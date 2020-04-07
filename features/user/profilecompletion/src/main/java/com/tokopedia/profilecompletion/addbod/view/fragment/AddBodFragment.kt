@@ -46,8 +46,6 @@ class AddBodFragment: BaseDaggerFragment(){
     private lateinit var maxDate: Calendar
     private lateinit var defaultDate: Calendar
 
-//    private lateinit var closeableBottomSheetDialog : CloseableBottomSheetDialog
-
     private var unifyDatePicker: DatePickerUnify? = null
     private lateinit var chooseDateButton : View
     private var selectedDate : String = ""
@@ -71,7 +69,7 @@ class AddBodFragment: BaseDaggerFragment(){
         chooseDate.textFieldInput.setFocusable(false)
         chooseDate.textFieldInput.setOnClickListener {
             fragmentManager?.run {
-                unifyDatePicker?.show(this, "aa")
+                unifyDatePicker?.show(this, TAG)
             }
         }
 
@@ -173,6 +171,7 @@ class AddBodFragment: BaseDaggerFragment(){
 
     companion object {
 
+        const val TAG = "addDobFragment"
         val EXTRA_PROFILE_SCORE = "profile_score"
         val EXTRA_BOD= "bod"
 

@@ -10,7 +10,7 @@
 
     <View android:id="@+id/guideline"
         android:layout_width="match_parent"
-        android:layout_height="1dp"
+        android:layout_height="@dimen/guideline_1"
         app:layout_constraintBottom_toBottomOf="@+id/dialog_card_icon"
         app:layout_constraintLeft_toLeftOf="@+id/dialog_card_icon"
         app:layout_constraintRight_toRightOf="@+id/dialog_card_icon"

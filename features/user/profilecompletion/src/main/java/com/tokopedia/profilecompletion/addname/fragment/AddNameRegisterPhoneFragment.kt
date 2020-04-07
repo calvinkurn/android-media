@@ -187,19 +187,13 @@ class AddNameRegisterPhoneFragment : BaseDaggerFragment(), AddNameListener.View 
     private fun hideValidationError() {
         isError = false
         et_name.setError(false)
-//        wrapperName.setErrorEnabled(false)
-//        wrapperName.error = ""
         et_name.setMessage("")
-//        message.visibility = View.VISIBLE
     }
 
     private fun showValidationError(errorMessage: String) {
         isError = true
         et_name.setError(true)
         et_name.setMessage(errorMessage)
-//        wrapperName.setErrorEnabled(true)
-//        wrapperName.error = errorMessage
-//        message.visibility = View.GONE
     }
 
     private fun enableButton(button: UnifyButton) {

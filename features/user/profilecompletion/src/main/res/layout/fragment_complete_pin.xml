@@ -13,8 +13,8 @@
 
         <ImageView
             android:id="@+id/completeImage"
-            android:layout_width="200dp"
-            android:layout_height="200dp"
+            android:layout_width="@dimen/complete_pin_image_200"
+            android:layout_height="@dimen/complete_pin_image_200"
             android:layout_marginTop="@dimen/spacing_lvl3"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

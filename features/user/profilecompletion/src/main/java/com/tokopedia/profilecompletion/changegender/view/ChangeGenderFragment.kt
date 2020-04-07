@@ -1,6 +1,5 @@
 package com.tokopedia.profilecompletion.changegender.view
 
-//import com.tokopedia.unifycomponents.Toaster
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
@@ -24,7 +23,6 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_change_gender.*
 import javax.inject.Inject
-
 
 class ChangeGenderFragment : BaseDaggerFragment() {
 
@@ -53,7 +51,6 @@ class ChangeGenderFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         setListener()
         setObserver()
-
     }
 
     private fun setListener() {
@@ -75,7 +72,6 @@ class ChangeGenderFragment : BaseDaggerFragment() {
         return if (selectedGender > 1) TYPE_WOMAN else TYPE_MAN
     }
 
-
     private fun radioGroupIsSelected(): Boolean {
         return radioGroup.checkedRadioButtonId != -1
     }
@@ -90,7 +86,6 @@ class ChangeGenderFragment : BaseDaggerFragment() {
                     }
                 }
         )
-
     }
 
     private fun onErrorChangeGender(throwable: Throwable) {
@@ -133,8 +128,6 @@ class ChangeGenderFragment : BaseDaggerFragment() {
         super.onDestroy()
         viewModel.mutateChangeGenderResponse.removeObservers(this)
         viewModel.flush()
-
-
     }
 
     companion object {
@@ -151,6 +144,4 @@ class ChangeGenderFragment : BaseDaggerFragment() {
             return fragment
         }
     }
-
-
 }

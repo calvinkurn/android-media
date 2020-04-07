@@ -128,7 +128,6 @@ class ChangePinFragment : BaseDaggerFragment() {
             else addChangePinViewModel.changePin(pin, input, oldPin)
         }else{
             changePinInput.pinTextField.setText("")
-//            changePinInput.setText("")
             changePinInput.focus()
             displayErrorPin(getString(R.string.error_wrong_pin))
         }
