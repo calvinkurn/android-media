@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.ContextWrapper
 import android.graphics.*
+import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.text.TextUtils
 import android.util.TypedValue
@@ -17,7 +18,11 @@ import androidx.annotation.LayoutRes
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.target.Target
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.HexValidator
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
@@ -32,6 +37,9 @@ import com.tokopedia.home.beranda.data.model.SectionContentItem
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderViewModel
 import com.tokopedia.home.util.ViewUtils
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
+import kotlinx.android.synthetic.main.layout_item_widget_ovo_tokopoint_nonlogin.view.*
 import kotlin.math.roundToInt
 
 /**
@@ -69,10 +77,21 @@ class OvoViewHolder(itemView: View, val listener: HomeCategoryListener) : Abstra
         containerOvo.background = ViewUtils.generateBackgroundWithShadow(containerOvo, R.color.white, R.dimen.dp_8, R.color.shadow_6, R.dimen.dp_2, Gravity.CENTER)
         val radius = TypedValue.applyDimension(
                 TypedValue.COMPLEX_UNIT_DIP, 16f, itemView.resources.displayMetrics).roundToInt()
-
+        itemView.loading_bg_ovo_non_login?.show()
         Glide.with(itemView.context.applicationContext)
                 .load(BG_CONTAINER_URL)
                 .transform(RoundedCorners(radius))
+                .listener(object : RequestListener<Drawable>{
+                    override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
+                        itemView.loading_bg_ovo_non_login?.hide()
+                        return false
+                    }
+
+                    override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
+                        itemView.loading_bg_ovo_non_login?.hide()
+                        return false
+                    }
+                })
                 .into(imgNonLogin)
 
         container.setOnClickListener {
