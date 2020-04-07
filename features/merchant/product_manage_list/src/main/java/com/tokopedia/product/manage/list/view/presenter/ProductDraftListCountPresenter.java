@@ -1,5 +1,7 @@
 package com.tokopedia.product.manage.list.view.presenter;
 
+import androidx.lifecycle.LiveData;
+
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.product.manage.list.view.listener.ProductDraftListCountView;
 
@@ -9,6 +11,6 @@ import com.tokopedia.product.manage.list.view.listener.ProductDraftListCountView
 
 public abstract class ProductDraftListCountPresenter extends BaseDaggerPresenter<ProductDraftListCountView> {
     public abstract void fetchAllDraftCountWithUpdateUploading();
-    public abstract void fetchAllDraftCount();
+    public abstract LiveData<Integer> getAllDraftCount();
     public abstract void clearAllDraft();
 }

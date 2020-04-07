@@ -10,6 +10,12 @@ import com.tokopedia.gm.common.domain.repository.GMCommonRepository
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.domain.GraphqlUseCase
+import com.tokopedia.product.manage.common.draft.data.db.AddEditProductDraftDao
+import com.tokopedia.product.manage.common.draft.data.db.AddEditProductDraftDb
+import com.tokopedia.product.manage.common.draft.data.db.repository.AddEditProductDraftRepository
+import com.tokopedia.product.manage.common.draft.data.db.repository.AddEditProductDraftRepositoryImpl
+import com.tokopedia.product.manage.common.draft.data.db.source.AddEditProductDraftDataSource
+import com.tokopedia.product.manage.common.draft.domain.usecase.GetAllProductsCountDraftUseCase
 import com.tokopedia.product.manage.item.main.draft.data.db.ProductDraftDB
 import com.tokopedia.product.manage.item.main.draft.data.db.ProductDraftDB.Companion.getInstance
 import com.tokopedia.product.manage.item.main.draft.data.db.ProductDraftDao
@@ -70,10 +76,15 @@ class ProductManageModule {
 
     @Provides
     internal fun providePresenterDraft(fetchAllDraftProductCountUseCase: FetchAllDraftProductCountUseCase?,
+                                       getAllProductsCountDraftUseCase: GetAllProductsCountDraftUseCase,
                                        clearAllDraftProductUseCase: ClearAllDraftProductUseCase?,
                                        updateUploadingDraftProductUseCase: UpdateUploadingDraftProductUseCase?): ProductDraftListCountPresenter {
-        return ProductDraftListCountPresenterImpl(fetchAllDraftProductCountUseCase,
-            clearAllDraftProductUseCase, updateUploadingDraftProductUseCase)
+        return ProductDraftListCountPresenterImpl(
+            fetchAllDraftProductCountUseCase,
+            getAllProductsCountDraftUseCase,
+            clearAllDraftProductUseCase,
+            updateUploadingDraftProductUseCase
+        )
     }
 
     @ProductManageScope
@@ -203,5 +214,22 @@ class ProductManageModule {
                 context.resources,
                 com.tokopedia.shop.common.R.raw.gql_mutation_gold_manage_featured_product_v2
         )
+    }
+
+    @ProductManageScope
+    @Provides
+    fun provideProductDraftDb(@ApplicationContext context: Context): AddEditProductDraftDb = AddEditProductDraftDb.getInstance(context)
+
+    @ProductManageScope
+    @Provides
+    fun provideProductDraftDao(draftDb: AddEditProductDraftDb): AddEditProductDraftDao = draftDb.getDraftDao()
+
+    @ProductManageScope
+    @Provides
+    fun provideProductDraftRepository(
+        draftDataSource: AddEditProductDraftDataSource,
+        userSession: UserSessionInterface
+    ): AddEditProductDraftRepository {
+        return AddEditProductDraftRepositoryImpl(draftDataSource, userSession)
     }
 }
