@@ -13,7 +13,6 @@ if (hasProperty('buildScan')) {
 }
 
 apply plugin: 'io.hansel.preprocessor'
-apply plugin: 'com.bugsnag.android.gradle'
 
 apply from: '../tools/dynamic_feature_inclusion.gradle'
 apply from: '../tools/set_debug_tools.gradle'
@@ -414,6 +413,11 @@ dependencies {
     implementation project(rootProject.ext.libraries.promotionsTarget)
     implementation project(rootProject.ext.features.promoGamificationCommon)
     implementation project(rootProject.ext.libraries.shakeDetect)
+    if (rootProject.ext.debugToolsEnabled) {
+        implementation project(rootProject.ext.libraries.preReleaseInspector)
+    } else {
+        implementation project(rootProject.ext.libraries.preReleaseInspectorNoop)
+    }
     implementation project(rootProject.ext.features.atc_variant)
     implementation project(rootProject.ext.libraries.deviceInfo)
     implementation rootProject.ext.unifyDependencies.components
@@ -521,13 +525,16 @@ dependencies {
     implementation(rootProject.ext.miscDependencies.facebook) {
         exclude group: 'com.android.support'
     }
-    implementation rootProject.ext.monitoringDependencies.bugSnag
     implementation 'com.facebook.soloader:soloader:0.8.0'
     implementation 'com.facebook.infer.annotation:infer-annotation:0.11.2'
     implementation(rootProject.ext.debugToolsDependencies.timber) {
         exclude group: 'org.jetbrains', module: 'annotations'
     }
-    devImplementation project.ext.debugToolsDependencies.blockCanary
+    if (rootProject.ext.debugToolsEnabled) {
+        implementation project(project.ext.debugToolsDependencies.blockCanary)
+    } else {
+        implementation project.ext.debugToolsDependencies.blockCanaryNoOp
+    }
     debugImplementation project.ext.debugToolsDependencies.leakCanary
 
     //[START] test and androidTest dependencies

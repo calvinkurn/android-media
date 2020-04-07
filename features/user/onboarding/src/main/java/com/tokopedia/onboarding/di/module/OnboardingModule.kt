@@ -7,6 +7,8 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.onboarding.analytics.OnboardingAnalytics
 import com.tokopedia.onboarding.di.OnboardingScope
+import com.tokopedia.onboarding.common.DefaultCoroutineDispatcherProvider
+import com.tokopedia.onboarding.common.OnboardingIoDispatcher
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -46,4 +48,8 @@ class OnboardingModule {
     @OnboardingScope
     @Provides
     fun provideGraphQlRepository() = GraphqlInteractor.getInstance().graphqlRepository
+
+    @OnboardingScope
+    @Provides
+    fun providerDispatcherProvider(): OnboardingIoDispatcher = DefaultCoroutineDispatcherProvider()
 }

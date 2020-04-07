@@ -15,14 +15,13 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.dynamicfeatures.DFInstaller
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.onboarding.R
 import com.tokopedia.onboarding.analytics.OnboardingAnalytics
 import com.tokopedia.onboarding.common.IOnBackPressed
+import com.tokopedia.onboarding.common.OnboardingIoDispatcher
 import com.tokopedia.onboarding.data.OnboardingScreenItem
 import com.tokopedia.onboarding.di.OnboardingComponent
 import com.tokopedia.onboarding.view.adapter.OnboardingViewPagerAdapter
@@ -37,7 +36,6 @@ import com.tokopedia.weaver.Weaver
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import com.tokopedia.weaver.WeaverFirebaseConditionCheck
 import kotlinx.coroutines.*
 import org.jetbrains.annotations.NotNull
 import java.util.*
@@ -50,7 +48,7 @@ import kotlin.coroutines.CoroutineContext
  * ade.hadian@tokopedia.com
  */
 
-class OnboardingFragment : BaseDaggerFragment(), IOnBackPressed, CoroutineScope {
+class OnboardingFragment : BaseDaggerFragment(), CoroutineScope, IOnBackPressed {
 
     private lateinit var screenViewpager: ViewPager
     private lateinit var skipAction: Typography
@@ -58,12 +56,22 @@ class OnboardingFragment : BaseDaggerFragment(), IOnBackPressed, CoroutineScope 
     private lateinit var joinButton: UnifyButton
     private lateinit var tabIndicator: TabLayout
 
+    private val job = SupervisorJob()
+
     @Inject
     lateinit var userSession: UserSessionInterface
+
     @Inject
     lateinit var onboardingAnalytics: OnboardingAnalytics
+
     @Inject
     lateinit var remoteConfig: RemoteConfig
+
+    @Inject
+    lateinit var dispatcher: OnboardingIoDispatcher
+
+    override val coroutineContext: CoroutineContext
+        get() = job + dispatcher.main
 
     private lateinit var onboardingViewPagerAdapter: OnboardingViewPagerAdapter
     private lateinit var sharedPrefs: SharedPreferences
@@ -93,8 +101,8 @@ class OnboardingFragment : BaseDaggerFragment(), IOnBackPressed, CoroutineScope 
     }
 
     @NotNull
-    private fun executeViewCreateFlow() : Boolean{
-        GlobalScope.launch(Dispatchers.Main) {
+    private fun executeViewCreateFlow(): Boolean {
+        GlobalScope.launch(coroutineContext) {
             trackPreinstall()
             initView()
         }
@@ -291,7 +299,4 @@ class OnboardingFragment : BaseDaggerFragment(), IOnBackPressed, CoroutineScope 
             return fragment
         }
     }
-
-    override val coroutineContext: CoroutineContext
-        get() = Dispatchers.Main
 }
