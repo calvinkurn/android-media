@@ -174,11 +174,10 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
 
         playFpmVideoStart?.startTrace(PLAY_TRACE_VIDEO_START)
         playFpmLoadDataFromNetwork?.startTrace(PLAY_TRACE_DATA_FROM_NETWORK)
-
-        super.onCreate(savedInstanceState)
 
         playViewModel = ViewModelProvider(requireParentFragment(), viewModelFactory).get(PlayViewModel::class.java)
         viewModel = ViewModelProvider(this, viewModelFactory).get(PlayInteractionViewModel::class.java)
