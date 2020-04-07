@@ -11,5 +11,7 @@ class AddEditProductShipmentConstants {
         const val MAX_WEIGHT_KILOGRAM = 500
         const val UNIT_GRAM = 0
         const val UNIT_KILOGRAM = 1
+        const val DEFAULT_WEIGHT_VALUE = 500
+        const val DEFAULT_WEIGHT_UNIT = UNIT_GRAM
     }
 }

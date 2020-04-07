@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.product.addedit.common.util.ResourceProvider
+import com.tokopedia.product.addedit.description.presentation.model.ProductVariantInputModel
 import com.tokopedia.product.addedit.detail.domain.usecase.GetCategoryRecommendationUseCase
 import com.tokopedia.product.addedit.detail.domain.usecase.GetNameRecommendationUseCase
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.UNIT_DAY
@@ -31,6 +32,8 @@ class AddEditProductDetailViewModel @Inject constructor(
     var isDrafting = false
 
     var detailInputModel = DetailInputModel()
+
+    var variantInputModel = ProductVariantInputModel()
 
     var productPhotoPaths = detailInputModel.imageUrlOrPathList.toMutableList()
 
@@ -98,6 +101,7 @@ class AddEditProductDetailViewModel @Inject constructor(
         get() = mIsInputValid
 
     var selectedCategoryId: String = ""
+    var selectedCategoryName: String = ""
 
     val productCategoryRecommendationLiveData = MutableLiveData<Result<List<ListItemUnify>>>()
 
