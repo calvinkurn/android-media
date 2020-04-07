@@ -6,12 +6,17 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.ProgressBar
 import androidx.appcompat.app.AlertDialog
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.Group
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
@@ -31,7 +36,8 @@ import com.tokopedia.purchase_platform.features.one_click_checkout.preference.an
 import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.view.PreferenceEditActivity
 import com.tokopedia.purchase_platform.features.one_click_checkout.preference.list.di.PreferenceListComponent
 import com.tokopedia.unifycomponents.Toaster
-import kotlinx.android.synthetic.main.fragment_preference_list.*
+import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifyprinciples.Typography
 import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
@@ -51,6 +57,18 @@ class PreferenceListFragment : BaseDaggerFragment(), PreferenceListAdapter.Prefe
     private val adapter = PreferenceListAdapter(this)
 
     private var progressDialog: AlertDialog? = null
+    private val swipeRefreshLayout by lazy { view?.findViewById<SwipeRefreshLayout>(R.id.swipe_refresh_layout) }
+    private val mainContent  by lazy { view?.findViewById<ConstraintLayout>(R.id.main_content) }
+    private val preferenceList  by lazy { view?.findViewById<RecyclerView>(R.id.rv_preference_list) }
+    private val progressBar by lazy { view?.findViewById<ProgressBar>(R.id.progress_bar) }
+    private val buttonPreferenceListAction  by lazy { view?.findViewById<UnifyButton>(R.id.btn_preference_list_action) }
+
+    private val ivEmptyState  by lazy { view?.findViewById<ImageView>(R.id.iv_empty) }
+    private val tvHeaderEmptyState  by lazy { view?.findViewById<Typography>(R.id.tv_header_empty) }
+    private val tvSubtitleEmptyState  by lazy { view?.findViewById<Typography>(R.id.tv_subtitle_empty) }
+    private val emptyStateGroup  by lazy { view?.findViewById<Group>(R.id.group_empty_state) }
+
+    private val globalError  by lazy { view?.findViewById<GlobalError>(R.id.global_error) }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -89,39 +107,41 @@ class PreferenceListFragment : BaseDaggerFragment(), PreferenceListAdapter.Prefe
         viewModel.preferenceList.observe(this, Observer {
             when (it) {
                 is OccState.Success -> {
-                    swipe_refresh_layout.isRefreshing = false
-                    global_error.gone()
-                    main_content.visible()
+                    swipeRefreshLayout?.isRefreshing = false
+                    globalError?.gone()
+                    mainContent?.visible()
                     val profiles = it.data.profiles ?: ArrayList()
                     val maxProfiles = it.data.maxProfile
                     adapter.submitList(profiles)
                     if (profiles.isEmpty()) {
-                        ImageHandler.LoadImage(iv_empty, EMPTY_STATE_PREFERENCE_PICT)
-                        group_empty_state.visible()
-                        rv_preference_list.gone()
-                        btn_preference_list_action.isEnabled = true
-                        btn_preference_list_action.setText(R.string.add_first_preference)
+                        ImageHandler.LoadImage(ivEmptyState, EMPTY_STATE_PREFERENCE_PICT)
+                        tvHeaderEmptyState?.setText(R.string.preference_list_empty_header)
+                        tvSubtitleEmptyState?.setText(R.string.preference_list_empty_subtitle)
+                        emptyStateGroup?.visible()
+                        preferenceList?.gone()
+                        buttonPreferenceListAction?.isEnabled = true
+                        buttonPreferenceListAction?.setText(R.string.add_first_preference)
                     } else if (profiles.isNotEmpty() && profiles.size >= maxProfiles) {
-                        group_empty_state.gone()
-                        rv_preference_list.visible()
-                        btn_preference_list_action.setText(R.string.add_preference)
-                        btn_preference_list_action.isEnabled = false
+                        emptyStateGroup?.gone()
+                        preferenceList?.visible()
+                        buttonPreferenceListAction?.setText(R.string.add_preference)
+                        buttonPreferenceListAction?.isEnabled = false
                     } else {
-                        group_empty_state.gone()
-                        rv_preference_list.visible()
-                        btn_preference_list_action.isEnabled = true
-                        btn_preference_list_action.setText(R.string.add_preference)
+                        emptyStateGroup?.gone()
+                        preferenceList?.visible()
+                        buttonPreferenceListAction?.isEnabled = true
+                        buttonPreferenceListAction?.setText(R.string.add_preference)
                     }
                 }
                 is OccState.Fail -> {
                     if (!it.isConsumed) {
-                        swipe_refresh_layout.isRefreshing = false
+                        swipeRefreshLayout?.isRefreshing = false
                         if (it.throwable != null) {
                             handleError(it.throwable)
                         }
                     }
                 }
-                else -> swipe_refresh_layout.isRefreshing = true
+                else -> swipeRefreshLayout?.isRefreshing = true
             }
         })
         viewModel.setDefaultPreference.observe(this, Observer {
@@ -197,24 +217,24 @@ class PreferenceListFragment : BaseDaggerFragment(), PreferenceListAdapter.Prefe
     }
 
     private fun showGlobalError(type: Int) {
-        global_error.setType(type)
-        global_error.setActionClickListener {
+        globalError?.setType(type)
+        globalError?.setActionClickListener {
             viewModel.getAllPreference()
         }
-        main_content.gone()
-        global_error.visible()
+        mainContent?.gone()
+        globalError?.visible()
     }
 
     private fun initViews() {
-        btn_preference_list_action.setOnClickListener {
+        buttonPreferenceListAction?.setOnClickListener {
             preferencelistAnalytics.eventAddPreferenceFromPurchaseSetting()
             val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PREFERENCE_EDIT)
             intent.putExtra(PreferenceEditActivity.EXTRA_PREFERENCE_INDEX, getString(R.string.preference_number_summary) + " " + (adapter.itemCount + 1))
             startActivityForResult(intent, REQUEST_CREATE_PREFERENCE)
         }
-        rv_preference_list.adapter = adapter
-        rv_preference_list.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-        rv_preference_list.addItemDecoration(object : RecyclerView.ItemDecoration() {
+        preferenceList?.adapter = adapter
+        preferenceList?.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+        preferenceList?.addItemDecoration(object : RecyclerView.ItemDecoration() {
             override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
                 super.getItemOffsets(outRect, view, parent, state)
                 outRect.left = context?.resources?.getDimension(R.dimen.dp_16)?.toInt() ?: 0

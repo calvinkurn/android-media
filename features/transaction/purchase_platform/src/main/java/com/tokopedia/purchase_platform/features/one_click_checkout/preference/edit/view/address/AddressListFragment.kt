@@ -7,10 +7,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import android.widget.FrameLayout
+import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
@@ -31,6 +36,7 @@ import com.tokopedia.purchase_platform.features.one_click_checkout.preference.ed
 import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.view.PreferenceEditActivity
 import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.view.shipping.ShippingDurationFragment
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.UnifyButton
 import kotlinx.android.synthetic.main.empty_list_address.*
 import kotlinx.android.synthetic.main.fragment_choose_address.*
 import java.net.ConnectException
@@ -49,6 +55,20 @@ class AddressListFragment : BaseDaggerFragment(), SearchInputView.Listener, Addr
         ViewModelProviders.of(this, viewModelFactory)[AddressListViewModel::class.java]
     }
 
+    private lateinit var searchAddress: SearchInputView
+    private val adapter = AddressListItemAdapter(this)
+
+    private val addressList by lazy { view?.findViewById<RecyclerView>(R.id.address_list_rv) }
+    private val swipeRefreshLayout by lazy { view?.findViewById<SwipeRefreshLayout>(R.id.swipe_refresh_layout) }
+    private val searchInputView by lazy { view?.findViewById<SearchInputView>(R.id.search_input_view) }
+    private val buttonSaveAddress by lazy { view?.findViewById<UnifyButton>(R.id.btn_save_address) }
+    private val bottomLayout by lazy { view?.findViewById<FrameLayout>(R.id.bottom_layout_address) }
+
+    private val emptyStateLayout by lazy { view?.findViewById<LinearLayout>(R.id.empty_state_order_list) }
+
+    private val textSearchError by lazy { view?.findViewById<TextView>(R.id.text_search_error) }
+    private val globalErrorLayout by lazy { view?.findViewById<GlobalError>(R.id.layout_global_error) }
+
     companion object {
         const val REQUEST_FIRST_CREATE = 1
         const val REQUEST_CREATE = 2
@@ -66,10 +86,6 @@ class AddressListFragment : BaseDaggerFragment(), SearchInputView.Listener, Addr
             return addressListFragment
         }
     }
-
-    val adapter = AddressListItemAdapter(this)
-
-    private lateinit var searchAddress: SearchInputView
 
     override fun getScreenName(): String = ""
 
@@ -94,22 +110,22 @@ class AddressListFragment : BaseDaggerFragment(), SearchInputView.Listener, Addr
         viewModel.addressList.observe(this, Observer {
             when (it) {
                 is OccState.Success -> {
-                    swipe_refresh_layout.isRefreshing = false
-                    global_error.gone()
+                    swipeRefreshLayout?.isRefreshing = false
+                    globalErrorLayout?.gone()
                     setEmptyState(it.data.listAddress.isEmpty(), viewModel.savedQuery.isEmpty())
                     renderData(it.data.listAddress)
                 }
 
                 is OccState.Fail -> {
                     if (!it.isConsumed) {
-                        swipe_refresh_layout.isRefreshing = false
+                        swipeRefreshLayout?.isRefreshing = false
                         if (it.throwable != null) {
                             handleError(it.throwable)
                         }
                     }
                 }
 
-                else -> swipe_refresh_layout.isRefreshing = true
+                else -> swipeRefreshLayout?.isRefreshing = true
             }
         })
     }
@@ -133,41 +149,41 @@ class AddressListFragment : BaseDaggerFragment(), SearchInputView.Listener, Addr
 
     private fun setEmptyState(isEmpty: Boolean, isFirstLoad: Boolean) {
         if (!isEmpty) {
-            btn_save_address.text = getString(R.string.label_button_input_address)
-            btn_save_address.setOnClickListener {
+            buttonSaveAddress?.text = getString(R.string.label_button_input_address)
+            buttonSaveAddress?.setOnClickListener {
                 if (arguments?.getBoolean(ARG_IS_EDIT) == false) {
                     goToNextStep()
                 } else {
                     goBack()
                 }
             }
-            empty_state_order_list.gone()
-            text_search_error.gone()
+            emptyStateLayout?.gone()
+            textSearchError?.gone()
             searchAddress.visible()
-            address_list_rv.visible()
-            bottom_layout_address.visible()
+            addressList?.visible()
+            bottomLayout?.visible()
         } else if (isFirstLoad) {
-            btn_save_address.text = getString(R.string.label_button_input_address_empty)
-            btn_save_address.setOnClickListener {
+            buttonSaveAddress?.text = getString(R.string.label_button_input_address_empty)
+            buttonSaveAddress?.setOnClickListener {
                 goToPickLocation(REQUEST_FIRST_CREATE)
             }
-            address_list_rv.gone()
+            addressList?.gone()
             searchAddress.gone()
-            text_search_error.gone()
-            empty_state_order_list.visible()
-            bottom_layout_address.visible()
+            textSearchError?.gone()
+            emptyStateLayout?.visible()
+            bottomLayout?.visible()
         } else {
-            address_list_rv.gone()
-            bottom_layout_address.gone()
-            empty_state_order_list.gone()
+            addressList?.gone()
+            bottomLayout?.gone()
+            emptyStateLayout?.gone()
             searchAddress.visible()
-            text_search_error.visible()
+            textSearchError?.visible()
         }
     }
 
     private fun initSearch() {
         val searchKey = viewModel.savedQuery
-        search_input_view.searchText = searchKey
+        searchInputView?.searchText = searchKey
 
         performSearch(searchKey)
     }
@@ -338,16 +354,16 @@ class AddressListFragment : BaseDaggerFragment(), SearchInputView.Listener, Addr
     }
 
     private fun showGlobalError(type: Int) {
-        global_error.setType(type)
-        global_error.setActionClickListener {
+        globalErrorLayout?.setType(type)
+        globalErrorLayout?.setActionClickListener {
             viewModel.searchAddress("")
         }
         searchAddress.gone()
-        text_search_error.gone()
-        address_list_rv.gone()
-        bottom_layout_address.gone()
-        empty_state_order_list.gone()
-        global_error.visible()
+        textSearchError?.gone()
+        addressList?.gone()
+        bottomLayout?.gone()
+        emptyStateLayout?.gone()
+        globalErrorLayout?.visible()
     }
 
 }
