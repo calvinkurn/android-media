@@ -1033,7 +1033,11 @@ public class HomePageTracking {
     }
 
     public static void eventEnhanceImpressionPlayBanner(TrackingQueue trackingQueue, PlayCardViewModel playCardViewModel) {
-        trackingQueue.putEETracking((HashMap<String, Object>) playCardViewModel.getEnhanceImpressionPlayBanner());
+        trackingQueue.putEETracking((HashMap<String, Object>) playCardViewModel.getEnhanceImpressionPlayBanner(false));
+    }
+
+    public static HashMap<String, Object> eventEnhanceImpressionIrisPlayBanner(PlayCardViewModel playCardViewModel) {
+        return  (HashMap<String, Object>) playCardViewModel.getEnhanceImpressionPlayBanner(true);
     }
 
     public static void eventClickPlayBanner(PlayCardViewModel playCardViewModel) {
@@ -1589,10 +1593,29 @@ public class HomePageTracking {
             SuggestedProductReviewResponse reviewData,
             int position,
             String orderId,
-            String productId
+            String productId,
+            String channelId
     ) {
+        trackingQueue.putEETracking(getHomeReviewImpression(reviewData, position, orderId, productId, channelId, false));
+    }
+
+    public static HashMap<String, Object>  getHomeReviewImpressionIris(
+            SuggestedProductReviewResponse reviewData,
+            int position,
+            String orderId,
+            String productId,
+            String channelId) {
+        return getHomeReviewImpression(reviewData, position, orderId, productId, channelId,true);
+    }
+
+    private static HashMap<String, Object> getHomeReviewImpression(SuggestedProductReviewResponse reviewData,
+                                                                   int position,
+                                                                   String orderId,
+                                                                   String productId,
+                                                                  String channelId,
+                                                                  boolean isToIris) {
         List<Object> promotionBody = DataLayer.listOf(DataLayer.mapOf(
-                "id", orderId + " - " + productId,
+                "id", orderId + " - " + productId + " - " + channelId,
                 "name", "product review notification - " + orderId + " - " + productId,
                 "creative", "product review notification - " + orderId + " - " + productId,
                 "creative_url", reviewData.getImageUrl(),
@@ -1601,19 +1624,18 @@ public class HomePageTracking {
                 "promo_id", null,
                 "promo_code", null
         ));
-
-
-        trackingQueue.putEETracking((HashMap<String, Object>) DataLayer.mapOf(
-                EVENT, "promoView",
+        return (HashMap<String, Object>) DataLayer.mapOf(
+                EVENT, isToIris? "promoViewIris" : "promoView",
                 EVENT_CATEGORY, "homepage-pdp",
                 EVENT_ACTION, "view - product review notification",
                 EVENT_LABEL, orderId + " - " + productId,
                 ECOMMERCE, DataLayer.mapOf(
-                    "promoView", DataLayer.mapOf(
-                        "promotions", promotionBody
+                        "promoView", DataLayer.mapOf(
+                                "promotions", promotionBody
+                        )
                 )
-            )
-        ));
+        );
+
     }
 
     public static void homeReviewOnCloseTracker(String orderId, String productId) {
@@ -1634,12 +1656,13 @@ public class HomePageTracking {
         ));
     }
 
-    public static void homeReviewOnBlankSpaceClickTracker(String orderId, String productId) {
+    public static void homeReviewOnBlankSpaceClickTracker(String orderId, String productId, String channelId) {
         getTracker().sendGeneralEvent(DataLayer.mapOf(
                 EVENT, "clickReview",
                 EVENT_CATEGORY, "homepage-pdp",
                 EVENT_ACTION, "click - home product review widget",
-                EVENT_LABEL, orderId + " - " + productId
+                EVENT_LABEL, orderId + " - " + productId,
+                CHANNEL_ID, channelId
         ));
     }
 

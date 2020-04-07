@@ -68,6 +68,7 @@ import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel;
 import com.tokopedia.home.beranda.domain.model.HomeFlag;
 import com.tokopedia.home.beranda.domain.model.SearchPlaceholder;
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel;
+import com.tokopedia.home.beranda.domain.model.review.SuggestedProductReviewResponse;
 import com.tokopedia.home.beranda.helper.Result;
 import com.tokopedia.home.beranda.helper.ViewHelper;
 import com.tokopedia.home.beranda.listener.ActivityStateListener;
@@ -1526,6 +1527,11 @@ public class HomeFragment extends BaseDaggerFragment implements
     @Override
     public boolean isLightThemeStatusBar() {
         return isLightThemeStatusBar;
+    }
+
+    @Override
+    public void sendIrisTrackerHashMap(@NotNull HashMap<String, Object> tracker) {
+        putEEToIris(tracker);
     }
 
     @Override
