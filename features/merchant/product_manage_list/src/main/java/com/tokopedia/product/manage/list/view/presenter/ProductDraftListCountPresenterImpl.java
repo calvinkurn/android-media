@@ -1,7 +1,5 @@
 package com.tokopedia.product.manage.list.view.presenter;
 
-import androidx.lifecycle.LiveData;
-
 import com.tokopedia.product.manage.common.draft.domain.usecase.GetAllProductsCountDraftUseCase;
 import com.tokopedia.product.manage.item.main.draft.domain.UpdateUploadingDraftProductUseCase;
 import com.tokopedia.product.manage.list.domain.ClearAllDraftProductUseCase;

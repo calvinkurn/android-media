@@ -8,7 +8,6 @@ import android.content.IntentFilter
 import android.os.Bundle
 import android.view.View
 import android.widget.TextView
-import androidx.lifecycle.Observer
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
