@@ -7,8 +7,11 @@ import android.view.View
 import android.widget.LinearLayout
 import androidx.annotation.RequiresApi
 import com.tokopedia.topchat.R
+import com.tokopedia.unifyprinciples.Typography
 
 class TransactionOrderProgressLayout : LinearLayout {
+
+    private var status: Typography? = null
 
     constructor(context: Context?) : super(context)
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
@@ -17,7 +20,16 @@ class TransactionOrderProgressLayout : LinearLayout {
     constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int) : super(context, attrs, defStyleAttr, defStyleRes)
 
     init {
+        initViewLayout()
+        initBindView()
+    }
+
+    private fun initViewLayout() {
         View.inflate(context, R.layout.partial_transaction_order_progress, this)
+    }
+
+    private fun initBindView() {
+        status = findViewById(R.id.tp_order_status)
     }
 
 
