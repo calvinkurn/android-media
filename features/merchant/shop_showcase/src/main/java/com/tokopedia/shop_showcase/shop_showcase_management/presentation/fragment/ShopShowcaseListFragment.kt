@@ -53,7 +53,7 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
         @JvmStatic
         fun createInstance(shopType: String, shopId: String?, selectedEtalaseId: String?,
                            isShowDefault: Boolean? = false, isShowZeroProduct: Boolean? = false,
-                           isMyShop: Boolean? = false, isNeedToGoToAddShowcase: Boolean? = false
+                           isMyShop: Boolean? = false
         ): ShopShowcaseListFragment {
             val fragment = ShopShowcaseListFragment()
             val bundle = Bundle()
@@ -64,8 +64,8 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
             bundle.putBoolean(ShopShowcaseListParam.EXTRA_IS_SHOW_ZERO_PRODUCT, isShowZeroProduct
                     ?: false)
             bundle.putBoolean(ShopShowcaseListParam.EXTRA_IS_MY_SHOP, isMyShop ?: false)
-            bundle.putBoolean(ShopShowcaseListParam.EXTRA_IS_NEED_TO_GOTO_ADD_SHOWCASE, isNeedToGoToAddShowcase
-                    ?: false)
+//            bundle.putBoolean(ShopShowcaseListParam.EXTRA_IS_NEED_TO_GOTO_ADD_SHOWCASE, isNeedToGoToAddShowcase
+//                    ?: false)
             fragment.arguments = bundle
             return fragment
         }
@@ -366,14 +366,15 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
     }
 
     private fun loadData() {
-        if (isNeedToGoToAddShowcase) {
-            checkTotalProduct()
-            Handler().postDelayed({
-                viewModel.getShopShowcaseListAsSeller()
-            }, 500)
-        } else {
-            viewModel.getShopShowcaseListAsSeller()
-        }
+//        if (isNeedToGoToAddShowcase) {
+//            checkTotalProduct()
+//            Handler().postDelayed({
+//                viewModel.getShopShowcaseListAsSeller()
+//            }, 500)
+//        } else {
+//            viewModel.getShopShowcaseListAsSeller()
+//        }
+        viewModel.getShopShowcaseListAsSeller()
     }
 
     private fun checkTotalProduct() {
@@ -482,6 +483,7 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
             } else {
                 UriUtil.buildUri(ApplinkConst.SHOP, shopId)
             })
+            intent.putExtra("isNeedToReloadData", true)
             it.context?.startActivity(intent)
         }
     }

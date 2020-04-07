@@ -26,6 +26,7 @@ object PageNameConstant {
 object ShopShowcaseListParam {
     const val EXTRA_SHOP_ID = "SHOP_ID"
     const val EXTRA_ETALASE_ID = "ETALASE_ID"
+    const val EXTRA_SELECTED_ETALASE_ID = "EXTRA_SELECTED_ETALASE_ID"
     const val EXTRA_EDIT_SHOWCASE_RESULT = "IS_EDIT_SHOWCASE_SUCCESS"
     const val EXTRA_IS_SHOW_DEFAULT = "IS_SHOW_DEFAULT"
     const val EXTRA_IS_SHOW_ZERO_PRODUCT = "IS_SHOW_ZERO_PRODUCT"
