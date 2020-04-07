@@ -122,26 +122,26 @@ class InitialStateFragment : BaseDaggerFragment(), InitialStateContract.View, In
 
         if (savedInstanceState != null) {
             val searchParameter = savedInstanceState.getSerializable(SEARCH_PARAMETER) as HashMap<String, String>
-            presenter.getInitialStateData(searchParameter)
+            setSearchParameter(searchParameter)
+            presenter.getInitialStateData()
         }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        presenter.getSearchParameterMap()?.let {
-            outState.putSerializable(SEARCH_PARAMETER, HashMap<String, Any>(it))
-        }
+        outState.putSerializable(SEARCH_PARAMETER, HashMap<String, Any>(presenter.getSearchParameter()))
     }
 
-    fun getInitialStateData(searchParameter: SearchParameter) {
+    fun getInitialStateData(searchParameter: HashMap<String, String>) {
         performanceMonitoring = PerformanceMonitoring.start(MP_SEARCH_AUTOCOMPLETE)
-        presenter.getInitialStateData(searchParameter.getSearchParameterMap())
+        setSearchParameter(searchParameter)
+        presenter.getInitialStateData()
     }
 
     override fun onItemClicked(applink: String, webUrl: String) {
         dropKeyBoard()
 
-        val modifiedApplink = getModifiedApplink(applink, presenter.getSearchParameterMap())
+        val modifiedApplink = getModifiedApplink(applink, presenter.getSearchParameter())
         startActivityFromAutoComplete(modifiedApplink)
     }
 
@@ -183,8 +183,8 @@ class InitialStateFragment : BaseDaggerFragment(), InitialStateContract.View, In
         presenter.refreshPopularSearch()
     }
 
-    fun setSearchParameter(searchParameter: SearchParameter) {
-        presenter.setSearchParameterMap(searchParameter.getSearchParameterHashMap())
+    fun setSearchParameter(searchParameter: HashMap<String, String> ) {
+        presenter.setSearchParameter(searchParameter)
     }
 
     fun setInitialStateViewUpdateListener(initialStateViewUpdateListener: InitialStateViewUpdateListener) {

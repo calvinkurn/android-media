@@ -32,14 +32,14 @@ class InitialStatePresenter @Inject constructor(
 
     private var querySearch = ""
     private var listVistable = mutableListOf<Visitable<*>>()
-    private var searchParameterHashMap = HashMap<String, String>()
+    private var searchParameter = HashMap<String, String>()
 
-    fun setSearchParameterMap(searchParameter: HashMap<String, String>) {
-        this.searchParameterHashMap = searchParameter
+    fun setSearchParameter(searchParameter: HashMap<String, String>) {
+        this.searchParameter = searchParameter
     }
-    
-    fun getSearchParameterMap() : Map<String, String>? {
-        return searchParameterHashMap
+
+    fun getSearchParameter(): Map<String, String> {
+        return searchParameter
     }
 
     private fun getInitialStateSubscriber(): Subscriber<List<InitialStateData>> = object : Subscriber<List<InitialStateData>>() {
@@ -114,7 +114,7 @@ class InitialStatePresenter @Inject constructor(
                         }
                     }
                 }
-                if(needDelete){
+                if (needDelete) {
                     removeRecentSearchTitle()
                     removeRecentSearch()
                 }
@@ -216,10 +216,10 @@ class InitialStatePresenter @Inject constructor(
         return childList
     }
 
-    override fun getInitialStateData(searchParameterMap: Map<String, Any>) {
+    override fun getInitialStateData() {
         initialStateUseCase.execute(
                 InitialStateUseCase.getParams(
-                        searchParameterMap,
+                        searchParameter,
                         userSession.deviceId,
                         userSession.userId
                 ),
@@ -251,16 +251,14 @@ class InitialStatePresenter @Inject constructor(
     }
 
     override fun refreshPopularSearch() {
-        searchParameterHashMap?.let {
-            refreshPopularSearchUseCase.execute(
-                    RefreshPopularSearchUseCase.getParams(
-                            it,
-                            userSession.deviceId,
-                            userSession.userId
-                    ),
-                    getPopularSearchSubscriber()
-            )
-        }
+        refreshPopularSearchUseCase.execute(
+                RefreshPopularSearchUseCase.getParams(
+                        searchParameter,
+                        userSession.deviceId,
+                        userSession.userId
+                ),
+                getPopularSearchSubscriber()
+        )
     }
 
     override fun detachView() {

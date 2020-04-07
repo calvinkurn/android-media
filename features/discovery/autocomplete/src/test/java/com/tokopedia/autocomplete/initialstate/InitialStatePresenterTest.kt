@@ -59,7 +59,7 @@ internal class InitialStatePresenterTest {
     }
 
     private fun `when presenter get initial state data`() {
-        initialStatePresenter.getInitialStateData(HashMap<String,Any>())
+        initialStatePresenter.getInitialStateData()
     }
 
     private fun `then verify initial state API is called`() {
@@ -115,7 +115,7 @@ internal class InitialStatePresenterTest {
     }
 
     private fun `given presenter get initial state data`() {
-        initialStatePresenter.getInitialStateData(HashMap<String,Any>())
+        initialStatePresenter.getInitialStateData()
     }
 
     private fun `given initial state API is called`() {

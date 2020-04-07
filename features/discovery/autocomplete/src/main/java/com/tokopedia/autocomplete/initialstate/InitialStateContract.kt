@@ -15,7 +15,7 @@ interface InitialStateContract {
     }
 
     interface Presenter : CustomerPresenter<View> {
-        fun getInitialStateData(searchParameterMap: Map<String, Any>)
+        fun getInitialStateData()
 
         fun deleteRecentSearchItem(keyword: String)
 
