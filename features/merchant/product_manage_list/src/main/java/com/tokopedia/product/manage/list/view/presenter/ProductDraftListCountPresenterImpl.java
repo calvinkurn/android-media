@@ -31,8 +31,7 @@ public class ProductDraftListCountPresenterImpl extends ProductDraftListCountPre
 
     @Override
     public void getAllDraftCount() {
-        long draftCount = getAllProductsCountDraftUseCase.execute();
-        getView().onDraftCountLoaded(draftCount);
+        getAllProductsCountDraftUseCase.execute(getSubscriber());
     }
 
     @Override
@@ -59,6 +58,27 @@ public class ProductDraftListCountPresenterImpl extends ProductDraftListCountPre
                 // no op
             }
         });
+    }
+
+    private Subscriber<Long> getSubscriber(){
+        return new Subscriber<Long>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                if(isViewAttached()) {
+                    getView().onDraftCountLoadError();
+                }
+            }
+
+            @Override
+            public void onNext(Long rowCount) {
+                getView().onDraftCountLoaded(rowCount);
+            }
+        };
     }
 
     @Override

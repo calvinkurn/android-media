@@ -1,6 +1,7 @@
 package com.tokopedia.product.manage.common.draft.data.db.repository
 
 import com.tokopedia.product.manage.common.draft.data.model.ProductDraft
+import rx.Observable
 
 interface AddEditProductDraftRepository {
 
@@ -10,7 +11,7 @@ interface AddEditProductDraftRepository {
 
     fun getAllDrafts(): List<ProductDraft>
 
-    fun getAllDraftsCount(): Long
+    fun getAllDraftsCount(): Observable<Long>
 
     fun deleteDraft(productId: Long): Boolean
 

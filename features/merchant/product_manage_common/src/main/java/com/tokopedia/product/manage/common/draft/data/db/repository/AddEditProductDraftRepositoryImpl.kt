@@ -4,6 +4,7 @@ import com.tokopedia.product.manage.common.draft.data.db.source.AddEditProductDr
 import com.tokopedia.product.manage.common.draft.data.model.ProductDraft
 import com.tokopedia.product.manage.common.draft.mapper.AddEditProductDraftMapper
 import com.tokopedia.user.session.UserSessionInterface
+import rx.Observable
 import javax.inject.Inject
 
 class AddEditProductDraftRepositoryImpl @Inject constructor(
@@ -27,7 +28,7 @@ class AddEditProductDraftRepositoryImpl @Inject constructor(
         return listEntities.map { AddEditProductDraftMapper.mapDraftToProductInput(it) }
     }
 
-    override fun getAllDraftsCount(): Long {
+    override fun getAllDraftsCount(): Observable<Long> {
         val shopId = userSession.shopId
         return draftDataSource.getAllDraftsCount(shopId)
     }

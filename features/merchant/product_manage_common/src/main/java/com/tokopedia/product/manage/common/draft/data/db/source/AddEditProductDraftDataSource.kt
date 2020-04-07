@@ -2,6 +2,7 @@ package com.tokopedia.product.manage.common.draft.data.db.source
 
 import androidx.lifecycle.LiveData
 import com.tokopedia.product.manage.common.draft.data.db.entity.AddEditProductDraftEntity
+import rx.Observable
 import javax.inject.Inject
 
 class AddEditProductDraftDataSource @Inject constructor(private val dataManager: AddEditProductDraftDataManager) {
@@ -21,7 +22,7 @@ class AddEditProductDraftDataSource @Inject constructor(private val dataManager:
         return dataManager.getAllDrafts(shopId)
     }
 
-    fun getAllDraftsCount(shopId: String): Long {
+    fun getAllDraftsCount(shopId: String): Observable<Long> {
         checkUpdateBlankShopId(shopId)
         return dataManager.getAllDraftsCount(shopId)
     }
