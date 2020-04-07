@@ -1,13 +1,15 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel
 
 import android.os.Bundle
+import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.domain.model.review.SuggestedProductReview
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeTypeFactory
 import com.tokopedia.kotlin.model.ImpressHolder
 
 data class ReviewDataModel(
-        var suggestedProductReview: SuggestedProductReview = SuggestedProductReview()
+        var suggestedProductReview: SuggestedProductReview = SuggestedProductReview(),
+        var channel: DynamicHomeChannel.Channels
 ) : ImpressHolder(), HomeVisitable {
     override fun equalsWith(b: Any?): Boolean {
         if (b is ReviewDataModel) {

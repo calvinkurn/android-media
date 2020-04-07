@@ -3,13 +3,13 @@ package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.home.R
 import com.tokopedia.home.analytics.HomePageTracking
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.listener.HomeReviewListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.ReviewDataModel
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.ViewHintListener
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.reputation.common.view.AnimatedReputationView
 import kotlinx.android.synthetic.main.home_item_review.view.*
 
@@ -49,8 +49,14 @@ class ReviewViewHolder(
                                 suggestedProductReview.suggestedProductReview,
                                 adapterPosition,
                                 suggestedProductReview.suggestedProductReview.orderId,
-                                suggestedProductReview.suggestedProductReview.productId
+                                suggestedProductReview.suggestedProductReview.productId,
+                                element.channel.id
                         )
+                        categoryListener.sendIrisTrackerHashMap(HomePageTracking.getHomeReviewImpressionIris(element.suggestedProductReview.suggestedProductReview,
+                                adapterPosition,
+                                suggestedProductReview.suggestedProductReview.orderId,
+                                suggestedProductReview.suggestedProductReview.productId,
+                                element.channel.id))
                     }
                 })
 
@@ -58,7 +64,8 @@ class ReviewViewHolder(
                     if (!isPressed) {
                         HomePageTracking.homeReviewOnBlankSpaceClickTracker(
                                 suggestedProductReview.suggestedProductReview.orderId,
-                                suggestedProductReview.suggestedProductReview.productId
+                                suggestedProductReview.suggestedProductReview.productId,
+                                element.channel.id
                         )
                         reviewListener.onReviewClick(
                                 adapterPosition,

@@ -67,6 +67,14 @@ query getProductVariant($productID:String!,$option:pdpGetProductVariantReqOption
         url
         url200
       }
+      upcomingCampaignInfo {
+        campaignID
+        campaignType
+        campaignTypeName
+        startDate
+        endDate
+        notifyMe
+      }
     }
   }
 }

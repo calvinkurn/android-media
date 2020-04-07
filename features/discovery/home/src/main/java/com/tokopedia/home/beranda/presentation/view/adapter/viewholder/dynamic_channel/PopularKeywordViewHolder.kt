@@ -59,7 +59,7 @@ class PopularKeywordViewHolder (val view: View,
 
     private fun initAdapter(element: PopularKeywordListDataModel) {
         if(adapter == null) {
-            adapter = PopularKeywordAdapter(popularKeywordListener, element.channel)
+            adapter = PopularKeywordAdapter(popularKeywordListener, homeCategoryListener, element.channel)
             recyclerView.layoutManager = GridLayoutManager(view.context, 2)
             recyclerView.adapter = adapter
         }
