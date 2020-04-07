@@ -5,16 +5,16 @@ import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.os.IBinder;
+
 import androidx.annotation.Nullable;
 
-import com.tokopedia.core.app.BaseService;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.transaction.neworder.di.DaggerNewOrderWidgetComponent;
 import com.tokopedia.seller.transaction.neworder.di.NewOrderWidgetModule;
-import com.tokopedia.seller.transaction.neworder.view.model.DataOrderViewWidget;
 import com.tokopedia.seller.transaction.neworder.view.appwidget.GetNewOrderView;
 import com.tokopedia.seller.transaction.neworder.view.appwidget.NewOrderWidget;
+import com.tokopedia.seller.transaction.neworder.view.model.DataOrderViewWidget;
 
 import javax.inject.Inject;
 

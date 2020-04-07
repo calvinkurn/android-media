@@ -28,8 +28,6 @@ public interface SellerModuleRouter {
 
     Intent getTopProfileIntent(Context context, String userId);
 
-    Intent getInboxTalkCallingIntent(Context context);
-
     boolean isToggleBuyAgainOn();
 
 }

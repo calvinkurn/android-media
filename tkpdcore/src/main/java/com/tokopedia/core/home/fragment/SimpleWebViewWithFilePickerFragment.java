@@ -77,34 +77,6 @@ public class SimpleWebViewWithFilePickerFragment extends Fragment implements Gen
             super.onProgressChanged(view, newProgress);
         }
 
-        //For Android 3.0+
-        public void openFileChooser(ValueCallback<Uri> uploadMsg) {
-            callbackBeforeL = uploadMsg;
-            Intent i = new Intent(Intent.ACTION_GET_CONTENT);
-            i.addCategory(Intent.CATEGORY_OPENABLE);
-            i.setType("*/*");
-            startActivityForResult(Intent.createChooser(i, "File Chooser"), ATTACH_FILE_REQUEST);
-        }
-
-        // For Android 3.0+, above method not supported in some android 3+ versions, in such case we use this
-        public void openFileChooser(ValueCallback uploadMsg, String acceptType) {
-            callbackBeforeL = uploadMsg;
-            Intent i = new Intent(Intent.ACTION_GET_CONTENT);
-            i.addCategory(Intent.CATEGORY_OPENABLE);
-            i.setType("*/*");
-            startActivityForResult(
-                    Intent.createChooser(i, "File Browser"), ATTACH_FILE_REQUEST);
-        }
-
-        //For Android 4.1+
-        public void openFileChooser(ValueCallback<Uri> uploadMsg, String acceptType, String capture) {
-            callbackBeforeL = uploadMsg;
-            Intent i = new Intent(Intent.ACTION_GET_CONTENT);
-            i.addCategory(Intent.CATEGORY_OPENABLE);
-            i.setType("*/*");
-            startActivityForResult(Intent.createChooser(i, "File Chooser"), ATTACH_FILE_REQUEST);
-        }
-
         //For Android 5.0+
         public boolean onShowFileChooser(
                 WebView webView, ValueCallback<Uri[]> filePathCallback,
@@ -130,7 +102,6 @@ public class SimpleWebViewWithFilePickerFragment extends Fragment implements Gen
     }
 
     private class MyWebClient extends WebViewClient {
-        private static final String APPLINK_SCHEME = "tokopedia://";
 
         @Override
         public void onPageStarted(WebView view, String url, Bitmap favicon) {

@@ -37,8 +37,6 @@ import java.util.List;
 @Deprecated
 public class ManageGeneral extends BaseActivity implements NotificationReceivedListener {
     private static final String EXTRA_STATE_TAB_POSITION = "EXTRA_STATE_TAB_POSITION";
-    public final static int TAB_POSITION_MANAGE_PROFILE = 0;
-    public final static int TAB_POSITION_MANAGE_SHOP = 1;
     public final static int TAB_POSITION_MANAGE_APP = 2;
     public final static int TAB_POSITION_ABOUT_US = 3;
 

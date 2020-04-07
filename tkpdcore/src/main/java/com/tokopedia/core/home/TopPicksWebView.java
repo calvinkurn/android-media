@@ -25,7 +25,6 @@ import static com.tokopedia.core.network.constants.TkpdBaseURL.FLAG_APP;
 
 public class TopPicksWebView extends TkpdCoreWebViewActivity {
 
-    private static final int IS_WEBVIEW = 1;
     private static final String URL = "url";
     private static final String TOPPICK_SEGMENT = "toppicks";
     private static final String ARGS_TOPPICK_ID = "toppick_id";

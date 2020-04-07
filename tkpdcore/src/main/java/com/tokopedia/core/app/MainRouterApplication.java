@@ -113,8 +113,4 @@ public abstract class MainRouterApplication extends CoreNetworkApplication imple
             return gcmHandler;
         }
     }
-
-    public static synchronized TkpdCoreRouter getTkpdCoreRouter(){
-        return MainApplication.getInstance();
-    }
 }

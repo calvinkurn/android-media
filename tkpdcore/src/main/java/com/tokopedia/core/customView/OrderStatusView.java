@@ -31,16 +31,8 @@ public class OrderStatusView {
         return view;
     }
 
-    public OrderStatusView(Context context, OrderHistory orderHistory) {
-        this(context, orderHistory.getHistoryActionBy(),
-                orderHistory.getHistoryStatusDateFull(),
-                orderHistory.getHistoryBuyerStatus(),
-                orderHistory.getHistoryComments());
-    }
-
-
-    public OrderStatusView(Context context, String ActorList, String DateList, String StateList,
-                           String CommentList) {
+    private OrderStatusView(Context context, String ActorList, String DateList, String StateList,
+                            String CommentList) {
         inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         mView = inflater.inflate(R.layout.listview_order_status, null);
         mActor = (TextView) mView.findViewById(R.id.actor);

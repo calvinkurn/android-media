@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
@@ -35,10 +34,7 @@ import com.tokopedia.core.MaintenancePage;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
-import com.tokopedia.core.drawer2.view.DrawerHelper;
-import com.tokopedia.core.drawer2.view.subscriber.ProfileCompletionSubscriber;
 import com.tokopedia.core.gcm.model.NotificationPass;
 import com.tokopedia.core.gcm.utils.NotificationUtils;
 import com.tokopedia.core.home.SimpleWebViewWithFilePickerActivity;
@@ -81,10 +77,10 @@ import com.tokopedia.mitratoppers.MitraToppersRouterInternal;
 import com.tokopedia.mlp.router.MLPRouter;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
-import com.tokopedia.network.service.AccountsService;
 import com.tokopedia.payment.router.IPaymentModuleRouter;
 import com.tokopedia.phoneverification.PhoneVerificationRouter;
 import com.tokopedia.phoneverification.view.activity.PhoneVerificationActivationActivity;
+import com.tokopedia.product.manage.feature.list.view.activity.ProductManageActivity;
 import com.tokopedia.product.manage.feature.list.view.fragment.ProductManageSellerFragment;
 import com.tokopedia.product.manage.item.common.di.component.DaggerProductComponent;
 import com.tokopedia.product.manage.item.common.di.component.ProductComponent;
@@ -92,12 +88,7 @@ import com.tokopedia.product.manage.item.common.di.module.ProductModule;
 import com.tokopedia.product.manage.item.main.base.data.model.ProductPictureViewModel;
 import com.tokopedia.product.manage.item.variant.data.model.variantbycat.ProductVariantByCatModel;
 import com.tokopedia.product.manage.item.variant.data.model.variantbyprd.ProductVariantViewModel;
-import com.tokopedia.product.manage.feature.list.view.activity.ProductManageActivity;
 import com.tokopedia.profile.view.activity.ProfileActivity;
-import com.tokopedia.profilecompletion.data.factory.ProfileSourceFactory;
-import com.tokopedia.profilecompletion.data.mapper.GetUserInfoMapper;
-import com.tokopedia.profilecompletion.data.repository.ProfileRepositoryImpl;
-import com.tokopedia.profilecompletion.domain.GetUserInfoUseCase;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
@@ -117,7 +108,6 @@ import com.tokopedia.seller.shop.common.di.module.ShopModule;
 import com.tokopedia.sellerapp.deeplink.DeepLinkActivity;
 import com.tokopedia.sellerapp.deeplink.DeepLinkDelegate;
 import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
-import com.tokopedia.sellerapp.drawer.DrawerSellerHelper;
 import com.tokopedia.sellerapp.utils.DeferredResourceInitializer;
 import com.tokopedia.sellerapp.utils.FingerprintModelGenerator;
 import com.tokopedia.sellerapp.welcome.WelcomeActivity;
@@ -299,32 +289,6 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public void getUserInfo(RequestParams empty, ProfileCompletionSubscriber profileSubscriber) {
-        Bundle bundle = new Bundle();
-        SessionHandler sessionHandler = new SessionHandler(this);
-        String authKey = sessionHandler.getAccessToken(this);
-        authKey = sessionHandler.getTokenType(this) + " " + authKey;
-        bundle.putString(AccountsService.AUTH_KEY, authKey);
-
-        AccountsService accountsService = new AccountsService(bundle);
-
-        ProfileSourceFactory profileSourceFactory =
-                new ProfileSourceFactory(
-                        this,
-                        accountsService,
-                        new GetUserInfoMapper(),
-                        null,
-                        sessionHandler
-                );
-
-        GetUserInfoUseCase getUserInfoUseCase = new GetUserInfoUseCase(
-                new ProfileRepositoryImpl(profileSourceFactory)
-        );
-
-        getUserInfoUseCase.execute(GetUserInfoUseCase.generateParam(), profileSubscriber);
-    }
-
-    @Override
     public Intent getInboxReputationIntent(Context context) {
         return TkpdReputationInternalRouter.getInboxReputationActivityIntent(context);
     }
@@ -370,14 +334,6 @@ public abstract class SellerRouterApplication extends MainApplication
         } else {
             return WelcomeActivity.class;
         }
-    }
-
-    @Override
-    public DrawerHelper getDrawer(AppCompatActivity activity,
-                                  SessionHandler sessionHandler,
-                                  LocalCacheHandler drawerCache,
-                                  GlobalCacheManager globalCacheManager) {
-        return DrawerSellerHelper.createInstance(activity, sessionHandler, drawerCache);
     }
 
     @Override
@@ -508,11 +464,6 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public Class getDeepLinkClass() {
-        return DeepLinkActivity.class;
-    }
-
-    @Override
     public android.app.Fragment getFragmentShopSettings() {
         return TkpdSeller.getFragmentShopSettings();
     }
@@ -555,11 +506,6 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public void goToGMSubscribe(@NonNull Activity activity) {
-    }
-
-    @Override
-    public String getFlavor() {
-        return BuildConfig.FLAVOR;
     }
 
     @Override
@@ -752,12 +698,6 @@ public abstract class SellerRouterApplication extends MainApplication
     public Intent getSellerWebViewIntent(Context context, String webviewUrl) {
         return RouteManager.getIntent(context, ApplinkConstInternalGlobal.WEBVIEW, webviewUrl);
     }
-
-    @Override
-    public Intent getCartIntent(Activity activity) {
-        return null;
-    }
-
 
     @Override
     public FingerprintModel getFingerprintModel() {

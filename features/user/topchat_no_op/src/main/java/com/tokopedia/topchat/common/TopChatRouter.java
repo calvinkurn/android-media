@@ -21,6 +21,4 @@ public interface TopChatRouter {
 
     Intent getShopPageIntent(Context context, String shopId);
 
-    Intent getCartIntent(Activity activity);
-
 }

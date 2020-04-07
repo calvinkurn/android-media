@@ -1,6 +1,5 @@
 package com.tokopedia.core.router.productdetail;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 
@@ -10,9 +9,5 @@ import android.content.Intent;
 
 public interface PdpRouter {
 
-    Intent getCartIntent(Activity activity);
-
     Intent getLoginIntent(Context context);
-
-    Intent getShopPageIntent(Context context, String shopId);
 }

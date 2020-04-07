@@ -2,15 +2,12 @@ package com.tokopedia.tkpd;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.DialogFragment;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
@@ -60,10 +57,7 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
-import com.tokopedia.core.drawer2.view.DrawerHelper;
-import com.tokopedia.core.drawer2.view.subscriber.ProfileCompletionSubscriber;
 import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.core.gcm.NotificationModHandler;
 import com.tokopedia.core.gcm.model.NotificationPass;
@@ -76,7 +70,6 @@ import com.tokopedia.core.router.CustomerRouter;
 import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.home.HomeRouter;
-import com.tokopedia.core.router.loyaltytokopoint.ILoyaltyRouter;
 import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.share.DefaultShare;
 import com.tokopedia.core.util.AccessTokenRefresh;
@@ -124,8 +117,6 @@ import com.tokopedia.logisticaddaddress.features.manage.ManagePeopleAddressActiv
 import com.tokopedia.logisticaddaddress.features.pinpoint.GeolocationActivity;
 import com.tokopedia.logisticdata.data.entity.address.Token;
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
-import com.tokopedia.loyalty.broadcastreceiver.TokoPointDrawerBroadcastReceiver;
-import com.tokopedia.loyalty.common.PopUpNotif;
 import com.tokopedia.loyalty.common.TokoPointDrawerData;
 import com.tokopedia.loyalty.di.component.DaggerTokopointComponent;
 import com.tokopedia.loyalty.di.component.TokopointComponent;
@@ -135,7 +126,6 @@ import com.tokopedia.loyalty.router.LoyaltyModuleRouter;
 import com.tokopedia.loyalty.view.activity.LoyaltyActivity;
 import com.tokopedia.loyalty.view.data.PromoData;
 import com.tokopedia.loyalty.view.data.VoucherViewModel;
-import com.tokopedia.loyalty.view.fragment.LoyaltyNotifFragmentDialog;
 import com.tokopedia.merchantvoucher.MerchantVoucherModuleRouter;
 import com.tokopedia.mitratoppers.MitraToppersRouter;
 import com.tokopedia.mitratoppers.MitraToppersRouterInternal;
@@ -143,7 +133,6 @@ import com.tokopedia.navigation.GlobalNavRouter;
 import com.tokopedia.navigation.presentation.activity.MainParentActivity;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
-import com.tokopedia.network.service.AccountsService;
 import com.tokopedia.notifications.CMPushNotificationManager;
 import com.tokopedia.notifications.CMRouter;
 import com.tokopedia.nps.presentation.view.dialog.AppFeedbackRatingBottomSheet;
@@ -156,13 +145,8 @@ import com.tokopedia.oms.domain.PostVerifyCartWrapper;
 import com.tokopedia.payment.router.IPaymentModuleRouter;
 import com.tokopedia.phoneverification.PhoneVerificationRouter;
 import com.tokopedia.phoneverification.view.activity.PhoneVerificationActivationActivity;
-import com.tokopedia.profilecompletion.data.factory.ProfileSourceFactory;
-import com.tokopedia.profilecompletion.data.mapper.GetUserInfoMapper;
-import com.tokopedia.profilecompletion.data.repository.ProfileRepositoryImpl;
-import com.tokopedia.profilecompletion.domain.GetUserInfoUseCase;
 import com.tokopedia.promogamification.common.GamificationRouter;
 import com.tokopedia.purchase_platform.common.constant.CartConstant;
-import com.tokopedia.purchase_platform.features.cart.view.CartActivity;
 import com.tokopedia.purchase_platform.features.cart.view.CartFragment;
 import com.tokopedia.recentview.RecentViewRouter;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
@@ -184,8 +168,6 @@ import com.tokopedia.shop.ShopModuleRouter;
 import com.tokopedia.shop.ShopPageInternalRouter;
 import com.tokopedia.tkpd.applink.ApplinkUnsupportedImpl;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
-import com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity;
-import com.tokopedia.tkpd.drawer.NoOpDrawerHelper;
 import com.tokopedia.tkpd.fcm.appupdate.FirebaseRemoteAppUpdate;
 import com.tokopedia.tkpd.goldmerchant.GoldMerchantRedirectActivity;
 import com.tokopedia.tkpd.home.analytics.HomeAnalytics;
@@ -277,7 +259,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         DigitalRouter,
         TopAdsRouter,
         CMRouter,
-        ILoyaltyRouter,
         ResolutionRouter,
         KYCRouter {
 
@@ -378,11 +359,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public void onNewIntent(Context context, Intent intent) {
         NFCSubscriber.onNewIntent(context, intent);
-    }
-
-    @Override
-    public Class getDeepLinkClass() {
-        return DeepLinkActivity.class;
     }
 
     @Override
@@ -487,14 +463,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public DrawerHelper getDrawer(AppCompatActivity activity,
-                                  SessionHandler sessionHandler,
-                                  LocalCacheHandler drawerCache,
-                                  GlobalCacheManager globalCacheManager) {
-        return new NoOpDrawerHelper(activity);
-    }
-
-    @Override
     public void goToManageProduct(Context context) {
         Intent intent = RouteManager.getIntent(context, ApplinkConst.PRODUCT_MANAGE);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -516,33 +484,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public void goToCreateMerchantRedirect(Context context) {
         Intent intent = RedirectCreateShopActivity.getCallingIntent(context);
         context.startActivity(intent);
-    }
-
-    @Override
-    public void getUserInfo(RequestParams empty, ProfileCompletionSubscriber profileSubscriber) {
-        Bundle bundle = new Bundle();
-        SessionHandler sessionHandler = new SessionHandler(this);
-        String authKey = SessionHandler.getAccessToken(this);
-        authKey = sessionHandler.getTokenType(this) + " " + authKey;
-        bundle.putString(AccountsService.AUTH_KEY, authKey);
-
-        AccountsService accountsService = new AccountsService(bundle);
-
-
-        ProfileSourceFactory profileSourceFactory =
-                new ProfileSourceFactory(
-                        this,
-                        accountsService,
-                        new GetUserInfoMapper(),
-                        null,
-                        sessionHandler
-                );
-
-        GetUserInfoUseCase getUserInfoUseCase = new GetUserInfoUseCase(
-                new ProfileRepositoryImpl(profileSourceFactory)
-        );
-
-        getUserInfoUseCase.execute(GetUserInfoUseCase.generateParam(), profileSubscriber);
     }
 
     @Override
@@ -703,11 +644,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public String getFlavor() {
-        return BuildConfig.FLAVOR;
-    }
-
-    @Override
     public Intent getInboxMessageIntent(Context context) {
         return RouteManager.getIntent(context, ApplinkConst.TOPCHAT_IDLESS);
     }
@@ -801,11 +737,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public DialogFragment getLoyaltyTokoPointNotificationDialogFragment(PopUpNotif popUpNotif) {
-        return LoyaltyNotifFragmentDialog.newInstance(popUpNotif);
-    }
-
-    @Override
     public Intent getDistrictRecommendationIntent(Activity activity, Token token) {
         return DiscomActivity.newInstance(activity, token);
     }
@@ -818,11 +749,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Intent getPhoneVerificationActivationIntent(Context context) {
         return PhoneVerificationActivationActivity.getCallingIntent(context);
-    }
-
-    @Override
-    public BroadcastReceiver getTokoPointBroadcastReceiver() {
-        return new TokoPointDrawerBroadcastReceiver();
     }
 
     @Override
@@ -858,13 +784,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                         );
                     }
                 });
-    }
-
-    @Override
-    public Intent getCartIntent(Activity activity) {
-        Intent intent = new Intent(activity, CartActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        return intent;
     }
 
     @Override

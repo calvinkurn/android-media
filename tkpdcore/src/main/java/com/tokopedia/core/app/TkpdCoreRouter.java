@@ -4,15 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 
-import androidx.appcompat.app.AppCompatActivity;
-
-import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.database.manager.GlobalCacheManager;
-import com.tokopedia.core.drawer2.view.DrawerHelper;
-import com.tokopedia.core.drawer2.view.subscriber.ProfileCompletionSubscriber;
-import com.tokopedia.core.util.SessionHandler;
 
 /**
  * Created by sebastianuskh on 12/8/16.
@@ -39,12 +31,6 @@ public interface TkpdCoreRouter {
 
     Intent getHomeIntent(Context context);
 
-    DrawerHelper getDrawer(AppCompatActivity activity,
-                           SessionHandler sessionHandler,
-                           LocalCacheHandler drawerCache,
-                           GlobalCacheManager globalCacheManager);
-
-
     void onLogout(AppComponent appComponent);
 
     void goToCreateMerchantRedirect(Context context);
@@ -53,15 +39,9 @@ public interface TkpdCoreRouter {
 
     Intent getRegisterIntent(Context context);
 
-    void getUserInfo(RequestParams empty, ProfileCompletionSubscriber profileSubscriber);
-
-    String getFlavor();
-
     boolean isSupportedDelegateDeepLink(String appLinks);
 
     Intent getSplashScreenIntent(Context context);
-
-    Class getDeepLinkClass();
 
     android.app.Fragment getFragmentShopSettings();
 
@@ -118,8 +98,6 @@ public interface TkpdCoreRouter {
     Intent getTopProfileIntent(Context context, String userId);
 
     Intent getGroupChatIntent(Context context, String channelUrl);
-
-    Intent getInboxTalkCallingIntent(Context context);
 
     Intent getManageAdressIntent(Context context);
 

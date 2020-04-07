@@ -34,11 +34,6 @@ public class HomeApp extends BaseMainApplication implements AccountHomeRouter, G
     }
 
     @Override
-    public void doLogoutAccount(Activity activity) {
-
-    }
-
-    @Override
     public Intent getManageAddressIntent(Context context) {
         return null;
     }
@@ -69,11 +64,6 @@ public class HomeApp extends BaseMainApplication implements AccountHomeRouter, G
     }
 
     @Override
-    public Fragment getFavoriteFragment() {
-        return null;
-    }
-
-    @Override
     public String getStringRemoteConfig(String key, String defaultValue) {
         return null;
     }
@@ -96,11 +86,6 @@ public class HomeApp extends BaseMainApplication implements AccountHomeRouter, G
     @Override
     public Fragment getFeedPlusFragment(Bundle bundle) {
         return new Fragment();
-    }
-
-    @Override
-    public Intent getInboxTalkCallingIntent(Context context) {
-        return null;
     }
 
     @Override
@@ -160,21 +145,6 @@ public class HomeApp extends BaseMainApplication implements AccountHomeRouter, G
 
     @Override
     public void refreshToken() throws IOException {
-
-    }
-
-    @Override
-    public void init() {
-
-    }
-
-    @Override
-    public void registerShake(String screenName, Activity activity) {
-
-    }
-
-    @Override
-    public void unregisterShake() {
 
     }
 

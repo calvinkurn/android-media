@@ -15,7 +15,6 @@ import com.tokopedia.core2.R;
  * Created by Angga.Prasetiyo on 23/02/2016.
  */
 public class DialogNoConnection {
-    private static final String TAG = DialogNoConnection.class.getSimpleName();
 
     public static void createShow(Context context, @Nullable final ActionListener listener) {
         AlertDialog alertDialog = create(context, listener);

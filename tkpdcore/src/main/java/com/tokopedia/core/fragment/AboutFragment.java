@@ -24,7 +24,6 @@ import com.tokopedia.core2.R;
  * Created by Angga.Prasetiyo on 13/01/2016.
  */
 public class AboutFragment extends TkpdBasePreferenceFragment {
-    private static final String TAG = AboutFragment.class.getSimpleName();
 
     private Preference prefVersion;
     private Preference prefTerm;

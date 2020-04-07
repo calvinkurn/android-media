@@ -16,22 +16,14 @@ import rx.Observable;
 public class NotificationRepositoryImpl implements NotificationRepository {
 
     private final NotificationSourceFactory notificationSourceFactory;
-    private TopChatNotificationSource topChatNotificationSource;
 
     public NotificationRepositoryImpl(NotificationSourceFactory notificationSourceFactory,
                                       TopChatNotificationSource topChatNotificationSource) {
         this.notificationSourceFactory = notificationSourceFactory;
-        this.topChatNotificationSource = topChatNotificationSource;
     }
 
     @Override
     public Observable<NotificationModel> getNotification(TKPDMapParam<String, Object> params) {
         return notificationSourceFactory.createCloudNotificationSource().getNotification(params);
-    }
-
-    @Override
-    public Observable<TopChatNotificationModel> getNotificationTopChat(TKPDMapParam<String, Object>
-                                                                           params) {
-        return topChatNotificationSource.getNotificationTopChat(params);
     }
 }

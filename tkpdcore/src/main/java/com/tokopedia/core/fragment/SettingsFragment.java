@@ -38,7 +38,6 @@ public class SettingsFragment extends TkpdBasePreferenceFragment {
      */
     private static final boolean ALWAYS_SIMPLE_PREFS = false;
     private static Context context;
-    private CustomCheckBoxPreference optionVibrate;
     private CustomCheckBoxPreference optionPromo;
     private CustomCheckBoxPreference optionShakeShake;
     public static final String SETTING_NOTIFICATION_VIBRATE = "notifications_new_message_vibrate";
@@ -85,17 +84,9 @@ public class SettingsFragment extends TkpdBasePreferenceFragment {
                 return true;
             }
         });
-        optionVibrate = (CustomCheckBoxPreference) findPreference(SETTING_NOTIFICATION_VIBRATE);
         optionPromo = (CustomCheckBoxPreference) findPreference(Constants.Settings.NOTIFICATION_PROMO);
         optionPromo.setOnPreferenceChangeListener(sBindPreferenceSummaryToValueListener);
     }
-
-
-    /** {@inheritDoc} */
-    /*@Override
-    public boolean onIsMultiPane() {
-		return isXLargeTablet(context) && !isSimplePreferences(context);
-	}*/
 
     /**
      * Helper method to determine if the device has an extra-large screen. For
@@ -117,16 +108,6 @@ public class SettingsFragment extends TkpdBasePreferenceFragment {
                 || Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB
                 || !isXLargeTablet(context);
     }
-
-    /** {@inheritDoc} */
-	/*@Override
-	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
-	public void onBuildHeaders(List<Header> target) {
-		if (!isSimplePreferences(context)) {
-			loadHeadersFromResource(R.xml.pref_headers, target);
-		}
-
-	}*/
 
     /**
      * A preference value change listener that updates the preference's summary
