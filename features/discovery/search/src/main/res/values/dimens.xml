@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="spacing_show_case">12dp</dimen>
-    <dimen name="arrow_width_show_case">16dp</dimen>
-    <dimen name="font_medium">16sp</dimen>
     <dimen name="fontvs">12sp</dimen>
 
     <dimen name="suggestion_text_view_extra_line_spacing">4sp</dimen>

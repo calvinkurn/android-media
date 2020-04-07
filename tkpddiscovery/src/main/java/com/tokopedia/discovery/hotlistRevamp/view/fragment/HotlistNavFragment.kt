@@ -663,7 +663,7 @@ class HotlistNavFragment : BaseCategorySectionFragment(),
 
     // CPM click listner
 
-    override fun onCpmClicked(trackerUrl: String, item: CpmItem) {
+    override fun onCpmClicked(applink: String, clickTrackerUrl: String, item: CpmItem) {
         if (item.is_product) {
             hotlistNavAnalytics.eventCpmTopAdsProductClick(isUserLoggedIn(),
                     hotlistDetail?.shareFilePath ?: "")
@@ -671,12 +671,13 @@ class HotlistNavFragment : BaseCategorySectionFragment(),
             hotlistNavAnalytics.eventCpmTopAdsShopClick(isUserLoggedIn(),
                     hotlistDetail?.shareFilePath ?: "")
         }
-        RouteManager.route(activity, trackerUrl)
+        ImpresionTask().execute(clickTrackerUrl)
+        RouteManager.route(activity, applink)
     }
 
-    override fun onCpmImpression(item: CpmItem) {
+    override fun onCpmImpression(impressionTrackUrl: String) {
+        ImpresionTask().execute(impressionTrackUrl)
     }
-
 
     // share button clicked
 
@@ -701,6 +702,7 @@ class HotlistNavFragment : BaseCategorySectionFragment(),
     }
 
     override fun topAdsTrackerUrlTrigger(url: String) {
+        ImpresionTask().execute(url)
     }
 
     override fun onDestroyView() {
