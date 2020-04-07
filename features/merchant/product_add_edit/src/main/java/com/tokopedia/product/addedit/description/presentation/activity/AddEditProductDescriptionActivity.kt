@@ -12,20 +12,21 @@ import com.tokopedia.product.addedit.description.presentation.fragment.AddEditPr
 import com.tokopedia.product.addedit.description.presentation.model.DescriptionInputModel
 import com.tokopedia.product.addedit.description.presentation.model.ProductVariantInputModel
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
+import com.tokopedia.product.manage.common.draft.data.model.ProductDraft
 
 class AddEditProductDescriptionActivity : BaseSimpleActivity() {
     private var categoryId: String = ""
     private var isEditMode: Boolean = false
     private var descriptionInputModel: DescriptionInputModel = DescriptionInputModel()
     private var variantInputModel: ProductVariantInputModel = ProductVariantInputModel()
-    private var productInputModel: ProductInputModel = ProductInputModel()
+    private var productDraft: ProductDraft = ProductDraft()
 
     override fun getNewFragment(): Fragment {
         intent?.apply {
             categoryId = getStringExtra(PARAM_CATEGORY_ID)
             descriptionInputModel = getParcelableExtra(PARAM_DESCRIPTION_INPUT_MODEL) ?: DescriptionInputModel()
             variantInputModel = getParcelableExtra(PARAM_VARIANT_INPUT_MODEL) ?: ProductVariantInputModel()
-            productInputModel = getParcelableExtra(PARAM_PRODUCT_INPUT_MODEL) ?: ProductInputModel()
+            productDraft = getParcelableExtra(PARAM_PRODUCT_INPUT_MODEL) ?: ProductDraft()
             isEditMode = getBooleanExtra(PARAM_IS_EDIT_MODE, false)
         }
 
@@ -36,7 +37,7 @@ class AddEditProductDescriptionActivity : BaseSimpleActivity() {
                     variantInputModel,
                     isEditMode)
         } else {
-            AddEditProductDescriptionFragment.createInstance(categoryId, productInputModel)
+            AddEditProductDescriptionFragment.createInstance(categoryId, productDraft)
         }
     }
 
@@ -47,10 +48,10 @@ class AddEditProductDescriptionActivity : BaseSimpleActivity() {
         const val PARAM_PRODUCT_INPUT_MODEL = "param_product_input_model"
         const val PARAM_CATEGORY_ID = "param_category_id"
         const val PARAM_IS_EDIT_MODE = "is_edit_mode"
-        fun createInstance(context: Context?, categoryId: String, productInputModel: ProductInputModel): Intent =
+        fun createInstance(context: Context?, categoryId: String, productDraft: ProductDraft): Intent =
                 Intent(context, AddEditProductDescriptionActivity::class.java)
                         .putExtra(PARAM_CATEGORY_ID, categoryId)
-                        .putExtra(PARAM_PRODUCT_INPUT_MODEL, productInputModel)
+                        .putExtra(PARAM_PRODUCT_INPUT_MODEL, productDraft)
         fun createInstanceEditMode(context: Context?,
                                    categoryId: String,
                                    descriptionInputModel: DescriptionInputModel,

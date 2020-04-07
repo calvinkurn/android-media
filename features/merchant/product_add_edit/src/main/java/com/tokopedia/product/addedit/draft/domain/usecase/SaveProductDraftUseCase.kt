@@ -1,8 +1,8 @@
 package com.tokopedia.product.addedit.draft.domain.usecase
 
-import com.tokopedia.product.addedit.common.constant.AddEditProductDraftConstant
-import com.tokopedia.product.addedit.draft.data.db.repository.AddEditProductDraftRepository
-import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
+import com.tokopedia.product.manage.common.draft.constant.AddEditProductDraftConstant
+import com.tokopedia.product.manage.common.draft.data.db.repository.AddEditProductDraftRepository
+import com.tokopedia.product.manage.common.draft.data.model.ProductDraft
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
@@ -10,9 +10,9 @@ import javax.inject.Inject
 class SaveProductDraftUseCase @Inject constructor(private val draftRepository: AddEditProductDraftRepository): UseCase<Long>() {
 
     companion object{
-        fun createRequestParams(product: ProductInputModel, productId: Long, isUploading: Boolean): RequestParams {
+        fun createRequestParams(productDraft: ProductDraft, productId: Long, isUploading: Boolean): RequestParams {
             val params = RequestParams.create()
-            params.putObject(AddEditProductDraftConstant.UPLOAD_PRODUCT_INPUT_MODEL, product)
+            params.putObject(AddEditProductDraftConstant.UPLOAD_PRODUCT_INPUT_MODEL, productDraft)
             params.putLong(AddEditProductDraftConstant.PREV_DRAFT_ID, productId)
             params.putBoolean(AddEditProductDraftConstant.IS_UPLOADING, isUploading)
             return params
@@ -23,12 +23,11 @@ class SaveProductDraftUseCase @Inject constructor(private val draftRepository: A
 
     private fun isInputProductNotNull() = params.getObject(AddEditProductDraftConstant.UPLOAD_PRODUCT_INPUT_MODEL) != null
 
-    private fun isUploadProductDomainModel() = params.getObject(AddEditProductDraftConstant.UPLOAD_PRODUCT_INPUT_MODEL) is ProductInputModel
+    private fun isUploadProductDomainModel() = params.getObject(AddEditProductDraftConstant.UPLOAD_PRODUCT_INPUT_MODEL) is ProductDraft
 
     override suspend fun executeOnBackground(): Long {
-        val product: ProductInputModel
-        if(isInputProductNotNull() && isUploadProductDomainModel()) {
-            product = params.getObject(AddEditProductDraftConstant.UPLOAD_PRODUCT_INPUT_MODEL) as ProductInputModel
+        val product: ProductDraft = if(isInputProductNotNull() && isUploadProductDomainModel()) {
+            params.getObject(AddEditProductDraftConstant.UPLOAD_PRODUCT_INPUT_MODEL) as ProductDraft
         } else {
             throw RuntimeException("Input model is missing")
         }

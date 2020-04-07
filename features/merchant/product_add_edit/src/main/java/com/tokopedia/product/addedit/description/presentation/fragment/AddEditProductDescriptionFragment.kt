@@ -61,6 +61,8 @@ import com.tokopedia.product.addedit.tooltip.model.NumericTooltipModel
 import com.tokopedia.product.addedit.tooltip.presentation.TooltipBottomSheet
 import com.tokopedia.product.addedit.tracking.ProductAddDescriptionTracking
 import com.tokopedia.product.addedit.tracking.ProductEditDescriptionTracking
+import com.tokopedia.product.manage.common.draft.data.model.ProductDraft
+import com.tokopedia.product.manage.common.draft.data.model.description.VideoLinkListModel
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -77,11 +79,11 @@ class AddEditProductDescriptionFragment:
         VideoLinkTypeFactory.VideoLinkListener {
 
     companion object {
-        fun createInstance(categoryId: String, productInputModel: ProductInputModel): Fragment {
+        fun createInstance(categoryId: String, productDraft: ProductDraft): Fragment {
             return AddEditProductDescriptionFragment().apply {
                 arguments = Bundle().apply {
                     putString(PARAM_CATEGORY_ID, categoryId)
-                    putParcelable(PARAM_PRODUCT_INPUT_MODEL, productInputModel)
+                    putParcelable(PARAM_PRODUCT_INPUT_MODEL, productDraft)
                 }
             }
         }
@@ -112,7 +114,7 @@ class AddEditProductDescriptionFragment:
     }
 
     private var videoId = 0
-    private var productInputModel : ProductInputModel? = null
+    private var productDraft : ProductDraft? = null
 
     private lateinit var userSession: UserSessionInterface
     private lateinit var shopId: String
@@ -175,7 +177,7 @@ class AddEditProductDescriptionFragment:
             descriptionViewModel.descriptionInputModel = descriptionInputModel
             descriptionViewModel.variantInputModel = variantInputModel
             descriptionViewModel.isEditMode = isEditMode
-            productInputModel = it.getParcelable(PARAM_PRODUCT_INPUT_MODEL) ?: ProductInputModel()
+            productDraft = it.getParcelable(PARAM_PRODUCT_INPUT_MODEL) ?: ProductDraft()
         }
     }
 
@@ -235,15 +237,22 @@ class AddEditProductDescriptionFragment:
 
     fun saveProductDraft(isUploading: Boolean) {
         inputAllDataInInputDraftModel()
-        productInputModel?.let { descriptionViewModel.saveProductDraft(it, it.productId, isUploading) }
+        productDraft?.let { descriptionViewModel.saveProductDraft(it, it.productId, isUploading) }
         Toast.makeText(context, R.string.label_succes_save_draft, Toast.LENGTH_LONG).show()
     }
 
     private fun inputAllDataInInputDraftModel() {
-        productInputModel?.descriptionInputModel = DescriptionInputModel(
-                textFieldDescription.getText(),
-                adapter.data
-        )
+        productDraft?.descriptionInputModel?.apply {
+            productDescription = textFieldDescription.getText()
+            val videoLinkList = MutableList(adapter.data.size) {VideoLinkListModel()}
+            adapter.data.forEach { videoLink ->
+                val id = videoLink.inputId
+                val image  = videoLink.inputImage
+                val url = videoLink.inputUrl
+                videoLinkList.add(VideoLinkListModel(id,url,image))
+            }
+            this.videoLinkList = videoLinkList
+        }
     }
 
     private fun observeProductVariant() {
@@ -389,7 +398,7 @@ class AddEditProductDescriptionFragment:
         }
         inputAllDataInInputDraftModel()
         val intent = Intent(context, AddEditProductShipmentActivity::class.java)
-        intent.putExtra(AddEditProductUploadConstant.EXTRA_PRODUCT_INPUT, productInputModel)
+        intent.putExtra(AddEditProductUploadConstant.EXTRA_PRODUCT_INPUT, productDraft)
         startActivityForResult(intent, REQUEST_CODE_SHIPMENT)
     }
 

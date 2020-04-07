@@ -12,7 +12,7 @@ import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProduct
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.UNIT_WEEK
 import com.tokopedia.product.addedit.draft.domain.usecase.GetAllProductsDraftUseCase
 import com.tokopedia.product.addedit.draft.domain.usecase.SaveProductDraftUseCase
-import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
+import com.tokopedia.product.manage.common.draft.data.model.ProductDraft
 import com.tokopedia.unifycomponents.list.ListItemUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -71,8 +71,8 @@ class AddEditProductDetailViewModel @Inject constructor(
     val insertProductDraftResultLiveData: LiveData<Result<Long>>
         get() = saveProductDraftResultMutableLiveData
 
-    private val getAllProductsDraftResultMutableLiveData = MutableLiveData<Result<List<ProductInputModel>>>()
-    val getAllProductsDraftResultLiveData: LiveData<Result<List<ProductInputModel>>>
+    private val getAllProductsDraftResultMutableLiveData = MutableLiveData<Result<List<ProductDraft>>>()
+    val getAllProductsDraftResultLiveData: LiveData<Result<List<ProductDraft>>>
         get() = getAllProductsDraftResultMutableLiveData
 
     var isEditMode:Boolean = false
@@ -343,9 +343,9 @@ class AddEditProductDetailViewModel @Inject constructor(
         })
     }
 
-    fun saveProductDraft(productInputModel: ProductInputModel, productId: Long, isUploading: Boolean) {
+    fun saveProductDraft(productDraft: ProductDraft, productId: Long, isUploading: Boolean) {
         launchCatchError(block = {
-            saveProductDraftUseCase.params = SaveProductDraftUseCase.createRequestParams(productInputModel, productId, isUploading)
+            saveProductDraftUseCase.params = SaveProductDraftUseCase.createRequestParams(productDraft, productId, isUploading)
             saveProductDraftResultMutableLiveData.value = withContext(Dispatchers.IO) {
                 saveProductDraftUseCase.executeOnBackground()
             }.let { Success(it) }

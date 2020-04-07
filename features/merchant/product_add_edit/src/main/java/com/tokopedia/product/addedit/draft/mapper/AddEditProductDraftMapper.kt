@@ -3,7 +3,7 @@ package com.tokopedia.product.addedit.draft.mapper
 import android.util.Log
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.common.utils.network.CacheUtil
-import com.tokopedia.product.addedit.draft.data.db.entity.AddEditProductDraftEntity
+import com.tokopedia.product.manage.common.draft.data.db.entity.AddEditProductDraftEntity
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 
 class AddEditProductDraftMapper {
@@ -17,9 +17,8 @@ class AddEditProductDraftMapper {
             return CacheUtil.convertModelToString(productInputModel, object : TypeToken<ProductInputModel>() {}.type)
         }
 
-        fun mapDraftToProductInput(draft : AddEditProductDraftEntity): ProductInputModel {
+        fun mapDraftToProductInput(draft: AddEditProductDraftEntity): ProductInputModel {
             val productInputModel: ProductInputModel = CacheUtil.convertStringToModel(draft.data, ProductInputModel::class.java)
-            Log.d("Hello Success", productInputModel.toString())
             productInputModel.productId = draft.id
             productInputModel.completionPercent = getCompletionPercent(productInputModel)
             return productInputModel
@@ -29,7 +28,7 @@ class AddEditProductDraftMapper {
 
             val productName = product.detailInputModel.productName
             val categoryId = product.detailInputModel.categoryId
-            val price  = product.detailInputModel.price
+            val price = product.detailInputModel.price
             val stock = product.detailInputModel.stock
             val minOrder = product.detailInputModel.minOrder
             val condition = product.detailInputModel.condition
@@ -72,4 +71,8 @@ class AddEditProductDraftMapper {
             return completionPercent
         }
     }
+
+
+
+
 }

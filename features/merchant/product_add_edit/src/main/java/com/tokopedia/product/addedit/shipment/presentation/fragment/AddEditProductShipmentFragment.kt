@@ -28,6 +28,7 @@ import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProdu
 import com.tokopedia.product.addedit.shipment.presentation.model.ShipmentInputModel
 import com.tokopedia.product.addedit.shipment.presentation.viewmodel.AddEditProductShipmentViewModel
 import com.tokopedia.product.addedit.tracking.ProductAddShippingTracking
+import com.tokopedia.product.manage.common.draft.data.model.ProductDraft
 import com.tokopedia.product.addedit.tracking.ProductEditShippingTracking
 import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.unifycomponents.UnifyButton
@@ -41,7 +42,7 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
     private var tfWeightUnit: TextFieldUnify? = null
     private var switchInsurance: SwitchUnify? = null
     private var btnEnd: UnifyButton? = null
-    private var productInputModel: ProductInputModel? = null
+    private var productDraft: ProductDraft? = null
     private var selectedWeightPosition: Int = 0
 
     private lateinit var userSession: UserSessionInterface
@@ -51,10 +52,10 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
     lateinit var shipmentViewModel: AddEditProductShipmentViewModel
 
     companion object {
-        fun createInstance(productInputModel: ProductInputModel): Fragment {
+        fun createInstance(productDraft: ProductDraft): Fragment {
             return AddEditProductShipmentFragment().apply {
                 arguments = Bundle().apply {
-                    putParcelable(EXTRA_PRODUCT_INPUT, productInputModel)
+                    putParcelable(EXTRA_PRODUCT_INPUT, productDraft)
                 }
             }
         }
@@ -94,7 +95,7 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
         arguments?.run {
             val shipmentInputModel: ShipmentInputModel = getParcelable(EXTRA_SHIPMENT_INPUT_MODEL) ?: ShipmentInputModel()
             val isEditMode = getBoolean(EXTRA_IS_EDITMODE, false)
-            productInputModel = getParcelable(EXTRA_PRODUCT_INPUT) ?: ProductInputModel()
+            productDraft = getParcelable(EXTRA_PRODUCT_INPUT) ?: ProductDraft()
             shipmentViewModel.shipmentInputModel = shipmentInputModel
             shipmentViewModel.isEditMode = isEditMode
         }
@@ -146,16 +147,16 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
 
     fun saveProductDraft(isUploading: Boolean) {
         inputAllDataInInputDraftModel()
-        productInputModel?.let { shipmentViewModel.saveProductDraft(it, it.productId,isUploading) }
+        productDraft?.let { shipmentViewModel.saveProductDraft(it, it.productId,isUploading) }
         Toast.makeText(context, R.string.label_succes_save_draft, Toast.LENGTH_LONG).show()
     }
 
     private fun inputAllDataInInputDraftModel() {
-        productInputModel?.shipmentInputModel = ShipmentInputModel(
-                tfWeightAmount.getTextIntOrZero(),
-                selectedWeightPosition,
-                switchInsurance?.isChecked == true
-        )
+        productDraft?.shipmentInputModel?.apply {
+            isMustInsurance = switchInsurance?.isChecked == true
+            weight = tfWeightAmount.getTextIntOrZero()
+            weightUnit = selectedWeightPosition
+        }
     }
 
     private fun applyEditMode() {

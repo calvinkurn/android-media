@@ -17,16 +17,17 @@ import com.tokopedia.product.addedit.shipment.di.AddEditProductShipmentModule
 import com.tokopedia.product.addedit.shipment.di.DaggerAddEditProductShipmentComponent
 import com.tokopedia.product.addedit.shipment.presentation.fragment.AddEditProductShipmentFragment
 import com.tokopedia.product.addedit.shipment.presentation.model.ShipmentInputModel
+import com.tokopedia.product.manage.common.draft.data.model.ProductDraft
 
 class AddEditProductShipmentActivity : BaseSimpleActivity(), HasComponent<AddEditProductShipmentComponent> {
 
     override fun getNewFragment(): Fragment {
         val shipmentInputModel:ShipmentInputModel? = intent.getParcelableExtra(PARAM_SHIPMENT_INPUT_MODEL)
-        val productInputModel: ProductInputModel = intent.getParcelableExtra(AddEditProductUploadConstant.EXTRA_PRODUCT_INPUT)
+        val productDraft: ProductDraft = intent.getParcelableExtra(AddEditProductUploadConstant.EXTRA_PRODUCT_INPUT)
         shipmentInputModel?.run {
             return AddEditProductShipmentFragment.createInstanceEditMode(shipmentInputModel)
         }
-        return AddEditProductShipmentFragment.createInstance(productInputModel)
+        return AddEditProductShipmentFragment.createInstance(productDraft)
     }
 
     override fun getComponent(): AddEditProductShipmentComponent {

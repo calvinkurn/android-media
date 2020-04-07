@@ -1,4 +1,4 @@
-package com.tokopedia.product.addedit.draft.data.db
+package com.tokopedia.product.manage.common.draft.data.db
 
 import android.content.Context
 import androidx.room.Database
@@ -6,8 +6,8 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
-import com.tokopedia.product.addedit.common.constant.AddEditProductDraftConstant
-import com.tokopedia.product.addedit.draft.data.db.entity.AddEditProductDraftEntity
+import com.tokopedia.product.manage.common.draft.constant.AddEditProductDraftConstant
+import com.tokopedia.product.manage.common.draft.data.db.entity.AddEditProductDraftEntity
 
 @Database(entities = [AddEditProductDraftEntity::class], version = AddEditProductDraftConstant.DB_VERSION, exportSchema = false)
 abstract class AddEditProductDraftDb : RoomDatabase(){

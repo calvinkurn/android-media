@@ -9,7 +9,7 @@ import com.tokopedia.product.addedit.description.domain.usecase.GetProductVarian
 import com.tokopedia.product.addedit.description.presentation.model.DescriptionInputModel
 import com.tokopedia.product.addedit.description.presentation.model.ProductVariantInputModel
 import com.tokopedia.product.addedit.draft.domain.usecase.SaveProductDraftUseCase
-import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
+import com.tokopedia.product.manage.common.draft.data.model.ProductDraft
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -49,9 +49,9 @@ class AddEditProductDescriptionViewModel @Inject constructor(
         })
     }
 
-    fun saveProductDraft(productInputModel: ProductInputModel, productId: Long, isUploading: Boolean) {
+    fun saveProductDraft(productDraft: ProductDraft, productId: Long, isUploading: Boolean) {
         launchCatchError(block = {
-            saveProductDraftUseCase.params = SaveProductDraftUseCase.createRequestParams(productInputModel, productId, isUploading)
+            saveProductDraftUseCase.params = SaveProductDraftUseCase.createRequestParams(productDraft, productId, isUploading)
             _saveProductDraftResult.value = withContext(Dispatchers.IO) {
                 saveProductDraftUseCase.executeOnBackground()
             }.let { Success(it) }
