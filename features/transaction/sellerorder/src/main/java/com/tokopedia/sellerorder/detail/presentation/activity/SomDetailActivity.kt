@@ -26,7 +26,7 @@ class SomDetailActivity: BaseSimpleActivity(), HasComponent<SomDetailComponent> 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        changeStatusBarColor()
+        setWhiteStatusBarBackground()
     }
 
     override fun getNewFragment(): Fragment? {
@@ -64,7 +64,7 @@ class SomDetailActivity: BaseSimpleActivity(), HasComponent<SomDetailComponent> 
                 .somComponent(SomComponentInstance.getSomComponent(application))
                 .build()
 
-    private fun changeStatusBarColor() {
+    private fun setWhiteStatusBarBackground() {
         if (GlobalConfig.isSellerApp() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             setStatusBarColor(Color.WHITE)
         }
