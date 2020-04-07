@@ -8,6 +8,7 @@ import com.tokopedia.search.result.error
 import com.tokopedia.search.result.presentation.ProductListSectionContract
 import com.tokopedia.search.result.presentation.presenter.product.testinstance.searchProductModelCommon
 import com.tokopedia.search.shouldBe
+import com.tokopedia.search.utils.UrlParamUtils
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import io.mockk.*
@@ -100,6 +101,8 @@ internal class SearchProductLoadMoreTest: Spek({
 
         Scenario("Load More Data Failed with exception") {
             val testException = TestException()
+            val slotSearchParameterErrorLog = slot<String>()
+            val searchParameter = mutableMapOf<String, Any>()
             lateinit var productListPresenter: ProductListPresenter
 
             Given("Search Product API will return SearchProductModel") {
@@ -121,7 +124,7 @@ internal class SearchProductLoadMoreTest: Spek({
             }
 
             Given("Product List Presenter already Load Data") {
-                val searchParameter : Map<String, Any> = mutableMapOf<String, Any>().also {
+                searchParameter.also {
                     it[SearchApiConst.Q] = "samsung"
                     it[SearchApiConst.START] = "0"
                     it[SearchApiConst.UNIQUE_ID] = "unique_id"
@@ -132,7 +135,7 @@ internal class SearchProductLoadMoreTest: Spek({
             }
 
             When("Product List Presenter Load More Data") {
-                val searchParameter : Map<String, Any> = mutableMapOf<String, Any>().also {
+                searchParameter.also {
                     it[SearchApiConst.Q] = "samsung"
                     it[SearchApiConst.START] = productListPresenter.startFrom
                     it[SearchApiConst.UNIQUE_ID] = "unique_id"
@@ -158,9 +161,17 @@ internal class SearchProductLoadMoreTest: Spek({
                     verifyHideLoading(productListView)
 
                     verifyShowLoadMoreError(productListView, 8)
+
+                    productListView.logWarning(capture(slotSearchParameterErrorLog), testException)
                 }
 
                 confirmVerified(productListView)
+            }
+
+            Then("verify logged error message is from search parameter") {
+                val message = slotSearchParameterErrorLog.captured
+
+                message shouldBe UrlParamUtils.generateUrlParamString(searchParameter)
             }
         }
     }

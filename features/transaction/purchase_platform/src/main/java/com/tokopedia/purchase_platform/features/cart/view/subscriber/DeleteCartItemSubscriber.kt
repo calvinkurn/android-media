@@ -1,7 +1,5 @@
 package com.tokopedia.purchase_platform.features.cart.view.subscriber
 
-import com.tokopedia.network.utils.ErrorHandler
-import com.tokopedia.purchase_platform.common.data.api.CartResponseErrorException
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.DeleteCartData
 import com.tokopedia.purchase_platform.features.cart.view.ICartListPresenter
 import com.tokopedia.purchase_platform.features.cart.view.ICartListView
@@ -32,6 +30,7 @@ class DeleteCartItemSubscriber(private val view: ICartListView?,
         view?.let { view ->
             view.hideProgressLoading()
             view.renderLoadGetCartDataFinish()
+            view.showPromoCheckoutStickyButtonLoading()
 
             if (deleteCartData.isSuccess) {
                 if (removeInsurance) {
@@ -44,6 +43,11 @@ class DeleteCartItemSubscriber(private val view: ICartListView?,
                     presenter.processInitialGetCartData(view.getCartId(), false, false)
                 } else {
                     view.onDeleteCartDataSuccess(toBeDeletedCartIds)
+                }
+
+                val params = view.generateGeneralParamValidateUse()
+                if ((view.checkHitValidateUseIsNeeded(params))) {
+                    presenter.doUpdateCartAndValidateUse(params)
                 }
                 view.updateCartCounter(deleteCartData.cartCounter)
             } else {

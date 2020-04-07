@@ -27,12 +27,11 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
 import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity
 import com.tokopedia.tokopoints.R
-import com.tokopedia.tokopoints.di.TokoPointComponent
 import com.tokopedia.tokopoints.di.TokopointBundleComponent
 import com.tokopedia.tokopoints.view.cataloglisting.ValidateMessageDialog
 import com.tokopedia.tokopoints.view.couponlisting.CouponListingStackedActivity.Companion.getCallingIntent
 import com.tokopedia.tokopoints.view.customview.ServerErrorView
-import com.tokopedia.tokopoints.view.fragment.SendGiftFragment
+import com.tokopedia.tokopoints.view.sendgift.SendGiftFragment
 import com.tokopedia.tokopoints.view.model.CatalogStatusItem
 import com.tokopedia.tokopoints.view.model.CatalogsValueEntity
 import com.tokopedia.tokopoints.view.util.*
@@ -118,7 +117,7 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
 
     private fun initObserver() {
         addCatalogDetailObserver()
-        addSendGiftDialog()
+        addSendGiftDialogObserver()
         addValidationDialogObserver()
         addLatestStatusObserver()
         addStartSaveCouponObserver()
@@ -158,7 +157,7 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
         }
     })
 
-    private fun addSendGiftDialog() = mViewModel.sendGiftPageLiveData.observe(this, androidx.lifecycle.Observer {
+    private fun addSendGiftDialogObserver() = mViewModel.sendGiftPageLiveData.observe(this, androidx.lifecycle.Observer {
         when(it) {
             is Success -> gotoSendGiftPage(it.data.id,it.data.title,it.data.pointStr,it.data.banner)
             is ValidationError<*, *> -> {

@@ -14,6 +14,7 @@ import com.tokopedia.home.beranda.helper.glide.FPM_DEALS_WIDGET_PRODUCT_IMAGE
 import com.tokopedia.home.beranda.helper.glide.loadImageRounded
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelViewModel
+import com.tokopedia.home.util.setGradientBackground
 import com.tokopedia.kotlin.extensions.view.displayTextOrHide
 import kotlinx.android.synthetic.main.home_dc_deals.view.*
 
@@ -72,11 +73,7 @@ class ProductHighlightViewHolder(
     }
 
     private fun setDealsChannelBackground(it: DynamicHomeChannel.Banner) {
-        if (it.backColor.isNotEmpty()) {
-            val backColor = Color.parseColor(it.backColor)
-            itemView.deals_background.setBackgroundColor(backColor)
-            itemView.deals_background.visibility = View.VISIBLE
-        } else itemView.deals_background.visibility = View.GONE
+        itemView.deals_background.setGradientBackground(it.gradientColor)
     }
 
     private fun setDealsChannelTitle(it: DynamicHomeChannel.Header) {

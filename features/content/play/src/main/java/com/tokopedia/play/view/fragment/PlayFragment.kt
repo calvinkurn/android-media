@@ -25,7 +25,9 @@ import com.tokopedia.play.ERR_STATE_SOCKET
 import com.tokopedia.play.ERR_STATE_VIDEO
 import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.R
+import com.tokopedia.play.analytic.BufferTrackingModel
 import com.tokopedia.play.analytic.PlayAnalytics
+import com.tokopedia.play.analytic.TrackingField
 import com.tokopedia.play.data.websocket.PlaySocketInfo
 import com.tokopedia.play.di.DaggerPlayComponent
 import com.tokopedia.play.di.PlayModule
@@ -69,6 +71,14 @@ class PlayFragment : BaseDaggerFragment() {
     }
 
     private var channelId = ""
+
+    @TrackingField
+    private var bufferTrackingModel = BufferTrackingModel(
+            isBuffering = false,
+            bufferCount = 0,
+            lastBufferMs = System.currentTimeMillis(),
+            shouldTrackNext = false
+    )
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -192,6 +202,12 @@ class PlayFragment : BaseDaggerFragment() {
     override fun onPause() {
         unregisterKeyboardListener(requireView())
         super.onPause()
+
+        bufferTrackingModel = bufferTrackingModel.copy(
+                isBuffering = false,
+                bufferCount = if (bufferTrackingModel.isBuffering) bufferTrackingModel.bufferCount - 1 else bufferTrackingModel.bufferCount,
+                shouldTrackNext = false
+        )
     }
 
     fun onNewChannelId(channelId: String?) {
@@ -272,6 +288,30 @@ class PlayFragment : BaseDaggerFragment() {
                 PlayAnalytics.errorState(channelId,
                         "$ERR_STATE_VIDEO: ${it.state.error.message?:getString(com.tokopedia.play_common.R.string.play_common_video_error_message)}",
                         playViewModel.channelType)
+
+            } else if (it.state is PlayVideoState.Buffering && !bufferTrackingModel.isBuffering) {
+                val nextBufferCount = if (bufferTrackingModel.shouldTrackNext) bufferTrackingModel.bufferCount + 1 else bufferTrackingModel.bufferCount
+
+                bufferTrackingModel = BufferTrackingModel(
+                        isBuffering = true,
+                        bufferCount = nextBufferCount,
+                        lastBufferMs = System.currentTimeMillis(),
+                        shouldTrackNext = bufferTrackingModel.shouldTrackNext
+                )
+
+            } else if ((it.state is PlayVideoState.Playing || it.state is PlayVideoState.Pause) && bufferTrackingModel.isBuffering) {
+                if (bufferTrackingModel.shouldTrackNext) {
+                    PlayAnalytics.trackVideoBuffering(
+                            bufferCount = bufferTrackingModel.bufferCount,
+                            bufferDurationInSecond = ((System.currentTimeMillis() - bufferTrackingModel.lastBufferMs) / 1000).toInt()
+                    )
+                }
+
+                bufferTrackingModel = bufferTrackingModel.copy(
+                        isBuffering = false,
+                        shouldTrackNext = true
+                )
+
             }
         })
     }
