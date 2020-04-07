@@ -136,42 +136,6 @@ class PlayInteractionViewModelTest {
     }
 
     @Test
-    fun `when logged in, should be allowed to do product action`() {
-        val eventProductAction = InteractionEvent.DoActionProduct(
-                product = modelBuilder.buildProductLineUiModel(),
-                action = ProductAction.Buy,
-                type = BottomInsetsType.VariantSheet
-        )
-
-        coEvery { userSession.isLoggedIn } returns true
-
-        val expectedResult = Event(LoginStateEvent.InteractionAllowed(eventProductAction))
-
-        playInteractionViewModel.doInteractionEvent(eventProductAction)
-
-        Assertions.assertThat(playInteractionViewModel.observableLoggedInInteractionEvent.getOrAwaitValue())
-                .isEqualToComparingFieldByFieldRecursively(expectedResult)
-    }
-
-    @Test
-    fun `when not logged in, should not be allowed to do product action`() {
-        val eventProductAction = InteractionEvent.DoActionProduct(
-                product = modelBuilder.buildProductLineUiModel(),
-                action = ProductAction.Buy,
-                type = BottomInsetsType.VariantSheet
-        )
-
-        coEvery { userSession.isLoggedIn } returns false
-
-        val expectedResult = Event(LoginStateEvent.NeedLoggedIn(eventProductAction))
-
-        playInteractionViewModel.doInteractionEvent(eventProductAction)
-
-        Assertions.assertThat(playInteractionViewModel.observableLoggedInInteractionEvent.getOrAwaitValue())
-                .isEqualToComparingFieldByFieldRecursively(expectedResult)
-    }
-
-    @Test
     fun `when logged in, should be allowed to open cart page`() {
         val eventOpenCartPage = InteractionEvent.CartPage
 
