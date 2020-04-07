@@ -30,6 +30,7 @@ import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstan
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_DETAIL_INPUT
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_SHIPMENT_INPUT
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_VARIANT_INPUT
+import com.tokopedia.product.addedit.common.util.ListUnifyUtil
 import com.tokopedia.product.addedit.common.util.getText
 import com.tokopedia.product.addedit.common.util.getTextIntOrZero
 import com.tokopedia.product.addedit.common.util.getTextLongOrZero
@@ -567,9 +568,9 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                     val categoryName = data.getStringExtra(CATEGORY_RESULT_NAME)
                     productCategoryPickerButton?.text = categoryName
                     viewModel.selectedCategoryId = categoryId.toString()
-                    val categoryList = getSelectedCategory()
+                    val categoryList = ListUnifyUtil.getSelected(productCategoryRecListView)
                     if (categoryList != null) {
-                        categoryList.listRightRadiobtn?.isChecked = false
+                        ListUnifyUtil.getShownRadioButton(categoryList)?.isChecked = false
                         if (viewModel.isEditing) {
                             ProductEditMainTracking.clickSaveOtherCategory(shopId)
                         }
@@ -957,28 +958,41 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         val items = ArrayList(result.data.take(3))
         productCategoryRecListView?.setData(items)
         productCategoryRecListView?.onLoadFinish {
-            (productCategoryRecListView?.adapter?.getItem(0) as? ListItemUnify)?.let {
-                it.listRightRadiobtn?.isChecked = true
-                viewModel.selectedCategoryId = it.categoryId.toString()
-            }
-            productCategoryRecListView?.setOnItemClickListener { _, _, position, _ ->
-                val clickedItem = productCategoryRecListView?.getItemAtPosition(position) as ListItemUnify
-                items.filter { it.listRightRadiobtn?.isChecked ?: false }
-                        .filterNot { it == clickedItem }
-                        .onEach { it.listRightRadiobtn?.isChecked = false }
-                clickedItem.listRightRadiobtn?.isChecked = true
-                viewModel.selectedCategoryId = clickedItem.categoryId.toString()
-
-                if (!viewModel.isEditing) {
-                    ProductAddMainTracking.clickProductCategoryRecom(shopId)
-                }
-            }
+            selectFirstCategoryRecommendation()
+            createCategoryRecommendationItemClickListener(items)
         }
     }
 
     private fun onGetCategoryRecommendationFailed() {
         productCategoryLayout?.show()
         productCategoryRecListView?.hide()
+    }
+
+    private fun selectFirstCategoryRecommendation() = productCategoryRecListView?.run {
+        ListUnifyUtil.setSelected(this, 0) {
+            onCategoryRecommendationSelected(ListUnifyUtil.getCategoryId(it).toString())
+        }
+    }
+
+    private fun createCategoryRecommendationItemClickListener(items: List<ListItemUnify>) = productCategoryRecListView?.run {
+        productCategoryRecListView?.setOnItemClickListener { _, _, position, _ ->
+            ListUnifyUtil.setSelected(this, position) {
+                onCategoryRecommendationSelected(ListUnifyUtil.getCategoryId(it).toString())
+            }
+        }
+
+        items.forEachIndexed { index, item ->
+            item.listRightRadiobtn?.setOnClickListener {
+                ListUnifyUtil.setSelected(this, index) {
+                    onCategoryRecommendationSelected(ListUnifyUtil.getCategoryId(it).toString())
+                }
+            }
+        }
+    }
+
+    private fun onCategoryRecommendationSelected(categoryId: String) {
+        viewModel.selectedCategoryId = categoryId
+        ProductAddMainTracking.clickProductCategoryRecom(shopId)
     }
 
     private fun submitInput(shipmentInputModel: ShipmentInputModel,
@@ -1016,6 +1030,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         val detailInputModel = viewModel.detailInputModel
         detailInputModel.apply {
             productName = productNameField.getText()
+            categoryId = viewModel.selectedCategoryId
             price = productPriceField.getTextLongOrZero()
             stock = productStockField.getTextIntOrZero()
             minOrder = productMinOrderField.getTextIntOrZero()
@@ -1033,19 +1048,5 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         intent.putExtra(EXTRA_DETAIL_INPUT, detailInputModel)
         activity?.setResult(Activity.RESULT_OK, intent)
         activity?.finish()
-    }
-
-    // category id is saved on listActionText property
-    private val ListItemUnify.categoryId: Long
-        get() = listActionText?.toLong().orZero()
-
-    @Suppress("UNCHECKED_CAST")
-    private fun getSelectedCategory(): ListItemUnify? {
-        ListUnify::class.java.getDeclaredField("array").let {
-            it.isAccessible = true
-            return (it.get(productCategoryRecListView) as ArrayList<ListItemUnify>).find { listItem ->
-                listItem.listRightRadiobtn?.isChecked ?: false
-            }
-        }
     }
 }
