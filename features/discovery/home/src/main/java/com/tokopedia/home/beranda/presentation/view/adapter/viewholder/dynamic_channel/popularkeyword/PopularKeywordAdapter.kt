@@ -9,34 +9,42 @@ import com.tokopedia.design.image.SquareImageView
 import com.tokopedia.home.R
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.helper.glide.loadImage
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PopularKeywordViewModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PopularKeywordDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.PopularKeywordViewHolder
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifyprinciples.Typography
-import java.lang.StringBuilder
 
 /**
  * @author by yoasfs on 2020-02-18
  */
 
-class PopularKeywordAdapter(val dataList: List<PopularKeywordViewModel>,
-                            val popularKeywordListener: PopularKeywordViewHolder.PopularKeywordListener,
+class PopularKeywordAdapter(val popularKeywordListener: PopularKeywordViewHolder.PopularKeywordListener,
                             val channel: DynamicHomeChannel.Channels)
     : RecyclerView.Adapter<PopularKeywordAdapter.Holder>() {
 
-
+    private val popularKeywordList: MutableList<PopularKeywordDataModel> = mutableListOf()
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
         return Holder(LayoutInflater.from(parent.context).inflate(R.layout.layout_popular_keyword_item, parent, false))
     }
 
     override fun getItemCount(): Int {
-        return dataList.size
+        return popularKeywordList.size
     }
 
     override fun onBindViewHolder(holder: Holder, position: Int) {
-        holder.bind(dataList[position], popularKeywordListener, channel, position)
+        holder.bind(popularKeywordList[position], popularKeywordListener, channel, position)
+    }
+
+    fun submitList(list: List<PopularKeywordDataModel>){
+        popularKeywordList.addAll(list)
+        notifyDataSetChanged()
+    }
+
+    fun clearList() {
+        popularKeywordList.clear()
+        notifyDataSetChanged()
     }
 
     class Holder(view: View): RecyclerView.ViewHolder(view) {
@@ -45,7 +53,7 @@ class PopularKeywordAdapter(val dataList: List<PopularKeywordViewModel>,
         val tvProduct = view.findViewById<Typography>(R.id.tv_product)
         val tvCount = view.findViewById<Typography>(R.id.tv_count)
 
-        fun bind(data : PopularKeywordViewModel, popularKeywordListener: PopularKeywordViewHolder.PopularKeywordListener, channel: DynamicHomeChannel.Channels, position: Int) {
+        fun bind(data : PopularKeywordDataModel, popularKeywordListener: PopularKeywordViewHolder.PopularKeywordListener, channel: DynamicHomeChannel.Channels, position: Int) {
             ivImage.loadImage(data.imageUrl)
             tvProduct.text = data.title.capitalize()
             if (data.productCount.isNotEmpty()) {

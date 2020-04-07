@@ -4,10 +4,12 @@ import android.util.Log
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import androidx.test.espresso.Espresso
-import androidx.test.espresso.assertion.ViewAssertions
-import androidx.test.espresso.matcher.ViewMatchers
-import androidx.test.espresso.matcher.ViewMatchers.*
+import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
+import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import com.google.gson.Gson
@@ -18,6 +20,9 @@ import com.tokopedia.home.beranda.data.mapper.factory.HomeVisitableFactoryImpl
 import com.tokopedia.home.beranda.data.usecase.HomeUseCase
 import com.tokopedia.home.beranda.domain.interactor.*
 import com.tokopedia.home.beranda.domain.model.HomeData
+import com.tokopedia.home.beranda.domain.model.review.SuggestedProductReview
+import com.tokopedia.home.beranda.domain.model.review.SuggestedProductReviewResponse
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.ReviewDataModel
 import com.tokopedia.home.beranda.presentation.viewModel.HomeViewModel
 import com.tokopedia.home.test.activity.HomeActivityTest
 import com.tokopedia.home.test.fragment.HomeFragmentTest
@@ -28,17 +33,13 @@ import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.flow
-import org.hamcrest.CoreMatchers.`is`
-import org.hamcrest.CoreMatchers.allOf
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
 @ExperimentalCoroutinesApi
-class BannerUITest {
-
+class ReviewUITest {
     @Rule
     @JvmField
     val activityRule = ActivityTestRule(HomeActivityTest::class.java, true, true)
@@ -75,53 +76,92 @@ class BannerUITest {
     }
 
     @Test
-    fun testDataFromHome(){
+    fun testLoadingReviewWidget(){
         val json = GraphqlHelper.loadRawString(context.resources, com.tokopedia.home.test.R.raw.home_empty_dynamic_channel_json)
         val homeData = Gson().fromJson<HomeData>(json, HomeData::class.java)
         coEvery { getHomeUseCase.updateHomeData() } returns flow {  }
+        coEvery{getHomeReviewSuggestedUseCase.executeOnBackground()} returns SuggestedProductReview(SuggestedProductReviewResponse())
         coEvery { getHomeUseCase.getHomeData() } returns flow {
-            emit(homeDataMapper.mapToHomeViewModel(homeData, false))
-            Log.d("testLukas", "Flow emit masuk")
+            val data = homeDataMapper.mapToHomeViewModel(homeData, false)
+            val newList = data.list.toMutableList()
+            newList.add(4, ReviewDataModel())
+            emit(data.copy(list = newList))
+            Log.d("testReview", "Flow emit masuk")
         }
         viewModel = reInitViewModel()
-        Log.d("testLukas", viewModel.toString())
+        Log.d("testReview", viewModel.toString())
         val homeFragment = HomeFragmentTest(createViewModelFactory(viewModel))
 
         activityRule.activity.setupFragment(homeFragment)
         Thread.sleep(5000)
-        Espresso.onView(withId(R.id.circular_view_pager)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+        onView(withId(R.id.review_card_bg)).check(matches(isDisplayed()))
+        onView(withId(R.id.loading_review)).check(matches(isDisplayed()))
     }
+
     @Test
-    fun testUpdateDataFromHome(){
+    fun testNoReviewWidget(){
         val json = GraphqlHelper.loadRawString(context.resources, com.tokopedia.home.test.R.raw.home_empty_dynamic_channel_json)
         val homeData = Gson().fromJson<HomeData>(json, HomeData::class.java)
-        val json2 = GraphqlHelper.loadRawString(context.resources, com.tokopedia.home.test.R.raw.play_widget_json)
-        val homeData2 = Gson().fromJson(json2, HomeData::class.java)
         coEvery { getHomeUseCase.updateHomeData() } returns flow {  }
         coEvery { getHomeUseCase.getHomeData() } returns flow {
-            emit(homeDataMapper.mapToHomeViewModel(homeData, false))
-            delay(4000)
-            emit(homeDataMapper.mapToHomeViewModel(homeData2, false))
+            val data = homeDataMapper.mapToHomeViewModel(homeData, false)
+            val newList = data.list.toMutableList()
+            newList.add(4, ReviewDataModel())
+            emit(data.copy(list = newList))
+            Log.d("testReview", "Flow emit masuk")
         }
         viewModel = reInitViewModel()
-        Log.d("testLukas", viewModel.toString())
-        Log.d("testLukas", "HomeData: $homeData")
+        Log.d("testReview", viewModel.toString())
         val homeFragment = HomeFragmentTest(createViewModelFactory(viewModel))
 
         activityRule.activity.setupFragment(homeFragment)
+        Thread.sleep(5000)
+        onView(withId(R.id.review_card_bg)).check(doesNotExist())
+    }
+
+    @Test
+    fun testCloseReviewWidget(){
+        val json = GraphqlHelper.loadRawString(context.resources, com.tokopedia.home.test.R.raw.home_empty_dynamic_channel_json)
+        val homeData = Gson().fromJson<HomeData>(json, HomeData::class.java)
+        coEvery { getHomeUseCase.updateHomeData() } returns flow {  }
+        coEvery{getHomeReviewSuggestedUseCase.executeOnBackground()} returns SuggestedProductReview(
+                SuggestedProductReviewResponse(
+                        linkURL = "KOSONG",
+                        imageUrl = "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/1/20/8744407/8744407_1bc03512-8a00-472b-8e14-560f0cb66d45_700_700.jpg"
+                )
+        )
+        coEvery { getHomeUseCase.getHomeData() } returns flow {
+            val data = homeDataMapper.mapToHomeViewModel(homeData, false)
+            val newList = data.list.toMutableList()
+            newList.add(4, ReviewDataModel(
+                    suggestedProductReview = SuggestedProductReview(
+                            SuggestedProductReviewResponse(
+                                    linkURL = "KOSONG"
+                            )
+                    )
+            ))
+            emit(data.copy(list = newList))
+            Log.d("testReview", "Flow emit masuk")
+        }
+
+        viewModel = reInitViewModel()
+        Log.d("testReview", viewModel.toString())
+        val homeFragment = HomeFragmentTest(createViewModelFactory(viewModel))
+
+        activityRule.activity.setupFragment(homeFragment)
+        Thread.sleep(5000)
+        onView(withId(R.id.review_card_bg)).check(matches(isDisplayed()))
+        onView(withId(R.id.ic_close_review)).check(matches(isDisplayed()))
+        onView(withId(R.id.ic_close_review)).perform(click())
         Thread.sleep(1000)
-        Espresso.onView(withId(R.id.circular_view_pager)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
-        Espresso.onView(allOf(withId(R.id.image_banner_homepage), withTagValue(`is`(homeData.banner.slides!!.first().imageUrl)))).check(ViewAssertions.matches(isDisplayed()))
-        Thread.sleep(4000)
-        // check banner updated or not
-        Espresso.onView(allOf(withId(R.id.image_banner_homepage), withTagValue(`is`(homeData2.banner.slides!!.first().imageUrl as Any)))).check(ViewAssertions.matches(isDisplayed()))
+        onView(withId(R.id.review_card_bg)).check(doesNotExist())
     }
 
     private fun <T : ViewModel> createViewModelFactory(viewModel: T): ViewModelProvider.Factory {
         return object : ViewModelProvider.Factory {
             override fun <T : ViewModel> create(viewModelClass: Class<T>): T {
                 if (viewModelClass.isAssignableFrom(viewModel.javaClass)) {
-                    Log.d("testNoSkeleton", "Masuk custom view model factory")
+                    Log.d("testReview", "Masuk custom view model factory")
                     @Suppress("UNCHECKED_CAST")
                     return viewModel as T
                 }

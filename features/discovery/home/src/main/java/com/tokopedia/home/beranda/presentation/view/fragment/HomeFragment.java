@@ -17,6 +17,7 @@ import android.os.Handler;
 import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -713,6 +714,7 @@ public class HomeFragment extends BaseDaggerFragment implements
                 .into(new CustomTarget<Bitmap>() {
                     @Override
                     public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                        Log.d("testNoSkeleton", "Get data from play banner network: success");
                         viewModel.setPlayBanner(playCardViewModelEvent.peekContent());
                     }
 
@@ -722,6 +724,7 @@ public class HomeFragment extends BaseDaggerFragment implements
 
                     @Override
                     public void onLoadFailed(@Nullable Drawable errorDrawable) {
+                        Log.d("testNoSkeleton", "Get data from play banner network: fail");
                         viewModel.clearPlayBanner();
                     }
                 }));

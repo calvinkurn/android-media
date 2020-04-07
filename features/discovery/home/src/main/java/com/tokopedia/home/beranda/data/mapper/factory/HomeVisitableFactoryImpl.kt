@@ -14,7 +14,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_ch
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.dynamic_icon.HomeIconItem
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.spotlight.SpotlightItemViewModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.spotlight.SpotlightViewModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.GeolocationPromptViewModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.GeoLocationPromptDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderViewModel
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils
 import com.tokopedia.home.beranda.presentation.view.fragment.HomeFragment
@@ -100,7 +100,7 @@ class HomeVisitableFactoryImpl(val userSessionInterface: UserSessionInterface) :
                         }
                     }
                     if (tmpTickers.isNotEmpty()) {
-                        val viewModel = TickerViewModel()
+                        val viewModel = TickerDataModel()
                         viewModel.tickers = tmpTickers
 
                         visitableList.add(viewModel)
@@ -124,7 +124,7 @@ class HomeVisitableFactoryImpl(val userSessionInterface: UserSessionInterface) :
     }
 
     override fun addGeolocationVisitable(): HomeVisitableFactory {
-        visitableList.add(GeolocationPromptViewModel())
+        visitableList.add(GeoLocationPromptDataModel())
         return this
     }
 
@@ -330,7 +330,7 @@ class HomeVisitableFactoryImpl(val userSessionInterface: UserSessionInterface) :
     }
 
     private fun createReviewWidget() {
-        if (!isCache) visitableList.add(ReviewViewModel())
+        if (!isCache) visitableList.add(ReviewDataModel())
     }
 
     private fun createDynamicTopAds(channel: DynamicHomeChannel.Channels) {
@@ -420,7 +420,7 @@ class HomeVisitableFactoryImpl(val userSessionInterface: UserSessionInterface) :
     }
 
     private fun createPopularKeywordChannel(channel: DynamicHomeChannel.Channels) {
-        visitableList.add(PopularKeywordListViewModel(popularKeywordList = mutableListOf(), channel = channel))
+        visitableList.add(PopularKeywordListDataModel(popularKeywordList = mutableListOf(), channel = channel))
     }
 
     override fun build(): List<Visitable<*>> = visitableList

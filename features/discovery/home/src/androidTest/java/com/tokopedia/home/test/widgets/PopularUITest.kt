@@ -4,21 +4,28 @@ import android.util.Log
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import androidx.test.espresso.Espresso
-import androidx.test.espresso.assertion.ViewAssertions
-import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
+import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import com.google.gson.Gson
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.home.R
 import com.tokopedia.home.beranda.data.mapper.HomeDataMapper
 import com.tokopedia.home.beranda.data.mapper.factory.HomeVisitableFactoryImpl
+import com.tokopedia.home.beranda.data.model.HomeWidget
 import com.tokopedia.home.beranda.data.usecase.HomeUseCase
 import com.tokopedia.home.beranda.domain.interactor.*
+import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.domain.model.HomeData
+import com.tokopedia.home.beranda.domain.model.review.SuggestedProductReview
+import com.tokopedia.home.beranda.domain.model.review.SuggestedProductReviewResponse
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PopularKeywordListDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.ReviewDataModel
 import com.tokopedia.home.beranda.presentation.viewModel.HomeViewModel
+import com.tokopedia.home.test.R
 import com.tokopedia.home.test.activity.HomeActivityTest
 import com.tokopedia.home.test.fragment.HomeFragmentTest
 import com.tokopedia.home.test.rules.TestDispatcherProvider
@@ -30,15 +37,14 @@ import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.flow
-import org.hamcrest.CoreMatchers.`is`
-import org.hamcrest.CoreMatchers.allOf
+import org.hamcrest.CoreMatchers
+import org.hamcrest.CoreMatchers.not
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
 @ExperimentalCoroutinesApi
-class BannerUITest {
-
+class PopularUITest {
     @Rule
     @JvmField
     val activityRule = ActivityTestRule(HomeActivityTest::class.java, true, true)
@@ -75,53 +81,112 @@ class BannerUITest {
     }
 
     @Test
-    fun testDataFromHome(){
-        val json = GraphqlHelper.loadRawString(context.resources, com.tokopedia.home.test.R.raw.home_empty_dynamic_channel_json)
+    fun testLoadingPopularWidget(){
+        val json = GraphqlHelper.loadRawString(context.resources, R.raw.home_empty_dynamic_channel_json)
         val homeData = Gson().fromJson<HomeData>(json, HomeData::class.java)
         coEvery { getHomeUseCase.updateHomeData() } returns flow {  }
+        coEvery{getHomeReviewSuggestedUseCase.executeOnBackground()} returns SuggestedProductReview(SuggestedProductReviewResponse())
         coEvery { getHomeUseCase.getHomeData() } returns flow {
-            emit(homeDataMapper.mapToHomeViewModel(homeData, false))
-            Log.d("testLukas", "Flow emit masuk")
+            val data = homeDataMapper.mapToHomeViewModel(homeData, false)
+            val newList = data.list.toMutableList()
+            newList.add(4, PopularKeywordListDataModel(
+                    channel = DynamicHomeChannel.Channels(layout = "popular_keyword", name = "Popular Keyword", header = DynamicHomeChannel.Header(name = "Lagi trending, nih!"))
+            ))
+            emit(data.copy(list = newList))
+            Log.d("testPopular", "Flow emit masuk")
         }
         viewModel = reInitViewModel()
-        Log.d("testLukas", viewModel.toString())
+        Log.d("testPopular", viewModel.toString())
         val homeFragment = HomeFragmentTest(createViewModelFactory(viewModel))
 
         activityRule.activity.setupFragment(homeFragment)
         Thread.sleep(5000)
-        Espresso.onView(withId(R.id.circular_view_pager)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+
+        onView(withId(R.id.loading_popular)).check(matches(isDisplayed()))
+        onView(withId(R.id.channel_title)).check(matches(isDisplayed()))
+        onView(withId(R.id.channel_title)).check(matches(withText(CoreMatchers.containsString("Lagi trending, nih!"))))
     }
+
     @Test
-    fun testUpdateDataFromHome(){
-        val json = GraphqlHelper.loadRawString(context.resources, com.tokopedia.home.test.R.raw.home_empty_dynamic_channel_json)
+    fun testDataShow(){
+        val json = GraphqlHelper.loadRawString(context.resources, R.raw.popular_keyword_json)
+        Log.d("testPopular", json)
         val homeData = Gson().fromJson<HomeData>(json, HomeData::class.java)
-        val json2 = GraphqlHelper.loadRawString(context.resources, com.tokopedia.home.test.R.raw.play_widget_json)
-        val homeData2 = Gson().fromJson(json2, HomeData::class.java)
         coEvery { getHomeUseCase.updateHomeData() } returns flow {  }
         coEvery { getHomeUseCase.getHomeData() } returns flow {
-            emit(homeDataMapper.mapToHomeViewModel(homeData, false))
-            delay(4000)
-            emit(homeDataMapper.mapToHomeViewModel(homeData2, false))
+            val data = homeDataMapper.mapToHomeViewModel(homeData, false)
+            emit(data)
+            Log.d("testPopular", "Flow emit masuk")
         }
         viewModel = reInitViewModel()
-        Log.d("testLukas", viewModel.toString())
-        Log.d("testLukas", "HomeData: $homeData")
+        Log.d("testPopular", viewModel.toString())
         val homeFragment = HomeFragmentTest(createViewModelFactory(viewModel))
 
         activityRule.activity.setupFragment(homeFragment)
+        Thread.sleep(5000)
+        onView(withId(R.id.channel_title)).check(matches(isDisplayed()))
+        onView(withId(R.id.channel_title)).check(matches(withText(CoreMatchers.containsString("Lagi trending, nih!"))))
+    }
+
+    @Test
+    fun testNotShowWidget(){
+        val json = GraphqlHelper.loadRawString(context.resources, R.raw.home_empty_dynamic_channel_json)
+        Log.d("testPopular", json)
+        val homeData = Gson().fromJson<HomeData>(json, HomeData::class.java)
+        coEvery { getHomeUseCase.updateHomeData() } returns flow {  }
+        coEvery { getHomeUseCase.getHomeData() } returns flow {
+            val data = homeDataMapper.mapToHomeViewModel(homeData, false)
+            emit(data)
+            Log.d("testPopular", "Flow emit masuk")
+        }
+        viewModel = reInitViewModel()
+        Log.d("testPopular", viewModel.toString())
+        val homeFragment = HomeFragmentTest(createViewModelFactory(viewModel))
+
+        activityRule.activity.setupFragment(homeFragment)
+        Thread.sleep(5000)
+        onView(withId(R.id.channel_title)).check(doesNotExist())
+    }
+
+
+    @Test
+    fun testReloadData(){
+        val json = GraphqlHelper.loadRawString(context.resources, R.raw.popular_keyword_json)
+        val popularData = GraphqlHelper.loadRawString(context.resources, R.raw.get_popular_keyword_query_data_json)
+        Log.d("testPopular", json)
+        val homeData = Gson().fromJson<HomeData>(json, HomeData::class.java)
+        coEvery { getPopularKeywordUseCase.executeOnBackground() } coAnswers  {
+            delay(2000)
+            Gson().fromJson<HomeWidget.PopularKeywordQuery>(popularData, HomeWidget.PopularKeywordQuery::class.java)
+        }
+        coEvery { getHomeUseCase.updateHomeData() } returns flow {  }
+        coEvery { getHomeUseCase.getHomeData() } returns flow {
+            val data = homeDataMapper.mapToHomeViewModel(homeData, false)
+            emit(data)
+            Log.d("testPopular", "Flow emit masuk")
+        }
+        viewModel = reInitViewModel()
+        Log.d("testPopular", viewModel.toString())
+        val homeFragment = HomeFragmentTest(createViewModelFactory(viewModel))
+
+        activityRule.activity.setupFragment(homeFragment)
+        Thread.sleep(5000)
+        onView(withId(R.id.channel_title)).check(matches(isDisplayed()))
+        onView(withId(R.id.channel_title)).check(matches(withText(CoreMatchers.containsString("Lagi trending, nih!"))))
+
+        onView(withId(R.id.tv_reload)).check(matches(isDisplayed()))
+        onView(withId(R.id.tv_reload)).perform(click())
         Thread.sleep(1000)
-        Espresso.onView(withId(R.id.circular_view_pager)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
-        Espresso.onView(allOf(withId(R.id.image_banner_homepage), withTagValue(`is`(homeData.banner.slides!!.first().imageUrl)))).check(ViewAssertions.matches(isDisplayed()))
-        Thread.sleep(4000)
-        // check banner updated or not
-        Espresso.onView(allOf(withId(R.id.image_banner_homepage), withTagValue(`is`(homeData2.banner.slides!!.first().imageUrl as Any)))).check(ViewAssertions.matches(isDisplayed()))
+        onView(withId(R.id.loading_popular)).check(matches(isDisplayed()))
+        Thread.sleep(2000)
+        onView(withId(R.id.loading_popular)).check(matches(not(isDisplayed())))
     }
 
     private fun <T : ViewModel> createViewModelFactory(viewModel: T): ViewModelProvider.Factory {
         return object : ViewModelProvider.Factory {
             override fun <T : ViewModel> create(viewModelClass: Class<T>): T {
                 if (viewModelClass.isAssignableFrom(viewModel.javaClass)) {
-                    Log.d("testNoSkeleton", "Masuk custom view model factory")
+                    Log.d("testPopular", "Masuk custom view model factory")
                     @Suppress("UNCHECKED_CAST")
                     return viewModel as T
                 }
