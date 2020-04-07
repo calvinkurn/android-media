@@ -314,10 +314,6 @@ public class InstrumentationTestApp extends BaseMainApplication implements TkpdC
     @Override
     public FingerprintModel getFingerprintModel() {
         FingerprintModel fingerprintModel = new FingerprintModel();
-        fingerprintModel.setAdsId(MOCK_ADS_ID);
-        fingerprintModel.setRegistrarionId("f4aKfO2FyP4:-22Y6Qb0KpG1NAXYV_2u0KLIXd4prQ2onGOSNq1aPfoHqjzHwpk0td6KjGoL1Tyd1tXmfQb0AsPTFVTK-Jiik_2bjMLpLEevVniZ3sFkj3ctorX4jFMKUC9w4HLG");
-        fingerprintModel.setFingerprintHash(MOCK_FINGERPRINT_HASH);
-
         fingerprintModel.setRegistrarionId(getRegistrarianId());
         fingerprintModel.setAdsId(getAdsId());
         try {
