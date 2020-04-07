@@ -12,6 +12,7 @@ import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.home.R
 
@@ -90,20 +91,21 @@ fun ImageView.loadImageRounded(url: String, roundedRadius: Int, fpmItemLabel: St
             .into(this)
 }
 
-fun ImageView.loadMiniImage(url: String, width: Int, height: Int, fpmItemLabel: String = ""){
+fun ImageView.loadMiniImage(url: String, width: Int, height: Int, fpmItemLabel: String = "", listener: ImageHandler.ImageLoaderStateListener? = null){
     val performanceMonitoring = getPerformanceMonitoring(url, fpmItemLabel)
     Glide.with(context)
             .load(url)
             .fitCenter()
             .format(DecodeFormat.PREFER_ARGB_8888)
             .override(width, height)
-            .placeholder(R.drawable.loading_page)
             .listener(object : RequestListener<Drawable> {
                 override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
+                    listener?.failedLoad()
                     return false
                 }
 
                 override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
+                    listener?.successLoad()
                     handleOnResourceReady(dataSource, resource, performanceMonitoring)
                     return false
                 }

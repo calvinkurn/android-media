@@ -3,6 +3,7 @@ package com.tokopedia.productcard.utils
 import android.content.Context
 import android.graphics.Color
 import android.graphics.Rect
+import android.graphics.drawable.Drawable
 import android.view.TouchDelegate
 import android.view.View
 import android.widget.ImageView
@@ -13,9 +14,13 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.target.Target
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.productcard.ProductCardFlashSaleModel
@@ -101,6 +106,27 @@ internal fun ImageView.loadImage(url: String?) {
                 .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                 .placeholder(R.drawable.ic_loading_toped_new)
                 .error(R.drawable.ic_loading_toped_new)
+                .into(this)
+    }
+}
+internal fun ImageView.loadImage(url: String?, state: ((Boolean) -> Unit)) {
+    if (url != null && url.isNotEmpty()) {
+        Glide.with(context)
+                .load(url)
+                .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+                .placeholder(R.drawable.ic_loading_toped_new)
+                .error(R.drawable.ic_loading_toped_new)
+                .listener(object : RequestListener<Drawable>{
+                    override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
+                        state.invoke(false)
+                        return false
+                    }
+
+                    override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
+                        state.invoke(true)
+                        return false
+                    }
+                })
                 .into(this)
     }
 }
