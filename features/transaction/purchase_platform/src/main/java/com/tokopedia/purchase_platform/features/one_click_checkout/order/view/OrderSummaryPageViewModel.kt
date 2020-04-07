@@ -13,6 +13,7 @@ import com.tokopedia.network.utils.TKPDMapParam
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase.Companion.PARAM_VALUE_MARKETPLACE
 import com.tokopedia.promocheckout.common.view.model.clearpromo.ClearPromoUiModel
+import com.tokopedia.promocheckout.common.view.uimodel.SummariesUiModel
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant.Companion.PARAM_CHECKOUT
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant.Companion.PARAM_OCC
 import com.tokopedia.purchase_platform.common.data.model.param.EditAddressParam
@@ -1232,26 +1233,29 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
             val fee = _orderPreference?.preference?.payment?.fee?.toDouble() ?: 0.0
             var productDiscount = 0
             var shippingDiscount = 0
+            var cashback = 0
             val list1 = validateUsePromoRevampUiModel?.promoUiModel?.benefitSummaryInfoUiModel?.summaries
                     ?: emptyList()
             for (summary in list1) {
-                if (summary.type == "discount") {
+                if (summary.type == SummariesUiModel.TYPE_DISCOUNT) {
                     for (detail in summary.details) {
-                        if (detail.type == "shipping_discount") {
+                        if (detail.type == SummariesUiModel.TYPE_SHIPPING_DISCOUNT) {
                             shippingDiscount += detail.amount
-                        } else if (detail.type == "product_discount") {
+                        } else if (detail.type == SummariesUiModel.TYPE_PRODUCT_DISCOUNT) {
                             productDiscount += detail.amount
                         }
                     }
+                } else if (summary.type == SummariesUiModel.TYPE_CASHBACK) {
+                    cashback = summary.amount
                 }
             }
             val finalShippingPrice = max(totalShippingPrice - shippingDiscount, 0.0)
             val subtotal = totalProductPrice + finalShippingPrice + insurancePrice + fee - productDiscount
             val minimumAmount = _orderPreference?.preference?.payment?.minimumAmount ?: 0
             val maximumAmount = _orderPreference?.preference?.payment?.maximumAmount ?: 0
-            val orderCost = OrderCost(subtotal, totalProductPrice, totalShippingPrice, insurancePrice, fee, shippingDiscount, productDiscount)
+            val orderCost = OrderCost(subtotal, totalProductPrice, totalShippingPrice, insurancePrice, fee, shippingDiscount, productDiscount, cashback)
             var currentState = orderTotal.value?.buttonState ?: ButtonBayarState.NORMAL
-            if (currentState == ButtonBayarState.NORMAL && quantity.isStateError && orderShop.errors.isNotEmpty()) {
+            if (currentState == ButtonBayarState.NORMAL && (!shipping?.serviceErrorMessage.isNullOrEmpty() || quantity.isStateError || orderShop.errors.isNotEmpty())) {
                 currentState = ButtonBayarState.DISABLE
             }
             if (minimumAmount > subtotal) {

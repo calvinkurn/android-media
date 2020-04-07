@@ -29,7 +29,7 @@ data class OrderCost(
 //        val shippingDiscountLabel: String,
         val shippingDiscountAmount: Int = 0,
 //        val productDiscountLabel: String,
-        val productDiscountAmount: Int = 0
+        val productDiscountAmount: Int = 0,
 //        val cashbackLabel: String = "",
-//        val cashbackAmount: Int = 0
+        val cashbackAmount: Int = 0
 )

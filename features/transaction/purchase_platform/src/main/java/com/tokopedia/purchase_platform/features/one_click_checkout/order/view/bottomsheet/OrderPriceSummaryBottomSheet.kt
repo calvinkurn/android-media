@@ -75,5 +75,16 @@ class OrderPriceSummaryBottomSheet {
             child.tv_total_payment_fee_price_value.gone()
         }
         child.tv_total_payment_price_value.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(orderCost.totalPrice, false)
+
+        if (orderCost.cashbackAmount > 0) {
+            child.tv_total_cashback_value.text = CurrencyFormatUtil.convertPriceValue(orderCost.cashbackAmount.toDouble(), false)
+            child.tv_total_cashback_value.visible()
+            child.tv_total_cashback_label.visible()
+            child.divider2.visible()
+        } else {
+            child.tv_total_cashback_value.gone()
+            child.tv_total_cashback_label.gone()
+            child.divider2.gone()
+        }
     }
 }
