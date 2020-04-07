@@ -10,8 +10,6 @@ import com.tokopedia.play.model.ModelBuilder
 import com.tokopedia.play.ui.toolbar.model.PartnerFollowAction
 import com.tokopedia.play.util.CoroutineDispatcherProvider
 import com.tokopedia.play.util.event.Event
-import com.tokopedia.play.view.type.BottomInsetsType
-import com.tokopedia.play.view.type.ProductAction
 import com.tokopedia.play.view.viewmodel.PlayInteractionViewModel
 import com.tokopedia.play.view.wrapper.InteractionEvent
 import com.tokopedia.play.view.wrapper.LoginStateEvent
