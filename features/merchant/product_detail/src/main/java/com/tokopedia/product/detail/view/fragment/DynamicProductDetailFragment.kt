@@ -227,11 +227,11 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     }
 
     //Performance Monitoring
-    lateinit var performanceMonitoringP1: PerformanceMonitoring
-    lateinit var performanceMonitoringP2: PerformanceMonitoring
-    lateinit var performanceMonitoringP2General: PerformanceMonitoring
-    lateinit var performanceMonitoringP2Login: PerformanceMonitoring
-    lateinit var performanceMonitoringFull: PerformanceMonitoring
+    var performanceMonitoringP1: PerformanceMonitoring? = null
+    var performanceMonitoringP2: PerformanceMonitoring? = null
+    var performanceMonitoringP2General: PerformanceMonitoring? = null
+    var performanceMonitoringP2Login: PerformanceMonitoring? = null
+    var performanceMonitoringFull: PerformanceMonitoring? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.dynamic_product_detail_fragment, container, false)
@@ -245,7 +245,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         }
 
         initTradein()
-        initPerformanceMonitoring()
         initRecyclerView(view)
         initBtnAction()
         initToolbar()
@@ -292,6 +291,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         context?.let {
             pdpHashMapUtil = DynamicProductDetailHashMap(it, mapOf(ProductDetailConstant.PRODUCT_SNAPSHOT to ProductSnapshotDataModel()))
         }
+        initPerformanceMonitoring()
         setHasOptionsMenu(true)
     }
 
@@ -1083,9 +1083,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
     private fun observeP1() {
         viewLifecycleOwner.observe(viewModel.productLayout) { data ->
-            if (::performanceMonitoringP1.isInitialized)
-                performanceMonitoringP1.stopTrace()
-
             data.doSuccessOrFail({
                 context?.let { context ->
                     pdpHashMapUtil = DynamicProductDetailHashMap(context, DynamicProductDetailMapper.hashMapLayout(it.data))
@@ -1095,6 +1092,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                 logException(it)
                 renderPageError(it)
             })
+            performanceMonitoringP1?.stopTrace()
         }
     }
 
@@ -1103,41 +1101,35 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             topAdsGetProductManage = it.topAdsGetProductManage
             it.pdpAffiliate?.let { renderAffiliate(it) }
             actionButtonView.setTopAdsButton(hasTopAds())
-
-            if (::performanceMonitoringFull.isInitialized)
-                performanceMonitoringP2Login.stopTrace()
-
             pdpHashMapUtil?.updateDataP2Login(it)
             dynamicAdapter.notifySnapshotWithPayloads(pdpHashMapUtil?.snapShotMap, ProductDetailConstant.PAYLOAD_WISHLIST)
+            performanceMonitoringP2Login?.stopTrace()
         }
     }
 
     private fun observeP2Shop() {
         viewLifecycleOwner.observe(viewModel.p2ShopDataResp) {
-            if (!viewModel.isUserSessionActive && ::performanceMonitoringFull.isInitialized)
-                performanceMonitoringFull.stopTrace()
-            performanceMonitoringP2.stopTrace()
-
             onSuccessGetDataP2Shop(it)
+
+            if (!viewModel.isUserSessionActive) {
+                performanceMonitoringFull?.stopTrace()
+            }
+            performanceMonitoringP2?.stopTrace()
         }
     }
 
     private fun observeP2General() {
         viewLifecycleOwner.observe(viewModel.p2General) {
-            if (::performanceMonitoringP2General.isInitialized)
-                performanceMonitoringP2General.stopTrace()
-
             onSuccessGetDataP2General(it)
+            performanceMonitoringP2General?.stopTrace()
         }
     }
 
     private fun observeP3() {
         observe(viewModel.productInfoP3resp) {
-            if (::performanceMonitoringFull.isInitialized)
-                performanceMonitoringFull.stopTrace()
-
             trackProductView(viewModel.tradeInParams.isEligible == 1)
             onSuccessGetDataP3Resp(it)
+            performanceMonitoringFull?.stopTrace()
         }
     }
 
