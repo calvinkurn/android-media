@@ -20,35 +20,14 @@
         android:descendantFocusability="beforeDescendants"
         android:scrollbars="vertical" />
 
-    <LinearLayout
+    <com.tokopedia.topchat.chatroom.view.custom.TransactionOrderProgressLayout
         android:id="@+id/ll_transaction_progress"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
         android:orientation="vertical"
         android:visibility="gone"
-        tools:visibility="visible">
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/white">
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/chatcommon_1dp"
-                android:background="@color/Neutral_N75"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="4dp"
-            android:layout_gravity="top"
-            android:background="@drawable/bg_shadow_transaction_order_progres" />
-    </LinearLayout>
+        tools:visibility="visible" />
 
     <LinearLayout
         android:id="@+id/notifier"
