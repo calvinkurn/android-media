@@ -198,6 +198,7 @@ public class ProductViewModelMapper {
         productItem.setIsShopPowerBadge(productModel.getShop().isPowerBadge());
         productItem.setIsShopOfficialStore(productModel.getShop().isOfficial());
         productItem.setFreeOngkirViewModel(convertToFreeOngkirViewModel(productModel.getFreeOngkir()));
+        productItem.setBoosterList(productModel.getBoosterList());
         return productItem;
     }
 
@@ -284,14 +285,14 @@ public class ProductViewModelMapper {
                     data.getTitle(),
                     data.getType(),
                     data.getPosition(),
-                    convertToInspirationCarouselOptionViewModel(data.getInspirationCarouselOptions())
+                    convertToInspirationCarouselOptionViewModel(data.getInspirationCarouselOptions(), data.getType())
             ));
         }
 
         return inspirationCarousel;
     }
 
-    private  List<InspirationCarouselViewModel.Option> convertToInspirationCarouselOptionViewModel(List<SearchProductModel.InspirationCarouselOption> inspirationCarouselOptions) {
+    private  List<InspirationCarouselViewModel.Option> convertToInspirationCarouselOptionViewModel(List<SearchProductModel.InspirationCarouselOption> inspirationCarouselOptions, String inspirationCarouselType) {
         List<InspirationCarouselViewModel.Option> options = new ArrayList<>();
 
         for (SearchProductModel.InspirationCarouselOption opt : inspirationCarouselOptions) {
@@ -300,14 +301,15 @@ public class ProductViewModelMapper {
                     opt.getTitle(),
                     opt.getUrl(),
                     opt.getApplink(),
-                    convertToInspirationCarouselProductViewModel(opt.getInspirationCarouselProducts(), position)
+                    convertToInspirationCarouselProductViewModel(opt.getInspirationCarouselProducts(), position, inspirationCarouselType),
+                    inspirationCarouselType
             ));
         }
 
         return options;
     }
 
-    private  List<InspirationCarouselViewModel.Option.Product> convertToInspirationCarouselProductViewModel(List<SearchProductModel.InspirationCarouselProduct> inspirationCarouselProduct, int position) {
+    private  List<InspirationCarouselViewModel.Option.Product> convertToInspirationCarouselProductViewModel(List<SearchProductModel.InspirationCarouselProduct> inspirationCarouselProduct, int position, String inspirationCarouselType) {
         List<InspirationCarouselViewModel.Option.Product> products = new ArrayList<>();
 
         for (SearchProductModel.InspirationCarouselProduct product : inspirationCarouselProduct) {
@@ -321,7 +323,8 @@ public class ProductViewModelMapper {
                     product.countReview(),
                     product.getUrl(),
                     product.getApplink(),
-                    position
+                    position,
+                    inspirationCarouselType
             ));
         }
 

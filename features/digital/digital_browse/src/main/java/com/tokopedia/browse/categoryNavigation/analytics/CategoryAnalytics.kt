@@ -5,7 +5,6 @@ import com.tokopedia.browse.categoryNavigation.data.model.newcategory.Categories
 import com.tokopedia.browse.categoryNavigation.data.model.newcategory.CategoryChildItem
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.interfaces.Analytics
-import com.tokopedia.trackingoptimizer.TrackingQueue
 import java.util.HashMap
 
 private const val EVENT_CATEGORY_BELANJA_PAGE = "belanja page"
@@ -25,8 +24,8 @@ private const val KEY_ECOMMERCE = "ecommerce"
 private const val KEY_PROMO_CODE = "promo_code"
 private const val KEY_NAME = "name"
 private const val KEY_ID = "id"
-private const val EVENT_SELECT_CONTENT = "select_content"
-private const val EVENT_VIEW_ITEM = "view_item"
+private const val EVENT_PROMO_CLICK = "promoClick"
+private const val EVENT_PROMO_VIEW = "promoView"
 
 class CategoryAnalytics {
 
@@ -42,17 +41,17 @@ class CategoryAnalytics {
     fun eventYangLagiHitClick(product: CategoryChildItem, position: Int) {
         getTracker().sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(
-                        KEY_EVENT, EVENT_SELECT_CONTENT,
+                        KEY_EVENT, EVENT_PROMO_CLICK,
                         KEY_EVENT_CATEGORY, EVENT_CATEGORY_BELANJA_PAGE,
                         KEY_EVENT_ACTION, "click banner inside kategori hits pilihan",
-                        KEY_EVENT_LABEL, product.id + " - " + product.name,
+                        KEY_EVENT_LABEL, "",
                         KEY_ECOMMERCE, DataLayer.mapOf(
                         KEY_PROMO_CLICK, DataLayer.mapOf(
                         KEY_PROMOTIONS, DataLayer.listOf(
                         DataLayer.mapOf(
                                 KEY_ID, product.id.toString(),
-                                KEY_NAME, "category/" + product.name + " - " + product.id,
-                                KEY_CREATIVE, product.name,
+                                KEY_NAME, "banner inside kategori hits pilihan",
+                                KEY_CREATIVE, product.id + " - " + product.name,
                                 KEY_CREATIVE_URL, product.iconImageUrl,
                                 KEY_POSITION, (position).toString(),
                                 KEY_PROMO_ID, "",
@@ -61,25 +60,32 @@ class CategoryAnalytics {
     }
 
     // 4
-    fun eventYangLagiHitView(trackingQueue: TrackingQueue, product: CategoryChildItem, position: Int) {
+    fun eventYangLagiHitView(itemList: ArrayList<CategoryChildItem>) {
+
+        val list = ArrayList<Map<String, Any>>()
+        for (item in itemList) {
+            val map = HashMap<String, String>()
+            map[KEY_ID] = item.id.toString()
+            map[KEY_NAME] = "banner inside kategori hits pilihan"
+            map[KEY_CREATIVE] = item.id + " - " + item.name
+            map[KEY_CREATIVE_URL] = item.iconImageUrl.toString()
+            map[KEY_POSITION] = item.categoryPosition.toString()
+            map[KEY_PROMO_ID] = ""
+            map[KEY_PROMO_CODE] = ""
+            list.add(map)
+        }
+
+        val ecommerce: MutableMap<String, Any>? = DataLayer.mapOf(
+                "promoView", DataLayer.mapOf(
+                "promotions", list))
+
         val map = DataLayer.mapOf(
-                KEY_EVENT, EVENT_VIEW_ITEM,
+                KEY_EVENT, EVENT_PROMO_VIEW,
                 KEY_EVENT_CATEGORY, EVENT_CATEGORY_BELANJA_PAGE,
                 KEY_EVENT_ACTION, "impression banner inside kategori hits pilihan",
-                KEY_EVENT_LABEL, product.id + " - " + product.name,
-                KEY_ECOMMERCE, DataLayer.mapOf(
-                KEY_PROMO_VIEW, DataLayer.mapOf(
-                KEY_PROMOTIONS, DataLayer.listOf(DataLayer.mapOf(
-                KEY_ID, product.id.toString(),
-                KEY_NAME, "category/" + product.name + " - " + product.id,
-                KEY_CREATIVE, product.name,
-                KEY_CREATIVE_URL, product.iconImageUrl,
-                KEY_POSITION, (position).toString(),
-                KEY_PROMO_ID, "",
-                KEY_PROMO_CODE, ""
-        )))
-        ))
-        trackingQueue.putEETracking(map as HashMap<String, Any>)
+                KEY_EVENT_LABEL, "",
+                KEY_ECOMMERCE, ecommerce)
+        getTracker().sendEnhanceEcommerceEvent(map)
     }
 
     //5
@@ -87,17 +93,17 @@ class CategoryAnalytics {
     fun eventSeringKamuLihatClick(product: CategoryChildItem, position: Int) {
         getTracker().sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(
-                        KEY_EVENT, EVENT_SELECT_CONTENT,
+                        KEY_EVENT, EVENT_PROMO_CLICK,
                         KEY_EVENT_CATEGORY, EVENT_CATEGORY_BELANJA_PAGE,
                         KEY_EVENT_ACTION, "click banner inside sering kamu lihat",
-                        KEY_EVENT_LABEL, product.id + " - " + product.name,
+                        KEY_EVENT_LABEL, "",
                         KEY_ECOMMERCE, DataLayer.mapOf(
                         KEY_PROMO_CLICK, DataLayer.mapOf(
                         KEY_PROMOTIONS, DataLayer.listOf(
                         DataLayer.mapOf(
                                 KEY_ID, product.id.toString(),
-                                KEY_NAME, "category/" + product.name + " - " + product.id,
-                                KEY_CREATIVE, product.name,
+                                KEY_NAME, "banner inside sering kamu lihat",
+                                KEY_CREATIVE, product.id + " - " + product.name,
                                 KEY_CREATIVE_URL, product.iconImageUrl,
                                 KEY_POSITION, (position).toString(),
                                 KEY_PROMO_ID, "",
@@ -106,25 +112,31 @@ class CategoryAnalytics {
     }
 
     // 6
-    fun eventSeringkkamuLihatView(trackingQueue: TrackingQueue, product: CategoryChildItem, position: Int) {
+
+    fun eventSeringkamuLihatView(itemList: ArrayList<CategoryChildItem>) {
+        val list = ArrayList<Map<String, Any>>()
+        for (item in itemList) {
+            val map = HashMap<String, String>()
+            map[KEY_ID] = item.id.toString()
+            map[KEY_NAME] = "banner inside sering kamu lihat"
+            map[KEY_CREATIVE] = item.id + " - " + item.name
+            map[KEY_CREATIVE_URL] = item.iconImageUrl.toString()
+            map[KEY_POSITION] = item.categoryPosition.toString()
+            map[KEY_PROMO_ID] = ""
+            map[KEY_PROMO_CODE] = ""
+            list.add(map)
+        }
+        val ecommerce: MutableMap<String, Any>? = DataLayer.mapOf(
+                "promoView", DataLayer.mapOf(
+                "promotions", list))
+
         val map = DataLayer.mapOf(
-                KEY_EVENT, EVENT_VIEW_ITEM,
+                KEY_EVENT, EVENT_PROMO_VIEW,
                 KEY_EVENT_CATEGORY, EVENT_CATEGORY_BELANJA_PAGE,
                 KEY_EVENT_ACTION, "impression banner inside sering kamu lihat",
-                KEY_EVENT_LABEL, product.id + " - " + product.name,
-                KEY_ECOMMERCE, DataLayer.mapOf(
-                KEY_PROMO_VIEW, DataLayer.mapOf(
-                KEY_PROMOTIONS, DataLayer.listOf(DataLayer.mapOf(
-                KEY_ID, product.id.toString(),
-                KEY_NAME, "category/" + product.name + " - " + product.id,
-                KEY_CREATIVE, product.name,
-                KEY_CREATIVE_URL, product.iconImageUrl,
-                KEY_POSITION, (position).toString(),
-                KEY_PROMO_ID, "",
-                KEY_PROMO_CODE, ""
-        )))
-        ))
-        trackingQueue.putEETracking(map as HashMap<String, Any>)
+                KEY_EVENT_LABEL, "",
+                KEY_ECOMMERCE, ecommerce)
+        getTracker().sendEnhanceEcommerceEvent(map)
     }
 
     // 7
@@ -137,16 +149,16 @@ class CategoryAnalytics {
         }
         val tracker = getTracker()
         val map = DataLayer.mapOf(
-                KEY_EVENT, EVENT_SELECT_CONTENT,
+                KEY_EVENT, EVENT_PROMO_CLICK,
                 KEY_EVENT_CATEGORY, EVENT_CATEGORY_BELANJA_PAGE,
                 KEY_EVENT_ACTION, "click category on side bar",
-                KEY_EVENT_LABEL, eventLabel,
+                KEY_EVENT_LABEL, "",
                 KEY_ECOMMERCE, DataLayer.mapOf(
                 KEY_PROMO_CLICK, DataLayer.mapOf(
                 KEY_PROMOTIONS, DataLayer.listOf(DataLayer.mapOf(
                 KEY_ID, product.id.toString(),
-                KEY_NAME, "category/" + product.name + " - " + product.id,
-                KEY_CREATIVE, product.name,
+                KEY_NAME, "category on side bar",
+                KEY_CREATIVE, product.id + " - " + product.name,
                 KEY_CREATIVE_URL, product.iconImageUrl,
                 KEY_POSITION, (position + 1).toString(),
                 KEY_PROMO_ID, "",
@@ -157,25 +169,33 @@ class CategoryAnalytics {
 
     //8
 
-    fun eventSideCategoryView(trackingQueue: TrackingQueue, product: CategoriesItem, position: Int) {
+    fun eventSideCategoryView( itemList: ArrayList<CategoriesItem>) {
+        val tracker = getTracker()
+        val list = ArrayList<Map<String, Any>>()
+        for (item in itemList) {
+            val map = HashMap<String, String>()
+            map[KEY_ID] = item.id.toString()
+            map[KEY_NAME] = "category on side bar"
+            map[KEY_CREATIVE] = item.id + " - " + item.name
+            map[KEY_CREATIVE_URL] = item.iconImageUrl.toString()
+            map[KEY_POSITION] = item.position.toString()
+            map[KEY_PROMO_ID] = ""
+            map[KEY_PROMO_CODE] = ""
+            list.add(map)
+        }
+
+        val ecommerce: MutableMap<String, Any>? = DataLayer.mapOf(
+                "promoView", DataLayer.mapOf(
+                "promotions", list))
+
         val map = DataLayer.mapOf(
-                KEY_EVENT, EVENT_VIEW_ITEM,
+                KEY_EVENT, EVENT_PROMO_VIEW,
                 KEY_EVENT_CATEGORY, EVENT_CATEGORY_BELANJA_PAGE,
                 KEY_EVENT_ACTION, "impression category on side bar",
-                KEY_EVENT_LABEL, product.id + " - " + product.name,
-                KEY_ECOMMERCE, DataLayer.mapOf(
-                KEY_PROMO_VIEW, DataLayer.mapOf(
-                KEY_PROMOTIONS, DataLayer.listOf(DataLayer.mapOf(
-                KEY_ID, product.id.toString(),
-                KEY_NAME, "category/" + product.name + " - " + product.id,
-                KEY_CREATIVE, product.name,
-                KEY_CREATIVE_URL, product.iconImageUrl,
-                KEY_POSITION, (position).toString(),
-                KEY_PROMO_ID, "",
-                KEY_PROMO_CODE, ""
-        )))
-        ))
-        trackingQueue.putEETracking(map as HashMap<String, Any>)
+                KEY_EVENT_LABEL, "",
+                KEY_ECOMMERCE, ecommerce)
+        tracker.sendEnhanceEcommerceEvent(map)
+
     }
 
     // 9
@@ -183,16 +203,16 @@ class CategoryAnalytics {
     fun eventBannerCategoryLevelOneClick(product: CategoryChildItem) {
         val tracker = getTracker()
         val map = DataLayer.mapOf(
-                KEY_EVENT, EVENT_SELECT_CONTENT,
+                KEY_EVENT, EVENT_PROMO_CLICK,
                 KEY_EVENT_CATEGORY, EVENT_CATEGORY_BELANJA_PAGE,
                 KEY_EVENT_ACTION, "click banner category level 1",
-                KEY_EVENT_LABEL, product.id + " - " + product.name,
+                KEY_EVENT_LABEL, "",
                 KEY_ECOMMERCE, DataLayer.mapOf(
                 KEY_PROMO_CLICK, DataLayer.mapOf(
                 KEY_PROMOTIONS, DataLayer.listOf(DataLayer.mapOf(
                 KEY_ID, product.id.toString(),
-                KEY_NAME, "category/" + product.name + " - " + product.id,
-                KEY_CREATIVE, product.name,
+                KEY_NAME, "banner category level 1",
+                KEY_CREATIVE, product.id + " - " + product.name,
                 KEY_CREATIVE_URL, product.iconImageUrl,
                 KEY_PROMO_ID, "",
                 KEY_PROMO_CODE, "")))
@@ -205,16 +225,16 @@ class CategoryAnalytics {
     fun eventBannerCategoryLevelTwoClick(product: CategoryChildItem, position: Int) {
         val tracker = getTracker()
         val map = DataLayer.mapOf(
-                KEY_EVENT, EVENT_SELECT_CONTENT,
+                KEY_EVENT, EVENT_PROMO_CLICK,
                 KEY_EVENT_CATEGORY, EVENT_CATEGORY_BELANJA_PAGE,
                 KEY_EVENT_ACTION, "click banner category level 2",
-                KEY_EVENT_LABEL, product.id + " - " + product.name,
+                KEY_EVENT_LABEL, "",
                 KEY_ECOMMERCE, DataLayer.mapOf(
                 KEY_PROMO_CLICK, DataLayer.mapOf(
                 KEY_PROMOTIONS, DataLayer.listOf(DataLayer.mapOf(
                 KEY_ID, product.id.toString(),
-                KEY_NAME, "category/" + product.name + " - " + product.id,
-                KEY_CREATIVE, product.name,
+                KEY_NAME, "banner category level 2",
+                KEY_CREATIVE, product.id + " - " + product.name,
                 "category", "",
                 KEY_POSITION, position,
                 KEY_CREATIVE_URL, product.iconImageUrl,
@@ -225,48 +245,57 @@ class CategoryAnalytics {
     }
 
     // 11
-    fun eventCategoryLevelOneBannerView(trackingQueue: TrackingQueue, product: CategoryChildItem, position: Int) {
+    fun eventCategoryLevelOneBannerView( product: CategoryChildItem, position: Int) {
         val map = DataLayer.mapOf(
-                KEY_EVENT, EVENT_VIEW_ITEM,
+                KEY_EVENT, EVENT_PROMO_VIEW,
                 KEY_EVENT_CATEGORY, EVENT_CATEGORY_BELANJA_PAGE,
                 KEY_EVENT_ACTION, "impression banner category level 1",
-                KEY_EVENT_LABEL, product.id + " - " + product.name,
+                KEY_EVENT_LABEL, "",
                 KEY_ECOMMERCE, DataLayer.mapOf(
                 KEY_PROMO_VIEW, DataLayer.mapOf(
                 KEY_PROMOTIONS, DataLayer.listOf(DataLayer.mapOf(
                 KEY_ID, product.id.toString(),
-                KEY_NAME, "category/" + product.name + " - " + product.id,
-                KEY_CREATIVE, product.name,
+                KEY_NAME, "banner category level 1",
+                KEY_CREATIVE, product.id + " - " + product.name,
                 KEY_CREATIVE_URL, product.iconImageUrl,
                 KEY_POSITION, (position + 1).toString(),
                 KEY_PROMO_ID, "",
                 KEY_PROMO_CODE, ""
         )))
         ))
-        trackingQueue.putEETracking(map as HashMap<String, Any>)
+        getTracker().sendEnhanceEcommerceEvent(map)
+
     }
 
     // 12
 
-    fun eventCategoryLevelTwoView(trackingQueue: TrackingQueue, product: CategoryChildItem, position: Int) {
+    fun eventCategoryLevelTwoView( itemList: ArrayList<CategoryChildItem>) {
+
+        val list = ArrayList<Map<String, Any>>()
+        for (item in itemList) {
+            val map = HashMap<String, String>()
+            map[KEY_ID] = item.id.toString()
+            map[KEY_NAME] = "banner category level 2"
+            map[KEY_CREATIVE] = item.id + " - " + item.name
+            map[KEY_CREATIVE_URL] = item.iconImageUrl.toString()
+            map[KEY_POSITION] = item.categoryPosition.toString()
+            map[KEY_PROMO_ID] = ""
+            map[KEY_PROMO_CODE] = ""
+            list.add(map)
+        }
+
+        val ecommerce: MutableMap<String, Any>? = DataLayer.mapOf(
+                "promoView", DataLayer.mapOf(
+                "promotions", list))
+
         val map = DataLayer.mapOf(
-                KEY_EVENT, EVENT_VIEW_ITEM,
+                KEY_EVENT, EVENT_PROMO_VIEW,
                 KEY_EVENT_CATEGORY, EVENT_CATEGORY_BELANJA_PAGE,
                 KEY_EVENT_ACTION, "impression banner category level 2",
-                KEY_EVENT_LABEL, product.id + " - " + product.name,
-                KEY_ECOMMERCE, DataLayer.mapOf(
-                KEY_PROMO_VIEW, DataLayer.mapOf(
-                KEY_PROMOTIONS, DataLayer.listOf(DataLayer.mapOf(
-                KEY_ID, product.id.toString(),
-                KEY_NAME, "category/" + product.name + " - " + product.id,
-                KEY_CREATIVE, product.name,
-                KEY_CREATIVE_URL, product.iconImageUrl,
-                KEY_POSITION, (position).toString(),
-                KEY_PROMO_ID, "",
-                KEY_PROMO_CODE, ""
-        )))
-        ))
-        trackingQueue.putEETracking(map as HashMap<String, Any>)
+                KEY_EVENT_LABEL, "",
+                KEY_ECOMMERCE, ecommerce)
+        getTracker().sendEnhanceEcommerceEvent(map)
+
     }
 
 

@@ -15,7 +15,8 @@
         android:keepScreenOn="true"
         app:cameraUseDeviceOrientation="false"
         app:cameraPictureSizeMaxHeight="2000"
-        app:cameraPlaySounds="true" />
+        app:cameraPlaySounds="true"
+        app:cameraAudio="off"/>
 
     <ImageView
         android:id="@+id/full_image_preview"

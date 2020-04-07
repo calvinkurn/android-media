@@ -11,11 +11,12 @@ ext {
             url                     : "com.tokopedia.url:url:1.0.3",
             usecase                 : "com.tokopedia.usecase:usecase:1.0.3",
             usersession             : "com.tokopedia.user.session:user_session:1.0.6",
-            akamaiBotLib            : "com.tokopedia.akamai:akamai_bot_lib:1.0.15",
+            akamaiBotLib            : "com.tokopedia.akamai:akamai_bot_lib:1.0.18",
             analyticConstants       : "com.tokopedia.analytic_constant:analytic_constant:1.0.3",
             williamchart            : "com.tokopedia.williamchart:williamchart:0.0.3",
             betaNotif               : "com.tokopedia.graphql:beta.notif:0.0.6",
-            chuckNoOp               : "com.tokopedia.chuckernoop:chucker_no_op:0.0.1"
+            chuckNoOp               : "com.tokopedia.chuckernoop:chucker_no_op:0.0.1",
+            akamaiBMP               : "AkamaiBMP:AkamaiBMP:2.1.2"
     ]
 
     // Sort and categorize alphabetically by folder name
@@ -39,6 +40,7 @@ ext {
             datePickerRange         : ":libraries:date_picker_range",
             deviceInfo              : ":libraries:device_info",
             dynamicFeatures         : ":libraries:dynamic_features",
+            encryption              : ":libraries:encryption",
             fingerprint             : ":libraries:fingerprint",
             graphView               : ":libraries:graph_view",
             imagePicker             : ":libraries:image_picker",

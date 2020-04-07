@@ -46,7 +46,7 @@ class PopularKeywordViewHolder (val view: View,
     }
 
     private fun initAdapter(element: PopularKeywordListViewModel) {
-        adapter = PopularKeywordAdapter(element.popularKeywordList, popularKeywordListener, element.channel)
+        adapter = PopularKeywordAdapter(element.popularKeywordList, popularKeywordListener, homeCategoryListener, element.channel)
         val recyclerView = view.findViewById<RecyclerView>(R.id.rv_popular_keyword)
         recyclerView.layoutManager = GridLayoutManager(view.context, 2)
         recyclerView.adapter = adapter

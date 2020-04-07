@@ -25,6 +25,7 @@ import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.VisibleForTesting;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.ActivityOptionsCompat;
 import androidx.core.content.ContextCompat;
@@ -68,6 +69,7 @@ import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel;
 import com.tokopedia.home.beranda.domain.model.HomeFlag;
 import com.tokopedia.home.beranda.domain.model.SearchPlaceholder;
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel;
+import com.tokopedia.home.beranda.domain.model.review.SuggestedProductReviewResponse;
 import com.tokopedia.home.beranda.helper.Result;
 import com.tokopedia.home.beranda.helper.ViewHelper;
 import com.tokopedia.home.beranda.listener.ActivityStateListener;
@@ -82,8 +84,8 @@ import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecycleAdapter;
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable;
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitableDiffUtil;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.CashBackData;
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.BannerViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelViewModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomepageBannerDataModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeAdapterFactory;
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.HomeRecyclerDecoration;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.BannerOrganicViewHolder;
@@ -98,6 +100,7 @@ import com.tokopedia.home.widget.FloatingTextButton;
 import com.tokopedia.home.widget.ToggleableSwipeRefreshLayout;
 import com.tokopedia.iris.Iris;
 import com.tokopedia.iris.IrisAnalytics;
+import com.tokopedia.iris.util.IrisSession;
 import com.tokopedia.locationmanager.DeviceLocation;
 import com.tokopedia.locationmanager.LocationDetectorHelper;
 import com.tokopedia.loyalty.view.activity.PromoListActivity;
@@ -137,12 +140,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.Callable;
 import java.util.concurrent.Executors;
 
 import javax.inject.Inject;
 
 import kotlin.Unit;
 import kotlin.jvm.functions.Function1;
+import rx.Observable;
+import rx.schedulers.Schedulers;
 
 import static com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicChannelViewHolder.TYPE_BANNER;
 import static com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicChannelViewHolder.TYPE_BANNER_CAROUSEL;
@@ -192,9 +198,10 @@ public class HomeFragment extends BaseDaggerFragment implements
     private static final String SOURCE_ACCOUNT = "account";
     private MainParentStatusBarListener mainParentStatusBarListener;
     private ActivityStateListener activityStateListener;
+    private BerandaComponent component;
 
     @Inject
-    ViewModelProvider.Factory viewModelFactory;
+    public ViewModelProvider.Factory viewModelFactory;
 
     private HomeViewModel viewModel;
 
@@ -222,6 +229,7 @@ public class HomeFragment extends BaseDaggerFragment implements
     private TrackingQueue trackingQueue;
 
     private Iris irisAnalytics;
+    private IrisSession irisSession;
 
     private HomeMainToolbar homeMainToolbar;
 
@@ -245,6 +253,9 @@ public class HomeFragment extends BaseDaggerFragment implements
     private boolean isLightThemeStatusBar = true;
     private static final String KEY_IS_LIGHT_THEME_STATUS_BAR = "is_light_theme_status_bar";
     private Map<String,RecyclerView.OnScrollListener> impressionScrollListeners = new HashMap<>();
+
+    private long mLastClickTime = System.currentTimeMillis();
+    private static final long CLICK_TIME_INTERVAL = 500;
 
     @NonNull
     public static HomeFragment newInstance(boolean scrollToRecommendList) {
@@ -280,21 +291,26 @@ public class HomeFragment extends BaseDaggerFragment implements
         userSession = new UserSession(getActivity());
         trackingQueue = new TrackingQueue(getActivity());
         irisAnalytics = IrisAnalytics.Companion.getInstance(getActivity());
+        irisSession = new IrisSession(getContext());
         remoteConfig = new FirebaseRemoteConfigImpl(getActivity());
         searchBarTransitionRange = getResources().getDimensionPixelSize(R.dimen.home_searchbar_transition_range);
         startToTransitionOffset = (getResources().getDimensionPixelSize(R.dimen.banner_background_height)) / 2;
 
-        ViewModelProvider viewModelProvider = ViewModelProviders.of(this, viewModelFactory);
-        viewModel = viewModelProvider.get(HomeViewModel.class);
         if (getPageLoadTimeCallback() != null) {
             getPageLoadTimeCallback().stopPreparePagePerformanceMonitoring();
             getPageLoadTimeCallback().startNetworkRequestPerformanceMonitoring();
         }
 
+        initViewModel();
         setGeolocationPermission();
         needToShowGeolocationComponent();
         getStickyContent();
         startHomeInitPerformanceMonitoring();
+    }
+
+    @VisibleForTesting
+    protected void initViewModel(){
+        viewModel = ViewModelProviders.of(this, viewModelFactory).get(HomeViewModel.class);
     }
 
     @Override
@@ -323,10 +339,16 @@ public class HomeFragment extends BaseDaggerFragment implements
     @Override
     protected void initInjector() {
         if (getActivity() != null) {
-            BerandaComponent component = DaggerBerandaComponent.builder().baseAppComponent(((BaseMainApplication)
-                    getActivity().getApplication()).getBaseAppComponent()).build();
+            if(component == null){
+                component = initBuilderComponent().build();
+            }
             component.inject(this);
         }
+    }
+
+    protected DaggerBerandaComponent.Builder initBuilderComponent(){
+        return DaggerBerandaComponent.builder().baseAppComponent(((BaseMainApplication)
+                getActivity().getApplication()).getBaseAppComponent());
     }
 
     private void fetchRemoteConfig() {
@@ -355,6 +377,7 @@ public class HomeFragment extends BaseDaggerFragment implements
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
         homeMainToolbar = view.findViewById(R.id.toolbar);
+        homeMainToolbar.setAfterInflationCallable(getAfterInflationCallable());
         statusBarBackground = view.findViewById(R.id.status_bar_bg);
         homeRecyclerView = view.findViewById(R.id.home_fragment_recycler_view);
         homeRecyclerView.setHasFixedSize(true);
@@ -369,17 +392,30 @@ public class HomeFragment extends BaseDaggerFragment implements
         fetchRemoteConfig();
         fetchTokopointsNotification(TOKOPOINTS_NOTIFICATION_TYPE);
         setupStatusBar();
-        calculateSearchbarView(0);
         setupHomeRecyclerView();
         initEggDragListener();
 
         return view;
     }
 
+    private Callable getAfterInflationCallable(){
+        Callable afterinflationCallable = new Callable() {
+            @Override
+            public Object call() throws Exception {
+                calculateSearchbarView(0);
+                observeSearchHint();
+                return null;
+            }
+        };
+        return afterinflationCallable;
+    }
+
     private void setupHomeRecyclerView() {
         //giving recyclerview larger cache to prevent lag, we can implement this because home dc content
         //is finite
         homeRecyclerView.setItemViewCacheSize(20);
+        homeRecyclerView.setItemAnimator(null);
+
         if (homeRecyclerView.getItemDecorationCount() == 0) {
             homeRecyclerView.addItemDecoration(new HomeRecyclerDecoration(getResources().getDimensionPixelSize(R.dimen.home_recyclerview_item_spacing)));
         }
@@ -464,12 +500,16 @@ public class HomeFragment extends BaseDaggerFragment implements
         }
 
         if (recyclerView.canScrollVertically(1)) {
-            homeMainToolbar.showShadow();
+            if(homeMainToolbar != null) {
+                homeMainToolbar.showShadow();
+            }
             showFeedSectionViewHolderShadow(false);
             homeRecyclerView.setNestedCanScroll(false);
         } else {
             //home feed now can scroll up, so hide maintoolbar shadow
-            homeMainToolbar.hideShadow();
+            if(homeMainToolbar != null) {
+                homeMainToolbar.hideShadow();
+            }
             showFeedSectionViewHolderShadow(true);
             homeRecyclerView.setNestedCanScroll(true);
         }
@@ -581,12 +621,14 @@ public class HomeFragment extends BaseDaggerFragment implements
 
     private void initRefreshLayout() {
         refreshLayout.post(() -> {
-            viewModel.searchHint(isFirstInstall());
+            viewModel.getSearchHint(isFirstInstall());
             viewModel.refreshHomeData();
             /*
              * set notification gimmick
              */
-            homeMainToolbar.setNotificationNumber(0);
+            if(homeMainToolbar != null) {
+                homeMainToolbar.setNotificationNumber(0);
+            }
         });
         refreshLayout.setOnRefreshListener(this);
     }
@@ -596,7 +638,6 @@ public class HomeFragment extends BaseDaggerFragment implements
         observeUpdateNetworkStatusData();
         observePopupIntroOvo();
         observeSendLocation();
-        observeSearchHint();
         observeStickyLogin();
         observeTrackingData();
         observeRequestImagePlayBanner();
@@ -671,27 +712,26 @@ public class HomeFragment extends BaseDaggerFragment implements
         });
     }
 
+    @VisibleForTesting
     private void observeRequestImagePlayBanner(){
-        viewModel.getRequestImageTestLiveData().observe(this, playCardViewModelEvent -> {
-            Glide.with(getContext())
-                    .asBitmap()
-                    .load(playCardViewModelEvent.peekContent().getPlayCardHome().getCoverUrl())
-                    .into(new CustomTarget<Bitmap>() {
-                        @Override
-                        public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
-                            viewModel.setPlayBanner(playCardViewModelEvent.peekContent());
-                        }
+        viewModel.getRequestImageTestLiveData().observe(this, playCardViewModelEvent -> Glide.with(getContext())
+                .asBitmap()
+                .load(playCardViewModelEvent.peekContent().getPlayCardHome().getCoverUrl())
+                .into(new CustomTarget<Bitmap>() {
+                    @Override
+                    public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                        viewModel.setPlayBanner(playCardViewModelEvent.peekContent());
+                    }
 
-                        @Override
-                        public void onLoadCleared(@Nullable Drawable placeholder) {
-                        }
+                    @Override
+                    public void onLoadCleared(@Nullable Drawable placeholder) {
+                    }
 
-                        @Override
-                        public void onLoadFailed(@Nullable Drawable errorDrawable) {
-                            viewModel.clearPlayBanner();
-                        }
-                    });
-        });
+                    @Override
+                    public void onLoadFailed(@Nullable Drawable errorDrawable) {
+                        viewModel.clearPlayBanner();
+                    }
+                }));
     }
 
     private void setData(List<HomeVisitable> data, boolean isCache){
@@ -716,7 +756,7 @@ public class HomeFragment extends BaseDaggerFragment implements
     }
 
     private boolean isDataValid(List<HomeVisitable> visitables) {
-        return containsInstance(visitables, BannerViewModel.class);
+        return containsInstance(visitables, HomepageBannerDataModel.class);
     }
 
     private <T> boolean containsInstance(List<T> list, Class type){
@@ -748,21 +788,25 @@ public class HomeFragment extends BaseDaggerFragment implements
         if (offsetAlpha < 0) {
             offsetAlpha = 0;
         }
-        if(offsetAlpha >= 150){
-            homeMainToolbar.switchToDarkToolbar();
-            if (isLightThemeStatusBar) requestStatusBarDark();
-        } else {
-            homeMainToolbar.switchToLightToolbar();
-            if (!isLightThemeStatusBar) requestStatusBarLight();
+        if(homeMainToolbar != null) {
+            if (offsetAlpha >= 150) {
+                homeMainToolbar.switchToDarkToolbar();
+                if (isLightThemeStatusBar) requestStatusBarDark();
+            } else {
+                homeMainToolbar.switchToLightToolbar();
+                if (!isLightThemeStatusBar) requestStatusBarLight();
+            }
         }
 
         if (offsetAlpha >= 255) {
             offsetAlpha = 255;
         }
 
-        if (offsetAlpha >= 0 && offsetAlpha <= 255) {
-            homeMainToolbar.setBackgroundAlpha(offsetAlpha);
-            setStatusBarAlpha(offsetAlpha);
+        if(homeMainToolbar != null) {
+            if (offsetAlpha >= 0 && offsetAlpha <= 255) {
+                homeMainToolbar.setBackgroundAlpha(offsetAlpha);
+                setStatusBarAlpha(offsetAlpha);
+            }
         }
     }
 
@@ -951,6 +995,14 @@ public class HomeFragment extends BaseDaggerFragment implements
 
     @Override
     public void onPromoClick(int position, BannerSlidesModel slidesModel) {
+        // tracking handler
+        if(slidesModel.getType().equals(BannerSlidesModel.TYPE_BANNER_PERSO)){
+            sendEETracking((HashMap<String, Object>) HomePageTrackingV2.HomeBanner.INSTANCE.getOverlayBannerClick(slidesModel));
+        }else {
+            sendEETracking((HashMap<String, Object>) HomePageTrackingV2.HomeBanner.INSTANCE.getBannerClick(slidesModel));
+        }
+        HomeTrackingUtils.homeSlidingBannerClick(getContext(), slidesModel, position);
+
         if (getActivity() != null && RouteManager.isSupportApplink(getActivity(), slidesModel.getApplink())) {
             openApplink(slidesModel.getApplink());
         } else {
@@ -1014,7 +1066,7 @@ public class HomeFragment extends BaseDaggerFragment implements
                 }
                 break;
             case REQUEST_CODE_PLAY_ROOM:
-                if(data.hasExtra(EXTRA_TOTAL_VIEW)) viewModel.updateBannerTotalView(data.getStringExtra(EXTRA_TOTAL_VIEW));
+                if(data != null && data.hasExtra(EXTRA_TOTAL_VIEW)) viewModel.updateBannerTotalView(data.getStringExtra(EXTRA_TOTAL_VIEW));
                 break;
         }
     }
@@ -1023,12 +1075,11 @@ public class HomeFragment extends BaseDaggerFragment implements
     public void onRefresh() {
         //on refresh most likely we already lay out many view, then we can reduce
         //animation to keep our performance
-        homeRecyclerView.setItemAnimator(null);
         adapter.resetImpressionHomeBanner();
         resetFeedState();
         removeNetworkError();
         if (viewModel != null) {
-            viewModel.searchHint(isFirstInstall());
+            viewModel.getSearchHint(isFirstInstall());
             viewModel.refreshHomeData();
             getStickyContent();
         }
@@ -1167,14 +1218,21 @@ public class HomeFragment extends BaseDaggerFragment implements
     }
 
     private void detectAndSendLocation() {
-        LocationDetectorHelper locationDetectorHelper = new LocationDetectorHelper(
-                permissionCheckerHelper,
-                LocationServices.getFusedLocationProviderClient(getActivity()
-                        .getApplicationContext()),
-                getActivity().getApplicationContext());
-        locationDetectorHelper.getLocation(onGetLocation(), getActivity(),
-                LocationDetectorHelper.TYPE_DEFAULT_FROM_CLOUD,
-                "");
+        Observable.just(true).map(aBoolean -> {
+            LocationDetectorHelper locationDetectorHelper = new LocationDetectorHelper(
+                    permissionCheckerHelper,
+                    LocationServices.getFusedLocationProviderClient(getActivity()
+                            .getApplicationContext()),
+                    getActivity().getApplicationContext());
+            locationDetectorHelper.getLocation(onGetLocation(), getActivity(),
+                    LocationDetectorHelper.TYPE_DEFAULT_FROM_CLOUD,
+                    "");
+                return true;
+        }).subscribeOn(Schedulers.io()).subscribe(aBoolean -> {
+            //IGNORE
+        }, throwable -> {
+            //IGNORE
+        });
     }
 
     private Function1<DeviceLocation, Unit> onGetLocation() {
@@ -1295,7 +1353,18 @@ public class HomeFragment extends BaseDaggerFragment implements
         onActionLinkClicked(actionLink, "");
     }
 
+    @Override
+    public void updateExpiredChannel(@NotNull DynamicChannelViewModel dynamicChannelDataModel, int position) {
+        viewModel.getDynamicChannelData(dynamicChannelDataModel, position);
+    }
+
     private void onActionLinkClicked(String actionLink, String trackingAttribution) {
+        long now = System.currentTimeMillis();
+        if (now - mLastClickTime < CLICK_TIME_INTERVAL) {
+            return;
+        }
+        mLastClickTime = now;
+
         if (TextUtils.isEmpty(actionLink)) {
             return;
         }
@@ -1392,9 +1461,19 @@ public class HomeFragment extends BaseDaggerFragment implements
 
     @Override
     public void onPromoScrolled(BannerSlidesModel bannerSlidesModel) {
-        if (getUserVisibleHint()) {
-            viewModel.hitBannerImpression(bannerSlidesModel);
+        HomeTrackingUtils.homeSlidingBannerImpression(getContext(), bannerSlidesModel, bannerSlidesModel.getPosition());
+        if (bannerSlidesModel.getType().equals(BannerSlidesModel.TYPE_BANNER_PERSO) && !bannerSlidesModel.isInvoke()) {
+            putEEToTrackingQueue((HashMap<String, Object>) HomePageTrackingV2.HomeBanner.INSTANCE.getOverlayBannerImpression(bannerSlidesModel));
+        } else if (!bannerSlidesModel.isInvoke()) {
+            if(!bannerSlidesModel.getTopadsViewUrl().isEmpty()){
+                viewModel.sendTopAds(bannerSlidesModel.getTopadsViewUrl());
+            }
+
+            HashMap dataLayer = (HashMap) HomePageTrackingV2.HomeBanner.INSTANCE.getBannerImpression(bannerSlidesModel);
+            dataLayer.put(com.tokopedia.iris.util.ConstantKt.KEY_SESSION_IRIS, irisSession.getSessionId());
+            putEEToTrackingQueue(dataLayer);
         }
+
         if (bannerSlidesModel.getPosition() > 1) {
             stopHomeInitPerformanceMonitoring();
         }
@@ -1463,6 +1542,11 @@ public class HomeFragment extends BaseDaggerFragment implements
     @Override
     public boolean isLightThemeStatusBar() {
         return isLightThemeStatusBar;
+    }
+
+    @Override
+    public void sendIrisTrackerHashMap(@NotNull HashMap<String, Object> tracker) {
+        putEEToIris(tracker);
     }
 
     @Override
@@ -1827,6 +1911,11 @@ public class HomeFragment extends BaseDaggerFragment implements
     }
 
     @Override
+    public void onOpenPlayChannelList(String appLink) {
+        openApplink(appLink);
+    }
+
+    @Override
     public void onOpenPlayActivity(@NotNull View root, String channelId) {
         Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalContent.PLAY_DETAIL, channelId);
         ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity(),
@@ -1914,8 +2003,8 @@ public class HomeFragment extends BaseDaggerFragment implements
                 break;
             case TYPE_BANNER_CAROUSEL :
             case TYPE_BANNER :
-                String bannerType = BannerOrganicViewHolder.Companion.getTYPE_NON_CAROUSEL();
-                if (layoutType == TYPE_BANNER_CAROUSEL) bannerType = BannerOrganicViewHolder.Companion.getTYPE_CAROUSEL();
+                String bannerType = BannerOrganicViewHolder.TYPE_NON_CAROUSEL;
+                if (layoutType == TYPE_BANNER_CAROUSEL) bannerType = BannerOrganicViewHolder.TYPE_CAROUSEL;
                 putEEToIris(
                         HomePageTracking.getEnhanceImpressionProductChannelMix(
                                 channel, bannerType

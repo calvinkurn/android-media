@@ -2,11 +2,16 @@ package com.tokopedia.variant_common.view.holder
 
 import android.view.View
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.setMargin
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.variant_common.R
 import com.tokopedia.variant_common.constant.VariantConstant
 import com.tokopedia.variant_common.model.VariantOptionWithAttribute
 import com.tokopedia.variant_common.view.ProductVariantListener
 import kotlinx.android.synthetic.main.item_variant_chip_view_holder.view.*
+import android.view.ViewGroup
 
 /**
  * Created by Yehezkiel on 08/03/20
@@ -31,26 +36,34 @@ class VariantChipViewHolder(val view: View,
         view.setOnClickListener {
             listener.onVariantClicked(element)
         }
+        val chipMargin = txtChipVariant.layoutParams as ViewGroup.MarginLayoutParams
+
+        if (element.flashSale) {
+            txtChipVariant.setMargin(chipMargin.leftMargin, chipMargin.topMargin, 6.toPx(), chipMargin.bottomMargin)
+            promoChipVariant.show()
+        } else {
+            txtChipVariant.setMargin(chipMargin.leftMargin, chipMargin.topMargin, 12.toPx(), chipMargin.bottomMargin)
+            promoChipVariant.hide()
+        }
 
         when (element.currentState) {
             VariantConstant.STATE_EMPTY -> {
-                txtChipVariant.background = MethodChecker.getDrawable(context, R.drawable.bg_variant_chip_disabled)
-                txtChipVariant.setTextColor(MethodChecker.getColor(context,R.color.Neutral_N700_32))
+                containerChipVariant.background = MethodChecker.getDrawable(context, R.drawable.bg_variant_chip_disabled)
+                txtChipVariant.setTextColor(MethodChecker.getColor(context, R.color.Neutral_N700_32))
                 view.isEnabled = false
                 view.setOnClickListener(null)
             }
             VariantConstant.STATE_SELECTED -> {
-                txtChipVariant.background = MethodChecker.getDrawable(context, R.drawable.bg_variant_chip_selected)
+                containerChipVariant.background = MethodChecker.getDrawable(context, R.drawable.bg_variant_chip_selected)
                 txtChipVariant.setTextColor(MethodChecker.getColor(context,R.color.g_500))
                 view.isEnabled = true
                 view.setOnClickListener(null)
             }
             VariantConstant.STATE_UNSELECTED -> {
-                txtChipVariant.background = MethodChecker.getDrawable(context, R.drawable.bg_variant_chip_unselected)
-                txtChipVariant.setTextColor(MethodChecker.getColor(context,R.color.light_N700))
+                containerChipVariant.background = MethodChecker.getDrawable(context, R.drawable.bg_variant_chip_unselected)
+                txtChipVariant.setTextColor(MethodChecker.getColor(context, R.color.Neutral_N700_68))
                 view.isEnabled = true
             }
         }
-
     }
 } 

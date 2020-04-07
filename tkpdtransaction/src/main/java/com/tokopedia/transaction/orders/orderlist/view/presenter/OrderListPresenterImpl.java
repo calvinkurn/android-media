@@ -178,7 +178,7 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
                     visitables.add(new OrderListRecomTitleViewModel(recomTitle));
                 }
                 visitables.addAll(getRecommendationVisitables(recommendationWidget));
-                getView().addData(visitables, true, isFirstTime);
+                getView().addData(visitables, true, false);
             }
         });
     }

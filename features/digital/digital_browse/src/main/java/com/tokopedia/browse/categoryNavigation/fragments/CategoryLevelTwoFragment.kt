@@ -80,7 +80,9 @@ class CategoryLevelTwoFragment : Fragment(), Listener, HasComponent<CategoryNavi
                 is Success -> {
                     childList.clear()
                     childList.addAll(it.data)
-                    slave_list.adapter = CategoryLevelTwoAdapter(childList, activityStateListener?.getActivityTrackingQueue())
+                    categoryLevelTwoAdapter.pushTrackingEvents()
+                    categoryLevelTwoAdapter =  CategoryLevelTwoAdapter(childList, activityStateListener?.getActivityTrackingQueue())
+                    slave_list.adapter = categoryLevelTwoAdapter
                 }
             }
 
@@ -129,6 +131,10 @@ class CategoryLevelTwoFragment : Fragment(), Listener, HasComponent<CategoryNavi
         categoryLevelTwoViewModel = viewModelProvider.get(CategoryLevelTwoViewModel::class.java)
     }
 
+    override fun onPause() {
+        categoryLevelTwoAdapter.pushTrackingEvents()
+        super.onPause()
+    }
 }
 
 interface Listener {

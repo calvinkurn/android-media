@@ -28,6 +28,8 @@ object ProductTrackingConstant {
         const val KEY_PROMO_ID = "promoId"
         const val USER_NON_LOGIN = "non login"
 
+        const val KEY_USER_ID_VARIANT = "userId"
+
         const val PRODUCT_DETAIL_SCREEN_NAME = "/product"
 
         const val ID = "id"
@@ -129,6 +131,13 @@ object ProductTrackingConstant {
         const val IMPRESSION_CHOOSE_VARIANT_NOTIFICATION = "impression - choose variant notification"
         const val CLICK_EDIT_PRODUCT = "click - edit product"
         const val CLICK_ATC_NON_LOGIN = "click - tambah ke keranjang on pdp - non login"
+
+        const val CLICK_REQUEST_PERMISSION_IMEI = "click - beli then show popup"
+        const val CLICK_ACCEPT_PERMISSION = "click -  berikan akses on bottomsheet"
+        const val CLICK_GO_TO_SETTING = "click - ke pengaturan hp on popup"
+        const val CLICK_PERMISSION_LATER = "click - nanti saja on popup"
+        const val CLICK_NOTIFY_ME = "click - ingatkan saya on pdp campaign"
+        const val CLICK_DISKUSI_PRODUCT_TAB = "click - diskusi produk tab"
     }
 
     object Label {
@@ -159,6 +168,11 @@ object ProductTrackingConstant {
 
     object ProductTalk {
         const val TALK = "Talk"
+    }
+
+    object ImeiChecker {
+        const val CLICK_IMEI_PERMISSION_TITLE_NEED_ACCESS = "butuh akses ke hp mu"
+        const val CLICK_IMEI_PERMISSION_TITLE_NEED_ACCESS_INFO = "aktifkan akses telepon yuk"
     }
 
     object ProductReview {

@@ -28,13 +28,18 @@ internal class SimilarProductItemViewHolder(
                 ratingCount = item.rating,
                 reviewCount = item.countReview,
                 labelGroupList = createProductCardLabelGroupList(item),
-                freeOngkir = ProductCardModel.FreeOngkir(item.freeOngkir.isActive, item.freeOngkir.imgUrl)
+                freeOngkir = ProductCardModel.FreeOngkir(item.freeOngkir.isActive, item.freeOngkir.imgUrl),
+                hasThreeDots = true
         )
 
         itemView.productCardView?.setProductModel(productCardModel)
 
         itemView.productCardView?.setOnClickListener {
             similarProductItemListener.onItemClicked(item, adapterPosition)
+        }
+
+        itemView.productCardView?.setThreeDotsOnClickListener {
+            similarProductItemListener.onThreeDotsClicked(item, adapterPosition)
         }
     }
 
