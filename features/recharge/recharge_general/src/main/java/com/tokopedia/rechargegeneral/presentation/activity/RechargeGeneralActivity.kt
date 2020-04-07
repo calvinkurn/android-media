@@ -59,8 +59,7 @@ class RechargeGeneralActivity : BaseSimpleActivity(), HasComponent<RechargeGener
                     val outRect = Rect()
                     focusedView.getGlobalVisibleRect(outRect)
                     if (!outRect.contains(event.rawX.toInt(), event.rawY.toInt())) {
-                        focusedView.clearFocus()
-                        KeyboardHandler.hideSoftKeyboard(this@RechargeGeneralActivity)
+                        KeyboardHandler.DropKeyboard(this@RechargeGeneralActivity, focusedView)
                     }
                 }
             }

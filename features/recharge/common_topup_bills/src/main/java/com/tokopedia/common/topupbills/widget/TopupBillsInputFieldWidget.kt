@@ -13,7 +13,6 @@ import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethod
 import android.view.inputmethod.InputMethodManager
-import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.common.topupbills.R
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -89,11 +88,6 @@ open class TopupBillsInputFieldWidget @JvmOverloads constructor(@NotNull context
                 }
             }
             false
-        }
-        ac_input.setOnFocusChangeListener { v, hasFocus ->
-            if (!hasFocus) {
-                KeyboardHandler.DropKeyboard(context, v)
-            }
         }
 
         input_info.setOnClickListener {
