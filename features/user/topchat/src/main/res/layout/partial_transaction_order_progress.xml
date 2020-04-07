@@ -54,6 +54,7 @@
             tools:text="Tutup" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/cl_description_container"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:paddingStart="@dimen/dp_topchat_12"

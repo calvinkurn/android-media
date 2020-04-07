@@ -711,7 +711,7 @@ class TopChatRoomPresenter @Inject constructor(
     }
 
     private fun onSuccessGetOrderProgress(orderProgressResponse: OrderProgressResponse) {
-        Toast.makeText(view.context, "onSuccess", Toast.LENGTH_SHORT).show()
+        view?.renderOrderProgress(orderProgressResponse.chatOrderProgress)
     }
 
     private fun onErrorGetOrderProgress(throwable: Throwable) {
