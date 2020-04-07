@@ -1207,7 +1207,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                         .bundle)
             }
             ProductDetailConstant.OCC_BUTTON -> {
-                if (remoteConfig.getBoolean(RemoteConfigKey.ENABLE_PREFERENCE_SETTINGS, true) || true) {
+                if (remoteConfig.getBoolean(RemoteConfigKey.ENABLE_ONE_CLICK_CHECKOUT, true) || true) {
                     goToOneClickCheckout()
                 } else {
                     goToCartCheckout(cartId)

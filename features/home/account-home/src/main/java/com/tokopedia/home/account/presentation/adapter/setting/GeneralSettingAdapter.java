@@ -148,7 +148,7 @@ public class GeneralSettingAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             String preferenceTitle = itemView
                     .getContext()
                     .getResources()
-                    .getString(R.string.title_preference_setting);
+                    .getString(R.string.title_occ_preference_setting);
             int boxColor = -1;
 
             if (title.equals(notificationTitle)) {

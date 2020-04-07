@@ -1,5 +1,6 @@
 package com.tokopedia.purchase_platform.features.one_click_checkout.order.view.bottomsheet
 
+import android.annotation.SuppressLint
 import android.view.View
 import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.kotlin.extensions.view.gone
@@ -31,12 +32,31 @@ class OrderPriceSummaryBottomSheet {
         }
     }
 
+    @SuppressLint("SetTextI18n")
     private fun setupView(child: View, orderCost: OrderCost) {
         child.tv_total_product_price_value.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(orderCost.totalItemPrice, false)
-        if (orderCost.shippingDiscountAmount >= orderCost.shippingFee) {
+        if (orderCost.productDiscountAmount > 0) {
+            child.tv_total_product_discount_value.text = "-${CurrencyFormatUtil.convertPriceValueToIdrFormat(orderCost.productDiscountAmount, false)}"
+            child.tv_total_product_discount_value.visible()
+            child.tv_total_product_discount_label.visible()
+        } else {
+            child.tv_total_product_discount_value.gone()
+            child.tv_total_product_discount_label.gone()
+        }
+        if (orderCost.shippingDiscountAmount > 0 && orderCost.shippingDiscountAmount >= orderCost.shippingFee) {
             child.tv_total_shipping_price_value.setText(R.string.label_free_shipping)
+            child.tv_total_shipping_discount_value.gone()
+            child.tv_total_shipping_discount_label.gone()
         } else {
             child.tv_total_shipping_price_value.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(orderCost.shippingFee - orderCost.shippingDiscountAmount, false)
+            if (orderCost.shippingDiscountAmount > 0) {
+                child.tv_total_shipping_discount_value.text = "-${CurrencyFormatUtil.convertPriceValueToIdrFormat(orderCost.shippingDiscountAmount, false)}"
+                child.tv_total_shipping_discount_value.visible()
+                child.tv_total_shipping_discount_label.visible()
+            } else {
+                child.tv_total_shipping_discount_value.gone()
+                child.tv_total_shipping_discount_label.gone()
+            }
         }
         if (orderCost.insuranceFee > 0.0) {
             child.tv_total_insurance_price_value.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(orderCost.insuranceFee, false)

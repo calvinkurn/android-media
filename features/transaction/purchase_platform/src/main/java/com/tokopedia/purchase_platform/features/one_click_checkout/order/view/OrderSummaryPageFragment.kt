@@ -11,13 +11,17 @@ import android.text.style.ForegroundColorSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.appcompat.app.AlertDialog
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.Group
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetBehavior.BottomSheetCallback
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
@@ -67,9 +71,11 @@ import com.tokopedia.purchase_platform.features.promo.presentation.analytics.Pro
 import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.validate_use.PromoUiModel
 import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.validate_use.ValidateUsePromoRevampUiModel
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
+import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.card_order_empty_preference.*
-import kotlinx.android.synthetic.main.fragment_order_summary_page.*
 import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
@@ -89,6 +95,31 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
     private val viewModel: OrderSummaryPageViewModel by lazy {
         ViewModelProviders.of(this, viewModelFactory)[OrderSummaryPageViewModel::class.java]
     }
+
+    private val swipeRefreshLayout by lazy { view?.findViewById<SwipeToRefresh>(R.id.swipe_refresh_layout) }
+    private val globalError by lazy { view?.findViewById<GlobalError>(R.id.global_error) }
+    private val mainContent by lazy { view?.findViewById<ConstraintLayout>(R.id.main_content) }
+    private val tvHeader2 by lazy { view?.findViewById<Typography>(R.id.tv_header_2) }
+    private val tvHeader3 by lazy { view?.findViewById<Typography>(R.id.tv_header_3) }
+    private val tvSubheader by lazy { view?.findViewById<Typography>(R.id.tv_subheader) }
+    private val tvSubheaderAction by lazy { view?.findViewById<Typography>(R.id.tv_subheader_action) }
+    private val ivSubheader by lazy { view?.findViewById<ImageView>(R.id.iv_subheader) }
+    private val tickerPreferenceInfo by lazy { view?.findViewById<Ticker>(R.id.ticker_preference_info) }
+    private val emptyPreferenceCard by lazy { view?.findViewById<View>(R.id.empty_preference_card) }
+    private val preferenceCard by lazy { view?.findViewById<View>(R.id.preference_card) }
+    private val tvTotalPaymentLabel by lazy { view?.findViewById<Typography>(R.id.tv_total_payment_label) }
+    private val tvTotalPaymentValue by lazy { view?.findViewById<Typography>(R.id.tv_total_payment_value) }
+    private val btnOrderDetail by lazy { view?.findViewById<ImageView>(R.id.btn_order_detail) }
+    private val btnPay by lazy { view?.findViewById<UnifyButton>(R.id.btn_pay) }
+    private val btnPromoCheckout by lazy { view?.findViewById<ButtonPromoCheckoutView>(R.id.btn_promo_checkout) }
+    private val imageEmptyProfile by lazy { view?.findViewById<ImageView>(R.id.image_empty_profile) }
+    private val groupInsurance by lazy { view?.findViewById<Group>(R.id.group_insurance) }
+    private val buttonAturPilihan by lazy { view?.findViewById<UnifyButton>(R.id.button_atur_pilihan) }
+    private val tickerPaymentError by lazy { view?.findViewById<Ticker>(R.id.ticker_payment_error) }
+    private val tvInsurance by lazy { view?.findViewById<Typography>(R.id.tv_insurance) }
+    private val cbInsurance by lazy { view?.findViewById<CheckboxUnify>(R.id.cb_insurance) }
+    private val imgBtInsuranceInfo by lazy { view?.findViewById<ImageView>(R.id.img_bt_insurance_info) }
+    private val tvInsurancePrice by lazy { view?.findViewById<Typography>(R.id.tv_insurance_price) }
 
     private lateinit var orderProductCard: OrderProductCard
     private lateinit var orderPreferenceCard: OrderPreferenceCard
@@ -168,7 +199,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        swipe_refresh_layout.isRefreshing = true
+        swipeRefreshLayout?.isRefreshing = true
         initViews(view)
         initViewModel()
     }
@@ -181,9 +212,9 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
     private fun initViewModel() {
         viewModel.orderPreference.observe(this, Observer {
             if (it is OccState.FirstLoad) {
-                swipe_refresh_layout.isRefreshing = false
-                global_error.gone()
-                main_content.visible()
+                swipeRefreshLayout?.isRefreshing = false
+                globalError?.gone()
+                mainContent?.visible()
                 view?.let { _ ->
                     orderProductCard.setProduct(viewModel.orderProduct)
                     orderProductCard.setShop(viewModel.orderShop)
@@ -200,8 +231,8 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                     }
                 }
             } else if (it is OccState.Success) {
-                swipe_refresh_layout.isRefreshing = false
-                main_content.visible()
+                swipeRefreshLayout?.isRefreshing = false
+                mainContent?.visible()
                 view?.let { _ ->
                     if (it.data.preference.address.addressId > 0) {
                         orderPreferenceCard.setPreference(it.data)
@@ -212,9 +243,9 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                     }
                 }
             } else if (it is OccState.Loading) {
-                swipe_refresh_layout.isRefreshing = true
+                swipeRefreshLayout?.isRefreshing = true
             } else if (it is OccState.Fail) {
-                swipe_refresh_layout.isRefreshing = false
+                swipeRefreshLayout?.isRefreshing = false
                 if (it.throwable != null) {
                     handleError(it.throwable)
                 }
@@ -305,39 +336,41 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                 is OccGlobalEvent.PromoClashing -> {
                     progressDialog?.dismiss()
                     if (activity != null) {
-                        val promoNotEligibleBottomsheet = PromoNotEligibleBottomsheet.createInstance()
-                        promoNotEligibleBottomsheet.notEligiblePromoHolderDataList = it.notEligiblePromoHolderdataList
-                        promoNotEligibleBottomsheet.actionListener = object : PromoNotEligibleActionListener {
-                            override fun onShow() {
-                                val bottomSheetBehavior = promoNotEligibleBottomsheet.bottomSheetBehavior
-                                bottomSheetBehavior.setBottomSheetCallback(object : BottomSheetCallback() {
-                                    override fun onStateChanged(bottomSheet: View, newState: Int) {
-                                        if (newState == BottomSheetBehavior.STATE_DRAGGING) {
-                                            bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+                        fragmentManager?.let { fm ->
+                            val promoNotEligibleBottomsheet = PromoNotEligibleBottomsheet.createInstance()
+                            promoNotEligibleBottomsheet.notEligiblePromoHolderDataList = it.notEligiblePromoHolderdataList
+                            promoNotEligibleBottomsheet.actionListener = object : PromoNotEligibleActionListener {
+                                override fun onShow() {
+                                    val bottomSheetBehavior = promoNotEligibleBottomsheet.bottomSheetBehavior
+                                    bottomSheetBehavior.setBottomSheetCallback(object : BottomSheetCallback() {
+                                        override fun onStateChanged(bottomSheet: View, newState: Int) {
+                                            if (newState == BottomSheetBehavior.STATE_DRAGGING) {
+                                                bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+                                            }
                                         }
-                                    }
 
-                                    override fun onSlide(bottomSheet: View, slideOffset: Float) {}
-                                })
+                                        override fun onSlide(bottomSheet: View, slideOffset: Float) {}
+                                    })
+                                }
+
+                                override fun onButtonContinueClicked(checkoutType: Int) {
+                                    viewModel.cancelIneligiblePromoCheckout(it.notEligiblePromoHolderdataList, onSuccessCheckout())
+                                    orderSummaryAnalytics.eventClickLanjutBayarPromoErrorOSP()
+                                }
+
+                                override fun onButtonChooseOtherPromo() {
+                                    val intent = RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_CHECKOUT_MARKETPLACE)
+                                    intent.putExtra(ARGS_PAGE_SOURCE, PromoCheckoutAnalytics.PAGE_CHECKOUT)
+                                    intent.putExtra(ARGS_VALIDATE_USE_REQUEST, viewModel.generateValidateUsePromoRequest())
+                                    intent.putExtra(ARGS_PROMO_REQUEST, viewModel.generatePromoRequest())
+                                    intent.putStringArrayListExtra(ARGS_BBO_PROMO_CODES, viewModel.generateBboPromoCodes())
+
+                                    orderSummaryAnalytics.eventClickPilihPromoLainPromoErrorOSP()
+                                    startActivityForResult(intent, REQUEST_CODE_PROMO)
+                                }
                             }
-
-                            override fun onButtonContinueClicked(checkoutType: Int) {
-                                viewModel.cancelIneligiblePromoCheckout(it.notEligiblePromoHolderdataList, onSuccessCheckout())
-                                orderSummaryAnalytics.eventClickLanjutBayarPromoErrorOSP()
-                            }
-
-                            override fun onButtonChooseOtherPromo() {
-                                val intent = RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_CHECKOUT_MARKETPLACE)
-                                intent.putExtra(ARGS_PAGE_SOURCE, PromoCheckoutAnalytics.PAGE_CHECKOUT)
-                                intent.putExtra(ARGS_VALIDATE_USE_REQUEST, viewModel.generateValidateUsePromoRequest())
-                                intent.putExtra(ARGS_PROMO_REQUEST, viewModel.generatePromoRequest())
-                                intent.putStringArrayListExtra(ARGS_BBO_PROMO_CODES, viewModel.generateBboPromoCodes())
-
-                                orderSummaryAnalytics.eventClickPilihPromoLainPromoErrorOSP()
-                                startActivityForResult(intent, REQUEST_CODE_PROMO)
-                            }
+                            promoNotEligibleBottomsheet.show(fm, "")
                         }
-                        promoNotEligibleBottomsheet.show(fragmentManager!!, "")
                     }
                 }
             }
@@ -351,64 +384,68 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
 
     private fun showMessage(preference: ProfileResponse) {
         if (preference.hasPreference && preference.profileId > 0) {
-            tv_header_2.text = getString(R.string.lbl_osp_secondary_header)
-            tv_header_2.visible()
-            tv_header_3.gone()
-            tv_subheader.gone()
-            tv_subheader_action.gone()
-            iv_subheader.gone()
+            tvHeader2?.text = getString(R.string.lbl_osp_secondary_header)
+            tvHeader2?.visible()
+            tvHeader3?.gone()
+            tvSubheader?.gone()
+            tvSubheaderAction?.gone()
+            ivSubheader?.gone()
         } else if (preference.profileId > 0) {
-            tv_header_2.gone()
-            tv_header_3.gone()
-            ImageHandler.LoadImage(iv_subheader, BELI_LANGSUNG_CART_IMAGE)
-            iv_subheader.visible()
-            tv_subheader.text = preference.onboardingHeaderMessage
-            tv_subheader_action.setOnClickListener {
+            tvHeader2?.gone()
+            tvHeader3?.gone()
+            ivSubheader?.let {
+                ImageHandler.LoadImage(it, BELI_LANGSUNG_CART_IMAGE)
+                it.visible()
+            }
+            tvSubheader?.text = preference.onboardingHeaderMessage
+            tvSubheaderAction?.setOnClickListener {
                 orderSummaryAnalytics.eventClickInfoOnOSP()
                 OccInfoBottomSheet().show(this, preference.onboardingComponent)
             }
-            tv_subheader_action.visible()
-            tv_subheader.visible()
+            tvSubheaderAction?.visible()
+            tvSubheader?.visible()
         } else {
-            tv_header_2.text = getString(R.string.lbl_osp_secondary_header_intro)
+            tvHeader2?.text = getString(R.string.lbl_osp_secondary_header_intro)
             val spannableString = SpannableString("${preference.onboardingHeaderMessage} Info")
             spannableString.setSpan(ForegroundColorSpan(Color.parseColor(COLOR_INFO)), preference.onboardingHeaderMessage.length, spannableString.length, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
-            tv_header_3.text = spannableString
-            tv_header_3.setOnClickListener {
+            tvHeader3?.text = spannableString
+            tvHeader3?.setOnClickListener {
                 orderSummaryAnalytics.eventClickInfoOnOSP()
                 OccInfoBottomSheet().show(this, preference.onboardingComponent)
             }
-            tv_header_2.visible()
-            tv_header_3.visible()
-            tv_subheader.gone()
-            tv_subheader_action.gone()
-            iv_subheader.gone()
+            tvHeader2?.visible()
+            tvHeader3?.visible()
+            tvSubheader?.gone()
+            tvSubheaderAction?.gone()
+            ivSubheader?.gone()
         }
-        ticker_preference_info.visibility = if (preference.isChangedProfile) View.VISIBLE else View.GONE
+        tickerPreferenceInfo?.visibility = if (preference.isChangedProfile) View.VISIBLE else View.GONE
     }
 
     private fun showPreferenceCard() {
-        empty_preference_card.gone()
-        preference_card.visible()
-        tv_total_payment_label.visible()
-        tv_total_payment_value.visible()
-        btn_order_detail.visible()
-        btn_pay.visible()
-        btn_promo_checkout.visible()
+        emptyPreferenceCard?.gone()
+        preferenceCard?.visible()
+        tvTotalPaymentLabel?.visible()
+        tvTotalPaymentValue?.visible()
+        btnOrderDetail?.visible()
+        btnPay?.visible()
+        btnPromoCheckout?.visible()
     }
 
     private fun showEmptyPreferenceCard() {
-        ImageHandler.LoadImage(image_empty_profile, EMPTY_PROFILE_IMAGE)
-        empty_preference_card.visible()
-        preference_card.gone()
-        tv_total_payment_label.gone()
-        tv_total_payment_value.gone()
-        btn_order_detail.gone()
-        btn_pay.gone()
-        btn_promo_checkout.gone()
-        group_insurance.gone()
+        imageEmptyProfile?.let {
+            ImageHandler.LoadImage(it, EMPTY_PROFILE_IMAGE)
+        }
+        emptyPreferenceCard?.visible()
+        preferenceCard?.gone()
+        tvTotalPaymentLabel?.gone()
+        tvTotalPaymentValue?.gone()
+        btnOrderDetail?.gone()
+        btnPay?.gone()
+        btnPromoCheckout?.gone()
+        groupInsurance?.gone()
 
-        button_atur_pilihan.setOnClickListener {
+        buttonAturPilihan?.setOnClickListener {
             orderSummaryAnalytics.eventUserSetsFirstPreference(userSession.userId)
             val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PREFERENCE_EDIT)
             intent.putExtra(PreferenceEditActivity.EXTRA_PREFERENCE_INDEX, "${getString(R.string.preference_number_summary)} 1")
@@ -434,18 +471,20 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         val productId = viewModel.orderProduct.productId
         if (insuranceData != null) {
             if (insuranceData.insurancePrice > 0) {
-                tv_insurance_price.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(insuranceData.insurancePrice, false)
-                tv_insurance_price.visible()
+                tvInsurancePrice?.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(insuranceData.insurancePrice, false)
+                tvInsurancePrice?.visible()
             } else {
-                tv_insurance_price.gone()
+                tvInsurancePrice?.gone()
             }
-            img_bt_insurance_info.setOnClickListener {
-                showBottomSheet(img_bt_insurance_info.context,
-                        img_bt_insurance_info.context.getString(R.string.title_bottomsheet_insurance),
-                        insuranceData.insuranceUsedInfo,
-                        R.drawable.ic_pp_insurance)
+            imgBtInsuranceInfo?.let { iv ->
+                iv.setOnClickListener {
+                    showBottomSheet(iv.context,
+                            iv.context.getString(R.string.title_bottomsheet_insurance),
+                            insuranceData.insuranceUsedInfo,
+                            R.drawable.ic_pp_insurance)
+                }
             }
-            cb_insurance.setOnCheckedChangeListener { _, isChecked ->
+            cbInsurance?.setOnCheckedChangeListener { _, isChecked ->
                 if (!isChecked) {
                     orderSummaryAnalytics.eventClickOnInsurance(productId.toString(), "uncheck", insuranceData.insurancePrice.toString())
                 } else {
@@ -454,97 +493,98 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                 viewModel.setInsuranceCheck(isChecked)
             }
             if (insuranceData.insuranceType == InsuranceConstant.INSURANCE_TYPE_MUST) {
-                tv_insurance.setText(R.string.label_must_insurance)
-                cb_insurance.isChecked = true
-                cb_insurance.isEnabled = false
+                tvInsurance?.setText(R.string.label_must_insurance)
+                cbInsurance?.isChecked = true
+                cbInsurance?.isEnabled = false
                 viewModel.setInsuranceCheck(true)
-                group_insurance.visible()
+                groupInsurance?.visible()
             } else if (insuranceData.insuranceType == InsuranceConstant.INSURANCE_TYPE_NO) {
                 viewModel.setInsuranceCheck(false)
-                group_insurance.gone()
+                groupInsurance?.gone()
             } else if (insuranceData.insuranceType == InsuranceConstant.INSURANCE_TYPE_OPTIONAL) {
-                tv_insurance.setText(R.string.label_shipment_insurance)
-                cb_insurance.isEnabled = true
+                tvInsurance?.setText(R.string.label_shipment_insurance)
+                cbInsurance?.isEnabled = true
                 if (insuranceData.insuranceUsedDefault == InsuranceConstant.INSURANCE_USED_DEFAULT_YES) {
-                    cb_insurance.isChecked = true
+                    cbInsurance?.isChecked = true
                     viewModel.setInsuranceCheck(true)
                 } else if (insuranceData.insuranceUsedDefault == InsuranceConstant.INSURANCE_USED_DEFAULT_NO) {
-                    cb_insurance.isChecked = false
+                    cbInsurance?.isChecked = false
                     viewModel.setInsuranceCheck(false)
                 }
-                group_insurance.visible()
+                groupInsurance?.visible()
             }
         } else {
-            group_insurance.gone()
+            groupInsurance?.gone()
         }
     }
 
     private fun showBottomSheet(context: Context, title: String, message: String, image: Int) {
-        val tooltip = Tooltip(context)
-        tooltip.setTitle(title)
-        tooltip.setDesc(message)
-        tooltip.setTextButton(context.getString(R.string.label_button_bottomsheet_close))
-        tooltip.setIcon(image)
-        tooltip.btnAction.setOnClickListener { tooltip.dismiss() }
-        tooltip.show()
+        Tooltip(context).apply {
+            setTitle(title)
+            setDesc(message)
+            setTextButton(context.getString(R.string.label_button_bottomsheet_close))
+            setIcon(image)
+            btnAction.setOnClickListener { this.dismiss() }
+            show()
+        }
     }
 
     private fun setupButtonBayar(orderTotal: OrderTotal) {
         if (orderTotal.isButtonChoosePayment) {
             if (orderTotal.buttonState == ButtonBayarState.NORMAL) {
-                btn_pay.setText(R.string.label_choose_payment)
-                btn_pay.layoutParams.width = convertDpToPixel(160f, context!!)
-                btn_pay.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
-                btn_pay.isLoading = false
-                btn_pay.isEnabled = true
-                btn_pay.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
-                btn_pay.setText(R.string.label_choose_payment)
+                btnPay?.setText(R.string.label_choose_payment)
+                btnPay?.layoutParams?.width = convertDpToPixel(160f, context!!)
+                btnPay?.layoutParams?.height = ViewGroup.LayoutParams.WRAP_CONTENT
+                btnPay?.isLoading = false
+                btnPay?.isEnabled = true
+                btnPay?.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
+                btnPay?.setText(R.string.label_choose_payment)
             } else if (orderTotal.buttonState == ButtonBayarState.DISABLE) {
-                btn_pay.setText(R.string.label_choose_payment)
-                btn_pay.layoutParams.width = convertDpToPixel(160f, context!!)
-                btn_pay.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
-                btn_pay.isLoading = false
-                btn_pay.isEnabled = false
-                btn_pay.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
-                btn_pay.setText(R.string.label_choose_payment)
+                btnPay?.setText(R.string.label_choose_payment)
+                btnPay?.layoutParams?.width = convertDpToPixel(160f, context!!)
+                btnPay?.layoutParams?.height = ViewGroup.LayoutParams.WRAP_CONTENT
+                btnPay?.isLoading = false
+                btnPay?.isEnabled = false
+                btnPay?.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
+                btnPay?.setText(R.string.label_choose_payment)
             } else {
-                btn_pay.layoutParams.width = convertDpToPixel(160f, context!!)
-                btn_pay.layoutParams.height = convertDpToPixel(48f, context!!)
-                btn_pay.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
-                btn_pay.isLoading = true
+                btnPay?.layoutParams?.width = convertDpToPixel(160f, context!!)
+                btnPay?.layoutParams?.height = convertDpToPixel(48f, context!!)
+                btnPay?.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
+                btnPay?.isLoading = true
             }
         } else {
             if (orderTotal.buttonState == ButtonBayarState.NORMAL) {
-                btn_pay.setText(R.string.pay)
-                btn_pay.layoutParams.width = convertDpToPixel(140f, context!!)
-                btn_pay.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
-                btn_pay.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_btn_pay_shield, 0, 0, 0)
-                btn_pay.isLoading = false
-                btn_pay.isEnabled = true
-                btn_pay.setText(R.string.pay)
+                btnPay?.setText(R.string.pay)
+                btnPay?.layoutParams?.width = convertDpToPixel(140f, context!!)
+                btnPay?.layoutParams?.height = ViewGroup.LayoutParams.WRAP_CONTENT
+                btnPay?.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_btn_pay_shield, 0, 0, 0)
+                btnPay?.isLoading = false
+                btnPay?.isEnabled = true
+                btnPay?.setText(R.string.pay)
             } else if (orderTotal.buttonState == ButtonBayarState.DISABLE) {
-                btn_pay.setText(R.string.pay)
-                btn_pay.layoutParams.width = convertDpToPixel(140f, context!!)
-                btn_pay.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
-                btn_pay.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_btn_pay_shield, 0, 0, 0)
-                btn_pay.isLoading = false
-                btn_pay.isEnabled = false
-                btn_pay.setText(R.string.pay)
+                btnPay?.setText(R.string.pay)
+                btnPay?.layoutParams?.width = convertDpToPixel(140f, context!!)
+                btnPay?.layoutParams?.height = ViewGroup.LayoutParams.WRAP_CONTENT
+                btnPay?.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_btn_pay_shield, 0, 0, 0)
+                btnPay?.isLoading = false
+                btnPay?.isEnabled = false
+                btnPay?.setText(R.string.pay)
             } else {
-                btn_pay.layoutParams.width = convertDpToPixel(140f, context!!)
-                btn_pay.layoutParams.height = convertDpToPixel(48f, context!!)
-                btn_pay.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
-                btn_pay.isLoading = true
+                btnPay?.layoutParams?.width = convertDpToPixel(140f, context!!)
+                btnPay?.layoutParams?.height = convertDpToPixel(48f, context!!)
+                btnPay?.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
+                btnPay?.isLoading = true
             }
         }
 
         if (orderTotal.orderCost.totalPrice > 0.0) {
-            tv_total_payment_value.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(orderTotal.orderCost.totalPrice, false)
+            tvTotalPaymentValue?.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(orderTotal.orderCost.totalPrice, false)
         } else {
-            tv_total_payment_value.text = "-"
+            tvTotalPaymentValue?.text = "-"
         }
 
-        btn_order_detail.setOnClickListener {
+        btnOrderDetail?.setOnClickListener {
             if (orderTotal.orderCost.totalPrice > 0.0) {
                 val totalPrice = orderTotal.orderCost.totalPrice.toInt()
                 orderSummaryAnalytics.eventClickRingkasanBelanjaOSP(viewModel.orderProduct.productId.toString(), totalPrice.toString())
@@ -552,30 +592,30 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
             }
         }
 
-        btn_pay.setOnClickListener {
+        btnPay?.setOnClickListener {
             viewModel.finalUpdate(onSuccessCheckout())
         }
     }
 
     private fun setupPaymentError(paymentErrorMessage: String?) {
         if (paymentErrorMessage.isNullOrEmpty()) {
-            ticker_payment_error.gone()
+            tickerPaymentError?.gone()
         } else {
-            ticker_payment_error.setTextDescription(paymentErrorMessage)
-            ticker_payment_error.visible()
+            tickerPaymentError?.setTextDescription(paymentErrorMessage)
+            tickerPaymentError?.visible()
         }
     }
 
     private fun setupButtonPromo(orderPromo: OrderPromo) {
         //loading
         if (orderPromo.state == ButtonBayarState.LOADING) {
-            btn_promo_checkout.state = ButtonPromoCheckoutView.State.LOADING
+            btnPromoCheckout?.state = ButtonPromoCheckoutView.State.LOADING
         } else if (orderPromo.state == ButtonBayarState.DISABLE) {
             //failed
-            btn_promo_checkout.state = ButtonPromoCheckoutView.State.INACTIVE
-            btn_promo_checkout.title = getString(R.string.promo_checkout_inactive_label)
-            btn_promo_checkout.desc = getString(R.string.promo_checkout_inactive_desc)
-            btn_promo_checkout.setOnClickListener {
+            btnPromoCheckout?.state = ButtonPromoCheckoutView.State.INACTIVE
+            btnPromoCheckout?.title = getString(R.string.promo_checkout_inactive_label)
+            btnPromoCheckout?.desc = getString(R.string.promo_checkout_inactive_desc)
+            btnPromoCheckout?.setOnClickListener {
                 viewModel.validateUsePromo()
             }
         } else {
@@ -586,11 +626,11 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
             } else if (lastApply?.defaultEmptyPromoMessage?.isNotBlank() == true) {
                 title = lastApply.defaultEmptyPromoMessage
             }
-            btn_promo_checkout.state = ButtonPromoCheckoutView.State.ACTIVE
-            btn_promo_checkout.title = title
-            btn_promo_checkout.desc = lastApply?.additionalInfo?.messageInfo?.detail ?: ""
+            btnPromoCheckout?.state = ButtonPromoCheckoutView.State.ACTIVE
+            btnPromoCheckout?.title = title
+            btnPromoCheckout?.desc = lastApply?.additionalInfo?.messageInfo?.detail ?: ""
 
-            btn_promo_checkout.setOnClickListener {
+            btnPromoCheckout?.setOnClickListener {
                 viewModel.updateCartPromo { validateUsePromoRequest, promoRequest, bboCodes ->
                     val intent = RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_CHECKOUT_MARKETPLACE)
                     intent.putExtra(ARGS_PAGE_SOURCE, PromoCheckoutAnalytics.PAGE_CHECKOUT)
@@ -653,7 +693,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         }
 
         override fun onErrorPaymentClicked() {
-            nested_scroll_view.smoothScrollTo(nested_scroll_view.scrollX, nested_scroll_view.maxScrollAmount)
+//            nested_scroll_view.smoothScrollTo(nested_scroll_view.scrollX, nested_scroll_view.maxScrollAmount)
         }
 
         override fun onPreferenceEditClicked(preference: OrderPreference) {
@@ -753,19 +793,19 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
     }
 
     private fun showGlobalError(type: Int) {
-        global_error.setType(type)
-        global_error.setActionClickListener {
+        globalError?.setType(type)
+        globalError?.setActionClickListener {
             refresh(false)
         }
-        main_content.gone()
-        global_error.visible()
+        mainContent?.gone()
+        globalError?.visible()
     }
 
     private fun refresh(shouldHideAll: Boolean = true, isFullRefresh: Boolean = true) {
-        swipe_refresh_layout.isRefreshing = true
+        swipeRefreshLayout?.isRefreshing = true
         if (shouldHideAll) {
-            main_content.gone()
-            global_error.gone()
+            mainContent?.gone()
+            globalError?.gone()
         }
         viewModel.getOccCart(isFullRefresh = isFullRefresh)
     }
@@ -803,7 +843,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
 
     override fun onStop() {
         super.onStop()
-        if (!swipe_refresh_layout.isRefreshing && shouldUpdateCart) {
+        if (swipeRefreshLayout?.isRefreshing == false && shouldUpdateCart) {
             viewModel.updateCart()
         }
     }

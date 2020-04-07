@@ -1249,9 +1249,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
             val subtotal = totalProductPrice + finalShippingPrice + insurancePrice + fee - productDiscount
             val minimumAmount = _orderPreference?.preference?.payment?.minimumAmount ?: 0
             val maximumAmount = _orderPreference?.preference?.payment?.maximumAmount ?: 0
-            val orderCost = OrderCost(totalProductPrice, subtotal, totalShippingPrice, insurancePrice, fee, shippingDiscount, validateUsePromoRevampUiModel?.promoUiModel?.benefitSummaryInfoUiModel?.finalBenefitText
-                    ?: "", validateUsePromoRevampUiModel?.promoUiModel?.benefitSummaryInfoUiModel?.finalBenefitAmount
-                    ?: 0)
+            val orderCost = OrderCost(subtotal, totalProductPrice, totalShippingPrice, insurancePrice, fee, shippingDiscount, productDiscount)
             var currentState = orderTotal.value?.buttonState ?: ButtonBayarState.NORMAL
             if (currentState == ButtonBayarState.NORMAL && quantity.isStateError && orderShop.errors.isNotEmpty()) {
                 currentState = ButtonBayarState.DISABLE
