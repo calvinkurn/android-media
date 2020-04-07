@@ -1,5 +1,6 @@
 package com.tokopedia.wallet.ovoactivationflashdeals
 
+import android.app.Application
 import android.os.Bundle
 import android.text.SpannableString
 import android.text.Spanned
@@ -16,6 +17,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wallet.R
+import com.tokopedia.wallet.di.WalletComponentInstance
 import kotlinx.android.synthetic.main.fragment_inactive_ovo.*
 import javax.inject.Inject
 
@@ -31,7 +33,8 @@ class InactiveOvoFragment : BaseDaggerFragment() {
     }
 
     override fun initInjector() {
-
+        val walletComponent = WalletComponentInstance.getComponent(activity?.application as Application)
+        walletComponent.inject(this)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

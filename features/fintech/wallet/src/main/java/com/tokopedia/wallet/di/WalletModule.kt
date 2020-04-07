@@ -8,7 +8,6 @@ import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wallet.ovoactivation.provider.WalletProvider
 import com.tokopedia.wallet.ovoactivation.provider.WalletScheduler
-import com.tokopedia.wallet.ovoactivationflashdeals.InactiveOvoAnalytics
 import dagger.Module
 import dagger.Provides
 
@@ -26,12 +25,7 @@ class WalletModule {
     }
 
     @Provides
-    fun provideWalletProvider() : WalletProvider {
+    fun provideWalletProvider(): WalletProvider {
         return WalletScheduler()
-    }
-
-    @Provides
-    fun provideInactiveOvoAnalytics() : InactiveOvoAnalytics {
-        return InactiveOvoAnalytics()
     }
 }
