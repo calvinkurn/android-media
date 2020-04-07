@@ -103,7 +103,7 @@ class PromoCheckoutAnalytics @Inject constructor() : TransactionAnalytics() {
         }
         data["eventAction"] = EventAction.CLICK_PILIH_PROMO_RECOMMENDATION
         data["eventLabel"] = ""
-        data["promoCode"] = promoCodes.joinToString(", ", "[", "]")
+        data["promoCode"] = promoCodes.joinToString(", ")
 
         if (data.containsKey("event") && data.containsKey("eventCategory")) {
             sendGeneralEvent(data)
@@ -256,7 +256,7 @@ class PromoCheckoutAnalytics @Inject constructor() : TransactionAnalytics() {
         }
         data["eventAction"] = EventAction.CLICK_PAKAI_PROMO
         data["eventLabel"] = "success - $status"
-        data["promoCode"] = promoCodes.joinToString(", ", "[", "]")
+        data["promoCode"] = promoCodes.joinToString(", ")
 
         if (data.containsKey("event") && data.containsKey("eventCategory")) {
             sendGeneralEvent(data)
