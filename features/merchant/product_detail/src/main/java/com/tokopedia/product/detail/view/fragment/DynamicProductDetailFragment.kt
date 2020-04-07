@@ -1024,11 +1024,11 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         pdpHashMapUtil?.updateDataP1(updatedDynamicProductInfo)
         updateButtonAfterClickVariant(indexOfSelectedVariant)
 
-            renderFullfillment()
-            dynamicAdapter.notifySnapshotWithPayloads(pdpHashMapUtil?.snapShotMap)
-            dynamicAdapter.notifyVariantSection(pdpHashMapUtil?.productNewVariantDataModel, 1)
-            dynamicAdapter.notifyNotifyMe(pdpHashMapUtil?.notifyMeMap, null)
-        }
+        renderFullfillment()
+        dynamicAdapter.notifySnapshotWithPayloads(pdpHashMapUtil?.snapShotMap)
+        dynamicAdapter.notifyVariantSection(pdpHashMapUtil?.productNewVariantDataModel, 1)
+        dynamicAdapter.notifyNotifyMe(pdpHashMapUtil?.notifyMeMap, null)
+    }
 
     private fun updateButtonAfterClickVariant(indexOfVariantButton: Int?) {
         if (viewModel.shopInfo == null) {
@@ -1076,7 +1076,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                 }
             }, {
                 logException(it)
-                showToasterError(it.message ?: "")
+                showToastError(it)
             })
         }
     }

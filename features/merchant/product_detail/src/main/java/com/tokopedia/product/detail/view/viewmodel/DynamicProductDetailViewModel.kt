@@ -20,6 +20,7 @@ import com.tokopedia.common_tradein.model.ValidateTradeInResponse
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.detail.common.data.model.carttype.CartRedirection
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.common.data.model.pdplayout.Media
@@ -332,7 +333,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         withContext(dispatcher.io()) {
             val result = addToCartUseCase.createObservable(requestParams).toBlocking().single()
             if (result.isDataError()) {
-                _addToCartLiveData.postValue(result.errorMessage.asThrowable().asFail())
+                _addToCartLiveData.postValue(MessageErrorException(result.errorMessage.firstOrNull() ?: "").asFail())
             } else {
                 _addToCartLiveData.postValue(result.asSuccess())
             }
@@ -343,8 +344,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         withContext(dispatcher.io()) {
             val result = addToCartOcsUseCase.createObservable(requestParams).toBlocking().single()
             if (result.isDataError()) {
-                _addToCartLiveData.postValue(result.errorMessage.asThrowable().asFail())
-
+                _addToCartLiveData.postValue(MessageErrorException(result.errorMessage.firstOrNull() ?: "").asFail())
             } else {
                 _addToCartLiveData.postValue(result.asSuccess())
             }
