@@ -287,11 +287,11 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         }
         activity?.run {
             remoteConfig = FirebaseRemoteConfigImpl(this)
+            initPerformanceMonitoring()
         }
         context?.let {
             pdpHashMapUtil = DynamicProductDetailHashMap(it, mapOf(ProductDetailConstant.PRODUCT_SNAPSHOT to ProductSnapshotDataModel()))
         }
-        initPerformanceMonitoring()
         setHasOptionsMenu(true)
     }
 
