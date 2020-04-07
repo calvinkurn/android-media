@@ -1,5 +1,6 @@
 package com.tokopedia.purchase_platform.features.promo.presentation.analytics
 
+import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.*
 import com.tokopedia.purchase_platform.common.analytics.TransactionAnalytics
 import javax.inject.Inject
@@ -47,6 +48,25 @@ class PromoCheckoutAnalytics @Inject constructor() : TransactionAnalytics() {
         }
     }
 
+    fun sendEventEnhancedEcommerceByPage(page: Int,
+                                         eventAction: String,
+                                         eventLabel: String,
+                                         eCommerceMapData: Map<String, Any>) {
+        val dataLayer = DataLayer.mapOf(
+                Key.EVENT, EventName.PROMO_VIEW,
+                Key.EVENT_CATEGORY,
+                when (page) {
+                    PAGE_CART -> EventCategory.CART
+                    PAGE_CHECKOUT -> EventCategory.COURIER_SELECTION
+                    else -> ""
+                },
+                Key.EVENT_ACTION, eventAction,
+                Key.EVENT_LABEL, eventLabel,
+                Key.E_COMMERCE, eCommerceMapData
+        )
+        sendEnhancedEcommerce(dataLayer)
+    }
+
     fun eventViewBlacklistErrorAfterApplyPromo(page: Int) {
         sendEventByPage(
                 page,
@@ -74,13 +94,20 @@ class PromoCheckoutAnalytics @Inject constructor() : TransactionAnalytics() {
         )
     }
 
-    fun eventViewAvailablePromoListIneligibleProduct(page: Int) {
-        sendEventByPage(
+    fun eventViewAvailablePromoListEligiblePromo(page: Int, eCommerceMapData: Map<String, Any>) {
+        sendEventEnhancedEcommerceByPage(
                 page,
-                EVENT_NAME_VIEW,
                 EventAction.VIEW_AVAILABLE_PROMO_LIST,
-                EventLabel.INELIGIBLE_PRODUCT
-        )
+                EventLabel.ELIGIBLE_PROMO,
+                eCommerceMapData)
+    }
+
+    fun eventViewAvailablePromoListIneligibleProduct(page: Int, eCommerceMapData: Map<String, Any>) {
+        sendEventEnhancedEcommerceByPage(
+                page,
+                EventAction.VIEW_AVAILABLE_PROMO_LIST,
+                EventLabel.INELIGIBLE_PRODUCT,
+                eCommerceMapData)
     }
 
     fun eventViewAvailablePromoListNoPromo(page: Int) {

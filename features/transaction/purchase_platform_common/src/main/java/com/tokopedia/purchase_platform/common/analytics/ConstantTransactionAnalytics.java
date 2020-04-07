@@ -437,6 +437,7 @@ public interface ConstantTransactionAnalytics {
         String INELIGIBLE_PRODUCT = "ineligible product";
         String NO_PROMO = "no promo";
         String INELIGIBLE_PROMO_LIST = "ineligible promo list";
+        String ELIGIBLE_PROMO = "eligible promo";
         String FAILED_TERJADI_KESALAHAN_SERVER = "failed - error terjadi kesalahan server";
         String BLACKLIST_ERROR = "blacklist error";
         String PHONE_VERIFICATION_MESSAGE = "phone verification message";
