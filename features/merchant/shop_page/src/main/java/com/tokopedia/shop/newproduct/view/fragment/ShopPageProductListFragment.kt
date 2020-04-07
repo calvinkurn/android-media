@@ -92,6 +92,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         private const val REQUEST_CODE_MERCHANT_VOUCHER = 207
         private const val REQUEST_CODE_MERCHANT_VOUCHER_DETAIL = 208
         private const val REQUEST_CODE_MEMBERSHIP_STAMP = 2091
+        private const val REQUEST_CODE_ADD_ETALASE = 288
         private const val GRID_SPAN_COUNT = 2
         private const val SHOP_ATTRIBUTION = "EXTRA_SHOP_ATTRIBUTION"
         const val SAVED_SELECTED_ETALASE_ID = "saved_etalase_id"
@@ -100,6 +101,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         const val SAVED_SHOP_REF = "saved_shop_ref"
         const val SAVED_SHOP_IS_OFFICIAL = "saved_shop_is_official"
         const val SAVED_SHOP_IS_GOLD_MERCHANT = "saved_shop_is_gold_merchant"
+        const val SAVED_NEED_TO_RELOAD = "saved_need_to_reload"
         const val ALL_ETALASE_ID = "etalase"
         const val SOLD_ETALASE_ID = "sold"
         const val SHOP_INFO_CACHE_MANAGER_ID = "SHOP_INFO_CACHE_MANAGER_ID"
@@ -254,7 +256,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
             bundle.putBoolean("isNeedToGoToAddShowcase", true)
             val intent = RouteManager.getIntent(context, ApplinkConstInternalMechant.MERCHANT_SHOP_SHOWCASE_LIST)
             intent.putExtra("bundle", bundle)
-            startActivity(intent)
+            startActivityForResult(intent, REQUEST_CODE_ADD_ETALASE)
         }
     }
 
@@ -529,6 +531,11 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
             }
             REQUEST_CODE_MEMBERSHIP_STAMP -> {
                 loadMembership()
+            }
+            REQUEST_CODE_ADD_ETALASE -> {
+                if (resultCode == Activity.RESULT_OK) {
+                    loadNewProductData()
+                }
             }
             else -> {
             }

@@ -1,5 +1,6 @@
 package com.tokopedia.shop_showcase.shop_showcase_management.presentation.activity
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Build
@@ -9,6 +10,8 @@ import android.view.Window
 import android.view.WindowManager
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.shop_showcase.R
 import com.tokopedia.shop_showcase.common.PageNameConstant
 import com.tokopedia.shop_showcase.common.ShopShowcaseFragmentNavigation
@@ -28,6 +31,7 @@ class ShopShowcaseListActivity : BaseActivity(), ShopShowcaseFragmentNavigation 
         const val IS_SHOW_DEFAULT = "isShowDefault"
         const val IS_NEED_TOGO_TO_ADD_PAGE = "isNeedToGoToAddShowcase"
         const val SELECTED_ETALASE_ID = "selectedEtalaseId"
+        const val REQUEST_CODE_ADD_ETALASE = 289
     }
 
     private val userSession: UserSessionInterface by lazy {
@@ -54,8 +58,14 @@ class ShopShowcaseListActivity : BaseActivity(), ShopShowcaseFragmentNavigation 
             isNeedToGoToAddShowcase = bundle.getBoolean(IS_NEED_TOGO_TO_ADD_PAGE)
         }
 
+        // If there is no shopId  then it's seller view
         if (shopId == "0"){
             shopId = userSession.shopId
+        }
+
+        if (isNeedToGoToAddShowcase) {
+            val addShowcaseIntent = RouteManager.getIntent(this, ApplinkConstInternalMechant.MERCHANT_SHOP_SHOWCASE_ADD)
+            startActivityForResult(addShowcaseIntent, REQUEST_CODE_ADD_ETALASE)
         }
 
         getShopType()
@@ -67,13 +77,31 @@ class ShopShowcaseListActivity : BaseActivity(), ShopShowcaseFragmentNavigation 
         if (page == PageNameConstant.SHOWCASE_LIST_PAGE) {
             val fragmentShowcaseList = ShopShowcaseListFragment.createInstance(
                     shopType, shopId, selectedEtalaseId, isShowDefault,
-                    isShowZeroProduct, isMyShop(), isNeedToGoToAddShowcase)
+                    isShowZeroProduct, isMyShop())
             navigateToOtherFragment(fragmentShowcaseList, null)
         } else if (page == PageNameConstant.SHOWCASE_LIST_REORDER_PAGE) {
             val fragmentShowcaseReorder = ShopShowcaseListReorderFragment.createInstance(
                     shopType, showcaseList, isMyShop())
             navigateToOtherFragment(fragmentShowcaseReorder, null)
         }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        when (requestCode) {
+            REQUEST_CODE_ADD_ETALASE -> {
+                if (resultCode == Activity.RESULT_OK) {
+                    val intent = Intent()
+                    setResult(Activity.RESULT_OK, intent)
+                    finish()
+                } else if (resultCode == Activity.RESULT_CANCELED) {
+                    val intent = Intent()
+                    setResult(Activity.RESULT_CANCELED, intent)
+                    finish()
+                } 
+            }
+        }
+
+        super.onActivityResult(requestCode, resultCode, data)
     }
 
     private fun setupStatusbar(){
@@ -91,7 +119,7 @@ class ShopShowcaseListActivity : BaseActivity(), ShopShowcaseFragmentNavigation 
     private fun setupInitialFragment() {
         val fragmentShowcaseList = ShopShowcaseListFragment.createInstance(
                 shopType, shopId, selectedEtalaseId, isShowDefault,
-                isShowZeroProduct, isMyShop(), isNeedToGoToAddShowcase)
+                isShowZeroProduct, isMyShop())
         val transaction = supportFragmentManager.beginTransaction()
         transaction.replace(R.id.shop_showcase_container, fragmentShowcaseList).commit()
     }
