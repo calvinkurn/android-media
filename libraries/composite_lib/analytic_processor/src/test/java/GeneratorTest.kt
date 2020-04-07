@@ -1,4 +1,4 @@
-import com.example.processor.AnnotationProcessor
+import com.tokopedia.analytic.processor.AnnotationProcessor
 import com.google.common.truth.Truth
 import com.google.testing.compile.JavaFileObjects
 import com.google.testing.compile.JavaSourcesSubjectFactory

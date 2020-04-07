@@ -13,8 +13,8 @@ dependencies {
     implementation 'com.squareup:javapoet:1.11.1'
     implementation files("${System.getProperty('java.home')}/../lib/tools.jar")
     kapt 'com.google.guava:guava:24.1-jre'
-    implementation "com.example.annotation:annotation:0.0.1-alpha"
-    implementation "com.example.analyticparam:analyticparam:0.0.1-alpha"
+    implementation rootProject.ext.tkpdInternalLibDependencies.analyticAnnotation
+    implementation rootProject.ext.tkpdInternalLibDependencies.analyticParam
 
     compileOnly("net.ltgt.gradle.incap:incap:0.2")
     kapt "net.ltgt.gradle.incap:incap-processor:0.2"
@@ -48,7 +48,7 @@ compileTestKotlin {
 
 project.ext {
     artifactId = 'processor'
-    groupId = 'com.example.processor'
+    groupId = 'com.tokopedia.analytic'
     versionName = "0.0.1-alpha"
     artifactName = "analytic_processor"
 }
