@@ -60,6 +60,7 @@ public class ShopProductListActivity extends BaseSimpleActivity
     private String etalaseId;
     private String sort;
     private String attribution;
+    private Boolean isNeedToReloadData = false;
 
     private SearchInputView searchInputView;
     private ShopInfo shopInfo;
@@ -102,6 +103,7 @@ public class ShopProductListActivity extends BaseSimpleActivity
                 .putExtra(ShopParamConstant.EXTRA_SHOP_ID, extras.getString(ShopParamConstant.KEY_SHOP_ID))
                 .putExtra(ShopParamConstant.EXTRA_ATTRIBUTION, extras.getString(ShopPageActivity.APP_LINK_EXTRA_SHOP_ATTRIBUTION, ""))
                 .putExtra(ShopParamConstant.EXTRA_ETALASE_ID, extras.getString(ShopParamConstant.KEY_ETALASE_ID))
+                .putExtra(ShopParamConstant.EXTRA_IS_NEED_TO_RELOAD_DATA, extras.getBoolean(ShopParamConstant.KEY_RELOAD_STATE))
                 .putExtra(ShopParamConstant.EXTRA_SHOP_REF, extras.getString(ShopParamConstant.KEY_SHOP_REF));
     }
 
@@ -216,7 +218,8 @@ public class ShopProductListActivity extends BaseSimpleActivity
     @Override
     protected Fragment getNewFragment() {
         if (isNewShopPageEnabled()) {
-            return ShopPageProductListResultFragment.createInstance(shopId, shopRef, keyword, etalaseId, sort, attribution);
+            return ShopPageProductListResultFragment.createInstance(shopId, shopRef,
+                    keyword, etalaseId, sort, attribution, isNeedToReloadData);
         } else {
             return ShopProductListFragment.createInstance(shopId, shopRef, keyword, etalaseId, sort, attribution);
         }

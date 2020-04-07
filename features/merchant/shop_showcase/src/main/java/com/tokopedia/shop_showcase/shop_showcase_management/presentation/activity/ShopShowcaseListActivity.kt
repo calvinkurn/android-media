@@ -92,8 +92,8 @@ class ShopShowcaseListActivity : BaseActivity(), ShopShowcaseFragmentNavigation 
 
         intent?.let {
             val bundle: Bundle = it.getBundleExtra("bundle")
-            shopId = bundle.getString(SHOP_ID)
-            selectedEtalaseId = bundle.getString(SELECTED_ETALASE_ID)
+            shopId = bundle.getString(SHOP_ID, "0")
+            selectedEtalaseId = bundle.getString(SELECTED_ETALASE_ID, "0")
             isShowDefault = bundle.getBoolean(IS_SHOW_DEFAULT)
             isShowZeroProduct = bundle.getBoolean(IS_SHOW_ZERO_PRODUCT)
             isNeedToGoToAddShowcase = bundle.getBoolean(IS_NEED_TOGO_TO_ADD_PAGE)

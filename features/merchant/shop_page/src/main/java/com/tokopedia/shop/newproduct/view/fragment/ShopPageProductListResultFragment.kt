@@ -119,6 +119,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
     private var attribution: String? = null
 
     private var selectedEtalaseList: ArrayList<ShopProductEtalaseChipItemViewModel>? = null
+    private var isNeedToReloadData: Boolean = false
 
     private var recyclerView: RecyclerView? = null
     private var shopInfo: ShopInfo? = null
@@ -230,6 +231,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                 sortValue = it.getString(ShopParamConstant.EXTRA_SORT_ID, Integer.MIN_VALUE.toString())
                 shopId = it.getString(ShopParamConstant.EXTRA_SHOP_ID, "")
                 shopRef = it.getString(ShopParamConstant.EXTRA_SHOP_REF, "")
+                isNeedToReloadData = it.getBoolean(ShopParamConstant.EXTRA_IS_NEED_TO_RELOAD_DATA)
             }
         } else {
             selectedEtalaseList = savedInstanceState.getParcelableArrayList(SAVED_SELECTED_ETALASE_LIST)
@@ -239,6 +241,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
             sortValue = savedInstanceState.getString(SAVED_SORT_VALUE)
             shopId = savedInstanceState.getString(SAVED_SHOP_ID)
             shopRef = savedInstanceState.getString(SAVED_SHOP_REF).orEmpty()
+            isNeedToReloadData = savedInstanceState.getBoolean(SAVED_RELOAD_STATE)
         }
         shopPageProductListResultFragmentListener?.onSortValueUpdated(sortValue ?: "")
         setHasOptionsMenu(true)
@@ -375,10 +378,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
 
     private fun loadShopPageList(shopInfo: ShopInfo, page: Int, forceNoEtalase: Boolean = false) {
         if (viewModel.isEtalaseEmpty && !forceNoEtalase) {
-//            viewModel.getEtalaseData(shopInfo.shopCore.shopID)
-
-            val _isMyShop = viewModel.isMyShop(shopInfo.shopCore.shopID)
-            viewModel.getEtalaseData(shopInfo.shopCore.shopID, _isMyShop)
+            viewModel.getEtalaseData(shopInfo.shopCore.shopID, isMyShop)
         } else {
             // continue to load ProductData
             viewModel.getShopProduct(shopInfo.shopCore.shopID, page,
@@ -778,7 +778,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
 
     override fun onResume() {
         super.onResume()
-        if (needReloadData) {
+        if (needReloadData || isNeedToReloadData) {
             loadInitialData()
             needReloadData = false
         }
@@ -860,6 +860,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         val SAVED_SHOP_IS_GOLD_MERCHANT = "saved_shop_is_gold_merchant"
         val SAVED_KEYWORD = "saved_keyword"
         val SAVED_SORT_VALUE = "saved_sort_name"
+        val SAVED_RELOAD_STATE = "saved_reload_state"
 
         @JvmStatic
         fun createInstance(shopId: String,
@@ -867,7 +868,9 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                            keyword: String?,
                            etalaseId: String?,
                            sort: String?,
-                           attribution: String?): ShopPageProductListResultFragment = ShopPageProductListResultFragment().also {
+                           attribution: String?,
+                           isNeedToReloadData: Boolean? = false
+        ): ShopPageProductListResultFragment = ShopPageProductListResultFragment().also {
             it.arguments = Bundle().apply {
                 putString(ShopParamConstant.EXTRA_SHOP_ID, shopId)
                 putString(ShopParamConstant.EXTRA_SHOP_REF, shopRef.orEmpty())
@@ -875,6 +878,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                 putString(ShopParamConstant.EXTRA_ETALASE_ID, etalaseId ?: "")
                 putString(ShopParamConstant.EXTRA_SORT_ID, sort ?: "")
                 putString(ShopParamConstant.EXTRA_ATTRIBUTION, attribution ?: "")
+                putBoolean(ShopParamConstant.EXTRA_IS_NEED_TO_RELOAD_DATA, isNeedToReloadData ?: false)
             }
         }
     }
