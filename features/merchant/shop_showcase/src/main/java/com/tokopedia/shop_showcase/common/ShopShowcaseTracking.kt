@@ -30,7 +30,7 @@ class ShopShowcaseTracking (context: Context?) {
     fun getShopType(userSession: UserSessionInterface): String {
         return when {
             userSession.isGoldMerchant -> ShopType.GOLD_MERCHANT
-//            userSession.isShopOfficialStore -> ShopType.OFFICIAL_STORE
+            userSession.isShopOfficialStore -> ShopType.OFFICIAL_STORE
             else -> ShopType.REGULAR
         }
     }

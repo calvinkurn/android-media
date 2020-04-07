@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
+import android.widget.Toast
 import androidx.cardview.widget.CardView
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
@@ -22,6 +23,7 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
+import com.tokopedia.empty_state.EmptyStateUnify
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.shop_showcase.R
@@ -44,7 +46,6 @@ import com.tokopedia.unifycomponents.*
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
@@ -128,16 +129,16 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
         view?.findViewById<Typography>(R.id.tv_add_showcase_title)
     }
 
-    private val emptyStateProduct: EmptyState? by lazy {
-        view?.findViewById<EmptyState>(R.id.empty_state_product_showcase)
+    private val emptyStateProduct: EmptyStateUnify? by lazy {
+        view?.findViewById<EmptyStateUnify>(R.id.empty_state_product_showcase)
     }
 
     private val headerUnify: HeaderUnify? by lazy {
         view?.findViewById<HeaderUnify>(R.id.add_showcase_toolbar)?.apply {
-//            backButtonView?.setOnClickListener {
-//                tracking.addShowcaseClickBackButton(shopId, shopType, isActionEdit)
-//                activity?.onBackPressed()
-//            }
+            setNavigationOnClickListener {
+                tracking.addShowcaseClickBackButton(shopId, shopType, isActionEdit)
+                activity?.onBackPressed()
+            }
         }
     }
 
@@ -178,12 +179,6 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
         super.onActivityResult(requestCode, resultCode, data)
         if(requestCode == START_PRODUCT_SHOWCASE_ACTIVITY && resultCode == Activity.RESULT_OK) {
             val newSelectedProductList = data?.getParcelableArrayListExtra<ShowcaseProduct>(ShopShowcaseProductAddFragment.SHOWCASE_PRODUCT_LIST)
-//            newSelectedProductList?.map {
-//                val newAppendedProduct = AppendedProduct()
-//                newAppendedProduct.product_id = it.productId
-//                newAppendedProduct.menu_id = showcaseId
-//                appendedShowcaseProduct.add(newAppendedProduct)
-//            }
             updateSelectedProduct(showcaseAddAdapter, newSelectedProductList)
             updateAppendedSelectedProduct(showcaseAddAdapter, newSelectedProductList)
             showSelectedProductList()
@@ -293,8 +288,12 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
             }
         })
 
-        textFieldShowcaseName?.textFieldInput?.setOnClickListener {
-            tracking.addShowcaseClickNameField(shopId, shopType, isActionEdit)
+        /**
+         * Send tracker if textfield get focus after clicked,
+         * not use onClickListener since this unify component have bug.
+         */
+        textFieldShowcaseName?.textFieldInput?.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
+            if(hasFocus) tracking.addShowcaseClickNameField(shopId, shopType, isActionEdit)
         }
 
         /**
@@ -362,7 +361,7 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
                 selectedProductText?.visibility = View.VISIBLE
                 chooseProductText?.visibility = View.VISIBLE
                 selectedProductListRecyclerView?.visibility = View.VISIBLE
-                emptyStateProduct?.visibility = View.GONE
+                emptyStateProduct?.visibility = View.INVISIBLE
                 headerUnify?.actionTextView?.visibility = View.VISIBLE
             } else {
                 showChooseProduct()
@@ -533,5 +532,6 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
 
     private fun hideSoftKeyboard() {
         KeyboardHandler.hideSoftKeyboard(activity)
+        textFieldShowcaseName?.textFieldInput?.clearFocus()
     }
 }
