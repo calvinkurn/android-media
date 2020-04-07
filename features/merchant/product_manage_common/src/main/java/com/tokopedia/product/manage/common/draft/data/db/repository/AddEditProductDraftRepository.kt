@@ -1,13 +1,12 @@
 package com.tokopedia.product.manage.common.draft.data.db.repository
 
-import androidx.lifecycle.LiveData
 import com.tokopedia.product.manage.common.draft.data.model.ProductDraft
 
 interface AddEditProductDraftRepository {
 
     fun insertDraft(productDraft: ProductDraft, isUploading: Boolean): Long
 
-    fun getDraft(productId: Long): LiveData<ProductDraft>
+    fun getDraft(productId: Long): ProductDraft
 
     fun getAllDrafts(): List<ProductDraft>
 

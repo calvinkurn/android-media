@@ -1,7 +1,5 @@
 package com.tokopedia.product.manage.common.draft.data.db.repository
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.Transformations
 import com.tokopedia.product.manage.common.draft.data.db.source.AddEditProductDraftDataSource
 import com.tokopedia.product.manage.common.draft.data.model.ProductDraft
 import com.tokopedia.product.manage.common.draft.mapper.AddEditProductDraftMapper
@@ -19,7 +17,7 @@ class AddEditProductDraftRepositoryImpl @Inject constructor(
         return draftDataSource.insertDraft(draftJson, isUploading, shopId)
     }
 
-    override fun getDraft(productId: Long): ProductInputModel {
+    override fun getDraft(productId: Long): ProductDraft {
         return AddEditProductDraftMapper.mapDraftToProductInput(draftDataSource.getDraft(productId))
     }
 
