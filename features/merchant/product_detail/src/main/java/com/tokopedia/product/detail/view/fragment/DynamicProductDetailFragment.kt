@@ -1182,15 +1182,16 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         val cartId = result.data.cartId
         when (viewModel.buttonActionType) {
             ProductDetailConstant.OCS_BUTTON -> {
-                if (result.data.success == 0)
+                if (result.data.success == 0) {
                     validateOvo(result)
-                else
+                } else {
                     sendTrackingATC(cartId)
                     goToCheckout(ShipmentFormRequest
                             .BundleBuilder()
                             .deviceId("")
                             .build()
                             .bundle)
+                }
             }
             ProductDetailConstant.BUY_BUTTON -> {
                 sendTrackingATC(cartId)

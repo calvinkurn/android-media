@@ -45,6 +45,7 @@ mutation atcOCS($params: AtcOcsParams) {
           }
         }
       }
+      refresh_prerequisite_page
     }
   }
 }
