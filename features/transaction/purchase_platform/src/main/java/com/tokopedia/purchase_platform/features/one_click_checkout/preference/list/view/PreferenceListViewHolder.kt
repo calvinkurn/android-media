@@ -58,7 +58,7 @@ class PreferenceListViewHolder(itemView: View, private val listener: PreferenceL
             } else {
                 lblMainPreference.gone()
                 tvChosenPreference.gone()
-                tvChoosePreference.text = "Gunakan pilihan ini"
+                tvChoosePreference.text = itemView.context.getString(R.string.label_choose_this_preference)
                 tvChoosePreference.visible()
             }
         }

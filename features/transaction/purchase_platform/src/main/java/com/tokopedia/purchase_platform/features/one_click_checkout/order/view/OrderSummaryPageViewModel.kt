@@ -3,6 +3,7 @@ package com.tokopedia.purchase_platform.features.one_click_checkout.order.view
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.authentication.AuthHelper
+import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateConverter
 import com.tokopedia.logisticcart.shipping.model.*
@@ -25,6 +26,9 @@ import com.tokopedia.purchase_platform.features.checkout.view.uimodel.NotEligibl
 import com.tokopedia.purchase_platform.features.checkout.view.uimodel.NotEligiblePromoHolderdata.Companion.TYPE_ICON_GLOBAL
 import com.tokopedia.purchase_platform.features.checkout.view.uimodel.NotEligiblePromoHolderdata.Companion.TYPE_ICON_OFFICIAL_STORE
 import com.tokopedia.purchase_platform.features.checkout.view.uimodel.NotEligiblePromoHolderdata.Companion.TYPE_ICON_POWER_MERCHANT
+import com.tokopedia.purchase_platform.features.one_click_checkout.common.DEFAULT_ERROR_MESSAGE
+import com.tokopedia.purchase_platform.features.one_click_checkout.common.DEFAULT_LOCAL_ERROR_MESSAGE
+import com.tokopedia.purchase_platform.features.one_click_checkout.common.STATUS_OK
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.GetPreferenceListUseCase
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.OccGlobalEvent
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.OccState
@@ -665,7 +669,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                                     } else {
                                         //show error
                                         if (messageError.isNullOrBlank()) {
-                                            messageError = "Terjadi kesalahan. Ulangi beberapa saat lagi"
+                                            messageError = DEFAULT_ERROR_MESSAGE
                                         }
                                         globalEvent.value = OccGlobalEvent.Error(errorMessage = messageError)
                                     }
@@ -704,7 +708,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
 
                                 override fun onNext(response: ValidateUsePromoRevampUiModel) {
                                     validateUsePromoRevampUiModel = response
-                                    if (response.status.equals("OK", true)) {
+                                    if (response.status.equals(STATUS_OK, true)) {
                                         for (voucherOrderUiModel in response.promoUiModel.voucherOrderUiModels) {
                                             if (voucherOrderUiModel != null && voucherOrderUiModel.code == logisticPromoUiModel.promoCode && voucherOrderUiModel.messageUiModel.state != "red") {
                                                 val shippingRecommendationData = _orderPreference?.shipping?.shippingRecommendationData
@@ -741,7 +745,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                                         }
                                     }
                                     updatePromoState(response.promoUiModel)
-                                    globalEvent.value = OccGlobalEvent.Error(null, "Gagal mengaplikasikan bebas ongkir")
+                                    globalEvent.value = OccGlobalEvent.Error(null, FAIL_APPLY_BBO_ERROR_MESSAGE)
                                 }
 
                                 override fun onCompleted() {
@@ -804,7 +808,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                 throwable.printStackTrace()
                 if (throwable is MessageErrorException && throwable.message != null) {
                     globalEvent.value = OccGlobalEvent.Error(errorMessage = throwable.message
-                            ?: "Terjadi kesalahan pada server. Ulangi beberapa saat lagi")
+                            ?: DEFAULT_ERROR_MESSAGE)
                 } else {
                     globalEvent.value = OccGlobalEvent.Error(throwable)
                 }
@@ -821,13 +825,12 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
             if (param != null) {
                 globalEvent.value = OccGlobalEvent.Loading
                 updateCartOccUseCase.execute(param, {
-//                    doCheckout(product, shop, pref, onSuccessCheckout)
                     finalValidateUse(product, shop, pref, onSuccessCheckout, skipCheckIneligiblePromo)
                 }, { throwable: Throwable ->
                     throwable.printStackTrace()
                     if (throwable is MessageErrorException && throwable.message != null) {
                         globalEvent.value = OccGlobalEvent.Error(errorMessage = throwable.message
-                                ?: "Terjadi kesalahan pada server. Ulangi beberapa saat lagi")
+                                ?: DEFAULT_ERROR_MESSAGE)
                     } else {
                         globalEvent.value = OccGlobalEvent.Error(throwable)
                     }
@@ -895,7 +898,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                 )
         )), promos = generateCheckoutPromos()))
         checkoutOccUseCase.execute(param, { checkoutOccGqlResponse: CheckoutOccGqlResponse ->
-            if (checkoutOccGqlResponse.response.status.equals("OK", true)) {
+            if (checkoutOccGqlResponse.response.status.equals(STATUS_OK, true)) {
                 if (checkoutOccGqlResponse.response.data.success == 1 || checkoutOccGqlResponse.response.data.paymentParameter.redirectParam.url.isNotEmpty()) {
                     globalEvent.value = OccGlobalEvent.Normal
                     onSuccessCheckout(checkoutOccGqlResponse.response.data)
@@ -917,7 +920,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                 if (checkoutOccGqlResponse.response.header.messages.isNotEmpty()) {
                     globalEvent.value = OccGlobalEvent.TriggerRefresh(errorMessage = checkoutOccGqlResponse.response.header.messages[0])
                 } else {
-                    globalEvent.value = OccGlobalEvent.TriggerRefresh(errorMessage = "Terjadi kesalahan. Ulangi beberapa saat lagi")
+                    globalEvent.value = OccGlobalEvent.TriggerRefresh(errorMessage = DEFAULT_ERROR_MESSAGE)
                 }
             }
         }, { throwable: Throwable ->
@@ -1044,13 +1047,13 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                 throwable.printStackTrace()
                 if (throwable is MessageErrorException && throwable.message != null) {
                     globalEvent.value = OccGlobalEvent.Error(errorMessage = throwable.message
-                            ?: "Terjadi kesalahan pada server. Ulangi beberapa saat lagi")
+                            ?: DEFAULT_ERROR_MESSAGE)
                 } else {
                     globalEvent.value = OccGlobalEvent.Error(throwable)
                 }
             })
         } else {
-            globalEvent.value = OccGlobalEvent.Error(errorMessage = "Terjadi kesalahan. Ulangi beberapa saat lagi")
+            globalEvent.value = OccGlobalEvent.Error(errorMessage = DEFAULT_LOCAL_ERROR_MESSAGE)
         }
     }
 
@@ -1260,11 +1263,11 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
             }
             if (minimumAmount > subtotal) {
                 orderTotal.value = orderTotal.value?.copy(orderCost = orderCost,
-                        paymentErrorMessage = "Belanjaanmu kurang dari min. transaksi ${_orderPreference?.preference?.payment?.gatewayName}. Silahkan pilih pembayaran lain.",
+                        paymentErrorMessage = "Belanjaanmu kurang dari min. transaksi ${_orderPreference?.preference?.payment?.gatewayName} (${CurrencyFormatUtil.convertPriceValueToIdrFormat(minimumAmount, false)}). Silahkan pilih pembayaran lain.",
                         isButtonChoosePayment = true, buttonState = currentState)
             } else if (maximumAmount > 0 && maximumAmount < subtotal) {
                 orderTotal.value = orderTotal.value?.copy(orderCost = orderCost,
-                        paymentErrorMessage = "Belanjaanmu melebihi limit transaksi ${_orderPreference?.preference?.payment?.gatewayName}. Silahkan pilih pembayaran lain.",
+                        paymentErrorMessage = "Belanjaanmu melebihi limit transaksi ${_orderPreference?.preference?.payment?.gatewayName} (${CurrencyFormatUtil.convertPriceValueToIdrFormat(maximumAmount, false)}). Silahkan pilih pembayaran lain.",
                         isButtonChoosePayment = true, buttonState = currentState)
             } else if (_orderPreference?.preference?.payment?.gatewayCode?.contains(OVO_GATEWAY_CODE) == true && subtotal > _orderPreference?.preference?.payment?.walletAmount ?: 0) {
                 orderTotal.value = orderTotal.value?.copy(orderCost = orderCost,
@@ -1318,6 +1321,8 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
         const val NO_EXACT_DURATION_MESSAGE = "Durasi tergantung kurir"
         const val NO_DURATION_AVAILABLE = "Durasi tidak tersedia"
         const val NEED_PINPOINT_ERROR_MESSAGE = "Butuh pinpoint lokasi"
+
+        const val FAIL_APPLY_BBO_ERROR_MESSAGE = "Gagal mengaplikasikan bebas ongkir"
 
         const val ERROR_CODE_PRICE_CHANGE = "513"
         const val PRICE_CHANGE_ERROR_MESSAGE = "Harga telah berubah"

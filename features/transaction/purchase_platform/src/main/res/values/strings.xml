@@ -352,6 +352,11 @@
     <string name="lbl_delete_preference_desc">Pengaturan Beli Langsung yang sudah dihapus tidak bisa dipakai untuk belanja.</string>
     <string name="lbl_delete_preference_ok">Ya, Hapus</string>
     <string name="atur_pilihan">Atur Pilihan</string>
+    <string name="label_pilih">Pilih</string>
+    <string name="label_kurir">Kurir</string>
+    <string name="label_choose_other_preference">Ganti Pilihan Lain</string>
+    <string name="label_choose_this_preference">Gunakan Pilihan Ini</string>
+    <string name="label_used">Digunakan</string>
 
     <string name="label_pay_total">Total Bayar</string>
     <string name="label_cashback_ovo_points">Cashback OVO Points</string>

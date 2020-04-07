@@ -245,7 +245,7 @@
             android:paddingEnd="@dimen/dp_16"
             android:paddingRight="@dimen/dp_16"
             android:paddingBottom="@dimen/dp_12"
-            android:text="Digunakan"
+            android:text="@string/label_used"
             android:textColor="@color/Neutral_N700_96"
             android:visibility="gone"
             app:drawableLeftCompat="@drawable/ic_action_check"

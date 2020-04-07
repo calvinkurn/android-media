@@ -18,14 +18,14 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:ignore="ContentDescription"/>
+            tools:ignore="ContentDescription" />
 
         <View
             android:layout_width="wrap_content"
             android:layout_height="@dimen/dp_1"
             android:background="@color/Neutral_N100"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/iv_card_header"/>
+            app:layout_constraintTop_toBottomOf="@id/iv_card_header" />
 
 
         <com.tokopedia.unifyprinciples.Typography
@@ -180,7 +180,7 @@
                     android:layout_marginRight="@dimen/dp_16"
                     android:paddingStart="@dimen/dp_16"
                     android:paddingLeft="@dimen/dp_16"
-                    android:text="Pilih"
+                    android:text="@string/label_pilih"
                     android:textColor="@color/unify_G500"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -191,18 +191,6 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </com.tokopedia.unifycomponents.CardUnify>
-
-        <!--        <com.tokopedia.unifycomponents.ticker.Ticker-->
-        <!--            android:id="@+id/ticker_shipping_promo"-->
-        <!--            android:layout_width="match_parent"-->
-        <!--            android:layout_height="wrap_content"-->
-        <!--            app:layout_constraintTop_toBottomOf="@+id/divider"-->
-        <!--            app:layout_constraintStart_toStartOf="parent"-->
-        <!--            app:layout_constraintEnd_toEndOf="parent"-->
-        <!--            app:tickerShapeType="loose"-->
-        <!--            app:tickerType="announcement"-->
-        <!--            app:closeButtonVisibility="gone"-->
-        <!--            app:descriptionText="Tersedia Bebas Ongkir (4 - 6 hari)"/>-->
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_shipping_name"
@@ -242,7 +230,7 @@
             android:layout_marginTop="@dimen/dp_8"
             android:ellipsize="end"
             android:lines="1"
-            android:text="Kurir"
+            android:text="@string/label_kurir"
             android:textColor="@color/Neutral_N700_96"
             android:visibility="visible"
             app:layout_constraintStart_toStartOf="@+id/tv_shipping_name"
@@ -300,8 +288,8 @@
             android:id="@+id/tv_shipping_slash_price"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dp_16"
             android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginLeft="@dimen/dp_16"
             android:gravity="center_vertical"
             android:lines="1"
             android:textColor="@color/Neutral_N700_68"
@@ -311,27 +299,6 @@
             app:typographyType="small"
             app:typographyWeight="reguler"
             tools:text="Rp. 25.000" />
-
-        <!--        <com.tokopedia.unifyprinciples.Typography
-                    android:id="@+id/tv_shipping_price"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/dp_16"
-                    android:layout_marginRight="@dimen/dp_16"
-                    android:gravity="center_vertical"
-                    android:lines="1"
-                    android:paddingStart="@dimen/dp_8"
-                    android:paddingLeft="@dimen/dp_8"
-                    android:paddingEnd="@dimen/dp_0"
-                    android:paddingRight="@dimen/dp_0"
-                    android:textColor="@color/Neutral_N700_96"
-                    app:drawableEndCompat="@drawable/ic_keyboard_arrow_down_grey_20dp"
-                    app:layout_constraintBottom_toTopOf="@+id/divider2"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/tv_shipping_slash_price"
-                    app:typographyType="body_3"
-                    app:typographyWeight="bold"
-                    tools:text="Rp. 25.000" />-->
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_shipping_change_duration"
@@ -345,7 +312,7 @@
             android:paddingLeft="@dimen/dp_16"
             android:paddingEnd="@dimen/dp_0"
             android:paddingRight="@dimen/dp_0"
-            android:text="Ubah"
+            android:text="@string/label_change_template"
             android:textColor="@color/Green_G500"
             android:visibility="visible"
             app:layout_constraintBottom_toTopOf="@+id/divider2"
@@ -447,7 +414,7 @@
             android:paddingEnd="@dimen/dp_16"
             android:paddingRight="@dimen/dp_16"
             android:paddingBottom="@dimen/dp_12"
-            android:text="Ganti Pilihan"
+            android:text="@string/label_choose_other_preference"
             android:textColor="@color/Green_G500"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
