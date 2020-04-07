@@ -50,23 +50,20 @@ import kotlinx.android.synthetic.main.fragment_notification_update.*
 import javax.inject.Inject
 import com.tokopedia.notifcenter.data.mapper.ProductStockHandlerMapper.map as stockHandlerMapper
 
-class NotificationUpdateFragment : BaseNotificationFragment(),
-open class NotificationUpdateFragment : BaseListFragment<Visitable<*>,
+open class NotificationUpdateFragment : BaseNotificationFragment(),
         NotificationUpdateContract.View,
         NotificationLongerTextDialog.LongerContentListener {
-    var cursor = ""
-    private var isFirstLoaded = true
-    var filterAdapter: NotificationUpdateFilterAdapter? = null
 
     @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
     @Inject lateinit var presenter: NotificationUpdatePresenter
     @Inject lateinit var analytics: NotificationUpdateAnalytics
 
     private lateinit var viewModel: NotificationUpdateViewModel
-    private val notificationUpdateAdapter by lazy { adapter as NotificationUpdateAdapter }
-    private val notificationUpdateListener by lazy { context as NotificationUpdateListener }
 
-    private val filterAdapter by lazy {
+    private val notificationUpdateListener by lazy { context as NotificationUpdateListener }
+    private val _adapter by lazy { adapter as NotificationUpdateAdapter }
+
+    val filterAdapter by lazy {
         NotificationUpdateFilterAdapter(
                 NotificationUpdateFilterSectionTypeFactoryImpl(),
                 this,
@@ -189,7 +186,7 @@ open class NotificationUpdateFragment : BaseListFragment<Visitable<*>,
         hideLoading()
         _adapter.removeEmptyState()
 
-        if (_isFirstLoaded && it.list.isEmpty()) {
+        if (isFirstLoaded && notification.list.isEmpty()) {
             lstFilter?.hide()
         }
 
@@ -217,7 +214,7 @@ open class NotificationUpdateFragment : BaseListFragment<Visitable<*>,
             }
         }
     }
-          
+
     open fun onSuccessGetFilter(): (ArrayList<NotificationUpdateFilterViewBean>) -> Unit {
         return {
             filterAdapter.updateData(it)

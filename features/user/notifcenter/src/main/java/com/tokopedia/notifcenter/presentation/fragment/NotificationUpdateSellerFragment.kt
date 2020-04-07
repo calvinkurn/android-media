@@ -19,7 +19,7 @@ class NotificationUpdateSellerFragment : NotificationUpdateFragment() {
     override fun onSuccessGetFilter(): (ArrayList<NotificationUpdateFilterViewBean>) -> Unit {
         return {
             // remove role section, force to seller only
-            it.removeAt(0)
+            it.removeAt.first()
             filterAdapter?.updateData(it)
         }
     }
