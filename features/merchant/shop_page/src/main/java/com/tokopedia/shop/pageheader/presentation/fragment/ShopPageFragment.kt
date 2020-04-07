@@ -49,6 +49,7 @@ import com.tokopedia.shop.pageheader.di.component.DaggerShopPageComponent
 import com.tokopedia.shop.pageheader.di.component.ShopPageComponent
 import com.tokopedia.shop.pageheader.di.module.ShopPageModule
 import com.tokopedia.shop.pageheader.presentation.ShopPageViewModel
+import com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity
 import com.tokopedia.shop.pageheader.presentation.adapter.ShopPageFragmentPagerAdapter
 import com.tokopedia.shop.pageheader.presentation.holder.ShopPageFragmentHeaderViewHolder
 import com.tokopedia.shop.product.view.activity.ShopProductListActivity
@@ -88,7 +89,6 @@ class ShopPageFragment :
         const val TAB_POSITION_INFO = 2
         const val SHOP_STATUS_FAVOURITE = "SHOP_STATUS_FAVOURITE"
         const val SHOP_STICKY_LOGIN = "SHOP_STICKY_LOGIN"
-        const val SHOP_TRACE = "mp_shop"
         const val SHOP_NAME_PLACEHOLDER = "{{shop_name}}"
         const val SHOP_LOCATION_PLACEHOLDER = "{{shop_location}}"
         private const val REQUEST_CODER_USER_LOGIN = 100
@@ -122,7 +122,6 @@ class ShopPageFragment :
 
     private lateinit var remoteConfig: RemoteConfig
     private lateinit var cartLocalCacheHandler: LocalCacheHandler
-    private var performanceMonitoring: PerformanceMonitoring? = null
     var shopPageTracking: ShopPageTrackingBuyer? = null
     var titles = listOf<String>()
     var shopId: String? = null
@@ -167,11 +166,6 @@ class ShopPageFragment :
 
     override fun initInjector() {
         component?.inject(this)
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        performanceMonitoring = PerformanceMonitoring.start(SHOP_TRACE)
-        super.onCreate(savedInstanceState)
     }
 
     override fun onCreateView(
@@ -530,10 +524,6 @@ class ShopPageFragment :
         }
     }
 
-    fun stopPerformanceMonitor() {
-        performanceMonitoring?.stopTrace()
-    }
-
     fun onSuccessGetShopInfo(shopInfo: ShopInfo) {
         with(shopInfo) {
             isOfficialStore = (goldOS.isOfficial == 1 && !TextUtils.isEmpty(shopInfo.topContent.topUrl))
@@ -665,7 +655,7 @@ class ShopPageFragment :
     }
 
     private fun onErrorGetShopInfo(e: Throwable?) {
-        stopPerformanceMonitor()
+        stopPerformanceMonitoring()
         context?.run {
             setViewState(VIEW_ERROR)
             errorTextView.text = ErrorHandler.getErrorMessage(this, e)
@@ -760,6 +750,10 @@ class ShopPageFragment :
             startActivity(ShopProductListActivity.createIntent(activity, shopId,
                     "", selectedEtalaseId, "", sortName, shopRef))
         }
+    }
+
+    private fun stopPerformanceMonitoring() {
+        (activity as? ShopPageActivity)?.stopPerformanceMonitor()
     }
 
     fun refreshData() {
