@@ -1,8 +1,8 @@
-package com.tokopedia.product.addedit.draft.data.db
+package com.tokopedia.product.manage.common.draft.data.db
 
 import androidx.room.*
-import com.tokopedia.product.addedit.common.constant.AddEditProductDraftConstant
-import com.tokopedia.product.addedit.draft.data.db.entity.AddEditProductDraftEntity
+import com.tokopedia.product.manage.common.draft.constant.AddEditProductDraftConstant
+import com.tokopedia.product.manage.common.draft.data.db.entity.AddEditProductDraftEntity
 
 @Dao
 interface AddEditProductDraftDao {

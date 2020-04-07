@@ -1,10 +1,11 @@
-package com.tokopedia.product.addedit.draft.data.db.source
+package com.tokopedia.product.manage.common.draft.data.db.source
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
-import com.tokopedia.product.addedit.common.constant.AddEditProductDraftConstant
-import com.tokopedia.product.addedit.draft.data.db.AddEditProductDraftDao
-import com.tokopedia.product.addedit.draft.data.db.entity.AddEditProductDraftEntity
+import com.tokopedia.product.manage.common.draft.constant.AddEditProductDraftConstant
+import com.tokopedia.product.manage.common.draft.data.db.AddEditProductDraftDao
+import com.tokopedia.product.manage.common.draft.data.db.entity.AddEditProductDraftEntity
+import rx.Observable
 import javax.inject.Inject
 
 class AddEditProductDraftDataManager @Inject constructor(private val draftDao: AddEditProductDraftDao) {
@@ -27,8 +28,8 @@ class AddEditProductDraftDataManager @Inject constructor(private val draftDao: A
         return draftDao.getAllDrafts(shopId)
     }
 
-    fun getAllDraftsCount(shopId: String): Long {
-        return draftDao.getAllDraftsCount(shopId)
+    fun getAllDraftsCount(shopId: String): Observable<Long> {
+        return Observable.fromCallable { draftDao.getAllDraftsCount(shopId) }
     }
 
     fun deleteAllDrafts(shopId: String): Boolean {

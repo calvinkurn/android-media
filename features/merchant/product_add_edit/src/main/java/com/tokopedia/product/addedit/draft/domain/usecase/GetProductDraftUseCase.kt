@@ -1,13 +1,15 @@
 package com.tokopedia.product.addedit.draft.domain.usecase
 
-import com.tokopedia.product.addedit.common.constant.AddEditProductDraftConstant
-import com.tokopedia.product.addedit.draft.data.db.repository.AddEditProductDraftRepository
-import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
+import com.tokopedia.product.manage.common.draft.constant.AddEditProductDraftConstant
+import com.tokopedia.product.manage.common.draft.data.db.repository.AddEditProductDraftRepository
+import com.tokopedia.product.manage.common.draft.data.model.ProductDraft
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
-class GetProductDraftUseCase @Inject constructor(private val draftRepository: AddEditProductDraftRepository): UseCase<ProductInputModel>() {
+class FetchProductDraftUseCase @Inject constructor(
+    private val draftRepository: AddEditProductDraftRepository
+): UseCase<ProductDraft>() {
 
     companion object {
         fun createRequestParams(productId: Long): RequestParams {
@@ -17,10 +19,8 @@ class GetProductDraftUseCase @Inject constructor(private val draftRepository: Ad
         }
     }
 
-    var params: RequestParams = RequestParams.EMPTY
-
-    override suspend fun executeOnBackground(): ProductInputModel {
-        val param = params.getLong(AddEditProductDraftConstant.DRAFT_PRODUCT_ID, Long.MIN_VALUE)
+    override suspend fun executeOnBackground(): ProductDraft {
+        val param = useCaseRequestParams.getLong(AddEditProductDraftConstant.DRAFT_PRODUCT_ID, Long.MIN_VALUE)
         return draftRepository.getDraft(param)
     }
 }

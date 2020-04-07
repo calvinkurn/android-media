@@ -1,4 +1,4 @@
-package com.tokopedia.product.addedit.common.constant
+package com.tokopedia.product.manage.common.draft.constant
 
 object AddEditProductDraftConstant {
     const val DB_NAME = "tkpd_seller.db"

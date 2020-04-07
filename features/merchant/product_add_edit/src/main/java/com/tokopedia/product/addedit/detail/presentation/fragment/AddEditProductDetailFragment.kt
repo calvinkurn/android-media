@@ -44,7 +44,6 @@ import com.tokopedia.product.addedit.description.presentation.fragment.AddEditPr
 import com.tokopedia.product.addedit.description.presentation.model.DescriptionInputModel
 import com.tokopedia.product.addedit.description.presentation.model.ProductVariantInputModel
 import com.tokopedia.product.addedit.detail.di.AddEditProductDetailComponent
-import com.tokopedia.product.addedit.detail.presentation.activity.AddEditProductDetailActivity
 import com.tokopedia.product.addedit.detail.presentation.adapter.NameRecommendationAdapter
 import com.tokopedia.product.addedit.detail.presentation.adapter.WholeSalePriceInputAdapter
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.CATEGORY_RESULT_ID
@@ -66,6 +65,7 @@ import com.tokopedia.product.addedit.detail.presentation.viewmodel.AddEditProduc
 import com.tokopedia.product.addedit.imagepicker.view.activity.ImagePickerAddProductActivity
 import com.tokopedia.product.addedit.optionpicker.OptionPicker
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
+import com.tokopedia.product.manage.common.draft.data.model.ProductDraft
 import com.tokopedia.product.addedit.shipment.presentation.model.ShipmentInputModel
 import com.tokopedia.product.addedit.tracking.ProductAddMainTracking
 import com.tokopedia.product.addedit.tracking.ProductEditMainTracking
@@ -203,14 +203,6 @@ class AddEditProductDetailFragment(private val initialSelectedImagePathList: Arr
         } else {
             ProductAddMainTracking.trackBack(shopId)
         }
-    }
-
-    fun insertProductDraft(isUploading: Boolean) {
-        viewModel.insertProductDraft(productInputModel, 0, isUploading)
-    }
-
-    fun getAllProductsDraft() {
-        viewModel.getAllProductsDraft()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -777,7 +769,7 @@ class AddEditProductDetailFragment(private val initialSelectedImagePathList: Arr
             when (it) {
                 is Success -> {
                     for (i in it.data) {
-                        Log.d("Hello Success", i.productId.toString())
+                        Log.d("Hello Success", i.id.toString())
                     }
                 }
                 is Fail -> Log.d("Hello SFailed", it.throwable.message)
@@ -1011,5 +1003,13 @@ class AddEditProductDetailFragment(private val initialSelectedImagePathList: Arr
         }
     }
 
+    fun insertProductDraft(isUploading: Boolean) {
+        val productName = productNameField?.getEditableValue().toString()
+        val productDraft = ProductDraft(0, productName)
+        viewModel.insertProductDraft(productDraft, 0, isUploading)
+    }
 
+    fun getAllProductsDraft() {
+        viewModel.getAllProductsDraft()
+    }
 }

@@ -1,9 +1,9 @@
-package com.tokopedia.product.addedit.draft.data.db.entity
+package com.tokopedia.product.manage.common.draft.data.db.entity
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.tokopedia.product.addedit.common.constant.AddEditProductDraftConstant
+import com.tokopedia.product.manage.common.draft.constant.AddEditProductDraftConstant
 
 @Entity(tableName = AddEditProductDraftConstant.DB_TABLE)
 data class AddEditProductDraftEntity(

@@ -1,8 +1,7 @@
 package com.tokopedia.product.addedit.draft.mapper
 
 import android.text.TextUtils
-import com.tokopedia.product.addedit.draft.data.db.model.AddEditProductDraftModel
-import com.tokopedia.product.addedit.preview.data.source.api.response.Product
+import com.tokopedia.product.manage.common.draft.data.db.model.AddEditProductDraftModel
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 
 class AddEditProductDraftListMapper {

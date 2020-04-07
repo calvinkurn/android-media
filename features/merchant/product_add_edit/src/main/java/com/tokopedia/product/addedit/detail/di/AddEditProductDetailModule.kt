@@ -2,11 +2,11 @@ package com.tokopedia.product.addedit.detail.di
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.product.addedit.draft.data.db.AddEditProductDraftDao
-import com.tokopedia.product.addedit.draft.data.db.AddEditProductDraftDb
-import com.tokopedia.product.addedit.draft.data.db.repository.AddEditProductDraftRepository
-import com.tokopedia.product.addedit.draft.data.db.repository.AddEditProductDraftRepositoryImpl
-import com.tokopedia.product.addedit.draft.data.db.source.AddEditProductDraftDataSource
+import com.tokopedia.product.manage.common.draft.data.db.AddEditProductDraftDao
+import com.tokopedia.product.manage.common.draft.data.db.AddEditProductDraftDb
+import com.tokopedia.product.manage.common.draft.data.db.repository.AddEditProductDraftRepository
+import com.tokopedia.product.manage.common.draft.data.db.repository.AddEditProductDraftRepositoryImpl
+import com.tokopedia.product.manage.common.draft.data.db.source.AddEditProductDraftDataSource
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -19,7 +19,7 @@ class AddEditProductDetailModule {
 
     @AddEditProductDetailScope
     @Provides
-    fun provideUserSession(context: Context): UserSessionInterface = UserSession(context)
+    fun provideUserSession(@ApplicationContext context: Context): UserSessionInterface = UserSession(context)
 
     @AddEditProductDetailScope
     @Provides
@@ -31,7 +31,10 @@ class AddEditProductDetailModule {
 
     @AddEditProductDetailScope
     @Provides
-    fun provideProductDraftRepository(draftDataSource: AddEditProductDraftDataSource, @ApplicationContext context: Context): AddEditProductDraftRepository {
-        return AddEditProductDraftRepositoryImpl(draftDataSource, context)
+    fun provideProductDraftRepository(
+        draftDataSource: AddEditProductDraftDataSource,
+        userSession: UserSessionInterface
+    ): AddEditProductDraftRepository {
+        return AddEditProductDraftRepositoryImpl(draftDataSource, userSession)
     }
 }
