@@ -1,18 +1,10 @@
 package com.tokopedia.purchase_platform.features.one_click_checkout.order.analytics
 
-import android.content.Context
 import com.tokopedia.analyticconstant.DataLayer
-import com.tokopedia.iris.util.IrisSession
 import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.*
 import com.tokopedia.purchase_platform.common.analytics.TransactionAnalytics
 
 class OrderSummaryAnalytics : TransactionAnalytics() {
-
-    var irisSession: IrisSession? = null
-
-    fun OrderSummaryAnalytics(context: Context) {
-        irisSession = IrisSession(context)
-    }
 
     fun eventEditQuantityIncrease(productId: String, shopId: String, productQuantity: String) {
         sendEventCategoryActionLabel(
@@ -133,16 +125,6 @@ class OrderSummaryAnalytics : TransactionAnalytics() {
                 EventName.CLICK_CHECKOUT_EXPRESS,
                 EventCategory.ORDER_SUMMARY,
                 EventAction.USER_CHANGES_PROFILE
-        )
-    }
-
-    //irisSession(?)
-    fun eventViewErrorMesageIris() {
-        sendEventCategoryActionLabel(
-                EventName.VIEW_CHECKOUT_EXPRESS_IRIS,
-                EventCategory.ORDER_SUMMARY,
-                EventAction.VIEW_ERROR_ON_OSP,
-                irisSession?.getSessionId()
         )
     }
 
