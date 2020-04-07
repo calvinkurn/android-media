@@ -1037,7 +1037,7 @@ public class HomePageTracking {
     }
 
     public static HashMap<String, Object> eventEnhanceImpressionIrisPlayBanner(PlayCardViewModel playCardViewModel) {
-        return  (HashMap<String, Object>) playCardViewModel.getEnhanceImpressionPlayBanner(true);
+        return  (HashMap<String, Object>) playCardViewModel.getEnhanceImpressionIrisPlayBanner(true);
     }
 
     public static void eventClickPlayBanner(PlayCardViewModel playCardViewModel) {
