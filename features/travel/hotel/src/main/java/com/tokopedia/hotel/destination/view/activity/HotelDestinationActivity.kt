@@ -1,10 +1,7 @@
 package com.tokopedia.hotel.destination.view.activity
 
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import android.content.Context
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
@@ -15,14 +12,8 @@ import com.tokopedia.hotel.destination.di.DaggerHotelDestinationComponent
 import com.tokopedia.hotel.destination.di.HotelDestinationComponent
 import com.tokopedia.hotel.destination.view.fragment.HotelRecommendationFragment
 import com.tokopedia.hotel.destination.view.fragment.HotelSearchDestinationFragment
-import com.tokopedia.hotel.destination.view.viewmodel.HotelDestinationViewModel
-import com.tokopedia.permissionchecker.PermissionCheckerHelper
 import kotlinx.android.synthetic.main.activity_hotel_destination.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import javax.inject.Inject
+import kotlinx.coroutines.*
 
 /**
  * @author by jessica on 25/03/19
@@ -34,6 +25,7 @@ class HotelDestinationActivity : HotelBaseActivity(), HasComponent<HotelDestinat
     var isSearching: Boolean = false
 
     private var searchTemp = ""
+    private var onTextChangedJob: Job? = null
 
     override fun shouldShowOptionMenu(): Boolean = false
 
@@ -89,9 +81,9 @@ class HotelDestinationActivity : HotelBaseActivity(), HasComponent<HotelDestinat
 
         if (text == searchTemp) return
         searchTemp = text
-
-        GlobalScope.launch(Dispatchers.Main) {
-            delay(300)
+        onTextChangedJob?.cancel()
+        onTextChangedJob = CoroutineScope(Dispatchers.Main).launch {
+            delay(500)
             if (text != searchTemp) return@launch
             if (text.isEmpty() && isSearching) {
                 isSearching = false
@@ -104,6 +96,11 @@ class HotelDestinationActivity : HotelBaseActivity(), HasComponent<HotelDestinat
                 doSearch(text)
             }
         }
+    }
+
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        onTextChangedJob?.cancel()
     }
 
     fun doSearch(text: String) {
