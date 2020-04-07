@@ -21,6 +21,36 @@
         android:scrollbars="vertical" />
 
     <LinearLayout
+        android:id="@+id/ll_transaction_progress"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone"
+        tools:visibility="visible">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:background="@color/light_G100">
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/chatcommon_1dp"
+                android:background="@color/Neutral_N75"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="4dp"
+            android:layout_gravity="top"
+            android:background="@drawable/bg_shadow_transaction_order_progres" />
+    </LinearLayout>
+
+    <LinearLayout
         android:id="@+id/notifier"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -181,7 +211,8 @@
                 android:id="@+id/rv_attachment_menu_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:visibility="gone">
+                android:visibility="gone"
+                tools:visibility="visible">
 
                 <View
                     android:layout_width="match_parent"
