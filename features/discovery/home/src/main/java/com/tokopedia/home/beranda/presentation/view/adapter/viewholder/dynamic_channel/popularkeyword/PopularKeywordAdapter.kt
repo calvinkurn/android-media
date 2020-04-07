@@ -5,10 +5,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.design.image.SquareImageView
+import com.tokopedia.circular_view_pager.presentation.widgets.shimmeringImageView.ShimmeringImageView
 import com.tokopedia.home.R
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
-import com.tokopedia.home.beranda.helper.glide.loadImage
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PopularKeywordDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.PopularKeywordViewHolder
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
@@ -49,7 +48,7 @@ class PopularKeywordAdapter(val popularKeywordListener: PopularKeywordViewHolder
 
     class Holder(view: View): RecyclerView.ViewHolder(view) {
         val cardProduct = view.findViewById<CardView>(R.id.card_product)
-        val ivImage = view.findViewById<SquareImageView>(R.id.iv_product)
+        val ivImage = view.findViewById<ShimmeringImageView>(R.id.iv_product)
         val tvProduct = view.findViewById<Typography>(R.id.tv_product)
         val tvCount = view.findViewById<Typography>(R.id.tv_count)
 
