@@ -712,6 +712,7 @@ class OfficialHomeFragment :
                 shopData.additionalInformation.orEmpty(),
                 shopData.featuredBrandId.orEmpty(),
                 viewModel.isLoggedIn(),
+                shopData.shopId.orEmpty(),
                 shopData.attribution.orEmpty()
         )
         RouteManager.route(context, shopData.url)
