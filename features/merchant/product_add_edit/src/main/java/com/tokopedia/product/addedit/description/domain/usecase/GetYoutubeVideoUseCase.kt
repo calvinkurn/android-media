@@ -14,7 +14,9 @@ class GetYoutubeVideoUseCase @Inject constructor(
 ): RestRequestUseCase(repository) {
 
     companion object {
-        val YOUTUBE_API_KEY = intArrayOf(65, 73, 122, 97, 83, 121, 65, 68, 114, 110, 69, 100, 74, 71, 119, 115, 86, 77, 49, 90, 54, 117, 87, 87, 110, 87, 65, 103, 90, 90, 102, 49, 115, 83, 102, 110, 73, 86, 81 )
+        val YOUTUBE_API_KEY = intArrayOf(65, 73, 122, 97, 83, 121, 65, 68, 114, 110, 69,
+                100, 74, 71, 119, 115, 86, 77, 49, 90, 54, 117, 87, 87, 110, 87, 65, 103, 90, 90,
+                102, 49, 115, 83, 102, 110, 73, 86, 81 )
         const val YOUTUBE_LINK = "https://www.googleapis.com/youtube/v3/videos"
         const val ID = "id"
         const val KEY = "key"

@@ -11,12 +11,10 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
-import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_CURRENCY_TYPE
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_DEFAULT_PRICE
@@ -46,7 +44,7 @@ import com.tokopedia.product.addedit.description.presentation.activity.AddEditPr
 import com.tokopedia.product.addedit.description.presentation.activity.AddEditProductDescriptionActivity.Companion.PARAM_DESCRIPTION_INPUT_MODEL
 import com.tokopedia.product.addedit.description.presentation.activity.AddEditProductDescriptionActivity.Companion.PARAM_IS_EDIT_MODE
 import com.tokopedia.product.addedit.description.presentation.activity.AddEditProductDescriptionActivity.Companion.PARAM_VARIANT_INPUT_MODEL
-import com.tokopedia.product.addedit.description.presentation.adapter.YoutubeVideoTypeFactory
+import com.tokopedia.product.addedit.description.presentation.adapter.VideoLinkTypeFactory
 import com.tokopedia.product.addedit.description.presentation.model.DescriptionInputModel
 import com.tokopedia.product.addedit.description.presentation.model.PictureViewModel
 import com.tokopedia.product.addedit.description.presentation.model.ProductVariantInputModel
@@ -70,13 +68,13 @@ import kotlinx.android.synthetic.main.add_edit_product_video_input_layout.*
 import kotlinx.android.synthetic.main.fragment_add_edit_product_description.*
 import javax.inject.Inject
 
-class AddEditProductDescriptionFragment(
-        private val categoryId: String
-) : BaseListFragment<Visitable<*>, YoutubeVideoTypeFactory>(), YoutubeVideoTypeFactory.VideoLinkListener {
+class AddEditProductDescriptionFragment:
+        BaseListFragment<VideoLinkModel, VideoLinkTypeFactory>(),
+        VideoLinkTypeFactory.VideoLinkListener {
 
     companion object {
         fun createInstance(categoryId: String): Fragment {
-            return AddEditProductDescriptionFragment(categoryId).apply {
+            return AddEditProductDescriptionFragment().apply {
                 arguments = Bundle().apply {
                     putString(PARAM_CATEGORY_ID, categoryId)
                 }
@@ -86,7 +84,7 @@ class AddEditProductDescriptionFragment(
                            descriptionInputModel: DescriptionInputModel,
                            variantInputModel: ProductVariantInputModel,
                            isEditMode: Boolean): Fragment {
-            return AddEditProductDescriptionFragment(categoryId).apply {
+            return AddEditProductDescriptionFragment().apply {
                 arguments = Bundle().apply {
                     putString(PARAM_CATEGORY_ID, categoryId)
                     putParcelable(PARAM_DESCRIPTION_INPUT_MODEL, descriptionInputModel)
@@ -116,8 +114,8 @@ class AddEditProductDescriptionFragment(
     @Inject
     lateinit var descriptionViewModel: AddEditProductDescriptionViewModel
 
-    override fun getAdapterTypeFactory(): YoutubeVideoTypeFactory {
-        val videoLinkTypeFactory = YoutubeVideoTypeFactory()
+    override fun getAdapterTypeFactory(): VideoLinkTypeFactory {
+        val videoLinkTypeFactory = VideoLinkTypeFactory()
         videoLinkTypeFactory.setVideoLinkListener(this)
 
         return videoLinkTypeFactory
@@ -132,25 +130,25 @@ class AddEditProductDescriptionFragment(
         adapter.data.removeAt(position)
         adapter.notifyDataSetChanged()
         textViewAddVideo.visibility =
-            if (adapter.dataSize < MAX_VIDEOS) View.VISIBLE else View.GONE
+                if (adapter.dataSize < MAX_VIDEOS) View.VISIBLE else View.GONE
     }
 
     override fun onTextChanged(url: String, position: Int) {
-//        adapter.data[position].items.firstOrNull()?.snippet.thumbnails.default.url = url
-        if(url.isNotEmpty()) {
-            descriptionViewModel.getVideoYoutube(url)
-        }
+        adapter.data[position].inputUrl = url
     }
 
+    override fun onItemClicked(t: VideoLinkModel?) {
+        //no op
+    }
 
     override fun getScreenName(): String? = null
 
     override fun initInjector() {
         DaggerAddEditProductDescriptionComponent.builder()
-            .baseAppComponent((requireContext().applicationContext as BaseMainApplication).baseAppComponent)
-            .addEditProductDescriptionModule(AddEditProductDescriptionModule())
-            .build()
-            .inject(this)
+                .baseAppComponent((requireContext().applicationContext as BaseMainApplication).baseAppComponent)
+                .addEditProductDescriptionModule(AddEditProductDescriptionModule())
+                .build()
+                .inject(this)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -200,8 +198,7 @@ class AddEditProductDescriptionFragment(
             } else {
                 ProductAddDescriptionTracking.clickAddVideoLink(shopId)
             }
-            videoId += 1
-            loadData(videoId)
+            addEmptyVideoUrl()
         }
 
         layoutDescriptionTips.setOnClickListener {
@@ -228,6 +225,11 @@ class AddEditProductDescriptionFragment(
         observeProductVariant()
     }
 
+    private fun addEmptyVideoUrl() {
+        videoId += 1
+        loadData(videoId)
+    }
+
     private fun observeProductVariant() {
         descriptionViewModel.productVariant.observe(viewLifecycleOwner, Observer { result ->
             when (result) {
@@ -235,16 +237,20 @@ class AddEditProductDescriptionFragment(
                 is Fail -> showVariantErrorToast(getString(R.string.title_tooltip_description_tips))
             }
         })
-        observeVideoYoutube()
     }
 
     private fun applyEditMode() {
         val description = descriptionViewModel.descriptionInputModel.productDescription
         val videoLinks = descriptionViewModel.descriptionInputModel.videoLinkList
 
-        textFieldDescription.setText(description)
-        super.clearAllData()
-        super.renderList(videoLinks)
+        if (videoLinks.isEmpty()) {
+            addEmptyVideoUrl()
+        } else {
+            textFieldDescription.setText(description)
+            super.clearAllData()
+            super.renderList(videoLinks)
+        }
+
     }
 
     private fun showVariantErrorToast(errorMessage: String) {
@@ -253,8 +259,8 @@ class AddEditProductDescriptionFragment(
                     type =  Toaster.TYPE_ERROR,
                     actionText = getString(R.string.title_try_again),
                     clickListener =  View.OnClickListener {
-                descriptionViewModel.getVariants(descriptionViewModel.categoryId)
-            })
+                        descriptionViewModel.getVariants(descriptionViewModel.categoryId)
+                    })
         }
     }
 
@@ -264,20 +270,20 @@ class AddEditProductDescriptionFragment(
             when (requestCode) {
                 REQUEST_CODE_SHIPMENT -> {
                     val shipmentInputModel =
-                        data.getParcelableExtra<ShipmentInputModel>(EXTRA_SHIPMENT_INPUT)
+                            data.getParcelableExtra<ShipmentInputModel>(EXTRA_SHIPMENT_INPUT)
                     submitInput(shipmentInputModel)
                 }
                 REQUEST_CODE_VARIANT -> {
                     val variantCacheId = data.getStringExtra(EXTRA_VARIANT_PICKER_RESULT_CACHE_ID)
-                    val cacheManager = context?.let { SaveInstanceCacheManager(it, variantCacheId) }
+                    val cacheManager = SaveInstanceCacheManager(context!!, variantCacheId)
                     if (data.hasExtra(EXTRA_PRODUCT_VARIANT_SELECTION)) {
-                        val productVariantViewModel = cacheManager?.get(EXTRA_PRODUCT_VARIANT_SELECTION,
+                        val productVariantViewModel = cacheManager.get(EXTRA_PRODUCT_VARIANT_SELECTION,
                                 object : TypeToken<ProductVariantInputModel>() {}.type) ?: ProductVariantInputModel()
                         descriptionViewModel.variantInputModel.variantOptionParent = productVariantViewModel.variantOptionParent
                         descriptionViewModel.variantInputModel.productVariant = productVariantViewModel.productVariant
                     }
                     if (data.hasExtra(EXTRA_PRODUCT_SIZECHART)) {
-                        val productPictureViewModel = cacheManager?.get(EXTRA_PRODUCT_SIZECHART,
+                        val productPictureViewModel = cacheManager.get(EXTRA_PRODUCT_SIZECHART,
                                 object : TypeToken<PictureViewModel>() {}.type, PictureViewModel())
                         descriptionViewModel.variantInputModel.productSizeChart = productPictureViewModel
                     }
@@ -332,9 +338,10 @@ class AddEditProductDescriptionFragment(
     override fun loadData(page: Int) {
         val videoLinkModels: ArrayList<VideoLinkModel> = ArrayList()
         videoLinkModels.add(VideoLinkModel(page, "", TEST_IMAGE_URL))
-        super.renderList(videoLinkModels as List<Visitable<*>>)
+        super.renderList(videoLinkModels)
+
         textViewAddVideo.visibility =
-            if (adapter.dataSize < MAX_VIDEOS) View.VISIBLE else View.GONE
+                if (adapter.dataSize < MAX_VIDEOS) View.VISIBLE else View.GONE
     }
 
     private fun showVariantDialog(variants: List<ProductVariantByCatModel>) {
@@ -375,10 +382,8 @@ class AddEditProductDescriptionFragment(
 
     private fun submitInput(shipmentInputModel: ShipmentInputModel) {
         val descriptionInputModel = DescriptionInputModel(
-                textFieldDescription.getText()
-//                adapter.data
-//            textFieldDescription.getText(),
-//            adapter.data
+                textFieldDescription.getText(),
+                adapter.data
         )
         val intent = Intent()
         intent.putExtra(EXTRA_DESCRIPTION_INPUT, descriptionInputModel)
@@ -388,21 +393,16 @@ class AddEditProductDescriptionFragment(
         activity?.finish()
     }
 
-
-    private fun observeVideoYoutube() {
-        observe(descriptionViewModel.videoYoutube) {
-            when (it) {
-                is Success -> {
-                    adapter.addElement(videoId, it.data)
-                }
-                is Fail -> {
-                    //TODO when youtube onError
-                    view?.let { it1 -> Toaster.make(it1, it.throwable.toString(), Toaster.TYPE_NORMAL) }
-                }
-            }
-        }
+    private fun submitInputEdit() {
+        val descriptionInputModel = DescriptionInputModel(
+                textFieldDescription.getText(),
+                adapter.data
+        )
+        val intent = Intent()
+        intent.putExtra(EXTRA_DESCRIPTION_INPUT, descriptionInputModel)
+        intent.putExtra(EXTRA_VARIANT_INPUT, descriptionViewModel.variantInputModel)
+        activity?.setResult(Activity.RESULT_OK, intent)
+        activity?.finish()
     }
-
-    override fun onItemClicked(t: Visitable<*>?) {}
 
 }
