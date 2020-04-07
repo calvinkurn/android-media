@@ -51,17 +51,20 @@ import javax.inject.Inject
 import com.tokopedia.notifcenter.data.mapper.ProductStockHandlerMapper.map as stockHandlerMapper
 
 class NotificationUpdateFragment : BaseNotificationFragment(),
+open class NotificationUpdateFragment : BaseListFragment<Visitable<*>,
         NotificationUpdateContract.View,
         NotificationLongerTextDialog.LongerContentListener {
+    var cursor = ""
+    private var isFirstLoaded = true
+    var filterAdapter: NotificationUpdateFilterAdapter? = null
 
     @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
     @Inject lateinit var presenter: NotificationUpdatePresenter
     @Inject lateinit var analytics: NotificationUpdateAnalytics
 
     private lateinit var viewModel: NotificationUpdateViewModel
-
+    private val notificationUpdateAdapter by lazy { adapter as NotificationUpdateAdapter }
     private val notificationUpdateListener by lazy { context as NotificationUpdateListener }
-    private val _adapter by lazy { adapter as NotificationUpdateAdapter }
 
     private val filterAdapter by lazy {
         NotificationUpdateFilterAdapter(
@@ -186,7 +189,7 @@ class NotificationUpdateFragment : BaseNotificationFragment(),
         hideLoading()
         _adapter.removeEmptyState()
 
-        if (isFirstLoaded && notification.list.isEmpty()) {
+        if (_isFirstLoaded && it.list.isEmpty()) {
             lstFilter?.hide()
         }
 
@@ -214,8 +217,8 @@ class NotificationUpdateFragment : BaseNotificationFragment(),
             }
         }
     }
-
-    private fun onSuccessGetFilter(): (ArrayList<NotificationUpdateFilterViewBean>) -> Unit {
+          
+    open fun onSuccessGetFilter(): (ArrayList<NotificationUpdateFilterViewBean>) -> Unit {
         return {
             filterAdapter.updateData(it)
         }

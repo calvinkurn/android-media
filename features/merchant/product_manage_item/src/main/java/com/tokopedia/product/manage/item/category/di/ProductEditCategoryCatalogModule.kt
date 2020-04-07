@@ -3,16 +3,10 @@ package com.tokopedia.product.manage.item.category.di
 import android.content.Context
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.core.base.di.qualifier.ApplicationContext
-import com.tokopedia.core.common.category.data.repository.CategoryRepositoryImpl
-import com.tokopedia.core.common.category.data.source.CategoryDataSource
-import com.tokopedia.core.common.category.data.source.CategoryVersionDataSource
-import com.tokopedia.core.common.category.data.source.FetchCategoryDataSource
-import com.tokopedia.core.common.category.data.source.cloud.api.HadesCategoryApi
 import com.tokopedia.core.common.category.data.source.db.CategoryDB
 import com.tokopedia.core.common.category.data.source.db.CategoryDao
-import com.tokopedia.core.common.category.domain.CategoryRepository
+import com.tokopedia.core.common.category.di.module.CategoryPickerModule
 import com.tokopedia.core.network.di.qualifier.AceQualifier
-import com.tokopedia.core.network.di.qualifier.HadesQualifier
 import com.tokopedia.core.network.di.qualifier.MerlinQualifier
 import com.tokopedia.product.manage.item.R
 import com.tokopedia.product.manage.item.catalog.data.repository.CatalogRepositoryImpl
@@ -31,8 +25,8 @@ import retrofit2.Retrofit
 import javax.inject.Named
 
 @ProductAddScope
-@Module
-class ProductEditCategoryCatalogModule{
+@Module(includes = arrayOf(CategoryPickerModule::class))
+class ProductEditCategoryCatalogModule {
 
     @ProductAddScope
     @Provides
@@ -48,26 +42,6 @@ class ProductEditCategoryCatalogModule{
     @Provides
     fun provideCatalogRepository(catalogDataSource: CatalogDataSource): CatalogRepository {
         return CatalogRepositoryImpl(catalogDataSource)
-    }
-
-    @ProductAddScope
-    @Provides
-    fun provideCategoryDao(@ApplicationContext context: Context): CategoryDao {
-        return CategoryDB.getInstance(context).getCategoryDao()
-    }
-
-    @ProductAddScope
-    @Provides
-    fun provideCategoryRepository(categoryVersionDataSource: CategoryVersionDataSource,
-                                           categoryDataSource: CategoryDataSource,
-                                           fetchCategoryDataSource: FetchCategoryDataSource): CategoryRepository {
-        return CategoryRepositoryImpl(categoryVersionDataSource, categoryDataSource, fetchCategoryDataSource)
-    }
-
-    @ProductAddScope
-    @Provides
-    fun provideHadesCategoryApi(@HadesQualifier retrofit: Retrofit): HadesCategoryApi {
-        return retrofit.create(HadesCategoryApi::class.java)
     }
 
     @ProductAddScope

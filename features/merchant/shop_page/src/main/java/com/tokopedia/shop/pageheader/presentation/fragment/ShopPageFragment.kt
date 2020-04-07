@@ -175,6 +175,7 @@ class ShopPageFragment :
             savedInstanceState: Bundle?
     ): View? = inflater.inflate(R.layout.shop_page_main, container, false)
 
+
     override fun onDestroy() {
         shopViewModel.shopInfoResp.removeObservers(this)
         shopViewModel.whiteListResp.removeObservers(this)
@@ -555,6 +556,7 @@ class ShopPageFragment :
                 shopPageTracking?.sendScreenShopPage(shopCore.shopID, shopType)
             }
             shopPageFragmentHeaderViewHolder.updateShopTicker(shopInfo, isMyShop)
+
         }
         swipeToRefresh.isRefreshing = false
         view?.let { onToasterNoUploadProduct(it, getString(R.string.shop_page_product_no_upload_product), isFirstCreateShop) }
@@ -909,4 +911,12 @@ class ShopPageFragment :
             this.isFirstCreateShop = false
         }
     }
+
+    private fun onToasterNoUploadProduct(view: View, message: String, isFirstCreateShop: Boolean) {
+        if (isFirstCreateShop) {
+            Toaster.make(view, message, actionText = getString(R.string.shop_page_product_action_no_upload_product), type = Toaster.TYPE_NORMAL)
+            this.isFirstCreateShop = false
+        }
+    }
+
 }
