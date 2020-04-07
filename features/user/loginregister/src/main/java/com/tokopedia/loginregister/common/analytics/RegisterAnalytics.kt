@@ -20,8 +20,6 @@ import javax.inject.Inject
  */
 class RegisterAnalytics @Inject constructor() {
 
-    @Inject
-    lateinit var analytics: LoginRegisterAnalytics
     //#R1
     fun trackClickTopSignUpButton() {
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
@@ -438,14 +436,31 @@ class RegisterAnalytics @Inject constructor() {
 
     }
 
-    fun trackSuccessRegister(loginMethod: String, userId: Int, name: String, email: String, phoneNumber: String, isGoldMerchant: Boolean, shopId: String,shopName:String) {
+    fun trackSuccessRegister(
+            loginMethod: String,
+            userId: Int,
+            name: String,
+            email: String,
+            phoneNumber: String,
+            isGoldMerchant: Boolean,
+            shopId: String,
+            shopName:String
+    ) {
         when (loginMethod) {
             UserSessionInterface.LOGIN_METHOD_EMAIL -> onSuccessRegisterEmail(userId, name, email)
             UserSessionInterface.LOGIN_METHOD_PHONE -> onSuccessRegisterPhone()
             UserSessionInterface.LOGIN_METHOD_GOOGLE -> onSuccessRegisterGoogle()
             UserSessionInterface.LOGIN_METHOD_FACEBOOK -> onSuccessRegisterFacebook()
         }
-        sendSuccessRegisterToMoengage(userId, name, email, analytics.getLoginMethodMoengage(loginMethod), phoneNumber, isGoldMerchant, shopId,shopName)
+        sendSuccessRegisterToMoengage(
+                userId,
+                name,
+                email,
+                getLoginMethodMoengage(loginMethod),
+                phoneNumber,
+                isGoldMerchant,
+                shopId,
+                shopName)
     }
 
     //#R7
@@ -579,6 +594,17 @@ class RegisterAnalytics @Inject constructor() {
         ))
     }
 
+    private fun getLoginMethodMoengage(loginMethod: String?): String? {
+        return when (loginMethod) {
+            UserSessionInterface.LOGIN_METHOD_EMAIL_SMART_LOCK -> EMAIL_METHOD
+            UserSessionInterface.LOGIN_METHOD_EMAIL -> EMAIL_METHOD
+            UserSessionInterface.LOGIN_METHOD_FACEBOOK -> FACEBOOK_METHOD
+            UserSessionInterface.LOGIN_METHOD_GOOGLE -> GOOGLE_METHOD
+            UserSessionInterface.LOGIN_METHOD_PHONE -> PHONE_NUMBER_METHOD
+            else -> loginMethod
+        }
+    }
+
     companion object {
 
         val SCREEN_REGISTER_INITIAL = "Register page"
@@ -652,5 +678,8 @@ class RegisterAnalytics @Inject constructor() {
         val FACEBOOK = "facebook"
 
         private const val EMAIL_METHOD = "Email"
+        private const val FACEBOOK_METHOD = "Facebook"
+        private const val GOOGLE_METHOD = "Google"
+        private const val PHONE_NUMBER_METHOD = "Phone Number"
     }
 }
