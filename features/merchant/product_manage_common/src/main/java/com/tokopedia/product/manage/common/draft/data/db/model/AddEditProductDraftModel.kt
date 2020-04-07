@@ -1,4 +1,4 @@
-package com.tokopedia.product.addedit.draft.data.db.model
+package com.tokopedia.product.manage.common.draft.data.db.model
 
 class AddEditProductDraftModel(
         val productId: Long,

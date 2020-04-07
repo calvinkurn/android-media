@@ -1,7 +1,7 @@
-package com.tokopedia.product.addedit.draft.data.db.source
+package com.tokopedia.product.manage.common.draft.data.db.source
 
 import androidx.lifecycle.LiveData
-import com.tokopedia.product.addedit.draft.data.db.entity.AddEditProductDraftEntity
+import com.tokopedia.product.manage.common.draft.data.db.entity.AddEditProductDraftEntity
 import javax.inject.Inject
 
 class AddEditProductDraftDataSource @Inject constructor(private val dataManager: AddEditProductDraftDataManager) {
