@@ -600,7 +600,7 @@ class SaldoDepositFragment : BaseDaggerFragment() {
 
         activity?.let {
             val saldoDetailsComponent = SaldoDetailsComponentInstance.getComponent(it)
-            saldoDetailsComponent!!.inject(this)
+            saldoDetailsComponent.inject(this)
 
 
             if (context is AppCompatActivity) {

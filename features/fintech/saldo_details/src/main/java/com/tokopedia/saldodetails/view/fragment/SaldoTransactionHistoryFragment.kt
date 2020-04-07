@@ -304,7 +304,7 @@ class SaldoTransactionHistoryFragment : BaseDaggerFragment(), SaldoHistoryContra
         try {
             activity?.let {
                 val saldoDetailsComponent = SaldoDetailsComponentInstance.getComponent(it)
-                saldoDetailsComponent!!.inject(this)
+                saldoDetailsComponent.inject(this)
             }
         } catch (e: NullPointerException) {
 

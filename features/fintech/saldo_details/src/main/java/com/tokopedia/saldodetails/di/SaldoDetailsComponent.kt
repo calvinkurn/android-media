@@ -1,9 +1,6 @@
 package com.tokopedia.saldodetails.di
 
-import android.app.Activity
 import android.content.Context
-import com.tokopedia.abstraction.common.di.component.BaseAppComponent
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.saldodetails.view.activity.SaldoDepositActivity
 import com.tokopedia.saldodetails.view.activity.SaldoHoldInfoActivity
 import com.tokopedia.saldodetails.view.fragment.MerchantCreditDetailFragment
@@ -13,13 +10,15 @@ import com.tokopedia.saldodetails.view.fragment.SaldoTransactionHistoryFragment
 import dagger.Component
 
 @SaldoDetailsScope
-@Component(modules = [SaldoDetailsModule::class,
+@Component(modules = [
+    ContextModule::class,
+    SaldoDetailsModule::class,
     GqlQueryModule::class,
     DispatcherModule::class,
-    ViewModelModule::class], dependencies = [BaseAppComponent::class])
+    ViewModelModule::class])
 interface SaldoDetailsComponent {
 
-    @ApplicationContext
+    @SaldoDetailsScope
     fun context(): Context
 
     fun inject(fragment: MerchantSaldoPriorityFragment)
@@ -32,9 +31,5 @@ interface SaldoDetailsComponent {
 
     fun inject(saldoTransactionHistoryFragment: SaldoTransactionHistoryFragment)
 
-
     fun inject(saldoHoldInfoActivity: SaldoHoldInfoActivity)
-
-    val activity: Activity
-
 }

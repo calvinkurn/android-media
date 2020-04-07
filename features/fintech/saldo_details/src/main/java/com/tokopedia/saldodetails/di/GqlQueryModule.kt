@@ -1,83 +1,77 @@
 package com.tokopedia.saldodetails.di
 
-import android.app.Activity
+import android.content.Context
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import dagger.Module
 import dagger.Provides
 import javax.inject.Named
 
 @Module
-class GqlQueryModule(val activity: Activity) {
-
-    @SaldoDetailsScope
-    @Provides
-    fun provideActivity(): Activity {
-        return activity
-    }
+class GqlQueryModule {
 
     @SaldoDetailsScope
     @Provides
     @Named(MERCHANT_SALDO_DETAIL_QUERY)
-    fun provideMerchantSaldoDetailRawQuery(): String {
-        return GraphqlHelper.loadRawString(activity.resources, com.tokopedia.saldodetails.R.raw.query_get_merchant_saldo_details)
+    fun provideMerchantSaldoDetailRawQuery(@SaldoDetailsScope context: Context): String {
+        return GraphqlHelper.loadRawString(context.resources, com.tokopedia.saldodetails.R.raw.query_get_merchant_saldo_details)
     }
 
     @SaldoDetailsScope
     @Provides
     @Named(MERCHANT_CREDIT_DETAIL_QUERY)
-    fun provideMerchantCreditDetailRawQuery(): String {
-        return GraphqlHelper.loadRawString(activity.resources, com.tokopedia.saldodetails.R.raw.query_get_merchant_credit_details)
+    fun provideMerchantCreditDetailRawQuery(@SaldoDetailsScope context: Context): String {
+        return GraphqlHelper.loadRawString(context.resources, com.tokopedia.saldodetails.R.raw.query_get_merchant_credit_details)
     }
 
     @SaldoDetailsScope
     @Provides
     @Named(MERCHANT_SALDO_BALANCE_QUERY)
-    fun provideMerchantSaldoBalanceRawQuery(): String {
-        return GraphqlHelper.loadRawString(activity.resources, com.tokopedia.saldodetails.R.raw.query_saldo_balance)
+    fun provideMerchantSaldoBalanceRawQuery(@SaldoDetailsScope context: Context): String {
+        return GraphqlHelper.loadRawString(context.resources, com.tokopedia.saldodetails.R.raw.query_saldo_balance)
     }
 
     @SaldoDetailsScope
     @Provides
     @Named(SALDO_WITHDRAWAL_TICKER_QUERY)
-    fun provideSaldoWithdrawalTickerRawQuery(): String {
-        return GraphqlHelper.loadRawString(activity.resources, com.tokopedia.saldodetails.R.raw.query_withdrawal_ticker)
+    fun provideSaldoWithdrawalTickerRawQuery(@SaldoDetailsScope context: Context): String {
+        return GraphqlHelper.loadRawString(context.resources, com.tokopedia.saldodetails.R.raw.query_withdrawal_ticker)
     }
 
     @SaldoDetailsScope
     @Provides
     @Named(MERCHANT_CREDIT_LATE_COUNT_QUERY)
-    fun provideLateCountQuery(): String {
-        return GraphqlHelper.loadRawString(activity.resources, com.tokopedia.saldodetails.R.raw.query_get_merchant_latecount)
+    fun provideLateCountQuery(@SaldoDetailsScope context: Context): String {
+        return GraphqlHelper.loadRawString(context.resources, com.tokopedia.saldodetails.R.raw.query_get_merchant_latecount)
     }
 
     @SaldoDetailsScope
     @Provides
     @Named(Companion.UPDATE_MERCHANT_SALDO_STATUS)
-    fun provideUpdateSaldoStatusQuery(): String {
-        return GraphqlHelper.loadRawString(activity.resources, com.tokopedia.saldodetails.R.raw.query_set_saldo_status)
+    fun provideUpdateSaldoStatusQuery(@SaldoDetailsScope context: Context): String {
+        return GraphqlHelper.loadRawString(context.resources, com.tokopedia.saldodetails.R.raw.query_set_saldo_status)
     }
 
     @SaldoDetailsScope
     @Provides
     @Named(DEPOSITE_DETAIL_FOR_ALL_QUERY)
-    fun provideDepositDetailForAll(): String {
-        return GraphqlHelper.loadRawString(activity.resources,
+    fun provideDepositDetailForAll(@SaldoDetailsScope context: Context): String {
+        return GraphqlHelper.loadRawString(context.resources,
                 com.tokopedia.saldodetails.R.raw.query_deposit_details_for_all)
     }
 
     @SaldoDetailsScope
     @Provides
     @Named(DEPOSITE_ALL_TRANSACTION_QUERY)
-    fun provideDepositeAllTransation(): String {
-        return GraphqlHelper.loadRawString(activity.resources,
+    fun provideDepositeAllTransation(@SaldoDetailsScope context: Context): String {
+        return GraphqlHelper.loadRawString(context.resources,
                 com.tokopedia.saldodetails.R.raw.query_deposit_all_transaction)
     }
 
     @SaldoDetailsScope
     @Provides
     @Named(QUERY_SALDO_HOLD_INFO)
-    fun provideSaldoHoldInfo(): String {
-        return GraphqlHelper.loadRawString(activity.resources,
+    fun provideSaldoHoldInfo(@SaldoDetailsScope context: Context): String {
+        return GraphqlHelper.loadRawString(context.resources,
                 com.tokopedia.saldodetails.R.raw.query_saldo_hold_info)
     }
 

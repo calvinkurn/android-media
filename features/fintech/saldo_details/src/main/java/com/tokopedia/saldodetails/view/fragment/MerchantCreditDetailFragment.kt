@@ -250,7 +250,7 @@ class MerchantCreditDetailFragment : BaseDaggerFragment() {
     override fun initInjector() {
         activity?.let {
             val saldoDetailsComponent = SaldoDetailsComponentInstance.getComponent(it)
-            saldoDetailsComponent!!.inject(this)
+            saldoDetailsComponent.inject(this)
         }
     }
 
