@@ -1,4 +1,4 @@
-package com.tokopedia.tokopoints.view.contract;
+package com.tokopedia.tokopoints.view.sendgift;
 
 import android.content.Context;
 
@@ -31,11 +31,10 @@ public interface SendGiftContract {
         void showPopup(String title, String message, int success);
     }
 
-    interface Presenter extends CustomerPresenter<View> {
-        void destroyView();
+    interface Presenter  {
 
-        void sendGift(int id, String email, String notes);
+        void sendGift(Integer id, String email, String notes);
 
-        void preValidateGift(int id, String email);
+        void preValidateGift(Integer id, String email);
     }
 }

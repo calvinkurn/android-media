@@ -412,7 +412,8 @@ public class ShipmentMapper implements IShipmentMapper {
                 }
             }
 
-            if (shipmentAddressFormDataResponse.getPromoSAFResponse().getErrorDefault() != null) {
+            if (shipmentAddressFormDataResponse.getPromoSAFResponse() != null &&
+                    shipmentAddressFormDataResponse.getPromoSAFResponse().getErrorDefault() != null) {
                 PromoCheckoutErrorDefault promoCheckoutErrorDefault = new PromoCheckoutErrorDefault();
                 promoCheckoutErrorDefault.setTitle(shipmentAddressFormDataResponse.getPromoSAFResponse().getErrorDefault().getTitle());
                 promoCheckoutErrorDefault.setDesc(shipmentAddressFormDataResponse.getPromoSAFResponse().getErrorDefault().getDescription());
