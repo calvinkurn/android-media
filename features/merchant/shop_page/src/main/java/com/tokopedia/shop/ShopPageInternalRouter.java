@@ -15,8 +15,4 @@ public class ShopPageInternalRouter {
     public static Intent getShopPageIntent(Context context, String shopId) {
         return RouteManager.getIntent(context, ApplinkConst.SHOP, shopId);
     }
-
-    public static Intent getShoProductListIntent(Context context, String shopId, String keyword, String etalaseId) {
-        return ShopProductListActivity.createIntent(context, shopId, keyword, etalaseId, "", "");
-    }
 }

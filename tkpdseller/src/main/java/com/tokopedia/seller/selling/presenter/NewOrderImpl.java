@@ -42,11 +42,6 @@ public class NewOrderImpl extends NewOrder {
     }
 
     @Override
-    public String getMessageTAG() {
-        return null;
-    }
-
-    @Override
     public void initData(@NonNull Context context) {
         view.initListener();
         if (!isAfterRotate) {

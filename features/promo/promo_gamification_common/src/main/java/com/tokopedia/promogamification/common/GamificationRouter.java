@@ -13,8 +13,6 @@ public interface GamificationRouter {
 
     Intent getWebviewActivityWithIntent(Context context, String url, String title);
 
-    boolean isSupportedDelegateDeepLink(String appLinks);
-
     void goToHome(Context context);
 
     Intent getLoginIntent();

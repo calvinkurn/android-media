@@ -7,13 +7,13 @@ import android.os.Bundle;
 import android.os.ResultReceiver;
 import android.util.Log;
 
-import com.tokopedia.core2.R;
 import com.tokopedia.core.manage.people.address.datamanager.NetworkParam;
 import com.tokopedia.core.network.apiservices.user.PeopleActService;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.network.retrofit.response.ErrorListener;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
+import com.tokopedia.core2.R;
 
 import java.net.SocketTimeoutException;
 
@@ -59,16 +59,6 @@ public class ManagePeopleAddressService extends IntentService {
 
     public ManagePeopleAddressService() {
         super("ManagePeopleAddressService");
-    }
-
-    public static void startActionSetDefaultAddress(Context context,
-                                                    String addressId,
-                                                    ManagePeopleAddressReceiver mReceiver) {
-        Intent intent = new Intent(context, ManagePeopleAddressService.class);
-        intent.setAction(ACTION_SET_DEFAULT_ADDRESS);
-        intent.putExtra(EXTRA_PARAM_ADDRESS_ID, addressId);
-        intent.putExtra(EXTRA_PARAM_RECEIVER, mReceiver);
-        context.startService(intent);
     }
 
     @SuppressWarnings("unused")

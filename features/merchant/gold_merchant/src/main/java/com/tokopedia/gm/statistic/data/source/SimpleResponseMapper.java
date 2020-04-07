@@ -1,4 +1,4 @@
-package com.tokopedia.core.common.mapper;
+package com.tokopedia.gm.statistic.data.source;
 
 import retrofit2.Response;
 import rx.functions.Func1;

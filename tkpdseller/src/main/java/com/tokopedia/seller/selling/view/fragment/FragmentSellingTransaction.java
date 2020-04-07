@@ -203,16 +203,6 @@ public class FragmentSellingTransaction extends BaseFragment<SellingStatusTransa
     }
 
     @Override
-    public int getFragmentId() {
-        return 0;
-    }
-
-    @Override
-    public void ariseRetry(int type, Object... data) {
-
-    }
-
-    @Override
     public void setData(int type, Bundle data) {
 
     }

@@ -124,16 +124,6 @@ public class FragmentShopNewOrderDetailV2 extends Fragment implements ShopNewOrd
     }
 
     @Override
-    public int getFragmentId() {
-        return 0;
-    }
-
-    @Override
-    public void ariseRetry(int type, Object... data) {
-        progressDialog.dismiss();
-    }
-
-    @Override
     public void setData(int type, Bundle data) {
         if (type == SellingService.REJECT_ORDER_WITH_REASON) {
             DataResponseReject dataResponseReject = Parcels.unwrap(data.getParcelable(DataResponseReject.MODEL_DATA_REJECT_RESPONSE_KEY));

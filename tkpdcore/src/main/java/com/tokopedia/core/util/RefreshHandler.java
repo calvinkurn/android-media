@@ -1,8 +1,9 @@
 package com.tokopedia.core.util;
 
 import android.app.Activity;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import android.view.View;
+
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
 import com.tokopedia.core2.R;
@@ -15,7 +16,6 @@ public class RefreshHandler {
 	private SwipeToRefresh swipeToRefreshLayout;
 	private OnRefreshHandlerListener RefreshHandlerListener;
 	private boolean isRefreshing = false;
-	private Activity context;
 	private View view;
 
 	public interface OnRefreshHandlerListener {

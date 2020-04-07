@@ -2,16 +2,17 @@ package com.tokopedia.core.listener;
 
 import android.app.Activity;
 import android.content.Context;
-import com.google.android.material.tabs.TabLayout;
-import androidx.viewpager.widget.ViewPager;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+
+import androidx.viewpager.widget.ViewPager;
+
+import com.google.android.material.tabs.TabLayout;
 
 /**
  * Created by Angga.Prasetiyo on 01/02/2016.
  */
 public class GlobalMainTabSelectedListener implements TabLayout.OnTabSelectedListener {
-    private static final String TAG = GlobalMainTabSelectedListener.class.getSimpleName();
     private final ViewPager viewPager;
     protected Activity activity;
 

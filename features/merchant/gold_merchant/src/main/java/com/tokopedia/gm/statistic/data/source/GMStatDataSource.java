@@ -1,14 +1,10 @@
 package com.tokopedia.gm.statistic.data.source;
 
 
-import com.tokopedia.core.common.mapper.SimpleResponseMapper;
-
 import com.tokopedia.gm.statistic.constant.GMTransactionTableSortBy;
 import com.tokopedia.gm.statistic.constant.GMTransactionTableSortType;
-
 import com.tokopedia.gm.statistic.data.source.cloud.GMStatCloud;
 import com.tokopedia.gm.statistic.data.source.cloud.model.graph.GetBuyerGraph;
-
 import com.tokopedia.gm.statistic.data.source.cloud.model.graph.GetKeyword;
 import com.tokopedia.gm.statistic.data.source.cloud.model.graph.GetPopularProduct;
 import com.tokopedia.gm.statistic.data.source.cloud.model.graph.GetProductGraph;
@@ -17,14 +13,6 @@ import com.tokopedia.gm.statistic.data.source.cloud.model.graph.GetTransactionGr
 import com.tokopedia.gm.statistic.data.source.cloud.model.table.GetBuyerTable;
 import com.tokopedia.gm.statistic.data.source.cloud.model.table.GetProductTable;
 import com.tokopedia.gm.statistic.data.source.cloud.model.table.GetTransactionTable;
-
-
-
-
-
-
-
-
 
 import javax.inject.Inject;
 

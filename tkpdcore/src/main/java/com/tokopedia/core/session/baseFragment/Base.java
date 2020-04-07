@@ -14,12 +14,6 @@ public interface Base {
     String TAG = "MNORMANSYAH";
 
     /**
-     *
-     * @return for logging purpose
-     */
-    String getMessageTAG();
-
-    /**
      * this one is called from {@link Fragment#onResume()}
      * or {@link AppCompatActivity#onResume()}
      * @param context

@@ -112,11 +112,6 @@ public class FragmentSellingShipping extends BaseFragment<Shipping> implements S
         return R.layout.fragment_shop_shipping_confirmation;
     }
 
-    @Override
-    public int getFragmentId() {
-        return 0;
-    }
-
     public void requestBarcodeScanner(int pos) {
         getBarcodePosition = pos;
         scanBarCode();
@@ -578,10 +573,6 @@ public class FragmentSellingShipping extends BaseFragment<Shipping> implements S
         if (!progressDialog.isProgress()) {
             progressDialog.showDialog();
         }
-    }
-
-    @Override
-    public void ariseRetry(int type, Object... data) {
     }
 
     @Override

@@ -72,8 +72,6 @@ import com.tokopedia.logisticaddaddress.features.manage.ManagePeopleAddressActiv
 import com.tokopedia.logisticaddaddress.features.pinpoint.GeolocationActivity;
 import com.tokopedia.logisticdata.data.entity.address.Token;
 import com.tokopedia.merchantvoucher.MerchantVoucherModuleRouter;
-import com.tokopedia.mitratoppers.MitraToppersRouter;
-import com.tokopedia.mitratoppers.MitraToppersRouterInternal;
 import com.tokopedia.mlp.router.MLPRouter;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
@@ -161,7 +159,7 @@ public abstract class SellerRouterApplication extends MainApplication
         implements TkpdCoreRouter, SellerModuleRouter, PdpRouter, GMModuleRouter, TopAdsModuleRouter,
         IPaymentModuleRouter, IDigitalModuleRouter, TkpdInboxRouter, TransactionRouter,
         ReputationRouter, LogisticRouter,
-        MitraToppersRouter, AbstractionRouter, ShopModuleRouter,
+        AbstractionRouter, ShopModuleRouter,
         ApplinkRouter,
         NetworkRouter, TopAdsWebViewRouter, ContactUsModuleRouter, WithdrawRouter,
         PhoneVerificationRouter,
@@ -257,10 +255,6 @@ public abstract class SellerRouterApplication extends MainApplication
     public void resetAddProductCache(Context context) {
         EtalaseUtils.clearEtalaseCache(context);
         EtalaseUtils.clearDepartementCache(context);
-    }
-
-    public Intent getMitraToppersActivityIntent(Context context) {
-        return MitraToppersRouterInternal.getMitraToppersActivityIntent(context);
     }
 
     @Override
@@ -646,11 +640,6 @@ public abstract class SellerRouterApplication extends MainApplication
             Intent intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.WEBVIEW, ApplinkConst.WebViewUrl.SALDO_DETAIL);
             context.startActivity(intent);
         }
-    }
-
-    @Override
-    public Intent getShoProductListIntent(Context context, String shopId, String keyword, String etalaseId) {
-        return ShopPageInternalRouter.getShoProductListIntent(context, shopId, keyword, etalaseId);
     }
 
     public Intent getGroupChatIntent(Context context, String channelUrl) {

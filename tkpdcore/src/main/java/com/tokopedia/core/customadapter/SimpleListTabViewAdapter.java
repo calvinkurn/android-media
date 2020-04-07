@@ -23,15 +23,6 @@ public class SimpleListTabViewAdapter extends BaseAdapter {
     public Activity context;
     public LayoutInflater inflater;
 
-    public SimpleListTabViewAdapter(Activity context, ArrayList<String> name, ArrayList<Bitmap> Image, ArrayList<Integer> Res) {
-        super();
-        this.context = context;
-        this.name = name;
-        this.Image = Image;
-        this.Res = Res;
-        this.inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-    }
-
     public SimpleListTabViewAdapter(Activity context, ArrayList<String> name, ArrayList<Integer> Res) {
         super();
         this.context = context;
@@ -56,11 +47,6 @@ public class SimpleListTabViewAdapter extends BaseAdapter {
     public long getItemId(int position) {
         // TODO Auto-generated method stub
         return 0;
-    }
-
-
-    public void AddBitmap(Bitmap pImage) {
-        Image.add(pImage);
     }
 
     public static class ViewHolder {

@@ -721,22 +721,6 @@ public class FragmentShopShippingDetailV2 extends Fragment implements ShopShippi
         progressDialog.showDialog();
     }
 
-
-    @Override
-    public int getFragmentId() {
-        return 0;
-    }
-
-    @Override
-    public void ariseRetry(int type, Object... data) {
-        switch (type) {
-            case SellingService.CONFIRM_SHIPPING:
-            case SellingService.CANCEL_SHIPPING:
-                progressDialog.dismiss();
-                break;
-        }
-    }
-
     @Override
     public void setData(final int type, Bundle data) {
         switch (type) {

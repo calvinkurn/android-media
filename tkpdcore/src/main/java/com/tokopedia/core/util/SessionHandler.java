@@ -476,22 +476,6 @@ public class SessionHandler {
         //return status;
     }
 
-    public void Logout(Context context) {
-        if (context != null && context instanceof AppCompatActivity && context instanceof onLogoutListener) {
-            if (((AppCompatActivity) context).getFragmentManager().findFragmentByTag(DialogLogoutFragment.FRAGMENT_TAG) == null) {
-                DialogLogoutFragment dialogLogoutFragment = new DialogLogoutFragment();
-                dialogLogoutFragment.show(((AppCompatActivity) context).getFragmentManager(), DialogLogoutFragment.FRAGMENT_TAG);
-                if (!GlobalConfig.DEBUG) Crashlytics.setUserIdentifier("");
-            }
-        }
-
-        //Set logout to Branch.io sdk,
-        LinkerManager.getInstance().sendEvent(
-                LinkerUtils.createGenericRequest(LinkerConstants.EVENT_LOGOUT_VAL,
-                        null)
-        );
-    }
-
     private void clearUserData() {
         clearUserData(context);
     }

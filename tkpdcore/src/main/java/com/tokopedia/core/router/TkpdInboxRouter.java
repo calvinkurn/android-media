@@ -16,7 +16,6 @@ public interface TkpdInboxRouter {
     String SHOP = "shop";
 
     String IS_CHAT_BOT = "is_chat_bot";
-    String INDICATOR_VISIBILITY = "indicator_groupchat";
 
 
     Intent getAskBuyerIntent(Context context, String toUserId,

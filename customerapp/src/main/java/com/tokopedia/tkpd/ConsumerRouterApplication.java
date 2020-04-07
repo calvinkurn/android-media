@@ -29,7 +29,6 @@ import com.tokopedia.abstraction.Actions.interfaces.ActionDataProvider;
 import com.tokopedia.abstraction.base.view.appupdate.ApplicationUpdate;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
-import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.analytics.mapper.TkpdAppsFlyerMapper;
 import com.tokopedia.analytics.mapper.TkpdAppsFlyerRouter;
@@ -88,13 +87,10 @@ import com.tokopedia.fingerprint.util.FingerprintConstant;
 import com.tokopedia.flight.orderlist.view.fragment.FlightOrderListFragment;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.home.HomeInternalRouter;
-import com.tokopedia.home.IHomeRouter;
 import com.tokopedia.home.account.AccountHomeRouter;
 import com.tokopedia.home.account.analytics.data.model.UserAttributeData;
 import com.tokopedia.home.account.di.AccountHomeInjection;
 import com.tokopedia.home.account.di.AccountHomeInjectionImpl;
-import com.tokopedia.home.beranda.data.model.TokopointHomeDrawerData;
-import com.tokopedia.home.beranda.data.model.UserTier;
 import com.tokopedia.homecredit.view.fragment.FragmentCardIdCamera;
 import com.tokopedia.homecredit.view.fragment.FragmentSelfieIdCamera;
 import com.tokopedia.inbox.common.ResolutionRouter;
@@ -117,18 +113,12 @@ import com.tokopedia.logisticaddaddress.features.manage.ManagePeopleAddressActiv
 import com.tokopedia.logisticaddaddress.features.pinpoint.GeolocationActivity;
 import com.tokopedia.logisticdata.data.entity.address.Token;
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
-import com.tokopedia.loyalty.common.TokoPointDrawerData;
-import com.tokopedia.loyalty.di.component.DaggerTokopointComponent;
 import com.tokopedia.loyalty.di.component.TokopointComponent;
-import com.tokopedia.loyalty.di.module.ServiceApiModule;
-import com.tokopedia.loyalty.domain.usecase.GetTokopointUseCase;
 import com.tokopedia.loyalty.router.LoyaltyModuleRouter;
 import com.tokopedia.loyalty.view.activity.LoyaltyActivity;
 import com.tokopedia.loyalty.view.data.PromoData;
 import com.tokopedia.loyalty.view.data.VoucherViewModel;
 import com.tokopedia.merchantvoucher.MerchantVoucherModuleRouter;
-import com.tokopedia.mitratoppers.MitraToppersRouter;
-import com.tokopedia.mitratoppers.MitraToppersRouterInternal;
 import com.tokopedia.navigation.GlobalNavRouter;
 import com.tokopedia.navigation.presentation.activity.MainParentActivity;
 import com.tokopedia.network.NetworkRouter;
@@ -148,7 +138,6 @@ import com.tokopedia.phoneverification.view.activity.PhoneVerificationActivation
 import com.tokopedia.promogamification.common.GamificationRouter;
 import com.tokopedia.purchase_platform.common.constant.CartConstant;
 import com.tokopedia.purchase_platform.features.cart.view.CartFragment;
-import com.tokopedia.recentview.RecentViewRouter;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
@@ -189,7 +178,6 @@ import com.tokopedia.track.TrackApp;
 import com.tokopedia.transaction.common.TransactionRouter;
 import com.tokopedia.transaction.orders.UnifiedOrderListRouter;
 import com.tokopedia.transaction.others.CreditCardFingerPrintUseCase;
-import com.tokopedia.transaction.router.ITransactionOrderDetailRouter;
 import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.usecase.UseCase;
 import com.tokopedia.user.session.UserSession;
@@ -210,7 +198,6 @@ import io.hansel.hanselsdk.Hansel;
 import okhttp3.Interceptor;
 import okhttp3.Response;
 import rx.Observable;
-import rx.functions.Func1;
 
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_DESCRIPTION;
 import static com.tokopedia.kyc.Constants.Keys.KYC_CARDID_CAMERA;
@@ -235,25 +222,21 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         ReputationRouter,
         AbstractionRouter,
         LogisticRouter,
-        IHomeRouter,
         ApplinkRouter,
         ShopModuleRouter,
         LoyaltyModuleRouter,
         GamificationRouter,
         ReactNativeRouter,
-        ITransactionOrderDetailRouter,
         NetworkRouter,
         GlobalNavRouter,
         AccountHomeRouter,
         OmsModuleRouter,
         TopAdsWebViewRouter,
         EventModuleRouter,
-        MitraToppersRouter,
         DigitalBrowseRouter,
         PhoneVerificationRouter,
         TkpdAppsFlyerRouter,
         UnifiedOrderListRouter,
-        RecentViewRouter,
         MerchantVoucherModuleRouter,
         LinkerRouter,
         DigitalRouter,
@@ -752,41 +735,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Observable<TokopointHomeDrawerData> getTokopointUseCaseForHome() {
-        com.tokopedia.usecase.RequestParams params = com.tokopedia.usecase.RequestParams.create();
-        params.putString(GetTokopointUseCase.KEY_PARAM,
-                GraphqlHelper.loadRawString(getResources(), com.tokopedia.loyalty.R.raw.tokopoints_query));
-        if(tokopointComponent == null){
-            tokopointComponent = DaggerTokopointComponent.builder()
-                    .baseAppComponent((ConsumerRouterApplication.this).getBaseAppComponent())
-                    .serviceApiModule(new ServiceApiModule())
-                    .build();
-        }
-        return this.tokopointComponent.getTokopointUseCase().createObservable(params)
-                .map(new Func1<TokoPointDrawerData, TokopointHomeDrawerData>() {
-                    @Override
-                    public TokopointHomeDrawerData call(TokoPointDrawerData tokoPointDrawerData) {
-                        UserTier userTier = new UserTier(
-                                tokoPointDrawerData.getUserTier().getTierNameDesc(),
-                                tokoPointDrawerData.getUserTier().getTierImageUrl(),
-                                tokoPointDrawerData.getUserTier().getRewardPointsStr()
-                        );
-
-                        return new TokopointHomeDrawerData(
-                                tokoPointDrawerData.getOffFlag(),
-                                tokoPointDrawerData.getHasNotif(),
-                                userTier,
-                                tokoPointDrawerData.getUserTier().getRewardPointsStr(),
-                                tokoPointDrawerData.getMainPageUrl(),
-                                tokoPointDrawerData.getMainPageTitle(),
-                                tokoPointDrawerData.getSumCoupon(),
-                                tokoPointDrawerData.getSumCouponStr()
-                        );
-                    }
-                });
-    }
-
-    @Override
     public boolean isToggleBuyAgainOn() {
         return remoteConfig.getBoolean(RemoteConfigKey.MAIN_APP_ENABLE_BUY_AGAIN, true);
     }
@@ -831,17 +779,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent getShoProductListIntent(Context context, String shopId, String keyword, String etalaseId) {
-        return ShopPageInternalRouter.getShoProductListIntent(context, shopId, keyword, etalaseId);
-    }
-
-    @Override
     public void logInvalidGrant(Response response) {
         AnalyticsLog.logInvalidGrant(this, legacyGCMHandler(), legacySessionHandler(), response.request().url().toString());
-    }
-
-    public boolean isIndicatorVisible() {
-        return remoteConfig.getBoolean(TkpdInboxRouter.INDICATOR_VISIBILITY, false);
     }
 
     @Override
@@ -1166,11 +1105,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public boolean isEnableInterestPick() {
         return remoteConfig.getBoolean("mainapp_enable_interest_pick", Boolean.TRUE);
-    }
-
-    @Override
-    public Intent getMitraToppersActivityIntent(Context context) {
-        return MitraToppersRouterInternal.getMitraToppersActivityIntent(context);
     }
 
     @Override

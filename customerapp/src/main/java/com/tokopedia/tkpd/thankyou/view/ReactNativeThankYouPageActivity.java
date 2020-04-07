@@ -264,17 +264,7 @@ public class ReactNativeThankYouPageActivity extends ReactFragmentActivity<React
     }
 
     @Override
-    public Intent getLoginIntent(Context context) {
-        return null;
-    }
-
-    @Override
     public Intent getShopPageIntent(Context context, String shopId) {
-        return null;
-    }
-
-    @Override
-    public Intent getShoProductListIntent(Context context, String shopId, String keyword, String etalaseId) {
         return null;
     }
 
