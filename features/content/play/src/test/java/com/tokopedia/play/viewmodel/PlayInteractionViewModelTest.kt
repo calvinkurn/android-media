@@ -200,6 +200,34 @@ class PlayInteractionViewModelTest {
     }
 
     @Test
+    fun `when logged in, should be allowed to click pinned product`() {
+        val eventClickPinnedProduct = InteractionEvent.ClickPinnedProduct
+
+        coEvery { userSession.isLoggedIn } returns true
+
+        val expectedResult = Event(LoginStateEvent.InteractionAllowed(eventClickPinnedProduct))
+
+        playInteractionViewModel.doInteractionEvent(eventClickPinnedProduct)
+
+        Assertions.assertThat(playInteractionViewModel.observableLoggedInInteractionEvent.getOrAwaitValue())
+                .isEqualToComparingFieldByFieldRecursively(expectedResult)
+    }
+
+    @Test
+    fun `when not logged in, should be allowed to click pinned product`() {
+        val eventClickPinnedProduct = InteractionEvent.ClickPinnedProduct
+
+        coEvery { userSession.isLoggedIn } returns false
+
+        val expectedResult = Event(LoginStateEvent.InteractionAllowed(eventClickPinnedProduct))
+
+        playInteractionViewModel.doInteractionEvent(eventClickPinnedProduct)
+
+        Assertions.assertThat(playInteractionViewModel.observableLoggedInInteractionEvent.getOrAwaitValue())
+                .isEqualToComparingFieldByFieldRecursively(expectedResult)
+    }
+
+    @Test
     fun `test do follow shop`() {
         coEvery { mockPostFollowPartnerUseCase.executeOnBackground() } returns true
 
