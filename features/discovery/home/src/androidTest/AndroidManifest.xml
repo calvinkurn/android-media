@@ -6,6 +6,6 @@
 
     <application>
         <activity
-            android:name=".InstrumentationHomeTestActivity"/>
+            android:name=".environment.InstrumentationHomeTestActivity"/>
     </application>
 </manifest>

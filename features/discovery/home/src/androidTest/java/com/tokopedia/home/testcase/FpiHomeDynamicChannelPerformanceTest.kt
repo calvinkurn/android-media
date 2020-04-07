@@ -1,4 +1,4 @@
-package com.tokopedia.home
+package com.tokopedia.home.testcase
 
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.NoMatchingViewException
@@ -6,9 +6,12 @@ import androidx.test.espresso.ViewInteraction
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers
-import androidx.test.espresso.matcher.ViewMatchers.*
+import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.rule.ActivityTestRule
-import com.tokopedia.analytics.performance.util.PerformanceData
+import com.tokopedia.analytics.performance.util.FpiPerformanceData
+import com.tokopedia.home.environment.InstrumentationHomeTestActivity
+import com.tokopedia.home.R
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import java.io.File
@@ -19,8 +22,7 @@ import java.io.File
  *
  * @see [Testing documentation](http://d.android.com/tools/testing)
  */
-class HomeDynamicChannelPerformanceTest {
-    val TEST_CASE_PAGE_LOAD_TIME_PERFORMANCE = "test_case_page_load_time"
+class FpiHomeDynamicChannelPerformanceTest {
     val TEST_CASE_INITIAL_INFLATE_PERFORMANCE = "test_case_initial_inflate"
     val TEST_CASE_DYNAMIC_CHANNEL_SCROLL_PERFORMANCE = "test_case_dynamic_channel_scroll"
     val TEST_CASE_OVERALL_SCROLL_PERFORMANCE = "test_case_overall_scroll"
@@ -34,10 +36,9 @@ class HomeDynamicChannelPerformanceTest {
 //        Thread.sleep(10000000)
 //    }
 
-    @Test
-    fun testPageLoadTimePerformance() {
-        waitForData()
-        savePLTPerformanceResultData(TEST_CASE_PAGE_LOAD_TIME_PERFORMANCE, activityRule.activity.getPageLoadTime())
+    @Before
+    fun deleteDatabase() {
+        activityRule. activity.deleteDatabase("HomeCache.db")
     }
 
     @Test
@@ -65,7 +66,7 @@ class HomeDynamicChannelPerformanceTest {
     }
 
     private fun waitForData() {
-        Thread.sleep(4000)
+        Thread.sleep(8000)
     }
 
     fun ViewInteraction.isDisplayed(): Boolean {
@@ -88,64 +89,59 @@ class HomeDynamicChannelPerformanceTest {
     }
 
     private fun saveFPIPerformanceResultData(tag: String) {
-        val performanceData = activityRule.activity.getPerformanceResultData()
+        val performanceData = activityRule.activity.getFpiPerformanceResultData()
         performanceData?.let {
             writeFPIPerformanceFile(tag, performanceData)
         }
     }
 
-    private fun savePLTPerformanceResultData(tag: String, pageLoadTime: Long) {
-        val performanceData = activityRule.activity.getPerformanceResultData()
-        performanceData?.let {
-            writePLTPerformanceFile(tag, performanceData, pageLoadTime)
-        }
-    }
-
-    private fun writeFPIPerformanceFile(testCaseName: String, performanceData: PerformanceData) {
+    private fun writeFPIPerformanceFile(testCaseName: String, fpiPerformanceData: FpiPerformanceData) {
         val path = activityRule.activity.getExternalFilesDir(null)
         val perfDataDir = File(path, "perf_data")
         if (!perfDataDir.exists()) {
             makeInitialPerfDir(perfDataDir)
         }
-        val perfReport = File(perfDataDir, "report-fpi.csv")
-        perfReport.appendText(
+        val perfReportFpi = File(perfDataDir, "report-fpi.csv")
+        val fpiValue = (100 - fpiPerformanceData.jankyFramePercentage)
+        perfReportFpi.appendText(
                 "$testCaseName," +
-                        "${performanceData.allFrames}," +
-                        "${performanceData.jankyFrames}," +
-                        "${performanceData.jankyFramePercentage}," +
-                        "${(100 - performanceData.jankyFramePercentage)}\n")
-    }
+                        "${fpiPerformanceData.allFrames}," +
+                        "${fpiPerformanceData.jankyFrames}," +
+                        "${fpiPerformanceData.jankyFramePercentage}," +
+                        "$fpiValue\n")
 
-    private fun writePLTPerformanceFile(testCaseName: String, performanceData: PerformanceData, duration: Long) {
-        val path = activityRule.activity.getExternalFilesDir(null)
-        val perfDataDir = File(path, "perf_data")
-        if (!perfDataDir.exists()) {
-            makeInitialPerfDir(perfDataDir)
-        }
-        val perfReport = File(perfDataDir, "report-plt.csv")
+        val perfReport = File(perfDataDir, "report.csv")
         perfReport.appendText(
                 "$testCaseName," +
-                        "${duration}," +
-                        "${(100 - performanceData.jankyFramePercentage)}\n")
+                        "$fpiValue FPI\n"
+        )
     }
 
     private fun makeInitialPerfDir(perfDataDir: File) {
         val testcase = "Test Case"
-        val plt = "PLT (ms)"
-        val initialfpi = "Initial FPI"
+        val metrics = "Metrics"
+        val value = "Value"
+
+        val startPagePlt = "Start Page Duration (ms)"
+        val networkRequestPlt = "Network Request Duration (ms)"
+        val renderPagePlt = "Render Page Duration (ms)"
+        val overallPlt = "Page Load Time (FPI) (ms)"
+        val datasource = "Data source"
+
         val allframes = "All Frames"
         val jankyframes = "Janky Frames"
         val jankyframespercentage = "Janky Frames (%)"
         val indexperformance = "Index Performance (FPI)"
-        val homeFpi = "Home FPI"
-        val homePlt = "Home PLT"
 
         perfDataDir.mkdirs()
         val perfReportPlt = File(perfDataDir, "report-plt.csv")
         perfReportPlt.appendText("" +
                 "$testcase," +
-                "$plt," +
-                "$initialfpi\n")
+                "$startPagePlt," +
+                "$networkRequestPlt," +
+                "$renderPagePlt," +
+                "$overallPlt," +
+                "$datasource\n")
 
         val perfReportFpi = File(perfDataDir, "report-fpi.csv")
         perfReportFpi.appendText("" +
@@ -157,7 +153,7 @@ class HomeDynamicChannelPerformanceTest {
 
         val perfReport = File(perfDataDir, "report.csv")
         perfReport.appendText("" +
-                "$homeFpi," +
-                "$homePlt\n")
+                "$metrics," +
+                "$value\n")
     }
 }

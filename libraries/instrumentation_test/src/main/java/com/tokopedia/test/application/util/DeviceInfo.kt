@@ -1,4 +1,4 @@
-package com.tokopedia.test.application
+package com.tokopedia.test.application.util
 
 import android.annotation.SuppressLint
 import android.content.Context

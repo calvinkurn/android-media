@@ -1,4 +1,4 @@
-package com.tokopedia.home
+package com.tokopedia.home.environment
 
 import com.tokopedia.analytics.performance.util.JankyFrameMonitoringUtil
 

@@ -1,10 +1,11 @@
-package  com.tokopedia.test.application;
+package com.tokopedia.test.application.environment;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Base64;
+
 import com.google.android.gms.ads.identifier.AdvertisingIdClient;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
@@ -26,6 +27,9 @@ import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.instrumentation.test.R;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
+import com.tokopedia.test.application.util.DeviceConnectionInfo;
+import com.tokopedia.test.application.util.DeviceInfo;
+import com.tokopedia.test.application.util.DeviceScreenInfo;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.interfaces.ContextAnalytics;
 
@@ -40,7 +44,7 @@ import java.util.UUID;
 
 import okhttp3.Response;
 
-public class InstrumentationTestApp extends BaseMainApplication implements TkpdCoreRouter, NetworkRouter {
+public class MockInstrumentationTestApp extends BaseMainApplication implements TkpdCoreRouter, NetworkRouter {
 
     @Override
     public void onCreate() {
@@ -54,6 +58,12 @@ public class InstrumentationTestApp extends BaseMainApplication implements TkpdC
         GlobalConfig.DEBUG = true;
         GlobalConfig.VERSION_NAME = "3.66";
         GraphqlClient.init(this);
+        GlobalConfig.DEBUG = true;
+        enableMockResponse();
+        super.onCreate();
+    }
+
+    public void enableMockResponse() {
         if (GlobalConfig.DEBUG) {
             HashMap<String, String> responseList = new HashMap<>();
             responseList.put("dynamicHomeChannel", getRawString(R.raw.response_mock_data_dynamic_home_channel));
@@ -63,8 +73,13 @@ public class InstrumentationTestApp extends BaseMainApplication implements TkpdC
             responseList.put("playGetLiveDynamicChannels", getRawString(R.raw.response_mock_data_play_widget));
             GraphqlClient.addTestInterceptor(responseList, this);
         }
-        com.tokopedia.config.GlobalConfig.DEBUG = true;
-        super.onCreate();
+    }
+
+    public void disableMockResponse() {
+        if (GlobalConfig.DEBUG) {
+            HashMap<String, String> responseList = new HashMap<>();
+            GraphqlClient.addTestInterceptor(responseList, this);
+        }
     }
 
     private String getRawString(int res) {

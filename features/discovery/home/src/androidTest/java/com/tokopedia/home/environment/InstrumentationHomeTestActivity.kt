@@ -1,20 +1,18 @@
-package com.tokopedia.home
+package com.tokopedia.home.environment
 
 import android.app.Activity
 import android.graphics.Color
 import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.view.WindowManager
-import com.tokopedia.analytics.performance.util.JankyFrameMonitoringUtil
-import com.tokopedia.analytics.performance.util.PerformanceData
+import androidx.appcompat.app.AppCompatActivity
+import com.tokopedia.analytics.performance.util.*
+import com.tokopedia.home.R
 import com.tokopedia.home.beranda.presentation.view.fragment.HomeFragment
 import com.tokopedia.navigation_common.listener.HomePerformanceMonitoringListener
 import com.tokopedia.navigation_common.listener.JankyFramesMonitoringListener
 import com.tokopedia.navigation_common.listener.MainParentStatusBarListener
-import java.io.File
 
 class InstrumentationHomeTestActivity : AppCompatActivity(),
         MainParentStatusBarListener,
@@ -26,11 +24,10 @@ class InstrumentationHomeTestActivity : AppCompatActivity(),
         return jankyFramePerformanceUtil
     }
 
-    private var endActivityTime: Long = 0
-    private var startActivityTime: Long = 0
-    private var pageLoadTime: Long = 0
-    private var performanceData: PerformanceData? = null
+    private var fpiPerformanceData: FpiPerformanceData? = null
     private var jankyFramePerformanceUtil: JankyFrameMonitoringUtil? = null
+    private var pageLoadTimePerformanceInterface: PageLoadTimePerformanceInterface? = null
+    var isFromCache: Boolean = false
 
     override fun requestStatusBarDark() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -76,29 +73,34 @@ class InstrumentationHomeTestActivity : AppCompatActivity(),
         fragmentTransaction.commit()
     }
 
-    override fun onFrameRendered(performanceData: PerformanceData) {
-        Log.d("HomeTestIntrumentedTest", "------------------------------")
-        Log.d("HomeTestIntrumentedTest", "allFrames: "+performanceData.allFrames)
-        Log.d("HomeTestIntrumentedTest", "jankyFrames: "+performanceData.jankyFrames)
-        Log.d("HomeTestIntrumentedTest", "jankyPercentage: "+performanceData.jankyFramePercentage)
-        Log.d("HomeTestIntrumentedTest", "Index Performance: "+(100 - performanceData.jankyFramePercentage))
-        Log.d("HomeTestIntrumentedTest", "------------------------------")
-        this.performanceData = performanceData
+    override fun onFrameRendered(fpiPerformanceData: FpiPerformanceData) {
+        this.fpiPerformanceData = fpiPerformanceData
     }
 
-    override fun getPerformanceResultData(): PerformanceData? {
-        return performanceData
+    override fun getFpiPerformanceResultData(): FpiPerformanceData? {
+        return fpiPerformanceData
     }
 
-    override fun getPageLoadTime(): Long {
-        return endActivityTime - startActivityTime
+    override fun getPltPerformanceResultData(): PltPerformanceData? {
+        return pageLoadTimePerformanceInterface?.getPltPerformanceData()
     }
 
-    override fun stopHomePerformanceMonitoring() {
-        endActivityTime = System.currentTimeMillis()
+    override fun getPageLoadTimePerformanceInterface(): PageLoadTimePerformanceInterface? {
+        return pageLoadTimePerformanceInterface
+    }
+
+    override fun stopHomePerformanceMonitoring(isCache: Boolean) {
+        pageLoadTimePerformanceInterface?.stopMonitoring()
+        isFromCache = isCache
     }
 
     override fun startHomePerformanceMonitoring() {
-        startActivityTime = System.currentTimeMillis()
+        pageLoadTimePerformanceInterface = PageLoadTimePerformanceCallback(
+                tagPrepareDuration = "prepare",
+                tagNetworkRequestDuration = "network",
+                tagRenderDuration = "render"
+        )
+        pageLoadTimePerformanceInterface?.startMonitoring("start monitoring")
+        pageLoadTimePerformanceInterface?.startPreparePagePerformanceMonitoring()
     }
 }

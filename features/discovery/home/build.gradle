@@ -25,10 +25,27 @@ android {
         exclude 'META-INF/**'
     }
 
+    flavorDimensions "tier", "client"
+    productFlavors {
+        prod {
+            dimension "client"
+            testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
+        }
+        live {
+            dimension "tier"
+        }
+        staging {
+            dimension "tier"
+        }
+        dev {
+            dimension "client"
+        }
+    }
+
     defaultConfig {
         defaultConfig {
             multiDexEnabled true
-            testInstrumentationRunner "com.tokopedia.test.application.InstrumentationTestRunner"
+            testInstrumentationRunner "com.tokopedia.test.application.environment.MockInstrumentationTestRunner"
         }
         javaCompileOptions {
             annotationProcessorOptions {
@@ -178,7 +195,6 @@ dependencies {
     implementation 'com.android.support:multidex:1.0.3'
     androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation 'androidx.test:rules:1.2.0'
-    androidTestImplementation rootProject.ext.playServicesDependencies.core
     androidTestImplementation rootProject.ext.firebase.core
     androidTestImplementation project(rootProject.ext.libraries.core_legacy)
     androidTestImplementation 'junit:junit:4.12'
