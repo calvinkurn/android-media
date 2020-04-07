@@ -370,6 +370,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                                 }
                             }
                             promoNotEligibleBottomsheet.show(fm, "")
+                            orderSummaryAnalytics.eventViewBottomSheetPromoError()
                         }
                     }
                 }
@@ -401,6 +402,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
             tvSubheaderAction?.setOnClickListener {
                 orderSummaryAnalytics.eventClickInfoOnOSP()
                 OccInfoBottomSheet().show(this, preference.onboardingComponent)
+                orderSummaryAnalytics.eventViewOnboardingInfo()
             }
             tvSubheaderAction?.visible()
             tvSubheader?.visible()
@@ -412,6 +414,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
             tvHeader3?.setOnClickListener {
                 orderSummaryAnalytics.eventClickInfoOnOSP()
                 OccInfoBottomSheet().show(this, preference.onboardingComponent)
+                orderSummaryAnalytics.eventViewOnboardingInfo()
             }
             tvHeader2?.visible()
             tvHeader3?.visible()

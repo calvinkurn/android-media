@@ -1237,9 +1237,9 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
             var productDiscount = 0
             var shippingDiscount = 0
             var cashback = 0
-            val list1 = validateUsePromoRevampUiModel?.promoUiModel?.benefitSummaryInfoUiModel?.summaries
+            val summaries = validateUsePromoRevampUiModel?.promoUiModel?.benefitSummaryInfoUiModel?.summaries
                     ?: emptyList()
-            for (summary in list1) {
+            for (summary in summaries) {
                 if (summary.type == SummariesUiModel.TYPE_DISCOUNT) {
                     for (detail in summary.details) {
                         if (detail.type == SummariesUiModel.TYPE_SHIPPING_DISCOUNT) {

@@ -414,12 +414,8 @@ public interface ConstantTransactionAnalytics {
 
         String EDIT_QUANTITY_INCRESE = "product - click button plus";
         String EDIT_QUANTITY_DECREASE = "product - click button minus";
-        String CLICK_VARIANT_COLOUR = "product - click variant colour";
-        String CLICK_VARIANT_SIZE = "product - click variant size";
         String EDIT_SELLER_NOTES = "product - click tulis catatan";
         String FIND_SIMILAR_PRODUCT = "product - click cari barang serupa";
-        String ONBOARDING_USER_SAVES_PREFERENCE = "preference - click simpan dan lanjutkan preference new occ";
-        String ONBOARDING_USER_EDITS_PREFERENCE = "preference - click atur on preference edit occ";
         String USER_CHANGE_COURIER_OSP = "courier - click arrow to change courier option";
         String CLICK_ON_INSURANCE = "courier - click on asuransi pengiriman";
         String CLICK_BAYAR_NOT_SUCCESS = "click bayar - not success";
@@ -432,7 +428,6 @@ public interface ConstantTransactionAnalytics {
         String CLICK_RINGKASAN_BELANJA_OSP = "click arrow on ringkasan belanja";
         String CLICK_GEAR_LOGO_IN_PREFERENCE_FROM_GANTI_PILIHAN_OSP = "preference - click gear logo from ganti pilihan";
         String GUNAKAN_PILIHAN_INI_FROM_GANTI_PILIHAN_OSP  = "preference -  click gunakan pilihan ini from ganti pilihan";
-        String CLICK_TAMBAH_PILIHAN_FROM_GANTI_PILIHAN_OSP  = "preference -  click tambah pilihan from ganti pilihan";
         String CLICK_BACK_FROM_OSP = "click back in order summary page";
         String CLICK_BUTTON_INFO_ON_OSP = "click button info on order summary page";
         String CLICK_PROMO_SECTION_APPLIED_OSP = "promo - click promo section with promo applied";
@@ -441,6 +436,8 @@ public interface ConstantTransactionAnalytics {
         String CLICK_PILIH_PROMO_LAIN_PROMO_ERROR_OSP = "promo - click pilih promo lain on bottom sheet promo error";
 
         String VIEW_ORDER_SUMMARY_PAGE = "view order summary page";
+        String VIEW_ONBOARDING_INFO = "view onboarding info";
+        String VIEW_BOTTOMSHEET_PROMO_ERROR = "view bottom sheet promo error";
 
     }
 

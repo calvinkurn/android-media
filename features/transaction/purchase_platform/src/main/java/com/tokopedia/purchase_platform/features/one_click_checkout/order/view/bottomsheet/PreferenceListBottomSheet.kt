@@ -80,20 +80,22 @@ class PreferenceListBottomSheet(
     }
 
     fun show(fragment: OrderSummaryPageFragment, profileId: Int) {
-        fragment.fragmentManager?.let {
-            bottomSheet?.dismiss()
-            bottomSheet = BottomSheetUnify().apply {
-                isDragable = true
-                isHideable = true
-                setTitle(BOTTOM_SHEET_TITLE)
-                val child = View.inflate(fragment.context, R.layout.bottom_sheet_preference_list, null)
-                setupChild(child, profileId)
-                fragment.view?.height?.div(2)?.let { height ->
-                    customPeekHeight = height
+        fragment.context?.let { context ->
+            fragment.fragmentManager?.let {
+                bottomSheet?.dismiss()
+                bottomSheet = BottomSheetUnify().apply {
+                    isDragable = true
+                    isHideable = true
+                    setTitle(context.getString(R.string.lbl_osp_secondary_header))
+                    val child = View.inflate(context, R.layout.bottom_sheet_preference_list, null)
+                    setupChild(child, profileId)
+                    fragment.view?.height?.div(2)?.let { height ->
+                        customPeekHeight = height
+                    }
+                    setChild(child)
+                    show(it, null)
+                    getPreferenceList()
                 }
-                setChild(child)
-                show(it, null)
-                getPreferenceList()
             }
         }
     }
@@ -149,9 +151,5 @@ class PreferenceListBottomSheet(
         fun onEditPreference(preference: ProfilesItemModel, position: Int, profileSize: Int)
 
         fun onAddPreference(itemCount: Int)
-    }
-
-    companion object {
-        private const val BOTTOM_SHEET_TITLE = "Pengiriman dan pembayaran"
     }
 }

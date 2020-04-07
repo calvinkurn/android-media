@@ -32,46 +32,12 @@ class OrderSummaryAnalytics : TransactionAnalytics() {
         )
     }
 
-    fun eventClickVariantColour(productId: String, shopId: String, colourValue: String) {
-        sendEventCategoryActionLabel(
-                EventName.CLICK_CHECKOUT_EXPRESS,
-                EventCategory.ORDER_SUMMARY,
-                EventAction.CLICK_VARIANT_COLOUR,
-                "$productId - $shopId - $colourValue"
-        )
-    }
-
-    fun eventClickVariantSize(productId: String, shopId: String, sizeValue: String) {
-        sendEventCategoryActionLabel(
-                EventName.CLICK_CHECKOUT_EXPRESS,
-                EventCategory.ORDER_SUMMARY,
-                EventAction.CLICK_VARIANT_SIZE,
-                "$productId - $shopId - $sizeValue"
-        )
-    }
-
     fun eventClickSellerNotes(productId: String, shopId: String){
         sendEventCategoryActionLabel(
                 EventName.CLICK_CHECKOUT_EXPRESS,
                 EventCategory.ORDER_SUMMARY,
                 EventAction.EDIT_SELLER_NOTES,
                 "$productId - $shopId"
-        )
-    }
-
-    fun eventClickSavesPreferenceOnBoarding() {
-        sendEventCategoryAction(
-                EventName.CLICK_CHECKOUT_EXPRESS,
-                EventCategory.ORDER_SUMMARY,
-                EventAction.ONBOARDING_USER_SAVES_PREFERENCE
-        )
-    }
-
-    fun eventClickEditPreferenceOnBoarding() {
-        sendEventCategoryAction(
-                EventName.CLICK_CHECKOUT_EXPRESS,
-                EventCategory.ORDER_SUMMARY,
-                EventAction.ONBOARDING_USER_EDITS_PREFERENCE
         )
     }
 
@@ -136,16 +102,6 @@ class OrderSummaryAnalytics : TransactionAnalytics() {
         )
     }
 
-    //irisSession(?)
-    fun eventViewErrorMesageIris() {
-        sendEventCategoryActionLabel(
-                EventName.VIEW_CHECKOUT_EXPRESS_IRIS,
-                EventCategory.ORDER_SUMMARY,
-                EventAction.VIEW_ERROR_ON_OSP,
-                irisSession?.getSessionId()
-        )
-    }
-
     fun eventUserSetsFirstPreference(userId: String) {
         sendEventCategoryActionLabel(
                 EventName.CLICK_CHECKOUT_EXPRESS,
@@ -197,14 +153,6 @@ class OrderSummaryAnalytics : TransactionAnalytics() {
         )
     }
 
-    fun eventCLickTambahPilihanFromGantiPilihanOSP() {
-        sendEventCategoryAction(
-                EventName.CLICK_CHECKOUT_EXPRESS,
-                EventCategory.ORDER_SUMMARY,
-                EventAction.CLICK_TAMBAH_PILIHAN_FROM_GANTI_PILIHAN_OSP
-        )
-    }
-
     fun eventClickBackFromOSP() {
         sendEventCategoryAction(
                 EventName.CLICK_CHECKOUT_EXPRESS,
@@ -244,6 +192,14 @@ class OrderSummaryAnalytics : TransactionAnalytics() {
         )
     }
 
+    fun eventViewOnboardingInfo() {
+        sendEventCategoryAction(
+                EventName.VIEW_CHECKOUT_EXPRESS_IRIS,
+                EventCategory.ORDER_SUMMARY,
+                EventAction.VIEW_ONBOARDING_INFO
+        )
+    }
+
     fun eventClickPromoOSP(promoCodes: List<String>) {
         if (promoCodes.isEmpty()) {
             sendEventCategoryAction(
@@ -259,6 +215,14 @@ class OrderSummaryAnalytics : TransactionAnalytics() {
                     promoCodes.joinToString("-")
             )
         }
+    }
+
+    fun eventViewBottomSheetPromoError() {
+        sendEventCategoryAction(
+                EventName.VIEW_CHECKOUT_EXPRESS_IRIS,
+                EventCategory.EXPRESS_CHECKOUT,
+                EventAction.VIEW_BOTTOMSHEET_PROMO_ERROR
+        )
     }
 
     fun eventClickLanjutBayarPromoErrorOSP() {

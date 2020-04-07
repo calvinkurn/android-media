@@ -21,9 +21,9 @@ data class Shipment(
         val checksum: String? = null,
         val shippingPrice: Int? = null,
         val logisticPromoTickerMessage: String? = null,
-        val logisticPromoViewModel: LogisticPromoUiModel? = null, // BBO ?
-        val logisticPromoShipping: ShippingCourierUiModel? = null, // BBO ?
-        val isApplyLogisticPromo: Boolean = false, // BBO ?
+        val logisticPromoViewModel: LogisticPromoUiModel? = null,
+        val logisticPromoShipping: ShippingCourierUiModel? = null,
+        val isApplyLogisticPromo: Boolean = false,
         val shippingRecommendationData: ShippingRecommendationData? = null,
         val insuranceData: InsuranceData? = null,
         val isCheckInsurance: Boolean = false
