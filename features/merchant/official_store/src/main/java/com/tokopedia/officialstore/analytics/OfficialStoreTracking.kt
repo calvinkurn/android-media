@@ -29,6 +29,8 @@ class OfficialStoreTracking(context: Context) {
     private val EVENT_ACTION = "eventAction"
     private val EVENT_LABEL = "eventLabel"
 
+    private val CAMPAIGN_CODE = "campaignCode"
+
     private val ATTRIBUTION = "attribution"
     private val AFFINITY_LABEL = "affinityLabel"
     private val CATEGORY_ID = "categoryId"
@@ -135,12 +137,14 @@ class OfficialStoreTracking(context: Context) {
     }
 
     fun eventClickBanner(categoryName: String, bannerPosition: Int,
-                         bannerItem: com.tokopedia.officialstore.official.data.model.Banner) {
+                         bannerItem: com.tokopedia.officialstore.official.data.model.Banner,
+                         campaignId: Int) {
         val data = DataLayer.mapOf(
                 EVENT, PROMO_CLICK,
                 EVENT_CATEGORY, "$OS_MICROSITE$categoryName",
                 EVENT_ACTION, "banner - $CLICK",
                 EVENT_LABEL, "$CLICK banner",
+                CAMPAIGN_CODE, "$campaignId",
                 ATTRIBUTION, bannerItem.galaxyAttribution,
                 AFFINITY_LABEL, bannerItem.persona,
                 CATEGORY_ID, bannerItem.categoryPersona,
@@ -216,7 +220,8 @@ class OfficialStoreTracking(context: Context) {
             additionalInformation: String,
             featuredBrandId: String,
             isLogin: Boolean,
-            shopId: String
+            shopId: String,
+            campaignId: String
     ) {
         val statusLogin = if (isLogin) "login" else "nonlogin"
         val data = DataLayer.mapOf(
@@ -224,6 +229,7 @@ class OfficialStoreTracking(context: Context) {
                 EVENT_CATEGORY, "$OS_MICROSITE$categoryName",
                 EVENT_ACTION, "$CLICK - shop - all brands - $statusLogin",
                 EVENT_LABEL, shopId,
+                CAMPAIGN_CODE, campaignId,
                 ECOMMERCE, DataLayer.mapOf(
                 PROMO_CLICK, DataLayer.mapOf(
                 "promotions",DataLayer.listOf(
@@ -311,6 +317,7 @@ class OfficialStoreTracking(context: Context) {
                 EVENT_CATEGORY, "os microsite - $categoryName",
                 EVENT_ACTION, "flash sale - product click",
                 EVENT_LABEL, "click product picture - $headerName",
+                CAMPAIGN_CODE, "$campaignId",
                 ECOMMERCE, ecommerceBody
         ))
     }
@@ -371,6 +378,7 @@ class OfficialStoreTracking(context: Context) {
                 AFFINITY_LABEL, channelData.persona,
                 CATEGORY_ID, channelData.categoryPersona,
                 SHOP_ID, channelData.brandId,
+                CAMPAIGN_CODE, "${channelData.campaignID}",
                 ECOMMERCE, ecommerceBody
         ))
     }
@@ -392,7 +400,7 @@ class OfficialStoreTracking(context: Context) {
         ) as HashMap<String, Any>)
     }
 
-    fun dynamicChannelMixCardClick(categoryName: String, headerName: String, position: String, gridData: Grid) {
+    fun dynamicChannelMixCardClick(categoryName: String, headerName: String, position: String, gridData: Grid, campaignId: Int) {
         val ecommerceBody = DataLayer.mapOf(
                 "click", DataLayer.mapOf(
                     "actionField", DataLayer.mapOf("list", "/official-store/$categoryName - dynamic channel mix - $headerName"),
@@ -415,6 +423,7 @@ class OfficialStoreTracking(context: Context) {
                 EVENT_CATEGORY, "os microsite - $categoryName",
                 EVENT_ACTION, "dynamic channel mix - product click",
                 EVENT_LABEL, "click product picture - $headerName",
+                CAMPAIGN_CODE, "$campaignId",
                 ECOMMERCE, ecommerceBody
         ))
     }
@@ -475,6 +484,7 @@ class OfficialStoreTracking(context: Context) {
                 AFFINITY_LABEL, channelData.persona,
                 CATEGORY_ID, channelData.categoryPersona,
                 SHOP_ID, channelData.brandId,
+                CAMPAIGN_CODE, "${channelData.campaignID}",
                 ECOMMERCE, ecommerceBody
         ))
     }
