@@ -1207,7 +1207,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                         .bundle)
             }
             ProductDetailConstant.OCC_BUTTON -> {
-                if (remoteConfig.getBoolean(RemoteConfigKey.ENABLE_ONE_CLICK_CHECKOUT, true) || true) {
+                if (remoteConfig.getBoolean(RemoteConfigKey.ENABLE_ONE_CLICK_CHECKOUT, true)) {
                     goToOneClickCheckout()
                 } else {
                     goToCartCheckout(cartId)
@@ -2210,7 +2210,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                     viewModel.addToCart(addToCartOcsRequestParams)
                 }
                 ProductDetailConstant.OCC_BUTTON -> {
-                    if (remoteConfig.getBoolean(RemoteConfigKey.ENABLE_ONE_CLICK_CHECKOUT, true) || true) {
+                    if (remoteConfig.getBoolean(RemoteConfigKey.ENABLE_ONE_CLICK_CHECKOUT, true)) {
                         val addToCartOccRequestParams = AddToCartOccRequestParams(data.basic.productID, data.basic.shopID, data.basic.minOrder.toString()).apply {
                             warehouseId = selectedWarehouseId.toString()
                             attribution = trackerAttributionPdp ?: ""
