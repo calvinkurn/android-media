@@ -9,7 +9,6 @@ import com.tokopedia.shop_showcase.shop_showcase_add.presentation.listener.ShopS
 import com.tokopedia.shop_showcase.shop_showcase_add.presentation.viewholder.ShowcaseProductPreviewViewHolder
 import com.tokopedia.shop_showcase.shop_showcase_product_add.presentation.model.BaseShowcaseProduct
 import com.tokopedia.shop_showcase.shop_showcase_product_add.presentation.model.ShowcaseProduct
-import com.tokopedia.shop_showcase.shop_showcase_product_add.presentation.viewholder.ShowcaseProductItemViewHolder
 
 class ShopShowcaseAddAdapter(private val context: Context, private var listener: ShopShowcasePreviewListener): RecyclerView.Adapter<ShowcaseProductPreviewViewHolder>() {
 
@@ -29,13 +28,13 @@ class ShopShowcaseAddAdapter(private val context: Context, private var listener:
         holder.bind(selectedProductList[position])
     }
 
-    fun updateSelectedDataSet(newSelectedProductList: ArrayList<ShowcaseProduct>?, isActionEdit: Boolean?) {
+    fun updateSelectedDataSet(newSelectedProductList: ArrayList<ShowcaseProduct>?, isActionEdit: Boolean) {
         newSelectedProductList?.let {
             it.map { showcaseProduct ->
                 showcaseProduct.isCloseable = true
                 showcaseProduct.ishighlighted = false
             }
-            selectedProductList.clear()
+            if(!isActionEdit) selectedProductList.clear()
             selectedProductList.addAll(it)
         }
         notifyDataSetChanged()

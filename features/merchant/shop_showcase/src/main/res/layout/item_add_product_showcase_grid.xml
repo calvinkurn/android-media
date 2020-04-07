@@ -12,9 +12,10 @@
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/card_wrapper"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="@dimen/dp_16"
+        android:paddingBottom="@dimen/dp_8"
         android:orientation="vertical">
 
         <com.tokopedia.unifycomponents.ImageUnify
@@ -44,9 +45,9 @@
             android:id="@+id/product_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:typographyType="heading_3"
+            app:typographyType="heading_5"
             android:textColor="@color/primary_text_color"
-            android:layout_marginTop="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_8"
             android:ellipsize="end"
             android:maxLines="2"
             android:layout_marginLeft="@dimen/dp_8"
@@ -61,10 +62,10 @@
             android:id="@+id/product_price"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:typographyType="heading_4"
-            android:layout_marginTop="@dimen/dp_8"
+            app:typographyType="heading_5"
             android:textColor="@color/text_color_orange"
             app:layout_constraintTop_toBottomOf="@id/product_name"
+            android:layout_marginTop="@dimen/dp_4"
             android:layout_marginLeft="@dimen/dp_8"
             android:layout_marginStart="@dimen/dp_8"
             android:layout_marginRight="@dimen/dp_8"
@@ -74,8 +75,8 @@
 
         <androidx.appcompat.widget.AppCompatRatingBar
             android:id="@+id/ratingBar"
-            style="@style/RatingBar.Small"
-            android:layout_marginTop="@dimen/dp_8"
+            style="@style/RatingBar.Micro"
+            android:layout_marginTop="@dimen/dp_6"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@id/product_price"
@@ -84,6 +85,7 @@
             android:layout_marginStart="@dimen/dp_8"
             android:layout_marginRight="@dimen/dp_8"
             android:layout_marginEnd="@dimen/dp_8"
+            android:visibility="gone"
             />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -94,8 +96,8 @@
             app:layout_constraintTop_toBottomOf="@id/product_price"
             android:layout_marginLeft="@dimen/dp_8"
             android:layout_marginStart="@dimen/dp_8"
-            android:layout_marginTop="@dimen/dp_4"
-            app:typographyType="body_2"
+            app:typographyType="body_3"
+            android:visibility="gone"
             tools:text="@string/product_total_review" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

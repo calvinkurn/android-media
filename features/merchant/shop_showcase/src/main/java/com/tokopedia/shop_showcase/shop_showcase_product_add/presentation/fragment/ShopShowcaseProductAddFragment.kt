@@ -17,6 +17,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
+import com.tokopedia.empty_state.EmptyStateUnify
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.shop_showcase.R
@@ -34,7 +35,6 @@ import com.tokopedia.shop_showcase.shop_showcase_product_add.presentation.adapte
 import com.tokopedia.shop_showcase.shop_showcase_product_add.presentation.model.BaseShowcaseProduct
 import com.tokopedia.shop_showcase.shop_showcase_product_add.presentation.model.ShowcaseProduct
 import com.tokopedia.shop_showcase.shop_showcase_product_add.presentation.viewmodel.ShowcaseProductAddViewModel
-import com.tokopedia.unifycomponents.EmptyState
 import com.tokopedia.unifycomponents.SearchBarUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -118,10 +118,10 @@ class ShopShowcaseProductAddFragment : BaseDaggerFragment(),
 
     private val headerUnify: HeaderUnify? by lazy {
         view?.findViewById<HeaderUnify>(R.id.add_product_showcase_toolbar)?.apply {
-//            backButtonView?.setOnClickListener {
-//                tracking.addShowcaseProductClickBackButton(shopId, shopType, isActionEdit)
-//                activity?.onBackPressed()
-//            }
+            setNavigationOnClickListener {
+                tracking.addShowcaseProductClickBackButton(shopId, shopType, isActionEdit)
+                activity?.onBackPressed()
+            }
         }
     }
 
@@ -141,8 +141,8 @@ class ShopShowcaseProductAddFragment : BaseDaggerFragment(),
         ViewModelProvider(this, viewModelFactory).get(ShowcaseProductAddViewModel::class.java)
     }
 
-    private val emptyState: EmptyState? by lazy {
-        view?.findViewById<EmptyState>(R.id.empty_state_product_search)
+    private val emptyState: EmptyStateUnify? by lazy {
+        view?.findViewById<EmptyStateUnify>(R.id.empty_state_product_search)
     }
 
     private val searchBar: SearchBarUnify? by lazy {
@@ -230,12 +230,13 @@ class ShopShowcaseProductAddFragment : BaseDaggerFragment(),
             }
         })
 
-        searchTextField?.setOnClickListener {
-            tracking.addShowcaseProductClickSearchbar(shopId, shopType, isActionEdit)
+        searchTextField?.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
+            if(hasFocus) tracking.addShowcaseProductClickSearchbar(shopId, shopType, isActionEdit)
         }
 
         searchClearButton?.setOnClickListener {
             productListFilter.setDefaultFilter()
+            scrollListener.resetState()
             searchTextField?.text?.clear()
             getProductList(productListFilter)
         }
