@@ -27,31 +27,34 @@
                 android:id="@+id/imgThumbnail"
                 android:layout_width="72dp"
                 android:layout_height="72dp"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tvVideoTitle"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/spacing_lvl4"
                 android:layout_marginLeft="@dimen/spacing_lvl4"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toEndOf="@id/imgThumbnail" />
+                android:ellipsize="end"
+                android:maxLines="1"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/imgThumbnail"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tvVideoSubtitle"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/spacing_lvl4"
                 android:layout_marginLeft="@dimen/spacing_lvl4"
                 android:layout_marginTop="@dimen/spacing_lvl2"
-                app:typographyType="body_2"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/imgThumbnail"
                 app:layout_constraintTop_toBottomOf="@id/tvVideoTitle"
-                app:layout_constraintStart_toEndOf="@id/imgThumbnail" />
+                app:typographyType="body_2" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
-
 
     </com.tokopedia.unifycomponents.CardUnify>
 

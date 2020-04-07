@@ -1,5 +1,6 @@
 package com.tokopedia.product.addedit.preview.presentation.fragment
 
+//import com.tokopedia.product.addedit.description.model.DescriptionInputModel
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
@@ -649,6 +650,8 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
                     putExtra(AddEditProductUploadConstant.EXTRA_IS_USING_CACHE_MANAGER, true)
                     startActivityForResult(this, AddEditProductDescriptionFragment.REQUEST_CODE_VARIANT)
                 }
+                val productVariantByCatModelList: ArrayList<String> = ArrayList()
+//            productVariantByCatModelList.add(AddEditProductDescriptionFragment.TEST_VARIANT)
             }
         }
     }
