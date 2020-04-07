@@ -560,6 +560,7 @@ class ShopPageFragment :
         }
         swipeToRefresh.isRefreshing = false
         view?.let { onToasterNoUploadProduct(it, getString(R.string.shop_page_product_no_upload_product), isFirstCreateShop) }
+
     }
 
     fun onBackPressed() {
@@ -911,12 +912,4 @@ class ShopPageFragment :
             this.isFirstCreateShop = false
         }
     }
-
-    private fun onToasterNoUploadProduct(view: View, message: String, isFirstCreateShop: Boolean) {
-        if (isFirstCreateShop) {
-            Toaster.make(view, message, actionText = getString(R.string.shop_page_product_action_no_upload_product), type = Toaster.TYPE_NORMAL)
-            this.isFirstCreateShop = false
-        }
-    }
-
 }
