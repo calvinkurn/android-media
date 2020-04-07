@@ -13,9 +13,12 @@ import com.tokopedia.purchase_platform.common.utils.isNullOrEmpty
 import com.tokopedia.purchase_platform.features.checkout.data.model.response.shipment_address_form.ShipProd
 import com.tokopedia.purchase_platform.features.checkout.data.model.response.shipment_address_form.ShopShipment
 import com.tokopedia.purchase_platform.features.checkout.data.model.response.shipment_address_form.promo_checkout.PromoSAFResponse
+import com.tokopedia.purchase_platform.features.one_click_checkout.common.DEFAULT_ERROR_MESSAGE
+import com.tokopedia.purchase_platform.features.one_click_checkout.common.STATUS_OK
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.data.GetOccCartGqlResponse
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.data.ProductDataResponse
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.data.ShopDataResponse
+import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.card.OrderProductCard
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.model.*
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
@@ -29,31 +32,28 @@ class GetOccCartUseCase @Inject constructor(@ApplicationContext val context: Con
                 R.raw.mutation_get_occ)
         graphqlUseCase.setGraphqlQuery(graphqlRequest)
         val response = graphqlUseCase.executeOnBackground()
-        if (response.response.status.equals("OK", true)) {
+        if (response.response.status.equals(STATUS_OK, true)) {
             if (response.response.data.cartList.isNotEmpty()) {
-                val orderCart = OrderCart()
                 val cart = response.response.data.cartList[0]
-                val profileIndex = response.response.data.profileIndex
-                val orderProduct = generateOrderProduct(cart.product)
-                orderCart.product = orderProduct
-                val orderShop = generateOrderShop(cart.shop)
-                generateShopShipment(orderShop, cart.shop.shopShipments)
-                orderShop.cartResponse = cart
-                orderShop.errors = cart.errors
-                orderCart.shop = orderShop
-                orderCart.kero = Kero(response.response.data.keroToken, response.response.data.keroDiscomToken, response.response.data.keroUnixTime)
-                val promo = response.response.data.promo
-                return OrderData(orderCart, profileIndex, response.response.data.profileResponse, mapPromo(promo))
+                val orderCart = OrderCart().apply {
+                    product = generateOrderProduct(cart.product)
+                    shop = generateOrderShop(cart.shop).apply {
+                        cartResponse = cart
+                        errors = cart.errors
+                    }
+                    kero = Kero(response.response.data.keroToken, response.response.data.keroDiscomToken, response.response.data.keroUnixTime)
+                }
+                return OrderData(orderCart, response.response.data.profileIndex, response.response.data.profileResponse, mapPromo(response.response.data.promo))
             } else if (response.response.data.errors.isNotEmpty()) {
                 throw MessageErrorException(response.response.data.errors[0])
             } else {
-                throw MessageErrorException("Terjadi kesalahan")
+                throw MessageErrorException(DEFAULT_ERROR_MESSAGE)
             }
         } else {
             if (response.response.errorMessages.isNotEmpty()) {
                 throw MessageErrorException(response.response.errorMessages[0])
             } else {
-                throw MessageErrorException("Terjadi kesalahan")
+                throw MessageErrorException(DEFAULT_ERROR_MESSAGE)
             }
         }
     }
@@ -172,9 +172,9 @@ class GetOccCartUseCase @Inject constructor(@ApplicationContext val context: Con
         return orderPromo
     }
 
-    private fun generateShopShipment(orderShop: OrderShop, shopShipments: List<ShopShipment>) {
+    private fun generateShopShipment(shopShipments: List<ShopShipment>): ArrayList<com.tokopedia.logisticcart.shipping.model.ShopShipment> {
+        val shopShipmentListResult = ArrayList<com.tokopedia.logisticcart.shipping.model.ShopShipment>()
         if (shopShipments.isNotEmpty()) {
-            val shopShipmentListResult: MutableList<com.tokopedia.logisticcart.shipping.model.ShopShipment> = java.util.ArrayList()
             for (shopShipment in shopShipments) {
                 val shopShipmentResult = com.tokopedia.logisticcart.shipping.model.ShopShipment()
                 shopShipmentResult.isDropshipEnabled = shopShipment.isDropshipEnabled == 1
@@ -183,7 +183,7 @@ class GetOccCartUseCase @Inject constructor(@ApplicationContext val context: Con
                 shopShipmentResult.shipLogo = shopShipment.shipLogo
                 shopShipmentResult.shipName = shopShipment.shipName
                 if (!isNullOrEmpty<ShipProd>(shopShipment.shipProds)) {
-                    val shipProdListResult: MutableList<com.tokopedia.logisticcart.shipping.model.ShipProd> = java.util.ArrayList()
+                    val shipProdListResult = ArrayList<com.tokopedia.logisticcart.shipping.model.ShipProd>()
                     for (shipProd in shopShipment.shipProds) {
                         val shipProdResult = com.tokopedia.logisticcart.shipping.model.ShipProd()
                         shipProdResult.additionalFee = shipProd.additionalFee
@@ -198,8 +198,8 @@ class GetOccCartUseCase @Inject constructor(@ApplicationContext val context: Con
                 }
                 shopShipmentListResult.add(shopShipmentResult)
             }
-            orderShop.shopShipment = shopShipmentListResult
         }
+        return shopShipmentListResult
     }
 
     private fun generateOrderShop(shop: ShopDataResponse): OrderShop {
@@ -225,6 +225,7 @@ class GetOccCartUseCase @Inject constructor(@ApplicationContext val context: Con
             provinceId = shop.provinceId
             cityId = shop.cityId
             cityName = shop.cityName ?: ""
+            shopShipment = generateShopShipment(shop.shopShipments)
         }
     }
 
@@ -244,21 +245,15 @@ class GetOccCartUseCase @Inject constructor(@ApplicationContext val context: Con
             freeOngkirImg = product.freeShipping.badgeUrl
             productResponse = product
             wholesalePrice = product.wholesalePrice
-            notes = if (product.productNotes.length > 144) product.productNotes.substring(0, 144) else product.productNotes
+            quantity = mapQuantity(product)
+            cashback = if (product.productCashback.isNotBlank()) "Cashback ${product.productCashback}" else ""
+            notes = if (product.productNotes.length > OrderProductCard.MAX_NOTES_LENGTH) product.productNotes.substring(0, OrderProductCard.MAX_NOTES_LENGTH) else product.productNotes
         }
-        mapQuantity(orderProduct, product)
         return orderProduct
     }
 
-    private fun mapQuantity(orderProduct: OrderProduct, product: ProductDataResponse) {
+    private fun mapQuantity(product: ProductDataResponse): QuantityUiModel {
         val quantityViewModel = QuantityUiModel()
-//        quantityViewModel.errorFieldBetween = messagesModel?.get(Message.ERROR_FIELD_BETWEEN) ?: ""
-//        quantityViewModel.errorFieldMaxChar = messagesModel?.get(Message.ERROR_FIELD_MAX_CHAR) ?: ""
-//        quantityViewModel.errorFieldRequired = messagesModel?.get(Message.ERROR_FIELD_REQUIRED) ?: ""
-//        quantityViewModel.errorProductAvailableStock = messagesModel?.get(Message.ERROR_PRODUCT_AVAILABLE_STOCK) ?: ""
-//        quantityViewModel.errorProductAvailableStockDetail = messagesModel?.get(Message.ERROR_PRODUCT_AVAILABLE_STOCK_DETAIL) ?: ""
-//        quantityViewModel.errorProductMaxQuantity = messagesModel?.get(Message.ERROR_PRODUCT_MAX_QUANTITY) ?: ""
-//        quantityViewModel.errorProductMinQuantity = messagesModel?.get(Message.ERROR_PRODUCT_MIN_QUANTITY) ?: ""
         quantityViewModel.isStateError = false
 
         quantityViewModel.maxOrderQuantity = product.productMaxOrder
@@ -270,6 +265,6 @@ class GetOccCartUseCase @Inject constructor(@ApplicationContext val context: Con
         quantityViewModel.minOrderQuantity = product.productMinOrder
         quantityViewModel.orderQuantity = product.productQuantity
         quantityViewModel.stockWording = ""
-        orderProduct.quantity = quantityViewModel
+        return quantityViewModel
     }
 }

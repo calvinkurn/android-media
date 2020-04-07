@@ -41,6 +41,7 @@ ext {
             digitalTopupBills               : ":features:recharge:digital_topup_bills",
             rechargeGeneral                 : ":features:recharge:recharge_general",
             rechargeOcr                     : ":features:recharge:rechargeocr",
+            rechargeCreditCard              : ":features:recharge:recharge_credit_card",
             voucherGame                     : ":features:recharge:voucher_game",
 
             commonTravel                    : ":features:travel:common_travel",
@@ -53,7 +54,8 @@ ext {
 
             digitalDeals                    : ":features:entertainment:digital_deals",
             event                           : ":features:entertainment:event",
-
+            eventHome                       : ":features:entertainment:event_home",
+            eventSearch                       : ":features:entertainment:event_search",
             digitalBrowse                   : ":features:digital:digital_browse",
             instantDebitBca                 : ":features:digital:instant_debit_bca",
 

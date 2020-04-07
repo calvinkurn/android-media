@@ -119,7 +119,5 @@ class CheckoutOccUseCase @Inject constructor(private val graphqlUseCase: Graphql
               }
             }
         """.trimIndent()
-
-
     }
 }

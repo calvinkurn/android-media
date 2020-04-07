@@ -19,5 +19,6 @@ data class OrderProduct(
         var weight: Int = 0,
         var quantity: QuantityUiModel? = null,
         var notes: String = "",
+        var cashback: String = "",
         var productResponse: ProductDataResponse = ProductDataResponse()
 )

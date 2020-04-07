@@ -9,13 +9,12 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.purchase_platform.R
 import com.tokopedia.purchase_platform.common.utils.QuantityTextWatcher
-import com.tokopedia.purchase_platform.features.express_checkout.view.variant.viewholder.QuantityViewHolder
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.model.OrderProduct
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.model.OrderShop
 import kotlinx.android.synthetic.main.card_order_product.view.*
 
-class OrderProductCard(private val view: View, private val listener: OrderProductCardListener, val orderSummaryAnalytics: OrderSummaryAnalytics) {
+class OrderProductCard(private val view: View, private val listener: OrderProductCardListener, private val orderSummaryAnalytics: OrderSummaryAnalytics) {
 
     private lateinit var product: OrderProduct
     private lateinit var shop: OrderShop
@@ -38,8 +37,15 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
             view.tv_product_name.text = product.productName
             showPrice()
 
-            view.et_note.filters = arrayOf(InputFilter.LengthFilter(144))
-            view.et_note.onFocusChangeListener = View.OnFocusChangeListener { v, hasFocus ->
+            if (product.cashback.isNotEmpty()) {
+                view.lbl_cashback.setLabel(product.cashback)
+                view.lbl_cashback.visible()
+            } else {
+                view.lbl_cashback.gone()
+            }
+
+            view.et_note.filters = arrayOf(InputFilter.LengthFilter(MAX_NOTES_LENGTH))
+            view.et_note.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
                 if (hasFocus) {
                     orderSummaryAnalytics.eventClickSellerNotes(product.productId.toString(), shop.shopId.toString())
                 }
@@ -152,15 +158,9 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
             view.btn_qty_plus.setImageResource(R.drawable.bg_button_counter_plus_checkout_enabled)
 
             if (element.orderQuantity <= 0 || element.orderQuantity < element.minOrderQuantity) {
-                error = element.errorProductMinQuantity.replace(QuantityViewHolder.QUANTITY_PLACEHOLDER, "${element.minOrderQuantity}", false)
-                if (error.isEmpty()) {
-                    error = String.format(view.context.getString(R.string.min_order_x), element.minOrderQuantity)
-                }
+                error = String.format(view.context.getString(R.string.min_order_x), element.minOrderQuantity)
             } else if (element.orderQuantity > element.maxOrderQuantity) {
-                error = element.errorProductMaxQuantity.replace(QuantityViewHolder.QUANTITY_PLACEHOLDER, "${element.maxOrderQuantity}", false)
-                if (error.isEmpty()) {
-                    error = String.format(view.context.getString(R.string.max_order_x), element.maxOrderQuantity)
-                }
+                error = String.format(view.context.getString(R.string.max_order_x), element.maxOrderQuantity)
             }
             if (element.orderQuantity <= element.minOrderQuantity) {
                 view.btn_qty_min.setImageResource(R.drawable.bg_button_counter_minus_checkout_disabled)
@@ -192,7 +192,7 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
         }
         view.tv_product_price.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(productPrice, false)
 
-        if(product.isFreeOngkir && product.freeOngkirImg.isNotEmpty()) {
+        if (product.isFreeOngkir && product.freeOngkirImg.isNotEmpty()) {
             view.iv_free_shipping.visible()
             ImageHandler.LoadImage(view.iv_free_shipping, product.freeOngkirImg)
         } else {
@@ -217,5 +217,9 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
     interface OrderProductCardListener {
 
         fun onProductChange(product: OrderProduct, shouldReloadRates: Boolean = true)
+    }
+
+    companion object {
+        const val MAX_NOTES_LENGTH = 144
     }
 }

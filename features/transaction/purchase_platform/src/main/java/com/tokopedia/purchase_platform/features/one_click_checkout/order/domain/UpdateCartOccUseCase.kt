@@ -2,7 +2,8 @@ package com.tokopedia.purchase_platform.features.one_click_checkout.order.domain
 
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.purchase_platform.features.cart.data.model.request.UpdateCartRequest
+import com.tokopedia.purchase_platform.features.one_click_checkout.common.DEFAULT_ERROR_MESSAGE
+import com.tokopedia.purchase_platform.features.one_click_checkout.common.STATUS_OK
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.data.UpdateCartOccGqlResponse
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.data.UpdateCartOccRequest
 import javax.inject.Inject
@@ -14,19 +15,19 @@ class UpdateCartOccUseCase @Inject constructor(private val graphqlUseCase: Graph
         graphqlUseCase.setRequestParams(generateParam(param))
         graphqlUseCase.setTypeClass(UpdateCartOccGqlResponse::class.java)
         graphqlUseCase.execute({ response: UpdateCartOccGqlResponse ->
-            if (response.response.status.equals("OK", true)) {
+            if (response.response.status.equals(STATUS_OK, true)) {
                 if (response.response.data.success == 1) {
                     onSuccess(response)
                 } else if (response.response.data.messages.isNotEmpty()) {
                     onError(MessageErrorException(response.response.data.messages[0]))
                 } else {
-                    onError(MessageErrorException("Terjadi kesalahan pada server. Ulangi beberapa saat lagi"))
+                    onError(MessageErrorException(DEFAULT_ERROR_MESSAGE))
                 }
 
             } else if (response.response.errorMessage.isNotEmpty()) {
                 onError(MessageErrorException(response.response.errorMessage[0]))
             } else {
-                onError(MessageErrorException("Terjadi kesalahan pada server. Ulangi beberapa saat lagi"))
+                onError(MessageErrorException(DEFAULT_ERROR_MESSAGE))
             }
 
         }, { throwable: Throwable ->

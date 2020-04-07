@@ -19,6 +19,7 @@ import com.tokopedia.logisticdata.data.constant.CourierConstant
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ServiceData
 import com.tokopedia.purchase_platform.R
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.OrderSummaryPageFragment
+import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.OrderSummaryPageViewModel
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.model.OrderPreference
 import kotlinx.android.synthetic.main.card_order_preference.view.*
 
@@ -107,11 +108,11 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
                         val serviceDur = if (tempServiceDuration.contains("(") && tempServiceDuration.contains(")")) {
                             tempServiceDuration.substring(tempServiceDuration.indexOf("(") + 1, tempServiceDuration.indexOf(")"))
                         } else {
-                            "Durasi tergantung kurir"
+                            OrderSummaryPageViewModel.NO_EXACT_DURATION_MESSAGE
                         }
                         view.tv_shipping_duration.text = serviceDur
                         if (shipping.logisticPromoViewModel.benefitAmount >= shipping.logisticPromoShipping.productData.price.price.toDouble()) {
-                            view.tv_shipping_price.text = "Rp 0"
+                            view.tv_shipping_price.text = view.context.getString(R.string.lbl_osp_free_shipping_only_price)
                             view.tv_shipping_slash_price.gone()
                         } else {
                             view.tv_shipping_price.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(shipping.logisticPromoShipping.productData.price.price - shipping.logisticPromoViewModel.benefitAmount, false)
@@ -156,7 +157,7 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
                         val serviceDur = if (tempServiceDuration.contains("(") && tempServiceDuration.contains(")")) {
                             tempServiceDuration.substring(tempServiceDuration.indexOf("(") + 1, tempServiceDuration.indexOf(")"))
                         } else {
-                            "Durasi tergantung kurir"
+                            OrderSummaryPageViewModel.NO_EXACT_DURATION_MESSAGE
                         }
                         view.tv_shipping_duration.text = serviceDur
                         if (shipping.logisticPromoViewModel.benefitAmount >= shipping.logisticPromoViewModel.shippingRate) {
