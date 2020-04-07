@@ -10,7 +10,6 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -21,15 +20,20 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
 import com.tokopedia.imagepicker.picker.main.builder.*
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.observe
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_DESCRIPTION_INPUT
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_DETAIL_INPUT
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_SHIPMENT_INPUT
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_VARIANT_INPUT
+import com.tokopedia.product.addedit.common.util.ListUnifyUtil
 import com.tokopedia.product.addedit.common.util.getText
 import com.tokopedia.product.addedit.common.util.getTextIntOrZero
 import com.tokopedia.product.addedit.common.util.getTextLongOrZero
@@ -44,7 +48,6 @@ import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProduct
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.CATEGORY_RESULT_NAME
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.CONDITION_NEW
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.CONDITION_USED
-import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.EXTRA_CATEGORY_ID
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_PRODUCT_PHOTOS
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.NEW_PRODUCT_INDEX
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.REQUEST_CODE_CATEGORY
@@ -71,6 +74,7 @@ import com.tokopedia.product_photo_adapter.ProductPhotoAdapter
 import com.tokopedia.product_photo_adapter.ProductPhotoViewHolder
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.TextFieldUnify
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.list.ListItemUnify
 import com.tokopedia.unifycomponents.list.ListUnify
 import com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
@@ -129,6 +133,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     private var productCategoryLayout: ViewGroup? = null
     private var productCategoryRecListView: ListUnify? = null
     private var productCategoryPickerButton: AppCompatTextView? = null
+    private var categoryAlertDialog: DialogUnify? = null
 
     // product price
     private var productPriceField: TextFieldUnify? = null
@@ -162,7 +167,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     private var productSkuField: TextFieldUnify? = null
 
     // button lanjut
-    private var continueButton: Button? = null
+    private var continueButton: UnifyButton? = null
 
     override fun getScreenName(): String {
         return getString(R.string.product_add_edit_detail)
@@ -175,9 +180,10 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // set detail input model
+        // set detail and variant input model
         arguments?.getParcelable<ProductInputModel>(EXTRA_PRODUCT_INPUT_MODEL)?.run {
             viewModel.detailInputModel = this.detailInputModel
+            viewModel.variantInputModel = this.variantInputModel
         }
         // set isEditing status
         arguments?.getBoolean(EXTRA_IS_EDITING_PRODUCT)?.run {
@@ -185,16 +191,16 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         }
         // set isDrafting status
         arguments?.getBoolean(EXTRA_IS_DRAFTING_PRODUCT)?.run {
-            viewModel.isEditing = this
+            viewModel.isDrafting = this
+        }
 
-            userSession = UserSession(requireContext())
-            shopId = userSession.shopId
+        userSession = UserSession(requireContext())
+        shopId = userSession.shopId
 
-            if (viewModel.isEditing) {
-                ProductEditMainTracking.trackScreen()
-            } else {
-                ProductAddMainTracking.trackScreen()
-            }
+        if (viewModel.isEditing) {
+            ProductEditMainTracking.trackScreen()
+        } else {
+            ProductAddMainTracking.trackScreen()
         }
     }
 
@@ -241,14 +247,34 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         productCategoryLayout = view.findViewById(R.id.add_edit_product_category_layout)
         productCategoryRecListView = view.findViewById(R.id.lvu_product_category_rec)
         productCategoryPickerButton = view.findViewById(R.id.tv_category_picker_button)
+        context?.let {
+            categoryAlertDialog = DialogUnify(it, DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE)
+            categoryAlertDialog?.setTitle(getString(R.string.title_category_dialog))
+            categoryAlertDialog?.setDescription(getString(R.string.immutable_category_message))
+            categoryAlertDialog?.setPrimaryCTAText(getString(R.string.action_close_category_dialog))
+            categoryAlertDialog?.setPrimaryCTAClickListener {
+                // tutup button clicked
+                ProductEditMainTracking.clickSaveOtherCategory(shopId)
+                categoryAlertDialog?.dismiss()
+            }
+        }
+
         productCategoryPickerButton?.setOnClickListener {
+            // is editing
             if (viewModel.isEditing) {
                 ProductEditMainTracking.clickOtherCategory(shopId)
-            } else {
+            }
+            // is adding
+            else {
                 ProductAddMainTracking.clickOtherCategory(shopId)
             }
-            val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PRODUCT_CATEGORY_PICKER, 0.toString())
-            startActivityForResult(intent, REQUEST_CODE_CATEGORY)
+            // if editing product that has variant
+            if (viewModel.isEditing && viewModel.variantInputModel.productVariant.isNotEmpty()) {
+                showImmutableCategoryDialog()
+            } else {
+                val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PRODUCT_CATEGORY_PICKER, 0.toString())
+                startActivityForResult(intent, REQUEST_CODE_CATEGORY)
+            }
         }
 
         // add edit product price views
@@ -378,9 +404,6 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                     viewModel.validateProductNameInput(it)
                 }
 
-                // hide category recommendations
-                productCategoryRecListView?.hide()
-
                 // hide recommendations if the text input is changed
                 val isTextChanged = start != before
                 if (isTextChanged) hideRecommendations()
@@ -475,6 +498,11 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
 
         continueButton?.setOnClickListener {
 
+            // show loading indicator
+            continueButton?.isLoading = true
+
+            var requestedFocus = false
+
             // input re-validation process in case the user click the button without entering the input
 
             // product photo validation
@@ -485,29 +513,58 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             // prevent name recommendation from being showed
             viewModel.isProductNameChanged = false
             viewModel.validateProductNameInput(productNameInput)
+            viewModel.isProductNameInputError.value?.run {
+                if (this && !requestedFocus) {
+                    productNameField?.requestFocus()
+                    requestedFocus = true
+                }
+            }
 
             // product price validation
             val productPriceInput = productPriceField?.getEditableValue().toString().replace(".", "")
             viewModel.validateProductPriceInput(productPriceInput)
+            viewModel.isProductPriceInputError.value?.run {
+                if (this && !requestedFocus) {
+                    productPriceField?.requestFocus()
+                    requestedFocus = true
+                }
+            }
 
             // product stock validation
             val productStockInput = productStockField?.getEditableValue().toString()
             viewModel.validateProductStockInput(productStockInput)
+            viewModel.isProductStockInputError.value?.run {
+                if (this && !requestedFocus) {
+                    productStockField?.requestFocus()
+                    requestedFocus = true
+                }
+            }
 
             // product minimum order validation
             val orderQuantityInput = productMinOrderField?.getEditableValue().toString()
             viewModel.validateProductMinOrderInput(productStockInput, orderQuantityInput)
+            viewModel.isOrderQuantityInputError.value?.run {
+                if (this && !requestedFocus) {
+                    productMinOrderField?.requestFocus()
+                    requestedFocus = true
+                }
+            }
 
             // pre order duration validation
             val preOrderDurationInput = preOrderDurationField?.getEditableValue().toString()
             viewModel.validatePreOrderDurationInput(selectedDurationPosition, preOrderDurationInput)
+            viewModel.isPreOrderDurationInputError.value?.run {
+                if (this && !requestedFocus) {
+                    preOrderDurationField?.requestFocus()
+                    requestedFocus = true
+                }
+            }
 
             val isInputValid = viewModel.isInputValid.value
 
             isInputValid?.let {
-                if (it) {
-                    moveToDescriptionActivity()
-                }
+                if (it) moveToDescriptionActivity()
+                else continueButton?.isLoading = false
             }
         }
 
@@ -533,21 +590,25 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                     productPhotoAdapter?.let { viewModel.validateProductPhotoInput(it.itemCount) }
                 }
                 REQUEST_CODE_CATEGORY -> {
+
                     val categoryId = data.getLongExtra(CATEGORY_RESULT_ID, 0)
                     val categoryName = data.getStringExtra(CATEGORY_RESULT_NAME)
-                    productCategoryPickerButton?.text = categoryName
+
                     viewModel.selectedCategoryId = categoryId.toString()
-                    val categoryList = getSelectedCategory()
-                    if (categoryList != null) {
-                        categoryList.listRightRadiobtn?.isChecked = false
-                        if (viewModel.isEditing) {
-                            ProductEditMainTracking.clickSaveOtherCategory(shopId)
-                        }
-                    } else {
-                        if (viewModel.isEditing) {
+                    viewModel.selectedCategoryName = categoryName.toString()
+
+                    // is editing
+                    if (viewModel.isEditing) {
+                        // close button clicked
+                        if (categoryName.isNullOrBlank()) {
                             ProductEditMainTracking.clickBackOtherCategory(shopId)
                         }
                     }
+                    productCategoryLayout?.show()
+                    productCategoryRecListView?.show()
+                    val selectedCategory = ArrayList<ListItemUnify>()
+                    selectedCategory.add(ListItemUnify(categoryName, ""))
+                    productCategoryRecListView?.setData(selectedCategory)
                 }
                 REQUEST_CODE_DESCRIPTION -> {
                     val shipmentInputModel =
@@ -580,9 +641,15 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     }
 
     override fun onNameItemClicked(productName: String) {
+
         viewModel.isProductRecommendationSelected = true
+
         productNameField?.textFieldInput?.setText(productName)
-        viewModel.getCategoryRecommendation(productName)
+        // if editing product that has variant
+        val editProductWithVariant = viewModel.isEditing && viewModel.variantInputModel.productVariant.isNotEmpty()
+        if (!editProductWithVariant) {
+            viewModel.getCategoryRecommendation(productName)
+        }
         viewModel.isProductRecommendationSelected = false
 
         if (!viewModel.isEditing) {
@@ -650,15 +717,20 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         // product name
         productNameField?.textFieldInput?.setText(detailInputModel.productName)
 
+
         // product price
-        productPriceField?.textFieldInput?.setText(formatProductPriceInput(detailInputModel.price.toString()))
+        val productPrice = detailInputModel.price
+        if (productPrice != 0L) {
+            productPriceField?.textFieldInput?.setText(formatProductPriceInput(detailInputModel.price.toString()))
+        }
 
         // product category
         if (detailInputModel.categoryName.isNotBlank()) {
-            productCategoryPickerButton?.text = detailInputModel.categoryName
-            productCategoryRecListView?.hide()
-            productCategoryPickerButton?.show()
             productCategoryLayout?.show()
+            productCategoryRecListView?.show()
+            val selectedCategory = ArrayList<ListItemUnify>()
+            selectedCategory.add(ListItemUnify(detailInputModel.categoryName, ""))
+            productCategoryRecListView?.setData(selectedCategory)
         }
 
         // product wholesale
@@ -840,7 +912,11 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
 
     private fun hideRecommendations() {
         productNameRecView?.hide()
-        productCategoryRecListView?.hide()
+        val editProductWithVariant = viewModel.isEditing && viewModel.variantInputModel.productVariant.isNotEmpty()
+        if (!editProductWithVariant) {
+            // hide category recommendations
+            productCategoryRecListView?.hide()
+        }
     }
 
     private fun showDurationUnitOption() {
@@ -921,28 +997,18 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         productNameRecShimmering?.visible()
     }
 
+    private fun showImmutableCategoryDialog() {
+        categoryAlertDialog?.show()
+    }
+
     private fun onGetCategoryRecommendationSuccess(result: Success<List<ListItemUnify>>) {
         productCategoryLayout?.show()
         productCategoryRecListView?.show()
         val items = ArrayList(result.data.take(3))
         productCategoryRecListView?.setData(items)
         productCategoryRecListView?.onLoadFinish {
-            (productCategoryRecListView?.adapter?.getItem(0) as? ListItemUnify)?.let {
-                it.listRightRadiobtn?.isChecked = true
-                viewModel.selectedCategoryId = it.categoryId.toString()
-            }
-            productCategoryRecListView?.setOnItemClickListener { _, _, position, _ ->
-                val clickedItem = productCategoryRecListView?.getItemAtPosition(position) as ListItemUnify
-                items.filter { it.listRightRadiobtn?.isChecked ?: false }
-                        .filterNot { it == clickedItem }
-                        .onEach { it.listRightRadiobtn?.isChecked = false }
-                clickedItem.listRightRadiobtn?.isChecked = true
-                viewModel.selectedCategoryId = clickedItem.categoryId.toString()
-
-                if (!viewModel.isEditing) {
-                    ProductAddMainTracking.clickProductCategoryRecom(shopId)
-                }
-            }
+            selectFirstCategoryRecommendation()
+            createCategoryRecommendationItemClickListener(items)
         }
     }
 
@@ -951,12 +1017,39 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         productCategoryRecListView?.hide()
     }
 
+    private fun selectFirstCategoryRecommendation() = productCategoryRecListView?.run {
+        ListUnifyUtil.setSelected(this, 0) {
+            onCategoryRecommendationSelected(ListUnifyUtil.getCategoryId(it).toString())
+        }
+    }
+
+    private fun createCategoryRecommendationItemClickListener(items: List<ListItemUnify>) = productCategoryRecListView?.run {
+        productCategoryRecListView?.setOnItemClickListener { _, _, position, _ ->
+            ListUnifyUtil.setSelected(this, position) {
+                onCategoryRecommendationSelected(ListUnifyUtil.getCategoryId(it).toString())
+            }
+        }
+
+        items.forEachIndexed { index, item ->
+            item.listRightRadiobtn?.setOnClickListener {
+                ListUnifyUtil.setSelected(this, index) {
+                    onCategoryRecommendationSelected(ListUnifyUtil.getCategoryId(it).toString())
+                }
+            }
+        }
+    }
+
+    private fun onCategoryRecommendationSelected(categoryId: String) {
+        viewModel.selectedCategoryId = categoryId
+        ProductAddMainTracking.clickProductCategoryRecom(shopId)
+    }
+
     private fun submitInput(shipmentInputModel: ShipmentInputModel,
                             descriptionInputModel: DescriptionInputModel,
                             variantInputModel: ProductVariantInputModel) {
         val detailInputModel = DetailInputModel(
                 productNameField.getText(),
-                productCategoryPickerButton?.text?.toString() ?: "",
+                viewModel.selectedCategoryName,
                 viewModel.selectedCategoryId,
                 "",
                 productPriceField.getTextLongOrZero(),
@@ -980,19 +1073,5 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         intent.putExtra(EXTRA_VARIANT_INPUT, variantInputModel)
         activity?.setResult(Activity.RESULT_OK, intent)
         activity?.finish()
-    }
-
-    // category id is saved on listActionText property
-    private val ListItemUnify.categoryId: Long
-        get() = listActionText?.toLong().orZero()
-
-    @Suppress("UNCHECKED_CAST")
-    private fun getSelectedCategory(): ListItemUnify? {
-        ListUnify::class.java.getDeclaredField("array").let {
-            it.isAccessible = true
-            return (it.get(productCategoryRecListView) as ArrayList<ListItemUnify>).find { listItem ->
-                listItem.listRightRadiobtn?.isChecked ?: false
-            }
-        }
     }
 }

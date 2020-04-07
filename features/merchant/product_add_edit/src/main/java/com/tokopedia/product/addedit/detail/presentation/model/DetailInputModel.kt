@@ -2,6 +2,8 @@ package com.tokopedia.product.addedit.detail.presentation.model
 
 import android.os.Parcelable
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.CONDITION_NEW
+import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.DEFAULT_MIN_ORDER_VALUE
+import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.DEFAULT_STOCK_VALUE
 import kotlinx.android.parcel.Parcelize
 
 /**
@@ -15,8 +17,8 @@ data class DetailInputModel(
         var categoryId: String = "",
         var catalogId: String = "",
         var price: Long = 0L,
-        var stock: Int = 0,
-        var minOrder: Int = 0,
+        var stock: Int = DEFAULT_STOCK_VALUE,
+        var minOrder: Int = DEFAULT_MIN_ORDER_VALUE,
         var condition: String = CONDITION_NEW,
         var sku: String = "",
         var imageUrlOrPathList: List<String> = emptyList(),

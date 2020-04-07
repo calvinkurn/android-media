@@ -110,7 +110,7 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
         switchInsurance = view.findViewById(R.id.switch_insurance)
         btnEnd = view.findViewById(R.id.btn_end)
         tfWeightAmount.setModeToNumberInput()
-        if (shipmentViewModel.isEditMode) applyEditMode()
+        applyShipmentInputModel()
         tfWeightUnit?.apply {
             textFieldInput.setText(getWeightTypeTitle(0))
             textFieldInput.isFocusable = false // disable focus
@@ -134,7 +134,7 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun applyEditMode() {
+    private fun applyShipmentInputModel() {
         val inputModel = shipmentViewModel.shipmentInputModel
         val weightUnitResId = getWeightTypeTitle(inputModel.weightUnit)
         val weightUnit = getString(weightUnitResId)
