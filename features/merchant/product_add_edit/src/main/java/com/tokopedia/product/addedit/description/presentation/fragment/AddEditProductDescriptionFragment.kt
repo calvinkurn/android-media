@@ -130,7 +130,7 @@ class AddEditProductDescriptionFragment:
         adapter.data.removeAt(position)
         adapter.notifyDataSetChanged()
         textViewAddVideo.visibility =
-            if (adapter.dataSize < MAX_VIDEOS) View.VISIBLE else View.GONE
+                if (adapter.dataSize < MAX_VIDEOS) View.VISIBLE else View.GONE
     }
 
     override fun onTextChanged(url: String, position: Int) {
@@ -145,10 +145,10 @@ class AddEditProductDescriptionFragment:
 
     override fun initInjector() {
         DaggerAddEditProductDescriptionComponent.builder()
-            .baseAppComponent((requireContext().applicationContext as BaseMainApplication).baseAppComponent)
-            .addEditProductDescriptionModule(AddEditProductDescriptionModule())
-            .build()
-            .inject(this)
+                .baseAppComponent((requireContext().applicationContext as BaseMainApplication).baseAppComponent)
+                .addEditProductDescriptionModule(AddEditProductDescriptionModule())
+                .build()
+                .inject(this)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -265,8 +265,8 @@ class AddEditProductDescriptionFragment:
                     type =  Toaster.TYPE_ERROR,
                     actionText = getString(R.string.title_try_again),
                     clickListener =  View.OnClickListener {
-                descriptionViewModel.getVariants(descriptionViewModel.categoryId)
-            })
+                        descriptionViewModel.getVariants(descriptionViewModel.categoryId)
+                    })
         }
     }
 
@@ -276,7 +276,7 @@ class AddEditProductDescriptionFragment:
             when (requestCode) {
                 REQUEST_CODE_SHIPMENT -> {
                     val shipmentInputModel =
-                        data.getParcelableExtra<ShipmentInputModel>(EXTRA_SHIPMENT_INPUT)
+                            data.getParcelableExtra<ShipmentInputModel>(EXTRA_SHIPMENT_INPUT)
                     submitInput(shipmentInputModel)
                 }
                 REQUEST_CODE_VARIANT -> {
@@ -347,7 +347,7 @@ class AddEditProductDescriptionFragment:
         super.renderList(videoLinkModels)
 
         textViewAddVideo.visibility =
-            if (adapter.dataSize < MAX_VIDEOS) View.VISIBLE else View.GONE
+                if (adapter.dataSize < MAX_VIDEOS) View.VISIBLE else View.GONE
     }
 
     private fun showVariantDialog(variants: List<ProductVariantByCatModel>) {
@@ -388,8 +388,8 @@ class AddEditProductDescriptionFragment:
 
     private fun submitInput(shipmentInputModel: ShipmentInputModel) {
         val descriptionInputModel = DescriptionInputModel(
-            textFieldDescription.getText(),
-            adapter.data
+                textFieldDescription.getText(),
+                adapter.data
         )
         val intent = Intent()
         intent.putExtra(EXTRA_DESCRIPTION_INPUT, descriptionInputModel)

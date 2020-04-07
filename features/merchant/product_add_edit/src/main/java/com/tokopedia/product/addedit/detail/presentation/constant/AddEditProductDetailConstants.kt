@@ -13,6 +13,7 @@ class AddEditProductDetailConstants {
         const val REQUEST_CODE_SHIPMENT_EDIT = 5
         const val REQUEST_CODE_VARIANT_EDIT = 6
         const val EXTRA_CATEGORY_ID = "CATEGORY_ID"
+
         const val CATEGORY_RESULT_ID = "CATEGORY_RESULT_ID"
         const val CATEGORY_RESULT_NAME = "CATEGORY_RESULT_NAME"
         const val UNIT_DAY = 0
@@ -21,5 +22,7 @@ class AddEditProductDetailConstants {
         const val CONDITION_NEW = "NEW"
         const val USED_PRODUCT_INDEX = 1
         const val CONDITION_USED = "USED"
+        const val DEFAULT_STOCK_VALUE = 1
+        const val DEFAULT_MIN_ORDER_VALUE = 1
     }
 }

@@ -28,6 +28,7 @@ class AddEditProductPreviewActivity : BaseSimpleActivity() {
     override fun getLayoutRes() = R.layout.activity_add_edit_product_preview
 
     override fun onCreate(savedInstanceState: Bundle?) {
+//        productId = intent.getStringExtra(EXTRA_PRODUCT_ID)
 
         intent.getStringExtra(EXTRA_PRODUCT_ID)?.run { productId = this }
         intent.getStringExtra(EXTRA_DRAFT_ID)?.run { draftId = this }

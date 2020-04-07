@@ -85,16 +85,4 @@ object ProductEditMainTracking {
         sendEditProductClick(shopId, "click continue on main page")
     }
 
-    fun clickEditPrice(shopId: String) {
-        sendEditProductClick(shopId, "click edit price")
-    }
-
-    fun clickChangePrice(shopId: String) {
-        sendEditProductClick(shopId, "click change price")
-    }
-
-    fun clickCancelEditPrice(shopId: String) {
-        sendEditProductClick(shopId, "click cancel edit price")
-    }
-
 }
