@@ -8,31 +8,30 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
-import androidx.appcompat.app.AlertDialog;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalMechant;
 import com.tokopedia.base.list.seller.view.adapter.BaseListAdapter;
 import com.tokopedia.base.list.seller.view.fragment.BaseListFragment;
 import com.tokopedia.base.list.seller.view.old.NoResultDataBinder;
 import com.tokopedia.core.analytics.AppEventTracking;
-import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.product.manage.item.common.di.component.ProductComponent;
 import com.tokopedia.product.manage.item.imagepicker.imagepickerbuilder.AddProductImagePickerBuilder;
-import com.tokopedia.product.manage.item.main.add.view.activity.ProductAddNameCategoryActivity;
 import com.tokopedia.product.manage.item.main.base.view.service.UploadProductService;
 import com.tokopedia.product.manage.item.main.draft.data.model.ProductDraftViewModel;
 import com.tokopedia.product.manage.item.main.draft.view.activity.ProductDraftAddActivity;
-import com.tokopedia.product.manage.item.main.draft.view.activity.ProductDraftEditActivity;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.presenter.BlankPresenter;
 import com.tokopedia.seller.product.draft.di.component.DaggerProductDraftListComponent;
@@ -61,6 +60,8 @@ public class ProductDraftListFragment extends BaseListFragment<BlankPresenter, P
 
     public static final int REQUEST_CODE_ADD_IMAGE = 9001;
     public static final int INSTAGRAM_SELECT_REQUEST_CODE = 9002;
+
+    private static final String EXTRA_PRODUCT_ID = "PRODUCT_ID";
 
     @Inject
     ProductDraftListPresenter productDraftListPresenter;
@@ -133,7 +134,7 @@ public class ProductDraftListFragment extends BaseListFragment<BlankPresenter, P
         super.initInjector();
         DaggerProductDraftListComponent
                 .builder()
-                .productDraftListModule(new ProductDraftListModule())
+                .productDraftListModule(new ProductDraftListModule(requireActivity().getApplication()))
                 .productComponent(getComponent(ProductComponent.class))
                 .build()
                 .inject(this);
@@ -180,7 +181,7 @@ public class ProductDraftListFragment extends BaseListFragment<BlankPresenter, P
             item.getSubMenu().findItem(R.id.label_view_add_image).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
                 @Override
                 public boolean onMenuItemClick(MenuItem item) {
-                    startActivity(ProductAddNameCategoryActivity.Companion.createInstance(getActivity()));
+                    RouteManager.route(getContext(), ApplinkConstInternalMechant.MERCHANT_OPEN_PRODUCT_PREVIEW);
                     return true;
                 }
             });
@@ -198,12 +199,8 @@ public class ProductDraftListFragment extends BaseListFragment<BlankPresenter, P
 
     @Override
     public void onItemClicked(ProductDraftViewModel productDraftViewModel) {
-        Intent intent;
-        if (productDraftViewModel.isEdit()) {
-            intent = ProductDraftEditActivity.Companion.createInstance(getActivity(), productDraftViewModel.getProductDraftId());
-        } else {
-            intent = ProductDraftAddActivity.Companion.createInstance(getActivity(), productDraftViewModel.getProductDraftId());
-        }
+        Intent intent = RouteManager.getIntent(getContext(), ApplinkConstInternalMechant.MERCHANT_OPEN_DRAFT);
+        intent.putExtra(EXTRA_PRODUCT_ID, productDraftViewModel.getProductDraftId() + "");
         eventDraftProductClicked(AppEventTracking.EventLabel.EDIT_DRAFT);
         startActivity(intent);
     }
@@ -314,7 +311,7 @@ public class ProductDraftListFragment extends BaseListFragment<BlankPresenter, P
     @Override
     public void onEmptyButtonClicked() {
         eventDraftProductClicked(AppEventTracking.EventLabel.ADD_PRODUCT);
-        startActivity(new Intent(getActivity(), ProductAddNameCategoryActivity.class));
+        RouteManager.route(getContext(), ApplinkConstInternalMechant.MERCHANT_OPEN_PRODUCT_PREVIEW);
     }
 
     public void eventDraftProductClicked(String label) {
