@@ -33,6 +33,7 @@ class AddEditProductDraftMapper {
             val stock = product.detailInputModel.stock
             val minOrder = product.detailInputModel.minOrder
             val condition = product.detailInputModel.condition
+            val weight = product.shipmentInputModel.weight
 
             var completionCount = 0
             var completionPercent: Int
@@ -53,6 +54,9 @@ class AddEditProductDraftMapper {
                 completionCount++
             }
             if (condition.isNotEmpty()) {
+                completionCount++
+            }
+            if (weight > 0) {
                 completionCount++
             }
 
