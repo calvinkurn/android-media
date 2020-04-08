@@ -33,4 +33,8 @@ interface BaseChatViewState {
 
     fun hideAttachmentMenu()
 
+    fun onKeyboardOpened()
+
+    fun onKeyboardClosed()
+
 }

@@ -30,6 +30,9 @@ class TransactionOrderProgressLayout : LinearLayout {
     private var chatOrder: ChatOrderProgress = ChatOrderProgress()
     private var state: String = stateOpen
 
+    private var isForceClose = false
+    private var isKeyboardOpened = false
+
     constructor(context: Context?) : super(context)
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
     constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
@@ -46,6 +49,37 @@ class TransactionOrderProgressLayout : LinearLayout {
         View.inflate(context, R.layout.partial_transaction_order_progress, this)
     }
 
+    fun render(chatOrder: ChatOrderProgress) {
+        this.chatOrder = chatOrder
+        if (!shouldBeRendered()) return
+        renderStateDescription()
+        renderStateChangerButton()
+        renderOrderStatus()
+        renderLayoutVisibility()
+    }
+
+    fun onKeyboardOpened() {
+        if (!isKeyboardOpened) {
+            toggleKeyboardState()
+            automaticHide()
+        }
+    }
+
+    fun onKeyboardClosed() {
+        if (isKeyboardOpened) {
+            toggleKeyboardState()
+            automaticShow()
+        }
+    }
+
+    private fun automaticHide() {
+        changeState(stateClose)
+    }
+
+    private fun automaticShow() {
+        changeState(stateOpen)
+    }
+
     private fun initBindView() {
         status = findViewById(R.id.tp_order_status)
         stateChanger = findViewById(R.id.tp_order_visibility)
@@ -55,15 +89,6 @@ class TransactionOrderProgressLayout : LinearLayout {
         estimateTitle = findViewById(R.id.tp_estimate_label)
         estimateValue = findViewById(R.id.tp_estimate_value)
         actionBtn = findViewById(R.id.btn_action_label)
-    }
-
-    fun render(chatOrder: ChatOrderProgress) {
-        this.chatOrder = chatOrder
-        if (!shouldBeRendered()) return
-        renderStateDescription()
-        renderStateChangerButton()
-        renderOrderStatus()
-        renderLayoutVisibility()
     }
 
     private fun shouldBeRendered(): Boolean {
@@ -191,6 +216,10 @@ class TransactionOrderProgressLayout : LinearLayout {
                 RouteManager.route(context, chatOrder.button.uri)
             }
         }
+    }
+
+    private fun toggleKeyboardState() {
+        isKeyboardOpened = !isKeyboardOpened
     }
 
     companion object {
