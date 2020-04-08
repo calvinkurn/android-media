@@ -6,8 +6,8 @@ import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.groupchat.vote.view.model.VoteInfoViewModel;
 import com.tokopedia.groupchat.vote.view.model.VoteViewModel;
-import com.tokopedia.vote.domain.model.VoteStatisticDomainModel;
 import com.tokopedia.user.session.UserSessionInterface;
+import com.tokopedia.vote.domain.model.VoteStatisticDomainModel;
 
 /**
  * @author by nisie on 2/6/18.

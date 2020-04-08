@@ -1,7 +1,5 @@
 package com.tokopedia.otp.cotp.domain.interactor;
 
-import androidx.annotation.Nullable;
-
 import com.tokopedia.otp.cotp.domain.source.OtpSource;
 import com.tokopedia.otp.cotp.view.viewmodel.RequestOtpViewModel;
 import com.tokopedia.usecase.RequestParams;

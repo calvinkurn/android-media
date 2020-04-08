@@ -16,7 +16,6 @@ import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.gherkin.Feature
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import java.lang.Exception
 import javax.net.ssl.HttpsURLConnection
 import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse

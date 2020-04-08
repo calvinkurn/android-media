@@ -1,9 +1,10 @@
 package com.tokopedia.navigation.presentation.adapter;
 
 import android.content.Context;
-import androidx.annotation.NonNull;
 import android.view.View;
 import android.view.ViewGroup;
+
+import androidx.annotation.NonNull;
 
 import com.tokopedia.design.label.LabelView;
 import com.tokopedia.navigation.R;

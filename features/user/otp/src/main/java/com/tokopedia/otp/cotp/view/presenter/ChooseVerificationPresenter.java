@@ -3,12 +3,12 @@ package com.tokopedia.otp.cotp.view.presenter;
 import android.text.TextUtils;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.otp.R;
 import com.tokopedia.otp.common.network.OtpErrorHandler;
 import com.tokopedia.otp.cotp.domain.GetVerificationMethodListUseCase;
 import com.tokopedia.otp.cotp.view.viewlistener.SelectVerification;
 import com.tokopedia.otp.cotp.view.viewmodel.ListVerificationMethod;
 import com.tokopedia.user.session.UserSessionInterface;
-import com.tokopedia.otp.R;
 
 import javax.inject.Inject;
 

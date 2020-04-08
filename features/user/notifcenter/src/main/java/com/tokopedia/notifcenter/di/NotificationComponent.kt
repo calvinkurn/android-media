@@ -7,7 +7,6 @@ import com.tokopedia.notifcenter.presentation.BaseNotificationFragment
 import com.tokopedia.notifcenter.presentation.activity.NotificationActivity
 import com.tokopedia.notifcenter.presentation.fragment.NotificationTransactionFragment
 import com.tokopedia.notifcenter.presentation.fragment.NotificationUpdateFragment
-import com.tokopedia.notifcenter.presentation.fragment.ProductStockReminderDialog
 import dagger.Component
 
 @NotificationScope

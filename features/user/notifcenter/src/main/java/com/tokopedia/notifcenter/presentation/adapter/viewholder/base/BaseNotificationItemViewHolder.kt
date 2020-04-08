@@ -17,17 +17,16 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.notifcenter.R
-import com.tokopedia.notifcenter.analytics.NotificationUpdateAnalytics
 import com.tokopedia.notifcenter.data.consts.Resources.Green_G100
 import com.tokopedia.notifcenter.data.consts.Resources.Green_G200
 import com.tokopedia.notifcenter.data.consts.Resources.Green_G500
 import com.tokopedia.notifcenter.data.consts.Resources.Neutral_N200
 import com.tokopedia.notifcenter.data.consts.Resources.Neutral_N50
 import com.tokopedia.notifcenter.data.state.BottomSheetType
-import com.tokopedia.notifcenter.listener.NotificationItemListener
 import com.tokopedia.notifcenter.data.viewbean.NotificationItemViewBean
 import com.tokopedia.notifcenter.data.viewbean.NotificationItemViewBean.Companion.BUYER_TYPE
 import com.tokopedia.notifcenter.data.viewbean.NotificationItemViewBean.Companion.SELLER_TYPE
+import com.tokopedia.notifcenter.listener.NotificationItemListener
 
 
 /**

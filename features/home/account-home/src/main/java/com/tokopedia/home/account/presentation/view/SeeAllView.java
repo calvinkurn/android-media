@@ -1,9 +1,10 @@
 package com.tokopedia.home.account.presentation.view;
 
+import android.view.View;
+
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import android.view.View;
 
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.design.component.BottomSheets;

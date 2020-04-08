@@ -7,8 +7,6 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.gamification.pdp.data.Recommendation
 import com.tokopedia.gamification.pdp.presentation.GamiPdpRecommendationListener
 import com.tokopedia.gamification.pdp.presentation.viewHolders.RecommendationVH
-import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
-import java.lang.ref.WeakReference
 
 class PdpGamificationAdapterTypeFactory(val recommendationListener: GamiPdpRecommendationListener) : BaseAdapterTypeFactory(), PdpGamificationTypeFactory{
 

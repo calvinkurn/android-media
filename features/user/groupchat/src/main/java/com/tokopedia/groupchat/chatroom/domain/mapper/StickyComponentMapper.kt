@@ -1,7 +1,6 @@
 package com.tokopedia.groupchat.chatroom.domain.mapper
 
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
-import com.tokopedia.groupchat.chatroom.domain.pojo.StickyComponentData
 import com.tokopedia.groupchat.chatroom.domain.pojo.StickyComponentPojo
 import com.tokopedia.groupchat.room.view.viewmodel.pinned.StickyComponentViewModel
 import com.tokopedia.groupchat.room.view.viewmodel.pinned.StickyComponentsViewModel

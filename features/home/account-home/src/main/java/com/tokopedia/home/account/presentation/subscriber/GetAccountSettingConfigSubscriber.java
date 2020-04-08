@@ -3,16 +3,11 @@ package com.tokopedia.home.account.presentation.subscriber;
 import android.content.Context;
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
-import com.tokopedia.config.GlobalConfig;
-import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.home.account.AccountConstants;
 import com.tokopedia.home.account.R;
 import com.tokopedia.home.account.data.model.AccountSettingConfig;
 import com.tokopedia.home.account.presentation.AccountSetting;
-
-import java.net.SocketTimeoutException;
-import java.net.UnknownHostException;
 
 import static com.tokopedia.home.account.AccountConstants.ErrorCodes.ERROR_CODE_NULL_MENU;
 

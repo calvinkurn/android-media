@@ -1,8 +1,8 @@
 package com.tokopedia.notifcenter.widget
 
 import android.graphics.Rect
-import androidx.recyclerview.widget.RecyclerView
 import android.view.View
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.toPx
 
 class ProductRecomNotificationItemDecoration : RecyclerView.ItemDecoration() {

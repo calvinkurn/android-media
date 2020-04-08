@@ -1,7 +1,6 @@
 package com.tokopedia.phoneverification.data;
 
 import com.tokopedia.abstraction.common.network.response.TokopediaWsV4Response;
-import com.tokopedia.network.utils.TKPDMapParam;
 import com.tokopedia.phoneverification.PhoneVerificationConst;
 
 import java.util.HashMap;

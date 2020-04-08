@@ -1,11 +1,7 @@
 package com.tokopedia.phoneverification;
 
-import android.content.Context;
-
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
-import com.tokopedia.track.interfaces.Analytics;
-import com.tokopedia.track.interfaces.ContextAnalytics;
 
 /**
  * @author by nisie on 8/21/18.

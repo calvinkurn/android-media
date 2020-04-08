@@ -46,7 +46,6 @@ import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.design.viewpagerindicator.CirclePageIndicator
 import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity
 import com.tokopedia.tokopoints.R
-import com.tokopedia.tokopoints.di.TokoPointComponent
 import com.tokopedia.tokopoints.di.TokopointBundleComponent
 import com.tokopedia.tokopoints.notification.TokoPointsNotificationManager
 import com.tokopedia.tokopoints.notification.model.PopupNotification

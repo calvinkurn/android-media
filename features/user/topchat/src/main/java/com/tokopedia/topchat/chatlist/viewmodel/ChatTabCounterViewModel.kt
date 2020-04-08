@@ -1,8 +1,8 @@
 package com.tokopedia.topchat.chatlist.viewmodel
 
+import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import android.content.Context
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.QUERY_CHAT_NOTIFICATION

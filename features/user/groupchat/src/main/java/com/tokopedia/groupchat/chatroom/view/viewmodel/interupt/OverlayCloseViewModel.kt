@@ -5,8 +5,8 @@ import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.groupchat.chatroom.view.adapter.chatroom.typefactory.GroupChatTypeFactory
 import com.tokopedia.groupchat.chatroom.domain.pojo.BaseGroupChatPojo
+import com.tokopedia.groupchat.chatroom.view.adapter.chatroom.typefactory.GroupChatTypeFactory
 
 /**
  * @author by yfsx on 14/12/18.

@@ -7,7 +7,6 @@ import com.tokopedia.gamification.pdp.domain.Mapper
 import com.tokopedia.gamification.pdp.domain.usecase.GamingRecommendationProductUseCase
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.topads.sdk.di.TopAdsWishlistModule
-import com.tokopedia.topads.sdk.domain.interactor.TopAdsWishlishedUseCase
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase

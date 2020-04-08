@@ -1,11 +1,10 @@
 package com.tokopedia.groupchat.chatroom.view.adapter.chatroom.viewholder
 
-import androidx.annotation.LayoutRes
 import android.util.TypedValue
 import android.view.View
 import android.widget.ImageView
+import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.design.widget.ViewTooltip
@@ -13,7 +12,6 @@ import com.tokopedia.groupchat.R
 import com.tokopedia.groupchat.chatroom.view.adapter.chatroom.typefactory.DynamicButtonTypeFactory
 import com.tokopedia.groupchat.chatroom.view.listener.ChatroomContract
 import com.tokopedia.groupchat.room.view.viewmodel.DynamicButton
-import com.tokopedia.groupchat.room.view.viewmodel.DynamicButtonsViewModel
 import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
 import rx.functions.Action1

@@ -4,7 +4,6 @@ import android.text.TextUtils
 import com.crashlytics.android.Crashlytics
 import com.tokopedia.home.account.BuildConfig
 import com.tokopedia.network.data.model.response.ResponseV4ErrorException
-import java.net.URLEncoder
 
 object AccountHomeErrorHandler {
     @JvmStatic

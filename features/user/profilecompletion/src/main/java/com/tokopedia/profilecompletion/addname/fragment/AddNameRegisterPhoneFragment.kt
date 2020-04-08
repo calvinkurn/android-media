@@ -25,11 +25,11 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.design.text.TkpdHintTextInputLayout
 import com.tokopedia.kotlin.util.getParamString
+import com.tokopedia.profilecompletion.R
+import com.tokopedia.profilecompletion.addname.AddNameRegisterPhoneAnalytics
+import com.tokopedia.profilecompletion.addname.di.DaggerAddNameComponent
 import com.tokopedia.profilecompletion.addname.listener.AddNameListener
 import com.tokopedia.profilecompletion.addname.presenter.AddNamePresenter
-import com.tokopedia.profilecompletion.addname.AddNameRegisterPhoneAnalytics
-import com.tokopedia.profilecompletion.R
-import com.tokopedia.profilecompletion.addname.di.DaggerAddNameComponent
 import com.tokopedia.sessioncommon.data.register.RegisterInfo
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject

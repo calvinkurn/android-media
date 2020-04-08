@@ -4,9 +4,13 @@ import android.content.Context
 import android.net.Uri
 import android.text.TextUtils
 import com.tokopedia.iris.IrisAnalytics
-import java.lang.Exception
 import java.net.URLDecoder
-import java.util.HashMap
+import java.util.*
+import kotlin.collections.LinkedHashMap
+import kotlin.collections.Map
+import kotlin.collections.dropLastWhile
+import kotlin.collections.set
+import kotlin.collections.toTypedArray
 
 object InstallUtils {
     val UTM_SOURCE = "utm_source"

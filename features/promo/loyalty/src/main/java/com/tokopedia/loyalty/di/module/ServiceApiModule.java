@@ -3,7 +3,6 @@ package com.tokopedia.loyalty.di.module;
 import android.content.Context;
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
-import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.loyalty.di.qualifier.DigitalQualifier;
 import com.tokopedia.loyalty.di.qualifier.LoyaltyModuleQualifier;
 import com.tokopedia.loyalty.di.qualifier.PromoQualifier;
@@ -33,6 +32,7 @@ import com.tokopedia.network.interceptor.FingerprintInterceptor;
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor;
 import com.tokopedia.network.interceptor.TkpdBaseInterceptor;
 import com.tokopedia.network.utils.TkpdOkHttpBuilder;
+import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.user.session.UserSession;
 
 import dagger.Module;

@@ -1,7 +1,6 @@
 package com.tokopedia.home.account.presentation.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-
 import com.tokopedia.home.account.data.pojo.NotifCenterSendNotifData;
 import com.tokopedia.home.account.domain.SendNotifUseCase;
 import com.tokopedia.home.account.presentation.listener.LogoutView;

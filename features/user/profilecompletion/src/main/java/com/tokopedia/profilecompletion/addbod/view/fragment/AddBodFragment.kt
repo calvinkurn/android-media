@@ -1,39 +1,38 @@
 package com.tokopedia.profilecompletion.addbod.view.fragment
 
 import android.app.Activity
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.os.Bundle
-import androidx.annotation.NonNull
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
+import androidx.annotation.NonNull
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.datepicker.OnDateChangedListener
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
 import com.tokopedia.profilecompletion.R
 import com.tokopedia.profilecompletion.addbod.data.AddBodData
+import com.tokopedia.profilecompletion.addbod.view.widget.common.LocaleUtils
+import com.tokopedia.profilecompletion.addbod.view.widget.common.LocaleUtils.getCurrentLocale
 import com.tokopedia.profilecompletion.addbod.viewmodel.AddBodViewModel
 import com.tokopedia.profilecompletion.di.ProfileCompletionSettingComponent
+import com.tokopedia.sessioncommon.ErrorHandlerSession
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_add_bod.*
+import kotlinx.android.synthetic.main.layout_datepicker_bottomsheet.view.*
+import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
-import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.google.android.material.snackbar.Snackbar
-import androidx.core.os.ConfigurationCompat
-import android.widget.FrameLayout
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.sessioncommon.ErrorHandlerSession
-import com.tokopedia.unifycomponents.Toaster
-import kotlinx.android.synthetic.main.layout_datepicker_bottomsheet.view.datePicker
-import java.text.SimpleDateFormat
-import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
-import com.tokopedia.datepicker.OnDateChangedListener
-import com.tokopedia.profilecompletion.addbod.view.widget.common.LocaleUtils
-import com.tokopedia.profilecompletion.addbod.view.widget.common.LocaleUtils.getCurrentLocale
 
 
 /**

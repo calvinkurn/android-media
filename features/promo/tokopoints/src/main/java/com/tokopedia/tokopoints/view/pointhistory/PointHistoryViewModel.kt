@@ -5,7 +5,6 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.library.baseadapter.AdapterCallback
@@ -19,8 +18,6 @@ import com.tokopedia.tokopoints.view.util.Loading
 import com.tokopedia.tokopoints.view.util.Resources
 import com.tokopedia.tokopoints.view.util.Success
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import rx.Subscriber
 import javax.inject.Inject
 
 @TokoPointScope

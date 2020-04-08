@@ -1,6 +1,5 @@
 package com.tokopedia.profilecompletion.settingprofile.domain
 
-import com.tokopedia.imageuploader.di.qualifier.ImageUploaderQualifier
 import com.tokopedia.imageuploader.domain.UploadImageUseCase
 import com.tokopedia.profilecompletion.data.UploadProfileImageModel
 import com.tokopedia.profilecompletion.di.ProfileCompletionQualifier
@@ -8,7 +7,7 @@ import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import okhttp3.RequestBody
 import rx.Observable
-import java.util.HashMap
+import java.util.*
 import javax.inject.Inject
 
 

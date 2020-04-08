@@ -9,7 +9,6 @@ import com.tokopedia.settingbank.banklist.domain.usecase.SetDefaultBankAccountUs
 import com.tokopedia.settingbank.banklist.view.listener.SettingBankContract
 import com.tokopedia.settingbank.banklist.view.viewmodel.BankAccountListViewModel
 import com.tokopedia.settingbank.banklist.view.viewmodel.BankAccountViewModel
-import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import rx.Subscriber
 import javax.inject.Inject

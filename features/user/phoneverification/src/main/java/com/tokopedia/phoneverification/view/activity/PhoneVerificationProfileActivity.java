@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
@@ -11,7 +12,6 @@ import androidx.fragment.app.FragmentTransaction;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
-import com.tokopedia.phoneverification.PhoneVerificationRouter;
 import com.tokopedia.phoneverification.R;
 import com.tokopedia.phoneverification.view.fragment.PhoneVerificationFragment;
 import com.tokopedia.phoneverification.view.fragment.PhoneVerificationProfileFragment;

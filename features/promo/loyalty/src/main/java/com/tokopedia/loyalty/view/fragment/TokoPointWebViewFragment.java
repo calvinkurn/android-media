@@ -3,7 +3,6 @@ package com.tokopedia.loyalty.view.fragment;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +10,8 @@ import android.view.ViewGroup;
 import android.webkit.CookieManager;
 import android.webkit.URLUtil;
 import android.webkit.WebView;
+
+import androidx.annotation.Nullable;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseSessionWebViewFragment;
 import com.tokopedia.applink.ApplinkConst;

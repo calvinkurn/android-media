@@ -1,8 +1,8 @@
 package com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.groupchat.chatroom.view.adapter.chatroom.typefactory.GroupChatTypeFactory
 import com.tokopedia.groupchat.chatroom.domain.pojo.BaseGroupChatPojo
+import com.tokopedia.groupchat.chatroom.view.adapter.chatroom.typefactory.GroupChatTypeFactory
 
 /**
  * @author by nisie on 3/29/18.

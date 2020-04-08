@@ -1,8 +1,7 @@
 package com.tokopedia.navigation.presentation.adapter.viewholder
 
-import androidx.annotation.LayoutRes
 import android.view.View
-
+import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.design.component.TextViewCompat
 import com.tokopedia.navigation.R

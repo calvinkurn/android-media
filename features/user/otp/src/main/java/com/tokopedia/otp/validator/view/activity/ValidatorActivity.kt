@@ -8,7 +8,6 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.otp.R
 import com.tokopedia.otp.validator.data.ModeListData
 import com.tokopedia.otp.validator.data.OtpParams
 import com.tokopedia.otp.validator.di.DaggerValidatorComponent

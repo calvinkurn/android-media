@@ -1,6 +1,5 @@
 package com.tokopedia.loginfingerprint.utils
 
-import com.tokopedia.loginfingerprint.utils.DispatcherProvider
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 

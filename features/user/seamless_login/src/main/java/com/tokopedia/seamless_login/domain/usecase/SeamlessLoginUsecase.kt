@@ -2,9 +2,9 @@ package com.tokopedia.seamless_login.domain.usecase
 
 import android.net.Uri
 import com.google.gson.Gson
-import com.tokopedia.config.GlobalConfig
 import com.tokopedia.abstraction.common.utils.network.AuthUtil
 import com.tokopedia.authentication.AuthHelper
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.decodeToUtf8
 import com.tokopedia.kotlin.extensions.view.encodeToUtf8
 import com.tokopedia.seamless_login.data.UserDataPojo

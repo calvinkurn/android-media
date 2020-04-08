@@ -1,9 +1,10 @@
 package com.tokopedia.tokopoints.view.util;
 
 import android.os.Build;
-import com.google.android.material.tabs.TabLayout;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.google.android.material.tabs.TabLayout;
 
 public class TabUtil {
     public static void wrapTabIndicatorToTitle(TabLayout tabLayout, int externalMargin, int internalMargin) {

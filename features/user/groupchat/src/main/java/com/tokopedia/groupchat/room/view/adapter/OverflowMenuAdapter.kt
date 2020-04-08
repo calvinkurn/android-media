@@ -1,11 +1,11 @@
 package com.tokopedia.groupchat.room.view.adapter
 
-import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.groupchat.R
 import com.tokopedia.groupchat.room.view.viewmodel.OverflowMenuButtonViewModel

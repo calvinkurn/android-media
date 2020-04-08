@@ -7,7 +7,7 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.home.account.R
 import com.tokopedia.home.account.data.model.SetUserProfileSettingResponse
-import java.util.HashMap
+import java.util.*
 import javax.inject.Inject
 
 private const val PARAM_SAFE_MODE = "safeMode"

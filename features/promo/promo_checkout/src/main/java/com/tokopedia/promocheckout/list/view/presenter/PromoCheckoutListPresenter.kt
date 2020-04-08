@@ -12,7 +12,7 @@ import com.tokopedia.promocheckout.list.model.listcoupon.DataPromoCheckoutList
 import com.tokopedia.promocheckout.list.model.listlastseen.PromoCheckoutLastSeenModel
 import com.tokopedia.usecase.RequestParams
 import rx.Subscriber
-import java.util.HashMap
+import java.util.*
 import kotlin.collections.ArrayList
 
 class PromoCheckoutListPresenter(private val graphqlUseCase: GraphqlUseCase,

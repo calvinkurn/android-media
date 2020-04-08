@@ -1,8 +1,7 @@
 package com.tokopedia.groupchat.animation.initializers
 
-import java.util.Random
-
 import com.tokopedia.groupchat.animation.Particle
+import java.util.*
 
 class ScaleInitializer(private val mMinScale: Float, private val mMaxScale: Float) : ParticleInitializer {
 

@@ -9,7 +9,6 @@ import com.android.installreferrer.api.ReferrerDetails
 import com.google.android.gms.analytics.CampaignTrackingReceiver
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.track.TrackApp
-import java.lang.Exception
 
 const val KEY_INSTALL_REF_SHARED_PREF_FILE_NAME = "install_ref"
 const val KEY_INSTALL_REF_INITIALISED = "install_ref_initialised"

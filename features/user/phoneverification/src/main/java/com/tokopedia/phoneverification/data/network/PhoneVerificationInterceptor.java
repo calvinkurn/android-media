@@ -2,11 +2,12 @@ package com.tokopedia.phoneverification.data.network;
 
 import android.content.Context;
 import android.os.Build;
+
 import androidx.collection.ArrayMap;
 
-import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.authentication.AuthHelper;
 import com.tokopedia.authentication.AuthKey;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor;
 import com.tokopedia.user.session.UserSession;

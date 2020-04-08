@@ -1,8 +1,8 @@
 package com.tokopedia.groupchat.channel.domain.source;
 
+import com.tokopedia.groupchat.channel.data.ChannelApi;
 import com.tokopedia.groupchat.channel.domain.mapper.ChannelMapper;
 import com.tokopedia.groupchat.channel.view.model.ChannelListViewModel;
-import com.tokopedia.groupchat.channel.data.ChannelApi;
 import com.tokopedia.groupchat.common.di.scope.GroupChatScope;
 
 import java.util.HashMap;

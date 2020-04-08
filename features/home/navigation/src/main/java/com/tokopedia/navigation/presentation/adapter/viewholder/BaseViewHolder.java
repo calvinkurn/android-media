@@ -1,7 +1,8 @@
 package com.tokopedia.navigation.presentation.adapter.viewholder;
 
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
+
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.tokopedia.navigation.presentation.adapter.BaseListAdapter;
 

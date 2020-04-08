@@ -6,7 +6,7 @@ import retrofit2.http.FieldMap
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.POST
 import rx.Observable
-import java.util.HashMap
+import java.util.*
 
 /**
  * @author by nisie on 5/30/18.

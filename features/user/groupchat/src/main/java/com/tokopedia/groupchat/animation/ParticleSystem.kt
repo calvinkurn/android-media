@@ -3,7 +3,6 @@ package com.tokopedia.groupchat.animation
 import android.animation.Animator
 import android.animation.Animator.AnimatorListener
 import android.animation.ValueAnimator
-import android.animation.ValueAnimator.AnimatorUpdateListener
 import android.app.Activity
 import android.graphics.Bitmap
 import android.graphics.Canvas
@@ -16,23 +15,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.Interpolator
 import android.view.animation.LinearInterpolator
-
-import com.tokopedia.groupchat.animation.initializers.AccelerationInitializer
-import com.tokopedia.groupchat.animation.initializers.ParticleInitializer
-import com.tokopedia.groupchat.animation.initializers.RotationInitializer
-import com.tokopedia.groupchat.animation.initializers.RotationSpeedInitializer
-import com.tokopedia.groupchat.animation.initializers.ScaleInitializer
-import com.tokopedia.groupchat.animation.initializers.SpeedModuleAndRangeInitializer
-import com.tokopedia.groupchat.animation.initializers.SpeeddByComponentsInitializer
+import com.tokopedia.groupchat.animation.initializers.*
 import com.tokopedia.groupchat.animation.modifiers.AlphaModifier
 import com.tokopedia.groupchat.animation.modifiers.ParticleModifier
-
 import java.lang.ref.WeakReference
-import java.util.ArrayList
-import java.util.Collections
-import java.util.Random
-import java.util.Timer
-import java.util.TimerTask
+import java.util.*
 
 class ParticleSystem private constructor(parentView: ViewGroup, private val mMaxParticles: Int, private val mTimeToLive: Long) {
     private lateinit var mParentView: ViewGroup

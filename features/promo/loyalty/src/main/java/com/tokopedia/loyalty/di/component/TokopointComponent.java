@@ -4,7 +4,6 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.loyalty.di.LoyaltyScope;
 import com.tokopedia.loyalty.di.module.TokopointModule;
 import com.tokopedia.loyalty.domain.usecase.GetTokopointUseCase;
-import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 
 import dagger.Component;
 

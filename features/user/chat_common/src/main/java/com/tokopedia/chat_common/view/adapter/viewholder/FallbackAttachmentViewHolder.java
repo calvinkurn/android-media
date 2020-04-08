@@ -1,17 +1,17 @@
 package com.tokopedia.chat_common.view.adapter.viewholder;
 
 import android.content.Context;
-import androidx.annotation.LayoutRes;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import androidx.annotation.LayoutRes;
+
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.chat_common.R;
 import com.tokopedia.chat_common.data.FallbackAttachmentViewModel;
-import com.tokopedia.chat_common.data.MessageViewModel;
 import com.tokopedia.chat_common.util.ChatLinkHandlerMovementMethod;
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ChatLinkHandlerListener;
-import com.tokopedia.chat_common.R;
 
 /**
  * @author by nisie on 5/9/18.

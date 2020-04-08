@@ -1,12 +1,12 @@
 package com.tokopedia.talk.producttalk.view.adapter
 
 import android.view.View
+import android.widget.ImageView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.talk.R
 import com.tokopedia.talk.common.adapter.CommentTalkAdapter
 import com.tokopedia.talk.producttalk.view.viewmodel.EmptyProductTalkViewModel
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import android.widget.ImageView
 
 class EmptyProductTalkViewHolder(val v: View, val qaTalkListener: TalkItemListener) :
         AbstractViewHolder<EmptyProductTalkViewModel>(v) {

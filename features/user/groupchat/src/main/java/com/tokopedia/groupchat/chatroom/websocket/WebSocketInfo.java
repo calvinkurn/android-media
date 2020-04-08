@@ -1,7 +1,8 @@
 package com.tokopedia.groupchat.chatroom.websocket;
 
-import androidx.annotation.Nullable;
 import android.text.TextUtils;
+
+import androidx.annotation.Nullable;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

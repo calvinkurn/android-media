@@ -7,7 +7,6 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
-import java.sql.RowId
 
 /**
  * Created by hendry on 21/09/18.

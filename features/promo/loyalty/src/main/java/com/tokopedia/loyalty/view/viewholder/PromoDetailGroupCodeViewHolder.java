@@ -1,15 +1,17 @@
 package com.tokopedia.loyalty.view.viewholder;
 
 import android.content.Context;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.loyalty.R;
 import com.tokopedia.loyalty.view.adapter.PromoDetailAdapter.OnAdapterActionListener;
 import com.tokopedia.loyalty.view.adapter.PromoDetailSingleCodeAdapter;
@@ -17,7 +19,6 @@ import com.tokopedia.loyalty.view.data.PromoCodeViewModel;
 import com.tokopedia.loyalty.view.data.SingleCodeViewModel;
 
 import java.util.List;
-import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 /**
  * @author Aghny A. Putra on 26/03/18

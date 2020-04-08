@@ -6,9 +6,14 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.settingbank.banklist.v2.domain.Bank
 import com.tokopedia.settingbank.banklist.v2.util.BankAccountNumber
-import com.tokopedia.settingbank.banklist.v2.view.viewState.*
+import com.tokopedia.settingbank.banklist.v2.view.viewState.OnNOBankSelected
+import com.tokopedia.settingbank.banklist.v2.view.viewState.OnTextChanged
+import com.tokopedia.settingbank.banklist.v2.view.viewState.TextWatcherState
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class BankNumberTextWatcherViewModel @Inject constructor(dispatcher: CoroutineDispatcher)

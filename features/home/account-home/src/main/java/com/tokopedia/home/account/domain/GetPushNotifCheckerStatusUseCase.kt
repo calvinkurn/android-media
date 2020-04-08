@@ -1,7 +1,6 @@
 package com.tokopedia.home.account.domain
 
 import android.content.Context
-import androidx.annotation.MainThread
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase

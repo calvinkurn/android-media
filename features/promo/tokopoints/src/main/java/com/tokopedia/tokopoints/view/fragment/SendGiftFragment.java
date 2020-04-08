@@ -25,7 +25,6 @@ import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.text.TkpdHintTextInputLayout;
 import com.tokopedia.tokopoints.R;
-import com.tokopedia.tokopoints.di.TokoPointComponent;
 import com.tokopedia.tokopoints.di.TokopointBundleComponent;
 import com.tokopedia.tokopoints.view.catalogdetail.CouponCatalogDetailsActivity;
 import com.tokopedia.tokopoints.view.contract.SendGiftContract;

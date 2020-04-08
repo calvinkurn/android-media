@@ -4,9 +4,9 @@ import android.content.Context
 import android.graphics.drawable.GradientDrawable
 import android.os.Parcel
 import android.os.Parcelable
-import androidx.core.content.ContextCompat
 import android.util.AttributeSet
 import android.view.View
+import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.design.base.BaseCustomView
 import com.tokopedia.promocheckout.common.R

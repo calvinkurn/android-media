@@ -1,9 +1,5 @@
 package com.tokopedia.core.customadapter;
 
-import java.util.ArrayList;
-
-import com.tokopedia.core2.R;
-
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -13,6 +9,10 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.tokopedia.core2.R;
+
+import java.util.ArrayList;
 
 public class SimpleListTabViewAdapter extends BaseAdapter {
     private ArrayList<String> name = new ArrayList<String>();

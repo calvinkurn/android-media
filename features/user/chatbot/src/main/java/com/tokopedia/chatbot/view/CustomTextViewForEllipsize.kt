@@ -1,11 +1,10 @@
 package com.tokopedia.chatbot.view
 
 import android.content.Context
-import androidx.appcompat.widget.AppCompatTextView
 import android.text.DynamicLayout
 import android.text.StaticLayout
 import android.util.AttributeSet
-
+import androidx.appcompat.widget.AppCompatTextView
 import java.lang.reflect.Field
 
 class CustomTextViewForEllipsize : AppCompatTextView {

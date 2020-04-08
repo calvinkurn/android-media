@@ -3,14 +3,14 @@ package com.tokopedia.navigation.presentation.activity;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.net.Uri;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import android.view.MenuItem;
+
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.tokopedia.DeepLinkActivity;
 import com.tokopedia.ShadowBottomNavigationView;
 import com.tokopedia.ShadowLocalBroadcastManager;
 import com.tokopedia.ShadowTaskStackBuilder;
-import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.design.component.BottomNavigation;
 import com.tokopedia.home.HomeApp;

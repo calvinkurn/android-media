@@ -1,19 +1,11 @@
 package com.tokopedia.liveness.view.fragment
 
 import ai.advance.common.entity.BaseResultEntity
-import com.tokopedia.liveness.R
-import com.tokopedia.liveness.analytics.LivenessDetectionAnalytics
-import com.tokopedia.liveness.di.LivenessDetectionComponent
 import ai.advance.liveness.lib.Detector
 import ai.advance.liveness.lib.LivenessResult
 import ai.advance.liveness.lib.LivenessView
 import ai.advance.liveness.lib.impl.LivenessCallback
 import ai.advance.liveness.lib.impl.LivenessGetFaceDataCallback
-import com.tokopedia.liveness.utils.LivenessConstants
-import com.tokopedia.liveness.view.BackgroundOverlay
-import com.tokopedia.liveness.view.OnBackListener
-import com.tokopedia.liveness.view.activity.LivenessFailedActivity
-import com.tokopedia.liveness.view.viewmodel.LivenessDetectionViewModel
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.app.Activity.RESULT_CANCELED
@@ -40,6 +32,14 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.imagepicker.common.util.FileUtils
 import com.tokopedia.imagepicker.common.util.ImageUtils
+import com.tokopedia.liveness.R
+import com.tokopedia.liveness.analytics.LivenessDetectionAnalytics
+import com.tokopedia.liveness.di.LivenessDetectionComponent
+import com.tokopedia.liveness.utils.LivenessConstants
+import com.tokopedia.liveness.view.BackgroundOverlay
+import com.tokopedia.liveness.view.OnBackListener
+import com.tokopedia.liveness.view.activity.LivenessFailedActivity
+import com.tokopedia.liveness.view.viewmodel.LivenessDetectionViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface

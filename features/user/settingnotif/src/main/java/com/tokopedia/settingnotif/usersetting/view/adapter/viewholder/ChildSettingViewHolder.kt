@@ -1,8 +1,8 @@
 package com.tokopedia.settingnotif.usersetting.view.adapter.viewholder
 
-import androidx.annotation.LayoutRes
 import android.view.View
 import android.widget.Switch
+import androidx.annotation.LayoutRes
 import com.tokopedia.settingnotif.R
 import com.tokopedia.settingnotif.usersetting.domain.pojo.ChildSetting
 import com.tokopedia.settingnotif.usersetting.domain.pojo.ParentSetting

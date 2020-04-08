@@ -2,8 +2,8 @@ package com.tokopedia.home.account.presentation
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter
-import com.tokopedia.home.account.presentation.viewmodel.base.BuyerViewModel
 import com.tokopedia.home.account.presentation.listener.BaseAccountView
+import com.tokopedia.home.account.presentation.viewmodel.base.BuyerViewModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 
 

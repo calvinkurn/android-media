@@ -3,11 +3,12 @@ package com.tokopedia.loyalty.view.presenter;
 import android.content.res.Resources;
 import android.util.Log;
 
-import com.tokopedia.analyticconstant.DataLayer;
-import com.tokopedia.network.constant.ErrorNetMessage;
 import com.tokopedia.abstraction.common.network.exception.HttpErrorException;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
+import com.tokopedia.analyticconstant.DataLayer;
+import com.tokopedia.graphql.data.model.GraphqlRequest;
+import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.loyalty.R;
 import com.tokopedia.loyalty.domain.entity.response.promocodesave.PromoCacheResponse;
@@ -15,6 +16,7 @@ import com.tokopedia.loyalty.view.data.PromoData;
 import com.tokopedia.loyalty.view.interactor.IPromoInteractor;
 import com.tokopedia.loyalty.view.util.PromoTrackingUtil;
 import com.tokopedia.loyalty.view.view.IPromoListView;
+import com.tokopedia.network.constant.ErrorNetMessage;
 
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;
@@ -23,9 +25,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import com.tokopedia.graphql.data.model.GraphqlRequest;
-import com.tokopedia.graphql.data.model.GraphqlResponse;
 
 import javax.inject.Inject;
 

@@ -1,11 +1,8 @@
 package com.tokopedia.settingbank.banklist.analytics
 
 import android.app.Activity
-import java.io.File
-import com.tokopedia.track.TrackApp;
-import com.tokopedia.track.TrackAppUtils;
-import com.tokopedia.track.interfaces.Analytics;
-import com.tokopedia.track.interfaces.ContextAnalytics;
+import com.tokopedia.track.TrackApp
+import com.tokopedia.track.TrackAppUtils
 
 /**
  * @author by nisie on 6/7/18.

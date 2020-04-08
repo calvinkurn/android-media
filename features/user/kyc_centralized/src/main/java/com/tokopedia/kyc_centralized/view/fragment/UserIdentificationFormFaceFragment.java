@@ -4,7 +4,6 @@ import android.animation.ValueAnimator;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -23,12 +22,7 @@ import com.tokopedia.kyc_centralized.view.activity.UserIdentificationFormActivit
 import com.tokopedia.kyc_centralized.view.di.DaggerUserIdentificationCommonComponent;
 import com.tokopedia.kyc_centralized.view.di.UserIdentificationCommonComponent;
 import com.tokopedia.kyc_centralized.view.viewmodel.UserIdentificationStepperModel;
-import com.tokopedia.remoteconfig.RemoteConfig;
-import com.tokopedia.remoteconfig.RemoteConfigInstance;
-import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.user_identification_common.KycUrl;
-
-import javax.inject.Inject;
 
 import static com.tokopedia.kyc_centralized.view.fragment.UserIdentificationCameraFragment.PARAM_VIEW_MODE_FACE;
 import static com.tokopedia.user_identification_common.KYCConstant.REQUEST_CODE_CAMERA_FACE;

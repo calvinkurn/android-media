@@ -2,12 +2,11 @@ package com.tokopedia.promocheckout.common.domain.umroh
 
 import android.content.Context
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.promocheckout.common.R
 import com.tokopedia.promocheckout.common.domain.model.CheckUmrahPromoCode
-import com.tokopedia.promocheckout.common.domain.model.CheckUmrahPromoCodeData
 import com.tokopedia.usecase.RequestParams
 import rx.Subscriber
 

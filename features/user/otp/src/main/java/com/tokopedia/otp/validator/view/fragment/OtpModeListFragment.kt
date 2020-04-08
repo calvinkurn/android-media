@@ -23,8 +23,6 @@ import com.tokopedia.otp.validator.di.ValidatorComponent
 import com.tokopedia.otp.validator.view.activity.ValidatorActivity
 import com.tokopedia.otp.validator.view.adapter.OtpModeListAdapter
 import com.tokopedia.otp.validator.viewmodel.OtpModeListViewModel
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_cotp_choose_method.*
 import javax.inject.Inject

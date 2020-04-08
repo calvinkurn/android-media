@@ -4,12 +4,12 @@ import android.content.Context
 import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
-import com.tokopedia.config.GlobalConfig
 import com.tokopedia.changepassword.data.ChangePasswordApi
 import com.tokopedia.changepassword.data.ChangePasswordUrl
 import com.tokopedia.changepassword.domain.ChangePasswordUseCase
 import com.tokopedia.changepassword.domain.mapper.ChangePasswordMapper
 import com.tokopedia.changepassword.view.presenter.ChangePasswordPresenter
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.converter.StringResponseConverter
 import com.tokopedia.network.interceptor.DebugInterceptor

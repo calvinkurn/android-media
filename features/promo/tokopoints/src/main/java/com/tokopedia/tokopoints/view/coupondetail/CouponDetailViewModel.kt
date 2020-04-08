@@ -1,7 +1,6 @@
 package com.tokopedia.tokopoints.view.coupondetail
 
 import android.os.Bundle
-
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
@@ -10,8 +9,6 @@ import com.tokopedia.tokopoints.di.TokoPointScope
 import com.tokopedia.tokopoints.view.model.*
 import com.tokopedia.tokopoints.view.util.*
 import kotlinx.coroutines.Dispatchers
-
-import java.lang.NullPointerException
 import javax.inject.Inject
 
 

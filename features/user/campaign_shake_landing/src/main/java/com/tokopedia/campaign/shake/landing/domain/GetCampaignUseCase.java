@@ -2,17 +2,17 @@ package com.tokopedia.campaign.shake.landing.domain;
 
 import android.content.res.Resources;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.inject.Inject;
-
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.campaign.shake.landing.R;
 import com.tokopedia.campaign.shake.landing.data.entity.CampaignGqlResponse;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.inject.Inject;
 
 import rx.Subscriber;
 

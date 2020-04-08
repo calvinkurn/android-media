@@ -1,8 +1,7 @@
 package com.tokopedia.promocheckout.common.domain.model.promostacking.response
 
-import javax.annotation.Generated
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.promocheckout.common.domain.model.promostacking.response.VoucherOrdersItem
+import javax.annotation.Generated
 
 @Generated("com.robohorse.robopojogenerator")
 data class ClashingInfoDetail(

@@ -1,24 +1,16 @@
 package com.tokopedia.tokopoints.view.catalogdetail
 
 import androidx.lifecycle.MutableLiveData
-import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.applink.RouteManager
-import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.tokopoints.R
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.tokopoints.di.BundleModule
 import com.tokopedia.tokopoints.di.TokoPointScope
 import com.tokopedia.tokopoints.view.cataloglisting.CatalogPurchaseRedeemptionViewModel
-import com.tokopedia.tokopoints.view.contract.CatalogPurchaseRedemptionPresenter
-import com.tokopedia.tokopoints.view.model.*
+import com.tokopedia.tokopoints.view.model.CatalogDetailOuter
+import com.tokopedia.tokopoints.view.model.CatalogStatusItem
+import com.tokopedia.tokopoints.view.model.CatalogsValueEntity
+import com.tokopedia.tokopoints.view.model.TokoPointDetailEntity
 import com.tokopedia.tokopoints.view.util.*
-import kotlinx.coroutines.Dispatchers
-import rx.Subscriber
-import java.util.*
 import javax.inject.Inject
 import javax.inject.Named
 

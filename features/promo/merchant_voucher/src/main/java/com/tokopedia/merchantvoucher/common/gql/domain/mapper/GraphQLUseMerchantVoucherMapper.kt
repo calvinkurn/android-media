@@ -1,6 +1,5 @@
 package com.tokopedia.merchantvoucher.common.gql.domain.mapper
 
-import android.text.TextUtils
 import com.tokopedia.merchantvoucher.common.gql.data.MessageTitleErrorException
 import com.tokopedia.merchantvoucher.common.gql.data.UseMerchantVoucherQuery
 import com.tokopedia.merchantvoucher.common.gql.data.UseMerchantVoucherQueryResult

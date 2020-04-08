@@ -1,10 +1,11 @@
 
 package com.tokopedia.tokopoints.view.model.section;
 
-import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.tokopedia.tokopoints.view.model.CouponValueEntity;
+
+import java.util.List;
 
 public class LayoutCouponAttr {
 

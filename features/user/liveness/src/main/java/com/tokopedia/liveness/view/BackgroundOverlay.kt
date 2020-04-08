@@ -8,7 +8,6 @@ import android.graphics.Path
 import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.View
-import java.lang.Exception
 
 class BackgroundOverlay : View {
 

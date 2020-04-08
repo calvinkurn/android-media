@@ -1,7 +1,6 @@
 package com.tokopedia.settingbank.banklist.v2.view.widgets
 
 import android.app.Activity
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog

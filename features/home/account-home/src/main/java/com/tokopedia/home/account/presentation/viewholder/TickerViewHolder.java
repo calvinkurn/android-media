@@ -1,7 +1,8 @@
 package com.tokopedia.home.account.presentation.viewholder;
 
-import androidx.annotation.LayoutRes;
 import android.view.View;
+
+import androidx.annotation.LayoutRes;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.design.component.ticker.TickerView;

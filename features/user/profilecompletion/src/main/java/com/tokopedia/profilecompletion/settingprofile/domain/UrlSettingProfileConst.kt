@@ -1,7 +1,5 @@
 package com.tokopedia.profilecompletion.settingprofile.domain
 
-import com.tokopedia.url.TokopediaUrl
-
 /**
  * Created by Ade Fulki on 2019-11-26.
  * ade.hadian@tokopedia.com

@@ -2,14 +2,13 @@ package com.tokopedia.otp.cotp.view.fragment
 
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import com.airbnb.lottie.LottieAnimationView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-
 import com.tokopedia.otp.R
 import com.tokopedia.otp.common.analytics.OTPAnalytics
 import com.tokopedia.otp.cotp.view.viewlistener.OnboardingOtpMiscall

@@ -8,10 +8,10 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.data.model.NotificationFilterSection
 import com.tokopedia.notifcenter.data.viewbean.NotificationFilterSectionViewBean
-import com.tokopedia.notifcenter.presentation.adapter.NotificationUpdateFilterAdapter
-import com.tokopedia.notifcenter.presentation.adapter.typefactory.filter.NotificationUpdateFilterSectionTypeFactoryImpl
 import com.tokopedia.notifcenter.data.viewbean.NotificationUpdateFilterViewBean
 import com.tokopedia.notifcenter.listener.NotificationFilterListener
+import com.tokopedia.notifcenter.presentation.adapter.NotificationUpdateFilterAdapter
+import com.tokopedia.notifcenter.presentation.adapter.typefactory.filter.NotificationUpdateFilterSectionTypeFactoryImpl
 import com.tokopedia.notifcenter.widget.ChipFilterItemDivider
 import com.tokopedia.user.session.UserSessionInterface
 

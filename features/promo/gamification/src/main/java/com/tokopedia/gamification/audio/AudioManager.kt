@@ -3,8 +3,6 @@ package com.tokopedia.gamification.audio
 import android.content.Context
 import android.content.res.AssetFileDescriptor
 import android.media.MediaPlayer
-import android.util.Log
-import java.lang.IllegalArgumentException
 
 
 class AudioManager(var mContext: Context) {

@@ -4,7 +4,10 @@ import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.tokopoints.di.TokoPointScope
-import com.tokopedia.tokopoints.view.model.*
+import com.tokopedia.tokopoints.view.model.CatalogBannerOuter
+import com.tokopedia.tokopoints.view.model.CatalogFilterOuter
+import com.tokopedia.tokopoints.view.model.TokenDetailOuter
+import com.tokopedia.tokopoints.view.model.TokoPointDetailEntity
 import com.tokopedia.tokopoints.view.util.CommonConstant
 import com.tokopedia.tokopoints.view.util.CommonConstant.GQLQuery.*
 import kotlinx.coroutines.Dispatchers

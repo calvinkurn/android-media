@@ -3,8 +3,8 @@ package com.tokopedia.notifcenter.domain
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.notifcenter.data.entity.NotifcenterIsTabUpdateEntity
 import com.tokopedia.notifcenter.data.consts.NotificationQueriesConstant
+import com.tokopedia.notifcenter.data.entity.NotifcenterIsTabUpdateEntity
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 import javax.inject.Named

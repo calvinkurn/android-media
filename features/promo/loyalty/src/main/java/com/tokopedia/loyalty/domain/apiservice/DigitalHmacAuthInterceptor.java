@@ -5,7 +5,6 @@ import android.util.Log;
 
 import com.tokopedia.abstraction.common.network.exception.HttpErrorException;
 import com.tokopedia.abstraction.common.utils.network.AuthUtil;
-import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.loyalty.domain.model.TkpdDigitalResponse;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.exception.ResponseErrorException;

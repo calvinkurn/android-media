@@ -2,6 +2,7 @@ package com.tokopedia.loyalty.view.presenter;
 
 import android.app.Activity;
 import android.content.Context;
+
 import androidx.annotation.NonNull;
 
 import com.google.gson.JsonObject;

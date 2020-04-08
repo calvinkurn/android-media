@@ -2,7 +2,6 @@ package com.tokopedia.topchat.chatlist.pojo
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.chat_common.domain.pojo.ChatItemPojo
 
 /**
  * @author : Steven 2019-08-08

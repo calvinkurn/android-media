@@ -1,10 +1,11 @@
 package com.tokopedia.groupchat.vote.view.adapter.viewholder;
 
 import android.content.Context;
-import androidx.annotation.LayoutRes;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import androidx.annotation.LayoutRes;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;

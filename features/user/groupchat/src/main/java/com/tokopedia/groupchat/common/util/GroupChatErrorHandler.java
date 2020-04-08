@@ -6,7 +6,6 @@ import android.text.TextUtils;
 import com.google.gson.JsonSyntaxException;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.globalerror.GlobalError;
-import com.tokopedia.groupchat.R;
 import com.tokopedia.groupchat.common.network.ErrorNetworkException;
 import com.tokopedia.vote.network.VoteErrorException;
 

@@ -4,9 +4,9 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.notifcenter.data.entity.DataNotification
 import com.tokopedia.notifcenter.data.entity.ProductData
+import com.tokopedia.notifcenter.listener.NotificationItemListener
 import com.tokopedia.notifcenter.presentation.adapter.viewholder.ProductRecommendationMoreViewHolder
 import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.ProductRecommendationViewHolder
-import com.tokopedia.notifcenter.listener.NotificationItemListener
 
 class NotifCenterProductRecomAdapter(
         val listener: NotificationItemListener

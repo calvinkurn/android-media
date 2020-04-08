@@ -1,8 +1,7 @@
 package com.tokopedia.groupchat.animation.initializers
 
-import java.util.Random
-
 import com.tokopedia.groupchat.animation.Particle
+import java.util.*
 
 class AccelerationInitializer(private val mMinValue: Float, private val mMaxValue: Float, private val mMinAngle: Int, private val mMaxAngle: Int) : ParticleInitializer {
 

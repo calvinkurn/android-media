@@ -1,8 +1,8 @@
 package com.tokopedia.settingbank.choosebank.domain.usecase
 
+import com.tokopedia.settingbank.choosebank.data.BankListApi
 import com.tokopedia.settingbank.choosebank.data.database.BankDao
 import com.tokopedia.settingbank.choosebank.data.database.BankTable
-import com.tokopedia.settingbank.choosebank.data.BankListApi
 import com.tokopedia.settingbank.choosebank.domain.mapper.GetBankListWSMapper
 import com.tokopedia.settingbank.choosebank.view.viewmodel.BankListViewModel
 import com.tokopedia.settingbank.choosebank.view.viewmodel.BankViewModel

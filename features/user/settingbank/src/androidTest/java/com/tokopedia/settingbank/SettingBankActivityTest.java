@@ -15,9 +15,7 @@ import androidx.test.rule.ActivityTestRule;
 
 import com.banklist.di.test.DaggerSettingBankTestComponent;
 import com.banklist.di.test.SettingBankTestModule;
-import com.google.gson.Gson;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
-import com.tokopedia.settingbank.R;
 import com.tokopedia.settingbank.banklist.di.DaggerSettingBankComponent;
 import com.tokopedia.settingbank.banklist.di.SettingBankComponent;
 import com.tokopedia.settingbank.banklist.view.activity.DebugSettingBankActivity;
@@ -26,7 +24,6 @@ import com.tokopedia.settingbank.util.FetchingIdlingResource;
 import com.tokopedia.tkpd.BaseRetrofitJsonFactory;
 
 import org.hamcrest.Matchers;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;

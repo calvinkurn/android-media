@@ -1,12 +1,13 @@
 package com.tokopedia.home.account.presentation.viewholder;
 
+import android.text.TextUtils;
+import android.view.View;
+import android.widget.TextView;
+
 import androidx.annotation.LayoutRes;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import android.text.TextUtils;
-import android.view.View;
-import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.home.account.R;

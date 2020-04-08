@@ -2,12 +2,13 @@ package com.tokopedia.searchbar;
 
 import android.content.Context;
 
-import java.util.HashMap;
-import java.util.Map;
+import com.tokopedia.iris.util.ConstantKt;
+import com.tokopedia.iris.util.IrisSession;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
-import com.tokopedia.iris.util.IrisSession;
-import com.tokopedia.iris.util.ConstantKt;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by meta on 04/08/18.

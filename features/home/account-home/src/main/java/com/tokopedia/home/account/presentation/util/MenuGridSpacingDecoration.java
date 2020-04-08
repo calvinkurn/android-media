@@ -1,8 +1,9 @@
 package com.tokopedia.home.account.presentation.util;
 
 import android.graphics.Rect;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
+
+import androidx.recyclerview.widget.RecyclerView;
 
 /**
  * @author okasurya on 7/24/2018

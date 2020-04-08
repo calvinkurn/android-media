@@ -1,7 +1,5 @@
 package com.tokopedia.tokopoints.view.util;
 
-import com.tokopedia.session.data.viewmodel.login.ShopReputationDomain;
-
 import static com.tokopedia.tokopoints.view.util.CommonConstant.BaseUrl.WEB_DOMAIN_MOBILE;
 
 public interface CommonConstant {

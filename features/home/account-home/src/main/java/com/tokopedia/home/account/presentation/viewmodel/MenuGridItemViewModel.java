@@ -2,6 +2,7 @@ package com.tokopedia.home.account.presentation.viewmodel;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+
 import androidx.annotation.DrawableRes;
 
 /**

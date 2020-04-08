@@ -1,11 +1,11 @@
 package com.tokopedia.settingbank.banklist.view.adapter.viewholder
 
 import android.content.Context
-import androidx.appcompat.widget.PopupMenu
 import android.view.MenuItem
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.widget.PopupMenu
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker

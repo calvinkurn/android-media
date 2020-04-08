@@ -1,6 +1,7 @@
 package com.tokopedia.home.account.presentation.viewmodel;
 
 import android.os.Parcel;
+
 import androidx.annotation.NonNull;
 
 import com.tokopedia.home.account.presentation.adapter.AccountTypeFactory;

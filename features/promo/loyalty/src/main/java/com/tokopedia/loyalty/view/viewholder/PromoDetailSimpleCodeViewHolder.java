@@ -1,11 +1,12 @@
 package com.tokopedia.loyalty.view.viewholder;
 
-import androidx.recyclerview.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.tokopedia.loyalty.R;
 import com.tokopedia.loyalty.view.adapter.PromoDetailAdapter.OnAdapterActionListener;

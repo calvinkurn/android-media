@@ -1,11 +1,10 @@
 package com.tokopedia.groupchat.chatroom.data;
 
-import com.tokopedia.network.data.model.response.DataResponse;
 import com.tokopedia.groupchat.chatroom.domain.pojo.ButtonsPojo;
 import com.tokopedia.groupchat.chatroom.domain.pojo.StickyComponentPojo;
 import com.tokopedia.groupchat.chatroom.domain.pojo.VideoStreamParent;
-import com.tokopedia.groupchat.chatroom.domain.pojo.VideoStreamPojo;
 import com.tokopedia.groupchat.chatroom.domain.pojo.channelinfo.ChannelInfoPojo;
+import com.tokopedia.network.data.model.response.DataResponse;
 
 import java.util.HashMap;
 

@@ -1,8 +1,9 @@
 package com.tokopedia.kyc.viewmodel;
 
 import android.app.Application;
-import androidx.lifecycle.AndroidViewModel;
+
 import androidx.annotation.NonNull;
+import androidx.lifecycle.AndroidViewModel;
 
 import com.tokopedia.kyc.model.ConfirmRequestDataContainer;
 

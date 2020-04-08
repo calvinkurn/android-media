@@ -1,7 +1,8 @@
 package com.tokopedia.groupchat.chatroom.view.adapter.chatroom.viewholder;
 
-import androidx.annotation.LayoutRes;
 import android.view.View;
+
+import androidx.annotation.LayoutRes;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.groupchat.R;

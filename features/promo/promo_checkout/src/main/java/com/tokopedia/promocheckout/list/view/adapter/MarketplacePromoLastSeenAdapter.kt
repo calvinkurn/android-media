@@ -1,8 +1,8 @@
 package com.tokopedia.promocheckout.list.view.adapter
 
-import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.promocheckout.R
 import com.tokopedia.promocheckout.list.model.listpromolastseen.PromoHistoryItem
 

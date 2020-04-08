@@ -5,7 +5,7 @@ import android.preference.PreferenceManager
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.common.network.util.NetworkClient
 import com.tokopedia.home.account.R
-import com.tokopedia.home.account.data.model.*
+import com.tokopedia.home.account.data.model.UserProfileDob
 import com.tokopedia.home.account.domain.SetUserProfileSafeModeUseCase
 import com.tokopedia.home.account.domain.UserProfileDobUseCase
 import com.tokopedia.home.account.domain.UserProfileSafeModeUseCase

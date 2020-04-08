@@ -8,10 +8,10 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.ImageView
 import androidx.viewpager.widget.PagerAdapter
-import com.tokopedia.utils.image.ImageUtils
 import com.tokopedia.onboarding.R
 import com.tokopedia.onboarding.data.OnboardingScreenItem
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.utils.image.ImageUtils
 
 /**
  * Created by Ade Fulki on 2020-02-09.

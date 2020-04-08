@@ -5,7 +5,6 @@ import com.google.gson.JsonObject;
 import com.tokopedia.topchat.chattemplate.data.repository.TemplateRepository;
 import com.tokopedia.topchat.chattemplate.view.viewmodel.GetTemplateUiModel;
 import com.tokopedia.usecase.RequestParams;
-
 import com.tokopedia.usecase.UseCase;
 
 import javax.inject.Inject;

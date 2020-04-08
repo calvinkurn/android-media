@@ -4,22 +4,18 @@ import android.content.Context
 import android.content.res.Resources
 import android.graphics.*
 import android.os.Build
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.TextPaint
+import android.text.style.AbsoluteSizeSpan
+import android.text.style.StyleSpan
+import android.text.style.TypefaceSpan
 import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.View
 import android.widget.FrameLayout
-import com.tokopedia.merchantvoucher.R
-import android.graphics.RectF
-import android.graphics.PorterDuff
-import android.graphics.PorterDuffXfermode
-import android.text.Spannable
-import android.text.SpannableString
-import android.text.style.AbsoluteSizeSpan
-import android.text.style.StyleSpan
-import android.text.style.TypefaceSpan
-import android.graphics.Typeface
-import android.text.TextPaint
 import androidx.annotation.ColorInt
+import com.tokopedia.merchantvoucher.R
 
 
 /*

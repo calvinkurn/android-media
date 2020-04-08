@@ -6,8 +6,6 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.otp.validator.data.ModeListData
 import com.tokopedia.otp.validator.data.OtpParams
 import com.tokopedia.otp.validator.domain.usecase.OtpModeListUseCase
-import com.tokopedia.usecase.coroutines.Result
-import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject

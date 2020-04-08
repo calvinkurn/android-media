@@ -1,6 +1,7 @@
 package com.tokopedia.notifcenter.widget
 
 import android.content.Context
+import android.graphics.Paint.STRIKE_THRU_TEXT_FLAG
 import android.util.AttributeSet
 import android.view.View
 import android.widget.LinearLayout
@@ -8,8 +9,6 @@ import android.widget.TextView
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.data.entity.Campaign
-import android.graphics.Paint.STRIKE_THRU_TEXT_FLAG
-
 
 
 class CampaignGreenView @JvmOverloads constructor(

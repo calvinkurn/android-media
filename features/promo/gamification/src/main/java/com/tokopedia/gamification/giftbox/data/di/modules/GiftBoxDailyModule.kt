@@ -7,8 +7,6 @@ import com.tokopedia.gamification.R
 import com.tokopedia.gamification.giftbox.data.di.*
 import dagger.Module
 import dagger.Provides
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import javax.inject.Named
 
 @Module

@@ -4,9 +4,9 @@ import android.graphics.drawable.Drawable
 import android.util.Log
 import android.view.View
 import android.widget.FrameLayout
-import com.tokopedia.config.GlobalConfig
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.groupchat.animation.Particle
 import com.tokopedia.groupchat.animation.ParticleSystem
 import com.tokopedia.groupchat.animation.modifiers.MovementModifier

@@ -2,7 +2,6 @@ package com.tokopedia.notifcenter.domain
 
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.notifcenter.data.consts.NotificationQueriesConstant
-import com.tokopedia.notifcenter.data.entity.NotificationCenterDetail
 import com.tokopedia.notifcenter.data.entity.NotificationCenterSingleDetail
 import javax.inject.Inject
 import javax.inject.Named

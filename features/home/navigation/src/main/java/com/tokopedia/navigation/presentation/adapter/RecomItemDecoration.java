@@ -1,14 +1,14 @@
 package com.tokopedia.navigation.presentation.adapter;
 
 import android.graphics.Rect;
+import android.view.View;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
-import android.view.View;
 
 import com.tokopedia.navigation.R;
-import com.tokopedia.topads.sdk.view.adapter.SpannedGridLayoutManager;
 
 public class RecomItemDecoration extends RecyclerView.ItemDecoration {
 

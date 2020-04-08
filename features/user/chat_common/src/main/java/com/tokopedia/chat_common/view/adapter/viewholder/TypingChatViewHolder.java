@@ -1,13 +1,14 @@
 package com.tokopedia.chat_common.view.adapter.viewholder;
 
-import androidx.annotation.LayoutRes;
 import android.view.View;
 import android.widget.ImageView;
 
+import androidx.annotation.LayoutRes;
+
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
-import com.tokopedia.chat_common.data.TypingChatModel;
 import com.tokopedia.chat_common.R;
+import com.tokopedia.chat_common.data.TypingChatModel;
 
 /**
  * Created by stevenfredian on 10/26/17.

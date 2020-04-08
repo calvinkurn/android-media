@@ -1,7 +1,6 @@
 package com.tokopedia.navigation.domain.model;
 
 import androidx.annotation.DrawableRes;
-import androidx.annotation.IdRes;
 import androidx.annotation.StringRes;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;

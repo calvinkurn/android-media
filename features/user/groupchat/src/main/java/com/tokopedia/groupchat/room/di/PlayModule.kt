@@ -3,7 +3,6 @@ package com.tokopedia.groupchat.room.di
 import android.content.Context
 import com.chuckerteam.chucker.api.ChuckerCollector
 import com.chuckerteam.chucker.api.ChuckerInterceptor
-import com.chuckerteam.chucker.api.RetentionManager
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.network.interceptor.AccountsAuthorizationInterceptor
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor

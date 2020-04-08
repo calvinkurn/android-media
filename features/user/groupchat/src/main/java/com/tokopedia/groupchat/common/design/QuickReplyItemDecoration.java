@@ -1,11 +1,9 @@
 package com.tokopedia.groupchat.common.design;
 
-import android.app.Application;
 import android.graphics.Rect;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 
-import com.tokopedia.groupchat.R;
+import androidx.recyclerview.widget.RecyclerView;
 
 /**
  * @author by StevenFredian on 27/02/18.

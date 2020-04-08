@@ -1,11 +1,12 @@
 package com.tokopedia.attachproduct.view.viewholder;
 
-import androidx.annotation.LayoutRes;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.annotation.LayoutRes;
 
 import com.tokopedia.abstraction.base.view.adapter.holder.BaseCheckableViewHolder;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;

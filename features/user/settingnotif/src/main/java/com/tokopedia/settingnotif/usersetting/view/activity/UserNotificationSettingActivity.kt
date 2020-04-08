@@ -1,13 +1,13 @@
 package com.tokopedia.settingnotif.usersetting.view.activity
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import androidx.core.content.ContextCompat
 import android.widget.FrameLayout
+import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.settingnotif.usersetting.const.Unify.Neutral_N0
-import com.tokopedia.settingnotif.usersetting.view.fragment.SettingTypeFragment
 import com.tokopedia.settingnotif.usersetting.view.dataview.SettingTypeDataView
+import com.tokopedia.settingnotif.usersetting.view.fragment.SettingTypeFragment
 
 typealias ParentActivity = UserNotificationSettingActivity
 

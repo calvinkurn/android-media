@@ -1,7 +1,6 @@
 package com.tokopedia.groupchat.room.domain.usecase
 
 import com.tokopedia.groupchat.chatroom.domain.source.ChannelInfoSource
-import com.tokopedia.groupchat.room.view.viewmodel.pinned.StickyComponentViewModel
 import com.tokopedia.groupchat.room.view.viewmodel.pinned.StickyComponentsViewModel
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase

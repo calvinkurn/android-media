@@ -1,9 +1,10 @@
 package com.tokopedia.navigation.presentation.fragment;
 
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import android.view.View;
+
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import android.view.View;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
@@ -13,8 +14,6 @@ import com.tokopedia.home.account.AccountHomeRouter;
 import com.tokopedia.navigation.GlobalNavAnalytics;
 import com.tokopedia.navigation.GlobalNavRouter;
 import com.tokopedia.navigation.R;
-import com.tokopedia.navigation_common.model.NotifcenterUnread;
-import com.tokopedia.navigation_common.model.NotificationsModel;
 import com.tokopedia.navigation.domain.model.DrawerNotification;
 import com.tokopedia.navigation.presentation.adapter.NotificationAdapter;
 import com.tokopedia.navigation.presentation.base.BaseParentFragment;
@@ -22,6 +21,8 @@ import com.tokopedia.navigation.presentation.di.DaggerGlobalNavComponent;
 import com.tokopedia.navigation.presentation.di.GlobalNavModule;
 import com.tokopedia.navigation.presentation.presenter.NotificationPresenter;
 import com.tokopedia.navigation.presentation.view.NotificationView;
+import com.tokopedia.navigation_common.model.NotifcenterUnread;
+import com.tokopedia.navigation_common.model.NotificationsModel;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 
 import java.util.ArrayList;
@@ -29,7 +30,20 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import static com.tokopedia.navigation.GlobalNavConstant.*;
+import static com.tokopedia.navigation.GlobalNavConstant.BUYER;
+import static com.tokopedia.navigation.GlobalNavConstant.KOMPLAIN;
+import static com.tokopedia.navigation.GlobalNavConstant.MENUNGGU_KONFIRMASI;
+import static com.tokopedia.navigation.GlobalNavConstant.MENUNGGU_PEMBAYARAN;
+import static com.tokopedia.navigation.GlobalNavConstant.NEWEST_INFO;
+import static com.tokopedia.navigation.GlobalNavConstant.PEMBELIAN;
+import static com.tokopedia.navigation.GlobalNavConstant.PENJUALAN;
+import static com.tokopedia.navigation.GlobalNavConstant.PESANAN_BARU;
+import static com.tokopedia.navigation.GlobalNavConstant.PESANAN_DIPROSES;
+import static com.tokopedia.navigation.GlobalNavConstant.SAMPAI_TUJUAN;
+import static com.tokopedia.navigation.GlobalNavConstant.SEDANG_DIKIRIM;
+import static com.tokopedia.navigation.GlobalNavConstant.SELLER;
+import static com.tokopedia.navigation.GlobalNavConstant.SIAP_DIKIRIM;
+import static com.tokopedia.navigation.GlobalNavConstant.UPDATE;
 
 /**
  * Created by meta on 24/07/18.

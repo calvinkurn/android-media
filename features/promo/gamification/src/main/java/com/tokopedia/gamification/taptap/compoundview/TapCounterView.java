@@ -9,8 +9,8 @@ import android.view.animation.ScaleAnimation;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
-import com.tokopedia.gamification.R;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.gamification.R;
 
 public class TapCounterView extends FrameLayout {
 

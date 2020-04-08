@@ -4,8 +4,6 @@ import android.content.Context;
 import android.text.TextUtils;
 
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException;
-import com.tokopedia.sessioncommon.R;
-
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 
 /**

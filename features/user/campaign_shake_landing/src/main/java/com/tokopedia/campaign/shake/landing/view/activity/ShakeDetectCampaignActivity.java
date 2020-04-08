@@ -1,14 +1,16 @@
 package com.tokopedia.campaign.shake.landing.view.activity;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
-import androidx.fragment.app.Fragment;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
@@ -25,9 +27,6 @@ import com.tokopedia.campaign.shake.landing.view.presenter.ShakeDetectContract;
 import com.tokopedia.campaign.shake.landing.view.presenter.ShakeDetectPresenter;
 import com.tokopedia.design.component.ToasterNormal;
 import com.tokopedia.permissionchecker.PermissionCheckerHelper;
-
-import androidx.annotation.NonNull;
-import android.os.Build;
 
 import java.util.List;
 

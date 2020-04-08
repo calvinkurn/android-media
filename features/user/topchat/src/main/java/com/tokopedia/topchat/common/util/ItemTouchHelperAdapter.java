@@ -16,8 +16,8 @@
 
 package com.tokopedia.topchat.common.util;
 
-import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.ItemTouchHelper;
+import androidx.recyclerview.widget.RecyclerView;
 
 /**
  * Interface to listen for a move or dismissal event from a {@link ItemTouchHelper.Callback}.

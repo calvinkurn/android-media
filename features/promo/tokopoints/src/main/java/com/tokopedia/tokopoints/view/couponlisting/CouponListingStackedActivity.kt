@@ -4,12 +4,11 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import androidx.viewpager.widget.ViewPager
 import android.view.View
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-
+import androidx.viewpager.widget.ViewPager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
@@ -29,13 +28,11 @@ import com.tokopedia.tokopoints.view.contract.StackedCouponActivityContract
 import com.tokopedia.tokopoints.view.couponlisting.CouponListingStackedFragment.Companion.REQUEST_CODE_STACKED_ADAPTER
 import com.tokopedia.tokopoints.view.couponlisting.CouponListingStackedFragment.Companion.REQUEST_CODE_STACKED_IN_ADAPTER
 import com.tokopedia.tokopoints.view.model.CouponFilterItem
-import com.tokopedia.user.session.UserSession
-
-import javax.inject.Inject
-
 import com.tokopedia.tokopoints.view.util.*
 import com.tokopedia.tokopoints.view.util.CommonConstant.TAB_SETUP_DELAY_MS
+import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.tp_activity_stacked_coupon_list.*
+import javax.inject.Inject
 
 class CouponListingStackedActivity : BaseSimpleActivity(), StackedCouponActivityContract.View, HasComponent<TokopointBundleComponent> {
     private val tokoPointComponent: TokopointBundleComponent by lazy { initInjector() }

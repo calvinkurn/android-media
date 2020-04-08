@@ -2,14 +2,10 @@ package com.tokopedia.otp.validator.view.fragment
 
 import android.app.Activity
 import android.content.Context
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.os.CountDownTimer
-import androidx.appcompat.app.AlertDialog
 import android.text.*
 import android.text.style.ClickableSpan
 import android.view.LayoutInflater
@@ -20,7 +16,11 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
@@ -34,10 +34,6 @@ import com.tokopedia.otp.common.analytics.TrackingValidatorConstant.Screen.SCREE
 import com.tokopedia.otp.common.analytics.TrackingValidatorUtil
 import com.tokopedia.otp.common.design.PinInputEditText
 import com.tokopedia.otp.validator.data.*
-import com.tokopedia.otp.validator.data.ModeListData
-import com.tokopedia.otp.validator.data.OtpRequestData
-import com.tokopedia.otp.validator.data.OtpValidateData
-
 import com.tokopedia.otp.validator.di.ValidatorComponent
 import com.tokopedia.otp.validator.viewmodel.ValidatorViewModel
 import com.tokopedia.sessioncommon.ErrorHandlerSession

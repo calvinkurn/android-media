@@ -2,18 +2,11 @@ package com.tokopedia.tokopoints.view.pointhistory
 
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.graphql.domain.GraphqlUseCase
-import io.mockk.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import io.mockk.coEvery
+import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.test.*
-import org.junit.After
 import org.junit.Before
 import org.junit.Test
-
-import org.junit.Assert.*
-import rx.Subscriber
 
 class PointHistoryRepositoryTest {
 

@@ -1,14 +1,13 @@
 package com.tokopedia.settingbank.addeditaccount.domain.mapper
 
-import com.tokopedia.network.data.model.response.DataResponse
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
+import com.tokopedia.network.data.model.response.DataResponse
 import com.tokopedia.settingbank.addeditaccount.domain.pojo.FormInfoPojo
 import com.tokopedia.settingbank.addeditaccount.domain.pojo.ValidateBankAccountPojo
 import com.tokopedia.settingbank.addeditaccount.view.viewmodel.ValidateBankViewModel
 import com.tokopedia.settingbank.addeditaccount.view.viewmodel.ValidationForm
 import retrofit2.Response
 import rx.functions.Func1
-import java.lang.RuntimeException
 import javax.inject.Inject
 
 /**

@@ -3,7 +3,10 @@ package com.tokopedia.talk.producttalk.view.adapter
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.talk.producttalk.view.data.ChatBannerUiModel
-import com.tokopedia.talk.producttalk.view.viewmodel.*
+import com.tokopedia.talk.producttalk.view.viewmodel.EmptyProductTalkViewModel
+import com.tokopedia.talk.producttalk.view.viewmodel.LoadProductTalkThreadViewModel
+import com.tokopedia.talk.producttalk.view.viewmodel.ProductTalkTitleViewModel
+import com.tokopedia.talk.producttalk.view.viewmodel.TalkThreadViewModel
 
 /**
  * @author by Steven

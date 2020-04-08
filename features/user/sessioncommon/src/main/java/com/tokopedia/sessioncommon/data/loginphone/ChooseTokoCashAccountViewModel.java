@@ -3,7 +3,6 @@ package com.tokopedia.sessioncommon.data.loginphone;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-
 import java.util.ArrayList;
 import java.util.List;
 

@@ -4,10 +4,10 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
-import com.tokopedia.merchantvoucher.R
-import com.tokopedia.merchantvoucher.common.model.*
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.merchantvoucher.R
 import com.tokopedia.merchantvoucher.common.constant.MerchantVoucherConst.DELIVERY_VOUCHER_IMAGE_URL
+import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import kotlinx.android.synthetic.main.widget_merchant_voucher_view.view.*
 
 

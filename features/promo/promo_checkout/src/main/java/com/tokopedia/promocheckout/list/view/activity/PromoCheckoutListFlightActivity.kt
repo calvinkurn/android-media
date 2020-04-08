@@ -7,11 +7,9 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.constant.IRouterConstant
-import com.tokopedia.promocheckout.common.view.uimodel.PromoDigitalModel
 import com.tokopedia.promocheckout.list.PromoCheckoutListComponentInstance
 import com.tokopedia.promocheckout.list.di.PromoCheckoutListComponent
 import com.tokopedia.promocheckout.list.view.fragment.BasePromoCheckoutListFragment
-import com.tokopedia.promocheckout.list.view.fragment.PromoCheckoutListDigitalFragment
 import com.tokopedia.promocheckout.list.view.fragment.PromoCheckoutListFlightFragment
 
 class PromoCheckoutListFlightActivity : BaseSimpleActivity(), HasComponent<PromoCheckoutListComponent> {

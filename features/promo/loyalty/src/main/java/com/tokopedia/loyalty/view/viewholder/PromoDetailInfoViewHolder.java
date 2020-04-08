@@ -1,12 +1,13 @@
 package com.tokopedia.loyalty.view.viewholder;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import androidx.recyclerview.widget.RecyclerView;
 import android.text.Html;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.loyalty.R;
 import com.tokopedia.loyalty.view.adapter.PromoDetailAdapter;

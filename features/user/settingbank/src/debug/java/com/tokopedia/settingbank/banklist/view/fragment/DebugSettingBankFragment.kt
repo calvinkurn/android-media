@@ -1,6 +1,5 @@
 package com.tokopedia.settingbank.banklist.view.fragment
 
-import android.os.Bundle
 import androidx.annotation.RestrictTo
 import com.tokopedia.settingbank.banklist.di.SettingBankComponent
 import com.tokopedia.settingbank.banklist.view.viewmodel.BankAccountListViewModel

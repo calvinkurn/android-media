@@ -9,6 +9,7 @@ import com.tokopedia.analytics.TrackAnalytics
 import com.tokopedia.analytics.firebase.FirebaseEvent
 import com.tokopedia.analytics.firebase.FirebaseParams
 import com.tokopedia.iris.util.IrisSession
+import com.tokopedia.iris.util.KEY_SESSION_IRIS
 import com.tokopedia.linker.LinkerConstants
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
@@ -17,11 +18,7 @@ import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.user.session.UserSessionInterface
 import timber.log.Timber
-import java.util.*
 import javax.inject.Inject
-import kotlin.collections.HashMap
-
-import com.tokopedia.iris.util.*
 
 /**
  * @author by nisie on 10/2/18.

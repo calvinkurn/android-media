@@ -1,8 +1,7 @@
 package com.tokopedia.groupchat.animation.initializers
 
 import com.tokopedia.groupchat.animation.Particle
-
-import java.util.Random
+import java.util.*
 
 class SpeedModuleAndRangeInitializer(
         private val mSpeedMin: Float,
