@@ -418,4 +418,4 @@
 -keep class com.analytic.util.** { *; }
 -keep class com.tokopedia.abstraction.processor.** { *; }
 -keep class com.tokopedia.product.util.processor.** { *; }
--keep class com.squareup.javapoet.** { *; }
+-dontwarn com.squareup.javapoet.**
