@@ -38,10 +38,6 @@ class AddEditProductPreviewViewModel @Inject constructor(
 
     private val draftId = MutableLiveData<String>()
 
-    private val getProductDraftResultMutableLiveData = MutableLiveData<Result<ProductDraft>>()
-    val getProductDraftResultLiveData: LiveData<Result<ProductDraft>>
-        get() = getProductDraftResultMutableLiveData
-
     // observing the product id, and will become true if product id exist
     val isEditing = Transformations.map(productId) { id ->
         !id.isNullOrBlank()
@@ -88,6 +84,9 @@ class AddEditProductPreviewViewModel @Inject constructor(
 
     private val mProductVariantList = MutableLiveData<Result<List<ProductVariantByCatModel>>>()
     val productVariantList: LiveData<Result<List<ProductVariantByCatModel>>> get() = mProductVariantList
+
+    private val mGetProductDraftResult = MutableLiveData<Result<ProductDraft>>()
+    val getProductDraftResult: LiveData<Result<ProductDraft>> get() = mGetProductDraftResult
 
     fun getProductId(): String {
         return productId.value ?: ""
@@ -155,14 +154,14 @@ class AddEditProductPreviewViewModel @Inject constructor(
         })
     }
 
-    fun getProductDraft(productId: Long) {
+    fun getProductDraft(draftId: Long) {
         launchCatchError(block = {
-            getProductDraftUseCase.params = GetProductDraftUseCase.createRequestParams(productId)
-            getProductDraftResultMutableLiveData.value = withContext(Dispatchers.IO) {
+            getProductDraftUseCase.params = GetProductDraftUseCase.createRequestParams(draftId)
+            mGetProductDraftResult.value = withContext(Dispatchers.IO) {
                 getProductDraftUseCase.executeOnBackground()
             }.let { Success(it) }
         }, onError = {
-            getProductDraftResultMutableLiveData.value = Fail(it)
+            mGetProductDraftResult.value = Fail(it)
         })
     }
 }

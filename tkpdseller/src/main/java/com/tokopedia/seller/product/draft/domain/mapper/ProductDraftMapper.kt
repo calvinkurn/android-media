@@ -12,7 +12,7 @@ class ProductDraftMapper @Inject constructor() {
         val completionPercent = draft.completionPercent
 
         ProductDraftViewModel(
-                draft.productId,
+                draft.draftId,
                 primaryImageUrl,
                 productName,
                 completionPercent,

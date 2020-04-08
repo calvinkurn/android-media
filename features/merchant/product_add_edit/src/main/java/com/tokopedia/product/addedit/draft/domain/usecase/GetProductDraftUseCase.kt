@@ -12,9 +12,9 @@ class GetProductDraftUseCase @Inject constructor(
 ): UseCase<ProductDraft>() {
 
     companion object {
-        fun createRequestParams(productId: Long): RequestParams {
+        fun createRequestParams(draftId: Long): RequestParams {
             val requestParams = RequestParams.create()
-            requestParams.putLong(AddEditProductDraftConstant.DRAFT_PRODUCT_ID, productId)
+            requestParams.putLong(AddEditProductDraftConstant.DRAFT_PRODUCT_ID, draftId)
             return requestParams
         }
     }

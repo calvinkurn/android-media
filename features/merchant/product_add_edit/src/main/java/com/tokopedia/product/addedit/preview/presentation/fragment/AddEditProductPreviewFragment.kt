@@ -49,6 +49,7 @@ import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProduct
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.REQUEST_CODE_VARIANT_EDIT
 import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
 import com.tokopedia.product.addedit.imagepicker.view.activity.ImagePickerAddProductActivity
+import com.tokopedia.product.addedit.mapper.mapDraftToProductInputModel
 import com.tokopedia.product.addedit.preview.data.source.api.response.Product
 import com.tokopedia.product.addedit.preview.di.AddEditProductPreviewModule
 import com.tokopedia.product.addedit.preview.di.DaggerAddEditProductPreviewComponent
@@ -86,6 +87,8 @@ import javax.inject.Inject
 import kotlin.collections.ArrayList
 
 class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHolder.OnPhotoChangeListener {
+
+    private var productInputModel: ProductInputModel? = null
 
     // action button
     private var doneButton: AppCompatTextView? = null
@@ -152,8 +155,10 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
         shopId = userSession.shopId
         super.onCreate(savedInstanceState)
         arguments?.run {
+            val draftId = getString(EXTRA_DRAFT_ID)
             viewModel.setProductId(getString(EXTRA_PRODUCT_ID) ?: "")
-            viewModel.setDraftId(getString(EXTRA_DRAFT_ID) ?: "")
+            viewModel.setDraftId(draftId ?: "")
+            if(draftId != "") draftId?.let { viewModel.getProductDraft(it.toLong()) }
         }
 
         if (viewModel.isEditing.value == true) {
@@ -316,7 +321,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
         observeProductVariant()
         observeImageUrlOrPathList()
         observeProductVariantList()
-
+        observeProductInputModelFromDraft()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -516,6 +521,14 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
             when (result) {
                 is Success -> showVariantDialog(result.data)
                 is Fail -> showVariantErrorToast(getString(R.string.error_cannot_get_variants))
+            }
+        })
+    }
+
+    private fun observeProductInputModelFromDraft() {
+        viewModel.getProductDraftResult.observe(viewLifecycleOwner, Observer { result ->
+            when(result) {
+                is Success -> productInputModel = mapDraftToProductInputModel(result.data)
             }
         })
     }
