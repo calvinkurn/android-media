@@ -37,6 +37,13 @@ class WholeSalePriceInputAdapter(private val listener: WholeSaleInputViewHolder.
         notifyItemInserted(wholeSaleInputModelList.lastIndex)
     }
 
+    fun addNewWholeSalePrice(wholeSaleInputModels: List<WholeSaleInputModel>) {
+        wholeSaleInputModels.forEach {
+            wholeSaleInputModelList.add(it)
+        }
+        notifyDataSetChanged()
+    }
+
     fun setWholeSaleInputModels(drafts: List<WholeSaleInputModel>) {
         if (drafts.size == MAX_WHOLESALE_PRICES) return
         wholeSaleInputModelList = drafts.toMutableList()

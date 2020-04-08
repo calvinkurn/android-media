@@ -37,5 +37,12 @@
             android:layout_height="wrap_content"
             android:text="@string/action_next_button"/>
 
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/btnSave"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:text="@string/action_save"/>
+
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>

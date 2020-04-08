@@ -4,15 +4,25 @@ class AddEditProductDetailConstants {
     companion object {
         const val MAX_PRODUCT_PHOTOS = 5
         const val MAX_WHOLESALE_PRICES = 5
+        const val UNIVERSE_SEARCH_TYPE = "AUTOCOMPLETE"
         const val REQUEST_CODE_IMAGE = 0
-        const val REQUEST_CODE_GET_CATEGORY = 1
-        const val REQUEST_CODE_GET_CATALOG = 2
-        const val UNIT_DAY = 0
-        const val UNIT_WEEK = 1
-        const val CONDITION_NEW = "NEW"
-        const val CONDITION_USED = "USED"
+        const val REQUEST_CODE_CATEGORY = 1
+        const val REQUEST_CODE_DETAIL = 2
+        const val REQUEST_CODE_DETAIL_EDIT = 3
+        const val REQUEST_CODE_DESCRIPTION_EDIT = 4
+        const val REQUEST_CODE_SHIPMENT_EDIT = 5
+        const val REQUEST_CODE_VARIANT_EDIT = 6
+        const val EXTRA_CATEGORY_ID = "CATEGORY_ID"
+
         const val CATEGORY_RESULT_ID = "CATEGORY_RESULT_ID"
         const val CATEGORY_RESULT_NAME = "CATEGORY_RESULT_NAME"
-        const val UNIVERSE_SEARCH_TYPE = "AUTOCOMPLETE"
+        const val UNIT_DAY = 0
+        const val UNIT_WEEK = 1
+        const val NEW_PRODUCT_INDEX = 0
+        const val CONDITION_NEW = "NEW"
+        const val USED_PRODUCT_INDEX = 1
+        const val CONDITION_USED = "USED"
+        const val DEFAULT_STOCK_VALUE = 1
+        const val DEFAULT_MIN_ORDER_VALUE = 1
     }
 }

@@ -90,17 +90,27 @@ class GetProductMapper @Inject constructor() {
     private fun mapDetailInputModel(product: Product): DetailInputModel =
             DetailInputModel(
                     product.productName,
+                    product.category.name,
                     product.category.id,
                     product.catalog.catalogID,
-                    product.price.toFloat(),
+                    product.price,
                     product.stock,
                     product.minOrder,
                     product.condition,
                     product.sku,
-                    pictureList = mapPictureInputModel(product.pictures),
+                    imageUrlOrPathList = mapImageUrlOrPathList(product),
                     preorder = mapPreorderInputModel(product.preorder),
-                    wholesaleList = mapWholeSaleInputModel(product.wholesales)
+                    wholesaleList = mapWholeSaleInputModel(product.wholesales),
+                    pictureList = mapPictureInputModel(product.pictures)
             )
+
+    private fun mapImageUrlOrPathList(product: Product): MutableList<String> {
+        val imageUrlOrPathList = mutableListOf<String>()
+        product.pictures.forEach {
+            imageUrlOrPathList.add(it.urlThumbnail)
+        }
+        return imageUrlOrPathList
+    }
 
     private fun mapPictureInputModel(pictures: List<Picture>): List<PictureInputModel> =
             pictures.map {
@@ -120,7 +130,7 @@ class GetProductMapper @Inject constructor() {
             }
 
     private fun mapPreorderInputModel(preorder: Preorder): PreorderInputModel {
-        val timeUnit: Int = when (preorder.timeUnit){
+        val timeUnit: Int = when (preorder.timeUnit) {
             UNIT_DAY_STRING -> UNIT_DAY
             UNIT_WEEK_STRING -> UNIT_WEEK
             UNIT_MONTH_STRING -> UNIT_MONTH
@@ -155,7 +165,7 @@ class GetProductMapper @Inject constructor() {
             }
 
     private fun mapShipmentInputModel(product: Product): ShipmentInputModel {
-        val weightUnit: Int = when (product.weightUnit){
+        val weightUnit: Int = when (product.weightUnit) {
             UNIT_GRAM_SRING -> UNIT_GRAM
             UNIT_KILOGRAM_SRING -> UNIT_KILOGRAM
             else -> -1

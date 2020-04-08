@@ -6,10 +6,12 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.product.addedit.common.util.ResourceProvider
+import com.tokopedia.product.addedit.description.presentation.model.ProductVariantInputModel
 import com.tokopedia.product.addedit.detail.domain.usecase.GetCategoryRecommendationUseCase
 import com.tokopedia.product.addedit.detail.domain.usecase.GetNameRecommendationUseCase
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.UNIT_DAY
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.UNIT_WEEK
+import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
 import com.tokopedia.product.addedit.draft.domain.usecase.GetProductDraftUseCase
 import com.tokopedia.product.addedit.draft.domain.usecase.SaveProductDraftUseCase
 import com.tokopedia.product.manage.common.draft.data.model.ProductDraft
@@ -31,8 +33,19 @@ class AddEditProductDetailViewModel @Inject constructor(
 )
     : BaseViewModel(dispatcher) {
 
+    var isEditing = false
+
+    var isDrafting = false
+
+    var detailInputModel = DetailInputModel()
+
+    var variantInputModel = ProductVariantInputModel()
+
+    var productPhotoPaths = detailInputModel.imageUrlOrPathList.toMutableList()
+
     private val mIsProductPhotoError = MutableLiveData<Boolean>()
 
+    var isProductNameChanged = false
     private val mIsProductNameInputError = MutableLiveData<Boolean>()
     val isProductNameInputError: LiveData<Boolean>
         get() = mIsProductNameInputError
@@ -78,7 +91,6 @@ class AddEditProductDetailViewModel @Inject constructor(
     var isEditMode:Boolean = false
 
     private val mIsInputValid = MediatorLiveData<Boolean>().apply {
-
         addSource(mIsProductPhotoError) {
             this.value = isInputValid()
         }
@@ -105,7 +117,7 @@ class AddEditProductDetailViewModel @Inject constructor(
         get() = mIsInputValid
 
     var selectedCategoryId: String = ""
-    var selectedCatalogId: String = ""
+    var selectedCategoryName: String = ""
 
     val productCategoryRecommendationLiveData = MutableLiveData<Result<List<ListItemUnify>>>()
 

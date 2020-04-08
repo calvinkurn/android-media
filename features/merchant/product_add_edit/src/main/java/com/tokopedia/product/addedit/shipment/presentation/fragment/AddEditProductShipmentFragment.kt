@@ -43,6 +43,7 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
     private var switchInsurance: SwitchUnify? = null
     private var btnEnd: UnifyButton? = null
     private var productDraft: ProductDraft? = null
+    private var btnSave: UnifyButton? = null
     private var selectedWeightPosition: Int = 0
 
     private lateinit var userSession: UserSessionInterface
@@ -76,7 +77,7 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
                 }
 
         const val EXTRA_SHIPMENT_INPUT_MODEL = "shipment_input_model"
-        const val EXTRA_IS_EDITMODE = "shipment_input_model"
+        const val EXTRA_IS_EDITMODE = "shipment_is_editmode"
         const val REQUEST_CODE_SHIPMENT = 0x04
     }
 
@@ -111,9 +112,10 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
         tfWeightUnit = view.findViewById(R.id.tf_weight_unit)
         tfWeightAmount = view.findViewById(R.id.tf_weight_amount)
         switchInsurance = view.findViewById(R.id.switch_insurance)
+        btnSave = view.findViewById(R.id.btn_save)
         btnEnd = view.findViewById(R.id.btn_end)
         tfWeightAmount.setModeToNumberInput()
-        if (shipmentViewModel.isEditMode) applyEditMode()
+        applyShipmentInputModel()
         tfWeightUnit?.apply {
             textFieldInput.setText(getWeightTypeTitle(0))
             textFieldInput.isFocusable = false // disable focus
@@ -127,6 +129,9 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
         }
         btnEnd?.setOnClickListener {
             submitInput()
+        }
+        btnSave?.setOnClickListener {
+            submitInputEdit()
         }
         switchInsurance?.setOnCheckedChangeListener { buttonView, isChecked ->
             if (shipmentViewModel.isEditMode) {
@@ -167,14 +172,18 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun applyEditMode() {
+    private fun applyShipmentInputModel() {
         val inputModel = shipmentViewModel.shipmentInputModel
         val weightUnitResId = getWeightTypeTitle(inputModel.weightUnit)
         val weightUnit = getString(weightUnitResId)
         tfWeightUnit.setText(weightUnit)
         tfWeightAmount.setText(inputModel.weight.toString())
         switchInsurance?.isChecked = inputModel.isMustInsurance
+        btnEnd?.visibility = View.GONE
+        btnSave?.visibility = View.VISIBLE
     }
+
+
 
     private fun showUnitWeightOption() {
         if (shipmentViewModel.isEditMode) {
@@ -252,5 +261,19 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
             activity?.finish()
         }
     }
-  
+
+    private fun submitInputEdit() {
+        if (validateInputWeight(tfWeightAmount.getText())) {
+            val shipmentInputModel = ShipmentInputModel(
+                    tfWeightAmount.getTextIntOrZero(),
+                    selectedWeightPosition,
+                    switchInsurance?.isChecked == true
+            )
+            val intent = Intent()
+            intent.putExtra(EXTRA_SHIPMENT_INPUT, shipmentInputModel)
+            activity?.setResult(Activity.RESULT_OK, intent)
+            activity?.finish()
+        }
+    }
+
 }

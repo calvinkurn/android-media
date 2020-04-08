@@ -24,7 +24,7 @@ class AddEditProductShipmentActivity : BaseSimpleActivity(), HasComponent<AddEdi
         val shipmentInputModel:ShipmentInputModel? = intent.getParcelableExtra(PARAM_SHIPMENT_INPUT_MODEL)
         val productDraft: ProductDraft = intent.getParcelableExtra(AddEditProductUploadConstant.EXTRA_PRODUCT_DRAFT)
         shipmentInputModel?.run {
-            return AddEditProductShipmentFragment.createInstanceEditMode(shipmentInputModel)
+            return AddEditProductShipmentFragment.createInstanceEditMode(this)
         }
         return AddEditProductShipmentFragment.createInstance(productDraft)
     }
