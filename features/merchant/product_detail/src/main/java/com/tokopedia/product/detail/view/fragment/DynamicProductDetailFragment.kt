@@ -140,6 +140,13 @@ import kotlinx.android.synthetic.main.partial_layout_button_action.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
+/**
+ * Separator Rule
+ * Without separator : ProductValuePropositionViewHolder, ProductSocialProofViewHolder, ProoductSocialProofPvViewHolder, ProductSnapshotViewHolder
+ * Bottom separator : ProductVariantViewHolder, ProductNotifyMeViewHolder
+ * Top separator : All of the view holder except above
+ */
+
 class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, DynamicProductDetailAdapterFactoryImpl>(), DynamicProductDetailListener, ProductVariantListener, IAccessRequestListener {
 
     companion object {
