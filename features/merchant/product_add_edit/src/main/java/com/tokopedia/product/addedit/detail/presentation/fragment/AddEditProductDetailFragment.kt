@@ -82,6 +82,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.android.synthetic.main.fragment_add_edit_product_description.*
 import java.text.NumberFormat
 import java.util.*
 import javax.inject.Inject
@@ -169,6 +170,9 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     // button lanjut
     private var continueButton: UnifyButton? = null
 
+    // button save
+    private var saveButton: Button? = null
+
     override fun getScreenName(): String {
         return getString(R.string.product_add_edit_detail)
     }
@@ -183,6 +187,8 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         // set detail and variant input model
         arguments?.getParcelable<ProductInputModel>(EXTRA_PRODUCT_INPUT_MODEL)?.run {
             viewModel.detailInputModel = this.detailInputModel
+            viewModel.selectedCategoryId = this.detailInputModel.categoryId
+            viewModel.productPhotoPaths = this.detailInputModel.imageUrlOrPathList.toMutableList()
             viewModel.variantInputModel = this.variantInputModel
         }
         // set isEditing status
@@ -373,6 +379,9 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         // button 'lanjut'
         continueButton = view.findViewById(R.id.btn_continue)
 
+        // button 'simpan'
+        saveButton = view.findViewById(R.id.btn_save)
+
         // fill the form with detail input model
         fillProductDetailForm(viewModel.detailInputModel)
 
@@ -497,7 +506,17 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         })
 
         continueButton?.setOnClickListener {
+            validateInput()
+            val isInputValid = viewModel.isInputValid.value
+            isInputValid?.let {
+                if (it) {
+                    moveToDescriptionActivity()
+                }
+            }
+        }
 
+        saveButton?.setOnClickListener {
+            validateInput()
             // show loading indicator
             continueButton?.isLoading = true
 
@@ -561,11 +580,20 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             }
 
             val isInputValid = viewModel.isInputValid.value
-
             isInputValid?.let {
+                if (it) {
+                    submitInputEdit()
+                }
+
                 if (it) moveToDescriptionActivity()
                 else continueButton?.isLoading = false
             }
+        }
+
+        // switch continue button to save button
+        if (viewModel.isEditing) {
+            saveButton?.visibility = View.VISIBLE
+            continueButton?.visibility = View.GONE
         }
 
         subscribeToProductNameInputStatus()
@@ -580,6 +608,35 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         subscribeToInputStatus()
     }
 
+    private fun validateInput() {
+        // input re-validation process in case the user click the button without entering the input
+
+        // product photo validation
+        productPhotoAdapter?.let { viewModel.validateProductPhotoInput(it.itemCount) }
+
+        // product name validation
+        val productNameInput = productNameField?.getEditableValue().toString()
+        // prevent name recommendation from being showed
+        viewModel.isProductNameChanged = false
+        viewModel.validateProductNameInput(productNameInput)
+
+        // product price validation
+        val productPriceInput = productPriceField?.getEditableValue().toString().replace(".", "")
+        viewModel.validateProductPriceInput(productPriceInput)
+
+        // product stock validation
+        val productStockInput = productStockField?.getEditableValue().toString()
+        viewModel.validateProductStockInput(productStockInput)
+
+        // product minimum order validation
+        val orderQuantityInput = productMinOrderField?.getEditableValue().toString()
+        viewModel.validateProductMinOrderInput(productStockInput, orderQuantityInput)
+
+        // pre order duration validation
+        val preOrderDurationInput = preOrderDurationField?.getEditableValue().toString()
+        viewModel.validatePreOrderDurationInput(selectedDurationPosition, preOrderDurationInput)
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK && data != null) {
@@ -587,7 +644,10 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                 REQUEST_CODE_IMAGE -> {
                     val imageUrlOrPathList = data.getStringArrayListExtra(ImagePickerActivity.PICKER_RESULT_PATHS)
                     productPhotoAdapter?.setProductPhotoPaths(imageUrlOrPathList)
-                    productPhotoAdapter?.let { viewModel.validateProductPhotoInput(it.itemCount) }
+                    productPhotoAdapter?.let {
+                        viewModel.validateProductPhotoInput(it.itemCount)
+                        viewModel.productPhotoPaths = it.getProductPhotoPaths()
+                    }
                 }
                 REQUEST_CODE_CATEGORY -> {
 
@@ -597,10 +657,14 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                     viewModel.selectedCategoryId = categoryId.toString()
                     viewModel.selectedCategoryName = categoryName.toString()
 
-                    // is editing
-                    if (viewModel.isEditing) {
-                        // close button clicked
-                        if (categoryName.isNullOrBlank()) {
+                    val categoryList = ListUnifyUtil.getSelected(productCategoryRecListView)
+                    if (categoryList != null) {
+                        ListUnifyUtil.getShownRadioButton(categoryList)?.isChecked = false
+                        if (viewModel.isEditing) {
+                            ProductEditMainTracking.clickSaveOtherCategory(shopId)
+                        }
+                    } else {
+                        if (viewModel.isEditing) {
                             ProductEditMainTracking.clickBackOtherCategory(shopId)
                         }
                     }
@@ -763,6 +827,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
 
         // product sku
         productSkuField?.textFieldInput?.setText(detailInputModel.sku)
+
     }
 
     private fun addNewWholeSalePrice(wholesaleInputs: List<WholeSaleInputModel>) {
@@ -847,7 +912,6 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
 
     private fun createAddProductPhotoButtonOnClickListener(): View.OnClickListener {
         return View.OnClickListener {
-            productPhotoAdapter?.let { viewModel.productPhotoPaths = it.getProductPhotoPaths() }
             val isEditing = viewModel.isEditing
             val intent = ImagePickerAddProductActivity.getIntent(context, createImagePickerBuilder(ArrayList(viewModel.productPhotoPaths)), isEditing)
             startActivityForResult(intent, REQUEST_CODE_IMAGE)
@@ -1074,4 +1138,29 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         activity?.setResult(Activity.RESULT_OK, intent)
         activity?.finish()
     }
+
+    private fun submitInputEdit() {
+        val detailInputModel = viewModel.detailInputModel
+        detailInputModel.apply {
+            productName = productNameField.getText()
+            categoryId = viewModel.selectedCategoryId
+            price = productPriceField.getTextLongOrZero()
+            stock = productStockField.getTextIntOrZero()
+            minOrder = productMinOrderField.getTextIntOrZero()
+            condition = if (isProductConditionNew) CONDITION_NEW else CONDITION_USED
+            sku = productSkuField.getText()
+            imageUrlOrPathList = viewModel.productPhotoPaths
+            preorder = PreorderInputModel(
+                    preOrderDurationField.getTextIntOrZero(),
+                    selectedDurationPosition,
+                    preOrderSwitch?.isChecked ?: false)
+            wholesaleList = getWholesaleInput()
+        }
+
+        val intent = Intent()
+        intent.putExtra(EXTRA_DETAIL_INPUT, detailInputModel)
+        activity?.setResult(Activity.RESULT_OK, intent)
+        activity?.finish()
+    }
+
 }

@@ -107,7 +107,7 @@ class GetProductMapper @Inject constructor() {
     private fun mapImageUrlOrPathList(product: Product): MutableList<String> {
         val imageUrlOrPathList = mutableListOf<String>()
         product.pictures.forEach {
-            imageUrlOrPathList.add(it.urlOriginal)
+            imageUrlOrPathList.add(it.urlThumbnail)
         }
         return imageUrlOrPathList
     }

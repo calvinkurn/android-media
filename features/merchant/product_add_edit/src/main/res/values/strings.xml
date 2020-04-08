@@ -19,6 +19,7 @@
     <string name="action_change">Ubah</string>
     <string name="action_add">Tambah</string>
     <string name="action_done">Selesai</string>
+    <string name="action_save">Simpan</string>
 
     <!-- add edit product photo -->
     <string name="add_product_photo_header">Foto Produk</string>

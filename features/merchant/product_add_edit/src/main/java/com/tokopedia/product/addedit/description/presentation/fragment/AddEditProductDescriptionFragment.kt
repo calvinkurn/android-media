@@ -222,6 +222,10 @@ class AddEditProductDescriptionFragment:
             moveToDescriptionActivity()
         }
 
+        btnSave.setOnClickListener {
+            submitInputEdit()
+        }
+
         observeProductVariant()
     }
 
@@ -251,6 +255,8 @@ class AddEditProductDescriptionFragment:
             super.renderList(videoLinks)
         }
 
+        btnNext.visibility = View.GONE
+        btnSave.visibility = View.VISIBLE
     }
 
     private fun showVariantErrorToast(errorMessage: String) {
