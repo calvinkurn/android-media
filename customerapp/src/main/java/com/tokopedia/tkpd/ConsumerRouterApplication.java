@@ -136,8 +136,6 @@ import com.tokopedia.loyalty.view.data.PromoData;
 import com.tokopedia.loyalty.view.data.VoucherViewModel;
 import com.tokopedia.loyalty.view.fragment.LoyaltyNotifFragmentDialog;
 import com.tokopedia.merchantvoucher.MerchantVoucherModuleRouter;
-import com.tokopedia.mitratoppers.MitraToppersRouter;
-import com.tokopedia.mitratoppers.MitraToppersRouterInternal;
 import com.tokopedia.navigation.GlobalNavRouter;
 import com.tokopedia.navigation.presentation.activity.MainParentActivity;
 import com.tokopedia.network.NetworkRouter;
@@ -265,7 +263,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         OmsModuleRouter,
         TopAdsWebViewRouter,
         EventModuleRouter,
-        MitraToppersRouter,
         DigitalBrowseRouter,
         PhoneVerificationRouter,
         TkpdAppsFlyerRouter,
@@ -1236,11 +1233,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public boolean isEnableInterestPick() {
         return remoteConfig.getBoolean("mainapp_enable_interest_pick", Boolean.TRUE);
-    }
-
-    @Override
-    public Intent getMitraToppersActivityIntent(Context context) {
-        return MitraToppersRouterInternal.getMitraToppersActivityIntent(context);
     }
 
     @Override

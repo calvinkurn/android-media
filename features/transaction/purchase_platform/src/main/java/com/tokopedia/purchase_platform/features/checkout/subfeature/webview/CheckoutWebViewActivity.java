@@ -34,7 +34,7 @@ public class CheckoutWebViewActivity extends BaseSimpleWebViewActivity {
     /**
      * @param context activity context
      * @param url of webview to be displayed
-     * @param title will display on toolbar Title, see implementation on BaseWebViewActivity@setupToolbar
+     * @param title will display on toolbar Title
      * @param callerCode for analytics purpose
      * @return Intent to start activity with
      */

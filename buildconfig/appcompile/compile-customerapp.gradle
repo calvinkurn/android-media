@@ -76,7 +76,6 @@ include "features:discovery:wishlist_common"
 include "features:discovery:search"
 include "features:discovery:global_nav_widget"
 
-include "features:fintech:mitra_toppers"
 include "features:fintech:home_credit"
 include "features:fintech:ovo_pay_with_qr"
 include "features:digital:instant_debit_bca"
