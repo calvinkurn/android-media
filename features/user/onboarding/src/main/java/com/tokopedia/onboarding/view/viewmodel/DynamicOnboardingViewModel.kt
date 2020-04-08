@@ -3,6 +3,7 @@ package com.tokopedia.onboarding.view.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.onboarding.common.OnboardingIoDispatcher
 import com.tokopedia.onboarding.domain.model.ConfigDataModel
 import com.tokopedia.onboarding.domain.usecase.DynamicOnboardingUseCase
 import com.tokopedia.usecase.coroutines.Fail
@@ -12,9 +13,9 @@ import kotlinx.coroutines.*
 import javax.inject.Inject
 
 class DynamicOnboardingViewModel @Inject constructor(
-        dispatcher: CoroutineDispatcher,
+        dispatcher: OnboardingIoDispatcher,
         private val dynamicOnboardingUseCase: DynamicOnboardingUseCase
-) : BaseViewModel(dispatcher) {
+) : BaseViewModel(dispatcher.main) {
 
     private val _dynamicOnboardingData = MutableLiveData<Result<ConfigDataModel>>()
     val configData: LiveData<Result<ConfigDataModel>>
@@ -54,7 +55,7 @@ class DynamicOnboardingViewModel @Inject constructor(
     }
 
     companion object {
-        const val TIMEOUT = 1000L
+        private const val TIMEOUT = 2000L
         const val JOB_WAS_CANCELED = "job was canceled"
     }
 }
