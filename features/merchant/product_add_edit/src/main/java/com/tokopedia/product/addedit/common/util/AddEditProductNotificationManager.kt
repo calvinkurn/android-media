@@ -14,12 +14,12 @@ import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.product.addedit.R
 import java.io.File
+import java.util.*
 
 /**
  * @author by milhamj on 26/02/19.
  */
 abstract class AddEditProductNotificationManager(
-        private val id: Int,
         private val maxCount: Int,
         private val notificationManager: NotificationManager,
         protected val context: Context) {
@@ -29,6 +29,8 @@ abstract class AddEditProductNotificationManager(
         private const val CHANNEL_GENERAL = "ANDROID_GENERAL_CHANNEL"
         private const val NOTIFICATION_GROUP = "com.tokopedia"
     }
+
+    private val id: Int = Random().nextInt()
 
     private val notificationBuilder = NotificationCompat.Builder(context, CHANNEL_GENERAL).apply {
         setContentTitle(context.getString(R.string.title_notif_product_upload))
@@ -46,7 +48,7 @@ abstract class AddEditProductNotificationManager(
 
     private var currentProgress = 0
     
-    fun onSuccessPost() {
+    fun onSuccessUpload() {
         val text = context.getString(R.string.message_notif_product_upload_success)
         val notification = notificationBuilder.setContentText(text)
                 .setStyle(NotificationCompat.BigTextStyle().bigText(text))
@@ -58,7 +60,7 @@ abstract class AddEditProductNotificationManager(
         notificationManager.notify(TAG, id, notification)
     }
 
-    fun onSubmitPost() {
+    fun onSubmitUpload() {
         val text = context.getString(R.string.message_notif_product_upload)
         val notification = notificationBuilder.setContentText(text)
                 .setStyle(NotificationCompat.BigTextStyle().bigText(text))
@@ -80,7 +82,7 @@ abstract class AddEditProductNotificationManager(
         updateLargeIcon(fileImage, notification)
     }
 
-    fun onFailedPost(errorMessage: String) {
+    fun onFailedUpload(errorMessage: String) {
         val text = context.getString(R.string.message_notif_product_upload_error)
         val notification = notificationBuilder.setContentText(text)
                 .setStyle(NotificationCompat.BigTextStyle().bigText(text))

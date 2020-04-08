@@ -7,6 +7,11 @@ import com.tokopedia.common.network.coroutines.repository.RestRepository
 import com.tokopedia.network.interceptor.CommonErrorResponseInterceptor
 import com.tokopedia.product.addedit.description.data.remote.ProductVariantService
 import com.tokopedia.product.addedit.description.domain.usecase.GetYoutubeVideoUseCase
+import com.tokopedia.product.manage.common.draft.data.db.AddEditProductDraftDao
+import com.tokopedia.product.manage.common.draft.data.db.AddEditProductDraftDb
+import com.tokopedia.product.manage.common.draft.data.db.repository.AddEditProductDraftRepository
+import com.tokopedia.product.manage.common.draft.data.db.repository.AddEditProductDraftRepositoryImpl
+import com.tokopedia.product.manage.common.draft.data.db.source.AddEditProductDraftDataSource
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -66,4 +71,21 @@ class AddEditProductDescriptionModule {
         return GetYoutubeVideoUseCase(restRepository)
     }
 
+
+    @AddEditProductDescriptionScope
+    @Provides
+    fun provideProductDraftDb(@ApplicationContext context: Context): AddEditProductDraftDb = AddEditProductDraftDb.getInstance(context)
+
+    @AddEditProductDescriptionScope
+    @Provides
+    fun provideProductDraftDao(draftDb: AddEditProductDraftDb): AddEditProductDraftDao = draftDb.getDraftDao()
+
+    @AddEditProductDescriptionScope
+    @Provides
+    fun provideProductDraftRepository(
+            draftDataSource: AddEditProductDraftDataSource,
+            userSession: UserSessionInterface
+    ): AddEditProductDraftRepository {
+        return AddEditProductDraftRepositoryImpl(draftDataSource, userSession)
+    }
 }

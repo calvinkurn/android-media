@@ -15,6 +15,8 @@ import com.tokopedia.product.addedit.description.presentation.model.DescriptionI
 import com.tokopedia.product.addedit.description.presentation.model.ProductVariantInputModel
 import com.tokopedia.product.addedit.description.presentation.model.VideoLinkModel
 import com.tokopedia.product.addedit.description.presentation.model.youtube.YoutubeVideoModel
+import com.tokopedia.product.addedit.draft.domain.usecase.SaveProductDraftUseCase
+import com.tokopedia.product.manage.common.draft.data.model.ProductDraft
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -28,7 +30,8 @@ class AddEditProductDescriptionViewModel @Inject constructor(
         coroutineDispatcher: CoroutineDispatcher,
         private val resource: ResourceProvider,
         private val getProductVariantUseCase: GetProductVariantUseCase,
-        private val getYoutubeVideoUseCase: GetYoutubeVideoUseCase
+        private val getYoutubeVideoUseCase: GetYoutubeVideoUseCase,
+        private val saveProductDraftUseCase: SaveProductDraftUseCase
 ) : BaseViewModel(coroutineDispatcher) {
 
     var categoryId: String = ""
@@ -42,6 +45,10 @@ class AddEditProductDescriptionViewModel @Inject constructor(
 
     private val _videoYoutube = MutableLiveData<Result<YoutubeVideoModel>>()
     val videoYoutube: LiveData<Result<YoutubeVideoModel>> = _videoYoutube
+
+    private val _saveProductDraftResult = MutableLiveData<Result<Long>>()
+    val saveProductDraftResult: LiveData<Result<Long>>
+        get() = _saveProductDraftResult
 
     fun getVariants(categoryId: String) {
         launchCatchError(block = {
@@ -111,5 +118,16 @@ class AddEditProductDescriptionViewModel @Inject constructor(
         const val WEB_PREFIX_HTTP = "http://"
         const val WEB_PREFIX_HTTPS = "https://"
         const val WEB_YOUTUBE_PREFIX = "https://"
+    }
+
+    fun saveProductDraft(productDraft: ProductDraft, productId: Long, isUploading: Boolean) {
+        launchCatchError(block = {
+            saveProductDraftUseCase.params = SaveProductDraftUseCase.createRequestParams(productDraft, productId, isUploading)
+            _saveProductDraftResult.value = withContext(Dispatchers.IO) {
+                saveProductDraftUseCase.executeOnBackground()
+            }.let { Success(it) }
+        }, onError = {
+            _saveProductDraftResult.value = Fail(it)
+        })
     }
 }
