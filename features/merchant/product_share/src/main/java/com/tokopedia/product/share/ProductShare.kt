@@ -44,7 +44,12 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
 
                 override fun onLoadFailed(errorDrawable: Drawable?) {
                     super.onLoadFailed(errorDrawable)
-                    generateBranchLink(null, data)
+                    try {
+                        generateBranchLink(null, data)
+                    } catch (t: Throwable){
+                    } finally {
+                        postBuildImage()
+                    }
                 }
 
                 override fun onLoadCleared(placeholder: Drawable?) {
