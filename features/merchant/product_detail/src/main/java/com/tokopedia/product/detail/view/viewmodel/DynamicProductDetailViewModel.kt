@@ -170,10 +170,10 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     private var updateCartCounterSubscription: Subscription? = null
 
     fun hasShopAuthority(): Boolean {
-        return isShopOwner(getDynamicProductInfoP1?.basic?.getShopId() ?: 0) || shopInfo?.allowManage == true
+        return isShopOwner() || shopInfo?.allowManage == true
     }
 
-    fun isShopOwner(shopId: Int): Boolean = userSessionInterface.shopId.toIntOrNull() == shopId
+    fun isShopOwner(): Boolean = isUserSessionActive && userSessionInterface.shopId.toIntOrNull() == getDynamicProductInfoP1?.basic?.getShopId()
     val isUserSessionActive: Boolean
         get() = userSessionInterface.isLoggedIn
     val userId: String
@@ -452,10 +452,9 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         val isOfficialStore = getDynamicProductInfoP1?.data?.isOS == true
         val isVariant = getDynamicProductInfoP1?.data?.variant?.isVariant == true
         val isTeaser = getDynamicProductInfoP1?.shouldShowNotifyMe() ?: false
-        val shopId = getDynamicProductInfoP1?.basic?.shopID.toIntOrZero()
 
         val removedData = initialLayoutData.map {
-            if ((!isTradein || isShopOwner(shopId)) && it.name() == ProductDetailConstant.TRADE_IN) {
+            if ((!isTradein || isShopOwner()) && it.name() == ProductDetailConstant.TRADE_IN) {
                 it
             } else if (!hasWholesale && it.name() == ProductDetailConstant.PRODUCT_WHOLESALE_INFO) {
                 it

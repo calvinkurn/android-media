@@ -128,7 +128,6 @@ import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceTaggingConstant
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.variant_common.model.ProductVariantCommon
 import com.tokopedia.variant_common.model.VariantCategory
@@ -485,6 +484,8 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         viewModel.updatedImageVariant.removeObservers(this)
         viewModel.initialVariantData.removeObservers(this)
         viewModel.onVariantClickedData.removeObservers(this)
+        viewModel.toggleTeaserNotifyMe.removeObservers(this)
+        viewModel.addToCartLiveData.removeObservers(this)
         viewModel.flush()
         super.onDestroy()
     }
@@ -752,11 +753,8 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     /**
      * ProductMerchantVoucherViewHolder
      */
-    override fun isOwner(): Boolean {
-        return viewModel.getDynamicProductInfoP1?.basic?.getShopId()?.let {
-            viewModel.isShopOwner(it)
-        } ?: false
-    }
+    override fun isOwner(): Boolean = viewModel.isShopOwner()
+
 
     override fun onMerchantUseVoucherClicked(merchantVoucherViewModel: MerchantVoucherViewModel, position: Int, dataTrackDataModel: ComponentTrackDataModel) {
         activity?.let {
@@ -1763,7 +1761,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             menuShare.isEnabled = true
 
             viewModel.getDynamicProductInfoP1?.run {
-                val isOwned = viewModel.isShopOwner(basic.getShopId())
+                val isOwned = viewModel.isShopOwner()
                 val isSellerApp = GlobalConfig.isSellerApp()
 
                 val isValidCustomer = !isOwned && !isSellerApp
@@ -2563,10 +2561,12 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     }
 
     private fun observeToggleNotifyMe() {
-        viewLifecycleOwner.observe(viewModel.toggleTeaserNotifyMe) {
-            when (it) {
-                is Fail -> onFailNotifyMe(it.throwable)
-            }
+        viewLifecycleOwner.observe(viewModel.toggleTeaserNotifyMe) {data ->
+            data.doSuccessOrFail({
+                viewModel.variantData = VariantMapper.updateVariantDeals(viewModel.variantData, viewModel.getDynamicProductInfoP1?.basic?.getProductId() ?: 0)
+            },{
+                onFailNotifyMe(it)
+            })
         }
     }
 
