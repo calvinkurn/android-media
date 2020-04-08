@@ -11,7 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ImageView
-import com.tokopedia.design.component.Tabs
+import com.google.android.material.tabs.TabLayout
 import com.tokopedia.discovery.R
 import com.tokopedia.discovery.catalogrevamp.adapter.CatalogDetailsAndSpecsPagerAdapter
 import com.tokopedia.discovery.catalogrevamp.model.ProductCatalogResponse
@@ -40,7 +40,7 @@ class CatalogSpecsAndDetailBottomSheet : BottomSheetDialogFragment() {
             description = arguments?.getString(DESCRIPTION)
             specifications = arguments?.getParcelableArrayList(SPECIFICATION)
         }
-        val tabLayout = view?.findViewById<Tabs>(R.id.tab_layout_specs)
+        val tabLayout = view?.findViewById<TabLayout>(R.id.tab_layout_specs)
         val viewPager = view?.findViewById<ViewPager>(R.id.view_pager_specs)
         val closeButton = view?.findViewById<ImageView>(R.id.close_button)
         list.add(CatalogSpecsAndDetailFragment.newInstance(CatalogSpecsAndDetailFragment.SPECIFICATION_TYPE, description, specifications))

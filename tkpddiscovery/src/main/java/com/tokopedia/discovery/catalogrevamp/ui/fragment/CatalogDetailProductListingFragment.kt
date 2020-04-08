@@ -20,7 +20,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.authentication.AuthHelper
 import com.tokopedia.core.gcm.GCMHandler
-import com.tokopedia.design.utils.CurrencyFormatHelper
+import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import com.tokopedia.discovery.R
 import com.tokopedia.discovery.catalogrevamp.analytics.CatalogDetailPageAnalytics
 import com.tokopedia.discovery.catalogrevamp.di.CatalogComponent

@@ -6,8 +6,8 @@ import androidx.cardview.widget.CardView
 import android.util.AttributeSet
 import android.view.View
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
-import com.tokopedia.design.base.BaseCustomView
-import com.tokopedia.design.image.SquareImageView
+import com.tokopedia.unifycomponents.BaseCustomView
+import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.discovery.R
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifyprinciples.Typography
@@ -16,7 +16,7 @@ import com.tokopedia.unifyprinciples.Typography
 abstract class CatalogCardView : BaseCustomView {
 
     protected var cardViewProductCard: CardView? = null
-    protected var imageCatalog: SquareImageView? = null
+    protected var imageCatalog: ImageUnify? = null
     protected var catalogCountLabel: Label? = null
     protected var catalogName: Typography? = null
     protected var catalogDescription: Typography? = null

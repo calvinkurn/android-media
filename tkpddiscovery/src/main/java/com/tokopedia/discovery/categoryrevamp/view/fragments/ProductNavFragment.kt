@@ -23,7 +23,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.core.gcm.GCMHandler
-import com.tokopedia.design.utils.CurrencyFormatHelper
+import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import com.tokopedia.discovery.R
 import com.tokopedia.discovery.categoryrevamp.adapters.*
 import com.tokopedia.discovery.categoryrevamp.analytics.CategoryPageAnalytics.Companion.catAnalyticsInstance
@@ -193,8 +193,8 @@ open class ProductNavFragment : BaseBannedProductFragment(),
                 .build()
         selectedFilterRecyclerView.layoutManager = layoutManager
         selectedFilterRecyclerView.addItemDecoration(SpacingItemDecoration(
-                resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_8),
-                resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_10)
+                resources.getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_8),
+                resources.getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_10)
         ))
     }
 
