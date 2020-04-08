@@ -6,11 +6,14 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.product.addedit.common.util.ResourceProvider
 import com.tokopedia.product.addedit.description.data.remote.model.variantbycat.ProductVariantByCatModel
 import com.tokopedia.product.addedit.description.domain.usecase.GetProductVariantUseCase
 import com.tokopedia.product.addedit.description.domain.usecase.GetYoutubeVideoUseCase
 import com.tokopedia.product.addedit.description.presentation.model.DescriptionInputModel
 import com.tokopedia.product.addedit.description.presentation.model.ProductVariantInputModel
+import com.tokopedia.product.addedit.description.presentation.model.VideoLinkModel
 import com.tokopedia.product.addedit.description.presentation.model.youtube.YoutubeVideoModel
 import com.tokopedia.product.addedit.draft.domain.usecase.SaveProductDraftUseCase
 import com.tokopedia.product.manage.common.draft.data.model.ProductDraft
@@ -25,6 +28,7 @@ import javax.inject.Inject
 
 class AddEditProductDescriptionViewModel @Inject constructor(
         coroutineDispatcher: CoroutineDispatcher,
+        private val resource: ResourceProvider,
         private val getProductVariantUseCase: GetProductVariantUseCase,
         private val getYoutubeVideoUseCase: GetYoutubeVideoUseCase,
         private val saveProductDraftUseCase: SaveProductDraftUseCase
@@ -60,11 +64,13 @@ class AddEditProductDescriptionViewModel @Inject constructor(
 
     fun getVideoYoutube(videoUrl: String) {
         launchCatchError( block = {
-            getYoutubeVideoUseCase.setVideoId(getIdYoutubeUrl(videoUrl))
-            val result = withContext(Dispatchers.IO) {
-                convertToYoutubeResponse(getYoutubeVideoUseCase.executeOnBackground())
+            getIdYoutubeUrl(videoUrl)?.let { youtubeId  ->
+                getYoutubeVideoUseCase.setVideoId(youtubeId)
+                val result = withContext(Dispatchers.IO) {
+                    convertToYoutubeResponse(getYoutubeVideoUseCase.executeOnBackground())
+                }
+                _videoYoutube.value = Success(result)
             }
-            _videoYoutube.value = Success(result)
         }, onError = {
             _videoYoutube.value = Fail(it)
         })
@@ -74,18 +80,44 @@ class AddEditProductDescriptionViewModel @Inject constructor(
         return typeRestResponseMap[YoutubeVideoModel::class.java]?.getData() as YoutubeVideoModel
     }
 
-    private fun getIdYoutubeUrl(videoUrl: String): String {
+    private fun getIdYoutubeUrl(videoUrl: String): String? {
         return try {
-            val uri = Uri.parse(videoUrl)
-            uri.getQueryParameter(KEY_YOUTUBE_VIDEO_ID) ?: ""
+            // add https:// prefix to videoUrl
+            val webVideoUrl =
+                    if (videoUrl.startsWith(WEB_PREFIX_HTTP) ||
+                            videoUrl.startsWith(WEB_PREFIX_HTTPS)) videoUrl else WEB_YOUTUBE_PREFIX + videoUrl
+            val uri = Uri.parse(webVideoUrl)
+            when {
+                uri.host == "youtu.be" -> uri.lastPathSegment
+                uri.host == "www.youtube.com" -> uri.getQueryParameter(KEY_YOUTUBE_VIDEO_ID)
+                else -> throw MessageErrorException("")
+            }
         } catch (e: NullPointerException) {
-            e.printStackTrace()
-            ""
+            throw MessageErrorException(e.message)
         }
+    }
+
+    fun validateDuplicateVideo(inputUrls: MutableList<VideoLinkModel>, url: String): String {
+        var errorMessage = ""
+        val videoLinks = inputUrls.filter {
+            it.inputUrl == url
+        }
+        if (videoLinks.size > 1) errorMessage = resource.getDuplicateProductVideoErrorMessage() ?: ""
+        return errorMessage
+    }
+
+    fun validateInputVideo(inputUrls: MutableList<VideoLinkModel>): Boolean {
+        val videoLinks = inputUrls.filter {
+            it.errorMessage.isNotEmpty()
+        }
+        return videoLinks.isEmpty()
     }
 
     companion object {
         const val KEY_YOUTUBE_VIDEO_ID = "v"
+        const val WEB_PREFIX_HTTP = "http://"
+        const val WEB_PREFIX_HTTPS = "https://"
+        const val WEB_YOUTUBE_PREFIX = "https://"
     }
 
     fun saveProductDraft(productDraft: ProductDraft, productId: Long, isUploading: Boolean) {
