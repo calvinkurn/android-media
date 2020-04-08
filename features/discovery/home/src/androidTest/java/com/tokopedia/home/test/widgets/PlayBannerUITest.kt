@@ -84,7 +84,7 @@ class PlayBannerUITest {
     }
 
     @Test
-    fun testNoSkeletonDataFromHome(){
+    fun test_when_no_data_skeleton_from_home_api_and_expect_the_widget_not_show(){
         val json = GraphqlHelper.loadRawString(context.resources, com.tokopedia.home.test.R.raw.home_empty_dynamic_channel_json)
         val homeData = Gson().fromJson<HomeData>(json, HomeData::class.java)
         coEvery { getHomeUseCase.updateHomeData() } returns flow {  }
@@ -100,7 +100,7 @@ class PlayBannerUITest {
     }
 
     @Test
-    fun testHappyPathPlayBannerUI(){
+    fun test_given_data_play_and_the_widget_must_take_data_from_play_api_and_expect_the_widget_will_show_with_data(){
         val json = GraphqlHelper.loadRawString(context.resources, com.tokopedia.home.test.R.raw.play_widget_json)
         val homeData = Gson().fromJson<HomeData>(json, HomeData::class.java)
         coEvery { getPlayLiveDynamicUseCase.executeOnBackground() } returns PlayData(
@@ -140,7 +140,7 @@ class PlayBannerUITest {
 
 
     @Test
-    fun testNotValidImageUrlFromBackend(){
+    fun test_given_data_play_and_the_widget_must_take_data_from_play_api_and_the_url_not_valid_the_widget_should_not_visible_into_user(){
         val json = GraphqlHelper.loadRawString(context.resources, com.tokopedia.home.test.R.raw.home_empty_dynamic_channel_json)
         val homeData = Gson().fromJson<HomeData>(json, HomeData::class.java)
         coEvery { getHomeUseCase.updateHomeData() } returns flow {  }
@@ -175,7 +175,7 @@ class PlayBannerUITest {
     }
 
     @Test
-    fun testNoReturnDataPlayFromBackend(){
+    fun test_given_data_play_and_the_widget_must_take_data_from_play_api_but_the_return_is_empty_and_expect_the_widget_not_visible_into_user(){
         val json = GraphqlHelper.loadRawString(context.resources, com.tokopedia.home.test.R.raw.home_empty_dynamic_channel_json)
         val homeData = Gson().fromJson<HomeData>(json, HomeData::class.java)
         coEvery { getHomeUseCase.updateHomeData() } returns flow {  }
@@ -195,7 +195,7 @@ class PlayBannerUITest {
     }
 
     @Test
-    fun testErrorDataPlayFromBackend(){
+    fun test_given_data_play_and_the_widget_must_take_data_from_play_api_but_the_api_throw_error_and_the_widget_should_not_visible(){
         val json = GraphqlHelper.loadRawString(context.resources, com.tokopedia.home.test.R.raw.home_empty_dynamic_channel_json)
         val homeData = Gson().fromJson<HomeData>(json, HomeData::class.java)
         coEvery { getHomeUseCase.updateHomeData() } returns flow {  }
@@ -213,7 +213,7 @@ class PlayBannerUITest {
     }
 
     @Test
-    fun testUpdateBannerAndDataFromHomeEmpty(){
+    fun test_given_data_play_and_try_update_new_data_but_the_new_data_is_empty_and_expect_the_widget_will_removed(){
         coEvery { getHomeUseCase.updateHomeData() } returns flow {
             emit(Result.success(""))
         }
@@ -259,7 +259,7 @@ class PlayBannerUITest {
     }
 
     @Test
-    fun testUpdateBannerFromPlayDataDifferent(){
+    fun test_given_data_play_and_try_update_into_new_data_expect_widget_show_the_new_data(){
         coEvery { getHomeUseCase.updateHomeData() } returns flow {
             emit(Result.success(""))
         }

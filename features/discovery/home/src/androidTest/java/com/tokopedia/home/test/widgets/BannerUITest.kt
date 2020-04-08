@@ -1,6 +1,5 @@
 package com.tokopedia.home.test.widgets
 
-import android.util.Log
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -75,24 +74,22 @@ class BannerUITest {
     }
 
     @Test
-    fun testDataFromHome(){
+    fun test_given_data_from_api_and_expect_the_widget_is_displayed(){
         val json = GraphqlHelper.loadRawString(context.resources, com.tokopedia.home.test.R.raw.home_empty_dynamic_channel_json)
         val homeData = Gson().fromJson<HomeData>(json, HomeData::class.java)
         coEvery { getHomeUseCase.updateHomeData() } returns flow {  }
         coEvery { getHomeUseCase.getHomeData() } returns flow {
             emit(homeDataMapper.mapToHomeViewModel(homeData, false))
-            Log.d("testLukas", "Flow emit masuk")
         }
         viewModel = reInitViewModel()
-        Log.d("testLukas", viewModel.toString())
         val homeFragment = HomeFragmentTest(createViewModelFactory(viewModel))
 
         activityRule.activity.setupFragment(homeFragment)
         Thread.sleep(5000)
-        Espresso.onView(withId(R.id.circular_view_pager)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+        Espresso.onView(withId(R.id.circular_view_pager)).check(ViewAssertions.matches(isDisplayed()))
     }
     @Test
-    fun testUpdateDataFromHome(){
+    fun test_given_data_from_home_and_try_update_with_new_data_expect_the_widget_will_render_new_data(){
         val json = GraphqlHelper.loadRawString(context.resources, com.tokopedia.home.test.R.raw.home_empty_dynamic_channel_json)
         val homeData = Gson().fromJson<HomeData>(json, HomeData::class.java)
         val json2 = GraphqlHelper.loadRawString(context.resources, com.tokopedia.home.test.R.raw.play_widget_json)
@@ -104,13 +101,11 @@ class BannerUITest {
             emit(homeDataMapper.mapToHomeViewModel(homeData2, false))
         }
         viewModel = reInitViewModel()
-        Log.d("testLukas", viewModel.toString())
-        Log.d("testLukas", "HomeData: $homeData")
         val homeFragment = HomeFragmentTest(createViewModelFactory(viewModel))
 
         activityRule.activity.setupFragment(homeFragment)
         Thread.sleep(1000)
-        Espresso.onView(withId(R.id.circular_view_pager)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+        Espresso.onView(withId(R.id.circular_view_pager)).check(ViewAssertions.matches(isDisplayed()))
         Espresso.onView(allOf(withId(R.id.image_banner_homepage), withTagValue(`is`(homeData.banner.slides!!.first().imageUrl)))).check(ViewAssertions.matches(isDisplayed()))
         Thread.sleep(4000)
         // check banner updated or not
@@ -121,7 +116,6 @@ class BannerUITest {
         return object : ViewModelProvider.Factory {
             override fun <T : ViewModel> create(viewModelClass: Class<T>): T {
                 if (viewModelClass.isAssignableFrom(viewModel.javaClass)) {
-                    Log.d("testNoSkeleton", "Masuk custom view model factory")
                     @Suppress("UNCHECKED_CAST")
                     return viewModel as T
                 }
