@@ -364,6 +364,10 @@ public interface ConstantTransactionAnalytics {
         String FIN_INSURANCE_CLICK_BUY = "ins - click buy";
         String FIN_INSURANCE_CHECKOUT = "ins - click pilih pembayaran";
         String FIN_INSURANCE_CHECKOUT_IMPRESSION = "ins - impression insurance box in checkout page";
+
+        //Campaign
+        String VIEW_POP_UP_MESSAGE_TIMER = "view pop up message payment time expired";
+        String CLICK_BELANJA_LAGI_ON_POP_UP = "click belanja lagi on pop up message payment time expired";
     }
 
     interface EventLabel {

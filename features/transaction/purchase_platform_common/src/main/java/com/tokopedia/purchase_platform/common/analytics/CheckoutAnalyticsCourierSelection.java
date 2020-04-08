@@ -5,6 +5,7 @@ import android.text.TextUtils;
 
 import com.tokopedia.analyticconstant.DataLayer;
 import com.tokopedia.track.TrackApp;
+import com.tokopedia.track.TrackAppUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -998,5 +999,16 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
                 EventAction.CLICK_DONATION,
                 check ? "check" : "uncheck"
         );
+    }
+
+    public void eventViewCampaignDialog(int productId, String userId) {
+        Map<String, Object> gtmMap = TrackAppUtils.gtmData(
+                EventName.VIEW_COURIER_IRIS,
+                EventCategory.COURIER_SELECTION,
+                EventAction.VIEW_POP_UP_MESSAGE_TIMER,
+                String.valueOf(productId)
+        );
+        gtmMap.put("userId", userId);
+        sendGeneralEvent(gtmMap);
     }
 }
