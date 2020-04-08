@@ -3,21 +3,22 @@ package com.tokopedia.shop.product.view.viewmodel
 import com.tokopedia.shop.common.graphql.data.membershipclaimbenefit.MembershipClaimBenefitResponse
 import com.tokopedia.shop.common.graphql.data.stampprogress.MembershipStampProgress
 import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.GetMembershipUseCaseNew
-import com.tokopedia.shop.newproduct.utils.mapper.ShopPageProductListMapper
-import com.tokopedia.shop.newproduct.view.datamodel.ShopProductEtalaseListViewModel
-import com.tokopedia.shop.newproduct.view.datamodel.ShopProductFeaturedViewModel
 import com.tokopedia.shop.product.data.model.ShopFeaturedProduct
 import com.tokopedia.shop.product.data.model.ShopProduct
 import com.tokopedia.shop.product.domain.interactor.GqlGetShopProductUseCase
+import com.tokopedia.shop.product.utils.mapper.ShopPageProductListMapper
+import com.tokopedia.shop.product.view.datamodel.ShopProductEtalaseListViewModel
+import com.tokopedia.shop.product.view.datamodel.ShopProductFeaturedViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import io.mockk.*
+import io.mockk.coEvery
+import io.mockk.coVerify
+import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Test
 import org.mockito.ArgumentMatchers.*
-import java.lang.Exception
 
 @ExperimentalCoroutinesApi
 class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture() {

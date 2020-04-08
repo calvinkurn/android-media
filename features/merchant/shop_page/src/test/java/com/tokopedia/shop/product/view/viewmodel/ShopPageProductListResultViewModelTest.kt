@@ -1,17 +1,15 @@
 package com.tokopedia.shop.product.view.viewmodel
 
-import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.product.data.model.ShopProduct
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
 import io.mockk.coVerify
-import io.mockk.mockkObject
-import io.mockk.verify
-import org.junit.Assert.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
+import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.mockito.ArgumentMatchers.*
 
@@ -35,8 +33,7 @@ class ShopPageProductListResultViewModelTest : ShopPageProductListViewModelTestF
             coEvery { getShopInfoUseCase.executeOnBackground() } throws Exception()
 
             viewModelShopPageProductListResultViewModel.getShop(anyString(), anyString(), anyBoolean())
-
-            verify { GQLGetShopInfoUseCase.createParams(anyList(), anyString())  }
+            Thread.sleep(3000L)
 
             verifyGetShopInfoUseCaseCalled()
             assertTrue(viewModelShopPageProductListResultViewModel.shopInfoResp.value is Fail)
