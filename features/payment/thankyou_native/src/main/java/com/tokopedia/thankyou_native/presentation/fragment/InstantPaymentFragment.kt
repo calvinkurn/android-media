@@ -118,7 +118,7 @@ class InstantPaymentFragment : ThankYouBaseFragment() {
     private fun checkCreditCardRegisteredForRBA(context: Context) {
         if (::dialogUnify.isInitialized)
             dialogUnify.cancel()
-        if (thanksPageData.whitelistedRBA)
+        if (!thanksPageData.whitelistedRBA)
             dialogUnify = DialogUnify(context = context, actionType = DialogUnify.HORIZONTAL_ACTION,
                     imageType = DialogUnify.NO_IMAGE).apply {
                 setTitle(getString(R.string.thank_single_authentication))
