@@ -54,6 +54,7 @@ class InactiveOvoFragment : BaseDaggerFragment() {
                 btn_topup_activation.setOnClickListener {
                     tracking.eventClickActivationOvoNow(productId, userSession.userId)
                     RouteManager.route(this, registerApplink)
+                    this.finish()
                 }
 
                 btn_learn_more.setOnClickListener {
