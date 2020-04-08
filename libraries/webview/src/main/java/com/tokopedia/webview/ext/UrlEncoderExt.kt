@@ -28,5 +28,5 @@ fun String.decode(): String {
 }
 
 fun String.isUrlEncoded() : Boolean {
-    return contains("%2F") || contains("%3F")
+    return contains("%2F") || contains("%252F")
 }
