@@ -11,6 +11,7 @@ import android.os.Build
 import android.text.TextUtils
 import android.util.AttributeSet
 import android.view.View
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.asynclayoutinflater.view.AsyncLayoutInflater
 import androidx.asynclayoutinflater.view.AsyncLayoutInflater.OnInflateFinishedListener
@@ -52,6 +53,8 @@ class HomeMainToolbar : MainToolbar, CoroutineScope {
 
     private lateinit var inboxBitmapGrey: Drawable
 
+    private lateinit var searchMagnifierIcon: Drawable
+
     private lateinit var afterInflationCallable: Callable<Any?>
 
     private var viewHomeMainToolBar: View? = null
@@ -73,6 +76,7 @@ class HomeMainToolbar : MainToolbar, CoroutineScope {
             val result = initializeinBackground()
             result.await()
             setImageDrawables()
+            findViewById<ImageView>(R.id.search_magnify_icon).setImageDrawable(searchMagnifierIcon)
             //..........
         }
     }
@@ -89,6 +93,7 @@ class HomeMainToolbar : MainToolbar, CoroutineScope {
         wishlistBitmapWhite = getBitmapDrawableFromVectorDrawable(context, R.drawable.ic_searchbar_wishlist_white)
         notifBitmapWhite = getBitmapDrawableFromVectorDrawable(context, R.drawable.ic_system_action_notification_pressed_24)
         inboxBitmapWhite = getBitmapDrawableFromVectorDrawable(context, R.drawable.ic_searchbar_inbox_white)
+        searchMagnifierIcon = getBitmapDrawableFromVectorDrawable(context, R.drawable.ic_search_bar)
 
         wishlistBitmapGrey = getBitmapDrawableFromVectorDrawable(context, R.drawable.ic_searchbar_wishlist_grey)
         notifBitmapGrey = getBitmapDrawableFromVectorDrawable(context, R.drawable.ic_system_action_notification_normal_24)
