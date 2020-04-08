@@ -180,6 +180,9 @@ ext {
     ]
 
     miscDependencies = [
+            javaPoet              : 'com.squareup:javapoet:1.11.1',
+            autoService           : "com.google.auto.service:auto-service:1.0-rc6",
+            kotlinPoet            : "com.squareup:kotlinpoet:1.4.3",
             scannerZxing          : "com.journeyapps:zxing-android-embedded:3.5.0",
             facebook              : "com.facebook.android:facebook-android-sdk:4.26.0",
             parcelerApi           : "org.parceler:parceler-api:1.1.12",
@@ -214,6 +217,10 @@ ext {
             coroutineAndroid      : "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutineVersion",
             coroutineTest         : "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutineVersion",
             guava                 : "com.google.guava:guava:$guavaVersion",
+            guava24               : 'com.google.guava:guava:24.1-jre',
+            incap                 : "net.ltgt.gradle.incap:incap:0.2",
+            incapProcessor        : "net.ltgt.gradle.incap:incap-processor:0.2"
+
             viewModel             : "androidx.lifecycle:lifecycle-viewmodel:$lifeCycleVersion",
             viewModelKtx          : "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifeCycleVersion",
             exoPlayerCore         : "com.google.android.exoplayer:exoplayer-core:$exoPlayerVersion",
