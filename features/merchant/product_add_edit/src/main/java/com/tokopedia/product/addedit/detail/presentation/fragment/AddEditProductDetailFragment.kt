@@ -8,7 +8,6 @@ import android.text.Editable
 import android.text.InputType
 import android.text.TextUtils
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -68,6 +67,7 @@ import com.tokopedia.product.addedit.optionpicker.OptionPicker
 import com.tokopedia.product.manage.common.draft.data.model.ProductDraft
 import com.tokopedia.product.addedit.shipment.presentation.model.ShipmentInputModel
 import com.tokopedia.product.addedit.tracking.ProductAddMainTracking
+import com.tokopedia.product.addedit.tracking.ProductAddStepperTracking
 import com.tokopedia.product.addedit.tracking.ProductEditMainTracking
 import com.tokopedia.product_photo_adapter.PhotoItemTouchHelperCallback
 import com.tokopedia.product_photo_adapter.ProductPhotoAdapter
@@ -635,6 +635,14 @@ class AddEditProductDetailFragment(private val initialSelectedImagePathList: Arr
         priceField?.setError(errorMessage.isNotEmpty())
         priceField?.setMessage(errorMessage)
         updateWholeSaleErrorCounter(viewModel, productWholeSaleInputFormsView)
+    }
+
+    fun onCtaYesPressed() {
+        ProductAddStepperTracking.trackDraftYes(shopId)
+    }
+
+    fun onCtaNoPressed() {
+        ProductAddStepperTracking.trackDraftCancel(shopId)
     }
 
     fun onBackPressed() {

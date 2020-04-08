@@ -59,6 +59,7 @@ import com.tokopedia.product.addedit.shipment.presentation.model.ShipmentInputMo
 import com.tokopedia.product.addedit.tooltip.model.NumericTooltipModel
 import com.tokopedia.product.addedit.tooltip.presentation.TooltipBottomSheet
 import com.tokopedia.product.addedit.tracking.ProductAddDescriptionTracking
+import com.tokopedia.product.addedit.tracking.ProductAddStepperTracking
 import com.tokopedia.product.addedit.tracking.ProductEditDescriptionTracking
 import com.tokopedia.product.manage.common.draft.data.model.ProductDraft
 import com.tokopedia.product.manage.common.draft.data.model.description.VideoLinkListModel
@@ -224,6 +225,14 @@ class AddEditProductDescriptionFragment:
         }
 
         observeProductVariant()
+    }
+
+    fun onCtaYesPressed() {
+        ProductAddStepperTracking.trackDraftYes(shopId)
+    }
+
+    fun onCtaNoPressed() {
+        ProductAddStepperTracking.trackDraftCancel(shopId)
     }
 
     fun onBackPressed() {

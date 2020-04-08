@@ -27,6 +27,7 @@ import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProdu
 import com.tokopedia.product.addedit.shipment.presentation.model.ShipmentInputModel
 import com.tokopedia.product.addedit.shipment.presentation.viewmodel.AddEditProductShipmentViewModel
 import com.tokopedia.product.addedit.tracking.ProductAddShippingTracking
+import com.tokopedia.product.addedit.tracking.ProductAddStepperTracking
 import com.tokopedia.product.manage.common.draft.data.model.ProductDraft
 import com.tokopedia.product.addedit.tracking.ProductEditShippingTracking
 import com.tokopedia.unifycomponents.TextFieldUnify
@@ -134,6 +135,14 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
                 ProductAddShippingTracking.clickInsurance(shopId)
             }
         }
+    }
+
+    fun onCtaYesPressed() {
+        ProductAddStepperTracking.trackDraftYes(shopId)
+    }
+
+    fun onCtaNoPressed() {
+        ProductAddStepperTracking.trackDraftCancel(shopId)
     }
 
     fun onBackPressed() {
