@@ -9,6 +9,7 @@ import com.tokopedia.purchase_platform.R
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.OrderSummaryPageFragment
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.model.OrderCost
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.bottom_sheet_order_price_summary.view.*
 
 class OrderPriceSummaryBottomSheet {
@@ -55,7 +56,7 @@ class OrderPriceSummaryBottomSheet {
             tvTotalShippingDiscountValue.gone()
             tvTotalShippingDiscountLabel.gone()
         } else {
-            tvTotalShippingPriceValue.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(orderCost.shippingFee - orderCost.shippingDiscountAmount, false)
+            tvTotalShippingPriceValue.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(orderCost.shippingFee, false)
             if (orderCost.shippingDiscountAmount > 0) {
                 tvTotalShippingDiscountValue.text = "-${CurrencyFormatUtil.convertPriceValueToIdrFormat(orderCost.shippingDiscountAmount, false)}"
                 tvTotalShippingDiscountValue.visible()
@@ -90,17 +91,20 @@ class OrderPriceSummaryBottomSheet {
 
         child.tv_total_payment_price_value.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(orderCost.totalPrice, false)
 
-        val tvTotalCashbackValue = child.tv_total_cashback_value
-        val tvTotalCashbackLabel = child.tv_total_cashback_label
+        val llCashback = child.ll_cashback
         val divider2 = child.divider2
-        if (orderCost.cashbackAmount > 0) {
-            tvTotalCashbackValue.text = CurrencyFormatUtil.convertPriceValue(orderCost.cashbackAmount.toDouble(), false)
-            tvTotalCashbackValue.visible()
-            tvTotalCashbackLabel.visible()
-            divider2.visible()
+        if (orderCost.cashbacks.isNotEmpty()) {
+            llCashback.removeAllViews()
+            for (cashback in orderCost.cashbacks) {
+                val view = View.inflate(child.context, R.layout.item_cashback_detail, null)
+                view.findViewById<Typography>(R.id.tv_total_cashback_label).text = cashback.first
+                view.findViewById<Typography>(R.id.tv_total_cashback_value).text = cashback.second
+                llCashback.addView(view)
+                llCashback.visible()
+                divider2.visible()
+            }
         } else {
-            tvTotalCashbackValue.gone()
-            tvTotalCashbackLabel.gone()
+            llCashback.gone()
             divider2.gone()
         }
     }

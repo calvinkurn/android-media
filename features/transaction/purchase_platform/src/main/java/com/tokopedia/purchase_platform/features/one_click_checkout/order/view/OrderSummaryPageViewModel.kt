@@ -1236,7 +1236,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
             val fee = _orderPreference?.preference?.payment?.fee?.toDouble() ?: 0.0
             var productDiscount = 0
             var shippingDiscount = 0
-            var cashback = 0
+            val cashbacks = ArrayList<Pair<String, String>>()
             val summaries = validateUsePromoRevampUiModel?.promoUiModel?.benefitSummaryInfoUiModel?.summaries
                     ?: emptyList()
             for (summary in summaries) {
@@ -1249,14 +1249,16 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                         }
                     }
                 } else if (summary.type == SummariesUiModel.TYPE_CASHBACK) {
-                    cashback = summary.amount
+                    for (detail in summary.details) {
+                        cashbacks.add(detail.description to detail.amountStr)
+                    }
                 }
             }
             val finalShippingPrice = max(totalShippingPrice - shippingDiscount, 0.0)
             val subtotal = totalProductPrice + finalShippingPrice + insurancePrice + fee - productDiscount
             val minimumAmount = _orderPreference?.preference?.payment?.minimumAmount ?: 0
             val maximumAmount = _orderPreference?.preference?.payment?.maximumAmount ?: 0
-            val orderCost = OrderCost(subtotal, totalProductPrice, totalShippingPrice, insurancePrice, fee, shippingDiscount, productDiscount, cashback)
+            val orderCost = OrderCost(subtotal, totalProductPrice, totalShippingPrice, insurancePrice, fee, shippingDiscount, productDiscount, cashbacks)
             var currentState = orderTotal.value?.buttonState ?: ButtonBayarState.NORMAL
             if (currentState == ButtonBayarState.NORMAL && (!shipping?.serviceErrorMessage.isNullOrEmpty() || quantity.isStateError || orderShop.errors.isNotEmpty())) {
                 currentState = ButtonBayarState.DISABLE

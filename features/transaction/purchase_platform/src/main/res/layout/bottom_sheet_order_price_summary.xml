@@ -275,36 +275,14 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_total_payment_price_value" />
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_total_cashback_label"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/ll_cashback"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_16"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginTop="@dimen/dp_12"
-        android:text="@string/label_cashback_ovo_points"
-        android:textColor="@color/Neutral_N700_96"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/divider2"
-        app:typographyType="body_3"
-        app:typographyWeight="reguler" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_total_cashback_value"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_16"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginTop="@dimen/dp_12"
-        android:layout_marginEnd="@dimen/dp_16"
-        android:layout_marginRight="@dimen/dp_16"
-        android:gravity="end"
-        android:textColor="@color/Neutral_N700_96"
+        android:orientation="vertical"
+        android:paddingTop="@dimen/dp_6"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/tv_total_cashback_label"
-        app:layout_constraintTop_toBottomOf="@+id/divider2"
-        app:typographyType="body_3"
-        app:typographyWeight="bold"
-        tools:text="Rp 100.000.000" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/divider2" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
