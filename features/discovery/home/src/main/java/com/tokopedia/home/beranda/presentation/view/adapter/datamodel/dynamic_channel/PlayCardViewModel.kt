@@ -97,10 +97,10 @@ data class PlayCardViewModel(
     }
 
 
-    fun getEnhanceImpressionPlayBanner(isToIris: Boolean = false): Map<String, Any> {
+    fun getEnhanceImpressionPlayBanner(): Map<String, Any> {
         val list: List<Any> = convertPromoEnhancePlayBanner(playCardHome)
         return DataLayer.mapOf(
-                "event", if (isToIris) "promoViewIris" else "promoView",
+                "event", "promoView",
                 "eventCategory", "homepage-cmp",
                 "eventAction", "impression on play dynamic banner",
                 "eventLabel", "Play-CMP_OTHERS_${playCardHome?.slug} - ${playCardHome?.channelId} - ${getLiveOrVod(playCardHome?.videoStream?.isLive)}",
@@ -114,10 +114,10 @@ data class PlayCardViewModel(
         )
     }
 
-    fun getEnhanceImpressionIrisPlayBanner(isToIris: Boolean = false): Map<String, Any> {
+    fun getEnhanceImpressionIrisPlayBanner(): Map<String, Any> {
         val list: List<Any> = convertPromoEnhancePlayBanner(playCardHome)
         return DataLayer.mapOf(
-                "event", if (isToIris) "promoViewIris" else "promoView",
+                "event", "promoViewIris" ,
                 "eventCategory", "homepage-cmp",
                 "eventAction", "impression on play dynamic banner",
                 "channelId", playCardHome?.channelId,
