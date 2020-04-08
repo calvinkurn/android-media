@@ -268,7 +268,8 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
 
     override fun sendClickShowcase(dataShowcase: ShowcaseItem, position: Int) {
         tracking?.clickEtalase(shopId, shopType, dataShowcase.name)
-        gotoShowcaseResultPage(dataShowcase.id, shopId)
+        val showcaseId = if (dataShowcase.type == ShowcaseType.GENERATED) dataShowcase.alias else dataShowcase.id
+        gotoShowcaseResultPage(showcaseId, shopId)
     }
 
     override fun onSuccessUpdateShowcase() {
