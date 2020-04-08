@@ -24,10 +24,7 @@ import com.tokopedia.play.view.wrapper.PlayResult
 import com.tokopedia.play_common.player.PlayVideoManager
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import io.mockk.coEvery
-import io.mockk.coVerify
-import io.mockk.every
-import io.mockk.mockk
+import io.mockk.*
 import org.assertj.core.api.Assertions
 import org.junit.After
 import org.junit.Before
@@ -756,6 +753,21 @@ class PlayViewModelTest {
         Assertions
                 .assertThat(playViewModel.observableBottomInsetsState.getOrAwaitValue()[BottomInsetsType.ProductSheet]?.isShown)
                 .isEqualTo(false)
+    }
+    //endregion
+
+    //region video
+    @Test
+    fun `when channel is active, then video should be configured`() {
+        coEvery { mockGetChannelInfoUseCase.executeOnBackground() } returns mockChannel.copy(
+                isActive = true
+        )
+
+        playViewModel.getChannelInfo(mockChannel.channelId)
+
+        verify(exactly = 1) {
+            mockPlayVideoManager.setRepeatMode(false)
+        }
     }
     //endregion
 

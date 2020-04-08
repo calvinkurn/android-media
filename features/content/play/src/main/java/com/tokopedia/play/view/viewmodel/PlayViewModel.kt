@@ -369,16 +369,15 @@ class PlayViewModel @Inject constructor(
     private fun initiateVideo(channel: Channel) {
         startVideoWithUrlString(
                 channel.videoStream.config.streamUrl,
-                channel.videoStream.isLive,
                 bufferControl = channel.videoStream.bufferControl?.let { mapBufferControl(it) }
                         ?: PlayBufferControl()
         )
         playVideoManager.setRepeatMode(false)
     }
 
-    private fun startVideoWithUrlString(urlString: String, isLive: Boolean, bufferControl: PlayBufferControl) {
+    private fun startVideoWithUrlString(urlString: String, bufferControl: PlayBufferControl) {
         try {
-            playVideoManager.safePlayVideoWithUri(Uri.parse(urlString), isLive, bufferControl)
+            playVideoManager.safePlayVideoWithUri(uri = Uri.parse(urlString), bufferControl = bufferControl)
         } catch (e: Exception) {}
     }
 
