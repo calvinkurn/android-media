@@ -48,6 +48,7 @@ import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
 import com.tokopedia.abstraction.common.utils.view.RefreshHandler;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.design.component.Dialog;
 import com.tokopedia.design.component.ToasterError;
@@ -114,12 +115,12 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
     public static final String STATUS_CODE_400 = "400";
     public static final String STATUS_CODE_11 = "11";
     private static final String CLICK_REQUEST_CANCEL = "click request cancel";
-    private static final String CLICK_TRACK= "click track";
+    private static final String CLICK_TRACK = "click track";
     private static final String CLICK_ASK_SELLER = "click ask seller";
     private static final String CLICK_ASK_SELLER_CANCELATION = "click ask seller - cancelation";
     private static final String CLICK_KEMBALI = "click kembali - cancelation";
-    private static final String  CLICK_SUBMIT_CANCELATION = "click submit cancelation";
-    private static final String CLICK_VIEW_COMPLAIN ="click view complain";
+    private static final String CLICK_SUBMIT_CANCELATION = "click submit cancelation";
+    private static final String CLICK_VIEW_COMPLAIN = "click view complain";
     private static final String TOTAL_SHIPPING_PRICE = "Total Ongkos Kirim";
     private static final String CLICK_LIHAT_PRODUK_SERUPA_LEVEL_ORDER = "click lihat produk serupa - order";
 
@@ -393,7 +394,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
 
     @Override
     public void setAdditionalTickerInfo(List<AdditionalTickerInfo> tickerInfos, @Nullable String url) {
-        if (getContext()!= null && tickerInfos.size() > 0) {
+        if (getContext() != null && tickerInfos.size() > 0) {
             mTickerInfos.setTickerTitle(tickerInfos.get(0).getTitle());
             mTickerInfos.setHtmlDescription(tickerInfos.get(0).getNotes());
             mTickerInfos.setVisibility(View.VISIBLE);
@@ -593,7 +594,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                 }
             }
             actionBtnLayout.addView(textView);
-            if(!stickyButtonAdded){
+            if (!stickyButtonAdded) {
                 //Cant add the same textview as it has a parent already so making a new instance of the textview and adding it for the sticky
                 TextView stickyTextView = new TextView(getContext());
                 stickyTextView.setText(actionButton.getLabel());
@@ -867,14 +868,8 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
         spannableString.setSpan(new ClickableSpan() {
             @Override
             public void onClick(View view) {
-                try {
-                    orderListAnalytics.sendHelpEventData(status.status());
-                    startActivity(((UnifiedOrderListRouter) getActivity()
-                            .getApplication()).getWebviewActivityWithIntent(getContext(),
-                            URLEncoder.encode(helpLink, ORDER_LIST_URL_ENCODING)));
-                } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
-                }
+                orderListAnalytics.sendHelpEventData(status.status());
+                RouteManager.route(getActivity(), ApplinkConstInternalGlobal.WEBVIEW, helpLink);
             }
 
             @Override
@@ -939,13 +934,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
     private View.OnClickListener getActionButtonClickListener(final String uri) {
         return view -> {
             if (uri != null && !uri.equals("")) {
-                try {
-                    startActivity(((UnifiedOrderListRouter) getActivity()
-                            .getApplication()).getWebviewActivityWithIntent(getContext(),
-                            URLEncoder.encode(uri, ORDER_LIST_URL_ENCODING)));
-                } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
-                }
+                RouteManager.route(getActivity(), ApplinkConstInternalGlobal.WEBVIEW, uri);
             }
         };
     }
