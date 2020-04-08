@@ -27,6 +27,7 @@ import com.tokopedia.base.list.seller.view.old.NoResultDataBinder;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant;
 import com.tokopedia.product.manage.item.common.di.component.ProductComponent;
 import com.tokopedia.product.manage.item.imagepicker.imagepickerbuilder.AddProductImagePickerBuilder;
 import com.tokopedia.product.manage.item.main.base.view.service.UploadProductService;
@@ -60,8 +61,6 @@ public class ProductDraftListFragment extends BaseListFragment<BlankPresenter, P
 
     public static final int REQUEST_CODE_ADD_IMAGE = 9001;
     public static final int INSTAGRAM_SELECT_REQUEST_CODE = 9002;
-
-    private static final String EXTRA_PRODUCT_ID = "PRODUCT_ID";
 
     @Inject
     ProductDraftListPresenter productDraftListPresenter;
@@ -200,7 +199,7 @@ public class ProductDraftListFragment extends BaseListFragment<BlankPresenter, P
     @Override
     public void onItemClicked(ProductDraftViewModel productDraftViewModel) {
         Intent intent = RouteManager.getIntent(getContext(), ApplinkConstInternalMechant.MERCHANT_OPEN_DRAFT);
-        intent.putExtra(EXTRA_PRODUCT_ID, productDraftViewModel.getProductDraftId() + "");
+        intent.putExtra(AddEditProductUploadConstant.EXTRA_PRODUCT_DRAFT_ID, productDraftViewModel.getProductDraftId() + "");
         eventDraftProductClicked(AppEventTracking.EventLabel.EDIT_DRAFT);
         startActivity(intent);
     }
