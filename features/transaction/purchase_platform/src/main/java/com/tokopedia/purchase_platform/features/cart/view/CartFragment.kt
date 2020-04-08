@@ -1812,7 +1812,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                             uniqueId = cartString,
                             product_details = listProductDetail,
                             codes = shop.promoCodes?.toMutableList() ?: mutableListOf(),
-                            isChecked = if (listProductDetail.isNotEmpty()) true else false)
+                            isChecked = listProductDetail.isNotEmpty())
                     listOrder.add(order)
                 }
             }
@@ -2714,10 +2714,10 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     override fun updateCartCounter(counter: Int) {
-        val cache = LocalCacheHandler(context, CartConstant.CART);
+        val cache = LocalCacheHandler(context, CartConstant.CART)
         cache.putInt(CartConstant.IS_HAS_CART, if (counter > 0) 1 else 0)
-        cache.putInt(CartConstant.CACHE_TOTAL_CART, counter);
-        cache.applyEditor();
+        cache.putInt(CartConstant.CACHE_TOTAL_CART, counter)
+        cache.applyEditor()
     }
 
     override fun onGetCompositeSubscriber(): CompositeSubscription {
