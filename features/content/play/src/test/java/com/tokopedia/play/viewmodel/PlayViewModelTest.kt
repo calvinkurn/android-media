@@ -191,49 +191,46 @@ class PlayViewModelTest {
                 .isEqualTo(expectedModel)
     }
 
-    @Nested
-    @DisplayName("Type of Partner Info")
-    inner class TypeOfPartnerInfo {
+    //region partner info
+    @Test
+    fun `when partner type is admin, then partner info should be of type admin`() {
+        val expectedModel = PartnerInfoUiModel(
+                id = mockChannel.partnerId,
+                name = mockChannel.moderatorName,
+                type = PartnerType.ADMIN,
+                isFollowed = true,
+                isFollowable = false
+        )
 
-        @Test
-        fun `test observe partner info when partner type is admin`() {
-            val expectedModel = PartnerInfoUiModel(
-                    id = mockChannel.partnerId,
-                    name = mockChannel.moderatorName,
-                    type = PartnerType.ADMIN,
-                    isFollowed = true,
-                    isFollowable = false
-            )
+        playViewModel.getChannelInfo(mockChannel.channelId)
 
-            playViewModel.getChannelInfo(mockChannel.channelId)
-
-            Assertions
-                    .assertThat(playViewModel.observablePartnerInfo.getOrAwaitValue())
-                    .isEqualTo(expectedModel)
-        }
-
-        @Test
-        fun `test observe partner info when partner type is shop owner`() {
-            val mockChannel = modelBuilder.buildChannelWithShop()
-
-            coEvery { mockGetChannelInfoUseCase.executeOnBackground() } returns mockChannel
-            coEvery { userSession.shopId } returns mockChannel.partnerId.toString()
-
-            val expectedModel = PartnerInfoUiModel(
-                    id = mockShopInfo.shopCore.shopId.toLong(),
-                    name = mockShopInfo.shopCore.name,
-                    type = PartnerType.SHOP,
-                    isFollowed = mockShopInfo.favoriteData.alreadyFavorited == 1,
-                    isFollowable = userSession.shopId != mockShopInfo.shopCore.shopId
-            )
-
-            playViewModel.getChannelInfo(mockChannel.channelId)
-
-            Assertions
-                    .assertThat(playViewModel.observablePartnerInfo.getOrAwaitValue())
-                    .isEqualTo(expectedModel)
-        }
+        Assertions
+                .assertThat(playViewModel.observablePartnerInfo.getOrAwaitValue())
+                .isEqualTo(expectedModel)
     }
+
+    @Test
+    fun `when partner type is not admin, then partner info should match the channel info partner type`() {
+        val mockChannel = modelBuilder.buildChannelWithShop()
+
+        coEvery { mockGetChannelInfoUseCase.executeOnBackground() } returns mockChannel
+        coEvery { userSession.shopId } returns mockChannel.partnerId.toString()
+
+        val expectedModel = PartnerInfoUiModel(
+                id = mockShopInfo.shopCore.shopId.toLong(),
+                name = mockShopInfo.shopCore.name,
+                type = PartnerType.SHOP,
+                isFollowed = mockShopInfo.favoriteData.alreadyFavorited == 1,
+                isFollowable = userSession.shopId != mockShopInfo.shopCore.shopId
+        )
+
+        playViewModel.getChannelInfo(mockChannel.channelId)
+
+        Assertions
+                .assertThat(playViewModel.observablePartnerInfo.getOrAwaitValue())
+                .isEqualTo(expectedModel)
+    }
+    //endregion
 
     @Test
     fun `test observe badge cart`() {
@@ -353,8 +350,9 @@ class PlayViewModelTest {
                 .isEqualTo(expectedModel)
     }
 
+    //region like count
     @Test
-    fun `test change like count`() {
+    fun `given current like count is number only, when like count is added, then it should plus the like count by 1`() {
         val expectedModel = TotalLikeUiModel(
                 totalLike = mockTotalLike.totalLike + 1,
                 totalLikeFormatted = (mockTotalLike.totalLike + 1).toString()
@@ -367,6 +365,100 @@ class PlayViewModelTest {
                 .assertThat(playViewModel.observableTotalLikes.getOrAwaitValue())
                 .isEqualTo(expectedModel)
     }
+
+    @Test
+    fun `given current like count is null, when like count is added, then it should be 1`() {
+        coEvery { mockGetTotalLikeUseCase.executeOnBackground() } throws Exception()
+
+        val expectedModel = TotalLikeUiModel(
+                totalLike = 1,
+                totalLikeFormatted = 1.toString()
+        )
+
+        playViewModel.getChannelInfo(mockChannel.channelId)
+        playViewModel.changeLikeCount(true)
+
+        Assertions
+                .assertThat(playViewModel.observableTotalLikes.getOrAwaitValue())
+                .isEqualTo(expectedModel)
+    }
+
+    @Test
+    fun `given current like count contains string, when like count is added, then it should stay the same`() {
+        val likeWithString = mockTotalLike.copy(
+                totalLike = 1500,
+                totalLikeFormatted = "1.5k"
+        )
+
+        coEvery { mockGetTotalLikeUseCase.executeOnBackground() } returns likeWithString
+
+        val expectedModel = TotalLikeUiModel(
+                totalLike = likeWithString.totalLike,
+                totalLikeFormatted = likeWithString.totalLikeFormatted
+        )
+
+        playViewModel.getChannelInfo(mockChannel.channelId)
+        playViewModel.changeLikeCount(true)
+
+        Assertions
+                .assertThat(playViewModel.observableTotalLikes.getOrAwaitValue())
+                .isEqualTo(expectedModel)
+    }
+
+    @Test
+    fun `given current like count is number only, when like count is reduced, then it should reduce the like count by 1`() {
+        val expectedModel = TotalLikeUiModel(
+                totalLike = mockTotalLike.totalLike - 1,
+                totalLikeFormatted = (mockTotalLike.totalLike - 1).toString()
+        )
+
+        playViewModel.getChannelInfo(mockChannel.channelId)
+        playViewModel.changeLikeCount(false)
+
+        Assertions
+                .assertThat(playViewModel.observableTotalLikes.getOrAwaitValue())
+                .isEqualTo(expectedModel)
+    }
+
+    @Test
+    fun `given current like count is null, when like count is reduced, then it should be 0`() {
+        coEvery { mockGetTotalLikeUseCase.executeOnBackground() } throws Exception()
+
+        val expectedModel = TotalLikeUiModel(
+                totalLike = 0,
+                totalLikeFormatted = 0.toString()
+        )
+
+        playViewModel.getChannelInfo(mockChannel.channelId)
+        playViewModel.changeLikeCount(false)
+
+        Assertions
+                .assertThat(playViewModel.observableTotalLikes.getOrAwaitValue())
+                .isEqualTo(expectedModel)
+    }
+
+    @Test
+    fun `given current like count contains string, when like count is reduced, then it should stay the same`() {
+        val likeWithString = mockTotalLike.copy(
+                totalLike = 1500,
+                totalLikeFormatted = "1.5k"
+        )
+
+        coEvery { mockGetTotalLikeUseCase.executeOnBackground() } returns likeWithString
+
+        val expectedModel = TotalLikeUiModel(
+                totalLike = likeWithString.totalLike,
+                totalLikeFormatted = likeWithString.totalLikeFormatted
+        )
+
+        playViewModel.getChannelInfo(mockChannel.channelId)
+        playViewModel.changeLikeCount(false)
+
+        Assertions
+                .assertThat(playViewModel.observableTotalLikes.getOrAwaitValue())
+                .isEqualTo(expectedModel)
+    }
+    //endregion
 
     @Test
     fun `test observe quick reply`() {
@@ -733,7 +825,7 @@ class PlayViewModelTest {
     fun `given product sheet and variant sheet is shown respectively, when back button is clicked, then variant sheet should be hidden`() {
         playViewModel.onShowProductSheet(123)
         playViewModel.onShowVariantSheet(123, modelBuilder.buildProductLineUiModel(), ProductAction.Buy)
-        playViewModel.onBackPressed()
+        val isHandled = playViewModel.onBackPressed()
 
         Assertions
                 .assertThat(playViewModel.observableBottomInsetsState.getOrAwaitValue()[BottomInsetsType.VariantSheet]?.isShown)
@@ -743,15 +835,57 @@ class PlayViewModelTest {
                 .assertThat(playViewModel.observableBottomInsetsState.getOrAwaitValue()[BottomInsetsType.ProductSheet]?.isShown)
                 .isEqualTo(true)
 
+        Assertions
+                .assertThat(isHandled)
+                .isEqualTo(true)
     }
 
     @Test
     fun `given product sheet is shown, when back button is clicked, then product sheet should be hidden`() {
         playViewModel.onShowProductSheet(123)
-        playViewModel.onBackPressed()
+        val isHandled = playViewModel.onBackPressed()
 
         Assertions
                 .assertThat(playViewModel.observableBottomInsetsState.getOrAwaitValue()[BottomInsetsType.ProductSheet]?.isShown)
+                .isEqualTo(false)
+
+        Assertions
+                .assertThat(isHandled)
+                .isEqualTo(true)
+    }
+
+    @Test
+    fun `given keyboard is shown, when back button is clicked, then keyboard should be hidden`() {
+        coEvery { mockGetChannelInfoUseCase.executeOnBackground() } returns mockChannel.copy(
+                videoStream = mockChannel.videoStream.copy(
+                        isLive = PlayChannelType.Live.isLive,
+                        type = PlayChannelType.Live.value
+                )
+        )
+
+        playViewModel.getChannelInfo(mockChannel.channelId)
+        playViewModel.onKeyboardShown(123)
+        val isHandled = playViewModel.onBackPressed()
+
+        Assertions
+                .assertThat(playViewModel.observableBottomInsetsState.getOrAwaitValue()[BottomInsetsType.Keyboard]?.isShown)
+                .isEqualTo(false)
+
+        Assertions
+                .assertThat(isHandled)
+                .isEqualTo(true)
+    }
+
+    @Test
+    fun `given no insets is shown, when back button is clicked, then it should return unhandled`() {
+        playViewModel.onKeyboardHidden()
+        playViewModel.onHideProductSheet()
+        playViewModel.onHideVariantSheet()
+
+        val isHandled = playViewModel.onBackPressed()
+
+        Assertions
+                .assertThat(isHandled)
                 .isEqualTo(false)
     }
     //endregion
@@ -768,6 +902,63 @@ class PlayViewModelTest {
         verify(exactly = 1) {
             mockPlayVideoManager.setRepeatMode(false)
         }
+    }
+
+    @Test
+    fun `when channel is not active, then video should not be configured`() {
+        coEvery { mockGetChannelInfoUseCase.executeOnBackground() } returns mockChannel.copy(
+                isActive = false
+        )
+
+        playViewModel.getChannelInfo(mockChannel.channelId)
+
+        verify(exactly = 0) {
+            mockPlayVideoManager.setRepeatMode(false)
+        }
+    }
+    //endregion
+
+    //region bottom insets
+    @Test
+    fun `when hide all insets and keyboard is handled, keyboard should be hidden but same with previous state`() {
+        coEvery { mockGetChannelInfoUseCase.executeOnBackground() } returns mockChannel.copy(
+                videoStream = mockChannel.videoStream.copy(
+                        isLive = PlayChannelType.Live.isLive,
+                        type = PlayChannelType.Live.value
+                )
+        )
+
+        playViewModel.getChannelInfo(mockChannel.channelId)
+        playViewModel.onKeyboardShown(123)
+
+        playViewModel.hideInsets(true)
+
+        val expectedResult = modelBuilder.buildBottomInsetsState(isShown = false, isPreviousSameState = true)
+
+        Assertions
+                .assertThat(playViewModel.observableBottomInsetsState.value?.get(BottomInsetsType.Keyboard))
+                .isEqualTo(expectedResult)
+    }
+
+    @Test
+    fun `when hide all insets and keyboard is not handled, keyboard should be hidden with different previous state`() {
+        coEvery { mockGetChannelInfoUseCase.executeOnBackground() } returns mockChannel.copy(
+                videoStream = mockChannel.videoStream.copy(
+                        isLive = PlayChannelType.Live.isLive,
+                        type = PlayChannelType.Live.value
+                )
+        )
+
+        playViewModel.getChannelInfo(mockChannel.channelId)
+        playViewModel.onKeyboardShown(123)
+
+        playViewModel.hideInsets(false)
+
+        val expectedResult = modelBuilder.buildBottomInsetsState(isShown = false, isPreviousSameState = false)
+
+        Assertions
+                .assertThat(playViewModel.observableBottomInsetsState.value?.get(BottomInsetsType.Keyboard))
+                .isEqualTo(expectedResult)
     }
     //endregion
 

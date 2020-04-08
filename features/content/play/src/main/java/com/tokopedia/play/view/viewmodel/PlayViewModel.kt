@@ -139,12 +139,6 @@ class PlayViewModel @Inject constructor(
             )
         }
 
-    val isAnyBottomSheetShown: Boolean
-        get() = _observableBottomInsetsState.value?.isAnyBottomSheetsShown == true
-
-    val isKeyboardShown: Boolean
-        get() = _observableBottomInsetsState.value?.isKeyboardShown == true
-
     private val isProductSheetInitialized: Boolean
         get() = _observableProductSheetContent.value != null
 
