@@ -229,7 +229,7 @@ class HomeVisitableFactoryImpl(val userSessionInterface: UserSessionInterface) :
                             trackingData = ProductHighlightTracking.getProductHighlightImpression(channel)) }
                 DynamicHomeChannel.Channels.LAYOUT_POPULAR_KEYWORD -> {createPopularKeywordChannel(channel = channel)}
                 DynamicHomeChannel.Channels.LAYOUT_DEFAULT_ERROR -> { createDynamicChannel(channel = channel) }
-                DynamicHomeChannel.Channels.LAYOUT_REVIEW -> { createReviewWidget() }
+                DynamicHomeChannel.Channels.LAYOUT_REVIEW -> { createReviewWidget(channel = channel) }
                 DynamicHomeChannel.Channels.LAYOUT_PLAY_BANNER -> { createPlayWidget(channel) }
                 DynamicHomeChannel.Channels.LAYOUT_MIX_TOP -> { createDynamicChannel(
                         channel,
@@ -329,8 +329,8 @@ class HomeVisitableFactoryImpl(val userSessionInterface: UserSessionInterface) :
         }
     }
 
-    private fun createReviewWidget() {
-        if (!isCache) visitableList.add(ReviewViewModel())
+    private fun createReviewWidget(channel: DynamicHomeChannel.Channels) {
+        if (!isCache) visitableList.add(ReviewViewModel(channel = channel))
     }
 
     private fun createDynamicTopAds(channel: DynamicHomeChannel.Channels) {

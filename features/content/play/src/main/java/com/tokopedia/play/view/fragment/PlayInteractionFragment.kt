@@ -511,7 +511,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
                     .collect {
                         when (it) {
                             is PinnedInteractionEvent.PinnedMessageClicked -> {
-                                PlayAnalytics.clickPinnedMessage(channelId, it.message, playViewModel.channelType)
+                                PlayAnalytics.clickPinnedMessage(channelId, it.message, it.applink, playViewModel.channelType)
                                 openPageByApplink(it.applink)
                             }
                             PinnedInteractionEvent.PinnedProductClicked -> {

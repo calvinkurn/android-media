@@ -139,9 +139,15 @@ final class ProductListPresenter
     }
 
     private boolean getIsUseRatingString() {
-        return getView().getABTestRemoteConfig()
-                .getString(AB_TEST_KEY_COMMA_VS_FULL_STAR, AB_TEST_VARIANT_FULL_STAR)
-                .equals(AB_TEST_VARIANT_COMMA_STAR);
+        try {
+            return getView().getABTestRemoteConfig()
+                    .getString(AB_TEST_KEY_COMMA_VS_FULL_STAR, AB_TEST_VARIANT_FULL_STAR)
+                    .equals(AB_TEST_VARIANT_COMMA_STAR);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     @Override
@@ -902,7 +908,7 @@ final class ProductListPresenter
                     continue;
                 }
 
-                if (data.getPosition() <= getView().getLastProductItemPositionFromCache()) {
+                if (data.getPosition() <= productList.size()) {
                     try {
                         Visitable product = productList.get(data.getPosition() - 1);
                         list.add(list.indexOf(product) + 1, data);
@@ -1197,6 +1203,31 @@ final class ProductListPresenter
     private void handleWishlistNonRecommendationProductWithNotLoggedInUser(ProductCardOptionsModel productCardOptionsModel) {
         getView().trackWishlistProduct(createWishlistTrackingModel(productCardOptionsModel, !productCardOptionsModel.isWishlisted()));
         getView().launchLoginActivity(productCardOptionsModel.getProductId());
+    }
+
+    @Override
+    public void onProductImpressed(ProductItemViewModel item, int adapterPosition) {
+        if (getView() == null || item == null) return;
+
+        if (item.isTopAds()) {
+            getView().sendTopAdsTrackingUrl(item.getTopadsImpressionUrl());
+            getView().sendTopAdsGTMTrackingProductImpression(item, adapterPosition);
+        }
+    }
+
+    @Override
+    public void onProductClick(ProductItemViewModel item, int adapterPosition) {
+        if (getView() == null || item == null) return;
+
+        if (item.isTopAds()) {
+            getView().sendTopAdsTrackingUrl(item.getTopadsClickUrl());
+            getView().sendTopAdsGTMTrackingProductClick(item, adapterPosition);
+        }
+        else {
+            getView().sendGTMTrackingProductClick(item, adapterPosition, getUserId());
+        }
+
+        getView().routeToProductDetail(item, adapterPosition);
     }
 
     @Override
