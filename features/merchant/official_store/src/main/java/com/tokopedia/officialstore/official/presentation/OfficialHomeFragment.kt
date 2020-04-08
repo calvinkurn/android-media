@@ -26,8 +26,8 @@ import com.tokopedia.discovery.common.manager.handleProductCardOptionsActivityRe
 import com.tokopedia.discovery.common.manager.showProductCardOptions
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
-import com.tokopedia.navigation_common.listener.JankyFramesMonitoringListener
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.navigation_common.listener.JankyFramesMonitoringListener
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.officialstore.FirebasePerformanceMonitoringConstant
 import com.tokopedia.officialstore.OfficialStoreInstance
@@ -61,8 +61,7 @@ class OfficialHomeFragment :
         HasComponent<OfficialStoreHomeComponent>,
         RecommendationListener,
         FeaturedShopListener,
-        DynamicChannelEventHandler
-{
+        DynamicChannelEventHandler {
 
     companion object {
         const val PRODUCT_RECOMM_GRID_SPAN_COUNT = 2
@@ -397,12 +396,11 @@ class OfficialHomeFragment :
         }
 
         handleProductCardOptionsActivityResult(
-                requestCode, resultCode, data, object: ProductCardOptionsWishlistCallback {
-                    override fun onReceiveWishlistResult(productCardOptionsModel: ProductCardOptionsModel) {
-                        handleWishlistAction(productCardOptionsModel)
-                    }
-                }
-        )
+                requestCode, resultCode, data, object : ProductCardOptionsWishlistCallback {
+            override fun onReceiveWishlistResult(productCardOptionsModel: ProductCardOptionsModel) {
+                handleWishlistAction(productCardOptionsModel)
+            }
+        })
     }
 
     private fun handleWishlistAction(productCardOptionsModel: ProductCardOptionsModel) {
@@ -639,8 +637,8 @@ class OfficialHomeFragment :
                         viewModel.currentSlug,
                         channelData.header?.name ?: "",
                         (position + 1).toString(10),
-                        it
-                )
+                        it,
+                        channelData.campaignID)
             }
 
             RouteManager.route(context, applink)
@@ -714,7 +712,8 @@ class OfficialHomeFragment :
                 shopData.additionalInformation.orEmpty(),
                 shopData.featuredBrandId.orEmpty(),
                 viewModel.isLoggedIn(),
-                shopData.shopId.orEmpty()
+                shopData.shopId.orEmpty(),
+                shopData.attribution.orEmpty()
         )
         RouteManager.route(context, shopData.url)
     }
