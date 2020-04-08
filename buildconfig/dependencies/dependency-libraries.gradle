@@ -87,6 +87,7 @@ ext {
             translator              : ":libraries:translator",
             traceroute              : ":libraries:traceroute",
             imagePreviewSlider      : ":libraries:imagepreviewslider",
-            tokofix                 : ":libraries:tokofix"
+            tokofix                 : ":libraries:tokofix",
+            analyticAnnotationCentral   : ":libraries:annotation_proc_central"
     ]
 }
