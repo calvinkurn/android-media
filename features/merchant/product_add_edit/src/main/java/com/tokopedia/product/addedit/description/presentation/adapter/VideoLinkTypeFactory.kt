@@ -50,7 +50,7 @@ class VideoLinkTypeFactory: BaseAdapterTypeFactory(){
                 requestFocus()
                 placeCursorToEnd()
             }
-            loadLayout(element.inputUrl, element.inputImage, element.inputTitle, element.inputDescription)
+            loadLayout(element.inputImage, element.inputTitle, element.inputDescription, element.errorMessage)
 
             itemView.textFieldUrl.getSecondIcon().setOnClickListener {
                 itemView.textFieldUrl.clearFocus()
@@ -59,15 +59,22 @@ class VideoLinkTypeFactory: BaseAdapterTypeFactory(){
 
         }
 
-        private fun loadLayout(url: String,
-                               imageUrl: String,
+        private fun loadLayout(imageUrl: String,
                                inputTitle: String,
-                               inputDescription: String) {
+                               inputDescription: String,
+                               errorMessage: String) {
             itemView.apply {
-                cardThumbnail.visibility = if (url.isEmpty()) View.GONE else View.VISIBLE
+                cardThumbnail.visibility = if (inputTitle.isEmpty()) View.GONE else View.VISIBLE
                 imgThumbnail.urlSrc = imageUrl
                 tvVideoTitle.text = inputTitle
                 tvVideoSubtitle.text = inputDescription
+                if (errorMessage.isNotEmpty()) {
+                    textFieldUrl.setError(true)
+                    textFieldUrl.setMessage(errorMessage)
+                } else {
+                    textFieldUrl.setError(false)
+                    textFieldUrl.setMessage("")
+                }
             }
         }
 

@@ -246,17 +246,22 @@ class AddEditProductDescriptionFragment:
                         adapter.data[positionVideoChanged].inputTitle = ""
                         adapter.data[positionVideoChanged].inputDescription = ""
                         adapter.data[positionVideoChanged].inputImage = ""
+                        adapter.data[positionVideoChanged].errorMessage = getString(R.string.error_video_not_valid)
                     } else {
                         adapter.data[positionVideoChanged].inputTitle = result.data.title.orEmpty()
                         adapter.data[positionVideoChanged].inputDescription = result.data.description.orEmpty()
                         adapter.data[positionVideoChanged].inputImage = result.data.thumbnailUrl.orEmpty()
+                        adapter.data[positionVideoChanged].errorMessage = ""
                     }
-                    adapter.notifyItemChanged(positionVideoChanged)
                 }
                 is Fail -> {
-                    showVariantErrorToast(getString(R.string.title_tooltip_description_tips))
+                    adapter.data[positionVideoChanged].inputTitle = ""
+                    adapter.data[positionVideoChanged].inputDescription = ""
+                    adapter.data[positionVideoChanged].inputImage = ""
+                    adapter.data[positionVideoChanged].errorMessage = getString(R.string.error_video_not_valid)
                 }
             }
+            adapter.notifyItemChanged(positionVideoChanged)
         })
     }
 

@@ -10,6 +10,7 @@ data class VideoLinkModel(
         var inputUrl : String = "",
         var inputTitle : String = "",
         var inputDescription : String = "",
-        var inputImage : String = "") : Visitable<VideoLinkTypeFactory>, Parcelable {
+        var inputImage : String = "",
+        var errorMessage : String = "") : Visitable<VideoLinkTypeFactory>, Parcelable {
     override fun type(typeFactory: VideoLinkTypeFactory): Int = typeFactory.type(this)
 }

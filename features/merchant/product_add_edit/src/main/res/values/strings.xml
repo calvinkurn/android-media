@@ -122,6 +122,7 @@
     <string name="label_video_url_placeholder">Link Video</string>
     <string name="action_add_video">+ Tambah video</string>
     <string name="action_next_button">Lanjut</string>
+    <string name="error_video_not_valid">Pastikan link Youtube kamu benar</string>
 
     <!--Tooltip wording-->
     <string name="title_tooltip_photo_tips">Tips memilih foto produk</string>

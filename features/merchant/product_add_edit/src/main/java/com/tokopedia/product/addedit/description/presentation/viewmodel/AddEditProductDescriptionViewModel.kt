@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.addedit.description.data.remote.model.variantbycat.ProductVariantByCatModel
 import com.tokopedia.product.addedit.description.domain.usecase.GetProductVariantUseCase
 import com.tokopedia.product.addedit.description.domain.usecase.GetYoutubeVideoUseCase
@@ -53,11 +54,13 @@ class AddEditProductDescriptionViewModel @Inject constructor(
 
     fun getVideoYoutube(videoUrl: String) {
         launchCatchError( block = {
-            getYoutubeVideoUseCase.setVideoId(getIdYoutubeUrl(videoUrl))
-            val result = withContext(Dispatchers.IO) {
-                convertToYoutubeResponse(getYoutubeVideoUseCase.executeOnBackground())
+            getIdYoutubeUrl(videoUrl)?.let { youtubeId  ->
+                getYoutubeVideoUseCase.setVideoId(youtubeId)
+                val result = withContext(Dispatchers.IO) {
+                    convertToYoutubeResponse(getYoutubeVideoUseCase.executeOnBackground())
+                }
+                _videoYoutube.value = Success(result)
             }
-            _videoYoutube.value = Success(result)
         }, onError = {
             _videoYoutube.value = Fail(it)
         })
@@ -67,17 +70,27 @@ class AddEditProductDescriptionViewModel @Inject constructor(
         return typeRestResponseMap[YoutubeVideoModel::class.java]?.getData() as YoutubeVideoModel
     }
 
-    fun getIdYoutubeUrl(videoUrl: String): String {
+    private fun getIdYoutubeUrl(videoUrl: String): String? {
         return try {
-            val uri = Uri.parse(videoUrl)
-            uri.getQueryParameter(KEY_YOUTUBE_VIDEO_ID) ?: ""
+            // add https:// prefix to videoUrl
+            val webVideoUrl =
+                    if (videoUrl.startsWith(WEB_PREFIX_HTTP) ||
+                            videoUrl.startsWith(WEB_PREFIX_HTTPS)) videoUrl else WEB_YOUTUBE_PREFIX + videoUrl
+            val uri = Uri.parse(webVideoUrl)
+            when {
+                uri.host == "youtu.be" -> uri.lastPathSegment
+                uri.host == "www.youtube.com" -> uri.getQueryParameter(KEY_YOUTUBE_VIDEO_ID)
+                else -> throw MessageErrorException("")
+            }
         } catch (e: NullPointerException) {
-            e.printStackTrace()
-            ""
+            throw MessageErrorException(e.message)
         }
     }
 
     companion object {
         const val KEY_YOUTUBE_VIDEO_ID = "v"
+        const val WEB_PREFIX_HTTP = "http://"
+        const val WEB_PREFIX_HTTPS = "https://"
+        const val WEB_YOUTUBE_PREFIX = "https://"
     }
 }
