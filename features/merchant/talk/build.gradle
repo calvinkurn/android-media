@@ -53,7 +53,7 @@ dependencies {
 
 project.ext {
     artifactId = 'talk'
-    groupId = 'com.tokopedia.user'
+    groupId = 'com.tokopedia.merchant'
     versionName = "0.0.2"
     artifactName = "talk-release"
 }

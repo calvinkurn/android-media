@@ -85,6 +85,7 @@ dependencies {
     //Merchant
     implementation project(rootProject.ext.features.report)
     implementation project(rootProject.ext.features.shopOpen)
+    implementation project(rootProject.ext.features.talk)
     //Operational
     implementation project(rootProject.ext.features.contactUs)
     implementation project(rootProject.ext.features.chatbot)
@@ -109,7 +110,6 @@ dependencies {
     implementation project(rootProject.ext.features.kyccentralized)
     implementation project(rootProject.ext.features.loginfingerprint)
     implementation project(rootProject.ext.features.notifCenter)
-    implementation project(rootProject.ext.features.talk)
     implementation project(rootProject.ext.features.attachvoucher)
     implementation project(rootProject.ext.features.topchat)
     //Entertainment
