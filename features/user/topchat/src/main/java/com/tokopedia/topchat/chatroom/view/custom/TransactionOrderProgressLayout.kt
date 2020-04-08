@@ -9,12 +9,11 @@ import android.widget.LinearLayout
 import androidx.annotation.RequiresApi
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.showWithCondition
-import com.tokopedia.kotlin.extensions.view.toPx
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.domain.pojo.orderprogress.ChatOrderProgress
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 
 class TransactionOrderProgressLayout : LinearLayout {
@@ -26,6 +25,7 @@ class TransactionOrderProgressLayout : LinearLayout {
     private var productName: Typography? = null
     private var estimateTitle: Typography? = null
     private var estimateValue: Typography? = null
+    private var actionBtn: UnifyButton? = null
 
     private var chatOrder: ChatOrderProgress = ChatOrderProgress()
     private var state: String = stateOpen
@@ -54,6 +54,7 @@ class TransactionOrderProgressLayout : LinearLayout {
         productName = findViewById(R.id.tp_order_name)
         estimateTitle = findViewById(R.id.tp_estimate_label)
         estimateValue = findViewById(R.id.tp_estimate_value)
+        actionBtn = findViewById(R.id.btn_action_label)
     }
 
     fun render(chatOrder: ChatOrderProgress) {
@@ -98,6 +99,7 @@ class TransactionOrderProgressLayout : LinearLayout {
             renderImageThumbnail()
             renderProductName()
             renderEstimation()
+            renderActionButton()
         } else {
             // TODO: impl this
         }
@@ -178,6 +180,15 @@ class TransactionOrderProgressLayout : LinearLayout {
     private fun renderEstimation() {
         estimateTitle?.text = chatOrder.label.title
         estimateValue?.text = chatOrder.label.value
+    }
+
+    private fun renderActionButton() {
+        actionBtn?.shouldShowWithAction(chatOrder.hasActionButton) {
+            actionBtn?.text = chatOrder.button.label
+            actionBtn?.setOnClickListener {
+                RouteManager.route(context, chatOrder.button.uri)
+            }
+        }
     }
 
     companion object {

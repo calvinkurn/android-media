@@ -28,4 +28,6 @@ data class ChatOrderProgress(
         val statusId: Int = 0,
         @SerializedName("uri")
         val uri: String = ""
-)
+) {
+        val hasActionButton: Boolean get() = button.key.isNotEmpty()
+}
