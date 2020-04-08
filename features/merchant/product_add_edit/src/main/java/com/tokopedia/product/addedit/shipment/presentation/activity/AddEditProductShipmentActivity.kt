@@ -11,22 +11,22 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant
+import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.shipment.di.AddEditProductShipmentComponent
 import com.tokopedia.product.addedit.shipment.di.AddEditProductShipmentModule
 import com.tokopedia.product.addedit.shipment.di.DaggerAddEditProductShipmentComponent
 import com.tokopedia.product.addedit.shipment.presentation.fragment.AddEditProductShipmentFragment
 import com.tokopedia.product.addedit.shipment.presentation.model.ShipmentInputModel
-import com.tokopedia.product.manage.common.draft.data.model.ProductDraft
 
 class AddEditProductShipmentActivity : BaseSimpleActivity(), HasComponent<AddEditProductShipmentComponent> {
 
     override fun getNewFragment(): Fragment {
         val shipmentInputModel:ShipmentInputModel? = intent.getParcelableExtra(PARAM_SHIPMENT_INPUT_MODEL)
-        val productDraft: ProductDraft = intent.getParcelableExtra(AddEditProductUploadConstant.EXTRA_PRODUCT_DRAFT)
+        val productInputModel: ProductInputModel = intent.getParcelableExtra(AddEditProductUploadConstant.EXTRA_PRODUCT_INPUT_MODEL)
         shipmentInputModel?.run {
             return AddEditProductShipmentFragment.createInstanceEditMode(this)
         }
-        return AddEditProductShipmentFragment.createInstance(productDraft)
+        return AddEditProductShipmentFragment.createInstance(productInputModel)
     }
 
     override fun getComponent(): AddEditProductShipmentComponent {

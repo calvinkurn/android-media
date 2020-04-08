@@ -11,13 +11,15 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.kotlin.extensions.view.afterTextChanged
 import com.tokopedia.product.addedit.R
-import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_PRODUCT_DRAFT
+import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_PRODUCT_INPUT_MODEL
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_SHIPMENT_INPUT
 import com.tokopedia.product.addedit.common.util.getText
 import com.tokopedia.product.addedit.common.util.getTextIntOrZero
 import com.tokopedia.product.addedit.common.util.setModeToNumberInput
 import com.tokopedia.product.addedit.common.util.setText
+import com.tokopedia.product.addedit.detail.presentation.mapper.mapProductInputModelDetailToDraft
 import com.tokopedia.product.addedit.optionpicker.OptionPicker
+import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.shipment.di.AddEditProductShipmentComponent
 import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.MAX_WEIGHT_GRAM
 import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.MAX_WEIGHT_KILOGRAM
@@ -28,7 +30,6 @@ import com.tokopedia.product.addedit.shipment.presentation.model.ShipmentInputMo
 import com.tokopedia.product.addedit.shipment.presentation.viewmodel.AddEditProductShipmentViewModel
 import com.tokopedia.product.addedit.tracking.ProductAddShippingTracking
 import com.tokopedia.product.addedit.tracking.ProductAddStepperTracking
-import com.tokopedia.product.manage.common.draft.data.model.ProductDraft
 import com.tokopedia.product.addedit.tracking.ProductEditShippingTracking
 import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.unifycomponents.UnifyButton
@@ -42,7 +43,7 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
     private var tfWeightUnit: TextFieldUnify? = null
     private var switchInsurance: SwitchUnify? = null
     private var btnEnd: UnifyButton? = null
-    private var productDraft: ProductDraft? = null
+    private var productInputModel: ProductInputModel? = null
     private var btnSave: UnifyButton? = null
     private var selectedWeightPosition: Int = 0
 
@@ -53,10 +54,10 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
     lateinit var shipmentViewModel: AddEditProductShipmentViewModel
 
     companion object {
-        fun createInstance(productDraft: ProductDraft): Fragment {
+        fun createInstance(productInputModel: ProductInputModel): Fragment {
             return AddEditProductShipmentFragment().apply {
                 arguments = Bundle().apply {
-                    putParcelable(EXTRA_PRODUCT_DRAFT, productDraft)
+                    putParcelable(EXTRA_PRODUCT_INPUT_MODEL, productInputModel)
                 }
             }
         }
@@ -96,7 +97,7 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
         arguments?.run {
             val shipmentInputModel: ShipmentInputModel = getParcelable(EXTRA_SHIPMENT_INPUT_MODEL) ?: ShipmentInputModel()
             val isEditMode = getBoolean(EXTRA_IS_EDITMODE, false)
-            productDraft = getParcelable(EXTRA_PRODUCT_DRAFT) ?: ProductDraft()
+            productInputModel = getParcelable(EXTRA_PRODUCT_INPUT_MODEL) ?: ProductInputModel()
             shipmentViewModel.shipmentInputModel = shipmentInputModel
             shipmentViewModel.isEditMode = isEditMode
         }
@@ -160,12 +161,12 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
 
     fun saveProductDraft(isUploading: Boolean) {
         inputAllDataInInputDraftModel()
-        productDraft?.let { shipmentViewModel.saveProductDraft(it, it.draftId,isUploading) }
+        productInputModel?.let { shipmentViewModel.saveProductDraft(mapProductInputModelDetailToDraft(it), it.draftId,isUploading) }
         Toast.makeText(context, R.string.label_succes_save_draft, Toast.LENGTH_LONG).show()
     }
 
     private fun inputAllDataInInputDraftModel() {
-        productDraft?.shipmentInputModel?.apply {
+        productInputModel?.shipmentInputModel?.apply {
             isMustInsurance = switchInsurance?.isChecked == true
             weight = tfWeightAmount.getTextIntOrZero()
             weightUnit = selectedWeightPosition

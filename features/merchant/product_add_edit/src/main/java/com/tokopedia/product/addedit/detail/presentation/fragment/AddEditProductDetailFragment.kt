@@ -43,6 +43,7 @@ import com.tokopedia.product.addedit.description.presentation.model.ProductVaria
 import com.tokopedia.product.addedit.detail.di.AddEditProductDetailComponent
 import com.tokopedia.product.addedit.detail.presentation.adapter.NameRecommendationAdapter
 import com.tokopedia.product.addedit.detail.presentation.adapter.WholeSalePriceInputAdapter
+import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.CATEGORY_RESULT_ID
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.CATEGORY_RESULT_NAME
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.CONDITION_NEW
@@ -54,6 +55,7 @@ import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProduct
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.UNIT_DAY
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.UNIT_WEEK
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.USED_PRODUCT_INDEX
+import com.tokopedia.product.addedit.detail.presentation.mapper.mapProductInputModelDetailToDraft
 import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.PreorderInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.WholeSaleInputModel
@@ -65,7 +67,6 @@ import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProduc
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_IS_EDITING_PRODUCT
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_PRODUCT_INPUT_MODEL
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
-import com.tokopedia.product.manage.common.draft.data.model.ProductDraft
 import com.tokopedia.product.addedit.shipment.presentation.model.ShipmentInputModel
 import com.tokopedia.product.addedit.tracking.ProductAddMainTracking
 import com.tokopedia.product.addedit.tracking.ProductAddStepperTracking
@@ -83,7 +84,6 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.fragment_add_edit_product_description.*
 import java.text.NumberFormat
 import java.util.*
 import javax.inject.Inject
@@ -116,7 +116,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     @Inject
     lateinit var viewModel: AddEditProductDetailViewModel
 
-    private val productDraft = ProductDraft()
+    private val productInputModel = ProductInputModel()
 
     private var productPhotoPaths = mutableListOf<String>()
 
@@ -670,7 +670,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                     val selectedCategory = ArrayList<ListItemUnify>()
                     selectedCategory.add(ListItemUnify(categoryName, ""))
                     productCategoryRecListView?.setData(selectedCategory)
-                    productDraft.detailInputModel.categoryName = categoryName
+                    productInputModel.detailInputModel.categoryName = categoryName
                 }
                 REQUEST_CODE_DESCRIPTION -> {
                     val shipmentInputModel =
@@ -755,31 +755,26 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     }
 
     fun saveProductDraft(isUploading: Boolean) {
-        inputAllDataInInputDraftModel()
-        viewModel.saveProductDraft(productDraft, productDraft.draftId, isUploading)
+        inputAllDataInProductInputModel()
+        viewModel.saveProductDraft(mapProductInputModelDetailToDraft(productInputModel), productInputModel.draftId, isUploading)
         Toast.makeText(context, R.string.label_succes_save_draft, Toast.LENGTH_LONG).show()
     }
 
-    private fun inputAllDataInInputDraftModel() {
-        productDraft.detailInputModel.productName = productNameField.getText()
-        productDraft.detailInputModel.categoryId = viewModel.selectedCategoryId
-        productDraft.detailInputModel.price = productPriceField.getTextFloatOrZero()
-        productDraft.detailInputModel.stock = productStockField.getTextIntOrZero()
-        productDraft.detailInputModel.minOrder = productMinOrderField.getTextIntOrZero()
-        productDraft.detailInputModel.condition = if (isProductConditionNew) CONDITION_NEW else CONDITION_USED
-        productDraft.detailInputModel.sku = productSkuField.getText()
-        productDraft.detailInputModel.imageUrlOrPathList = productPhotoPaths
-        productDraft.detailInputModel.preorder.apply {
+    private fun inputAllDataInProductInputModel() {
+        productInputModel.detailInputModel.productName = productNameField.getText()
+        productInputModel.detailInputModel.categoryId = viewModel.selectedCategoryId
+        productInputModel.detailInputModel.price = productPriceField.getTextLongOrZero()
+        productInputModel.detailInputModel.stock = productStockField.getTextIntOrZero()
+        productInputModel.detailInputModel.minOrder = productMinOrderField.getTextIntOrZero()
+        productInputModel.detailInputModel.condition = if (isProductConditionNew) AddEditProductDetailConstants.CONDITION_NEW else AddEditProductDetailConstants.CONDITION_USED
+        productInputModel.detailInputModel.sku = productSkuField.getText()
+        productInputModel.detailInputModel.imageUrlOrPathList = productPhotoPaths
+        productInputModel.detailInputModel.preorder.apply {
             duration = preOrderDurationField.getTextIntOrZero()
             timeUnit = selectedDurationPosition
             isActive = preOrderSwitch?.isChecked ?: false
         }
-        getWholesaleInput().map { wholeSale ->
-            productDraft.detailInputModel.wholesaleList.map { wholeSaleDraft ->
-                wholeSaleDraft.price = wholeSale.price
-                wholeSaleDraft.quantity = wholeSale.price
-            }
-        }
+        productInputModel.detailInputModel.wholesaleList = getWholesaleInput()
     }
 
     private fun updateWholeSaleErrorCounter(viewModel: AddEditProductDetailViewModel, wholesaleInputForms: RecyclerView?) {
@@ -1076,8 +1071,8 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             ProductAddMainTracking.clickContinue(shopId)
         }
         val categoryId = viewModel.selectedCategoryId
-        inputAllDataInInputDraftModel()
-        val intent = AddEditProductDescriptionActivity.createInstance(context, categoryId, productDraft)
+        inputAllDataInProductInputModel()
+        val intent = AddEditProductDescriptionActivity.createInstance(context, categoryId, productInputModel)
         startActivityForResult(intent, REQUEST_CODE_DESCRIPTION)
     }
 
