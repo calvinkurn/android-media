@@ -25,14 +25,11 @@ open class CategoryBrowseActivity : BaseSimpleActivity(), CategoryChangeListener
     private val trackingQueue: TrackingQueue by lazy {
         TrackingQueue(this)
     }
-    private var masterFragment = Fragment()
-    private var slaveFragment = Fragment()
-
-    private var deepLinkCategoryName: String? = "0"
-
+    private lateinit var masterFragment: Fragment
+    private lateinit var slaveFragment: Fragment
+    private var deepLinkCategoryName: String = "0"
     private var toolbarName = "Kategori"
     private lateinit var globalError: GlobalError
-
     private val EXTRA_CATEGORY_NAME = "CATEGORY_NAME"
 
     override fun getScreenName(): String = getString(R.string.belanja_screen_name)
@@ -43,8 +40,8 @@ open class CategoryBrowseActivity : BaseSimpleActivity(), CategoryChangeListener
 
     override fun onCreate(savedInstanceState: Bundle?) {
         val uri = intent.data
-        if (uri?.getQueryParameter(EXTRA_CATEGORY_NAME) != null) {
-            deepLinkCategoryName = uri.getQueryParameter(EXTRA_CATEGORY_NAME)
+        uri?.getQueryParameter(EXTRA_CATEGORY_NAME)?.let {
+            deepLinkCategoryName = it
         }
         super.onCreate(savedInstanceState)
         setupToolbar(toolbarName)
