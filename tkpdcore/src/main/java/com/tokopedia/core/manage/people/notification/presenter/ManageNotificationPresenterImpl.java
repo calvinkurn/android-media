@@ -111,7 +111,6 @@ public class ManageNotificationPresenterImpl implements ManageNotificationPresen
     }
 
     private void getNotificationSetting() {
-        //Current backend contract is still not fixed, will comment the snowSnackbar() method until backend completed
         networkInteractor.getNotificationSetting(viewListener.getActivity(),
                 getNotificationSettingParam(),
                 new ManageNotificationRetrofitInteractor.NotificationSettingListener() {
@@ -124,6 +123,8 @@ public class ManageNotificationPresenterImpl implements ManageNotificationPresen
 
                     @Override
                     public void onTimeout() {
+                        //Current backend contract is still not fixed, will comment the snowSnackbar() method until backend completed
+                        //For now, the request will always timeout
                         viewListener.finishLoading();
 //                        viewListener.showSnackbar();
                     }
@@ -131,7 +132,7 @@ public class ManageNotificationPresenterImpl implements ManageNotificationPresen
                     @Override
                     public void onError(String error) {
                         viewListener.finishLoading();
-//                        viewListener.showSnackbar(error);
+                        viewListener.showSnackbar(error);
                     }
 
                     @Override
@@ -142,7 +143,7 @@ public class ManageNotificationPresenterImpl implements ManageNotificationPresen
                     @Override
                     public void onNoNetworkConnection() {
                         viewListener.finishLoading();
-//                        viewListener.showSnackbar();
+                        viewListener.showSnackbar();
                     }
                 });
     }
