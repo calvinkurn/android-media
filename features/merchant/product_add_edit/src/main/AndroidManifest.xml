@@ -28,7 +28,21 @@
         <activity
             android:name=".detail.presentation.activity.AddEditProductDetailActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White" />
+            android:theme="@style/Theme.White" >
+
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_merchant"
+                    android:path="@string/path_open_draft"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+
+        </activity>
 
         <activity
             android:name=".description.presentation.activity.AddEditProductDescriptionActivity"
