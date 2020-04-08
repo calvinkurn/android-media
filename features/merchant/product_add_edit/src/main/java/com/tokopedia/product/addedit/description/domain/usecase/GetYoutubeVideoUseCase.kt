@@ -33,6 +33,7 @@ class GetYoutubeVideoUseCase @Inject constructor(
                 .setRequestType(RequestType.GET)
                 .build()
 
+        restRequestList.clear()
         restRequestList.add(restRequest)
 
         return repository.getResponses(restRequestList)
