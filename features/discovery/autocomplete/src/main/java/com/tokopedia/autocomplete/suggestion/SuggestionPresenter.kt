@@ -161,6 +161,9 @@ class SuggestionPresenter @Inject constructor() : BaseDaggerPresenter<Suggestion
             TYPE_PROFILE -> {
                 view?.trackEventClickProfile(getProfileEventLabelForTracking(item))
             }
+            TYPE_RECENT_KEYWORD -> {
+                view?.trackEventClickRecentKeyword(item.title)
+            }
         }
     }
 

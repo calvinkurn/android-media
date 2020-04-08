@@ -47,13 +47,16 @@ dependencies {
 
     //Libraries
     implementation project(rootProject.ext.libraries.fingerprint)
+    implementation project(rootProject.ext.libraries.tkpddesign)
     implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.linker)
+    implementation project(rootProject.ext.libraries.kotlinExtensions)
 
     //Unify Dependencies
-    implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.principles
+    implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.unifyDependencies.global_error
 
     //Tkpd Internal Libs Dependencies
     implementation rootProject.ext.tkpdInternalLibDependencies.graphql
@@ -69,6 +72,8 @@ dependencies {
     implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk8
 
     //Misc Dependencies
+    implementation rootProject.ext.miscDependencies.roundCornerProgressBar
+    implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.miscDependencies.lottie
@@ -89,7 +94,7 @@ dependencies {
 project.ext {
     artifactId = 'login-fingerprint'
     groupId = 'com.tokopedia.user'
-    versionName = "0.0.1"
+    versionName = "0.0.2"
     artifactName = "loginfingerprint-release"
 }
 

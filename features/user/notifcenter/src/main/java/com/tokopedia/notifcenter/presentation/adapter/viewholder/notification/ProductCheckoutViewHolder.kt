@@ -96,7 +96,6 @@ class ProductCheckoutViewHolder(
 
     override fun trackProduct(element: NotificationItemViewBean) {
         if (element.totalProduct == SINGLE_PRODUCT) {
-            productStockTracker.productCardClicked(element, element.userInfo.userId)
             listener.getAnalytic().trackSingleProductCheckoutCardClick(
                     notification = element
             )

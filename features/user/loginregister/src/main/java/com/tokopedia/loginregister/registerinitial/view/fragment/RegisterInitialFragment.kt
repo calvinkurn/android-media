@@ -1183,7 +1183,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
                     phoneNumbers.add(telephony.line1Number)
             }
 
-            if (phoneNumbers.isNotEmpty())
+            if (phoneNumbers.isNotEmpty() && activity != null)
                 partialRegisterInputView.setAdapterInputEmailPhone(ArrayAdapter(it, R.layout.select_dialog_item_material, phoneNumbers))
         }
     }

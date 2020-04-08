@@ -13,7 +13,8 @@ import com.tokopedia.graphql.data.model.GraphqlResponseInternal;
 import com.tokopedia.graphql.data.source.GraphqlDataStore;
 import com.tokopedia.graphql.data.source.cloud.api.GraphqlApi;
 
-import java.net.SocketTimeoutException;
+import java.io.InterruptedIOException;
+import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.List;
@@ -21,6 +22,7 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
+import okhttp3.internal.http2.ConnectionShutdownException;
 import rx.Observable;
 import timber.log.Timber;
 
@@ -62,7 +64,10 @@ public class GraphqlCloudDataStore implements GraphqlDataStore {
     public Observable<GraphqlResponseInternal> getResponse(List<GraphqlRequest> requests, GraphqlCacheStrategy cacheStrategy) {
         return getResponse(requests)
                 .doOnError(throwable -> {
-                    if (!(throwable instanceof UnknownHostException) && !(throwable instanceof SocketTimeoutException)) {
+                    if (!(throwable instanceof UnknownHostException) &&
+                            !(throwable instanceof SocketException) &&
+                            !(throwable instanceof InterruptedIOException) &&
+                            !(throwable instanceof ConnectionShutdownException)) {
                         Timber.e(throwable, "P1#REQUEST_ERROR_GQL#%s", requests.toString());
                     }
                 })

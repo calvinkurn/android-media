@@ -105,6 +105,15 @@ object ApplinkConstInternalMarketplace {
     @JvmField
     val SHOP_PAGE = "$INTERNAL_MARKETPLACE/shop-page/{shop_id}/"
 
+    @JvmField
+    val SHOP_PAGE_HOME = "$INTERNAL_MARKETPLACE/shop-page/{shop_id}/home"
+
+    @JvmField
+    val SHOP_PAGE_INFO = "$INTERNAL_MARKETPLACE/shop-page/{shop_id}/info"
+
+    @JvmField
+    val SHOP_PAGE_PRODUCT_LIST = "$INTERNAL_MARKETPLACE/shop-page-product-list/{shop_id}/etalase/{etalase_id}/"
+
     //ReviewShopInfoActiviy
     @JvmField
     val SHOP_REVIEW_APPLINK = "$INTERNAL_MARKETPLACE/shop/{shop_id}/review"
@@ -213,5 +222,8 @@ object ApplinkConstInternalMarketplace {
 
     @JvmField
     val PARAM_IS_NEED_LOC = "IS_NEED_LOC"
+
+    @JvmField
+    val PARAM_FIRST_CREATE_SHOP = "FIRST_CREATE_SHOP"
 
 }

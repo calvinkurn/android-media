@@ -2,7 +2,6 @@ package com.tokopedia.shop.home.view.model
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.shop.home.view.adapter.ShopHomeAdapterTypeFactory
-import com.tokopedia.shop.newproduct.view.adapter.ShopProductAdapterTypeFactory
 
 /**
  * Created by zulfikarrahman on 1/16/18.
