@@ -8,7 +8,7 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticFirebaseRules
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticParam
     kapt rootProject.ext.tkpdInternalLibDependencies.analyticProcessor
-    compileOnly "com.squareup:kotlinpoet:1.4.3"
-    implementation "org.jetbrains.kotlin:kotlin-reflect:1.3.60"
+    compileOnly rootProject.ext.miscDependencies.kotlinPoet
+    implementation rootProject.ext.supportLibDependencies.kotlinReflection
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
 }
