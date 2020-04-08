@@ -6,8 +6,8 @@ apply plugin: 'kotlin-kapt'
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
-    compileOnly 'com.squareup:javapoet:1.11.1'
+    implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk8
+    compileOnly rootProject.ext.miscDependencies.javaPoet
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticAnnotation
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticParam
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticProcessor
