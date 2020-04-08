@@ -448,7 +448,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
             affiliateAnalytics.onTambahTagButtonClicked()
         } else {
             view?.run {
-                Toaster.make(this@run, getString(R.string.string_attach_product_warning_max_product_format, viewModel.maxProduct.toString()), Snackbar.LENGTH_LONG,
+                Toaster.make(this, getString(R.string.string_attach_product_warning_max_product_format, viewModel.maxProduct.toString()), Snackbar.LENGTH_LONG,
                         Toaster.TYPE_ERROR, getString(R.string.general_label_ok))
             }
         }
@@ -686,7 +686,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
                 Toaster.make(v, message.toString(), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
             } else {
                 Toaster.apply {
-                    toastorCustomCtaWidth = resources.getDimension(R.dimen.dp_100).toPx().toInt()
+                    toasterCustomCtaWidth = resources.getDimension(R.dimen.dp_100).toPx().toInt()
                     make(v, message.toString(), Snackbar.LENGTH_LONG, TYPE_ERROR, action.toString(), View.OnClickListener {
                         actionClick?.invoke(it)
                     })
