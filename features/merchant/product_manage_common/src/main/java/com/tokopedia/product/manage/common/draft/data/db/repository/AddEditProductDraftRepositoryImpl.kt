@@ -16,7 +16,6 @@ class AddEditProductDraftRepositoryImpl @Inject constructor(
     override fun insertDraft(productDraft: ProductDraft, isUploading: Boolean): Long {
         val draftJson = AddEditProductDraftMapper.mapProductInputToJsonString(productDraft)
         val shopId = userSession.shopId
-        Log.d("Hello Success", draftJson)
         return draftDataSource.insertDraft(draftJson, isUploading, shopId)
     }
 

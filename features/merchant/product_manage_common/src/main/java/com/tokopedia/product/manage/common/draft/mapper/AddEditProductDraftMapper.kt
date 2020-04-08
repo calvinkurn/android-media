@@ -58,14 +58,12 @@ class AddEditProductDraftMapper {
                 completionCount++
             }
 
-            completionPercent = if (completionCount == MAX_COMPLETION_COUNT) {
-                MAX_COMPLETION_PERCENT
-            } else {
-                completionCount * 100 / MAX_COMPLETION_COUNT
-            }
+            completionPercent = (100 / 7) * completionCount
+
             if (completionPercent == 0) {
                 completionPercent = MIN_COMPLETION_PERCENT
-            }
+            } else if(completionPercent > MAX_COMPLETION_PERCENT)
+                completionPercent = MAX_COMPLETION_COUNT
 
             return completionPercent
         }

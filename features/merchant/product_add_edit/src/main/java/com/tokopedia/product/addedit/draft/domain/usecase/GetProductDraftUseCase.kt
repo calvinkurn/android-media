@@ -7,7 +7,7 @@ import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
-class FetchProductDraftUseCase @Inject constructor(
+class GetProductDraftUseCase @Inject constructor(
     private val draftRepository: AddEditProductDraftRepository
 ): UseCase<ProductDraft>() {
 
@@ -19,8 +19,10 @@ class FetchProductDraftUseCase @Inject constructor(
         }
     }
 
+    var params: RequestParams = RequestParams.EMPTY
+
     override suspend fun executeOnBackground(): ProductDraft {
-        val param = useCaseRequestParams.getLong(AddEditProductDraftConstant.DRAFT_PRODUCT_ID, Long.MIN_VALUE)
+        val param = params.getLong(AddEditProductDraftConstant.DRAFT_PRODUCT_ID, Long.MIN_VALUE)
         return draftRepository.getDraft(param)
     }
 }
