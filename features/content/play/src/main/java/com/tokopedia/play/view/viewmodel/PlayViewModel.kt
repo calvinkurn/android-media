@@ -377,7 +377,9 @@ class PlayViewModel @Inject constructor(
     }
 
     private fun startVideoWithUrlString(urlString: String, isLive: Boolean, bufferControl: PlayBufferControl) {
-        playVideoManager.safePlayVideoWithUri(Uri.parse(urlString), isLive, bufferControl)
+        try {
+            playVideoManager.safePlayVideoWithUri(Uri.parse(urlString), isLive, bufferControl)
+        } catch (e: Exception) {}
     }
 
     private fun playVideoStream(channel: Channel) {
@@ -533,12 +535,12 @@ class PlayViewModel @Inject constructor(
         }
     }
 
-    private fun getProductTagItems(channel: Channel) {
+    private suspend fun getProductTagItems(channel: Channel) {
         if (!isProductSheetInitialized) _observableProductSheetContent.value = PlayResult.Loading(
                 showPlaceholder = true
         )
 
-        launchCatchError(block = {
+        try {
             val productTagsItems = withContext(dispatchers.io) {
                 getProductTagItemsUseCase.params = GetProductTagItemsUseCase.createParam(channel.channelId)
                 getProductTagItemsUseCase.executeOnBackground()
@@ -548,9 +550,10 @@ class PlayViewModel @Inject constructor(
                             channel.pinnedProduct.titleBottomSheet,
                             productTagsItems)
             )
-        }) {
-            _observableProductSheetContent.value = PlayResult.Failure(it) {
-                getProductTagItems(channel)
+
+        } catch (e: Exception) {
+            _observableProductSheetContent.value = PlayResult.Failure(e) {
+                launch { if (channel.isShowProductTagging) getProductTagItems(channel) }
             }
         }
     }
@@ -562,7 +565,7 @@ class PlayViewModel @Inject constructor(
         }
     }
 
-    private fun startWebSocket(channelId: String, gcToken: String, settings: Channel.Settings) {
+    fun startWebSocket(channelId: String, gcToken: String, settings: Channel.Settings) {
         playSocket.channelId = channelId
         playSocket.gcToken = gcToken
         playSocket.settings = settings

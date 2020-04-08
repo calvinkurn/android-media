@@ -1,12 +1,13 @@
 package com.tokopedia.similarsearch.viewmodel
 
-import com.tokopedia.similarsearch.*
-import com.tokopedia.similarsearch.viewmodel.testinstance.getSimilarProductModelCommon
-import com.tokopedia.similarsearch.viewmodel.testinstance.getSimilarProductModelOriginalProductWishlisted
-import com.tokopedia.similarsearch.getsimilarproducts.GetSimilarProductsUseCase
+import com.tokopedia.similarsearch.SimilarSearchViewModel
+import com.tokopedia.similarsearch.getsimilarproducts.model.SimilarProductModel
 import com.tokopedia.similarsearch.testutils.InstantTaskExecutorRuleSpek
 import com.tokopedia.similarsearch.testutils.shouldBe
 import com.tokopedia.similarsearch.testutils.stubExecute
+import com.tokopedia.similarsearch.viewmodel.testinstance.getSimilarProductModelCommon
+import com.tokopedia.similarsearch.viewmodel.testinstance.getSimilarProductModelOriginalProductWishlisted
+import com.tokopedia.usecase.coroutines.UseCase
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
@@ -38,7 +39,7 @@ internal class HandleViewToggleWishlistOriginalProductTest: Spek({
             }
 
             Given("view already created and has similar search data") {
-                val getSimilarProductsUseCase by memoized<GetSimilarProductsUseCase>()
+                val getSimilarProductsUseCase by memoized<UseCase<SimilarProductModel>>()
                 getSimilarProductsUseCase.stubExecute().returns(similarProductModelCommon)
                 similarSearchViewModel.onViewCreated()
             }
@@ -69,7 +70,7 @@ internal class HandleViewToggleWishlistOriginalProductTest: Spek({
             }
 
             Given("view already created and has similar search data with original product not wishlisted") {
-                val getSimilarProductsUseCase by memoized<GetSimilarProductsUseCase>()
+                val getSimilarProductsUseCase by memoized<UseCase<SimilarProductModel>>()
                 getSimilarProductsUseCase.stubExecute().returns(similarProductModelCommon)
                 similarSearchViewModel.onViewCreated()
             }
@@ -107,7 +108,7 @@ internal class HandleViewToggleWishlistOriginalProductTest: Spek({
             }
 
             Given("view already created and has similar search data with original product wishlisted") {
-                val getSimilarProductsUseCase by memoized<GetSimilarProductsUseCase>()
+                val getSimilarProductsUseCase by memoized<UseCase<SimilarProductModel>>()
                 getSimilarProductsUseCase.stubExecute().returns(similarProductModelOriginalProductWishlisted)
                 similarSearchViewModel.onViewCreated()
             }
@@ -144,7 +145,7 @@ internal class HandleViewToggleWishlistOriginalProductTest: Spek({
             }
 
             Given("view already created and has similar search data with original product not wishlisted") {
-                val getSimilarProductsUseCase by memoized<GetSimilarProductsUseCase>()
+                val getSimilarProductsUseCase by memoized<UseCase<SimilarProductModel>>()
                 getSimilarProductsUseCase.stubExecute().returns(similarProductModelCommon)
                 similarSearchViewModel.onViewCreated()
             }
@@ -206,7 +207,7 @@ internal class HandleViewToggleWishlistOriginalProductTest: Spek({
             }
 
             Given("view already created and has similar search data with original product not wishlisted") {
-                val getSimilarProductsUseCase by memoized<GetSimilarProductsUseCase>()
+                val getSimilarProductsUseCase by memoized<UseCase<SimilarProductModel>>()
                 getSimilarProductsUseCase.stubExecute().returns(similarProductModelCommon)
                 similarSearchViewModel.onViewCreated()
             }
@@ -272,7 +273,7 @@ internal class HandleViewToggleWishlistOriginalProductTest: Spek({
             }
 
             Given("view already created and has similar search data with original product wishlisted") {
-                val getSimilarProductsUseCase by memoized<GetSimilarProductsUseCase>()
+                val getSimilarProductsUseCase by memoized<UseCase<SimilarProductModel>>()
                 getSimilarProductsUseCase.stubExecute().returns(similarProductModelOriginalProductWishlisted)
                 similarSearchViewModel.onViewCreated()
             }
@@ -334,7 +335,7 @@ internal class HandleViewToggleWishlistOriginalProductTest: Spek({
             }
 
             Given("view already created and has similar search data with original product wishlisted") {
-                val getSimilarProductsUseCase by memoized<GetSimilarProductsUseCase>()
+                val getSimilarProductsUseCase by memoized<UseCase<SimilarProductModel>>()
                 getSimilarProductsUseCase.stubExecute().returns(similarProductModelOriginalProductWishlisted)
                 similarSearchViewModel.onViewCreated()
             }

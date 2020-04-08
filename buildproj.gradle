@@ -51,7 +51,16 @@ afterEvaluate {
     }
 }
 
-configurations.all {
+subprojects {
+    tasks.withType(Test) {
+        if(project.hasProperty("SPEK_TIMEOUT")){
+            systemProperty "SPEK_TIMEOUT", project.getProperty("SPEK_TIMEOUT")
+        } else {
+            systemProperty "SPEK_TIMEOUT", 999999
+        }
+        maxParallelForks = Runtime.runtime.availableProcessors()
+    }
+    project.configurations.all {
     resolutionStrategy {
         dependencySubstitution {
             force "androidx.appcompat:appcompat:${supportLibraryVersion}"
@@ -80,11 +89,13 @@ configurations.all {
             substitute module('com.google.android.gms:play-services-measurement-base') with module("com.google.android.gms:play-services-measurement-base:${playServiceMeasurementBase}")
             substitute module('com.google.guava:guava') with module("com.google.guava:guava:${guavaVersion}")
             substitute module('com.facebook.soloader:soloader') with module("com.facebook.soloader:soloader:0.8.0")
+            substitute module('org.jetbrains.kotlin:kotlin-reflect') with module("org.jetbrains.kotlin:kotlin-reflect:${kotlinVersion}")
             if (!rootProject.ext.debugToolsEnabled) {
                 substitute module(rootProject.ext.debugToolsDependencies.chuck) with module(rootProject.ext.tkpdInternalLibDependencies.chuckNoOp)
             }
         }
     }
+}
 }
 
 gradle.buildFinished {

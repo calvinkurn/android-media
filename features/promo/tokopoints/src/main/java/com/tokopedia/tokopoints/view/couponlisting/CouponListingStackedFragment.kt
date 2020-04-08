@@ -23,7 +23,6 @@ import com.tokopedia.tokopoints.di.DaggerTokopointBundleComponent
 import com.tokopedia.tokopoints.di.TokopointsQueryModule
 import com.tokopedia.tokopoints.view.adapter.SpacesItemDecoration
 import com.tokopedia.tokopoints.view.cataloglisting.CatalogListingActivity
-import com.tokopedia.tokopoints.view.contract.CouponListingStackedContract
 import com.tokopedia.tokopoints.view.model.TokoPointPromosEntity
 import com.tokopedia.tokopoints.view.util.*
 import kotlinx.android.synthetic.main.tp_fragment_stacked_coupon_listing.*
