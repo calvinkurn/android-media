@@ -5,7 +5,8 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 data class VideoLinkListModel(
-        var inputId : Int = 0,
         var inputUrl : String = "",
+        var inputTitle : String = "",
+        var inputDescription : String = "",
         var inputImage : String = ""
 ): Parcelable
