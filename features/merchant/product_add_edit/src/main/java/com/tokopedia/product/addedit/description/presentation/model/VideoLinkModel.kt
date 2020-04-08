@@ -7,8 +7,9 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 data class VideoLinkModel(
-        var inputId : Int = 0,
         var inputUrl : String = "",
+        var inputTitle : String = "",
+        var inputDescription : String = "",
         var inputImage : String = "") : Visitable<VideoLinkTypeFactory>, Parcelable {
     override fun type(typeFactory: VideoLinkTypeFactory): Int = typeFactory.type(this)
 }

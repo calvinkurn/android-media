@@ -67,7 +67,7 @@ class AddEditProductDescriptionViewModel @Inject constructor(
         return typeRestResponseMap[YoutubeVideoModel::class.java]?.getData() as YoutubeVideoModel
     }
 
-    private fun getIdYoutubeUrl(videoUrl: String): String {
+    fun getIdYoutubeUrl(videoUrl: String): String {
         return try {
             val uri = Uri.parse(videoUrl)
             uri.getQueryParameter(KEY_YOUTUBE_VIDEO_ID) ?: ""

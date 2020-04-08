@@ -101,15 +101,11 @@ class AddEditProductDescriptionFragment:
 
         const val IS_ADD = 0
         const val REQUEST_CODE_DESCRIPTION = 0x03
-
-        // TODO faisalramd
-        const val TEST_IMAGE_URL = "https://ecs7.tokopedia.net/img/cache/700/product-1/2018/9/16/36162992/36162992_778e5d1e-06fd-4e4a-b650-50c232815b24_1080_1080.jpg"
     }
-
-    private var videoId = 0
 
     private lateinit var userSession: UserSessionInterface
     private lateinit var shopId: String
+    private var positionVideoChanged = 0
 
     @Inject
     lateinit var descriptionViewModel: AddEditProductDescriptionViewModel
@@ -135,6 +131,8 @@ class AddEditProductDescriptionFragment:
 
     override fun onTextChanged(url: String, position: Int) {
         adapter.data[position].inputUrl = url
+        positionVideoChanged = position
+        descriptionViewModel.getVideoYoutube(url)
     }
 
     override fun onItemClicked(t: VideoLinkModel?) {
@@ -223,11 +221,11 @@ class AddEditProductDescriptionFragment:
         }
 
         observeProductVariant()
+        observeProductVideo()
     }
 
     private fun addEmptyVideoUrl() {
-        videoId += 1
-        loadData(videoId)
+        loadData(0)
     }
 
     private fun observeProductVariant() {
@@ -235,6 +233,29 @@ class AddEditProductDescriptionFragment:
             when (result) {
                 is Success -> showVariantDialog(result.data)
                 is Fail -> showVariantErrorToast(getString(R.string.title_tooltip_description_tips))
+            }
+        })
+    }
+
+    private fun observeProductVideo() {
+        descriptionViewModel.videoYoutube.observe(viewLifecycleOwner, Observer { result ->
+            when (result) {
+                is Success -> {
+                    val id  = result.data.id
+                    if (id == null) {
+                        adapter.data[positionVideoChanged].inputTitle = ""
+                        adapter.data[positionVideoChanged].inputDescription = ""
+                        adapter.data[positionVideoChanged].inputImage = ""
+                    } else {
+                        adapter.data[positionVideoChanged].inputTitle = result.data.title.orEmpty()
+                        adapter.data[positionVideoChanged].inputDescription = result.data.description.orEmpty()
+                        adapter.data[positionVideoChanged].inputImage = result.data.thumbnailUrl.orEmpty()
+                    }
+                    adapter.notifyItemChanged(positionVideoChanged)
+                }
+                is Fail -> {
+                    showVariantErrorToast(getString(R.string.title_tooltip_description_tips))
+                }
             }
         })
     }
@@ -337,7 +358,7 @@ class AddEditProductDescriptionFragment:
 
     override fun loadData(page: Int) {
         val videoLinkModels: ArrayList<VideoLinkModel> = ArrayList()
-        videoLinkModels.add(VideoLinkModel(page, "", TEST_IMAGE_URL))
+        videoLinkModels.add(VideoLinkModel())
         super.renderList(videoLinkModels)
 
         textViewAddVideo.visibility =
