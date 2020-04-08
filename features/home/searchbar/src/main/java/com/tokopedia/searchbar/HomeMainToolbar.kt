@@ -54,7 +54,7 @@ class HomeMainToolbar : MainToolbar, CoroutineScope {
 
     private lateinit var afterInflationCallable: Callable<Any?>
 
-    private lateinit var viewHomeMainToolBar: View
+    private var viewHomeMainToolBar: View? = null
 
     constructor(context: Context) : super(context)
 
@@ -154,6 +154,10 @@ class HomeMainToolbar : MainToolbar, CoroutineScope {
         }
     }
 
+    fun getViewHomeMainToolBar() : View?{
+        return viewHomeMainToolBar
+    }
+
     fun setBackgroundAlpha(alpha: Float) {
         val drawable = toolbar!!.background
         drawable.alpha = alpha.toInt()
@@ -212,20 +216,22 @@ class HomeMainToolbar : MainToolbar, CoroutineScope {
     }
 
     fun setHint(placeholder: String, keyword: String, isFirstInstall: Boolean){
-        val editTextSearch = viewHomeMainToolBar.findViewById<TextView>(R.id.et_search)
-        editTextSearch.hint = if(placeholder.isEmpty()) context.getString(R.string.search_tokopedia) else placeholder
-        editTextSearch.setSingleLine()
-        editTextSearch.ellipsize = TextUtils.TruncateAt.END
-        editTextSearch.setOnClickListener {
-            searchBarAnalytics.eventTrackingSearchBar(screenName)
-            if(placeholder.isEmpty()){
-                RouteManager.route(context, ApplinkConstInternalDiscovery.AUTOCOMPLETE)
-            }else{
-                RouteManager.route(context,
-                        ApplinkConstInternalDiscovery.AUTOCOMPLETE + PARAM_APPLINK_AUTOCOMPLETE,
-                        HOME_SOURCE,
-                        safeEncodeUTF8(keyword),
-                        isFirstInstall.toString())
+        if(viewHomeMainToolBar != null) {
+            val editTextSearch = viewHomeMainToolBar!!.findViewById<TextView>(R.id.et_search)
+            editTextSearch.hint = if (placeholder.isEmpty()) context.getString(R.string.search_tokopedia) else placeholder
+            editTextSearch.setSingleLine()
+            editTextSearch.ellipsize = TextUtils.TruncateAt.END
+            editTextSearch.setOnClickListener {
+                searchBarAnalytics.eventTrackingSearchBar(screenName)
+                if (placeholder.isEmpty()) {
+                    RouteManager.route(context, ApplinkConstInternalDiscovery.AUTOCOMPLETE)
+                } else {
+                    RouteManager.route(context,
+                            ApplinkConstInternalDiscovery.AUTOCOMPLETE + PARAM_APPLINK_AUTOCOMPLETE,
+                            HOME_SOURCE,
+                            safeEncodeUTF8(keyword),
+                            isFirstInstall.toString())
+                }
             }
         }
     }
