@@ -675,9 +675,19 @@ public class HomeFragment extends BaseDaggerFragment implements
     }
 
     private void observeSearchHint(){
-        viewModel.getSearchHint().observe(getViewLifecycleOwner(), data -> {
-            setHint(data);
-        });
+        if(getView() != null) {
+            viewModel.getSearchHint().observe(getViewLifecycleOwner(), data -> {
+                setHint(data);
+            });
+        }
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        if(!viewModel.getSearchHint().hasObservers()){
+            observeSearchHint();
+        }
     }
 
     private void observeSendLocation(){
@@ -1283,11 +1293,13 @@ public class HomeFragment extends BaseDaggerFragment implements
     }
 
     private void setHint(SearchPlaceholder searchPlaceholder) {
-        if (searchPlaceholder.getData() != null && searchPlaceholder.getData().getPlaceholder() != null && searchPlaceholder.getData().getKeyword() != null) {
-            homeMainToolbar.setHint(
-                    searchPlaceholder.getData().getPlaceholder(),
-                    searchPlaceholder.getData().getKeyword(),
-                    isFirstInstall());
+        if(homeMainToolbar != null) {
+            if (searchPlaceholder.getData() != null && searchPlaceholder.getData().getPlaceholder() != null && searchPlaceholder.getData().getKeyword() != null) {
+                homeMainToolbar.setHint(
+                        searchPlaceholder.getData().getPlaceholder(),
+                        searchPlaceholder.getData().getKeyword(),
+                        isFirstInstall());
+            }
         }
     }
 
