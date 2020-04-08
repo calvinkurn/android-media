@@ -18,7 +18,7 @@ class AddEditProductDraftMapper {
 
         fun mapDraftToProductInput(draft: AddEditProductDraftEntity): ProductDraft {
             val productDraft: ProductDraft = CacheUtil.convertStringToModel(draft.data, ProductDraft::class.java)
-            productDraft.productId = draft.id
+            productDraft.draftId = draft.id
             productDraft.completionPercent = getCompletionPercent(productDraft)
             return productDraft
         }

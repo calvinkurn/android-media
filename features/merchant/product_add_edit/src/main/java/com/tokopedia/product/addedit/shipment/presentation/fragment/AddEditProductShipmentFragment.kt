@@ -155,7 +155,7 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
 
     fun saveProductDraft(isUploading: Boolean) {
         inputAllDataInInputDraftModel()
-        productDraft?.let { shipmentViewModel.saveProductDraft(it, it.productId,isUploading) }
+        productDraft?.let { shipmentViewModel.saveProductDraft(it, it.draftId,isUploading) }
         Toast.makeText(context, R.string.label_succes_save_draft, Toast.LENGTH_LONG).show()
     }
 

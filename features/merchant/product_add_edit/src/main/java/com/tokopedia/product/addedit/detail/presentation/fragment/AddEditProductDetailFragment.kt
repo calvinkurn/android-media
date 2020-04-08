@@ -655,7 +655,7 @@ class AddEditProductDetailFragment(private val initialSelectedImagePathList: Arr
 
     fun saveProductDraft(isUploading: Boolean) {
         inputAllDataInInputDraftModel()
-        viewModel.saveProductDraft(productDraft, productDraft.productId, isUploading)
+        viewModel.saveProductDraft(productDraft, productDraft.draftId, isUploading)
         Toast.makeText(context, R.string.label_succes_save_draft, Toast.LENGTH_LONG).show()
     }
 

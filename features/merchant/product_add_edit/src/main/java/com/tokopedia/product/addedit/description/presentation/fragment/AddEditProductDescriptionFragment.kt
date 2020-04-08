@@ -245,7 +245,7 @@ class AddEditProductDescriptionFragment:
 
     fun saveProductDraft(isUploading: Boolean) {
         inputAllDataInInputDraftModel()
-        productDraft?.let { descriptionViewModel.saveProductDraft(it, it.productId, isUploading) }
+        productDraft?.let { descriptionViewModel.saveProductDraft(it, it.draftId, isUploading) }
         Toast.makeText(context, R.string.label_succes_save_draft, Toast.LENGTH_LONG).show()
     }
 
