@@ -123,10 +123,8 @@ public class ManageNotificationPresenterImpl implements ManageNotificationPresen
 
                     @Override
                     public void onTimeout() {
-                        //Current backend contract is still not fixed, will comment the snowSnackbar() method until backend completed
-                        //For now, the request will always timeout
                         viewListener.finishLoading();
-//                        viewListener.showSnackbar();
+                        viewListener.showSnackbar();
                     }
 
                     @Override
