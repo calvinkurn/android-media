@@ -149,6 +149,8 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
 
     private fun getRates() {
         val s = _orderPreference?.shipping
+        val currPromo = if (_orderPreference?.shipping?.isApplyLogisticPromo == true) _orderPreference?.shipping?.logisticPromoViewModel?.promoCode
+                ?: "" else ""
         if (s != null && s.shippingRecommendationData?.logisticPromo?.isApplied == true && s.isApplyLogisticPromo) {
             clearCacheAutoApplyStackUseCase.setParams(PARAM_VALUE_MARKETPLACE, arrayListOf(s.shippingRecommendationData.logisticPromo?.promoCode
                     ?: ""), true)
@@ -367,18 +369,35 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                                         }
                                     }
 
-                                    //BBO
-                                    //reset last BBO
-                                    if (shipping?.logisticPromoViewModel != null) {
-                                        shipping = shipping.copy(logisticPromoTickerMessage = null, logisticPromoViewModel = null, logisticPromoShipping = null, isApplyLogisticPromo = false)
-                                    }
                                     if (shipping?.serviceErrorMessage?.isEmpty() == true) {
                                         val logisticPromo: LogisticPromoUiModel? = shippingRecommendationData.logisticPromo
                                         if (logisticPromo != null && !logisticPromo.disabled) {
-                                            shipping = shipping.copy(logisticPromoTickerMessage = "Tersedia ${logisticPromo.title}", logisticPromoViewModel = logisticPromo, logisticPromoShipping = null)
+                                            shipping = shipping.copy(logisticPromoViewModel = logisticPromo)
+                                            if (currPromo.isNotEmpty()) {
+                                                if (logisticPromo.promoCode == currPromo) {
+                                                    autoApplyLogisticPromo(logisticPromo, currPromo, shipping)
+                                                    return
+                                                } else {
+                                                    if (currPromo.isNotEmpty()) {
+                                                        clearOldLogisticPromo(currPromo)
+                                                    }
+                                                    autoApplyLogisticPromo(logisticPromo, currPromo, shipping)
+                                                    return
+                                                }
+                                            } else {
+                                                shipping = shipping.copy(logisticPromoTickerMessage = "Tersedia ${logisticPromo.title}", logisticPromoViewModel = logisticPromo, logisticPromoShipping = null)
+                                            }
+                                        } else {
+                                            shipping = shipping.copy(logisticPromoTickerMessage = null, logisticPromoViewModel = null, logisticPromoShipping = null, isApplyLogisticPromo = false)
+                                            if (currPromo.isNotEmpty()) {
+                                                clearOldLogisticPromo(currPromo)
+                                            }
                                         }
                                     } else if (shipping != null) {
-                                        shipping = shipping.copy(logisticPromoTickerMessage = null, logisticPromoViewModel = null, logisticPromoShipping = null)
+                                        shipping = shipping.copy(logisticPromoTickerMessage = null, logisticPromoViewModel = null, logisticPromoShipping = null, isApplyLogisticPromo = false)
+                                        if (currPromo.isNotEmpty()) {
+                                            clearOldLogisticPromo(currPromo)
+                                        }
                                     }
 
                                     _orderPreference = value.copy(shipping = shipping)
@@ -451,6 +470,118 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                     return it
                 }
         return null
+    }
+
+    private fun clearOldLogisticPromo(oldPromoCode: String) {
+        clearCacheAutoApplyStackUseCase.setParams(PARAM_VALUE_MARKETPLACE, arrayListOf(oldPromoCode), true)
+        compositeSubscription.add(
+                clearCacheAutoApplyStackUseCase.createObservable(RequestParams.EMPTY).subscribe(object : Observer<ClearPromoUiModel?> {
+                    override fun onError(e: Throwable?) {
+                        e?.printStackTrace()
+                    }
+
+                    override fun onNext(t: ClearPromoUiModel?) {
+                    }
+
+                    override fun onCompleted() {
+                    }
+                })
+        )
+        val orders = lastValidateUsePromoRequest?.orders ?: emptyList()
+        if (orders.isNotEmpty()) {
+            orders[0]?.codes?.remove(oldPromoCode)
+        }
+    }
+
+    private fun autoApplyLogisticPromo(logisticPromoUiModel: LogisticPromoUiModel, oldCode: String = "", shipping: Shipment) {
+        val op = _orderPreference
+        if (op != null) {
+            orderPromo.value = orderPromo.value?.copy(state = ButtonBayarState.LOADING)
+            val validateUsePromoRequest = generateValidateUsePromoRequest(false)
+            validateUsePromoRequest.orders[0]?.shippingId = logisticPromoUiModel.shipperId
+            validateUsePromoRequest.orders[0]?.spId = logisticPromoUiModel.shipperProductId
+            if (oldCode.isNotEmpty()) {
+                validateUsePromoRequest.orders[0]?.codes?.remove(oldCode)
+            }
+            validateUsePromoRequest.orders[0]?.codes?.add(logisticPromoUiModel.promoCode)
+            val requestParams = RequestParams.create()
+            requestParams.putObject(ValidateUsePromoRevampUseCase.PARAM_VALIDATE_USE, validateUsePromoRequest)
+            compositeSubscription.add(
+                    validateUsePromoRevampUseCase.createObservable(requestParams)
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe(object : Observer<ValidateUsePromoRevampUiModel> {
+                                override fun onError(e: Throwable) {
+                                    e.printStackTrace()
+                                    orderPromo.value = orderPromo.value?.copy(state = ButtonBayarState.DISABLE)
+                                    globalEvent.value = OccGlobalEvent.Error(e)
+                                    val shippingRecommendationData = shipping.shippingRecommendationData
+                                    if (shippingRecommendationData != null) {
+                                        _orderPreference = _orderPreference?.copy(shipping = shipping.copy(logisticPromoTickerMessage = "Tersedia ${logisticPromoUiModel.title}", isApplyLogisticPromo = false, logisticPromoShipping = null))
+                                        orderPreference.value = OccState.Success(_orderPreference!!)
+                                    }
+                                    orderTotal.value = orderTotal.value?.copy(buttonState = ButtonBayarState.DISABLE)
+                                    calculateTotal()
+                                }
+
+                                override fun onNext(response: ValidateUsePromoRevampUiModel) {
+                                    validateUsePromoRevampUiModel = response
+                                    if (response.status.equals(STATUS_OK, true)) {
+                                        for (voucherOrderUiModel in response.promoUiModel.voucherOrderUiModels) {
+                                            if (voucherOrderUiModel != null && voucherOrderUiModel.code == logisticPromoUiModel.promoCode && voucherOrderUiModel.messageUiModel.state != "red") {
+                                                val shippingRecommendationData = shipping.shippingRecommendationData
+                                                var logisticPromoShipping: ShippingCourierUiModel? = null
+                                                if (shippingRecommendationData != null) {
+                                                    for (shippingDurationViewModel in shippingRecommendationData.shippingDurationViewModels) {
+                                                        if (shippingDurationViewModel.isSelected) {
+                                                            for (shippingCourierUiModel in shippingDurationViewModel.shippingCourierViewModelList) {
+                                                                shippingCourierUiModel.isSelected = false
+                                                            }
+                                                        }
+                                                        if (shippingDurationViewModel.serviceData.serviceId == logisticPromoUiModel.serviceId) {
+                                                            for (shippingCourierUiModel in shippingDurationViewModel.shippingCourierViewModelList) {
+                                                                if (shippingCourierUiModel.productData.shipperProductId == logisticPromoUiModel.shipperProductId) {
+                                                                    logisticPromoShipping = shippingCourierUiModel
+                                                                    break
+                                                                }
+                                                            }
+                                                        }
+                                                        if (shipping.isServicePickerEnable) {
+                                                            shippingDurationViewModel.isSelected = false
+                                                        }
+                                                    }
+                                                    if (logisticPromoShipping != null) {
+                                                        shippingRecommendationData.logisticPromo = shippingRecommendationData.logisticPromo.copy(isApplied = true)
+                                                        _orderPreference = _orderPreference?.copy(shipping = shipping.copy(shippingRecommendationData = shippingRecommendationData,
+                                                                insuranceData = logisticPromoShipping.productData?.insurance, logisticPromoTickerMessage = null,
+                                                                isApplyLogisticPromo = true, logisticPromoShipping = logisticPromoShipping))
+                                                        orderPreference.value = OccState.Success(_orderPreference!!)
+                                                        globalEvent.value = OccGlobalEvent.Normal
+                                                        orderTotal.value = orderTotal.value?.copy(buttonState = if (_orderPreference?.shipping?.serviceErrorMessage.isNullOrEmpty() && orderShop.errors.isEmpty() && !orderProduct.quantity.isStateError) ButtonBayarState.NORMAL else ButtonBayarState.DISABLE)
+                                                        updatePromoState(response.promoUiModel)
+                                                        return
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                    _orderPreference = _orderPreference?.copy(shipping = shipping.copy(logisticPromoTickerMessage = "Tersedia ${logisticPromoUiModel.title}", isApplyLogisticPromo = false, logisticPromoShipping = null))
+                                    orderTotal.value = orderTotal.value?.copy(buttonState = if (_orderPreference?.shipping?.serviceErrorMessage.isNullOrEmpty() && orderShop.errors.isEmpty() && !orderProduct.quantity.isStateError) ButtonBayarState.NORMAL else ButtonBayarState.DISABLE)
+                                    updatePromoState(response.promoUiModel)
+                                }
+
+                                override fun onCompleted() {
+                                }
+                            })
+            )
+        }
+    }
+
+    fun clearBboIfExist() {
+        val logisticPromoViewModel = _orderPreference?.shipping?.logisticPromoViewModel
+        if (logisticPromoViewModel != null && _orderPreference?.shipping?.isApplyLogisticPromo == true && _orderPreference?.shipping?.logisticPromoShipping != null) {
+            clearOldLogisticPromo(logisticPromoViewModel.promoCode)
+        }
     }
 
     fun chooseCourier(choosenShippingCourierViewModel: ShippingCourierUiModel) {
@@ -803,6 +934,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
             ))
             globalEvent.value = OccGlobalEvent.Loading
             updateCartOccUseCase.execute(param, {
+                clearBboIfExist()
                 globalEvent.value = OccGlobalEvent.TriggerRefresh(true)
             }, { throwable: Throwable ->
                 throwable.printStackTrace()
@@ -902,10 +1034,12 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                 if (checkoutOccGqlResponse.response.data.success == 1 || checkoutOccGqlResponse.response.data.paymentParameter.redirectParam.url.isNotEmpty()) {
                     globalEvent.value = OccGlobalEvent.Normal
                     onSuccessCheckout(checkoutOccGqlResponse.response.data)
-                    orderSummaryAnalytics.eventClickBayarSuccess(generateOspEe(OrderSummaryPageEnhanceECommerce.STEP_2, OrderSummaryPageEnhanceECommerce.STEP_2_OPTION))
+                    orderSummaryAnalytics.eventClickBayarSuccess(orderTotal.value?.isButtonChoosePayment
+                            ?: false, generateOspEe(OrderSummaryPageEnhanceECommerce.STEP_2, OrderSummaryPageEnhanceECommerce.STEP_2_OPTION))
                 } else {
                     val errorCode = checkoutOccGqlResponse.response.data.error.code
-                    orderSummaryAnalytics.eventClickBayarNotSuccess(errorCode)
+                    orderSummaryAnalytics.eventClickBayarNotSuccess(orderTotal.value?.isButtonChoosePayment
+                            ?: false, errorCode)
                     if (errorCode == ErrorCheckoutBottomSheet.ERROR_CODE_PRODUCT_STOCK_EMPTY || errorCode == ErrorCheckoutBottomSheet.ERROR_CODE_PRODUCT_ERROR || errorCode == ErrorCheckoutBottomSheet.ERROR_CODE_SHOP_CLOSED) {
                         globalEvent.value = OccGlobalEvent.CheckoutError(checkoutOccGqlResponse.response.data.error)
                     } else if (errorCode == ERROR_CODE_PRICE_CHANGE) {
@@ -1191,6 +1325,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                             override fun onError(e: Throwable) {
                                 e.printStackTrace()
                                 orderPromo.value = orderPromo.value?.copy(state = ButtonBayarState.DISABLE)
+                                orderTotal.value = orderTotal.value?.copy(buttonState = ButtonBayarState.DISABLE)
                             }
 
                             override fun onNext(t: ValidateUsePromoRevampUiModel) {

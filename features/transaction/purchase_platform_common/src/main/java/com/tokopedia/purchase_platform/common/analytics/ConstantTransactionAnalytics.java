@@ -419,6 +419,8 @@ public interface ConstantTransactionAnalytics {
         String USER_CHANGE_COURIER_OSP = "courier - click arrow to change courier option";
         String CLICK_ON_INSURANCE = "courier - click on asuransi pengiriman";
         String CLICK_BAYAR_NOT_SUCCESS = "click bayar - not success";
+        String CLICK_PILIH_PEMBAYARAN_NOT_SUCCESS = "click pilih pembayaran - not success";
+        String CLICK_PILIH_PEMBAYARAN = "click pilih pembayaran";
         String VIEW_ERROR_ON_OSP = "view error messagge";
         String CLICK_ADD_PREFERENSI_FROM_OSP = "preference - click tambah pilihan from ganti pilihan";
         String USER_CHANGES_PROFILE = "preference - click ganti pilihan on order summary";
