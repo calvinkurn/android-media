@@ -412,3 +412,9 @@
 
 # -- robust
 -optimizations !class/unboxing/enum,!code/simplification/arithmetic
+
+# -- annotation analytic
+-keep class com.analytic.paramchecker.** { *; }
+-keep class com.analytic.util.** { *; }
+-keep class com.tokopedia.abstraction.processor.** { *; }
+-keep class com.tokopedia.product.util.processor.** { *; }
