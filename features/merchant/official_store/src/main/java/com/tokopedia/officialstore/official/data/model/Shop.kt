@@ -17,13 +17,8 @@ data class Shop(@SerializedName("id")
                 @SerializedName("featuredBrandId")
                 val featuredBrandId: String? = "",
                 @SerializedName("additionalInformation")
-                val additionalInformation: String? = "",
-                @SerializedName("attribution")
-                val attribution: String? = ""
-) : Parcelable {
-
+                val additionalInformation: String? = "") : Parcelable {
     constructor(parcel: Parcel) : this(
-            parcel.readString(),
             parcel.readString(),
             parcel.readString(),
             parcel.readString(),
@@ -40,7 +35,6 @@ data class Shop(@SerializedName("id")
         parcel.writeString(imageUrl)
         parcel.writeString(featuredBrandId)
         parcel.writeString(additionalInformation)
-        parcel.writeString(attribution)
     }
 
     override fun describeContents(): Int {
