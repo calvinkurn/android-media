@@ -493,9 +493,6 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
             val isWishlistedRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_WISHLIST_STATUS],
                     ProductInfo.WishlistStatus::class.java, isWishlistedParams)
 
-            val getCheckoutTypeRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_CHECKOUTTYPE],
-                    GetCheckoutTypeResponse::class.java)
-
             val affilateParams = mapOf(ParamAffiliate.PRODUCT_ID_PARAM to listOf(productId),
                     ParamAffiliate.SHOP_ID_PARAM to shopId,
                     ParamAffiliate.INCLUDE_UI_PARAM to true)
@@ -509,7 +506,7 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
 
             val cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
             try {
-                val response = graphqlRepository.getReseponse(listOf(isWishlistedRequest, getCheckoutTypeRequest,
+                val response = graphqlRepository.getReseponse(listOf(isWishlistedRequest,
                         affiliateRequest, topAdsManageRequest), cacheStrategy)
 
                 if (response.getError(ProductInfo.WishlistStatus::class.java)?.isNotEmpty() != true)
@@ -523,12 +520,6 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
                     p2Login.pdpAffiliate = response
                             .getData<TopAdsPdpAffiliateResponse>(TopAdsPdpAffiliateResponse::class.java)
                             .topAdsPDPAffiliate.data.affiliate.firstOrNull()
-                }
-
-                if (response.getError(GetCheckoutTypeResponse::class.java)?.isNotEmpty() != true) {
-                    p2Login.cartType = response
-                            .getData<GetCheckoutTypeResponse>(GetCheckoutTypeResponse::class.java)
-                            .getCartType.data.cartType
                 }
 
                 if (response.getError(TopAdsGetProductManageResponse::class.java)?.isNotEmpty() != true) {
