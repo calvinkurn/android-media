@@ -137,13 +137,14 @@ class OfficialStoreTracking(context: Context) {
     }
 
     fun eventClickBanner(categoryName: String, bannerPosition: Int,
-                         bannerItem: com.tokopedia.officialstore.official.data.model.Banner) {
+                         bannerItem: com.tokopedia.officialstore.official.data.model.Banner,
+                         campaignId: Int) {
         val data = DataLayer.mapOf(
                 EVENT, PROMO_CLICK,
                 EVENT_CATEGORY, "$OS_MICROSITE$categoryName",
                 EVENT_ACTION, "banner - $CLICK",
                 EVENT_LABEL, "$CLICK banner",
-                CAMPAIGN_CODE, "",
+                CAMPAIGN_CODE, "$campaignId",
                 ATTRIBUTION, bannerItem.galaxyAttribution,
                 AFFINITY_LABEL, bannerItem.persona,
                 CATEGORY_ID, bannerItem.categoryPersona,
