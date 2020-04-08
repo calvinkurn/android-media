@@ -19,7 +19,7 @@ import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.gherkin.Feature
 import rx.Subscriber
 
-internal class GeneralSearchTrackingTest: Spek({
+internal class GeneralSearchTrackingSpekTest: Spek({
 
     Feature("General Search Tracking on first time load") {
         createTestInstance()
