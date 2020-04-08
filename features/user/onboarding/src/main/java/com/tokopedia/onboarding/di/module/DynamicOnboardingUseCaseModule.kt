@@ -8,7 +8,6 @@ import com.tokopedia.onboarding.domain.usecase.DynamicOnboardingUseCase
 import dagger.Module
 import dagger.Provides
 
-@OnboardingScope
 @Module
 class DynamicOnboardingUseCaseModule {
 

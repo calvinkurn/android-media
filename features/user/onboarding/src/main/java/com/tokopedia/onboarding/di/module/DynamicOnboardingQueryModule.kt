@@ -11,7 +11,6 @@ import dagger.Provides
 import dagger.multibindings.IntoMap
 import dagger.multibindings.StringKey
 
-@OnboardingScope
 @Module
 class DynamicOnboardingQueryModule(private val activity: Activity) {
 
