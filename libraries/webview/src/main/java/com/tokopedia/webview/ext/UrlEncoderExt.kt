@@ -16,9 +16,17 @@ fun String.encodeOnce(): String {
 }
 
 fun String.decode(): String {
-    try {
-        return URLDecoder.decode(this, "UTF-8")
-    } catch (e: Exception) {
-        return this
+    return if (isUrlEncoded()) {
+        try {
+            URLDecoder.decode(this, "UTF-8")
+        } catch (e: Exception) {
+            this
+        }
+    } else {
+        this
     }
+}
+
+fun String.isUrlEncoded() : Boolean {
+    return contains("%2F") || contains("%3F")
 }
