@@ -2210,25 +2210,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                     viewModel.addToCart(addToCartOcsRequestParams)
                 }
                 ProductDetailConstant.OCC_BUTTON -> {
-                    if (remoteConfig.getBoolean(RemoteConfigKey.ENABLE_ONE_CLICK_CHECKOUT, true)) {
-                        val addToCartOccRequestParams = AddToCartOccRequestParams(data.basic.productID, data.basic.shopID, data.basic.minOrder.toString()).apply {
-                            warehouseId = selectedWarehouseId.toString()
-                            attribution = trackerAttributionPdp ?: ""
-                            listTracker = trackerListNamePdp ?: ""
-                        }
-                        viewModel.addToCart(addToCartOccRequestParams)
-                    } else {
-                        val addToCartRequestParams = AddToCartRequestParams().apply {
-                            productId = data.basic.productID.toLongOrNull() ?: 0
-                            shopId = data.basic.shopID.toIntOrZero()
-                            quantity = data.basic.minOrder
-                            notes = ""
-                            attribution = trackerAttributionPdp ?: ""
-                            listTracker = trackerListNamePdp ?: ""
-                            warehouseId = selectedWarehouseId
-                        }
-                        viewModel.addToCart(addToCartRequestParams)
-                    }
+                    addToCartOcc(data, selectedWarehouseId)
                 }
                 else -> {
                     val addToCartRequestParams = AddToCartRequestParams().apply {
@@ -2243,6 +2225,28 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                     viewModel.addToCart(addToCartRequestParams)
                 }
             }
+        }
+    }
+
+    private fun addToCartOcc(data: DynamicProductInfoP1, selectedWarehouseId: Int) {
+        if (remoteConfig.getBoolean(RemoteConfigKey.ENABLE_ONE_CLICK_CHECKOUT, true)) {
+            val addToCartOccRequestParams = AddToCartOccRequestParams(data.basic.productID, data.basic.shopID, data.basic.minOrder.toString()).apply {
+                warehouseId = selectedWarehouseId.toString()
+                attribution = trackerAttributionPdp ?: ""
+                listTracker = trackerListNamePdp ?: ""
+            }
+            viewModel.addToCart(addToCartOccRequestParams)
+        } else {
+            val addToCartRequestParams = AddToCartRequestParams().apply {
+                productId = data.basic.productID.toLongOrNull() ?: 0
+                shopId = data.basic.shopID.toIntOrZero()
+                quantity = data.basic.minOrder
+                notes = ""
+                attribution = trackerAttributionPdp ?: ""
+                listTracker = trackerListNamePdp ?: ""
+                warehouseId = selectedWarehouseId
+            }
+            viewModel.addToCart(addToCartRequestParams)
         }
     }
 
