@@ -4,6 +4,7 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.purchase_platform.common.data.model.response.Messages
 import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.data.model.AutoApplyStack
+import com.tokopedia.purchase_platform.common.feature.promo_checkout.data.model.response.CartPromoData
 import com.tokopedia.purchase_platform.common.feature.promo_global.data.model.response.GlobalCouponAttr
 import java.util.*
 
@@ -47,5 +48,8 @@ data class CartDataListResponse(
     val autoApplyStack: AutoApplyStack = AutoApplyStack(),
     @SerializedName("global_checkbox_state")
     @Expose
-    val isGlobalCheckboxState: Boolean = false
+    val isGlobalCheckboxState: Boolean = false,
+    @SerializedName("promo")
+    @Expose
+    val promo: CartPromoData = CartPromoData()
 )

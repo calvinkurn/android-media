@@ -139,9 +139,15 @@ final class ProductListPresenter
     }
 
     private boolean getIsUseRatingString() {
-        return getView().getABTestRemoteConfig()
-                .getString(AB_TEST_KEY_COMMA_VS_FULL_STAR, AB_TEST_VARIANT_FULL_STAR)
-                .equals(AB_TEST_VARIANT_COMMA_STAR);
+        try {
+            return getView().getABTestRemoteConfig()
+                    .getString(AB_TEST_KEY_COMMA_VS_FULL_STAR, AB_TEST_VARIANT_FULL_STAR)
+                    .equals(AB_TEST_VARIANT_COMMA_STAR);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     @Override
@@ -902,7 +908,7 @@ final class ProductListPresenter
                     continue;
                 }
 
-                if (data.getPosition() <= getView().getLastProductItemPositionFromCache()) {
+                if (data.getPosition() <= productList.size()) {
                     try {
                         Visitable product = productList.get(data.getPosition() - 1);
                         list.add(list.indexOf(product) + 1, data);

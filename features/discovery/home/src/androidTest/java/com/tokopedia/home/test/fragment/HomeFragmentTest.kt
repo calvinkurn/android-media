@@ -1,5 +1,6 @@
 package com.tokopedia.home.test.fragment
 
+import android.util.Log
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.home.beranda.di.DaggerBerandaComponent
 import com.tokopedia.home.beranda.presentation.view.fragment.HomeFragment
@@ -11,6 +12,7 @@ class HomeFragmentTest(
 
     override fun initViewModel() {
         viewModelFactory = mockViewModelFactory
+        Log.d("testLukas", viewModelFactory.toString())
         super.initViewModel()
     }
 

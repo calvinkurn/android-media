@@ -6,7 +6,6 @@ import android.graphics.drawable.LayerDrawable
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.*
-import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -46,15 +45,16 @@ import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.favourite.view.activity.ShopFavouriteListActivity
 import com.tokopedia.shop.feed.view.fragment.FeedShopFragment
 import com.tokopedia.shop.home.view.fragment.ShopPageHomeFragment
-import com.tokopedia.shop.product.view.fragment.ShopPageProductListFragment
 import com.tokopedia.shop.pageheader.di.component.DaggerShopPageComponent
 import com.tokopedia.shop.pageheader.di.component.ShopPageComponent
 import com.tokopedia.shop.pageheader.di.module.ShopPageModule
 import com.tokopedia.shop.pageheader.presentation.ShopPageViewModel
+import com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity
 import com.tokopedia.shop.pageheader.presentation.adapter.ShopPageFragmentPagerAdapter
 import com.tokopedia.shop.pageheader.presentation.holder.ShopPageFragmentHeaderViewHolder
 import com.tokopedia.shop.product.view.activity.ShopProductListActivity
 import com.tokopedia.shop.product.view.fragment.HomeProductFragment
+import com.tokopedia.shop.product.view.fragment.ShopPageProductListFragment
 import com.tokopedia.shop.search.view.activity.ShopSearchProductActivity
 import com.tokopedia.shop.setting.view.activity.ShopPageSettingActivity
 import com.tokopedia.shop.sort.view.activity.ShopProductSortActivity
@@ -62,6 +62,7 @@ import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
 import com.tokopedia.stickylogin.internal.StickyLoginConstant
 import com.tokopedia.stickylogin.view.StickyLoginView
 import com.tokopedia.trackingoptimizer.TrackingQueue
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
@@ -88,7 +89,6 @@ class ShopPageFragment :
         const val TAB_POSITION_INFO = 2
         const val SHOP_STATUS_FAVOURITE = "SHOP_STATUS_FAVOURITE"
         const val SHOP_STICKY_LOGIN = "SHOP_STICKY_LOGIN"
-        const val SHOP_TRACE = "mp_shop"
         const val SHOP_NAME_PLACEHOLDER = "{{shop_name}}"
         const val SHOP_LOCATION_PLACEHOLDER = "{{shop_location}}"
         private const val REQUEST_CODER_USER_LOGIN = 100
@@ -122,13 +122,13 @@ class ShopPageFragment :
 
     private lateinit var remoteConfig: RemoteConfig
     private lateinit var cartLocalCacheHandler: LocalCacheHandler
-    private var performanceMonitoring: PerformanceMonitoring? = null
     var shopPageTracking: ShopPageTrackingBuyer? = null
     var titles = listOf<String>()
     var shopId: String? = null
     var shopRef: String = ""
     var shopDomain: String? = null
     var shopAttribution: String? = null
+    var isFirstCreateShop: Boolean = false
     var isShowFeed: Boolean = false
     var isOfficialStore: Boolean = false
     var isGoldMerchant: Boolean = false
@@ -140,7 +140,7 @@ class ShopPageFragment :
     private lateinit var shopPageFragmentHeaderViewHolder: ShopPageFragmentHeaderViewHolder
     private lateinit var viewPagerAdapter: ShopPageFragmentPagerAdapter
     private lateinit var errorTextView: TextView
-    private lateinit var errorButton: Button
+    private lateinit var errorButton: View
     private val iconTabHome = R.drawable.ic_shop_tab_home_inactive
     private val iconTabProduct = R.drawable.ic_shop_tab_products_inactive
     private val iconTabFeed = R.drawable.ic_shop_tab_feed_inactive
@@ -275,7 +275,6 @@ class ShopPageFragment :
         context?.let {
             remoteConfig = FirebaseRemoteConfigImpl(it)
             cartLocalCacheHandler = LocalCacheHandler(it, CART_LOCAL_CACHE_NAME)
-            performanceMonitoring = PerformanceMonitoring.start(SHOP_TRACE)
             shopPageTracking = ShopPageTrackingBuyer(TrackingQueue(it))
             activity?.intent?.run {
                 shopId = getStringExtra(SHOP_ID)
@@ -283,6 +282,7 @@ class ShopPageFragment :
                 shopDomain = getStringExtra(SHOP_DOMAIN)
                 shopAttribution = getStringExtra(SHOP_ATTRIBUTION)
                 tabPosition = getIntExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_HOME)
+                isFirstCreateShop = getBooleanExtra(ApplinkConstInternalMarketplace.PARAM_FIRST_CREATE_SHOP, false)
                 data?.run {
                     if (shopId.isNullOrEmpty()) {
                         if (pathSegments.size > 1) {
@@ -524,10 +524,6 @@ class ShopPageFragment :
         }
     }
 
-    fun stopPerformanceMonitor() {
-        performanceMonitoring?.stopTrace()
-    }
-
     fun onSuccessGetShopInfo(shopInfo: ShopInfo) {
         with(shopInfo) {
             isOfficialStore = (goldOS.isOfficial == 1 && !TextUtils.isEmpty(shopInfo.topContent.topUrl))
@@ -555,6 +551,7 @@ class ShopPageFragment :
             shopPageFragmentHeaderViewHolder.updateShopTicker(shopInfo, isMyShop)
         }
         swipeToRefresh.isRefreshing = false
+        view?.let { onToasterNoUploadProduct(it, getString(R.string.shop_page_product_no_upload_product), isFirstCreateShop) }
     }
 
     fun onBackPressed() {
@@ -658,6 +655,7 @@ class ShopPageFragment :
     }
 
     private fun onErrorGetShopInfo(e: Throwable?) {
+        stopPerformanceMonitoring()
         context?.run {
             setViewState(VIEW_ERROR)
             errorTextView.text = ErrorHandler.getErrorMessage(this, e)
@@ -752,6 +750,10 @@ class ShopPageFragment :
             startActivity(ShopProductListActivity.createIntent(activity, shopId,
                     "", selectedEtalaseId, "", sortName, shopRef))
         }
+    }
+
+    private fun stopPerformanceMonitoring() {
+        (activity as? ShopPageActivity)?.stopPerformanceMonitor()
     }
 
     fun refreshData() {
@@ -897,6 +899,13 @@ class ShopPageFragment :
             viewPager.setPadding(0, 0, 0, stickyLoginView.height)
         } else {
             viewPager.setPadding(0, 0, 0, 0)
+        }
+    }
+
+    private fun onToasterNoUploadProduct(view: View, message: String, isFirstCreateShop: Boolean) {
+        if (isFirstCreateShop) {
+            Toaster.make(view, message, actionText = getString(R.string.shop_page_product_action_no_upload_product), type = Toaster.TYPE_NORMAL)
+            this.isFirstCreateShop = false
         }
     }
 }
