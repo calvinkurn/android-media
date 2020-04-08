@@ -2,6 +2,7 @@ package com.tokopedia.withdraw.view.fragment;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.PorterDuff;
@@ -75,6 +76,7 @@ import com.tokopedia.withdraw.domain.model.premiumAccount.CheckEligible;
 import com.tokopedia.withdraw.domain.model.premiumAccount.CopyWriting;
 import com.tokopedia.withdraw.domain.model.premiumAccount.Data;
 import com.tokopedia.withdraw.domain.model.validatePopUp.ValidatePopUpWithdrawal;
+import com.tokopedia.withdraw.view.WithdrawalFragmentCallback;
 import com.tokopedia.withdraw.view.adapter.BankAdapter;
 import com.tokopedia.withdraw.view.decoration.SpaceItemDecoration;
 import com.tokopedia.withdraw.view.listener.ToolbarUpdater;
@@ -171,6 +173,7 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
 
     private String WITHDRAWAL_REQUEST_OUT_STATE = "WITHDRAWAL_OUT_STATE";
     private WithdrawalRequest withdrawalRequest;
+    private WithdrawalFragmentCallback withdrawalFragmentCallback;
 
     @Override
     protected String getScreenName() {
@@ -207,7 +210,7 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if(savedInstanceState!= null && savedInstanceState.containsKey(WITHDRAWAL_REQUEST_OUT_STATE)){
+        if (savedInstanceState != null && savedInstanceState.containsKey(WITHDRAWAL_REQUEST_OUT_STATE)) {
             withdrawalRequest = savedInstanceState.getParcelable(WITHDRAWAL_REQUEST_OUT_STATE);
         }
     }
@@ -983,16 +986,22 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
     @Override
     public void openWithdrawalSuccessScreen(BankAccount bankAccount, String message, long amount) {
         analytics.eventClickWithdrawalConfirm(getString(R.string.label_analytics_success_withdraw));
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(WithdrawConstant.Keys.BANK_ACCOUNT, bankAccount);
-        bundle.putString(WithdrawConstant.Keys.MESSAGE, message);
-        bundle.putLong(WithdrawConstant.Keys.AMOUNT, amount);
-        FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.parent_view, SuccessFragmentWithdrawal.getInstance(bundle));
-        fragmentTransaction.commitAllowingStateLoss();
+        withdrawalFragmentCallback.openSuccessFragment(bankAccount, message, amount);
         ((ToolbarUpdater) getActivity()).updateToolbar(getActivity().getResources().getString(R.string.sucs_pg_ttl),
                 R.drawable.ic_action_back);
     }
 
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof WithdrawalFragmentCallback) {
+            withdrawalFragmentCallback = (WithdrawalFragmentCallback) context;
+        }
+    }
 
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        withdrawalFragmentCallback = null;
+    }
 }

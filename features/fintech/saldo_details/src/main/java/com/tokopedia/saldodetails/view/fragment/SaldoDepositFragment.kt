@@ -55,7 +55,7 @@ import javax.inject.Inject
 class SaldoDepositFragment : BaseDaggerFragment() {
 
     companion object {
-        val REQUEST_WITHDRAW_CODE = 1
+        val REQUEST_WITHDRAW_CODE = 3333
 
         val IS_SELLER_ENABLED = "is_user_enabled"
         val BUNDLE_PARAM_SELLER_DETAILS = "seller_details"
@@ -282,7 +282,7 @@ class SaldoDepositFragment : BaseDaggerFragment() {
 
         val saldoHistoryFragment = SaldoTransactionHistoryFragment()
         childFragmentManager.beginTransaction()
-                .replace(com.tokopedia.saldodetails.R.id.saldo_history_layout, saldoHistoryFragment,"saldo History")
+                .replace(com.tokopedia.saldodetails.R.id.saldo_history_layout, saldoHistoryFragment, "saldo History")
                 .commit()
         this.saldoHistoryFragment = saldoHistoryFragment
 
@@ -293,89 +293,89 @@ class SaldoDepositFragment : BaseDaggerFragment() {
         saldoDetailViewModel.gqlUserSaldoBalanceLiveData.observe(context as AppCompatActivity,
                 androidx.lifecycle.Observer {
 
-            when (it) {
-                is Success -> {
-                    setSellerSaldoBalance(it.data.saldo!!.sellerUsable, it.data.saldo!!.sellerUsableFmt!!)
-                    showSellerSaldoRL()
+                    when (it) {
+                        is Success -> {
+                            setSellerSaldoBalance(it.data.saldo!!.sellerUsable, it.data.saldo!!.sellerUsableFmt!!)
+                            showSellerSaldoRL()
 
-                    setBuyerSaldoBalance(it.data.saldo!!.buyerUsable, it.data.saldo!!.buyerUsableFmt!!)
-                    showBuyerSaldoRL()
+                            setBuyerSaldoBalance(it.data.saldo!!.buyerUsable, it.data.saldo!!.buyerUsableFmt!!)
+                            showBuyerSaldoRL()
 
-                    val totalBalance = it.data.saldo!!.buyerUsable + it.data.saldo!!.sellerUsable
-                    setBalance(totalBalance, CurrencyFormatUtil.convertPriceValueToIdrFormat(totalBalance, false))
-                    setWithdrawButtonState(totalBalance != 0L)
+                            val totalBalance = it.data.saldo!!.buyerUsable + it.data.saldo!!.sellerUsable
+                            setBalance(totalBalance, CurrencyFormatUtil.convertPriceValueToIdrFormat(totalBalance, false))
+                            setWithdrawButtonState(totalBalance != 0L)
 
-                    val holdBalance = (it.data.saldo!!.buyerHold + it.data.saldo!!.sellerHold).toFloat()
-                    if (holdBalance > 0) {
-                        showHoldWarning(CurrencyFormatUtil.convertPriceValueToIdrFormat(holdBalance.toDouble(), false))
-                    } else {
-                        hideWarning()
+                            val holdBalance = (it.data.saldo!!.buyerHold + it.data.saldo!!.sellerHold).toFloat()
+                            if (holdBalance > 0) {
+                                showHoldWarning(CurrencyFormatUtil.convertPriceValueToIdrFormat(holdBalance.toDouble(), false))
+                            } else {
+                                hideWarning()
+                            }
+                        }
+                        is ErrorMessage<*, *> -> {
+                            if (it.data is Int) {
+                                setRetry(getString(it.data))
+                            } else {
+                                setRetry()
+                            }
+                        }
+                        else -> {
+                            setRetry(getString(com.tokopedia.saldodetails.R.string.sp_empty_state_error))
+                        }
                     }
-                }
-                is ErrorMessage<*, *>  -> {
-                    if (it.data is Int) {
-                        setRetry(getString(it.data))
-                    } else {
-                        setRetry()
-                    }
-                }
-                else -> {
-                    setRetry(getString(com.tokopedia.saldodetails.R.string.sp_empty_state_error))
-                }
-            }
-        })
+                })
 
         saldoDetailViewModel.gqlMerchantSaldoDetailLiveData.observe(context as AppCompatActivity,
                 androidx.lifecycle.Observer {
-            when (it) {
-                is Success -> {
-                    showSaldoPrioritasFragment(it.data.data)
-                }
-                else -> {
-                    hideSaldoPrioritasFragment()
-                }
-            }
-        })
+                    when (it) {
+                        is Success -> {
+                            showSaldoPrioritasFragment(it.data.data)
+                        }
+                        else -> {
+                            hideSaldoPrioritasFragment()
+                        }
+                    }
+                })
 
         saldoDetailViewModel.gqlMerchantCreditDetailLiveData.observe(context as AppCompatActivity,
                 androidx.lifecycle.Observer {
-            when (it) {
-                is Success -> {
-                    showMerchantCreditLineFragment(it.data.data)
-                }
-                else -> {
-                    hideMerchantCreditLineFragment()
-                }
-            }
-        })
+                    when (it) {
+                        is Success -> {
+                            showMerchantCreditLineFragment(it.data.data)
+                        }
+                        else -> {
+                            hideMerchantCreditLineFragment()
+                        }
+                    }
+                })
 
         saldoDetailViewModel.gqlLateCountResponseLiveData.observe(context as AppCompatActivity,
                 androidx.lifecycle.Observer {
-            when (it) {
-                is Success -> {
-                    setLateCount(it.data.mclGetLatedetails!!.lateCount)
-                }
-                else -> {
-                    hideWithdrawTicker()
-                }
-            }
-        })
+                    when (it) {
+                        is Success -> {
+                            setLateCount(it.data.mclGetLatedetails!!.lateCount)
+                        }
+                        else -> {
+                            hideWithdrawTicker()
+                        }
+                    }
+                })
 
         saldoDetailViewModel.gqlTickerWithdrawalLiveData.observe(context as AppCompatActivity,
                 androidx.lifecycle.Observer {
-            when (it) {
-                is Success -> {
-                    if (!TextUtils.isEmpty(it.data.withdrawalTicker!!.tickerMessage)) {
-                        showTickerMessage(it.data.withdrawalTicker!!.tickerMessage!!)
-                    } else {
-                        hideTickerMessage()
+                    when (it) {
+                        is Success -> {
+                            if (!TextUtils.isEmpty(it.data.withdrawalTicker!!.tickerMessage)) {
+                                showTickerMessage(it.data.withdrawalTicker!!.tickerMessage!!)
+                            } else {
+                                hideTickerMessage()
+                            }
+                        }
+                        else -> {
+                            hideTickerMessage()
+                        }
                     }
-                }
-                else -> {
-                    hideTickerMessage()
-                }
-            }
-        })
+                })
     }
 
     private fun initListeners() {
@@ -830,6 +830,8 @@ class SaldoDepositFragment : BaseDaggerFragment() {
     }
 
     fun refresh() {
+        if (::saldoDetailViewModel.isInitialized)
+            saldoDetailViewModel.getUserSaldoBalance()
         saldoHistoryFragment!!.onRefresh()
     }
 
