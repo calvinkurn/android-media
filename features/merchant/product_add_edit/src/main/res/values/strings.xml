@@ -121,7 +121,7 @@
     <string name="label_video_title">Video</string>
     <string name="label_video_subtitle">Tambah video agar pembeli lebih paham tentang produkmu</string>
     <string name="label_video_url_placeholder">Link Video</string>
-    <string name="action_add_video">+ Tambah video</string>
+    <string name="action_add_video">Tambah video</string>
     <string name="action_next_button">Lanjut</string>
     <string name="error_video_not_valid">Pastikan link Youtube kamu benar</string>
     <string name="error_video_is_exist">Link video tidak boleh sama</string>
