@@ -80,10 +80,11 @@ fun mapDraftToProductInputModel(productDraft: ProductDraft): ProductInputModel {
         productDescription = productDraft.descriptionInputModel.productDescription
         val videoLinkList = MutableList(productDraft.descriptionInputModel.videoLinkList.size) { VideoLinkModel() }
         productDraft.descriptionInputModel.videoLinkList.forEach { videoLink ->
-            val id = videoLink.inputId
+            val title = videoLink.inputTitle
+            val description = videoLink.inputDescription
             val image  = videoLink.inputImage
             val url = videoLink.inputUrl
-            videoLinkList.add(VideoLinkModel(id,url,image))
+            videoLinkList.add(VideoLinkModel(url, title, description, image))
         }
         this.videoLinkList = videoLinkList
     }
