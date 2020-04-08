@@ -10,6 +10,7 @@ ext {
             nps                             : ":features:common:nps",
 
             commonTradein                   : ":features:category:common_tradein",
+            kategori                        : ":features:category:kategori",
             agerestriction                  : ":features:category:age_restriction",
             tradeIn                         : ":features:category:tradein",
             basemvvm                        : ":features:category:basemvvm",

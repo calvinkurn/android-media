@@ -1033,11 +1033,11 @@ public class HomePageTracking {
     }
 
     public static void eventEnhanceImpressionPlayBanner(TrackingQueue trackingQueue, PlayCardViewModel playCardViewModel) {
-        trackingQueue.putEETracking((HashMap<String, Object>) playCardViewModel.getEnhanceImpressionPlayBanner(false));
+        trackingQueue.putEETracking((HashMap<String, Object>) playCardViewModel.getEnhanceImpressionPlayBanner());
     }
 
     public static HashMap<String, Object> eventEnhanceImpressionIrisPlayBanner(PlayCardViewModel playCardViewModel) {
-        return  (HashMap<String, Object>) playCardViewModel.getEnhanceImpressionIrisPlayBanner(true);
+        return  (HashMap<String, Object>) playCardViewModel.getEnhanceImpressionIrisPlayBanner();
     }
 
     public static void eventClickPlayBanner(PlayCardViewModel playCardViewModel) {
