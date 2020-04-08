@@ -82,6 +82,7 @@ data class PlayCardViewModel(
             return DataLayer.mapOf(
                     "event", "promoClick",
                     "eventCategory", "homepage-cmp",
+                    "channelId", playCardHome?.channelId,
                     "eventAction", "click on play dynamic banner",
                     "eventLabel", "Play-CMP_OTHERS_${playCardHome?.slug} - ${playCardHome?.channelId} - ${getLiveOrVod(playCardHome?.videoStream?.isLive)}",
                     "ecommerce", DataLayer.mapOf(
@@ -95,22 +96,40 @@ data class PlayCardViewModel(
 
     }
 
-    val enhanceImpressionPlayBanner: Map<String, Any>
-        get() {
-            val list: List<Any> = convertPromoEnhancePlayBanner(playCardHome)
-            return DataLayer.mapOf(
-                    "event", "promoView",
-                    "eventCategory", "homepage-cmp",
-                    "eventAction", "impression on play dynamic banner",
-                    "eventLabel", "Play-CMP_OTHERS_${playCardHome?.slug} - ${playCardHome?.channelId} - ${getLiveOrVod(playCardHome?.videoStream?.isLive)}",
-                    "ecommerce", DataLayer.mapOf(
-                    "promoView", DataLayer.mapOf(
-                    "promotions", DataLayer.listOf(
-                    *list.toTypedArray()
-            )
-            )
-            )
-            )
+
+    fun getEnhanceImpressionPlayBanner(): Map<String, Any> {
+        val list: List<Any> = convertPromoEnhancePlayBanner(playCardHome)
+        return DataLayer.mapOf(
+                "event", "promoView",
+                "eventCategory", "homepage-cmp",
+                "eventAction", "impression on play dynamic banner",
+                "eventLabel", "Play-CMP_OTHERS_${playCardHome?.slug} - ${playCardHome?.channelId} - ${getLiveOrVod(playCardHome?.videoStream?.isLive)}",
+                "ecommerce", DataLayer.mapOf(
+                "promoView", DataLayer.mapOf(
+                "promotions", DataLayer.listOf(
+                *list.toTypedArray()
+        )
+        )
+        )
+        )
+    }
+
+    fun getEnhanceImpressionIrisPlayBanner(): Map<String, Any> {
+        val list: List<Any> = convertPromoEnhancePlayBanner(playCardHome)
+        return DataLayer.mapOf(
+                "event", "promoViewIris" ,
+                "eventCategory", "homepage-cmp",
+                "eventAction", "impression on play dynamic banner",
+                "channelId", playCardHome?.channelId,
+                "eventLabel", "Play-CMP_OTHERS_${playCardHome?.slug} - ${playCardHome?.channelId} - ${getLiveOrVod(playCardHome?.videoStream?.isLive)}",
+                "ecommerce", DataLayer.mapOf(
+                "promoView", DataLayer.mapOf(
+                "promotions", DataLayer.listOf(
+                *list.toTypedArray()
+        )
+        )
+        )
+        )
     }
 
     private fun getLiveOrVod(isLive: Boolean?): String {

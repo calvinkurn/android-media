@@ -8,21 +8,28 @@ import com.tokopedia.abstraction.common.network.exception.ResponseDataNullExcept
 import com.tokopedia.abstraction.common.network.exception.ResponseErrorException
 import com.tokopedia.network.constant.ErrorNetMessage
 import com.tokopedia.notifcenter.data.entity.ProductStockHandler
+import com.tokopedia.notifcenter.data.mapper.GetNotificationUpdateMapper
+import com.tokopedia.notifcenter.data.model.NotificationViewData
 import com.tokopedia.notifcenter.domain.ProductStockHandlerUseCase
+import com.tokopedia.notifcenter.domain.SingleNotificationUpdateUseCase
 import com.tokopedia.notifcenter.util.coroutines.DispatcherProvider
 import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
 import com.tokopedia.notifcenter.domain.ProductStockHandlerUseCase.Companion.params as stockHandlerParam
+import com.tokopedia.notifcenter.domain.SingleNotificationUpdateUseCase.Companion.params as singleNotificationParams
 
 interface NotificationUpdateContract {
     fun isProductStockHandler(notificationId: String)
+    fun getSingleNotification(notificationId: String)
     fun onErrorMessage(throwable: Throwable)
 }
 
 class NotificationUpdateViewModel @Inject constructor(
         private val productStockHandlerUseCase: ProductStockHandlerUseCase,
+        private val singleNotificationUpdateUseCase: SingleNotificationUpdateUseCase,
+        private var notificationMapper: GetNotificationUpdateMapper,
         dispatcher: DispatcherProvider
 ) : BaseViewModel(dispatcher.io()), NotificationUpdateContract {
 
@@ -30,8 +37,20 @@ class NotificationUpdateViewModel @Inject constructor(
     val productStockHandler: LiveData<ProductStockHandler>
         get() = _productStockHandler
 
+    private val _singleNotification = MutableLiveData<NotificationViewData>()
+    val singleNotification: LiveData<NotificationViewData>
+        get() = _singleNotification
+
     private val _errorMessage = MutableLiveData<String>()
     val errorMessage: LiveData<String> get() = _errorMessage
+
+    override fun getSingleNotification(notificationId: String) {
+        val params = singleNotificationParams(notificationId)
+        singleNotificationUpdateUseCase.get(params, {
+            val data = notificationMapper.map(it)
+            _singleNotification.postValue(data)
+        }, ::onErrorMessage)
+    }
 
     override fun isProductStockHandler(notificationId: String) {
         val params = stockHandlerParam(notificationId)

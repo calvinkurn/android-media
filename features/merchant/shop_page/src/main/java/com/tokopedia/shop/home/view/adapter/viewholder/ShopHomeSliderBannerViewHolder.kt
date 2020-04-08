@@ -53,7 +53,9 @@ class ShopHomeSliderBannerViewHolder(
                 }
             }
         }
-
+        carouselShopPage?.post {
+            img.initialWidth = carouselShopPage?.measuredWidth
+        }
         img.setImageUrl(carouselItem.imageUrl, heightRatio = bannerData?.let { getHeightRatio(it) })
     }
 

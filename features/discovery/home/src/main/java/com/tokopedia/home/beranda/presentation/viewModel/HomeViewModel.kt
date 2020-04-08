@@ -72,6 +72,7 @@ open class HomeViewModel @Inject constructor(
         private val getBusinessWidgetTab: GetBusinessWidgetTab,
         private val getBusinessUnitDataUseCase: GetBusinessUnitDataUseCase,
         private val getDynamicChannelsUseCase: GetDynamicChannelsUseCase,
+        private val sendTopAdsUseCase: SendTopAdsUseCase,
         private val homeDispatcher: HomeDispatcherProvider
 ) : BaseViewModel(homeDispatcher.io()){
 
@@ -178,25 +179,6 @@ open class HomeViewModel @Inject constructor(
         getSearchHint(isFirstInstall)
     }
 
-    fun hitBannerImpression(slidesModel: BannerSlidesModel) {
-        if (!slidesModel.isImpressed && slidesModel.topadsViewUrl.isNotEmpty()) {
-            compositeSubscription.add(Observable.just(ImpresionTask(object : ImpressionListener {
-                        override fun onSuccess() {
-                            slidesModel.isImpressed = true
-                        }
-
-                        override fun onFailed() {
-                            slidesModel.isImpressed = false
-                        }
-                    }).execute(slidesModel.topadsViewUrl))
-                    .debounce(200, TimeUnit.MILLISECONDS)
-                    .subscribeOn(Schedulers.newThread())
-                    .unsubscribeOn(Schedulers.newThread())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe())
-        }
-    }
-
     fun sendGeolocationData() {
         sendGeolocationInfoUseCase.createObservable(RequestParams.EMPTY)
                 .subscribeOn(Schedulers.io())
@@ -274,7 +256,7 @@ open class HomeViewModel @Inject constructor(
                 headerViewModel.isTokoPointDataError = it
             }
             headerViewModel.isUserLogin = userSession.isLoggedIn
-            launch { updateWidget(UpdateLiveDataModel(ACTION_UPDATE, headerViewModel.copy(), currentPosition)) }
+            launch(coroutineContext) { updateWidget(UpdateLiveDataModel(ACTION_UPDATE, headerViewModel.copy(), currentPosition)) }
         }
 
     }
@@ -354,7 +336,7 @@ open class HomeViewModel @Inject constructor(
         newList.addAll(_homeLiveData.value?.list ?: listOf())
         val playIndex = newList.indexOfFirst { visitable -> visitable is PlayCardViewModel }
         if(playIndex != -1 && newList[playIndex] is PlayCardViewModel){
-            launch { updateWidget(UpdateLiveDataModel(ACTION_UPDATE, playCardViewModel, playIndex)) }
+            launch(coroutineContext) { updateWidget(UpdateLiveDataModel(ACTION_UPDATE, playCardViewModel, playIndex)) }
         }
     }
 
@@ -363,13 +345,13 @@ open class HomeViewModel @Inject constructor(
     fun clearPlayBanner(){
         val playIndex = _homeLiveData.value?.list.copy().indexOfFirst { visitable -> visitable is PlayCardViewModel }
         if(playIndex != -1) {
-            launch { updateWidget(UpdateLiveDataModel(ACTION_DELETE, null, playIndex )) }
+            launch(coroutineContext) { updateWidget(UpdateLiveDataModel(ACTION_DELETE, null, playIndex )) }
         }
     }
 
     fun onBannerClicked(slidesModel: BannerSlidesModel) {
         if (slidesModel.redirectUrl.isNotEmpty()) {
-            ImpresionTask().execute(slidesModel.redirectUrl)
+            sendTopAdsUseCase.executeOnBackground(slidesModel.redirectUrl)
         }
     }
 
@@ -394,7 +376,7 @@ open class HomeViewModel @Inject constructor(
             val newFindReviewViewModel = findReviewViewModel.copy(
                     suggestedProductReview = suggestedProductReview
             )
-            launch { updateWidget(UpdateLiveDataModel(ACTION_UPDATE, newFindReviewViewModel, indexOfReviewViewModel)) }
+            launch(coroutineContext) { updateWidget(UpdateLiveDataModel(ACTION_UPDATE, newFindReviewViewModel, indexOfReviewViewModel)) }
         }
     }
 
@@ -420,7 +402,7 @@ open class HomeViewModel @Inject constructor(
                 _homeLiveData.value?.list?.find { visitable -> visitable is ReviewViewModel }
                         ?: return
         if (findReviewViewModel is ReviewViewModel) {
-            launch { updateWidget(UpdateLiveDataModel(ACTION_DELETE, findReviewViewModel)) }
+            launch(coroutineContext) { updateWidget(UpdateLiveDataModel(ACTION_DELETE, findReviewViewModel)) }
         }
     }
 
@@ -428,15 +410,16 @@ open class HomeViewModel @Inject constructor(
         val homeViewModel = _homeLiveData.value
         val detectGeolocation = homeViewModel?.list?.find { visitable -> visitable is GeolocationPromptViewModel }
         (detectGeolocation as? GeolocationPromptViewModel)?.let {
-            launch { updateWidget(UpdateLiveDataModel(ACTION_DELETE, it)) }
+            launch(coroutineContext) { updateWidget(UpdateLiveDataModel(ACTION_DELETE, it)) }
         }
+        setNeedToShowGeolocationComponent(false)
     }
 
     fun onCloseTicker() {
         val homeViewModel = _homeLiveData.value
         val detectTicker = homeViewModel?.list?.find { visitable -> visitable is TickerViewModel }
         (detectTicker as? TickerViewModel)?.let {
-            launch { updateWidget(UpdateLiveDataModel(ACTION_DELETE, it)) }
+            launch(coroutineContext) { updateWidget(UpdateLiveDataModel(ACTION_DELETE, it)) }
         }
     }
 
@@ -685,9 +668,6 @@ open class HomeViewModel @Inject constructor(
     fun getFeedTabData() {
         launchCatchError(coroutineContext, block={
             val homeRecommendationTabs = getRecommendationTabUseCase.executeOnBackground()
-            val findLoadingModel = _homeLiveData.value?.list?.find {
-                visitable -> visitable is HomeLoadingMoreModel
-            }
             val findRetryModel = _homeLiveData.value?.list?.find {
                 visitable -> visitable is HomeRetryModel
             }
@@ -698,21 +678,15 @@ open class HomeViewModel @Inject constructor(
             if (findRecommendationModel != null) return@launchCatchError
 
             val homeRecommendationFeedViewModel = HomeRecommendationFeedViewModel()
-            homeRecommendationFeedViewModel.feedTabModel = homeRecommendationTabs
+            homeRecommendationFeedViewModel.recommendationTabDataModel = homeRecommendationTabs
             homeRecommendationFeedViewModel.isNewData = true
-            updateWidget(UpdateLiveDataModel(ACTION_DELETE, findLoadingModel as HomeVisitable?))
             updateWidget(UpdateLiveDataModel(ACTION_DELETE, findRetryModel as HomeVisitable?))
             updateWidget(UpdateLiveDataModel(ACTION_ADD, homeRecommendationFeedViewModel))
 
         }){
-            val findLoadingModel = _homeLiveData.value?.list?.find {
-                visitable -> visitable is HomeLoadingMoreModel
-            }
             val findRetryModel = _homeLiveData.value?.list?.find {
                 visitable -> visitable is HomeRetryModel
             }
-
-            updateWidget(UpdateLiveDataModel(ACTION_DELETE, findLoadingModel as HomeVisitable?))
             updateWidget(UpdateLiveDataModel(ACTION_DELETE, findRetryModel as HomeVisitable?))
             updateWidget(UpdateLiveDataModel(ACTION_ADD, HomeRetryModel()))
         }
@@ -785,6 +759,10 @@ open class HomeViewModel @Inject constructor(
         }){
             _stickyLogin.postValue(Result.error(it))
         }
+    }
+
+    fun sendTopAds(url: String){
+        sendTopAdsUseCase.executeOnBackground(url)
     }
 
     private fun getTokocashBalance() {

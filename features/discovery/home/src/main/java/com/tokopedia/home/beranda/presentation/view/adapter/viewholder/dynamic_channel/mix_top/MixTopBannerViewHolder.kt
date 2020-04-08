@@ -25,6 +25,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_c
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.pdpview.dataModel.SeeMorePdpDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.pdpview.listener.FlashSaleCardListener
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.pdpview.typeFactory.FlashSaleCardViewTypeFactoryImpl
+import com.tokopedia.home.util.setGradientBackground
 import com.tokopedia.productcard.ProductCardFlashSaleModel
 import com.tokopedia.productcard.v2.BlankSpaceConfig
 import com.tokopedia.unifycomponents.Toaster
@@ -60,16 +61,11 @@ class MixTopBannerViewHolder(
         mappingView(channel)
     }
 
-    override fun bind(element: DynamicChannelViewModel?, payloads: MutableList<Any>) {
-        super.bind(element, payloads)
-        val channel = element?.channel
-        element?.let {
-            channel?.let {channel->
-                val visitables = mappingVisitablesFromChannel(channel)
-                mappingHeader(channel)
-                mappingItem(channel, visitables)
-            }
-        }
+    override fun setupContent(channel: DynamicHomeChannel.Channels, payloads: MutableList<Any>) {
+        super.setupContent(channel, payloads)
+        val visitables = mappingVisitablesFromChannel(channel)
+        mappingHeader(channel)
+        mappingItem(channel, visitables)
     }
 
     override fun getViewHolderClassName(): String {
@@ -118,16 +114,9 @@ class MixTopBannerViewHolder(
         val bannerItem = channel.banner
         val ctaData = channel.banner.cta
         var textColor = ContextCompat.getColor(bannerTitle.context, R.color.Neutral_N50)
-        var backColor: Int = ContextCompat.getColor(bannerTitle.context, R.color.Neutral_N50)
         if(bannerItem.textColor.isNotEmpty()){
             try {
                 textColor = Color.parseColor(bannerItem.textColor)
-            } catch (e: IllegalArgumentException) { }
-        }
-
-        if(bannerItem.backColor.isNotEmpty()) {
-            try {
-                backColor = Color.parseColor(bannerItem.backColor)
             } catch (e: IllegalArgumentException) { }
         }
 
@@ -135,8 +124,7 @@ class MixTopBannerViewHolder(
         bannerTitle.visibility = if(bannerItem.title.isEmpty()) View.GONE else View.VISIBLE
         bannerDescription.text = bannerItem.description
         bannerDescription.visibility = if(bannerItem.description.isEmpty()) View.GONE else View.VISIBLE
-
-        background.setBackgroundColor(backColor)
+        background.setGradientBackground(bannerItem.gradientColor)
         bannerTitle.setTextColor(textColor)
         bannerDescription.setTextColor(textColor)
 
@@ -235,7 +223,15 @@ class MixTopBannerViewHolder(
                             pdpViewCount = element.productViewCountFormatted,
                             stockBarLabel = element.label,
                             isTopAds = element.isTopads,
-                            stockBarPercentage = element.soldPercentage
+                            stockBarPercentage = element.soldPercentage,
+                            labelGroupList = element.labelGroup.map {
+                                ProductCardFlashSaleModel.LabelGroup(
+                                        position = it.position,
+                                        title = it.title,
+                                        type = it.type
+                                )
+                            },
+                            isOutOfStock = element.isOutOfStock
                     ),
                     blankSpaceConfig = BlankSpaceConfig(),
                     grid = element,

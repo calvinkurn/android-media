@@ -9,6 +9,7 @@ import com.tokopedia.dynamicfeatures.DFInstallerActivity.Companion.DOWNLOAD_MODE
 import com.tokopedia.dynamicfeatures.config.DFRemoteConfig
 import com.tokopedia.dynamicfeatures.constant.CommonConstant
 import com.tokopedia.dynamicfeatures.service.DFDownloader
+import com.tokopedia.dynamicfeatures.service.DFErrorCache
 import com.tokopedia.dynamicfeatures.service.DFQueue
 import com.tokopedia.dynamicfeatures.track.DFTracking
 import com.tokopedia.dynamicfeatures.utils.DFInstallerLogUtil
@@ -61,6 +62,8 @@ object DFInstaller {
         fun onInstalling(state: SplitInstallSessionState)
         fun onFailed(errorString: String)
         fun getModuleNameView(): String
+        fun getDeeplink(): String
+        fun getFallbackUrl(): String
     }
 
     @JvmStatic
@@ -77,14 +80,23 @@ object DFInstaller {
     }
 
     suspend fun startInstallInBackground(context: Context,
-                                         moduleNames: List<String>,
+                                         moduleName: String,
                                          onSuccessInstall: (() -> Unit)? = null,
                                          onFailedInstall: (() -> Unit)? = null): Pair<Boolean, Boolean> {
         return withContext(Dispatchers.IO) {
+            if (getView() == null) { // no foreground activity
+                // check max retry
+                val maxRetry = DFRemoteConfig.getConfig(context).downloadInBackgroundMaxRetry
+                val errorCount = DFErrorCache.getErrorCounter(context, moduleName)
+                if (errorCount >= maxRetry) {
+                    return@withContext (true to true)
+                }
+            }
+
             val applicationContext = context.applicationContext
             resetDFInfo()
 
-            val moduleNameToDownload = getFilteredModuleList(context, moduleNames)
+            val moduleNameToDownload = getFilteredModuleList(context, listOf(moduleName))
             if (moduleNameToDownload.isEmpty()) return@withContext (true to false)
 
             val requestBuilder = SplitInstallRequest.newBuilder()
@@ -115,14 +127,17 @@ object DFInstaller {
                     getManager(applicationContext)?.startInstall(request)?.addOnSuccessListener {
                         if (it == 0) {
                             // success
-                            onSuccessInstall(context, moduleNameToDownload.first(), onSuccessInstall, continuation)
+                            onSuccessInstall(context, moduleName, onSuccessInstall, continuation)
                         } else {
                             sessionId = it
                         }
                     }?.addOnFailureListener {
                         val errorCode = (it as? SplitInstallException)?.errorCode
                         val errorString = errorCode?.toString() ?: it.toString()
-                        onErrorInstall(context, errorString, moduleNameToDownload.first(), onFailedInstall, continuation)
+                        onErrorInstall(context, errorString, moduleName, onFailedInstall, continuation)
+                        if (getView() == null) {
+                            DFErrorCache.addErrorCounter(context, moduleName)
+                        }
                     }
                 }
             }
@@ -138,6 +153,8 @@ object DFInstaller {
         if (view != null && view.getModuleNameView() == moduleName) {
             view.onInstalled()
             tag = DOWNLOAD_MODE_PAGE
+            deeplink = view.getDeeplink()
+            fallbackUrl = view.getFallbackUrl()
         } else {
             tag = DOWNLOAD_MODE_BACKGROUND
         }
@@ -152,12 +169,14 @@ object DFInstaller {
         sessionId = null
         val viewRef = viewRef
         val view = viewRef?.get()
-        var tag: String
+        val tag: String
         if (view != null && view.getModuleNameView() == moduleName) {
             view.onFailed(errorString)
             // to stop download other DFs in queue
             DFQueue.clear(context)
             tag = DOWNLOAD_MODE_PAGE
+            deeplink = view.getDeeplink()
+            fallbackUrl = view.getFallbackUrl()
         } else {
             tag = DOWNLOAD_MODE_BACKGROUND
         }
@@ -199,7 +218,7 @@ object DFInstaller {
     private fun logDeferredStatus(context: Context, message: String, moduleNames: List<String>, errorCode: List<String> = emptyList()) {
         val errorCodeTemp = ErrorUtils.getValidatedErrorCode(context, errorCode, freeInternalSpaceBeforeDownload)
         DFInstallerLogUtil.logStatus(context, TAG_DFM_DEFERRED, message, moduleNames.joinToString(),
-            freeInternalSpaceBeforeDownload, moduleSize, errorCodeTemp, 0, false)
+            freeInternalSpaceBeforeDownload, moduleSize, errorCodeTemp, 1, false)
     }
 
     /**
@@ -245,7 +264,7 @@ object DFInstaller {
     }
 
     private fun logFailedStatus(tag: String, context: Context, moduleNameToDownload: List<String>,
-                        errorCode: List<String> = emptyList()) {
+                                errorCode: List<String> = emptyList()) {
         val errorCodeTemp = ErrorUtils.getValidatedErrorCode(context, errorCode, freeInternalSpaceBeforeDownload)
         DFTracking.trackDownloadDF(moduleNameToDownload, errorCodeTemp, tag == DOWNLOAD_MODE_BACKGROUND)
         DFInstallerLogUtil.logStatus(context, CommonConstant.DFM_TAG, tag, moduleNameToDownload.joinToString(),

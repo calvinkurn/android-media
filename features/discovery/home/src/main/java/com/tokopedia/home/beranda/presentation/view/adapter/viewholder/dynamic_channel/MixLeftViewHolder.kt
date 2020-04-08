@@ -21,6 +21,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_c
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.pdpview.dataModel.FlashSaleDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.pdpview.listener.FlashSaleCardListener
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.pdpview.typeFactory.FlashSaleCardViewTypeFactoryImpl
+import com.tokopedia.home.util.setGradientBackground
 import com.tokopedia.productcard.ProductCardFlashSaleModel
 import com.tokopedia.productcard.utils.getMaxHeightForGridView
 import com.tokopedia.productcard.v2.BlankSpaceConfig
@@ -70,7 +71,6 @@ class MixLeftViewHolder (itemView: View, val homeCategoryListener: HomeCategoryL
     }
 
     override fun onBannerSeeMoreClicked(applink: String, channel: DynamicHomeChannel.Channels) {
-        RouteManager.route(itemView.context, applink)
         HomePageTrackingV2.MixLeft.sendMixLeftClickLoadMore(channel)
     }
 
@@ -84,9 +84,7 @@ class MixLeftViewHolder (itemView: View, val homeCategoryListener: HomeCategoryL
     }
 
     private fun setupBackground(channel: DynamicHomeChannel.Channels) {
-        if (channel.banner.backColor.isNotEmpty()) {
-            parallaxBackground.setBackgroundColor(Color.parseColor(channel.banner.backColor))
-        }
+        parallaxBackground.setGradientBackground(channel.banner.gradientColor)
         if (channel.banner.imageUrl.isNotEmpty()) {
             image.loadImage(channel.banner.imageUrl)
         }
@@ -94,6 +92,7 @@ class MixLeftViewHolder (itemView: View, val homeCategoryListener: HomeCategoryL
 
     private fun setupList(channel: DynamicHomeChannel.Channels) {
         image.alpha = 1f
+        recyclerView.resetLayout()
         layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
         recyclerView.layoutManager = layoutManager
         val typeFactoryImpl = FlashSaleCardViewTypeFactoryImpl(channel)
@@ -104,7 +103,6 @@ class MixLeftViewHolder (itemView: View, val homeCategoryListener: HomeCategoryL
 
         adapter = MixLeftAdapter(listData,typeFactoryImpl)
         recyclerView.adapter = adapter
-        recyclerView.setHasFixedSize(true)
         launch {
             try {
                 recyclerView.setHeightBasedOnProductCardMaxHeight(productDataList.map {it.productModel})
@@ -157,7 +155,15 @@ class MixLeftViewHolder (itemView: View, val homeCategoryListener: HomeCategoryL
                             pdpViewCount = element.productViewCountFormatted,
                             stockBarLabel = element.label,
                             isTopAds = element.isTopads,
-                            stockBarPercentage = element.soldPercentage
+                            stockBarPercentage = element.soldPercentage,
+                            labelGroupList = element.labelGroup.map {
+                                ProductCardFlashSaleModel.LabelGroup(
+                                        position = it.position,
+                                        title = it.title,
+                                        type = it.type
+                                )
+                            },
+                            isOutOfStock = element.isOutOfStock
                     ),
                     blankSpaceConfig = BlankSpaceConfig(),
                     grid = element,
@@ -166,6 +172,12 @@ class MixLeftViewHolder (itemView: View, val homeCategoryListener: HomeCategoryL
             ))
         }
         return list
+    }
+
+    private fun RecyclerView.resetLayout() {
+        val carouselLayoutParams = this.layoutParams
+        carouselLayoutParams?.height = RecyclerView.LayoutParams.WRAP_CONTENT
+        this.layoutParams = carouselLayoutParams
     }
 
     private suspend fun RecyclerView.setHeightBasedOnProductCardMaxHeight(

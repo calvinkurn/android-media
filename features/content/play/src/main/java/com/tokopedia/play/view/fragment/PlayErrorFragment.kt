@@ -15,6 +15,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.play.ERR_STATE_GLOBAL
 import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.R
 import com.tokopedia.play.analytic.PlayAnalytics
@@ -127,9 +128,6 @@ class PlayErrorFragment: BaseDaggerFragment(), CoroutineScope {
     private fun showGlobalError(throwable: Throwable) {
         throwable.message?.let {
             when(GlobalErrorCodeWrapper.wrap(it)) {
-                is GlobalErrorCodeWrapper.Unknown -> {
-                    return
-                }
                 is GlobalErrorCodeWrapper.NotFound -> {
                     globalError.setType(GlobalError.PAGE_NOT_FOUND)
                     globalError.setActionClickListener {
@@ -144,14 +142,15 @@ class PlayErrorFragment: BaseDaggerFragment(), CoroutineScope {
                         playViewModel.getChannelInfo(channelId)
                     }
                 }
-                is GlobalErrorCodeWrapper.ServerError -> {
+                is GlobalErrorCodeWrapper.ServerError,
+                is GlobalErrorCodeWrapper.Unknown -> {
                     globalError.setType(GlobalError.SERVER_ERROR)
                     globalError.setActionClickListener {
                         playViewModel.getChannelInfo(channelId)
                     }
                 }
             }
-            PlayAnalytics.errorState(channelId, globalError.errorDescription.text.toString(), playViewModel.channelType)
+            PlayAnalytics.errorState(channelId, "$ERR_STATE_GLOBAL: ${globalError.errorDescription.text}", playViewModel.channelType)
             container.visible()
         }
     }

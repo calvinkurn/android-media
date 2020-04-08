@@ -52,7 +52,7 @@ class HomeVisitableFactoryImpl(val userSessionInterface: UserSessionInterface) :
     }
 
     override fun addBannerVisitable(): HomeVisitableFactory {
-        val bannerViewModel = BannerViewModel()
+        val bannerViewModel = HomepageBannerDataModel()
         val bannerDataModel = homeData?.banner
         bannerViewModel.isCache = isCache
 
@@ -89,20 +89,22 @@ class HomeVisitableFactoryImpl(val userSessionInterface: UserSessionInterface) :
     }
 
     override fun addTickerVisitable(): HomeVisitableFactory {
-        val tmpTickers = ArrayList<Ticker.Tickers>()
-        val tickers = homeData?.ticker?.tickers
-        if (!HomeFragment.HIDE_TICKER) {
-            tickers?.let {
-                for (tmpTicker in tickers) {
-                    if (tmpTicker.layout != StickyLoginConstant.LAYOUT_FLOATING) {
-                        tmpTickers.add(tmpTicker)
+        if (!isCache) {
+            val tmpTickers = ArrayList<Ticker.Tickers>()
+            val tickers = homeData?.ticker?.tickers
+            if (!HomeFragment.HIDE_TICKER) {
+                tickers?.let {
+                    for (tmpTicker in tickers) {
+                        if (tmpTicker.layout != StickyLoginConstant.LAYOUT_FLOATING) {
+                            tmpTickers.add(tmpTicker)
+                        }
                     }
-                }
-                if (tmpTickers.isNotEmpty()) {
-                    val viewModel = TickerViewModel()
-                    viewModel.tickers = tmpTickers
+                    if (tmpTickers.isNotEmpty()) {
+                        val viewModel = TickerViewModel()
+                        viewModel.tickers = tmpTickers
 
-                    visitableList.add(viewModel)
+                        visitableList.add(viewModel)
+                    }
                 }
             }
         }
@@ -227,7 +229,7 @@ class HomeVisitableFactoryImpl(val userSessionInterface: UserSessionInterface) :
                             trackingData = ProductHighlightTracking.getProductHighlightImpression(channel)) }
                 DynamicHomeChannel.Channels.LAYOUT_POPULAR_KEYWORD -> {createPopularKeywordChannel(channel = channel)}
                 DynamicHomeChannel.Channels.LAYOUT_DEFAULT_ERROR -> { createDynamicChannel(channel = channel) }
-                DynamicHomeChannel.Channels.LAYOUT_REVIEW -> { createReviewWidget() }
+                DynamicHomeChannel.Channels.LAYOUT_REVIEW -> { createReviewWidget(channel = channel) }
                 DynamicHomeChannel.Channels.LAYOUT_PLAY_BANNER -> { createPlayWidget(channel) }
                 DynamicHomeChannel.Channels.LAYOUT_MIX_TOP -> { createDynamicChannel(
                         channel,
@@ -327,8 +329,8 @@ class HomeVisitableFactoryImpl(val userSessionInterface: UserSessionInterface) :
         }
     }
 
-    private fun createReviewWidget() {
-        if (!isCache) visitableList.add(ReviewViewModel())
+    private fun createReviewWidget(channel: DynamicHomeChannel.Channels) {
+        if (!isCache) visitableList.add(ReviewViewModel(channel = channel))
     }
 
     private fun createDynamicTopAds(channel: DynamicHomeChannel.Channels) {

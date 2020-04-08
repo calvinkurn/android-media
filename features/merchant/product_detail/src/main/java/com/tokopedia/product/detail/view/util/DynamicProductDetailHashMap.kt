@@ -54,9 +54,6 @@ class DynamicProductDetailHashMap(private val context: Context, private val mapO
     val productLastSeenMap: ProductLastSeenDataModel?
         get() = mapOfData[ProductDetailConstant.PRODUCT_LAST_SEEN] as? ProductLastSeenDataModel
 
-    val productVariantInfoMap: ProductGeneralInfoDataModel?
-        get() = mapOfData[ProductDetailConstant.PRODUCT_VARIANT_INFO] as? ProductGeneralInfoDataModel
-
     val productWholesaleInfoMap: ProductGeneralInfoDataModel?
         get() = mapOfData[ProductDetailConstant.PRODUCT_WHOLESALE_INFO] as? ProductGeneralInfoDataModel
 
@@ -149,21 +146,8 @@ class DynamicProductDetailHashMap(private val context: Context, private val mapO
                  * Sometimes this lastUpdateUnix doesn't has Long value like "123"
                  * If P1 updated by selected variant this value will be formatted dated "dd-mm-yyy , hh:mm"
                  */
-                val isLongFormat = try {
-                    it.data.price.lastUpdateUnix.toLong()
-                    true
-                } catch (e: Throwable) {
-                    false
-                }
-
-                lastSeen = if (isLongFormat) {
-                    val date = Date(it.data.price.lastUpdateUnix.toLong() * 1000)
-                    val dateString = date.toFormattedString("dd-MM-yyyy , HH:mm")
-                    "$dateString WIB"
-                } else {
-                    it.data.price.lastUpdateUnix
-                }
-
+                val dateFormatted = it.data.price.lastUpdateUnix toDate "dd-MM-yyy , HH:mm"
+                lastSeen = "$dateFormatted WIB"
             }
         }
     }
@@ -293,19 +277,6 @@ class DynamicProductDetailHashMap(private val context: Context, private val mapO
     fun updateImageAfterClickVariant(it: MutableList<Media>) {
         snapShotMap?.run {
             media = DynamicProductDetailMapper.convertMediaToDataModel(it)
-        }
-    }
-
-    fun updateVariantInfo(productVariant: ProductVariant, selectedOptionString: String) {
-        productVariantInfoMap?.run {
-            data.first().subtitle =
-                    if (selectedOptionString.isEmpty()) {
-                        "Pilih " +
-                                productVariant.variant.map { it.name }.joinToStringWithLast(separator = ", ",
-                                        lastSeparator = " dan ")
-                    } else {
-                        selectedOptionString
-                    }
         }
     }
 

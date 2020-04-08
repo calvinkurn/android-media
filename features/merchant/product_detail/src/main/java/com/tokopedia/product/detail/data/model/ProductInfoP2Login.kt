@@ -11,8 +11,7 @@ data class ProductInfoP2Login (
         var isWishlisted: Boolean = false,
         var pdpAffiliate: TopAdsPdpAffiliateResponse.TopAdsPdpAffiliate.Data.PdpAffiliate? = null,
         var cartType: String = CART_TYPE_DEFAULT,
-        var topAdsGetProductManage: TopAdsGetProductManage = TopAdsGetProductManage(),
-        var newCartTypeResponse: CartRedirectionResponse = CartRedirectionResponse()
+        var topAdsGetProductManage: TopAdsGetProductManage = TopAdsGetProductManage()
 ){
     val isExpressCheckoutType: Boolean
         get() {

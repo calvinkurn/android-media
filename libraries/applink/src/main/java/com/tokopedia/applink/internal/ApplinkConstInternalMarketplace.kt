@@ -105,6 +105,15 @@ object ApplinkConstInternalMarketplace {
     @JvmField
     val SHOP_PAGE = "$INTERNAL_MARKETPLACE/shop-page/{shop_id}/"
 
+    @JvmField
+    val SHOP_PAGE_HOME = "$INTERNAL_MARKETPLACE/shop-page/{shop_id}/home"
+
+    @JvmField
+    val SHOP_PAGE_INFO = "$INTERNAL_MARKETPLACE/shop-page/{shop_id}/info"
+
+    @JvmField
+    val SHOP_PAGE_PRODUCT_LIST = "$INTERNAL_MARKETPLACE/shop-page-product-list/{shop_id}/etalase/{etalase_id}/"
+
     //ReviewShopInfoActiviy
     @JvmField
     val SHOP_REVIEW_APPLINK = "$INTERNAL_MARKETPLACE/shop/{shop_id}/review"
@@ -188,6 +197,12 @@ object ApplinkConstInternalMarketplace {
     @JvmField
     val NOTIFICATION_CENTER = "$INTERNAL_MARKETPLACE/notification"
 
+    @JvmField
+    val NOTIFICATION_BUYER_INFO = "$INTERNAL_MARKETPLACE/notif-center"
+
+    @JvmField
+    val NOTIFICATION_BUYER_INFO_WITH_ID = "$INTERNAL_MARKETPLACE/notif-center/{id}/"
+
     // PowerMerchantSubscribeActivity
     @JvmField
     val POWER_MERCHANT_SUBSCRIBE = "$INTERNAL_MARKETPLACE/power-merchant-subscribe"
@@ -207,5 +222,8 @@ object ApplinkConstInternalMarketplace {
 
     @JvmField
     val PARAM_IS_NEED_LOC = "IS_NEED_LOC"
+
+    @JvmField
+    val PARAM_FIRST_CREATE_SHOP = "FIRST_CREATE_SHOP"
 
 }

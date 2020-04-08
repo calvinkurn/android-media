@@ -159,6 +159,11 @@ class PlayBottomSheetFragment : BaseDaggerFragment(), CoroutineScope {
         trackingQueue.sendAll()
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        job.cancel()
+    }
+
     private fun observeProductSheetContent() {
         playViewModel.observableProductSheetContent.observe(viewLifecycleOwner, Observer {
             launch {
@@ -363,7 +368,7 @@ class PlayBottomSheetFragment : BaseDaggerFragment(), CoroutineScope {
     private fun pushParentPlayBySheetHeight(productSheetHeight: Int) {
         val statusBarHeight = view?.let { DisplayMetricUtils.getStatusBarHeight(it.context) }.orZero()
         val requiredMargin = offset16
-        playFragment.onBottomInsetsViewShown(getScreenHeight() - (productSheetHeight + statusBarHeight + requiredMargin))
+        playFragment.onBottomInsetsViewShown(requireView().height - (productSheetHeight + statusBarHeight + requiredMargin))
     }
 
     private fun handleLoginInteractionEvent(loginInteractionEvent: LoginStateEvent) {
