@@ -1,6 +1,5 @@
 package com.tokopedia.home.test.widgets
 
-import android.util.Log
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -71,7 +70,14 @@ class PlayBannerUITest {
 
     private val context = InstrumentationRegistry.getInstrumentation().context
     private lateinit var viewModel: HomeViewModel
-
+    
+    companion object{
+        private val CONTAINER = R.id.play_frame_layout
+        private val TITLE = R.id.title
+        private val TITLE_CONTENT = R.id.title_play
+        
+    }
+    
     @Before
     fun setup(){
         every { userSessionInterface.isLoggedIn } returns false
@@ -84,22 +90,19 @@ class PlayBannerUITest {
         coEvery { getHomeUseCase.updateHomeData() } returns flow {  }
         coEvery { getHomeUseCase.getHomeData() } returns flow {
             emit(homeDataMapper.mapToHomeViewModel(homeData, false))
-            Log.d("testNoSkeleton", "Flow emit masuk")
         }
         viewModel = reInitViewModel()
-        Log.d("testNoSkeleton", viewModel.toString())
         val homeFragment = HomeFragmentTest(createViewModelFactory(viewModel))
 
         activityRule.activity.setupFragment(homeFragment)
         Thread.sleep(5000)
-        onView(withId(R.id.play_frame_layout)).check(doesNotExist())
+        onView(withId(CONTAINER)).check(doesNotExist())
     }
 
     @Test
     fun testHappyPathPlayBannerUI(){
         val json = GraphqlHelper.loadRawString(context.resources, com.tokopedia.home.test.R.raw.play_widget_json)
         val homeData = Gson().fromJson<HomeData>(json, HomeData::class.java)
-        Log.d("testNoSkeleton", "Home data init " + homeData.dynamicHomeChannel.toString())
         coEvery { getPlayLiveDynamicUseCase.executeOnBackground() } returns PlayData(
                 listOf(
                         PlayChannel(
@@ -121,19 +124,17 @@ class PlayBannerUITest {
         coEvery { getHomeUseCase.updateHomeData() } returns flow {  }
         coEvery { getHomeUseCase.getHomeData() } returns flow {
             emit(homeDataMapper.mapToHomeViewModel(homeData, false))
-            Log.d("testNoSkeleton", "Flow emit masuk")
         }
         viewModel = reInitViewModel()
-        Log.d("testNoSkeleton", viewModel.toString())
         val homeFragment = HomeFragmentTest(createViewModelFactory(viewModel))
 
         activityRule.activity.setupFragment(homeFragment)
         Thread.sleep(1000)
-        onView(withId(R.id.play_frame_layout)).check(matches(not(isDisplayed())))
+        onView(withId(CONTAINER)).check(matches(not(isDisplayed())))
         Thread.sleep(50000)
-        onView(withId(R.id.title)).check(matches(isDisplayed()))
-        onView(withId(R.id.title)).check(matches(withText("Play Widget")))
-        onView(withId(R.id.title_play)).check(matches(withText("Channel 1")))
+        onView(withId(TITLE)).check(matches(isDisplayed()))
+        onView(withId(TITLE)).check(matches(withText("Play Widget")))
+        onView(withId(TITLE_CONTENT)).check(matches(withText("Channel 1")))
         Thread.sleep(5000)
     }
 
@@ -142,11 +143,9 @@ class PlayBannerUITest {
     fun testNotValidImageUrlFromBackend(){
         val json = GraphqlHelper.loadRawString(context.resources, com.tokopedia.home.test.R.raw.home_empty_dynamic_channel_json)
         val homeData = Gson().fromJson<HomeData>(json, HomeData::class.java)
-        Log.d("testNoSkeleton", "Home data init " + homeData.dynamicHomeChannel.toString())
         coEvery { getHomeUseCase.updateHomeData() } returns flow {  }
         coEvery { getHomeUseCase.getHomeData() } returns flow {
             emit(homeDataMapper.mapToHomeViewModel(homeData, false))
-            Log.d("testNoSkeleton", "Flow emit masuk")
         }
         coEvery { getPlayLiveDynamicUseCase.executeOnBackground() } returns PlayData(
                 listOf(
@@ -171,7 +170,7 @@ class PlayBannerUITest {
 
         activityRule.activity.setupFragment(homeFragment)
         Thread.sleep(5000)
-        onView(withId(R.id.play_frame_layout)).check(matches(not(isDisplayed())))
+        onView(withId(CONTAINER)).check(matches(not(isDisplayed())))
         Thread.sleep(5000)
     }
 
@@ -179,11 +178,9 @@ class PlayBannerUITest {
     fun testNoReturnDataPlayFromBackend(){
         val json = GraphqlHelper.loadRawString(context.resources, com.tokopedia.home.test.R.raw.home_empty_dynamic_channel_json)
         val homeData = Gson().fromJson<HomeData>(json, HomeData::class.java)
-        Log.d("testNoSkeleton", "Home data init " + homeData.dynamicHomeChannel.toString())
         coEvery { getHomeUseCase.updateHomeData() } returns flow {  }
         coEvery { getHomeUseCase.getHomeData() } returns flow {
             emit(homeDataMapper.mapToHomeViewModel(homeData, false))
-            Log.d("testNoSkeleton", "Flow emit masuk")
         }
         coEvery { getPlayLiveDynamicUseCase.executeOnBackground() } returns PlayData(
                 listOf()
@@ -193,7 +190,7 @@ class PlayBannerUITest {
 
         activityRule.activity.setupFragment(homeFragment)
         Thread.sleep(5000)
-        onView(withId(R.id.play_frame_layout)).check(matches(not(isDisplayed())))
+        onView(withId(CONTAINER)).check(matches(not(isDisplayed())))
         Thread.sleep(5000)
     }
 
@@ -201,11 +198,9 @@ class PlayBannerUITest {
     fun testErrorDataPlayFromBackend(){
         val json = GraphqlHelper.loadRawString(context.resources, com.tokopedia.home.test.R.raw.home_empty_dynamic_channel_json)
         val homeData = Gson().fromJson<HomeData>(json, HomeData::class.java)
-        Log.d("testNoSkeleton", "Home data init " + homeData.dynamicHomeChannel.toString())
         coEvery { getHomeUseCase.updateHomeData() } returns flow {  }
         coEvery { getHomeUseCase.getHomeData() } returns flow {
             emit(homeDataMapper.mapToHomeViewModel(homeData, false))
-            Log.d("testNoSkeleton", "Flow emit masuk")
         }
         coEvery { getPlayLiveDynamicUseCase.executeOnBackground() } throws RuntimeException()
         viewModel = reInitViewModel()
@@ -213,7 +208,7 @@ class PlayBannerUITest {
 
         activityRule.activity.setupFragment(homeFragment)
         Thread.sleep(5000)
-        onView(withId(R.id.play_frame_layout)).check(matches(not(isDisplayed())))
+        onView(withId(CONTAINER)).check(matches(not(isDisplayed())))
         Thread.sleep(5000)
     }
 
@@ -254,13 +249,13 @@ class PlayBannerUITest {
 
         activityRule.activity.setupFragment(homeFragment)
         Thread.sleep(3000)
-        onView(withId(R.id.play_frame_layout)).check(doesNotExist())
+        onView(withId(CONTAINER)).check(doesNotExist())
         Thread.sleep(4000)
-        onView(withId(R.id.play_frame_layout)).check(matches(isDisplayed()))
+        onView(withId(CONTAINER)).check(matches(isDisplayed()))
         Thread.sleep(2000)
-        onView(withId(R.id.title)).check(matches(isDisplayed()))
-        onView(withId(R.id.title)).check(matches(withText("Play Widget")))
-        onView(withId(R.id.title_play)).check(matches(withText("Channel 1")))
+        onView(withId(TITLE)).check(matches(isDisplayed()))
+        onView(withId(TITLE)).check(matches(withText("Play Widget")))
+        onView(withId(TITLE_CONTENT)).check(matches(withText("Channel 1")))
     }
 
     @Test
@@ -317,24 +312,23 @@ class PlayBannerUITest {
 
         activityRule.activity.setupFragment(homeFragment)
         Thread.sleep(2000)
-        onView(withId(R.id.play_frame_layout)).check(matches(isDisplayed()))
+        onView(withId(CONTAINER)).check(matches(isDisplayed()))
         Thread.sleep(1000)
-        onView(withId(R.id.title)).check(matches(isDisplayed()))
-        onView(withId(R.id.title)).check(matches(withText("Play Widget")))
-        onView(withId(R.id.title_play)).check(matches(withText("Channel 1")))
+        onView(withId(TITLE)).check(matches(isDisplayed()))
+        onView(withId(TITLE)).check(matches(withText("Play Widget")))
+        onView(withId(TITLE_CONTENT)).check(matches(withText("Channel 1")))
         Thread.sleep(2000)
-        onView(withId(R.id.play_frame_layout)).check(matches(isDisplayed()))
+        onView(withId(CONTAINER)).check(matches(isDisplayed()))
         Thread.sleep(1000)
-        onView(withId(R.id.title)).check(matches(isDisplayed()))
-        onView(withId(R.id.title)).check(matches(withText("Play Widget")))
-        onView(withId(R.id.title_play)).check(matches(withText("Channel 2")))
+        onView(withId(TITLE)).check(matches(isDisplayed()))
+        onView(withId(TITLE)).check(matches(withText("Play Widget")))
+        onView(withId(TITLE_CONTENT)).check(matches(withText("Channel 2")))
     }
 
     private fun <T : ViewModel> createViewModelFactory(viewModel: T): ViewModelProvider.Factory {
         return object : ViewModelProvider.Factory {
             override fun <T : ViewModel> create(viewModelClass: Class<T>): T {
                 if (viewModelClass.isAssignableFrom(viewModel.javaClass)) {
-                    Log.d("testNoSkeleton", "Masuk custom view model factory")
                     @Suppress("UNCHECKED_CAST")
                     return viewModel as T
                 }

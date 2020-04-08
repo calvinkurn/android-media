@@ -3,6 +3,7 @@ package com.tokopedia.home.viewModel.homepage
 import androidx.lifecycle.Observer
 import com.tokopedia.home.beranda.data.usecase.HomeUseCase
 import com.tokopedia.home.beranda.domain.interactor.GetHomeReviewSuggestedUseCase
+import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.domain.model.review.SuggestedProductReview
 import com.tokopedia.home.beranda.domain.model.review.SuggestedProductReviewResponse
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDataModel
@@ -56,7 +57,7 @@ class HomeViewModelReviewUnitTest : Spek({
         }
 
         Scenario("Test Review is visible") {
-            val review = ReviewDataModel()
+            val review = ReviewDataModel(channel = DynamicHomeChannel.Channels())
             val observerHome: Observer<HomeDataModel> = mockk(relaxed = true)
 
             Given("Populate data viewmodel") {
@@ -84,7 +85,7 @@ class HomeViewModelReviewUnitTest : Spek({
         }
 
         Scenario("Test Review with data product") {
-            val review = ReviewDataModel()
+            val review = ReviewDataModel(channel = DynamicHomeChannel.Channels())
             val observerHome: Observer<HomeDataModel> = mockk(relaxed = true)
 
             val getHomeReviewSuggestedUseCase by memoized<GetHomeReviewSuggestedUseCase>()
@@ -122,7 +123,7 @@ class HomeViewModelReviewUnitTest : Spek({
             }
         }
         Scenario("Test Review with data product and close the widget") {
-            val review = ReviewDataModel()
+            val review = ReviewDataModel(channel = DynamicHomeChannel.Channels())
             val observerHome: Observer<HomeDataModel> = mockk(relaxed = true)
 
             val getHomeReviewSuggestedUseCase by memoized<GetHomeReviewSuggestedUseCase>()

@@ -31,7 +31,7 @@ class HomeViewModelPopularKeywordUnitTest : Spek({
             val popular = PopularKeywordListDataModel()
             val observerHome: Observer<HomeDataModel> = mockk(relaxed = true)
 
-            Given("Data with geolocation") {
+            Given("Populate empty data") {
                 getHomeUseCase.givenGetHomeDataReturn(
                         HomeDataModel(
                                 list = listOf()
@@ -44,7 +44,7 @@ class HomeViewModelPopularKeywordUnitTest : Spek({
                 homeViewModel.homeLiveData.observeForever(observerHome)
             }
 
-            Then("Expect geolocation will show on user screen") {
+            Then("Expect popular widget not show on user screen") {
                 verifyOrder {
                     // check on home data initial first channel is dynamic channel
                     observerHome.onChanged(match {
@@ -59,7 +59,7 @@ class HomeViewModelPopularKeywordUnitTest : Spek({
             val popular = PopularKeywordListDataModel()
             val observerHome: Observer<HomeDataModel> = mockk(relaxed = true)
 
-            Given("Data with geolocation") {
+            Given("Data with popular keyword") {
                 getHomeUseCase.givenGetHomeDataReturn(
                         HomeDataModel(
                                 list = listOf(popular)
@@ -72,7 +72,7 @@ class HomeViewModelPopularKeywordUnitTest : Spek({
                 homeViewModel.homeLiveData.observeForever(observerHome)
             }
 
-            Then("Expect geolocation will show on user screen") {
+            Then("Expect popular keyword will show on user screen") {
                 verifyOrder {
                     // check on home data initial first channel is dynamic channel
                     observerHome.onChanged(match {
@@ -88,7 +88,7 @@ class HomeViewModelPopularKeywordUnitTest : Spek({
             val observerHome: Observer<HomeDataModel> = mockk(relaxed = true)
             val getPopularKeywordUseCase by memoized<GetPopularKeywordUseCase>()
 
-            Given("Data with geolocation") {
+            Given("Data with popular keyword") {
                 getHomeUseCase.givenGetHomeDataReturn(
                         HomeDataModel(
                                 list = listOf(popular)
@@ -118,7 +118,7 @@ class HomeViewModelPopularKeywordUnitTest : Spek({
                 homeViewModel.getPopularKeywordData()
             }
 
-            Then("Expect geolocation will show on user screen") {
+            Then("Expect popular keyword will show on user screen") {
                 verifyOrder {
                     // check on home data initial first channel is dynamic channel
                     observerHome.onChanged(match {

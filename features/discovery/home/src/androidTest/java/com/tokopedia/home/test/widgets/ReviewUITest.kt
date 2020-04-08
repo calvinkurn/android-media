@@ -1,6 +1,5 @@
 package com.tokopedia.home.test.widgets
 
-import android.util.Log
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -19,6 +18,7 @@ import com.tokopedia.home.beranda.data.mapper.HomeDataMapper
 import com.tokopedia.home.beranda.data.mapper.factory.HomeVisitableFactoryImpl
 import com.tokopedia.home.beranda.data.usecase.HomeUseCase
 import com.tokopedia.home.beranda.domain.interactor.*
+import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.domain.model.HomeData
 import com.tokopedia.home.beranda.domain.model.review.SuggestedProductReview
 import com.tokopedia.home.beranda.domain.model.review.SuggestedProductReviewResponse
@@ -70,13 +70,19 @@ class ReviewUITest {
     private val context = InstrumentationRegistry.getInstrumentation().context
     private lateinit var viewModel: HomeViewModel
 
+    companion object{
+        private val CONTAINER = R.id.review_card_bg
+        private val LOADING = R.id.loading_review
+        private val CLOSE_REVIEW = R.id.ic_close_review
+    }
+
     @Before
     fun setup(){
         every { userSessionInterface.isLoggedIn } returns false
     }
 
     @Test
-    fun testLoadingReviewWidget(){
+    fun test_when_data_suggested_not_available_the_review_widget_must_loading(){
         val json = GraphqlHelper.loadRawString(context.resources, com.tokopedia.home.test.R.raw.home_empty_dynamic_channel_json)
         val homeData = Gson().fromJson<HomeData>(json, HomeData::class.java)
         coEvery { getHomeUseCase.updateHomeData() } returns flow {  }
@@ -84,43 +90,39 @@ class ReviewUITest {
         coEvery { getHomeUseCase.getHomeData() } returns flow {
             val data = homeDataMapper.mapToHomeViewModel(homeData, false)
             val newList = data.list.toMutableList()
-            newList.add(4, ReviewDataModel())
+            newList.add(4, ReviewDataModel(channel = DynamicHomeChannel.Channels()))
             emit(data.copy(list = newList))
-            Log.d("testReview", "Flow emit masuk")
         }
         viewModel = reInitViewModel()
-        Log.d("testReview", viewModel.toString())
         val homeFragment = HomeFragmentTest(createViewModelFactory(viewModel))
 
         activityRule.activity.setupFragment(homeFragment)
         Thread.sleep(5000)
-        onView(withId(R.id.review_card_bg)).check(matches(isDisplayed()))
-        onView(withId(R.id.loading_review)).check(matches(isDisplayed()))
+        onView(withId(CONTAINER)).check(matches(isDisplayed()))
+        onView(withId(LOADING)).check(matches(isDisplayed()))
     }
 
     @Test
-    fun testNoReviewWidget(){
+    fun test_when_no_data_review_the_review_widget_must_not_show(){
         val json = GraphqlHelper.loadRawString(context.resources, com.tokopedia.home.test.R.raw.home_empty_dynamic_channel_json)
         val homeData = Gson().fromJson<HomeData>(json, HomeData::class.java)
         coEvery { getHomeUseCase.updateHomeData() } returns flow {  }
         coEvery { getHomeUseCase.getHomeData() } returns flow {
             val data = homeDataMapper.mapToHomeViewModel(homeData, false)
             val newList = data.list.toMutableList()
-            newList.add(4, ReviewDataModel())
+            newList.add(4, ReviewDataModel(channel = DynamicHomeChannel.Channels()))
             emit(data.copy(list = newList))
-            Log.d("testReview", "Flow emit masuk")
         }
         viewModel = reInitViewModel()
-        Log.d("testReview", viewModel.toString())
         val homeFragment = HomeFragmentTest(createViewModelFactory(viewModel))
 
         activityRule.activity.setupFragment(homeFragment)
         Thread.sleep(5000)
-        onView(withId(R.id.review_card_bg)).check(doesNotExist())
+        onView(withId(CONTAINER)).check(doesNotExist())
     }
 
     @Test
-    fun testCloseReviewWidget(){
+    fun test_when_data_available_the_review_widget_try_to_click_close_button(){
         val json = GraphqlHelper.loadRawString(context.resources, com.tokopedia.home.test.R.raw.home_empty_dynamic_channel_json)
         val homeData = Gson().fromJson<HomeData>(json, HomeData::class.java)
         coEvery { getHomeUseCase.updateHomeData() } returns flow {  }
@@ -138,30 +140,28 @@ class ReviewUITest {
                             SuggestedProductReviewResponse(
                                     linkURL = "KOSONG"
                             )
-                    )
+                    ),
+                    channel = DynamicHomeChannel.Channels()
             ))
             emit(data.copy(list = newList))
-            Log.d("testReview", "Flow emit masuk")
         }
 
         viewModel = reInitViewModel()
-        Log.d("testReview", viewModel.toString())
         val homeFragment = HomeFragmentTest(createViewModelFactory(viewModel))
 
         activityRule.activity.setupFragment(homeFragment)
         Thread.sleep(5000)
-        onView(withId(R.id.review_card_bg)).check(matches(isDisplayed()))
-        onView(withId(R.id.ic_close_review)).check(matches(isDisplayed()))
-        onView(withId(R.id.ic_close_review)).perform(click())
+        onView(withId(CONTAINER)).check(matches(isDisplayed()))
+        onView(withId(CLOSE_REVIEW)).check(matches(isDisplayed()))
+        onView(withId(CLOSE_REVIEW)).perform(click())
         Thread.sleep(1000)
-        onView(withId(R.id.review_card_bg)).check(doesNotExist())
+        onView(withId(CONTAINER)).check(doesNotExist())
     }
 
     private fun <T : ViewModel> createViewModelFactory(viewModel: T): ViewModelProvider.Factory {
         return object : ViewModelProvider.Factory {
             override fun <T : ViewModel> create(viewModelClass: Class<T>): T {
                 if (viewModelClass.isAssignableFrom(viewModel.javaClass)) {
-                    Log.d("testReview", "Masuk custom view model factory")
                     @Suppress("UNCHECKED_CAST")
                     return viewModel as T
                 }
