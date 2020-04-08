@@ -122,12 +122,14 @@ class TransactionOrderProgressLayout : LinearLayout {
     }
 
     private fun bindClickOpenCloseState() {
-        stateChanger?.setOnClickListener {
+        val clickListener = OnClickListener {
             doWhenState(
                     isOpen = { changeState(stateClose) },
                     isClose = { changeState(stateOpen) }
             )
         }
+        stateChanger?.setOnClickListener(clickListener)
+        status?.setOnClickListener(clickListener)
     }
 
     private fun openCloseState(): Boolean {
