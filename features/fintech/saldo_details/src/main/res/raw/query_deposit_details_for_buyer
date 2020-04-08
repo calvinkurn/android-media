@@ -6,7 +6,7 @@ query DepositActivityQuery($page: Int!, $maxRows: Int!, $dateFrom: String!, $dat
     deposit_history_list {
           note
           amount
-          class
+          type_description
           image
           create_time
     }

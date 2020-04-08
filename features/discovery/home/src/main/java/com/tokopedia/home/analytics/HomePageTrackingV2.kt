@@ -333,6 +333,23 @@ object HomePageTrackingV2 : BaseTracking() {
 
                 })
 
+        fun getPopularKeywordImpressionIrisItem(channel: DynamicHomeChannel.Channels, position: Int, keyword: String) = getBasicPromotionChannelView(
+                event = Event.PROMO_VIEW_IRIS,
+                eventCategory = Category.HOMEPAGE,
+                eventAction = IMPRESSION_POPULAR_KEYWORDS,
+                eventLabel = String.format(BaseTracking.Label.FORMAT_2_ITEMS, channel.header.name, keyword),
+                channelId = channel.id,
+                promotions = channel.grids.map {
+                    Promotion(
+                            id = channel.id,
+                            creative = it.attribution,
+                            creativeUrl = it.imageUrl,
+                            name = Ecommerce.PROMOTION_NAME.format(position, POPULAR_KEYWORDS_NAME, keyword),
+                            position = position.toString()
+                    )
+
+                })
+
         fun getPopularKeywordClickItem(channel: DynamicHomeChannel.Channels, position: Int, keyword: String) = getBasicPromotionClick(
                 event = Event.PROMO_CLICK,
                 eventCategory = Category.HOMEPAGE,
@@ -364,7 +381,7 @@ object HomePageTrackingV2 : BaseTracking() {
                     Category.KEY, Category.HOMEPAGE,
                     Action.KEY, CLICK_POPULAR_KEYWORDS_RELOAD,
                     Label.KEY, channel.header.name,
-                    Label.CHANNEL_LABEL, channel.header.name
+                    ChannelId.KEY, channel.id
             ) as HashMap<String, Any>
         }
 

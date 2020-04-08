@@ -207,6 +207,7 @@
     <string name="notify_me_active">Pengingat Aktif</string>
     <string name="notify_me_inactive">Ingatkan Saya</string>
     <string name="notify_me_subtitle">Dimulai dalam %1$s</string>
+    <string name="notify_me_subtitle_main">Dimulai dalam</string>
     <string name="notify_me_title">Kejar Diskon</string>
 
 </resources>

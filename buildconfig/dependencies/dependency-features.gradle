@@ -10,6 +10,7 @@ ext {
             nps                             : ":features:common:nps",
 
             commonTradein                   : ":features:category:common_tradein",
+            kategori                        : ":features:category:kategori",
             agerestriction                  : ":features:category:age_restriction",
             tradeIn                         : ":features:category:tradein",
             basemvvm                        : ":features:category:basemvvm",
@@ -149,7 +150,7 @@ ext {
 //            pms                             : ":features:payment:pms_no_op",
             withdraw                        : ":features:payment:withdraw",
 
-            gallery                         : ":features:product:gallery",
+            gallery                         : ":features:merchant:gallery",
 
             gamification                    : ":features:promo:gamification",
             merchantVoucher                 : ":features:promo:merchant_voucher",

@@ -86,7 +86,7 @@
 
         <activity
             android:name="com.facebook.react.devsupport.DevSettingsActivity"
-            android:label="com.tokopedia.tkpd:string/app_name" />
+            android:label="@string/app_name" />
         <activity
             android:name="com.facebook.FacebookActivity"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
@@ -145,12 +145,6 @@
         <activity
             android:name="com.tokopedia.core.share.ShareActivity"
             android:label="@string/title_activity_share"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.tokopedia.core.home.SimpleWebViewWithFilePickerActivity"
-            android:label="@string/app_name"
-            android:theme="@style/Toolbar.White"
-            android:configChanges="uiMode"
             android:screenOrientation="portrait" />
 
         <!-- ======================================================= -->
