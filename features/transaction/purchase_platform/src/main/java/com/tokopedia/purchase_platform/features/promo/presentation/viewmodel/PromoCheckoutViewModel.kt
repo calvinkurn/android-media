@@ -1312,6 +1312,30 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
                 } else {
                     disabledPromotions.add(getPromotionMap())
                 }
+            } else if (it is PromoListHeaderUiModel && it.uiData.tmpPromoItemList.isNotEmpty()) {
+                it.uiData.tmpPromoItemList.forEach {
+                    if (it.uiState.isParentEnabled && it.uiData.currentClashingPromo.isNullOrEmpty()) {
+                        if (it.uiState.isDisabled) {
+                            disabledPromotions.add(getPromotionMap())
+                        } else {
+                            enabledPromotions.add(getPromotionMap())
+                        }
+                    } else {
+                        disabledPromotions.add(getPromotionMap())
+                    }
+                }
+            } else if (it is PromoEligibilityHeaderUiModel && !it.uiState.isEnabled && it.uiData.tmpPromo.isNotEmpty()) {
+                it.uiData.tmpPromo.forEach {
+                    if (it is PromoListItemUiModel && it.uiState.isParentEnabled && it.uiData.currentClashingPromo.isNullOrEmpty()) {
+                        if (it.uiState.isDisabled) {
+                            disabledPromotions.add(getPromotionMap())
+                        } else {
+                            enabledPromotions.add(getPromotionMap())
+                        }
+                    } else {
+                        disabledPromotions.add(getPromotionMap())
+                    }
+                }
             }
         }
 
@@ -1320,7 +1344,7 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
             promoViewMap["promotions"] = enabledPromotions
 
             val eCommerceMap = HashMap<String, Any>()
-            eCommerceMap["promoView"]
+            eCommerceMap["promoView"] = promoViewMap
 
             analytics.eventViewAvailablePromoListEligiblePromo(getPageSource(), eCommerceMap)
         }
@@ -1330,7 +1354,7 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
             promoViewMap["promotions"] = disabledPromotions
 
             val eCommerceMap = HashMap<String, Any>()
-            eCommerceMap["promoView"]
+            eCommerceMap["promoView"] = promoViewMap
 
             analytics.eventViewAvailablePromoListIneligibleProduct(getPageSource(), eCommerceMap)
         }
