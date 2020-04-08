@@ -143,7 +143,7 @@ class OfficialStoreTracking(context: Context) {
                 EVENT_CATEGORY, "$OS_MICROSITE$categoryName",
                 EVENT_ACTION, "banner - $CLICK",
                 EVENT_LABEL, "$CLICK banner",
-                CAMPAIGN_CODE, bannerItem.campaignCode,
+                CAMPAIGN_CODE, "",
                 ATTRIBUTION, bannerItem.galaxyAttribution,
                 AFFINITY_LABEL, bannerItem.persona,
                 CATEGORY_ID, bannerItem.categoryPersona,
