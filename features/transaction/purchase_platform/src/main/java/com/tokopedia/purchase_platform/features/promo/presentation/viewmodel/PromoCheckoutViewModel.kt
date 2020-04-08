@@ -1347,9 +1347,7 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
             eCommerceMap["promoView"] = promoViewMap
 
             analytics.eventViewAvailablePromoListEligiblePromo(getPageSource(), eCommerceMap)
-        }
-
-        if (disabledPromotions.size > 0) {
+        } else if (disabledPromotions.size > 0) {
             val promoViewMap = HashMap<String, Any>()
             promoViewMap["promotions"] = disabledPromotions
 
