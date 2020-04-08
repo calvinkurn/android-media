@@ -219,7 +219,7 @@ ext {
             guava                 : "com.google.guava:guava:$guavaVersion",
             guava24               : 'com.google.guava:guava:24.1-jre',
             incap                 : "net.ltgt.gradle.incap:incap:0.2",
-            incapProcessor        : "net.ltgt.gradle.incap:incap-processor:0.2"
+            incapProcessor        : "net.ltgt.gradle.incap:incap-processor:0.2",
 
             viewModel             : "androidx.lifecycle:lifecycle-viewmodel:$lifeCycleVersion",
             viewModelKtx          : "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifeCycleVersion",
