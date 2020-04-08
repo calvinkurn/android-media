@@ -16,6 +16,7 @@ import static com.tokopedia.purchase_platform.common.analytics.ConstantTransacti
 import static com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.EventCategory;
 import static com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.EventLabel;
 import static com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.EventName;
+import static com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.ExtraKey;
 
 
 /**
@@ -1008,7 +1009,18 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
                 EventAction.VIEW_POP_UP_MESSAGE_TIMER,
                 String.valueOf(productId)
         );
-        gtmMap.put("userId", userId);
+        gtmMap.put(ExtraKey.USER_ID, userId);
+        sendGeneralEvent(gtmMap);
+    }
+
+    public void eventClickBelanjaLagiOnDialog(int productId, String userId) {
+        Map<String, Object> gtmMap = TrackAppUtils.gtmData(
+                EventName.VIEW_COURIER_IRIS,
+                EventCategory.COURIER_SELECTION,
+                EventAction.CLICK_BELANJA_LAGI_ON_POP_UP,
+                String.valueOf(productId)
+        );
+        gtmMap.put(ExtraKey.USER_ID, userId);
         sendGeneralEvent(gtmMap);
     }
 }

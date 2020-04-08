@@ -416,6 +416,10 @@ public interface ConstantTransactionAnalytics {
         String SOURCE_CART = "source: cart";
     }
 
+    interface ExtraKey {
+        String USER_ID = "userId";
+    }
+
     interface ScreenName {
         String CART = "/cart";
         String CHECKOUT = "/cart/shipment";
