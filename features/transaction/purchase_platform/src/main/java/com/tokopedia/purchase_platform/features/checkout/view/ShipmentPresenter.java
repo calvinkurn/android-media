@@ -1916,6 +1916,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     public CampaignTimerUi getCampaignTimer() {
         if (campaignTimer == null) return null;
         else {
+            // Set necessary analytics attributes to be passed so the gtm will just trigger
+            // the method without collecting the data again (quite expensive)
             campaignTimer.setGtmProductId(
                     ShipmentCartItemModelHelper.getFirstProductId(shipmentCartItemModelList)
             );
@@ -1986,7 +1988,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
     @Override
     public void releaseBooking() {
-        // As deals product is using OCS the shipment should only contain 1 product
+        // As deals product is using OCS, the shipment should only contain 1 product
         int productId = ShipmentCartItemModelHelper.getFirstProductId(shipmentCartItemModelList);
         if (productId != 0) {
             compositeSubscription.add(releaseBookingUseCase
