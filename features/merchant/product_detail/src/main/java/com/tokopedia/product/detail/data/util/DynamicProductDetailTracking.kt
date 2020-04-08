@@ -780,6 +780,24 @@ object DynamicProductDetailTracking {
                 it.type == "image"
             }?.firstOrNull()?.uRLOriginal ?: ""
 
+            val product = Product(
+                    productInfo?.getProductName ?: "",
+                    productInfo?.basic?.getProductId().toString(),
+                    productInfo?.data?.price?.value?.toDouble()
+                            ?: 0.0,
+                    "",
+                    productInfo?.getProductName ?: "",
+                    TrackingUtil.getEnhanceCategoryFormatted(productInfo?.basic?.category?.detail),
+                    ProductTrackingConstant.Tracking.DEFAULT_VALUE,
+                    trackerAttribution
+                            ?: ProductTrackingConstant.Tracking.DEFAULT_VALUE,
+                    dimension55,
+                    TrackingUtil.getMultiOriginAttribution(multiOrigin),
+                    dimension83 ?: "",
+                    shopInfo?.goldOS?.shopTypeString ?: "",
+                    0
+            )
+
             TrackApp
                     .getInstance()
                     .gtm
@@ -793,24 +811,7 @@ object DynamicProductDetailTracking {
                                                 ""
                                             },
                                             arrayListOf(
-                                                    Product(
-                                                            productInfo?.getProductName ?: "",
-                                                            productInfo?.basic?.getProductId().toString(),
-                                                            productInfo?.data?.price?.value?.toDouble()
-                                                                    ?: 0.0,
-                                                            "",
-                                                            productInfo?.getProductName ?: "",
-                                                            TrackingUtil.getEnhanceCategoryFormatted(productInfo?.basic?.category?.detail),
-                                                            ProductTrackingConstant.Tracking.DEFAULT_VALUE,
-                                                            trackerAttribution
-                                                                    ?: ProductTrackingConstant.Tracking.DEFAULT_VALUE,
-                                                            dimension55,
-                                                            TrackingUtil.getMultiOriginAttribution(multiOrigin),
-                                                            dimension83 ?: "",
-                                                            shopInfo?.goldOS?.shopTypeString ?: "",
-                                                            0
-                                                    )
-
+                                                    product
                                             ),
                                             TrackingUtil.getEnhanceUrl(productInfo?.basic?.url),
                                             shopInfo?.shopCore?.name,
