@@ -1206,6 +1206,31 @@ final class ProductListPresenter
     }
 
     @Override
+    public void onProductImpressed(ProductItemViewModel item, int adapterPosition) {
+        if (getView() == null || item == null) return;
+
+        if (item.isTopAds()) {
+            getView().sendTopAdsTrackingUrl(item.getTopadsImpressionUrl());
+            getView().sendTopAdsGTMTrackingProductImpression(item, adapterPosition);
+        }
+    }
+
+    @Override
+    public void onProductClick(ProductItemViewModel item, int adapterPosition) {
+        if (getView() == null || item == null) return;
+
+        if (item.isTopAds()) {
+            getView().sendTopAdsTrackingUrl(item.getTopadsClickUrl());
+            getView().sendTopAdsGTMTrackingProductClick(item, adapterPosition);
+        }
+        else {
+            getView().sendGTMTrackingProductClick(item, adapterPosition, getUserId());
+        }
+
+        getView().routeToProductDetail(item, adapterPosition);
+    }
+
+    @Override
     public void detachView() {
         super.detachView();
         if (getDynamicFilterUseCase != null) getDynamicFilterUseCase.unsubscribe();
