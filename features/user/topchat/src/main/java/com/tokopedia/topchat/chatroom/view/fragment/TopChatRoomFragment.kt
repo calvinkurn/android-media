@@ -259,6 +259,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
                 onSuccessGetShopFollowingStatus())
 
         renderList(chatRoom.listChat, chatRoom.canLoadMore)
+        orderProgress?.renderIfExist()
         getViewState().onSuccessLoadFirstTime(chatRoom, onToolbarClicked(), this, alertDialog, onUnblockChatClicked())
         getViewState().onSetCustomMessage(customMessage)
         presenter.getTemplate(getUserSession().shopId == shopId.toString())

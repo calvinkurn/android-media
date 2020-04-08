@@ -32,6 +32,7 @@ class TransactionOrderProgressLayout : LinearLayout {
 
     private var isForceClose = false
     private var isKeyboardOpened = false
+    private var canBeRendered = false
 
     constructor(context: Context?) : super(context)
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
@@ -47,6 +48,11 @@ class TransactionOrderProgressLayout : LinearLayout {
 
     private fun initViewLayout() {
         View.inflate(context, R.layout.partial_transaction_order_progress, this)
+    }
+
+    fun renderIfExist() {
+        canBeRendered = true
+        render(this.chatOrder)
     }
 
     fun render(chatOrder: ChatOrderProgress) {
@@ -92,7 +98,7 @@ class TransactionOrderProgressLayout : LinearLayout {
     }
 
     private fun shouldBeRendered(): Boolean {
-        return chatOrder.enable.also { shouldShow ->
+        return canBeRendered && chatOrder.enable.also { shouldShow ->
             if (!shouldShow) hide()
         }
     }
