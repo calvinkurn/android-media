@@ -19,7 +19,7 @@ class TransactionOrderProgressLayout : LinearLayout {
     private var status: Typography? = null
     private var stateChanger: Typography? = null
     private var descriptionContainer: ConstraintLayout? = null
-    private var state: String = stateClose
+    private var state: String = stateOpen
 
     constructor(context: Context?) : super(context)
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
@@ -66,10 +66,10 @@ class TransactionOrderProgressLayout : LinearLayout {
     }
 
     private fun renderStateDescription() {
-        when (state) {
-            stateOpen -> showDescription()
-            stateClose -> hideDescription()
-        }
+        doWhenState(
+                isOpen = { showDescription() },
+                isClose = { hideDescription() }
+        )
     }
 
     /**
@@ -80,7 +80,7 @@ class TransactionOrderProgressLayout : LinearLayout {
     private fun renderStateChangerButton(chatOrder: ChatOrderProgress) {
         if (openCloseState(chatOrder)) {
             renderOpenCloseStateChangerButton()
-            bindClickOpenCloseState(chatOrder)
+            bindClickOpenCloseState()
         } else {
             // TODO: impl this
         }
@@ -88,22 +88,26 @@ class TransactionOrderProgressLayout : LinearLayout {
 
     private fun renderOpenCloseStateChangerButton() {
         stateChanger?.text = state
-        when (state) {
-            stateOpen -> {
-                stateChanger?.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_topchat_arrow_small_up, 0)
-            }
-            stateClose -> {
-                stateChanger?.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_topchat_arrow_small_down, 0)
-            }
-        }
+        doWhenState(
+                isOpen = {
+                    stateChanger?.setCompoundDrawablesWithIntrinsicBounds(
+                            0, 0, R.drawable.ic_topchat_arrow_small_up, 0
+                    )
+                },
+                isClose = {
+                    stateChanger?.setCompoundDrawablesWithIntrinsicBounds(
+                            0, 0, R.drawable.ic_topchat_arrow_small_down, 0
+                    )
+                }
+        )
     }
 
-    private fun bindClickOpenCloseState(chatOrder: ChatOrderProgress) {
+    private fun bindClickOpenCloseState() {
         stateChanger?.setOnClickListener {
-            when (state) {
-                stateOpen -> changeState(stateClose)
-                stateClose -> changeState(stateOpen)
-            }
+            doWhenState(
+                    isOpen = { changeState(stateClose) },
+                    isClose = { changeState(stateOpen) }
+            )
         }
     }
 
@@ -114,6 +118,16 @@ class TransactionOrderProgressLayout : LinearLayout {
 
     private fun initPreviousState() {
         // TODO: impl this
+    }
+
+    private fun doWhenState(
+            isOpen: () -> Unit,
+            isClose: () -> Unit
+    ) {
+        when (state) {
+            stateOpen -> isOpen()
+            stateClose -> isClose()
+        }
     }
 
     private fun changeState(desiredState: String) {
