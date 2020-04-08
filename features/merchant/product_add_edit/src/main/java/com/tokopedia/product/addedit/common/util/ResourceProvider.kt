@@ -126,4 +126,14 @@ class ResourceProvider @Inject constructor(@ApplicationContext val context: Cont
     fun getDuplicateProductVideoErrorMessage(): String? {
         return getString(R.string.error_video_is_exist)
     }
+
+    // product variant string properties
+
+    fun getVariantEmptyMessage(): String? {
+        return getString(R.string.label_variant_subtitle)
+    }
+
+    fun getVariantAddedMessage(): String? {
+        return getString(R.string.label_variant_subtitle_added) + "\n"
+    }
 }

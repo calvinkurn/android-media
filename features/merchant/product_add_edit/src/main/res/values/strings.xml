@@ -116,6 +116,7 @@
     <string name="label_add_product_description_tips">Tips buat deskripsi produk yang jelas</string>
     <string name="label_variant_title">Varian</string>
     <string name="label_variant_subtitle">Tambah varian warna, ukuran atau tipe lain agar pembeli mudah memilih</string>
+    <string name="label_variant_subtitle_added">Kamu sudah menambahkan varian</string>
     <string name="label_add_variant">Ubah varian</string>
     <string name="label_add_product_variant_tips">Tips buat deskripsi produk yang jelas</string>
     <string name="label_video_title">Video</string>

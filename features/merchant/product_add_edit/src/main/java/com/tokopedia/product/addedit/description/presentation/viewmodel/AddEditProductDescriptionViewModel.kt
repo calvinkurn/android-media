@@ -11,9 +11,7 @@ import com.tokopedia.product.addedit.common.util.ResourceProvider
 import com.tokopedia.product.addedit.description.data.remote.model.variantbycat.ProductVariantByCatModel
 import com.tokopedia.product.addedit.description.domain.usecase.GetProductVariantUseCase
 import com.tokopedia.product.addedit.description.domain.usecase.GetYoutubeVideoUseCase
-import com.tokopedia.product.addedit.description.presentation.model.DescriptionInputModel
-import com.tokopedia.product.addedit.description.presentation.model.ProductVariantInputModel
-import com.tokopedia.product.addedit.description.presentation.model.VideoLinkModel
+import com.tokopedia.product.addedit.description.presentation.model.*
 import com.tokopedia.product.addedit.description.presentation.model.youtube.YoutubeVideoModel
 import com.tokopedia.product.addedit.draft.domain.usecase.SaveProductDraftUseCase
 import com.tokopedia.product.manage.common.draft.data.model.ProductDraft
@@ -24,6 +22,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.lang.reflect.Type
+import java.util.ArrayList
 import javax.inject.Inject
 
 class AddEditProductDescriptionViewModel @Inject constructor(
@@ -35,6 +34,8 @@ class AddEditProductDescriptionViewModel @Inject constructor(
 ) : BaseViewModel(coroutineDispatcher) {
 
     var categoryId: String = ""
+    var variantCountList: ArrayList<Int> = arrayListOf(0, 0)
+    var variantNameList: ArrayList<String> = arrayListOf("", "")
     var descriptionInputModel: DescriptionInputModel = DescriptionInputModel()
     var variantInputModel: ProductVariantInputModel = ProductVariantInputModel()
     var isEditMode: Boolean = false
@@ -129,5 +130,71 @@ class AddEditProductDescriptionViewModel @Inject constructor(
         }, onError = {
             _saveProductDraftResult.value = Fail(it)
         })
+    }
+
+    fun setVariantInput(productVariant: ArrayList<ProductVariantCombinationViewModel>,
+                        variantOptionParent: ArrayList<ProductVariantOptionParent>) {
+        variantInputModel.variantOptionParent = variantOptionParent
+        variantInputModel.productVariant = productVariant
+        setVariantNamesAndCount(productVariant, variantOptionParent)
+    }
+
+    private fun setVariantNamesAndCount(productVariant: ArrayList<ProductVariantCombinationViewModel>,
+                                        variantOptionParent: ArrayList<ProductVariantOptionParent>) {
+        productVariant.firstOrNull().let { variant ->
+            // process level 1
+            setVariantName(0, variant?.level1String, variantOptionParent)
+            // process level 2
+            setVariantName(1, variant?.level2String, variantOptionParent)
+        }
+
+        setVariantCountLevel1(productVariant)
+        setVariantCountLevel2(productVariant)
+    }
+
+    private fun setVariantCountLevel1(productVariant: ArrayList<ProductVariantCombinationViewModel>) {
+        val distictOptionList = productVariant.distinctBy {
+            it.level1String
+        }
+        variantCountList[0] = distictOptionList.size
+    }
+
+    private fun setVariantCountLevel2(productVariant: ArrayList<ProductVariantCombinationViewModel>) {
+        val distictOptionList = productVariant.distinctBy {
+            it.level2String
+        }
+        variantCountList[1] = distictOptionList.size
+    }
+
+    private fun setVariantName(
+            changedIndex: Int,
+            optionChildValue: String?,
+            variantOptionParent: ArrayList<ProductVariantOptionParent>) {
+        variantOptionParent.forEach { optionParent ->
+            optionParent.productVariantOptionChild?.forEach { optionChild ->
+                if (optionChildValue == optionChild.value) {
+                    variantNameList[changedIndex] = optionParent.name ?: ""
+                }
+            }
+        }
+    }
+
+    fun getVariantSelectedMessage(): String {
+        var level1Message = ""
+        var level2Message = ""
+        if (variantNameList[0].isNotEmpty()) {
+            level1Message = variantCountList[0].toString() + " " + variantNameList[0]
+        }
+
+        if (variantNameList[1].isNotEmpty()) {
+            level2Message = ", " + variantCountList[1].toString() + " " + variantNameList[1]
+        }
+
+        return if (level1Message.isNotEmpty()) {
+            resource.getVariantAddedMessage() + level1Message + level2Message
+        } else {
+            resource.getVariantEmptyMessage() ?: ""
+        }
+
     }
 }
