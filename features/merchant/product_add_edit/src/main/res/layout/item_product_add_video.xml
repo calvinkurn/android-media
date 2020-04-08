@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
@@ -29,6 +30,16 @@
                 android:layout_height="72dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/imgPlay"
+                android:layout_width="@dimen/layout_lvl4"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="@+id/imgThumbnail"
+                app:layout_constraintEnd_toEndOf="@+id/imgThumbnail"
+                app:layout_constraintStart_toStartOf="@+id/imgThumbnail"
+                app:layout_constraintTop_toTopOf="@+id/imgThumbnail"
+                app:srcCompat="@drawable/ic_play" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tvVideoTitle"

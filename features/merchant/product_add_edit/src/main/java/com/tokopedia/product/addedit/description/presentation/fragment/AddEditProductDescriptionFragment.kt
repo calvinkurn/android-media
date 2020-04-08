@@ -2,6 +2,7 @@ package com.tokopedia.product.addedit.description.presentation.fragment
 
 import android.app.Activity
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -136,7 +137,11 @@ class AddEditProductDescriptionFragment:
     }
 
     override fun onItemClicked(t: VideoLinkModel?) {
-        //no op
+        ProductEditDescriptionTracking.clickPlayVideo(shopId)
+        try {
+            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(t?.inputUrl)))
+        } catch (e: Throwable) {
+        }
     }
 
     override fun getScreenName(): String? = null
