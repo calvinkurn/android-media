@@ -10,6 +10,8 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.Toast
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -33,10 +35,7 @@ import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstan
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_DETAIL_INPUT
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_SHIPMENT_INPUT
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_VARIANT_INPUT
-import com.tokopedia.product.addedit.common.util.ListUnifyUtil
-import com.tokopedia.product.addedit.common.util.getText
-import com.tokopedia.product.addedit.common.util.getTextIntOrZero
-import com.tokopedia.product.addedit.common.util.getTextLongOrZero
+import com.tokopedia.product.addedit.common.util.*
 import com.tokopedia.product.addedit.description.presentation.activity.AddEditProductDescriptionActivity
 import com.tokopedia.product.addedit.description.presentation.fragment.AddEditProductDescriptionFragment.Companion.REQUEST_CODE_DESCRIPTION
 import com.tokopedia.product.addedit.description.presentation.model.DescriptionInputModel
@@ -44,6 +43,7 @@ import com.tokopedia.product.addedit.description.presentation.model.ProductVaria
 import com.tokopedia.product.addedit.detail.di.AddEditProductDetailComponent
 import com.tokopedia.product.addedit.detail.presentation.adapter.NameRecommendationAdapter
 import com.tokopedia.product.addedit.detail.presentation.adapter.WholeSalePriceInputAdapter
+import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.CATEGORY_RESULT_ID
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.CATEGORY_RESULT_NAME
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.CONDITION_NEW
@@ -55,6 +55,7 @@ import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProduct
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.UNIT_DAY
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.UNIT_WEEK
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.USED_PRODUCT_INDEX
+import com.tokopedia.product.addedit.detail.presentation.mapper.mapProductInputModelDetailToDraft
 import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.PreorderInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.WholeSaleInputModel
@@ -68,6 +69,7 @@ import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProduc
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.shipment.presentation.model.ShipmentInputModel
 import com.tokopedia.product.addedit.tracking.ProductAddMainTracking
+import com.tokopedia.product.addedit.tracking.ProductAddStepperTracking
 import com.tokopedia.product.addedit.tracking.ProductEditMainTracking
 import com.tokopedia.product_photo_adapter.PhotoItemTouchHelperCallback
 import com.tokopedia.product_photo_adapter.ProductPhotoAdapter
@@ -82,7 +84,6 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.fragment_add_edit_product_description.*
 import java.text.NumberFormat
 import java.util.*
 import javax.inject.Inject
@@ -114,6 +115,10 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
 
     @Inject
     lateinit var viewModel: AddEditProductDetailViewModel
+
+    private val productInputModel = ProductInputModel()
+
+    private var productPhotoPaths = mutableListOf<String>()
 
     private var selectedDurationPosition: Int = UNIT_DAY
 
@@ -207,14 +212,6 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             ProductEditMainTracking.trackScreen()
         } else {
             ProductAddMainTracking.trackScreen()
-        }
-    }
-
-    fun onBackPressed() {
-        if (viewModel.isEditing) {
-            ProductEditMainTracking.trackBack(shopId)
-        } else {
-            ProductAddMainTracking.trackBack(shopId)
         }
     }
 
@@ -673,6 +670,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                     val selectedCategory = ArrayList<ListItemUnify>()
                     selectedCategory.add(ListItemUnify(categoryName, ""))
                     productCategoryRecListView?.setData(selectedCategory)
+                    productInputModel.detailInputModel.categoryName = categoryName
                 }
                 REQUEST_CODE_DESCRIPTION -> {
                     val shipmentInputModel =
@@ -738,6 +736,45 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         priceField?.setError(errorMessage.isNotEmpty())
         priceField?.setMessage(errorMessage)
         updateWholeSaleErrorCounter(viewModel, productWholeSaleInputFormsView)
+    }
+
+    fun onCtaYesPressed() {
+        ProductAddStepperTracking.trackDraftYes(shopId)
+    }
+
+    fun onCtaNoPressed() {
+        ProductAddStepperTracking.trackDraftCancel(shopId)
+    }
+
+    fun onBackPressed() {
+        if (viewModel.isEditMode) {
+            ProductEditMainTracking.trackBack(shopId)
+        } else {
+            ProductAddMainTracking.trackBack(shopId)
+        }
+    }
+
+    fun saveProductDraft(isUploading: Boolean) {
+        inputAllDataInProductInputModel()
+        viewModel.saveProductDraft(mapProductInputModelDetailToDraft(productInputModel), productInputModel.draftId, isUploading)
+        Toast.makeText(context, R.string.label_succes_save_draft, Toast.LENGTH_LONG).show()
+    }
+
+    private fun inputAllDataInProductInputModel() {
+        productInputModel.detailInputModel.productName = productNameField.getText()
+        productInputModel.detailInputModel.categoryId = viewModel.selectedCategoryId
+        productInputModel.detailInputModel.price = productPriceField.getTextLongOrZero()
+        productInputModel.detailInputModel.stock = productStockField.getTextIntOrZero()
+        productInputModel.detailInputModel.minOrder = productMinOrderField.getTextIntOrZero()
+        productInputModel.detailInputModel.condition = if (isProductConditionNew) AddEditProductDetailConstants.CONDITION_NEW else AddEditProductDetailConstants.CONDITION_USED
+        productInputModel.detailInputModel.sku = productSkuField.getText()
+        productInputModel.detailInputModel.imageUrlOrPathList = productPhotoPaths
+        productInputModel.detailInputModel.preorder.apply {
+            duration = preOrderDurationField.getTextIntOrZero()
+            timeUnit = selectedDurationPosition
+            isActive = preOrderSwitch?.isChecked ?: false
+        }
+        productInputModel.detailInputModel.wholesaleList = getWholesaleInput()
     }
 
     private fun updateWholeSaleErrorCounter(viewModel: AddEditProductDetailViewModel, wholesaleInputForms: RecyclerView?) {
@@ -1034,7 +1071,8 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             ProductAddMainTracking.clickContinue(shopId)
         }
         val categoryId = viewModel.selectedCategoryId
-        val intent = AddEditProductDescriptionActivity.createInstance(context, categoryId)
+        inputAllDataInProductInputModel()
+        val intent = AddEditProductDescriptionActivity.createInstance(context, categoryId, productInputModel)
         startActivityForResult(intent, REQUEST_CODE_DESCRIPTION)
     }
 
@@ -1162,5 +1200,4 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         activity?.setResult(Activity.RESULT_OK, intent)
         activity?.finish()
     }
-
 }
