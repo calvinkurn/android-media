@@ -4,12 +4,15 @@ import android.content.Context
 import android.os.Build
 import android.util.AttributeSet
 import android.view.View
+import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.annotation.RequiresApi
 import androidx.constraintlayout.widget.ConstraintLayout
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.extensions.view.toPx
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.domain.pojo.orderprogress.ChatOrderProgress
 import com.tokopedia.unifyprinciples.Typography
@@ -19,6 +22,11 @@ class TransactionOrderProgressLayout : LinearLayout {
     private var status: Typography? = null
     private var stateChanger: Typography? = null
     private var descriptionContainer: ConstraintLayout? = null
+    private var productThumbnail: ImageView? = null
+    private var productName: Typography? = null
+    private var estimateTitle: Typography? = null
+    private var estimateValue: Typography? = null
+
     private var chatOrder: ChatOrderProgress = ChatOrderProgress()
     private var state: String = stateOpen
 
@@ -42,6 +50,10 @@ class TransactionOrderProgressLayout : LinearLayout {
         status = findViewById(R.id.tp_order_status)
         stateChanger = findViewById(R.id.tp_order_visibility)
         descriptionContainer = findViewById(R.id.cl_description_container)
+        productThumbnail = findViewById(R.id.iv_order_thumbnail)
+        productName = findViewById(R.id.tp_order_name)
+        estimateTitle = findViewById(R.id.tp_estimate_label)
+        estimateValue = findViewById(R.id.tp_estimate_value)
     }
 
     fun render(chatOrder: ChatOrderProgress) {
@@ -83,6 +95,9 @@ class TransactionOrderProgressLayout : LinearLayout {
         if (openCloseState()) {
             renderOpenCloseStateChangerButton()
             bindClickOpenCloseState()
+            renderImageThumbnail()
+            renderProductName()
+            renderEstimation()
         } else {
             // TODO: impl this
         }
@@ -145,6 +160,24 @@ class TransactionOrderProgressLayout : LinearLayout {
 
     private fun hideDescription() {
         descriptionContainer?.hide()
+    }
+
+    private fun renderImageThumbnail() {
+        ImageHandler.loadImageRounded2(
+                context,
+                productThumbnail,
+                chatOrder.imageUrl,
+                8f.toPx()
+        )
+    }
+
+    private fun renderProductName() {
+        productName?.text = chatOrder.name
+    }
+
+    private fun renderEstimation() {
+        estimateTitle?.text = chatOrder.label.title
+        estimateValue?.text = chatOrder.label.value
     }
 
     companion object {
