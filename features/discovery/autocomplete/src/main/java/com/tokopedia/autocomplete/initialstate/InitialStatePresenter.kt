@@ -147,7 +147,7 @@ class InitialStatePresenter @Inject constructor(
             when (initialStateData.id) {
                 InitialStateData.INITIAL_STATE_RECENT_SEARCH -> {
                     data.addAll(
-                            initialStateData.convertRecentSearchToVisitableList().insertTitleWithDeleteAll(initialStateData.header)
+                            initialStateData.convertRecentSearchToVisitableList().insertTitleWithDeleteAll(initialStateData.header, initialStateData.labelAction)
                     )
                 }
                 InitialStateData.INITIAL_STATE_RECENT_VIEW -> {
@@ -157,7 +157,7 @@ class InitialStatePresenter @Inject constructor(
                 }
                 InitialStateData.INITIAL_STATE_POPULAR_SEARCH -> {
                     data.addAll(
-                            initialStateData.convertPopularSearchToVisitableList().insertTitleWithRefresh(initialStateData.header)
+                            initialStateData.convertPopularSearchToVisitableList().insertTitleWithRefresh(initialStateData.header, initialStateData.labelAction)
                     )
                 }
             }
@@ -165,23 +165,25 @@ class InitialStatePresenter @Inject constructor(
         return data
     }
 
-    private fun MutableList<Visitable<*>>.insertTitle(name: String): List<Visitable<*>> {
+    private fun MutableList<Visitable<*>>.insertTitle(title: String): List<Visitable<*>> {
         val titleSearch = ReecentViewTitleViewModel()
-        titleSearch.title = name
+        titleSearch.title = title
         this.add(0, titleSearch)
         return this
     }
 
-    private fun MutableList<Visitable<*>>.insertTitleWithDeleteAll(name: String): List<Visitable<*>> {
+    private fun MutableList<Visitable<*>>.insertTitleWithDeleteAll(title: String, labelAction: String): List<Visitable<*>> {
         val titleSearch = RecentSearchTitleViewModel(true)
-        titleSearch.title = name
+        titleSearch.title = title
+        titleSearch.labelAction = labelAction
         this.add(0, titleSearch)
         return this
     }
 
-    private fun MutableList<Visitable<*>>.insertTitleWithRefresh(name: String): List<Visitable<*>> {
+    private fun MutableList<Visitable<*>>.insertTitleWithRefresh(title: String, labelAction: String): List<Visitable<*>> {
         val titleSearch = PopularSearchTitleViewModel(true)
-        titleSearch.title = name
+        titleSearch.title = title
+        titleSearch.labelAction = labelAction
         this.add(0, titleSearch)
         return this
     }
