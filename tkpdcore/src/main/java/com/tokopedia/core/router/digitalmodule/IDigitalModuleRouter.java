@@ -17,6 +17,4 @@ public interface IDigitalModuleRouter {
     boolean isSupportedDelegateDeepLink(String appLinks);
 
     void actionNavigateByApplinksUrl(Activity activity, String applinks, Bundle bundle);
-
-    Intent getLoginIntent(Context context);
 }

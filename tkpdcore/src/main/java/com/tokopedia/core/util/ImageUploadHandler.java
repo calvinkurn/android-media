@@ -50,13 +50,7 @@ public class ImageUploadHandler {
         public String cameraFileLoc;
     }
 
-    public static final int REQUEST_CODE = 111;
-
     private Model model = new Model();
-
-    public void setImageBitmap(String fileloc) {
-        this.model.cameraFileLoc = fileloc;
-    }
 
     public static File writeImageToTkpdPath(byte[] buffer) throws IOException {
         File directory = new File(FileUtils.getFolderPathForUploadRandom());

@@ -44,7 +44,6 @@ import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
-import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.share.DefaultShare;
 import com.tokopedia.core.util.AccessTokenRefresh;
 import com.tokopedia.core.util.SessionHandler;
@@ -156,7 +155,7 @@ import static com.tokopedia.remoteconfig.RemoteConfigKey.ENABLE_OLD_PRODUCT_MANA
  */
 
 public abstract class SellerRouterApplication extends MainApplication
-        implements TkpdCoreRouter, SellerModuleRouter, PdpRouter, GMModuleRouter, TopAdsModuleRouter,
+        implements TkpdCoreRouter, SellerModuleRouter, GMModuleRouter, TopAdsModuleRouter,
         IPaymentModuleRouter, IDigitalModuleRouter, TkpdInboxRouter, TransactionRouter,
         ReputationRouter, LogisticRouter,
         AbstractionRouter, ShopModuleRouter,

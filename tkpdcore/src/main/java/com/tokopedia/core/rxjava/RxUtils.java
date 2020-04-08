@@ -1,9 +1,8 @@
 package com.tokopedia.core.rxjava;
 
-import android.util.Log;
-
 import rx.Subscription;
 import rx.subscriptions.CompositeSubscription;
+import timber.log.Timber;
 
 public class RxUtils {
 
@@ -11,7 +10,7 @@ public class RxUtils {
 
     public static void unsubscribeIfNotNull(Subscription subscription) {
         if (subscription != null) {
-            Log.d(TAG, "unsubscribeIfNotNull");
+            Timber.d("unsubscribeIfNotNull");
             subscription.unsubscribe();
         }
     }

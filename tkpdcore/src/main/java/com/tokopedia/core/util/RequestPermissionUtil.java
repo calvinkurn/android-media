@@ -139,11 +139,4 @@ public class RequestPermissionUtil {
         Toast.makeText(context, R.string.permission_multi_neverask, Toast.LENGTH_LONG).show();
 
     }
-
-    public static boolean checkHasPermission(Activity activity, String permission) {
-        return ContextCompat.checkSelfPermission(activity, permission)
-                == PackageManager.PERMISSION_GRANTED;
-    }
-
-
 }

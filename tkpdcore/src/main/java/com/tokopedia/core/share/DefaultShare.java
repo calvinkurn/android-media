@@ -2,7 +2,6 @@ package com.tokopedia.core.share;
 
 import android.app.Activity;
 import android.app.PendingIntent;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.text.TextUtils;
@@ -11,18 +10,14 @@ import com.tokopedia.abstraction.common.utils.FindAndReplaceHelper;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.util.DataMapper;
 import com.tokopedia.linker.LinkerManager;
 import com.tokopedia.linker.LinkerUtils;
 import com.tokopedia.linker.interfaces.ShareCallback;
 import com.tokopedia.linker.model.LinkerData;
 import com.tokopedia.linker.model.LinkerError;
-import com.tokopedia.linker.model.LinkerShareData;
 import com.tokopedia.linker.model.LinkerShareResult;
-import com.tokopedia.linker.model.UserData;
 import com.tokopedia.track.TrackApp;
-import com.tokopedia.user.session.UserSession;
 
 /**
  * Created by meta on 18/05/18.

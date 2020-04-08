@@ -69,7 +69,6 @@ import com.tokopedia.core.router.CustomerRouter;
 import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.home.HomeRouter;
-import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.share.DefaultShare;
 import com.tokopedia.core.util.AccessTokenRefresh;
 import com.tokopedia.core.util.AppWidgetUtil;
@@ -214,7 +213,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         TkpdCoreRouter,
         SellerModuleRouter,
         IDigitalModuleRouter,
-        PdpRouter,
         IPaymentModuleRouter,
         TransactionRouter,
         ReactApplication,

@@ -38,7 +38,6 @@ public class SessionHandler {
     public static final String DEFAULT_EMPTY_SHOP_ID = "0";
     public static final String CACHE_PROMOTION_PRODUCT = "CACHE_PROMOTION_PRODUCT";
     private static final String DEFAULT_EMPTY_SHOP_ID_ON_PREF = "-1";
-    private static final String SAVE_REAL = "SAVE_REAL";
     private static final String IS_MSISDN_VERIFIED = "IS_MSISDN_VERIFIED";
     private static final String PHONE_NUMBER = "PHONE_NUMBER";
     private static final String TEMP_PHONE_NUMBER = "TEMP_PHONE_NUMBER";
