@@ -61,6 +61,8 @@ import com.tokopedia.applink.internal.ApplinkConstInternalTravel.INTERNAL_FLIGHT
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.CHANGE_PASSWORD
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.DETAIL_TALK_BASE
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.LIVENESS_DETECTION
+import com.tokopedia.applink.internal.ApplinkConstInternalEntertainment.EVENT_HOME
+import com.tokopedia.applink.internal.ApplinkConstInternalNotification.NOTIFICATION_BUYER
 import com.tokopedia.config.GlobalConfig
 import tokopedia.applink.R
 import java.io.BufferedReader
@@ -88,7 +90,7 @@ object DeeplinkDFMapper {
 
     @JvmField
     val DFM_BASE = "df_base"
-    
+
     private val DFM_CATEGORY_TRADEIN = "df_category_tradein"
     @JvmField
     val DFM_MERCHANT_SELLER_CUSTOMERAPP = "df_merchant_seller"
@@ -118,6 +120,7 @@ object DeeplinkDFMapper {
             // Content
             add(DFP({ it.startsWithPattern(PROFILE) }, DFM_BASE, R.string.applink_title_profile))
             add(DFP({ it.startsWithPattern(INTERNAL_AFFILIATE) }, DFM_BASE, R.string.applink_title_affiliate))
+            add(DFP({ it.startsWithPattern(PLAY_DETAIL) }, DFM_BASE, R.string.applink_title_play))
 
             // Digital
             add(DFP({ it.startsWith(DIGITAL_RECHARGE) || it.startsWith(DIGITAL) }, DFM_BASE, R.string.title_digital_subhomepage))
@@ -194,6 +197,9 @@ object DeeplinkDFMapper {
             // Promo
             add(DFP({ it.startsWith(INTERNAL_TOKOPOINTS) }, DFM_BASE, R.string.title_tokopoints))
 
+            //Entertainment
+            add(DFP({ it.startsWith(EVENT_HOME)}, DFM_BASE, R.string.title_home_event))
+
             // Travel
             add(DFP({ it.startsWith(TRAVEL_SUBHOMEPAGE) }, DFM_BASE, R.string.title_travel_homepage))
             add(DFP({ it.startsWith(FLIGHT) }, DFM_BASE, R.string.title_flight))
@@ -227,6 +233,7 @@ object DeeplinkDFMapper {
             add(DFP({ it.startsWith(SALAM_UMRAH_HOME_PAGE) }, DFM_BASE, R.string.title_salam))
             add(DFP({ it.startsWith(SALAM_ORDER_DETAIL) }, DFM_BASE, R.string.title_salam))
             add(DFP({ it.startsWith(NOTIFICATION) }, DFM_BASE, R.string.title_notification_center))
+            add(DFP({ it.startsWith(NOTIFICATION_BUYER) }, DFM_BASE, R.string.title_notification_center))
 
             add(DFP({ it.startsWith(HOME_WISHLIST) }, DFM_BASE, R.string.title_wishlist))
 

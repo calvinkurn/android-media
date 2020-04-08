@@ -6,6 +6,7 @@ import com.tkpd.library.utils.CurrencyFormatHelper
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.kotlin.model.ImpressHolder
 import java.util.*
+import kotlin.collections.ArrayList
 
 data class DynamicHomeChannel(
     @Expose
@@ -18,6 +19,9 @@ data class DynamicHomeChannel(
             @Expose
             @SerializedName("id")
             val id: String = "",
+            @Expose
+            @SerializedName("group_id")
+            val groupId: String = "",
             @Expose
             @SerializedName("galaxy_attribution")
             val galaxyAttribution: String = "",
@@ -618,11 +622,20 @@ data class DynamicHomeChannel(
             @SerializedName("productClickUrl")
             val productClickUrl: String = "",
             @Expose
+            @SerializedName("isTopads")
+            val isTopads: Boolean = false,
+            @Expose
             @SerializedName("freeOngkir")
             val freeOngkir: FreeOngkir = FreeOngkir(),
             @Expose
             @SerializedName("productViewCountFormatted")
-            val productViewCountFormatted: String = ""
+            val productViewCountFormatted: String = "",
+            @Expose
+            @SerializedName("isOutOfStock")
+            val isOutOfStock: Boolean = false,
+            @Expose
+            @SerializedName("labelGroup")
+            val labelGroup: Array<LabelGroup> = arrayOf()
     )
 
     data class Header(
@@ -688,7 +701,9 @@ data class DynamicHomeChannel(
             val imageUrl: String = "",
             @Expose
             @SerializedName("attribution")
-            val attribution: String = ""
+            val attribution: String = "",
+            @SerializedName("gradient_color")
+            val gradientColor: ArrayList<String> = arrayListOf("#ffffff")
     ) : ImpressHolder()
 
     data class CtaData(

@@ -314,6 +314,7 @@ public class ShipmentDataConverter {
         shipmentCartItemModel.setSaveStateFlag(groupShop.isSaveStateFlag());
         shipmentCartItemModel.setIsLeasingProduct(groupShop.getIsLeasingProduct());
         shipmentCartItemModel.setBookingFee(groupShop.getBookingFee());
+        shipmentCartItemModel.setListPromoCodes(groupShop.getListPromoCodes());
 
         shipmentCartItemModel.setHasSetDropOffLocation(hasTradeInDropOffAddress);
 
