@@ -123,6 +123,7 @@
     <string name="action_add_video">+ Tambah video</string>
     <string name="action_next_button">Lanjut</string>
     <string name="error_video_not_valid">Pastikan link Youtube kamu benar</string>
+    <string name="error_video_is_exist">Link video tidak boleh sama</string>
 
     <!--Tooltip wording-->
     <string name="title_tooltip_photo_tips">Tips memilih foto produk</string>
@@ -159,6 +160,7 @@
     <string name="message_notif_product_upload_error">Product gagal di-upload. Coba lagi</string>
     <string name="product_name_is_more_than_seventy_character">Nama Produk lebih dari 70 karakter</string>
     <string name="product_name_should_be_not_empty">Nama produk tidak boleh kosong</string>
+
 
     <!-- id -->
     <item name="name" type="id" />

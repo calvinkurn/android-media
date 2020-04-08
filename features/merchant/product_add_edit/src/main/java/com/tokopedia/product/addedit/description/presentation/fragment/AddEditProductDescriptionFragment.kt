@@ -251,7 +251,8 @@ class AddEditProductDescriptionFragment:
                         adapter.data[positionVideoChanged].inputTitle = result.data.title.orEmpty()
                         adapter.data[positionVideoChanged].inputDescription = result.data.description.orEmpty()
                         adapter.data[positionVideoChanged].inputImage = result.data.thumbnailUrl.orEmpty()
-                        adapter.data[positionVideoChanged].errorMessage = ""
+                        adapter.data[positionVideoChanged].errorMessage =
+                                validateDuplicateVideo(adapter.data[positionVideoChanged].inputUrl)
                     }
                 }
                 is Fail -> {
@@ -263,6 +264,15 @@ class AddEditProductDescriptionFragment:
             }
             adapter.notifyItemChanged(positionVideoChanged)
         })
+    }
+
+    private fun validateDuplicateVideo(inputUrl: String): String {
+        var errorMessage = ""
+        val videoLinks = adapter.data.filter {
+            it.inputUrl == inputUrl
+        }
+        if (videoLinks.size > 1)  errorMessage = getString(R.string.error_video_is_exist)
+        return errorMessage
     }
 
     private fun applyEditMode() {
