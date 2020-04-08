@@ -1,4 +1,4 @@
-package com.tokopedia.product.addedit.detail.presentation.mapper
+package com.tokopedia.product.addedit.mapper
 
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.manage.common.draft.data.model.ProductDraft
@@ -12,7 +12,7 @@ fun mapProductInputModelDetailToDraft(productInputModel: ProductInputModel): Pro
     productDraft.detailInputModel.stock = productInputModel.detailInputModel.stock
     productDraft.detailInputModel.minOrder = productInputModel.detailInputModel.minOrder
     productDraft.detailInputModel.condition = productInputModel.detailInputModel.sku
-    productDraft.detailInputModel.sku = productInputModel.detailInputModel.sku
+    productDraft.detailInputModel.sku = productInputModel.detailInputModel.condition
     productDraft.detailInputModel.imageUrlOrPathList = productInputModel.detailInputModel.imageUrlOrPathList
     productDraft.detailInputModel.preorder.apply {
         duration = productInputModel.detailInputModel.preorder.duration

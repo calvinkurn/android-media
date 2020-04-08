@@ -11,11 +11,13 @@ import com.tokopedia.product.addedit.description.data.remote.model.variantbycat.
 import com.tokopedia.product.addedit.description.domain.usecase.GetProductVariantUseCase
 import com.tokopedia.product.addedit.description.presentation.model.DescriptionInputModel
 import com.tokopedia.product.addedit.description.presentation.model.ProductVariantInputModel
+import com.tokopedia.product.addedit.draft.domain.usecase.GetProductDraftUseCase
 import com.tokopedia.product.addedit.preview.data.source.api.response.Product
 import com.tokopedia.product.addedit.preview.domain.GetProductUseCase
 import com.tokopedia.product.addedit.preview.domain.mapper.GetProductMapper
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.shipment.presentation.model.ShipmentInputModel
+import com.tokopedia.product.manage.common.draft.data.model.ProductDraft
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -28,12 +30,17 @@ class AddEditProductPreviewViewModel @Inject constructor(
         private val getProductUseCase: GetProductUseCase,
         private val getProductMapper: GetProductMapper,
         private val getProductVariantUseCase: GetProductVariantUseCase,
+        private val getProductDraftUseCase: GetProductDraftUseCase,
         dispatcher: CoroutineDispatcher
 ) : BaseViewModel(dispatcher) {
 
     private val productId = MutableLiveData<String>()
 
     private val draftId = MutableLiveData<String>()
+
+    private val getProductDraftResultMutableLiveData = MutableLiveData<Result<ProductDraft>>()
+    val getProductDraftResultLiveData: LiveData<Result<ProductDraft>>
+        get() = getProductDraftResultMutableLiveData
 
     // observing the product id, and will become true if product id exist
     val isEditing = Transformations.map(productId) { id ->
@@ -145,6 +152,17 @@ class AddEditProductPreviewViewModel @Inject constructor(
             })
         }, onError = {
             mProductVariantList.value = Fail(it)
+        })
+    }
+
+    fun getProductDraft(productId: Long) {
+        launchCatchError(block = {
+            getProductDraftUseCase.params = GetProductDraftUseCase.createRequestParams(productId)
+            getProductDraftResultMutableLiveData.value = withContext(Dispatchers.IO) {
+                getProductDraftUseCase.executeOnBackground()
+            }.let { Success(it) }
+        }, onError = {
+            getProductDraftResultMutableLiveData.value = Fail(it)
         })
     }
 }

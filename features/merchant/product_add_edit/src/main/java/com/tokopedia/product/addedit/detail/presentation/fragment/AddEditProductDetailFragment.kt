@@ -55,7 +55,7 @@ import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProduct
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.UNIT_DAY
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.UNIT_WEEK
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.USED_PRODUCT_INDEX
-import com.tokopedia.product.addedit.detail.presentation.mapper.mapProductInputModelDetailToDraft
+import com.tokopedia.product.addedit.mapper.mapProductInputModelDetailToDraft
 import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.PreorderInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.WholeSaleInputModel
@@ -116,7 +116,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     @Inject
     lateinit var viewModel: AddEditProductDetailViewModel
 
-    private val productInputModel = ProductInputModel()
+    private var productInputModel = ProductInputModel()
 
     private var productPhotoPaths = mutableListOf<String>()
 
@@ -195,6 +195,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             viewModel.selectedCategoryId = this.detailInputModel.categoryId
             viewModel.productPhotoPaths = this.detailInputModel.imageUrlOrPathList.toMutableList()
             viewModel.variantInputModel = this.variantInputModel
+            productInputModel = this
         }
         // set isEditing status
         arguments?.getBoolean(EXTRA_IS_EDITING_PRODUCT)?.run {
@@ -768,7 +769,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         productInputModel.detailInputModel.minOrder = productMinOrderField.getTextIntOrZero()
         productInputModel.detailInputModel.condition = if (isProductConditionNew) AddEditProductDetailConstants.CONDITION_NEW else AddEditProductDetailConstants.CONDITION_USED
         productInputModel.detailInputModel.sku = productSkuField.getText()
-        productInputModel.detailInputModel.imageUrlOrPathList = productPhotoPaths
+        productInputModel.detailInputModel.imageUrlOrPathList = viewModel.productPhotoPaths
         productInputModel.detailInputModel.preorder.apply {
             duration = preOrderDurationField.getTextIntOrZero()
             timeUnit = selectedDurationPosition
