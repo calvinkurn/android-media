@@ -1,6 +1,7 @@
 package com.tokopedia.topchat.chatroom.view.custom
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.os.Build
 import android.util.AttributeSet
 import android.view.View
@@ -18,6 +19,8 @@ import com.tokopedia.unifyprinciples.Typography
 
 class TransactionOrderProgressLayout : LinearLayout {
 
+    private val DEFAULT_STATE = stateOpen
+
     private var status: Typography? = null
     private var stateChanger: Typography? = null
     private var descriptionContainer: ConstraintLayout? = null
@@ -28,7 +31,7 @@ class TransactionOrderProgressLayout : LinearLayout {
     private var actionBtn: UnifyButton? = null
 
     private var chatOrder: ChatOrderProgress = ChatOrderProgress()
-    private var state: String = stateOpen
+    private var state: String = DEFAULT_STATE
 
     private var isForceClose = false
     private var isKeyboardOpened = false
@@ -58,6 +61,7 @@ class TransactionOrderProgressLayout : LinearLayout {
     fun render(chatOrder: ChatOrderProgress) {
         this.chatOrder = chatOrder
         if (!shouldBeRendered()) return
+        loadPreviousState()
         renderStateDescription()
         renderStateChangerButton()
         renderOrderStatus()
@@ -74,7 +78,7 @@ class TransactionOrderProgressLayout : LinearLayout {
     fun onKeyboardClosed() {
         if (isKeyboardOpened) {
             toggleKeyboardState()
-            automaticShow()
+            if (!isForceClose) automaticShow()
         }
     }
 
@@ -158,9 +162,32 @@ class TransactionOrderProgressLayout : LinearLayout {
                     isOpen = { changeState(stateClose) },
                     isClose = { changeState(stateOpen) }
             )
+            saveCurrentState()
         }
         stateChanger?.setOnClickListener(clickListener)
         status?.setOnClickListener(clickListener)
+    }
+
+    private fun loadPreviousState() {
+        state = getPref()?.getString(getPrefOrderPrefKey(), DEFAULT_STATE) ?: DEFAULT_STATE
+        updateIsForceClose()
+    }
+
+    private fun saveCurrentState() {
+        getPref()?.edit()?.putString(getPrefOrderPrefKey(), state)?.apply()
+        updateIsForceClose()
+    }
+
+    private fun getPref(): SharedPreferences? {
+        return context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
+    }
+
+    private fun updateIsForceClose() {
+        isForceClose = state == stateClose
+    }
+
+    private fun getPrefOrderPrefKey(): String {
+        return chatOrder.orderId
     }
 
     private fun openCloseState(): Boolean {
@@ -236,5 +263,7 @@ class TransactionOrderProgressLayout : LinearLayout {
 
         private const val stateOpen = "Tutup"
         private const val stateClose = "Lihat"
+
+        private const val PREF_NAME = "TransactionOrderProgressPreference_ChatRoom"
     }
 }
