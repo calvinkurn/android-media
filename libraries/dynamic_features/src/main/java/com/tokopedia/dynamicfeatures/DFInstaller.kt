@@ -195,9 +195,9 @@ object DFInstaller {
         if (isInstalled(context, moduleName)) {
             return
         }
-        val list = ArrayList<String>()
-        list.add(moduleName)
-        installOnBackground(context, list, message)
+        val moduleNameList = ArrayList<String>()
+        moduleNameList.add(moduleName)
+        installOnBackground(context, moduleNameList, message)
     }
 
     /**
@@ -205,12 +205,18 @@ object DFInstaller {
      * The service will run suspend function of install on background.
      */
     @JvmStatic
-    fun installOnBackground(context: Context, moduleNames: List<String>, message: String) {
+    fun installOnBackground(context: Context, moduleNameList: List<String>, message: String) {
+        val filteredModuleNameList = ArrayList<String>()
+        for (moduleName in moduleNameList) {
+            if (!isInstalled(context, moduleName)) {
+                filteredModuleNameList.add(moduleName)
+            }
+        }
         val dfConfig = DFRemoteConfig.getConfig(context.applicationContext)
         if (dfConfig.downloadInBackground && !dfConfig.downloadInBackgroundExcludedSdkVersion.contains(Build.VERSION.SDK_INT)) {
-            DFDownloader.startSchedule(context.applicationContext, moduleNames, true)
+            DFDownloader.startSchedule(context.applicationContext, filteredModuleNameList, true)
         } else {
-            startDeferredInstall(context, moduleNames, message)
+            startDeferredInstall(context, filteredModuleNameList, message)
         }
     }
 

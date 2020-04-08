@@ -67,7 +67,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.design.component.BottomNavigation;
 import com.tokopedia.dynamicfeatures.DFInstaller;
-import com.tokopedia.dynamicfeatures.DFInstallerActivity;
 import com.tokopedia.home.account.presentation.fragment.AccountHomeFragment;
 import com.tokopedia.inappupdate.AppUpdateManagerWrapper;
 import com.tokopedia.navigation.GlobalNavAnalytics;
@@ -269,18 +268,20 @@ public class MainParentActivity extends BaseActivity implements
             }
         };
         Weaver.Companion.executeWeaveCoRoutineWithFirebase(executeEventsWeave, RemoteConfigKey.ENABLE_ASYNC_OPENHOME_EVENT, getContext());
-        installDF();
+        installDFonBackground();
     }
 
-    private void installDF() {
-        DFInstaller.installOnBackground(this.getApplication(), DeeplinkDFMapper.DF_SALAM_UMRAH, "Home");
+    private void installDFonBackground() {
+        List<String> moduleNameList = new ArrayList<>();
+        moduleNameList.add(DeeplinkDFMapper.DF_SALAM_UMRAH);
         if (userSession.isLoggedIn()) {
-            DFInstaller.installOnBackground(this.getApplication(), DeeplinkDFMapper.DF_USER_SETTINGS, "Home");
-            DFInstaller.installOnBackground(this.getApplication(), DeeplinkDFMapper.DF_OPERATIONAL_CONTACT_US, "Home");
+            moduleNameList.add(DeeplinkDFMapper.DF_USER_SETTINGS);
+            moduleNameList.add(DeeplinkDFMapper.DF_OPERATIONAL_CONTACT_US);
         }
         if (userSession.hasShop()) {
-            DFInstaller.installOnBackground(this.getApplication(), DeeplinkDFMapper.DF_MERCHANT_SELLER, "Home");
+            moduleNameList.add(DeeplinkDFMapper.DF_MERCHANT_SELLER);
         }
+        DFInstaller.installOnBackground(this.getApplication(), moduleNameList, "Home");
     }
 
     private void startJankyFrameMonitoringUtil() {
@@ -502,7 +503,6 @@ public class MainParentActivity extends BaseActivity implements
         if (position == FEED_MENU) {
             Intent intent = new Intent(BROADCAST_FEED);
             LocalBroadcastManager.getInstance(getContext().getApplicationContext()).sendBroadcast(intent);
-            startActivity(new Intent(this, DFInstallerActivity.class));
         }
 
         if ((position == CART_MENU || position == ACCOUNT_MENU) && !presenter.isUserLogin()) {
