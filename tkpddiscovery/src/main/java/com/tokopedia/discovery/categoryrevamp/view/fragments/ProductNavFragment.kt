@@ -21,6 +21,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalCategory.INTERNAL_BELANJA_CATEGORY
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.core.gcm.GCMHandler
 import com.tokopedia.design.utils.CurrencyFormatHelper
@@ -454,7 +455,7 @@ open class ProductNavFragment : BaseBannedProductFragment(),
     }
 
     override fun OnDefaultItemClicked() {
-        val intent = RouteManager.getIntent(activity, ApplinkConst.CATEGORY_BELANJA)
+        val intent = RouteManager.getIntent(activity, INTERNAL_BELANJA_CATEGORY)
                 .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         startActivity(intent)
     }
