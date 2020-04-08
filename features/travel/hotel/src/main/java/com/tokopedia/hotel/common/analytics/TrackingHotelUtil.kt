@@ -1,6 +1,5 @@
 package com.tokopedia.hotel.common.analytics
 
-import android.util.Log
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.common.travel.data.entity.TravelCollectiveBannerModel
 import com.tokopedia.common.travel.data.entity.TravelRecentSearchModel
@@ -18,7 +17,6 @@ import com.tokopedia.hotel.search.data.model.params.ParamFilter
 import com.tokopedia.hotel.search.data.model.params.SearchParam
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils.*
-import javax.inject.Inject
 import kotlin.math.roundToLong
 
 /**
@@ -517,15 +515,15 @@ class TrackingHotelUtil {
     }
 
     fun changeSearchPageLoaded(screenName: String, irisSessionId: String, userId: String) {
-        val map = mutableMapOf<String, Any>()
-        map[SCREEN_NAME] = screenName
+        val map = mutableMapOf<String, String>()
+        map[EVENT_NAME] = OPEN_SCREEN_EVENT
         map[CURRENT_SITE] = TOKOPEDIA_DIGITAL_HOTEL
         map[CLIENT_ID] = TrackApp.getInstance().gtm.clientIDString ?: ""
         map[SESSION_IRIS] = irisSessionId
         map[USER_ID] = userId
         map[BUSINESS_UNIT] = HOTEL_LABEL
 
-        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
+        TrackApp.getInstance().gtm.sendScreenAuthenticated(screenName, map)
     }
 
     fun clickSaveChangeSearch(type: String, name: String, totalRoom: Int, totalGuest: Int, checkIn: String, checkOut: String, screenName: String,

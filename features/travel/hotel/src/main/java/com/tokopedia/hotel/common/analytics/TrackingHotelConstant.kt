@@ -6,6 +6,8 @@ val CLIENT_ID = "clientId"
 val SESSION_IRIS = "sessionIris"
 val USER_ID = "userId"
 val BUSINESS_UNIT = "businessUnit"
+val EVENT_NAME = "eventName"
+val OPEN_SCREEN_EVENT = "openScreen"
 
 val PROMO_VIEW = "promoView"
 val PROMO_CLICK = "promoClick"

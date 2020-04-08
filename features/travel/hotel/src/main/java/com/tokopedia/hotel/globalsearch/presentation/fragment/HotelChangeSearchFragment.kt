@@ -88,7 +88,7 @@ class HotelChangeSearchFragment : HotelGlobalSearchFragment() {
         }
 
         context?.let {
-            trackingUtil.hotelClickChangeSearch(globalSearchModel.destinationType, globalSearchModel.destinationName,
+            trackingUtil.clickSaveChangeSearch(globalSearchModel.destinationType, globalSearchModel.destinationName,
                     globalSearchModel.numOfRooms, globalSearchModel.numOfGuests, globalSearchModel.checkInDate, globalSearchModel.checkOutDate,
                     SCREEN_NAME, IrisSession(it).getSessionId(), UserSession(it).userId)
         }
