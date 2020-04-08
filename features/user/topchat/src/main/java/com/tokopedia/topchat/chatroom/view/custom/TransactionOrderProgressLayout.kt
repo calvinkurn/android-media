@@ -19,6 +19,7 @@ class TransactionOrderProgressLayout : LinearLayout {
     private var status: Typography? = null
     private var stateChanger: Typography? = null
     private var descriptionContainer: ConstraintLayout? = null
+    private var chatOrder: ChatOrderProgress = ChatOrderProgress()
     private var state: String = stateOpen
 
     constructor(context: Context?) : super(context)
@@ -44,24 +45,25 @@ class TransactionOrderProgressLayout : LinearLayout {
     }
 
     fun render(chatOrder: ChatOrderProgress) {
-        if (!shouldBeRendered(chatOrder)) return
+        this.chatOrder = chatOrder
+        if (!shouldBeRendered()) return
         renderStateDescription()
-        renderStateChangerButton(chatOrder)
-        renderOrderStatus(chatOrder)
-        renderLayoutVisibility(chatOrder)
+        renderStateChangerButton()
+        renderOrderStatus()
+        renderLayoutVisibility()
     }
 
-    private fun shouldBeRendered(chatOrder: ChatOrderProgress): Boolean {
+    private fun shouldBeRendered(): Boolean {
         return chatOrder.enable.also { shouldShow ->
             if (!shouldShow) hide()
         }
     }
 
-    private fun renderLayoutVisibility(chatOrder: ChatOrderProgress) {
+    private fun renderLayoutVisibility() {
         showWithCondition(chatOrder.enable)
     }
 
-    private fun renderOrderStatus(chatOrder: ChatOrderProgress) {
+    private fun renderOrderStatus() {
         status?.text = chatOrder.status
     }
 
@@ -77,8 +79,8 @@ class TransactionOrderProgressLayout : LinearLayout {
      * 1. if transaction is not finished user can open/close
      * 2. if transaction is finished. closed state only
      */
-    private fun renderStateChangerButton(chatOrder: ChatOrderProgress) {
-        if (openCloseState(chatOrder)) {
+    private fun renderStateChangerButton() {
+        if (openCloseState()) {
             renderOpenCloseStateChangerButton()
             bindClickOpenCloseState()
         } else {
@@ -111,7 +113,7 @@ class TransactionOrderProgressLayout : LinearLayout {
         }
     }
 
-    private fun openCloseState(chatOrder: ChatOrderProgress): Boolean {
+    private fun openCloseState(): Boolean {
         // TODO: impl this
         return true
     }
