@@ -13,18 +13,22 @@ data class CampaignTimerUi(
         var timerDescription: String = "",
         var timerExpired: String = "",
         var timerExpiredDuration: Int = 0,
-        var timerServer: String = ""
+        var timerServer: String = "",
+        var gtmProductId: Int = 0,
+        var gtmUserId: String = ""
 ) : Parcelable {
     constructor(source: Parcel) : this(
-            source.readString(),
-            source.readString(),
-            source.readString(),
-            1 == source.readInt(),
-            source.readString(),
-            source.readString(),
-            source.readString(),
-            source.readInt(),
-            source.readString()
+    source.readString(),
+    source.readString(),
+    source.readString(),
+    1 == source.readInt(),
+    source.readString(),
+    source.readString(),
+    source.readString(),
+    source.readInt(),
+    source.readString(),
+    source.readInt(),
+    source.readString()
     )
 
     override fun describeContents() = 0
@@ -39,6 +43,8 @@ data class CampaignTimerUi(
         writeString(timerExpired)
         writeInt(timerExpiredDuration)
         writeString(timerServer)
+        writeInt(gtmProductId)
+        writeString(gtmUserId)
     }
 
     companion object {

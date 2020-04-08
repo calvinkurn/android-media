@@ -3067,7 +3067,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             cdText.setText(timer.getTimerDescription());
             cdView.setupTimerFromRemianingMillis(diff, () -> {
                 if (getFragmentManager() != null && isResumed()) {
-                    ExpiredTimeDialog dialog = ExpiredTimeDialog.newInstance(timer);
+                    ExpiredTimeDialog dialog = ExpiredTimeDialog.newInstance(timer, checkoutAnalyticsCourierSelection);
                     dialog.show(getFragmentManager(), "expired dialog");
                 }
             });

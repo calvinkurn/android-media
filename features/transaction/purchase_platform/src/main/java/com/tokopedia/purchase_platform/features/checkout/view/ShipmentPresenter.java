@@ -1914,7 +1914,14 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
     @Override
     public CampaignTimerUi getCampaignTimer() {
-        return this.campaignTimer;
+        if (campaignTimer == null) return null;
+        else {
+            campaignTimer.setGtmProductId(
+                    ShipmentCartItemModelHelper.getFirstProductId(shipmentCartItemModelList)
+            );
+            campaignTimer.setGtmUserId(userSessionInterface.getUserId());
+            return campaignTimer;
+        }
     }
 
     @Override
