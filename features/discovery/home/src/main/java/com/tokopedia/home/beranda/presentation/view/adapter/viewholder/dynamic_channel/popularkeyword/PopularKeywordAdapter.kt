@@ -40,6 +40,7 @@ class PopularKeywordAdapter(private val popularKeywordListener: PopularKeywordVi
     }
 
     fun submitList(list: List<PopularKeywordDataModel>){
+        popularKeywordList.clear()
         popularKeywordList.addAll(list)
         notifyDataSetChanged()
     }
