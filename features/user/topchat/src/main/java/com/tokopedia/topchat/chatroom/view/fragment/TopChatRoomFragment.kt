@@ -13,6 +13,7 @@ import android.view.ViewGroup
 import android.widget.EditText
 import androidx.annotation.StringRes
 import androidx.fragment.app.FragmentManager
+import com.crashlytics.android.Crashlytics
 import com.github.rubensousa.bottomsheetbuilder.BottomSheetBuilder
 import com.github.rubensousa.bottomsheetbuilder.custom.CheckedBottomSheetBuilder
 import com.google.android.material.snackbar.Snackbar
@@ -55,6 +56,7 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RemoteConfigKey
+import com.tokopedia.topchat.BuildConfig
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.di.ChatRoomContextModule
 import com.tokopedia.topchat.chatroom.di.DaggerChatComponent
@@ -82,6 +84,7 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.webview.BaseSimpleWebViewActivity
 import com.tokopedia.wishlist.common.listener.WishListActionListener
+import java.lang.Exception
 import javax.inject.Inject
 
 /**
@@ -437,7 +440,22 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     }
 
     override fun isUseNewCard(): Boolean {
-        return RemoteConfigInstance.getInstance().abTestPlatform.getString(abNewThumbnailKey) == variantNewThumbnail
+        val defaultUseNewCard = true
+        return try {
+            RemoteConfigInstance.getInstance().abTestPlatform.getString(abNewThumbnailKey) == variantNewThumbnail
+        } catch (e: Exception) {
+            e.printStackTrace()
+            logUnknownError(e)
+            defaultUseNewCard
+        }
+    }
+
+    private fun logUnknownError(exception: Exception) {
+        try {
+            if (!BuildConfig.DEBUG) Crashlytics.logException(exception)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 
     override fun isUseCarousel(): Boolean? {

@@ -13,10 +13,8 @@ import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.DeeplinkDFMapper
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.dynamicfeatures.DFInstaller
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.invisible
@@ -24,6 +22,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.onboarding.R
 import com.tokopedia.onboarding.analytics.OnboardingAnalytics
 import com.tokopedia.onboarding.common.IOnBackPressed
+import com.tokopedia.onboarding.common.OnboardingIoDispatcher
 import com.tokopedia.onboarding.data.OnboardingScreenItem
 import com.tokopedia.onboarding.di.OnboardingComponent
 import com.tokopedia.onboarding.view.adapter.OnboardingViewPagerAdapter
@@ -36,7 +35,6 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.weaver.WeaveInterface
 import com.tokopedia.weaver.Weaver
-import com.tokopedia.weaver.WeaverFirebaseConditionCheck
 import kotlinx.coroutines.*
 import org.jetbrains.annotations.NotNull
 import java.util.*
@@ -49,7 +47,7 @@ import kotlin.coroutines.CoroutineContext
  * ade.hadian@tokopedia.com
  */
 
-class OnboardingFragment : BaseDaggerFragment(), IOnBackPressed, CoroutineScope {
+class OnboardingFragment : BaseDaggerFragment(), CoroutineScope, IOnBackPressed {
 
     private lateinit var screenViewpager: ViewPager
     private lateinit var skipAction: Typography
@@ -59,12 +57,22 @@ class OnboardingFragment : BaseDaggerFragment(), IOnBackPressed, CoroutineScope 
 
     private var abTestVariant = ""
 
+    private val job = SupervisorJob()
+
     @Inject
     lateinit var userSession: UserSessionInterface
+
     @Inject
     lateinit var onboardingAnalytics: OnboardingAnalytics
+
     @Inject
     lateinit var remoteConfig: RemoteConfig
+
+    @Inject
+    lateinit var dispatcher: OnboardingIoDispatcher
+
+    override val coroutineContext: CoroutineContext
+        get() = job + dispatcher.main
 
     private lateinit var onboardingViewPagerAdapter: OnboardingViewPagerAdapter
     private lateinit var sharedPrefs: SharedPreferences
@@ -94,10 +102,12 @@ class OnboardingFragment : BaseDaggerFragment(), IOnBackPressed, CoroutineScope 
     }
 
     @NotNull
-    private fun executeViewCreateFlow() : Boolean{
-        initAbTesting()
-        trackPreinstall()
-        initView()
+    private fun executeViewCreateFlow(): Boolean {
+        GlobalScope.launch(coroutineContext) {
+            initAbTesting()
+            trackPreinstall()
+            initView()
+        }
         return true
     }
 
@@ -133,7 +143,7 @@ class OnboardingFragment : BaseDaggerFragment(), IOnBackPressed, CoroutineScope 
             onboardingViewPagerAdapter = OnboardingViewPagerAdapter(it, listItem)
             if (::screenViewpager.isInitialized) {
                 screenViewpager.adapter = onboardingViewPagerAdapter
-                if(onboardingViewPagerAdapter.count > 1)
+                if (onboardingViewPagerAdapter.count > 1)
                     screenViewpager.offscreenPageLimit = onboardingViewPagerAdapter.count - 1
             }
             tabIndicator.setupWithViewPager(screenViewpager)
@@ -218,7 +228,7 @@ class OnboardingFragment : BaseDaggerFragment(), IOnBackPressed, CoroutineScope 
             context?.let {
                 onboardingAnalytics.eventOnboardingSkip(screenViewpager.currentItem)
                 val applink = if (TextUtils.isEmpty(TrackApp.getInstance().appsFlyer.defferedDeeplinkPathIfExists)) {
-                    when(abTestVariant) {
+                    when (abTestVariant) {
                         ONBOARD_BUTTON_AB_TESTING_VARIANT_ALL_BUTTON_REGISTER -> ApplinkConst.OFFICIAL_STORE
                         else -> ApplinkConst.HOME
                     }
@@ -343,7 +353,4 @@ class OnboardingFragment : BaseDaggerFragment(), IOnBackPressed, CoroutineScope 
             return fragment
         }
     }
-
-    override val coroutineContext: CoroutineContext
-        get() = Dispatchers.Main
 }
