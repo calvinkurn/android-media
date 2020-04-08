@@ -207,7 +207,6 @@ class CatalogListingFragment : BaseDaggerFragment(), CatalogListingContract.View
 
     override fun onSuccessPoints(rewardStr: String, rewardValue: Int, membership: String, eggUrl: String) {
         if (!rewardStr.isEmpty()) mTextPoints!!.text = rewardStr
-        if (!membership.isEmpty()) mTextMembershipValueBottom!!.text = membership
         mTextPointsBottom!!.text = CurrencyFormatUtil.convertPriceValue(rewardValue.toDouble(), false)
         if (!eggUrl.isEmpty()) ImageHandler.loadImageCircle2(activityContext, mImgEggBottom, eggUrl)
         isPointsAvailable = true
@@ -387,7 +386,6 @@ class CatalogListingFragment : BaseDaggerFragment(), CatalogListingContract.View
         mTextPoints = view.findViewById(R.id.text_point_value)
         bottomViewMembership = view.findViewById(R.id.bottom_view_membership)
         mContainerPointDetail = view.findViewById(R.id.container_point_detail)
-        mTextMembershipValueBottom = view.findViewById(R.id.text_loyalty_value_bottom)
         mTextPointsBottom = view.findViewById(R.id.text_my_points_value_bottom)
         mImgEggBottom = view.findViewById(R.id.img_loyalty_stack_bottom)
         mAppBarHeader = view.findViewById(R.id.app_bar_header)
@@ -437,7 +435,8 @@ class CatalogListingFragment : BaseDaggerFragment(), CatalogListingContract.View
         if (subCategory.timerLabel != null) {
             mTvFlashTimerLabel!!.text = subCategory.timerLabel
         }
-        /*This section is exclusively for handling flash-sale timer*/mProgressFlash!!.max = CommonConstant.COUPON_SHOW_COUNTDOWN_MAX_LIMIT_S.toInt()
+        /*This section is exclusively for handling flash-sale timer*/
+        mProgressFlash!!.max = CommonConstant.COUPON_SHOW_COUNTDOWN_MAX_LIMIT_S.toInt()
         mFlashTimer = object : CountDownTimer(subCategory.timeRemainingSeconds * 1000, 1000) {
             override fun onTick(l: Long) {
                 subCategory.timeRemainingSeconds = l / 1000
