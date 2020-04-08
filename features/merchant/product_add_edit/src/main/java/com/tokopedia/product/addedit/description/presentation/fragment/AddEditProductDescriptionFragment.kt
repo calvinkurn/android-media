@@ -45,7 +45,7 @@ import com.tokopedia.product.addedit.description.di.DaggerAddEditProductDescript
 import com.tokopedia.product.addedit.description.presentation.activity.AddEditProductDescriptionActivity.Companion.PARAM_CATEGORY_ID
 import com.tokopedia.product.addedit.description.presentation.activity.AddEditProductDescriptionActivity.Companion.PARAM_DESCRIPTION_INPUT_MODEL
 import com.tokopedia.product.addedit.description.presentation.activity.AddEditProductDescriptionActivity.Companion.PARAM_IS_EDIT_MODE
-import com.tokopedia.product.addedit.description.presentation.activity.AddEditProductDescriptionActivity.Companion.PARAM_PRODUCT_INPUT_MODEL
+import com.tokopedia.product.addedit.description.presentation.activity.AddEditProductDescriptionActivity.Companion.PARAM_PRODUCT_DRAFT_MODEL
 import com.tokopedia.product.addedit.description.presentation.activity.AddEditProductDescriptionActivity.Companion.PARAM_VARIANT_INPUT_MODEL
 import com.tokopedia.product.addedit.description.presentation.adapter.VideoLinkTypeFactory
 import com.tokopedia.product.addedit.description.presentation.model.DescriptionInputModel
@@ -53,13 +53,13 @@ import com.tokopedia.product.addedit.description.presentation.model.PictureViewM
 import com.tokopedia.product.addedit.description.presentation.model.ProductVariantInputModel
 import com.tokopedia.product.addedit.description.presentation.model.VideoLinkModel
 import com.tokopedia.product.addedit.description.presentation.viewmodel.AddEditProductDescriptionViewModel
-import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.shipment.presentation.activity.AddEditProductShipmentActivity
 import com.tokopedia.product.addedit.shipment.presentation.fragment.AddEditProductShipmentFragment.Companion.REQUEST_CODE_SHIPMENT
 import com.tokopedia.product.addedit.shipment.presentation.model.ShipmentInputModel
 import com.tokopedia.product.addedit.tooltip.model.NumericTooltipModel
 import com.tokopedia.product.addedit.tooltip.presentation.TooltipBottomSheet
 import com.tokopedia.product.addedit.tracking.ProductAddDescriptionTracking
+import com.tokopedia.product.addedit.tracking.ProductAddStepperTracking
 import com.tokopedia.product.addedit.tracking.ProductEditDescriptionTracking
 import com.tokopedia.product.manage.common.draft.data.model.ProductDraft
 import com.tokopedia.product.manage.common.draft.data.model.description.VideoLinkListModel
@@ -83,7 +83,7 @@ class AddEditProductDescriptionFragment:
             return AddEditProductDescriptionFragment().apply {
                 arguments = Bundle().apply {
                     putString(PARAM_CATEGORY_ID, categoryId)
-                    putParcelable(PARAM_PRODUCT_INPUT_MODEL, productDraft)
+                    putParcelable(PARAM_PRODUCT_DRAFT_MODEL, productDraft)
                 }
             }
         }
@@ -177,7 +177,7 @@ class AddEditProductDescriptionFragment:
             descriptionViewModel.descriptionInputModel = descriptionInputModel
             descriptionViewModel.variantInputModel = variantInputModel
             descriptionViewModel.isEditMode = isEditMode
-            productDraft = it.getParcelable(PARAM_PRODUCT_INPUT_MODEL) ?: ProductDraft()
+            productDraft = it.getParcelable(PARAM_PRODUCT_DRAFT_MODEL) ?: ProductDraft()
         }
     }
 
@@ -225,6 +225,14 @@ class AddEditProductDescriptionFragment:
         }
 
         observeProductVariant()
+    }
+
+    fun onCtaYesPressed() {
+        ProductAddStepperTracking.trackDraftYes(shopId)
+    }
+
+    fun onCtaNoPressed() {
+        ProductAddStepperTracking.trackDraftCancel(shopId)
     }
 
     fun onBackPressed() {
@@ -398,7 +406,7 @@ class AddEditProductDescriptionFragment:
         }
         inputAllDataInInputDraftModel()
         val intent = Intent(context, AddEditProductShipmentActivity::class.java)
-        intent.putExtra(AddEditProductUploadConstant.EXTRA_PRODUCT_INPUT, productDraft)
+        intent.putExtra(AddEditProductUploadConstant.EXTRA_PRODUCT_DRAFT, productDraft)
         startActivityForResult(intent, REQUEST_CODE_SHIPMENT)
     }
 

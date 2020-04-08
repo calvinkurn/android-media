@@ -8,7 +8,6 @@ import android.text.Editable
 import android.text.InputType
 import android.text.TextUtils
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -68,6 +67,7 @@ import com.tokopedia.product.addedit.optionpicker.OptionPicker
 import com.tokopedia.product.manage.common.draft.data.model.ProductDraft
 import com.tokopedia.product.addedit.shipment.presentation.model.ShipmentInputModel
 import com.tokopedia.product.addedit.tracking.ProductAddMainTracking
+import com.tokopedia.product.addedit.tracking.ProductAddStepperTracking
 import com.tokopedia.product.addedit.tracking.ProductEditMainTracking
 import com.tokopedia.product_photo_adapter.PhotoItemTouchHelperCallback
 import com.tokopedia.product_photo_adapter.ProductPhotoAdapter
@@ -527,8 +527,6 @@ class AddEditProductDetailFragment(private val initialSelectedImagePathList: Arr
             }
         }
 
-        getAllProductsDraft()
-
         subscribeToProductNameInputStatus()
         subscribeToProductNameRecommendation()
         subscribeToCategoryRecommendation()
@@ -539,8 +537,6 @@ class AddEditProductDetailFragment(private val initialSelectedImagePathList: Arr
         subscribeToPreOrderSwitchStatus()
         subscribeToPreOrderDurationInputStatus()
         subscribeToInputStatus()
-        subscribeToInsertProductDraftResult()
-        subscribeToGetAllProductsDraftResult()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -641,6 +637,14 @@ class AddEditProductDetailFragment(private val initialSelectedImagePathList: Arr
         updateWholeSaleErrorCounter(viewModel, productWholeSaleInputFormsView)
     }
 
+    fun onCtaYesPressed() {
+        ProductAddStepperTracking.trackDraftYes(shopId)
+    }
+
+    fun onCtaNoPressed() {
+        ProductAddStepperTracking.trackDraftCancel(shopId)
+    }
+
     fun onBackPressed() {
         if (viewModel.isEditMode) {
             ProductEditMainTracking.trackBack(shopId)
@@ -653,10 +657,6 @@ class AddEditProductDetailFragment(private val initialSelectedImagePathList: Arr
         inputAllDataInInputDraftModel()
         viewModel.saveProductDraft(productDraft, productDraft.productId, isUploading)
         Toast.makeText(context, R.string.label_succes_save_draft, Toast.LENGTH_LONG).show()
-    }
-
-    fun getAllProductsDraft() {
-        viewModel.getAllProductsDraft()
     }
 
     private fun inputAllDataInInputDraftModel() {
@@ -781,28 +781,6 @@ class AddEditProductDetailFragment(private val initialSelectedImagePathList: Arr
             when (it) {
                 is Success -> onGetCategoryRecommendationSuccess(it)
                 is Fail -> onGetCategoryRecommendationFailed()
-            }
-        })
-    }
-
-    private fun subscribeToInsertProductDraftResult() {
-        viewModel.insertProductDraftResultLiveData.observe(this, Observer {
-            when (it) {
-                is Success -> Log.d("Hello Success", it.toString())
-                is Fail -> Log.d("Hello SFailed", it.throwable.message)
-            }
-        })
-    }
-
-    private fun subscribeToGetAllProductsDraftResult() {
-        viewModel.getAllProductsDraftResultLiveData.observe(this, Observer {
-            when (it) {
-                is Success -> {
-                    for (i in it.data) {
-                       Log.d("Hello Success", i.productId.toString())
-                    }
-                }
-                is Fail -> Log.d("Hello SFailed", it.throwable.message)
             }
         })
     }
