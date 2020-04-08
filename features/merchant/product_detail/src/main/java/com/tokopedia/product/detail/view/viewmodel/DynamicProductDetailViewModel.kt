@@ -92,6 +92,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                                                              private val addToCartOcsUseCase: AddToCartOcsUseCase,
                                                              private val getP3VariantUseCase: GetP3VariantUseCase,
                                                              private val toggleNotifyMeUseCase: ToggleNotifyMeUseCase,
+                                                             private val sendTopAdsUseCase: SendTopAdsUseCase,
                                                              val userSessionInterface: UserSessionInterface) : BaseViewModel(dispatcher.ui()) {
 
     private val _productLayout = MutableLiveData<Result<List<DynamicPdpDataModel>>>()
@@ -170,6 +171,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     fun hasShopAuthority(): Boolean {
         return isShopOwner(getDynamicProductInfoP1?.basic?.getShopId() ?: 0) || shopInfo?.allowManage == true
     }
+
     fun isShopOwner(shopId: Int): Boolean = userSessionInterface.shopId.toIntOrNull() == shopId
     val isUserSessionActive: Boolean
         get() = userSessionInterface.isLoggedIn
@@ -198,6 +200,10 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         addToCartUseCase.unsubscribe()
         addToCartOcsUseCase.unsubscribe()
         toggleNotifyMeUseCase.cancelJobs()
+    }
+
+    fun sendTopAds(url: String) {
+        sendTopAdsUseCase.executeOnBackground(url)
     }
 
     fun processVariant(data: ProductVariantCommon, mapOfSelectedVariant: MutableMap<String, Int>?) {
@@ -251,9 +257,9 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                                 return@execute
                             }
                         }
-                        onError?.invoke("".asThrowable())
+                        onError?.invoke(Throwable(""))
                     } else {
-                        onError?.invoke("".asThrowable())
+                        onError?.invoke(Throwable(""))
                     }
                 },
                 onError = {
@@ -430,8 +436,9 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                     productInfoP3.addressModel = p3Temp.addressModel
                     productInfoP3.rateEstSummarizeText = p3Temp.rateEstSummarizeText
                     productInfoP3.userCod = p3Temp.userCod
-                    //TODO YEHEZ
-                    shippingMinimumPrice = p3Temp.ratesModel?.getMinimumShippingPrice() ?: 30000
+                    productInfoP3.ratesModel = p3Temp.ratesModel
+                    val shippingPriceValue = p3Temp.ratesModel?.getMinimumShippingPrice()
+                    shippingMinimumPrice = if (shippingPriceValue == null || shippingPriceValue == 0) getDynamicProductInfoP1?.basic?.getDefaultOngkirInt() ?: 30000 else shippingPriceValue
                 }
             }
 
@@ -536,8 +543,12 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         val productImageUrl = productInfo?.data?.getProductImageUrl() ?: ""
         val productName = productInfo?.getProductName ?: ""
         val productPrice = productInfo?.finalPrice?.getCurrencyFormatted() ?: ""
-        val priceBefore = productInfo?.priceBeforeInt?.getCurrencyFormatted() ?: ""
         val priceBeforeInt = productInfo?.priceBeforeInt ?: 0
+        val priceBefore = if (priceBeforeInt > 0) {
+            priceBeforeInt.getCurrencyFormatted()
+        } else {
+            ""
+        }
         val dropPercentage = productInfo?.dropPercentage ?: ""
         val productUrl = productInfo?.basic?.url ?: ""
         val isActive = productInfo?.basic?.isActive() ?: true

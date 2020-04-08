@@ -68,7 +68,7 @@ data class DynamicProductInfoP1(
     fun shouldShowNotifyMe(): Boolean {
         return try {
             val now = System.currentTimeMillis()
-            val startTime = data.startDate.toLong() * 1000L
+            val startTime = (data.startDate.toLongOrNull() ?: 0) * 1000L
             val dayLeft = TimeUnit.MICROSECONDS.toDays(now - startTime)
             !(data.campaignId.isEmpty() || dayLeft > 3)
         } catch (ex: Exception) {

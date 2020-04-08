@@ -171,4 +171,8 @@ class SuggestionFragment : BaseDaggerFragment(), SuggestionContract.View, Sugges
     override fun trackEventClickProfile(eventLabel: String) {
         AutocompleteTracking.eventClickProfile(eventLabel)
     }
+
+    override fun trackEventClickRecentKeyword(eventLabel: String) {
+        AutocompleteTracking.eventClickRecentKeyword(eventLabel)
+    }
 }

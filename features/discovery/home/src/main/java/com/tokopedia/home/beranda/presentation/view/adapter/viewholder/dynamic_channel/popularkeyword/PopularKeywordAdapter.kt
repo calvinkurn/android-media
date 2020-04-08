@@ -7,15 +7,17 @@ import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.design.image.SquareImageView
 import com.tokopedia.home.R
+import com.tokopedia.home.analytics.HomePageTrackingV2.PopularKeyword.getPopularKeywordImpressionIrisItem
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.helper.glide.loadImage
+import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PopularKeywordViewModel
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.PopularKeywordViewHolder
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifyprinciples.Typography
-import java.lang.StringBuilder
+import java.util.*
 
 /**
  * @author by yoasfs on 2020-02-18
@@ -23,6 +25,7 @@ import java.lang.StringBuilder
 
 class PopularKeywordAdapter(val dataList: List<PopularKeywordViewModel>,
                             val popularKeywordListener: PopularKeywordViewHolder.PopularKeywordListener,
+                            val homeCategoryListener: HomeCategoryListener,
                             val channel: DynamicHomeChannel.Channels)
     : RecyclerView.Adapter<PopularKeywordAdapter.Holder>() {
 
@@ -36,7 +39,7 @@ class PopularKeywordAdapter(val dataList: List<PopularKeywordViewModel>,
     }
 
     override fun onBindViewHolder(holder: Holder, position: Int) {
-        holder.bind(dataList[position], popularKeywordListener, channel, position)
+        holder.bind(dataList[position], popularKeywordListener, homeCategoryListener, channel, position)
     }
 
     class Holder(view: View): RecyclerView.ViewHolder(view) {
@@ -45,7 +48,10 @@ class PopularKeywordAdapter(val dataList: List<PopularKeywordViewModel>,
         val tvProduct = view.findViewById<Typography>(R.id.tv_product)
         val tvCount = view.findViewById<Typography>(R.id.tv_count)
 
-        fun bind(data : PopularKeywordViewModel, popularKeywordListener: PopularKeywordViewHolder.PopularKeywordListener, channel: DynamicHomeChannel.Channels, position: Int) {
+        fun bind(data : PopularKeywordViewModel,
+                 popularKeywordListener: PopularKeywordViewHolder.PopularKeywordListener,
+                 homeCategoryListener: HomeCategoryListener,
+                 channel: DynamicHomeChannel.Channels, position: Int) {
             ivImage.loadImage(data.imageUrl)
             tvProduct.text = data.title.capitalize()
             if (data.productCount.isNotEmpty()) {
@@ -54,6 +60,7 @@ class PopularKeywordAdapter(val dataList: List<PopularKeywordViewModel>,
             } else tvCount.hide()
             itemView.addOnImpressionListener(data.impressHolder) {
                 popularKeywordListener.onPopularKeywordItemImpressed(channel, position, data.title)
+                homeCategoryListener.sendIrisTrackerHashMap(getPopularKeywordImpressionIrisItem(channel, position, data.title) as HashMap<String, Any>)
             }
             cardProduct.setOnClickListener{
                 popularKeywordListener.onPopularKeywordItemClicked(data.applink, channel, position, data.title)

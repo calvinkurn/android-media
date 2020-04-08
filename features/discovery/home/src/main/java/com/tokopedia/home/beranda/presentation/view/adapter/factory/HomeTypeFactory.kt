@@ -16,7 +16,7 @@ interface HomeTypeFactory {
 
     fun type(inspirationHeaderViewModel: InspirationHeaderViewModel): Int
 
-    fun type(bannerViewModel: BannerViewModel): Int
+    fun type(homepageBannerDataModel: HomepageBannerDataModel): Int
 
     fun type(tickerViewModel: TickerViewModel): Int
 
