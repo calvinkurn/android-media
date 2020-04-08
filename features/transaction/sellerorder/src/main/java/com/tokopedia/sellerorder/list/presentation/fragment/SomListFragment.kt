@@ -25,6 +25,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalOrder
 import com.tokopedia.coachmark.CoachMark
 import com.tokopedia.coachmark.CoachMarkBuilder
 import com.tokopedia.coachmark.CoachMarkItem
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.design.quickfilter.QuickFilterItem
 import com.tokopedia.design.quickfilter.custom.CustomViewQuickFilterItem
 import com.tokopedia.design.text.SearchInputView
@@ -538,14 +539,14 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         }
     }
 
-    private fun showCoachMarkProducts(){
-        if(!coachMark.hasShown(activity, TAG_COACHMARK)){
+    private fun showCoachMarkProducts() {
+        if (!coachMark.hasShown(activity, TAG_COACHMARK) && !GlobalConfig.isSellerApp()) {
             coachMark.show(activity, TAG_COACHMARK, arrayListOf(coachMarkSearch, coachMarkProduct, coachMarkFilter))
         }
     }
 
-    private fun showCoachMarkProductsEmpty(){
-        if(!coachMark.hasShown(activity, TAG_COACHMARK)){
+    private fun showCoachMarkProductsEmpty() {
+        if (!coachMark.hasShown(activity, TAG_COACHMARK) && !GlobalConfig.isSellerApp()) {
             coachMark.show(activity, TAG_COACHMARK, arrayListOf(coachMarkSearch, coachMarkFilter))
         }
     }
