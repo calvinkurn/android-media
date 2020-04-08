@@ -428,6 +428,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                 }
             }
             ProductDetailConstant.REQUEST_CODE_LOGIN -> {
+                hideProgressDialog()
                 if (resultCode == Activity.RESULT_OK && doActivityResult) {
                     onSwipeRefresh()
                 }
@@ -886,8 +887,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         } else {
             DynamicProductDetailTracking.Click.eventPDPAddToWishlistNonLogin(viewModel.getDynamicProductInfoP1, componentTrackDataModel)
             context?.run {
-                startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN),
-                        ProductDetailConstant.REQUEST_CODE_LOGIN)
+                goToLogin()
             }
         }
     }
@@ -1547,6 +1547,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
     private fun shareProduct() {
         activity?.let {
+            showProgressDialog()
             viewModel.getDynamicProductInfoP1?.let { productInfo ->
                 DynamicProductDetailTracking.Click.eventClickPdpShare(productInfo)
 
@@ -1920,7 +1921,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             updateStickyState()
         }
         stickyLoginView.setOnClickListener {
-            startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN), ProductDetailConstant.REQUEST_CODE_LOGIN)
+            goToLogin()
             stickyLoginView.tracker.clickOnLogin(StickyLoginConstant.Page.PDP)
         }
         stickyLoginView.setOnDismissListener(View.OnClickListener {
@@ -2089,7 +2090,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         activity?.let {
             DynamicProductDetailTracking.Click.eventClickButtonNonLogin(viewModel.buttonActionType, viewModel.getDynamicProductInfoP1, viewModel.userId, viewModel.shopInfo?.goldOS?.shopTypeString
                     ?: "", viewModel.buttonActionText)
-            startActivityForResult(RouteManager.getIntent(it, ApplinkConst.LOGIN), ProductDetailConstant.REQUEST_CODE_LOGIN)
+            goToLogin()
         }
     }
 
@@ -2147,8 +2148,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             val selectedProductId = basic.productID
 
             if (!viewModel.isUserSessionActive) {
-                startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN),
-                        ProductDetailConstant.REQUEST_CODE_LOGIN)
+                goToLogin()
                 return@run
             }
 
@@ -2565,8 +2565,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                     viewModel.toggleTeaserNotifyMe(data.campaignID.toInt(), productId?.toInt()
                             ?: 0, action, ProductDetailCommonConstant.VALUE_TEASER_SOURCE)
                 } else {
-                    startActivityForResult(RouteManager.getIntent(it, ApplinkConst.LOGIN),
-                            ProductDetailConstant.REQUEST_CODE_LOGIN)
+                    goToLogin()
                 }
             }
         } catch (ex: Exception) {
@@ -2600,6 +2599,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     }
 
     private fun goToLogin() {
+        showProgressDialog()
         activity?.let {
             startActivityForResult(RouteManager.getIntent(it, ApplinkConst.LOGIN),
                     ProductDetailConstant.REQUEST_CODE_LOGIN)

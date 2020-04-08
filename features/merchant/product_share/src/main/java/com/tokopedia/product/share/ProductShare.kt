@@ -44,12 +44,7 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
 
                 override fun onLoadFailed(errorDrawable: Drawable?) {
                     super.onLoadFailed(errorDrawable)
-                    try {
-                        generateBranchLink(null, data)
-                    } catch (t: Throwable){
-                    } finally {
-                        postBuildImage()
-                    }
+                    generateBranchLink(null, data)
                 }
 
                 override fun onLoadCleared(placeholder: Drawable?) {
@@ -60,7 +55,7 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
 
             ImageHandler.loadImageWithTargetCenterCrop(activity, data.productImageUrl, target)
         } else {
-            generateBranchLink(null, data)
+            generateBranchLink(null, data, postBuildImage)
         }
     }
 
@@ -84,11 +79,12 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
 
     private fun isBranchUrlActive() = remoteConfig.getBoolean(RemoteConfigKey.MAINAPP_ACTIVATE_BRANCH_LINKS, true)
 
-    private fun generateBranchLink(file: File?, data: ProductData) {
+    private fun generateBranchLink(file: File?, data: ProductData, postBuildImage: (() -> Unit?)? = null) {
         if (isBranchUrlActive()){
             LinkerManager.getInstance().executeShareRequest(LinkerUtils.createShareRequest(0,
                     productDataToLinkerDataMapper(data), object : ShareCallback {
                 override fun urlCreated(linkerShareData: LinkerShareResult) {
+                    postBuildImage?.invoke()
                     try {
                         openIntentShare(file, data.productName, data.getShareContent(linkerShareData.url), linkerShareData.url)
                     } catch (e: Exception) {
@@ -97,10 +93,12 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
                 }
 
                 override fun onError(linkerError: LinkerError) {
+                    postBuildImage?.invoke()
                     openIntentShareDefault(file, data)
                 }
             }))
         } else {
+            postBuildImage?.invoke()
             openIntentShareDefault(file, data)
         }
     }
