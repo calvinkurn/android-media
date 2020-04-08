@@ -45,6 +45,7 @@ import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_ACCEPT_ORDER
 import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_CONFIRM_SHIPPING
 import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_PROCESS_REQ_PICKUP
 import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_REJECT_ORDER
+import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_SET_DELIVERED
 import com.tokopedia.sellerorder.common.util.SomConsts.SORT_ASCENDING
 import com.tokopedia.sellerorder.common.util.SomConsts.SORT_DESCENDING
 import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_ALL_ORDER
@@ -659,6 +660,10 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                     data.hasExtra(RESULT_CONFIRM_SHIPPING) -> {
                         val resultConfirmShippingMsg = data.getStringExtra(RESULT_CONFIRM_SHIPPING)
                         refreshThenShowToasterOk(resultConfirmShippingMsg)
+                    }
+                    data.hasExtra(RESULT_SET_DELIVERED) -> {
+                        val msg = data.getStringExtra(RESULT_SET_DELIVERED)
+                        refreshThenShowToasterOk(msg)
                     }
                 }
             }
