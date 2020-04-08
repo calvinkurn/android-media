@@ -17,7 +17,7 @@ ext {
             analyticAnnotation      : "com.tokopedia.analytic:annotation:0.0.1-alpha",
             analyticParam           : "com.tokopedia.analytic:param:0.0.1-alpha",
             analyticProcessor       : "com.tokopedia.analytic:processor:0.0.1-alpha",
-            analyticFirebaseRules    : "com.tokopedia.analytic.rules:firebase:0.0.1-alpha"
+            analyticFirebaseRules    : "com.tokopedia.analytic.rules:firebase:0.0.1-alpha2"
 
 
     ]
