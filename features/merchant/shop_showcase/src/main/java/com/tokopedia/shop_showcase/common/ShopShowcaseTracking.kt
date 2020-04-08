@@ -45,6 +45,11 @@ class ShopShowcaseTracking (context: Context?) {
         tracker.sendScreenAuthenticated(screenName)
     }
 
+    fun sendScreenNameFinishAddShowcase() {
+        screenName = "/add etalase page - finish"
+        tracker.sendScreenAuthenticated(screenName)
+    }
+
     fun addShowcaseClickBackButton(shopId: String, shopType: String, isActionEdit: Boolean) {
         if(isActionEdit) {
             page = EDIT_SHOWCASE_PAGE
