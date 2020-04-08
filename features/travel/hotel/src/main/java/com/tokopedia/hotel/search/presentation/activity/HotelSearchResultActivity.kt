@@ -13,6 +13,7 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.hotel.HotelComponentInstance
 import com.tokopedia.hotel.R
+import com.tokopedia.hotel.common.analytics.TrackingHotelUtil
 import com.tokopedia.hotel.common.presentation.HotelBaseActivity
 import com.tokopedia.hotel.common.util.HotelUtils
 import com.tokopedia.hotel.globalsearch.presentation.activity.HotelChangeSearchActivity
@@ -20,6 +21,7 @@ import com.tokopedia.hotel.search.di.DaggerHotelSearchPropertyComponent
 import com.tokopedia.hotel.search.di.HotelSearchPropertyComponent
 import com.tokopedia.hotel.search.presentation.fragment.HotelSearchResultFragment
 import kotlinx.android.synthetic.main.activity_hotel_search_result.*
+import javax.inject.Inject
 
 class HotelSearchResultActivity : HotelBaseActivity(), HasComponent<HotelSearchPropertyComponent> {
 
@@ -135,6 +137,9 @@ class HotelSearchResultActivity : HotelBaseActivity(), HasComponent<HotelSearchP
     }
 
     private fun changeSearchParameter() {
+        if (fragment is HotelSearchResultFragment) {
+            (fragment as HotelSearchResultFragment).onClickChangeSearch(type, name, room, adult, checkIn, checkOut, SEARCH_SCREEN_NAME)
+        }
         startActivityForResult(HotelChangeSearchActivity.getIntent(this, id, name, type, lat.toDouble(), long.toDouble(),
                 checkIn, checkOut, adult, room, getString(R.string.hotel_search_result_change_toolbar_title)),
                 CHANGE_SEARCH_REQ_CODE)

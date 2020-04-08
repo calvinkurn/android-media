@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.hotel.R
+import com.tokopedia.hotel.common.analytics.TrackingHotelUtil
 import com.tokopedia.hotel.destination.view.activity.HotelDestinationActivity
 import com.tokopedia.hotel.globalsearch.presentation.activity.HotelChangeSearchActivity.Companion.CHECK_IN_DATE
 import com.tokopedia.hotel.globalsearch.presentation.activity.HotelChangeSearchActivity.Companion.CHECK_OUT_DATE
@@ -28,6 +29,8 @@ import com.tokopedia.hotel.globalsearch.presentation.activity.HotelChangeSearchA
 import com.tokopedia.hotel.globalsearch.presentation.activity.HotelChangeSearchActivity.Companion.EXTRA_NUM_OF_ROOMS
 import com.tokopedia.hotel.globalsearch.presentation.activity.HotelChangeSearchActivity.Companion.NUM_OF_GUESTS
 import com.tokopedia.hotel.globalsearch.presentation.activity.HotelChangeSearchActivity.Companion.NUM_OF_ROOMS
+import com.tokopedia.iris.util.IrisSession
+import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.fragment_hotel_change_search.*
 import java.util.*
 
@@ -36,6 +39,8 @@ import java.util.*
  */
 
 class HotelChangeSearchFragment : HotelGlobalSearchFragment() {
+
+    var trackingUtil = TrackingHotelUtil()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
             inflater.inflate(R.layout.fragment_hotel_change_search, container, false)
@@ -62,6 +67,10 @@ class HotelChangeSearchFragment : HotelGlobalSearchFragment() {
             globalSearchModel.nightCount = countRoomDuration()
 
             renderView()
+
+            context?.let {ctx ->
+                trackingUtil.changeSearchPageLoaded(SCREEN_NAME, IrisSession(ctx).getSessionId(), UserSession(ctx).userId)
+            }
         }
     }
 
@@ -76,6 +85,12 @@ class HotelChangeSearchFragment : HotelGlobalSearchFragment() {
             putExtra(CHECK_OUT_DATE, globalSearchModel.checkOutDate)
             putExtra(NUM_OF_GUESTS, globalSearchModel.numOfGuests)
             putExtra(NUM_OF_ROOMS, globalSearchModel.numOfRooms)
+        }
+
+        context?.let {
+            trackingUtil.hotelClickChangeSearch(globalSearchModel.destinationType, globalSearchModel.destinationName,
+                    globalSearchModel.numOfRooms, globalSearchModel.numOfGuests, globalSearchModel.checkInDate, globalSearchModel.checkOutDate,
+                    SCREEN_NAME, IrisSession(it).getSessionId(), UserSession(it).userId)
         }
 
         activity?.setResult(RESULT_OK, intent)
@@ -133,6 +148,7 @@ class HotelChangeSearchFragment : HotelGlobalSearchFragment() {
     companion object {
 
         const val REQUEST_CODE_DESTINATION = 101
+        const val SCREEN_NAME = "hotel/changesearch"
 
         fun getInstance(destinationId: Long, destinationName: String, destinationType: String, latitude: Double, longitude: Double,
                         checkInDate: String, checkOutDate: String, numOfGuests: Int, numOfRooms: Int) =
