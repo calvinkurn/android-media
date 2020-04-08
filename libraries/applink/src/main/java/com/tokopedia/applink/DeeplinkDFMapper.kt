@@ -61,6 +61,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalTravel.INTERNAL_FLIGHT
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.CHANGE_PASSWORD
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.DETAIL_TALK_BASE
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.LIVENESS_DETECTION
+import com.tokopedia.applink.internal.ApplinkConstInternalEntertainment.EVENT_HOME
 import com.tokopedia.applink.internal.ApplinkConstInternalNotification.NOTIFICATION_BUYER
 import com.tokopedia.config.GlobalConfig
 import tokopedia.applink.R
@@ -89,7 +90,7 @@ object DeeplinkDFMapper {
 
     @JvmField
     val DFM_BASE = "df_base"
-    
+
     private val DFM_CATEGORY_TRADEIN = "df_category_tradein"
     @JvmField
     val DFM_MERCHANT_SELLER_CUSTOMERAPP = "df_merchant_seller"
@@ -195,6 +196,9 @@ object DeeplinkDFMapper {
 
             // Promo
             add(DFP({ it.startsWith(INTERNAL_TOKOPOINTS) }, DFM_BASE, R.string.title_tokopoints))
+
+            //Entertainment
+            add(DFP({ it.startsWith(EVENT_HOME)}, DFM_BASE, R.string.title_home_event))
 
             // Travel
             add(DFP({ it.startsWith(TRAVEL_SUBHOMEPAGE) }, DFM_BASE, R.string.title_travel_homepage))

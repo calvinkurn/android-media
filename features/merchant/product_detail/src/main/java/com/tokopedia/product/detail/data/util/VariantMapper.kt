@@ -6,6 +6,7 @@ import com.tokopedia.product.detail.common.data.model.pdplayout.ComponentData
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.common.data.model.pdplayout.Media
 import com.tokopedia.product.detail.view.util.toDate
+import com.tokopedia.variant_common.model.ProductVariantCommon
 import com.tokopedia.variant_common.model.VariantChildCommon
 
 /**
@@ -41,7 +42,8 @@ object VariantMapper {
                 isAppsOnly = newData?.campaign?.isAppsOnly ?: false,
                 appLinks = newData?.campaign?.applinks ?: "",
                 percentageAmount = newData?.campaign?.discountedPercentage?.toInt() ?: 0,
-                stockSoldPercentage = newData?.campaign?.stockSoldPercentage?.toInt() ?: 0
+                stockSoldPercentage = newData?.campaign?.stockSoldPercentage?.toInt() ?: 0,
+                isUsingOvo = newData?.campaign?.isUsingOvo ?: false
         )
 
         val newMedia = if (newData?.hasPicture == true) {
@@ -64,9 +66,34 @@ object VariantMapper {
                 campaign = newCampaign,
                 price = newPrice,
                 name= newData?.name ?: "",
-                media = newMedia)
+                media = newMedia,
+        //upcoming campaign data
+                campaignId = newData?.upcoming?.campaignId ?: "",
+                campaignType = newData?.upcoming?.campaignType ?: "",
+                campaignTypeName = newData?.upcoming?.campaignTypeName ?: "",
+                startDate = newData?.upcoming?.startDate ?: "",
+                endDate = newData?.upcoming?.endDate ?: "",
+                notifyMe = newData?.upcoming?.notifyMe ?: false
+        )
 
         return DynamicProductInfoP1(basic, data, oldData.layoutName)
+    }
+
+    fun updateVariantDeals(variantData: ProductVariantCommon?, productId: Int): ProductVariantCommon? {
+        val children = variantData?.children
+        val childrenTemp: MutableList<VariantChildCommon> = mutableListOf()
+        children?.forEach {
+            if (productId == it.productId) {
+                val upcomingData = it.upcoming
+                val upcomingTempData = upcomingData?.copy(notifyMe = upcomingData.notifyMe != true)
+                val childCommonUpdated = it.copy(upcoming = upcomingTempData)
+                childrenTemp.add(childCommonUpdated)
+            } else {
+                childrenTemp.add(it)
+            }
+        }
+
+        return variantData?.copy(children = childrenTemp)
     }
 
     fun updateMediaToCurrentP1Data(oldData: DynamicProductInfoP1?, media: MutableList<Media>): DynamicProductInfoP1 {

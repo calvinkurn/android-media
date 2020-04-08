@@ -11,12 +11,14 @@ import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterce
 import com.tokopedia.akamai_bot_lib.interceptor.AkamaiBotInterceptor
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.common_digital.cart.data.datasource.DigitalAddToCartDataSource
+import com.tokopedia.common_digital.cart.data.datasource.DigitalGetCartDataSource
 import com.tokopedia.common_digital.cart.data.datasource.DigitalInstantCheckoutDataSource
 import com.tokopedia.common_digital.cart.data.mapper.CartMapperData
 import com.tokopedia.common_digital.cart.data.mapper.ICartMapperData
 import com.tokopedia.common_digital.cart.data.repository.DigitalCartRepository
 import com.tokopedia.common_digital.cart.domain.IDigitalCartRepository
 import com.tokopedia.common_digital.cart.domain.usecase.DigitalAddToCartUseCase
+import com.tokopedia.common_digital.cart.domain.usecase.DigitalGetCartUseCase
 import com.tokopedia.common_digital.cart.domain.usecase.DigitalInstantCheckoutUseCase
 import com.tokopedia.common_digital.common.DigitalRouter
 import com.tokopedia.common_digital.common.RechargeAnalytics
@@ -164,6 +166,13 @@ class DigitalCommonModule {
 
     @Provides
     @DigitalCommonScope
+    fun provideDigitalGetCartDataSource(digitalRestApi: DigitalRestApi,
+                                          cartMapperData: ICartMapperData): DigitalGetCartDataSource {
+        return DigitalGetCartDataSource(digitalRestApi, cartMapperData)
+    }
+
+    @Provides
+    @DigitalCommonScope
     fun provideDigitalInstantCheckoutDataSource(digitalRestApi: DigitalRestApi,
                                                 cartMapperData: ICartMapperData): DigitalInstantCheckoutDataSource {
         return DigitalInstantCheckoutDataSource(digitalRestApi, cartMapperData)
@@ -172,14 +181,21 @@ class DigitalCommonModule {
     @Provides
     @DigitalCommonScope
     fun provideDigitalCartRepository(digitalAddToCartDataSource: DigitalAddToCartDataSource,
+                                     digitalGetCartDataSource: DigitalGetCartDataSource,
                                      digitalInstantCheckoutDataSource: DigitalInstantCheckoutDataSource): IDigitalCartRepository {
-        return DigitalCartRepository(digitalAddToCartDataSource, digitalInstantCheckoutDataSource)
+        return DigitalCartRepository(digitalAddToCartDataSource, digitalGetCartDataSource, digitalInstantCheckoutDataSource)
     }
 
     @Provides
     @DigitalCommonScope
     fun provideDigitalAddToCartUseCase(digitalCartRepository: IDigitalCartRepository): DigitalAddToCartUseCase {
         return DigitalAddToCartUseCase(digitalCartRepository)
+    }
+
+    @Provides
+    @DigitalCommonScope
+    fun provideDigitalGetCartUseCase(digitalCartRepository: IDigitalCartRepository): DigitalGetCartUseCase {
+        return DigitalGetCartUseCase(digitalCartRepository)
     }
 
     @Provides
