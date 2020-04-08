@@ -7,13 +7,7 @@ import javax.inject.Inject
 
 class ProductDraftMapper @Inject constructor() {
     fun mapDomainDataModelToViewModel(drafts: List<ProductDraft>) = drafts.map { draft ->
-        val pictures = draft.detailInputModel.pictureList
-        val primaryImageUrl = if (pictures.isNotEmpty()) {
-            val picture = pictures[0]
-            picture.urlOriginal
-        } else {
-            ""
-        }
+        val primaryImageUrl = draft.detailInputModel.imageUrlOrPathList.firstOrNull().orEmpty()
         val productName = draft.detailInputModel.productName
         val completionPercent = draft.completionPercent
 
