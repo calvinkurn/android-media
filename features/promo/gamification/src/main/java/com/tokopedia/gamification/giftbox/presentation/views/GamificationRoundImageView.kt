@@ -20,7 +20,7 @@ class GamificationRoundImageView @JvmOverloads constructor(
         attrs?.let { attributes ->
             val typedArray =
                     context.theme.obtainStyledAttributes(attributes, R.styleable.GamificationRoundImageView, 0, 0)
-            radius = typedArray.getDimension(R.styleable.GfCardConstraintLayout_gfShadowTopOffset, dpToPx(8))
+            radius = typedArray.getDimension(R.styleable.GamificationRoundImageView_gfRoundImageRadius, dpToPx(8))
         }
     }
 
