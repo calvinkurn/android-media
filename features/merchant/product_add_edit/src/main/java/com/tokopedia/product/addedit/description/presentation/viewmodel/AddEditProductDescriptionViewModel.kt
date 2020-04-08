@@ -7,11 +7,13 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.product.addedit.common.util.ResourceProvider
 import com.tokopedia.product.addedit.description.data.remote.model.variantbycat.ProductVariantByCatModel
 import com.tokopedia.product.addedit.description.domain.usecase.GetProductVariantUseCase
 import com.tokopedia.product.addedit.description.domain.usecase.GetYoutubeVideoUseCase
 import com.tokopedia.product.addedit.description.presentation.model.DescriptionInputModel
 import com.tokopedia.product.addedit.description.presentation.model.ProductVariantInputModel
+import com.tokopedia.product.addedit.description.presentation.model.VideoLinkModel
 import com.tokopedia.product.addedit.description.presentation.model.youtube.YoutubeVideoModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -24,6 +26,7 @@ import javax.inject.Inject
 
 class AddEditProductDescriptionViewModel @Inject constructor(
         coroutineDispatcher: CoroutineDispatcher,
+        private val resource: ResourceProvider,
         private val getProductVariantUseCase: GetProductVariantUseCase,
         private val getYoutubeVideoUseCase: GetYoutubeVideoUseCase
 ) : BaseViewModel(coroutineDispatcher) {
@@ -85,6 +88,22 @@ class AddEditProductDescriptionViewModel @Inject constructor(
         } catch (e: NullPointerException) {
             throw MessageErrorException(e.message)
         }
+    }
+
+    fun validateDuplicateVideo(inputUrls: MutableList<VideoLinkModel>, url: String): String {
+        var errorMessage = ""
+        val videoLinks = inputUrls.filter {
+            it.inputUrl == url
+        }
+        if (videoLinks.size > 1) errorMessage = resource.getDuplicateProductVideoErrorMessage() ?: ""
+        return errorMessage
+    }
+
+    fun validateInputVideo(inputUrls: MutableList<VideoLinkModel>): Boolean {
+        val videoLinks = inputUrls.filter {
+            it.errorMessage.isNotEmpty()
+        }
+        return videoLinks.isEmpty()
     }
 
     companion object {

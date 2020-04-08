@@ -50,6 +50,7 @@ import com.tokopedia.product.addedit.description.presentation.model.DescriptionI
 import com.tokopedia.product.addedit.description.presentation.model.PictureViewModel
 import com.tokopedia.product.addedit.description.presentation.model.ProductVariantInputModel
 import com.tokopedia.product.addedit.description.presentation.model.VideoLinkModel
+import com.tokopedia.product.addedit.description.presentation.model.youtube.YoutubeVideoModel
 import com.tokopedia.product.addedit.description.presentation.viewmodel.AddEditProductDescriptionViewModel
 import com.tokopedia.product.addedit.shipment.presentation.activity.AddEditProductShipmentActivity
 import com.tokopedia.product.addedit.shipment.presentation.fragment.AddEditProductShipmentFragment.Companion.REQUEST_CODE_SHIPMENT
@@ -168,10 +169,12 @@ class AddEditProductDescriptionFragment:
                     it.getParcelable(PARAM_DESCRIPTION_INPUT_MODEL) ?: DescriptionInputModel()
             val variantInputModel : ProductVariantInputModel =
                     it.getParcelable(PARAM_VARIANT_INPUT_MODEL) ?: ProductVariantInputModel()
-            descriptionViewModel.categoryId = categoryId
-            descriptionViewModel.descriptionInputModel = descriptionInputModel
-            descriptionViewModel.variantInputModel = variantInputModel
-            descriptionViewModel.isEditMode = isEditMode
+            descriptionViewModel.apply {
+                this.categoryId = categoryId
+                this.descriptionInputModel = descriptionInputModel
+                this.variantInputModel = variantInputModel
+                this.isEditMode = isEditMode
+            }
         }
     }
 
@@ -248,36 +251,35 @@ class AddEditProductDescriptionFragment:
                 is Success -> {
                     val id  = result.data.id
                     if (id == null) {
-                        adapter.data[positionVideoChanged].inputTitle = ""
-                        adapter.data[positionVideoChanged].inputDescription = ""
-                        adapter.data[positionVideoChanged].inputImage = ""
-                        adapter.data[positionVideoChanged].errorMessage = getString(R.string.error_video_not_valid)
+                        displayErrorOnSelectedVideo()
                     } else {
-                        adapter.data[positionVideoChanged].inputTitle = result.data.title.orEmpty()
-                        adapter.data[positionVideoChanged].inputDescription = result.data.description.orEmpty()
-                        adapter.data[positionVideoChanged].inputImage = result.data.thumbnailUrl.orEmpty()
-                        adapter.data[positionVideoChanged].errorMessage =
-                                validateDuplicateVideo(adapter.data[positionVideoChanged].inputUrl)
+                        setDataOnSelectedVideo(result.data)
                     }
                 }
                 is Fail -> {
-                    adapter.data[positionVideoChanged].inputTitle = ""
-                    adapter.data[positionVideoChanged].inputDescription = ""
-                    adapter.data[positionVideoChanged].inputImage = ""
-                    adapter.data[positionVideoChanged].errorMessage = getString(R.string.error_video_not_valid)
+                    displayErrorOnSelectedVideo()
                 }
             }
             adapter.notifyItemChanged(positionVideoChanged)
         })
     }
 
-    private fun validateDuplicateVideo(inputUrl: String): String {
-        var errorMessage = ""
-        val videoLinks = adapter.data.filter {
-            it.inputUrl == inputUrl
+    private fun displayErrorOnSelectedVideo() {
+        adapter.data[positionVideoChanged].apply {
+            inputTitle = ""
+            inputDescription = ""
+            inputImage = ""
+            errorMessage = getString(R.string.error_video_not_valid)
         }
-        if (videoLinks.size > 1)  errorMessage = getString(R.string.error_video_is_exist)
-        return errorMessage
+    }
+
+    private fun setDataOnSelectedVideo(youtubeVideoModel: YoutubeVideoModel) {
+        adapter.data[positionVideoChanged].apply {
+            inputTitle = youtubeVideoModel.title.orEmpty()
+            inputDescription = youtubeVideoModel.description.orEmpty()
+            inputImage = youtubeVideoModel.thumbnailUrl.orEmpty()
+            errorMessage = descriptionViewModel.validateDuplicateVideo(adapter.data, inputUrl)
+        }
     }
 
     private fun applyEditMode() {
@@ -417,8 +419,10 @@ class AddEditProductDescriptionFragment:
         } else {
             ProductAddDescriptionTracking.clickContinue(shopId)
         }
-        val intent = Intent(context, AddEditProductShipmentActivity::class.java)
-        startActivityForResult(intent, REQUEST_CODE_SHIPMENT)
+        if (descriptionViewModel.validateInputVideo(adapter.data)) {
+            val intent = Intent(context, AddEditProductShipmentActivity::class.java)
+            startActivityForResult(intent, REQUEST_CODE_SHIPMENT)
+        }
     }
 
     private fun submitInput(shipmentInputModel: ShipmentInputModel) {
@@ -435,15 +439,17 @@ class AddEditProductDescriptionFragment:
     }
 
     private fun submitInputEdit() {
-        val descriptionInputModel = DescriptionInputModel(
-                textFieldDescription.getText(),
-                adapter.data
-        )
-        val intent = Intent()
-        intent.putExtra(EXTRA_DESCRIPTION_INPUT, descriptionInputModel)
-        intent.putExtra(EXTRA_VARIANT_INPUT, descriptionViewModel.variantInputModel)
-        activity?.setResult(Activity.RESULT_OK, intent)
-        activity?.finish()
+        if (descriptionViewModel.validateInputVideo(adapter.data)) {
+            val descriptionInputModel = DescriptionInputModel(
+                    textFieldDescription.getText(),
+                    adapter.data
+            )
+            val intent = Intent()
+            intent.putExtra(EXTRA_DESCRIPTION_INPUT, descriptionInputModel)
+            intent.putExtra(EXTRA_VARIANT_INPUT, descriptionViewModel.variantInputModel)
+            activity?.setResult(Activity.RESULT_OK, intent)
+            activity?.finish()
+        }
     }
 
 }
