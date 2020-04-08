@@ -38,9 +38,7 @@ data class Banner(@SerializedName("id")
             parcel.readString() ?: "",
             parcel.readString() ?: "",
             parcel.readString() ?: "",
-            parcel.readString() ?: "",
-            parcel.readString() ?: ""
-    )
+            parcel.readString() ?: "")
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(bannerId)
@@ -53,7 +51,6 @@ data class Banner(@SerializedName("id")
         parcel.writeString(brandId)
         parcel.writeString(galaxyAttribution)
         parcel.writeString(categoryPersona)
-        parcel.writeString(campaignCode)
     }
 
     override fun describeContents(): Int {
