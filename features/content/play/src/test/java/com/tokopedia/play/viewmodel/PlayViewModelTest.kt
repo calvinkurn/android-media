@@ -7,13 +7,16 @@ import com.google.android.exoplayer2.SimpleExoPlayer
 import com.tokopedia.play.data.TotalLike
 import com.tokopedia.play.data.websocket.PlaySocket
 import com.tokopedia.play.domain.*
+import com.tokopedia.play.extensions.isKeyboardShown
 import com.tokopedia.play.helper.TestCoroutineDispatchersProvider
 import com.tokopedia.play.helper.getOrAwaitValue
 import com.tokopedia.play.model.ModelBuilder
 import com.tokopedia.play.ui.chatlist.model.PlayChat
 import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.util.CoroutineDispatcherProvider
+import com.tokopedia.play.view.type.BottomInsetsType
 import com.tokopedia.play.view.type.PlayChannelType
+import com.tokopedia.play.view.type.ProductAction
 import com.tokopedia.play.view.uimodel.*
 import com.tokopedia.play.view.uimodel.mapper.PlayUiMapper
 import com.tokopedia.play.view.viewmodel.PlayViewModel
@@ -21,7 +24,10 @@ import com.tokopedia.play.view.wrapper.PlayResult
 import com.tokopedia.play_common.player.PlayVideoManager
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import io.mockk.*
+import io.mockk.coEvery
+import io.mockk.coVerify
+import io.mockk.every
+import io.mockk.mockk
 import org.assertj.core.api.Assertions
 import org.junit.After
 import org.junit.Before
@@ -531,6 +537,225 @@ class PlayViewModelTest {
         Assertions
                 .assertThat(playViewModel.channelType)
                 .isEqualTo(expectedResult)
+    }
+    //endregion
+
+    //region state helper
+    /**
+     * Variable state helper
+     */
+    @Test
+    fun `when pinned is removed, then state helper should not show pinned`() {
+        val expectedResult = false
+
+        coEvery { mockGetChannelInfoUseCase.executeOnBackground() } returns mockChannel.copy(
+                pinnedMessage = mockChannel.pinnedMessage.copy(
+                        pinnedMessageId = 0
+                ),
+                isShowProductTagging = false
+        )
+
+        playViewModel.getChannelInfo(mockChannel.channelId)
+        playViewModel.observablePinned.getOrAwaitValue()
+
+        Assertions
+                .assertThat(playViewModel.stateHelper.shouldShowPinned)
+                .isEqualTo(expectedResult)
+    }
+
+    @Test
+    fun `when there is pinned message only, then state helper should show pinned`() {
+        val expectedResult = true
+
+        coEvery { mockGetChannelInfoUseCase.executeOnBackground() } returns mockChannel.copy(
+                isShowProductTagging = false
+        )
+
+        playViewModel.getChannelInfo(mockChannel.channelId)
+        playViewModel.observablePinned.getOrAwaitValue()
+
+        Assertions
+                .assertThat(playViewModel.stateHelper.shouldShowPinned)
+                .isEqualTo(expectedResult)
+    }
+
+    @Test
+    fun `when there is pinned product only, then state helper should show pinned`() {
+        val expectedResult = true
+
+        coEvery { mockGetChannelInfoUseCase.executeOnBackground() } returns mockChannel.copy(
+                pinnedMessage = mockChannel.pinnedMessage.copy(
+                        pinnedMessageId = 0
+                )
+        )
+
+        playViewModel.getChannelInfo(mockChannel.channelId)
+        playViewModel.observablePinned.getOrAwaitValue()
+
+        Assertions
+                .assertThat(playViewModel.stateHelper.shouldShowPinned)
+                .isEqualTo(expectedResult)
+    }
+
+    @Test
+    fun `when there is pinned message and product, then state helper should show pinned`() {
+        val expectedResult = true
+
+        coEvery { mockGetChannelInfoUseCase.executeOnBackground() } returns mockChannel
+
+        playViewModel.getChannelInfo(mockChannel.channelId)
+        playViewModel.observablePinned.getOrAwaitValue()
+
+        Assertions
+                .assertThat(playViewModel.stateHelper.shouldShowPinned)
+                .isEqualTo(expectedResult)
+    }
+
+    @Test
+    fun `given channel info is success, when channel type is live, then state_helper's channel type should be live`() {
+        coEvery { mockGetChannelInfoUseCase.executeOnBackground() } returns mockChannel.copy(
+                videoStream = mockChannel.videoStream.copy(
+                        isLive = PlayChannelType.Live.isLive,
+                        type = PlayChannelType.Live.value
+                )
+        )
+
+        val expectedResult = PlayChannelType.Live
+
+        playViewModel.getChannelInfo(mockChannel.channelId)
+
+        Assertions
+                .assertThat(playViewModel.stateHelper.channelType)
+                .isEqualTo(expectedResult)
+    }
+
+    @Test
+    fun `given channel info is success, when channel type is vod, then state_helper's channel type should be vod`() {
+        coEvery { mockGetChannelInfoUseCase.executeOnBackground() } returns mockChannel.copy(
+                videoStream = mockChannel.videoStream.copy(
+                        isLive = PlayChannelType.VOD.isLive,
+                        type = PlayChannelType.VOD.value
+                )
+        )
+
+        val expectedResult = PlayChannelType.VOD
+
+        playViewModel.getChannelInfo(mockChannel.channelId)
+
+        Assertions
+                .assertThat(playViewModel.stateHelper.channelType)
+                .isEqualTo(expectedResult)
+    }
+
+    @Test
+    fun `when channel info is not success, then state_helper's channel type should be unknown`() {
+        coEvery { mockGetChannelInfoUseCase.executeOnBackground() } throws Exception()
+
+        val expectedResult = PlayChannelType.Unknown
+
+        playViewModel.getChannelInfo(mockChannel.channelId)
+
+        Assertions
+                .assertThat(playViewModel.stateHelper.channelType)
+                .isEqualTo(expectedResult)
+    }
+
+    @Test
+    fun `when channel info is null, then state_helper's channel type should be unknown`() {
+        val expectedResult = PlayChannelType.Unknown
+
+        Assertions
+                .assertThat(playViewModel.stateHelper.channelType)
+                .isEqualTo(expectedResult)
+    }
+
+    @Test
+    fun `given channel is live, when keyboard is shown, then state_helper's keyboard is shown`() {
+        coEvery { mockGetChannelInfoUseCase.executeOnBackground() } returns mockChannel.copy(
+                videoStream = mockChannel.videoStream.copy(
+                        isLive = PlayChannelType.Live.isLive,
+                        type = PlayChannelType.Live.value
+                )
+        )
+
+        playViewModel.getChannelInfo(mockChannel.channelId)
+        playViewModel.onKeyboardShown(123)
+
+        val expectedResult = true
+
+        Assertions
+                .assertThat(playViewModel.stateHelper.bottomInsets.isKeyboardShown)
+                .isEqualTo(expectedResult)
+    }
+
+    @Test
+    fun `given channel is vod, when keyboard is shown, then state_helper's keyboard is shown`() {
+        coEvery { mockGetChannelInfoUseCase.executeOnBackground() } returns mockChannel.copy(
+                videoStream = mockChannel.videoStream.copy(
+                        isLive = PlayChannelType.VOD.isLive,
+                        type = PlayChannelType.VOD.value
+                )
+        )
+
+        playViewModel.getChannelInfo(mockChannel.channelId)
+        playViewModel.onKeyboardShown(123)
+
+        val expectedResult = false
+
+        Assertions
+                .assertThat(playViewModel.stateHelper.bottomInsets.isKeyboardShown)
+                .isEqualTo(expectedResult)
+    }
+
+    @Test
+    fun `when keyboard is not shown, then state_helper's keyboard is not shown`() {
+        playViewModel.onKeyboardHidden()
+
+        val expectedResult = false
+
+        Assertions
+                .assertThat(playViewModel.stateHelper.bottomInsets.isKeyboardShown)
+                .isEqualTo(expectedResult)
+    }
+
+    @Test
+    fun `when bottom insets is not set, then state_helper's keyboard is not shown`() {
+        val expectedResult = false
+
+        Assertions
+                .assertThat(playViewModel.stateHelper.bottomInsets.isKeyboardShown)
+                .isEqualTo(expectedResult)
+    }
+    //endregion
+
+    //region back button
+    /**
+     * Back button
+     */
+    @Test
+    fun `given product sheet and variant sheet is shown respectively, when back button is clicked, then variant sheet should be hidden`() {
+        playViewModel.onShowProductSheet(123)
+        playViewModel.onShowVariantSheet(123, modelBuilder.buildProductLineUiModel(), ProductAction.Buy)
+        playViewModel.onBackPressed()
+
+        Assertions
+                .assertThat(playViewModel.observableBottomInsetsState.getOrAwaitValue()[BottomInsetsType.VariantSheet]?.isShown)
+                .isEqualTo(false)
+
+        Assertions
+                .assertThat(playViewModel.observableBottomInsetsState.getOrAwaitValue()[BottomInsetsType.ProductSheet]?.isShown)
+                .isEqualTo(true)
+
+    }
+
+    @Test
+    fun `given product sheet is shown, when back button is clicked, then product sheet should be hidden`() {
+        playViewModel.onShowProductSheet(123)
+        playViewModel.onBackPressed()
+
+        Assertions
+                .assertThat(playViewModel.observableBottomInsetsState.getOrAwaitValue()[BottomInsetsType.ProductSheet]?.isShown)
+                .isEqualTo(false)
     }
     //endregion
 
