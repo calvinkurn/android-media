@@ -1,10 +1,10 @@
-package com.example.googletagmanagerwithannotation.enhancedecommerce.events
+package com.tokopedia.abstraction.processor
 
-import com.example.annotation.AnalyticEvent
-import com.example.firebaseanalyticrules.rules.PromotionImpressionsRules
-import com.example.googletagmanagerwithannotation.enhancedecommerce.models.ecommerce.Promotion
+
+import com.tokopedia.abstraction.processor.model.Promotion
 import com.tokopedia.analytic_constant.Event
-import com.tokopedia.analytic_constant.Param
+import com.tokopedia.annotation.AnalyticEvent
+import com.tokopedia.firebase.analytic.rules.PromotionImpressionsRules
 
 @AnalyticEvent(true, Event.VIEW_SEARCH_RESULTS, PromotionImpressionsRules::class)
 data class PromotionImpressions(

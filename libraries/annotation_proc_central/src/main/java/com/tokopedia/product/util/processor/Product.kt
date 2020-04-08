@@ -1,11 +1,11 @@
 package com.tokopedia.product.util.processor
 
-import com.example.annotation.BundleThis
-import com.example.annotation.Key
-import com.example.annotation.defaultvalues.DefaultValueInt
-import com.example.annotation.defaultvalues.DefaultValueLong
-import com.example.annotation.defaultvalues.DefaultValueString
+
 import com.tokopedia.analytic_constant.Param
+import com.tokopedia.annotation.BundleThis
+import com.tokopedia.annotation.Key
+import com.tokopedia.annotation.defaultvalues.DefaultValueLong
+import com.tokopedia.annotation.defaultvalues.DefaultValueString
 
 private const val KEY_DIMENSION_40 = "dimension40"
 

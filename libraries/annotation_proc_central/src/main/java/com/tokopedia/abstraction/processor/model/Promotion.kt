@@ -1,8 +1,8 @@
-package com.example.googletagmanagerwithannotation.enhancedecommerce.models.ecommerce
+package com.tokopedia.abstraction.processor.model
 
-import com.example.annotation.BundleThis
-import com.example.annotation.Key
 import com.tokopedia.analytic_constant.Param
+import com.tokopedia.annotation.BundleThis
+import com.tokopedia.annotation.Key
 
 @BundleThis(false, true)
 data class Promotion(

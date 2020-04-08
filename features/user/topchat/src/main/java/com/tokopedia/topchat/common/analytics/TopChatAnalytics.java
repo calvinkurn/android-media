@@ -1,12 +1,8 @@
 package com.tokopedia.topchat.common.analytics;
 
 
-import android.os.Bundle;
-
-import com.example.googletagmanagerwithannotation.enhancedecommerce.events.ProductClicks;
-import com.example.googletagmanagerwithannotation.enhancedecommerce.events.ProductClicksBundler;
-import com.example.googletagmanagerwithannotation.enhancedecommerce.events.ProductViewsBundler;
-import com.example.googletagmanagerwithannotation.enhancedecommerce.models.ecommerce.Product;
+import com.tokopedia.abstraction.processor.ProductClicksBundler;
+import com.tokopedia.abstraction.processor.model.Product;
 import com.tokopedia.analyticconstant.DataLayer;
 import com.tokopedia.attachproduct.analytics.AttachProductAnalytics;
 import com.tokopedia.chat_common.data.AttachInvoiceSentViewModel;
@@ -20,9 +16,9 @@ import com.tokopedia.user.session.UserSessionInterface;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.ArrayList;
 
 import javax.inject.Inject;
 

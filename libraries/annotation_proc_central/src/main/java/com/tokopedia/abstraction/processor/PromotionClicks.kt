@@ -1,11 +1,12 @@
-package com.example.googletagmanagerwithannotation.enhancedecommerce.events
+package com.tokopedia.abstraction.processor
 
-import com.example.annotation.AnalyticEvent
-import com.example.annotation.Key
-import com.example.firebaseanalyticrules.rules.PromotionClicksRules
-import com.example.googletagmanagerwithannotation.enhancedecommerce.models.ecommerce.Promotion
+
+import com.tokopedia.abstraction.processor.model.Promotion
 import com.tokopedia.analytic_constant.Event
 import com.tokopedia.analytic_constant.Param
+import com.tokopedia.annotation.AnalyticEvent
+import com.tokopedia.annotation.Key
+import com.tokopedia.firebase.analytic.rules.PromotionClicksRules
 
 @AnalyticEvent(false, Event.VIEW_ITEM, PromotionClicksRules::class)
 data class PromotionClicks(

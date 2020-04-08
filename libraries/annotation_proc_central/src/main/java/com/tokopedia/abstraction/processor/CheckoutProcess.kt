@@ -1,13 +1,13 @@
-package com.example.googletagmanagerwithannotation.enhancedecommerce.events
+package com.tokopedia.abstraction.processor
 
-import com.example.annotation.AnalyticEvent
-import com.example.annotation.Key
-import com.example.annotation.defaultvalues.DefaultValueInt
-import com.example.annotation.defaultvalues.DefaultValueString
-import com.example.firebaseanalyticrules.rules.CheckoutProcessRules
-import com.example.googletagmanagerwithannotation.enhancedecommerce.models.ecommerce.Product
+import com.tokopedia.abstraction.processor.model.Product
 import com.tokopedia.analytic_constant.Event
 import com.tokopedia.analytic_constant.Param
+import com.tokopedia.annotation.AnalyticEvent
+import com.tokopedia.annotation.Key
+import com.tokopedia.annotation.defaultvalues.DefaultValueInt
+import com.tokopedia.annotation.defaultvalues.DefaultValueString
+import com.tokopedia.firebase.analytic.rules.CheckoutProcessRules
 
 @AnalyticEvent(false, Event.BEGIN_CHECKOUT, CheckoutProcessRules::class)
 data class CheckoutProcess(

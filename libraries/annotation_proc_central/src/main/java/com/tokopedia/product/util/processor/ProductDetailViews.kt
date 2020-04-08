@@ -1,9 +1,10 @@
 package com.tokopedia.product.util.processor
 
-import com.example.annotation.AnalyticEvent
-import com.example.annotation.Key
-import com.example.firebaseanalyticrules.rules.ProductDetailViewsRules
+
 import com.tokopedia.analytic_constant.Event
+import com.tokopedia.annotation.AnalyticEvent
+import com.tokopedia.annotation.Key
+import com.tokopedia.firebase.analytic.rules.ProductDetailViewsRules
 
 const val KEY_SESSION_IRIS = "sessionIris"
 
