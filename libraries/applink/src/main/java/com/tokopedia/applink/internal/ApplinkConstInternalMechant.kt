@@ -17,6 +17,8 @@ object ApplinkConstInternalMechant {
     val MERCHANT_OPEN_CATALOG_PICKER = "${INTERNAL_MERCHANT}:/open-catalog-picker"
     @JvmField
     val MERCHANT_OPEN_PRODUCT_PREVIEW = "${INTERNAL_MERCHANT}:/open-product-preview"
+    @JvmField
+    val MERCHANT_OPEN_DRAFT = "${INTERNAL_MERCHANT}/open-draft"
 
     // Official Store Brandlist
     @JvmField

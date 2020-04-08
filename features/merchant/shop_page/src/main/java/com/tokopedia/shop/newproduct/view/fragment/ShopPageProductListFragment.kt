@@ -13,7 +13,9 @@ import androidx.core.view.ViewCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
-import androidx.recyclerview.widget.*
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.SimpleItemAnimator
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
@@ -24,6 +26,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
@@ -36,7 +39,10 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.shop.R
 import com.tokopedia.shop.analytic.ShopPageTrackingBuyer
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.*
-import com.tokopedia.shop.analytic.model.*
+import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
+import com.tokopedia.shop.analytic.model.CustomDimensionShopPageAttribution
+import com.tokopedia.shop.analytic.model.CustomDimensionShopPageProduct
+import com.tokopedia.shop.analytic.model.ShopTrackProductTypeDef
 import com.tokopedia.shop.common.constant.ShopPageConstant.GO_TO_MEMBERSHIP_DETAIL
 import com.tokopedia.shop.common.constant.ShopParamConstant
 import com.tokopedia.shop.common.di.component.ShopComponent
@@ -150,7 +156,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
 
     override fun chooseProductClicked() {
         context?.let {
-            RouteManager.route(it, ApplinkConst.PRODUCT_ADD)
+            RouteManager.route(it, ApplinkConstInternalMechant.MERCHANT_OPEN_PRODUCT_PREVIEW)
         }
     }
 
@@ -697,7 +703,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
     override fun onAddProductClicked() {
         context?.let {
             shopPageTracking?.clickAddProduct(customDimensionShopPage)
-            RouteManager.route(it, ApplinkConst.PRODUCT_ADD)
+            RouteManager.route(it, ApplinkConstInternalMechant.MERCHANT_OPEN_PRODUCT_PREVIEW)
         }
     }
 
