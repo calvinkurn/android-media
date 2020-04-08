@@ -21,9 +21,7 @@ import com.tokopedia.play.view.wrapper.PlayResult
 import com.tokopedia.play_common.player.PlayVideoManager
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import io.mockk.coEvery
-import io.mockk.every
-import io.mockk.mockk
+import io.mockk.*
 import org.assertj.core.api.Assertions
 import org.junit.After
 import org.junit.Before
@@ -31,6 +29,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
+import java.util.concurrent.TimeoutException
 
 /**
  * Created by jegul on 20/02/20
@@ -247,8 +246,12 @@ class PlayViewModelTest {
                 .isEqualTo(expectedModel)
     }
 
+    //region update badge cart
+    /**
+     * Update badge cart
+     */
     @Test
-    fun `test update badge cart`() {
+    fun `given channel info is success, when cart should show, then badge cart should be updated`() {
         val expectedModel = CartUiModel(
                 isShow = true,
                 count = mockCartCount
@@ -257,10 +260,54 @@ class PlayViewModelTest {
         playViewModel.getChannelInfo(mockChannel.channelId)
         playViewModel.updateBadgeCart()
 
+        coVerify {
+            mockGetCartCountUseCase.executeOnBackground()
+        }
+
         Assertions
                 .assertThat(playViewModel.observableBadgeCart.getOrAwaitValue())
                 .isEqualTo(expectedModel)
     }
+
+    @Test(expected = TimeoutException::class)
+    fun `given channel info is success, when cart should not show, then badge cart should not be updated`() {
+        coEvery { mockGetChannelInfoUseCase.executeOnBackground() } returns mockChannel.copy(isShowCart = false)
+
+        playViewModel.getChannelInfo(mockChannel.channelId)
+        playViewModel.updateBadgeCart()
+
+        coVerify(exactly = 0) {
+            mockGetCartCountUseCase.executeOnBackground()
+        }
+
+        playViewModel.observableBadgeCart.getOrAwaitValue()
+    }
+
+    @Test(expected = TimeoutException::class)
+    fun `when channel info is not success, then badge cart should not be updated`() {
+        coEvery { mockGetChannelInfoUseCase.executeOnBackground() } throws Exception("just throws")
+
+        playViewModel.getChannelInfo(mockChannel.channelId)
+        playViewModel.updateBadgeCart()
+
+        coVerify(exactly = 0) {
+            mockGetCartCountUseCase.executeOnBackground()
+        }
+
+        playViewModel.observableBadgeCart.getOrAwaitValue()
+    }
+
+    @Test(expected = TimeoutException::class)
+    fun `when channel info is null, then badge cart should not be updated`() {
+        playViewModel.updateBadgeCart()
+
+        coVerify(exactly = 0) {
+            mockGetCartCountUseCase.executeOnBackground()
+        }
+
+        playViewModel.observableBadgeCart.getOrAwaitValue()
+    }
+    //endregion
 
     @Test
     fun `test observe product tagging`() {
