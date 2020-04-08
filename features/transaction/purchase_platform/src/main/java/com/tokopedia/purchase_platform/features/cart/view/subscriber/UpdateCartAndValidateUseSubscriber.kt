@@ -8,14 +8,12 @@ import rx.Subscriber
 /**
  * Created by fwidjaja on 2020-03-05.
  */
-class UpdateCartAndValidateUseSubscriber(private val view: ICartListView?,
-                                         private val presenter: CartListPresenter) : Subscriber<UpdateAndValidateUseData>() {
+class UpdateCartAndValidateUseSubscriber(private val view: ICartListView?) : Subscriber<UpdateAndValidateUseData>() {
     override fun onNext(t: UpdateAndValidateUseData?) {
         t?.let {
             it.updateCartData?.let { updateCartData ->
                 if (updateCartData.isSuccess) {
                     it.promoUiModel?.let { promoUiModel ->
-                        presenter.isLastApplyResponseStillValid = false
                         view?.updatePromoCheckoutStickyButton(promoUiModel)
                     }
                 }
