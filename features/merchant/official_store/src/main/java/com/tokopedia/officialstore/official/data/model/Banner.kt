@@ -23,7 +23,10 @@ data class Banner(@SerializedName("id")
                   @SerializedName("category_persona")
                   val categoryPersona: String = "",
                   @SerializedName("brand_id")
-                  val brandId: String = "")
+                  val brandId: String = "",
+                  @SerializedName("campaignCode")
+                  val campaignCode: String = ""
+)
     : Parcelable {
     constructor(parcel: Parcel) : this(
             parcel.readString() ?: "",
