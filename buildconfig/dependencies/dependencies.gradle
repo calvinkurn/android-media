@@ -313,6 +313,7 @@ ext {
 
     unifyDependencies = [
             icon            : "com.tokopedia.unify:icon:${unifyIconVersion}@aar",
+            iconNotification: "com.tokopedia.unify.compositions:icon_notification:${unifyIconNotificationVersion}@aar",
             principles      : "com.tokopedia.unify:principles:${unifyPrinciplesVersion}@aar",
             components      : "com.tokopedia.unify:components:${unifyComponentsVersion}@aar",
             coach_mark      : "com.tokopedia.unify.compositions:coach_mark:${unifyCoachMarkVersion}@aar",

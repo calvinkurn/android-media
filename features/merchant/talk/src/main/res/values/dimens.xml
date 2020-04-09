@@ -1,5 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <dimen name="dp_1">1dp</dimen>
+    <dimen name="dp_12">12dp</dimen>
+    <dimen name="dp_18">18dp</dimen>
+    <dimen name="dp_46">46dp</dimen>
+    <dimen name="dp_104">104dp</dimen>
+    <dimen name="dp_168">168dp</dimen>
+    <dimen name="dp_171">171dp</dimen>
+    <dimen name="dp_215">215dp</dimen>
+    <dimen name="dp_234">234dp</dimen>
+    <dimen name="dp_328">328dp</dimen>
     <dimen name="empty_icon_talk_width">203dp</dimen>
     <dimen name="empty_icon_talk_height">116dp</dimen>
     <dimen name="margin_comment_seperator_left">58dp</dimen>
