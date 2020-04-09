@@ -616,6 +616,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                     }
                     productCategoryLayout?.show()
                     productCategoryRecListView?.show()
+                    // TODO remove the onchange listener in productCategoryRecListView, because it overwrite viewModel.productInputModel.detailInputModel.categoryId to "0"
                     val selectedCategory = ArrayList<ListItemUnify>()
                     selectedCategory.add(ListItemUnify(categoryName, ""))
                     productCategoryRecListView?.setData(selectedCategory)
@@ -1055,14 +1056,15 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     }
 
     private fun onGetCategoryRecommendationSuccess(result: Success<List<ListItemUnify>>) {
+        productCategoryLayout?.show()
+        productCategoryRecListView?.show()
         val items = ArrayList(result.data.take(3))
         productCategoryRecListView?.setData(items)
         productCategoryRecListView?.onLoadFinish {
             selectFirstCategoryRecommendation()
             createCategoryRecommendationItemClickListener(items)
+            productCategoryRecListView?.onLoadFinish {}
         }
-        productCategoryLayout?.show()
-        productCategoryRecListView?.show()
     }
 
     private fun onGetCategoryRecommendationFailed() {
