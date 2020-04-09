@@ -4,15 +4,6 @@ import android.os.Parcel
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
 
-//722246
-//
-
-
-//todo handle toolbar back-press button and toolbar icon
-
-//processing 720644
-//instant credit card 720599
-
 
 data class ThanksPageResponse(
         @SerializedName("thanksPageData")
@@ -55,7 +46,9 @@ data class ThanksPageData(
         @SerializedName("payment_deduction")
         val paymentDeductions: ArrayList<PaymentItem>?,
         @SerializedName("payment_details")
-        val paymentDetails: ArrayList<PaymentDetail>?
+        val paymentDetails: ArrayList<PaymentDetail>?,
+        @SerializedName("order_amount_str")
+        val orderAmountStr: String
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
             parcel.readLong(),
@@ -75,7 +68,8 @@ data class ThanksPageData(
             parcel.readString() ?: "",
             parcel.createTypedArrayList(PaymentItem) ?: arrayListOf(),
             parcel.createTypedArrayList(PaymentItem) ?: arrayListOf(),
-            parcel.createTypedArrayList(PaymentDetail) ?: arrayListOf())
+            parcel.createTypedArrayList(PaymentDetail) ?: arrayListOf(),
+            parcel.readString() ?: "")
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeLong(paymentID)
@@ -94,8 +88,9 @@ data class ThanksPageData(
         parcel.writeString(expireTimeStr)
         parcel.writeString(pageType)
         parcel.writeTypedList(paymentItems?.let { it } ?: run { arrayListOf<PaymentItem>() })
-        parcel.writeTypedList(paymentDeductions?.let { it } ?: run { arrayListOf<PaymentItem>()})
+        parcel.writeTypedList(paymentDeductions?.let { it } ?: run { arrayListOf<PaymentItem>() })
         parcel.writeTypedList(paymentDetails?.let { it } ?: run { arrayListOf<PaymentDetail>() })
+        parcel.writeString(orderAmountStr)
     }
 
     override fun describeContents(): Int {
@@ -125,10 +120,10 @@ data class PaymentDetail(
         val amountStr: String
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
-            parcel.readString()?:"",
-            parcel.readString()?:"",
+            parcel.readString() ?: "",
+            parcel.readString() ?: "",
             parcel.readFloat(),
-            parcel.readString()?:"")
+            parcel.readString() ?: "")
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(gatewayCode)

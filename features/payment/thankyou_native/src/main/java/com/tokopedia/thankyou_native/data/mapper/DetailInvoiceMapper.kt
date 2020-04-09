@@ -63,7 +63,7 @@ class DetailInvoiceMapper(val thanksPageData: ThanksPageData) {
         visitableList.add(PaymentMethodModel(thanksPageData.gatewayName))
         val invoiceSummery = InvoiceSummery(
                 totalItemCount = totalItemCount.toString(),
-                totalPriceStr = CurrencyFormatUtil.convertPriceValue(totalPrice.toDouble(), true),
+                totalPriceStr = CurrencyFormatUtil.convertPriceValue(totalPrice.toDouble(), false),
                 totalItemDiscountStr = totalDiscountStr,
                 totalProductProtectionStr = totalProductProtectionStr,
                 totalShippingChargeStr = totalShippingStr,
@@ -74,7 +74,7 @@ class DetailInvoiceMapper(val thanksPageData: ThanksPageData) {
 
         visitableList.add(invoiceSummery)
 
-        val billDetail = BillDetail(thanksPageData.amountStr, null, totalServiceFeeStr)
+        val billDetail = BillDetail(thanksPageData.orderAmountStr, null, totalServiceFeeStr)
         visitableList.add(billDetail)
 
         thanksPageData.paymentDetails?.forEach { paymentDetail ->
