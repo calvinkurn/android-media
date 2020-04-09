@@ -32,7 +32,6 @@ fun ImageView.loadImage(url: String, fpmItemLabel: String = "", listener: ImageH
     Glide.with(context)
             .load(url)
             .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-            .placeholder(R.drawable.loading_page)
             .listener(object : RequestListener<Drawable> {
                 override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
                     GlideErrorLogHelper().logError(context, e, url)
@@ -54,9 +53,9 @@ fun ImageView.loadImageFitCenter(url: String, fpmItemLabel: String = ""){
     Glide.with(context)
             .load(url)
             .fitCenter()
+            .placeholder(R.drawable.placeholder_grey)
             .format(DecodeFormat.PREFER_ARGB_8888)
             .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-            .placeholder(R.drawable.loading_page)
             .listener(object : RequestListener<Drawable> {
                 override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
                     GlideErrorLogHelper().logError(context, e, url)
@@ -79,7 +78,6 @@ fun ImageView.loadImageRounded(url: String, roundedRadius: Int, fpmItemLabel: St
             .centerCrop()
             .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
             .transform(CenterCrop(), RoundedCorners(roundedRadius))
-            .placeholder(R.drawable.loading_page)
             .listener(object : RequestListener<Drawable> {
                 override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
                     return false
@@ -98,6 +96,7 @@ fun ImageView.loadMiniImage(url: String, width: Int, height: Int, fpmItemLabel: 
     Glide.with(context)
             .load(url)
             .fitCenter()
+            .placeholder(R.drawable.placeholder_grey)
             .format(DecodeFormat.PREFER_ARGB_8888)
             .override(width, height)
             .listener(object : RequestListener<Drawable> {
@@ -121,7 +120,7 @@ fun ImageView.loadImageCenterCrop(url: String){
             .format(DecodeFormat.PREFER_ARGB_8888)
             .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
             .transform(CenterCrop(), RoundedCorners(15))
-            .placeholder(R.drawable.loading_page)
+            .placeholder(R.drawable.placeholder_grey)
             .into(this)
 }
 
@@ -130,17 +129,6 @@ fun ImageView.loadImageWithoutPlaceholder(url: String){
             .load(url)
             .format(DecodeFormat.PREFER_ARGB_8888)
             .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-            .into(this)
-}
-
-fun ImageView.loadImage(url: String, width: Int, height: Int, skipMemoryCache: Boolean = false, placeholder: Int = -1){
-    Glide.with(context)
-            .load(url)
-            .override(width, height)
-            .format(DecodeFormat.PREFER_ARGB_8888)
-            .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-            .transform(CenterCrop(), RoundedCorners(15))
-            .placeholder(placeholder)
             .into(this)
 }
 

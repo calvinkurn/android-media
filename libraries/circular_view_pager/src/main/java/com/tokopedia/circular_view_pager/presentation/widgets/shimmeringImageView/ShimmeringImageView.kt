@@ -14,13 +14,14 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
+import com.elyeproj.loaderviewlibrary.LoaderImageView
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.home_page_banner.R
 import com.tokopedia.home_page_banner.ext.CrossFadeFactory
 import kotlinx.android.synthetic.main.layout_shimmering_image_view.view.*
 
 
-class ShimmeringImageView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
+class ShimmeringImageView @JvmOverloads constructor(context: Context, private val attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
         FrameLayout(context, attrs, defStyleAttr){
 
     companion object{
@@ -28,17 +29,20 @@ class ShimmeringImageView @JvmOverloads constructor(context: Context, attrs: Att
         private const val TRUNCATED_URL_PREFIX = "https://ecs7.tokopedia.net/img/cache/"
     }
 
+    private var loaderImageView: LoaderImageView?=null
+
     init {
         init()
     }
 
     private fun init(){
         View.inflate(context, R.layout.layout_shimmering_image_view, this)
-        shimmeringView?.visibility = View.GONE
+        loaderImageView = LoaderImageView(context, attrs)
+        this.addView(loaderImageView)
     }
 
     fun loadImage(url: String, fpmItemLabel: String = ""){
-        shimmeringView?.visibility = View.VISIBLE
+        loaderImageView?.visibility = View.VISIBLE
         imageView?.let {
             val performanceMonitoring = getPerformanceMonitoring(url, fpmItemLabel)
             Glide.with(context)
@@ -52,7 +56,7 @@ class ShimmeringImageView @JvmOverloads constructor(context: Context, attrs: Att
                         }
 
                         override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
-                            shimmeringView?.visibility = View.GONE
+                            loaderImageView?.visibility = View.GONE
                             stopTraceOnResourceReady(dataSource, performanceMonitoring)
                             return false
                         }
@@ -62,7 +66,7 @@ class ShimmeringImageView @JvmOverloads constructor(context: Context, attrs: Att
     }
 
     fun loadImageRounded(url: String, roundedRadius: Int, fpmItemLabel: String = ""){
-        shimmeringView?.visibility = View.VISIBLE
+        loaderImageView?.visibility = View.VISIBLE
         imageView?.let {
             val performanceMonitoring = getPerformanceMonitoring(url, fpmItemLabel)
             Glide.with(context)
@@ -76,7 +80,7 @@ class ShimmeringImageView @JvmOverloads constructor(context: Context, attrs: Att
                         }
 
                         override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
-                            shimmeringView?.visibility = View.GONE
+                            loaderImageView?.visibility = View.GONE
                             stopTraceOnResourceReady(dataSource, performanceMonitoring)
                             return false
                         }

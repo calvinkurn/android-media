@@ -50,7 +50,7 @@ data class PopularKeywordListDataModel(
     }
 
     override fun equalsWith(b: Any?): Boolean {
-        return b is PopularKeywordListDataModel && popularKeywordList === b.popularKeywordList
+        return this === b
     }
 
     override fun getChangePayloadFrom(b: Any?): Bundle {

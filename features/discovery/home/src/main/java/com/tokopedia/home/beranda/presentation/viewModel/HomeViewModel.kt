@@ -507,12 +507,7 @@ open class HomeViewModel @Inject constructor(
                 val findRetryModel = homeDataModel.list.find {
                     visitable -> visitable is HomeRetryModel
                 }
-                val findLoadingModel = homeDataModel.list.find {
-                    visitable -> visitable is HomeLoadingMoreModel
-                }
-                visitableMutableList.remove(findLoadingModel)
                 visitableMutableList.remove(findRetryModel)
-                visitableMutableList.add(HomeLoadingMoreModel())
                 val newHomeViewModel = homeDataModel.copy(
                         list = visitableMutableList)
                 getFeedTabData()

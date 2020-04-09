@@ -104,7 +104,7 @@ internal fun ImageView.loadImage(url: String?) {
         Glide.with(context)
                 .load(url)
                 .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-                .placeholder(R.drawable.ic_loading_toped_new)
+                .placeholder(R.drawable.placeholder_grey)
                 .error(R.drawable.ic_loading_toped_new)
                 .into(this)
     }
@@ -115,6 +115,26 @@ internal fun ImageView.loadImage(url: String?, state: ((Boolean) -> Unit)) {
                 .load(url)
                 .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                 .placeholder(R.drawable.ic_loading_toped_new)
+                .error(R.drawable.ic_loading_toped_new)
+                .listener(object : RequestListener<Drawable>{
+                    override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
+                        state.invoke(false)
+                        return false
+                    }
+
+                    override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
+                        state.invoke(true)
+                        return false
+                    }
+                })
+                .into(this)
+    }
+}
+internal fun ImageView.loadImageWithOutPlaceholder(url: String?, state: ((Boolean) -> Unit)) {
+    if (url != null && url.isNotEmpty()) {
+        Glide.with(context)
+                .load(url)
+                .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                 .error(R.drawable.ic_loading_toped_new)
                 .listener(object : RequestListener<Drawable>{
                     override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {

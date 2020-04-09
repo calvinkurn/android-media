@@ -8,6 +8,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.productcard.utils.glideClear
 import com.tokopedia.productcard.utils.loadImage
+import com.tokopedia.productcard.utils.loadImageWithOutPlaceholder
 import com.tokopedia.unifycomponents.BaseCustomView
 import kotlinx.android.synthetic.main.product_card_flashsale_layout.view.*
 
@@ -35,7 +36,7 @@ class ProductCardFlashSaleView: BaseCustomView, IProductCardFlashSaleView {
 
     override fun setProductModel(productCardModel: ProductCardFlashSaleModel) {
         imageLoadingProduct?.show()
-        imageProduct?.loadImage(productCardModel.productImageUrl){
+        imageProduct?.loadImageWithOutPlaceholder(productCardModel.productImageUrl){
             imageLoadingProduct.hide()
         }
         renderProductCardFlashSaleContent(productCardModel)
