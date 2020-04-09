@@ -137,15 +137,15 @@
         tools:visibility="visible"
         />
 
-    <com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify
-        android:id="@+id/btn_back_to_top"
-        app:fbType="back_to_top"
-        app:layout_constraintBottom_toTopOf="@id/product_choosen_counter"
-        app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginRight="@dimen/dp_16"
-        android:layout_marginBottom="@dimen/dp_16"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+<!--    <com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify-->
+<!--        android:id="@+id/btn_back_to_top"-->
+<!--        app:fbType="back_to_top"-->
+<!--        app:layout_constraintBottom_toTopOf="@id/product_choosen_counter"-->
+<!--        app:layout_constraintRight_toRightOf="parent"-->
+<!--        android:layout_marginRight="@dimen/dp_16"-->
+<!--        android:layout_marginBottom="@dimen/dp_16"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content" />-->
 
     <androidx.cardview.widget.CardView
         android:id="@+id/product_choosen_counter"

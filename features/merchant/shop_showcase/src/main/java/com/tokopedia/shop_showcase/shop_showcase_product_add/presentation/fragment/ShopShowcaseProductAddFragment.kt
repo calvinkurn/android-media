@@ -8,7 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
-import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -116,17 +115,11 @@ class ShopShowcaseProductAddFragment : BaseDaggerFragment(),
 
     private val buttonBackToTop: FloatingButtonUnify? by lazy {
         view?.findViewById<FloatingButtonUnify>(R.id.btn_back_to_top)?.apply {
-            circleMainMenu.setOnClickListener {
-                scrollToTop()
-            }
-        }
-    }
-
-    private fun scrollToTop() {
-        buttonBackToTop?.let { fab ->
-            fab.hide()
-            if(!fab.isShown) {
-                recyclerViewProductList?.smoothScrollToPosition(0)
+            circleMainMenu.run {
+                setOnClickListener {
+                    recyclerViewProductList?.smoothScrollToPosition(0)
+                    hide()
+                }
             }
         }
     }

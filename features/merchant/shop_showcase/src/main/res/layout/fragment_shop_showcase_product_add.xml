@@ -73,7 +73,7 @@
         app:layout_constraintTop_toBottomOf="@id/searchbar_add_product"
         />
 
-        <com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify
+    <com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify
             android:id="@+id/btn_back_to_top"
             app:fbType="back_to_top"
             app:layout_constraintBottom_toTopOf="@id/product_choosen_counter"

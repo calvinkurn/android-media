@@ -2,6 +2,7 @@ package com.tokopedia.shop_showcase.shop_showcase_add.presentation.viewholder
 
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.shop_showcase.R
 import com.tokopedia.shop_showcase.common.util.getCurrencyFormatted
@@ -24,7 +25,7 @@ class ShowcaseProductPreviewViewHolder(itemView: View, private val previewListen
         itemView.product_price.text = element.productPrice.getCurrencyFormatted()
         itemView.ratingBar.rating = element.ratingStarAvg
         itemView.total_review.text = itemView.resources.getString(R.string.product_total_review, element.totalReview.toString())
-        itemView.product_image.setImageUrl(element.productImageUrl)
+        ImageHandler.loadImage2(itemView.product_image, element.productImageUrl, R.drawable.loading_page)
     }
 
     private fun renderDeleteButton() {
