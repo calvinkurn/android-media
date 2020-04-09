@@ -17,7 +17,7 @@ import com.tokopedia.product.addedit.common.util.getText
 import com.tokopedia.product.addedit.common.util.getTextIntOrZero
 import com.tokopedia.product.addedit.common.util.setModeToNumberInput
 import com.tokopedia.product.addedit.common.util.setText
-import com.tokopedia.product.addedit.detail.presentation.mapper.mapProductInputModelDetailToDraft
+import com.tokopedia.product.addedit.mapper.mapProductInputModelDetailToDraft
 import com.tokopedia.product.addedit.optionpicker.OptionPicker
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.shipment.di.AddEditProductShipmentComponent

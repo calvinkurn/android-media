@@ -151,8 +151,10 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
         shopId = userSession.shopId
         super.onCreate(savedInstanceState)
         arguments?.run {
+            val draftId = getString(EXTRA_DRAFT_ID)
             viewModel.setProductId(getString(EXTRA_PRODUCT_ID) ?: "")
-            viewModel.setDraftId(getString(EXTRA_DRAFT_ID) ?: "")
+            viewModel.setDraftId(draftId ?: "")
+            viewModel.getDraftId()?.let { viewModel.getProductDraft(it) }
         }
 
         if (viewModel.isEditing.value == true) {
@@ -316,6 +318,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
         observeProductVariant()
         observeImageUrlOrPathList()
         observeProductVariantList()
+        observeProductInputModelFromDraft()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -350,7 +353,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
                             data.getParcelableExtra<ProductVariantInputModel>(EXTRA_VARIANT_INPUT)
                     context?.let {
                         AddEditProductAddService.startService(it, detailInputModel,
-                                descriptionInputModel, shipmentInputModel, variantInputModel)
+                                descriptionInputModel, shipmentInputModel, variantInputModel, viewModel.getDraftId())
                     }
                 }
                 REQUEST_CODE_DETAIL_EDIT -> {
@@ -515,6 +518,14 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
             when (result) {
                 is Success -> showVariantDialog(result.data)
                 is Fail -> showVariantErrorToast(getString(R.string.error_cannot_get_variants))
+            }
+        })
+    }
+
+    private fun observeProductInputModelFromDraft() {
+        viewModel.getProductDraftResult.observe(viewLifecycleOwner, Observer { result ->
+            when(result) {
+                is Success -> { viewModel.updateProductInputModel(result.data) }
             }
         })
     }

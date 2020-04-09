@@ -10,8 +10,12 @@ import com.tokopedia.product.addedit.common.util.AddEditProductNotificationManag
 import com.tokopedia.product.addedit.description.presentation.model.DescriptionInputModel
 import com.tokopedia.product.addedit.description.presentation.model.ProductVariantInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
+import com.tokopedia.product.addedit.draft.domain.usecase.DeleteProductDraftUseCase
+import com.tokopedia.product.addedit.draft.domain.usecase.SaveProductDraftUseCase
+import com.tokopedia.product.addedit.mapper.mapProductInputModelDetailToDraft
 import com.tokopedia.product.addedit.preview.domain.usecase.ProductAddUseCase
 import com.tokopedia.product.addedit.preview.presentation.activity.AddEditProductPreviewActivity
+import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.shipment.presentation.model.ShipmentInputModel
 import com.tokopedia.product.addedit.tracking.ProductAddShippingTracking
 import kotlinx.coroutines.Dispatchers
@@ -23,6 +27,7 @@ import kotlin.collections.ArrayList
  */
 
 class AddEditProductAddService : AddEditProductBaseService() {
+    private var productInputModel: ProductInputModel = ProductInputModel()
     private var shipmentInputModel: ShipmentInputModel = ShipmentInputModel()
     private var descriptionInputModel: DescriptionInputModel = DescriptionInputModel()
     private var detailInputModel: DetailInputModel = DetailInputModel()
@@ -35,22 +40,33 @@ class AddEditProductAddService : AddEditProductBaseService() {
                          detailInputModel: DetailInputModel,
                          descriptionInputModel: DescriptionInputModel,
                          shipmentInputModel: ShipmentInputModel,
-                         variantInputModel: ProductVariantInputModel) {
+                         variantInputModel: ProductVariantInputModel,
+                         draftId: Long
+        ) {
             val work = Intent(context, AddEditProductBaseService::class.java).apply {
                 putExtra(AddEditProductUploadConstant.EXTRA_DETAIL_INPUT, detailInputModel)
                 putExtra(AddEditProductUploadConstant.EXTRA_DESCRIPTION_INPUT, descriptionInputModel)
                 putExtra(AddEditProductUploadConstant.EXTRA_SHIPMENT_INPUT, shipmentInputModel)
                 putExtra(AddEditProductUploadConstant.EXTRA_VARIANT_INPUT, variantInputModel)
+                putExtra(AddEditProductUploadConstant.EXTRA_PRODUCT_DRAFT_ID, draftId)
             }
             enqueueWork(context, AddEditProductAddService::class.java, JOB_ID, work)
         }
     }
 
     override fun onHandleWork(intent: Intent) {
+        val draftId = intent.getLongExtra(AddEditProductUploadConstant.EXTRA_PRODUCT_DRAFT_ID, 0)
         shipmentInputModel = intent.getParcelableExtra(AddEditProductUploadConstant.EXTRA_SHIPMENT_INPUT)
         descriptionInputModel = intent.getParcelableExtra(AddEditProductUploadConstant.EXTRA_DESCRIPTION_INPUT)
         detailInputModel = intent.getParcelableExtra(AddEditProductUploadConstant.EXTRA_DETAIL_INPUT)
         variantInputModel = intent.getParcelableExtra(AddEditProductUploadConstant.EXTRA_VARIANT_INPUT)
+        productInputModel.let {
+            it.shipmentInputModel = shipmentInputModel
+            it.descriptionInputModel = descriptionInputModel
+            it.detailInputModel = detailInputModel
+            it.variantInputModel = variantInputModel
+            it.draftId = draftId
+        }
         uploadProductImages(detailInputModel.imageUrlOrPathList,
                 variantInputModel.productSizeChart?.filePath ?: "")
     }
@@ -88,10 +104,20 @@ class AddEditProductAddService : AddEditProductBaseService() {
             withContext(Dispatchers.IO) {
                 productAddUseCase.params = ProductAddUseCase.createRequestParams(param)
                 setUploadProductDataSuccess()
+                if(productInputModel.draftId > 0) {
+                    deleteProductDraftUseCase.params = DeleteProductDraftUseCase.createRequestParams(productInputModel.draftId)
+                    deleteProductDraftUseCase.executeOnBackground()
+                }
                 return@withContext productAddUseCase.executeOnBackground()
             }
         }, onError = {
-            it.message?.let { errorMessage -> setUploadProductDataSuccess(errorMessage) }
+            it.message?.let { errorMessage ->
+                setUploadProductDataSuccess(errorMessage)
+                if(productInputModel.draftId > 0) {
+                    saveProductDraftUseCase.params = SaveProductDraftUseCase.createRequestParams(mapProductInputModelDetailToDraft(productInputModel), productInputModel.draftId, false)
+                    withContext(Dispatchers.IO){ saveProductDraftUseCase.executeOnBackground() }
+                }
+            }
         })
     }
 }
