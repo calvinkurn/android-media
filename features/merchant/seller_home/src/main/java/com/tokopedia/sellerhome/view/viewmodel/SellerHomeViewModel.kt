@@ -2,10 +2,10 @@ package com.tokopedia.sellerhome.view.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.sellerhome.common.utils.DateTimeUtil
+import com.tokopedia.sellerhome.domain.model.GetShopStatusResponse
 import com.tokopedia.sellerhome.domain.model.ShippingLoc
 import com.tokopedia.sellerhome.domain.usecase.*
 import com.tokopedia.sellerhome.view.model.*
@@ -25,6 +25,7 @@ import javax.inject.Named
  */
 
 class SellerHomeViewModel @Inject constructor(
+        private val getShopStatusUseCase: GetStatusShopUseCase,
         private val userSession: UserSessionInterface,
         private val getTickerUseCase: GetTickerUseCase,
         private val getLayoutUseCase: GetLayoutUseCase,
@@ -35,7 +36,7 @@ class SellerHomeViewModel @Inject constructor(
         private val getPostDataUseCase: GetPostDataUseCase,
         private val getCarouselDataUseCase: GetCarouselDataUseCase,
         @Named("Main") dispatcher: CoroutineDispatcher
-) : BaseViewModel(dispatcher) {
+) : CustomBaseViewModel(dispatcher) {
 
     companion object {
         private const val DATE_FORMAT = "dd-MM-yyyy"
@@ -52,6 +53,7 @@ class SellerHomeViewModel @Inject constructor(
     }
 
     private val _homeTicker = MutableLiveData<Result<List<TickerUiModel>>>()
+    private val _shopStatus = MutableLiveData<Result<GetShopStatusResponse>>()
     private val _widgetLayout = MutableLiveData<Result<List<BaseWidgetUiModel<*>>>>()
     private val _shopLocation = MutableLiveData<Result<ShippingLoc>>()
     private val _cardWidgetData = MutableLiveData<Result<List<CardDataUiModel>>>()
@@ -62,6 +64,8 @@ class SellerHomeViewModel @Inject constructor(
 
     val homeTicker: LiveData<Result<List<TickerUiModel>>>
         get() = _homeTicker
+    val shopStatus: LiveData<Result<GetShopStatusResponse>>
+        get() = _shopStatus
     val widgetLayout: LiveData<Result<List<BaseWidgetUiModel<*>>>>
         get() = _widgetLayout
     val shopLocation: LiveData<Result<ShippingLoc>>
@@ -85,6 +89,11 @@ class SellerHomeViewModel @Inject constructor(
         }, onError = {
             _homeTicker.value = Fail(it)
         })
+    }
+
+    fun getShopStatus() = executeCall(_shopStatus) {
+        getShopStatusUseCase.params = GetStatusShopUseCase.createRequestParams(userSession.shopId)
+        getShopStatusUseCase.executeOnBackground()
     }
 
     fun getWidgetLayout() {

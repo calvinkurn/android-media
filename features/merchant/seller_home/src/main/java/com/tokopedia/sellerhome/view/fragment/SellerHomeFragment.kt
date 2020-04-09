@@ -2,9 +2,7 @@ package com.tokopedia.sellerhome.view.fragment
 
 import android.os.Bundle
 import android.os.Handler
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.core.view.ViewCompat
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
@@ -22,11 +20,13 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.sellerhome.BuildConfig
 import com.tokopedia.sellerhome.R
+import com.tokopedia.sellerhome.analytic.NavigationTracking
 import com.tokopedia.sellerhome.common.ShopStatus
 import com.tokopedia.sellerhome.common.WidgetType
 import com.tokopedia.sellerhome.common.exception.SellerHomeException
 import com.tokopedia.sellerhome.common.utils.Utils
 import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
+import com.tokopedia.sellerhome.domain.model.GetShopStatusResponse
 import com.tokopedia.sellerhome.domain.model.PROVINCE_ID_EMPTY
 import com.tokopedia.sellerhome.domain.model.ShippingLoc
 import com.tokopedia.sellerhome.view.adapter.SellerHomeAdapterTypeFactory
@@ -34,6 +34,7 @@ import com.tokopedia.sellerhome.view.bottomsheet.view.SellerHomeBottomSheetConte
 import com.tokopedia.sellerhome.view.model.*
 import com.tokopedia.sellerhome.view.viewholder.*
 import com.tokopedia.sellerhome.view.viewmodel.SellerHomeViewModel
+import com.tokopedia.sellerhome.view.widget.toolbar.NotificationDotBadge
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
@@ -58,6 +59,8 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
         @JvmStatic
         fun newInstance() = SellerHomeFragment()
 
+        val NOTIFICATION_MENU_ID = R.id.menu_sah_notification
+        private const val NOTIFICATION_BADGE_DELAY = 2000L
         private const val TAG_TOOLTIP = "seller_home_tooltip"
         private const val ERROR_LAYOUT = "Error get layout data."
         private const val ERROR_WIDGET = "Error get widget data."
@@ -67,7 +70,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
-    private var pageRefreshListener: PageRefreshListener? = null
 
     private var widgetHasMap = hashMapOf<String, MutableList<BaseWidgetUiModel<*>>>()
     private val sellerHomeViewModel by lazy {
@@ -76,6 +78,13 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
     private val tooltipBottomSheet by lazy { BottomSheetUnify() }
     private val recyclerView: RecyclerView by lazy { super.getRecyclerView(view) }
 
+    private var sellerHomeListener: Listener? = null
+    private var menu: Menu? = null
+    private val notificationDotBadge: NotificationDotBadge? by lazy {
+        NotificationDotBadge(context ?: return@lazy null)
+    }
+
+    private var notifCenterCount = 0
     private var isFirstLoad = true
     private var isErrorToastShown = false
 
@@ -95,6 +104,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        setHasOptionsMenu(true)
         return inflater.inflate(R.layout.fragment_sah, container, false)
     }
 
@@ -112,6 +122,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
         observeWidgetData(sellerHomeViewModel.postListWidgetData, WidgetType.POST_LIST)
         observeWidgetData(sellerHomeViewModel.carouselWidgetData, WidgetType.CAROUSEL)
         observeTickerLiveData()
+        observeShopStatusLiveData()
     }
 
     override fun onResume() {
@@ -120,8 +131,19 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
             reloadPage()
     }
 
-    fun setOnPageRefreshedListener(listener: PageRefreshListener) {
-        this.pageRefreshListener = listener
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.sah_menu_toolbar_notification, menu)
+        this.menu = menu
+        showNotificationBadge()
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == NOTIFICATION_MENU_ID) {
+            RouteManager.route(requireContext(), ApplinkConst.SELLER_INFO)
+            NavigationTracking.sendClickNotificationEvent()
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     private fun hideTooltipIfExist() {
@@ -148,7 +170,9 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
 
         swipeRefreshLayout.setOnRefreshListener {
             reloadPage()
-            pageRefreshListener?.onRefreshPage()
+            showNotificationBadge()
+            sellerHomeViewModel.getShopStatus()
+            sellerHomeListener?.getShopInfo()
         }
 
         sahGlobalError.setActionClickListener {
@@ -169,20 +193,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
 
         sahGlobalError.gone()
         sellerHomeViewModel.getWidgetLayout()
-    }
-
-    fun setShopStatus(shopStatus: ShopStatus) = view?.run {
-        when (shopStatus) {
-            ShopStatus.OFFICIAL_STORE -> {
-                viewBgShopStatus.setBackgroundResource(R.drawable.sah_shop_state_bg_official_store)
-            }
-            ShopStatus.POWER_MERCHANT -> {
-                viewBgShopStatus.setBackgroundResource(R.drawable.sah_shop_state_bg_power_merchant)
-            }
-            else -> {
-                viewBgShopStatus.setBackgroundColor(context.getResColor(android.R.color.transparent))
-            }
-        }
+        sellerHomeViewModel.getTicker()
     }
 
     override fun getAdapterTypeFactory(): SellerHomeAdapterTypeFactory {
@@ -262,6 +273,19 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
         showErrorToaster()
     }
 
+    private fun showNotificationBadge() {
+        Handler().postDelayed({
+            context?.let {
+                val menuItem = menu?.findItem(NOTIFICATION_MENU_ID)
+                if (notifCenterCount > 0) {
+                    notificationDotBadge?.showBadge(menuItem ?: return@let)
+                } else {
+                    notificationDotBadge?.removeBadge(menuItem ?: return@let)
+                }
+            }
+        }, NOTIFICATION_BADGE_DELAY)
+    }
+
     private fun setProgressBarVisibility(isShown: Boolean) {
         view?.progressBarSah?.visibility = if (isShown) View.VISIBLE else View.GONE
     }
@@ -339,15 +363,15 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
 
     private fun getWidgetsData(widgets: List<BaseWidgetUiModel<*>>) {
         widgets.forEachIndexed { i, widget ->
-                    when (widget.widgetType) {
-                        WidgetType.CARD -> getCardData()
-                        WidgetType.LINE_GRAPH -> getLineGraphData()
-                        WidgetType.PROGRESS -> getProgressData()
-                        WidgetType.CAROUSEL -> getCarouselData()
-                        WidgetType.POST_LIST -> getPostData()
-                        else -> adapter.notifyItemChanged(i)
-                    }
-                }
+            when (widget.widgetType) {
+                WidgetType.CARD -> getCardData()
+                WidgetType.LINE_GRAPH -> getLineGraphData()
+                WidgetType.PROGRESS -> getProgressData()
+                WidgetType.CAROUSEL -> getCarouselData()
+                WidgetType.POST_LIST -> getPostData()
+                else -> adapter.notifyItemChanged(i)
+            }
+        }
     }
 
     private fun setOnErrorGetLayout(throwable: Throwable) = view?.run {
@@ -435,6 +459,35 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
         sellerHomeViewModel.getTicker()
     }
 
+    private fun observeShopStatusLiveData() {
+        sellerHomeViewModel.shopStatus.observe(viewLifecycleOwner, Observer {
+            if (it is Success)
+                setOnSuccessGetShopStatus(it.data)
+        })
+        sellerHomeViewModel.getShopStatus()
+    }
+
+    private fun setOnSuccessGetShopStatus(goldPmOsStatus: GetShopStatusResponse) = view?.run {
+        val mShopStatus = goldPmOsStatus.result.data
+        val shopStatus: ShopStatus = when {
+            mShopStatus.isOfficialStore() -> ShopStatus.OFFICIAL_STORE
+            mShopStatus.isPowerMerchantActive() || mShopStatus.isPowerMerchantIdle() -> ShopStatus.POWER_MERCHANT
+            else -> ShopStatus.REGULAR_MERCHANT
+        }
+
+        when (shopStatus) {
+            ShopStatus.OFFICIAL_STORE -> {
+                viewBgShopStatus.setBackgroundResource(R.drawable.sah_shop_state_bg_official_store)
+            }
+            ShopStatus.POWER_MERCHANT -> {
+                viewBgShopStatus.setBackgroundResource(R.drawable.sah_shop_state_bg_power_merchant)
+            }
+            else -> {
+                viewBgShopStatus.setBackgroundColor(context.getResColor(android.R.color.transparent))
+            }
+        }
+    }
+
     private inline fun <reified D : BaseDataUiModel> observeWidgetData(liveData: LiveData<Result<List<D>>>, type: String) {
         liveData.observe(viewLifecycleOwner, Observer { result ->
             when (result) {
@@ -516,7 +569,16 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
         }
     }
 
-    interface PageRefreshListener {
-        fun onRefreshPage()
+    fun setNotifCenterCounter(count: Int) {
+        this.notifCenterCount = count
+        showNotificationBadge()
+    }
+
+    fun bindListener(listener: Listener?) {
+        this.sellerHomeListener = listener
+    }
+
+    interface Listener {
+        fun getShopInfo()
     }
 }

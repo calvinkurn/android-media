@@ -90,6 +90,7 @@ ext {
             commonWallet                    : ":features:fintech:common_wallet",
             wallet                          : ":features:fintech:wallet",
             ovoPayWithQr                    : ":features:fintech:ovo_pay_with_qr",
+            layanan                         : ":features:fintech:layanan_finansial",
 
             accountHome                     : ":features:home:account-home",
             dynamicBanner                   : ":features:home:dynamicbanner",
@@ -123,7 +124,6 @@ ext {
             reputation                      : ":features:merchant:reputation",
             reputationCommon                : ":features:merchant:reputation_common",
             sellerHome                      : ":features:merchant:seller_home",
-            sellerHomeDrawer                : ":features:merchant:seller_home_drawer",
             shopCommon                      : ":features:merchant:shop_common",
             shopEtalasePicker               : ":features:merchant:shop_etalase_picker",
 //            shopEtalasePicker               : ":features:merchant:shop_etalase_picker_no_op",
