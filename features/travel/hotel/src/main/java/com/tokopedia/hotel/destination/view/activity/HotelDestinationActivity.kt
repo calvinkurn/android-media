@@ -83,12 +83,12 @@ class HotelDestinationActivity : HotelBaseActivity(), HasComponent<HotelDestinat
         searchTemp = text
         onTextChangedJob?.cancel()
         onTextChangedJob = CoroutineScope(Dispatchers.Main).launch {
-            delay(500)
+            delay(DEFAULT_DELAY_MS.toLong())
             if (text != searchTemp) return@launch
-            if (text.length <= 2 && isSearching) {
+            if (text.length <= DEFAULT_MIN_CHARACTER && isSearching) {
                 isSearching = false
                 backToHotelRecommendation()
-            } else if (text.isNotEmpty() && text.length == 2 && !isSearching) {
+            } else if (text.isNotEmpty() && text.length == DEFAULT_MIN_CHARACTER && !isSearching) {
                 isSearching = true
                 showSearchDestinationResult()
             } else if (isSearching) {
@@ -120,6 +120,8 @@ class HotelDestinationActivity : HotelBaseActivity(), HasComponent<HotelDestinat
 
     companion object {
         const val SEARCH_DESTINATION_FRAGMENT_TAG = "SEARCH_DESTINATION"
+        const val DEFAULT_DELAY_MS = 500
+        const val DEFAULT_MIN_CHARACTER = 2
 
         const val HOTEL_DESTINATION_ID = "destinationID"
         const val HOTEL_DESTINATION_NAME = "name"
