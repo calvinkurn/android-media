@@ -1838,7 +1838,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                             uniqueId = cartString,
                             product_details = listProductDetail,
                             codes = shop.promoCodes?.toMutableList() ?: mutableListOf(),
-                            isChecked = shop.isChecked)
+                            isChecked = listProductDetail.isNotEmpty())
                     listOrder.add(order)
                 }
             }
