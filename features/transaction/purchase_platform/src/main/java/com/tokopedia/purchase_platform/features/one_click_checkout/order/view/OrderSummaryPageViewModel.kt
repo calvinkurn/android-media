@@ -1287,7 +1287,6 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                             }
 
                             override fun onNext(result: ValidateUsePromoRevampUiModel) {
-                                var isPromoDecreased = false
                                 var isPromoReleased = false
                                 val lastResult = validateUsePromoRevampUiModel
                                 if (lastResult != null && lastResult.promoUiModel.codes.isNotEmpty() && result.promoUiModel.codes.isNotEmpty() && result.promoUiModel.messageUiModel.state == "red") {
@@ -1303,12 +1302,10 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                                 }
                                 if (isPromoReleased) {
                                     orderSummaryAnalytics.eventViewPromoDecreasedOrReleased(true)
-                                }
-                                if (lastResult != null && result.promoUiModel.benefitSummaryInfoUiModel.finalBenefitAmount < lastResult.promoUiModel.benefitSummaryInfoUiModel.finalBenefitAmount) {
-                                    isPromoDecreased = true
-                                }
-                                if (isPromoDecreased) {
-                                    orderSummaryAnalytics.eventViewPromoDecreasedOrReleased(false)
+                                } else {
+                                    if (lastResult != null && result.promoUiModel.benefitSummaryInfoUiModel.finalBenefitAmount < lastResult.promoUiModel.benefitSummaryInfoUiModel.finalBenefitAmount) {
+                                        orderSummaryAnalytics.eventViewPromoDecreasedOrReleased(false)
+                                    }
                                 }
                                 validateUsePromoRevampUiModel = result
                                 updatePromoState(result.promoUiModel)
