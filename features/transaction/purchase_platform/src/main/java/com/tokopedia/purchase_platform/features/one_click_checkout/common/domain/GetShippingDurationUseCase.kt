@@ -10,31 +10,24 @@ class GetShippingDurationUseCase @Inject constructor(val graphqlUseCase: Graphql
         graphqlUseCase.setGraphqlQuery(QUERY)
         graphqlUseCase.setTypeClass(ShippingNoPriceResponse::class.java)
         return graphqlUseCase.execute(
-                { shippingNoPriceResponse: ShippingNoPriceResponse ->
-                    print(shippingNoPriceResponse)
-                    onSuccess(shippingNoPriceResponse) },
-                { throwable: Throwable ->
-                    print(throwable)
-                    onError(throwable) })
+                { shippingNoPriceResponse ->
+                    onSuccess(shippingNoPriceResponse)
+                }, { throwable ->
+                    onError(throwable)
+        })
     }
 
-
-
-    companion object {
-        val QUERY = """
-            query ongkir_shipper_service{
-            ongkir_shipper_service {
+    private val QUERY = """
+        query ongkir_shipper_service {
+          ongkir_shipper_service {
             services { 
                 service_code
                 service_id
                 service_duration
                 shipper_ids
                 spids
+                }
             }
-            }
-            }
-            """.trimIndent()
-    }
+        }
+        """.trimIndent()
 }
-
-
