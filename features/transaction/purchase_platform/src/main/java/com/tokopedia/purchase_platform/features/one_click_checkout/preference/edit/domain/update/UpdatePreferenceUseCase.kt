@@ -2,6 +2,8 @@ package com.tokopedia.purchase_platform.features.one_click_checkout.preference.e
 
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.purchase_platform.features.one_click_checkout.common.DEFAULT_ERROR_MESSAGE
+import com.tokopedia.purchase_platform.features.one_click_checkout.common.STATUS_OK
 import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.domain.update.model.UpdatePreferenceGqlResponse
 import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.domain.update.model.UpdatePreferenceRequest
 import javax.inject.Inject
@@ -13,18 +15,14 @@ class UpdatePreferenceUseCase @Inject constructor(private val graphqlUseCase: Gr
         graphqlUseCase.setRequestParams(mapOf(PARAM_KEY to param))
         graphqlUseCase.setTypeClass(UpdatePreferenceGqlResponse::class.java)
         graphqlUseCase.execute({ response: UpdatePreferenceGqlResponse ->
-            if (response.response.status.equals("OK", true)) {
-                if (response.response.data.success == 1) {
-                    onSuccess(response)
-                } else if (response.response.data.messages.isNotEmpty()) {
-                    onError(MessageErrorException(response.response.data.messages[0]))
-                } else {
-                    onError(MessageErrorException("Terjadi kesalahan pada server. Ulangi beberapa saat lagi"))
-                }
+            if (response.response.status.equals(STATUS_OK, true) && response.response.data.success == 1) {
+                onSuccess(response)
+            } else if (response.response.data.messages.isNotEmpty()) {
+                onError(MessageErrorException(response.response.data.messages[0]))
             } else if (response.response.errorMessage.isNotEmpty()) {
                 onError(MessageErrorException(response.response.errorMessage[0]))
             } else {
-                onError(MessageErrorException("Terjadi kesalahan pada server. Ulangi beberapa saat lagi"))
+                onError(MessageErrorException(DEFAULT_ERROR_MESSAGE))
             }
         }, { throwable: Throwable ->
             onError(throwable)
