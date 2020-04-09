@@ -47,7 +47,6 @@ import com.tokopedia.product.addedit.description.presentation.model.ProductVaria
 import com.tokopedia.product.addedit.detail.di.AddEditProductDetailComponent
 import com.tokopedia.product.addedit.detail.presentation.adapter.NameRecommendationAdapter
 import com.tokopedia.product.addedit.detail.presentation.adapter.WholeSalePriceInputAdapter
-import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.CATEGORY_RESULT_ID
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.CATEGORY_RESULT_NAME
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.CONDITION_NEW
@@ -193,7 +192,6 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         arguments?.getParcelable<ProductInputModel>(EXTRA_PRODUCT_INPUT_MODEL)?.run {
             viewModel.productInputModel = this
             viewModel.detailInputModel = this.detailInputModel
-            viewModel.selectedCategoryId = this.detailInputModel.categoryId
             viewModel.productPhotoPaths = this.detailInputModel.imageUrlOrPathList.toMutableList()
             viewModel.hasVariants = this.variantInputModel.productVariant.isNotEmpty()
         }
@@ -708,11 +706,11 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
 
     private fun inputAllDataInProductInputModel() {
         viewModel.productInputModel.detailInputModel.productName = productNameField.getText()
-        viewModel.productInputModel.detailInputModel.categoryId = viewModel.selectedCategoryId
+        viewModel.productInputModel.detailInputModel.categoryId = viewModel.productInputModel.detailInputModel.categoryId
         viewModel.productInputModel.detailInputModel.price = productPriceField.getTextBigIntegerOrZero()
         viewModel.productInputModel.detailInputModel.stock = productStockField.getTextIntOrZero()
         viewModel.productInputModel.detailInputModel.minOrder = productMinOrderField.getTextIntOrZero()
-        viewModel.productInputModel.detailInputModel.condition = if (isProductConditionNew) AddEditProductDetailConstants.CONDITION_NEW else AddEditProductDetailConstants.CONDITION_USED
+        viewModel.productInputModel.detailInputModel.condition = if (isProductConditionNew) CONDITION_NEW else CONDITION_USED
         viewModel.productInputModel.detailInputModel.sku = productSkuField.getText()
         viewModel.productInputModel.detailInputModel.imageUrlOrPathList = viewModel.productPhotoPaths
         viewModel.productInputModel.detailInputModel.preorder.apply {
@@ -1023,7 +1021,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         } else {
             ProductAddMainTracking.clickContinue(shopId)
         }
-        val categoryId = viewModel.selectedCategoryId
+        val categoryId = viewModel.productInputModel.detailInputModel.categoryId
         inputAllDataInProductInputModel()
         val intent = AddEditProductDescriptionActivity.createInstance(context, categoryId, viewModel.productInputModel)
         startActivityForResult(intent, REQUEST_CODE_DESCRIPTION)
@@ -1099,7 +1097,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     }
 
     private fun onCategoryRecommendationSelected(categoryId: String) {
-        viewModel.selectedCategoryId = categoryId
+        viewModel.productInputModel.detailInputModel.categoryId = categoryId
         ProductAddMainTracking.clickProductCategoryRecom(shopId)
     }
 
@@ -1108,8 +1106,8 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                             variantInputModel: ProductVariantInputModel) {
         val detailInputModel = DetailInputModel(
                 productNameField.getText(),
-                viewModel.selectedCategoryName,
-                viewModel.selectedCategoryId,
+                viewModel.productInputModel.detailInputModel.categoryName,
+                viewModel.productInputModel.detailInputModel.categoryId,
                 "",
                 productPriceField.getTextBigIntegerOrZero(),
                 productStockField.getTextIntOrZero(),
@@ -1138,7 +1136,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         val detailInputModel = viewModel.detailInputModel
         detailInputModel.apply {
             productName = productNameField.getText()
-            categoryId = viewModel.selectedCategoryId
+            categoryId = viewModel.productInputModel.detailInputModel.categoryId
             price = productPriceField.getTextBigIntegerOrZero()
             stock = productStockField.getTextIntOrZero()
             minOrder = productMinOrderField.getTextIntOrZero()
