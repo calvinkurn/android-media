@@ -441,6 +441,8 @@ public interface ConstantTransactionAnalytics {
         String VIEW_ONBOARDING_INFO = "view onboarding info";
         String VIEW_BOTTOMSHEET_PROMO_ERROR = "view bottom sheet promo error";
         String VIEW_PROMO_ALREADY_APPLIED = "view promo already applied in order summary list";
+        String VIEW_PROMO_RELEASED = "view promo released after adjust item";
+        String VIEW_PROMO_DECREASED = "view promo decreased after adjust item";
 
     }
 

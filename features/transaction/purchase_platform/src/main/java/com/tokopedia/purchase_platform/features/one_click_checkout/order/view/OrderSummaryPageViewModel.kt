@@ -1286,9 +1286,32 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                                 orderTotal.value = orderTotal.value?.copy(buttonState = ButtonBayarState.DISABLE)
                             }
 
-                            override fun onNext(t: ValidateUsePromoRevampUiModel) {
-                                validateUsePromoRevampUiModel = t
-                                updatePromoState(t.promoUiModel)
+                            override fun onNext(result: ValidateUsePromoRevampUiModel) {
+                                var isPromoDecreased = false
+                                var isPromoReleased = false
+                                val lastResult = validateUsePromoRevampUiModel
+                                if (lastResult != null && lastResult.promoUiModel.codes.isNotEmpty() && result.promoUiModel.codes.isNotEmpty() && result.promoUiModel.messageUiModel.state == "red") {
+                                    isPromoReleased = true
+                                }
+                                if (result.promoUiModel.voucherOrderUiModels.isNotEmpty()) {
+                                    for (voucherOrderUiModel in result.promoUiModel.voucherOrderUiModels) {
+                                        if (voucherOrderUiModel?.messageUiModel?.state == "red") {
+                                            isPromoReleased = true
+                                            break
+                                        }
+                                    }
+                                }
+                                if (isPromoReleased) {
+                                    orderSummaryAnalytics.eventViewPromoDecreasedOrReleased(true)
+                                }
+                                if (lastResult != null && result.promoUiModel.benefitSummaryInfoUiModel.finalBenefitAmount < lastResult.promoUiModel.benefitSummaryInfoUiModel.finalBenefitAmount) {
+                                    isPromoDecreased = true
+                                }
+                                if (isPromoDecreased) {
+                                    orderSummaryAnalytics.eventViewPromoDecreasedOrReleased(false)
+                                }
+                                validateUsePromoRevampUiModel = result
+                                updatePromoState(result.promoUiModel)
                                 orderTotal.value = orderTotal.value?.copy(buttonState = if (_orderPreference?.shipping?.serviceErrorMessage.isNullOrEmpty() && orderShop.errors.isEmpty() && !orderProduct.quantity.isStateError) ButtonBayarState.NORMAL else ButtonBayarState.DISABLE)
                             }
 

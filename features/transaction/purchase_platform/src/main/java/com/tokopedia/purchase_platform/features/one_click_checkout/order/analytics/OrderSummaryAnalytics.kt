@@ -24,7 +24,7 @@ class OrderSummaryAnalytics : TransactionAnalytics() {
         )
     }
 
-    fun eventClickSellerNotes(productId: String, shopId: String){
+    fun eventClickSellerNotes(productId: String, shopId: String) {
         sendEventCategoryActionLabel(
                 EventName.CLICK_CHECKOUT_EXPRESS,
                 EventCategory.ORDER_SUMMARY,
@@ -168,7 +168,7 @@ class OrderSummaryAnalytics : TransactionAnalytics() {
         val dataLayer = DataLayer.mapOf(
                 Key.EVENT, EventName.CHECKOUT,
                 Key.EVENT_CATEGORY, EventCategory.ORDER_SUMMARY,
-                Key.EVENT_ACTION, if(isButtonPilihPembayaran) EventAction.CLICK_PILIH_PEMBAYARAN else EventAction.CLICK_BAYAR,
+                Key.EVENT_ACTION, if (isButtonPilihPembayaran) EventAction.CLICK_PILIH_PEMBAYARAN else EventAction.CLICK_BAYAR,
                 Key.EVENT_LABEL, "success",
                 Key.E_COMMERCE, ee
         )
@@ -238,6 +238,14 @@ class OrderSummaryAnalytics : TransactionAnalytics() {
                 EventName.VIEW_CHECKOUT_EXPRESS_IRIS,
                 EventCategory.ORDER_SUMMARY,
                 EventAction.VIEW_PROMO_ALREADY_APPLIED
+        )
+    }
+
+    fun eventViewPromoDecreasedOrReleased(isReleased: Boolean) {
+        sendEventCategoryAction(
+                EventName.VIEW_CHECKOUT_EXPRESS_IRIS,
+                EventCategory.ORDER_SUMMARY,
+                if (isReleased) EventAction.VIEW_PROMO_RELEASED else EventAction.VIEW_PROMO_DECREASED
         )
     }
 
