@@ -13,5 +13,6 @@ data class AddToCartOccResponse(
         val status: String = "",
 
         @SerializedName("data")
+        @Expose
         val data: DataOccResponse = DataOccResponse()
 )

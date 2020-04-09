@@ -21,6 +21,7 @@ import com.tokopedia.purchase_platform.features.one_click_checkout.preference.ed
 import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.view.summary.PreferenceSummaryFragment
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_payment_method.*
 import rx.subscriptions.CompositeSubscription
 import javax.inject.Inject
@@ -42,6 +43,9 @@ class PaymentMethodFragment : BaseDaggerFragment() {
 
     @Inject
     lateinit var preferenceListAnalytics: PreferenceListAnalytics
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     private val compositeSubscription = CompositeSubscription()
 
@@ -91,7 +95,6 @@ class PaymentMethodFragment : BaseDaggerFragment() {
             webSettings.mediaPlaybackRequiresUserGesture = false
         }
 
-        val userSession = UserSession(context)
         var addressId = ""
         val parent = activity
         if (parent is PreferenceEditActivity) {

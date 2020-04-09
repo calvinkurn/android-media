@@ -1,5 +1,7 @@
 package com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.di
 
+import android.content.Context
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.graphql.coroutines.data.Interactor
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -14,6 +16,8 @@ import com.tokopedia.purchase_platform.features.one_click_checkout.preference.ed
 import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.domain.get.model.GetPreferenceByIdGqlResponse
 import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.domain.update.UpdatePreferenceUseCase
 import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.domain.update.model.UpdatePreferenceGqlResponse
+import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
@@ -95,7 +99,13 @@ class PreferenceEditModule {
 
     @PreferenceEditScope
     @Provides
-    internal fun providePreferenceListAnalytics(): PreferenceListAnalytics {
+    fun providePreferenceListAnalytics(): PreferenceListAnalytics {
         return PreferenceListAnalytics()
+    }
+
+    @PreferenceEditScope
+    @Provides
+    fun provideUserSession(@ApplicationContext context: Context): UserSessionInterface {
+        return UserSession(context)
     }
 }

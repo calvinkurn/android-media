@@ -47,6 +47,7 @@ class PreferenceListFragment : BaseDaggerFragment(), PreferenceListAdapter.Prefe
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
     @Inject
     lateinit var preferencelistAnalytics: PreferenceListAnalytics
 
@@ -58,17 +59,17 @@ class PreferenceListFragment : BaseDaggerFragment(), PreferenceListAdapter.Prefe
 
     private var progressDialog: AlertDialog? = null
     private val swipeRefreshLayout by lazy { view?.findViewById<SwipeRefreshLayout>(R.id.swipe_refresh_layout) }
-    private val mainContent  by lazy { view?.findViewById<ConstraintLayout>(R.id.main_content) }
-    private val preferenceList  by lazy { view?.findViewById<RecyclerView>(R.id.rv_preference_list) }
+    private val mainContent by lazy { view?.findViewById<ConstraintLayout>(R.id.main_content) }
+    private val preferenceList by lazy { view?.findViewById<RecyclerView>(R.id.rv_preference_list) }
     private val progressBar by lazy { view?.findViewById<ProgressBar>(R.id.progress_bar) }
-    private val buttonPreferenceListAction  by lazy { view?.findViewById<UnifyButton>(R.id.btn_preference_list_action) }
+    private val buttonPreferenceListAction by lazy { view?.findViewById<UnifyButton>(R.id.btn_preference_list_action) }
 
-    private val ivEmptyState  by lazy { view?.findViewById<ImageView>(R.id.iv_empty) }
-    private val tvHeaderEmptyState  by lazy { view?.findViewById<Typography>(R.id.tv_header_empty) }
-    private val tvSubtitleEmptyState  by lazy { view?.findViewById<Typography>(R.id.tv_subtitle_empty) }
-    private val emptyStateGroup  by lazy { view?.findViewById<Group>(R.id.group_empty_state) }
+    private val ivEmptyState by lazy { view?.findViewById<ImageView>(R.id.iv_empty) }
+    private val tvHeaderEmptyState by lazy { view?.findViewById<Typography>(R.id.tv_header_empty) }
+    private val tvSubtitleEmptyState by lazy { view?.findViewById<Typography>(R.id.tv_subtitle_empty) }
+    private val emptyStateGroup by lazy { view?.findViewById<Group>(R.id.group_empty_state) }
 
-    private val globalError  by lazy { view?.findViewById<GlobalError>(R.id.global_error) }
+    private val globalError by lazy { view?.findViewById<GlobalError>(R.id.global_error) }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -173,13 +174,15 @@ class PreferenceListFragment : BaseDaggerFragment(), PreferenceListAdapter.Prefe
                     }
                 }
                 else -> {
-                    if (progressDialog == null) {
-                        progressDialog = AlertDialog.Builder(context!!)
-                                .setView(R.layout.purchase_platform_progress_dialog_view)
-                                .setCancelable(false)
-                                .create()
+                    context?.let { ctx ->
+                        if (progressDialog == null) {
+                            progressDialog = AlertDialog.Builder(ctx)
+                                    .setView(R.layout.purchase_platform_progress_dialog_view)
+                                    .setCancelable(false)
+                                    .create()
+                        }
+                        progressDialog?.show()
                     }
-                    progressDialog?.show()
                 }
             }
         })
@@ -251,13 +254,9 @@ class PreferenceListFragment : BaseDaggerFragment(), PreferenceListAdapter.Prefe
     }
 
     override fun onPreferenceEditClicked(preference: ProfilesItemModel, position: Int, profileSize: Int) {
-        var showDelete = true
-        if (profileSize > 1) showDelete
-        else showDelete = false
         preferencelistAnalytics.eventClickSettingPreferenceGearInPreferenceListPage()
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PREFERENCE_EDIT)
-        intent.apply {
-            putExtra(PreferenceEditActivity.EXTRA_SHOW_DELETE_BUTTON, showDelete)
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PREFERENCE_EDIT).apply {
+            putExtra(PreferenceEditActivity.EXTRA_SHOW_DELETE_BUTTON, profileSize > 1)
             putExtra(PreferenceEditActivity.EXTRA_PREFERENCE_INDEX, getString(R.string.lbl_summary_preference_option) + " " + position)
             putExtra(PreferenceEditActivity.EXTRA_PROFILE_ID, preference.profileId)
             putExtra(PreferenceEditActivity.EXTRA_ADDRESS_ID, preference.addressModel?.addressId)

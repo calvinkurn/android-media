@@ -182,7 +182,7 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
         presenter.proccessUriPayment();
 
         String message = getIntent().getStringExtra(EXTRA_PARAMETER_TOP_PAY_TOASTER_MESSAGE);
-        if (message != null && !message.isEmpty()) {
+        if (!TextUtils.isEmpty(message)) {
             Toaster.INSTANCE.make(scroogeWebView, message, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL, "", v -> {});
         }
     }

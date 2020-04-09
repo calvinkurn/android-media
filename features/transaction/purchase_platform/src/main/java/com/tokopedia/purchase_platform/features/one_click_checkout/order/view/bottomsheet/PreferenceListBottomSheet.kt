@@ -16,7 +16,7 @@ import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.Or
 import com.tokopedia.purchase_platform.features.one_click_checkout.preference.list.view.PreferenceListAdapter
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.UnifyButton
-import kotlinx.android.synthetic.main.bottom_sheet_preference_list.view.*
+import timber.log.Timber
 import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
@@ -42,7 +42,7 @@ class PreferenceListBottomSheet(
         getPreferenceListUseCase.execute({ preferenceListResponseModel: PreferenceListResponseModel ->
             updateList(preferenceListResponseModel)
         }, { throwable: Throwable ->
-            throwable.printStackTrace()
+            Timber.d(throwable)
             handleError(throwable)
         })
     }
