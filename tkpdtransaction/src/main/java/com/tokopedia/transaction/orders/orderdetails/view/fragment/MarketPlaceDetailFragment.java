@@ -584,15 +584,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                 });
             } else {
                 if (!TextUtils.isEmpty(actionButton.getUri())) {
-                    textView.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            clickActionButton(actionButton);
-                            if (actionButton.getKey().equalsIgnoreCase(KEY_TULIS_REVIEW)) {
-                                orderListAnalytics.sendTulisReviewEventData(status.status());
-                            }
-                        }
-                    });
+                    textView.setOnClickListener(clickActionButton(actionButton));
                 }
             }
             actionBtnLayout.addView(textView);
@@ -650,7 +642,6 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
         refreshHandler.startRefresh();
 //        presenter.setOrderDetailsContent((String) getArguments().get(KEY_ORDER_ID), (String) getArguments().get(KEY_ORDER_CATEGORY), getArguments().getString(KEY_FROM_PAYMENT));
     }
-
 
     private View.OnClickListener clickActionButton(ActionButton actionButton) {
         if (!TextUtils.isEmpty(actionButton.getKey())) {
@@ -756,6 +747,9 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                     RouteManager.route(getContext(), actionButton.getUri());
                 } else if (actionButton.getKey().equalsIgnoreCase(SIMILAR_PRODUCTS_ACTION_BUTTON_KEY)) {
                     orderListAnalytics.sendActionButtonClickEvent(CLICK_LIHAT_PRODUK_SERUPA_LEVEL_ORDER, presenter.getFirstProductId());
+                    RouteManager.route(getContext(), actionButton.getUri());
+                } else if (actionButton.getKey().equalsIgnoreCase(KEY_TULIS_REVIEW)) {
+                    orderListAnalytics.sendTulisReviewEventData(status.status());
                     RouteManager.route(getContext(), actionButton.getUri());
                 } else if (!TextUtils.isEmpty(actionButton.getUri())) {
                     Intent intent = new Intent(getContext(), RequestCancelActivity.class);
