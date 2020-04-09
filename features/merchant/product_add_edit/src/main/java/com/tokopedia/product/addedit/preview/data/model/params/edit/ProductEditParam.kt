@@ -5,6 +5,7 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.product.addedit.preview.data.model.params.add.*
 import kotlinx.android.parcel.Parcelize
+import java.math.BigInteger
 
 @Parcelize
 data class ProductEditParam (
@@ -16,7 +17,7 @@ data class ProductEditParam (
         var productName: String? = null,
         @SerializedName("price")
         @Expose
-        var price: Long? = null,
+        var price: BigInteger? = null,
         @SerializedName("priceCurrency")
         @Expose
         var priceCurrency: String? = null,

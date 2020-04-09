@@ -5,6 +5,7 @@ import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProduct
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.DEFAULT_MIN_ORDER_VALUE
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.DEFAULT_STOCK_VALUE
 import kotlinx.android.parcel.Parcelize
+import java.math.BigInteger
 
 /**
  * Created by faisalramd on 2020-03-22.
@@ -16,7 +17,7 @@ data class DetailInputModel(
         var categoryName: String = "",
         var categoryId: String = "",
         var catalogId: String = "",
-        var price: Long = 0L,
+        var price: BigInteger = 0.toBigInteger(),
         var stock: Int = DEFAULT_STOCK_VALUE,
         var minOrder: Int = DEFAULT_MIN_ORDER_VALUE,
         var condition: String = CONDITION_NEW,
