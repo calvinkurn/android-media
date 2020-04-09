@@ -136,4 +136,12 @@ class ResourceProvider @Inject constructor(@ApplicationContext val context: Cont
     fun getVariantAddedMessage(): String? {
         return getString(R.string.label_variant_subtitle_added) + "\n"
     }
+
+    fun getVariantButtonEmptyMessage(): String? {
+        return getString(R.string.label_add_variant)
+    }
+
+    fun getVariantButtonAddedMessage(): String? {
+        return getString(R.string.label_edit_variant)
+    }
 }

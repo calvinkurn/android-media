@@ -195,6 +195,13 @@ class AddEditProductDescriptionViewModel @Inject constructor(
         } else {
             resource.getVariantEmptyMessage() ?: ""
         }
+    }
 
+    fun getVariantButtonMessage(): String {
+        return if (variantNameList[0].isNotEmpty()) {
+            resource.getVariantButtonAddedMessage()
+        } else {
+            resource.getVariantButtonEmptyMessage()
+        } ?: ""
     }
 }

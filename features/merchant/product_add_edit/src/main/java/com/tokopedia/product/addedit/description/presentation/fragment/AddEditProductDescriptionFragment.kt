@@ -359,6 +359,7 @@ class AddEditProductDescriptionFragment:
                                 object : TypeToken<ProductVariantInputModel>() {}.type) ?: ProductVariantInputModel()
                         descriptionViewModel.setVariantInput(productVariantViewModel.productVariant, productVariantViewModel.variantOptionParent)
                         tvVariantHeaderSubtitle.text = descriptionViewModel.getVariantSelectedMessage()
+                        tvAddVariant.text = descriptionViewModel.getVariantButtonMessage()
                     }
                     if (data.hasExtra(EXTRA_PRODUCT_SIZECHART)) {
                         val productPictureViewModel = cacheManager.get(EXTRA_PRODUCT_SIZECHART,
