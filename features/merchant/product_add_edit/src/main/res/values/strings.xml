@@ -164,6 +164,10 @@
     <string name="product_name_is_more_than_seventy_character">Nama Produk lebih dari 70 karakter</string>
     <string name="product_name_should_be_not_empty">Nama produk tidak boleh kosong</string>
 
+    <!--Product Add Validation-->
+    <string name="error_invalid_category_id">Kategori tidak valid</string>
+    <string name="error_invalid_photo_count">Produk tidak memiliki foto</string>
+    <string name="error_invalid_name">Nama produk tidak valid</string>
 
     <!-- id -->
     <item name="name" type="id" />

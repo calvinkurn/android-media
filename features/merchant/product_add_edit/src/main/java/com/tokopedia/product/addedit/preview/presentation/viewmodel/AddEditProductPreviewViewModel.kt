@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.product.addedit.common.util.ResourceProvider
 import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
 import com.tokopedia.product.addedit.description.data.remote.model.variantbycat.ProductVariantByCatModel
 import com.tokopedia.product.addedit.description.domain.usecase.GetProductVariantUseCase
@@ -28,6 +29,7 @@ class AddEditProductPreviewViewModel @Inject constructor(
         private val getProductUseCase: GetProductUseCase,
         private val getProductMapper: GetProductMapper,
         private val getProductVariantUseCase: GetProductVariantUseCase,
+        private val resourceProvider: ResourceProvider,
         dispatcher: CoroutineDispatcher
 ) : BaseViewModel(dispatcher) {
 
@@ -146,5 +148,25 @@ class AddEditProductPreviewViewModel @Inject constructor(
         }, onError = {
             mProductVariantList.value = Fail(it)
         })
+    }
+
+    fun validateProductInput(detailInputModel: DetailInputModel): String {
+        var errorMessage = ""
+        // validate category input
+        if (detailInputModel.categoryId.isEmpty() || detailInputModel.categoryId == "0")  {
+            errorMessage += resourceProvider.getInvalidCategoryIdErrorMessage() + "\n"
+        }
+
+        // validate product name input
+        if (detailInputModel.productName.isEmpty())  {
+            errorMessage += resourceProvider.getInvalidNameErrorMessage() + "\n"
+        }
+
+        // validate images input
+        if (detailInputModel.imageUrlOrPathList.isEmpty())  {
+            errorMessage += resourceProvider.getInvalidPhotoCountErrorMessage()
+        }
+
+        return errorMessage
     }
 }

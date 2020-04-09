@@ -144,4 +144,18 @@ class ResourceProvider @Inject constructor(@ApplicationContext val context: Cont
     fun getVariantButtonAddedMessage(): String? {
         return getString(R.string.label_edit_variant)
     }
+
+    // product add validation string properties
+    fun getInvalidCategoryIdErrorMessage(): String? {
+        return getString(R.string.error_invalid_category_id)
+    }
+
+    fun getInvalidPhotoCountErrorMessage(): String? {
+        return getString(R.string.error_invalid_photo_count)
+    }
+
+    fun getInvalidNameErrorMessage(): String? {
+        return getString(R.string.error_invalid_name)
+    }
+
 }

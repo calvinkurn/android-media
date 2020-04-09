@@ -356,8 +356,15 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
                     val variantInputModel =
                             data.getParcelableExtra<ProductVariantInputModel>(EXTRA_VARIANT_INPUT)
                     context?.let {
-                        AddEditProductAddService.startService(it, detailInputModel,
-                                descriptionInputModel, shipmentInputModel, variantInputModel)
+                        val validateMessage = viewModel.validateProductInput(detailInputModel)
+                        if (validateMessage.isEmpty()) {
+                            AddEditProductAddService.startService(it, detailInputModel,
+                                    descriptionInputModel, shipmentInputModel, variantInputModel)
+                        } else {
+                            view?.let {
+                                Toaster.make(it, validateMessage, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR)
+                            }
+                        }
                     }
                 }
                 REQUEST_CODE_DETAIL_EDIT -> {
