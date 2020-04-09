@@ -316,7 +316,7 @@ class OfficialStoreTracking(context: Context) {
                 EVENT_CATEGORY, "os microsite - $categoryName",
                 EVENT_ACTION, "flash sale - product click",
                 EVENT_LABEL, "click product picture - $headerName",
-                CAMPAIGN_CODE, "$campaignId",
+                CAMPAIGN_CODE, campaignId.toString(),
                 ECOMMERCE, ecommerceBody
         ))
     }
@@ -377,7 +377,7 @@ class OfficialStoreTracking(context: Context) {
                 AFFINITY_LABEL, channelData.persona,
                 CATEGORY_ID, channelData.categoryPersona,
                 SHOP_ID, channelData.brandId,
-                CAMPAIGN_CODE, "${channelData.campaignID}",
+                CAMPAIGN_CODE, channelData.campaignID.toString(),
                 ECOMMERCE, ecommerceBody
         ))
     }
