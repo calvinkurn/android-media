@@ -60,6 +60,8 @@ import com.tokopedia.updateinactivephone.applink.ChangeInactivePhoneApplinkModul
 import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.useridentification.applink.UserIdentificationApplinkModule;
 import com.tokopedia.useridentification.applink.UserIdentificationApplinkModuleLoader;
+import com.tokopedia.webview.WebViewApplinkModule;
+import com.tokopedia.webview.WebViewApplinkModuleLoader;
 
 import static com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.OPEN_SHOP;
 
@@ -88,6 +90,7 @@ import static com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.OPE
         UserIdentificationApplinkModule.class,
         AutoAdsLinkModule.class,
         FlashsaleDeeplinkModule.class,
+        WebViewApplinkModule.class,
         RNDevOptionsApplinkModule.class
 })
 /* **
@@ -120,6 +123,7 @@ public class DeepLinkHandlerActivity extends AppCompatActivity {
                 new UserIdentificationApplinkModuleLoader(),
                 new AutoAdsLinkModuleLoader(),
                 new FlashsaleDeeplinkModuleLoader(),
+                new WebViewApplinkModuleLoader(),
                 new RNDevOptionsApplinkModuleLoader()
         );
     }

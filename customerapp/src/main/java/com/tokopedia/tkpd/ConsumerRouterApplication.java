@@ -198,7 +198,6 @@ import com.tokopedia.tkpd.utils.FingerprintModelGenerator;
 import com.tokopedia.tkpdreactnative.react.ReactUtils;
 import com.tokopedia.tkpdreactnative.react.di.ReactNativeModule;
 import com.tokopedia.tkpdreactnative.router.ReactNativeRouter;
-import com.tokopedia.topads.common.TopAdsWebViewRouter;
 import com.tokopedia.topads.sdk.base.TopAdsRouter;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.transaction.common.TransactionRouter;
@@ -261,7 +260,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         GlobalNavRouter,
         AccountHomeRouter,
         OmsModuleRouter,
-        TopAdsWebViewRouter,
         EventModuleRouter,
         DigitalBrowseRouter,
         PhoneVerificationRouter,
