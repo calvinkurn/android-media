@@ -119,7 +119,7 @@
     <string name="label_variant_subtitle_added">Kamu sudah menambahkan varian</string>
     <string name="label_add_variant">Tambah varian</string>
     <string name="label_edit_variant">Ubah varian</string>
-    <string name="label_add_product_variant_tips">Tips buat deskripsi produk yang jelas</string>
+    <string name="label_add_product_variant_tips">Tips atur stok &amp; harga dengan fitur Varian</string>
     <string name="label_video_title">Video</string>
     <string name="label_video_subtitle">Tambah video agar pembeli lebih paham tentang produkmu</string>
     <string name="label_video_url_placeholder">Link Video</string>

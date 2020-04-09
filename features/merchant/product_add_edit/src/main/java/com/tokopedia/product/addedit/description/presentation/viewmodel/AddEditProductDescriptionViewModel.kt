@@ -114,13 +114,6 @@ class AddEditProductDescriptionViewModel @Inject constructor(
         return videoLinks.isEmpty()
     }
 
-    companion object {
-        const val KEY_YOUTUBE_VIDEO_ID = "v"
-        const val WEB_PREFIX_HTTP = "http://"
-        const val WEB_PREFIX_HTTPS = "https://"
-        const val WEB_YOUTUBE_PREFIX = "https://"
-    }
-
     fun saveProductDraft(productDraft: ProductDraft, productId: Long, isUploading: Boolean) {
         launchCatchError(block = {
             saveProductDraftUseCase.params = SaveProductDraftUseCase.createRequestParams(productDraft, productId, isUploading)
@@ -239,5 +232,12 @@ class AddEditProductDescriptionViewModel @Inject constructor(
         } else {
             resource.getVariantButtonEmptyMessage()
         } ?: ""
+    }
+
+    companion object {
+        const val KEY_YOUTUBE_VIDEO_ID = "v"
+        const val WEB_PREFIX_HTTP = "http://"
+        const val WEB_PREFIX_HTTPS = "https://"
+        const val WEB_YOUTUBE_PREFIX = "https://"
     }
 }
