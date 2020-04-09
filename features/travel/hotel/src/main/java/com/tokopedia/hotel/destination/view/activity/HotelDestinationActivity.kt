@@ -53,7 +53,7 @@ class HotelDestinationActivity : HotelBaseActivity(), HasComponent<HotelDestinat
         initEditText()
     }
 
-    fun initEditText() {
+    private fun initEditText() {
         search_input_view.searchImageView.setImageDrawable(resources.getDrawable(com.tokopedia.resources.common.R.drawable.ic_system_action_search_grayscale_24))
         search_input_view.closeImageButton.setImageDrawable(resources.getDrawable(com.tokopedia.resources.common.R.drawable.ic_system_action_close_grayscale_16))
         search_input_view.setListener(this)
@@ -64,12 +64,12 @@ class HotelDestinationActivity : HotelBaseActivity(), HasComponent<HotelDestinat
         component.inject(this)
     }
 
-    fun showSearchDestinationResult() {
+    private fun showSearchDestinationResult() {
         supportFragmentManager.beginTransaction().replace(R.id.parent_view,
                 HotelSearchDestinationFragment(), SEARCH_DESTINATION_FRAGMENT_TAG).addToBackStack(null).commit()
     }
 
-    fun backToHotelRecommendation() {
+    private fun backToHotelRecommendation() {
         if (supportFragmentManager.backStackEntryCount > 0) supportFragmentManager.popBackStack()
     }
 
@@ -85,10 +85,10 @@ class HotelDestinationActivity : HotelBaseActivity(), HasComponent<HotelDestinat
         onTextChangedJob = CoroutineScope(Dispatchers.Main).launch {
             delay(500)
             if (text != searchTemp) return@launch
-            if (text.isEmpty() && isSearching) {
+            if (text.length <= 2 && isSearching) {
                 isSearching = false
                 backToHotelRecommendation()
-            } else if (text.isNotEmpty() && !isSearching) {
+            } else if (text.isNotEmpty() && text.length == 2 && !isSearching) {
                 isSearching = true
                 showSearchDestinationResult()
             } else if (isSearching) {
@@ -103,7 +103,7 @@ class HotelDestinationActivity : HotelBaseActivity(), HasComponent<HotelDestinat
         onTextChangedJob?.cancel()
     }
 
-    fun doSearch(text: String) {
+    private fun doSearch(text: String) {
         if (supportFragmentManager.findFragmentById(R.id.parent_view) is HotelSearchDestinationFragment)
             (supportFragmentManager.findFragmentById(R.id.parent_view) as HotelSearchDestinationFragment).onSearchQueryChange(text)
     }
@@ -119,7 +119,7 @@ class HotelDestinationActivity : HotelBaseActivity(), HasComponent<HotelDestinat
     }
 
     companion object {
-        val SEARCH_DESTINATION_FRAGMENT_TAG = "SEARCH_DESTINATION"
+        const val SEARCH_DESTINATION_FRAGMENT_TAG = "SEARCH_DESTINATION"
 
         const val HOTEL_DESTINATION_ID = "destinationID"
         const val HOTEL_DESTINATION_NAME = "name"
