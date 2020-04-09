@@ -66,7 +66,7 @@ class ShopHomeSliderBannerViewHolder(
             indicatorPosition = CarouselUnify.INDICATOR_BL
             infinite = true
             onActiveIndexChangedListener = this@ShopHomeSliderBannerViewHolder
-            indicatorWrapper.setMargin(0, 8.toPx(), 0, 0)
+            indicatorWrapper.setMargin(0, 4.toPx(), 0, 0)
         }
     }
 
