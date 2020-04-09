@@ -23,6 +23,7 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.empty_state.EmptyStateUnify
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.observe
@@ -303,12 +304,12 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
          */
         emptyStateProduct?.setPrimaryCTAClickListener {
             tracking.addShowcaseClickAddProduct(shopId, shopType)
-            goToChooseProduct()
+            showChooseProductConfirmDialog()
         }
 
         chooseProductText?.setOnClickListener {
             tracking.addShowcaseClickChooseProductText(shopId, shopType, isActionEdit)
-            goToChooseProduct()
+            showChooseProductConfirmDialog()
         }
 
     }
@@ -353,6 +354,34 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
         intent.putExtra(ShopShowcaseEditParam.EXTRA_IS_ACTION_EDIT, isActionEdit)
         intent.putExtra(ShopShowcaseEditParam.EXTRA_SHOWCASE_ID, showcaseId)
         startActivityForResult(intent, START_PRODUCT_SHOWCASE_ACTIVITY)
+    }
+
+    private fun showChooseProductConfirmDialog() {
+        activity?.also {
+            val deletedProductSize = showcaseAddAdapter?.getDeletedProductList()?.size
+            deletedProductSize?.let { size ->
+                if(size > 0) {
+                    val confirmDialog = DialogUnify(it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
+                    confirmDialog.apply {
+                        setTitle(getString(R.string.text_confirm_dialog_title))
+                        setDescription(getString(R.string.text_confirm_dialog_description))
+                        setPrimaryCTAText(getString(R.string.text_cancel_button))
+                        setPrimaryCTAClickListener {
+                            this.dismiss()
+                        }
+                        setSecondaryCTAText(getString(R.string.text_agree_button))
+                        setSecondaryCTAClickListener {
+                            this.dismiss()
+                            showcaseAddAdapter?.undoDeleteSelectedProduct()
+                            goToChooseProduct()
+                        }
+                        show()
+                    }
+                } else {
+                    goToChooseProduct()
+                }
+            }
+        }
     }
 
     private fun showSelectedProductList() {

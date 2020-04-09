@@ -46,16 +46,16 @@
                 android:id="@+id/textfield_showcase_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:text_field_counter="128"
-                app:text_field_label_static="true"
-                app:text_field_label="@string/etalase_name_label"
-                app:text_field_message="@string/showcase_name_hint"
-                app:text_field_input_type="text"
-                app:layout_constraintTop_toBottomOf="@+id/tv_add_showcase_title"
+                android:layout_marginTop="@dimen/dp_16"
                 android:paddingLeft="@dimen/dp_16"
                 android:paddingRight="@dimen/dp_16"
-                android:layout_marginTop="@dimen/dp_16"
-                />
+                app:layout_constraintTop_toBottomOf="@+id/tv_add_showcase_title"
+                app:text_field_counter="128"
+                app:text_field_input_type="text"
+                app:text_field_label="@string/etalase_name_label"
+                app:text_field_label_static="true"
+                app:text_field_message="@string/showcase_name_hint"
+                tools:layout_editor_absoluteX="0dp" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_showcase_product"
@@ -137,21 +137,15 @@
         tools:visibility="visible"
         />
 
-<!--    <com.tokopedia.unifycomponents.EmptyState-->
-<!--        android:id="@+id/empty_state_product_showcase"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_marginTop="@dimen/dp_50"-->
-<!--        app:layout_constraintBottom_toBottomOf="parent"-->
-<!--        app:layout_constraintTop_toBottomOf="@id/add_showcase_toolbar"-->
-<!--        app:unifyEmptyStateCTAFullWidth="true"-->
-<!--        app:unifyEmptyStateDescription="@string/showcase_empty_subtitle_text"-->
-<!--        app:unifyEmptyStateOrientation="horizontal"-->
-<!--        app:unifyEmptyStatePrimaryCTAText="@string/add_product_text"-->
-<!--        app:unifyEmptyStateTitle="@string/showcase_empty"-->
-<!--        android:visibility="gone"-->
-<!--        app:unifyEmptyStateType="section"-->
-<!--        />-->
+<!--    <com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify-->
+<!--        android:id="@+id/btn_back_to_top"-->
+<!--        app:fbType="back_to_top"-->
+<!--        app:layout_constraintBottom_toTopOf="@id/product_choosen_counter"-->
+<!--        app:layout_constraintRight_toRightOf="parent"-->
+<!--        android:layout_marginRight="@dimen/dp_16"-->
+<!--        android:layout_marginBottom="@dimen/dp_16"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content" />-->
 
     <androidx.cardview.widget.CardView
         android:id="@+id/product_choosen_counter"
@@ -162,6 +156,7 @@
         app:cardCornerRadius="0dp"
         app:cardElevation="@dimen/dp_16"
         app:layout_constraintBottom_toBottomOf="parent"
+        tools:visibility="visible"
         >
 
         <RelativeLayout
@@ -187,8 +182,8 @@
                 android:layout_toEndOf="@id/product_choosen_image"
                 android:layout_marginLeft="@dimen/dp_16"
                 android:layout_marginStart="@dimen/dp_16"
-                app:typographyType="heading_4"
-                android:layout_marginTop="@dimen/dp_10"
+                app:typographyType="heading_5"
+                android:layout_marginTop="@dimen/dp_12"
                 android:textColor="@color/primary_text_color"
                 />
 
@@ -202,8 +197,8 @@
                 android:layout_alignParentEnd="true"
                 android:layout_marginEnd="@dimen/dp_8"
                 android:layout_marginRight="@dimen/dp_8"
-                android:layout_marginTop="@dimen/dp_12"
-                app:typographyType="body_1"
+                android:layout_marginTop="@dimen/dp_14"
+                app:typographyType="body_2"
                 app:typographyWeight="bold"
                 tools:ignore="RelativeOverlap" />
 
