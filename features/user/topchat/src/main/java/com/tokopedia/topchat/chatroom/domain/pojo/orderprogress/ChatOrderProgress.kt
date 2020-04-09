@@ -29,5 +29,15 @@ data class ChatOrderProgress(
         @SerializedName("uri")
         val uri: String = ""
 ) {
-        val hasActionButton: Boolean get() = button.key.isNotEmpty()
+
+    val hasActionButton: Boolean get() = button.key.isNotEmpty()
+
+    fun isNotEmpty(): Boolean = state != stateEmpty
+
+    companion object {
+        const val stateEmpty = "empty"
+        const val stateNew_order = "new_order"
+        const val stateOngoing = "on_going"
+        const val stateFinish = "finish"
+    }
 }
