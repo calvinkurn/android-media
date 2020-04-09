@@ -13,7 +13,6 @@ import com.tokopedia.autocomplete.initialstate.recentsearch.convertRecentSearchT
 import com.tokopedia.autocomplete.initialstate.recentview.ReecentViewTitleViewModel
 import com.tokopedia.autocomplete.initialstate.recentview.convertRecentViewSearchToVisitableList
 import com.tokopedia.user.session.UserSessionInterface
-import retrofit2.Response
 import rx.Subscriber
 import javax.inject.Inject
 
@@ -94,15 +93,15 @@ class InitialStatePresenter @Inject constructor(
         }
     }
 
-    private fun getDeleteRecentSearchSubscriber(keyword: String): Subscriber<Response<Void>> = object : Subscriber<Response<Void>>() {
+    private fun getDeleteRecentSearchSubscriber(keyword: String): Subscriber<Boolean> = object : Subscriber<Boolean>() {
         override fun onCompleted() {}
 
         override fun onError(e: Throwable) {
             e.printStackTrace()
         }
 
-        override fun onNext(response: Response<Void>) {
-            if (response.isSuccessful) {
+        override fun onNext(isSuccessful: Boolean) {
+            if (isSuccessful) {
                 var needDelete = false
                 listVistable.forEachIndexed { _, visitable ->
                     if (visitable is RecentSearchViewModel) {
@@ -133,15 +132,15 @@ class InitialStatePresenter @Inject constructor(
         listVistable.removeAll(recentSearchViewModel)
     }
 
-    private fun getDeleteAllRecentSearchSubscriber(): Subscriber<Response<Void>> = object : Subscriber<Response<Void>>() {
+    private fun getDeleteAllRecentSearchSubscriber(): Subscriber<Boolean> = object : Subscriber<Boolean>() {
         override fun onCompleted() {}
 
         override fun onError(e: Throwable) {
             e.printStackTrace()
         }
 
-        override fun onNext(response: Response<Void>) {
-            if (response.isSuccessful) {
+        override fun onNext(isSuccessful: Boolean) {
+            if (isSuccessful) {
                 removeRecentSearchTitle()
                 removeRecentSearch()
                 view.deleteRecentSearch(listVistable)
