@@ -1163,28 +1163,30 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
     @SuppressLint("MissingPermission", "HardwareIds")
     fun getPhoneNumber() {
         activity?.let {
-            val phoneNumbers = arrayListOf<String>()
+            if(permissionCheckerHelper.hasPermission(it, arrayOf(PermissionCheckerHelper.Companion.PERMISSION_READ_PHONE_STATE))) {
+                val phoneNumbers = arrayListOf<String>()
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                val subscription = it.getSystemService(Context.TELEPHONY_SUBSCRIPTION_SERVICE) as SubscriptionManager
-                if (subscription.activeSubscriptionInfoList != null && subscription.activeSubscriptionInfoCount > 0) {
-                    for (info in subscription.activeSubscriptionInfoList) {
-                        if (!info.number.isNullOrEmpty() &&
-                                PartialRegisterInputUtils.getType(info.number) == PartialRegisterInputUtils.PHONE_TYPE &&
-                                PartialRegisterInputUtils.isValidPhone(info.number))
-                            phoneNumbers.add(info.number)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    val subscription = it.getSystemService(Context.TELEPHONY_SUBSCRIPTION_SERVICE) as SubscriptionManager
+                    if (subscription.activeSubscriptionInfoList != null && subscription.activeSubscriptionInfoCount > 0) {
+                        for (info in subscription.activeSubscriptionInfoList) {
+                            if (!info.number.isNullOrEmpty() &&
+                                    PartialRegisterInputUtils.getType(info.number) == PartialRegisterInputUtils.PHONE_TYPE &&
+                                    PartialRegisterInputUtils.isValidPhone(info.number))
+                                phoneNumbers.add(info.number)
+                        }
                     }
+                } else {
+                    val telephony = it.getSystemService(AppCompatActivity.TELEPHONY_SERVICE) as TelephonyManager
+                    if (!telephony.line1Number.isNullOrEmpty() &&
+                            PartialRegisterInputUtils.getType(telephony.line1Number) == PartialRegisterInputUtils.PHONE_TYPE &&
+                            PartialRegisterInputUtils.isValidPhone(telephony.line1Number))
+                        phoneNumbers.add(telephony.line1Number)
                 }
-            } else {
-                val telephony = it.getSystemService(AppCompatActivity.TELEPHONY_SERVICE) as TelephonyManager
-                if (!telephony.line1Number.isNullOrEmpty() &&
-                        PartialRegisterInputUtils.getType(telephony.line1Number) == PartialRegisterInputUtils.PHONE_TYPE &&
-                        PartialRegisterInputUtils.isValidPhone(telephony.line1Number))
-                    phoneNumbers.add(telephony.line1Number)
-            }
 
-            if (phoneNumbers.isNotEmpty() && activity != null)
-                partialRegisterInputView.setAdapterInputEmailPhone(ArrayAdapter(it, R.layout.select_dialog_item_material, phoneNumbers))
+                if (phoneNumbers.isNotEmpty() && activity != null)
+                    partialRegisterInputView.setAdapterInputEmailPhone(ArrayAdapter(it, R.layout.select_dialog_item_material, phoneNumbers))
+            }
         }
     }
 
