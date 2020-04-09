@@ -29,13 +29,15 @@ class ShopShowcaseAddAdapter(private val context: Context, private var listener:
     }
 
     fun updateSelectedDataSet(newSelectedProductList: ArrayList<ShowcaseProduct>?, isActionEdit: Boolean) {
+        if(!isActionEdit) selectedProductList.clear()
         newSelectedProductList?.let {
             it.map { showcaseProduct ->
                 showcaseProduct.isCloseable = true
                 showcaseProduct.ishighlighted = false
+                if(!selectedProductList.contains(showcaseProduct))
+                    selectedProductList.add(showcaseProduct)
             }
-            if(!isActionEdit) selectedProductList.clear()
-            selectedProductList.addAll(it)
+//            selectedProductList.addAll(it)
         }
         notifyDataSetChanged()
     }

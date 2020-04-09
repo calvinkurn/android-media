@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
+import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -36,6 +37,7 @@ import com.tokopedia.shop_showcase.shop_showcase_product_add.presentation.model.
 import com.tokopedia.shop_showcase.shop_showcase_product_add.presentation.model.ShowcaseProduct
 import com.tokopedia.shop_showcase.shop_showcase_product_add.presentation.viewmodel.ShowcaseProductAddViewModel
 import com.tokopedia.unifycomponents.SearchBarUnify
+import com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -112,6 +114,23 @@ class ShopShowcaseProductAddFragment : BaseDaggerFragment(),
         }
     }
 
+    private val buttonBackToTop: FloatingButtonUnify? by lazy {
+        view?.findViewById<FloatingButtonUnify>(R.id.btn_back_to_top)?.apply {
+            circleMainMenu.setOnClickListener {
+                scrollToTop()
+            }
+        }
+    }
+
+    private fun scrollToTop() {
+        buttonBackToTop?.let { fab ->
+            fab.hide()
+            if(!fab.isShown) {
+                recyclerViewProductList?.smoothScrollToPosition(0)
+            }
+        }
+    }
+
     private val recyclerViewProductList: RecyclerView? by lazy {
         view?.findViewById<RecyclerView>(R.id.rv_showcase_add_product)
     }
@@ -129,11 +148,23 @@ class ShopShowcaseProductAddFragment : BaseDaggerFragment(),
      * Setup Scroll Listener for endless recycler view load.
      */
     private val scrollListener by lazy {
+        var currentScrollPosition = 0
         object : EndlessRecyclerViewScrollListener(gridLayoutManager) {
+
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
                 productListFilter.page = (page+1)
                 loadMoreProduct(productListFilter)
             }
+
+            override fun onScrolled(view: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(view, dx, dy)
+                currentScrollPosition += dy
+                if(currentScrollPosition == 0)
+                    buttonBackToTop?.hide()
+                else if(currentScrollPosition > 2)
+                    buttonBackToTop?.show()
+            }
+
         }
     }
 

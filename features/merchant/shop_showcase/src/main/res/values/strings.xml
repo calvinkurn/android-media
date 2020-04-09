@@ -35,6 +35,9 @@
     <string name="please_search_with_different_keyword_text">Lakukan pencarian dengan kata kunci lain, ya!</string>
     <string name="text_cancel_button">Batal</string>
     <string name="text_delete_button">Hapus</string>
+    <string name="text_agree_button">Setuju</string>
     <string name="error_happens">Something wrong happens. Please try again later.</string>
     <string name="error_product_less_than_one">Untuk membuat etalase, kamu perlu upload foto produk terlebih dahulu.</string>
+    <string name="text_confirm_dialog_title">Yakin ingin pilih produk?</string>
+    <string name="text_confirm_dialog_description">Produk akan gagal terhapus jika kamu \nlanjut pilih produk</string>
 </resources>

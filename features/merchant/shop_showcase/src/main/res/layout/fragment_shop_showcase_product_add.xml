@@ -8,6 +8,7 @@
 
     <com.tokopedia.header.HeaderUnify
         android:id="@+id/add_product_showcase_toolbar"
+        app:layout_constraintTop_toTopOf="parent"
         android:layout_width="match_parent"
         android:layout_height="?actionBarSize"
         app:unify_header_title="@string/choose_product_text"
@@ -72,6 +73,20 @@
         app:layout_constraintTop_toBottomOf="@id/searchbar_add_product"
         />
 
+        <com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify
+            android:id="@+id/btn_back_to_top"
+            app:fbType="back_to_top"
+            app:layout_constraintBottom_toTopOf="@id/product_choosen_counter"
+            app:layout_constraintRight_toRightOf="parent"
+            android:layout_marginRight="@dimen/dp_4"
+            android:layout_marginEnd="@dimen/dp_4"
+            android:layout_marginBottom="@dimen/dp_4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="invisible"
+            tools:visibility="visible"
+            />
+
     <androidx.cardview.widget.CardView
         android:id="@+id/product_choosen_counter"
         android:layout_width="match_parent"
@@ -108,8 +123,8 @@
                 android:layout_toEndOf="@id/product_choosen_image"
                 android:layout_marginLeft="@dimen/dp_16"
                 android:layout_marginStart="@dimen/dp_16"
-                app:typographyType="heading_4"
-                android:layout_marginTop="@dimen/dp_10"
+                app:typographyType="heading_5"
+                android:layout_marginTop="@dimen/dp_13"
                 android:textColor="@color/primary_text_color"
                  />
 
