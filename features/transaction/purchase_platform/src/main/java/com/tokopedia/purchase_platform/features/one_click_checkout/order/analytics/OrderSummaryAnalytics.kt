@@ -233,6 +233,14 @@ class OrderSummaryAnalytics : TransactionAnalytics() {
         )
     }
 
+    fun eventViewPromoAlreadyApplied() {
+        sendEventCategoryAction(
+                EventName.CLICK_CHECKOUT_EXPRESS,
+                EventCategory.ORDER_SUMMARY,
+                EventAction.VIEW_PROMO_ALREADY_APPLIED
+        )
+    }
+
     companion object {
         private const val NOT_SUCCESS = "not success"
     }
