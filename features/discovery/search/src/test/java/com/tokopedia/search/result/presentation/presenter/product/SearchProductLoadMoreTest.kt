@@ -16,12 +16,6 @@ import rx.Subscriber
 internal class SearchProductLoadMoreTest: ProductListPresenterTestFixtures() {
 
     private val requestParamsSlot = slot<RequestParams>()
-    private val searchParameter : Map<String, Any> = mutableMapOf<String, Any>().also {
-        it[SearchApiConst.Q] = "samsung"
-        it[SearchApiConst.START] = productListPresenter.startFrom
-        it[SearchApiConst.UNIQUE_ID] = "unique_id"
-        it[SearchApiConst.USER_ID] = productListPresenter.userId
-    }
 
     @Test
     fun `Load More Data Success`() {
@@ -29,7 +23,8 @@ internal class SearchProductLoadMoreTest: ProductListPresenterTestFixtures() {
         `Given Search Product Load More API will return SearchProductModel`()
         `Given Product List Presenter already Load Data`()
 
-        `When Product List Presenter Load More Data`()
+        val loadMoreSearchParameter = createLoadMoreSearchParameter()
+        `When Product List Presenter Load More Data`(loadMoreSearchParameter)
 
         `Then verify load more use case request params`()
         `Then verify view interaction when load more data success`()
@@ -59,7 +54,14 @@ internal class SearchProductLoadMoreTest: ProductListPresenterTestFixtures() {
         productListPresenter.loadData(searchParameter)
     }
 
-    private fun `When Product List Presenter Load More Data`() {
+    private fun createLoadMoreSearchParameter() : Map<String, Any> = mutableMapOf<String, Any>().also {
+        it[SearchApiConst.Q] = "samsung"
+        it[SearchApiConst.START] = productListPresenter.startFrom
+        it[SearchApiConst.UNIQUE_ID] = "unique_id"
+        it[SearchApiConst.USER_ID] = productListPresenter.userId
+    }
+
+    private fun `When Product List Presenter Load More Data`(searchParameter: Map<String, Any>) {
         productListPresenter.loadMoreData(searchParameter)
     }
 
@@ -103,10 +105,11 @@ internal class SearchProductLoadMoreTest: ProductListPresenterTestFixtures() {
         `Given Search Product Load More API will throw exception`(testException)
         `Given Product List Presenter already Load Data`()
 
-        `When Product List Presenter Load More Data`()
+        val loadMoreSearchParameter = createLoadMoreSearchParameter()
+        `When Product List Presenter Load More Data`(loadMoreSearchParameter)
 
         `Then verify view interaction for load data failed with exception`(slotSearchParameterErrorLog, testException)
-        `Then verify logged error message is from search parameter`(slotSearchParameterErrorLog)
+        `Then verify logged error message is from search parameter`(slotSearchParameterErrorLog, loadMoreSearchParameter)
     }
 
     private fun `Given Search Product Load More API will throw exception`(exception: Exception?) {
@@ -136,7 +139,7 @@ internal class SearchProductLoadMoreTest: ProductListPresenterTestFixtures() {
         confirmVerified(productListView)
     }
 
-    private fun `Then verify logged error message is from search parameter`(slotSearchParameterErrorLog: CapturingSlot<String>) {
+    private fun `Then verify logged error message is from search parameter`(slotSearchParameterErrorLog: CapturingSlot<String>, searchParameter: Map<String, Any>) {
         val message = slotSearchParameterErrorLog.captured
 
         message shouldBe UrlParamUtils.generateUrlParamString(searchParameter)
