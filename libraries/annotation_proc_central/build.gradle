@@ -9,6 +9,6 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticParam
     kapt rootProject.ext.tkpdInternalLibDependencies.analyticProcessor
     compileOnly rootProject.ext.miscDependencies.kotlinPoet
-    implementation rootProject.ext.supportLibDependencies.kotlinReflection
+    compileOnly rootProject.ext.supportLibDependencies.kotlinReflection
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
 }
