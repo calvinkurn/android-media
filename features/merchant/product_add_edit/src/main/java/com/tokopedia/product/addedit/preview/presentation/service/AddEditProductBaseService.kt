@@ -7,6 +7,8 @@ import com.tokopedia.mediauploader.domain.UploaderUseCase
 import com.tokopedia.product.addedit.common.AddEditProductComponentBuilder
 import com.tokopedia.product.addedit.common.constant.AddEditProductExtraConstant.Companion.IMAGE_SOURCE_ID
 import com.tokopedia.product.addedit.common.util.AddEditProductNotificationManager
+import com.tokopedia.product.addedit.draft.domain.usecase.DeleteProductDraftUseCase
+import com.tokopedia.product.addedit.draft.domain.usecase.SaveProductDraftUseCase
 import com.tokopedia.product.addedit.preview.di.AddEditProductPreviewModule
 import com.tokopedia.product.addedit.preview.di.DaggerAddEditProductPreviewComponent
 import com.tokopedia.product.addedit.preview.domain.mapper.AddProductInputMapper
@@ -34,6 +36,10 @@ abstract class AddEditProductBaseService : JobIntentService(), CoroutineScope {
     lateinit var productEditUseCase: ProductEditUseCase
     @Inject
     lateinit var editProductInputMapper: EditProductInputMapper
+    @Inject
+    lateinit var saveProductDraftUseCase: SaveProductDraftUseCase
+    @Inject
+    lateinit var deleteProductDraftUseCase: DeleteProductDraftUseCase
 
     private var notificationManager: AddEditProductNotificationManager? = null
 
