@@ -29,7 +29,6 @@ class AddGqlActivity : BaseActivity() {
 
     override fun getLayout() = R.layout.fake_activity_add_gql
     lateinit var viewModel: AddGqlVM
-    private val gson = GsonBuilder().setPrettyPrinting().create()
 
     var id: Int? = null
 

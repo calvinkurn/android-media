@@ -45,7 +45,6 @@ class AddToDbUseCase(val repository: LocalRepository) : BaseUseCase<LocalReposit
         val gql = GqlRecord(
                 id = id,
                 gqlOperationName = data.gqlQueryName!!,
-                javaQueryName = data.javaQueryName,
                 createdAt = date.time,
                 updatedAt = date.time,
                 enabled = true,

@@ -2,9 +2,11 @@ package com.rahullohra.fakeresponse.presentaiton.activities
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import com.google.gson.GsonBuilder
 import com.rahullohra.fakeresponse.App
 
 open class BaseActivity : AppCompatActivity() {
+    val gson = GsonBuilder().setPrettyPrinting().create()
 
     open fun getLayout() = 1
     override fun onCreate(savedInstanceState: Bundle?) {

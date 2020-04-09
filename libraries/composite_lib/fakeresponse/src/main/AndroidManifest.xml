@@ -1,20 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.rahullohra.fakeresponse">
 
     <application>
-        <activity android:name="com.rahullohra.fakeresponse.presentaiton.activities.BaseActivity"
-            android:theme="@style/FakeNoActionBar" />
-        <activity android:name="com.rahullohra.fakeresponse.presentaiton.activities.AddGqlActivity"
-            android:theme="@style/FakeNoActionBar" />
-        <activity android:name="com.rahullohra.fakeresponse.presentaiton.activities.AddRestResponseActivity"
-            android:theme="@style/FakeNoActionBar" />
-        <activity android:name="com.rahullohra.fakeresponse.presentaiton.activities.FakeResponseActivity"
+        <activity
+            android:name="com.rahullohra.fakeresponse.presentaiton.activities.BaseActivity"
+            android:splitName="fakeresponse"
             android:theme="@style/FakeNoActionBar"
+            tools:replace="android:splitName"
+            tools:targetApi="o" />
+        <activity
+            android:name="com.rahullohra.fakeresponse.presentaiton.activities.AddGqlActivity"
+            android:splitName="fakeresponse"
+            android:theme="@style/FakeNoActionBar"
+            tools:replace="android:splitName"
+            tools:targetApi="o" />
+        <activity
+            android:name="com.rahullohra.fakeresponse.presentaiton.activities.AddRestResponseActivity"
+            android:splitName="fakeresponse"
+            android:theme="@style/FakeNoActionBar"
+            tools:replace="android:splitName"
+            tools:targetApi="o" />
+        <activity
+            android:name="com.rahullohra.fakeresponse.presentaiton.activities.FakeResponseActivity"
+            android:launchMode="singleTask"
+            android:splitName="fakeresponse"
             android:taskAffinity="fakeresponse.gqlTesting"
-            android:launchMode="singleTask">
-            <intent-filter >
-                <action android:name="${applicationId}.fakeresponse.gqlTesting" />
+            android:theme="@style/FakeNoActionBar"
+            tools:replace="android:splitName"
+            tools:targetApi="o">
+            <intent-filter>
+                <action android:name="com.tokopedia.tkpd.fakeresponse.gqlTesting" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>

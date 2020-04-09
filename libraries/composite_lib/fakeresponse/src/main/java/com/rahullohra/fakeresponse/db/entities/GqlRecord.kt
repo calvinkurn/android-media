@@ -11,6 +11,5 @@ data class GqlRecord(
     val updatedAt: Long,
     val enabled: Boolean,
     val gqlOperationName: String,
-    val javaQueryName: String?,
     val customTag:String?
 )
