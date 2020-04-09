@@ -28,8 +28,6 @@ import com.tokopedia.broadcast.message.common.BroadcastMessageRouter;
 import com.tokopedia.broadcast.message.common.constant.BroadcastMessageConstant;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiClearAllUseCase;
 import com.tokopedia.config.GlobalConfig;
-import com.tokopedia.contactus.ContactUsModuleRouter;
-import com.tokopedia.contactus.createticket.activity.ContactUsActivity;
 import com.tokopedia.core.MaintenancePage;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
@@ -81,9 +79,6 @@ import com.tokopedia.product.manage.feature.list.view.fragment.ProductManageSell
 import com.tokopedia.product.manage.item.common.di.component.DaggerProductComponent;
 import com.tokopedia.product.manage.item.common.di.component.ProductComponent;
 import com.tokopedia.product.manage.item.common.di.module.ProductModule;
-import com.tokopedia.product.manage.item.main.base.data.model.ProductPictureViewModel;
-import com.tokopedia.product.manage.item.variant.data.model.variantbycat.ProductVariantByCatModel;
-import com.tokopedia.product.manage.item.variant.data.model.variantbyprd.ProductVariantViewModel;
 import com.tokopedia.profile.view.activity.ProfileActivity;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
@@ -94,7 +89,6 @@ import com.tokopedia.seller.TkpdSeller;
 import com.tokopedia.seller.common.logout.TkpdSellerLogout;
 import com.tokopedia.seller.common.topads.deposit.data.model.DataDeposit;
 import com.tokopedia.seller.product.etalase.utils.EtalaseUtils;
-import com.tokopedia.seller.product.variant.view.activity.ProductVariantDashboardActivity;
 import com.tokopedia.seller.purchase.detail.activity.OrderDetailActivity;
 import com.tokopedia.seller.purchase.detail.activity.OrderHistoryActivity;
 import com.tokopedia.seller.reputation.view.fragment.SellerReputationFragment;
@@ -131,7 +125,6 @@ import com.tokopedia.track.TrackApp;
 import com.tokopedia.transaction.common.TransactionRouter;
 import com.tokopedia.transaction.orders.UnifiedOrderListRouter;
 import com.tokopedia.user.session.UserSession;
-import com.tokopedia.withdraw.WithdrawRouter;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -158,7 +151,7 @@ public abstract class SellerRouterApplication extends MainApplication
         ReputationRouter, LogisticRouter,
         AbstractionRouter, ShopModuleRouter,
         ApplinkRouter,
-        NetworkRouter, TopAdsWebViewRouter, ContactUsModuleRouter, WithdrawRouter,
+        NetworkRouter, TopAdsWebViewRouter,
         PhoneVerificationRouter,
         TopAdsManagementRouter,
         BroadcastMessageRouter,
@@ -682,21 +675,6 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public Intent getChatBotIntent(Context context, String messageId) {
-        return RouteManager.getIntent(context, ApplinkConst.CHATBOT
-                .replace(String.format("{%s}", ApplinkConst.Chat.MESSAGE_ID), messageId));
-    }
-
-    public Intent createIntentProductVariant(Context context, ArrayList<ProductVariantByCatModel> productVariantByCatModelList,
-                                             ProductVariantViewModel productVariant, int productPriceCurrency, double productPrice,
-                                             int productStock, boolean officialStore, String productSku,
-                                             boolean needRetainImage, ProductPictureViewModel productSizeChart, boolean hasOriginalVariantLevel1,
-                                             boolean hasOriginalVariantLevel2, boolean hasWholesale, boolean isAddStatus) {
-        return ProductVariantDashboardActivity.getIntent(context, productVariantByCatModelList, productVariant,
-                productPriceCurrency, productPrice, productStock, officialStore, productSku, needRetainImage, productSizeChart,
-                hasOriginalVariantLevel1, hasOriginalVariantLevel2, hasWholesale,isAddStatus);
-    }
-    @Override
     public void goToApplinkActivity(Activity activity, String applink, Bundle bundle) {
         if (activity != null) {
             DeepLinkDelegate deepLinkDelegate = DeepLinkHandlerActivity.getDelegateInstance();
@@ -745,16 +723,6 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public Fragment getFlightOrderListFragment() {
         return null;
-    }
-
-    @Override
-    public Intent getHelpUsIntent(Context context) {
-        return new Intent(context, ContactUsActivity.class);
-    }
-
-    @Override
-    public Intent getWebviewActivityWithIntent(Context context, String url, String title) {
-        return SimpleWebViewWithFilePickerActivity.getIntentWithTitle(context, url, title);
     }
 
     @Override

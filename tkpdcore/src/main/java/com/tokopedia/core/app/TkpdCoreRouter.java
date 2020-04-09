@@ -93,8 +93,6 @@ public interface TkpdCoreRouter {
 
     Intent getShopPageIntent(Context context, String shopId);
 
-    Intent getTopProfileIntent(Context context, String userId);
-
     Intent getGroupChatIntent(Context context, String channelUrl);
 
     Intent getCreateResCenterActivityIntent(Context context, String orderId);

@@ -1,6 +1,5 @@
 package com.tokopedia.seller;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 

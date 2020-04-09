@@ -2,7 +2,6 @@ package com.tokopedia.contactus.inboxticket2.view.fragment;
 
 import android.content.Context;
 import android.graphics.Color;
-import androidx.annotation.NonNull;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextPaint;
@@ -13,8 +12,9 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.contactus.ContactUsModuleRouter;
 import com.tokopedia.contactus.R;
 
 
