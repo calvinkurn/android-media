@@ -1,97 +1,100 @@
 package com.tokopedia.purchase_platform.features.one_click_checkout.order.data.checkout
 
+import com.google.gson.annotations.Expose
+import com.google.gson.annotations.SerializedName
+
 data class CheckoutOccRequest(
+        @SerializedName("profile")
+        @Expose
         val profile: Profile = Profile(),
+        @SerializedName("carts")
+        @Expose
         val carts: ParamCart = ParamCart()
-) {
-    companion object {
-        const val PARAM_PROFILE = "profile"
-        const val PARAM_CARTS = "carts"
-    }
-}
+)
 
 data class Profile(
+        @SerializedName("profile_id")
+        @Expose
         val profileId: Int = 0
-) {
-    companion object {
-        const val PARAM_PROFILE_ID = "profile_id"
-    }
-}
+)
 
 data class PromoRequest(
+        @SerializedName("type")
+        @Expose
         val type: String = "",
+        @SerializedName("code")
+        @Expose
         val code: String = ""
-) {
-    companion object {
-        const val PARAM_TYPE = "type"
-        const val PARAM_CODE = "code"
-    }
-}
+)
 
 data class ParamCart(
+        @SerializedName("promos")
+        @Expose
         val promos: List<PromoRequest> = emptyList(),
+        @SerializedName("data")
+        @Expose
         val data: List<ParamData> = emptyList()
-) {
-    companion object {
-        const val PARAM_PROMOS = "promos"
-        const val PARAM_DATA = "data"
-    }
-}
+)
 
 data class ParamData(
+        @SerializedName("address_id")
+        @Expose
         val addressId: Int = 0,
+        @SerializedName("shop_products")
+        @Expose
         val shopProducts: List<ShopProduct> = emptyList()
-) {
-    companion object {
-        const val PARAM_ADDRESS_ID = "address_id"
-        const val PARAM_SHOP_PRODUCTS = "shop_products"
-    }
-}
+)
 
 data class ShopProduct(
+        @SerializedName("promos")
+        @Expose
         val promos: List<PromoRequest> = emptyList(),
+        @SerializedName("shop_id")
+        @Expose
         val shopId: Int = 0,
+        @SerializedName("product_data")
+        @Expose
         val productData: List<ProductData> = emptyList(),
+        @SerializedName("is_preorder")
+        @Expose
         val isPreorder: Int = 0,
+        @SerializedName("warehouse_id")
+        @Expose
         val warehouseId: Int = 0,
+        @SerializedName("finsurance")
+        @Expose
         val finsurance: Int = 0,
+        @SerializedName("shipping_info")
+        @Expose
         val shippingInfo: ShippingInfo = ShippingInfo()
-) {
-    companion object {
-        const val PARAM_PROMOS = "promos"
-        const val PARAM_SHOP_ID = "shop_id"
-        const val PARAM_PRODUCT_DATA = "product_data"
-        const val PARAM_WAREHOUSE_ID = "warehouse_id"
-        const val PARAM_IS_PREORDER = "is_preorder"
-        const val PARAM_FINSURANCE = "finsurance"
-        const val PARAM_SHIPPING_INFO = "shipping_info"
-    }
-}
+)
 
 data class ProductData(
+        @SerializedName("product_id")
+        @Expose
         val productId: Int = 0,
+        @SerializedName("product_quantity")
+        @Expose
         val productQuantity: Int = 0,
+        @SerializedName("product_notes")
+        @Expose
         val productNotes: String = ""
-) {
-    companion object {
-        const val PARAM_PRODUCT_ID = "product_id"
-        const val PARAM_PRODUCT_QUANTITY = "product_quantity"
-        const val PARAM_PRODUCT_NOTES = "product_notes"
-    }
-}
+)
 
 data class ShippingInfo(
+        @SerializedName("shipping_id")
+        @Expose
         val shippingId: Int = 0,
+        @SerializedName("sp_id")
+        @Expose
         val spId: Int = 0,
+        @SerializedName("rates_id")
+        @Expose
         val ratesId: String = "",
+        @SerializedName("ut")
+        @Expose
         val ut: String = "",
+        @SerializedName("checksum")
+        @Expose
         val checksum: String = ""
-) {
-    companion object {
-        const val PARAM_SHIPPING_ID = "shipping_id"
-        const val PARAM_SP_ID = "sp_id"
-        const val PARAM_RATES_ID = "rates_id"
-        const val PARAM_UT = "ut"
-        const val PARAM_CHECKSUM = "checksum"
-    }
-}
+)

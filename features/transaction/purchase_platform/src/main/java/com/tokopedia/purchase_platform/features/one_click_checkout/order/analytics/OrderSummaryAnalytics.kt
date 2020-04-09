@@ -235,7 +235,7 @@ class OrderSummaryAnalytics : TransactionAnalytics() {
 
     fun eventViewPromoAlreadyApplied() {
         sendEventCategoryAction(
-                EventName.CLICK_CHECKOUT_EXPRESS,
+                EventName.VIEW_CHECKOUT_EXPRESS_IRIS,
                 EventCategory.ORDER_SUMMARY,
                 EventAction.VIEW_PROMO_ALREADY_APPLIED
         )
