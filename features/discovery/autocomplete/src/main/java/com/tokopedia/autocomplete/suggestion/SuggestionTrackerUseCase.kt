@@ -31,7 +31,7 @@ class SuggestionTrackerUseCase(
 
         fun getParams(url: String, registrationId: String, userId: String): RequestParams {
             var uniqueId = AuthHelper.getMD5Hash(registrationId)
-            if (!TextUtils.isEmpty(userId)) {
+            if (!textIsEmpty(userId)) {
                 uniqueId = AuthHelper.getMD5Hash(userId)
             }
 
@@ -48,6 +48,10 @@ class SuggestionTrackerUseCase(
             val params = RequestParams.create()
             params.putString(URL_TRACKER, urlTracker)
             return params
+        }
+
+        private fun textIsEmpty(str: String?): Boolean {
+            return str == null || str.isEmpty()
         }
     }
 }
