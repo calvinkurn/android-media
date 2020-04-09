@@ -25,7 +25,7 @@ class UpdateCartAndValidateUseSubscriber(private val view: ICartListView?) : Sub
 
     }
 
-    override fun onError(e: Throwable?) {
-        view?.showPromoCheckoutStickyButtonInactive()
+    override fun onError(e: Throwable) {
+        view?.renderPromoCheckoutButtonActiveDefault(emptyList())
     }
 }

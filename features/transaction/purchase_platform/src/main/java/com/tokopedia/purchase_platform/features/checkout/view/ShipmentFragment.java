@@ -2536,6 +2536,11 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             }
             shipmentPresenter.setLatValidateUseRequest(validateUsePromoRequest);
             this.bboPromoCodes = bboPromoCodes;
+            if (isOneClickShipment()) {
+                validateUsePromoRequest.setCartType("ocs");
+            } else {
+                validateUsePromoRequest.setCartType("default");
+            }
             return validateUsePromoRequest;
         } else {
             // First param data generation / initialization
@@ -2615,6 +2620,11 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             }
             shipmentPresenter.setLatValidateUseRequest(validateUsePromoRequest);
             this.bboPromoCodes = bboPromoCodes;
+            if (isOneClickShipment()) {
+                validateUsePromoRequest.setCartType("ocs");
+            } else {
+                validateUsePromoRequest.setCartType("default");
+            }
             return validateUsePromoRequest;
         }
     }
@@ -2664,7 +2674,11 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         }
         promoRequest.setOrders(listOrderItem);
         promoRequest.setState(PARAM_CHECKOUT);
-        promoRequest.setCartType(PARAM_DEFAULT);
+        if (isOneClickShipment()) {
+            promoRequest.setCartType("ocs");
+        } else {
+            promoRequest.setCartType(PARAM_DEFAULT);
+        }
 
         if (isTradeIn()) {
             promoRequest.setTradeIn(1);
