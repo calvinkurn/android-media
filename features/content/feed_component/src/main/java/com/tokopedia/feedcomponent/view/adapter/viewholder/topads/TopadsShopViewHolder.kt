@@ -18,8 +18,7 @@ import kotlinx.android.synthetic.main.item_topads_shop.view.*
 /**
  * @author by milhamj on 08/01/19.
  */
-class TopadsShopViewHolder(v: View,
-                           private val topadsShopListener: TopadsShopViewHolder.TopadsShopListener,
+class TopadsShopViewHolder(v: View, private val topadsShopListener: TopadsShopListener,
                            private val cardTitleListener: CardTitleView.CardTitleListener)
     : AbstractViewHolder<TopadsShopViewModel>(v), TopAdsItemClickListener {
 
