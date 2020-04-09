@@ -53,7 +53,6 @@ class PopularKeywordViewHolder (val view: View,
     }
 
     override fun bind(element: PopularKeywordListDataModel, payloads: MutableList<Any>) {
-        super.bind(element, payloads)
         bind(element)
     }
 

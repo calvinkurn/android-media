@@ -27,7 +27,7 @@ const val FPM_RECOMMENDATION_LIST_CAROUSEL = "home_recommendation_list_carousel"
 const val TRUNCATED_URL_PREFIX = "https://ecs7.tokopedia.net/img/cache/"
 
 
-fun ImageView.loadImage(url: String, fpmItemLabel: String = ""){
+fun ImageView.loadImage(url: String, fpmItemLabel: String = "", listener: ImageHandler.ImageLoaderStateListener? = null){
     val performanceMonitoring = getPerformanceMonitoring(url, fpmItemLabel)
     Glide.with(context)
             .load(url)
@@ -36,11 +36,13 @@ fun ImageView.loadImage(url: String, fpmItemLabel: String = ""){
             .listener(object : RequestListener<Drawable> {
                 override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
                     GlideErrorLogHelper().logError(context, e, url)
+                    listener?.failedLoad()
                     return false
                 }
 
                 override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
                     handleOnResourceReady(dataSource, resource, performanceMonitoring)
+                    listener?.successLoad()
                     return false
                 }
             })

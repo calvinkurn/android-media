@@ -46,11 +46,11 @@ data class PopularKeywordListDataModel(
     }
 
     override fun visitableId(): String {
-        return "popularKeyword"
+        return channel.id
     }
 
     override fun equalsWith(b: Any?): Boolean {
-        return b is PopularKeywordListDataModel && popularKeywordList == b.popularKeywordList
+        return b is PopularKeywordListDataModel && popularKeywordList === b.popularKeywordList
     }
 
     override fun getChangePayloadFrom(b: Any?): Bundle {
