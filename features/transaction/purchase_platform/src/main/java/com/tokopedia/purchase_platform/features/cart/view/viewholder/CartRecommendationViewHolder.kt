@@ -2,6 +2,7 @@ package com.tokopedia.purchase_platform.features.cart.view.viewholder
 
 import androidx.recyclerview.widget.RecyclerView
 import android.view.View
+import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.purchase_platform.R
 import com.tokopedia.purchase_platform.features.cart.view.ActionListener
@@ -50,12 +51,30 @@ class CartRecommendationViewHolder(view: View, val actionListener: ActionListene
                             hasAddToCartButton = true
                     )
             )
+            setOnClickListener(
+                    {
+                        actionListener?.onRecommendationProductClicked(
+                                element.recommendationItem.productId.toString(),
+                                element.recommendationItem.isTopAds,
+                                element.recommendationItem.clickUrl
+                        )
+                    }
+            )
             setAddToCartOnClickListener {
                 actionListener?.onButtonAddToCartClicked(element)
             }
-        }
-        itemView.setOnClickListener {
-            actionListener?.onRecommendationProductClicked(element.recommendationItem.productId.toString())
+
+            setImageProductViewHintListener(
+                    element.recommendationItem,
+                    object : ViewHintListener {
+                        override fun onViewHint() {
+                            actionListener?.onRecommendationProductImpression(
+                                    element.recommendationItem.isTopAds,
+                                    element.recommendationItem.trackerImageUrl
+                            )
+                        }
+                    }
+            )
         }
     }
 

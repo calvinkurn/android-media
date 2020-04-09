@@ -51,7 +51,8 @@ class HomeBannerTrackerTest : Spek({
             startTime = "",
             expireTime = "",
             slideIndex = 1,
-            type = "new_user_mp"
+            type = "new_user_mp",
+            campaignCode = "this_is_campaign_code"
     )
 
     Feature("Impression Banner Promotion"){

@@ -323,7 +323,7 @@ class TopChatRoomPresenter @Inject constructor(
     }
 
     private fun onErrorUploadImage(throwable: Throwable, image: ImageUploadViewModel) {
-        view.onErrorUploadImage(ErrorHandler.getErrorMessage(view.context, throwable), image)
+        view?.onErrorUploadImage(ErrorHandler.getErrorMessage(view?.context, throwable), image)
     }
 
     private fun sendImageByWebSocket(uploadId: String, image: ImageUploadViewModel) {

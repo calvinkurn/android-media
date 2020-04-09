@@ -122,7 +122,7 @@ public class AutoCompleteActivity extends BaseActivity
             suggestionFragment.setSuggestionViewUpdateListener(this);
         }
         if (initialStateFragment != null) {
-            initialStateFragment.setSearchParameter(searchParameter);
+            initialStateFragment.setSearchParameter(searchParameter.getSearchParameterHashMap());
             initialStateFragment.setInitialStateViewUpdateListener(this);
         }
     }
@@ -195,7 +195,7 @@ public class AutoCompleteActivity extends BaseActivity
     public void onQueryTextChange(@NotNull SearchParameter searchParameter) {
         if (searchParameter.getSearchQuery().isEmpty()) {
             if (initialStateFragment != null) {
-                initialStateFragment.getInitialStateData(searchParameter);
+                initialStateFragment.getInitialStateData(searchParameter.getSearchParameterHashMap());
             }
         } else {
             if (suggestionFragment != null) {
