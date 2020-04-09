@@ -157,7 +157,6 @@ import com.tokopedia.shop.ShopPageInternalRouter;
 import com.tokopedia.tkpd.applink.ApplinkUnsupportedImpl;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.fcm.appupdate.FirebaseRemoteAppUpdate;
-import com.tokopedia.tkpd.goldmerchant.GoldMerchantRedirectActivity;
 import com.tokopedia.tkpd.home.analytics.HomeAnalytics;
 import com.tokopedia.tkpd.nfc.NFCSubscriber;
 import com.tokopedia.tkpd.react.DaggerReactNativeComponent;
@@ -341,12 +340,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public void onNewIntent(Context context, Intent intent) {
         NFCSubscriber.onNewIntent(context, intent);
     }
-
-    @Override
-    public android.app.Fragment getFragmentShopSettings() {
-        return TkpdSeller.getFragmentShopSettings();
-    }
-
 
     @Override
     public Class getSellingActivityClass() {
@@ -616,12 +609,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 , shopName
                 , avatar);
 
-    }
-
-    @Override
-    public void goToGMSubscribe(Activity activity) {
-        Intent intent = new Intent(activity, GoldMerchantRedirectActivity.class);
-        activity.startActivity(intent);
     }
 
     @Override
@@ -1020,16 +1007,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
         AnalyticsEventTrackingHelper.homepageSaldoClick(getApplicationContext(),
                 "com.tokopedia.saldodetails.activity.SaldoDepositActivity");
-    }
-
-    @Override
-    public void startSaldoDepositIntent(Context context) {
-        RouteManager.route(context, ApplinkConstInternalGlobal.SALDO_DEPOSIT);
-    }
-
-    @Override
-    public Intent getManageAdressIntent(Context context) {
-        return new Intent(context, ManagePeopleAddressActivity.class);
     }
 
     @Override

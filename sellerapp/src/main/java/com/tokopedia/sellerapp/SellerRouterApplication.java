@@ -67,7 +67,6 @@ import com.tokopedia.linker.model.LinkerData;
 import com.tokopedia.loginregister.login.view.activity.LoginActivity;
 import com.tokopedia.loginregister.registerinitial.view.activity.RegisterInitialActivity;
 import com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomActivity;
-import com.tokopedia.logisticaddaddress.features.manage.ManagePeopleAddressActivity;
 import com.tokopedia.logisticaddaddress.features.pinpoint.GeolocationActivity;
 import com.tokopedia.logisticdata.data.entity.address.Token;
 import com.tokopedia.merchantvoucher.MerchantVoucherModuleRouter;
@@ -147,7 +146,6 @@ import okhttp3.Response;
 import rx.Observable;
 
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_DESCRIPTION;
-import static com.tokopedia.remoteconfig.RemoteConfigKey.APP_ENABLE_SALDO_SPLIT_FOR_SELLER_APP;
 import static com.tokopedia.remoteconfig.RemoteConfigKey.ENABLE_OLD_PRODUCT_MANAGE;
 
 /**
@@ -457,11 +455,6 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public android.app.Fragment getFragmentShopSettings() {
-        return TkpdSeller.getFragmentShopSettings();
-    }
-
-    @Override
     public Class getSellingActivityClass() {
         return TkpdSeller.getSellingActivityClass();
     }
@@ -495,10 +488,6 @@ public abstract class SellerRouterApplication extends MainApplication
     public void goToTopAdsDashboard(Activity activity) {
         Intent intent = new Intent(activity, TopAdsDashboardActivity.class);
         activity.startActivity(intent);
-    }
-
-    @Override
-    public void goToGMSubscribe(@NonNull Activity activity) {
     }
 
     @Override
@@ -629,16 +618,6 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public Intent getShopPageIntent(Context context, String shopId) {
         return ShopPageInternalRouter.getShopPageIntent(context, shopId);
-    }
-
-    @Override
-    public void startSaldoDepositIntent(Context context) {
-        if (remoteConfig.getBoolean(APP_ENABLE_SALDO_SPLIT_FOR_SELLER_APP, false)) {
-            RouteManager.route(context, ApplinkConstInternalGlobal.SALDO_DEPOSIT);
-        } else {
-            Intent intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.WEBVIEW, ApplinkConst.WebViewUrl.SALDO_DETAIL);
-            context.startActivity(intent);
-        }
     }
 
     public Intent getGroupChatIntent(Context context, String channelUrl) {
@@ -787,11 +766,6 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public Intent getInboxTalkCallingIntent(@NonNull Context context) {
         return InboxTalkActivity.Companion.createIntent(context);
-    }
-
-    @Override
-    public Intent getManageAdressIntent(Context context) {
-        return new Intent(context, ManagePeopleAddressActivity.class);
     }
 
     @Override

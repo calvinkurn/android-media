@@ -43,8 +43,6 @@ public interface TkpdCoreRouter {
 
     Intent getSplashScreenIntent(Context context);
 
-    android.app.Fragment getFragmentShopSettings();
-
     Class getSellingActivityClass();
 
     /**
@@ -98,8 +96,6 @@ public interface TkpdCoreRouter {
     Intent getTopProfileIntent(Context context, String userId);
 
     Intent getGroupChatIntent(Context context, String channelUrl);
-
-    Intent getManageAdressIntent(Context context);
 
     Intent getCreateResCenterActivityIntent(Context context, String orderId);
 }
