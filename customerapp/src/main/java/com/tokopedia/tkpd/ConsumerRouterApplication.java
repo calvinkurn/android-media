@@ -1059,11 +1059,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent getSellerWebViewIntent(Context context, String webviewUrl) {
-        return null;
-    }
-
-    @Override
     public Observable<VoucherViewModel> checkTrainVoucher(String trainReservationId,
                                                           String trainReservationCode,
                                                           String galaCode) {
