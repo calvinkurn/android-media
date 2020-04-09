@@ -10,7 +10,8 @@ import io.mockk.verifyOrder
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.gherkin.Feature
 
-class HandleViewClickProfileTest: Spek({
+@Deprecated("Migrated to JUnit")
+class HandleViewClickProfileSpekTest: Spek({
     InstantTaskExecutorRuleSpek(this)
 
     Feature("Handle View Click Profile") {
