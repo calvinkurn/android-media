@@ -31,6 +31,7 @@ import com.tokopedia.common_digital.common.constant.DigitalExtraParam
 import com.tokopedia.common_digital.common.presentation.model.DigitalCategoryDetailPassData
 import com.tokopedia.emoney.R
 import com.tokopedia.emoney.data.EmoneyInquiry
+import com.tokopedia.emoney.data.NfcCardErrorTypeDef
 import com.tokopedia.emoney.di.DaggerDigitalEmoneyComponent
 import com.tokopedia.emoney.util.EmoneyAnalytics
 import com.tokopedia.emoney.view.compoundview.ETollUpdateBalanceResultView
@@ -46,6 +47,7 @@ import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.user.session.UserSessionInterface
 import id.co.bri.sdk.Brizzi
 import kotlinx.android.synthetic.main.fragment_emoney_nfc_check_balance.*
+import java.io.IOException
 import javax.inject.Inject
 
 class NfcCheckBalanceFragment : BaseDaggerFragment() {
@@ -169,10 +171,15 @@ class NfcCheckBalanceFragment : BaseDaggerFragment() {
 
     private fun executeMandiri(intent: Intent) {
         val tag = intent.getParcelableExtra<Tag>(NfcAdapter.EXTRA_TAG)
-        if (tag != null) {
-            emoneyBalanceViewModel.processEmoneyTagIntent(IsoDep.get(tag),
-                    GraphqlHelper.loadRawString(resources, R.raw.query_emoney_inquiry_balance),
-                    0)
+        try {
+            if (tag != null) {
+                val isodep = IsoDep.get(tag);
+                emoneyBalanceViewModel.processEmoneyTagIntent(isodep,
+                        GraphqlHelper.loadRawString(resources, R.raw.query_emoney_inquiry_balance),
+                        0)
+            }
+        } catch (e: IOException) {
+            showError(NfcCardErrorTypeDef.FAILED_READ_CARD)
         }
 
         emoneyBalanceViewModel.emoneyInquiry.observe(this, Observer { emoneyInquiry ->
