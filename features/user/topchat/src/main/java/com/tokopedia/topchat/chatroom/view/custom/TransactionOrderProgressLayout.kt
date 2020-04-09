@@ -5,12 +5,14 @@ import android.content.SharedPreferences
 import android.os.Build
 import android.util.AttributeSet
 import android.view.View
+import android.view.View.OnClickListener
 import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.annotation.RequiresApi
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.common.network.util.CommonUtil
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.domain.pojo.orderprogress.ChatOrderProgress
@@ -18,8 +20,6 @@ import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 
 class TransactionOrderProgressLayout : LinearLayout {
-
-    private val DEFAULT_STATE = stateOpen
 
     private var status: Typography? = null
     private var stateChanger: Typography? = null
@@ -31,9 +31,8 @@ class TransactionOrderProgressLayout : LinearLayout {
     private var actionBtn: UnifyButton? = null
 
     private var chatOrder: ChatOrderProgress = ChatOrderProgress()
-    private var state: String = DEFAULT_STATE
+    private var state = State()
 
-    private var isForceClose = false
     private var isKeyboardOpened = false
     private var canBeRendered = false
 
@@ -46,7 +45,6 @@ class TransactionOrderProgressLayout : LinearLayout {
     init {
         initViewLayout()
         initBindView()
-        initPreviousState()
     }
 
     private fun initViewLayout() {
@@ -78,7 +76,7 @@ class TransactionOrderProgressLayout : LinearLayout {
     fun onKeyboardClosed() {
         if (isKeyboardOpened) {
             toggleKeyboardState()
-            if (!isForceClose) automaticShow()
+            if (!state.isForceClose) automaticShow()
         }
     }
 
@@ -141,7 +139,7 @@ class TransactionOrderProgressLayout : LinearLayout {
     }
 
     private fun renderOpenCloseStateChangerButton() {
-        stateChanger?.text = state
+        stateChanger?.text = state.bodyVisibility
         doWhenState(
                 isOpen = {
                     stateChanger?.setCompoundDrawablesWithIntrinsicBounds(
@@ -162,6 +160,7 @@ class TransactionOrderProgressLayout : LinearLayout {
                     isOpen = { changeState(stateClose) },
                     isClose = { changeState(stateOpen) }
             )
+            state.updateIsForceClose()
             saveCurrentState()
         }
         stateChanger?.setOnClickListener(clickListener)
@@ -169,21 +168,21 @@ class TransactionOrderProgressLayout : LinearLayout {
     }
 
     private fun loadPreviousState() {
-        state = getPref()?.getString(getPrefOrderPrefKey(), DEFAULT_STATE) ?: DEFAULT_STATE
-        updateIsForceClose()
+        val stateJsonString = getPref()?.getString(getPrefOrderPrefKey(), DEFAULT_STATE)
+        try {
+            state = CommonUtil.fromJson(stateJsonString, State::class.java)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 
     private fun saveCurrentState() {
-        getPref()?.edit()?.putString(getPrefOrderPrefKey(), state)?.apply()
-        updateIsForceClose()
+        val stateJsonString = CommonUtil.toJson(state)
+        getPref()?.edit()?.putString(getPrefOrderPrefKey(), stateJsonString)?.apply()
     }
 
     private fun getPref(): SharedPreferences? {
         return context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
-    }
-
-    private fun updateIsForceClose() {
-        isForceClose = state == stateClose
     }
 
     private fun getPrefOrderPrefKey(): String {
@@ -195,23 +194,19 @@ class TransactionOrderProgressLayout : LinearLayout {
         return true
     }
 
-    private fun initPreviousState() {
-        // TODO: impl this
-    }
-
     private fun doWhenState(
             isOpen: () -> Unit,
             isClose: () -> Unit
     ) {
-        when (state) {
+        when (state.bodyVisibility) {
             stateOpen -> isOpen()
             stateClose -> isClose()
         }
     }
 
     private fun changeState(desiredState: String) {
-        if (state == desiredState) return
-        state = desiredState
+        if (state.bodyVisibility == desiredState) return
+        state.bodyVisibility = desiredState
         renderOpenCloseStateChangerButton()
         renderStateDescription()
     }
@@ -255,9 +250,24 @@ class TransactionOrderProgressLayout : LinearLayout {
         isKeyboardOpened = !isKeyboardOpened
     }
 
+    data class State(
+            var bodyVisibility: String = DEFAULT_BODY_VISIBILITY,
+            var haBeenSeen: Boolean = DEFAULT_HAS_SEEN,
+            var isForceClose: Boolean = DEFAULT_IS_FORCE_CLOSE
+    ) {
+        fun updateIsForceClose() {
+            isForceClose = bodyVisibility == stateClose
+        }
+    }
+
     companion object {
         private const val stateOpen = "Tutup"
         private const val stateClose = "Lihat"
+
+        private const val DEFAULT_BODY_VISIBILITY = stateOpen
+        private const val DEFAULT_HAS_SEEN = true
+        private const val DEFAULT_IS_FORCE_CLOSE = false
+        private val DEFAULT_STATE = CommonUtil.toJson(State())
 
         private const val PREF_NAME = "TransactionOrderProgressPreference_ChatRoom"
     }

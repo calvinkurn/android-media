@@ -39,5 +39,7 @@ data class ChatOrderProgress(
         const val stateNew_order = "new_order"
         const val stateOngoing = "on_going"
         const val stateFinish = "finish"
+
+        const val DEFAULT_STATE = stateEmpty
     }
 }
