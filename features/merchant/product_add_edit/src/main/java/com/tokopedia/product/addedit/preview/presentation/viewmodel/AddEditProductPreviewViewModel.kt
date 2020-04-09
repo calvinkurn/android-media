@@ -93,6 +93,13 @@ class AddEditProductPreviewViewModel @Inject constructor(
         return productId.value ?: ""
     }
 
+    fun getDraftId(): Long {
+        if (draftId.value != "") {
+            return draftId.value?.toLong() ?: 0
+        }
+        return 0
+    }
+
     fun setProductId(id: String) {
         productId.value = id
     }

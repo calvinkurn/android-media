@@ -155,7 +155,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
             val draftId = getString(EXTRA_DRAFT_ID)
             viewModel.setProductId(getString(EXTRA_PRODUCT_ID) ?: "")
             viewModel.setDraftId(draftId ?: "")
-            if(draftId != "") draftId?.let { viewModel.getProductDraft(it.toLong()) }
+            viewModel.getDraftId()?.let { viewModel.getProductDraft(it) }
         }
 
         if (viewModel.isEditing.value == true) {
@@ -353,7 +353,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
                             data.getParcelableExtra<ProductVariantInputModel>(EXTRA_VARIANT_INPUT)
                     context?.let {
                         AddEditProductAddService.startService(it, detailInputModel,
-                                descriptionInputModel, shipmentInputModel, variantInputModel)
+                                descriptionInputModel, shipmentInputModel, variantInputModel, viewModel.getDraftId())
                     }
                 }
                 REQUEST_CODE_DETAIL_EDIT -> {
