@@ -102,7 +102,7 @@ class TransactionOrderProgressLayout : LinearLayout {
     }
 
     private fun shouldBeRendered(): Boolean {
-        return canBeRendered && chatOrder.enable.also { shouldShow ->
+        return canBeRendered && chatOrder.isNotEmpty() && chatOrder.enable.also { shouldShow ->
             if (!shouldShow) hide()
         }
     }
@@ -256,11 +256,6 @@ class TransactionOrderProgressLayout : LinearLayout {
     }
 
     companion object {
-        private const val stateEmpty = "empty"
-        private const val stateNew_order = "new_order"
-        private const val stateOngoing = "on_going"
-        private const val stateFinish = "finish"
-
         private const val stateOpen = "Tutup"
         private const val stateClose = "Lihat"
 
