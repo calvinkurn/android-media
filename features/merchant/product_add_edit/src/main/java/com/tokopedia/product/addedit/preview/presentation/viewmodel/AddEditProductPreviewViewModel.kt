@@ -123,7 +123,14 @@ class AddEditProductPreviewViewModel @Inject constructor(
     }
 
     fun updateProductInputModel(productDraft: ProductDraft) {
-        productInputModel.value?.let { mapDraftToProductInputModel(productDraft) }
+        productInputModel.value?.apply {
+            val draft = mapDraftToProductInputModel(productDraft)
+            variantInputModel = draft.variantInputModel
+            detailInputModel = draft.detailInputModel
+            descriptionInputModel = draft.descriptionInputModel
+            shipmentInputModel = draft.shipmentInputModel
+            draftId = draft.draftId
+        }
     }
 
     fun getNewProductInputModel(imageUrlOrPathList: ArrayList<String>): ProductInputModel {

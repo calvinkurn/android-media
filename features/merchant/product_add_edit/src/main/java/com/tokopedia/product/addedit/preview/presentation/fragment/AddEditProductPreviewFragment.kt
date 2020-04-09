@@ -525,7 +525,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
     private fun observeProductInputModelFromDraft() {
         viewModel.getProductDraftResult.observe(viewLifecycleOwner, Observer { result ->
             when(result) {
-                is Success -> viewModel.updateProductInputModel(result.data)
+                is Success -> { viewModel.updateProductInputModel(result.data) }
             }
         })
     }
