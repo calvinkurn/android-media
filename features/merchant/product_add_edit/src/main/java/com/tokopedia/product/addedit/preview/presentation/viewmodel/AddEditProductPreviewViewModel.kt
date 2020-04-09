@@ -39,6 +39,8 @@ class AddEditProductPreviewViewModel @Inject constructor(
 
     private val draftId = MutableLiveData<String>()
 
+    private val detailInputModel = MutableLiveData<DetailInputModel>()
+
     // observing the product id, and will become true if product id exist
     val isEditing = Transformations.map(productId) { id ->
         !id.isNullOrBlank()
@@ -57,16 +59,7 @@ class AddEditProductPreviewViewModel @Inject constructor(
     val getProductResult: LiveData<Result<Product>> get() = mGetProductResult
 
     // observing the use case result, and will convert product data to input model
-    var productInputModel = Transformations.map(mGetProductResult) {
-        when (it) {
-            is Success -> {
-                getProductMapper.mapRemoteModelToUiModel(it.data)
-            }
-            is Fail -> {
-                ProductInputModel()
-            }
-        }
-    }
+    var productInputModel = MediatorLiveData<ProductInputModel>()
 
     // observing the use case result, and will become true if no variant
     val isVariantEmpty = Transformations.map(mGetProductResult) {
@@ -88,6 +81,20 @@ class AddEditProductPreviewViewModel @Inject constructor(
 
     private val mGetProductDraftResult = MutableLiveData<Result<ProductDraft>>()
     val getProductDraftResult: LiveData<Result<ProductDraft>> get() = mGetProductDraftResult
+
+    init {
+        with (productInputModel) {
+            addSource(mGetProductResult) {
+                productInputModel.value = when (it) {
+                    is Success -> getProductMapper.mapRemoteModelToUiModel(it.data)
+                    is Fail -> ProductInputModel()
+                }
+            }
+            addSource(detailInputModel) {
+                productInputModel.value = productInputModel.value.apply { this?.detailInputModel = it }
+            }
+        }
+    }
 
     fun getProductId(): String {
         return productId.value ?: ""
@@ -114,7 +121,7 @@ class AddEditProductPreviewViewModel @Inject constructor(
     }
 
     fun updateDetailInputModel(detailInputModel: DetailInputModel) {
-        productInputModel.value?.detailInputModel = detailInputModel
+        this.detailInputModel.value = detailInputModel
     }
 
     fun updateDescriptionInputModel(descriptionInputModel: DescriptionInputModel) {
