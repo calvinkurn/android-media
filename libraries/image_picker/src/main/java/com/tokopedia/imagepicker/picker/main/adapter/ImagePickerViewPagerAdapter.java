@@ -27,7 +27,7 @@ public class ImagePickerViewPagerAdapter extends FragmentStatePagerAdapter {
     protected Context context;
 
     public ImagePickerViewPagerAdapter(Context context, FragmentManager fm, ImagePickerBuilder imagePickerBuilder) {
-        super(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
+        super(fm, BEHAVIOR_SET_USER_VISIBLE_HINT);
         this.imagePickerBuilder = imagePickerBuilder;
         this.context = context;
     }
