@@ -87,9 +87,9 @@ class AddEditProductPreviewViewModel @Inject constructor(
         draftId.value = id
     }
 
-    fun updateProductPhotos(imageUrlOrPathList: ArrayList<String>) {
-        productInputModel.value?.detailInputModel?.imageUrlOrPathList = imageUrlOrPathList
-        this.mImageUrlOrPathList.value = imageUrlOrPathList
+    fun updateProductPhotos(imagePickerResult: ArrayList<String>) {
+        productInputModel.value?.detailInputModel?.imageUrlOrPathList = imagePickerResult
+        this.mImageUrlOrPathList.value = imagePickerResult
     }
 
     fun getNewProductInputModel(imageUrlOrPathList: ArrayList<String>): ProductInputModel {

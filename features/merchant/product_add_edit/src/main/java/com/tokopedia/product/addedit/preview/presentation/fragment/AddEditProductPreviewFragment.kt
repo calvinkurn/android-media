@@ -226,7 +226,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
             } else {
                 ProductAddStepperTracking.trackStart(shopId)
             }
-            val imageUrlOrPathList = viewModel.imageUrlOrPathList.value ?: mutableListOf()
+            val imageUrlOrPathList = viewModel.productInputModel.value?.detailInputModel?.imageUrlOrPathList ?: listOf()
             val intent = ImagePickerAddProductActivity.getIntent(context, createImagePickerBuilder(ArrayList(imageUrlOrPathList)))
             startActivityForResult(intent, REQUEST_CODE_IMAGE)
         }
@@ -306,22 +306,21 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
         observeProductVariant()
         observeImageUrlOrPathList()
         observeProductVariantList()
-
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK && data != null) {
             if (requestCode == REQUEST_CODE_IMAGE) {
-                val imageUrlOrPathList = data.getStringArrayListExtra(ImagePickerActivity.PICKER_RESULT_PATHS)
-                if (imageUrlOrPathList != null && imageUrlOrPathList.size > 0) {
+                val imagePickerResult = data.getStringArrayListExtra(ImagePickerActivity.PICKER_RESULT_PATHS)
+                if (imagePickerResult != null && imagePickerResult.size > 0) {
                     val isEditMode = viewModel.isEditing.value
                     isEditMode?.let {
                         // update the product pictures in the preview page
-                        if (isEditMode) viewModel.updateProductPhotos(imageUrlOrPathList)
+                        if (isEditMode) viewModel.updateProductPhotos(imagePickerResult)
                         else {
                             // start add product detail
-                            val newProductInputModel = viewModel.getNewProductInputModel(imageUrlOrPathList)
+                            val newProductInputModel = viewModel.getNewProductInputModel(imagePickerResult)
                             val isEditing = viewModel.isEditing.value ?: false
                             val isDrafting = viewModel.isDrafting.value ?: false
                             startAddEditProductDetailActivity(newProductInputModel, isEditing = isEditing, isDrafting = isDrafting)

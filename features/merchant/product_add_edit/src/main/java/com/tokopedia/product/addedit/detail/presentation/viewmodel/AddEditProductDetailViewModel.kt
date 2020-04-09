@@ -33,7 +33,7 @@ class AddEditProductDetailViewModel @Inject constructor(
 
     var detailInputModel = DetailInputModel()
 
-    var variantInputModel = ProductVariantInputModel()
+    var hasVariants = false
 
     var productPhotoPaths = detailInputModel.imageUrlOrPathList.toMutableList()
 
@@ -172,14 +172,14 @@ class AddEditProductDetailViewModel @Inject constructor(
             mIsProductPriceInputError.value = true
             return
         }
-        val productPrice = productPriceInput.toLong()
-        if (productPrice < minProductPriceLimit) {
+        val productPrice = productPriceInput.toBigInteger()
+        if (productPrice < minProductPriceLimit.toBigInteger()) {
             val errorMessage = provider.getMinLimitProductPriceErrorMessage()
             errorMessage?.let { productPriceMessage = it }
             mIsProductPriceInputError.value = true
             return
         }
-        if (productPrice > maxProductPriceLimit) {
+        if (productPrice > maxProductPriceLimit.toBigInteger()) {
             val errorMessage = provider.getMaxLimitProductPriceErrorMessage()
             errorMessage?.let { productPriceMessage = it }
             mIsProductPriceInputError.value = true
@@ -207,16 +207,16 @@ class AddEditProductDetailViewModel @Inject constructor(
         if (wholeSalePriceInput.isEmpty()) {
             provider.getEmptyWholeSalePriceErrorMessage()?.let { return it }
         }
-        val wholeSalePrice = wholeSalePriceInput.toLong()
-        if (wholeSalePrice == 0L) {
+        val wholeSalePrice = wholeSalePriceInput.toBigDecimal()
+        if (wholeSalePrice == 0.toBigDecimal()) {
             provider.getZeroWholeSalePriceErrorMessage()?.let { return it }
         }
-        if (wholeSalePrice > maxWholeSalePriceLimit) {
+        if (wholeSalePrice > maxWholeSalePriceLimit.toBigDecimal()) {
             provider.getMaxLimitWholeSalePriceErrorMessage()?.let { return it }
         }
         if (productPriceInput.isNotEmpty()) {
             val productPrice = productPriceInput.toLong()
-            if (wholeSalePrice > productPrice) {
+            if (wholeSalePrice > productPrice.toBigDecimal()) {
                 provider.getWholeSalePriceTooExpensiveErrorMessage()?.let { return it }
             }
         }
@@ -230,14 +230,14 @@ class AddEditProductDetailViewModel @Inject constructor(
             mIsProductStockInputError.value = true
             return
         }
-        val productStock = productStockInput.toLong()
-        if (productStock < minProductStockLimit) {
+        val productStock = productStockInput.toBigInteger()
+        if (productStock < minProductStockLimit.toBigInteger()) {
             val errorMessage = provider.getMinLimitProductStockErrorMessage()
             errorMessage?.let { productStockMessage = it }
             mIsProductStockInputError.value = true
             return
         }
-        if (productStock > maxProductStockLimit) {
+        if (productStock > maxProductStockLimit.toBigInteger()) {
             val errorMessage = provider.getMaxLimitProductStockErrorMessage()
             errorMessage?.let { productStockMessage = it }
             mIsProductStockInputError.value = true
@@ -254,15 +254,15 @@ class AddEditProductDetailViewModel @Inject constructor(
             mIsOrderQuantityInputError.value = true
             return
         }
-        val productMinOrder = orderQuantityInput.toLong()
-        if (productMinOrder < minOrderQuantity) {
+        val productMinOrder = orderQuantityInput.toBigInteger()
+        if (productMinOrder < minOrderQuantity.toBigInteger()) {
             val errorMessage = provider.getMinLimitOrderQuantityErrorMessage()
             errorMessage?.let { orderQuantityMessage = it }
             mIsOrderQuantityInputError.value = true
             return
         }
         if (productStockInput.isNotEmpty()) {
-            val productStock = productStockInput.toLong()
+            val productStock = productStockInput.toBigInteger()
             if (productMinOrder > productStock) {
                 val errorMessage = provider.getMaxLimitOrderQuantityErrorMessage()
                 errorMessage?.let { orderQuantityMessage = it }
@@ -281,22 +281,22 @@ class AddEditProductDetailViewModel @Inject constructor(
             mIsPreOrderDurationInputError.value = true
             return
         }
-        val preOrderDuration = preOrderDurationInput.toLong()
-        if (preOrderDuration < minPreOrderDuration) {
+        val preOrderDuration = preOrderDurationInput.toBigInteger()
+        if (preOrderDuration < minPreOrderDuration.toBigInteger()) {
             val errorMessage = provider.getMinLimitPreorderDurationErrorMessage()
             errorMessage?.let { preOrderDurationMessage = it }
             mIsPreOrderDurationInputError.value = true
             return
         }
         val isDayUnit = timeUnit == UNIT_DAY
-        if (isDayUnit && preOrderDuration > maxPreOrderDays) {
+        if (isDayUnit && preOrderDuration > maxPreOrderDays.toBigInteger()) {
             val errorMessage = provider.getMaxDaysLimitPreorderDuratioErrorMessage()
             errorMessage?.let { preOrderDurationMessage = it }
             mIsPreOrderDurationInputError.value = true
             return
         }
         val isWeekUnit = timeUnit == UNIT_WEEK
-        if (isWeekUnit && preOrderDuration > maxPreOrderWeeks) {
+        if (isWeekUnit && preOrderDuration > maxPreOrderWeeks.toBigInteger()) {
             val errorMessage = provider.getMaxWeeksLimitPreorderDuratioErrorMessage()
             errorMessage?.let { preOrderDurationMessage = it }
             mIsPreOrderDurationInputError.value = true
@@ -308,12 +308,12 @@ class AddEditProductDetailViewModel @Inject constructor(
 
     private fun isProductNameExist(productNameInput: String): Boolean {
         // TODO: replace the validation with API check
-        return productNameInput == "Addidas"
+        return false
     }
 
     private fun isProductNameBanned(productNameInput: String): Boolean {
         // TODO: replace the validation with API check
-        return productNameInput == "Shopee"
+        return false
     }
 
     fun getProductNameRecommendation(shopId: Int = 0, query: String) {

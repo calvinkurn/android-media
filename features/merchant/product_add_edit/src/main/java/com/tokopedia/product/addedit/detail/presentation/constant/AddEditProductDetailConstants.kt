@@ -18,5 +18,6 @@ class AddEditProductDetailConstants {
         const val CONDITION_USED = "USED"
         const val DEFAULT_STOCK_VALUE = 1
         const val DEFAULT_MIN_ORDER_VALUE = 1
+        const val DEBOUNCE_DELAY_MILLIS = 500L
     }
 }

@@ -3,10 +3,9 @@ package com.tokopedia.product.addedit.common.util
 import android.text.Editable
 import android.text.InputFilter
 import android.text.TextWatcher
-import com.tokopedia.kotlin.extensions.view.toFloatOrZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.unifycomponents.TextFieldUnify
+import java.math.BigInteger
 import java.text.NumberFormat
 import java.util.*
 
@@ -16,9 +15,7 @@ fun TextFieldUnify?.getText(): String = this?.textFieldInput?.text.toString()
 
 fun TextFieldUnify?.getTextIntOrZero(): Int = this?.textFieldInput?.text.toString().replace(".", "").toIntOrZero()
 
-fun TextFieldUnify?.getTextFloatOrZero(): Float = this?.textFieldInput?.text.toString().replace(".", "").toFloatOrZero()
-
-fun TextFieldUnify?.getTextLongOrZero(): Long = this?.textFieldInput?.text.toString().replace(".", "").toLongOrZero()
+fun TextFieldUnify?.getTextBigIntegerOrZero(): BigInteger = this?.textFieldInput?.text.toString().replace(".", "").toBigIntegerOrNull() ?: 0.toBigInteger()
 
 fun TextFieldUnify?.setModeToNumberInput() {
     val textFieldInput = this?.textFieldInput
