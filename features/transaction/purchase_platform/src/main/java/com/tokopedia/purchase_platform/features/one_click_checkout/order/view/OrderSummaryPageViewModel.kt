@@ -4,7 +4,6 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.authentication.AuthHelper
 import com.tokopedia.design.utils.CurrencyFormatUtil
-import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateConverter
 import com.tokopedia.logisticcart.shipping.model.*
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
@@ -121,7 +120,6 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
         }, { throwable: Throwable ->
             _orderPreference = null
             orderPreference.value = OccState.Fail(false, throwable, "")
-            throwable.printStackTrace()
         })
     }
 
@@ -157,7 +155,6 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
             compositeSubscription.add(
                     clearCacheAutoApplyStackUseCase.createObservable(RequestParams.EMPTY).subscribe(object : Observer<ClearPromoUiModel?> {
                         override fun onError(e: Throwable?) {
-                            e?.printStackTrace()
                         }
 
                         override fun onNext(t: ClearPromoUiModel?) {
@@ -199,7 +196,6 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                             return@map data
                         }.subscribe(object : Observer<ShippingRecommendationData> {
                             override fun onError(e: Throwable) {
-                                e.printStackTrace()
                                 _orderPreference = _orderPreference?.copy(shipping = Shipment(
                                         serviceName = _orderPreference?.preference?.shipment?.serviceName,
                                         serviceDuration = _orderPreference?.preference?.shipment?.serviceDuration,
@@ -477,7 +473,6 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
         compositeSubscription.add(
                 clearCacheAutoApplyStackUseCase.createObservable(RequestParams.EMPTY).subscribe(object : Observer<ClearPromoUiModel?> {
                     override fun onError(e: Throwable?) {
-                        e?.printStackTrace()
                     }
 
                     override fun onNext(t: ClearPromoUiModel?) {
@@ -512,7 +507,6 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribe(object : Observer<ValidateUsePromoRevampUiModel> {
                                 override fun onError(e: Throwable) {
-                                    e.printStackTrace()
                                     orderPromo.value = orderPromo.value?.copy(state = ButtonBayarState.DISABLE)
                                     globalEvent.value = OccGlobalEvent.Error(e)
                                     val shippingRecommendationData = shipping.shippingRecommendationData
@@ -597,7 +591,6 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                 compositeSubscription.add(
                         clearCacheAutoApplyStackUseCase.createObservable(RequestParams.EMPTY).subscribe(object : Observer<ClearPromoUiModel?> {
                             override fun onError(e: Throwable?) {
-                                e?.printStackTrace()
                             }
 
                             override fun onNext(t: ClearPromoUiModel?) {
@@ -683,7 +676,6 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                 compositeSubscription.add(
                         clearCacheAutoApplyStackUseCase.createObservable(RequestParams.EMPTY).subscribe(object : Observer<ClearPromoUiModel?> {
                             override fun onError(e: Throwable?) {
-                                e?.printStackTrace()
                             }
 
                             override fun onNext(t: ClearPromoUiModel?) {
@@ -773,7 +765,6 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                             .unsubscribeOn(Schedulers.io())
                             .subscribe(object : Observer<String> {
                                 override fun onError(e: Throwable) {
-                                    e.printStackTrace()
                                     globalEvent.value = OccGlobalEvent.Error(e)
                                 }
 
@@ -790,7 +781,6 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                                             messageError = response.getJSONArray("message_error").getString(0)
                                         }
                                     } catch (e: JSONException) {
-                                        e.printStackTrace()
                                         statusSuccess = false
                                     }
 
@@ -833,7 +823,6 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribe(object : Observer<ValidateUsePromoRevampUiModel> {
                                 override fun onError(e: Throwable) {
-                                    e.printStackTrace()
                                     globalEvent.value = OccGlobalEvent.Error(e)
                                 }
 
@@ -891,8 +880,8 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
         if (param != null) {
             updateCartOccUseCase.execute(param, {
                 //do nothing
-            }, { throwable: Throwable ->
-                throwable.printStackTrace()
+            }, {
+                //do nothing
             })
         }
     }
@@ -937,7 +926,6 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                 clearBboIfExist()
                 globalEvent.value = OccGlobalEvent.TriggerRefresh(true)
             }, { throwable: Throwable ->
-                throwable.printStackTrace()
                 if (throwable is MessageErrorException && throwable.message != null) {
                     globalEvent.value = OccGlobalEvent.Error(errorMessage = throwable.message
                             ?: DEFAULT_ERROR_MESSAGE)
@@ -959,7 +947,6 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                 updateCartOccUseCase.execute(param, {
                     finalValidateUse(product, shop, pref, onSuccessCheckout, skipCheckIneligiblePromo)
                 }, { throwable: Throwable ->
-                    throwable.printStackTrace()
                     if (throwable is MessageErrorException && throwable.message != null) {
                         globalEvent.value = OccGlobalEvent.Error(errorMessage = throwable.message
                                 ?: DEFAULT_ERROR_MESSAGE)
@@ -981,7 +968,6 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribe(object : Observer<ValidateUsePromoRevampUiModel> {
                                 override fun onError(e: Throwable) {
-                                    e.printStackTrace()
                                     globalEvent.value = OccGlobalEvent.Error(e)
                                 }
 
@@ -1058,7 +1044,6 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                 }
             }
         }, { throwable: Throwable ->
-            throwable.printStackTrace()
             globalEvent.value = OccGlobalEvent.Error(throwable)
         })
     }
@@ -1154,7 +1139,6 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                 clearCacheAutoApplyStackUseCase.createObservable(RequestParams.EMPTY)
                         .subscribe(object : Observer<ClearPromoUiModel?> {
                             override fun onError(e: Throwable?) {
-                                e?.printStackTrace()
                                 globalEvent.value = OccGlobalEvent.Error(e)
                             }
 
@@ -1178,7 +1162,6 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                 globalEvent.value = OccGlobalEvent.Normal
                 onSuccess(generateValidateUsePromoRequest(), generatePromoRequest(), generateBboPromoCodes())
             }, { throwable: Throwable ->
-                throwable.printStackTrace()
                 if (throwable is MessageErrorException && throwable.message != null) {
                     globalEvent.value = OccGlobalEvent.Error(errorMessage = throwable.message
                             ?: DEFAULT_ERROR_MESSAGE)
@@ -1323,7 +1306,6 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(object : Observer<ValidateUsePromoRevampUiModel> {
                             override fun onError(e: Throwable) {
-                                e.printStackTrace()
                                 orderPromo.value = orderPromo.value?.copy(state = ButtonBayarState.DISABLE)
                                 orderTotal.value = orderTotal.value?.copy(buttonState = ButtonBayarState.DISABLE)
                             }

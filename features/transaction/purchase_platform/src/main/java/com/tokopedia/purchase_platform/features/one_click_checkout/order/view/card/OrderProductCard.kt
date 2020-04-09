@@ -122,9 +122,7 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
                 var qty = 0
                 try {
                     qty = Integer.parseInt(quantity.editable.toString())
-                } catch (e: NumberFormatException) {
-                    e.printStackTrace()
-                }
+                } catch (e: NumberFormatException) { }
 
                 product.quantity.orderQuantity = qty
                 validateQuantity()
