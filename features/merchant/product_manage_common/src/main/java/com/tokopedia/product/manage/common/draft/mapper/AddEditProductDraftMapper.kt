@@ -42,7 +42,7 @@ class AddEditProductDraftMapper {
             if (categoryId.isNotEmpty()) {
                 completionCount++
             }
-            if (price > 0) {
+            if (price > 0.toBigInteger()) {
                 completionCount++
             }
             if (stock > 0) {

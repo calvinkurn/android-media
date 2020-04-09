@@ -9,7 +9,7 @@ fun mapProductInputModelDetailToDraft(productInputModel: ProductInputModel): Pro
     val productDraft = ProductDraft()
     productDraft.detailInputModel.productName = productInputModel.detailInputModel.productName
     productDraft.detailInputModel.categoryId = productInputModel.detailInputModel.categoryId
-    productDraft.detailInputModel.price = productInputModel.detailInputModel.price.toFloat()
+    productDraft.detailInputModel.price = productInputModel.detailInputModel.price
     productDraft.detailInputModel.stock = productInputModel.detailInputModel.stock
     productDraft.detailInputModel.minOrder = productInputModel.detailInputModel.minOrder
     productDraft.detailInputModel.condition = productInputModel.detailInputModel.sku
@@ -55,7 +55,7 @@ fun mapDraftToProductInputModel(productDraft: ProductDraft): ProductInputModel {
     productInputModel.detailInputModel.apply {
         productName = productDraft.detailInputModel.productName
         categoryId = productDraft.detailInputModel.categoryId
-        price = productDraft.detailInputModel.price.toLong()
+        price = productDraft.detailInputModel.price
         stock = productDraft.detailInputModel.stock
         minOrder = productDraft.detailInputModel.minOrder
         condition = productDraft.detailInputModel.sku

@@ -4,6 +4,7 @@ import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import kotlinx.android.parcel.Parcelize
+import java.math.BigInteger
 
 @Parcelize
 data class ProductAddParam (
@@ -12,7 +13,7 @@ data class ProductAddParam (
         var productName: String? = null,
         @SerializedName("price")
         @Expose
-        var price: Long? = null,
+        var price: BigInteger? = null,
         @SerializedName("priceCurrency")
         @Expose
         var priceCurrency: String? = null,

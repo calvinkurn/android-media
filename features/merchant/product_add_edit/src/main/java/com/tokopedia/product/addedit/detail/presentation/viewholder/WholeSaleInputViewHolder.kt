@@ -67,7 +67,7 @@ class WholeSaleInputViewHolder(itemView: View,
                     if (it.isNotEmpty()) {
                         // format the number
                         wholeSalePriceField?.textFieldInput?.removeTextChangedListener(this)
-                        val formattedText: String = NumberFormat.getNumberInstance(Locale.US).format(it.toLong()).toString().replace(",", ".")
+                        val formattedText: String = NumberFormat.getNumberInstance(Locale.US).format(it.toBigInteger()).toString().replace(",", ".")
                         wholeSalePriceField?.textFieldInput?.setText(formattedText)
                         wholeSalePriceField?.textFieldInput?.setSelection(formattedText.length)
                         wholeSalePriceField?.textFieldInput?.addTextChangedListener(this)
