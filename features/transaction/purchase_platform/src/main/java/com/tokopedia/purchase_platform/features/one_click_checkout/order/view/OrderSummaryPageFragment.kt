@@ -626,6 +626,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
             val lastApply = orderPromo.lastApply
             var title = getString(R.string.promo_funnel_label)
             if (lastApply?.additionalInfo?.messageInfo?.message?.isNotEmpty() == true) {
+                orderSummaryAnalytics.eventViewPromoAlreadyApplied()
                 title = lastApply.additionalInfo.messageInfo.message
             } else if (lastApply?.defaultEmptyPromoMessage?.isNotBlank() == true) {
                 title = lastApply.defaultEmptyPromoMessage

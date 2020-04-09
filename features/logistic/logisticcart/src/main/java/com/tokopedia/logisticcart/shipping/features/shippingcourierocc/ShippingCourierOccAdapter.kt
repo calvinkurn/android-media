@@ -8,7 +8,9 @@ import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.Shippin
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.ArmyViewHolder
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.NotifierViewHolder
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.ShippingDurationAdapterListener
-import com.tokopedia.logisticcart.shipping.model.*
+import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
+import com.tokopedia.logisticcart.shipping.model.RatesViewModelType
+import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 
 class ShippingCourierOccAdapter(val list: List<RatesViewModelType>, val shippingCourierAdapterListener: ShippingCourierAdapterListener, val shippingDurationAdapterListener: ShippingDurationAdapterListener) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -29,7 +31,7 @@ class ShippingCourierOccAdapter(val list: List<RatesViewModelType>, val shipping
         when (holder) {
             is ShippingCourierViewHolder -> holder.bindData(list[position] as ShippingCourierUiModel, shippingCourierAdapterListener)
             is ArmyViewHolder -> holder.bindData(list[position] as LogisticPromoUiModel, shippingDurationAdapterListener)
-            is NotifierViewHolder -> holder.bindInstantOrSamedayCourier()
+            is NotifierViewHolder -> holder.bindData()
         }
     }
 
