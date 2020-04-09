@@ -127,18 +127,17 @@ object DynamicProductDetailMapper {
     }
 
     fun generateButtonAction(it: String, atcButton: Boolean, leasing: Boolean): Int {
-        return ProductDetailConstant.OCS_BUTTON
-//        return when {
-//            atcButton -> ProductDetailConstant.ATC_BUTTON
-//            leasing -> ProductDetailConstant.LEASING_BUTTON
-//            it == ProductDetailConstant.KEY_NORMAL_BUTTON -> {
-//                ProductDetailConstant.BUY_BUTTON
-//            }
-//            it == ProductDetailConstant.KEY_OCS_BUTTON -> {
-//                ProductDetailConstant.OCS_BUTTON
-//            }
-//            else -> ProductDetailConstant.BUY_BUTTON
-//        }
+        return when {
+            atcButton -> ProductDetailConstant.ATC_BUTTON
+            leasing -> ProductDetailConstant.LEASING_BUTTON
+            it == ProductDetailConstant.KEY_NORMAL_BUTTON -> {
+                ProductDetailConstant.BUY_BUTTON
+            }
+            it == ProductDetailConstant.KEY_OCS_BUTTON -> {
+                ProductDetailConstant.OCS_BUTTON
+            }
+            else -> ProductDetailConstant.BUY_BUTTON
+        }
     }
 
     fun mapToWholesale(data: List<Wholesale>?): List<com.tokopedia.product.detail.common.data.model.product.Wholesale>? {
