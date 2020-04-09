@@ -6,11 +6,11 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
 import com.tokopedia.product.addedit.description.data.remote.model.variantbycat.ProductVariantByCatModel
 import com.tokopedia.product.addedit.description.domain.usecase.GetProductVariantUseCase
 import com.tokopedia.product.addedit.description.presentation.model.DescriptionInputModel
 import com.tokopedia.product.addedit.description.presentation.model.ProductVariantInputModel
+import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
 import com.tokopedia.product.addedit.preview.data.source.api.response.Product
 import com.tokopedia.product.addedit.preview.domain.GetProductUseCase
 import com.tokopedia.product.addedit.preview.domain.mapper.GetProductMapper
@@ -35,6 +35,8 @@ class AddEditProductPreviewViewModel @Inject constructor(
 
     private val draftId = MutableLiveData<String>()
 
+    private val detailInputModel = MutableLiveData<DetailInputModel>()
+
     // observing the product id, and will become true if product id exist
     val isEditing = Transformations.map(productId) { id ->
         !id.isNullOrBlank()
@@ -53,16 +55,7 @@ class AddEditProductPreviewViewModel @Inject constructor(
     val getProductResult: LiveData<Result<Product>> get() = mGetProductResult
 
     // observing the use case result, and will convert product data to input model
-    var productInputModel = Transformations.map(mGetProductResult) {
-        when (it) {
-            is Success -> {
-                getProductMapper.mapRemoteModelToUiModel(it.data)
-            }
-            is Fail -> {
-                ProductInputModel()
-            }
-        }
-    }
+    var productInputModel = MediatorLiveData<ProductInputModel>()
 
     // observing the use case result, and will become true if no variant
     val isVariantEmpty = Transformations.map(mGetProductResult) {
@@ -82,6 +75,20 @@ class AddEditProductPreviewViewModel @Inject constructor(
     private val mProductVariantList = MutableLiveData<Result<List<ProductVariantByCatModel>>>()
     val productVariantList: LiveData<Result<List<ProductVariantByCatModel>>> get() = mProductVariantList
 
+    init {
+        with (productInputModel) {
+            addSource(mGetProductResult) {
+                productInputModel.value = when (it) {
+                    is Success -> getProductMapper.mapRemoteModelToUiModel(it.data)
+                    is Fail -> ProductInputModel()
+                }
+            }
+            addSource(detailInputModel) {
+                productInputModel.value = productInputModel.value.apply { this?.detailInputModel = it }
+            }
+        }
+    }
+
     fun getProductId(): String {
         return productId.value ?: ""
     }
@@ -100,7 +107,7 @@ class AddEditProductPreviewViewModel @Inject constructor(
     }
 
     fun updateDetailInputModel(detailInputModel: DetailInputModel) {
-        productInputModel.value?.detailInputModel = detailInputModel
+        this.detailInputModel.value = detailInputModel
     }
 
     fun updateDescriptionInputModel(descriptionInputModel: DescriptionInputModel) {

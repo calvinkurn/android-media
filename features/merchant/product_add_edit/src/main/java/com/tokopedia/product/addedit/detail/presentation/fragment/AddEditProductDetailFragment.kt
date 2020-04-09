@@ -401,8 +401,8 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         })
 
         // product price text change listener
-        if (viewModel.variantInputModel.variantOptionParent.isNotEmpty() &&
-                viewModel.variantInputModel.productVariant.isNotEmpty()) {
+        if (viewModel.productInputModel.variantInputModel.variantOptionParent.isNotEmpty() &&
+                viewModel.productInputModel.variantInputModel.productVariant.isNotEmpty()) {
             productPriceField?.textFieldInput?.isEnabled = false
             productPriceEditIcon?.visible()
             productPriceEditIcon?.setOnClickListener { showEditAllVariantPriceBottomSheet() }
@@ -507,7 +507,6 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             isInputValid?.let {
                 if (it) {
                     submitInputEdit()
-                    moveToDescriptionActivity()
                 }
             }
         }
@@ -588,13 +587,6 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             if (this && !requestedFocus) {
                 preOrderDurationField?.requestFocus()
                 requestedFocus = true
-            }
-
-            val isInputValid = viewModel.isInputValid.value
-            isInputValid?.let {
-                if (it) {
-                    submitInputEdit()
-                } else continueButton?.isLoading = false
             }
         }
     }
