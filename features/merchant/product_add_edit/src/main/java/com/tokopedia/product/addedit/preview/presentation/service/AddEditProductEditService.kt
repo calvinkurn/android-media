@@ -119,9 +119,6 @@ class AddEditProductEditService : AddEditProductBaseService() {
                     saveProductDraftUseCase.params = SaveProductDraftUseCase.createRequestParams(mapProductInputModelDetailToDraft(productInputModel), productInputModel.draftId, false)
                     withContext(Dispatchers.IO){ saveProductDraftUseCase.executeOnBackground() }
                 }
-                val intent = RouteManager.getIntent(applicationContext, ApplinkConstInternalMechant.MERCHANT_OPEN_PRODUCT_PREVIEW)
-                intent.putExtra(EXTRA_DRAFT_ID, productInputModel.draftId.toString() + "")
-                startActivity(intent)
             }
         })
     }
