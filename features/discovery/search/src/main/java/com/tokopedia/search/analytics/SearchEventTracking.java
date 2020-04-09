@@ -90,4 +90,6 @@ public interface SearchEventTracking {
     interface EventMoEngage {
         String SEARCH_ATTEMPT = "Search_Attempt";
     }
+
+    String NONE = "none";
 }

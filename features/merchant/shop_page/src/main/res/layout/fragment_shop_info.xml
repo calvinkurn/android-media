@@ -10,14 +10,6 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <ImageView
-            android:id="@+id/shopBackgroundImageView"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_100"
-            android:maxHeight="@dimen/dp_100"
-            android:scaleType="centerCrop"
-            tools:ignore="ContentDescription" />
-
         <include layout="@layout/partial_shop_info_description"/>
 
         <View

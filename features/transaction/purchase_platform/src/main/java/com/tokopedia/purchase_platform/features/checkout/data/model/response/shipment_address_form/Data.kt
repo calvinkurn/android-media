@@ -7,9 +7,9 @@ import com.google.gson.annotations.SerializedName
  */
 
 data class Data(
-        @SerializedName("default_address")
-        val defaultAddress: UserAddress?,
+		@SerializedName("default_address")
+		val defaultAddress: UserAddress?,
 
-        @SerializedName("trade_in_address")
-        val tradeInAddress: UserAddress?
+		@SerializedName("trade_in_address")
+		val tradeInAddress: UserAddress?
 )

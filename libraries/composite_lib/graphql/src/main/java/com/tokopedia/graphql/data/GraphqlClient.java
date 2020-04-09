@@ -12,6 +12,7 @@ import com.tokopedia.graphql.data.db.GraphqlDatabase;
 import com.tokopedia.graphql.data.source.cloud.api.GraphqlApi;
 import com.tokopedia.graphql.data.source.cloud.api.GraphqlApiSuspend;
 import com.tokopedia.graphql.data.source.cloud.api.GraphqlUrl;
+import com.tokopedia.grapqhl.beta.notif.BetaInterceptor;
 import com.tokopedia.network.CommonNetwork;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.converter.StringResponseConverter;
@@ -44,6 +45,7 @@ public class GraphqlClient {
             TkpdOkHttpBuilder tkpdOkHttpBuilder = new TkpdOkHttpBuilder(context.getApplicationContext(), new OkHttpClient.Builder());
             tkpdOkHttpBuilder.addInterceptor(new RiskAnalyticsInterceptor(context));
             tkpdOkHttpBuilder.addInterceptor(new GqlAkamaiBotInterceptor());
+            tkpdOkHttpBuilder.addInterceptor(new BetaInterceptor(context));
 
             if (GlobalConfig.isAllowDebuggingTools()) {
                 tkpdOkHttpBuilder.addInterceptor(new DeprecatedApiInterceptor(context.getApplicationContext()));

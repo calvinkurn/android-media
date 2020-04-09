@@ -19,7 +19,8 @@ class InspirationCarouselViewModel(
             var title: String = "",
             var url: String = "",
             var applink: String = "",
-            var product: List<Product> = listOf()
+            var product: List<Product> = listOf(),
+            var inspirationCarouselType: String = ""
     ){
         class Product(
             var id: String = "",
@@ -31,7 +32,8 @@ class InspirationCarouselViewModel(
             var countReview: Int = 0,
             var url: String = "",
             var applink: String = "",
-            var optionPosition: Int = 0
+            var optionPosition: Int = 0,
+            var inspirationCarouselType: String = ""
         ){
             fun getProductAsObjectDataLayer(): Any {
                 return DataLayer.mapOf(

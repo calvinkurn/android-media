@@ -7,6 +7,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.constant.DeeplinkConstant
 import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst.MENU_ID_TELCO
+import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst.TEMPLATE_ID_CC
 import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst.TEMPLATE_ID_GENERAL
 import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst.TEMPLATE_ID_VOUCHER
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital
@@ -67,6 +68,9 @@ object DeeplinkMapperDigital {
                 }
                 TEMPLATE_ID_GENERAL -> {
                     ApplinkConsInternalDigital.GENERAL_TEMPLATE
+                }
+                TEMPLATE_ID_CC -> {
+                    ApplinkConsInternalDigital.CREDIT_CARD_TEMPLATE
                 }
                 else -> deeplink
             }

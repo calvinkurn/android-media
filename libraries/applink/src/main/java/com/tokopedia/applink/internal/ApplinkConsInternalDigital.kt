@@ -18,6 +18,7 @@ object ApplinkConsInternalDigital {
     const val VOUCHER_GAME = "$INTERNAL_DIGITAL/vouchergame"
     const val GENERAL_TEMPLATE = "$INTERNAL_DIGITAL/general"
     const val CAMERA_OCR = "$INTERNAL_RECHARGE/ocr"
+    const val CREDIT_CARD_TEMPLATE = "$INTERNAL_RECHARGE/cc"
 
     const val INTERNAL_SMARTCARD = "$INTERNAL_DIGITAL/smartcard?$PARAM_SMARTCARD={type}"
 

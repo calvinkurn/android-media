@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.tokopedia.home.account.AccountConstants.Analytics.PEMBELI;
+import static com.tokopedia.home.account.AccountConstants.RC_FOOD_AND_VOUCHER_ICON_ENABLE;
 import static com.tokopedia.home.account.AccountConstants.RC_GIFTCARD_ENABLE;
 import static com.tokopedia.home.account.AccountConstants.RC_LOCALSERVICE_ENABLE;
 
@@ -119,15 +120,17 @@ public class SeeAllView extends BottomSheets {
         );
         list.add(gridItem);
 
-        gridItem = new MenuGridItemViewModel(
-                R.drawable.ic_deals,
-                getContext().getString(R.string.title_menu_deals),
-                ApplinkConst.DEALS_ORDER,
-                0,
-                PEMBELI,
-                getContext().getString(R.string.title_menu_transaction)
-        );
-        list.add(gridItem);
+        if (remoteConfig != null && remoteConfig.getBoolean(RC_FOOD_AND_VOUCHER_ICON_ENABLE, false)) {
+            gridItem = new MenuGridItemViewModel(
+                    R.drawable.ic_food_voucher,
+                    getContext().getString(R.string.title_menu_deals),
+                    ApplinkConst.DEALS_ORDER,
+                    0,
+                    PEMBELI,
+                    getContext().getString(R.string.title_menu_transaction)
+            );
+            list.add(gridItem);
+        }
 
         gridItem = new MenuGridItemViewModel(
                 R.drawable.ic_event,

@@ -4,6 +4,7 @@ object ProductTrackingConstant {
 
     object Category {
         const val PDP = "product detail page"
+        const val PDP_SELLER = "product detail page - seller side"
         const val PRODUCT_PAGE = "Product Page"
         const val PDP_AFTER_ATC = "product detail page after atc"
         const val TOP_NAV_SEARCH_PDP = "top nav - search - product detail page"
@@ -27,6 +28,8 @@ object ProductTrackingConstant {
         const val KEY_PROMO_ID = "promoId"
         const val USER_NON_LOGIN = "non login"
 
+        const val KEY_USER_ID_VARIANT = "userId"
+
         const val PRODUCT_DETAIL_SCREEN_NAME = "/product"
 
         const val ID = "id"
@@ -44,6 +47,7 @@ object ProductTrackingConstant {
         const val BRAND = "brand"
         const val DEFAULT_VALUE = "none / other"
         const val VARIANT = "variant"
+        const val QUANTITY = "quantity"
         const val NON_VARIANT = "non variant"
         const val CATEGORY = "category"
         const val LIST_DEFAULT = "/product - "
@@ -56,12 +60,21 @@ object ProductTrackingConstant {
         const val KEY_PRODUCT_ID = "productId"
         const val KEY_LAYOUT = "layout"
         const val KEY_COMPONENT = "component"
+        const val KEY_ISLOGGIN = "isLoggedInStatus"
+        const val KEY_ADD = "add"
 
         const val KEY_DIMENSION_81 = "dimension81"
         const val KEY_DIMENSION_83 = "dimension83"
         const val KEY_DIMENSION_54 = "dimension54"
         const val KEY_DIMENSION_55 = "dimension55"
         const val KEY_DIMENSION_38 = "dimension38"
+        const val KEY_DIMENSION_40 = "dimension40"
+        const val KEY_DIMENSION_82 = "dimension82"
+        const val KEY_DIMENSION_80 = "dimension80"
+        const val KEY_DIMENSION_79 = "dimension79"
+        const val KEY_DIMENSION_45 = "dimension45"
+        const val KEY_DIMENSION_98 = "dimension98"
+
     }
 
     object Action {
@@ -109,11 +122,22 @@ object ProductTrackingConstant {
         const val CLICK_DETAIL_MERCHANT_VOUCHER = "click - merchant voucher - mvc detail"
         const val CLICK_USE_MERCHANT_VOUCHER = "click - merchant voucher - use voucher"
         const val IMPRESSION_USE_MERCHANT_VOUCHER = "impression - merchant voucher - use voucher"
-        const val LANDSCAPE_VIEW = "landscape view"
         const val CLICK_LAST_DISCUSSION = "click - lihat semua diskusi on diskusi terakhir"
         const val CLICK_TRADEIN = "click trade in widget"
         const val CLICK_UNFOLLOW = "click - unfollow shop"
         const val CLICK_FOLLOW = "click - follow shop"
+        const val CLICK_CHOOSE_PRODUCT_VARIANT = "click - choose product variant"
+        const val CLICK_VARIANT_GUIDELINE = "click - lihat panduan on size chart"
+        const val IMPRESSION_CHOOSE_VARIANT_NOTIFICATION = "impression - choose variant notification"
+        const val CLICK_EDIT_PRODUCT = "click - edit product"
+        const val CLICK_ATC_NON_LOGIN = "click - tambah ke keranjang on pdp - non login"
+
+        const val CLICK_REQUEST_PERMISSION_IMEI = "click - beli then show popup"
+        const val CLICK_ACCEPT_PERMISSION = "click -  berikan akses on bottomsheet"
+        const val CLICK_GO_TO_SETTING = "click - ke pengaturan hp on popup"
+        const val CLICK_PERMISSION_LATER = "click - nanti saja on popup"
+        const val CLICK_NOTIFY_ME = "click - ingatkan saya on pdp campaign"
+        const val CLICK_DISKUSI_PRODUCT_TAB = "click - diskusi produk tab"
     }
 
     object Label {
@@ -132,6 +156,7 @@ object ProductTrackingConstant {
         const val EVENT_CLICK_PDP = "clickPDP"
         const val EVENT_VIEW_PDP = "viewPDP"
         const val EVENT_CLICK_TOP_NAV = "clickTopNav"
+        const val EVENT_VIEW_PDP_IRIS = "viewPDPIris"
     }
 
     object Affiliate {
@@ -143,6 +168,11 @@ object ProductTrackingConstant {
 
     object ProductTalk {
         const val TALK = "Talk"
+    }
+
+    object ImeiChecker {
+        const val CLICK_IMEI_PERMISSION_TITLE_NEED_ACCESS = "butuh akses ke hp mu"
+        const val CLICK_IMEI_PERMISSION_TITLE_NEED_ACCESS_INFO = "aktifkan akses telepon yuk"
     }
 
     object ProductReview {
