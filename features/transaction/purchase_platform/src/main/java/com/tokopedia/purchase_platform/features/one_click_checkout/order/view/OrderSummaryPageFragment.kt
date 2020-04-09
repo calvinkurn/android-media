@@ -697,10 +697,6 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
             }
         }
 
-        override fun onErrorPaymentClicked() {
-//            nested_scroll_view.smoothScrollTo(nested_scroll_view.scrollX, nested_scroll_view.maxScrollAmount)
-        }
-
         override fun onPreferenceEditClicked(preference: OrderPreference) {
             val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PREFERENCE_EDIT)
             intent.apply {
@@ -734,12 +730,8 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                             orderSummaryAnalytics.eventClickGearLogoInPreferenceFromGantiPilihanOSP()
                             val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PREFERENCE_EDIT)
                             val preferenceIndex = "${getString(R.string.lbl_summary_preference_option)} $position"
-                            var showDelete = true
-                            if (profileSize <= 1) {
-                                showDelete = false
-                            }
                             intent.apply {
-                                putExtra(PreferenceEditActivity.EXTRA_SHOW_DELETE_BUTTON, showDelete)
+                                putExtra(PreferenceEditActivity.EXTRA_SHOW_DELETE_BUTTON, profileSize > 1)
                                 putExtra(PreferenceEditActivity.EXTRA_PREFERENCE_INDEX, preferenceIndex)
                                 putExtra(PreferenceEditActivity.EXTRA_PROFILE_ID, preference.profileId)
                                 putExtra(PreferenceEditActivity.EXTRA_ADDRESS_ID, preference.addressModel?.addressId)

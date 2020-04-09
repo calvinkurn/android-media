@@ -78,14 +78,16 @@ class GetOccCartUseCase @Inject constructor(@ApplicationContext val context: Con
                 for (i in lastApply.data.voucherOrders.indices) {
                     val lastApplyVoucherOrdersItemUiModel = LastApplyVoucherOrdersItemUiModel()
                     val (_, code, uniqueId, _, _, _, _, message) = lastApply.data.voucherOrders[i]!!
-                    lastApplyVoucherOrdersItemUiModel.code = code!!
-                    lastApplyVoucherOrdersItemUiModel.uniqueId = uniqueId!!
-                    val lastApplyMessageInfoUiModel = LastApplyMessageUiModel()
-                    lastApplyMessageInfoUiModel.color = message!!.color!!
-                    lastApplyMessageInfoUiModel.state = message.state!!
-                    lastApplyMessageInfoUiModel.text = message.text!!
-                    lastApplyVoucherOrdersItemUiModel.message = lastApplyMessageInfoUiModel
-                    listVoucherOrdersUiModel.add(lastApplyVoucherOrdersItemUiModel)
+                    if (!code.isNullOrEmpty() && !uniqueId.isNullOrEmpty() && message != null && !message.color.isNullOrEmpty() && !message.state.isNullOrEmpty() && !message.text.isNullOrEmpty()) {
+                        lastApplyVoucherOrdersItemUiModel.code = code
+                        lastApplyVoucherOrdersItemUiModel.uniqueId = uniqueId
+                        val lastApplyMessageInfoUiModel = LastApplyMessageUiModel()
+                        lastApplyMessageInfoUiModel.color = message.color
+                        lastApplyMessageInfoUiModel.state = message.state
+                        lastApplyMessageInfoUiModel.text = message.text
+                        lastApplyVoucherOrdersItemUiModel.message = lastApplyMessageInfoUiModel
+                        listVoucherOrdersUiModel.add(lastApplyVoucherOrdersItemUiModel)
+                    }
                 }
                 lastApplyUiModel.voucherOrders = listVoucherOrdersUiModel
             }
@@ -176,22 +178,24 @@ class GetOccCartUseCase @Inject constructor(@ApplicationContext val context: Con
         val shopShipmentListResult = ArrayList<com.tokopedia.logisticcart.shipping.model.ShopShipment>()
         if (shopShipments.isNotEmpty()) {
             for (shopShipment in shopShipments) {
-                val shopShipmentResult = com.tokopedia.logisticcart.shipping.model.ShopShipment()
-                shopShipmentResult.isDropshipEnabled = shopShipment.isDropshipEnabled == 1
-                shopShipmentResult.shipCode = shopShipment.shipCode
-                shopShipmentResult.shipId = shopShipment.shipId
-                shopShipmentResult.shipLogo = shopShipment.shipLogo
-                shopShipmentResult.shipName = shopShipment.shipName
-                if (!isNullOrEmpty<ShipProd>(shopShipment.shipProds)) {
+                val shopShipmentResult = com.tokopedia.logisticcart.shipping.model.ShopShipment().apply {
+                    isDropshipEnabled = shopShipment.isDropshipEnabled == 1
+                    shipCode = shopShipment.shipCode
+                    shipId = shopShipment.shipId
+                    shipLogo = shopShipment.shipLogo
+                    shipName = shopShipment.shipName
+                }
+                if (!shopShipment.shipProds.isNullOrEmpty()) {
                     val shipProdListResult = ArrayList<com.tokopedia.logisticcart.shipping.model.ShipProd>()
                     for (shipProd in shopShipment.shipProds) {
-                        val shipProdResult = com.tokopedia.logisticcart.shipping.model.ShipProd()
-                        shipProdResult.additionalFee = shipProd.additionalFee
-                        shipProdResult.minimumWeight = shipProd.minimumWeight
-                        shipProdResult.shipGroupId = shipProd.shipGroupId
-                        shipProdResult.shipGroupName = shipProd.shipGroupName
-                        shipProdResult.shipProdId = shipProd.shipProdId
-                        shipProdResult.shipProdName = shipProd.shipProdName
+                        val shipProdResult = com.tokopedia.logisticcart.shipping.model.ShipProd().apply {
+                            additionalFee = shipProd.additionalFee
+                            minimumWeight = shipProd.minimumWeight
+                            shipGroupId = shipProd.shipGroupId
+                            shipGroupName = shipProd.shipGroupName
+                            shipProdId = shipProd.shipProdId
+                            shipProdName = shipProd.shipProdName
+                        }
                         shipProdListResult.add(shipProdResult)
                     }
                     shopShipmentResult.shipProds = shipProdListResult

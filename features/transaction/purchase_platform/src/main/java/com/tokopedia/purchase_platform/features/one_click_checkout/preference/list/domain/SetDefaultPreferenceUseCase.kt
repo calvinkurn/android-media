@@ -2,7 +2,7 @@ package com.tokopedia.purchase_platform.features.one_click_checkout.preference.l
 
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.OccState
+import com.tokopedia.purchase_platform.features.one_click_checkout.common.STATUS_OK
 import com.tokopedia.purchase_platform.features.one_click_checkout.preference.list.domain.model.SetDefaultPreferenceGqlResponse
 import javax.inject.Inject
 
@@ -13,7 +13,7 @@ class SetDefaultPreferenceUseCase @Inject constructor(val graphqlUseCase: Graphq
         graphqlUseCase.setRequestParams(mapOf(PARAM_KEY to profileId))
         graphqlUseCase.setTypeClass(SetDefaultPreferenceGqlResponse::class.java)
         graphqlUseCase.execute({ response: SetDefaultPreferenceGqlResponse ->
-            if (response.response.status.equals("OK", true)) {
+            if (response.response.status.equals(STATUS_OK, true)) {
                 if (response.response.data.success == 1) {
                     onSuccess(response)
                 } else if (response.response.data.messages.isNotEmpty()) {

@@ -320,8 +320,6 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
 
         fun chooseDuration()
 
-        fun onErrorPaymentClicked()
-
         fun onPreferenceEditClicked(preference: OrderPreference)
     }
 }
