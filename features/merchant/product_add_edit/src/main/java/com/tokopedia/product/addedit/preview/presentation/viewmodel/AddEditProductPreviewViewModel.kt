@@ -12,6 +12,7 @@ import com.tokopedia.product.addedit.description.domain.usecase.GetProductVarian
 import com.tokopedia.product.addedit.description.presentation.model.DescriptionInputModel
 import com.tokopedia.product.addedit.description.presentation.model.ProductVariantInputModel
 import com.tokopedia.product.addedit.draft.domain.usecase.GetProductDraftUseCase
+import com.tokopedia.product.addedit.mapper.mapDraftToProductInputModel
 import com.tokopedia.product.addedit.preview.data.source.api.response.Product
 import com.tokopedia.product.addedit.preview.domain.GetProductUseCase
 import com.tokopedia.product.addedit.preview.domain.mapper.GetProductMapper
@@ -119,6 +120,10 @@ class AddEditProductPreviewViewModel @Inject constructor(
 
     fun updateShipmentInputModel(shipmentInputModel: ShipmentInputModel) {
         productInputModel.value?.shipmentInputModel = shipmentInputModel
+    }
+
+    fun updateProductInputModel(productDraft: ProductDraft) {
+        productInputModel.value?.let { mapDraftToProductInputModel(productDraft) }
     }
 
     fun getNewProductInputModel(imageUrlOrPathList: ArrayList<String>): ProductInputModel {

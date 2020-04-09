@@ -49,7 +49,6 @@ import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProduct
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.REQUEST_CODE_VARIANT_EDIT
 import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
 import com.tokopedia.product.addedit.imagepicker.view.activity.ImagePickerAddProductActivity
-import com.tokopedia.product.addedit.mapper.mapDraftToProductInputModel
 import com.tokopedia.product.addedit.preview.data.source.api.response.Product
 import com.tokopedia.product.addedit.preview.di.AddEditProductPreviewModule
 import com.tokopedia.product.addedit.preview.di.DaggerAddEditProductPreviewComponent
@@ -87,8 +86,6 @@ import javax.inject.Inject
 import kotlin.collections.ArrayList
 
 class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHolder.OnPhotoChangeListener {
-
-    private var productInputModel: ProductInputModel? = null
 
     // action button
     private var doneButton: AppCompatTextView? = null
@@ -528,7 +525,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
     private fun observeProductInputModelFromDraft() {
         viewModel.getProductDraftResult.observe(viewLifecycleOwner, Observer { result ->
             when(result) {
-                is Success -> productInputModel = mapDraftToProductInputModel(result.data)
+                is Success -> viewModel.updateProductInputModel(result.data)
             }
         })
     }
