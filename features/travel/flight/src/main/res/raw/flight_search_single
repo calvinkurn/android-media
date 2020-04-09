@@ -18,6 +18,7 @@ query Searching($data: SearchSingleArgs) {
       total
       totalNumeric
       beforeTotal
+      showSpecialPriceTag
       routes {
         airlineID
         departureAirportID

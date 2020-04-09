@@ -10,16 +10,16 @@ import com.google.gson.annotations.SerializedName
 class FlightSearchEntity(
         @SerializedName("data")
         @Expose
-        val data: List<FlightSearchData> = arrayListOf(),
+        var data: List<FlightSearchData> = arrayListOf(),
         @SerializedName("error")
         @Expose
-        val error: List<FlightSearchErrorEntity> = arrayListOf(),
+        var error: List<FlightSearchErrorEntity> = arrayListOf(),
         @SerializedName("meta")
         @Expose
-        val meta: FlightSearchMetaEntity = FlightSearchMetaEntity(),
+        var meta: FlightSearchMetaEntity = FlightSearchMetaEntity(),
         @SerializedName("included")
         @Expose
-        val included: FlightSearchIncluded = FlightSearchIncluded()
+        val included: List<FlightSearchIncluded> = arrayListOf()
 ) {
     class Response(
             @SerializedName("flightSearch")
@@ -76,10 +76,13 @@ class FlightSearchData(
         val totalPrice: String = "",
         @SerializedName("totalNumeric")
         @Expose
-        val totalPriceNumeric: Long = 0,
+        val totalPriceNumeric: Int = 0,
         @SerializedName("beforeTotal")
         @Expose
         val beforeTotalPrice: String = "",
+        @SerializedName("showSpecialPriceTag")
+        @Expose
+        val showSpecialPriceTag: Boolean = false,
         @SerializedName("routes")
         @Expose
         val routes: List<FlightSearchRoute> = arrayListOf(),
@@ -167,13 +170,13 @@ class FlightSearchFare(
         val infant: String = "",
         @SerializedName("adultNumeric")
         @Expose
-        val adultNumeric: Long = 0,
+        val adultNumeric: Int = 0,
         @SerializedName("childNumeric")
         @Expose
-        val childNumeric: Long = 0,
+        val childNumeric: Int = 0,
         @SerializedName("infantNumeric")
         @Expose
-        val infantNumeric: Long = 0
+        val infantNumeric: Int = 0
 )
 
 class FlightSearchInfo(

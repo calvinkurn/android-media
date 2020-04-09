@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName
 /**
  * @author by furqan on 06/04/2020
  */
-class FlightSearchMetaEntity (
+class FlightSearchMetaEntity(
         @SerializedName("needRefresh")
         @Expose
         val needRefresh: Boolean = false,
@@ -28,4 +28,6 @@ class FlightSearchMetaEntity (
         @SerializedName("requestID")
         @Expose
         val requestId: String = ""
-)
+) {
+    var airlineList: List<String> = arrayListOf()
+}
