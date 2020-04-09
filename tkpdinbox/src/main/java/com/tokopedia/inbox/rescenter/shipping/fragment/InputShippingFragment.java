@@ -452,7 +452,7 @@ public class InputShippingFragment extends BasePresenterFragment<InputShippingFr
 
                 @Override
                 public void onFailed() {
-                    showErrorMessage(getActivity().getString(com.tokopedia.core2.R.string.error_gallery_valid));
+                    showErrorMessage(getActivity().getString(com.tokopedia.inbox.R.string.error_gallery_valid));
                 }
             });
         }
