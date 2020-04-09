@@ -6,7 +6,7 @@ import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.gherkin.Feature
 
 @Deprecated("Migrated to JUnit")
-internal class HandleViewVisiblityChangedSpekTest: Spek({
+internal class HandleViewVisibilityChangedSpekTest: Spek({
 
     Feature("Handle view visibility changed") {
 
