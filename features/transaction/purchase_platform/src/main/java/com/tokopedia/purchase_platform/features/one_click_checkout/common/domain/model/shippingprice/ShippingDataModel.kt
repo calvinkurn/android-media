@@ -1,12 +1,8 @@
 package com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.shippingprice
 
-data class ShippingDataModel (
-        var services: List<ServicesItemModel> = emptyList()
-)
-
 sealed class ServicesItem
 
-class ServicesItemModelNoPrice (
+class ServicesItemModelNoPrice(
         var serviceCode: String? = null,
         var serviceId: Int = -1,
         var servicesDuration: String? = null,
@@ -15,7 +11,7 @@ class ServicesItemModelNoPrice (
         var isSelected: Boolean = false
 ) : ServicesItem()
 
-class ServicesItemModel (
+class ServicesItemModel(
         var servicesName: String? = null,
         var servicesId: Int = -1,
         var texts: TextsModel? = null,
@@ -23,7 +19,7 @@ class ServicesItemModel (
 
 ) : ServicesItem()
 
-data class TextsModel (
+data class TextsModel(
         var textRangePrice: String? = null,
         var textNotes: String? = null,
         var textsServiceDesc: String = ""

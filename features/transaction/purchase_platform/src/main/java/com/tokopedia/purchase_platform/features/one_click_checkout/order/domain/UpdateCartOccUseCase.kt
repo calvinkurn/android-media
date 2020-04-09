@@ -37,27 +37,7 @@ class UpdateCartOccUseCase @Inject constructor(private val graphqlUseCase: Graph
     }
 
     private fun generateParam(param: UpdateCartOccRequest): Map<String, Any?> {
-        return mapOf(
-                PARAM_KEY to mapOf(
-                        PARAM_CART_KEY to listOf(
-                                mapOf(
-                                        PARAM_CART_ID_KEY to param.cart[0].cartId,
-                                        PARAM_QUANTITY_KEY to param.cart[0].quantity,
-                                        PARAM_NOTES_KEY to param.cart[0].notes,
-                                        PARAM_PRODUCT_ID_KEY to param.cart[0].productId,
-                                        PARAM_SHIPPING_ID_KEY to param.cart[0].shippingId,
-                                        PARAM_SP_ID_KEY to param.cart[0].spId
-                                )
-                        ),
-                        PARAM_PROFILE_KEY to mapOf(
-                                PARAM_PROFILE_ID_KEY to param.profile.profileId,
-                                PARAM_GATEWAY_CODE_KEY to param.profile.gatewayCode,
-                                PARAM_METADATA_KEY to param.profile.metadata,
-                                PARAM_SERVICE_ID_KEY to param.profile.serviceId,
-                                PARAM_ADDRESS_ID_KEY to param.profile.addressId
-                        )
-                )
-        )
+        return mapOf(PARAM_KEY to param)
     }
 
     companion object {
