@@ -128,19 +128,23 @@
                         android:id="@+id/input_field_1"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:visibility="gone"
                         app:layout_constraintEnd_toStartOf="@+id/input_field_2"
                         app:layout_constraintHorizontal_bias="0.5"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:visibility="visible" />
 
                     <com.tokopedia.common.topupbills.widget.TopupBillsInputFieldWidget
                         android:id="@+id/input_field_2"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:visibility="gone"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.5"
                         app:layout_constraintStart_toEndOf="@+id/input_field_1"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:visibility="visible" />
 
                     <com.tokopedia.unifyprinciples.Typography
                         android:id="@+id/input_field_label"

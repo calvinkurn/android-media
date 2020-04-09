@@ -99,6 +99,7 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
 
     lateinit var enquiryData: List<CatalogProductInput>
     var inputData: MutableMap<String, String> = mutableMapOf()
+    private var inputFieldCount = 0
     var isEnquired = false
         set(value) {
             field = value
@@ -279,17 +280,18 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
         }
         else {
             enquiryData = data.enquiryFields
-            inputFieldCount = enquiryData.size
+            // Chcek if input count is valid
+            if (enquiryData.size in INPUT_COUNT_MIN..INPUT_COUNT_MAX) inputFieldCount = enquiryData.size
 
-            // Show first input field (guaranteed to have an input field)
-            setupEnquiryField(input_field_1, enquiryData[0])
-
-            // Hide second field if there is only one field, setup second field otherwise
-            when (inputFieldCount) {
-                1 -> input_field_2.visibility = View.GONE
-                2 -> setupEnquiryField(input_field_2, enquiryData[1])
+            if (hasFirstInput()) {
+                // Show first input field
+                setupEnquiryField(input_field_1, enquiryData[0])
+                // Hide second field if there is only one field, setup second field otherwise
+                if (hasSecondInput()) {
+                    setupEnquiryField(input_field_2, enquiryData[1])
+                }
+                input_field_container.visibility = View.VISIBLE
             }
-            input_field_container.visibility = View.VISIBLE
         }
     }
 
@@ -318,9 +320,13 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
     }
 
     private fun checkAutoFillInput() {
-        if (inputFieldCount in 1..2 && ::enquiryData.isInitialized && inputData.isNotEmpty()) {
-            inputData[EXTRA_INPUT_FIELD_1]?.let { input -> input_field_1.setInputText(input) }
-            inputData[EXTRA_INPUT_FIELD_2]?.let { input -> input_field_2.setInputText(input) }
+        if (::enquiryData.isInitialized && hasInputs() && inputData.isNotEmpty()) {
+            inputData[EXTRA_INPUT_FIELD_1]?.let { input ->
+                if (hasFirstInput()) input_field_1.setInputText(input)
+            }
+            inputData[EXTRA_INPUT_FIELD_2]?.let { input ->
+                if (hasSecondInput()) input_field_2.setInputText(input)
+            }
             if (inputData.size == inputFieldCount) enquireFields()
         }
     }
@@ -333,26 +339,29 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
     }
 
     private fun enquireFields() {
-        if (inputFieldCount in 1..2 && ::enquiryData.isInitialized) {
+        if (::enquiryData.isInitialized) {
             val input1 = input_field_1.getInputText()
             val input2 = input_field_2.getInputText()
+            var isValid = false
 
-            // Add case when user is still filling the fields (only 1/2 fields are filled)
-            if (inputFieldCount == 2 && (input1.isEmpty() xor input2.isEmpty())) {
-                isEnquired = false
-                setInputFieldsError(false)
-                return
+            if (hasFirstInput()) {
+                isValid = verifyField(enquiryData[0].validations, input1)
             }
+            if (hasSecondInput()) {
+                // Add case when user is still filling the fields (only 1/2 fields are filled)
+                if (input1.isEmpty() xor input2.isEmpty()) {
+                    isEnquired = false
+                    setInputFieldsError(false)
+                    return
+                }
 
-            // Verify fields
-            var isValid: Boolean
-            isValid = verifyField(enquiryData[0].validations, input1)
-            if (isValid && inputFieldCount == 2) {
-                isValid = verifyField(enquiryData[1].validations, input2)
+                if (isValid) {
+                    isValid = verifyField(enquiryData[1].validations, input2)
+                }
             }
 
             if (isValid) {
-            // Enquiry query is not ready, temporarily validate enquiry
+                // Enquiry query is not ready, temporarily validate enquiry
                 isEnquired = true
 //                toggleEnquiryLoadingBar(true)
 //                val clientNumber = if (input2.isNotEmpty()) "${input1}_${input2}" else input1
@@ -587,13 +596,6 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
     }
 
     override fun onClickNextBuyButton() {
-//        if (::voucherGameOperatorData.isInitialized) {
-//            selectedProduct?.run {
-//                voucherGameAnalytics.eventClickBuy(voucherGameExtraParam.categoryId,
-//                        voucherGameOperatorData.name, product = this)
-//            }
-//        }
-
         processCheckout()
     }
 
@@ -613,10 +615,10 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
                         .utmSource(DigitalCheckoutPassData.UTM_SOURCE_ANDROID)
                         .utmMedium(DigitalCheckoutPassData.UTM_MEDIUM_WIDGET)
                         .voucherCodeCopied("")
-                if (inputFieldCount in 1..2) {
+                if (hasFirstInput()) {
                     checkoutPassDataBuilder = checkoutPassDataBuilder.clientNumber(input_field_1.getInputText())
                 }
-                if (inputFieldCount == 2) {
+                if (hasSecondInput()) {
                     checkoutPassDataBuilder = checkoutPassDataBuilder.zoneId(input_field_2.getInputText())
                 }
                 checkoutPassData = checkoutPassDataBuilder.build()
@@ -638,15 +640,31 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
         return productList
     }
 
+    private fun hasInputs(): Boolean {
+        return inputFieldCount > 0
+    }
+
+    private fun hasFirstInput(): Boolean {
+        return hasNthInput(1)
+    }
+
+    private fun hasSecondInput(): Boolean {
+        return hasNthInput(2)
+    }
+
+    private fun hasNthInput(n: Int): Boolean {
+        return inputFieldCount >= n
+    }
+
     companion object {
-
-        var inputFieldCount = 0
-
         val ITEM_DECORATOR_SIZE = com.tokopedia.design.R.dimen.dp_6
         const val INFO_TOUCH_AREA_SIZE_PX = 20
 
         const val FULL_SCREEN_SPAN_SIZE = 1
         const val PRODUCT_ITEM_SPAN_SIZE = 2
+
+        const val INPUT_COUNT_MIN = 0
+        const val INPUT_COUNT_MAX = 2
 
         const val EXTRA_PARAM_OPERATOR_DATA = "EXTRA_PARAM_OPERATOR_DATA"
         const val EXTRA_INPUT_FIELD_1 = "EXTRA_INPUT_FIELD_1"
