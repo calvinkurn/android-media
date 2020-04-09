@@ -22,6 +22,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.purchase_platform.R
+import com.tokopedia.purchase_platform.features.one_click_checkout.common.DEFAULT_ERROR_MESSAGE
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.OccState
 import com.tokopedia.purchase_platform.features.one_click_checkout.preference.analytics.PreferenceListAnalytics
 import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.di.PreferenceEditComponent
@@ -241,7 +242,7 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
                     else -> {
                         view?.let {
                             showGlobalError(GlobalError.SERVER_ERROR)
-                            Toaster.make(it, "Terjadi kesalahan pada server. Ulangi beberapa saat lagi", type = Toaster.TYPE_ERROR)
+                            Toaster.make(it, DEFAULT_ERROR_MESSAGE, type = Toaster.TYPE_ERROR)
                         }
                     }
                 }
@@ -250,7 +251,7 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
                 view?.let {
                     showGlobalError(GlobalError.SERVER_ERROR)
                     Toaster.make(it, throwable.message
-                            ?: "Terjadi kesalahan pada server. Ulangi beberapa saat lagi", type = Toaster.TYPE_ERROR)
+                            ?: DEFAULT_ERROR_MESSAGE, type = Toaster.TYPE_ERROR)
                 }
             }
         }

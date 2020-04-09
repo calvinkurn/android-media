@@ -1,6 +1,7 @@
 package com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.domain.get
 
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.purchase_platform.features.one_click_checkout.common.DEFAULT_ERROR_MESSAGE
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.data.model.response.preference.Address
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.data.model.response.preference.Payment
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.data.model.response.preference.ProfilesItem
@@ -35,7 +36,7 @@ class PreferenceModelMapper @Inject constructor() {
                 if (errorMessage.isNotEmpty()) {
                     throw MessageErrorException(errorMessage[0])
                 } else {
-                    throw MessageErrorException("Terjadi kesalahan pada server. Ulangi beberapa saat lagi")
+                    throw MessageErrorException(DEFAULT_ERROR_MESSAGE)
                 }
             }
         } else {
@@ -43,7 +44,7 @@ class PreferenceModelMapper @Inject constructor() {
             if (errorMessage.isNotEmpty()) {
                 throw MessageErrorException(errorMessage[0])
             } else {
-                throw MessageErrorException("Terjadi kesalahan pada server. Ulangi beberapa saat lagi")
+                throw MessageErrorException(DEFAULT_ERROR_MESSAGE)
             }
         }
     }
