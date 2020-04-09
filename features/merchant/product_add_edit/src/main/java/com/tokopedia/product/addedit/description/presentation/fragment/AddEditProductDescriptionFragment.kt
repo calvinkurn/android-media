@@ -2,6 +2,7 @@ package com.tokopedia.product.addedit.description.presentation.fragment
 
 import android.app.Activity
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -52,6 +53,7 @@ import com.tokopedia.product.addedit.description.presentation.model.DescriptionI
 import com.tokopedia.product.addedit.description.presentation.model.PictureViewModel
 import com.tokopedia.product.addedit.description.presentation.model.ProductVariantInputModel
 import com.tokopedia.product.addedit.description.presentation.model.VideoLinkModel
+import com.tokopedia.product.addedit.description.presentation.model.youtube.YoutubeVideoModel
 import com.tokopedia.product.addedit.description.presentation.viewmodel.AddEditProductDescriptionViewModel
 import com.tokopedia.product.addedit.detail.presentation.mapper.mapProductInputModelDetailToDraft
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
@@ -108,9 +110,6 @@ class AddEditProductDescriptionFragment:
 
         const val IS_ADD = 0
         const val REQUEST_CODE_DESCRIPTION = 0x03
-
-        // TODO faisalramd
-        const val TEST_IMAGE_URL = "https://ecs7.tokopedia.net/img/cache/700/product-1/2018/9/16/36162992/36162992_778e5d1e-06fd-4e4a-b650-50c232815b24_1080_1080.jpg"
     }
 
     private var productInputModel: ProductInputModel? = null
@@ -118,6 +117,7 @@ class AddEditProductDescriptionFragment:
 
     private lateinit var userSession: UserSessionInterface
     private lateinit var shopId: String
+    private var positionVideoChanged = 0
 
     @Inject
     lateinit var descriptionViewModel: AddEditProductDescriptionViewModel
@@ -143,10 +143,16 @@ class AddEditProductDescriptionFragment:
 
     override fun onTextChanged(url: String, position: Int) {
         adapter.data[position].inputUrl = url
+        positionVideoChanged = position
+        descriptionViewModel.getVideoYoutube(url)
     }
 
     override fun onItemClicked(t: VideoLinkModel?) {
-        //no op
+        ProductEditDescriptionTracking.clickPlayVideo(shopId)
+        try {
+            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(t?.inputUrl)))
+        } catch (e: Throwable) {
+        }
     }
 
     override fun getScreenName(): String? = null
@@ -228,11 +234,11 @@ class AddEditProductDescriptionFragment:
         }
 
         observeProductVariant()
+        observeProductVideo()
     }
 
     private fun addEmptyVideoUrl() {
-        videoId += 1
-        loadData(videoId)
+        loadData(0)
     }
 
     fun onCtaYesPressed() {
@@ -271,6 +277,43 @@ class AddEditProductDescriptionFragment:
                 is Fail -> showVariantErrorToast(getString(R.string.title_tooltip_description_tips))
             }
         })
+    }
+
+    private fun observeProductVideo() {
+        descriptionViewModel.videoYoutube.observe(viewLifecycleOwner, Observer { result ->
+            when (result) {
+                is Success -> {
+                    val id  = result.data.id
+                    if (id == null) {
+                        displayErrorOnSelectedVideo()
+                    } else {
+                        setDataOnSelectedVideo(result.data)
+                    }
+                }
+                is Fail -> {
+                    displayErrorOnSelectedVideo()
+                }
+            }
+            adapter.notifyItemChanged(positionVideoChanged)
+        })
+    }
+
+    private fun displayErrorOnSelectedVideo() {
+        adapter.data[positionVideoChanged].apply {
+            inputTitle = ""
+            inputDescription = ""
+            inputImage = ""
+            errorMessage = getString(R.string.error_video_not_valid)
+        }
+    }
+
+    private fun setDataOnSelectedVideo(youtubeVideoModel: YoutubeVideoModel) {
+        adapter.data[positionVideoChanged].apply {
+            inputTitle = youtubeVideoModel.title.orEmpty()
+            inputDescription = youtubeVideoModel.description.orEmpty()
+            inputImage = youtubeVideoModel.thumbnailUrl.orEmpty()
+            errorMessage = descriptionViewModel.validateDuplicateVideo(adapter.data, inputUrl)
+        }
     }
 
     private fun applyEditMode() {
@@ -373,7 +416,7 @@ class AddEditProductDescriptionFragment:
 
     override fun loadData(page: Int) {
         val videoLinkModels: ArrayList<VideoLinkModel> = ArrayList()
-        videoLinkModels.add(VideoLinkModel(page, "", TEST_IMAGE_URL))
+        videoLinkModels.add(VideoLinkModel())
         super.renderList(videoLinkModels)
 
         textViewAddVideo.visibility =
@@ -413,9 +456,11 @@ class AddEditProductDescriptionFragment:
             ProductAddDescriptionTracking.clickContinue(shopId)
         }
         inputAllDataInInputDraftModel()
-        val intent = Intent(context, AddEditProductShipmentActivity::class.java)
-        intent.putExtra(AddEditProductUploadConstant.EXTRA_PRODUCT_INPUT_MODEL, productInputModel)
-        startActivityForResult(intent, REQUEST_CODE_SHIPMENT)
+        if (descriptionViewModel.validateInputVideo(adapter.data)) {
+            val intent = Intent(context, AddEditProductShipmentActivity::class.java)
+            intent.putExtra(AddEditProductUploadConstant.EXTRA_PRODUCT_INPUT_MODEL, productInputModel)
+            startActivityForResult(intent, REQUEST_CODE_SHIPMENT)
+        }
     }
 
     private fun submitInput(shipmentInputModel: ShipmentInputModel) {
@@ -432,15 +477,17 @@ class AddEditProductDescriptionFragment:
     }
 
     private fun submitInputEdit() {
-        val descriptionInputModel = DescriptionInputModel(
-                textFieldDescription.getText(),
-                adapter.data
-        )
-        val intent = Intent()
-        intent.putExtra(EXTRA_DESCRIPTION_INPUT, descriptionInputModel)
-        intent.putExtra(EXTRA_VARIANT_INPUT, descriptionViewModel.variantInputModel)
-        activity?.setResult(Activity.RESULT_OK, intent)
-        activity?.finish()
+        if (descriptionViewModel.validateInputVideo(adapter.data)) {
+            val descriptionInputModel = DescriptionInputModel(
+                    textFieldDescription.getText(),
+                    adapter.data
+            )
+            val intent = Intent()
+            intent.putExtra(EXTRA_DESCRIPTION_INPUT, descriptionInputModel)
+            intent.putExtra(EXTRA_VARIANT_INPUT, descriptionViewModel.variantInputModel)
+            activity?.setResult(Activity.RESULT_OK, intent)
+            activity?.finish()
+        }
     }
 
 }

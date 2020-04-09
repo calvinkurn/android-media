@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
@@ -30,6 +31,16 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
+            <ImageView
+                android:id="@+id/imgPlay"
+                android:layout_width="@dimen/layout_lvl4"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="@+id/imgThumbnail"
+                app:layout_constraintEnd_toEndOf="@+id/imgThumbnail"
+                app:layout_constraintStart_toStartOf="@+id/imgThumbnail"
+                app:layout_constraintTop_toTopOf="@+id/imgThumbnail"
+                app:srcCompat="@drawable/ic_play" />
+
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tvVideoTitle"
                 android:layout_width="0dp"
@@ -49,6 +60,8 @@
                 android:layout_marginStart="@dimen/spacing_lvl4"
                 android:layout_marginLeft="@dimen/spacing_lvl4"
                 android:layout_marginTop="@dimen/spacing_lvl2"
+                android:ellipsize="end"
+                android:maxLines="2"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/imgThumbnail"
                 app:layout_constraintTop_toBottomOf="@id/tvVideoTitle"

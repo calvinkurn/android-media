@@ -20,6 +20,10 @@ fun TextFieldUnify?.getTextFloatOrZero(): Float = this?.textFieldInput?.text.toS
 
 fun TextFieldUnify?.getTextLongOrZero(): Long = this?.textFieldInput?.text.toString().replace(".", "").toLongOrZero()
 
+fun TextFieldUnify?.placeCursorToEnd() {
+    this?.textFieldInput?.setSelection(this.textFieldInput.text.length)
+}
+
 fun TextFieldUnify?.setModeToNumberInput() {
     val textFieldInput = this?.textFieldInput
     val maxLength = Int.MAX_VALUE.toString().length
