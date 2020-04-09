@@ -16,10 +16,6 @@ import com.tokopedia.phoneverification.view.fragment.PhoneVerificationFragment;
 
 public class FlightPhoneVerificationActivity extends BaseSimpleActivity implements HasComponent<AppComponent>, PhoneVerificationFragment.PhoneVerificationFragmentListener {
 
-    public static Intent getCallingIntent(Activity activity) {
-        return new Intent(activity, FlightPhoneVerificationActivity.class);
-    }
-
     @Override
     protected Fragment getNewFragment() {
         return FlightPhoneVerificationFragment.newInstance();
@@ -27,14 +23,14 @@ public class FlightPhoneVerificationActivity extends BaseSimpleActivity implemen
 
     @Override
     public void onSkipVerification() {
-        FlightPhoneVerificationActivity.this.setResult(Activity.RESULT_CANCELED);
-        FlightPhoneVerificationActivity.this.finish();
+        setResult(Activity.RESULT_CANCELED);
+        finish();
     }
 
     @Override
     public void onSuccessVerification() {
-        FlightPhoneVerificationActivity.this.setResult(Activity.RESULT_OK);
-        FlightPhoneVerificationActivity.this.finish();
+        setResult(Activity.RESULT_OK);
+        finish();
     }
 
     @Override
