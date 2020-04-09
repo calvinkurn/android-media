@@ -1303,7 +1303,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     private fun updatePromoCheckoutManualIfNoSelected(listPromoApplied: List<String>) {
         if (cartAdapter.selectedCartShopHolderData.isEmpty()) {
             renderPromoCheckoutButtonNoItemIsSelected()
-        }  else {
+        } else {
             renderPromoCheckoutButtonActiveDefault(listPromoApplied)
         }
     }
@@ -1608,7 +1608,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
 
-
     // NOTES:
     // if position = -1, then isChecked for all (shop level)
     // if ignoreIsChecked = true, then no position nor isChecked is gained
@@ -1635,11 +1634,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                             if (cartString.equals(lastApplyVoucherOrders.uniqueId, true)) {
                                 listPromoCodes.add(lastApplyVoucherOrders.code)
                             }
-                        }
-                    }
-                    if (listPromoCodes.isEmpty()) {
-                        cartItemHolderData.promoCodes?.forEach { code ->
-                            listPromoCodes.add(code)
                         }
                     }
 
@@ -1680,16 +1674,22 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 val listProductDetail = arrayListOf<ProductDetailsItem>()
 
                 val listPromoCodes = arrayListOf<String>()
-                cartListData?.lastApplyShopGroupSimplifiedData?.voucherOrders?.forEach { lastApplyVoucherOrders ->
-                    cartShop.shopGroupAvailableData.cartString?.let { cartString ->
-                        if (cartString.equals(lastApplyVoucherOrders.uniqueId, true)) {
-                            listPromoCodes.add(lastApplyVoucherOrders.code)
+                if (isChecked) {
+                    // ambil dari shopgroup
+                    cartListData?.shopGroupAvailableDataList?.forEach { shopGroup ->
+                        if (cartShop.shopGroupAvailableData.cartString.equals(shopGroup.cartString)) {
+                            shopGroup.promoCodes?.forEach {
+                                listPromoCodes.add(it)
+                            }
                         }
                     }
-                }
-                if (listPromoCodes.isEmpty()) {
-                    cartShop.shopGroupAvailableData.promoCodes?.forEach { code ->
-                        listPromoCodes.add(code)
+                } else {
+                    cartListData?.lastApplyShopGroupSimplifiedData?.voucherOrders?.forEach { lastApplyVoucherOrders ->
+                        cartShop.shopGroupAvailableData.cartString?.let {cartString  ->
+                            if (cartString.equals(lastApplyVoucherOrders.uniqueId, true)) {
+                                listPromoCodes.add(lastApplyVoucherOrders.code)
+                            }
+                        }
                     }
                 }
 
@@ -1718,11 +1718,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                             if (cartString.equals(lastApplyVoucherOrders.uniqueId, true)) {
                                 listPromoCodes.add(lastApplyVoucherOrders.code)
                             }
-                        }
-                    }
-                    if (listPromoCodes.isEmpty()) {
-                        cartItemHolderData.promoCodes?.forEach { code ->
-                            listPromoCodes.add(code)
                         }
                     }
 
@@ -1823,19 +1818,21 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 shop.cartString?.let { cartString ->
                     val listProductDetail = arrayListOf<ProductDetail>()
                     shop.cartItemDataList?.forEach { cartItem ->
-                        val productDetail = ProductDetail(
-                                productId = cartItem.cartItemData?.originData?.productId?.toLong()
-                                        ?: 0,
-                                quantity = cartItem.cartItemData?.updatedData?.quantity ?: 0
-                        )
-                        listProductDetail.add(productDetail)
+                        if (cartItem.isSelected) {
+                            val productDetail = ProductDetail(
+                                    productId = cartItem.cartItemData?.originData?.productId?.toLong()
+                                            ?: 0,
+                                    quantity = cartItem.cartItemData?.updatedData?.quantity ?: 0
+                            )
+                            listProductDetail.add(productDetail)
+                        }
                     }
                     val order = Order(
                             shopId = shopId,
                             uniqueId = cartString,
                             product_details = listProductDetail,
                             codes = shop.promoCodes?.toMutableList() ?: mutableListOf(),
-                            isChecked = shop.isChecked)
+                            isChecked = listProductDetail.isNotEmpty())
                     listOrder.add(order)
                 }
             }
@@ -2737,10 +2734,10 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     override fun updateCartCounter(counter: Int) {
-        val cache = LocalCacheHandler(context, CartConstant.CART);
+        val cache = LocalCacheHandler(context, CartConstant.CART)
         cache.putInt(CartConstant.IS_HAS_CART, if (counter > 0) 1 else 0)
-        cache.putInt(CartConstant.CACHE_TOTAL_CART, counter);
-        cache.applyEditor();
+        cache.putInt(CartConstant.CACHE_TOTAL_CART, counter)
+        cache.applyEditor()
     }
 
     override fun onGetCompositeSubscriber(): CompositeSubscription {
@@ -2768,8 +2765,9 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     override fun updatePromoCheckoutStickyButton(promoUiModel: PromoUiModel) {
-        doRenderPromoCheckoutButton(LastApplyUiMapper.mapValidateUsePromoUiModelToLastApplyUiModel(promoUiModel))
-        setLastApplyDataToShopGroup(LastApplyUiMapper.mapValidateUsePromoUiModelToLastApplyUiModel(promoUiModel))
+        val lastApplyUiModel = LastApplyUiMapper.mapValidateUsePromoUiModelToLastApplyUiModel(promoUiModel)
+        doRenderPromoCheckoutButton(lastApplyUiModel)
+        setLastApplyDataToShopGroup(lastApplyUiModel)
     }
 
     private fun showToaster(msg: String, isShowOk: Boolean) {
