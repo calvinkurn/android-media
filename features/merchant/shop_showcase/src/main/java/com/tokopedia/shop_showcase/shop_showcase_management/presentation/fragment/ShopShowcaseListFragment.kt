@@ -64,8 +64,6 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
             bundle.putBoolean(ShopShowcaseListParam.EXTRA_IS_SHOW_ZERO_PRODUCT, isShowZeroProduct
                     ?: false)
             bundle.putBoolean(ShopShowcaseListParam.EXTRA_IS_MY_SHOP, isMyShop ?: false)
-//            bundle.putBoolean(ShopShowcaseListParam.EXTRA_IS_NEED_TO_GOTO_ADD_SHOWCASE, isNeedToGoToAddShowcase
-//                    ?: false)
             fragment.arguments = bundle
             return fragment
         }
@@ -268,7 +266,8 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
 
     override fun sendClickShowcase(dataShowcase: ShowcaseItem, position: Int) {
         tracking?.clickEtalase(shopId, shopType, dataShowcase.name)
-        gotoShowcaseResultPage(dataShowcase.id, shopId)
+        val showcaseId = if (dataShowcase.type == ShowcaseType.GENERATED) dataShowcase.alias else dataShowcase.id
+        gotoShowcaseResultPage(showcaseId, shopId)
     }
 
     override fun onSuccessUpdateShowcase() {

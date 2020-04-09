@@ -15,7 +15,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.shop_showcase.R
 import com.tokopedia.shop_showcase.common.PageNameConstant
 import com.tokopedia.shop_showcase.common.ShopShowcaseFragmentNavigation
-import com.tokopedia.shop_showcase.common.ShopShowcaseListParam
 import com.tokopedia.shop_showcase.common.ShopType
 import com.tokopedia.shop_showcase.shop_showcase_management.data.model.ShowcaseList.ShowcaseItem
 import com.tokopedia.shop_showcase.shop_showcase_management.presentation.fragment.ShopShowcaseListFragment
@@ -49,13 +48,13 @@ class ShopShowcaseListActivity : BaseActivity(), ShopShowcaseFragmentNavigation 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.fragment_shop_showcase_list_container)
 
-        intent?.let {
-            val bundle: Bundle = it.getBundleExtra("bundle")
-            shopId = bundle.getString(SHOP_ID, "0")
-            selectedEtalaseId = bundle.getString(SELECTED_ETALASE_ID, "0")
-            isShowDefault = bundle.getBoolean(IS_SHOW_DEFAULT)
-            isShowZeroProduct = bundle.getBoolean(IS_SHOW_ZERO_PRODUCT)
-            isNeedToGoToAddShowcase = bundle.getBoolean(IS_NEED_TOGO_TO_ADD_PAGE)
+        val bundle = intent.getBundleExtra("bundle")
+        if (bundle != null) {
+            shopId = bundle.getString(SHOP_ID, "0").toString()
+            selectedEtalaseId = bundle.getString(SELECTED_ETALASE_ID, "0").toString()
+            isShowDefault = bundle.getBoolean(IS_SHOW_DEFAULT, true)
+            isShowZeroProduct = bundle.getBoolean(IS_SHOW_ZERO_PRODUCT, true)
+            isNeedToGoToAddShowcase = bundle.getBoolean(IS_NEED_TOGO_TO_ADD_PAGE, false)
         }
 
         // If there is no shopId  then it's seller view
