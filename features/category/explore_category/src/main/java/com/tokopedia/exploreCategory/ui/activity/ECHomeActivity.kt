@@ -1,6 +1,5 @@
 package com.tokopedia.exploreCategory.ui.activity
 
-import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
@@ -8,8 +7,6 @@ import android.text.Spannable
 import android.text.SpannableStringBuilder
 import androidx.fragment.app.Fragment
 import com.tokopedia.basemvvm.viewcontrollers.BaseViewModelActivity
-import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.browse.homepage.presentation.activity.DigitalBrowseHomeActivity
 import com.tokopedia.exploreCategory.ECConstants.Companion.DEFAULT_SCREEN
@@ -18,7 +15,6 @@ import com.tokopedia.exploreCategory.ECConstants.Companion.EXTRA_TAB
 import com.tokopedia.exploreCategory.ECConstants.Companion.EXTRA_TYPE
 import com.tokopedia.exploreCategory.ECConstants.Companion.LAYANAN_SCREEN
 import com.tokopedia.exploreCategory.ECConstants.Companion.TYPE_LAYANAN
-import com.tokopedia.exploreCategory.ECConstants.Companion.TYPE_BELANJA
 import com.tokopedia.exploreCategory.ui.fragment.ECServiceFragment
 import com.tokopedia.exploreCategory.viewmodel.ECHomeViewModel
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -58,10 +54,7 @@ class ECHomeActivity : BaseViewModelActivity<ECHomeViewModel>() {
         val data = intent.data
 
         if (data?.getQueryParameter(EXTRA_TITLE) == null) {
-            if ((data?.getQueryParameter(EXTRA_TYPE))?.toInt() == TYPE_BELANJA) {
-                title = TITLE_BELANJA
-                return openBelanjaActivity(this)
-            } else if ((data?.getQueryParameter(EXTRA_TYPE))?.toInt() == TYPE_LAYANAN) {
+           if (data?.getQueryParameter(EXTRA_TYPE)?.toInt() == TYPE_LAYANAN) {
                 title = TITLE_LAYANAN
             }
         }
@@ -111,18 +104,12 @@ class ECHomeActivity : BaseViewModelActivity<ECHomeViewModel>() {
                 DEFAULT_SCREEN
             }
 
-    private fun openBelanjaActivity(context: Context) {
-        RouteManager.route(context, ApplinkConst.CATEGORY_BELANJA)
-        finish()
-    }
-
     override fun onBackPressed() {
         ecHomeHomeViewModel.fireBackEvent()
         super.onBackPressed()
     }
 
     companion object {
-        const val TITLE_BELANJA = "Belanja di Tokopedia"
         const val TITLE_LAYANAN = "Jelajah Tokopedia"
     }
 
