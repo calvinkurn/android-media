@@ -36,7 +36,7 @@ class AddRestResponseActivity : BaseActivity() {
         setContentView(getLayout())
         initVars()
         initUi()
-        setListeners()
+        setObservers()
         getDataFromId()
     }
 
@@ -61,7 +61,7 @@ class AddRestResponseActivity : BaseActivity() {
         RestActivityDiProvider().inject(this)
     }
 
-    fun setListeners() {
+    fun setObservers() {
 
         viewModel.liveDataRestResponse.observe(this, Observer {
             when (it) {
