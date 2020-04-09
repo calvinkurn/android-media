@@ -4,6 +4,8 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.product.addedit.common.util.AddEditProductNotificationManager
 import com.tokopedia.product.addedit.description.presentation.model.DescriptionInputModel
@@ -14,12 +16,13 @@ import com.tokopedia.product.addedit.draft.domain.usecase.SaveProductDraftUseCas
 import com.tokopedia.product.addedit.mapper.mapProductInputModelDetailToDraft
 import com.tokopedia.product.addedit.preview.domain.usecase.ProductEditUseCase
 import com.tokopedia.product.addedit.preview.presentation.activity.AddEditProductPreviewActivity
+import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_DRAFT_ID
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.shipment.presentation.model.ShipmentInputModel
 import com.tokopedia.product.addedit.tracking.ProductEditStepperTracking
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import kotlin.collections.ArrayList
+
 
 /**
  * Created by faisalramd on 2020-04-05.
@@ -114,8 +117,11 @@ class AddEditProductEditService : AddEditProductBaseService() {
                 setUploadProductDataSuccess(errorMessage)
                 if(productInputModel.draftId > 0) {
                     saveProductDraftUseCase.params = SaveProductDraftUseCase.createRequestParams(mapProductInputModelDetailToDraft(productInputModel), productInputModel.draftId, false)
-                    saveProductDraftUseCase.executeOnBackground()
+                    withContext(Dispatchers.IO){ saveProductDraftUseCase.executeOnBackground() }
                 }
+                val intent = RouteManager.getIntent(applicationContext, ApplinkConstInternalMechant.MERCHANT_OPEN_PRODUCT_PREVIEW)
+                intent.putExtra(EXTRA_DRAFT_ID, productInputModel.draftId.toString() + "")
+                startActivity(intent)
             }
         })
     }
