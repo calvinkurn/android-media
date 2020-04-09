@@ -144,9 +144,6 @@ import javax.inject.Inject
 class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, DynamicProductDetailAdapterFactoryImpl>(), DynamicProductDetailListener, ProductVariantListener, IAccessRequestListener {
 
     companion object {
-        const val OVO_INACTIVE_STATUS = 1;
-        const val OVO_INSUFFICIENT_BALANCE_STATUS = 2;
-
         fun newInstance(productId: String? = null,
                         warehouseId: String? = null,
                         shopDomain: String? = null,
@@ -1224,14 +1221,14 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         } else {
             activity?.let {
                 when (result.data.ovoValidationDataModel.status) {
-                    OVO_INACTIVE_STATUS -> {
+                    ProductDetailConstant.OVO_INACTIVE_STATUS -> {
                         val applink = "${result.data.ovoValidationDataModel.applink}&product_id=${viewModel.getDynamicProductInfoP1?.parentProductId ?: ""}"
                         DynamicProductDetailTracking.Click.eventActivationOvo(
                                 viewModel.getDynamicProductInfoP1?.parentProductId ?: "",
                                 viewModel.userSessionInterface.userId)
                         RouteManager.route(it, applink)
                     }
-                    OVO_INSUFFICIENT_BALANCE_STATUS -> {
+                    ProductDetailConstant.OVO_INSUFFICIENT_BALANCE_STATUS -> {
                             val bottomSheetOvoDeals = OvoFlashDealsBottomSheet(
                                     viewModel.getDynamicProductInfoP1?.parentProductId ?: "",
                                     viewModel.userSessionInterface.userId,
