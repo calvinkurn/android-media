@@ -1825,7 +1825,11 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             shop.shopId?.toLong()?.let { shopId ->
                 shop.cartString?.let { cartString ->
                     val listProductDetail = arrayListOf<ProductDetail>()
+                    var hasCheckedItem = false
                     shop.cartItemDataList?.forEach { cartItem ->
+                        if (!hasCheckedItem && cartItem.isSelected) {
+                            hasCheckedItem = true
+                        }
                         val productDetail = ProductDetail(
                                 productId = cartItem.cartItemData?.originData?.productId?.toLong()
                                         ?: 0,
@@ -1838,7 +1842,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                             uniqueId = cartString,
                             product_details = listProductDetail,
                             codes = shop.promoCodes?.toMutableList() ?: mutableListOf(),
-                            isChecked = listProductDetail.isNotEmpty())
+                            isChecked = hasCheckedItem)
                     listOrder.add(order)
                 }
             }
