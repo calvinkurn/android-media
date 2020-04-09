@@ -1030,7 +1030,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
                     break
                 }
             }
-            if (adapterPosition >= 0 && tracking.size > adapterPosition) {
+            if (adapterPosition != RecyclerView.NO_POSITION && tracking.size > adapterPosition) {
                 trackTopAdsClickEvent(tracking[adapterPosition])
             }
             feedAnalytics.eventClickTopadsPromoted(shop.id)
