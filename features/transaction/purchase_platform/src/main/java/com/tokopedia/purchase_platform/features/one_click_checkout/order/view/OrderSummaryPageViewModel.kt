@@ -925,10 +925,10 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                     finalValidateUse(product, shop, pref, onSuccessCheckout, skipCheckIneligiblePromo)
                 }, { throwable: Throwable ->
                     if (throwable is MessageErrorException && throwable.message != null) {
-                        globalEvent.value = OccGlobalEvent.Error(errorMessage = throwable.message
+                        globalEvent.value = OccGlobalEvent.TriggerRefresh(errorMessage = throwable.message
                                 ?: DEFAULT_ERROR_MESSAGE)
                     } else {
-                        globalEvent.value = OccGlobalEvent.Error(throwable)
+                        globalEvent.value = OccGlobalEvent.TriggerRefresh(throwable = throwable)
                     }
                 })
             }
@@ -945,7 +945,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribe(object : Observer<ValidateUsePromoRevampUiModel> {
                                 override fun onError(e: Throwable) {
-                                    globalEvent.value = OccGlobalEvent.Error(e)
+                                    globalEvent.value = OccGlobalEvent.TriggerRefresh(throwable = e)
                                 }
 
                                 override fun onNext(t: ValidateUsePromoRevampUiModel) {
