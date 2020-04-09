@@ -1,0 +1,5 @@
+mutation preValidateRedeem($catalog_id: Int, $is_gift: Int) {
+  hachikoPreValidateRedeem(catalog_id: $catalog_id, is_gift: $is_gift) {
+    is_valid
+  }
+}

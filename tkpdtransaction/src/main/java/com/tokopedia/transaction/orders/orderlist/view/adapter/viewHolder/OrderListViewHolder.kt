@@ -241,8 +241,10 @@ class OrderListViewHolder(itemView: View?, var orderListAnalytics: OrderListAnal
     private fun setClickListeners(order: Order) {
         orderListBtnOverflow?.setOnClickListener {
             val popup = PopupMenu(it.context, it)
-            popup.menu.add(Menu.NONE, R.id.action_bantuan, Menu.NONE, "Bantuan")
-            popup.menu.add(Menu.NONE, R.id.action_order_detail, Menu.NONE, "Lihat Order Detail")
+            popup.menu.add(Menu.NONE, R.id.action_bantuan,
+                    Menu.NONE, itemView.context.getResources().getString(R.string.tokopedia_care))
+            popup.menu.add(Menu.NONE, R.id.action_order_detail,
+                    Menu.NONE, itemView.context.getResources().getString(R.string.lihat_order_detail))
             popup.setOnMenuItemClickListener(OnMenuPopupClicked(it.context, order))
             popup.show()
         }
@@ -252,7 +254,11 @@ class OrderListViewHolder(itemView: View?, var orderListAnalytics: OrderListAnal
                 orderListAnalytics.sendPageClickEvent("order - detail")
                 orderListAnalytics.sendProductViewEvent(order, categoryName?.text.toString(), this.position, total?.text.toString())
 
-                RouteManager.route(itemView.context, "${appLink}?upstream=${order.upstream}")
+                var separator = "?"
+                if(appLink.contains(separator)){
+                    separator = "&"
+                }
+                RouteManager.route(itemView.context, "${appLink}${separator}upstream=${order.upstream}")
             }
         }
     }
@@ -272,7 +278,11 @@ class OrderListViewHolder(itemView: View?, var orderListAnalytics: OrderListAnal
                 }
                 R.id.action_order_detail -> {
                     if (order.appLink.isNotEmpty()) {
-                        RouteManager.route(context, "${order.appLink}?upstream=${order.upstream}")
+                        var separator = "?"
+                        if(order.appLink.contains(separator)){
+                            separator = "&"
+                        }
+                        RouteManager.route(context, "${order.appLink}${separator}upstream=${order.upstream}")
                     }
                     true
                 }

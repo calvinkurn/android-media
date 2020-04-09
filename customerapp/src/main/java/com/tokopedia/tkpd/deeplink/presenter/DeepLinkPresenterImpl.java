@@ -43,8 +43,7 @@ import com.tokopedia.core.session.model.SecurityModel;
 import com.tokopedia.core.util.AppUtils;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.discovery.catalogrevamp.ui.activity.CatalogDetailPageActivity;
-import com.tokopedia.discovery.intermediary.view.IntermediaryActivity;
-import com.tokopedia.discovery.newdiscovery.category.presentation.CategoryActivity;
+import com.tokopedia.discovery.categoryrevamp.view.activity.CategoryNavActivity;
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase;
 import com.tokopedia.product.detail.common.data.model.product.ProductInfo;
 import com.tokopedia.session.domain.interactor.SignInInteractor;
@@ -95,12 +94,11 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     private static final String FORMAT_UTF_8 = "UTF-8";
     private static final String AF_ONELINK_HOST = "tokopedia.onelink.me";
     private static final String OVERRIDE_URL = "override_url";
+    private static final String ALLOW_OVERRIDE = "allow_override";
     private static final String PARAM_TITLEBAR = "titlebar";
     private static final String PARAM_NEED_LOGIN = "need_login";
     private static final String PARAM_EXTRA_REVIEW = "rating";
     private static final String PARAM_EXTRA_UTM_SOURCE = "utm_source";
-
-    private static final String TAG_FRAGMENT_CATALOG_DETAIL = "TAG_FRAGMENT_CATALOG_DETAIL";
 
     private final Activity context;
     private final DeepLinkView viewListener;
@@ -547,8 +545,12 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
 
     private void prepareOpenWebView(Uri uriData) {
         boolean isAllowOverride = false;
-        String allowOverride = uriData.getQueryParameter(OVERRIDE_URL);
-        if ("1".equalsIgnoreCase(allowOverride) || "true".equalsIgnoreCase(allowOverride)) {
+        String overrideUrl = uriData.getQueryParameter(OVERRIDE_URL);
+        String allowOverride = uriData.getQueryParameter(ALLOW_OVERRIDE);
+        if ("1".equalsIgnoreCase(overrideUrl) ||
+            "true".equalsIgnoreCase(overrideUrl) ||
+            "1".equalsIgnoreCase(allowOverride) ||
+            "true".equalsIgnoreCase(allowOverride)) {
             isAllowOverride = true;
         }
         openWebView(uriData, isAllowOverride,
@@ -799,11 +801,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     private void openCategory(String uriData, Bundle bundle) {
         URLParser urlParser = new URLParser(uriData);
         if (!urlParser.getParamKeyValueMap().isEmpty()) {
-            CategoryActivity.moveTo(
-                    context,
-                    uriData,
-                    bundle
-            );
+            context.startActivity(CategoryNavActivity.getCategoryIntentWithFilter(context,uriData));
         } else {
             RouteManager.route(context, bundle, ApplinkConstInternalMarketplace.DISCOVERY_CATEGORY_DETAIL, urlParser.getDepIDfromURI(context));
         }
@@ -825,7 +823,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
             intent.putExtras(defaultBundle);
             context.startActivity(intent);
         } else {
-            IntermediaryActivity.moveToClear(context, departmentId);
+            context.startActivity(CategoryNavActivity.getCategoryIntentWithDepartmentId(context,departmentId));
         }
     }
 

@@ -45,10 +45,6 @@ internal class HandleViewVisiblityChanged: Spek({
             }
 
             Then("Verify view interaction when visibility changed") {
-                verify {
-                    productListView wasNot Called
-                }
-
                 confirmVerified(productListView)
             }
         }

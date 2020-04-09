@@ -3,9 +3,7 @@ package com.tokopedia.notifications.model
 import androidx.room.ColumnInfo
 import androidx.room.Embedded
 import androidx.room.Entity
-import androidx.room.Ignore
 import androidx.room.PrimaryKey
-import androidx.annotation.NonNull
 import android.os.Parcel
 import android.os.Parcelable
 import com.tokopedia.notifications.database.convertors.NotificationModeConverter
@@ -19,10 +17,9 @@ parcel.createTypedArrayList(Carousel.CREATOR),
  */
 @Entity(tableName = "BaseNotificationModel")
 data class BaseNotificationModel(
-
         @ColumnInfo(name = "notificationId")
         var notificationId: Int = 0,
-        
+
         @PrimaryKey
         @ColumnInfo(name = "campaignId")
         var campaignId: Long = 0,
@@ -108,7 +105,6 @@ data class BaseNotificationModel(
         @ColumnInfo(name = "campaignUserToken")
         var campaignUserToken: String? = null,
 
-
         //new Fields for offline
         @ColumnInfo(name = "notificationStatus")
         var status: NotificationStatus = NotificationStatus.PENDING,
@@ -120,9 +116,26 @@ data class BaseNotificationModel(
         var endTime: Long = 0,
 
         @ColumnInfo(name = "notificationMode")
-        var notificationMode: NotificationMode = NotificationMode.OFFLINE
-        //new Fields for offline ends
+        var notificationMode: NotificationMode = NotificationMode.OFFLINE,
 
+        @ColumnInfo(name = "is_test")
+        var isTest: Boolean = false,
+
+        //notification attribution
+        @ColumnInfo(name = "transId")
+        var transactionId: String? = null,
+
+        @ColumnInfo(name = "userTransId")
+        var userTransactionId: String? = null,
+
+        @ColumnInfo(name = "userId")
+        var userId: String? = null,
+
+        @ColumnInfo(name = "shopId")
+        var shopId: String? = null,
+
+        @ColumnInfo(name = "notifcenterBlastId")
+        var blastId: String? = null
 
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
@@ -158,7 +171,13 @@ data class BaseNotificationModel(
             NotificationStatusConverter.instances.toStatus(parcel.readInt()),
             parcel.readLong(),
             parcel.readLong(),
-            NotificationModeConverter.instances.toMode(parcel.readInt()))
+            NotificationModeConverter.instances.toMode(parcel.readInt()),
+            parcel.readByte() != 0.toByte(),
+            parcel.readString(),
+            parcel.readString(),
+            parcel.readString(),
+            parcel.readString(),
+            parcel.readString())
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeInt(notificationId)
@@ -193,6 +212,12 @@ data class BaseNotificationModel(
         parcel.writeLong(startTime)
         parcel.writeLong(endTime)
         parcel.writeInt(status.statusInt)
+        parcel.writeByte(if (isTest) 1 else 0)
+        parcel.writeString(transactionId)
+        parcel.writeString(userTransactionId)
+        parcel.writeString(userId)
+        parcel.writeString(shopId)
+        parcel.writeString(blastId)
     }
 
     override fun describeContents(): Int {

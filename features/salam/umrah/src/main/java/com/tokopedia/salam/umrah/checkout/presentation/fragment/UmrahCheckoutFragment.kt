@@ -22,6 +22,7 @@ import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalPayment
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
@@ -44,7 +45,6 @@ import com.tokopedia.salam.umrah.checkout.presentation.activity.UmrahCheckoutAct
 import com.tokopedia.salam.umrah.checkout.presentation.activity.UmrahCheckoutActivity.Companion.EXTRA_PRICE
 import com.tokopedia.salam.umrah.checkout.presentation.activity.UmrahCheckoutActivity.Companion.EXTRA_SLUG_NAME
 import com.tokopedia.salam.umrah.checkout.presentation.activity.UmrahCheckoutActivity.Companion.EXTRA_TOTAL_PASSENGER
-import com.tokopedia.salam.umrah.checkout.presentation.activity.UmrahCheckoutActivity.Companion.EXTRA_TOTAL_PRICE
 import com.tokopedia.salam.umrah.checkout.presentation.activity.UmrahCheckoutActivity.Companion.EXTRA_VARIANT
 import com.tokopedia.salam.umrah.checkout.presentation.activity.UmrahCheckoutContactDataActivity
 import com.tokopedia.salam.umrah.checkout.presentation.activity.UmrahCheckoutInstallmentActivity
@@ -100,6 +100,8 @@ class UmrahCheckoutFragment : BaseDaggerFragment(), UmrahPilgrimsEmptyViewHolder
     var variantId: String = ""
     var departDate: String = ""
     var promoCode : String = ""
+    lateinit var performanceMonitoring: PerformanceMonitoring
+
 
     private val umrahCheckoutPilgrimsListAdapter by lazy { UmrahCheckoutPilgrimsListAdapter(this, this) }
     private val umrahCheckoutSummaryAdapter by lazy { UmrahCheckoutSummaryListAdapter() }
@@ -116,6 +118,7 @@ class UmrahCheckoutFragment : BaseDaggerFragment(), UmrahPilgrimsEmptyViewHolder
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        initializePerformance()
         arguments?.let{
             slugName = it.getString(EXTRA_SLUG_NAME, "")
             variantId = it.getString(EXTRA_VARIANT, "")
@@ -133,8 +136,10 @@ class UmrahCheckoutFragment : BaseDaggerFragment(), UmrahPilgrimsEmptyViewHolder
             when (it) {
                 is Success -> {
                     renderView(it.data)
+                    performanceMonitoring.stopTrace()
                 }
                 is Fail -> {
+                    performanceMonitoring.stopTrace()
                     val data = it.throwable
                     view?.let {
                         Toaster.showErrorWithAction(it, data.message
@@ -195,6 +200,10 @@ class UmrahCheckoutFragment : BaseDaggerFragment(), UmrahPilgrimsEmptyViewHolder
 
         })
 
+    }
+
+    private fun initializePerformance(){
+        performanceMonitoring = PerformanceMonitoring.start(UMRAH_CHECKOUT_PAGE_PERFORMANCE)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -280,7 +289,6 @@ class UmrahCheckoutFragment : BaseDaggerFragment(), UmrahPilgrimsEmptyViewHolder
         btn_umrah_checkout.setOnClickListener {
             onButtonCheckoutClicked()
         }
-
     }
 
     private fun initProgressDialog() {
@@ -632,7 +640,7 @@ class UmrahCheckoutFragment : BaseDaggerFragment(), UmrahPilgrimsEmptyViewHolder
 
     private fun inflatingViewTermCondition(context: Context, id: Int,
                                            listBottomSheet: List<UmrahTermCondition>): View? {
-        val view = LayoutInflater.from(context).inflate(id, null).apply {
+        return LayoutInflater.from(context).inflate(id, null).apply {
             umrahCheckoutTermConditionAdapter.setList(listBottomSheet)
             rv_umrah_checkout_term_condition.adapter = umrahCheckoutTermConditionAdapter
             rv_umrah_checkout_term_condition.layoutManager = LinearLayoutManager(
@@ -640,11 +648,10 @@ class UmrahCheckoutFragment : BaseDaggerFragment(), UmrahPilgrimsEmptyViewHolder
                     RecyclerView.VERTICAL, false
             )
         }
-        return view
     }
 
     private fun inflatingViewMandatoryDocument(context: Context, id: Int, listBottomSheet: List<UmrahCheckoutMandatoryDocument>): View? {
-        val view = LayoutInflater.from(context).inflate(id, null).apply {
+       return LayoutInflater.from(context).inflate(id, null).apply {
             umrahCheckoutMandatoryDocumentAdapter.setList(listBottomSheet)
             rv_umrah_checkout_mandatory_document.adapter = umrahCheckoutMandatoryDocumentAdapter
             rv_umrah_checkout_mandatory_document.layoutManager = LinearLayoutManager(
@@ -652,7 +659,6 @@ class UmrahCheckoutFragment : BaseDaggerFragment(), UmrahPilgrimsEmptyViewHolder
                     RecyclerView.VERTICAL, false
             )
         }
-        return view
     }
 
     fun TextView.makeLinks(vararg links: Pair<String, View.OnClickListener>) {
@@ -873,6 +879,8 @@ class UmrahCheckoutFragment : BaseDaggerFragment(), UmrahPilgrimsEmptyViewHolder
         const val EXTRA_TOTAL_PRICE = "EXTRA_TOTAL_PRICE"
         const val EXTRA_PROMO_DATA = "EXTRA_PROMO_DATA"
 
+        const val UMRAH_CHECKOUT_PAGE_PERFORMANCE = "sl_umrah_checkout"
+
 
         const val PROMO_EXTRA_LIST_ACTIVITY_RESULT = 123
 
@@ -920,5 +928,9 @@ class UmrahCheckoutFragment : BaseDaggerFragment(), UmrahPilgrimsEmptyViewHolder
         trackingUmrahUtil.getClickBackCheckoutTracker()
     }
 
+    override fun onDestroyView() {
+        performanceMonitoring.stopTrace()
+        super.onDestroyView()
+    }
 
 }

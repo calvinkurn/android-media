@@ -3,54 +3,62 @@ package com.tokopedia.installreferral
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.util.Log
-import android.widget.Toast
 import com.android.installreferrer.api.InstallReferrerClient
 import com.android.installreferrer.api.InstallReferrerStateListener
 import com.android.installreferrer.api.ReferrerDetails
 import com.google.android.gms.analytics.CampaignTrackingReceiver
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.track.TrackApp
+import java.lang.Exception
 
 const val KEY_INSTALL_REF_SHARED_PREF_FILE_NAME = "install_ref"
 const val KEY_INSTALL_REF_INITIALISED = "install_ref_initialised"
 
 class InstallReferral {
 
-    private lateinit var referrerClient: InstallReferrerClient
+    private var referrerClient: InstallReferrerClient? = null
 
     fun initilizeInstallReferral(context: Context) {
         referrerClient = InstallReferrerClient.newBuilder(context.applicationContext).build()
         val applicationContext = context.applicationContext
-        referrerClient.startConnection(object : InstallReferrerStateListener {
+        referrerClient?.startConnection(object : InstallReferrerStateListener {
 
             override fun onInstallReferrerSetupFinished(responseCode: Int) {
-                when (responseCode) {
-                    InstallReferrerClient.InstallReferrerResponse.OK -> {
-                        // Connection established.
-                        updateReferralCache()
+                try {
+                    when (responseCode) {
 
-                        val response: ReferrerDetails = referrerClient.installReferrer
-                        val referrerUrl: String = response.installReferrer
-                        val referrerClickTime: Long = response.referrerClickTimestampSeconds
-                        val appInstallTime: Long = response.installBeginTimestampSeconds
-                        val instantExperienceLaunched: Boolean = response.googlePlayInstantParam
 
-                        trackIfFromCampaignUrl(response.installReferrer)
-                        sendToGA(context, response.installReferrer)
-                        InstallUtils.sendIrisInstallEvent(context)
-                    }
-                    InstallReferrerClient.InstallReferrerResponse.FEATURE_NOT_SUPPORTED -> {
-                        // API not available on the current Play Store app.
-                        updateReferralCache()
-                    }
-                    InstallReferrerClient.InstallReferrerResponse.SERVICE_UNAVAILABLE -> {
-                        // Connection couldn't be established.
-                        updateReferralCache()
-                    }
-                    else -> {
+                        InstallReferrerClient.InstallReferrerResponse.OK -> {
+                            // Connection established.
 
+                            referrerClient?.let {
+                                val response: ReferrerDetails? = it.installReferrer
+
+                                if (response != null) {
+                                    response.installReferrer?.let { installReferrer ->
+                                        trackIfFromCampaignUrl(installReferrer)
+                                        sendToGA(context, installReferrer)
+                                    }
+                                }
+                                InstallUtils.sendIrisInstallEvent(context)
+                                updateReferralCache()
+
+                            }
+                        }
+                        InstallReferrerClient.InstallReferrerResponse.FEATURE_NOT_SUPPORTED -> {
+                            // API not available on the current Play Store app.
+                            updateReferralCache()
+                        }
+                        InstallReferrerClient.InstallReferrerResponse.SERVICE_UNAVAILABLE -> {
+                            // Connection couldn't be established.
+                            updateReferralCache()
+                        }
+                        else -> {
+
+                        }
                     }
+                } catch (e: Exception) {
+
                 }
             }
 

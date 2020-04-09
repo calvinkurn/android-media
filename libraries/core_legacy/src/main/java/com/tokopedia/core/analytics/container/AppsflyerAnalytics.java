@@ -19,8 +19,13 @@ import com.tokopedia.core.TkpdCoreRouter;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.deprecated.SessionHandler;
 import com.tokopedia.core.gcm.utils.RouterUtils;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.track.interfaces.AFAdsIDCallback;
 import com.tokopedia.track.interfaces.ContextAnalytics;
+import com.tokopedia.weaver.WeaveInterface;
+import com.tokopedia.weaver.Weaver;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -163,11 +168,19 @@ public class AppsflyerAnalytics extends ContextAnalytics {
     }
 
     public void initAppsFlyer(String key, String userID, AppsFlyerConversionListener conversionListener) {
-        AppsFlyerLib.getInstance().init(key, conversionListener, getContext());
-        initAppsFlyer(key, userID);
+        WeaveInterface appsFlyerInitWeave = new WeaveInterface() {
+            @NotNull
+            @Override
+            public Object execute() {
+                return executeInitAppsFlyer(key, userID, conversionListener);
+            }
+        };
+        Weaver.Companion.executeWeaveCoRoutineWithFirebase(appsFlyerInitWeave, RemoteConfigKey.ENABLE_ASYNC_CREATE_APPSFLYER, context);
     }
 
-    public void initAppsFlyer(String key, String userID) {
+    @NotNull
+    private boolean executeInitAppsFlyer(String key, String userID, AppsFlyerConversionListener conversionListener) {
+        AppsFlyerLib.getInstance().init(key, conversionListener, getContext());
         AppsFlyerLib.getInstance().setCurrencyCode("IDR");
         setUserID(userID);
         AppsFlyerLib.getInstance().setDebugLog(BuildConfig.DEBUG);
@@ -179,6 +192,7 @@ public class AppsflyerAnalytics extends ContextAnalytics {
             );
         }
         AppsFlyerLib.getInstance().startTracking(getContext(), key);
+        return true;
     }
 
     public void sendEvent(String eventName, Map<String, Object> eventValue) {

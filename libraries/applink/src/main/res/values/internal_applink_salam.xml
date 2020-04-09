@@ -18,5 +18,7 @@
     <string name="umrah_path_pdp" translatable="false">/umroh/produk/.*\</string>
     <string name="umrah_home_page_path" translatable="false">/umroh</string>
     <string name="umrah_checkout_path" translatable="false">/umroh/checkout</string>
+    <string name="umroh_travel_agen_path" translatable="false">/umroh/agen/.*\</string>
+    <string name="umroh_travel_agen_list" translatable="false">/umroh/agen</string>
 
 </resources>

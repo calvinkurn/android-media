@@ -45,6 +45,10 @@ object ApplinkConstInternalGlobal {
     val PARAM_LOGIN_TYPE = "loginType"
     @JvmField
     val PARAM_IS_SQ_CHECK = "isSqCheck"
+    @JvmField
+    val PARAM_KTP_PATH = "ktpPath"
+    @JvmField
+    val PARAM_FACE_PATH = "facePath"
 
     //VerificationActivity Param
     @JvmField
@@ -117,6 +121,9 @@ object ApplinkConstInternalGlobal {
     // tokopedia-android-internal://global/name-shop-creation
     @JvmField
     val NAME_SHOP_CREATION = "$INTERNAL_GLOBAL/name-shop-creation"
+
+    @JvmField
+    val LIVENESS_DETECTION = "$INTERNAL_GLOBAL/liveness-detection"
 
     @JvmField
     val USER_IDENTIFICATION_INFO_BASE = "$INTERNAL_GLOBAL/user-identification-info"
@@ -215,6 +222,11 @@ object ApplinkConstInternalGlobal {
     // tokopedia-android-internal://global/add-pin-onboarding
     @JvmField
     val ADD_PIN_ONBOARDING = "$INTERNAL_GLOBAL/add-pin-onboarding"
+
+    // RegisterFingerprintOnboardingActivity
+    // tokopedia-android-internal://global/add-fingerprint-onboarding
+    @JvmField
+    val ADD_FINGERPRINT_ONBOARDING = "$INTERNAL_GLOBAL/add-fingerprint-onboarding"
 
     // PinCompleteActivity
     // tokopedia-android-internal://global/add-pin-complete
@@ -376,8 +388,7 @@ object ApplinkConstInternalGlobal {
     val DYNAMIC_FEATURE_INSTALL= DYNAMIC_FEATURE_INSTALL_BASE + "{module}/?" +
         "dfname={moduleTranslate}&" +
         "dfapplink={encodedApplink}&" +
-        "dfauto={isAutoDownload}&" +
-        "dfimage={imageUrl}"
+        "dffallbackurl={fallbackUrl}"
 
     /**
      * LogoutActivity
@@ -426,5 +437,6 @@ object ApplinkConstInternalGlobal {
     // tokopedia-android-internal://global/gamification2
     @JvmField
     val GAMIFICATION_TAP_TAP_MANTAP = "$INTERNAL_GLOBAL/gamification2"
+    val GAMIFICATION_DAILY_GIFT = "$INTERNAL_GLOBAL/gamification_gift_daily"
 
 }

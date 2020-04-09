@@ -1,5 +1,7 @@
 package com.tokopedia.product.detail.common.data.model.pdplayout
 
+import java.util.concurrent.TimeUnit
+
 data class DynamicProductInfoP1(
         val basic: BasicInfo = BasicInfo(),
         val data: ComponentData = ComponentData(),
@@ -20,4 +22,53 @@ data class DynamicProductInfoP1(
     val getProductName: String
         get() = data.name
 
+    val finalPrice: Int
+        get() {
+            return if (data.campaign.isActive) {
+                data.campaign.discountedPrice
+            } else {
+                data.price.value
+            }
+        }
+
+    val priceBeforeInt: Int
+        get() {
+            return if (data.campaign.isActive) {
+                data.campaign.originalPrice
+            } else {
+                0
+            }
+        }
+
+    val dropPercentage: String?
+        get() {
+            return if (data.campaign.isActive) {
+                data.campaign.percentageAmount.toString()
+            } else {
+                ""
+            }
+        }
+
+    fun getFinalStock(multiOriginStock: String): String {
+        return if (multiOriginStock.isEmpty()) {
+            if (data.campaign.isActive) {
+                data.campaign.stock.toString()
+            } else {
+                data.stock.value.toString()
+            }
+        } else {
+            multiOriginStock
+        }
+    }
+
+    fun shouldShowNotifyMe(): Boolean {
+        return try {
+            val now = System.currentTimeMillis()
+            val startTime = data.startDate.toLong() * 1000L
+            val dayLeft = TimeUnit.MICROSECONDS.toDays(now - startTime)
+            !(data.campaignId.isEmpty() || dayLeft > 3)
+        } catch (ex: Exception) {
+            false
+        }
+    }
 }

@@ -56,14 +56,14 @@ class HotelContactDataFragment : BaseDaggerFragment(), TravelContactArrayAdapter
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
-            inflater.inflate(com.tokopedia.common.travel.R.layout.fragment_travel_contact_data, container, false)
+            inflater.inflate(com.tokopedia.travel.passenger.R.layout.fragment_travel_contact_data, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         initView()
 
-        bookingViewModel.getContactList(GraphqlHelper.loadRawString(resources, com.tokopedia.common.travel.R.raw.query_get_travel_contact_list))
+        bookingViewModel.getContactList(GraphqlHelper.loadRawString(resources, com.tokopedia.travel.passenger.R.raw.query_get_travel_contact_list))
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -94,7 +94,7 @@ class HotelContactDataFragment : BaseDaggerFragment(), TravelContactArrayAdapter
     }
 
     fun initView() {
-        til_contact_name.setLabel(getString(com.tokopedia.common.travel.R.string.travel_contact_data_name_title))
+        til_contact_name.setLabel(getString(com.tokopedia.travel.passenger.R.string.travel_contact_data_name_title))
 
         context?.let {
             travelContactArrayAdapter = TravelContactArrayAdapter(it, com.tokopedia.travel.passenger.R.layout.layout_travel_passenger_autocompletetv, arrayListOf(), this)
@@ -107,7 +107,7 @@ class HotelContactDataFragment : BaseDaggerFragment(), TravelContactArrayAdapter
         til_contact_name.editText.setText(contactData.name)
         til_contact_name.setErrorTextAppearance(com.tokopedia.common.travel.R.style.ErrorTextAppearance)
 
-        til_contact_email.setLabel(getString(com.tokopedia.common.travel.R.string.travel_contact_data_email_title))
+        til_contact_email.setLabel(getString(com.tokopedia.travel.passenger.R.string.travel_contact_data_email_title))
         til_contact_email.editText.setText(contactData.email)
         til_contact_email.setErrorTextAppearance(com.tokopedia.common.travel.R.style.ErrorTextAppearance)
 
@@ -153,7 +153,7 @@ class HotelContactDataFragment : BaseDaggerFragment(), TravelContactArrayAdapter
             contactData.phone = til_contact_phone_number.editText.text.toString()
             contactData.phoneCode = (sp_contact_phone_code.selectedItem as String).toInt()
 
-            bookingViewModel.updateContactList(GraphqlHelper.loadRawString(resources, com.tokopedia.common.travel.R.raw.query_upsert_travel_contact_list),
+            bookingViewModel.updateContactList(GraphqlHelper.loadRawString(resources, com.tokopedia.travel.passenger.R.raw.query_upsert_travel_contact_list),
                     TravelUpsertContactModel.Contact(fullName = contactData.name, email = contactData.email, phoneNumber = contactData.phone,
                             phoneCountryCode = contactData.phoneCode))
 
@@ -169,15 +169,15 @@ class HotelContactDataFragment : BaseDaggerFragment(), TravelContactArrayAdapter
     private fun validateData(): Boolean {
         var isValid = true
         if (til_contact_name.editText.text.isNullOrBlank()) {
-            til_contact_name.error = getString(com.tokopedia.common.travel.R.string.travel_contact_data_name_error)
+            til_contact_name.error = getString(com.tokopedia.travel.passenger.R.string.travel_contact_data_name_error)
             isValid = false
         }
         if (!isValidEmail(til_contact_email.editText.text.toString())) {
-            til_contact_email.error = getString(com.tokopedia.common.travel.R.string.travel_contact_data_email_error)
+            til_contact_email.error = getString(com.tokopedia.travel.passenger.R.string.travel_contact_data_email_error)
             isValid = false
         }
         if (til_contact_phone_number.editText.text.length < MIN_PHONE_NUMBER_DIGIT) {
-            til_contact_phone_number.error = getString(com.tokopedia.common.travel.R.string.travel_contact_data_phone_number_error)
+            til_contact_phone_number.error = getString(com.tokopedia.travel.passenger.R.string.travel_contact_data_phone_number_error)
             isValid = false
         }
         return isValid

@@ -8,5 +8,7 @@ data class PlayCompleteInfoUiModel(
         val videoStream: VideoStreamUiModel,
         val totalView: TotalViewUiModel,
         val pinnedMessage: PinnedMessageUiModel?,
-        val quickReply: QuickReplyUiModel
+        val pinnedProduct: PinnedProductUiModel?,
+        val quickReply: QuickReplyUiModel,
+        val event: EventUiModel
 )

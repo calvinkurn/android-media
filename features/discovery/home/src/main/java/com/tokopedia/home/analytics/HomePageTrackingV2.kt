@@ -3,31 +3,32 @@ package com.tokopedia.home.analytics
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.home.analytics.v2.BaseTracking
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
-
 object HomePageTrackingV2 : BaseTracking() {
     private object CustomEvent{
         const val CLICK_HOMEPAGE = "clickHomepage"
+        const val FORMAT_4_VALUE_UNDERSCORE = "%s_%s_%s_%s";
     }
 
     object LegoBanner{
         private const val LEGO_BANNER_4_IMAGE_NAME = "lego banner 4 image"
 
-        fun getLegoBannerFourImageImpression(channel: DynamicHomeChannel.Channels, position: Int, isToIris: Boolean = false) = getBasicPromotionView(
+        fun getLegoBannerFourImageImpression(channel: DynamicHomeChannel.Channels, position: Int, isToIris: Boolean = false) = getBasicPromotionChannelView(
                 event = if(isToIris) Event.PROMO_VIEW_IRIS else Event.PROMO_VIEW,
                 eventCategory = Category.HOMEPAGE,
                 eventAction = Action.IMPRESSION.format(LEGO_BANNER_4_IMAGE_NAME),
                 eventLabel = Label.NONE,
                 promotions = channel.grids.mapIndexed { index, grid ->
                     Promotion(
-                            id = "%s_%s".format(channel.id, grid.id),
+                            id = CustomEvent.FORMAT_4_VALUE_UNDERSCORE.format(channel.id, grid.id, channel.persoType, channel.categoryID),
                             creative = grid.attribution,
                             creativeUrl = grid.imageUrl,
                             name = Ecommerce.PROMOTION_NAME.format(position, LEGO_BANNER_4_IMAGE_NAME, channel.header.name),
                             position = (index + 1).toString()
                     )
-                }
+                },
+                channelId = channel.id
         )
-        fun getLegoBannerFourImageClick(channel: DynamicHomeChannel.Channels, grid: DynamicHomeChannel.Grid, position: Int) = getBasicPromotionClick(
+        fun getLegoBannerFourImageClick(channel: DynamicHomeChannel.Channels, grid: DynamicHomeChannel.Grid, position: Int) = getBasicPromotionChannelClick(
                 event = Event.PROMO_CLICK,
                 eventCategory = Category.HOMEPAGE,
                 eventAction = Action.CLICK.format(LEGO_BANNER_4_IMAGE_NAME),
@@ -39,7 +40,7 @@ object HomePageTrackingV2 : BaseTracking() {
                 shopId = channel.brandId,
                 promotions = channel.grids.map {
                     Promotion(
-                            id = "%s_%s".format(channel.id, it.id),
+                            id = CustomEvent.FORMAT_4_VALUE_UNDERSCORE.format(channel.id, grid.id, channel.persoType, channel.categoryID),
                             creative = it.attribution,
                             creativeUrl = it.imageUrl,
                             name = Ecommerce.PROMOTION_NAME.format(position, LEGO_BANNER_4_IMAGE_NAME, channel.header.name),
@@ -56,6 +57,304 @@ object HomePageTrackingV2 : BaseTracking() {
                 Label.KEY, channel.header.name,
                 Label.CHANNEL_LABEL, channel.id
             ) as HashMap<String, Any>
+        }
+    }
+
+    object RecommendationList{
+        private const val RECOMMENDATION_LIST_CAROUSEL_PRODUCT = "dynamic channel list"
+        private const val RECOMMENDATION_LIST_IMPRESSION_EVENT_ACTION = "impression on dynamic channel list"
+        private const val RECOMMENDATION_LIST_CLICK_EVENT_ACTION = "click on dynamic channel list"
+        private const val RECOMMENDATION_LIST_SEE_ALL_EVENT_ACTION = "click view all on dynamic channel list"
+
+        fun getRecommendationListImpression(channel: DynamicHomeChannel.Channels, isToIris: Boolean = false) = getBasicProductChannelView(
+                event = if(isToIris) Event.PRODUCT_VIEW_IRIS else Event.PRODUCT_VIEW,
+                eventCategory = Category.HOMEPAGE,
+                eventAction = RECOMMENDATION_LIST_IMPRESSION_EVENT_ACTION,
+                eventLabel = Label.NONE,
+                products = channel.grids.mapIndexed { index, grid ->
+                    Product(
+                            name = grid.name,
+                            id = grid.id,
+                            productPrice = convertRupiahToInt(grid.price).toString(),
+                            brand = Value.NONE_OTHER,
+                            category = Value.NONE_OTHER,
+                            variant = Value.NONE_OTHER,
+                            productPosition = (index + 1).toString(),
+                            channelId = channel.id,
+                            isFreeOngkir = grid.freeOngkir.isActive,
+                            persoType = channel.persoType,
+                            categoryId = channel.categoryID,
+                            isTopAds = grid.isTopads
+                    )
+                },
+                list = String.format(
+                        Value.LIST_WITH_HEADER, "1", RECOMMENDATION_LIST_CAROUSEL_PRODUCT, channel.header.name
+                ),
+                channelId = channel.id
+        )
+
+        private fun getRecommendationListClick(channel: DynamicHomeChannel.Channels, grid: DynamicHomeChannel.Grid, position: Int) = getBasicProductChannelClick(
+                event = Event.PRODUCT_CLICK,
+                eventCategory = Category.HOMEPAGE,
+                eventAction = RECOMMENDATION_LIST_CLICK_EVENT_ACTION,
+                eventLabel = grid.attribution,
+                channelId = channel.id,
+                products = listOf(
+                        Product(
+                                name = grid.name,
+                                id = grid.id,
+                                productPrice = convertRupiahToInt(grid.price).toString(),
+                                brand = Value.NONE_OTHER,
+                                category = Value.NONE_OTHER,
+                                variant = Value.NONE_OTHER,
+                                productPosition = (position + 1).toString(),
+                                channelId = channel.id,
+                                isFreeOngkir = grid.freeOngkir.isActive,
+                                persoType = channel.persoType,
+                                categoryId = channel.categoryID,
+                                isTopAds = grid.isTopads
+                        )
+                ),
+                list = String.format(
+                        Value.LIST_WITH_HEADER, "1", RECOMMENDATION_LIST_CAROUSEL_PRODUCT, channel.header.name
+                )
+        )
+
+        fun sendRecommendationListClick(channel: DynamicHomeChannel.Channels, grid: DynamicHomeChannel.Grid, position: Int) {
+            getTracker().sendEnhanceEcommerceEvent(getRecommendationListClick(channel, grid, position))
+        }
+
+        private fun getRecommendationListSeeAllClick(channel: DynamicHomeChannel.Channels): HashMap<String, Any>{
+            return DataLayer.mapOf(
+                    Event.KEY, Event.CLICK_HOMEPAGE,
+                    Category.KEY, Category.HOMEPAGE,
+                    Action.KEY, RECOMMENDATION_LIST_SEE_ALL_EVENT_ACTION,
+                    Label.KEY, channel.header.name
+            ) as HashMap<String, Any>
+        }
+
+        fun sendRecommendationListSeeAllClick(channel: DynamicHomeChannel.Channels) {
+            getTracker().sendGeneralEvent(getRecommendationListSeeAllClick(channel))
+        }
+    }
+
+    object MixLeft {
+
+        private const val LIST_MIX_LEFT = "dynamic channel left carousel"
+        private const val IMPRESSION_MIX_LEFT = "impression on product dynamic channel left carousel"
+        private const val CLICK_MIX_LEFT = "click on product dynamic channel left carousel"
+
+        private const val CLICK_MIX_LEFT_LOADMORE = "click view all on dynamic channel left carousel"
+        fun getMixLeftClickLoadMore(channel: DynamicHomeChannel.Channels): HashMap<String, Any> {
+            return DataLayer.mapOf(
+                    Event.KEY, CustomEvent.CLICK_HOMEPAGE,
+                    Category.KEY, Category.HOMEPAGE,
+                    Action.KEY, CLICK_MIX_LEFT_LOADMORE,
+                    Label.KEY, channel.header.name,
+                    Label.CHANNEL_LABEL, channel.id
+            ) as HashMap<String, Any>
+        }
+
+        fun sendMixLeftClickLoadMore(channel: DynamicHomeChannel.Channels) {
+            getTracker().sendGeneralEvent(getMixLeftClickLoadMore(channel))
+        }
+
+        fun getMixLeftProductView(channel: DynamicHomeChannel.Channels, isToIris: Boolean = false) = getBasicProductChannelView(
+                event = if(isToIris) Event.PRODUCT_VIEW_IRIS else Event.PRODUCT_VIEW,
+                eventCategory = Category.HOMEPAGE,
+                eventAction = IMPRESSION_MIX_LEFT,
+                eventLabel = channel.header.name,
+                products = channel.grids.mapIndexed { index, grid ->
+                    Product(
+                            name = grid.name,
+                            id = grid.id,
+                            productPrice = convertRupiahToInt(
+                                    grid.price
+                            ).toString(),
+                            brand = Value.NONE_OTHER,
+                            category = Value.NONE_OTHER,
+                            variant = Value.NONE_OTHER,
+                            productPosition = (index + 1).toString(),
+                            channelId = channel.id,
+                            isFreeOngkir = grid.freeOngkir.isActive,
+                            persoType = channel.persoType,
+                            categoryId = channel.categoryID,
+                            isTopAds = grid.isTopads
+                    )
+                },
+                list = String.format(
+                        Value.LIST_HEADER_NAME, "1", LIST_MIX_LEFT, channel.header.name
+                ),
+                channelId = channel.id
+        )
+
+        fun getMixLeftProductClick(channel: DynamicHomeChannel.Channels, grid: DynamicHomeChannel.Grid, position: Int) = getBasicProductChannelClick(
+                event = Event.PRODUCT_CLICK,
+                eventCategory = Category.HOMEPAGE,
+                eventAction = CLICK_MIX_LEFT,
+                eventLabel = channel.header.name,
+                channelId = channel.id,
+                products = listOf(
+                        Product(
+                                name = grid.name,
+                                id = grid.id,
+                                productPrice = grid.price,
+                                brand = Value.NONE_OTHER,
+                                category = Value.NONE_OTHER,
+                                variant = Value.NONE_OTHER,
+                                productPosition = (position + 1).toString(),
+                                channelId = channel.id,
+                                isFreeOngkir = grid.freeOngkir.isActive,
+                                persoType = channel.persoType,
+                                categoryId = channel.categoryID,
+                                isTopAds = grid.isTopads
+                        )
+                ),
+                list = String.format(
+                        Value.LIST_HEADER_NAME, "1", LIST_MIX_LEFT, channel.header.name
+                )
+        )
+
+        fun sendMixLeftProductClick(channel: DynamicHomeChannel.Channels, grid: DynamicHomeChannel.Grid, position: Int) {
+            getTracker().sendEnhanceEcommerceEvent(getMixLeftProductClick(channel, grid, position))
+        }
+    }
+
+    object PopularKeyword {
+        private const val CLICK_POPULAR_KEYWORDS = "click on popular keyword banner"
+        private const val CLICK_POPULAR_KEYWORDS_RELOAD = "click view all on popular keyword banner"
+        private const val IMPRESSION_POPULAR_KEYWORDS = "impression on popular keyword banner"
+        private const val POPULAR_KEYWORDS_NAME = "popular keyword banner"
+        fun getPopularKeywordImpressionItem(channel: DynamicHomeChannel.Channels, position: Int, keyword: String) = getBasicPromotionView(
+                event = Event.PROMO_VIEW,
+                eventCategory = Category.HOMEPAGE,
+                eventAction = IMPRESSION_POPULAR_KEYWORDS,
+                eventLabel = String.format(BaseTracking.Label.FORMAT_2_ITEMS, channel.header.name, keyword),
+                promotions = channel.grids.map {
+                    Promotion(
+                            id = channel.id,
+                            creative = it.attribution,
+                            creativeUrl = it.imageUrl,
+                            name = Ecommerce.PROMOTION_NAME.format(position, POPULAR_KEYWORDS_NAME, keyword),
+                            position = position.toString()
+                    )
+
+                })
+
+        fun getPopularKeywordClickItem(channel: DynamicHomeChannel.Channels, position: Int, keyword: String) = getBasicPromotionClick(
+                event = Event.PROMO_CLICK,
+                eventCategory = Category.HOMEPAGE,
+                eventAction = CLICK_POPULAR_KEYWORDS,
+                eventLabel = channel.header.name,
+                channelId = channel.id,
+                categoryId = channel.categoryPersona,
+                affinity = channel.persona,
+                attribution = channel.galaxyAttribution,
+                shopId = channel.brandId,
+                promotions = channel.grids.map {
+                    Promotion(
+                            id = channel.id,
+                            creative = it.attribution,
+                            creativeUrl = it.imageUrl,
+                            name = Ecommerce.PROMOTION_NAME.format(position, POPULAR_KEYWORDS_NAME, keyword),
+                            position = position.toString()
+                    )
+
+                })
+
+        fun sendPopularKeywordClickItem(channel: DynamicHomeChannel.Channels, position: Int, keyword: String) {
+            getTracker().sendEnhanceEcommerceEvent(getPopularKeywordClickItem(channel, position, keyword))
+        }
+
+        fun getPopularKeywordClickReload(channel: DynamicHomeChannel.Channels): HashMap<String, Any> {
+            return DataLayer.mapOf(
+                    Event.KEY, CustomEvent.CLICK_HOMEPAGE,
+                    Category.KEY, Category.HOMEPAGE,
+                    Action.KEY, CLICK_POPULAR_KEYWORDS_RELOAD,
+                    Label.KEY, channel.header.name,
+                    Label.CHANNEL_LABEL, channel.header.name
+            ) as HashMap<String, Any>
+        }
+
+        fun sendPopularKeywordClickReload(channel: DynamicHomeChannel.Channels) {
+            getTracker().sendGeneralEvent(getPopularKeywordClickReload(channel))
+        }
+    }
+
+    object SprintSale{
+        private const val EVENT_ACTION_SPRINT_SALE_IMPRESSION = "sprint sale impression"
+        private const val EVENT_ACTION_SPRINT_SALE_CLICK = "sprint sale click"
+        private const val EVENT_ACTION_SPRINT_SALE_CLICK_VIEW_ALL = "sprint sale click view all"
+        private const val LIST_VALUE_SPRINT_SALE = "sprint sale"
+
+        fun getSprintSaleImpression(channel: DynamicHomeChannel.Channels, isToIris: Boolean = false) = getBasicProductView(
+                event = if(isToIris) Event.PRODUCT_VIEW_IRIS else Event.PRODUCT_VIEW,
+                eventCategory = Category.HOMEPAGE,
+                eventAction = EVENT_ACTION_SPRINT_SALE_IMPRESSION,
+                eventLabel = Label.NONE,
+                products = channel.grids.mapIndexed { index, grid ->
+                    Product(
+                            name = grid.name,
+                            id =  grid.id,
+                            productPrice = convertRupiahToInt(grid.price).toString(),
+                            brand = Value.NONE_OTHER,
+                            category = Value.NONE_OTHER,
+                            variant = Value.NONE_OTHER,
+                            productPosition = (index + 1).toString(),
+                            channelId = channel.id,
+                            isFreeOngkir = grid.freeOngkir.isActive,
+                            persoType = channel.persoType,
+                            categoryId = channel.categoryID,
+                            isTopAds = grid.isTopads
+                    )
+                },
+                list = String.format(
+                        Value.LIST, "1", LIST_VALUE_SPRINT_SALE
+                )
+        )
+        private fun getSprintSaleClick(channel: DynamicHomeChannel.Channels, currentCountDown: String, grid: DynamicHomeChannel.Grid, position: Int) = getBasicProductChannelClick(
+                event = Event.PRODUCT_CLICK,
+                eventCategory = Category.HOMEPAGE,
+                eventAction = EVENT_ACTION_SPRINT_SALE_CLICK,
+                eventLabel = currentCountDown,
+                channelId = channel.id,
+                products = listOf(
+                        Product(
+                                name = grid.name,
+                                id = grid.id,
+                                productPrice = convertRupiahToInt(grid.price).toString(),
+                                brand = Value.NONE_OTHER,
+                                category = Value.NONE_OTHER,
+                                variant = Value.NONE_OTHER,
+                                productPosition = (position + 1).toString(),
+                                channelId = channel.id,
+                                isFreeOngkir = grid.freeOngkir.isActive,
+                                persoType = channel.persoType,
+                                categoryId = channel.categoryID,
+                                isTopAds = grid.isTopads
+                        )
+                ),
+                list = String.format(
+                        Value.LIST, "1", LIST_VALUE_SPRINT_SALE
+                )
+        )
+
+        fun sendSprintSaleClick(channel: DynamicHomeChannel.Channels, currentCountDown: String, grid: DynamicHomeChannel.Grid, position: Int) {
+            getTracker().sendEnhanceEcommerceEvent(getSprintSaleClick(channel, currentCountDown, grid, position))
+        }
+
+        private fun getSprintSaleSeeAllClick(channel: DynamicHomeChannel.Channels): HashMap<String, Any>{
+            return DataLayer.mapOf(
+                    Event.KEY, Event.CLICK_HOMEPAGE,
+                    Category.KEY, Category.HOMEPAGE,
+                    Action.KEY, EVENT_ACTION_SPRINT_SALE_CLICK_VIEW_ALL,
+                    Label.KEY, Value.EMPTY,
+                    ChannelId.KEY, channel.id
+            ) as HashMap<String, Any>
+        }
+
+        fun sendSprintSaleSeeAllClick(channel: DynamicHomeChannel.Channels) {
+            getTracker().sendGeneralEvent(getSprintSaleSeeAllClick(channel))
         }
     }
 }

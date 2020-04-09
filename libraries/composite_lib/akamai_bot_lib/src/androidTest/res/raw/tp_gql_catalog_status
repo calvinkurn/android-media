@@ -1,0 +1,11 @@
+query Status($catalogIDs: [Int]) {
+	tokopointsCatalogStatus(input: {catalogIDs:$catalogIDs}) {
+		catalogStatus {
+			catalogID
+			quota
+			upperTextDesc
+			isDisabled
+			isDisabledButton
+		}
+	}
+}  

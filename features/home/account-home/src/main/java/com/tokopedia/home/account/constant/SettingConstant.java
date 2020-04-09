@@ -36,6 +36,7 @@ public class SettingConstant {
     public static final int SETTING_APP_ADVANCED_SETTING = 11;
     public static final int SETTING_APP_ADVANCED_CLEAR_CACHE = 1;
     public static final int SETTING_APP_ADVANCED_PUSH_NOTIFICATION = 2;
+    public static final int SETTING_ABOUT_US = 36;
 
 
     public static class Url {
@@ -44,6 +45,7 @@ public class SettingConstant {
         public static final String PATH_PRIVACY_POLICY = "privacy.pl?isBack=true";
         public static final String PATH_CHECKOUT_TEMPLATE = "user/settings/template-pembelian";
         public static final String BASE_WEBVIEW_APPLINK = "tokopedia://webview?url=";
+        public static final String PATH_ABOUT_US = "about";
     }
 
     public static class PeopleUrl{

@@ -48,7 +48,7 @@ class InvoicePreviewUiModel(
         return attachmentPreviewFactory.type(this)
     }
 
-    override fun sendTo(messageId: String, opponentId: String, listInterceptor: List<Interceptor>) {
+    override fun sendTo(messageId: String, opponentId: String, message: String, listInterceptor: List<Interceptor>) {
         val startTime = SendableViewModel.generateStartTime()
         val invoicePreviewParam = SendWebsocketParam.generateParamSendInvoiceAttachment(
                 messageId,

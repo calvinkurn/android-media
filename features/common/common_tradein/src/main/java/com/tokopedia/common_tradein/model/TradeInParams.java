@@ -38,6 +38,8 @@ public class TradeInParams implements Parcelable {
     private int tradeInType;
     @SerializedName("ModelId")
     private int modelID;
+    @SerializedName("WidgetString")
+    private String widgetString;
 
     private String productName;
 
@@ -166,6 +168,14 @@ public class TradeInParams implements Parcelable {
         this.tradeInType = tradeInType;
     }
 
+    public String getWidgetString() {
+        return widgetString;
+    }
+
+    public void setWidgetString(String widgetString) {
+        this.widgetString = widgetString;
+    }
+
     public TradeInParams() {
     }
 
@@ -189,6 +199,7 @@ public class TradeInParams implements Parcelable {
         dest.writeInt(this.remainingPrice);
         dest.writeInt(this.useKyc);
         dest.writeInt(this.isEligible);
+        dest.writeString(this.widgetString);
     }
 
     protected TradeInParams(Parcel in) {
@@ -205,6 +216,7 @@ public class TradeInParams implements Parcelable {
         this.remainingPrice = in.readInt();
         this.useKyc = in.readInt();
         this.isEligible = in.readInt();
+        this.widgetString = in.readString();
     }
 
     public static final Creator<TradeInParams> CREATOR = new Creator<TradeInParams>() {

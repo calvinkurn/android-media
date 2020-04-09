@@ -304,6 +304,7 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
     }
 
     public void sendEnhancedECommerceCheckout(Map<String, Object> cartMap,
+                                              String irisSessionId,
                                               String transactionId,
                                               boolean isTradeIn,
                                               String eventAction,

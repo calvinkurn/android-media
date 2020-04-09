@@ -47,7 +47,7 @@ interface TopChatContract {
 
         fun showAttachmentPreview(attachmentPreview: ArrayList<SendablePreview>)
 
-        fun notifyAttachmentsSent()
+        fun clearAttachmentPreviews()
 
         fun getShopName(): String
 

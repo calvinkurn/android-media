@@ -95,7 +95,7 @@ public class TapTapTokenPresenter extends BaseDaggerPresenter<TapTapTokenContrac
                     return;
                 }
                 if (e instanceof UnknownHostException) {
-                    showErrorView(R.drawable.gf_internet_not_connected_error
+                    showErrorView(R.drawable.unify_globalerrors_connection
                             , getView().getResources().getString(R.string.internet_not_connected_error_occured), true);
                 } else {
                     getView().showErrorSnackBarOnCrackError(getView().getResources().getString(R.string.gf_server_error_crack_token_tap_tap), true);
@@ -201,7 +201,7 @@ public class TapTapTokenPresenter extends BaseDaggerPresenter<TapTapTokenContrac
                 }
                 getView().hideLoading();
                 if (e instanceof UnknownHostException) {
-                    showErrorView(R.drawable.gf_internet_not_connected_error
+                    showErrorView(R.drawable.unify_globalerrors_connection
                             , getView().getResources().getString(R.string.internet_not_connected_error_occured));
                 } else {
                     showErrorView(R.drawable.gf_server_full_error

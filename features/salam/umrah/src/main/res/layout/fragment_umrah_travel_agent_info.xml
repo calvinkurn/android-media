@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_umrah_travel_info_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginBottom="@dimen/dp_16"
+        android:text="@string/umrah_travel_info_desc_title"
+        android:textColor="@color/Neutral_N700"
+        app:typographyType="heading_5"
+        app:typographyWeight="bold"
+        />
+
+    <com.tokopedia.salam.umrah.common.presentation.widget.TruncateDescriptionWidget
+        android:id="@+id/tv_umrah_travel_info_desc"
+        app:layout_constraintTop_toBottomOf="@+id/tv_umrah_travel_info_title"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/iv_umrah_travel_location"
+        android:layout_width="@dimen/dp_14"
+        android:layout_height="@dimen/dp_14"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_umrah_travel_info_desc"
+        app:srcCompat="@drawable/umrah_ic_home_page_location"
+        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginLeft="@dimen/dp_16"
+        />
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_umrah_travel_info_address"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_32"
+        android:layout_marginBottom="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_16"
+        tools:text="Jl. Panglima Polom Raya No. 43 A-B,Kebayoran Baru - Jakarta Selatan"
+        app:typographyType="small"
+        android:textColor="@color/Neutral_N700"
+        app:layout_constraintTop_toBottomOf="@+id/tv_umrah_travel_info_desc"
+        app:layout_constraintLeft_toLeftOf="@+id/iv_umrah_travel_location"
+        app:layout_constraintRight_toRightOf="parent"
+        />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/iv_umrah_travel_timeline"
+        android:layout_width="@dimen/dp_14"
+        android:layout_height="@dimen/dp_14"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_umrah_travel_info_address"
+        app:srcCompat="@drawable/umrah_ic_travel_timeline"
+        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginLeft="@dimen/dp_16"
+        />
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_umrah_travel_info_years"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_32"
+        android:layout_marginBottom="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_16"
+        tools:text="Berdiri Sejak: 2001"
+        app:typographyType="small"
+        android:textColor="@color/Neutral_N700"
+        app:layout_constraintTop_toBottomOf="@+id/tv_umrah_travel_info_address"
+        app:layout_constraintLeft_toLeftOf="@+id/iv_umrah_travel_timeline"
+        />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/iv_umrah_travel_pilgrims"
+        android:layout_width="@dimen/dp_14"
+        android:layout_height="@dimen/dp_14"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_umrah_travel_info_years"
+        app:srcCompat="@drawable/umrah_ic_pdp_person"
+        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginLeft="@dimen/dp_16"
+        />
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_umrah_travel_info_pilgrims"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_32"
+        android:layout_marginBottom="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_16"
+        tools:text="1000 jemaah per tahun"
+        app:typographyType="small"
+        android:textColor="@color/Neutral_N700"
+        app:layout_constraintTop_toBottomOf="@+id/tv_umrah_travel_info_years"
+        app:layout_constraintLeft_toLeftOf="@+id/iv_umrah_travel_pilgrims"
+        />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -12,6 +12,9 @@ class SendableProductPreview(
         val productPreview: ProductPreview
 ) : SendablePreview {
 
+    val productId get() = productPreview.id
+    val productUrl get() = productPreview.url
+
     override fun type(attachmentPreviewFactory: AttachmentPreviewFactory): Int {
         return attachmentPreviewFactory.type(this)
     }
@@ -42,14 +45,10 @@ class SendableProductPreview(
         )
     }
 
-    override fun sendTo(messageId: String, opponentId: String, interceptors: List<Interceptor>) {
+    override fun sendTo(messageId: String, opponentId: String, message: String, interceptors: List<Interceptor>) {
         val startTime = SendableViewModel.generateStartTime()
         val productPreviewParam = SendWebsocketParam.generateParamSendProductAttachment(
-                messageId,
-                generateResultProduct(),
-                startTime,
-                opponentId,
-                productPreview
+                messageId, generateResultProduct(), startTime, opponentId, productPreview, message
         )
         RxWebSocket.send(productPreviewParam, interceptors)
     }

@@ -1,13 +1,15 @@
 package com.tokopedia.brandlist.brandlist_page.presentation.adapter
 
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
 import com.tokopedia.brandlist.brandlist_page.data.mapper.BrandlistPageMapper.Companion.ALL_BRAND_HEADER_POSITION
 import com.tokopedia.brandlist.brandlist_page.data.mapper.BrandlistPageMapper.Companion.FEATURED_BRAND_POSITION
 import com.tokopedia.brandlist.brandlist_page.data.mapper.BrandlistPageMapper.Companion.NEW_BRAND_POSITION
 import com.tokopedia.brandlist.brandlist_page.data.mapper.BrandlistPageMapper.Companion.POPULAR_BRAND_POSITION
-import com.tokopedia.brandlist.brandlist_page.presentation.adapter.viewholder.*
+import com.tokopedia.brandlist.brandlist_page.presentation.adapter.viewholder.AllBrandGroupHeaderViewHolder
+import com.tokopedia.brandlist.brandlist_page.presentation.adapter.viewholder.AllBrandViewHolder
 import com.tokopedia.brandlist.brandlist_page.presentation.adapter.viewmodel.AllBrandHeaderViewModel
 import com.tokopedia.brandlist.brandlist_page.presentation.adapter.viewmodel.FeaturedBrandViewModel
 import com.tokopedia.brandlist.brandlist_page.presentation.adapter.viewmodel.NewBrandViewModel
@@ -21,6 +23,8 @@ class BrandlistPageAdapter(
         private val adapterTypeFactory: BrandlistPageAdapterTypeFactory,
         private val brandlistPageFragment: BrandlistPageFragment) :
         BaseAdapter<BrandlistPageAdapterTypeFactory>(adapterTypeFactory), StickyHeaderInterface {
+
+    private var recyclerView: RecyclerView? = null
 
     val spanSizeLookup: GridLayoutManager.SpanSizeLookup by lazy {
         object : GridLayoutManager.SpanSizeLookup() {
@@ -50,5 +54,30 @@ class BrandlistPageAdapter(
 
     override fun isHeader(itemPosition: Int): Boolean {
         return visitables[itemPosition].type(adapterTypeFactory) == AllBrandGroupHeaderViewHolder.LAYOUT
+    }
+
+    override fun showLoading() {
+        if (!isLoading) {
+            if (isShowLoadingMore) {
+                visitables.add(loadingMoreModel)
+            } else {
+                visitables.add(loadingModel)
+            }
+            recyclerView?.let {
+                it.post {
+                    notifyItemInserted(visitables.size)
+                }
+            }
+        }
+    }
+
+    override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
+        this.recyclerView = recyclerView
+        super.onAttachedToRecyclerView(recyclerView)
+    }
+
+    override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
+        this.recyclerView = null
+        super.onDetachedFromRecyclerView(recyclerView)
     }
 }

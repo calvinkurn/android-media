@@ -20,7 +20,7 @@ class CouponCatalogRepositoryTest {
 
     @Before
     fun setUp() {
-        repository = CouponCatalogRepository(map)
+        repository = CouponCatalogRepository(map , "tp_curent_point")
     }
 
     @After
@@ -33,7 +33,6 @@ class CouponCatalogRepositoryTest {
             val useCase = mockk<MultiRequestGraphqlUseCase>()
             repository.mGetCouponDetail = useCase
             every { map[CommonConstant.GQLQuery.TP_GQL_CATALOG_DETAIL] } returns "sdfcasdv"
-            every { map[CommonConstant.GQLQuery.TP_GQL_CURRENT_POINTS] } returns "sdfcasdv"
             every { useCase.clearRequest() } just Runs
             every { useCase.addRequest(any()) } just Runs
             coEvery { useCase.executeOnBackground() } returns mockk()

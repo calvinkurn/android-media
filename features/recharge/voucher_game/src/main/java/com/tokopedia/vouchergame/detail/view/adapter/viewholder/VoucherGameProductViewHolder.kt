@@ -38,7 +38,7 @@ class VoucherGameProductViewHolder(val view: View, val listener: OnClickListener
                     product_promo_label.visibility = View.VISIBLE
                     product_promo_label.text = productLabels.joinToString(",", limit = 2)
                 } else {
-                    product_promo_label.visibility = View.INVISIBLE
+                    product_promo_label.visibility = View.GONE
                 }
 
                 when {

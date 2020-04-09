@@ -4,9 +4,12 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
+import com.tokopedia.discovery.common.model.ProductCardOptionsModel;
+import com.tokopedia.discovery.common.model.WishlistTrackingModel;
 import com.tokopedia.filter.common.data.DynamicFilterModel;
 import com.tokopedia.filter.common.data.Filter;
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem;
+import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.search.analytics.GeneralSearchTrackingModel;
 import com.tokopedia.search.result.presentation.model.GlobalNavViewModel;
 import com.tokopedia.search.result.presentation.model.InspirationCarouselViewModel;
@@ -30,10 +33,6 @@ public interface ProductListSectionContract {
 
         void addRecommendationList(List<Visitable> list);
 
-        void disableWishlistButton(String productId);
-
-        void enableWishlistButton(String productId);
-
         void showNetworkError(int startRow);
 
         String getQueryKey();
@@ -51,16 +50,6 @@ public interface ProductListSectionContract {
         void addLoading();
 
         void removeLoading();
-
-        void successAddWishlist(ProductItemViewModel productItemViewModel);
-
-        void errorAddWishList(String errorMessage, String productId);
-
-        void successRemoveWishlist(ProductItemViewModel productItemViewModel);
-
-        void errorRemoveWishlist(String errorMessage, String productId);
-
-        void notifyAdapter();
 
         void stopTracePerformanceMonitoring();
 
@@ -90,19 +79,11 @@ public interface ProductListSectionContract {
 
         void showAdultRestriction();
 
-        void sendTrackingWishlistNonLogin(ProductItemViewModel productItemViewModel);
-
         void redirectSearchToAnotherPage(String applink);
 
         void sendTrackingForNoResult(String resultCode, String alternativeKeyword, String keywordProcess);
 
         void setDefaultLayoutType(int defaultView);
-
-        void successRemoveRecommendationWishlist(String productId);
-
-        void successAddRecommendationWishlist(String productId);
-
-        void errorRecommendationWishlist(String errorMessage, String productId);
 
         void showFreeOngkirShowCase(boolean hasFreeOngkirBadge);
 
@@ -126,8 +107,6 @@ public interface ProductListSectionContract {
 
         BaseAppComponent getBaseAppComponent();
 
-        void logDebug(String tag, String message);
-
         void renderDynamicFilter(DynamicFilterModel dynamicFilterModel);
 
         void renderFailRequestDynamicFilter();
@@ -145,21 +124,33 @@ public interface ProductListSectionContract {
         void hideBottomNavigation();
 
         void sendImpressionInspirationCarousel(final InspirationCarouselViewModel inspirationCarouselViewModel);
+
+        RemoteConfig getABTestRemoteConfig();
+
+        void trackWishlistRecommendationProductLoginUser(boolean isAddWishlist);
+
+        void trackWishlistRecommendationProductNonLoginUser();
+
+        void trackWishlistProduct(WishlistTrackingModel wishlistTrackingModel);
+
+        void updateWishlistStatus(String productId, boolean isWishlisted);
+
+        void showMessageSuccessWishlistAction(boolean isWishlisted);
+
+        void showMessageFailedWishlistAction(boolean isWishlisited);
+
+        String getPreviousKeyword();
+
+        boolean isLandingPage();
     }
 
     interface Presenter extends CustomerPresenter<View> {
-
-        void initInjector(View view);
 
         void requestDynamicFilter(Map<String, Object> searchParameter);
 
         void loadMoreData(Map<String, Object> searchParameter);
 
         void loadData(Map<String, Object> searchParameter);
-
-        void handleWishlistButtonClicked(final ProductItemViewModel productItem);
-
-        void handleWishlistButtonClicked(final RecommendationItem recommendationItem);
 
         void onBannedProductsGoToBrowserClick(String url);
 
@@ -168,6 +159,8 @@ public interface ProductListSectionContract {
         String getUserId();
 
         boolean isUserLoggedIn();
+
+        String getDeviceId();
 
         void onPriceFilterTickerDismissed();
 
@@ -184,5 +177,7 @@ public interface ProductListSectionContract {
         void onViewCreated();
 
         void onViewVisibilityChanged(boolean isViewVisible, boolean isViewAdded);
+
+        void handleWishlistAction(ProductCardOptionsModel productCardOptionsModel);
     }
 }

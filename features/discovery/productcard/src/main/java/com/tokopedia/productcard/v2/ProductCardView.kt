@@ -22,15 +22,14 @@ import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.design.base.BaseCustomView
-import com.tokopedia.design.image.SquareImageView
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.model.ImpressHolder
+import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.R
 import com.tokopedia.productcard.utils.*
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifyprinciples.Typography
-import kotlinx.android.synthetic.main.product_card_layout_v2_skeleton.view.*
 
 /**
  * This abstract class provides a basis for Custom View Product Card.
@@ -42,6 +41,7 @@ import kotlinx.android.synthetic.main.product_card_layout_v2_skeleton.view.*
  *    e.g. setImageProductUrl, setProductNameVisible, setProductNameText, etc.
  * 3. Call method realignLayout() after configuring the required ProductCardView components.
  */
+@Deprecated("Please use ProductCardGridView or ProductCardListView")
 abstract class ProductCardView: BaseCustomView {
 
     companion object {
@@ -339,7 +339,7 @@ abstract class ProductCardView: BaseCustomView {
 
     open protected fun initProductImage(productImageUrl: String) {
         imageProduct?.shouldShowWithAction(productImageUrl.isNotEmpty()) {
-            it.loadProductImage(productImageUrl)
+            it.loadImage(productImageUrl)
         }
     }
 

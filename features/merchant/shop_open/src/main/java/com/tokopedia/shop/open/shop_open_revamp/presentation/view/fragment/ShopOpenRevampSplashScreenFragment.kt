@@ -65,8 +65,10 @@ class ShopOpenRevampSplashScreenFragment : Fragment() {
         txt_greeting.text = greetingText
         shopOpenRevampTracking?.sendScreenHooray()
         handler.postDelayed({
-            fragmentNavigationInterface
+            context?.let{
+                fragmentNavigationInterface
                     .navigateToNextPage(PageNameConstant.QUISIONER_PAGE, SECOND_FRAGMENT_TAG)
+            }
         }, 3000)
     }
 
