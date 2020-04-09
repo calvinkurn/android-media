@@ -420,7 +420,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
             weightInKilograms = orderProduct.quantity.orderQuantity * orderProduct.weight / 1000.0
             productInsurance = orderShop.cartResponse.product.productFinsurance
 
-            var productPrice = orderProduct.productPrice.toLong()
+            var productPrice = orderProduct.productPrice
             if (orderProduct.wholesalePrice.isNotEmpty()) {
                 for (wholesalePrice in orderProduct.wholesalePrice) {
                     if (orderProduct.quantity.orderQuantity >= wholesalePrice.qtyMin) {
@@ -1256,6 +1256,8 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
             val globalCodes = orderPromo.value?.lastApply?.codes ?: emptyList()
             validateUsePromoRequest.codes = globalCodes.toMutableList()
         }
+        validateUsePromoRequest.skipApply = 0
+        validateUsePromoRequest.isSuggested = 0
 
         lastValidateUsePromoRequest = validateUsePromoRequest
 

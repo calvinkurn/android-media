@@ -14,13 +14,13 @@ data class Payment(
         @SerializedName("url")
         val url: String = "",
         @SerializedName("minimum_amount")
-        val minimumAmount: Int = 0,
+        val minimumAmount: Long = 0,
         @SerializedName("maximum_amount")
-        val maximumAmount: Int = 0,
+        val maximumAmount: Long = 0,
         @SerializedName("fee")
-        val fee: Int = 0,
+        val fee: Long = 0,
         @SerializedName("wallet_amount")
-        val walletAmount: Int = 0,
+        val walletAmount: Long = 0,
         @SerializedName("metadata")
         val metadata: String = ""
 )

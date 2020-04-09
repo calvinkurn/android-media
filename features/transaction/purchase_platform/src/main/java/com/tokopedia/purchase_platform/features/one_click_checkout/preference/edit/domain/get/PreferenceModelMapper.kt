@@ -2,6 +2,7 @@ package com.tokopedia.purchase_platform.features.one_click_checkout.preference.e
 
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.DEFAULT_ERROR_MESSAGE
+import com.tokopedia.purchase_platform.features.one_click_checkout.common.STATUS_OK
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.data.model.response.preference.Address
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.data.model.response.preference.Payment
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.data.model.response.preference.ProfilesItem
@@ -17,20 +18,17 @@ import javax.inject.Inject
 class PreferenceModelMapper @Inject constructor() {
 
     fun convertToDomainModel(response: GetPreferenceByIdGqlResponse): GetPreferenceData {
-        if (response.response.status.equals("OK", true)) {
+        if (response.response.status.equals(STATUS_OK, true)) {
             val data = response.response.data
             if (data.success == 1) {
-                val getPreferenceData = GetPreferenceData()
-
                 val profilesItemModel = getProfilesItemModel(data.profile)
-
-                getPreferenceData.addressModel = profilesItemModel.addressModel
-                getPreferenceData.shipmentModel = profilesItemModel.shipmentModel
-                getPreferenceData.paymentModel = profilesItemModel.paymentModel
-                getPreferenceData.profileId = profilesItemModel.profileId
-                getPreferenceData.status = profilesItemModel.status
-
-                return getPreferenceData
+                return GetPreferenceData().apply {
+                    addressModel = profilesItemModel.addressModel
+                    shipmentModel = profilesItemModel.shipmentModel
+                    paymentModel = profilesItemModel.paymentModel
+                    profileId = profilesItemModel.profileId
+                    status = profilesItemModel.status
+                }
             } else {
                 val errorMessage = data.messages
                 if (errorMessage.isNotEmpty()) {
@@ -51,58 +49,49 @@ class PreferenceModelMapper @Inject constructor() {
 
 
     private fun getProfilesItemModel(profilesItem: ProfilesItem): ProfilesItemModel {
-        val profilesItemsModel = ProfilesItemModel()
-        profilesItemsModel.profileId = profilesItem.profileId
-        profilesItemsModel.status = profilesItem.status
-        profilesItemsModel.addressModel = profilesItem.address?.let { getAddressModel(it) }
-        profilesItemsModel.paymentModel = profilesItem.payment?.let { getPaymentModel(it) }
-        profilesItemsModel.shipmentModel = profilesItem.shipment?.let { getShipmentModel(it) }
-
-        return profilesItemsModel
+        return ProfilesItemModel().apply {
+            profileId = profilesItem.profileId
+            status = profilesItem.status
+            addressModel = profilesItem.address?.let { getAddressModel(it) }
+            paymentModel = profilesItem.payment?.let { getPaymentModel(it) }
+            shipmentModel = profilesItem.shipment?.let { getShipmentModel(it) }
+        }
     }
 
     private fun getAddressModel(address: Address): AddressModel {
-        val addressModel = AddressModel()
-        addressModel.addressId = address.addressId
-        addressModel.addressName = address.addressName
-        addressModel.addressStreet = address.addressStreet
-        addressModel.cityId = address.cityId
-        addressModel.cityName = address.cityName
-        addressModel.districtId = address.districtId
-        addressModel.districtName = address.districtName
-        addressModel.phone = address.phone
-        addressModel.postalCode = address.postalCode
-        addressModel.provinceId = address.provinceId
-        addressModel.provinceName = address.provinceName
-        addressModel.receiverName = address.receiverName
+        return AddressModel().apply {
+            addressId = address.addressId
+            addressName = address.addressName
+            addressStreet = address.addressStreet
+            cityId = address.cityId
+            cityName = address.cityName
+            districtId = address.districtId
+            districtName = address.districtName
+            phone = address.phone
+            postalCode = address.postalCode
+            provinceId = address.provinceId
+            provinceName = address.provinceName
+            receiverName = address.receiverName
 
-        addressModel.fullAddress = address.addressStreet + ", " +
-                address.districtName + ", " +
-                address.cityName + ", " +
-                address.provinceName + " " +
-                address.postalCode
-
-
-        return addressModel
+            fullAddress = "${address.addressStreet}, ${address.districtName}, ${address.cityName}, ${address.provinceName} ${address.postalCode}"
+        }
     }
 
     private fun getShipmentModel(shipment: Shipment): ShipmentModel {
-        val shipmentModel = ShipmentModel()
-        shipmentModel.serviceId = shipment.serviceId
-        shipmentModel.serviceDuration = shipment.serviceDuration
-        shipmentModel.serviceName = shipment.serviceName
-
-        return shipmentModel
+        return ShipmentModel().apply {
+            serviceId = shipment.serviceId
+            serviceDuration = shipment.serviceDuration
+            serviceName = shipment.serviceName
+        }
     }
 
     private fun getPaymentModel(payment: Payment): PaymentModel {
-        val paymentModel = PaymentModel()
-        paymentModel.gatewayCode = payment.gatewayCode
-        paymentModel.description = payment.description
-        paymentModel.gatewayName = payment.gatewayName
-        paymentModel.image = payment.image
-        paymentModel.url = payment.url
-
-        return paymentModel
+        return PaymentModel().apply {
+            gatewayCode = payment.gatewayCode
+            description = payment.description
+            gatewayName = payment.gatewayName
+            image = payment.image
+            url = payment.url
+        }
     }
 }

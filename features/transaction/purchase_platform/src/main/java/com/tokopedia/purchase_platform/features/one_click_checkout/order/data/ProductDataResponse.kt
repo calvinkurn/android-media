@@ -2,11 +2,10 @@ package com.tokopedia.purchase_platform.features.one_click_checkout.order.data
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.purchase_platform.common.data.model.response.WholesalePrice
 import com.tokopedia.purchase_platform.features.cart.data.model.response.*
 import com.tokopedia.transactiondata.entity.response.cartlist.shopgroup.FreeShipping
-import java.util.ArrayList
+import java.util.*
 
 data class ProductDataResponse(
         @SerializedName("product_tracker_data")
@@ -22,7 +21,7 @@ data class ProductDataResponse(
         val productPriceFmt: String = "",
         @SerializedName("product_price")
         @Expose
-        val productPrice: Int = 0,
+        val productPrice: Long = 0,
         @SerializedName("parent_id")
         @Expose
         val parentId: Int = 0,
@@ -130,7 +129,7 @@ data class ProductDataResponse(
         val campaignId: Int = 0,
         @SerializedName("product_original_price")
         @Expose
-        val productOriginalPrice: Int = 0,
+        val productOriginalPrice: Long = 0,
         @SerializedName("product_price_original_fmt")
         @Expose
         val productPriceOriginalFmt: String = "",

@@ -12,7 +12,7 @@ class OrderSummaryPageEnhanceECommerce {
         data[KEY_ID] = id
     }
 
-    fun setPrice(price: Int) {
+    fun setPrice(price: Long) {
         data[KEY_PRICE] = price
     }
 
@@ -60,7 +60,7 @@ class OrderSummaryPageEnhanceECommerce {
         data[KEY_PROMO_DETAILS] = promoDetails
     }
 
-    fun setCartId(cartId: Int) {
+    fun setCartId(cartId: Long) {
         data[KEY_CART_ID] = cartId
     }
 

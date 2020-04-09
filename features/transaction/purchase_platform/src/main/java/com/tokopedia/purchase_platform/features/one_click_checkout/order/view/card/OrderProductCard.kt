@@ -194,7 +194,7 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
     }
 
     private fun showPrice() {
-        var productPrice = product.productPrice.toLong()
+        var productPrice = product.productPrice
         if (product.wholesalePrice.isNotEmpty()) {
             for (wholesalePrice in product.wholesalePrice) {
                 if (product.quantity.orderQuantity >= wholesalePrice.qtyMin) {
