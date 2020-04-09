@@ -134,10 +134,46 @@ class AddEditProductDescriptionViewModel @Inject constructor(
 
     fun setVariantInput(productVariant: ArrayList<ProductVariantCombinationViewModel>,
                         variantOptionParent: ArrayList<ProductVariantOptionParent>) {
-        variantInputModel.variantOptionParent = variantOptionParent
-        variantInputModel.productVariant = productVariant
+        variantInputModel.variantOptionParent = mapVariantOption(variantOptionParent)
+        variantInputModel.productVariant = mapProductVariant(productVariant, variantOptionParent)
         setVariantNamesAndCount(productVariant, variantOptionParent)
     }
+
+    private fun mapProductVariant(productVariant: ArrayList<ProductVariantCombinationViewModel>,
+                                  variantOptionParent: ArrayList<ProductVariantOptionParent>
+    ): ArrayList<ProductVariantCombinationViewModel> {
+        productVariant.forEach { variant ->
+            val options: ArrayList<Int> = ArrayList()
+            val level1Id = getVariantOptionIndex(variant.level1String,
+                    variantOptionParent)
+            val level2Id = getVariantOptionIndex(variant.level2String,
+                    variantOptionParent)
+            level1Id?.let { options.add(it) }
+            level2Id?.let { options.add(it) }
+            variant.opt = options
+        }
+        return productVariant
+    }
+
+    private fun getVariantOptionIndex(variantValue: String?,
+                                       variantOptionParent: List<ProductVariantOptionParent>): Int? {
+        variantOptionParent.forEach { productVariantOptionParent ->
+            productVariantOptionParent.productVariantOptionChild?.let {
+                for (outputIndex in it.indices){
+                    if (it[outputIndex].value == variantValue) return outputIndex
+                }
+            }
+        }
+        return null
+    }
+
+    private fun mapVariantOption(variantOptionParent: ArrayList<ProductVariantOptionParent>):
+            ArrayList<ProductVariantOptionParent> = variantOptionParent.map {
+                it.productVariantOptionChild?.forEachIndexed { index, productVariantOptionChild ->
+                    productVariantOptionChild.pvo = index
+                }
+                it
+            } as ArrayList<ProductVariantOptionParent>
 
     private fun setVariantNamesAndCount(productVariant: ArrayList<ProductVariantCombinationViewModel>,
                                         variantOptionParent: ArrayList<ProductVariantOptionParent>) {
