@@ -193,21 +193,6 @@ public class WelcomeFragment extends BaseDaggerFragment implements
     }
 
     @Override
-    public void addProgressbar() {
-        ProgressBar pb = new ProgressBar(getActivity(), null, android.R.attr.progressBarStyle);
-        int lastPos = containerProvider.getChildCount() - 1;
-        if (containerProvider != null && !(containerProvider.getChildAt(lastPos) instanceof ProgressBar))
-            containerProvider.addView(pb, containerProvider.getChildCount());
-    }
-
-    @Override
-    public void removeProgressBar() {
-        int lastPos = containerProvider.getChildCount() - 1;
-        if (containerProvider != null && containerProvider.getChildAt(lastPos) instanceof ProgressBar)
-            containerProvider.removeViewAt(containerProvider.getChildCount() - 1);
-    }
-
-    @Override
     public void showProvider(List<LoginProviderModel.ProvidersBean> data) {
         listProvider = data;
         if (listProvider != null && checkHasNoProvider()) {
@@ -314,11 +299,6 @@ public class WelcomeFragment extends BaseDaggerFragment implements
                 presenter.initData();
                 break;
         }
-    }
-
-    @Override
-    public void showError(String string) {
-        SnackbarManager.make(getActivity(), string, Snackbar.LENGTH_LONG).show();
     }
 
     public boolean checkHasNoProvider() {

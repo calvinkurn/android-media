@@ -131,10 +131,6 @@
             android:name=".reputation.view.activity.SellerReputationDatePickerActivity"
             android:label="@string/set_date" />
         <activity
-            android:name=".reputation.view.activity.SellerReputationActivity"
-            android:label="@string/title_activity_reputation"
-            android:theme="@style/AppTheme" />
-        <activity
             android:name=".reputation.view.activity.SellerReputationInfoActivity"
             android:label="@string/reputation_point_calculation"
             android:theme="@style/AppTheme" />
@@ -158,9 +154,6 @@
                     android:path="@string/path_shop_setting_shipping"/>
             </intent-filter>
         </activity>
-        <activity
-            android:name=".shopsettings.shipping.OpenShopEditShipping"
-            android:label="@string/title_open_shop" />
         <activity
             android:name=".product.etalase.view.activity.EtalaseDynamicPickerActivity"
             android:label="@string/product_title_activity_etalase_picker"

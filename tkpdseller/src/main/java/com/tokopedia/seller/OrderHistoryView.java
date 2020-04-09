@@ -49,18 +49,6 @@ public class OrderHistoryView extends TActivity {
         return AppScreen.SCREEN_ORDER_HISTORY;
     }
 
-    public static Intent createInstanceBuyer(Context context, String statusList,
-                                             String preorderInfo, boolean wsv4) {
-        Intent intent = new Intent(context, OrderHistoryView.class);
-        Bundle bundle = new Bundle();
-        bundle.putInt("state", OrderHistoryView.STATE_BUYER);
-        bundle.putString("status_list", statusList);
-        bundle.putString("preorder_info", preorderInfo);
-        bundle.putBoolean("DATA_FROM_WS_V4", wsv4);
-        intent.putExtras(bundle);
-        return intent;
-    }
-
 
     private ArrayList<String> ActorList = new ArrayList<String>();
     private ArrayList<String> DateList = new ArrayList<String>();

@@ -13,17 +13,11 @@ import java.util.List;
 public interface WelcomeFragmentView {
     boolean checkHasNoProvider();
 
-    void addProgressbar();
-
-    void removeProgressBar();
-
     void showProvider(List<LoginProviderModel.ProvidersBean> providerList);
 
     Activity getActivity();
 
     void onMessageError(int discoverLogin, Object... s);
-
-    void showError(String string);
 
     void showProgress(boolean b);
 
