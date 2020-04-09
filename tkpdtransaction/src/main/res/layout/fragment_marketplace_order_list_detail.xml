@@ -167,14 +167,13 @@
                         android:textSize="@dimen/sp_16"/>
                     
                     <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/dp_9"
-                        android:layout_marginStart="@dimen/dp_9"
-                        app:srcCompat="@drawable/ic_right"
+                        android:id="@+id/iv_shop_info"
+                        android:layout_width="@dimen/dp_24"
+                        android:layout_height="@dimen/dp_24"
                         android:layout_toRightOf="@id/shop_info_label"
                         android:layout_toEndOf="@id/shop_info_label"
-                        android:layout_centerVertical="true"/>
+                        android:layout_centerVertical="true"
+                        tools:ignore="ContentDescription" />
                     
                 </RelativeLayout>
 

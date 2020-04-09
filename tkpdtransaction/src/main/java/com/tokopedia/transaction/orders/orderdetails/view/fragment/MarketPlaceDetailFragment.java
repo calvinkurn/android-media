@@ -161,6 +161,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
     private TextView productInformationTitle;
     private TextView shopInformationTitle;
     private RelativeLayout rlShopInfo;
+    private ImageView ivShopInfo;
     private boolean isSingleButton;
     private ClipboardManager myClipboard;
     private CardView driverLayout, dropShipperLayout;
@@ -226,6 +227,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
         productInformationTitle = view.findViewById(R.id.product_info_label);
         shopInformationTitle = view.findViewById(R.id.shop_info_label);
         rlShopInfo = view.findViewById(R.id.rl_shop_info);
+        ivShopInfo = view.findViewById(R.id.iv_shop_info);
         paymentMethod = view.findViewById(R.id.info_payment_method);
         progressBarLayout = view.findViewById(R.id.progress_bar_layout);
         swipeToRefresh = view.findViewById(R.id.swipe_refresh_layout);
@@ -966,6 +968,8 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
         completeLabelShop.append(shopName);
         completeLabelShop.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), startLabelShop, completeLabelShop.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         shopInformationTitle.setText(completeLabelShop);
+
+        ivShopInfo.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.ic_right));
 
         rlShopInfo.setOnClickListener(v -> {
             orderListAnalytics.sendClickShopName(status.status());
