@@ -21,8 +21,6 @@
     <string name="path_travel_entertainment_home" translatable="false">/home</string>
     <string name="path_travel_entertainment_destination" translatable="false">/home/city</string>
 
-    <string name="path_flight_phone_verification" translatable="false">/phone-verification</string>
-
     <string name="title_hotel">Hotel</string>
     <string name="title_flight">Tiket Pesawat</string>
     <string name="title_travel_homepage">Travel &amp; Entertainment</string>
