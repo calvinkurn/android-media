@@ -28,10 +28,6 @@ public abstract class BaseService<T> {
         initApiService(createRetrofitInstance(getBaseUrl()));
     }
 
-    public BaseService(String overrideUrl) {
-        initApiService(createRetrofitInstance(overrideUrl));
-    }
-
     protected Retrofit createRetrofitInstance(String processedBaseUrl) {
         return null;
     }

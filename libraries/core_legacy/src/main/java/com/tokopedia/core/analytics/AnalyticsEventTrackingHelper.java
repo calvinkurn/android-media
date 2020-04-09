@@ -15,33 +15,6 @@ import java.util.Map;
 
 public class AnalyticsEventTrackingHelper {
 
-    public static void hamburgerOptionClicked(Context context, String landingScreen, String optionName) {
-        Map<String, Object> map = new HashMap<>();
-        map.put(FirebaseParams.Home.LANDING_SCREEN_NAME, landingScreen);
-        map.put(FirebaseParams.Home.OPTION_NAME, optionName);
-
-        sendEventToAnalytics(context, FirebaseEvent.Home.HAMBURGER_OPTION_CLICK, map);
-    }
-    public static void hamburgerOptionClicked(Context context, String landingScreen, String optionName, String subCategory) {
-        Map<String, Object> map = new HashMap<>();
-        map.put(FirebaseParams.Home.LANDING_SCREEN_NAME, landingScreen);
-        map.put(FirebaseParams.Home.OPTION_NAME, optionName);
-        map.put(FirebaseParams.Home.SUBCATEGORY_NAME, subCategory);
-
-        sendEventToAnalytics(context, FirebaseEvent.Home.HAMBURGER_OPTION_CLICK, map);
-    }
-
-    public static void hamburgerTokocashActivateClick(Context context) {
-        Map<String, Object> map = new HashMap<>();
-        sendEventToAnalytics(context, FirebaseEvent.Home.HAMBURGER_TOKOCASH_ACTIVATE, map);
-    }
-
-    public static void homepageTokocashClick(Context context, String landingScreen ) {
-        Map<String, Object> map = new HashMap<>();
-        map.put(FirebaseParams.Home.LANDING_SCREEN_NAME, landingScreen);
-        sendEventToAnalytics(context, FirebaseEvent.Home.HAMBURGER_TOKOCASH, map);
-    }
-
     public static void homepageSaldoClick(Context context, String landingScreen) {
         Map<String, Object> map = new HashMap<>();
         map.put(FirebaseParams.Home.LANDING_SCREEN_NAME, landingScreen);

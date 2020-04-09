@@ -9,12 +9,9 @@ package com.tokopedia.core.analytics.appsflyer;
 public class Jordan {
 
     public static final String AF_SCREEN_HOME_MAIN = "home_beranda";
-    public static final String AF_SCREEN_PRODUCT = "productView";
     public static final String AF_SHIPPING_PRICE = "af_shipping_price";
     public static final String AF_PURCHASE_SITE = "af_purchase_site";
-    public static final String AF_SHOP_ID = "af_shop_id";
     public static final String AF_KEY_CATEGORY_NAME = "category";
-    public static final String AF_KEY_ADS_ID = "advertising_id";
     public static final String AF_KEY_CRITEO = "criteo_track_transaction";
     public static final String CACHE_AF_KEY_JSONIDS = "af_json_ids";
     public static final String CACHE_AF_KEY_QTY = "af_qty";
@@ -25,6 +22,4 @@ public class Jordan {
     public static final String AF_VALUE_PRODUCTGROUPTYPE = "product_group";
     public static final String VALUE_ANDROID = "Android";
     public static final String VALUE_IDR = "IDR";
-
-
 }

@@ -20,7 +20,7 @@ public abstract class BearerService<T> extends BaseService<T>{
     private Context context;
     protected String mToken;
 
-    public BearerService(Context context, String mToken) {
+    BearerService(Context context, String mToken) {
         this.context = context;
         this.mToken = mToken;
         initApiService(createRetrofitInstance(getBaseUrl()));

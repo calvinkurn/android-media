@@ -34,9 +34,4 @@ public class PushNotificationDataInteractor implements IPushNotificationDataInte
                 .unsubscribeOn(Schedulers.newThread())
                 .subscribe(subscriber);
     }
-
-    @Override
-    public void unSubscribeObservable() {
-        if (mCompositeSubscription.hasSubscriptions()) mCompositeSubscription.unsubscribe();
-    }
 }
