@@ -17,6 +17,10 @@ fun TextFieldUnify?.getTextIntOrZero(): Int = this?.textFieldInput?.text.toStrin
 
 fun TextFieldUnify?.getTextBigIntegerOrZero(): BigInteger = this?.textFieldInput?.text.toString().replace(".", "").toBigIntegerOrNull() ?: 0.toBigInteger()
 
+fun TextFieldUnify?.placeCursorToEnd() {
+    this?.textFieldInput?.setSelection(this.textFieldInput.text.length)
+}
+
 fun TextFieldUnify?.setModeToNumberInput() {
     val textFieldInput = this?.textFieldInput
     val maxLength = Int.MAX_VALUE.toString().length

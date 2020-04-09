@@ -120,4 +120,10 @@ class ResourceProvider @Inject constructor(@ApplicationContext val context: Cont
     fun getMaxWeeksLimitPreorderDuratioErrorMessage(): String? {
         return getString(R.string.error_preorder_duration_cant_exceed_thirteen_weeks)
     }
+
+    // product video string properties
+
+    fun getDuplicateProductVideoErrorMessage(): String? {
+        return getString(R.string.error_video_is_exist)
+    }
 }

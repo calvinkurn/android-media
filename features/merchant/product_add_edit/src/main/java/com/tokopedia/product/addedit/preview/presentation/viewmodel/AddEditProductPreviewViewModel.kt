@@ -9,10 +9,13 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
 import com.tokopedia.product.addedit.description.data.remote.model.variantbycat.ProductVariantByCatModel
 import com.tokopedia.product.addedit.description.domain.usecase.GetProductVariantUseCase
+import com.tokopedia.product.addedit.description.presentation.model.DescriptionInputModel
+import com.tokopedia.product.addedit.description.presentation.model.ProductVariantInputModel
 import com.tokopedia.product.addedit.preview.data.source.api.response.Product
 import com.tokopedia.product.addedit.preview.domain.GetProductUseCase
 import com.tokopedia.product.addedit.preview.domain.mapper.GetProductMapper
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
+import com.tokopedia.product.addedit.shipment.presentation.model.ShipmentInputModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -79,6 +82,10 @@ class AddEditProductPreviewViewModel @Inject constructor(
     private val mProductVariantList = MutableLiveData<Result<List<ProductVariantByCatModel>>>()
     val productVariantList: LiveData<Result<List<ProductVariantByCatModel>>> get() = mProductVariantList
 
+    fun getProductId(): String {
+        return productId.value ?: ""
+    }
+
     fun setProductId(id: String) {
         productId.value = id
     }
@@ -90,6 +97,22 @@ class AddEditProductPreviewViewModel @Inject constructor(
     fun updateProductPhotos(imagePickerResult: ArrayList<String>) {
         productInputModel.value?.detailInputModel?.imageUrlOrPathList = imagePickerResult
         this.mImageUrlOrPathList.value = imagePickerResult
+    }
+
+    fun updateDetailInputModel(detailInputModel: DetailInputModel) {
+        productInputModel.value?.detailInputModel = detailInputModel
+    }
+
+    fun updateDescriptionInputModel(descriptionInputModel: DescriptionInputModel) {
+        productInputModel.value?.descriptionInputModel = descriptionInputModel
+    }
+
+    fun updateVariantInputModel(variantInputModel: ProductVariantInputModel) {
+        productInputModel.value?.variantInputModel = variantInputModel
+    }
+
+    fun updateShipmentInputModel(shipmentInputModel: ShipmentInputModel) {
+        productInputModel.value?.shipmentInputModel = shipmentInputModel
     }
 
     fun getNewProductInputModel(imageUrlOrPathList: ArrayList<String>): ProductInputModel {

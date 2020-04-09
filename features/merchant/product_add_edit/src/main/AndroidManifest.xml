@@ -38,7 +38,7 @@
         <activity
             android:name=".detail.presentation.activity.AddEditProductDetailActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White" />
+            android:theme="@style/Theme.White"/>
 
         <activity
             android:name=".description.presentation.activity.AddEditProductDescriptionActivity"
@@ -51,9 +51,14 @@
             android:theme="@style/Theme.White" />
 
         <service
-            android:name="com.tokopedia.product.addedit.preview.presentation.service.AddEditProductUploadService"
-            android:permission="android.permission.BIND_JOB_SERVICE"
-            android:enabled="true" />
+            android:name="com.tokopedia.product.addedit.preview.presentation.service.AddEditProductAddService"
+            android:enabled="true"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
+
+        <service
+            android:name="com.tokopedia.product.addedit.preview.presentation.service.AddEditProductEditService"
+            android:enabled="true"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
 
     </application>
 </manifest>

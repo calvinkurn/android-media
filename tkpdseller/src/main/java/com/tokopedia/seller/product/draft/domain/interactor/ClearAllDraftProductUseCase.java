@@ -1,6 +1,6 @@
 package com.tokopedia.seller.product.draft.domain.interactor;
 
-import com.tokopedia.product.manage.item.main.draft.domain.ProductDraftRepository;
+import com.tokopedia.product.manage.common.draft.data.db.repository.AddEditProductDraftRepository;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 
@@ -13,15 +13,15 @@ import rx.Observable;
  */
 
 public class ClearAllDraftProductUseCase extends UseCase<Boolean> {
-    private final ProductDraftRepository productDraftRepository;
+    private final AddEditProductDraftRepository addEditProductDraftRepository;
 
     @Inject
-    public ClearAllDraftProductUseCase(ProductDraftRepository productDraftRepository) {
-        this.productDraftRepository = productDraftRepository;
+    public ClearAllDraftProductUseCase(AddEditProductDraftRepository addEditProductDraftRepository) {
+        this.addEditProductDraftRepository = addEditProductDraftRepository;
     }
 
     @Override
     public Observable<Boolean> createObservable(RequestParams requestParams) {
-        return productDraftRepository.clearAllDraft();
+        return Observable.just(addEditProductDraftRepository.deleteAllDrafts());
     }
 }

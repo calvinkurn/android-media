@@ -2,11 +2,13 @@ package com.tokopedia.product.addedit.description.presentation.fragment
 
 import android.app.Activity
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import com.google.gson.reflect.TypeToken
@@ -16,6 +18,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.product.addedit.R
+import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_CURRENCY_TYPE
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_DEFAULT_PRICE
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_DEFAULT_SKU
@@ -43,19 +46,24 @@ import com.tokopedia.product.addedit.description.di.DaggerAddEditProductDescript
 import com.tokopedia.product.addedit.description.presentation.activity.AddEditProductDescriptionActivity.Companion.PARAM_CATEGORY_ID
 import com.tokopedia.product.addedit.description.presentation.activity.AddEditProductDescriptionActivity.Companion.PARAM_DESCRIPTION_INPUT_MODEL
 import com.tokopedia.product.addedit.description.presentation.activity.AddEditProductDescriptionActivity.Companion.PARAM_IS_EDIT_MODE
+import com.tokopedia.product.addedit.description.presentation.activity.AddEditProductDescriptionActivity.Companion.PARAM_PRODUCT_INPUT_MODEL
 import com.tokopedia.product.addedit.description.presentation.activity.AddEditProductDescriptionActivity.Companion.PARAM_VARIANT_INPUT_MODEL
 import com.tokopedia.product.addedit.description.presentation.adapter.VideoLinkTypeFactory
 import com.tokopedia.product.addedit.description.presentation.model.DescriptionInputModel
 import com.tokopedia.product.addedit.description.presentation.model.PictureViewModel
 import com.tokopedia.product.addedit.description.presentation.model.ProductVariantInputModel
 import com.tokopedia.product.addedit.description.presentation.model.VideoLinkModel
+import com.tokopedia.product.addedit.description.presentation.model.youtube.YoutubeVideoModel
 import com.tokopedia.product.addedit.description.presentation.viewmodel.AddEditProductDescriptionViewModel
+import com.tokopedia.product.addedit.detail.presentation.mapper.mapProductInputModelDetailToDraft
+import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.shipment.presentation.activity.AddEditProductShipmentActivity
 import com.tokopedia.product.addedit.shipment.presentation.fragment.AddEditProductShipmentFragment.Companion.REQUEST_CODE_SHIPMENT
 import com.tokopedia.product.addedit.shipment.presentation.model.ShipmentInputModel
 import com.tokopedia.product.addedit.tooltip.model.NumericTooltipModel
 import com.tokopedia.product.addedit.tooltip.presentation.TooltipBottomSheet
 import com.tokopedia.product.addedit.tracking.ProductAddDescriptionTracking
+import com.tokopedia.product.addedit.tracking.ProductAddStepperTracking
 import com.tokopedia.product.addedit.tracking.ProductEditDescriptionTracking
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
@@ -73,10 +81,11 @@ class AddEditProductDescriptionFragment:
         VideoLinkTypeFactory.VideoLinkListener {
 
     companion object {
-        fun createInstance(categoryId: String): Fragment {
+        fun createInstance(categoryId: String, productInputModel: ProductInputModel): Fragment {
             return AddEditProductDescriptionFragment().apply {
                 arguments = Bundle().apply {
                     putString(PARAM_CATEGORY_ID, categoryId)
+                    putParcelable(PARAM_PRODUCT_INPUT_MODEL, productInputModel)
                 }
             }
         }
@@ -101,15 +110,14 @@ class AddEditProductDescriptionFragment:
 
         const val IS_ADD = 0
         const val REQUEST_CODE_DESCRIPTION = 0x03
-
-        // TODO faisalramd
-        const val TEST_IMAGE_URL = "https://ecs7.tokopedia.net/img/cache/700/product-1/2018/9/16/36162992/36162992_778e5d1e-06fd-4e4a-b650-50c232815b24_1080_1080.jpg"
     }
 
+    private var productInputModel: ProductInputModel? = null
     private var videoId = 0
 
     private lateinit var userSession: UserSessionInterface
     private lateinit var shopId: String
+    private var positionVideoChanged = 0
 
     @Inject
     lateinit var descriptionViewModel: AddEditProductDescriptionViewModel
@@ -130,25 +138,31 @@ class AddEditProductDescriptionFragment:
         adapter.data.removeAt(position)
         adapter.notifyDataSetChanged()
         textViewAddVideo.visibility =
-            if (adapter.dataSize < MAX_VIDEOS) View.VISIBLE else View.GONE
+                if (adapter.dataSize < MAX_VIDEOS) View.VISIBLE else View.GONE
     }
 
     override fun onTextChanged(url: String, position: Int) {
         adapter.data[position].inputUrl = url
+        positionVideoChanged = position
+        descriptionViewModel.getVideoYoutube(url)
     }
 
     override fun onItemClicked(t: VideoLinkModel?) {
-        //no op
+        ProductEditDescriptionTracking.clickPlayVideo(shopId)
+        try {
+            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(t?.inputUrl)))
+        } catch (e: Throwable) {
+        }
     }
 
     override fun getScreenName(): String? = null
 
     override fun initInjector() {
         DaggerAddEditProductDescriptionComponent.builder()
-            .baseAppComponent((requireContext().applicationContext as BaseMainApplication).baseAppComponent)
-            .addEditProductDescriptionModule(AddEditProductDescriptionModule())
-            .build()
-            .inject(this)
+                .baseAppComponent((requireContext().applicationContext as BaseMainApplication).baseAppComponent)
+                .addEditProductDescriptionModule(AddEditProductDescriptionModule())
+                .build()
+                .inject(this)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -169,14 +183,7 @@ class AddEditProductDescriptionFragment:
             descriptionViewModel.descriptionInputModel = descriptionInputModel
             descriptionViewModel.variantInputModel = variantInputModel
             descriptionViewModel.isEditMode = isEditMode
-        }
-    }
-
-    fun onBackPressed() {
-        if (descriptionViewModel.isEditMode) {
-            ProductEditDescriptionTracking.clickBack(shopId)
-        } else {
-            ProductAddDescriptionTracking.clickBack(shopId)
+            productInputModel = it.getParcelable(PARAM_PRODUCT_INPUT_MODEL) ?: ProductInputModel()
         }
     }
 
@@ -198,8 +205,7 @@ class AddEditProductDescriptionFragment:
             } else {
                 ProductAddDescriptionTracking.clickAddVideoLink(shopId)
             }
-            videoId += 1
-            loadData(videoId)
+            addEmptyVideoUrl()
         }
 
         layoutDescriptionTips.setOnClickListener {
@@ -220,10 +226,48 @@ class AddEditProductDescriptionFragment:
         }
 
         btnNext.setOnClickListener {
-            moveToDescriptionActivity()
+            moveToShipmentActivity()
+        }
+
+        btnSave.setOnClickListener {
+            submitInputEdit()
         }
 
         observeProductVariant()
+        observeProductVideo()
+    }
+
+    private fun addEmptyVideoUrl() {
+        loadData(0)
+    }
+
+    fun onCtaYesPressed() {
+        ProductAddStepperTracking.trackDraftYes(shopId)
+    }
+
+    fun onCtaNoPressed() {
+        ProductAddStepperTracking.trackDraftCancel(shopId)
+    }
+
+    fun onBackPressed() {
+        if (descriptionViewModel.isEditMode) {
+            ProductEditDescriptionTracking.clickBack(shopId)
+        } else {
+            ProductAddDescriptionTracking.clickBack(shopId)
+        }
+    }
+
+    fun saveProductDraft(isUploading: Boolean) {
+        inputAllDataInInputDraftModel()
+        productInputModel?.let { descriptionViewModel.saveProductDraft(mapProductInputModelDetailToDraft(it), it.draftId, isUploading) }
+        Toast.makeText(context, R.string.label_succes_save_draft, Toast.LENGTH_LONG).show()
+    }
+
+    private fun inputAllDataInInputDraftModel() {
+        productInputModel?.descriptionInputModel = DescriptionInputModel(
+                textFieldDescription.getText(),
+                adapter.data
+        )
     }
 
     private fun observeProductVariant() {
@@ -235,13 +279,57 @@ class AddEditProductDescriptionFragment:
         })
     }
 
+    private fun observeProductVideo() {
+        descriptionViewModel.videoYoutube.observe(viewLifecycleOwner, Observer { result ->
+            when (result) {
+                is Success -> {
+                    val id  = result.data.id
+                    if (id == null) {
+                        displayErrorOnSelectedVideo()
+                    } else {
+                        setDataOnSelectedVideo(result.data)
+                    }
+                }
+                is Fail -> {
+                    displayErrorOnSelectedVideo()
+                }
+            }
+            adapter.notifyItemChanged(positionVideoChanged)
+        })
+    }
+
+    private fun displayErrorOnSelectedVideo() {
+        adapter.data[positionVideoChanged].apply {
+            inputTitle = ""
+            inputDescription = ""
+            inputImage = ""
+            errorMessage = getString(R.string.error_video_not_valid)
+        }
+    }
+
+    private fun setDataOnSelectedVideo(youtubeVideoModel: YoutubeVideoModel) {
+        adapter.data[positionVideoChanged].apply {
+            inputTitle = youtubeVideoModel.title.orEmpty()
+            inputDescription = youtubeVideoModel.description.orEmpty()
+            inputImage = youtubeVideoModel.thumbnailUrl.orEmpty()
+            errorMessage = descriptionViewModel.validateDuplicateVideo(adapter.data, inputUrl)
+        }
+    }
+
     private fun applyEditMode() {
         val description = descriptionViewModel.descriptionInputModel.productDescription
         val videoLinks = descriptionViewModel.descriptionInputModel.videoLinkList
 
-        textFieldDescription.setText(description)
-        super.clearAllData()
-        super.renderList(videoLinks)
+        if (videoLinks.isEmpty()) {
+            addEmptyVideoUrl()
+        } else {
+            textFieldDescription.setText(description)
+            super.clearAllData()
+            super.renderList(videoLinks)
+        }
+
+        btnNext.visibility = View.GONE
+        btnSave.visibility = View.VISIBLE
     }
 
     private fun showVariantErrorToast(errorMessage: String) {
@@ -250,8 +338,8 @@ class AddEditProductDescriptionFragment:
                     type =  Toaster.TYPE_ERROR,
                     actionText = getString(R.string.title_try_again),
                     clickListener =  View.OnClickListener {
-                descriptionViewModel.getVariants(descriptionViewModel.categoryId)
-            })
+                        descriptionViewModel.getVariants(descriptionViewModel.categoryId)
+                    })
         }
     }
 
@@ -261,7 +349,7 @@ class AddEditProductDescriptionFragment:
             when (requestCode) {
                 REQUEST_CODE_SHIPMENT -> {
                     val shipmentInputModel =
-                        data.getParcelableExtra<ShipmentInputModel>(EXTRA_SHIPMENT_INPUT)
+                            data.getParcelableExtra<ShipmentInputModel>(EXTRA_SHIPMENT_INPUT)
                     submitInput(shipmentInputModel)
                 }
                 REQUEST_CODE_VARIANT -> {
@@ -328,11 +416,11 @@ class AddEditProductDescriptionFragment:
 
     override fun loadData(page: Int) {
         val videoLinkModels: ArrayList<VideoLinkModel> = ArrayList()
-        videoLinkModels.add(VideoLinkModel(page, "", TEST_IMAGE_URL))
+        videoLinkModels.add(VideoLinkModel())
         super.renderList(videoLinkModels)
 
         textViewAddVideo.visibility =
-            if (adapter.dataSize < MAX_VIDEOS) View.VISIBLE else View.GONE
+                if (adapter.dataSize < MAX_VIDEOS) View.VISIBLE else View.GONE
     }
 
     private fun showVariantDialog(variants: List<ProductVariantByCatModel>) {
@@ -361,20 +449,24 @@ class AddEditProductDescriptionFragment:
         }
     }
 
-    private fun moveToDescriptionActivity() {
+    private fun moveToShipmentActivity() {
         if (descriptionViewModel.isEditMode) {
             ProductEditDescriptionTracking.clickContinue(shopId)
         } else {
             ProductAddDescriptionTracking.clickContinue(shopId)
         }
-        val intent = Intent(context, AddEditProductShipmentActivity::class.java)
-        startActivityForResult(intent, REQUEST_CODE_SHIPMENT)
+        inputAllDataInInputDraftModel()
+        if (descriptionViewModel.validateInputVideo(adapter.data)) {
+            val intent = Intent(context, AddEditProductShipmentActivity::class.java)
+            intent.putExtra(AddEditProductUploadConstant.EXTRA_PRODUCT_INPUT_MODEL, productInputModel)
+            startActivityForResult(intent, REQUEST_CODE_SHIPMENT)
+        }
     }
 
     private fun submitInput(shipmentInputModel: ShipmentInputModel) {
         val descriptionInputModel = DescriptionInputModel(
-            textFieldDescription.getText(),
-            adapter.data
+                textFieldDescription.getText(),
+                adapter.data
         )
         val intent = Intent()
         intent.putExtra(EXTRA_DESCRIPTION_INPUT, descriptionInputModel)
@@ -382,6 +474,20 @@ class AddEditProductDescriptionFragment:
         intent.putExtra(EXTRA_VARIANT_INPUT, descriptionViewModel.variantInputModel)
         activity?.setResult(Activity.RESULT_OK, intent)
         activity?.finish()
+    }
+
+    private fun submitInputEdit() {
+        if (descriptionViewModel.validateInputVideo(adapter.data)) {
+            val descriptionInputModel = DescriptionInputModel(
+                    textFieldDescription.getText(),
+                    adapter.data
+            )
+            val intent = Intent()
+            intent.putExtra(EXTRA_DESCRIPTION_INPUT, descriptionInputModel)
+            intent.putExtra(EXTRA_VARIANT_INPUT, descriptionViewModel.variantInputModel)
+            activity?.setResult(Activity.RESULT_OK, intent)
+            activity?.finish()
+        }
     }
 
 }
