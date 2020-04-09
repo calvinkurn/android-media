@@ -55,6 +55,11 @@
     <string name="error_product_price_less_than_min_limit">Harga kurang dari batas minimum Rp100</string>
     <string name="error_product_price_exceeding_max_limit">Harga melebihi batas maks. Rp500 juta</string>
 
+    <!-- add edit product price bottomsheet   -->
+    <string name="bulk_edit_price_bottomsheet_helper">Kamu bisa atur harga masing masing di halaman Varian atau ubah semua harga varian dengan mengisi harga di bawah</string>
+    <string name="action_bulk_edit_price">Ganti</string>
+    <string name="product_price_edit_bottom_sheet_title">Tetapkan harga produkmu</string>
+
     <!-- add edit product wholesale -->
     <string name="add_product_wholesale_header">Grosir</string>
     <string name="label_minimum_quantity">Jumlah minimal</string>
@@ -174,7 +179,5 @@
     <string name="label_cta_secondary_button_on_dialog">Ya</string>
     <string name="label_title_on_dialog">Yakin ingin keluar?</string>
     <string name="label_succes_save_draft">TopSeller: Produk berhasil disimpan dalam draft</string>
-    <string name="bulk_edit_price_bottomsheet_helper">Kamu bisa atur harga masing masing di halaman Varian atau ubah semua harga varian dengan mengisi harga di bawah</string>
-    <string name="action_bulk_edit_price">Ganti</string>
 
 </resources>

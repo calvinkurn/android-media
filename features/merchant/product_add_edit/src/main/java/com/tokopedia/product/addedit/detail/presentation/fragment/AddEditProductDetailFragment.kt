@@ -1159,7 +1159,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
 
     private fun showEditAllVariantPriceBottomSheet() {
         with(productPriceBulkEditBottomSheet) {
-            setTitle("Tetapkan harga produkmu")
+            setTitle(getString(R.string.product_price_edit_bottom_sheet_title))
             showCloseIcon = true
             setCloseClickListener { this.dismiss() }
             productPriceBulkPriceEditBottomSheetContent.setPrice(viewModel.detailInputModel.price.toString())
