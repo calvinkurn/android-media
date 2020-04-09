@@ -592,10 +592,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             isInputValid?.let {
                 if (it) {
                     submitInputEdit()
-                }
-
-                if (it) moveToDescriptionActivity()
-                else continueButton?.isLoading = false
+                } else continueButton?.isLoading = false
             }
         }
 
@@ -1159,7 +1156,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
 
     private fun showEditAllVariantPriceBottomSheet() {
         with(productPriceBulkEditBottomSheet) {
-            setTitle(getString(R.string.product_price_edit_bottom_sheet_title))
+            setTitle(this@AddEditProductDetailFragment.getString(R.string.product_price_edit_bottom_sheet_title))
             showCloseIcon = true
             setCloseClickListener { this.dismiss() }
             productPriceBulkPriceEditBottomSheetContent.setPrice(viewModel.detailInputModel.price.toString())
