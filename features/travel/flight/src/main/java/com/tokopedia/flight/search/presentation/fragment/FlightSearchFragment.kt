@@ -490,7 +490,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
 
     override fun onDetailClicked(journeyModel: FlightJourneyModel?, adapterPosition: Int) {
         flightSearchPresenter.onSeeDetailItemClicked(journeyModel!!, adapterPosition)
-        val flightDetailViewModel = FlightDetailViewModel()
+        val flightDetailViewModel = FlightDetailModel()
         flightDetailViewModel.build(journeyModel)
         flightDetailViewModel.build(flightSearchPassData)
 
@@ -519,7 +519,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
     }
 
     override fun onItemClicked(journeyModel: FlightJourneyModel?) {
-        flightSearchPresenter.onSearchItemClicked(journeyViewModel = journeyModel)
+        flightSearchPresenter.onSearchItemClicked(journeyModel = journeyModel)
     }
 
     override fun getScreenName(): String = ""
