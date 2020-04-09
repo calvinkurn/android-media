@@ -46,54 +46,56 @@ class PreferenceListModelMapper @Inject constructor() : PreferenceDataMapper {
 
     private fun getProfilesItemModel(profilesItem: ProfilesItem): ProfilesItemModel {
         val profilesItemsModel = ProfilesItemModel()
-        profilesItemsModel.profileId = profilesItem.profileId
-        profilesItemsModel.status = profilesItem.status
-        profilesItemsModel.addressModel = profilesItem.address?.let { getAddressModel(it) }
-        profilesItemsModel.paymentModel = profilesItem.payment?.let { getPaymentModel(it) }
-        profilesItemsModel.shipmentModel = profilesItem.shipment?.let { getShipmentModel(it) }
-
+        profilesItemsModel.apply {
+            profileId = profilesItem.profileId
+            status = profilesItem.status
+            addressModel = profilesItem.address?.let { getAddressModel(it) }
+            paymentModel = profilesItem.payment?.let { getPaymentModel(it) }
+            shipmentModel = profilesItem.shipment?.let { getShipmentModel(it) }
+        }
         return profilesItemsModel
     }
 
     private fun getAddressModel(address: Address): AddressModel {
         val addressModel = AddressModel()
-        addressModel.addressId = address.addressId
-        addressModel.addressName = address.addressName
-        addressModel.addressStreet = address.addressStreet
-        addressModel.cityId = address.cityId
-        addressModel.cityName = address.cityName
-        addressModel.districtId = address.districtId
-        addressModel.districtName = address.districtName
-        addressModel.phone = address.phone
-        addressModel.postalCode = address.postalCode
-        addressModel.provinceId = address.provinceId
-        addressModel.provinceName = address.provinceName
-        addressModel.receiverName = address.receiverName
-
-        addressModel.fullAddress = "${address.addressStreet}, ${address.districtName}, ${address.cityName}, ${address.provinceName} ${address.postalCode}"
-
-
+        addressModel.apply {
+            addressId = address.addressId
+            addressName = address.addressName
+            addressStreet = address.addressStreet
+            cityId = address.cityId
+            cityName = address.cityName
+            districtId = address.districtId
+            districtName = address.districtName
+            phone = address.phone
+            postalCode = address.postalCode
+            provinceId = address.provinceId
+            provinceName = address.provinceName
+            receiverName = address.receiverName
+            fullAddress = "${address.addressStreet}, ${address.districtName}, ${address.cityName}, ${address.provinceName} ${address.postalCode}"
+        }
         return addressModel
     }
 
     private fun getShipmentModel(shipment: Shipment): ShipmentModel {
         val shipmentModel = ShipmentModel()
-        shipmentModel.serviceId = shipment.serviceId
-        shipmentModel.serviceDuration = shipment.serviceDuration
-        shipmentModel.serviceName = shipment.serviceName
-
+        shipmentModel.apply {
+            serviceId = shipment.serviceId
+            serviceDuration = shipment.serviceDuration
+            serviceName = shipment.serviceName
+        }
         return shipmentModel
     }
 
     private fun getPaymentModel(payment: Payment): PaymentModel {
         val paymentModel = PaymentModel()
-        paymentModel.gatewayCode = payment.gatewayCode
-        paymentModel.description = payment.description
-        paymentModel.gatewayName = payment.gatewayName
-        paymentModel.image = payment.image
-        paymentModel.url = payment.url
-        paymentModel.metadata = payment.metadata
-
+        paymentModel.apply {
+            gatewayCode = payment.gatewayCode
+            description = payment.description
+            gatewayName = payment.gatewayName
+            image = payment.image
+            url = payment.url
+            metadata = payment.metadata
+        }
         return paymentModel
     }
 }
