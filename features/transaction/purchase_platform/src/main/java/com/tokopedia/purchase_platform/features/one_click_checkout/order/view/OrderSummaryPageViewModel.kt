@@ -756,7 +756,6 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
             val requestParams = RequestParams.create()
             requestParams.putAllString(params)
 
-            //loading
             globalEvent.value = OccGlobalEvent.Loading
             compositeSubscription.add(
                     editAddressUseCase.createObservable(requestParams)
@@ -785,10 +784,8 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                                     }
 
                                     if (response != null && statusSuccess) {
-                                        // trigger refresh
                                         globalEvent.value = OccGlobalEvent.TriggerRefresh(false)
                                     } else {
-                                        //show error
                                         if (messageError.isNullOrBlank()) {
                                             messageError = DEFAULT_ERROR_MESSAGE
                                         }
@@ -1107,7 +1104,6 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                                 notEligiblePromoHolderdata.iconType = TYPE_ICON_POWER_MERCHANT
                             }
                         }
-                        // why?
                         if (i == 0) {
                             notEligiblePromoHolderdata.showShopSection = true
                         } else if (voucherOrdersItemUiModels[i - 1]?.uniqueId == voucherOrdersItemUiModel.uniqueId) {
@@ -1340,7 +1336,6 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
             }
             val totalProductPrice = quantity.orderQuantity * productPrice
             val shipping = _orderPreference?.shipping
-            // change shipping discount count
             val totalShippingPrice: Double = if (shipping?.logisticPromoShipping != null && shipping.isApplyLogisticPromo) {
                 shipping.logisticPromoShipping.productData.price.price.toDouble()
             } else if (shipping?.shippingPrice != null) {
