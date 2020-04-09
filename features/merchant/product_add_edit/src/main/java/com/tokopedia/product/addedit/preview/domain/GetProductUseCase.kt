@@ -190,6 +190,7 @@ class GetProductUseCase @Inject constructor(
                         }
                       }
                       selections{
+                        variantID
                         variantName
                         unitName
                         unitID

@@ -180,7 +180,7 @@ class AddEditProductDescriptionFragment:
                     it.getParcelable(PARAM_VARIANT_INPUT_MODEL) ?: ProductVariantInputModel()
             descriptionViewModel.categoryId = categoryId
             descriptionViewModel.descriptionInputModel = descriptionInputModel
-            descriptionViewModel.variantInputModel = variantInputModel
+            descriptionViewModel.setVariantInput(variantInputModel)
             descriptionViewModel.isEditMode = isEditMode
             productInputModel = it.getParcelable(PARAM_PRODUCT_INPUT_MODEL) ?: ProductInputModel()
         }
@@ -319,14 +319,14 @@ class AddEditProductDescriptionFragment:
         val description = descriptionViewModel.descriptionInputModel.productDescription
         val videoLinks = descriptionViewModel.descriptionInputModel.videoLinkList
 
-        if (videoLinks.isEmpty()) {
-            addEmptyVideoUrl()
-        } else {
+        if (videoLinks.isNotEmpty()) {
             textFieldDescription.setText(description)
             super.clearAllData()
             super.renderList(videoLinks)
         }
 
+        tvVariantHeaderSubtitle.text = descriptionViewModel.getVariantSelectedMessage()
+        tvAddVariant.text = descriptionViewModel.getVariantButtonMessage()
         btnNext.visibility = View.GONE
         btnSave.visibility = View.VISIBLE
     }

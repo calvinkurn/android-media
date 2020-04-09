@@ -132,6 +132,10 @@ class AddEditProductDescriptionViewModel @Inject constructor(
         setVariantNamesAndCount(productVariant, variantOptionParent)
     }
 
+    fun setVariantInput(variantInputModel: ProductVariantInputModel) {
+        this.variantInputModel = variantInputModel
+    }
+
     private fun mapProductVariant(productVariant: ArrayList<ProductVariantCombinationViewModel>,
                                   variantOptionParent: ArrayList<ProductVariantOptionParent>
     ): ArrayList<ProductVariantCombinationViewModel> {
