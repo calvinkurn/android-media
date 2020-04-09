@@ -7,7 +7,7 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.hotel.common.presentation.HotelBaseActivity
 import com.tokopedia.hotel.globalsearch.presentation.fragment.HotelGlobalSearchFragment
 
-class HotelGlobalSearchActivity : HotelBaseActivity() {
+open class HotelGlobalSearchActivity : HotelBaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

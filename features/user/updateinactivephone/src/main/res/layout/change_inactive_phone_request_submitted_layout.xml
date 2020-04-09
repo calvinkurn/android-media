@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="@color/white"
-        android:elevation="@dimen/dp_4"
+        android:elevation="@dimen/updateinactivephone_4dp"
         android:gravity="top"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
@@ -21,13 +21,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="@dimen/dp_24"
+        android:layout_marginTop="@dimen/layout_lvl3"
         android:gravity="center_horizontal"
         android:orientation="vertical"
-        android:paddingEnd="@dimen/dp_39"
-        android:paddingLeft="@dimen/dp_39"
-        android:paddingRight="@dimen/dp_39"
-        android:paddingStart="@dimen/dp_39">
+        android:paddingEnd="@dimen/updateinactivephone_39dp"
+        android:paddingLeft="@dimen/updateinactivephone_39dp"
+        android:paddingRight="@dimen/updateinactivephone_39dp"
+        android:paddingStart="@dimen/updateinactivephone_39dp">
 
         <ImageView
             android:layout_width="wrap_content"
@@ -38,43 +38,43 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_32"
+            android:layout_marginTop="@dimen/updateinactivephone_32dp"
             android:fontFamily="sans-serif-medium"
             android:text="@string/submission_sent"
             android:textAlignment="center"
             android:textColor="@color/black_70"
-            android:textSize="@dimen/sp_16"
+            android:textSize="@dimen/fontSize_lvl3"
             android:textStyle="normal" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_9"
+            android:layout_marginTop="@dimen/updateinactivephone_9dp"
             android:fontFamily="sans-serif"
             android:gravity="center_horizontal"
-            android:lineSpacingExtra="@dimen/dp_6"
+            android:lineSpacingExtra="@dimen/updateinactivephone_6dp"
             android:text="@string/submission_sent_desc"
             android:textAlignment="center"
             android:textColor="@color/black_54"
-            android:textSize="@dimen/sp_12"
+            android:textSize="@dimen/fontSize_lvl2"
             android:textStyle="normal" />
 
         <View
-            android:layout_width="@dimen/dp_112"
-            android:layout_height="@dimen/dp_1"
-            android:layout_marginTop="@dimen/dp_18"
+            android:layout_width="@dimen/updateinactivephone_112dp"
+            android:layout_height="@dimen/updateinactivephone_1dp"
+            android:layout_marginTop="@dimen/updateinactivephone_18dp"
             android:background="@color/grey_hint" />
 
         <TextView
             android:id="@+id/duplicate_request_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_18"
+            android:layout_marginTop="@dimen/updateinactivephone_18dp"
             android:fontFamily="sans-serif"
             android:text="@string/duplicate_submission_desc"
             android:textAlignment="center"
             android:textColor="@color/black_54"
-            android:textSize="@dimen/sp_12"
+            android:textSize="@dimen/fontSize_lvl2"
             android:textStyle="normal"
             android:visibility="gone"/>
 
@@ -83,7 +83,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="@dimen/dp_18"
+            android:layout_marginTop="@dimen/updateinactivephone_18dp"
             android:gravity="center_horizontal"
             android:orientation="vertical"
             android:visibility="gone">
@@ -95,7 +95,7 @@
                 android:text="@string/new_request_submission_desc"
                 android:textAlignment="center"
                 android:textColor="@color/black_54"
-                android:textSize="12sp"
+                android:textSize="@dimen/fontSize_lvl2"
                 android:textStyle="normal" />
 
             <TextView
@@ -103,12 +103,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginTop="@dimen/dp_12"
-                android:layout_marginBottom="@dimen/dp_12"
+                android:layout_marginTop="@dimen/updateinactivephone_12dp"
+                android:layout_marginBottom="@dimen/updateinactivephone_12dp"
                 android:fontFamily="sans-serif"
                 android:textAlignment="center"
                 android:textColor="@color/black_70"
-                android:textSize="13sp"
+                android:textSize="@dimen/updateinactivephone_13sp"
                 android:textStyle="normal" />
 
             <TextView
@@ -118,7 +118,7 @@
                 android:text="@string/email_label"
                 android:textAlignment="center"
                 android:textColor="@color/black_54"
-                android:textSize="12sp"
+                android:textSize="@dimen/fontSize_lvl2"
                 android:textStyle="normal" />
 
             <TextView
@@ -126,20 +126,20 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginTop="@dimen/dp_12"
+                android:layout_marginTop="@dimen/updateinactivephone_12dp"
                 android:fontFamily="sans-serif"
                 android:textAlignment="center"
                 android:textColor="@color/black_70"
-                android:textSize="@dimen/sp_13"
+                android:textSize="@dimen/updateinactivephone_13sp"
                 android:textStyle="normal" />
         </LinearLayout>
 
         <Button
             android:id="@+id/button_return_to_home"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_48"
+            android:layout_height="@dimen/layout_lvl6"
             android:layout_gravity="center"
-            android:layout_marginTop="@dimen/dp_32"
+            android:layout_marginTop="@dimen/layout_lvl4"
             android:background="@drawable/green_button_rounded"
             android:fontFamily="sans-serif"
             android:gravity="center"
@@ -147,7 +147,7 @@
             android:text="@string/goto_home"
             android:textAlignment="center"
             android:textColor="@color/white"
-            android:textSize="@dimen/text_size_medium"
+            android:textSize="@dimen/fontSize_lvl3"
             android:textStyle="bold" />
     </LinearLayout>
 
