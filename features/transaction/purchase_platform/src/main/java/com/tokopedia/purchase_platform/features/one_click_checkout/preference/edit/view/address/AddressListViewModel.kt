@@ -18,7 +18,6 @@ class AddressListViewModel @Inject constructor(val useCase: GetAddressCornerUseC
 
     private var currentPage: Int = 1
     var savedQuery: String = ""
-    private var hasLoadData: Boolean = false
     var selectedId = "-1"
     var token: Token? = null
     private var addressListModel: AddressListModel? = null
@@ -27,7 +26,7 @@ class AddressListViewModel @Inject constructor(val useCase: GetAddressCornerUseC
     val addressList: LiveData<OccState<AddressListModel>>
     get() = _addresslist
 
-    fun searchAddress(query: String){
+    fun searchAddress(query: String) {
         _addresslist.value = OccState.Loading
         useCase.getAll(query)
                 .subscribe(object : rx.Observer<AddressListModel> {
@@ -46,14 +45,14 @@ class AddressListViewModel @Inject constructor(val useCase: GetAddressCornerUseC
                 })
     }
 
-    fun consumeSearchAddressFail(){
+    fun consumeSearchAddressFail() {
         val value = _addresslist.value
         if(value is OccState.Fail){
             _addresslist.value = value.copy(isConsumed = true)
         }
     }
 
-    fun logicSelection(addressListModel: AddressListModel){
+    fun logicSelection(addressListModel: AddressListModel) {
         launch {
             withContext(Dispatchers.Default){
                val addressList = addressListModel.listAddress
@@ -67,7 +66,7 @@ class AddressListViewModel @Inject constructor(val useCase: GetAddressCornerUseC
         }
     }
 
-    fun setSelectedAddress(addressId: String){
+    fun setSelectedAddress(addressId: String) {
         val addressModel = addressListModel
         if(addressModel != null && _addresslist.value is OccState.Success) {
             selectedId = addressId
