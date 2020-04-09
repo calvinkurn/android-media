@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
@@ -17,11 +16,11 @@
         android:paddingBottom="@dimen/layout_lvl1">
 
         <ImageView
-            android:layout_width="@dimen/dp_24"
-            android:layout_height="@dimen/dp_24"
+            android:layout_width="@dimen/layout_lvl3"
+            android:layout_height="@dimen/layout_lvl3"
             android:layout_gravity="center"
-            android:layout_marginEnd="@dimen/dp_10"
-            android:layout_marginRight="@dimen/dp_10"
+            android:layout_marginEnd="@dimen/hotel_10dp"
+            android:layout_marginRight="@dimen/hotel_10dp"
             app:srcCompat="@drawable/ic_hotel_location" />
 
         <LinearLayout
@@ -32,8 +31,8 @@
             <com.tokopedia.design.component.TextViewCompat
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_3"
-                android:layout_marginLeft="@dimen/dp_3"
+                android:layout_marginStart="@dimen/hotel_3dp"
+                android:layout_marginLeft="@dimen/hotel_3dp"
                 android:text="@string/hotel_homepage_destination"
                 app:fontSize="micro" />
 
