@@ -1472,7 +1472,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         }
     }
 
-    private fun renderPromoCheckoutButtonActiveDefault(listPromoApplied: List<String>) {
+    override fun renderPromoCheckoutButtonActiveDefault(listPromoApplied: List<String>) {
         promoCheckoutBtn.state = ButtonPromoCheckoutView.State.ACTIVE
         promoCheckoutBtn.margin = ButtonPromoCheckoutView.Margin.NO_BOTTOM
         promoCheckoutBtn.title = getString(R.string.promo_funnel_label)
@@ -1685,7 +1685,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                     }
                 } else {
                     cartListData?.lastApplyShopGroupSimplifiedData?.voucherOrders?.forEach { lastApplyVoucherOrders ->
-                        cartShop.shopGroupAvailableData.cartString?.let {cartString  ->
+                        cartShop.shopGroupAvailableData.cartString?.let { cartString ->
                             if (cartString.equals(lastApplyVoucherOrders.uniqueId, true)) {
                                 listPromoCodes.add(lastApplyVoucherOrders.code)
                             }
@@ -1717,6 +1717,14 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                         it.cartString?.let { cartString ->
                             if (cartString.equals(lastApplyVoucherOrders.uniqueId, true)) {
                                 listPromoCodes.add(lastApplyVoucherOrders.code)
+                            }
+                        }
+                    }
+
+                    if (it.promoCodes?.isNotEmpty() == true) {
+                        it.promoCodes?.forEach {
+                            if (!listPromoCodes.contains(it)) {
+                                listPromoCodes.add(it)
                             }
                         }
                     }
