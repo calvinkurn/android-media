@@ -955,7 +955,7 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
         withdrawalRequest = new WithdrawalRequest(
                 userSession.getEmail(),
                 withdrawal, bankAdapter.getSelectedBank(),
-                isSeller, userSession.getUserId()
+                sellerWithdrawal, userSession.getUserId()
                 , program);
     }
 
