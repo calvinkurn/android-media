@@ -6,26 +6,26 @@
     <application>
         <activity
             android:name="com.rahullohra.fakeresponse.presentaiton.activities.BaseActivity"
-            android:splitName="fakeresponse"
+            android:splitName="com.tokopedia.tkpd"
             android:theme="@style/FakeNoActionBar"
             tools:replace="android:splitName"
             tools:targetApi="o" />
         <activity
             android:name="com.rahullohra.fakeresponse.presentaiton.activities.AddGqlActivity"
-            android:splitName="fakeresponse"
+            android:splitName="com.tokopedia.tkpd"
             android:theme="@style/FakeNoActionBar"
             tools:replace="android:splitName"
             tools:targetApi="o" />
         <activity
             android:name="com.rahullohra.fakeresponse.presentaiton.activities.AddRestResponseActivity"
-            android:splitName="fakeresponse"
+            android:splitName="com.tokopedia.tkpd"
             android:theme="@style/FakeNoActionBar"
             tools:replace="android:splitName"
             tools:targetApi="o" />
         <activity
             android:name="com.rahullohra.fakeresponse.presentaiton.activities.FakeResponseActivity"
             android:launchMode="singleTask"
-            android:splitName="fakeresponse"
+            android:splitName="com.tokopedia.tkpd"
             android:taskAffinity="fakeresponse.gqlTesting"
             android:theme="@style/FakeNoActionBar"
             tools:replace="android:splitName"
