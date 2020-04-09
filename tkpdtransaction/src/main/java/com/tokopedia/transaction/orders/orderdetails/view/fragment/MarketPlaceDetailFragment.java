@@ -31,6 +31,7 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
@@ -159,6 +160,8 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
     private RecyclerView itemsRecyclerView;
     private TextView productInformationTitle;
     private TextView shopInformationTitle;
+    private RelativeLayout rlShopInfo;
+    private ImageView ivShopInfo;
     private boolean isSingleButton;
     private ClipboardManager myClipboard;
     private CardView driverLayout, dropShipperLayout;
@@ -223,6 +226,8 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
         itemsRecyclerView = view.findViewById(R.id.rv_items);
         productInformationTitle = view.findViewById(R.id.product_info_label);
         shopInformationTitle = view.findViewById(R.id.shop_info_label);
+        rlShopInfo = view.findViewById(R.id.rl_shop_info);
+        ivShopInfo = view.findViewById(R.id.iv_shop_info);
         paymentMethod = view.findViewById(R.id.info_payment_method);
         progressBarLayout = view.findViewById(R.id.progress_bar_layout);
         swipeToRefresh = view.findViewById(R.id.swipe_refresh_layout);
@@ -581,15 +586,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                 });
             } else {
                 if (!TextUtils.isEmpty(actionButton.getUri())) {
-                    textView.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            clickActionButton(actionButton);
-                            if (actionButton.getKey().equalsIgnoreCase(KEY_TULIS_REVIEW)) {
-                                orderListAnalytics.sendTulisReviewEventData(status.status());
-                            }
-                        }
-                    });
+                    textView.setOnClickListener(clickActionButton(actionButton));
                 }
             }
             actionBtnLayout.addView(textView);
@@ -647,7 +644,6 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
         refreshHandler.startRefresh();
 //        presenter.setOrderDetailsContent((String) getArguments().get(KEY_ORDER_ID), (String) getArguments().get(KEY_ORDER_CATEGORY), getArguments().getString(KEY_FROM_PAYMENT));
     }
-
 
     private View.OnClickListener clickActionButton(ActionButton actionButton) {
         if (!TextUtils.isEmpty(actionButton.getKey())) {
@@ -753,6 +749,9 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                     RouteManager.route(getContext(), actionButton.getUri());
                 } else if (actionButton.getKey().equalsIgnoreCase(SIMILAR_PRODUCTS_ACTION_BUTTON_KEY)) {
                     orderListAnalytics.sendActionButtonClickEvent(CLICK_LIHAT_PRODUK_SERUPA_LEVEL_ORDER, presenter.getFirstProductId());
+                    RouteManager.route(getContext(), actionButton.getUri());
+                } else if (actionButton.getKey().equalsIgnoreCase(KEY_TULIS_REVIEW)) {
+                    orderListAnalytics.sendTulisReviewEventData(status.status());
                     RouteManager.route(getContext(), actionButton.getUri());
                 } else if (!TextUtils.isEmpty(actionButton.getUri())) {
                     Intent intent = new Intent(getContext(), RequestCancelActivity.class);
@@ -959,7 +958,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
     @SuppressLint("SetTextI18n")
     @Override
     public void setItems(List<Items> items, boolean isTradeIn) {
-        shopInformationTitle.setVisibility(View.VISIBLE);
+        rlShopInfo.setVisibility(View.VISIBLE);
         String labelShop = shopInformationTitle.getContext().getResources().getString(R.string.label_shop_title) + " ";
         int startLabelShop = labelShop.length();
         String shopName = shopInfo.getShopName();
@@ -970,7 +969,9 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
         completeLabelShop.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), startLabelShop, completeLabelShop.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         shopInformationTitle.setText(completeLabelShop);
 
-        shopInformationTitle.setOnClickListener(v -> {
+        ivShopInfo.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.ic_right));
+
+        rlShopInfo.setOnClickListener(v -> {
             orderListAnalytics.sendClickShopName(status.status());
             String applink = ApplinkConst.SHOP.replace("{shop_id}", String.valueOf(shopInfo.getShopId()));
             RouteManager.route(getContext(), applink);
