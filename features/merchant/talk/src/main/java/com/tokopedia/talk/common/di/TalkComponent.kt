@@ -10,10 +10,10 @@ import com.tokopedia.user.session.UserSessionInterface
 import dagger.Component
 
 @Component(modules = [TalkModule::class], dependencies = [BaseAppComponent::class])
+@TalkScope
 interface TalkComponent {
     @ApplicationContext
     fun getContext(): Context
-    fun getMultiRequestGraphqlUseCase(): MultiRequestGraphqlUseCase
     fun graphqlRepository(): GraphqlRepository
     fun userSession(): UserSessionInterface
     fun coroutineDispatchers(): CoroutineDispatchers

@@ -13,7 +13,7 @@ import dagger.Provides
 
 @Module
 @TalkScope
-interface TalkModule {
+class TalkModule {
 
     @TalkScope
     @Provides

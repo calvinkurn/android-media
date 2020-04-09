@@ -6,6 +6,7 @@ import com.tokopedia.talk.feature.reading.presentation.fragment.TalkReadingFragm
 import dagger.Component
 
 @Component(modules = [TalkReadingModule::class], dependencies = [TalkComponent::class])
+@TalkReadingScope
 interface TalkReadingComponent {
     fun inject(talkReadingFragment: TalkReadingFragment)
     fun inject(talkReadingActivity: TalkReadingActivity)
