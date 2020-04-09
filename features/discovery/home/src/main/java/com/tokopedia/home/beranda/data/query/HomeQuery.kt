@@ -3,6 +3,7 @@ package com.tokopedia.home.beranda.data.query
 object HomeQuery{
     fun getQuery() = """
         {
+        status
           ticker {
             meta {
               total_data
@@ -36,6 +37,7 @@ object HomeQuery{
               expire_time
               slide_index
               type
+              campaignCode
             }
           }
           dynamicHomeIcon {
@@ -73,6 +75,7 @@ object HomeQuery{
               showPromoBadge
               categoryID
               perso_type
+              campaignCode
               header {
                 id
                 name
@@ -114,6 +117,12 @@ object HomeQuery{
                   imageUrl
                 }
                 productViewCountFormatted
+                isOutOfStock
+                labelGroup {
+                  title
+                  position
+                  type
+                }
               }
               banner {
                 id
@@ -131,7 +140,7 @@ object HomeQuery{
                 text_color
                 image_url
                 attribution
-
+                gradient_color
               }
             }
           }

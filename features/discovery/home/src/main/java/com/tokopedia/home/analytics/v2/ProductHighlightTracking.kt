@@ -40,6 +40,7 @@ object ProductHighlightTracking : BaseTracking() {
             eventAction = EVENT_ACTION_CLICK_PRODUCT_DYNAMIC_CHANNEL_HERO,
             eventLabel = channel.header.name,
             channelId = channel.id,
+            campaignCode = channel.campaignCode,
             products = listOf(
                     Product(
                             name = grid.name,

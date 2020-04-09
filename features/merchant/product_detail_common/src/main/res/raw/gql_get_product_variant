@@ -52,6 +52,7 @@ query getProductVariant($productID:String!,$option:pdpGetProductVariantReqOption
         isAppsOnly
         stockSoldPercentage
         isCheckImei
+        isUsingOvo
       }
       stock {
         isLimitedStock
@@ -66,6 +67,14 @@ query getProductVariant($productID:String!,$option:pdpGetProductVariantReqOption
       picture {
         url
         url200
+      }
+      upcomingCampaignInfo {
+        campaignID
+        campaignType
+        campaignTypeName
+        startDate
+        endDate
+        notifyMe
       }
     }
   }

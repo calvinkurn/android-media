@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.crashlytics.android.Crashlytics
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -31,6 +32,7 @@ import com.tokopedia.home.account.di.component.DaggerBuyerAccountComponent
 import com.tokopedia.home.account.presentation.BuyerAccount
 import com.tokopedia.home.account.presentation.adapter.AccountTypeFactory
 import com.tokopedia.home.account.presentation.adapter.buyer.BuyerAccountAdapter
+import com.tokopedia.home.account.presentation.util.AccountHomeErrorHandler
 import com.tokopedia.home.account.presentation.viewmodel.RecommendationProductViewModel
 import com.tokopedia.home.account.presentation.viewmodel.base.BuyerViewModel
 import com.tokopedia.navigation_common.listener.FragmentListener
@@ -39,7 +41,6 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.topads.sdk.utils.ImpresionTask
 import com.tokopedia.track.TrackApp
-import com.tokopedia.trackingoptimizer.TrackingQueue
 
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.fragment_buyer_account.*
@@ -174,19 +175,19 @@ class BuyerAccountFragment : BaseAccountFragment(), BuyerAccount.View, FragmentL
                 it.show()
             }
         }
-
         fpmBuyer?.run { stopTrace() }
     }
 
-    override fun showError(e: Throwable) {
+    override fun showError(e: Throwable, errorCode: String) {
         if (view != null && context != null && userVisibleHint) {
-            snackBar = ToasterError.make(view, ErrorHandler.getErrorMessage(context, e))
+            val message = "${ErrorHandler.getErrorMessage(context, e)} ($errorCode)"
+            snackBar = ToasterError.make(view, message)
             snackBar?.let {
                 it.setAction(getString(R.string.title_try_again)) { getData() }
                 it.show()
             }
         }
-
+        AccountHomeErrorHandler.logExceptionToCrashlytics(e, userSession.userId, userSession.email, errorCode)
         fpmBuyer?.run { stopTrace() }
     }
 

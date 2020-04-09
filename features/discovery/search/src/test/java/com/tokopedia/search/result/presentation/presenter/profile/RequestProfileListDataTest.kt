@@ -20,6 +20,8 @@ class RequestProfileListDataTest: Spek({
     InstantTaskExecutorRuleSpek(this)
 
     Feature("Request Profile List Data Empty Result") {
+
+        
         createTestInstance()
 
         Scenario("No Result Empty Profile") {

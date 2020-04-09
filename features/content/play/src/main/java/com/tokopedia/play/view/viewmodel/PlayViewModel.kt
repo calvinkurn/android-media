@@ -22,6 +22,7 @@ import com.tokopedia.play.util.CoroutineDispatcherProvider
 import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.*
 import com.tokopedia.play.view.uimodel.mapper.PlayUiMapper
+import com.tokopedia.play.view.uimodel.mocker.PlayUiMocker
 import com.tokopedia.play.view.wrapper.PlayResult
 import com.tokopedia.play_common.model.PlayBufferControl
 import com.tokopedia.play_common.player.PlayVideoManager
@@ -138,12 +139,6 @@ class PlayViewModel @Inject constructor(
             )
         }
 
-    val isAnyBottomSheetShown: Boolean
-        get() = _observableBottomInsetsState.value?.isAnyBottomSheetsShown == true
-
-    val isKeyboardShown: Boolean
-        get() = _observableBottomInsetsState.value?.isKeyboardShown == true
-
     private val isProductSheetInitialized: Boolean
         get() = _observableProductSheetContent.value != null
 
@@ -229,13 +224,6 @@ class PlayViewModel @Inject constructor(
         }
 
         _observableBottomInsetsState.value = getLatestBottomInsetsMapState()
-
-//        startMockFreeze()
-//        setMockProductSocket()
-//        setMockVoucherSocket()
-//        setMockProductSheetContent()
-//        setMockVariantSheetContent()
-//        setMockProductPinned()
     }
 
     //region lifecycle
@@ -317,7 +305,6 @@ class PlayViewModel @Inject constructor(
                 )
 
         _observableBottomInsetsState.value = insetsMap
-//        setMockVariantSheetContent(action)
     }
 
     fun onHideVariantSheet() {
@@ -376,15 +363,16 @@ class PlayViewModel @Inject constructor(
     private fun initiateVideo(channel: Channel) {
         startVideoWithUrlString(
                 channel.videoStream.config.streamUrl,
-                channel.videoStream.isLive,
                 bufferControl = channel.videoStream.bufferControl?.let { mapBufferControl(it) }
                         ?: PlayBufferControl()
         )
         playVideoManager.setRepeatMode(false)
     }
 
-    private fun startVideoWithUrlString(urlString: String, isLive: Boolean, bufferControl: PlayBufferControl) {
-        playVideoManager.safePlayVideoWithUri(Uri.parse(urlString), isLive, bufferControl)
+    private fun startVideoWithUrlString(urlString: String, bufferControl: PlayBufferControl) {
+        try {
+            playVideoManager.safePlayVideoWithUri(uri = Uri.parse(urlString), bufferControl = bufferControl)
+        } catch (e: Exception) {}
     }
 
     private fun playVideoStream(channel: Channel) {
@@ -416,7 +404,11 @@ class PlayViewModel @Inject constructor(
 
             playVideoStream(channel)
 
-            val completeInfoUiModel = createCompleteInfoModel(channel)
+            val completeInfoUiModel = PlayUiMapper.createCompleteInfoModel(
+                    channel = channel,
+                    partnerName = _observablePartnerInfo.value?.name.orEmpty(),
+                    isBanned = _observableEvent.value?.isBanned ?: false
+            )
 
             _observableGetChannelInfo.value = Success(completeInfoUiModel.channelInfo)
             _observableTotalViews.value = completeInfoUiModel.totalView
@@ -536,12 +528,12 @@ class PlayViewModel @Inject constructor(
         }
     }
 
-    private fun getProductTagItems(channel: Channel) {
+    private suspend fun getProductTagItems(channel: Channel) {
         if (!isProductSheetInitialized) _observableProductSheetContent.value = PlayResult.Loading(
                 showPlaceholder = true
         )
 
-        launchCatchError(block = {
+        try {
             val productTagsItems = withContext(dispatchers.io) {
                 getProductTagItemsUseCase.params = GetProductTagItemsUseCase.createParam(channel.channelId)
                 getProductTagItemsUseCase.executeOnBackground()
@@ -551,9 +543,10 @@ class PlayViewModel @Inject constructor(
                             channel.pinnedProduct.titleBottomSheet,
                             productTagsItems)
             )
-        }) {
-            _observableProductSheetContent.value = PlayResult.Failure(it) {
-                getProductTagItems(channel)
+
+        } catch (e: Exception) {
+            _observableProductSheetContent.value = PlayResult.Failure(e) {
+                launch { if (channel.isShowProductTagging) getProductTagItems(channel) }
             }
         }
     }
@@ -565,7 +558,7 @@ class PlayViewModel @Inject constructor(
         }
     }
 
-    private fun startWebSocket(channelId: String, gcToken: String, settings: Channel.Settings) {
+    fun startWebSocket(channelId: String, gcToken: String, settings: Channel.Settings) {
         playSocket.channelId = channelId
         playSocket.gcToken = gcToken
         playSocket.settings = settings
@@ -624,34 +617,6 @@ class PlayViewModel @Inject constructor(
         })
     }
 
-    private fun createCompleteInfoModel(channel: Channel) = PlayCompleteInfoUiModel(
-            channelInfo = PlayUiMapper.mapChannelInfo(channel),
-            videoStream = PlayUiMapper.mapVideoStream(channel.videoStream, channel.isActive),
-            pinnedMessage = PlayUiMapper.mapPinnedMessage(
-                    _observablePartnerInfo.value?.name.orEmpty(),
-                    channel.pinnedMessage
-            ),
-            pinnedProduct = PlayUiMapper.mapPinnedProduct(
-                    _observablePartnerInfo.value?.name.orEmpty(),
-                    channel.isShowProductTagging,
-                    channel.pinnedProduct),
-            quickReply = PlayUiMapper.mapQuickReply(channel.quickReply),
-            totalView = PlayUiMapper.mapTotalViews(channel.totalViews),
-            event = mapEvent(channel)
-    )
-
-    private fun mapEvent(channel: Channel) = EventUiModel(
-            isBanned = _observableEvent.value?.isBanned ?: false,
-            isFreeze = !channel.isActive || channel.isFreeze,
-            bannedMessage = channel.banned.message,
-            bannedTitle = channel.banned.title,
-            bannedButtonTitle = channel.banned.buttonTitle,
-            freezeMessage = channel.freezeChannelState.desc,
-            freezeTitle = channel.freezeChannelState.title,
-            freezeButtonTitle = channel.freezeChannelState.btnTitle,
-            freezeButtonUrl = channel.freezeChannelState.btnAppLink
-    )
-
     private fun mapBufferControl(bufferControl: VideoStream.BufferControl) = PlayBufferControl(
             minBufferMs = bufferControl.minBufferingSecond * MS_PER_SECOND,
             maxBufferMs = bufferControl.maxBufferingSecond * MS_PER_SECOND,
@@ -671,136 +636,4 @@ class PlayViewModel @Inject constructor(
 
         private const val MS_PER_SECOND = 1000
     }
-
-
-    //region mock
-    private fun startMockFreeze() {
-        launch(dispatchers.io) {
-            delay(10000)
-            withContext(dispatchers.main) {
-                _observableEvent.value = _observableEvent.value?.copy(
-                        isFreeze = true
-                )
-            }
-        }
-    }
-
-    private fun setMockProductSocket() {
-        launch(dispatchers.io) {
-            delay(10000)
-            withContext(dispatchers.main) {
-                val productSheet = _observableProductSheetContent.value
-                val currentProduct = if (productSheet is PlayResult.Success) productSheet.data else ProductSheetUiModel.empty()
-                _observableProductSheetContent.value = PlayResult.Success(currentProduct.copy(
-                        productList = List(5) {
-                            ProductLineUiModel(
-                                    id = it.toString(),
-                                    shopId = "123",
-                                    imageUrl = "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/5/8/52943980/52943980_908dc570-338d-46d5-aed2-4871f2840d0d_1664_1664",
-                                    title = "Product $it",
-                                    isVariantAvailable = true,
-                                    price = if (it % 2 == 0) {
-                                        OriginalPrice("Rp20$it.000", 20000)
-                                    } else {
-                                        DiscountedPrice(
-                                                originalPrice = "Rp20$it.000",
-                                                discountPercent = it * 10,
-                                                discountedPrice = "Rp2$it.000",
-                                                discountedPriceNumber = 20000
-                                        )
-                                    },
-                                    stock = if (it % 2 == 0) {
-                                        OutOfStock
-                                    } else {
-                                        StockAvailable(it * 10)
-                                    },
-                                    minQty = 2,
-                                    isFreeShipping = true,
-                                    applink = null
-                            )
-                        }
-                ))
-            }
-        }
-    }
-
-    private fun setMockVoucherSocket() {
-        launch(dispatchers.io) {
-            delay(15000)
-            withContext(dispatchers.main) {
-                val productSheet = _observableProductSheetContent.value
-                val currentProduct = if (productSheet is PlayResult.Success) productSheet.data else ProductSheetUiModel.empty()
-                _observableProductSheetContent.value = PlayResult.Success(currentProduct.copy(
-                        voucherList = List(5) { voucherIndex ->
-                            MerchantVoucherUiModel(
-                                    type = if (voucherIndex % 2 == 0) MerchantVoucherType.Discount else MerchantVoucherType.Shipping,
-                                    title = if (voucherIndex % 2 == 0) "Cashback ${(voucherIndex + 1) * 2}rb" else "Gratis ongkir ${(voucherIndex + 1) * 2}rb",
-                                    description = "min. pembelian ${(voucherIndex + 1)}00rb"
-                            )
-                        }
-                ))
-            }
-        }
-    }
-
-    private fun setMockProductSheetContent() {
-        launch(dispatchers.io) {
-            delay(3000)
-            withContext(dispatchers.main) {
-                _observableProductSheetContent.value = PlayResult.Success(ProductSheetUiModel(
-                        title = "Barang & Promo Pilihan",
-                        voucherList = List(5) { voucherIndex ->
-                                                        MerchantVoucherUiModel(
-                                    type = if (voucherIndex % 2 == 0) MerchantVoucherType.Discount else MerchantVoucherType.Shipping,
-                                    title = if (voucherIndex % 2 == 0) "Cashback ${(voucherIndex + 1) * 2}rb" else "Gratis ongkir ${(voucherIndex + 1) * 2}rb",
-                                    description = "min. pembelian ${(voucherIndex + 1)}00rb"
-                            )
-//                            VoucherPlaceholderUiModel
-                        },
-                        productList = List(5) {
-                            ProductLineUiModel(
-                                    id = "697897875",
-                                    shopId = "123",
-                                    imageUrl = "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/5/8/52943980/52943980_908dc570-338d-46d5-aed2-4871f2840d0d_1664_1664",
-                                    title = "Product $it",
-                                    isVariantAvailable = true,
-                                    price = if (it % 2 == 0) {
-                                        OriginalPrice("Rp20$it.000", 20000)
-                                    } else {
-                                        DiscountedPrice(
-                                                originalPrice = "Rp20$it.000",
-                                                discountPercent = it * 10,
-                                                discountedPrice = "Rp2$it.000",
-                                                discountedPriceNumber = 20000
-                                        )
-                                    },
-                                    stock = if (it % 2 == 0) {
-                                        OutOfStock
-                                    } else {
-                                        StockAvailable(it * 10)
-                                    },
-                                    minQty = 2,
-                                    isFreeShipping = true,
-                                    applink = "tokopedia://login"
-                            )
-//                            ProductPlaceholderUiModel
-                        }
-                ))
-            }
-        }
-    }
-
-    private fun setMockProductPinned() {
-        launch(dispatchers.io) {
-            delay(3000)
-            withContext(dispatchers.main) {
-                _observablePinnedProduct.value = PinnedProductUiModel(
-                        partnerName = "GSK Official Store",
-                        title = "Ayo belanja barang pilihan kami sebelum kehabisan!",
-                        isPromo = true
-                )
-            }
-        }
-    }
-    //endregion
 }
