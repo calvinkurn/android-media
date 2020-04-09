@@ -7,12 +7,12 @@ public class TopAdsUrlHitter {
         impresionTask = new ImpresionTask();
     }
 
-    public void hitClickUrl(String url, Class sourceClass) {
+    public void hitClickUrl(String url, String sourceClassName) {
         impresionTask.execute(url);
         //saveToDb
     }
 
-    public void hitImpressionUrl(String url, Class sourceClass) {
+    public void hitImpressionUrl(String url, String sourceClassName) {
         impresionTask.execute(url);
         //saveToDb
     }

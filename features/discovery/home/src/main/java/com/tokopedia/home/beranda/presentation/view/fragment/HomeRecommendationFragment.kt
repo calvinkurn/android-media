@@ -51,6 +51,7 @@ import com.tokopedia.home.beranda.presentation.viewModel.HomeRecommendationViewM
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.smart_recycler_helper.SmartExecutors
 import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker
+import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.track.TrackApp
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
@@ -229,7 +230,7 @@ open class HomeRecommendationFragment : Fragment(), HomeRecommendationListener {
 
     override fun onProductImpression(homeRecommendationItemDataModel: HomeRecommendationItemDataModel, position: Int) {
         if (homeRecommendationItemDataModel.product.isTopads) {
-            viewModel.sendTopAds(homeRecommendationItemDataModel.product.trackerImageUrl)
+            TopAdsUrlHitter().hitImpressionUrl(homeRecommendationItemDataModel.product.trackerImageUrl, this::class.qualifiedName)
             if (userSessionInterface.isLoggedIn) {
                 trackingQueue.putEETracking(getRecommendationProductViewLoginTopAds(
                         tabName.toLowerCase(Locale.ROOT),
@@ -258,7 +259,7 @@ open class HomeRecommendationFragment : Fragment(), HomeRecommendationListener {
 
     override fun onProductClick(homeRecommendationItemDataModel: HomeRecommendationItemDataModel, position: Int) {
         if (homeRecommendationItemDataModel.product.isTopads){
-            viewModel.sendTopAds(homeRecommendationItemDataModel.product.clickUrl)
+            TopAdsUrlHitter().hitClickUrl(homeRecommendationItemDataModel.product.clickUrl, this::class.qualifiedName)
             if (userSessionInterface.isLoggedIn) {
                 TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(getRecommendationProductClickLoginTopAds(
                         tabName.toLowerCase(Locale.ROOT),

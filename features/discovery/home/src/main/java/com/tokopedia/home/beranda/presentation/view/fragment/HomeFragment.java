@@ -120,6 +120,7 @@ import com.tokopedia.stickylogin.data.StickyLoginTickerPojo;
 import com.tokopedia.stickylogin.internal.StickyLoginConstant;
 import com.tokopedia.stickylogin.view.StickyLoginView;
 import com.tokopedia.tokopoints.notification.TokoPointsNotificationManager;
+import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
 import com.tokopedia.unifycomponents.Toaster;
@@ -996,7 +997,9 @@ public class HomeFragment extends BaseDaggerFragment implements
         } else {
             openWebViewURL(slidesModel.getRedirectUrl(), getActivity());
         }
-        viewModel.onBannerClicked(slidesModel);
+        if (!TextUtils.isEmpty(slidesModel.getRedirectUrl())) {
+            new TopAdsUrlHitter().hitClickUrl(slidesModel.getRedirectUrl(), this.getClass().getName());
+        }
     }
 
     @Override
@@ -1451,7 +1454,7 @@ public class HomeFragment extends BaseDaggerFragment implements
             putEEToTrackingQueue((HashMap<String, Object>) HomePageTrackingV2.HomeBanner.INSTANCE.getOverlayBannerImpression(bannerSlidesModel));
         } else if (!bannerSlidesModel.isInvoke()) {
             if(!bannerSlidesModel.getTopadsViewUrl().isEmpty()){
-                viewModel.sendTopAds(bannerSlidesModel.getTopadsViewUrl());
+                new TopAdsUrlHitter().hitImpressionUrl(bannerSlidesModel.getTopadsViewUrl(), this.getClass().getName());
             }
 
             HashMap dataLayer = (HashMap) HomePageTrackingV2.HomeBanner.INSTANCE.getBannerImpression(bannerSlidesModel);

@@ -2,7 +2,6 @@ package com.tokopedia.home.viewModel.homepage
 
 import androidx.lifecycle.Observer
 import com.tokopedia.home.beranda.data.usecase.HomeUseCase
-import com.tokopedia.home.beranda.domain.interactor.SendTopAdsUseCase
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomepageBannerDataModel
@@ -106,7 +105,6 @@ class HomeViewModelBannerHomepageTest : Spek({
         createHomeViewModelTestInstance()
         var url = ""
         val slotUrl = slot<String>()
-        val sendTopAdsUseCase by memoized<SendTopAdsUseCase>()
         val getHomeUseCase by memoized<HomeUseCase>()
         Scenario("User doesn't have cache, and must get data from network. And should available on view"){
             val observerHome: Observer<HomeDataModel> = mockk(relaxed = true)
@@ -123,11 +121,6 @@ class HomeViewModelBannerHomepageTest : Spek({
                         )
                 )
             }
-            Given("set return impression"){
-                every { sendTopAdsUseCase.executeOnBackground(capture(slotUrl)) } answers {
-                    url = slotUrl.captured
-                }
-            }
 
             Given("home viewmodel") {
                 homeViewModel = createHomeViewModel()
@@ -142,14 +135,6 @@ class HomeViewModelBannerHomepageTest : Spek({
                     })
                 }
                 confirmVerified(observerHome)
-            }
-
-            When("Impression topads called"){
-                homeViewModel.sendTopAds("coba topads")
-            }
-
-            Then("Check the url is same"){
-                Assert.assertTrue(url == "coba topads")
             }
         }
     }

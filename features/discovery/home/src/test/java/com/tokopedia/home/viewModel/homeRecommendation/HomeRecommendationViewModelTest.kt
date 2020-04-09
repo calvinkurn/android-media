@@ -3,7 +3,6 @@ package com.tokopedia.home.viewModel.homeRecommendation
 import androidx.lifecycle.Observer
 import com.tokopedia.home.beranda.domain.gql.feed.Product
 import com.tokopedia.home.beranda.domain.interactor.GetHomeRecommendationUseCase
-import com.tokopedia.home.beranda.domain.interactor.SendTopAdsUseCase
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.*
 import com.tokopedia.home.beranda.presentation.viewModel.HomeRecommendationViewModel
 import com.tokopedia.home.rules.InstantTaskExecutorRuleSpek
@@ -20,7 +19,6 @@ class HomeRecommendationViewModelTest : Spek({
         createHomeRecommendationViewModelTestInstance()
 
         val getHomeRecommendationUseCase by memoized<GetHomeRecommendationUseCase>()
-        val sendTopAdsUseCase by memoized<SendTopAdsUseCase>()
 
         Scenario("Get Success Data Home Recommendation Initial Page"){
             val observerHomeRecommendation: Observer<HomeRecommendationDataModel> = mockk(relaxed = true)
@@ -413,12 +411,6 @@ class HomeRecommendationViewModelTest : Spek({
                 getHomeRecommendationUseCase.givenDataReturn(homeRecommendationDataModel)
             }
 
-            Given("set return impression"){
-                every { sendTopAdsUseCase.executeOnBackground(capture(slotUrl)) } answers {
-                    url = slotUrl.captured
-                }
-            }
-
             Given("home viewmodel") {
                 homeRecommendationViewModel = createHomeRecommendationViewModel()
                 homeRecommendationViewModel.homeRecommendationLiveData.observeForever(observerHomeRecommendation)
@@ -443,14 +435,6 @@ class HomeRecommendationViewModelTest : Spek({
                     })
                 }
                 confirmVerified(observerHomeRecommendation)
-            }
-
-            When("View rendered and impression triggered"){
-                homeRecommendationViewModel.sendTopAds(item.product.trackerImageUrl)
-            }
-
-            Then("Verify impression"){
-                assert(url == item.product.trackerImageUrl)
             }
         }
 
@@ -473,12 +457,6 @@ class HomeRecommendationViewModelTest : Spek({
                 getHomeRecommendationUseCase.givenDataReturn(homeRecommendationDataModel)
             }
 
-            Given("set return impression"){
-                every { sendTopAdsUseCase.executeOnBackground(capture(slotUrl)) } answers {
-                    url = slotUrl.captured
-                }
-            }
-
             Given("home viewmodel") {
                 homeRecommendationViewModel = createHomeRecommendationViewModel()
                 homeRecommendationViewModel.homeRecommendationLiveData.observeForever(observerHomeRecommendation)
@@ -504,25 +482,6 @@ class HomeRecommendationViewModelTest : Spek({
                 }
                 confirmVerified(observerHomeRecommendation)
             }
-
-            When("View rendered and impression triggered"){
-                homeRecommendationViewModel.sendTopAds(item.product.trackerImageUrl)
-            }
-
-            Then("Verify impression"){
-                assert(url == item.product.trackerImageUrl)
-            }
-
-
-            When("View rendered and impression triggered"){
-                homeRecommendationViewModel.sendTopAds(item.product.clickUrl)
-            }
-
-            Then("Verify impression"){
-                assert(url == item.product.clickUrl)
-            }
         }
-
-
     }
 })

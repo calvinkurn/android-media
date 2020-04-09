@@ -66,9 +66,6 @@ class HomeUseCaseModule {
     }
 
     @Provides
-    fun provideSendTopAdsUseCase() = SendTopAdsUseCase()
-
-    @Provides
     fun provideGetFeedTabUseCase(@ApplicationContext context: Context?,
                                  graphqlUseCase: GraphqlUseCase?,
                                  feedTabMapper: FeedTabMapper?): GetFeedTabUseCase {

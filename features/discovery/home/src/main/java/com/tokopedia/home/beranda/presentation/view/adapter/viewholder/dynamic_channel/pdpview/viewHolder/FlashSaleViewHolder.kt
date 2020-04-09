@@ -7,7 +7,7 @@ import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.pdpview.dataModel.FlashSaleDataModel
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.productcard.ProductCardFlashSaleView
-import com.tokopedia.topads.sdk.utils.ImpresionTask
+import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 
 class FlashSaleViewHolder (view: View,
                            private val channels: DynamicHomeChannel.Channels):
@@ -28,13 +28,13 @@ class FlashSaleViewHolder (view: View,
             setProductModel(element.productModel)
             addOnImpressionListener(element.impressHolder) {
                 if(element.grid.isTopads){
-                    ImpresionTask().execute(element.grid.impression)
+                    TopAdsUrlHitter().hitImpressionUrl(element.grid.impression, FlashSaleViewHolder::class.qualifiedName)
                 }
                 element.listener.onFlashSaleCardImpressed(adapterPosition, channels)
             }
             setOnClickListener {
                 if(element.grid.isTopads){
-                    ImpresionTask().execute(element.grid.productClickUrl)
+                    TopAdsUrlHitter().hitClickUrl(element.grid.productClickUrl, FlashSaleViewHolder::class.qualifiedName)
                 }
                 element.listener.onFlashSaleCardClicked(adapterPosition, channels, element.grid, element.applink)
             }
