@@ -422,7 +422,7 @@ class OfficialStoreTracking(context: Context) {
                 EVENT_CATEGORY, "os microsite - $categoryName",
                 EVENT_ACTION, "dynamic channel mix - product click",
                 EVENT_LABEL, "click product picture - $headerName",
-                CAMPAIGN_CODE, "$campaignId",
+                CAMPAIGN_CODE, campaignId.toString(),
                 ECOMMERCE, ecommerceBody
         ))
     }
@@ -479,7 +479,7 @@ class OfficialStoreTracking(context: Context) {
                 EVENT_CATEGORY, "os microsite - $categoryName",
                 EVENT_ACTION, "dynamic channel mix - banner click",
                 EVENT_LABEL, "click banner dc mix - ${bannerData.applink}",
-                CAMPAIGN_CODE, "${channelData.campaignID}",
+                CAMPAIGN_CODE, channelData.campaignID.toString(),
                 ATTRIBUTION, channelData.galaxyAttribution,
                 AFFINITY_LABEL, channelData.persona,
                 CATEGORY_ID, channelData.categoryPersona,
