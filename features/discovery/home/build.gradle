@@ -140,6 +140,7 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.graphql
     implementation rootProject.ext.tkpdInternalLibDependencies.network
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
+    implementation rootProject.ext.tkpdInternalLibDependencies.akamaiBMP
     implementation rootProject.ext.supportLibDependencies.constraintLayout
 
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
