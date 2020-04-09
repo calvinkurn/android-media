@@ -16,6 +16,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/card_order_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/white">
@@ -124,15 +125,18 @@
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tp_estimate_value"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_topchat_6"
-                android:layout_marginLeft="@dimen/dp_topchat_2"
-                android:layout_marginEnd="@dimen/spacing_lvl4"
-                android:layout_marginRight="@dimen/spacing_lvl4"
+                android:layout_marginStart="@dimen/dp_topchat_4"
+                android:layout_marginLeft="@dimen/dp_topchat_4"
+                android:layout_marginEnd="@dimen/spacing_lvl3"
+                android:layout_marginRight="@dimen/spacing_lvl3"
+                android:ellipsize="end"
                 android:includeFontPadding="false"
+                android:maxLines="1"
                 android:textColor="@color/Neutral_N700_96"
                 app:layout_constraintBottom_toBottomOf="@+id/tp_estimate_label"
+                app:layout_constraintEnd_toStartOf="@+id/btn_action_label"
                 app:layout_constraintStart_toEndOf="@+id/tp_estimate_label"
                 app:layout_constraintTop_toTopOf="@+id/tp_estimate_label"
                 app:typographyType="body_2"

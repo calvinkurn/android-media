@@ -2,6 +2,7 @@ package com.tokopedia.topchat.chatroom.view.custom
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.graphics.Color
 import android.os.Build
 import android.util.AttributeSet
 import android.view.View
@@ -24,6 +25,7 @@ class TransactionOrderProgressLayout : LinearLayout {
     private var status: Typography? = null
     private var stateChanger: Typography? = null
     private var descriptionContainer: ConstraintLayout? = null
+    private var cardOrderContainer: ConstraintLayout? = null
     private var productThumbnail: ImageView? = null
     private var productName: Typography? = null
     private var estimateTitle: Typography? = null
@@ -47,10 +49,6 @@ class TransactionOrderProgressLayout : LinearLayout {
         initBindView()
     }
 
-    private fun initViewLayout() {
-        View.inflate(context, R.layout.partial_transaction_order_progress, this)
-    }
-
     fun renderIfExist() {
         canBeRendered = true
         render(this.chatOrder)
@@ -60,6 +58,7 @@ class TransactionOrderProgressLayout : LinearLayout {
         this.chatOrder = chatOrder
         if (!shouldBeRendered()) return
         loadPreviousState()
+        renderBackgroundHasBeenSeen()
         renderStateDescription()
         renderStateChangerButton()
         renderOrderStatus()
@@ -80,6 +79,10 @@ class TransactionOrderProgressLayout : LinearLayout {
         }
     }
 
+    private fun initViewLayout() {
+        View.inflate(context, LAYOUT, this)
+    }
+
     private fun automaticHide() {
         changeState(stateClose)
     }
@@ -92,6 +95,7 @@ class TransactionOrderProgressLayout : LinearLayout {
         status = findViewById(R.id.tp_order_status)
         stateChanger = findViewById(R.id.tp_order_visibility)
         descriptionContainer = findViewById(R.id.cl_description_container)
+        cardOrderContainer = findViewById(R.id.card_order_container)
         productThumbnail = findViewById(R.id.iv_order_thumbnail)
         productName = findViewById(R.id.tp_order_name)
         estimateTitle = findViewById(R.id.tp_estimate_label)
@@ -173,6 +177,14 @@ class TransactionOrderProgressLayout : LinearLayout {
             state = CommonUtil.fromJson(stateJsonString, State::class.java)
         } catch (e: Exception) {
             e.printStackTrace()
+        }
+    }
+
+    private fun renderBackgroundHasBeenSeen() {
+        if (!state.haBeenSeen) {
+            cardOrderContainer?.setBackgroundColor(colorStateSeen.toInt())
+        } else {
+            cardOrderContainer?.setBackgroundColor(Color.WHITE)
         }
     }
 
@@ -261,14 +273,18 @@ class TransactionOrderProgressLayout : LinearLayout {
     }
 
     companion object {
+        private val LAYOUT = R.layout.partial_transaction_order_progress
+
+        private const val colorStateSeen = 0xFFEBFFEF
+
         private const val stateOpen = "Tutup"
         private const val stateClose = "Lihat"
 
         private const val DEFAULT_BODY_VISIBILITY = stateOpen
-        private const val DEFAULT_HAS_SEEN = true
+        private const val DEFAULT_HAS_SEEN = false
         private const val DEFAULT_IS_FORCE_CLOSE = false
         private val DEFAULT_STATE = CommonUtil.toJson(State())
 
-        private const val PREF_NAME = "TransactionOrderProgressPreference_ChatRoom"
+        private const val PREF_NAME = "Chat_TransactionOrderProgressPreference"
     }
 }
