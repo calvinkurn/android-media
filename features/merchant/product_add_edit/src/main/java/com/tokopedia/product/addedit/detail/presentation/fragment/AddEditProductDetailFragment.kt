@@ -11,6 +11,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.content.ContextCompat
@@ -61,6 +62,7 @@ import com.tokopedia.product.addedit.detail.presentation.model.PreorderInputMode
 import com.tokopedia.product.addedit.detail.presentation.model.WholeSaleInputModel
 import com.tokopedia.product.addedit.detail.presentation.viewholder.WholeSaleInputViewHolder
 import com.tokopedia.product.addedit.detail.presentation.viewmodel.AddEditProductDetailViewModel
+import com.tokopedia.product.addedit.detail.presentation.widget.ProductBulkPriceEditBottomSheetContent
 import com.tokopedia.product.addedit.imagepicker.view.activity.ImagePickerAddProductActivity
 import com.tokopedia.product.addedit.optionpicker.OptionPicker
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_IS_DRAFTING_PRODUCT
@@ -74,6 +76,7 @@ import com.tokopedia.product.addedit.tracking.ProductEditMainTracking
 import com.tokopedia.product_photo_adapter.PhotoItemTouchHelperCallback
 import com.tokopedia.product_photo_adapter.ProductPhotoAdapter
 import com.tokopedia.product_photo_adapter.ProductPhotoViewHolder
+import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.unifycomponents.UnifyButton
@@ -84,10 +87,8 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
-import java.text.NumberFormat
-import java.util.*
+import kotlinx.android.synthetic.main.add_edit_product_bulk_price_edit_bottom_sheet_content.view.*
 import javax.inject.Inject
-import kotlin.collections.ArrayList
 
 class AddEditProductDetailFragment : BaseDaggerFragment(),
         ProductPhotoViewHolder.OnPhotoChangeListener,
@@ -95,6 +96,8 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         WholeSaleInputViewHolder.TextChangedListener {
 
     companion object {
+        private const val TAG_BULK_EDIT_PRICE: String = "TAG_BULK_EDIT_PRICE"
+
         fun createInstance(productInputModel: ProductInputModel, isEditing: Boolean, isDrafting: Boolean): Fragment {
             return AddEditProductDetailFragment().apply {
                 val args = Bundle()
@@ -143,6 +146,9 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
 
     // product price
     private var productPriceField: TextFieldUnify? = null
+    private var productPriceEditIcon: ImageView? = null
+    private val productPriceBulkEditBottomSheet by lazy { BottomSheetUnify() }
+    private val productPriceBulkPriceEditBottomSheetContent by lazy { ProductBulkPriceEditBottomSheetContent(requireContext()) }
 
     // product wholesale price
     private var productWholeSaleSwitch: SwitchUnify? = null
@@ -282,6 +288,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
 
         // add edit product price views
         productPriceField = view.findViewById(R.id.tfu_product_price)
+        productPriceEditIcon = view.findViewById(R.id.ic_edit_price)
 
         // add edit product wholesale views
         productWholeSaleSwitch = view.findViewById(R.id.su_wholesale)
@@ -417,27 +424,32 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         })
 
         // product price text change listener
-        productPriceField?.textFieldInput?.addTextChangedListener(object : TextWatcher {
+        if (viewModel.variantInputModel.variantOptionParent.isNotEmpty() &&
+                viewModel.variantInputModel.productVariant.isNotEmpty()) {
+            productPriceField?.textFieldInput?.isEnabled = false
+            productPriceEditIcon?.visible()
+            productPriceEditIcon?.setOnClickListener { showEditAllVariantPriceBottomSheet() }
+        } else {
+            productPriceEditIcon?.hide()
+            productPriceField?.textFieldInput?.addTextChangedListener(object : TextWatcher {
 
-            override fun afterTextChanged(p0: Editable?) {}
+                override fun afterTextChanged(p0: Editable?) {}
 
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+                override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
-            override fun onTextChanged(charSequence: CharSequence?, start: Int, before: Int, count: Int) {
-                // clean any kind of number formatting here
-                val productPriceInput = charSequence?.toString()?.replace(".", "")
-                productPriceInput?.let {
-                    // do the validation first
-                    viewModel.validateProductPriceInput(it)
-                    // format the number
-                    productPriceField?.textFieldInput?.removeTextChangedListener(this)
-                    val formattedText = formatProductPriceInput(it)
-                    productPriceField?.textFieldInput?.setText(formattedText)
-                    productPriceField?.textFieldInput?.setSelection(formattedText.length)
-                    productPriceField?.textFieldInput?.addTextChangedListener(this)
+                override fun onTextChanged(charSequence: CharSequence?, start: Int, before: Int, count: Int) {
+                    // clean any kind of number formatting here
+                    val productPriceInput = charSequence?.toString()?.replace(".", "")
+                    productPriceInput?.let {
+                        // do the validation first
+                        viewModel.validateProductPriceInput(it)
+                        productPriceField?.textFieldInput?.let { editText ->
+                            InputPriceUtil.applyPriceFormatToInputField(editText, it, this)
+                        }
+                    }
                 }
-            }
-        })
+            })
+        }
 
         // product whole sale checked change listener
         productWholeSaleSwitch?.setOnCheckedChangeListener { _, isChecked ->
@@ -822,7 +834,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         // product price
         val productPrice = detailInputModel.price
         if (productPrice != 0L) {
-            productPriceField?.textFieldInput?.setText(formatProductPriceInput(detailInputModel.price.toString()))
+            productPriceField?.textFieldInput?.setText(InputPriceUtil.formatProductPriceInput(detailInputModel.price.toString()))
         }
 
         // product category
@@ -871,11 +883,6 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         wholeSaleInputFormsAdapter?.addNewWholeSalePrice(wholesaleInputs)
     }
 
-    private fun formatProductPriceInput(productPriceInput: String): String {
-        return if (productPriceInput.isNotBlank()) NumberFormat.getNumberInstance(Locale.US).format(productPriceInput.toLong()).replace(",", ".")
-        else productPriceInput
-    }
-
     private fun subscribeToProductNameInputStatus() {
         viewModel.isProductNameInputError.observe(this, Observer {
             productNameField?.setError(it)
@@ -891,8 +898,12 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
 
     private fun subscribeToProductPriceInputStatus() {
         viewModel.isProductPriceInputError.observe(this, Observer {
-            productPriceField?.setError(it)
-            productPriceField?.setMessage(viewModel.productPriceMessage)
+            if (productPriceBulkEditBottomSheet.isVisible) {
+                productPriceBulkPriceEditBottomSheetContent.setError(it, viewModel.productPriceMessage)
+            } else {
+                productPriceField?.setError(it)
+                productPriceField?.setMessage(viewModel.productPriceMessage)
+            }
         })
     }
 
@@ -1144,6 +1155,41 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     private fun onCategoryRecommendationSelected(categoryId: String) {
         viewModel.selectedCategoryId = categoryId
         ProductAddMainTracking.clickProductCategoryRecom(shopId)
+    }
+
+    private fun showEditAllVariantPriceBottomSheet() {
+        with(productPriceBulkEditBottomSheet) {
+            setTitle("Tetapkan harga produkmu")
+            showCloseIcon = true
+            setCloseClickListener { this.dismiss() }
+            productPriceBulkPriceEditBottomSheetContent.setPrice(viewModel.detailInputModel.price.toString())
+            productPriceBulkPriceEditBottomSheetContent.setPriceTextWatcher(object : TextWatcher {
+
+                override fun afterTextChanged(p0: Editable?) {}
+
+                override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+
+                override fun onTextChanged(charSequence: CharSequence?, start: Int, before: Int, count: Int) {
+                    // clean any kind of number formatting here
+                    val productPriceInput = charSequence?.toString()?.replace(".", "")
+                    productPriceInput?.let {
+                        // do the validation first
+                        viewModel.validateProductPriceInput(it)
+                        productPriceBulkPriceEditBottomSheetContent.tfu_product_price.textFieldInput.let { editText ->
+                            InputPriceUtil.applyPriceFormatToInputField(editText, it, this)
+                        }
+                    }
+                }
+            })
+            productPriceBulkPriceEditBottomSheetContent.setPriceInputListener(object : ProductBulkPriceEditBottomSheetContent.PriceInputListener {
+                override fun onPriceChangeRequested(price: Long) {
+                    productPriceField?.textFieldInput?.setText(InputPriceUtil.formatProductPriceInput(price.toString()))
+                    productPriceBulkEditBottomSheet.dismiss()
+                }
+            })
+            setChild(productPriceBulkPriceEditBottomSheetContent)
+            show(this@AddEditProductDetailFragment.childFragmentManager, TAG_BULK_EDIT_PRICE)
+        }
     }
 
     private fun submitInput(shipmentInputModel: ShipmentInputModel,

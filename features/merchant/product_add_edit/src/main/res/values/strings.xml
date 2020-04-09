@@ -171,5 +171,7 @@
     <string name="label_cta_secondary_button_on_dialog">Ya</string>
     <string name="label_title_on_dialog">Yakin ingin keluar?</string>
     <string name="label_succes_save_draft">TopSeller: Produk berhasil disimpan dalam draft</string>
+    <string name="bulk_edit_price_bottomsheet_helper">Kamu bisa atur harga masing masing di halaman Varian atau ubah semua harga varian dengan mengisi harga di bawah</string>
+    <string name="action_bulk_edit_price">Ganti</string>
 
 </resources>
