@@ -631,8 +631,8 @@ public class SearchTracking {
                 EVENT_ACTION, SearchEventTracking.Action.GENERAL_SEARCH,
                 EVENT_LABEL, generalSearchTrackingModel.getEventLabel(),
                 IS_RESULT_FOUND, generalSearchTrackingModel.isResultFound(),
-                CATEGORY_ID_MAPPING, new JSONArray(Arrays.asList(generalSearchTrackingModel.getCategoryMapping().keySet().toArray())),
-                CATEGORY_NAME_MAPPING, new JSONArray(generalSearchTrackingModel.getCategoryMapping().values()),
+                CATEGORY_ID_MAPPING, generalSearchTrackingModel.getCategoryIdMapping(),
+                CATEGORY_NAME_MAPPING, generalSearchTrackingModel.getCategoryNameMapping(),
                 RELATED_KEYWORD, generalSearchTrackingModel.getRelatedKeyword()
         );
 
