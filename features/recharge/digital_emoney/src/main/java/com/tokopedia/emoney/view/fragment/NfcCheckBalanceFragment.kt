@@ -12,6 +12,7 @@ import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.text.TextUtils
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -48,6 +49,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import id.co.bri.sdk.Brizzi
 import kotlinx.android.synthetic.main.fragment_emoney_nfc_check_balance.*
 import java.io.IOException
+import java.lang.Exception
 import javax.inject.Inject
 
 class NfcCheckBalanceFragment : BaseDaggerFragment() {
@@ -257,10 +259,14 @@ class NfcCheckBalanceFragment : BaseDaggerFragment() {
     }
 
     private fun getBalanceBrizzi(needRefreshToken: Boolean, intent: Intent) {
-        brizziBalanceViewModel.processBrizziTagIntent(intent, brizziInstance,
-                GraphqlHelper.loadRawString(resources, R.raw.query_token_brizzi),
-                GraphqlHelper.loadRawString(resources, R.raw.mutation_emoney_log_brizzi),
-                needRefreshToken)
+        try {
+            brizziBalanceViewModel.processBrizziTagIntent(intent, brizziInstance,
+                    GraphqlHelper.loadRawString(resources, R.raw.query_token_brizzi),
+                    GraphqlHelper.loadRawString(resources, R.raw.mutation_emoney_log_brizzi),
+                    needRefreshToken)
+        } catch (e: Exception) {
+            Log.e(NfcCheckBalanceFragment.javaClass.simpleName, e.message)
+        }
     }
 
     private fun getOperatorName(issuerId: Int): String {
