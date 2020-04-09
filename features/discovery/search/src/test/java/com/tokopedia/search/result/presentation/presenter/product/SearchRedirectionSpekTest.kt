@@ -14,6 +14,7 @@ import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.gherkin.Feature
 import rx.Subscriber
 
+@Deprecated("Migrated to JUnit")
 internal class SearchRedirectionSpekTest: Spek({
 
     Feature("Search success with redirection") {
