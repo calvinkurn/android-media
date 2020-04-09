@@ -1826,21 +1826,19 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 shop.cartString?.let { cartString ->
                     val listProductDetail = arrayListOf<ProductDetail>()
                     shop.cartItemDataList?.forEach { cartItem ->
-                        if (cartItem.isSelected) {
-                            val productDetail = ProductDetail(
-                                    productId = cartItem.cartItemData?.originData?.productId?.toLong()
-                                            ?: 0,
-                                    quantity = cartItem.cartItemData?.updatedData?.quantity ?: 0
-                            )
-                            listProductDetail.add(productDetail)
-                        }
+                        val productDetail = ProductDetail(
+                                productId = cartItem.cartItemData?.originData?.productId?.toLong()
+                                        ?: 0,
+                                quantity = cartItem.cartItemData?.updatedData?.quantity ?: 0
+                        )
+                        listProductDetail.add(productDetail)
                     }
                     val order = Order(
                             shopId = shopId,
                             uniqueId = cartString,
                             product_details = listProductDetail,
                             codes = shop.promoCodes?.toMutableList() ?: mutableListOf(),
-                            isChecked = listProductDetail.isNotEmpty())
+                            isChecked = shop.isChecked)
                     listOrder.add(order)
                 }
             }
@@ -1881,7 +1879,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
         return PromoRequest(
                 codes = globalPromo,
-                state = CART,
+                state = "cart",
+                isSuggested = 0,
                 orders = listOrder)
     }
 
