@@ -69,11 +69,11 @@ class OrderSummaryAnalytics : TransactionAnalytics() {
         )
     }
 
-    fun eventClickBayarNotSuccess(isButtonBayar: Boolean, eventId: String) {
+    fun eventClickBayarNotSuccess(isButtonPilihPembayaran: Boolean, eventId: String) {
         sendEventCategoryActionLabel(
                 EventName.CLICK_CHECKOUT_EXPRESS,
                 EventCategory.ORDER_SUMMARY,
-                if (isButtonBayar) EventAction.CLICK_BAYAR_NOT_SUCCESS else EventAction.CLICK_PILIH_PEMBAYARAN_NOT_SUCCESS,
+                if (isButtonPilihPembayaran) EventAction.CLICK_PILIH_PEMBAYARAN_NOT_SUCCESS else EventAction.CLICK_BAYAR_NOT_SUCCESS,
                 "$NOT_SUCCESS - $eventId"
         )
     }
@@ -164,11 +164,11 @@ class OrderSummaryAnalytics : TransactionAnalytics() {
         sendEnhancedEcommerce(dataLayer)
     }
 
-    fun eventClickBayarSuccess(isButtonBayar: Boolean, ee: Map<String, Any>) {
+    fun eventClickBayarSuccess(isButtonPilihPembayaran: Boolean, ee: Map<String, Any>) {
         val dataLayer = DataLayer.mapOf(
                 Key.EVENT, EventName.CHECKOUT,
                 Key.EVENT_CATEGORY, EventCategory.ORDER_SUMMARY,
-                Key.EVENT_ACTION, if(isButtonBayar) EventAction.CLICK_BAYAR else EventAction.CLICK_PILIH_PEMBAYARAN,
+                Key.EVENT_ACTION, if(isButtonPilihPembayaran) EventAction.CLICK_PILIH_PEMBAYARAN else EventAction.CLICK_BAYAR,
                 Key.EVENT_LABEL, "success",
                 Key.E_COMMERCE, ee
         )
