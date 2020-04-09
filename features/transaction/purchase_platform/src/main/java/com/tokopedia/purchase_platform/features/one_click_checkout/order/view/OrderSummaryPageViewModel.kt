@@ -149,26 +149,6 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
         val s = _orderPreference?.shipping
         val currPromo = if (_orderPreference?.shipping?.isApplyLogisticPromo == true) _orderPreference?.shipping?.logisticPromoViewModel?.promoCode
                 ?: "" else ""
-        if (s != null && s.shippingRecommendationData?.logisticPromo?.isApplied == true && s.isApplyLogisticPromo) {
-            clearCacheAutoApplyStackUseCase.setParams(PARAM_VALUE_MARKETPLACE, arrayListOf(s.shippingRecommendationData.logisticPromo?.promoCode
-                    ?: ""), true)
-            compositeSubscription.add(
-                    clearCacheAutoApplyStackUseCase.createObservable(RequestParams.EMPTY).subscribe(object : Observer<ClearPromoUiModel?> {
-                        override fun onError(e: Throwable?) {
-                        }
-
-                        override fun onNext(t: ClearPromoUiModel?) {
-                        }
-
-                        override fun onCompleted() {
-                        }
-                    })
-            )
-            val orders = lastValidateUsePromoRequest?.orders ?: emptyList()
-            if (orders.isNotEmpty()) {
-                orders[0]?.codes?.remove(s.logisticPromoViewModel?.promoCode)
-            }
-        }
         val shippingParam = generateShippingParam()
         val ratesParamBuilder = RatesParam.Builder(generateListShopShipment(), shippingParam)
         val ratesParam = ratesParamBuilder.build()
