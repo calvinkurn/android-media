@@ -1,9 +1,9 @@
 package com.tokopedia.common.topupbills.analytics
 
 import com.google.android.gms.tagmanager.DataLayer
-import com.tokopedia.track.TrackApp
 import com.tokopedia.common.topupbills.analytics.CommonTopupBillsEventTracking.*
 import com.tokopedia.common.topupbills.analytics.CommonTopupBillsEventTracking.EnhanceEccomerce.Companion.ECOMMERCE
+import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 
 class CommonTopupBillsAnalytics {
@@ -68,7 +68,10 @@ class CommonTopupBillsAnalytics {
         val viewCheckoutEnhanceEccomerce = with(EnhanceEccomerce) {
             DataLayer.mapOf(
                 CHECKOUT, DataLayer.mapOf(
-                    ACTION_FIELD, DataLayer.mapOf("step", 2, "option", "click checkout"),
+                    ActionField.ACTION_FIELD, DataLayer.mapOf(
+                        ActionField.ACTION_FIELD_STEP, 1,
+                        ActionField.ACTION_FIELD_OPTION, ActionField.ACTION_FIELD_VIEW_CHECKOUT
+                    ),
                     PRODUCTS, DataLayer.listOf(DataLayer.mapOf(
                         NAME, productName,
                         ID, productId,
@@ -100,7 +103,10 @@ class CommonTopupBillsAnalytics {
         val clickPaymentEnhanceEccomerce = with(EnhanceEccomerce) {
             DataLayer.mapOf(
                 CHECKOUT, DataLayer.mapOf(
-                    ACTION_FIELD, DataLayer.mapOf("step", 2, "option", "click checkout"),
+                    ActionField.ACTION_FIELD, DataLayer.mapOf(
+                        ActionField.ACTION_FIELD_STEP, 2,
+                        ActionField.ACTION_FIELD_OPTION, ActionField.ACTION_FIELD_CLICK_CHECKOUT
+                    ),
                     PRODUCTS, DataLayer.listOf(DataLayer.mapOf(
                         NAME, productName,
                         ID, productId,

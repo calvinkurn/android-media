@@ -25,8 +25,8 @@ interface CommonTopupBillsEventTracking {
         companion object {
             const val CLICK_USE_PROMO = "click pakai promo"
             const val CLICK_BUY = "click beli"
-            const val VIEW_CHECKOUT = "viwe checkout"
-            const val CLICK_PROCEED_TO_PAYMENT = "click_proceed_to_payment"
+            const val VIEW_CHECKOUT = "view checkout"
+            const val CLICK_PROCEED_TO_PAYMENT = "click proceed to payment"
             const val CLICK_REMOVE_PROMO = "click 'x' on promo"
         }
     }
@@ -39,7 +39,6 @@ interface CommonTopupBillsEventTracking {
             const val ADD = "add"
             const val PRODUCTS = "products"
             const val CHECKOUT = "checkout"
-            const val ACTION_FIELD = "actionField"
 
             const val NAME = "name"
             const val ID = "id"
@@ -53,6 +52,17 @@ interface CommonTopupBillsEventTracking {
             const val DIMENSION_80 = "dimension80"
             const val DIMENSION_81 = "dimension81"
             const val DIMENSION_82 = "dimension82"
+        }
+    }
+
+    interface ActionField {
+        companion object {
+            const val ACTION_FIELD = "actionField"
+            const val ACTION_FIELD_STEP = "step"
+            const val ACTION_FIELD_OPTION = "option"
+
+            const val ACTION_FIELD_VIEW_CHECKOUT = "view checkout page"
+            const val ACTION_FIELD_CLICK_CHECKOUT = "click checkout"
         }
     }
 }

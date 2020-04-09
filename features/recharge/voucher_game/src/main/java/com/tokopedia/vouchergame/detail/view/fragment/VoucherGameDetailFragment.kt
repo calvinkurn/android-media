@@ -21,13 +21,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
-import com.tokopedia.config.GlobalConfig
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
-import com.tokopedia.common.topupbills.data.TopupBillsFavNumber
 import com.tokopedia.common.topupbills.data.TopupBillsEnquiryData
 import com.tokopedia.common.topupbills.data.TopupBillsEnquiryMainInfo
+import com.tokopedia.common.topupbills.data.TopupBillsFavNumber
 import com.tokopedia.common.topupbills.data.TopupBillsMenuDetail
 import com.tokopedia.common.topupbills.data.product.CatalogOperatorAttributes
 import com.tokopedia.common.topupbills.data.product.CatalogProductInput
@@ -41,6 +40,7 @@ import com.tokopedia.common.topupbills.widget.TopupBillsInputDropdownWidget.Comp
 import com.tokopedia.common.topupbills.widget.TopupBillsInputFieldWidget
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam.EXTRA_PARAM_VOUCHER_GAME
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifyprinciples.UnifyThemeHelper
@@ -132,6 +132,8 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
             it.getString(EXTRA_INPUT_FIELD_1)?.let { input -> inputData[EXTRA_INPUT_FIELD_1] = input }
             it.getString(EXTRA_INPUT_FIELD_2)?.let { input -> inputData[EXTRA_INPUT_FIELD_2] = input }
         }
+
+        operatorName = voucherGameOperatorData.name
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -585,12 +587,12 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
     }
 
     override fun onClickNextBuyButton() {
-        if (::voucherGameOperatorData.isInitialized) {
-            selectedProduct?.run {
-                voucherGameAnalytics.eventClickBuy(voucherGameExtraParam.categoryId,
-                        voucherGameOperatorData.name, product = this)
-            }
-        }
+//        if (::voucherGameOperatorData.isInitialized) {
+//            selectedProduct?.run {
+//                voucherGameAnalytics.eventClickBuy(voucherGameExtraParam.categoryId,
+//                        voucherGameOperatorData.name, product = this)
+//            }
+//        }
 
         processCheckout()
     }

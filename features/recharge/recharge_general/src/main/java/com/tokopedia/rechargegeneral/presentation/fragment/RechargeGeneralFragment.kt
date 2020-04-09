@@ -42,11 +42,11 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.onTabSelected
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.promocheckout.common.data.REQUEST_CODE_PROMO_DETAIL
 import com.tokopedia.promocheckout.common.data.REQUEST_CODE_PROMO_LIST
 import com.tokopedia.promocheckout.common.view.model.PromoData
 import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView
-import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.rechargegeneral.R
 import com.tokopedia.rechargegeneral.di.RechargeGeneralComponent
 import com.tokopedia.rechargegeneral.model.RechargeGeneralOperatorCluster
@@ -810,7 +810,6 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
         super.processMenuDetail(data)
         with (data.catalog) {
             (activity as? BaseSimpleActivity)?.updateTitle(label)
-            categoryName = name.toLowerCase()
             rechargeAnalytics.eventOpenScreen(userSession.isLoggedIn, categoryName, categoryId.toString())
         }
         renderTickers(data.tickers)
