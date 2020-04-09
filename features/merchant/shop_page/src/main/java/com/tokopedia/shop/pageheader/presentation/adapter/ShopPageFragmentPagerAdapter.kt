@@ -89,13 +89,15 @@ internal class ShopPageFragmentPagerAdapter(
         listFragment = tabData.second
     }
 
-    fun getFragmentPosition(classType: Class<*>) : Int{
-        return listFragment.indexOf(isFragmentObjectExists(classType)).takeIf {
-            it >= 0
+    fun getFragmentPosition(classType: Class<*>): Int {
+        return listFragment.filterIsInstance(classType).firstOrNull()?.let {
+            return listFragment.indexOf(it).takeIf { index ->
+                index >= 0
+            } ?: 0
         } ?: 0
     }
 
-    fun isFragmentObjectExists(classType: Class<*>): Any? {
-        return listFragment.filterIsInstance(classType).first()
+    fun isFragmentObjectExists(classType: Class<*>): Boolean {
+        return listFragment.filterIsInstance(classType).firstOrNull() != null
     }
 }

@@ -584,7 +584,7 @@ class ShopPageFragment :
         viewPagerAdapter.notifyDataSetChanged()
         var selectedPosition = getSelectedTabPosition()
         if(shouldOverrideTabToHome){
-            selectedPosition = if(viewPagerAdapter.isFragmentObjectExists(HomeProductFragment::class.java) != null){
+            selectedPosition = if(viewPagerAdapter.isFragmentObjectExists(HomeProductFragment::class.java)){
                 viewPagerAdapter.getFragmentPosition(HomeProductFragment::class.java)
             }else{
                 viewPagerAdapter.getFragmentPosition(ShopPageHomeFragment::class.java)
