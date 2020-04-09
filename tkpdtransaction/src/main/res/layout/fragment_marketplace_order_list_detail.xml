@@ -157,7 +157,7 @@
 
                     <TextView
                         android:id="@+id/shop_info_label"
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/dp_16"
                         android:layout_marginTop="@dimen/dp_8"
@@ -174,7 +174,7 @@
                         android:layout_toEndOf="@id/shop_info_label"
                         android:layout_centerVertical="true"
                         tools:ignore="ContentDescription" />
-                    
+
                 </RelativeLayout>
 
                 <androidx.recyclerview.widget.RecyclerView
