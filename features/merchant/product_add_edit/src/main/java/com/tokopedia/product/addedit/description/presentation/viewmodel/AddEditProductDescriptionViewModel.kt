@@ -134,6 +134,7 @@ class AddEditProductDescriptionViewModel @Inject constructor(
 
     fun setVariantInput(variantInputModel: ProductVariantInputModel) {
         this.variantInputModel = variantInputModel
+        setVariantNamesAndCount()
     }
 
     private fun mapProductVariant(productVariant: ArrayList<ProductVariantCombinationViewModel>,
@@ -183,6 +184,16 @@ class AddEditProductDescriptionViewModel @Inject constructor(
 
         setVariantCountLevel1(productVariant)
         setVariantCountLevel2(productVariant)
+    }
+
+    private fun setVariantNamesAndCount() {
+        variantInputModel.variantOptionParent.forEachIndexed { index, optionParent ->
+            if (index < 2) {
+                variantNameList[index] = optionParent.name ?: ""
+            }
+        }
+        setVariantCountLevel1(variantInputModel.productVariant)
+        setVariantCountLevel2(variantInputModel.productVariant)
     }
 
     private fun setVariantCountLevel1(productVariant: ArrayList<ProductVariantCombinationViewModel>) {
