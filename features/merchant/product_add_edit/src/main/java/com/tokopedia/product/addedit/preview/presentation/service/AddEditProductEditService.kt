@@ -4,14 +4,20 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.Companion.HTTP_PREFIX
 import com.tokopedia.product.addedit.common.util.AddEditProductNotificationManager
 import com.tokopedia.product.addedit.description.presentation.model.DescriptionInputModel
 import com.tokopedia.product.addedit.description.presentation.model.ProductVariantInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
+import com.tokopedia.product.addedit.draft.domain.usecase.DeleteProductDraftUseCase
+import com.tokopedia.product.addedit.draft.domain.usecase.SaveProductDraftUseCase
+import com.tokopedia.product.addedit.mapper.mapProductInputModelDetailToDraft
 import com.tokopedia.product.addedit.preview.domain.usecase.ProductEditUseCase
 import com.tokopedia.product.addedit.preview.presentation.activity.AddEditProductPreviewActivity
+import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_DRAFT_ID
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.shipment.presentation.model.ShipmentInputModel
 import com.tokopedia.product.addedit.tracking.ProductEditStepperTracking
@@ -24,6 +30,7 @@ import kotlinx.coroutines.withContext
 
 class AddEditProductEditService : AddEditProductBaseService() {
     private var productId = ""
+    private var productInputModel: ProductInputModel = ProductInputModel()
     private var shipmentInputModel: ShipmentInputModel = ShipmentInputModel()
     private var descriptionInputModel: DescriptionInputModel = DescriptionInputModel()
     private var detailInputModel: DetailInputModel = DetailInputModel()
@@ -47,9 +54,9 @@ class AddEditProductEditService : AddEditProductBaseService() {
 
     override fun onHandleWork(intent: Intent) {
         productId = intent.getStringExtra(EXTRA_PRODUCT_ID_INPUT_EDIT)
-        val productInputModel: ProductInputModel? = intent.getParcelableExtra(EXTRA_PRODUCT_INPUT_MODEL)
+        productInputModel = intent.getParcelableExtra(EXTRA_PRODUCT_INPUT_MODEL)
 
-        productInputModel?.let {
+        productInputModel.let {
             shipmentInputModel = it.shipmentInputModel
             descriptionInputModel = it.descriptionInputModel
             detailInputModel = it.detailInputModel
@@ -98,10 +105,20 @@ class AddEditProductEditService : AddEditProductBaseService() {
             withContext(Dispatchers.IO) {
                 productEditUseCase.params = ProductEditUseCase.createRequestParams(param)
                 setUploadProductDataSuccess()
+                if(productInputModel.draftId > 0) {
+                    deleteProductDraftUseCase.params = DeleteProductDraftUseCase.createRequestParams(productInputModel.draftId)
+                    deleteProductDraftUseCase.executeOnBackground()
+                }
                 return@withContext productEditUseCase.executeOnBackground()
             }
         }, onError = {
-            it.message?.let { errorMessage -> setUploadProductDataSuccess(errorMessage) }
+            it.message?.let { errorMessage ->
+                setUploadProductDataSuccess(errorMessage)
+                if(productInputModel.draftId > 0) {
+                    saveProductDraftUseCase.params = SaveProductDraftUseCase.createRequestParams(mapProductInputModelDetailToDraft(productInputModel), productInputModel.draftId, false)
+                    withContext(Dispatchers.IO){ saveProductDraftUseCase.executeOnBackground() }
+                }
+            }
         })
     }
 }

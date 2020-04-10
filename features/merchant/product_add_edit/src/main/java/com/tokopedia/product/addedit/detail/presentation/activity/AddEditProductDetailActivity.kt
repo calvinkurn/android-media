@@ -7,7 +7,6 @@ import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.dialog.DialogUnify
-import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.common.AddEditProductComponentBuilder
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.Companion.EXTRA_CACHE_MANAGER_ID

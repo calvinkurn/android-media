@@ -58,7 +58,7 @@ import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProduct
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.UNIT_DAY
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.UNIT_WEEK
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.USED_PRODUCT_INDEX
-import com.tokopedia.product.addedit.detail.presentation.mapper.mapProductInputModelDetailToDraft
+import com.tokopedia.product.addedit.mapper.mapProductInputModelDetailToDraft
 import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.PreorderInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.WholeSaleInputModel
@@ -803,8 +803,8 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         if (isPreOrder) {
             preOrderSwitch?.isChecked = true
             preOrderDurationUnitField?.textFieldInput?.setText(getString(getDurationUnit(detailInputModel.preorder.timeUnit)))
-            preOrderDurationField?.textFieldInput?.setText(detailInputModel.preorder.duration)
-            preOrderInputLayout?.show()
+            preOrderDurationField?.textFieldInput?.setText(detailInputModel.preorder.duration.toString())
+            viewModel.isPreOrderActivated.value = true
         }
 
         // product stock

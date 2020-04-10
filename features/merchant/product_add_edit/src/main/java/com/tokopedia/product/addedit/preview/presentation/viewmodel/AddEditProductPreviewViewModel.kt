@@ -6,16 +6,20 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.product.addedit.common.util.ResourceProvider
+import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
 import com.tokopedia.product.addedit.description.data.remote.model.variantbycat.ProductVariantByCatModel
 import com.tokopedia.product.addedit.description.domain.usecase.GetProductVariantUseCase
 import com.tokopedia.product.addedit.description.presentation.model.DescriptionInputModel
 import com.tokopedia.product.addedit.description.presentation.model.ProductVariantInputModel
-import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
+import com.tokopedia.product.addedit.draft.domain.usecase.GetProductDraftUseCase
+import com.tokopedia.product.addedit.mapper.mapDraftToProductInputModel
 import com.tokopedia.product.addedit.preview.data.source.api.response.Product
 import com.tokopedia.product.addedit.preview.domain.GetProductUseCase
 import com.tokopedia.product.addedit.preview.domain.mapper.GetProductMapper
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.shipment.presentation.model.ShipmentInputModel
+import com.tokopedia.product.manage.common.draft.data.model.ProductDraft
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -28,6 +32,8 @@ class AddEditProductPreviewViewModel @Inject constructor(
         private val getProductUseCase: GetProductUseCase,
         private val getProductMapper: GetProductMapper,
         private val getProductVariantUseCase: GetProductVariantUseCase,
+        private val resourceProvider: ResourceProvider,
+        private val getProductDraftUseCase: GetProductDraftUseCase,
         dispatcher: CoroutineDispatcher
 ) : BaseViewModel(dispatcher) {
 
@@ -75,6 +81,9 @@ class AddEditProductPreviewViewModel @Inject constructor(
     private val mProductVariantList = MutableLiveData<Result<List<ProductVariantByCatModel>>>()
     val productVariantList: LiveData<Result<List<ProductVariantByCatModel>>> get() = mProductVariantList
 
+    private val mGetProductDraftResult = MutableLiveData<Result<ProductDraft>>()
+    val getProductDraftResult: LiveData<Result<ProductDraft>> get() = mGetProductDraftResult
+
     var isDuplicate: Boolean = false
 
     init {
@@ -93,6 +102,13 @@ class AddEditProductPreviewViewModel @Inject constructor(
 
     fun getProductId(): String {
         return productId.value ?: ""
+    }
+
+    fun getDraftId(): Long {
+        if (draftId.value != "") {
+            return draftId.value?.toLong() ?: 0
+        }
+        return 0
     }
 
     fun setProductId(id: String) {
@@ -140,6 +156,17 @@ class AddEditProductPreviewViewModel @Inject constructor(
         productInputModel.value?.shipmentInputModel = shipmentInputModel
     }
 
+    fun updateProductInputModel(productDraft: ProductDraft) {
+        productInputModel.value?.apply {
+            val draft = mapDraftToProductInputModel(productDraft)
+            variantInputModel = draft.variantInputModel
+            detailInputModel = draft.detailInputModel
+            descriptionInputModel = draft.descriptionInputModel
+            shipmentInputModel = draft.shipmentInputModel
+            draftId = draft.draftId
+        }
+    }
+
     fun getNewProductInputModel(imageUrlOrPathList: ArrayList<String>): ProductInputModel {
         val detailInputModel = DetailInputModel().apply { this.imageUrlOrPathList = imageUrlOrPathList }
         return ProductInputModel().apply { this.detailInputModel = detailInputModel }
@@ -170,6 +197,37 @@ class AddEditProductPreviewViewModel @Inject constructor(
             })
         }, onError = {
             mProductVariantList.value = Fail(it)
+        })
+    }
+
+    fun validateProductInput(detailInputModel: DetailInputModel): String {
+        var errorMessage = ""
+        // validate category input
+        if (detailInputModel.categoryId.isEmpty() || detailInputModel.categoryId == "0")  {
+            errorMessage += resourceProvider.getInvalidCategoryIdErrorMessage() + "\n"
+        }
+
+        // validate product name input
+        if (detailInputModel.productName.isEmpty())  {
+            errorMessage += resourceProvider.getInvalidNameErrorMessage() + "\n"
+        }
+
+        // validate images input
+        if (detailInputModel.imageUrlOrPathList.isEmpty())  {
+            errorMessage += resourceProvider.getInvalidPhotoCountErrorMessage()
+        }
+
+        return errorMessage
+    }
+
+    fun getProductDraft(draftId: Long) {
+        launchCatchError(block = {
+            getProductDraftUseCase.params = GetProductDraftUseCase.createRequestParams(draftId)
+            mGetProductDraftResult.value = withContext(Dispatchers.IO) {
+                getProductDraftUseCase.executeOnBackground()
+            }.let { Success(it) }
+        }, onError = {
+            mGetProductDraftResult.value = Fail(it)
         })
     }
 }

@@ -17,7 +17,7 @@ import com.tokopedia.product.addedit.common.util.getText
 import com.tokopedia.product.addedit.common.util.getTextIntOrZero
 import com.tokopedia.product.addedit.common.util.setModeToNumberInput
 import com.tokopedia.product.addedit.common.util.setText
-import com.tokopedia.product.addedit.detail.presentation.mapper.mapProductInputModelDetailToDraft
+import com.tokopedia.product.addedit.mapper.mapProductInputModelDetailToDraft
 import com.tokopedia.product.addedit.optionpicker.OptionPicker
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.shipment.di.AddEditProductShipmentComponent
@@ -116,7 +116,6 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
         btnSave = view.findViewById(R.id.btn_save)
         btnEnd = view.findViewById(R.id.btn_end)
         tfWeightAmount.setModeToNumberInput()
-        applyShipmentInputModel()
         tfWeightUnit?.apply {
             textFieldInput.setText(getWeightTypeTitle(0))
             textFieldInput.isFocusable = false // disable focus
@@ -125,6 +124,7 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
                 showUnitWeightOption()
             }
         }
+        applyShipmentInputModel()
         tfWeightAmount?.textFieldInput?.afterTextChanged {
             validateInputWeight(it)
         }
@@ -177,14 +177,13 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
         val inputModel = shipmentViewModel.shipmentInputModel
         val weightUnitResId = getWeightTypeTitle(inputModel.weightUnit)
         val weightUnit = getString(weightUnitResId)
+        selectedWeightPosition = inputModel.weightUnit
         tfWeightUnit.setText(weightUnit)
         tfWeightAmount.setText(inputModel.weight.toString())
         switchInsurance?.isChecked = inputModel.isMustInsurance
         btnEnd?.visibility = View.GONE
         btnSave?.visibility = View.VISIBLE
     }
-
-
 
     private fun showUnitWeightOption() {
         if (shipmentViewModel.isEditMode) {

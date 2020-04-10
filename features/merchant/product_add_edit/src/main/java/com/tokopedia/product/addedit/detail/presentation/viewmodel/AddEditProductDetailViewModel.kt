@@ -29,8 +29,7 @@ class AddEditProductDetailViewModel @Inject constructor(
         val provider: ResourceProvider, dispatcher: CoroutineDispatcher,
         private val getNameRecommendationUseCase: GetNameRecommendationUseCase,
         private val getCategoryRecommendationUseCase: GetCategoryRecommendationUseCase,
-        private val saveProductDraftUseCase: SaveProductDraftUseCase,
-        private val getProductDraftUseCase: GetProductDraftUseCase
+        private val saveProductDraftUseCase: SaveProductDraftUseCase
 ) : BaseViewModel(dispatcher) {
 
     var isEditing = false
@@ -382,17 +381,6 @@ class AddEditProductDetailViewModel @Inject constructor(
             }.let { Success(it) }
         }, onError = {
             saveProductDraftResultMutableLiveData.value = Fail(it)
-        })
-    }
-
-    fun getProductDraft(productId: Long) {
-        launchCatchError(block = {
-            getProductDraftUseCase.params = GetProductDraftUseCase.createRequestParams(productId)
-            getProductDraftResultMutableLiveData.value = withContext(Dispatchers.IO) {
-                getProductDraftUseCase.executeOnBackground()
-            }.let { Success(it) }
-        }, onError = {
-            getProductDraftResultMutableLiveData.value = Fail(it)
         })
     }
 }
