@@ -4,8 +4,6 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.product.addedit.common.util.AddEditProductNotificationManager
 import com.tokopedia.product.addedit.description.presentation.model.DescriptionInputModel
@@ -16,7 +14,6 @@ import com.tokopedia.product.addedit.draft.domain.usecase.SaveProductDraftUseCas
 import com.tokopedia.product.addedit.mapper.mapProductInputModelDetailToDraft
 import com.tokopedia.product.addedit.preview.domain.usecase.ProductEditUseCase
 import com.tokopedia.product.addedit.preview.presentation.activity.AddEditProductPreviewActivity
-import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_DRAFT_ID
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.shipment.presentation.model.ShipmentInputModel
 import com.tokopedia.product.addedit.tracking.ProductEditStepperTracking
@@ -71,7 +68,6 @@ class AddEditProductEditService : AddEditProductBaseService() {
             imageUrlOrPathList.filterNot {
                 it.startsWith(HTTP_PREFIX)
             }
-
 
     override fun onUploadProductImagesDone(uploadIdList: ArrayList<String>, sizeChartId: String) {
         editProduct(uploadIdList, sizeChartId)

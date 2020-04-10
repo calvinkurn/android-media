@@ -319,8 +319,8 @@ class AddEditProductDescriptionFragment:
         val description = descriptionViewModel.descriptionInputModel.productDescription
         val videoLinks = descriptionViewModel.descriptionInputModel.videoLinkList
 
+        textFieldDescription.setText(description)
         if (videoLinks.isNotEmpty()) {
-            textFieldDescription.setText(description)
             super.clearAllData()
             super.renderList(videoLinks)
         }
