@@ -3,7 +3,6 @@ package com.tokopedia.seller.shopscore.data.source.disk;
 import androidx.annotation.NonNull;
 
 import com.google.gson.reflect.TypeToken;
-import com.tokopedia.core.base.utils.ErrorCheck;
 import com.tokopedia.core.database.CacheUtil;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.product.model.shopscore.detail.ShopScoreDetailServiceModel;

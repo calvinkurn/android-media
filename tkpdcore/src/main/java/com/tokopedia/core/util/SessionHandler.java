@@ -606,10 +606,6 @@ public class SessionHandler {
         editor.apply();
     }
 
-    public interface onLogoutListener {
-        void onLogout(Boolean success);
-    }
-
     public void setHasPassword(boolean hasPassword) {
         LocalCacheHandler cache = new LocalCacheHandler(MainApplication.getAppContext(), LOGIN_SESSION);
         cache.putBoolean(HAS_PASSWORD, hasPassword);

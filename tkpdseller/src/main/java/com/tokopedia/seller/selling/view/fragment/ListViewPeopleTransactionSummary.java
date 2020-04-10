@@ -1,4 +1,4 @@
-package com.tokopedia.core.customadapter;
+package com.tokopedia.seller.selling.view.fragment;
 
 import java.util.ArrayList;
 

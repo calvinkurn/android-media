@@ -1,4 +1,4 @@
-package com.tokopedia.core.base.utils;
+package com.tokopedia.seller.shopscore.data.source.disk;
 
 import rx.functions.Func1;
 

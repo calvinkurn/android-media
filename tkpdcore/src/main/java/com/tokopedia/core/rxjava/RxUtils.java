@@ -6,8 +6,6 @@ import timber.log.Timber;
 
 public class RxUtils {
 
-    private static final String TAG = RxUtils.class.getSimpleName();
-
     public static void unsubscribeIfNotNull(Subscription subscription) {
         if (subscription != null) {
             Timber.d("unsubscribeIfNotNull");

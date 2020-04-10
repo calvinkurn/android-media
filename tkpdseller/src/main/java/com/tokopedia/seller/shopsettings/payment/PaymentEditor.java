@@ -9,7 +9,6 @@ import android.widget.ListView;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TActivity;
-import com.tokopedia.core.customadapter.ListViewPaymentEditor;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.apiservices.shop.MyShopPaymentService;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;

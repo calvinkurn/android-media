@@ -2,8 +2,6 @@ package com.tokopedia.topads.dashboard.di;
 
 import android.content.Context;
 
-import com.tokopedia.core.base.data.executor.JobExecutor;
-import com.tokopedia.core.base.presentation.UIThread;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.topads.dashboard.data.factory.TopAdsGroupAdFactory;

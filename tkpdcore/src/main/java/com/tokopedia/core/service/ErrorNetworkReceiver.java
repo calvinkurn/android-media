@@ -16,7 +16,6 @@ public class ErrorNetworkReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         if (mReceiver != null) {
             if (intent.getAction() == null) {
-                Log.e(this.getClass().getSimpleName(), "Intent Action NULL");
                 return;
             }
             if (intent.getAction().equals("com.tokopedia.tkpd.FORCE_LOGOUT")) {

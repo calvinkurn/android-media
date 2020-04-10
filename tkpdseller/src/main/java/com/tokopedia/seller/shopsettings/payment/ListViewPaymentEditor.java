@@ -1,8 +1,7 @@
-package com.tokopedia.core.customadapter;
+package com.tokopedia.seller.shopsettings.payment;
 
 import android.app.Activity;
 import android.content.Context;
-import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,21 +11,19 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
-import com.tokopedia.core2.R;
 import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.core2.R;
 
 import java.util.ArrayList;
 
 
 public class ListViewPaymentEditor extends BaseAdapter{
-	private Activity context;
 	private LayoutInflater inflater;
 	private ArrayList<String> PaymentIconUri; 
 	private ArrayList<String> PaymentInfo;
 	private ImageHandler imagehandler = new ImageHandler();
 	
 	public ListViewPaymentEditor(Activity context, ArrayList<String> PaymentIconUri, ArrayList<String> PaymentInfo){
-		this.context = context;
 		this.PaymentIconUri = PaymentIconUri;
 		this.PaymentInfo = PaymentInfo;
 		this.inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
