@@ -1,6 +1,4 @@
-package com.tokopedia.abstraction.common.utils.time;
-
-import androidx.annotation.Nullable;
+package com.tokopedia.utils.time;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -38,7 +36,6 @@ public class RfcDateTimeParser {
             "EEE, dd MMM yyyy HH:mm:ss zzz"
     };
 
-    @Nullable
     public static Date parseDateString(String timestamp, String[] rfcPatterns) {
         if (timestamp == null || timestamp.isEmpty()) {
             return null;

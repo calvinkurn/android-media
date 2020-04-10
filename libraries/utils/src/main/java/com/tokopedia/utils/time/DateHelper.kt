@@ -1,7 +1,6 @@
-package com.tokopedia.abstraction.common.utils.time
+package com.tokopedia.utils.time
 
-import com.tokopedia.abstraction.common.utils.time.RfcDateTimeParser
-import com.tokopedia.abstraction.common.utils.time.RfcDateTimeParser.RFC_3339
+import com.tokopedia.utils.time.RfcDateTimeParser.RFC_3339
 
 object DateHelper {
 

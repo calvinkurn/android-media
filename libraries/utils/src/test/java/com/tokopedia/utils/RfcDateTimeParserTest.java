@@ -1,4 +1,6 @@
-package com.tokopedia.abstraction.common.utils.time;
+package com.tokopedia.utils;
+
+import com.tokopedia.utils.time.RfcDateTimeParser;
 
 import org.junit.Test;
 
