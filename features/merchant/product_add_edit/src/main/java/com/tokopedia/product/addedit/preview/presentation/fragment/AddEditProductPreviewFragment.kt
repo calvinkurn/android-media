@@ -91,8 +91,6 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.add_edit_product_variant_input_layout.*
-import java.text.NumberFormat
 import java.util.*
 import javax.inject.Inject
 
@@ -580,8 +578,9 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
     }
 
     private fun showProductPhotoPreview(productInputModel: ProductInputModel) {
-        val imageUrlOrPathList = productInputModel.detailInputModel.imageUrlOrPathList.mapIndexed { index, urlOrPath ->
-            if (urlOrPath.startsWith(AddEditProductConstants.HTTP_PREFIX)) productInputModel.detailInputModel.pictureList[index].urlOriginal
+        var pictureIndex = 0
+        val imageUrlOrPathList = productInputModel.detailInputModel.imageUrlOrPathList.map { urlOrPath ->
+            if (urlOrPath.startsWith(AddEditProductConstants.HTTP_PREFIX)) productInputModel.detailInputModel.pictureList[pictureIndex++].urlOriginal
             else urlOrPath
         }
         productPhotoAdapter?.setProductPhotoPaths(imageUrlOrPathList.toMutableList())

@@ -25,7 +25,7 @@ import kotlinx.coroutines.withContext
  * Created by faisalramd on 2020-04-05.
  */
 
-class AddEditProductAddService : AddEditProductBaseService() {
+open class AddEditProductAddService : AddEditProductBaseService() {
     protected var productInputModel: ProductInputModel = ProductInputModel()
     protected var shipmentInputModel: ShipmentInputModel = ShipmentInputModel()
     protected var descriptionInputModel: DescriptionInputModel = DescriptionInputModel()

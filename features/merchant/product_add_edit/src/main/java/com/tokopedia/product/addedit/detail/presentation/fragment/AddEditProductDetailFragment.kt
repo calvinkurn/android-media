@@ -58,14 +58,15 @@ import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProduct
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.UNIT_DAY
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.UNIT_WEEK
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.USED_PRODUCT_INDEX
-import com.tokopedia.product.addedit.mapper.mapProductInputModelDetailToDraft
 import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
+import com.tokopedia.product.addedit.detail.presentation.model.PictureInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.PreorderInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.WholeSaleInputModel
 import com.tokopedia.product.addedit.detail.presentation.viewholder.WholeSaleInputViewHolder
 import com.tokopedia.product.addedit.detail.presentation.viewmodel.AddEditProductDetailViewModel
 import com.tokopedia.product.addedit.detail.presentation.widget.ProductBulkPriceEditBottomSheetContent
 import com.tokopedia.product.addedit.imagepicker.view.activity.ImagePickerAddProductActivity
+import com.tokopedia.product.addedit.mapper.mapProductInputModelDetailToDraft
 import com.tokopedia.product.addedit.optionpicker.OptionPicker
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_IS_DRAFTING_PRODUCT
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_IS_EDITING_PRODUCT
@@ -920,7 +921,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     private fun createAddProductPhotoButtonOnClickListener(): View.OnClickListener {
         return View.OnClickListener {
             val isEditing = viewModel.isEditing
-            val intent = ImagePickerAddProductActivity.getIntent(context, createImagePickerBuilder(ArrayList(viewModel.productPhotoPaths)), isEditing)
+            val intent = ImagePickerAddProductActivity.getIntent(context, createImagePickerBuilder(ArrayList(productPhotoAdapter?.getProductPhotoPaths().orEmpty())), isEditing)
             startActivityForResult(intent, REQUEST_CODE_IMAGE)
             if (isEditing) {
                 ProductEditMainTracking.trackAddPhoto(shopId)
@@ -1169,6 +1170,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                 getWholesaleInput()
         )
 
+        updateImageList(detailInputModel)
         val intent = Intent()
         intent.putExtra(EXTRA_DETAIL_INPUT, detailInputModel)
         intent.putExtra(EXTRA_DESCRIPTION_INPUT, descriptionInputModel)
@@ -1196,9 +1198,26 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             wholesaleList = getWholesaleInput()
         }
 
+        updateImageList(detailInputModel)
         val intent = Intent()
         intent.putExtra(EXTRA_DETAIL_INPUT, detailInputModel)
         activity?.setResult(Activity.RESULT_OK, intent)
         activity?.finish()
+    }
+
+    private fun updateImageList(detailInputModel: DetailInputModel) {
+        // fillter product pictureList, so that edited image will be reuploaded and changed (removed from pictureList) and than reorder the picture if necessary
+        val imageUrlOrPathList = productPhotoAdapter?.getProductPhotoPaths().orEmpty()
+        val pictureList = detailInputModel.pictureList.filter {
+            imageUrlOrPathList.contains(it.url300) || imageUrlOrPathList.contains(it.urlThumbnail) || imageUrlOrPathList.contains(it.urlOriginal)
+        }
+        val newPictureList = mutableListOf<PictureInputModel>()
+        imageUrlOrPathList.forEachIndexed { index, urlOrPath ->
+            pictureList.find { it.urlOriginal == urlOrPath }?.run {
+                newPictureList.add(this)
+            }
+        }
+        detailInputModel.pictureList = newPictureList
+        detailInputModel.imageUrlOrPathList = imageUrlOrPathList
     }
 }
