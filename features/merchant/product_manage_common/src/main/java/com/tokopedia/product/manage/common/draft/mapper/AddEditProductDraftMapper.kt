@@ -1,6 +1,5 @@
 package com.tokopedia.product.manage.common.draft.mapper
 
-import android.util.Log
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.common.utils.network.CacheUtil
 import com.tokopedia.product.manage.common.draft.data.db.entity.AddEditProductDraftEntity
@@ -43,7 +42,7 @@ class AddEditProductDraftMapper {
             if (categoryId.isNotEmpty()) {
                 completionCount++
             }
-            if (price > 0) {
+            if (price > 0.toBigInteger()) {
                 completionCount++
             }
             if (stock > 0) {

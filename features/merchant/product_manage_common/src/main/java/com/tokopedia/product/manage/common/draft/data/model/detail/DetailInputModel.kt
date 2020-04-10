@@ -2,6 +2,7 @@ package com.tokopedia.product.manage.common.draft.data.model.detail
 
 import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
+import java.math.BigInteger
 
 /**
  * Created by faisalramd on 2020-03-22.
@@ -12,7 +13,7 @@ data class DetailInputModel(
         var productName: String = "",
         var categoryId: String = "",
         var catalogId: String = "",
-        var price: Float = 0F,
+        var price: BigInteger = 0.toBigInteger(),
         var stock: Int = 0,
         var minOrder: Int = 0,
         var condition: String = "NEW",
