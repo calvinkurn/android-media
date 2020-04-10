@@ -1,4 +1,4 @@
-package com.tokopedia.core.util;
+package com.tokopedia.linker.share;
 
 import com.tokopedia.linker.LinkerManager;
 import com.tokopedia.linker.model.LinkerData;

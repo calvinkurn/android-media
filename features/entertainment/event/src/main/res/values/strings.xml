@@ -133,6 +133,8 @@
     <string name="reset">Reset</string>
     <string name="error_message">Terjadi kesalahan, silahkan coba kembali</string>
     <string name="event_ended">Penjualan tiket untuk event ini telah berakhir</string>
+
+    <string name="share_link">Bagikan Produk Ini</string>
     <!-- need to changed -->
 
 </resources>

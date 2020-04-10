@@ -14,11 +14,7 @@ public interface EventModuleRouter {
 
     void actionOpenGeneralWebView(Activity activity, String mobileUrl);
 
-    String getUserPhoneNumber();
-
     boolean getBooleanRemoteConfig(String key, boolean defaultValue);
-
-    void shareEvent(Context context, String uri, String name, String imageUrl, String desktopUrl);
 
     Intent tkpdCartCheckoutGetLoyaltyOldCheckoutCouponActiveIntent(Context context, String platform, String category, String defaultSelectedTab);
 

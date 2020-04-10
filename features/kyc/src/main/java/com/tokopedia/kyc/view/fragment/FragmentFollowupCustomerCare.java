@@ -15,12 +15,13 @@ import androidx.annotation.Nullable;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.kyc.Constants;
-import com.tokopedia.kyc.KYCRouter;
 import com.tokopedia.kyc.R;
 import com.tokopedia.kyc.di.KYCComponent;
 import com.tokopedia.kyc.util.AnalyticsUtil;
 import com.tokopedia.kyc.util.KycUtil;
 import com.tokopedia.kyc.view.interfaces.ActivityListener;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 public class FragmentFollowupCustomerCare extends BaseDaggerFragment implements
         View.OnClickListener{
@@ -45,32 +46,36 @@ public class FragmentFollowupCustomerCare extends BaseDaggerFragment implements
 
     private void executeCall(){
         KycUtil.makeCall(getContext());
+        UserSessionInterface userSession = new UserSession(getContext());
         AnalyticsUtil.sendEvent(getContext(),
                 AnalyticsUtil.EventName.CLICK_OVO,
                 AnalyticsUtil.EventCategory.OVO_KYC,
                 "",
-                ((KYCRouter)getContext().getApplicationContext()).getUserId(),
+                userSession.getUserId(),
                 AnalyticsUtil.EventAction.CLK_PHN);
     }
 
     private void executeEmail(){
         KycUtil.sendEmail(getContext());
+        UserSessionInterface userSession = new UserSession(getContext());
+
         AnalyticsUtil.sendEvent(getContext(),
                 AnalyticsUtil.EventName.CLICK_OVO,
                 AnalyticsUtil.EventCategory.OVO_KYC,
                 "",
-                ((KYCRouter)getContext().getApplicationContext()).getUserId(),
+                userSession.getUserId(),
                 AnalyticsUtil.EventAction.CLK_EML);
     }
 
     private void executeBackToApp(){
         getActivity().finish();
         PersistentCacheManager.instance.put("reload_webview", 1);
+        UserSessionInterface userSession = new UserSession(getContext());
         AnalyticsUtil.sendEvent(getContext(),
                 AnalyticsUtil.EventName.CLICK_OVO,
                 AnalyticsUtil.EventCategory.OVO_KYC,
                 "",
-                ((KYCRouter)getContext().getApplicationContext()).getUserId(),
+                userSession.getUserId(),
                 AnalyticsUtil.EventAction.CLK_KMBL_TKPD);
     }
 

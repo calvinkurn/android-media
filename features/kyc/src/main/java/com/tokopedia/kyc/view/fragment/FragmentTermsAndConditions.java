@@ -36,6 +36,8 @@ import com.tokopedia.kyc.view.presenter.TnCConfirmationPresenter;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -90,52 +92,57 @@ public class FragmentTermsAndConditions extends BaseDaggerFragment implements Vi
 
     private void executeRetakeCardId(){
         retakeImage(Constants.Keys.KYC_CARDID_CAMERA);
+        UserSessionInterface userSession = new UserSession(getContext());
         AnalyticsUtil.sendEvent(getContext(),
                 AnalyticsUtil.EventName.CLICK_OVO,
                 AnalyticsUtil.EventCategory.OVO_KYC,
                 "",
-                ((KYCRouter)getContext().getApplicationContext()).getUserId(),
+                userSession.getUserId(),
                 AnalyticsUtil.EventAction.CLK_ULN_KTP);
     }
 
     private void executeRetakeSelfie(){
         retakeImage(Constants.Keys.KYC_SELFIEID_CAMERA);
+        UserSessionInterface userSession = new UserSession(getContext());
         AnalyticsUtil.sendEvent(getContext(),
                 AnalyticsUtil.EventName.CLICK_OVO,
                 AnalyticsUtil.EventCategory.OVO_KYC,
                 "",
-                ((KYCRouter)getContext().getApplicationContext()).getUserId(),
+                userSession.getUserId(),
                 AnalyticsUtil.EventAction.CLK_ULN_SLFE);
     }
 
     private void executePrcdTnC(){
         showConfirmationDialog();
+        UserSessionInterface userSession = new UserSession(getContext());
         AnalyticsUtil.sendEvent(getContext(),
                 AnalyticsUtil.EventName.CLICK_OVO,
                 AnalyticsUtil.EventCategory.OVO_KYC,
                 "",
-                ((KYCRouter)getContext().getApplicationContext()).getUserId(),
+                userSession.getUserId(),
                 AnalyticsUtil.EventAction.CLK_PRCS);
     }
 
     private void executeBckBtn(){
         alertDialog.dismiss();
+        UserSessionInterface userSession = new UserSession(getContext());
         AnalyticsUtil.sendEvent(getContext(),
                 AnalyticsUtil.EventName.CLICK_OVO,
                 AnalyticsUtil.EventCategory.OVO_KYC,
                 "",
-                ((KYCRouter)getContext().getApplicationContext()).getUserId(),
+                userSession.getUserId(),
                 AnalyticsUtil.EventAction.CLK_BTLKN_STP4);
     }
 
     private void executeCntnu(){
         alertDialog.dismiss();
         submitKycTnCConfirmForm();
+        UserSessionInterface userSession = new UserSession(getContext());
         AnalyticsUtil.sendEvent(getContext(),
                 AnalyticsUtil.EventName.CLICK_OVO,
                 AnalyticsUtil.EventCategory.OVO_KYC,
                 "",
-                ((KYCRouter)getContext().getApplicationContext()).getUserId(),
+                userSession.getUserId(),
                 AnalyticsUtil.EventAction.CLK_LNJTN_STP4);
     }
 

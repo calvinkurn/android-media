@@ -1,4 +1,4 @@
-package com.tokopedia.core.share;
+package com.tokopedia.linker.share;
 
 import android.app.Activity;
 import android.app.PendingIntent;
@@ -6,11 +6,10 @@ import android.content.Intent;
 import android.os.Build;
 import android.text.TextUtils;
 
-import com.tokopedia.abstraction.common.utils.FindAndReplaceHelper;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.util.DataMapper;
+import com.tokopedia.core.share.ShareBroadcastReceiver;
 import com.tokopedia.linker.LinkerManager;
 import com.tokopedia.linker.LinkerUtils;
 import com.tokopedia.linker.interfaces.ShareCallback;

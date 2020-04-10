@@ -46,6 +46,8 @@ import com.tokopedia.oms.domain.postusecase.PostPaymentUseCase;
 import com.tokopedia.oms.domain.postusecase.PostVerifyCartUseCase;
 import com.tokopedia.oms.scrooge.ScroogePGUtil;
 import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -175,7 +177,8 @@ public class EventReviewTicketPresenter
     public void getProfile() {
         mView.showProgressBar();
         email = Utils.getUserSession(mView.getActivity()).getEmail();
-        number = ((EventModuleRouter) mView.getActivity().getApplication()).getUserPhoneNumber();
+        UserSessionInterface userSession = new UserSession(mView.getActivity());
+        number = userSession.getPhoneNumber();
         mView.setEmailID(email);
         mView.setPhoneNumber(number);
         autoApplyCoupon();

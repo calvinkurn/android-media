@@ -35,10 +35,11 @@ import com.tokopedia.events.view.viewmodel.SelectedSeatViewModel;
 import com.tokopedia.oms.data.entity.response.verifyresponse.VerifyMyCartResponse;
 import com.tokopedia.oms.domain.postusecase.PostVerifyCartUseCase;
 import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
 import java.util.List;
-
 
 import rx.Subscriber;
 
@@ -74,8 +75,9 @@ public class SeatSelectionPresenter extends BaseDaggerPresenter<EventBaseContrac
                     getLoginIntent(mView.getActivity());
             mView.navigateToActivityRequest(intent, 1099);
         } else {
+            UserSessionInterface userSession = new UserSession(mView.getActivity());
             email = Utils.getUserSession(mView.getActivity()).getEmail();
-            number = ((EventModuleRouter) mView.getActivity().getApplication()).getUserPhoneNumber();
+            number = userSession.getPhoneNumber();
             mView.hideProgressBar();
         }
     }

@@ -1,13 +1,11 @@
 package com.tokopedia.events.view.utils;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.os.Environment;
-import androidx.core.content.ContextCompat;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextUtils;
@@ -18,7 +16,8 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.tokopedia.events.EventModuleRouter;
+import androidx.core.content.ContextCompat;
+
 import com.tokopedia.events.R;
 import com.tokopedia.events.data.source.EventsUrl;
 import com.tokopedia.events.domain.model.EventsCategoryDomain;
@@ -30,6 +29,13 @@ import com.tokopedia.events.domain.postusecase.PostUpdateEventLikesUseCase;
 import com.tokopedia.events.view.viewmodel.CategoryItemsViewModel;
 import com.tokopedia.events.view.viewmodel.CategoryViewModel;
 import com.tokopedia.events.view.viewmodel.SearchViewModel;
+import com.tokopedia.linker.LinkerManager;
+import com.tokopedia.linker.LinkerUtils;
+import com.tokopedia.linker.interfaces.ShareCallback;
+import com.tokopedia.linker.model.LinkerData;
+import com.tokopedia.linker.model.LinkerError;
+import com.tokopedia.linker.model.LinkerShareResult;
+import com.tokopedia.linker.share.DataMapper;
 import com.tokopedia.user.session.UserSession;
 
 import java.io.File;
@@ -395,7 +401,32 @@ public class Utils {
 
     public void shareEvent(Context context, String title, String URL, String imageUrl,String desktopUrl) {
         String url = EventsUrl.AppLink.EVENTS + "/" + URL;
-        ((EventModuleRouter) ((Activity) context).getApplication()).shareEvent(context, url, title, imageUrl,desktopUrl);
+        LinkerData shareData = LinkerData.Builder.getLinkerBuilder()
+                .setType("")
+                .setName(imageUrl)
+                .setUri(URL)
+                .setDesktopUrl(desktopUrl)
+                .setImgUri(imageUrl)
+                .build();
+
+        LinkerManager.getInstance().executeShareRequest(LinkerUtils.createShareRequest(0,
+                DataMapper.getLinkerShareData(shareData), new ShareCallback() {
+                    @Override
+                    public void urlCreated(LinkerShareResult linkerShareData) {
+                        Intent share = new Intent(android.content.Intent.ACTION_SEND);
+                        share.setType("text/plain");
+                        share.putExtra(Intent.EXTRA_TEXT, linkerShareData.getUrl());
+                        share.putExtra(Intent.EXTRA_HTML_TEXT, linkerShareData.getUrl());
+                        Intent intent = Intent.createChooser(share, context.getString(R.string.share_link));
+                        intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                        context.startActivity(intent);
+                    }
+
+                    @Override
+                    public void onError(LinkerError linkerError) {
+
+                    }
+                }));
     }
 
     public static class Constants {

@@ -42,7 +42,6 @@ import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
-import com.tokopedia.core.share.DefaultShare;
 import com.tokopedia.core.util.AccessTokenRefresh;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.util.SessionRefresh;
@@ -61,13 +60,11 @@ import com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResChatActivit
 import com.tokopedia.inbox.rescenter.inboxv2.view.activity.ResoInboxActivity;
 import com.tokopedia.iris.IrisAnalytics;
 import com.tokopedia.linker.interfaces.LinkerRouter;
-import com.tokopedia.linker.model.LinkerData;
 import com.tokopedia.loginregister.login.view.activity.LoginActivity;
 import com.tokopedia.loginregister.registerinitial.view.activity.RegisterInitialActivity;
 import com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomActivity;
 import com.tokopedia.logisticaddaddress.features.pinpoint.GeolocationActivity;
 import com.tokopedia.logisticdata.data.entity.address.Token;
-import com.tokopedia.merchantvoucher.MerchantVoucherModuleRouter;
 import com.tokopedia.mlp.router.MLPRouter;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
@@ -76,9 +73,6 @@ import com.tokopedia.phoneverification.PhoneVerificationRouter;
 import com.tokopedia.phoneverification.view.activity.PhoneVerificationActivationActivity;
 import com.tokopedia.product.manage.feature.list.view.activity.ProductManageActivity;
 import com.tokopedia.product.manage.feature.list.view.fragment.ProductManageSellerFragment;
-import com.tokopedia.product.manage.item.common.di.component.DaggerProductComponent;
-import com.tokopedia.product.manage.item.common.di.component.ProductComponent;
-import com.tokopedia.product.manage.item.common.di.module.ProductModule;
 import com.tokopedia.profile.view.activity.ProfileActivity;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
@@ -124,7 +118,6 @@ import com.tokopedia.topchat.chatlist.fragment.ChatTabListFragment;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.transaction.common.TransactionRouter;
 import com.tokopedia.transaction.orders.UnifiedOrderListRouter;
-import com.tokopedia.user.session.UserSession;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -155,7 +148,6 @@ public abstract class SellerRouterApplication extends MainApplication
         PhoneVerificationRouter,
         TopAdsManagementRouter,
         BroadcastMessageRouter,
-        MerchantVoucherModuleRouter,
         UnifiedOrderListRouter,
         CoreNetworkRouter,
         FlashSaleRouter,
@@ -165,8 +157,6 @@ public abstract class SellerRouterApplication extends MainApplication
         SellerHomeRouter {
 
     protected RemoteConfig remoteConfig;
-    private DaggerProductComponent.Builder daggerProductBuilder;
-    private ProductComponent productComponent;
     private DaggerGMComponent.Builder daggerGMBuilder;
     private GMComponent gmComponent;
     private TopAdsComponent topAdsComponent;
@@ -197,7 +187,6 @@ public abstract class SellerRouterApplication extends MainApplication
 
     private void initializeDagger() {
         daggerGMBuilder = DaggerGMComponent.builder().gMModule(new GMModule());
-        daggerProductBuilder = DaggerProductComponent.builder().productModule(new ProductModule());
         daggerShopBuilder = DaggerShopComponent.builder().shopModule(new ShopModule());
     }
 
@@ -535,10 +524,6 @@ public abstract class SellerRouterApplication extends MainApplication
         return LoginActivity.DeepLinkIntents.getAutoLoginWebview(context, name, url);
     }
 
-    public Intent getKolFollowingPageIntent(Context context, int userId) {
-        return null;
-    }
-
     @Override
     public Intent getDistrictRecommendationIntent(Activity activity, Token token) {
         return DiscomActivity.newInstance(activity, token);
@@ -585,22 +570,6 @@ public abstract class SellerRouterApplication extends MainApplication
     public void refreshToken() throws IOException {
         AccessTokenRefresh accessTokenRefresh = new AccessTokenRefresh();
         accessTokenRefresh.refreshToken();
-    }
-
-    public UserSession getSession() {
-        return new UserSession(this);
-    }
-
-    @Override
-    public void goToShareShop(Activity activity, String shopId, String shopUrl, String shareLabel) {
-        LinkerData shareData = LinkerData.Builder.getLinkerBuilder()
-                .setType(LinkerData.SHOP_TYPE)
-                .setName(getString(R.string.message_share_shop))
-                .setTextContent(shareLabel)
-                .setUri(shopUrl)
-                .setId(shopId)
-                .build();
-        new DefaultShare(activity, shareData).show();
     }
 
     @Override
@@ -782,13 +751,6 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public Intent getMaintenancePageIntent() {
         return MaintenancePage.createIntentFromNetwork(getAppContext());
-    }
-
-    public void onLoginSuccess() {
-    }
-
-    public String getDeviceId(Context context) {
-        return "";
     }
 
     @Override

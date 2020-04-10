@@ -18,13 +18,15 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.removeObservers
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.linker.model.LinkerData
+import com.tokopedia.linker.share.DefaultShare
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.shop.R
-import com.tokopedia.shop.ShopModuleRouter
 import com.tokopedia.shop.analytic.ShopPageTrackingShopPageInfo
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
+import com.tokopedia.shop.common.config.ShopPageConfig
 import com.tokopedia.shop.common.data.model.ShopInfoData
 import com.tokopedia.shop.common.di.component.ShopComponent
 import com.tokopedia.shop.extension.transformToVisitable
@@ -38,7 +40,6 @@ import com.tokopedia.shop.note.view.activity.ShopNoteDetailActivity
 import com.tokopedia.shop.note.view.adapter.ShopNoteAdapterTypeFactory
 import com.tokopedia.shop.note.view.adapter.viewholder.ShopNoteViewHolder
 import com.tokopedia.shop.note.view.model.ShopNoteViewModel
-import com.tokopedia.shop.common.config.ShopPageConfig
 import com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity.Companion.SHOP_ID
 import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageFragment
 import com.tokopedia.trackingoptimizer.TrackingQueue
@@ -336,13 +337,18 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback,
     }
 
     private fun goToShareShop(shopInfo: ShopInfoData) {
-        val shopShareMsg = getShopShareMessage(shopInfo)
-        (activity?.applicationContext as? ShopModuleRouter)?.goToShareShop(
-                activity,
-                shopInfo.shopId,
-                shopInfo.url,
-                shopShareMsg
-        )
+        activity?.let {
+            val shopShareMsg = getShopShareMessage(shopInfo)
+            val shareData = LinkerData.Builder.getLinkerBuilder()
+                    .setType(LinkerData.SHOP_TYPE)
+                    .setName(getString(R.string.message_share_shop))
+                    .setTextContent(shopShareMsg)
+                    .setCustMsg(shopShareMsg)
+                    .setUri(shopInfo.url)
+                    .setId(shopInfo.shopId)
+                    .build()
+            DefaultShare(activity, shareData).show()
+        }
     }
 
     private fun trackClickShareButton(it: ShopInfoData) {

@@ -12,10 +12,12 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.core.model.share.ShareData;
+import com.tokopedia.linker.model.LinkerData;
+import com.tokopedia.linker.share.DefaultShare;
 import com.tokopedia.loyalty.R;
 import com.tokopedia.loyalty.di.component.DaggerPromoDetailComponent;
 import com.tokopedia.loyalty.di.component.PromoDetailComponent;
-import com.tokopedia.loyalty.router.LoyaltyModuleRouter;
 import com.tokopedia.loyalty.view.data.PromoData;
 import com.tokopedia.loyalty.view.fragment.PromoDetailFragment;
 
@@ -93,8 +95,14 @@ public class PromoDetailActivity extends BaseSimpleActivity implements HasCompon
 
     @Override
     public void onSharePromo(PromoData promoData) {
-        if(getApplicationContext() instanceof LoyaltyModuleRouter){
-            ((LoyaltyModuleRouter)getApplicationContext()).sharePromoLoyalty(this, promoData);
-        }
+        LinkerData shareData = LinkerData.Builder.getLinkerBuilder()
+                .setType(ShareData.PROMO_TYPE)
+                .setId(promoData.getSlug())
+                .setName(promoData.getTitle())
+                .setTextContent(promoData.getTitle()
+                        + getString(com.tokopedia.loyalty.R.string.share_promo_additional_text))
+                .setUri(promoData.getLink())
+                .build();
+        new DefaultShare(this, shareData).show();
     }
 }

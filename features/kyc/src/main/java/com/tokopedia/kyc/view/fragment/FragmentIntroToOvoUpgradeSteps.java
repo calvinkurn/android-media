@@ -26,6 +26,8 @@ import com.tokopedia.kyc.view.interfaces.ActivityListener;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -110,11 +112,12 @@ public class FragmentIntroToOvoUpgradeSteps extends BaseDaggerFragment implement
                             FragmentCardIDUpload.TAG);
                     activityListener.showHideActionbar(true);
                 }
+                UserSessionInterface userSession = new UserSession(getContext());
                 AnalyticsUtil.sendEvent(getContext(),
                         AnalyticsUtil.EventName.CLICK_OVO,
                         AnalyticsUtil.EventCategory.OVO_KYC,
                         "",
-                        ((KYCRouter)getContext().getApplicationContext()).getUserId(),
+                        userSession.getUserId(),
                         AnalyticsUtil.EventAction.CLK_CPTR_PIC_STP2);
             }
 
@@ -128,11 +131,12 @@ public class FragmentIntroToOvoUpgradeSteps extends BaseDaggerFragment implement
                 actionCreator,
                 Constants.Keys.KYC_CARDID_CAMERA,
                 true);
+        UserSessionInterface userSession = new UserSession(getContext());
         AnalyticsUtil.sendEvent(getContext(),
                 AnalyticsUtil.EventName.CLICK_OVO,
                 AnalyticsUtil.EventCategory.OVO_KYC,
                 "",
-                ((KYCRouter)getContext().getApplicationContext()).getUserId(),
+                userSession.getUserId(),
                 AnalyticsUtil.EventAction.CLK_MUL_STP1);
     }
 }

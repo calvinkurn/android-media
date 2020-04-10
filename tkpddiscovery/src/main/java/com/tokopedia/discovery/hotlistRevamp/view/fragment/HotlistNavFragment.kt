@@ -23,7 +23,6 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.authentication.AuthHelper
 import com.tokopedia.core.gcm.GCMHandler
-import com.tokopedia.core.share.DefaultShare
 import com.tokopedia.design.image.ImageLoader
 import com.tokopedia.discovery.R
 import com.tokopedia.discovery.categoryrevamp.adapters.BaseCategoryAdapter
@@ -52,6 +51,7 @@ import com.tokopedia.filter.common.data.Option
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.linker.model.LinkerData
+import com.tokopedia.linker.share.DefaultShare
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey.HOTLIST_SHARE_MSG
 import com.tokopedia.topads.sdk.utils.ImpresionTask

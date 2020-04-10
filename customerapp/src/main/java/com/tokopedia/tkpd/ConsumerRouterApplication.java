@@ -62,17 +62,14 @@ import com.tokopedia.core.gcm.NotificationModHandler;
 import com.tokopedia.core.gcm.model.NotificationPass;
 import com.tokopedia.core.gcm.utils.NotificationUtils;
 import com.tokopedia.core.home.SimpleWebViewWithFilePickerActivity;
-import com.tokopedia.core.model.share.ShareData;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
 import com.tokopedia.core.router.CustomerRouter;
 import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.home.HomeRouter;
-import com.tokopedia.core.share.DefaultShare;
 import com.tokopedia.core.util.AccessTokenRefresh;
 import com.tokopedia.core.util.AppWidgetUtil;
-import com.tokopedia.core.util.DataMapper;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.util.SessionRefresh;
 import com.tokopedia.design.component.BottomSheets;
@@ -98,13 +95,7 @@ import com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResChatActivit
 import com.tokopedia.iris.Iris;
 import com.tokopedia.iris.IrisAnalytics;
 import com.tokopedia.kyc.KYCRouter;
-import com.tokopedia.linker.LinkerManager;
-import com.tokopedia.linker.LinkerUtils;
 import com.tokopedia.linker.interfaces.LinkerRouter;
-import com.tokopedia.linker.interfaces.ShareCallback;
-import com.tokopedia.linker.model.LinkerData;
-import com.tokopedia.linker.model.LinkerError;
-import com.tokopedia.linker.model.LinkerShareResult;
 import com.tokopedia.loginregister.login.view.activity.LoginActivity;
 import com.tokopedia.loginregister.registerinitial.view.activity.RegisterInitialActivity;
 import com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomActivity;
@@ -115,9 +106,7 @@ import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationP
 import com.tokopedia.loyalty.di.component.TokopointComponent;
 import com.tokopedia.loyalty.router.LoyaltyModuleRouter;
 import com.tokopedia.loyalty.view.activity.LoyaltyActivity;
-import com.tokopedia.loyalty.view.data.PromoData;
 import com.tokopedia.loyalty.view.data.VoucherViewModel;
-import com.tokopedia.merchantvoucher.MerchantVoucherModuleRouter;
 import com.tokopedia.navigation.GlobalNavRouter;
 import com.tokopedia.navigation.presentation.activity.MainParentActivity;
 import com.tokopedia.network.NetworkRouter;
@@ -178,8 +167,6 @@ import com.tokopedia.transaction.orders.UnifiedOrderListRouter;
 import com.tokopedia.transaction.others.CreditCardFingerPrintUseCase;
 import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.usecase.UseCase;
-import com.tokopedia.user.session.UserSession;
-import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.weaver.WeaveInterface;
 import com.tokopedia.weaver.Weaver;
 
@@ -234,7 +221,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         PhoneVerificationRouter,
         TkpdAppsFlyerRouter,
         UnifiedOrderListRouter,
-        MerchantVoucherModuleRouter,
         LinkerRouter,
         DigitalRouter,
         TopAdsRouter,
@@ -731,19 +717,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public void goToShareShop(Activity activity, String shopId, String shopUrl, String shareLabel) {
-        LinkerData shareData = LinkerData.Builder.getLinkerBuilder()
-                .setType(LinkerData.SHOP_TYPE)
-                .setName(getString(R.string.message_share_shop))
-                .setTextContent(shareLabel)
-                .setCustMsg(shareLabel)
-                .setUri(shopUrl)
-                .setId(shopId)
-                .build();
-        new DefaultShare(activity, shareData).show();
-    }
-
-    @Override
     public Fragment getReviewFragment(Activity activity, String shopId, String shopDomain) {
         return ReviewShopFragment.createInstance(shopId, shopDomain);
     }
@@ -797,54 +770,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public void sharePromoLoyalty(Activity activity, PromoData promoData) {
-        LinkerData shareData = LinkerData.Builder.getLinkerBuilder()
-                .setType(ShareData.PROMO_TYPE)
-                .setId(promoData.getSlug())
-                .setName(promoData.getTitle())
-                .setTextContent(promoData.getTitle()
-                        + getString(com.tokopedia.loyalty.R.string.share_promo_additional_text))
-                .setUri(promoData.getLink())
-                .build();
-        new DefaultShare(activity, shareData).show();
-    }
-
-    @Override
-    public void shareEvent(Context context, String uri, String name, String imageUrl, String desktopUrl) {
-        LinkerData shareData = LinkerData.Builder.getLinkerBuilder()
-                .setType("")
-                .setName(name)
-                .setUri(uri)
-                .setDesktopUrl(desktopUrl)
-                .setImgUri(imageUrl)
-                .build();
-
-        LinkerManager.getInstance().executeShareRequest(LinkerUtils.createShareRequest(0,
-                DataMapper.getLinkerShareData(shareData), new ShareCallback() {
-                    @Override
-                    public void urlCreated(LinkerShareResult linkerShareData) {
-                        Intent share = new Intent(android.content.Intent.ACTION_SEND);
-                        share.setType("text/plain");
-                        share.putExtra(Intent.EXTRA_TEXT, linkerShareData.getUrl());
-                        share.putExtra(Intent.EXTRA_HTML_TEXT, linkerShareData.getUrl());
-                        Intent intent = Intent.createChooser(share, getString(R.string.share_link));
-                        intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                        context.startActivity(intent);
-                    }
-
-                    @Override
-                    public void onError(LinkerError linkerError) {
-
-                    }
-                }));
-    }
-
-    @Override
-    public String getUserPhoneNumber() {
-        return SessionHandler.getPhoneNumber();
-    }
-
-    @Override
     public boolean isSupportApplink(String appLink) {
         return DeeplinkHandlerActivity.getApplinkDelegateInstance().supportsUri(appLink);
     }
@@ -864,11 +789,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         LocalCacheHandler localCacheHandler = new LocalCacheHandler(context, CartConstant.CART);
         localCacheHandler.putInt(CartConstant.CACHE_TOTAL_CART, count);
         localCacheHandler.applyEditor();
-    }
-
-    @Override
-    public void sendAnalyticsFirstTime() {
-        TrackingUtils.activityBasedAFEvent(this, HomeRouter.IDENTIFIER_HOME_ACTIVITY);
     }
 
     @Override
@@ -1085,12 +1005,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public String getAppsFlyerID() {
         return TrackingUtils.getAfUniqueId(this);
-    }
-
-    @Override
-    public String getUserId() {
-        UserSessionInterface userSession = new UserSession(this);
-        return userSession.getUserId();
     }
 
     public void onAppsFlyerInit() {

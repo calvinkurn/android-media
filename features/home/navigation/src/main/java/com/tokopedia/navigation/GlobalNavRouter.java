@@ -29,8 +29,6 @@ public interface GlobalNavRouter {
 
     void setCartCount(Context context, int count);
 
-    void sendAnalyticsFirstTime();
-
     Intent getHomeIntent(Context context);
 
     boolean getBooleanRemoteConfig(String key, boolean defaultValue);
