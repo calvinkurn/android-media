@@ -6,6 +6,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     
     <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/talkReadingContainer"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
         
@@ -27,9 +28,21 @@
             android:layout_height="wrap_content"
             android:background="@color/Green_G500"
             app:fabSize="normal"
-            app:srcCompat="@drawable/ic_plus"/>
+            app:srcCompat="@drawable/talk_reading_ic_plus"/>
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/talkReadingContainer">
+
+        <com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
+            android:id="@+id/talkReadingRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     <include
         android:id="@+id/pageLoading"
