@@ -5,6 +5,7 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
 import com.tokopedia.product.addedit.common.util.ResourceProvider
 import com.tokopedia.product.addedit.detail.domain.usecase.GetCategoryRecommendationUseCase
 import com.tokopedia.product.addedit.detail.domain.usecase.GetNameRecommendationUseCase
@@ -42,7 +43,10 @@ class AddEditProductDetailViewModel @Inject constructor(
 
     var hasVariants = false
 
-    var productPhotoPaths = detailInputModel.imageUrlOrPathList.toMutableList()
+    var productPhotoPaths = productInputModel.detailInputModel.imageUrlOrPathList.mapIndexed { index, urlOrPath ->
+        if (urlOrPath.startsWith(AddEditProductConstants.HTTP_PREFIX)) productInputModel.detailInputModel.pictureList[index].urlOriginal
+        else urlOrPath
+    }.toMutableList()
 
     private val mIsProductPhotoError = MutableLiveData<Boolean>()
 
@@ -328,6 +332,23 @@ class AddEditProductDetailViewModel @Inject constructor(
     private fun isProductNameBanned(productNameInput: String): Boolean {
         // TODO: replace the validation with API check
         return false
+    }
+
+    fun updateProductPhotos(imagePickerResult: java.util.ArrayList<String>, originalImageUrl: java.util.ArrayList<String>, editted: ArrayList<Boolean>) {
+        val pictureList = productInputModel.detailInputModel.pictureList.filter {
+            originalImageUrl.contains(it.urlOriginal)
+        }.filterIndexed { index, _ -> !editted[index] }
+
+        val imageUrlOrPathList = imagePickerResult.mapIndexed { index, urlOrPath ->
+            if (editted[index]) urlOrPath else originalImageUrl[index]
+        }.toMutableList()
+
+        this.detailInputModel = productInputModel.detailInputModel.apply {
+            this.pictureList = pictureList
+            this.imageUrlOrPathList = imageUrlOrPathList
+        }
+
+        this.productPhotoPaths = imageUrlOrPathList
     }
 
     fun getProductNameRecommendation(shopId: Int = 0, query: String) {

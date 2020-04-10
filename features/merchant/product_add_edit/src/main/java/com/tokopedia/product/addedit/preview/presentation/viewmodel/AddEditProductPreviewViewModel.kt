@@ -75,6 +75,8 @@ class AddEditProductPreviewViewModel @Inject constructor(
     private val mProductVariantList = MutableLiveData<Result<List<ProductVariantByCatModel>>>()
     val productVariantList: LiveData<Result<List<ProductVariantByCatModel>>> get() = mProductVariantList
 
+    var isDuplicate: Boolean = false
+
     init {
         with (productInputModel) {
             addSource(mGetProductResult) {
@@ -84,7 +86,7 @@ class AddEditProductPreviewViewModel @Inject constructor(
                 }
             }
             addSource(detailInputModel) {
-                productInputModel.value = productInputModel.value.apply { this?.detailInputModel = it }
+                productInputModel.value = productInputModel.value?.apply { this.detailInputModel = it }
             }
         }
     }
@@ -101,9 +103,25 @@ class AddEditProductPreviewViewModel @Inject constructor(
         draftId.value = id
     }
 
-    fun updateProductPhotos(imagePickerResult: ArrayList<String>) {
-        productInputModel.value?.detailInputModel?.imageUrlOrPathList = imagePickerResult
-        this.mImageUrlOrPathList.value = imagePickerResult
+    fun setIsDuplicate(isDuplicate: Boolean) {
+        this.isDuplicate = isDuplicate
+    }
+
+    fun updateProductPhotos(imagePickerResult: ArrayList<String>, originalImageUrl: ArrayList<String>, editted: ArrayList<Boolean>) {
+        val pictureList = productInputModel.value?.detailInputModel?.pictureList?.filter {
+            originalImageUrl.contains(it.urlOriginal)
+        }?.filterIndexed { index, _ -> !editted[index] }.orEmpty()
+
+        val imageUrlOrPathList = imagePickerResult.mapIndexed { index, urlOrPath ->
+            if (editted[index]) urlOrPath else originalImageUrl[index]
+        }.toMutableList()
+
+        this.detailInputModel.value = productInputModel.value?.detailInputModel?.apply {
+            this.pictureList = pictureList
+            this.imageUrlOrPathList = imageUrlOrPathList
+        } ?: DetailInputModel(pictureList = pictureList, imageUrlOrPathList = imageUrlOrPathList)
+
+        this.mImageUrlOrPathList.value = imageUrlOrPathList
     }
 
     fun updateDetailInputModel(detailInputModel: DetailInputModel) {

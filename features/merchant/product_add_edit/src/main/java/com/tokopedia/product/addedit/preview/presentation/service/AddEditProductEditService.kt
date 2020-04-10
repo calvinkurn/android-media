@@ -5,6 +5,7 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.Companion.HTTP_PREFIX
 import com.tokopedia.product.addedit.common.util.AddEditProductNotificationManager
 import com.tokopedia.product.addedit.description.presentation.model.DescriptionInputModel
 import com.tokopedia.product.addedit.description.presentation.model.ProductVariantInputModel
@@ -16,7 +17,6 @@ import com.tokopedia.product.addedit.shipment.presentation.model.ShipmentInputMo
 import com.tokopedia.product.addedit.tracking.ProductEditStepperTracking
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import kotlin.collections.ArrayList
 
 /**
  * Created by faisalramd on 2020-04-05.
@@ -33,7 +33,6 @@ class AddEditProductEditService : AddEditProductBaseService() {
         private const val JOB_ID = 13131314
         private const val EXTRA_PRODUCT_ID_INPUT_EDIT = "EXTRA_PRODUCT_ID_INPUT_EDIT"
         private const val EXTRA_PRODUCT_INPUT_MODEL = "EXTRA_PRODUCT_INPUT_MODEL"
-        private const val HTTP_PREFIX = "http"
 
         fun startService(context: Context,
                          productId: String,
