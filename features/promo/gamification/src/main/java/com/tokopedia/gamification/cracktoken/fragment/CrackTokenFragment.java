@@ -44,6 +44,8 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog;
 import com.tokopedia.gamification.GamificationEventTracking;
 import com.tokopedia.gamification.R;
@@ -66,7 +68,6 @@ import com.tokopedia.gamification.di.GamificationComponentInstance;
 import com.tokopedia.gamification.pdp.presentation.views.PdpGamificationView;
 import com.tokopedia.gamification.pdp.presentation.views.Wishlist;
 import com.tokopedia.gamification.taptap.compoundview.NetworkErrorHelper;
-import com.tokopedia.promogamification.common.GamificationRouter;
 import com.tokopedia.promogamification.common.applink.ApplinkUtil;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
@@ -579,10 +580,8 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
 
     @Override
     public void navigateToLoginPage() {
-        if (getActivity().getApplication() instanceof GamificationRouter
-                && ((GamificationRouter) getActivity().getApplication()).getLoginIntent() != null) {
-            startActivityForResult(((GamificationRouter) getActivity().getApplication()).getLoginIntent(), REQUEST_CODE_LOGIN);
-        }
+        Intent intent = RouteManager.getIntent(getActivity(), ApplinkConst.LOGIN);
+        startActivityForResult(intent, REQUEST_CODE_LOGIN);
     }
 
     @Override

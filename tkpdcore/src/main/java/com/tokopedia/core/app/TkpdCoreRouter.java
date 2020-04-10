@@ -1,6 +1,5 @@
 package com.tokopedia.core.app;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 
@@ -17,23 +16,11 @@ public interface TkpdCoreRouter {
 
     void resetAddProductCache(Context context);
 
-    /**
-     * deprecated
-     *
-     * @param activity activity context
-     * @param linkUrl  applinkScheme
-     * @see #actionApplinkFromActivity(Activity, String)
-     */
-    @Deprecated
-    void actionApplink(Activity activity, String linkUrl);
-
     Intent getHomeIntent(Context context);
 
     void onLogout(AppComponent appComponent);
 
     void goToCreateMerchantRedirect(Context context);
-
-    Intent getLoginIntent(Context context);
 
     Intent getRegisterIntent(Context context);
 
@@ -88,8 +75,6 @@ public interface TkpdCoreRouter {
      */
     @Deprecated
     Intent getLoginWebviewIntent(Context context, String name, String url);
-
-    Intent getShopPageIntent(Context context, String shopId);
 
     Intent getCreateResCenterActivityIntent(Context context, String orderId);
 }

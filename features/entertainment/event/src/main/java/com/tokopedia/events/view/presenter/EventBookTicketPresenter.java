@@ -9,8 +9,9 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.cachemanager.SaveInstanceCacheManager;
-import com.tokopedia.events.EventModuleRouter;
 import com.tokopedia.events.R;
 import com.tokopedia.events.data.entity.response.SeatLayoutItem;
 import com.tokopedia.events.data.entity.response.ValidateResponse;
@@ -38,7 +39,6 @@ import com.tokopedia.events.view.viewmodel.SeatLayoutViewModel;
 import com.tokopedia.usecase.RequestParams;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 import rx.Subscriber;
@@ -172,8 +172,7 @@ public class EventBookTicketPresenter extends BaseDaggerPresenter<EventBaseContr
     private void getProfile() {
         mView.showProgressBar();
         if (!Utils.getUserSession(mView.getActivity()).isLoggedIn()) {
-            Intent intent = ((EventModuleRouter) mView.getActivity().getApplication()).
-                    getLoginIntent(mView.getActivity());
+            Intent intent = RouteManager.getIntent(mView.getActivity(), ApplinkConst.LOGIN);
             mView.navigateToActivityRequest(intent, mView.getRequestCode());
         } else {
             if (hasSeatLayout == 1)

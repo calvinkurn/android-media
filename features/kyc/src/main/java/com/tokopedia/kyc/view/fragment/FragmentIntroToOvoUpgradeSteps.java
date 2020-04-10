@@ -15,8 +15,9 @@ import androidx.annotation.Nullable;
 import com.tokopedia.abstraction.Actions.interfaces.ActionCreator;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.kyc.Constants;
-import com.tokopedia.kyc.KYCRouter;
 import com.tokopedia.kyc.R;
 import com.tokopedia.kyc.di.KYCComponent;
 import com.tokopedia.kyc.model.CardIdDataKeyProvider;
@@ -92,8 +93,7 @@ public class FragmentIntroToOvoUpgradeSteps extends BaseDaggerFragment implement
             if(TextUtils.isEmpty(ovotncUrl)){
                 ovotncUrl = Constants.URLs.OVO_TNC_PAGE;
             }
-            ((KYCRouter)getContext().getApplicationContext()).actionOpenGeneralWebView(getActivity(),
-                    ovotncUrl);
+            RouteManager.route(getContext(), ApplinkConstInternalGlobal.WEBVIEW, ovotncUrl);
         }
     }
 

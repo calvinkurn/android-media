@@ -95,7 +95,6 @@ import com.tokopedia.sellerhome.view.activity.SellerHomeActivity;
 import com.tokopedia.sellerorder.common.util.SomConsts;
 import com.tokopedia.sellerorder.list.presentation.fragment.SomListFragment;
 import com.tokopedia.shop.ShopModuleRouter;
-import com.tokopedia.shop.ShopPageInternalRouter;
 import com.tokopedia.talk.inboxtalk.view.activity.InboxTalkActivity;
 import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
 import com.tokopedia.tkpd.tkpdreputation.TkpdReputationInternalRouter;
@@ -218,16 +217,6 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public void actionApplink(Activity activity, String linkUrl) {
-
-    }
-
-    @Override
-    public void actionOpenGeneralWebView(Activity activity, String mobileUrl) {
-
-    }
-
-    @Override
     public void goToCreateMerchantRedirect(Context context) {
         //no route to merchant redirect on seller, go to default
         goToDefaultRoute(context);
@@ -300,8 +289,7 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public Intent getRegisterIntent(Context context) {
-        Intent intent = RegisterInitialActivity.getCallingIntent(context);
-        return intent;
+        return RegisterInitialActivity.getCallingIntent(context);
     }
 
     private void goToDefaultRoute(Context context) {
@@ -465,12 +453,6 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public Intent getInboxMessageIntent(Context context) {
-        return RouteManager.getIntent(context, ApplinkConst.TOPCHAT_IDLESS);
-    }
-
-
-    @Override
     public Intent getResolutionCenterIntentSeller(Context context) {
         return ResoInboxActivity.newSellerInstance(context);
     }
@@ -552,11 +534,6 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public Fragment getReviewFragment(Activity activity, String shopId, String shopDomain) {
         return ReviewShopFragment.createInstance(shopId, shopDomain);
-    }
-
-    @Override
-    public Intent getShopPageIntent(Context context, String shopId) {
-        return ShopPageInternalRouter.getShopPageIntent(context, shopId);
     }
 
     @Override
@@ -750,11 +727,6 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public Intent getOrderHistoryIntent(Context context, String orderId) {
         return OrderHistoryActivity.createInstance(context, orderId, 1);
-    }
-
-    @Override
-    public Intent getLoginIntent(Context context) {
-        return LoginActivity.DeepLinkIntents.getCallingIntent(context);
     }
 
     @Override

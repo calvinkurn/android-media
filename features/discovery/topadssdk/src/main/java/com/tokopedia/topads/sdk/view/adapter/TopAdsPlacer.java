@@ -2,15 +2,17 @@ package com.tokopedia.topads.sdk.view.adapter;
 
 import android.content.Context;
 import android.content.Intent;
-import com.google.android.material.snackbar.Snackbar;
-import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;
 
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.material.snackbar.Snackbar;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.topads.sdk.R;
 import com.tokopedia.topads.sdk.base.Config;
-import com.tokopedia.topads.sdk.base.TopAdsRouter;
 import com.tokopedia.topads.sdk.base.adapter.Item;
 import com.tokopedia.topads.sdk.base.adapter.ObserverType;
 import com.tokopedia.topads.sdk.di.DaggerTopAdsComponent;
@@ -363,7 +365,7 @@ public class TopAdsPlacer implements AdsView, LocalAdsClickListener {
 
     @Override
     public void doLogin() {
-        Intent intent = ((TopAdsRouter) context.getApplicationContext()).getLoginIntent(context);
+        Intent intent = RouteManager.getIntent(context, ApplinkConst.LOGIN);
         context.startActivity(intent);
     }
 

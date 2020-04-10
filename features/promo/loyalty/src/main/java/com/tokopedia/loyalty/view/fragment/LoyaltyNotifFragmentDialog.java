@@ -16,6 +16,7 @@ import androidx.annotation.Nullable;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.loyalty.R;
 import com.tokopedia.loyalty.common.PopUpNotif;
 import com.tokopedia.loyalty.router.LoyaltyModuleRouter;
@@ -81,10 +82,7 @@ public class LoyaltyNotifFragmentDialog extends DialogFragment {
                 if (!TextUtils.isEmpty(popUpNotifData.getAppLink())) {
                     RouteManager.route(getActivity(), popUpNotifData.getAppLink());
                 } else if (!TextUtils.isEmpty(popUpNotifData.getButtonUrl())) {
-                    if (getActivity().getApplication() instanceof LoyaltyModuleRouter) {
-                        ((LoyaltyModuleRouter) getActivity().getApplication())
-                                .actionOpenGeneralWebView(getActivity(), popUpNotifData.getButtonUrl());
-                    }
+                    RouteManager.route(getActivity(), ApplinkConstInternalGlobal.WEBVIEW, popUpNotifData.getButtonUrl());
                 }
             }
         });

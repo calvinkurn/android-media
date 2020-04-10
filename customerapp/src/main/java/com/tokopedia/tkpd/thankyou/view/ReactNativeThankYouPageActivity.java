@@ -264,11 +264,6 @@ public class ReactNativeThankYouPageActivity extends ReactFragmentActivity<React
     }
 
     @Override
-    public Intent getShopPageIntent(Context context, String shopId) {
-        return null;
-    }
-
-    @Override
     public void showAppFeedbackRatingDialog(FragmentManager fragmentManager, Context context, BottomSheets.BottomSheetDismissListener listener) {
 
     }

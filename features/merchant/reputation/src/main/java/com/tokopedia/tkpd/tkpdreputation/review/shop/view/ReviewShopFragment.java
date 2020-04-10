@@ -24,7 +24,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.imagepreview.ImagePreviewActivity;
 import com.tokopedia.network.utils.ErrorHandler;
 import com.tokopedia.tkpd.tkpdreputation.R;
-import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
 import com.tokopedia.tkpd.tkpdreputation.analytic.ReputationTracking;
 import com.tokopedia.tkpd.tkpdreputation.analytic.ReputationTrackingConstant;
 import com.tokopedia.tkpd.tkpdreputation.di.DaggerReputationComponent;
@@ -172,7 +171,7 @@ public class ReviewShopFragment extends BaseListFragment<ReviewShopModelContent,
 
     @Override
     public void onGoToShopInfo(String shopId) {
-        Intent intent = ((ReputationRouter) getActivity().getApplication()).getShopPageIntent(getActivity(), shopId);
+        Intent intent = RouteManager.getIntent(getActivity(), ApplinkConst.SHOP, shopId);
         startActivity(intent);
     }
 

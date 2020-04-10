@@ -516,7 +516,7 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
 
     @Override
     public void onGoToShopInfo(int shopId) {
-        Intent intent = ((ReputationRouter) getActivity().getApplication()).getShopPageIntent(getActivity(), String.valueOf(shopId));
+        Intent intent = RouteManager.getIntent(getActivity(), ApplinkConst.SHOP, String.valueOf(shopId));
         startActivity(intent);
     }
 
@@ -563,7 +563,7 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
 
     @Override
     public void onGoToShopDetail(int shopId) {
-        Intent intent = ((ReputationRouter) getActivity().getApplication()).getShopPageIntent(getActivity(), String.valueOf(shopId));
+        Intent intent = RouteManager.getIntent(getActivity(), ApplinkConst.SHOP, String.valueOf(shopId));
         startActivity(intent);
     }
 

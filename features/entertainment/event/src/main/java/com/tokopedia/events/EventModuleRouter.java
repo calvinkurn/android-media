@@ -1,6 +1,5 @@
 package com.tokopedia.events;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 
@@ -9,10 +8,6 @@ import okhttp3.Interceptor;
 public interface EventModuleRouter {
 
     Interceptor getChuckerInterceptor();
-
-    Intent getLoginIntent(Context context);
-
-    void actionOpenGeneralWebView(Activity activity, String mobileUrl);
 
     boolean getBooleanRemoteConfig(String key, boolean defaultValue);
 

@@ -93,7 +93,6 @@ import com.tokopedia.iris.Iris;
 import com.tokopedia.iris.IrisAnalytics;
 import com.tokopedia.kyc.KYCRouter;
 import com.tokopedia.linker.interfaces.LinkerRouter;
-import com.tokopedia.loginregister.login.view.activity.LoginActivity;
 import com.tokopedia.loginregister.registerinitial.view.activity.RegisterInitialActivity;
 import com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomActivity;
 import com.tokopedia.logisticaddaddress.features.manage.ManagePeopleAddressActivity;
@@ -139,7 +138,6 @@ import com.tokopedia.seller.shop.common.di.component.ShopComponent;
 import com.tokopedia.seller.shop.common.di.module.ShopModule;
 import com.tokopedia.seller.shopsettings.shipping.EditShippingActivity;
 import com.tokopedia.shop.ShopModuleRouter;
-import com.tokopedia.shop.ShopPageInternalRouter;
 import com.tokopedia.tkpd.applink.ApplinkUnsupportedImpl;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.fcm.appupdate.FirebaseRemoteAppUpdate;
@@ -157,7 +155,6 @@ import com.tokopedia.tkpdreactnative.react.ReactUtils;
 import com.tokopedia.tkpdreactnative.react.di.ReactNativeModule;
 import com.tokopedia.tkpdreactnative.router.ReactNativeRouter;
 import com.tokopedia.topads.common.TopAdsWebViewRouter;
-import com.tokopedia.topads.sdk.base.TopAdsRouter;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.transaction.common.TransactionRouter;
 import com.tokopedia.transaction.orders.UnifiedOrderListRouter;
@@ -219,7 +216,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         UnifiedOrderListRouter,
         LinkerRouter,
         DigitalRouter,
-        TopAdsRouter,
         CMRouter,
         ResolutionRouter,
         KYCRouter {
@@ -477,20 +473,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         return SellerReputationFragment.createInstance();
     }
 
-    /**
-     * Use {@link com.tokopedia.applink.RouteManager} or {@link ApplinkRouter#goToApplinkActivity(Activity, String, Bundle)}
-     */
-    @Deprecated
-    @Override
-    public void actionApplink(Activity activity, String linkUrl) {
-        goToApplinkActivity(activity, linkUrl, new Bundle());
-    }
-
-    @Override
-    public void actionOpenGeneralWebView(Activity activity, String mobileUrl) {
-        RouteManager.route(activity, ApplinkConstInternalGlobal.WEBVIEW, mobileUrl);
-    }
-
     @Override
     public Intent getOrderHistoryIntent(Context context, String orderId) {
         return OrderHistoryActivity.createInstance(context, orderId, 1);
@@ -505,14 +487,9 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         TkpdSellerLogout.onLogOut(appComponent, this);
     }
 
-    public Intent getLoginIntent(Context context) {
-        return RouteManager.getIntent(context, ApplinkConst.LOGIN);
-    }
-
     @Override
     public Intent getRegisterIntent(Context context) {
-        Intent intent = RegisterInitialActivity.getCallingIntent(context);
-        return intent;
+        return RegisterInitialActivity.getCallingIntent(context);
     }
 
     public Intent getHomeIntent(Context context) {
@@ -581,11 +558,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 , shopName
                 , avatar);
 
-    }
-
-    @Override
-    public Intent getInboxMessageIntent(Context context) {
-        return RouteManager.getIntent(context, ApplinkConst.TOPCHAT_IDLESS);
     }
 
     @Override
@@ -671,12 +643,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent getLoginIntent() {
-        Intent intent = LoginActivity.DeepLinkIntents.getCallingIntent(this);
-        return intent;
-    }
-
-    @Override
     public Intent getDistrictRecommendationIntent(Activity activity, Token token) {
         return DiscomActivity.newInstance(activity, token);
     }
@@ -705,11 +671,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Fragment getReviewFragment(Activity activity, String shopId, String shopDomain) {
         return ReviewShopFragment.createInstance(shopId, shopDomain);
-    }
-
-    @Override
-    public Intent getShopPageIntent(Context context, String shopId) {
-        return ShopPageInternalRouter.getShopPageIntent(context, shopId);
     }
 
     @Override

@@ -28,7 +28,6 @@ import com.tokopedia.design.quickfilter.custom.CustomViewQuickFilterItem;
 import com.tokopedia.design.quickfilter.custom.CustomViewQuickFilterView;
 import com.tokopedia.network.utils.ErrorHandler;
 import com.tokopedia.tkpd.tkpdreputation.R;
-import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
 import com.tokopedia.tkpd.tkpdreputation.analytic.ReputationTracking;
 import com.tokopedia.tkpd.tkpdreputation.di.DaggerReputationComponent;
 import com.tokopedia.tkpd.tkpdreputation.di.ReputationModule;
@@ -280,7 +279,7 @@ public class ReviewProductFragment extends BaseListFragment<ReviewProductModel, 
 
     @Override
     public void onGoToShopInfo(String shopId) {
-        Intent intent = ((ReputationRouter) getActivity().getApplication()).getShopPageIntent(getActivity(), String.valueOf(shopId));
+        Intent intent = RouteManager.getIntent(getActivity(), ApplinkConst.SHOP, String.valueOf(shopId));
         startActivity(intent);
     }
 

@@ -140,8 +140,7 @@ public class WelcomeFragment extends BaseDaggerFragment implements
             @Override
             public void onClick(View v) {
                 if (MainApplication.getAppContext() instanceof TkpdCoreRouter) {
-                    Intent intent = ((TkpdCoreRouter) MainApplication.getAppContext())
-                            .getLoginIntent(getActivity());
+                    Intent intent = RouteManager.getIntent(getActivity(), ApplinkConst.LOGIN);
                     startActivityForResult(intent, REQUEST_LOGIN);
                 }
             }

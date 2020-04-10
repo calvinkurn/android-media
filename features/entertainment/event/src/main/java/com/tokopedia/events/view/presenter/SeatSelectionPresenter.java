@@ -8,6 +8,8 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.cachemanager.SaveInstanceCacheManager;
 import com.tokopedia.design.utils.StringUtils;
 import com.tokopedia.events.EventModuleRouter;
@@ -71,8 +73,7 @@ public class SeatSelectionPresenter extends BaseDaggerPresenter<EventBaseContrac
     public void getProfile() {
         mView.showProgressBar();
         if (!Utils.getUserSession(mView.getActivity()).isLoggedIn()) {
-            Intent intent = ((EventModuleRouter) mView.getActivity().getApplication()).
-                    getLoginIntent(mView.getActivity());
+            Intent intent = RouteManager.getIntent(mView.getActivity(), ApplinkConst.LOGIN);
             mView.navigateToActivityRequest(intent, 1099);
         } else {
             UserSessionInterface userSession = new UserSession(mView.getActivity());

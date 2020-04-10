@@ -23,6 +23,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.RefreshHandler;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.loyalty.R;
 import com.tokopedia.loyalty.di.component.PromoDetailComponent;
@@ -295,10 +296,7 @@ public class PromoDetailFragment extends BaseDaggerFragment implements
 
     @Override
     public void onWebViewLinkClicked(String url) {
-        if (getActivity().getApplication() instanceof LoyaltyModuleRouter) {
-            LoyaltyModuleRouter loyaltyModuleRouter = (LoyaltyModuleRouter) getActivity().getApplication();
-            loyaltyModuleRouter.actionOpenGeneralWebView(getActivity(), url);
-        }
+        RouteManager.route(getActivity(), ApplinkConstInternalGlobal.WEBVIEW, url);
     }
 
 
@@ -328,7 +326,7 @@ public class PromoDetailFragment extends BaseDaggerFragment implements
                     if (!TextUtils.isEmpty(appLink) && RouteManager.isSupportApplink(getActivity(), appLink)) {
                         RouteManager.route(getActivity(), appLink);
                     } else {
-                        loyaltyModuleRouter.actionOpenGeneralWebView(getActivity(), redirectUrl);
+                        RouteManager.route(getActivity(), ApplinkConstInternalGlobal.WEBVIEW, redirectUrl);
                     }
                 }
             }

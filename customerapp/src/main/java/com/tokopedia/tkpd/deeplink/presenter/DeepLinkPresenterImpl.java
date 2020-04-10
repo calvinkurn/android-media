@@ -627,7 +627,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                                     ApplinkConst.SHOP_HOME,
                                     shopId);
                         } else {
-                            Intent intent = ((TkpdCoreRouter) context.getApplication()).getShopPageIntent(context, shopId);
+                            Intent intent = RouteManager.getIntent(context, ApplinkConst.SHOP, shopId);
                             intent.putExtras(bundle);
                             context.startActivity(intent);
                         }

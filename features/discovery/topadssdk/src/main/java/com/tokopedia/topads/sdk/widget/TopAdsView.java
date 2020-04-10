@@ -3,20 +3,22 @@ package com.tokopedia.topads.sdk.widget;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.TypedArray;
-import androidx.annotation.Nullable;
-import com.google.android.material.snackbar.Snackbar;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.material.snackbar.Snackbar;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.topads.sdk.R;
 import com.tokopedia.topads.sdk.base.Config;
-import com.tokopedia.topads.sdk.base.TopAdsRouter;
 import com.tokopedia.topads.sdk.base.adapter.Item;
 import com.tokopedia.topads.sdk.di.DaggerTopAdsComponent;
 import com.tokopedia.topads.sdk.di.TopAdsComponent;
@@ -274,7 +276,7 @@ public class TopAdsView extends LinearLayout implements AdsView, LocalAdsClickLi
 
     @Override
     public void doLogin() {
-        Intent intent = ((TopAdsRouter) getContext().getApplicationContext()).getLoginIntent(getContext());
+        Intent intent = RouteManager.getIntent(getContext(), ApplinkConst.LOGIN);
         getContext().startActivity(intent);
     }
 

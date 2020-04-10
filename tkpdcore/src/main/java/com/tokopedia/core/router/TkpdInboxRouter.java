@@ -28,8 +28,6 @@ public interface TkpdInboxRouter {
 
     Intent getHomeIntent(Context context);
 
-    Intent getLoginIntent(Context context);
-
     void actionNavigateByApplinksUrl(Activity activity, String url, Bundle bundle);
 
     Intent getWebviewActivityWithIntent(Context context, String url);

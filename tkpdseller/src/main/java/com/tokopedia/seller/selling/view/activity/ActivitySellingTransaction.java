@@ -20,7 +20,6 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.legacy.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
@@ -30,11 +29,11 @@ import com.google.android.material.tabs.TabLayout;
 import com.tkpd.library.utils.DownloadResultReceiver;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.base.view.activity.BaseActivity;
-import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TkpdCoreRouter;
@@ -48,9 +47,7 @@ import com.tokopedia.core.presenter.BaseView;
 import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.AppWidgetUtil;
-import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.core2.R;
 import com.tokopedia.design.component.Tabs;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
@@ -293,7 +290,7 @@ public class ActivitySellingTransaction extends BaseActivity
     private void checkLogin() {
         if (getApplication() instanceof TkpdCoreRouter) {
             if (!SessionHandler.isV4Login(this)) {
-                startActivity(((TkpdCoreRouter) getApplication()).getLoginIntent(this));
+                startActivity(RouteManager.getIntent(this, ApplinkConst.LOGIN));
                 AppWidgetUtil.sendBroadcastToAppWidget(this);
                 finish();
             } else if (!SessionHandler.isUserHasShop(this)) {
