@@ -16,6 +16,7 @@ import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
+import com.tokopedia.applink.internal.ApplinkConstInternalPayment;
 import com.tokopedia.home.account.AccountConstants;
 import com.tokopedia.home.account.AccountHomeRouter;
 import com.tokopedia.home.account.AccountHomeUrl;
@@ -119,7 +120,7 @@ public class TkpdPaySettingFragment extends BaseGeneralSettingFragment {
             switch (settingId) {
                 case SettingConstant.SETTING_CREDIT_CARD_ID:
                     accountAnalytics.eventClickPaymentSetting(CREDIT_CARD);
-                    router.goToManageCreditCard(getActivity());
+                    RouteManager.route(getActivity(), ApplinkConstInternalPayment.PAYMENT_SETTING);
                     break;
                 case SettingConstant.SETTING_TOKOCASH_ID:
                     accountAnalytics.eventClickPaymentSetting(TOKOCASH);

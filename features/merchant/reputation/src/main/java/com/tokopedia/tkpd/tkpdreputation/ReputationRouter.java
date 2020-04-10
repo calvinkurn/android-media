@@ -19,8 +19,6 @@ public interface ReputationRouter {
 
     Intent getShopPageIntent(Context context, String shopId);
 
-    Intent getTopProfileIntent(Context context, String reviewUserId);
-
     void showAppFeedbackRatingDialog(
             FragmentManager fragmentManager,
             Context context,

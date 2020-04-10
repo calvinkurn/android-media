@@ -109,11 +109,6 @@ public class HomeApp extends BaseMainApplication implements AccountHomeRouter, G
     }
 
     @Override
-    public void sendAnalyticsFirstTime() {
-
-    }
-
-    @Override
     public void onForceLogout(Activity activity) {
 
     }

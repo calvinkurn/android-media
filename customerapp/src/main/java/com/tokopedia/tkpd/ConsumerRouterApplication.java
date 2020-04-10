@@ -39,9 +39,6 @@ import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.ApplinkUnsupported;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
-import com.tokopedia.applink.internal.ApplinkConstInternalOperational;
-import com.tokopedia.applink.internal.ApplinkConstInternalPayment;
-import com.tokopedia.browse.common.DigitalBrowseRouter;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiClearAllUseCase;
 import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.common.network.util.NetworkClient;
@@ -217,7 +214,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         OmsModuleRouter,
         TopAdsWebViewRouter,
         EventModuleRouter,
-        DigitalBrowseRouter,
         PhoneVerificationRouter,
         TkpdAppsFlyerRouter,
         UnifiedOrderListRouter,
@@ -423,13 +419,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public void goToManageProduct(Context context) {
-        Intent intent = RouteManager.getIntent(context, ApplinkConst.PRODUCT_MANAGE);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        context.startActivity(intent);
-    }
-
-    @Override
     public void clearEtalaseCache() {
         EtalaseUtils.clearEtalaseCache(getApplicationContext());
     }
@@ -509,6 +498,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public void onLogout(AppComponent appComponent) {
+        SessionHandler sessionHandler = new SessionHandler(this);
+        sessionHandler.forceLogout();
         PersistentCacheManager.instance.delete(DigitalCache.NEW_DIGITAL_CATEGORY_AND_FAV);
         new CacheApiClearAllUseCase(this).executeSync();
         TkpdSellerLogout.onLogOut(appComponent, this);
@@ -536,11 +527,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Class<?> getHomeClass(Context context) throws ClassNotFoundException {
         return MainParentActivity.class;
-    }
-
-    @Override
-    public void goToUserPaymentList(Activity activity) {
-        RouteManager.route(activity, ApplinkConstInternalPayment.PAYMENT_SETTING);
     }
 
     @Override
@@ -722,16 +708,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public void goToWebview(Context context, String url) {
-        RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, url);
-    }
-
-    @Override
-    public Intent getGroupChatIntent(Context context, String channelUrl) {
-        return RouteManager.getIntent(context, ApplinkConst.GROUPCHAT_DETAIL, channelUrl);
-    }
-
-    @Override
     public Intent getShopPageIntent(Context context, String shopId) {
         return ShopPageInternalRouter.getShopPageIntent(context, shopId);
     }
@@ -838,20 +814,10 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent getSellerWebViewIntent(Context context, String webviewUrl) {
-        return null;
-    }
-
-    @Override
     public Observable<VoucherViewModel> checkTrainVoucher(String trainReservationId,
                                                           String trainReservationCode,
                                                           String galaCode) {
         return Observable.just(new VoucherViewModel());
-    }
-
-    @Override
-    public Intent getTopProfileIntent(Context context, String userId) {
-        return RouteManager.getIntent(context, ApplinkConst.PROFILE, userId);
     }
 
     public UseCase<String> setCreditCardSingleAuthentication() {
@@ -906,13 +872,9 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public void goToManageShopProduct(Context context) {
-        goToManageProduct(context);
-    }
-
-    @Override
-    public void goToManageCreditCard(Context context) {
-        if (context instanceof Activity)
-            goToUserPaymentList((Activity) context);
+        Intent intent = RouteManager.getIntent(context, ApplinkConst.PRODUCT_MANAGE);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(intent);
     }
 
     @Override
@@ -927,11 +889,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
         AnalyticsEventTrackingHelper.homepageSaldoClick(getApplicationContext(),
                 "com.tokopedia.saldodetails.activity.SaldoDepositActivity");
-    }
-
-    @Override
-    public Intent getInboxTicketCallingIntent(Context context) {
-        return RouteManager.getIntent(context, ApplinkConstInternalOperational.INTERNAL_INBOX_LIST);
     }
 
     @Override
@@ -1081,25 +1038,10 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         });
     }
 
-    @Override
-    public void sendEventCouponChosen(Context context, String title) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(
-                AppEventTracking.Event.EVENT_TOKO_POINT,
-                AppEventTracking.Category.TOKO_POINTS_PROMO_COUPON_PAGE,
-                AppEventTracking.Action.CHOOSE_COUPON,
-                title);
-    }
-
-    @Override
-    public void sendEventDigitalEventTracking(Context context, String text, String failmsg) {
-        UnifyTracking.eventDigitalEventTracking(this, text, failmsg);
-    }
-
     private void initCMPushNotification() {
         CMPushNotificationManager.getInstance().init(this);
         refreshFCMTokenFromBackgroundToCM(FCMCacheManager.getRegistrationId(this), false);
     }
-
 
     @Override
     public void refreshFCMTokenFromBackgroundToCM(String token, boolean force) {

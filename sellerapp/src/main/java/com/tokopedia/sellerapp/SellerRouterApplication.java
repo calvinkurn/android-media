@@ -20,8 +20,6 @@ import com.tokopedia.applink.ApplinkDelegate;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.ApplinkUnsupported;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
-import com.tokopedia.applink.internal.ApplinkConstInternalPayment;
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds;
 import com.tokopedia.broadcast.message.BroadcastMessageInternalRouter;
 import com.tokopedia.broadcast.message.common.BroadcastMessageRouter;
@@ -65,15 +63,12 @@ import com.tokopedia.loginregister.registerinitial.view.activity.RegisterInitial
 import com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomActivity;
 import com.tokopedia.logisticaddaddress.features.pinpoint.GeolocationActivity;
 import com.tokopedia.logisticdata.data.entity.address.Token;
-import com.tokopedia.mlp.router.MLPRouter;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
 import com.tokopedia.payment.router.IPaymentModuleRouter;
 import com.tokopedia.phoneverification.PhoneVerificationRouter;
 import com.tokopedia.phoneverification.view.activity.PhoneVerificationActivationActivity;
-import com.tokopedia.product.manage.feature.list.view.activity.ProductManageActivity;
 import com.tokopedia.product.manage.feature.list.view.fragment.ProductManageSellerFragment;
-import com.tokopedia.profile.view.activity.ProfileActivity;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
@@ -132,7 +127,6 @@ import okhttp3.Response;
 import rx.Observable;
 
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_DESCRIPTION;
-import static com.tokopedia.remoteconfig.RemoteConfigKey.ENABLE_OLD_PRODUCT_MANAGE;
 
 /**
  * Created by normansyahputa on 12/15/16.
@@ -153,7 +147,6 @@ public abstract class SellerRouterApplication extends MainApplication
         FlashSaleRouter,
         LinkerRouter,
         ResolutionRouter,
-        MLPRouter,
         SellerHomeRouter {
 
     protected RemoteConfig remoteConfig;
@@ -211,18 +204,6 @@ public abstract class SellerRouterApplication extends MainApplication
             shopComponent = daggerShopBuilder.appComponent(getApplicationComponent()).build();
         }
         return shopComponent;
-    }
-
-    @Override
-    public void goToManageProduct(Context context) {
-        Intent intent = new Intent(context, ProductManageActivity.class);
-
-        if(remoteConfig.getBoolean(ENABLE_OLD_PRODUCT_MANAGE)) {
-            intent = new Intent(context, com.tokopedia.product.manage.oldlist.view.activity.ProductManageActivity.class);
-        }
-
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        context.startActivity(intent);
     }
 
     @Override
@@ -311,8 +292,9 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public void onLogout(AppComponent appComponent) {
+        SessionHandler sessionHandler = new SessionHandler(this);
+        sessionHandler.forceLogout();
         new CacheApiClearAllUseCase(this).executeSync();
-
         TkpdSellerLogout.onLogOut(appComponent, this);
     }
 
@@ -478,11 +460,6 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public void goToUserPaymentList(Activity activity) {
-        RouteManager.route(activity, ApplinkConstInternalPayment.PAYMENT_SETTING);
-    }
-
-    @Override
     public ApplinkUnsupported getApplinkUnsupported(Activity activity) {
         return null;
     }
@@ -582,19 +559,10 @@ public abstract class SellerRouterApplication extends MainApplication
         return ShopPageInternalRouter.getShopPageIntent(context, shopId);
     }
 
-    public Intent getGroupChatIntent(Context context, String channelUrl) {
-        return null;
-    }
-
     @Override
     public void logInvalidGrant(Response response) {
         AnalyticsLog.logInvalidGrant(this, legacyGCMHandler(), legacySessionHandler(), response.request().url().toString());
 
-    }
-
-    @Override
-    public Intent getTopProfileIntent(Context context, String userId) {
-        return ProfileActivity.Companion.createIntent(context, userId);
     }
 
     @Override
@@ -621,11 +589,6 @@ public abstract class SellerRouterApplication extends MainApplication
         intent.setData(Uri.parse(applink));
 
         return intent;
-    }
-
-    @Override
-    public Intent getSellerWebViewIntent(Context context, String webviewUrl) {
-        return RouteManager.getIntent(context, ApplinkConstInternalGlobal.WEBVIEW, webviewUrl);
     }
 
     @Override

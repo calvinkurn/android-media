@@ -21,8 +21,6 @@ public interface GlobalNavRouter {
 
     Fragment getOfficialStoreFragment(Bundle bundle);
 
-    Intent getInboxTicketCallingIntent(Context context);
-
     ApplicationUpdate getAppUpdate(Context context);
 
     int getCartCount(Context context);

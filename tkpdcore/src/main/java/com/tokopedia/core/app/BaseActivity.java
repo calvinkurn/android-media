@@ -224,7 +224,6 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
                 new DialogForceLogout.ActionListener() {
                     @Override
                     public void onDialogClicked() {
-                        sessionHandler.forceLogout();
                         try {
                             ((TkpdCoreRouter) getApplication()).onLogout(getApplicationComponent());
                         } catch (Exception ex) {

@@ -22,6 +22,8 @@ import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.RefreshHandler;
 import com.tokopedia.abstraction.constant.IRouterConstant;
+import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.loyalty.R;
 import com.tokopedia.loyalty.di.component.DaggerPromoCouponComponent;
 import com.tokopedia.loyalty.di.component.PromoCouponComponent;
@@ -33,6 +35,7 @@ import com.tokopedia.loyalty.view.data.CouponData;
 import com.tokopedia.loyalty.view.data.CouponViewModel;
 import com.tokopedia.loyalty.view.presenter.IPromoCouponPresenter;
 import com.tokopedia.loyalty.view.view.IPromoCouponView;
+import com.tokopedia.track.TrackApp;
 
 import java.util.List;
 
@@ -154,7 +157,7 @@ public class PromoCouponFragment extends BaseDaggerFragment
 
     @Override
     public void sendEventDigitalEventTracking(Context context, String text, String failmsg) {
-        loyaltyModuleRouter.sendEventDigitalEventTracking(context, text, failmsg);
+        UnifyTracking.eventDigitalEventTracking(context, text, failmsg);
     }
 
 
@@ -430,7 +433,11 @@ public class PromoCouponFragment extends BaseDaggerFragment
         }
 
         adapter.clearError();
-        loyaltyModuleRouter.sendEventCouponChosen(getActivity(),data.getTitle());
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                AppEventTracking.Event.EVENT_TOKO_POINT,
+                AppEventTracking.Category.TOKO_POINTS_PROMO_COUPON_PAGE,
+                AppEventTracking.Action.CHOOSE_COUPON,
+                data.getTitle());
         String platformString = getArguments().getString(PLATFORM_KEY, "");
         if (platformString.equalsIgnoreCase(
                 IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.DIGITAL_STRING)) {

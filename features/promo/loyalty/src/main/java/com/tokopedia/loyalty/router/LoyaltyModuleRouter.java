@@ -1,7 +1,6 @@
 package com.tokopedia.loyalty.router;
 
 import android.app.Activity;
-import android.content.Context;
 
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.loyalty.view.data.VoucherViewModel;
@@ -18,8 +17,4 @@ public interface LoyaltyModuleRouter {
     Observable<TKPDMapParam<String, Object>> verifyDealPromo(com.tokopedia.usecase.RequestParams requestParams);
 
     void actionOpenGeneralWebView(Activity activity, String url);
-
-    void sendEventCouponChosen(Context context, String title);
-
-    void sendEventDigitalEventTracking(Context context, String text, String failmsg);
 }

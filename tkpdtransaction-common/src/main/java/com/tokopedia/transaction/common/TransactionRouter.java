@@ -1,6 +1,5 @@
 package com.tokopedia.transaction.common;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 
@@ -9,8 +8,6 @@ import android.content.Intent;
  */
 
 public interface TransactionRouter {
-
-    void goToUserPaymentList(Activity activity);
 
     Intent goToOrderDetail(Context context, String orderId);
 

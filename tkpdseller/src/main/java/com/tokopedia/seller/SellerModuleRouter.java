@@ -19,8 +19,6 @@ public interface SellerModuleRouter {
 
     Intent getShopPageIntent(Context context, String shopId);
 
-    Intent getTopProfileIntent(Context context, String userId);
-
     boolean isToggleBuyAgainOn();
 
 }

@@ -13,8 +13,6 @@ import com.tokopedia.core.base.di.component.AppComponent;
  */
 public interface TkpdCoreRouter {
 
-    void goToManageProduct(Context context);
-
     void clearEtalaseCache();
 
     void resetAddProductCache(Context context);
@@ -92,8 +90,6 @@ public interface TkpdCoreRouter {
     Intent getLoginWebviewIntent(Context context, String name, String url);
 
     Intent getShopPageIntent(Context context, String shopId);
-
-    Intent getGroupChatIntent(Context context, String channelUrl);
 
     Intent getCreateResCenterActivityIntent(Context context, String orderId);
 }

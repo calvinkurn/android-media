@@ -26,6 +26,7 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.constant.IRouterConstant;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.loyalty.R;
 import com.tokopedia.loyalty.di.component.DaggerPromoCodeComponent;
 import com.tokopedia.loyalty.di.component.PromoCodeComponent;
@@ -437,7 +438,7 @@ public class PromoCodeFragment extends BaseDaggerFragment implements IPromoCodeV
 
     @Override
     public void sendEventDigitalEventTracking(Context context, String text, String failmsg) {
-        loyaltyModuleRouter.sendEventDigitalEventTracking(context, text, failmsg);
+        UnifyTracking.eventDigitalEventTracking(context, text, failmsg);
     }
 
     @Override

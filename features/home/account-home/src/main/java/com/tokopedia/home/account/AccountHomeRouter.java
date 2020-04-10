@@ -16,8 +16,6 @@ public interface AccountHomeRouter {
 
     void goToManageShopProduct(Context context);
 
-    void goToManageCreditCard(Context context);
-
     void goToSaldo(Context context);
 
     AccountHomeInjection getAccountHomeInjection();
