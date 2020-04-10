@@ -22,7 +22,7 @@ class AddEditProductShipmentActivity : BaseSimpleActivity(), HasComponent<AddEdi
 
     override fun getNewFragment(): Fragment {
         val shipmentInputModel:ShipmentInputModel? = intent.getParcelableExtra(PARAM_SHIPMENT_INPUT_MODEL)
-        val productInputModel:ProductInputModel = intent.getParcelableExtra(AddEditProductUploadConstant.EXTRA_PRODUCT_INPUT_MODEL) ?: ProductInputModel()
+        val productInputModel: ProductInputModel = intent.getParcelableExtra(AddEditProductUploadConstant.EXTRA_PRODUCT_INPUT_MODEL) ?: ProductInputModel()
         shipmentInputModel?.run {
             return AddEditProductShipmentFragment.createInstanceEditMode(this)
         }

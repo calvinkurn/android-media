@@ -60,11 +60,13 @@ class GetProductMapper @Inject constructor() {
     }
 
     private fun mapProductVariantOption(selections: List<Selection>): ArrayList<ProductVariantOptionParent> {
+        var position = 0
         val variantOptions = selections.map {
+            position++
             ProductVariantOptionParent(
-                    0,
+                    it.variantId.toIntOrZero(),
                     it.unitID.toIntOrZero(),
-                    0,
+                    position,
                     mapProductVariantOptionChild(it.options),
                     it.variantName,
                     it.identifier,
@@ -107,7 +109,7 @@ class GetProductMapper @Inject constructor() {
     private fun mapImageUrlOrPathList(product: Product): MutableList<String> {
         val imageUrlOrPathList = mutableListOf<String>()
         product.pictures.forEach {
-            imageUrlOrPathList.add(it.urlThumbnail)
+            imageUrlOrPathList.add(it.urlOriginal)
         }
         return imageUrlOrPathList
     }
