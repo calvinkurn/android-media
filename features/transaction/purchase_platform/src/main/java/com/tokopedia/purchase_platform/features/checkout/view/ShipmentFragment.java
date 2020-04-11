@@ -371,6 +371,12 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        checkCampaignTimer();
+    }
+
+    @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         if (savedInstanceState == null || savedShipmentCartItemModelList == null) {
@@ -2901,6 +2907,24 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 LogisticConstant.REQUEST_CODE_PICK_DROP_OFF_TRADE_IN);
     }
 
+    /*
+    * This method is to solve expired dialog not shown up after time expired in background
+    * Little caveat: what if device's time is tempered and not synchronized with server?
+    * Later: consider serverTimeOffset, need more time
+    * */
+    private void checkCampaignTimer() {
+        if (shipmentPresenter.getCampaignTimer() != null && shipmentPresenter.getCampaignTimer().getShowTimer()) {
+            CampaignTimerUi timer = shipmentPresenter.getCampaignTimer();
+
+            long diff = DateHelper.timeSinceNow(timer.getTimerExpired());
+
+            if (diff <= 0 && getFragmentManager() != null) {
+                ExpiredTimeDialog dialog = ExpiredTimeDialog.newInstance(timer, checkoutAnalyticsCourierSelection);
+                dialog.show(getFragmentManager(), "expired dialog");
+            }
+        }
+    }
+
     private void setCampaignTimer() {
         if (shipmentPresenter.getCampaignTimer() != null && shipmentPresenter.getCampaignTimer().getShowTimer()) {
             CampaignTimerUi timer = shipmentPresenter.getCampaignTimer();
@@ -2910,6 +2934,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             cdLayout.setVisibility(View.VISIBLE);
             cdText.setText(timer.getTimerDescription());
             cdView.setupTimerFromRemianingMillis(diff, () -> {
+                // need to check with resumed to avoid crash when time is expired in background
+                // time needs to be running in background
                 if (getFragmentManager() != null && isResumed()) {
                     ExpiredTimeDialog dialog = ExpiredTimeDialog.newInstance(timer, checkoutAnalyticsCourierSelection);
                     dialog.show(getFragmentManager(), "expired dialog");

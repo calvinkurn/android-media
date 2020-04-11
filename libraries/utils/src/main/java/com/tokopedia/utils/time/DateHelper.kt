@@ -1,6 +1,7 @@
 package com.tokopedia.utils.time
 
 import com.tokopedia.utils.time.RfcDateTimeParser.RFC_3339
+import java.util.*
 
 object DateHelper {
 
@@ -15,5 +16,13 @@ object DateHelper {
         } else {
             0
         }
+    }
+
+    @JvmStatic
+    fun timeSinceNow(endTime: String): Long {
+        val start = Calendar.getInstance().time.time
+        val end = RfcDateTimeParser.parseDateString(endTime, RFC_3339)?.time ?: 0
+
+        return end - start
     }
 }
