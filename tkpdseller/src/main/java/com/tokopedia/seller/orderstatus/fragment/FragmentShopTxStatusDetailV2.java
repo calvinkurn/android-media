@@ -31,7 +31,7 @@ import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.customView.OrderStatusView;
+import com.tokopedia.seller.orderstatus.widget.OrderStatusView;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.purchase.model.response.txlist.OrderHistory;
 import com.tokopedia.core.router.TkpdInboxRouter;

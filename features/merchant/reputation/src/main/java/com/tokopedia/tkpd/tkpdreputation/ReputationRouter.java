@@ -14,7 +14,6 @@ import com.tokopedia.design.component.BottomSheets;
  */
 
 public interface ReputationRouter {
-    Intent getInboxReputationIntent(Context context);
 
     Fragment getReputationHistoryFragment();
 

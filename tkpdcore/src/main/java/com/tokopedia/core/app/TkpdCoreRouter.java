@@ -12,8 +12,6 @@ import com.tokopedia.core.base.di.component.AppComponent;
  */
 public interface TkpdCoreRouter {
 
-    void clearEtalaseCache();
-
     void resetAddProductCache(Context context);
 
     Intent getHomeIntent(Context context);
@@ -47,8 +45,6 @@ public interface TkpdCoreRouter {
     Intent getActivitySellingTransactionList(Context context);
 
     Intent getActivitySellingTransactionOpportunity(Context context, String query);
-
-    Intent getInboxReputationIntent(Context context);
 
     /**
      * Only for sellerapp

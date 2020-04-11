@@ -254,11 +254,6 @@ public class ReactNativeThankYouPageActivity extends ReactFragmentActivity<React
     }
 
     @Override
-    public Intent getInboxReputationIntent(Context context) {
-        return null;
-    }
-
-    @Override
     public Fragment getReputationHistoryFragment() {
         return null;
     }

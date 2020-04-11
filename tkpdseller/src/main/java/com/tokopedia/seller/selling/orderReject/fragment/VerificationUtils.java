@@ -1,4 +1,4 @@
-package com.tokopedia.core.myproduct.utils;
+package com.tokopedia.seller.selling.orderReject.fragment;
 
 import android.content.Context;
 import android.text.TextUtils;

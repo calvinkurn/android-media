@@ -206,11 +206,6 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public void clearEtalaseCache() {
-        EtalaseUtils.clearEtalaseCache(getApplicationContext());
-    }
-
-    @Override
     public void resetAddProductCache(Context context) {
         EtalaseUtils.clearEtalaseCache(context);
         EtalaseUtils.clearDepartementCache(context);
@@ -232,11 +227,6 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public Intent getInboxReputationIntent(Context context) {
-        return TkpdReputationInternalRouter.getInboxReputationActivityIntent(context);
-    }
-
-    @Override
     public NotificationPass setNotificationPass(Context mContext, NotificationPass mNotificationPass, Bundle data, String notifTitle) {
         mNotificationPass.mIntent = NotificationUtils.configureGeneralIntent(getInboxReputationIntent(this));
         mNotificationPass.classParentStack = InboxReputationActivity.class;
@@ -244,6 +234,10 @@ public abstract class SellerRouterApplication extends MainApplication
         mNotificationPass.ticker = data.getString(ARG_NOTIFICATION_DESCRIPTION);
         mNotificationPass.description = data.getString(ARG_NOTIFICATION_DESCRIPTION);
         return mNotificationPass;
+    }
+
+    private Intent getInboxReputationIntent(Context context) {
+        return TkpdReputationInternalRouter.getInboxReputationActivityIntent(context);
     }
 
     @Override

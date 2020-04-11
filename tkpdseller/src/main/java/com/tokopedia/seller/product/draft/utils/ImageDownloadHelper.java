@@ -1,10 +1,11 @@
-package com.tokopedia.core.myproduct.utils;
+package com.tokopedia.seller.product.draft.utils;
 
 import android.content.Context;
 import androidx.annotation.NonNull;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.FutureTarget;
+import com.tokopedia.core.myproduct.utils.FileUtils;
 
 import java.io.File;
 import java.io.FileInputStream;

@@ -13,8 +13,6 @@ public interface SellerModuleRouter {
 
     ShopComponent getShopComponent();
 
-    Intent getInboxReputationIntent(Context context);
-
     Intent getPhoneVerificationActivityIntent(Context context);
 
     boolean isToggleBuyAgainOn();

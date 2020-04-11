@@ -147,6 +147,7 @@ import com.tokopedia.tkpd.react.DaggerReactNativeComponent;
 import com.tokopedia.tkpd.react.ReactNativeComponent;
 import com.tokopedia.tkpd.redirect.RedirectCreateShopActivity;
 import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
+import com.tokopedia.tkpd.tkpdreputation.TkpdReputationInternalRouter;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationActivity;
 import com.tokopedia.tkpd.tkpdreputation.review.shop.view.ReviewShopFragment;
 import com.tokopedia.tkpd.utils.DeferredResourceInitializer;
@@ -415,11 +416,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public void clearEtalaseCache() {
-        EtalaseUtils.clearEtalaseCache(getApplicationContext());
-    }
-
-    @Override
     public void resetAddProductCache(Context context) {
         EtalaseUtils.clearEtalaseCache(context);
         EtalaseUtils.clearDepartementCache(context);
@@ -453,11 +449,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent getInboxReputationIntent(Context context) {
-        return InboxReputationActivity.getCallingIntent(context);
-    }
-
-    @Override
     public NotificationPass setNotificationPass(Context mContext, NotificationPass mNotificationPass,
                                                 Bundle data, String notifTitle) {
         mNotificationPass.mIntent = NotificationUtils.configureGeneralIntent(getInboxReputationIntent(this));
@@ -466,6 +457,10 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         mNotificationPass.ticker = data.getString(ARG_NOTIFICATION_DESCRIPTION);
         mNotificationPass.description = data.getString(ARG_NOTIFICATION_DESCRIPTION);
         return mNotificationPass;
+    }
+
+    private Intent getInboxReputationIntent(Context context) {
+        return TkpdReputationInternalRouter.getInboxReputationActivityIntent(context);
     }
 
     @Override
@@ -888,7 +883,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public void doLogoutAccount(Context activity) {
         new GlobalCacheManager().deleteAll();
         PersistentCacheManager.instance.delete();
-        clearEtalaseCache();
+        EtalaseUtils.clearEtalaseCache(getApplicationContext());
         TrackApp.getInstance().getMoEngage().logoutEvent();
         SessionHandler.clearUserData(activity);
         NotificationModHandler notif = new NotificationModHandler(activity);
