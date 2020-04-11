@@ -34,6 +34,7 @@ import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.addedit.R
+import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_DESCRIPTION_INPUT
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_DETAIL_INPUT
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_SHIPMENT_INPUT
@@ -198,6 +199,11 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             viewModel.productInputModel = this
             viewModel.detailInputModel = this.detailInputModel
             viewModel.hasVariants = this.variantInputModel.productVariant.isNotEmpty()
+            var pictureIndex = 0
+            viewModel.productPhotoPaths = this.detailInputModel.imageUrlOrPathList.map { urlOrPath ->
+                if (urlOrPath.startsWith(AddEditProductConstants.HTTP_PREFIX)) this.detailInputModel.pictureList[pictureIndex++].urlThumbnail
+                else urlOrPath
+            }.toMutableList()
         }
         // set isEditing status
         arguments?.getBoolean(EXTRA_IS_EDITING_PRODUCT)?.run {
@@ -770,7 +776,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     private fun fillProductDetailForm(detailInputModel: DetailInputModel) {
 
         // product photo
-        productPhotoAdapter?.setProductPhotoPaths(detailInputModel.imageUrlOrPathList.toMutableList())
+        productPhotoAdapter?.setProductPhotoPaths(viewModel.productPhotoPaths)
 
         // product name
         productNameField?.textFieldInput?.setText(detailInputModel.productName)
@@ -921,7 +927,11 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     private fun createAddProductPhotoButtonOnClickListener(): View.OnClickListener {
         return View.OnClickListener {
             val isEditing = viewModel.isEditing
-            val intent = ImagePickerAddProductActivity.getIntent(context, createImagePickerBuilder(ArrayList(productPhotoAdapter?.getProductPhotoPaths().orEmpty())), isEditing)
+            val imageUrlOrPathList = productPhotoAdapter?.getProductPhotoPaths()?.map { urlOrPath ->
+                if (urlOrPath.startsWith(AddEditProductConstants.HTTP_PREFIX)) viewModel.detailInputModel.pictureList.find { it.urlThumbnail == urlOrPath }?.urlOriginal ?: urlOrPath
+                else urlOrPath
+            }.orEmpty()
+            val intent = ImagePickerAddProductActivity.getIntent(context, createImagePickerBuilder(ArrayList(imageUrlOrPathList)), isEditing)
             startActivityForResult(intent, REQUEST_CODE_IMAGE)
             if (isEditing) {
                 ProductEditMainTracking.trackAddPhoto(shopId)
@@ -1209,11 +1219,11 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         // fillter product pictureList, so that edited image will be reuploaded and changed (removed from pictureList) and than reorder the picture if necessary
         val imageUrlOrPathList = productPhotoAdapter?.getProductPhotoPaths().orEmpty()
         val pictureList = detailInputModel.pictureList.filter {
-            imageUrlOrPathList.contains(it.url300) || imageUrlOrPathList.contains(it.urlThumbnail) || imageUrlOrPathList.contains(it.urlOriginal)
+            imageUrlOrPathList.contains(it.urlThumbnail)
         }
         val newPictureList = mutableListOf<PictureInputModel>()
-        imageUrlOrPathList.forEachIndexed { index, urlOrPath ->
-            pictureList.find { it.urlOriginal == urlOrPath }?.run {
+        imageUrlOrPathList.forEach { urlOrPath ->
+            pictureList.find { it.urlThumbnail == urlOrPath }?.run {
                 newPictureList.add(this)
             }
         }

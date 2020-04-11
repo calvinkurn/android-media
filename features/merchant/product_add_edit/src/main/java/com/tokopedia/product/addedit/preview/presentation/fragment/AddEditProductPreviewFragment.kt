@@ -30,6 +30,7 @@ import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.common.AddEditProductComponentBuilder
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.Companion.EXTRA_CACHE_MANAGER_ID
+import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.Companion.HTTP_PREFIX
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_DESCRIPTION_INPUT
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_DETAIL_INPUT
@@ -244,7 +245,11 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
             } else {
                 ProductAddStepperTracking.trackStart(shopId)
             }
-            val intent = ImagePickerAddProductActivity.getIntent(context, createImagePickerBuilder(ArrayList(productPhotoAdapter?.getProductPhotoPaths().orEmpty())))
+            val imageUrlOrPathList = productPhotoAdapter?.getProductPhotoPaths()?.map { urlOrPath ->
+                if (urlOrPath.startsWith(HTTP_PREFIX)) viewModel.productInputModel.value?.detailInputModel?.pictureList?.find { it.urlThumbnail == urlOrPath }?.urlOriginal ?: urlOrPath
+                else urlOrPath
+            }.orEmpty()
+            val intent = ImagePickerAddProductActivity.getIntent(context, createImagePickerBuilder(ArrayList(imageUrlOrPathList)))
             startActivityForResult(intent, REQUEST_CODE_IMAGE)
         }
 
@@ -580,7 +585,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
     private fun showProductPhotoPreview(productInputModel: ProductInputModel) {
         var pictureIndex = 0
         val imageUrlOrPathList = productInputModel.detailInputModel.imageUrlOrPathList.map { urlOrPath ->
-            if (urlOrPath.startsWith(AddEditProductConstants.HTTP_PREFIX)) productInputModel.detailInputModel.pictureList[pictureIndex++].urlOriginal
+            if (urlOrPath.startsWith(AddEditProductConstants.HTTP_PREFIX)) productInputModel.detailInputModel.pictureList[pictureIndex++].urlThumbnail
             else urlOrPath
         }
         productPhotoAdapter?.setProductPhotoPaths(imageUrlOrPathList.toMutableList())
@@ -758,11 +763,11 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
         // fillter product pictureList, so that edited image will be reuploaded and changed (removed from pictureList) and than reorder the picture if necessary
         val imageUrlOrPathList = productPhotoAdapter?.getProductPhotoPaths().orEmpty()
         val pictureList = viewModel.productInputModel.value?.detailInputModel?.pictureList?.filter {
-            imageUrlOrPathList.contains(it.url300) || imageUrlOrPathList.contains(it.urlThumbnail) || imageUrlOrPathList.contains(it.urlOriginal)
+            imageUrlOrPathList.contains(it.urlThumbnail)
         }.orEmpty()
         val newPictureList = mutableListOf<PictureInputModel>()
-        imageUrlOrPathList.forEachIndexed { index, urlOrPath ->
-            pictureList.find { it.urlOriginal == urlOrPath }?.run {
+        imageUrlOrPathList.forEach { urlOrPath ->
+            pictureList.find { it.urlThumbnail == urlOrPath }?.run {
                 newPictureList.add(this)
             }
         }

@@ -5,14 +5,12 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
 import com.tokopedia.product.addedit.common.util.ResourceProvider
 import com.tokopedia.product.addedit.detail.domain.usecase.GetCategoryRecommendationUseCase
 import com.tokopedia.product.addedit.detail.domain.usecase.GetNameRecommendationUseCase
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.UNIT_DAY
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.UNIT_WEEK
 import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
-import com.tokopedia.product.addedit.draft.domain.usecase.GetProductDraftUseCase
 import com.tokopedia.product.addedit.draft.domain.usecase.SaveProductDraftUseCase
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.manage.common.draft.data.model.ProductDraft
@@ -42,10 +40,7 @@ class AddEditProductDetailViewModel @Inject constructor(
 
     var hasVariants = false
 
-    var productPhotoPaths = productInputModel.detailInputModel.imageUrlOrPathList.mapIndexed { index, urlOrPath ->
-        if (urlOrPath.startsWith(AddEditProductConstants.HTTP_PREFIX)) productInputModel.detailInputModel.pictureList[index].urlOriginal
-        else urlOrPath
-    }.toMutableList()
+    var productPhotoPaths: MutableList<String> = mutableListOf()
 
     private val mIsProductPhotoError = MutableLiveData<Boolean>()
 
@@ -339,7 +334,7 @@ class AddEditProductDetailViewModel @Inject constructor(
         }.filterIndexed { index, _ -> !editted[index] }
 
         val imageUrlOrPathList = imagePickerResult.mapIndexed { index, urlOrPath ->
-            if (editted[index]) urlOrPath else originalImageUrl[index]
+            if (editted[index]) urlOrPath else pictureList.find { it.urlOriginal == originalImageUrl[index] }?.urlThumbnail ?: urlOrPath
         }.toMutableList()
 
         this.detailInputModel = productInputModel.detailInputModel.apply {
