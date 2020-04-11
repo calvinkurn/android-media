@@ -259,6 +259,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
                     viewModel.productInputModel.value?.let { productInputModel ->
                         AddEditProductEditService.startService(this,
                                 viewModel.getProductId(), productInputModel)
+                        activity?.finish()
                     }
                 }
             }
@@ -362,10 +363,12 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
                         val validateMessage = viewModel.validateProductInput(detailInputModel)
                         if (validateMessage.isEmpty()) {
                             AddEditProductAddService.startService(it, detailInputModel,
-                                descriptionInputModel, shipmentInputModel, variantInputModel, viewModel.getDraftId())
+                                descriptionInputModel, shipmentInputModel, variantInputModel,
+                                    viewModel.getDraftId())
+                            activity?.finish()
                         } else {
-                            view?.let {
-                                Toaster.make(it, validateMessage, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR)
+                            view?.let { view ->
+                                Toaster.make(view, validateMessage, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR)
                             }
                         }
                     }
