@@ -2,12 +2,10 @@ package com.tokopedia.loyalty.view.adapter;
 
 import android.app.Activity;
 import android.content.Context;
+import com.google.android.material.tabs.TabLayout;
+import androidx.viewpager.widget.ViewPager;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-
-import androidx.viewpager.widget.ViewPager;
-
-import com.google.android.material.tabs.TabLayout;
 
 /**
  * Created by Angga.Prasetiyo on 01/02/2016.

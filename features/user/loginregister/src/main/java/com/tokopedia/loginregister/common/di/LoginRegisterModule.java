@@ -2,13 +2,15 @@ package com.tokopedia.loginregister.common.di;
 
 import android.content.Context;
 
+import android.content.res.Resources;
+
+import com.tokopedia.akamai_bot_lib.interceptor.AkamaiBotInterceptor;
 import com.chuckerteam.chucker.api.ChuckerInterceptor;
 import com.tokopedia.abstraction.common.data.model.response.TkpdV4ResponseError;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.network.exception.HeaderErrorListResponse;
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
 import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseInterceptor;
-import com.tokopedia.akamai_bot_lib.interceptor.AkamaiBotInterceptor;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.iris.util.IrisSession;
 import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics;

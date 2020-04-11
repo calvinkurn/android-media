@@ -1,5 +1,6 @@
 package com.tokopedia.sessioncommon.domain.mapper;
 
+import com.tokopedia.network.data.model.response.DataResponse;
 import com.tokopedia.sessioncommon.data.model.GetUserInfoData;
 
 import javax.inject.Inject;

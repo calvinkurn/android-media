@@ -16,8 +16,8 @@ import com.tokopedia.home.account.presentation.viewmodel.TokopediaPayBSModel;
 import com.tokopedia.home.account.presentation.viewmodel.TokopediaPayViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.base.BuyerViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.base.ParcelableViewModel;
-import com.tokopedia.navigation_common.model.VccUserStatus;
 import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.navigation_common.model.VccUserStatus;
 
 import java.util.ArrayList;
 import java.util.List;

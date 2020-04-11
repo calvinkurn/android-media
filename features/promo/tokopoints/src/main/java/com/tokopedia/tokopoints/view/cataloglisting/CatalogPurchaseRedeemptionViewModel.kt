@@ -11,6 +11,7 @@ import com.tokopedia.tokopoints.view.util.Resources
 import com.tokopedia.tokopoints.view.util.Success
 import com.tokopedia.tokopoints.view.util.ValidationError
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.DisposableHandle
 
 open class CatalogPurchaseRedeemptionViewModel(private val repository: CatalogPurchaseRedeemptionRepository) : BaseViewModel(Dispatchers.Main), CatalogPurchaseRedemptionPresenter {
 

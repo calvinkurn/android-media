@@ -7,7 +7,7 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.home.account.R
 import com.tokopedia.home.account.data.model.UserProfileSettingResponse
-import java.util.*
+import java.util.HashMap
 import javax.inject.Inject
 
 class UserProfileSafeModeUseCase @Inject constructor(@ApplicationContext var context: Context?,

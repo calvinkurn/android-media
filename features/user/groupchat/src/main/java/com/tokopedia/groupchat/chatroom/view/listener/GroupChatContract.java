@@ -1,7 +1,6 @@
 package com.tokopedia.groupchat.chatroom.view.listener;
 
 import android.content.Context;
-
 import androidx.annotation.Nullable;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;

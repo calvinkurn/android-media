@@ -1,11 +1,14 @@
 package com.tokopedia.loyalty.listener;
 
+import com.google.android.material.tabs.TabLayout;
 import androidx.viewpager.widget.ViewPager;
 
-import com.google.android.material.tabs.TabLayout;
+import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.loyalty.router.LoyaltyModuleRouter;
 import com.tokopedia.loyalty.view.LoyaltyTracking;
 import com.tokopedia.loyalty.view.adapter.GlobalMainTabSelectedListener;
+import com.tokopedia.track.TrackApp;
 
 
 /**

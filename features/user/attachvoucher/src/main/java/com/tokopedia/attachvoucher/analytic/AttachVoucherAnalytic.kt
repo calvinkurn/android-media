@@ -1,7 +1,7 @@
 package com.tokopedia.attachvoucher.analytic
 
-import com.tokopedia.attachvoucher.data.VoucherType
 import com.tokopedia.attachvoucher.data.VoucherUiModel
+import com.tokopedia.attachvoucher.data.VoucherType
 import com.tokopedia.attachvoucher.view.viewmodel.AttachVoucherViewModel
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils

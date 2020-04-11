@@ -6,13 +6,12 @@ import com.tokopedia.liveness.domain.UploadLivenessResultUseCase
 import com.tokopedia.liveness.util.InstantTaskExecutorRule
 import com.tokopedia.liveness.view.viewmodel.LivenessDetectionViewModel
 import com.tokopedia.usecase.coroutines.Success
-import io.mockk.coEvery
-import io.mockk.mockk
-import io.mockk.verify
+import io.mockk.*
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.gherkin.Feature
+import java.lang.Exception
 import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue

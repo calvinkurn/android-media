@@ -12,6 +12,7 @@ import com.tokopedia.promocheckout.R
 import com.tokopedia.promocheckout.common.data.entity.request.CurrentApplyCode
 import com.tokopedia.promocheckout.common.data.entity.request.Promo
 import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeUseCase
+import com.tokopedia.promocheckout.common.domain.mapper.CheckPromoStackingCodeMapper
 import com.tokopedia.promocheckout.common.util.mapToStatePromoStackingCheckout
 import com.tokopedia.promocheckout.common.view.uimodel.ResponseGetPromoStackUiModel
 import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView
@@ -19,9 +20,7 @@ import com.tokopedia.promocheckout.list.model.listpromocatalog.ResponseExchangeC
 import com.tokopedia.promocheckout.list.model.listpromolastseen.PromoLastSeenResponse
 import com.tokopedia.usecase.RequestParams
 import rx.Subscriber
-import java.util.*
-import kotlin.collections.ArrayList
-import kotlin.collections.forEach
+import java.util.HashMap
 
 class PromoCheckoutListMarketplacePresenter(val graphqlUseCase: GraphqlUseCase,
                                             private val checkPromoStackingCodeUseCase: CheckPromoStackingCodeUseCase) : BaseDaggerPresenter<PromoCheckoutListMarketplaceContract.View>(), PromoCheckoutListMarketplaceContract.Presenter {

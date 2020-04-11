@@ -2,6 +2,7 @@ package com.tokopedia.gamification.taptap.compoundview;
 
 import android.content.Context;
 import android.graphics.Color;
+import com.google.android.material.snackbar.Snackbar;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,7 +12,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.google.android.material.snackbar.Snackbar;
 import com.tokopedia.gamification.R;
 
 public class NetworkErrorHelper {

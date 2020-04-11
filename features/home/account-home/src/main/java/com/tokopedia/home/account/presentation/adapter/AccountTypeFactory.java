@@ -1,8 +1,8 @@
 package com.tokopedia.home.account.presentation.adapter;
 
-import android.view.View;
-
 import androidx.annotation.NonNull;
+
+import android.view.View;
 
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory;
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel;

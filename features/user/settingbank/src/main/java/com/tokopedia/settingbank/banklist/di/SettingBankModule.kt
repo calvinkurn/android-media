@@ -9,6 +9,7 @@ import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.interceptor.DebugInterceptor
 import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
+import com.tokopedia.settingbank.addeditaccount.di.AddEditAccountScope
 import com.tokopedia.settingbank.banklist.data.SettingBankApi
 import com.tokopedia.settingbank.banklist.data.SettingBankUrl
 import com.tokopedia.user.session.UserSession

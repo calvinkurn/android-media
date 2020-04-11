@@ -13,8 +13,10 @@ import java.util.regex.Pattern;
 
 import javax.inject.Inject;
 
-import static com.tokopedia.changephonenumber.domain.interactor.ValidateNumberUseCase.getSubmitNumberParam;
-import static com.tokopedia.changephonenumber.domain.interactor.ValidateNumberUseCase.getValidateNumberParam;
+import static com.tokopedia.changephonenumber.domain.interactor.ValidateNumberUseCase
+        .getSubmitNumberParam;
+import static com.tokopedia.changephonenumber.domain.interactor.ValidateNumberUseCase
+        .getValidateNumberParam;
 
 
 /**

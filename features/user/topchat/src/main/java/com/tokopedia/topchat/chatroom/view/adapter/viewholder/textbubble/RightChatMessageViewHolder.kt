@@ -1,6 +1,7 @@
 package com.tokopedia.topchat.chatroom.view.adapter.viewholder.textbubble
 
 import android.view.View
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.chat_common.data.MessageViewModel
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ChatLinkHandlerListener
 import com.tokopedia.topchat.R

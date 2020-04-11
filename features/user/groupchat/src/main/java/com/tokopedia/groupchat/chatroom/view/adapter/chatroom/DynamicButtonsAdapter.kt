@@ -1,13 +1,14 @@
 package com.tokopedia.groupchat.chatroom.view.adapter.chatroom
 
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.HideViewHolder
 import com.tokopedia.groupchat.chatroom.view.adapter.chatroom.typefactory.DynamicButtonTypeFactory
 import com.tokopedia.groupchat.chatroom.view.adapter.chatroom.viewholder.BaseDynamicButtonViewHolder
+import com.tokopedia.groupchat.room.view.viewmodel.BaseDynamicButton
 import com.tokopedia.groupchat.room.view.viewmodel.DynamicButton
 import com.tokopedia.groupchat.room.view.viewmodel.InteractiveButton
 

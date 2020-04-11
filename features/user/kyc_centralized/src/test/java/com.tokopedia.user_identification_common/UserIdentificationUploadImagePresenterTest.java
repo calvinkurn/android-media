@@ -6,6 +6,8 @@ import com.tokopedia.imageuploader.domain.UploadImageRepository;
 import com.tokopedia.imageuploader.domain.UploadImageUseCase;
 import com.tokopedia.imageuploader.domain.model.ImageUploadDomainModel;
 import com.tokopedia.imageuploader.utils.ImageUploaderUtils;
+import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.kyc_centralized.domain.usecase.RegisterIdentificationUseCase;
 import com.tokopedia.kyc_centralized.domain.usecase.UploadIdentificationUseCase;
 import com.tokopedia.kyc_centralized.util.TestSchedulerProvider;
@@ -13,8 +15,6 @@ import com.tokopedia.kyc_centralized.view.listener.UserIdentificationUploadImage
 import com.tokopedia.kyc_centralized.view.presenter.UserIdentificationUploadImagePresenter;
 import com.tokopedia.kyc_centralized.view.viewmodel.AttachmentImageModel;
 import com.tokopedia.kyc_centralized.view.viewmodel.ImageUploadModel;
-import com.tokopedia.usecase.RequestParams;
-import com.tokopedia.user.session.UserSessionInterface;
 
 import org.junit.Before;
 import org.junit.Test;

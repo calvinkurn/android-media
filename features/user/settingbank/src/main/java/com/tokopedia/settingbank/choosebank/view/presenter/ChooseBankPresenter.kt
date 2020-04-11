@@ -9,6 +9,7 @@ import com.tokopedia.settingbank.choosebank.domain.usecase.GetBankListDBUseCase
 import com.tokopedia.settingbank.choosebank.domain.usecase.GetBankListWSUseCase
 import com.tokopedia.settingbank.choosebank.view.viewmodel.BankListViewModel
 import com.tokopedia.settingbank.choosebank.view.viewmodel.BankViewModel
+import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import rx.Subscriber
 import javax.inject.Inject

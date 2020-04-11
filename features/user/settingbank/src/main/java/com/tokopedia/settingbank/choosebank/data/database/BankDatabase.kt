@@ -1,9 +1,9 @@
 package com.tokopedia.settingbank.choosebank.data.database
 
-import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import android.content.Context
 
 /**
  * Created by Ade Fulki on 2019-05-15.

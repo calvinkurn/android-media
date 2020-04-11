@@ -3,6 +3,8 @@ package com.tokopedia.chatbot.data.quickreply
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.chat_common.data.BaseChatViewModel
 import com.tokopedia.chatbot.view.adapter.ChatbotTypeFactory
+import java.util.*
+import kotlin.collections.ArrayList
 
 /**
  * @author by yfsx on 08/05/18.

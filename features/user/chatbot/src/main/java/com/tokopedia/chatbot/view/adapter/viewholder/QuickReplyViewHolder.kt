@@ -1,10 +1,13 @@
 package com.tokopedia.chatbot.view.adapter.viewholder
 
+import android.util.Log
+import androidx.fragment.app.FragmentActivity
+import androidx.core.content.ContextCompat
 import android.view.View
 import android.widget.RelativeLayout
 import android.widget.TextView
-import androidx.core.content.ContextCompat
-import androidx.fragment.app.FragmentActivity
+import android.widget.Toast
+
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.chat_common.util.ChatLinkHandlerMovementMethod
 import com.tokopedia.chat_common.view.adapter.viewholder.BaseChatViewHolder

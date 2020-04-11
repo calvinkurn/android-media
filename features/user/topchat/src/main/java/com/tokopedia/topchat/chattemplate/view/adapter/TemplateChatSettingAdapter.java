@@ -1,14 +1,17 @@
 package com.tokopedia.topchat.chattemplate.view.adapter;
 
 import android.content.Context;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import androidx.recyclerview.widget.RecyclerView;
-
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.topchat.common.util.ItemTouchHelperAdapter;
+import com.tokopedia.topchat.chattemplate.view.listener.TemplateChatContract;
+import com.tokopedia.topchat.chattemplate.view.adapter.viewholder.ItemTemplateChatViewHolder;
+import com.tokopedia.topchat.chattemplate.view.viewmodel.TemplateChatModel;
 import com.tokopedia.topchat.chattemplate.view.adapter.viewholder.ItemTemplateChatViewHolder;
 import com.tokopedia.topchat.chattemplate.view.listener.TemplateChatContract;
 import com.tokopedia.topchat.chattemplate.view.viewmodel.TemplateChatModel;

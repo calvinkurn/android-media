@@ -1,11 +1,10 @@
 package com.tokopedia.loyalty.view.adapter;
 
 import android.content.Context;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.tokopedia.loyalty.view.data.PromoCodeViewModel;
 import com.tokopedia.loyalty.view.data.PromoData;
@@ -22,10 +21,10 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import static com.tokopedia.loyalty.view.viewholder.PromoDetailGroupCodeViewHolder.ITEM_VIEW_GROUP_CODE;
-import static com.tokopedia.loyalty.view.viewholder.PromoDetailInfoViewHolder.ITEM_VIEW_DETAIL_INFO;
 import static com.tokopedia.loyalty.view.viewholder.PromoDetailSimpleCodeViewHolder.ITEM_VIEW_SIMPLE_CODE;
 import static com.tokopedia.loyalty.view.viewholder.PromoDetailTnCViewHolder.ITEM_VIEW_TNC;
+import static com.tokopedia.loyalty.view.viewholder.PromoDetailGroupCodeViewHolder.ITEM_VIEW_GROUP_CODE;
+import static com.tokopedia.loyalty.view.viewholder.PromoDetailInfoViewHolder.ITEM_VIEW_DETAIL_INFO;
 
 /**
  * @author Aghny A. Putra on 26/03/18

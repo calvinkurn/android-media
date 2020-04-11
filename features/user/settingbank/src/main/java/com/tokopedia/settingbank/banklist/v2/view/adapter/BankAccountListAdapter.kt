@@ -5,8 +5,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.settingbank.banklist.v2.domain.BankAccount
 import com.tokopedia.settingbank.banklist.v2.domain.TemplateData
-import com.tokopedia.settingbank.banklist.v2.view.viewHolder.BankAccountViewHolder
 import com.tokopedia.settingbank.banklist.v2.view.viewHolder.BankTNCViewHolder
+import com.tokopedia.settingbank.banklist.v2.view.viewHolder.BankAccountViewHolder
 
 
 class BankAccountListAdapter(var bankList: ArrayList<BankAccount>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {

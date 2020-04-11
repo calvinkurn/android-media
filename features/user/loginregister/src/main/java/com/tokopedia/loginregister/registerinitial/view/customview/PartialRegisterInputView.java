@@ -3,6 +3,11 @@ package com.tokopedia.loginregister.registerinitial.view.customview;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+import com.google.android.material.textfield.TextInputEditText;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
@@ -14,11 +19,6 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
-
-import com.google.android.material.textfield.TextInputEditText;
 import com.tokopedia.design.base.BaseCustomView;
 import com.tokopedia.design.component.ButtonCompat;
 import com.tokopedia.design.text.TkpdHintTextInputLayout;

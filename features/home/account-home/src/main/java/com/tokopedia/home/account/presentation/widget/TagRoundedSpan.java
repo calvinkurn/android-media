@@ -4,11 +4,10 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.RectF;
-import android.text.style.ReplacementSpan;
-import android.util.TypedValue;
-
 import androidx.annotation.ColorRes;
 import androidx.core.content.ContextCompat;
+import android.text.style.ReplacementSpan;
+import android.util.TypedValue;
 
 import org.jetbrains.annotations.NotNull;
 

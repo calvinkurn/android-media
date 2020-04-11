@@ -1,5 +1,11 @@
 package com.tokopedia.liveness.view.fragment
 
+import com.tokopedia.liveness.R
+import com.tokopedia.liveness.analytics.LivenessDetectionAnalytics
+import com.tokopedia.liveness.di.LivenessDetectionComponent
+import com.tokopedia.liveness.utils.LivenessConstants
+import com.tokopedia.liveness.view.OnBackListener
+import com.tokopedia.liveness.view.activity.LivenessFailedActivity
 import android.app.Activity
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,12 +14,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
-import com.tokopedia.liveness.R
-import com.tokopedia.liveness.analytics.LivenessDetectionAnalytics
-import com.tokopedia.liveness.di.LivenessDetectionComponent
-import com.tokopedia.liveness.utils.LivenessConstants
-import com.tokopedia.liveness.view.OnBackListener
-import com.tokopedia.liveness.view.activity.LivenessFailedActivity
 import kotlinx.android.synthetic.main.fragment_liveness_error.*
 import javax.inject.Inject
 

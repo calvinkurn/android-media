@@ -4,6 +4,7 @@ import com.facebook.AccessToken
 import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentialSubscriber
 import com.tokopedia.loginregister.loginthirdparty.facebook.data.FacebookCredentialData
 import rx.Subscriber
+import java.lang.Exception
 
 /**
  * Created by Ade Fulki on 2019-10-15.

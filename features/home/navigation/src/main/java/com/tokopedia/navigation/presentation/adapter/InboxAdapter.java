@@ -1,14 +1,18 @@
 package com.tokopedia.navigation.presentation.adapter;
 
+import android.content.Context;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import androidx.recyclerview.widget.StaggeredGridLayoutManager;
-
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.abstraction.base.view.adapter.viewholders.LoadingMoreViewHolder;
+import com.tokopedia.navigation.R;
+
 import com.tokopedia.navigation.domain.model.Inbox;
 import com.tokopedia.navigation.presentation.adapter.viewholder.RecommendationViewHolder;
 import com.tokopedia.navigation.presentation.fragment.InboxFragment;

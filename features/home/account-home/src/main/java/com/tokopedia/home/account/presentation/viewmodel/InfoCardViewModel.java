@@ -1,9 +1,8 @@
 package com.tokopedia.home.account.presentation.viewmodel;
 
 import android.os.Parcel;
-import android.view.View;
-
 import androidx.annotation.DrawableRes;
+import android.view.View;
 
 import com.tokopedia.home.account.presentation.adapter.AccountTypeFactory;
 import com.tokopedia.home.account.presentation.viewmodel.base.ParcelableViewModel;

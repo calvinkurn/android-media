@@ -1,6 +1,7 @@
 package com.tokopedia.loginphone.chooseaccount.view.adapter
 
 import android.content.Context
+import android.util.Patterns
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup

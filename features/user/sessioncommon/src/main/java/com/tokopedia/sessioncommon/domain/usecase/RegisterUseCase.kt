@@ -8,10 +8,12 @@ import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.sessioncommon.R
 import com.tokopedia.sessioncommon.data.register.RegisterPojo
+import com.tokopedia.sessioncommon.di.SessionModule
 import com.tokopedia.sessioncommon.util.TokenGenerator
 import com.tokopedia.user.session.UserSessionInterface
 import rx.Subscriber
 import javax.inject.Inject
+import javax.inject.Named
 
 /**
  * @author by nisie on 30/04/19.

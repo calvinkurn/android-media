@@ -2,6 +2,10 @@ package com.tokopedia.home.account.presentation.viewmodel.base;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import androidx.annotation.NonNull;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author okasurya on 7/20/18.

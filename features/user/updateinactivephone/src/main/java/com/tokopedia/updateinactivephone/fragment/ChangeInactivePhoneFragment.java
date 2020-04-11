@@ -4,6 +4,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -16,10 +19,6 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
@@ -34,9 +33,9 @@ import com.tokopedia.updateinactivephone.activity.ChangeInactiveFormRequestActiv
 import com.tokopedia.updateinactivephone.activity.ChangeInactivePhoneRequestSubmittedActivity;
 import com.tokopedia.updateinactivephone.common.analytics.UpdateInactivePhoneEventConstants;
 import com.tokopedia.updateinactivephone.common.analytics.UpdateInactivePhoneEventTracking;
-import com.tokopedia.updateinactivephone.di.DaggerUpdateInactivePhoneComponent;
 import com.tokopedia.updateinactivephone.presenter.ChangeInactivePhonePresenter;
 import com.tokopedia.updateinactivephone.view.ChangeInactivePhone;
+import com.tokopedia.updateinactivephone.di.DaggerUpdateInactivePhoneComponent;
 
 import javax.inject.Inject;
 

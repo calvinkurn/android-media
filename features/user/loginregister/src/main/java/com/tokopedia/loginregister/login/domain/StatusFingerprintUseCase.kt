@@ -4,6 +4,8 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.loginfingerprint.data.model.FingerprintSignature
 import com.tokopedia.loginregister.login.di.LoginQueryConstant
+import com.tokopedia.loginregister.login.domain.pojo.StatusPinData
+import com.tokopedia.loginregister.login.domain.pojo.StatusPinPojo
 import javax.inject.Inject
 
 /**

@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
-import android.widget.GridLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -24,6 +23,7 @@ import com.tokopedia.tokopoints.view.presenter.AddPointPresenter
 import kotlinx.android.synthetic.main.tp_add_point_section.*
 import kotlinx.android.synthetic.main.tp_add_point_section.view.*
 import javax.inject.Inject
+import android.widget.GridLayout
 import kotlin.math.roundToInt
 
 

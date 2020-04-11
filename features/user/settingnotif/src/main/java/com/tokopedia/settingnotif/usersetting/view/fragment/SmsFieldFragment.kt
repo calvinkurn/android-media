@@ -7,8 +7,8 @@ import com.tokopedia.settingnotif.usersetting.domain.pojo.SmsSection
 import com.tokopedia.settingnotif.usersetting.view.adapter.factory.VisitableSettings
 import com.tokopedia.settingnotif.usersetting.view.dataview.ChangeItemDataView.changePhoneNumber
 import com.tokopedia.settingnotif.usersetting.view.dataview.NotificationActivationDataView.activationPhoneNumber
-import com.tokopedia.settingnotif.usersetting.view.dataview.UserSettingViewModel
 import com.tokopedia.settingnotif.usersetting.view.fragment.base.SettingFieldFragment
+import com.tokopedia.settingnotif.usersetting.view.dataview.UserSettingViewModel
 
 class SmsFieldFragment: SettingFieldFragment() {
 

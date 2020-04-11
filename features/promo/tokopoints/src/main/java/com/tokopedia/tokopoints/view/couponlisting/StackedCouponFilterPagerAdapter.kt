@@ -1,10 +1,11 @@
 package com.tokopedia.tokopoints.view.couponlisting
 
-import android.util.SparseArray
-import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
+import android.util.SparseArray
+import android.view.ViewGroup
+
 import com.tokopedia.tokopoints.view.model.CouponFilterItem
 
 class StackedCouponFilterPagerAdapter(fm: FragmentManager, private val mItems: List<CouponFilterItem>) : FragmentStatePagerAdapter(fm) {

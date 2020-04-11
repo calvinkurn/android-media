@@ -1,7 +1,8 @@
 package com.tokopedia.groupchat.animation.initializers
 
 import com.tokopedia.groupchat.animation.Particle
-import java.util.*
+
+import java.util.Random
 
 class RotationInitializer(private val mMinAngle: Int, private val mMaxAngle: Int) : ParticleInitializer {
 

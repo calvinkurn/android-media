@@ -3,12 +3,13 @@ package com.tokopedia.referral.view.presenter;
 import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
-import android.text.TextUtils;
-
 import androidx.fragment.app.FragmentManager;
+import android.text.TextUtils;
 
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.network.data.model.response.DataResponse;
+import com.tokopedia.network.constant.ErrorNetMessage;
 import com.tokopedia.abstraction.common.network.exception.HttpErrorException;
 import com.tokopedia.abstraction.common.network.exception.ResponseDataNullException;
 import com.tokopedia.abstraction.common.network.exception.ResponseErrorException;
@@ -22,8 +23,6 @@ import com.tokopedia.linker.model.LinkerError;
 import com.tokopedia.linker.model.LinkerShareData;
 import com.tokopedia.linker.model.LinkerShareResult;
 import com.tokopedia.linker.model.UserData;
-import com.tokopedia.network.constant.ErrorNetMessage;
-import com.tokopedia.network.data.model.response.DataResponse;
 import com.tokopedia.referral.Constants;
 import com.tokopedia.referral.R;
 import com.tokopedia.referral.Util;

@@ -17,8 +17,11 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
+
+import java.util.ArrayList
+import java.util.HashMap
+
 import rx.Subscriber
-import java.util.*
 
 /**
  * @author okasurya on 7/17/18.

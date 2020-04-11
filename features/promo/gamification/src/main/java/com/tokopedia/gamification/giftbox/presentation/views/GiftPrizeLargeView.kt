@@ -13,6 +13,7 @@ import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.tokopedia.gamification.R
+import com.tokopedia.utils.image.ImageUtils
 
 class GiftPrizeLargeView : FrameLayout {
 

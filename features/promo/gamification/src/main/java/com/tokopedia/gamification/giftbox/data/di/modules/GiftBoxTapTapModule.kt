@@ -4,10 +4,11 @@ import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.gamification.R
-import com.tokopedia.gamification.giftbox.data.di.GAMI_TAP_CRACK_EGG
-import com.tokopedia.gamification.giftbox.data.di.GAMI_TAP_EGG_HOME
+import com.tokopedia.gamification.giftbox.data.di.*
 import dagger.Module
 import dagger.Provides
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 import javax.inject.Named
 
 @Module

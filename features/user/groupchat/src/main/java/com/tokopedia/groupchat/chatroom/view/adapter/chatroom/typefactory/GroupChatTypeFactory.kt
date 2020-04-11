@@ -1,10 +1,11 @@
 package com.tokopedia.groupchat.chatroom.view.adapter.chatroom.typefactory
 
 import android.view.View
+
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.*
 import com.tokopedia.groupchat.chatroom.view.viewmodel.interupt.OverlayCloseViewModel
 import com.tokopedia.groupchat.chatroom.view.viewmodel.interupt.OverlayViewModel
+import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.*
 
 /**
  * @author by nisie on 2/7/18.

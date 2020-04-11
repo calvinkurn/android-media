@@ -5,8 +5,10 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.util.AttributeSet;
+import android.util.FloatProperty;
 import android.util.IntProperty;
 import android.util.Property;
+import android.view.View;
 
 /**
  * Created by nakama on 23/03/18.

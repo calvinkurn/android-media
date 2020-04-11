@@ -1,9 +1,8 @@
 package com.tokopedia.topchat.common.util;
 
 import android.graphics.Rect;
-import android.view.View;
-
 import androidx.recyclerview.widget.RecyclerView;
+import android.view.View;
 
 /**
  * @author by nisie on 3/12/18.

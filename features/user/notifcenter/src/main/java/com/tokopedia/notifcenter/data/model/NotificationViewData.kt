@@ -3,9 +3,9 @@ package com.tokopedia.notifcenter.data.model
 import android.os.Parcel
 import android.os.Parcelable
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.notifcenter.data.viewbean.NotificationItemViewBean
 import com.tokopedia.notifcenter.data.entity.Paging
 import com.tokopedia.notifcenter.data.entity.UserInfo
-import com.tokopedia.notifcenter.data.viewbean.NotificationItemViewBean
 import java.util.*
 
 open class NotificationViewData() : Parcelable {

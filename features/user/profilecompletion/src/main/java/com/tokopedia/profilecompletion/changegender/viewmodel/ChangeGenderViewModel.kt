@@ -1,7 +1,7 @@
 package com.tokopedia.profilecompletion.changegender.viewmodel
 
-import android.content.Context
 import androidx.lifecycle.MutableLiveData
+import android.content.Context
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.abstraction.common.utils.GraphqlHelper

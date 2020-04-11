@@ -6,9 +6,7 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.tokopoints.di.TokoPointScope
 import com.tokopedia.tokopoints.view.cataloglisting.CatalogPurchaseRedeemptionRepository
-import com.tokopedia.tokopoints.view.model.CatalogDetailOuter
-import com.tokopedia.tokopoints.view.model.PreValidateRedeemBase
-import com.tokopedia.tokopoints.view.model.TokoPointDetailEntity
+import com.tokopedia.tokopoints.view.model.*
 import com.tokopedia.tokopoints.view.util.CommonConstant
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext

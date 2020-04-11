@@ -3,15 +3,14 @@ package com.tokopedia.groupchat.channel.view;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.os.CountDownTimer;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 import com.tokopedia.groupchat.R;
 

@@ -3,8 +3,8 @@ package com.tokopedia.notifcenter.data.mapper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.notifcenter.data.entity.NotificationCenterDetail
 import com.tokopedia.notifcenter.data.entity.NotificationCenterSingleDetail
-import com.tokopedia.notifcenter.data.model.NotificationViewData
 import com.tokopedia.notifcenter.data.viewbean.NotificationItemViewBean
+import com.tokopedia.notifcenter.data.model.NotificationViewData
 import javax.inject.Inject
 
 /**

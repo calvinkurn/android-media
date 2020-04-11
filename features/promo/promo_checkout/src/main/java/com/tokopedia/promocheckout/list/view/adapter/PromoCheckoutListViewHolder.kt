@@ -1,8 +1,8 @@
 package com.tokopedia.promocheckout.list.view.adapter
 
+import androidx.core.content.ContextCompat
 import android.text.TextUtils
 import android.view.View
-import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.promocheckout.R

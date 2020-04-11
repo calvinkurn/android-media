@@ -5,7 +5,9 @@ import android.widget.ImageView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.talk.R
+import com.tokopedia.talk.inboxtalk.view.viewmodel.EmptyInboxTalkViewModel
 import com.tokopedia.talk.producttalk.view.viewmodel.EmptyProductTalkViewModel
+import kotlinx.android.synthetic.main.empty_inbox_talk.view.*
 
 /**
  * @author by nisie on 8/29/18.

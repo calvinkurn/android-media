@@ -1,5 +1,8 @@
 package com.tokopedia.navigation.domain;
 
+import android.content.Context;
+
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.navigation.data.entity.NotificationEntity;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;

@@ -4,15 +4,19 @@ import android.content.res.Resources
 import android.text.TextUtils
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.chat_common.data.SendableViewModel
+
+import com.tokopedia.graphql.domain.GraphqlUseCase
+import com.tokopedia.usecase.RequestParams
 import com.tokopedia.chatbot.R
+import com.tokopedia.chatbot.attachinvoice.data.model.GetInvoicesResponsePojo
 import com.tokopedia.chatbot.domain.pojo.invoicelist.api.GetInvoiceListPojo
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.graphql.domain.GraphqlUseCase
-import com.tokopedia.usecase.RequestParams
-import rx.Subscriber
-import java.util.*
+
 import javax.inject.Inject
+
+import rx.Subscriber
+import java.util.HashMap
 
 /**
  * Created by Hendri on 21/03/18.

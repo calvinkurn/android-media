@@ -2,7 +2,6 @@ package com.tokopedia;
 
 import android.content.Context;
 import android.content.Intent;
-
 import androidx.core.app.TaskStackBuilder;
 
 import org.robolectric.RuntimeEnvironment;

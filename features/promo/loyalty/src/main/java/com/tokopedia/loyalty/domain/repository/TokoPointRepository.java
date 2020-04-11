@@ -17,7 +17,6 @@ import com.tokopedia.loyalty.view.data.CouponViewModel;
 import com.tokopedia.loyalty.view.data.CouponsDataWrapper;
 import com.tokopedia.loyalty.view.data.VoucherViewModel;
 import com.tokopedia.network.constant.ErrorNetMessage;
-
 import java.util.Map;
 
 import retrofit2.Response;

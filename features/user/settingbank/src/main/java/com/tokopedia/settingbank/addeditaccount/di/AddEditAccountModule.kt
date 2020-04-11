@@ -3,6 +3,9 @@ package com.tokopedia.settingbank.addeditaccount.di
 import android.content.Context
 import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.abstraction.common.network.exception.HeaderErrorListResponse
+import com.tokopedia.abstraction.common.network.interceptor.AccountsAuthorizationInterceptor
+import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor
 import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseInterceptor
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.network.NetworkRouter
@@ -11,6 +14,7 @@ import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.settingbank.addeditaccount.data.AddEditAccountApi
 import com.tokopedia.settingbank.addeditaccount.data.AddEditAccountUrl
+import com.tokopedia.settingbank.banklist.data.SettingBankUrl
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module

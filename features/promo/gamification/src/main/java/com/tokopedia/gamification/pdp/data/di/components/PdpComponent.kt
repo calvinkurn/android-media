@@ -1,10 +1,7 @@
 package com.tokopedia.gamification.pdp.data.di.components
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
-import com.tokopedia.gamification.pdp.data.di.modules.DispatcherModule
-import com.tokopedia.gamification.pdp.data.di.modules.GqlQueryModule
-import com.tokopedia.gamification.pdp.data.di.modules.PdpModule
-import com.tokopedia.gamification.pdp.data.di.modules.ViewModelModule
+import com.tokopedia.gamification.pdp.data.di.modules.*
 import com.tokopedia.gamification.pdp.data.di.scopes.GamificationPdpScope
 import com.tokopedia.gamification.pdp.presentation.views.PdpGamificationView
 import dagger.Component

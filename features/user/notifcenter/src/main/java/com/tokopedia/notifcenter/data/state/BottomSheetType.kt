@@ -1,5 +1,7 @@
 package com.tokopedia.notifcenter.data.state
 
+import java.lang.Exception
+
 sealed class BottomSheetType {
     object LongerContent: BottomSheetType()
     object ProductCheckout: BottomSheetType()

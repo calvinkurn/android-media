@@ -4,8 +4,8 @@ import androidx.lifecycle.Observer
 import com.tokopedia.attachvoucher.FileUtil
 import com.tokopedia.attachvoucher.InstantTaskExecutorRuleSpek
 import com.tokopedia.attachvoucher.data.GetVoucherResponse
-import com.tokopedia.attachvoucher.data.VoucherType
 import com.tokopedia.attachvoucher.data.VoucherUiModel
+import com.tokopedia.attachvoucher.data.VoucherType
 import com.tokopedia.attachvoucher.usecase.GetVoucherUseCase
 import com.tokopedia.attachvoucher.view.viewmodel.AttachVoucherViewModel.Companion.NO_FILTER
 import com.tokopedia.common.network.util.CommonUtil

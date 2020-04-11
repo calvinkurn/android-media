@@ -4,6 +4,7 @@ package com.tokopedia.topchat.chatlist.domain.pojo.search;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.tokopedia.topchat.chatlist.domain.pojo.message.Contact;
+import com.tokopedia.topchat.chatlist.domain.pojo.message.Contact;
 
 public class RepliesContent {
 

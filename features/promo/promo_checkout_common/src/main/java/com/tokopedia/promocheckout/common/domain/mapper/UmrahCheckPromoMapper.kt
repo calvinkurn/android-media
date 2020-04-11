@@ -1,5 +1,6 @@
 package com.tokopedia.promocheckout.common.domain.mapper
 
+import com.tokopedia.promocheckout.common.domain.model.CheckUmrahPromoCode
 import com.tokopedia.promocheckout.common.domain.model.CheckUmrahPromoCodeData
 import com.tokopedia.promocheckout.common.domain.model.Message
 import com.tokopedia.promocheckout.common.view.uimodel.DataUiModel

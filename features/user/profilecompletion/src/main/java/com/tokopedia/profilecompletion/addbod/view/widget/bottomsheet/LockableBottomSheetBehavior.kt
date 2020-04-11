@@ -1,10 +1,10 @@
 package com.tokopedia.profilecompletion.addbod.view.widget.bottomsheet
 import android.content.Context
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
-import androidx.coordinatorlayout.widget.CoordinatorLayout
-import com.google.android.material.bottomsheet.BottomSheetBehavior
 
 
 @Suppress("unused")

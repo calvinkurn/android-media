@@ -1,14 +1,16 @@
 package com.tokopedia.navigation.presentation.adapter.viewholder
 
 import android.content.Context
+import androidx.annotation.LayoutRes
 import android.view.View
 import android.widget.LinearLayout
-import androidx.annotation.LayoutRes
+
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.design.label.LabelView
 import com.tokopedia.navigation.R
 import com.tokopedia.navigation.domain.model.Inbox
 import com.tokopedia.navigation.presentation.view.InboxAdapterListener
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 
 /**
  * Author errysuprayogi on 13,March,2019

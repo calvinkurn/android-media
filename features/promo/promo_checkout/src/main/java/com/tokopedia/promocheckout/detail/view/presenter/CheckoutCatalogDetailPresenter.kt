@@ -11,9 +11,12 @@ import com.tokopedia.promocheckout.detail.model.couponredeem.PromoRedeemCouponRe
 import com.tokopedia.promocheckout.detail.model.detailmodel.CouponDetailsResponse
 import com.tokopedia.promocheckout.detail.model.detailmodel.HachikoCatalogDetail
 import com.tokopedia.promocheckout.detail.model.userpoints.UserPointsResponse
-import rx.Subscriber
-import java.util.*
+
+import java.util.HashMap
+
 import javax.inject.Inject
+
+import rx.Subscriber
 
 class CheckoutCatalogDetailPresenter @Inject constructor(private val mGetCouponDetail: GraphqlUseCase?, private val mValidateCouponUseCase: GraphqlUseCase, private val mRedeemCouponUseCase: GraphqlUseCase) : BaseDaggerPresenter<CheckoutCatalogDetailContract.View>(), CheckoutCatalogDetailContract.Presenter {
     lateinit var data: CouponDetailsResponse

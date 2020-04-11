@@ -2,6 +2,7 @@ package com.tokopedia.tokopoints.view.catalogdetail
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
+import com.tokopedia.network.ErrorMessageException
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.tokopoints.view.cataloglisting.ConfirmRedeemDialog
 import com.tokopedia.tokopoints.view.cataloglisting.ValidateMessageDialog
@@ -16,6 +17,7 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import java.lang.Exception
 import kotlin.reflect.KClass
 
 class CouponCatalogViewModelTest {

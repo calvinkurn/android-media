@@ -1,8 +1,7 @@
 package com.tokopedia;
 
-import android.view.MenuItem;
-
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import android.view.MenuItem;
 
 import org.robolectric.annotation.Implementation;
 import org.robolectric.annotation.Implements;

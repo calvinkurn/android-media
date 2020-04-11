@@ -1,10 +1,7 @@
 package com.tokopedia.settingnotif.usersetting.view.dataview
 
 import com.tokopedia.settingnotif.R
-import com.tokopedia.settingnotif.usersetting.view.fragment.EmailFieldFragment
-import com.tokopedia.settingnotif.usersetting.view.fragment.PushNotifFieldFragment
-import com.tokopedia.settingnotif.usersetting.view.fragment.SellerFieldFragment
-import com.tokopedia.settingnotif.usersetting.view.fragment.SmsFieldFragment
+import com.tokopedia.settingnotif.usersetting.view.fragment.*
 import com.tokopedia.settingnotif.usersetting.view.fragment.base.SettingFieldFragment
 
 data class SettingTypeDataView(

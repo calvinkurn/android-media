@@ -1,7 +1,7 @@
 package com.tokopedia.groupchat.chatroom.view.adapter.chatroom.viewholder
 
-import android.view.View
 import androidx.annotation.LayoutRes
+import android.view.View
 import com.airbnb.lottie.LottieAnimationView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.groupchat.R

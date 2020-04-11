@@ -2,10 +2,12 @@ package com.tokopedia.chatbot.view.customview
 
 
 import android.app.Activity
-import android.widget.ImageView
+import android.content.Context
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.bottomsheet.BottomSheetDialog
+import android.view.LayoutInflater
+import android.widget.ImageView
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.view.adapter.ReasonAdapter
 import java.util.*

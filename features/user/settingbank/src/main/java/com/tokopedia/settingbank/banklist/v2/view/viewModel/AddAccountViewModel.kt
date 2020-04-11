@@ -8,6 +8,7 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.settingbank.banklist.v2.di.QUERY_ADD_BANK_ACCOUNT
 import com.tokopedia.settingbank.banklist.v2.domain.AddBankRequest
+import com.tokopedia.settingbank.banklist.v2.domain.AddBankResponse
 import com.tokopedia.settingbank.banklist.v2.domain.RichieAddBankAccountNewFlow
 import com.tokopedia.settingbank.banklist.v2.view.viewState.*
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
@@ -15,6 +16,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.withContext
+import java.lang.Exception
 import javax.inject.Inject
 
 class AddAccountViewModel @Inject constructor(private val graphqlRepository: GraphqlRepository,

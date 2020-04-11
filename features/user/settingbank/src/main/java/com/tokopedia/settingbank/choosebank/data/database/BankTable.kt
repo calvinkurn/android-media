@@ -1,10 +1,10 @@
 package com.tokopedia.settingbank.choosebank.data.database
 
-import androidx.annotation.NonNull
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import androidx.annotation.NonNull
 import com.tokopedia.settingbank.choosebank.data.database.BankTable.Companion.BANK_ID
 import com.tokopedia.settingbank.choosebank.data.database.BankTable.Companion.TABLE_NAME
 

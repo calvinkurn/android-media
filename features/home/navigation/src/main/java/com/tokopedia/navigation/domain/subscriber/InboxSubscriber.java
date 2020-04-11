@@ -1,11 +1,11 @@
 package com.tokopedia.navigation.domain.subscriber;
 
+import com.tokopedia.network.constant.ErrorNetMessage;
 import com.tokopedia.abstraction.common.network.exception.HttpErrorException;
 import com.tokopedia.abstraction.common.network.exception.ResponseDataNullException;
 import com.tokopedia.abstraction.common.network.exception.ResponseErrorException;
 import com.tokopedia.navigation.data.entity.NotificationEntity;
 import com.tokopedia.navigation.presentation.view.InboxView;
-import com.tokopedia.network.constant.ErrorNetMessage;
 
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;

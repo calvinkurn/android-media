@@ -1,5 +1,6 @@
 package com.tokopedia.chatbot.view.adapter.viewholder.listener
 
+import com.tokopedia.chatbot.data.quickreply.QuickReplyListViewModel
 import com.tokopedia.chatbot.data.quickreply.QuickReplyViewModel
 
 /**

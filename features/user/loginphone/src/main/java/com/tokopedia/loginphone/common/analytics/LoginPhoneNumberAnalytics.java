@@ -3,10 +3,10 @@ package com.tokopedia.loginphone.common.analytics;
 import android.app.Activity;
 import android.os.Build;
 
+import javax.inject.Inject;
+
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
-
-import javax.inject.Inject;
 
 import timber.log.Timber;
 

@@ -2,7 +2,7 @@ package com.tokopedia.loginregister.registerinitial.view.util;
 
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 /**
  * @author by nisie on 28/10/18.

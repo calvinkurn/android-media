@@ -1,10 +1,10 @@
 package com.tokopedia.loyalty.view.analytics;
 
 import com.tokopedia.analyticconstant.DataLayer;
-import com.tokopedia.track.TrackApp;
 
 import java.util.ArrayList;
 import java.util.List;
+import com.tokopedia.track.TrackApp;
 
 import javax.inject.Inject;
 

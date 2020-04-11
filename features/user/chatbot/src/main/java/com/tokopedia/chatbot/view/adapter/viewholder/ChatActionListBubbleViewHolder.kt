@@ -1,11 +1,12 @@
 package com.tokopedia.chatbot.view.adapter.viewholder
 
-import android.view.View
-import android.widget.TextView
 import androidx.annotation.LayoutRes
 import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import android.view.View
+import android.widget.TextView
+
 import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration
 import com.tokopedia.chat_common.view.adapter.viewholder.BaseChatViewHolder
 import com.tokopedia.chatbot.R

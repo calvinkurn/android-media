@@ -1,5 +1,6 @@
 package com.tokopedia.settingbank.banklist.v2.view.viewModel
 
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData

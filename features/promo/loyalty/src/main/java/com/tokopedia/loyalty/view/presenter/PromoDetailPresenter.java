@@ -2,6 +2,7 @@ package com.tokopedia.loyalty.view.presenter;
 
 import android.content.res.Resources;
 
+import com.tokopedia.network.constant.ErrorNetMessage;
 import com.tokopedia.abstraction.common.network.exception.HttpErrorException;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
@@ -13,7 +14,6 @@ import com.tokopedia.loyalty.domain.entity.response.promocodesave.PromoCacheResp
 import com.tokopedia.loyalty.view.data.PromoData;
 import com.tokopedia.loyalty.view.interactor.IPromoInteractor;
 import com.tokopedia.loyalty.view.view.IPromoDetailView;
-import com.tokopedia.network.constant.ErrorNetMessage;
 
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;

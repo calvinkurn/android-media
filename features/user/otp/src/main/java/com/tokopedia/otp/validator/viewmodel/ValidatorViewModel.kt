@@ -5,10 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.otp.validator.data.OtpRequestData
-import com.tokopedia.otp.validator.data.OtpRequestPojo
-import com.tokopedia.otp.validator.data.OtpValidateData
-import com.tokopedia.otp.validator.data.OtpValidatePojo
+import com.tokopedia.otp.validator.data.*
 import com.tokopedia.otp.validator.di.ValidatorQueryConstant
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result

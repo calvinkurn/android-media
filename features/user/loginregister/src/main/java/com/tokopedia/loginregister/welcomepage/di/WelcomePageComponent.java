@@ -1,6 +1,7 @@
 package com.tokopedia.loginregister.welcomepage.di;
 
 import com.tokopedia.loginregister.common.di.LoginRegisterComponent;
+import com.tokopedia.loginregister.registerinitial.di.RegisterInitialScope;
 import com.tokopedia.loginregister.welcomepage.WelcomePageFragment;
 
 import dagger.Component;

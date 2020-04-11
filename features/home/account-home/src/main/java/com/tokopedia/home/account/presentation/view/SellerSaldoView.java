@@ -1,13 +1,12 @@
 package com.tokopedia.home.account.presentation.view;
 
 import android.content.Context;
-import android.util.AttributeSet;
-import android.view.View;
-import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
+import android.util.AttributeSet;
+import android.view.View;
+import android.widget.TextView;
 
 import com.tokopedia.design.base.BaseCustomView;
 import com.tokopedia.home.account.R;

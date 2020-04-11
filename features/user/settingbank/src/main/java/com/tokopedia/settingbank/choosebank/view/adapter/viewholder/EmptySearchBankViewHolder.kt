@@ -4,6 +4,7 @@ import android.view.View
 import android.widget.TextView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.settingbank.R
+import com.tokopedia.settingbank.choosebank.view.viewmodel.BankViewModel
 import com.tokopedia.settingbank.choosebank.view.viewmodel.EmptySearchBankViewModel
 
 /**

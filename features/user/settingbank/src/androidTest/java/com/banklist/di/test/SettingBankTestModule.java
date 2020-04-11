@@ -2,6 +2,7 @@ package com.banklist.di.test;
 
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.interceptor.FingerprintInterceptor;
+import com.tokopedia.settingbank.banklist.data.SettingBankUrl;
 import com.tokopedia.settingbank.banklist.di.SettingBankModule;
 import com.tokopedia.settingbank.banklist.di.SettingBankScope;
 import com.tokopedia.user.session.UserSessionInterface;

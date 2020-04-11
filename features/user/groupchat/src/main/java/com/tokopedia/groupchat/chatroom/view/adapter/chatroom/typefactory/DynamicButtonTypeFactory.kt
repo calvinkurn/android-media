@@ -2,7 +2,9 @@ package com.tokopedia.groupchat.chatroom.view.adapter.chatroom.typefactory
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.groupchat.chatroom.view.adapter.chatroom.viewholder.BaseDynamicButtonViewHolder
+import com.tokopedia.groupchat.room.view.viewmodel.BaseDynamicButton
 import com.tokopedia.groupchat.room.view.viewmodel.DynamicButton
 import com.tokopedia.groupchat.room.view.viewmodel.InteractiveButton
 

@@ -4,14 +4,10 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.imageuploader.domain.UploadImageUseCase;
-import com.tokopedia.kyc_centralized.R;
-import com.tokopedia.kyc_centralized.view.listener.UserIdentificationUploadImage;
-import com.tokopedia.kyc_centralized.view.viewmodel.AttachmentImageModel;
-import com.tokopedia.kyc_centralized.view.viewmodel.ImageUploadModel;
-import com.tokopedia.kyc_centralized.view.viewmodel.UserIdentificationStepperModel;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.user_identification_common.KYCConstant;
+import com.tokopedia.kyc_centralized.R;
 import com.tokopedia.user_identification_common.domain.pojo.RegisterIdentificationPojo;
 import com.tokopedia.user_identification_common.domain.pojo.UploadIdentificationPojo;
 import com.tokopedia.user_identification_common.domain.usecase.GetKtpStatusUseCase;
@@ -19,6 +15,10 @@ import com.tokopedia.user_identification_common.domain.usecase.RegisterIdentific
 import com.tokopedia.user_identification_common.domain.usecase.UploadIdentificationUseCase;
 import com.tokopedia.user_identification_common.subscriber.GetKtpStatusSubscriber;
 import com.tokopedia.user_identification_common.util.SchedulerProvider;
+import com.tokopedia.kyc_centralized.view.listener.UserIdentificationUploadImage;
+import com.tokopedia.kyc_centralized.view.viewmodel.AttachmentImageModel;
+import com.tokopedia.kyc_centralized.view.viewmodel.ImageUploadModel;
+import com.tokopedia.kyc_centralized.view.viewmodel.UserIdentificationStepperModel;
 
 import java.util.ArrayList;
 import java.util.HashMap;

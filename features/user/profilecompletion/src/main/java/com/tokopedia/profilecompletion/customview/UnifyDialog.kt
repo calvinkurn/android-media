@@ -1,17 +1,19 @@
 package com.tokopedia.profilecompletion.customview
 
 import android.app.Activity
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Build
+import androidx.annotation.IntDef
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.content.res.AppCompatResources
+import androidx.cardview.widget.CardView
 import android.view.View
 import android.view.Window
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.annotation.IntDef
-import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.content.res.AppCompatResources
-import androidx.cardview.widget.CardView
-import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.profilecompletion.R
 
 class UnifyDialog(private val activity: Activity,

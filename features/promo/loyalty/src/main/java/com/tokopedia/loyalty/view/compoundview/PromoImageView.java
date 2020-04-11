@@ -1,9 +1,8 @@
 package com.tokopedia.loyalty.view.compoundview;
 
 import android.content.Context;
-import android.util.AttributeSet;
-
 import androidx.annotation.Nullable;
+import android.util.AttributeSet;
 
 /**
  * @author anggaprasetiyo on 08/01/18.

@@ -5,6 +5,7 @@ import android.content.SharedPreferences
 import android.graphics.Typeface
 import android.graphics.drawable.Drawable
 import android.os.Build
+import androidx.appcompat.content.res.AppCompatResources
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
@@ -15,16 +16,15 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.appcompat.content.res.AppCompatResources
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.design.base.BaseCustomView
-import com.tokopedia.design.utils.StripedUnderlineUtil
 import com.tokopedia.stickylogin.R
 import com.tokopedia.stickylogin.analytics.StickyLoginTracking
 import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
 import com.tokopedia.stickylogin.internal.StickyLoginConstant
-import kotlinx.coroutines.*
 import java.util.concurrent.TimeUnit
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.design.utils.StripedUnderlineUtil
+import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
 
 

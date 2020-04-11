@@ -1,8 +1,13 @@
 package com.tokopedia.liveness.view.activity
 
 import ai.advance.common.utils.ScreenUtil
+import com.tokopedia.liveness.R
+import com.tokopedia.liveness.di.DaggerLivenessDetectionComponent
+import com.tokopedia.liveness.di.LivenessDetectionComponent
 import ai.advance.liveness.lib.GuardianLivenessDetectionSDK
 import ai.advance.liveness.lib.LivenessResult
+import com.tokopedia.liveness.view.OnBackListener
+import com.tokopedia.liveness.view.fragment.LivenessFragment
 import android.Manifest
 import android.app.Activity
 import android.content.Context
@@ -18,11 +23,6 @@ import androidx.core.content.ContextCompat
 import com.google.android.play.core.splitcompat.SplitCompat
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.liveness.R
-import com.tokopedia.liveness.di.DaggerLivenessDetectionComponent
-import com.tokopedia.liveness.di.LivenessDetectionComponent
-import com.tokopedia.liveness.view.OnBackListener
-import com.tokopedia.liveness.view.fragment.LivenessFragment
 
 class LivenessActivity : AppCompatActivity(), HasComponent<LivenessDetectionComponent> {
 

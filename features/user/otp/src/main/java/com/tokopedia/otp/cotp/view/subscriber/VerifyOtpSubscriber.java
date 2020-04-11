@@ -2,11 +2,11 @@ package com.tokopedia.otp.cotp.view.subscriber;
 
 import android.text.TextUtils;
 
-import com.tokopedia.otp.R;
 import com.tokopedia.otp.common.network.OtpErrorCode;
 import com.tokopedia.otp.common.network.OtpErrorHandler;
 import com.tokopedia.otp.cotp.view.viewlistener.Verification;
 import com.tokopedia.otp.cotp.view.viewmodel.ValidateOtpDomain;
+import com.tokopedia.otp.R;
 
 import rx.Subscriber;
 

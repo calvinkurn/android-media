@@ -6,9 +6,9 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.chatbot.domain.pojo.csatRating.websocketCsatRatingResponse.WebSocketCsatResponse
 import com.tokopedia.chatbot.view.fragment.ChatBotProvideRatingFragment
 import com.tokopedia.chatbot.view.fragment.ChatBotProvideRatingFragment.Companion.TIME_STAMP
-import com.tokopedia.csat_rating.activity.BaseProvideRatingActivity
 import com.tokopedia.csat_rating.data.BadCsatReasonListItem
-import java.util.*
+import com.tokopedia.csat_rating.activity.BaseProvideRatingActivity
+import java.util.ArrayList
 
 class ChatBotProvideRatingActivity: BaseProvideRatingActivity() {
 

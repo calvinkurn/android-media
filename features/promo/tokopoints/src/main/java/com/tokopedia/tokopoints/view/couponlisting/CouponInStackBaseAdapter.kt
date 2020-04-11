@@ -3,6 +3,12 @@ package com.tokopedia.tokopoints.view.couponlisting
 import android.content.Context
 import android.os.Bundle
 import android.os.CountDownTimer
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
+import androidx.cardview.widget.CardView
+import androidx.fragment.app.FragmentActivity
+import androidx.recyclerview.widget.RecyclerView
+
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
@@ -10,13 +16,13 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
-import androidx.cardview.widget.CardView
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.content.ContextCompat
-import androidx.fragment.app.FragmentActivity
-import androidx.recyclerview.widget.RecyclerView
+
+import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.library.baseadapter.AdapterCallback
@@ -30,7 +36,12 @@ import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil
 import com.tokopedia.tokopoints.view.util.CommonConstant
 import com.tokopedia.tokopoints.view.util.DEFAULT_TIME_STRING
 import com.tokopedia.tokopoints.view.util.convertLongToHourMinuteSec
-import java.util.*
+
+import java.util.Arrays
+import java.util.HashMap
+import java.util.Locale
+
+import rx.Subscriber
 
 class CouponInStackBaseAdapter(callback: AdapterCallback, val data : TokoPointPromosEntity) : BaseAdapter<CouponValueEntity>(callback) {
 

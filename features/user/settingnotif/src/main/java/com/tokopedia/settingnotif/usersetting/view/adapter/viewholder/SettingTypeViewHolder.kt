@@ -1,15 +1,15 @@
 package com.tokopedia.settingnotif.usersetting.view.adapter.viewholder
 
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.loadImageDrawable
 import com.tokopedia.settingnotif.R
-import com.tokopedia.settingnotif.usersetting.view.dataview.SettingTypeDataView
 import com.tokopedia.settingnotif.usersetting.view.fragment.SettingTypeFragment
+import com.tokopedia.settingnotif.usersetting.view.dataview.SettingTypeDataView
 
 class SettingTypeViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 

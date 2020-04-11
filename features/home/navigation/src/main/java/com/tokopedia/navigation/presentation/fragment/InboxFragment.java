@@ -342,9 +342,9 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
                 if (getActivity() != null
                         && getActivity().getApplicationContext() != null) {
                     TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData("clickInboxChat",
-                                        "inbox - talk",
-                                        "click on diskusi product",
-                                        ""));
+                            "inbox - talk",
+                            "click on diskusi product",
+                            ""));
 
                     RouteManager.route(getActivity(), ApplinkConstInternalGlobal.INBOX_TALK);
                 }

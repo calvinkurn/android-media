@@ -1,8 +1,10 @@
 package com.tokopedia.home.account.presentation.viewholder
 
-import android.view.View
 import androidx.annotation.LayoutRes
+import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.home.account.R
 import com.tokopedia.home.account.presentation.listener.AccountItemListener
 import com.tokopedia.home.account.presentation.viewmodel.PowerMerchantCardViewModel

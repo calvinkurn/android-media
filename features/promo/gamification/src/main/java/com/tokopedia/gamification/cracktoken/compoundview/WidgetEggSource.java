@@ -1,15 +1,21 @@
 package com.tokopedia.gamification.cracktoken.compoundview;
 
+import android.app.Activity;
 import android.content.Context;
+import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
+import android.text.Spannable;
+import android.text.SpannableString;
 import android.text.TextUtils;
+import android.text.style.ForegroundColorSpan;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import androidx.annotation.Nullable;
-
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.gamification.R;
 
 /**

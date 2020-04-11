@@ -1,11 +1,11 @@
 package com.tokopedia.loginregister.activation.view.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.loginregister.R;
 import com.tokopedia.loginregister.activation.domain.pojo.ActionPojo;
 import com.tokopedia.loginregister.activation.domain.usecase.ChangeEmailUseCase;
 import com.tokopedia.loginregister.activation.view.listener.ChangeEmailContract;
 import com.tokopedia.sessioncommon.ErrorHandlerSession;
+import com.tokopedia.loginregister.R;
 
 import javax.inject.Inject;
 

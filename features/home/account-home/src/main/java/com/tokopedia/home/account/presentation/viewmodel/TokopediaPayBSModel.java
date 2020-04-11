@@ -3,6 +3,9 @@ package com.tokopedia.home.account.presentation.viewmodel;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.tokopedia.home.account.presentation.adapter.AccountTypeFactory;
+import com.tokopedia.home.account.presentation.viewmodel.base.ParcelableViewModel;
+
 /**
  * @author okasurya on 7/17/18.
  */

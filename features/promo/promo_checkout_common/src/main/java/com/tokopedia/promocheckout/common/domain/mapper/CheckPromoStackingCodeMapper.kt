@@ -2,6 +2,7 @@ package com.tokopedia.promocheckout.common.domain.mapper
 
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.promocheckout.common.domain.model.promostacking.response.*
+import com.tokopedia.promocheckout.common.domain.model.promostacking.response.TrackingDetail
 import com.tokopedia.promocheckout.common.view.uimodel.*
 import javax.inject.Inject
 

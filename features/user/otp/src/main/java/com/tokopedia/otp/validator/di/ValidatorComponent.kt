@@ -5,6 +5,7 @@ import com.tokopedia.otp.validator.view.activity.ValidatorActivity
 import com.tokopedia.otp.validator.view.fragment.OtpModeListFragment
 import com.tokopedia.otp.validator.view.fragment.ValidatorFragment
 import dagger.Component
+import dagger.Module
 
 /**
  * Created by Ade Fulki on 2019-10-20.

@@ -1,7 +1,6 @@
 package com.tokopedia.tokopoints.view.contract;
 
 import android.content.Context;
-
 import androidx.annotation.RawRes;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;

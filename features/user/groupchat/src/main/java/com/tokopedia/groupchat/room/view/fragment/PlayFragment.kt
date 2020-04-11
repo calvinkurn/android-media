@@ -3,6 +3,7 @@ package com.tokopedia.groupchat.room.view.fragment
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.*
+import android.content.pm.ActivityInfo
 import android.content.res.Configuration
 import android.os.Build
 import android.os.Bundle

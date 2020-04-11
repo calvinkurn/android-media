@@ -1,9 +1,8 @@
 package com.tokopedia.tokopoints.view.adapter;
 
 import android.graphics.Rect;
-import android.view.View;
-
 import androidx.recyclerview.widget.RecyclerView;
+import android.view.View;
 
 public class NonCarouselItemDecoration extends RecyclerView.ItemDecoration {
     private final int size;

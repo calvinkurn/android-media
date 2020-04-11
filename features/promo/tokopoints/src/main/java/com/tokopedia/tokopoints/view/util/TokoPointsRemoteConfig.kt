@@ -1,7 +1,9 @@
 package com.tokopedia.tokopoints.view.util
 
 import android.content.Context
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
 
 class  TokoPointsRemoteConfig  private constructor(val remoteConfig: FirebaseRemoteConfigImpl){
 

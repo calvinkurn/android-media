@@ -4,6 +4,7 @@ import android.view.View;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.topchat.chattemplate.view.viewmodel.TemplateChatModel;
+import com.tokopedia.topchat.chattemplate.view.viewmodel.TemplateChatModel;
 
 /**
  * Created by stevenfredian on 9/27/17.

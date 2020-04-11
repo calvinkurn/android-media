@@ -1,10 +1,10 @@
 package com.tokopedia.liveness.view.viewmodel
 
+import com.tokopedia.liveness.data.model.response.LivenessData
+import com.tokopedia.liveness.domain.UploadLivenessResultUseCase
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.liveness.data.model.response.LivenessData
-import com.tokopedia.liveness.domain.UploadLivenessResultUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success

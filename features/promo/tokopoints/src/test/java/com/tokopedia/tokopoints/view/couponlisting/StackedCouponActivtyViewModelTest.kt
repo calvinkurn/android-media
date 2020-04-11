@@ -16,8 +16,11 @@ import kotlinx.coroutines.test.runBlockingTest
 import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
+
+import org.junit.Assert.*
+import org.junit.Rule
+import java.util.*
 import kotlin.reflect.KClass
 
 class StackedCouponActivtyViewModelTest {

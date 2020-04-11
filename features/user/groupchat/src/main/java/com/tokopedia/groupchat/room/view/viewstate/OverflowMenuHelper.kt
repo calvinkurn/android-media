@@ -1,13 +1,13 @@
 package com.tokopedia.groupchat.room.view.viewstate
 
 import android.content.Context
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialog
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
 import com.tokopedia.groupchat.R
 import com.tokopedia.groupchat.chatroom.view.viewmodel.ChannelInfoViewModel

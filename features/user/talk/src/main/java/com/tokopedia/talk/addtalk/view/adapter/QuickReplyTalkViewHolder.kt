@@ -5,6 +5,7 @@ import android.view.View
 import android.widget.TextView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.talk.R
+import com.tokopedia.talk.producttalk.view.viewmodel.LoadProductTalkThreadViewModel
 
 /**
  * @author : Steven 17/09/18

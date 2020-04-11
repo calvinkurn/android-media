@@ -3,13 +3,13 @@ package com.tokopedia.groupchat.chatroom.view.adapter.chatroom
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.graphics.Typeface
+import androidx.recyclerview.widget.RecyclerView
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker

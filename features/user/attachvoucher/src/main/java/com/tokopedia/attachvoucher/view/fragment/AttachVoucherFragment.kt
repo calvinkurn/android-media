@@ -15,8 +15,8 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.attachcommon.data.VoucherPreview
 import com.tokopedia.attachvoucher.R
 import com.tokopedia.attachvoucher.analytic.AttachVoucherAnalytic
-import com.tokopedia.attachvoucher.data.VoucherType
 import com.tokopedia.attachvoucher.data.VoucherUiModel
+import com.tokopedia.attachvoucher.data.VoucherType
 import com.tokopedia.attachvoucher.di.AttachVoucherComponent
 import com.tokopedia.attachvoucher.view.adapter.AttachVoucherAdapter
 import com.tokopedia.attachvoucher.view.adapter.AttachVoucherTypeFactory

@@ -4,9 +4,9 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.groupchat.chatroom.view.listener.ChannelVoteContract;
 import com.tokopedia.groupchat.common.util.GroupChatErrorHandler;
 import com.tokopedia.groupchat.vote.view.model.VoteViewModel;
-import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.vote.domain.model.VoteStatisticDomainModel;
 import com.tokopedia.vote.domain.usecase.SendVoteUseCase;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import javax.inject.Inject;
 

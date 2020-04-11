@@ -2,6 +2,7 @@ package com.tokopedia.tokopoints.di
 
 import android.app.Activity
 import android.content.Context
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.coroutines.data.Interactor
 import com.tokopedia.tokopoints.R

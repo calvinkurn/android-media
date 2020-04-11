@@ -11,6 +11,7 @@ import com.tokopedia.groupchat.chatroom.domain.pojo.AttributeStickyComponentData
 import com.tokopedia.groupchat.chatroom.view.adapter.chatroom.StickyComponentAdapter
 import com.tokopedia.groupchat.chatroom.view.viewmodel.ChannelInfoViewModel
 import com.tokopedia.groupchat.common.analytics.GroupChatAnalytics
+import com.tokopedia.groupchat.room.view.activity.PlayActivity
 import com.tokopedia.groupchat.room.view.viewmodel.pinned.StickyComponentViewModel
 import com.tokopedia.groupchat.room.view.viewmodel.pinned.StickyComponentsViewModel
 import com.tokopedia.kotlin.extensions.view.hide

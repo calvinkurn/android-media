@@ -1,8 +1,8 @@
 package com.tokopedia.notifcenter.presentation.subscriber
 
 import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.notifcenter.data.entity.NotificationCenterDetail
 import com.tokopedia.notifcenter.data.mapper.GetNotificationUpdateMapper
+import com.tokopedia.notifcenter.data.entity.NotificationCenterDetail
 import com.tokopedia.notifcenter.data.model.NotificationViewData
 
 class GetNotificationUpdateSubscriber(

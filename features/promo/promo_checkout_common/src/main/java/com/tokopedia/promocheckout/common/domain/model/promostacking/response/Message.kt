@@ -2,8 +2,8 @@ package com.tokopedia.promocheckout.common.domain.model.promostacking.response
 
 import android.os.Parcel
 import android.os.Parcelable
-import com.google.gson.annotations.SerializedName
 import javax.annotation.Generated
+import com.google.gson.annotations.SerializedName
 
 @Generated("com.robohorse.robopojogenerator")
 data class Message(
