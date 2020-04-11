@@ -97,7 +97,7 @@ class EditProductInputMapper @Inject constructor() {
         val products: ArrayList<Product> = ArrayList()
         productVariant.forEach {
             val product = Product(
-                    it.opt,
+                    mapProductCombination(it.opt),
                     it.priceVar,
                     it.sku,
                     STOCK_STATUS,
@@ -107,6 +107,8 @@ class EditProductInputMapper @Inject constructor() {
         }
         return products
     }
+
+    private fun mapProductCombination(opt: List<Int>): List<Int> = opt.map { it - 1 }
 
     private fun mapVariantSelectionParam(
             variantOptionParent: List<ProductVariantOptionParent>): List<Selection> {
@@ -130,7 +132,6 @@ class EditProductInputMapper @Inject constructor() {
                     it.value,
                     it.vuv.toString(),
                     it.hex
-
             )
             options.add(option)
         }

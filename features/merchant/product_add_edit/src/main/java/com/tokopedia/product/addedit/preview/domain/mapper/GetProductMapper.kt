@@ -53,11 +53,14 @@ class GetProductMapper @Inject constructor() {
                     it.price.toDouble(),
                     it.stock.toLong(),
                     it.sku,
-                    it.combination
+                    mapProductVariantCombination(it.combination)
             )
         }
         return ArrayList(variantCombination)
     }
+
+    private fun mapProductVariantCombination(combination: List<Int>): List<Int> =
+            combination.map { it + 1 }
 
     private fun mapProductVariantOption(selections: List<Selection>): ArrayList<ProductVariantOptionParent> {
         var position = 0
@@ -77,7 +80,7 @@ class GetProductMapper @Inject constructor() {
     }
 
     private fun mapProductVariantOptionChild(options: List<Option>): List<ProductVariantOptionChild>?{
-        var pvo = -1
+        var pvo = 0
         return options.map {
             pvo += 1 // generate pvo id
             ProductVariantOptionChild(
