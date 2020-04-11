@@ -157,7 +157,7 @@ class EditProductInputMapper @Inject constructor() {
         return if (weightUnit == 0) UNIT_GRAM else UNIT_KILOGRAM
     }
 
-    private fun mapVideoParam(videoLinkList: List<VideoLinkModel>): Videos {
+    private fun mapVideoParam(videoLinkList: List<VideoLinkModel>): Videos? {
         val data: ArrayList<Video> = ArrayList()
         videoLinkList.forEach {
             if (it.inputUrl.isNotEmpty()) {
@@ -167,7 +167,11 @@ class EditProductInputMapper @Inject constructor() {
                 data.add(Video(source, url))
             }
         }
-        return Videos(data)
+        return if (data.isEmpty()) {
+            null
+        } else {
+            Videos(data)
+        }
     }
 
     private fun mapPictureParam(pictureList: List<PictureInputModel>,

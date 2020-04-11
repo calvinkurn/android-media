@@ -197,7 +197,7 @@ class GetProductMapper @Inject constructor() {
         const val UNIT_MONTH_STRING = "MONTH"
         const val UNIT_GRAM_SRING = "GR"
         const val UNIT_KILOGRAM_SRING = "KG"
-        const val YOUTUBE_URL_DELIMITER = "watch?v="
+        const val YOUTUBE_URL_DELIMITER = "/watch?v="
         const val YOUTUBE_URL_DELIMITER_SHORT = "/"
         const val YOUTUBE_URL = "www.youtube.com"
 
