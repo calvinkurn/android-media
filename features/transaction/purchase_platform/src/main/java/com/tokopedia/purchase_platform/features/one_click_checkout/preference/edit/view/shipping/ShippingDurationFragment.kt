@@ -23,7 +23,7 @@ import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.shippingprice.ServicesItem
 import com.tokopedia.purchase_platform.features.one_click_checkout.preference.analytics.PreferenceListAnalytics
 import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.di.PreferenceEditComponent
-import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.view.PreferenceEditActivity
+import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.view.PreferenceEditParent
 import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.view.payment.PaymentMethodFragment
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
@@ -35,7 +35,6 @@ import java.net.UnknownHostException
 import javax.inject.Inject
 
 class ShippingDurationFragment : BaseDaggerFragment(), ShippingDurationItemAdapter.OnShippingMenuSelected {
-
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -87,9 +86,9 @@ class ShippingDurationFragment : BaseDaggerFragment(), ShippingDurationItemAdapt
 
     private fun initViewModel() {
         val parent = activity
-        if (parent is PreferenceEditActivity) {
-            if (parent.shippingId > 0) {
-                viewModel.selectedId = parent.shippingId
+        if (parent is PreferenceEditParent) {
+            if (parent.getShippingId() > 0) {
+                viewModel.selectedId = parent.getShippingId()
             }
         }
 
@@ -154,8 +153,8 @@ class ShippingDurationFragment : BaseDaggerFragment(), ShippingDurationItemAdapt
 
     private fun checkEntryPoint() {
         val parent = activity
-        if (parent is PreferenceEditActivity) {
-            if (parent.listShopShipment.isNullOrEmpty() && parent.shippingParam == null) {
+        if (parent is PreferenceEditParent) {
+            if (parent.getListShopShipment().isNullOrEmpty() && parent.getShippingParam() == null) {
                 viewModel.getShippingDuration()
             } else {
                 hitRates()
@@ -165,17 +164,17 @@ class ShippingDurationFragment : BaseDaggerFragment(), ShippingDurationItemAdapt
 
     private fun hitRates() {
         val parent = activity
-        if (parent is PreferenceEditActivity) {
-            viewModel.getRates(parent.listShopShipment, parent.shippingParam)
+        if (parent is PreferenceEditParent) {
+            viewModel.getRates(parent.getListShopShipment(), parent.getShippingParam())
         }
     }
 
     private fun goToNextStep() {
         val parent = activity
-        if (parent is PreferenceEditActivity) {
+        if (parent is PreferenceEditParent) {
             val selectedId = viewModel.selectedId
             if (selectedId > 0) {
-                parent.shippingId = selectedId
+                parent.setShippingId(selectedId)
                 if (arguments?.getBoolean(ARG_IS_EDIT) == true) {
                     parent.goBack()
                 } else {
@@ -189,7 +188,7 @@ class ShippingDurationFragment : BaseDaggerFragment(), ShippingDurationItemAdapt
     private fun initHeader() {
         if (arguments?.getBoolean(ARG_IS_EDIT) == true) {
             val parent = activity
-            if (parent is PreferenceEditActivity) {
+            if (parent is PreferenceEditParent) {
                 parent.hideStepper()
                 parent.setHeaderTitle(getString(R.string.activity_title_shipping_duration))
                 parent.hideDeleteButton()
@@ -197,7 +196,7 @@ class ShippingDurationFragment : BaseDaggerFragment(), ShippingDurationItemAdapt
             }
         } else {
             val parent = activity
-            if (parent is PreferenceEditActivity) {
+            if (parent is PreferenceEditParent) {
                 parent.hideDeleteButton()
                 parent.hideAddButton()
                 parent.showStepper()

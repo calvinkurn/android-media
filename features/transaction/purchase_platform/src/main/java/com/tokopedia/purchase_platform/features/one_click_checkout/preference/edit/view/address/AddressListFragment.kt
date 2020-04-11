@@ -34,7 +34,7 @@ import com.tokopedia.purchase_platform.features.one_click_checkout.common.DEFAUL
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.OccState
 import com.tokopedia.purchase_platform.features.one_click_checkout.preference.analytics.PreferenceListAnalytics
 import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.di.PreferenceEditComponent
-import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.view.PreferenceEditActivity
+import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.view.PreferenceEditParent
 import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.view.shipping.ShippingDurationFragment
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
@@ -102,9 +102,9 @@ class AddressListFragment : BaseDaggerFragment(), SearchInputView.Listener, Addr
 
     private fun initViewModel() {
         val parent = activity
-        if (parent is PreferenceEditActivity) {
-            if (parent.addressId > 0) {
-                viewModel.selectedId = parent.addressId.toString()
+        if (parent is PreferenceEditParent) {
+            if (parent.getAddressId() > 0) {
+                viewModel.selectedId = parent.getAddressId().toString()
             }
         }
 
@@ -204,11 +204,11 @@ class AddressListFragment : BaseDaggerFragment(), SearchInputView.Listener, Addr
 
     private fun goBack() {
         val parent = activity
-        if (parent is PreferenceEditActivity) {
+        if (parent is PreferenceEditParent) {
             val selectedId = viewModel.selectedId.toIntOrZero()
             if (selectedId > 0) {
                 preferenceListAnalytics.eventClickSimpanAlamatInPilihAlamatPage()
-                parent.addressId = selectedId
+                parent.setAddressId(selectedId)
                 parent.goBack()
             }
         }
@@ -217,7 +217,7 @@ class AddressListFragment : BaseDaggerFragment(), SearchInputView.Listener, Addr
     private fun initHeader() {
         if (arguments?.getBoolean(ARG_IS_EDIT) == true) {
             val parent = activity
-            if (parent is PreferenceEditActivity) {
+            if (parent is PreferenceEditParent) {
                 parent.hideStepper()
                 parent.setHeaderTitle(getString(R.string.activity_title_choose_address))
                 parent.showAddButton()
@@ -233,7 +233,7 @@ class AddressListFragment : BaseDaggerFragment(), SearchInputView.Listener, Addr
             }
         } else {
             val parent = activity
-            if (parent is PreferenceEditActivity) {
+            if (parent is PreferenceEditParent) {
                 parent.hideDeleteButton()
                 parent.hideAddButton()
                 parent.showAddButton()
@@ -321,11 +321,11 @@ class AddressListFragment : BaseDaggerFragment(), SearchInputView.Listener, Addr
 
     private fun goToNextStep() {
         val parent = activity
-        if (parent is PreferenceEditActivity) {
+        if (parent is PreferenceEditParent) {
             val selectedId = viewModel.selectedId.toIntOrZero()
             if (selectedId > 0) {
                 preferenceListAnalytics.eventClickSimpanAlamatInPilihAlamatPage()
-                parent.addressId = selectedId
+                parent.setAddressId(selectedId)
                 parent.addFragment(ShippingDurationFragment())
             }
         }

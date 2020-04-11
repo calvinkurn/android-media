@@ -17,10 +17,9 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.purchase_platform.R
 import com.tokopedia.purchase_platform.features.one_click_checkout.preference.analytics.PreferenceListAnalytics
 import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.di.PreferenceEditComponent
-import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.view.PreferenceEditActivity
+import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.view.PreferenceEditParent
 import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.view.summary.PreferenceSummaryFragment
 import com.tokopedia.url.TokopediaUrl
-import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_payment_method.*
 import rx.subscriptions.CompositeSubscription
@@ -67,7 +66,7 @@ class PaymentMethodFragment : BaseDaggerFragment() {
 
     private fun initHeader() {
         val parent = activity
-        if (parent is PreferenceEditActivity) {
+        if (parent is PreferenceEditParent) {
             parent.hideAddButton()
             parent.hideDeleteButton()
             parent.setHeaderTitle(getString(R.string.lbl_choose_payment))
@@ -97,8 +96,8 @@ class PaymentMethodFragment : BaseDaggerFragment() {
 
         var addressId = ""
         val parent = activity
-        if (parent is PreferenceEditActivity) {
-            addressId = parent.addressId.toString()
+        if (parent is PreferenceEditParent) {
+            addressId = parent.getAddressId().toString()
         }
         val phoneNumber = userSession.phoneNumber
         val msisdnVerified = userSession.isMsisdnVerified
@@ -122,7 +121,7 @@ class PaymentMethodFragment : BaseDaggerFragment() {
     override fun onStart() {
         super.onStart()
         val parent = activity
-        if (parent is PreferenceEditActivity) {
+        if (parent is PreferenceEditParent) {
             parent.setStepperValue(75, true)
         }
     }
@@ -169,9 +168,9 @@ class PaymentMethodFragment : BaseDaggerFragment() {
 
     private fun goToNextStep(gatewayCode: String, metadata: String) {
         val parent = activity
-        if (parent is PreferenceEditActivity) {
-            parent.gatewayCode = gatewayCode
-            parent.paymentQuery = metadata
+        if (parent is PreferenceEditParent) {
+            parent.setGatewayCode(gatewayCode)
+            parent.setPaymentQuery(metadata)
             if (arguments?.getBoolean(ARG_IS_EDIT) == true) {
                 parent.goBack()
             } else {

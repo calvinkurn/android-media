@@ -28,6 +28,7 @@ import com.tokopedia.purchase_platform.features.one_click_checkout.preference.an
 import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.di.PreferenceEditComponent
 import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.domain.get.model.GetPreferenceData
 import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.view.PreferenceEditActivity
+import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.view.PreferenceEditParent
 import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.view.address.AddressListFragment
 import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.view.payment.PaymentMethodFragment
 import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.view.shipping.ShippingDurationFragment
@@ -111,8 +112,8 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
 
     private fun getPreferenceDetail() {
         val parent = activity
-        if (parent is PreferenceEditActivity) {
-            viewModel.getPreferenceDetail(parent.profileId, parent.addressId, parent.shippingId, parent.gatewayCode, parent.paymentQuery)
+        if (parent is PreferenceEditParent) {
+            viewModel.getPreferenceDetail(parent.getProfileId(), parent.getAddressId(), parent.getShippingId(), parent.getGatewayCode(), parent.getPaymentQuery())
         }
     }
 
@@ -181,8 +182,8 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
     private fun setupViews(data: GetPreferenceData) {
         if (arguments?.getBoolean(ARG_IS_EDIT) == false) {
             val parent = activity
-            if (parent is PreferenceEditActivity) {
-                val preferenceIndex = parent.preferenceIndex
+            if (parent is PreferenceEditParent) {
+                val preferenceIndex = parent.getPreferenceIndex()
                 if (preferenceIndex.isNotEmpty()) {
                     tvPreferenceName?.text = preferenceIndex
                     tvPreferenceName?.visible()
@@ -294,7 +295,7 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
 
         buttonChangeAddress?.setOnClickListener {
             val parent = activity
-            if (parent is PreferenceEditActivity) {
+            if (parent is PreferenceEditParent) {
                 preferenceListAnalytics.eventClickUbahAddressInPreferenceSettingPage()
                 parent.addFragment(AddressListFragment.newInstance(true))
             }
@@ -302,7 +303,7 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
 
         buttonChangeDuration?.setOnClickListener {
             val parent = activity
-            if (parent is PreferenceEditActivity) {
+            if (parent is PreferenceEditParent) {
                 preferenceListAnalytics.eventClickUbahShippingInPreferenceSettingPage()
                 parent.addFragment(ShippingDurationFragment.newInstance(true))
             }
@@ -310,7 +311,7 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
 
         buttonChangePayment?.setOnClickListener {
             val parent = activity
-            if (parent is PreferenceEditActivity) {
+            if (parent is PreferenceEditParent) {
                 preferenceListAnalytics.eventClickUbahPaymentInPreferenceSettingPage()
                 parent.addFragment(PaymentMethodFragment.newInstance(true))
             }
@@ -319,11 +320,11 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
         buttonSavePreference?.setOnClickListener {
             if (viewModel.preference.value is OccState.Success) {
                 val parent = activity
-                if (parent is PreferenceEditActivity) {
-                    if (arguments?.getBoolean(ARG_IS_EDIT) == true && parent.profileId > 0) {
-                        viewModel.updatePreference(parent.profileId, parent.addressId, parent.shippingId, parent.gatewayCode, parent.paymentQuery)
+                if (parent is PreferenceEditParent) {
+                    if (arguments?.getBoolean(ARG_IS_EDIT) == true && parent.getProfileId() > 0) {
+                        viewModel.updatePreference(parent.getProfileId(), parent.getAddressId(), parent.getShippingId(), parent.getGatewayCode(), parent.getPaymentQuery())
                     } else {
-                        viewModel.createPreference(parent.addressId, parent.shippingId, parent.gatewayCode, parent.paymentQuery)
+                        viewModel.createPreference(parent.getAddressId(), parent.getShippingId(), parent.getGatewayCode(), parent.getPaymentQuery())
                     }
                 }
             }
@@ -332,11 +333,11 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
 
     private fun initHeader() {
         val parent = activity
-        if (parent is PreferenceEditActivity) {
+        if (parent is PreferenceEditParent) {
             parent.hideAddButton()
-            val profileId = parent.profileId
+            val profileId = parent.getProfileId()
             if (arguments?.getBoolean(ARG_IS_EDIT) == true && profileId > -1) {
-                if (parent.should_show_delete_button) {
+                if (parent.getShouldShowDeleteButton()) {
                     parent.showDeleteButton()
                     parent.setDeleteButtonOnClickListener {
                         preferenceListAnalytics.eventClickTrashBinInEditPreference()
@@ -363,7 +364,7 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
                     parent.hideDeleteButton()
                 }
 
-                parent.setHeaderTitle(getString(R.string.lbl_summary_preference_with_number_title) + " " + parent.preferenceIndex)
+                parent.setHeaderTitle(getString(R.string.lbl_summary_preference_with_number_title) + " " + parent.getPreferenceIndex())
                 parent.hideStepper()
             } else {
                 parent.hideDeleteButton()

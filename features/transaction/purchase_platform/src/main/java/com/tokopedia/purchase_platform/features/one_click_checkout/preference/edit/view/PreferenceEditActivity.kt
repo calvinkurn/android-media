@@ -21,20 +21,20 @@ import com.tokopedia.purchase_platform.features.one_click_checkout.preference.ed
 import kotlinx.android.synthetic.main.activity_preference_edit.*
 import javax.inject.Inject
 
-class PreferenceEditActivity : BaseActivity(), HasComponent<PreferenceEditComponent> {
+class PreferenceEditActivity : BaseActivity(), HasComponent<PreferenceEditComponent>, PreferenceEditParent {
 
     @Inject
     lateinit var preferenceListAnalytics: PreferenceListAnalytics
 
-    var preferenceIndex = ""
-    var profileId = 0
-    var addressId = -1
-    var shippingId = -1
-    var gatewayCode = ""
-    var paymentQuery = ""
-    var shippingParam: ShippingParam? = null
-    var listShopShipment: ArrayList<ShopShipment>? = null
-    var should_show_delete_button: Boolean = true
+    private var _preferenceIndex = ""
+    private var _profileId = 0
+    private var _addressId = -1
+    private var _shippingId = -1
+    private var _gatewayCode = ""
+    private var _paymentQuery = ""
+    private var _shippingParam: ShippingParam? = null
+    private var _listShopShipment: ArrayList<ShopShipment>? = null
+    private var _should_show_delete_button: Boolean = true
 
     override fun getComponent(): PreferenceEditComponent {
         return DaggerPreferenceEditComponent.builder()
@@ -60,16 +60,16 @@ class PreferenceEditActivity : BaseActivity(), HasComponent<PreferenceEditCompon
             onBackPressed()
         }
 
-        preferenceIndex = intent.getStringExtra(EXTRA_PREFERENCE_INDEX) ?: ""
-        profileId = intent.getIntExtra(EXTRA_PROFILE_ID, 0)
-        addressId = intent.getIntExtra(EXTRA_ADDRESS_ID, -1)
-        shippingId = intent.getIntExtra(EXTRA_SHIPPING_ID, -1)
-        gatewayCode = intent.getStringExtra(EXTRA_GATEWAY_CODE) ?: ""
-        shippingParam = intent.getParcelableExtra(EXTRA_SHIPPING_PARAM)
-        listShopShipment = intent.getParcelableArrayListExtra(EXTRA_LIST_SHOP_SHIPMENT)
-        should_show_delete_button = intent.getBooleanExtra(EXTRA_SHOW_DELETE_BUTTON, true)
+        _preferenceIndex = intent.getStringExtra(EXTRA_PREFERENCE_INDEX) ?: ""
+        _profileId = intent.getIntExtra(EXTRA_PROFILE_ID, 0)
+        _addressId = intent.getIntExtra(EXTRA_ADDRESS_ID, -1)
+        _shippingId = intent.getIntExtra(EXTRA_SHIPPING_ID, -1)
+        _gatewayCode = intent.getStringExtra(EXTRA_GATEWAY_CODE) ?: ""
+        _shippingParam = intent.getParcelableExtra(EXTRA_SHIPPING_PARAM)
+        _listShopShipment = intent.getParcelableArrayListExtra(EXTRA_LIST_SHOP_SHIPMENT)
+        _should_show_delete_button = intent.getBooleanExtra(EXTRA_SHOW_DELETE_BUTTON, true)
 
-        if (addressId == -1 || shippingId == -1 || gatewayCode.isBlank() || profileId == 0) {
+        if (_addressId == -1 || _shippingId == -1 || _gatewayCode.isBlank() || _profileId == 0) {
             supportFragmentManager.beginTransaction().replace(R.id.container, AddressListFragment.newInstance()).commit()
         } else {
             supportFragmentManager.beginTransaction().replace(R.id.container, PreferenceSummaryFragment.newInstance(true)).commit()
@@ -100,23 +100,95 @@ class PreferenceEditActivity : BaseActivity(), HasComponent<PreferenceEditCompon
         }
     }
 
-    fun setHeaderTitle(title: String) {
+    override fun setPreferenceIndex(preferenceIndex: String) {
+        _preferenceIndex = preferenceIndex
+    }
+
+    override fun getPreferenceIndex(): String {
+        return _preferenceIndex
+    }
+
+    override fun setProfileId(profileId: Int) {
+        _profileId = profileId
+    }
+
+    override fun getProfileId(): Int {
+        return _profileId
+    }
+
+    override fun setAddressId(addressId: Int) {
+        _addressId = addressId
+    }
+
+    override fun getAddressId(): Int {
+        return _addressId
+    }
+
+    override fun setShippingId(shippingId: Int) {
+        _shippingId = shippingId
+    }
+
+    override fun getShippingId(): Int {
+        return _shippingId
+    }
+
+    override fun setGatewayCode(gatewayCode: String) {
+        _gatewayCode = gatewayCode
+    }
+
+    override fun getGatewayCode(): String {
+        return _gatewayCode
+    }
+
+    override fun setPaymentQuery(paymentQuery: String) {
+        _paymentQuery = paymentQuery
+    }
+
+    override fun getPaymentQuery(): String {
+        return _paymentQuery
+    }
+
+    override fun setShippingParam(shippingParam: ShippingParam) {
+        _shippingParam = shippingParam
+    }
+
+    override fun getShippingParam(): ShippingParam? {
+        return _shippingParam
+    }
+
+    override fun setListShopShipment(listShopShipment: ArrayList<ShopShipment>?) {
+        _listShopShipment = listShopShipment
+    }
+
+    override fun getListShopShipment(): ArrayList<ShopShipment>? {
+        return _listShopShipment
+    }
+
+    override fun setShouldShowDeleteButton(shouldShowDeleteButton: Boolean) {
+        _should_show_delete_button = shouldShowDeleteButton
+    }
+
+    override fun getShouldShowDeleteButton(): Boolean {
+        return _should_show_delete_button
+    }
+
+    override fun setHeaderTitle(title: String) {
         tv_title.text = title
     }
 
-    fun setHeaderSubtitle(subtitle: String) {
+    override fun setHeaderSubtitle(subtitle: String) {
         tv_subtitle.text = subtitle
     }
 
-    fun addFragment(fragment: Fragment) {
+    override fun addFragment(fragment: Fragment) {
         supportFragmentManager.beginTransaction().replace(R.id.container, fragment).addToBackStack(null).commit()
     }
 
-    fun goBack() {
+    override fun goBack() {
         supportFragmentManager.popBackStack()
     }
 
-    fun setStepperValue(value: Int, isSmooth: Boolean = true) {
+    override fun setStepperValue(value: Int, isSmooth: Boolean) {
         if (isSmooth && stepper != null) {
             try {
                 ObjectAnimator.ofInt(stepper, "progress", value).setDuration(500).start()
@@ -128,41 +200,41 @@ class PreferenceEditActivity : BaseActivity(), HasComponent<PreferenceEditCompon
         }
     }
 
-    fun showStepper() {
+    override fun showStepper() {
         tv_subtitle.visible()
         stepper.visible()
     }
 
-    fun hideStepper() {
+    override fun hideStepper() {
         tv_subtitle.gone()
         stepper.gone()
     }
 
-    fun showAddButton() {
+    override fun showAddButton() {
         hideDeleteButton()
         btn_add.visible()
     }
 
-    fun hideAddButton() {
+    override fun hideAddButton() {
         btn_add.gone()
     }
 
-    fun showDeleteButton() {
+    override fun showDeleteButton() {
         hideAddButton()
         btn_delete.visible()
     }
 
-    fun hideDeleteButton() {
+    override fun hideDeleteButton() {
         btn_delete.gone()
     }
 
-    fun setDeleteButtonOnClickListener(onClick: () -> Unit) {
+    override fun setDeleteButtonOnClickListener(onClick: () -> Unit) {
         btn_delete.setOnClickListener {
             onClick()
         }
     }
 
-    fun setAddButtonOnClickListener(onClick: () -> Unit) {
+    override fun setAddButtonOnClickListener(onClick: () -> Unit) {
         btn_add.setOnClickListener {
             onClick()
         }
