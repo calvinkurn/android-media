@@ -165,7 +165,7 @@ open class AddProductInputMapper @Inject constructor() {
         return Videos(data)
     }
 
-    private fun mapPictureParam(uploadIdList: java.util.ArrayList<String>): Pictures {
+    private fun mapPictureParam(uploadIdList: ArrayList<String>): Pictures {
         val data: ArrayList<Picture> = ArrayList()
         uploadIdList.forEach {
             data.add(Picture(uploadId = it))

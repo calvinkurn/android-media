@@ -37,7 +37,7 @@ class DuplicateProductInputMapper @Inject constructor() : AddProductInputMapper(
         )
     }
 
-    private fun mapPictureParam(imageUrlOrPathList: List<String>, pictureList: List<PictureInputModel>, uploadIdList: java.util.ArrayList<String>): Pictures {
+    private fun mapPictureParam(imageUrlOrPathList: List<String>, pictureList: List<PictureInputModel>, uploadIdList: ArrayList<String>): Pictures {
         val data: ArrayList<Picture> = ArrayList()
         var idxPictureList = 0
         var idxUploadIdList = 0

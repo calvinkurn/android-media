@@ -6,8 +6,6 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import kotlinx.android.parcel.Parcelize
 
-import java.util.ArrayList
-
 @Parcelize
 data class ProductVariantInputModel (
         @SerializedName("variant")

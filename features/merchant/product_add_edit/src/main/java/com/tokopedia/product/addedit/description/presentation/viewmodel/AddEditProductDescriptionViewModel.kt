@@ -22,7 +22,6 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.lang.reflect.Type
-import java.util.ArrayList
 import javax.inject.Inject
 
 class AddEditProductDescriptionViewModel @Inject constructor(

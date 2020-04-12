@@ -328,7 +328,7 @@ class AddEditProductDetailViewModel @Inject constructor(
         return false
     }
 
-    fun updateProductPhotos(imagePickerResult: java.util.ArrayList<String>, originalImageUrl: java.util.ArrayList<String>, editted: ArrayList<Boolean>) {
+    fun updateProductPhotos(imagePickerResult: ArrayList<String>, originalImageUrl: ArrayList<String>, editted: ArrayList<Boolean>) {
         val pictureList = productInputModel.detailInputModel.pictureList.filter {
             originalImageUrl.contains(it.urlOriginal)
         }.filterIndexed { index, _ -> !editted[index] }
