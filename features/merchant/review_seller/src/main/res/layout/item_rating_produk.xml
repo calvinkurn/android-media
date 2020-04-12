@@ -13,8 +13,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:layout_marginTop="@dimen/dp_8"
-        app:card_type="clear"
-        >
+        app:card_type="clear">
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/ivItemProduct"
@@ -54,7 +53,7 @@
         app:srcCompat="@drawable/ic_rating_star_item" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tgCountRating"
+        android:id="@+id/tgRatingCount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:typographyType="body_1"
@@ -69,7 +68,7 @@
         tools:text="5.0" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tgCountReview"
+        android:id="@+id/tgReviewCount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:typographyType="body_1"
@@ -79,7 +78,7 @@
         android:layout_marginLeft="@dimen/dp_4"
         android:layout_marginStart="@dimen/dp_4"
         app:layout_constraintTop_toBottomOf="@id/tgTitleProduct"
-        app:layout_constraintStart_toEndOf="@id/tgCountRating"
+        app:layout_constraintStart_toEndOf="@id/tgRatingCount"
         app:layout_constraintBottom_toBottomOf="@id/cvItemProduct"
         tools:text="/ 5 Ulasan" />
 
