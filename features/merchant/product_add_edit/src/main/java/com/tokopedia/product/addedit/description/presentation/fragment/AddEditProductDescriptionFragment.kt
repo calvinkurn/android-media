@@ -354,17 +354,16 @@ class AddEditProductDescriptionFragment:
                 REQUEST_CODE_VARIANT -> {
                     val variantCacheId = data.getStringExtra(EXTRA_VARIANT_PICKER_RESULT_CACHE_ID)
                     val cacheManager = SaveInstanceCacheManager(context!!, variantCacheId)
+                    val productPictureViewModel = if (data.hasExtra(EXTRA_PRODUCT_SIZECHART)) {
+                        cacheManager.get(EXTRA_PRODUCT_SIZECHART,
+                                object : TypeToken<PictureViewModel>() {}.type, PictureViewModel())
+                    } else null
                     if (data.hasExtra(EXTRA_PRODUCT_VARIANT_SELECTION)) {
                         val productVariantViewModel = cacheManager.get(EXTRA_PRODUCT_VARIANT_SELECTION,
                                 object : TypeToken<ProductVariantInputModel>() {}.type) ?: ProductVariantInputModel()
-                        descriptionViewModel.setVariantInput(productVariantViewModel.productVariant, productVariantViewModel.variantOptionParent)
+                        descriptionViewModel.setVariantInput(productVariantViewModel.productVariant, productVariantViewModel.variantOptionParent, productPictureViewModel)
                         tvVariantHeaderSubtitle.text = descriptionViewModel.getVariantSelectedMessage()
                         tvAddVariant.text = descriptionViewModel.getVariantButtonMessage()
-                    }
-                    if (data.hasExtra(EXTRA_PRODUCT_SIZECHART)) {
-                        val productPictureViewModel = cacheManager.get(EXTRA_PRODUCT_SIZECHART,
-                                object : TypeToken<PictureViewModel>() {}.type, PictureViewModel())
-                        descriptionViewModel.variantInputModel.productSizeChart = productPictureViewModel
                     }
                 }
             }

@@ -125,10 +125,20 @@ class AddEditProductDescriptionViewModel @Inject constructor(
     }
 
     fun setVariantInput(productVariant: ArrayList<ProductVariantCombinationViewModel>,
-                        variantOptionParent: ArrayList<ProductVariantOptionParent>) {
-        variantInputModel.variantOptionParent = mapVariantOption(variantOptionParent)
-        variantInputModel.productVariant = mapProductVariant(productVariant, variantOptionParent)
-        setVariantNamesAndCount(productVariant, variantOptionParent)
+                        variantOptionParent: ArrayList<ProductVariantOptionParent>,
+                        productPictureViewModel: PictureViewModel?) {
+        if (productVariant.isNotEmpty()) {
+            variantInputModel.variantOptionParent = mapVariantOption(variantOptionParent)
+            variantInputModel.productVariant = mapProductVariant(productVariant, variantOptionParent)
+            variantInputModel.productSizeChart = productPictureViewModel
+            setVariantNamesAndCount(productVariant, variantOptionParent)
+        } else {
+            variantInputModel.variantOptionParent.clear()
+            variantInputModel.productVariant.clear()
+            variantCountList.fill(0)
+            variantNameList.fill("")
+            variantInputModel.productSizeChart = null
+        }
     }
 
     fun setVariantInput(variantInputModel: ProductVariantInputModel) {
