@@ -2,7 +2,7 @@ package com.tokopedia.reviewseller.feature.reviewlist.util.mapper
 
 import com.tokopedia.reviewseller.feature.reviewlist.data.ProductRatingOverallResponse
 import com.tokopedia.reviewseller.feature.reviewlist.data.ProductReviewListResponse
-import com.tokopedia.reviewseller.feature.reviewlist.view.model.ProductRatingOverallModel
+import com.tokopedia.reviewseller.feature.reviewlist.view.model.ProductRatingOverallUiModel
 import com.tokopedia.reviewseller.feature.reviewlist.view.model.ProductReviewUiModel
 
 object ReviewSellerMapper {
@@ -22,8 +22,8 @@ object ReviewSellerMapper {
         return productReviewListUiModel
     }
 
-    fun mapToProductRatingOverallModel(productGetProductRatingOverallByShop: ProductRatingOverallResponse.ProductGetProductRatingOverallByShop): ProductRatingOverallModel {
-        return ProductRatingOverallModel().apply {
+    fun mapToProductRatingOverallModel(productGetProductRatingOverallByShop: ProductRatingOverallResponse.ProductGetProductRatingOverallByShop): ProductRatingOverallUiModel {
+        return ProductRatingOverallUiModel().apply {
             rating = productGetProductRatingOverallByShop.rating
             reviewCount = productGetProductRatingOverallByShop.reviewCount
             period = productGetProductRatingOverallByShop.filterBy
