@@ -1,6 +1,10 @@
 package com.tokopedia.kotlin.extensions.coroutines
 
 import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
 
 fun CoroutineScope.launchCatchError(context: CoroutineContext = coroutineContext,
