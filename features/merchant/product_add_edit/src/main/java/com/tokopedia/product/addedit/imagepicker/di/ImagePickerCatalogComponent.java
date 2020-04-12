@@ -11,8 +11,7 @@ import dagger.Component;
  */
 
 @CatalogImageScope
-@Component(modules = {ImagePickerCatalogModule.class, ProductDraftModule.class}, dependencies = BaseAppComponent.class)
+@Component(modules = ImagePickerCatalogModule.class, dependencies = BaseAppComponent.class)
 public interface ImagePickerCatalogComponent {
     void inject(ImagePickerCatalogFragment imagePickerCatalogFragment);
-    void inject(ImagePickerEditPhotoActivity imagePickerEditPhotoActivity);
 }

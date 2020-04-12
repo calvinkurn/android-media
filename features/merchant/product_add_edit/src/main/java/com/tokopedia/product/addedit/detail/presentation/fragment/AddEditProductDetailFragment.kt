@@ -934,8 +934,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         return View.OnClickListener {
             val isEditing = viewModel.isEditing
             val isDrafting = viewModel.isDrafting
-            val productInputModel = viewModel.productInputModel
-            val intent = ImagePickerAddProductActivity.getIntent(context, createImagePickerBuilder(ArrayList(viewModel.productPhotoPaths)), isEditing, isDrafting, productInputModel)
+            val intent = ImagePickerAddProductActivity.getIntent(context, createImagePickerBuilder(ArrayList(viewModel.productPhotoPaths)), isEditing, isDrafting)
             startActivityForResult(intent, REQUEST_CODE_IMAGE)
             if (isEditing) {
                 ProductEditMainTracking.trackAddPhoto(shopId)

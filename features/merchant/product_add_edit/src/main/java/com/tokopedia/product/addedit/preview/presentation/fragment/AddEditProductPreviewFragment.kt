@@ -238,12 +238,8 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
             }
             val imageUrlOrPathList = viewModel.productInputModel.value?.detailInputModel?.imageUrlOrPathList ?: listOf()
             val intent = ImagePickerAddProductActivity.getIntent(context, createImagePickerBuilder(ArrayList(imageUrlOrPathList)),
-                    viewModel.isEditing.value ?: false, viewModel.isDrafting.value ?: false, viewModel.productInputModel.value ?: ProductInputModel())
-            if (viewModel.isEditing.value == true || viewModel.isDrafting.value == true)
-                startActivityForResult(intent, REQUEST_CODE_IMAGE)
-            else {
-                startActivityForResult(intent, REQUEST_CODE_DETAIL)
-            }
+                    viewModel.isEditing.value ?: false, viewModel.isDrafting.value ?: false)
+            startActivityForResult(intent, REQUEST_CODE_IMAGE)
         }
 
         productStatusSwitch?.setOnCheckedChangeListener { buttonView, isChecked ->
