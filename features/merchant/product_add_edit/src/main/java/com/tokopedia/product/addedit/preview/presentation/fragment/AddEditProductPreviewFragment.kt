@@ -153,8 +153,12 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
         arguments?.run {
             val draftId = getString(EXTRA_DRAFT_ID)
             viewModel.setProductId(getString(EXTRA_PRODUCT_ID) ?: "")
-            viewModel.setDraftId(draftId ?: "")
-            viewModel.getDraftId()?.let { viewModel.getProductDraft(it) }
+            draftId?.let { viewModel.setDraftId(it) }
+            viewModel.getProductDraft(viewModel.getDraftId())
+        }
+
+        if(viewModel.isDrafting.value == true) {
+            viewModel.getDraftId().let { viewModel.getProductDraft(it) }
         }
 
         if (viewModel.isEditing.value == true) {
@@ -232,10 +236,14 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
             } else {
                 ProductAddStepperTracking.trackStart(shopId)
             }
-            val imageUrlOrPathList = viewModel.productInputModel.value?.detailInputModel?.imageUrlOrPathList
-                    ?: listOf()
-            val intent = ImagePickerAddProductActivity.getIntent(context, createImagePickerBuilder(ArrayList(imageUrlOrPathList)))
-            startActivityForResult(intent, REQUEST_CODE_IMAGE)
+            val imageUrlOrPathList = viewModel.productInputModel.value?.detailInputModel?.imageUrlOrPathList ?: listOf()
+            val intent = ImagePickerAddProductActivity.getIntent(context, createImagePickerBuilder(ArrayList(imageUrlOrPathList)),
+                    viewModel.isEditing.value ?: false, viewModel.isDrafting.value ?: false, viewModel.productInputModel.value ?: ProductInputModel())
+            if (viewModel.isEditing.value == true || viewModel.isDrafting.value == true)
+                startActivityForResult(intent, REQUEST_CODE_IMAGE)
+            else {
+                startActivityForResult(intent, REQUEST_CODE_DETAIL)
+            }
         }
 
         productStatusSwitch?.setOnCheckedChangeListener { buttonView, isChecked ->
@@ -318,7 +326,6 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
         observeProductVariant()
         observeImageUrlOrPathList()
         observeProductVariantList()
-        observeProductInputModelFromDraft()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -518,14 +525,6 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
             when (result) {
                 is Success -> showVariantDialog(result.data)
                 is Fail -> showVariantErrorToast(getString(R.string.error_cannot_get_variants))
-            }
-        })
-    }
-
-    private fun observeProductInputModelFromDraft() {
-        viewModel.getProductDraftResult.observe(viewLifecycleOwner, Observer { result ->
-            when(result) {
-                is Success -> { viewModel.updateProductInputModel(result.data) }
             }
         })
     }

@@ -12,7 +12,7 @@ import com.tokopedia.product.addedit.description.domain.usecase.GetProductVarian
 import com.tokopedia.product.addedit.description.presentation.model.DescriptionInputModel
 import com.tokopedia.product.addedit.description.presentation.model.ProductVariantInputModel
 import com.tokopedia.product.addedit.draft.domain.usecase.GetProductDraftUseCase
-import com.tokopedia.product.addedit.mapper.mapDraftToProductInputModel
+import com.tokopedia.product.addedit.mapper.AddEditProductMapper.mapDraftToProductInputModel
 import com.tokopedia.product.addedit.preview.data.source.api.response.Product
 import com.tokopedia.product.addedit.preview.domain.GetProductUseCase
 import com.tokopedia.product.addedit.preview.domain.mapper.GetProductMapper
@@ -47,7 +47,11 @@ class AddEditProductPreviewViewModel @Inject constructor(
     }
 
     val isDrafting = Transformations.map(draftId) { id ->
-        !id.isNullOrBlank()
+        if(id != "") {
+            id.toLong() > 0
+        } else {
+            false
+        }
     }
 
     // observing the product id, and will execute the use case when product id is changed
@@ -93,6 +97,14 @@ class AddEditProductPreviewViewModel @Inject constructor(
             addSource(detailInputModel) {
                 productInputModel.value = productInputModel.value.apply { this?.detailInputModel = it }
             }
+            addSource(getProductDraftResult) {
+                if(isDrafting.value == true) {
+                    productInputModel.value = when(it) {
+                        is Success -> mapDraftToProductInputModel(it.data)
+                        is Fail -> ProductInputModel()
+                    }
+                }
+            }
         }
     }
 
@@ -134,17 +146,6 @@ class AddEditProductPreviewViewModel @Inject constructor(
 
     fun updateShipmentInputModel(shipmentInputModel: ShipmentInputModel) {
         productInputModel.value?.shipmentInputModel = shipmentInputModel
-    }
-
-    fun updateProductInputModel(productDraft: ProductDraft) {
-        productInputModel.value?.apply {
-            val draft = mapDraftToProductInputModel(productDraft)
-            variantInputModel = draft.variantInputModel
-            detailInputModel = draft.detailInputModel
-            descriptionInputModel = draft.descriptionInputModel
-            shipmentInputModel = draft.shipmentInputModel
-            draftId = draft.draftId
-        }
     }
 
     fun getNewProductInputModel(imageUrlOrPathList: ArrayList<String>): ProductInputModel {

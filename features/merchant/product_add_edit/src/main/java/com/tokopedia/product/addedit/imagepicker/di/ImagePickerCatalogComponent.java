@@ -1,6 +1,7 @@
 package com.tokopedia.product.addedit.imagepicker.di;
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
+import com.tokopedia.product.addedit.imagepicker.view.activity.ImagePickerEditPhotoActivity;
 import com.tokopedia.product.addedit.imagepicker.view.fragment.ImagePickerCatalogFragment;
 
 import dagger.Component;
@@ -10,7 +11,8 @@ import dagger.Component;
  */
 
 @CatalogImageScope
-@Component(modules = ImagePickerCatalogModule.class, dependencies = BaseAppComponent.class)
+@Component(modules = {ImagePickerCatalogModule.class, ProductDraftModule.class}, dependencies = BaseAppComponent.class)
 public interface ImagePickerCatalogComponent {
     void inject(ImagePickerCatalogFragment imagePickerCatalogFragment);
+    void inject(ImagePickerEditPhotoActivity imagePickerEditPhotoActivity);
 }
