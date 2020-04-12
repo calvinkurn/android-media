@@ -50,4 +50,4 @@ project.ext {
     artifactName = "recharge_slice-release"
 }
 
-apply from: '../../publish_local.gradle'
+apply from: '../../../publish_local.gradle'
