@@ -6,10 +6,10 @@ import androidx.appcompat.widget.AppCompatImageView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.reviewseller.R
-import com.tokopedia.reviewseller.feature.reviewlist.view.model.ProductReviewModel
+import com.tokopedia.reviewseller.feature.reviewlist.view.model.ProductReviewUiModel
 import com.tokopedia.unifyprinciples.Typography
 
-class SellerReviewListViewHolder(itemView: View): AbstractViewHolder<ProductReviewModel>(itemView) {
+class SellerReviewListViewHolder(itemView: View): AbstractViewHolder<ProductReviewUiModel>(itemView) {
 
     companion object {
         @LayoutRes
@@ -18,13 +18,13 @@ class SellerReviewListViewHolder(itemView: View): AbstractViewHolder<ProductRevi
 
     private val ivItemProduct: AppCompatImageView = itemView.findViewById(R.id.ivItemProduct)
     private val tgTitleProduct: Typography = itemView.findViewById(R.id.tgTitleProduct)
-    private val tgCountRating: Typography = itemView.findViewById(R.id.tgCountRating)
-    private val tgCountReview: Typography = itemView.findViewById(R.id.tgCountReview)
+    private val tgRatingCount: Typography = itemView.findViewById(R.id.tgRatingCount)
+    private val tgReviewCount: Typography = itemView.findViewById(R.id.tgReviewCount)
 
-    override fun bind(element: ProductReviewModel?) {
-        ImageHandler.LoadImage(ivItemProduct, element?.image)
-        tgTitleProduct.text = element?.title
-        tgCountRating.text = element?.rating
-        tgCountReview.text = element?.review
+    override fun bind(element: ProductReviewUiModel?) {
+        ImageHandler.LoadImage(ivItemProduct, element?.productImageUrl)
+        tgTitleProduct.text = element?.productName
+        tgRatingCount.text = element?.rating?.toString()
+        tgReviewCount.text = element?.reviewCount?.toString()
     }
 }
