@@ -13,6 +13,7 @@ import android.webkit.URLUtil;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatDelegate;
 
+import com.bugsnag.android.Bugsnag;
 import com.google.android.play.core.splitcompat.SplitCompat;
 import com.moengage.inapp.InAppManager;
 import com.moengage.inapp.InAppMessage;
@@ -112,6 +113,7 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
 
     @Override
     public void onCreate() {
+        Bugsnag.init(this);
         GlobalConfig.APPLICATION_TYPE = GlobalConfig.SELLER_APPLICATION;
         GlobalConfig.PACKAGE_APPLICATION = GlobalConfig.PACKAGE_SELLER_APP;
         setVersionCode();

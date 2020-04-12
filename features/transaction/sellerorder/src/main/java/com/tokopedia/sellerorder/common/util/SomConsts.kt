@@ -74,6 +74,7 @@ object SomConsts {
     const val KEY_UBAH_NO_RESI = "change_awb"
     const val KEY_UPLOAD_AWB = "upload_awb"
     const val KEY_CHANGE_COURIER = "change_courier"
+    const val KEY_ASK_BUYER = "ask_buyer"
 
     const val VALUE_REASON_EMPTY_STOCK = "Stok Produk Kosong"
     const val VALUE_REASON_SHOP_CLOSED = "Toko Sedang Tutup"

@@ -117,6 +117,11 @@ public class GTMAnalytics extends ContextAnalytics {
         }
     }
 
+    @Override
+    public void sendEnhanceEcommerceEvent(String eventName, Bundle value) {
+        pushEventV5(eventName, value, context);
+    }
+
     @SuppressWarnings("unchecked")
     private String keyEvent(Map<String, Object> value) {
         String event = bruteForceCastToString(value.get("event"));
