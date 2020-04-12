@@ -2,7 +2,7 @@ package com.tokopedia.reviewseller.feature.reviewlist.view.model
 
 import com.tokopedia.reviewseller.feature.reviewlist.view.adapter.SellerReviewListTypeFactory
 
-data class ProductRatingOverallModel(
+data class ProductRatingOverallUiModel(
         var rating: Float? = 0.0F,
         var reviewCount: Int? = -1,
         var period: String? = ""
