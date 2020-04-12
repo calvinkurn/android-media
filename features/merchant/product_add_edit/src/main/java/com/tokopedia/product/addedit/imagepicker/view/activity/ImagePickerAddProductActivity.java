@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder;
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity;
-import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel;
 import com.tokopedia.product.addedit.tracking.ProductAddChooseImageTracking;
 import com.tokopedia.product.addedit.tracking.ProductEditChooseImageTracking;
 import com.tokopedia.user.session.UserSession;
