@@ -26,17 +26,12 @@ import com.tokopedia.product.manage.item.main.draft.domain.UpdateUploadingDraftP
 import com.tokopedia.product.manage.oldlist.constant.GQL_FEATURED_PRODUCT
 import com.tokopedia.product.manage.oldlist.constant.GQL_UPDATE_PRODUCT
 import com.tokopedia.product.manage.oldlist.constant.ProductManageListConstant.GQL_POPUP_NAME
-import com.tokopedia.product.manage.oldlist.domain.BulkUpdateProductUseCase
-import com.tokopedia.product.manage.oldlist.domain.EditFeaturedProductUseCase
-import com.tokopedia.product.manage.oldlist.domain.EditPriceUseCase
-import com.tokopedia.product.manage.oldlist.domain.PopupManagerAddProductUseCase
+import com.tokopedia.product.manage.oldlist.domain.*
 import com.tokopedia.product.manage.oldlist.view.mapper.ProductListMapperView
-import com.tokopedia.product.manage.oldlist.view.presenter.ProductManagePresenter
-import com.tokopedia.product.manage.oldlist.view.presenter.ProductManagePresenterImpl
-import com.tokopedia.product.manage.oldlist.domain.ClearAllDraftProductUseCase
-import com.tokopedia.product.manage.oldlist.domain.FetchAllDraftProductCountUseCase
 import com.tokopedia.product.manage.oldlist.view.presenter.ProductDraftListCountPresenter
 import com.tokopedia.product.manage.oldlist.view.presenter.ProductDraftListCountPresenterImpl
+import com.tokopedia.product.manage.oldlist.view.presenter.ProductManagePresenter
+import com.tokopedia.product.manage.oldlist.view.presenter.ProductManagePresenterImpl
 import com.tokopedia.shop.common.constant.GQLQueryNamedConstant
 import com.tokopedia.shop.common.constant.ShopCommonParamApiConstant
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
@@ -216,15 +211,15 @@ class ProductManageModule {
         )
     }
 
-    @ProductManageScope
+    @OldProductManageScope
     @Provides
     fun provideProductDraftDb(@ApplicationContext context: Context): AddEditProductDraftDb = AddEditProductDraftDb.getInstance(context)
 
-    @ProductManageScope
+    @OldProductManageScope
     @Provides
     fun provideProductDraftDao(draftDb: AddEditProductDraftDb): AddEditProductDraftDao = draftDb.getDraftDao()
 
-    @ProductManageScope
+    @OldProductManageScope
     @Provides
     fun provideProductDraftRepository(
         draftDataSource: AddEditProductDraftDataSource,
