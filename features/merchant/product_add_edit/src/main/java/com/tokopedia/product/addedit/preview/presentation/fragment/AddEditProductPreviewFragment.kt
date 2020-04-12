@@ -85,7 +85,6 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.add_edit_product_variant_input_layout.*
 import java.text.NumberFormat
 import java.util.*
 import javax.inject.Inject
@@ -246,10 +245,10 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
         }
 
         productStatusSwitch?.setOnCheckedChangeListener { buttonView, isChecked ->
-            //TODO function
             if (viewModel.isEditing.value == true) {
                 ProductEditStepperTracking.trackChangeProductStatus(shopId)
             }
+            viewModel.updateProductStatus(isChecked)
         }
 
         doneButton?.setOnClickListener {

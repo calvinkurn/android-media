@@ -27,6 +27,17 @@ class EditProductInputMapper @Inject constructor() {
         const val UNIT_DAY = "DAY"
         const val UNIT_WEEK = "WEEK"
         const val UNIT_MONTH = "MONTH"
+        const val IS_ACTIVE = 1
+        const val IS_INACTIVE = 0
+        const val IS_ACTIVE_STRING = "ACTIVE"
+        const val IS_INACTIVE_STRING = "INACTIVE"
+
+        fun getActiveStatus(status: Int) =
+                when (status) {
+                    IS_INACTIVE -> IS_INACTIVE_STRING
+                    IS_ACTIVE -> IS_ACTIVE_STRING
+                    else -> IS_ACTIVE_STRING
+                }
     }
 
     fun mapInputToParam(shopId: String,
@@ -44,7 +55,7 @@ class EditProductInputMapper @Inject constructor() {
                 detailInputModel.price,
                 PRICE_CURRENCY,
                 detailInputModel.stock,
-                STOCK_STATUS,
+                getActiveStatus(detailInputModel.status),
                 descriptionInputModel.productDescription,
                 detailInputModel.minOrder,
                 mapShipmentUnit(shipmentInputModel.weightUnit),

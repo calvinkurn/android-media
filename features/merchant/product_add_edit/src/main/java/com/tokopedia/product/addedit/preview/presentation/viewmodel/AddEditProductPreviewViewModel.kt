@@ -160,6 +160,10 @@ class AddEditProductPreviewViewModel @Inject constructor(
         }
     }
 
+    fun updateProductStatus(isActive: Boolean) {
+        productInputModel.value?.detailInputModel?.status = if (isActive) 1 else 0
+    }
+
     fun getNewProductInputModel(imageUrlOrPathList: ArrayList<String>): ProductInputModel {
         val detailInputModel = DetailInputModel().apply { this.imageUrlOrPathList = imageUrlOrPathList }
         return ProductInputModel().apply { this.detailInputModel = detailInputModel }

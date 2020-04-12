@@ -103,6 +103,7 @@ class GetProductMapper @Inject constructor() {
                     product.minOrder,
                     product.condition,
                     product.sku,
+                    getActiveStatus(product.status),
                     imageUrlOrPathList = mapImageUrlOrPathList(product),
                     preorder = mapPreorderInputModel(product.preorder),
                     wholesaleList = mapWholeSaleInputModel(product.wholesales),
