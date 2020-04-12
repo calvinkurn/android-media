@@ -419,6 +419,10 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                     val productPriceInput = charSequence?.toString()?.replace(".", "")
                     productPriceInput?.let {
                         // do the validation first
+                        if(it != "") {
+                            wholeSaleInputFormsAdapter?.setPrice(it.toBigInteger())
+                            wholeSaleInputFormsAdapter?.notifyDataSetChanged()
+                        }
                         viewModel.validateProductPriceInput(it)
                         productPriceField?.textFieldInput?.let { editText ->
                             InputPriceUtil.applyPriceFormatToInputField(editText, it, this)
