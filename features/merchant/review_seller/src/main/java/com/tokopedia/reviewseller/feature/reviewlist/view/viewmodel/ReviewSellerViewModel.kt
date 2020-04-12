@@ -3,11 +3,20 @@ package com.tokopedia.reviewseller.feature.reviewlist.view.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
+import com.tokopedia.reviewseller.common.ReviewSellerConstant
 import com.tokopedia.reviewseller.feature.reviewlist.domain.GetProductRatingOverallUseCase
 import com.tokopedia.reviewseller.feature.reviewlist.domain.GetReviewProductListUseCase
 import com.tokopedia.reviewseller.feature.reviewlist.util.CoroutineDispatcherProvider
+import com.tokopedia.reviewseller.feature.reviewlist.util.mapper.ReviewSellerMapper
+import com.tokopedia.reviewseller.feature.reviewlist.view.model.ProductRatingOverallUiModel
 import com.tokopedia.reviewseller.feature.reviewlist.view.model.ProductReviewUiModel
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class ReviewSellerViewModel @Inject constructor(
@@ -15,17 +24,81 @@ class ReviewSellerViewModel @Inject constructor(
         private val userSession: UserSessionInterface,
         private val getProductRatingOverallUseCase: GetProductRatingOverallUseCase,
         private val getReviewProductListUseCase: GetReviewProductListUseCase
-        ) : BaseViewModel(dispatcherProvider.main()) {
+) : BaseViewModel(dispatcherProvider.main()) {
 
-    private val _reviewProductList = MutableLiveData<Pair<Boolean, List<ProductReviewUiModel>>>()
-    val reviewProductList: LiveData<Pair<Boolean, List<ProductReviewUiModel>>> = _reviewProductList
+    private val _reviewProductList = MutableLiveData<Result<Pair<Boolean, List<ProductReviewUiModel>>>>()
+    val reviewProductList: LiveData<Result<Pair<Boolean, List<ProductReviewUiModel>>>> = _reviewProductList
 
-    fun getProductRatingData() {
+    private val _productRatingOverall = MutableLiveData<Result<ProductRatingOverallUiModel>>()
+    val productRatingOverall: LiveData<Result<ProductRatingOverallUiModel>> = _productRatingOverall
 
+    fun getProductRatingData(sortBy: String, filterBy: String, page: Int) {
+        launchCatchError(block = {
+            val productRatingOverall = asyncCatchError(
+                    dispatcherProvider.io(),
+                    block = {
+                        getProductRatingOverall(filterBy)
+                    },
+                    onError = {
+                        _productRatingOverall.postValue(Fail(it))
+                        null
+                    }
+            )
 
+            val reviewProductList = asyncCatchError(
+                    dispatcherProvider.io(),
+                    block = {
+                        getProductReviewList(
+                                sortBy = sortBy,
+                                filterBy = filterBy,
+                                page = page
+                        )
+                    },
+                    onError = { null }
+            )
+
+            productRatingOverall.await()?.let {
+                _productRatingOverall.postValue(Success(it))
+                reviewProductList.await()?.let { reviewProductData ->
+                    _reviewProductList.postValue(Success(reviewProductData))
+                }
+            }
+        }) {
+        }
     }
 
+    private fun getNextProductReviewList(sortBy: String, filterBy: String, page: Int) {
+        launchCatchError(block = {
+            val productReviewList = withContext(dispatcherProvider.io()) {
+                getProductReviewList(sortBy, filterBy, page)
+            }
+            _reviewProductList.postValue(Success(productReviewList))
+        }, onError = {
+            _reviewProductList.postValue(Fail(it))
+        })
+    }
 
+    private suspend fun getProductRatingOverall(filterBy: String): ProductRatingOverallUiModel  {
+        getProductRatingOverallUseCase.params = GetProductRatingOverallUseCase.createParams(filterBy)
+        return ReviewSellerMapper.mapToProductRatingOverallModel(getProductRatingOverallUseCase.executeOnBackground())
+    }
+
+    private suspend fun getProductReviewList(sortBy: String, filterBy: String, page: Int): Pair<Boolean, List<ProductReviewUiModel>> {
+        getReviewProductListUseCase.params = GetReviewProductListUseCase.createParams(
+                sortBy,
+                filterBy,
+                ReviewSellerConstant.DEFAULT_PER_PAGE,
+                page
+        )
+
+        val productRatingListResponse = getReviewProductListUseCase.executeOnBackground()
+//        val isHastNextPage = ReviewSellerUtil.isHasNextPage(page, ReviewSellerConstant.DEFAULT_PER_PAGE, productRatingListResponse.data.size)
+        return Pair(
+                productRatingListResponse.hasNext,
+                ReviewSellerMapper.mapToProductReviewListUiModel(productRatingListResponse)
+        )
+
+    }
 
 
 }
