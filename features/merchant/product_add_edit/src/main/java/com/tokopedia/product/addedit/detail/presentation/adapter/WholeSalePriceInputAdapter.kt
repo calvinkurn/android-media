@@ -30,14 +30,17 @@ class WholeSalePriceInputAdapter(private val listener: WholeSaleInputViewHolder.
     override fun onBindViewHolder(holder: WholeSaleInputViewHolder, position: Int) {
         val wholeSaleInputModel = wholeSaleInputModelList[position]
         if (price > 0.toBigInteger()) {
-            wholeSaleInputModel.price = (price - 1.toBigInteger()).toString()
+            var priceResult = (price - (position + 1).toBigInteger())
+            if (priceResult < 0.toBigInteger()) {
+                priceResult = 0.toBigInteger()
+            }
+            wholeSaleInputModel.price = priceResult.toString()
         }
-        wholeSaleInputModel.quantity = "2"
+        wholeSaleInputModel.quantity = (position + 1).toString()
         holder.bindData(wholeSaleInputModel)
     }
 
     fun addNewWholeSalePriceForm() {
-        if (itemCount == MAX_WHOLESALE_PRICES) return
         val wholeSaleInputModel = WholeSaleInputModel()
         wholeSaleInputModelList.add(wholeSaleInputModel)
         onAddWholesale?.invoke()

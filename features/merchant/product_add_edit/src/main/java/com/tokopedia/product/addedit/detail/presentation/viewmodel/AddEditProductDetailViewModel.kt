@@ -11,7 +11,6 @@ import com.tokopedia.product.addedit.detail.domain.usecase.GetNameRecommendation
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.UNIT_DAY
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.UNIT_WEEK
 import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
-import com.tokopedia.product.addedit.draft.domain.usecase.GetProductDraftUseCase
 import com.tokopedia.product.addedit.draft.domain.usecase.SaveProductDraftUseCase
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.manage.common.draft.data.model.ProductDraft
@@ -120,7 +119,6 @@ class AddEditProductDetailViewModel @Inject constructor(
 
     private val minProductPriceLimit = 100
     private val maxProductPriceLimit = 500000000
-    private val minWholeSaleQuantity = 2
     private val maxWholeSalePriceLimit = 500000000
     private val minProductStockLimit = 1
     private val maxProductStockLimit = 999999
@@ -202,7 +200,7 @@ class AddEditProductDetailViewModel @Inject constructor(
         mIsProductPriceInputError.value = false
     }
 
-    fun validateProductWholeSaleQuantityInput(wholeSaleQuantityInput: String): String {
+    fun validateProductWholeSaleQuantityInput(wholeSaleQuantityInput: String, minWholeSaleQuantity: Int): String {
         if (wholeSaleQuantityInput.isEmpty()) {
             provider.getEmptyWholeSaleQuantityErrorMessage()?.let { return it }
         }
@@ -211,7 +209,7 @@ class AddEditProductDetailViewModel @Inject constructor(
             provider.getZeroWholeSaleQuantityErrorMessage()?.let { return it }
         }
         if (wholeSaleQuantity < minWholeSaleQuantity) {
-            provider.getMinLimitWholeSaleQuantityErrorMessage()?.let { return it }
+            provider.getMinLimitWholeSaleQuantityErrorMessage(minWholeSaleQuantity)?.let { return it }
         }
         return ""
     }

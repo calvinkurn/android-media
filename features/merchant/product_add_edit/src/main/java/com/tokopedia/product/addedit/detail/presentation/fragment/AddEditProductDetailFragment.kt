@@ -45,6 +45,7 @@ import com.tokopedia.product.addedit.description.presentation.model.ProductVaria
 import com.tokopedia.product.addedit.detail.di.AddEditProductDetailComponent
 import com.tokopedia.product.addedit.detail.presentation.adapter.NameRecommendationAdapter
 import com.tokopedia.product.addedit.detail.presentation.adapter.WholeSalePriceInputAdapter
+import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.CATEGORY_RESULT_ID
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.CATEGORY_RESULT_NAME
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.CONDITION_NEW
@@ -296,6 +297,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             } else {
                 ProductAddMainTracking.clickRemoveWholesale(shopId)
             }
+            addNewWholeSalePriceButton?.visibility = View.VISIBLE
         }, onAddWholesale = {
             if (viewModel.isEditing) {
                 ProductEditMainTracking.clickAddWholesale(shopId)
@@ -310,6 +312,11 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         wholeSaleInputFormsAdapter?.addNewWholeSalePriceForm()
         addNewWholeSalePriceButton = view.findViewById(R.id.tv_add_new_wholesale_price)
         addNewWholeSalePriceButton?.setOnClickListener {
+            wholeSaleInputFormsAdapter?.itemCount?.let {
+                if (it >= AddEditProductDetailConstants.MAX_WHOLESALE_PRICES - 1) {
+                    addNewWholeSalePriceButton?.visibility = View.GONE
+                }
+            }
             wholeSaleInputFormsAdapter?.addNewWholeSalePriceForm()
         }
 
@@ -440,6 +447,11 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                     ProductEditMainTracking.clickWholesale(shopId)
                 } else {
                     ProductAddMainTracking.clickWholesale(shopId)
+                }
+                wholeSaleInputFormsAdapter?.itemCount?.let {
+                    if (it >= AddEditProductDetailConstants.MAX_WHOLESALE_PRICES - 1) {
+                        addNewWholeSalePriceButton?.visibility = View.GONE
+                    }
                 }
             }
         }
@@ -679,7 +691,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     override fun onWholeSaleQuantityItemTextChanged(position: Int, input: String) {
         val itemView = productWholeSaleInputFormsView?.layoutManager?.getChildAt(position)
         val quantityField: TextFieldUnify? = itemView?.findViewById(R.id.tfu_wholesale_quantity)
-        val errorMessage = viewModel.validateProductWholeSaleQuantityInput(input)
+        val errorMessage = viewModel.validateProductWholeSaleQuantityInput(input, position + 1)
         quantityField?.setError(errorMessage.isNotEmpty())
         quantityField?.setMessage(errorMessage)
         updateWholeSaleErrorCounter(viewModel, productWholeSaleInputFormsView)
