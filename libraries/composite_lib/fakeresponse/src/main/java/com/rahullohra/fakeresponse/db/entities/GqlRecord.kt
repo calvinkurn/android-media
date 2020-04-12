@@ -2,6 +2,8 @@ package com.rahullohra.fakeresponse.db.entities
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.rahullohra.fakeresponse.ResponseItemType
+import com.rahullohra.fakeresponse.ResponseListData
 
 @Entity(tableName = "GqlRecord")
 data class GqlRecord(
@@ -13,3 +15,11 @@ data class GqlRecord(
     val gqlOperationName: String,
     val customTag:String?
 )
+
+
+fun GqlRecord.toResponseListData():ResponseListData?{
+    id?.let {
+        return ResponseListData(id = it,title = gqlOperationName,isChecked = enabled,responseType = ResponseItemType.GQL,customName = customTag )
+    }
+    return null
+}

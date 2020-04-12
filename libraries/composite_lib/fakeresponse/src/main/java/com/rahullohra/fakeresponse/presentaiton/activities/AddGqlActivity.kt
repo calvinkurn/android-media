@@ -7,11 +7,12 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.Observer
-import com.google.gson.GsonBuilder
 import com.google.gson.JsonParser
 import com.rahullohra.fakeresponse.R
 import com.rahullohra.fakeresponse.Router
+import com.rahullohra.fakeresponse.chuck.TransactionEntity
 import com.rahullohra.fakeresponse.data.diProvider.activities.AddGqlActivityProvider
+import com.rahullohra.fakeresponse.data.parsers.ParserRuleProvider
 import com.rahullohra.fakeresponse.db.entities.GqlRecord
 import com.rahullohra.fakeresponse.presentaiton.livedata.Fail
 import com.rahullohra.fakeresponse.presentaiton.livedata.Loading
@@ -31,6 +32,7 @@ class AddGqlActivity : BaseActivity() {
     lateinit var viewModel: AddGqlVM
 
     var id: Int? = null
+    var isFromChuck: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,7 +45,11 @@ class AddGqlActivity : BaseActivity() {
 
     fun getDataFromId() {
         id?.let {
-            viewModel.loadRecord(it)
+            if (isFromChuck) {
+                viewModel.loadRecordFromChuck(it)
+            } else {
+                viewModel.loadRecord(it)
+            }
         }
     }
 
@@ -54,6 +60,7 @@ class AddGqlActivity : BaseActivity() {
         toolbar = findViewById(R.id.toolbar)
 
         id = intent.extras?.get(Router.BUNDLE_ARGS_ID) as Int?
+        isFromChuck = intent.extras?.get(Router.BUNDLE_ARGS_FROM_CHUCK) as Boolean? ?: false
 
         setSupportActionBar(toolbar)
     }
@@ -99,6 +106,27 @@ class AddGqlActivity : BaseActivity() {
                 }
             }
         })
+
+        viewModel.liveDataTransactionEntity.observe(this, Observer {
+            when(it){
+                is Success<TransactionEntity>->{
+                    updateUi(it.data)
+                }
+                is Fail->{
+                    toast(it.ex.message)
+                }
+            }
+        })
+    }
+
+    fun updateUi(transactionEntity: TransactionEntity){
+
+        val parserRuleProvider = ParserRuleProvider()
+        etGqlName.setText(parserRuleProvider.parse(transactionEntity.requestBody?:""))
+
+        var response = transactionEntity.responseBody?:""
+        response = gson.toJson(JsonParser().parse(response))
+        etResponse.setText(response)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -140,6 +168,6 @@ class AddGqlActivity : BaseActivity() {
     }
 
     fun isExistingRecord(): Boolean {
-        return id != null
+        return id != null && !isFromChuck
     }
 }

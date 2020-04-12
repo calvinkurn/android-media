@@ -2,6 +2,8 @@ package com.rahullohra.fakeresponse.presentaiton.viewmodels
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.rahullohra.fakeresponse.chuck.TransactionEntity
+import com.rahullohra.fakeresponse.chuck.domain.usecase.ChuckSearchUseCase
 import com.rahullohra.fakeresponse.db.entities.RestRecord
 import com.rahullohra.fakeresponse.domain.usecases.AddRestDaoUseCase
 import com.rahullohra.fakeresponse.presentaiton.livedata.Fail
@@ -16,12 +18,14 @@ import kotlin.coroutines.CoroutineContext
 
 class AddRestVM constructor(
         val workerDispatcher: CoroutineDispatcher,
-        val usecase: AddRestDaoUseCase
+        val usecase: AddRestDaoUseCase,
+        val chuckSearchUseCase: ChuckSearchUseCase
 ) : ViewModel(), CoroutineScope {
 
     val liveDataCreate = MutableLiveData<LiveDataResult<Long>>()
     val liveDataUpdate = MutableLiveData<LiveDataResult<Boolean>>()
     val liveDataRestResponse = MutableLiveData<LiveDataResult<RestRecord>>()
+    val liveDataTransactionEntity = MutableLiveData<LiveDataResult<TransactionEntity>>()
 
     override val coroutineContext: CoroutineContext
         get() = workerDispatcher + ceh
@@ -33,23 +37,47 @@ class AddRestVM constructor(
 
     fun addRecord(data: AddRestData) {
         launch {
-            val rowId = usecase.addRestRecord(data)
-            liveDataCreate.postValue(Success(rowId))
+            try {
+                val rowId = usecase.addRestRecord(data)
+                liveDataCreate.postValue(Success(rowId))
+            } catch (ex: Exception) {
+                liveDataCreate.postValue(Fail(ex))
+            }
         }
     }
 
-    fun updateRecord(id:Int, data: AddRestData) {
+    fun updateRecord(id: Int, data: AddRestData) {
         launch {
-            usecase.updateRestRecord(id, data)
-            liveDataUpdate.postValue(Success(true))
+            try {
+                usecase.updateRestRecord(id, data)
+                liveDataUpdate.postValue(Success(true))
+            } catch (ex: Exception) {
+                liveDataUpdate.postValue(Fail(ex))
+            }
+
         }
     }
 
     fun loadRecord(id: Int) {
         launch {
-            val result = usecase.getRecordFromTable(id)
-            liveDataRestResponse.postValue(Success(result))
+            try {
+                val result = usecase.getRecordFromTable(id)
+                liveDataRestResponse.postValue(Success(result))
+            } catch (ex: Exception) {
+                liveDataRestResponse.postValue(Fail(ex))
+            }
+
         }
     }
 
+    fun loadRecordFromChuck(id: Int) {
+        launch {
+            try {
+                val result = chuckSearchUseCase.performSearch(id = id.toLong()).first()
+                liveDataTransactionEntity.postValue(Success(result))
+            } catch (ex: Exception) {
+                liveDataTransactionEntity.postValue(Fail(ex))
+            }
+        }
+    }
 }

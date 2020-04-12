@@ -2,6 +2,9 @@
     <string name="gql_name">FakeResponse</string>
     <string name="gql_save">Save</string>
     <string name="gql_reset">Reset</string>
+    <string name="gql_export">Export</string>
+    <string name="gql_import">Import</string>
+    <string name="gql_search">Search</string>
     <string name="gql_clear_records">Clear records</string>
     <string name="gql_add_record">Add gql record</string>
     <string name="gql_add_rest_record">Add rest record</string>

@@ -51,7 +51,8 @@ class AddRestDaoUseCase(val repository: RestRepository) : BaseUseCase<RestReposi
                 createdAt = date.time,
                 updatedAt = date.time,
                 enabled = true,
-                response = data.response!!
+                response = data.response!!,
+                customTag = data.customTag
         )
     }
 }

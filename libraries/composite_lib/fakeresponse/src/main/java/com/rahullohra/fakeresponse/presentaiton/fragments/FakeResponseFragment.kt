@@ -123,6 +123,9 @@ class FakeResponseFragment : BaseFragment() {
             R.id.gql_add_rest_record -> {
                 Router.routeToAddRest(context)
             }
+            R.id.gql_menu_search -> {
+                Router.routeToSearch(context)
+            }
         }
         return true
     }

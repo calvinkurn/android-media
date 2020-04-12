@@ -1,8 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/gql_menu_search"
+        android:icon="@drawable/fake_ic_search"
+        android:title="@string/gql_search"
+        app:showAsAction="always" />
+
     <item
         android:id="@+id/gql_menu_reset"
         android:title="@string/gql_reset" />
+
+    <item
+        android:id="@+id/gql_menu_export"
+        android:title="@string/gql_export" />
+
+    <item
+        android:id="@+id/gql_menu_import"
+        android:title="@string/gql_import" />
 
     <item
         android:id="@+id/gql_menu_clear_records"

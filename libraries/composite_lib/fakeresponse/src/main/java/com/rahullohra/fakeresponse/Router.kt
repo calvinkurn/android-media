@@ -2,24 +2,39 @@ package com.rahullohra.fakeresponse
 
 import android.content.Context
 import android.content.Intent
+import com.rahullohra.fakeresponse.chuck.presentation.activities.SearchActivity
 import com.rahullohra.fakeresponse.presentaiton.activities.AddGqlActivity
 import com.rahullohra.fakeresponse.presentaiton.activities.AddRestResponseActivity
+import com.rahullohra.fakeresponse.presentaiton.activities.ExportActivity
 
 class Router {
 
     companion object {
 
         const val BUNDLE_ARGS_ID = "id"
+        const val BUNDLE_ARGS_FROM_CHUCK = "fromChuck"
 
-        fun routeToAddGql(context: Context?, id: Int? = null) {
+        fun routeToAddGql(context: Context?, id: Int? = null, fromChuck: Boolean = false) {
             val intent = Intent(context, AddGqlActivity::class.java)
             intent.putExtra(BUNDLE_ARGS_ID, id)
+            intent.putExtra(BUNDLE_ARGS_FROM_CHUCK, fromChuck)
             context?.startActivity(intent)
         }
 
-        fun routeToAddRest(context: Context?, id: Int? = null) {
+        fun routeToAddRest(context: Context?, id: Int? = null, fromChuck: Boolean = false) {
             val intent = Intent(context, AddRestResponseActivity::class.java)
             intent.putExtra(BUNDLE_ARGS_ID, id)
+            intent.putExtra(BUNDLE_ARGS_FROM_CHUCK, fromChuck)
+            context?.startActivity(intent)
+        }
+
+        fun routeToSearch(context: Context?) {
+            val intent = Intent(context, SearchActivity::class.java)
+            context?.startActivity(intent)
+        }
+
+        fun routeToExportActivity(context: Context?) {
+            val intent = Intent(context, ExportActivity::class.java)
             context?.startActivity(intent)
         }
     }

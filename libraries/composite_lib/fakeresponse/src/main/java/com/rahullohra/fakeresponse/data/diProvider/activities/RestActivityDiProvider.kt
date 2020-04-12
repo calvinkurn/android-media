@@ -1,6 +1,9 @@
 package com.rahullohra.fakeresponse.data.diProvider.activities
 
 import androidx.lifecycle.ViewModelProvider
+import com.rahullohra.fakeresponse.chuck.ChuckDBConnector
+import com.rahullohra.fakeresponse.chuck.domain.repository.ChuckRepository
+import com.rahullohra.fakeresponse.chuck.domain.usecase.ChuckSearchUseCase
 import com.rahullohra.fakeresponse.data.diProvider.DiProvider
 import com.rahullohra.fakeresponse.data.diProvider.vm.VMFactory
 import com.rahullohra.fakeresponse.domain.repository.LocalRepository
@@ -19,9 +22,12 @@ class RestActivityDiProvider :
 
         val dao = getDatabase(t).restDao()
         val repository = RestRepository(dao)
-        val usecase = AddRestDaoUseCase(repository )
+        val usecase = AddRestDaoUseCase(repository)
 
-        val list = arrayOf(workerDispatcher, usecase)
+        val chuckRepository = ChuckRepository(ChuckDBConnector.getDatabase(t))
+        val chuckSearchUseCase = ChuckSearchUseCase(chuckRepository)
+
+        val list = arrayOf(workerDispatcher, usecase, chuckSearchUseCase)
         val vmFactory = ViewModelProvider(
             t,
             VMFactory(t.application, list)
