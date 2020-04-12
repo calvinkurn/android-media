@@ -7,7 +7,7 @@ import com.rahullohra.fakeresponse.FileUtil
 import com.rahullohra.fakeresponse.domain.repository.RemoteSqliteRepository
 
 class DownloadSqliteUseCase(val repository: RemoteSqliteRepository) :
-    BaseUseCase<RemoteSqliteRepository>(repository) {
+        BaseUseCase<RemoteSqliteRepository>(repository) {
 
     suspend fun getSqlite() {
         val isFilePresent = checkForExsistingSqliteFile()
@@ -39,7 +39,13 @@ class DownloadSqliteUseCase(val repository: RemoteSqliteRepository) :
 
     fun getCpu(): Array<String> {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            return arrayOf(Build.CPU_ABI2)
+
+            val abi2 = Build.CPU_ABI
+            val v = RemoteSqliteRepository.AbiEndpoints.map[abi2]
+            if (v.isNullOrEmpty()) {
+                return arrayOf(Build.CPU_ABI)
+            }
+            return arrayOf(abi2)
         }
         return Build.SUPPORTED_ABIS
     }
