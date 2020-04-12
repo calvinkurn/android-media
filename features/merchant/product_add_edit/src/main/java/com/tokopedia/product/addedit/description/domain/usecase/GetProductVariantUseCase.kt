@@ -14,9 +14,13 @@ class GetProductVariantUseCase @Inject constructor(
 
     override suspend fun executeOnBackground(): List<ProductVariantByCatModel> {
         val categoryId = params.getString(PARAM_INPUT, "")
-        return productVariantRepo.getVariant(categoryId)
+        val variantData = productVariantRepo.getVariant(categoryId)
+        return sortByStatus(variantData)
     }
 
+    private fun sortByStatus(variantData: List<ProductVariantByCatModel>)
+            : List<ProductVariantByCatModel> = variantData.sortedBy { it.status }
+    
     companion object {
         const val PARAM_INPUT = "cat_id"
 
