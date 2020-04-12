@@ -4,19 +4,19 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.reviewseller.feature.reviewlist.view.model.FilterAndSortModel
-import com.tokopedia.reviewseller.feature.reviewlist.view.model.SummaryReviewModel
-import com.tokopedia.reviewseller.feature.reviewlist.view.model.ProductReviewModel
+import com.tokopedia.reviewseller.feature.reviewlist.view.model.ProductRatingOverallModel
+import com.tokopedia.reviewseller.feature.reviewlist.view.model.ProductReviewUiModel
 import com.tokopedia.reviewseller.feature.reviewlist.view.viewholder.FilterAndSortViewHolder
 import com.tokopedia.reviewseller.feature.reviewlist.view.viewholder.ReviewSummaryViewHolder
 import com.tokopedia.reviewseller.feature.reviewlist.view.viewholder.SellerReviewListViewHolder
 
 class SellerReviewListTypeFactory: BaseAdapterTypeFactory(), TypeFactoryViewHolder {
 
-    override fun type(summaryReviewModel: SummaryReviewModel): Int {
+    override fun type(productRatingOverallModel: ProductRatingOverallModel): Int {
         return ReviewSummaryViewHolder.LAYOUT_RES
     }
 
-    override fun type(productReviewModel: ProductReviewModel): Int {
+    override fun type(productReviewUiModel: ProductReviewUiModel): Int {
         return SellerReviewListViewHolder.LAYOUT_RES
     }
 
