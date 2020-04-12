@@ -20,7 +20,7 @@ class GetProductVariantUseCase @Inject constructor(
 
     private fun sortByStatus(variantData: List<ProductVariantByCatModel>)
             : List<ProductVariantByCatModel> = variantData.sortedBy { it.status }
-    
+
     companion object {
         const val PARAM_INPUT = "cat_id"
 
