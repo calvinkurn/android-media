@@ -217,7 +217,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
             val importFromInstagramMenu = subMenu.findItem(R.id.label_view_import_from_instagram)
 
             addProductMenu.setOnMenuItemClickListener {
-                startActivity(ProductAddNameCategoryActivity.createInstance(activity))
+                RouteManager.route(requireContext(), ApplinkConst.PRODUCT_ADD)
                 true
             }
 
