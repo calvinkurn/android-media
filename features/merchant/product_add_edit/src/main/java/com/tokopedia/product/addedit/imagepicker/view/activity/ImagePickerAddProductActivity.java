@@ -63,6 +63,7 @@ public class ImagePickerAddProductActivity extends ImagePickerActivity {
         Intent targetIntent = new Intent(this, ImagePickerEditPhotoActivity.class);
         Intent origin = super.getEditorIntent(selectedImagePaths);
         targetIntent.putExtras(origin.getExtras());
+        targetIntent.putExtra(IS_EDIT, isEditProduct);
         return targetIntent;
     }
 }
