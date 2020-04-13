@@ -226,6 +226,6 @@ ext {
             tkpdtransaction                 : ":tkpdtransaction",
             tkpdtransactioncommon           : ":tkpdtransaction-common",
 
-            recharge_slice                  : ":features:recharge_slice"
+            recharge_slice                  : ":features:recharge:recharge_slice"
     ]
 }

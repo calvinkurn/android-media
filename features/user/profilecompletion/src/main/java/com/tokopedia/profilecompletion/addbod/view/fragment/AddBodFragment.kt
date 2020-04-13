@@ -1,39 +1,33 @@
 package com.tokopedia.profilecompletion.addbod.view.fragment
 
 import android.app.Activity
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.os.Bundle
-import androidx.annotation.NonNull
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
+import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.datepicker.DatePickerUnify
 import com.tokopedia.profilecompletion.R
 import com.tokopedia.profilecompletion.addbod.data.AddBodData
+import com.tokopedia.profilecompletion.addbod.view.widget.common.LocaleUtils
+import com.tokopedia.profilecompletion.addbod.view.widget.common.LocaleUtils.getCurrentLocale
 import com.tokopedia.profilecompletion.addbod.viewmodel.AddBodViewModel
 import com.tokopedia.profilecompletion.di.ProfileCompletionSettingComponent
+import com.tokopedia.sessioncommon.ErrorHandlerSession
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_add_bod.*
+import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
-import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.google.android.material.snackbar.Snackbar
-import androidx.core.os.ConfigurationCompat
-import android.widget.FrameLayout
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.sessioncommon.ErrorHandlerSession
-import com.tokopedia.unifycomponents.Toaster
-import kotlinx.android.synthetic.main.layout_datepicker_bottomsheet.view.datePicker
-import java.text.SimpleDateFormat
-import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
-import com.tokopedia.datepicker.OnDateChangedListener
-import com.tokopedia.profilecompletion.addbod.view.widget.common.LocaleUtils
-import com.tokopedia.profilecompletion.addbod.view.widget.common.LocaleUtils.getCurrentLocale
 
 
 /**
@@ -52,9 +46,10 @@ class AddBodFragment: BaseDaggerFragment(){
     private lateinit var maxDate: Calendar
     private lateinit var defaultDate: Calendar
 
-    private lateinit var closeableBottomSheetDialog : CloseableBottomSheetDialog
+    private var unifyDatePicker: DatePickerUnify? = null
     private lateinit var chooseDateButton : View
     private var selectedDate : String = ""
+
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -69,44 +64,13 @@ class AddBodFragment: BaseDaggerFragment(){
         defaultDate = GregorianCalendar(getCurrentLocale(context!!))
 
         initVar()
+        initDatepicker()
 
-        val viewBottomSheetDialog = View.inflate(context, R.layout.layout_datepicker_bottomsheet, null)
-        val datePicker = viewBottomSheetDialog.datePicker
-        datePicker.init(defaultDate.timeInMillis, minDate.timeInMillis, maxDate.timeInMillis,
-                object : OnDateChangedListener {
-                    override fun onDateChanged(date: Long) {
-
-                    }
-                })
-
-        chooseDateButton = viewBottomSheetDialog.findViewById(R.id.btn_continue)
-        chooseDateButton.setOnClickListener {
-            selectedDate = formatDateParam( datePicker.getDayOfMonth(),datePicker.getMonth()+1 , datePicker.getYear() )
-            val formattedDateView = selectedDate
-            chooseDate.setText(DateFormatUtils.formatDate(
-                    DateFormatUtils.FORMAT_YYYY_MM_DD,
-                    DateFormatUtils.FORMAT_DD_MMMM_YYYY,
-                    formattedDateView))
-            closeableBottomSheetDialog.dismiss()
-        }
-
-        closeableBottomSheetDialog = CloseableBottomSheetDialog.createInstanceRounded(context)
-        closeableBottomSheetDialog.setCustomContentView(viewBottomSheetDialog, "DatePicker", true)
-
-        val bottomSheet = closeableBottomSheetDialog.findViewById(com.google.android.material.R.id.design_bottom_sheet) as FrameLayout?
-        val behavior = BottomSheetBehavior.from<View>(bottomSheet)
-        behavior.setBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
-            override fun onStateChanged(@NonNull bottomSheet: View, newState: Int) {
-                if (newState == BottomSheetBehavior.STATE_DRAGGING) {
-                    behavior.state = BottomSheetBehavior.STATE_EXPANDED
-                }
+        chooseDate.textFieldInput.setFocusable(false)
+        chooseDate.textFieldInput.setOnClickListener {
+            fragmentManager?.run {
+                unifyDatePicker?.show(this, TAG)
             }
-
-            override fun onSlide(@NonNull bottomSheet: View, slideOffset: Float) {}
-        })
-
-        chooseDate.setOnClickListener {
-            closeableBottomSheetDialog.show()
         }
 
         btnSave.setOnClickListener {
@@ -119,15 +83,36 @@ class AddBodFragment: BaseDaggerFragment(){
         initObserver()
     }
 
+    private fun setChoosenDateFormat(date: String){
+        chooseDate.textFieldInput.setText(DateFormatUtils.formatDate(
+                DateFormatUtils.FORMAT_YYYY_MM_DD,
+                DateFormatUtils.FORMAT_DD_MMMM_YYYY,
+                date))
+    }
+
+    private fun initDatepicker(){
+        context?.run {
+            unifyDatePicker = DatePickerUnify(this, minDate, defaultDate, maxDate)
+        }
+        unifyDatePicker?.setTitle(getString(R.string.subtitle_bod_setting_profile))
+        unifyDatePicker?.datePickerButton?.setOnClickListener {
+            val dateArray = unifyDatePicker?.getDate()
+            dateArray?.run {
+                if(size >= 3){
+                    selectedDate = formatDateParam( dateArray[0],dateArray[1]+1 , dateArray[2] )
+                    setChoosenDateFormat(selectedDate)
+                }
+            }
+            unifyDatePicker?.dismiss()
+        }
+    }
+
     private fun initVar() {
         val bod = arguments?.getString(ApplinkConstInternalGlobal.PARAM_BOD)
         if(!bod.isNullOrEmpty()){
             val simpleDateFormat = SimpleDateFormat("yyyy-MM-dd", LocaleUtils.getIDLocale())
             defaultDate.time = simpleDateFormat.parse(bod)
-            chooseDate.setText(DateFormatUtils.formatDate(
-                    DateFormatUtils.FORMAT_YYYY_MM_DD,
-                    DateFormatUtils.FORMAT_DD_MMMM_YYYY,
-                    bod))
+            setChoosenDateFormat(bod)
             selectedDate = bod
         }else{
             defaultDate.add(Calendar.YEAR, -17)
@@ -172,7 +157,6 @@ class AddBodFragment: BaseDaggerFragment(){
             val errorMessage = ErrorHandlerSession.getErrorMessage(context, throwable)
             Toaster.showError(this, errorMessage, Snackbar.LENGTH_LONG)
         }
-
     }
 
     private fun showLoading() {
@@ -187,6 +171,7 @@ class AddBodFragment: BaseDaggerFragment(){
 
     companion object {
 
+        const val TAG = "addDobFragment"
         val EXTRA_PROFILE_SCORE = "profile_score"
         val EXTRA_BOD= "bod"
 
