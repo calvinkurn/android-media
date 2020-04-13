@@ -128,6 +128,7 @@ class ValidateUsePromoCheckoutMapper {
             benefitSummaryInfo?.let { benefit ->
                 benefitSummaryInfoUiModel.finalBenefitText = benefit.finalBenefitText
                 benefitSummaryInfoUiModel.finalBenefitAmountStr = benefit.finalBenefitAmountStr
+                benefitSummaryInfoUiModel.finalBenefitAmount = benefit.finalBenefitAmount
                 benefitSummaryInfoUiModel.summaries = mapToListSummaryInfoUiModel(benefit.summaries)
             }
             return benefitSummaryInfoUiModel

@@ -14,7 +14,7 @@ query OfficialStoreFeaturedShop($categoryAliasID: Int) {
         imageUrl
         additionalInformation
         featuredBrandId
-        attribution
+        campaignCode
       }
     }
 }

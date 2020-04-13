@@ -61,7 +61,8 @@ class OfficialHomeFragment :
         HasComponent<OfficialStoreHomeComponent>,
         RecommendationListener,
         FeaturedShopListener,
-        DynamicChannelEventHandler {
+        DynamicChannelEventHandler
+{
 
     companion object {
         const val PRODUCT_RECOMM_GRID_SPAN_COUNT = 2
@@ -396,11 +397,12 @@ class OfficialHomeFragment :
         }
 
         handleProductCardOptionsActivityResult(
-                requestCode, resultCode, data, object : ProductCardOptionsWishlistCallback {
-            override fun onReceiveWishlistResult(productCardOptionsModel: ProductCardOptionsModel) {
-                handleWishlistAction(productCardOptionsModel)
-            }
-        })
+                requestCode, resultCode, data, object: ProductCardOptionsWishlistCallback {
+                    override fun onReceiveWishlistResult(productCardOptionsModel: ProductCardOptionsModel) {
+                        handleWishlistAction(productCardOptionsModel)
+                    }
+                }
+        )
     }
 
     private fun handleWishlistAction(productCardOptionsModel: ProductCardOptionsModel) {
@@ -638,7 +640,8 @@ class OfficialHomeFragment :
                         channelData.header?.name ?: "",
                         (position + 1).toString(10),
                         it,
-                        channelData.campaignID)
+                        channelData.campaignID
+                )
             }
 
             RouteManager.route(context, applink)
@@ -713,7 +716,7 @@ class OfficialHomeFragment :
                 shopData.featuredBrandId.orEmpty(),
                 viewModel.isLoggedIn(),
                 shopData.shopId.orEmpty(),
-                shopData.attribution.orEmpty()
+                shopData.campaignCode.orEmpty()
         )
         RouteManager.route(context, shopData.url)
     }

@@ -25,8 +25,7 @@ data class Banner(@SerializedName("id")
                   @SerializedName("brand_id")
                   val brandId: String = "",
                   @SerializedName("campaignCode")
-                  val campaignCode: String = ""
-)
+                  val campaignCode: String = "")
     : Parcelable {
     constructor(parcel: Parcel) : this(
             parcel.readString() ?: "",
@@ -39,8 +38,7 @@ data class Banner(@SerializedName("id")
             parcel.readString() ?: "",
             parcel.readString() ?: "",
             parcel.readString() ?: "",
-            parcel.readString() ?: ""
-    )
+            parcel.readString() ?: "")
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(bannerId)

@@ -29,8 +29,6 @@ class OfficialStoreTracking(context: Context) {
     private val EVENT_ACTION = "eventAction"
     private val EVENT_LABEL = "eventLabel"
 
-    private val CAMPAIGN_CODE = "campaignCode"
-
     private val ATTRIBUTION = "attribution"
     private val AFFINITY_LABEL = "affinityLabel"
     private val CATEGORY_ID = "categoryId"
@@ -45,6 +43,8 @@ class OfficialStoreTracking(context: Context) {
     private val PROMO_CLICK = "promoClick"
     private val PROMO_VIEW = "promoView"
     private val CATEGORY = "category"
+
+    private val CAMPAIGN_CODE = "campaignCode"
 
     private val OS_MICROSITE = "os microsite - "
 
@@ -316,7 +316,7 @@ class OfficialStoreTracking(context: Context) {
                 EVENT_CATEGORY, "os microsite - $categoryName",
                 EVENT_ACTION, "flash sale - product click",
                 EVENT_LABEL, "click product picture - $headerName",
-                CAMPAIGN_CODE, "$campaignId",
+                CAMPAIGN_CODE, campaignId.toString(),
                 ECOMMERCE, ecommerceBody
         ))
     }
@@ -377,7 +377,7 @@ class OfficialStoreTracking(context: Context) {
                 AFFINITY_LABEL, channelData.persona,
                 CATEGORY_ID, channelData.categoryPersona,
                 SHOP_ID, channelData.brandId,
-                CAMPAIGN_CODE, "${channelData.campaignID}",
+                CAMPAIGN_CODE, channelData.campaignID.toString(),
                 ECOMMERCE, ecommerceBody
         ))
     }
@@ -422,7 +422,7 @@ class OfficialStoreTracking(context: Context) {
                 EVENT_CATEGORY, "os microsite - $categoryName",
                 EVENT_ACTION, "dynamic channel mix - product click",
                 EVENT_LABEL, "click product picture - $headerName",
-                CAMPAIGN_CODE, "$campaignId",
+                CAMPAIGN_CODE, campaignId.toString(),
                 ECOMMERCE, ecommerceBody
         ))
     }
@@ -479,11 +479,11 @@ class OfficialStoreTracking(context: Context) {
                 EVENT_CATEGORY, "os microsite - $categoryName",
                 EVENT_ACTION, "dynamic channel mix - banner click",
                 EVENT_LABEL, "click banner dc mix - ${bannerData.applink}",
+                CAMPAIGN_CODE, channelData.campaignID.toString(),
                 ATTRIBUTION, channelData.galaxyAttribution,
                 AFFINITY_LABEL, channelData.persona,
                 CATEGORY_ID, channelData.categoryPersona,
                 SHOP_ID, channelData.brandId,
-                CAMPAIGN_CODE, "${channelData.campaignID}",
                 ECOMMERCE, ecommerceBody
         ))
     }

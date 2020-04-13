@@ -7,6 +7,8 @@ import com.tokopedia.autocomplete.initialstate.popularsearch.RefreshPopularSearc
 import com.tokopedia.autocomplete.initialstate.recentsearch.DeleteRecentSearchUseCase
 import com.tokopedia.autocomplete.initialstate.recentsearch.RecentSearchTitleViewModel
 import com.tokopedia.autocomplete.initialstate.recentsearch.RecentSearchViewModel
+import com.tokopedia.autocomplete.initialstate.recentview.RecentViewViewModel
+import com.tokopedia.autocomplete.initialstate.recentview.ReecentViewTitleViewModel
 import com.tokopedia.autocomplete.initialstate.testinstance.initialStateCommonResponse
 import com.tokopedia.autocomplete.initialstate.testinstance.popularSearchCommonResponse
 import com.tokopedia.user.session.UserSessionInterface
@@ -26,11 +28,15 @@ internal class InitialStatePresenterTest {
     private val userSession = mockk<UserSessionInterface>(relaxed = true)
 
     private val slotVisitableList = slot<List<Visitable<*>>>()
+    private val slotDeletedVisitableList = slot<List<Visitable<*>>>()
     private val slotRefreshVisitableList = slot<List<Visitable<*>>>()
 
     private lateinit var initialStatePresenter: InitialStatePresenter
 
     private val testException = TestException("Error")
+
+    private val deleteKeyword = "samsung"
+    private val isSuccessful = true
 
     @Before
     fun setUp() {
@@ -45,7 +51,7 @@ internal class InitialStatePresenterTest {
     @Test
     fun `test get initial state data`() {
         `given initial state use case capture request params`()
-        `when presenter get initial state data` ()
+        `when presenter get initial state data`()
         `then verify initial state API is called`()
         `then verify initial state view will call showInitialStateResult behavior`()
         `then verify visitable list`()
@@ -77,15 +83,17 @@ internal class InitialStatePresenterTest {
 
         Assert.assertTrue(visitableList[0] is RecentSearchTitleViewModel)
         Assert.assertTrue(visitableList[1] is RecentSearchViewModel)
-        Assert.assertTrue(visitableList[2] is PopularSearchTitleViewModel)
-        Assert.assertTrue(visitableList[3] is PopularSearchViewModel)
-        Assert.assertTrue(visitableList.size == 4)
+        Assert.assertTrue(visitableList[2] is ReecentViewTitleViewModel)
+        Assert.assertTrue(visitableList[3] is RecentViewViewModel)
+        Assert.assertTrue(visitableList[4] is PopularSearchTitleViewModel)
+        Assert.assertTrue(visitableList[5] is PopularSearchViewModel)
+        Assert.assertTrue(visitableList.size == 6)
     }
 
     @Test
     fun `test fail to get initial state data`() {
         `given initial state API will return error`()
-        `when presenter get initial state data` ()
+        `when presenter get initial state data`()
         `then verify initial state API is called`()
         `then verify initial state view do nothing behavior`()
     }
@@ -104,11 +112,11 @@ internal class InitialStatePresenterTest {
     @Test
     fun `test refresh popular search data`() {
         `given initial state use case capture request params`()
-        `given presenter get initial state data` ()
+        `given presenter get initial state data`()
         `given initial state API is called`()
         `given initial state view called showInitialStateResult behavior`()
         `given refresh popular search API will return data`()
-        `when presenter refresh popular search `()
+        `when presenter refresh popular search`()
         `then verify popularSearch API is called`()
         `then verify initial state view behavior`()
         `then verify visitable list after refresh popular search`()
@@ -135,7 +143,7 @@ internal class InitialStatePresenterTest {
         }
     }
 
-    private fun `when presenter refresh popular search `() {
+    private fun `when presenter refresh popular search`() {
         initialStatePresenter.refreshPopularSearch()
     }
 
@@ -149,23 +157,23 @@ internal class InitialStatePresenterTest {
         }
     }
 
-    private fun `then verify visitable list after refresh popular search`(){
+    private fun `then verify visitable list after refresh popular search`() {
         val refreshVisitableList = slotRefreshVisitableList.captured
         val visitableList = slotVisitableList.captured
 
         Assert.assertTrue(
-                (refreshVisitableList[3] as PopularSearchViewModel).list.size == (visitableList[3] as PopularSearchViewModel).list.size
+                (refreshVisitableList[5] as PopularSearchViewModel).list.size == (visitableList[5] as PopularSearchViewModel).list.size
         )
     }
 
     @Test
     fun `test fail to refresh popular search data`() {
         `given initial state use case capture request params`()
-        `given presenter get initial state data` ()
+        `given presenter get initial state data`()
         `given initial state API is called`()
         `given initial state view called showInitialStateResult behavior`()
         `given refresh popular search API will return error`()
-        `when presenter refresh popular search `()
+        `when presenter refresh popular search`()
         `then verify popularSearch API is called`()
         `then verify initial state view do nothing behavior`()
     }
@@ -175,5 +183,113 @@ internal class InitialStatePresenterTest {
             secondArg<Subscriber<List<InitialStateItem>>>().onStart()
             secondArg<Subscriber<List<InitialStateItem>>>().onError(testException)
         }
+    }
+
+    @Test
+    fun `test delete recent search data`() {
+        `given initial state use case capture request params`()
+        `given presenter get initial state data`()
+        `given initial state API is called`()
+        `given initial state view called showInitialStateResult behavior`()
+        `given delete recent search API will return data`()
+        `when presenter delete recent search`()
+        `then verify deleteRecentSearch API is called`()
+        `then verify initial state view called deleteRecentSearch`()
+        `then verify visitable list doesnt have keyword samsung in recent search`()
+    }
+
+    private fun `given delete recent search API will return data`() {
+        every { deleteRecentSearchUseCase.execute(any(), any()) }.answers {
+            secondArg<Subscriber<Boolean>>().onStart()
+            secondArg<Subscriber<Boolean>>().onNext(isSuccessful)
+        }
+    }
+
+    private fun `when presenter delete recent search`() {
+        initialStatePresenter.deleteRecentSearchItem(deleteKeyword)
+    }
+
+    private fun `then verify deleteRecentSearch API is called`() {
+        verify { deleteRecentSearchUseCase.execute(any(), any()) }
+    }
+
+    private fun `then verify initial state view called deleteRecentSearch`() {
+        verify {
+            initialStateView.deleteRecentSearch(capture(slotDeletedVisitableList))
+        }
+    }
+
+    private fun `then verify visitable list doesnt have keyword samsung in recent search`() {
+        val newList = slotDeletedVisitableList.captured
+        Assert.assertTrue(newList[1] is RecentSearchViewModel)
+        Assert.assertFalse(
+                (newList[1] as RecentSearchViewModel).list.contains(
+                        BaseItemInitialStateSearch(
+                                template = "list_single_line",
+                                applink = "tokopedia://search?q=sepatu&source=universe&st=product",
+                                url = "/search?q=sepatu&source=universe&st=product",
+                                title = "sepatu",
+                                label = "keyword",
+                                shortcutImage = "https://shortcut"
+                        )
+                )
+        )
+    }
+
+    @Test
+    fun `test fail to delete recent search data`() {
+        `given initial state use case capture request params`()
+        `given presenter get initial state data`()
+        `given initial state API is called`()
+        `given initial state view called showInitialStateResult behavior`()
+        `given delete recent search API will return error`()
+        `when presenter delete recent search`()
+        `then verify deleteRecentSearch API is called`()
+        `then verify initial state view do nothing behavior`()
+    }
+
+    private fun `given delete recent search API will return error`() {
+        every { deleteRecentSearchUseCase.execute(any(), any()) }.answers {
+            secondArg<Subscriber<Boolean>>().onStart()
+            secondArg<Subscriber<Boolean>>().onError(testException)
+        }
+    }
+
+    @Test
+    fun `test delete all recent search data`() {
+        `given initial state use case capture request params`()
+        `given presenter get initial state data`()
+        `given initial state API is called`()
+        `given initial state view called showInitialStateResult behavior`()
+        `given delete recent search API will return data`()
+        `when presenter delete all recent search`()
+        `then verify deleteRecentSearch API is called`()
+        `then verify initial state view called deleteRecentSearch`()
+        `then verify visitable list doesnt have recent search anymore`()
+    }
+
+    private fun `when presenter delete all recent search`() {
+        initialStatePresenter.deleteAllRecentSearch()
+    }
+
+    private fun `then verify visitable list doesnt have recent search anymore`() {
+        val list = slotDeletedVisitableList.captured
+        Assert.assertTrue(list[0] is ReecentViewTitleViewModel)
+        Assert.assertTrue(list[1] is RecentViewViewModel)
+        Assert.assertTrue(list[2] is PopularSearchTitleViewModel)
+        Assert.assertTrue(list[3] is PopularSearchViewModel)
+        Assert.assertTrue(list.size == 4)
+    }
+
+    @Test
+    fun `test fail to delete all recent search data`() {
+        `given initial state use case capture request params`()
+        `given presenter get initial state data`()
+        `given initial state API is called`()
+        `given initial state view called showInitialStateResult behavior`()
+        `given delete recent search API will return error`()
+        `when presenter delete all recent search`()
+        `then verify deleteRecentSearch API is called`()
+        `then verify initial state view do nothing behavior`()
     }
 }
