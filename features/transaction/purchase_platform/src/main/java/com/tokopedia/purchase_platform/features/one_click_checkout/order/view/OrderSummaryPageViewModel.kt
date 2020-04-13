@@ -146,7 +146,6 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
     }
 
     private fun getRates() {
-        val s = _orderPreference?.shipping
         val currPromo = if (_orderPreference?.shipping?.isApplyLogisticPromo == true) _orderPreference?.shipping?.logisticPromoViewModel?.promoCode
                 ?: "" else ""
         val shippingParam = generateShippingParam()
