@@ -161,7 +161,6 @@
 
 /features/operational/contact_us        				@tokopedia/minion-darth
 
-/features/fintech/wallet                				@tokopedia/minion-solo
 /features/fintech/common_wallet         				@tokopedia/minion-solo
 /features/fintech/instant_loan          				@tokopedia/minion-solo
 /features/fintech/ovo_pay_with_qr       				@tokopedia/minion-solo
@@ -184,6 +183,8 @@
 /features/im/common_promo                               @tokopedia/minion-yoda
 /features/ovop2p                                        @tokopedia/minion-yoda
 /features/payment/common_payment                        @tokopedia/minion-yoda
+/features/digital/instant_debit_bca                     @tokopedia/minion-yoda
+/features/fintech/wallet                				@tokopedia/minion-yoda
 
 
 /libraries/adapter_delegate/							@tokopedia/core-team
