@@ -1,4 +1,4 @@
-package com.tokopedia.product.addedit.mapper
+package com.tokopedia.product.addedit.draft.mapper
 
 import com.tokopedia.product.addedit.description.presentation.model.VideoLinkModel
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
