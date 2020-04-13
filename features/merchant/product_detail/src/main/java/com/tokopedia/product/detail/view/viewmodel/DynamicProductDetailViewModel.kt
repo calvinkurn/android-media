@@ -7,9 +7,11 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.affiliatecommon.domain.TrackAffiliateUseCase
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.atc_common.data.model.request.AddToCartOccRequestParams
 import com.tokopedia.atc_common.data.model.request.AddToCartOcsRequestParams
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
+import com.tokopedia.atc_common.domain.usecase.AddToCartOccUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartOcsUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
@@ -20,6 +22,7 @@ import com.tokopedia.common_tradein.model.ValidateTradeInResponse
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.detail.common.data.model.carttype.CartRedirection
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.common.data.model.pdplayout.Media
@@ -90,6 +93,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                                                              private val updateCartCounterUseCase: UpdateCartCounterUseCase,
                                                              private val addToCartUseCase: AddToCartUseCase,
                                                              private val addToCartOcsUseCase: AddToCartOcsUseCase,
+                                                             private val addToCartOccUseCase: AddToCartOccUseCase,
                                                              private val getP3VariantUseCase: GetP3VariantUseCase,
                                                              private val toggleNotifyMeUseCase: ToggleNotifyMeUseCase,
                                                              private val sendTopAdsUseCase: SendTopAdsUseCase,
@@ -169,10 +173,10 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     private var updateCartCounterSubscription: Subscription? = null
 
     fun hasShopAuthority(): Boolean {
-        return isShopOwner(getDynamicProductInfoP1?.basic?.getShopId() ?: 0) || shopInfo?.allowManage == true
+        return isShopOwner() || shopInfo?.allowManage == true
     }
 
-    fun isShopOwner(shopId: Int): Boolean = userSessionInterface.shopId.toIntOrNull() == shopId
+    fun isShopOwner(): Boolean = isUserSessionActive && userSessionInterface.shopId.toIntOrNull() == getDynamicProductInfoP1?.basic?.getShopId()
     val isUserSessionActive: Boolean
         get() = userSessionInterface.isLoggedIn
     val userId: String
@@ -300,6 +304,9 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                 is AddToCartOcsRequestParams -> {
                     getAddToCartOcsUseCase(requestParams)
                 }
+                is AddToCartOccRequestParams -> {
+                    getAddToCartOccUseCase(requestParams)
+                }
             }
         }) {
             _addToCartLiveData.value = it.asFail()
@@ -332,7 +339,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         withContext(dispatcher.io()) {
             val result = addToCartUseCase.createObservable(requestParams).toBlocking().single()
             if (result.isDataError()) {
-                _addToCartLiveData.postValue(result.errorMessage.asThrowable().asFail())
+                _addToCartLiveData.postValue(MessageErrorException(result.errorMessage.firstOrNull() ?: "").asFail())
             } else {
                 _addToCartLiveData.postValue(result.asSuccess())
             }
@@ -343,7 +350,18 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         withContext(dispatcher.io()) {
             val result = addToCartOcsUseCase.createObservable(requestParams).toBlocking().single()
             if (result.isDataError()) {
-                _addToCartLiveData.postValue(result.errorMessage.asThrowable().asFail())
+                _addToCartLiveData.postValue(MessageErrorException(result.errorMessage.firstOrNull() ?: "").asFail())
+            } else {
+                _addToCartLiveData.postValue(result.asSuccess())
+            }
+        }
+    }
+
+    private suspend fun getAddToCartOccUseCase(requestParams: RequestParams) {
+        withContext(dispatcher.io()) {
+            val result = addToCartOccUseCase.createObservable(requestParams).toBlocking().single()
+            if (result.isDataError()) {
+                _addToCartLiveData.postValue(arrayListOf(result.getAtcErrorMessage() ?: "").asThrowable().asFail())
 
             } else {
                 _addToCartLiveData.postValue(result.asSuccess())
@@ -452,10 +470,9 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         val isOfficialStore = getDynamicProductInfoP1?.data?.isOS == true
         val isVariant = getDynamicProductInfoP1?.data?.variant?.isVariant == true
         val isTeaser = getDynamicProductInfoP1?.shouldShowNotifyMe() ?: false
-        val shopId = getDynamicProductInfoP1?.basic?.shopID.toIntOrZero()
 
         val removedData = initialLayoutData.map {
-            if ((!isTradein || isShopOwner(shopId)) && it.name() == ProductDetailConstant.TRADE_IN) {
+            if ((!isTradein || isShopOwner()) && it.name() == ProductDetailConstant.TRADE_IN) {
                 it
             } else if (!hasWholesale && it.name() == ProductDetailConstant.PRODUCT_WHOLESALE_INFO) {
                 it

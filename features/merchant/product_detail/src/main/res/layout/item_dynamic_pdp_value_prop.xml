@@ -5,8 +5,10 @@
     android:id="@+id/layout_value_proposition"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:paddingTop="@dimen/dp_16"
     android:background="@color/white"
     app:layout_constraintTop_toBottomOf="@+id/base_header"
+    android:paddingBottom="@dimen/dp_16"
     tools:visibility="visible">
 
     <LinearLayout
@@ -96,14 +98,5 @@
             android:text="@string/value_proposition_title_guarantee_7_days"
             app:typographyType="body_3" />
     </LinearLayout>
-
-    <View
-        android:id="@+id/social_proof_separator"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_8"
-        android:layout_marginTop="@dimen/dp_16"
-        android:background="@color/grey_separator"
-        app:layout_constraintTop_toBottomOf="@+id/container_ready"
-        app:layout_constraintBottom_toBottomOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -62,6 +62,7 @@ object ShipmentPresenterHelpTicketTest : Spek({
     val getInsuranceCartUseCase: GetInsuranceCartUseCase = mockk()
     val shipmentAnalyticsActionListener: ShipmentContract.AnalyticsActionListener = mockk()
     val shipmentDataConverter = ShipmentDataConverter()
+    val releaseBookingUseCase: ReleaseBookingUseCase = mockk()
 
     RxAndroidPlugins.getInstance().reset()
     RxAndroidPlugins.getInstance().registerSchedulersHook(object : RxAndroidSchedulersHook() {
@@ -78,13 +79,12 @@ object ShipmentPresenterHelpTicketTest : Spek({
                     checkoutUseCase, getShipmentAddressFormUseCase,
                     getShipmentAddressFormOneClickShipementUseCase,
                     editAddressUseCase, changeShippingAddressUseCase,
-                    saveShipmentStateUseCase,
-                    getRatesUseCase, getRatesApiUseCase,
+                    saveShipmentStateUseCase, getRatesUseCase, getRatesApiUseCase,
                     codCheckoutUseCase, clearCacheAutoApplyStackUseCase, submitHelpTicketUseCase,
-                    ratesStatesConverter, shippingCourierConverter, shipmentAnalyticsActionListener, userSessionInterface,
-                    analyticsPurchaseProtection, codAnalytics, checkoutAnalytics,
-                    getInsuranceCartUseCase, shipmentDataConverter,
-                    validateUsePromoRevampUseCase)
+                    ratesStatesConverter, shippingCourierConverter, shipmentAnalyticsActionListener,
+                    userSessionInterface, analyticsPurchaseProtection, codAnalytics,
+                    checkoutAnalytics, getInsuranceCartUseCase, shipmentDataConverter,
+                    releaseBookingUseCase, validateUsePromoRevampUseCase)
         }
 
         val view by memoized { mockk<ShipmentContract.View>(relaxed = true) }

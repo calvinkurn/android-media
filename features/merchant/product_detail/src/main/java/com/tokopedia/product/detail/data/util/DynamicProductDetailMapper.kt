@@ -136,6 +136,9 @@ object DynamicProductDetailMapper {
             it == ProductDetailConstant.KEY_OCS_BUTTON -> {
                 ProductDetailConstant.OCS_BUTTON
             }
+            it == ProductDetailConstant.KEY_OCC_BUTTON -> {
+                ProductDetailConstant.OCC_BUTTON
+            }
             else -> ProductDetailConstant.BUY_BUTTON
         }
     }

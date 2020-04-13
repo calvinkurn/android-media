@@ -1,5 +1,6 @@
 package com.tokopedia.purchase_platform.features.cart.domain.usecase
 
+import com.tokopedia.purchase_platform.common.data.api.CartResponseErrorException
 import com.tokopedia.purchase_platform.common.domain.schedulers.ExecutorSchedulers
 import com.tokopedia.purchase_platform.features.cart.data.model.request.UpdateCartRequest
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.UpdateAndValidateUseData
@@ -30,6 +31,9 @@ class UpdateCartAndValidateUseUseCase @Inject constructor(private val updateCart
                     updateCartUseCase.createObservable(requestParamUpdateCart)
                             .map { updateCartData ->
                                 updateAndValidateUseData.updateCartData = updateCartData
+                                if (!updateCartData.isSuccess) {
+                                    throw CartResponseErrorException(updateCartData.message)
+                                }
                                 updateAndValidateUseData
                             }
                 }

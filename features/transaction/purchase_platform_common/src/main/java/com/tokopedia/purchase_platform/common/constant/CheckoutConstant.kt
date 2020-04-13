@@ -20,6 +20,7 @@ class CheckoutConstant {
         const val TYPE_CASHBACK = "cashback"
         const val PARAM_DEFAULT = "default"
         const val PARAM_CHECKOUT = "checkout"
+        const val PARAM_OCC = "occ"
     }
 
 }
