@@ -2,6 +2,7 @@ package com.tokopedia.reviewseller.feature.reviewlist.view.adapter
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
+import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.reviewseller.feature.reviewlist.view.model.FilterAndSortModel
 import com.tokopedia.reviewseller.feature.reviewlist.view.model.ProductRatingOverallUiModel
@@ -22,6 +23,10 @@ class SellerReviewListTypeFactory: BaseAdapterTypeFactory(), TypeFactoryViewHold
 
     override fun type(filterAndSortModel: FilterAndSortModel): Int {
         return FilterAndSortViewHolder.LAYOUT_RES
+    }
+
+    override fun type(viewModel: LoadingModel?): Int {
+        return super.type(viewModel)
     }
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {

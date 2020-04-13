@@ -1,6 +1,5 @@
 package com.tokopedia.reviewseller.feature.reviewlist.view.fragment
 
-
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -15,15 +14,22 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
+import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.reviewseller.R
 import com.tokopedia.reviewseller.common.ReviewSellerConstant
-import com.tokopedia.reviewseller.feature.reviewlist.view.adapter.SellerReviewListAdapter
+import com.tokopedia.reviewseller.feature.reviewlist.view.adapter.DataEndlessScrollListener
+import com.tokopedia.reviewseller.feature.reviewlist.view.adapter.ReviewSellerAdapter
 import com.tokopedia.reviewseller.feature.reviewlist.view.adapter.SellerReviewListTypeFactory
 import com.tokopedia.reviewseller.feature.reviewlist.view.model.ProductRatingOverallUiModel
 import com.tokopedia.reviewseller.feature.reviewlist.view.model.ProductReviewUiModel
 import com.tokopedia.reviewseller.feature.reviewlist.view.viewmodel.ReviewSellerViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import kotlinx.android.synthetic.main.fragment_rating_product.*
 import javax.inject.Inject
 
 /**
@@ -36,6 +42,17 @@ class RatingProductFragment: BaseListFragment<Visitable<*>, SellerReviewListType
     private var viewModel: ReviewSellerViewModel? = null
 
     private var linearLayoutManager: LinearLayoutManager? = null
+
+    private val reviewSellerAdapter: ReviewSellerAdapter
+        get() = adapter as ReviewSellerAdapter
+
+    private val sellerReviewListTypeFactory by lazy {
+        SellerReviewListTypeFactory()
+    }
+
+    private var sortBy: String? = ""
+    private var filterBy: String? = ""
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,8 +71,9 @@ class RatingProductFragment: BaseListFragment<Visitable<*>, SellerReviewListType
         getRecyclerView(view).let {
             it.clearOnScrollListeners()
             it.layoutManager = linearLayoutManager
+            it.addOnScrollListener(endlessRecyclerViewScrollListener)
         }
-        loadInitialData()
+        observeLiveData()
     }
 
     override fun onDestroy() {
@@ -66,12 +84,10 @@ class RatingProductFragment: BaseListFragment<Visitable<*>, SellerReviewListType
     }
 
     override fun createAdapterInstance(): BaseListAdapter<Visitable<*>, SellerReviewListTypeFactory> {
-        return SellerReviewListAdapter(adapterTypeFactory)
+        return ReviewSellerAdapter(sellerReviewListTypeFactory)
     }
 
-    override fun getAdapterTypeFactory(): SellerReviewListTypeFactory {
-        return SellerReviewListTypeFactory()
-    }
+    override fun getAdapterTypeFactory(): SellerReviewListTypeFactory = sellerReviewListTypeFactory
 
     override fun callInitialLoadAutomatically(): Boolean {
         return false
@@ -84,14 +100,23 @@ class RatingProductFragment: BaseListFragment<Visitable<*>, SellerReviewListType
     override fun initInjector() {}
 
     override fun loadInitialData() {
-
+        reviewSellerAdapter.clearAllElements()
+        rvRatingProduct?.visible()
+        globalError_reviewSeller?.hide()
+        showLoading()
         adapter.addElement(ReviewSellerConstant.filterAndSortComposition)
+        viewModel?.getProductRatingData(sortBy.toString(), filterBy.toString())
 //        adapter.addElement(ReviewSellerConstant.summaryReviewProduct)
 //        adapter.addElement(ReviewSellerConstant.listProductReview)
     }
 
     override fun createEndlessRecyclerViewListener(): EndlessRecyclerViewScrollListener {
-        return super.createEndlessRecyclerViewListener()
+        return object : DataEndlessScrollListener(linearLayoutManager, reviewSellerAdapter) {
+            override fun onLoadMore(page: Int, totalItemsCount: Int) {
+                reviewSellerAdapter.showLoading()
+                loadNextPage(page)
+            }
+        }
     }
 
     override fun loadData(page: Int) {}
@@ -124,11 +149,37 @@ class RatingProductFragment: BaseListFragment<Visitable<*>, SellerReviewListType
         })
     }
 
-    private fun onSuccessGetProductRatingOverallData(data: ProductRatingOverallUiModel) {}
+    private fun onSuccessGetProductRatingOverallData(data: ProductRatingOverallUiModel) {
+        reviewSellerAdapter.hideLoading()
+        reviewSellerAdapter.setProductRatingOverallData(data)
+    }
 
-    private fun onErrorGetProductRatingOverallData(throwable: Throwable) {}
+    private fun onErrorGetProductRatingOverallData(throwable: Throwable) {
+        if(throwable is MessageErrorException) {
+            globalError_reviewSeller?.setType(GlobalError.SERVER_ERROR)
+        } else {
+            globalError_reviewSeller?.setType(GlobalError.NO_CONNECTION)
+        }
+
+        globalError_reviewSeller?.show()
+        rvRatingProduct?.hide()
+
+        globalError_reviewSeller.setOnClickListener {
+            loadInitialData()
+        }
+    }
 
     private fun onSuccessGetReviewProductListData(hasNextPage: Boolean, reviewProductList: List<ProductReviewUiModel>) {
+        reviewSellerAdapter.hideLoading()
+        reviewSellerAdapter.setProductListReviewData(reviewProductList)
+        updateScrollListenerState(hasNextPage)
+    }
 
+    fun loadNextPage(page: Int) {
+        viewModel?.getProductRatingData(
+                sortBy = sortBy.toString(),
+                filterBy = filterBy.toString(),
+                page = page
+        )
     }
 }

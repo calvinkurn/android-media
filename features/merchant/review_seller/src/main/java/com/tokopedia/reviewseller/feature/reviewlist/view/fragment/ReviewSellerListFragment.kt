@@ -14,7 +14,7 @@ import kotlinx.android.synthetic.main.fragment_seller_review_list.*
 /**
  * @author by milhamj on 2020-02-14.
  */
-class SellerReviewListFragment: BaseDaggerFragment() {
+class ReviewSellerListFragment: BaseDaggerFragment() {
 
     private val tabList = ArrayList<ReviewFragmentAdapter.ReviewFragmentItem>()
     private var fragmentAdapter: ReviewFragmentAdapter? = null
