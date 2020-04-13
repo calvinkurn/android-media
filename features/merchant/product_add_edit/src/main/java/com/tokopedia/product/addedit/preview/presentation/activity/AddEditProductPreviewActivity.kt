@@ -9,6 +9,7 @@ import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_DRAFT_ID
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_FROM_NOTIF_EDIT_PRODUCT
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_FROM_NOTIF_SUCCESS
+import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_IS_DUPLICATE
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_PRODUCT_ID
 import com.tokopedia.product.addedit.preview.presentation.fragment.AddEditProductPreviewFragment
 import com.tokopedia.product.addedit.tracking.ProductAddNotifTracking
@@ -20,16 +21,20 @@ class AddEditProductPreviewActivity : BaseSimpleActivity() {
 
     private var productId = ""
     private var draftId = ""
+    private var isDuplicate = false
 
     override fun getNewFragment(): Fragment? {
-        return AddEditProductPreviewFragment.createInstance(productId, draftId)
+        return AddEditProductPreviewFragment.createInstance(productId, draftId, isDuplicate)
     }
 
     override fun getLayoutRes() = R.layout.activity_add_edit_product_preview
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        intent.getStringExtra(EXTRA_PRODUCT_ID)?.run { productId = this }
-        intent.getStringExtra(EXTRA_DRAFT_ID)?.run { draftId = this }
+        with (intent) {
+            getStringExtra(EXTRA_PRODUCT_ID)?.run { productId = this }
+            getStringExtra(EXTRA_DRAFT_ID)?.run { draftId = this }
+            isDuplicate = getBooleanExtra(EXTRA_IS_DUPLICATE, false)
+        }
 
         if (intent.hasExtra(EXTRA_FROM_NOTIF_SUCCESS) &&
                 intent.hasExtra(EXTRA_FROM_NOTIF_EDIT_PRODUCT) &&

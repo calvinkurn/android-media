@@ -3,12 +3,13 @@ package com.tokopedia.product.addedit.preview.domain.mapper
 import android.net.Uri
 import com.tokopedia.kotlin.extensions.view.toFloatOrZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.product.addedit.preview.data.model.params.add.*
+import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
 import com.tokopedia.product.addedit.description.presentation.model.*
 import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.PictureInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.PreorderInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.WholeSaleInputModel
+import com.tokopedia.product.addedit.preview.data.model.params.add.*
 import com.tokopedia.product.addedit.preview.data.model.params.edit.ProductEditParam
 import com.tokopedia.product.addedit.shipment.presentation.model.ShipmentInputModel
 import javax.inject.Inject
@@ -67,7 +68,7 @@ class EditProductInputMapper @Inject constructor() {
                 Catalog(detailInputModel.catalogId),
                 Category(detailInputModel.categoryId),
                 ProductEtalase(), // TODO product etalase not implemented yet
-                mapPictureParam(detailInputModel.pictureList, uploadIdList),
+                mapPictureParam(detailInputModel.imageUrlOrPathList, detailInputModel.pictureList, uploadIdList),
                 mapPreorderParam(detailInputModel.preorder),
                 mapWholesaleParam(detailInputModel.wholesaleList),
                 mapVideoParam(descriptionInputModel.videoLinkList),
@@ -180,22 +181,26 @@ class EditProductInputMapper @Inject constructor() {
         return Videos(data)
     }
 
-    private fun mapPictureParam(pictureList: List<PictureInputModel>,
+    private fun mapPictureParam(imageUrlOrPathList: List<String>,
+                                pictureList: List<PictureInputModel>,
                                 uploadIdList: List<String>): Pictures {
         val data: ArrayList<Picture> = ArrayList()
-        // map existing picture
-        pictureList.forEach {
-            data.add(Picture(
-                    it.description,
-                    it.fileName,
-                    it.filePath,
-                    it.picID,
-                    it.isFromIG.contains("true")
-            ))
-        }
-        // map new uploaded picture (only upload id)
-        uploadIdList.forEach {
-            data.add(Picture(uploadId = it))
+        var idxPictureList = 0
+        var idxUploadIdList = 0
+        imageUrlOrPathList.forEach { urlOrPath ->
+            if (urlOrPath.startsWith(AddEditProductConstants.HTTP_PREFIX)) {
+                with (pictureList[idxPictureList++]) {
+                    data.add(Picture(
+                            description,
+                            fileName,
+                            filePath,
+                            picID,
+                            isFromIG.contains("true")
+                    ))
+                }
+            } else {
+                data.add(Picture(uploadId = uploadIdList[idxUploadIdList++]))
+            }
         }
         return Pictures(data)
     }

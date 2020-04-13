@@ -7,10 +7,10 @@ import androidx.lifecycle.Transformations
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.product.addedit.common.util.ResourceProvider
-import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
 import com.tokopedia.product.addedit.description.data.remote.model.variantbycat.ProductVariantByCatModel
 import com.tokopedia.product.addedit.description.domain.usecase.GetProductVariantUseCase
 import com.tokopedia.product.addedit.description.presentation.model.*
+import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
 import com.tokopedia.product.addedit.draft.domain.usecase.GetProductDraftUseCase
 import com.tokopedia.product.addedit.mapper.mapDraftToProductInputModel
 import com.tokopedia.product.addedit.preview.data.source.api.response.Product
@@ -83,6 +83,8 @@ class AddEditProductPreviewViewModel @Inject constructor(
     private val mGetProductDraftResult = MutableLiveData<Result<ProductDraft>>()
     val getProductDraftResult: LiveData<Result<ProductDraft>> get() = mGetProductDraftResult
 
+    var isDuplicate: Boolean = false
+
     init {
         with (productInputModel) {
             addSource(mGetProductResult) {
@@ -92,7 +94,7 @@ class AddEditProductPreviewViewModel @Inject constructor(
                 }
             }
             addSource(detailInputModel) {
-                productInputModel.value = productInputModel.value.apply { this?.detailInputModel = it }
+                productInputModel.value = productInputModel.value?.apply { this.detailInputModel = it }
             }
         }
     }
@@ -116,9 +118,25 @@ class AddEditProductPreviewViewModel @Inject constructor(
         draftId.value = id
     }
 
-    fun updateProductPhotos(imagePickerResult: ArrayList<String>) {
-        productInputModel.value?.detailInputModel?.imageUrlOrPathList = imagePickerResult
-        this.mImageUrlOrPathList.value = imagePickerResult
+    fun setIsDuplicate(isDuplicate: Boolean) {
+        this.isDuplicate = isDuplicate
+    }
+
+    fun updateProductPhotos(imagePickerResult: ArrayList<String>, originalImageUrl: ArrayList<String>, editted: ArrayList<Boolean>) {
+        val pictureList = productInputModel.value?.detailInputModel?.pictureList?.filter {
+            originalImageUrl.contains(it.urlOriginal)
+        }?.filterIndexed { index, _ -> !editted[index] }.orEmpty()
+
+        val imageUrlOrPathList = imagePickerResult.mapIndexed { index, urlOrPath ->
+            if (editted[index]) urlOrPath else pictureList.find { it.urlOriginal == originalImageUrl[index] }?.urlThumbnail ?: urlOrPath
+        }.toMutableList()
+
+        this.detailInputModel.value = productInputModel.value?.detailInputModel?.apply {
+            this.pictureList = pictureList
+            this.imageUrlOrPathList = imageUrlOrPathList
+        } ?: DetailInputModel(pictureList = pictureList, imageUrlOrPathList = imageUrlOrPathList)
+
+        this.mImageUrlOrPathList.value = imageUrlOrPathList
     }
 
     fun updateDetailInputModel(detailInputModel: DetailInputModel) {

@@ -13,6 +13,7 @@ import androidx.core.app.NotificationManagerCompat
 import androidx.core.app.RemoteInput
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.chat_common.data.ReplyChatViewModel
+import com.tokopedia.topchat.chatroom.di.ChatRoomContextModule
 import com.tokopedia.topchat.chatroom.di.DaggerChatComponent
 import com.tokopedia.topchat.chatroom.domain.usecase.ReplyChatUseCase
 import com.tokopedia.topchat.common.analytics.TopChatAnalytics
@@ -48,6 +49,7 @@ class NotificationChatService : JobIntentService() {
         super.onCreate()
         DaggerChatComponent.builder()
                 .baseAppComponent((application as BaseMainApplication).baseAppComponent)
+                .chatRoomContextModule(ChatRoomContextModule(this))
                 .build()
                 .inject(this)
 

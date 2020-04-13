@@ -267,6 +267,7 @@
 -keep class com.tokopedia.seller.selling.model.** { *; }
 
 -keep class com.tokopedia.tkpd.fcm.** { *; }
+-keep class com.tokopedia.sellerapp.fcm.** { *; }
 
 -keep class com.airbnb.deeplinkdispatch.** { *; }
 -keepclasseswithmembers class * {
@@ -412,6 +413,9 @@
 # -- robust
 -optimizations !class/unboxing/enum,!code/simplification/arithmetic
 
--keep class com.newrelic.** { *; }
--dontwarn com.newrelic.**
--keepattributes Exceptions, Signature, InnerClasses, LineNumberTable, SourceFile, EnclosingMethod
+# -- annotation analytic
+-keep class com.analytic.paramchecker.** { *; }
+-keep class com.analytic.util.** { *; }
+-keep class com.tokopedia.abstraction.processor.** { *; }
+-keep class com.tokopedia.product.util.processor.** { *; }
+-dontwarn com.squareup.javapoet.**
