@@ -134,7 +134,7 @@ public class BottomNavigation extends BottomNavigationView {
             setItemHeight(mItemHeight);
         }
 
-        mMenuView.updateMenuView();
+        //mMenuView.updateMenuView();
     }
 
     /**
@@ -196,7 +196,7 @@ public class BottomNavigation extends BottomNavigationView {
             setItemHeight(mItemHeight);
         }
 
-        mMenuView.updateMenuView();
+        //mMenuView.updateMenuView();
     }
 
     /**
@@ -263,7 +263,7 @@ public class BottomNavigation extends BottomNavigationView {
                 }
             }
         }
-        mMenuView.updateMenuView();
+        //mMenuView.updateMenuView();
     }
 
     /**
@@ -284,7 +284,7 @@ public class BottomNavigation extends BottomNavigationView {
         // 2. change field mShiftingMode value in mMenuView
         setField(mMenuView.getClass(), mMenuView, "isShifting", enable);
 
-        mMenuView.updateMenuView();
+        //mMenuView.updateMenuView();
     }
 
     /**
@@ -302,7 +302,7 @@ public class BottomNavigation extends BottomNavigationView {
         for (BottomNavigationItemView button : mButtons) {
             setField(button.getClass(), button, "isShifting", enable);
         }
-        mMenuView.updateMenuView();
+        //mMenuView.updateMenuView();
     }
 
     /**
@@ -485,7 +485,7 @@ public class BottomNavigation extends BottomNavigationView {
         for (int i = 0; i < count; i++) {
             getSmallLabelAt(i).setTextSize(sp);
         }
-        mMenuView.updateMenuView();
+        //mMenuView.updateMenuView();
     }
 
     /**
@@ -502,7 +502,7 @@ public class BottomNavigation extends BottomNavigationView {
         for (int i = 0; i < count; i++) {
             getLargeLabelAt(i).setTextSize(sp);
         }
-        mMenuView.updateMenuView();
+        //mMenuView.updateMenuView();
     }
 
     /**
@@ -534,7 +534,7 @@ public class BottomNavigation extends BottomNavigationView {
         layoutParams.height = dp2px(getContext(), height);
         icon.setLayoutParams(layoutParams);
 
-        mMenuView.updateMenuView();
+        //mMenuView.updateMenuView();
     }
 
     /**
@@ -562,7 +562,7 @@ public class BottomNavigation extends BottomNavigationView {
         // 2. set private final int mItemHeight in mMenuView
         setField(mMenuView.getClass(), mMenuView, "itemHeight", height);
 
-        mMenuView.updateMenuView();
+        //mMenuView.updateMenuView();
     }
 
     /**
@@ -602,7 +602,7 @@ public class BottomNavigation extends BottomNavigationView {
             getLargeLabelAt(i).setTypeface(typeface, style);
             getSmallLabelAt(i).setTypeface(typeface, style);
         }
-        mMenuView.updateMenuView();
+        //mMenuView.updateMenuView();
     }
 
     /**
@@ -617,7 +617,7 @@ public class BottomNavigation extends BottomNavigationView {
             getLargeLabelAt(i).setTypeface(typeface);
             getSmallLabelAt(i).setTypeface(typeface);
         }
-        mMenuView.updateMenuView();
+        //mMenuView.updateMenuView();
     }
 
     /**
@@ -861,7 +861,7 @@ public class BottomNavigation extends BottomNavigationView {
          */
         BottomNavigationItemView itemView = getBottomNavigationItemView(position);
         setField(BottomNavigationItemView.class, itemView, "defaultMargin", marginTop);
-        mMenuView.updateMenuView();
+        //mMenuView.updateMenuView();
     }
 
     /**
