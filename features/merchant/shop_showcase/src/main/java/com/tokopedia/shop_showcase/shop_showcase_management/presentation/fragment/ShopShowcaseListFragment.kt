@@ -170,6 +170,7 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
         setupBuyerSellerView()
 
         observeShopShowcaseSellerData()
+        observeShopShowcaseBuyerData()
         observeDeleteShopShowcase()
         observeTotalProduct()
 
@@ -274,26 +275,26 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
         showToaster(resources.getString(R.string.info_success_edit_showcase), Toaster.TYPE_NORMAL)
     }
 
-//    private fun observeShopShowcaseBuyerData() {
-//        viewModel.getListBuyerShopShowcaseResponse.observe(this, Observer {
-//            when (it) {
-//                is Success -> {
-//                    showLoading(false)
-//                    val errorMessage = it.data.shopShowcasesByShopID.error.message
-//                    if (errorMessage.isNotEmpty()) {
-//                        showErrorResponse(errorMessage)
-//                    } else {
-//                        showcaseList = it.data.shopShowcasesByShopID.result
-//                        shopShowcaseListAdapter?.updateDataShowcaseList(showcaseList)
-//                    }
-//                }
-//                is Fail -> {
-//                    showLoading(false)
-//                    showErrorMessage(it.throwable)
-//                }
-//            }
-//        })
-//    }
+    private fun observeShopShowcaseBuyerData() {
+        viewModel.getListBuyerShopShowcaseResponse.observe(this, Observer {
+            when (it) {
+                is Success -> {
+                    showLoading(false)
+                    val errorMessage = it.data.shopShowcasesByShopID.error.message
+                    if (errorMessage.isNotEmpty()) {
+                        showErrorResponse(errorMessage)
+                    } else {
+                        showcaseList = it.data.shopShowcasesByShopID.result
+                        shopShowcaseListAdapter?.updateDataShowcaseList(showcaseList)
+                    }
+                }
+                is Fail -> {
+                    showLoading(false)
+                    showErrorMessage(it.throwable)
+                }
+            }
+        })
+    }
 
     private fun observeShopShowcaseSellerData() {
         viewModel.getListSellerShopShowcaseResponse.observe(this, Observer {
@@ -365,6 +366,11 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
     }
 
     private fun loadData() {
+        if (isMyShop) {
+            viewModel.getShopShowcaseListAsSeller()
+        } else {
+            viewModel.getShopShowcaseListAsBuyer(shopId, false)
+        }
 //        if (isNeedToGoToAddShowcase) {
 //            checkTotalProduct()
 //            Handler().postDelayed({
@@ -373,7 +379,7 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
 //        } else {
 //            viewModel.getShopShowcaseListAsSeller()
 //        }
-        viewModel.getShopShowcaseListAsSeller()
+//        viewModel.getShopShowcaseListAsSeller()
     }
 
     private fun checkTotalProduct() {
