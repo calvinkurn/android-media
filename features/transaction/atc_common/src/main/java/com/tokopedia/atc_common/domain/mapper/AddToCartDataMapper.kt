@@ -39,7 +39,7 @@ class AddToCartDataMapper @Inject constructor() {
         }
     }
 
-    fun mapAddToCartOcsUseCase(addToCartOcsGqlResponse: AddToCartOcsGqlResponse): AddToCartDataModel {
+    fun mapAddToCartOccResponse(addToCartOcsGqlResponse: AddToCartOcsGqlResponse): AddToCartDataModel {
         return addToCartOcsGqlResponse.addToCartResponse.let {
             val dataModel = mapDataModelOcs(it.data)
 
