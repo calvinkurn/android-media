@@ -55,4 +55,7 @@ object ApplinkConstInternalSellerapp {
     @JvmField
     val CENTRALIZED_PROMO = "$INTERNAL_SELLERAPP/centralized-promo"
 
+    //SellerOnboardingActivity
+    @JvmField
+    val SELLER_ONBOARDING = "$INTERNAL_SELLERAPP/seller-onboarding"
 }

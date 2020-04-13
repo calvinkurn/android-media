@@ -5,6 +5,18 @@
         <activity
             android:name=".activity.SellerOnboardingActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White"/>
+            android:theme="@style/Theme.White">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_sellerapp"
+                    android:path="@string/path_sellerapp_onboarding"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+        </activity>
     </application>
 </manifest>
