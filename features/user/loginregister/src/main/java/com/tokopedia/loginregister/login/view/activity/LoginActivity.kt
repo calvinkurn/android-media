@@ -150,12 +150,20 @@ class LoginActivity : BaseSimpleActivity(), HasComponent<LoginRegisterComponent>
         super.onCreate(savedInstanceState)
 
         setWhiteStatusBarIfSellerApp()
+        removeBackButtonIfSellerApp()
     }
 
     private fun setWhiteStatusBarIfSellerApp() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && GlobalConfig.isSellerApp()) {
             setStatusBarColor(Color.WHITE)
             setLightStatusBar(true)
+        }
+    }
+
+    private fun removeBackButtonIfSellerApp() {
+        if (GlobalConfig.isSellerApp()) {
+            toolbar?.setPadding(30, 0, 0, 0)
+            supportActionBar?.setDisplayHomeAsUpEnabled(false)
         }
     }
 }
