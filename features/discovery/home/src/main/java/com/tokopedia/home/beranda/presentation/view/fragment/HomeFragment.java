@@ -50,6 +50,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarRetry;
 import com.tokopedia.analytics.performance.util.JankyFrameMonitoringUtil;
+import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalContent;
@@ -79,6 +80,7 @@ import com.tokopedia.home.beranda.listener.HomeFeedsListener;
 import com.tokopedia.home.beranda.listener.HomeInspirationListener;
 import com.tokopedia.home.beranda.listener.HomeReviewListener;
 import com.tokopedia.home.beranda.listener.HomeTabFeedListener;
+import com.tokopedia.home.beranda.presentation.viewModel.HomeViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecycleAdapter;
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable;
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitableDiffUtil;
@@ -93,7 +95,6 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_c
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeRecommendationFeedViewHolder;
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils;
 import com.tokopedia.home.beranda.presentation.view.customview.NestedRecyclerView;
-import com.tokopedia.home.beranda.presentation.viewModel.HomeViewModel;
 import com.tokopedia.home.constant.BerandaUrl;
 import com.tokopedia.home.constant.ConstantKey;
 import com.tokopedia.home.widget.FloatingTextButton;
@@ -296,6 +297,11 @@ public class HomeFragment extends BaseDaggerFragment implements
         searchBarTransitionRange = getResources().getDimensionPixelSize(R.dimen.home_searchbar_transition_range);
         startToTransitionOffset = (getResources().getDimensionPixelSize(R.dimen.banner_background_height)) / 2;
 
+        if (getPageLoadTimeCallback() != null) {
+            getPageLoadTimeCallback().stopPreparePagePerformanceMonitoring();
+            getPageLoadTimeCallback().startNetworkRequestPerformanceMonitoring();
+        }
+
         initViewModel();
         setGeolocationPermission();
         needToShowGeolocationComponent();
@@ -374,7 +380,7 @@ public class HomeFragment extends BaseDaggerFragment implements
         homeMainToolbar = view.findViewById(R.id.toolbar);
         homeMainToolbar.setAfterInflationCallable(getAfterInflationCallable());
         statusBarBackground = view.findViewById(R.id.status_bar_bg);
-        homeRecyclerView = view.findViewById(R.id.list);
+        homeRecyclerView = view.findViewById(R.id.home_fragment_recycler_view);
         homeRecyclerView.setHasFixedSize(true);
         refreshLayout = view.findViewById(R.id.home_swipe_refresh_layout);
         floatingTextButton = view.findViewById(R.id.recom_action_button);
@@ -731,8 +737,14 @@ public class HomeFragment extends BaseDaggerFragment implements
 
     private void setData(List<HomeVisitable> data, boolean isCache){
         if(!data.isEmpty()) {
-            if (isCache && needToPerformanceMonitoring()) {
-                setOnRecyclerViewLayoutReady();
+            if (!isCache && getPageLoadTimeCallback() != null) {
+                getPageLoadTimeCallback().stopNetworkRequestPerformanceMonitoring();
+            }
+
+            if (needToPerformanceMonitoring() && getPageLoadTimeCallback() != null) {
+                getPageLoadTimeCallback().stopNetworkRequestPerformanceMonitoring();
+                getPageLoadTimeCallback().startRenderPerformanceMonitoring();
+                setOnRecyclerViewLayoutReady(isCache);
             }
 
             adapter.submitList(data);
@@ -1125,7 +1137,7 @@ public class HomeFragment extends BaseDaggerFragment implements
         homeRecyclerView.setEnabled(true);
     }
 
-    private void setOnRecyclerViewLayoutReady() {
+    private void setOnRecyclerViewLayoutReady(boolean isCache) {
         homeRecyclerView.getViewTreeObserver()
                 .addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
                     @Override
@@ -1133,7 +1145,10 @@ public class HomeFragment extends BaseDaggerFragment implements
                         //At this point the layout is complete and the
                         //dimensions of recyclerView and any child views are known.
                         //Remove listener after changed RecyclerView's height to prevent infinite loop
-                        if (homePerformanceMonitoringListener != null) homePerformanceMonitoringListener.stopHomePerformanceMonitoring();
+                        if (homePerformanceMonitoringListener != null) {
+                            homePerformanceMonitoringListener.stopHomePerformanceMonitoring(isCache);
+                        }
+
                         homePerformanceMonitoringListener = null;
                         homeRecyclerView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
                     }
@@ -2033,6 +2048,13 @@ public class HomeFragment extends BaseDaggerFragment implements
     @Override
     public JankyFrameMonitoringUtil getHomeJankyFramesUtil() {
         if (jankyFramesMonitoringListener != null && jankyFramesMonitoringListener.getMainJankyFrameMonitoringUtil() != null) return jankyFramesMonitoringListener.getMainJankyFrameMonitoringUtil();
+        return null;
+    }
+
+    private PageLoadTimePerformanceInterface getPageLoadTimeCallback() {
+        if (homePerformanceMonitoringListener != null && homePerformanceMonitoringListener.getPageLoadTimePerformanceInterface() != null) {
+            return homePerformanceMonitoringListener.getPageLoadTimePerformanceInterface();
+        }
         return null;
     }
 }

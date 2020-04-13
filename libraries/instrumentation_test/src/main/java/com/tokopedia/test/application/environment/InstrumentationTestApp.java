@@ -1,18 +1,23 @@
-package  com.tokopedia.test.application;
+package com.tokopedia.test.application.environment;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-
-import androidx.multidex.MultiDexApplication;
-
+import android.util.Base64;
+import com.google.android.gms.ads.identifier.AdvertisingIdClient;
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
+import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.play.core.splitcompat.SplitCompat;
 import com.google.firebase.FirebaseApp;
+import com.google.gson.Gson;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
+import com.tokopedia.analyticsdebugger.debugger.FpmLogger;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.TkpdCoreRouter;
 import com.tokopedia.core.analytics.container.GTMAnalytics;
+import com.tokopedia.core.analytics.fingerprint.LocationCache;
+import com.tokopedia.core.analytics.fingerprint.domain.model.FingerPrint;
 import com.tokopedia.core.deprecated.SessionHandler;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.gcm.base.IAppNotificationReceiver;
@@ -20,10 +25,16 @@ import com.tokopedia.core.gcm.model.NotificationPass;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
+import com.tokopedia.test.application.util.DeviceConnectionInfo;
+import com.tokopedia.test.application.util.DeviceInfo;
+import com.tokopedia.test.application.util.DeviceScreenInfo;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.interfaces.ContextAnalytics;
 
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.Map;
+import java.util.UUID;
 
 import okhttp3.Response;
 
@@ -36,12 +47,14 @@ public class InstrumentationTestApp extends BaseMainApplication implements TkpdC
     public void onCreate() {
         SplitCompat.install(this);
         FirebaseApp.initializeApp(this);
+        FpmLogger.init(this);
         TrackApp.initTrackApp(this);
         TrackApp.getInstance().registerImplementation(TrackApp.GTM, GTMAnalytics.class);
         TrackApp.getInstance().registerImplementation(TrackApp.APPSFLYER, DummyAppsFlyerAnalytics.class);
         TrackApp.getInstance().initializeAllApis();
-        GraphqlClient.init(this);
         GlobalConfig.DEBUG = true;
+        GlobalConfig.VERSION_NAME = "3.66";
+        GraphqlClient.init(this);
         com.tokopedia.config.GlobalConfig.DEBUG = true;
         super.onCreate();
     }
@@ -300,19 +313,91 @@ public class InstrumentationTestApp extends BaseMainApplication implements TkpdC
 
     @Override
     public FingerprintModel getFingerprintModel() {
-        return generateFingerprintModel();
+        FingerprintModel fingerprintModel = new FingerprintModel();
+        fingerprintModel.setRegistrarionId(getRegistrarianId());
+        fingerprintModel.setAdsId(getAdsId());
+        try {
+            fingerprintModel.setFingerprintHash(getFingerprintHash());
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+        return fingerprintModel;
+    }
+
+    public String toBase64(String text, int mode) throws UnsupportedEncodingException {
+        byte[] data = text.getBytes("UTF-8");
+        return Base64.encodeToString(data, mode);
+    }
+
+    public String getFingerprintHash() throws UnsupportedEncodingException {
+        String deviceName   = DeviceInfo.getModelName();
+        String deviceFabrik = DeviceInfo.getManufacturerName();
+        String deviceOS     = DeviceInfo.getOSName();
+        String deviceSystem = "android";
+        boolean isRooted    = DeviceInfo.isRooted();
+        String timezone     = DeviceInfo.getTimeZoneOffset();
+        String userAgent    = DeviceConnectionInfo.getHttpAgent();
+        boolean isEmulator  = DeviceInfo.isEmulated();
+        boolean isTablet    = DeviceScreenInfo.isTablet(this);
+        String screenReso     = DeviceScreenInfo.getScreenResolution(this);
+        String deviceLanguage = DeviceInfo.getLanguage();
+        String ssid         = DeviceConnectionInfo.getSSID(this);
+        String carrier      = DeviceConnectionInfo.getCarrierName(this);
+        String adsId = getAdsId();
+        String androidId = DeviceInfo.getAndroidId(this);
+        boolean isx86 = DeviceInfo.isx86();
+        String packageName = DeviceInfo.getPackageName(this);
+
+        FingerPrint fp = new FingerPrint.FingerPrintBuilder()
+                .uniqueId(adsId)
+                .deviceName(deviceName)
+                .deviceManufacturer(deviceFabrik)
+                .model(deviceName)
+                .system(deviceSystem)
+                .currentOS(deviceOS)
+                .jailbreak(isRooted)
+                .timezone(timezone)
+                .userAgent(userAgent)
+                .emulator(isEmulator)
+                .tablet(isTablet)
+                .screenReso(screenReso)
+                .language(deviceLanguage)
+                .ssid(ssid)
+                .carrier(carrier)
+                .deviceLat(new LocationCache(this).getLatitudeCache())
+                .deviceLng(new LocationCache(this).getLongitudeCache())
+                .androidId(androidId)
+                .isx86(isx86)
+                .packageName(packageName)
+                .build();
+        Gson gson = new Gson();
+        String json = gson.toJson(fp);
+        return toBase64(json, Base64.NO_WRAP);
+    }
+
+    public String getRegistrarianId() {
+        return UUID.randomUUID().toString();
+    }
+
+    public String getAdsId() {
+        AdvertisingIdClient.Info adInfo;
+        try {
+            adInfo = AdvertisingIdClient.getAdvertisingIdInfo(this);
+        } catch (IOException | GooglePlayServicesNotAvailableException | GooglePlayServicesRepairableException e) {
+            e.printStackTrace();
+            return "";
+        }
+
+        if (adInfo != null) {
+            String adID = adInfo.getId();
+            return adID;
+        }
+        return "";
     }
 
     @Override
     public void doRelogin(String newAccessToken) {
 
-    }
-
-    public static FingerprintModel generateFingerprintModel() {
-        FingerprintModel fingerprintModel = new FingerprintModel();
-        fingerprintModel.setFingerprintHash(MOCK_FINGERPRINT_HASH);
-        fingerprintModel.setAdsId(MOCK_ADS_ID);
-        fingerprintModel.setRegistrarionId(MOCK_DEVICE_ID);
-        return fingerprintModel;
     }
 }

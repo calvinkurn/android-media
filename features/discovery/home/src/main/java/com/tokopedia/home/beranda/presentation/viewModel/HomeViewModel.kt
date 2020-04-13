@@ -510,7 +510,6 @@ open class HomeViewModel @Inject constructor(
                 visitableMutableList.remove(findRetryModel)
                 val newHomeViewModel = homeDataModel.copy(
                         list = visitableMutableList)
-                getFeedTabData()
                 return newHomeViewModel
             }
         }
@@ -548,6 +547,7 @@ open class HomeViewModel @Inject constructor(
             homeFlowData.collect { homeDataModel ->
                 if (homeDataModel?.isCache == false) {
                     updateWidget(UpdateLiveDataModel(action = ACTION_UPDATE_HOME_DATA, homeData = homeDataModel))
+                    getFeedTabData()
                     getHeaderData()
                     getReviewData()
                     getPlayBanner()

@@ -1,6 +1,6 @@
 package com.tokopedia.analytics.performance.util
 
-class PerformanceData(var allFrames: Int = 0, var jankyFrames: Int = 0) {
+class FpiPerformanceData(var allFrames: Int = 0, var jankyFrames: Int = 0) {
     var allFramesTag = "all_frames"
     var jankyFramesTag = "janky_frames"
     var jankyFramesPercentageTag = "janky_frames_percentage"
