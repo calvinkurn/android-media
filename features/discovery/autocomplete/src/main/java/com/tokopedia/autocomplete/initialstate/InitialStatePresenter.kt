@@ -12,9 +12,7 @@ import com.tokopedia.autocomplete.initialstate.recentsearch.RecentSearchViewMode
 import com.tokopedia.autocomplete.initialstate.recentsearch.convertRecentSearchToVisitableList
 import com.tokopedia.autocomplete.initialstate.recentview.ReecentViewTitleViewModel
 import com.tokopedia.autocomplete.initialstate.recentview.convertRecentViewSearchToVisitableList
-import com.tokopedia.discovery.common.model.SearchParameter
 import com.tokopedia.user.session.UserSessionInterface
-import retrofit2.Response
 import rx.Subscriber
 import javax.inject.Inject
 
@@ -33,6 +31,15 @@ class InitialStatePresenter @Inject constructor(
 
     private var querySearch = ""
     private var listVistable = mutableListOf<Visitable<*>>()
+    private var searchParameter = HashMap<String, String>()
+
+    fun setSearchParameter(searchParameter: HashMap<String, String>) {
+        this.searchParameter = searchParameter
+    }
+
+    fun getSearchParameter(): Map<String, String> {
+        return searchParameter
+    }
 
     private fun getInitialStateSubscriber(): Subscriber<List<InitialStateData>> = object : Subscriber<List<InitialStateData>>() {
         override fun onCompleted() {}
@@ -86,15 +93,15 @@ class InitialStatePresenter @Inject constructor(
         }
     }
 
-    private fun getDeleteRecentSearchSubscriber(keyword: String): Subscriber<Response<Void>> = object : Subscriber<Response<Void>>() {
+    private fun getDeleteRecentSearchSubscriber(keyword: String): Subscriber<Boolean> = object : Subscriber<Boolean>() {
         override fun onCompleted() {}
 
         override fun onError(e: Throwable) {
             e.printStackTrace()
         }
 
-        override fun onNext(response: Response<Void>) {
-            if (response.isSuccessful) {
+        override fun onNext(isSuccessful: Boolean) {
+            if (isSuccessful) {
                 var needDelete = false
                 listVistable.forEachIndexed { _, visitable ->
                     if (visitable is RecentSearchViewModel) {
@@ -106,7 +113,7 @@ class InitialStatePresenter @Inject constructor(
                         }
                     }
                 }
-                if(needDelete){
+                if (needDelete) {
                     removeRecentSearchTitle()
                     removeRecentSearch()
                 }
@@ -125,15 +132,15 @@ class InitialStatePresenter @Inject constructor(
         listVistable.removeAll(recentSearchViewModel)
     }
 
-    private fun getDeleteAllRecentSearchSubscriber(): Subscriber<Response<Void>> = object : Subscriber<Response<Void>>() {
+    private fun getDeleteAllRecentSearchSubscriber(): Subscriber<Boolean> = object : Subscriber<Boolean>() {
         override fun onCompleted() {}
 
         override fun onError(e: Throwable) {
             e.printStackTrace()
         }
 
-        override fun onNext(response: Response<Void>) {
-            if (response.isSuccessful) {
+        override fun onNext(isSuccessful: Boolean) {
+            if (isSuccessful) {
                 removeRecentSearchTitle()
                 removeRecentSearch()
                 view.deleteRecentSearch(listVistable)
@@ -208,10 +215,10 @@ class InitialStatePresenter @Inject constructor(
         return childList
     }
 
-    override fun getInitialStateData(searchParameter: SearchParameter) {
+    override fun getInitialStateData() {
         initialStateUseCase.execute(
                 InitialStateUseCase.getParams(
-                        searchParameter.getSearchParameterMap(),
+                        searchParameter,
                         userSession.deviceId,
                         userSession.userId
                 ),
@@ -242,10 +249,10 @@ class InitialStatePresenter @Inject constructor(
         )
     }
 
-    override fun refreshPopularSearch(searchParameter: SearchParameter) {
+    override fun refreshPopularSearch() {
         refreshPopularSearchUseCase.execute(
                 RefreshPopularSearchUseCase.getParams(
-                        searchParameter.getSearchParameterMap(),
+                        searchParameter,
                         userSession.deviceId,
                         userSession.userId
                 ),
