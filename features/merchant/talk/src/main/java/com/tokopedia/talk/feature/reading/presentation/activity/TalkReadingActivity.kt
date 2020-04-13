@@ -1,6 +1,7 @@
 package com.tokopedia.talk.feature.reading.presentation.activity
 
 import android.os.Bundle
+import android.view.View
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
@@ -19,6 +20,7 @@ class TalkReadingActivity : BaseSimpleActivity(), HasComponent<TalkComponent> {
     override fun onCreate(savedInstanceState: Bundle?) {
         getProductIdFromAppLink()
         super.onCreate(savedInstanceState)
+        setUpToolBar()
     }
 
     override fun getNewFragment(): Fragment? {
@@ -36,6 +38,10 @@ class TalkReadingActivity : BaseSimpleActivity(), HasComponent<TalkComponent> {
         if (productIdString.isNotEmpty()) {
             this.productId = productIdString.toIntOrZero()
         }
+    }
+
+    private fun setUpToolBar() {
+        supportActionBar?.elevation = 0F;
     }
 
 

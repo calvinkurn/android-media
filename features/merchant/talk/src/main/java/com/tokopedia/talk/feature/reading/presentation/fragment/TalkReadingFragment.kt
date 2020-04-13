@@ -53,7 +53,7 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel, TalkReadingAdap
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        pageLoading.visibility = View.VISIBLE
+        showPageLoading()
         super.onViewCreated(view, savedInstanceState)
     }
 
@@ -83,5 +83,9 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel, TalkReadingAdap
         arguments?.let {
             productId = it.getInt(PRODUCT_ID)
         }
+    }
+
+    private fun showPageLoading() {
+        pageLoading.visibility = View.VISIBLE
     }
 }

@@ -4,11 +4,13 @@
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    
+
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:id="@+id/talkReadingContainer"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        android:background="@android:color/white" >
         
         <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
@@ -27,6 +29,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@color/Green_G500"
+            android:visibility="gone"
             app:fabSize="normal"
             app:srcCompat="@drawable/talk_reading_ic_plus"/>
 
@@ -40,13 +43,25 @@
         <com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
             android:id="@+id/talkReadingRecyclerView"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:visibility="gone" />
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     <include
         android:id="@+id/pageLoading"
         layout="@layout/partial_talk_reading_shimmering"
-        tools:visibility="gone" />
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <include
+        android:id="@+id/pageError"
+        layout="@layout/partial_talk_reading_connection_error"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

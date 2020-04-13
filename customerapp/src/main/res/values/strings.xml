@@ -173,4 +173,11 @@
     <string name="saldo_webview_title">Tokopedia</string>
   
     <string name="title_logout" translatable="false">logout</string>
+
+    <!--Talk-->
+    <string name="title_reading_page">Tanya-Jawab</string>
+    <string name="title_reply_page">Balas Tanya-Jawab</string>
+    <string name="title_report_page">Laporkan</string>
+    <string name="title_write_page">Kirim Pertanyaan</string>
+
 </resources>
