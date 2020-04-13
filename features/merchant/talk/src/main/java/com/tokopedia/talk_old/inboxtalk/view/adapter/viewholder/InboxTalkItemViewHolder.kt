@@ -47,7 +47,7 @@ open class InboxTalkItemViewHolder(val v: View,
         fun onGoToPdpFromProductItemHeader(productId: String)
     }
 
-    protected val productName: TextView = itemView.productName
+    protected val productName: TextView = itemView.readingHeaderProductName
     protected val productAvatar: ImageView = itemView.productAvatar
     protected val profileAvatar: ImageView = itemView.prof_pict
     protected val notification: View = itemView.notification

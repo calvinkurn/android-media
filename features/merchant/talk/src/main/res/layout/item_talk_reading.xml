@@ -16,11 +16,12 @@
         app:typographyType="heading_5"
         app:typographyWeight="bold" />
 
-    <ImageView
+    <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/readingProfilePicture"
         android:layout_width="@dimen/layout_lvl4"
         android:layout_height="@dimen/layout_lvl4"
         android:layout_marginTop="@dimen/layout_lvl2"
+        app:unify_image_type="circle"
         app:layout_constraintStart_toStartOf="@id/readingQuestionTitle"
         app:layout_constraintTop_toBottomOf="@id/readingQuestionTitle" />
     

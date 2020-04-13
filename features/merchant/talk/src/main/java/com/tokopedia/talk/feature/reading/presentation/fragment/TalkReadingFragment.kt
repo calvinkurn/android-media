@@ -11,6 +11,7 @@ import com.tokopedia.talk.common.di.TalkComponent
 import com.tokopedia.talk.feature.reading.di.DaggerTalkReadingComponent
 import com.tokopedia.talk.feature.reading.di.TalkReadingComponent
 import com.tokopedia.talk.feature.reading.presentation.adapter.TalkReadingAdapterTypeFactory
+import com.tokopedia.talk.feature.reading.presentation.adapter.uimodel.TalkReadingHeaderModel
 import com.tokopedia.talk.feature.reading.presentation.adapter.uimodel.TalkReadingUiModel
 import com.tokopedia.talk.feature.reading.presentation.viewmodel.TalkReadingViewModel
 import com.tokopedia.talk_old.R
@@ -91,5 +92,13 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel, TalkReadingAdap
 
     private fun showPageError() {
         pageError.visibility = View.VISIBLE
+    }
+
+    private fun observeProductHeader() {
+
+    }
+
+    private fun initHeader(talkReadingHeaderModel: TalkReadingHeaderModel) {
+
     }
 }

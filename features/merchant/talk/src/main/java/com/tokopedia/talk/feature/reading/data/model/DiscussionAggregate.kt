@@ -8,6 +8,6 @@ data class DiscussionAggregate(
         @SerializedName("thumbnail")
         val thumbnail: String = "",
         @SerializedName("category")
-        val category: DiscussionAggregateCategory
+        val category: List<DiscussionAggregateCategory> = listOf()
 )
 

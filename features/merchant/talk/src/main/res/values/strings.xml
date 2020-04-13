@@ -84,6 +84,8 @@
     <string name="reading_relevant_sort_option">Pertanyaan Paling Relevan</string>
     <string name="reading_latest_sort_option">Pertanyaan Terbaru</string>
     <string name="reading_popular_sort_option">Pertanyaan Terpopuler</string>
+    <string name="reading_sort_bottom_sheet_title">Urutkan berdasarkan</string>
+    <string name="reading_sort_chip_string">%s (%d)</string>
 
     <string name="toaster_follow_success">Kamu berhasil follow Tanya-Jawab ini. Nantikan notifikasinya di Inbox, ya!</string>
     <string name="toaster_unfollow_success">Kamu sudah tidak lagi follow Tanya-Jawab ini.</string>
