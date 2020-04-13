@@ -4,16 +4,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:maxHeight="@dimen/sah_dimen_74dp"
     android:background="?android:attr/selectableItemBackground"
-    android:paddingTop="@dimen/layout_lvl1"
-    android:paddingBottom="@dimen/layout_lvl1">
+    android:maxHeight="@dimen/sah_dimen_74dp"
+    android:paddingTop="@dimen/sah_dimen_6dp"
+    android:paddingBottom="@dimen/sah_dimen_6dp">
 
     <ImageView
         android:id="@+id/imgPost"
         android:layout_width="@dimen/sah_dimen_56dp"
         android:layout_height="@dimen/sah_dimen_56dp"
         android:adjustViewBounds="true"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -39,7 +40,10 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_lvl1"
         android:maxLines="1"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@id/tvPostTitle"
+        app:layout_constraintVertical_bias="0.0"
         app:layout_constraintTop_toBottomOf="@id/tvPostTitle"
         app:typographyType="body_3"
         app:typographyWeight="reguler"

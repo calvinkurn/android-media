@@ -18,6 +18,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.loginregister.R
@@ -123,8 +124,16 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
         shopCreationAnalytics.eventClickBackLanding()
         if (GlobalConfig.isSellerApp()) {
             activity?.let {
-                RouteManager.route(it, ApplinkConstInternalGlobal.LOGOUT)
-                it.finish()
+                if (userSession.isLoggedIn) {
+                    RouteManager.route(it, ApplinkConstInternalGlobal.LOGOUT)
+                    it.finish()
+                } else if(it.intent.hasExtra(ApplinkConstInternalGlobal.PARAM_SOURCE)) {
+                    RouteManager.route(it, ApplinkConst.LOGIN)
+                    it.finish()
+                } else {
+                    RouteManager.route(it, ApplinkConstInternalSellerapp.WELCOME)
+                    it.finish()
+                }
             }
         }
         return true

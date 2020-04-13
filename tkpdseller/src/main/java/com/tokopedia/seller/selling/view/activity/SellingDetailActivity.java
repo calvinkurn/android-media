@@ -11,8 +11,8 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import com.tkpd.library.utils.DownloadResultReceiver;
+import com.tokopedia.abstraction.base.view.activity.BaseActivity;
 import com.tokopedia.core.analytics.AppScreen;
-import com.tokopedia.core.app.TkpdActivity;
 import com.tokopedia.core.network.v4.NetworkConfig;
 import com.tokopedia.core.presenter.BaseView;
 import com.tokopedia.core.var.TkpdState;
@@ -32,7 +32,7 @@ import org.parceler.Parcels;
 /**
  * Created by Erry on 7/25/2016.
  */
-public class SellingDetailActivity extends TkpdActivity implements  DownloadResultReceiver.Receiver {
+public class SellingDetailActivity extends BaseActivity implements  DownloadResultReceiver.Receiver {
 
     Toolbar toolbar;
 
@@ -49,11 +49,6 @@ public class SellingDetailActivity extends TkpdActivity implements  DownloadResu
     @Override
     public String getScreenName() {
         return AppScreen.SCREEN_SHOP_SELLING_DETAIL;
-    }
-
-    @Override
-    public int getDrawerPosition() {
-        return TkpdState.DrawerPosition.SHOP;
     }
 
     private FragmentManager fragmentManager;

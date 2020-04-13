@@ -28,24 +28,20 @@ import retrofit2.Retrofit;
  * Created by zulfikarrahman on 6/5/18.
  */
 
-@CatalogImageScope
 @Module
 public class ImagePickerCatalogModule {
 
-    @CatalogImageScope
     @Provides
     ImagePickerCatalogPresenter provideImagePickerCatalogPresenter(GetCatalogImageUseCase getCatalogImageUseCase,
                                                                    ClearCacheCatalogUseCase clearCacheCatalogUseCase){
         return new ImagePickerCatalogPresenter(getCatalogImageUseCase, clearCacheCatalogUseCase);
     }
 
-    @CatalogImageScope
     @Provides
     CatalogImageRepository provideCatalogImageRepository(CatalogImageDataSource catalogImageDataSource){
         return new CatalogImageRepositoryImpl(catalogImageDataSource);
     }
 
-    @CatalogImageScope
     @Provides
     CatalogApi provideCatalogApi(Retrofit.Builder retrofit, @CatalogQualifier OkHttpClient okHttpClient){
         return retrofit
@@ -55,7 +51,6 @@ public class ImagePickerCatalogModule {
                 .create(CatalogApi.class);
     }
 
-    @CatalogImageScope
     @CatalogQualifier
     @Provides
     public OkHttpClient provideOkHttpClient(@ApplicationContext Context context) {

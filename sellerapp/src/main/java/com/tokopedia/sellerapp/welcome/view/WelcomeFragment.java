@@ -1,11 +1,8 @@
 package com.tokopedia.sellerapp.welcome.view;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
-import com.google.android.material.snackbar.Snackbar;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.TextPaint;
@@ -20,18 +17,20 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
+
+import com.google.android.material.snackbar.Snackbar;
 import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.analytics.handler.UserAuthenticationAnalytics;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.customView.LoginTextView;
 import com.tokopedia.core.router.SellerAppRouter;
-import com.tokopedia.core.router.SellerRouter;
-import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.session.model.LoginProviderModel;
 import com.tokopedia.sellerapp.R;
 import com.tokopedia.sellerapp.welcome.presenter.WelcomeFragmentPresenter;
@@ -124,7 +123,7 @@ public class WelcomeFragment extends BaseDaggerFragment implements
         background = view.findViewById(R.id.background);
         login = view.findViewById(R.id.login);
         register = view.findViewById(R.id.register);
-        linearLayout = view.findViewById(R.id.linearLayout);
+        linearLayout = view.findViewById(R.id.parent);
         progressBar = view.findViewById(R.id.progress_login);
         titleView = view.findViewById(R.id.title_view);
         containerProvider = view.findViewById(R.id.container_provider);
@@ -160,8 +159,7 @@ public class WelcomeFragment extends BaseDaggerFragment implements
         clickableSpan = new ClickableSpan() {
             @Override
             public void onClick(View view) {
-                Intent intent = ((TkpdCoreRouter) getActivity().getApplication()).getRegisterIntent
-                        (getActivity());
+                Intent intent = RouteManager.getIntent(getActivity(), ApplinkConst.CREATE_SHOP);
                 startActivityForResult(intent, REQUEST_REGISTER);
             }
 

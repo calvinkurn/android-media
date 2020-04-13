@@ -8,12 +8,18 @@ ext {
             globalconfig            : "com.tokopedia.config:global_config:1.0.3",
             graphql                 : "com.tokopedia.graphql:graphql:1.0.33",
             network                 : "com.tokopedia.network:network:1.0.17",
-            url                     : "com.tokopedia.url:url:1.0.3",
+            url                     : "com.tokopedia.url:url:1.0.6-hub",
             usecase                 : "com.tokopedia.usecase:usecase:1.0.3",
             usersession             : "com.tokopedia.user.session:user_session:1.0.6",
             akamaiBotLib            : "com.tokopedia.akamai:akamai_bot_lib:1.0.11",
             analyticConstants       : "com.tokopedia.analytic_constant:analytic_constant:1.0.3",
-            williamchart            : "com.tokopedia.williamchart:williamchart:0.0.6"
+            williamchart            : "com.tokopedia.williamchart:williamchart:0.0.6",
+            analyticAnnotation      : "com.tokopedia.analytic:annotation:0.0.1-alpha",
+            analyticParam           : "com.tokopedia.analytic:param:0.0.1-alpha",
+            analyticProcessor       : "com.tokopedia.analytic:processor:0.0.1-alpha",
+            analyticFirebaseRules    : "com.tokopedia.analytic.rules:firebase:0.0.1-alpha2"
+
+
     ]
 
     // Sort and categorize alphabetically by folder name
@@ -82,6 +88,7 @@ ext {
             translator              : ":libraries:translator",
             traceroute              : ":libraries:traceroute",
             imagePreviewSlider      : ":libraries:imagepreviewslider",
-            tokofix                 : ":libraries:tokofix"
+            tokofix                 : ":libraries:tokofix",
+            analyticAnnotationCentral   : ":libraries:annotation_proc_central"
     ]
 }
