@@ -64,6 +64,7 @@ import com.tokopedia.play.view.layout.PlayInteractionLayoutManager
 import com.tokopedia.play.view.type.BottomInsetsState
 import com.tokopedia.play.view.type.BottomInsetsType
 import com.tokopedia.play.view.type.PlayRoomEvent
+import com.tokopedia.play.view.type.ScreenOrientation
 import com.tokopedia.play.view.uimodel.*
 import com.tokopedia.play.view.viewmodel.PlayInteractionViewModel
 import com.tokopedia.play.view.viewmodel.PlayViewModel
@@ -450,7 +451,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
 
         sendInitState()
 
-        PlayInteractionLayoutManager(container).layoutView(
+        PlayInteractionLayoutManager(ScreenOrientation.getByInt(resources.configuration.orientation), container).layoutView(
                 sizeContainerComponentId = sizeContainerComponent.getContainerId(),
                 sendChatComponentId = sendChatComponent.getContainerId(),
                 likeComponentId = likeComponent.getContainerId(),
