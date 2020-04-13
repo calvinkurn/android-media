@@ -1144,10 +1144,10 @@ public class HomeFragment extends BaseDaggerFragment implements
                         //At this point the layout is complete and the
                         //dimensions of recyclerView and any child views are known.
                         //Remove listener after changed RecyclerView's height to prevent infinite loop
-                        if (homePerformanceMonitoringListener != null && getPageLoadTimeCallback() != null) {
+                        if (homePerformanceMonitoringListener != null) {
                             homePerformanceMonitoringListener.stopHomePerformanceMonitoring(isCache);
-                            getPageLoadTimeCallback().stopRenderPerformanceMonitoring();
                         }
+
                         homePerformanceMonitoringListener = null;
                         homeRecyclerView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
                     }
