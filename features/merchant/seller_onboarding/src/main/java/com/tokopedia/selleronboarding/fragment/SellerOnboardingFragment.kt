@@ -1,41 +1,45 @@
 package com.tokopedia.selleronboarding.fragment
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.DrawableRes
 import androidx.fragment.app.Fragment
-import com.tokopedia.kotlin.extensions.view.loadImageDrawable
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.PagerSnapHelper
+import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.OPEN_SHOP
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.selleronboarding.R
+import com.tokopedia.selleronboarding.adapter.SlideAdapter
+import com.tokopedia.selleronboarding.model.SlideUiModel
+import com.tokopedia.selleronboarding.utils.OnboardingLayoutManager
+import com.tokopedia.selleronboarding.utils.SellerOnboardingRouter
+import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_sob_onboarding.view.*
 
 /**
- * Created By @ilhamsuaib on 09/04/20
+ * Created By @ilhamsuaib on 13/04/20
  */
 
 class SellerOnboardingFragment : Fragment() {
 
     companion object {
-
-        private const val KEY_PAGE = "page"
-        const val PAGE_1 = 1
-        const val PAGE_2 = 2
-        const val PAGE_3 = 3
-
-        fun newInstance(page: Int): SellerOnboardingFragment {
-            return SellerOnboardingFragment().apply {
-                arguments = Bundle().apply {
-                    putInt(KEY_PAGE, page)
-                }
-            }
-        }
+        private const val REQUEST_LOGIN = 101
+        fun newInstance(): SellerOnboardingFragment = SellerOnboardingFragment()
     }
 
-    private val onboardingPage by lazy {
-        arguments?.getInt(KEY_PAGE, PAGE_1).orZero()
+    private val router by lazy {
+        return@lazy if (context?.applicationContext is SellerOnboardingRouter) {
+            context?.applicationContext as? SellerOnboardingRouter
+        } else { null }
     }
+    private val userSession: UserSessionInterface by lazy { UserSession(requireContext()) }
+    private val sliderAdapter by lazy { SlideAdapter() }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_sob_onboarding, container, false)
@@ -44,33 +48,79 @@ class SellerOnboardingFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setupOnboarding()
+        setupView()
+        initOnboardingSlides()
     }
 
-    private fun setupOnboarding() {
-        when(onboardingPage) {
-            PAGE_1 -> {
-                val headerText = getString(R.string.sob_header_text_page_1)
-                val drawableRes = R.drawable.sob_illustration_onboarding_1
-                showOnboardingPage(headerText, drawableRes)
-            }
-            PAGE_2 -> {
-                val headerText = getString(R.string.sob_header_text_page_2)
-                val drawableRes = R.drawable.sob_illustration_onboarding_2
-                showOnboardingPage(headerText, drawableRes)
-            }
-            PAGE_3 -> {
-                val headerText = getString(R.string.sob_header_text_page_3)
-                val drawableRes = R.drawable.sob_illustration_onboarding_3
-                showOnboardingPage(headerText, drawableRes)
-            }
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (userSession.isLoggedIn) {
+            onSuccessLogin()
         }
     }
 
-    private fun showOnboardingPage(headerText: String, @DrawableRes drawableRes: Int) {
-        view?.run {
-            tvHeaderText.text = headerText
-            imgIllustrationSob.loadImageDrawable(drawableRes)
+    private fun onSuccessLogin() = view?.run {
+        if (context.applicationContext is SellerOnboardingRouter) {
+            val intent = if (userSession.hasShop()) {
+                router?.getSellerAppHomeActivity(context)?.apply intent@ {
+                    this@intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
+                }
+            } else {
+                RouteManager.getIntent(context, OPEN_SHOP).apply intent@ {
+                    this@intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    this@intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                }
+            }
+            startActivity(intent)
+        }
+    }
+
+    private fun setupView() = view?.run {
+        rvSliderSob.adapter = sliderAdapter
+        rvSliderSob.layoutManager = OnboardingLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        PagerSnapHelper().attachToRecyclerView(rvSliderSob)
+
+        btnSobOpenApp.setOnClickListener {
+            openApp()
+        }
+
+        setupOnSlideListener()
+    }
+
+    private fun setupOnSlideListener() {
+        view?.rvSliderSob?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                setSelectedPageIndicator()
+            }
+        })
+    }
+
+    private fun setSelectedPageIndicator() {
+        val mLayoutManager = view?.rvSliderSob?.layoutManager as? LinearLayoutManager
+        val position = mLayoutManager?.findFirstCompletelyVisibleItemPosition().orZero()
+        if (position >= 0) {
+            view?.pageIndicatorSob?.setCurrentIndicator(position)
+        }
+    }
+
+    private fun initOnboardingSlides() {
+        sliderAdapter.clearSlideItems()
+        sliderAdapter.addSlideItem(getSlideItem(getString(R.string.sob_header_text_page_1), R.drawable.sob_illustration_onboarding_1))
+        sliderAdapter.addSlideItem(getSlideItem(getString(R.string.sob_header_text_page_2), R.drawable.sob_illustration_onboarding_2))
+        sliderAdapter.addSlideItem(getSlideItem(getString(R.string.sob_header_text_page_3), R.drawable.sob_illustration_onboarding_3))
+
+        view?.pageIndicatorSob?.setIndicator(sliderAdapter.itemCount)
+    }
+
+    private fun getSlideItem(headerText: String, @DrawableRes drawableRes: Int): SlideUiModel {
+        return SlideUiModel(headerText, drawableRes)
+    }
+
+    private fun openApp() = view?.run {
+        if (context.applicationContext is SellerOnboardingRouter) {
+            val intent: Intent = (context.applicationContext as SellerOnboardingRouter).getLoginIntent(requireActivity())
+            startActivityForResult(intent, REQUEST_LOGIN)
         }
     }
 }
