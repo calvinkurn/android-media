@@ -35,6 +35,7 @@ import android.widget.Toast;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.webview.CommonWebViewClient;
 import com.tokopedia.abstraction.base.view.webview.FilePickerInterface;
+import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.webview.WebViewHelper;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
@@ -75,6 +76,7 @@ import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
 import static com.tokopedia.common.payment.PaymentConstant.EXTRA_PARAMETER_TOP_PAY_DATA;
+import static com.tokopedia.common.payment.PaymentConstant.EXTRA_PARAMETER_TOP_PAY_TOASTER_MESSAGE;
 
 
 /**
@@ -178,6 +180,11 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
 
     private void setActionVar() {
         presenter.proccessUriPayment();
+
+        String message = getIntent().getStringExtra(EXTRA_PARAMETER_TOP_PAY_TOASTER_MESSAGE);
+        if (!TextUtils.isEmpty(message)) {
+            Toaster.INSTANCE.make(scroogeWebView, message, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL, "", v -> {});
+        }
     }
 
     @SuppressLint("SetJavaScriptEnabled")
@@ -237,8 +244,12 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
     }
 
     @Override
-    public void renderWebViewPostUrl(String url, byte[] postData) {
-        scroogeWebView.postUrl(WebViewHelper.appendGAClientIdAsQueryParam(url, this), postData);
+    public void renderWebViewPostUrl(String url, byte[] postData, boolean isGet) {
+        if (isGet) {
+            scroogeWebView.loadUrl(url);
+        } else {
+            scroogeWebView.postUrl(WebViewHelper.appendGAClientIdAsQueryParam(url, this), postData);
+        }
     }
 
     @Override

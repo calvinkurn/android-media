@@ -37,7 +37,7 @@ public interface TopPayContract {
 
         void showProgressLoading();
 
-        void renderWebViewPostUrl(String url, byte[] postData);
+        void renderWebViewPostUrl(String url, byte[] postData, boolean isGet);
 
         void showToastMessageWithForceCloseView(String message);
 
