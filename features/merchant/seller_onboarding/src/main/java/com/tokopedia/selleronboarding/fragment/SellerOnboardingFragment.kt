@@ -10,16 +10,14 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.OPEN_SHOP
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.selleronboarding.R
 import com.tokopedia.selleronboarding.adapter.SlideAdapter
 import com.tokopedia.selleronboarding.model.SlideUiModel
 import com.tokopedia.selleronboarding.utils.OnboardingLayoutManager
-import com.tokopedia.selleronboarding.utils.SellerOnboardingRouter
-import com.tokopedia.user.session.UserSession
-import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.selleronboarding.utils.OnboardingPreference
 import kotlinx.android.synthetic.main.fragment_sob_onboarding.view.*
 
 /**
@@ -29,16 +27,10 @@ import kotlinx.android.synthetic.main.fragment_sob_onboarding.view.*
 class SellerOnboardingFragment : Fragment() {
 
     companion object {
-        private const val REQUEST_LOGIN = 101
         fun newInstance(): SellerOnboardingFragment = SellerOnboardingFragment()
     }
 
-    private val router by lazy {
-        return@lazy if (context?.applicationContext is SellerOnboardingRouter) {
-            context?.applicationContext as? SellerOnboardingRouter
-        } else { null }
-    }
-    private val userSession: UserSessionInterface by lazy { UserSession(requireContext()) }
+    private val onboardingPreference by lazy { OnboardingPreference(requireContext()) }
     private val sliderAdapter by lazy { SlideAdapter() }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -50,29 +42,6 @@ class SellerOnboardingFragment : Fragment() {
 
         setupView()
         initOnboardingSlides()
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (userSession.isLoggedIn) {
-            onSuccessLogin()
-        }
-    }
-
-    private fun onSuccessLogin() = view?.run {
-        if (context.applicationContext is SellerOnboardingRouter) {
-            val intent = if (userSession.hasShop()) {
-                router?.getSellerAppHomeActivity(context)?.apply intent@ {
-                    this@intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
-                }
-            } else {
-                RouteManager.getIntent(context, OPEN_SHOP).apply intent@ {
-                    this@intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                    this@intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                }
-            }
-            startActivity(intent)
-        }
     }
 
     private fun setupView() = view?.run {
@@ -118,9 +87,10 @@ class SellerOnboardingFragment : Fragment() {
     }
 
     private fun openApp() = view?.run {
-        if (context.applicationContext is SellerOnboardingRouter) {
-            val intent: Intent = (context.applicationContext as SellerOnboardingRouter).getLoginIntent(requireActivity())
-            startActivityForResult(intent, REQUEST_LOGIN)
+        val loginIntent = RouteManager.getIntent(context, ApplinkConst.LOGIN).apply {
+            flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
         }
+        onboardingPreference.putBoolean(OnboardingPreference.HAS_OPEN_ONBOARDING, true)
+        startActivity(loginIntent)
     }
 }
