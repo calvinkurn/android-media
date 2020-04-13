@@ -7,7 +7,8 @@ import com.tokopedia.search.shouldBe
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.gherkin.Feature
 
-internal class HandleViewClickShopTest: Spek({
+@Deprecated("Migrated to JUnit")
+internal class HandleViewClickShopSpekTest: Spek({
     InstantTaskExecutorRuleSpek(this)
 
     Feature("Handle View Click Shop") {
