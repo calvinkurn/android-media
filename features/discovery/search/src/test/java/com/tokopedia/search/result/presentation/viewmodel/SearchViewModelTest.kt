@@ -12,7 +12,7 @@ import org.junit.Test
 internal class SearchViewModelTest {
 
     @get:Rule
-    val instantTaskExecutor = InstantTaskExecutorRule()
+    val instantTaskExecutorRule = InstantTaskExecutorRule()
 
     private val searchViewModel = SearchViewModel(TestDispatcherProvider())
 
