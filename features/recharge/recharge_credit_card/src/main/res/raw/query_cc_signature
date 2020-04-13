@@ -1,0 +1,6 @@
+query rechargeCCSignature($categoryId: Int!) {
+  rechargePCIDSSSignature(category_id: $categoryId) {
+    signature
+    message_error
+  }
+}

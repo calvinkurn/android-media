@@ -14,7 +14,7 @@ import com.tokopedia.home.beranda.listener.HomeReviewListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.*
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.dynamic_icon.DynamicIconSectionViewModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.spotlight.SpotlightViewModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.GeolocationPromptViewModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.GeoLocationPromptDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderViewModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.RetryModel
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.*
@@ -22,7 +22,6 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_c
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.default_home_dc.ErrorPromptViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.mix_top.MixTopBannerViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.widget_business.NewBusinessViewHolder
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.pdpview.listener.FlashSaleCardListener
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.EmptyBlankViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.GeolocationPromptViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.OvoViewHolder
@@ -59,11 +58,11 @@ class HomeAdapterFactory(private val fragmentManager: FragmentManager, private v
         return InspirationHeaderViewHolder.LAYOUT
     }
 
-    override fun type(bannerViewModel: BannerViewModel): Int {
+    override fun type(homepageBannerDataModel: HomepageBannerDataModel): Int {
         return BannerViewHolder.LAYOUT
     }
 
-    override fun type(tickerViewModel: TickerViewModel): Int {
+    override fun type(tickerDataModel: TickerDataModel): Int {
         return TickerViewHolder.LAYOUT
     }
 
@@ -101,7 +100,7 @@ class HomeAdapterFactory(private val fragmentManager: FragmentManager, private v
         return TopAdsViewHolder.LAYOUT
     }
 
-    override fun type(geolocationPromptViewModel: GeolocationPromptViewModel): Int {
+    override fun type(geoLocationPromptDataModel: GeoLocationPromptDataModel): Int {
         return GeolocationPromptViewHolder.LAYOUT
     }
 
@@ -118,7 +117,7 @@ class HomeAdapterFactory(private val fragmentManager: FragmentManager, private v
         return RetryViewHolder.LAYOUT
     }
 
-    override fun type(reviewViewModel: ReviewViewModel): Int {
+    override fun type(reviewDataModel: ReviewDataModel): Int {
         return ReviewViewHolder.LAYOUT
     }
 
@@ -135,7 +134,7 @@ class HomeAdapterFactory(private val fragmentManager: FragmentManager, private v
         return RetryViewHolder.LAYOUT
     }
 
-    override fun type(popularKeywordListViewModel: PopularKeywordListViewModel): Int {
+    override fun type(popularKeywordListDataModel: PopularKeywordListDataModel): Int {
         return PopularKeywordViewHolder.LAYOUT
     }
 

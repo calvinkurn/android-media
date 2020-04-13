@@ -64,7 +64,7 @@ dependencies {
 project.ext {
     artifactId = 'feed-component'
     groupId = 'com.tokopedia.content'
-    versionName = "0.0.1"
+    versionName = "0.0.2"
     artifactName ="feed_component-release"
 }
 

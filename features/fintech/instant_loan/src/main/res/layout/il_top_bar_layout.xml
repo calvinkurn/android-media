@@ -11,7 +11,7 @@
         android:id="@+id/top_bar_close_button"
         android:layout_width="24dp"
         android:layout_height="24dp"
-        android:background="@drawable/ic_filter_detail_close" />
+        android:background="@drawable/ic_filter_detail_close_instant_loan" />
 
     <TextView
         android:id="@+id/top_bar_title"

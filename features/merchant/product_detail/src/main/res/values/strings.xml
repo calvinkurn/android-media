@@ -31,6 +31,7 @@
     <string name="template_min_order">%1$d Buah</string>
     <string name="buy_now">Beli Sekarang</string>
     <string name="add_product_to_cart">Tambah ke Keranjang</string>
+    <string name="plus_product_to_cart">+ Keranjang</string>
     <string name="apply_credit">Ajukan Kredit</string>
     <string name="buy">Beli</string>
     <string name="promo_hourly">Promo Perjam</string>
@@ -189,6 +190,8 @@
 
     //Variant section
     <string name="add_to_cart_error_variant">Oops, kamu wajib pilih varian.</string>
+    <string name="variant_failed_load">Variannya belum muncul, refresh yuk!</string>
+    <string name="product_refresh">Refresh</string>
     <string name="tradein_error_label">Stok sudah habis. Cari barang lain untuk bisa gunakan Tukar Tambah</string>
 
     //Check Imei
@@ -204,6 +207,7 @@
     <string name="notify_me_active">Pengingat Aktif</string>
     <string name="notify_me_inactive">Ingatkan Saya</string>
     <string name="notify_me_subtitle">Dimulai dalam %1$s</string>
+    <string name="notify_me_subtitle_main">Dimulai dalam</string>
     <string name="notify_me_title">Kejar Diskon</string>
 
 </resources>

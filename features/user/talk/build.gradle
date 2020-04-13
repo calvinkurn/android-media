@@ -26,7 +26,11 @@ dependencies {
     implementation project(rootProject.ext.features.chatcommon)
     implementation project(rootProject.ext.libraries.commonNetwork)
     implementation project(rootProject.ext.libraries.analytics)
+    implementation project(rootProject.ext.libraries.track)
 
+    implementation rootProject.ext.unifyDependencies.principles
+    implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.unifyDependencies.global_error
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.network
@@ -45,16 +49,12 @@ dependencies {
     implementation rootProject.ext.miscDependencies.rxKotlin
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     kapt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
-    implementation project(rootProject.ext.libraries.track)
-
-    implementation rootProject.ext.unifyDependencies.principles
-    implementation rootProject.ext.unifyDependencies.components
 }
 
 project.ext {
     artifactId = 'talk'
     groupId = 'com.tokopedia.user'
-    versionName = "0.0.1"
+    versionName = "0.0.2"
     artifactName = "talk-release"
 }
 

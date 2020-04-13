@@ -65,7 +65,7 @@ class ETollCardInfoView @JvmOverloads constructor(@NotNull context: Context, att
         textLabelBalance.text = resources.getString(R.string.emoney_card_info_label_card_balance)
         textRemainingBalance.text = CurrencyFormatUtil
                 .convertPriceValueToIdrFormat(attributesEmoneyInquiry.lastBalance, true)
-        textRemainingBalance.setTextColor(resources.getColor(R.color.green_400))
+        textRemainingBalance.setTextColor(resources.getColor(com.tokopedia.design.R.color.green_400))
 
         val simpleDateFormat = SimpleDateFormat("dd MMM yyyy, HH:mm",
                 DateFormatUtils.DEFAULT_LOCALE)
@@ -102,11 +102,11 @@ class ETollCardInfoView @JvmOverloads constructor(@NotNull context: Context, att
     fun removeCardInfo() {
         textLabelCardNumber.text = resources.getString(R.string.emoney_card_info_label_card_number)
         textCardNumber.text = resources.getString(R.string.emoney_card_info_is_not_available_yet)
-        textCardNumber.setTextColor(resources.getColor(R.color.grey_300))
+        textCardNumber.setTextColor(resources.getColor(com.tokopedia.design.R.color.grey_300))
         textCardNumber.typeface = Typeface.DEFAULT
         textLabelBalance.text = resources.getString(R.string.emoney_card_info_label_card_balance)
         textRemainingBalance.text = resources.getString(R.string.emoney_card_info_is_not_available_yet)
-        textRemainingBalance.setTextColor(resources.getColor(R.color.grey_300))
+        textRemainingBalance.setTextColor(resources.getColor(com.tokopedia.design.R.color.grey_300))
         textDate.text = ""
         imageIssuer.setImageDrawable(null)
     }
