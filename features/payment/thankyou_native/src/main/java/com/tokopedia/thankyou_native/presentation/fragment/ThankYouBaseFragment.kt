@@ -1,6 +1,7 @@
 package com.tokopedia.thankyou_native.presentation.fragment
 
 import android.content.Intent
+import android.net.Uri
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
@@ -18,6 +19,8 @@ import com.tokopedia.thankyou_native.presentation.helper.OnDialogRedirectListene
 import com.tokopedia.thankyou_native.recommendation.presentation.view.PDPThankYouPageView
 import com.tokopedia.thankyou_native.recommendation.presentation.view.WishList
 import com.tokopedia.unifycomponents.Toaster
+import retrofit2.http.Url
+import java.net.URL
 
 abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectListener {
 
@@ -54,6 +57,18 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
         activity?.let {
             howToPayBottomSheets.showNow(it.supportFragmentManager, "")
         }
+
+
+        /* val uriBuilder = Uri.Builder()
+                 .appendQueryParameter("transaction_id", thanksPageData.paymentID.toString())
+                 .appendQueryParameter("gateway_name", thanksPageData.gatewayName)
+ //                .appendQueryParameter("gateway_code", thanksPageData.profileCode)
+                 .appendQueryParameter("total_amount", thanksPageData.amount.toString())
+                 .appendQueryParameter("payment_type", thanksPageData.paymentType)
+                 .appendQueryParameter("deadline", thanksPageData.expireTimeUnix.toString())
+                 .appendQueryParameter("gateway_logo", thanksPageData.gatewayImage)
+                 .appendQueryParameter("payment_code", thanksPageData.profileCode)
+         RouteManager.route(context!!, ApplinkConst.HOWTOPAY + uriBuilder.toString())*/
     }
 
     fun showPaymentStatusDialog(dialogOrigin: DialogOrigin?, thanksPageData: ThanksPageData) {
@@ -91,8 +106,13 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
     }
 
     override fun gotoOrderList() {
-        RouteManager.route(context, ApplinkConst.PURCHASE_ORDER_DETAIL, "")//arrayOf(thanksPageData.orderList[0].orderId))
-        activity?.finish()
+        try {
+            val list: List<String> = getThankPageData().shopOrder.map {
+                it.orderId
+            }
+            RouteManager.route(context, ApplinkConst.Transaction.ORDER_MARKETPLACE_DETAIL, list[0])
+            activity?.finish()
+        }catch (e : Exception){}
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

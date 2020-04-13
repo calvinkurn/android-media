@@ -3,7 +3,11 @@ package com.tokopedia.thankyou_native.presentation.fragment
 import android.app.Activity
 import android.content.ClipData
 import android.content.ClipboardManager
+import android.content.Context
 import android.os.Bundle
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.style.ForegroundColorSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,7 +15,6 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.design.image.ImageLoader
-import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.thankyou_native.R
@@ -24,8 +27,9 @@ import com.tokopedia.thankyou_native.presentation.helper.OriginCheckStatusButton
 import com.tokopedia.thankyou_native.presentation.helper.OriginOnBackPress
 import com.tokopedia.thankyou_native.presentation.helper.OriginTimerFinished
 import com.tokopedia.thankyou_native.presentation.viewModel.ThanksPageDataViewModel
-import com.tokopedia.thankyou_native.recommendation.presentation.view.PDPThankYouPageView
 import com.tokopedia.thankyou_native.presentation.views.ThankYouPageTimerView
+import com.tokopedia.thankyou_native.recommendation.presentation.view.PDPThankYouPageView
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.thank_fragment_deferred.*
@@ -35,6 +39,7 @@ class DeferredPaymentFragment : ThankYouBaseFragment(), ThankYouPageTimerView.Th
 
     private lateinit var thanksPageDataViewModel: ThanksPageDataViewModel
 
+
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
@@ -43,8 +48,6 @@ class DeferredPaymentFragment : ThankYouBaseFragment(), ThankYouPageTimerView.Th
     var dialogOrigin: DialogOrigin? = null
 
     private lateinit var thanksPageData: ThanksPageData
-
-    private var dialog: DialogUnify? = null
 
     override fun getScreenName(): String = SCREEN_NAME
 
@@ -104,27 +107,42 @@ class DeferredPaymentFragment : ThankYouBaseFragment(), ThankYouPageTimerView.Th
         paymentType?.let {
             when (it) {
                 is BankTransfer -> {
-                    inflateWaitingUI(getString(R.string.thank_account_number), isCopyVisible = true)
+                    inflateWaitingUI(getString(R.string.thank_account_number), isCopyVisible = true, highlightAmountDigits = true)
                     showDigitAnnouncementTicker()
                 }
-                is VirtualAccount -> inflateWaitingUI(getString(R.string.thank_virtual_account_tag), isCopyVisible = true)
-                is Retail -> inflateWaitingUI(getString(R.string.thank_payment_code), isCopyVisible = true)
-                is SmsPayment -> inflateWaitingUI(getString(R.string.thank_phone_number), isCopyVisible = false)
+                is VirtualAccount -> inflateWaitingUI(getString(R.string.thank_virtual_account_tag), isCopyVisible = true, highlightAmountDigits = false)
+                is Retail -> inflateWaitingUI(getString(R.string.thank_payment_code), isCopyVisible = true, highlightAmountDigits = false)
+                is SmsPayment -> inflateWaitingUI(getString(R.string.thank_phone_number), isCopyVisible = false, highlightAmountDigits = false)
             }
         }
         initCheckPaymentWidgetData()
     }
 
-    private fun inflateWaitingUI(numberTypeTitle: String, isCopyVisible: Boolean) {
+    private fun highlightLastThreeDigits(amountStr: String) {
+        tvTotalAmount.setTextColor(resources.getColor(com.tokopedia.design.R.color.grey_796))
+        val spannable = SpannableString(getString(R.string.thankyou_rp, amountStr))
+        if (amountStr.length > 3) {
+            val startIndex = spannable.length - 3
+            spannable.setSpan(ForegroundColorSpan(resources.getColor(com.tokopedia.design.R.color.orange_500)),
+                    startIndex, spannable.length,
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        }
+        tvTotalAmount.text = spannable
+    }
+
+    private fun inflateWaitingUI(numberTypeTitle: String, isCopyVisible: Boolean, highlightAmountDigits: Boolean) {
         tvPaymentGatewayName.text = thanksPageData.gatewayName
         ImageLoader.LoadImage(ivPaymentGatewayImage, thanksPageData.gatewayImage)
         tvAccountNumberTypeTag.text = numberTypeTitle
         tvAccountNumber.text = thanksPageData.additionalInfo?.accountDest ?: ""
-        tvTotalAmount.text = getString(R.string.thankyou_rp, thanksPageData.amountStr)
+        if (highlightAmountDigits)
+            highlightLastThreeDigits(thanksPageData.amountStr)
+        else
+            tvTotalAmount.text = getString(R.string.thankyou_rp, thanksPageData.amountStr)
 
         if (isCopyVisible) {
             tvAccountNumberCopy.visible()
-            tvAccountNumberCopy.tag = thanksPageData.additionalInfo
+            tvAccountNumberCopy.tag = thanksPageData.additionalInfo.accountDest
             tvAccountNumberCopy.setOnClickListener {
                 val accountNumberStr: String? = tvAccountNumberCopy.tag?.toString()
                 copyAccountNumberToClipboard(accountNumberStr)
@@ -166,16 +184,26 @@ class DeferredPaymentFragment : ThankYouBaseFragment(), ThankYouPageTimerView.Th
 
     private fun showDigitAnnouncementTicker() {
         tickerAnnouncementExactDigits.visible()
+        tickerAnnouncementExactDigits
+                .setTextDescription(getString(R.string.thank_exact_transfer_upto_3_digits))
         view_divider_3.gone()
     }
 
     private fun copyAccountNumberToClipboard(accountNumberStr: String?) {
         accountNumberStr?.let { str ->
             context?.let { context ->
-                val clipboard = context.getSystemService(Activity.CLIPBOARD_SERVICE) as ClipboardManager
-                val clip = ClipData.newPlainText("Tokopedia", str)
+                val clipboard = context.getSystemService(Activity.CLIPBOARD_SERVICE)
+                        as ClipboardManager
+                val clip = ClipData.newPlainText(COPY_BOARD_LABEL, str)
                 clipboard.primaryClip = clip
+                showToastCopySuccessFully(context)
             }
+        }
+    }
+
+    private fun showToastCopySuccessFully(context: Context) {
+        view?.let {
+            Toaster.make(it, getString(R.string.thankyou_account_copied), Toaster.LENGTH_SHORT)
         }
     }
 
@@ -220,6 +248,7 @@ class DeferredPaymentFragment : ThankYouBaseFragment(), ThankYouPageTimerView.Th
     }
 
     companion object {
+        private val COPY_BOARD_LABEL = "Tokopedia"
         const val SCREEN_NAME = "Selesaikan Pembayaran"
         private const val ARG_THANK_PAGE_DATA = "arg_thank_page_data"
         fun getFragmentInstance(bundle: Bundle, thanksPageData: ThanksPageData):
