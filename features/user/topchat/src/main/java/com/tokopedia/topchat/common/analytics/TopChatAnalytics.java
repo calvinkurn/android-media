@@ -1,6 +1,8 @@
 package com.tokopedia.topchat.common.analytics;
 
 
+import com.tokopedia.abstraction.processor.ProductClicksBundler;
+import com.tokopedia.abstraction.processor.model.Product;
 import com.tokopedia.analyticconstant.DataLayer;
 import com.tokopedia.attachproduct.analytics.AttachProductAnalytics;
 import com.tokopedia.chat_common.data.AttachInvoiceSentViewModel;
@@ -14,6 +16,7 @@ import com.tokopedia.user.session.UserSessionInterface;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -259,30 +262,29 @@ public class TopChatAnalytics {
             @NotNull ProductAttachmentViewModel product,
             @NotNull UserSessionInterface user
     ) {
+
+        ArrayList<Product> products = new ArrayList<>();
+        Product topChatProduct = new Product(
+                product.getIdString(),
+                product.getProductName(),
+                product.getCategory(),
+                product.getVariants().toString(),
+                null,
+                product.getPriceInt(),
+                null,
+                "/chat",
+                0
+        );
+        products.add(topChatProduct);
+
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
-                DataLayer.mapOf(
-                        EVENT_NAME, Name.EVENT_NAME_PRODUCT_CLICK,
-                        EVENT_CATEGORY, Category.CHAT_DETAIL,
-                        EVENT_ACTION, Action.CLICK_PRODUCT_IMAGE,
-                        EVENT_LABEL, String.format("chat - %s", String.valueOf(product.getBlastId())),
-                        USER_ID, user.getUserId(),
-                        ECOMMERCE, DataLayer.mapOf(
-                                "click", DataLayer.mapOf(
-                                        "actionField", DataLayer.mapOf("list", "/chat"),
-                                        "products", DataLayer.listOf(
-                                                DataLayer.mapOf(
-                                                        "name", product.getProductName(),
-                                                        "id", product.getIdString(),
-                                                        "price", product.getPriceInt(),
-                                                        "brand", "none",
-                                                        "category", product.getCategory(),
-                                                        "variant", product.getVariants().toString(),
-                                                        "list", getField(String.valueOf(product.getBlastId())),
-                                                        "position", 0
-                                                )
-                                        )
-                                )
-                        )
+                ProductClicksBundler.KEY, ProductClicksBundler.getBundle(
+                        getField(String.valueOf(product.getBlastId())),
+                        products,
+                        Category.CHAT_DETAIL,
+                        Action.CLICK_PRODUCT_IMAGE,
+                        Name.EVENT_NAME_PRODUCT_CLICK,
+                        user.getUserId()
                 )
         );
     }
@@ -292,28 +294,29 @@ public class TopChatAnalytics {
             @NotNull ProductAttachmentViewModel product,
             @NotNull UserSessionInterface user
     ) {
+
+        ArrayList<Product> products = new ArrayList<>();
+        Product product1 = new Product(
+                product.getIdString(),
+                product.getProductName(),
+                product.getCategory(),
+                product.getVariants().toString(),
+                null,
+                product.getPriceInt(),
+                null,
+                getField(String.valueOf(product.getBlastId())),
+                0
+        );
+        products.add(product1);
+
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
-                DataLayer.mapOf(
-                        EVENT_NAME, Name.EVENT_NAME_PRODUCT_PREVIEW,
-                        EVENT_CATEGORY, Category.CHAT_DETAIL,
-                        EVENT_ACTION, Action.VIEW_PRODUCT_PREVIEW,
-                        EVENT_LABEL, String.format("chat - %s", String.valueOf(product.getBlastId())),
-                        USER_ID, user.getUserId(),
-                        ECOMMERCE, DataLayer.mapOf(
-                                "currencyCode", "IDR",
-                                "impressions", DataLayer.listOf(
-                                        DataLayer.mapOf(
-                                                "name", product.getProductName(),
-                                                "id", product.getProductId(),
-                                                "price", product.getProductPrice(),
-                                                "brand", "none",
-                                                "category", product.getCategory(),
-                                                "variant", product.getVariants().toString(),
-                                                "list", getField(String.valueOf(product.getBlastId())),
-                                                "position", 0
-                                        )
-                                )
-                        )
+                ProductClicksBundler.KEY, ProductClicksBundler.getBundle(
+                        getField(String.valueOf(product.getBlastId())),
+                        products,
+                        Category.CHAT_DETAIL,
+                        Action.VIEW_PRODUCT_PREVIEW,
+                        Name.EVENT_NAME_PRODUCT_PREVIEW,
+                        user.getUserId()
                 )
         );
     }

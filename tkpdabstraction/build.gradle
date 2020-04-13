@@ -47,6 +47,8 @@ dependencies {
 
     implementation project(rootProject.ext.libraries.promotionsTarget)
     kapt rootProject.ext.miscDependencies.daggerCompiler
+
+
 }
 
 apply from: '../publish_local.gradle'
