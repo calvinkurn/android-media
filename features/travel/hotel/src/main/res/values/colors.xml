@@ -13,10 +13,13 @@
 
     <color name="hotel_divider_color_gray">#ededed</color>
     <color name="hotel_green_250">#42B549</color>
+    <color name="hotel_grey_100">#f5f5f5</color>
     <color name="hotel_grey_200">#f1f1f1</color>
     <color name="hotel_grey_300">#e0e0e0</color>
     <color name="hotel_grey_400">#bdbdbd</color>
     <color name="hotel_dark_orange_300">#ff5722</color>
+    <color name="hotel_lightish_green">#77db80</color>
+    <color name="hotel_black_disable_38">#61000000</color>
 
     <color name="search_subtitle">#7031353b</color>
 </resources>

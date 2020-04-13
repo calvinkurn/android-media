@@ -15,7 +15,7 @@
                 android:type="linear"
                 android:angle="0"
                 android:endColor="@color/hotel_green_250"
-                android:startColor="@color/lightish_green"/>
+                android:startColor="@color/hotel_lightish_green"/>
         </shape>
     </item>
 </layer-list>

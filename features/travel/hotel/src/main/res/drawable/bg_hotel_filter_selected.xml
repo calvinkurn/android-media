@@ -3,5 +3,5 @@
     <solid android:color="@color/Green_G100"/>
     <corners android:radius="@dimen/layout_lvl2" />
     <stroke android:width="@dimen/hotel_1dp"
-        android:color="@color/tkpd_main_green"/>
+        android:color="@color/Green_G500"/>
 </shape>
