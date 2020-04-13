@@ -138,7 +138,11 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
         view?.findViewById<HeaderUnify>(R.id.add_showcase_toolbar)?.apply {
             setNavigationOnClickListener {
                 tracking.addShowcaseClickBackButton(shopId, shopType, isActionEdit)
-                activity?.onBackPressed()
+                if(isActionEdit) {
+                    showExitConfirmDialog()
+                } else {
+                    activity?.onBackPressed()
+                }
             }
         }
     }
@@ -247,6 +251,20 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
             hideSelectedProductList()
         }
     }
+
+//    override fun onResume() {
+//        super.onResume()
+//        loadData()
+//    }
+//
+//    override fun onDestroy() {
+//        viewModel.reoderShopShowcaseResponse.removeObservers(this)
+//        viewModel.getListBuyerShopShowcaseResponse.removeObservers(this)
+//        viewModel.getListSellerShopShowcaseResponse.removeObservers(this)
+//        viewModel.deleteShopShowcaseResponse.removeObservers(this)
+//        viewModel.getShopProductResponse.removeObservers(this)
+//        super.onDestroy()
+//    }
 
     private fun initView() {
         observeCreateShopShowcase()
@@ -360,7 +378,7 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
         activity?.also {
             val deletedProductSize = showcaseAddAdapter?.getDeletedProductList()?.size
             deletedProductSize?.let { size ->
-                if(size > 0) {
+                if(size > 0 && isActionEdit) {
                     val confirmDialog = DialogUnify(it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
                     confirmDialog.apply {
                         setTitle(getString(R.string.text_confirm_dialog_title))
@@ -380,6 +398,26 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
                 } else {
                     goToChooseProduct()
                 }
+            }
+        }
+    }
+
+    private fun showExitConfirmDialog() {
+        activity?.also {
+            val confirmDialog = DialogUnify(it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
+            confirmDialog.apply {
+                setTitle(getString(R.string.text_exit_confirm_dialog_title))
+                setDescription(getString(R.string.text_exit_confirm_dialog_description))
+                setPrimaryCTAText(getString(R.string.text_cancel_button))
+                setPrimaryCTAClickListener {
+                    this.dismiss()
+                }
+                setSecondaryCTAText(getString(R.string.text_exit_button))
+                setSecondaryCTAClickListener {
+                    this.dismiss()
+                    activity?.onBackPressed()
+                }
+                show()
             }
         }
     }
@@ -445,6 +483,7 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
                     val responseData = it.data
                     if(responseData.success) {
                         // navigate back to origin create showcase entry point
+//                        activity?.setResult(Activity.RESULT_OK)
                         activity?.finish()
                     }
                     else {
