@@ -5,9 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 
-internal class CarouselProductCardListAdapter(
-        private val carouselProductCardListenerInfo: CarouselProductCardListenerInfo
-):
+internal class CarouselProductCardListAdapter :
         ListAdapter<CarouselProductCardModel, CarouselProductCardListViewHolder>(ProductCardModelDiffUtil()),
         CarouselProductCardAdapter {
 
@@ -15,7 +13,7 @@ internal class CarouselProductCardListAdapter(
         val view = LayoutInflater
                 .from(viewGroup.context)
                 .inflate(CarouselProductCardListViewHolder.LAYOUT, viewGroup, false)
-        return CarouselProductCardListViewHolder(view, carouselProductCardListenerInfo)
+        return CarouselProductCardListViewHolder(view)
     }
 
     override fun getItemViewType(position: Int): Int {

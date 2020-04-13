@@ -38,7 +38,6 @@ import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.di.TokopointBundleComponent
 import com.tokopedia.tokopoints.view.couponlisting.CouponListingStackedActivity
-import com.tokopedia.tokopoints.view.contract.CouponDetailContract
 import com.tokopedia.tokopoints.view.customview.SwipeCardView
 import com.tokopedia.tokopoints.view.fragment.CloseableBottomSheetFragment
 import com.tokopedia.tokopoints.view.fragment.ValidateMerchantPinFragment

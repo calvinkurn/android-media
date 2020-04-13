@@ -12,9 +12,9 @@ import retrofit2.Response
 class DeleteRecentSearchUseCase(
         private val initialStateRepository: InitialStateRepository,
         private val initialStateUseCase: InitialStateUseCase
-) : UseCase<Response<Void>>() {
+) : UseCase<Boolean>() {
 
-    override fun createObservable(requestParams: RequestParams): Observable<Response<Void>> {
+    override fun createObservable(requestParams: RequestParams): Observable<Boolean> {
         return initialStateRepository.deleteRecentSearch(requestParams.parameters)
     }
 

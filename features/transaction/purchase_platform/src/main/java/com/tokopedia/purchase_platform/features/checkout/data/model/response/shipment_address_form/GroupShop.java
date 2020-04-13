@@ -56,6 +56,9 @@ public class GroupShop {
     @SerializedName("vehicle_leasing")
     @Expose
     private VehicleLeasing vehicleLeasing;
+    @SerializedName("promo_codes")
+    @Expose
+    private List<String> listPromoCodes;
 
     public List<String> getErrors() {
         return errors;
@@ -110,4 +113,6 @@ public class GroupShop {
     }
 
     public VehicleLeasing getVehicleLeasing() { return vehicleLeasing; }
+
+    public List<String> getListPromoCodes() { return listPromoCodes; }
 }

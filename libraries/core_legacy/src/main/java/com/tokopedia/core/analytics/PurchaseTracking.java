@@ -136,15 +136,15 @@ public class PurchaseTracking extends TrackingUtils {
         afValue.put(AFInAppEventParameterName.CURRENCY, Jordan.VALUE_IDR);
         afValue.put(Jordan.AF_VALUE_PRODUCTTYPE, productList);
         afValue.put(Jordan.AF_KEY_CATEGORY_NAME,productCategory);
+        afValue.put(AFInAppEventParameterName.CONTENT_TYPE, Jordan.AF_VALUE_PRODUCTTYPE);
+        Map<String, Object> criteoAfValue = new HashMap<>(afValue);
         if (productArray.length() > 0) {
             String afContent = productArray.toString();
             afValue.put(AFInAppEventParameterName.CONTENT, afContent);
         }
 
-        afValue.put(AFInAppEventParameterName.CONTENT_TYPE, Jordan.AF_VALUE_PRODUCTTYPE);
-
         TrackApp.getInstance().getAppsFlyer().sendTrackEvent(AFInAppEventType.PURCHASE, afValue);
-        afValue.remove(AFInAppEventParameterName.CONTENT);
-        TrackApp.getInstance().getAppsFlyer().sendTrackEvent(Jordan.AF_KEY_CRITEO, afValue);
+
+        TrackApp.getInstance().getAppsFlyer().sendTrackEvent(Jordan.AF_KEY_CRITEO, criteoAfValue);
     }
 }

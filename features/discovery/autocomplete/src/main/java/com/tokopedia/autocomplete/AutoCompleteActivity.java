@@ -96,7 +96,6 @@ public class AutoCompleteActivity extends BaseActivity
     }
 
     private void handleIntent(Intent intent) {
-
         SearchParameter searchParameter = getSearchParameterFromIntentUri(intent);
 
         handleIntentAutoComplete(searchParameter);
@@ -116,13 +115,14 @@ public class AutoCompleteActivity extends BaseActivity
     }
 
     private void handleIntentAutoComplete(SearchParameter searchParameter) {
-        SearchParameter param = searchBarView.showSearch(searchParameter);
+        searchBarView.showSearch(searchParameter);
+
         if (suggestionFragment != null) {
-            suggestionFragment.setSearchParameter(param);
+            suggestionFragment.setSearchParameter(searchParameter);
             suggestionFragment.setSuggestionViewUpdateListener(this);
         }
         if (initialStateFragment != null) {
-            initialStateFragment.setSearchParameter(param);
+            initialStateFragment.setSearchParameter(searchParameter.getSearchParameterHashMap());
             initialStateFragment.setInitialStateViewUpdateListener(this);
         }
     }
@@ -195,7 +195,7 @@ public class AutoCompleteActivity extends BaseActivity
     public void onQueryTextChange(@NotNull SearchParameter searchParameter) {
         if (searchParameter.getSearchQuery().isEmpty()) {
             if (initialStateFragment != null) {
-                initialStateFragment.getInitialStateData(searchParameter);
+                initialStateFragment.getInitialStateData(searchParameter.getSearchParameterHashMap());
             }
         } else {
             if (suggestionFragment != null) {

@@ -8,6 +8,8 @@ import org.spekframework.spek2.style.gherkin.Feature
 internal class HandleViewVisiblityChanged: Spek({
 
     Feature("Handle view visibility changed") {
+
+        
         createTestInstance()
 
         Scenario("Handle view is visible and added") {
@@ -45,10 +47,6 @@ internal class HandleViewVisiblityChanged: Spek({
             }
 
             Then("Verify view interaction when visibility changed") {
-                verify {
-                    productListView wasNot Called
-                }
-
                 confirmVerified(productListView)
             }
         }

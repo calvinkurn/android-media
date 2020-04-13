@@ -31,11 +31,13 @@ android {
 project.ext {
     artifactId = 'graphql'
     groupId = 'com.tokopedia.graphql'
-    versionName = "1.0.40"
+    versionName = "1.1.5"
     artifactName = "graphql-debug"
 }
 
 dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
     implementation rootProject.ext.tkpdInternalLibDependencies.akamaiBotLib
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.miscDependencies.gson
@@ -45,11 +47,12 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.network
     implementation rootProject.ext.tkpdInternalLibDependencies.authentication
     implementation rootProject.ext.tkpdInternalLibDependencies.betaNotif
+    implementation rootProject.ext.tkpdInternalLibDependencies.akamaiBMP
 
     //room
     implementation rootProject.ext.dbDependencies.dbRoomRuntime
     kapt rootProject.ext.dbDependencies.dbRoomCompiler
-    androidTestApi rootProject.ext.dbDependencies.dbRoomTesting
+    androidTestImplementation rootProject.ext.dbDependencies.dbRoomTesting
 
     implementation rootProject.ext.miscDependencies.dagger
     kapt rootProject.ext.miscDependencies.daggerCompiler

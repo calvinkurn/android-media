@@ -21,7 +21,7 @@ import com.tokopedia.kotlin.extensions.getCalculatedFormattedDate
 import com.tokopedia.kotlin.extensions.toFormattedString
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.analytics.SomAnalytics
-import com.tokopedia.sellerorder.analytics.SomAnalytics.eventClickButtonPeluangInEmptyState
+import com.tokopedia.sellerorder.analytics.SomAnalytics.eventClickTerapkanOnFilterPage
 import com.tokopedia.sellerorder.common.util.SomConsts.CATEGORY_COURIER_TYPE
 import com.tokopedia.sellerorder.common.util.SomConsts.CATEGORY_ORDER_STATUS
 import com.tokopedia.sellerorder.common.util.SomConsts.CATEGORY_ORDER_TYPE
@@ -30,6 +30,7 @@ import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_TYPE_CHECKBOX
 import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_TYPE_RADIO
 import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_TYPE_SEPARATOR
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_LIST_ORDER
+import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_TAB_ACTIVE
 import com.tokopedia.sellerorder.common.util.SomConsts.START_DATE
 import com.tokopedia.sellerorder.list.data.model.SomListAllFilter
 import com.tokopedia.sellerorder.list.data.model.SomListOrderParam
@@ -59,6 +60,7 @@ class SomFilterFragment : BaseDaggerFragment() {
     private var courierList: List<SomListAllFilter.Data.ShippingList> = listOf()
     private var statusList: List<SomListAllFilter.Data.OrderFilterSomSingle.StatusList> = listOf()
     private var currentFilterParams: SomListOrderParam? = SomListOrderParam()
+    private var tabActive: String = ""
     private val somFilterViewModel by lazy {
         ViewModelProviders.of(this, viewModelFactory)[SomFilterViewModel::class.java]
     }
@@ -73,6 +75,7 @@ class SomFilterFragment : BaseDaggerFragment() {
             return SomFilterFragment().apply {
                 arguments = Bundle().apply {
                     putParcelable(PARAM_LIST_ORDER, bundle.getParcelable(PARAM_LIST_ORDER))
+                    putString(PARAM_TAB_ACTIVE, bundle.getString(PARAM_TAB_ACTIVE))
                 }
             }
         }
@@ -88,6 +91,7 @@ class SomFilterFragment : BaseDaggerFragment() {
         super.onCreate(savedInstanceState)
         if (arguments != null) {
             currentFilterParams = arguments?.getParcelable(PARAM_LIST_ORDER)
+            tabActive = arguments?.getString(PARAM_TAB_ACTIVE).toString()
         }
         loadAllFilter()
     }
@@ -108,7 +112,7 @@ class SomFilterFragment : BaseDaggerFragment() {
 
     private fun setListeners() {
         btn_terapkan?.setOnClickListener {
-            eventClickButtonPeluangInEmptyState()
+            eventClickTerapkanOnFilterPage(tabActive)
             activity?.setResult(Activity.RESULT_OK, Intent().apply {
                 putExtra(PARAM_LIST_ORDER, currentFilterParams)
             })
@@ -234,69 +238,73 @@ class SomFilterFragment : BaseDaggerFragment() {
     }
 
     private fun renderOrderType() {
-        listOrderTypeCheckbox.clear()
-        val listOrderType = arrayListOf<QuickFilterItem>()
-        orderTypeList.forEach { orderType ->
-            val orderTypeItem = CustomViewQuickFilterItem()
-            orderTypeItem.name = orderType.name
-            orderTypeItem.type = orderType.id.toString()
-            currentFilterParams?.orderTypeList?.filter { it == orderType.id }?.map {
-                orderTypeItem.isSelected = true
-                listSelectedOrderTypeId.add(orderType.id)
+        if (listOrderTypeCheckbox.isNotEmpty()) listOrderTypeCheckbox.clear()
+        if (orderTypeList.isNotEmpty()) {
+            val listOrderType = arrayListOf<QuickFilterItem>()
+            orderTypeList.forEach { orderType ->
+                val orderTypeItem = CustomViewQuickFilterItem()
+                orderTypeItem.name = orderType.name
+                orderTypeItem.type = orderType.id.toString()
+                currentFilterParams?.orderTypeList?.filter { it == orderType.id }?.map {
+                    orderTypeItem.isSelected = true
+                    listSelectedOrderTypeId.add(orderType.id)
+                }
+                listOrderType.add(orderTypeItem)
+                listOrderTypeCheckbox.add(SomSubFilter(orderType.id, orderType.name, orderType.key, "", FILTER_TYPE_CHECKBOX))
             }
-            listOrderType.add(orderTypeItem)
-            listOrderTypeCheckbox.add(SomSubFilter(orderType.id, orderType.name, orderType.key, "", FILTER_TYPE_CHECKBOX))
-        }
-        quick_filter_order_type?.renderFilter(listOrderType)
-        quick_filter_order_type?.setListener {
-            val orderTypeId = it.toInt()
-            if (orderTypeId in listSelectedOrderTypeId) {
-                listSelectedOrderTypeId.remove(orderTypeId)
-            } else {
-                listSelectedOrderTypeId.add(orderTypeId)
+            quick_filter_order_type?.renderFilter(listOrderType)
+            quick_filter_order_type?.setListener {
+                val orderTypeId = it.toInt()
+                if (orderTypeId in listSelectedOrderTypeId) {
+                    listSelectedOrderTypeId.remove(orderTypeId)
+                } else {
+                    listSelectedOrderTypeId.add(orderTypeId)
+                }
+                currentFilterParams?.orderTypeList = listSelectedOrderTypeId
             }
-            currentFilterParams?.orderTypeList = listSelectedOrderTypeId
-        }
 
-        label_see_all_type?.isClickable = true
-        label_see_all_type?.setOnClickListener {
-            context?.let {
-                val intentStatus = SomSubFilterActivity.createIntent(it, listOrderTypeCheckbox, currentFilterParams, CATEGORY_ORDER_TYPE)
-                startActivityForResult(intentStatus, REQUEST_ORDER_TYPE_LIST)
+            label_see_all_type?.isClickable = true
+            label_see_all_type?.setOnClickListener {
+                context?.let {
+                    val intentStatus = SomSubFilterActivity.createIntent(it, listOrderTypeCheckbox, currentFilterParams, CATEGORY_ORDER_TYPE)
+                    startActivityForResult(intentStatus, REQUEST_ORDER_TYPE_LIST)
+                }
             }
         }
     }
 
     private fun renderCourierList() {
-        listCourierCheckbox.clear()
-        val listCourier = arrayListOf<QuickFilterItem>()
-        courierList.forEach { courier ->
-            val courierItem = CustomViewQuickFilterItem()
-            courierItem.name = courier.shippingName
-            courierItem.type = courier.shippingId.toString()
-            currentFilterParams?.shippingList?.filter { it == courier.shippingId }?.map {
-                courierItem.isSelected = true
-                listSelectedCourierId.add(courier.shippingId)
+        if (listCourierCheckbox.isNotEmpty()) listCourierCheckbox.clear()
+        if (courierList.isNotEmpty()) {
+            val listCourier = arrayListOf<QuickFilterItem>()
+            courierList.forEach { courier ->
+                val courierItem = CustomViewQuickFilterItem()
+                courierItem.name = courier.shippingName
+                courierItem.type = courier.shippingId.toString()
+                currentFilterParams?.shippingList?.filter { it == courier.shippingId }?.map {
+                    courierItem.isSelected = true
+                    listSelectedCourierId.add(courier.shippingId)
+                }
+                listCourier.add(courierItem)
+                listCourierCheckbox.add(SomSubFilter(courier.shippingId, courier.shippingName, courier.shippingCode, "", FILTER_TYPE_CHECKBOX))
             }
-            listCourier.add(courierItem)
-            listCourierCheckbox.add(SomSubFilter(courier.shippingId, courier.shippingName, courier.shippingCode, "", FILTER_TYPE_CHECKBOX))
-        }
-        quick_filter_order_courier?.renderFilter(listCourier)
-        quick_filter_order_courier?.setListener {
-            val shippingId = it.toInt()
-            if (shippingId in listSelectedCourierId) {
-                listSelectedCourierId.remove(shippingId)
-            } else {
-                listSelectedCourierId.add(shippingId)
+            quick_filter_order_courier?.renderFilter(listCourier)
+            quick_filter_order_courier?.setListener {
+                val shippingId = it.toInt()
+                if (shippingId in listSelectedCourierId) {
+                    listSelectedCourierId.remove(shippingId)
+                } else {
+                    listSelectedCourierId.add(shippingId)
+                }
+                currentFilterParams?.shippingList = listSelectedCourierId
             }
-            currentFilterParams?.shippingList = listSelectedCourierId
-        }
 
-        label_see_all_courier?.isClickable = true
-        label_see_all_courier?.setOnClickListener {
-            context?.let {
-                val intentStatus = SomSubFilterActivity.createIntent(it, listCourierCheckbox, currentFilterParams, CATEGORY_COURIER_TYPE)
-                startActivityForResult(intentStatus, REQUEST_SHIPPING_LIST)
+            label_see_all_courier?.isClickable = true
+            label_see_all_courier?.setOnClickListener {
+                context?.let {
+                    val intentStatus = SomSubFilterActivity.createIntent(it, listCourierCheckbox, currentFilterParams, CATEGORY_COURIER_TYPE)
+                    startActivityForResult(intentStatus, REQUEST_SHIPPING_LIST)
+                }
             }
         }
     }
@@ -338,34 +346,43 @@ class SomFilterFragment : BaseDaggerFragment() {
     }
 
     fun onResetClicked() {
+        SomAnalytics.eventClickResetButtonOnFilterPage(tabActive)
         resetFilters()
         renderCourierList()
         renderOrderType()
-        SomAnalytics.eventClickResetButtonOnFilterPage()
+    }
+
+    fun onBackClicked() {
+        SomAnalytics.eventClickBackButtonOnFilterPage(tabActive)
     }
 
     @SuppressLint("SetTextI18n")
     private fun resetFilters() {
-        val resetStartDate = getCalculatedFormattedDate("dd/MM/yyyy", -90)
-        val resetEndDate = Date().toFormattedString("dd/MM/yyyy")
-        currentFilterParams = SomListOrderParam(
-                startDate = resetStartDate,
-                endDate = resetEndDate,
-                statusList = statusList.first().orderStatusIdList)
+        if (statusList.isNotEmpty()) {
+            val resetStartDate = getCalculatedFormattedDate("dd/MM/yyyy", -90)
+            val resetEndDate = Date().toFormattedString("dd/MM/yyyy")
+            currentFilterParams = SomListOrderParam(
+                    startDate = resetStartDate,
+                    endDate = resetEndDate,
+                    statusList = statusList.first().orderStatusIdList)
 
-        // start date
-        val splitStartDate = resetStartDate.split('/')
-        var startDateStr = splitStartDate[0]
-        if (startDateStr.length == 1) startDateStr = "0$startDateStr"
+            // start date
+            val splitStartDate = resetStartDate.split('/')
+            if (splitStartDate.isNotEmpty()) {
+                var startDateStr = splitStartDate[0]
+                if (startDateStr.length == 1) startDateStr = "0$startDateStr"
+                et_start_date?.setText("$startDateStr ${convertMonth((splitStartDate[1].toInt()-1))} ${splitStartDate[2]}")
+            }
 
-        et_start_date?.setText("$startDateStr ${convertMonth((splitStartDate[1].toInt()-1))} ${splitStartDate[2]}")
+            // end date
+            val splitEndDate = resetEndDate.split('/')
+            if (splitEndDate.isNotEmpty()) {
+                var endDateStr = splitEndDate[0]
+                if (endDateStr.length == 1) endDateStr = "0$endDateStr"
+                et_end_date?.setText("$endDateStr ${convertMonth((splitEndDate[1].toInt()-1))} ${splitEndDate[2]}")
+            }
 
-        // end date
-        val splitEndDate = resetEndDate.split('/')
-        var endDateStr = splitEndDate[0]
-        if (endDateStr.length == 1) endDateStr = "0$endDateStr"
-
-        et_end_date?.setText("$endDateStr ${convertMonth((splitEndDate[1].toInt()-1))} ${splitEndDate[2]}")
-        label_substatus?.text = statusList.first().text
+            label_substatus?.text = statusList.first().text
+        }
     }
 }

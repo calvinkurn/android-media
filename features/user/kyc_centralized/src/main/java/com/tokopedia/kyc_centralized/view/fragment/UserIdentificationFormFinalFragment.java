@@ -278,7 +278,10 @@ public class UserIdentificationFormFinalFragment extends BaseDaggerFragment
     }
 
     private Boolean isKycSelfie(){
-        return !remoteConfigInstance.getABTestPlatform().getString("Liveness Detection 1", "").equals("Liveness Detection 1");
+        if(UserIdentificationFormActivity.isSupportedLiveness) {
+            return !remoteConfigInstance.getABTestPlatform().getString(KYCConstant.KYC_AB_KEYWORD).equals(KYCConstant.KYC_AB_KEYWORD);
+        }
+        return true;
     }
 
     private void checkKtp(){

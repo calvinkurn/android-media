@@ -1,7 +1,7 @@
 package com.tokopedia.adapterdelegate
 
+import android.os.Bundle
 import androidx.recyclerview.widget.DiffUtil
-
 
 /**
  * Created by jegul on 2019-10-02.
@@ -11,6 +11,10 @@ abstract class BaseDiffUtilAdapter<T: Any> : BaseAdapter<T>() {
     abstract fun areItemsTheSame(oldItem: T, newItem: T): Boolean
 
     abstract fun areContentsTheSame(oldItem: T, newItem: T): Boolean
+
+    open fun getChangePayload(oldItem: T, newItem: T): Bundle? {
+        return null
+    }
 
     inner class BaseDiffUtilCallback(
             private val oldItemList: List<T>,
@@ -30,6 +34,10 @@ abstract class BaseDiffUtilAdapter<T: Any> : BaseAdapter<T>() {
 
         override fun areContentsTheSame(oldPos: Int, newPos: Int): Boolean {
             return areContentsTheSame(oldItemList[oldPos], newItemList[newPos])
+        }
+
+        override fun getChangePayload(oldItemPosition: Int, newItemPosition: Int): Any? {
+            return getChangePayload(oldItemList[oldItemPosition], newItemList[newItemPosition])
         }
     }
 
@@ -71,7 +79,7 @@ abstract class BaseDiffUtilAdapter<T: Any> : BaseAdapter<T>() {
     private inline fun animateNotifyChanged(oldItemList: List<T>, newItemList: List<T>, changeList: () -> Unit) {
         val diffCallback = BaseDiffUtilCallback(oldItemList, newItemList)
         val diffResult = DiffUtil.calculateDiff(diffCallback)
-        changeList()
         diffResult.dispatchUpdatesTo(this)
+        changeList()
     }
 }

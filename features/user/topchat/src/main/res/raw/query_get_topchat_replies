@@ -1,6 +1,7 @@
-query get_chat_replies($msgId: Int!, $page: Int!) {
+query get_chat_replies($msgId: Int!, $beforeReplyTime: String) {
   status
-  chatReplies(msgId: $msgId, page: $page) {
+  chatReplies(msgId: $msgId, beforeReplyTime: $beforeReplyTime) {
+    minReplyTime
     block {
       blockedUntil
       isBlocked
