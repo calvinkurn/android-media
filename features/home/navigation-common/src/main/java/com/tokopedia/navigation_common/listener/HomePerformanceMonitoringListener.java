@@ -8,4 +8,6 @@ import java.util.Map;
 public interface HomePerformanceMonitoringListener {
     void stopHomePerformanceMonitoring();
     void startHomePerformanceMonitoring();
+    void stopOfficialStorePerformanceMonitoring();
+    void startOfficialStorePerformanceMonitoring();
 }

@@ -151,6 +151,7 @@ public class MainParentActivity extends BaseActivity implements
     private static final String ANDROID_CUSTOMER_NEW_OS_HOME_ENABLED = "android_customer_new_os_home_enabled";
     private static final String SOURCE_ACCOUNT = "account";
     private static final String HOME_PERFORMANCE_MONITORING_KEY = "mp_home";
+    private static final String OFFICIAL_STORE_PERFORMANCE_MONITORING_KEY = "mp_official_store";
     private static final String MAIN_PARENT_PERFORMANCE_MONITORING_KEY = "mp_slow_rendering_perf";
     private static final String FPM_METRIC_ALL_FRAMES = "all_frames";
     private static final String FPM_METRIC_JANKY_FRAMES = "janky_frames";
@@ -180,6 +181,7 @@ public class MainParentActivity extends BaseActivity implements
     private boolean isFirstNavigationImpression = false;
 
     private PerformanceMonitoring homePerformanceMonitoring;
+    private PerformanceMonitoring officialStorePerformanceMonitoring;
 
     private PerformanceMonitoring mainParentPerformanceMonitoring;
 
@@ -1159,6 +1161,19 @@ public class MainParentActivity extends BaseActivity implements
     @Override
     public void startHomePerformanceMonitoring() {
         homePerformanceMonitoring = PerformanceMonitoring.start(HOME_PERFORMANCE_MONITORING_KEY);
+    }
+
+    @Override
+    public void stopOfficialStorePerformanceMonitoring() {
+        if (officialStorePerformanceMonitoring != null) {
+            officialStorePerformanceMonitoring.stopTrace();
+            officialStorePerformanceMonitoring = null;
+        }
+    }
+
+    @Override
+    public void startOfficialStorePerformanceMonitoring() {
+        officialStorePerformanceMonitoring = PerformanceMonitoring.start(OFFICIAL_STORE_PERFORMANCE_MONITORING_KEY);
     }
 
     private void startMainParentPerformanceMonitoring() {

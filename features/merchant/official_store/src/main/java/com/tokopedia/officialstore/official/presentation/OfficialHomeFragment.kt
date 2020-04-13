@@ -7,6 +7,7 @@ import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
@@ -26,8 +27,9 @@ import com.tokopedia.discovery.common.manager.handleProductCardOptionsActivityRe
 import com.tokopedia.discovery.common.manager.showProductCardOptions
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
-import com.tokopedia.navigation_common.listener.JankyFramesMonitoringListener
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.navigation_common.listener.HomePerformanceMonitoringListener
+import com.tokopedia.navigation_common.listener.JankyFramesMonitoringListener
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.officialstore.FirebasePerformanceMonitoringConstant
 import com.tokopedia.officialstore.OfficialStoreInstance
@@ -80,6 +82,7 @@ class OfficialHomeFragment :
     }
 
     private var jankyFramesMonitoringListener: JankyFramesMonitoringListener? = null
+    private var homePerformanceMonitoringListener: HomePerformanceMonitoringListener? = null
     private val sentDynamicChannelTrackers = mutableSetOf<String>()
 
     @Inject
@@ -125,6 +128,7 @@ class OfficialHomeFragment :
             category = it.getParcelable(BUNDLE_CATEGORY)
         }
         context?.let { tracking = OfficialStoreTracking(it) }
+        homePerformanceMonitoringListener = context?.let { castContextToHomePerformanceMonitoring(it) }
     }
 
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
@@ -146,7 +150,20 @@ class OfficialHomeFragment :
         recyclerView?.adapter = adapter
 
         recyclerView?.let { jankyFramesMonitoringListener?.mainJankyFrameMonitoringUtil?.recordRecyclerViewScrollPerformance(it, pageName = PERFORMANCE_OS_PAGE_NAME) }
+        setPerformanceListenerForRecyclerView()
         return view
+    }
+
+    private fun setPerformanceListenerForRecyclerView(){
+        recyclerView?.viewTreeObserver?.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener{
+            override fun onGlobalLayout() {
+                if(homePerformanceMonitoringListener != null){
+                    homePerformanceMonitoringListener!!.stopOfficialStorePerformanceMonitoring()
+                    homePerformanceMonitoringListener = null
+                    recyclerView?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
+                }
+            }
+        })
     }
 
     override fun onAttach(context: Context) {
@@ -730,5 +747,11 @@ class OfficialHomeFragment :
 
         val dynamicChannelConstant = (FirebasePerformanceMonitoringConstant.DYNAMIC_CHANNEL).replace(SLUG_CONST, CATEGORY_CONST)
         dynamicChannelPerformanceMonitoring = PerformanceMonitoring.start(dynamicChannelConstant)
+    }
+
+    private fun castContextToHomePerformanceMonitoring(context: Context): HomePerformanceMonitoringListener? {
+        return if (context is HomePerformanceMonitoringListener) {
+            context
+        } else null
     }
 }
