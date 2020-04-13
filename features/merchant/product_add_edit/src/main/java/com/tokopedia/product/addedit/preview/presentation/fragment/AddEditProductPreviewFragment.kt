@@ -239,10 +239,11 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
             } else {
                 ProductAddStepperTracking.trackStart(shopId)
             }
-            val imageUrlOrPathList = viewModel.productInputModel.value?.detailInputModel?.imageUrlOrPathList
-                    ?: listOf()
-            val intent = ImagePickerAddProductActivity.getIntent(context, createImagePickerBuilder(ArrayList(imageUrlOrPathList)))
-            startActivityForResult(intent, REQUEST_CODE_IMAGE)
+            val imageUrlOrPathList = productPhotoAdapter?.getProductPhotoPaths()
+            imageUrlOrPathList?.run {
+                val intent = ImagePickerAddProductActivity.getIntent(context, createImagePickerBuilder(ArrayList(this)))
+                startActivityForResult(intent, REQUEST_CODE_IMAGE)
+            }
         }
 
         productStatusSwitch?.setOnCheckedChangeListener { buttonView, isChecked ->
@@ -557,8 +558,10 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
 
     private fun observeProductInputModelFromDraft() {
         viewModel.getProductDraftResult.observe(viewLifecycleOwner, Observer { result ->
-            when(result) {
-                is Success -> { viewModel.updateProductInputModel(result.data) }
+            when (result) {
+                is Success -> {
+                    viewModel.updateProductInputModel(result.data)
+                }
             }
         })
     }
