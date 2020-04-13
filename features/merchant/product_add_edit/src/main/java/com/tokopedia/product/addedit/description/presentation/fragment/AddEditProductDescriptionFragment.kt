@@ -190,6 +190,12 @@ class AddEditProductDescriptionFragment:
         return inflater.inflate(R.layout.fragment_add_edit_product_description, container, false)
     }
 
+    override fun onResume() {
+        super.onResume()
+        btnNext.isLoading = false
+        btnSave.isLoading = false
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -225,10 +231,12 @@ class AddEditProductDescriptionFragment:
         }
 
         btnNext.setOnClickListener {
+            btnNext.isLoading = true
             moveToShipmentActivity()
         }
 
         btnSave.setOnClickListener {
+            btnSave.isLoading = true
             submitInputEdit()
         }
 
