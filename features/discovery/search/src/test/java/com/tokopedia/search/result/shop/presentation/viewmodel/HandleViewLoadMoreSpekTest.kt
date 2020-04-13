@@ -14,7 +14,8 @@ import com.tokopedia.usecase.coroutines.UseCase
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.gherkin.Feature
 
-internal class HandleViewLoadMoreTest: Spek({
+@Deprecated("Migrated to JUnit")
+internal class HandleViewLoadMoreSpekTest: Spek({
 
     InstantTaskExecutorRuleSpek(this)
 
