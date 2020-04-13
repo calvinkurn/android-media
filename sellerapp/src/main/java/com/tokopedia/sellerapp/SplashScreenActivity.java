@@ -79,7 +79,7 @@ public class SplashScreenActivity extends SplashScreen {
             Intent intent = moveToCreateShop(this);
             startActivity(intent);
         } else {
-            Intent intent = new Intent(SplashScreenActivity.this, WelcomeActivity.class);
+            Intent intent = new Intent(SplashScreenActivity.this, SellerOnboardingActivity.class);
             startActivity(intent);
         }
         finish();
