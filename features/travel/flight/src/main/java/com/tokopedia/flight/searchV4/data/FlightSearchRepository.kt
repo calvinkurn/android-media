@@ -1,9 +1,12 @@
 package com.tokopedia.flight.searchV4.data
 
-import com.tokopedia.flight.search.data.db.FlightSearchSingleDataDbSource
+import com.tokopedia.flight.search.data.cache.FlightSearchDataCacheSource
 import com.tokopedia.flight.search.data.db.JourneyAndRoutes
+import com.tokopedia.flight.search.data.repository.JourneyAndRoutesModel
 import com.tokopedia.flight.search.presentation.model.FlightAirlineModel
 import com.tokopedia.flight.search.presentation.model.FlightAirportModel
+import com.tokopedia.flight.search.presentation.model.filter.FlightFilterModel
+import com.tokopedia.flight.searchV4.data.cache.dao.FlightSearchSingleDataDbSource
 import com.tokopedia.flight.searchV4.data.cloud.FlightSearchDataCloudSource
 import com.tokopedia.flight.searchV4.data.cloud.single.*
 import com.tokopedia.flight.searchV4.domain.FlightSearchMapper.Companion.createCompleteJourneyAndRoutes
@@ -17,7 +20,8 @@ import javax.inject.Inject
  */
 class FlightSearchRepository @Inject constructor(
         private val flightSearchSingleDataDbSource: FlightSearchSingleDataDbSource,
-        private val flightSearchDataCloudSource: FlightSearchDataCloudSource) {
+        private val flightSearchDataCloudSource: FlightSearchDataCloudSource,
+        private val flightSearchDataCacheSource: FlightSearchDataCacheSource) {
 
     suspend fun getSearchSingle(searchParam: FlightSearchRequestModel, isReturnTrip: Boolean): FlightSearchMetaEntity {
         val searchData = flightSearchDataCloudSource.getSearchSingleData(searchParam)
@@ -29,6 +33,10 @@ class FlightSearchRepository @Inject constructor(
         meta.airlineList = getAirlines(journeyAndRouteList)
         return meta
     }
+
+    suspend fun getSearchFilter(flightSortOption: Int, flightFilterModel: FlightFilterModel): JourneyAndRoutesModel =
+            JourneyAndRoutesModel(flightSearchSingleDataDbSource.getFilteredJourneys(flightFilterModel, flightSortOption),
+                    flightSearchDataCacheSource.cacheCoroutine)
 
     private fun generateJourneyAndRoutes(journeyResponse: FlightSearchData,
                                          includedList: List<FlightSearchIncluded>,

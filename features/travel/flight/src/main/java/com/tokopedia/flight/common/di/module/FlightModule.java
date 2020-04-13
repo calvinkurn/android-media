@@ -202,6 +202,18 @@ public class FlightModule {
     }
 
     @Provides
+    @FlightScope
+    com.tokopedia.flight.searchV4.data.cache.dao.FlightJourneyDao provideFlightJourneyNewDao(FlightSearchRoomDb flightSearchRoomDb) {
+        return flightSearchRoomDb.flightJourneyCoroutineDao();
+    }
+
+    @Provides
+    @FlightScope
+    com.tokopedia.flight.searchV4.data.FlightRouteDao provideRouteNewDao(FlightSearchRoomDb flightSearchRoomDb) {
+        return flightSearchRoomDb.flightRouteCoroutineDao();
+    }
+
+    @Provides
     FlightRoomDb provideFlightAirportRoomDb(@ApplicationContext Context context) {
         return FlightRoomDb.getDatabase(context);
     }

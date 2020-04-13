@@ -3,7 +3,6 @@ package com.tokopedia.flight.searchV4.presentation.adapter.viewholder
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.flight.R
-import com.tokopedia.flight.search.presentation.adapter.FlightSearchAdapterTypeFactory
 import com.tokopedia.flight.search.presentation.model.FlightJourneyModel
 import com.tokopedia.flight.search.util.DurationUtil
 import kotlinx.android.synthetic.main.item_flight_search_new.view.*
@@ -14,6 +13,7 @@ import kotlinx.android.synthetic.main.item_flight_search_new.view.*
 class FlightSearchViewHolder(itemView: View,
                              private val onFLightSearchListener: FlightSearchAdapterTypeFactory.OnFlightSearchListener)
     : AbstractViewHolder<FlightJourneyModel>(itemView) {
+
     override fun bind(element: FlightJourneyModel) {
         with(itemView) {
             tvDepartureTime.text = element.departureTime
@@ -94,6 +94,17 @@ class FlightSearchViewHolder(itemView: View,
                 else -> {
                     tagBestPairing.visibility = View.GONE
                 }
+            }
+        }
+    }
+
+    private fun setAdditionalArrivalDay(element: FlightJourneyModel) {
+        with(itemView) {
+            if (element.addDayArrival > 0) {
+                tvFlightAdditionalDay.visibility = View.VISIBLE
+                tvFlightAdditionalDay.text = context.getString(R.string.flight_label_duration_add_day, element.addDayArrival)
+            } else {
+                tvFlightAdditionalDay.visibility = View.GONE
             }
         }
     }
