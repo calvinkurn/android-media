@@ -27,6 +27,7 @@ import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.instrumentation.test.R;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
+import com.tokopedia.test.application.environment.interceptor.MockInterceptor;
 import com.tokopedia.test.application.util.DeviceConnectionInfo;
 import com.tokopedia.test.application.util.DeviceInfo;
 import com.tokopedia.test.application.util.DeviceScreenInfo;
@@ -38,10 +39,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import okhttp3.Interceptor;
 import okhttp3.Response;
 
 public class MockInstrumentationTestApp extends BaseMainApplication implements TkpdCoreRouter, NetworkRouter {
@@ -71,14 +75,11 @@ public class MockInstrumentationTestApp extends BaseMainApplication implements T
             responseList.put("widget_grid", getRawString(R.raw.response_mock_data_home_widget_grid));
             responseList.put("suggestedProductReview", getRawString(R.raw.response_mock_data_suggested_review));
             responseList.put("playGetLiveDynamicChannels", getRawString(R.raw.response_mock_data_play_widget));
-            GraphqlClient.addTestInterceptor(responseList, this);
-        }
-    }
 
-    public void disableMockResponse() {
-        if (GlobalConfig.DEBUG) {
-            HashMap<String, String> responseList = new HashMap<>();
-            GraphqlClient.addTestInterceptor(responseList, this);
+            List<Interceptor> testInterceptors = new ArrayList<>();
+            testInterceptors.add(new MockInterceptor(responseList));
+
+            GraphqlClient.reInitRetrofitWithInterceptors(testInterceptors, this);
         }
     }
 

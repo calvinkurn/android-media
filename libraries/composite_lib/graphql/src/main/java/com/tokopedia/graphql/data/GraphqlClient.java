@@ -18,7 +18,6 @@ import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.converter.StringResponseConverter;
 import com.tokopedia.network.interceptor.DeprecatedApiInterceptor;
 import com.tokopedia.network.interceptor.FingerprintInterceptor;
-import com.tokopedia.network.interceptor.MockInterceptor;
 import com.tokopedia.network.interceptor.RiskAnalyticsInterceptor;
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor;
 import com.tokopedia.network.utils.TkpdOkHttpBuilder;
@@ -26,8 +25,10 @@ import com.tokopedia.user.session.UserSession;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
 import java.util.Map;
 
+import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import retrofit2.Retrofit;
@@ -39,7 +40,7 @@ public class GraphqlClient {
     private static FingerprintManager sFingerprintManager;
     private static GraphqlDatabase sGraphqlDatabase;
 
-    public GraphqlClient() {
+    private GraphqlClient() {
 
     }
 
@@ -67,11 +68,15 @@ public class GraphqlClient {
         }
     }
 
-    public static void addTestInterceptor(@NonNull Map<String, String> mockResponses,
-                                          @NonNull Context context) {
+    public static void reInitRetrofitWithInterceptors(@NonNull List<Interceptor> interceptors,
+                                                      @NonNull Context context) {
         UserSession userSession = new UserSession(context.getApplicationContext());
         TkpdOkHttpBuilder tkpdOkHttpBuilder = new TkpdOkHttpBuilder(context.getApplicationContext(), new OkHttpClient.Builder());
-        tkpdOkHttpBuilder.addInterceptor(new MockInterceptor(mockResponses));
+
+        for (Interceptor interceptor: interceptors) {
+            tkpdOkHttpBuilder.addInterceptor(interceptor);
+        }
+
         tkpdOkHttpBuilder.addInterceptor(new RiskAnalyticsInterceptor(context));
         tkpdOkHttpBuilder.addInterceptor(new GqlAkamaiBotInterceptor());
         tkpdOkHttpBuilder.addInterceptor(new BetaInterceptor(context));

@@ -1,4 +1,4 @@
-package com.tokopedia.network.interceptor
+package com.tokopedia.test.application.environment.interceptor
 
 import com.tokopedia.network.BuildConfig
 import okhttp3.*
