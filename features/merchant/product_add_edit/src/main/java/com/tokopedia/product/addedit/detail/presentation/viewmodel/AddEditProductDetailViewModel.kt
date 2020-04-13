@@ -50,7 +50,7 @@ class AddEditProductDetailViewModel @Inject constructor(
         get() = mIsProductNameInputError
     var productNameMessage: String = ""
 
-    var isProductRecommendationSelected = false
+    var isNameRecommendationSelected = false
     private val mProductNameRecommendations = MutableLiveData<Result<List<String>>>()
     val productNameRecommendations: LiveData<Result<List<String>>>
         get() = mProductNameRecommendations
@@ -99,6 +99,9 @@ class AddEditProductDetailViewModel @Inject constructor(
         addSource(mIsProductPriceInputError) {
             this.value = isInputValid()
         }
+        addSource(isWholeSalePriceActivated) {
+            this.value = isInputValid()
+        }
         addSource(wholeSaleErrorCounter) {
             this.value = isInputValid()
         }
@@ -118,9 +121,8 @@ class AddEditProductDetailViewModel @Inject constructor(
     val productCategoryRecommendationLiveData = MutableLiveData<Result<List<ListItemUnify>>>()
 
     private val minProductPriceLimit = 100
-    private val maxProductPriceLimit = 500000000
-    private val minWholeSaleQuantity = 2
-    private val maxWholeSalePriceLimit = 500000000
+    private val maxProductPriceLimit = 100000000
+    private val maxWholeSalePriceLimit = 100000000
     private val minProductStockLimit = 1
     private val maxProductStockLimit = 999999
     private val minOrderQuantity = 1
@@ -209,9 +211,6 @@ class AddEditProductDetailViewModel @Inject constructor(
         if (wholeSaleQuantity == 0L) {
             provider.getZeroWholeSaleQuantityErrorMessage()?.let { return it }
         }
-        if (wholeSaleQuantity < minWholeSaleQuantity) {
-            provider.getMinLimitWholeSaleQuantityErrorMessage()?.let { return it }
-        }
         return ""
     }
 
@@ -228,7 +227,7 @@ class AddEditProductDetailViewModel @Inject constructor(
         }
         if (productPriceInput.isNotEmpty()) {
             val productPrice = productPriceInput.toLong()
-            if (wholeSalePrice > productPrice.toBigDecimal()) {
+            if (wholeSalePrice >= productPrice.toBigDecimal()) {
                 provider.getWholeSalePriceTooExpensiveErrorMessage()?.let { return it }
             }
         }

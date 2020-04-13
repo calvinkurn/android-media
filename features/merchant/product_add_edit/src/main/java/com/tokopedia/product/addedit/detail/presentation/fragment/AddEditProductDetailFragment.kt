@@ -177,11 +177,10 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     // product sku
     private var productSkuField: TextFieldUnify? = null
 
-    // button lanjut
-    private var continueButton: Button? = null
-
-    // button save
-    private var saveButton: Button? = null
+    // button continue
+    private var submitButton: ViewGroup? = null
+    private var submitTextView: AppCompatTextView? = null
+    private var submitLoadingIndicator: LoaderUnify? = null
 
     override fun getScreenName(): String {
         return getString(R.string.product_add_edit_detail)
@@ -314,7 +313,6 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             adapter = wholeSaleInputFormsAdapter
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         }
-        wholeSaleInputFormsAdapter?.addNewWholeSalePriceForm()
         addNewWholeSalePriceButton = view.findViewById(R.id.tv_add_new_wholesale_price)
         addNewWholeSalePriceButton?.setOnClickListener {
             wholeSaleInputFormsAdapter?.addNewWholeSalePriceForm()
@@ -383,11 +381,12 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         // add edit product sku views
         productSkuField = view.findViewById(R.id.tfu_sku)
 
-        // button 'lanjut'
-        continueButton = view.findViewById(R.id.btn_continue)
-
-        // button 'simpan'
-        saveButton = view.findViewById(R.id.btn_save)
+        // submit button
+        submitButton = view.findViewById(R.id.btn_submit)
+        submitTextView = view.findViewById(R.id.tv_submit_text)
+        submitLoadingIndicator = view.findViewById(R.id.lu_submit_loading_indicator)
+        if (viewModel.isEditing) submitTextView?.text = getString(R.string.action_save)
+        else submitTextView?.text = getString(R.string.action_continue)
 
         // fill the form with detail input model
         fillProductDetailForm(viewModel.detailInputModel)
@@ -498,30 +497,23 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             }
         })
 
-        continueButton?.setOnClickListener {
+        // Continue to add product description
+        submitButton?.setOnClickListener {
+            submitTextView?.hide()
+            submitLoadingIndicator?.show()
             validateInput()
             val isInputValid = viewModel.isInputValid.value
             isInputValid?.let {
                 if (it) {
-                    moveToDescriptionActivity()
+                    val isEditing = viewModel.isEditing
+                    // navigate to preview page
+                    if (isEditing) submitInputEdit()
+                    // navigate to description page
+                    else moveToDescriptionActivity()
                 }
             }
-        }
-
-        saveButton?.setOnClickListener {
-            validateInput()
-            val isInputValid = viewModel.isInputValid.value
-            isInputValid?.let {
-                if (it) {
-                    submitInputEdit()
-                }
-            }
-        }
-
-        // switch continue button to save button
-        if (viewModel.isEditing) {
-            saveButton?.visibility = View.VISIBLE
-            continueButton?.visibility = View.GONE
+            submitTextView?.show()
+            submitLoadingIndicator?.hide()
         }
 
         subscribeToProductNameInputStatus()
@@ -539,8 +531,6 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     private fun validateInput() {
 
         var requestedFocus = false
-
-        // input re-validation process in case the user click the button without entering the input
 
         // product photo validation
         productPhotoAdapter?.let { viewModel.validateProductPhotoInput(it.itemCount) }
@@ -565,6 +555,11 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                 productPriceField?.requestFocus()
                 requestedFocus = true
             }
+        }
+
+        // product wholesale input validation
+        viewModel.isWholeSalePriceActivated.value?.run {
+            if (this) validateWholeSaleInput(viewModel, productWholeSaleInputFormsView)
         }
 
         // product stock validation
@@ -673,7 +668,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
 
         productNameRecView?.hide()
 
-        viewModel.isProductRecommendationSelected = true
+        viewModel.isNameRecommendationSelected = true
 
         productNameField?.textFieldInput?.setText(productName)
 
@@ -740,6 +735,37 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         viewModel.productInputModel.detailInputModel.wholesaleList = getWholesaleInput()
     }
 
+    private fun validateWholeSaleInput(viewModel: AddEditProductDetailViewModel, wholesaleInputForms: RecyclerView?) {
+        wholesaleInputForms?.childCount?.let {
+            var wholeSaleErrorCounter = 0
+            for (index in 0 until it) {
+                val productWholeSaleFormView = wholesaleInputForms.layoutManager?.getChildAt(index)
+                // Minimum amount
+                val productWholeSaleQuantityField: TextFieldUnify? = productWholeSaleFormView?.findViewById(R.id.tfu_wholesale_quantity)
+                productWholeSaleQuantityField?.textFieldInput?.editableText?.run {
+                    val errorMessage = viewModel.validateProductWholeSaleQuantityInput(this.toString())
+                    productWholeSaleQuantityField.setError(errorMessage.isNotEmpty())
+                    productWholeSaleQuantityField.setMessage(errorMessage)
+                }
+                val isQuantityError = productWholeSaleQuantityField?.isTextFieldError
+                isQuantityError?.let { isError -> if (isError) wholeSaleErrorCounter++ }
+
+                // Product price
+                val productWholeSalePriceField: TextFieldUnify? = productWholeSaleFormView?.findViewById(R.id.tfu_wholesale_price)
+                productWholeSalePriceField?.textFieldInput?.editableText?.run {
+                    val wholeSalePriceInput = this.toString().replace(".", "")
+                    val productPriceInput = productPriceField?.textFieldInput?.editableText.toString().replace(".", "")
+                    val errorMessage = viewModel.validateProductWholeSalePriceInput(wholeSalePriceInput, productPriceInput)
+                    productWholeSalePriceField.setError(errorMessage.isNotEmpty())
+                    productWholeSalePriceField.setMessage(errorMessage)
+                }
+                val isPriceError = productWholeSalePriceField?.isTextFieldError
+                isPriceError?.let { isError -> if (isError) wholeSaleErrorCounter++ }
+            }
+            viewModel.wholeSaleErrorCounter.value = wholeSaleErrorCounter
+        }
+    }
+
     private fun updateWholeSaleErrorCounter(viewModel: AddEditProductDetailViewModel, wholesaleInputForms: RecyclerView?) {
         wholesaleInputForms?.childCount?.let {
             var wholeSaleErrorCounter = 0
@@ -758,16 +784,21 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
 
     private fun getWholesaleInput(): MutableList<WholeSaleInputModel> {
         val inputResult: ArrayList<WholeSaleInputModel> = ArrayList()
-        productWholeSaleInputFormsView?.childCount?.let {
-            for (index in 0 until it) {
-                val productWholeSaleFormView = productWholeSaleInputFormsView?.layoutManager?.getChildAt(index)
-                val productWholeSalePriceField: TextFieldUnify? = productWholeSaleFormView?.findViewById(R.id.tfu_wholesale_price)
-                val productWholeSaleQuantityField: TextFieldUnify? = productWholeSaleFormView?.findViewById(R.id.tfu_wholesale_quantity)
-                val item = WholeSaleInputModel(
-                        productWholeSalePriceField.getText(),
-                        productWholeSaleQuantityField.getText()
-                )
-                inputResult.add(item)
+        productWholeSaleSwitch?.isChecked?.run {
+            if (this) {
+                productWholeSaleInputFormsView?.childCount?.let {
+                    for (index in 0 until it) {
+                        val productWholeSaleFormView = productWholeSaleInputFormsView?.layoutManager?.getChildAt(index)
+                        val productWholeSalePriceField: TextFieldUnify? = productWholeSaleFormView?.findViewById(R.id.tfu_wholesale_price)
+                        val productWholeSaleQuantityField: TextFieldUnify? = productWholeSaleFormView?.findViewById(R.id.tfu_wholesale_quantity)
+                        val item = WholeSaleInputModel(
+                                productWholeSalePriceField.getText(),
+                                productWholeSaleQuantityField.getText()
+                        )
+                        inputResult.add(item)
+                    }
+                }
+
             }
         }
         return inputResult
@@ -801,9 +832,9 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         val wholesalePriceExist = detailInputModel.wholesaleList.isNotEmpty()
         if (wholesalePriceExist) {
             productWholeSaleSwitch?.isChecked = true
-            addNewWholeSalePrice(wholesaleInputs = detailInputModel.wholesaleList)
-            productWholeSaleInputLayout?.show()
-        }
+            wholeSaleInputFormsAdapter?.setWholeSaleInputModels(detailInputModel.wholesaleList)
+            viewModel.isWholeSalePriceActivated.value = true
+        } else wholeSaleInputFormsAdapter?.addNewWholeSalePriceForm()
 
         // product pre order
         val isPreOrder = detailInputModel.preorder.isActive
@@ -831,26 +862,22 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
 
     }
 
-    private fun addNewWholeSalePrice(wholesaleInputs: List<WholeSaleInputModel>) {
-        wholeSaleInputFormsAdapter?.addNewWholeSalePrice(wholesaleInputs)
-    }
-
     private fun subscribeToProductNameInputStatus() {
         viewModel.isProductNameInputError.observe(this, Observer {
             productNameField?.setError(it)
             productNameField?.setMessage(viewModel.productNameMessage)
             // if product name input has no issue
             if (!it) {
+                val productNameInput = productNameField?.getEditableValue().toString()
                 // prevent queries getting called from recursive name selection and clicked submit button
-                if (!viewModel.isProductRecommendationSelected && viewModel.isProductNameChanged) {
-                    val productNameInput = productNameField?.getEditableValue().toString()
+                if (!viewModel.isNameRecommendationSelected && viewModel.isProductNameChanged) {
                     // show product name recommendations
                     showProductNameLoadingIndicator()
                     productNameRecAdapter?.setProductNameInput(productNameInput)
                     viewModel.getProductNameRecommendation(query = productNameInput)
-                    // show category recommendations to the product has no variants
-                    if (!viewModel.hasVariants) viewModel.getCategoryRecommendation(productNameInput)
                 }
+                // show category recommendations to the product has no variants
+                if (!viewModel.hasVariants) viewModel.getCategoryRecommendation(productNameInput)
             } else {
                 // show empty recommendations for input with error
                 productNameRecAdapter?.setProductNameRecommendations(emptyList())
@@ -858,7 +885,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                 if (!viewModel.hasVariants) productCategoryRecListView?.setData(ArrayList(emptyList()))
             }
             // reset name selection status
-            viewModel.isProductRecommendationSelected = false
+            viewModel.isNameRecommendationSelected = false
         })
     }
 
@@ -910,8 +937,8 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
 
     private fun subscribeToInputStatus() {
         viewModel.isInputValid.observe(this, Observer {
-            if (it) enableContinueButton()
-            else disableContinueButton()
+            if (it) enableSubmitButton()
+            else disableSubmitButton()
         })
     }
 
@@ -980,16 +1007,16 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                 imagePickerMultipleSelectionBuilder)
     }
 
-    private fun enableContinueButton() {
-        continueButton?.isEnabled = true
-        continueButton?.setBackgroundResource(R.drawable.rect_green_solid)
-        context?.let { continueButton?.setTextColor(ContextCompat.getColor(it, android.R.color.white)) }
+    private fun enableSubmitButton() {
+        submitButton?.isClickable = true
+        submitButton?.setBackgroundResource(R.drawable.rect_green_solid)
+        context?.let { submitTextView?.setTextColor(ContextCompat.getColor(it, android.R.color.white)) }
     }
 
-    private fun disableContinueButton() {
-        continueButton?.isEnabled = false
-        continueButton?.setBackgroundResource(R.drawable.rect_grey_solid)
-        context?.let { continueButton?.setTextColor(ContextCompat.getColor(it, R.color.Neutral_N700_32)) }
+    private fun disableSubmitButton() {
+        submitButton?.isClickable = false
+        submitButton?.setBackgroundResource(R.drawable.rect_grey_solid)
+        context?.let { submitTextView?.setTextColor(ContextCompat.getColor(it, R.color.Neutral_N700_32)) }
     }
 
     private fun showDurationUnitOption() {
