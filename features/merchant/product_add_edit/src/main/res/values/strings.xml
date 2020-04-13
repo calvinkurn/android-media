@@ -171,8 +171,8 @@
 
     <!--Product Add Validation-->
     <string name="error_invalid_category_id">Kategori tidak valid</string>
-    <string name="error_invalid_photo_count">Produk tidak memiliki foto</string>
-    <string name="error_invalid_name">Nama produk tidak valid</string>
+    <string name="error_invalid_photo_count">Biar selesai, tambah foto dulu, ya!</string>
+    <string name="error_invalid_photo_reach_maximum">Foto produk maksimal 5. Cek kembali foto produkmu</string>
 
     <!-- id -->
     <item name="name" type="id" />

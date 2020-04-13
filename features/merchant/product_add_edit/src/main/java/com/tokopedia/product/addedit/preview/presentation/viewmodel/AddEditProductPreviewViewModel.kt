@@ -11,6 +11,7 @@ import com.tokopedia.product.addedit.description.data.remote.model.variantbycat.
 import com.tokopedia.product.addedit.description.domain.usecase.GetProductVariantUseCase
 import com.tokopedia.product.addedit.description.presentation.model.DescriptionInputModel
 import com.tokopedia.product.addedit.description.presentation.model.ProductVariantInputModel
+import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_PRODUCT_PHOTOS
 import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
 import com.tokopedia.product.addedit.draft.domain.usecase.GetProductDraftUseCase
 import com.tokopedia.product.addedit.mapper.mapDraftToProductInputModel
@@ -204,20 +205,25 @@ class AddEditProductPreviewViewModel @Inject constructor(
         var errorMessage = ""
         // validate category input
         if (detailInputModel.categoryId.isEmpty() || detailInputModel.categoryId == "0")  {
-            errorMessage += resourceProvider.getInvalidCategoryIdErrorMessage() + "\n"
+            errorMessage = resourceProvider.getInvalidCategoryIdErrorMessage() ?: ""
         }
 
-        // validate product name input
-        if (detailInputModel.productName.isEmpty())  {
-            errorMessage += resourceProvider.getInvalidNameErrorMessage() + "\n"
-        }
-
-        // validate images input
+        // validate images empty
         if (detailInputModel.imageUrlOrPathList.isEmpty())  {
-            errorMessage += resourceProvider.getInvalidPhotoCountErrorMessage()
+            errorMessage = resourceProvider.getInvalidPhotoCountErrorMessage() ?: ""
+        }
+
+        // validate images already reached limit
+        if (detailInputModel.imageUrlOrPathList.size > MAX_PRODUCT_PHOTOS)  {
+            errorMessage = resourceProvider.getInvalidPhotoReachErrorMessage() ?: ""
         }
 
         return errorMessage
+    }
+
+    fun validateProductInput(): String {
+        val detailInputModel = productInputModel.value?.detailInputModel ?: DetailInputModel()
+        return validateProductInput(detailInputModel)
     }
 
     fun getProductDraft(draftId: Long) {

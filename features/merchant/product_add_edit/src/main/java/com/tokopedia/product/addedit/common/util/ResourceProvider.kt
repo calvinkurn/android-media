@@ -154,8 +154,8 @@ class ResourceProvider @Inject constructor(@ApplicationContext val context: Cont
         return getString(R.string.error_invalid_photo_count)
     }
 
-    fun getInvalidNameErrorMessage(): String? {
-        return getString(R.string.error_invalid_name)
+    fun getInvalidPhotoReachErrorMessage(): String? {
+        return getString(R.string.error_invalid_photo_reach_maximum)
     }
 
 }

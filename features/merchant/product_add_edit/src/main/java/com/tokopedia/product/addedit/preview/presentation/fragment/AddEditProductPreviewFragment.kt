@@ -14,6 +14,7 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -261,26 +262,16 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
 
         doneButton?.setOnClickListener {
             updateImageList()
-            if (viewModel.isDuplicate) {
-                context?.apply {
-                    viewModel.productInputModel.value?.let { productInputModel ->
-                        AddEditProductDuplicateService.startService(
-                                context = this,
-                                detailInputModel = productInputModel.detailInputModel,
-                                descriptionInputModel = productInputModel.descriptionInputModel,
-                                shipmentInputModel = productInputModel.shipmentInputModel,
-                                variantInputModel = productInputModel.variantInputModel
-                        )
-                    }
+            ProductEditStepperTracking.trackFinishButton(shopId)
+            val validateMessage = viewModel.validateProductInput()
+            if (validateMessage.isEmpty()) {
+                if (viewModel.isDuplicate) {
+                    submitProductDuplicate()
+                } else if (viewModel.isEditing.value == true) {
+                    submitProductEdit()
                 }
-            } else if (viewModel.isEditing.value == true) {
-                ProductEditStepperTracking.trackFinishButton(shopId)
-                context?.apply {
-                    viewModel.productInputModel.value?.let { productInputModel ->
-                        AddEditProductEditService.startService(this,
-                                viewModel.getProductId(), productInputModel)
-                    }
-                }
+            } else {
+                Toaster.make(view, validateMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
             }
         }
 
@@ -348,6 +339,29 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
         observeProductInputModelFromDraft()
     }
 
+    private fun submitProductDuplicate() {
+        context?.apply {
+            viewModel.productInputModel.value?.let { productInputModel ->
+                AddEditProductDuplicateService.startService(
+                        context = this,
+                        detailInputModel = productInputModel.detailInputModel,
+                        descriptionInputModel = productInputModel.descriptionInputModel,
+                        shipmentInputModel = productInputModel.shipmentInputModel,
+                        variantInputModel = productInputModel.variantInputModel
+                )
+            }
+        }
+    }
+
+    private fun submitProductEdit() {
+        context?.apply {
+            viewModel.productInputModel.value?.let { productInputModel ->
+                AddEditProductEditService.startService(this,
+                        viewModel.getProductId(), productInputModel)
+            }
+        }
+    }
+
     @Suppress("UNCHECKED_CAST")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
@@ -387,8 +401,8 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
                             AddEditProductAddService.startService(it, detailInputModel,
                                 descriptionInputModel, shipmentInputModel, variantInputModel, viewModel.getDraftId())
                         } else {
-                            view?.let {
-                                Toaster.make(it, validateMessage, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR)
+                            view?.let { view ->
+                                Toaster.make(view, validateMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
                             }
                         }
                     }
