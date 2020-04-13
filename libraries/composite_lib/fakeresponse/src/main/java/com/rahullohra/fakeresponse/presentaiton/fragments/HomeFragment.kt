@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.rahullohra.fakeresponse.R
-import com.rahullohra.fakeresponse.ResponseListData
+import com.rahullohra.fakeresponse.data.models.ResponseListData
 import com.rahullohra.fakeresponse.data.diProvider.fragments.GqlFragmentProvider
 import com.rahullohra.fakeresponse.presentaiton.adapters.GqlRvAdapter
 import com.rahullohra.fakeresponse.presentaiton.livedata.Fail
@@ -42,7 +42,7 @@ class HomeFragment : BaseFragment() {
     override fun initVars() {
         dataList = ArrayList()
         adapter = GqlRvAdapter(dataList, itemClickCallback = { data, isChecked ->
-            viewModel.toggleGql(data, isChecked)
+            viewModel.toggleGql(data as ResponseListData, isChecked)
         })
     }
 

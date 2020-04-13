@@ -1,6 +1,7 @@
 package com.rahullohra.fakeresponse.db.dao
 
 import androidx.room.*
+import androidx.sqlite.db.SupportSQLiteQuery
 import com.rahullohra.fakeresponse.db.entities.GqlRecord
 
 
@@ -27,4 +28,7 @@ interface GqlDao {
 
     @Query("DELETE from GqlRecord")
     fun deleteAll()
+
+    @RawQuery
+    fun searchRecords(query: SupportSQLiteQuery):List<GqlRecord>
 }

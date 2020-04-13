@@ -1,6 +1,7 @@
 package com.rahullohra.fakeresponse.db.dao
 
 import androidx.room.*
+import androidx.sqlite.db.SupportSQLiteQuery
 import com.rahullohra.fakeresponse.db.entities.RestRecord
 
 @Dao
@@ -31,4 +32,7 @@ interface RestDao {
 
     @Query("DELETE from RestRecord")
     fun deleteAll()
+
+    @RawQuery
+    fun searchRecords(query: SupportSQLiteQuery): List<RestRecord>
 }

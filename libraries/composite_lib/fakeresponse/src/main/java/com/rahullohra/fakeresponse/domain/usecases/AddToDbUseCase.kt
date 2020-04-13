@@ -5,12 +5,12 @@ import com.rahullohra.fakeresponse.data.models.Either
 import com.rahullohra.fakeresponse.db.entities.GqlRecord
 import com.rahullohra.fakeresponse.domain.exceptions.EmptyException
 import com.rahullohra.fakeresponse.domain.exceptions.NoResponseException
-import com.rahullohra.fakeresponse.domain.repository.LocalRepository
+import com.rahullohra.fakeresponse.domain.repository.GqlRepository
 import com.rahullohra.fakeresponse.presentaiton.viewmodels.data.AddGqlData
 import java.util.*
 
 
-class AddToDbUseCase(val repository: LocalRepository) : BaseUseCase<LocalRepository>(repository) {
+class AddToDbUseCase(val repository: GqlRepository) : BaseUseCase<GqlRepository>(repository) {
 
     fun addToDb(data: AddGqlData): Long {
         validateData(data)

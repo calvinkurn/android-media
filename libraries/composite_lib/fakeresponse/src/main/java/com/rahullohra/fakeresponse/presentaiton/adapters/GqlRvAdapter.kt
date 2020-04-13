@@ -3,10 +3,11 @@ package com.rahullohra.fakeresponse.presentaiton.adapters
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.rahullohra.fakeresponse.ResponseListData
+import com.rahullohra.fakeresponse.data.models.ResponseListData
+import com.rahullohra.fakeresponse.data.models.SearchType
 import com.rahullohra.fakeresponse.presentaiton.viewholder.ResponseVH
 
-class GqlRvAdapter(val dataList: ArrayList<ResponseListData>, val itemClickCallback: (ResponseListData,Boolean) -> Unit) :
+class GqlRvAdapter(val dataList: ArrayList<ResponseListData>, val itemClickCallback: (SearchType, Boolean) -> Unit) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {

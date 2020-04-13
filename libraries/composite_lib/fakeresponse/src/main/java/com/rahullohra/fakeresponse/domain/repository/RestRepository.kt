@@ -1,5 +1,6 @@
 package com.rahullohra.fakeresponse.domain.repository
 
+import androidx.sqlite.db.SimpleSQLiteQuery
 import com.rahullohra.fakeresponse.db.dao.RestDao
 import com.rahullohra.fakeresponse.db.entities.RestRecord
 
@@ -21,7 +22,7 @@ class RestRepository(val dao: RestDao) : BaseRepository {
         return dao.toggle(restRecord, enable)
     }
 
-    fun getResponse(url: String, method:String, enable: Boolean): RestRecord {
+    fun getResponse(url: String, method: String, enable: Boolean): RestRecord {
         return dao.getRestResponse(url, method, enable)
     }
 
@@ -31,6 +32,36 @@ class RestRepository(val dao: RestDao) : BaseRepository {
 
     fun getResponse(id: Int): RestRecord {
         return dao.getRestResponse(id)
+    }
+
+    fun search(url: String?, tag: String? = null, response: String? = null): List<RestRecord> {
+
+        val items = arrayListOf<String>()
+
+        if (!tag.isNullOrEmpty()) {
+            items.add(" customTag LIKE '%$tag%' ")
+        }
+        if (!url.isNullOrEmpty()) {
+            items.add(" url LIKE '%$tag%' ")
+        }
+        if (!response.isNullOrEmpty()) {
+            items.add(" response LIKE '%$response%' ")
+        }
+
+        val queryBuilder = StringBuilder()
+        items.forEach {
+            if (!queryBuilder.isEmpty()) {
+                queryBuilder.append(" OR ")
+            }
+            queryBuilder.append(it)
+        }
+
+        if (queryBuilder.isEmpty()) {
+            return emptyList()
+        }
+
+        val query = SimpleSQLiteQuery("SELECT * FROM RestRecord WHERE $queryBuilder ORDER BY updatedAt DESC")
+        return dao.searchRecords(query = query)
     }
 
 }

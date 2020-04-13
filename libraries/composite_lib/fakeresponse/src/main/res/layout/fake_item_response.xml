@@ -4,19 +4,33 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingStart="10dp"
-    android:paddingEnd="10dp"
-    android:paddingBottom="10dp">
+    android:paddingStart="8dp"
+    android:paddingEnd="8dp"
+    android:paddingBottom="8dp">
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/imageCheck"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:background="@drawable/fake_grey_circle"
+        android:scaleType="centerInside"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/fake_ic_done" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/tvQueryName"
         style="@style/TextAppearance.AppCompat.Large"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
         android:layout_marginTop="10dp"
         android:fontFamily="sans-serif-medium"
         app:layout_constraintEnd_toStartOf="@id/cb"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@id/imageCheck"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="CatalogDetail" />
 
@@ -25,10 +39,12 @@
         style="@style/TextAppearance.AppCompat.Small"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
         android:layout_marginTop="10dp"
         android:fontFamily="sans-serif-medium"
         app:layout_constraintEnd_toStartOf="@id/cb"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@id/imageCheck"
         app:layout_constraintTop_toBottomOf="@id/tvQueryName"
         tools:text="Custom name" />
 

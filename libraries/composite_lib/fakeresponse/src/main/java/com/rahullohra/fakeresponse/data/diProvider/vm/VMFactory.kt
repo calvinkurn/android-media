@@ -46,7 +46,8 @@ class VMFactory(application: Application, val list: Array<Any>) :
         } else if (modelClass.isAssignableFrom(SearchViewModel::class.java)) {
             return SearchViewModel(
                     list[0] as CoroutineDispatcher,
-                    list[1] as ChuckSearchUseCase
+                    list[1] as ChuckSearchUseCase,
+                    list[2] as ShowRecordsUseCase
             ) as T
         }
         return super.create(modelClass)

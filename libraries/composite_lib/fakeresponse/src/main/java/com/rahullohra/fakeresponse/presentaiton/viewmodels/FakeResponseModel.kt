@@ -2,8 +2,7 @@ package com.rahullohra.fakeresponse.presentaiton.viewmodels
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.rahullohra.fakeresponse.ResponseItemType
-import com.rahullohra.fakeresponse.ResponseListData
+import com.rahullohra.fakeresponse.data.models.ResponseListData
 import com.rahullohra.fakeresponse.domain.usecases.ShowRecordsUseCase
 import com.rahullohra.fakeresponse.domain.usecases.UpdateGqlUseCase
 import com.rahullohra.fakeresponse.presentaiton.livedata.Fail

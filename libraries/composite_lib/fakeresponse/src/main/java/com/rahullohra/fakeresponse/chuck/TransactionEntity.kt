@@ -1,6 +1,8 @@
 package com.rahullohra.fakeresponse.chuck
 
+import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.rahullohra.fakeresponse.data.models.SearchType
 
 data class TransactionEntity(@SerializedName(TransactionEntityColumn.RESPONSE_BODY) val responseBody: String? = null,
                              @SerializedName(TransactionEntityColumn.REQUEST_BODY) val requestBody: String? = null,
@@ -13,8 +15,12 @@ data class TransactionEntity(@SerializedName(TransactionEntityColumn.RESPONSE_BO
                              @SerializedName(TransactionEntityColumn.URL) val url: String? = null,
                              @SerializedName(TransactionEntityColumn.REQUEST_DATE) val requestDate: Long? = null,
                              @SerializedName(TransactionEntityColumn.ID) val id: Long? = null,
-                             val isGql:Boolean = false
-)
+                             val isGql:Boolean = false,
+                             @Expose(serialize = false)
+                             var isSelectedForExport:Boolean = false,
+                             @Expose(serialize = false)
+                             var isInExportMode:Boolean = false
+): SearchType
 
 object TransactionEntityColumn {
     const val RESPONSE_BODY = "responseBody"

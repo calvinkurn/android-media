@@ -18,6 +18,8 @@ import com.rahullohra.fakeresponse.chuck.TransactionEntity
 import com.rahullohra.fakeresponse.chuck.presentation.adapters.SearchAdapter
 import com.rahullohra.fakeresponse.chuck.presentation.viewmodels.SearchViewModel
 import com.rahullohra.fakeresponse.data.diProvider.activities.SearchActivityProvider
+import com.rahullohra.fakeresponse.data.models.ResponseListData
+import com.rahullohra.fakeresponse.data.models.SearchType
 import com.rahullohra.fakeresponse.presentaiton.livedata.Fail
 import com.rahullohra.fakeresponse.presentaiton.livedata.Loading
 import com.rahullohra.fakeresponse.presentaiton.livedata.Success
@@ -28,6 +30,7 @@ class SearchActivity : AppCompatActivity() {
     lateinit var etResponse: TextInputEditText
     lateinit var etRequest: TextInputEditText
     lateinit var etUrl: TextInputEditText
+    lateinit var etTag: TextInputEditText
     lateinit var progressBar: ProgressBar
     lateinit var recyclerView: RecyclerView
     lateinit var viewFlipper: ViewFlipper
@@ -35,11 +38,12 @@ class SearchActivity : AppCompatActivity() {
 
     lateinit var viewModel: SearchViewModel
     lateinit var adapter: SearchAdapter
-    val searchList = arrayListOf<TransactionEntity>()
+    val searchList = arrayListOf<SearchType>()
 
     var responseText = ""
     var requestText = ""
     var urlText = ""
+    var tag = ""
 
     val CONTAINER_LIST = 0
     val CONTAINER_PROGRESS = 1
@@ -63,6 +67,7 @@ class SearchActivity : AppCompatActivity() {
         etResponse = findViewById(R.id.etResponse)
         etRequest = findViewById(R.id.etRequest)
         etUrl = findViewById(R.id.etUrl)
+        etTag = findViewById(R.id.etTag)
         progressBar = findViewById(R.id.progressBar)
         recyclerView = findViewById(R.id.rv)
         viewFlipper = findViewById(R.id.viewFlipper)
@@ -70,9 +75,10 @@ class SearchActivity : AppCompatActivity() {
 
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.VERTICAL))
-        adapter = SearchAdapter(searchList) {
-            openEditActivity(it)
-        }
+        adapter = SearchAdapter(searchList, {
+            openEditActivity(it as TransactionEntity)
+        }, { type, isChecked -> })
+
         recyclerView.adapter = adapter
     }
 
@@ -96,12 +102,20 @@ class SearchActivity : AppCompatActivity() {
             }
         })
 
+        etTag.addTextChangedListener(object : FakeResponseTextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+                tag = s?.toString() ?: ""
+                performSearch()
+            }
+        })
+
         viewModel.searchLiveData.observe(this, Observer {
             when (it) {
-                is Success<List<TransactionEntity>> -> {
+                is Success<Pair<List<TransactionEntity>, List<ResponseListData>>> -> {
                     viewFlipper.displayedChild = CONTAINER_LIST
                     searchList.clear()
-                    searchList.addAll(it.data)
+                    searchList.addAll(it.data.second)
+                    searchList.addAll(it.data.first)
                     adapter.notifyDataSetChanged()
 
                     if (searchList.isEmpty()) {
@@ -120,7 +134,7 @@ class SearchActivity : AppCompatActivity() {
     }
 
     fun performSearch() {
-        viewModel.search(responseBody = responseText, requestBody = requestText, url = urlText)
+        viewModel.search(responseBody = responseText, requestBody = requestText, url = urlText, tag = tag)
     }
 
     fun openEditActivity(transactionEntity: TransactionEntity) {

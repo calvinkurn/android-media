@@ -2,8 +2,8 @@ package com.rahullohra.fakeresponse.db.entities
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.rahullohra.fakeresponse.ResponseItemType
-import com.rahullohra.fakeresponse.ResponseListData
+import com.rahullohra.fakeresponse.data.models.ResponseItemType
+import com.rahullohra.fakeresponse.data.models.ResponseListData
 
 @Entity(tableName = "RestRecord")
 data class RestRecord(

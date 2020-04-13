@@ -4,12 +4,12 @@ import android.util.Log
 import com.rahullohra.fakeresponse.data.parsers.GetResultFromDaoUseCase
 import com.rahullohra.fakeresponse.data.parsers.ParserRuleProvider
 import com.rahullohra.fakeresponse.db.dao.GqlDao
-import com.rahullohra.fakeresponse.domain.repository.LocalRepository
+import com.rahullohra.fakeresponse.domain.repository.GqlRepository
 import org.json.JSONArray
 
 class GqlRequestBodyParser(gqlDao: GqlDao) : BodyParser {
     val parserRuleProvider = ParserRuleProvider()
-    val useCase = GetResultFromDaoUseCase(LocalRepository(gqlDao))
+    val useCase = GetResultFromDaoUseCase(GqlRepository(gqlDao))
 
     fun parse(requestBody: String): String? {
         try {

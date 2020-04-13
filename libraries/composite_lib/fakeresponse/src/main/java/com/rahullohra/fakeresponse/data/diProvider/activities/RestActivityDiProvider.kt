@@ -6,10 +6,8 @@ import com.rahullohra.fakeresponse.chuck.domain.repository.ChuckRepository
 import com.rahullohra.fakeresponse.chuck.domain.usecase.ChuckSearchUseCase
 import com.rahullohra.fakeresponse.data.diProvider.DiProvider
 import com.rahullohra.fakeresponse.data.diProvider.vm.VMFactory
-import com.rahullohra.fakeresponse.domain.repository.LocalRepository
 import com.rahullohra.fakeresponse.domain.repository.RestRepository
 import com.rahullohra.fakeresponse.domain.usecases.AddRestDaoUseCase
-import com.rahullohra.fakeresponse.domain.usecases.AddToDbUseCase
 import com.rahullohra.fakeresponse.presentaiton.activities.AddRestResponseActivity
 import com.rahullohra.fakeresponse.presentaiton.viewmodels.AddRestVM
 import kotlinx.coroutines.Dispatchers

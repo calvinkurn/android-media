@@ -1,17 +1,17 @@
 package com.rahullohra.fakeresponse.domain.usecases
 
-import com.rahullohra.fakeresponse.ResponseListData
+import com.rahullohra.fakeresponse.data.models.ResponseListData
 import com.rahullohra.fakeresponse.db.entities.toResponseListData
-import com.rahullohra.fakeresponse.domain.repository.LocalRepository
+import com.rahullohra.fakeresponse.domain.repository.GqlRepository
 import com.rahullohra.fakeresponse.domain.repository.RestRepository
 
-class ShowRecordsUseCase constructor(val repository: LocalRepository, val restRepository: RestRepository) :
-        BaseUseCase<LocalRepository>(repository) {
+class ShowRecordsUseCase constructor(val gqlRepository: GqlRepository, val restRepository: RestRepository) :
+        BaseUseCase<GqlRepository>(gqlRepository) {
 
     suspend fun getAllQueries(): List<ResponseListData> {
         val list = mutableListOf<ResponseListData>()
 
-        list.addAll(repository.getAllGql()
+        list.addAll(gqlRepository.getAllGql()
                 .mapNotNull { it.toResponseListData() })
 
         list.addAll(restRepository.getAll()
@@ -20,8 +20,17 @@ class ShowRecordsUseCase constructor(val repository: LocalRepository, val restRe
         return list
     }
 
+    fun search(url: String? = null, tag: String? = null, response: String? = null): List<ResponseListData> {
+        val list = mutableListOf<ResponseListData>()
+        list.addAll(gqlRepository.search(tag, response)
+                .mapNotNull { it.toResponseListData() })
+        list.addAll(restRepository.search(url, tag, response)
+                .mapNotNull { it.toResponseListData() })
+        return list
+    }
+
     suspend fun deleteAllRecords() {
-        repository.deleteAllRecords()
+        gqlRepository.deleteAllRecords()
         restRepository.deleteAllRecords()
     }
 }

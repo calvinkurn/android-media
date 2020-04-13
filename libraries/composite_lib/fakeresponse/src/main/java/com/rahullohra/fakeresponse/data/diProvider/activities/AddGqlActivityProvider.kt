@@ -6,7 +6,7 @@ import com.rahullohra.fakeresponse.chuck.domain.repository.ChuckRepository
 import com.rahullohra.fakeresponse.chuck.domain.usecase.ChuckSearchUseCase
 import com.rahullohra.fakeresponse.data.diProvider.DiProvider
 import com.rahullohra.fakeresponse.data.diProvider.vm.VMFactory
-import com.rahullohra.fakeresponse.domain.repository.LocalRepository
+import com.rahullohra.fakeresponse.domain.repository.GqlRepository
 import com.rahullohra.fakeresponse.domain.usecases.AddToDbUseCase
 import com.rahullohra.fakeresponse.presentaiton.activities.AddGqlActivity
 import com.rahullohra.fakeresponse.presentaiton.viewmodels.AddGqlVM
@@ -19,7 +19,7 @@ class AddGqlActivityProvider :
         val workerDispatcher = Dispatchers.IO
 
         val gqlDao = getDatabase(t).gqlDao()
-        val localRepository = LocalRepository(gqlDao)
+        val localRepository = GqlRepository(gqlDao)
         val addToDbUseCase = AddToDbUseCase(localRepository)
 
         val chuckRepository = ChuckRepository(ChuckDBConnector.getDatabase(t))
