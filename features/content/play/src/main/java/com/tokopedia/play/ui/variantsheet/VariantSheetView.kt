@@ -14,6 +14,7 @@ import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.play.R
@@ -25,7 +26,9 @@ import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.ProductLineUiModel
 import com.tokopedia.play.view.uimodel.VariantPlaceholderUiModel
 import com.tokopedia.play.view.uimodel.VariantSheetUiModel
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.variant_common.model.ProductVariantCommon
 import com.tokopedia.variant_common.model.VariantOptionWithAttribute
 import com.tokopedia.variant_common.util.VariantCommonMapper
@@ -62,6 +65,7 @@ class VariantSheetView(
     private val globalError: GlobalError = view.findViewById(R.id.global_error_variant)
 
     private val imageRadius = view.resources.getDimensionPixelSize(R.dimen.play_product_line_image_radius).toFloat()
+    private val toasterMargin  =  view.resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl5)
     private val bottomSheetBehavior = BottomSheetBehavior.from(view)
 
     private val variantAdapter: VariantAdapter = VariantAdapter(this)
@@ -223,6 +227,27 @@ class VariantSheetView(
         globalError.setType(
                 if (isConnectionError) GlobalError.NO_CONNECTION else GlobalError.SERVER_ERROR
         )
+    }
+
+    internal fun showToaster(toasterType: Int, message: String = "", actionText: String?, actionListener: View.OnClickListener?) {
+        Toaster.toasterCustomBottomHeight = btnAction.height + toasterMargin
+
+        if (actionText != null && actionListener != null) {
+            Toaster.make(
+                    view,
+                    message,
+                    type = toasterType,
+                    actionText = actionText,
+                    clickListener = actionListener
+            )
+        } else {
+            Toaster.make(
+                    view,
+                    message,
+                    Snackbar.LENGTH_LONG,
+                    type = toasterType)
+        }
+
     }
 
     private fun setProduct(product: ProductLineUiModel) {

@@ -47,8 +47,9 @@ class ProductMerchantVoucherViewHolder(val view: View, val listener: DynamicProd
 
                     override fun onVoucherItemImpressed(merchantVoucherViewModel: MerchantVoucherViewModel, voucherPosition: Int) {}
                 })
-
-                element.shouldRenderInitialData = false
+                if (it.isNotEmpty()) {
+                    element.shouldRenderInitialData = false
+                }
             }
         }
     }
