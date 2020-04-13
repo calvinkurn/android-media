@@ -25,6 +25,10 @@ import java.util.concurrent.TimeUnit
 class PartialSnapshotView(private val view: View,
                           private val listener: DynamicProductDetailListener) {
 
+    companion object{
+        const val ONE_SECOND = 1000L
+    }
+
     fun renderData(product: DynamicProductInfoP1, nearestWarehouseStockWording: String) = with(view) {
         val data = product.data
         val basic = product.basic
@@ -178,7 +182,7 @@ class PartialSnapshotView(private val view: View,
     private fun showCountDownTimer(campaign: CampaignModular) = with(view) {
         try {
             val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
-            val endDateTimeMs = campaign.getEndDataInt * PartialHeaderView.ONE_SECOND
+            val endDateTimeMs = campaign.getEndDataInt * ONE_SECOND
             val now = System.currentTimeMillis()
             val endDate = dateFormat.parse(campaign.endDate)
             val delta = endDate.time - endDateTimeMs
