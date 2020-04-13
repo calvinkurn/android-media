@@ -55,4 +55,8 @@ object ApplinkConstInternalSellerapp {
     @JvmField
     val CENTRALIZED_PROMO = "$INTERNAL_SELLERAPP/centralized-promo"
 
+    //MenuSettingActivity
+    @JvmField
+    val MENU_SETTING = "$INTERNAL_SELLERAPP/menu-setting"
+
 }

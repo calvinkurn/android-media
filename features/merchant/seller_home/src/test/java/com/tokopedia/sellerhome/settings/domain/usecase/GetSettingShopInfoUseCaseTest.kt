@@ -60,7 +60,8 @@ class GetSettingShopInfoUseCaseTest {
                                 )
                         ),
                         balance = Balance(
-                                sellerBalance = "Rp123.456"
+                                sellerBalance = 100000f,
+                                buyerBalance = 100000f
                         )
                 )
 

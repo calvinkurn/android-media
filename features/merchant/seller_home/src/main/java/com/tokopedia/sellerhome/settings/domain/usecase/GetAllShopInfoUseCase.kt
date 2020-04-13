@@ -83,7 +83,7 @@ class GetAllShopInfoUseCase @Inject constructor(
                     info?.shopName.toEmptyStringIfNull(),
                     info?.shopAvatar.toEmptyStringIfNull(),
                     shopStatusType,
-                    shopInfo.balance?.sellerBalance ?: "",
+                    shopInfo.balance?.totalBalance ?: "",
                     topAdsBalance.getCurrencyFormatted(),
                     isTopAdsAutoTopup,
                     shopBadge,
