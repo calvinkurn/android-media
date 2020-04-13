@@ -4,67 +4,95 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.view.View
-import android.view.WindowManager
-import android.widget.ImageView
-import android.widget.TextView
-import androidx.appcompat.widget.Toolbar
-import androidx.core.content.ContextCompat
+import android.os.Handler
+import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.base.view.appupdate.AppUpdateDialogBuilder
-import com.tokopedia.abstraction.base.view.appupdate.ApplicationUpdate
-import com.tokopedia.abstraction.base.view.appupdate.model.DetailUpdate
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import com.google.android.material.bottomnavigation.LabelVisibilityMode
+import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.base.view.activity.BaseActivity
+import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
-import com.tokopedia.graphql.domain.GraphqlUseCase
-import com.tokopedia.sellerhome.common.ShopStatus
+import com.tokopedia.kotlin.extensions.view.requestStatusBarDark
+import com.tokopedia.sellerhome.R
+import com.tokopedia.sellerhome.analytic.NavigationTracking
+import com.tokopedia.sellerhome.analytic.TrackingConstant
+import com.tokopedia.sellerhome.common.DeepLinkHandler
+import com.tokopedia.sellerhome.common.FragmentType
+import com.tokopedia.sellerhome.common.PageFragment
+import com.tokopedia.sellerhome.common.appupdate.UpdateCheckerHelper
+import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
+import com.tokopedia.sellerhome.settings.view.fragment.OtherMenuFragment
+import com.tokopedia.sellerhome.view.StatusBarCallback
+import com.tokopedia.sellerhome.view.fragment.ContainerFragment
 import com.tokopedia.sellerhome.view.fragment.SellerHomeFragment
-import com.tokopedia.sellerhomedrawer.R
-import com.tokopedia.sellerhomedrawer.data.GoldGetPmOsStatus
-import com.tokopedia.sellerhomedrawer.data.ShopStatusModel
-import com.tokopedia.sellerhomedrawer.data.constant.SellerHomeState
-import com.tokopedia.sellerhomedrawer.domain.firebase.SellerFirebaseRemoteAppUpdate
-import com.tokopedia.sellerhomedrawer.domain.usecase.FlashSaleGetSellerStatusUseCase
-import com.tokopedia.sellerhomedrawer.domain.usecase.GetShopStatusUseCase
-import com.tokopedia.sellerhomedrawer.presentation.view.BaseSellerReceiverDrawerActivity
-import com.tokopedia.sellerhomedrawer.presentation.view.SellerHomeDashboardContract
-import com.tokopedia.sellerhomedrawer.presentation.view.presenter.SellerHomeDashboardDrawerPresenter
-import com.tokopedia.user.session.UserSession
+import com.tokopedia.sellerhome.view.model.NotificationCenterUnreadUiModel
+import com.tokopedia.sellerhome.view.model.NotificationChatUiModel
+import com.tokopedia.sellerhome.view.model.NotificationSellerOrderStatusUiModel
+import com.tokopedia.sellerhome.view.viewmodel.SellerHomeActivityViewModel
+import com.tokopedia.sellerhome.view.viewmodel.SharedViewModel
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.android.synthetic.main.activity_sah_seller_home.*
+import javax.inject.Inject
 
-class SellerHomeActivity: BaseSellerReceiverDrawerActivity(), SellerHomeDashboardContract.View,
-        SellerHomeFragment.PageRefreshListener {
+class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener {
 
     companion object {
         @JvmStatic
         fun createIntent(context: Context) = Intent(context, SellerHomeActivity::class.java)
+
+        private const val DOUBLE_TAB_EXIT_DELAY = 2000L
     }
 
-    private val sellerHomeFragment by lazy { SellerHomeFragment.newInstance() }
-    private var sellerHomeDashboardDrawerPresenter: SellerHomeDashboardDrawerPresenter? = null
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
-    override val isSellerHome: Boolean
-        get() = true
+    @Inject
+    lateinit var viewModelFactory: ViewModelFactory
+
+    private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
+    private val homeViewModel by lazy { viewModelProvider.get(SellerHomeActivityViewModel::class.java) }
+    private val sharedViewModel by lazy { viewModelProvider.get(SharedViewModel::class.java) }
+
+    private val handler = Handler() //create handler to make sure when showing fragment is on UI thread
+    private val containerFragment by lazy {
+        ContainerFragment.newInstance().apply {
+            setSellerHomeListener(this@SellerHomeActivity)
+        }
+    }
+
+    private val otherSettingsFragment by lazy {
+        OtherMenuFragment.createInstance()
+    }
+
+    private var currentSelectedMenu = 0
+    private var canExitApp = false
+    private var lastProductMangePage = PageFragment(FragmentType.PRODUCT)
+    private var lastSomTab = PageFragment(FragmentType.ORDER) //by default show tab "Semua Pesanan"
+
+    private var statusBarCallback: StatusBarCallback? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_sah_seller_home)
 
         initInjector()
-        checkAppUpdate()
-
-        sellerHomeFragment.setOnPageRefreshedListener(this)
-    }
-
-    override fun getNewFragment(): Fragment? {
-        return sellerHomeFragment
+        setupBottomNav()
+        setupDefaultPage(savedInstanceState)
+        UpdateCheckerHelper.checkAppUpdate(this)
+        observeNotificationsLiveData()
+        observeShopInfoLiveData()
+        observeCurrentSelectedPageLiveData()
+        setupStatusBar()
     }
 
     override fun onResume() {
-        sellerHomeDashboardDrawerPresenter?.attachView(this)
         super.onResume()
+        homeViewModel.getNotifications()
 
         if (!userSession.isLoggedIn) {
             RouteManager.route(this, ApplinkConstInternalSellerapp.WELCOME)
@@ -75,149 +103,174 @@ class SellerHomeActivity: BaseSellerReceiverDrawerActivity(), SellerHomeDashboar
         }
     }
 
-    override fun setDrawerPosition(): Int {
-        return SellerHomeState.DrawerPosition.SELLER_INDEX_HOME
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        handleAppLink(intent)
     }
 
-    override fun onSuccessGetFlashSaleSellerStatus(isVisible: Boolean) {
-        val sellerDrawerAdapter = sellerDrawerHelper.sellerDrawerAdapter
-        if (isVisible != sellerDrawerAdapter?.isFlashSaleVisible) {
-            sellerDrawerAdapter?.isFlashSaleVisible = isVisible
-            findViewById<RecyclerView>(R.id.left_drawer).post {
-                sellerDrawerAdapter?.renderFlashSaleDrawer()
-            }
+    override fun onBackPressed() {
+        doubleTapToExit()
+    }
+
+    override fun getShopInfo() {
+        homeViewModel.getShopInfo()
+    }
+
+    fun attachCallback(callback: StatusBarCallback) {
+        statusBarCallback = callback
+    }
+
+    private fun setupDefaultPage(savedInstanceState: Bundle?) {
+        if (null == savedInstanceState) {
+            val homePage = PageFragment(FragmentType.HOME)
+            sharedViewModel.setCurrentSelectedPage(homePage)
+            showFragment(containerFragment)
+        } else {
+            handleAppLink(intent)
         }
     }
 
-    override fun onPause() {
-        super.onPause()
-        sellerHomeDashboardDrawerPresenter?.unsubscribe()
+    private fun handleAppLink(intent: Intent?) {
+        DeepLinkHandler.handleAppLink(intent) { page ->
+            when(page.type) {
+                FragmentType.ORDER -> lastSomTab = page
+                FragmentType.PRODUCT -> lastProductMangePage = page
+            }
+            sharedViewModel.setCurrentSelectedPage(page)
+        }
     }
 
-    override fun onRefreshPage() {
-        updateDrawerData()
+    private fun doubleTapToExit() {
+        if (canExitApp) {
+            finish()
+        } else {
+            canExitApp = true
+            Toast.makeText(this, R.string.sah_exit_message, Toast.LENGTH_SHORT).show()
+            Handler().postDelayed({
+                canExitApp = false
+            }, DOUBLE_TAB_EXIT_DELAY)
+        }
     }
 
-    private fun checkAppUpdate() {
-        val appUpdate: ApplicationUpdate = SellerFirebaseRemoteAppUpdate(this)
-        appUpdate.checkApplicationUpdate(object : ApplicationUpdate.OnUpdateListener {
-            override fun onNeedUpdate(detail: DetailUpdate?) {
-                if (detail != null && !isFinishing) {
-                    AppUpdateDialogBuilder(
-                            this@SellerHomeActivity,
-                            detail,
-                            object : AppUpdateDialogBuilder.Listener {
-                                override fun onPositiveButtonClicked(detail: DetailUpdate?) {
+    private fun initInjector() {
+        DaggerSellerHomeComponent.builder()
+                .baseAppComponent((applicationContext as BaseMainApplication).baseAppComponent)
+                .build()
+                .inject(this)
+    }
 
-                                }
+    private fun setupBottomNav() {
+        sahBottomNav.itemIconTintList = null
+        sahBottomNav.labelVisibilityMode = LabelVisibilityMode.LABEL_VISIBILITY_LABELED
+        sahBottomNav.setOnNavigationItemSelectedListener { menu ->
+            when (menu.itemId) {
+                R.id.menu_sah_home -> showContainerFragment(PageFragment(FragmentType.HOME), TrackingConstant.CLICK_HOME)
+                R.id.menu_sah_product -> showContainerFragment(lastProductMangePage, TrackingConstant.CLICK_PRODUCT)
+                R.id.menu_sah_chat -> showContainerFragment(PageFragment(FragmentType.CHAT), TrackingConstant.CLICK_CHAT)
+                R.id.menu_sah_order -> showContainerFragment(lastSomTab, TrackingConstant.CLICK_ORDER)
+                R.id.menu_sah_other -> showOtherSettingsFragment()
+            }
+            return@setOnNavigationItemSelectedListener true
+        }
+    }
 
-                                override fun onNegativeButtonClicked(detail: DetailUpdate?) {
+    private fun showContainerFragment(page: PageFragment, trackingAction: String) {
+        if (currentSelectedMenu == page.type) return
+        currentSelectedMenu = page.type
 
-                                }
-                            }).alertDialog.show()
+        setupStatusBar()
+        sharedViewModel.setCurrentSelectedPage(page)
+        showFragment(containerFragment)
+        resetPages(page)
+
+        NavigationTracking.sendClickBottomNavigationMenuEvent(trackingAction)
+    }
+
+    private fun resetPages(page: PageFragment) {
+        when(page.type) {
+            FragmentType.PRODUCT -> lastProductMangePage = PageFragment(FragmentType.PRODUCT)
+            FragmentType.ORDER -> lastSomTab = PageFragment(FragmentType.ORDER)
+        }
+    }
+
+    private fun showOtherSettingsFragment() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            statusBarCallback?.setStatusBar()
+        }
+        val type = FragmentType.OTHER
+        if (currentSelectedMenu == type) return
+        currentSelectedMenu = type
+
+        showFragment(otherSettingsFragment)
+        sharedViewModel.setCurrentSelectedPage(PageFragment(type))
+
+        NavigationTracking.sendClickBottomNavigationMenuEvent(TrackingConstant.CLICK_OTHERS)
+    }
+
+    private fun showFragment(fragment: Fragment) {
+        handler.post {
+            val fragmentName = fragment.javaClass.name
+            val manager = supportFragmentManager
+            val transaction = manager.beginTransaction()
+            val isFragmentHasAttached = null != manager.findFragmentByTag(fragmentName)
+
+            if (isFragmentHasAttached && manager.fragments.isNotEmpty()) {
+                manager.fragments.forEach { fmt ->
+                    if (fmt.javaClass.name == fragmentName) {
+                        transaction.show(fmt)
+                    } else {
+                        transaction.hide(fmt)
+                    }
                 }
+            } else {
+                transaction.add(R.id.sahContainer, fragment, fragmentName)
             }
+            transaction.commitNowAllowingStateLoss()
+        }
+    }
 
-            override fun onError(e: Exception?) {
-                e?.printStackTrace()
-            }
+    private fun observeCurrentSelectedPageLiveData() {
+        sharedViewModel.currentSelectedPage.observe(this, Observer {
+            sahBottomNav.currentItem = it.type
+            statusBarCallback?.setCurrentFragmentType(it.type)
+        })
+    }
 
-            override fun onNotNeedUpdate() {
-
+    private fun observeNotificationsLiveData() {
+        homeViewModel.notifications.observe(this, Observer {
+            if (it is Success) {
+                showNotificationBadge(it.data.notifCenterUnread)
+                showChatNotificationCounter(it.data.chat)
+                showOrderNotificationCounter(it.data.sellerOrderStatus)
             }
         })
     }
 
-    override fun onSuccessGetShopInfo(goldGetPmOsStatus: GoldGetPmOsStatus) {
-        val shopStatusModel = goldGetPmOsStatus.result.data
-        val sellerDrawerAdapter = sellerDrawerHelper.sellerDrawerAdapter
-        val isGoldMerchant = shopStatusModel.isPowerMerchantActive()
-        val isOfficialStore = shopStatusModel.isOfficialStore()
-        sellerDrawerAdapter?.isGoldMerchant = isGoldMerchant
-        sellerDrawerAdapter?.isOfficialStore = isOfficialStore
-        userSession.setIsGoldMerchant(isGoldMerchant)
-        setShopStatus(shopStatusModel)
-    }
-
-    private fun setShopStatus(shopStatus: ShopStatusModel) {
-        val mShopStatus: ShopStatus = when {
-            shopStatus.isOfficialStore() -> ShopStatus.OFFICIAL_STORE
-            shopStatus.isPowerMerchantActive() || shopStatus.isPowerMerchantIdle() -> ShopStatus.POWER_MERCHANT
-            else -> ShopStatus.REGULAR_MERCHANT
-        }
-
-        sellerHomeFragment.setShopStatus(mShopStatus)
-    }
-
-    override fun updateDrawerData() {
-        if (userSession.isLoggedIn) {
-            setDataDrawer()
-            getDrawerSellerAttrUseCase(userSession)
-            sellerHomeDashboardDrawerPresenter?.getFlashSaleSellerStatus()
-            sellerHomeDashboardDrawerPresenter?.isGoldMerchantAsync()
-        }
-
-    }
-
-    private fun getDrawerSellerAttrUseCase(userSession: UserSessionInterface) {
-        drawerDataManager?.getSellerUserAttributes(userSession)
-    }
-
-    private fun initInjector() {
-        //Dagger injecting still fails, will do manual instantiation
-        val userSession: UserSessionInterface = UserSession(this)
-        val graphqlUseCase = GraphqlUseCase()
-        val getShopStatusUseCase = GetShopStatusUseCase(graphqlUseCase, GraphqlHelper.loadRawString(resources, R.raw.gold_merchant_status))
-        val flashSaleGetSellerStatusUseCase = FlashSaleGetSellerStatusUseCase(graphqlUseCase)
-        sellerHomeDashboardDrawerPresenter = SellerHomeDashboardDrawerPresenter(getShopStatusUseCase, flashSaleGetSellerStatusUseCase, userSession, this)
-
-        sellerHomeDashboardDrawerPresenter?.attachView(this)
-    }
-
-    override fun setupToolbar() {
-        toolbar.apply {
-            removeAllViews()
-            initNotificationMenu()
-            initTitle()
-        }
-        setSupportActionBar(toolbar)
-        supportActionBar?.apply {
-            setDisplayShowCustomEnabled(true)
-            setDisplayHomeAsUpEnabled(false)
-            setDisplayShowTitleEnabled(false)
-            setHomeButtonEnabled(false)
-        }
-    }
-
-    override fun setupDrawerStatusBar() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            window.apply {
-                addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
-                decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
-                statusBarColor = ContextCompat.getColor(context, com.tokopedia.design.R.color.white_95)
+    private fun observeShopInfoLiveData() {
+        homeViewModel.shopInfo.observe(this, Observer {
+            if (it is Success) {
+                containerFragment.showShopName(it.data.shopName)
             }
+        })
+        homeViewModel.getShopInfo()
+    }
+
+    private fun showNotificationBadge(notifCenter: NotificationCenterUnreadUiModel) {
+        containerFragment.showNotifCenterBadge(notifCenter)
+    }
+
+    private fun showChatNotificationCounter(chat: NotificationChatUiModel) {
+        sahBottomNav.setNotification(chat.unreadsSeller, FragmentType.CHAT)
+    }
+
+    private fun showOrderNotificationCounter(orderStatus: NotificationSellerOrderStatusUiModel) {
+        val notificationCount = orderStatus.newOrder.plus(orderStatus.readyToShip)
+        sahBottomNav.setNotification(notificationCount, FragmentType.ORDER)
+    }
+
+    private fun setupStatusBar() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            this.requestStatusBarDark()
         }
     }
-
-    override fun setToolbarTitle(title: String) {
-        toolbar.findViewById<TextView>(R.id.actionbar_title).text = title
-    }
-
-    override fun Toolbar.initNotificationMenu() {
-        val notif = layoutInflater.inflate(R.layout.sh_custom_actionbar_drawer_notification, null)
-        val drawerToggle = notif.findViewById<ImageView>(R.id.toggle_but_ab)
-        drawerToggle.setOnClickListener {
-            if (sellerDrawerHelper.isOpened())
-                sellerDrawerHelper.closeDrawer()
-            else sellerDrawerHelper.openDrawer()
-        }
-        this.addView(notif)
-        this.navigationIcon = null
-    }
-
-    override fun Toolbar.initTitle() {
-        toolbarTitle = layoutInflater.inflate(R.layout.sh_custom_action_bar_title, null)
-        this.addView(toolbarTitle)
-    }
-
 }

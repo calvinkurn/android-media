@@ -13,16 +13,32 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.product.manage.R
-import com.tokopedia.product.manage.feature.list.di.ProductManageListComponent
+import com.tokopedia.product.manage.feature.list.di.ProductManageListInstance
 import com.tokopedia.product.manage.item.main.base.view.service.UploadProductService
 import com.tokopedia.product.manage.oldlist.constant.DRAFT_PRODUCT
 import com.tokopedia.product.manage.oldlist.utils.ProductManageTracking
 import com.tokopedia.product.manage.oldlist.view.listener.ProductDraftListCountView
 import com.tokopedia.product.manage.oldlist.view.presenter.ProductDraftListCountPresenter
+import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterMapper
+import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterOption
 import kotlinx.android.synthetic.main.fragment_product_manage_seller.*
+import java.util.ArrayList
 import javax.inject.Inject
 
 class ProductManageSellerFragment : ProductManageFragment(), ProductDraftListCountView {
+
+    companion object {
+        private const val FILTER_OPTIONS = "filter_options"
+
+        @JvmStatic
+        fun newInstance(filterOptions: ArrayList<String>): ProductManageSellerFragment {
+            return ProductManageSellerFragment().apply {
+                arguments = Bundle().apply {
+                    putStringArrayList(FILTER_OPTIONS, filterOptions)
+                }
+            }
+        }
+    }
 
     private lateinit var draftBroadCastReceiver: BroadcastReceiver
 
@@ -60,10 +76,18 @@ class ProductManageSellerFragment : ProductManageFragment(), ProductDraftListCou
         checkLogin()
         super.onViewCreated(view, savedInstanceState)
         tvDraftProduct.visibility = View.GONE
+        getDefaultFilterOptionsFromArguments()
+    }
+
+    private fun getDefaultFilterOptionsFromArguments() {
+        val filterOptionKeys: List<String> = arguments?.getStringArrayList(FILTER_OPTIONS).orEmpty()
+        val filterOptions: List<FilterOption> = FilterMapper.mapKeysToFilterOptionList(filterOptionKeys)
+        super.setDefaultFilterOptions(filterOptions)
     }
 
     override fun initInjector() {
-        getComponent(ProductManageListComponent::class.java).inject(this)
+        ProductManageListInstance.getComponent((requireActivity().application))
+                .inject(this)
         productDraftListCountPresenter.attachView(this)
     }
 

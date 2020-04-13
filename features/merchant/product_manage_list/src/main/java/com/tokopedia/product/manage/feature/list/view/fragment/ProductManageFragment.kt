@@ -144,6 +144,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     private val stockInfoBottomSheet by lazy { StockInformationBottomSheet(view, fragmentManager) }
 
     private val productManageListAdapter by lazy { adapter as ProductManageListAdapter }
+    private var defaultFilterOptions: List<FilterOption> = emptyList()
     private var itemsChecked: MutableList<ProductViewModel> = mutableListOf()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -281,6 +282,24 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         } else {
             SearchEmptyModel
         }
+    }
+
+    //set filter options if filterOptions is not null or empty
+    private fun setDefaultFilterOption() {
+        if (defaultFilterOptions.isNotEmpty()) {
+            val filterOptionsWrapper = FilterOptionWrapper(
+                    sortOption = null,
+                    filterOptions = defaultFilterOptions,
+                    filterShownState = listOf(true, true, false, true)
+            )
+            viewModel.setFilterOptionWrapper(filterOptionsWrapper)
+
+            defaultFilterOptions = emptyList()
+        }
+    }
+
+    fun setDefaultFilterOptions(filterOptions: List<FilterOption>) {
+        defaultFilterOptions = filterOptions
     }
 
     private fun showProductEmptyState(): Boolean {
@@ -504,6 +523,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         val hasNextPage = productList.isNotEmpty()
         renderProductList(productList, hasNextPage)
         renderSelectAllCheckBox()
+        setDefaultFilterOption()
     }
 
     private fun renderMultiSelectProduct() {

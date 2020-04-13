@@ -32,6 +32,7 @@ import com.tokopedia.kotlin.extensions.getCalculatedFormattedDate
 import com.tokopedia.kotlin.extensions.toFormattedString
 import com.tokopedia.kotlin.extensions.view.loadImageDrawable
 import com.tokopedia.sellerorder.R
+import com.tokopedia.sellerorder.SomComponentInstance
 import com.tokopedia.sellerorder.analytics.SomAnalytics
 import com.tokopedia.sellerorder.analytics.SomAnalytics.eventClickButtonPeluangInEmptyState
 import com.tokopedia.sellerorder.analytics.SomAnalytics.eventClickOrder
@@ -61,6 +62,7 @@ import com.tokopedia.sellerorder.list.data.model.SomListFilter
 import com.tokopedia.sellerorder.list.data.model.SomListOrder
 import com.tokopedia.sellerorder.list.data.model.SomListOrderParam
 import com.tokopedia.sellerorder.list.data.model.SomListTicker
+import com.tokopedia.sellerorder.list.di.DaggerSomListComponent
 import com.tokopedia.sellerorder.list.di.SomListComponent
 import com.tokopedia.sellerorder.list.presentation.activity.SomFilterActivity
 import com.tokopedia.sellerorder.list.presentation.adapter.SomListItemAdapter
@@ -149,7 +151,12 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     override fun getScreenName(): String = ""
 
     override fun initInjector() {
-        getComponent(SomListComponent::class.java).inject(this)
+        activity?.let {
+            DaggerSomListComponent.builder()
+                    .somComponent(SomComponentInstance.getSomComponent(it.application))
+                    .build()
+                    .inject(this)
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -573,8 +580,8 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         order_list_rv.visibility = View.GONE
         empty_state_order_list.visibility = View.VISIBLE
         title_empty?.text = getString(R.string.empty_peluang_title)
-        desc_empty?.text = getString(R.string.empty_peluang_desc)
-        btn_cek_peluang?.visibility = View.VISIBLE
+        desc_empty?.text = ""
+        btn_cek_peluang?.visibility = View.GONE
         btn_cek_peluang?.setOnClickListener {
             eventClickButtonPeluangInEmptyState(tabActive)
             startActivity(RouteManager.getIntent(context, ApplinkConstInternalOrder.OPPORTUNITY))

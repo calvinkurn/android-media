@@ -51,6 +51,7 @@ import com.tokopedia.sellerorder.common.util.SomConsts.EXTRA_URL_UPLOAD
 import com.tokopedia.sellerorder.common.util.SomConsts.INPUT_ORDER_ID
 import com.tokopedia.sellerorder.common.util.SomConsts.INPUT_SHIPPING_REF
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_ACCEPT_ORDER
+import com.tokopedia.sellerorder.common.util.SomConsts.KEY_ASK_BUYER
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_BATALKAN_PESANAN
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_CHANGE_COURIER
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_CONFIRM_SHIPPING
@@ -467,6 +468,7 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
                             buttonResp.key.equals(KEY_CONFIRM_SHIPPING, true) -> setActionConfirmShipping()
                             buttonResp.key.equals(KEY_VIEW_COMPLAINT_SELLER, true) -> setActionSeeComplaint(buttonResp.url)
                             buttonResp.key.equals(KEY_BATALKAN_PESANAN, true) -> setActionCancelOrder()
+                            buttonResp.key.equals(KEY_ASK_BUYER, true) -> goToAskBuyer()
                         }
                     }
                 }
@@ -633,6 +635,7 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
             key.equals(KEY_UBAH_NO_RESI, true) -> setActionUbahNoResi()
             key.equals(KEY_UPLOAD_AWB, true) -> setActionUploadAwb(key)
             key.equals(KEY_CHANGE_COURIER, true) -> setActionChangeCourier()
+            key.equals(KEY_ASK_BUYER, true) -> goToAskBuyer()
         }
     }
 
