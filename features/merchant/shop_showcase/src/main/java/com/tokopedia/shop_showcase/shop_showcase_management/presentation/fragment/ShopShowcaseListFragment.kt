@@ -15,6 +15,7 @@ import android.widget.TextView
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -84,6 +85,7 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
     private lateinit var emptyStateContainer: LinearLayout
     private lateinit var imgEmptyState: ImageView
     private lateinit var appBarLayout: AppBarLayout
+    private lateinit var swipeRefreshLayout: SwipeRefreshLayout
     private var layoutManager: LinearLayoutManager? = null
     private var shopShowcaseListAdapter: ShopShowcaseListAdapter? = null
     private var showcaseList: List<ShowcaseItem> = listOf()
@@ -147,6 +149,7 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_shop_showcase_list, container, false)
         appBarLayout = view.findViewById(R.id.appbar_layout_showcase_list)
+        swipeRefreshLayout = view.findViewById(R.id.shop_showcase_list_swipe_to_refresh)
         btnBack = view.findViewById(R.id.btn_back_input_shop)
         btnReorder = view.findViewById(R.id.btn_reorder)
         btnAddEtalase = view.findViewById(R.id.btn_add_etalase)

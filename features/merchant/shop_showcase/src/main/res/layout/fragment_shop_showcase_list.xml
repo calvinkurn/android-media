@@ -91,67 +91,69 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <com.tokopedia.unifycomponents.LoaderUnify
-        android:id="@+id/loading"
-        android:layout_width="@dimen/dp_50"
-        android:layout_height="@dimen/dp_50"
-        android:layout_gravity="center"
-        android:layout_marginTop="@dimen/dp_120"
-        android:visibility="visible"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/appbar_layout_showcase_list" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_list_etalase"
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/shop_showcase_list_swipe_to_refresh"
         android:layout_width="match_parent"
         android:layout_height="@dimen/layout_lvl0"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:visibility="visible"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/appbar_layout_showcase_list"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/appbar_layout_showcase_list" />
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-    <LinearLayout
-        android:id="@+id/empty_state"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_36"
-        android:orientation="vertical"
-        android:visibility="gone"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/appbar_layout_showcase_list">
-
-        <ImageView
-            android:id="@+id/img_empty_state"
-            android:layout_width="@dimen/dp_280"
-            android:layout_height="@dimen/dp_210"
-            android:layout_gravity="center" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:id="@+id/loading"
+            android:layout_width="@dimen/dp_50"
+            android:layout_height="@dimen/dp_50"
             android:layout_gravity="center"
-            android:layout_marginTop="@dimen/dp_16"
-            android:gravity="center"
-            android:text="@string/title_empty_state"
-            android:textColor="@color/primary_text_color"
-            android:textSize="@dimen/sp_20"
-            android:textStyle="bold" />
+            android:layout_marginTop="@dimen/dp_120"
+            android:visibility="visible" />
 
-        <TextView
-            android:layout_width="wrap_content"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_list_etalase"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/layout_lvl0"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:visibility="visible" />
+
+        <LinearLayout
+            android:id="@+id/empty_state"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="@dimen/dp_16"
-            android:gravity="center"
-            android:lineSpacingExtra="@dimen/sp_6"
-            android:text="@string/subtitle_empty_state"
-            android:textColor="@color/secondary_subtitle_text_color"
-            android:textSize="@dimen/sp_12" />
-    </LinearLayout>
+            android:layout_marginTop="@dimen/dp_36"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <ImageView
+                android:id="@+id/img_empty_state"
+                android:layout_width="@dimen/dp_280"
+                android:layout_height="@dimen/dp_210"
+                android:layout_gravity="center" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="@dimen/dp_16"
+                android:gravity="center"
+                android:text="@string/title_empty_state"
+                android:textColor="@color/primary_text_color"
+                android:textSize="@dimen/sp_20"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="@dimen/dp_16"
+                android:gravity="center"
+                android:lineSpacingExtra="@dimen/sp_6"
+                android:text="@string/subtitle_empty_state"
+                android:textColor="@color/secondary_subtitle_text_color"
+                android:textSize="@dimen/sp_12" />
+        </LinearLayout>
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 
