@@ -16,13 +16,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:padding="@dimen/dp_16">
+            android:padding="@dimen/layout_lvl2">
 
             <com.tokopedia.design.component.TextViewCompat
                 android:id="@+id/current_location_tv"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:drawablePadding="@dimen/dp_8"
+                android:drawablePadding="@dimen/layout_lvl1"
                 android:gravity="center_vertical"
                 android:text="@string/hotel_destination_nearest_location"
                 app:fontSize="small"
@@ -44,12 +44,12 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingStart="@dimen/dp_16"
-                android:paddingLeft="@dimen/dp_16"
-                android:paddingTop="@dimen/dp_24"
-                android:paddingEnd="@dimen/dp_16"
-                android:paddingRight="@dimen/dp_16"
-                android:paddingBottom="@dimen/dp_8">
+                android:paddingStart="@dimen/layout_lvl2"
+                android:paddingLeft="@dimen/layout_lvl2"
+                android:paddingTop="@dimen/layout_lvl3"
+                android:paddingEnd="@dimen/layout_lvl2"
+                android:paddingRight="@dimen/layout_lvl2"
+                android:paddingBottom="@dimen/layout_lvl1">
 
                 <com.tokopedia.design.component.TextViewCompat
                     android:id="@+id/title_text_view"
@@ -76,15 +76,15 @@
                 android:id="@+id/recent_search_recycler_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingStart="@dimen/dp_16"
-                android:paddingLeft="@dimen/dp_16"
-                android:paddingEnd="@dimen/dp_16"
-                android:paddingRight="@dimen/dp_16" />
+                android:paddingStart="@dimen/layout_lvl2"
+                android:paddingLeft="@dimen/layout_lvl2"
+                android:paddingEnd="@dimen/layout_lvl2"
+                android:paddingRight="@dimen/layout_lvl2" />
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:layout_marginTop="@dimen/dp_20"
+                android:layout_marginTop="@dimen/hotel_20dp"
                 android:background="@drawable/bg_line_separator" />
         </LinearLayout>
 
@@ -99,12 +99,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/white"
-                android:paddingStart="@dimen/dp_16"
-                android:paddingLeft="@dimen/dp_16"
-                android:paddingTop="@dimen/dp_24"
-                android:paddingEnd="@dimen/dp_16"
-                android:paddingRight="@dimen/dp_16"
-                android:paddingBottom="@dimen/dp_12">
+                android:paddingStart="@dimen/layout_lvl2"
+                android:paddingLeft="@dimen/layout_lvl2"
+                android:paddingTop="@dimen/layout_lvl3"
+                android:paddingEnd="@dimen/layout_lvl2"
+                android:paddingRight="@dimen/layout_lvl2"
+                android:paddingBottom="@dimen/hotel_12dp">
 
                 <com.tokopedia.design.component.TextViewCompat
                     android:layout_width="wrap_content"
@@ -119,7 +119,7 @@
                 android:id="@+id/recycler_view"
                 android:layout_width="match_parent"
                 android:layout_height="fill_parent"
-                android:paddingBottom="@dimen/dp_32"
+                android:paddingBottom="@dimen/layout_lvl4"
                 android:clipToPadding="false"
                 />
         </LinearLayout>

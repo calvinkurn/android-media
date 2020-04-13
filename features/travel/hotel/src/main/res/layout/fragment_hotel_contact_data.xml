@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="@dimen/dp_16"
+    android:padding="@dimen/layout_lvl2"
     android:background="@color/white">
 
     <LinearLayout
@@ -16,7 +16,7 @@
             android:id="@+id/til_contact_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/dp_24">
+            android:layout_marginBottom="@dimen/layout_lvl3">
 
             <androidx.appcompat.widget.AppCompatAutoCompleteTextView
                 android:layout_width="match_parent"
@@ -30,7 +30,7 @@
             android:id="@+id/til_contact_email"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/dp_24">
+            android:layout_marginBottom="@dimen/layout_lvl3">
 
             <androidx.appcompat.widget.AppCompatAutoCompleteTextView
                 android:layout_width="match_parent"
@@ -44,7 +44,7 @@
             android:id="@+id/tv_contact_phone_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingLeft="@dimen/dp_2"
+            android:paddingLeft="@dimen/spacing_lvl1"
             android:text="@string/travel_contact_data_phone_number_title"
             app:fontSize="micro"
             app:layout_constraintStart_toStartOf="parent"
@@ -56,7 +56,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center_vertical"
-            android:layout_marginBottom="@dimen/dp_24">
+            android:layout_marginBottom="@dimen/layout_lvl3">
 
             <Spinner
                 android:id="@+id/sp_contact_phone_code"
@@ -93,7 +93,7 @@
     <com.tokopedia.design.component.ButtonCompat
         android:id="@+id/contact_data_button"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_48"
+        android:layout_height="@dimen/layout_lvl6"
         android:text="@string/travel_select_passenger_submit_button"
         android:layout_alignParentBottom="true"
         app:buttonCompatType="primary" />

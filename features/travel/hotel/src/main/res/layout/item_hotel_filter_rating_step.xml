@@ -8,8 +8,8 @@
     android:orientation="vertical">
 
     <ImageView
-        android:layout_width="@dimen/dp_5"
-        android:layout_height="@dimen/dp_5"
+        android:layout_width="@dimen/hotel_5dp"
+        android:layout_height="@dimen/hotel_5dp"
         android:tint="@color/grey_300"
         app:srcCompat="@drawable/ic_dot_black" />
 

@@ -44,7 +44,7 @@
                         <androidx.appcompat.widget.AppCompatImageView
                             android:id="@+id/iv_main_photo_preview"
                             android:layout_width="match_parent"
-                            android:layout_height="@dimen/dp_160"
+                            android:layout_height="@dimen/hotel_160dp"
                             android:scaleType="centerCrop"
                             app:layout_constraintTop_toTopOf="parent"
                             app:srcCompat="@color/grey_no_image" />
@@ -53,37 +53,37 @@
                             android:id="@+id/hotel_photo_layout"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/dp_2"
+                            android:layout_marginTop="@dimen/spacing_lvl1"
                             android:orientation="horizontal"
                             app:layout_constraintTop_toBottomOf="@+id/iv_main_photo_preview">
 
                             <androidx.appcompat.widget.AppCompatImageView
                                 android:id="@+id/iv_first_photo_preview"
-                                android:layout_width="0dp"
-                                android:layout_height="@dimen/dp_76"
+                                android:layout_width="@dimen/layout_lvl0"
+                                android:layout_height="@dimen/hotel_76dp"
                                 android:layout_weight="1"
                                 android:scaleType="centerCrop"
                                 app:srcCompat="@color/grey_no_image" />
 
                             <androidx.appcompat.widget.AppCompatImageView
                                 android:id="@+id/iv_second_photo_preview"
-                                android:layout_width="0dp"
-                                android:layout_height="@dimen/dp_76"
-                                android:layout_marginLeft="@dimen/dp_2"
-                                android:layout_marginRight="@dimen/dp_2"
+                                android:layout_width="@dimen/layout_lvl0"
+                                android:layout_height="@dimen/hotel_76dp"
+                                android:layout_marginLeft="@dimen/spacing_lvl1"
+                                android:layout_marginRight="@dimen/spacing_lvl1"
                                 android:layout_weight="1"
                                 android:scaleType="centerCrop"
                                 app:srcCompat="@color/grey_no_image" />
 
                             <RelativeLayout
-                                android:layout_width="0dp"
-                                android:layout_height="@dimen/dp_76"
+                                android:layout_width="@dimen/layout_lvl0"
+                                android:layout_height="@dimen/hotel_76dp"
                                 android:layout_weight="1">
 
                                 <androidx.appcompat.widget.AppCompatImageView
                                     android:id="@+id/iv_third_photo_preview"
                                     android:layout_width="match_parent"
-                                    android:layout_height="@dimen/dp_76"
+                                    android:layout_height="@dimen/hotel_76dp"
                                     android:scaleType="centerCrop"
                                     app:srcCompat="@color/grey_no_image" />
 
@@ -124,12 +124,12 @@
                             android:lines="1"
                             android:maxWidth="@dimen/dp_300"
                             android:maxLines="1"
-                            android:paddingStart="@dimen/dp_12"
-                            android:paddingLeft="@dimen/dp_12"
-                            android:paddingTop="@dimen/dp_4"
-                            android:paddingEnd="@dimen/dp_16"
-                            android:paddingRight="@dimen/dp_16"
-                            android:paddingBottom="@dimen/dp_4"
+                            android:paddingStart="@dimen/hotel_12dp"
+                            android:paddingLeft="@dimen/hotel_12dp"
+                            android:paddingTop="@dimen/spacing_lvl2"
+                            android:paddingEnd="@dimen/layout_lvl2"
+                            android:paddingRight="@dimen/layout_lvl2"
+                            android:paddingBottom="@dimen/spacing_lvl2"
                             android:textColor="@color/Red_R400"
                             android:visibility="invisible"
                             app:layout_constraintBottom_toBottomOf="@+id/hotel_photo_layout"
@@ -148,12 +148,12 @@
                         android:id="@+id/detail_toolbar"
                         android:layout_width="match_parent"
                         android:layout_height="?attr/actionBarSize"
-                        android:elevation="@dimen/dp_4"
+                        android:elevation="@dimen/spacing_lvl2"
                         android:gravity="top"
-                        app:contentInsetLeft="0dp"
-                        app:contentInsetStart="0dp"
-                        app:contentInsetStartWithNavigation="0dp"
-                        app:elevation="@dimen/dp_4"
+                        app:contentInsetLeft="@dimen/layout_lvl0"
+                        app:contentInsetStart="@dimen/layout_lvl0"
+                        app:contentInsetStartWithNavigation="@dimen/layout_lvl0"
+                        app:elevation="@dimen/spacing_lvl2"
                         app:layout_anchor="@+id/toolbar_container"
                         app:layout_collapseMode="pin"
                         app:subtitleTextAppearance="@style/TitleTextAppearance.White"
@@ -192,9 +192,9 @@
                             android:id="@+id/tv_hotel_name"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="@dimen/dp_16"
-                            android:layout_marginTop="@dimen/dp_12"
-                            android:layout_marginRight="@dimen/dp_16"
+                            android:layout_marginLeft="@dimen/layout_lvl2"
+                            android:layout_marginTop="@dimen/hotel_12dp"
+                            android:layout_marginRight="@dimen/layout_lvl2"
                             app:fontSize="titleBig"
                             app:textViewTheme="lightPrimary"
                             app:weight="medium"
@@ -204,23 +204,23 @@
                             android:id="@+id/hotel_rating_container"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="@dimen/dp_16"
-                            android:layout_marginTop="@dimen/dp_8"
-                            android:layout_marginRight="@dimen/dp_16"
-                            android:layout_marginBottom="@dimen/dp_16"
+                            android:layout_marginLeft="@dimen/layout_lvl2"
+                            android:layout_marginTop="@dimen/layout_lvl1"
+                            android:layout_marginRight="@dimen/layout_lvl2"
+                            android:layout_marginBottom="@dimen/layout_lvl2"
                             android:orientation="horizontal">
 
                             <com.tokopedia.design.component.TextViewCompat
                                 android:id="@+id/hotel_property_type"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginEnd="@dimen/dp_4"
-                                android:layout_marginRight="@dimen/dp_4"
+                                android:layout_marginEnd="@dimen/spacing_lvl2"
+                                android:layout_marginRight="@dimen/spacing_lvl2"
                                 android:background="@drawable/bg_search_destination_tag"
-                                android:paddingLeft="@dimen/dp_6"
-                                android:paddingTop="@dimen/dp_2"
-                                android:paddingRight="@dimen/dp_6"
-                                android:paddingBottom="@dimen/dp_2"
+                                android:paddingLeft="@dimen/hotel_6dp"
+                                android:paddingTop="@dimen/spacing_lvl1"
+                                android:paddingRight="@dimen/hotel_6dp"
+                                android:paddingBottom="@dimen/spacing_lvl1"
                                 android:textColor="#9e9fa3"
                                 android:textStyle="bold"
                                 app:fontSize="micro"
@@ -231,7 +231,7 @@
                         <View
                             android:id="@+id/top_divider"
                             android:layout_width="match_parent"
-                            android:layout_height="@dimen/dp_1"
+                            android:layout_height="@dimen/hotel_1dp"
                             android:background="@color/grey_200" />
 
                         <LinearLayout
@@ -245,26 +245,26 @@
                             <RelativeLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_marginLeft="@dimen/dp_16"
-                                android:layout_marginTop="@dimen/dp_16"
-                                android:layout_marginRight="@dimen/dp_16">
+                                android:layout_marginLeft="@dimen/layout_lvl2"
+                                android:layout_marginTop="@dimen/layout_lvl2"
+                                android:layout_marginRight="@dimen/layout_lvl2">
 
                                 <androidx.appcompat.widget.AppCompatImageView
                                     android:id="@+id/iv_booking_logo"
-                                    android:layout_width="@dimen/dp_20"
-                                    android:layout_height="@dimen/dp_20"
+                                    android:layout_width="@dimen/hotel_20dp"
+                                    android:layout_height="@dimen/hotel_20dp"
                                     android:layout_alignTop="@+id/tv_hotel_rating_number"
                                     android:layout_alignBottom="@+id/tv_hotel_rating_number"
-                                    android:layout_marginEnd="@dimen/dp_4"
-                                    android:layout_marginRight="@dimen/dp_4"
+                                    android:layout_marginEnd="@dimen/spacing_lvl2"
+                                    android:layout_marginRight="@dimen/spacing_lvl2"
                                     app:srcCompat="@drawable/ic_booking_logo" />
 
                                 <com.tokopedia.design.component.TextViewCompat
                                     android:id="@+id/tv_hotel_rating_number"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:layout_marginEnd="@dimen/dp_4"
-                                    android:layout_marginRight="@dimen/dp_4"
+                                    android:layout_marginEnd="@dimen/spacing_lvl2"
+                                    android:layout_marginRight="@dimen/spacing_lvl2"
                                     android:layout_toEndOf="@+id/iv_booking_logo"
                                     android:layout_toRightOf="@+id/iv_booking_logo"
                                     android:textColor="@color/blue_booking"
@@ -278,7 +278,7 @@
                                     android:layout_height="wrap_content"
                                     android:layout_alignTop="@+id/tv_hotel_rating_number"
                                     android:layout_alignBottom="@+id/tv_hotel_rating_number"
-                                    android:layout_marginTop="@dimen/dp_2"
+                                    android:layout_marginTop="@dimen/spacing_lvl1"
                                     android:layout_toEndOf="@+id/tv_hotel_rating_number"
                                     android:layout_toRightOf="@+id/tv_hotel_rating_number"
                                     android:gravity="center"
@@ -291,7 +291,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_below="@+id/iv_booking_logo"
-                                    android:layout_marginTop="@dimen/dp_2"
+                                    android:layout_marginTop="@dimen/spacing_lvl1"
                                     app:fontSize="micro"
                                     app:textViewTheme="lightSecondary"
                                     tools:text="Berdasarkan 1.000 ulasan" />
@@ -316,10 +316,10 @@
                                 android:layout_height="wrap_content"
                                 android:background="@drawable/bg_hotel_review_gradient"
                                 android:clipToPadding="false"
-                                android:paddingTop="@dimen/dp_8"
-                                android:paddingEnd="@dimen/dp_16"
-                                android:paddingRight="@dimen/dp_16"
-                                android:paddingBottom="@dimen/dp_16" />
+                                android:paddingTop="@dimen/layout_lvl1"
+                                android:paddingEnd="@dimen/layout_lvl2"
+                                android:paddingRight="@dimen/layout_lvl2"
+                                android:paddingBottom="@dimen/layout_lvl2" />
 
                         </LinearLayout>
 
@@ -327,13 +327,13 @@
                             android:id="@+id/container_hotel_address"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_margin="@dimen/dp_16"
+                            android:layout_margin="@dimen/layout_lvl2"
                             android:orientation="vertical">
 
                             <com.tokopedia.design.component.TextViewCompat
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_marginTop="@dimen/dp_8"
+                                android:layout_marginTop="@dimen/layout_lvl1"
                                 android:text="@string/hotel_address_title"
                                 app:fontSize="title"
                                 app:textViewTheme="lightPrimary"
@@ -342,7 +342,7 @@
                             <RelativeLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_marginTop="@dimen/dp_8">
+                                android:layout_marginTop="@dimen/layout_lvl1">
 
                                 <androidx.appcompat.widget.AppCompatImageView
                                     android:id="@+id/iv_hotel_detail_location"
@@ -362,11 +362,11 @@
                                         android:id="@+id/btn_hotel_detail_show"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
-                                        android:layout_marginEnd="@dimen/dp_8"
-                                        android:layout_marginRight="@dimen/dp_8"
-                                        android:layout_marginBottom="@dimen/dp_8"
-                                        android:paddingLeft="@dimen/dp_16"
-                                        android:paddingRight="@dimen/dp_16"
+                                        android:layout_marginEnd="@dimen/layout_lvl1"
+                                        android:layout_marginRight="@dimen/layout_lvl1"
+                                        android:layout_marginBottom="@dimen/layout_lvl1"
+                                        android:paddingLeft="@dimen/layout_lvl2"
+                                        android:paddingRight="@dimen/layout_lvl2"
                                         android:text="@string/hotel_show_map_text"
                                         android:textStyle="bold"
                                         app:buttonCompatSize="small"
@@ -379,22 +379,22 @@
                             <RelativeLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_marginTop="@dimen/dp_12">
+                                android:layout_marginTop="@dimen/hotel_12dp">
 
                                 <androidx.appcompat.widget.AppCompatImageView
                                     android:id="@+id/hotel_icon"
-                                    android:layout_width="@dimen/dp_24"
-                                    android:layout_height="@dimen/dp_24"
+                                    android:layout_width="@dimen/layout_lvl3"
+                                    android:layout_height="@dimen/layout_lvl3"
                                     android:layout_centerVertical="true"
-                                    android:layout_marginEnd="@dimen/dp_8"
-                                    android:layout_marginRight="@dimen/dp_8"
+                                    android:layout_marginEnd="@dimen/layout_lvl1"
+                                    android:layout_marginRight="@dimen/layout_lvl1"
                                     app:srcCompat="@drawable/ic_hotel" />
 
                                 <com.tokopedia.design.component.TextViewCompat
                                     android:id="@+id/tv_hotel_address"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:layout_marginTop="@dimen/dp_8"
+                                    android:layout_marginTop="@dimen/layout_lvl1"
                                     android:layout_toEndOf="@+id/hotel_icon"
                                     android:layout_toRightOf="@+id/hotel_icon"
                                     app:fontSize="micro"
@@ -413,15 +413,15 @@
                             <LinearLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_marginLeft="@dimen/dp_16"
-                                android:layout_marginTop="@dimen/dp_16"
-                                android:layout_marginRight="@dimen/dp_16"
+                                android:layout_marginLeft="@dimen/layout_lvl2"
+                                android:layout_marginTop="@dimen/layout_lvl2"
+                                android:layout_marginRight="@dimen/layout_lvl2"
                                 android:orientation="horizontal">
 
                                 <com.tokopedia.design.component.TextViewCompat
-                                    android:layout_width="0dp"
+                                    android:layout_width="@dimen/layout_lvl0"
                                     android:layout_height="wrap_content"
-                                    android:layout_marginTop="@dimen/dp_8"
+                                    android:layout_marginTop="@dimen/layout_lvl1"
                                     android:layout_weight="1"
                                     android:text="@string/hotel_facility_title"
                                     app:fontSize="title"
@@ -443,10 +443,10 @@
                                 android:id="@+id/rv_hotel_facilities"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_marginTop="@dimen/dp_8"
+                                android:layout_marginTop="@dimen/layout_lvl1"
                                 android:clipToPadding="false"
-                                android:paddingStart="@dimen/dp_8"
-                                android:paddingLeft="@dimen/dp_8" />
+                                android:paddingStart="@dimen/layout_lvl1"
+                                android:paddingLeft="@dimen/layout_lvl1" />
 
                         </LinearLayout>
 
@@ -454,19 +454,19 @@
                             android:id="@+id/container_hotel_info"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_margin="@dimen/dp_16"
+                            android:layout_margin="@dimen/layout_lvl2"
                             android:orientation="vertical">
 
                             <LinearLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_marginTop="@dimen/dp_8"
+                                android:layout_marginTop="@dimen/layout_lvl1"
                                 android:orientation="horizontal">
 
                                 <com.tokopedia.design.component.TextViewCompat
-                                    android:layout_width="0dp"
+                                    android:layout_width="@dimen/layout_lvl0"
                                     android:layout_height="wrap_content"
-                                    android:layout_marginTop="@dimen/dp_8"
+                                    android:layout_marginTop="@dimen/layout_lvl1"
                                     android:layout_weight="1"
                                     android:text="@string/hotel_policy_title"
                                     app:fontSize="title"
@@ -488,7 +488,7 @@
                                 android:id="@+id/scv_hotel_date"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_marginTop="@dimen/dp_8"
+                                android:layout_marginTop="@dimen/layout_lvl1"
                                 app:leftSubtitleText="@string/hotel_homepage_check_in"
                                 app:rightSubtitleText="@string/hotel_check_out_calendar_title" />
 
@@ -501,7 +501,7 @@
                                 <com.tokopedia.design.component.TextViewCompat
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:layout_marginTop="@dimen/dp_24"
+                                    android:layout_marginTop="@dimen/layout_lvl3"
                                     android:text="@string/hotel_important_info_title"
                                     app:fontSize="title"
                                     app:textViewTheme="lightPrimary"
@@ -511,7 +511,7 @@
                                     android:id="@+id/tv_hotel_important_info"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:layout_marginTop="@dimen/dp_8"
+                                    android:layout_marginTop="@dimen/layout_lvl1"
                                     android:ellipsize="end"
                                     android:maxLines="3"
                                     app:fontSize="micro"
@@ -537,7 +537,7 @@
                                 <com.tokopedia.design.component.TextViewCompat
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:layout_marginTop="@dimen/dp_24"
+                                    android:layout_marginTop="@dimen/layout_lvl3"
                                     android:text="@string/hotel_description_title"
                                     app:fontSize="title"
                                     app:textViewTheme="lightPrimary"
@@ -547,7 +547,7 @@
                                     android:id="@+id/tv_hotel_description"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:layout_marginTop="@dimen/dp_8"
+                                    android:layout_marginTop="@dimen/layout_lvl1"
                                     android:ellipsize="end"
                                     android:maxLines="3"
                                     app:fontSize="micro"
@@ -574,13 +574,13 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:background="@color/white"
-            android:elevation="@dimen/dp_4"
+            android:elevation="@dimen/spacing_lvl2"
             android:orientation="vertical"
             android:visibility="visible">
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_2"
+                android:layout_height="@dimen/spacing_lvl1"
                 android:background="@color/grey_200" />
 
             <com.tokopedia.hotel.globalsearch.presentation.widget.HotelGlobalSearchWidget
@@ -590,7 +590,7 @@
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_1"
+                android:layout_height="@dimen/hotel_1dp"
                 android:background="@color/grey_200" />
 
             <LinearLayout
@@ -598,15 +598,15 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:paddingLeft="@dimen/dp_16"
-                android:paddingTop="@dimen/dp_8"
-                android:paddingRight="@dimen/dp_16"
-                android:paddingBottom="@dimen/dp_8"
+                android:paddingLeft="@dimen/layout_lvl2"
+                android:paddingTop="@dimen/layout_lvl1"
+                android:paddingRight="@dimen/layout_lvl2"
+                android:paddingBottom="@dimen/layout_lvl1"
                 android:visibility="gone"
                 tools:visibility="visible">
 
                 <LinearLayout
-                    android:layout_width="0dp"
+                    android:layout_width="@dimen/layout_lvl0"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:layout_weight="1"
@@ -632,7 +632,7 @@
 
                 <com.tokopedia.design.component.ButtonCompat
                     android:id="@+id/btn_see_room"
-                    android:layout_width="0dp"
+                    android:layout_width="@dimen/layout_lvl0"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/hotel_detail_show_room_text"
@@ -646,10 +646,10 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:orientation="vertical"
-                android:paddingLeft="@dimen/dp_16"
-                android:paddingTop="@dimen/dp_8"
-                android:paddingRight="@dimen/dp_16"
-                android:paddingBottom="@dimen/dp_16"
+                android:paddingLeft="@dimen/layout_lvl2"
+                android:paddingTop="@dimen/layout_lvl1"
+                android:paddingRight="@dimen/layout_lvl2"
+                android:paddingBottom="@dimen/layout_lvl2"
                 android:visibility="gone"
                 tools:visibility="visible">
 
@@ -675,27 +675,27 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
                 android:background="@color/white"
-                android:elevation="@dimen/dp_4"
+                android:elevation="@dimen/spacing_lvl2"
                 android:orientation="horizontal"
-                android:paddingLeft="@dimen/dp_16"
-                android:paddingTop="@dimen/dp_8"
-                android:paddingRight="@dimen/dp_16"
-                android:paddingBottom="@dimen/dp_8"
+                android:paddingLeft="@dimen/layout_lvl2"
+                android:paddingTop="@dimen/layout_lvl1"
+                android:paddingRight="@dimen/layout_lvl2"
+                android:paddingBottom="@dimen/layout_lvl1"
                 android:visibility="visible">
 
                 <LinearLayout
-                    android:layout_width="0dp"
+                    android:layout_width="@dimen/layout_lvl0"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginEnd="@dimen/dp_16"
-                    android:layout_marginRight="@dimen/dp_16"
+                    android:layout_marginEnd="@dimen/layout_lvl2"
+                    android:layout_marginRight="@dimen/layout_lvl2"
                     android:layout_weight="1"
                     android:orientation="vertical">
 
                     <com.elyeproj.loaderviewlibrary.LoaderTextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="@dimen/dp_8" />
+                        android:layout_marginBottom="@dimen/layout_lvl1" />
 
                     <com.elyeproj.loaderviewlibrary.LoaderTextView
                         android:layout_width="match_parent"
@@ -704,8 +704,8 @@
                 </LinearLayout>
 
                 <com.elyeproj.loaderviewlibrary.LoaderImageView
-                    android:layout_width="0dp"
-                    android:layout_height="@dimen/dp_48"
+                    android:layout_width="@dimen/layout_lvl0"
+                    android:layout_height="@dimen/layout_lvl6"
                     android:layout_weight="1" />
 
             </LinearLayout>

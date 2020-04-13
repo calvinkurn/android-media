@@ -5,10 +5,10 @@
     android:id="@+id/item_hotel_last_search_container"
     android:layout_width="wrap_content"
     android:layout_height="@dimen/hotel_last_search_height"
-    android:layout_marginEnd="@dimen/dp_8"
-    android:layout_marginRight="@dimen/dp_8"
+    android:layout_marginEnd="@dimen/layout_lvl1"
+    android:layout_marginRight="@dimen/layout_lvl1"
     android:minWidth="180dp"
-    android:padding="@dimen/dp_16">
+    android:padding="@dimen/layout_lvl2">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="wrap_content"
@@ -16,8 +16,8 @@
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/iv_hotel_homepage_last_search"
-            android:layout_width="@dimen/dp_16"
-            android:layout_height="@dimen/dp_16"
+            android:layout_width="@dimen/layout_lvl2"
+            android:layout_height="@dimen/layout_lvl2"
             android:scaleType="fitXY"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -27,7 +27,7 @@
             android:id="@+id/tg_hotel_homepage_title_last_search"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dp_8"
+            android:layout_marginLeft="@dimen/layout_lvl1"
             android:ellipsize="end"
             android:textColor="@color/Neutral_N700_96"
             app:layout_constraintLeft_toRightOf="@+id/iv_hotel_homepage_last_search"
@@ -40,7 +40,7 @@
             android:id="@+id/tg_hotel_homepage_subtitle_last_search"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_4"
+            android:layout_marginTop="@dimen/spacing_lvl2"
             android:ellipsize="end"
             android:lines="2"
             android:textColor="@color/Neutral_N700_96"
@@ -53,7 +53,7 @@
             android:id="@+id/tg_hotel_homepage_prefix_last_search"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_14"
+            android:layout_marginTop="@dimen/hotel_14dp"
             android:textColor="@color/Neutral_N700_44"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"

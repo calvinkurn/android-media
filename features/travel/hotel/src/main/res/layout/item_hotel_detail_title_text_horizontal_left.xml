@@ -4,12 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingTop="@dimen/dp_4"
-    android:paddingBottom="@dimen/dp_4">
+    android:paddingTop="@dimen/spacing_lvl2"
+    android:paddingBottom="@dimen/spacing_lvl2">
 
     <com.tokopedia.design.component.TextViewCompat
         android:id="@+id/title"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:text="@string/hotel_order_detail_transaction_date"
         android:textSize="@dimen/fontSize_lvl2"
@@ -19,7 +19,7 @@
 
     <com.tokopedia.design.component.TextViewCompat
         android:id="@+id/text"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:textSize="@dimen/fontSize_lvl2"
         android:textColor="@color/light_primary"

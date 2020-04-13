@@ -4,13 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="@dimen/dp_260"
     android:layout_height="@dimen/dp_140"
-    android:layout_margin="@dimen/dp_8"
-    app:cardCornerRadius="@dimen/dp_8">
+    android:layout_margin="@dimen/layout_lvl1"
+    app:cardCornerRadius="@dimen/layout_lvl1">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/dp_12">
+        android:padding="@dimen/hotel_12dp">
 
         <LinearLayout
             android:id="@+id/container_top"
@@ -22,7 +22,7 @@
 
             <com.tokopedia.design.component.TextViewCompat
                 android:id="@+id/tv_review_title"
-                android:layout_width="0dp"
+                android:layout_width="@dimen/layout_lvl0"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:layout_weight="1"
@@ -38,13 +38,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:layout_marginStart="@dimen/dp_12"
-                android:layout_marginLeft="@dimen/dp_12"
+                android:layout_marginStart="@dimen/hotel_12dp"
+                android:layout_marginLeft="@dimen/hotel_12dp"
                 android:background="@drawable/bg_hotel_blue_radius"
-                android:paddingLeft="@dimen/dp_8"
-                android:paddingTop="@dimen/dp_1"
-                android:paddingRight="@dimen/dp_8"
-                android:paddingBottom="@dimen/dp_1"
+                android:paddingLeft="@dimen/layout_lvl1"
+                android:paddingTop="@dimen/hotel_1dp"
+                android:paddingRight="@dimen/layout_lvl1"
+                android:paddingBottom="@dimen/hotel_1dp"
                 android:textColor="@color/blue_booking"
                 app:fontSize="small"
                 app:weight="medium"
@@ -57,7 +57,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/container_top"
-            android:layout_marginTop="@dimen/dp_8"
+            android:layout_marginTop="@dimen/layout_lvl1"
             android:ellipsize="end"
             android:maxLines="2"
             app:fontSize="small"
@@ -68,7 +68,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_above="@+id/tv_review_date"
-            android:layout_marginTop="@dimen/dp_8"
+            android:layout_marginTop="@dimen/layout_lvl1"
             app:fontSize="small"
             app:textViewTheme="lightSecondary"
             app:weight="medium"

@@ -4,15 +4,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:cardCornerRadius="@dimen/dp_8"
-    app:cardElevation="@dimen/dp_1"
+    app:cardCornerRadius="@dimen/layout_lvl1"
+    app:cardElevation="@dimen/hotel_1dp"
     app:cardPreventCornerOverlap="false"
-    android:layout_marginLeft="@dimen/dp_16"
-    android:layout_marginStart="@dimen/dp_16"
-    android:layout_marginRight="@dimen/dp_16"
-    android:layout_marginEnd="@dimen/dp_16"
-    android:layout_marginTop="@dimen/dp_8"
-    android:layout_marginBottom="@dimen/dp_8"
+    android:layout_marginLeft="@dimen/layout_lvl2"
+    android:layout_marginStart="@dimen/layout_lvl2"
+    android:layout_marginRight="@dimen/layout_lvl2"
+    android:layout_marginEnd="@dimen/layout_lvl2"
+    android:layout_marginTop="@dimen/layout_lvl1"
+    android:layout_marginBottom="@dimen/layout_lvl1"
     app:cardBackgroundColor="@color/cardview_light_background">
 
     <LinearLayout
@@ -27,23 +27,23 @@
 
         <com.elyeproj.loaderviewlibrary.LoaderTextView
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_8"
+            android:layout_height="@dimen/layout_lvl1"
             app:corners="4"
             app:width_weight="0.5"
-            android:layout_marginTop="@dimen/dp_16"
-            android:layout_marginStart="@dimen/dp_12"
-            android:layout_marginLeft="@dimen/dp_12"
+            android:layout_marginTop="@dimen/layout_lvl2"
+            android:layout_marginStart="@dimen/hotel_12dp"
+            android:layout_marginLeft="@dimen/hotel_12dp"
             />
 
         <com.elyeproj.loaderviewlibrary.LoaderTextView
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_8"
+            android:layout_height="@dimen/layout_lvl1"
             app:corners="4"
             app:width_weight="0.4"
-            android:layout_marginTop="@dimen/dp_16"
-            android:layout_marginStart="@dimen/dp_12"
-            android:layout_marginLeft="@dimen/dp_12"
-            android:layout_marginBottom="@dimen/dp_16"
+            android:layout_marginTop="@dimen/layout_lvl2"
+            android:layout_marginStart="@dimen/hotel_12dp"
+            android:layout_marginLeft="@dimen/hotel_12dp"
+            android:layout_marginBottom="@dimen/layout_lvl2"
             />
 
     </LinearLayout>

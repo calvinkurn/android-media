@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingBottom="@dimen/dp_4">
+    android:paddingBottom="@dimen/spacing_lvl2">
 
     <com.tokopedia.design.component.TextViewCompat
         android:id="@+id/title"
@@ -23,10 +23,10 @@
 
     <com.tokopedia.design.component.TextViewCompat
         android:id="@+id/text"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_16"
-        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginStart="@dimen/layout_lvl2"
+        android:layout_marginLeft="@dimen/layout_lvl2"
         android:gravity="end"
         android:textColor="@color/deep_orange_500"
         app:fontSize="title"

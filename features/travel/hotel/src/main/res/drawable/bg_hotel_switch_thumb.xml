@@ -4,9 +4,9 @@
         <shape android:shape="oval">
             <solid android:color="@color/white" />
             <stroke android:color="@color/transparent"
-                android:width="@dimen/dp_10"/>
-            <size android:height="@dimen/dp_30"
-                android:width="@dimen/dp_30"/>
+                android:width="@dimen/hotel_10dp"/>
+            <size android:height="@dimen/hotel_30dp"
+                android:width="@dimen/hotel_30dp"/>
         </shape>
     </item>
 </layer-list>

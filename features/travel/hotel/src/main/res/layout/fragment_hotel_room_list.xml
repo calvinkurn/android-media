@@ -55,14 +55,14 @@
                         android:id="@+id/filter_recycler_view"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:paddingLeft="@dimen/dp_12"
-                        android:paddingRight="@dimen/dp_12"/>
+                        android:paddingLeft="@dimen/hotel_12dp"
+                        android:paddingRight="@dimen/hotel_12dp"/>
 
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/recycler_view"
                         android:layout_width="match_parent"
                         android:layout_height="fill_parent"
-                        android:layout_marginTop="@dimen/dp_8"
+                        android:layout_marginTop="@dimen/layout_lvl1"
                         android:nestedScrollingEnabled="false" />
 
                 </LinearLayout>

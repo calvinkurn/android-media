@@ -16,13 +16,13 @@
             android:layout_height="wrap_content"
             android:background="@color/bg_green_e_voucher"
             android:orientation="vertical"
-            android:padding="@dimen/dp_16">
+            android:padding="@dimen/layout_lvl2">
 
             <com.tokopedia.hotel.common.presentation.widget.TicketView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:tv_anchor1="@+id/ticket_head"
-                app:tv_circleRadius="@dimen/dp_8">
+                app:tv_circleRadius="@dimen/layout_lvl1">
 
                 <LinearLayout
                     android:id="@+id/ticket_head"
@@ -30,7 +30,7 @@
                     android:layout_height="wrap_content"
                     android:background="@drawable/bg_hotel_ticket_top"
                     android:orientation="vertical"
-                    android:padding="@dimen/dp_16">
+                    android:padding="@dimen/layout_lvl2">
 
                     <LinearLayout
                         android:id="@+id/container_rating_view"
@@ -43,7 +43,7 @@
                         android:id="@+id/tv_property_name"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="@dimen/dp_8"
+                        android:layout_marginBottom="@dimen/layout_lvl1"
                         android:gravity="center"
                         app:fontSize="titleBig"
                         app:textViewTheme="lightPrimary"
@@ -54,7 +54,7 @@
                         android:id="@+id/tv_property_address"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="@dimen/dp_8"
+                        android:layout_marginBottom="@dimen/layout_lvl1"
                         android:gravity="center"
                         app:fontSize="micro"
                         tools:text="Jalan Cihampelas No 211-217 Bandung 40131, Cihampelas, Jawa Barat." />
@@ -63,7 +63,7 @@
                         android:id="@+id/tv_property_phone"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="@dimen/dp_8"
+                        android:layout_marginBottom="@dimen/layout_lvl1"
                         android:gravity="center"
                         app:fontSize="micro"
                         tools:text="No. Telepon: 0231 204464" />
@@ -78,7 +78,7 @@
                     android:layout_below="@+id/ticket_head"
                     android:background="@drawable/bg_hotel_ticket_bottom"
                     android:orientation="vertical"
-                    android:paddingBottom="@dimen/dp_16">
+                    android:paddingBottom="@dimen/layout_lvl2">
 
                     <com.tokopedia.hotel.common.presentation.widget.RoomDurationView
                         android:id="@+id/rdv_checkin_checkout_date"
@@ -88,7 +88,7 @@
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="5dp"
-                        android:layout_marginBottom="@dimen/dp_16"
+                        android:layout_marginBottom="@dimen/layout_lvl2"
                         android:background="@drawable/bg_hotel_ticket_divider"
                         android:layerType="software" />
 
@@ -96,8 +96,8 @@
                         android:id="@+id/tv_guest_title"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/dp_16"
-                        android:layout_marginRight="@dimen/dp_16"
+                        android:layout_marginLeft="@dimen/layout_lvl2"
+                        android:layout_marginRight="@dimen/layout_lvl2"
                         app:fontSize="micro"
                         tools:text="Nama Tamu" />
 
@@ -105,9 +105,9 @@
                         android:id="@+id/tv_guest_name"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/dp_16"
-                        android:layout_marginRight="@dimen/dp_16"
-                        android:layout_marginBottom="@dimen/dp_16"
+                        android:layout_marginLeft="@dimen/layout_lvl2"
+                        android:layout_marginRight="@dimen/layout_lvl2"
+                        android:layout_marginBottom="@dimen/layout_lvl2"
                         app:fontSize="small"
                         app:textViewTheme="lightPrimary"
                         app:weight="medium"
@@ -117,8 +117,8 @@
                         android:id="@+id/tv_booking_title"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/dp_16"
-                        android:layout_marginRight="@dimen/dp_16"
+                        android:layout_marginLeft="@dimen/layout_lvl2"
+                        android:layout_marginRight="@dimen/layout_lvl2"
                         app:fontSize="micro"
                         tools:text="Kode Booking" />
 
@@ -126,9 +126,9 @@
                         android:id="@+id/tv_booking_code"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/dp_16"
-                        android:layout_marginRight="@dimen/dp_16"
-                        android:layout_marginBottom="@dimen/dp_16"
+                        android:layout_marginLeft="@dimen/layout_lvl2"
+                        android:layout_marginRight="@dimen/layout_lvl2"
+                        android:layout_marginBottom="@dimen/layout_lvl2"
                         app:fontSize="small"
                         app:textViewTheme="lightPrimary"
                         app:weight="medium"
@@ -141,15 +141,15 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_16"
-                android:paddingBottom="@dimen/dp_16"
+                android:layout_marginTop="@dimen/layout_lvl2"
+                android:paddingBottom="@dimen/layout_lvl2"
                 android:background="@drawable/bg_hotel_ticket_rounded"
                 android:orientation="vertical">
 
                 <com.tokopedia.design.component.TextViewCompat
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/dp_16"
+                    android:layout_margin="@dimen/layout_lvl2"
                     android:text="@string/hotel_e_voucher_detail_order_title"
                     app:fontSize="micro"
                     app:textViewTheme="lightPrimary"
@@ -160,10 +160,10 @@
                     android:id="@+id/tv_room_title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/dp_16"
-                    android:layout_marginTop="@dimen/dp_8"
-                    android:layout_marginRight="@dimen/dp_16"
-                    android:layout_marginBottom="@dimen/dp_8"
+                    android:layout_marginLeft="@dimen/layout_lvl2"
+                    android:layout_marginTop="@dimen/layout_lvl1"
+                    android:layout_marginRight="@dimen/layout_lvl2"
+                    android:layout_marginBottom="@dimen/layout_lvl1"
                     app:fontSize="small"
                     app:textViewTheme="lightPrimary"
                     app:weight="medium"
@@ -173,8 +173,8 @@
                     android:id="@+id/tv_room_info"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/dp_16"
-                    android:layout_marginRight="@dimen/dp_16"
+                    android:layout_marginLeft="@dimen/layout_lvl2"
+                    android:layout_marginRight="@dimen/layout_lvl2"
                     app:fontSize="micro"
                     tools:text="2 Kamar • 2 Tamu" />
 
@@ -182,16 +182,16 @@
                     android:id="@+id/tv_room_facility"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/dp_16"
-                    android:layout_marginRight="@dimen/dp_16"
+                    android:layout_marginLeft="@dimen/layout_lvl2"
+                    android:layout_marginRight="@dimen/layout_lvl2"
                     app:fontSize="micro"
                     tools:text="Termasuk Sarapan, Refund Bersyarat" />
 
                 <View android:id="@+id/hotel_detail_seperator"
                     android:layout_width="match_parent"
                     android:layout_height="5dp"
-                    android:layout_marginTop="@dimen/dp_16"
-                    android:layout_marginBottom="@dimen/dp_16"
+                    android:layout_marginTop="@dimen/layout_lvl2"
+                    android:layout_marginBottom="@dimen/layout_lvl2"
                     android:background="@drawable/bg_hotel_ticket_divider"
                     android:layerType="software" />
 
@@ -199,8 +199,8 @@
                     android:id="@+id/tv_request_label"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/dp_16"
-                    android:layout_marginRight="@dimen/dp_16"
+                    android:layout_marginLeft="@dimen/layout_lvl2"
+                    android:layout_marginRight="@dimen/layout_lvl2"
                     app:fontSize="micro"
                     tools:text="Permintaan Khusus" />
 
@@ -208,8 +208,8 @@
                     android:id="@+id/tv_request_info"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/dp_16"
-                    android:layout_marginRight="@dimen/dp_16"
+                    android:layout_marginLeft="@dimen/layout_lvl2"
+                    android:layout_marginRight="@dimen/layout_lvl2"
                     app:fontSize="small"
                     app:textViewTheme="lightPrimary"
                     tools:text="Saya ingin kamar yang view nya pantai, dingin, dan tambahan extra bed 2 yah mas tolong." />
@@ -219,14 +219,14 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_16"
+                android:layout_marginTop="@dimen/layout_lvl2"
                 android:background="@drawable/bg_hotel_ticket_rounded"
                 android:orientation="vertical">
 
                 <com.tokopedia.design.component.TextViewCompat
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/dp_16"
+                    android:layout_margin="@dimen/layout_lvl2"
                     android:text="@string/hotel_e_voucher_cancellation_policy_title"
                     app:fontSize="micro"
                     app:textViewTheme="lightPrimary"
@@ -235,8 +235,8 @@
                 <androidx.recyclerview.widget.RecyclerView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingLeft="@dimen/dp_16"
-                    android:paddingRight="@dimen/dp_16"
+                    android:paddingLeft="@dimen/layout_lvl2"
+                    android:paddingRight="@dimen/layout_lvl2"
                     android:id="@+id/rv_cancellation_policies">
 
                 </androidx.recyclerview.widget.RecyclerView>
@@ -244,7 +244,7 @@
                 <com.tokopedia.design.component.TextViewCompat
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/dp_16"
+                    android:layout_margin="@dimen/layout_lvl2"
                     android:text="@string/hotel_e_voucher_local_time"
                     android:textSize="@dimen/sp_10" />
 
@@ -257,10 +257,10 @@
             android:layout_height="wrap_content"
             android:background="@color/white"
             android:orientation="horizontal"
-            android:padding="@dimen/dp_16">
+            android:padding="@dimen/layout_lvl2">
 
             <com.tokopedia.design.component.TextViewCompat
-                android:layout_width="0dp"
+                android:layout_width="@dimen/layout_lvl0"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/hotel_e_voucher_powered_by"

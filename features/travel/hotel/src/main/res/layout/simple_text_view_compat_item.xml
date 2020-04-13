@@ -5,14 +5,14 @@
     android:layout_height="wrap_content"
     android:background="@color/white"
     android:clipToPadding="false"
-    android:paddingLeft="@dimen/dp_16"
-    android:paddingRight="@dimen/dp_16">
+    android:paddingLeft="@dimen/layout_lvl2"
+    android:paddingRight="@dimen/layout_lvl2">
 
     <com.tokopedia.design.component.TextViewCompat
         android:id="@+id/text_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:lineSpacingExtra="@dimen/dp_4"
+        android:lineSpacingExtra="@dimen/spacing_lvl2"
         app:fontSize="small" />
 
 </androidx.core.widget.NestedScrollView>

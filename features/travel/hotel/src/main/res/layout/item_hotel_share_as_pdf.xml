@@ -8,7 +8,7 @@
 
     <com.tokopedia.design.component.TextViewCompat
         android:id="@+id/tv_email"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:layout_weight="1"

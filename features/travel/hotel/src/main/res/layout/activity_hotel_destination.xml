@@ -15,7 +15,7 @@
         android:id="@+id/search_input_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:layout_height="70dp"
+        tools:layout_height="@dimen/hotel_70dp"
         app:layout_scrollFlags="scroll|snap|enterAlways"
         app:siv_search_hint="@string/hotel_destination_edittext_hint"
         />

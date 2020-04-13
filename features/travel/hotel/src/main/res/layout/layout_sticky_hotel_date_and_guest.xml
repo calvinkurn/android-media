@@ -9,7 +9,7 @@
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_1"
+        android:layout_height="@dimen/hotel_1dp"
         android:background="@drawable/bg_line_separator" />
 
 
@@ -17,11 +17,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:paddingStart="@dimen/dp_18"
-        android:paddingLeft="@dimen/dp_18"
+        android:paddingStart="@dimen/hotel_18dp"
+        android:paddingLeft="@dimen/hotel_18dp"
         android:paddingTop="@dimen/dp_11"
-        android:paddingEnd="@dimen/dp_18"
-        android:paddingRight="@dimen/dp_18"
+        android:paddingEnd="@dimen/hotel_18dp"
+        android:paddingRight="@dimen/hotel_18dp"
         android:paddingBottom="@dimen/dp_11"
         android:weightSum="2">
 
@@ -32,11 +32,11 @@
             android:layout_weight="1">
 
             <ImageView
-                android:layout_width="@dimen/dp_16"
-                android:layout_height="@dimen/dp_16"
+                android:layout_width="@dimen/layout_lvl2"
+                android:layout_height="@dimen/layout_lvl2"
                 android:layout_gravity="center_vertical"
-                android:layout_marginEnd="@dimen/dp_4"
-                android:layout_marginRight="@dimen/dp_4"
+                android:layout_marginEnd="@dimen/spacing_lvl2"
+                android:layout_marginRight="@dimen/spacing_lvl2"
                 app:srcCompat="@drawable/ic_hotel_calendar" />
 
             <com.tokopedia.design.component.TextViewCompat
@@ -45,7 +45,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:ellipsize="end"
-                android:lineSpacingExtra="@dimen/dp_6"
+                android:lineSpacingExtra="@dimen/hotel_6dp"
                 android:lines="1"
                 app:fontSize="micro"
                 tools:text="18 Des 2019 - 20 Jan 2020" />
@@ -53,12 +53,12 @@
 
         <View
             android:id="@+id/seperator"
-            android:layout_width="@dimen/dp_1"
+            android:layout_width="@dimen/hotel_1dp"
             android:layout_height="match_parent"
-            android:layout_marginStart="@dimen/dp_12"
-            android:layout_marginLeft="@dimen/dp_12"
-            android:layout_marginEnd="@dimen/dp_12"
-            android:layout_marginRight="@dimen/dp_12"
+            android:layout_marginStart="@dimen/hotel_12dp"
+            android:layout_marginLeft="@dimen/hotel_12dp"
+            android:layout_marginEnd="@dimen/hotel_12dp"
+            android:layout_marginRight="@dimen/hotel_12dp"
             android:background="@drawable/bg_line_separator" />
 
         <LinearLayout
@@ -74,10 +74,10 @@
                 android:orientation="horizontal">
 
                 <ImageView
-                    android:layout_width="@dimen/dp_16"
-                    android:layout_height="@dimen/dp_16"
+                    android:layout_width="@dimen/layout_lvl2"
+                    android:layout_height="@dimen/layout_lvl2"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginRight="@dimen/dp_4"
+                    android:layout_marginRight="@dimen/spacing_lvl2"
                     app:srcCompat="@drawable/ic_hotel_room" />
 
                 <com.tokopedia.design.component.TextViewCompat
@@ -86,10 +86,10 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:ellipsize="end"
-                    android:lineSpacingExtra="@dimen/dp_6"
+                    android:lineSpacingExtra="@dimen/hotel_6dp"
                     android:lines="1"
-                    android:paddingEnd="@dimen/dp_8"
-                    android:paddingRight="@dimen/dp_8"
+                    android:paddingEnd="@dimen/layout_lvl1"
+                    android:paddingRight="@dimen/layout_lvl1"
                     app:fontSize="micro"
                     tools:text="1" />
             </LinearLayout>
@@ -99,12 +99,12 @@
                 android:layout_height="wrap_content">
 
                 <ImageView
-                    android:layout_width="@dimen/dp_16"
-                    android:layout_height="@dimen/dp_16"
+                    android:layout_width="@dimen/layout_lvl2"
+                    android:layout_height="@dimen/layout_lvl2"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginStart="@dimen/dp_4"
-                    android:layout_marginLeft="@dimen/dp_4"
-                    android:layout_marginRight="@dimen/dp_4"
+                    android:layout_marginStart="@dimen/spacing_lvl2"
+                    android:layout_marginLeft="@dimen/spacing_lvl2"
+                    android:layout_marginRight="@dimen/spacing_lvl2"
                     app:srcCompat="@drawable/ic_hotel_adult" />
 
                 <com.tokopedia.design.component.TextViewCompat
@@ -113,10 +113,10 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:ellipsize="end"
-                    android:lineSpacingExtra="@dimen/dp_6"
+                    android:lineSpacingExtra="@dimen/hotel_6dp"
                     android:lines="1"
-                    android:paddingEnd="@dimen/dp_8"
-                    android:paddingRight="@dimen/dp_8"
+                    android:paddingEnd="@dimen/layout_lvl1"
+                    android:paddingRight="@dimen/layout_lvl1"
                     app:fontSize="micro"
                     tools:text="2" />
             </LinearLayout>
@@ -125,7 +125,7 @@
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_1"
+        android:layout_height="@dimen/hotel_1dp"
         android:background="@drawable/bg_line_separator" />
 
 </LinearLayout>
