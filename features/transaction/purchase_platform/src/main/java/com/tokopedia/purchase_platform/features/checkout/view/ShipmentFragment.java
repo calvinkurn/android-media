@@ -489,7 +489,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 }
             }
             if (errorShopCount == 0 || errorShopCount < shipmentCartItemModelList.size()) {
-                if (!lastApplyUiModel.getAdditionalInfo().getErrorDetail().getMessage().isEmpty()) {
+                if (lastApplyUiModel != null && !lastApplyUiModel.getAdditionalInfo().getErrorDetail().getMessage().isEmpty()) {
                     PromoRevampAnalytics.INSTANCE.eventCartViewPromoChanged(lastApplyUiModel.getAdditionalInfo().getErrorDetail().getMessage());
                 }
                 shipmentAdapter.addLastApplyUiDataModel(lastApplyUiModel);
@@ -2940,6 +2940,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void onClickPromoCheckout(LastApplyUiModel lastApplyUiModel) {
+        if (lastApplyUiModel == null) return;
+
         ArrayList<com.tokopedia.purchase_platform.features.promo.data.request.Order> listOrder = new ArrayList<>();
         com.tokopedia.purchase_platform.features.promo.data.request.Order order = new com.tokopedia.purchase_platform.features.promo.data.request.Order();
         for (int i = 0; i < shipmentAdapter.getShipmentCartItemModelList().size(); i++) {
