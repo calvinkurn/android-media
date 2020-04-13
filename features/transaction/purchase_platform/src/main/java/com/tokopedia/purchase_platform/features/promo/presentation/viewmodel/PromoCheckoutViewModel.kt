@@ -29,7 +29,10 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.util.*
 import javax.inject.Inject
+import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher,
                                                  private val graphqlRepository: GraphqlRepository,
@@ -103,8 +106,10 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
         launch { getCouponRecommendation(mutation, promoRequest, promoCode) }
     }
 
-    private suspend fun getCouponRecommendation(mutation: String, promoRequest: PromoRequest, promoCode: String) {
+    private suspend fun getCouponRecommendation(mutation: String, promoRequest: PromoRequest, tmpPromoCode: String) {
         launchCatchError(block = {
+            val promoCode = tmpPromoCode.toUpperCase(Locale.getDefault())
+
             // Set param manual input
             if (promoCode.isNotBlank()) {
                 promoRequest.attemptedCodes.clear()
@@ -167,6 +172,16 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
                 }
             }
 
+            // Remove code if same with attempted
+            if (promoRequest.codes.contains(promoCode)) {
+                promoRequest.codes.remove(promoCode)
+            }
+            promoRequest.orders.forEach {
+                if (it.codes.contains(promoCode)) {
+                    it.codes.remove(promoCode)
+                }
+            }
+
             val promo = HashMap<String, Any>()
             promo["params"] = CouponListRecommendationRequest(promoRequest = promoRequest)
 
@@ -199,6 +214,7 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
                     initPromoRecommendation(response)
                     initPromoInput()
                     initPromoList(response)
+                    sendAnalyticsPromoPageLoaded()
 
                     val attemptedPromoCodeError = response.couponListRecommendation.data.attemptedPromoCodeError
                     if (attemptedPromoCodeError.code.isNotBlank() && attemptedPromoCodeError.message.isNotBlank()) {
@@ -560,18 +576,18 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
         }
     }
 
-    fun clearPromo(mutation: String, validateUsePromoRequest: ValidateUsePromoRequest) {
-        launch { doClearPromo(mutation, validateUsePromoRequest) }
+    fun clearPromo(mutation: String, validateUsePromoRequest: ValidateUsePromoRequest, bboPromoCodes: ArrayList<String>) {
+        launch { doClearPromo(mutation, validateUsePromoRequest, bboPromoCodes) }
     }
 
-    private suspend fun doClearPromo(mutation: String, validateUsePromoRequest: ValidateUsePromoRequest) {
+    private suspend fun doClearPromo(mutation: String, validateUsePromoRequest: ValidateUsePromoRequest, bboPromoCodes: ArrayList<String>) {
         launchCatchError(block = {
             // Initialize response action state
             if (clearPromoResponse.value == null) {
                 _clearPromoResponse.value = ClearPromoResponseAction()
             }
 
-            // Set param
+            // Add unselected promo
             val toBeRemovedPromoCodes = ArrayList<String>()
             var tmpMutation = mutation
             promoListUiModel.value?.forEach {
@@ -582,6 +598,22 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
                         if (it.uiState.isParentEnabled) {
                             toBeRemovedPromoCodes.add(it.uiData.promoCode)
                         }
+                    }
+                }
+            }
+
+            // Add invalid promo
+            validateUsePromoRequest.codes.forEach { promoGlobalCode ->
+                promoGlobalCode?.let {
+                    if (!bboPromoCodes.contains(it) && !toBeRemovedPromoCodes.contains(it)) {
+                        toBeRemovedPromoCodes.add(it)
+                    }
+                }
+            }
+            validateUsePromoRequest.orders.forEach { order ->
+                order?.codes?.forEach {
+                    if (!bboPromoCodes.contains(it) && !toBeRemovedPromoCodes.contains(it)) {
+                        toBeRemovedPromoCodes.add(it)
                     }
                 }
             }
@@ -647,7 +679,6 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
         // Initialize coupon section
         val couponList = ArrayList<Visitable<*>>()
         var headerIdentifierId = 0
-        var hasAnyEnabledPromo = false
         response.couponListRecommendation.data.couponSections.forEach { couponSectionItem ->
             // Initialize eligibility header
             val eligibilityHeader = uiModelMapper.mapPromoEligibilityHeaderUiModel(couponSectionItem)
@@ -658,9 +689,6 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
             val tmpPromoHeaderList = ArrayList<Visitable<*>>()
             couponSectionItem.subSections.forEach { couponSubSection ->
                 val promoHeader = uiModelMapper.mapPromoListHeaderUiModel(couponSubSection, headerIdentifierId, couponSectionItem.isEnabled)
-                if (!hasAnyEnabledPromo && eligibilityHeader.uiState.isEnabled) {
-                    hasAnyEnabledPromo = true
-                }
 
                 if (eligibilityHeader.uiState.isEnabled) {
                     if (!eligibilityHeader.uiState.isCollapsed) {
@@ -712,7 +740,6 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
             }
         }
         _promoListUiModel.value = couponList
-        if (!hasAnyEnabledPromo) analytics.eventViewAvailablePromoListIneligibleProduct(getPageSource())
     }
 
     private fun initPromoInput() {
@@ -1257,6 +1284,79 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
         }
 
         return false
+    }
+
+    fun getPromotionMap(): Map<String, String> {
+        return mapOf(
+                "id" to "",
+                "name" to "",
+                "creative" to "",
+                "creative_url" to "",
+                "position" to "",
+                "category" to "",
+                "promo_id" to "",
+                "promo_code" to ""
+        )
+    }
+
+    fun sendAnalyticsPromoPageLoaded() {
+        val enabledPromotions = mutableListOf<Map<String, String>>()
+        val disabledPromotions = mutableListOf<Map<String, String>>()
+        promoListUiModel.value?.forEach {
+            if (it is PromoListItemUiModel) {
+                if (it.uiState.isParentEnabled && it.uiData.currentClashingPromo.isNullOrEmpty()) {
+                    if (it.uiState.isDisabled) {
+                        disabledPromotions.add(getPromotionMap())
+                    } else {
+                        enabledPromotions.add(getPromotionMap())
+                    }
+                } else {
+                    disabledPromotions.add(getPromotionMap())
+                }
+            } else if (it is PromoListHeaderUiModel && it.uiData.tmpPromoItemList.isNotEmpty()) {
+                it.uiData.tmpPromoItemList.forEach {
+                    if (it.uiState.isParentEnabled && it.uiData.currentClashingPromo.isNullOrEmpty()) {
+                        if (it.uiState.isDisabled) {
+                            disabledPromotions.add(getPromotionMap())
+                        } else {
+                            enabledPromotions.add(getPromotionMap())
+                        }
+                    } else {
+                        disabledPromotions.add(getPromotionMap())
+                    }
+                }
+            } else if (it is PromoEligibilityHeaderUiModel && !it.uiState.isEnabled && it.uiData.tmpPromo.isNotEmpty()) {
+                it.uiData.tmpPromo.forEach {
+                    if (it is PromoListItemUiModel && it.uiState.isParentEnabled && it.uiData.currentClashingPromo.isNullOrEmpty()) {
+                        if (it.uiState.isDisabled) {
+                            disabledPromotions.add(getPromotionMap())
+                        } else {
+                            enabledPromotions.add(getPromotionMap())
+                        }
+                    } else {
+                        disabledPromotions.add(getPromotionMap())
+                    }
+                }
+            }
+        }
+
+        if (enabledPromotions.size > 0) {
+            val promoViewMap = HashMap<String, Any>()
+            promoViewMap["promotions"] = enabledPromotions
+
+            val eCommerceMap = HashMap<String, Any>()
+            eCommerceMap["promoView"] = promoViewMap
+
+            analytics.eventViewAvailablePromoListEligiblePromo(getPageSource(), eCommerceMap)
+        } else if (disabledPromotions.size > 0) {
+            val promoViewMap = HashMap<String, Any>()
+            promoViewMap["promotions"] = disabledPromotions
+
+            val eCommerceMap = HashMap<String, Any>()
+            eCommerceMap["promoView"] = promoViewMap
+
+            analytics.eventViewAvailablePromoListIneligibleProduct(getPageSource(), eCommerceMap)
+        }
     }
 
     fun sendAnalyticsClickLihatDetailKupon(promoCode: String) {
