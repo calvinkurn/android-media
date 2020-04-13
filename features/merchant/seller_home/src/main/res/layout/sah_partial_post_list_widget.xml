@@ -13,8 +13,11 @@
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:textColor="@color/Neutral_N700_96"
+        android:textSize="@dimen/fontSize_lvl3"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0"
         app:typographyType="heading_5"
         app:typographyWeight="bold"
         tools:text="Info Seller" />
