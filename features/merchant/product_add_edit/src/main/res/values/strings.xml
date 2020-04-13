@@ -121,12 +121,14 @@
     <string name="label_add_product_description_tips">Tips buat deskripsi produk yang jelas</string>
     <string name="label_variant_title">Varian</string>
     <string name="label_variant_subtitle">Tambah varian warna, ukuran atau tipe lain agar pembeli mudah memilih</string>
-    <string name="label_add_variant">Ubah varian</string>
-    <string name="label_add_product_variant_tips">Tips buat deskripsi produk yang jelas</string>
+    <string name="label_variant_subtitle_added">Kamu sudah menambahkan varian</string>
+    <string name="label_add_variant">Tambah varian</string>
+    <string name="label_edit_variant">Ubah varian</string>
+    <string name="label_add_product_variant_tips">Tips atur stok &amp; harga dengan fitur Varian</string>
     <string name="label_video_title">Video</string>
     <string name="label_video_subtitle">Tambah video agar pembeli lebih paham tentang produkmu</string>
     <string name="label_video_url_placeholder">Link Video</string>
-    <string name="action_add_video">+ Tambah video</string>
+    <string name="action_add_video">Tambah video</string>
     <string name="action_next_button">Lanjut</string>
     <string name="error_video_not_valid">Pastikan link Youtube kamu benar</string>
     <string name="error_video_is_exist">Link video tidak boleh sama</string>
@@ -167,6 +169,10 @@
     <string name="product_name_is_more_than_seventy_character">Nama Produk lebih dari 70 karakter</string>
     <string name="product_name_should_be_not_empty">Nama produk tidak boleh kosong</string>
 
+    <!--Product Add Validation-->
+    <string name="error_invalid_category_id">Kategori tidak valid</string>
+    <string name="error_invalid_photo_count">Produk tidak memiliki foto</string>
+    <string name="error_invalid_name">Nama produk tidak valid</string>
 
     <!-- id -->
     <item name="name" type="id" />

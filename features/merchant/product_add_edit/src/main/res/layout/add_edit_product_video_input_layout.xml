@@ -22,6 +22,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_lvl2"
         android:text="@string/label_video_subtitle"
+        android:textColor="@color/grey_796"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvVideoHeaderTitle"
         app:typographyType="body_2" />

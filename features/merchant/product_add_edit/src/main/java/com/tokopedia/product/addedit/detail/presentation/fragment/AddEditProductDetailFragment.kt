@@ -830,8 +830,8 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         if (isPreOrder) {
             preOrderSwitch?.isChecked = true
             preOrderDurationUnitField?.textFieldInput?.setText(getString(getDurationUnit(detailInputModel.preorder.timeUnit)))
-            preOrderDurationField?.textFieldInput?.setText(detailInputModel.preorder.duration)
-            preOrderInputLayout?.show()
+            preOrderDurationField?.textFieldInput?.setText(detailInputModel.preorder.duration.toString())
+            viewModel.isPreOrderActivated.value = true
         }
 
         // product stock
