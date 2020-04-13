@@ -2,6 +2,7 @@ package com.tokopedia.shop_showcase.shop_showcase_management.presentation.fragme
 
 import android.app.Activity
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.text.Editable
@@ -149,7 +150,7 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_shop_showcase_list, container, false)
         appBarLayout = view.findViewById(R.id.appbar_layout_showcase_list)
-        swipeRefreshLayout = view.findViewById(R.id.shop_showcase_list_swipe_to_refresh)
+//        swipeRefreshLayout = view.findViewById(R.id.shop_showcase_list_swipe_to_refresh)
         btnBack = view.findViewById(R.id.btn_back_input_shop)
         btnReorder = view.findViewById(R.id.btn_reorder)
         btnAddEtalase = view.findViewById(R.id.btn_add_etalase)
@@ -240,10 +241,19 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
                 super.onScrolled(recyclerView, dx, dy)
                 currentScrollPosition += dy
 
-                if (currentScrollPosition == 0) {
-                    appBarLayout.background = MethodChecker.getDrawable(context, R.color.white)
-                } else {
-                    appBarLayout.background = MethodChecker.getDrawable(context, R.drawable.card_shadow_bottom)
+                val HAS_ELEVATION = 12
+                val NO_ELEVATION = 0
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    if (currentScrollPosition == 0) {
+                        appBarLayout.elevation = NO_ELEVATION.toFloat()
+//                    appBarLayout.context.setTheme(R.style.AppBarNoBottomShadow)
+//                    appBarLayout.background = MethodChecker.getDrawable(context, R.color.white)
+                    } else {
+                        appBarLayout.elevation = HAS_ELEVATION.toFloat()
+//                    appBarLayout.context.setTheme(R.style.ThemeOverlay_AppCompat_ActionBar)
+//                    appBarLayout.background = MethodChecker.getDrawable(context, R.drawable.card_shadow_bottom)
+                    }
                 }
             }
         })
