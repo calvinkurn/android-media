@@ -18,8 +18,9 @@ import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.sellerapp.deeplink.DeepLinkDelegate;
 import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
 import com.tokopedia.sellerapp.utils.timber.TimberWrapper;
-import com.tokopedia.sellerapp.welcome.WelcomeActivity;
 import com.tokopedia.sellerhome.view.activity.SellerHomeActivity;
+import com.tokopedia.selleronboarding.activity.SellerOnboardingActivity;
+import com.tokopedia.selleronboarding.utils.OnboardingPreference;
 
 import static com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.OPEN_SHOP;
 
