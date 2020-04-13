@@ -125,24 +125,4 @@ class PlayBottomSheetViewModel @Inject constructor(
         super.onCleared()
         job.cancelChildren()
     }
-
-//    private fun setMockVariantSheetContent(action: ProductAction) {
-//        _observableProductVariant.value = PlayResult.Success(VariantSheetUiModel(
-//                product = ProductLineUiModel(
-//                        id = "123",
-//                        imageUrl = "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/5/8/52943980/52943980_908dc570-338d-46d5-aed2-4871f2840d0d_1664_1664",
-//                        title = "Product Value",
-//                        isVariantAvailable = true,
-//                        price = DiscountedPrice(
-//                                originalPrice = "Rp20.000",
-//                                discountPercent = 10,
-//                                discountedPrice = "Rp20.000"
-//                        ),
-//                        stock = OutOfStock,
-//                        minQty = 1,
-//                        applink = null
-//                ),
-//                action = action
-//        ))
-//    }
 }

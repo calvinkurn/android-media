@@ -6,6 +6,7 @@ include "features:common:nps"
 include "features:common:resources_common"
 include "features:common:qr_scanner"
 include "features:category:common_tradein"
+include "features:category:kategori"
 
 include "features:communication:broadcast_message_common"
 
