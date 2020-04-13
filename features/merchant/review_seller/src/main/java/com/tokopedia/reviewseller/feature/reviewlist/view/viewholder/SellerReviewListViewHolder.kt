@@ -25,6 +25,6 @@ class SellerReviewListViewHolder(itemView: View): AbstractViewHolder<ProductRevi
         ImageHandler.LoadImage(ivItemProduct, element?.productImageUrl)
         tgTitleProduct.text = element?.productName
         tgRatingCount.text = element?.rating?.toString()
-        tgReviewCount.text = element?.reviewCount?.toString()
+        tgReviewCount.text = String.format(getString(R.string.period_seller_review), element?.reviewCount.toString())
     }
 }

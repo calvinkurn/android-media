@@ -19,7 +19,7 @@ class ReviewSummaryViewHolder(itemView: View): AbstractViewHolder<ProductRatingO
         tgCountRating.text = element?.rating?.toString()
         tgCountReview.text = element?.reviewCount?.toString()
         tgFiveReview.text = "/ 5.0"
-        tgPeriodReview.text = element?.period
+        tgPeriodReview.text = "1 Des 2019 - Hari Ini"
     }
 
     companion object {
