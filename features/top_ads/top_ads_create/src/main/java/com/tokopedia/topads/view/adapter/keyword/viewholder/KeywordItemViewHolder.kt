@@ -32,7 +32,7 @@ class KeywordItemViewHolder(val view: View, private var actionSelected: ((pos: I
             view.checkBox.setOnCheckedChangeListener(null)
             view.checkBox.isChecked = item.isChecked
             try {
-                view.keyword_count.text = Utils.format(Integer.parseInt(it.totalSearch).toLong())
+                view.keyword_count.text = Utils.convertToCurrencyString(it.totalSearch.toLong())
             } catch (e: Exception) {
                 view.keyword_count.text = it.totalSearch
             }
