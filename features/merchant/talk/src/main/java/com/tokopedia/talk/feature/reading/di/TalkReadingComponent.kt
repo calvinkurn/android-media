@@ -9,5 +9,4 @@ import dagger.Component
 @TalkReadingScope
 interface TalkReadingComponent {
     fun inject(talkReadingFragment: TalkReadingFragment)
-    fun inject(talkReadingActivity: TalkReadingActivity)
 }

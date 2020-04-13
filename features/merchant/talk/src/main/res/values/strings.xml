@@ -76,5 +76,22 @@
     <string name="success_follow_talk">Berhasil mengikuti diskusi</string>
     <string name="send">Kirim</string>
 
+    <string name="talk_send">Kirim</string>
+
     <string name="reading_connection_error">Oops, ada kendala dengan koneksi internetmu. Coba lagi, ya!</string>
+    <string name="reading_empty_title">Malu bertanya sesat di jalan</string>
+    <string name="reading_empty_subtitle">Masih ada hal yang mengganjal di hati? Kirim aja pertanyaanmu terkait barang ini di sini!</string>
+
+    <string name="toaster_follow_success">Kamu berhasil follow Tanya-Jawab ini. Nantikan notifikasinya di Inbox, ya!</string>
+    <string name="toaster_unfollow_success">Kamu sudah tidak lagi follow Tanya-Jawab ini.</string>
+    <string name="reply_editText_placeholder">Tulis jawabanmu…</string>
+    <string name="reply_header_tnc">Inilah tempat buat kamu ngobrolin segala hal seputar barang ini. Baca juga <b>syarat &amp; ketentuan</b> dan ketentuannya, ya.</string>
+
+    <string name="toaster_report_success">Laporanmu berhasil dikirim dan akan segera ditindaklanjuti.</string>
+    <string name="report_header">Bantu kami memahami apa yang terjadi. Mengapa kamu melaporkan hal ini?</string>
+    <string name="report_spam_option">Ini adalah spam</string>
+    <string name="report_content_option">Konten mengandung SARA, diskriminasi, vulgar, ancaman, dan pelanggaran nilai/norma sosial</string>
+    <string name="report_other_option">Lainnya</string>
+    <string name="report_editTExt_placeholder">Alasan</string>
+
 </resources>

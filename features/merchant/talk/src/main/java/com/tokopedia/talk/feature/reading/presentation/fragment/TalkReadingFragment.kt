@@ -88,4 +88,8 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel, TalkReadingAdap
     private fun showPageLoading() {
         pageLoading.visibility = View.VISIBLE
     }
+
+    private fun showPageError() {
+        pageError.visibility = View.VISIBLE
+    }
 }

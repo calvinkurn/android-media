@@ -1,17 +1,15 @@
 package com.tokopedia.talk.feature.reading.presentation.activity
 
 import android.os.Bundle
-import android.view.View
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.talk.common.TalkConstants.NO_SHADOW_ELEVATION
 import com.tokopedia.talk.common.di.DaggerTalkComponent
 import com.tokopedia.talk.common.di.TalkComponent
 import com.tokopedia.talk.feature.reading.presentation.fragment.TalkReadingFragment
-import com.tokopedia.talk.feature.reading.presentation.viewmodel.TalkReadingViewModel
-import javax.inject.Inject
 
 class TalkReadingActivity : BaseSimpleActivity(), HasComponent<TalkComponent> {
 
@@ -41,7 +39,7 @@ class TalkReadingActivity : BaseSimpleActivity(), HasComponent<TalkComponent> {
     }
 
     private fun setUpToolBar() {
-        supportActionBar?.elevation = 0F;
+        supportActionBar?.elevation = NO_SHADOW_ELEVATION
     }
 
 
