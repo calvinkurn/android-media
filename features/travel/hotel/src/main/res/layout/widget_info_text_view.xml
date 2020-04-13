@@ -34,7 +34,7 @@
         android:layout_marginTop="@dimen/spacing_lvl2"
         android:lineSpacingExtra="@dimen/sp_6"
         android:text="@string/hotel_read_more_title"
-        android:textColor="@color/green_500"
+        android:textColor="@color/Green_G500"
         android:visibility="gone"
         app:fontSize="micro" />
 </LinearLayout>

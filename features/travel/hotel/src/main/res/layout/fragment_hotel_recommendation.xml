@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="@color/Neutral_N0"
     android:fillViewport="true">
 
     <LinearLayout
@@ -33,7 +33,7 @@
             android:id="@+id/seperator"
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@drawable/bg_line_separator"/>
+            android:background="@drawable/bg_hotel_line_seperator"/>
 
         <LinearLayout
             android:id="@+id/recent_search_layout"
@@ -68,7 +68,7 @@
                     android:layout_alignParentRight="true"
                     android:gravity="end"
                     android:text="@string/hotel_destination_recent_search_delete_all"
-                    android:textColor="@color/green_500"
+                    android:textColor="@color/Green_G500"
                     app:fontSize="micro" />
             </RelativeLayout>
 
@@ -85,7 +85,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_marginTop="@dimen/hotel_20dp"
-                android:background="@drawable/bg_line_separator" />
+                android:background="@drawable/bg_hotel_line_seperator" />
         </LinearLayout>
 
         <LinearLayout
@@ -98,7 +98,7 @@
                 android:id="@+id/popular_search_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/white"
+                android:background="@color/Neutral_N0"
                 android:paddingStart="@dimen/layout_lvl2"
                 android:paddingLeft="@dimen/layout_lvl2"
                 android:paddingTop="@dimen/layout_lvl3"

@@ -28,7 +28,7 @@
         android:layout_marginStart="@dimen/layout_lvl2"
         android:layout_marginLeft="@dimen/layout_lvl2"
         android:gravity="end"
-        android:textColor="@color/deep_orange_500"
+        android:textColor="@color/hotel_dark_orange_300"
         app:fontSize="title"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/title"

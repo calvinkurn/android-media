@@ -22,7 +22,7 @@
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:textSize="@dimen/fontSize_lvl2"
-        android:textColor="@color/light_primary"
+        android:textColor="@color/Neutral_N700_96"
         app:textViewTheme="lightPrimary"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/title"

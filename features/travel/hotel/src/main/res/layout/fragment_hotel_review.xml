@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white">
+    android:background="@color/Neutral_N0">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/app_bar_layout"
@@ -15,7 +15,7 @@
         <com.google.android.material.appbar.CollapsingToolbarLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:contentScrim="@color/white"
+            app:contentScrim="@color/Neutral_N0"
             app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
             <LinearLayout
@@ -91,7 +91,7 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/hotel_1dp"
-                    android:background="@drawable/bg_line_separator" />
+                    android:background="@drawable/bg_hotel_line_seperator" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
@@ -127,7 +127,7 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="@dimen/hotel_1dp"
-            android:background="@drawable/bg_line_separator" />
+            android:background="@drawable/bg_hotel_line_seperator" />
 
         <com.tokopedia.common.travel.widget.filterchips.FilterChipRecyclerView
             android:id="@+id/filter_recycler_view"
@@ -146,7 +146,7 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="@dimen/hotel_1dp"
-            android:background="@drawable/bg_line_separator" />
+            android:background="@drawable/bg_hotel_line_seperator" />
 
     </com.google.android.material.appbar.AppBarLayout>
 

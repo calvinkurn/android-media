@@ -72,7 +72,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/hotel_1dp"
                 android:layout_marginTop="@dimen/layout_lvl2"
-                android:background="@color/grey_300"
+                android:background="@color/hotel_grey_300"
                 app:layout_constraintTop_toBottomOf="@+id/transaction_status" />
 
             <com.tokopedia.hotel.common.presentation.widget.RoomDurationView
@@ -84,7 +84,7 @@
                 android:id="@+id/seperator_3"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/hotel_1dp"
-                android:background="@color/grey_300"
+                android:background="@color/hotel_grey_300"
                 app:layout_constraintTop_toBottomOf="@+id/checkin_checkout_date" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -222,7 +222,7 @@
                     android:layout_marginStart="@dimen/layout_lvl1"
                     android:layout_marginLeft="@dimen/layout_lvl1"
                     android:text="@string/hotel_order_detail_contact_hotel"
-                    android:textColor="@color/tkpd_main_green"
+                    android:textColor="@color/Green_G500"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/call_icon"
@@ -256,7 +256,7 @@
                 app:fontSize="small"
                 app:textViewTheme="lightPrimary"
                 app:weight="medium"
-                tools:textColor="@color/light_primary"
+                tools:textColor="@color/Neutral_N700_96"
                 tools:textSize="@dimen/sp_14"
                 tools:textStyle="bold" />
 
@@ -286,7 +286,7 @@
                 app:textViewTheme="lightPrimary"
                 app:weight="medium"
                 tools:text="Stevanus Kurniawan Suharyanto"
-                tools:textColor="@color/light_primary"
+                tools:textColor="@color/Neutral_N700_96"
                 tools:textSize="@dimen/sp_14"
                 tools:textStyle="bold" />
         </androidx.constraintlayout.widget.ConstraintLayout>

@@ -33,6 +33,6 @@
         tools:text="1 Sep 2017, 05:00 WIB"
         tools:textSize="@dimen/sp_12"
         tools:textStyle="bold"
-        tools:textColor="@color/light_primary"/>
+        tools:textColor="@color/Neutral_N700_96"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

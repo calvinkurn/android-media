@@ -33,7 +33,7 @@
                     android:id="@+id/transaction_status"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/light_primary"
+                    android:textColor="@color/Neutral_N700_96"
                     app:fontSize="title"
                     app:layout_constraintTop_toBottomOf="@+id/transaction_status_hint"
                     app:textViewTheme="lightPrimary"
@@ -47,7 +47,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/hotel_1dp"
                     android:layout_marginTop="@dimen/layout_lvl2"
-                    android:background="@color/grey_300"
+                    android:background="@color/hotel_grey_300"
                     app:layout_constraintTop_toBottomOf="@+id/transaction_status" />
 
                 <com.tokopedia.design.component.TextViewCompat
@@ -79,7 +79,7 @@
                 android:id="@+id/transaction_seperator_2"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/hotel_1dp"
-                android:background="@color/grey_300"
+                android:background="@color/hotel_grey_300"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -98,7 +98,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:textViewTheme="lightPrimary"
                     tools:text="IVR/20170713/XVII/VII/16205811"
-                    tools:textColor="@color/light_primary"
+                    tools:textColor="@color/Neutral_N700_96"
                     tools:textSize="@dimen/sp_12" />
 
                 <com.tokopedia.design.component.TextViewCompat
@@ -107,7 +107,7 @@
                     android:layout_height="wrap_content"
                     android:padding="@dimen/hotel_6dp"
                     android:text="@string/hotel_order_detail_see_invoice_text"
-                    android:textColor="@color/tkpd_main_green"
+                    android:textColor="@color/Green_G500"
                     app:fontSize="micro"
                     app:layout_constraintBottom_toBottomOf="@+id/invoice_number"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -139,7 +139,7 @@
                 android:layout_width="@dimen/layout_lvl0"
                 android:layout_height="25dp"
                 android:text="@string/hotel_order_detail_see_evoucher_text"
-                android:textColor="@color/tkpd_main_green"
+                android:textColor="@color/Green_G500"
                 app:fontSize="small"
                 app:layout_constraintEnd_toStartOf="@+id/see_evoucher_next_icon"
                 app:layout_constraintStart_toStartOf="parent"
@@ -154,7 +154,7 @@
                 android:layout_height="wrap_content"
                 android:padding="@dimen/hotel_6dp"
                 android:text="@string/hotel_order_detail_see_invoice_text"
-                android:textColor="@color/tkpd_main_green"
+                android:textColor="@color/Green_G500"
                 app:layout_constraintBottom_toBottomOf="@+id/see_evoucher_text"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/see_evoucher_text"

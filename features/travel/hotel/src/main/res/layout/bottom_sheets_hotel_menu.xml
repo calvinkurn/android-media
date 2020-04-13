@@ -21,7 +21,7 @@
         android:id="@+id/v_first_separator"
         android:layout_width="match_parent"
         android:layout_height="@dimen/hotel_1dp"
-        android:background="@drawable/bg_line_separator" />
+        android:background="@drawable/bg_hotel_line_seperator" />
 
     <com.tokopedia.design.component.TextViewCompat
         android:id="@+id/tv_hotel_menu_promo"
@@ -38,7 +38,7 @@
         android:id="@+id/v_second_separator"
         android:layout_width="match_parent"
         android:layout_height="@dimen/hotel_1dp"
-        android:background="@drawable/bg_line_separator" />
+        android:background="@drawable/bg_hotel_line_seperator" />
 
     <com.tokopedia.design.component.TextViewCompat
         android:id="@+id/tv_hotel_menu_help"

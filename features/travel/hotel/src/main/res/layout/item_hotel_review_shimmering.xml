@@ -44,7 +44,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="@dimen/hotel_1dp"
-        android:background="@drawable/bg_line_separator"/>
+        android:background="@drawable/bg_hotel_line_seperator"/>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"

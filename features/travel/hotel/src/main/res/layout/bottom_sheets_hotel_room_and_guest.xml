@@ -23,7 +23,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="@dimen/hotel_1dp"
-        android:background="@color/divider_color" />
+        android:background="@color/hotel_divider_color_gray" />
 
     <com.tokopedia.common.travel.widget.SelectPassengerView
         android:id="@+id/spv_hotel_adult"
@@ -40,7 +40,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="@dimen/hotel_1dp"
-        android:background="@color/divider_color" />
+        android:background="@color/hotel_divider_color_gray" />
 
     <com.tokopedia.design.component.ButtonCompat
         android:id="@+id/btn_hotel_save_guest"

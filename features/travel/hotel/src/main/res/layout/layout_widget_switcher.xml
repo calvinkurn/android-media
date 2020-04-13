@@ -67,7 +67,7 @@
     <View
         android:layout_width="1dp"
         android:layout_height="@dimen/layout_lvl0"
-        android:background="@color/grey_300"
+        android:background="@color/hotel_grey_300"
         android:visibility="visible"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

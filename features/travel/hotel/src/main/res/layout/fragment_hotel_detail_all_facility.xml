@@ -11,7 +11,7 @@
         footerColor="@color/Green_G500"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"
+        android:background="@color/Neutral_N0"
         android:elevation="@dimen/spacing_lvl1"
         app:tabIndicatorColor="@color/green_all_facility_tab_underlined"
         app:tabMode="scrollable"

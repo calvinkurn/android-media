@@ -88,7 +88,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@drawable/bg_line_separator"
+        android:background="@drawable/bg_hotel_line_seperator"
         android:layout_marginLeft="@dimen/layout_lvl2"
         app:layout_constraintBottom_toBottomOf="parent"/>
 

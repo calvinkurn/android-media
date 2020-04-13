@@ -10,7 +10,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="@dimen/hotel_1dp"
-        android:background="@drawable/bg_line_separator" />
+        android:background="@drawable/bg_hotel_line_seperator" />
 
 
     <LinearLayout
@@ -59,7 +59,7 @@
             android:layout_marginLeft="@dimen/hotel_12dp"
             android:layout_marginEnd="@dimen/hotel_12dp"
             android:layout_marginRight="@dimen/hotel_12dp"
-            android:background="@drawable/bg_line_separator" />
+            android:background="@drawable/bg_hotel_line_seperator" />
 
         <LinearLayout
             android:id="@+id/hotel_room_and_guest_layout"
@@ -126,6 +126,6 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="@dimen/hotel_1dp"
-        android:background="@drawable/bg_line_separator" />
+        android:background="@drawable/bg_hotel_line_seperator" />
 
 </LinearLayout>

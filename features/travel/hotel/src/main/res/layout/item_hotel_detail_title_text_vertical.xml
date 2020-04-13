@@ -23,7 +23,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/hotel_3dp"
-        android:textColor="@color/light_primary"
+        android:textColor="@color/Neutral_N700_96"
         app:fontSize="small"
         app:layout_constraintTop_toBottomOf="@+id/title"
         app:textViewTheme="lightPrimary"

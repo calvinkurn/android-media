@@ -11,7 +11,7 @@
     android:layout_marginEnd="@dimen/layout_lvl2"
     android:layout_marginRight="@dimen/layout_lvl2"
     android:layout_marginBottom="@dimen/layout_lvl1"
-    app:cardBackgroundColor="@color/cardview_light_background"
+    app:cardBackgroundColor="@color/Neutral_N0"
     app:cardCornerRadius="@dimen/layout_lvl1"
     app:cardElevation="@dimen/hotel_3dp"
     app:cardPreventCornerOverlap="false">
@@ -99,7 +99,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_marginTop="@dimen/layout_lvl1"
-                android:background="@drawable/bg_line_separator"
+                android:background="@drawable/bg_hotel_line_seperator"
                 app:layout_constraintTop_toBottomOf="@+id/room_meta_info_layout" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -220,7 +220,7 @@
                     android:id="@+id/room_left_text_view"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/red_pink"
+                    android:textColor="@color/Red_R500"
                     app:fontSize="micro"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"

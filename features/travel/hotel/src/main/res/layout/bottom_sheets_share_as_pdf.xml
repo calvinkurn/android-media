@@ -16,7 +16,7 @@
         android:id="@+id/divider_list"
         android:layout_width="match_parent"
         android:layout_height="@dimen/hotel_1dp"
-        android:background="@color/grey_200" />
+        android:background="@color/hotel_divider_color_gray" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -67,7 +67,7 @@
                 android:layout_marginStart="@dimen/layout_lvl1"
                 android:layout_marginLeft="@dimen/layout_lvl1"
                 android:text="@string/hotel_share_add_email"
-                android:textColor="@color/green_500"
+                android:textColor="@color/Green_G500"
                 app:fontSize="small" />
 
         </LinearLayout>
