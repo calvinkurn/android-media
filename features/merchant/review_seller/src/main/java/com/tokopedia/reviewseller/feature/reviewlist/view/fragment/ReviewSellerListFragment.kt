@@ -14,15 +14,16 @@ import kotlinx.android.synthetic.main.fragment_seller_review_list.*
 /**
  * @author by milhamj on 2020-02-14.
  */
-class ReviewSellerListFragment: BaseDaggerFragment() {
+class ReviewSellerListFragment : BaseDaggerFragment() {
 
     private val tabList = ArrayList<ReviewFragmentAdapter.ReviewFragmentItem>()
     private var fragmentAdapter: ReviewFragmentAdapter? = null
     private var viewPager: ViewPager? = null
 
     override fun getScreenName(): String = ""
+    override fun initInjector() {
 
-    override fun initInjector() {}
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return LayoutInflater.from(context).inflate(R.layout.fragment_seller_review_list, container, false)
@@ -49,7 +50,7 @@ class ReviewSellerListFragment: BaseDaggerFragment() {
         tabLayout.setupWithViewPager(viewPager)
         fragmentAdapter?.setupLayout(context, tab_review.getUnifyTabLayout())
 
-        tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener{
+        tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabReselected(tab: TabLayout.Tab?) {
                 fragmentAdapter?.handleSelectedTab(context, tab, true)
             }

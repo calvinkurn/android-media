@@ -18,9 +18,9 @@ import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.reviewseller.R
 import com.tokopedia.reviewseller.common.ReviewSellerConstant
+import com.tokopedia.reviewseller.feature.reviewlist.di.component.ReviewProductListComponent
 import com.tokopedia.reviewseller.feature.reviewlist.view.adapter.DataEndlessScrollListener
 import com.tokopedia.reviewseller.feature.reviewlist.view.adapter.ReviewSellerAdapter
 import com.tokopedia.reviewseller.feature.reviewlist.view.adapter.SellerReviewListTypeFactory
@@ -35,7 +35,7 @@ import javax.inject.Inject
 /**
  * A simple [Fragment] subclass.
  */
-class RatingProductFragment: BaseListFragment<Visitable<*>, SellerReviewListTypeFactory>() {
+class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTypeFactory>() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -89,25 +89,24 @@ class RatingProductFragment: BaseListFragment<Visitable<*>, SellerReviewListType
 
     override fun getAdapterTypeFactory(): SellerReviewListTypeFactory = sellerReviewListTypeFactory
 
-    override fun callInitialLoadAutomatically(): Boolean {
-        return false
-    }
-
     override fun onItemClicked(t: Visitable<*>?) {}
 
-    override fun getScreenName(): String { return getString(R.string.title_review_rating_product) }
+    override fun getScreenName(): String {
+        return getString(R.string.title_review_rating_product)
+    }
 
-    override fun initInjector() {}
+    override fun initInjector() {
+        getComponent(ReviewProductListComponent::class.java).inject(this)
+    }
 
     override fun loadInitialData() {
         reviewSellerAdapter.clearAllElements()
         rvRatingProduct?.visible()
         globalError_reviewSeller?.hide()
+        emptyState_reviewProduct?.hide()
         showLoading()
         adapter.addElement(ReviewSellerConstant.filterAndSortComposition)
         viewModel?.getProductRatingData(sortBy.toString(), filterBy.toString())
-//        adapter.addElement(ReviewSellerConstant.summaryReviewProduct)
-//        adapter.addElement(ReviewSellerConstant.listProductReview)
     }
 
     override fun createEndlessRecyclerViewListener(): EndlessRecyclerViewScrollListener {
@@ -125,7 +124,6 @@ class RatingProductFragment: BaseListFragment<Visitable<*>, SellerReviewListType
         return view.findViewById(R.id.rvRatingProduct)
     }
 
-
     private fun observeLiveData() {
         viewModel?.productRatingOverall?.observe(this, Observer {
             hideLoading()
@@ -134,7 +132,7 @@ class RatingProductFragment: BaseListFragment<Visitable<*>, SellerReviewListType
                     onSuccessGetProductRatingOverallData(it.data)
                 }
                 is Fail -> {
-                    onErrorGetProductRatingOverallData(it.throwable)
+                    onErrorGetReviewSellerData(it.throwable)
                 }
             }
         })
@@ -145,6 +143,9 @@ class RatingProductFragment: BaseListFragment<Visitable<*>, SellerReviewListType
                 is Success -> {
                     onSuccessGetReviewProductListData(it.data.first, it.data.second)
                 }
+                is Fail -> {
+                    onErrorGetReviewSellerData(it.throwable)
+                }
             }
         })
     }
@@ -154,8 +155,8 @@ class RatingProductFragment: BaseListFragment<Visitable<*>, SellerReviewListType
         reviewSellerAdapter.setProductRatingOverallData(data)
     }
 
-    private fun onErrorGetProductRatingOverallData(throwable: Throwable) {
-        if(throwable is MessageErrorException) {
+    private fun onErrorGetReviewSellerData(throwable: Throwable) {
+        if (throwable is Exception) {
             globalError_reviewSeller?.setType(GlobalError.SERVER_ERROR)
         } else {
             globalError_reviewSeller?.setType(GlobalError.NO_CONNECTION)
@@ -164,19 +165,23 @@ class RatingProductFragment: BaseListFragment<Visitable<*>, SellerReviewListType
         globalError_reviewSeller?.show()
         rvRatingProduct?.hide()
 
-        globalError_reviewSeller.setOnClickListener {
+        globalError_reviewSeller.setActionClickListener {
             loadInitialData()
         }
     }
 
     private fun onSuccessGetReviewProductListData(hasNextPage: Boolean, reviewProductList: List<ProductReviewUiModel>) {
         reviewSellerAdapter.hideLoading()
-        reviewSellerAdapter.setProductListReviewData(reviewProductList)
+        if (reviewProductList.isEmpty()) {
+            emptyState_reviewProduct?.visible()
+        } else {
+            reviewSellerAdapter.setProductListReviewData(reviewProductList)
+        }
         updateScrollListenerState(hasNextPage)
     }
 
     fun loadNextPage(page: Int) {
-        viewModel?.getProductRatingData(
+        viewModel?.getNextProductReviewList(
                 sortBy = sortBy.toString(),
                 filterBy = filterBy.toString(),
                 page = page
