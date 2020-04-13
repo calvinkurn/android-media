@@ -111,6 +111,9 @@
         <meta-data
             android:name="APP_ID"
             android:value="@string/key_moengage" />
+        <meta-data
+            android:name="com.bugsnag.android.API_KEY"
+            android:value="50d42520ce58b3168a5a721995812a72"/>
         <uses-library
             android:name="org.apache.http.legacy"
             android:required="false" />
