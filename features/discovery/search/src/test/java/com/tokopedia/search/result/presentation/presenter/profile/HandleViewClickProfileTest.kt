@@ -14,6 +14,8 @@ class HandleViewClickProfileTest: Spek({
     InstantTaskExecutorRuleSpek(this)
 
     Feature("Handle View Click Profile") {
+
+        
         createTestInstance()
 
         Scenario("Click Profile") {

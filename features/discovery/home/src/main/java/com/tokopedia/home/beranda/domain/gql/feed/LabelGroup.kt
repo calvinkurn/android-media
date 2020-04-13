@@ -7,9 +7,9 @@ import com.google.gson.annotations.SerializedName
  */
 class LabelGroup (
         @SerializedName("type")
-        val type: String,
+        val type: String = "",
         @SerializedName("title")
-        val title: String,
+        val title: String = "",
         @SerializedName("position")
-        val position: String
+        val position: String = ""
 )

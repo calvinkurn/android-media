@@ -221,7 +221,11 @@ class RevampedDynamicFilterActivity : BaseActivity(), DynamicFilterView {
 
     }
 
-    override fun onPriceEditedFromTextInput(minValue: Int, maxValue: Int) {
+    override fun onMinPriceEditedFromTextInput(minValue: Int) {
+
+    }
+
+    override fun onMaxPriceEditedFromTextInput(maxValue: Int) {
 
     }
 
