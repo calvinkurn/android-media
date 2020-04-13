@@ -13,10 +13,9 @@ import io.mockk.coVerify
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.spyk
 import junit.framework.Assert.*
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.TestCoroutineDispatcher
+import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -35,8 +34,10 @@ class OtherMenuViewModelTest {
         MockKAnnotations.init(this)
     }
 
+    private val testDispatcher = TestCoroutineDispatcher()
+
     private val mViewModel: OtherMenuViewModel by lazy {
-        OtherMenuViewModel(Dispatchers.Unconfined, getAllShopInfoUseCase)
+        OtherMenuViewModel(testDispatcher, getAllShopInfoUseCase)
     }
 
     @Test
@@ -75,7 +76,7 @@ class OtherMenuViewModelTest {
     }
 
     @Test
-    fun `Check delay will alter isToasterAlreadyShown between true and false`() = runBlocking {
+    fun `Check delay will alter isToasterAlreadyShown between true and false`() = testDispatcher.runBlockingTest {
 
         val mockViewModel = spyk(mViewModel, recordPrivateCalls = true)
 
@@ -85,11 +86,13 @@ class OtherMenuViewModelTest {
             mockViewModel["checkDelayErrorResponseTrigger"]()
         }
 
+        testDispatcher.pauseDispatcher()
+
         mockViewModel.isToasterAlreadyShown.observeOnce {
             assertTrue(it)
         }
 
-        delay(5000L)
+        testDispatcher.resumeDispatcher()
 
         mockViewModel.isToasterAlreadyShown.observeOnce {
             assertFalse(it)

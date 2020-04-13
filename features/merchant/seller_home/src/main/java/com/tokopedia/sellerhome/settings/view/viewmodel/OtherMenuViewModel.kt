@@ -9,7 +9,9 @@ import com.tokopedia.sellerhome.settings.view.uimodel.shopinfo.SettingShopInfoUi
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 import javax.inject.Named
 class OtherMenuViewModel @Inject constructor(
@@ -47,9 +49,7 @@ class OtherMenuViewModel @Inject constructor(
 
     private fun getAllShopInfoData() {
         launchCatchError(block = {
-            _settingShopInfoLiveData.value = Success(withContext(Dispatchers.IO) {
-                getAllShopInfoUseCase.executeOnBackground()
-            })
+            _settingShopInfoLiveData.value = Success(getAllShopInfoUseCase.executeOnBackground())
         }, onError = {
             _settingShopInfoLiveData.value = Fail(it)
         })
