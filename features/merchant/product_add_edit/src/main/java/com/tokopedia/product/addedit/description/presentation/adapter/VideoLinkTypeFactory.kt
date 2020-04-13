@@ -31,6 +31,8 @@ class VideoLinkTypeFactory: BaseAdapterTypeFactory(){
     class VideoLinkViewHolder(val view: View?, private val listener: VideoLinkListener?)
         : AbstractViewHolder<VideoLinkModel>(view) {
 
+        var isFirstLoaded = true
+
         var textWatcher: TextWatcher = object : TextWatcher {
             override fun beforeTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {}
 
@@ -43,14 +45,24 @@ class VideoLinkTypeFactory: BaseAdapterTypeFactory(){
 
         override fun bind(element: VideoLinkModel) {
             // Remove listener and set the text so it will not trigger textWatcher
-            itemView.textFieldUrl.apply {
-                textFieldInput.removeTextChangedListener(textWatcher)
-                setText(element.inputUrl)
-                textFieldInput.addTextChangedListener(textWatcher)
-                requestFocus()
-                placeCursorToEnd()
+            if (isFirstLoaded) {
+                itemView.textFieldUrl.apply {
+                    textFieldInput.addTextChangedListener(textWatcher)
+                    setText(element.inputUrl)
+                }
+                isFirstLoaded = false
+            } else {
+                itemView.textFieldUrl.apply {
+                    textFieldInput.removeTextChangedListener(textWatcher)
+                    setText(element.inputUrl)
+                    textFieldInput.addTextChangedListener(textWatcher)
+                    requestFocus()
+                    placeCursorToEnd()
+                }
             }
-            loadLayout(element.inputImage, element.inputTitle, element.inputDescription, element.errorMessage)
+
+            loadLayout(element.inputUrl, element.inputImage, element.inputTitle,
+                    element.inputDescription, element.errorMessage)
 
             itemView.textFieldUrl.getSecondIcon().setOnClickListener {
                 itemView.textFieldUrl.clearFocus()
@@ -59,12 +71,14 @@ class VideoLinkTypeFactory: BaseAdapterTypeFactory(){
 
         }
 
-        private fun loadLayout(imageUrl: String,
+        private fun loadLayout(inputUrl: String,
+                               imageUrl: String,
                                inputTitle: String,
                                inputDescription: String,
                                errorMessage: String) {
             itemView.apply {
                 cardThumbnail.visibility = if (inputTitle.isEmpty()) View.GONE else View.VISIBLE
+                textFieldUrl.textFieldIcon2.visibility = if (inputUrl.isEmpty()) View.GONE else View.VISIBLE
                 imgThumbnail.urlSrc = imageUrl
                 tvVideoTitle.text = inputTitle
                 tvVideoSubtitle.text = inputDescription

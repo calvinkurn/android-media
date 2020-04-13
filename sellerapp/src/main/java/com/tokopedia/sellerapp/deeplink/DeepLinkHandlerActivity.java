@@ -27,6 +27,8 @@ import com.tokopedia.flashsale.management.applink.FlashsaleDeeplinkModule;
 import com.tokopedia.flashsale.management.applink.FlashsaleDeeplinkModuleLoader;
 import com.tokopedia.gm.applink.GMApplinkModule;
 import com.tokopedia.gm.applink.GMApplinkModuleLoader;
+import com.tokopedia.homecredit.applink.HomeCreditAppLinkModule;
+import com.tokopedia.homecredit.applink.HomeCreditAppLinkModuleLoader;
 import com.tokopedia.inbox.deeplink.InboxDeeplinkModule;
 import com.tokopedia.inbox.deeplink.InboxDeeplinkModuleLoader;
 import com.tokopedia.loginregister.common.applink.LoginRegisterApplinkModule;
@@ -57,6 +59,8 @@ import com.tokopedia.updateinactivephone.applink.ChangeInactivePhoneApplinkModul
 import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.useridentification.applink.UserIdentificationApplinkModule;
 import com.tokopedia.useridentification.applink.UserIdentificationApplinkModuleLoader;
+import com.tokopedia.webview.WebViewApplinkModule;
+import com.tokopedia.webview.WebViewApplinkModuleLoader;
 
 import static com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.OPEN_SHOP;
 
@@ -82,7 +86,9 @@ import static com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.OPE
         UserIdentificationApplinkModule.class,
         FlashsaleDeeplinkModule.class,
         CreatePostModule.class,
-        RNDevOptionsApplinkModule.class
+        RNDevOptionsApplinkModule.class,
+        WebViewApplinkModule.class,
+        HomeCreditAppLinkModule.class
 })
 /* **
  * Navigation will via RouteManager -> manifest instead.
@@ -112,7 +118,9 @@ public class DeepLinkHandlerActivity extends AppCompatActivity {
                 new UserIdentificationApplinkModuleLoader(),
                 new FlashsaleDeeplinkModuleLoader(),
                 new CreatePostModuleLoader(),
-                new RNDevOptionsApplinkModuleLoader()
+                new RNDevOptionsApplinkModuleLoader(),
+                new WebViewApplinkModuleLoader(),
+                new HomeCreditAppLinkModuleLoader()
         );
     }
 

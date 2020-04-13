@@ -14,6 +14,7 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
@@ -30,13 +31,17 @@ import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.Com
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_DESCRIPTION_INPUT
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_DETAIL_INPUT
+import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_PRODUCT_SIZECHART
+import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_PRODUCT_VARIANT_SELECTION
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_SHIPMENT_INPUT
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_VARIANT_INPUT
+import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_VARIANT_PICKER_RESULT_CACHE_ID
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_VARIANT_RESULT_CACHE_ID
 import com.tokopedia.product.addedit.description.data.remote.model.variantbycat.ProductVariantByCatModel
 import com.tokopedia.product.addedit.description.presentation.activity.AddEditProductDescriptionActivity
 import com.tokopedia.product.addedit.description.presentation.fragment.AddEditProductDescriptionFragment
 import com.tokopedia.product.addedit.description.presentation.model.DescriptionInputModel
+import com.tokopedia.product.addedit.description.presentation.model.PictureViewModel
 import com.tokopedia.product.addedit.description.presentation.model.ProductVariantInputModel
 import com.tokopedia.product.addedit.detail.presentation.activity.AddEditProductDetailActivity
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_PRODUCT_PHOTOS
@@ -45,6 +50,7 @@ import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProduct
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.REQUEST_CODE_DETAIL_EDIT
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.REQUEST_CODE_IMAGE
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.REQUEST_CODE_SHIPMENT_EDIT
+import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.REQUEST_CODE_VARIANT_DIALOG_EDIT
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.REQUEST_CODE_VARIANT_EDIT
 import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
 import com.tokopedia.product.addedit.imagepicker.view.activity.ImagePickerAddProductActivity
@@ -80,6 +86,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.android.synthetic.main.add_edit_product_variant_input_layout.*
 import java.text.NumberFormat
 import java.util.*
 import javax.inject.Inject
@@ -366,8 +373,15 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
                     val variantInputModel =
                             data.getParcelableExtra<ProductVariantInputModel>(EXTRA_VARIANT_INPUT)
                     context?.let {
-                        AddEditProductAddService.startService(it, detailInputModel,
+                        val validateMessage = viewModel.validateProductInput(detailInputModel)
+                        if (validateMessage.isEmpty()) {
+                            AddEditProductAddService.startService(it, detailInputModel,
                                 descriptionInputModel, shipmentInputModel, variantInputModel, viewModel.getDraftId())
+                        } else {
+                            view?.let {
+                                Toaster.make(it, validateMessage, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR)
+                            }
+                        }
                     }
                 }
                 REQUEST_CODE_DETAIL_EDIT -> {
@@ -403,6 +417,25 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
                     viewModel.updateVariantInputModel(variantInputModel)
                     viewModel.productInputModel.value?.let { it.variantInputModel = variantInputModel }
                     saveToDraft()
+                }
+                REQUEST_CODE_VARIANT_DIALOG_EDIT -> {
+                    viewModel.productInputModel.value?.let { productInputModel ->
+                        val variantInputModel = productInputModel.variantInputModel
+                        val variantCacheId = data.getStringExtra(EXTRA_VARIANT_PICKER_RESULT_CACHE_ID)
+                        val cacheManager = SaveInstanceCacheManager(context!!, variantCacheId)
+                        if (data.hasExtra(EXTRA_PRODUCT_VARIANT_SELECTION)) {
+                            val productVariantViewModel = cacheManager.get(EXTRA_PRODUCT_VARIANT_SELECTION,
+                                    object : TypeToken<ProductVariantInputModel>() {}.type) ?: ProductVariantInputModel()
+                            variantInputModel.productVariant = productVariantViewModel.productVariant
+                            variantInputModel.variantOptionParent = productVariantViewModel.variantOptionParent
+                        }
+                        if (data.hasExtra(EXTRA_PRODUCT_SIZECHART)) {
+                            val productPictureViewModel = cacheManager.get(EXTRA_PRODUCT_SIZECHART,
+                                    object : TypeToken<PictureViewModel>() {}.type, PictureViewModel())
+                            variantInputModel.productSizeChart = productPictureViewModel
+                        }
+                        viewModel.updateVariantInputModel(variantInputModel)
+                    }
                 }
             }
         }
@@ -721,10 +754,8 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
                 intent?.run {
                     putExtra(EXTRA_VARIANT_RESULT_CACHE_ID, cacheManager.id)
                     putExtra(AddEditProductUploadConstant.EXTRA_IS_USING_CACHE_MANAGER, true)
-                    startActivityForResult(this, REQUEST_CODE_VARIANT_EDIT)
+                    startActivityForResult(this, REQUEST_CODE_VARIANT_DIALOG_EDIT)
                 }
-                val productVariantByCatModelList: ArrayList<String> = ArrayList()
-//            productVariantByCatModelList.add(AddEditProductDescriptionFragment.TEST_VARIANT)
             }
         }
     }

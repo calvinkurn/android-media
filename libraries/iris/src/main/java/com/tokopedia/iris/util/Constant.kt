@@ -4,12 +4,7 @@ package com.tokopedia.iris.util
  * @author okasurya on 10/18/18.
  */
 
-const val LIVE = "https://hub.tokopedia.com/"
-const val STAGING = "https://hub-staging.tokopedia.com/"
-
 const val VERSION = "iris/v1/"
-
-const val BASE_URL ="$LIVE$VERSION"
 
 const val TAG = "P3IRIS-ANDROID"
 
@@ -46,6 +41,7 @@ const val REMOTE_CONFIG_IRIS_BATCH_SEND = "android_main_app_line_iris_batch_send
 
 const val KEY_CONTAINER = "gtm"
 const val KEY_EVENT = "default_app"
+const val KEY_EVENT_SELLERAPP = "default_sellerapp"
 
 const val DEFAULT_CONFIG = "{\"row_limit\":25,\"interval\":2}"
 const val JOB_IRIS_ID = 1500

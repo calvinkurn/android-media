@@ -127,4 +127,36 @@ class ResourceProvider @Inject constructor(@ApplicationContext val context: Cont
     fun getDuplicateProductVideoErrorMessage(): String? {
         return getString(R.string.error_video_is_exist)
     }
+
+    // product variant string properties
+
+    fun getVariantEmptyMessage(): String? {
+        return getString(R.string.label_variant_subtitle)
+    }
+
+    fun getVariantAddedMessage(): String? {
+        return getString(R.string.label_variant_subtitle_added) + "\n"
+    }
+
+    fun getVariantButtonEmptyMessage(): String? {
+        return getString(R.string.label_add_variant)
+    }
+
+    fun getVariantButtonAddedMessage(): String? {
+        return getString(R.string.label_edit_variant)
+    }
+
+    // product add validation string properties
+    fun getInvalidCategoryIdErrorMessage(): String? {
+        return getString(R.string.error_invalid_category_id)
+    }
+
+    fun getInvalidPhotoCountErrorMessage(): String? {
+        return getString(R.string.error_invalid_photo_count)
+    }
+
+    fun getInvalidNameErrorMessage(): String? {
+        return getString(R.string.error_invalid_name)
+    }
+
 }

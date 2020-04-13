@@ -113,7 +113,6 @@ class AddEditProductDescriptionFragment:
     }
 
     private var productInputModel: ProductInputModel? = null
-    private var videoId = 0
 
     private lateinit var userSession: UserSessionInterface
     private lateinit var shopId: String
@@ -181,7 +180,7 @@ class AddEditProductDescriptionFragment:
                     it.getParcelable(PARAM_VARIANT_INPUT_MODEL) ?: ProductVariantInputModel()
             descriptionViewModel.categoryId = categoryId
             descriptionViewModel.descriptionInputModel = descriptionInputModel
-            descriptionViewModel.variantInputModel = variantInputModel
+            descriptionViewModel.setVariantInput(variantInputModel)
             descriptionViewModel.isEditMode = isEditMode
             productInputModel = it.getParcelable(PARAM_PRODUCT_INPUT_MODEL) ?: ProductInputModel()
         }
@@ -320,14 +319,14 @@ class AddEditProductDescriptionFragment:
         val description = descriptionViewModel.descriptionInputModel.productDescription
         val videoLinks = descriptionViewModel.descriptionInputModel.videoLinkList
 
-        if (videoLinks.isEmpty()) {
-            addEmptyVideoUrl()
-        } else {
+        if (videoLinks.isNotEmpty()) {
             textFieldDescription.setText(description)
             super.clearAllData()
             super.renderList(videoLinks)
         }
 
+        tvVariantHeaderSubtitle.text = descriptionViewModel.getVariantSelectedMessage()
+        tvAddVariant.text = descriptionViewModel.getVariantButtonMessage()
         btnNext.visibility = View.GONE
         btnSave.visibility = View.VISIBLE
     }
@@ -355,16 +354,16 @@ class AddEditProductDescriptionFragment:
                 REQUEST_CODE_VARIANT -> {
                     val variantCacheId = data.getStringExtra(EXTRA_VARIANT_PICKER_RESULT_CACHE_ID)
                     val cacheManager = SaveInstanceCacheManager(context!!, variantCacheId)
+                    val productPictureViewModel = if (data.hasExtra(EXTRA_PRODUCT_SIZECHART)) {
+                        cacheManager.get(EXTRA_PRODUCT_SIZECHART,
+                                object : TypeToken<PictureViewModel>() {}.type, PictureViewModel())
+                    } else null
                     if (data.hasExtra(EXTRA_PRODUCT_VARIANT_SELECTION)) {
                         val productVariantViewModel = cacheManager.get(EXTRA_PRODUCT_VARIANT_SELECTION,
                                 object : TypeToken<ProductVariantInputModel>() {}.type) ?: ProductVariantInputModel()
-                        descriptionViewModel.variantInputModel.variantOptionParent = productVariantViewModel.variantOptionParent
-                        descriptionViewModel.variantInputModel.productVariant = productVariantViewModel.productVariant
-                    }
-                    if (data.hasExtra(EXTRA_PRODUCT_SIZECHART)) {
-                        val productPictureViewModel = cacheManager.get(EXTRA_PRODUCT_SIZECHART,
-                                object : TypeToken<PictureViewModel>() {}.type, PictureViewModel())
-                        descriptionViewModel.variantInputModel.productSizeChart = productPictureViewModel
+                        descriptionViewModel.setVariantInput(productVariantViewModel.productVariant, productVariantViewModel.variantOptionParent, productPictureViewModel)
+                        tvVariantHeaderSubtitle.text = descriptionViewModel.getVariantSelectedMessage()
+                        tvAddVariant.text = descriptionViewModel.getVariantButtonMessage()
                     }
                 }
             }

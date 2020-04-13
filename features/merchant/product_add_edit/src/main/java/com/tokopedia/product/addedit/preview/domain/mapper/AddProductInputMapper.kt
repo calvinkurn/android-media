@@ -61,36 +61,12 @@ class AddProductInputMapper @Inject constructor() {
         )
     }
 
-    private fun getProductVariantIndex(variantValue: String?,
-                                       variantOptionParent: List<ProductVariantOptionParent>): Int? {
-        variantOptionParent.forEach { productVariantOptionParent ->
-            productVariantOptionParent.productVariantOptionChild?.let {
-                for (outputIndex in it.indices){
-                    if (it[outputIndex].value == variantValue) return outputIndex
-                }
-            }
-        }
-        return null
-    }
-
     private fun mapVariantParam(variantInputModel: ProductVariantInputModel,
                                 sizeChartUploadId: String): Variant? {
         if (variantInputModel.variantOptionParent.size == 0 &&
                 variantInputModel.productVariant.size == 0 &&
                 variantInputModel.productSizeChart == null) {
             return null
-        }
-
-        // generate option index for each product variant
-        variantInputModel.productVariant.forEach { productVariant ->
-            val options: ArrayList<Int> = ArrayList()
-            val level1Id = getProductVariantIndex(productVariant.level1String,
-                    variantInputModel.variantOptionParent)
-            val level2Id = getProductVariantIndex(productVariant.level2String,
-                    variantInputModel.variantOptionParent)
-            level1Id?.let { options.add(it) }
-            level2Id?.let { options.add(it) }
-            productVariant.opt = options
         }
 
         return Variant(

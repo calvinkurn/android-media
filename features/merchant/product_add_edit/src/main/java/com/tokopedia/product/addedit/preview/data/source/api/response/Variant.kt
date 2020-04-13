@@ -31,6 +31,8 @@ data class ProductVariant(
 )
 
 data class Selection(
+        @SerializedName("variantID")
+        val variantId: String,
         @SerializedName("variantName")
         val variantName: String,
         @SerializedName("unitName")

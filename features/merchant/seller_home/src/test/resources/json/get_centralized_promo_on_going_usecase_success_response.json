@@ -1,0 +1,33 @@
+{
+  "data":{
+    "MerchantPromotionGetPromotionList":{
+      "header":{
+        "process_time":333756056,
+        "message":[
+
+        ],
+        "reason":"",
+        "error_code":""
+      },
+      "data":{
+        "title":"Track your promotion",
+        "list":[
+          {
+            "title":"Flash Sale",
+            "status":{
+              "text":"Terdaftar",
+              "count":56,
+              "url":"https://seller.tokopedia.com/manage-campaign",
+              "mobile_url":"sellerapp://flashsale/management"
+            },
+            "footer":{
+              "text":"Lihat Semua",
+              "url":"seller.tokopedia.com/manage-campaign/my-campaign",
+              "mobile_url":"sellerapp://flashsale/management"
+            }
+          }
+        ]
+      }
+    }
+  }
+}
