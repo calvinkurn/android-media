@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.sellerhome.common.viewmodel.NonNullLiveData
 import com.tokopedia.sellerhome.settings.domain.usecase.GetAllShopInfoUseCase
 import com.tokopedia.sellerhome.settings.view.uimodel.shopinfo.SettingShopInfoUiModel
 import com.tokopedia.usecase.coroutines.Fail
@@ -24,7 +25,7 @@ class OtherMenuViewModel @Inject constructor(
     }
 
     private val _settingShopInfoLiveData = MutableLiveData<Result<SettingShopInfoUiModel>>()
-    private val _isToasterAlreadyShown = MutableLiveData<Boolean>().apply { value = false }
+    private val _isToasterAlreadyShown = NonNullLiveData(false)
     private val _isStatusBarInitialState = MutableLiveData<Boolean>().apply { value = true }
 
     val settingShopInfoLiveData: LiveData<Result<SettingShopInfoUiModel>>
@@ -56,7 +57,7 @@ class OtherMenuViewModel @Inject constructor(
     }
 
     private suspend fun checkDelayErrorResponseTrigger() {
-        _isToasterAlreadyShown.value?.let { isToasterAlreadyShown ->
+        _isToasterAlreadyShown.value.let { isToasterAlreadyShown ->
             if (!isToasterAlreadyShown){
                 _isToasterAlreadyShown.value = true
                 delay(DELAY_TIME)

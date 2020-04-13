@@ -2,6 +2,7 @@ package com.tokopedia.sellerhome.settings.view.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.network.exception.ResponseErrorException
+import com.tokopedia.sellerhome.common.viewmodel.NonNullLiveData
 import com.tokopedia.sellerhome.settings.domain.usecase.GetAllShopInfoUseCase
 import com.tokopedia.sellerhome.settings.view.uimodel.shopinfo.SettingShopInfoUiModel
 import com.tokopedia.sellerhome.utils.observeOnce
@@ -19,6 +20,7 @@ import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.mockito.internal.util.reflection.Whitebox
 
 @ExperimentalCoroutinesApi
 class OtherMenuViewModelTest {
@@ -96,6 +98,22 @@ class OtherMenuViewModelTest {
 
         mockViewModel.isToasterAlreadyShown.observeOnce {
             assertFalse(it)
+        }
+    }
+
+    @Test
+    fun `Toaster already shown will not alter values`() {
+        val isToasterAlreadyShown = mViewModel.isToasterAlreadyShown.value
+        mViewModel.getAllSettingShopInfo(false)
+        assertEquals(isToasterAlreadyShown, mViewModel.isToasterAlreadyShown.value)
+    }
+
+    @Test
+    fun `will not change live data value if toaster is already shown`() {
+        Whitebox.setInternalState(mViewModel, "_isToasterAlreadyShown", NonNullLiveData(true))
+        mViewModel.getAllSettingShopInfo(true)
+        mViewModel.isToasterAlreadyShown.value?.let {
+            assert(it)
         }
     }
 
