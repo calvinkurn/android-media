@@ -9,7 +9,7 @@ import com.tokopedia.search.shouldBe
 import com.tokopedia.search.utils.convertValuesToString
 import org.junit.Test
 
-internal class HandleSearchShopApplyFilterTest: SearchShopViewModelTestFixtures() {
+internal class SearchShopHandleApplyFilterTest: SearchShopViewModelTestFixtures() {
 
     @Test
     fun `Apply filter with query parameters`() {
