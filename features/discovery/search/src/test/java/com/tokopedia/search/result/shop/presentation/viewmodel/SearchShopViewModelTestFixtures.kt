@@ -1,5 +1,6 @@
 package com.tokopedia.search.result.shop.presentation.viewmodel
 
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.search.result.TestDispatcherProvider
@@ -10,8 +11,12 @@ import com.tokopedia.usecase.coroutines.UseCase
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.mockk
 import org.junit.Before
+import org.junit.Rule
 
 internal open class SearchShopViewModelTestFixtures {
+
+    @get:Rule
+    val instantTaskExecutorRule = InstantTaskExecutorRule()
 
     private val shopViewModelMapperModule = ShopViewModelMapperModule()
 
