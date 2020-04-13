@@ -153,7 +153,7 @@ class SuggestionPresenter @Inject constructor() : BaseDaggerPresenter<Suggestion
                 view?.trackEventClickKeyword(getKeywordEventLabelForTracking(item))
             }
             TYPE_CURATED -> {
-                view?.trackEventClickCurated(getCuratedEventLabelForTracking(item))
+                view?.trackEventClickCurated(getCuratedEventLabelForTracking(item), item.trackingCode)
             }
             TYPE_SHOP -> {
                 view?.trackEventClickShop(getShopEventLabelForTracking(item))
