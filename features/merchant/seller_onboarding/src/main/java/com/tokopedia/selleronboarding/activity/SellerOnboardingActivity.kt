@@ -1,14 +1,13 @@
 package com.tokopedia.selleronboarding.activity
 
+import android.content.Intent
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
-import androidx.viewpager2.widget.ViewPager2
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.kotlin.extensions.view.requestStatusBarDark
 import com.tokopedia.kotlin.extensions.view.setStatusBarColor
 import com.tokopedia.selleronboarding.R
-import com.tokopedia.selleronboarding.adapter.ViewPagerAdapter
 import com.tokopedia.selleronboarding.fragment.SellerOnboardingFragment
 import com.tokopedia.selleronboarding.utils.StatusBarHelper
 import kotlinx.android.synthetic.main.activity_sob_onboarding.*
@@ -19,32 +18,27 @@ import kotlinx.android.synthetic.main.activity_sob_onboarding.*
 
 class SellerOnboardingActivity : BaseActivity() {
 
-    private val viewPagerAdapter by lazy {
-        ViewPagerAdapter(this)
+    private val onboardingFragment: SellerOnboardingFragment by lazy {
+        SellerOnboardingFragment.newInstance()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sob_onboarding)
 
-        setupView()
-        initOnboardingPages()
+        showFragment()
+        setWhiteStatusBar()
     }
 
-    private fun setupView() {
-        viewPagerSob.adapter = viewPagerAdapter
-        viewPagerSob.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
-            override fun onPageSelected(position: Int) {
-                super.onPageSelected(position)
-                pageIndicatorSob.setCurrentIndicator(position)
-            }
-        })
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        onboardingFragment.onActivityResult(requestCode, resultCode, data)
+    }
 
-        btnSobOpenApp.setOnClickListener {
-            openApp()
-        }
-
-        setWhiteStatusBar()
+    private fun showFragment() {
+        supportFragmentManager.beginTransaction()
+                .replace(R.id.onboardingContainer, onboardingFragment)
+                .commitNowAllowingStateLoss()
     }
 
     private fun setWhiteStatusBar() {
@@ -58,19 +52,6 @@ class SellerOnboardingActivity : BaseActivity() {
 
     private fun addParentLayoutPadding() {
         val statusBarHeight = StatusBarHelper.getStatusBarHeight(this)
-        rootLayoutSob.setPadding(0, statusBarHeight, 0, 0)
-    }
-
-    private fun initOnboardingPages() {
-        viewPagerAdapter.clearFragments()
-        viewPagerAdapter.addFragment(SellerOnboardingFragment.newInstance(SellerOnboardingFragment.PAGE_1))
-        viewPagerAdapter.addFragment(SellerOnboardingFragment.newInstance(SellerOnboardingFragment.PAGE_2))
-        viewPagerAdapter.addFragment(SellerOnboardingFragment.newInstance(SellerOnboardingFragment.PAGE_3))
-
-        pageIndicatorSob.setIndicator(viewPagerAdapter.itemCount)
-    }
-
-    private fun openApp() {
-
+        onboardingContainer.setPadding(0, statusBarHeight, 0, 0)
     }
 }
