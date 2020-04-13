@@ -15,16 +15,17 @@ class ShowcaseProductPreviewViewHolder(itemView: View, private val previewListen
 
     fun bind(element: BaseShowcaseProduct) {
         if (element is ShowcaseProduct) {
-            if(element.isCloseable) renderDeleteButton()
             renderProductCard(element)
         }
     }
 
     private fun renderProductCard(element: ShowcaseProduct) {
+        if(element.isCloseable) {
+            renderDeleteButton()
+        }
         itemView.product_name.text = element.productName
         itemView.product_price.text = element.productPrice.getCurrencyFormatted()
-        itemView.ratingBar.rating = element.ratingStarAvg
-        itemView.total_review.text = itemView.resources.getString(R.string.product_total_review, element.totalReview.toString())
+        renderProductRating(element)
         ImageHandler.loadImage2(itemView.product_image, element.productImageUrl, R.drawable.loading_page)
     }
 
@@ -33,6 +34,15 @@ class ShowcaseProductPreviewViewHolder(itemView: View, private val previewListen
         itemView.delete_product_showcase.visibility = View.VISIBLE
         itemView.delete_product_showcase.setOnClickListener {
             previewListener.deleteSelectedProduct(adapterPosition)
+        }
+    }
+
+    private fun renderProductRating(element: ShowcaseProduct) {
+        if(element.totalReview > 0) {
+            itemView.ratingBar.rating = element.ratingStarAvg
+            itemView.total_review.text = itemView.resources.getString(R.string.product_total_review, element.totalReview.toString())
+            itemView.ratingBar.visibility = View.VISIBLE
+            itemView.total_review.visibility = View.VISIBLE
         }
     }
 

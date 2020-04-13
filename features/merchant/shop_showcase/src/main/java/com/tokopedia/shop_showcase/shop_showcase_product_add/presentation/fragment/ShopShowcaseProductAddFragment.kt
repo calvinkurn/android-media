@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
+import androidx.cardview.widget.CardView
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -137,11 +138,14 @@ class ShopShowcaseProductAddFragment : BaseDaggerFragment(),
         }
     }
 
+    private val headerLayout: CardView? by lazy {
+        view?.findViewById<CardView>(R.id.header_layout)
+    }
+
     /**
      * Setup Scroll Listener for endless recycler view load.
      */
     private val scrollListener by lazy {
-        var currentScrollPosition = 0
         object : EndlessRecyclerViewScrollListener(gridLayoutManager) {
 
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
@@ -151,11 +155,14 @@ class ShopShowcaseProductAddFragment : BaseDaggerFragment(),
 
             override fun onScrolled(view: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(view, dx, dy)
-                currentScrollPosition += dy
-                if(currentScrollPosition == 0)
+                if(gridLayoutManager.findFirstCompletelyVisibleItemPosition() == 0) {
                     buttonBackToTop?.hide()
-                else if(currentScrollPosition > 2)
+                    headerLayout?.cardElevation = 0f
+                }
+                else {
                     buttonBackToTop?.show()
+                    headerLayout?.cardElevation = 16.0f
+                }
             }
 
         }
