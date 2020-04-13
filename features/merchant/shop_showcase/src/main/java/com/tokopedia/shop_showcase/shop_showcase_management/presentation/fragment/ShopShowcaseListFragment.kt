@@ -241,7 +241,7 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
                 super.onScrolled(recyclerView, dx, dy)
                 currentScrollPosition += dy
 
-                val HAS_ELEVATION = 12
+                val HAS_ELEVATION = 4
                 val NO_ELEVATION = 0
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
