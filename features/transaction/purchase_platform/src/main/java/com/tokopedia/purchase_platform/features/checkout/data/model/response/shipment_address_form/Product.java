@@ -4,7 +4,6 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.tokopedia.purchase_platform.features.cart.data.model.response.FreeReturns;
 import com.tokopedia.purchase_platform.common.data.model.response.WholesalePrice;
-import com.tokopedia.purchase_platform.features.express_checkout.data.entity.response.variant.ProductVariantData;
 import com.tokopedia.transactiondata.entity.response.cartlist.shopgroup.FreeShipping;
 
 import java.util.ArrayList;
