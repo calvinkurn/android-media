@@ -8,7 +8,8 @@ abstract class BaseSetting (
     @SerializedName("name") var name: String = "",
     @SerializedName("icon") var icon: String = "",
     @SerializedName("key") var key: String = "",
-    @SerializedName("status") var status: Boolean = false
+    @SerializedName("status") var status: Boolean = false,
+    var isEnabled: Boolean = true
 ) : Visitable<SettingFieldTypeFactory> {
 
     fun hasSameCheckedStatusWith(checked: Boolean) : Boolean {
