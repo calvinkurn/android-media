@@ -83,6 +83,11 @@ open class ToolbarComponent(
         }
     }
 
+    override fun onViewRendered() {
+        launch {
+            bus.emit(PlayToolbarInteractionEvent::class.java, PlayToolbarInteractionEvent.ViewRendered)
+        }
+    }
     protected open fun initView(container: ViewGroup) =
             ToolbarView(container, this)
 }

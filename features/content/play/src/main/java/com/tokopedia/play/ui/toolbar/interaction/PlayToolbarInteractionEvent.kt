@@ -14,4 +14,5 @@ sealed class PlayToolbarInteractionEvent : ComponentEvent {
     object CartButtonClicked : PlayToolbarInteractionEvent()
     data class FollowButtonClicked(val partnerId: Long, val action: PartnerFollowAction) : PlayToolbarInteractionEvent()
     data class PartnerNameClicked(val partnerId: Long, val type: PartnerType) : PlayToolbarInteractionEvent()
+    object ViewRendered : PlayToolbarInteractionEvent()
 }

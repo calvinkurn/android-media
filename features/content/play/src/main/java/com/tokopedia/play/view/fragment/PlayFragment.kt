@@ -16,15 +16,13 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.play.ERR_STATE_SOCKET
-import com.tokopedia.play.ERR_STATE_VIDEO
-import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
-import com.tokopedia.play.R
+import com.tokopedia.play.*
 import com.tokopedia.play.analytic.BufferTrackingModel
 import com.tokopedia.play.analytic.PlayAnalytics
 import com.tokopedia.play.analytic.TrackingField
@@ -70,6 +68,9 @@ class PlayFragment : BaseDaggerFragment() {
             }
         }
     }
+
+    private var fpmPreparePage: PerformanceMonitoring? = null
+    private var fpmRequestNetwork: PerformanceMonitoring? = null
 
     private var channelId = ""
 
@@ -143,6 +144,7 @@ class PlayFragment : BaseDaggerFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        fpmPreparePage?.startTrace(PLAY_TRACE_PREPARE_PAGE)
         playViewModel = ViewModelProvider(this, viewModelFactory).get(PlayViewModel::class.java)
         channelId = arguments?.getString(PLAY_KEY_CHANNEL_ID) ?: ""
     }
@@ -194,7 +196,9 @@ class PlayFragment : BaseDaggerFragment() {
 
     override fun onResume() {
         super.onResume()
+        fpmRequestNetwork?.startTrace(PLAY_TRACE_REQUEST_NETWORK)
         playViewModel.resumeWithChannelId(channelId)
+        fpmPreparePage?.stopTrace()
         requireView().post {
             registerKeyboardListener(requireView())
         }
@@ -260,6 +264,7 @@ class PlayFragment : BaseDaggerFragment() {
                 is Success ->
                     PlayAnalytics.sendScreen(channelId, playViewModel.channelType)
             }
+            fpmRequestNetwork?.stopTrace()
         })
     }
 

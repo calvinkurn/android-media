@@ -31,7 +31,23 @@ const val ERR_STATE_SOCKET = "Socket Connection"
 const val ERR_STATE_VIDEO = "Video Player"
 const val ERR_STATE_GLOBAL = "Global Error"
 
-const val PLAY_TRACE_VIDEO_START = "mp_play_video"
-const val PLAY_TRACE_DATA_FROM_NETWORK = "mp_play"
-const val PLAY_TRACE_DATA_FROM_NETWORK_SUCCESS = "mp_play_success"
-const val PLAY_TRACE_DATA_FROM_NETWORK_FAIL = "mp_play_fail"
+/**
+ * from open page until network requests
+ * Start: PlayFragment onCreate()
+ * Stop: getChannelInfo(channelId)
+ */
+const val PLAY_TRACE_PREPARE_PAGE = "mp_plt_play_page_prepare_page"
+
+/**
+ * from network requests until receiving responses
+ * Start: PlayFragment getChannelInfo(channelId)
+ * Stop: PlayFragment observableGetChannelInfo
+ */
+const val PLAY_TRACE_REQUEST_NETWORK = "mp_plt_play_page_request_network"
+
+/**
+ * from receive response until the UI is displayed
+ * Start: PlayInteractionFragment observeToolbarInfo()
+ * Stop: PlayInteractionFragment stopFpmTrace()
+ */
+const val PLAY_TRACE_RENDER_PAGE = "plt_play_page_render_page"

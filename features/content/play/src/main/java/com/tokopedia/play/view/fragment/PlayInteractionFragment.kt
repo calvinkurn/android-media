@@ -8,9 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.annotation.IdRes
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.view.ViewCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -24,7 +22,9 @@ import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.play.*
+import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
+import com.tokopedia.play.PLAY_TRACE_RENDER_PAGE
+import com.tokopedia.play.R
 import com.tokopedia.play.analytic.PlayAnalytics
 import com.tokopedia.play.component.EventBusFactory
 import com.tokopedia.play.component.UIComponent
@@ -73,8 +73,11 @@ import com.tokopedia.play_common.state.PlayVideoState
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
@@ -115,8 +118,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
     @Inject
     lateinit var trackingQueue: TrackingQueue
 
-    private var playFpmVideoStart: PerformanceMonitoring? = null
-    private var playFpmLoadDataFromNetwork: PerformanceMonitoring? = null
+    private var fpmRenderPage: PerformanceMonitoring? = null
 
     private val offset24 by lazy { resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl5) }
     private val offset16 by lazy { resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4) }
@@ -175,10 +177,6 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        playFpmVideoStart?.startTrace(PLAY_TRACE_VIDEO_START)
-        playFpmLoadDataFromNetwork?.startTrace(PLAY_TRACE_DATA_FROM_NETWORK)
-
         playViewModel = ViewModelProvider(requireParentFragment(), viewModelFactory).get(PlayViewModel::class.java)
         viewModel = ViewModelProvider(this, viewModelFactory).get(PlayInteractionViewModel::class.java)
         channelId  = arguments?.getString(PLAY_KEY_CHANNEL_ID).orEmpty()
@@ -282,7 +280,6 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
     private fun observeVideoProperty() {
         playViewModel.observableVideoProperty.observe(viewLifecycleOwner, Observer {
             if (it.state == PlayVideoState.Playing) {
-                playFpmVideoStart?.stopTrace()
                 PlayAnalytics.clickPlayVideo(channelId, playViewModel.channelType)
             }
             if (it.state == PlayVideoState.Ended) showInteractionIfWatchMode()
@@ -298,16 +295,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
 
     private fun observeTitleChannel() {
         playViewModel.observableGetChannelInfo.observe(viewLifecycleOwner, Observer {
-            when(it) {
-                is Success -> {
-                    playFpmLoadDataFromNetwork?.putIncrementMetric(PLAY_TRACE_DATA_FROM_NETWORK_SUCCESS, 1)
-                    setChannelTitle(it.data.title)
-                }
-                is Fail -> {
-                    playFpmLoadDataFromNetwork?.putIncrementMetric(PLAY_TRACE_DATA_FROM_NETWORK_FAIL, 1)
-                }
-            }
-            playFpmLoadDataFromNetwork?.stopTrace()
+            if (it is Success) setChannelTitle(it.data.title)
         })
     }
 
@@ -320,7 +308,10 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
     }
 
     private fun observeToolbarInfo() {
-        playViewModel.observablePartnerInfo.observe(viewLifecycleOwner, Observer(::setPartnerInfo))
+        playViewModel.observablePartnerInfo.observe(viewLifecycleOwner, Observer {
+            fpmRenderPage?.startTrace(PLAY_TRACE_RENDER_PAGE)
+            setPartnerInfo(it)
+        })
     }
 
     private fun observeTotalLikes() {
@@ -567,6 +558,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
                             PlayToolbarInteractionEvent.MoreButtonClicked -> showMoreActionBottomSheet()
                             is PlayToolbarInteractionEvent.PartnerNameClicked -> openPartnerPage(it.partnerId, it.type)
                             PlayToolbarInteractionEvent.CartButtonClicked -> shouldOpenCartPage()
+                            is PlayToolbarInteractionEvent.ViewRendered -> stopFpmTrace()
                         }
                     }
         }
@@ -657,6 +649,10 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
                     ScreenStateEvent.Init
             )
         }
+    }
+
+    private fun stopFpmTrace() {
+        fpmRenderPage?.stopTrace()
     }
 
     //region set data
