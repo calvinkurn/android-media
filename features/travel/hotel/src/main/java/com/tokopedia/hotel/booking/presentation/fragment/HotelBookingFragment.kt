@@ -294,6 +294,7 @@ class HotelBookingFragment : HotelBaseFragment() {
             context?.run { hotel_info_rating_container.addView(RatingStarView(this)) }
         }
         tv_hotel_info_address.text = property.address
+        iv_hotel_info_image.clipToOutline = true
         iv_hotel_info_image.loadImage(property.image.urlMax300, R.drawable.ic_failed_load_image)
     }
 
