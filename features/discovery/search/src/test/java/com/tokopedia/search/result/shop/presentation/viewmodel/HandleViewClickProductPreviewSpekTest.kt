@@ -6,7 +6,8 @@ import com.tokopedia.search.shouldBe
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.gherkin.Feature
 
-internal class HandleViewClickProductPreviewTest: Spek({
+@Deprecated("Migrated to JUnit")
+internal class HandleViewClickProductPreviewSpekTest: Spek({
     InstantTaskExecutorRuleSpek(this)
 
     Feature("Handle view click product preview") {
