@@ -10,7 +10,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
-import android.widget.Toast
 import androidx.cardview.widget.CardView
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
@@ -138,11 +137,7 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
         view?.findViewById<HeaderUnify>(R.id.add_showcase_toolbar)?.apply {
             setNavigationOnClickListener {
                 tracking.addShowcaseClickBackButton(shopId, shopType, isActionEdit)
-                if(isActionEdit) {
-                    showExitConfirmDialog()
-                } else {
-                    activity?.onBackPressed()
-                }
+                activity?.onBackPressed()
             }
         }
     }
@@ -398,26 +393,6 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
                 } else {
                     goToChooseProduct()
                 }
-            }
-        }
-    }
-
-    private fun showExitConfirmDialog() {
-        activity?.also {
-            val confirmDialog = DialogUnify(it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
-            confirmDialog.apply {
-                setTitle(getString(R.string.text_exit_confirm_dialog_title))
-                setDescription(getString(R.string.text_exit_confirm_dialog_description))
-                setPrimaryCTAText(getString(R.string.text_cancel_button))
-                setPrimaryCTAClickListener {
-                    this.dismiss()
-                }
-                setSecondaryCTAText(getString(R.string.text_exit_button))
-                setSecondaryCTAClickListener {
-                    this.dismiss()
-                    activity?.onBackPressed()
-                }
-                show()
             }
         }
     }

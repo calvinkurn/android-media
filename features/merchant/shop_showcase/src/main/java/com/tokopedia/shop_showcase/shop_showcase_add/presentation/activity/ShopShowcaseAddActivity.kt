@@ -9,6 +9,7 @@ import android.view.WindowManager
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.shop_showcase.R
 import com.tokopedia.shop_showcase.common.ShopShowcaseEditParam
 import com.tokopedia.shop_showcase.shop_showcase_add.presentation.fragment.ShopShowcaseAddFragment
@@ -33,7 +34,7 @@ class ShopShowcaseAddActivity : BaseSimpleActivity() {
         const val DEFAULT_SHOWCASE_ID = "0"
     }
 
-    private var isActionEdit: Boolean? = false
+    private var isActionEdit: Boolean = false
     private var showcaseId: String? = DEFAULT_SHOWCASE_ID
     private var showcaseName: String? = ""
 
@@ -59,6 +60,32 @@ class ShopShowcaseAddActivity : BaseSimpleActivity() {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+        }
+    }
+
+    override fun onBackPressed() {
+        if(isActionEdit) {
+            onBackPressedConfirm()
+        } else {
+            finish()
+        }
+    }
+
+    private fun onBackPressedConfirm() {
+        val confirmDialog = DialogUnify(this, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
+        confirmDialog.apply {
+            setTitle(getString(R.string.text_exit_confirm_dialog_title))
+            setDescription(getString(R.string.text_exit_confirm_dialog_description))
+            setPrimaryCTAText(getString(R.string.text_cancel_button))
+            setPrimaryCTAClickListener {
+                this.dismiss()
+            }
+            setSecondaryCTAText(getString(R.string.text_exit_button))
+            setSecondaryCTAClickListener {
+                this.dismiss()
+                finish()
+            }
+            show()
         }
     }
 }
