@@ -69,8 +69,8 @@ class PlayFragment : BaseDaggerFragment() {
         }
     }
 
-    private var fpmPreparePage: PerformanceMonitoring? = null
-    private var fpmRequestNetwork: PerformanceMonitoring? = null
+    private lateinit var fpmPreparePage: PerformanceMonitoring
+    private lateinit var fpmRequestNetwork: PerformanceMonitoring
 
     private var channelId = ""
 
@@ -198,7 +198,7 @@ class PlayFragment : BaseDaggerFragment() {
         super.onResume()
         fpmRequestNetwork = PerformanceMonitoring.start(PLAY_TRACE_REQUEST_NETWORK)
         playViewModel.resumeWithChannelId(channelId)
-        fpmPreparePage?.stopTrace()
+        fpmPreparePage.stopTrace()
         requireView().post {
             registerKeyboardListener(requireView())
         }
@@ -264,7 +264,7 @@ class PlayFragment : BaseDaggerFragment() {
                 is Success ->
                     PlayAnalytics.sendScreen(channelId, playViewModel.channelType)
             }
-            fpmRequestNetwork?.stopTrace()
+            fpmRequestNetwork.stopTrace()
         })
     }
 

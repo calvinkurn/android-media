@@ -118,7 +118,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
     @Inject
     lateinit var trackingQueue: TrackingQueue
 
-    private var fpmRenderPage: PerformanceMonitoring? = null
+    private lateinit var fpmRenderPage: PerformanceMonitoring
 
     private val offset24 by lazy { resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl5) }
     private val offset16 by lazy { resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4) }
@@ -652,7 +652,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
     }
 
     private fun stopFpmTrace() {
-        fpmRenderPage?.stopTrace()
+        fpmRenderPage.stopTrace()
     }
 
     //region set data
