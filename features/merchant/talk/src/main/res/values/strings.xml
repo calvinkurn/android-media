@@ -81,6 +81,9 @@
     <string name="reading_connection_error">Oops, ada kendala dengan koneksi internetmu. Coba lagi, ya!</string>
     <string name="reading_empty_title">Malu bertanya sesat di jalan</string>
     <string name="reading_empty_subtitle">Masih ada hal yang mengganjal di hati? Kirim aja pertanyaanmu terkait barang ini di sini!</string>
+    <string name="reading_relevant_sort_option">Pertanyaan Paling Relevan</string>
+    <string name="reading_latest_sort_option">Pertanyaan Terbaru</string>
+    <string name="reading_popular_sort_option">Pertanyaan Terpopuler</string>
 
     <string name="toaster_follow_success">Kamu berhasil follow Tanya-Jawab ini. Nantikan notifikasinya di Inbox, ya!</string>
     <string name="toaster_unfollow_success">Kamu sudah tidak lagi follow Tanya-Jawab ini.</string>
