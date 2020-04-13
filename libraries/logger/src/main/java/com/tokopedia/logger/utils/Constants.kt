@@ -15,8 +15,6 @@ class Constants {
         const val SCALYR_SERVER_URL = "https://app.scalyr.com/addEvents"
         const val ENCRYPTION_KEY = "q(e#%Gf@oi>lkB~h"
         const val DATE_TIME_FORMAT = "dd/MM/yyyy HH:mm:ss:SSS"
-        const val ENCRYPTION_MODE = "AES"
-        const val ENCRYPTION_ALGORITHM = "AES"
         const val SEND_PRIORITY_OFFLINE = 3
         const val SEND_PRIORITY_ONLINE = 2
 

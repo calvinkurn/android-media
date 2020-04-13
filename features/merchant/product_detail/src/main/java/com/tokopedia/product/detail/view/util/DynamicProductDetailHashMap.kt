@@ -3,12 +3,9 @@ package com.tokopedia.product.detail.view.util
 import android.content.Context
 import com.tokopedia.common_tradein.model.ValidateTradeInResponse
 import com.tokopedia.design.utils.CurrencyFormatUtil
-import com.tokopedia.kotlin.extensions.toFormattedString
-import com.tokopedia.kotlin.extensions.view.joinToStringWithLast
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.common.data.model.pdplayout.Media
-import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.data.model.ProductInfoP2General
 import com.tokopedia.product.detail.data.model.ProductInfoP2Login
 import com.tokopedia.product.detail.data.model.ProductInfoP2ShopData
@@ -21,7 +18,6 @@ import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.data.util.getCurrencyFormatted
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
-import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.math.roundToLong
 
@@ -53,9 +49,6 @@ class DynamicProductDetailHashMap(private val context: Context, private val mapO
 
     val productLastSeenMap: ProductLastSeenDataModel?
         get() = mapOfData[ProductDetailConstant.PRODUCT_LAST_SEEN] as? ProductLastSeenDataModel
-
-    val productVariantInfoMap: ProductGeneralInfoDataModel?
-        get() = mapOfData[ProductDetailConstant.PRODUCT_VARIANT_INFO] as? ProductGeneralInfoDataModel
 
     val productWholesaleInfoMap: ProductGeneralInfoDataModel?
         get() = mapOfData[ProductDetailConstant.PRODUCT_WHOLESALE_INFO] as? ProductGeneralInfoDataModel
@@ -280,19 +273,6 @@ class DynamicProductDetailHashMap(private val context: Context, private val mapO
     fun updateImageAfterClickVariant(it: MutableList<Media>) {
         snapShotMap?.run {
             media = DynamicProductDetailMapper.convertMediaToDataModel(it)
-        }
-    }
-
-    fun updateVariantInfo(productVariant: ProductVariant, selectedOptionString: String) {
-        productVariantInfoMap?.run {
-            data.first().subtitle =
-                    if (selectedOptionString.isEmpty()) {
-                        "Pilih " +
-                                productVariant.variant.map { it.name }.joinToStringWithLast(separator = ", ",
-                                        lastSeparator = " dan ")
-                    } else {
-                        selectedOptionString
-                    }
         }
     }
 

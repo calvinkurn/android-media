@@ -78,6 +78,9 @@ class Option() : Parcelable {
     val uniqueId: String
         get() = key + UID_FIRST_SEPARATOR_SYMBOL + value + UID_SECOND_SEPARATOR_SYMBOL + name
 
+    val isTypeRadio: Boolean
+        get() = INPUT_TYPE_RADIO == inputType
+
     override fun equals(obj: Any?): Boolean {
         if (this === obj) return true
 
@@ -147,6 +150,7 @@ class Option() : Parcelable {
 
         const val INPUT_TYPE_TEXTBOX = "textbox"
         const val INPUT_TYPE_CHECKBOX = "checkbox"
+        const val INPUT_TYPE_RADIO = "radio"
         const val UID_FIRST_SEPARATOR_SYMBOL = "*"
         const val UID_SECOND_SEPARATOR_SYMBOL = "?"
         const val METRIC_INTERNATIONAL = "International"

@@ -22,7 +22,7 @@ import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.product.di.component.DaggerShopProductComponent
 import com.tokopedia.shop.product.di.module.ShopProductModule
 import com.tokopedia.shop.product.util.ShopProductOfficialStoreUtils
-import com.tokopedia.shop.product.view.model.ShopProductPromoViewModel
+import com.tokopedia.shop.product.view.datamodel.ShopProductPromoViewModel
 import com.tokopedia.shop.product.view.widget.NestedWebView
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.item_shop_product_limited_promo.*

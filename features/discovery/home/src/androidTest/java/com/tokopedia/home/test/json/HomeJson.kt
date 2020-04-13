@@ -15,63 +15,6 @@ object HomeJson{
           },
           "slides": [
             {
-              "id": "6790",
-              "galaxy_attribution": "PG",
-              "persona": "",
-              "brand_id": "",
-              "category_persona": "",
-              "title": "X_PG_HPB1_Tokopedia Peduli Sehat_New User_23 Mar 20",
-              "image_url": "https://ecs7.tokopedia.net/img/banner/2020/3/22/85531617/85531617_97db3e84-eb1d-4a40-ba23-893848bbeb7e.jpg",
-              "redirect_url": "https://www.tokopedia.com/discovery/tokopedia-peduli-sehat",
-              "applink": "tokopedia://discovery/tokopedia-peduli-sehat",
-              "topads_view_url": "",
-              "promo_code": "",
-              "message": "X_PG_HPB1_Tokopedia Peduli Sehat_New User_23 Mar 20",
-              "creative_name": "X_PG_HPB1_Tokopedia Peduli Sehat_New User_23 Mar 20",
-              "start_time": "",
-              "expire_time": "",
-              "slide_index": 0,
-              "type": "new_user_mp"
-            },
-            {
-              "id": "6794",
-              "galaxy_attribution": "OTHERS",
-              "persona": "",
-              "brand_id": "",
-              "category_persona": "",
-              "title": "X_Others_HPB2_Donasi COVID19_New User_22 Mar 20",
-              "image_url": "https://ecs7.tokopedia.net/img/banner/2020/3/22/85531617/85531617_f8dd3096-8eb6-4f82-b193-d7d0cee392e4.jpg",
-              "redirect_url": "https://www.tokopedia.com/discovery/salam-donasicovid19",
-              "applink": "tokopedia://discovery/salam-donasicovid19",
-              "topads_view_url": "",
-              "promo_code": "",
-              "message": "X_Others_HPB2_Donasi COVID19_New User_22 Mar 20",
-              "creative_name": "X_Others_HPB2_Donasi COVID19_New User_22 Mar 20",
-              "start_time": "",
-              "expire_time": "",
-              "slide_index": 1,
-              "type": "new_user_mp"
-            },
-            {
-              "id": "6795",
-              "galaxy_attribution": "PG",
-              "persona": "",
-              "brand_id": "",
-              "category_persona": "",
-              "title": "X_PG_HPB3_Bebas Ongkir_New User_23 Mar 20",
-              "image_url": "https://ecs7.tokopedia.net/img/banner/2020/3/22/85531617/85531617_8420cb98-c5ff-4d28-8bf4-7279475a964a.jpg",
-              "redirect_url": "https://www.tokopedia.com/discovery/bebas-ongkir",
-              "applink": "tokopedia://discovery/bebas-ongkir",
-              "topads_view_url": "",
-              "promo_code": "",
-              "message": "X_PG_HPB3_Bebas Ongkir_New User_23 Mar 20",
-              "creative_name": "X_PG_HPB3_Bebas Ongkir_New User_23 Mar 20",
-              "start_time": "",
-              "expire_time": "",
-              "slide_index": 2,
-              "type": "new_user_mp"
-            },
-            {
               "id": "6798",
               "galaxy_attribution": "DG",
               "persona": "",
@@ -186,7 +129,6 @@ object HomeJson{
 
     val resultNoSkeleton = """
         {
-          "data": {
             "ticker": {
               "meta": {
                 "total_data": 0
@@ -472,7 +414,6 @@ object HomeJson{
               ]
             }
           }
-        }
     """.trimIndent()
 
 }

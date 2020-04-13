@@ -18,7 +18,8 @@ class HomeBannerAdapter(itemList: List<CircularModel>, listener: CircularListene
 
 class HomeBannerImageViewHolder(itemView: View): CircularViewHolder(itemView) {
     override fun bind(item: CircularModel, listener: CircularListener) {
-        itemView.findViewById<ShimmeringImageView>(R.id.image).loadImage(item.url)
-        itemView.findViewById<ShimmeringImageView>(R.id.image).setOnClickListener { listener.onClick(adapterPosition) }
+        itemView.findViewById<ShimmeringImageView>(R.id.image_banner_homepage).tag = item.url
+        itemView.findViewById<ShimmeringImageView>(R.id.image_banner_homepage).loadImage(item.url)
+        itemView.findViewById<ShimmeringImageView>(R.id.image_banner_homepage).setOnClickListener { listener.onClick(adapterPosition) }
     }
 }

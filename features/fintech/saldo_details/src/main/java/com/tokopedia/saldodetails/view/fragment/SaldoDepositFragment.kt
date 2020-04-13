@@ -599,8 +599,8 @@ class SaldoDepositFragment : BaseDaggerFragment() {
     override fun initInjector() {
 
         activity?.let {
-            val saldoDetailsComponent = SaldoDetailsComponentInstance.getComponent(it.application)
-            saldoDetailsComponent!!.inject(this)
+            val saldoDetailsComponent = SaldoDetailsComponentInstance.getComponent(it)
+            saldoDetailsComponent.inject(this)
 
 
             if (context is AppCompatActivity) {

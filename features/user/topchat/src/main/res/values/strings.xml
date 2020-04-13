@@ -149,9 +149,12 @@ yang ditemukan</string>
 
     <string name="title_topchat_empty_chat">Belum ada chat</string>
     <string name="title_topchat_manage_product">Atur Toko</string>
-    <string name="title_topchat_success_atw">Anda berhasil menambahkan wishlist</string>
+    <string name="title_topchat_success_atw">Sukses menambah wishlist</string>
+    <string name="title_topchat_already_success_atw">Barang sudah di wishlist kamu</string>
     <string name="title_topchat_success_rfw">Anda berhasil menghapus wishlist</string>
     <string name="title_topchat_list_template">Daftar Template</string>
     <string name="action_atc">+ Keranjang</string>
-    <string name="action_wishlist">+ Wishlist</string>
+    <string name="action_wishlist">Tambah ke Wishlist</string>
+    <string name="cta_topchat_success_atw">Lihat</string>
+    <string name="title_topchat_empty_stock">Stok habis</string>
 </resources>
