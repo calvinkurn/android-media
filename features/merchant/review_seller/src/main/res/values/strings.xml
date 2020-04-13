@@ -7,11 +7,7 @@
     <string name="title_review_inbox">Inbox Ulasan</string>
     <string name="period">Periode:</string>
     <string name="review_text">Ulasan</string>
-
-    <string name="rating_star_icon_content_description">Rating Star Icon</string>
-    <string name="product_average_rating">4.6</string>
-    <string name="maximum_product_rating">/ 5.0</string>
-    <string name="total_product_review">1.234 Ulasan</string>
-    <string name="product_rating_bar_value">5</string>
-    <string name="default_total_star_review">(1200)</string>
+    <string name="period_seller_review">/ %s ulasan</string>
+    <string name="no_reviews_yet">Tidak ada ulasan</string>
+    <string name="content_no_reviews_yet">Terus berjualan ya agar pembeli kasih kamu alasan yang bikin happy</string>
 </resources>
