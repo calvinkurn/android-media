@@ -6,5 +6,6 @@ class AddEditProductConstants {
 
         const val EXTRA_CACHE_MANAGER_ID = "CACHE_MANAGER_ID"
 
+        const val HTTP_PREFIX = "http"
     }
 }

@@ -3,11 +3,11 @@ package com.tokopedia.product.addedit.preview.domain.mapper
 import android.net.Uri
 import com.tokopedia.kotlin.extensions.view.toFloatOrZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.product.addedit.preview.data.model.params.add.*
 import com.tokopedia.product.addedit.description.presentation.model.*
 import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.PreorderInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.WholeSaleInputModel
+import com.tokopedia.product.addedit.preview.data.model.params.add.*
 import com.tokopedia.product.addedit.shipment.presentation.model.ShipmentInputModel
 import javax.inject.Inject
 
@@ -15,7 +15,7 @@ import javax.inject.Inject
  * Created by faisalramd on 2020-03-23.
  */
 
-class AddProductInputMapper @Inject constructor() {
+open class AddProductInputMapper @Inject constructor() {
 
     companion object{
         const val PRICE_CURRENCY = "IDR"
@@ -27,7 +27,7 @@ class AddProductInputMapper @Inject constructor() {
         const val UNIT_MONTH = "MONTH"
     }
 
-    fun mapInputToParam(shopId: String,
+    open fun mapInputToParam(shopId: String,
                         uploadIdList: ArrayList<String>,
                         sizeChartUploadId: String,
                         detailInputModel: DetailInputModel,
@@ -61,7 +61,7 @@ class AddProductInputMapper @Inject constructor() {
         )
     }
 
-    private fun mapVariantParam(variantInputModel: ProductVariantInputModel,
+    protected fun mapVariantParam(variantInputModel: ProductVariantInputModel,
                                 sizeChartUploadId: String): Variant? {
         if (variantInputModel.variantOptionParent.size == 0 &&
                 variantInputModel.productVariant.size == 0 &&
@@ -133,7 +133,7 @@ class AddProductInputMapper @Inject constructor() {
         return options
     }
 
-    private fun mapWholesaleParam(wholesaleList: List<WholeSaleInputModel>): Wholesales? {
+    protected fun mapWholesaleParam(wholesaleList: List<WholeSaleInputModel>): Wholesales? {
         val data: ArrayList<Wholesale> = ArrayList()
         wholesaleList.forEach {
             val quantity = it.quantity.replace(".", "").toIntOrZero()
@@ -148,11 +148,11 @@ class AddProductInputMapper @Inject constructor() {
         return Wholesales(data)
     }
 
-    private fun mapShipmentUnit(weightUnit: Int): String? {
+    protected fun mapShipmentUnit(weightUnit: Int): String? {
         return if (weightUnit == 0) UNIT_GRAM else UNIT_KILOGRAM
     }
 
-    private fun mapVideoParam(videoLinkList: List<VideoLinkModel>): Videos {
+    protected fun mapVideoParam(videoLinkList: List<VideoLinkModel>): Videos {
         val data: ArrayList<Video> = ArrayList()
         videoLinkList.forEach {
             if (it.inputUrl.isNotEmpty()) {
@@ -165,7 +165,7 @@ class AddProductInputMapper @Inject constructor() {
         return Videos(data)
     }
 
-    private fun mapPictureParam(uploadIdList: java.util.ArrayList<String>): Pictures {
+    private fun mapPictureParam(uploadIdList: ArrayList<String>): Pictures {
         val data: ArrayList<Picture> = ArrayList()
         uploadIdList.forEach {
             data.add(Picture(uploadId = it))
@@ -173,7 +173,7 @@ class AddProductInputMapper @Inject constructor() {
         return Pictures(data)
     }
 
-    private fun mapPreorderParam(preorder: PreorderInputModel): Preorder {
+    protected fun mapPreorderParam(preorder: PreorderInputModel): Preorder {
         if (preorder.duration == 0) return Preorder()
         return Preorder(
                 preorder.duration,

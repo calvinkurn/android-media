@@ -20,6 +20,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.imagepicker.editor.main.view.ImageEditorActivity
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
 import com.tokopedia.imagepicker.picker.main.builder.*
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
@@ -27,7 +28,9 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.common.AddEditProductComponentBuilder
+import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.Companion.EXTRA_CACHE_MANAGER_ID
+import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.Companion.HTTP_PREFIX
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_DESCRIPTION_INPUT
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_DETAIL_INPUT
@@ -37,6 +40,7 @@ import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstan
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_VARIANT_INPUT
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_VARIANT_PICKER_RESULT_CACHE_ID
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_VARIANT_RESULT_CACHE_ID
+import com.tokopedia.product.addedit.common.util.InputPriceUtil
 import com.tokopedia.product.addedit.description.data.remote.model.variantbycat.ProductVariantByCatModel
 import com.tokopedia.product.addedit.description.presentation.activity.AddEditProductDescriptionActivity
 import com.tokopedia.product.addedit.description.presentation.fragment.AddEditProductDescriptionFragment
@@ -53,18 +57,21 @@ import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProduct
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.REQUEST_CODE_VARIANT_DIALOG_EDIT
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.REQUEST_CODE_VARIANT_EDIT
 import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
+import com.tokopedia.product.addedit.detail.presentation.model.PictureInputModel
 import com.tokopedia.product.addedit.imagepicker.view.activity.ImagePickerAddProductActivity
 import com.tokopedia.product.addedit.preview.data.source.api.response.Product
 import com.tokopedia.product.addedit.preview.di.AddEditProductPreviewModule
 import com.tokopedia.product.addedit.preview.di.DaggerAddEditProductPreviewComponent
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_DRAFT_ID
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_IS_DRAFTING_PRODUCT
+import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_IS_DUPLICATE
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_IS_EDITING_PRODUCT
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_PRODUCT_ID
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_PRODUCT_INPUT_MODEL
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.PRODUCT_STATUS_ACTIVE
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.preview.presentation.service.AddEditProductAddService
+import com.tokopedia.product.addedit.preview.presentation.service.AddEditProductDuplicateService
 import com.tokopedia.product.addedit.preview.presentation.service.AddEditProductEditService
 import com.tokopedia.product.addedit.preview.presentation.viewmodel.AddEditProductPreviewViewModel
 import com.tokopedia.product.addedit.shipment.presentation.activity.AddEditProductShipmentActivity
@@ -85,11 +92,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.add_edit_product_variant_input_layout.*
-import java.text.NumberFormat
-import java.util.*
 import javax.inject.Inject
-import kotlin.collections.ArrayList
 
 class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHolder.OnPhotoChangeListener {
 
@@ -140,11 +143,12 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
     lateinit var viewModel: AddEditProductPreviewViewModel
 
     companion object {
-        fun createInstance(productId: String, draftId: String): Fragment {
+        fun createInstance(productId: String, draftId: String, isDuplicate: Boolean): Fragment {
             return AddEditProductPreviewFragment().apply {
                 arguments = Bundle().apply {
                     putString(EXTRA_PRODUCT_ID, productId)
                     putString(EXTRA_DRAFT_ID, draftId)
+                    putBoolean(EXTRA_IS_DUPLICATE, isDuplicate)
                 }
             }
         }
@@ -162,6 +166,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
             viewModel.setProductId(getString(EXTRA_PRODUCT_ID) ?: "")
             viewModel.setDraftId(draftId ?: "")
             viewModel.getDraftId()?.let { viewModel.getProductDraft(it) }
+            viewModel.setIsDuplicate(getBoolean(EXTRA_IS_DUPLICATE))
         }
 
         if (viewModel.isEditing.value == true) {
@@ -239,8 +244,10 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
             } else {
                 ProductAddStepperTracking.trackStart(shopId)
             }
-            val imageUrlOrPathList = viewModel.productInputModel.value?.detailInputModel?.imageUrlOrPathList
-                    ?: listOf()
+            val imageUrlOrPathList = productPhotoAdapter?.getProductPhotoPaths()?.map { urlOrPath ->
+                if (urlOrPath.startsWith(HTTP_PREFIX)) viewModel.productInputModel.value?.detailInputModel?.pictureList?.find { it.urlThumbnail == urlOrPath }?.urlOriginal ?: urlOrPath
+                else urlOrPath
+            }.orEmpty()
             val intent = ImagePickerAddProductActivity.getIntent(context, createImagePickerBuilder(ArrayList(imageUrlOrPathList)))
             startActivityForResult(intent, REQUEST_CODE_IMAGE)
         }
@@ -253,7 +260,20 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
         }
 
         doneButton?.setOnClickListener {
-            if (viewModel.isEditing.value == true) {
+            updateImageList()
+            if (viewModel.isDuplicate) {
+                context?.apply {
+                    viewModel.productInputModel.value?.let { productInputModel ->
+                        AddEditProductDuplicateService.startService(
+                                context = this,
+                                detailInputModel = productInputModel.detailInputModel,
+                                descriptionInputModel = productInputModel.descriptionInputModel,
+                                shipmentInputModel = productInputModel.shipmentInputModel,
+                                variantInputModel = productInputModel.variantInputModel
+                        )
+                    }
+                }
+            } else if (viewModel.isEditing.value == true) {
                 ProductEditStepperTracking.trackFinishButton(shopId)
                 context?.apply {
                     viewModel.productInputModel.value?.let { productInputModel ->
@@ -328,17 +348,20 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
         observeProductInputModelFromDraft()
     }
 
+    @Suppress("UNCHECKED_CAST")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK && data != null) {
             when (requestCode) {
                 REQUEST_CODE_IMAGE -> {
                     val imagePickerResult = data.getStringArrayListExtra(ImagePickerActivity.PICKER_RESULT_PATHS)
+                    val originalImageUrl = data.getStringArrayListExtra(ImageEditorActivity.RESULT_PREVIOUS_IMAGE)
+                    val isEditted = data.getSerializableExtra(ImageEditorActivity.RESULT_IS_EDITTED) as ArrayList<Boolean>
                     if (imagePickerResult != null && imagePickerResult.size > 0) {
                         val isEditMode = viewModel.isEditing.value
                         isEditMode?.let {
                             // update the product pictures in the preview page
-                            if (isEditMode) viewModel.updateProductPhotos(imagePickerResult)
+                            if (isEditMode) viewModel.updateProductPhotos(imagePickerResult, originalImageUrl, isEditted)
                             else {
                                 // start add product detail
                                 val newProductInputModel = viewModel.getNewProductInputModel(imagePickerResult)
@@ -437,11 +460,6 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
                 .addEditProductPreviewModule(AddEditProductPreviewModule())
                 .build()
                 .inject(this)
-    }
-
-    private fun formatProductPriceInput(productPriceInput: String): String {
-        return if (productPriceInput.isNotBlank()) NumberFormat.getNumberInstance(Locale.US).format(productPriceInput.toBigInteger()).replace(",", ".")
-        else productPriceInput
     }
 
     private fun displayEditMode(isEditMode: Boolean) {
@@ -557,21 +575,27 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
 
     private fun observeProductInputModelFromDraft() {
         viewModel.getProductDraftResult.observe(viewLifecycleOwner, Observer { result ->
-            when(result) {
-                is Success -> { viewModel.updateProductInputModel(result.data) }
+            when (result) {
+                is Success -> {
+                    viewModel.updateProductInputModel(result.data)
+                }
             }
         })
     }
 
     private fun showProductPhotoPreview(productInputModel: ProductInputModel) {
-        val imageUrlOrPathList = productInputModel.detailInputModel.imageUrlOrPathList
+        var pictureIndex = 0
+        val imageUrlOrPathList = productInputModel.detailInputModel.imageUrlOrPathList.map { urlOrPath ->
+            if (urlOrPath.startsWith(AddEditProductConstants.HTTP_PREFIX)) productInputModel.detailInputModel.pictureList[pictureIndex++].urlThumbnail
+            else urlOrPath
+        }
         productPhotoAdapter?.setProductPhotoPaths(imageUrlOrPathList.toMutableList())
     }
 
     private fun showProductDetailPreview(productInputModel: ProductInputModel) {
         val detailInputModel = productInputModel.detailInputModel
         productNameView?.text = detailInputModel.productName
-        productPriceView?.text = "Rp " + formatProductPriceInput(detailInputModel.price.toString())
+        productPriceView?.text = "Rp " + InputPriceUtil.formatProductPriceInput(detailInputModel.price.toString())
         productStockView?.text = detailInputModel.stock.toString()
         productDetailPreviewLayout?.show()
     }
@@ -677,6 +701,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
 
     private fun startAddEditProductDetailActivity(productInputModel: ProductInputModel, isEditing: Boolean, isDrafting: Boolean) {
         context?.run {
+            updateImageList()
             val cacheManager = SaveInstanceCacheManager(this, true).apply {
                 put(EXTRA_PRODUCT_INPUT_MODEL, productInputModel)
                 put(EXTRA_IS_EDITING_PRODUCT, isEditing)
@@ -733,5 +758,21 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
                 }
             }
         }
+    }
+
+    private fun updateImageList() {
+        // fillter product pictureList, so that edited image will be reuploaded and changed (removed from pictureList) and than reorder the picture if necessary
+        val imageUrlOrPathList = productPhotoAdapter?.getProductPhotoPaths().orEmpty()
+        val pictureList = viewModel.productInputModel.value?.detailInputModel?.pictureList?.filter {
+            imageUrlOrPathList.contains(it.urlThumbnail)
+        }.orEmpty()
+        val newPictureList = mutableListOf<PictureInputModel>()
+        imageUrlOrPathList.forEach { urlOrPath ->
+            pictureList.find { it.urlThumbnail == urlOrPath }?.run {
+                newPictureList.add(this)
+            }
+        }
+        viewModel.productInputModel.value?.detailInputModel?.pictureList = newPictureList
+        viewModel.productInputModel.value?.detailInputModel?.imageUrlOrPathList = imageUrlOrPathList
     }
 }

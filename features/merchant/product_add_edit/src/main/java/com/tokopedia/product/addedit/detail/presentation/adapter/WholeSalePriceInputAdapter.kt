@@ -37,21 +37,14 @@ class WholeSalePriceInputAdapter(private val listener: WholeSaleInputViewHolder.
         notifyItemInserted(wholeSaleInputModelList.lastIndex)
     }
 
-    fun addNewWholeSalePrice(wholeSaleInputModels: List<WholeSaleInputModel>) {
-        wholeSaleInputModels.forEach {
-            wholeSaleInputModelList.add(it)
-        }
+    fun setWholeSaleInputModels(wholeSaleInputModels: List<WholeSaleInputModel>) {
+        this.wholeSaleInputModelList = wholeSaleInputModels.toMutableList()
         notifyDataSetChanged()
-    }
-
-    fun setWholeSaleInputModels(drafts: List<WholeSaleInputModel>) {
-        if (drafts.size == MAX_WHOLESALE_PRICES) return
-        wholeSaleInputModelList = drafts.toMutableList()
     }
 
     override fun onDeleteButtonClicked(position: Int) {
         onDeleteWholesale?.invoke()
         wholeSaleInputModelList.removeAt(position)
-        notifyDataSetChanged()
+        notifyItemRemoved(position)
     }
 }

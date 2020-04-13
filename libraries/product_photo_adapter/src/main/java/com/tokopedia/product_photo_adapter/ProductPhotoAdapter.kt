@@ -40,7 +40,6 @@ class ProductPhotoAdapter(private val maxSize: Int,
     }
 
     fun setProductPhotoPaths(newProductPhotoPaths: MutableList<String>) {
-        productPhotoPaths.clear()
         productPhotoPaths = newProductPhotoPaths
         notifyDataSetChanged()
     }
