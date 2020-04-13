@@ -47,7 +47,14 @@ const val PLAY_TRACE_REQUEST_NETWORK = "mp_plt_play_page_request_network"
 
 /**
  * from receive response until the UI is displayed
- * Start: PlayInteractionFragment observeToolbarInfo()
- * Stop: PlayInteractionFragment stopFpmTrace()
+ * Start: PlayInteractionFragment observeTitleChannel()
+ * Stop: PlayInteractionFragment setupView(view)
  */
 const val PLAY_TRACE_RENDER_PAGE = "mp_plt_play_page_render_page"
+
+/**
+ * from receive response until the UI is displayed
+ * Start: PlayVideoFragment observeChannelInfo()
+ * Stop: PlayVideoFragment containerVideo.viewTreeObserver.addOnGlobalLayoutListener()
+ */
+const val PLAY_TRACE_RENDER_VIDEO = "mp_plt_play_page_render_video"

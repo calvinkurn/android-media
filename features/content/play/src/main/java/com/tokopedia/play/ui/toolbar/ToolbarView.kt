@@ -71,7 +71,6 @@ class ToolbarView(
     internal fun setPartnerInfo(partnerInfo: PartnerInfoUiModel) {
         tvPartnerName.text = partnerInfo.name
         setFollowStatus(partnerInfo.isFollowed)
-        listener.onViewRendered()
 
         if (!partnerInfo.isFollowable) {
             tvFollow.setOnClickListener {}
@@ -121,6 +120,5 @@ class ToolbarView(
         fun onFollowButtonClicked(view: ToolbarView, partnerId: Long, action: PartnerFollowAction)
         fun onPartnerNameClicked(view: ToolbarView, partnerId: Long, type: PartnerType)
         fun onCartButtonClicked(view: ToolbarView)
-        fun onViewRendered()
     }
 }

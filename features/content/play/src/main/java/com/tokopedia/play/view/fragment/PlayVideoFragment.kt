@@ -11,7 +11,9 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
+import com.tokopedia.play.PLAY_TRACE_RENDER_VIDEO
 import com.tokopedia.play.R
 import com.tokopedia.play.component.EventBusFactory
 import com.tokopedia.play.component.UIComponent
@@ -75,6 +77,7 @@ class PlayVideoFragment : BaseDaggerFragment(), CoroutineScope {
     private var channelId: String = ""
 
     private lateinit var containerVideo: RoundedConstraintLayout
+    private lateinit var fpmRenderPage: PerformanceMonitoring
 
     override fun getScreenName(): String = "Play Video"
 
@@ -100,6 +103,9 @@ class PlayVideoFragment : BaseDaggerFragment(), CoroutineScope {
         val view = inflater.inflate(R.layout.fragment_play_video, container, false)
         containerVideo = view.findViewById(R.id.container_video)
         initComponents(view as ViewGroup)
+        containerVideo.viewTreeObserver.addOnGlobalLayoutListener {
+            fpmRenderPage.stopTrace()
+        }
         return view
     }
 
@@ -107,6 +113,7 @@ class PlayVideoFragment : BaseDaggerFragment(), CoroutineScope {
         super.onActivityCreated(savedInstanceState)
 
         observeVOD()
+        observeChannelInfo()
         observeVideoProperty()
         observeOneTapOnboarding()
         observeBottomInsetsState()
@@ -128,6 +135,12 @@ class PlayVideoFragment : BaseDaggerFragment(), CoroutineScope {
                                 ScreenStateEvent.SetVideo(it)
                         )
             }
+        })
+    }
+
+    private fun observeChannelInfo() {
+        playViewModel.observableGetChannelInfo.observe(viewLifecycleOwner, Observer {
+            fpmRenderPage = PerformanceMonitoring.start(PLAY_TRACE_RENDER_VIDEO)
         })
     }
 

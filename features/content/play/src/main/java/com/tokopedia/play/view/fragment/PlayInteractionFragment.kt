@@ -18,10 +18,7 @@ import com.tokopedia.abstraction.common.utils.DisplayMetricUtils.getStatusBarHei
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.kotlin.extensions.view.getScreenHeight
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.PLAY_TRACE_RENDER_PAGE
 import com.tokopedia.play.R
@@ -295,6 +292,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
 
     private fun observeTitleChannel() {
         playViewModel.observableGetChannelInfo.observe(viewLifecycleOwner, Observer {
+            fpmRenderPage = PerformanceMonitoring.start(PLAY_TRACE_RENDER_PAGE)
             if (it is Success) setChannelTitle(it.data.title)
         })
     }
@@ -308,10 +306,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
     }
 
     private fun observeToolbarInfo() {
-        playViewModel.observablePartnerInfo.observe(viewLifecycleOwner, Observer {
-            fpmRenderPage = PerformanceMonitoring.start(PLAY_TRACE_RENDER_PAGE)
-            setPartnerInfo(it)
-        })
+        playViewModel.observablePartnerInfo.observe(viewLifecycleOwner, Observer(::setPartnerInfo))
     }
 
     private fun observeTotalLikes() {
@@ -417,6 +412,10 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
                     view = clPlayInteraction,
                     whenAlpha = INVISIBLE_ALPHA
             )
+        }
+
+        clPlayInteraction.viewTreeObserver.addOnGlobalLayoutListener {
+            fpmRenderPage.stopTrace()
         }
     }
 
@@ -558,7 +557,6 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
                             PlayToolbarInteractionEvent.MoreButtonClicked -> showMoreActionBottomSheet()
                             is PlayToolbarInteractionEvent.PartnerNameClicked -> openPartnerPage(it.partnerId, it.type)
                             PlayToolbarInteractionEvent.CartButtonClicked -> shouldOpenCartPage()
-                            is PlayToolbarInteractionEvent.ViewRendered -> stopFpmTrace()
                         }
                     }
         }
@@ -649,10 +647,6 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
                     ScreenStateEvent.Init
             )
         }
-    }
-
-    private fun stopFpmTrace() {
-        fpmRenderPage.stopTrace()
     }
 
     //region set data
