@@ -106,7 +106,7 @@ SearchDestinationListener{
     }
 
     override fun getFilterText(): String {
-        return (activity as HotelDestinationActivity).search_input_view.searchText
+        return (activity as HotelDestinationActivity).search_input_view.searchBarEditText.text.toString()
     }
 
     fun onSearchQueryChange(keyword: String) {

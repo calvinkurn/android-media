@@ -12,6 +12,7 @@ import com.tokopedia.hotel.destination.di.DaggerHotelDestinationComponent
 import com.tokopedia.hotel.destination.di.HotelDestinationComponent
 import com.tokopedia.hotel.destination.view.fragment.HotelRecommendationFragment
 import com.tokopedia.hotel.destination.view.fragment.HotelSearchDestinationFragment
+import com.tokopedia.hotel.destination.view.widget.HotelSearchInputView
 import kotlinx.android.synthetic.main.activity_hotel_destination.*
 import kotlinx.coroutines.*
 
@@ -19,8 +20,7 @@ import kotlinx.coroutines.*
  * @author by jessica on 25/03/19
  */
 
-class HotelDestinationActivity : HotelBaseActivity(), HasComponent<HotelDestinationComponent>, SearchInputView.Listener,
-        SearchInputView.ResetListener {
+class HotelDestinationActivity : HotelBaseActivity(), HasComponent<HotelDestinationComponent>, HotelSearchInputView.ActionListener {
 
     var isSearching: Boolean = false
 
@@ -54,10 +54,8 @@ class HotelDestinationActivity : HotelBaseActivity(), HasComponent<HotelDestinat
     }
 
     private fun initEditText() {
-        search_input_view.searchImageView.setImageDrawable(resources.getDrawable(com.tokopedia.resources.common.R.drawable.ic_system_action_search_grayscale_24))
-        search_input_view.closeImageButton.setImageDrawable(resources.getDrawable(com.tokopedia.resources.common.R.drawable.ic_system_action_close_grayscale_16))
-        search_input_view.setListener(this)
-        search_input_view.setResetListener(this)
+        search_input_view.actionListener = this
+        search_input_view.buildView()
     }
 
     fun initInjector() {
@@ -71,10 +69,6 @@ class HotelDestinationActivity : HotelBaseActivity(), HasComponent<HotelDestinat
 
     private fun backToHotelRecommendation() {
         if (supportFragmentManager.backStackEntryCount > 0) supportFragmentManager.popBackStack()
-    }
-
-    override fun onSearchSubmitted(text: String?) {
-        //ViewModel search Hotel based on Query
     }
 
     override fun onSearchTextChanged(text: String) {
@@ -106,10 +100,6 @@ class HotelDestinationActivity : HotelBaseActivity(), HasComponent<HotelDestinat
     private fun doSearch(text: String) {
         if (supportFragmentManager.findFragmentById(R.id.parent_view) is HotelSearchDestinationFragment)
             (supportFragmentManager.findFragmentById(R.id.parent_view) as HotelSearchDestinationFragment).onSearchQueryChange(text)
-    }
-
-    override fun onSearchReset() {
-        //delete search query
     }
 
     override fun onBackPressed() {
