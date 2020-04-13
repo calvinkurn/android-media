@@ -400,7 +400,8 @@ public class MainParentActivity extends BaseActivity implements
     private void afterBottomNaviagtionInflation(Bundle savedInstanceState){
         bottomNavigation = findViewById(R.id.bottomnav);
         bottomNavigation.setItemIconTintList(null);
-        bottomNavigation.setLabelVisibilityMode(LabelVisibilityMode.LABEL_VISIBILITY_LABELED);
+        //set this from xml as this expensive Method
+        //bottomNavigation.setLabelVisibilityMode(LabelVisibilityMode.LABEL_VISIBILITY_LABELED);
         bottomNavigation.setOnNavigationItemSelectedListener(MainParentActivity.this::onNavigationItemSelected);
         bottomNavigation.setOnNavigationItemReselectedListener(item -> {
             Fragment fragment = fragmentList.get(getPositionFragmentByMenu(item));

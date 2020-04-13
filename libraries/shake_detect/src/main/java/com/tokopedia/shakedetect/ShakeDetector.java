@@ -4,7 +4,6 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -72,7 +71,6 @@ public class ShakeDetector implements SensorEventListener {
     if (accelerometer != null) {
       this.sensorManager = sensorManager;
       Observable.just(true).map(aBoolean -> {
-        Log.d("HomePerfTest ShakeDetector" , "Befor registerListener");
         sensorManager.registerListener(ShakeDetector.this, accelerometer,
                 SensorManager.SENSOR_DELAY_FASTEST);
         return true;
@@ -99,7 +97,7 @@ public class ShakeDetector implements SensorEventListener {
   }
 
   @Override public void onSensorChanged(SensorEvent event) {
-    Log.d("HomePerfTest ShakeDetector" , "onSensorChanged");
+
     boolean accelerating = isAccelerating(event);
     long timestamp = event.timestamp;
     queue.add(timestamp, accelerating);
@@ -109,12 +107,10 @@ public class ShakeDetector implements SensorEventListener {
         listener.hearShake();
       }
     }
-    Log.d("HomePerfTest ShakeDetector" , "onSensorChanged End");
   }
 
   /** Returns true if the device is currently accelerating. */
   private boolean isAccelerating(SensorEvent event) {
-    Log.d("HomePerfTest ShakeDetector" , "isAccelerating");
     float ax = event.values[0];
     float ay = event.values[1];
     float az = event.values[2];
@@ -272,6 +268,5 @@ public class ShakeDetector implements SensorEventListener {
   }
 
   @Override public void onAccuracyChanged(Sensor sensor, int accuracy) {
-    Log.d("HomePerfTest ShakeDetector" , "onAccuracyChanged");
   }
 }
