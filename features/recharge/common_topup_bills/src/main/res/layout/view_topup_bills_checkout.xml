@@ -39,7 +39,7 @@
         app:layout_constraintTop_toBottomOf="@id/txt_recharge_checkout_label"
         android:layout_marginTop="@dimen/spacing_lvl3"
         android:lines="1"
-        android:textColor="?attr/Y400"
+        android:textColor="@color/tkpd_main_orange"
         app:typographyType="body_1"
         app:typographyWeight="bold"
         tools:text="Rp 25.200" />
