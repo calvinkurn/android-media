@@ -965,6 +965,20 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
     }
 
     private fun doCheckout(product: OrderProduct, shop: OrderShop, pref: OrderPreference, onSuccessCheckout: (Data) -> Unit) {
+        val shopPromos = generateShopPromos()
+        val checkoutPromos = generateCheckoutPromos()
+        val allPromoCodes = ArrayList<String>().apply {
+            if (checkoutPromos.isNotEmpty()) {
+                addAll(checkoutPromos.map {
+                    it.code
+                })
+            }
+            if (shopPromos.isNotEmpty()) {
+                addAll(shopPromos.map {
+                    it.code
+                })
+            }
+        }
         val param = CheckoutOccRequest(Profile(pref.preference.profileId), ParamCart(data = listOf(ParamData(
                 pref.preference.address.addressId,
                 listOf(
@@ -987,17 +1001,17 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                                         pref.shipping.getRealUt(),
                                         pref.shipping.getRealChecksum()
                                 ),
-                                promos = generateShopPromos()
+                                promos = shopPromos
                         )
                 )
-        )), promos = generateCheckoutPromos()))
+        )), promos = checkoutPromos))
         checkoutOccUseCase.execute(param, { checkoutOccGqlResponse: CheckoutOccGqlResponse ->
             if (checkoutOccGqlResponse.response.status.equals(STATUS_OK, true)) {
                 if (checkoutOccGqlResponse.response.data.success == 1 || checkoutOccGqlResponse.response.data.paymentParameter.redirectParam.url.isNotEmpty()) {
                     globalEvent.value = OccGlobalEvent.Normal
                     onSuccessCheckout(checkoutOccGqlResponse.response.data)
                     orderSummaryAnalytics.eventClickBayarSuccess(orderTotal.value?.isButtonChoosePayment
-                            ?: false, generateOspEe(OrderSummaryPageEnhanceECommerce.STEP_2, OrderSummaryPageEnhanceECommerce.STEP_2_OPTION))
+                            ?: false, generateOspEe(OrderSummaryPageEnhanceECommerce.STEP_2, OrderSummaryPageEnhanceECommerce.STEP_2_OPTION, allPromoCodes))
                 } else {
                     val errorCode = checkoutOccGqlResponse.response.data.error.code
                     orderSummaryAnalytics.eventClickBayarNotSuccess(orderTotal.value?.isButtonChoosePayment
@@ -1402,7 +1416,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
         debounceJob?.cancel()
     }
 
-    private fun generateOspEe(step: Int, option: String): Map<String, Any> {
+    private fun generateOspEe(step: Int, option: String, promoCodes: List<String> = emptyList()): Map<String, Any> {
         return OrderSummaryPageEnhanceECommerce().apply {
             setName(orderProduct.productName)
             setId(orderProduct.productId)
@@ -1415,9 +1429,10 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
             setAttribution(orderProduct.productResponse.productTrackerData.attribution)
             setDiscountedPrice(orderProduct.productResponse.isSlashPrice)
             setWarehouseId(orderProduct.productResponse.wareHouseId)
-            setWarehouseId(orderProduct.weight)
-            setPromoCode("")
+            setProductWeight(orderProduct.weight)
+            setPromoCode(promoCodes)
             setPromoDetails("")
+            setProductType("")
             setCartId(orderShop.cartResponse.cartId)
             setBuyerAddressId(_orderPreference?.preference?.address?.addressId ?: 0)
             setSpid(_orderPreference?.shipping?.getRealShipperProductId() ?: 0)
