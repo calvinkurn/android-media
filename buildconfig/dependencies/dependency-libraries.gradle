@@ -86,6 +86,7 @@ ext {
             tkpddesign              : ":tkpddesign",
             translator              : ":libraries:translator",
             traceroute              : ":libraries:traceroute",
+            utils                   : ":libraries:utils",
             imagePreviewSlider      : ":libraries:imagepreviewslider",
     ]
 }

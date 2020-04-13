@@ -83,9 +83,74 @@ internal class GeneralSearchTrackingTest: Spek({
                                 searchProductModel.searchProduct.responseCode
                         ),
                         isResultFound = true,
-                        categoryMapping = mutableMapOf<String, String>().also {
-                            it["65"] = "Handphone & Tablet"
-                        },
+                        categoryIdMapping = "65",
+                        categoryNameMapping = "Handphone & Tablet",
+                        relatedKeyword = "none - none"
+                )
+            }
+        }
+
+        Scenario("General search tracking with result found and multiple categories") {
+            val productListView by memoized<ProductListSectionContract.View>()
+            lateinit var productListPresenter: ProductListPresenter
+            val searchProductModel = searchProductModelMultipleCategories
+            val generalSearchTrackingModelSlot = slot<GeneralSearchTrackingModel>()
+
+            Given("Search Product API will return SearchProductModel") {
+                val searchProductFirstPageUseCase by memoized<UseCase<SearchProductModel>>()
+                every { searchProductFirstPageUseCase.execute(any(), any()) }.answers {
+                    secondArg<Subscriber<SearchProductModel>>().complete(searchProductModel)
+                }
+            }
+
+            Given("Product List Presenter") {
+                productListPresenter = createProductListPresenter()
+            }
+
+            Given("View is first active tab") {
+                every { productListView.isFirstActiveTab }.returns(true)
+            }
+
+            Given("Previous keyword from view is empty") {
+                every { productListView.previousKeyword }.returns("")
+            }
+
+            Given("View reload data immediately calls load data") {
+                every { productListView.reloadData() }.answers {
+                    val searchParameter : Map<String, Any> = mutableMapOf<String, Any>().also {
+                        it[SearchApiConst.Q] = "samsung"
+                        it[SearchApiConst.START] = "0"
+                        it[SearchApiConst.UNIQUE_ID] = "unique_id"
+                        it[SearchApiConst.USER_ID] = productListPresenter.userId
+                    }
+
+                    productListPresenter.loadData(searchParameter)
+                }
+            }
+
+            When("View is created") {
+                productListPresenter.onViewCreated()
+            }
+
+            Then("verify view send general search tracking") {
+                verify {
+                    productListView.sendTrackingGTMEventSearchAttempt(capture(generalSearchTrackingModelSlot))
+                }
+            }
+
+            Then("verify general search tracking model is correct") {
+                val generalSearchTrackingModel = generalSearchTrackingModelSlot.captured
+
+                generalSearchTrackingModel shouldBe GeneralSearchTrackingModel(
+                        eventLabel = String.format(
+                                SearchEventTracking.Label.KEYWORD_TREATMENT_RESPONSE,
+                                searchProductModel.searchProduct.query,
+                                searchProductModel.searchProduct.keywordProcess,
+                                searchProductModel.searchProduct.responseCode
+                        ),
+                        isResultFound = true,
+                        categoryIdMapping = "1759,1758,65",
+                        categoryNameMapping = "Fashion Pria,Handphone & Tablet,Fashion Wanita",
                         relatedKeyword = "none - none"
                 )
             }
@@ -150,7 +215,8 @@ internal class GeneralSearchTrackingTest: Spek({
                                 searchProductModel.searchProduct.responseCode
                         ),
                         isResultFound = false,
-                        categoryMapping = mapOf(),
+                        categoryIdMapping = "",
+                        categoryNameMapping = "",
                         relatedKeyword = "none - none"
                 )
             }
@@ -216,9 +282,8 @@ internal class GeneralSearchTrackingTest: Spek({
                                 searchProductModel.searchProduct.responseCode
                         ),
                         isResultFound = true,
-                        categoryMapping = mutableMapOf<String, String>().also {
-                            it["65"] = "Handphone & Tablet"
-                        },
+                        categoryIdMapping = "65",
+                        categoryNameMapping = "Handphone & Tablet",
                         relatedKeyword = "$previousKeyword - none"
                 )
             }
@@ -284,10 +349,8 @@ internal class GeneralSearchTrackingTest: Spek({
                                 searchProductModel.searchProduct.responseCode
                         ),
                         isResultFound = true,
-                        categoryMapping = mutableMapOf<String, String>().also {
-                            it["1759"] = "Fashion Pria"
-                            it["1758"] = "Fashion Wanita"
-                        },
+                        categoryIdMapping = "1759,1758",
+                        categoryNameMapping = "Fashion Pria,Fashion Wanita",
                         relatedKeyword = "$previousKeyword - ${searchProductModel.searchProduct.related.relatedKeyword}"
                 )
             }
@@ -353,10 +416,8 @@ internal class GeneralSearchTrackingTest: Spek({
                                 searchProductModel.searchProduct.responseCode
                         ),
                         isResultFound = true,
-                        categoryMapping = mutableMapOf<String, String>().also {
-                            it["1759"] = "Fashion Pria"
-                            it["1758"] = "Fashion Wanita"
-                        },
+                        categoryIdMapping = "1759,1758",
+                        categoryNameMapping = "Fashion Pria,Fashion Wanita",
                         relatedKeyword = "$previousKeyword - ${searchProductModel.searchProduct.related.relatedKeyword}"
                 )
             }
@@ -422,10 +483,8 @@ internal class GeneralSearchTrackingTest: Spek({
                                 searchProductModel.searchProduct.responseCode
                         ),
                         isResultFound = true,
-                        categoryMapping = mutableMapOf<String, String>().also {
-                            it["1759"] = "Fashion Pria"
-                            it["1758"] = "Fashion Wanita"
-                        },
+                        categoryIdMapping = "1759,1758",
+                        categoryNameMapping = "Fashion Pria,Fashion Wanita",
                         relatedKeyword = "$previousKeyword - ${searchProductModel.searchProduct.suggestion.suggestion}"
                 )
             }
