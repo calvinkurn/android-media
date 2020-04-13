@@ -21,7 +21,7 @@ class HeaderDateViewHolder(itemView: View?) : AbstractViewHolder<HeaderDateUiMod
     }
 
     private fun bindDate(element: HeaderDateUiModel) {
-        date?.text = element.date
+        date?.text = element.relativeDate
     }
 
     companion object {
