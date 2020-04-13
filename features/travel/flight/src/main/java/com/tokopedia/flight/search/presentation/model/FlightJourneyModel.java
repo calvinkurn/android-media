@@ -2,8 +2,8 @@ package com.tokopedia.flight.search.presentation.model;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.flight.search.data.api.single.response.Route;
-import com.tokopedia.flight.search.presentation.adapter.FlightSearchAdapterTypeFactory;
 import com.tokopedia.flight.search.presentation.model.filter.RefundableEnum;
+import com.tokopedia.flight.searchV4.presentation.adapter.viewholder.FlightSearchAdapterTypeFactory;
 
 import java.util.List;
 
@@ -176,7 +176,9 @@ public class FlightJourneyModel implements Visitable<FlightSearchAdapterTypeFact
         return beforeTotal;
     }
 
-    public boolean isShowSpecialPriceTag() { return showSpecialPriceTag; }
+    public boolean isShowSpecialPriceTag() {
+        return showSpecialPriceTag;
+    }
 
     public RefundableEnum isRefundable() {
         return isRefundable;
@@ -202,7 +204,9 @@ public class FlightJourneyModel implements Visitable<FlightSearchAdapterTypeFact
         return comboId;
     }
 
-    public String getSpecialTagText() { return specialTagText; }
+    public String getSpecialTagText() {
+        return specialTagText;
+    }
 
     @Override
     public int type(FlightSearchAdapterTypeFactory typeFactory) {

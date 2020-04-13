@@ -121,6 +121,8 @@ open class FlightSearchActivity : BaseFlightActivity() {
 
         flight_search_header.title = title
         flight_search_header.subtitle = subtitle
+
+        supportActionBar?.elevation = 0f
     }
 
     companion object {
