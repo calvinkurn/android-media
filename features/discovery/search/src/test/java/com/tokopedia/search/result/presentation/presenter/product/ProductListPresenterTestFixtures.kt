@@ -45,7 +45,7 @@ internal open class ProductListPresenterTestFixtures {
     )
 
     @Before
-    fun setUp() {
+    open fun setUp() {
         productListPresenter.attachView(productListView)
 
         verify {

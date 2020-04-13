@@ -20,7 +20,7 @@ open class ProfileListPresenterTestFixtures {
     }
 
     @Before
-    fun setUp() {
+    open fun setUp() {
         profileListPresenter.attachView(profileListView)
     }
 }
