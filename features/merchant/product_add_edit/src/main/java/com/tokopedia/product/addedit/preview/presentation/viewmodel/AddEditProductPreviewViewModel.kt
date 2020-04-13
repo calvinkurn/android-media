@@ -12,6 +12,7 @@ import com.tokopedia.product.addedit.description.domain.usecase.GetProductVarian
 import com.tokopedia.product.addedit.description.presentation.model.DescriptionInputModel
 import com.tokopedia.product.addedit.description.presentation.model.ProductVariantInputModel
 import com.tokopedia.product.addedit.draft.domain.usecase.GetProductDraftUseCase
+import com.tokopedia.product.addedit.draft.domain.usecase.SaveProductDraftUseCase
 import com.tokopedia.product.addedit.mapper.AddEditProductMapper.mapDraftToProductInputModel
 import com.tokopedia.product.addedit.preview.data.source.api.response.Product
 import com.tokopedia.product.addedit.preview.domain.GetProductUseCase
@@ -32,6 +33,7 @@ class AddEditProductPreviewViewModel @Inject constructor(
         private val getProductMapper: GetProductMapper,
         private val getProductVariantUseCase: GetProductVariantUseCase,
         private val getProductDraftUseCase: GetProductDraftUseCase,
+        private val saveProductDraftUseCase: SaveProductDraftUseCase,
         dispatcher: CoroutineDispatcher
 ) : BaseViewModel(dispatcher) {
 
@@ -85,6 +87,9 @@ class AddEditProductPreviewViewModel @Inject constructor(
 
     private val mGetProductDraftResult = MutableLiveData<Result<ProductDraft>>()
     val getProductDraftResult: LiveData<Result<ProductDraft>> get() = mGetProductDraftResult
+
+    private val saveProductDraftResultMutableLiveData = MutableLiveData<Result<Long>>()
+    val saveProductDraftResultLiveData: LiveData<Result<Long>> get() = saveProductDraftResultMutableLiveData
 
     init {
         with (productInputModel) {
@@ -189,6 +194,17 @@ class AddEditProductPreviewViewModel @Inject constructor(
             }.let { Success(it) }
         }, onError = {
             mGetProductDraftResult.value = Fail(it)
+        })
+    }
+
+    fun saveProductDraft(productDraft: ProductDraft, productId: Long, isUploading: Boolean) {
+        launchCatchError(block = {
+            saveProductDraftUseCase.params = SaveProductDraftUseCase.createRequestParams(productDraft, productId, isUploading)
+            saveProductDraftResultMutableLiveData.value = withContext(Dispatchers.IO) {
+                saveProductDraftUseCase.executeOnBackground()
+            }.let { Success(it) }
+        }, onError = {
+            saveProductDraftResultMutableLiveData.value = Fail(it)
         })
     }
 }

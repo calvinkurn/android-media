@@ -528,7 +528,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         }
 
         // switch continue button to save button
-        if (viewModel.isEditing) {
+        if (viewModel.isEditing || viewModel.isDrafting) {
             saveButton?.visibility = View.VISIBLE
             continueButton?.visibility = View.GONE
         }
@@ -933,8 +933,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     private fun createAddProductPhotoButtonOnClickListener(): View.OnClickListener {
         return View.OnClickListener {
             val isEditing = viewModel.isEditing
-            val isDrafting = viewModel.isDrafting
-            val intent = ImagePickerAddProductActivity.getIntent(context, createImagePickerBuilder(ArrayList(viewModel.productPhotoPaths)), isEditing, isDrafting)
+            val intent = ImagePickerAddProductActivity.getIntent(context, createImagePickerBuilder(ArrayList(viewModel.productPhotoPaths)), isEditing)
             startActivityForResult(intent, REQUEST_CODE_IMAGE)
             if (isEditing) {
                 ProductEditMainTracking.trackAddPhoto(shopId)

@@ -13,26 +13,21 @@ import java.util.ArrayList;
 public class ImagePickerAddProductActivity extends ImagePickerActivity {
 
     UserSession userSession;
+    boolean isEditProduct = false;
     public static final String IS_EDIT = "is_edit";
-    public static final String IS_DRAFT = "is_draft";
-    private static boolean isEditProduct = false;
-    private static boolean isDraftProduct = false;
 
-    public static Intent getIntent(Context context, ImagePickerBuilder imagePickerBuilder, boolean isEditProduct, boolean isDraftProduct) {
+    public static Intent getIntent(Context context, ImagePickerBuilder imagePickerBuilder, boolean isEditProduct) {
         Intent intent = new Intent(context, ImagePickerAddProductActivity.class);
         // https://stackoverflow.com/questions/28589509/android-e-parcel-class-not-found-when-unmarshalling-only-on-samsung-tab3
         Bundle bundle = new Bundle();
         bundle.putParcelable(EXTRA_IMAGE_PICKER_BUILDER, imagePickerBuilder);
         intent.putExtra(EXTRA_IMAGE_PICKER_BUILDER, bundle);
         intent.putExtra(IS_EDIT, isEditProduct);
-        intent.putExtra(IS_DRAFT,isDraftProduct);
         return intent;
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        isEditProduct = getIntent().getBooleanExtra(IS_EDIT, false);
-        isDraftProduct = getIntent().getBooleanExtra(IS_DRAFT, false);
         super.onCreate(savedInstanceState);
         userSession = new UserSession(getContext());
     }
@@ -68,13 +63,5 @@ public class ImagePickerAddProductActivity extends ImagePickerActivity {
         Intent origin = super.getEditorIntent(selectedImagePaths);
         targetIntent.putExtras(origin.getExtras());
         return targetIntent;
-    }
-
-    @Override
-    protected void startEditorActivity(ArrayList<String> selectedImagePaths) {
-        Intent intent = getEditorIntent(selectedImagePaths);
-        intent.putExtra(IS_EDIT, isEditProduct);
-        intent.putExtra(IS_DRAFT,isDraftProduct);
-        startActivityForResult(intent, REQUEST_CODE_EDITOR);
     }
 }
