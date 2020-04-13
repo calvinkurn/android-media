@@ -53,7 +53,7 @@
     <string name="label_prefix_rupiah">Rp </string>
     <string name="error_empty_product_price">Harga produk tidak boleh kosong</string>
     <string name="error_product_price_less_than_min_limit">Harga kurang dari batas minimum Rp100</string>
-    <string name="error_product_price_exceeding_max_limit">Harga melebihi batas maks. Rp500 juta</string>
+    <string name="error_product_price_exceeding_max_limit">Harga melebihi batas maks. Rp100 juta</string>
 
     <!-- add edit product price bottomsheet   -->
     <string name="bulk_edit_price_bottomsheet_helper">Kamu bisa atur harga masing masing di halaman Varian atau ubah semua harga varian dengan mengisi harga di bawah</string>
@@ -71,7 +71,7 @@
     <string name="error_wholesale_quantity_less_than_two">Stok minimal %1$d</string>
     <string name="error_empty_wholesale_price">Harga grosir tidak boleh kosong</string>
     <string name="error_zero_wholesale_price">Harga grosir tidak boleh 0</string>
-    <string name="error_wholesale_price_exceeding_max_limit">Harga grosir melebihi batas maks. Rp500 juta</string>
+    <string name="error_wholesale_price_exceeding_max_limit">Harga grosir melebihi batas maks. Rp100 juta</string>
     <string name="error_wholesale_price_too_expensive">Harga grosir harus lebih murah dari harga satuan</string>
 
     <!-- add edit product stock -->

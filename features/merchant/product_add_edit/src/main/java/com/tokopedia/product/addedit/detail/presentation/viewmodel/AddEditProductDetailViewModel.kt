@@ -40,7 +40,7 @@ class AddEditProductDetailViewModel @Inject constructor(
 
     var hasVariants = false
 
-    var productPhotoPaths = detailInputModel.imageUrlOrPathList.toMutableList()
+    var productPhotoPaths: MutableList<String> = mutableListOf()
 
     private val mIsProductPhotoError = MutableLiveData<Boolean>()
 
@@ -50,7 +50,7 @@ class AddEditProductDetailViewModel @Inject constructor(
         get() = mIsProductNameInputError
     var productNameMessage: String = ""
 
-    var isProductRecommendationSelected = false
+    var isNameRecommendationSelected = false
     private val mProductNameRecommendations = MutableLiveData<Result<List<String>>>()
     val productNameRecommendations: LiveData<Result<List<String>>>
         get() = mProductNameRecommendations
@@ -99,6 +99,9 @@ class AddEditProductDetailViewModel @Inject constructor(
         addSource(mIsProductPriceInputError) {
             this.value = isInputValid()
         }
+        addSource(isWholeSalePriceActivated) {
+            this.value = isInputValid()
+        }
         addSource(wholeSaleErrorCounter) {
             this.value = isInputValid()
         }
@@ -118,8 +121,8 @@ class AddEditProductDetailViewModel @Inject constructor(
     val productCategoryRecommendationLiveData = MutableLiveData<Result<List<ListItemUnify>>>()
 
     private val minProductPriceLimit = 100
-    private val maxProductPriceLimit = 500000000
-    private val maxWholeSalePriceLimit = 500000000
+    private val maxProductPriceLimit = 100000000
+    private val maxWholeSalePriceLimit = 100000000
     private val minProductStockLimit = 1
     private val maxProductStockLimit = 999999
     private val minOrderQuantity = 1
@@ -227,7 +230,7 @@ class AddEditProductDetailViewModel @Inject constructor(
         }
         if (productPriceInput.isNotEmpty()) {
             val productPrice = productPriceInput.toLong()
-            if (wholeSalePrice > productPrice.toBigDecimal()) {
+            if (wholeSalePrice >= productPrice.toBigDecimal()) {
                 provider.getWholeSalePriceTooExpensiveErrorMessage()?.let { return it }
             }
         }
@@ -325,6 +328,23 @@ class AddEditProductDetailViewModel @Inject constructor(
     private fun isProductNameBanned(productNameInput: String): Boolean {
         // TODO: replace the validation with API check
         return false
+    }
+
+    fun updateProductPhotos(imagePickerResult: ArrayList<String>, originalImageUrl: ArrayList<String>, editted: ArrayList<Boolean>) {
+        val pictureList = productInputModel.detailInputModel.pictureList.filter {
+            originalImageUrl.contains(it.urlOriginal)
+        }.filterIndexed { index, _ -> !editted[index] }
+
+        val imageUrlOrPathList = imagePickerResult.mapIndexed { index, urlOrPath ->
+            if (editted[index]) urlOrPath else pictureList.find { it.urlOriginal == originalImageUrl[index] }?.urlThumbnail ?: urlOrPath
+        }.toMutableList()
+
+        this.detailInputModel = productInputModel.detailInputModel.apply {
+            this.pictureList = pictureList
+            this.imageUrlOrPathList = imageUrlOrPathList
+        }
+
+        this.productPhotoPaths = imageUrlOrPathList
     }
 
     fun getProductNameRecommendation(shopId: Int = 0, query: String) {

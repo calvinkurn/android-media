@@ -61,7 +61,6 @@ import com.tokopedia.product.manage.item.common.util.CurrencyTypeDef
 import com.tokopedia.product.manage.item.common.util.ViewUtils
 import com.tokopedia.product.manage.item.imagepicker.imagepickerbuilder.AddProductImagePickerBuilder
 import com.tokopedia.product.manage.item.main.base.view.activity.BaseProductAddEditFragment.Companion.EXTRA_STOCK
-import com.tokopedia.product.manage.item.main.duplicate.activity.ProductDuplicateActivity
 import com.tokopedia.product.manage.item.stock.view.activity.ProductBulkEditStockActivity
 import com.tokopedia.product.manage.item.utils.constant.ProductExtraConstant
 import com.tokopedia.product.manage.R
@@ -955,7 +954,9 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
 
     private fun goToDuplicateProduct(productId: String) {
         activity?.let {
-            val intent = ProductDuplicateActivity.createInstance(it, productId)
+            val intent = RouteManager.getIntent(context, ApplinkConstInternalMechant.MERCHANT_OPEN_PRODUCT_PREVIEW)
+            intent.putExtra(EXTRA_PRODUCT_ID, productId)
+            intent.putExtra(EXTRA_IS_DUPLICATE, true)
             startActivity(intent)
         }
     }
@@ -1101,5 +1102,6 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
         private const val LOCAL_PATH_IMAGE_LIST = "loca_img_list"
         private const val DESC_IMAGE_LIST = "desc_img_list"
         const val EXTRA_PRODUCT_ID = "PRODUCT_ID"
+        const val EXTRA_IS_DUPLICATE = "IS_DUPLICATE"
     }
 }

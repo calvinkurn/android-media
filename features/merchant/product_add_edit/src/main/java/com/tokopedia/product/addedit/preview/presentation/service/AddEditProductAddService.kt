@@ -20,18 +20,17 @@ import com.tokopedia.product.addedit.shipment.presentation.model.ShipmentInputMo
 import com.tokopedia.product.addedit.tracking.ProductAddShippingTracking
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import kotlin.collections.ArrayList
 
 /**
  * Created by faisalramd on 2020-04-05.
  */
 
-class AddEditProductAddService : AddEditProductBaseService() {
-    private var productInputModel: ProductInputModel = ProductInputModel()
-    private var shipmentInputModel: ShipmentInputModel = ShipmentInputModel()
-    private var descriptionInputModel: DescriptionInputModel = DescriptionInputModel()
-    private var detailInputModel: DetailInputModel = DetailInputModel()
-    private var variantInputModel: ProductVariantInputModel = ProductVariantInputModel()
+open class AddEditProductAddService : AddEditProductBaseService() {
+    protected var productInputModel: ProductInputModel = ProductInputModel()
+    protected var shipmentInputModel: ShipmentInputModel = ShipmentInputModel()
+    protected var descriptionInputModel: DescriptionInputModel = DescriptionInputModel()
+    protected var detailInputModel: DetailInputModel = DetailInputModel()
+    protected var variantInputModel: ProductVariantInputModel = ProductVariantInputModel()
 
     companion object {
         private const val JOB_ID = 13131314
