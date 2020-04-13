@@ -11,6 +11,7 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.widget.AppCompatTextView
@@ -24,6 +25,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.imagepicker.editor.main.view.ImageEditorActivity
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
 import com.tokopedia.imagepicker.picker.main.builder.*
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
@@ -32,6 +34,7 @@ import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.addedit.R
+import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_DESCRIPTION_INPUT
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_DETAIL_INPUT
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_SHIPMENT_INPUT
@@ -57,6 +60,7 @@ import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProduct
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.UNIT_WEEK
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.USED_PRODUCT_INDEX
 import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
+import com.tokopedia.product.addedit.detail.presentation.model.PictureInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.PreorderInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.WholeSaleInputModel
 import com.tokopedia.product.addedit.detail.presentation.viewholder.WholeSaleInputViewHolder
@@ -193,8 +197,12 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         arguments?.getParcelable<ProductInputModel>(EXTRA_PRODUCT_INPUT_MODEL)?.run {
             viewModel.productInputModel = this
             viewModel.detailInputModel = this.detailInputModel
-            viewModel.productPhotoPaths = this.detailInputModel.imageUrlOrPathList.toMutableList()
             viewModel.hasVariants = this.variantInputModel.productVariant.isNotEmpty()
+            var pictureIndex = 0
+            viewModel.productPhotoPaths = this.detailInputModel.imageUrlOrPathList.map { urlOrPath ->
+                if (urlOrPath.startsWith(AddEditProductConstants.HTTP_PREFIX)) this.detailInputModel.pictureList[pictureIndex++].urlThumbnail
+                else urlOrPath
+            }.toMutableList()
         }
         // set isEditing status
         arguments?.getBoolean(EXTRA_IS_EDITING_PRODUCT)?.run {
@@ -226,7 +234,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         // add edit product photo views
         addProductPhotoButton = view.findViewById(R.id.tv_add_product_photo)
         productPhotosView = view.findViewById(R.id.rv_product_photos)
-        productPhotoAdapter = ProductPhotoAdapter(MAX_PRODUCT_PHOTOS, mutableListOf(), this)
+        productPhotoAdapter = ProductPhotoAdapter(MAX_PRODUCT_PHOTOS, viewModel.productPhotoPaths, this)
         productPhotosView?.let {
             it.adapter = productPhotoAdapter
             it.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
@@ -585,16 +593,19 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         }
     }
 
+    @Suppress("UNCHECKED_CAST")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK && data != null) {
             when (requestCode) {
                 REQUEST_CODE_IMAGE -> {
                     val imageUrlOrPathList = data.getStringArrayListExtra(ImagePickerActivity.PICKER_RESULT_PATHS)
+                    val originalImageUrl = data.getStringArrayListExtra(ImageEditorActivity.RESULT_PREVIOUS_IMAGE)
+                    val isEditted = data.getSerializableExtra(ImageEditorActivity.RESULT_IS_EDITTED) as ArrayList<Boolean>
+                    viewModel.updateProductPhotos(imageUrlOrPathList, originalImageUrl, isEditted)
+                    productPhotoAdapter?.setProductPhotoPaths(viewModel.productPhotoPaths)
                     productPhotoAdapter?.let {
-                        it.setProductPhotoPaths(imageUrlOrPathList)
                         viewModel.validateProductPhotoInput(it.itemCount)
-                        viewModel.productPhotoPaths = it.getProductPhotoPaths()
                     }
                 }
                 REQUEST_CODE_CATEGORY -> {
@@ -796,7 +807,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     private fun fillProductDetailForm(detailInputModel: DetailInputModel) {
 
         // product photo
-        productPhotoAdapter?.setProductPhotoPaths(detailInputModel.imageUrlOrPathList.toMutableList())
+        productPhotoAdapter?.setProductPhotoPaths(viewModel.productPhotoPaths)
 
         // product name
         productNameField?.textFieldInput?.setText(detailInputModel.productName)
@@ -943,12 +954,12 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     private fun createAddProductPhotoButtonOnClickListener(): View.OnClickListener {
         return View.OnClickListener {
             val isEditing = viewModel.isEditing
-            val imageUrlOrPathList = productPhotoAdapter?.getProductPhotoPaths()
-            imageUrlOrPathList?.run {
-                val intent = ImagePickerAddProductActivity.getIntent(context, createImagePickerBuilder(ArrayList(this)), isEditing)
-                startActivityForResult(intent, REQUEST_CODE_IMAGE)
-            }
-
+            val imageUrlOrPathList = productPhotoAdapter?.getProductPhotoPaths()?.map { urlOrPath ->
+                if (urlOrPath.startsWith(AddEditProductConstants.HTTP_PREFIX)) viewModel.detailInputModel.pictureList.find { it.urlThumbnail == urlOrPath }?.urlOriginal ?: urlOrPath
+                else urlOrPath
+            }.orEmpty()
+            val intent = ImagePickerAddProductActivity.getIntent(context, createImagePickerBuilder(ArrayList(imageUrlOrPathList)), isEditing)
+            startActivityForResult(intent, REQUEST_CODE_IMAGE)
             if (isEditing) {
                 ProductEditMainTracking.trackAddPhoto(shopId)
             } else {
@@ -1196,6 +1207,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                 getWholesaleInput()
         )
 
+        updateImageList(detailInputModel)
         val intent = Intent()
         intent.putExtra(EXTRA_DETAIL_INPUT, detailInputModel)
         intent.putExtra(EXTRA_DESCRIPTION_INPUT, descriptionInputModel)
@@ -1223,9 +1235,26 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             wholesaleList = getWholesaleInput()
         }
 
+        updateImageList(detailInputModel)
         val intent = Intent()
         intent.putExtra(EXTRA_DETAIL_INPUT, detailInputModel)
         activity?.setResult(Activity.RESULT_OK, intent)
         activity?.finish()
+    }
+
+    private fun updateImageList(detailInputModel: DetailInputModel) {
+        // fillter product pictureList, so that edited image will be reuploaded and changed (removed from pictureList) and than reorder the picture if necessary
+        val imageUrlOrPathList = productPhotoAdapter?.getProductPhotoPaths().orEmpty()
+        val pictureList = detailInputModel.pictureList.filter {
+            imageUrlOrPathList.contains(it.urlThumbnail)
+        }
+        val newPictureList = mutableListOf<PictureInputModel>()
+        imageUrlOrPathList.forEach { urlOrPath ->
+            pictureList.find { it.urlThumbnail == urlOrPath }?.run {
+                newPictureList.add(this)
+            }
+        }
+        detailInputModel.pictureList = newPictureList
+        detailInputModel.imageUrlOrPathList = imageUrlOrPathList
     }
 }
