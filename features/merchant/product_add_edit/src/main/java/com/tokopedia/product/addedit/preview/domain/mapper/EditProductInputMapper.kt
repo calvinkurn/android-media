@@ -79,8 +79,7 @@ class EditProductInputMapper @Inject constructor() {
     private fun mapVariantParam(variantInputModel: ProductVariantInputModel,
                                 sizeChartUploadId: String): Variant? {
         if (variantInputModel.variantOptionParent.size == 0 &&
-                variantInputModel.productVariant.size == 0 &&
-                variantInputModel.productSizeChart == null) {
+                variantInputModel.productVariant.size == 0) {
             return null
         }
 
@@ -178,11 +177,7 @@ class EditProductInputMapper @Inject constructor() {
                 data.add(Video(source, url))
             }
         }
-        return if (data.isEmpty()) {
-            null
-        } else {
-            Videos(data)
-        }
+        return Videos(data)
     }
 
     private fun mapPictureParam(pictureList: List<PictureInputModel>,
