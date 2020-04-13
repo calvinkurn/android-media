@@ -27,7 +27,6 @@ object DeeplinkMapperDigital {
 
     const val TEMPLATE_PARAM = "template"
     const val MENU_ID_PARAM = "menu_id"
-    const val HOST_DIGITAL_PRODUCT = "form"
 
     private fun readWhitelistFromFile(context: Context): List<WhitelistItem> {
         if (whiteList == null) {
@@ -42,7 +41,8 @@ object DeeplinkMapperDigital {
 
     fun getRegisteredNavigationFromHttpDigital(context: Context, deeplink: String): String {
         val path = Uri.parse(deeplink).pathSegments.joinToString("/")
-        return readWhitelistFromFile(context).firstOrNull { it.path.equals(path, false) }?.applink ?: ""
+        return readWhitelistFromFile(context).firstOrNull { it.path.equals(path, false) }?.applink
+                ?: ""
     }
 
     fun getRegisteredNavigationDigital(context: Context, deeplink: String): String {
@@ -51,8 +51,8 @@ object DeeplinkMapperDigital {
             if (!uri.getQueryParameter(TEMPLATE_PARAM).isNullOrEmpty()) return getDigitalTemplateNavigation(context, deeplink)
             return if (!uri.getQueryParameter(MENU_ID_PARAM).isNullOrEmpty()) getDigitalMenuNavigation(context, deeplink)
             else deeplink.replaceBefore("://", DeeplinkConstant.SCHEME_INTERNAL)
-        } else if (deeplink.startsWith(ApplinkConst.DIGITAL_SMARTCARD)){
-            return getDigitalSmartcardNavigation(context, deeplink)
+        } else if (deeplink.startsWith(ApplinkConst.DIGITAL_SMARTCARD)) {
+            return getDigitalSmartcardNavigation(deeplink)
         }
         return deeplink
     }
@@ -64,7 +64,7 @@ object DeeplinkMapperDigital {
             when (it) {
                 TEMPLATE_ID_VOUCHER -> {
                     if (remoteConfig.getBoolean(RemoteConfigKey.MAINAPP_ENABLE_DIGITAL_VOUCHER_GAME_PDP))
-                            ApplinkConsInternalDigital.VOUCHER_GAME else deeplink
+                        ApplinkConsInternalDigital.VOUCHER_GAME else deeplink
                 }
                 TEMPLATE_ID_GENERAL -> {
                     ApplinkConsInternalDigital.GENERAL_TEMPLATE
@@ -91,14 +91,10 @@ object DeeplinkMapperDigital {
         } ?: deeplink
     }
 
-    fun getDigitalSmartcardNavigation(context: Context, deeplink: String): String {
+    private fun getDigitalSmartcardNavigation(deeplink: String): String {
         val uri = Uri.parse(deeplink)
-        val remoteConfig = FirebaseRemoteConfigImpl(context)
-        var paramValue = uri.getQueryParameter(ApplinkConsInternalDigital.PARAM_SMARTCARD)?: ""
+        var paramValue = uri.getQueryParameter(ApplinkConsInternalDigital.PARAM_SMARTCARD) ?: ""
 
-        return if (remoteConfig.getBoolean(RemoteConfigKey.MAINAPP_SMARTCARD_BRIZZI))
-            UriUtil.buildUri(ApplinkConsInternalDigital.SMARTCARD_WITH_BRIZZI, paramValue)
-        else
-            UriUtil.buildUri(ApplinkConsInternalDigital.SMARTCARD_EMONEY, paramValue)
+        return UriUtil.buildUri(ApplinkConsInternalDigital.INTERNAL_SMARTCARD, paramValue)
     }
 }

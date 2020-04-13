@@ -52,7 +52,7 @@ object HomePageTrackingV2 : BaseTracking() {
                 )
         )
 
-        fun getBannerClick(bannerModel: BannerSlidesModel) = getBasicPromotionClick(
+        fun getBannerClick(bannerModel: BannerSlidesModel) = getBasicPromotionChannelClick(
                 event = Event.PROMO_CLICK,
                 eventCategory = Category.HOMEPAGE,
                 eventAction = Action.CLICK.format(SLIDER_BANNER),
@@ -62,6 +62,7 @@ object HomePageTrackingV2 : BaseTracking() {
                 categoryId = bannerModel.categoryPersona,
                 shopId = bannerModel.brandId,
                 channelId = Label.NONE,
+                campaignCode = bannerModel.campaignCode,
                 promotions = listOf(
                         Promotion(
                                 id= bannerModel.id.toString(),
@@ -75,7 +76,7 @@ object HomePageTrackingV2 : BaseTracking() {
                 )
         )
 
-        fun getOverlayBannerClick(bannerModel: BannerSlidesModel) = getBasicPromotionClick(
+        fun getOverlayBannerClick(bannerModel: BannerSlidesModel) = getBasicPromotionChannelClick(
                 event = Event.PROMO_CLICK,
                 eventCategory = Category.HOMEPAGE,
                 eventAction = Action.CLICK.format(OVERLAY_SLIDER_BANNER),
@@ -85,6 +86,7 @@ object HomePageTrackingV2 : BaseTracking() {
                 categoryId = bannerModel.categoryPersona,
                 shopId = bannerModel.brandId,
                 channelId = Label.NONE,
+                campaignCode = bannerModel.campaignCode,
                 promotions = listOf(
                         Promotion(
                                 id= bannerModel.id.toString(),
@@ -128,6 +130,7 @@ object HomePageTrackingV2 : BaseTracking() {
                 affinity = channel.persona,
                 attribution = channel.galaxyAttribution,
                 shopId = channel.brandId,
+                campaignCode = channel.campaignCode,
                 promotions = channel.grids.map {
                     Promotion(
                             id = CustomEvent.FORMAT_4_VALUE_UNDERSCORE.format(channel.id, grid.id, channel.persoType, channel.categoryID),
@@ -189,6 +192,7 @@ object HomePageTrackingV2 : BaseTracking() {
                 eventAction = RECOMMENDATION_LIST_CLICK_EVENT_ACTION,
                 eventLabel = grid.attribution,
                 channelId = channel.id,
+                campaignCode = channel.campaignCode,
                 products = listOf(
                         Product(
                                 name = grid.name,
@@ -284,6 +288,7 @@ object HomePageTrackingV2 : BaseTracking() {
                 eventAction = CLICK_MIX_LEFT,
                 eventLabel = channel.header.name,
                 channelId = channel.id,
+                campaignCode = channel.campaignCode,
                 products = listOf(
                         Product(
                                 name = grid.name,
@@ -333,7 +338,24 @@ object HomePageTrackingV2 : BaseTracking() {
 
                 })
 
-        fun getPopularKeywordClickItem(channel: DynamicHomeChannel.Channels, position: Int, keyword: String) = getBasicPromotionClick(
+        fun getPopularKeywordImpressionIrisItem(channel: DynamicHomeChannel.Channels, position: Int, keyword: String) = getBasicPromotionChannelView(
+                event = Event.PROMO_VIEW_IRIS,
+                eventCategory = Category.HOMEPAGE,
+                eventAction = IMPRESSION_POPULAR_KEYWORDS,
+                eventLabel = String.format(BaseTracking.Label.FORMAT_2_ITEMS, channel.header.name, keyword),
+                channelId = channel.id,
+                promotions = channel.grids.map {
+                    Promotion(
+                            id = channel.id,
+                            creative = it.attribution,
+                            creativeUrl = it.imageUrl,
+                            name = Ecommerce.PROMOTION_NAME.format(position, POPULAR_KEYWORDS_NAME, keyword),
+                            position = position.toString()
+                    )
+
+                })
+
+        fun getPopularKeywordClickItem(channel: DynamicHomeChannel.Channels, position: Int, keyword: String) = getBasicPromotionChannelClick(
                 event = Event.PROMO_CLICK,
                 eventCategory = Category.HOMEPAGE,
                 eventAction = CLICK_POPULAR_KEYWORDS,
@@ -343,6 +365,7 @@ object HomePageTrackingV2 : BaseTracking() {
                 affinity = channel.persona,
                 attribution = channel.galaxyAttribution,
                 shopId = channel.brandId,
+                campaignCode = channel.campaignCode,
                 promotions = channel.grids.map {
                     Promotion(
                             id = channel.id,
@@ -364,7 +387,7 @@ object HomePageTrackingV2 : BaseTracking() {
                     Category.KEY, Category.HOMEPAGE,
                     Action.KEY, CLICK_POPULAR_KEYWORDS_RELOAD,
                     Label.KEY, channel.header.name,
-                    Label.CHANNEL_LABEL, channel.header.name
+                    ChannelId.KEY, channel.id
             ) as HashMap<String, Any>
         }
 
@@ -410,6 +433,7 @@ object HomePageTrackingV2 : BaseTracking() {
                 eventAction = EVENT_ACTION_SPRINT_SALE_CLICK,
                 eventLabel = currentCountDown,
                 channelId = channel.id,
+                campaignCode = channel.campaignCode,
                 products = listOf(
                         Product(
                                 name = grid.name,

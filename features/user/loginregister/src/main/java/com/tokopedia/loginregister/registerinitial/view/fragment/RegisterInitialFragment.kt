@@ -1082,7 +1082,11 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
                     userSession.loginMethod,
                     userSession.userId.toIntOrZero(),
                     userSession.name,
-                    userSession.email
+                    userSession.email,
+                    userSession.phoneNumber,
+                    userSession.isGoldMerchant,
+                    userSession.shopId,
+                    userSession.shopName
             )
 
             if (isFromAccount()) {

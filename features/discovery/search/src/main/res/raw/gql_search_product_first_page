@@ -310,7 +310,7 @@ query SearchProduct(
         }
     }
 
-    global_search_navigation(keyword:$query, device:"android", size:5) {
+    global_search_navigation(keyword:$query, device:"android", size:5, params:$params) {
         data {
             source
             title

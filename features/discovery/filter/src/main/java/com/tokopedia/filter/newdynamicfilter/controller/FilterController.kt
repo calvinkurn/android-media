@@ -191,6 +191,14 @@ open class FilterController {
         return minValue != pressedSliderMinValueState || maxValue != pressedSliderMaxValueState
     }
 
+    fun isSliderMinValueHasChanged(minValue: Int): Boolean {
+        return minValue != pressedSliderMinValueState
+    }
+
+    fun isSliderMaxValueHasChanged(maxValue: Int): Boolean {
+        return maxValue != pressedSliderMaxValueState
+    }
+
     fun resetAllFilters() {
         filterViewState.clear()
         resetSliderStates()
