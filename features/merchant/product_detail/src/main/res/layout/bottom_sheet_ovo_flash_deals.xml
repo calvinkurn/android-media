@@ -44,7 +44,7 @@
             android:layout_marginBottom="4dp"
             android:paddingLeft="@dimen/layout_lvl2"
             android:paddingRight="@dimen/layout_lvl2"
-            android:text="Harga Barang"
+            android:text="@string/product_detail_price__goods"
             android:textColor="@color/light_N700_96"
             app:typographyType="body_2"
             app:typographyWeight="bold" />
@@ -70,7 +70,7 @@
             android:layout_marginBottom="4dp"
             android:paddingLeft="@dimen/layout_lvl2"
             android:paddingRight="@dimen/layout_lvl2"
-            android:text="Estimasi Ongkir Minimum"
+            android:text="@string/product_detail_estimation_price_min"
             android:textColor="@color/light_N700_96"
             app:typographyType="body_2"
             app:typographyWeight="bold" />
@@ -97,7 +97,7 @@
             android:layout_marginBottom="@dimen/layout_lvl1"
             android:paddingLeft="@dimen/layout_lvl2"
             android:paddingRight="@dimen/layout_lvl2"
-            android:text="OVO Cash + OVO Points"
+            android:text="@string/product_detail_ovo_cash_points"
             android:textColor="@color/light_N700_96"
             app:typographyType="body_2" />
 
@@ -131,7 +131,7 @@
             android:layout_marginBottom="4dp"
             android:paddingLeft="@dimen/layout_lvl2"
             android:paddingRight="@dimen/layout_lvl2"
-            android:text="OVO Kamu Kurang"
+            android:text="@string/product_detail_total_pay"
             android:textColor="@color/light_N700_96"
             app:typographyType="body_2"
             app:typographyWeight="bold" />
@@ -157,7 +157,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/layout_lvl3"
-        android:text="Top-up Instan OVO Cash"
+        tools:text="Top-up Instan OVO Cash"
         android:textStyle="bold"
         app:unifyButtonSize="large"
         app:unifyButtonType="main"
@@ -169,7 +169,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/layout_lvl1"
         android:layout_marginBottom="@dimen/layout_lvl3"
-        android:text="Top-up dengan Metode Lain"
+        tools:text="Top-up dengan Metode Lain"
         android:textStyle="bold"
         app:unifyButtonSize="large"
         app:unifyButtonType="main"
