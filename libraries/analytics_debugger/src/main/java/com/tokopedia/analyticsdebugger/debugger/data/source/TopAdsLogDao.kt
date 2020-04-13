@@ -26,6 +26,6 @@ interface TopAdsLogDao {
     @Insert
     fun insertAll(vararg topAdsLogDbs: TopAdsLogDB)
 
-    @Query("SELECT * FROM topads_log WHERE tracename LIKE :keyword OR attributes LIKE :keyword OR metrics LIKE :keyword " + "ORDER BY timestamp DESC LIMIT 20 OFFSET :offset")
+    @Query("SELECT * FROM topads_log WHERE url LIKE :keyword OR eventType LIKE :keyword OR sourceName LIKE :keyword " + "ORDER BY timestamp DESC LIMIT 20 OFFSET :offset")
     fun getData(keyword: String, offset: Int): List<TopAdsLogDB>
 }
