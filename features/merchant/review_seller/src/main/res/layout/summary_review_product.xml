@@ -6,7 +6,7 @@
     android:id="@+id/cardSummary"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="@dimen/dp_14"
+    android:layout_marginBottom="@dimen/spacing_lvl4"
     app:cardUseCompatPadding="true"
     app:card_type="border">
 
@@ -59,8 +59,8 @@
             android:id="@+id/tgCountReview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_4"
-            android:layout_marginLeft="@dimen/dp_4"
+            android:layout_marginStart="@dimen/spacing_lvl3"
+            android:layout_marginLeft="@dimen/spacing_lvl3"
             android:layout_marginTop="@dimen/dp_5"
             android:layout_marginBottom="@dimen/dp_12"
             android:textColor="@color/clr_31353b"
