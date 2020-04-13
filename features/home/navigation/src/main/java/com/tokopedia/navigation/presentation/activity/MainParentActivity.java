@@ -186,7 +186,6 @@ public class MainParentActivity extends BaseActivity implements
     private CoordinatorLayout fragmentContainer;
     private boolean isFirstNavigationImpression = false;
 
-    private PerformanceMonitoring homePerformanceMonitoring;
     private PerformanceMonitoring officialStorePerformanceMonitoring;
 
     private PerformanceMonitoring mainParentPerformanceMonitoring;
@@ -1207,17 +1206,6 @@ public class MainParentActivity extends BaseActivity implements
             getPageLoadTimePerformanceInterface().stopRenderPerformanceMonitoring();
             pageLoadTimePerformanceCallback = null;
         }
-    @Override
-    public void stopOfficialStorePerformanceMonitoring() {
-        if (officialStorePerformanceMonitoring != null) {
-            officialStorePerformanceMonitoring.stopTrace();
-            officialStorePerformanceMonitoring = null;
-        }
-    }
-
-    @Override
-    public void startOfficialStorePerformanceMonitoring() {
-        officialStorePerformanceMonitoring = PerformanceMonitoring.start(OFFICIAL_STORE_PERFORMANCE_MONITORING_KEY);
     }
 
     @Override
@@ -1250,5 +1238,18 @@ public class MainParentActivity extends BaseActivity implements
     @Override
     public JankyFrameMonitoringUtil getMainJankyFrameMonitoringUtil() {
         return jankyFrameMonitoringUtil;
+    }
+
+    @Override
+    public void stopOfficialStorePerformanceMonitoring() {
+        if (officialStorePerformanceMonitoring != null) {
+            officialStorePerformanceMonitoring.stopTrace();
+            officialStorePerformanceMonitoring = null;
+        }
+    }
+
+    @Override
+    public void startOfficialStorePerformanceMonitoring() {
+        officialStorePerformanceMonitoring = PerformanceMonitoring.start(OFFICIAL_STORE_PERFORMANCE_MONITORING_KEY);
     }
 }

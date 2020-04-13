@@ -18,7 +18,6 @@ import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.navigation_common.listener.AllNotificationListener
 import com.tokopedia.navigation_common.listener.HomePerformanceMonitoringListener
-import com.tokopedia.navigation_common.listener.JankyFramesMonitoringListener
 import com.tokopedia.officialstore.ApplinkConstant
 import com.tokopedia.officialstore.FirebasePerformanceMonitoringConstant
 import com.tokopedia.officialstore.OfficialStoreInstance
@@ -34,7 +33,6 @@ import com.tokopedia.officialstore.category.presentation.viewmodel.OfficialStore
 import com.tokopedia.officialstore.category.presentation.widget.OfficialCategoriesTab
 import com.tokopedia.officialstore.common.listener.RecyclerViewScrollListener
 import com.tokopedia.searchbar.MainToolbar
-import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_official_home.*

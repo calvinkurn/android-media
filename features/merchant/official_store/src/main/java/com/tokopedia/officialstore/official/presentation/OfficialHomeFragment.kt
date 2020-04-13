@@ -30,7 +30,6 @@ import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.navigation_common.listener.JankyFramesMonitoringListener
 import com.tokopedia.navigation_common.listener.HomePerformanceMonitoringListener
-import com.tokopedia.navigation_common.listener.JankyFramesMonitoringListener
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.officialstore.FirebasePerformanceMonitoringConstant
 import com.tokopedia.officialstore.OfficialStoreInstance
