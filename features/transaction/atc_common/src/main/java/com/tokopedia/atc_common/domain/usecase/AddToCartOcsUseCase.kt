@@ -42,7 +42,7 @@ open class AddToCartOcsUseCase @Inject constructor(@Named("atcOcsMutation") priv
         graphqlUseCase.addRequest(graphqlRequest)
         return graphqlUseCase.createObservable(RequestParams.EMPTY).map {
             val addToCartOcsGqlResponse = it.getData<AddToCartOcsGqlResponse>(AddToCartOcsGqlResponse::class.java)
-            addToCartDataMapper.mapAddToCartOcsUseCase(addToCartOcsGqlResponse)
+            addToCartDataMapper.mapAddToCartOcsResponse(addToCartOcsGqlResponse)
         }
 
     }
