@@ -4,13 +4,13 @@ import android.os.Bundle
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeTypeFactory
 
-class GeolocationPromptViewModel : HomeVisitable {
+class GeoLocationPromptDataModel : HomeVisitable {
     override fun visitableId(): String {
         return "geolocation"
     }
 
     override fun equalsWith(b: Any?): Boolean {
-        if (b is GeolocationPromptViewModel) {
+        if (b is GeoLocationPromptDataModel) {
             return visitableId() == b.visitableId()
         }
         return false

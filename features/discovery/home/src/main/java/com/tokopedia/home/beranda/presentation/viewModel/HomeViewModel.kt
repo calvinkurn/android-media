@@ -25,7 +25,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.CashBackData
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.*
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.GeolocationPromptViewModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.GeoLocationPromptDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderViewModel
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeHeaderWalletAction
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeRecommendationFeedViewModel
@@ -33,8 +33,6 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
 import com.tokopedia.stickylogin.domain.usecase.coroutine.StickyLoginUseCase
 import com.tokopedia.stickylogin.internal.StickyLoginConstant
-import com.tokopedia.topads.sdk.listener.ImpressionListener
-import com.tokopedia.topads.sdk.utils.ImpresionTask
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.*
@@ -44,7 +42,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flowOn
 import retrofit2.Response
-import rx.Observable
 import rx.Subscriber
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
@@ -298,7 +295,7 @@ open class HomeViewModel @Inject constructor(
         homeDataModel?.let {
             if (!isNeedShowGeoLocation) {
                 val findGeolocationModel =
-                        homeDataModel.list.find { visitable -> visitable is GeolocationPromptViewModel }
+                        homeDataModel.list.find { visitable -> visitable is GeoLocationPromptDataModel }
                 val currentList = homeDataModel.list.toMutableList()
 
                 currentList.let {
@@ -370,9 +367,9 @@ open class HomeViewModel @Inject constructor(
 // =================================================================================
 
     private fun insertSuggestedReview(suggestedProductReview: SuggestedProductReview) {
-        val findReviewViewModel = _homeLiveData.value?.list?.find { visitable -> visitable is ReviewViewModel }
+        val findReviewViewModel = _homeLiveData.value?.list?.find { visitable -> visitable is ReviewDataModel }
         val indexOfReviewViewModel = _homeLiveData.value?.list?.indexOf(findReviewViewModel) ?: -1
-        if(indexOfReviewViewModel != -1 && findReviewViewModel is ReviewViewModel){
+        if(indexOfReviewViewModel != -1 && findReviewViewModel is ReviewDataModel){
             val newFindReviewViewModel = findReviewViewModel.copy(
                     suggestedProductReview = suggestedProductReview
             )
@@ -383,10 +380,10 @@ open class HomeViewModel @Inject constructor(
     private fun removeSuggestedReview(homeDataModel: HomeDataModel?): HomeDataModel? {
         homeDataModel?.let { it->
             val findReviewViewModel =
-                    it.list.find { visitable -> visitable is ReviewViewModel }
+                    it.list.find { visitable -> visitable is ReviewDataModel }
             val currentList = it.list.toMutableList()
             currentList.let { list->
-                if (findReviewViewModel is ReviewViewModel) {
+                if (findReviewViewModel is ReviewDataModel) {
                     list.remove(findReviewViewModel)
                     return it.copy(
                             list = list
@@ -399,17 +396,17 @@ open class HomeViewModel @Inject constructor(
 
     fun removeSuggestedReview() {
         val findReviewViewModel =
-                _homeLiveData.value?.list?.find { visitable -> visitable is ReviewViewModel }
+                _homeLiveData.value?.list?.find { visitable -> visitable is ReviewDataModel }
                         ?: return
-        if (findReviewViewModel is ReviewViewModel) {
+        if (findReviewViewModel is ReviewDataModel) {
             launch(coroutineContext) { updateWidget(UpdateLiveDataModel(ACTION_DELETE, findReviewViewModel)) }
         }
     }
 
     fun onCloseGeolocation() {
         val homeViewModel = _homeLiveData.value
-        val detectGeolocation = homeViewModel?.list?.find { visitable -> visitable is GeolocationPromptViewModel }
-        (detectGeolocation as? GeolocationPromptViewModel)?.let {
+        val detectGeolocation = homeViewModel?.list?.find { visitable -> visitable is GeoLocationPromptDataModel }
+        (detectGeolocation as? GeoLocationPromptDataModel)?.let {
             launch(coroutineContext) { updateWidget(UpdateLiveDataModel(ACTION_DELETE, it)) }
         }
         setNeedToShowGeolocationComponent(false)
@@ -417,8 +414,8 @@ open class HomeViewModel @Inject constructor(
 
     fun onCloseTicker() {
         val homeViewModel = _homeLiveData.value
-        val detectTicker = homeViewModel?.list?.find { visitable -> visitable is TickerViewModel }
-        (detectTicker as? TickerViewModel)?.let {
+        val detectTicker = homeViewModel?.list?.find { visitable -> visitable is TickerDataModel }
+        (detectTicker as? TickerDataModel)?.let {
             launch(coroutineContext) { updateWidget(UpdateLiveDataModel(ACTION_DELETE, it)) }
         }
     }
@@ -510,12 +507,7 @@ open class HomeViewModel @Inject constructor(
                 val findRetryModel = homeDataModel.list.find {
                     visitable -> visitable is HomeRetryModel
                 }
-                val findLoadingModel = homeDataModel.list.find {
-                    visitable -> visitable is HomeLoadingMoreModel
-                }
-                visitableMutableList.remove(findLoadingModel)
                 visitableMutableList.remove(findRetryModel)
-                visitableMutableList.add(HomeLoadingMoreModel())
                 val newHomeViewModel = homeDataModel.copy(
                         list = visitableMutableList)
                 getFeedTabData()
@@ -527,13 +519,13 @@ open class HomeViewModel @Inject constructor(
 
     private fun evaluatePopularKeywordComponent(homeDataModel: HomeDataModel?): HomeDataModel? {
         homeDataModel?.let { homeViewModel ->
-            val popularWidget = _homeLiveData.value?.list?.find { visitable -> visitable is PopularKeywordListViewModel}
+            val popularWidget = _homeLiveData.value?.list?.find { visitable -> visitable is PopularKeywordListDataModel}
             if(popularWidget != null) {
                 val list = homeViewModel.list.toMutableList()
                 // find the old data from current list
                 list.forEachIndexed { pos, data ->
                     run {
-                        if (data is PopularKeywordListViewModel) {
+                        if (data is PopularKeywordListDataModel) {
                             list[pos] = data
                         }
                     }
@@ -708,8 +700,8 @@ open class HomeViewModel @Inject constructor(
     }
 
     private fun getPopularKeyword() {
-        val data = _homeLiveData.value?.list?.find { it is PopularKeywordListViewModel }
-        if(data != null && data is PopularKeywordListViewModel) {
+        val data = _homeLiveData.value?.list?.find { it is PopularKeywordListDataModel }
+        if(data != null && data is PopularKeywordListDataModel) {
             getPopularKeywordData()
         }
     }
@@ -721,9 +713,9 @@ open class HomeViewModel @Inject constructor(
             val results = popularKeywordUseCase.executeOnBackground()
             if (results.data.keywords.isNotEmpty()) {
                 val resultList = convertPopularKeywordDataList(results.data.keywords)
-                _homeLiveData.value?.list?.withIndex()?.find { it.value is PopularKeywordListViewModel }?.let { indexedData ->
+                _homeLiveData.value?.list?.withIndex()?.find { it.value is PopularKeywordListDataModel }?.let { indexedData ->
                     val oldData = indexedData.value
-                    if (oldData is PopularKeywordListViewModel) {
+                    if (oldData is PopularKeywordListDataModel) {
                         updateWidget(UpdateLiveDataModel(ACTION_UPDATE, oldData.copy(popularKeywordList = resultList), indexedData.index))
                     }
                 }
@@ -879,10 +871,10 @@ open class HomeViewModel @Inject constructor(
 // ================================== Mapper Function =========================================
 // ============================================================================================
 
-    private fun convertPopularKeywordDataList(list: List<HomeWidget.PopularKeyword>): MutableList<PopularKeywordViewModel> {
-        val dataList: MutableList<PopularKeywordViewModel> = mutableListOf()
+    private fun convertPopularKeywordDataList(list: List<HomeWidget.PopularKeyword>): MutableList<PopularKeywordDataModel> {
+        val dataList: MutableList<PopularKeywordDataModel> = mutableListOf()
         for (pojo in list) {
-            dataList.add(PopularKeywordViewModel(pojo.url, pojo.imageUrl, pojo.keyword, pojo.productCount))
+            dataList.add(PopularKeywordDataModel(pojo.url, pojo.imageUrl, pojo.keyword, pojo.productCount))
         }
         return dataList
     }

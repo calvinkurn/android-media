@@ -11,7 +11,7 @@ import java.util.ArrayList
  * @author by errysuprayogi on 11/28/17.
  */
 
-class TickerViewModel : HomeVisitable {
+class TickerDataModel : HomeVisitable {
 
     var tickers: ArrayList<Ticker.Tickers>? = null
     private var isCache: Boolean = false
@@ -20,7 +20,7 @@ class TickerViewModel : HomeVisitable {
     private var isCombined: Boolean = false
 
     override fun equalsWith(b: Any?): Boolean {
-        if (b is TickerViewModel) {
+        if (b is TickerDataModel) {
             if (tickers?.size != b.tickers?.size) return false
             tickers?.forEachIndexed { index, ticker ->
                 if (ticker.id == b.tickers?.get(index)?.id) return false

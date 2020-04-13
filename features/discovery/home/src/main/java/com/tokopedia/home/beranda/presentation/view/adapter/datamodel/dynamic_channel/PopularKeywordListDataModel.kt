@@ -9,8 +9,8 @@ import com.tokopedia.kotlin.model.ImpressHolder
 /**
  * @author by yoasfs on 2020-02-18
  */
-data class PopularKeywordListViewModel(
-        var popularKeywordList: MutableList<PopularKeywordViewModel> = mutableListOf(),
+data class PopularKeywordListDataModel(
+        var popularKeywordList: MutableList<PopularKeywordDataModel> = mutableListOf(),
         val channel : DynamicHomeChannel.Channels = DynamicHomeChannel.Channels(),
         var position:Int = 0
 ) : HomeVisitable, ImpressHolder() {
@@ -46,11 +46,11 @@ data class PopularKeywordListViewModel(
     }
 
     override fun visitableId(): String {
-        return "popularKeyword"
+        return channel.id
     }
 
     override fun equalsWith(b: Any?): Boolean {
-        return b is PopularKeywordListViewModel && popularKeywordList == b.popularKeywordList
+        return this === b
     }
 
     override fun getChangePayloadFrom(b: Any?): Bundle {

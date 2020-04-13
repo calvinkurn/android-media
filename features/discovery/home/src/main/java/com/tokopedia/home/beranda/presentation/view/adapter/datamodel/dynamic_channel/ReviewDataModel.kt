@@ -7,18 +7,18 @@ import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeTypeFactory
 import com.tokopedia.kotlin.model.ImpressHolder
 
-data class ReviewViewModel(
+data class ReviewDataModel(
         var suggestedProductReview: SuggestedProductReview = SuggestedProductReview(),
         var channel: DynamicHomeChannel.Channels
 ) : ImpressHolder(), HomeVisitable {
     override fun equalsWith(b: Any?): Boolean {
-        if (b is ReviewViewModel) {
+        if (b is ReviewDataModel) {
             return suggestedProductReview == b.suggestedProductReview
         }
         return false
     }
     override fun visitableId(): String {
-        return suggestedProductReview.suggestedProductReview.title
+        return suggestedProductReview?.suggestedProductReview?.title ?: DEFAULT_REVIEW_ID
     }
 
     override fun setTrackingData(trackingData: MutableMap<String, Any>?) {
@@ -52,5 +52,9 @@ data class ReviewViewModel(
 
     override fun getChangePayloadFrom(b: Any?): Bundle? {
         return null
+    }
+
+    companion object{
+        private const val DEFAULT_REVIEW_ID = "REVIEW"
     }
 }
