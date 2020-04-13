@@ -105,7 +105,7 @@ internal fun ImageView.loadImage(url: String?) {
                 .load(url)
                 .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                 .placeholder(R.drawable.placeholder_grey)
-                .error(R.drawable.ic_loading_toped_new)
+                .error(R.drawable.placeholder_grey)
                 .into(this)
     }
 }
@@ -114,8 +114,8 @@ internal fun ImageView.loadImage(url: String?, state: ((Boolean) -> Unit)) {
         Glide.with(context)
                 .load(url)
                 .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-                .placeholder(R.drawable.ic_loading_toped_new)
-                .error(R.drawable.ic_loading_toped_new)
+                .placeholder(R.drawable.placeholder_grey)
+                .error(R.drawable.placeholder_grey)
                 .listener(object : RequestListener<Drawable>{
                     override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
                         state.invoke(false)
@@ -157,8 +157,8 @@ internal fun ImageView.loadImageRounded(url: String?) {
                 .load(url)
                 .transform(CenterCrop(), RoundedCorners(getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_6)))
                 .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-                .placeholder(R.drawable.ic_loading_toped_new)
-                .error(R.drawable.error_drawable)
+                .placeholder(R.drawable.placeholder_grey)
+                .error(R.drawable.placeholder_grey)
                 .into(this)
     }
 }
