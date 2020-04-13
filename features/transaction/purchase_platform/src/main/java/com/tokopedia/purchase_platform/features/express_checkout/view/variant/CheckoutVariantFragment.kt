@@ -783,9 +783,9 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
                 }
             }
         } else {
-            product.setProductName(fragmentUiModel.getProductViewModel()?.productName)
-            product.setProductID(fragmentUiModel.getProductViewModel()?.parentId?.toString())
-            product.setPrice(fragmentUiModel.getProductViewModel()?.productPrice?.toString())
+            product.setProductName(fragmentUiModel.getProductViewModel()?.productName ?: "")
+            product.setProductID(fragmentUiModel.getProductViewModel()?.parentId?.toString() ?: "")
+            product.setPrice(fragmentUiModel.getProductViewModel()?.productPrice?.toString() ?: "")
         }
 
         if (shopModel?.isOfficial == 1) {
@@ -797,12 +797,12 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
         }
 
         product.setQty(fragmentUiModel.getQuantityViewModel()?.orderQuantity ?: 0)
-        product.setShopId(shopModel?.shopId?.toString())
-        product.setShopName(shopModel?.shopName)
+        product.setShopId(shopModel?.shopId?.toString() ?: "")
+        product.setShopName(shopModel?.shopName ?: "")
 
         val checkout = EnhancedECommerceCheckout()
         checkout.setActionField(actionField.actionFieldMap)
-        checkout.addProduct(product.product)
+        checkout.addProduct(product.getProduct())
 
         enhanceEcommerceData.put("checkout", checkout.checkoutMap)
 
