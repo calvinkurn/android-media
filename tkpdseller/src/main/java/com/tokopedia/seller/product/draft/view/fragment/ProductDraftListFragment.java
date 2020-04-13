@@ -199,8 +199,10 @@ public class ProductDraftListFragment extends BaseListFragment<BlankPresenter, P
 
     @Override
     public void onItemClicked(ProductDraftViewModel productDraftViewModel) {
-        Intent intent = RouteManager.getIntent(getContext(), ApplinkConstInternalMechant.MERCHANT_OPEN_PRODUCT_PREVIEW);
-        intent.putExtra(EXTRA_DRAFT_ID, productDraftViewModel.getProductDraftId() + "");
+        Intent intent = RouteManager.getIntent(getContext(),
+                ApplinkConstInternalMechant.MERCHANT_OPEN_PRODUCT_PREVIEW,
+                productDraftViewModel.getProductDraftId() + "",
+                ApplinkConstInternalMechant.MODE_EDIT_DRAFT);
         eventDraftProductClicked(AppEventTracking.EventLabel.EDIT_DRAFT);
         startActivity(intent);
     }

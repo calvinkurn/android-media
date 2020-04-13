@@ -1908,8 +1908,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     private fun gotoEditProduct() {
         val id = viewModel.getDynamicProductInfoP1?.parentProductId ?: return
         context?.let {
-            val intent = RouteManager.getIntent(it, ApplinkConstInternalMechant.MERCHANT_OPEN_PRODUCT_PREVIEW)
-            intent.putExtra(EXTRA_PRODUCT_ID, id)
+            val intent = RouteManager.getIntent(it, ApplinkConstInternalMechant.MERCHANT_OPEN_PRODUCT_PREVIEW, id, ApplinkConstInternalMechant.MODE_EDIT_PRODUCT)
             intent?.run { startActivityForResult(this, ProductDetailConstant.REQUEST_CODE_EDIT_PRODUCT) }
         }
     }

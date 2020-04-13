@@ -57,13 +57,13 @@ import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.PICKER_RESULT_PATHS
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.RESULT_IMAGE_DESCRIPTION_LIST
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.item.common.util.CurrencyTypeDef
 import com.tokopedia.product.manage.item.common.util.ViewUtils
 import com.tokopedia.product.manage.item.imagepicker.imagepickerbuilder.AddProductImagePickerBuilder
 import com.tokopedia.product.manage.item.main.base.view.activity.BaseProductAddEditFragment.Companion.EXTRA_STOCK
 import com.tokopedia.product.manage.item.stock.view.activity.ProductBulkEditStockActivity
 import com.tokopedia.product.manage.item.utils.constant.ProductExtraConstant
-import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.oldlist.constant.ProductManageListConstant
 import com.tokopedia.product.manage.oldlist.constant.ProductManageListConstant.ERROR_CODE_LIMIT_CASHBACK
 import com.tokopedia.product.manage.oldlist.constant.ProductManageListConstant.ETALASE_PICKER_REQUEST_CODE
@@ -954,17 +954,12 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
 
     private fun goToDuplicateProduct(productId: String) {
         activity?.let {
-            val intent = RouteManager.getIntent(context, ApplinkConstInternalMechant.MERCHANT_OPEN_PRODUCT_PREVIEW)
-            intent.putExtra(EXTRA_PRODUCT_ID, productId)
-            intent.putExtra(EXTRA_IS_DUPLICATE, true)
-            startActivity(intent)
+            RouteManager.route(context, ApplinkConstInternalMechant.MERCHANT_OPEN_PRODUCT_PREVIEW, productId, ApplinkConstInternalMechant.MODE_DUPLICATE_PRODUCT)
         }
     }
 
     private fun goToEditProduct(productId: String) {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalMechant.MERCHANT_OPEN_PRODUCT_PREVIEW)
-        intent.putExtra(EXTRA_PRODUCT_ID, productId)
-        startActivity(intent)
+        RouteManager.route(context, ApplinkConstInternalMechant.MERCHANT_OPEN_PRODUCT_PREVIEW, productId, ApplinkConstInternalMechant.MODE_EDIT_PRODUCT)
     }
 
     private fun showDialogActionDeleteProduct(productIdList: List<String>, onClickListener: DialogInterface.OnClickListener, onCancelListener: DialogInterface.OnClickListener) {
