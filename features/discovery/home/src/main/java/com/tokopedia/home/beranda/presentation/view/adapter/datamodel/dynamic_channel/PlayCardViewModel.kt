@@ -85,6 +85,7 @@ data class PlayCardViewModel(
                     "channelId", playCardHome?.channelId,
                     "eventAction", "click on play dynamic banner",
                     "eventLabel", "Play-CMP_OTHERS_${playCardHome?.slug} - ${playCardHome?.channelId} - ${getLiveOrVod(playCardHome?.videoStream?.isLive)}",
+                    "campaignCode", channel.campaignCode,
                     "ecommerce", DataLayer.mapOf(
                     "promoClick", DataLayer.mapOf(
                     "promotions", DataLayer.listOf(

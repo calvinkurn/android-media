@@ -44,6 +44,7 @@ abstract class BaseTracking {
         const val ATTRIBUTION_LABEL = "attribution"
         const val CATEGORY_LABEL = "categoryId"
         const val SHOP_LABEL = "shopId"
+        const val CAMPAIGN_CODE = "campaignCode"
         const val NONE = ""
         const val FORMAT_2_ITEMS = "%s - %s"
     }
@@ -236,32 +237,6 @@ abstract class BaseTracking {
         )
     }
 
-    open fun getBasicPromotionClick(
-        event: String,
-        eventCategory: String,
-        eventAction: String,
-        eventLabel: String,
-        channelId: String,
-        affinity: String,
-        attribution: String,
-        categoryId: String,
-        shopId: String,
-        promotions: List<Promotion>
-    ): Map<String, Any>{
-        return DataLayer.mapOf(
-                Event.KEY, event,
-                Category.KEY, eventCategory,
-                Action.KEY, eventAction,
-                Label.KEY, eventLabel,
-                Label.CHANNEL_LABEL, channelId,
-                Label.AFFINITY_LABEL, affinity,
-                Label.ATTRIBUTION_LABEL, attribution,
-                Label.CATEGORY_LABEL, categoryId,
-                Label.SHOP_LABEL, shopId,
-                Ecommerce.KEY, Ecommerce.getEcommercePromoClick(promotions)
-        )
-    }
-
     open fun getBasicPromotionChannelClick(
             event: String,
             eventCategory: String,
@@ -272,6 +247,7 @@ abstract class BaseTracking {
             attribution: String,
             categoryId: String,
             shopId: String,
+            campaignCode: String,
             promotions: List<Promotion>
     ): Map<String, Any>{
         return DataLayer.mapOf(
@@ -284,6 +260,7 @@ abstract class BaseTracking {
                 Label.ATTRIBUTION_LABEL, attribution,
                 Label.CATEGORY_LABEL, categoryId,
                 Label.SHOP_LABEL, shopId,
+                Label.CAMPAIGN_CODE, campaignCode,
                 Ecommerce.KEY, Ecommerce.getEcommercePromoClick(promotions),
                 ChannelId.KEY, channelId
         )
@@ -313,6 +290,7 @@ abstract class BaseTracking {
             eventLabel: String,
             list: String,
             channelId: String,
+            campaignCode: String,
             products: List<Product>
     ): Map<String, Any>{
         return DataLayer.mapOf(
@@ -321,6 +299,7 @@ abstract class BaseTracking {
                 Action.KEY, eventAction,
                 Label.KEY, eventLabel,
                 Label.CHANNEL_LABEL, channelId,
+                Label.CAMPAIGN_CODE, campaignCode,
                 Ecommerce.KEY, Ecommerce.getEcommerceProductClick(products, list)
         )
     }

@@ -13,7 +13,6 @@ import com.tokopedia.autocomplete.initialstate.recentsearch.convertRecentSearchT
 import com.tokopedia.autocomplete.initialstate.recentview.ReecentViewTitleViewModel
 import com.tokopedia.autocomplete.initialstate.recentview.convertRecentViewSearchToVisitableList
 import com.tokopedia.user.session.UserSessionInterface
-import retrofit2.Response
 import rx.Subscriber
 import javax.inject.Inject
 
@@ -94,15 +93,15 @@ class InitialStatePresenter @Inject constructor(
         }
     }
 
-    private fun getDeleteRecentSearchSubscriber(keyword: String): Subscriber<Response<Void>> = object : Subscriber<Response<Void>>() {
+    private fun getDeleteRecentSearchSubscriber(keyword: String): Subscriber<Boolean> = object : Subscriber<Boolean>() {
         override fun onCompleted() {}
 
         override fun onError(e: Throwable) {
             e.printStackTrace()
         }
 
-        override fun onNext(response: Response<Void>) {
-            if (response.isSuccessful) {
+        override fun onNext(isSuccessful: Boolean) {
+            if (isSuccessful) {
                 var needDelete = false
                 listVistable.forEachIndexed { _, visitable ->
                     if (visitable is RecentSearchViewModel) {
@@ -133,15 +132,15 @@ class InitialStatePresenter @Inject constructor(
         listVistable.removeAll(recentSearchViewModel)
     }
 
-    private fun getDeleteAllRecentSearchSubscriber(): Subscriber<Response<Void>> = object : Subscriber<Response<Void>>() {
+    private fun getDeleteAllRecentSearchSubscriber(): Subscriber<Boolean> = object : Subscriber<Boolean>() {
         override fun onCompleted() {}
 
         override fun onError(e: Throwable) {
             e.printStackTrace()
         }
 
-        override fun onNext(response: Response<Void>) {
-            if (response.isSuccessful) {
+        override fun onNext(isSuccessful: Boolean) {
+            if (isSuccessful) {
                 removeRecentSearchTitle()
                 removeRecentSearch()
                 view.deleteRecentSearch(listVistable)
@@ -155,7 +154,7 @@ class InitialStatePresenter @Inject constructor(
             when (initialStateData.id) {
                 InitialStateData.INITIAL_STATE_RECENT_SEARCH -> {
                     data.addAll(
-                            initialStateData.convertRecentSearchToVisitableList().insertTitleWithDeleteAll(initialStateData.header)
+                            initialStateData.convertRecentSearchToVisitableList().insertTitleWithDeleteAll(initialStateData.header, initialStateData.labelAction)
                     )
                 }
                 InitialStateData.INITIAL_STATE_RECENT_VIEW -> {
@@ -165,7 +164,7 @@ class InitialStatePresenter @Inject constructor(
                 }
                 InitialStateData.INITIAL_STATE_POPULAR_SEARCH -> {
                     data.addAll(
-                            initialStateData.convertPopularSearchToVisitableList().insertTitleWithRefresh(initialStateData.header)
+                            initialStateData.convertPopularSearchToVisitableList().insertTitleWithRefresh(initialStateData.header, initialStateData.labelAction)
                     )
                 }
             }
@@ -173,23 +172,25 @@ class InitialStatePresenter @Inject constructor(
         return data
     }
 
-    private fun MutableList<Visitable<*>>.insertTitle(name: String): List<Visitable<*>> {
+    private fun MutableList<Visitable<*>>.insertTitle(title: String): List<Visitable<*>> {
         val titleSearch = ReecentViewTitleViewModel()
-        titleSearch.title = name
+        titleSearch.title = title
         this.add(0, titleSearch)
         return this
     }
 
-    private fun MutableList<Visitable<*>>.insertTitleWithDeleteAll(name: String): List<Visitable<*>> {
+    private fun MutableList<Visitable<*>>.insertTitleWithDeleteAll(title: String, labelAction: String): List<Visitable<*>> {
         val titleSearch = RecentSearchTitleViewModel(true)
-        titleSearch.title = name
+        titleSearch.title = title
+        titleSearch.labelAction = labelAction
         this.add(0, titleSearch)
         return this
     }
 
-    private fun MutableList<Visitable<*>>.insertTitleWithRefresh(name: String): List<Visitable<*>> {
+    private fun MutableList<Visitable<*>>.insertTitleWithRefresh(title: String, labelAction: String): List<Visitable<*>> {
         val titleSearch = PopularSearchTitleViewModel(true)
-        titleSearch.title = name
+        titleSearch.title = title
+        titleSearch.labelAction = labelAction
         this.add(0, titleSearch)
         return this
     }

@@ -5,6 +5,8 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
 import androidx.fragment.app.Fragment
+import androidx.transition.TransitionInflater
+import androidx.transition.TransitionSet
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
@@ -50,7 +52,8 @@ class HomeRecommendationActivity : BaseSimpleActivity(), HasComponent<HomeRecomm
                 if(isSimilarProduct(intent?.data?.toString() ?: "")) SimilarProductRecommendationFragment.newInstance(
                         if(isNumber(intent.data?.pathSegments?.get(1) ?: "")) intent.data?.pathSegments?.get(1) ?: ""
                         else "", intent.data?.getQueryParameter("ref") ?: "null", intent.data?.query ?: "")
-                else RecommendationFragment.newInstance(intent.data?.lastPathSegment ?: "", intent.data?.query ?: "", intent.data?.getQueryParameter("ref") ?: "")
+                else RecommendationFragment
+                        .newInstance(intent.data?.lastPathSegment ?: "", intent.data?.query ?: "", intent.data?.getQueryParameter("ref") ?: "")
             }
             else -> {
                 RouteManager.route(this, ApplinkConst.HOME)

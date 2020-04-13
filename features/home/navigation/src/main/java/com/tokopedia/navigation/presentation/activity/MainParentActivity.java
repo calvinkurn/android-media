@@ -1,6 +1,5 @@
 package com.tokopedia.navigation.presentation.activity;
 
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
@@ -20,28 +19,21 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.PersistableBundle;
 import android.preference.PreferenceManager;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RestrictTo;
-
 import com.google.android.material.bottomnavigation.LabelVisibilityMode;
 
 import androidx.asynclayoutinflater.view.AsyncLayoutInflater;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
-
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
-
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
-
 import android.text.TextUtils;
 import android.util.SparseArray;
-import android.util.Log;
-import android.view.FrameMetrics;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -66,6 +58,8 @@ import com.tokopedia.abstraction.common.utils.DisplayMetricUtils;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.analytics.performance.util.JankyFrameMonitoringUtil;
+import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback;
+import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.DeeplinkDFMapper;
@@ -81,7 +75,6 @@ import com.tokopedia.navigation.GlobalNavAnalytics;
 import com.tokopedia.navigation.GlobalNavConstant;
 import com.tokopedia.navigation.GlobalNavRouter;
 import com.tokopedia.navigation.R;
-import com.tokopedia.navigation.analytics.performance.HomePerformanceData;
 import com.tokopedia.navigation.analytics.performance.PerformanceData;
 import com.tokopedia.navigation.domain.model.Notification;
 import com.tokopedia.navigation.presentation.di.DaggerGlobalNavComponent;
@@ -111,7 +104,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -157,6 +149,14 @@ public class MainParentActivity extends BaseActivity implements
     private static final String ANDROID_CUSTOMER_NEW_OS_HOME_ENABLED = "android_customer_new_os_home_enabled";
     private static final String SOURCE_ACCOUNT = "account";
     private static final String HOME_PERFORMANCE_MONITORING_KEY = "mp_home";
+    private static final String HOME_PERFORMANCE_MONITORING_PREPARE_METRICS = "home_plt_start_page_metrics";
+    private static final String HOME_PERFORMANCE_MONITORING_NETWORK_METRICS = "home_plt_network_request_page_metrics";
+    private static final String HOME_PERFORMANCE_MONITORING_RENDER_METRICS = "home_plt_render_page_metrics";
+
+    private static final String HOME_PERFORMANCE_MONITORING_CACHE_ATTRIBUTION = "Data source";
+    private static final String HOME_PERFORMANCE_MONITORING_CACHE_VALUE = "Cache";
+    private static final String HOME_PERFORMANCE_MONITORING_NETWORK_VALUE= "Network";
+
     private static final String MAIN_PARENT_PERFORMANCE_MONITORING_KEY = "mp_slow_rendering_perf";
     private static final String FPM_METRIC_ALL_FRAMES = "all_frames";
     private static final String FPM_METRIC_JANKY_FRAMES = "janky_frames";
@@ -185,9 +185,9 @@ public class MainParentActivity extends BaseActivity implements
     private CoordinatorLayout fragmentContainer;
     private boolean isFirstNavigationImpression = false;
 
-    private PerformanceMonitoring homePerformanceMonitoring;
-
     private PerformanceMonitoring mainParentPerformanceMonitoring;
+
+    private PageLoadTimePerformanceCallback pageLoadTimePerformanceCallback;
 
     // animate icon OS
     private MenuItem osMenu;
@@ -289,7 +289,12 @@ public class MainParentActivity extends BaseActivity implements
 
     private void startJankyFrameMonitoringUtil() {
         jankyFrameMonitoringUtil = new JankyFrameMonitoringUtil();
-        jankyFrameMonitoringUtil.init(this);
+        jankyFrameMonitoringUtil.init(this, new JankyFrameMonitoringUtil.OnFrameListener() {
+            @Override
+            public void onFrameRendered(@NotNull com.tokopedia.analytics.performance.util.FpiPerformanceData fpiPerformanceData) {
+
+            }
+        });
     }
 
     @NotNull
@@ -309,11 +314,11 @@ public class MainParentActivity extends BaseActivity implements
 
     /**
      * this is temporary fix for crash MediaPlayer,
-     * because we already fix it 5times, and still appear on specific device
+     *  because we already fix it 5times, and still appear on specific device
      */
     private void routeOnboarding() {
         if (Build.MODEL.contains("vivo Y35")
-                || Build.MODEL.contains("vivo Y51L")) {
+            || Build.MODEL.contains("vivo Y51L")) {
             if (Build.VERSION.RELEASE.contains("5.0.2")) {
                 return;
             }
@@ -377,7 +382,7 @@ public class MainParentActivity extends BaseActivity implements
         inflateBottomNavigationViewAsync(savedInstanceState);
     }
 
-    private void inflateBottomNavigationViewAsync(Bundle savedInstanceState) {
+    private void inflateBottomNavigationViewAsync(Bundle savedInstanceState){
         AsyncLayoutInflater asyncLayoutInflater = new AsyncLayoutInflater(getContext());
         AsyncLayoutInflater.OnInflateFinishedListener inflationCompleteListener = new AsyncLayoutInflater.OnInflateFinishedListener() {
             @Override
@@ -391,7 +396,7 @@ public class MainParentActivity extends BaseActivity implements
         asyncLayoutInflater.inflate(R.layout.bottom_navigation_view, viewGroup, inflationCompleteListener);
     }
 
-    private void afterBottomNaviagtionInflation(Bundle savedInstanceState) {
+    private void afterBottomNaviagtionInflation(Bundle savedInstanceState){
         bottomNavigation = findViewById(R.id.bottomnav);
         bottomNavigation.setItemIconTintList(null);
         bottomNavigation.setLabelVisibilityMode(LabelVisibilityMode.LABEL_VISIBILITY_LABELED);
@@ -406,14 +411,14 @@ public class MainParentActivity extends BaseActivity implements
     }
 
     @NotNull
-    private boolean executeFirstTimeEvent() {
+    private boolean executeFirstTimeEvent(){
         if (isFirstTime()) {
             globalNavAnalytics.trackFirstTime(MainParentActivity.this);
         }
         return true;
     }
 
-    private void showSelectedPage() {
+    private void showSelectedPage(){
         int tabPosition = HOME_MENU;
         if (getIntent().getExtras() != null) {
             tabPosition = getIntent().getExtras().getInt(ARGS_TAB_POSITION, HOME_MENU);
@@ -675,7 +680,7 @@ public class MainParentActivity extends BaseActivity implements
     }
 
     @NotNull
-    private boolean checkAppSignature() {
+    private boolean checkAppSignature(){
         if (!((BaseMainApplication) getApplication()).checkAppSignature()) {
             finish();
         }
@@ -734,7 +739,7 @@ public class MainParentActivity extends BaseActivity implements
     @Override
     public void renderNotification(Notification notification) {
         this.notification = notification;
-        if (bottomNavigation != null) {
+        if(bottomNavigation != null) {
             bottomNavigation.setNotification(notification.getTotalCart(), CART_MENU);
             if (notification.getHaveNewFeed()) {
                 bottomNavigation.setNotification(-1, FEED_MENU);
@@ -750,16 +755,13 @@ public class MainParentActivity extends BaseActivity implements
     }
 
     @Override
-    public void onStartLoading() {
-    }
+    public void onStartLoading() { }
 
     @Override
-    public void onError(String message) {
-    }
+    public void onError(String message) { }
 
     @Override
-    public void onHideLoading() {
-    }
+    public void onHideLoading() { }
 
     @Override
     public Context getContext() {
@@ -835,7 +837,7 @@ public class MainParentActivity extends BaseActivity implements
     @Override
     public void onReadytoShowBoarding(ArrayList<ShowCaseObject> showCaseObjects) {
 
-        if (bottomNavigation != null) {
+        if(bottomNavigation != null) {
 
             playAnimOsIcon(); // show animation icon
 
@@ -1112,11 +1114,12 @@ public class MainParentActivity extends BaseActivity implements
 
 
     /**
+     *
      * Load animated icon by Lottie
      * duration anim: 2s
      * 1s = 60 frames
      * + 20 frames
-     * <p>
+     *
      * 0f - 0.7f state default - animation - default
      * 1 state selected
      */
@@ -1164,22 +1167,47 @@ public class MainParentActivity extends BaseActivity implements
         lottieOsDrawable.setProgress(progress);
     }
 
-    @Override
-    public void startHomePerformanceMonitoring() {
-        homePerformanceMonitoring = PerformanceMonitoring.start(HOME_PERFORMANCE_MONITORING_KEY);
-    }
-
     private void startMainParentPerformanceMonitoring() {
         mainParentPerformanceMonitoring = PerformanceMonitoring.start(MAIN_PARENT_PERFORMANCE_MONITORING_KEY);
     }
 
     @Override
-    public void stopHomePerformanceMonitoring() {
-        if (homePerformanceMonitoring != null) {
-            Log.d("HomePerfTest MainParentActivity", "stopHomePerformanceMonitoring");
-            homePerformanceMonitoring.stopTrace();
-            homePerformanceMonitoring = null;
+    public void startHomePerformanceMonitoring() {
+        pageLoadTimePerformanceCallback = new PageLoadTimePerformanceCallback(
+                HOME_PERFORMANCE_MONITORING_PREPARE_METRICS,
+                HOME_PERFORMANCE_MONITORING_NETWORK_METRICS,
+                HOME_PERFORMANCE_MONITORING_RENDER_METRICS,
+                0,
+                0,
+                0,
+                0,
+                null
+        );
+        getPageLoadTimePerformanceInterface().startMonitoring(HOME_PERFORMANCE_MONITORING_KEY);
+        getPageLoadTimePerformanceInterface().startPreparePagePerformanceMonitoring();
+    }
+
+    @Override
+    public void stopHomePerformanceMonitoring(boolean isCache) {
+        if (getPageLoadTimePerformanceInterface() != null) {
+            if (isCache) {
+                getPageLoadTimePerformanceInterface().addAttribution(
+                        HOME_PERFORMANCE_MONITORING_CACHE_ATTRIBUTION,
+                        HOME_PERFORMANCE_MONITORING_CACHE_VALUE);
+            } else {
+                getPageLoadTimePerformanceInterface().addAttribution(
+                        HOME_PERFORMANCE_MONITORING_CACHE_ATTRIBUTION,
+                        HOME_PERFORMANCE_MONITORING_NETWORK_VALUE);
+            }
+            getPageLoadTimePerformanceInterface().stopMonitoring();
+            getPageLoadTimePerformanceInterface().stopRenderPerformanceMonitoring();
+            pageLoadTimePerformanceCallback = null;
         }
+    }
+
+    @Override
+    public PageLoadTimePerformanceInterface getPageLoadTimePerformanceInterface() {
+        return pageLoadTimePerformanceCallback;
     }
 
     @Override
