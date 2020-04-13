@@ -144,7 +144,7 @@ class PlayFragment : BaseDaggerFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        fpmPreparePage?.startTrace(PLAY_TRACE_PREPARE_PAGE)
+        fpmPreparePage = PerformanceMonitoring.start(PLAY_TRACE_PREPARE_PAGE)
         playViewModel = ViewModelProvider(this, viewModelFactory).get(PlayViewModel::class.java)
         channelId = arguments?.getString(PLAY_KEY_CHANNEL_ID) ?: ""
     }
@@ -196,7 +196,7 @@ class PlayFragment : BaseDaggerFragment() {
 
     override fun onResume() {
         super.onResume()
-        fpmRequestNetwork?.startTrace(PLAY_TRACE_REQUEST_NETWORK)
+        fpmRequestNetwork = PerformanceMonitoring.start(PLAY_TRACE_REQUEST_NETWORK)
         playViewModel.resumeWithChannelId(channelId)
         fpmPreparePage?.stopTrace()
         requireView().post {

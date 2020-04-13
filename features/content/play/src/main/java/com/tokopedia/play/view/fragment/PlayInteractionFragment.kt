@@ -309,7 +309,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
 
     private fun observeToolbarInfo() {
         playViewModel.observablePartnerInfo.observe(viewLifecycleOwner, Observer {
-            fpmRenderPage?.startTrace(PLAY_TRACE_RENDER_PAGE)
+            fpmRenderPage = PerformanceMonitoring.start(PLAY_TRACE_RENDER_PAGE)
             setPartnerInfo(it)
         })
     }

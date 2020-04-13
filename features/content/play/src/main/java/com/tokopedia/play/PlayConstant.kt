@@ -50,4 +50,4 @@ const val PLAY_TRACE_REQUEST_NETWORK = "mp_plt_play_page_request_network"
  * Start: PlayInteractionFragment observeToolbarInfo()
  * Stop: PlayInteractionFragment stopFpmTrace()
  */
-const val PLAY_TRACE_RENDER_PAGE = "plt_play_page_render_page"
+const val PLAY_TRACE_RENDER_PAGE = "mp_plt_play_page_render_page"
