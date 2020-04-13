@@ -1288,6 +1288,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         dPresenter.setHasPerformChecklistChange(true)
         dPresenter.reCalculateSubTotal(cartAdapter.allShopGroupDataList, cartAdapter.insuranceCartShops)
 
+        cartAdapter.checkForShipmentForm()
+        val isSelected = cartAdapter.setItemSelected(position, parentPosition, checked)
         val params = generateParamValidateUsePromoRevamp(checked, parentPosition, position, false)
         if (isNeedHitUpdateCartAndValidateUse(params)) {
             renderPromoCheckoutLoading()
@@ -1295,15 +1297,13 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         } else {
             updatePromoCheckoutManualIfNoSelected(getAllAppliedPromoCodes(params))
         }
-
-        cartAdapter.checkForShipmentForm()
-        return cartAdapter.setItemSelected(position, parentPosition, checked)
+        return isSelected
     }
 
     private fun updatePromoCheckoutManualIfNoSelected(listPromoApplied: List<String>) {
         if (cartAdapter.selectedCartShopHolderData.isEmpty()) {
             renderPromoCheckoutButtonNoItemIsSelected()
-        }  else {
+        } else {
             renderPromoCheckoutButtonActiveDefault(listPromoApplied)
         }
     }
@@ -1472,7 +1472,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         }
     }
 
-    private fun renderPromoCheckoutButtonActiveDefault(listPromoApplied: List<String>) {
+    override fun renderPromoCheckoutButtonActiveDefault(listPromoApplied: List<String>) {
         promoCheckoutBtn.state = ButtonPromoCheckoutView.State.ACTIVE
         promoCheckoutBtn.margin = ButtonPromoCheckoutView.Margin.NO_BOTTOM
         promoCheckoutBtn.title = getString(R.string.promo_funnel_label)
@@ -1608,7 +1608,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
 
-
     // NOTES:
     // if position = -1, then isChecked for all (shop level)
     // if ignoreIsChecked = true, then no position nor isChecked is gained
@@ -1635,11 +1634,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                             if (cartString.equals(lastApplyVoucherOrders.uniqueId, true)) {
                                 listPromoCodes.add(lastApplyVoucherOrders.code)
                             }
-                        }
-                    }
-                    if (listPromoCodes.isEmpty()) {
-                        cartItemHolderData.promoCodes?.forEach { code ->
-                            listPromoCodes.add(code)
                         }
                     }
 
@@ -1680,16 +1674,22 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 val listProductDetail = arrayListOf<ProductDetailsItem>()
 
                 val listPromoCodes = arrayListOf<String>()
-                cartListData?.lastApplyShopGroupSimplifiedData?.voucherOrders?.forEach { lastApplyVoucherOrders ->
-                    cartShop.shopGroupAvailableData.cartString?.let { cartString ->
-                        if (cartString.equals(lastApplyVoucherOrders.uniqueId, true)) {
-                            listPromoCodes.add(lastApplyVoucherOrders.code)
+                if (isChecked) {
+                    // ambil dari shopgroup
+                    cartListData?.shopGroupAvailableDataList?.forEach { shopGroup ->
+                        if (cartShop.shopGroupAvailableData.cartString.equals(shopGroup.cartString)) {
+                            shopGroup.promoCodes?.forEach {
+                                listPromoCodes.add(it)
+                            }
                         }
                     }
-                }
-                if (listPromoCodes.isEmpty()) {
-                    cartShop.shopGroupAvailableData.promoCodes?.forEach { code ->
-                        listPromoCodes.add(code)
+                } else {
+                    cartListData?.lastApplyShopGroupSimplifiedData?.voucherOrders?.forEach { lastApplyVoucherOrders ->
+                        cartShop.shopGroupAvailableData.cartString?.let { cartString ->
+                            if (cartString.equals(lastApplyVoucherOrders.uniqueId, true)) {
+                                listPromoCodes.add(lastApplyVoucherOrders.code)
+                            }
+                        }
                     }
                 }
 
@@ -1720,9 +1720,12 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                             }
                         }
                     }
-                    if (listPromoCodes.isEmpty()) {
-                        cartItemHolderData.promoCodes?.forEach { code ->
-                            listPromoCodes.add(code)
+
+                    if (it.promoCodes?.isNotEmpty() == true) {
+                        it.promoCodes?.forEach {
+                            if (!listPromoCodes.contains(it)) {
+                                listPromoCodes.add(it)
+                            }
                         }
                     }
 
@@ -1822,7 +1825,11 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             shop.shopId?.toLong()?.let { shopId ->
                 shop.cartString?.let { cartString ->
                     val listProductDetail = arrayListOf<ProductDetail>()
+                    var hasCheckedItem = false
                     shop.cartItemDataList?.forEach { cartItem ->
+                        if (!hasCheckedItem && cartItem.isSelected) {
+                            hasCheckedItem = true
+                        }
                         val productDetail = ProductDetail(
                                 productId = cartItem.cartItemData?.originData?.productId?.toLong()
                                         ?: 0,
@@ -1835,7 +1842,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                             uniqueId = cartString,
                             product_details = listProductDetail,
                             codes = shop.promoCodes?.toMutableList() ?: mutableListOf(),
-                            isChecked = shop.isChecked)
+                            isChecked = hasCheckedItem)
                     listOrder.add(order)
                 }
             }
@@ -1876,7 +1883,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
         return PromoRequest(
                 codes = globalPromo,
-                state = CART,
+                state = "cart",
+                isSuggested = 0,
                 orders = listOrder)
     }
 
@@ -2737,10 +2745,10 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     override fun updateCartCounter(counter: Int) {
-        val cache = LocalCacheHandler(context, CartConstant.CART);
+        val cache = LocalCacheHandler(context, CartConstant.CART)
         cache.putInt(CartConstant.IS_HAS_CART, if (counter > 0) 1 else 0)
-        cache.putInt(CartConstant.CACHE_TOTAL_CART, counter);
-        cache.applyEditor();
+        cache.putInt(CartConstant.CACHE_TOTAL_CART, counter)
+        cache.applyEditor()
     }
 
     override fun onGetCompositeSubscriber(): CompositeSubscription {
@@ -2768,8 +2776,9 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     override fun updatePromoCheckoutStickyButton(promoUiModel: PromoUiModel) {
-        doRenderPromoCheckoutButton(LastApplyUiMapper.mapValidateUsePromoUiModelToLastApplyUiModel(promoUiModel))
-        setLastApplyDataToShopGroup(LastApplyUiMapper.mapValidateUsePromoUiModelToLastApplyUiModel(promoUiModel))
+        val lastApplyUiModel = LastApplyUiMapper.mapValidateUsePromoUiModelToLastApplyUiModel(promoUiModel)
+        doRenderPromoCheckoutButton(lastApplyUiModel)
+        setLastApplyDataToShopGroup(lastApplyUiModel)
     }
 
     private fun showToaster(msg: String, isShowOk: Boolean) {

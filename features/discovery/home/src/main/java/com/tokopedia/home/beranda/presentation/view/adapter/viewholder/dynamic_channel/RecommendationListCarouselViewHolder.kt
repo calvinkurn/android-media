@@ -9,7 +9,6 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.design.countdown.CountDownView
 import com.tokopedia.home.R
 import com.tokopedia.home.analytics.HomePageTrackingV2
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel

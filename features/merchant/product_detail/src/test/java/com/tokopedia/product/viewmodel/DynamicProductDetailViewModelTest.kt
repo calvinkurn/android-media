@@ -6,6 +6,7 @@ import com.tokopedia.affiliatecommon.domain.TrackAffiliateUseCase
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.model.response.ErrorReporterModel
 import com.tokopedia.atc_common.domain.model.response.ErrorReporterTextModel
+import com.tokopedia.atc_common.domain.usecase.AddToCartOccUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartOcsUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.product.detail.common.data.model.product.ProductParams
@@ -96,6 +97,8 @@ class DynamicProductDetailViewModelTest {
     @RelaxedMockK
     lateinit var addToCartOcsUseCase: AddToCartOcsUseCase
     @RelaxedMockK
+    lateinit var addToCartOccUseCase: AddToCartOccUseCase
+    @RelaxedMockK
     lateinit var getP3VariantUseCase: GetP3VariantUseCase
     @RelaxedMockK
     lateinit var toggleNotifyMeUseCase: ToggleNotifyMeUseCase
@@ -112,7 +115,7 @@ class DynamicProductDetailViewModelTest {
 
     private val viewModel by lazy {
         DynamicProductDetailViewModel(TestDispatcherProvider(), stickyLoginUseCase, getPdpLayoutUseCase, getProductInfoP2ShopUseCase, getProductInfoP2LoginUseCase, getProductInfoP2GeneralUseCase, getProductInfoP3UseCase, toggleFavoriteUseCase, removeWishlistUseCase, addWishListUseCase, getRecommendationUseCase,
-                moveProductToWarehouseUseCase, moveProductToEtalaseUseCase, trackAffiliateUseCase, submitHelpTicketUseCase, updateCartCounterUseCase, addToCartUseCase, addToCartOcsUseCase, getP3VariantUseCase, toggleNotifyMeUseCase, sendTopAdsUseCase, userSessionInterface)
+                moveProductToWarehouseUseCase, moveProductToEtalaseUseCase, trackAffiliateUseCase, submitHelpTicketUseCase, updateCartCounterUseCase, addToCartUseCase, addToCartOcsUseCase, addToCartOccUseCase, getP3VariantUseCase, toggleNotifyMeUseCase, sendTopAdsUseCase, userSessionInterface)
     }
 
     /**
@@ -125,7 +128,7 @@ class DynamicProductDetailViewModelTest {
             userSessionInterface.shopId
         } returns shopId
 
-        val isShopOwner = viewModel.isShopOwner(shopId.toInt())
+        val isShopOwner = viewModel.isShopOwner()
 
         Assert.assertTrue(isShopOwner)
     }
@@ -138,7 +141,7 @@ class DynamicProductDetailViewModelTest {
             userSessionInterface.shopId
         } returns anotherShopId
 
-        val isShopOwner = viewModel.isShopOwner(shopId.toInt())
+        val isShopOwner = viewModel.isShopOwner()
 
         Assert.assertFalse(isShopOwner)
     }

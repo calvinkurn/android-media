@@ -100,6 +100,7 @@ import com.tokopedia.product.detail.imagepreview.view.activity.ImagePreviewPdpAc
 import com.tokopedia.product.detail.view.activity.*
 import com.tokopedia.product.detail.view.adapter.dynamicadapter.DynamicProductDetailAdapter
 import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactoryImpl
+import com.tokopedia.product.detail.view.bottomsheet.OvoFlashDealsBottomSheet
 import com.tokopedia.product.detail.view.fragment.partialview.PartialButtonActionView
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.product.detail.view.util.*
@@ -128,7 +129,6 @@ import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceTaggingConstant
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.variant_common.model.ProductVariantCommon
 import com.tokopedia.variant_common.model.VariantCategory
@@ -488,6 +488,8 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         viewModel.updatedImageVariant.removeObservers(this)
         viewModel.initialVariantData.removeObservers(this)
         viewModel.onVariantClickedData.removeObservers(this)
+        viewModel.toggleTeaserNotifyMe.removeObservers(this)
+        viewModel.addToCartLiveData.removeObservers(this)
         viewModel.flush()
         super.onDestroy()
     }
@@ -755,11 +757,8 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     /**
      * ProductMerchantVoucherViewHolder
      */
-    override fun isOwner(): Boolean {
-        return viewModel.getDynamicProductInfoP1?.basic?.getShopId()?.let {
-            viewModel.isShopOwner(it)
-        } ?: false
-    }
+    override fun isOwner(): Boolean = viewModel.isShopOwner()
+
 
     override fun onMerchantUseVoucherClicked(merchantVoucherViewModel: MerchantVoucherViewModel, position: Int, dataTrackDataModel: ComponentTrackDataModel) {
         activity?.let {
@@ -1024,11 +1023,11 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         pdpHashMapUtil?.updateDataP1(updatedDynamicProductInfo)
         updateButtonAfterClickVariant(indexOfSelectedVariant)
 
-            renderFullfillment()
-            dynamicAdapter.notifySnapshotWithPayloads(pdpHashMapUtil?.snapShotMap)
-            dynamicAdapter.notifyVariantSection(pdpHashMapUtil?.productNewVariantDataModel, 1)
-            dynamicAdapter.notifyNotifyMe(pdpHashMapUtil?.notifyMeMap, null)
-        }
+        renderFullfillment()
+        dynamicAdapter.notifySnapshotWithPayloads(pdpHashMapUtil?.snapShotMap)
+        dynamicAdapter.notifyVariantSection(pdpHashMapUtil?.productNewVariantDataModel, 1)
+        dynamicAdapter.notifyNotifyMe(pdpHashMapUtil?.notifyMeMap, null)
+    }
 
     private fun updateButtonAfterClickVariant(indexOfVariantButton: Int?) {
         if (viewModel.shopInfo == null) {
@@ -1072,11 +1071,11 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                     logException(Throwable(it.data.errorReporter.texts.submitTitle))
                     showDialogErrorAtc(it.data)
                 } else {
-                    onSuccessAtc(it.data.data.cartId)
+                    onSuccessAtc(it.data)
                 }
             }, {
                 logException(it)
-                showToasterError(it.message ?: "")
+                showToastError(it)
             })
         }
     }
@@ -1174,7 +1173,54 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         }
     }
 
-    private fun onSuccessAtc(cartId: String) {
+
+    private fun onSuccessAtc(result: AddToCartDataModel) {
+        val cartId = result.data.cartId
+        when (viewModel.buttonActionType) {
+            ProductDetailConstant.OCS_BUTTON -> {
+                if (result.data.success == 0) {
+                    validateOvo(result)
+                } else {
+                    sendTrackingATC(cartId)
+                    goToCheckout(ShipmentFormRequest
+                            .BundleBuilder()
+                            .deviceId("")
+                            .build()
+                            .bundle)
+                }
+            }
+            ProductDetailConstant.OCC_BUTTON -> {
+                sendTrackingATC(cartId)
+                if (remoteConfig.getBoolean(RemoteConfigKey.ENABLE_ONE_CLICK_CHECKOUT, true)) {
+                    goToOneClickCheckout()
+                } else {
+                    goToCartCheckout(cartId)
+                }
+            }
+            ProductDetailConstant.BUY_BUTTON -> {
+                sendTrackingATC(cartId)
+                goToCartCheckout(cartId)
+            }
+            ProductDetailConstant.ATC_BUTTON -> {
+                sendTrackingATC(cartId)
+                showAddToCartDoneBottomSheet()
+            }
+            ProductDetailConstant.TRADEIN_AFTER_DIAGNOSE -> {
+                // Same with OCS but should send devideId
+                sendTrackingATC(cartId)
+                goToCheckout(ShipmentFormRequest.BundleBuilder()
+                        .deviceId(viewModel.tradeinDeviceId)
+                        .build()
+                        .bundle)
+            }
+        }
+    }
+
+    private fun goToOneClickCheckout() {
+        RouteManager.route(context, ApplinkConstInternalMarketplace.ONE_CLICK_CHECKOUT)
+    }
+
+    private fun sendTrackingATC(cartId: String) {
         DynamicProductDetailTracking.Click.eventEcommerceBuy(viewModel.buttonActionType,
                 viewModel.buttonActionText,
                 viewModel.userId,
@@ -1186,40 +1232,32 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                 DynamicProductDetailTracking.generateVariantString(viewModel.variantData, viewModel.getDynamicProductInfoP1?.basic?.productID
                         ?: ""),
                 viewModel.getDynamicProductInfoP1)
-
-        when (viewModel.buttonActionType) {
-            ProductDetailConstant.OCS_BUTTON -> {
-                goToCheckout(ShipmentFormRequest
-                        .BundleBuilder()
-                        .deviceId("")
-                        .build()
-                        .bundle)
-            }
-            ProductDetailConstant.OCC_BUTTON -> {
-                if (remoteConfig.getBoolean(RemoteConfigKey.ENABLE_ONE_CLICK_CHECKOUT, true)) {
-                    goToOneClickCheckout()
-                } else {
-                    goToCartCheckout(cartId)
-                }
-            }
-            ProductDetailConstant.BUY_BUTTON -> {
-                goToCartCheckout(cartId)
-            }
-            ProductDetailConstant.ATC_BUTTON -> {
-                showAddToCartDoneBottomSheet()
-            }
-            ProductDetailConstant.TRADEIN_AFTER_DIAGNOSE -> {
-                // Same with OCS but should send devideId
-                goToCheckout(ShipmentFormRequest.BundleBuilder()
-                        .deviceId(viewModel.tradeinDeviceId)
-                        .build()
-                        .bundle)
-            }
-        }
     }
 
-    private fun goToOneClickCheckout() {
-        RouteManager.route(context, ApplinkConstInternalMarketplace.ONE_CLICK_CHECKOUT)
+    private fun validateOvo(result: AddToCartDataModel) {
+        if (result.data.refreshPrerequisitePage) {
+            onSwipeRefresh()
+        } else {
+            activity?.let {
+                when (result.data.ovoValidationDataModel.status) {
+                    ProductDetailConstant.OVO_INACTIVE_STATUS -> {
+                        val applink = "${result.data.ovoValidationDataModel.applink}&product_id=${viewModel.getDynamicProductInfoP1?.parentProductId ?: ""}"
+                        DynamicProductDetailTracking.Click.eventActivationOvo(
+                                viewModel.getDynamicProductInfoP1?.parentProductId ?: "",
+                                viewModel.userSessionInterface.userId)
+                        RouteManager.route(it, applink)
+                    }
+                    ProductDetailConstant.OVO_INSUFFICIENT_BALANCE_STATUS -> {
+                            val bottomSheetOvoDeals = OvoFlashDealsBottomSheet(
+                                    viewModel.getDynamicProductInfoP1?.parentProductId ?: "",
+                                    viewModel.userSessionInterface.userId,
+                                    result.data.ovoValidationDataModel)
+                            bottomSheetOvoDeals.show(it.supportFragmentManager, "Ovo Deals")
+                        }
+                    else -> showToastError(Throwable(getString(R.string.default_request_error_unknown)))
+                }
+            }
+        }
     }
 
     private fun goToCheckout(shipmentFormRequest: Bundle) {
@@ -1807,7 +1845,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             menuShare.isEnabled = true
 
             viewModel.getDynamicProductInfoP1?.run {
-                val isOwned = viewModel.isShopOwner(basic.getShopId())
+                val isOwned = viewModel.isShopOwner()
                 val isSellerApp = GlobalConfig.isSellerApp()
 
                 val isValidCustomer = !isOwned && !isSellerApp
@@ -2183,6 +2221,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                         trackerAttribution = trackerAttributionPdp ?: ""
                         trackerListName = trackerListNamePdp ?: ""
                         isTradeIn = data.data.isTradeIn
+                        shippingPrice = viewModel.shippingMinimumPrice
                     }
                     viewModel.addToCart(addToCartOcsRequestParams)
                 }
@@ -2619,10 +2658,12 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     }
 
     private fun observeToggleNotifyMe() {
-        viewLifecycleOwner.observe(viewModel.toggleTeaserNotifyMe) {
-            when (it) {
-                is Fail -> onFailNotifyMe(it.throwable)
-            }
+        viewLifecycleOwner.observe(viewModel.toggleTeaserNotifyMe) {data ->
+            data.doSuccessOrFail({
+                viewModel.variantData = VariantMapper.updateVariantDeals(viewModel.variantData, viewModel.getDynamicProductInfoP1?.basic?.getProductId() ?: 0)
+            },{
+                onFailNotifyMe(it)
+            })
         }
     }
 
