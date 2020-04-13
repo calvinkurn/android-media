@@ -53,12 +53,6 @@ public class PerformanceMonitoring {
         }
     }
 
-    public void putIncrementMetric(String key, long increment) {
-        if (trace != null) {
-            trace.incrementMetric(key, increment);
-        }
-    }
-
     public void putMetric(String parameter, long value) {
         if (trace != null) {
             trace.putMetric(parameter, value);
