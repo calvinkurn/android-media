@@ -154,4 +154,10 @@ public interface UserSessionInterface {
 
     void setLoginMethod(@NotNull String loginMethod);
 
+    void setDeviceId(String deviceId);
+
+    void setFcmTimestamp();
+
+    long getFcmTimestamp();
+
 }

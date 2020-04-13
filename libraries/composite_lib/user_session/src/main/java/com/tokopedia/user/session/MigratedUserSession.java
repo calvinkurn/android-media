@@ -5,9 +5,6 @@ import android.content.SharedPreferences;
 
 import com.tokopedia.user.session.util.EncoderDecoder;
 
-import static com.tokopedia.user.session.Constants.ACCESS_TOKEN;
-import static com.tokopedia.user.session.Constants.LOGIN_SESSION;
-
 public class MigratedUserSession {
 
     protected Context context;
@@ -29,6 +26,18 @@ public class MigratedUserSession {
 
     protected void nullString(String prefName, String keyName) {
         setString(prefName, keyName, null);
+    }
+
+    protected long getLong(String prefName, String keyName, long defValue) {
+        SharedPreferences sharedPrefs = context.getSharedPreferences(prefName, Context.MODE_PRIVATE);
+        return sharedPrefs.getLong(keyName, defValue);
+    }
+
+    protected void setLong(String prefName, String keyName, long value) {
+        SharedPreferences sharedPrefs = context.getSharedPreferences(prefName, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPrefs.edit();
+        editor.putLong(keyName, value);
+        editor.apply();
     }
 
     protected void setString(String prefName, String keyName, String value) {

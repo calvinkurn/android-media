@@ -12,6 +12,7 @@ import static com.tokopedia.user.session.Constants.AUTOFILL_USER_DATA;
 import static com.tokopedia.user.session.Constants.EMAIL;
 import static com.tokopedia.user.session.Constants.FULL_NAME;
 import static com.tokopedia.user.session.Constants.GCM_ID;
+import static com.tokopedia.user.session.Constants.GCM_ID_TIMESTAMP;
 import static com.tokopedia.user.session.Constants.GCM_STORAGE;
 import static com.tokopedia.user.session.Constants.GC_TOKEN;
 import static com.tokopedia.user.session.Constants.GTM_LOGIN_ID;
@@ -150,6 +151,11 @@ public class UserSession extends MigratedUserSession implements UserSessionInter
 
     public String getTemporaryUserId() {
         return getAndTrimOldString(LOGIN_SESSION, TEMP_USER_ID, "");
+    }
+
+    @Override
+    public void setDeviceId(String deviceId) {
+        setString(GCM_STORAGE, GCM_ID, deviceId);
     }
 
     /**
@@ -363,6 +369,14 @@ public class UserSession extends MigratedUserSession implements UserSessionInter
 
     public String getRefreshTokenIV() {
         return getAndTrimOldString(LOGIN_SESSION, REFRESH_TOKEN_KEY, KEY_IV);
+    }
+
+    public long getFcmTimestamp() {
+        return getLong(GCM_STORAGE, GCM_ID_TIMESTAMP, 0);
+    }
+
+    public void setFcmTimestamp() {
+        setLong(GCM_STORAGE, GCM_ID_TIMESTAMP, System.currentTimeMillis());
     }
 
     @Override
