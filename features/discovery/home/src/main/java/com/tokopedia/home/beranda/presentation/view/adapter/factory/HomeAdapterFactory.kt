@@ -14,7 +14,7 @@ import com.tokopedia.home.beranda.listener.HomeReviewListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.*
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.dynamic_icon.DynamicIconSectionViewModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.spotlight.SpotlightViewModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.GeolocationPromptViewModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.GeoLocationPromptDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderViewModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.RetryModel
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.*
@@ -62,7 +62,7 @@ class HomeAdapterFactory(private val fragmentManager: FragmentManager, private v
         return BannerViewHolder.LAYOUT
     }
 
-    override fun type(tickerViewModel: TickerViewModel): Int {
+    override fun type(tickerDataModel: TickerDataModel): Int {
         return TickerViewHolder.LAYOUT
     }
 
@@ -100,7 +100,7 @@ class HomeAdapterFactory(private val fragmentManager: FragmentManager, private v
         return TopAdsViewHolder.LAYOUT
     }
 
-    override fun type(geolocationPromptViewModel: GeolocationPromptViewModel): Int {
+    override fun type(geoLocationPromptDataModel: GeoLocationPromptDataModel): Int {
         return GeolocationPromptViewHolder.LAYOUT
     }
 
@@ -117,7 +117,7 @@ class HomeAdapterFactory(private val fragmentManager: FragmentManager, private v
         return RetryViewHolder.LAYOUT
     }
 
-    override fun type(reviewViewModel: ReviewViewModel): Int {
+    override fun type(reviewDataModel: ReviewDataModel): Int {
         return ReviewViewHolder.LAYOUT
     }
 
@@ -134,7 +134,7 @@ class HomeAdapterFactory(private val fragmentManager: FragmentManager, private v
         return RetryViewHolder.LAYOUT
     }
 
-    override fun type(popularKeywordListViewModel: PopularKeywordListViewModel): Int {
+    override fun type(popularKeywordListDataModel: PopularKeywordListDataModel): Int {
         return PopularKeywordViewHolder.LAYOUT
     }
 

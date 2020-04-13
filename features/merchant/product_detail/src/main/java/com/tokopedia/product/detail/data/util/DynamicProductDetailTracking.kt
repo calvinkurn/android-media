@@ -675,6 +675,33 @@ object DynamicProductDetailTracking {
 
             TrackingUtil.addComponentTracker(mapEvent, productInfo, componentTrackDataModel, ProductTrackingConstant.Action.CLICK_NOTIFY_ME)
         }
+
+        fun eventActivationOvo(productId: String, userId: String) {
+            val mapEvent = TrackAppUtils.gtmData(
+                    ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
+                    ProductTrackingConstant.Category.PDP,
+                    ProductTrackingConstant.Action.CLICK_BUY_ACTIVATION_OVO,
+                    ProductTrackingConstant.Label.EMPTY_LABEL)
+            TrackingUtil.addComponentOvoTracker(mapEvent, productId, userId)
+        }
+
+        fun eventSeeBottomSheetOvo(title: String, productId: String, userId: String) {
+            val mapEvent = TrackAppUtils.gtmData(
+                    ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
+                    ProductTrackingConstant.Category.PDP,
+                    "${ProductTrackingConstant.Action.CLICK_SEE_BOTTOMSHEET_OVO} $title",
+                    ProductTrackingConstant.Label.EMPTY_LABEL)
+            TrackingUtil.addComponentOvoTracker(mapEvent, productId, userId)
+        }
+
+        fun eventTopupBottomSheetOvo(title: String, buttonTitle: String, productId: String, userId: String) {
+            val mapEvent = TrackAppUtils.gtmData(
+                    ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
+                    ProductTrackingConstant.Category.PDP,
+                    "${ProductTrackingConstant.Action.CLICK} - $buttonTitle ${ProductTrackingConstant.Action.CLICK_TOPUP_BOTTOMSHEET_OVO} $title",
+                    ProductTrackingConstant.Label.EMPTY_LABEL)
+            TrackingUtil.addComponentOvoTracker(mapEvent, productId, userId)
+        }
     }
 
     object Iris {

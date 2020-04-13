@@ -248,8 +248,10 @@ class MerchantCreditDetailFragment : BaseDaggerFragment() {
     }
 
     override fun initInjector() {
-        val saldoDetailsComponent = SaldoDetailsComponentInstance.getComponent(activity!!.application)
-        saldoDetailsComponent!!.inject(this)
+        activity?.let {
+            val saldoDetailsComponent = SaldoDetailsComponentInstance.getComponent(it)
+            saldoDetailsComponent.inject(this)
+        }
     }
 
     override fun getScreenName(): String? {

@@ -23,6 +23,7 @@ internal class OnSuggestionItemClickTest {
     private val applinkProfileWithoutQueryParams = "tokopedia://people/$id"
     private val applinkRecentSearch = "tokopedia://search?q=jaket+pria&source=universe&st=product"
     private val urlTracker = "https://ace.tokopedia.com/tracker/v1?id=558518&user_id=0&device=desktop&unique_id=&type=shop"
+    private val expectedUrlTracker = "https://ace.tokopedia.com/tracker/v1?id=558518&user_id=0&device=desktop&unique_id=&type=shop&device=android&source=searchbar&count=5&user_id=&unique_id=d41d8cd98f00b204e9800998ecf8427e&device_id="
     private val capturedUrlTrackerParams = slot<RequestParams>()
     private val keywordTypedByUser = "samsung"
     private val position = 1
@@ -78,8 +79,8 @@ internal class OnSuggestionItemClickTest {
 
         val actualUrlTracker = requestParams.getString(SuggestionTrackerUseCase.URL_TRACKER, "")
 
-        assert(actualUrlTracker == urlTracker) {
-            "Assertion Failed, actual url tracker: $actualUrlTracker, expected url tracker: $urlTracker"
+        assert(actualUrlTracker == expectedUrlTracker) {
+            "Assertion Failed, actual url tracker: $actualUrlTracker, expected url tracker: $expectedUrlTracker"
         }
     }
 
