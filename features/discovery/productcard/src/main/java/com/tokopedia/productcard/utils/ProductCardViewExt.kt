@@ -135,7 +135,7 @@ internal fun ImageView.loadImageWithOutPlaceholder(url: String?, state: ((Boolea
         Glide.with(context)
                 .load(url)
                 .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-                .error(R.drawable.ic_loading_toped_new)
+                .error(R.drawable.placeholder_grey)
                 .listener(object : RequestListener<Drawable>{
                     override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
                         state.invoke(false)

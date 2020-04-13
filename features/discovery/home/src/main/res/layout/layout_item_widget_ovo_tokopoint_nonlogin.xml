@@ -73,10 +73,6 @@
             android:scaleType="fitEnd"
             android:paddingTop="@dimen/dp_2"
             android:paddingBottom="@dimen/dp_2"/>
-        <com.elyeproj.loaderviewlibrary.LoaderImageView
-            android:id="@+id/loading_bg_ovo_non_login"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
 
         <View
             android:layout_width="match_parent"

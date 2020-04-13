@@ -715,7 +715,6 @@ public class HomeFragment extends BaseDaggerFragment implements
                 .into(new CustomTarget<Bitmap>() {
                     @Override
                     public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
-                        Log.d("testNoSkeleton", "Get data from play banner network: success");
                         viewModel.setPlayBanner(playCardViewModelEvent.peekContent());
                     }
 
@@ -725,7 +724,6 @@ public class HomeFragment extends BaseDaggerFragment implements
 
                     @Override
                     public void onLoadFailed(@Nullable Drawable errorDrawable) {
-                        Log.d("testNoSkeleton", "Get data from play banner network: fail");
                         viewModel.clearPlayBanner();
                     }
                 }));
