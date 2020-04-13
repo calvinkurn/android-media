@@ -64,8 +64,7 @@ open class AddProductInputMapper @Inject constructor() {
     protected fun mapVariantParam(variantInputModel: ProductVariantInputModel,
                                 sizeChartUploadId: String): Variant? {
         if (variantInputModel.variantOptionParent.size == 0 &&
-                variantInputModel.productVariant.size == 0 &&
-                variantInputModel.productSizeChart == null) {
+                variantInputModel.productVariant.size == 0) {
             return null
         }
 
@@ -93,7 +92,7 @@ open class AddProductInputMapper @Inject constructor() {
         val products: ArrayList<Product> = ArrayList()
         productVariant.forEach {
             val product = Product(
-                    it.opt,
+                    mapProductCombination(it.opt),
                     it.priceVar,
                     it.sku,
                     STOCK_STATUS,
@@ -103,6 +102,8 @@ open class AddProductInputMapper @Inject constructor() {
         }
         return products
     }
+
+    private fun mapProductCombination(opt: List<Int>): List<Int> = opt.map { it - 1 }
 
     private fun mapVariantSelectionParam(
             variantOptionParent: List<ProductVariantOptionParent>): List<Selection> {

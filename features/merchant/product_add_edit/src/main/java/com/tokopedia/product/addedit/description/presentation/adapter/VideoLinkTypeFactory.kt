@@ -48,7 +48,7 @@ class VideoLinkTypeFactory: BaseAdapterTypeFactory(){
             if (isFirstLoaded) {
                 itemView.textFieldUrl.apply {
                     textFieldInput.addTextChangedListener(textWatcher)
-                    setText(element.inputUrl)
+                    if (element.inputUrl.isNotEmpty()) setText(element.inputUrl)
                 }
                 isFirstLoaded = false
             } else {
