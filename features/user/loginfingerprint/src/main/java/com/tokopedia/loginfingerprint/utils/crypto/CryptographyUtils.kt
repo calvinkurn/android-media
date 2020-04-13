@@ -8,6 +8,8 @@ import android.util.Base64
 import androidx.core.hardware.fingerprint.FingerprintManagerCompat
 import com.tokopedia.loginfingerprint.constant.BiometricConstant
 import com.tokopedia.loginfingerprint.data.model.FingerprintSignature
+import rx.Observable
+import rx.schedulers.Schedulers
 import java.security.*
 import java.security.spec.X509EncodedKeySpec
 
@@ -90,7 +92,10 @@ class CryptographyUtils: Cryptography {
             keyStore = KeyStore.getInstance(BiometricConstant.ANDROID_KEY_STORE)
             keyStore?.load(null)
 
-            generateKeyPair(keyStore)
+            Observable.just(true).map { aBoolean: Boolean? ->
+                generateKeyPair(keyStore)
+                true
+            }.subscribeOn(Schedulers.io()).subscribe({ aBoolean: Boolean? -> }) { throwable: Throwable? -> }
         } catch (e: Exception) {
             e.printStackTrace()
         }
