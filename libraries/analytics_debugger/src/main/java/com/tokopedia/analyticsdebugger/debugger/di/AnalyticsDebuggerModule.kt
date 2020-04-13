@@ -43,6 +43,13 @@ class AnalyticsDebuggerModule {
     }
 
     @Provides
+    @Named(NAMED_TOPADS)
+    fun provideTopAdsPresenter(getTopAdsLogUseCase: GetTopAdsLogUseCase,
+                                deleteTopAdsLogUseCase: DeleteTopAdsLogUseCase): TopAdsDebugger.Presenter {
+        return TopAdsDebuggerPresenter(getTopAdsLogUseCase, deleteTopAdsLogUseCase)
+    }
+
+    @Provides
     @Named(NAMED_GTM_ERROR_ANALYTICS)
     fun provideGtmErrorPresenter(getGtmErrorLogUseCase: GetGtmErrorLogUseCase,
                                  deleteGtmErrorLogUseCase: DeleteGtmErrorLogUseCase): AnalyticsDebugger.Presenter {

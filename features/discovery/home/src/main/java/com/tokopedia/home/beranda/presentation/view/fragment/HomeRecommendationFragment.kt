@@ -230,7 +230,7 @@ open class HomeRecommendationFragment : Fragment(), HomeRecommendationListener {
 
     override fun onProductImpression(homeRecommendationItemDataModel: HomeRecommendationItemDataModel, position: Int) {
         if (homeRecommendationItemDataModel.product.isTopads) {
-            TopAdsUrlHitter().hitImpressionUrl(homeRecommendationItemDataModel.product.trackerImageUrl, this::class.qualifiedName)
+            TopAdsUrlHitter().hitImpressionUrl(context, homeRecommendationItemDataModel.product.trackerImageUrl, this::class.qualifiedName)
             if (userSessionInterface.isLoggedIn) {
                 trackingQueue.putEETracking(getRecommendationProductViewLoginTopAds(
                         tabName.toLowerCase(Locale.ROOT),
@@ -259,7 +259,7 @@ open class HomeRecommendationFragment : Fragment(), HomeRecommendationListener {
 
     override fun onProductClick(homeRecommendationItemDataModel: HomeRecommendationItemDataModel, position: Int) {
         if (homeRecommendationItemDataModel.product.isTopads){
-            TopAdsUrlHitter().hitClickUrl(homeRecommendationItemDataModel.product.clickUrl, this::class.qualifiedName)
+            TopAdsUrlHitter().hitClickUrl(context, homeRecommendationItemDataModel.product.clickUrl, this::class.qualifiedName)
             if (userSessionInterface.isLoggedIn) {
                 TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(getRecommendationProductClickLoginTopAds(
                         tabName.toLowerCase(Locale.ROOT),

@@ -1,5 +1,6 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.pdpview.viewHolder
 
+import android.content.Context
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home.R
@@ -19,22 +20,22 @@ class FlashSaleViewHolder (view: View,
 
     private val productCardView: ProductCardFlashSaleView? by lazy { view.findViewById<ProductCardFlashSaleView>(R.id.productCardView) }
     override fun bind(element: FlashSaleDataModel) {
-        setLayout(element)
+        setLayout(itemView.context, element)
     }
 
-    private fun setLayout(element: FlashSaleDataModel){
+    private fun setLayout(context: Context, element: FlashSaleDataModel){
         productCardView?.run{
             applyCarousel()
             setProductModel(element.productModel)
             addOnImpressionListener(element.impressHolder) {
                 if(element.grid.isTopads){
-                    TopAdsUrlHitter().hitImpressionUrl(element.grid.impression, FlashSaleViewHolder::class.qualifiedName)
+                    TopAdsUrlHitter().hitImpressionUrl(context, element.grid.impression, FlashSaleViewHolder::class.qualifiedName)
                 }
                 element.listener.onFlashSaleCardImpressed(adapterPosition, channels)
             }
             setOnClickListener {
                 if(element.grid.isTopads){
-                    TopAdsUrlHitter().hitClickUrl(element.grid.productClickUrl, FlashSaleViewHolder::class.qualifiedName)
+                    TopAdsUrlHitter().hitClickUrl(context, element.grid.productClickUrl, FlashSaleViewHolder::class.qualifiedName)
                 }
                 element.listener.onFlashSaleCardClicked(adapterPosition, channels, element.grid, element.applink)
             }

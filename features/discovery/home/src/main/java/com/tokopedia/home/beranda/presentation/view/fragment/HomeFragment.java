@@ -998,7 +998,7 @@ public class HomeFragment extends BaseDaggerFragment implements
             openWebViewURL(slidesModel.getRedirectUrl(), getActivity());
         }
         if (!TextUtils.isEmpty(slidesModel.getRedirectUrl())) {
-            new TopAdsUrlHitter().hitClickUrl(slidesModel.getRedirectUrl(), this.getClass().getName());
+            new TopAdsUrlHitter().hitClickUrl(getContext(), slidesModel.getRedirectUrl(), this.getClass().getName());
         }
     }
 
@@ -1454,7 +1454,7 @@ public class HomeFragment extends BaseDaggerFragment implements
             putEEToTrackingQueue((HashMap<String, Object>) HomePageTrackingV2.HomeBanner.INSTANCE.getOverlayBannerImpression(bannerSlidesModel));
         } else if (!bannerSlidesModel.isInvoke()) {
             if(!bannerSlidesModel.getTopadsViewUrl().isEmpty()){
-                new TopAdsUrlHitter().hitImpressionUrl(bannerSlidesModel.getTopadsViewUrl(), this.getClass().getName());
+                new TopAdsUrlHitter().hitImpressionUrl(getContext(), bannerSlidesModel.getTopadsViewUrl(), this.getClass().getName());
             }
 
             HashMap dataLayer = (HashMap) HomePageTrackingV2.HomeBanner.INSTANCE.getBannerImpression(bannerSlidesModel);

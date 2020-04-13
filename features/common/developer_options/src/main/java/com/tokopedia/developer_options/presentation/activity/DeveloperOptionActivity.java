@@ -41,6 +41,7 @@ import com.tokopedia.analyticsdebugger.debugger.ApplinkLogger;
 import com.tokopedia.analyticsdebugger.debugger.FpmLogger;
 import com.tokopedia.analyticsdebugger.debugger.GtmLogger;
 import com.tokopedia.analyticsdebugger.debugger.IrisLogger;
+import com.tokopedia.analyticsdebugger.debugger.TopAdsLogger;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.config.GlobalConfig;
@@ -108,6 +109,7 @@ public class DeveloperOptionActivity extends BaseActivity {
     private TextView vGoTochuck;
     private CheckBox toggleChuck;
 
+    private TextView vGoToTopAdsDebugger;
     private TextView vGoToApplinkDebugger;
     private TextView vGoToFpm;
     private TextView vGoToAnalytics;
@@ -116,6 +118,7 @@ public class DeveloperOptionActivity extends BaseActivity {
     private TextView vGoToIrisSendLogDB;
     private CheckBox toggleAnalytics;
     private CheckBox toggleApplinkNotif;
+    private CheckBox toggleTopAdsNotif;
     private CheckBox toggleFpmNotif;
     private CheckBox toggleFpmAutoLogFile;
 
@@ -197,6 +200,7 @@ public class DeveloperOptionActivity extends BaseActivity {
         vGoTochuck = findViewById(R.id.goto_chuck);
         toggleChuck = findViewById(R.id.toggle_chuck);
 
+        vGoToTopAdsDebugger = findViewById(R.id.goto_topads_debugger);
         vGoToApplinkDebugger = findViewById(R.id.goto_applink_debugger);
         vGoToFpm = findViewById(R.id.goto_fpm);
         vGoToAnalytics = findViewById(R.id.goto_analytics);
@@ -206,6 +210,7 @@ public class DeveloperOptionActivity extends BaseActivity {
 
         toggleAnalytics = findViewById(R.id.toggle_analytics);
         toggleApplinkNotif = findViewById(R.id.toggle_applink_debugger_notif);
+        toggleTopAdsNotif = findViewById(R.id.toggle_topads_debugger_notif);
         toggleFpmNotif = findViewById(R.id.toggle_fpm_notif);
         toggleFpmAutoLogFile = findViewById(R.id.toggle_fpm_auto_file_log);
 
@@ -395,6 +400,11 @@ public class DeveloperOptionActivity extends BaseActivity {
             NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(getApplicationContext());
             notificationManagerCompat.notify(777,notifReview);
                 });
+
+        toggleTopAdsNotif.setChecked(TopAdsLogger.getInstance(this).isNotificationEnabled());
+        toggleTopAdsNotif.setOnCheckedChangeListener((compoundButton, state) -> TopAdsLogger.getInstance(this).enableNotification(state));
+
+        vGoToTopAdsDebugger.setOnClickListener(v -> TopAdsLogger.getInstance(this).openActivity());
 
         toggleApplinkNotif.setChecked(ApplinkLogger.getInstance(this).isNotificationEnabled());
         toggleApplinkNotif.setOnCheckedChangeListener((compoundButton, state) -> ApplinkLogger.getInstance(this).enableNotification(state));
