@@ -16,6 +16,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.design.countdown.CountDownView
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.officialstore.DynamicChannelIdentifiers.CTA_MODE_ALTERNATE
 import com.tokopedia.officialstore.DynamicChannelIdentifiers.CTA_MODE_DISABLED
 import com.tokopedia.officialstore.DynamicChannelIdentifiers.CTA_MODE_INVERTED
@@ -40,7 +41,7 @@ import kotlinx.coroutines.launch
 class DynamicChannelMixTopViewHolder(
         view: View?,
         private val dcEventHandler: DynamicChannelEventHandler
-) : AbstractViewHolder<DynamicChannelViewModel>(view), OfficialStoreFlashSaleCardListener, CoroutineScope {
+) : AbstractViewHolder<DynamicChannelViewModel>(view), CoroutineScope {
 
     companion object {
         @LayoutRes
@@ -65,40 +66,44 @@ class DynamicChannelMixTopViewHolder(
     override fun bind(element: DynamicChannelViewModel?) {
         element?.run {
             dcEventHandler.flashSaleImpression(dynamicChannelData)
-            setupHeader(dynamicChannelData.header)
+            setupHeader(dynamicChannelData)
             setupContent(dynamicChannelData)
         }
     }
 
-    private fun setupHeader(header: Header?) {
-        if (header != null && header.name.isNotEmpty()) {
-            headerContainer.visibility = View.VISIBLE
-            headerTitle.text = header.name
+    private fun setupHeader(channel: Channel) {
+        channel.header?.let{header ->
+            if (header.name.isNotEmpty()) {
+                headerContainer.visibility = View.VISIBLE
+                headerTitle.text = header.name
 
-            if (header.expiredTime.isNotEmpty()) {
-                val expiredTime = OfficialStoreDateHelper.getExpiredTime(header.expiredTime)
+                if (header.expiredTime.isNotEmpty()) {
+                    val expiredTime = OfficialStoreDateHelper.getExpiredTime(header.expiredTime)
 
-                headerCountDown.setup(
-                        OfficialStoreDateHelper.getServerTimeOffset(header.serverTime),
-                        expiredTime,
-                        dcEventHandler
-                )
-                headerCountDown.visibility = View.VISIBLE
-            } else {
-                headerCountDown.visibility = View.GONE
-            }
+                    headerCountDown.setup(
+                            OfficialStoreDateHelper.getServerTimeOffset(header.serverTime),
+                            expiredTime,
+                            dcEventHandler
+                    )
+                    headerCountDown.visibility = View.VISIBLE
+                } else {
+                    headerCountDown.visibility = View.GONE
+                }
 
-            if (header.applink.isNotEmpty()) {
-                headerActionText.apply {
-                    visibility = View.VISIBLE
-                    setOnClickListener(dcEventHandler.onClickFlashSaleActionText(header.applink, header.id))
-                    setTextColor(MethodChecker.getColor(itemView.context, R.color.bg_button_green_border_outline))
+                if (header.applink.isNotEmpty()) {
+                    headerActionText.apply {
+                        visibility = View.VISIBLE
+                        setOnClickListener {
+                            dcEventHandler.onMixFlashSaleSeeAllClicked( channel,header.applink)
+                        }
+                        setTextColor(MethodChecker.getColor(itemView.context, R.color.bg_button_green_border_outline))
+                    }
+                } else {
+                    headerActionText.visibility = View.GONE
                 }
             } else {
-                headerActionText.visibility = View.GONE
+                headerContainer.visibility = View.GONE
             }
-        } else {
-            headerContainer.visibility = View.GONE
         }
     }
 
@@ -132,7 +137,7 @@ class DynamicChannelMixTopViewHolder(
             bannerTitle.setTextColor(textColor)
             bannerDescription.setTextColor(textColor)
             ctaData?.let{
-                setupBannerUnifyButton(banner)
+                setupBannerUnifyButton(channel, banner)
             }
             itemView.setOnClickListener {
                 dcEventHandler.onClickMixTopBannerItem(banner.applink)
@@ -140,10 +145,14 @@ class DynamicChannelMixTopViewHolder(
         }
     }
 
-    private fun setupBannerUnifyButton(banner: Banner) {
+    private fun setupBannerUnifyButton(channel: Channel,banner: Banner) {
         banner.cta?.let { cta ->
             bannerUnifyButton.setOnClickListener {
-//                dcEventHandler.onClickMixTopBannerButton()
+                dcEventHandler.onClickMixTopBannerCtaButton(
+                        cta,
+                        channel.id,
+                        banner.applink
+                )
             }
             //set false first to prevent unexpected behavior
             bannerUnifyButton.isInverse = false
@@ -205,7 +214,9 @@ class DynamicChannelMixTopViewHolder(
                                     productName = grid.name,
                                     formattedPrice = grid.price,
                                     productImageUrl = grid.imageUrl,
-                                    discountPercentage = "${grid.discountPercentage}%",
+                                    discountPercentage = "${grid.discountPercentage}%".takeIf {
+                                        grid.discountPercentage.toIntOrZero() != 0
+                                    } ?: "",
                                     stockBarLabel = grid.label,
                                     stockBarPercentage = grid.soldPercentage.toInt()
                             ),
@@ -236,22 +247,5 @@ class DynamicChannelMixTopViewHolder(
     private suspend fun getProductCardMaxHeight(productCardModelList: List<ProductCardFlashSaleModel>): Int {
         val productCardWidth = itemView.context.resources.getDimensionPixelSize(com.tokopedia.productcard.R.dimen.product_card_flashsale_width)
         return productCardModelList.getMaxHeightForGridView(itemView.context, Dispatchers.Default, productCardWidth)
-    }
-
-    private fun copyCoupon(view: View, cta: Cta) {
-        val clipboard = view.context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-        val clipData = ClipData.newPlainText(getString(R.string.os_coupon_code_label), cta.couponCode)
-        clipboard.primaryClip = clipData
-        Toaster.make(view.parent as ViewGroup,
-                getString(R.string.os_toaster_coupon_copied),
-                Snackbar.LENGTH_LONG)
-    }
-
-    override fun onFlashSaleCardImpressed(position: Int, channel: Channel) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    override fun onFlashSaleCardClicked(position: Int, channel: Channel, grid: Grid, applink: String) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 }

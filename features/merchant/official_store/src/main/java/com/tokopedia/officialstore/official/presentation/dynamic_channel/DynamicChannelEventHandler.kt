@@ -3,6 +3,7 @@ package com.tokopedia.officialstore.official.presentation.dynamic_channel
 import android.view.View
 import com.tokopedia.design.countdown.CountDownView
 import com.tokopedia.officialstore.official.data.model.dynamic_channel.Channel
+import com.tokopedia.officialstore.official.data.model.dynamic_channel.Cta
 import com.tokopedia.officialstore.official.data.model.dynamic_channel.Grid
 
 interface DynamicChannelEventHandler : CountDownView.CountDownListener {
@@ -25,9 +26,9 @@ interface DynamicChannelEventHandler : CountDownView.CountDownListener {
 
     //flash sale card listener
     fun onFlashSaleCardImpressed(position: Int,grid: Grid, channel: Channel)
-    fun onMixFlashSaleSeeAllClicked(channel: Channel)
+    fun onMixFlashSaleSeeAllClicked(channel: Channel, applink: String)
     fun onFlashSaleCardClicked(position: Int, channel: Channel, grid: Grid, applink: String)
     fun onClickMixTopBannerItem(applink: String)
-    fun onClickMixTopBannerCtaButton(buttonName: String, applink: String)
+    fun onClickMixTopBannerCtaButton(cta: Cta, channelId: String, applink: String)
 
 }
