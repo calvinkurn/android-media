@@ -3,8 +3,8 @@
     <solid android:color="#f3f4f5" />
     <corners android:radius="@dimen/spacing_lvl3" />
     <padding
-        android:bottom="0dip"
-        android:left="0dip"
-        android:right="0dip"
-        android:top="0dip" />
+        android:bottom="@dimen/layout_lvl0"
+        android:left="@dimen/layout_lvl0"
+        android:right="@dimen/layout_lvl0"
+        android:top="@dimen/layout_lvl0" />
 </shape>
