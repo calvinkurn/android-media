@@ -101,16 +101,17 @@ class AddEditProductEditService : AddEditProductBaseService() {
         launchCatchError(block = {
             withContext(Dispatchers.IO) {
                 productEditUseCase.params = ProductEditUseCase.createRequestParams(param)
+                val response = productEditUseCase.executeOnBackground()
                 setUploadProductDataSuccess()
                 if(productInputModel.draftId > 0) {
                     deleteProductDraftUseCase.params = DeleteProductDraftUseCase.createRequestParams(productInputModel.draftId)
                     deleteProductDraftUseCase.executeOnBackground()
                 }
-                return@withContext productEditUseCase.executeOnBackground()
+                return@withContext response
             }
         }, onError = {
             it.message?.let { errorMessage ->
-                setUploadProductDataSuccess(errorMessage)
+                setUploadProductDataError(errorMessage)
                 if(productInputModel.draftId > 0) {
                     saveProductDraftUseCase.params = SaveProductDraftUseCase.createRequestParams(mapProductInputModelDetailToDraft(productInputModel), productInputModel.draftId, false)
                     withContext(Dispatchers.IO){ saveProductDraftUseCase.executeOnBackground() }

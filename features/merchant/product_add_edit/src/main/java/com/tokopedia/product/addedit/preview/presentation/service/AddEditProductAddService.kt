@@ -111,7 +111,7 @@ open class AddEditProductAddService : AddEditProductBaseService() {
             }
         }, onError = {
             it.message?.let { errorMessage ->
-                setUploadProductDataSuccess(errorMessage)
+                setUploadProductDataError(errorMessage)
                 if(productInputModel.draftId > 0) {
                     saveProductDraftUseCase.params = SaveProductDraftUseCase.createRequestParams(mapProductInputModelDetailToDraft(productInputModel), productInputModel.draftId, false)
                     withContext(Dispatchers.IO){ saveProductDraftUseCase.executeOnBackground() }

@@ -63,7 +63,7 @@ class AddEditProductDuplicateService : AddEditProductAddService() {
                 return@withContext productAddUseCase.executeOnBackground()
             }
         }, onError = {
-            it.message?.let { errorMessage -> setUploadProductDataSuccess(errorMessage) }
+            it.message?.let { errorMessage -> setUploadProductDataError(errorMessage) }
         })
     }
 }

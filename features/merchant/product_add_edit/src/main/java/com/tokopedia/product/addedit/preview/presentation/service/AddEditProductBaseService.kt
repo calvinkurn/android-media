@@ -68,7 +68,7 @@ abstract class AddEditProductBaseService : JobIntentService(), CoroutineScope {
         notificationManager?.onSuccessUpload()
     }
 
-    fun setUploadProductDataSuccess(errorMessage: String) {
+    fun setUploadProductDataError(errorMessage: String) {
         notificationManager?.onFailedUpload(errorMessage)
     }
 

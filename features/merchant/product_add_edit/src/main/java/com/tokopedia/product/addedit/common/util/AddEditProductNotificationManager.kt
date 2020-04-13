@@ -85,7 +85,8 @@ abstract class AddEditProductNotificationManager(
     fun onFailedUpload(errorMessage: String) {
         val text = context.getString(R.string.message_notif_product_upload_error)
         val notification = notificationBuilder.setContentText(text)
-                .setStyle(NotificationCompat.BigTextStyle().bigText(text))
+                .setContentTitle(text)
+                .setStyle(NotificationCompat.BigTextStyle().bigText(errorMessage))
                 .setProgress(0, 0, false)
                 .setOngoing(false)
                 .setAutoCancel(true)
