@@ -1,10 +1,12 @@
 package com.tokopedia.contactus.home.view;
 
 import android.os.Bundle;
-import androidx.fragment.app.Fragment;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import androidx.fragment.app.Fragment;
+
+import com.google.android.play.core.splitcompat.SplitCompat;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.contactus.R;
 import com.tokopedia.contactus.createticket.ContactUsConstant;
@@ -12,9 +14,9 @@ import com.tokopedia.contactus.home.view.fragment.ContactUsHomeFragment;
 import com.tokopedia.contactus.home.view.presenter.ContactUsHomeContract;
 import com.tokopedia.contactus.inboxticket2.view.activity.InboxListActivity;
 import com.tokopedia.core.home.fragment.SimpleWebViewWithFilePickerFragment;
-import com.tokopedia.url.TokopediaUrl;
-import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.url.TokopediaUrl;
 
 /**
  * Created by sandeepgoyal on 02/04/18.
@@ -75,6 +77,7 @@ public class ContactUsHomeActivity extends BaseSimpleActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        SplitCompat.installActivity(this);
         getMenuInflater().inflate(R.menu.contactus_menu_home, menu);
         return true;
     }
