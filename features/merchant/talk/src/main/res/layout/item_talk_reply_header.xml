@@ -17,6 +17,16 @@
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="body_3" />
 
+    <ImageView
+        android:id="@+id/replyHeaderKebab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/layout_lvl3"
+        android:layout_marginRight="@dimen/layout_lvl3"
+        app:layout_constraintTop_toTopOf="@id/replyHeaderDate"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/talk_ic_kebab" />
+
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/replyHeaderMessage"
         android:layout_width="wrap_content"
