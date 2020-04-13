@@ -87,8 +87,6 @@ import com.tokopedia.recentview.view.applink.RecentViewApplinkModule;
 import com.tokopedia.recentview.view.applink.RecentViewApplinkModuleLoader;
 import com.tokopedia.seller.applink.SellerApplinkModule;
 import com.tokopedia.seller.applink.SellerApplinkModuleLoader;
-import com.tokopedia.shop.applink.ShopAppLinkModule;
-import com.tokopedia.shop.applink.ShopAppLinkModuleLoader;
 import com.tokopedia.tkpd.deeplink.presenter.DeepLinkAnalyticsImpl;
 import com.tokopedia.tkpd.redirect.RedirectCreateShopActivity;
 import com.tokopedia.track.TrackApp;
@@ -96,8 +94,8 @@ import com.tokopedia.logisticorder.applink.TrackingAppLinkModule;
 import com.tokopedia.logisticorder.applink.TrackingAppLinkModuleLoader;
 import com.tokopedia.transaction.applink.TransactionApplinkModule;
 import com.tokopedia.transaction.applink.TransactionApplinkModuleLoader;
-import com.tokopedia.updateinactivephone.applink.ChangeInactivePhoneApplinkModule;
-import com.tokopedia.updateinactivephone.applink.ChangeInactivePhoneApplinkModuleLoader;
+import com.tokopedia.updateinactivephone.common.applink.ChangeInactivePhoneApplinkModule;
+import com.tokopedia.updateinactivephone.common.applink.ChangeInactivePhoneApplinkModuleLoader;
 import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.useridentification.applink.UserIdentificationApplinkModule;
 import com.tokopedia.useridentification.applink.UserIdentificationApplinkModuleLoader;
@@ -112,6 +110,9 @@ import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 
 @DeepLinkHandler({
         ConsumerDeeplinkModule.class,
@@ -129,7 +130,6 @@ import rx.schedulers.Schedulers;
         EventsDeepLinkModule.class,
         OvoUpgradeDeeplinkModule.class,
         LoyaltyAppLinkModule.class,
-        ShopAppLinkModule.class,
         CreatePostModule.class,
         KolApplinkModule.class,
         ExploreApplinkModule.class,
@@ -173,7 +173,6 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
                     new DigitalBrowseApplinkModuleLoader(),
                     new EventsDeepLinkModuleLoader(),
                     new LoyaltyAppLinkModuleLoader(),
-                    new ShopAppLinkModuleLoader(),
                     new CreatePostModuleLoader(),
                     new KolApplinkModuleLoader(),
                     new ExploreApplinkModuleLoader(),
@@ -238,7 +237,7 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
                 }
             }
         }
-        LinkerManager.getInstance().initSession();
+        iniBranchIO(this);
         finish();
     }
 
@@ -398,5 +397,12 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
     @Override
     public void onError(LinkerError linkerError) {
 
+    }
+
+    private void iniBranchIO(Context context){
+        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
+        if (remoteConfig.getBoolean(RemoteConfigKey.APP_ENABLE_BRANCH_INIT_DEEPLINKHANDLER)){
+            LinkerManager.getInstance().initSession();
+        }
     }
 }

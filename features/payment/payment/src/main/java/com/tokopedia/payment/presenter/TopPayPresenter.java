@@ -46,7 +46,11 @@ public class TopPayPresenter extends BaseDaggerPresenter<TopPayContract.View> im
         PaymentPassData paymentPassData = getView().getPaymentPassData();
         try {
             byte[] postData = paymentPassData.getQueryString().getBytes(CHARSET_UTF_8);
-            getView().renderWebViewPostUrl(paymentPassData.getRedirectUrl(), postData);
+            String method = paymentPassData.getMethod();
+            if (method == null) {
+                method = PaymentPassData.METHOD_POST;
+            }
+            getView().renderWebViewPostUrl(paymentPassData.getRedirectUrl(), postData, method.equalsIgnoreCase(PaymentPassData.METHOD_GET));
         } catch (Exception e) {
             e.printStackTrace();
             getView().showToastMessageWithForceCloseView(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);

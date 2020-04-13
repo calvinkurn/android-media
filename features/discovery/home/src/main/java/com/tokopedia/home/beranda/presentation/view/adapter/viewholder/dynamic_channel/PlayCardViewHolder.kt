@@ -17,9 +17,7 @@ import com.tokopedia.home.beranda.presentation.view.helper.ExoPlayerListener
 import com.tokopedia.home.beranda.presentation.view.helper.HomePlayWidgetHelper
 import com.tokopedia.home.beranda.presentation.view.helper.setSafeOnClickListener
 import com.tokopedia.home.beranda.presentation.view.helper.setValue
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.*
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
 
@@ -36,6 +34,7 @@ class PlayCardViewHolder(
     private val viewer = view.findViewById<TextView>(R.id.viewer)
     private val live = view.findViewById<View>(R.id.live)
     private val titlePlay = view.findViewById<TextView>(R.id.title_play)
+    private val seeAll = view.findViewById<TextView>(R.id.play_txt_see_all)
     private val broadcasterName = view.findViewById<TextView>(R.id.title_description)
     private val title = view.findViewById<TextView>(R.id.title)
     private var isClickable = false
@@ -63,13 +62,22 @@ class PlayCardViewHolder(
     override fun bind(element: PlayCardViewModel?) {
         if(element?.playCardHome == null){
             container.hide()
+            listener.getPlayChannel(adapterPosition)
         } else {
-            playCardViewModel = element
-            playCardViewModel?.let{ playCardViewModel ->
-                if (container.visibility == View.GONE) container.show()
-                initView(playCardViewModel)
-                initAutoPlayVideo(playCardViewModel)
-            }
+            onBind(element)
+        }
+    }
+
+    override fun bind(element: PlayCardViewModel?, payloads: MutableList<Any>) {
+        onBind(element)
+    }
+
+    private fun onBind(element: PlayCardViewModel?) {
+        playCardViewModel = element
+        playCardViewModel?.let { playCardViewModel ->
+            if (container.visibility == View.GONE) container.show()
+            initView(playCardViewModel)
+            initAutoPlayVideo(playCardViewModel)
         }
     }
 
@@ -83,19 +91,16 @@ class PlayCardViewHolder(
         }
     }
 
-    override fun bind(element: PlayCardViewModel?, payloads: MutableList<Any>) {
-        playCardViewModel = element
-        if(playCardViewModel != null && element?.playCardHome != null) {
-            if (container.visibility == View.GONE) container.show()
-            initView(playCardViewModel!!)
-            playCardViewModel!!.playCardHome?.videoStream?.config?.streamUrl?.let { playChannel(it) }
-        }
-    }
-
     private fun initView(model: PlayCardViewModel){
         model.playCardHome?.let{ playChannel ->
             handlingTracker(model)
             title.setValue(model.channel.name)
+
+            if (model.channel.header.applink.isNotEmpty()) {
+                seeAll.visible()
+            } else {
+                seeAll.gone()
+            }
 
             thumbnailView.show()
             thumbnailView.loadImageNoRounded(playChannel.coverUrl)
@@ -103,7 +108,7 @@ class PlayCardViewHolder(
             broadcasterName.text = playChannel.moderatorName
             titlePlay.text = playChannel.title
 
-            if(playChannel.totalView.isNotEmpty()){
+            if(playChannel.totalView.isNotEmpty() && playChannel.isShowTotalView){
                 viewer.text = playChannel.totalView
                 viewer.show()
                 imageViewer.show()
@@ -126,12 +131,17 @@ class PlayCardViewHolder(
             play.setSafeOnClickListener {
                 goToPlayChannel(model)
             }
+
+            seeAll.setOnClickListener {
+                goToChannelList(model.channel.header.applink)
+            }
         }
     }
 
     private fun handlingTracker(model: PlayCardViewModel){
         container.addOnImpressionListener(model){
             HomePageTracking.eventEnhanceImpressionPlayBanner(listener.trackingQueue, model)
+            listener.sendIrisTrackerHashMap(HomePageTracking.eventEnhanceImpressionIrisPlayBanner(model))
         }
     }
 
@@ -145,6 +155,10 @@ class PlayCardViewHolder(
             listener.onOpenPlayActivity(frameLayout, model.playCardHome?.channelId)
             HomePageTracking.eventClickPlayBanner(model)
         }
+    }
+
+    private fun goToChannelList(appLink: String) {
+        listener.onOpenPlayChannelList(appLink)
     }
 
     fun resume(){

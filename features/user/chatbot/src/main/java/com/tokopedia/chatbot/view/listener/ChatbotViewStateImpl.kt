@@ -217,6 +217,8 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
         showQuickReply(quickReplyList)
     }
 
+    override fun getInterlocutorName(headerName: CharSequence): CharSequence  = headerName
+
     override fun getRecyclerViewId(): Int {
         return R.id.recycler_view
     }

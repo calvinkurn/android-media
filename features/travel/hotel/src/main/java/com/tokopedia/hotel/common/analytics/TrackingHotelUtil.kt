@@ -190,7 +190,7 @@ class TrackingHotelUtil {
     }
 
     fun hotelViewDetails(hotelHomepageModel: HotelHomepageModel,
-                         hotelName: String, hotelId: Int, available: Boolean,
+                         hotelName: String, hotelId: Long, available: Boolean,
                          price: String, directPayment: Boolean) {
 
         val roomCount = hotelHomepageModel.roomCount
@@ -223,17 +223,17 @@ class TrackingHotelUtil {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
     }
 
-    fun hotelClickHotelPhoto(hotelId: Int, price: String) {
+    fun hotelClickHotelPhoto(hotelId: Long, price: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(CLICK_HOTEL, DIGITAL_NATIVE, CLICK_HOTEL_PHOTO,
                 "$HOTEL_LABEL - $hotelId - $price")
     }
 
-    fun hotelClickHotelReviews(hotelId: Int, price: String) {
+    fun hotelClickHotelReviews(hotelId: Long, price: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(CLICK_HOTEL, DIGITAL_NATIVE, CLICK_HOTEL_REVIEWS,
                 "$HOTEL_LABEL - $hotelId - $price")
     }
 
-    fun hotelChooseViewRoom(hotelHomepageModel: HotelHomepageModel, hotelId: Int, hotelName: String) {
+    fun hotelChooseViewRoom(hotelHomepageModel: HotelHomepageModel, hotelId: Long, hotelName: String) {
         val roomCount = hotelHomepageModel.roomCount
         val guestCount = hotelHomepageModel.adultCount
         val duration = HotelUtils.countDayDifference(hotelHomepageModel.checkInDate, hotelHomepageModel.checkOutDate)
@@ -244,7 +244,7 @@ class TrackingHotelUtil {
                 "$HOTEL_LABEL - $destinationType - $destination - $roomCount - $guestCount - ${convertDate(hotelHomepageModel.checkInDate)} - $duration - $hotelId")
     }
 
-    fun hotelViewRoomList(hotelId: Int, hotelRoomListPageModel: HotelRoomListPageModel, roomList: List<HotelRoom>) {
+    fun hotelViewRoomList(hotelId: Long, hotelRoomListPageModel: HotelRoomListPageModel, roomList: List<HotelRoom>) {
         val roomCount = hotelRoomListPageModel.room
         val guestCount = hotelRoomListPageModel.adult
         val duration = HotelUtils.countDayDifference(hotelRoomListPageModel.checkIn, hotelRoomListPageModel.checkOut)
@@ -491,11 +491,56 @@ class TrackingHotelUtil {
                 PROMOTIONS_LABEL, DataLayer.listOf(
                 DataLayer.mapOf(
                         ID_LABEL, position + 1,
-                        NAME_LABEL, lastSearchItems.title,
+                        NAME_LABEL, "$LAST_SEARCH_LABEL - ${lastSearchItems.title}",
                         CREATIVE_LABEL, lastSearchItems.appUrl,
-                        POSITION_LABEL, position + 1,
-                        CATEGORY_LABEL, HOTEL_CONTENT_LABEL
+                        POSITION_LABEL, position + 1
                 )))
+    }
+
+    fun hotelClickChangeSearch(type: String, name: String, totalRoom: Int, totalGuest: Int, checkIn: String, checkOut: String, screenName: String,
+                               irisSessionId: String, userId: String) {
+        val map = mutableMapOf<String, Any>()
+        map[EVENT] = CLICK_HOTEL
+        map[EVENT_CATEGORY] = DIGITAL_NATIVE
+        map[EVENT_ACTION] = ACTION_CLICK_CHANGE_SEARCH
+        map[EVENT_LABEL] = "$HOTEL_LABEL - $type - $name - $totalRoom - $totalGuest - ${convertDate(checkIn)} - ${HotelUtils.countDayDifference(checkIn, checkOut)}"
+        map[SCREEN_NAME] = screenName
+        map[CURRENT_SITE] = TOKOPEDIA_DIGITAL_HOTEL
+        map[CLIENT_ID] = TrackApp.getInstance().gtm.clientIDString ?: ""
+        map[SESSION_IRIS] = irisSessionId
+        map[USER_ID] = userId
+        map[BUSINESS_UNIT] = HOTEL_LABEL
+
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
+    }
+
+    fun changeSearchPageLoaded(screenName: String, irisSessionId: String, userId: String) {
+        val map = mutableMapOf<String, String>()
+        map[EVENT_NAME] = OPEN_SCREEN_EVENT
+        map[CURRENT_SITE] = TOKOPEDIA_DIGITAL_HOTEL
+        map[CLIENT_ID] = TrackApp.getInstance().gtm.clientIDString ?: ""
+        map[SESSION_IRIS] = irisSessionId
+        map[USER_ID] = userId
+        map[BUSINESS_UNIT] = HOTEL_LABEL
+
+        TrackApp.getInstance().gtm.sendScreenAuthenticated(screenName, map)
+    }
+
+    fun clickSaveChangeSearch(type: String, name: String, totalRoom: Int, totalGuest: Int, checkIn: String, checkOut: String, screenName: String,
+    irisSessionId: String, userId: String) {
+        val map = mutableMapOf<String, Any>()
+        map[EVENT] = CLICK_HOTEL
+        map[EVENT_CATEGORY] = DIGITAL_NATIVE
+        map[EVENT_ACTION] = ACTION_SAVE_CHANGE_SEARCH
+        map[EVENT_LABEL] = "$HOTEL_LABEL - $type - $name - $totalRoom - $totalGuest - ${convertDate(checkIn)} - ${HotelUtils.countDayDifference(checkIn, checkOut)}"
+        map[SCREEN_NAME] = screenName
+        map[CURRENT_SITE] = TOKOPEDIA_DIGITAL_HOTEL
+        map[CLIENT_ID] = TrackApp.getInstance().gtm.clientIDString ?: ""
+        map[SESSION_IRIS] = irisSessionId
+        map[USER_ID] = userId
+        map[BUSINESS_UNIT] = HOTEL_LABEL
+
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
     }
 
     private fun convertDate(date: String): String =

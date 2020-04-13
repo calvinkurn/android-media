@@ -1,0 +1,6 @@
+query checkPin($pin: String!){
+    check_pin (pin: $pin){
+        valid
+        error_message
+    }
+}

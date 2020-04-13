@@ -1,9 +1,7 @@
 package com.tokopedia.search.result.shop.presentation.viewmodel
 
-import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.authentication.AuthHelper
 import com.tokopedia.discovery.common.constants.SearchApiConst
-import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.search.InstantTaskExecutorRuleSpek
 import com.tokopedia.search.shouldBe
 import com.tokopedia.user.session.UserSessionInterface
@@ -25,7 +23,6 @@ internal class CreateSearchShopViewModelTest: Spek({
 
         Scenario("Create Search Shop View Model with non-logged in user") {
             val userSession by memoized<UserSessionInterface>()
-            val localCacheHandler by memoized<LocalCacheHandler>()
             lateinit var searchShopViewModel: SearchShopViewModel
 
             Given("User has not logged in") {
@@ -33,7 +30,7 @@ internal class CreateSearchShopViewModelTest: Spek({
             }
 
             Given("GCM ID value from local cache") {
-                every { localCacheHandler.getString(eq(SearchConstant.GCM.GCM_ID), "") }.returns(localCacheGCMIDValue)
+                every { userSession.deviceId }.returns(localCacheGCMIDValue)
             }
 
             When("Create Search Shop View Model") {
@@ -51,7 +48,6 @@ internal class CreateSearchShopViewModelTest: Spek({
 
         Scenario("Create Search Shop View Model with logged in user") {
             val userSession by memoized<UserSessionInterface>()
-            val localCacheHandler by memoized<LocalCacheHandler>()
             lateinit var searchShopViewModel: SearchShopViewModel
 
             Given("User has logged in") {
@@ -60,7 +56,7 @@ internal class CreateSearchShopViewModelTest: Spek({
             }
 
             Given("GCM ID value from local cache") {
-                every { localCacheHandler.getString(eq(SearchConstant.GCM.GCM_ID), "") }.returns(localCacheGCMIDValue)
+                every { userSession.deviceId }.returns(localCacheGCMIDValue)
             }
 
             When("Create Search Shop View Model") {

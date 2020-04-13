@@ -1,0 +1,53 @@
+query TokopointsMembershipQuery {
+  tokopointsToken {
+    sumToken
+  }
+  tokopoints {
+    resultStatus {
+      code
+      message
+      status
+    }
+    membership_detail: pageMembershipStatus {
+      btnFirst {
+        icon
+        text
+        url
+        appLink
+      }
+      btnSecond {
+        icon
+        text
+        url
+        appLink
+      }
+      tierInfo {
+        name
+        imgURL
+        content
+        isBtnFirst
+        isBtnSecond
+        isLocked
+        isCurrent
+        progressInfo {
+          loyaltyPointsStr
+          differenceStr
+          currentLoyaltyPoints
+          nextLoyaltyPoints
+          nextMemberIcon
+          cutOffStr
+        }
+        benefits {
+          imgURL
+          description
+          urlExtraDescription {
+            icon
+            text
+            url
+            appLink
+          }
+        }
+      }
+    }
+  }
+}

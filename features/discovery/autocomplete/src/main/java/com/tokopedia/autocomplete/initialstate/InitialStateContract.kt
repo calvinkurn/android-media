@@ -10,15 +10,17 @@ interface InitialStateContract {
         fun showInitialStateResult(initialStateVisitableList: List<Visitable<*>>)
 
         fun refreshPopularSearch(list: List<Visitable<*>>)
+
+        fun deleteRecentSearch(list: List<Visitable<*>>)
     }
 
     interface Presenter : CustomerPresenter<View> {
-        fun getInitialStateData(searchParameter: SearchParameter)
+        fun getInitialStateData()
 
         fun deleteRecentSearchItem(keyword: String)
 
         fun deleteAllRecentSearch()
 
-        fun refreshPopularSearch(searchParameter: SearchParameter)
+        fun refreshPopularSearch()
     }
 }

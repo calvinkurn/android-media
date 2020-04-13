@@ -4,6 +4,10 @@ import android.content.Context
 import com.tokopedia.analytics.TrackAnalytics
 import com.tokopedia.analytics.firebase.FirebaseEvent
 import com.tokopedia.analytics.firebase.FirebaseParams
+import com.tokopedia.linker.LinkerConstants
+import com.tokopedia.linker.LinkerManager
+import com.tokopedia.linker.LinkerUtils
+import com.tokopedia.linker.model.UserData
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.user.session.UserSessionInterface
@@ -432,13 +436,31 @@ class RegisterAnalytics @Inject constructor() {
 
     }
 
-    fun trackSuccessRegister(loginMethod: String) {
+    fun trackSuccessRegister(
+            loginMethod: String,
+            userId: Int,
+            name: String,
+            email: String,
+            phoneNumber: String,
+            isGoldMerchant: Boolean,
+            shopId: String,
+            shopName:String
+    ) {
         when (loginMethod) {
-            UserSessionInterface.LOGIN_METHOD_EMAIL -> onSuccessRegisterEmail()
+            UserSessionInterface.LOGIN_METHOD_EMAIL -> onSuccessRegisterEmail(userId, name, email)
             UserSessionInterface.LOGIN_METHOD_PHONE -> onSuccessRegisterPhone()
             UserSessionInterface.LOGIN_METHOD_GOOGLE -> onSuccessRegisterGoogle()
             UserSessionInterface.LOGIN_METHOD_FACEBOOK -> onSuccessRegisterFacebook()
         }
+        sendSuccessRegisterToMoengage(
+                userId,
+                name,
+                email,
+                getLoginMethodMoengage(loginMethod),
+                phoneNumber,
+                isGoldMerchant,
+                shopId,
+                shopName)
     }
 
     //#R7
@@ -485,8 +507,28 @@ class RegisterAnalytics @Inject constructor() {
 
     }
 
-    private fun onSuccessRegisterEmail() {
+    private fun onSuccessRegisterEmail(userId: Int, name: String, email: String) {
+        trackSuccessClickEmailSignUpButton()
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_REGISTER_SUCCESS,
+                CATEGORY_REGISTER,
+                ACTION_REGISTER_SUCCESS,
+                LABEL_EMAIL
+        ))
 
+        TrackApp.getInstance().appsFlyer.sendAppsflyerRegisterEvent(userId.toString(), EMAIL_METHOD)
+        sendBranchRegisterEvent(email)
+    }
+
+    private fun sendSuccessRegisterToMoengage(userId: Int, name: String, email: String, loginMethod: String?, phoneNumber: String, isGoldMerchant: Boolean, shopId: String,shopName:String){
+        TrackApp.getInstance().moEngage.sendMoengageRegisterEvent(name, userId.toString(),email, loginMethod?:"", phoneNumber,  isGoldMerchant, shopId,shopName)
+    }
+
+    private fun sendBranchRegisterEvent(email: String) {
+        val userData = UserData()
+        userData.email = email
+        userData.phoneNumber = ""
+        LinkerManager.getInstance().sendEvent(LinkerUtils.createGenericRequest(LinkerConstants.EVENT_USER_REGISTRATION_VAL, userData))
     }
 
     fun trackClickTicker() {
@@ -550,6 +592,17 @@ class RegisterAnalytics @Inject constructor() {
                 ACTION_VIEW_BANNER,
                 label
         ))
+    }
+
+    private fun getLoginMethodMoengage(loginMethod: String?): String? {
+        return when (loginMethod) {
+            UserSessionInterface.LOGIN_METHOD_EMAIL_SMART_LOCK -> EMAIL_METHOD
+            UserSessionInterface.LOGIN_METHOD_EMAIL -> EMAIL_METHOD
+            UserSessionInterface.LOGIN_METHOD_FACEBOOK -> FACEBOOK_METHOD
+            UserSessionInterface.LOGIN_METHOD_GOOGLE -> GOOGLE_METHOD
+            UserSessionInterface.LOGIN_METHOD_PHONE -> PHONE_NUMBER_METHOD
+            else -> loginMethod
+        }
     }
 
     companion object {
@@ -619,8 +672,14 @@ class RegisterAnalytics @Inject constructor() {
         val LABEL_EMAIL_EXIST = "email exist"
         val LABEL_PHONE_EXIST = "phone number exist"
         private val LABEL_BEBAS_ONGKIR = "bebas ongkir"
+        private const val LABEL_EMAIL = "Email"
 
         val GOOGLE = "google"
         val FACEBOOK = "facebook"
+
+        private const val EMAIL_METHOD = "Email"
+        private const val FACEBOOK_METHOD = "Facebook"
+        private const val GOOGLE_METHOD = "Google"
+        private const val PHONE_NUMBER_METHOD = "Phone Number"
     }
 }

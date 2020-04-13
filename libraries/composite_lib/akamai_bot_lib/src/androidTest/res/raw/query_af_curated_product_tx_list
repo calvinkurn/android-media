@@ -1,0 +1,21 @@
+query GetAffiliatedProductTxList($affiliatedProductID: Int!, $limit: Int! $next: String){
+   affiliatedProductTxList(affiliatedProductID: $affiliatedProductID , next: $next, limit: $limit) {
+       history {
+         itemSent
+         affCommission
+         affCommissionFormatted
+         affInvoice
+         affInvoiceURL
+         txTimeFormatted
+         txTime
+         tkpdInvoice
+         tkpdInvoiceURL
+         tkpdCommission
+         tkpdCommissionFormatted
+         netCommission
+         netCommissionFormatted
+       }
+       next
+       has_next
+   }
+}

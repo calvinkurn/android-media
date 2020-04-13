@@ -1,6 +1,5 @@
 package com.tokopedia.navigation.presentation.activity;
 
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
@@ -21,8 +20,11 @@ import android.os.Handler;
 import android.os.PersistableBundle;
 import android.preference.PreferenceManager;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.annotation.RestrictTo;
 import com.google.android.material.bottomnavigation.LabelVisibilityMode;
+
+import androidx.asynclayoutinflater.view.AsyncLayoutInflater;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
@@ -32,10 +34,10 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import android.text.TextUtils;
 import android.util.SparseArray;
-import android.view.FrameMetrics;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Toast;
@@ -55,6 +57,9 @@ import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.abstraction.common.utils.DisplayMetricUtils;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
+import com.tokopedia.analytics.performance.util.JankyFrameMonitoringUtil;
+import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback;
+import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.DeeplinkDFMapper;
@@ -70,7 +75,6 @@ import com.tokopedia.navigation.GlobalNavAnalytics;
 import com.tokopedia.navigation.GlobalNavConstant;
 import com.tokopedia.navigation.GlobalNavRouter;
 import com.tokopedia.navigation.R;
-import com.tokopedia.navigation.analytics.performance.HomePerformanceData;
 import com.tokopedia.navigation.analytics.performance.PerformanceData;
 import com.tokopedia.navigation.domain.model.Notification;
 import com.tokopedia.navigation.presentation.di.DaggerGlobalNavComponent;
@@ -100,7 +104,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -146,6 +149,14 @@ public class MainParentActivity extends BaseActivity implements
     private static final String ANDROID_CUSTOMER_NEW_OS_HOME_ENABLED = "android_customer_new_os_home_enabled";
     private static final String SOURCE_ACCOUNT = "account";
     private static final String HOME_PERFORMANCE_MONITORING_KEY = "mp_home";
+    private static final String HOME_PERFORMANCE_MONITORING_PREPARE_METRICS = "home_plt_start_page_metrics";
+    private static final String HOME_PERFORMANCE_MONITORING_NETWORK_METRICS = "home_plt_network_request_page_metrics";
+    private static final String HOME_PERFORMANCE_MONITORING_RENDER_METRICS = "home_plt_render_page_metrics";
+
+    private static final String HOME_PERFORMANCE_MONITORING_CACHE_ATTRIBUTION = "Data source";
+    private static final String HOME_PERFORMANCE_MONITORING_CACHE_VALUE = "Cache";
+    private static final String HOME_PERFORMANCE_MONITORING_NETWORK_VALUE= "Network";
+
     private static final String MAIN_PARENT_PERFORMANCE_MONITORING_KEY = "mp_slow_rendering_perf";
     private static final String FPM_METRIC_ALL_FRAMES = "all_frames";
     private static final String FPM_METRIC_JANKY_FRAMES = "janky_frames";
@@ -174,11 +185,9 @@ public class MainParentActivity extends BaseActivity implements
     private CoordinatorLayout fragmentContainer;
     private boolean isFirstNavigationImpression = false;
 
-    private PerformanceMonitoring homePerformanceMonitoring;
-
     private PerformanceMonitoring mainParentPerformanceMonitoring;
 
-    Window.OnFrameMetricsAvailableListener onFrameMetricAvailableListener = null;
+    private PageLoadTimePerformanceCallback pageLoadTimePerformanceCallback;
 
     // animate icon OS
     private MenuItem osMenu;
@@ -186,6 +195,7 @@ public class MainParentActivity extends BaseActivity implements
     private float OS_STATE_SELECTED = 1f;
     private float OS_STATE_UNSELECTED = 0f;
     private float OS_STATE_ANIMATED = 0.7f;
+    private JankyFrameMonitoringUtil jankyFrameMonitoringUtil;
 
     @DeepLink({ApplinkConst.HOME, ApplinkConst.HOME_CATEGORY})
     public static Intent getApplinkIntent(Context context, Bundle bundle) {
@@ -251,7 +261,8 @@ public class MainParentActivity extends BaseActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         startHomePerformanceMonitoring();
         startMainParentPerformanceMonitoring();
-        startFrameMetrics(this);
+        startJankyFrameMonitoringUtil();
+
         super.onCreate(savedInstanceState);
         initInjector();
         presenter.setView(this);
@@ -272,8 +283,18 @@ public class MainParentActivity extends BaseActivity implements
         if (userSession.hasShop() && !DFInstaller.isInstalled(getApplication(), DFM_MERCHANT_SELLER_CUSTOMERAPP)) {
             ArrayList<String> list = new ArrayList<>();
             list.add(DFM_MERCHANT_SELLER_CUSTOMERAPP);
-            new DFInstaller().installOnBackground(this.getApplication(), list, null, null, "Home");
+            DFInstaller.installOnBackground(this.getApplication(), list, "Home");
         }
+    }
+
+    private void startJankyFrameMonitoringUtil() {
+        jankyFrameMonitoringUtil = new JankyFrameMonitoringUtil();
+        jankyFrameMonitoringUtil.init(this, new JankyFrameMonitoringUtil.OnFrameListener() {
+            @Override
+            public void onFrameRendered(@NotNull com.tokopedia.analytics.performance.util.FpiPerformanceData fpiPerformanceData) {
+
+            }
+        });
     }
 
     @NotNull
@@ -303,12 +324,10 @@ public class MainParentActivity extends BaseActivity implements
             }
         }
 
-        if (DFInstaller.isInstalled(this.getApplication(), DeeplinkDFMapper.DFM_ONBOARDING)) {
-            Intent intent = RouteManager.getIntent(this,
-                    ApplinkConstInternalMarketplace.ONBOARDING);
-            startActivity(intent);
-            finish();
-        }
+        Intent intent = RouteManager.getIntent(this,
+                ApplinkConstInternalMarketplace.ONBOARDING);
+        startActivity(intent);
+        finish();
     }
 
     private void setDefaultShakeEnable() {
@@ -346,17 +365,7 @@ public class MainParentActivity extends BaseActivity implements
         isFirstNavigationImpression = true;
         setContentView(R.layout.activity_main_parent);
 
-        bottomNavigation = findViewById(R.id.bottomnav);
         fragmentContainer = findViewById(R.id.container);
-
-        bottomNavigation.setItemIconTintList(null);
-        bottomNavigation.setLabelVisibilityMode(LabelVisibilityMode.LABEL_VISIBILITY_LABELED);
-        bottomNavigation.setOnNavigationItemSelectedListener(this::onNavigationItemSelected);
-        bottomNavigation.setOnNavigationItemReselectedListener(item -> {
-            Fragment fragment = fragmentList.get(getPositionFragmentByMenu(item));
-            scrollToTop(fragment); // enable feature scroll to top for home & feed
-        });
-
         fragmentList = fragments();
 
         WeaveInterface firstTimeWeave = new WeaveInterface() {
@@ -367,20 +376,58 @@ public class MainParentActivity extends BaseActivity implements
             }
         };
         Weaver.Companion.executeWeaveCoRoutineWithFirebase(firstTimeWeave, RemoteConfigKey.ENABLE_ASYNC_FIRSTTIME_EVENT, getContext());
-
-        handleAppLinkBottomNavigation(savedInstanceState);
+        showSelectedPage();
         checkAppUpdateAndInApp();
         checkApplinkCouponCode(getIntent());
+        inflateBottomNavigationViewAsync(savedInstanceState);
+    }
 
+    private void inflateBottomNavigationViewAsync(Bundle savedInstanceState){
+        AsyncLayoutInflater asyncLayoutInflater = new AsyncLayoutInflater(getContext());
+        AsyncLayoutInflater.OnInflateFinishedListener inflationCompleteListener = new AsyncLayoutInflater.OnInflateFinishedListener() {
+            @Override
+            public void onInflateFinished(@NonNull View view, int resid, @Nullable ViewGroup parent) {
+                parent.addView(view);
+                afterBottomNaviagtionInflation(savedInstanceState);
+            }
+        };
+        final ViewGroup viewGroup = (ViewGroup) ((ViewGroup) this
+                .findViewById(android.R.id.content)).getChildAt(0);
+        asyncLayoutInflater.inflate(R.layout.bottom_navigation_view, viewGroup, inflationCompleteListener);
+    }
+
+    private void afterBottomNaviagtionInflation(Bundle savedInstanceState){
+        bottomNavigation = findViewById(R.id.bottomnav);
+        bottomNavigation.setItemIconTintList(null);
+        bottomNavigation.setLabelVisibilityMode(LabelVisibilityMode.LABEL_VISIBILITY_LABELED);
+        bottomNavigation.setOnNavigationItemSelectedListener(MainParentActivity.this::onNavigationItemSelected);
+        bottomNavigation.setOnNavigationItemReselectedListener(item -> {
+            Fragment fragment = fragmentList.get(getPositionFragmentByMenu(item));
+            scrollToTop(fragment); // enable feature scroll to top for home & feed
+        });
+        handleAppLinkBottomNavigation(savedInstanceState);
         initNewFeedClickReceiver();
+        registerNewFeedClickedReceiver();
     }
 
     @NotNull
     private boolean executeFirstTimeEvent(){
         if (isFirstTime()) {
-            globalNavAnalytics.trackFirstTime(this);
+            globalNavAnalytics.trackFirstTime(MainParentActivity.this);
         }
         return true;
+    }
+
+    private void showSelectedPage(){
+        int tabPosition = HOME_MENU;
+        if (getIntent().getExtras() != null) {
+            tabPosition = getIntent().getExtras().getInt(ARGS_TAB_POSITION, HOME_MENU);
+        }
+        Fragment fragment = fragmentList.get(tabPosition);
+        if (fragment != null) {
+            this.currentFragment = fragment;
+            selectFragment(fragment);
+        }
     }
 
     private void handleAppLinkBottomNavigation(Bundle savedInstanceState) {
@@ -408,7 +455,6 @@ public class MainParentActivity extends BaseActivity implements
             }
         } else if (savedInstanceState == null) {
             onNavigationItemSelected(bottomNavigation.getMenu().findItem(R.id.menu_home));
-            this.currentFragment = fragmentList.get(HOME_MENU);
         }
     }
 
@@ -416,13 +462,6 @@ public class MainParentActivity extends BaseActivity implements
     protected void onPause() {
         super.onPause();
         unRegisterNewFeedClickedReceiver();
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        stopFrameMetrics(this);
-        submitMainParentPerformanceMonitoring();
     }
 
     @Override
@@ -628,8 +667,6 @@ public class MainParentActivity extends BaseActivity implements
         };
         Weaver.Companion.executeWeaveCoRoutineWithFirebase(addShortcutsWeave, RemoteConfigKey.ENABLE_ASYNC_ADDSHORTCUTS, getContext());
 
-        registerNewFeedClickedReceiver();
-
         WeaveInterface checkAppSignatureWeave = new WeaveInterface() {
             @NotNull
             @Override
@@ -676,37 +713,6 @@ public class MainParentActivity extends BaseActivity implements
             presenter.onDestroy();
     }
 
-    private void submitMainParentPerformanceMonitoring() {
-        if (fragmentPerformanceDatas.size() > 0) {
-            for(int i = 0; i < fragmentPerformanceDatas.size(); i++) {
-                int key = fragmentPerformanceDatas.keyAt(i);
-                // get the object by the key.
-                PerformanceData performanceData = fragmentPerformanceDatas.get(key);
-                if (performanceData instanceof HomePerformanceData) {
-                    Map<String, Integer> dynamicChannelList = ((HomePerformanceData) performanceData).getDynamicChannelList();
-                    if (dynamicChannelList != null) {
-                        for (Map.Entry<String,Integer> dynamicChannel : dynamicChannelList.entrySet()) {
-                            mainParentPerformanceMonitoring.putMetric(
-                                    dynamicChannel.getKey(), dynamicChannel.getValue()
-                            );
-                        }
-                    }
-                }
-                mainParentPerformanceMonitoring.putMetric(
-                        performanceData.getAllFramesTag(), performanceData.getAllFrames()
-                );
-                mainParentPerformanceMonitoring.putMetric(
-                        performanceData.getJankyFramesTag(), performanceData.getJankyFrames()
-                );
-                mainParentPerformanceMonitoring.putMetric(
-                        performanceData.getJankyFramesPercentageTag(), performanceData.getJankyFramePercentage()
-                );
-            }
-            mainParentPerformanceMonitoring.stopTrace();
-        }
-        fragmentPerformanceDatas.clear();
-    }
-
     private void reloadPage() {
         finish();
         startActivity(getIntent());
@@ -733,14 +739,16 @@ public class MainParentActivity extends BaseActivity implements
     @Override
     public void renderNotification(Notification notification) {
         this.notification = notification;
-        bottomNavigation.setNotification(notification.getTotalCart(), CART_MENU);
-        if (notification.getHaveNewFeed()) {
-            bottomNavigation.setNotification(-1, FEED_MENU);
-            Intent intent = new Intent(BROADCAST_FEED);
-            intent.putExtra(PARAM_BROADCAST_NEW_FEED, notification.getHaveNewFeed());
-            LocalBroadcastManager.getInstance(getContext().getApplicationContext()).sendBroadcast(intent);
-        } else {
-            bottomNavigation.setNotification(0, FEED_MENU);
+        if(bottomNavigation != null) {
+            bottomNavigation.setNotification(notification.getTotalCart(), CART_MENU);
+            if (notification.getHaveNewFeed()) {
+                bottomNavigation.setNotification(-1, FEED_MENU);
+                Intent intent = new Intent(BROADCAST_FEED);
+                intent.putExtra(PARAM_BROADCAST_NEW_FEED, notification.getHaveNewFeed());
+                LocalBroadcastManager.getInstance(getContext().getApplicationContext()).sendBroadcast(intent);
+            } else {
+                bottomNavigation.setNotification(0, FEED_MENU);
+            }
         }
         if (currentFragment != null)
             setBadgeNotifCounter(currentFragment);
@@ -829,38 +837,41 @@ public class MainParentActivity extends BaseActivity implements
     @Override
     public void onReadytoShowBoarding(ArrayList<ShowCaseObject> showCaseObjects) {
 
-        playAnimOsIcon(); // show animation icon
+        if(bottomNavigation != null) {
 
-        final String showCaseTag = MainParentActivity.class.getName() + ".bottomNavigation";
-        if (ShowCasePreference.hasShown(this, showCaseTag) || showCaseDialog != null
-                || showCaseObjects == null) {
-            return;
+            playAnimOsIcon(); // show animation icon
+
+            final String showCaseTag = MainParentActivity.class.getName() + ".bottomNavigation";
+            if (ShowCasePreference.hasShown(this, showCaseTag) || showCaseDialog != null
+                    || showCaseObjects == null) {
+                return;
+            }
+
+            showCaseDialog = createShowCase();
+
+            int bottomNavTopPos = bottomNavigation.getTop();
+            int bottomNavBottomPos = bottomNavigation.getBottom();
+
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+                bottomNavBottomPos =
+                        bottomNavBottomPos - DisplayMetricUtils.getStatusBarHeight(this);
+                bottomNavTopPos =
+                        bottomNavTopPos - DisplayMetricUtils.getStatusBarHeight(this);
+            }
+            ArrayList<ShowCaseObject> showcases = new ArrayList<>();
+            showcases.add(new ShowCaseObject(
+                    bottomNavigation,
+                    getString(R.string.title_showcase),
+                    getString(R.string.desc_showcase))
+                    .withCustomTarget(new int[]{
+                            bottomNavigation.getLeft(),
+                            bottomNavTopPos,
+                            bottomNavigation.getRight(),
+                            bottomNavBottomPos}));
+            showcases.addAll(showCaseObjects);
+
+            showCaseDialog.show(this, showCaseTag, showcases);
         }
-
-        showCaseDialog = createShowCase();
-
-        int bottomNavTopPos = bottomNavigation.getTop();
-        int bottomNavBottomPos = bottomNavigation.getBottom();
-
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            bottomNavBottomPos =
-                    bottomNavBottomPos - DisplayMetricUtils.getStatusBarHeight(this);
-            bottomNavTopPos =
-                    bottomNavTopPos - DisplayMetricUtils.getStatusBarHeight(this);
-        }
-        ArrayList<ShowCaseObject> showcases = new ArrayList<>();
-        showcases.add(new ShowCaseObject(
-                bottomNavigation,
-                getString(R.string.title_showcase),
-                getString(R.string.desc_showcase))
-                .withCustomTarget(new int[]{
-                        bottomNavigation.getLeft(),
-                        bottomNavTopPos,
-                        bottomNavigation.getRight(),
-                        bottomNavBottomPos}));
-        showcases.addAll(showCaseObjects);
-
-        showCaseDialog.show(this, showCaseTag, showcases);
     }
 
     private Boolean isFirstTime() {
@@ -1018,46 +1029,46 @@ public class MainParentActivity extends BaseActivity implements
                     args.putBoolean(GlobalNavConstant.EXTRA_APPLINK_FROM_PUSH, true);
                     args.putBoolean(GlobalNavConstant.FROM_APP_SHORTCUTS, true);
 
-                    Intent intentHome = MainParentActivity.start(this);
+                    Intent intentHome = MainParentActivity.start(MainParentActivity.this);
                     intentHome.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     intentHome.setAction(Intent.ACTION_VIEW);
 
-                    Intent productIntent = RouteManager.getIntent(this, ApplinkConstInternalDiscovery.AUTOCOMPLETE);
+                    Intent productIntent = RouteManager.getIntent(MainParentActivity.this, ApplinkConstInternalDiscovery.AUTOCOMPLETE);
                     productIntent.setAction(Intent.ACTION_VIEW);
                     productIntent.putExtras(args);
 
-                    ShortcutInfo productShortcut = new ShortcutInfo.Builder(this, SHORTCUT_BELI_ID)
+                    ShortcutInfo productShortcut = new ShortcutInfo.Builder(MainParentActivity.this, SHORTCUT_BELI_ID)
                             .setShortLabel(getResources().getString(R.string.navigation_home_label_longpress_beli))
                             .setLongLabel(getResources().getString(R.string.navigation_home_label_longpress_beli))
-                            .setIcon(Icon.createWithResource(this, R.drawable.ic_search_shortcut))
+                            .setIcon(Icon.createWithResource(MainParentActivity.this, R.drawable.ic_search_shortcut))
                             .setIntents(new Intent[]{intentHome, productIntent})
                             .setRank(0)
                             .build();
                     shortcutInfos.add(productShortcut);
 
                     if (userSession.isLoggedIn()) {
-                        Intent wishlistIntent = ((GlobalNavRouter) getApplication()).gotoWishlistPage(this);
+                        Intent wishlistIntent = RouteManager.getIntent(MainParentActivity.this, ApplinkConst.NEW_WISHLIST);
                         wishlistIntent.setAction(Intent.ACTION_VIEW);
                         wishlistIntent.putExtras(args);
 
-                        ShortcutInfo wishlistShortcut = new ShortcutInfo.Builder(this, SHORTCUT_SHARE_ID)
+                        ShortcutInfo wishlistShortcut = new ShortcutInfo.Builder(MainParentActivity.this, SHORTCUT_SHARE_ID)
                                 .setShortLabel(getResources().getString(R.string.navigation_home_label_longpress_share))
                                 .setLongLabel(getResources().getString(R.string.navigation_home_label_longpress_share))
-                                .setIcon(Icon.createWithResource(this, R.drawable.ic_wishlist_shortcut))
+                                .setIcon(Icon.createWithResource(MainParentActivity.this, R.drawable.ic_wishlist_shortcut))
                                 .setIntents(new Intent[]{intentHome, wishlistIntent})
                                 .setRank(1)
                                 .build();
                         shortcutInfos.add(wishlistShortcut);
                     }
 
-                    Intent digitalIntent = RouteManager.getIntent(this, ApplinkConst.DIGITAL_SUBHOMEPAGE_HOME);
+                    Intent digitalIntent = RouteManager.getIntent(MainParentActivity.this, ApplinkConst.DIGITAL_SUBHOMEPAGE_HOME);
                     digitalIntent.setAction(Intent.ACTION_VIEW);
                     digitalIntent.putExtras(args);
 
-                    ShortcutInfo digitalShortcut = new ShortcutInfo.Builder(this, SHORTCUT_DIGITAL_ID)
+                    ShortcutInfo digitalShortcut = new ShortcutInfo.Builder(MainParentActivity.this, SHORTCUT_DIGITAL_ID)
                             .setShortLabel(getResources().getString(R.string.navigation_home_label_longpress_bayar))
                             .setLongLabel(getResources().getString(R.string.navigation_home_label_longpress_bayar))
-                            .setIcon(Icon.createWithResource(this, R.drawable.ic_pay_shortcut))
+                            .setIcon(Icon.createWithResource(MainParentActivity.this, R.drawable.ic_pay_shortcut))
                             .setIntents(new Intent[]{intentHome, digitalIntent})
                             .setRank(2)
                             .build();
@@ -1076,10 +1087,10 @@ public class MainParentActivity extends BaseActivity implements
                         shopIntent.setAction(Intent.ACTION_VIEW);
                         shopIntent.putExtras(args);
 
-                        ShortcutInfo shopShortcut = new ShortcutInfo.Builder(this, SHORTCUT_SHOP_ID)
+                        ShortcutInfo shopShortcut = new ShortcutInfo.Builder(MainParentActivity.this, SHORTCUT_SHOP_ID)
                                 .setShortLabel(getResources().getString(R.string.navigation_home_label_longpress_jual))
                                 .setLongLabel(getResources().getString(R.string.navigation_home_label_longpress_jual))
-                                .setIcon(Icon.createWithResource(this, R.drawable.ic_sell_shortcut))
+                                .setIcon(Icon.createWithResource(MainParentActivity.this, R.drawable.ic_sell_shortcut))
                                 .setIntents(new Intent[]{intentHome, shopIntent})
                                 .setRank(3)
                                 .build();
@@ -1156,88 +1167,49 @@ public class MainParentActivity extends BaseActivity implements
         lottieOsDrawable.setProgress(progress);
     }
 
-    @Override
-    public void startHomePerformanceMonitoring() {
-        homePerformanceMonitoring = PerformanceMonitoring.start(HOME_PERFORMANCE_MONITORING_KEY);
-    }
-
     private void startMainParentPerformanceMonitoring() {
         mainParentPerformanceMonitoring = PerformanceMonitoring.start(MAIN_PARENT_PERFORMANCE_MONITORING_KEY);
     }
 
     @Override
-    public void submitDynamicChannelCount(Map<String, Integer> dynamicChannelList) {
-        PerformanceData performanceData = fragmentPerformanceDatas.get(HOME_MENU);
-        if (performanceData instanceof HomePerformanceData && !((HomePerformanceData) performanceData).isDataLocked()) {
-            ((HomePerformanceData) performanceData).setDynamicChannelList(dynamicChannelList);
-            ((HomePerformanceData) performanceData).lockData();
+    public void startHomePerformanceMonitoring() {
+        pageLoadTimePerformanceCallback = new PageLoadTimePerformanceCallback(
+                HOME_PERFORMANCE_MONITORING_PREPARE_METRICS,
+                HOME_PERFORMANCE_MONITORING_NETWORK_METRICS,
+                HOME_PERFORMANCE_MONITORING_RENDER_METRICS,
+                0,
+                0,
+                0,
+                0,
+                null
+        );
+        getPageLoadTimePerformanceInterface().startMonitoring(HOME_PERFORMANCE_MONITORING_KEY);
+        getPageLoadTimePerformanceInterface().startPreparePagePerformanceMonitoring();
+    }
+
+    @Override
+    public void stopHomePerformanceMonitoring(boolean isCache) {
+        if (getPageLoadTimePerformanceInterface() != null) {
+            if (isCache) {
+                getPageLoadTimePerformanceInterface().addAttribution(
+                        HOME_PERFORMANCE_MONITORING_CACHE_ATTRIBUTION,
+                        HOME_PERFORMANCE_MONITORING_CACHE_VALUE);
+            } else {
+                getPageLoadTimePerformanceInterface().addAttribution(
+                        HOME_PERFORMANCE_MONITORING_CACHE_ATTRIBUTION,
+                        HOME_PERFORMANCE_MONITORING_NETWORK_VALUE);
+            }
+            getPageLoadTimePerformanceInterface().stopMonitoring();
+            getPageLoadTimePerformanceInterface().stopRenderPerformanceMonitoring();
+            pageLoadTimePerformanceCallback = null;
         }
     }
 
     @Override
-    public Boolean needToSubmitDynamicChannelCount() {
-        PerformanceData performanceData = fragmentPerformanceDatas.get(HOME_MENU);
-        if (performanceData instanceof HomePerformanceData) {
-            return !((HomePerformanceData) performanceData).isDataLocked();
-        }
-        return false;
+    public PageLoadTimePerformanceInterface getPageLoadTimePerformanceInterface() {
+        return pageLoadTimePerformanceCallback;
     }
 
-    @Override
-    public void stopHomePerformanceMonitoring() {
-        if (homePerformanceMonitoring != null) {
-            homePerformanceMonitoring.stopTrace();
-            homePerformanceMonitoring = null;
-        }
-    }
-
-    @TargetApi(Build.VERSION_CODES.N)
-    public void startFrameMetrics(Activity activity) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            setupMetrics();
-            onFrameMetricAvailableListener = new Window.OnFrameMetricsAvailableListener() {
-                @Override
-                public void onFrameMetricsAvailable(Window window, FrameMetrics frameMetrics, int dropCountSinceLastInvocation) {
-                    FrameMetrics frameMetricsCopy = new FrameMetrics(frameMetrics);
-                    incrementAllFramesFragmentMetrics(frameMetricsCopy);
-                }
-            };
-            activity.getWindow().addOnFrameMetricsAvailableListener(onFrameMetricAvailableListener, new Handler());
-        }
-    }
-
-    private void incrementAllFramesFragmentMetrics(FrameMetrics frameMetricsCopy) {
-        PerformanceData performanceData = fragmentPerformanceDatas.get(currentSelectedFragmentPosition);
-        if (performanceData != null) {
-            performanceData.incrementAllFrames();
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                float totalDurationMs = (float) (0.000001 * frameMetricsCopy.getMetric(FrameMetrics.TOTAL_DURATION));
-                if (totalDurationMs > DEFAULT_WARNING_LEVEL_MS) {
-                    performanceData.incremenetJankyFrames();
-                }
-            }
-            fragmentPerformanceDatas.setValueAt(currentSelectedFragmentPosition, performanceData);
-        }
-    }
-
-    private void setupMetrics() {
-        fragmentPerformanceDatas.put(HOME_MENU, new HomePerformanceData("home_all_frames", "home_janky_frames", "home_janky_frames_percentage"));
-        fragmentPerformanceDatas.put(FEED_MENU, new PerformanceData("feed_all_frames", "feed_janky_frames", "feed_janky_frames_percentage"));
-        fragmentPerformanceDatas.put(OS_MENU, new PerformanceData("os_all_frames", "os_janky_frames", "os_janky_frames_percentage"));
-        fragmentPerformanceDatas.put(CART_MENU, new PerformanceData("cart_all_frames", "cart_janky_frames", "cart_janky_frames_percentage"));
-        fragmentPerformanceDatas.put(ACCOUNT_MENU, new PerformanceData("account_all_frames", "account_janky_frames", "account_janky_frames_percentage"));
-    }
-
-    @TargetApi(Build.VERSION_CODES.N)
-    public void stopFrameMetrics(Activity activity) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            if (onFrameMetricAvailableListener != null) {
-                activity.getWindow().removeOnFrameMetricsAvailableListener(onFrameMetricAvailableListener);
-                onFrameMetricAvailableListener = null;
-            }
-        }
-    }
-         
     @Override
     public void requestStatusBarDark() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -1258,5 +1230,10 @@ public class MainParentActivity extends BaseActivity implements
             setWindowFlag(this, WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, false);
             this.getWindow().setStatusBarColor(Color.TRANSPARENT);
         }
+    }
+
+    @Override
+    public JankyFrameMonitoringUtil getMainJankyFrameMonitoringUtil() {
+        return jankyFrameMonitoringUtil;
     }
 }
