@@ -14,7 +14,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_ch
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.dynamic_icon.HomeIconItem
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.spotlight.SpotlightItemViewModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.spotlight.SpotlightViewModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.GeolocationPromptViewModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.GeoLocationPromptDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderViewModel
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils
 import com.tokopedia.home.beranda.presentation.view.fragment.HomeFragment
@@ -100,7 +100,7 @@ class HomeVisitableFactoryImpl(val userSessionInterface: UserSessionInterface) :
                         }
                     }
                     if (tmpTickers.isNotEmpty()) {
-                        val viewModel = TickerViewModel()
+                        val viewModel = TickerDataModel()
                         viewModel.tickers = tmpTickers
 
                         visitableList.add(viewModel)
@@ -124,7 +124,7 @@ class HomeVisitableFactoryImpl(val userSessionInterface: UserSessionInterface) :
     }
 
     override fun addGeolocationVisitable(): HomeVisitableFactory {
-        visitableList.add(GeolocationPromptViewModel())
+        visitableList.add(GeoLocationPromptDataModel())
         return this
     }
 
@@ -229,7 +229,7 @@ class HomeVisitableFactoryImpl(val userSessionInterface: UserSessionInterface) :
                             trackingData = ProductHighlightTracking.getProductHighlightImpression(channel)) }
                 DynamicHomeChannel.Channels.LAYOUT_POPULAR_KEYWORD -> {createPopularKeywordChannel(channel = channel)}
                 DynamicHomeChannel.Channels.LAYOUT_DEFAULT_ERROR -> { createDynamicChannel(channel = channel) }
-                DynamicHomeChannel.Channels.LAYOUT_REVIEW -> { createReviewWidget() }
+                DynamicHomeChannel.Channels.LAYOUT_REVIEW -> { createReviewWidget(channel = channel) }
                 DynamicHomeChannel.Channels.LAYOUT_PLAY_BANNER -> { createPlayWidget(channel) }
                 DynamicHomeChannel.Channels.LAYOUT_MIX_TOP -> { createDynamicChannel(
                         channel,
@@ -329,8 +329,8 @@ class HomeVisitableFactoryImpl(val userSessionInterface: UserSessionInterface) :
         }
     }
 
-    private fun createReviewWidget() {
-        if (!isCache) visitableList.add(ReviewViewModel())
+    private fun createReviewWidget(channel: DynamicHomeChannel.Channels) {
+        if (!isCache) visitableList.add(ReviewDataModel(channel = channel))
     }
 
     private fun createDynamicTopAds(channel: DynamicHomeChannel.Channels) {
@@ -420,7 +420,7 @@ class HomeVisitableFactoryImpl(val userSessionInterface: UserSessionInterface) :
     }
 
     private fun createPopularKeywordChannel(channel: DynamicHomeChannel.Channels) {
-        visitableList.add(PopularKeywordListViewModel(popularKeywordList = mutableListOf(), channel = channel))
+        visitableList.add(PopularKeywordListDataModel(popularKeywordList = mutableListOf(), channel = channel))
     }
 
     override fun build(): List<Visitable<*>> = visitableList

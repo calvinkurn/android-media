@@ -675,6 +675,33 @@ object DynamicProductDetailTracking {
 
             TrackingUtil.addComponentTracker(mapEvent, productInfo, componentTrackDataModel, ProductTrackingConstant.Action.CLICK_NOTIFY_ME)
         }
+
+        fun eventActivationOvo(productId: String, userId: String) {
+            val mapEvent = TrackAppUtils.gtmData(
+                    ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
+                    ProductTrackingConstant.Category.PDP,
+                    ProductTrackingConstant.Action.CLICK_BUY_ACTIVATION_OVO,
+                    ProductTrackingConstant.Label.EMPTY_LABEL)
+            TrackingUtil.addComponentOvoTracker(mapEvent, productId, userId)
+        }
+
+        fun eventSeeBottomSheetOvo(title: String, productId: String, userId: String) {
+            val mapEvent = TrackAppUtils.gtmData(
+                    ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
+                    ProductTrackingConstant.Category.PDP,
+                    "${ProductTrackingConstant.Action.CLICK_SEE_BOTTOMSHEET_OVO} $title",
+                    ProductTrackingConstant.Label.EMPTY_LABEL)
+            TrackingUtil.addComponentOvoTracker(mapEvent, productId, userId)
+        }
+
+        fun eventTopupBottomSheetOvo(title: String, buttonTitle: String, productId: String, userId: String) {
+            val mapEvent = TrackAppUtils.gtmData(
+                    ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
+                    ProductTrackingConstant.Category.PDP,
+                    "${ProductTrackingConstant.Action.CLICK} - $buttonTitle ${ProductTrackingConstant.Action.CLICK_TOPUP_BOTTOMSHEET_OVO} $title",
+                    ProductTrackingConstant.Label.EMPTY_LABEL)
+            TrackingUtil.addComponentOvoTracker(mapEvent, productId, userId)
+        }
     }
 
     object Iris {
@@ -695,10 +722,10 @@ object DynamicProductDetailTracking {
                 it.type == "image"
             }?.firstOrNull()?.uRLOriginal ?: ""
 
-            val mapOfData = mutableMapOf(ProductTrackingConstant.Tracking.KEY_EVENT to "clickPDP",
-                    ProductTrackingConstant.Tracking.KEY_CATEGORY to "product detail page",
-                    ProductTrackingConstant.Tracking.KEY_ACTION to "Click",
-                    ProductTrackingConstant.Tracking.KEY_LABEL to "Talk",
+            val mapOfData = mutableMapOf(ProductTrackingConstant.Tracking.KEY_EVENT to ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
+                    ProductTrackingConstant.Tracking.KEY_CATEGORY to ProductTrackingConstant.Category.PDP,
+                    ProductTrackingConstant.Tracking.KEY_ACTION to ProductTrackingConstant.Action.CLICK_DISKUSI_PRODUCT_TAB,
+                    ProductTrackingConstant.Tracking.KEY_LABEL to "",
                     "subcategory" to categoryNameLvl2,
                     "subcategoryId" to categoryIdLvl2,
                     "category" to (productInfo?.basic?.category?.name ?: ""),
@@ -715,7 +742,7 @@ object DynamicProductDetailTracking {
                     "productPriceFormatted" to TrackingUtil.getFormattedPrice(productInfo?.data?.price?.value
                             ?: 0))
 
-            TrackingUtil.addComponentTracker(mapOfData, productInfo, componentTrackDataModel, "Click")
+            TrackingUtil.addComponentTracker(mapOfData, productInfo, componentTrackDataModel, ProductTrackingConstant.Action.CLICK_DISKUSI_PRODUCT_TAB)
 
         }
 

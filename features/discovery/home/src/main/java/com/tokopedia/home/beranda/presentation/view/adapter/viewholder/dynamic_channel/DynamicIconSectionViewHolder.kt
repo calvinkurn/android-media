@@ -10,6 +10,7 @@ import androidx.appcompat.widget.AppCompatImageView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.home.R
 import com.tokopedia.home.analytics.HomePageTracking
 import com.tokopedia.home.beranda.helper.DynamicLinkHelper
@@ -23,6 +24,8 @@ import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.Carou
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 
 /**
  * @author by errysuprayogi on 11/28/17.
@@ -92,7 +95,16 @@ class DynamicIconSectionViewHolder(val view: View,
 
         override fun onBindViewHolder(holder: DynamicIconViewHolder, position: Int) {
             holder.title.text = sectionViewModel.itemList[position].title
-            holder.icon.loadMiniImage(sectionViewModel.itemList[position].icon, 150, 150, FPM_USE_CASE_ICON)
+            holder.shimmeringIcon.show()
+            holder.icon.loadMiniImage(sectionViewModel.itemList[position].icon, 150, 150, FPM_USE_CASE_ICON, object : ImageHandler.ImageLoaderStateListener{
+                override fun successLoad() {
+                    holder.shimmeringIcon.hide()
+                }
+
+                override fun failedLoad() {
+                    holder.shimmeringIcon.show()
+                }
+            })
             holder.container.setOnClickListener { view ->
                 eventClickDynamicIcon(view.context, sectionViewModel.itemList[position], position)
                 listener.onSectionItemClicked(DynamicLinkHelper.getActionLink(sectionViewModel.itemList[position]))
@@ -121,6 +133,7 @@ class DynamicIconSectionViewHolder(val view: View,
 
     private class DynamicIconViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val icon: AppCompatImageView = view.findViewById(R.id.icon)
+        val shimmeringIcon: View = view.findViewById(R.id.icon_shimmering)
         val title: TextView = view.findViewById(R.id.title)
         val container: LinearLayout = view.findViewById(R.id.container)
 

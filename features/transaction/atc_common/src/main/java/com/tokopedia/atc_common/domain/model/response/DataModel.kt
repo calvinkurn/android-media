@@ -20,7 +20,9 @@ data class DataModel(
         var trackerListName: String = "",
         var ucUtParam: String = "",
         var isTradeIn: Boolean = false,
-        var message: ArrayList<String> = arrayListOf()
+        var message: ArrayList<String> = arrayListOf(),
+        var ovoValidationDataModel: OvoValidationDataModel = OvoValidationDataModel(),
+        var refreshPrerequisitePage: Boolean = false
 ) : Parcelable {
 
     constructor(parcel: Parcel) : this(
@@ -36,7 +38,9 @@ data class DataModel(
             parcel.readString(),
             parcel.readString(),
             parcel.readByte() != 0.toByte(),
-            parcel.createStringArrayList())
+            parcel.createStringArrayList(),
+            parcel.readParcelable(OvoValidationDataModel::class.java.classLoader),
+            parcel.readByte() != 0.toByte())
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeInt(success)
@@ -52,6 +56,8 @@ data class DataModel(
         parcel.writeString(ucUtParam)
         parcel.writeByte(if (isTradeIn) 1 else 0)
         parcel.writeStringList(message)
+        parcel.writeParcelable(ovoValidationDataModel, flags)
+        parcel.writeByte(if (refreshPrerequisitePage) 1 else 0)
     }
 
     override fun describeContents(): Int {
