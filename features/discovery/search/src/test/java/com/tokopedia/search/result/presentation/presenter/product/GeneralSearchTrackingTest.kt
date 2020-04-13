@@ -38,9 +38,8 @@ internal class GeneralSearchTrackingTest: ProductListPresenterTestFixtures() {
                         searchProductModel.searchProduct.responseCode
                 ),
                 isResultFound = true,
-                categoryMapping = mutableMapOf<String, String>().also {
-                    it["65"] = "Handphone & Tablet"
-                },
+                categoryIdMapping = "65",
+                categoryNameMapping = "Handphone & Tablet",
                 relatedKeyword = "none - none"
         )
 
@@ -91,6 +90,35 @@ internal class GeneralSearchTrackingTest: ProductListPresenterTestFixtures() {
     }
 
     @Test
+    fun `General search tracking with result found and multiple categories`() {
+        val searchProductModel = searchProductModelMultipleCategories
+
+        `Given Search Product API will return SearchProductModel`(searchProductModel)
+        `Given View is first active tab`()
+        `Given Previous keyword from view is empty`()
+        `Given View reload data immediately calls load data`()
+
+        `When View is created`()
+
+        `Then verify view send general search tracking`()
+
+        val expectedGeneralSearchTrackingModel = GeneralSearchTrackingModel(
+                eventLabel = String.format(
+                        SearchEventTracking.Label.KEYWORD_TREATMENT_RESPONSE,
+                        searchProductModel.searchProduct.query,
+                        searchProductModel.searchProduct.keywordProcess,
+                        searchProductModel.searchProduct.responseCode
+                ),
+                isResultFound = true,
+                categoryIdMapping = "1759,1758,65",
+                categoryNameMapping = "Fashion Pria,Handphone & Tablet,Fashion Wanita",
+                relatedKeyword = "none - none"
+        )
+
+        `Then verify general search tracking model is correct`(expectedGeneralSearchTrackingModel)
+    }
+
+    @Test
     fun `General search tracking with no result found`() {
         val searchProductModel = searchProductModelNoResult
 
@@ -111,7 +139,8 @@ internal class GeneralSearchTrackingTest: ProductListPresenterTestFixtures() {
                         searchProductModel.searchProduct.responseCode
                 ),
                 isResultFound = false,
-                categoryMapping = mapOf(),
+                categoryIdMapping = "",
+                categoryNameMapping = "",
                 relatedKeyword = "none - none"
         )
 
@@ -140,9 +169,8 @@ internal class GeneralSearchTrackingTest: ProductListPresenterTestFixtures() {
                         searchProductModel.searchProduct.responseCode
                 ),
                 isResultFound = true,
-                categoryMapping = mutableMapOf<String, String>().also {
-                    it["65"] = "Handphone & Tablet"
-                },
+                categoryIdMapping = "65",
+                categoryNameMapping = "Handphone & Tablet",
                 relatedKeyword = "$previousKeyword - none"
         )
 
@@ -175,10 +203,8 @@ internal class GeneralSearchTrackingTest: ProductListPresenterTestFixtures() {
                         searchProductModel.searchProduct.responseCode
                 ),
                 isResultFound = true,
-                categoryMapping = mutableMapOf<String, String>().also {
-                    it["1759"] = "Fashion Pria"
-                    it["1758"] = "Fashion Wanita"
-                },
+                categoryIdMapping = "1759,1758",
+                categoryNameMapping = "Fashion Pria,Fashion Wanita",
                 relatedKeyword = "$previousKeyword - ${searchProductModel.searchProduct.related.relatedKeyword}"
         )
 
@@ -207,10 +233,8 @@ internal class GeneralSearchTrackingTest: ProductListPresenterTestFixtures() {
                         searchProductModel.searchProduct.responseCode
                 ),
                 isResultFound = true,
-                categoryMapping = mutableMapOf<String, String>().also {
-                    it["1759"] = "Fashion Pria"
-                    it["1758"] = "Fashion Wanita"
-                },
+                categoryIdMapping = "1759,1758",
+                categoryNameMapping = "Fashion Pria,Fashion Wanita",
                 relatedKeyword = "$previousKeyword - ${searchProductModel.searchProduct.related.relatedKeyword}"
         )
 
@@ -239,10 +263,8 @@ internal class GeneralSearchTrackingTest: ProductListPresenterTestFixtures() {
                         searchProductModel.searchProduct.responseCode
                 ),
                 isResultFound = true,
-                categoryMapping = mutableMapOf<String, String>().also {
-                    it["1759"] = "Fashion Pria"
-                    it["1758"] = "Fashion Wanita"
-                },
+                categoryIdMapping = "1759,1758",
+                categoryNameMapping = "Fashion Pria,Fashion Wanita",
                 relatedKeyword = "$previousKeyword - ${searchProductModel.searchProduct.suggestion.suggestion}"
         )
 
