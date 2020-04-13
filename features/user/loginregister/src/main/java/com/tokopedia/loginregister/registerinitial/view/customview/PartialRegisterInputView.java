@@ -235,18 +235,22 @@ public class PartialRegisterInputView extends BaseCustomView {
     }
 
     public void setAdapterInputEmailPhone(ArrayAdapter<String> adapter){
-        if(adapter.getItem(0) != null){
-            etInputEmailPhone.setText(adapter.getItem(0));
-            etInputEmailPhone.setSelection(etInputEmailPhone.getText().length());
-        }
-        etInputEmailPhone.setAdapter(adapter);
-        etInputEmailPhone.setOnFocusChangeListener((v, hasFocus) -> {
-            if (hasFocus) {
-                ((AutoCompleteTextView) v).showDropDown();
-            } else {
-                ((AutoCompleteTextView) v).dismissDropDown();
+        if(etInputEmailPhone != null) {
+            if(adapter.getItem(0) != null){
+                etInputEmailPhone.setText(adapter.getItem(0));
+                etInputEmailPhone.setSelection(etInputEmailPhone.getText().length());
             }
-        });
+            etInputEmailPhone.setAdapter(adapter);
+            etInputEmailPhone.setOnFocusChangeListener((v, hasFocus) -> {
+                if (getContext() != null) {
+                    if (hasFocus) {
+                        ((AutoCompleteTextView) v).showDropDown();
+                    } else {
+                        ((AutoCompleteTextView) v).dismissDropDown();
+                    }
+                }
+            });
+        }
     }
 
     public void setEmailExtension(EmailExtension emailExtension, List<String> emailExtensionList) {

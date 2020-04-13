@@ -6,6 +6,7 @@ import com.tokopedia.product.detail.common.data.model.pdplayout.ComponentData
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.common.data.model.pdplayout.Media
 import com.tokopedia.product.detail.view.util.toDate
+import com.tokopedia.variant_common.model.ProductVariantCommon
 import com.tokopedia.variant_common.model.VariantChildCommon
 
 /**
@@ -76,6 +77,23 @@ object VariantMapper {
         )
 
         return DynamicProductInfoP1(basic, data, oldData.layoutName)
+    }
+
+    fun updateVariantDeals(variantData: ProductVariantCommon?, productId: Int): ProductVariantCommon? {
+        val children = variantData?.children
+        val childrenTemp: MutableList<VariantChildCommon> = mutableListOf()
+        children?.forEach {
+            if (productId == it.productId) {
+                val upcomingData = it.upcoming
+                val upcomingTempData = upcomingData?.copy(notifyMe = upcomingData.notifyMe != true)
+                val childCommonUpdated = it.copy(upcoming = upcomingTempData)
+                childrenTemp.add(childCommonUpdated)
+            } else {
+                childrenTemp.add(it)
+            }
+        }
+
+        return variantData?.copy(children = childrenTemp)
     }
 
     fun updateMediaToCurrentP1Data(oldData: DynamicProductInfoP1?, media: MutableList<Media>): DynamicProductInfoP1 {

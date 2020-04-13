@@ -16,7 +16,7 @@ import com.tokopedia.unifycomponents.UnifyButton
 import kotlinx.android.synthetic.main.partial_layout_button_action.view.*
 
 
-class PartialButtonActionView private constructor(private val view: View,
+class PartialButtonActionView private constructor(val view: View,
                                                   private val listener: View.OnClickListener)
     : View.OnClickListener by listener {
     var promoTopAdsClick: (() -> Unit)? = null
@@ -42,7 +42,7 @@ class PartialButtonActionView private constructor(private val view: View,
     var preOrder: PreOrder? = PreOrder()
     var onSuccessGetCartType = false
     var showByMe = false
-    private var cartTypeData: CartTypeData? = null
+    var cartTypeData: CartTypeData? = null
 
     companion object {
         fun build(_view: View, _listener: View.OnClickListener) = PartialButtonActionView(_view, _listener)
