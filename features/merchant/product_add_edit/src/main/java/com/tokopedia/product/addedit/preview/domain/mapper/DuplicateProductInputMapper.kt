@@ -48,8 +48,10 @@ class DuplicateProductInputMapper @Inject constructor() : AddProductInputMapper(
                             description,
                             fileName,
                             filePath,
-                            picID,
-                            isFromIG.contains("true")
+                            "",
+                            isFromIG.contains("true"),
+                            width,
+                            height
                     ))
                 }
             } else {
