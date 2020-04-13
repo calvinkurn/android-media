@@ -6,7 +6,6 @@ import android.content.Intent;
 import androidx.fragment.app.Fragment;
 
 public interface UnifiedOrderListRouter {
-    Intent getWebviewActivityWithIntent(Context context, String url);
     Fragment getFlightOrderListFragment();
     boolean getBooleanRemoteConfig(String key, boolean defaultValue);
     void actionOpenGeneralWebView(Activity activity, String url);

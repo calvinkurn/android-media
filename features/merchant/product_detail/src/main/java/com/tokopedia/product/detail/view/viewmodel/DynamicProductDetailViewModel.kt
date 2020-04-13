@@ -454,6 +454,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                     productInfoP3.addressModel = p3Temp.addressModel
                     productInfoP3.rateEstSummarizeText = p3Temp.rateEstSummarizeText
                     productInfoP3.userCod = p3Temp.userCod
+                    productInfoP3.ratesModel = p3Temp.ratesModel
                     val shippingPriceValue = p3Temp.ratesModel?.getMinimumShippingPrice()
                     shippingMinimumPrice = if (shippingPriceValue == null || shippingPriceValue == 0) getDynamicProductInfoP1?.basic?.getDefaultOngkirInt() ?: 30000 else shippingPriceValue
                 }
@@ -560,8 +561,12 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         val productImageUrl = productInfo?.data?.getProductImageUrl() ?: ""
         val productName = productInfo?.getProductName ?: ""
         val productPrice = productInfo?.finalPrice?.getCurrencyFormatted() ?: ""
-        val priceBefore = productInfo?.priceBeforeInt?.getCurrencyFormatted() ?: ""
         val priceBeforeInt = productInfo?.priceBeforeInt ?: 0
+        val priceBefore = if (priceBeforeInt > 0) {
+            priceBeforeInt.getCurrencyFormatted()
+        } else {
+            ""
+        }
         val dropPercentage = productInfo?.dropPercentage ?: ""
         val productUrl = productInfo?.basic?.url ?: ""
         val isActive = productInfo?.basic?.isActive() ?: true

@@ -41,7 +41,6 @@ import com.tokopedia.abstraction.common.utils.FindAndReplaceHelper
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.affiliatecommon.data.pojo.productaffiliate.TopAdsPdpAffiliateResponse
-import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
@@ -143,6 +142,13 @@ import kotlinx.android.synthetic.main.partial_layout_button_action.view.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
+/**
+ * Separator Rule
+ * Without separator : ProductValuePropositionViewHolder, ProductSocialProofViewHolder, ProoductSocialProofPvViewHolder, ProductSnapshotViewHolder
+ * Bottom separator : ProductVariantViewHolder, ProductNotifyMeViewHolder
+ * Top separator : All of the view holder except above
+ */
+
 class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, DynamicProductDetailAdapterFactoryImpl>(), DynamicProductDetailListener, ProductVariantListener, IAccessRequestListener {
 
     companion object {
@@ -228,13 +234,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         context?.let { IrisSession(it).getSessionId() } ?: ""
     }
 
-    //Performance Monitoring
-    lateinit var performanceMonitoringP1: PerformanceMonitoring
-    lateinit var performanceMonitoringP2: PerformanceMonitoring
-    lateinit var performanceMonitoringP2General: PerformanceMonitoring
-    lateinit var performanceMonitoringP2Login: PerformanceMonitoring
-    lateinit var performanceMonitoringFull: PerformanceMonitoring
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.dynamic_product_detail_fragment, container, false)
     }
@@ -247,7 +246,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         }
 
         initTradein()
-        initPerformanceMonitoring()
         initRecyclerView(view)
         initBtnAction()
         initToolbar()
@@ -441,6 +439,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                 }
             }
             ProductDetailConstant.REQUEST_CODE_LOGIN -> {
+                hideProgressDialog()
                 if (resultCode == Activity.RESULT_OK && doActivityResult) {
                     onSwipeRefresh()
                 }
@@ -898,10 +897,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             }
         } else {
             DynamicProductDetailTracking.Click.eventPDPAddToWishlistNonLogin(viewModel.getDynamicProductInfoP1, componentTrackDataModel)
-            context?.run {
-                startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN),
-                        ProductDetailConstant.REQUEST_CODE_LOGIN)
-            }
+            goToLogin()
         }
     }
 
@@ -1028,10 +1024,11 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         pdpHashMapUtil?.updateDataP1(updatedDynamicProductInfo)
         updateButtonAfterClickVariant(indexOfSelectedVariant)
 
-        renderFullfillment()
-        dynamicAdapter.notifySnapshotWithPayloads(pdpHashMapUtil?.snapShotMap)
-        dynamicAdapter.notifyVariantSection(pdpHashMapUtil?.productNewVariantDataModel, 1)
-    }
+            renderFullfillment()
+            dynamicAdapter.notifySnapshotWithPayloads(pdpHashMapUtil?.snapShotMap)
+            dynamicAdapter.notifyVariantSection(pdpHashMapUtil?.productNewVariantDataModel, 1)
+            dynamicAdapter.notifyNotifyMe(pdpHashMapUtil?.notifyMeMap, null)
+        }
 
     private fun updateButtonAfterClickVariant(indexOfVariantButton: Int?) {
         if (viewModel.shopInfo == null) {
@@ -1086,9 +1083,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
     private fun observeP1() {
         viewLifecycleOwner.observe(viewModel.productLayout) { data ->
-            if (::performanceMonitoringP1.isInitialized)
-                performanceMonitoringP1.stopTrace()
-
             data.doSuccessOrFail({
                 context?.let { context ->
                     pdpHashMapUtil = DynamicProductDetailHashMap(context, DynamicProductDetailMapper.hashMapLayout(it.data))
@@ -1098,6 +1092,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                 logException(it)
                 renderPageError(it)
             })
+            (activity as? ProductDetailActivity)?.stopMonitoringP1()
         }
     }
 
@@ -1106,41 +1101,35 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             topAdsGetProductManage = it.topAdsGetProductManage
             it.pdpAffiliate?.let { renderAffiliate(it) }
             actionButtonView.setTopAdsButton(hasTopAds())
-
-            if (::performanceMonitoringFull.isInitialized)
-                performanceMonitoringP2Login.stopTrace()
-
             pdpHashMapUtil?.updateDataP2Login(it)
             dynamicAdapter.notifySnapshotWithPayloads(pdpHashMapUtil?.snapShotMap, ProductDetailConstant.PAYLOAD_WISHLIST)
+            (activity as? ProductDetailActivity)?.stopMonitoringP2Login()
         }
     }
 
     private fun observeP2Shop() {
         viewLifecycleOwner.observe(viewModel.p2ShopDataResp) {
-            if (!viewModel.isUserSessionActive && ::performanceMonitoringFull.isInitialized)
-                performanceMonitoringFull.stopTrace()
-            performanceMonitoringP2.stopTrace()
-
             onSuccessGetDataP2Shop(it)
+
+            if (!viewModel.isUserSessionActive) {
+                (activity as? ProductDetailActivity)?.stopMonitoringFull()
+            }
+            (activity as? ProductDetailActivity)?.stopMonitoringP2()
         }
     }
 
     private fun observeP2General() {
         viewLifecycleOwner.observe(viewModel.p2General) {
-            if (::performanceMonitoringP2General.isInitialized)
-                performanceMonitoringP2General.stopTrace()
-
             onSuccessGetDataP2General(it)
+            (activity as? ProductDetailActivity)?.stopMonitoringP2General()
         }
     }
 
     private fun observeP3() {
         observe(viewModel.productInfoP3resp) {
-            if (::performanceMonitoringFull.isInitialized)
-                performanceMonitoringFull.stopTrace()
-
             trackProductView(viewModel.tradeInParams.isEligible == 1)
             onSuccessGetDataP3Resp(it)
+            (activity as? ProductDetailActivity)?.stopMonitoringFull()
         }
     }
 
@@ -1618,6 +1607,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
     private fun shareProduct() {
         activity?.let {
+            showProgressDialog()
             viewModel.getDynamicProductInfoP1?.let { productInfo ->
                 DynamicProductDetailTracking.Click.eventClickPdpShare(productInfo)
 
@@ -1914,17 +1904,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         }
     }
 
-    private fun initPerformanceMonitoring() {
-        performanceMonitoringP1 = PerformanceMonitoring.start(ProductDetailConstant.PDP_P1_TRACE)
-        performanceMonitoringP2 = PerformanceMonitoring.start(ProductDetailConstant.PDP_P2_TRACE)
-        performanceMonitoringP2General = PerformanceMonitoring.start(ProductDetailConstant.PDP_P2_GENERAL_TRACE)
-
-        if (viewModel.isUserSessionActive) {
-            performanceMonitoringP2Login = PerformanceMonitoring.start(ProductDetailConstant.PDP_P2_LOGIN_TRACE)
-            performanceMonitoringFull = PerformanceMonitoring.start(ProductDetailConstant.PDP_P3_TRACE)
-        }
-    }
-
     private fun generateVariantString(): String {
         return try {
             viewModel.p2General.value?.variantResp?.variant?.map { it.name }?.joinToString(separator = ", ")
@@ -2003,7 +1982,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             updateStickyState()
         }
         stickyLoginView.setOnClickListener {
-            startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN), ProductDetailConstant.REQUEST_CODE_LOGIN)
+            goToLogin()
             stickyLoginView.tracker.clickOnLogin(StickyLoginConstant.Page.PDP)
         }
         stickyLoginView.setOnDismissListener(View.OnClickListener {
@@ -2169,11 +2148,9 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     }
 
     private fun doLoginWhenUserClickButton() {
-        activity?.let {
-            DynamicProductDetailTracking.Click.eventClickButtonNonLogin(viewModel.buttonActionType, viewModel.getDynamicProductInfoP1, viewModel.userId, viewModel.shopInfo?.goldOS?.shopTypeString
-                    ?: "", viewModel.buttonActionText)
-            startActivityForResult(RouteManager.getIntent(it, ApplinkConst.LOGIN), ProductDetailConstant.REQUEST_CODE_LOGIN)
-        }
+        DynamicProductDetailTracking.Click.eventClickButtonNonLogin(viewModel.buttonActionType, viewModel.getDynamicProductInfoP1, viewModel.userId, viewModel.shopInfo?.goldOS?.shopTypeString
+                ?: "", viewModel.buttonActionText)
+        goToLogin()
     }
 
     private fun showErrorVariantUnselected() {
@@ -2255,8 +2232,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             val selectedProductId = basic.productID
 
             if (!viewModel.isUserSessionActive) {
-                startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN),
-                        ProductDetailConstant.REQUEST_CODE_LOGIN)
+                goToLogin()
                 return@run
             }
 
@@ -2513,8 +2489,15 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     }
 
     private fun scrollToPosition(position: Int) {
-        if (position != -1)
-            getRecyclerView(view).smoothScrollToPosition(position)
+        if (position >= 0) {
+            getRecyclerView(view).post {
+                try {
+                    getRecyclerView(view).smoothScrollToPosition(position)
+                } catch (e: Throwable) {
+
+                }
+            }
+        }
     }
 
     private fun showProgressDialog(onCancelClicked: (() -> Unit)? = null) {
@@ -2666,8 +2649,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                     viewModel.toggleTeaserNotifyMe(data.campaignID.toInt(), productId?.toInt()
                             ?: 0, action, ProductDetailCommonConstant.VALUE_TEASER_SOURCE)
                 } else {
-                    startActivityForResult(RouteManager.getIntent(it, ApplinkConst.LOGIN),
-                            ProductDetailConstant.REQUEST_CODE_LOGIN)
+                    goToLogin()
                 }
             }
         } catch (ex: Exception) {
@@ -2701,9 +2683,16 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     }
 
     private fun goToLogin() {
+        showProgressDialog()
         activity?.let {
             startActivityForResult(RouteManager.getIntent(it, ApplinkConst.LOGIN),
                     ProductDetailConstant.REQUEST_CODE_LOGIN)
+        }
+    }
+
+    override fun showAlertUpcomingEnded() {
+        activity?.let {
+            onSwipeRefresh()
         }
     }
 }

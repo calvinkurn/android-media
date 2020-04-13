@@ -133,6 +133,9 @@ public class Product {
     private TradeInInfo tradeInInfo;
     @SerializedName("free_shipping")
     private FreeShipping freeShipping;
+    @SerializedName("product_ticker")
+    @Expose
+    private ProductTicker productTicker;
 
     public String getProductCategory() {
         return productCategory;
@@ -292,5 +295,13 @@ public class Product {
 
     public FreeShipping getFreeShipping() {
         return freeShipping;
+    }
+
+    public ProductTicker getProductTicker() {
+        return productTicker;
+    }
+
+    public void setProductTicker(ProductTicker productTicker) {
+        this.productTicker = productTicker;
     }
 }

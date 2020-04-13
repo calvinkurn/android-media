@@ -105,6 +105,17 @@ public interface CMConstant {
         String USER_ID = "userId";
         String SHOP_ID = "shopId";
         String BLAST_ID = "notifcenterBlastId";
+
+        String ADD_TO_CART = "addToCart";
+        String PRODUCT_ID = "product_id";
+        String PRODUCT_NAME = "product_name";
+        String PRODUCT_BRAND = "product_brand";
+        String PRODUCT_PRICE = "product_price";
+        String PRODUCT_VARIANT = "product_variant";
+        String PRODUCT_QUANTITY = "product_quantity";
+        String ATC_SHOP_ID = "shop_id";
+        String SHOP_NAME = "shop_name";
+        String SHOP_TYPE = "shop_type";
     }
 
     interface ReceiverExtraData {

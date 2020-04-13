@@ -6,9 +6,10 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
 import io.mockk.coVerify
-import org.junit.Assert.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
+import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.mockito.ArgumentMatchers.*
 
@@ -28,10 +29,15 @@ class ShopPageProductListResultViewModelTest : ShopPageProductListViewModelTestF
 
     @Test
     fun `check whether response get shop info error`() {
-        coEvery { getShopInfoUseCase.executeOnBackground() } throws Exception()
-        viewModelShopPageProductListResultViewModel.getShop(anyString(), anyString(), anyBoolean())
-        verifyGetShopInfoUseCaseCalled()
-        assertTrue(viewModelShopPageProductListResultViewModel.shopInfoResp.value is Fail)
+        runBlocking {
+            coEvery { getShopInfoUseCase.executeOnBackground() } throws Exception()
+
+            viewModelShopPageProductListResultViewModel.getShop(anyString(), anyString(), anyBoolean())
+            Thread.sleep(3000L)
+
+            verifyGetShopInfoUseCaseCalled()
+            assertTrue(viewModelShopPageProductListResultViewModel.shopInfoResp.value is Fail)
+        }
     }
 
     @Test
@@ -51,10 +57,12 @@ class ShopPageProductListResultViewModelTest : ShopPageProductListViewModelTestF
     fun `check whether response get shop product error`() {
         runBlocking {
             coEvery { getShopProductUseCase.executeOnBackground() } throws Exception()
+            coEvery { getShopProductUseCase.executeOnBackground().errors.isNotEmpty() }
 
             viewModelShopPageProductListResultViewModel.getShopProduct(
                     anyString()
             )
+
             verifyGetShopProductUseCaseCalled()
             assertTrue(viewModelShopPageProductListResultViewModel.productResponse.value is Fail)
         }

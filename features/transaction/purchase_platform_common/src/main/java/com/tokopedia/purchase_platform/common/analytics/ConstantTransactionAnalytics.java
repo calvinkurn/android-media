@@ -370,6 +370,10 @@ public interface ConstantTransactionAnalytics {
         String FIN_INSURANCE_CHECKOUT = "ins - click pilih pembayaran";
         String FIN_INSURANCE_CHECKOUT_IMPRESSION = "ins - impression insurance box in checkout page";
 
+        //Campaign
+        String VIEW_POP_UP_MESSAGE_TIMER = "view pop up message payment time expired";
+        String CLICK_BELANJA_LAGI_ON_POP_UP = "click belanja lagi on pop up message payment time expired";
+
         // Promo checkout revamp
         String CLICK_BUTTON_VERIFIKASI_NOMOR_HP = "click button verifikasi nomor HP promo page";
         String VIEW_AVAILABLE_PROMO_LIST = "view available promo list";
@@ -502,6 +506,10 @@ public interface ConstantTransactionAnalytics {
         String NEW_OCC = "new occ";
         String SHOP_CLOSED = "shop closed";
         String EMPTY_STOCK = "empty_stock";
+    }
+
+    interface ExtraKey {
+        String USER_ID = "userId";
     }
 
     interface ScreenName {
