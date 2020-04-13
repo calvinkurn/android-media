@@ -39,6 +39,7 @@ import com.tokopedia.officialstore.common.listener.RecyclerViewScrollListener
 import com.tokopedia.officialstore.official.data.mapper.OfficialHomeMapper
 import com.tokopedia.officialstore.official.data.model.Shop
 import com.tokopedia.officialstore.official.data.model.dynamic_channel.Channel
+import com.tokopedia.officialstore.official.data.model.dynamic_channel.Grid
 import com.tokopedia.officialstore.official.di.DaggerOfficialStoreHomeComponent
 import com.tokopedia.officialstore.official.di.OfficialStoreHomeComponent
 import com.tokopedia.officialstore.official.di.OfficialStoreHomeModule
@@ -681,6 +682,44 @@ class OfficialHomeFragment :
             tracking?.dynamicChannelMixBannerImpression(viewModel.currentSlug, channelData)
             sentDynamicChannelTrackers.add(channelData.id + impressionTag)
         }
+    }
+
+    override fun onFlashSaleCardImpressed(position: Int, grid: Grid, channel: Channel) {
+        tracking?.flashSaleCardImpression(
+                viewModel.currentSlug,
+                channel,
+                grid,
+                (position + 1).toString(),
+                viewModel.isLoggedIn()
+        )
+    }
+
+    override fun onMixFlashSaleSeeAllClicked(channel: Channel) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onFlashSaleCardClicked(position: Int, channel: Channel, grid: Grid, applink: String) {
+        tracking?.flashSaleCardClicked(
+                viewModel.currentSlug,
+                channel,
+                grid,
+                (position + 1).toString(),
+                viewModel.isLoggedIn()
+        )
+        RouteManager.route(context, applink)
+    }
+
+    override fun onClickMixTopBannerItem(applink: String) {
+        RouteManager.route(context, applink)
+    }
+
+    override fun onClickMixTopBannerCtaButton(buttonName: String, applink: String) {
+        //                    homeCategoryListener.sendEETracking(MixTopTracking.getMixTopButtonClick(channel.header?.name ?: "", ctaData.text) as HashMap<String, Any>)
+//        if (cta.couponCode.isEmpty()) {
+////                        homeCategoryListener.onSectionItemClicked(banner.applink)
+//        } else {
+//            copyCoupon(itemView, cta)
+//        }
     }
 
     private fun removeLoading() {

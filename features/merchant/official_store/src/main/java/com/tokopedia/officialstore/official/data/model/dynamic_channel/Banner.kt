@@ -14,6 +14,7 @@ data class Banner(
         @Expose @SerializedName("applink") val applink: String,
         @Expose @SerializedName("text_color") val textColor: String,
         @Expose @SerializedName("image_url") val imageUrl: String,
+        @Expose @SerializedName("back_color") val backColor: String,
         val attribution: String
 ) : Parcelable {
 
@@ -26,6 +27,7 @@ data class Banner(
             applink = parcel.readString() ?: "",
             textColor = parcel.readString() ?: "",
             imageUrl = parcel.readString() ?: "",
+            backColor = parcel.readString() ?: "",
             attribution = parcel.readString() ?: ""
     )
 
@@ -39,6 +41,7 @@ data class Banner(
             writeString(applink)
             writeString(textColor)
             writeString(imageUrl)
+            writeString(backColor)
             writeString(attribution)
         }
     }

@@ -39,6 +39,7 @@ query dynamicHomeChannel($type: String) {
                 productClickUrl
                 impression
                 cashback
+                discountPercentage
                 freeOngkir {
                     isActive
                     imageUrl
@@ -58,6 +59,7 @@ query dynamicHomeChannel($type: String) {
                 applink
                 text_color
                 image_url
+                back_color
                 attribution
             }
             galaxy_attribution

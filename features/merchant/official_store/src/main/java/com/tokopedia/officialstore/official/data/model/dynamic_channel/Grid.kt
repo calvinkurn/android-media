@@ -19,7 +19,8 @@ data class Grid(
         @Expose @SerializedName("attribution") val attribution: String,
         @Expose @SerializedName("productClickUrl") val productClickUrl: String,
         @Expose @SerializedName("impression") val impression: String,
-        @Expose @SerializedName("cashback") val cashback: String
+        @Expose @SerializedName("cashback") val cashback: String,
+        @Expose @SerializedName("discountPercentage") val discountPercentage: String
 ) : Parcelable {
 
     private constructor(parcel: Parcel) : this(
@@ -36,7 +37,8 @@ data class Grid(
             attribution = parcel.readString() ?: "",
             productClickUrl = parcel.readString() ?: "",
             impression = parcel.readString() ?: "",
-            cashback = parcel.readString() ?: ""
+            cashback = parcel.readString() ?: "",
+            discountPercentage = parcel.readString() ?: ""
     )
 
     override fun writeToParcel(dest: Parcel?, flags: Int) {
@@ -55,6 +57,7 @@ data class Grid(
             writeString(productClickUrl)
             writeString(impression)
             writeString(cashback)
+            writeString(discountPercentage)
         }
     }
 
