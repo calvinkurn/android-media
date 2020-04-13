@@ -32,7 +32,7 @@ class ReviewSellerViewModel @Inject constructor(
     private val _productRatingOverall = MutableLiveData<Result<ProductRatingOverallUiModel>>()
     val productRatingOverall: LiveData<Result<ProductRatingOverallUiModel>> = _productRatingOverall
 
-    fun getProductRatingData(sortBy: String, filterBy: String, page: Int) {
+    fun getProductRatingData(sortBy: String, filterBy: String) {
         launchCatchError(block = {
             val productRatingOverall = asyncCatchError(
                     dispatcherProvider.io(),
@@ -50,11 +50,12 @@ class ReviewSellerViewModel @Inject constructor(
                     block = {
                         getProductReviewList(
                                 sortBy = sortBy,
-                                filterBy = filterBy,
-                                page = page
-                        )
+                                filterBy = filterBy)
                     },
-                    onError = { null }
+                    onError = {
+                        _reviewProductList.postValue(Fail(it))
+                        null
+                    }
             )
 
             productRatingOverall.await()?.let {
@@ -67,7 +68,7 @@ class ReviewSellerViewModel @Inject constructor(
         }
     }
 
-    private fun getNextProductReviewList(sortBy: String, filterBy: String, page: Int) {
+    fun getNextProductReviewList(sortBy: String, filterBy: String, page: Int) {
         launchCatchError(block = {
             val productReviewList = withContext(dispatcherProvider.io()) {
                 getProductReviewList(sortBy, filterBy, page)
@@ -83,7 +84,7 @@ class ReviewSellerViewModel @Inject constructor(
         return ReviewSellerMapper.mapToProductRatingOverallModel(getProductRatingOverallUseCase.executeOnBackground())
     }
 
-    private suspend fun getProductReviewList(sortBy: String, filterBy: String, page: Int): Pair<Boolean, List<ProductReviewUiModel>> {
+    private suspend fun getProductReviewList(sortBy: String, filterBy: String, page: Int = 1): Pair<Boolean, List<ProductReviewUiModel>> {
         getReviewProductListUseCase.params = GetReviewProductListUseCase.createParams(
                 sortBy,
                 filterBy,
@@ -98,6 +99,11 @@ class ReviewSellerViewModel @Inject constructor(
                 ReviewSellerMapper.mapToProductReviewListUiModel(productRatingListResponse)
         )
 
+    }
+
+    fun clearCache() {
+        getProductRatingOverallUseCase.clearCache()
+        getReviewProductListUseCase.clearCache()
     }
 
 
