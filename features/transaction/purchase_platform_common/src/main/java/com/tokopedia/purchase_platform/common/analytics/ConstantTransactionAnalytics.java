@@ -365,6 +365,10 @@ public interface ConstantTransactionAnalytics {
         String FIN_INSURANCE_CHECKOUT = "ins - click pilih pembayaran";
         String FIN_INSURANCE_CHECKOUT_IMPRESSION = "ins - impression insurance box in checkout page";
 
+        //Campaign
+        String VIEW_POP_UP_MESSAGE_TIMER = "view pop up message payment time expired";
+        String CLICK_BELANJA_LAGI_ON_POP_UP = "click belanja lagi on pop up message payment time expired";
+
         // Promo checkout revamp
         String CLICK_BUTTON_VERIFIKASI_NOMOR_HP = "click button verifikasi nomor HP promo page";
         String VIEW_AVAILABLE_PROMO_LIST = "view available promo list";
@@ -440,6 +444,10 @@ public interface ConstantTransactionAnalytics {
         String FAILED_TERJADI_KESALAHAN_SERVER = "failed - error terjadi kesalahan server";
         String BLACKLIST_ERROR = "blacklist error";
         String PHONE_VERIFICATION_MESSAGE = "phone verification message";
+    }
+
+    interface ExtraKey {
+        String USER_ID = "userId";
     }
 
     interface ScreenName {
