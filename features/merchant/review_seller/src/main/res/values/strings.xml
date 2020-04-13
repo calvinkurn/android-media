@@ -7,4 +7,7 @@
     <string name="title_review_inbox">Inbox Ulasan</string>
     <string name="period">Periode:</string>
     <string name="review_text">Ulasan</string>
+    <string name="period_seller_review">/ %s ulasan</string>
+    <string name="no_reviews_yet">Tidak ada ulasan</string>
+    <string name="content_no_reviews_yet">Terus berjualan ya agar pembeli kasih kamu alasan yang bikin happy</string>
 </resources>
