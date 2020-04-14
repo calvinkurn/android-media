@@ -234,7 +234,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         // add edit product photo views
         addProductPhotoButton = view.findViewById(R.id.tv_add_product_photo)
         productPhotosView = view.findViewById(R.id.rv_product_photos)
-        productPhotoAdapter = ProductPhotoAdapter(MAX_PRODUCT_PHOTOS, viewModel.productPhotoPaths, this)
+        productPhotoAdapter = ProductPhotoAdapter(MAX_PRODUCT_PHOTOS, true, viewModel.productPhotoPaths, this)
         productPhotosView?.let {
             it.adapter = productPhotoAdapter
             it.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
