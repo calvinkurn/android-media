@@ -4,9 +4,7 @@ import org.gradle.api.Project
 
 data class Module(val project: Project,
                   val type: ModuleType,
-                  val key:String) {
-
-}
+                  val key: String)
 
 enum class ModuleType(val typeInt: Int) {
     APP(0),
