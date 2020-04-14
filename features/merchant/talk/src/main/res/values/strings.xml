@@ -97,6 +97,10 @@
     <string name="report_spam_option">Ini adalah spam</string>
     <string name="report_content_option">Konten mengandung SARA, diskriminasi, vulgar, ancaman, dan pelanggaran nilai/norma sosial</string>
     <string name="report_other_option">Lainnya</string>
-    <string name="report_editTExt_placeholder">Alasan</string>
+    <string name="report_editText_placeholder">Alasan</string>
+
+    <string name="write_category_title">Pilih kategori</string>
+    <string name="write_question_title">Tulis pertanyaan</string>
+    <string name="write_question_placeholder">Pertanyaan</string>
 
 </resources>
