@@ -32,9 +32,11 @@ import com.tokopedia.play.data.websocket.PlaySocketInfo
 import com.tokopedia.play.di.DaggerPlayComponent
 import com.tokopedia.play.di.PlayModule
 import com.tokopedia.play.extensions.isAnyBottomSheetsShown
+import com.tokopedia.play.util.SensorOrientationManager
 import com.tokopedia.play.util.PlayFullScreenHelper
 import com.tokopedia.play.util.keyboard.KeyboardWatcher
 import com.tokopedia.play.view.contract.PlayNewChannelInteractor
+import com.tokopedia.play.view.type.ScreenOrientation
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play_common.state.PlayVideoState
 import com.tokopedia.unifycomponents.Toaster
@@ -46,7 +48,7 @@ import javax.inject.Inject
 /**
  * Created by jegul on 29/11/19
  */
-class PlayFragment : BaseDaggerFragment() {
+class PlayFragment : BaseDaggerFragment(), SensorOrientationManager.OrientationListener {
 
     companion object {
         const val ANIMATION_DURATION = 300L
@@ -128,6 +130,20 @@ class PlayFragment : BaseDaggerFragment() {
 
     private val keyboardWatcher = KeyboardWatcher()
 
+    private lateinit var orientationManager: SensorOrientationManager
+
+    private var systemUiVisibility: Int
+        get() = requireActivity().window.decorView.systemUiVisibility
+        set(value) {
+            requireActivity().window.decorView.systemUiVisibility = value
+        }
+
+    private var requestedOrientation: Int
+        get() = requireActivity().requestedOrientation
+        set(value) {
+            requireActivity().requestedOrientation = value
+        }
+
     override fun getScreenName(): String = "Play"
 
     override fun initInjector() {
@@ -153,6 +169,7 @@ class PlayFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setOrientation()
         initView(view)
         setupView(view)
         setupScreen(view)
@@ -211,10 +228,98 @@ class PlayFragment : BaseDaggerFragment() {
         )
     }
 
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            android.R.id.home -> {
+                activity?.supportFinishAfterTransition()
+                return true
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+
+        videoScaleAnimator.cancel()
+        if (::orientationManager.isInitialized) orientationManager.disable()
+    }
+
+    override fun onOrientationChanged(screenOrientation: ScreenOrientation) {
+        if (requestedOrientation != screenOrientation.requestedOrientation)
+            requestedOrientation = screenOrientation.requestedOrientation
+    }
+
+    fun onBottomInsetsViewShown(bottomMostBounds: Int) {
+        flInteraction.layoutParams = flInteraction.layoutParams.apply {
+            height = ViewGroup.LayoutParams.WRAP_CONTENT
+        }
+
+        videoScaleAnimator.cancel()
+
+        val currentHeight = flVideo.height
+        val destHeight = bottomMostBounds.toFloat() - (MARGIN_CHAT_VIDEO + offset12) //offset12 for the range between video and status bar
+        val scaleFactor = destHeight / currentHeight
+        val animatorY = ObjectAnimator.ofFloat(flVideo, View.SCALE_Y,FULL_SCALE_FACTOR, scaleFactor)
+        val animatorX = ObjectAnimator.ofFloat(flVideo ,View.SCALE_X,FULL_SCALE_FACTOR, scaleFactor)
+        animatorY.duration = ANIMATION_DURATION
+        animatorX.duration = ANIMATION_DURATION
+
+        flVideo.pivotX = (flVideo.width / 2).toFloat()
+        val marginTop = (ivClose.layoutParams as ViewGroup.MarginLayoutParams).topMargin
+        val marginTopXt = marginTop * scaleFactor
+        flVideo.pivotY = ivClose.y + (ivClose.y * scaleFactor) + marginTopXt
+        videoScaleAnimator.apply {
+            removeAllListeners()
+            addListener(onBottomInsetsShownAnimatorListener)
+            playTogether(animatorX, animatorY)
+        }.start()
+    }
+
+    fun onBottomInsetsViewHidden() {
+        flInteraction.layoutParams = flInteraction.layoutParams.apply {
+            height = ViewGroup.LayoutParams.MATCH_PARENT
+        }
+
+        videoScaleAnimator.cancel()
+
+        val animatorY = ObjectAnimator.ofFloat(flVideo, View.SCALE_Y, flVideo.scaleY, FULL_SCALE_FACTOR)
+        val animatorX = ObjectAnimator.ofFloat(flVideo ,View.SCALE_X, flVideo.scaleX, FULL_SCALE_FACTOR)
+        animatorY.duration = ANIMATION_DURATION
+        animatorX.duration = ANIMATION_DURATION
+
+        videoScaleAnimator.apply {
+            removeAllListeners()
+            addListener(onBottomInsetsHiddenAnimatorListener)
+            playTogether(animatorX, animatorY)
+        }.start()
+    }
+
+    fun setResultBeforeFinish() {
+        activity?.setResult(Activity.RESULT_OK, Intent().apply {
+            val totalView = playViewModel.totalView
+            if (!totalView.isNullOrEmpty()) putExtra(EXTRA_TOTAL_VIEW, totalView)
+        })
+    }
+
+    /**
+     * @return true means the onBackPressed() has been handled by this fragment
+     */
+    fun onBackPressed(): Boolean {
+        return playViewModel.onBackPressed()
+    }
+
     fun onNewChannelId(channelId: String?) {
         if (this.channelId != channelId && activity is PlayNewChannelInteractor) {
             (activity as PlayNewChannelInteractor).onNewChannel(channelId)
         }
+    }
+
+    private fun setOrientation() {
+        orientationManager = SensorOrientationManager(requireContext(), this)
+        orientationManager.enable()
+
+        playViewModel.setScreenOrientation(ScreenOrientation.getByInt(resources.configuration.orientation))
     }
 
     private fun initView(view: View) {
@@ -237,12 +342,14 @@ class PlayFragment : BaseDaggerFragment() {
     }
 
     private fun setupScreen(view: View) {
-        setFullScreen()
+        setupSystemUi()
         setInsets(view)
     }
 
-    private fun setFullScreen() {
-        PlayFullScreenHelper.showSystemUi(requireActivity())
+    private fun setupSystemUi() {
+        systemUiVisibility =
+                if (playViewModel.screenOrientation.isLandscape) PlayFullScreenHelper.getHideSystemUiVisibility()
+                else PlayFullScreenHelper.getShowSystemUiVisibility()
     }
 
     private fun setInsets(view: View) {
@@ -337,81 +444,6 @@ class PlayFragment : BaseDaggerFragment() {
             dialog.setOverlayClose(false)
             dialog.show()
         }
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            android.R.id.home -> {
-                activity?.supportFinishAfterTransition()
-                return true
-            }
-        }
-        return super.onOptionsItemSelected(item)
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-
-        videoScaleAnimator.cancel()
-    }
-
-    fun onBottomInsetsViewShown(bottomMostBounds: Int) {
-        flInteraction.layoutParams = flInteraction.layoutParams.apply {
-            height = ViewGroup.LayoutParams.WRAP_CONTENT
-        }
-
-        videoScaleAnimator.cancel()
-
-        val currentHeight = flVideo.height
-        val destHeight = bottomMostBounds.toFloat() - (MARGIN_CHAT_VIDEO + offset12) //offset12 for the range between video and status bar
-        val scaleFactor = destHeight / currentHeight
-        val animatorY = ObjectAnimator.ofFloat(flVideo, View.SCALE_Y,FULL_SCALE_FACTOR, scaleFactor)
-        val animatorX = ObjectAnimator.ofFloat(flVideo ,View.SCALE_X,FULL_SCALE_FACTOR, scaleFactor)
-        animatorY.duration = ANIMATION_DURATION
-        animatorX.duration = ANIMATION_DURATION
-
-        flVideo.pivotX = (flVideo.width / 2).toFloat()
-        val marginTop = (ivClose.layoutParams as ViewGroup.MarginLayoutParams).topMargin
-        val marginTopXt = marginTop * scaleFactor
-        flVideo.pivotY = ivClose.y + (ivClose.y * scaleFactor) + marginTopXt
-        videoScaleAnimator.apply {
-            removeAllListeners()
-            addListener(onBottomInsetsShownAnimatorListener)
-            playTogether(animatorX, animatorY)
-        }.start()
-    }
-
-    fun onBottomInsetsViewHidden() {
-        flInteraction.layoutParams = flInteraction.layoutParams.apply {
-            height = ViewGroup.LayoutParams.MATCH_PARENT
-        }
-
-        videoScaleAnimator.cancel()
-
-        val animatorY = ObjectAnimator.ofFloat(flVideo, View.SCALE_Y, flVideo.scaleY, FULL_SCALE_FACTOR)
-        val animatorX = ObjectAnimator.ofFloat(flVideo ,View.SCALE_X, flVideo.scaleX, FULL_SCALE_FACTOR)
-        animatorY.duration = ANIMATION_DURATION
-        animatorX.duration = ANIMATION_DURATION
-
-        videoScaleAnimator.apply {
-            removeAllListeners()
-            addListener(onBottomInsetsHiddenAnimatorListener)
-            playTogether(animatorX, animatorY)
-        }.start()
-    }
-
-    fun setResultBeforeFinish() {
-        activity?.setResult(Activity.RESULT_OK, Intent().apply {
-            val totalView = playViewModel.totalView
-            if (!totalView.isNullOrEmpty()) putExtra(EXTRA_TOTAL_VIEW, totalView)
-        })
-    }
-
-    /**
-     * @return true means the onBackPressed() has been handled by this fragment
-     */
-    fun onBackPressed(): Boolean {
-        return playViewModel.onBackPressed()
     }
 
     private fun hideKeyboard() {

@@ -1,6 +1,5 @@
 package com.tokopedia.play.util
 
-import android.app.Activity
 import android.os.Build
 import android.view.View
 
@@ -9,7 +8,11 @@ import android.view.View
  */
 object PlayFullScreenHelper {
 
-    fun hideSystemUi(activity: Activity) {
+    fun getShowSystemUiVisibility() = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or
+            View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or
+            View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+
+    fun getHideSystemUiVisibility(): Int {
         val uiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or
                 View.SYSTEM_UI_FLAG_FULLSCREEN or
                 View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or
@@ -19,13 +22,6 @@ object PlayFullScreenHelper {
             else it
         }
 
-        activity.window.decorView.systemUiVisibility = uiVisibility
-    }
-
-    fun showSystemUi(activity: Activity) {
-        activity.window.decorView.systemUiVisibility =
-                View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or
-                        View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or
-                        View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+        return uiVisibility
     }
 }

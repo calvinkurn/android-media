@@ -1,0 +1,53 @@
+package com.tokopedia.play.ui.videosettings
+
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.ImageView
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.play.R
+import com.tokopedia.play.component.UIView
+
+/**
+ * Created by jegul on 14/04/20
+ */
+class VideoSettingsView(
+        container: ViewGroup,
+        private val listener: Listener
+) : UIView(container) {
+
+    private val view: View =
+            LayoutInflater.from(container.context).inflate(R.layout.view_video_settings, container, true)
+                    .findViewById(R.id.iv_fullscreen_control)
+
+    private val ivFullscreenControl: ImageView = view as ImageView
+
+    override val containerId: Int = view.id
+
+    override fun show() {
+        view.show()
+    }
+
+    override fun hide() {
+        view.hide()
+    }
+
+    internal fun setFullscreen(isFullscreen: Boolean) {
+        ivFullscreenControl.setImageResource(
+                if (isFullscreen) R.drawable.ic_play_exit_fullscreen
+                else R.drawable.ic_play_enter_fullscreen
+        )
+
+        ivFullscreenControl.setOnClickListener {
+            if (isFullscreen) listener.onExitFullscreen(this)
+            else listener.onEnterFullscreen(this)
+        }
+    }
+
+    interface Listener {
+
+        fun onEnterFullscreen(view: VideoSettingsView)
+        fun onExitFullscreen(view: VideoSettingsView)
+    }
+}
