@@ -16,6 +16,7 @@ import com.tokopedia.flight.common.util.FlightAnalytics
 import com.tokopedia.flight.filter.presentation.FlightFilterFacilityEnum
 import com.tokopedia.flight.filter.presentation.bottomsheets.FlightFilterBottomSheet
 import com.tokopedia.flight.search.presentation.model.FlightJourneyModel
+import com.tokopedia.flight.search.presentation.model.FlightPriceModel
 import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataModel
 import com.tokopedia.flight.search.presentation.model.filter.FlightFilterModel
 import com.tokopedia.flight.search.presentation.model.filter.TransitEnum
@@ -360,6 +361,13 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
         getString(R.string.flight_search_choose_return_flight)
     } else {
         getString(R.string.flight_search_choose_departure_flight)
+    }
+
+    interface OnFlightSearchFragmentListener {
+        fun selectFlight(selectedFlightID: String, selectedTerm: String, flightPriceModel: FlightPriceModel,
+                         isBestPairing: Boolean, isCombineDone: Boolean, requestId: String)
+
+        fun changeDate(flightSearchPassDataModel: FlightSearchPassDataModel)
     }
 
     companion object {
