@@ -124,7 +124,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     lateinit var appBarLayout: AppBarLayout
     lateinit var cartRecyclerView: RecyclerView
-    // lateinit var btnToShipment: TextView
     lateinit var btnToShipment: UnifyButton
     lateinit var tvTotalPrice: TextView
     lateinit var rlContent: RelativeLayout
@@ -412,9 +411,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         cartRecyclerView = view.findViewById(R.id.rv_cart)
         btnToShipment = view.findViewById(R.id.go_to_courier_page_button)
         tvTotalPrice = view.findViewById(R.id.tv_total_prices)
-        // tvPromoBenefitInfo = view.findViewById(R.id.tv_promo_benefit)
-        // tvPromoUsageInfo = view.findViewById(R.id.tv_promo_usage)
-        // clPromoFunnel = view.findViewById(R.id.cl_promo_funnel)
         rlContent = view.findViewById(R.id.rl_content)
         llNetworkErrorView = view.findViewById(R.id.ll_network_error_view)
         cardHeader = view.findViewById(R.id.card_header)
@@ -711,9 +707,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         } else {
             showToastMessageRed(getString(R.string.message_delete_empty_selection))
         }
-    }
-
-    override fun onGoToChuck() {
     }
 
     private fun checkGoToShipment(message: String?) {
@@ -1509,10 +1502,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     private fun doRenderPromoCheckoutButton(lastApplyData: LastApplyUiModel) {
         val isApplied: Boolean
-        /*if (lastApplyData.additionalInfo.errorDetail.message.isNotEmpty()) {
-            showToaster(lastApplyData.additionalInfo.errorDetail.message, isShowOk = false)
-            PromoRevampAnalytics.eventCartViewPromoChanged(lastApplyData.additionalInfo.errorDetail.message)
-        }*/
 
         promoCheckoutBtn.state = ButtonPromoCheckoutView.State.ACTIVE
         promoCheckoutBtn.margin = ButtonPromoCheckoutView.Margin.NO_BOTTOM
@@ -2227,10 +2216,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 showMainContainer()
             }
             dPresenter.processInitialGetCartData(getCartId(), cartListData == null, true)
-            //            String promo = PersistentCacheManager.instance.getString("KEY_CACHE_PROMO_CODE", "");
-            //            if (!TextUtils.isEmpty(promo)) {
-            //                dPresenter.processCheckPromoCodeFromSuggestedPromo(promo, true);
-            //            }
         }
     }
 
