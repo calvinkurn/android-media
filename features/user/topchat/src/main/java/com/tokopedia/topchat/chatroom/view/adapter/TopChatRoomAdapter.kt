@@ -25,20 +25,6 @@ class TopChatRoomAdapter(
     private var lastHeaderDate: HeaderDateUiModel? = null
     private var lastHeaderDateIndex: Int? = null
 
-    override fun addElement(visitables: MutableList<out Visitable<Any>>?) {
-        super.addElement(visitables)
-        assignLastHeaderDate()
-    }
-
-    private fun assignLastHeaderDate() {
-        if (visitables.isEmpty()) return
-        val lastItem = visitables?.last()
-        if (lastItem is HeaderDateUiModel) {
-            lastHeaderDate = lastItem
-            lastHeaderDateIndex = visitables.lastIndex
-        }
-    }
-
     override fun getItemViewType(position: Int): Int {
         val default = super.getItemViewType(position)
         return adapterTypeFactory.getItemViewType(visitables, position, default)
@@ -75,6 +61,7 @@ class TopChatRoomAdapter(
     }
 
     fun removeLastHeaderDateIfSame(latestHeaderDate: String) {
+        assignLastHeaderDate()
         if (this.lastHeaderDate?.date == latestHeaderDate) {
             lastHeaderDateIndex?.let {
                 visitables.removeAt(it)
@@ -91,9 +78,20 @@ class TopChatRoomAdapter(
             val chatTime = visitable.replyTime?.toLong()?.div(SECONDS) ?: return
             val previousChatTime = latestHeaderDate?.dateTimestamp ?: return
             if (!sameDay(chatTime, previousChatTime)) {
-                visitables.add(0, HeaderDateUiModel(chatTime))
+                latestHeaderDate = HeaderDateUiModel(chatTime)
+                visitables.add(0, latestHeaderDate)
                 notifyItemInserted(0)
             }
+        }
+    }
+
+    private fun assignLastHeaderDate() {
+        if (visitables.size <= 1) return
+        val lastDateHeaderItemIndex = visitables.size - 2
+        val lastDateHeaderItem = visitables[lastDateHeaderItemIndex]
+        if (lastDateHeaderItem is HeaderDateUiModel) {
+            lastHeaderDate = lastDateHeaderItem
+            lastHeaderDateIndex = lastDateHeaderItemIndex
         }
     }
 
