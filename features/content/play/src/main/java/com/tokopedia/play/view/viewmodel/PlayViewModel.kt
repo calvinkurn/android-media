@@ -86,14 +86,18 @@ class PlayViewModel @Inject constructor(
         get() = _observableProductSheetContent
     val observableBadgeCart: LiveData<CartUiModel>
         get() = _observableBadgeCart
+    val observableScreenOrientation: LiveData<ScreenOrientation>
+        get() = _observableScreenOrientation
+
+    val screenOrientation: ScreenOrientation
+        get() {
+            val screenOrientation = _observableScreenOrientation.value
+            return screenOrientation ?: ScreenOrientation.Unknown
+        }
     val channelType: PlayChannelType
         get() {
-            val channelInfo = _observableGetChannelInfo.value
-            return if (channelInfo != null && channelInfo is Success) {
-                channelInfo.data.channelType
-            } else {
-                PlayChannelType.Unknown
-            }
+            val videoStream = _observableVideoStream.value
+            return videoStream?.channelType ?: PlayChannelType.Unknown
         }
     val contentId: Int
         get() {
@@ -130,12 +134,12 @@ class PlayViewModel @Inject constructor(
     val stateHelper: StateHelperUiModel
         get() {
             val pinned = _observablePinned.value
-            val videoStream = _observableVideoStream.value
             val bottomInsets = _observableBottomInsetsState.value
             return StateHelperUiModel(
                     shouldShowPinned = pinned is PinnedMessageUiModel || pinned is PinnedProductUiModel,
-                    channelType = videoStream?.channelType ?: PlayChannelType.Unknown,
-                    bottomInsets = bottomInsets ?: getDefaultBottomInsetsMapState()
+                    channelType = channelType,
+                    bottomInsets = bottomInsets ?: getDefaultBottomInsetsMapState(),
+                    screenOrientation = screenOrientation
             )
         }
 
@@ -159,6 +163,7 @@ class PlayViewModel @Inject constructor(
     private val _observableBottomInsetsState = MutableLiveData<Map<BottomInsetsType, BottomInsetsState>>()
     private val _observablePinned = MediatorLiveData<PinnedUiModel>()
     private val _observableBadgeCart = MutableLiveData<CartUiModel>()
+    private val _observableScreenOrientation = MutableLiveData<ScreenOrientation>()
     private val stateHandler: LiveData<Unit> = MediatorLiveData<Unit>().apply {
         addSource(playVideoManager.getObservablePlayVideoState()) {
             _observableVideoProperty.value = VideoPropertyUiModel(it)
@@ -467,6 +472,13 @@ class PlayViewModel @Inject constructor(
             BottomInsetsType.VariantSheet -> onHideVariantSheet()
         }
         return shownBottomSheets.isNotEmpty()
+    }
+
+    /**
+     * Set Screen Orientation
+     */
+    fun setScreenOrientation(screenOrientation: ScreenOrientation) {
+        _observableScreenOrientation.value = screenOrientation
     }
 
     private fun destroy() {

@@ -2,15 +2,14 @@ package com.tokopedia.play.view.fragment
 
 import android.app.Activity
 import android.content.Intent
+import android.content.pm.ActivityInfo
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.annotation.IdRes
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.view.ViewCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -55,15 +54,18 @@ import com.tokopedia.play.ui.toolbar.interaction.PlayToolbarInteractionEvent
 import com.tokopedia.play.ui.toolbar.model.PartnerFollowAction
 import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.ui.videocontrol.VideoControlComponent
+import com.tokopedia.play.ui.videosettings.VideoSettingsComponent
+import com.tokopedia.play.ui.videosettings.interaction.VideoSettingsInteractionEvent
 import com.tokopedia.play.util.CoroutineDispatcherProvider
-import com.tokopedia.play.util.PlayFullScreenHelper
 import com.tokopedia.play.util.event.EventObserver
 import com.tokopedia.play.view.bottomsheet.PlayMoreActionBottomSheet
 import com.tokopedia.play.view.event.ScreenStateEvent
-import com.tokopedia.play.view.layout.PlayInteractionLayoutManager
+import com.tokopedia.play.view.layout.interaction.PlayInteractionLayoutManager
+import com.tokopedia.play.view.layout.interaction.PlayInteractionLayoutManagerImpl
 import com.tokopedia.play.view.type.BottomInsetsState
 import com.tokopedia.play.view.type.BottomInsetsType
 import com.tokopedia.play.view.type.PlayRoomEvent
+import com.tokopedia.play.view.type.ScreenOrientation
 import com.tokopedia.play.view.uimodel.*
 import com.tokopedia.play.view.viewmodel.PlayInteractionViewModel
 import com.tokopedia.play.view.viewmodel.PlayViewModel
@@ -73,8 +75,11 @@ import com.tokopedia.play_common.state.PlayVideoState
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
@@ -115,11 +120,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
     @Inject
     lateinit var trackingQueue: TrackingQueue
 
-    private val offset24 by lazy { resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl5) }
     private val offset16 by lazy { resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4) }
-    private val offset12 by lazy { resources.getDimensionPixelOffset(com.tokopedia.play.R.dimen.play_offset_12) }
-    private val offset8 by lazy { resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3) }
-    private val offset4 by lazy { resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2) }
 
     private lateinit var playViewModel: PlayViewModel
     private lateinit var viewModel: PlayInteractionViewModel
@@ -137,6 +138,9 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
     private lateinit var quickReplyComponent: UIComponent<*>
     private lateinit var playButtonComponent: UIComponent<*>
     private lateinit var endLiveInfoComponent: UIComponent<*>
+    private lateinit var videoSettingsComponent: UIComponent<*>
+
+    private lateinit var layoutManager: PlayInteractionLayoutManager
 
     private lateinit var bottomSheet: PlayMoreActionBottomSheet
     private lateinit var clPlayInteraction: ConstraintLayout
@@ -148,8 +152,6 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
         get() = requireView().findViewById(sendChatComponent.getContainerId())
     private val quickReplyView: View
         get() = requireView().findViewById(quickReplyComponent.getContainerId())
-    private val statsInfoView: View
-        get() = requireView().findViewById(statsInfoComponent.getContainerId())
     private val chatListView: View
         get() = requireView().findViewById(chatListComponent.getContainerId())
 
@@ -157,6 +159,18 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
 
     private val playFragment: PlayFragment
         get() = requireParentFragment() as PlayFragment
+
+    private var systemUiVisibility: Int
+        get() = requireActivity().window.decorView.systemUiVisibility
+        set(value) {
+            requireActivity().window.decorView.systemUiVisibility = value
+        }
+
+    private var requestedOrientation: Int
+        get() = requireActivity().requestedOrientation
+        set(value) {
+            requireActivity().requestedOrientation = value
+        }
 
     override fun getScreenName(): String = "Play Interaction"
 
@@ -207,6 +221,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
         observeLikeContent()
         observeBottomInsetsState()
         observeEventUserInfo()
+        observeScreenOrientation()
 
         observeLoggedInInteractionEvent()
     }
@@ -242,17 +257,8 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
     }
 
     private fun setInsets(view: View) {
-        ViewCompat.setOnApplyWindowInsetsListener(view) { v, insets ->
-
-            val sizeContainerView = view.findViewById<View>(sizeContainerComponent.getContainerId())
-            val sizeContainerMarginLp = sizeContainerView.layoutParams as ViewGroup.MarginLayoutParams
-            sizeContainerMarginLp.bottomMargin = offset16 + insets.systemWindowInsetBottom
-            sizeContainerMarginLp.topMargin = insets.systemWindowInsetTop
-            sizeContainerView.layoutParams = sizeContainerMarginLp
-
-            val endLiveInfoView = view.findViewById<View>(endLiveInfoComponent.getContainerId())
-            endLiveInfoView.setPadding(endLiveInfoView.paddingLeft, endLiveInfoView.paddingTop, endLiveInfoView.paddingRight, offset24 + insets.systemWindowInsetBottom)
-
+        ViewCompat.setOnApplyWindowInsetsListener(view) { _, insets ->
+            if (::layoutManager.isInitialized) layoutManager.setupInsets(view, insets)
             insets
         }
 
@@ -379,7 +385,9 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
                         )
 
             }.apply {
-                invokeOnCompletion { requireView().visible() }
+                invokeOnCompletion {
+                    view?.visible()
+                }
             }
         })
     }
@@ -400,6 +408,10 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
 
     private fun observeCartInfo() {
         playViewModel.observableBadgeCart.observe(viewLifecycleOwner, Observer(::setCartInfo))
+    }
+
+    private fun observeScreenOrientation() {
+        playViewModel.observableScreenOrientation.observe(viewLifecycleOwner, Observer(::sendOrientationEvent))
     }
     //endregion
 
@@ -423,8 +435,10 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
         }
                 .withStartAction {
                     view.isClickable = false
-                    if (whenAlpha == VISIBLE_ALPHA) hideSystemUI()
-                    else showSystemUI()
+
+                    systemUiVisibility =
+                            if (whenAlpha == VISIBLE_ALPHA) layoutManager.onEnterImmersive()
+                            else layoutManager.onExitImmersive()
                 }
                 .withEndAction {
                     view.isClickable = true
@@ -441,6 +455,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
         chatListComponent = initChatListComponent(container)
         immersiveBoxComponent = initImmersiveBoxComponent(container)
         videoControlComponent = initVideoControlComponent(container)
+        videoSettingsComponent = initVideoSettingsComponent(container)
         endLiveInfoComponent = initEndLiveInfoComponent(container)
         toolbarComponent = initToolbarComponent(container)
         statsInfoComponent = initStatsInfoComponent(container)
@@ -448,9 +463,9 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
         //play button should be on top of other component so it can be clicked
         playButtonComponent = initPlayButtonComponent(container)
 
-        sendInitState()
-
-        PlayInteractionLayoutManager(container).layoutView(
+        layoutManager = PlayInteractionLayoutManagerImpl(
+                context = requireContext(),
+                orientation = ScreenOrientation.getByInt(resources.configuration.orientation),
                 sizeContainerComponentId = sizeContainerComponent.getContainerId(),
                 sendChatComponentId = sendChatComponent.getContainerId(),
                 likeComponentId = likeComponent.getContainerId(),
@@ -463,8 +478,13 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
                 playButtonComponentId = playButtonComponent.getContainerId(),
                 immersiveBoxComponentId = immersiveBoxComponent.getContainerId(),
                 quickReplyComponentId = quickReplyComponent.getContainerId(),
-                endLiveInfoComponentId = endLiveInfoComponent.getContainerId()
+                endLiveInfoComponentId = endLiveInfoComponent.getContainerId(),
+                videoSettingsComponentId = videoSettingsComponent.getContainerId()
         )
+
+        sendInitState()
+
+        layoutManager.layoutView(container)
     }
 
     private fun initSendChatComponent(container: ViewGroup): UIComponent<SendChatInteractionEvent> {
@@ -530,6 +550,22 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
     private fun initVideoControlComponent(container: ViewGroup): UIComponent<Unit> {
         return VideoControlComponent(container, EventBusFactory.get(viewLifecycleOwner), this, dispatchers)
                 .also(viewLifecycleOwner.lifecycle::addObserver)
+    }
+
+    private fun initVideoSettingsComponent(container: ViewGroup): UIComponent<VideoSettingsInteractionEvent> {
+        val videoSettingsComponent =  VideoSettingsComponent(container, EventBusFactory.get(viewLifecycleOwner), this, dispatchers)
+
+        launch {
+            videoSettingsComponent.getUserInteractionEvents()
+                    .collect {
+                        when (it) {
+                            VideoSettingsInteractionEvent.OnEnterFullscreen -> enterFullscreen()
+                            VideoSettingsInteractionEvent.OnExitFullscreen -> exitFullscreen()
+                        }
+                    }
+        }
+
+        return videoSettingsComponent
     }
 
     private fun initSizeContainerComponent(container: ViewGroup): UIComponent<Unit> {
@@ -678,6 +714,16 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
         }
     }
 
+    private fun sendOrientationEvent(screenOrientation: ScreenOrientation) {
+        launch {
+            EventBusFactory.get(viewLifecycleOwner)
+                    .emit(
+                            ScreenStateEvent::class.java,
+                            ScreenStateEvent.ScreenOrientationChanged(screenOrientation, playViewModel.stateHelper)
+                    )
+        }
+    }
+
     private fun setTotalView(totalView: TotalViewUiModel) {
        launch {
            EventBusFactory.get(viewLifecycleOwner)
@@ -729,6 +775,14 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
         }
     }
     //endregion
+
+    private fun enterFullscreen() {
+        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+    }
+
+    private fun exitFullscreen() {
+        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+    }
 
     private fun doLeaveRoom() {
         PlayAnalytics.clickLeaveRoom(channelId, playViewModel.getDurationCurrentVideo(), playViewModel.channelType)
@@ -863,14 +917,6 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
         activity?.overridePendingTransition(R.anim.anim_play_enter_page, R.anim.anim_play_exit_page)
 
         if (shouldFinish) activity?.finish()
-    }
-
-    private fun hideSystemUI() {
-        PlayFullScreenHelper.hideSystemUi(requireActivity())
-    }
-
-    private fun showSystemUI() {
-        PlayFullScreenHelper.showSystemUi(requireActivity())
     }
 
     private fun sendEventBanned(eventUiModel: EventUiModel) {
