@@ -5,7 +5,7 @@ import io.mockk.every
 import io.mockk.verifyOrder
 import org.junit.Test
 
-internal class HandleViewCreatedTest: ProductListPresenterTestFixtures() {
+internal class SearchProductHandleViewCreatedTest: ProductListPresenterTestFixtures() {
 
     @Test
     fun `Handle view created when Product is first active tab`() {

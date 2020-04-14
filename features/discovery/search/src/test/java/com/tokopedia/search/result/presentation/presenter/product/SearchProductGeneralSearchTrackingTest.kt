@@ -13,7 +13,7 @@ import io.mockk.verify
 import org.junit.Test
 import rx.Subscriber
 
-internal class GeneralSearchTrackingTest: ProductListPresenterTestFixtures() {
+internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestFixtures() {
 
     private val generalSearchTrackingModelSlot = slot<GeneralSearchTrackingModel>()
 

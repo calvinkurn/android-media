@@ -15,7 +15,7 @@ import org.junit.Test
 import rx.Subscriber
 
 
-internal class SearchInspirationCarouselTest: ProductListPresenterTestFixtures() {
+internal class SearchProductInspirationCarouselTest: ProductListPresenterTestFixtures() {
 
     private val visitableListSlot = slot<List<Visitable<*>>>()
 

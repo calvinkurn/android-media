@@ -10,7 +10,7 @@ import io.mockk.*
 import org.junit.Test
 import rx.Subscriber
 
-internal class SearchRedirectionTest: ProductListPresenterTestFixtures() {
+internal class SearchProductRedirectionTest: ProductListPresenterTestFixtures() {
 
     private val requestParamsSlot = slot<RequestParams>()
 

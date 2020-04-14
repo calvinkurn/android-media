@@ -7,7 +7,7 @@ import io.mockk.confirmVerified
 import io.mockk.verify
 import org.junit.Test
 
-internal class HandleProductImpressionTest: ProductListPresenterTestFixtures() {
+internal class SearchProductHandleProductImpressionTest: ProductListPresenterTestFixtures() {
 
     @Test
     fun `Handle onProductImpressed with null ProductItemViewModel (degenerate cases)`() {

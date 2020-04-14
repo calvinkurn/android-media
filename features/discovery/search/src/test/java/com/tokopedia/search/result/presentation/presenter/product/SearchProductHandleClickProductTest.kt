@@ -8,7 +8,7 @@ import io.mockk.every
 import io.mockk.verify
 import org.junit.Test
 
-internal class HandleProductClickTest: ProductListPresenterTestFixtures() {
+internal class SearchProductHandleClickProductTest: ProductListPresenterTestFixtures() {
 
     @Test
     fun `Handle onProductClick with null ProductItemViewModel`() {

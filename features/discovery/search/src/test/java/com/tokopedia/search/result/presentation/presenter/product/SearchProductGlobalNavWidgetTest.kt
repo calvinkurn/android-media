@@ -18,7 +18,7 @@ import io.mockk.verify
 import org.junit.Test
 import rx.Subscriber
 
-internal class SearchGlobalNavWidgetTest: ProductListPresenterTestFixtures() {
+internal class SearchProductGlobalNavWidgetTest: ProductListPresenterTestFixtures() {
 
     private val visitableListSlot = slot<List<Visitable<*>>>()
 

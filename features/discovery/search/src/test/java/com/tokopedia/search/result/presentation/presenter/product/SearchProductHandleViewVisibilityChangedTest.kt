@@ -5,7 +5,7 @@ import io.mockk.every
 import io.mockk.verifyOrder
 import org.junit.Test
 
-internal class HandleViewVisibilityChangedTest: ProductListPresenterTestFixtures() {
+internal class SearchProductHandleViewVisibilityChangedTest: ProductListPresenterTestFixtures() {
 
     @Test
     fun `Handle view is visible and added`() {

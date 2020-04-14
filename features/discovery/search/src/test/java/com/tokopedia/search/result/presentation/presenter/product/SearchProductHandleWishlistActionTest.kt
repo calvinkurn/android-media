@@ -8,7 +8,7 @@ import io.mockk.slot
 import io.mockk.verifyOrder
 import org.junit.Test
 
-internal class HandleWishlistActionTest: ProductListPresenterTestFixtures() {
+internal class SearchProductHandleWishlistActionTest: ProductListPresenterTestFixtures() {
 
     private val keyword = "samsung"
     private val slotWishlistTrackingModel = slot<WishlistTrackingModel>()
