@@ -506,6 +506,7 @@ public interface ConstantTransactionAnalytics {
         String PHONE_VERIFICATION_MESSAGE = "phone verification message";
 
         String NEW_OCC = "new occ";
+        String NEW_BUYER = "new buyer";
         String SHOP_CLOSED = "shop closed";
         String EMPTY_STOCK = "empty_stock";
     }

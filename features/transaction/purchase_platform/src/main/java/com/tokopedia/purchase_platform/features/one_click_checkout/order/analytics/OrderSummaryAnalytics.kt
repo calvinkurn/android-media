@@ -164,23 +164,33 @@ class OrderSummaryAnalytics : TransactionAnalytics() {
         sendEnhancedEcommerce(dataLayer)
     }
 
-    fun eventClickBayarSuccess(isButtonPilihPembayaran: Boolean, ee: Map<String, Any>) {
+    fun eventClickBayarSuccess(isButtonPilihPembayaran: Boolean, paymentId: String, ee: Map<String, Any>) {
         val dataLayer = DataLayer.mapOf(
                 Key.EVENT, EventName.CHECKOUT,
                 Key.EVENT_CATEGORY, EventCategory.ORDER_SUMMARY,
                 Key.EVENT_ACTION, if (isButtonPilihPembayaran) EventAction.CLICK_PILIH_PEMBAYARAN else EventAction.CLICK_BAYAR,
                 Key.EVENT_LABEL, "success",
-                Key.E_COMMERCE, ee
+                Key.E_COMMERCE, ee,
+                Key.PAYMENT_ID, paymentId
         )
         sendEnhancedEcommerce(dataLayer)
     }
 
-    fun eventClickInfoOnOSP() {
+    fun eventClickInfoOnOSPNewOcc() {
         sendEventCategoryActionLabel(
                 EventName.CLICK_CHECKOUT_EXPRESS,
                 EventCategory.ORDER_SUMMARY,
                 EventAction.CLICK_BUTTON_INFO_ON_OSP,
                 EventLabel.NEW_OCC
+        )
+    }
+
+    fun eventClickInfoOnOSPNewBuyer() {
+        sendEventCategoryActionLabel(
+                EventName.CLICK_CHECKOUT_EXPRESS,
+                EventCategory.ORDER_SUMMARY,
+                EventAction.CLICK_BUTTON_INFO_ON_OSP,
+                EventLabel.NEW_BUYER
         )
     }
 

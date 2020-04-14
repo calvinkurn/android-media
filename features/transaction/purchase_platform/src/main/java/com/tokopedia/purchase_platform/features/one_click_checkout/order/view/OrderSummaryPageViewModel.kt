@@ -1011,7 +1011,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                     globalEvent.value = OccGlobalEvent.Normal
                     onSuccessCheckout(checkoutOccGqlResponse.response.data)
                     orderSummaryAnalytics.eventClickBayarSuccess(orderTotal.value?.isButtonChoosePayment
-                            ?: false, generateOspEe(OrderSummaryPageEnhanceECommerce.STEP_2, OrderSummaryPageEnhanceECommerce.STEP_2_OPTION, allPromoCodes))
+                            ?: false, getTransactionId(checkoutOccGqlResponse.response.data.paymentParameter.redirectParam.form), generateOspEe(OrderSummaryPageEnhanceECommerce.STEP_2, OrderSummaryPageEnhanceECommerce.STEP_2_OPTION, allPromoCodes))
                 } else {
                     val errorCode = checkoutOccGqlResponse.response.data.error.code
                     orderSummaryAnalytics.eventClickBayarNotSuccess(orderTotal.value?.isButtonChoosePayment
@@ -1446,6 +1446,21 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
         }.build(step, option)
     }
 
+    private fun getTransactionId(query: String): String {
+        val keyLength = TRANSACTION_ID_KEY.length
+        val keyIndex = query.indexOf(TRANSACTION_ID_KEY)
+        if (keyIndex > -1 && query[keyIndex + keyLength] == '=') {
+            val nextAmpersand = query.indexOf('&', keyIndex)
+            val end = if (nextAmpersand > -1) nextAmpersand else query.length
+            val start = keyIndex + keyLength + 1
+
+            if (end > start) {
+                return query.substring(start, end)
+            }
+        }
+        return ""
+    }
+
     companion object {
         const val NO_COURIER_SUPPORTED_ERROR_MESSAGE = "Tidak ada kurir yang mendukung pengiriman ini ke lokasi Anda."
         const val NO_EXACT_DURATION_MESSAGE = "Durasi tergantung kurir"
@@ -1460,5 +1475,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
 
         const val OVO_GATEWAY_CODE = "OVO"
         const val OVO_INSUFFICIENT_ERROR_MESSAGE = "OVO Cash kamu tidak cukup. Silahkan pilih pembayaran lain."
+
+        private const val TRANSACTION_ID_KEY = "transaction_id"
     }
 }

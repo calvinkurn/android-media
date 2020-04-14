@@ -401,7 +401,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
             }
             tvSubheader?.text = preference.onboardingHeaderMessage
             tvSubheaderAction?.setOnClickListener {
-                orderSummaryAnalytics.eventClickInfoOnOSP()
+                orderSummaryAnalytics.eventClickInfoOnOSPNewOcc()
                 OccInfoBottomSheet().show(this, preference.onboardingComponent)
                 orderSummaryAnalytics.eventViewOnboardingInfo()
             }
@@ -413,7 +413,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
             spannableString.setSpan(ForegroundColorSpan(Color.parseColor(COLOR_INFO)), preference.onboardingHeaderMessage.length, spannableString.length, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
             tvHeader3?.text = spannableString
             tvHeader3?.setOnClickListener {
-                orderSummaryAnalytics.eventClickInfoOnOSP()
+                orderSummaryAnalytics.eventClickInfoOnOSPNewBuyer()
                 OccInfoBottomSheet().show(this, preference.onboardingComponent)
                 orderSummaryAnalytics.eventViewOnboardingInfo()
             }
