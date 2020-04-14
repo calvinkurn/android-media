@@ -9,8 +9,12 @@ import javax.inject.Inject
 class GetDiscussionAggregateUseCase @Inject constructor(graphqlRepository: GraphqlRepository) : GraphqlUseCase<DiscussionAggregate>(graphqlRepository) {
 
     companion object {
-        val query = """
-            query discussionAggregateByProductID(productID: Int!) {
+        const val PARAM_PRODUCT_ID = "productID"
+        private val query by lazy {
+            val productID = "\$productID"
+            """
+            query discussionAggregateByProductID($productID: Int!) {
+                discussionAggregateByProductID(productID: $productID)
                 productName
                 thumbnail
                 category {
@@ -20,15 +24,18 @@ class GetDiscussionAggregateUseCase @Inject constructor(graphqlRepository: Graph
                 }
             }
         """.trimIndent()
-        const val PRODUCT_ID_PARAM = "productID"
+        }
+    }
+
+    init {
+        setGraphqlQuery(query)
+        setTypeClass(DiscussionAggregate::class.java)
     }
 
     fun setParams(productId: Int) {
         val requestParams = RequestParams()
-        requestParams.putInt(PRODUCT_ID_PARAM, productId)
-        setGraphqlQuery(query)
+        requestParams.putInt(PARAM_PRODUCT_ID, productId)
         setRequestParams(requestParams.parameters)
-        setTypeClass(DiscussionAggregate::class.java)
     }
 
 }

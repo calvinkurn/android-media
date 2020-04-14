@@ -3,8 +3,9 @@ package com.tokopedia.talk.feature.reading.data.mapper
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.talk.feature.reading.data.model.DiscussionAggregate
 import com.tokopedia.talk.feature.reading.data.model.DiscussionAggregateCategory
+import com.tokopedia.talk.feature.reading.data.model.SortOption
 import com.tokopedia.talk.feature.reading.presentation.adapter.uimodel.TalkReadingHeaderModel
-import com.tokopedia.unifycomponents.ChipsUnify
+import com.tokopedia.unifycomponents.list.ListItemUnify
 
 object TalkReadingMapper {
 
@@ -20,6 +21,16 @@ object TalkReadingMapper {
 
     fun mapDiscussionDataResponseToTalkReadingUiModel() {
 
+    }
+
+    fun mapSortOptionsToListUnifyItems(sortOptions: List<SortOption>): ArrayList<ListItemUnify> {
+        val result = arrayListOf<ListItemUnify>()
+        sortOptions.forEach {
+            val itemToAdd = ListItemUnify(title = it.displayName, description = "")
+            itemToAdd.setVariant(rightComponent = ListItemUnify.RADIO_BUTTON)
+            result.add(itemToAdd)
+        }
+        return result
     }
 
     private fun List<DiscussionAggregateCategory>.mapToSortFilter(showBottomSheet: () -> Unit): List<SortFilterItem> {

@@ -86,11 +86,21 @@
     <string name="reading_popular_sort_option">Pertanyaan Terpopuler</string>
     <string name="reading_sort_bottom_sheet_title">Urutkan berdasarkan</string>
     <string name="reading_sort_chip_string">%s (%d)</string>
+    <string name="reading_seller_label">Penjual</string>
 
     <string name="toaster_follow_success">Kamu berhasil follow Tanya-Jawab ini. Nantikan notifikasinya di Inbox, ya!</string>
     <string name="toaster_unfollow_success">Kamu sudah tidak lagi follow Tanya-Jawab ini.</string>
     <string name="reply_editText_placeholder">Tulis jawabanmu…</string>
     <string name="reply_header_tnc">Inilah tempat buat kamu ngobrolin segala hal seputar barang ini. Baca juga <b>syarat &amp; ketentuan</b> dan ketentuannya, ya.</string>
+    <string name="reply_toaster_success">Yay, jawabanmu berhasil dikirim. Tunggu notifikasi balasan di Inbox, ya.</string>
+    <string name="reply_toaster_message_too_long">Balasanmu terlalu panjang. Kurangi dikit, ya!</string>
+    <string name="reply_toaster_network_error">Pertanyaanmu tidak terkirim. Cek koneksi internetmu dan coba lagi, ya.</string>
+    <string name="delete_toaster_success">Jawabanmu berhasil dihapus.</string>
+    <string name="delete_toaster_network_error">Jawaban belum terhapus. Cek koneksi internetmu dan coba lagi, ya.</string>
+    <string name="delete_dialog_title">Beneran mau dihapus?</string>
+    <string name="delete_dialog_content">Soalnya, satu jawaban kamu bisa berikan manfaat bagi ratusan calon pembeli lain</string>
+    <string name="delete_confirm_button">Hapus</string>
+    <string name="delete_cancel_button">Batal</string>
 
     <string name="toaster_report_success">Laporanmu berhasil dikirim dan akan segera ditindaklanjuti.</string>
     <string name="report_header">Bantu kami memahami apa yang terjadi. Mengapa kamu melaporkan hal ini?</string>
