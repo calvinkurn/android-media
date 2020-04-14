@@ -3,8 +3,10 @@ package com.tokopedia.product_photo_adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.product_photo_adapter.ProductPhotoViewHolder.Companion.PLACE_HOLDER
 
 class ProductPhotoAdapter(private val maxSize: Int,
+                          private val usePlaceholder: Boolean,
                           private var productPhotoPaths: MutableList<String>,
                           private val onPhotoChangeListener: ProductPhotoViewHolder.OnPhotoChangeListener)
     : RecyclerView.Adapter<ProductPhotoViewHolder>(), ProductPhotoViewHolder.OnDeleteButtonClickListener {
@@ -41,15 +43,26 @@ class ProductPhotoAdapter(private val maxSize: Int,
 
     fun setProductPhotoPaths(newProductPhotoPaths: MutableList<String>) {
         productPhotoPaths = newProductPhotoPaths
+        if (productPhotoPaths.isEmpty() && usePlaceholder) addImagePlaceHolder()
         notifyDataSetChanged()
     }
 
     fun getProductPhotoPaths(): MutableList<String> {
-        return productPhotoPaths
+        return if (usePlaceholder) {
+            val cleanProductPhotoPaths = productPhotoPaths.filterNot {path -> path.contains(PLACE_HOLDER)}
+            cleanProductPhotoPaths.toMutableList()
+        } else {
+            productPhotoPaths
+        }
+    }
+
+    private fun addImagePlaceHolder() {
+        productPhotoPaths.add(PLACE_HOLDER)
     }
 
     override fun onDeleteButtonClicked(position: Int) {
         productPhotoPaths.removeAt(position)
+        if (productPhotoPaths.isEmpty() && usePlaceholder) addImagePlaceHolder()
         notifyDataSetChanged()
     }
 }

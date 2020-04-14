@@ -10,6 +10,13 @@ import com.tokopedia.product.addedit.detail.domain.usecase.GetCategoryRecommenda
 import com.tokopedia.product.addedit.detail.domain.usecase.GetNameRecommendationUseCase
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.UNIT_DAY
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.UNIT_WEEK
+import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_PREORDER_DAYS
+import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_PREORDER_WEEKS
+import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_PRODUCT_STOCK_LIMIT
+import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MIN_ORDER_QUANTITY
+import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MIN_PREORDER_DURATION
+import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MIN_PRODUCT_PRICE_LIMIT
+import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MIN_PRODUCT_STOCK_LIMIT
 import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
 import com.tokopedia.product.addedit.draft.domain.usecase.SaveProductDraftUseCase
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
@@ -120,16 +127,6 @@ class AddEditProductDetailViewModel @Inject constructor(
 
     val productCategoryRecommendationLiveData = MutableLiveData<Result<List<ListItemUnify>>>()
 
-    private val minProductPriceLimit = 100
-    private val maxProductPriceLimit = 100000000
-    private val maxWholeSalePriceLimit = 100000000
-    private val minProductStockLimit = 1
-    private val maxProductStockLimit = 999999
-    private val minOrderQuantity = 1
-    private val minPreOrderDuration = 1
-    private val maxPreOrderDays = 90
-    private val maxPreOrderWeeks = 13
-
     private fun isInputValid(): Boolean {
 
         val isProductPhotoError = mIsProductPhotoError.value ?: false
@@ -187,14 +184,8 @@ class AddEditProductDetailViewModel @Inject constructor(
             return
         }
         val productPrice = productPriceInput.toBigInteger()
-        if (productPrice < minProductPriceLimit.toBigInteger()) {
+        if (productPrice < MIN_PRODUCT_PRICE_LIMIT.toBigInteger()) {
             val errorMessage = provider.getMinLimitProductPriceErrorMessage()
-            errorMessage?.let { productPriceMessage = it }
-            mIsProductPriceInputError.value = true
-            return
-        }
-        if (productPrice > maxProductPriceLimit.toBigInteger()) {
-            val errorMessage = provider.getMaxLimitProductPriceErrorMessage()
             errorMessage?.let { productPriceMessage = it }
             mIsProductPriceInputError.value = true
             return
@@ -207,8 +198,8 @@ class AddEditProductDetailViewModel @Inject constructor(
         if (wholeSaleQuantityInput.isEmpty()) {
             provider.getEmptyWholeSaleQuantityErrorMessage()?.let { return it }
         }
-        val wholeSaleQuantity = wholeSaleQuantityInput.toLong()
-        if (wholeSaleQuantity == 0L) {
+        val wholeSaleQuantity = wholeSaleQuantityInput.toBigInteger()
+        if (wholeSaleQuantity == 0.toBigInteger()) {
             provider.getZeroWholeSaleQuantityErrorMessage()?.let { return it }
         }
         if (wholeSaleQuantity < minWholeSaleQuantity) {
@@ -221,16 +212,13 @@ class AddEditProductDetailViewModel @Inject constructor(
         if (wholeSalePriceInput.isEmpty()) {
             provider.getEmptyWholeSalePriceErrorMessage()?.let { return it }
         }
-        val wholeSalePrice = wholeSalePriceInput.toBigDecimal()
-        if (wholeSalePrice == 0.toBigDecimal()) {
+        val wholeSalePrice = wholeSalePriceInput.toBigInteger()
+        if (wholeSalePrice == 0.toBigInteger()) {
             provider.getZeroWholeSalePriceErrorMessage()?.let { return it }
-        }
-        if (wholeSalePrice > maxWholeSalePriceLimit.toBigDecimal()) {
-            provider.getMaxLimitWholeSalePriceErrorMessage()?.let { return it }
         }
         if (productPriceInput.isNotEmpty()) {
             val productPrice = productPriceInput.toLong()
-            if (wholeSalePrice >= productPrice.toBigDecimal()) {
+            if (wholeSalePrice >= productPrice.toBigInteger()) {
                 provider.getWholeSalePriceTooExpensiveErrorMessage()?.let { return it }
             }
         }
@@ -245,13 +233,13 @@ class AddEditProductDetailViewModel @Inject constructor(
             return
         }
         val productStock = productStockInput.toBigInteger()
-        if (productStock < minProductStockLimit.toBigInteger()) {
+        if (productStock < MIN_PRODUCT_STOCK_LIMIT.toBigInteger()) {
             val errorMessage = provider.getMinLimitProductStockErrorMessage()
             errorMessage?.let { productStockMessage = it }
             mIsProductStockInputError.value = true
             return
         }
-        if (productStock > maxProductStockLimit.toBigInteger()) {
+        if (productStock > MAX_PRODUCT_STOCK_LIMIT.toBigInteger()) {
             val errorMessage = provider.getMaxLimitProductStockErrorMessage()
             errorMessage?.let { productStockMessage = it }
             mIsProductStockInputError.value = true
@@ -269,7 +257,7 @@ class AddEditProductDetailViewModel @Inject constructor(
             return
         }
         val productMinOrder = orderQuantityInput.toBigInteger()
-        if (productMinOrder < minOrderQuantity.toBigInteger()) {
+        if (productMinOrder < MIN_ORDER_QUANTITY.toBigInteger()) {
             val errorMessage = provider.getMinLimitOrderQuantityErrorMessage()
             errorMessage?.let { orderQuantityMessage = it }
             mIsOrderQuantityInputError.value = true
@@ -296,21 +284,21 @@ class AddEditProductDetailViewModel @Inject constructor(
             return
         }
         val preOrderDuration = preOrderDurationInput.toBigInteger()
-        if (preOrderDuration < minPreOrderDuration.toBigInteger()) {
+        if (preOrderDuration < MIN_PREORDER_DURATION.toBigInteger()) {
             val errorMessage = provider.getMinLimitPreorderDurationErrorMessage()
             errorMessage?.let { preOrderDurationMessage = it }
             mIsPreOrderDurationInputError.value = true
             return
         }
         val isDayUnit = timeUnit == UNIT_DAY
-        if (isDayUnit && preOrderDuration > maxPreOrderDays.toBigInteger()) {
+        if (isDayUnit && preOrderDuration > MAX_PREORDER_DAYS.toBigInteger()) {
             val errorMessage = provider.getMaxDaysLimitPreorderDuratioErrorMessage()
             errorMessage?.let { preOrderDurationMessage = it }
             mIsPreOrderDurationInputError.value = true
             return
         }
         val isWeekUnit = timeUnit == UNIT_WEEK
-        if (isWeekUnit && preOrderDuration > maxPreOrderWeeks.toBigInteger()) {
+        if (isWeekUnit && preOrderDuration > MAX_PREORDER_WEEKS.toBigInteger()) {
             val errorMessage = provider.getMaxWeeksLimitPreorderDuratioErrorMessage()
             errorMessage?.let { preOrderDurationMessage = it }
             mIsPreOrderDurationInputError.value = true

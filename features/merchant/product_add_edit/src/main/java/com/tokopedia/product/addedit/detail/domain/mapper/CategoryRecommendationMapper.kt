@@ -8,8 +8,12 @@ class CategoryRecommendationMapper @Inject constructor() {
 
     fun mapRemoteModelToUiModel(categoryRecommendationData: GetCategoryRecommendationDataModel?): List<ListItemUnify> =
             categoryRecommendationData?.categories?.map {
+
+                var categoryName = it.name.orEmpty()
+                if (categoryName.isNotBlank()) categoryName = categoryName.replace("/","-")
+
                 ListItemUnify(
-                        title = it.name.orEmpty(),
+                        categoryName,
                         description = ""
                 ).apply {
                     setVariant(null, ListItemUnify.RADIO_BUTTON, null)
