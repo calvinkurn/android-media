@@ -21,13 +21,23 @@ import com.tokopedia.product.addedit.preview.presentation.model.ProductInputMode
 import com.tokopedia.product.addedit.shipment.presentation.model.ShipmentInputModel
 import com.tokopedia.product.addedit.tracking.ProductAddShippingTracking
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 /**
  * Created by faisalramd on 2020-04-05.
  */
 
+/*
+Step to submit add product:
+(1). Save product data to draft and get productDraftId
+(2). Upload product images and get uploadIdList
+(3). Hit gql for add product
+(4). clear product from draft if add data success
+ */
+
 open class AddEditProductAddService : AddEditProductBaseService() {
+    protected var productDraftId = 0L
     protected var productInputModel: ProductInputModel = ProductInputModel()
     protected var shipmentInputModel: ShipmentInputModel = ShipmentInputModel()
     protected var descriptionInputModel: DescriptionInputModel = DescriptionInputModel()
@@ -68,11 +78,28 @@ open class AddEditProductAddService : AddEditProductBaseService() {
             it.variantInputModel = variantInputModel
             it.draftId = draftId
         }
-        uploadProductImages(detailInputModel.imageUrlOrPathList,
-                variantInputModel.productSizeChart?.filePath ?: "")
+
+        // (1)
+        saveProductToDraft()
+    }
+
+    private fun saveProductToDraft() {
+        launch {
+            saveProductDraftUseCase.params = SaveProductDraftUseCase
+                    .createRequestParams(mapProductInputModelDetailToDraft(productInputModel),
+                            productInputModel.draftId, false)
+            withContext(Dispatchers.IO){
+                productDraftId = saveProductDraftUseCase.executeOnBackground()
+
+                // (2)
+                uploadProductImages(detailInputModel.imageUrlOrPathList,
+                        variantInputModel.productSizeChart?.filePath ?: "")
+            }
+        }
     }
 
     override fun onUploadProductImagesDone(uploadIdList: ArrayList<String>, sizeChartId: String) {
+        // (3)
         addProduct(uploadIdList, sizeChartId)
     }
 
@@ -88,7 +115,7 @@ open class AddEditProductAddService : AddEditProductBaseService() {
 
             override fun getFailedIntent(errorMessage: String): PendingIntent {
                 ProductAddShippingTracking.clickFinish(userSession.shopId, false)
-                val draftId = productInputModel.draftId.toString()
+                val draftId = productDraftId.toString()
                 val intent = AddEditProductPreviewActivity.createInstance(context, draftId,
                         isFromSuccessNotif = false, isFromNotifEditMode = false)
                 return PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
@@ -104,22 +131,21 @@ open class AddEditProductAddService : AddEditProductBaseService() {
         launchCatchError(block = {
             withContext(Dispatchers.IO) {
                 productAddUseCase.params = ProductAddUseCase.createRequestParams(param)
-                val response = productAddUseCase.executeOnBackground()
-                setUploadProductDataSuccess()
-                if(productInputModel.draftId > 0) {
-                    deleteProductDraftUseCase.params = DeleteProductDraftUseCase.createRequestParams(productInputModel.draftId)
-                    deleteProductDraftUseCase.executeOnBackground()
-                }
-                return@withContext response
+                productAddUseCase.executeOnBackground()
+
+                // (4)
+                clearProductDraft()
             }
+            setUploadProductDataSuccess()
         }, onError = {
-            it.message?.let { errorMessage ->
-                setUploadProductDataError(errorMessage)
-                if(productInputModel.draftId > 0) {
-                    saveProductDraftUseCase.params = SaveProductDraftUseCase.createRequestParams(mapProductInputModelDetailToDraft(productInputModel), productInputModel.draftId, false)
-                    withContext(Dispatchers.IO){ saveProductDraftUseCase.executeOnBackground() }
-                }
-            }
+            it.message?.let { errorMessage -> setUploadProductDataError(errorMessage) }
         })
+    }
+
+    protected suspend fun clearProductDraft() {
+        if(productDraftId > 0) {
+            deleteProductDraftUseCase.params = DeleteProductDraftUseCase.createRequestParams(productDraftId)
+            deleteProductDraftUseCase.executeOnBackground()
+        }
     }
 }

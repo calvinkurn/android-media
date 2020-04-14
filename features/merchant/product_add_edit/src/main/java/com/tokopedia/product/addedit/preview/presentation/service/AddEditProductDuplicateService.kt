@@ -8,10 +8,22 @@ import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstan
 import com.tokopedia.product.addedit.description.presentation.model.DescriptionInputModel
 import com.tokopedia.product.addedit.description.presentation.model.ProductVariantInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
+import com.tokopedia.product.addedit.draft.domain.usecase.DeleteProductDraftUseCase
+import com.tokopedia.product.addedit.draft.domain.usecase.SaveProductDraftUseCase
+import com.tokopedia.product.addedit.draft.mapper.AddEditProductMapper
 import com.tokopedia.product.addedit.preview.domain.usecase.ProductAddUseCase
 import com.tokopedia.product.addedit.shipment.presentation.model.ShipmentInputModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+
+/*
+Step to submit duplicate product:
+(1). Save product data to draft and get productDraftId
+(2). Upload product images and get uploadIdList
+(3). Hit gql for add product
+(4). clear product from draft if add data success
+ */
 
 class AddEditProductDuplicateService : AddEditProductAddService() {
 
@@ -38,8 +50,24 @@ class AddEditProductDuplicateService : AddEditProductAddService() {
         descriptionInputModel = intent.getParcelableExtra(AddEditProductUploadConstant.EXTRA_DESCRIPTION_INPUT)
         detailInputModel = intent.getParcelableExtra(AddEditProductUploadConstant.EXTRA_DETAIL_INPUT)
         variantInputModel = intent.getParcelableExtra(AddEditProductUploadConstant.EXTRA_VARIANT_INPUT)
-        uploadProductImages(filterPathOnly(detailInputModel.imageUrlOrPathList),
-                variantInputModel.productSizeChart?.filePath ?: "")
+
+        // (1)
+        saveProductToDraft()
+    }
+
+    private fun saveProductToDraft() {
+        launch {
+            saveProductDraftUseCase.params = SaveProductDraftUseCase
+                    .createRequestParams(AddEditProductMapper.mapProductInputModelDetailToDraft(productInputModel),
+                            productInputModel.draftId, false)
+            withContext(Dispatchers.IO){
+                productDraftId = saveProductDraftUseCase.executeOnBackground()
+
+                // (2)
+                uploadProductImages(filterPathOnly(detailInputModel.imageUrlOrPathList),
+                        variantInputModel.productSizeChart?.filePath ?: "")
+            }
+        }
     }
 
     private fun filterPathOnly(imageUrlOrPathList: List<String>): List<String> =
@@ -48,6 +76,7 @@ class AddEditProductDuplicateService : AddEditProductAddService() {
             }
 
     override fun onUploadProductImagesDone(uploadIdList: ArrayList<String>, sizeChartId: String) {
+        // (3)
         duplicateProduct(uploadIdList, sizeChartId)
     }
 
@@ -59,9 +88,11 @@ class AddEditProductDuplicateService : AddEditProductAddService() {
         launchCatchError(block = {
             withContext(Dispatchers.IO) {
                 productAddUseCase.params = ProductAddUseCase.createRequestParams(param)
-                val response = productAddUseCase.executeOnBackground()
+                productAddUseCase.executeOnBackground()
                 setUploadProductDataSuccess()
-                return@withContext response
+
+                // (4)
+                clearProductDraft()
             }
         }, onError = {
             it.message?.let { errorMessage -> setUploadProductDataError(errorMessage) }

@@ -1,7 +1,5 @@
 package com.tokopedia.product.manage.common.draft.data.db.source
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.Transformations
 import com.tokopedia.product.manage.common.draft.constant.AddEditProductDraftConstant
 import com.tokopedia.product.manage.common.draft.data.db.AddEditProductDraftDao
 import com.tokopedia.product.manage.common.draft.data.db.entity.AddEditProductDraftEntity
@@ -16,8 +14,7 @@ class AddEditProductDraftDataManager @Inject constructor(private val draftDao: A
         draft.isUploading = isUploading
         draft.shopId = shopId
         draft.version = AddEditProductDraftConstant.DB_VERSION
-        draftDao.insertDraft(draft)
-        return draft.id
+        return draftDao.insertDraft(draft)
     }
 
     fun getDraft(productId: Long): AddEditProductDraftEntity {

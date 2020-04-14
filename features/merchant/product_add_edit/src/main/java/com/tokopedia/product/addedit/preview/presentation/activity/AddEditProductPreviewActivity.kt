@@ -11,6 +11,7 @@ import com.tokopedia.product.addedit.R
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_DRAFT_ID
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_FROM_NOTIF_EDIT_PRODUCT
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_FROM_NOTIF_SUCCESS
 import com.tokopedia.product.addedit.preview.presentation.fragment.AddEditProductPreviewFragment
@@ -50,6 +51,9 @@ class AddEditProductPreviewActivity : BaseSimpleActivity() {
     override fun getLayoutRes() = R.layout.activity_add_edit_product_preview
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        // get draftId from failed notif
+        draftId = intent.getStringExtra(EXTRA_DRAFT_ID) ?: ""
+        // get data from applink
         intent.data?.run {
             val uri = toString()
             val params = UriUtil.uriQueryParamsToMap(uri)

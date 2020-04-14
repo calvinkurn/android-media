@@ -2,6 +2,7 @@ package com.tokopedia.product.addedit.preview.presentation.service
 
 import androidx.core.app.JobIntentService
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.mediauploader.data.state.UploadResult
 import com.tokopedia.mediauploader.domain.UploaderUseCase
 import com.tokopedia.product.addedit.common.AddEditProductComponentBuilder
@@ -20,6 +21,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.File
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
@@ -83,7 +85,7 @@ abstract class AddEditProductBaseService : JobIntentService(), CoroutineScope {
             getNotificationManager(urlImageCount)
         }
         notificationManager?.onSubmitUpload()
-        launch(coroutineContext) {
+        launchCatchError(block = {
             repeat(urlImageCount) { i ->
                 val imageId = uploadImageAndGetId(imageUrlOrPathList[i])
                 uploadIdList.add(imageId)
@@ -92,7 +94,9 @@ abstract class AddEditProductBaseService : JobIntentService(), CoroutineScope {
                 sizeChartUploadId = uploadImageAndGetId(sizeChartPath)
             }
             onUploadProductImagesDone(uploadIdList, sizeChartUploadId)
-        }
+        }, onError = {
+            it.message?.let { errorMessage -> setUploadProductDataError(errorMessage) }
+        })
     }
 
     private suspend fun uploadImageAndGetId(imagePath: String): String {
