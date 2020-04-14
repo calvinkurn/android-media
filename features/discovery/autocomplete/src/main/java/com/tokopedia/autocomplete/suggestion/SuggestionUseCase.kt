@@ -2,7 +2,6 @@ package com.tokopedia.autocomplete.suggestion
 
 import android.text.TextUtils
 import com.tokopedia.authentication.AuthHelper
-import com.tokopedia.autocomplete.suggestion.data.SuggestionResponse
 import com.tokopedia.autocomplete.util.UrlParamHelper
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
@@ -14,11 +13,11 @@ import rx.functions.Func1
 import java.util.HashMap
 import com.tokopedia.discovery.common.constants.SearchConstant.GQL
 
-class SuggestionGqlUseCase(
+class SuggestionUseCase(
         private val graphqlRequest: GraphqlRequest,
         private val graphqlUseCase: GraphqlUseCase,
-        private val suggestionDataModelMapper: Func1<GraphqlResponse, SuggestionResponse>
-) : UseCase<SuggestionResponse>() {
+        private val suggestionDataModelMapper: Func1<GraphqlResponse, SuggestionData>
+) : UseCase<SuggestionData>() {
 
     companion object {
 
@@ -52,7 +51,7 @@ class SuggestionGqlUseCase(
         }
     }
 
-    override fun createObservable(requestParams: RequestParams): Observable<SuggestionResponse> {
+    override fun createObservable(requestParams: RequestParams): Observable<SuggestionData> {
         val variables = createParametersForQuery(requestParams.parameters)
         graphqlRequest.variables = variables
         graphqlUseCase.clearRequest()

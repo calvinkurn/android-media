@@ -12,9 +12,9 @@ query universe_suggestion($params: String!) {
         subtitle
         icon_title
         icon_subtitle
-        url_tracker
         shortcut_image
         image_url
+        url_tracker
       }
     }
   }

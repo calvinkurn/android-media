@@ -43,7 +43,9 @@ public class UrlParamHelper {
 
     private static <T> void addParameterEntryToList(List<String> paramList, Map.Entry<String, T> entry) {
         try {
-            paramList.add(entry.getKey() + "=" + URLEncoder.encode(entry.getValue().toString(), "UTF-8"));
+            if(entry.getValue() != null) {
+                paramList.add(entry.getKey() + "=" + URLEncoder.encode(entry.getValue().toString(), "UTF-8"));
+            }
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
