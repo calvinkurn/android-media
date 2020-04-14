@@ -361,7 +361,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
 
                                 override fun onButtonChooseOtherPromo() {
                                     val intent = RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_CHECKOUT_MARKETPLACE)
-                                    intent.putExtra(ARGS_PAGE_SOURCE, PromoCheckoutAnalytics.PAGE_CHECKOUT)
+                                    intent.putExtra(ARGS_PAGE_SOURCE, PromoCheckoutAnalytics.PAGE_OCC)
                                     intent.putExtra(ARGS_VALIDATE_USE_REQUEST, viewModel.generateValidateUsePromoRequest())
                                     intent.putExtra(ARGS_PROMO_REQUEST, viewModel.generatePromoRequest())
                                     intent.putStringArrayListExtra(ARGS_BBO_PROMO_CODES, viewModel.generateBboPromoCodes())
@@ -638,7 +638,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
             btnPromoCheckout?.setOnClickListener {
                 viewModel.updateCartPromo { validateUsePromoRequest, promoRequest, bboCodes ->
                     val intent = RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_CHECKOUT_MARKETPLACE)
-                    intent.putExtra(ARGS_PAGE_SOURCE, PromoCheckoutAnalytics.PAGE_CHECKOUT)
+                    intent.putExtra(ARGS_PAGE_SOURCE, PromoCheckoutAnalytics.PAGE_OCC)
                     intent.putExtra(ARGS_PROMO_REQUEST, promoRequest)
                     intent.putExtra(ARGS_VALIDATE_USE_REQUEST, validateUsePromoRequest)
                     intent.putStringArrayListExtra(ARGS_BBO_PROMO_CODES, bboCodes)
