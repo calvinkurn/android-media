@@ -11,7 +11,7 @@ interface SuggestionContract {
 
         fun trackEventClickKeyword(eventLabel: String)
 
-        fun trackEventClickCurated(eventLabel: String)
+        fun trackEventClickCurated(eventLabel: String, campaignCode: String)
 
         fun trackEventClickShop(eventLabel: String)
 

@@ -28,6 +28,7 @@ internal class OnSuggestionItemClickTest {
     private val keywordTypedByUser = "samsung"
     private val position = 1
     private val title = "Samsung"
+    private val campaignCode = "123"
 
     @Before
     fun setUp() {
@@ -133,7 +134,8 @@ internal class OnSuggestionItemClickTest {
                 type = TYPE_CURATED,
                 searchTerm = keywordTypedByUser,
                 title = title,
-                position = position
+                position = position,
+                trackingCode = campaignCode
         )
 
         `when suggestion item clicked`(item)
@@ -148,7 +150,7 @@ internal class OnSuggestionItemClickTest {
                 "- page: ${item.applink}"
 
         verify {
-            suggestionView.trackEventClickCurated(expectedEventLabel)
+            suggestionView.trackEventClickCurated(expectedEventLabel, campaignCode)
             suggestionView.onClickSuggestion(item)
         }
 
