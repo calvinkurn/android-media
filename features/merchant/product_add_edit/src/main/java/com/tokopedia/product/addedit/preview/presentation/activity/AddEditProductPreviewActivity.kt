@@ -79,6 +79,7 @@ class AddEditProductPreviewActivity : BaseSimpleActivity() {
             setPrimaryCTAText(getString(R.string.label_cta_primary_button_on_dialog))
             setSecondaryCTAText(getString(R.string.label_cta_secondary_button_on_dialog))
             setSecondaryCTAClickListener {
+                saveProductToDraft()
                 moveToManageProduct()
                 onCtaYesPressedHitTracking()
             }
@@ -93,6 +94,13 @@ class AddEditProductPreviewActivity : BaseSimpleActivity() {
         val intent = RouteManager.getIntent(this, ApplinkConstInternalMarketplace.PRODUCT_MANAGE_LIST)
         startActivity(intent)
         finish()
+    }
+
+    private fun saveProductToDraft() {
+        val f = fragment
+        if (f != null && f is AddEditProductPreviewFragment) {
+            f.saveProductDraft(false)
+        }
     }
 
     private fun onCtaYesPressedHitTracking() {

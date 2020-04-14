@@ -158,6 +158,7 @@ class AddEditProductPreviewViewModel @Inject constructor(
 
     fun updateDetailInputModel(detailInputModel: DetailInputModel) {
         this.detailInputModel.value = detailInputModel
+        productInputModel.value?.let { it.detailInputModel = detailInputModel }
     }
 
     fun updateDescriptionInputModel(descriptionInputModel: DescriptionInputModel) {

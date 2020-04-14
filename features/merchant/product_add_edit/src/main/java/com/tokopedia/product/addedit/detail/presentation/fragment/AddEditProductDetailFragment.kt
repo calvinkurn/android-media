@@ -458,6 +458,12 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                         addNewWholeSalePriceButton?.visibility = View.GONE
                     }
                 }
+                productPriceField?.getEditableValue().toString().let {
+                    if(it != "") {
+                        wholeSaleInputFormsAdapter?.setPrice(it.toBigInteger())
+                        wholeSaleInputFormsAdapter?.notifyDataSetChanged()
+                    }
+                }
             }
         }
 

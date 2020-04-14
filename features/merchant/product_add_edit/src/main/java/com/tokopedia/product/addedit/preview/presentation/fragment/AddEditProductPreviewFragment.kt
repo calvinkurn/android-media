@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -41,6 +42,9 @@ import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstan
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_VARIANT_PICKER_RESULT_CACHE_ID
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_VARIANT_RESULT_CACHE_ID
 import com.tokopedia.product.addedit.common.util.InputPriceUtil
+import com.tokopedia.product.addedit.common.util.getText
+import com.tokopedia.product.addedit.common.util.getTextBigIntegerOrZero
+import com.tokopedia.product.addedit.common.util.getTextIntOrZero
 import com.tokopedia.product.addedit.description.data.remote.model.variantbycat.ProductVariantByCatModel
 import com.tokopedia.product.addedit.description.presentation.activity.AddEditProductDescriptionActivity
 import com.tokopedia.product.addedit.description.presentation.fragment.AddEditProductDescriptionFragment
@@ -48,6 +52,7 @@ import com.tokopedia.product.addedit.description.presentation.model.DescriptionI
 import com.tokopedia.product.addedit.description.presentation.model.PictureViewModel
 import com.tokopedia.product.addedit.description.presentation.model.ProductVariantInputModel
 import com.tokopedia.product.addedit.detail.presentation.activity.AddEditProductDetailActivity
+import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_PRODUCT_PHOTOS
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.REQUEST_CODE_DESCRIPTION_EDIT
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.REQUEST_CODE_DETAIL
@@ -199,6 +204,13 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
         } else {
             ProductAddStepperTracking.trackBack(shopId)
         }
+    }
+
+    fun saveProductDraft(isUploading: Boolean) {
+        viewModel.productInputModel.value?.let {
+            viewModel.saveProductDraft(AddEditProductMapper.mapProductInputModelDetailToDraft(it), it.draftId, false)
+        }
+        Toast.makeText(context, R.string.label_succes_save_draft, Toast.LENGTH_LONG).show()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -389,7 +401,6 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
                         // update the product pictures in the preview page
                         if (isEditMode || isDraftMode) {
                             viewModel.updateProductPhotos(imagePickerResult, originalImageUrl, isEditted)
-                            saveToDraft()
                         } else {
                             // start add product detail
                             val newProductInputModel = viewModel.getNewProductInputModel(imagePickerResult)
@@ -426,8 +437,6 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
                     val detailInputModel =
                             data.getParcelableExtra<DetailInputModel>(EXTRA_DETAIL_INPUT)
                     viewModel.updateDetailInputModel(detailInputModel)
-                    viewModel.productInputModel.value?.let { it.detailInputModel = detailInputModel }
-                    saveToDraft()
                 }
                 REQUEST_CODE_DESCRIPTION_EDIT -> {
                     val descriptionInputModel =
@@ -436,25 +445,16 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
                             data.getParcelableExtra<ProductVariantInputModel>(EXTRA_VARIANT_INPUT)
                     viewModel.updateDescriptionInputModel(descriptionInputModel)
                     viewModel.updateVariantInputModel(variantInputModel)
-                    viewModel.productInputModel.value?.let {
-                        it.descriptionInputModel = descriptionInputModel
-                        it.variantInputModel = variantInputModel
-                    }
-                    saveToDraft()
                 }
                 REQUEST_CODE_SHIPMENT_EDIT -> {
                     val shipmentInputModel =
                             data.getParcelableExtra<ShipmentInputModel>(EXTRA_SHIPMENT_INPUT)
                     viewModel.updateShipmentInputModel(shipmentInputModel)
-                    viewModel.productInputModel.value?.let { it.shipmentInputModel = shipmentInputModel }
-                    saveToDraft()
                 }
                 REQUEST_CODE_VARIANT_EDIT -> {
                     val variantInputModel =
                             data.getParcelableExtra<ProductVariantInputModel>(EXTRA_VARIANT_INPUT)
                     viewModel.updateVariantInputModel(variantInputModel)
-                    viewModel.productInputModel.value?.let { it.variantInputModel = variantInputModel }
-                    saveToDraft()
                 }
                 REQUEST_CODE_VARIANT_DIALOG_EDIT -> {
                     viewModel.productInputModel.value?.let { productInputModel ->
@@ -609,14 +609,6 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
                 is Fail -> showVariantErrorToast(getString(R.string.error_cannot_get_variants))
             }
         })
-    }
-
-    private fun saveToDraft() {
-        if (viewModel.isDrafting.value == true) {
-            viewModel.productInputModel.value?.let {
-                viewModel.saveProductDraft(AddEditProductMapper.mapProductInputModelDetailToDraft(it), it.draftId, false)
-            }
-        }
     }
 
     private fun showProductPhotoPreview(productInputModel: ProductInputModel) {
