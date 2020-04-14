@@ -13,7 +13,7 @@ import java.util.ArrayList;
 public class ImagePickerAddProductActivity extends ImagePickerActivity {
 
     UserSession userSession;
-    boolean isEditProduct = false;
+    private static boolean isEditProduct = false;
     public static final String IS_EDIT = "is_edit";
 
     @Override

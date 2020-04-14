@@ -183,11 +183,19 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
         }
     }
 
+    fun onCtaYesPressed() {
+        ProductAddStepperTracking.trackDraftYes(shopId)
+    }
+
+    fun onCtaNoPressed() {
+        ProductAddStepperTracking.trackDraftCancel(shopId)
+    }
+
     fun onBackPressed() {
         if (viewModel.isEditing.value == true) {
-            ProductAddStepperTracking.trackBack(shopId)
-        } else {
             ProductEditStepperTracking.trackBack(shopId)
+        } else {
+            ProductAddStepperTracking.trackBack(shopId)
         }
     }
 
@@ -254,7 +262,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
                 if (urlOrPath.startsWith(HTTP_PREFIX)) viewModel.productInputModel.value?.detailInputModel?.pictureList?.find { it.urlThumbnail == urlOrPath }?.urlOriginal ?: urlOrPath
                 else urlOrPath
             }.orEmpty()
-            val intent = ImagePickerAddProductActivity.getIntent(context, createImagePickerBuilder(ArrayList(imageUrlOrPathList)))
+            val intent = ImagePickerAddProductActivity.getIntent(context, createImagePickerBuilder(ArrayList(imageUrlOrPathList)), viewModel.isEditing.value ?: false)
             startActivityForResult(intent, REQUEST_CODE_IMAGE)
         }
 

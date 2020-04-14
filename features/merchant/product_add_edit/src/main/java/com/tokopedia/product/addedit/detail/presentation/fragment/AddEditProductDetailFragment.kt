@@ -11,7 +11,6 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.widget.AppCompatTextView
@@ -941,6 +940,12 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         viewModel.isPreOrderActivated.observe(this, Observer {
             if (it) preOrderInputLayout?.visible()
             else preOrderInputLayout?.hide()
+
+            if (viewModel.isEditing) {
+                ProductEditMainTracking.clickPreorderButton(shopId)
+            } else {
+                ProductAddMainTracking.clickPreorderButton(shopId)
+            }
         })
     }
 

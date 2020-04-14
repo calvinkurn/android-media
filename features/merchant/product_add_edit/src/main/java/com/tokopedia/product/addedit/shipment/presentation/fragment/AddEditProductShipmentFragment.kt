@@ -28,9 +28,7 @@ import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProdu
 import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.UNIT_KILOGRAM
 import com.tokopedia.product.addedit.shipment.presentation.model.ShipmentInputModel
 import com.tokopedia.product.addedit.shipment.presentation.viewmodel.AddEditProductShipmentViewModel
-import com.tokopedia.product.addedit.tracking.ProductAddShippingTracking
-import com.tokopedia.product.addedit.tracking.ProductAddStepperTracking
-import com.tokopedia.product.addedit.tracking.ProductEditShippingTracking
+import com.tokopedia.product.addedit.tracking.*
 import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
@@ -100,6 +98,9 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
             productInputModel = getParcelable(EXTRA_PRODUCT_INPUT_MODEL) ?: ProductInputModel()
             shipmentViewModel.shipmentInputModel = shipmentInputModel
             shipmentViewModel.isEditMode = isEditMode
+        }
+        if (!shipmentViewModel.isEditMode) {
+            ProductAddShippingTracking.trackScreen()
         }
     }
 

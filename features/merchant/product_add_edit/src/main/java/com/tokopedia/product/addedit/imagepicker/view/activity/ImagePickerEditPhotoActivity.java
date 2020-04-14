@@ -11,7 +11,7 @@ import com.tokopedia.user.session.UserSession;
 public class ImagePickerEditPhotoActivity extends ImageEditorActivity {
 
     UserSession userSession;
-    boolean isEditProduct = false;
+    private static boolean isEditProduct = false;
     public static final String IS_EDIT = "is_edit";
 
     @Override
