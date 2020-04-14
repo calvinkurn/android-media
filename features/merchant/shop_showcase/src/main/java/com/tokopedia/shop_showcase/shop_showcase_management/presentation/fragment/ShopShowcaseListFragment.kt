@@ -413,7 +413,10 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
                 viewModel.getShopShowcaseListAsSeller()
             }, 500)
         } else {
-            viewModel.getShopShowcaseListAsBuyer(shopId, false)
+            if (!isMyShop) {
+                viewModel.getShopShowcaseListAsBuyer(shopId, false)
+            }
+            viewModel.getShopShowcaseListAsSeller()
         }
     }
 
