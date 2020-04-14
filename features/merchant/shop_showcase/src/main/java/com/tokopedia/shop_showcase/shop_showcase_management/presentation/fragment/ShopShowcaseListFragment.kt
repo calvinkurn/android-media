@@ -40,6 +40,7 @@ import com.tokopedia.shop_showcase.shop_showcase_management.data.model.ShowcaseL
 import com.tokopedia.shop_showcase.shop_showcase_management.di.DaggerShopShowcaseManagementComponent
 import com.tokopedia.shop_showcase.shop_showcase_management.di.ShopShowcaseManagementComponent
 import com.tokopedia.shop_showcase.shop_showcase_management.di.ShopShowcaseManagementModule
+import com.tokopedia.shop_showcase.shop_showcase_management.presentation.activity.ShopShowcaseListActivity.Companion.REQUEST_CODE_ADD_ETALASE
 import com.tokopedia.shop_showcase.shop_showcase_management.presentation.adapter.ShopShowcaseListAdapter
 import com.tokopedia.shop_showcase.shop_showcase_management.presentation.viewmodel.ShopShowcaseListViewModel
 import com.tokopedia.unifycomponents.*
@@ -55,7 +56,7 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
         @JvmStatic
         fun createInstance(shopType: String, shopId: String?, selectedEtalaseId: String?,
                            isShowDefault: Boolean? = false, isShowZeroProduct: Boolean? = false,
-                           isMyShop: Boolean? = false
+                           isMyShop: Boolean? = false, isNeedToGoToAddShowcase: Boolean? = false
         ): ShopShowcaseListFragment {
             val fragment = ShopShowcaseListFragment()
             val bundle = Bundle()
@@ -66,6 +67,8 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
             bundle.putBoolean(ShopShowcaseListParam.EXTRA_IS_SHOW_ZERO_PRODUCT, isShowZeroProduct
                     ?: false)
             bundle.putBoolean(ShopShowcaseListParam.EXTRA_IS_MY_SHOP, isMyShop ?: false)
+            bundle.putBoolean(ShopShowcaseListParam.EXTRA_IS_NEED_TO_GOTO_ADD_SHOWCASE, isNeedToGoToAddShowcase
+                    ?: false)
             fragment.arguments = bundle
             return fragment
         }
@@ -126,10 +129,30 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == REQUEST_EDIT_SHOWCASE_CODE && resultCode == Activity.RESULT_OK) {
-            val isSuccessEditShowcase = data?.extras?.getInt(ShopShowcaseListParam.EXTRA_EDIT_SHOWCASE_RESULT)
-            if (isSuccessEditShowcase == ShopShowcaseAddFragment.SUCCESS_EDIT_SHOWCASE)
-                onSuccessUpdateShowcase()
+
+        when (requestCode) {
+            REQUEST_CODE_ADD_ETALASE -> {
+                if (resultCode == Activity.RESULT_OK) {
+                    val intent = Intent()
+                    activity?.let {
+                        it.setResult(Activity.RESULT_OK, intent)
+                        it.finish()
+                    }
+                } else if (resultCode == Activity.RESULT_CANCELED) {
+                    val intent = Intent()
+                    activity?.let {
+                        it.setResult(Activity.RESULT_CANCELED, intent)
+                        it.finish()
+                    }
+                }
+            }
+            REQUEST_EDIT_SHOWCASE_CODE -> {
+                if (resultCode == Activity.RESULT_OK) {
+                    val isSuccessEditShowcase = data?.extras?.getInt(ShopShowcaseListParam.EXTRA_EDIT_SHOWCASE_RESULT)
+                    if (isSuccessEditShowcase == ShopShowcaseAddFragment.SUCCESS_EDIT_SHOWCASE)
+                        onSuccessUpdateShowcase()
+                }
+            }
         }
     }
 
@@ -345,7 +368,7 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
                         } else if (totalProduct > 0) {
                             if (isNeedToGoToAddShowcase) {
                                 isNeedToGoToAddShowcase = false
-                                RouteManager.route(context, ApplinkConstInternalMechant.MERCHANT_SHOP_SHOWCASE_ADD)
+                                goToAddShowcase()
                             }
                         }
                     }
@@ -378,21 +401,20 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
         })
     }
 
+    private fun goToAddShowcase() {
+        val addShowcaseIntent = RouteManager.getIntent(context, ApplinkConstInternalMechant.MERCHANT_SHOP_SHOWCASE_ADD)
+        startActivityForResult(addShowcaseIntent, REQUEST_CODE_ADD_ETALASE)
+    }
+
     private fun loadData() {
-        if (isMyShop) {
-            viewModel.getShopShowcaseListAsSeller()
+        if (isNeedToGoToAddShowcase && isMyShop) {
+            checkTotalProduct()
+            Handler().postDelayed({
+                viewModel.getShopShowcaseListAsSeller()
+            }, 500)
         } else {
             viewModel.getShopShowcaseListAsBuyer(shopId, false)
         }
-//        if (isNeedToGoToAddShowcase) {
-//            checkTotalProduct()
-//            Handler().postDelayed({
-//                viewModel.getShopShowcaseListAsSeller()
-//            }, 500)
-//        } else {
-//            viewModel.getShopShowcaseListAsSeller()
-//        }
-//        viewModel.getShopShowcaseListAsSeller()
     }
 
     private fun checkTotalProduct() {
