@@ -6,9 +6,12 @@ import com.tokopedia.analyticsdebugger.debugger.ui.adapter.TopAdsDebuggerTypeFac
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
-data class TopAdsDebuggerViewModel(var id: Long = 0, var url: String? = null,
+data class TopAdsDebuggerViewModel(var id: Long = 0,
+                                   var url: String? = null,
+                                   var previewUrl: String? = null,
                                    var eventType: String? = null,
                                    var sourceName: String? = null,
+                                   var eventStatus: String? = null,
                                    var timestamp: String? = null) : Visitable<TopAdsDebuggerTypeFactory>, Parcelable {
 
     override fun type(typeFactory: TopAdsDebuggerTypeFactory): Int {

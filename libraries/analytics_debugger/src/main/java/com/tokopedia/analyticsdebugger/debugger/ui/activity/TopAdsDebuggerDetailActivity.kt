@@ -32,7 +32,7 @@ class TopAdsDebuggerDetailActivity : BaseSimpleActivity() {
         fun newInstance(context: Context, viewModel: TopAdsDebuggerViewModel): Intent {
             val intent = Intent(context, TopAdsDebuggerDetailActivity::class.java)
             intent.putExtra(DATA_DETAIL, viewModel)
-            intent.putExtra(EVENT_NAME, viewModel.url)
+            intent.putExtra(EVENT_NAME, "Topads Verificator")
 
             return intent
         }

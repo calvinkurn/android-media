@@ -4,6 +4,7 @@ import android.content.Context
 
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import com.tokopedia.analyticsdebugger.database.STATUS_PENDING
 import com.tokopedia.analyticsdebugger.database.TkpdAnalyticsDatabase
 import com.tokopedia.analyticsdebugger.database.TopAdsLogDB
 import com.tokopedia.analyticsdebugger.debugger.AnalyticsDebuggerConst
@@ -45,6 +46,7 @@ constructor(context: Context) {
             topAdsLogDB.eventType = data.eventType
             topAdsLogDB.sourceName = data.sourceName
             topAdsLogDB.timestamp = Date().time
+            topAdsLogDB.eventStatus = STATUS_PENDING
             topAdsLogDao.insertAll(topAdsLogDB)
             true
         }

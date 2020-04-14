@@ -8,7 +8,6 @@ class TopAdsLogModel() {
     var sourceName: String = ""
 
     val data: String
-        get() = "Url: " + url +
-                "\r\neventType: " + eventType +
-                "\r\nsourceName: " + sourceName
+        get() = "EventType: " + eventType +
+                "\r\nUrl: " + url
 }

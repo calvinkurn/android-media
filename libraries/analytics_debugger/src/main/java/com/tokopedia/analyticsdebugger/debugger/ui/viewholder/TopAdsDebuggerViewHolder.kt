@@ -1,35 +1,22 @@
 package com.tokopedia.analyticsdebugger.debugger.ui.viewholder
 
-import android.text.TextUtils
 import android.view.View
-import android.widget.TextView
-
 import androidx.annotation.LayoutRes
-
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.analyticsdebugger.R
+import com.tokopedia.analyticsdebugger.debugger.helper.getTopAdsStatusColor
 import com.tokopedia.analyticsdebugger.debugger.ui.model.TopAdsDebuggerViewModel
+import kotlinx.android.synthetic.main.item_topads_debugger.view.*
 
 class TopAdsDebuggerViewHolder(itemView: View) : AbstractViewHolder<TopAdsDebuggerViewModel>(itemView) {
 
-    private val urlText: TextView
-    private val eventTypeText: TextView
-    private val sourceNameText: TextView
-    private val timestamp: TextView
-
-
-    init {
-        urlText = itemView.findViewById(R.id.topads_text_url)
-        eventTypeText = itemView.findViewById(R.id.topads_text_event_type)
-        sourceNameText = itemView.findViewById(R.id.topads_text_source_name)
-        timestamp = itemView.findViewById(R.id.topads_text_timestamp)
-    }
-
     override fun bind(element: TopAdsDebuggerViewModel) {
-        urlText.text = element.url
-        eventTypeText.text = element.eventType
-        sourceNameText.text = element.sourceName
-        timestamp.text = element.timestamp
+        itemView.viewHolderUrlText.text = element.url
+        itemView.viewHolderEventTypeText.text = element.eventType
+        itemView.viewHolderSourceNameText.text = element.sourceName
+        itemView.viewHolderTimestampText.text = element.timestamp
+        itemView.viewHolderStatusText.text = element.eventStatus
+        itemView.viewHolderStatusText.setTextColor(getTopAdsStatusColor(itemView.context, element.eventStatus))
     }
 
     companion object {

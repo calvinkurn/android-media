@@ -52,7 +52,7 @@ internal object NotificationHelper {
 
     fun show(context: Context, data: TopAdsLogModel) {
         showNotif(context, NOTIF_ID_TOPADS_DEBUGGER, NOTIF_TITLE_TOPADS_DEBUGGER,
-                data.url, data.data, TopAdsDebuggerActivity.newInstance(context))
+                data.sourceName, data.data, TopAdsDebuggerActivity.newInstance(context))
     }
 
     private fun showNotif(context: Context, notifId: Int, contentTitle: String,

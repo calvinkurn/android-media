@@ -27,7 +27,7 @@
         <activity
             android:name=".debugger.ui.activity.TopAdsDebuggerActivity"
             android:launchMode="singleTask"
-            android:label="FPM Debugger"
+            android:label="Topads Verificator"
             android:taskAffinity="com.tokopedia.analytics.task"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"
             android:exported="true"/>

@@ -13,32 +13,60 @@
         android:padding="16dp">
 
         <TextView
-            android:id="@+id/topads_text_url"
-            style="@style/TextView.Title.Bold"
+            android:id="@+id/viewHolderSourceNameText"
+            style="@style/TextView"
+            android:textColor="@color/topads_item_source_name"
+            android:textSize="14sp"
+            android:textStyle="bold"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            tools:text="EventName" />
+            tools:text="Source Name" />
 
         <TextView
-            android:id="@+id/topads_text_event_type"
-            style="@style/TextView.Small"
+            android:id="@+id/viewHolderEventTypeText"
+            style="@style/TextView"
+            android:textColor="@color/topads_item_source_name"
+            android:textSize="14sp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             tools:text="eventCategory" />
 
         <TextView
-            android:id="@+id/topads_text_source_name"
-            style="@style/TextView.Micro.BlackDisabled"
+            android:id="@+id/viewHolderUrlText"
+            style="@style/TextView"
+            android:textColor="@color/topads_item_url"
+            android:textSize="12sp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            tools:text="{ dadfa:sdfasdfas...." />
+            tools:text="Url" />
 
-        <TextView
-            android:id="@+id/topads_text_timestamp"
-            style="@style/TextView.Micro.Bold"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_5"
-            tools:text="2018-01-01 01:01:01.000" />
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/viewHolderTimestampText"
+                style="@style/TextView"
+                android:textColor="@color/topads_item_source_name"
+                android:textSize="12sp"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                tools:text="2018-01-01 01:01:01.000" />
+
+            <TextView
+                android:id="@+id/viewHolderStatusText"
+                style="@style/TextView"
+                android:textColor="@color/topads_status_match"
+                android:textSize="10sp"
+                android:textStyle="bold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="Match" />
+
+        </LinearLayout>
+
     </LinearLayout>
 </androidx.cardview.widget.CardView>

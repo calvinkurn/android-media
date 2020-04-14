@@ -2,6 +2,7 @@ package com.tokopedia.analyticsdebugger.debugger.data.mapper
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.analyticsdebugger.database.TopAdsLogDB
+import com.tokopedia.analyticsdebugger.debugger.helper.formatDataExcerpt
 import com.tokopedia.analyticsdebugger.debugger.ui.model.TopAdsDebuggerViewModel
 import rx.Observable
 import rx.functions.Func1
@@ -21,8 +22,10 @@ internal constructor() : Func1<TopAdsLogDB, Observable<Visitable<*>>> {
         val viewModel = TopAdsDebuggerViewModel()
         viewModel.id = topAdsLogDB.id
         viewModel.url = topAdsLogDB.url
+        viewModel.previewUrl = formatDataExcerpt(topAdsLogDB.url)
         viewModel.eventType = topAdsLogDB.eventType
         viewModel.sourceName = topAdsLogDB.sourceName
+        viewModel.eventStatus = topAdsLogDB.eventStatus
         viewModel.timestamp = dateFormat.format(Date(topAdsLogDB.timestamp))
 
         return Observable.just(viewModel as Visitable<*>)

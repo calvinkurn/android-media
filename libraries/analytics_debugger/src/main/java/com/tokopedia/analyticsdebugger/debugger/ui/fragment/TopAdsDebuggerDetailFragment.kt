@@ -4,35 +4,29 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.analyticsdebugger.R
 import com.tokopedia.analyticsdebugger.debugger.AnalyticsDebuggerConst.DATA_DETAIL
+import com.tokopedia.analyticsdebugger.debugger.helper.getTopAdsStatusColor
 import com.tokopedia.analyticsdebugger.debugger.ui.model.TopAdsDebuggerViewModel
+import kotlinx.android.synthetic.main.fragment_topads_debugger_detail.*
 
 class TopAdsDebuggerDetailFragment : TkpdBaseV4Fragment() {
-    private var textTimestamp: TextView? = null
-    private var textEventType: TextView? = null
-    private var textSourceName: TextView? = null
     private var viewModel: TopAdsDebuggerViewModel? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_topads_debugger_detail, container, false)
-        textTimestamp = view.findViewById(R.id.topads_text_timestamp)
-        textEventType = view.findViewById(R.id.topads_text_event_type)
-        textSourceName = view.findViewById(R.id.topads_text_source_name)
-
-        return view
+        return inflater.inflate(R.layout.fragment_topads_debugger_detail, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        viewModel = arguments!!.getParcelable(DATA_DETAIL)
-
-        textTimestamp?.text = viewModel?.timestamp
-        textEventType?.text = viewModel?.eventType
-        textSourceName?.text = viewModel?.sourceName
-
+        viewModel = arguments?.getParcelable(DATA_DETAIL)
+        timestampText.text = viewModel?.timestamp
+        eventTypeText.text = viewModel?.eventType
+        sourceNameText.text = viewModel?.sourceName
+        urlText.text = viewModel?.url
+        statusText.text = viewModel?.eventStatus
+        statusText.setTextColor(getTopAdsStatusColor(context, viewModel?.eventStatus))
     }
 
     override fun getScreenName(): String {
