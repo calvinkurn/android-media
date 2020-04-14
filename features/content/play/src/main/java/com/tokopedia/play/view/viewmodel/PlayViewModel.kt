@@ -86,6 +86,9 @@ class PlayViewModel @Inject constructor(
         get() = _observableProductSheetContent
     val observableBadgeCart: LiveData<CartUiModel>
         get() = _observableBadgeCart
+    val observableScreenOrientation: LiveData<ScreenOrientation>
+        get() = _observableScreenOrientation
+
     val channelType: PlayChannelType
         get() {
             val channelInfo = _observableGetChannelInfo.value
@@ -132,10 +135,12 @@ class PlayViewModel @Inject constructor(
             val pinned = _observablePinned.value
             val videoStream = _observableVideoStream.value
             val bottomInsets = _observableBottomInsetsState.value
+            val screenOrientation = _observableScreenOrientation.value
             return StateHelperUiModel(
                     shouldShowPinned = pinned is PinnedMessageUiModel || pinned is PinnedProductUiModel,
                     channelType = videoStream?.channelType ?: PlayChannelType.Unknown,
-                    bottomInsets = bottomInsets ?: getDefaultBottomInsetsMapState()
+                    bottomInsets = bottomInsets ?: getDefaultBottomInsetsMapState(),
+                    screenOrientation = screenOrientation ?: ScreenOrientation.Unknown
             )
         }
 
@@ -159,6 +164,7 @@ class PlayViewModel @Inject constructor(
     private val _observableBottomInsetsState = MutableLiveData<Map<BottomInsetsType, BottomInsetsState>>()
     private val _observablePinned = MediatorLiveData<PinnedUiModel>()
     private val _observableBadgeCart = MutableLiveData<CartUiModel>()
+    private val _observableScreenOrientation = MutableLiveData<ScreenOrientation>()
     private val stateHandler: LiveData<Unit> = MediatorLiveData<Unit>().apply {
         addSource(playVideoManager.getObservablePlayVideoState()) {
             _observableVideoProperty.value = VideoPropertyUiModel(it)
@@ -467,6 +473,13 @@ class PlayViewModel @Inject constructor(
             BottomInsetsType.VariantSheet -> onHideVariantSheet()
         }
         return shownBottomSheets.isNotEmpty()
+    }
+
+    /**
+     * Set Screen Orientation
+     */
+    fun setScreenOrientation(screenOrientation: ScreenOrientation) {
+        _observableScreenOrientation.value = screenOrientation
     }
 
     private fun destroy() {

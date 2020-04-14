@@ -6,6 +6,7 @@ import com.tokopedia.play.component.ComponentEvent
 import com.tokopedia.play.view.type.BottomInsetsState
 import com.tokopedia.play.view.type.BottomInsetsType
 import com.tokopedia.play.view.type.PlayRoomEvent
+import com.tokopedia.play.view.type.ScreenOrientation
 import com.tokopedia.play.view.uimodel.*
 import com.tokopedia.play.view.wrapper.PlayResult
 
@@ -68,6 +69,12 @@ sealed class ScreenStateEvent : ComponentEvent {
      * Room Event
      */
     data class OnNewPlayRoomEvent(val event: PlayRoomEvent) : ScreenStateEvent()
+
+
+    /**
+     * Orientation
+     */
+    data class ScreenOrientationChanged(val orientation: ScreenOrientation, val stateHelper: StateHelperUiModel) : ScreenStateEvent()
 
     object OnNoMoreAction : ScreenStateEvent()
     object ShowOneTapOnboarding : ScreenStateEvent()

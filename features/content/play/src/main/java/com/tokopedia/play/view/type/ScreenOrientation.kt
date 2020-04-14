@@ -11,6 +11,9 @@ enum class ScreenOrientation(private val orientationInt: Int) {
     Landscape(Configuration.ORIENTATION_LANDSCAPE),
     Unknown(-1);
 
+    val isLandscape: Boolean
+        get() = this == Landscape
+
     companion object {
         private val values = values()
 

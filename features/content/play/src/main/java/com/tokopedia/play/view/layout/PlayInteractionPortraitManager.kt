@@ -38,7 +38,7 @@ class PlayInteractionPortraitManager(
         layoutChat(id = sendChatComponentId, likeComponentId = likeComponentId, sizeContainerComponentId = sizeContainerComponentId, videoControlComponentId = videoControlComponentId)
         layoutChatList(id = chatListComponentId, quickReplyComponentId = quickReplyComponentId, likeComponentId = likeComponentId, sizeContainerComponentId = sizeContainerComponentId)
         layoutPinned(id = pinnedComponentId, chatListComponentId = chatListComponentId, likeComponentId = likeComponentId, sizeContainerComponentId = sizeContainerComponentId)
-        layoutPlayButton(id = playButtonComponentId)
+        layoutPlayButton(id = playButtonComponentId, sizeContainerComponentId = sizeContainerComponentId)
         layoutImmersiveBox(id = immersiveBoxComponentId, toolbarComponentId = toolbarComponentId, pinnedComponentId = pinnedComponentId)
         layoutQuickReply(id = quickReplyComponentId, sendChatComponentId = sendChatComponentId, sizeContainerComponentId = sizeContainerComponentId)
         layoutGradientBackground(id = gradientBackgroundComponentId)
@@ -118,12 +118,12 @@ class PlayInteractionPortraitManager(
         }
     }
 
-    private fun layoutPlayButton(@IdRes id: Int) {
+    private fun layoutPlayButton(@IdRes id: Int, @IdRes sizeContainerComponentId: Int) {
         changeConstraint {
-            connect(id, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START)
-            connect(id, ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END)
-            connect(id, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP)
-            connect(id, ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM)
+            connect(id, ConstraintSet.START, sizeContainerComponentId, ConstraintSet.START)
+            connect(id, ConstraintSet.END, sizeContainerComponentId, ConstraintSet.END)
+            connect(id, ConstraintSet.TOP, sizeContainerComponentId, ConstraintSet.TOP)
+            connect(id, ConstraintSet.BOTTOM, sizeContainerComponentId, ConstraintSet.BOTTOM)
         }
     }
 

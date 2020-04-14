@@ -1,5 +1,6 @@
 package com.tokopedia.play_common.util
 
+import android.app.Activity
 import android.content.Context
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
@@ -17,28 +18,44 @@ class PlayLifecycleObserver(private val context: Context) : LifecycleObserver {
     @Volatile
     private var isVideoPlaying = playVideoManager.isVideoPlaying()
 
+    private val isChangingConfig: Boolean
+        get() {
+            return try {
+                val activity = context as Activity?
+                activity?.isChangingConfigurations ?: throw IllegalStateException("Activity is null")
+            } catch (e: Exception) {
+                false
+            }
+        }
+
     @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
     fun onPause() {
         synchronized(this) {
-            isVideoPlaying = playVideoManager.isVideoPlaying()
+            if (!isChangingConfig) {
+                isVideoPlaying = playVideoManager.isVideoPlaying()
 
-            playVideoManager.pauseCurrentVideo(true)
-            playVideoManager.muteVideo(true)
+                playVideoManager.pauseCurrentVideo(true)
+                playVideoManager.muteVideo(true)
+            }
         }
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
     fun onResume() {
         synchronized(this) {
-            if (isVideoPlaying) playVideoManager.resumeCurrentVideo()
-            playVideoManager.muteVideo(false)
+            if (!isChangingConfig) {
+                if (isVideoPlaying) playVideoManager.resumeCurrentVideo()
+                playVideoManager.muteVideo(false)
+            }
         }
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
     fun onDestroy() {
         synchronized(this) {
-            playVideoManager.stopPlayer()
+            if (!isChangingConfig) {
+                playVideoManager.stopPlayer()
+            }
         }
     }
 }

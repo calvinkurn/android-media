@@ -35,11 +35,12 @@ open class ToolbarComponent(
                             ScreenStateEvent.Init -> uiView.show()
                             is ScreenStateEvent.SetPartnerInfo ->
                                 uiView.setPartnerInfo(it.partnerInfo)
-                            is ScreenStateEvent.BottomInsetsChanged -> if (it.isAnyShown) uiView.hide() else uiView.show()
+                            is ScreenStateEvent.BottomInsetsChanged -> if (!it.isAnyShown && !it.stateHelper.isLandscape) uiView.show() else uiView.hide()
                             is ScreenStateEvent.OnNewPlayRoomEvent -> if(it.event.isFreeze || it.event.isBanned) uiView.show()
                             is ScreenStateEvent.OnNoMoreAction -> uiView.hideActionMore()
                             is ScreenStateEvent.FollowPartner -> uiView.setFollowStatus(it.shouldFollow)
                             is ScreenStateEvent.SetTotalCart -> uiView.setCartInfo(it.cartUiModel)
+                            is ScreenStateEvent.ScreenOrientationChanged -> if (it.orientation.isLandscape) uiView.hide() else uiView.show()
                         }
                     }
         }

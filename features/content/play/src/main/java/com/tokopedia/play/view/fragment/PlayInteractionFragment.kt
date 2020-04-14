@@ -2,6 +2,7 @@ package com.tokopedia.play.view.fragment
 
 import android.app.Activity
 import android.content.Intent
+import android.content.res.Configuration
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -208,6 +209,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
         observeLikeContent()
         observeBottomInsetsState()
         observeEventUserInfo()
+        observeScreenOrientation()
 
         observeLoggedInInteractionEvent()
     }
@@ -380,7 +382,9 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
                         )
 
             }.apply {
-                invokeOnCompletion { requireView().visible() }
+                invokeOnCompletion {
+                    view?.visible()
+                }
             }
         })
     }
@@ -401,6 +405,10 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
 
     private fun observeCartInfo() {
         playViewModel.observableBadgeCart.observe(viewLifecycleOwner, Observer(::setCartInfo))
+    }
+
+    private fun observeScreenOrientation() {
+        playViewModel.observableScreenOrientation.observe(viewLifecycleOwner, Observer(::sendOrientationEvent))
     }
     //endregion
 
@@ -675,6 +683,16 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
                     .emit(
                             ScreenStateEvent::class.java,
                             ScreenStateEvent.SetTotalCart(cartUiModel)
+                    )
+        }
+    }
+
+    private fun sendOrientationEvent(screenOrientation: ScreenOrientation) {
+        launch {
+            EventBusFactory.get(viewLifecycleOwner)
+                    .emit(
+                            ScreenStateEvent::class.java,
+                            ScreenStateEvent.ScreenOrientationChanged(screenOrientation, playViewModel.stateHelper)
                     )
         }
     }
