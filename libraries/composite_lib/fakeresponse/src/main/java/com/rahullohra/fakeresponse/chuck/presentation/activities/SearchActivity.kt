@@ -6,6 +6,7 @@ import android.widget.ProgressBar
 import android.widget.ViewFlipper
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatTextView
+import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -35,6 +36,7 @@ class SearchActivity : AppCompatActivity() {
     lateinit var recyclerView: RecyclerView
     lateinit var viewFlipper: ViewFlipper
     lateinit var tvResult: AppCompatTextView
+    lateinit var toolbar: Toolbar
 
     lateinit var viewModel: SearchViewModel
     lateinit var adapter: SearchAdapter
@@ -48,6 +50,8 @@ class SearchActivity : AppCompatActivity() {
     val CONTAINER_LIST = 0
     val CONTAINER_PROGRESS = 1
     val CONTAINER_EMPTY = 2
+
+    var isSelectionMode = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -72,6 +76,7 @@ class SearchActivity : AppCompatActivity() {
         recyclerView = findViewById(R.id.rv)
         viewFlipper = findViewById(R.id.viewFlipper)
         tvResult = findViewById(R.id.tvResult)
+        toolbar = findViewById(R.id.toolbar)
 
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.VERTICAL))
@@ -80,6 +85,23 @@ class SearchActivity : AppCompatActivity() {
         }, { type, isChecked -> })
 
         recyclerView.adapter = adapter
+
+        setToolbar()
+    }
+
+    fun setToolbar() {
+        setSupportActionBar(toolbar)
+        toolbar.setNavigationOnClickListener {
+            toggleSelectionMode()
+        }
+    }
+
+    fun toggleSelectionMode(){
+        isSelectionMode = !isSelectionMode
+        searchList.forEach {
+            it.isInExportMode = isSelectionMode
+        }
+        adapter.notifyDataSetChanged()
     }
 
     fun setObservers() {

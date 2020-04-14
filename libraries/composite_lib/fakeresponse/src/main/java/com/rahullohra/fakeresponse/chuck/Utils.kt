@@ -24,6 +24,9 @@ object Utils{
                 return@forEach
             }
         }
+        if(requestBody.isNullOrEmpty()){
+            isGql = false
+        }
 
         return TransactionEntity(responseBody = responseBody,
                 requestBody = requestBody,
