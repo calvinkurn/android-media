@@ -44,6 +44,7 @@ class RecommendationPageTracking {
         private const val FIELD_DIMENSION_40 = "dimension40"
         private const val FIELD_DIMENSION_45 = "dimension45"
         private const val FIELD_DIMENSION_83 = "dimension83"
+        private const val FIELD_DIMENSION_90 = "dimension90"
 
         private const val VALUE_NONE_OTHER = "none / other"
         private const val VALUE_IDR = "IDR"
@@ -101,7 +102,8 @@ class RecommendationPageTracking {
 
         private fun convertRecommendationItemToDataImpressionObject(item: RecommendationItem,
                                                                     list: String,
-                                                                    position: String): Any  {
+                                                                    position: String,
+                                                                    internalRef: String): Any  {
             return DataLayer.mapOf(
                     FIELD_PRODUCT_NAME, item.name,
                     FIELD_PRODUCT_ID, item.productId,
@@ -111,13 +113,15 @@ class RecommendationPageTracking {
                     FIELD_PRODUCT_CATEGORY, item.categoryBreadcrumbs,
                     FIELD_PRODUCT_LIST, list,
                     FIELD_PRODUCT_POSITION, position,
-                    FIELD_DIMENSION_83, if(item.isFreeOngkirActive) VALUE_BEBAS_ONGKIR else VALUE_NONE_OTHER
+                    FIELD_DIMENSION_83, if(item.isFreeOngkirActive) VALUE_BEBAS_ONGKIR else VALUE_NONE_OTHER,
+                    FIELD_DIMENSION_90, internalRef
             )
         }
 
         private fun convertRecommendationItemToDataClickObject(item: RecommendationItem,
                                                                list: String,
-                                                               position: String): Any  {
+                                                               position: String,
+                                                               internalRef: String): Any  {
             return DataLayer.mapOf(
                     FIELD_ACTION_FIELD, DataLayer.mapOf(
                     FIELD_PRODUCT_LIST, list
@@ -131,7 +135,8 @@ class RecommendationPageTracking {
                             FIELD_PRODUCT_VARIANT, VALUE_NONE_OTHER,
                             FIELD_PRODUCT_CATEGORY, item.categoryBreadcrumbs,
                             FIELD_PRODUCT_POSITION, position,
-                            FIELD_DIMENSION_83, if(item.isFreeOngkirActive) VALUE_BEBAS_ONGKIR else VALUE_NONE_OTHER
+                            FIELD_DIMENSION_83, if(item.isFreeOngkirActive) VALUE_BEBAS_ONGKIR else VALUE_NONE_OTHER,
+                            FIELD_DIMENSION_90, internalRef
                     )
             )
             )
@@ -139,7 +144,8 @@ class RecommendationPageTracking {
 
         private fun convertPrimaryProductToDataImpressionObject(item: RecommendationItem,
                                                                 list: String,
-                                                                position: String): Any {
+                                                                position: String,
+                                                                internalRef: String): Any {
             return DataLayer.mapOf(
                     FIELD_PRODUCT_NAME, item.name,
                     FIELD_PRODUCT_ID, item.productId,
@@ -148,13 +154,15 @@ class RecommendationPageTracking {
                     FIELD_PRODUCT_CATEGORY, item.categoryBreadcrumbs,
                     FIELD_PRODUCT_VARIANT, VALUE_NONE_OTHER,
                     FIELD_PRODUCT_LIST, list,
-                    FIELD_PRODUCT_POSITION, position
+                    FIELD_PRODUCT_POSITION, position,
+                    FIELD_DIMENSION_90, internalRef
             )
         }
 
         private fun convertPrimaryProductToDataClickObject(item: RecommendationItem,
                                                            list: String,
-                                                           position: String): Any {
+                                                           position: String,
+                                                           internalRef: String): Any {
             return DataLayer.mapOf(
                     FIELD_ACTION_FIELD, DataLayer.mapOf(
                     FIELD_PRODUCT_LIST, list
@@ -168,7 +176,8 @@ class RecommendationPageTracking {
                             FIELD_PRODUCT_CATEGORY, item.categoryBreadcrumbs,
                             FIELD_PRODUCT_VARIANT, VALUE_NONE_OTHER,
                             FIELD_PRODUCT_LIST, list,
-                            FIELD_PRODUCT_POSITION, position
+                            FIELD_PRODUCT_POSITION, position,
+                            FIELD_DIMENSION_90, internalRef
                     )
             )
             )
@@ -213,7 +222,8 @@ class RecommendationPageTracking {
         fun eventClickPrimaryProduct(
                 recommendationItem: RecommendationItem,
                 position: String,
-                ref: String) {
+                ref: String,
+                internalRef: String) {
 
             val tracker = getTracker()
             val data = DataLayer.mapOf(
@@ -230,7 +240,8 @@ class RecommendationPageTracking {
                                     else
                                         VALUE_LIST_PRIMARY_PRODUCT_RECOMMENDATION_WITH_SOURCE,
                             if(ref.isEmpty()) "null" else ref),
-                            position
+                            position,
+                            internalRef
                         )
                     )
             )
@@ -242,7 +253,8 @@ class RecommendationPageTracking {
         fun eventImpressionPrimaryProduct(
                 recommendationItem: RecommendationItem,
                 position: String,
-                ref: String) {
+                ref: String,
+                internalRef: String) {
 
             val tracker = getTracker()
             val data = DataLayer.mapOf(
@@ -260,7 +272,8 @@ class RecommendationPageTracking {
                                                 VALUE_LIST_PRIMARY_PRODUCT_RECOMMENDATION_WITH_SOURCE
                                             else VALUE_LIST_PRIMARY_PRODUCT_RECOMMENDATION_WITH_SOURCE_TOP_ADS,
                                             if(ref.isEmpty()) "null" else ref),
-                                    position
+                                    position,
+                                    internalRef
                             )
                         )
                     )
@@ -336,7 +349,8 @@ class RecommendationPageTracking {
                 headerName: String,
                 recommendationItem: RecommendationItem,
                 position: String,
-                ref: String
+                ref: String,
+                internalRef: String
         ){
 
             val tracker = getTracker()
@@ -352,7 +366,7 @@ class RecommendationPageTracking {
                                 recommendationItem.pageName,
                                 recommendationItem.recommendationType,
                                 if(ref.isEmpty()) "null" else ref
-                        ), position)
+                        ), position, internalRef)
                     )
             )
             tracker.sendEnhanceEcommerceEvent(data)
@@ -364,7 +378,8 @@ class RecommendationPageTracking {
                 headerName: String,
                 recommendationItem: RecommendationItem,
                 position: String,
-                ref: String
+                ref: String,
+                internalRef: String
         ){
 
             val tracker = getTracker()
@@ -380,7 +395,7 @@ class RecommendationPageTracking {
                             recommendationItem.pageName,
                             recommendationItem.recommendationType,
                             if(ref.isEmpty()) "null" else ref
-                        ), position)
+                        ), position, internalRef)
                     )
             )
             tracker.sendEnhanceEcommerceEvent(data)
@@ -393,7 +408,8 @@ class RecommendationPageTracking {
                 headerName: String,
                 recommendationItem: RecommendationItem,
                 position: String,
-                ref: String
+                ref: String,
+                internalRef: String
         ){
             val data = DataLayer.mapOf(
                     EVENT, EVENT_PRODUCT_VIEW,
@@ -411,7 +427,9 @@ class RecommendationPageTracking {
                                             else VALUE_LIST_RECOMMENDATION_PRODUCT_CLICK_WITH_SOURCE,
                                             recommendationItem.pageName, recommendationItem.recommendationType,
                                             if(ref.isEmpty()) "null" else ref
-                                    ), position)
+                                    ),
+                                    position,
+                                    internalRef)
                         )
                     )
             )
@@ -425,7 +443,8 @@ class RecommendationPageTracking {
                 headerName: String,
                 recommendationItem: RecommendationItem,
                 position: String,
-                ref: String
+                ref: String,
+                internalRef: String
         ){
             val data = DataLayer.mapOf(
                     EVENT, EVENT_PRODUCT_VIEW,
@@ -439,7 +458,7 @@ class RecommendationPageTracking {
                                 String.format(
                                         if(recommendationItem.isTopAds) VALUE_LIST_RECOMMENDATION_PRODUCT_CLICK_TOP_ADS_WITH_SOURCE_NON_LOGIN else VALUE_LIST_RECOMMENDATION_PRODUCT_CLICK_WITH_SOURCE_NON_LOGIN,
                                         recommendationItem.pageName, recommendationItem.recommendationType, if(ref.isEmpty()) "null" else ref
-                                ), position)
+                                ), position, internalRef)
                         )
                     )
             )
@@ -550,7 +569,8 @@ class RecommendationPageTracking {
         fun eventClickPrimaryProductWithProductId(
                 recommendationItem: RecommendationItem,
                 position: String,
-                ref: String) {
+                ref: String,
+                internalRef: String) {
 
             val tracker = getTracker()
             val data = DataLayer.mapOf(
@@ -567,7 +587,8 @@ class RecommendationPageTracking {
                             else
                                 VALUE_LIST_PRIMARY_PRODUCT_RECOMMENDATION_PRODUCT_ID_WITH_SOURCE,
                             if(ref.isEmpty()) "null" else ref),
-                    position
+                    position,
+                    internalRef
             )
             )
             )
@@ -579,7 +600,8 @@ class RecommendationPageTracking {
         fun eventImpressionPrimaryProductWithProductId(
                 recommendationItem: RecommendationItem,
                 position: String,
-                ref: String) {
+                ref: String,
+                internalRef: String) {
 
             val tracker = getTracker()
             val data = DataLayer.mapOf(
@@ -597,7 +619,8 @@ class RecommendationPageTracking {
                                         VALUE_LIST_PRIMARY_PRODUCT_RECOMMENDATION_PRODUCT_ID_WITH_SOURCE
                                     else VALUE_LIST_PRIMARY_PRODUCT_RECOMMENDATION_PRODUCT_ID_WITH_SOURCE_TOP_ADS,
                                     if(ref.isEmpty()) "null" else ref),
-                            position
+                            position,
+                            internalRef
                     )
             )
             )
@@ -731,7 +754,8 @@ class RecommendationPageTracking {
                 headerName: String,
                 recommendationItem: RecommendationItem,
                 position: String,
-                ref: String
+                ref: String,
+                internalRef: String
         ){
             val data = DataLayer.mapOf(
                     EVENT, EVENT_PRODUCT_VIEW,
@@ -749,7 +773,7 @@ class RecommendationPageTracking {
                                     else VALUE_LIST_RECOMMENDATION_PRODUCT_CLICK_PRODUCT_ID_WITH_SOURCE,
                                     recommendationItem.pageName, recommendationItem.recommendationType,
                                     if(ref.isEmpty()) "null" else ref
-                            ), position)
+                            ), position, internalRef)
             )
             )
             )
@@ -762,7 +786,8 @@ class RecommendationPageTracking {
                 headerName: String,
                 recommendationItem: RecommendationItem,
                 position: String,
-                ref: String
+                ref: String,
+                internalRef: String
         ){
             val data = DataLayer.mapOf(
                     EVENT, EVENT_PRODUCT_VIEW,
@@ -776,7 +801,7 @@ class RecommendationPageTracking {
                             String.format(
                                     if(recommendationItem.isTopAds) VALUE_LIST_RECOMMENDATION_PRODUCT_CLICK_PRODUCT_ID_TOP_ADS_WITH_SOURCE_NON_LOGIN else VALUE_LIST_RECOMMENDATION_PRODUCT_CLICK_PRODUCT_ID_WITH_SOURCE_NON_LOGIN,
                                     recommendationItem.pageName, recommendationItem.recommendationType, if(ref.isEmpty()) "null" else ref
-                            ), position)
+                            ), position, internalRef)
             )
             )
             )
@@ -788,7 +813,8 @@ class RecommendationPageTracking {
                 headerName: String,
                 recommendationItem: RecommendationItem,
                 position: String,
-                ref: String
+                ref: String,
+                internalRef: String
         ){
 
             val tracker = getTracker()
@@ -804,7 +830,7 @@ class RecommendationPageTracking {
                     recommendationItem.pageName,
                     recommendationItem.recommendationType,
                     if(ref.isEmpty()) "null" else ref
-            ), position)
+            ), position, internalRef)
             )
             )
             tracker.sendEnhanceEcommerceEvent(data)
@@ -815,7 +841,8 @@ class RecommendationPageTracking {
                 headerName: String,
                 recommendationItem: RecommendationItem,
                 position: String,
-                ref: String
+                ref: String,
+                internalRef: String
         ){
 
             val tracker = getTracker()
@@ -831,7 +858,7 @@ class RecommendationPageTracking {
                     recommendationItem.pageName,
                     recommendationItem.recommendationType,
                     if(ref.isEmpty()) "null" else ref
-            ), position)
+            ), position, internalRef)
             )
             )
             tracker.sendEnhanceEcommerceEvent(data)
