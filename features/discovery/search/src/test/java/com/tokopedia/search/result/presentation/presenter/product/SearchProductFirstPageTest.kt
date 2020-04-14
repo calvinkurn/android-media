@@ -128,8 +128,6 @@ internal class SearchProductFirstPageTest: ProductListPresenterTestFixtures() {
 
     @Test
     fun `Load Data Success Is First Time Load`() {
-        val requestParamsSlot = slot<RequestParams>()
-
         `Given Search Product API will return SearchProductModel`(searchProductModelCommon)
         `Given View is first active tab`()
         `Given View reload data immediately calls load data`()

@@ -96,7 +96,7 @@ internal class SearchProductHandleWishlistActionTest: ProductListPresenterTestFi
     private fun `Then verify wishlist tracking model is correct`(expectedWishlistTrackingModel: WishlistTrackingModel) {
         val wishlistTrackingModel = slotWishlistTrackingModel.captured
 
-        wishlistTrackingModel.assert(wishlistTrackingModel)
+        wishlistTrackingModel.assert(expectedWishlistTrackingModel)
     }
 
     @Test
