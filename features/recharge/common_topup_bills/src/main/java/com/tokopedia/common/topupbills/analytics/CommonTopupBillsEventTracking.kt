@@ -16,6 +16,7 @@ interface CommonTopupBillsEventTracking {
 
     interface Category {
         companion object {
+            const val DIGITAL_NATIVE = "digital - native"
             const val DIGITAL_HOMEPAGE = "digital - homepage"
             const val DIGITAL_CHECKOUT = "digital - checkout"
         }
@@ -28,6 +29,15 @@ interface CommonTopupBillsEventTracking {
             const val VIEW_CHECKOUT = "view checkout"
             const val CLICK_PROCEED_TO_PAYMENT = "click proceed to payment"
             const val CLICK_REMOVE_PROMO = "click 'x' on promo"
+        }
+    }
+
+    interface Label {
+        companion object {
+            const val INSTANT = "instant"
+            const val NO_INSTANT = "no instant"
+            const val PROMO = "promo"
+            const val NO_PROMO = "no promo"
         }
     }
 

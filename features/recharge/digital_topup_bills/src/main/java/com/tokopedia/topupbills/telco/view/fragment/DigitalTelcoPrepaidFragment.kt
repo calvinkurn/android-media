@@ -91,7 +91,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
                 }
 
                 productId = it.product.id.toIntOrZero()
-                price = it.product.attributes.pricePlain.toLong()
+                price = it.product.attributes.pricePlain
                 checkVoucherWithDelay()
 
                 checkoutPassData = DigitalCheckoutPassData.Builder()

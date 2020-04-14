@@ -106,7 +106,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
             value?.run {
                 productId = id.toIntOrNull() ?: 0
                 productName = title
-                this@RechargeGeneralFragment.price = price.toLongOrNull()
+                this@RechargeGeneralFragment.price = price.toIntOrNull() ?: 0
 
                 // Show product info ticker
                 if (description.isNotEmpty()) {
@@ -162,7 +162,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
             if (savedEnquiryData != null) {
                 enquiryData = savedEnquiryData
                 productId = enquiryData?.attributes?.productId?.toIntOrNull() ?: 0
-                price = enquiryData?.attributes?.price?.toLongOrNull() ?: 0L
+                price = enquiryData?.attributes?.price?.toIntOrNull() ?: 0
             }
 
             adapter = RechargeGeneralAdapter(it, RechargeGeneralAdapterFactory(this), this)
@@ -802,7 +802,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
 
     override fun processEnquiry(data: TopupBillsEnquiryData) {
         enquiryData = data.enquiry
-        price = data.enquiry.attributes.pricePlain.toLong()
+        price = data.enquiry.attributes.pricePlain
         renderCheckoutView(data.enquiry)
     }
 

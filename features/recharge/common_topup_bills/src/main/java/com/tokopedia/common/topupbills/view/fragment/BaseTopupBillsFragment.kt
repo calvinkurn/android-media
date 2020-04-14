@@ -66,7 +66,7 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
     var isCoupon: Boolean = false
     open var categoryId: Int = 0
     var productId: Int = 0
-    var price: Long? = null
+    var price: Int = 0
 
     // Express Checkout
     var isExpressCheckout = false
@@ -146,12 +146,12 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
                         if (it.data.needsOtp) {
                             requestOtp()
                         } else {
-                            commonTopupBillsAnalytics.eventBuy(
+                            commonTopupBillsAnalytics.eventExpressCheckout(
                                     categoryName,
                                     operatorName,
                                     productId.toString(),
                                     productName,
-                                    price.toString(),
+                                    price,
                                     isInstantCheckout,
                                     promoCode.isNotEmpty()
                             )
@@ -171,7 +171,7 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
             promoCode = getString(EXTRA_PROMO_CODE, promoCode)
             categoryId = getInt(EXTRA_CATEGORY_ID, categoryId)
             productId = getInt(EXTRA_PRODUCT_ID, productId)
-            price = getLong(EXTRA_PRODUCT_PRICE, 0L)
+            price = getInt(EXTRA_PRODUCT_PRICE, price)
             isExpressCheckout = getBoolean(EXTRA_IS_EXPRESS_CHECKOUT, isExpressCheckout)
         }
 
@@ -193,7 +193,7 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
         outState.putInt(EXTRA_CATEGORY_ID, categoryId)
         outState.putInt(EXTRA_PRODUCT_ID, productId)
         outState.putBoolean(EXTRA_IS_EXPRESS_CHECKOUT, isExpressCheckout)
-        price?.run { outState.putLong(EXTRA_PRODUCT_PRICE, this) }
+        outState.putInt(EXTRA_PRODUCT_PRICE, price)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -273,7 +273,7 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
         val promoModel = PromoDigitalModel()
         promoModel.categoryId = if (categoryId > 0) categoryId else 0
         promoModel.productId = if (productId > 0) productId else 0
-        price?.run { promoModel.price = this }
+        promoModel.price = price.toLong()
         return promoModel
     }
 
@@ -329,14 +329,16 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
     }
 
     fun getFavoriteNumbers(categoryId: Int) {
-        topupBillsViewModel.getFavoriteNumbers(GraphqlHelper.loadRawString(resources, R.raw.query_fav_number_digital),
+        topupBillsViewModel.getFavoriteNumbers(
+                GraphqlHelper.loadRawString(resources, R.raw.query_fav_number_digital),
                 topupBillsViewModel.createFavoriteNumbersParams(categoryId))
     }
 
     fun checkVoucher() {
         promoTicker?.toggleLoading(true)
-        topupBillsViewModel.checkVoucher(promoCode, PromoDigitalModel(categoryId, productId, price = price
-                ?: 0))
+        topupBillsViewModel.checkVoucher(promoCode,
+                PromoDigitalModel(categoryId, productId, price = price.toLong())
+        )
     }
 
     private fun processExpressCheckout(checkOtp: Boolean = false) {
@@ -345,11 +347,12 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
             if (state == TickerPromoStackingCheckoutView.State.ACTIVE) promoCode else ""
         } ?: ""
         if (productId > 0) {
-            topupBillsViewModel.processExpressCheckout(GraphqlHelper.loadRawString(resources, R.raw.query_recharge_express_checkout),
+            topupBillsViewModel.processExpressCheckout(
+                    GraphqlHelper.loadRawString(resources, R.raw.query_recharge_express_checkout),
                     topupBillsViewModel.createExpressCheckoutParams(
                             productId,
                             inputFields,
-                            price ?: 0,
+                            price,
                             voucherCode,
                             checkOtp))
         }

@@ -19,19 +19,22 @@ class CommonTopupBillsAnalytics {
     fun eventClickRemovePromo() {
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 Event.CLICK_HOMEPAGE,
-                Category.DIGITAL_HOMEPAGE,
+                Category.DIGITAL_NATIVE,
                 Action.CLICK_REMOVE_PROMO,
                 ""
         )
     }
 
-    fun eventBuy(categoryName: String,
-                 operatorName: String,
-                 productId: String,
-                 productName: String,
-                 productPrice: String,
-                 isInstantCheckout: Boolean = false,
-                 isPromoUsed: Boolean = false) {
+    fun eventExpressCheckout(categoryName: String,
+                             operatorName: String,
+                             productId: String,
+                             productName: String,
+                             productPrice: Int,
+                             isInstantCheckout: Boolean = false,
+                             isPromoUsed: Boolean = false) {
+        val isInstantCheckoutValue = if (isInstantCheckout) Label.INSTANT else Label.NO_INSTANT
+        val isPromoUsedValue = if (isPromoUsed) Label.PROMO else Label.NO_PROMO
+
         // Click Buy
         val clickBuyEnhanceEccomerce = with(EnhanceEccomerce) {
             DataLayer.mapOf(
@@ -59,7 +62,7 @@ class CommonTopupBillsAnalytics {
                         TrackAppUtils.EVENT, Event.ADD_TO_CART,
                         TrackAppUtils.EVENT_CATEGORY, Category.DIGITAL_HOMEPAGE,
                         TrackAppUtils.EVENT_ACTION, Action.CLICK_BUY,
-                        TrackAppUtils.EVENT_LABEL, "$categoryName - $operatorName - $isInstantCheckout",
+                        TrackAppUtils.EVENT_LABEL, "$categoryName - $operatorName - $isInstantCheckoutValue",
                         ECOMMERCE, clickBuyEnhanceEccomerce
                 )
         )
@@ -76,7 +79,7 @@ class CommonTopupBillsAnalytics {
                         NAME, productName,
                         ID, productId,
                         PRICE, productPrice,
-                        BRAND, "",
+                        BRAND, operatorName,
                         CATEGORY, categoryName,
                         VARIANT, "",
                         QUANTITY, 1,
@@ -111,15 +114,10 @@ class CommonTopupBillsAnalytics {
                         NAME, productName,
                         ID, productId,
                         PRICE, productPrice,
-                        BRAND, "",
+                        BRAND, operatorName,
                         CATEGORY, categoryName,
                         VARIANT, "",
-                        QUANTITY, 1,
-                        DIMENSION_79, "",
-                        DIMENSION_81, "",
-                        DIMENSION_80, "",
-                        DIMENSION_82, "",
-                        DIMENSION_45, ""
+                        QUANTITY, 1
                     ))
                 )
             )
@@ -129,7 +127,7 @@ class CommonTopupBillsAnalytics {
                         TrackAppUtils.EVENT, Event.CHECKOUT,
                         TrackAppUtils.EVENT_CATEGORY, Category.DIGITAL_CHECKOUT,
                         TrackAppUtils.EVENT_ACTION, Action.CLICK_PROCEED_TO_PAYMENT,
-                        TrackAppUtils.EVENT_LABEL, "$categoryName - $operatorName - $isPromoUsed",
+                        TrackAppUtils.EVENT_LABEL, "$categoryName - $operatorName - $isPromoUsedValue",
                         ECOMMERCE, clickPaymentEnhanceEccomerce
                 )
         )

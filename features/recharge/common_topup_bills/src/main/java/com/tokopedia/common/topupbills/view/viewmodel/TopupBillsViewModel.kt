@@ -228,7 +228,7 @@ class TopupBillsViewModel @Inject constructor(private val graphqlRepository: Gra
 
     fun createExpressCheckoutParams(productId: Int,
                                     inputs: Map<String, String>,
-                                    transactionAmount: Long = 0,
+                                    transactionAmount: Int = 0,
                                     voucherCode: String = "",
                                     checkOtp: Boolean = false,
                                     isInstantCheckout: Boolean = false,

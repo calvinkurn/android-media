@@ -86,7 +86,8 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
             field = value
             if (value != null) {
                 productId = value.id.toIntOrNull() ?: 0
-                price = value.attributes.pricePlain.toLongOrNull()
+                productName = value.attributes.desc
+                price = value.attributes.pricePlain.toIntOrNull() ?: 0
                 checkVoucherWithDelay()
             }
         }
