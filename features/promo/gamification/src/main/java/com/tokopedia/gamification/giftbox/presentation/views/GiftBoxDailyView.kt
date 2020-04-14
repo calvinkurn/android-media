@@ -73,7 +73,6 @@ open class GiftBoxDailyView : FrameLayout {
         imageShadow = findViewById(R.id.imageShadow)
 
         imageFlatGlow.alpha = 0f
-
     }
 
 
