@@ -82,6 +82,8 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), LogoutView, General
     private lateinit var notifPreference: NotifPreference
     private lateinit var googleSignInClient: GoogleSignInClient
 
+    private val remoteConfig by lazy { FirebaseRemoteConfigImpl(context) }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         accountAnalytics = AccountAnalytics(activity)
@@ -168,6 +170,11 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), LogoutView, General
                 settingItems.add(SettingItemViewModel(SettingConstant.SETTING_TEMPLATE_ID,
                         getString(R.string.title_tkpd_template_setting), getString(R.string.subtitle_template_setting)))
             }
+        }
+
+        if (remoteConfig.getBoolean(RemoteConfigKey.ENABLE_ONE_CLICK_CHECKOUT, true)) {
+            settingItems.add(SettingItemViewModel(SettingConstant.SETTING_OCC_PREFERENCE_ID,
+                    getString(R.string.title_occ_preference_setting), getString(R.string.subtitle_occ_preference_setting)))
         }
 
         settingItems.add(SettingItemViewModel(SettingConstant.SETTING_NOTIFICATION_ID,
@@ -267,6 +274,9 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), LogoutView, General
             SettingConstant.SETTING_DEV_OPTIONS -> if (GlobalConfig.isAllowDebuggingTools()) {
                 accountAnalytics.eventClickSetting(DEVELOPER_OPTIONS)
                 RouteManager.route(activity, ApplinkConst.DEVELOPER_OPTIONS)
+            }
+            SettingConstant.SETTING_OCC_PREFERENCE_ID -> {
+                RouteManager.route(context, ApplinkConstInternalMarketplace.PREFERENCE_LIST)
             }
             else -> {
             }

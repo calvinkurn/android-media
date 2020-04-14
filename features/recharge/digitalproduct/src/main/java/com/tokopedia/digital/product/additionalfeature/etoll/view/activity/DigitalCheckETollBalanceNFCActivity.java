@@ -58,10 +58,6 @@ import javax.inject.Inject;
 /**
  * Created by Rizky on 15/05/18.
  *
- * applink
- * tokopedia-android-internal://digital/smartcard/emoney
- * or
- * RouteManager.route(this, ApplinkConsInternalDigital.SMARTCARD_EMONEY)
  */
 
 public class DigitalCheckETollBalanceNFCActivity extends BaseSimpleActivity

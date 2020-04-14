@@ -5,7 +5,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.*
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.dynamic_icon.DynamicIconSectionViewModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.spotlight.SpotlightViewModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.GeolocationPromptViewModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.GeoLocationPromptDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderViewModel
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeRecommendationFeedViewModel
 
@@ -18,7 +18,7 @@ interface HomeTypeFactory {
 
     fun type(homepageBannerDataModel: HomepageBannerDataModel): Int
 
-    fun type(tickerViewModel: TickerViewModel): Int
+    fun type(tickerDataModel: TickerDataModel): Int
 
     fun type(businessUnitWidgetDataModel: NewBusinessUnitWidgetDataModel): Int
 
@@ -42,9 +42,9 @@ interface HomeTypeFactory {
 
     fun type(homeRecommendationFeedViewModel: HomeRecommendationFeedViewModel): Int
 
-    fun type(geolocationPromptViewModel: GeolocationPromptViewModel): Int
+    fun type(geoLocationPromptDataModel: GeoLocationPromptDataModel): Int
 
-    fun type(reviewViewModel: ReviewViewModel): Int
+    fun type(reviewDataModel: ReviewDataModel): Int
 
     fun type(playCard: PlayCardViewModel): Int
 
@@ -52,5 +52,5 @@ interface HomeTypeFactory {
 
     fun type(homeRetryModel: HomeRetryModel): Int
 
-    fun type(popularKeywordListViewModel: PopularKeywordListViewModel): Int
+    fun type(popularKeywordListDataModel: PopularKeywordListDataModel): Int
 }
