@@ -14,7 +14,7 @@ import com.tokopedia.flight.search.presentation.model.FlightSearchMetaModel
 import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataModel
 import com.tokopedia.flight.search.presentation.model.filter.FlightFilterModel
 import com.tokopedia.flight.searchV4.data.cloud.single.FlightSearchRequestModel
-import com.tokopedia.flight.searchV4.domain.FlightSearchUseCase
+import com.tokopedia.flight.searchV4.domain.FlightSearchSingleUseCase
 import com.tokopedia.flight.searchV4.domain.FlightSortAndFilterUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import kotlinx.coroutines.delay
@@ -25,7 +25,7 @@ import javax.inject.Inject
  * @author by furqan on 09/04/2020
  */
 open class FlightSearchViewModel @Inject constructor(
-        private val flightSearchUseCase: FlightSearchUseCase,
+        private val flightSearchSingleUseCase: FlightSearchSingleUseCase,
         private val flightSortAndFilterUseCase: FlightSortAndFilterUseCase,
         private val flightAnalytics: FlightAnalytics,
         private val dispatcherProvider: TravelDispatcherProvider)
@@ -86,7 +86,7 @@ open class FlightSearchViewModel @Inject constructor(
                 delay(TimeUnit.SECONDS.toMillis(delayInSeconds))
             }
 
-            val data = flightSearchUseCase.execute(requestModel,
+            val data = flightSearchSingleUseCase.execute(requestModel,
                     isReturnTrip,
                     !flightSearchPassData.isOneWay,
                     filterModel.journeyId)

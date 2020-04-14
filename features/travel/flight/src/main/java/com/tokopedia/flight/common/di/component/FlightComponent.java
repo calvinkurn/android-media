@@ -62,6 +62,8 @@ public interface FlightComponent {
 
     com.tokopedia.flight.searchV4.data.FlightRouteDao flightRouteNewDao();
 
+    com.tokopedia.flight.searchV4.data.cache.dao.FlightComboDao flightComboNewDao();
+
     Resources resources();
 
     FlightGetOrderUseCase flightGetOrderUseCase();

@@ -1,6 +1,8 @@
 package com.tokopedia.flight.searchV4.data.cloud
 
 import com.tokopedia.flight.searchV4.data.FlightSearchThrowable
+import com.tokopedia.flight.searchV4.data.cloud.combine.FlightCombineRequestModel
+import com.tokopedia.flight.searchV4.data.cloud.combine.FlightSearchCombineEntity
 import com.tokopedia.flight.searchV4.data.cloud.single.FlightSearchEntity
 import com.tokopedia.flight.searchV4.data.cloud.single.FlightSearchRequestModel
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
@@ -15,12 +17,13 @@ import javax.inject.Named
 class FlightSearchDataCloudSource @Inject constructor(
         private val graphqlRepository: GraphqlRepository,
         @Named(NAMED_FLIGHT_SEARCH_SINGLE_QUERY)
-        private val flightSearchSingleQuery: String
-) {
+        private val flightSearchSingleQuery: String,
+        @Named(NAMED_FLIGHT_SEARCH_COMBINE_QUERY)
+        private val flightSearchCombineQuery: String) {
 
     suspend fun getSearchSingleData(searchParam: FlightSearchRequestModel): FlightSearchEntity {
         try {
-            val params = mapOf(PARAM_SEARCH_SINGLE to searchParam)
+            val params = mapOf(PARAM_FLIGHT_SEARCH to searchParam)
             val grapqhRequest = GraphqlRequest(flightSearchSingleQuery, FlightSearchEntity.Response::class.java, params)
 
             val rawResponse = graphqlRepository.getReseponse(listOf(grapqhRequest))
@@ -36,10 +39,29 @@ class FlightSearchDataCloudSource @Inject constructor(
         }
     }
 
+    suspend fun getSearchCombineData(combineParam: FlightCombineRequestModel): FlightSearchCombineEntity {
+        try {
+            val params = mapOf(PARAM_FLIGHT_SEARCH to combineParam)
+            val graphqlRequest = GraphqlRequest(flightSearchCombineQuery, FlightSearchCombineEntity.Response::class.java, params)
+
+            val rawResponse = graphqlRepository.getReseponse(listOf(graphqlRequest))
+            val response = rawResponse.getSuccessData<FlightSearchCombineEntity.Response>().flightSearchCombine
+            if (response.error.isNotEmpty()) {
+                throw FlightSearchThrowable().apply {
+                    errorList = response.error
+                }
+            }
+            return response
+        } catch (t: Throwable) {
+            throw t
+        }
+    }
+
     companion object {
-        private const val PARAM_SEARCH_SINGLE = "data"
+        private const val PARAM_FLIGHT_SEARCH = "data"
 
         const val NAMED_FLIGHT_SEARCH_SINGLE_QUERY = "flight_search_single_query"
+        const val NAMED_FLIGHT_SEARCH_COMBINE_QUERY = "flight_search_combine_query"
     }
 
 }

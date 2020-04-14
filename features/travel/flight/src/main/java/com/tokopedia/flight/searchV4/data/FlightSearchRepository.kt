@@ -1,15 +1,20 @@
 package com.tokopedia.flight.searchV4.data
 
 import com.tokopedia.flight.search.data.cache.FlightSearchDataCacheSource
+import com.tokopedia.flight.search.data.db.FlightComboTable
+import com.tokopedia.flight.search.data.db.FlightJourneyTable
 import com.tokopedia.flight.search.data.db.JourneyAndRoutes
 import com.tokopedia.flight.search.data.repository.JourneyAndRoutesModel
 import com.tokopedia.flight.search.presentation.model.FlightAirlineModel
 import com.tokopedia.flight.search.presentation.model.FlightAirportModel
 import com.tokopedia.flight.search.presentation.model.filter.FlightFilterModel
-import com.tokopedia.flight.searchV4.data.cache.dao.FlightSearchSingleDataDbSource
+import com.tokopedia.flight.searchV4.data.cache.FlightSearchCombineDataDbSource
+import com.tokopedia.flight.searchV4.data.cache.FlightSearchSingleDataDbSource
 import com.tokopedia.flight.searchV4.data.cloud.FlightSearchDataCloudSource
+import com.tokopedia.flight.searchV4.data.cloud.combine.FlightCombineRequestModel
 import com.tokopedia.flight.searchV4.data.cloud.single.*
 import com.tokopedia.flight.searchV4.domain.FlightSearchMapper.Companion.createCompleteJourneyAndRoutes
+import com.tokopedia.flight.searchV4.domain.FlightSearchMapper.Companion.createJourneyWithCombo
 import com.tokopedia.flight.searchV4.domain.FlightSearchMapper.Companion.getAirlineById
 import com.tokopedia.flight.searchV4.domain.FlightSearchMapper.Companion.getAirlines
 import com.tokopedia.flight.searchV4.domain.FlightSearchMapper.Companion.getAirports
@@ -21,7 +26,57 @@ import javax.inject.Inject
 class FlightSearchRepository @Inject constructor(
         private val flightSearchSingleDataDbSource: FlightSearchSingleDataDbSource,
         private val flightSearchDataCloudSource: FlightSearchDataCloudSource,
-        private val flightSearchDataCacheSource: FlightSearchDataCacheSource) {
+        private val flightSearchDataCacheSource: FlightSearchDataCacheSource,
+        private val flightSearchCombineDataDbSource: FlightSearchCombineDataDbSource) {
+
+    suspend fun getSearchCombined(combineParam: FlightCombineRequestModel): FlightSearchMetaEntity {
+        with(flightSearchDataCloudSource.getSearchCombineData(combineParam)) {
+            data.combos.map {
+                val journeyIndexs = it.combination.split(",")
+                val onwardJourneyId = data.journeys[ONWARD_JOURNEY_INDEX][journeyIndexs[ONWARD_JOURNEY_INDEX].toInt()].journeyId
+                val returnJourneyId = data.journeys[RETURN_JOURNEY_INDEX][journeyIndexs[RETURN_JOURNEY_INDEX].toInt()].journeyId
+
+                val comboTable = FlightComboTable(
+                        onwardJourneyId,
+                        it.fares[ONWARD_JOURNEY_INDEX].adultPrice,
+                        it.fares[ONWARD_JOURNEY_INDEX].childPrice,
+                        it.fares[ONWARD_JOURNEY_INDEX].infantPrice,
+                        it.fares[ONWARD_JOURNEY_INDEX].adultPriceNumeric,
+                        it.fares[ONWARD_JOURNEY_INDEX].childPriceNumeric,
+                        it.fares[ONWARD_JOURNEY_INDEX].infantPriceNumeric,
+                        returnJourneyId,
+                        it.fares[RETURN_JOURNEY_INDEX].adultPrice,
+                        it.fares[RETURN_JOURNEY_INDEX].childPrice,
+                        it.fares[RETURN_JOURNEY_INDEX].infantPrice,
+                        it.fares[RETURN_JOURNEY_INDEX].adultPriceNumeric,
+                        it.fares[RETURN_JOURNEY_INDEX].childPriceNumeric,
+                        it.fares[RETURN_JOURNEY_INDEX].infantPriceNumeric,
+                        it.comboKey,
+                        it.isBestPairing
+                )
+
+                //update journey data
+                val latestJourneyList = arrayListOf<FlightJourneyTable>()
+                val onwardJourneyTable = flightSearchSingleDataDbSource
+                        .getJourneyRouteById(onwardJourneyId)?.flightJourneyTable
+                val returnJourneyTable = flightSearchSingleDataDbSource
+                        .getJourneyRouteById(returnJourneyId)?.flightJourneyTable
+
+                if (onwardJourneyTable != null && isJourneyNeedToUpdate(onwardJourneyTable, it.fares[ONWARD_JOURNEY_INDEX].adultPriceNumeric)) {
+                    latestJourneyList.add(createJourneyWithCombo(onwardJourneyTable, comboTable))
+                }
+                if (returnJourneyTable != null && isJourneyNeedToUpdate(returnJourneyTable, it.fares[RETURN_JOURNEY_INDEX].adultPriceNumeric)) {
+                    latestJourneyList.add(createJourneyWithCombo(returnJourneyTable, comboTable))
+                }
+                flightSearchSingleDataDbSource.updateJourneyDataList(latestJourneyList)
+
+                comboTable
+            }.toList().let {
+                flightSearchCombineDataDbSource.insert(it)
+                return meta
+            }
+        }
+    }
 
     suspend fun getSearchSingle(searchParam: FlightSearchRequestModel, isReturnTrip: Boolean): FlightSearchMetaEntity {
         val searchData = flightSearchDataCloudSource.getSearchSingleData(searchParam)
@@ -75,4 +130,11 @@ class FlightSearchRepository @Inject constructor(
                 }
             }
 
+    private fun isJourneyNeedToUpdate(journeyTable: FlightJourneyTable, comboPrice: Int): Boolean =
+            !journeyTable.isBestPairing && (journeyTable.adultNumericCombo == 0 || journeyTable.adultNumericCombo > comboPrice)
+
+    companion object {
+        private const val ONWARD_JOURNEY_INDEX = 0
+        private const val RETURN_JOURNEY_INDEX = 1
+    }
 }

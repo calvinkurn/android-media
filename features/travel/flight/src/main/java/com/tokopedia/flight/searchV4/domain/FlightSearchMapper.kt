@@ -1,6 +1,7 @@
 package com.tokopedia.flight.searchV4.domain
 
 import com.google.gson.Gson
+import com.tokopedia.flight.search.data.db.FlightComboTable
 import com.tokopedia.flight.search.data.db.FlightJourneyTable
 import com.tokopedia.flight.search.data.db.FlightRouteTable
 import com.tokopedia.flight.search.data.db.JourneyAndRoutes
@@ -82,6 +83,33 @@ class FlightSearchMapper {
                 }
             }
             return airlines
+        }
+
+        fun createJourneyWithCombo (journey: FlightJourneyTable, flightComboTable: FlightComboTable): FlightJourneyTable {
+            with (flightComboTable) {
+                journey.isBestPairing = isBestPairing
+                journey.comboId = comboId
+                if (!journey.isReturn) {
+                    journey.adultCombo = onwardAdultPrice
+                    journey.childCombo = onwardChildPrice
+                    journey.infantCombo = onwardInfantPrice
+                    journey.adultNumericCombo = onwardAdultPriceNumeric
+                    journey.childNumericCombo = onwardChildPriceNumeric
+                    journey.infantNumericCombo = onwardInfantPriceNumeric
+                    journey.sortPrice = onwardAdultPrice
+                    journey.sortPriceNumeric = onwardAdultPriceNumeric
+                } else {
+                    journey.adultCombo = returnAdultPrice
+                    journey.childCombo = returnChildPrice
+                    journey.infantCombo = returnInfantPrice
+                    journey.adultNumericCombo = returnAdultPriceNumeric
+                    journey.childNumericCombo = returnChildPriceNumeric
+                    journey.infantNumericCombo = returnInfantPriceNumeric
+                    journey.sortPrice = returnAdultPrice
+                    journey.sortPriceNumeric = returnAdultPriceNumeric
+                }
+            }
+            return journey
         }
     }
 
