@@ -10,8 +10,6 @@ import androidx.annotation.AttrRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.meituan.robust.patch.annotaion.Modify;
-
 /**
  * Created by nathan on 6/2/17.
  */
@@ -52,7 +50,6 @@ public class BaseCustomView extends FrameLayout {
     }
 
     @Override
-    @Modify
     protected void onRestoreInstanceState(Parcelable state) {
         if (state instanceof SavedState) {
             SavedState ss = (SavedState) state;
