@@ -1394,4 +1394,8 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
     fun sendAnalyticsClickPakaiPromoFailed(errorMessage: String) {
         analytics.eventClickPakaiPromoFailed(getPageSource(), errorMessage)
     }
+
+    fun sendAnalyticsClickBeliTanpaPromo() {
+        analytics.eventClickBeliTanpaPromo(getPageSource())
+    }
 }
