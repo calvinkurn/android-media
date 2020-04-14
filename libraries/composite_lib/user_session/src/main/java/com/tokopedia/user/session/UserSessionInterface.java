@@ -154,6 +154,10 @@ public interface UserSessionInterface {
 
     void setLoginMethod(@NotNull String loginMethod);
 
+    void setIsShopOfficialStore(boolean isShopOfficialStore);
+
+    boolean isShopOfficialStore();
+
     void setDeviceId(String deviceId);
 
     void setFcmTimestamp();
