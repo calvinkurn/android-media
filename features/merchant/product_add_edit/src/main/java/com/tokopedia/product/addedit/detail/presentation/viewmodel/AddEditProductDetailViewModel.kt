@@ -121,8 +121,6 @@ class AddEditProductDetailViewModel @Inject constructor(
     val productCategoryRecommendationLiveData = MutableLiveData<Result<List<ListItemUnify>>>()
 
     private val minProductPriceLimit = 100
-    private val maxProductPriceLimit = 100000000
-    private val maxWholeSalePriceLimit = 100000000
     private val minProductStockLimit = 1
     private val maxProductStockLimit = 999999
     private val minOrderQuantity = 1
@@ -193,12 +191,6 @@ class AddEditProductDetailViewModel @Inject constructor(
             mIsProductPriceInputError.value = true
             return
         }
-        if (productPrice > maxProductPriceLimit.toBigInteger()) {
-            val errorMessage = provider.getMaxLimitProductPriceErrorMessage()
-            errorMessage?.let { productPriceMessage = it }
-            mIsProductPriceInputError.value = true
-            return
-        }
         productPriceMessage = ""
         mIsProductPriceInputError.value = false
     }
@@ -207,8 +199,8 @@ class AddEditProductDetailViewModel @Inject constructor(
         if (wholeSaleQuantityInput.isEmpty()) {
             provider.getEmptyWholeSaleQuantityErrorMessage()?.let { return it }
         }
-        val wholeSaleQuantity = wholeSaleQuantityInput.toLong()
-        if (wholeSaleQuantity == 0L) {
+        val wholeSaleQuantity = wholeSaleQuantityInput.toBigInteger()
+        if (wholeSaleQuantity == 0.toBigInteger()) {
             provider.getZeroWholeSaleQuantityErrorMessage()?.let { return it }
         }
         return ""
@@ -218,16 +210,13 @@ class AddEditProductDetailViewModel @Inject constructor(
         if (wholeSalePriceInput.isEmpty()) {
             provider.getEmptyWholeSalePriceErrorMessage()?.let { return it }
         }
-        val wholeSalePrice = wholeSalePriceInput.toBigDecimal()
-        if (wholeSalePrice == 0.toBigDecimal()) {
+        val wholeSalePrice = wholeSalePriceInput.toBigInteger()
+        if (wholeSalePrice == 0.toBigInteger()) {
             provider.getZeroWholeSalePriceErrorMessage()?.let { return it }
-        }
-        if (wholeSalePrice > maxWholeSalePriceLimit.toBigDecimal()) {
-            provider.getMaxLimitWholeSalePriceErrorMessage()?.let { return it }
         }
         if (productPriceInput.isNotEmpty()) {
             val productPrice = productPriceInput.toLong()
-            if (wholeSalePrice >= productPrice.toBigDecimal()) {
+            if (wholeSalePrice >= productPrice.toBigInteger()) {
                 provider.getWholeSalePriceTooExpensiveErrorMessage()?.let { return it }
             }
         }

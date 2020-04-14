@@ -197,7 +197,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
 
         // photos
         productPhotosView = view.findViewById(R.id.rv_product_photos)
-        productPhotoAdapter = ProductPhotoAdapter(MAX_PRODUCT_PHOTOS, mutableListOf(), this)
+        productPhotoAdapter = ProductPhotoAdapter(MAX_PRODUCT_PHOTOS, true, mutableListOf(), this)
         productPhotosView?.let {
             it.adapter = productPhotoAdapter
             it.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
@@ -245,7 +245,8 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
                 ProductAddStepperTracking.trackStart(shopId)
             }
             val imageUrlOrPathList = productPhotoAdapter?.getProductPhotoPaths()?.map { urlOrPath ->
-                if (urlOrPath.startsWith(HTTP_PREFIX)) viewModel.productInputModel.value?.detailInputModel?.pictureList?.find { it.urlThumbnail == urlOrPath }?.urlOriginal ?: urlOrPath
+                if (urlOrPath.startsWith(HTTP_PREFIX)) viewModel.productInputModel.value?.detailInputModel?.pictureList?.find { it.urlThumbnail == urlOrPath }?.urlOriginal
+                        ?: urlOrPath
                 else urlOrPath
             }.orEmpty()
             val intent = ImagePickerAddProductActivity.getIntent(context, createImagePickerBuilder(ArrayList(imageUrlOrPathList)))
@@ -385,7 +386,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
                         val validateMessage = viewModel.validateProductInput(detailInputModel)
                         if (validateMessage.isEmpty()) {
                             AddEditProductAddService.startService(it, detailInputModel,
-                                descriptionInputModel, shipmentInputModel, variantInputModel, viewModel.getDraftId())
+                                    descriptionInputModel, shipmentInputModel, variantInputModel, viewModel.getDraftId())
                         } else {
                             view?.let {
                                 Toaster.make(it, validateMessage, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR)
@@ -423,7 +424,8 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
                         val cacheManager = SaveInstanceCacheManager(context!!, variantCacheId)
                         if (data.hasExtra(EXTRA_PRODUCT_VARIANT_SELECTION)) {
                             val productVariantViewModel = cacheManager.get(EXTRA_PRODUCT_VARIANT_SELECTION,
-                                    object : TypeToken<ProductVariantInputModel>() {}.type) ?: ProductVariantInputModel()
+                                    object : TypeToken<ProductVariantInputModel>() {}.type)
+                                    ?: ProductVariantInputModel()
                             variantInputModel.productVariant = productVariantViewModel.productVariant
                             variantInputModel.variantOptionParent = productVariantViewModel.variantOptionParent
                         }
