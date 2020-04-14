@@ -1692,6 +1692,11 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
+    public void sendAnalyticsViewPromoAfterAdjustItem(String msg) {
+        checkoutAnalyticsCourierSelection.eventViewPromoAfterAdjustItem(msg);
+    }
+
+    @Override
     public void onChoosePickupPoint(RecipientAddressModel addressAdapterData) {
 
     }
