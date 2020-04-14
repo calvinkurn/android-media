@@ -1,6 +1,7 @@
 package com.tokopedia.shop_showcase.shop_showcase_management.presentation.fragment
 
 import android.app.Activity
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -205,11 +206,17 @@ class ShopShowcaseListReorderFragment : BaseDaggerFragment(),
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 currentScrollPosition += dy
+                val HAS_ELEVATION = 4
+                val NO_ELEVATION = 0
 
-                if (currentScrollPosition == 0) {
-                    appBarLayout.background = MethodChecker.getDrawable(context, R.color.white)
-                } else {
-                    appBarLayout.background = MethodChecker.getDrawable(context, R.drawable.card_shadow_bottom)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    if (currentScrollPosition == 0) {
+                        appBarLayout.elevation = NO_ELEVATION.toFloat()
+//                    appBarLayout.background = MethodChecker.getDrawable(context, R.color.white)
+                    } else {
+                        appBarLayout.elevation = HAS_ELEVATION.toFloat()
+//                    appBarLayout.background = MethodChecker.getDrawable(context, R.drawable.card_shadow_bottom)
+                    }
                 }
             }
         })
