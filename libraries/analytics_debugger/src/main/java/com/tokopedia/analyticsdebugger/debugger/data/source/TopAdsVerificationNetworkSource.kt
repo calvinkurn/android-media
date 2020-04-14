@@ -16,7 +16,7 @@ internal constructor(context: Context) {
 
     fun appendVerificationStatus(inputList: List<TopAdsLogDB>): Observable<List<TopAdsLogDB>> {
         for (input in inputList) {
-            if (input.eventStatus == STATUS_PENDING && System.currentTimeMillis() - input.timestamp > 60000) {
+            if (input.eventStatus == STATUS_PENDING && System.currentTimeMillis() - input.timestamp > 10000) {
                 input.eventStatus = STATUS_DATA_NOT_FOUND
                 updateItem(input)
             } else if (input.eventStatus == STATUS_DATA_NOT_FOUND) {
