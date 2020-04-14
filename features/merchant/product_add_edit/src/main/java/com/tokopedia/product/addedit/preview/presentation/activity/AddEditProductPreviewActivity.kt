@@ -5,15 +5,14 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.applink.UriUtil
+import com.tokopedia.applink.internal.ApplinkConstInternalMechant
+import com.tokopedia.product.addedit.R
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.dialog.DialogUnify
-import com.tokopedia.product.addedit.R
-import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_DRAFT_ID
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_FROM_NOTIF_EDIT_PRODUCT
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_FROM_NOTIF_SUCCESS
-import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_IS_DUPLICATE
-import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_PRODUCT_ID
 import com.tokopedia.product.addedit.preview.presentation.fragment.AddEditProductPreviewFragment
 import com.tokopedia.product.addedit.tracking.ProductAddNotifTracking
 import com.tokopedia.product.addedit.tracking.ProductEditNotifTracking
@@ -51,10 +50,21 @@ class AddEditProductPreviewActivity : BaseSimpleActivity() {
     override fun getLayoutRes() = R.layout.activity_add_edit_product_preview
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        with (intent) {
-            getStringExtra(EXTRA_PRODUCT_ID)?.run { productId = this }
-            getStringExtra(EXTRA_DRAFT_ID)?.run { draftId = this }
-            isDuplicate = getBooleanExtra(EXTRA_IS_DUPLICATE, false)
+        intent.data?.run {
+            val uri = toString()
+            val params = UriUtil.uriQueryParamsToMap(uri)
+            if (params.isNotEmpty()) {
+                val mode = params[ApplinkConstInternalMechant.QUERY_PARAM_MODE].orEmpty()
+                val id = params[ApplinkConstInternalMechant.QUERY_PARAM_ID].orEmpty()
+                when (mode) {
+                    ApplinkConstInternalMechant.MODE_EDIT_PRODUCT -> productId = id
+                    ApplinkConstInternalMechant.MODE_EDIT_DRAFT -> draftId = id
+                    ApplinkConstInternalMechant.MODE_DUPLICATE_PRODUCT -> {
+                        productId = id
+                        isDuplicate = true
+                    }
+                }
+            }
         }
 
         if (intent.hasExtra(EXTRA_FROM_NOTIF_SUCCESS) &&
@@ -111,7 +121,7 @@ class AddEditProductPreviewActivity : BaseSimpleActivity() {
 
     private fun onBackPressedHitTracking() {
         val f = fragment
-        if (f!= null && f is AddEditProductPreviewFragment) {
+        if (f != null && f is AddEditProductPreviewFragment) {
             f.onBackPressed()
         }
     }

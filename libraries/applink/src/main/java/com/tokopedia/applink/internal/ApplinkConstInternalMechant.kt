@@ -8,6 +8,16 @@ import com.tokopedia.applink.constant.DeeplinkConstant
 
 object ApplinkConstInternalMechant {
     @JvmField
+    val QUERY_PARAM_ID = "id"
+    @JvmField
+    val QUERY_PARAM_MODE = "mode"
+    @JvmField
+    val MODE_EDIT_PRODUCT = "edit-product"
+    @JvmField
+    val MODE_EDIT_DRAFT = "edit-draft"
+    @JvmField
+    val MODE_DUPLICATE_PRODUCT = "duplicate-product"
+    @JvmField
     val HOST_MERCHANT = "merchant"
     @JvmField
     val INTERNAL_MERCHANT = "${DeeplinkConstant.SCHEME_INTERNAL}://${HOST_MERCHANT}"
