@@ -25,6 +25,9 @@ class TopChatRoomAdapter(
     private var lastHeaderDate: HeaderDateUiModel? = null
     private var lastHeaderDateIndex: Int? = null
 
+    override fun enableShowDate(): Boolean = false
+    override fun enableShowTime(): Boolean = false
+
     override fun getItemViewType(position: Int): Int {
         val default = super.getItemViewType(position)
         return adapterTypeFactory.getItemViewType(visitables, position, default)

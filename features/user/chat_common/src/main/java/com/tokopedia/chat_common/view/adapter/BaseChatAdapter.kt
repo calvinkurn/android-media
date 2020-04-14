@@ -215,11 +215,11 @@ open class BaseChatAdapter(adapterTypeFactory: BaseChatTypeFactoryImpl) :
         return DateFormat.getLongDateFormat(context).format(Date(calCurrent)) == DateFormat.getLongDateFormat(context).format(Date(calBefore))
     }
 
-    protected fun enableShowDate(): Boolean {
+    protected open fun enableShowDate(): Boolean {
         return true
     }
 
-    protected fun enableShowTime(): Boolean {
+    protected open fun enableShowTime(): Boolean {
         return true
     }
 
