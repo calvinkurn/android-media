@@ -539,7 +539,10 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
         giftBoxDailyView.fmGiftBox.doOnLayout { fmGiftBox ->
             val heightOfRvCoupons = fmGiftBox.context.resources.getDimension(R.dimen.gami_rv_coupons_height)
             val lidTop = fmGiftBox.top
-            val translationY = lidTop - heightOfRvCoupons + fmGiftBox.dpToPx(3)
+            var translationY = lidTop - heightOfRvCoupons + fmGiftBox.dpToPx(3)
+            if(isTablet){
+                translationY -= fmGiftBox.dpToPx(8)
+            }
 
             rewardContainer.rvCoupons.translationY = translationY
             val distanceFromLidTop = fmGiftBox.dpToPx(29)
