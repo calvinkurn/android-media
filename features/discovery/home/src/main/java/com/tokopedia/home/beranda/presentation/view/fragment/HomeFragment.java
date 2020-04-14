@@ -714,7 +714,7 @@ public class HomeFragment extends BaseDaggerFragment implements
     private void observeStickyLogin(){
         viewModel.getStickyLogin().observe(getViewLifecycleOwner(), result -> {
             if(result.getStatus() == Result.Status.SUCCESS){
-                //setStickyContent(result.getData());
+                setStickyContent(result.getData());
             } else {
                 hideStickyLogin();
             }
