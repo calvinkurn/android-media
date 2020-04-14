@@ -126,6 +126,7 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
                     globalError?.gone()
                     mainContent?.visible()
                     setupViews(it.data)
+                    setDataToParent(it.data)
                 }
                 is OccState.Fail -> {
                     swipeRefreshLayout?.isRefreshing = false
@@ -372,6 +373,28 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
                 parent.setHeaderSubtitle(getString(R.string.lbl_summary_preference_subtitle))
                 parent.showStepper()
                 parent.setStepperValue(100, true)
+            }
+        }
+    }
+
+    private fun setDataToParent(data: GetPreferenceData) {
+        val parent = activity
+        if (parent is PreferenceEditParent) {
+            val addressId = data.addressModel?.addressId
+            if (addressId != null) {
+                parent.setAddressId(addressId)
+            }
+            val serviceId = data.shipmentModel?.serviceId
+            if (serviceId != null) {
+                parent.setShippingId(serviceId)
+            }
+            val gatewayCode = data.paymentModel?.gatewayCode
+            if (gatewayCode != null) {
+                parent.setGatewayCode(gatewayCode)
+            }
+            val metadata = data.paymentModel?.metadata
+            if (metadata != null) {
+                parent.setPaymentQuery(metadata)
             }
         }
     }
