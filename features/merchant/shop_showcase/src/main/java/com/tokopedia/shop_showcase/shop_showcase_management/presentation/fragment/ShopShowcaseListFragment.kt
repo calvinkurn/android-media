@@ -12,6 +12,8 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.cardview.widget.CardView
+import androidx.fragment.app.FragmentManager
 
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -30,6 +32,7 @@ import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.design.text.watcher.AfterTextWatcher
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.header.HeaderUnify
 
 import com.tokopedia.shop_showcase.R
 import com.tokopedia.shop_showcase.ShopShowcaseInstance
@@ -83,12 +86,11 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
     private lateinit var searchbar: SearchBarUnify
     private lateinit var loading: LoaderUnify
     private lateinit var bottomSheet: BottomSheetUnify
-    private lateinit var btnBack: ImageView
-    private lateinit var btnReorder: TextView
+    private lateinit var headerUnify: HeaderUnify
+    private lateinit var headerLayout: CardView
     private lateinit var recyclerView: RecyclerView
     private lateinit var emptyStateContainer: LinearLayout
     private lateinit var imgEmptyState: ImageView
-    private lateinit var appBarLayout: AppBarLayout
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
     private var layoutManager: LinearLayoutManager? = null
     private var shopShowcaseListAdapter: ShopShowcaseListAdapter? = null
@@ -172,10 +174,8 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_shop_showcase_list, container, false)
-        appBarLayout = view.findViewById(R.id.appbar_layout_showcase_list)
-//        swipeRefreshLayout = view.findViewById(R.id.shop_showcase_list_swipe_to_refresh)
-        btnBack = view.findViewById(R.id.btn_back_input_shop)
-        btnReorder = view.findViewById(R.id.btn_reorder)
+        headerUnify = view.findViewById(R.id.showcase_list_toolbar)
+        headerLayout = view.findViewById(R.id.header_layout)
         btnAddEtalase = view.findViewById(R.id.btn_add_etalase)
         loading = view.findViewById(R.id.loading)
         searchbar = view.findViewById(R.id.searchbar)
@@ -193,6 +193,7 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         showLoading(true)
+        initHeaderUnify()
         initRecyclerView()
         setupBuyerSellerView()
 
@@ -200,23 +201,6 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
         observeShopShowcaseBuyerData()
         observeDeleteShopShowcase()
         observeTotalProduct()
-
-        btnBack.setOnClickListener {
-            tracking?.clickBackButton(shopId, shopType)
-            activity?.finish()
-        }
-
-        btnReorder.setOnClickListener {
-            val shopShowcaseViewModelList = ArrayList<ShowcaseItem>()
-            for (shopShowcaseViewModel in showcaseList) {
-                shopShowcaseViewModelList.add(shopShowcaseViewModel)
-            }
-            tracking?.clickSusun(shopId, shopType)
-
-            shopShowcaseFragmentNavigation.navigateToPage(
-                    PageNameConstant.SHOWCASE_LIST_REORDER_PAGE,
-                    null, shopShowcaseViewModelList)
-        }
 
         btnAddEtalase.setOnClickListener {
             isNeedToGoToAddShowcase = true
@@ -263,19 +247,14 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 currentScrollPosition += dy
-
-                val HAS_ELEVATION = 4
-                val NO_ELEVATION = 0
+                val HAS_ELEVATION = 16.0f
+                val NO_ELEVATION = 0f
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     if (currentScrollPosition == 0) {
-                        appBarLayout.elevation = NO_ELEVATION.toFloat()
-//                    appBarLayout.context.setTheme(R.style.AppBarNoBottomShadow)
-//                    appBarLayout.background = MethodChecker.getDrawable(context, R.color.white)
+                        headerLayout?.cardElevation = NO_ELEVATION
                     } else {
-                        appBarLayout.elevation = HAS_ELEVATION.toFloat()
-//                    appBarLayout.context.setTheme(R.style.ThemeOverlay_AppCompat_ActionBar)
-//                    appBarLayout.background = MethodChecker.getDrawable(context, R.drawable.card_shadow_bottom)
+                        headerLayout?.cardElevation = HAS_ELEVATION
                     }
                 }
             }
@@ -511,12 +490,12 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
 
     private fun setupBuyerView() {
         btnAddEtalase.visibility = View.GONE
-        btnReorder.visibility = View.GONE
+//        btnReorder.visibility = View.GONE
     }
 
     private fun setupSellerView() {
         btnAddEtalase.visibility = View.VISIBLE
-        btnReorder.visibility = View.VISIBLE
+//        btnReorder.visibility = View.VISIBLE
     }
 
     private fun gotoShowcaseResultPage(showcaseId: String, shopId: String) {
@@ -548,6 +527,26 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
     private fun showSuccessMessage(message: String) {
         view?.let {
             Toaster.showNormal(it, message, Snackbar.LENGTH_LONG)
+        }
+    }
+
+    private fun initHeaderUnify() {
+        headerUnify.apply {
+            setNavigationOnClickListener {
+                tracking?.clickBackButton(shopId, shopType)
+                activity?.finish()
+            }
+        }
+        headerUnify.actionTextView?.setOnClickListener {
+            val shopShowcaseViewModelList = ArrayList<ShowcaseItem>()
+            for (shopShowcaseViewModel in showcaseList) {
+                shopShowcaseViewModelList.add(shopShowcaseViewModel)
+            }
+            tracking?.clickSusun(shopId, shopType)
+
+            shopShowcaseFragmentNavigation.navigateToPage(
+                    PageNameConstant.SHOWCASE_LIST_REORDER_PAGE,
+                    null, shopShowcaseViewModelList)
         }
     }
 
