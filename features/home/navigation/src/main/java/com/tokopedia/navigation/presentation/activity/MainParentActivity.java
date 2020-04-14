@@ -1186,7 +1186,7 @@ public class MainParentActivity extends BaseActivity implements
                 null
         );
 
-        Debug.startMethodTracingSampling("mp_home", 50 * 1024 * 1024, 1000);
+        //Debug.startMethodTracingSampling("mp_home", 50 * 1024 * 1024, 1000);
         getPageLoadTimePerformanceInterface().startMonitoring(HOME_PERFORMANCE_MONITORING_KEY);
         getPageLoadTimePerformanceInterface().startPreparePagePerformanceMonitoring();
     }
@@ -1203,7 +1203,7 @@ public class MainParentActivity extends BaseActivity implements
                         HOME_PERFORMANCE_MONITORING_CACHE_ATTRIBUTION,
                         HOME_PERFORMANCE_MONITORING_NETWORK_VALUE);
             }
-            Debug.stopMethodTracing();
+            //Debug.stopMethodTracing();
             getPageLoadTimePerformanceInterface().stopMonitoring();
             getPageLoadTimePerformanceInterface().stopRenderPerformanceMonitoring();
             pageLoadTimePerformanceCallback = null;
