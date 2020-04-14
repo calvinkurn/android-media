@@ -1579,6 +1579,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     private fun renderPromoCheckoutLoading() {
         promoCheckoutBtn.state = ButtonPromoCheckoutView.State.LOADING
         promoCheckoutBtn.margin = ButtonPromoCheckoutView.Margin.NO_BOTTOM
+        promoCheckoutBtn.setOnClickListener {  }
     }
 
     private fun isNeedHitUpdateCartAndValidateUse(params: ValidateUsePromoRequest): Boolean {
