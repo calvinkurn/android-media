@@ -1,0 +1,21 @@
+query universe_suggestion($params: String!) {
+  universe_suggestion(param: $params) {
+    data {
+      id
+      name
+      items {
+        template
+        type
+        applink
+        url
+        title
+        subtitle
+        icon_title
+        icon_subtitle
+        url_tracker
+        shortcut_image
+        image_url
+      }
+    }
+  }
+}

@@ -2,6 +2,7 @@ package com.tokopedia.autocomplete.suggestion
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
+import com.tokopedia.autocomplete.suggestion.data.SuggestionResponse
 import com.tokopedia.autocomplete.suggestion.doubleline.convertSuggestionItemToDoubleLineVisitableList
 import com.tokopedia.autocomplete.suggestion.singleline.convertSuggestionItemToSingleLineVisitableList
 import com.tokopedia.autocomplete.suggestion.title.convertToTitleHeader
@@ -16,7 +17,7 @@ class SuggestionPresenter @Inject constructor() : BaseDaggerPresenter<Suggestion
     private var querySearch = ""
 
     @Inject
-    lateinit var getSuggestionUseCase: SuggestionUseCase
+    lateinit var getSuggestionUseCase: UseCase<SuggestionResponse>
 
     @Inject
     lateinit var suggestionTrackerUseCase: UseCase<Void?>
@@ -35,15 +36,15 @@ class SuggestionPresenter @Inject constructor() : BaseDaggerPresenter<Suggestion
         )
     }
 
-    private fun createGetSuggestionParams(searchParameter: SearchParameter) = SuggestionUseCase.getParams(
+    private fun createGetSuggestionParams(searchParameter: SearchParameter) = SuggestionGqlUseCase.getParams(
         searchParameter.getSearchParameterMap(),
         userSession.deviceId,
         userSession.userId
     )
 
-    private fun createGetSuggestionSubscriber(): Subscriber<SuggestionData> = object : Subscriber<SuggestionData>() {
-        override fun onNext(suggestionData: SuggestionData) {
-            onSuccessReceivedSuggestion(suggestionData)
+    private fun createGetSuggestionSubscriber(): Subscriber<SuggestionResponse> = object : Subscriber<SuggestionResponse>() {
+        override fun onNext(suggestionResponse: SuggestionResponse) {
+            onSuccessReceivedSuggestion(suggestionResponse.suggestionUniverse.data)
         }
 
         override fun onCompleted() { }
