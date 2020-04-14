@@ -2,10 +2,10 @@ package com.tokopedia.hotel.evoucher.presentation.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.common.travel.utils.TravelDispatcherProvider
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.hotel.common.util.HotelDispatcherProvider
 import com.tokopedia.hotel.evoucher.data.entity.SharePdfDataParam
 import com.tokopedia.hotel.evoucher.data.entity.SharePdfDataResponse
 import com.tokopedia.hotel.orderdetail.data.model.HotelOrderDetail
@@ -15,8 +15,6 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -25,9 +23,9 @@ import javax.inject.Inject
  * @author by furqan on 23/05/19
  */
 class HotelEVoucherViewModel @Inject constructor(private val graphqlRepository: GraphqlRepository,
-                                                 private val dispatcher: HotelDispatcherProvider,
+                                                 private val dispatcher: TravelDispatcherProvider,
                                                  private val useCase: GetHotelOrderDetailUseCase)
-    : BaseViewModel(dispatcher.io) {
+    : BaseViewModel(dispatcher.io()) {
 
     val orderDetailData = MutableLiveData<Result<HotelOrderDetail>>()
     val sharePdfData = MutableLiveData<Result<SharePdfDataResponse>>()
@@ -45,7 +43,7 @@ class HotelEVoucherViewModel @Inject constructor(private val graphqlRepository: 
         val sharePdfParams = mapOf(PARAM_HOTEL_PDF_PARAM to requestParams)
 
         launchCatchError(block = {
-            val response = withContext(dispatcher.ui) {
+            val response = withContext(dispatcher.ui()) {
                 val sharePdfRequest = GraphqlRequest(rawQuery, TYPE_SHARE_PDF, sharePdfParams)
                 graphqlRepository.getReseponse(listOf(sharePdfRequest))
             }.getSuccessData<SharePdfDataResponse>()

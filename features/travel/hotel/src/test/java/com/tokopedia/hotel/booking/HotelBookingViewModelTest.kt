@@ -1,15 +1,14 @@
 package com.tokopedia.hotel.booking
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.common.travel.utils.TravelTestDispatcherProvider
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.hotel.HotelDispatchersProviderTest
 import com.tokopedia.hotel.booking.data.model.HotelCart
 import com.tokopedia.hotel.booking.data.model.HotelCheckoutParam
 import com.tokopedia.hotel.booking.data.model.HotelCheckoutResponse
 import com.tokopedia.hotel.booking.presentation.viewmodel.HotelBookingViewModel
-import com.tokopedia.hotel.roomlist.util.HotelUtil
 import com.tokopedia.promocheckout.common.domain.model.FlightCancelVoucher
 import com.tokopedia.travel.passenger.data.entity.TravelContactListModel
 import com.tokopedia.travel.passenger.data.entity.TravelUpsertContactModel
@@ -36,7 +35,7 @@ class HotelBookingViewModelTest {
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
-    private val dispatcher = HotelDispatchersProviderTest()
+    private val dispatcher = TravelTestDispatcherProvider()
     private lateinit var hotelBookingViewModel: HotelBookingViewModel
 
     private val graphqlRepository = mockk<GraphqlRepository>()
@@ -56,7 +55,7 @@ class HotelBookingViewModelTest {
     @Test
     fun getContactList_updateContactList() {
         //given
-        val contacts = listOf(TravelContactListModel.Contact(firstName = "Jessica", lastName = "Sean" ),
+        val contacts = listOf(TravelContactListModel.Contact(firstName = "Jessica", lastName = "Sean"),
                 TravelContactListModel.Contact(fullName = "Jee Sean", firstName = "Jee", lastName = "See"),
                 TravelContactListModel.Contact(fullName = "Lalala")
         )
@@ -109,7 +108,7 @@ class HotelBookingViewModelTest {
     @Test
     fun getCartData_shouldReturnFail() {
         //given
-       val graphqlSuccessResponse = GraphqlResponse(
+        val graphqlSuccessResponse = GraphqlResponse(
                 mapOf(),
                 mapOf(HotelCart.Response::class.java to listOf(GraphqlError())),
                 false)

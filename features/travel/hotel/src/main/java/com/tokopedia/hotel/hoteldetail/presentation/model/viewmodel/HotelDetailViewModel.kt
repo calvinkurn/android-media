@@ -2,10 +2,10 @@ package com.tokopedia.hotel.hoteldetail.presentation.model.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.common.travel.utils.TravelDispatcherProvider
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.hotel.common.util.HotelDispatcherProvider
 import com.tokopedia.hotel.homepage.presentation.model.HotelHomepageModel
 import com.tokopedia.hotel.hoteldetail.data.entity.PropertyDataParam
 import com.tokopedia.hotel.hoteldetail.data.entity.PropertyDetailData
@@ -16,16 +16,18 @@ import com.tokopedia.hotel.roomlist.usecase.GetHotelRoomListUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.coroutines.*
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 /**
  * @author by furqan on 22/04/19
  */
 class HotelDetailViewModel @Inject constructor(private val graphqlRepository: GraphqlRepository,
-                                               private val dispatcher: HotelDispatcherProvider,
+                                               private val dispatcher: TravelDispatcherProvider,
                                                private val useCase: GetHotelRoomListUseCase)
-    : BaseViewModel(dispatcher.io) {
+    : BaseViewModel(dispatcher.io()) {
 
     val hotelInfoResult = MutableLiveData<Result<PropertyDetailData>>()
     val hotelReviewResult = MutableLiveData<Result<HotelReview.ReviewData>>()
@@ -59,7 +61,7 @@ class HotelDetailViewModel @Inject constructor(private val graphqlRepository: Gr
 
         try {
             val hotelInfoData = async {
-                val response = withContext(dispatcher.ui) {
+                val response = withContext(dispatcher.ui()) {
                     val detailRequest = GraphqlRequest(rawQuery, TYPE_HOTEL_INFO, detailParams)
                     graphqlRepository.getReseponse(listOf(detailRequest))
                             .getSuccessData<PropertyDetailData.Response>()
@@ -86,7 +88,7 @@ class HotelDetailViewModel @Inject constructor(private val graphqlRepository: Gr
 
         try {
             val hotelReviewData = async {
-                val response = withContext(dispatcher.ui) {
+                val response = withContext(dispatcher.ui()) {
                     val reviewRequest = GraphqlRequest(rawQuery, TYPE_HOTEL_REVIEW, reviewParams)
                     graphqlRepository.getReseponse(listOf(reviewRequest))
                             .getSuccessData<HotelReview.Response>()

@@ -4,25 +4,21 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.common.travel.data.entity.TravelCrossSelling
 import com.tokopedia.common.travel.domain.TravelCrossSellingUseCase
-import com.tokopedia.hotel.common.util.HotelDispatcherProvider
+import com.tokopedia.common.travel.utils.TravelDispatcherProvider
 import com.tokopedia.hotel.orderdetail.data.model.HotelOrderDetail
 import com.tokopedia.hotel.orderdetail.usecase.GetHotelOrderDetailUseCase
-import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import javax.inject.Named
 
 /**
  * @author by jessica on 13/05/19
  */
 
-class HotelOrderDetailViewModel @Inject constructor(dispatcher: HotelDispatcherProvider,
+class HotelOrderDetailViewModel @Inject constructor(dispatcher: TravelDispatcherProvider,
                                                     private val useCase: GetHotelOrderDetailUseCase,
                                                     private val crossSellingUseCase: TravelCrossSellingUseCase)
-    : BaseViewModel(dispatcher.io) {
+    : BaseViewModel(dispatcher.io()) {
 
     val orderDetailData = MutableLiveData<Result<HotelOrderDetail>>()
     val crossSellData = MutableLiveData<Result<TravelCrossSelling>>()

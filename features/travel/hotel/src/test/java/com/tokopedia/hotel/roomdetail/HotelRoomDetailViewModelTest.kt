@@ -1,8 +1,7 @@
 package com.tokopedia.hotel.roomdetail
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.hotel.HotelDispatchersProviderTest
+import com.tokopedia.common.travel.utils.TravelTestDispatcherProvider
 import com.tokopedia.hotel.roomdetail.presentation.viewmodel.HotelRoomDetailViewModel
 import com.tokopedia.hotel.roomlist.data.model.HotelAddCartData
 import com.tokopedia.hotel.roomlist.data.model.HotelAddCartParam
@@ -12,7 +11,6 @@ import com.tokopedia.usecase.coroutines.Success
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.impl.annotations.RelaxedMockK
-import io.mockk.mockk
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -28,10 +26,8 @@ class HotelRoomDetailViewModelTest {
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
-    private val dispatcher = HotelDispatchersProviderTest()
+    private val dispatcher = TravelTestDispatcherProvider()
     private lateinit var hotelRoomDetailViewModel: HotelRoomDetailViewModel
-
-    private val graphqlRepository = mockk<GraphqlRepository>()
 
     @RelaxedMockK
     lateinit var hotelAddToCartUseCase: HotelAddToCartUseCase

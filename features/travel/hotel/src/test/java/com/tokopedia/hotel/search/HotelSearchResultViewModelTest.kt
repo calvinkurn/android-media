@@ -1,10 +1,10 @@
 package com.tokopedia.hotel.search
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.common.travel.utils.TravelTestDispatcherProvider
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.hotel.HotelDispatchersProviderTest
 import com.tokopedia.hotel.search.data.model.Filter
 import com.tokopedia.hotel.search.data.model.Property
 import com.tokopedia.hotel.search.data.model.PropertySearch
@@ -30,11 +30,11 @@ import org.junit.runners.JUnit4
  */
 
 @RunWith(JUnit4::class)
-class HotelSearchResultViewModelTest  {
+class HotelSearchResultViewModelTest {
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
-    private val dispatcher = HotelDispatchersProviderTest()
+    private val dispatcher = TravelTestDispatcherProvider()
     private lateinit var hotelSearchResultViewModel: HotelSearchResultViewModel
 
     private val graphqlRepository = mockk<GraphqlRepository>()
@@ -71,7 +71,7 @@ class HotelSearchResultViewModelTest  {
     @Test
     fun initSearchParam_typeCity_shouldInitSearchParam() {
         //given
-        val destinationId = 100
+        val destinationId = 100.toLong()
         val type = TYPE_CITY
         val latitude = 0.0f
         val longitude = 0.0f
@@ -86,7 +86,7 @@ class HotelSearchResultViewModelTest  {
 
         //then
         assert(hotelSearchResultViewModel.searchParam.location.cityID == destinationId)
-        assert(hotelSearchResultViewModel.searchParam.location.districtID == 0)
+        assert(hotelSearchResultViewModel.searchParam.location.districtID == 0.toLong())
         assert(hotelSearchResultViewModel.searchParam.location.latitude == latitude)
         assert(hotelSearchResultViewModel.searchParam.location.longitude == longitude)
         assert(hotelSearchResultViewModel.searchParam.checkIn == checkIn)
@@ -109,12 +109,12 @@ class HotelSearchResultViewModelTest  {
         val totalAdult = 4
 
         //when
-        hotelSearchResultViewModel.initSearchParam(destinationId, type,
+        hotelSearchResultViewModel.initSearchParam(destinationId.toLong(), type,
                 latitude, longitude, checkIn, checkOut, totalRoom, totalAdult)
 
         //then
-        assert(hotelSearchResultViewModel.searchParam.location.cityID == 0)
-        assert(hotelSearchResultViewModel.searchParam.location.districtID == destinationId)
+        assert(hotelSearchResultViewModel.searchParam.location.cityID == 0.toLong())
+        assert(hotelSearchResultViewModel.searchParam.location.districtID == destinationId.toLong())
         assert(hotelSearchResultViewModel.searchParam.location.latitude == latitude)
         assert(hotelSearchResultViewModel.searchParam.location.longitude == longitude)
         assert(hotelSearchResultViewModel.searchParam.checkIn == checkIn)
@@ -137,13 +137,13 @@ class HotelSearchResultViewModelTest  {
         val totalAdult = 4
 
         //when
-        hotelSearchResultViewModel.initSearchParam(destinationId, type,
+        hotelSearchResultViewModel.initSearchParam(destinationId.toLong(), type,
                 latitude, longitude, checkIn, checkOut, totalRoom, totalAdult)
 
         //then
-        assert(hotelSearchResultViewModel.searchParam.location.cityID == 0)
-        assert(hotelSearchResultViewModel.searchParam.location.districtID == 0)
-        assert(hotelSearchResultViewModel.searchParam.location.regionID == destinationId)
+        assert(hotelSearchResultViewModel.searchParam.location.cityID == 0.toLong())
+        assert(hotelSearchResultViewModel.searchParam.location.districtID == 0.toLong())
+        assert(hotelSearchResultViewModel.searchParam.location.regionID == destinationId.toLong())
         assert(hotelSearchResultViewModel.searchParam.location.latitude == latitude)
         assert(hotelSearchResultViewModel.searchParam.location.longitude == longitude)
         assert(hotelSearchResultViewModel.searchParam.checkIn == checkIn)

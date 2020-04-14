@@ -1,10 +1,10 @@
 package com.tokopedia.hotel.hoteldetail
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.common.travel.utils.TravelTestDispatcherProvider
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.hotel.HotelDispatchersProviderTest
 import com.tokopedia.hotel.homepage.presentation.model.HotelHomepageModel
 import com.tokopedia.hotel.hoteldetail.data.entity.PropertyDetailData
 import com.tokopedia.hotel.hoteldetail.presentation.model.viewmodel.HotelDetailViewModel
@@ -31,7 +31,7 @@ class HotelDetailViewModelTest {
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
-    private val dispatcher = HotelDispatchersProviderTest()
+    private val dispatcher = TravelTestDispatcherProvider()
     private lateinit var hotelDetailViewModel: HotelDetailViewModel
 
     private val graphqlRepository = mockk<GraphqlRepository>()

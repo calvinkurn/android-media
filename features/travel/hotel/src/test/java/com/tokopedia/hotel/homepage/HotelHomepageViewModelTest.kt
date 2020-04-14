@@ -6,10 +6,10 @@ import com.tokopedia.common.travel.data.entity.TravelMetaModel
 import com.tokopedia.common.travel.data.entity.TravelRecentSearchModel
 import com.tokopedia.common.travel.domain.GetTravelCollectiveBannerUseCase
 import com.tokopedia.common.travel.domain.TravelRecentSearchUseCase
+import com.tokopedia.common.travel.utils.TravelTestDispatcherProvider
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.hotel.HotelDispatchersProviderTest
 import com.tokopedia.hotel.homepage.data.cloud.entity.HotelDeleteRecentSearchEntity
 import com.tokopedia.hotel.homepage.presentation.model.viewmodel.HotelHomepageViewModel
 import com.tokopedia.usecase.coroutines.Fail
@@ -40,7 +40,7 @@ class HotelHomepageViewModelTest {
     @RelaxedMockK
     lateinit var travelRecentSearchUseCase: TravelRecentSearchUseCase
 
-    private val dispatcher = HotelDispatchersProviderTest()
+    private val dispatcher = TravelTestDispatcherProvider()
     private lateinit var hotelHomepageViewModel: HotelHomepageViewModel
 
     private val graphqlRepository = mockk<GraphqlRepository>()
@@ -162,8 +162,8 @@ class HotelHomepageViewModelTest {
     fun deleteRecentSearch_shouldReturnSuccess() {
         //given
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns
-       GraphqlResponse(mapOf(HotelDeleteRecentSearchEntity.Response::class.java to HotelDeleteRecentSearchEntity.Response(HotelDeleteRecentSearchEntity(true))),
-                mapOf(), false)
+                GraphqlResponse(mapOf(HotelDeleteRecentSearchEntity.Response::class.java to HotelDeleteRecentSearchEntity.Response(HotelDeleteRecentSearchEntity(true))),
+                        mapOf(), false)
 
         //when
         hotelHomepageViewModel.deleteRecentSearch("")

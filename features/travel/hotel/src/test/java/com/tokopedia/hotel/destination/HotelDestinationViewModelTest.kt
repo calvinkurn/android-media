@@ -1,22 +1,16 @@
 package com.tokopedia.hotel.destination
 
-import android.app.Activity
-import android.app.FragmentManager
-import android.content.Context
-import android.os.Looper
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.google.android.gms.location.LocationServices
+import com.tokopedia.common.travel.utils.TravelTestDispatcherProvider
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.hotel.HotelDispatchersProviderTest
 import com.tokopedia.hotel.destination.data.model.HotelSuggestion
 import com.tokopedia.hotel.destination.data.model.PopularSearch
 import com.tokopedia.hotel.destination.data.model.RecentSearch
 import com.tokopedia.hotel.destination.data.model.SearchDestination
 import com.tokopedia.hotel.destination.view.viewmodel.HotelDestinationViewModel
 import com.tokopedia.hotel.destination.view.viewmodel.Loaded
-import com.tokopedia.permissionchecker.PermissionCheckerHelper
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -40,7 +34,7 @@ class HotelHomepageViewModelTest {
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
-    private val dispatcher = HotelDispatchersProviderTest()
+    private val dispatcher = TravelTestDispatcherProvider()
     private lateinit var hotelDestinationViewModel: HotelDestinationViewModel
 
     private val userSessionInterface = mockk<UserSessionInterface>()
@@ -68,7 +62,7 @@ class HotelHomepageViewModelTest {
             userSessionInterface.isLoggedIn
         } returns true
 
-        coEvery{
+        coEvery {
             userSessionInterface.userId
         } returns "0"
 
@@ -86,7 +80,7 @@ class HotelHomepageViewModelTest {
         val popularSearches = mutableListOf<PopularSearch>()
         val recentSearches = mutableListOf<RecentSearch>()
         for (i in 0..3) {
-            popularSearches.add(PopularSearch(i))
+            popularSearches.add(PopularSearch(i.toLong()))
             recentSearches.add(RecentSearch(i.toString()))
         }
         val graphqlSuccessResponse = GraphqlResponse(
@@ -102,7 +96,7 @@ class HotelHomepageViewModelTest {
             userSessionInterface.isLoggedIn
         } returns true
 
-        coEvery{
+        coEvery {
             userSessionInterface.userId
         } returns "0"
 
@@ -130,7 +124,7 @@ class HotelHomepageViewModelTest {
             userSessionInterface.isLoggedIn
         } returns true
 
-        coEvery{
+        coEvery {
             userSessionInterface.userId
         } returns "0"
 
@@ -147,7 +141,7 @@ class HotelHomepageViewModelTest {
         //given
         val popularSearches = mutableListOf<PopularSearch>()
         for (i in 0..3) {
-            popularSearches.add(PopularSearch(i))
+            popularSearches.add(PopularSearch(i.toLong()))
         }
         val graphqlSuccessResponse = GraphqlResponse(
                 mapOf(PopularSearch.Response::class.java to PopularSearch.Response(popularSearches)),
@@ -174,7 +168,7 @@ class HotelHomepageViewModelTest {
         //given
         val popularSearches = mutableListOf<PopularSearch>()
         for (i in 0..3) {
-            popularSearches.add(PopularSearch(i))
+            popularSearches.add(PopularSearch(i.toLong()))
         }
         val graphqlErrorResponse = GraphqlResponse(
                 mapOf(),
@@ -201,7 +195,7 @@ class HotelHomepageViewModelTest {
         //given
         val searchDestinations = mutableListOf<SearchDestination>()
         for (i in 0..3) {
-            searchDestinations.add(SearchDestination(i))
+            searchDestinations.add(SearchDestination(i.toLong()))
         }
         val graphqlSuccessResponse = GraphqlResponse(
                 mapOf(HotelSuggestion.Response::class.java to HotelSuggestion.Response(HotelSuggestion(searchDestinationList = searchDestinations))),
@@ -249,7 +243,7 @@ class HotelHomepageViewModelTest {
             graphqlRepository.getReseponse(any(), any())
         } returns graphqlSuccessResponse
 
-        coEvery{
+        coEvery {
             userSessionInterface.userId
         } returns "0"
 
@@ -271,7 +265,7 @@ class HotelHomepageViewModelTest {
             graphqlRepository.getReseponse(any(), any())
         } returns graphqlErrorResponse
 
-        coEvery{
+        coEvery {
             userSessionInterface.userId
         } returns "0"
 

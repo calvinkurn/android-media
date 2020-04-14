@@ -2,6 +2,7 @@ package com.tokopedia.hotel.booking.presentation.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.common.travel.utils.TravelDispatcherProvider
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
@@ -9,7 +10,6 @@ import com.tokopedia.hotel.booking.data.model.CartDataParam
 import com.tokopedia.hotel.booking.data.model.HotelCart
 import com.tokopedia.hotel.booking.data.model.HotelCheckoutParam
 import com.tokopedia.hotel.booking.data.model.HotelCheckoutResponse
-import com.tokopedia.hotel.common.util.HotelDispatcherProvider
 import com.tokopedia.hotel.roomlist.util.HotelUtil
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.promocheckout.common.domain.model.FlightCancelVoucher
@@ -20,7 +20,6 @@ import com.tokopedia.travel.passenger.domain.UpsertContactListUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -33,7 +32,7 @@ import javax.inject.Inject
 class HotelBookingViewModel @Inject constructor(private val graphqlRepository: GraphqlRepository,
                                                 private val getContactListUseCase: GetContactListUseCase,
                                                 private val upsertContactListUseCase: UpsertContactListUseCase,
-                                                val dispatcher: HotelDispatcherProvider) : BaseViewModel(dispatcher.io) {
+                                                val dispatcher: TravelDispatcherProvider) : BaseViewModel(dispatcher.io()) {
 
     val contactListResult = MutableLiveData<List<TravelContactListModel.Contact>>()
     val hotelCartResult = MutableLiveData<Result<HotelCart.Response>>()
@@ -55,9 +54,9 @@ class HotelBookingViewModel @Inject constructor(private val graphqlRepository: G
     fun updateContactList(query: String,
                           updatedContact: TravelUpsertContactModel.Contact) {
         launch {
-                upsertContactListUseCase.execute(query,
-                        TravelUpsertContactModel(updateLastUsedProduct = UpsertContactListUseCase.PARAM_TRAVEL_HOTEL,
-                                contacts = listOf(updatedContact)))
+            upsertContactListUseCase.execute(query,
+                    TravelUpsertContactModel(updateLastUsedProduct = UpsertContactListUseCase.PARAM_TRAVEL_HOTEL,
+                            contacts = listOf(updatedContact)))
         }
     }
 
@@ -65,7 +64,7 @@ class HotelBookingViewModel @Inject constructor(private val graphqlRepository: G
         val requestParams = CartDataParam(cartId)
         val params = mapOf(PARAM_CART_PROPERTY to requestParams)
         launchCatchError(block = {
-            val data = withContext(dispatcher.ui) {
+            val data = withContext(dispatcher.ui()) {
                 val graphqlRequest = GraphqlRequest(rawQuery, TYPE_HOTEL_CART, params)
                 graphqlRepository.getReseponse(listOf(graphqlRequest))
             }.getSuccessData<HotelCart.Response>()
@@ -80,7 +79,7 @@ class HotelBookingViewModel @Inject constructor(private val graphqlRepository: G
         hotelCheckoutParam.idempotencyKey = generateIdEmpotency(hotelCheckoutParam.cartId)
         val params = mapOf(PARAM_CART_PROPERTY to hotelCheckoutParam)
         launchCatchError(block = {
-            val data = withContext(dispatcher.ui) {
+            val data = withContext(dispatcher.ui()) {
                 val graphqlRequest = GraphqlRequest(rawQuery, TYPE_HOTEL_CHECKOUT, params)
                 graphqlRepository.getReseponse(listOf(graphqlRequest))
             }.getSuccessData<HotelCheckoutResponse.Response>()

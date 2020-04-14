@@ -1,10 +1,10 @@
 package com.tokopedia.hotel.evoucher
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.common.travel.utils.TravelTestDispatcherProvider
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.hotel.HotelDispatchersProviderTest
 import com.tokopedia.hotel.evoucher.data.entity.SharePdfDataResponse
 import com.tokopedia.hotel.evoucher.presentation.viewmodel.HotelEVoucherViewModel
 import com.tokopedia.hotel.orderdetail.data.model.HotelOrderDetail
@@ -30,7 +30,7 @@ class HotelEvoucherViewModelTest {
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
-    private val dispatcher = HotelDispatchersProviderTest()
+    private val dispatcher = TravelTestDispatcherProvider()
     private lateinit var hotelEVoucherViewModel: HotelEVoucherViewModel
 
     private val graphqlRepository = mockk<GraphqlRepository>()
@@ -56,7 +56,7 @@ class HotelEvoucherViewModelTest {
 
         //then
         assert(hotelEVoucherViewModel.orderDetailData.value is Success)
-        assert((hotelEVoucherViewModel.orderDetailData.value as Success<HotelOrderDetail>).data.status.status ==  30)
+        assert((hotelEVoucherViewModel.orderDetailData.value as Success<HotelOrderDetail>).data.status.status == 30)
     }
 
     @Test

@@ -3,8 +3,7 @@ package com.tokopedia.hotel.orderdetail
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.common.travel.data.entity.TravelCrossSelling
 import com.tokopedia.common.travel.domain.TravelCrossSellingUseCase
-import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.hotel.HotelDispatchersProviderTest
+import com.tokopedia.common.travel.utils.TravelTestDispatcherProvider
 import com.tokopedia.hotel.orderdetail.data.model.HotelOrderDetail
 import com.tokopedia.hotel.orderdetail.presentation.viewmodel.HotelOrderDetailViewModel
 import com.tokopedia.hotel.orderdetail.usecase.GetHotelOrderDetailUseCase
@@ -13,7 +12,6 @@ import com.tokopedia.usecase.coroutines.Success
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.impl.annotations.RelaxedMockK
-import io.mockk.mockk
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -29,10 +27,8 @@ class HotelOrderDetailViewModelTest {
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
-    private val dispatcher = HotelDispatchersProviderTest()
+    private val dispatcher = TravelTestDispatcherProvider()
     private lateinit var hotelOrderDetailViewModel: HotelOrderDetailViewModel
-
-    private val graphqlRepository = mockk<GraphqlRepository>()
 
     @RelaxedMockK
     lateinit var getHotelOrderDetailUseCase: GetHotelOrderDetailUseCase

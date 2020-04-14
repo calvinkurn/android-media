@@ -2,10 +2,10 @@ package com.tokopedia.hotel.search.presentation.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.common.travel.utils.TravelDispatcherProvider
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.hotel.common.util.HotelDispatcherProvider
 import com.tokopedia.hotel.search.data.model.Filter
 import com.tokopedia.hotel.search.data.model.PropertySearch
 import com.tokopedia.hotel.search.data.model.Sort
@@ -15,15 +15,13 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class HotelSearchResultViewModel @Inject constructor(
         private val graphqlRepository: GraphqlRepository,
-        private val dispatcher: HotelDispatcherProvider)
-    : BaseViewModel(dispatcher.io) {
+        private val dispatcher: TravelDispatcherProvider)
+    : BaseViewModel(dispatcher.io()) {
 
     val searchParam: SearchParam = SearchParam()
     var selectedSort: Sort = Sort()
@@ -62,7 +60,7 @@ class HotelSearchResultViewModel @Inject constructor(
             val params = mapOf(PARAM_SEARCH_PROPERTY to searchParam)
             val graphqlRequest = GraphqlRequest(searchQuery, PropertySearch.Response::class.java, params)
 
-            val response = withContext(dispatcher.ui) { graphqlRepository.getReseponse(listOf(graphqlRequest)) }
+            val response = withContext(dispatcher.ui()) { graphqlRepository.getReseponse(listOf(graphqlRequest)) }
             liveSearchResult.postValue(Success(response.getSuccessData<PropertySearch.Response>().response))
         }) {
             liveSearchResult.postValue(Fail(it))
