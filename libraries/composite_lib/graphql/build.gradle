@@ -31,7 +31,7 @@ android {
 project.ext {
     artifactId = 'graphql'
     groupId = 'com.tokopedia.graphql'
-    versionName = "1.1.5"
+    versionName = "1.1.7"
     artifactName = "graphql-debug"
 }
 

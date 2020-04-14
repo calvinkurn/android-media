@@ -41,7 +41,6 @@ import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.drawer2.view.subscriber.ProfileCompletionSubscriber;
 import com.tokopedia.core.gcm.model.NotificationPass;
 import com.tokopedia.core.gcm.utils.NotificationUtils;
-import com.tokopedia.core.home.SimpleWebViewWithFilePickerActivity;
 import com.tokopedia.core.network.CoreNetworkRouter;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
@@ -843,17 +842,6 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public Intent getHelpUsIntent(Context context) {
         return new Intent(context, ContactUsActivity.class);
-    }
-
-    @Override
-    public Intent getWebviewActivityWithIntent(Context context, String url, String title) {
-        return SimpleWebViewWithFilePickerActivity.getIntentWithTitle(context, url, title);
-    }
-
-    @Override
-    public Intent getWebviewActivityWithIntent(Context context, String url) {
-        return SimpleWebViewWithFilePickerActivity.getIntent(context,
-                url);
     }
 
     @Override

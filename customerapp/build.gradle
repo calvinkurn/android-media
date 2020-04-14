@@ -297,7 +297,6 @@ dependencies {
     implementation project(rootProject.ext.features.recommendationWidgetCommon)
     implementation project(rootProject.ext.features.topAdsSdk)
     implementation project(rootProject.ext.features.reputationCommon)
-    implementation project(rootProject.ext.features.digitalEmoney)
     implementation project(rootProject.ext.features.commonTopupBills)
     implementation project(rootProject.ext.features.otp)
     implementation project(rootProject.ext.features.logout)
@@ -400,6 +399,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.logger)
     implementation project(rootProject.ext.features.filter)
     implementation project(rootProject.ext.features.commonTradein)
+    implementation project(rootProject.ext.features.kategori)
     implementation project(rootProject.ext.features.exploreCategory)
     implementation project(rootProject.ext.libraries.inappupdate)
     implementation project(rootProject.ext.libraries.youtubeutil)
@@ -577,7 +577,8 @@ dependencies {
     androidTestAnnotationProcessor rootProject.ext.miscDependencies.parceler
     androidTestImplementation rootProject.ext.testDependencies.dexMaker
     androidTestImplementation(rootProject.ext.testDependencies.dexMakerMockito) {
-        exclude group: 'org.hamcrest', module: 'hamcrest-core'
+        exclude group: 'org.hamcrest', module: 'hamcrest-core, mockito-core'
+        exclude group: 'org.mockito'
     }
     // Cloud testing
     androidTestImplementation(name: 'cloudtestingscreenshotter_lib', ext: 'aar')

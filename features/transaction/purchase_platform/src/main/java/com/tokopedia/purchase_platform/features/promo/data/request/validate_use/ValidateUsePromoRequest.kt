@@ -28,8 +28,8 @@ data class ValidateUsePromoRequest(
         var skipApply: Int = 1,
 
         @field:SerializedName("cart_type")
-        var cartType: String = "", // ocs & default
+        var cartType: String = "", // ocs & default & occ
 
         @field:SerializedName("state")
-        var state: String = "" // cart & checkout & occ
+        var state: String = "" // cart & checkout
 ) : Parcelable

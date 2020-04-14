@@ -53,7 +53,11 @@ afterEvaluate {
 
 subprojects {
     tasks.withType(Test) {
-        systemProperty "SPEK_TIMEOUT", project.getProperty("SPEK_TIMEOUT")
+        if(project.hasProperty("SPEK_TIMEOUT")){
+            systemProperty "SPEK_TIMEOUT", project.getProperty("SPEK_TIMEOUT")
+        } else {
+            systemProperty "SPEK_TIMEOUT", 999999
+        }
         maxParallelForks = Runtime.runtime.availableProcessors()
     }
     project.configurations.all {

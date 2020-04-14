@@ -7,6 +7,7 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.shop.R
 import com.tokopedia.shop.ShopComponentInstance
@@ -20,6 +21,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent> {
         const val SHOP_ID = "EXTRA_SHOP_ID"
         const val SHOP_REF = "EXTRA_SHOP_REF"
         const val PATH_INFO = "info"
+        const val SHOP_TRACE = "mp_shop"
 
         @JvmStatic
         fun createIntent(context: Context, shopId: String, shopRef: String) = Intent(context, ShopPageActivity::class.java)
@@ -29,7 +31,10 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent> {
                 }
     }
 
+    private var performanceMonitoring: PerformanceMonitoring? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
+        initPerformanceMonitoring()
         checkIfAppLinkToShopInfo()
         super.onCreate(savedInstanceState)
     }
@@ -47,6 +52,14 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent> {
     override fun onBackPressed() {
         super.onBackPressed()
         (fragment as? ShopPageFragment)?.onBackPressed()
+    }
+
+    fun stopPerformanceMonitor() {
+        performanceMonitoring?.stopTrace()
+    }
+
+    private fun initPerformanceMonitoring() {
+        performanceMonitoring = PerformanceMonitoring.start(SHOP_TRACE)
     }
 
     private fun checkIfAppLinkToShopInfo() {
