@@ -3,6 +3,7 @@ package com.tokopedia.analyticsdebugger.debugger.data.source
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
+import androidx.room.Update
 
 import com.tokopedia.analyticsdebugger.database.TopAdsLogDB
 
@@ -28,4 +29,7 @@ interface TopAdsLogDao {
 
     @Query("SELECT * FROM topads_log WHERE url LIKE :keyword OR eventType LIKE :keyword OR sourceName LIKE :keyword " + "ORDER BY timestamp DESC LIMIT 20 OFFSET :offset")
     fun getData(keyword: String, offset: Int): List<TopAdsLogDB>
+
+    @Update
+    fun updateItem(vararg item: TopAdsLogDB)
 }
