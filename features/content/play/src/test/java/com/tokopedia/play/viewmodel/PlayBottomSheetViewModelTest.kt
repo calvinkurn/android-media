@@ -121,19 +121,36 @@ class PlayBottomSheetViewModelTest {
     }
 
     @Test
-    fun `test do interaction event do action product when isLoggedIn true`() {
+    fun `when logged in, should be allowed to do product action`() {
+        val eventProductAction = InteractionEvent.DoActionProduct(
+                product = modelBuilder.buildProductLineUiModel(),
+                action = ProductAction.Buy,
+                type = BottomInsetsType.VariantSheet
+        )
 
         coEvery { userSession.isLoggedIn } returns true
 
-        val expectedResult = Event(LoginStateEvent.InteractionAllowed(InteractionEvent.DoActionProduct(
-                product = PlayUiMapper.mapItemProduct(modelBuilder.buildProduct()),
-                action = ProductAction.AddToCart,
-                type = BottomInsetsType.VariantSheet)))
+        val expectedResult = Event(LoginStateEvent.InteractionAllowed(eventProductAction))
 
-        playBottomSheetViewModel.doInteractionEvent(InteractionEvent.DoActionProduct(
-                product = PlayUiMapper.mapItemProduct(modelBuilder.buildProduct()),
-                action = ProductAction.AddToCart,
-                type = BottomInsetsType.VariantSheet))
+        playBottomSheetViewModel.doInteractionEvent(eventProductAction)
+
+        Assertions.assertThat(playBottomSheetViewModel.observableLoggedInInteractionEvent.getOrAwaitValue())
+                .isEqualToComparingFieldByFieldRecursively(expectedResult)
+    }
+
+    @Test
+    fun `when not logged in, should not be allowed to do product action`() {
+        val eventProductAction = InteractionEvent.DoActionProduct(
+                product = modelBuilder.buildProductLineUiModel(),
+                action = ProductAction.Buy,
+                type = BottomInsetsType.VariantSheet
+        )
+
+        coEvery { userSession.isLoggedIn } returns false
+
+        val expectedResult = Event(LoginStateEvent.NeedLoggedIn(eventProductAction))
+
+        playBottomSheetViewModel.doInteractionEvent(eventProductAction)
 
         Assertions.assertThat(playBottomSheetViewModel.observableLoggedInInteractionEvent.getOrAwaitValue())
                 .isEqualToComparingFieldByFieldRecursively(expectedResult)

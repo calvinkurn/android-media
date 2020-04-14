@@ -36,12 +36,19 @@ class HotelSearchResultViewModel @Inject constructor(
 
     fun initSearchParam(destinationID: Long, type: String, latitude: Float, longitude: Float,
                         checkIn: String, checkOut: String, totalRoom: Int, totalAdult: Int) {
-        if (type == TYPE_CITY)
+        if (type == TYPE_CITY){
             searchParam.location.cityID = destinationID
+            searchParam.location.districtID = 0
+            searchParam.location.regionID = 0
+        }
         else if (type == TYPE_DISTRICT) {
             searchParam.location.districtID = destinationID
+            searchParam.location.cityID = 0
+            searchParam.location.regionID = 0
         } else {
             searchParam.location.regionID = destinationID
+            searchParam.location.cityID = 0
+            searchParam.location.districtID = 0
         }
         searchParam.location.latitude = latitude
         searchParam.location.longitude = longitude
