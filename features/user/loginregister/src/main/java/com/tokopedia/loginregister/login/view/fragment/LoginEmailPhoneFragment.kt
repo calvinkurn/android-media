@@ -63,6 +63,7 @@ import com.tokopedia.loginregister.discover.data.DiscoverItemViewModel
 import com.tokopedia.loginregister.login.di.DaggerLoginComponent
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckData
 import com.tokopedia.loginregister.login.domain.pojo.StatusPinData
+import com.tokopedia.loginregister.login.router.LoginRouter
 import com.tokopedia.loginregister.login.view.activity.LoginActivity
 import com.tokopedia.loginregister.login.view.listener.LoginEmailPhoneContract
 import com.tokopedia.loginregister.login.view.presenter.LoginEmailPhonePresenter
@@ -632,6 +633,9 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
     }
 
     private fun setLoginSuccessSellerApp() = view?.run {
+        if (context.applicationContext is LoginRouter) {
+            (context.applicationContext as LoginRouter).setOnboardingStatus(true)
+        }
         val intent = if (userSession.hasShop()) {
             RouteManager.getIntent(context, ApplinkConstInternalSellerapp.SELLER_HOME)
         } else {

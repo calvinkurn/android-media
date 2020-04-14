@@ -11,7 +11,8 @@ class OnboardingPreference(private val context: Context) {
 
     companion object {
         private const val ONBOARDING_PREF = "onboarding_preference"
-        const val HAS_OPEN_ONBOARDING = "has_open_onboarding"
+        @JvmField
+        val HAS_OPEN_ONBOARDING = "has_open_onboarding"
     }
 
     private val sharedPref: SharedPreferences by lazy {

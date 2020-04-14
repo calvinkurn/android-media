@@ -17,7 +17,6 @@ import com.tokopedia.selleronboarding.R
 import com.tokopedia.selleronboarding.adapter.SlideAdapter
 import com.tokopedia.selleronboarding.model.SlideUiModel
 import com.tokopedia.selleronboarding.utils.OnboardingLayoutManager
-import com.tokopedia.selleronboarding.utils.OnboardingPreference
 import kotlinx.android.synthetic.main.fragment_sob_onboarding.view.*
 
 /**
@@ -30,7 +29,6 @@ class SellerOnboardingFragment : Fragment() {
         fun newInstance(): SellerOnboardingFragment = SellerOnboardingFragment()
     }
 
-    private val onboardingPreference by lazy { OnboardingPreference(requireContext()) }
     private val sliderAdapter by lazy { SlideAdapter() }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -87,10 +85,7 @@ class SellerOnboardingFragment : Fragment() {
     }
 
     private fun openApp() = view?.run {
-        val loginIntent = RouteManager.getIntent(context, ApplinkConst.LOGIN).apply {
-            flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
-        }
-        onboardingPreference.putBoolean(OnboardingPreference.HAS_OPEN_ONBOARDING, true)
-        startActivity(loginIntent)
+        RouteManager.route(context, ApplinkConst.LOGIN)
+        activity?.finish()
     }
 }
