@@ -35,6 +35,7 @@ class PlayInteractionLandscapeManager(
         layoutVideoControl(id = videoControlComponentId, sizeContainerComponentId = sizeContainerComponentId, likeComponentId = likeComponentId)
         layoutLike(id = likeComponentId, videoControlComponentId = videoControlComponentId, sizeContainerComponentId = sizeContainerComponentId)
         layoutPlayButton(id = playButtonComponentId, sizeContainerComponentId = sizeContainerComponentId)
+        layoutImmersiveBox(id = immersiveBoxComponentId)
     }
 
     private fun layoutSizeContainer(@IdRes id: Int) {
@@ -67,6 +68,15 @@ class PlayInteractionLandscapeManager(
         changeConstraint {
             connect(id, ConstraintSet.END, sizeContainerComponentId, ConstraintSet.END, offset16)
             connect(id, ConstraintSet.BOTTOM, videoControlComponentId, ConstraintSet.BOTTOM)
+        }
+    }
+
+    private fun layoutImmersiveBox(@IdRes id: Int) {
+        changeConstraint {
+            connect(id, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START)
+            connect(id, ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END)
+            connect(id, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP)
+            connect(id, ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM)
         }
     }
 
