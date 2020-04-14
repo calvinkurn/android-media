@@ -508,6 +508,10 @@ open class HomeViewModel @Inject constructor(
                     visitable -> visitable is HomeRetryModel
                 }
                 visitableMutableList.remove(findRetryModel)
+                if (!homeDataModel.isCache) {
+                    visitableMutableList.add(HomeLoadingMoreModel())
+                    getFeedTabData()
+                }
                 val newHomeViewModel = homeDataModel.copy(
                         list = visitableMutableList)
                 return newHomeViewModel
@@ -547,7 +551,6 @@ open class HomeViewModel @Inject constructor(
             homeFlowData.collect { homeDataModel ->
                 if (homeDataModel?.isCache == false) {
                     updateWidget(UpdateLiveDataModel(action = ACTION_UPDATE_HOME_DATA, homeData = homeDataModel))
-                    getFeedTabData()
                     getHeaderData()
                     getReviewData()
                     getPlayBanner()
@@ -666,12 +669,17 @@ open class HomeViewModel @Inject constructor(
             val findRecommendationModel = _homeLiveData.value?.list?.find {
                 visitable -> visitable is HomeRecommendationFeedViewModel
             }
+            val findLoadingModel = _homeLiveData.value?.list?.find {
+                visitable -> visitable is HomeLoadingMoreModel
+            }
 
             if (findRecommendationModel != null) return@launchCatchError
 
             val homeRecommendationFeedViewModel = HomeRecommendationFeedViewModel()
             homeRecommendationFeedViewModel.recommendationTabDataModel = homeRecommendationTabs
             homeRecommendationFeedViewModel.isNewData = true
+
+            updateWidget(UpdateLiveDataModel(ACTION_DELETE, findLoadingModel as HomeVisitable?))
             updateWidget(UpdateLiveDataModel(ACTION_DELETE, findRetryModel as HomeVisitable?))
             updateWidget(UpdateLiveDataModel(ACTION_ADD, homeRecommendationFeedViewModel))
 
@@ -679,6 +687,11 @@ open class HomeViewModel @Inject constructor(
             val findRetryModel = _homeLiveData.value?.list?.find {
                 visitable -> visitable is HomeRetryModel
             }
+            val findLoadingModel = _homeLiveData.value?.list?.find {
+                visitable -> visitable is HomeLoadingMoreModel
+            }
+
+            updateWidget(UpdateLiveDataModel(ACTION_DELETE, findLoadingModel as HomeVisitable?))
             updateWidget(UpdateLiveDataModel(ACTION_DELETE, findRetryModel as HomeVisitable?))
             updateWidget(UpdateLiveDataModel(ACTION_ADD, HomeRetryModel()))
         }
