@@ -71,7 +71,6 @@ class AddEditProductDescriptionModule {
         return GetYoutubeVideoUseCase(restRepository)
     }
 
-
     @AddEditProductDescriptionScope
     @Provides
     fun provideProductDraftDb(@ApplicationContext context: Context): AddEditProductDraftDb = AddEditProductDraftDb.getInstance(context)

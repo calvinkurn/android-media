@@ -9,8 +9,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.product.addedit.common.util.ResourceProvider
 import com.tokopedia.product.addedit.description.data.remote.model.variantbycat.ProductVariantByCatModel
 import com.tokopedia.product.addedit.description.domain.usecase.GetProductVariantUseCase
-import com.tokopedia.product.addedit.description.presentation.model.DescriptionInputModel
-import com.tokopedia.product.addedit.description.presentation.model.ProductVariantInputModel
+import com.tokopedia.product.addedit.description.presentation.model.*
 import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
 import com.tokopedia.product.addedit.draft.domain.usecase.GetProductDraftUseCase
 import com.tokopedia.product.addedit.draft.domain.usecase.SaveProductDraftUseCase
@@ -169,8 +168,24 @@ class AddEditProductPreviewViewModel @Inject constructor(
         productInputModel.value?.variantInputModel = variantInputModel
     }
 
+    fun updateVariantAndOption(productVariant: ArrayList<ProductVariantCombinationViewModel>,
+                               variantOptionParent: ArrayList<ProductVariantOptionParent>) {
+        productInputModel.value?.variantInputModel?.productVariant =
+                mapProductVariant(productVariant, variantOptionParent)
+        productInputModel.value?.variantInputModel?.variantOptionParent =
+                mapVariantOption(variantOptionParent)
+    }
+
+    fun updateSizeChart(productSizeChart: PictureViewModel?) {
+        productInputModel.value?.variantInputModel?.productSizeChart = productSizeChart
+    }
+
     fun updateShipmentInputModel(shipmentInputModel: ShipmentInputModel) {
         productInputModel.value?.shipmentInputModel = shipmentInputModel
+    }
+
+    fun updateProductStatus(isActive: Boolean) {
+        productInputModel.value?.detailInputModel?.status = if (isActive) 1 else 0
     }
 
     fun getNewProductInputModel(imageUrlOrPathList: ArrayList<String>): ProductInputModel {
@@ -206,26 +221,6 @@ class AddEditProductPreviewViewModel @Inject constructor(
         })
     }
 
-    fun validateProductInput(detailInputModel: DetailInputModel): String {
-        var errorMessage = ""
-        // validate category input
-        if (detailInputModel.categoryId.isEmpty() || detailInputModel.categoryId == "0")  {
-            errorMessage += resourceProvider.getInvalidCategoryIdErrorMessage() + "\n"
-        }
-
-        // validate product name input
-        if (detailInputModel.productName.isEmpty())  {
-            errorMessage += resourceProvider.getInvalidNameErrorMessage() + "\n"
-        }
-
-        // validate images input
-        if (detailInputModel.imageUrlOrPathList.isEmpty())  {
-            errorMessage += resourceProvider.getInvalidPhotoCountErrorMessage()
-        }
-
-        return errorMessage
-    }
-
     fun getProductDraft(draftId: Long) {
         launchCatchError(block = {
             getProductDraftUseCase.params = GetProductDraftUseCase.createRequestParams(draftId)
@@ -247,4 +242,59 @@ class AddEditProductPreviewViewModel @Inject constructor(
             saveProductDraftResultMutableLiveData.value = Fail(it)
         })
     }
+
+    fun validateProductInput(detailInputModel: DetailInputModel): String {
+        var errorMessage = ""
+        // validate category input
+        if (detailInputModel.categoryId.isEmpty() || detailInputModel.categoryId == "0")  {
+            errorMessage += resourceProvider.getInvalidCategoryIdErrorMessage() + "\n"
+        }
+
+        // validate product name input
+        if (detailInputModel.productName.isEmpty())  {
+            errorMessage += resourceProvider.getInvalidNameErrorMessage() + "\n"
+        }
+
+        // validate images input
+        if (detailInputModel.imageUrlOrPathList.isEmpty())  {
+            errorMessage += resourceProvider.getInvalidPhotoCountErrorMessage()
+        }
+
+        return errorMessage
+    }
+
+    private fun mapProductVariant(productVariant: ArrayList<ProductVariantCombinationViewModel>,
+                                  variantOptionParent: ArrayList<ProductVariantOptionParent>
+    ): ArrayList<ProductVariantCombinationViewModel> {
+        productVariant.forEach { variant ->
+            val options: ArrayList<Int> = ArrayList()
+            val level1Id = getVariantOptionIndex(variant.level1String, variantOptionParent)
+            val level2Id = getVariantOptionIndex(variant.level2String, variantOptionParent)
+            level1Id?.let { options.add(it) }
+            level2Id?.let { options.add(it) }
+            variant.opt = options
+        }
+        return productVariant
+    }
+
+    private fun mapVariantOption(variantOptionParent: ArrayList<ProductVariantOptionParent>):
+            ArrayList<ProductVariantOptionParent> = variantOptionParent.map {
+        it.productVariantOptionChild?.forEachIndexed { index, productVariantOptionChild ->
+            productVariantOptionChild.pvo = index + 1
+        }
+        it
+    } as ArrayList<ProductVariantOptionParent>
+
+    private fun getVariantOptionIndex(variantValue: String?,
+                                      variantOptionParent: List<ProductVariantOptionParent>): Int? {
+        variantOptionParent.forEach { productVariantOptionParent ->
+            productVariantOptionParent.productVariantOptionChild?.let {
+                it.forEachIndexed { outputIndex, optionChild ->
+                    if (optionChild.value == variantValue) return outputIndex + 1
+                }
+            }
+        }
+        return null
+    }
+
 }

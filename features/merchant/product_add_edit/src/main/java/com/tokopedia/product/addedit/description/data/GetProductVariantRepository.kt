@@ -7,8 +7,8 @@ import javax.inject.Inject
 class GetProductVariantRepository @Inject constructor(
         private val service: ProductVariantService
 ) {
-    suspend fun getVariant(categoryId: String): List<ProductVariantByCatModel> {
-        val response = service.getVariant(categoryId)
+    suspend fun getVariant(categoryId: String, useDefault: Boolean): List<ProductVariantByCatModel> {
+        val response = service.getVariant(categoryId, useDefault)
         return response.data
     }
 }
