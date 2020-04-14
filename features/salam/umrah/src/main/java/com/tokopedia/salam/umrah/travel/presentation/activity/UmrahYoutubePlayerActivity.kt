@@ -3,6 +3,7 @@ package com.tokopedia.salam.umrah.travel.presentation.activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import com.google.android.play.core.splitcompat.SplitCompat
 import com.google.android.youtube.player.YouTubeBaseActivity
 import com.google.android.youtube.player.YouTubeInitializationResult
 import com.google.android.youtube.player.YouTubePlayer
@@ -27,7 +28,7 @@ YouTubePlayer.PlayerStateChangeListener{
 
     override fun onCreate(p0: Bundle?) {
         super.onCreate(p0)
-        setContentView(com.tokopedia.salam.umrah.R.layout.activity_umrah_youtube_player)
+        setContentView(R.layout.activity_umrah_youtube_player)
         videoUrl = intent.getStringExtra(EXTRA_YOUTUBE_URL)
         umrah_youtube_player.initialize(getString(R.string.UMRAH_GOOGLE_API_KEY), this)
     }
@@ -83,5 +84,10 @@ YouTubePlayer.PlayerStateChangeListener{
         if(::youtubePlayerScreen.isInitialized)
             youtubePlayerScreen.release()
         super.onDestroy()
+    }
+
+    override fun attachBaseContext(newBase: Context?) {
+        super.attachBaseContext(newBase)
+        SplitCompat.installActivity(this)
     }
 }
