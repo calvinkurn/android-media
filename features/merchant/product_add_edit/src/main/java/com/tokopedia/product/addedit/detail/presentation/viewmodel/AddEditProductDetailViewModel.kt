@@ -202,7 +202,7 @@ class AddEditProductDetailViewModel @Inject constructor(
         if (wholeSaleQuantity == 0.toBigInteger()) {
             provider.getZeroWholeSaleQuantityErrorMessage()?.let { return it }
         }
-        if (wholeSaleQuantity < minWholeSaleQuantity) {
+        if (wholeSaleQuantity < minWholeSaleQuantity.toBigInteger()) {
             provider.getMinLimitWholeSaleQuantityErrorMessage(minWholeSaleQuantity)?.let { return it }
         }
         return ""
