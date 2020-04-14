@@ -32,11 +32,35 @@ class TalkReadingSortBottomSheet(
 
 
     private fun initView() {
-        talkReadingSortOptions.setData(TalkReadingMapper.mapSortOptionsToListUnifyItems(sortOptions))
+        val data = TalkReadingMapper.mapSortOptionsToListUnifyItems(sortOptions)
+        talkReadingSortOptions.setData(data)
         talkReadingSortOptions.setOnItemClickListener { parent, view, position, id ->
             val chosenSortOption = sortOptions[position]
             onFinishedListener.onFinishChooseSort(chosenSortOption)
             this.dismiss()
+        }
+        talkReadingSortOptions.onLoadFinish {
+            data.forEach {itemUnify ->
+                itemUnify.listRightRadiobtn?.setOnClickListener {
+                    val chosenSortOption = getSortOptionFromListUnify(itemUnify.listTitleText)
+                    onFinishedListener.onFinishChooseSort(chosenSortOption)
+                    this.dismiss()
+                }
+            }
+        }
+    }
+
+    private fun getSortOptionFromListUnify(title: String): SortOption {
+        return when(title) {
+            SortOption.INFORMATIVENESS_DISPLAY_NAME -> {
+                SortOption.SortByInformativeness()
+            }
+            SortOption.TIME_DISPLAY_NAME -> {
+                SortOption.SortByTime()
+            }
+            else -> {
+                SortOption.SortByLike()
+            }
         }
     }
 }
