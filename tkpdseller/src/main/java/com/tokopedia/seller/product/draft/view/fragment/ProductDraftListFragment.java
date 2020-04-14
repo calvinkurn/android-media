@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.Menu;
@@ -199,10 +200,13 @@ public class ProductDraftListFragment extends BaseListFragment<BlankPresenter, P
 
     @Override
     public void onItemClicked(ProductDraftViewModel productDraftViewModel) {
-        Intent intent = RouteManager.getIntent(getContext(),
-                ApplinkConstInternalMechant.MERCHANT_OPEN_PRODUCT_PREVIEW,
-                productDraftViewModel.getProductDraftId() + "",
-                ApplinkConstInternalMechant.MODE_EDIT_DRAFT);
+        String uri = Uri.parse(ApplinkConstInternalMechant.MERCHANT_OPEN_PRODUCT_PREVIEW)
+                .buildUpon()
+                .appendQueryParameter(ApplinkConstInternalMechant.QUERY_PARAM_ID, productDraftViewModel.getProductDraftId() + "")
+                .appendQueryParameter(ApplinkConstInternalMechant.QUERY_PARAM_MODE, ApplinkConstInternalMechant.MODE_EDIT_DRAFT)
+                .build()
+                .toString();
+        Intent intent = RouteManager.getIntent(getContext(), uri);
         eventDraftProductClicked(AppEventTracking.EventLabel.EDIT_DRAFT);
         startActivity(intent);
     }

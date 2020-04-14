@@ -1106,7 +1106,13 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
 
     private fun goToDuplicateProduct(productId: String) {
         activity?.let {
-            RouteManager.route(context, ApplinkConstInternalMechant.MERCHANT_OPEN_PRODUCT_PREVIEW, productId, ApplinkConstInternalMechant.MODE_DUPLICATE_PRODUCT)
+            val uri = Uri.parse(ApplinkConstInternalMechant.MERCHANT_OPEN_PRODUCT_PREVIEW)
+                    .buildUpon()
+                    .appendQueryParameter(ApplinkConstInternalMechant.QUERY_PARAM_ID, productId)
+                    .appendQueryParameter(ApplinkConstInternalMechant.QUERY_PARAM_MODE, ApplinkConstInternalMechant.MODE_DUPLICATE_PRODUCT)
+                    .build()
+                    .toString()
+            RouteManager.route(context, uri)
         }
     }
 

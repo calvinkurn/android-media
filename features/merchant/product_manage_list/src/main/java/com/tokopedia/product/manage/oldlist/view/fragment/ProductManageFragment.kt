@@ -952,14 +952,24 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
         }
     }
 
-    private fun goToDuplicateProduct(productId: String) {
+    private fun goToAddEditProduct(productId: String, mode: String) {
         activity?.let {
-            RouteManager.route(context, ApplinkConstInternalMechant.MERCHANT_OPEN_PRODUCT_PREVIEW, productId, ApplinkConstInternalMechant.MODE_DUPLICATE_PRODUCT)
+            val uri = Uri.parse(ApplinkConstInternalMechant.MERCHANT_OPEN_PRODUCT_PREVIEW)
+                    .buildUpon()
+                    .appendQueryParameter(ApplinkConstInternalMechant.QUERY_PARAM_ID, productId)
+                    .appendQueryParameter(ApplinkConstInternalMechant.QUERY_PARAM_MODE, mode)
+                    .build()
+                    .toString()
+            RouteManager.route(context, uri)
         }
     }
 
+    private fun goToDuplicateProduct(productId: String) {
+        goToAddEditProduct(productId, ApplinkConstInternalMechant.MODE_DUPLICATE_PRODUCT)
+    }
+
     private fun goToEditProduct(productId: String) {
-        RouteManager.route(context, ApplinkConstInternalMechant.MERCHANT_OPEN_PRODUCT_PREVIEW, productId, ApplinkConstInternalMechant.MODE_EDIT_PRODUCT)
+        goToAddEditProduct(productId, ApplinkConstInternalMechant.MODE_EDIT_PRODUCT)
     }
 
     private fun showDialogActionDeleteProduct(productIdList: List<String>, onClickListener: DialogInterface.OnClickListener, onCancelListener: DialogInterface.OnClickListener) {

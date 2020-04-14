@@ -26,7 +26,12 @@ object DeepLinkMapperProductManage {
             //tokopedia://product/edit/12345
             uri.pathSegments.size == 2 && uri.pathSegments[0] == PATH_SEGMENT_EDIT -> {
                 val productId = uri.pathSegments[1]
-                UriUtil.buildUri(ApplinkConstInternalMechant.MERCHANT_OPEN_PRODUCT_PREVIEW, productId, ApplinkConstInternalMechant.MODE_EDIT_PRODUCT)
+                Uri.parse(ApplinkConstInternalMechant.MERCHANT_OPEN_PRODUCT_PREVIEW)
+                        .buildUpon()
+                        .appendQueryParameter(ApplinkConstInternalMechant.QUERY_PARAM_ID, productId)
+                        .appendQueryParameter(ApplinkConstInternalMechant.QUERY_PARAM_MODE, ApplinkConstInternalMechant.MODE_EDIT_PRODUCT)
+                        .build()
+                        .toString()
             }
             else -> ""
         }

@@ -1659,7 +1659,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
     private fun gotoEditProduct() {
         val id = productInfo?.parentProductId ?: return
         context?.let {
-            val intent = RouteManager.getIntent(it, ApplinkConstInternalMechant.MERCHANT_OPEN_PRODUCT_PREVIEW, id, ApplinkConstInternalMechant.MODE_EDIT_PRODUCT)
+            val intent = RouteManager.getIntent(it, ApplinkConst.PRODUCT_EDIT, id)
             intent?.run { startActivityForResult(this, REQUEST_CODE_EDIT_PRODUCT) }
         }
     }
