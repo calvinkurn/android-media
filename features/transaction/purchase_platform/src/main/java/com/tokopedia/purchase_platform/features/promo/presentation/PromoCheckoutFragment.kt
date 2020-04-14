@@ -76,7 +76,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
         ViewModelProviders.of(this, viewModelFactory)[PromoCheckoutViewModel::class.java]
     }
 
-    // Use single recycler view to prevent NPE caused by nested recyclerview
+    // Use single recycler view to prevent memory leak & OOM caused by nested recyclerview
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: PromoCheckoutAdapter
 
