@@ -8,7 +8,6 @@ import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.view.WindowInsetsCompat
 import com.tokopedia.play.util.PlayFullScreenHelper
 import com.tokopedia.play.util.changeConstraint
-import com.tokopedia.play.view.layout.PlayLayoutManager
 
 /**
  * Created by jegul on 13/04/20
@@ -108,7 +107,7 @@ class PlayInteractionLandscapeManager(
     private fun layoutVideoSettings(container: View, @IdRes id: Int, @IdRes sizeContainerComponentId: Int) {
         container.changeConstraint {
             connect(id, ConstraintSet.END, sizeContainerComponentId, ConstraintSet.END, offset16)
-            connect(id, ConstraintSet.TOP, sizeContainerComponentId, ConstraintSet.TOP, offset16)
+            connect(id, ConstraintSet.TOP, sizeContainerComponentId, ConstraintSet.TOP)
         }
     }
 }
