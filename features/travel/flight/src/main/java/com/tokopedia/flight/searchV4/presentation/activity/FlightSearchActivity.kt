@@ -20,7 +20,6 @@ import com.tokopedia.flight.common.util.FlightAnalytics
 import com.tokopedia.flight.common.util.FlightDateUtil
 import com.tokopedia.flight.common.util.FlightFlowUtil
 import com.tokopedia.flight.common.view.BaseFlightActivity
-import com.tokopedia.flight.dashboard.view.fragment.model.FlightClassModel
 import com.tokopedia.flight.dashboard.view.fragment.model.FlightPassengerModel
 import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataModel
 import com.tokopedia.flight.search.util.FlightSearchCache
@@ -244,7 +243,7 @@ open class FlightSearchActivity : BaseFlightActivity(),
                 Intent(context, FlightSearchActivity::class.java)
                         .putExtra(EXTRA_PASS_DATA, passDataModel)
 
-        fun getCallingIntent(context: Context): Intent {
+       /* fun getCallingIntent(context: Context): Intent {
             val passDataModel = FlightSearchPassDataModel(
                     "2020-10-01",
                     "",
@@ -266,6 +265,6 @@ open class FlightSearchActivity : BaseFlightActivity(),
             )
 
             return getCallingIntent(context, passDataModel)
-        }
+        }*/
     }
 }
