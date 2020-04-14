@@ -35,6 +35,13 @@ open class FlightSearchViewModel @Inject constructor(
     lateinit var flightAirportCombine: FlightAirportCombineModel
     lateinit var filterModel: FlightFilterModel
     var selectedSortOption: Int = TravelSortOption.CHEAPEST
+    val isInFilterMode: Boolean
+        get() {
+            if (::filterModel.isInitialized) {
+                return filterModel.isHasFilter
+            }
+            return false
+        }
 
     var priceFilterStatistic: Pair<Int, Int> = Pair(0, Int.MAX_VALUE)
 

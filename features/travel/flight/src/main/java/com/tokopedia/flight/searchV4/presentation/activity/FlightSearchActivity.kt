@@ -214,7 +214,7 @@ open class FlightSearchActivity : BaseFlightActivity(),
             ))
 
             val coachMark = CoachMarkBuilder().build()
-            coachMark.show(this, com.tokopedia.flight.search.presentation.activity.FlightSearchActivity.TAG_CHANGE_COACH_MARK, coachMarkItems)
+            coachMark.show(this, TAG_CHANGE_COACH_MARK, coachMarkItems)
             Handler().postDelayed({
                 if (coachMark.isAdded && coachMark.isVisible) {
                     coachMark.dismiss()
