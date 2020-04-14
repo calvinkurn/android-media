@@ -449,11 +449,11 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
     private fun initComponents(container: ViewGroup) {
         sizeContainerComponent = initSizeContainerComponent(container)
         gradientBackgroundComponent = initGradientBackgroundComponent(container)
+        immersiveBoxComponent = initImmersiveBoxComponent(container)
         sendChatComponent = initSendChatComponent(container)
         likeComponent = initLikeComponent(container)
         pinnedComponent = initPinnedComponent(container)
         chatListComponent = initChatListComponent(container)
-        immersiveBoxComponent = initImmersiveBoxComponent(container)
         videoControlComponent = initVideoControlComponent(container)
         videoSettingsComponent = initVideoSettingsComponent(container)
         endLiveInfoComponent = initEndLiveInfoComponent(container)
