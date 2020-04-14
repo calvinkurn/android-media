@@ -142,8 +142,13 @@ class AddEditProductDescriptionFragment:
 
     override fun onTextChanged(url: String, position: Int) {
         adapter.data[position].inputUrl = url
-        positionVideoChanged = position
-        descriptionViewModel.getVideoYoutube(url)
+        if (url.isNotBlank()) {
+            positionVideoChanged = position
+            descriptionViewModel.getVideoYoutube(url)
+        } else {
+            adapter.data[position].errorMessage = ""
+            getRecyclerView(view).post { adapter.notifyItemChanged(position) }
+        }
     }
 
     override fun onItemClicked(t: VideoLinkModel?) {
@@ -370,7 +375,7 @@ class AddEditProductDescriptionFragment:
                         val productVariantViewModel = cacheManager.get(EXTRA_PRODUCT_VARIANT_SELECTION,
                                 object : TypeToken<ProductVariantInputModel>() {}.type) ?: ProductVariantInputModel()
                         descriptionViewModel.setVariantInput(productVariantViewModel.productVariant,
-                                productVariantViewModel.variantOptionParent)
+                                productVariantViewModel.variantOptionParent, productPictureViewModel)
                         tvVariantHeaderSubtitle.text = descriptionViewModel.getVariantSelectedMessage()
                         tvAddVariant.text = descriptionViewModel.getVariantButtonMessage()
                     }
