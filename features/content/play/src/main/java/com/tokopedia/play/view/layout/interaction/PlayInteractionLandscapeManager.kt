@@ -1,4 +1,4 @@
-package com.tokopedia.play.view.layout
+package com.tokopedia.play.view.layout.interaction
 
 import android.content.Context
 import android.view.View
@@ -6,7 +6,9 @@ import android.view.ViewGroup
 import androidx.annotation.IdRes
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.view.WindowInsetsCompat
+import com.tokopedia.play.util.PlayFullScreenHelper
 import com.tokopedia.play.util.changeConstraint
+import com.tokopedia.play.view.layout.PlayLayoutManager
 
 /**
  * Created by jegul on 13/04/20
@@ -26,7 +28,7 @@ class PlayInteractionLandscapeManager(
         @IdRes private val immersiveBoxComponentId: Int,
         @IdRes private val quickReplyComponentId: Int,
         @IdRes private val endLiveInfoComponentId: Int
-) : PlayLayoutManager {
+) : PlayInteractionLayoutManager {
 
     private val offset16 = context.resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4)
     private val offset12 = context.resources.getDimensionPixelOffset(com.tokopedia.play.R.dimen.play_offset_12)
@@ -49,6 +51,14 @@ class PlayInteractionLandscapeManager(
     }
 
     override fun onDestroy() {
+    }
+
+    override fun onEnterImmersive(): Int {
+        return PlayFullScreenHelper.getHideSystemUiVisibility()
+    }
+
+    override fun onExitImmersive(): Int {
+        return PlayFullScreenHelper.getHideSystemUiVisibility()
     }
 
     private fun layoutSizeContainer(container: View, @IdRes id: Int) {

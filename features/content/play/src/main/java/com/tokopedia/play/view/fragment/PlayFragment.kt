@@ -6,7 +6,6 @@ import android.animation.ObjectAnimator
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.content.res.Configuration
 import android.os.Bundle
 import android.view.*
 import android.view.inputmethod.InputMethodManager
@@ -129,6 +128,12 @@ class PlayFragment : BaseDaggerFragment() {
     private lateinit var flGlobalError: FrameLayout
 
     private val keyboardWatcher = KeyboardWatcher()
+
+    private var systemUiVisibility: Int
+        get() = requireActivity().window.decorView.systemUiVisibility
+        set(value) {
+            requireActivity().window.decorView.systemUiVisibility = value
+        }
 
     override fun getScreenName(): String = "Play"
 
@@ -319,12 +324,14 @@ class PlayFragment : BaseDaggerFragment() {
     }
 
     private fun setupScreen(view: View) {
-        setFullScreen()
+        setupSystemUi()
         setInsets(view)
     }
 
-    private fun setFullScreen() {
-        PlayFullScreenHelper.showSystemUi(requireActivity())
+    private fun setupSystemUi() {
+        systemUiVisibility =
+                if (playViewModel.screenOrientation.isLandscape) PlayFullScreenHelper.getHideSystemUiVisibility()
+                else PlayFullScreenHelper.getShowSystemUiVisibility()
     }
 
     private fun setInsets(view: View) {

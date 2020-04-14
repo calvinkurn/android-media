@@ -54,12 +54,11 @@ import com.tokopedia.play.ui.toolbar.model.PartnerFollowAction
 import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.ui.videocontrol.VideoControlComponent
 import com.tokopedia.play.util.CoroutineDispatcherProvider
-import com.tokopedia.play.util.PlayFullScreenHelper
 import com.tokopedia.play.util.event.EventObserver
 import com.tokopedia.play.view.bottomsheet.PlayMoreActionBottomSheet
 import com.tokopedia.play.view.event.ScreenStateEvent
-import com.tokopedia.play.view.layout.PlayInteractionLayoutManager
-import com.tokopedia.play.view.layout.PlayLayoutManager
+import com.tokopedia.play.view.layout.interaction.PlayInteractionLayoutManager
+import com.tokopedia.play.view.layout.interaction.PlayInteractionLayoutManagerImpl
 import com.tokopedia.play.view.type.BottomInsetsState
 import com.tokopedia.play.view.type.BottomInsetsType
 import com.tokopedia.play.view.type.PlayRoomEvent
@@ -137,7 +136,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
     private lateinit var playButtonComponent: UIComponent<*>
     private lateinit var endLiveInfoComponent: UIComponent<*>
 
-    private lateinit var layoutManager: PlayLayoutManager
+    private lateinit var layoutManager: PlayInteractionLayoutManager
 
     private lateinit var bottomSheet: PlayMoreActionBottomSheet
     private lateinit var clPlayInteraction: ConstraintLayout
@@ -149,8 +148,6 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
         get() = requireView().findViewById(sendChatComponent.getContainerId())
     private val quickReplyView: View
         get() = requireView().findViewById(quickReplyComponent.getContainerId())
-    private val statsInfoView: View
-        get() = requireView().findViewById(statsInfoComponent.getContainerId())
     private val chatListView: View
         get() = requireView().findViewById(chatListComponent.getContainerId())
 
@@ -158,6 +155,12 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
 
     private val playFragment: PlayFragment
         get() = requireParentFragment() as PlayFragment
+
+    private var systemUiVisibility: Int
+        get() = requireActivity().window.decorView.systemUiVisibility
+        set(value) {
+            requireActivity().window.decorView.systemUiVisibility = value
+        }
 
     override fun getScreenName(): String = "Play Interaction"
 
@@ -422,8 +425,10 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
         }
                 .withStartAction {
                     view.isClickable = false
-                    if (whenAlpha == VISIBLE_ALPHA) hideSystemUI()
-                    else showSystemUI()
+
+                    systemUiVisibility =
+                            if (whenAlpha == VISIBLE_ALPHA) layoutManager.onEnterImmersive()
+                            else layoutManager.onExitImmersive()
                 }
                 .withEndAction {
                     view.isClickable = true
@@ -447,7 +452,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
         //play button should be on top of other component so it can be clicked
         playButtonComponent = initPlayButtonComponent(container)
 
-        layoutManager = PlayInteractionLayoutManager(
+        layoutManager = PlayInteractionLayoutManagerImpl(
                 context = requireContext(),
                 orientation = ScreenOrientation.getByInt(resources.configuration.orientation),
                 sizeContainerComponentId = sizeContainerComponent.getContainerId(),
@@ -876,14 +881,6 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
         activity?.overridePendingTransition(R.anim.anim_play_enter_page, R.anim.anim_play_exit_page)
 
         if (shouldFinish) activity?.finish()
-    }
-
-    private fun hideSystemUI() {
-        PlayFullScreenHelper.hideSystemUi(requireActivity())
-    }
-
-    private fun showSystemUI() {
-        PlayFullScreenHelper.showSystemUi(requireActivity())
     }
 
     private fun sendEventBanned(eventUiModel: EventUiModel) {

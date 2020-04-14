@@ -1,15 +1,16 @@
-package com.tokopedia.play.view.layout
+package com.tokopedia.play.view.layout.interaction
 
 import android.content.Context
 import android.view.View
 import androidx.annotation.IdRes
 import androidx.core.view.WindowInsetsCompat
+import com.tokopedia.play.view.layout.PlayLayoutManager
 import com.tokopedia.play.view.type.ScreenOrientation
 
 /**
  * Created by jegul on 01/04/20
  */
-class PlayInteractionLayoutManager(
+class PlayInteractionLayoutManagerImpl(
         context: Context,
         private val orientation: ScreenOrientation,
         @IdRes private val sizeContainerComponentId: Int,
@@ -25,7 +26,7 @@ class PlayInteractionLayoutManager(
         @IdRes private val immersiveBoxComponentId: Int,
         @IdRes private val quickReplyComponentId: Int,
         @IdRes private val endLiveInfoComponentId: Int
-) : PlayLayoutManager {
+) : PlayInteractionLayoutManager {
 
     private val portraitManager = PlayInteractionPortraitManager(
             context = context,
@@ -72,7 +73,15 @@ class PlayInteractionLayoutManager(
         getManager().onDestroy()
     }
 
-    private fun getManager(): PlayLayoutManager = when (orientation) {
+    override fun onEnterImmersive(): Int {
+        return getManager().onEnterImmersive()
+    }
+
+    override fun onExitImmersive(): Int {
+        return getManager().onExitImmersive()
+    }
+
+    private fun getManager(): PlayInteractionLayoutManager = when (orientation) {
         ScreenOrientation.Portrait, ScreenOrientation.Unknown -> portraitManager
         ScreenOrientation.Landscape -> landscapeManager
     }
