@@ -1,39 +1,46 @@
 package com.tokopedia.home.viewModel.homepage
 
 import androidx.lifecycle.Observer
+import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
+import com.tokopedia.atc_common.domain.usecase.AddToCartOccUseCase
 import com.tokopedia.home.beranda.data.usecase.HomeUseCase
 import com.tokopedia.home.beranda.domain.interactor.GetDynamicChannelsUseCase
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
+import com.tokopedia.home.beranda.helper.Event
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelDataModel
 import com.tokopedia.home.beranda.presentation.viewModel.HomeViewModel
 import com.tokopedia.home.rules.InstantTaskExecutorRuleSpek
 import io.mockk.confirmVerified
+import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verifyOrder
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.gherkin.Feature
+import rx.Observable
 
-@ExperimentalCoroutinesApi
-class HomeViewModelDynamicChannelTest : Spek({
+class HomeViewModelBuyAgainUnitTest : Spek({
     InstantTaskExecutorRuleSpek(this)
 
-    Feature("Get dynamic channel data") {
+    Feature("Test express checkout"){
         lateinit var homeViewModel: HomeViewModel
         createHomeViewModelTestInstance()
 
         val getDynamicChannelsUseCase by memoized<GetDynamicChannelsUseCase>()
         val getHomeUseCase by memoized<HomeUseCase>()
+        val getAtcUseCase by memoized<AddToCartOccUseCase>()
 
-        Scenario("Get dynamic channel data success with single data") {
+        Scenario("Get dynamic channel data success with single data and try express checkout") {
             val dataModel = DynamicChannelDataModel()
             dataModel.channel = DynamicHomeChannel.Channels(id = "1")
             val dynamicChannel = DynamicHomeChannel.Channels(id = "2")
             val dynamicChannelViewModel = DynamicChannelDataModel()
             val observerHome: Observer<HomeDataModel> = mockk(relaxed = true)
+            val observerExpressCheckout: Observer<Event<Any>> = mockk(relaxed = true)
             dynamicChannelViewModel.channel = dynamicChannel
-            Given("dynamic banner almost expired time") {
+
+
+            Given("dynamic channel") {
                 getHomeUseCase.givenGetHomeDataReturn(
                         HomeDataModel(
                                 list = listOf(dataModel)
@@ -41,9 +48,14 @@ class HomeViewModelDynamicChannelTest : Spek({
                 )
             }
 
+            Given("Success Express Checkout"){
+                every{ getAtcUseCase.createObservable(any()) } returns Observable.just(mockk())
+            }
+
             Given("home viewModel") {
                 homeViewModel = createHomeViewModel()
                 homeViewModel.homeLiveData.observeForever(observerHome)
+                homeViewModel.oneClickCheckout.observeForever(observerExpressCheckout)
             }
 
 
@@ -53,8 +65,8 @@ class HomeViewModelDynamicChannelTest : Spek({
                 )
             }
 
-            When("viewModel load request update dynamic channel data") {
-                homeViewModel.getDynamicChannelData(dataModel, 0)
+            When("Express checkout clicked"){
+                homeViewModel.getOneClickCheckout("")
             }
 
             Then("Expect channel updated") {
@@ -64,33 +76,28 @@ class HomeViewModelDynamicChannelTest : Spek({
                         it.list.isNotEmpty() && it.list.first() is DynamicChannelDataModel &&
                                 (it.list.first() as DynamicChannelDataModel).channel?.id == "1"
                     })
-                    // check on second update data liveData is removed old dynamic channel
-                    observerHome.onChanged(match {
-                        it.list.isNotEmpty() && it.list.first() !is DynamicChannelDataModel
-                    })
-
-                    // check after removed is must add new channel from list of channel
-                    observerHome.onChanged(match {
-                        it.list.isNotEmpty() && it.list.first() is DynamicChannelDataModel &&
-                                (it.list.first() as DynamicChannelDataModel).channel?.id == "2"
-                    })
                 }
                 confirmVerified(observerHome)
             }
+
+            Then("Event express checkout should be triggered"){
+                verifyOrder {
+                    observerExpressCheckout.onChanged(match { it.peekContent() is AddToCartDataModel })
+                }
+            }
         }
 
-        Scenario("Get dynamic channel data success with multiple data") {
+        Scenario("Get dynamic channel data success with single data and fail express checkout") {
             val dataModel = DynamicChannelDataModel()
-            val observerHome: Observer<HomeDataModel> = mockk(relaxed = true)
             dataModel.channel = DynamicHomeChannel.Channels(id = "1")
             val dynamicChannel = DynamicHomeChannel.Channels(id = "2")
-            val dynamicChannel2 = DynamicHomeChannel.Channels(id = "3")
-            val dynamicChannelViewModel1 = DynamicChannelDataModel()
-            val dynamicChannelViewModel2 = DynamicChannelDataModel()
-            dynamicChannelViewModel1.channel = dynamicChannel
-            dynamicChannelViewModel2.channel = dynamicChannel2
+            val dynamicChannelViewModel = DynamicChannelDataModel()
+            val observerHome: Observer<HomeDataModel> = mockk(relaxed = true)
+            val observerExpressCheckout: Observer<Event<Any>> = mockk(relaxed = true)
+            dynamicChannelViewModel.channel = dynamicChannel
 
-            Given("dynamic banner almost expired time") {
+
+            Given("dynamic channel") {
                 getHomeUseCase.givenGetHomeDataReturn(
                         HomeDataModel(
                                 list = listOf(dataModel)
@@ -98,20 +105,25 @@ class HomeViewModelDynamicChannelTest : Spek({
                 )
             }
 
+            Given("Success Express Checkout"){
+                every{ getAtcUseCase.createObservable(any()) } returns Observable.error(mockk())
+            }
+
             Given("home viewModel") {
                 homeViewModel = createHomeViewModel()
                 homeViewModel.homeLiveData.observeForever(observerHome)
+                homeViewModel.oneClickCheckout.observeForever(observerExpressCheckout)
             }
 
 
             Given("dynamic data returns success") {
                 getDynamicChannelsUseCase.givenGetDynamicChannelsUseCase(
-                        dynamicChannelDataModels = listOf(dynamicChannelViewModel1, dynamicChannelViewModel2)
+                        dynamicChannelDataModels = listOf(dynamicChannelViewModel)
                 )
             }
 
-            When("viewModel load request update dynamic channel data") {
-                homeViewModel.getDynamicChannelData(dataModel, 0)
+            When("Express checkout clicked"){
+                homeViewModel.getOneClickCheckout("")
             }
 
             Then("Expect channel updated") {
@@ -121,33 +133,31 @@ class HomeViewModelDynamicChannelTest : Spek({
                         it.list.isNotEmpty() && it.list.first() is DynamicChannelDataModel &&
                                 (it.list.first() as DynamicChannelDataModel).channel?.id == "1"
                     })
-                    // check on second update data liveData is removed old dynamic channel
-                    observerHome.onChanged(match {
-                        it.list.isNotEmpty() && it.list.first() !is DynamicChannelDataModel
-                    })
-
-                    // check after removed is must add new channel from list of channel
-                    observerHome.onChanged(match {
-                        it.list.isNotEmpty() && it.list.first() is DynamicChannelDataModel &&
-                                (it.list.first() as DynamicChannelDataModel).channel?.id == "3"
-                    })
-
-                    // check the second new channel from list of channel
-                    observerHome.onChanged(match {
-                        it.list.isNotEmpty() && it.list.first() is DynamicChannelDataModel &&
-                                (it.list.first() as DynamicChannelDataModel).channel?.id == "2"
-                    })
                 }
                 confirmVerified(observerHome)
             }
+
+            Then("Event express checkout should be triggered"){
+                verifyOrder {
+                    observerExpressCheckout.onChanged(match { it.peekContent() is Throwable })
+                }
+            }
         }
+    }
 
-        Scenario("Get dynamic channel data success with empty data") {
+    Feature("Test Close Buy Again Widget"){
+        lateinit var homeViewModel: HomeViewModel
+        createHomeViewModelTestInstance()
+        val getHomeUseCase by memoized<HomeUseCase>()
+        val getAtcUseCase by memoized<AddToCartOccUseCase>()
+
+        Scenario("Get dynamic channel data success with single data and try close widget") {
             val dataModel = DynamicChannelDataModel()
-            val observerHome: Observer<HomeDataModel> = mockk(relaxed = true)
             dataModel.channel = DynamicHomeChannel.Channels(id = "1")
+            val observerHome: Observer<HomeDataModel> = mockk(relaxed = true)
 
-            Given("dynamic banner almost expired time") {
+
+            Given("dynamic channel") {
                 getHomeUseCase.givenGetHomeDataReturn(
                         HomeDataModel(
                                 list = listOf(dataModel)
@@ -155,24 +165,22 @@ class HomeViewModelDynamicChannelTest : Spek({
                 )
             }
 
+            Given("Success Express Checkout"){
+                every{ getAtcUseCase.createObservable(any()) } returns Observable.just(mockk())
+            }
+
             Given("home viewModel") {
                 homeViewModel = createHomeViewModel()
                 homeViewModel.homeLiveData.observeForever(observerHome)
             }
 
-
-            Given("dynamic data returns success") {
-                getDynamicChannelsUseCase.givenGetDynamicChannelsUseCase(
-                        dynamicChannelDataModels = listOf()
-                )
-            }
-
-            When("viewModel load request update dynamic channel data") {
-                homeViewModel.getDynamicChannelData(dataModel, 0)
+            When("Express checkout clicked"){
+                homeViewModel.onCloseBuyAgain(dataModel.channel!!, 0)
             }
 
             Then("Expect channel updated") {
                 verifyOrder {
+                    // check on home data initial first channel is dynamic channel
                     observerHome.onChanged(match {
                         it.list.isNotEmpty() && it.list.first() is DynamicChannelDataModel &&
                                 (it.list.first() as DynamicChannelDataModel).channel?.id == "1"
@@ -185,45 +193,5 @@ class HomeViewModelDynamicChannelTest : Spek({
             }
         }
 
-        Scenario("Get dynamic channel data error") {
-            val dataModel = DynamicChannelDataModel()
-            val observerHome: Observer<HomeDataModel> = mockk(relaxed = true)
-            dataModel.channel = DynamicHomeChannel.Channels(id = "1")
-
-            Given("dynamic banner almost expired time") {
-                getHomeUseCase.givenGetHomeDataReturn(
-                        HomeDataModel(
-                                list = listOf(dataModel)
-                        )
-                )
-            }
-
-            Given("home viewModel") {
-                homeViewModel = createHomeViewModel()
-                homeViewModel.homeLiveData.observeForever(observerHome)
-            }
-
-
-            Given("dynamic data returns success") {
-                getDynamicChannelsUseCase.givenGetDynamicChannelsUseCaseThrowReturn()
-            }
-
-            When("viewModel load request update dynamic channel data") {
-                homeViewModel.getDynamicChannelData(dataModel, 0)
-            }
-
-            Then("Expect channel updated") {
-                verifyOrder {
-                    observerHome.onChanged(match {
-                        it.list.isNotEmpty() && it.list.first() is DynamicChannelDataModel &&
-                                (it.list.first() as DynamicChannelDataModel).channel?.id == "1"
-                    })
-                    observerHome.onChanged(match {
-                        it.list.isNotEmpty()
-                    })
-                }
-                confirmVerified(observerHome)
-            }
-        }
     }
 })

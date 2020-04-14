@@ -9,7 +9,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import android.text.Spannable
 import android.text.SpannableStringBuilder
-import android.text.TextUtils
 import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
 import android.util.TypedValue
@@ -26,7 +25,7 @@ import com.tokopedia.home.analytics.HomePageTracking
 import com.tokopedia.home.beranda.helper.DynamicLinkHelper
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.LinearHorizontalSpacingDecoration
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.spotlight.SpotlightItemViewModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.spotlight.SpotlightItemDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.spotlight.SpotlightViewModel
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
@@ -59,11 +58,11 @@ class SpotlightViewHolder(itemView: View, val listener: HomeCategoryListener) : 
     }
 
     private class SpotlightAdapter(private val listener: HomeCategoryListener) : RecyclerView.Adapter<SpotlightItemViewHolder>() {
-        private val spotlightItemViewModels = ArrayList<SpotlightItemViewModel>()
+        private val spotlightItemViewModels = ArrayList<SpotlightItemDataModel>()
 
-        fun setData(spotlightItemViewModels: List<SpotlightItemViewModel>) {
+        fun setData(spotlightItemDataModels: List<SpotlightItemDataModel>) {
             this.spotlightItemViewModels.clear()
-            this.spotlightItemViewModels.addAll(spotlightItemViewModels)
+            this.spotlightItemViewModels.addAll(spotlightItemDataModels)
             notifyDataSetChanged()
         }
 
@@ -90,7 +89,7 @@ class SpotlightViewHolder(itemView: View, val listener: HomeCategoryListener) : 
         private val container: View = itemView.findViewById(R.id.spotlightContainer)
         private val context: Context = itemView.context
 
-        fun bind(model: SpotlightItemViewModel, position: Int) {
+        fun bind(model: SpotlightItemDataModel, position: Int) {
             /**
              * Hardcoded spotlight title to use dip unit
              * prevent spotlight title increase text size
@@ -137,7 +136,7 @@ class SpotlightViewHolder(itemView: View, val listener: HomeCategoryListener) : 
             }
         }
 
-        private fun eventClickSpotlight(model: SpotlightItemViewModel, position: Int) {
+        private fun eventClickSpotlight(model: SpotlightItemDataModel, position: Int) {
             HomePageTracking.eventEnhancedClickDynamicChannelHomePage(
                     HomePageTracking.getEventEnhancedClickSpotlightHomePage(
                             position, model

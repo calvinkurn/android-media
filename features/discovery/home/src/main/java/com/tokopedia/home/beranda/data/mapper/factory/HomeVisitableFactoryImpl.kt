@@ -10,12 +10,12 @@ import com.tokopedia.home.analytics.v2.ProductHighlightTracking
 import com.tokopedia.home.beranda.domain.model.*
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.*
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.dynamic_icon.DynamicIconSectionViewModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.dynamic_icon.DynamicIconSectionDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.dynamic_icon.HomeIconItem
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.spotlight.SpotlightItemViewModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.spotlight.SpotlightItemDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.spotlight.SpotlightViewModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.GeoLocationPromptDataModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderViewModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderDataModel
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils
 import com.tokopedia.home.beranda.presentation.view.fragment.HomeFragment
 import com.tokopedia.home.util.ServerTimeOffsetUtil
@@ -114,7 +114,7 @@ class HomeVisitableFactoryImpl(val userSessionInterface: UserSessionInterface) :
     override fun addUserWalletVisitable(): HomeVisitableFactory {
         val needToShowUserWallet = homeData?.homeFlag?.getFlag(HomeFlag.TYPE.HAS_TOKOPOINTS)?: false
         if (needToShowUserWallet) {
-            val headerViewModel = HeaderViewModel()
+            val headerViewModel = HeaderDataModel()
             headerViewModel.isPendingTokocashChecked = false
             headerViewModel.isUserLogin = userSessionInterface.isLoggedIn
 
@@ -132,7 +132,7 @@ class HomeVisitableFactoryImpl(val userSessionInterface: UserSessionInterface) :
         val isDynamicIconWrapType = homeData?.homeFlag?.getFlag(HomeFlag.TYPE.DYNAMIC_ICON_WRAP)?: false
         val iconList = homeData?.dynamicHomeIcon?.dynamicIcon?: listOf()
 
-        val viewModelDynamicIcon = DynamicIconSectionViewModel()
+        val viewModelDynamicIcon = DynamicIconSectionDataModel()
         viewModelDynamicIcon.dynamicIconWrap = isDynamicIconWrapType
         for (icon in iconList) {
             viewModelDynamicIcon.addItem(HomeIconItem(
@@ -365,7 +365,7 @@ class HomeVisitableFactoryImpl(val userSessionInterface: UserSessionInterface) :
                                       trackingDataForCombination: List<Any>?,
                                       isCombined: Boolean,
                                       isCache: Boolean): Visitable<*> {
-        val viewModel = DynamicChannelViewModel()
+        val viewModel = DynamicChannelDataModel()
         viewModel.channel = channel
         if (!isCache) {
             viewModel.trackingData = trackingData
@@ -379,9 +379,9 @@ class HomeVisitableFactoryImpl(val userSessionInterface: UserSessionInterface) :
     }
 
     private fun createSpotlight(spotlight: Spotlight, isCache: Boolean) {
-        val spotlightItems: MutableList<SpotlightItemViewModel> = ArrayList()
+        val spotlightItems: MutableList<SpotlightItemDataModel> = ArrayList()
         for (spotlightItem in spotlight.spotlights) {
-            spotlightItems.add(SpotlightItemViewModel(
+            spotlightItems.add(SpotlightItemDataModel(
                     spotlightItem.id,
                     spotlightItem.title,
                     spotlightItem.description,
@@ -412,7 +412,7 @@ class HomeVisitableFactoryImpl(val userSessionInterface: UserSessionInterface) :
     private fun mappingPlayChannel(channel: DynamicHomeChannel.Channels,
                                    trackingData: MutableMap<String, Any>,
                                    isCache: Boolean): Visitable<*> {
-        val playCardViewModel = PlayCardViewModel(channel, null)
+        val playCardViewModel = PlayCardDataModel(channel, null)
         if (!isCache) {
             playCardViewModel.setTrackingData(trackingData)
         }

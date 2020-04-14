@@ -3,10 +3,10 @@ package com.tokopedia.home.beranda.presentation.view.adapter.factory
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.*
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.dynamic_icon.DynamicIconSectionViewModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.dynamic_icon.DynamicIconSectionDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.spotlight.SpotlightViewModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.GeoLocationPromptDataModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderViewModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderDataModel
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeRecommendationFeedViewModel
 
 /**
@@ -14,7 +14,7 @@ import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeRecommendation
  */
 interface HomeTypeFactory {
 
-    fun type(inspirationHeaderViewModel: InspirationHeaderViewModel): Int
+    fun type(inspirationHeaderDataModel: InspirationHeaderDataModel): Int
 
     fun type(homepageBannerDataModel: HomepageBannerDataModel): Int
 
@@ -24,19 +24,19 @@ interface HomeTypeFactory {
 
     fun type(useCaseIconSectionViewModel: UseCaseIconSectionViewModel): Int
 
-    fun type(dynamicIconSectionViewModel: DynamicIconSectionViewModel): Int
+    fun type(dynamicIconSectionDataModel: DynamicIconSectionDataModel): Int
 
-    fun type(sellViewModel: SellViewModel): Int
+    fun type(sellDataModel: SellDataModel): Int
 
-    fun type(headerViewModel: HeaderViewModel): Int
+    fun type(headerDataModel: HeaderDataModel): Int
 
-    fun type(topAdsViewModel: TopAdsViewModel): Int
+    fun type(topAdsDataModel: TopAdsDataModel): Int
 
     fun type(topAdsDynamicChannelModel: TopAdsDynamicChannelModel): Int
 
     fun createViewHolder(view: View, viewType: Int): AbstractViewHolder<*>
 
-    fun type(dynamicChannelViewModel: DynamicChannelViewModel): Int
+    fun type(dynamicChannelDataModel: DynamicChannelDataModel): Int
 
     fun type(spotlightViewModel: SpotlightViewModel): Int
 
@@ -46,7 +46,7 @@ interface HomeTypeFactory {
 
     fun type(reviewDataModel: ReviewDataModel): Int
 
-    fun type(playCard: PlayCardViewModel): Int
+    fun type(playCard: PlayCardDataModel): Int
 
     fun type(homeLoadingMoreModel: HomeLoadingMoreModel): Int
 

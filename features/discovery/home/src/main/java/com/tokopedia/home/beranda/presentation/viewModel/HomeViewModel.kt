@@ -6,6 +6,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.atc_common.data.model.request.AddToCartOccRequestParams
+import com.tokopedia.atc_common.domain.usecase.AddToCartOccUseCase
 import com.tokopedia.common_wallet.balance.view.WalletBalanceModel
 import com.tokopedia.home.beranda.common.HomeDispatcherProvider
 import com.tokopedia.home.beranda.data.model.HomeWidget
@@ -14,6 +16,7 @@ import com.tokopedia.home.beranda.data.model.TokopointsDrawer
 import com.tokopedia.home.beranda.data.model.UpdateLiveDataModel
 import com.tokopedia.home.beranda.data.usecase.HomeUseCase
 import com.tokopedia.home.beranda.domain.interactor.*
+import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.domain.model.SearchPlaceholder
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel
 import com.tokopedia.home.beranda.domain.model.review.SuggestedProductReview
@@ -26,7 +29,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.CashBackDa
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.*
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.GeoLocationPromptDataModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderViewModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderDataModel
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeHeaderWalletAction
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeRecommendationFeedViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -55,20 +58,21 @@ import javax.inject.Inject
 open class HomeViewModel @Inject constructor(
         private val homeUseCase: HomeUseCase,
         private val userSession: UserSessionInterface,
-        private val getRecommendationTabUseCase: GetRecommendationTabUseCase,
-        private val sendGeolocationInfoUseCase: SendGeolocationInfoUseCase,
-        private val getWalletBalanceUseCase: GetCoroutineWalletBalanceUseCase,
-        private val getPendingCashbackUseCase: GetCoroutinePendingCashbackUseCase,
+        private val dismissHomeReviewUseCase: DismissHomeReviewUseCase,
+        private val getAtcUseCase: AddToCartOccUseCase,
+        private val getBusinessUnitDataUseCase: GetBusinessUnitDataUseCase,
+        private val getBusinessWidgetTab: GetBusinessWidgetTab,
+        private val getDynamicChannelsUseCase: GetDynamicChannelsUseCase,
+        private val getHomeReviewSuggestedUseCase: GetHomeReviewSuggestedUseCase,
         private val getHomeTokopointsDataUseCase: GetHomeTokopointsDataUseCase,
         private val getKeywordSearchUseCase: GetKeywordSearchUseCase,
-        private val stickyLoginUseCase: StickyLoginUseCase,
-        private val getHomeReviewSuggestedUseCase: GetHomeReviewSuggestedUseCase,
-        private val dismissHomeReviewUseCase: DismissHomeReviewUseCase,
+        private val getPendingCashbackUseCase: GetCoroutinePendingCashbackUseCase,
         private val getPlayCardHomeUseCase: GetPlayLiveDynamicUseCase,
+        private val getRecommendationTabUseCase: GetRecommendationTabUseCase,
+        private val getWalletBalanceUseCase: GetCoroutineWalletBalanceUseCase,
         private val popularKeywordUseCase: GetPopularKeywordUseCase,
-        private val getBusinessWidgetTab: GetBusinessWidgetTab,
-        private val getBusinessUnitDataUseCase: GetBusinessUnitDataUseCase,
-        private val getDynamicChannelsUseCase: GetDynamicChannelsUseCase,
+        private val sendGeolocationInfoUseCase: SendGeolocationInfoUseCase,
+        private val stickyLoginUseCase: StickyLoginUseCase,
         private val sendTopAdsUseCase: SendTopAdsUseCase,
         private val homeDispatcher: HomeDispatcherProvider
 ) : BaseViewModel(homeDispatcher.io()){
@@ -112,8 +116,11 @@ open class HomeViewModel @Inject constructor(
     private val _popupIntroOvoLiveData = MutableLiveData<Event<String>>()
 
     // Test cover banner url play widget is valid or not
-    private val _requestImageTestLiveData = MutableLiveData<Event<PlayCardViewModel>>()
-    val requestImageTestLiveData: LiveData<Event<PlayCardViewModel>> get() = _requestImageTestLiveData
+    private val _requestImageTestLiveData = MutableLiveData<Event<PlayCardDataModel>>()
+    val requestImageTestLiveData: LiveData<Event<PlayCardDataModel>> get() = _requestImageTestLiveData
+
+    val oneClickCheckout: LiveData<Event<Any>> get() = _oneClickCheckout
+    private val _oneClickCheckout = MutableLiveData<Event<Any>>()
 
     val sendLocationLiveData: LiveData<Event<Any>>
         get() = _sendLocationLiveData
@@ -154,7 +161,7 @@ open class HomeViewModel @Inject constructor(
     private var compositeSubscription: CompositeSubscription = CompositeSubscription()
     private var hasGeoLocationPermission = false
     private var isNeedShowGeoLocation = false
-    private var headerViewModel: HeaderViewModel? = null
+    private var headerDataModel: HeaderDataModel? = null
 
     private val homeRateLimit = RateLimiter<String>(timeout = 3, timeUnit = TimeUnit.MINUTES)
 
@@ -207,9 +214,9 @@ open class HomeViewModel @Inject constructor(
 
     fun updateBannerTotalView(totalView: String) {
         val homeList = _homeLiveData.value?.list ?: listOf()
-        val playCard = _homeLiveData.value?.list?.firstOrNull { visitable -> visitable is PlayCardViewModel }
+        val playCard = _homeLiveData.value?.list?.firstOrNull { visitable -> visitable is PlayCardDataModel }
         val playIndex = homeList.indexOf(playCard)
-        if(playCard != null && playCard is PlayCardViewModel && playCard.playCardHome != null) {
+        if(playCard != null && playCard is PlayCardDataModel && playCard.playCardHome != null) {
             val newPlayCard = playCard.copy(playCardHome = playCard.playCardHome.copy(totalView = totalView))
             launch(coroutineContext){
                 updateWidget(UpdateLiveDataModel(ACTION_UPDATE, newPlayCard, playIndex))
@@ -224,13 +231,13 @@ open class HomeViewModel @Inject constructor(
                                       isPendingTokocashChecked: Boolean? = null,
                                       isWalletDataError: Boolean? = null,
                                       isTokoPointDataError: Boolean? = null) {
-        if(headerViewModel == null){
-            headerViewModel = _homeLiveData.value?.list?.find { visitable-> visitable is HeaderViewModel } as HeaderViewModel?
+        if(headerDataModel == null){
+            headerDataModel = _homeLiveData.value?.list?.find { visitable-> visitable is HeaderDataModel } as HeaderDataModel?
         }
 
-        val currentPosition = _homeLiveData.value?.list?.withIndex()?.find { (_, model) ->  model is HeaderViewModel }?.index ?: -1
+        val currentPosition = _homeLiveData.value?.list?.withIndex()?.find { (_, model) ->  model is HeaderDataModel }?.index ?: -1
 
-        headerViewModel?.let { headerViewModel ->
+        headerDataModel?.let { headerViewModel ->
             tokopointsDrawer?.let {
                 headerViewModel.tokopointsDrawerHomeData = it
             }
@@ -260,7 +267,7 @@ open class HomeViewModel @Inject constructor(
 
     private fun getReviewData() {
         if (isNeedShowGeoLocation) {
-            removeSuggestedReview()
+            onRemoveSuggestedReview()
         } else {
             getSuggestedReview()
         }
@@ -273,7 +280,7 @@ open class HomeViewModel @Inject constructor(
                 val data = getHomeReviewSuggestedUseCase.executeOnBackground()
                 insertSuggestedReview(data)
             }) {
-                removeSuggestedReview()
+                onRemoveSuggestedReview()
             }
         }
     }
@@ -281,7 +288,7 @@ open class HomeViewModel @Inject constructor(
     private fun evaluateAvailableComponent(homeDataModel: HomeDataModel?): HomeDataModel? {
         homeDataModel?.let {
             var newHomeViewModel = homeDataModel
-            if(isNeedShowGeoLocation) newHomeViewModel = removeSuggestedReview(it)
+            if(isNeedShowGeoLocation) newHomeViewModel = onRemoveSuggestedReview(it)
             newHomeViewModel = evaluatePlayWidget(newHomeViewModel)
             newHomeViewModel = evaluateBuWidgetData(newHomeViewModel)
             newHomeViewModel = evaluateRecommendationSection(newHomeViewModel)
@@ -310,37 +317,37 @@ open class HomeViewModel @Inject constructor(
     fun getPlayBanner(position: Int){
         val playBanner =
                 if (position < _homeLiveData.value?.list?.size ?: -1
-                        && _homeLiveData.value?.list?.get(position) is PlayCardViewModel)
-                    _homeLiveData.value?.list?.getOrNull(position) as PlayCardViewModel
-                else _homeLiveData.value?.list?.find { it is PlayCardViewModel }
+                        && _homeLiveData.value?.list?.get(position) is PlayCardDataModel)
+                    _homeLiveData.value?.list?.getOrNull(position) as PlayCardDataModel
+                else _homeLiveData.value?.list?.find { it is PlayCardDataModel }
         playBanner?.let {
-            getLoadPlayBannerFromNetwork(playBanner as PlayCardViewModel)
+            getLoadPlayBannerFromNetwork(playBanner as PlayCardDataModel)
         }
     }
 
     // Logic detect play banner should load data from API
     private fun getPlayBanner(){
         // Check the current index is play card view model
-        val playBanner = _homeLiveData.value?.list?.find { it is PlayCardViewModel }
-        if(playBanner != null && playBanner is PlayCardViewModel) {
+        val playBanner = _homeLiveData.value?.list?.find { it is PlayCardDataModel }
+        if(playBanner != null && playBanner is PlayCardDataModel) {
             getLoadPlayBannerFromNetwork(playBanner)
         }
     }
 
     // If the image is valid it will be set play banner to UI
-    fun setPlayBanner(playCardViewModel: PlayCardViewModel){
+    fun setPlayBanner(playCardDataModel: PlayCardDataModel){
         val newList = mutableListOf<Visitable<*>>()
         newList.addAll(_homeLiveData.value?.list ?: listOf())
-        val playIndex = newList.indexOfFirst { visitable -> visitable is PlayCardViewModel }
-        if(playIndex != -1 && newList[playIndex] is PlayCardViewModel){
-            launch(coroutineContext) { updateWidget(UpdateLiveDataModel(ACTION_UPDATE, playCardViewModel, playIndex)) }
+        val playIndex = newList.indexOfFirst { visitable -> visitable is PlayCardDataModel }
+        if(playIndex != -1 && newList[playIndex] is PlayCardDataModel){
+            launch(coroutineContext) { updateWidget(UpdateLiveDataModel(ACTION_UPDATE, playCardDataModel, playIndex)) }
         }
     }
 
     // play widget it will be removed when load image is failed (deal from PO)
     // because don't let the banner blank
     fun clearPlayBanner(){
-        val playIndex = _homeLiveData.value?.list.copy().indexOfFirst { visitable -> visitable is PlayCardViewModel }
+        val playIndex = _homeLiveData.value?.list.copy().indexOfFirst { visitable -> visitable is PlayCardDataModel }
         if(playIndex != -1) {
             launch(coroutineContext) { updateWidget(UpdateLiveDataModel(ACTION_DELETE, null, playIndex )) }
         }
@@ -377,7 +384,7 @@ open class HomeViewModel @Inject constructor(
         }
     }
 
-    private fun removeSuggestedReview(homeDataModel: HomeDataModel?): HomeDataModel? {
+    private fun onRemoveSuggestedReview(homeDataModel: HomeDataModel?): HomeDataModel? {
         homeDataModel?.let { it->
             val findReviewViewModel =
                     it.list.find { visitable -> visitable is ReviewDataModel }
@@ -394,12 +401,19 @@ open class HomeViewModel @Inject constructor(
         return homeDataModel
     }
 
-    fun removeSuggestedReview() {
+    fun onRemoveSuggestedReview() {
         val findReviewViewModel =
                 _homeLiveData.value?.list?.find { visitable -> visitable is ReviewDataModel }
                         ?: return
         if (findReviewViewModel is ReviewDataModel) {
             launch(coroutineContext) { updateWidget(UpdateLiveDataModel(ACTION_DELETE, findReviewViewModel)) }
+        }
+    }
+
+    fun onCloseBuyAgain(channel: DynamicHomeChannel.Channels, position: Int){
+        val dynamicChannelDataModel = _homeLiveData.value?.list?.find { visitable -> visitable is DynamicChannelDataModel && visitable.channel?.id == channel.id }
+        if (dynamicChannelDataModel is DynamicChannelDataModel){
+            launch(coroutineContext) { updateWidget(UpdateLiveDataModel(ACTION_DELETE, dynamicChannelDataModel, position)) }
         }
     }
 
@@ -445,11 +459,11 @@ open class HomeViewModel @Inject constructor(
     private fun evaluatePlayWidget(homeDataModel: HomeDataModel?): HomeDataModel? {
         homeDataModel?.let { homeViewModel ->
             // find the old data from current list
-            val playWidget = _homeLiveData.value?.list?.find { visitable -> visitable is PlayCardViewModel}
+            val playWidget = _homeLiveData.value?.list?.find { visitable -> visitable is PlayCardDataModel}
             if(playWidget != null) {
                 // Find the new play widget is still available or not
                 val list = homeViewModel.list.toMutableList()
-                val playIndex = list.indexOfFirst { visitable -> visitable is PlayCardViewModel }
+                val playIndex = list.indexOfFirst { visitable -> visitable is PlayCardDataModel }
 
                 // if on new home available the data, it will be load new data
                 if(playIndex != -1){
@@ -586,11 +600,31 @@ open class HomeViewModel @Inject constructor(
     }
 
     fun dismissReview() {
-        removeSuggestedReview()
+        onRemoveSuggestedReview()
         if(dismissReviewJob?.isActive == true) return
         dismissReviewJob = launchCatchError(coroutineContext, block = {
             dismissHomeReviewUseCase.executeOnBackground()
         }){}
+    }
+
+    fun getOneClickCheckout(productId: String){
+        val requestParams = RequestParams()
+        requestParams.putObject(AddToCartOccUseCase.REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST, AddToCartOccRequestParams(
+                productId = productId,
+                quantity = "1",
+                shopId = ""
+        ))
+        getAtcUseCase.createObservable(requestParams)
+                .subscribeOn(Schedulers.io())
+                .observeOn(Schedulers.io())
+                .subscribe (
+                    {
+                        _oneClickCheckout.postValue(Event(it))
+                    },
+                    {
+                        _oneClickCheckout.postValue(Event(it))
+                    }
+                )
     }
 
     fun getBusinessUnitTabData(position: Int){
@@ -634,7 +668,7 @@ open class HomeViewModel @Inject constructor(
         }
     }
 
-    fun getDynamicChannelData(dynamicChannelDataModel: DynamicChannelViewModel, position: Int){
+    fun getDynamicChannelData(dynamicChannelDataModel: DynamicChannelDataModel, position: Int){
         launchCatchError(coroutineContext, block = {
             getDynamicChannelsUseCase.setParams(dynamicChannelDataModel.channel?.groupId ?: "")
             val data = getDynamicChannelsUseCase.executeOnBackground()
@@ -643,7 +677,7 @@ open class HomeViewModel @Inject constructor(
             } else {
                 var lastIndex = position
                 val dynamicData = _homeLiveData.value?.list?.getOrNull(lastIndex)
-                if(dynamicData !is DynamicChannelViewModel && dynamicData != dynamicChannelDataModel){
+                if(dynamicData !is DynamicChannelDataModel && dynamicData != dynamicChannelDataModel){
                     lastIndex = _homeLiveData.value?.list?.indexOf(dynamicChannelDataModel) ?: -1
                 }
                 updateWidget(UpdateLiveDataModel(ACTION_DELETE, dynamicChannelDataModel, lastIndex))
@@ -685,7 +719,7 @@ open class HomeViewModel @Inject constructor(
     }
 
     @VisibleForTesting
-    fun getLoadPlayBannerFromNetwork(playBanner: PlayCardViewModel){
+    fun getLoadPlayBannerFromNetwork(playBanner: PlayCardDataModel){
         if(getPlayWidgetJob?.isActive == true) return
         getPlayWidgetJob = launchCatchError(coroutineContext, block = {
             getPlayCardHomeUseCase.setParams()
@@ -839,7 +873,7 @@ open class HomeViewModel @Inject constructor(
                                 if (data.position != -1 && newList.isNotEmpty() && newList.size > data.position && newList[data.position]::class.java == homeVisitable::class.java) {
                                     newList[data.position] = homeVisitable
                                 } else {
-                                    newList.withIndex().find { it::class.java == homeVisitable::class.java }?.let {
+                                    newList.withIndex().find { it::class.java == homeVisitable::class.java && (it as HomeVisitable).visitableId() == homeVisitable.visitableId() }?.let {
                                         newList[it.index] = homeVisitable
                                     }
                                 }

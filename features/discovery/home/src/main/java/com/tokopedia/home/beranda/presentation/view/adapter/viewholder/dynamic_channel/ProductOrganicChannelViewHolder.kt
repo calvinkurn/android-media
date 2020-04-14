@@ -17,7 +17,7 @@ import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.helper.DynamicLinkHelper
 import com.tokopedia.home.beranda.helper.glide.FPM_PRODUCT_ORGANIC_CHANNEL
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelViewModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.GridSpacingItemDecoration
 import com.tokopedia.kotlin.extensions.view.displayTextOrHide
 
@@ -81,7 +81,7 @@ class ProductOrganicChannelViewHolder(sprintView: View,
         }
     }
 
-    override fun bind(element: DynamicChannelViewModel, payloads: MutableList<Any>) {
+    override fun bind(element: DynamicChannelDataModel, payloads: MutableList<Any>) {
         if (adapter != null) {
             element.channel?.let {
                 adapter?.grids = it.grids
