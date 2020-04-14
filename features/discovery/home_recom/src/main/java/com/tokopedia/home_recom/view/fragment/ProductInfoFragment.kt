@@ -71,13 +71,15 @@ class ProductInfoFragment : BaseDaggerFragment() {
 
     private lateinit var primaryProductViewModel: PrimaryProductViewModel
 
-    private lateinit var trackingQueue: TrackingQueue
+    private var trackingQueue: TrackingQueue? = null
 
-    private lateinit var ref: String
+    private var ref: String = ""
 
-    private lateinit var productId: String
+    private var productId: String = ""
 
-    private lateinit var queryParam: String
+    private var queryParam: String = ""
+
+    private var internalRef: String = ""
 
     private lateinit var productView: View
 
@@ -94,10 +96,11 @@ class ProductInfoFragment : BaseDaggerFragment() {
 
     companion object{
 
-        fun newInstance(productId: String, ref: String, queryParam: String) = ProductInfoFragment().apply {
+        fun newInstance(productId: String, ref: String, queryParam: String, internalRef: String) = ProductInfoFragment().apply {
             this.productId = productId
             this.ref = ref
             this.queryParam = queryParam
+            this.internalRef = internalRef
         }
 
         private const val WISHLIST_STATUS_UPDATED_POSITION = "wishlistUpdatedPosition"
@@ -238,7 +241,7 @@ class ProductInfoFragment : BaseDaggerFragment() {
     private fun onProductImpression(){
         product_image?.addOnImpressionListener(recommendationItem, object: ViewHintListener{
             override fun onViewHint() {
-                RecommendationPageTracking.eventImpressionPrimaryProductWithProductId(recommendationItem, "0", ref)
+                RecommendationPageTracking.eventImpressionPrimaryProductWithProductId(recommendationItem, "0", ref, internalRef)
             }
         })
     }
@@ -255,7 +258,7 @@ class ProductInfoFragment : BaseDaggerFragment() {
      */
     private fun onClickProductCard(productId: String){
         product_card?.setOnClickListener {
-            RecommendationPageTracking.eventClickPrimaryProductWithProductId(recommendationItem, "0", ref)
+            RecommendationPageTracking.eventClickPrimaryProductWithProductId(recommendationItem, "0", ref, internalRef)
             val intent = RouteManager.getIntent(
                     context,
                     ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
