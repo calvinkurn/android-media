@@ -3,7 +3,6 @@ package com.tokopedia.topchat.chatroom.view.uimodel
 import android.text.format.DateUtils
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactory
-import com.tokopedia.topchat.common.util.Utils
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -11,10 +10,15 @@ class HeaderDateUiModel : Visitable<TopChatTypeFactory> {
 
     val date: String
 
-    constructor(date: String) { this.date = date }
-    constructor(timeStamp: Long) { this.date = convertToDate(timeStamp) }
+    constructor(date: String) {
+        this.date = date
+    }
 
-    private val formatter = SimpleDateFormat(DATE_FORMAT, Utils.getLocale())
+    constructor(timeStamp: Long) {
+        this.date = convertToDate(timeStamp)
+    }
+
+    private val formatter = SimpleDateFormat(DATE_FORMAT, Locale.ENGLISH)
 
     private fun convertToDate(timeStamp: Long): String {
         return try {
