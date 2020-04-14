@@ -40,6 +40,7 @@ class PlayInteractionLandscapeManager(
         layoutLike(container = view, id = likeComponentId, videoControlComponentId = videoControlComponentId, sizeContainerComponentId = sizeContainerComponentId)
         layoutPlayButton(container = view, id = playButtonComponentId, sizeContainerComponentId = sizeContainerComponentId)
         layoutImmersiveBox(container = view, id = immersiveBoxComponentId)
+        layoutGradientBackground(container = view, id = gradientBackgroundComponentId)
         layoutVideoSettings(container = view, id = videoSettingsComponentId, sizeContainerComponentId = sizeContainerComponentId)
     }
 
@@ -108,6 +109,15 @@ class PlayInteractionLandscapeManager(
         container.changeConstraint {
             connect(id, ConstraintSet.END, sizeContainerComponentId, ConstraintSet.END, offset16)
             connect(id, ConstraintSet.TOP, sizeContainerComponentId, ConstraintSet.TOP)
+        }
+    }
+
+    private fun layoutGradientBackground(container: View, @IdRes id: Int) {
+        container.changeConstraint {
+            connect(id, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START)
+            connect(id, ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END)
+            connect(id, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP)
+            connect(id, ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM)
         }
     }
 }
