@@ -313,6 +313,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
     override fun onResume() {
         super.onResume()
+        updateCartNotification()
         reloadCartCounter()
     }
 
@@ -586,7 +587,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     override fun onEtalaseClicked(url: String, componentTrackDataModel: ComponentTrackDataModel) {
         val etalaseId = viewModel.getDynamicProductInfoP1?.basic?.menu?.id ?: ""
         val etalaseName = viewModel.getDynamicProductInfoP1?.basic?.menu?.name ?: ""
-        val shopId = viewModel.shopInfo?.shopCore?.shopID ?: ""
+        val shopId = viewModel.getDynamicProductInfoP1?.basic?.shopID ?: ""
 
         val intent = RouteManager.getIntent(context, if (etalaseId.isNotEmpty()) {
             UriUtil.buildUri(ApplinkConst.SHOP_ETALASE, shopId, etalaseId)
@@ -683,6 +684,8 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
      * PageErrorViewHolder
      */
     override fun onRetryClicked(forceRefresh: Boolean) {
+        clearAllData()
+        showLoading()
         onSwipeRefresh()
     }
 
@@ -1038,7 +1041,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
         viewModel.getDynamicProductInfoP1?.basic?.let {
             actionButtonView.renderData(!it.isActive(),
-                    viewModel.hasShopAuthority(), hasTopAds(),
+                    viewModel.hasShopAuthority(), viewModel.isShopOwner(), hasTopAds(),
                     viewModel.cartTypeData?.getCartTypeAtPosition(indexOfVariantButton ?: -1))
         }
     }
@@ -1241,19 +1244,20 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             activity?.let {
                 when (result.data.ovoValidationDataModel.status) {
                     ProductDetailConstant.OVO_INACTIVE_STATUS -> {
-                        val applink = "${result.data.ovoValidationDataModel.applink}&product_id=${viewModel.getDynamicProductInfoP1?.parentProductId ?: ""}"
+                        val applink = "${result.data.ovoValidationDataModel.applink}&product_id=${viewModel.getDynamicProductInfoP1?.parentProductId
+                                ?: ""}"
                         DynamicProductDetailTracking.Click.eventActivationOvo(
                                 viewModel.getDynamicProductInfoP1?.parentProductId ?: "",
                                 viewModel.userSessionInterface.userId)
                         RouteManager.route(it, applink)
                     }
                     ProductDetailConstant.OVO_INSUFFICIENT_BALANCE_STATUS -> {
-                            val bottomSheetOvoDeals = OvoFlashDealsBottomSheet(
-                                    viewModel.getDynamicProductInfoP1?.parentProductId ?: "",
-                                    viewModel.userSessionInterface.userId,
-                                    result.data.ovoValidationDataModel)
-                            bottomSheetOvoDeals.show(it.supportFragmentManager, "Ovo Deals")
-                        }
+                        val bottomSheetOvoDeals = OvoFlashDealsBottomSheet(
+                                viewModel.getDynamicProductInfoP1?.parentProductId ?: "",
+                                viewModel.userSessionInterface.userId,
+                                result.data.ovoValidationDataModel)
+                        bottomSheetOvoDeals.show(it.supportFragmentManager, "Ovo Deals")
+                    }
                     else -> showToastError(Throwable(getString(R.string.default_request_error_unknown)))
                 }
             }
@@ -1301,7 +1305,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
     private fun onSuccessGetDataP2Shop(it: ProductInfoP2ShopData) {
         viewModel.getDynamicProductInfoP1?.let { p1 ->
-            actionButtonView.renderData(!p1.basic.isActive(), viewModel.hasShopAuthority(),
+            actionButtonView.renderData(!p1.basic.isActive(), viewModel.hasShopAuthority(), viewModel.isShopOwner(),
                     hasTopAds(), it.cartRedirectionResponse.cartRedirection.data.firstOrNull())
 
             if (viewModel.shopInfo == null) {
@@ -1609,7 +1613,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         cache.putInt(CartConstant.CACHE_TOTAL_CART, count)
         cache.applyEditor()
         if (isAdded) {
-            initToolBarMethod()
+            initToolBarMethod.invoke()
         }
     }
 
@@ -2658,10 +2662,11 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     }
 
     private fun observeToggleNotifyMe() {
-        viewLifecycleOwner.observe(viewModel.toggleTeaserNotifyMe) {data ->
+        viewLifecycleOwner.observe(viewModel.toggleTeaserNotifyMe) { data ->
             data.doSuccessOrFail({
-                viewModel.variantData = VariantMapper.updateVariantDeals(viewModel.variantData, viewModel.getDynamicProductInfoP1?.basic?.getProductId() ?: 0)
-            },{
+                viewModel.variantData = VariantMapper.updateVariantDeals(viewModel.variantData, viewModel.getDynamicProductInfoP1?.basic?.getProductId()
+                        ?: 0)
+            }, {
                 onFailNotifyMe(it)
             })
         }
