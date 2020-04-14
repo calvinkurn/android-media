@@ -65,7 +65,7 @@ class AddEditProductDetailActivity : BaseSimpleActivity(), HasComponent<AddEditP
                 onCtaYesPressedHitTracking()
             }
             setPrimaryCTAClickListener {
-                super.onBackPressed()
+                sendDataBack()
                 onCtaNoPressedHitTracking()
             }
         }.show()
@@ -95,6 +95,13 @@ class AddEditProductDetailActivity : BaseSimpleActivity(), HasComponent<AddEditP
         val f = fragment
         if (f != null && f is AddEditProductDetailFragment) {
             f.onCtaNoPressed()
+        }
+    }
+
+    private fun sendDataBack() {
+        val f = fragment
+        if (f != null && f is AddEditProductDetailFragment) {
+            f.sendDataBack()
         }
     }
 

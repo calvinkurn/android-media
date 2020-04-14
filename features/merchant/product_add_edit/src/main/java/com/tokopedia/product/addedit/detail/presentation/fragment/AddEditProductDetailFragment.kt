@@ -69,6 +69,7 @@ import com.tokopedia.product.addedit.detail.presentation.widget.ProductBulkPrice
 import com.tokopedia.product.addedit.imagepicker.view.activity.ImagePickerAddProductActivity
 import com.tokopedia.product.addedit.draft.mapper.AddEditProductMapper.mapProductInputModelDetailToDraft
 import com.tokopedia.product.addedit.optionpicker.OptionPicker
+import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_BACK_PRESSED
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_IS_DRAFTING_PRODUCT
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_IS_EDITING_PRODUCT
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_PRODUCT_INPUT_MODEL
@@ -717,6 +718,19 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
 
     fun onCtaNoPressed() {
         ProductAddStepperTracking.trackDraftCancel(shopId)
+    }
+
+    fun sendDataBack() {
+        if(!viewModel.isDrafting && !viewModel.isEditing) {
+            inputAllDataInProductInputModel()
+            val intent = Intent()
+            intent.putExtra(EXTRA_PRODUCT_INPUT_MODEL, viewModel.productInputModel)
+            intent.putExtra(EXTRA_BACK_PRESSED, 1)
+            activity?.setResult(Activity.RESULT_OK, intent)
+            activity?.finish()
+        } else {
+            activity?.onBackPressed()
+        }
     }
 
     fun onBackPressed() {

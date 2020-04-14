@@ -68,6 +68,7 @@ import com.tokopedia.product.addedit.draft.mapper.AddEditProductMapper
 import com.tokopedia.product.addedit.preview.data.source.api.response.Product
 import com.tokopedia.product.addedit.preview.di.AddEditProductPreviewModule
 import com.tokopedia.product.addedit.preview.di.DaggerAddEditProductPreviewComponent
+import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_BACK_PRESSED
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_DRAFT_ID
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_IS_DRAFTING_PRODUCT
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_IS_DUPLICATE
@@ -411,6 +412,11 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
                     }
                 }
                 REQUEST_CODE_DETAIL -> {
+                    if (data.getIntExtra(EXTRA_BACK_PRESSED, 0) == 1) {
+                        val productInputModel = data.getParcelableExtra<ProductInputModel>(EXTRA_PRODUCT_INPUT_MODEL)
+                        displayAddMode(productInputModel)
+                        return
+                    }
                     val shipmentInputModel =
                             data.getParcelableExtra<ShipmentInputModel>(EXTRA_SHIPMENT_INPUT)
                     val descriptionInputModel =
@@ -498,6 +504,12 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
                 .addEditProductPreviewModule(AddEditProductPreviewModule())
                 .build()
                 .inject(this)
+    }
+
+    private fun displayAddMode(productInputModel: ProductInputModel) {
+        displayEditMode(true)
+        showProductPhotoPreview(productInputModel)
+        showProductDetailPreview(productInputModel)
     }
 
     private fun displayEditMode(isEditMode: Boolean) {
