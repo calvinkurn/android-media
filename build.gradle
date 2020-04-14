@@ -7,6 +7,8 @@ apply from: 'buildconfig/dependencies/dependency-features.gradle'
 apply from: 'tools/quality.gradle'
 apply from: 'tools/composite_build.gradle'
 
+import com.tokopedia.plugin.AnalyzeAppTask
+
 buildscript {
     apply from: 'buildconfig/dependencies/dependencies.gradle'
 
@@ -54,3 +56,5 @@ task installGitHooks(type: Copy) {
     Runtime.getRuntime().exec("chmod -R +x .git/hooks/")
 }
 clean.dependsOn installGitHooks
+
+task analyzeAppTask(type: AnalyzeAppTask)
