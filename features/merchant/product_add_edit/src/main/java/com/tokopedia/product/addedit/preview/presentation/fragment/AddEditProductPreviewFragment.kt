@@ -288,6 +288,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
                                 shipmentInputModel = productInputModel.shipmentInputModel,
                                 variantInputModel = productInputModel.variantInputModel
                         )
+                        activity?.finish()
                     }
                 }
             } else if (viewModel.isEditing.value == true) {
