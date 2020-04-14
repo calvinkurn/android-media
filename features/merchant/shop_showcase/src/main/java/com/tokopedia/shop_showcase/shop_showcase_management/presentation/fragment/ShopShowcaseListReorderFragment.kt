@@ -8,12 +8,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.cardview.widget.CardView
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.appbar.AppBarLayout
+
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
@@ -21,6 +22,7 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.design.touchhelper.OnStartDragListener
 import com.tokopedia.design.touchhelper.SimpleItemTouchHelperCallback
+import com.tokopedia.header.HeaderUnify
 import com.tokopedia.shop_showcase.R
 import com.tokopedia.shop_showcase.ShopShowcaseInstance
 import com.tokopedia.shop_showcase.common.ShopShowcaseFragmentNavigation
@@ -42,13 +44,13 @@ import javax.inject.Inject
 class ShopShowcaseListReorderFragment : BaseDaggerFragment(),
         ShopShowcaseReorderListener,
         OnStartDragListener,
-        HasComponent<ShopShowcaseManagementComponent>{
+        HasComponent<ShopShowcaseManagementComponent> {
 
     companion object {
         const val SHOWCASE_LIST = "SHOWCASE_LIST"
 
         @JvmStatic
-        fun createInstance(shopType: String, showcaseList: ArrayList<ShowcaseItem>?, isMyShop: Boolean? = false) : ShopShowcaseListReorderFragment {
+        fun createInstance(shopType: String, showcaseList: ArrayList<ShowcaseItem>?, isMyShop: Boolean? = false): ShopShowcaseListReorderFragment {
             val fragment = ShopShowcaseListReorderFragment()
             if (showcaseList != null) {
                 val bundle = Bundle()
@@ -62,11 +64,10 @@ class ShopShowcaseListReorderFragment : BaseDaggerFragment(),
     @Inject
     lateinit var viewModel: ShopShowcaseListViewModel
     lateinit var shopShowcaseFragmentNavigation: ShopShowcaseFragmentNavigation
-    private lateinit var btnBack: ImageView
+    private lateinit var headerUnify: HeaderUnify
+    private lateinit var headerLayout: CardView
     private lateinit var loading: LoaderUnify
-    private lateinit var btnSubmit: TextView
     private lateinit var recyclerView: RecyclerView
-    private lateinit var appBarLayout: AppBarLayout
     private var layoutManager: LinearLayoutManager? = null
     private var shopShowcaseListReorderAdapter: ShopShowcaseListReorderAdapter? = null
     private var shopShowcaseListDefault: ArrayList<ShowcaseItem>? = null
@@ -106,9 +107,8 @@ class ShopShowcaseListReorderFragment : BaseDaggerFragment(),
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_reorder_showcase, container, false)
-        btnBack = view.findViewById(R.id.btn_back_showcase)
-        btnSubmit = view.findViewById(R.id.btn_submit)
-        appBarLayout = view.findViewById(R.id.appbar_layout_showcase_list)
+        headerUnify = view.findViewById(R.id.showcase_list_toolbar)
+        headerLayout = view.findViewById(R.id.header_layout)
         recyclerView = view.findViewById(R.id.rv_list_showcase)
         loading = view.findViewById(R.id.loading)
         layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
@@ -121,18 +121,13 @@ class ShopShowcaseListReorderFragment : BaseDaggerFragment(),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val itemTouchHelperCallback = SimpleItemTouchHelperCallback(shopShowcaseListReorderAdapter)
-        enableReorderMode(true)
+//        enableReorderMode(true)
+        initHeaderUnify()
         initRecyclerView()
         itemTouchHelper = ItemTouchHelper(itemTouchHelperCallback)
         itemTouchHelper!!.attachToRecyclerView(recyclerView)
 
         showLoading(true)
-        btnBack.setOnClickListener {
-            fragmentManager?.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
-        }
-        btnSubmit.setOnClickListener {
-            saveReorderListShowcase()
-        }
 
         showShowcaseData()
         observeReorderShopShowcase()
@@ -142,8 +137,19 @@ class ShopShowcaseListReorderFragment : BaseDaggerFragment(),
         itemTouchHelper!!.startDrag(viewHolder)
     }
 
+    private fun initHeaderUnify() {
+        headerUnify.apply {
+            setNavigationOnClickListener {
+                fragmentManager?.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+            }
+        }
+        headerUnify.actionTextView?.setOnClickListener {
+            saveReorderListShowcase()
+        }
+    }
+
     private fun showShowcaseData() {
-        if (shopShowcaseListDefault != null || shopShowcaseListDefault!!.size > 0 ) {
+        if (shopShowcaseListDefault != null || shopShowcaseListDefault!!.size > 0) {
             showLoading(false)
             shopShowcaseListReorderAdapter?.updateDataShowcaseList(shopShowcaseListDefault!!)
         }
@@ -152,7 +158,7 @@ class ShopShowcaseListReorderFragment : BaseDaggerFragment(),
     private fun showLoading(isLoading: Boolean) {
         if (isLoading) {
             loading.visibility = View.VISIBLE
-        } else{
+        } else {
             loading.visibility = View.GONE
         }
     }
@@ -166,15 +172,15 @@ class ShopShowcaseListReorderFragment : BaseDaggerFragment(),
                 }
             }
         }
-        enableReorderMode(false)
+//        enableReorderMode(false)
         viewModel.reorderShopShowcaseList(shopShowcaseList)
     }
 
     private fun enableReorderMode(isEnabled: Boolean) {
         if (isEnabled) {
-            btnSubmit.isEnabled = true
+//            btnSubmit.isEnabled = true
         } else {
-            btnSubmit.isEnabled = false
+//            btnSubmit.isEnabled = false
         }
     }
 
@@ -206,16 +212,14 @@ class ShopShowcaseListReorderFragment : BaseDaggerFragment(),
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 currentScrollPosition += dy
-                val HAS_ELEVATION = 4
-                val NO_ELEVATION = 0
+                val HAS_ELEVATION = 16.0f
+                val NO_ELEVATION = 0f
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     if (currentScrollPosition == 0) {
-                        appBarLayout.elevation = NO_ELEVATION.toFloat()
-//                    appBarLayout.background = MethodChecker.getDrawable(context, R.color.white)
+                        headerLayout?.cardElevation = NO_ELEVATION
                     } else {
-                        appBarLayout.elevation = HAS_ELEVATION.toFloat()
-//                    appBarLayout.background = MethodChecker.getDrawable(context, R.drawable.card_shadow_bottom)
+                        headerLayout?.cardElevation = HAS_ELEVATION
                     }
                 }
             }
@@ -236,7 +240,7 @@ class ShopShowcaseListReorderFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun showSuccessMessage(message: String){
+    private fun showSuccessMessage(message: String) {
         view?.let {
             Toaster.showNormal(it, message, Snackbar.LENGTH_LONG)
         }
