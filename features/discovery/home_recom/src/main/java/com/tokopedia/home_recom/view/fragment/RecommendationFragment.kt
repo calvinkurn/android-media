@@ -366,7 +366,7 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
      */
     private fun displayProductInfo(){
         childFragmentManager.beginTransaction()
-                .replace(R.id.product_info_container, ProductInfoFragment.newInstance(productId, ref, queryParam))
+                .replace(R.id.product_info_container, ProductInfoFragment.newInstance(productId, ref, queryParam, internalRef))
                 .commit()
     }
 
