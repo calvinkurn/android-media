@@ -11,7 +11,7 @@ import kotlinx.android.synthetic.main.item_topads_debugger.view.*
 class TopAdsDebuggerViewHolder(itemView: View) : AbstractViewHolder<TopAdsDebuggerViewModel>(itemView) {
 
     override fun bind(element: TopAdsDebuggerViewModel) {
-        itemView.viewHolderUrlText.text = element.url
+        itemView.viewHolderUrlText.text = element.previewUrl
         itemView.viewHolderEventTypeText.text = element.eventType
         itemView.viewHolderSourceNameText.text = element.sourceName
         itemView.viewHolderTimestampText.text = element.timestamp
