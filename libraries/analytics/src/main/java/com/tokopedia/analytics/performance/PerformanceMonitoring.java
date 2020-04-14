@@ -17,6 +17,7 @@ public class PerformanceMonitoring {
     private Trace trace;
     private String traceName;
     private long startTime;
+    private long pointStartTime;
     private long endTime;
     private Map<String, String> attributes = new HashMap<>();
     private Map<String, Long> metrics = new HashMap<>();
@@ -35,6 +36,7 @@ public class PerformanceMonitoring {
                 this.traceName = traceName;
                 if (trace != null) {
                     this.startTime = System.currentTimeMillis();
+                    this.pointStartTime = System.currentTimeMillis();
                     trace.start();
                 }
             } else {
@@ -49,7 +51,7 @@ public class PerformanceMonitoring {
         if(trace != null){
             trace.stop();
             this.endTime = System.currentTimeMillis();
-            FpmLogger.getInstance().save(traceName, startTime, endTime, attributes, metrics);
+            if(FpmLogger.getInstance() != null) FpmLogger.getInstance().save(traceName, startTime, endTime, attributes, metrics);
         }
     }
 
@@ -59,6 +61,22 @@ public class PerformanceMonitoring {
             metrics.put(parameter, value);
         }
     }
+
+    /**
+     * use this to add point in your trace, to separate each process in a trace
+     * @param tag
+     */
+    public void putPointMetric(String tag) {
+        if (trace != null) {
+            long currentTime = System.currentTimeMillis();
+            long duration = currentTime - pointStartTime;
+            pointStartTime = currentTime;
+
+            trace.putMetric(tag, duration);
+            metrics.put(tag, duration);
+        }
+    }
+
 
     public void putCustomAttribute(String attribute, String value) {
         if (trace != null) {

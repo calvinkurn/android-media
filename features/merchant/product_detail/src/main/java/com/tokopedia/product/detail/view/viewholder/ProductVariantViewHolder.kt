@@ -1,6 +1,7 @@
 package com.tokopedia.product.detail.view.viewholder
 
 import android.view.View
+import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.show
@@ -26,6 +27,13 @@ class ProductVariantViewHolder(val view: View,
 
     override fun bind(element: VariantDataModel) {
         with(view) {
+
+            if (element.listOfVariantCategory != null && element.listOfVariantCategory?.isNotEmpty() == true) {
+                containerProductVariant.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
+            } else {
+                containerProductVariant.layoutParams.height = 0
+            }
+
             element.listOfVariantCategory?.let {
                 variant_separator.show()
                 containerAdapter = VariantContainerAdapter(listener)

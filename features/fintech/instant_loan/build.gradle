@@ -21,8 +21,9 @@ dependencies {
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.remoteConfig)
 
-    implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.principles
+    implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.unifyDependencies.global_error
     implementation rootProject.ext.tkpdInternalLibDependencies.cacheapi
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
@@ -32,6 +33,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.remoteResourceRequest)
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
+    implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation rootProject.ext.miscDependencies.multiDex
 
     implementation(rootProject.ext.tkpdLibDependencies.expandableOption) {
@@ -50,7 +52,7 @@ dependencies {
 project.ext {
     artifactId = 'instant-loan'
     groupId = 'com.tokopedia.fintech'
-    versionName = "0.0.1"
+    versionName = "0.0.2"
     artifactName ="instant_loan-release"
 }
 

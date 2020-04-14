@@ -68,7 +68,6 @@ import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.core.gcm.NotificationModHandler;
 import com.tokopedia.core.gcm.model.NotificationPass;
 import com.tokopedia.core.gcm.utils.NotificationUtils;
-import com.tokopedia.core.home.SimpleWebViewWithFilePickerActivity;
 import com.tokopedia.core.model.share.ShareData;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
@@ -189,7 +188,6 @@ import com.tokopedia.tkpd.drawer.NoOpDrawerHelper;
 import com.tokopedia.tkpd.fcm.appupdate.FirebaseRemoteAppUpdate;
 import com.tokopedia.tkpd.goldmerchant.GoldMerchantRedirectActivity;
 import com.tokopedia.tkpd.home.analytics.HomeAnalytics;
-import com.tokopedia.tkpd.home.favorite.view.FragmentFavorite;
 import com.tokopedia.tkpd.nfc.NFCSubscriber;
 import com.tokopedia.tkpd.react.DaggerReactNativeComponent;
 import com.tokopedia.tkpd.react.ReactNativeComponent;
@@ -559,7 +557,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         String PATH_USER_BOOKING_LIST = "/user/bookings";
         String PARAM_DIGITAL_ISPULSA = "?ispulsa=1";
         String TRAIN_ORDER_LIST = KAI_WEBVIEW + PATH_USER_BOOKING_LIST + PARAM_DIGITAL_ISPULSA;
-        return getWebviewActivityWithIntent(context, TRAIN_ORDER_LIST);
+        return RouteManager.getIntent(context, ApplinkConstInternalGlobal.WEBVIEW, TRAIN_ORDER_LIST);
     }
 
     @Override
@@ -711,16 +709,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Intent getInboxMessageIntent(Context context) {
         return RouteManager.getIntent(context, ApplinkConst.TOPCHAT_IDLESS);
-    }
-
-    @Override
-    public Intent getWebviewActivityWithIntent(Context context, String url) {
-        return SimpleWebViewWithFilePickerActivity.getIntent(context, url);
-    }
-
-    @Override
-    public Intent getWebviewActivityWithIntent(Context context, String url, String title) {
-        return SimpleWebViewWithFilePickerActivity.getIntentWithTitle(context, url, title);
     }
 
     @Override
@@ -1213,11 +1201,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public AccountHomeInjection getAccountHomeInjection() {
         return new AccountHomeInjectionImpl();
-    }
-
-    @Override
-    public Fragment getFavoriteFragment() {
-        return FragmentFavorite.newInstance();
     }
 
     public void doLogoutAccount(Context activity) {

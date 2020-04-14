@@ -33,6 +33,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.locationmanager)
     implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.libraries.remoteConfig)
+    implementation project(rootProject.ext.libraries.iris)
 
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.calendar
@@ -41,6 +42,7 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.banner
     implementation rootProject.ext.unifyDependencies.dialog
     implementation rootProject.ext.unifyDependencies.global_error
+    implementation rootProject.ext.unifyDependencies.header
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.network
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
@@ -68,7 +70,7 @@ dependencies {
 project.ext {
     artifactId = 'hotel'
     groupId = 'com.tokopedia.travel'
-    versionName = "0.0.1"
+    versionName = "0.0.2"
     artifactName = "hotel-release"
 }
 

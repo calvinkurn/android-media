@@ -8,11 +8,19 @@
     app:cardUseCompatPadding="true">
 
     <ImageView
+        android:id="@+id/ec_image_bg_background"
+        android:layout_width="@dimen/dp_52"
+        android:layout_height="@dimen/dp_52"
+        app:srcCompat="@drawable/ic_squircle_border"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
         android:id="@+id/ec_image_bg"
         android:layout_width="@dimen/dp_52"
         android:layout_height="@dimen/dp_52"
         android:padding="@dimen/dp_10"
-        android:background="@drawable/ic_squircle_border"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

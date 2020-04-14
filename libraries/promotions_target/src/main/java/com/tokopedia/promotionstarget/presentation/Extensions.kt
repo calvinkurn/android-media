@@ -13,6 +13,7 @@ import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
+import com.tokopedia.promotionstarget.R
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
@@ -21,6 +22,8 @@ fun AppCompatImageView.loadImageGlide(url: String?, onLoadingFinished: (success:
     if (!TextUtils.isEmpty(url)) {
         Glide.with(context)
                 .load(url)
+                .placeholder(R.drawable.t_promo_placeholder)
+                .dontAnimate()
                 .listener(object : RequestListener<Drawable> {
                     override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
                         onLoadingFinished(true)

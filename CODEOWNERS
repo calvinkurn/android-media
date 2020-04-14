@@ -8,6 +8,7 @@
 /features/content/kol_common/           				@tokopedia/minion-dave
 /features/content/profile/              				@tokopedia/minion-dave
 /features/content/feed_component/       				@tokopedia/minion-darth
+/features/category/       				                @tokopedia/minion-darth
 /features/user/groupchat/                       		@tokopedia/minion-dave
 /features/discovery/topadssdk/                      	@tokopedia/minion-dave
 /features/discovery/home/                           	@tokopedia/minion-dave
@@ -90,6 +91,7 @@
 /features/recharge/common_topup_bills                   @tokopedia/minion-mark
 /features/recharge/digital_homepage                     @tokopedia/minion-mark
 /features/recharge/digitalproduct                       @tokopedia/minion-mark
+/features/recharge/recharge_credit_card                  @tokopedia/minion-mark
 
 /features/entertainment/event                 			@tokopedia/minion-mark
 /features/entertainment/digital_deals         			@tokopedia/minion-mark
@@ -104,7 +106,7 @@
 
 /features/salam/umrah                                   @tokopedia/minion-mark
 /libraries/travel_calendar                              @tokopedia/minion-mark
-/features/recharge_slice                                @tokopedia/minion-mark
+/features/recharge/recharge_slice                       @tokopedia/minion-mark
 
 /features/payment/payment/                      		@tokopedia/minion-bob
 /features/payment/payment_setting/              		@tokopedia/minion-bob
@@ -159,7 +161,6 @@
 
 /features/operational/contact_us        				@tokopedia/minion-darth
 
-/features/fintech/wallet                				@tokopedia/minion-solo
 /features/fintech/common_wallet         				@tokopedia/minion-solo
 /features/fintech/instant_loan          				@tokopedia/minion-solo
 /features/fintech/ovo_pay_with_qr       				@tokopedia/minion-solo
@@ -182,6 +183,8 @@
 /features/im/common_promo                               @tokopedia/minion-yoda
 /features/ovop2p                                        @tokopedia/minion-yoda
 /features/payment/common_payment                        @tokopedia/minion-yoda
+/features/digital/instant_debit_bca                     @tokopedia/minion-yoda
+/features/fintech/wallet                				@tokopedia/minion-yoda
 
 
 /libraries/adapter_delegate/							@tokopedia/core-team
@@ -196,7 +199,7 @@
 /libraries/bottom_sheet_builder/						@tokopedia/core-team
 /libraries/cache_api/									@tokopedia/core-team
 /libraries/cameraview/									@tokopedia/core-team
-/libraries/circular_view_pager/				    		@lukaskris
+/libraries/circular_view_pager/				    		@tokopedia/core-team
 /libraries/cm_push_notifications/						@tokopedia/minion-yoda
 /libraries/collapsing_tab_layout/						@tokopedia/core-team
 /libraries/common_network/								@tokopedia/core-team
@@ -206,6 +209,7 @@
 /libraries/cpm/											@tokopedia/core-team
 /libraries/date_picker_range/							@tokopedia/core-team
 /libraries/dynamic_features/							@tokopedia/core-team
+/libraries/encryption/							        @tokopedia/core-team
 /libraries/fingerprint/									@tokopedia/core-team
 /libraries/graph_view/									@tokopedia/core-team
 /libraries/image_picker/								@tokopedia/core-team
@@ -230,6 +234,7 @@
 /libraries/translator/									@tokopedia/core-team
 /libraries/travel_calendar/								@tokopedia/core-team
 /libraries/twitter_share/								@tokopedia/core-team
+/libraries/utils                                        @tokopedia/core-team
 /libraries/video_recorder/								@tokopedia/core-team
 /libraries/videoplayer/									@tokopedia/core-team
 /libraries/videouploader/								@tokopedia/core-team
@@ -248,9 +253,9 @@
 /tkpdtransaction-common/                                @tokopedia/core-team
 /tkpdseller/                                        	@tokopedia/core-team
 
-/tkpddesign/                                        	@nathaniel09 @hendrysetiadi89
-/tkpdcore/                                          	@nathaniel09 @hendrysetiadi89
-/tkpdabstraction/                                   	@nathaniel09 @hendrysetiadi89
+/tkpddesign/                                        	@tokopedia/android-gatekeeper-legacy-code
+/tkpdcore/                                          	@tokopedia/android-gatekeeper-legacy-code
+/tkpdabstraction/                                   	@tokopedia/android-gatekeeper-legacy-code
 
 /customerapp/                                       	@tokopedia/core-team
 /sellerapp/                                         	@tokopedia/minion-stuart

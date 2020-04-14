@@ -6,6 +6,13 @@ import android.os.Build
 import com.google.android.play.core.splitinstall.SplitInstallManager
 import com.google.android.play.core.splitinstall.SplitInstallManagerFactory
 import com.tokopedia.applink.ApplinkConst.*
+import com.tokopedia.applink.internal.ApplinkConsInternalDigital.CAMERA_OCR
+import com.tokopedia.applink.internal.ApplinkConsInternalDigital.CART_DIGITAL
+import com.tokopedia.applink.internal.ApplinkConsInternalDigital.DIGITAL_PRODUCT_FORM
+import com.tokopedia.applink.internal.ApplinkConsInternalDigital.GENERAL_TEMPLATE
+import com.tokopedia.applink.internal.ApplinkConsInternalDigital.INTERNAL_SMARTCARD
+import com.tokopedia.applink.internal.ApplinkConsInternalDigital.TELCO_DIGITAL
+import com.tokopedia.applink.internal.ApplinkConsInternalDigital.VOUCHER_GAME
 import com.tokopedia.applink.internal.ApplinkConsInternalHome.HOME_WISHLIST
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory.AGE_RESTRICTION
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory.FINAL_PRICE
@@ -61,6 +68,8 @@ import com.tokopedia.applink.internal.ApplinkConstInternalTravel.INTERNAL_FLIGHT
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.CHANGE_PASSWORD
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.DETAIL_TALK_BASE
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.LIVENESS_DETECTION
+import com.tokopedia.applink.internal.ApplinkConstInternalEntertainment.EVENT_HOME
+import com.tokopedia.applink.internal.ApplinkConstInternalNotification.NOTIFICATION_BUYER
 import com.tokopedia.config.GlobalConfig
 import tokopedia.applink.R
 import java.io.BufferedReader
@@ -85,10 +94,11 @@ import java.io.InputStreamReader
  */
 object DeeplinkDFMapper {
     // it should have the same name with the folder of dynamic feature
-
+    @JvmField
+    val DFM_EMONEY = "df_emoney"
     @JvmField
     val DFM_BASE = "df_base"
-    
+
     private val DFM_CATEGORY_TRADEIN = "df_category_tradein"
     @JvmField
     val DFM_MERCHANT_SELLER_CUSTOMERAPP = "df_merchant_seller"
@@ -121,7 +131,14 @@ object DeeplinkDFMapper {
             add(DFP({ it.startsWithPattern(PLAY_DETAIL) }, DFM_BASE, R.string.applink_title_play))
 
             // Digital
-            add(DFP({ it.startsWith(DIGITAL_RECHARGE) || it.startsWith(DIGITAL) }, DFM_BASE, R.string.title_digital_subhomepage))
+            add(DFP({ it.startsWith(DIGITAL_SUBHOMEPAGE_HOME) ||
+                    it.startsWith(TELCO_DIGITAL) ||
+                    it.startsWith(DIGITAL_PRODUCT_FORM) ||
+                    it.startsWith(GENERAL_TEMPLATE) ||
+                    it.startsWith(CAMERA_OCR) ||
+                    it.startsWith(VOUCHER_GAME) ||
+                    it.startsWith(CART_DIGITAL) || it.startsWith(DIGITAL_CART) }, DFM_BASE, R.string.title_digital_subhomepage))
+            add(DFP({ it.startsWithPattern(INTERNAL_SMARTCARD) }, DFM_EMONEY, R.string.title_digital_emoney))
 
             add(DFP({ it.startsWith(GLOBAL_INTERNAL_DIGITAL_DEAL) }, DFM_BASE, R.string.title_digital_deals))
             add(DFP({ it.startsWithPattern(GLOBAL_INTERNAL_DIGITAL_DEAL_SLUG) }, DFM_BASE, R.string.title_digital_deals))
@@ -195,6 +212,9 @@ object DeeplinkDFMapper {
             // Promo
             add(DFP({ it.startsWith(INTERNAL_TOKOPOINTS) }, DFM_BASE, R.string.title_tokopoints))
 
+            //Entertainment
+            add(DFP({ it.startsWith(EVENT_HOME)}, DFM_BASE, R.string.title_home_event))
+
             // Travel
             add(DFP({ it.startsWith(TRAVEL_SUBHOMEPAGE) }, DFM_BASE, R.string.title_travel_homepage))
             add(DFP({ it.startsWith(FLIGHT) }, DFM_BASE, R.string.title_flight))
@@ -228,6 +248,7 @@ object DeeplinkDFMapper {
             add(DFP({ it.startsWith(SALAM_UMRAH_HOME_PAGE) }, DFM_BASE, R.string.title_salam))
             add(DFP({ it.startsWith(SALAM_ORDER_DETAIL) }, DFM_BASE, R.string.title_salam))
             add(DFP({ it.startsWith(NOTIFICATION) }, DFM_BASE, R.string.title_notification_center))
+            add(DFP({ it.startsWith(NOTIFICATION_BUYER) }, DFM_BASE, R.string.title_notification_center))
 
             add(DFP({ it.startsWith(HOME_WISHLIST) }, DFM_BASE, R.string.title_wishlist))
 

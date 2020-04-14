@@ -76,13 +76,22 @@ abstract class BasePromoCheckoutDetailFragment : Fragment(), PromoCheckoutDetail
     }
 
     protected fun validateButton() {
-        if (isUse) {
-            buttonCancel.visibility = View.VISIBLE
-            buttonUse.visibility = View.GONE
+        if (showActionButtonUse()) {
+            if (isUse) {
+                buttonCancel.visibility = View.VISIBLE
+                buttonUse.visibility = View.GONE
+            } else {
+                buttonCancel.visibility = View.GONE
+                buttonUse.visibility = View.VISIBLE
+            }
+            containerButton.visibility = View.VISIBLE
         } else {
-            buttonCancel.visibility = View.GONE
-            buttonUse.visibility = View.VISIBLE
+            containerButton.visibility = View.GONE
         }
+    }
+
+    open protected fun showActionButtonUse(): Boolean {
+        return true
     }
 
     abstract fun onClickUse()
