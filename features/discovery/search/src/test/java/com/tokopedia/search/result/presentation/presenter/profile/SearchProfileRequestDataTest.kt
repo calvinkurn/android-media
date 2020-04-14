@@ -9,7 +9,7 @@ import io.mockk.*
 import org.junit.Test
 import rx.Subscriber
 
-class RequestProfileListDataTest: ProfileListPresenterTestFixtures() {
+class SearchProfileRequestDataTest: ProfileListPresenterTestFixtures() {
 
     private val query = "dariand"
     private val slotVisitableList = slot<List<Visitable<*>>>()

@@ -6,7 +6,7 @@ import io.mockk.confirmVerified
 import io.mockk.verifyOrder
 import org.junit.Test
 
-class HandleProfileClickTest: ProfileListPresenterTestFixtures() {
+class SearchProfileHandleClickProfileTest: ProfileListPresenterTestFixtures() {
 
     @Test
     fun `Handle Click Profile`() {
