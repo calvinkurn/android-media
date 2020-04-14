@@ -398,25 +398,25 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/layout_lvl1">
 
-                    <com.tokopedia.design.component.TextViewCompat
+                    <com.tokopedia.unifyprinciples.Typography
                         android:id="@+id/tv_room_price_label"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        app:fontSize="micro"
+                        app:typographyType="body_3"
+                        android:textColor="@color/Neutral_N700_68"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:textViewTheme="lightSecondary"
                         tools:text="2 kamar x 2 malam" />
 
-                    <com.tokopedia.design.component.TextViewCompat
+                    <com.tokopedia.unifyprinciples.Typography
                         android:id="@+id/tv_room_price"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textStyle="bold"
-                        app:fontSize="micro"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:textViewTheme="lightPrimary"
+                        app:typographyType="body_3"
+                        android:textColor="@color/Neutral_N700_96"
+                        app:typographyWeight="bold"
                         tools:text="Rp 400.000" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
@@ -427,26 +427,27 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/layout_lvl2">
 
-                    <com.tokopedia.design.component.TextViewCompat
+                    <com.tokopedia.unifyprinciples.Typography
                         android:id="@+id/tv_room_tax_label"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/hotel_booking_tax_label"
-                        app:fontSize="micro"
+                        app:typographyType="body_3"
+                        app:typographyWeight="bold"
+                        android:textColor="@color/Neutral_N700_68"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:textViewTheme="lightSecondary" />
+                        app:layout_constraintTop_toTopOf="parent"/>
 
-                    <com.tokopedia.design.component.TextViewCompat
+                    <com.tokopedia.unifyprinciples.Typography
                         android:id="@+id/tv_room_tax"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/hotel_booking_tax_included"
-                        android:textStyle="bold"
-                        app:fontSize="micro"
+                        app:typographyType="body_3"
+                        app:typographyWeight="bold"
+                        android:textColor="@color/Neutral_N700_96"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:textViewTheme="lightPrimary" />
+                        app:layout_constraintTop_toTopOf="parent" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -463,39 +464,38 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/layout_lvl2">
 
-                    <com.tokopedia.design.component.TextViewCompat
+                    <com.tokopedia.unifyprinciples.Typography
                         android:id="@+id/tv_room_estimated_price_label"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textStyle="bold"
-                        app:fontSize="micro"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:textViewTheme="lightSecondary"
+                        app:typographyType="body_3"
+                        android:textColor="@color/Neutral_N700_96"
+                        app:typographyWeight="bold"
                         tools:text="Bayar di Hotel" />
 
-                    <com.tokopedia.design.component.TextViewCompat
+                    <com.tokopedia.unifyprinciples.Typography
                         android:id="@+id/tv_room_estimated_price"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textStyle="bold"
-                        app:fontSize="small"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:textViewTheme="lightPrimary"
+                        app:typographyType="body_2"
+                        app:typographyWeight="bold"
                         tools:text="Rp 400.000" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
-                <com.tokopedia.design.component.TextViewCompat
+                <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/tv_invoice_foreign_currency"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/hotel_booking_invoice_foreign_currency_label"
                     android:visibility="gone"
-                    app:fontSize="micro"
-                    app:textViewTheme="lightSecondary"
+                    app:typographyType="body_3"
+                    android:textColor="@color/Neutral_N700_68"
                     tools:text="Sebagai referensi, estimasi harga dalam rupiah sebesar Rp 400.000"
                     tools:visibility="visible" />
 
@@ -515,7 +515,7 @@
                     android:layout_height="@dimen/layout_lvl1"
                     android:background="@color/hotel_divider_color_gray" />
 
-                <com.tokopedia.design.component.TextViewCompat
+                <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/tv_booking_important_notes"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -524,8 +524,8 @@
                     android:paddingRight="@dimen/layout_lvl2"
                     android:paddingBottom="@dimen/layout_lvl1"
                     android:text="@string/hotel_booking_important_notes"
-                    app:fontSize="micro"
-                    app:textViewTheme="lightSecondary" />
+                    app:typographyType="body_3"
+                    android:textColor="@color/Neutral_N700_68" />
 
             </LinearLayout>
 
@@ -535,12 +535,12 @@
                 android:orientation="horizontal"
                 android:padding="@dimen/layout_lvl2">
 
-                <com.tokopedia.design.component.ButtonCompat
+                <com.tokopedia.unifycomponents.UnifyButton
                     android:id="@+id/booking_button"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/layout_lvl6"
-                    android:text="@string/hotel_booking_button"
-                    app:buttonCompatType="transaction" />
+                    app:unifyButtonType="transaction"
+                    app:unifyButtonSize="large"/>
 
             </LinearLayout>
 
