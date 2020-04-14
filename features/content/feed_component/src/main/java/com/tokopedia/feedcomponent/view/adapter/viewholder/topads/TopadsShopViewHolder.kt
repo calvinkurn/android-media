@@ -33,7 +33,6 @@ class TopadsShopViewHolder(v: View, private val topadsShopListener: TopadsShopLi
             return
         }
 
-
         if (element.dataList.isNotEmpty()) {
             itemView.viewPaddingBottom.visibility = View.VISIBLE
             itemView.topadsShop.bind(element.dataList)
@@ -84,8 +83,6 @@ class TopadsShopViewHolder(v: View, private val topadsShopListener: TopadsShopLi
         fun onAddFavorite(positionInFeed: Int, adapterPosition: Int, data: Data)
 
         fun onAffiliateTrackClicked(trackList: List<TrackingViewModel>, isClick: Boolean)
-
-        fun onTopAdsImpression(url:String)
     }
 
     override fun onImpressionShopAds(url: String?) {

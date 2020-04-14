@@ -565,9 +565,6 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         }
     }
 
-    override fun onTopAdsImpression(url: String) {
-    }
-
     override fun onHighlightItemClicked(positionInFeed: Int, item: HighlightCardViewModel) {
 
     }

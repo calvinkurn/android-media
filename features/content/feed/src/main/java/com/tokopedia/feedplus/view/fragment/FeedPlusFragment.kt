@@ -1242,10 +1242,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
         }
     }
 
-    override fun onTopAdsImpression(url: String) {
-        trackUrlEvent(url)
-    }
-
     override fun onHighlightItemClicked(positionInFeed: Int, item: HighlightCardViewModel) {
 
     }
