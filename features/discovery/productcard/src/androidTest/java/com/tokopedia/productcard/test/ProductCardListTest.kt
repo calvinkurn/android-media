@@ -9,16 +9,16 @@ import org.junit.Rule
 import org.junit.Test
 
 
-internal class ProductCardListTest {
-
-    @Rule
-    @JvmField
-    val activityTestRule = ActivityTestRule<ProductCardListActivityTest>(ProductCardListActivityTest::class.java)
-
-    @Test
-    fun testProductCardList() {
-        val recyclerViewViewInteraction = onView(withId(R.id.productCardListTestRecyclerView))
-
-        ProductCardTest(recyclerViewViewInteraction, productCardListTestData).startTest()
-    }
-}
+//internal class ProductCardListTest {
+//
+//    @Rule
+//    @JvmField
+//    val activityTestRule = ActivityTestRule<ProductCardListActivityTest>(ProductCardListActivityTest::class.java)
+//
+//    @Test
+//    fun testProductCardList() {
+//        val recyclerViewViewInteraction = onView(withId(R.id.productCardListTestRecyclerView))
+//
+//        ProductCardTest(recyclerViewViewInteraction, productCardListTestData).startTest()
+//    }
+//}
