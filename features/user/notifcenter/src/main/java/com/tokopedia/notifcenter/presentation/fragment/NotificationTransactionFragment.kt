@@ -89,6 +89,11 @@ class NotificationTransactionFragment : BaseNotificationFragment(), TransactionM
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        viewModel.getInfoStatusNotification()
+    }
+
     override fun updateFilter(filter: HashMap<String, Int>) {
         fetchUpdateFilter(filter)
     }
@@ -163,6 +168,7 @@ class NotificationTransactionFragment : BaseNotificationFragment(), TransactionM
         }
 
         viewModel.getInfoStatusNotification()
+        viewModel.getNotificationFilter()
     }
 
     override fun createEndlessRecyclerViewListener(): EndlessRecyclerViewScrollListener {
