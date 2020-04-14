@@ -2,7 +2,7 @@ package com.tokopedia.atc_common.domain.usecase
 
 import com.google.gson.Gson
 import com.tokopedia.atc_common.data.model.request.AddToCartOcsRequestParams
-import com.tokopedia.atc_common.data.model.response.AddToCartOcsGqlResponse
+import com.tokopedia.atc_common.data.model.response.ocs.AddToCartOcsGqlResponse
 import com.tokopedia.atc_common.domain.mapper.AddToCartDataMapper
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.graphql.data.model.GraphqlRequest
@@ -42,7 +42,7 @@ open class AddToCartOcsUseCase @Inject constructor(@Named("atcOcsMutation") priv
         graphqlUseCase.addRequest(graphqlRequest)
         return graphqlUseCase.createObservable(RequestParams.EMPTY).map {
             val addToCartOcsGqlResponse = it.getData<AddToCartOcsGqlResponse>(AddToCartOcsGqlResponse::class.java)
-            addToCartDataMapper.mapAddToCartOcsUseCase(addToCartOcsGqlResponse)
+            addToCartDataMapper.mapAddToCartOcsResponse(addToCartOcsGqlResponse)
         }
 
     }
