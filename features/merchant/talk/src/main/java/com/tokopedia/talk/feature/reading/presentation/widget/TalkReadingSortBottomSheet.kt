@@ -40,12 +40,13 @@ class TalkReadingSortBottomSheet(
             this.dismiss()
         }
         talkReadingSortOptions.onLoadFinish {
-            data.forEach {itemUnify ->
-                itemUnify.listRightRadiobtn?.setOnClickListener {
-                    val chosenSortOption = getSortOptionFromListUnify(itemUnify.listTitleText)
+            data.forEachIndexed { index, listItemUnify ->
+                listItemUnify.listRightRadiobtn?.setOnClickListener {
+                    val chosenSortOption = getSortOptionFromListUnify(listItemUnify.listTitleText)
                     onFinishedListener.onFinishChooseSort(chosenSortOption)
                     this.dismiss()
                 }
+                listItemUnify.listRightRadiobtn?.isChecked = sortOptions[index].isSelected
             }
         }
     }
@@ -53,13 +54,13 @@ class TalkReadingSortBottomSheet(
     private fun getSortOptionFromListUnify(title: String): SortOption {
         return when(title) {
             SortOption.INFORMATIVENESS_DISPLAY_NAME -> {
-                SortOption.SortByInformativeness()
+                SortOption.SortByInformativeness(isSelected = true)
             }
             SortOption.TIME_DISPLAY_NAME -> {
-                SortOption.SortByTime()
+                SortOption.SortByTime(isSelected = true)
             }
             else -> {
-                SortOption.SortByLike()
+                SortOption.SortByLike(isSelected = true)
             }
         }
     }

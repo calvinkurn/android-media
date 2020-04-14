@@ -45,7 +45,6 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
     lateinit var viewModel: TalkReadingViewModel
 
     private var productId: Int = 0
-    private var sortOptions: List<SortOption> = listOf()
     private var sortOptionsBottomSheet: BottomSheetUnify? = null
 
     override fun getAdapterTypeFactory(): TalkReadingAdapterTypeFactory {
@@ -67,8 +66,9 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         observeProductHeader()
+        observeSortOptions()
         showPageLoading()
-        initSortOptionsBottomSheet()
+        initSortOptions()
         super.onViewCreated(view, savedInstanceState)
     }
 
@@ -96,8 +96,7 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
 
 
     override fun onFinishChooseSort(sortOption: SortOption) {
-        //Get Data
-
+        viewModel.updateSelectedSort(sortOption)
     }
 
     private fun getProductId() {
@@ -142,16 +141,22 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
         })
     }
 
+    private fun observeSortOptions() {
+        viewModel.sortOptions.observe(this, Observer { sortOptions ->
+            val selectedSort = sortOptions.filter { it.isSelected }
+            // get talk with selected sort
+        })
+    }
+
     private fun showBottomSheet() {
+        sortOptionsBottomSheet = context?.let { context ->
+            viewModel.sortOptions.value?.let {
+                TalkReadingSortBottomSheet.createInstance(context,it , this) }
+        }
         this.childFragmentManager.let { sortOptionsBottomSheet?.show(it,"BottomSheetTag") }
     }
 
-    private fun initHeader(talkReadingHeaderModel: TalkReadingHeaderModel) {
-
-    }
-
-    private fun initSortOptionsBottomSheet() {
-        sortOptions = listOf(SortOption.SortByInformativeness(), SortOption.SortByTime(), SortOption.SortByLike())
-        sortOptionsBottomSheet = context?.let { TalkReadingSortBottomSheet.createInstance(it, sortOptions, this) }
+    private fun initSortOptions() {
+        viewModel.updateSortOptions(listOf(SortOption.SortByInformativeness(), SortOption.SortByTime(), SortOption.SortByLike()))
     }
 }
