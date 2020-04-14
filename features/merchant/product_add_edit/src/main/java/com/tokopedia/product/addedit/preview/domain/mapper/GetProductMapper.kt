@@ -53,11 +53,14 @@ class GetProductMapper @Inject constructor() {
                     it.price.toDouble(),
                     it.stock.toLong(),
                     it.sku,
-                    it.combination
+                    mapProductVariantCombination(it.combination)
             )
         }
         return ArrayList(variantCombination)
     }
+
+    private fun mapProductVariantCombination(combination: List<Int>): List<Int> =
+            combination.map { it + 1 }
 
     private fun mapProductVariantOption(selections: List<Selection>): ArrayList<ProductVariantOptionParent> {
         var position = 0
@@ -77,7 +80,7 @@ class GetProductMapper @Inject constructor() {
     }
 
     private fun mapProductVariantOptionChild(options: List<Option>): List<ProductVariantOptionChild>?{
-        var pvo = -1
+        var pvo = 0
         return options.map {
             pvo += 1 // generate pvo id
             ProductVariantOptionChild(
@@ -100,6 +103,7 @@ class GetProductMapper @Inject constructor() {
                     product.minOrder,
                     product.condition,
                     product.sku,
+                    getActiveStatus(product.status),
                     imageUrlOrPathList = mapImageUrlOrPathList(product),
                     preorder = mapPreorderInputModel(product.preorder),
                     wholesaleList = mapWholeSaleInputModel(product.wholesales),
@@ -194,7 +198,7 @@ class GetProductMapper @Inject constructor() {
         const val UNIT_MONTH_STRING = "MONTH"
         const val UNIT_GRAM_SRING = "GR"
         const val UNIT_KILOGRAM_SRING = "KG"
-        const val YOUTUBE_URL_DELIMITER = "watch?v="
+        const val YOUTUBE_URL_DELIMITER = "/watch?v="
         const val YOUTUBE_URL_DELIMITER_SHORT = "/"
         const val YOUTUBE_URL = "www.youtube.com"
 

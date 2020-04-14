@@ -55,7 +55,7 @@ import com.tokopedia.product.addedit.description.presentation.model.ProductVaria
 import com.tokopedia.product.addedit.description.presentation.model.VideoLinkModel
 import com.tokopedia.product.addedit.description.presentation.model.youtube.YoutubeVideoModel
 import com.tokopedia.product.addedit.description.presentation.viewmodel.AddEditProductDescriptionViewModel
-import com.tokopedia.product.addedit.mapper.mapProductInputModelDetailToDraft
+import com.tokopedia.product.addedit.draft.mapper.AddEditProductMapper.mapProductInputModelDetailToDraft
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.shipment.presentation.activity.AddEditProductShipmentActivity
 import com.tokopedia.product.addedit.shipment.presentation.fragment.AddEditProductShipmentFragment.Companion.REQUEST_CODE_SHIPMENT
@@ -142,8 +142,13 @@ class AddEditProductDescriptionFragment:
 
     override fun onTextChanged(url: String, position: Int) {
         adapter.data[position].inputUrl = url
-        positionVideoChanged = position
-        descriptionViewModel.getVideoYoutube(url)
+        if (url.isNotBlank()) {
+            positionVideoChanged = position
+            descriptionViewModel.getVideoYoutube(url)
+        } else {
+            adapter.data[position].errorMessage = ""
+            getRecyclerView(view).post { adapter.notifyItemChanged(position) }
+        }
     }
 
     override fun onItemClicked(t: VideoLinkModel?) {
@@ -190,6 +195,12 @@ class AddEditProductDescriptionFragment:
         return inflater.inflate(R.layout.fragment_add_edit_product_description, container, false)
     }
 
+    override fun onResume() {
+        super.onResume()
+        btnNext.isLoading = false
+        btnSave.isLoading = false
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -225,10 +236,12 @@ class AddEditProductDescriptionFragment:
         }
 
         btnNext.setOnClickListener {
+            btnNext.isLoading = true
             moveToShipmentActivity()
         }
 
         btnSave.setOnClickListener {
+            btnSave.isLoading = true
             submitInputEdit()
         }
 
@@ -319,8 +332,8 @@ class AddEditProductDescriptionFragment:
         val description = descriptionViewModel.descriptionInputModel.productDescription
         val videoLinks = descriptionViewModel.descriptionInputModel.videoLinkList
 
+        textFieldDescription.setText(description)
         if (videoLinks.isNotEmpty()) {
-            textFieldDescription.setText(description)
             super.clearAllData()
             super.renderList(videoLinks)
         }
@@ -361,7 +374,8 @@ class AddEditProductDescriptionFragment:
                     if (data.hasExtra(EXTRA_PRODUCT_VARIANT_SELECTION)) {
                         val productVariantViewModel = cacheManager.get(EXTRA_PRODUCT_VARIANT_SELECTION,
                                 object : TypeToken<ProductVariantInputModel>() {}.type) ?: ProductVariantInputModel()
-                        descriptionViewModel.setVariantInput(productVariantViewModel.productVariant, productVariantViewModel.variantOptionParent, productPictureViewModel)
+                        descriptionViewModel.setVariantInput(productVariantViewModel.productVariant,
+                                productVariantViewModel.variantOptionParent, productPictureViewModel)
                         tvVariantHeaderSubtitle.text = descriptionViewModel.getVariantSelectedMessage()
                         tvAddVariant.text = descriptionViewModel.getVariantButtonMessage()
                     }

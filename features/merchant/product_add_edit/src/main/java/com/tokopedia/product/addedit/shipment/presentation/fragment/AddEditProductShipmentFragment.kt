@@ -17,7 +17,7 @@ import com.tokopedia.product.addedit.common.util.getText
 import com.tokopedia.product.addedit.common.util.getTextIntOrZero
 import com.tokopedia.product.addedit.common.util.setModeToNumberInput
 import com.tokopedia.product.addedit.common.util.setText
-import com.tokopedia.product.addedit.mapper.mapProductInputModelDetailToDraft
+import com.tokopedia.product.addedit.draft.mapper.AddEditProductMapper.mapProductInputModelDetailToDraft
 import com.tokopedia.product.addedit.optionpicker.OptionPicker
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.shipment.di.AddEditProductShipmentComponent
@@ -28,9 +28,7 @@ import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProdu
 import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.UNIT_KILOGRAM
 import com.tokopedia.product.addedit.shipment.presentation.model.ShipmentInputModel
 import com.tokopedia.product.addedit.shipment.presentation.viewmodel.AddEditProductShipmentViewModel
-import com.tokopedia.product.addedit.tracking.ProductAddShippingTracking
-import com.tokopedia.product.addedit.tracking.ProductAddStepperTracking
-import com.tokopedia.product.addedit.tracking.ProductEditShippingTracking
+import com.tokopedia.product.addedit.tracking.*
 import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
@@ -101,6 +99,9 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
             shipmentViewModel.shipmentInputModel = shipmentInputModel
             shipmentViewModel.isEditMode = isEditMode
         }
+        if (!shipmentViewModel.isEditMode) {
+            ProductAddShippingTracking.trackScreen()
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -129,9 +130,11 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
             validateInputWeight(it)
         }
         btnEnd?.setOnClickListener {
+            btnEnd?.isLoading = true
             submitInput()
         }
         btnSave?.setOnClickListener {
+            btnSave?.isLoading = true
             submitInputEdit()
         }
         switchInsurance?.setOnCheckedChangeListener { buttonView, isChecked ->
@@ -141,6 +144,12 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
                 ProductAddShippingTracking.clickInsurance(shopId)
             }
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        btnEnd?.isLoading = false
+        btnSave?.isLoading = false
     }
 
     fun onCtaYesPressed() {
@@ -275,5 +284,4 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
             activity?.finish()
         }
     }
-
 }

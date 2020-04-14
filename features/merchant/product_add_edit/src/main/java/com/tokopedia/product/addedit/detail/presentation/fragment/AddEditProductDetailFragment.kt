@@ -11,7 +11,6 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.widget.AppCompatTextView
@@ -47,6 +46,7 @@ import com.tokopedia.product.addedit.description.presentation.model.ProductVaria
 import com.tokopedia.product.addedit.detail.di.AddEditProductDetailComponent
 import com.tokopedia.product.addedit.detail.presentation.adapter.NameRecommendationAdapter
 import com.tokopedia.product.addedit.detail.presentation.adapter.WholeSalePriceInputAdapter
+import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.CATEGORY_RESULT_ID
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.CATEGORY_RESULT_NAME
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.CONDITION_NEW
@@ -67,7 +67,7 @@ import com.tokopedia.product.addedit.detail.presentation.viewholder.WholeSaleInp
 import com.tokopedia.product.addedit.detail.presentation.viewmodel.AddEditProductDetailViewModel
 import com.tokopedia.product.addedit.detail.presentation.widget.ProductBulkPriceEditBottomSheetContent
 import com.tokopedia.product.addedit.imagepicker.view.activity.ImagePickerAddProductActivity
-import com.tokopedia.product.addedit.mapper.mapProductInputModelDetailToDraft
+import com.tokopedia.product.addedit.draft.mapper.AddEditProductMapper.mapProductInputModelDetailToDraft
 import com.tokopedia.product.addedit.optionpicker.OptionPicker
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_IS_DRAFTING_PRODUCT
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_IS_EDITING_PRODUCT
@@ -234,7 +234,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         // add edit product photo views
         addProductPhotoButton = view.findViewById(R.id.tv_add_product_photo)
         productPhotosView = view.findViewById(R.id.rv_product_photos)
-        productPhotoAdapter = ProductPhotoAdapter(MAX_PRODUCT_PHOTOS, viewModel.productPhotoPaths, this)
+        productPhotoAdapter = ProductPhotoAdapter(MAX_PRODUCT_PHOTOS, true, viewModel.productPhotoPaths, this)
         productPhotosView?.let {
             it.adapter = productPhotoAdapter
             it.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
@@ -302,6 +302,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             } else {
                 ProductAddMainTracking.clickRemoveWholesale(shopId)
             }
+            addNewWholeSalePriceButton?.visibility = View.VISIBLE
         }, onAddWholesale = {
             if (viewModel.isEditing) {
                 ProductEditMainTracking.clickAddWholesale(shopId)
@@ -315,6 +316,11 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         }
         addNewWholeSalePriceButton = view.findViewById(R.id.tv_add_new_wholesale_price)
         addNewWholeSalePriceButton?.setOnClickListener {
+            wholeSaleInputFormsAdapter?.itemCount?.let {
+                if (it >= AddEditProductDetailConstants.MAX_WHOLESALE_PRICES - 1) {
+                    addNewWholeSalePriceButton?.visibility = View.GONE
+                }
+            }
             wholeSaleInputFormsAdapter?.addNewWholeSalePriceForm()
         }
 
@@ -425,6 +431,10 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                     val productPriceInput = charSequence?.toString()?.replace(".", "")
                     productPriceInput?.let {
                         // do the validation first
+                        if(it != "") {
+                            wholeSaleInputFormsAdapter?.setPrice(it.toBigInteger())
+                            wholeSaleInputFormsAdapter?.notifyDataSetChanged()
+                        }
                         viewModel.validateProductPriceInput(it)
                         productPriceField?.textFieldInput?.let { editText ->
                             InputPriceUtil.applyPriceFormatToInputField(editText, it, this)
@@ -442,6 +452,11 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                     ProductEditMainTracking.clickWholesale(shopId)
                 } else {
                     ProductAddMainTracking.clickWholesale(shopId)
+                }
+                wholeSaleInputFormsAdapter?.itemCount?.let {
+                    if (it >= AddEditProductDetailConstants.MAX_WHOLESALE_PRICES - 1) {
+                        addNewWholeSalePriceButton?.visibility = View.GONE
+                    }
                 }
             }
         }
@@ -680,7 +695,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     override fun onWholeSaleQuantityItemTextChanged(position: Int, input: String) {
         val itemView = productWholeSaleInputFormsView?.layoutManager?.getChildAt(position)
         val quantityField: TextFieldUnify? = itemView?.findViewById(R.id.tfu_wholesale_quantity)
-        val errorMessage = viewModel.validateProductWholeSaleQuantityInput(input)
+        val errorMessage = viewModel.validateProductWholeSaleQuantityInput(input, position + 1)
         quantityField?.setError(errorMessage.isNotEmpty())
         quantityField?.setMessage(errorMessage)
         updateWholeSaleErrorCounter(viewModel, productWholeSaleInputFormsView)
@@ -743,7 +758,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                 // Minimum amount
                 val productWholeSaleQuantityField: TextFieldUnify? = productWholeSaleFormView?.findViewById(R.id.tfu_wholesale_quantity)
                 productWholeSaleQuantityField?.textFieldInput?.editableText?.run {
-                    val errorMessage = viewModel.validateProductWholeSaleQuantityInput(this.toString())
+                    val errorMessage = viewModel.validateProductWholeSaleQuantityInput(this.toString(), index + 1)
                     productWholeSaleQuantityField.setError(errorMessage.isNotEmpty())
                     productWholeSaleQuantityField.setMessage(errorMessage)
                 }
@@ -925,6 +940,12 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         viewModel.isPreOrderActivated.observe(this, Observer {
             if (it) preOrderInputLayout?.visible()
             else preOrderInputLayout?.hide()
+
+            if (viewModel.isEditing) {
+                ProductEditMainTracking.clickPreorderButton(shopId)
+            } else {
+                ProductAddMainTracking.clickPreorderButton(shopId)
+            }
         })
     }
 
@@ -1198,6 +1219,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                 productMinOrderField.getTextIntOrZero(),
                 if (isProductConditionNew) CONDITION_NEW else CONDITION_USED,
                 productSkuField.getText(),
+                viewModel.productInputModel.detailInputModel.status,
                 viewModel.productPhotoPaths,
                 PreorderInputModel(
                         preOrderDurationField.getTextIntOrZero(),

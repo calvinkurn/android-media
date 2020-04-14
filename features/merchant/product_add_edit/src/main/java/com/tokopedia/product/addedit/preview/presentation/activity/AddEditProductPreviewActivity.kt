@@ -8,6 +8,9 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.product.addedit.R
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_FROM_NOTIF_EDIT_PRODUCT
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_FROM_NOTIF_SUCCESS
 import com.tokopedia.product.addedit.preview.presentation.fragment.AddEditProductPreviewFragment
@@ -17,6 +20,24 @@ import com.tokopedia.user.session.UserSession
 
 
 class AddEditProductPreviewActivity : BaseSimpleActivity() {
+
+    companion object {
+        fun createInstance(context: Context?): Intent = Intent(context,
+                AddEditProductPreviewActivity::class.java)
+
+        fun createInstance(context: Context?, isFromSuccessNotif: Boolean?,
+                           isFromNotifEditMode: Boolean?): Intent {
+            val intent = Intent(context,
+                    AddEditProductPreviewActivity::class.java)
+            isFromSuccessNotif?.run {
+                intent.apply {
+                    putExtra(EXTRA_FROM_NOTIF_SUCCESS, isFromSuccessNotif)
+                    putExtra(EXTRA_FROM_NOTIF_EDIT_PRODUCT, isFromNotifEditMode)
+                }
+            }
+            return intent
+        }
+    }
 
     private var productId = ""
     private var draftId = ""
@@ -35,7 +56,7 @@ class AddEditProductPreviewActivity : BaseSimpleActivity() {
             if (params.isNotEmpty()) {
                 val mode = params[ApplinkConstInternalMechant.QUERY_PARAM_MODE].orEmpty()
                 val id = params[ApplinkConstInternalMechant.QUERY_PARAM_ID].orEmpty()
-                when(mode) {
+                when (mode) {
                     ApplinkConstInternalMechant.MODE_EDIT_PRODUCT -> productId = id
                     ApplinkConstInternalMechant.MODE_EDIT_DRAFT -> draftId = id
                     ApplinkConstInternalMechant.MODE_DUPLICATE_PRODUCT -> {
@@ -60,26 +81,45 @@ class AddEditProductPreviewActivity : BaseSimpleActivity() {
         super.onCreate(savedInstanceState)
     }
 
-    companion object {
-        fun createInstance(context: Context?): Intent = Intent(context,
-                AddEditProductPreviewActivity::class.java)
-
-        fun createInstance(context: Context?, isFromSuccessNotif: Boolean?,
-                           isFromNotifEditMode: Boolean?): Intent {
-            val intent = Intent(context,
-                    AddEditProductPreviewActivity::class.java)
-            isFromSuccessNotif?.run {
-                intent.apply {
-                    putExtra(EXTRA_FROM_NOTIF_SUCCESS, isFromSuccessNotif)
-                    putExtra(EXTRA_FROM_NOTIF_EDIT_PRODUCT, isFromNotifEditMode)
-                }
+    override fun onBackPressed() {
+        onBackPressedHitTracking()
+        DialogUnify(this, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
+            setTitle(getString(R.string.label_title_on_dialog))
+            setDescription(getString(R.string.label_description_on_dialog))
+            setPrimaryCTAText(getString(R.string.label_cta_primary_button_on_dialog))
+            setSecondaryCTAText(getString(R.string.label_cta_secondary_button_on_dialog))
+            setSecondaryCTAClickListener {
+                moveToManageProduct()
+                onCtaYesPressedHitTracking()
             }
-            return intent
+            setPrimaryCTAClickListener {
+                super.onBackPressed()
+                onCtaNoPressedHitTracking()
+            }
+        }.show()
+    }
+
+    private fun moveToManageProduct() {
+        val intent = RouteManager.getIntent(this, ApplinkConstInternalMarketplace.PRODUCT_MANAGE_LIST)
+        startActivity(intent)
+        finish()
+    }
+
+    private fun onCtaYesPressedHitTracking() {
+        val f = fragment
+        if (f != null && f is AddEditProductPreviewFragment) {
+            f.onCtaYesPressed()
         }
     }
 
-    override fun onBackPressed() {
-        super.onBackPressed()
+    private fun onCtaNoPressedHitTracking() {
+        val f = fragment
+        if (f != null && f is AddEditProductPreviewFragment) {
+            f.onCtaNoPressed()
+        }
+    }
+
+    private fun onBackPressedHitTracking() {
         val f = fragment
         if (f != null && f is AddEditProductPreviewFragment) {
             f.onBackPressed()

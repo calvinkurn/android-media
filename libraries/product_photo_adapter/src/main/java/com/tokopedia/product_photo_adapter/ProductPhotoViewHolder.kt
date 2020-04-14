@@ -20,6 +20,10 @@ class ProductPhotoViewHolder(itemView: View,
         fun onRemovePhoto(viewHolder: RecyclerView.ViewHolder)
     }
 
+    companion object {
+        const val PLACE_HOLDER = "PLACE_HOLDER"
+    }
+
     private var context: Context? = null
     private var productPhotoLayoutView: View? = null
     private var primaryStrokeView: View? = null
@@ -40,7 +44,7 @@ class ProductPhotoViewHolder(itemView: View,
         dragHandleView = itemView.findViewById(R.id.iv_drag_handle)
         deleteButton = itemView.findViewById(R.id.iv_delete_button)
 
-        dragHandleView?.setOnTouchListener { _, _ ->
+        productPhotoView?.setOnTouchListener { _, _ ->
             onPhotoChangeListener.onStartDrag(this)
             true
         }
@@ -52,25 +56,39 @@ class ProductPhotoViewHolder(itemView: View,
     }
 
     fun bindData(position: Int, productPhotoPath: String) {
-        // load product photo to image view
-        context?.let {
-            loadProductPhotoToImageView(it, productPhotoView, productPhotoPath)
+        val isPlaceHolder = productPhotoPath.contains(PLACE_HOLDER)
+        if (isPlaceHolder) showImagePlaceHolder()
+        else {
+            // load product photo to image view
+            context?.let {
+                loadProductPhotoToImageView(it, productPhotoView, productPhotoPath)
+            }
+            // show product photo attributes
+            if (position == 0) showPrimaryAttribute()
+            else showDragHandle()
         }
-        // show product photo attributes
-        if (position == 0) showPrimaryAttribute()
-        else showDragHandle()
+    }
+
+    private fun showImagePlaceHolder() {
+        productPhotoView?.setImageResource(R.drawable.ic_placeholder_empty)
+        primaryStrokeView?.visibility = View.GONE
+        primaryBadgeView?.visibility = View.GONE
+        dragHandleView?.visibility = View.GONE
+        deleteButton?.visibility = View.GONE
     }
 
     private fun showPrimaryAttribute() {
         primaryStrokeView?.visibility = View.VISIBLE
         primaryBadgeView?.visibility = View.VISIBLE
         dragHandleView?.visibility = View.GONE
+        deleteButton?.visibility = View.VISIBLE
     }
 
     private fun showDragHandle() {
         primaryStrokeView?.visibility = View.GONE
         primaryBadgeView?.visibility = View.GONE
         dragHandleView?.visibility = View.VISIBLE
+        deleteButton?.visibility = View.VISIBLE
     }
 
     private fun loadProductPhotoToImageView(context: Context, productPhotoView: AppCompatImageView?, productPhotoPath: String) {

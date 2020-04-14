@@ -3,7 +3,7 @@ package com.tokopedia.product.addedit.tracking
 import com.tokopedia.product.addedit.tracking.ProductAddEditTracking.sendAddProductClick
 
 object ProductAddEditImageTracking {
-    const val SCREEN = "/addproductpage - choose photo"
+    const val SCREEN = "/addproductpage - edit photo"
 
     fun trackScreen() {
         ProductAddEditTracking.getTracker().sendScreenAuthenticated(SCREEN)
