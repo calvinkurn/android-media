@@ -228,18 +228,12 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
 
     override fun processDeleteCartItem(allCartItemData: List<CartItemData>,
                                        removedCartItems: List<CartItemData>,
-                                       appliedPromoCodeList: ArrayList<String>?,
                                        addWishList: Boolean,
                                        removeInsurance: Boolean) {
         view?.let {
             it.showProgressLoading()
 
             val removeAllItem = allCartItemData.size == removedCartItems.size
-
-            var tmpAppliedPromoCodeList = appliedPromoCodeList
-            if (tmpAppliedPromoCodeList == null) {
-                tmpAppliedPromoCodeList = ArrayList()
-            }
 
             val toBeDeletedCartIds = ArrayList<String>()
             for (cartItemData in removedCartItems) {
@@ -252,7 +246,6 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
 
             val requestParams = RequestParams.create()
             requestParams.putObject(DeleteCartUseCase.PARAM_REMOVE_CART_REQUEST, removeCartRequest)
-            requestParams.putObject(DeleteCartUseCase.PARAM_TO_BE_REMOVED_PROMO_CODES, tmpAppliedPromoCodeList)
 
             compositeSubscription.add(deleteCartUseCase?.createObservable(requestParams)
                     ?.subscribe(DeleteCartItemSubscriber(view, this, toBeDeletedCartIds,

@@ -697,7 +697,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             val dialog = getMultipleItemsDialogDeleteConfirmation(toBeDeletedCartItemDataList.size)
             dialog?.setPrimaryCTAClickListener {
                 if (toBeDeletedCartItemDataList.isNotEmpty()) {
-                    dPresenter.processDeleteCartItem(allCartItemDataList, toBeDeletedCartItemDataList, getAppliedPromoCodeList(toBeDeletedCartItemDataList), false, true)
+                    dPresenter.processDeleteCartItem(allCartItemDataList, toBeDeletedCartItemDataList, false, true)
                     sendAnalyticsOnClickConfirmationRemoveCartSelectedNoAddToWishList(
                             dPresenter.generateDeleteCartDataAnalytics(toBeDeletedCartItemDataList)
                     )
@@ -845,12 +845,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     override fun onCartItemDeleteButtonClicked(cartItemHolderData: CartItemHolderData, position: Int, parentPosition: Int) {
         sendAnalyticsOnClickRemoveIconCartItem()
-        val appliedPromoCodes = ArrayList<String>()
-        val cartShopHolderData = cartAdapter.getCartShopHolderDataByIndex(parentPosition)
-        if (!TextUtils.isEmpty(cartShopHolderData?.shopGroupAvailableData?.voucherOrdersItemData?.code)) {
-            appliedPromoCodes.add(cartShopHolderData?.shopGroupAvailableData?.voucherOrdersItemData?.code
-                    ?: "")
-        }
         val cartItemDatas = mutableListOf<CartItemData>()
         cartItemHolderData.cartItemData?.let {
             cartItemDatas.add(it)
@@ -867,7 +861,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             dialog = getInsuranceDialogDeleteConfirmation()
             dialog?.setPrimaryCTAClickListener {
                 if (cartItemDatas.isNotEmpty()) {
-                    dPresenter.processDeleteCartItem(allCartItemDataList, cartItemDatas, appliedPromoCodes, true, removeMacroInsurance)
+                    dPresenter.processDeleteCartItem(allCartItemDataList, cartItemDatas, true, removeMacroInsurance)
                     sendAnalyticsOnClickConfirmationRemoveCartSelectedWithAddToWishList(
                             dPresenter.generateDeleteCartDataAnalytics(cartItemDatas)
                     )
@@ -876,7 +870,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             }
             dialog?.setSecondaryCTAClickListener {
                 if (cartItemDatas.size > 0) {
-                    dPresenter.processDeleteCartItem(allCartItemDataList, cartItemDatas, appliedPromoCodes, false, removeMacroInsurance)
+                    dPresenter.processDeleteCartItem(allCartItemDataList, cartItemDatas,  false, removeMacroInsurance)
                     sendAnalyticsOnClickConfirmationRemoveCartSelectedNoAddToWishList(
                             dPresenter.generateDeleteCartDataAnalytics(cartItemDatas)
                     )
@@ -888,7 +882,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             dialog = getDialogDeleteConfirmation()
             dialog?.setPrimaryCTAClickListener {
                 if (cartItemDatas.size > 0) {
-                    dPresenter.processDeleteCartItem(allCartItemDataList, cartItemDatas, appliedPromoCodes, false, removeMacroInsurance)
+                    dPresenter.processDeleteCartItem(allCartItemDataList, cartItemDatas,  false, removeMacroInsurance)
                     sendAnalyticsOnClickConfirmationRemoveCartSelectedNoAddToWishList(
                             dPresenter.generateDeleteCartDataAnalytics(cartItemDatas)
                     )
@@ -1579,7 +1573,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     private fun renderPromoCheckoutLoading() {
         promoCheckoutBtn.state = ButtonPromoCheckoutView.State.LOADING
         promoCheckoutBtn.margin = ButtonPromoCheckoutView.Margin.NO_BOTTOM
-        promoCheckoutBtn.setOnClickListener {  }
+        promoCheckoutBtn.setOnClickListener { }
     }
 
     private fun isNeedHitUpdateCartAndValidateUse(params: ValidateUsePromoRequest): Boolean {
@@ -2708,7 +2702,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
         dialog?.setPrimaryCTAClickListener {
             if (allDisabledCartItemDataList.size > 0) {
-                dPresenter.processDeleteCartItem(allCartItemDataList, allDisabledCartItemDataList, null, false, false)
+                dPresenter.processDeleteCartItem(allCartItemDataList, allDisabledCartItemDataList,  false, false)
                 sendAnalyticsOnClickConfirmationRemoveCartConstrainedProductNoAddToWishList(
                         dPresenter.generateDeleteCartDataAnalytics(allDisabledCartItemDataList)
                 )
@@ -2733,7 +2727,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         val dialog = getDisabledItemDialogDeleteConfirmation()
 
         dialog?.setPrimaryCTAClickListener {
-            dPresenter.processDeleteCartItem(allCartItemDataList, cartItemDatas, null, false, false)
+            dPresenter.processDeleteCartItem(allCartItemDataList, cartItemDatas, false, false)
             sendAnalyticsOnClickConfirmationRemoveCartSelectedNoAddToWishList(
                     dPresenter.generateDeleteCartDataAnalytics(cartItemDatas)
             )
