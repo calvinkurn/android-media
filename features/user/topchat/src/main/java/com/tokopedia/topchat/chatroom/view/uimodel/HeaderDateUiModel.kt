@@ -2,6 +2,7 @@ package com.tokopedia.topchat.chatroom.view.uimodel
 
 import android.text.format.DateUtils
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactory
 import java.text.SimpleDateFormat
 import java.util.*
@@ -42,7 +43,7 @@ class HeaderDateUiModel : Visitable<TopChatTypeFactory> {
             return when {
                 DateUtils.isToday(dateTimestamp) -> RELATIVE_TODAY
                 DateUtils.isToday(dateTimestamp + DateUtils.DAY_IN_MILLIS) -> RELATIVE_YESTERDAY
-                else -> date
+                else -> DateFormatUtils.formatDate(DATE_FORMAT, HEADER_DATE_FORMAT, date, Locale.ENGLISH)
             }
         }
 
@@ -54,5 +55,6 @@ class HeaderDateUiModel : Visitable<TopChatTypeFactory> {
         private const val RELATIVE_TODAY = "Hari ini"
         private const val RELATIVE_YESTERDAY = "Kemarin"
         private const val DATE_FORMAT = "d MMM yyyy"
+        private const val HEADER_DATE_FORMAT = "MMMM d, yyyy"
     }
 }
