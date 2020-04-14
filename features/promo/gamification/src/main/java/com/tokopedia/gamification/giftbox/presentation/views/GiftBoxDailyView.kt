@@ -82,8 +82,7 @@ open class GiftBoxDailyView : FrameLayout {
             startBoxOpenAnimation()
         }
     }
-
-
+    
     fun startBoxOpenAnimation() {
         initialBounceAnimatorSet?.end()
 
