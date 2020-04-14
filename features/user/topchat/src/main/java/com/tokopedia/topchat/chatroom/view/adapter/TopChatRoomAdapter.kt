@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.chat_common.BaseChatAdapter
 import com.tokopedia.chat_common.data.ImageUploadViewModel
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.ProductCarouselListAttachmentViewHolder
+import com.tokopedia.topchat.chatroom.view.uimodel.HeaderDateUiModel
 
 /**
  * @author : Steven 02/01/19
@@ -16,6 +17,21 @@ class TopChatRoomAdapter(private val adapterTypeFactory: TopChatTypeFactoryImpl)
     : BaseChatAdapter(adapterTypeFactory), ProductCarouselListAttachmentViewHolder.Listener {
 
     private val productCarouselState: ArrayMap<Int, Parcelable> = ArrayMap()
+    private var lastHeaderDate: HeaderDateUiModel? = null
+    private var lastHeaderDateIndex: Int? = null
+
+    override fun addElement(visitables: MutableList<out Visitable<Any>>?) {
+        super.addElement(visitables)
+        assignLastHeaderDate(visitables)
+    }
+
+    private fun assignLastHeaderDate(items: MutableList<*>?) {
+        val lastItem = items?.last()
+        if (lastItem is HeaderDateUiModel) {
+            lastHeaderDate = lastItem
+            lastHeaderDateIndex = items.lastIndex
+        }
+    }
 
     override fun getItemViewType(position: Int): Int {
         val default = super.getItemViewType(position)
@@ -50,5 +66,11 @@ class TopChatRoomAdapter(private val adapterTypeFactory: TopChatTypeFactoryImpl)
         val currentLastPosition = visitables.lastIndex
         visitables.addAll(widgets)
         notifyItemRangeInserted(currentLastPosition, widgets.size)
+    }
+
+    fun removeLastHeaderDateIfSame(lastHeaderDate: String) {
+        if (this.lastHeaderDate?.date == lastHeaderDate) {
+            lastHeaderDateIndex?.let { visitables.removeAt(it) }
+        }
     }
 }

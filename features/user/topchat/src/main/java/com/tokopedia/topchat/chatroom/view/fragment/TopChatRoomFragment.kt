@@ -308,6 +308,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
 
     private fun onSuccessGetPreviousChat(): (ChatroomViewModel) -> Unit {
         return {
+            adapter.removeLastHeaderDateIfSame(it.lastHeaderDate)
             renderList(it.listChat, it.canLoadMore)
             checkShowLoading(it.canLoadMore)
             loadChatRoomSettings(it)

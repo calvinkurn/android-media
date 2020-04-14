@@ -110,8 +110,10 @@ class TopChatRoomPresenter @Inject constructor(
         dummyList = arrayListOf()
     }
 
-    override fun clearText() {
-    }
+    override val lastHeaderDate: String
+        get() = TODO("not implemented") //To change initializer of created properties use File | Settings | File Templates.
+    override val firstHeaderDate: String
+        get() = TODO("not implemented") //To change initializer of created properties use File | Settings | File Templates.
 
     override fun connectWebSocket(messageId: String) {
         thisMessageId = messageId
@@ -698,4 +700,6 @@ class TopChatRoomPresenter @Inject constructor(
     override fun updateMinReplyTime(chatRoom: ChatroomViewModel) {
         paramBeforeReplyTime = chatRoom.minReplyTime
     }
+
+    override fun clearText() { }
 }

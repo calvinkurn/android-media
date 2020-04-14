@@ -33,6 +33,7 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor(
     override fun mappingListChat(pojo: GetExistingChatPojo): ArrayList<Visitable<*>> {
         val listChat: ArrayList<Visitable<*>> = ArrayList()
         for (chatItemPojo in pojo.chatReplies.list) {
+            lastHeaderDate = chatItemPojo.date
             listChat.add(createHeaderDate(chatItemPojo))
             for (chatItemPojoByDate in chatItemPojo.chats) {
                 var index = 0

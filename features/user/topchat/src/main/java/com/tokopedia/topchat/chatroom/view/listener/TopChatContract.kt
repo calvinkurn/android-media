@@ -61,6 +61,9 @@ interface TopChatContract {
     }
 
     interface Presenter : BaseChatContract.Presenter<View> {
+        val lastHeaderDate: String
+        val firstHeaderDate: String
+
         fun connectWebSocket(messageId: String)
 
         fun startTyping()
