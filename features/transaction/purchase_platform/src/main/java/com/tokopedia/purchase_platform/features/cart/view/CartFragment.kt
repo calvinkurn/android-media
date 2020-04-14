@@ -1503,6 +1503,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         promoCheckoutBtn.desc = getString(R.string.promo_desc_no_selected_item)
         promoCheckoutBtn.setOnClickListener {
             showToaster(getString(R.string.promo_choose_item_cart), isShowOk = false)
+            PromoRevampAnalytics.eventCartViewPromoChanged(getString(R.string.promo_choose_item_cart))
         }
     }
 
@@ -1543,8 +1544,10 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
         promoCheckoutBtn.title = title
         promoCheckoutBtn.setOnClickListener {
-            if (cartAdapter.selectedCartItemData.isEmpty()) showToaster(getString(R.string.promo_choose_item_cart), isShowOk = false)
-            else {
+            if (cartAdapter.selectedCartItemData.isEmpty()) {
+                showToaster(getString(R.string.promo_choose_item_cart), isShowOk = false)
+                PromoRevampAnalytics.eventCartViewPromoChanged(getString(R.string.promo_choose_item_cart))
+            } else {
                 dPresenter.doUpdateCartForPromo()
                 // analytics
                 PromoRevampAnalytics.eventCartClickPromoSection(getAllPromosApplied(lastApplyData), isApplied)
@@ -2793,7 +2796,9 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     override fun updatePromoCheckoutStickyButton(promoUiModel: PromoUiModel) {
         val lastApplyUiModel = LastApplyUiMapper.mapValidateUsePromoUiModelToLastApplyUiModel(promoUiModel)
         doRenderPromoCheckoutButton(lastApplyUiModel)
-        setLastApplyDataToShopGroup(lastApplyUiModel)
+        if (promoUiModel.globalSuccess) {
+            setLastApplyDataToShopGroup(lastApplyUiModel)
+        }
     }
 
     private fun showToaster(msg: String, isShowOk: Boolean) {
