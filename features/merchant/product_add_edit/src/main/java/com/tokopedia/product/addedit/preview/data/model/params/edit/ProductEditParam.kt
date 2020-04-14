@@ -71,7 +71,7 @@ data class ProductEditParam (
         var wholesale: Wholesales? = null,
         @SerializedName("video")
         @Expose
-        var videos: Videos = Videos(),
+        var videos: Videos? = Videos(),
         @SerializedName("variant")
         @Expose
         var variant: Variant? = null

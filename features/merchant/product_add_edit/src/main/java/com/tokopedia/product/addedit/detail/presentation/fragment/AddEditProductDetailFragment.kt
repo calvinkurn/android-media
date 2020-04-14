@@ -1198,6 +1198,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                 productMinOrderField.getTextIntOrZero(),
                 if (isProductConditionNew) CONDITION_NEW else CONDITION_USED,
                 productSkuField.getText(),
+                viewModel.productInputModel.detailInputModel.status,
                 viewModel.productPhotoPaths,
                 PreorderInputModel(
                         preOrderDurationField.getTextIntOrZero(),

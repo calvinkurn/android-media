@@ -12,6 +12,7 @@ import com.tokopedia.product.addedit.description.domain.usecase.GetProductVarian
 import com.tokopedia.product.addedit.description.presentation.model.DescriptionInputModel
 import com.tokopedia.product.addedit.description.presentation.model.ProductVariantInputModel
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_PRODUCT_PHOTOS
+import com.tokopedia.product.addedit.description.presentation.model.*
 import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
 import com.tokopedia.product.addedit.draft.domain.usecase.GetProductDraftUseCase
 import com.tokopedia.product.addedit.mapper.mapDraftToProductInputModel
@@ -153,6 +154,18 @@ class AddEditProductPreviewViewModel @Inject constructor(
         productInputModel.value?.variantInputModel = variantInputModel
     }
 
+    fun updateVariantAndOption(productVariant: ArrayList<ProductVariantCombinationViewModel>,
+                               variantOptionParent: ArrayList<ProductVariantOptionParent>) {
+        productInputModel.value?.variantInputModel?.productVariant =
+                mapProductVariant(productVariant, variantOptionParent)
+        productInputModel.value?.variantInputModel?.variantOptionParent =
+                mapVariantOption(variantOptionParent)
+    }
+
+    fun updateSizeChart(productSizeChart: PictureViewModel?) {
+        productInputModel.value?.variantInputModel?.productSizeChart = productSizeChart
+    }
+
     fun updateShipmentInputModel(shipmentInputModel: ShipmentInputModel) {
         productInputModel.value?.shipmentInputModel = shipmentInputModel
     }
@@ -166,6 +179,10 @@ class AddEditProductPreviewViewModel @Inject constructor(
             shipmentInputModel = draft.shipmentInputModel
             draftId = draft.draftId
         }
+    }
+
+    fun updateProductStatus(isActive: Boolean) {
+        productInputModel.value?.detailInputModel?.status = if (isActive) 1 else 0
     }
 
     fun getNewProductInputModel(imageUrlOrPathList: ArrayList<String>): ProductInputModel {
@@ -201,6 +218,17 @@ class AddEditProductPreviewViewModel @Inject constructor(
         })
     }
 
+    fun getProductDraft(draftId: Long) {
+        launchCatchError(block = {
+            getProductDraftUseCase.params = GetProductDraftUseCase.createRequestParams(draftId)
+            mGetProductDraftResult.value = withContext(Dispatchers.IO) {
+                getProductDraftUseCase.executeOnBackground()
+            }.let { Success(it) }
+        }, onError = {
+            mGetProductDraftResult.value = Fail(it)
+        })
+    }
+
     fun validateProductInput(detailInputModel: DetailInputModel): String {
         var errorMessage = ""
         // validate category input
@@ -226,14 +254,38 @@ class AddEditProductPreviewViewModel @Inject constructor(
         return validateProductInput(detailInputModel)
     }
 
-    fun getProductDraft(draftId: Long) {
-        launchCatchError(block = {
-            getProductDraftUseCase.params = GetProductDraftUseCase.createRequestParams(draftId)
-            mGetProductDraftResult.value = withContext(Dispatchers.IO) {
-                getProductDraftUseCase.executeOnBackground()
-            }.let { Success(it) }
-        }, onError = {
-            mGetProductDraftResult.value = Fail(it)
-        })
+    private fun mapProductVariant(productVariant: ArrayList<ProductVariantCombinationViewModel>,
+                                  variantOptionParent: ArrayList<ProductVariantOptionParent>
+    ): ArrayList<ProductVariantCombinationViewModel> {
+        productVariant.forEach { variant ->
+            val options: ArrayList<Int> = ArrayList()
+            val level1Id = getVariantOptionIndex(variant.level1String, variantOptionParent)
+            val level2Id = getVariantOptionIndex(variant.level2String, variantOptionParent)
+            level1Id?.let { options.add(it) }
+            level2Id?.let { options.add(it) }
+            variant.opt = options
+        }
+        return productVariant
     }
+
+    private fun mapVariantOption(variantOptionParent: ArrayList<ProductVariantOptionParent>):
+            ArrayList<ProductVariantOptionParent> = variantOptionParent.map {
+        it.productVariantOptionChild?.forEachIndexed { index, productVariantOptionChild ->
+            productVariantOptionChild.pvo = index + 1
+        }
+        it
+    } as ArrayList<ProductVariantOptionParent>
+
+    private fun getVariantOptionIndex(variantValue: String?,
+                                      variantOptionParent: List<ProductVariantOptionParent>): Int? {
+        variantOptionParent.forEach { productVariantOptionParent ->
+            productVariantOptionParent.productVariantOptionChild?.let {
+                it.forEachIndexed { outputIndex, optionChild ->
+                    if (optionChild.value == variantValue) return outputIndex + 1
+                }
+            }
+        }
+        return null
+    }
+
 }

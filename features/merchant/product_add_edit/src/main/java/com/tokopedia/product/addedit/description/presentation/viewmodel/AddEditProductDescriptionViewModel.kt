@@ -163,11 +163,11 @@ class AddEditProductDescriptionViewModel @Inject constructor(
     }
 
     private fun getVariantOptionIndex(variantValue: String?,
-                                       variantOptionParent: List<ProductVariantOptionParent>): Int? {
+                                      variantOptionParent: List<ProductVariantOptionParent>): Int? {
         variantOptionParent.forEach { productVariantOptionParent ->
             productVariantOptionParent.productVariantOptionChild?.let {
-                for (outputIndex in it.indices){
-                    if (it[outputIndex].value == variantValue) return outputIndex
+                it.forEachIndexed { outputIndex, optionChild ->
+                    if (optionChild.value == variantValue) return outputIndex + 1
                 }
             }
         }
@@ -176,11 +176,11 @@ class AddEditProductDescriptionViewModel @Inject constructor(
 
     private fun mapVariantOption(variantOptionParent: ArrayList<ProductVariantOptionParent>):
             ArrayList<ProductVariantOptionParent> = variantOptionParent.map {
-                it.productVariantOptionChild?.forEachIndexed { index, productVariantOptionChild ->
-                    productVariantOptionChild.pvo = index
-                }
-                it
-            } as ArrayList<ProductVariantOptionParent>
+        it.productVariantOptionChild?.forEachIndexed { index, productVariantOptionChild ->
+            productVariantOptionChild.pvo = index + 1
+        }
+        it
+    } as ArrayList<ProductVariantOptionParent>
 
     private fun setVariantNamesAndCount(productVariant: ArrayList<ProductVariantCombinationViewModel>,
                                         variantOptionParent: ArrayList<ProductVariantOptionParent>) {

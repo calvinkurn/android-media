@@ -59,8 +59,9 @@ class AddEditProductDuplicateService : AddEditProductAddService() {
         launchCatchError(block = {
             withContext(Dispatchers.IO) {
                 productAddUseCase.params = ProductAddUseCase.createRequestParams(param)
+                val response = productAddUseCase.executeOnBackground()
                 setUploadProductDataSuccess()
-                return@withContext productAddUseCase.executeOnBackground()
+                return@withContext response
             }
         }, onError = {
             it.message?.let { errorMessage -> setUploadProductDataError(errorMessage) }
