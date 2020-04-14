@@ -14,6 +14,7 @@ public class TkpdCache  extends com.tokopedia.abstraction.constant.TkpdCache {
     public static final String REFERRAL = "REFERRAL";
     public static final String ADVERTISINGID = "ADVERTISINGID";
     public static final String ANDROID_ID = "ANDROID_ID";
+    public static final String MAINTENANCE = "MAINTENANCE";
     public static final String PRODUCT_DETAIL = "PRODUCT_DETAIL_PAGE";
 
     public class Key extends com.tokopedia.abstraction.constant.TkpdCache.Key {
