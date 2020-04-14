@@ -306,10 +306,10 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                     view?.let { _ ->
                         ErrorCheckoutBottomSheet().show(this, it, object : ErrorCheckoutBottomSheet.Listener {
                             override fun onClickSimilarProduct(errorCode: String) {
-                                if (errorCode == ErrorCheckoutBottomSheet.ERROR_CODE_PRODUCT_STOCK_EMPTY) {
-                                    orderSummaryAnalytics.eventClickSimilarProductEmptyStock()
-                                } else {
+                                if (errorCode == ErrorCheckoutBottomSheet.ERROR_CODE_SHOP_CLOSED) {
                                     orderSummaryAnalytics.eventClickSimilarProductShopClosed()
+                                } else {
+                                    orderSummaryAnalytics.eventClickSimilarProductEmptyStock()
                                 }
                                 RouteManager.route(context, ApplinkConstInternalDiscovery.SIMILAR_SEARCH_RESULT, viewModel.orderProduct.productId.toString())
                                 activity?.finish()
