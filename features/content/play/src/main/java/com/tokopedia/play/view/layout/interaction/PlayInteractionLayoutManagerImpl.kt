@@ -85,7 +85,7 @@ class PlayInteractionLayoutManagerImpl(
     }
 
     private fun getManager(): PlayInteractionLayoutManager = when (orientation) {
-        ScreenOrientation.Portrait, ScreenOrientation.Unknown -> portraitManager
-        ScreenOrientation.Landscape -> landscapeManager
+        ScreenOrientation.Portrait, ScreenOrientation.ReversedPortrait, ScreenOrientation.Unknown -> portraitManager
+        ScreenOrientation.Landscape, ScreenOrientation.ReversedLandscape -> landscapeManager
     }
 }

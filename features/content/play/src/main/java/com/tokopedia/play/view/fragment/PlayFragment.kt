@@ -32,6 +32,7 @@ import com.tokopedia.play.data.websocket.PlaySocketInfo
 import com.tokopedia.play.di.DaggerPlayComponent
 import com.tokopedia.play.di.PlayModule
 import com.tokopedia.play.extensions.isAnyBottomSheetsShown
+import com.tokopedia.play.util.SensorOrientationManager
 import com.tokopedia.play.util.PlayFullScreenHelper
 import com.tokopedia.play.util.keyboard.KeyboardWatcher
 import com.tokopedia.play.view.contract.PlayNewChannelInteractor
@@ -47,7 +48,7 @@ import javax.inject.Inject
 /**
  * Created by jegul on 29/11/19
  */
-class PlayFragment : BaseDaggerFragment() {
+class PlayFragment : BaseDaggerFragment(), SensorOrientationManager.OrientationListener {
 
     companion object {
         const val ANIMATION_DURATION = 300L
@@ -129,10 +130,18 @@ class PlayFragment : BaseDaggerFragment() {
 
     private val keyboardWatcher = KeyboardWatcher()
 
+    private lateinit var orientationManager: SensorOrientationManager
+
     private var systemUiVisibility: Int
         get() = requireActivity().window.decorView.systemUiVisibility
         set(value) {
             requireActivity().window.decorView.systemUiVisibility = value
+        }
+
+    private var requestedOrientation: Int
+        get() = requireActivity().requestedOrientation
+        set(value) {
+            requireActivity().requestedOrientation = value
         }
 
     override fun getScreenName(): String = "Play"
@@ -233,6 +242,12 @@ class PlayFragment : BaseDaggerFragment() {
         super.onDestroy()
 
         videoScaleAnimator.cancel()
+        if (::orientationManager.isInitialized) orientationManager.disable()
+    }
+
+    override fun onOrientationChanged(screenOrientation: ScreenOrientation) {
+        if (requestedOrientation != screenOrientation.requestedOrientation)
+            requestedOrientation = screenOrientation.requestedOrientation
     }
 
     fun onBottomInsetsViewShown(bottomMostBounds: Int) {
@@ -301,6 +316,9 @@ class PlayFragment : BaseDaggerFragment() {
     }
 
     private fun setOrientation() {
+        orientationManager = SensorOrientationManager(requireContext(), this)
+        orientationManager.enable()
+
         playViewModel.setScreenOrientation(ScreenOrientation.getByInt(resources.configuration.orientation))
     }
 
