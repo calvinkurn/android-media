@@ -53,14 +53,16 @@ afterEvaluate {
 
 subprojects {
     tasks.withType(Test) {
-        if(project.hasProperty("SPEK_TIMEOUT")){
+        if (project.hasProperty("SPEK_TIMEOUT")) {
             systemProperty "SPEK_TIMEOUT", project.getProperty("SPEK_TIMEOUT")
         } else {
             systemProperty "SPEK_TIMEOUT", 999999
         }
         maxParallelForks = Runtime.runtime.availableProcessors()
     }
-    project.configurations.all {
+}
+
+project.configurations.all {
     resolutionStrategy {
         dependencySubstitution {
             force "androidx.appcompat:appcompat:${supportLibraryVersion}"
@@ -96,7 +98,7 @@ subprojects {
         }
     }
 }
-}
+
 
 gradle.buildFinished {
     "zip -d .okbuck/cache/org.hamcrest.hamcrest-core-1.3.jar LICENSE.txt".execute()
