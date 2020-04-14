@@ -29,6 +29,7 @@ internal constructor(context: Context) {
                 }
             }
             subscriber.onNext(inputList)
+            subscriber.onCompleted()
         }
     }
 
