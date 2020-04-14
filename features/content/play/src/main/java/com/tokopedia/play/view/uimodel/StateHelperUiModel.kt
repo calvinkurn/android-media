@@ -13,8 +13,4 @@ data class StateHelperUiModel(
         val channelType: PlayChannelType,
         val bottomInsets: Map<BottomInsetsType, BottomInsetsState>,
         val screenOrientation: ScreenOrientation
-) {
-
-    val isLandscape: Boolean
-        get() = screenOrientation.isLandscape
-}
+)

@@ -35,7 +35,7 @@ open class ToolbarComponent(
                             ScreenStateEvent.Init -> uiView.show()
                             is ScreenStateEvent.SetPartnerInfo ->
                                 uiView.setPartnerInfo(it.partnerInfo)
-                            is ScreenStateEvent.BottomInsetsChanged -> if (!it.isAnyShown && !it.stateHelper.isLandscape) uiView.show() else uiView.hide()
+                            is ScreenStateEvent.BottomInsetsChanged -> if (!it.isAnyShown && !it.stateHelper.screenOrientation.isLandscape) uiView.show() else uiView.hide()
                             is ScreenStateEvent.OnNewPlayRoomEvent -> if(it.event.isFreeze || it.event.isBanned) uiView.show()
                             is ScreenStateEvent.OnNoMoreAction -> uiView.hideActionMore()
                             is ScreenStateEvent.FollowPartner -> uiView.setFollowStatus(it.shouldFollow)
