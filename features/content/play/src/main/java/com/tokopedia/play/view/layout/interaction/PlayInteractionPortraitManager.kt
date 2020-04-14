@@ -28,7 +28,8 @@ class PlayInteractionPortraitManager(
         @IdRes private val playButtonComponentId: Int,
         @IdRes private val immersiveBoxComponentId: Int,
         @IdRes private val quickReplyComponentId: Int,
-        @IdRes private val endLiveInfoComponentId: Int
+        @IdRes private val endLiveInfoComponentId: Int,
+        @IdRes private val videoSettingsComponentId: Int
 ) : PlayInteractionLayoutManager {
 
     private val offset24 = context.resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl5)
@@ -50,6 +51,7 @@ class PlayInteractionPortraitManager(
         layoutGradientBackground(container = view, id = gradientBackgroundComponentId)
         layoutEndLiveComponent(container = view, id = endLiveInfoComponentId)
         layoutStatsInfo(container = view, id = statsInfoComponentId, sizeContainerComponentId = sizeContainerComponentId, toolbarComponentId = toolbarComponentId)
+        layoutVideoSettings(container = view, id = videoSettingsComponentId, sizeContainerComponentId = sizeContainerComponentId, statsInfoComponentId = statsInfoComponentId)
     }
 
     override fun setupInsets(view: View, insets: WindowInsetsCompat) {
@@ -182,5 +184,10 @@ class PlayInteractionPortraitManager(
         }
     }
 
-
+    private fun layoutVideoSettings(container: View, @IdRes id: Int, @IdRes sizeContainerComponentId: Int, @IdRes statsInfoComponentId: Int) {
+        container.changeConstraint {
+            connect(id, ConstraintSet.END, sizeContainerComponentId, ConstraintSet.END, offset16)
+            connect(id, ConstraintSet.TOP, statsInfoComponentId, ConstraintSet.BOTTOM, offset16)
+        }
+    }
 }

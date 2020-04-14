@@ -25,7 +25,8 @@ class PlayInteractionLayoutManagerImpl(
         @IdRes private val playButtonComponentId: Int,
         @IdRes private val immersiveBoxComponentId: Int,
         @IdRes private val quickReplyComponentId: Int,
-        @IdRes private val endLiveInfoComponentId: Int
+        @IdRes private val endLiveInfoComponentId: Int,
+        @IdRes private val videoSettingsComponentId: Int
 ) : PlayInteractionLayoutManager {
 
     private val portraitManager = PlayInteractionPortraitManager(
@@ -42,7 +43,8 @@ class PlayInteractionLayoutManagerImpl(
             playButtonComponentId = playButtonComponentId,
             immersiveBoxComponentId = immersiveBoxComponentId,
             quickReplyComponentId = quickReplyComponentId,
-            endLiveInfoComponentId = endLiveInfoComponentId
+            endLiveInfoComponentId = endLiveInfoComponentId,
+            videoSettingsComponentId = videoSettingsComponentId
     )
     private val landscapeManager = PlayInteractionLandscapeManager(
             context = context,
@@ -58,7 +60,8 @@ class PlayInteractionLayoutManagerImpl(
             playButtonComponentId = playButtonComponentId,
             immersiveBoxComponentId = immersiveBoxComponentId,
             quickReplyComponentId = quickReplyComponentId,
-            endLiveInfoComponentId = endLiveInfoComponentId
+            endLiveInfoComponentId = endLiveInfoComponentId,
+            videoSettingsComponentId = videoSettingsComponentId
     )
 
     override fun layoutView(view: View) {

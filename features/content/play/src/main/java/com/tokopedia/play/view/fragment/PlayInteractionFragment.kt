@@ -2,6 +2,7 @@ package com.tokopedia.play.view.fragment
 
 import android.app.Activity
 import android.content.Intent
+import android.content.pm.ActivityInfo
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -53,6 +54,8 @@ import com.tokopedia.play.ui.toolbar.interaction.PlayToolbarInteractionEvent
 import com.tokopedia.play.ui.toolbar.model.PartnerFollowAction
 import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.ui.videocontrol.VideoControlComponent
+import com.tokopedia.play.ui.videosettings.VideoSettingsComponent
+import com.tokopedia.play.ui.videosettings.interaction.VideoSettingsInteractionEvent
 import com.tokopedia.play.util.CoroutineDispatcherProvider
 import com.tokopedia.play.util.event.EventObserver
 import com.tokopedia.play.view.bottomsheet.PlayMoreActionBottomSheet
@@ -135,6 +138,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
     private lateinit var quickReplyComponent: UIComponent<*>
     private lateinit var playButtonComponent: UIComponent<*>
     private lateinit var endLiveInfoComponent: UIComponent<*>
+    private lateinit var videoSettingsComponent: UIComponent<*>
 
     private lateinit var layoutManager: PlayInteractionLayoutManager
 
@@ -160,6 +164,12 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
         get() = requireActivity().window.decorView.systemUiVisibility
         set(value) {
             requireActivity().window.decorView.systemUiVisibility = value
+        }
+
+    private var requestedOrientation: Int
+        get() = requireActivity().requestedOrientation
+        set(value) {
+            requireActivity().requestedOrientation = value
         }
 
     override fun getScreenName(): String = "Play Interaction"
@@ -445,6 +455,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
         chatListComponent = initChatListComponent(container)
         immersiveBoxComponent = initImmersiveBoxComponent(container)
         videoControlComponent = initVideoControlComponent(container)
+        videoSettingsComponent = initVideoSettingsComponent(container)
         endLiveInfoComponent = initEndLiveInfoComponent(container)
         toolbarComponent = initToolbarComponent(container)
         statsInfoComponent = initStatsInfoComponent(container)
@@ -467,7 +478,8 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
                 playButtonComponentId = playButtonComponent.getContainerId(),
                 immersiveBoxComponentId = immersiveBoxComponent.getContainerId(),
                 quickReplyComponentId = quickReplyComponent.getContainerId(),
-                endLiveInfoComponentId = endLiveInfoComponent.getContainerId()
+                endLiveInfoComponentId = endLiveInfoComponent.getContainerId(),
+                videoSettingsComponentId = videoSettingsComponent.getContainerId()
         )
 
         sendInitState()
@@ -538,6 +550,22 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
     private fun initVideoControlComponent(container: ViewGroup): UIComponent<Unit> {
         return VideoControlComponent(container, EventBusFactory.get(viewLifecycleOwner), this, dispatchers)
                 .also(viewLifecycleOwner.lifecycle::addObserver)
+    }
+
+    private fun initVideoSettingsComponent(container: ViewGroup): UIComponent<VideoSettingsInteractionEvent> {
+        val videoSettingsComponent =  VideoSettingsComponent(container, EventBusFactory.get(viewLifecycleOwner), this, dispatchers)
+
+        launch {
+            videoSettingsComponent.getUserInteractionEvents()
+                    .collect {
+                        when (it) {
+                            VideoSettingsInteractionEvent.OnEnterFullscreen -> enterFullscreen()
+                            VideoSettingsInteractionEvent.OnExitFullscreen -> exitFullscreen()
+                        }
+                    }
+        }
+
+        return videoSettingsComponent
     }
 
     private fun initSizeContainerComponent(container: ViewGroup): UIComponent<Unit> {
@@ -747,6 +775,14 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
         }
     }
     //endregion
+
+    private fun enterFullscreen() {
+        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+    }
+
+    private fun exitFullscreen() {
+        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+    }
 
     private fun doLeaveRoom() {
         PlayAnalytics.clickLeaveRoom(channelId, playViewModel.getDurationCurrentVideo(), playViewModel.channelType)

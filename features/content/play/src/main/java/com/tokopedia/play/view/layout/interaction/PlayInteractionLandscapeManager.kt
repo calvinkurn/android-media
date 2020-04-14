@@ -27,7 +27,8 @@ class PlayInteractionLandscapeManager(
         @IdRes private val playButtonComponentId: Int,
         @IdRes private val immersiveBoxComponentId: Int,
         @IdRes private val quickReplyComponentId: Int,
-        @IdRes private val endLiveInfoComponentId: Int
+        @IdRes private val endLiveInfoComponentId: Int,
+        @IdRes private val videoSettingsComponentId: Int
 ) : PlayInteractionLayoutManager {
 
     private val offset16 = context.resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4)
@@ -40,6 +41,7 @@ class PlayInteractionLandscapeManager(
         layoutLike(container = view, id = likeComponentId, videoControlComponentId = videoControlComponentId, sizeContainerComponentId = sizeContainerComponentId)
         layoutPlayButton(container = view, id = playButtonComponentId, sizeContainerComponentId = sizeContainerComponentId)
         layoutImmersiveBox(container = view, id = immersiveBoxComponentId)
+        layoutVideoSettings(container = view, id = videoSettingsComponentId, sizeContainerComponentId = sizeContainerComponentId)
     }
 
     override fun setupInsets(view: View, insets: WindowInsetsCompat) {
@@ -100,6 +102,13 @@ class PlayInteractionLandscapeManager(
             connect(id, ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END)
             connect(id, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP)
             connect(id, ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM)
+        }
+    }
+
+    private fun layoutVideoSettings(container: View, @IdRes id: Int, @IdRes sizeContainerComponentId: Int) {
+        container.changeConstraint {
+            connect(id, ConstraintSet.END, sizeContainerComponentId, ConstraintSet.END, offset16)
+            connect(id, ConstraintSet.TOP, sizeContainerComponentId, ConstraintSet.TOP, offset16)
         }
     }
 }
