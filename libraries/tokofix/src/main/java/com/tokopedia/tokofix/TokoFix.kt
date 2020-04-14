@@ -18,9 +18,7 @@ class TokoFix private constructor(private val app: Application, val version: Str
 
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
     private fun onForegroud() {
-        val intent = Intent(app, PatchService::class.java)
-        intent.putExtra("version", version)
-        app.startService(intent)
+        PatchService.startService(app, version)
     }
 
     companion object {
