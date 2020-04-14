@@ -15,7 +15,7 @@ class ChatroomViewModel(
         val replyable: Boolean = false,
         var blockedStatus: BlockedStatus = BlockedStatus(),
         val minReplyTime: String = "0",
-        val lastHeaderDate: String = ""
+        val latestHeaderDate: String = ""
 ) {
 
     val badgeUrl get() = headerModel.badge

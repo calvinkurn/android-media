@@ -110,11 +110,6 @@ class TopChatRoomPresenter @Inject constructor(
         dummyList = arrayListOf()
     }
 
-    override val lastHeaderDate: String
-        get() = TODO("not implemented") //To change initializer of created properties use File | Settings | File Templates.
-    override val firstHeaderDate: String
-        get() = TODO("not implemented") //To change initializer of created properties use File | Settings | File Templates.
-
     override fun connectWebSocket(messageId: String) {
         thisMessageId = messageId
         webSocketUrl = CHAT_WEBSOCKET_DOMAIN + ChatUrl.CONNECT_WEBSOCKET +

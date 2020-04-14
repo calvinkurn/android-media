@@ -21,7 +21,7 @@ import java.util.*
 open class BaseChatAdapter(adapterTypeFactory: BaseChatTypeFactoryImpl) :
         BaseListAdapter<Visitable<*>, BaseAdapterTypeFactory>(adapterTypeFactory) {
 
-    private val SECONDS: Long = 1000000
+    protected val SECONDS: Long = 1000000
 
     var typingModel = TypingChatModel()
 
@@ -211,7 +211,7 @@ open class BaseChatAdapter(adapterTypeFactory: BaseChatTypeFactoryImpl) :
         return current.fromRole == compare.fromRole
     }
 
-    private fun compareTime(context: Context, calCurrent: Long, calBefore: Long): Boolean {
+    protected fun compareTime(context: Context, calCurrent: Long, calBefore: Long): Boolean {
         return DateFormat.getLongDateFormat(context).format(Date(calCurrent)) == DateFormat.getLongDateFormat(context).format(Date(calBefore))
     }
 

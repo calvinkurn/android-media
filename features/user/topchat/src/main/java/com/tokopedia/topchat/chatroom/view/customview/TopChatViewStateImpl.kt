@@ -119,6 +119,11 @@ class TopChatViewStateImpl(
         initHeaderLayout()
     }
 
+    override fun onReceiveMessageEvent(visitable: Visitable<*>) {
+        getAdapter().addHeaderDateIfDifferent(visitable)
+        super.onReceiveMessageEvent(visitable)
+    }
+
     private fun initHeaderLayout() {
         setupHeaderHamburgerBtn()
     }

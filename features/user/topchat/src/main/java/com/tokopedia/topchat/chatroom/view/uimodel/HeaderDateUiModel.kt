@@ -7,14 +7,26 @@ import com.tokopedia.topchat.common.util.Utils
 import java.text.SimpleDateFormat
 import java.util.*
 
-class HeaderDateUiModel(
-        val date: String = ""
-) : Visitable<TopChatTypeFactory> {
+class HeaderDateUiModel : Visitable<TopChatTypeFactory> {
 
-    private val dateTimestamp: Long
+    val date: String
+
+    constructor(date: String) { this.date = date }
+    constructor(timeStamp: Long) { this.date = convertToDate(timeStamp) }
+
+    private val formatter = SimpleDateFormat(DATE_FORMAT, Utils.getLocale())
+
+    private fun convertToDate(timeStamp: Long): String {
+        return try {
+            formatter.format(Date(timeStamp))
+        } catch (e: Exception) {
+            formatter.format(Date())
+        }
+    }
+
+    val dateTimestamp: Long
         get() {
             return try {
-                val formatter = SimpleDateFormat("d MMM yyyy", Utils.getLocale())
                 formatter.parse(date).time
             } catch (e: Exception) {
                 Calendar.getInstance().timeInMillis
@@ -37,5 +49,6 @@ class HeaderDateUiModel(
     companion object {
         private const val RELATIVE_TODAY = "Hari ini"
         private const val RELATIVE_YESTERDAY = "Kemarin"
+        private const val DATE_FORMAT = "d MMM yyyy"
     }
 }

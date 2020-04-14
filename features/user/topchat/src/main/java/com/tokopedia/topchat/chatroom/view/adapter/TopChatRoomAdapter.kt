@@ -1,11 +1,13 @@
 package com.tokopedia.topchat.chatroom.view.adapter
 
+import android.content.Context
 import android.os.Parcelable
 import android.view.ViewGroup
 import androidx.collection.ArrayMap
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.chat_common.BaseChatAdapter
+import com.tokopedia.chat_common.data.BaseChatViewModel
 import com.tokopedia.chat_common.data.ImageUploadViewModel
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.ProductCarouselListAttachmentViewHolder
 import com.tokopedia.topchat.chatroom.view.uimodel.HeaderDateUiModel
@@ -13,23 +15,27 @@ import com.tokopedia.topchat.chatroom.view.uimodel.HeaderDateUiModel
 /**
  * @author : Steven 02/01/19
  */
-class TopChatRoomAdapter(private val adapterTypeFactory: TopChatTypeFactoryImpl)
-    : BaseChatAdapter(adapterTypeFactory), ProductCarouselListAttachmentViewHolder.Listener {
+class TopChatRoomAdapter(
+        private val context: Context?,
+        private val adapterTypeFactory: TopChatTypeFactoryImpl
+) : BaseChatAdapter(adapterTypeFactory), ProductCarouselListAttachmentViewHolder.Listener {
 
     private val productCarouselState: ArrayMap<Int, Parcelable> = ArrayMap()
+    private var latestHeaderDate: HeaderDateUiModel? = null
     private var lastHeaderDate: HeaderDateUiModel? = null
     private var lastHeaderDateIndex: Int? = null
 
     override fun addElement(visitables: MutableList<out Visitable<Any>>?) {
         super.addElement(visitables)
-        assignLastHeaderDate(visitables)
+        assignLastHeaderDate()
     }
 
-    private fun assignLastHeaderDate(items: MutableList<*>?) {
-        val lastItem = items?.last()
+    private fun assignLastHeaderDate() {
+        if (visitables.isEmpty()) return
+        val lastItem = visitables?.last()
         if (lastItem is HeaderDateUiModel) {
             lastHeaderDate = lastItem
-            lastHeaderDateIndex = items.lastIndex
+            lastHeaderDateIndex = visitables.lastIndex
         }
     }
 
@@ -68,9 +74,31 @@ class TopChatRoomAdapter(private val adapterTypeFactory: TopChatTypeFactoryImpl)
         notifyItemRangeInserted(currentLastPosition, widgets.size)
     }
 
-    fun removeLastHeaderDateIfSame(lastHeaderDate: String) {
-        if (this.lastHeaderDate?.date == lastHeaderDate) {
-            lastHeaderDateIndex?.let { visitables.removeAt(it) }
+    fun removeLastHeaderDateIfSame(latestHeaderDate: String) {
+        if (this.lastHeaderDate?.date == latestHeaderDate) {
+            lastHeaderDateIndex?.let {
+                visitables.removeAt(it)
+            }
         }
+    }
+
+    fun setFirstHeaderDate(latestHeaderDate: String) {
+        this.latestHeaderDate = HeaderDateUiModel(latestHeaderDate)
+    }
+
+    fun addHeaderDateIfDifferent(visitable: Visitable<*>) {
+        if (visitable is BaseChatViewModel) {
+            val chatTime = visitable.replyTime?.toLong()?.div(SECONDS) ?: return
+            val previousChatTime = latestHeaderDate?.dateTimestamp ?: return
+            if (!sameDay(chatTime, previousChatTime)) {
+                visitables.add(0, HeaderDateUiModel(chatTime))
+                notifyItemInserted(0)
+            }
+        }
+    }
+
+    private fun sameDay(chatTime: Long?, previousChatTime: Long?): Boolean {
+        if (context == null || chatTime == null || previousChatTime == null) return false
+        return compareTime(context, chatTime, previousChatTime)
     }
 }

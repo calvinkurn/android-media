@@ -22,7 +22,7 @@ import javax.inject.Inject
  */
 open class GetExistingChatMapper @Inject constructor() {
 
-    protected var lastHeaderDate: String = ""
+    protected var latestHeaderDate: String = ""
 
     open fun map(pojo: GetExistingChatPojo): ChatroomViewModel {
 
@@ -37,7 +37,7 @@ open class GetExistingChatMapper @Inject constructor() {
                 listChat, headerModel,
                 canLoadMore, isReplyable,
                 blockedStatus, minReplyTime,
-                lastHeaderDate
+                latestHeaderDate
         )
 
     }
