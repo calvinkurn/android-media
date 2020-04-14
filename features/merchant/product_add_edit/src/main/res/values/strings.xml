@@ -151,7 +151,7 @@
 
     <!--Shipment-->
     <string name="label_shipment_insurance">Asuransi pengiriman</string>
-    <string name="label_shipment_insurance_description">Gunakan asuransi pengiriman untuk menjamin produk aman sampai pembeli</string>
+    <string name="label_shipment_insurance_description">Gunakan asuransi pengiriman untuk menjamin produk aman sampai ke pembeli</string>
     <string name="label_shipment_detail">Tentukan detail pengirimanmu</string>
     <string name="label_shipment_description">Pastikan berat produk dan pengiriman sesuai</string>
     <string name="label_unit">Satuan</string>
