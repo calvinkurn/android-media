@@ -44,10 +44,11 @@ public class TopAdsDynamicFeedShopView extends LinearLayout implements LocalAdsC
     private void inflateView(Context context) {
         inflate(context, R.layout.layout_dynamic_feed_shop, this);
         adapter = new DynamicFeedShopAdapter(this);
-
         recommendationRv = findViewById(R.id.recommendationRv);
         recommendationRv.setAdapter(adapter);
-        ((DefaultItemAnimator) recommendationRv.getItemAnimator()).setSupportsChangeAnimations(false);
+        if (recommendationRv.getItemAnimator() != null) {
+            ((DefaultItemAnimator) recommendationRv.getItemAnimator()).setSupportsChangeAnimations(false);
+        }
     }
 
     public void bind(List<Data> dataList) {
@@ -99,5 +100,9 @@ public class TopAdsDynamicFeedShopView extends LinearLayout implements LocalAdsC
     @Override
     public void onAddWishLish(int position, Data data) {
 
+    }
+
+    public void setImpressionListener(DynamicFeedShopAdapter.TopAdsShopImpressionListener impressionListener) {
+        adapter.setItemImpressionListener(impressionListener);
     }
 }

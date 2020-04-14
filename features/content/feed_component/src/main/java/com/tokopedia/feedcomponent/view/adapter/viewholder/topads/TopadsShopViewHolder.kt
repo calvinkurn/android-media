@@ -1,18 +1,18 @@
 package com.tokopedia.feedcomponent.view.adapter.viewholder.topads
 
-import androidx.annotation.LayoutRes
 import android.view.View
+import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsShopViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
 import com.tokopedia.feedcomponent.view.widget.CardTitleView
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.topads.sdk.domain.model.Data
 import com.tokopedia.topads.sdk.domain.model.Product
 import com.tokopedia.topads.sdk.domain.model.Shop
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener
+import com.tokopedia.topads.sdk.view.adapter.DynamicFeedShopAdapter
 import kotlinx.android.synthetic.main.item_topads_shop.view.*
 
 /**
@@ -20,7 +20,7 @@ import kotlinx.android.synthetic.main.item_topads_shop.view.*
  */
 class TopadsShopViewHolder(v: View, private val topadsShopListener: TopadsShopListener,
                            private val cardTitleListener: CardTitleView.CardTitleListener)
-    : AbstractViewHolder<TopadsShopViewModel>(v), TopAdsItemClickListener {
+    : AbstractViewHolder<TopadsShopViewModel>(v), TopAdsItemClickListener, DynamicFeedShopAdapter.TopAdsShopImpressionListener {
 
     companion object {
         @LayoutRes
@@ -33,14 +33,12 @@ class TopadsShopViewHolder(v: View, private val topadsShopListener: TopadsShopLi
             return
         }
 
-        itemView.addOnImpressionListener(element.impressHolder) {
-            topadsShopListener.onAffiliateTrackClicked(element.tracking, false)
-        }
 
         if (element.dataList.isNotEmpty()) {
             itemView.viewPaddingBottom.visibility = View.VISIBLE
             itemView.topadsShop.bind(element.dataList)
             itemView.topadsShop.setItemClickListener(this)
+            itemView.topadsShop.setImpressionListener(this)
         } else {
             itemView.viewPaddingBottom.visibility = View.GONE
         }
@@ -86,5 +84,13 @@ class TopadsShopViewHolder(v: View, private val topadsShopListener: TopadsShopLi
         fun onAddFavorite(positionInFeed: Int, adapterPosition: Int, data: Data)
 
         fun onAffiliateTrackClicked(trackList: List<TrackingViewModel>, isClick: Boolean)
+
+        fun onTopAdsImpression(url:String)
+    }
+
+    override fun onImpressionShopAds(url: String?) {
+        url?.let {
+            topadsShopListener.onAffiliateTrackClicked(listOf(TrackingViewModel(viewURL = it)), false)
+        }
     }
 }

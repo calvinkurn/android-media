@@ -156,8 +156,14 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
                               template: Template) {
         val trackingRecommendationList = arrayListOf<TrackingRecommendationModel>()
         val trackingList = arrayListOf<TrackingViewModel>()
-        if (feed.content.cardRecommendation.items.isNotEmpty()) {
-            feed.content.cardRecommendation.items.forEachIndexed { index, card ->
+
+         if (feed.content.cardRecommendation.items.isNotEmpty()) {
+
+             val topAdsShopList = feed.tracking.topads.filter {
+                 it.shop != null && it.shopClickUrl != null
+             } as MutableList
+
+             feed.content.cardRecommendation.items.forEachIndexed { index, card ->
                 trackingRecommendationList.add(TrackingRecommendationModel(
                         feed.type,
                         feed.activity,
@@ -169,7 +175,7 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
                         index,
                         feed.tracking.topads.getOrNull(index)?.id.toIntOrZero()
                 ))
-                card.tracking.firstOrNull()?.let {tracking ->
+                card.tracking.firstOrNull()?.let { tracking ->
                     trackingList.add(TrackingViewModel(
                             tracking.clickURL,
                             tracking.viewURL,
@@ -179,14 +185,7 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
                             tracking.recomID
                     ))
                 }
-            }
-
-            val topAdsShopList = feed.tracking.topads.filter {
-                it.shop != null && it.shopClickUrl != null
-            } as MutableList
-
-            feed.content.cardRecommendation.items.forEachIndexed { index, item ->
-                topAdsShopList[index].isFavorit = item.header.followCta.isFollow
+                topAdsShopList[index].isFavorit = card.header.followCta.isFollow
             }
 
             posts.add(
@@ -502,7 +501,7 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
     }
 
     private fun convertTempTrackingToList(tracking: Tracking): List<Tracking> {
-        val list:MutableList<Tracking> = ArrayList()
+        val list: MutableList<Tracking> = ArrayList()
         list.add(tracking)
         return list
     }

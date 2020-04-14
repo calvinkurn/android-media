@@ -1017,7 +1017,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         goToShopPage(shop.id)
 
         if (adapter.getlist()[positionInFeed] is TopadsShopViewModel) {
-            val (_, _, _, trackingList, tracking) = adapter.getlist()[positionInFeed] as TopadsShopViewModel
+            val (_, dataList, _, trackingList, _) = adapter.getlist()[positionInFeed] as TopadsShopViewModel
             for ((templateType, _, _, _, authorName, _, authorId, cardPosition, adId) in trackingList) {
                 if (TextUtils.equals(authorName, shop.name)) {
                     analytics.eventTopadsRecommendationClick(
@@ -1030,19 +1030,15 @@ class FeedPlusFragment : BaseDaggerFragment(),
                     break
                 }
             }
-            if (adapterPosition != RecyclerView.NO_POSITION && tracking.size > adapterPosition) {
-                trackTopAdsClickEvent(tracking[adapterPosition])
+            if (adapterPosition != RecyclerView.NO_POSITION) {
+                trackUrlEvent(dataList[adapterPosition].shopClickUrl)
             }
             feedAnalytics.eventClickTopadsPromoted(shop.id)
         }
     }
 
-    private fun trackTopAdsClickEvent(trackingViewModel: TrackingViewModel) {
-        feedViewModel.doTrackAffiliate(trackingViewModel.clickURL)
-    }
-
-    private fun trackTopAdsViewEvent(trackingViewModel: TrackingViewModel) {
-        feedViewModel.doTrackAffiliate(trackingViewModel.viewURL)
+    private fun trackUrlEvent(url: String) {
+        feedViewModel.doTrackAffiliate(url)
     }
 
     override fun onAddFavorite(positionInFeed: Int, adapterPosition: Int, data: Data) {
@@ -1239,11 +1235,15 @@ class FeedPlusFragment : BaseDaggerFragment(),
     override fun onAffiliateTrackClicked(trackList: List<TrackingViewModel>, isClick: Boolean) {
         for (track in trackList) {
             if (isClick) {
-                trackTopAdsClickEvent(track)
+                trackUrlEvent(track.clickURL)
             } else {
-                trackTopAdsViewEvent(track)
+                trackUrlEvent(track.viewURL)
             }
         }
+    }
+
+    override fun onTopAdsImpression(url: String) {
+        trackUrlEvent(url)
     }
 
     override fun onHighlightItemClicked(positionInFeed: Int, item: HighlightCardViewModel) {
