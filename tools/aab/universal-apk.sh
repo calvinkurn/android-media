@@ -30,7 +30,7 @@ BUNDLE_NAME=$(echo "$COMPILE_TYPE"        \
      | tr '[:upper:]' '[:lower:]')
 
 # Generate app bundle
-./gradlew "$APP_COMPILE"
+./gradlew "$APP_COMPILE" || { echo 'gradle failed' ; exit 1; }
 AAB_FILE_PATH="$APP_NAME/build/outputs/bundle/$COMPILE_TYPE/$APP_NAME-$BUNDLE_NAME.aab"
 if [ ! -f "$AAB_FILE_PATH" ]; then
 	echo "$AAB_FILE_PATH does not exist, please try again"
