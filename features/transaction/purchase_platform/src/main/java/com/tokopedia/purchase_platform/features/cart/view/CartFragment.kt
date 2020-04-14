@@ -2802,7 +2802,9 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     override fun updatePromoCheckoutStickyButton(promoUiModel: PromoUiModel) {
         val lastApplyUiModel = LastApplyUiMapper.mapValidateUsePromoUiModelToLastApplyUiModel(promoUiModel)
         doRenderPromoCheckoutButton(lastApplyUiModel)
-        setLastApplyDataToShopGroup(lastApplyUiModel)
+        if (promoUiModel.globalSuccess) {
+            setLastApplyDataToShopGroup(lastApplyUiModel)
+        }
     }
 
     private fun showToaster(msg: String, isShowOk: Boolean) {
