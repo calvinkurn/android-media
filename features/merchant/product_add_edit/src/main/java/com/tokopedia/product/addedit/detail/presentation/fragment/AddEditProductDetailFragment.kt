@@ -391,7 +391,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         submitButton = view.findViewById(R.id.btn_submit)
         submitTextView = view.findViewById(R.id.tv_submit_text)
         submitLoadingIndicator = view.findViewById(R.id.lu_submit_loading_indicator)
-        if (viewModel.isEditing) submitTextView?.text = getString(R.string.action_save)
+        if (viewModel.isEditing || viewModel.isDrafting) submitTextView?.text = getString(R.string.action_save)
         else submitTextView?.text = getString(R.string.action_continue)
 
         // fill the form with detail input model
@@ -521,8 +521,9 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             isInputValid?.let {
                 if (it) {
                     val isEditing = viewModel.isEditing
+                    val isDrafting = viewModel.isDrafting
                     // navigate to preview page
-                    if (isEditing) submitInputEdit()
+                    if (isEditing || isDrafting) submitInputEdit()
                     // navigate to description page
                     else moveToDescriptionActivity()
                 }
