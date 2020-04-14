@@ -47,19 +47,19 @@ dependencies {
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.networkDependencies.glide
 
-    androidTestImplementation rootProject.ext.miscDependencies.multiDex
-    androidTestImplementation rootProject.ext.testDependencies.androidTestRunner
-    androidTestImplementation rootProject.ext.testDependencies.androidRulesVersion
-    androidTestImplementation rootProject.ext.playServicesDependencies.core
-    androidTestImplementation rootProject.ext.testDependencies.junit
-    androidTestImplementation rootProject.ext.tkpdInternalLibDependencies.akamaiBotLib
-    androidTestImplementation rootProject.ext.tkpdInternalLibDependencies.network
-    androidTestImplementation rootProject.ext.tkpdInternalLibDependencies.authentication
-    androidTestImplementation project(rootProject.ext.libraries.instrumentation_test), {
-        exclude group: "com.google.android.gms"
-    }
-    androidTestImplementation rootProject.ext.testDependencies.espressoCore
-    androidTestImplementation rootProject.ext.testDependencies.espressoContrib
+//    androidTestImplementation rootProject.ext.miscDependencies.multiDex
+//    androidTestImplementation rootProject.ext.testDependencies.androidTestRunner
+//    androidTestImplementation rootProject.ext.testDependencies.androidRulesVersion
+//    androidTestImplementation rootProject.ext.playServicesDependencies.core
+//    androidTestImplementation rootProject.ext.testDependencies.junit
+//    androidTestImplementation rootProject.ext.tkpdInternalLibDependencies.akamaiBotLib
+//    androidTestImplementation rootProject.ext.tkpdInternalLibDependencies.network
+//    androidTestImplementation rootProject.ext.tkpdInternalLibDependencies.authentication
+//    androidTestImplementation project(rootProject.ext.libraries.instrumentation_test), {
+//        exclude group: "com.google.android.gms"
+//    }
+//    androidTestImplementation rootProject.ext.testDependencies.espressoCore
+//    androidTestImplementation rootProject.ext.testDependencies.espressoContrib
 }
 
 project.ext {
