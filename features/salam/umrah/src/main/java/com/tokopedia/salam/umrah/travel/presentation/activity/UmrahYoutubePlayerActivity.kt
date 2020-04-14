@@ -27,7 +27,7 @@ YouTubePlayer.PlayerStateChangeListener{
 
     override fun onCreate(p0: Bundle?) {
         super.onCreate(p0)
-        setContentView(R.layout.activity_umrah_youtube_player)
+        setContentView(com.tokopedia.salam.umrah.R.layout.activity_umrah_youtube_player)
         videoUrl = intent.getStringExtra(EXTRA_YOUTUBE_URL)
         umrah_youtube_player.initialize(getString(R.string.UMRAH_GOOGLE_API_KEY), this)
     }
