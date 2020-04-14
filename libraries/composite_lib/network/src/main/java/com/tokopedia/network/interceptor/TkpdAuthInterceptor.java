@@ -32,6 +32,7 @@ import okio.Buffer;
  */
 public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
     private static final int ERROR_FORBIDDEN_REQUEST = 403;
+    private static final int ERROR_UNAUTHORIZED_REQUEST = 401;
     private static final String ACTION_TIMEZONE_ERROR = "com.tokopedia.tkpd.TIMEZONE_ERROR";
 
     private static final String REQUEST_METHOD_GET = "GET";
@@ -403,6 +404,9 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
                 return refreshToken(chain, response);
             } else if (isInvalidGrantWhenRefreshToken(finalRequest, response)) {
                 networkRouter.logInvalidGrant(response);
+                return response;
+            } else if (response.code() == ERROR_UNAUTHORIZED_REQUEST) {
+                networkRouter.showForceLogoutTokenDialog(response.message());
                 return response;
             } else {
                 return response;
