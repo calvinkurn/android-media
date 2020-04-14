@@ -30,6 +30,7 @@ open class PageLoadTimePerformanceCallback(
     }
 
     override fun startMonitoring(traceName: String) {
+        performanceMonitoring = PerformanceMonitoring()
         performanceMonitoring?.startTrace(traceName)
         if (overallDuration == 0L) overallDuration = System.currentTimeMillis()
     }
