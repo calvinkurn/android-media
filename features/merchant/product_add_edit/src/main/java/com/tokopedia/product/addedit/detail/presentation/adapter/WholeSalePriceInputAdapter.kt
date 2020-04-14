@@ -4,9 +4,9 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.product.addedit.R
-import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_WHOLESALE_PRICES
 import com.tokopedia.product.addedit.detail.presentation.model.WholeSaleInputModel
 import com.tokopedia.product.addedit.detail.presentation.viewholder.WholeSaleInputViewHolder
+import java.math.BigInteger
 
 class WholeSalePriceInputAdapter(private val listener: WholeSaleInputViewHolder.TextChangedListener,
                                  private val onAddWholesale: (() -> Unit)? = null,
@@ -14,6 +14,8 @@ class WholeSalePriceInputAdapter(private val listener: WholeSaleInputViewHolder.
     RecyclerView.Adapter<WholeSaleInputViewHolder>(), WholeSaleInputViewHolder.OnDeleteButtonClickListener {
 
     private var wholeSaleInputModelList: MutableList<WholeSaleInputModel> = mutableListOf()
+
+    private var price: BigInteger = 0.toBigInteger()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WholeSaleInputViewHolder {
         val rootView = LayoutInflater.from(parent.context).inflate(R.layout.wholesale_input_item, parent, false)
@@ -26,11 +28,18 @@ class WholeSalePriceInputAdapter(private val listener: WholeSaleInputViewHolder.
 
     override fun onBindViewHolder(holder: WholeSaleInputViewHolder, position: Int) {
         val wholeSaleInputModel = wholeSaleInputModelList[position]
+        if (price > 0.toBigInteger()) {
+            var priceResult = (price - (position + 1).toBigInteger())
+            if (priceResult < 0.toBigInteger()) {
+                priceResult = 0.toBigInteger()
+            }
+            wholeSaleInputModel.price = priceResult.toString()
+        }
+        wholeSaleInputModel.quantity = (position + 1).toString()
         holder.bindData(wholeSaleInputModel)
     }
 
     fun addNewWholeSalePriceForm() {
-        if (itemCount == MAX_WHOLESALE_PRICES) return
         val wholeSaleInputModel = WholeSaleInputModel()
         wholeSaleInputModelList.add(wholeSaleInputModel)
         onAddWholesale?.invoke()
@@ -40,6 +49,10 @@ class WholeSalePriceInputAdapter(private val listener: WholeSaleInputViewHolder.
     fun setWholeSaleInputModels(wholeSaleInputModels: List<WholeSaleInputModel>) {
         this.wholeSaleInputModelList = wholeSaleInputModels.toMutableList()
         notifyDataSetChanged()
+    }
+
+    fun setPrice(price: BigInteger) {
+        this.price = price
     }
 
     override fun onDeleteButtonClicked(position: Int) {

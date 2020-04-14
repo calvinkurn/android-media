@@ -3,19 +3,17 @@ package com.tokopedia.product.addedit.imagepicker.view.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder;
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity;
 import com.tokopedia.product.addedit.tracking.ProductAddChooseImageTracking;
 import com.tokopedia.product.addedit.tracking.ProductEditChooseImageTracking;
 import com.tokopedia.user.session.UserSession;
-
 import java.util.ArrayList;
 
 public class ImagePickerAddProductActivity extends ImagePickerActivity {
 
     UserSession userSession;
-    boolean isEditProduct = false;
+    private static boolean isEditProduct = false;
     public static final String IS_EDIT = "is_edit";
 
     @Override

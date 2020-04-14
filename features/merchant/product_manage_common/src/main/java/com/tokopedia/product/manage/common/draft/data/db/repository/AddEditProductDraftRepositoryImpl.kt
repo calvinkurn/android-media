@@ -1,6 +1,5 @@
 package com.tokopedia.product.manage.common.draft.data.db.repository
 
-import android.util.Log
 import com.tokopedia.product.manage.common.draft.data.db.source.AddEditProductDraftDataSource
 import com.tokopedia.product.manage.common.draft.data.model.ProductDraft
 import com.tokopedia.product.manage.common.draft.mapper.AddEditProductDraftMapper

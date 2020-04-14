@@ -55,7 +55,7 @@ import com.tokopedia.product.addedit.description.presentation.model.ProductVaria
 import com.tokopedia.product.addedit.description.presentation.model.VideoLinkModel
 import com.tokopedia.product.addedit.description.presentation.model.youtube.YoutubeVideoModel
 import com.tokopedia.product.addedit.description.presentation.viewmodel.AddEditProductDescriptionViewModel
-import com.tokopedia.product.addedit.mapper.mapProductInputModelDetailToDraft
+import com.tokopedia.product.addedit.draft.mapper.AddEditProductMapper.mapProductInputModelDetailToDraft
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.shipment.presentation.activity.AddEditProductShipmentActivity
 import com.tokopedia.product.addedit.shipment.presentation.fragment.AddEditProductShipmentFragment.Companion.REQUEST_CODE_SHIPMENT
@@ -370,7 +370,7 @@ class AddEditProductDescriptionFragment:
                         val productVariantViewModel = cacheManager.get(EXTRA_PRODUCT_VARIANT_SELECTION,
                                 object : TypeToken<ProductVariantInputModel>() {}.type) ?: ProductVariantInputModel()
                         descriptionViewModel.setVariantInput(productVariantViewModel.productVariant,
-                                productVariantViewModel.variantOptionParent)
+                                productVariantViewModel.variantOptionParent, productPictureViewModel)
                         tvVariantHeaderSubtitle.text = descriptionViewModel.getVariantSelectedMessage()
                         tvAddVariant.text = descriptionViewModel.getVariantButtonMessage()
                     }
