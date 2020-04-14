@@ -3,6 +3,7 @@ package com.tokopedia.applink.productmanage
 import android.net.Uri
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.config.GlobalConfig
 
@@ -25,7 +26,12 @@ object DeepLinkMapperProductManage {
             //tokopedia://product/edit/12345
             uri.pathSegments.size == 2 && uri.pathSegments[0] == PATH_SEGMENT_EDIT -> {
                 val productId = uri.pathSegments[1]
-                UriUtil.buildUri(ApplinkConstInternalMarketplace.PRODUCT_EDIT_ITEM, productId)
+                Uri.parse(ApplinkConstInternalMechant.MERCHANT_OPEN_PRODUCT_PREVIEW)
+                        .buildUpon()
+                        .appendQueryParameter(ApplinkConstInternalMechant.QUERY_PARAM_ID, productId)
+                        .appendQueryParameter(ApplinkConstInternalMechant.QUERY_PARAM_MODE, ApplinkConstInternalMechant.MODE_EDIT_PRODUCT)
+                        .build()
+                        .toString()
             }
             else -> ""
         }

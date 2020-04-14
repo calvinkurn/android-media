@@ -33,6 +33,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.design.text.SearchInputView
@@ -79,7 +80,6 @@ import com.tokopedia.product.manage.feature.quickedit.price.presentation.fragmen
 import com.tokopedia.product.manage.feature.quickedit.stock.data.model.EditStockResult
 import com.tokopedia.product.manage.feature.quickedit.stock.presentation.fragment.ProductManageQuickEditStockFragment
 import com.tokopedia.product.manage.item.imagepicker.imagepickerbuilder.AddProductImagePickerBuilder
-import com.tokopedia.product.manage.item.main.duplicate.activity.ProductDuplicateActivity
 import com.tokopedia.product.manage.oldlist.constant.ProductManageListConstant
 import com.tokopedia.product.manage.oldlist.constant.ProductManageListConstant.EXTRA_PRODUCT_NAME
 import com.tokopedia.product.manage.oldlist.constant.ProductManageListConstant.EXTRA_THRESHOLD
@@ -1106,8 +1106,13 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
 
     private fun goToDuplicateProduct(productId: String) {
         activity?.let {
-            val intent = ProductDuplicateActivity.createInstance(it, productId)
-            startActivity(intent)
+            val uri = Uri.parse(ApplinkConstInternalMechant.MERCHANT_OPEN_PRODUCT_PREVIEW)
+                    .buildUpon()
+                    .appendQueryParameter(ApplinkConstInternalMechant.QUERY_PARAM_ID, productId)
+                    .appendQueryParameter(ApplinkConstInternalMechant.QUERY_PARAM_MODE, ApplinkConstInternalMechant.MODE_DUPLICATE_PRODUCT)
+                    .build()
+                    .toString()
+            RouteManager.route(context, uri)
         }
     }
 
