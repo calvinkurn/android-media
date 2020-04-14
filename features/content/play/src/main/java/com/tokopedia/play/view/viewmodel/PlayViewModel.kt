@@ -361,8 +361,14 @@ class PlayViewModel @Inject constructor(
     }
 
     private fun initiateVideo(channel: Channel) {
+//        startVideoWithUrlString(
+//                channel.videoStream.config.streamUrl,
+//                bufferControl = channel.videoStream.bufferControl?.let { mapBufferControl(it) }
+//                        ?: PlayBufferControl()
+//        )
         startVideoWithUrlString(
-                channel.videoStream.config.streamUrl,
+                "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
+//                "https://assets.mixkit.co/videos/preview/mixkit-womans-feet-splashing-in-the-pool-1261-large.mp4",
                 bufferControl = channel.videoStream.bufferControl?.let { mapBufferControl(it) }
                         ?: PlayBufferControl()
         )
