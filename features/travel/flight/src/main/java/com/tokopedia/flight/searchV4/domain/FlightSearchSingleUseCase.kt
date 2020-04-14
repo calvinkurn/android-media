@@ -9,7 +9,7 @@ import javax.inject.Inject
 /**
  * @author by furqan on 09/04/2020
  */
-class FlightSearchUseCase @Inject constructor(private val flightSearchRepository: FlightSearchRepository) {
+class FlightSearchSingleUseCase @Inject constructor(private val flightSearchRepository: FlightSearchRepository) {
 
     suspend fun execute(searchParams: FlightSearchRequestModel,
                         isRoundTrip: Boolean,

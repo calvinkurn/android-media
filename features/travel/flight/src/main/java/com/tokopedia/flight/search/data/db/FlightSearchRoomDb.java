@@ -30,6 +30,7 @@ public abstract class FlightSearchRoomDb extends RoomDatabase {
 
     public abstract com.tokopedia.flight.searchV4.data.cache.dao.FlightJourneyDao flightJourneyCoroutineDao();
     public abstract com.tokopedia.flight.searchV4.data.FlightRouteDao flightRouteCoroutineDao();
+    public abstract com.tokopedia.flight.searchV4.data.cache.dao.FlightComboDao flightComboCoroutineDao();
 
     @NonNull
     @Override

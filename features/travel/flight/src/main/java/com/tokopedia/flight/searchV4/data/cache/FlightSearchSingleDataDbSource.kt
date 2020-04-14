@@ -1,4 +1,4 @@
-package com.tokopedia.flight.searchV4.data.cache.dao
+package com.tokopedia.flight.searchV4.data.cache
 
 import androidx.sqlite.db.SimpleSQLiteQuery
 import com.google.gson.Gson
@@ -15,6 +15,7 @@ import com.tokopedia.flight.search.presentation.model.filter.FlightFilterModel
 import com.tokopedia.flight.search.presentation.model.filter.RefundableEnum
 import com.tokopedia.flight.search.presentation.model.filter.TransitEnum
 import com.tokopedia.flight.searchV4.data.FlightRouteDao
+import com.tokopedia.flight.searchV4.data.cache.dao.FlightJourneyDao
 import javax.inject.Inject
 
 /**

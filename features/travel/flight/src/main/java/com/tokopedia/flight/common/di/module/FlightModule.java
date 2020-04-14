@@ -214,6 +214,12 @@ public class FlightModule {
     }
 
     @Provides
+    @FlightScope
+    com.tokopedia.flight.searchV4.data.cache.dao.FlightComboDao provideComboNewDao(FlightSearchRoomDb flightSearchRoomDb) {
+        return flightSearchRoomDb.flightComboCoroutineDao();
+    }
+
+    @Provides
     FlightRoomDb provideFlightAirportRoomDb(@ApplicationContext Context context) {
         return FlightRoomDb.getDatabase(context);
     }

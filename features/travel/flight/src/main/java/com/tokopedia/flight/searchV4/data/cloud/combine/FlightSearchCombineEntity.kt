@@ -8,7 +8,7 @@ import com.tokopedia.flight.searchV4.data.cloud.single.FlightSearchMetaEntity
 /**
  * @author by furqan on 06/04/2020
  */
-class FlightCombineEntity(
+class FlightSearchCombineEntity(
         @SerializedName("data")
         @Expose
         val data: FlightCombineData = FlightCombineData(),
@@ -22,7 +22,7 @@ class FlightCombineEntity(
     class Response(
             @SerializedName("flightSearchCombineV3")
             @Expose
-            val flightSearchCombine: FlightCombineEntity = FlightCombineEntity()
+            val flightSearchCombine: FlightSearchCombineEntity = FlightSearchCombineEntity()
     )
 }
 
@@ -59,7 +59,7 @@ class FlightCombineCombo(
         val totalPrice: String = "",
         @SerializedName("totalNumeric")
         @Expose
-        val totalPriceNumeric: Long = 0
+        val totalPriceNumeric: Int = 0
 )
 
 class FlightCombineFare(
@@ -74,11 +74,11 @@ class FlightCombineFare(
         val infantPrice: String = "",
         @SerializedName("adultPriceNumeric")
         @Expose
-        val adultPriceNumeric: Long = 0,
+        val adultPriceNumeric: Int = 0,
         @SerializedName("childPriceNumeric")
         @Expose
-        val childPriceNumeric: Long = 0,
+        val childPriceNumeric: Int = 0,
         @SerializedName("infantPriceNumeric")
         @Expose
-        val infantPriceNumeric: Long = 0
+        val infantPriceNumeric: Int = 0
 )
