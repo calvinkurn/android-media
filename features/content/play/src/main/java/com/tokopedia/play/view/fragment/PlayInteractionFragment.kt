@@ -154,6 +154,8 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
         get() = requireView().findViewById(statsInfoComponent.getContainerId())
     private val chatListView: View
         get() = requireView().findViewById(chatListComponent.getContainerId())
+    private val toolbarView: View
+        get() = requireView().findViewById(toolbarComponent.getContainerId())
 
     private var channelId: String = ""
 
@@ -414,7 +416,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
             )
         }
 
-        clPlayInteraction.viewTreeObserver.addOnGlobalLayoutListener {
+        toolbarView.viewTreeObserver.addOnGlobalLayoutListener {
             fpmRenderPage.stopTrace()
         }
     }
