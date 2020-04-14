@@ -129,9 +129,11 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
             validateInputWeight(it)
         }
         btnEnd?.setOnClickListener {
+            btnEnd?.isLoading = true
             submitInput()
         }
         btnSave?.setOnClickListener {
+            btnSave?.isLoading = true
             submitInputEdit()
         }
         switchInsurance?.setOnCheckedChangeListener { buttonView, isChecked ->
@@ -141,6 +143,12 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
                 ProductAddShippingTracking.clickInsurance(shopId)
             }
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        btnEnd?.isLoading = false
+        btnSave?.isLoading = false
     }
 
     fun onCtaYesPressed() {
@@ -275,5 +283,4 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
             activity?.finish()
         }
     }
-
 }

@@ -68,7 +68,6 @@ class AddEditProductEditService : AddEditProductBaseService() {
                 it.startsWith(HTTP_PREFIX)
             }
 
-
     override fun onUploadProductImagesDone(uploadIdList: ArrayList<String>, sizeChartId: String) {
         editProduct(uploadIdList, sizeChartId)
     }

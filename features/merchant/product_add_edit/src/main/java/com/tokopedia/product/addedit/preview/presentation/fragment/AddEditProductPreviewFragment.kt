@@ -92,6 +92,8 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
+import java.text.NumberFormat
+import java.util.*
 import javax.inject.Inject
 
 class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHolder.OnPhotoChangeListener {
@@ -254,10 +256,10 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
         }
 
         productStatusSwitch?.setOnCheckedChangeListener { buttonView, isChecked ->
-            //TODO function
             if (viewModel.isEditing.value == true) {
                 ProductEditStepperTracking.trackChangeProductStatus(shopId)
             }
+            viewModel.updateProductStatus(isChecked)
         }
 
         doneButton?.setOnClickListener {
@@ -280,6 +282,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
                     viewModel.productInputModel.value?.let { productInputModel ->
                         AddEditProductEditService.startService(this,
                                 viewModel.getProductId(), productInputModel)
+                        activity?.finish()
                     }
                 }
             }
@@ -386,10 +389,12 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
                         val validateMessage = viewModel.validateProductInput(detailInputModel)
                         if (validateMessage.isEmpty()) {
                             AddEditProductAddService.startService(it, detailInputModel,
-                                    descriptionInputModel, shipmentInputModel, variantInputModel, viewModel.getDraftId())
+                                descriptionInputModel, shipmentInputModel, variantInputModel,
+                                    viewModel.getDraftId())
+                            activity?.finish()
                         } else {
-                            view?.let {
-                                Toaster.make(it, validateMessage, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR)
+                            view?.let { view ->
+                                Toaster.make(view, validateMessage, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR)
                             }
                         }
                     }
@@ -419,22 +424,19 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
                 }
                 REQUEST_CODE_VARIANT_DIALOG_EDIT -> {
                     viewModel.productInputModel.value?.let { productInputModel ->
-                        val variantInputModel = productInputModel.variantInputModel
                         val variantCacheId = data.getStringExtra(EXTRA_VARIANT_PICKER_RESULT_CACHE_ID)
                         val cacheManager = SaveInstanceCacheManager(context!!, variantCacheId)
                         if (data.hasExtra(EXTRA_PRODUCT_VARIANT_SELECTION)) {
                             val productVariantViewModel = cacheManager.get(EXTRA_PRODUCT_VARIANT_SELECTION,
-                                    object : TypeToken<ProductVariantInputModel>() {}.type)
-                                    ?: ProductVariantInputModel()
-                            variantInputModel.productVariant = productVariantViewModel.productVariant
-                            variantInputModel.variantOptionParent = productVariantViewModel.variantOptionParent
+                                    object : TypeToken<ProductVariantInputModel>() {}.type) ?: ProductVariantInputModel()
+                            viewModel.updateVariantAndOption(productVariantViewModel.productVariant,
+                                    productVariantViewModel.variantOptionParent)
                         }
                         if (data.hasExtra(EXTRA_PRODUCT_SIZECHART)) {
                             val productPictureViewModel = cacheManager.get(EXTRA_PRODUCT_SIZECHART,
                                     object : TypeToken<PictureViewModel>() {}.type, PictureViewModel())
-                            variantInputModel.productSizeChart = productPictureViewModel
+                            viewModel.updateSizeChart(productPictureViewModel)
                         }
-                        viewModel.updateVariantInputModel(variantInputModel)
                     }
                 }
             }
@@ -750,7 +752,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
                     put(AddEditProductUploadConstant.EXTRA_HAS_ORIGINAL_VARIANT_LV1, true)
                     put(AddEditProductUploadConstant.EXTRA_HAS_ORIGINAL_VARIANT_LV2, false)
                     put(AddEditProductUploadConstant.EXTRA_HAS_WHOLESALE, false)
-                    put(AddEditProductUploadConstant.EXTRA_IS_ADD, false)
+                    put(AddEditProductUploadConstant.EXTRA_IS_ADD, 1    )
                 }
                 val intent = RouteManager.getIntent(it, ApplinkConstInternalMarketplace.PRODUCT_EDIT_VARIANT_DASHBOARD)
                 intent?.run {
