@@ -72,7 +72,7 @@ class HomeRecommendationActivity : BaseSimpleActivity(), HasComponent<HomeRecomm
 
     private fun getRef() = intent.data?.getQueryParameter("ref") ?: "null"
 
-    private fun getInternalRef() = intent.data?.getQueryParameter("internal_ref") ?: ""
+    private fun getInternalRef() = intent.data?.getQueryParameter("search_ref") ?: ""
 
     private fun getSimilarRecomPageProductId() =
             if (isNumber(intent.data?.pathSegments?.get(1) ?: "")) intent.data?.pathSegments?.get(1)
