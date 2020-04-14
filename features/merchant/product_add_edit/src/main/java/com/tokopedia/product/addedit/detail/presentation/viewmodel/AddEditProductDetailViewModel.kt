@@ -194,13 +194,16 @@ class AddEditProductDetailViewModel @Inject constructor(
         mIsProductPriceInputError.value = false
     }
 
-    fun validateProductWholeSaleQuantityInput(wholeSaleQuantityInput: String): String {
+    fun validateProductWholeSaleQuantityInput(wholeSaleQuantityInput: String, minWholeSaleQuantity: Int): String {
         if (wholeSaleQuantityInput.isEmpty()) {
             provider.getEmptyWholeSaleQuantityErrorMessage()?.let { return it }
         }
         val wholeSaleQuantity = wholeSaleQuantityInput.toBigInteger()
         if (wholeSaleQuantity == 0.toBigInteger()) {
             provider.getZeroWholeSaleQuantityErrorMessage()?.let { return it }
+        }
+        if (wholeSaleQuantity < minWholeSaleQuantity.toBigInteger()) {
+            provider.getMinLimitWholeSaleQuantityErrorMessage(minWholeSaleQuantity)?.let { return it }
         }
         return ""
     }

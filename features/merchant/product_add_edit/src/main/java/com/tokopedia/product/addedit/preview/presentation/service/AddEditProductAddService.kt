@@ -4,6 +4,8 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant
 import com.tokopedia.product.addedit.common.util.AddEditProductNotificationManager
@@ -12,7 +14,7 @@ import com.tokopedia.product.addedit.description.presentation.model.ProductVaria
 import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
 import com.tokopedia.product.addedit.draft.domain.usecase.DeleteProductDraftUseCase
 import com.tokopedia.product.addedit.draft.domain.usecase.SaveProductDraftUseCase
-import com.tokopedia.product.addedit.mapper.mapProductInputModelDetailToDraft
+import com.tokopedia.product.addedit.draft.mapper.AddEditProductMapper.mapProductInputModelDetailToDraft
 import com.tokopedia.product.addedit.preview.domain.usecase.ProductAddUseCase
 import com.tokopedia.product.addedit.preview.presentation.activity.AddEditProductPreviewActivity
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
@@ -80,16 +82,16 @@ open class AddEditProductAddService : AddEditProductBaseService() {
                 this@AddEditProductAddService) {
             override fun getSuccessIntent(): PendingIntent {
                 ProductAddShippingTracking.clickFinish(userSession.shopId, true)
-                val intent = AddEditProductPreviewActivity
-                        .createInstance(context, isFromSuccessNotif = true, isFromNotifEditMode = false)
+                val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PRODUCT_MANAGE_LIST)
                 return PendingIntent.getActivity(context, 0, intent, 0)
             }
 
             override fun getFailedIntent(errorMessage: String): PendingIntent {
                 ProductAddShippingTracking.clickFinish(userSession.shopId, false)
-                val intent = AddEditProductPreviewActivity
-                        .createInstance(context, isFromSuccessNotif = false, isFromNotifEditMode = false)
-                return PendingIntent.getActivity(context, 0, intent, 0)
+                val draftId = productInputModel.draftId.toString()
+                val intent = AddEditProductPreviewActivity.createInstance(context, draftId,
+                        isFromSuccessNotif = false, isFromNotifEditMode = false)
+                return PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
             }
         }
     }

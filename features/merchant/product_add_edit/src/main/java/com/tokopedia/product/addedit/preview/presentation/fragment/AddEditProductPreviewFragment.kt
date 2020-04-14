@@ -60,6 +60,7 @@ import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProduct
 import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.PictureInputModel
 import com.tokopedia.product.addedit.imagepicker.view.activity.ImagePickerAddProductActivity
+import com.tokopedia.product.addedit.draft.mapper.AddEditProductMapper
 import com.tokopedia.product.addedit.preview.data.source.api.response.Product
 import com.tokopedia.product.addedit.preview.di.AddEditProductPreviewModule
 import com.tokopedia.product.addedit.preview.di.DaggerAddEditProductPreviewComponent
@@ -165,9 +166,13 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
         arguments?.run {
             val draftId = getString(EXTRA_DRAFT_ID)
             viewModel.setProductId(getString(EXTRA_PRODUCT_ID) ?: "")
-            viewModel.setDraftId(draftId ?: "")
-            viewModel.getDraftId()?.let { viewModel.getProductDraft(it) }
             viewModel.setIsDuplicate(getBoolean(EXTRA_IS_DUPLICATE))
+            draftId?.let { viewModel.setDraftId(it) }
+            viewModel.getProductDraft(viewModel.getDraftId())
+        }
+
+        if(viewModel.isDrafting.value == true) {
+            viewModel.getDraftId().let { viewModel.getProductDraft(it) }
         }
 
         if (viewModel.isEditing.value == true) {
@@ -178,11 +183,19 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
         }
     }
 
+    fun onCtaYesPressed() {
+        ProductAddStepperTracking.trackDraftYes(shopId)
+    }
+
+    fun onCtaNoPressed() {
+        ProductAddStepperTracking.trackDraftCancel(shopId)
+    }
+
     fun onBackPressed() {
         if (viewModel.isEditing.value == true) {
-            ProductAddStepperTracking.trackBack(shopId)
-        } else {
             ProductEditStepperTracking.trackBack(shopId)
+        } else {
+            ProductAddStepperTracking.trackBack(shopId)
         }
     }
 
@@ -250,7 +263,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
                         ?: urlOrPath
                 else urlOrPath
             }.orEmpty()
-            val intent = ImagePickerAddProductActivity.getIntent(context, createImagePickerBuilder(ArrayList(imageUrlOrPathList)))
+            val intent = ImagePickerAddProductActivity.getIntent(context, createImagePickerBuilder(ArrayList(imageUrlOrPathList)), viewModel.isEditing.value ?: false)
             startActivityForResult(intent, REQUEST_CODE_IMAGE)
         }
 
@@ -270,6 +283,15 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
                     submitProductDuplicate()
                 } else if (viewModel.isEditing.value == true) {
                     submitProductEdit()
+                } else if(viewModel.isDrafting.value == true) {
+                    context?.let {
+                        AddEditProductAddService.startService(it,
+                                viewModel.productInputModel.value?.detailInputModel ?: DetailInputModel(),
+                                viewModel.productInputModel.value?.descriptionInputModel ?: DescriptionInputModel(),
+                                viewModel.productInputModel.value?.shipmentInputModel ?: ShipmentInputModel(),
+                                viewModel.productInputModel.value?.variantInputModel ?: ProductVariantInputModel(),
+                                viewModel.getDraftId())
+                    }
                 }
             } else {
                 Toaster.make(view, validateMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
@@ -337,7 +359,6 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
         observeProductVariant()
         observeImageUrlOrPathList()
         observeProductVariantList()
-        observeProductInputModelFromDraft()
     }
 
     private fun submitProductDuplicate() {
@@ -373,17 +394,18 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
                     val originalImageUrl = data.getStringArrayListExtra(ImageEditorActivity.RESULT_PREVIOUS_IMAGE)
                     val isEditted = data.getSerializableExtra(ImageEditorActivity.RESULT_IS_EDITTED) as ArrayList<Boolean>
                     if (imagePickerResult != null && imagePickerResult.size > 0) {
-                        val isEditMode = viewModel.isEditing.value
-                        isEditMode?.let {
-                            // update the product pictures in the preview page
-                            if (isEditMode) viewModel.updateProductPhotos(imagePickerResult, originalImageUrl, isEditted)
-                            else {
-                                // start add product detail
-                                val newProductInputModel = viewModel.getNewProductInputModel(imagePickerResult)
-                                val isEditing = viewModel.isEditing.value ?: false
-                                val isDrafting = viewModel.isDrafting.value ?: false
-                                startAddEditProductDetailActivity(newProductInputModel, isEditing = isEditing, isDrafting = isDrafting)
-                            }
+                        val isEditMode = viewModel.isEditing.value ?: false
+                        val isDraftMode = viewModel.isDrafting.value ?: false
+                        // update the product pictures in the preview page
+                        if (isEditMode || isDraftMode) {
+                            viewModel.updateProductPhotos(imagePickerResult, originalImageUrl, isEditted)
+                            saveToDraft()
+                        } else {
+                            // start add product detail
+                            val newProductInputModel = viewModel.getNewProductInputModel(imagePickerResult)
+                            val isEditing = viewModel.isEditing.value ?: false
+                            val isDrafting = viewModel.isDrafting.value ?: false
+                            startAddEditProductDetailActivity(newProductInputModel, isEditing = isEditing, isDrafting = isDrafting)
                         }
                     }
                 }
@@ -414,6 +436,8 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
                     val detailInputModel =
                             data.getParcelableExtra<DetailInputModel>(EXTRA_DETAIL_INPUT)
                     viewModel.updateDetailInputModel(detailInputModel)
+                    viewModel.productInputModel.value?.let { it.detailInputModel = detailInputModel }
+                    saveToDraft()
                 }
                 REQUEST_CODE_DESCRIPTION_EDIT -> {
                     val descriptionInputModel =
@@ -422,16 +446,25 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
                             data.getParcelableExtra<ProductVariantInputModel>(EXTRA_VARIANT_INPUT)
                     viewModel.updateDescriptionInputModel(descriptionInputModel)
                     viewModel.updateVariantInputModel(variantInputModel)
+                    viewModel.productInputModel.value?.let {
+                        it.descriptionInputModel = descriptionInputModel
+                        it.variantInputModel = variantInputModel
+                    }
+                    saveToDraft()
                 }
                 REQUEST_CODE_SHIPMENT_EDIT -> {
                     val shipmentInputModel =
                             data.getParcelableExtra<ShipmentInputModel>(EXTRA_SHIPMENT_INPUT)
                     viewModel.updateShipmentInputModel(shipmentInputModel)
+                    viewModel.productInputModel.value?.let { it.shipmentInputModel = shipmentInputModel }
+                    saveToDraft()
                 }
                 REQUEST_CODE_VARIANT_EDIT -> {
                     val variantInputModel =
                             data.getParcelableExtra<ProductVariantInputModel>(EXTRA_VARIANT_INPUT)
                     viewModel.updateVariantInputModel(variantInputModel)
+                    viewModel.productInputModel.value?.let { it.variantInputModel = variantInputModel }
+                    saveToDraft()
                 }
                 REQUEST_CODE_VARIANT_DIALOG_EDIT -> {
                     viewModel.productInputModel.value?.let { productInputModel ->
@@ -541,7 +574,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
 
     private fun observeIsDraftingStatus() {
         viewModel.isDrafting.observe(this, Observer {
-
+            displayEditMode(it)
         })
     }
 
@@ -588,14 +621,12 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
         })
     }
 
-    private fun observeProductInputModelFromDraft() {
-        viewModel.getProductDraftResult.observe(viewLifecycleOwner, Observer { result ->
-            when (result) {
-                is Success -> {
-                    viewModel.updateProductInputModel(result.data)
-                }
+    private fun saveToDraft() {
+        if (viewModel.isDrafting.value == true) {
+            viewModel.productInputModel.value?.let {
+                viewModel.saveProductDraft(AddEditProductMapper.mapProductInputModelDetailToDraft(it), it.draftId, false)
             }
-        })
+        }
     }
 
     private fun showProductPhotoPreview(productInputModel: ProductInputModel) {
@@ -723,7 +754,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
                 put(EXTRA_IS_DRAFTING_PRODUCT, isDrafting)
             }
             val intent = Intent(this, AddEditProductDetailActivity::class.java).apply { putExtra(EXTRA_CACHE_MANAGER_ID, cacheManager.id) }
-            if (!isEditing) {
+            if (!isEditing && !isDrafting) {
                 startActivityForResult(intent, REQUEST_CODE_DETAIL)
             } else {
                 startActivityForResult(intent, REQUEST_CODE_DETAIL_EDIT)

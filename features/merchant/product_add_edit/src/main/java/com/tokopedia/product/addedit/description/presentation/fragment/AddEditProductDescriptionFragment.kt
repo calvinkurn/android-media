@@ -55,7 +55,7 @@ import com.tokopedia.product.addedit.description.presentation.model.ProductVaria
 import com.tokopedia.product.addedit.description.presentation.model.VideoLinkModel
 import com.tokopedia.product.addedit.description.presentation.model.youtube.YoutubeVideoModel
 import com.tokopedia.product.addedit.description.presentation.viewmodel.AddEditProductDescriptionViewModel
-import com.tokopedia.product.addedit.mapper.mapProductInputModelDetailToDraft
+import com.tokopedia.product.addedit.draft.mapper.AddEditProductMapper.mapProductInputModelDetailToDraft
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.shipment.presentation.activity.AddEditProductShipmentActivity
 import com.tokopedia.product.addedit.shipment.presentation.fragment.AddEditProductShipmentFragment.Companion.REQUEST_CODE_SHIPMENT
@@ -142,8 +142,13 @@ class AddEditProductDescriptionFragment:
 
     override fun onTextChanged(url: String, position: Int) {
         adapter.data[position].inputUrl = url
-        positionVideoChanged = position
-        descriptionViewModel.getVideoYoutube(url)
+        if (url.isNotBlank()) {
+            positionVideoChanged = position
+            descriptionViewModel.getVideoYoutube(url)
+        } else {
+            adapter.data[position].errorMessage = ""
+            getRecyclerView(view).post { adapter.notifyItemChanged(position) }
+        }
     }
 
     override fun onItemClicked(t: VideoLinkModel?) {

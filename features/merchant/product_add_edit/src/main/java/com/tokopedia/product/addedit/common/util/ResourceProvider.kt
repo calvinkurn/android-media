@@ -53,8 +53,9 @@ class ResourceProvider @Inject constructor(@ApplicationContext val context: Cont
         return getString(R.string.error_zero_wholesale_quantity)
     }
 
-    fun getMinLimitWholeSaleQuantityErrorMessage(): String? {
-        return getString(R.string.error_wholesale_quantity_less_than_two)
+    fun getMinLimitWholeSaleQuantityErrorMessage(min : Int): String? {
+        val errorMessage = getString(R.string.error_wholesale_quantity_less_than_two)
+        return errorMessage?.let { String.format(it, min)}
     }
 
     // product whole sale price string properties

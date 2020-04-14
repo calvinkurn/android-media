@@ -15,7 +15,8 @@ import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProduct
 import com.tokopedia.product.addedit.description.presentation.model.*
 import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
 import com.tokopedia.product.addedit.draft.domain.usecase.GetProductDraftUseCase
-import com.tokopedia.product.addedit.mapper.mapDraftToProductInputModel
+import com.tokopedia.product.addedit.draft.domain.usecase.SaveProductDraftUseCase
+import com.tokopedia.product.addedit.draft.mapper.AddEditProductMapper.mapDraftToProductInputModel
 import com.tokopedia.product.addedit.preview.data.source.api.response.Product
 import com.tokopedia.product.addedit.preview.domain.GetProductUseCase
 import com.tokopedia.product.addedit.preview.domain.mapper.GetProductMapper
@@ -36,6 +37,7 @@ class AddEditProductPreviewViewModel @Inject constructor(
         private val getProductVariantUseCase: GetProductVariantUseCase,
         private val resourceProvider: ResourceProvider,
         private val getProductDraftUseCase: GetProductDraftUseCase,
+        private val saveProductDraftUseCase: SaveProductDraftUseCase,
         dispatcher: CoroutineDispatcher
 ) : BaseViewModel(dispatcher) {
 
@@ -51,7 +53,11 @@ class AddEditProductPreviewViewModel @Inject constructor(
     }
 
     val isDrafting = Transformations.map(draftId) { id ->
-        !id.isNullOrBlank()
+        if(id != "") {
+            id.toLong() > 0
+        } else {
+            false
+        }
     }
 
     // observing the product id, and will execute the use case when product id is changed
@@ -88,6 +94,9 @@ class AddEditProductPreviewViewModel @Inject constructor(
 
     var isDuplicate: Boolean = false
 
+    private val saveProductDraftResultMutableLiveData = MutableLiveData<Result<Long>>()
+    val saveProductDraftResultLiveData: LiveData<Result<Long>> get() = saveProductDraftResultMutableLiveData
+
     init {
         with (productInputModel) {
             addSource(mGetProductResult) {
@@ -98,6 +107,14 @@ class AddEditProductPreviewViewModel @Inject constructor(
             }
             addSource(detailInputModel) {
                 productInputModel.value = productInputModel.value?.apply { this.detailInputModel = it }
+            }
+            addSource(getProductDraftResult) {
+                if(isDrafting.value == true) {
+                    productInputModel.value = when(it) {
+                        is Success -> mapDraftToProductInputModel(it.data)
+                        is Fail -> ProductInputModel()
+                    }
+                }
             }
         }
     }
@@ -170,17 +187,6 @@ class AddEditProductPreviewViewModel @Inject constructor(
         productInputModel.value?.shipmentInputModel = shipmentInputModel
     }
 
-    fun updateProductInputModel(productDraft: ProductDraft) {
-        productInputModel.value?.apply {
-            val draft = mapDraftToProductInputModel(productDraft)
-            variantInputModel = draft.variantInputModel
-            detailInputModel = draft.detailInputModel
-            descriptionInputModel = draft.descriptionInputModel
-            shipmentInputModel = draft.shipmentInputModel
-            draftId = draft.draftId
-        }
-    }
-
     fun updateProductStatus(isActive: Boolean) {
         productInputModel.value?.detailInputModel?.status = if (isActive) 1 else 0
     }
@@ -226,6 +232,17 @@ class AddEditProductPreviewViewModel @Inject constructor(
             }.let { Success(it) }
         }, onError = {
             mGetProductDraftResult.value = Fail(it)
+        })
+    }
+
+    fun saveProductDraft(productDraft: ProductDraft, productId: Long, isUploading: Boolean) {
+        launchCatchError(block = {
+            saveProductDraftUseCase.params = SaveProductDraftUseCase.createRequestParams(productDraft, productId, isUploading)
+            saveProductDraftResultMutableLiveData.value = withContext(Dispatchers.IO) {
+                saveProductDraftUseCase.executeOnBackground()
+            }.let { Success(it) }
+        }, onError = {
+            saveProductDraftResultMutableLiveData.value = Fail(it)
         })
     }
 
