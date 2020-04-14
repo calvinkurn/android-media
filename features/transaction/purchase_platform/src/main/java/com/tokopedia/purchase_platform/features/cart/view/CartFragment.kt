@@ -756,6 +756,24 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 }
             }
 
+            val lastUpdateCartAndValidateUseResponse = dPresenter.getUpdateCartAndValidateUseLastResponse()
+            lastUpdateCartAndValidateUseResponse?.promoUiModel?.let {
+                if (it.messageUiModel.state.equals("red")) {
+                    it.codes.forEach {
+                        if (!redStatePromo.contains(it)) {
+                            redStatePromo.add(it)
+                        }
+                    }
+                }
+
+                it.voucherOrderUiModels.forEach {
+                    val promoCode = it?.code ?: ""
+                    if (promoCode.isNotBlank() && it?.messageUiModel?.state.equals("red") && !redStatePromo.contains(promoCode)) {
+                        redStatePromo.add(promoCode)
+                    }
+                }
+            }
+
             if (redStatePromo.isNotEmpty()) {
                 dPresenter.doClearRedPromosBeforeGoToCheckout(redStatePromo)
             } else {
@@ -2232,6 +2250,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                     val validateUseUiModel = data?.getParcelableExtra<ValidateUsePromoRevampUiModel>(ARGS_VALIDATE_USE_DATA_RESULT)
                     if (validateUseUiModel != null) {
                         dPresenter.setValidateUseLastResponse(validateUseUiModel)
+                        dPresenter.setUpdateCartAndValidateUseLastResponse(null)
                         dPresenter.setLastApplyNotValid()
                         updatePromoCheckoutStickyButton(validateUseUiModel.promoUiModel)
                     }
@@ -2241,6 +2260,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                         if (validateUseUiModel == null) {
                             dPresenter.setLastApplyNotValid()
                             dPresenter.setValidateUseLastResponse(null)
+                            dPresenter.setUpdateCartAndValidateUseLastResponse(null)
                         }
                         updatePromoCheckoutStickyButton(PromoUiModel(titleDescription = clearPromoUiModel.successDataModel.defaultEmptyPromoMessage))
                     }
