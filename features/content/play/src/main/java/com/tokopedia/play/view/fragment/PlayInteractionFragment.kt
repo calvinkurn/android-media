@@ -2,16 +2,13 @@ package com.tokopedia.play.view.fragment
 
 import android.app.Activity
 import android.content.Intent
-import android.content.res.Configuration
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.annotation.IdRes
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.view.ViewCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -62,6 +59,7 @@ import com.tokopedia.play.util.event.EventObserver
 import com.tokopedia.play.view.bottomsheet.PlayMoreActionBottomSheet
 import com.tokopedia.play.view.event.ScreenStateEvent
 import com.tokopedia.play.view.layout.PlayInteractionLayoutManager
+import com.tokopedia.play.view.layout.PlayLayoutManager
 import com.tokopedia.play.view.type.BottomInsetsState
 import com.tokopedia.play.view.type.BottomInsetsType
 import com.tokopedia.play.view.type.PlayRoomEvent
@@ -75,8 +73,11 @@ import com.tokopedia.play_common.state.PlayVideoState
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
@@ -117,11 +118,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
     @Inject
     lateinit var trackingQueue: TrackingQueue
 
-    private val offset24 by lazy { resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl5) }
     private val offset16 by lazy { resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4) }
-    private val offset12 by lazy { resources.getDimensionPixelOffset(com.tokopedia.play.R.dimen.play_offset_12) }
-    private val offset8 by lazy { resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3) }
-    private val offset4 by lazy { resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2) }
 
     private lateinit var playViewModel: PlayViewModel
     private lateinit var viewModel: PlayInteractionViewModel
@@ -139,6 +136,8 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
     private lateinit var quickReplyComponent: UIComponent<*>
     private lateinit var playButtonComponent: UIComponent<*>
     private lateinit var endLiveInfoComponent: UIComponent<*>
+
+    private lateinit var layoutManager: PlayLayoutManager
 
     private lateinit var bottomSheet: PlayMoreActionBottomSheet
     private lateinit var clPlayInteraction: ConstraintLayout
@@ -245,17 +244,8 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
     }
 
     private fun setInsets(view: View) {
-        ViewCompat.setOnApplyWindowInsetsListener(view) { v, insets ->
-
-            val sizeContainerView = view.findViewById<View>(sizeContainerComponent.getContainerId())
-            val sizeContainerMarginLp = sizeContainerView.layoutParams as ViewGroup.MarginLayoutParams
-            sizeContainerMarginLp.bottomMargin = offset16 + insets.systemWindowInsetBottom
-            sizeContainerMarginLp.topMargin = insets.systemWindowInsetTop
-            sizeContainerView.layoutParams = sizeContainerMarginLp
-
-            val endLiveInfoView = view.findViewById<View>(endLiveInfoComponent.getContainerId())
-            endLiveInfoView.setPadding(endLiveInfoView.paddingLeft, endLiveInfoView.paddingTop, endLiveInfoView.paddingRight, offset24 + insets.systemWindowInsetBottom)
-
+        ViewCompat.setOnApplyWindowInsetsListener(view) { _, insets ->
+            if (::layoutManager.isInitialized) layoutManager.setupInsets(view, insets)
             insets
         }
 
@@ -457,9 +447,9 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
         //play button should be on top of other component so it can be clicked
         playButtonComponent = initPlayButtonComponent(container)
 
-        sendInitState()
-
-        PlayInteractionLayoutManager(ScreenOrientation.getByInt(resources.configuration.orientation), container).layoutView(
+        layoutManager = PlayInteractionLayoutManager(
+                context = requireContext(),
+                orientation = ScreenOrientation.getByInt(resources.configuration.orientation),
                 sizeContainerComponentId = sizeContainerComponent.getContainerId(),
                 sendChatComponentId = sendChatComponent.getContainerId(),
                 likeComponentId = likeComponent.getContainerId(),
@@ -474,6 +464,10 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
                 quickReplyComponentId = quickReplyComponent.getContainerId(),
                 endLiveInfoComponentId = endLiveInfoComponent.getContainerId()
         )
+
+        sendInitState()
+
+        layoutManager.layoutView(container)
     }
 
     private fun initSendChatComponent(container: ViewGroup): UIComponent<SendChatInteractionEvent> {
