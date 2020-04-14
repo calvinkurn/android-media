@@ -19,7 +19,8 @@ import io.mockk.verify
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.gherkin.Feature
 
-internal class HandleViewVisibilityChangedTest: Spek({
+@Deprecated("Migrated to JUnit")
+internal class HandleViewVisibilityChangedSpekTest: Spek({
 
     InstantTaskExecutorRuleSpek(this)
 
