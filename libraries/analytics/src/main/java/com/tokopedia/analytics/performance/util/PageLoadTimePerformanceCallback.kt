@@ -21,7 +21,8 @@ open class PageLoadTimePerformanceCallback(
                 startPageDuration = preparePageDuration,
                 networkRequestDuration = requestNetworkDuration,
                 renderPageDuration = renderDuration,
-                overallDuration = overallDuration
+                overallDuration = overallDuration,
+                isSuccess = (isNetworkDone && isRenderDone)
         )
     }
 
@@ -36,6 +37,9 @@ open class PageLoadTimePerformanceCallback(
     }
 
     override fun stopMonitoring() {
+        if (!isNetworkDone) requestNetworkDuration = 0
+        if (!isRenderDone) renderDuration = 0
+
         performanceMonitoring?.stopTrace()
         overallDuration = System.currentTimeMillis() - overallDuration
         if (!isNetworkDone) requestNetworkDuration = 0
