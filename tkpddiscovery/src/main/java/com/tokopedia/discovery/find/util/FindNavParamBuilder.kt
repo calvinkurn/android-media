@@ -1,7 +1,7 @@
 package com.tokopedia.discovery.find.util
 
-import com.tokopedia.discovery.categoryrevamp.data.filter.DAFilterQueryType
-import com.tokopedia.discovery.categoryrevamp.utils.ParamMapToUrl
+import com.tokopedia.common_category.model.filter.DAFilterQueryType
+import com.tokopedia.common_category.util.ParamMapToUrl
 import com.tokopedia.usecase.RequestParams
 
 private const val KEY_START = "start"

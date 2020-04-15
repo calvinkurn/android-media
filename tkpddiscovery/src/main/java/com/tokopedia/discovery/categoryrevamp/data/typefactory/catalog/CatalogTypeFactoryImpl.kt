@@ -11,9 +11,8 @@ import com.tokopedia.discovery.categoryrevamp.adapters.viewHolders.CatalogShimme
 import com.tokopedia.discovery.categoryrevamp.adapters.viewHolders.catalog.BigGridCatalogCardViewHolder
 import com.tokopedia.discovery.categoryrevamp.adapters.viewHolders.catalog.ListCatalogCardViewHolder
 import com.tokopedia.discovery.categoryrevamp.adapters.viewHolders.catalog.SmallGridCatalogCardViewHolder
-import com.tokopedia.discovery.categoryrevamp.constants.CategoryNavConstants
 import com.tokopedia.discovery.categoryrevamp.data.catalogModel.CatalogItem
-import com.tokopedia.discovery.categoryrevamp.data.typefactory.BaseProductTypeFactoryImpl
+import com.tokopedia.common_category.factory.BaseProductTypeFactoryImpl
 import com.tokopedia.discovery.categoryrevamp.view.interfaces.CatalogCardListener
 
 class CatalogTypeFactoryImpl(val catalogCardListener: CatalogCardListener) : BaseProductTypeFactoryImpl(), CatalogTypeFactory {
@@ -32,9 +31,9 @@ class CatalogTypeFactoryImpl(val catalogCardListener: CatalogCardListener) : Bas
 
     override fun type(catalogItem: CatalogItem): Int {
         return when (getRecyclerViewItem()) {
-            CategoryNavConstants.RecyclerView.VIEW_PRODUCT -> ListCatalogCardViewHolder.LAYOUT
-            CategoryNavConstants.RecyclerView.VIEW_PRODUCT_GRID_1 -> BigGridCatalogCardViewHolder.LAYOUT
-            CategoryNavConstants.RecyclerView.VIEW_PRODUCT_GRID_2 -> SmallGridCatalogCardViewHolder.LAYOUT
+            com.tokopedia.common_category.constants.CategoryNavConstants.RecyclerView.VIEW_PRODUCT -> ListCatalogCardViewHolder.LAYOUT
+            com.tokopedia.common_category.constants.CategoryNavConstants.RecyclerView.VIEW_PRODUCT_GRID_1 -> BigGridCatalogCardViewHolder.LAYOUT
+            com.tokopedia.common_category.constants.CategoryNavConstants.RecyclerView.VIEW_PRODUCT_GRID_2 -> SmallGridCatalogCardViewHolder.LAYOUT
             else -> SmallGridCatalogCardViewHolder.LAYOUT
         }
     }

@@ -8,14 +8,14 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.discovery.categoryrevamp.adapters.viewHolders.CatalogShimmer.model.BigListCatalogShimmerModel
 import com.tokopedia.discovery.categoryrevamp.adapters.viewHolders.CatalogShimmer.model.GridListCatalogShimmerModel
 import com.tokopedia.discovery.categoryrevamp.adapters.viewHolders.CatalogShimmer.model.ListCatalogShimmerModel
-import com.tokopedia.discovery.categoryrevamp.constants.CategoryNavConstants
-import com.tokopedia.discovery.categoryrevamp.data.typefactory.BaseProductTypeFactory
+import com.tokopedia.common_category.constants.CategoryNavConstants
+import com.tokopedia.common_category.factory.BaseProductTypeFactory
 import com.tokopedia.discovery.categoryrevamp.data.typefactory.catalog.CatalogTypeFactory
 
 
 class CatalogNavListAdapter(val catalogTypeFactory: CatalogTypeFactory,
                             val visitables: ArrayList<Visitable<CatalogTypeFactory>>,
-                            onItemChangeView: OnItemChangeView) : BaseCategoryAdapter(onItemChangeView) {
+                            onItemChangeView: OnItemChangeView) : com.tokopedia.common_category.adapter.BaseCategoryAdapter(onItemChangeView) {
 
     private var loadingMoreModel: LoadingMoreModel = LoadingMoreModel()
 
@@ -30,7 +30,7 @@ class CatalogNavListAdapter(val catalogTypeFactory: CatalogTypeFactory,
     override fun setDimension(dimension: String) {
     }
 
-    override fun getTypeFactory(): BaseProductTypeFactory {
+    override fun getTypeFactory(): com.tokopedia.common_category.factory.BaseProductTypeFactory {
         return catalogTypeFactory
     }
 
@@ -102,14 +102,14 @@ class CatalogNavListAdapter(val catalogTypeFactory: CatalogTypeFactory,
 
     private fun getShimmerItem(): Visitable<CatalogTypeFactory> {
         return when (getCurrentLayoutType()) {
-            CategoryNavConstants.RecyclerView.GridType.GRID_1 -> {
+            com.tokopedia.common_category.constants.CategoryNavConstants.RecyclerView.GridType.GRID_1 -> {
                 listShimmerModel
             }
 
-            CategoryNavConstants.RecyclerView.GridType.GRID_2 -> {
+            com.tokopedia.common_category.constants.CategoryNavConstants.RecyclerView.GridType.GRID_2 -> {
                 gridShimmerModelGrid
             }
-            CategoryNavConstants.RecyclerView.GridType.GRID_3 -> {
+            com.tokopedia.common_category.constants.CategoryNavConstants.RecyclerView.GridType.GRID_3 -> {
                 bigListShimmerModel
             }
         }

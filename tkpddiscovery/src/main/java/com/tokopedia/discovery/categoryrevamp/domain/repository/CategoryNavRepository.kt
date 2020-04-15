@@ -4,7 +4,7 @@ import android.content.res.Resources
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.basemvvm.repository.BaseRepository
 import com.tokopedia.discovery.R
-import com.tokopedia.discovery.categoryrevamp.constants.CategoryNavConstants
+import com.tokopedia.common_category.constants.CategoryNavConstants
 import com.tokopedia.discovery.categoryrevamp.data.bannedCategory.BannedCategoryResponse
 import com.tokopedia.discovery.categoryrevamp.data.bannedCategory.Data
 import com.tokopedia.usecase.RequestParams
@@ -28,9 +28,9 @@ class CategoryNavRepository @Inject constructor() {
 
     private fun getSubCategoryParam(departmentId: String): RequestParams {
         val subCategoryMap = RequestParams()
-        subCategoryMap.putString(CategoryNavConstants.IDENTIFIER, departmentId)
-        subCategoryMap.putBoolean(CategoryNavConstants.INTERMEDIARY, false)
-        subCategoryMap.putBoolean(CategoryNavConstants.SAFESEARCH, false)
+        subCategoryMap.putString(com.tokopedia.common_category.constants.CategoryNavConstants.IDENTIFIER, departmentId)
+        subCategoryMap.putBoolean(com.tokopedia.common_category.constants.CategoryNavConstants.INTERMEDIARY, false)
+        subCategoryMap.putBoolean(com.tokopedia.common_category.constants.CategoryNavConstants.SAFESEARCH, false)
         return subCategoryMap
     }
 

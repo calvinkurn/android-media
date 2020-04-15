@@ -7,11 +7,10 @@ import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.discovery.R
-import com.tokopedia.discovery.catalogrevamp.ui.customview.SearchNavigationView
+import com.tokopedia.common_category.customview.SearchNavigationView
 import com.tokopedia.discovery.categoryrevamp.data.bannedCategory.Data
 import com.tokopedia.discovery.categoryrevamp.view.fragments.BaseBannedProductFragment
-import com.tokopedia.discovery.categoryrevamp.view.fragments.BaseCategorySectionFragment
-import com.tokopedia.discovery.categoryrevamp.view.interfaces.CategoryNavigationListener
+import com.tokopedia.common_category.interfaces.CategoryNavigationListener
 import com.tokopedia.discovery.find.analytics.FindPageAnalytics.Companion.findPageAnalytics
 import com.tokopedia.discovery.find.view.fragment.FindNavFragment
 import com.tokopedia.filter.common.data.Filter
@@ -32,11 +31,11 @@ private const val ORDER_BY = "ob"
 
 class FindNavActivity : BaseActivity(), CategoryNavigationListener,
         BottomSheetListener, SearchNavigationView.SearchNavClickListener,
-        BaseCategorySectionFragment.SortAppliedListener, BaseBannedProductFragment.OnBannedFragmentInteractionListener {
+        com.tokopedia.common_category.fragment.BaseCategorySectionFragment.SortAppliedListener, BaseBannedProductFragment.OnBannedFragmentInteractionListener {
 
     private var visibleFragmentListener: CategoryNavigationListener.VisibleClickListener? = null
     private var navigationListenerList: ArrayList<CategoryNavigationListener.ClickListener> = ArrayList()
-    private lateinit var findNavFragment: BaseCategorySectionFragment
+    private lateinit var findNavFragment: com.tokopedia.common_category.fragment.BaseCategorySectionFragment
     private lateinit var findSearchParam: String
     private var findNavScreenName: String = ""
 
@@ -52,7 +51,7 @@ class FindNavActivity : BaseActivity(), CategoryNavigationListener,
 
     private fun attachFragment() {
         val fragment = FindNavFragment.newInstance(findSearchParam)
-        findNavFragment = fragment as BaseCategorySectionFragment
+        findNavFragment = fragment as com.tokopedia.common_category.fragment.BaseCategorySectionFragment
         supportFragmentManager.beginTransaction().add(R.id.fragment_container,
                 fragment).commit()
         findNavFragment.setSortListener(this)

@@ -5,10 +5,10 @@ import com.tokopedia.discovery.categoryrevamp.adapters.viewHolders.CatalogShimme
 import com.tokopedia.discovery.categoryrevamp.adapters.viewHolders.CatalogShimmer.model.GridListCatalogShimmerModel
 import com.tokopedia.discovery.categoryrevamp.adapters.viewHolders.CatalogShimmer.model.ListCatalogShimmerModel
 import com.tokopedia.discovery.categoryrevamp.data.catalogModel.CatalogItem
-import com.tokopedia.discovery.categoryrevamp.data.typefactory.BaseProductTypeFactory
+import com.tokopedia.common_category.factory.BaseProductTypeFactory
 
 
-interface CatalogTypeFactory : BaseProductTypeFactory, AdapterTypeFactory {
+interface CatalogTypeFactory : com.tokopedia.common_category.factory.BaseProductTypeFactory, AdapterTypeFactory {
 
     fun type(catalogItem: CatalogItem): Int
 

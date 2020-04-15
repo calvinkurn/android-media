@@ -2,7 +2,7 @@ package com.tokopedia.discovery.find.analytics
 
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.discovery.categoryrevamp.data.productModel.ProductsItem
+import com.tokopedia.common_category.model.productModel.ProductsItem
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.interfaces.Analytics
 

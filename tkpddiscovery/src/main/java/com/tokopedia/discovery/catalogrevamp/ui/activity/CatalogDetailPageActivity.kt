@@ -15,11 +15,10 @@ import com.tokopedia.core.network.NetworkErrorHelper
 import com.tokopedia.core.share.DefaultShare
 import com.tokopedia.discovery.R
 import com.tokopedia.discovery.catalogrevamp.analytics.CatalogDetailPageAnalytics
-import com.tokopedia.discovery.catalogrevamp.ui.customview.SearchNavigationView
+import com.tokopedia.common_category.customview.SearchNavigationView
 import com.tokopedia.discovery.catalogrevamp.ui.fragment.CatalogDetailPageFragment
 import com.tokopedia.discovery.catalogrevamp.ui.fragment.CatalogDetailProductListingFragment
-import com.tokopedia.discovery.categoryrevamp.view.fragments.BaseCategorySectionFragment
-import com.tokopedia.discovery.categoryrevamp.view.interfaces.CategoryNavigationListener
+import com.tokopedia.common_category.interfaces.CategoryNavigationListener
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.newdynamicfilter.analytics.FilterEventTracking
 import com.tokopedia.filter.newdynamicfilter.analytics.FilterTrackingData
@@ -35,7 +34,7 @@ class CatalogDetailPageActivity : BaseActivity(),
         CategoryNavigationListener,
         BottomSheetListener,
         SearchNavigationView.SearchNavClickListener,
-        BaseCategorySectionFragment.SortAppliedListener{
+        com.tokopedia.common_category.fragment.BaseCategorySectionFragment.SortAppliedListener{
     private var catalogId: String = ""
     private var shareData: LinkerData? = null
     private var searchNavContainer: SearchNavigationView? = null
@@ -86,7 +85,7 @@ class CatalogDetailPageActivity : BaseActivity(),
 
     private fun getNewCatalogDetailListingFragment(catalogName: String, departmentId: String): Fragment {
         val departmentName: String? = intent.getStringExtra(EXTRA_CATEGORY_DEPARTMENT_NAME)
-        val fragment : BaseCategorySectionFragment = CatalogDetailProductListingFragment.newInstance(catalogId, catalogName, departmentId, departmentName)
+        val fragment : com.tokopedia.common_category.fragment.BaseCategorySectionFragment = CatalogDetailProductListingFragment.newInstance(catalogId, catalogName, departmentId, departmentName)
         fragment.setSortListener(this)
         return fragment
     }
@@ -140,7 +139,7 @@ class CatalogDetailPageActivity : BaseActivity(),
     }
 
     private fun applyFilter(filterParameter: Map<String, String>) {
-        val fragment = catalogDetailListingFragment as BaseCategorySectionFragment
+        val fragment = catalogDetailListingFragment as com.tokopedia.common_category.fragment.BaseCategorySectionFragment
 
         if(filterParameter.isNotEmpty() && (filterParameter.size > 1 || !filterParameter.containsKey(ORDER_BY))){
             searchNavContainer?.onFilterSelected(true)

@@ -1,0 +1,5 @@
+<resources>
+    <string name="error_filter_data_not_ready">Data Filter belum tersedia</string>
+    <string name="error_sort_data_not_ready">Data Sort belum tersedia</string>
+
+</resources>

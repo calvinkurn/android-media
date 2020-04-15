@@ -25,7 +25,7 @@ private const val KEY_ADVERTISING_ID = "KEY_ADVERTISINGID"
 private const val ADVERTISING_ID = "ADVERTISINGID"
 private const val QUERY_APP_CLIENT_ID = "?appClientId="
 
-abstract class BaseBannedProductFragment : BaseCategorySectionFragment() {
+abstract class BaseBannedProductFragment : com.tokopedia.common_category.fragment.BaseCategorySectionFragment() {
     protected var categoryName: String = ""
     private var listenerBanned: OnBannedFragmentInteractionListener? = null
     private lateinit var categoryNavComponent: CategoryNavComponent

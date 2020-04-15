@@ -2,8 +2,8 @@ package com.tokopedia.discovery.catalogrevamp.di
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.common_category.usecase.*
 import com.tokopedia.discovery.catalogrevamp.usecase.GetProductCatalogOneUseCase
-import com.tokopedia.discovery.categoryrevamp.domain.usecase.*
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase

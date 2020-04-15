@@ -21,7 +21,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.core.gcm.Constants
 import com.tokopedia.core.router.discovery.BrowseProductRouter
 import com.tokopedia.discovery.R
-import com.tokopedia.discovery.catalogrevamp.ui.customview.SearchNavigationView
+import com.tokopedia.common_category.customview.SearchNavigationView
 import com.tokopedia.discovery.categoryrevamp.adapters.CategoryNavigationPagerAdapter
 import com.tokopedia.discovery.categoryrevamp.analytics.CategoryPageAnalytics.Companion.catAnalyticsInstance
 import com.tokopedia.discovery.categoryrevamp.data.CategorySectionItem
@@ -29,10 +29,9 @@ import com.tokopedia.discovery.categoryrevamp.data.bannedCategory.Data
 import com.tokopedia.discovery.categoryrevamp.di.CategoryNavComponent
 import com.tokopedia.discovery.categoryrevamp.di.DaggerCategoryNavComponent
 import com.tokopedia.discovery.categoryrevamp.view.fragments.BaseBannedProductFragment
-import com.tokopedia.discovery.categoryrevamp.view.fragments.BaseCategorySectionFragment
 import com.tokopedia.discovery.categoryrevamp.view.fragments.CatalogNavFragment
 import com.tokopedia.discovery.categoryrevamp.view.fragments.ProductNavFragment
-import com.tokopedia.discovery.categoryrevamp.view.interfaces.CategoryNavigationListener
+import com.tokopedia.common_category.interfaces.CategoryNavigationListener
 import com.tokopedia.discovery.categoryrevamp.viewmodel.CategoryNavViewModel
 import com.tokopedia.discovery.common.manager.AdultManager
 import com.tokopedia.discovery.common.model.SearchParameter
@@ -65,7 +64,7 @@ private const val STATE_BIG = 3
 
 class CategoryNavActivity : BaseActivity(), CategoryNavigationListener,
         SearchNavigationView.SearchNavClickListener,
-        BaseCategorySectionFragment.SortAppliedListener,
+        com.tokopedia.common_category.fragment.BaseCategorySectionFragment.SortAppliedListener,
         BaseBannedProductFragment.OnBannedFragmentInteractionListener,
         BottomSheetListener {
 
@@ -357,7 +356,7 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener,
     }
 
     private fun sendBottomSheetHideEvent() {
-        val selectedFragment = categorySectionPagerAdapter?.getItem(pager.currentItem) as BaseCategorySectionFragment
+        val selectedFragment = categorySectionPagerAdapter?.getItem(pager.currentItem) as com.tokopedia.common_category.fragment.BaseCategorySectionFragment
         selectedFragment.onBottomSheetHide()
     }
 
@@ -365,7 +364,7 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener,
 
         if (filterParameter == null) return
 
-        val selectedFragment = categorySectionPagerAdapter?.getItem(pager.currentItem) as BaseCategorySectionFragment
+        val selectedFragment = categorySectionPagerAdapter?.getItem(pager.currentItem) as com.tokopedia.common_category.fragment.BaseCategorySectionFragment
 
         if (filterParameter.isNotEmpty() && (filterParameter.size > 1 || !filterParameter.containsKey(ORDER_BY))) {
             searchNavContainer?.onFilterSelected(true)
@@ -469,8 +468,8 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener,
     private fun onPageSelectedCalled(position: Int) {
         this.isForceSwipeToShop = false
         this.activeTabPosition = position
-        if (categorySectionPagerAdapter?.getItem(pager.currentItem) is BaseCategorySectionFragment) {
-            val selectedFragment = categorySectionPagerAdapter?.getItem(pager.currentItem) as BaseCategorySectionFragment
+        if (categorySectionPagerAdapter?.getItem(pager.currentItem) is com.tokopedia.common_category.fragment.BaseCategorySectionFragment) {
+            val selectedFragment = categorySectionPagerAdapter?.getItem(pager.currentItem) as com.tokopedia.common_category.fragment.BaseCategorySectionFragment
             selectedFragment.resetSortTick()
             val filterParameter = selectedFragment.getSelectedFilter()
             if (filterParameter.isNotEmpty() && (filterParameter.size > 1 || !filterParameter.containsKey(ORDER_BY))) {

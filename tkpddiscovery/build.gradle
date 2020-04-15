@@ -44,7 +44,6 @@ dependencies {
     implementation project(rootProject.ext.libraries.permissionchecker)
     implementation project(rootProject.ext.libraries.trackingOptimizer)
     implementation project(rootProject.ext.libraries.track)
-    implementation project(rootProject.ext.features.filter)
     implementation project(rootProject.ext.libraries.remoteResourceRequest)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
     implementation project(rootProject.ext.features.tkpdtransaction)
@@ -104,6 +103,8 @@ dependencies {
     implementation rootProject.ext.miscDependencies.viewModelKtx
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
     implementation project(rootProject.ext.features.basemvvm)
+    implementation project(rootProject.ext.features.commonCategory)
+
 }
 
 project.ext {

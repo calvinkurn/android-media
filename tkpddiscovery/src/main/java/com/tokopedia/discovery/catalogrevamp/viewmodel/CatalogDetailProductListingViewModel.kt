@@ -2,11 +2,11 @@ package com.tokopedia.discovery.catalogrevamp.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.tokopedia.discovery.categoryrevamp.data.productModel.ProductListResponse
-import com.tokopedia.discovery.categoryrevamp.data.productModel.ProductsItem
-import com.tokopedia.discovery.categoryrevamp.domain.usecase.DynamicFilterUseCase
-import com.tokopedia.discovery.categoryrevamp.domain.usecase.GetProductListUseCase
-import com.tokopedia.discovery.categoryrevamp.domain.usecase.QuickFilterUseCase
+import com.tokopedia.common_category.model.productModel.ProductListResponse
+import com.tokopedia.common_category.model.productModel.ProductsItem
+import com.tokopedia.common_category.usecase.DynamicFilterUseCase
+import com.tokopedia.common_category.usecase.GetProductListUseCase
+import com.tokopedia.common_category.usecase.QuickFilterUseCase
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.usecase.RequestParams
