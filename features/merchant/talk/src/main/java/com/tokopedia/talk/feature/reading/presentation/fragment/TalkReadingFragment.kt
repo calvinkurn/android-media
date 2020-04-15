@@ -24,6 +24,7 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_talk_reading.*
+import kotlinx.android.synthetic.main.partial_talk_reading_connection_error.view.*
 import javax.inject.Inject
 
 class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
@@ -67,8 +68,9 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         observeProductHeader()
         observeSortOptions()
-        showPageLoading()
+        showPageError()
         initSortOptions()
+//        getHeaderData()
         super.onViewCreated(view, savedInstanceState)
     }
 
@@ -114,6 +116,12 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
 
     private fun showPageError() {
         pageError.visibility = View.VISIBLE
+        pageError.readingConnectionErrorRetryButton.setOnClickListener {
+            // Retry
+        }
+        pageError.readingConnectionErrorGoToSettingsButton.setOnClickListener {
+            // Go to Settings
+        }
     }
 
     private fun hidePageError() {
@@ -158,5 +166,9 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
 
     private fun initSortOptions() {
         viewModel.updateSortOptions(listOf(SortOption.SortByInformativeness(), SortOption.SortByTime(), SortOption.SortByLike()))
+    }
+
+    private fun getHeaderData() {
+        viewModel.getDiscussionAggregate(productId)
     }
 }

@@ -16,7 +16,7 @@
     <com.tokopedia.unifyprinciples.Typography
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/reading_connection_error"
+        android:text="@string/reading_empty_title"
         android:layout_marginTop="@dimen/layout_lvl1"
         android:gravity="center"
         android:layout_marginStart="@dimen/layout_lvl2"

@@ -2,19 +2,41 @@ package com.tokopedia.talk.feature.reading.domain.usecase
 
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.talk.feature.reading.data.model.DiscussionDataResponse
+import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
-class GetDiscussionDataUseCase @Inject constructor(graphqlRepository: GraphqlRepository)  {
+class GetDiscussionDataUseCase @Inject constructor(graphqlRepository: GraphqlRepository) : GraphqlUseCase<DiscussionDataResponse>(graphqlRepository) {
 
     companion object {
-        private val query = """
+
+        const val PARAM_PRODUCT_ID = "productID"
+        const val PARAM_PAGE = "page"
+        const val PARAM_LIMIT = "limit"
+        const val PARAM_SORT = "sortBy"
+        const val PARAM_CATEGORY = "category"
+
+        private val query by lazy {
+            val productID = "\$productID"
+            val page = "\$page"
+            val limit = "\$limit"
+            val sortBy = "\$sortBy"
+            val category = "\$category"
+
+            """
             query discussionDataByProductID(
-                productID: Int!,
-                page: Int!,
-                limit: Int!,
-                sortBy: String,
-                category: String
+                $productID: Int!,
+                $page: Int!,
+                $limit: Int!,
+                $sortBy: String,
+                $category: String
             ) {
+                discussionDataByProductID(
+                            productID: $productID,
+                            page: $page,
+                            limit: $limit!,
+                            sortBy: $sortBy,
+                            category: $category
                 hasNext
                 totalQuestion
                 question {
@@ -36,6 +58,7 @@ class GetDiscussionDataUseCase @Inject constructor(graphqlRepository: GraphqlRep
                     answer {
                         content
                         userName
+                        userThumbnail
                         userID
                         createTime
                         createTimeFormatted
@@ -44,5 +67,21 @@ class GetDiscussionDataUseCase @Inject constructor(graphqlRepository: GraphqlRep
                 }
             }
         """.trimIndent()
+        }
+    }
+
+    init {
+        setGraphqlQuery(query)
+        setTypeClass(DiscussionDataResponse::class.java)
+    }
+
+    fun setParams(productID: Int, page: Int, limit: Int, sortBy: String, category: String) {
+        val requestParams = RequestParams()
+        requestParams.putInt(PARAM_PRODUCT_ID, productID)
+        requestParams.putInt(PARAM_PAGE, page)
+        requestParams.putInt(PARAM_LIMIT, limit)
+        requestParams.putString(PARAM_SORT, sortBy)
+        requestParams.putString(PARAM_CATEGORY, category)
+        setRequestParams(requestParams.parameters)
     }
 }
