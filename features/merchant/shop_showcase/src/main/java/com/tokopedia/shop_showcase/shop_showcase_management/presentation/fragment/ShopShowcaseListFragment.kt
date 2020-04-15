@@ -2,6 +2,7 @@ package com.tokopedia.shop_showcase.shop_showcase_management.presentation.fragme
 
 import android.app.Activity
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.text.Editable
@@ -11,10 +12,13 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.cardview.widget.CardView
+import androidx.fragment.app.FragmentManager
 
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -28,6 +32,7 @@ import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.design.text.watcher.AfterTextWatcher
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.header.HeaderUnify
 
 import com.tokopedia.shop_showcase.R
 import com.tokopedia.shop_showcase.ShopShowcaseInstance
@@ -38,6 +43,7 @@ import com.tokopedia.shop_showcase.shop_showcase_management.data.model.ShowcaseL
 import com.tokopedia.shop_showcase.shop_showcase_management.di.DaggerShopShowcaseManagementComponent
 import com.tokopedia.shop_showcase.shop_showcase_management.di.ShopShowcaseManagementComponent
 import com.tokopedia.shop_showcase.shop_showcase_management.di.ShopShowcaseManagementModule
+import com.tokopedia.shop_showcase.shop_showcase_management.presentation.activity.ShopShowcaseListActivity.Companion.REQUEST_CODE_ADD_ETALASE
 import com.tokopedia.shop_showcase.shop_showcase_management.presentation.adapter.ShopShowcaseListAdapter
 import com.tokopedia.shop_showcase.shop_showcase_management.presentation.viewmodel.ShopShowcaseListViewModel
 import com.tokopedia.unifycomponents.*
@@ -53,7 +59,7 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
         @JvmStatic
         fun createInstance(shopType: String, shopId: String?, selectedEtalaseId: String?,
                            isShowDefault: Boolean? = false, isShowZeroProduct: Boolean? = false,
-                           isMyShop: Boolean? = false
+                           isMyShop: Boolean? = false, isNeedToGoToAddShowcase: Boolean? = false
         ): ShopShowcaseListFragment {
             val fragment = ShopShowcaseListFragment()
             val bundle = Bundle()
@@ -64,6 +70,8 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
             bundle.putBoolean(ShopShowcaseListParam.EXTRA_IS_SHOW_ZERO_PRODUCT, isShowZeroProduct
                     ?: false)
             bundle.putBoolean(ShopShowcaseListParam.EXTRA_IS_MY_SHOP, isMyShop ?: false)
+            bundle.putBoolean(ShopShowcaseListParam.EXTRA_IS_NEED_TO_GOTO_ADD_SHOWCASE, isNeedToGoToAddShowcase
+                    ?: false)
             fragment.arguments = bundle
             return fragment
         }
@@ -78,12 +86,12 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
     private lateinit var searchbar: SearchBarUnify
     private lateinit var loading: LoaderUnify
     private lateinit var bottomSheet: BottomSheetUnify
-    private lateinit var btnBack: ImageView
-    private lateinit var btnReorder: TextView
+    private lateinit var headerUnify: HeaderUnify
+    private lateinit var headerLayout: CardView
     private lateinit var recyclerView: RecyclerView
     private lateinit var emptyStateContainer: LinearLayout
     private lateinit var imgEmptyState: ImageView
-    private lateinit var appBarLayout: AppBarLayout
+    private lateinit var swipeRefreshLayout: SwipeRefreshLayout
     private var layoutManager: LinearLayoutManager? = null
     private var shopShowcaseListAdapter: ShopShowcaseListAdapter? = null
     private var showcaseList: List<ShowcaseItem> = listOf()
@@ -123,10 +131,30 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == REQUEST_EDIT_SHOWCASE_CODE && resultCode == Activity.RESULT_OK) {
-            val isSuccessEditShowcase = data?.extras?.getInt(ShopShowcaseListParam.EXTRA_EDIT_SHOWCASE_RESULT)
-            if (isSuccessEditShowcase == ShopShowcaseAddFragment.SUCCESS_EDIT_SHOWCASE)
-                onSuccessUpdateShowcase()
+
+        when (requestCode) {
+            REQUEST_CODE_ADD_ETALASE -> {
+                if (resultCode == Activity.RESULT_OK) {
+                    val intent = Intent()
+                    activity?.let {
+                        it.setResult(Activity.RESULT_OK, intent)
+                        it.finish()
+                    }
+                } else if (resultCode == Activity.RESULT_CANCELED) {
+                    val intent = Intent()
+                    activity?.let {
+                        it.setResult(Activity.RESULT_CANCELED, intent)
+                        it.finish()
+                    }
+                }
+            }
+            REQUEST_EDIT_SHOWCASE_CODE -> {
+                if (resultCode == Activity.RESULT_OK) {
+                    val isSuccessEditShowcase = data?.extras?.getInt(ShopShowcaseListParam.EXTRA_EDIT_SHOWCASE_RESULT)
+                    if (isSuccessEditShowcase == ShopShowcaseAddFragment.SUCCESS_EDIT_SHOWCASE)
+                        onSuccessUpdateShowcase()
+                }
+            }
         }
     }
 
@@ -146,9 +174,8 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_shop_showcase_list, container, false)
-        appBarLayout = view.findViewById(R.id.appbar_layout_showcase_list)
-        btnBack = view.findViewById(R.id.btn_back_input_shop)
-        btnReorder = view.findViewById(R.id.btn_reorder)
+        headerUnify = view.findViewById(R.id.showcase_list_toolbar)
+        headerLayout = view.findViewById(R.id.header_layout)
         btnAddEtalase = view.findViewById(R.id.btn_add_etalase)
         loading = view.findViewById(R.id.loading)
         searchbar = view.findViewById(R.id.searchbar)
@@ -166,6 +193,7 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         showLoading(true)
+        initHeaderUnify()
         initRecyclerView()
         setupBuyerSellerView()
 
@@ -173,23 +201,6 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
         observeShopShowcaseBuyerData()
         observeDeleteShopShowcase()
         observeTotalProduct()
-
-        btnBack.setOnClickListener {
-            tracking?.clickBackButton(shopId, shopType)
-            activity?.finish()
-        }
-
-        btnReorder.setOnClickListener {
-            val shopShowcaseViewModelList = ArrayList<ShowcaseItem>()
-            for (shopShowcaseViewModel in showcaseList) {
-                shopShowcaseViewModelList.add(shopShowcaseViewModel)
-            }
-            tracking?.clickSusun(shopId, shopType)
-
-            shopShowcaseFragmentNavigation.navigateToPage(
-                    PageNameConstant.SHOWCASE_LIST_REORDER_PAGE,
-                    null, shopShowcaseViewModelList)
-        }
 
         btnAddEtalase.setOnClickListener {
             isNeedToGoToAddShowcase = true
@@ -236,11 +247,15 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 currentScrollPosition += dy
+                val HAS_ELEVATION = 16.0f
+                val NO_ELEVATION = 0f
 
-                if (currentScrollPosition == 0) {
-                    appBarLayout.background = MethodChecker.getDrawable(context, R.color.white)
-                } else {
-                    appBarLayout.background = MethodChecker.getDrawable(context, R.drawable.card_shadow_bottom)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    if (currentScrollPosition == 0) {
+                        headerLayout?.cardElevation = NO_ELEVATION
+                    } else {
+                        headerLayout?.cardElevation = HAS_ELEVATION
+                    }
                 }
             }
         })
@@ -332,7 +347,7 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
                         } else if (totalProduct > 0) {
                             if (isNeedToGoToAddShowcase) {
                                 isNeedToGoToAddShowcase = false
-                                RouteManager.route(context, ApplinkConstInternalMechant.MERCHANT_SHOP_SHOWCASE_ADD)
+                                goToAddShowcase()
                             }
                         }
                     }
@@ -365,21 +380,23 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
         })
     }
 
+    private fun goToAddShowcase() {
+        val addShowcaseIntent = RouteManager.getIntent(context, ApplinkConstInternalMechant.MERCHANT_SHOP_SHOWCASE_ADD)
+        startActivityForResult(addShowcaseIntent, REQUEST_CODE_ADD_ETALASE)
+    }
+
     private fun loadData() {
-        if (isMyShop) {
-            viewModel.getShopShowcaseListAsSeller()
+        if (isNeedToGoToAddShowcase && isMyShop) {
+            checkTotalProduct()
+            Handler().postDelayed({
+                viewModel.getShopShowcaseListAsSeller()
+            }, 500)
         } else {
-            viewModel.getShopShowcaseListAsBuyer(shopId, false)
+            if (!isMyShop) {
+                viewModel.getShopShowcaseListAsBuyer(shopId, false)
+            }
+            viewModel.getShopShowcaseListAsSeller()
         }
-//        if (isNeedToGoToAddShowcase) {
-//            checkTotalProduct()
-//            Handler().postDelayed({
-//                viewModel.getShopShowcaseListAsSeller()
-//            }, 500)
-//        } else {
-//            viewModel.getShopShowcaseListAsSeller()
-//        }
-//        viewModel.getShopShowcaseListAsSeller()
     }
 
     private fun checkTotalProduct() {
@@ -473,12 +490,12 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
 
     private fun setupBuyerView() {
         btnAddEtalase.visibility = View.GONE
-        btnReorder.visibility = View.GONE
+        headerUnify.actionTextView?.visibility = View.GONE
     }
 
     private fun setupSellerView() {
         btnAddEtalase.visibility = View.VISIBLE
-        btnReorder.visibility = View.VISIBLE
+        headerUnify.actionTextView?.visibility = View.VISIBLE
     }
 
     private fun gotoShowcaseResultPage(showcaseId: String, shopId: String) {
@@ -510,6 +527,26 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
     private fun showSuccessMessage(message: String) {
         view?.let {
             Toaster.showNormal(it, message, Snackbar.LENGTH_LONG)
+        }
+    }
+
+    private fun initHeaderUnify() {
+        headerUnify.apply {
+            setNavigationOnClickListener {
+                tracking?.clickBackButton(shopId, shopType)
+                activity?.finish()
+            }
+        }
+        headerUnify.actionTextView?.setOnClickListener {
+            val shopShowcaseViewModelList = ArrayList<ShowcaseItem>()
+            for (shopShowcaseViewModel in showcaseList) {
+                shopShowcaseViewModelList.add(shopShowcaseViewModel)
+            }
+            tracking?.clickSusun(shopId, shopType)
+
+            shopShowcaseFragmentNavigation.navigateToPage(
+                    PageNameConstant.SHOWCASE_LIST_REORDER_PAGE,
+                    null, shopShowcaseViewModelList)
         }
     }
 
