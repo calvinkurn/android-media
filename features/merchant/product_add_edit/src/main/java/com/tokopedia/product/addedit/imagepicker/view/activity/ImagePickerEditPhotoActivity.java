@@ -33,7 +33,7 @@ public class ImagePickerEditPhotoActivity extends ImageEditorActivity {
         if (isEditProduct) {
             ProductEditEditImageTracking.INSTANCE.trackContinue(userSession.getShopId());
         } else {
-            ProductAddEditImageTracking.INSTANCE.trackContinue(userSession.getShopId());
+            ProductAddEditImageTracking.INSTANCE.trackEditContinue(userSession.getShopId());
         }
     }
 
@@ -42,7 +42,7 @@ public class ImagePickerEditPhotoActivity extends ImageEditorActivity {
         if (isEditProduct) {
             ProductEditEditImageTracking.INSTANCE.trackBack(userSession.getShopId());
         } else {
-            ProductAddEditImageTracking.INSTANCE.trackBack(userSession.getShopId());
+            ProductAddEditImageTracking.INSTANCE.trackEditBack(userSession.getShopId());
         }
     }
 

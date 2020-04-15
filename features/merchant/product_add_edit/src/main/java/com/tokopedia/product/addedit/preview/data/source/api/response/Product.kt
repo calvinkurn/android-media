@@ -62,6 +62,8 @@ data class Product(
         val campaign: Campaign = Campaign(),
         @SerializedName("video")
         val videos: List<Video> = listOf(),
+        @SerializedName("cashback")
+        val cashback: Cashback = Cashback(),
         @SerializedName("lock")
         val lock: Lock = Lock(),
         @SerializedName("stats")

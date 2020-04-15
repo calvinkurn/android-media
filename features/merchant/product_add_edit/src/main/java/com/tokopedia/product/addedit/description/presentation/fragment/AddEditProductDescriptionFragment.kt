@@ -56,6 +56,8 @@ import com.tokopedia.product.addedit.description.presentation.model.VideoLinkMod
 import com.tokopedia.product.addedit.description.presentation.model.youtube.YoutubeVideoModel
 import com.tokopedia.product.addedit.description.presentation.viewmodel.AddEditProductDescriptionViewModel
 import com.tokopedia.product.addedit.draft.mapper.AddEditProductMapper.mapProductInputModelDetailToDraft
+import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants
+import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_BACK_PRESSED
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.shipment.presentation.activity.AddEditProductShipmentActivity
 import com.tokopedia.product.addedit.shipment.presentation.fragment.AddEditProductShipmentFragment.Companion.REQUEST_CODE_SHIPMENT
@@ -261,6 +263,19 @@ class AddEditProductDescriptionFragment:
         ProductAddStepperTracking.trackDraftCancel(shopId)
     }
 
+    fun sendDataBack() {
+        if(!descriptionViewModel.isEditMode) {
+            inputAllDataInInputDraftModel()
+            val intent = Intent()
+            intent.putExtra(AddEditProductPreviewConstants.EXTRA_PRODUCT_INPUT_MODEL, productInputModel)
+            intent.putExtra(AddEditProductPreviewConstants.EXTRA_BACK_PRESSED, 2)
+            activity?.setResult(Activity.RESULT_OK, intent)
+            activity?.finish()
+        } else {
+            activity?.finish()
+        }
+    }
+
     fun onBackPressed() {
         if (descriptionViewModel.isEditMode) {
             ProductEditDescriptionTracking.clickBack(shopId)
@@ -360,6 +375,11 @@ class AddEditProductDescriptionFragment:
         if (resultCode == Activity.RESULT_OK && data != null) {
             when (requestCode) {
                 REQUEST_CODE_SHIPMENT -> {
+                    if(data.getIntExtra(EXTRA_BACK_PRESSED, 0) != 0) {
+                        activity?.setResult(Activity.RESULT_OK, data)
+                        activity?.finish()
+                        return
+                    }
                     val shipmentInputModel =
                             data.getParcelableExtra<ShipmentInputModel>(EXTRA_SHIPMENT_INPUT)
                     submitInput(shipmentInputModel)
