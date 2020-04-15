@@ -70,6 +70,7 @@ import com.tokopedia.product.addedit.imagepicker.view.activity.ImagePickerAddPro
 import com.tokopedia.product.addedit.draft.mapper.AddEditProductMapper.mapProductInputModelDetailToDraft
 import com.tokopedia.product.addedit.optionpicker.OptionPicker
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_BACK_PRESSED
+import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_IS_ADDING_PRODUCT
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_IS_DRAFTING_PRODUCT
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_IS_EDITING_PRODUCT
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_PRODUCT_INPUT_MODEL
@@ -102,12 +103,13 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     companion object {
         private const val TAG_BULK_EDIT_PRICE: String = "TAG_BULK_EDIT_PRICE"
 
-        fun createInstance(productInputModel: ProductInputModel, isEditing: Boolean, isDrafting: Boolean): Fragment {
+        fun createInstance(productInputModel: ProductInputModel, isEditing: Boolean, isDrafting: Boolean, isAdding: Boolean): Fragment {
             return AddEditProductDetailFragment().apply {
                 val args = Bundle()
                 args.putParcelable(EXTRA_PRODUCT_INPUT_MODEL, productInputModel)
                 args.putBoolean(EXTRA_IS_EDITING_PRODUCT, isEditing)
                 args.putBoolean(EXTRA_IS_DRAFTING_PRODUCT, isDrafting)
+                args.putBoolean(EXTRA_IS_ADDING_PRODUCT, isAdding)
                 arguments = args
             }
         }
@@ -212,6 +214,10 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         // set isDrafting status
         arguments?.getBoolean(EXTRA_IS_DRAFTING_PRODUCT)?.run {
             viewModel.isDrafting = this
+        }
+        // set isAdding status
+        arguments?.getBoolean(EXTRA_IS_ADDING_PRODUCT)?.run {
+            viewModel.isAdding = this
         }
 
         userSession = UserSession(requireContext())
@@ -392,7 +398,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         submitButton = view.findViewById(R.id.btn_submit)
         submitTextView = view.findViewById(R.id.tv_submit_text)
         submitLoadingIndicator = view.findViewById(R.id.lu_submit_loading_indicator)
-        if (viewModel.isEditing) submitTextView?.text = getString(R.string.action_save)
+        if (viewModel.isEditing || viewModel.isDrafting || viewModel.isAdding) submitTextView?.text = getString(R.string.action_save)
         else submitTextView?.text = getString(R.string.action_continue)
 
         // fill the form with detail input model
@@ -521,7 +527,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             val isInputValid = viewModel.isInputValid.value
             isInputValid?.let {
                 if (it) {
-                    val isEditing = viewModel.isEditing
+                    val isEditing = viewModel.isEditing || viewModel.isDrafting || viewModel.isAdding
                     // navigate to preview page
                     if (isEditing) submitInputEdit()
                     // navigate to description page
@@ -651,6 +657,11 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                     productCategoryRecListView?.setData(selectedCategory)
                 }
                 REQUEST_CODE_DESCRIPTION -> {
+                    if(data.getIntExtra(EXTRA_BACK_PRESSED, 0) != 0) {
+                        activity?.setResult(Activity.RESULT_OK, data)
+                        activity?.finish()
+                        return
+                    }
                     val shipmentInputModel =
                             data.getParcelableExtra<ShipmentInputModel>(EXTRA_SHIPMENT_INPUT)
                     val descriptionInputModel =
@@ -721,7 +732,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     }
 
     fun sendDataBack() {
-        if(!viewModel.isDrafting && !viewModel.isEditing) {
+        if(!viewModel.isDrafting && !viewModel.isEditing && !viewModel.isAdding) {
             inputAllDataInProductInputModel()
             val intent = Intent()
             intent.putExtra(EXTRA_PRODUCT_INPUT_MODEL, viewModel.productInputModel)
@@ -729,7 +740,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             activity?.setResult(Activity.RESULT_OK, intent)
             activity?.finish()
         } else {
-            activity?.onBackPressed()
+            activity?.finish()
         }
     }
 
@@ -988,7 +999,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
 
     private fun createAddProductPhotoButtonOnClickListener(): View.OnClickListener {
         return View.OnClickListener {
-            val isEditing = viewModel.isEditing
+            val isEditing = viewModel.isEditing || viewModel.isDrafting || viewModel.isAdding
             val imageUrlOrPathList = productPhotoAdapter?.getProductPhotoPaths()?.map { urlOrPath ->
                 if (urlOrPath.startsWith(AddEditProductConstants.HTTP_PREFIX)) viewModel.detailInputModel.pictureList.find { it.urlThumbnail == urlOrPath }?.urlOriginal ?: urlOrPath
                 else urlOrPath
