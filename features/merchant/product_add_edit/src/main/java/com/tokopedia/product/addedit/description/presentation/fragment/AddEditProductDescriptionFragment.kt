@@ -8,7 +8,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import com.google.gson.reflect.TypeToken
@@ -56,6 +55,8 @@ import com.tokopedia.product.addedit.description.presentation.model.VideoLinkMod
 import com.tokopedia.product.addedit.description.presentation.model.youtube.YoutubeVideoModel
 import com.tokopedia.product.addedit.description.presentation.viewmodel.AddEditProductDescriptionViewModel
 import com.tokopedia.product.addedit.draft.mapper.AddEditProductMapper.mapProductInputModelDetailToDraft
+import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants
+import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_BACK_PRESSED
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.shipment.presentation.activity.AddEditProductShipmentActivity
 import com.tokopedia.product.addedit.shipment.presentation.fragment.AddEditProductShipmentFragment.Companion.REQUEST_CODE_SHIPMENT
@@ -253,12 +254,17 @@ class AddEditProductDescriptionFragment:
         loadData(0)
     }
 
-    fun onCtaYesPressed() {
-        ProductAddStepperTracking.trackDraftYes(shopId)
-    }
-
-    fun onCtaNoPressed() {
-        ProductAddStepperTracking.trackDraftCancel(shopId)
+    fun sendDataBack() {
+        if(!descriptionViewModel.isEditMode) {
+            inputAllDataInInputDraftModel()
+            val intent = Intent()
+            intent.putExtra(AddEditProductPreviewConstants.EXTRA_PRODUCT_INPUT_MODEL, productInputModel)
+            intent.putExtra(AddEditProductPreviewConstants.EXTRA_BACK_PRESSED, 2)
+            activity?.setResult(Activity.RESULT_OK, intent)
+            activity?.finish()
+        } else {
+            activity?.finish()
+        }
     }
 
     fun onBackPressed() {
@@ -267,12 +273,6 @@ class AddEditProductDescriptionFragment:
         } else {
             ProductAddDescriptionTracking.clickBack(shopId)
         }
-    }
-
-    fun saveProductDraft(isUploading: Boolean) {
-        inputAllDataInInputDraftModel()
-        productInputModel?.let { descriptionViewModel.saveProductDraft(mapProductInputModelDetailToDraft(it), it.draftId, isUploading) }
-        Toast.makeText(context, R.string.label_succes_save_draft, Toast.LENGTH_LONG).show()
     }
 
     private fun inputAllDataInInputDraftModel() {
@@ -360,6 +360,11 @@ class AddEditProductDescriptionFragment:
         if (resultCode == Activity.RESULT_OK && data != null) {
             when (requestCode) {
                 REQUEST_CODE_SHIPMENT -> {
+                    if(data.getIntExtra(EXTRA_BACK_PRESSED, 0) != 0) {
+                        activity?.setResult(Activity.RESULT_OK, data)
+                        activity?.finish()
+                        return
+                    }
                     val shipmentInputModel =
                             data.getParcelableExtra<ShipmentInputModel>(EXTRA_SHIPMENT_INPUT)
                     submitInput(shipmentInputModel)

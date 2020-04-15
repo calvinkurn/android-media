@@ -47,6 +47,8 @@ class AddEditProductPreviewViewModel @Inject constructor(
 
     private val detailInputModel = MutableLiveData<DetailInputModel>()
 
+    var isAdding = MutableLiveData<Boolean>()
+
     // observing the product id, and will become true if product id exist
     val isEditing = Transformations.map(productId) { id ->
         !id.isNullOrBlank()
@@ -59,6 +61,8 @@ class AddEditProductPreviewViewModel @Inject constructor(
             false
         }
     }
+
+    val productAddResult = MutableLiveData<ProductInputModel>()
 
     // observing the product id, and will execute the use case when product id is changed
     private val mGetProductResult = MediatorLiveData<Result<Product>>().apply {
@@ -94,6 +98,8 @@ class AddEditProductPreviewViewModel @Inject constructor(
 
     var isDuplicate: Boolean = false
 
+    var productDomain: Product = Product()
+
     private val saveProductDraftResultMutableLiveData = MutableLiveData<Result<Long>>()
     val saveProductDraftResultLiveData: LiveData<Result<Long>> get() = saveProductDraftResultMutableLiveData
 
@@ -101,7 +107,10 @@ class AddEditProductPreviewViewModel @Inject constructor(
         with (productInputModel) {
             addSource(mGetProductResult) {
                 productInputModel.value = when (it) {
-                    is Success -> getProductMapper.mapRemoteModelToUiModel(it.data)
+                    is Success -> {
+                        productDomain = it.data
+                        getProductMapper.mapRemoteModelToUiModel(it.data)
+                    }
                     is Fail -> ProductInputModel()
                 }
             }
@@ -114,6 +123,11 @@ class AddEditProductPreviewViewModel @Inject constructor(
                         is Success -> mapDraftToProductInputModel(it.data)
                         is Fail -> ProductInputModel()
                     }
+                }
+            }
+            addSource(productAddResult) {
+                if(isAdding.value == true && isDrafting.value == false) {
+                    productInputModel.value = it
                 }
             }
         }
@@ -161,6 +175,7 @@ class AddEditProductPreviewViewModel @Inject constructor(
 
     fun updateDetailInputModel(detailInputModel: DetailInputModel) {
         this.detailInputModel.value = detailInputModel
+        productInputModel.value?.let { it.detailInputModel = detailInputModel }
     }
 
     fun updateDescriptionInputModel(descriptionInputModel: DescriptionInputModel) {

@@ -28,8 +28,7 @@ class AddEditProductDescriptionViewModel @Inject constructor(
         coroutineDispatcher: CoroutineDispatcher,
         private val resource: ResourceProvider,
         private val getProductVariantUseCase: GetProductVariantUseCase,
-        private val getYoutubeVideoUseCase: GetYoutubeVideoUseCase,
-        private val saveProductDraftUseCase: SaveProductDraftUseCase
+        private val getYoutubeVideoUseCase: GetYoutubeVideoUseCase
 ) : BaseViewModel(coroutineDispatcher) {
 
     var categoryId: String = ""
@@ -45,10 +44,6 @@ class AddEditProductDescriptionViewModel @Inject constructor(
 
     private val _videoYoutube = MutableLiveData<Result<YoutubeVideoModel>>()
     val videoYoutube: LiveData<Result<YoutubeVideoModel>> = _videoYoutube
-
-    private val _saveProductDraftResult = MutableLiveData<Result<Long>>()
-    val saveProductDraftResult: LiveData<Result<Long>>
-        get() = _saveProductDraftResult
 
     fun getVariants(categoryId: String) {
         launchCatchError(block = {
@@ -111,17 +106,6 @@ class AddEditProductDescriptionViewModel @Inject constructor(
             it.errorMessage.isNotEmpty()
         }
         return videoLinks.isEmpty()
-    }
-
-    fun saveProductDraft(productDraft: ProductDraft, productId: Long, isUploading: Boolean) {
-        launchCatchError(block = {
-            saveProductDraftUseCase.params = SaveProductDraftUseCase.createRequestParams(productDraft, productId, isUploading)
-            _saveProductDraftResult.value = withContext(Dispatchers.IO) {
-                saveProductDraftUseCase.executeOnBackground()
-            }.let { Success(it) }
-        }, onError = {
-            _saveProductDraftResult.value = Fail(it)
-        })
     }
 
     fun setVariantInput(productVariant: ArrayList<ProductVariantCombinationViewModel>,
@@ -196,13 +180,24 @@ class AddEditProductDescriptionViewModel @Inject constructor(
     }
 
     private fun setVariantNamesAndCount() {
+        // get variant count
+        val level1Options: ArrayList<Int> = arrayListOf()
+        val level2Options: ArrayList<Int> = arrayListOf()
+        variantInputModel.productVariant.forEach { productVariant ->
+            val level1Option = productVariant.opt.getOrNull(0)
+            val level2Option = productVariant.opt.getOrNull(1)
+            level1Option?.run { level1Options.add(this) }
+            level2Option?.run { level2Options.add(this) }
+        }
+        variantCountList[0] = level1Options.distinct().size
+        variantCountList[1] = level2Options.distinct().size
+
+        // get variant names
         variantInputModel.variantOptionParent.forEachIndexed { index, optionParent ->
             if (index < 2) {
                 variantNameList[index] = optionParent.name ?: ""
             }
         }
-        setVariantCountLevel1(variantInputModel.productVariant)
-        setVariantCountLevel2(variantInputModel.productVariant)
     }
 
     private fun setVariantCountLevel1(productVariant: ArrayList<ProductVariantCombinationViewModel>) {

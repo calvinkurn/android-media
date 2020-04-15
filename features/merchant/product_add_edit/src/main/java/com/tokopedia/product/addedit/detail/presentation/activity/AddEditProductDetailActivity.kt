@@ -4,16 +4,13 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
-import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.dialog.DialogUnify
-import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.common.AddEditProductComponentBuilder
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.Companion.EXTRA_CACHE_MANAGER_ID
 import com.tokopedia.product.addedit.detail.di.AddEditProductDetailComponent
 import com.tokopedia.product.addedit.detail.di.AddEditProductDetailModule
 import com.tokopedia.product.addedit.detail.di.DaggerAddEditProductDetailComponent
 import com.tokopedia.product.addedit.detail.presentation.fragment.AddEditProductDetailFragment
+import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_IS_ADDING_PRODUCT
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_IS_DRAFTING_PRODUCT
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_IS_EDITING_PRODUCT
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_PRODUCT_INPUT_MODEL
@@ -31,6 +28,7 @@ class AddEditProductDetailActivity : BaseSimpleActivity(), HasComponent<AddEditP
         var productInputModel = ProductInputModel()
         var isEditing = false
         var isDrafting = false
+        var isAdding = false
 
         // try to get passed extras from the cache manager
         cacheManagerId?.run {
@@ -40,8 +38,10 @@ class AddEditProductDetailActivity : BaseSimpleActivity(), HasComponent<AddEditP
                     ?: false
             isDrafting = saveInstanceCacheManager.get(EXTRA_IS_DRAFTING_PRODUCT, Boolean::class.java)
                     ?: false
+            isAdding = saveInstanceCacheManager.get(EXTRA_IS_ADDING_PRODUCT, Boolean::class.java)
+                    ?: false
         }
-        return AddEditProductDetailFragment.createInstance(productInputModel, isEditing, isDrafting)
+        return AddEditProductDetailFragment.createInstance(productInputModel, isEditing, isDrafting, isAdding)
     }
 
     override fun getComponent(): AddEditProductDetailComponent {
@@ -54,47 +54,13 @@ class AddEditProductDetailActivity : BaseSimpleActivity(), HasComponent<AddEditP
 
     override fun onBackPressed() {
         onBackPressedHitTracking()
-        DialogUnify(this, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
-            setTitle(getString(R.string.label_title_on_dialog))
-            setDescription(getString(R.string.label_description_on_dialog))
-            setPrimaryCTAText(getString(R.string.label_cta_primary_button_on_dialog))
-            setSecondaryCTAText(getString(R.string.label_cta_secondary_button_on_dialog))
-            setSecondaryCTAClickListener {
-                saveProductToDraft()
-                moveToManageProduct()
-                onCtaYesPressedHitTracking()
-            }
-            setPrimaryCTAClickListener {
-                super.onBackPressed()
-                onCtaNoPressedHitTracking()
-            }
-        }.show()
+        sendDataBack()
     }
 
-    private fun moveToManageProduct() {
-        val intent = RouteManager.getIntent(this, ApplinkConstInternalMarketplace.PRODUCT_MANAGE_LIST)
-        startActivity(intent)
-        finish()
-    }
-
-    private fun saveProductToDraft() {
+    private fun sendDataBack() {
         val f = fragment
         if (f != null && f is AddEditProductDetailFragment) {
-            f.saveProductDraft(false)
-        }
-    }
-
-    private fun onCtaYesPressedHitTracking() {
-        val f = fragment
-        if (f != null && f is AddEditProductDetailFragment) {
-            f.onCtaYesPressed()
-        }
-    }
-
-    private fun onCtaNoPressedHitTracking() {
-        val f = fragment
-        if (f != null && f is AddEditProductDetailFragment) {
-            f.onCtaNoPressed()
+            f.sendDataBack()
         }
     }
 

@@ -13,11 +13,11 @@ object ProductEditShippingTracking {
     }
 
     fun clickCancelChangeWeight(shopId: String) {
-        sendEditProductClick(shopId, shopId, "click cancel change weight")
+        sendEditProductClick(shopId, "click cancel change weight","" )
     }
 
     fun clickWeightDropDown(shopId: String) {
-        sendEditProductClick(shopId, shopId, "click weight dropdown menu")
+        sendEditProductClick(shopId, "click weight dropdown menu", "")
     }
 
     fun clickChooseWeight(shopId: String, isGram: Boolean) {

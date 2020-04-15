@@ -5,5 +5,5 @@
         android:width="@dimen/dp_1"
         android:color="@color/Green_G500" />
     <solid android:color="@android:color/transparent" />
-    <corners android:radius="@dimen/spacing_lvl1" />
+    <corners android:radius="@dimen/dp_1" />
 </shape>

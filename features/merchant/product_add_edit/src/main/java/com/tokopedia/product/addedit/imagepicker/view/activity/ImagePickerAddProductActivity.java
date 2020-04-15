@@ -41,13 +41,7 @@ public class ImagePickerAddProductActivity extends ImagePickerActivity {
     }
 
     @Override
-    public void trackContinue() {
-        if (isEditProduct) {
-            ProductEditChooseImageTracking.INSTANCE.trackContinue(userSession.getShopId());
-        } else {
-            ProductAddChooseImageTracking.INSTANCE.trackContinue(userSession.getShopId());
-        }
-    }
+    public void trackContinue() { }
 
     @Override
     public void trackBack() {
@@ -60,6 +54,12 @@ public class ImagePickerAddProductActivity extends ImagePickerActivity {
 
     @Override
     protected Intent getEditorIntent(ArrayList<String> selectedImagePaths) {
+        if (isEditProduct) {
+            ProductEditChooseImageTracking.INSTANCE.trackContinue(userSession.getShopId());
+        } else {
+            ProductAddChooseImageTracking.INSTANCE.trackContinue(userSession.getShopId());
+        }
+
         Intent targetIntent = new Intent(this, ImagePickerEditPhotoActivity.class);
         Intent origin = super.getEditorIntent(selectedImagePaths);
         targetIntent.putExtras(origin.getExtras());
