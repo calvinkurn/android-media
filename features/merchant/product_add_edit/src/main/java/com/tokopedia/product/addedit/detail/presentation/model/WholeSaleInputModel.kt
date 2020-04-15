@@ -6,5 +6,5 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 data class WholeSaleInputModel(
         var price: String = "",
-        var quantity: String = "1"
+        var quantity: String = ""
 ) : Parcelable

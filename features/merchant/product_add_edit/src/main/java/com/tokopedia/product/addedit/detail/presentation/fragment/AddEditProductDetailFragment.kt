@@ -66,8 +66,8 @@ import com.tokopedia.product.addedit.detail.presentation.model.WholeSaleInputMod
 import com.tokopedia.product.addedit.detail.presentation.viewholder.WholeSaleInputViewHolder
 import com.tokopedia.product.addedit.detail.presentation.viewmodel.AddEditProductDetailViewModel
 import com.tokopedia.product.addedit.detail.presentation.widget.ProductBulkPriceEditBottomSheetContent
-import com.tokopedia.product.addedit.imagepicker.view.activity.ImagePickerAddProductActivity
 import com.tokopedia.product.addedit.draft.mapper.AddEditProductMapper.mapProductInputModelDetailToDraft
+import com.tokopedia.product.addedit.imagepicker.view.activity.ImagePickerAddProductActivity
 import com.tokopedia.product.addedit.optionpicker.OptionPicker
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_BACK_PRESSED
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_IS_ADDING_PRODUCT
@@ -303,20 +303,25 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         productWholeSaleSwitch = view.findViewById(R.id.su_wholesale)
         productWholeSaleInputLayout = view.findViewById(R.id.wholesale_input_layout)
         productWholeSaleInputFormsView = view.findViewById(R.id.rv_wholesale_input_forms)
-        wholeSaleInputFormsAdapter = WholeSalePriceInputAdapter(this, onDeleteWholesale = {
-            if (viewModel.isEditing) {
-                ProductEditMainTracking.clickRemoveWholesale(shopId)
-            } else {
-                ProductAddMainTracking.clickRemoveWholesale(shopId)
-            }
-            addNewWholeSalePriceButton?.visibility = View.VISIBLE
-        }, onAddWholesale = {
-            if (viewModel.isEditing) {
-                ProductEditMainTracking.clickAddWholesale(shopId)
-            } else {
-                ProductAddMainTracking.clickAddWholesale(shopId)
-            }
-        })
+        wholeSaleInputFormsAdapter = WholeSalePriceInputAdapter(this,
+
+                onDeleteWholesale = {
+                    if (viewModel.isEditing) {
+                        ProductEditMainTracking.clickRemoveWholesale(shopId)
+                    } else {
+                        ProductAddMainTracking.clickRemoveWholesale(shopId)
+                    }
+                    addNewWholeSalePriceButton?.visibility = View.VISIBLE
+                },
+
+                onAddWholesale = {
+                    if (viewModel.isEditing) {
+                        ProductEditMainTracking.clickAddWholesale(shopId)
+                    } else {
+                        ProductAddMainTracking.clickAddWholesale(shopId)
+                    }
+                })
+
         productWholeSaleInputFormsView?.apply {
             adapter = wholeSaleInputFormsAdapter
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
@@ -328,6 +333,8 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                     addNewWholeSalePriceButton?.visibility = View.GONE
                 }
             }
+            val productPriceInput = productPriceField?.textFieldInput?.editableText.toString().replace(".", "")
+            wholeSaleInputFormsAdapter?.setProductPrice(productPriceInput)
             wholeSaleInputFormsAdapter?.addNewWholeSalePriceForm()
         }
 
@@ -406,6 +413,10 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
 
         addProductPhotoButton?.setOnClickListener(createAddProductPhotoButtonOnClickListener())
 
+        productNameField?.textFieldInput?.setOnFocusChangeListener { _, hasFocus ->
+            if (!hasFocus) productNameRecView?.hide()
+        }
+
         // product name text change listener
         productNameField?.textFieldInput?.addTextChangedListener(object : TextWatcher {
 
@@ -438,10 +449,6 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                     val productPriceInput = charSequence?.toString()?.replace(".", "")
                     productPriceInput?.let {
                         // do the validation first
-                        if(it != "") {
-                            wholeSaleInputFormsAdapter?.setPrice(it.toBigInteger())
-                            wholeSaleInputFormsAdapter?.notifyDataSetChanged()
-                        }
                         viewModel.validateProductPriceInput(it)
                         productPriceField?.textFieldInput?.let { editText ->
                             InputPriceUtil.applyPriceFormatToInputField(editText, it, this)
@@ -460,11 +467,11 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                 } else {
                     ProductAddMainTracking.clickWholesale(shopId)
                 }
-                wholeSaleInputFormsAdapter?.itemCount?.let {
-                    if (it >= AddEditProductDetailConstants.MAX_WHOLESALE_PRICES - 1) {
-                        addNewWholeSalePriceButton?.visibility = View.GONE
-                    }
-                }
+
+                val productPriceInput = productPriceField?.textFieldInput?.editableText.toString().replace(".", "")
+                wholeSaleInputFormsAdapter?.setProductPrice(productPriceInput)
+                val wholesalePriceExist = wholeSaleInputFormsAdapter?.itemCount != 0
+                if (!wholesalePriceExist) wholeSaleInputFormsAdapter?.addNewWholeSalePriceForm()
             }
         }
 
@@ -710,20 +717,30 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     override fun onWholeSaleQuantityItemTextChanged(position: Int, input: String) {
         val itemView = productWholeSaleInputFormsView?.layoutManager?.getChildAt(position)
         val quantityField: TextFieldUnify? = itemView?.findViewById(R.id.tfu_wholesale_quantity)
-        val errorMessage = viewModel.validateProductWholeSaleQuantityInput(input, position + 1)
+        val minOrderInput = productMinOrderField?.textFieldInput?.editableText.toString()
+        val previousQuantity = wholeSaleInputFormsAdapter?.getPreviousQuantity(position) ?: ""
+        val errorMessage = viewModel.validateProductWholeSaleQuantityInput(input, minOrderInput, previousQuantity)
         quantityField?.setError(errorMessage.isNotEmpty())
         quantityField?.setMessage(errorMessage)
         updateWholeSaleErrorCounter(viewModel, productWholeSaleInputFormsView)
+        wholeSaleInputFormsAdapter?.run {
+            if (input.isNotBlank()) this.updateWholeSaleQuantityInputModel(position, input)
+        }
     }
 
     override fun onWholeSalePriceItemTextChanged(position: Int, input: String) {
         val itemView = productWholeSaleInputFormsView?.layoutManager?.getChildAt(position)
         val priceField: TextFieldUnify? = itemView?.findViewById(R.id.tfu_wholesale_price)
         val productPriceInput = productPriceField?.textFieldInput?.editableText.toString().replace(".", "")
-        val errorMessage = viewModel.validateProductWholeSalePriceInput(input, productPriceInput)
+        val previousPrice = wholeSaleInputFormsAdapter?.getPreviousPrice(position)?.replace(".", "")
+                ?: ""
+        val errorMessage = viewModel.validateProductWholeSalePriceInput(input, productPriceInput, previousPrice)
         priceField?.setError(errorMessage.isNotEmpty())
         priceField?.setMessage(errorMessage)
         updateWholeSaleErrorCounter(viewModel, productWholeSaleInputFormsView)
+        wholeSaleInputFormsAdapter?.run {
+            if (input.isNotBlank()) this.updateWholeSalePriceInputModel(position, input)
+        }
     }
 
     fun onCtaYesPressed() {
@@ -786,7 +803,10 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                 // Minimum amount
                 val productWholeSaleQuantityField: TextFieldUnify? = productWholeSaleFormView?.findViewById(R.id.tfu_wholesale_quantity)
                 productWholeSaleQuantityField?.textFieldInput?.editableText?.run {
-                    val errorMessage = viewModel.validateProductWholeSaleQuantityInput(this.toString(), index + 1)
+                    val minOrderInput = productMinOrderField?.textFieldInput?.editableText.toString()
+                    val previousQuantity = wholeSaleInputFormsAdapter?.getPreviousQuantity(index)
+                            ?: ""
+                    val errorMessage = viewModel.validateProductWholeSaleQuantityInput(this.toString(), minOrderInput, previousQuantity)
                     productWholeSaleQuantityField.setError(errorMessage.isNotEmpty())
                     productWholeSaleQuantityField.setMessage(errorMessage)
                 }
@@ -798,7 +818,9 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                 productWholeSalePriceField?.textFieldInput?.editableText?.run {
                     val wholeSalePriceInput = this.toString().replace(".", "")
                     val productPriceInput = productPriceField?.textFieldInput?.editableText.toString().replace(".", "")
-                    val errorMessage = viewModel.validateProductWholeSalePriceInput(wholeSalePriceInput, productPriceInput)
+                    val previousPrice = wholeSaleInputFormsAdapter?.getPreviousPrice(index)?.replace(".", "")
+                            ?: ""
+                    val errorMessage = viewModel.validateProductWholeSalePriceInput(wholeSalePriceInput, productPriceInput, previousPrice)
                     productWholeSalePriceField.setError(errorMessage.isNotEmpty())
                     productWholeSalePriceField.setMessage(errorMessage)
                 }
@@ -877,7 +899,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             productWholeSaleSwitch?.isChecked = true
             wholeSaleInputFormsAdapter?.setWholeSaleInputModels(detailInputModel.wholesaleList)
             viewModel.isWholeSalePriceActivated.value = true
-        } else wholeSaleInputFormsAdapter?.addNewWholeSalePriceForm()
+        }
 
         // product pre order
         val isPreOrder = detailInputModel.preorder.isActive
@@ -1006,7 +1028,8 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             val isDrafting = viewModel.isDrafting
             val isAdding = viewModel.isAdding
             val imageUrlOrPathList = productPhotoAdapter?.getProductPhotoPaths()?.map { urlOrPath ->
-                if (urlOrPath.startsWith(AddEditProductConstants.HTTP_PREFIX)) viewModel.detailInputModel.pictureList.find { it.urlThumbnail == urlOrPath }?.urlOriginal ?: urlOrPath
+                if (urlOrPath.startsWith(AddEditProductConstants.HTTP_PREFIX)) viewModel.detailInputModel.pictureList.find { it.urlThumbnail == urlOrPath }?.urlOriginal
+                        ?: urlOrPath
                 else urlOrPath
             }.orEmpty()
             val intent = ImagePickerAddProductActivity.getIntent(context, createImagePickerBuilder(ArrayList(imageUrlOrPathList)), isEditing)
@@ -1174,7 +1197,9 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         productCategoryRecListView?.adapter?.count?.let {
             if (it > 0) {
                 ListUnifyUtil.setSelected(this, 0) {
-                    onCategoryRecommendationSelected(ListUnifyUtil.getCategoryId(it).toString())
+                    val categoryId = ListUnifyUtil.getCategoryId(it).toString()
+                    viewModel.productInputModel.detailInputModel.categoryId = categoryId
+                    ProductAddMainTracking.clickProductCategoryRecom(shopId)
                 }
             }
         }
@@ -1197,6 +1222,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     }
 
     private fun onCategoryRecommendationSelected(categoryId: String) {
+        productNameRecView?.hide()
         viewModel.productInputModel.detailInputModel.categoryId = categoryId
         ProductAddMainTracking.clickProductCategoryRecom(shopId)
     }
