@@ -59,4 +59,8 @@ object ApplinkConstInternalSellerapp {
     @JvmField
     val MENU_SETTING = "$INTERNAL_SELLERAPP/menu-setting"
 
+    //CreateMerchantVoucherStepsActivity
+    @JvmField
+    val CREATE_VOUCHER = "$INTERNAL_SELLERAPP/create-voucher"
+
 }

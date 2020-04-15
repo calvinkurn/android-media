@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Voucher Creation</string>
+    <string name="create_voucher_title">Tambah Voucher Toko</string>
+</resources>
