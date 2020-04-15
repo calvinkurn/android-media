@@ -5,9 +5,30 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_review_rating_product">Rating Produk</string>
     <string name="title_review_inbox">Inbox Ulasan</string>
+    <string name="most_review">Ulasan Terbanyak</string>
+    <string name="last_week">7 Hari Terakhir</string>
     <string name="period">Periode:</string>
     <string name="review_text">Ulasan</string>
     <string name="period_seller_review">/ %s ulasan</string>
     <string name="no_reviews_yet">Tidak ada ulasan</string>
     <string name="content_no_reviews_yet">Terus berjualan ya agar pembeli kasih kamu alasan yang bikin happy</string>
+    <string name="product_search">cari produk</string>
+    <string name="action_bottom_sheet_rating_product">Pilih</string>
+    <string name="title_bottom_sheet_filter">Tampilkan periode ulasan dalam</string>
+    <string name="title_bottom_sheet_sort">Urutkan rating berdasarkan</string>
+    <string name="error_message_load_more_review_product">Oops, halaman bermasalah. coba refresh atau cek koneksi</string>
+    <string name="action_retry_toaster_review_product">Coba lagi</string>
+    <string name="rating_overall_product">/ 5.0</string>
+
+    <string-array name="sort_review_product_array">
+        <item>Ulasan Terbanyak</item>
+        <item>Rating Tertinggi - Terendah</item>
+        <item>Rating Terendah - Tertinggi</item>
+    </string-array>
+
+    <string-array name="filter_review_product_array">
+        <item>7 Hari Terakhir</item>
+        <item>30 Hari Terakhir</item>
+        <item>1 Tahun Terakhir</item>
+    </string-array>
 </resources>
