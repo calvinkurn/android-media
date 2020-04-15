@@ -37,6 +37,7 @@ class AddEditProductDescriptionViewModel @Inject constructor(
     var descriptionInputModel: DescriptionInputModel = DescriptionInputModel()
     var variantInputModel: ProductVariantInputModel = ProductVariantInputModel()
     var isEditMode: Boolean = false
+    var isAddMode: Boolean = false
 
     private val _productVariant = MutableLiveData<Result<List<ProductVariantByCatModel>>>()
     val productVariant: LiveData<Result<List<ProductVariantByCatModel>>>

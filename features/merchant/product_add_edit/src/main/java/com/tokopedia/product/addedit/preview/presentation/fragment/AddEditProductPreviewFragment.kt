@@ -842,7 +842,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
     private fun moveToDescriptionActivity() {
         viewModel.productInputModel.value?.let {
             val intent = AddEditProductDescriptionActivity.createInstanceEditMode(context,
-                    it.detailInputModel.categoryId, it.descriptionInputModel, it.variantInputModel)
+                    it.detailInputModel.categoryId, it.descriptionInputModel, it.variantInputModel, viewModel.isAdding.value ?: false)
             startActivityForResult(intent, REQUEST_CODE_DESCRIPTION_EDIT)
         }
     }
@@ -850,7 +850,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
     private fun moveToShipmentActivity() {
         viewModel.productInputModel.let {
             val shipmentInputModel = it.value?.shipmentInputModel ?: ShipmentInputModel()
-            val intent = AddEditProductShipmentActivity.createInstanceEditMode(context, shipmentInputModel)
+            val intent = AddEditProductShipmentActivity.createInstanceEditMode(context, shipmentInputModel, viewModel.isAdding.value ?: false)
             startActivityForResult(intent, REQUEST_CODE_SHIPMENT_EDIT)
         }
     }

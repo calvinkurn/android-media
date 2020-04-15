@@ -44,6 +44,7 @@ import com.tokopedia.product.addedit.description.di.AddEditProductDescriptionMod
 import com.tokopedia.product.addedit.description.di.DaggerAddEditProductDescriptionComponent
 import com.tokopedia.product.addedit.description.presentation.activity.AddEditProductDescriptionActivity.Companion.PARAM_CATEGORY_ID
 import com.tokopedia.product.addedit.description.presentation.activity.AddEditProductDescriptionActivity.Companion.PARAM_DESCRIPTION_INPUT_MODEL
+import com.tokopedia.product.addedit.description.presentation.activity.AddEditProductDescriptionActivity.Companion.PARAM_IS_ADD_MODE
 import com.tokopedia.product.addedit.description.presentation.activity.AddEditProductDescriptionActivity.Companion.PARAM_IS_EDIT_MODE
 import com.tokopedia.product.addedit.description.presentation.activity.AddEditProductDescriptionActivity.Companion.PARAM_PRODUCT_INPUT_MODEL
 import com.tokopedia.product.addedit.description.presentation.activity.AddEditProductDescriptionActivity.Companion.PARAM_VARIANT_INPUT_MODEL
@@ -54,7 +55,6 @@ import com.tokopedia.product.addedit.description.presentation.model.ProductVaria
 import com.tokopedia.product.addedit.description.presentation.model.VideoLinkModel
 import com.tokopedia.product.addedit.description.presentation.model.youtube.YoutubeVideoModel
 import com.tokopedia.product.addedit.description.presentation.viewmodel.AddEditProductDescriptionViewModel
-import com.tokopedia.product.addedit.draft.mapper.AddEditProductMapper.mapProductInputModelDetailToDraft
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_BACK_PRESSED
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
@@ -64,7 +64,6 @@ import com.tokopedia.product.addedit.shipment.presentation.model.ShipmentInputMo
 import com.tokopedia.product.addedit.tooltip.model.NumericTooltipModel
 import com.tokopedia.product.addedit.tooltip.presentation.TooltipBottomSheet
 import com.tokopedia.product.addedit.tracking.ProductAddDescriptionTracking
-import com.tokopedia.product.addedit.tracking.ProductAddStepperTracking
 import com.tokopedia.product.addedit.tracking.ProductEditDescriptionTracking
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
@@ -93,13 +92,14 @@ class AddEditProductDescriptionFragment:
         fun createInstance(categoryId: String,
                            descriptionInputModel: DescriptionInputModel,
                            variantInputModel: ProductVariantInputModel,
-                           isEditMode: Boolean): Fragment {
+                           isEditMode: Boolean, isAddMode: Boolean): Fragment {
             return AddEditProductDescriptionFragment().apply {
                 arguments = Bundle().apply {
                     putString(PARAM_CATEGORY_ID, categoryId)
                     putParcelable(PARAM_DESCRIPTION_INPUT_MODEL, descriptionInputModel)
                     putParcelable(PARAM_VARIANT_INPUT_MODEL, variantInputModel)
                     putBoolean(PARAM_IS_EDIT_MODE, isEditMode)
+                    putBoolean(PARAM_IS_ADD_MODE, isAddMode)
                 }
             }
         }
@@ -180,6 +180,7 @@ class AddEditProductDescriptionFragment:
         arguments?.let {
             val categoryId: String = it.getString(PARAM_CATEGORY_ID) ?: ""
             val isEditMode: Boolean = it.getBoolean(PARAM_IS_EDIT_MODE, false)
+            val isAddMode: Boolean = it.getBoolean(PARAM_IS_ADD_MODE, false)
             val descriptionInputModel : DescriptionInputModel =
                     it.getParcelable(PARAM_DESCRIPTION_INPUT_MODEL) ?: DescriptionInputModel()
             val variantInputModel : ProductVariantInputModel =
@@ -188,6 +189,7 @@ class AddEditProductDescriptionFragment:
             descriptionViewModel.descriptionInputModel = descriptionInputModel
             descriptionViewModel.setVariantInput(variantInputModel)
             descriptionViewModel.isEditMode = isEditMode
+            descriptionViewModel.isAddMode = isAddMode
             productInputModel = it.getParcelable(PARAM_PRODUCT_INPUT_MODEL) ?: ProductInputModel()
         }
     }
@@ -390,7 +392,7 @@ class AddEditProductDescriptionFragment:
     }
 
     private fun showDescriptionTips() {
-        if (!descriptionViewModel.isEditMode) {
+        if (!descriptionViewModel.isEditMode || descriptionViewModel.isAddMode) {
             ProductAddDescriptionTracking.clickHelpWriteDescription(shopId)
         }
         fragmentManager?.let {

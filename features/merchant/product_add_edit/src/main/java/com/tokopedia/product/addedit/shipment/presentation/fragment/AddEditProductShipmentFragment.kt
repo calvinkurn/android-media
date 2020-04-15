@@ -58,11 +58,12 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
                 }
             }
         }
-        fun createInstanceEditMode(shipmentInputModel: ShipmentInputModel): Fragment {
+        fun createInstanceEditMode(shipmentInputModel: ShipmentInputModel, isAdding: Boolean): Fragment {
             return AddEditProductShipmentFragment().apply {
                 arguments = Bundle().apply {
                     putParcelable(EXTRA_SHIPMENT_INPUT_MODEL, shipmentInputModel)
                     putBoolean(EXTRA_IS_EDITMODE, true)
+                    putBoolean(EXTRA_IS_ADDMODE, isAdding)
                 }
             }
         }
@@ -76,6 +77,7 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
 
         const val EXTRA_SHIPMENT_INPUT_MODEL = "shipment_input_model"
         const val EXTRA_IS_EDITMODE = "shipment_is_editmode"
+        const val EXTRA_IS_ADDMODE = "shipment_is_addmode"
         const val REQUEST_CODE_SHIPMENT = 0x04
     }
 
@@ -94,11 +96,13 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
         arguments?.run {
             val shipmentInputModel: ShipmentInputModel = getParcelable(EXTRA_SHIPMENT_INPUT_MODEL) ?: ShipmentInputModel()
             val isEditMode = getBoolean(EXTRA_IS_EDITMODE, false)
+            val isAddMode = getBoolean(EXTRA_IS_ADDMODE, false)
             productInputModel = getParcelable(EXTRA_PRODUCT_INPUT_MODEL) ?: ProductInputModel()
             shipmentViewModel.shipmentInputModel = shipmentInputModel
             shipmentViewModel.isEditMode = isEditMode
+            shipmentViewModel.isAddMode = isAddMode
         }
-        if (!shipmentViewModel.isEditMode) {
+        if (!shipmentViewModel.isEditMode || shipmentViewModel.isAddMode) {
             ProductAddShippingTracking.trackScreen()
         }
     }
@@ -266,6 +270,9 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
             intent.putExtra(EXTRA_SHIPMENT_INPUT, shipmentInputModel)
             activity?.setResult(Activity.RESULT_OK, intent)
             activity?.finish()
+            ProductAddShippingTracking.clickFinish(shopId, true)
+        } else {
+            ProductAddShippingTracking.clickFinish(shopId, false)
         }
     }
 
@@ -280,6 +287,9 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
             intent.putExtra(EXTRA_SHIPMENT_INPUT, shipmentInputModel)
             activity?.setResult(Activity.RESULT_OK, intent)
             activity?.finish()
+            ProductEditShippingTracking.clickFinish(shopId, true)
+        } else {
+            ProductEditShippingTracking.clickFinish(shopId, false)
         }
     }
 }
