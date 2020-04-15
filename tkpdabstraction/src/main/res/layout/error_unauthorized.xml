@@ -3,8 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
-    android:padding="@dimen/dp_10">
+    android:orientation="vertical">
 
     <ImageView
         android:id="@+id/image_error"
@@ -13,8 +12,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:srcCompat="@drawable/unify_globalerrors_connection"
-        />
+        app:srcCompat="@drawable/unify_globalerrors_connection" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/msg_title"
@@ -31,7 +29,7 @@
         android:id="@+id/msg_body"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/error_message_unautorized_title"
+        android:text="@string/error_message_unautorized_body"
         app:typographyType="body_2"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -49,6 +47,6 @@
         app:unifyButtonVariant="filled"
         app:unifyButtonSize="medium"
         app:unifyButtonType="main"
-        android:paddingTop="@dimen/spacing_lvl5"/>
+        android:layout_marginTop="@dimen/spacing_lvl5"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
