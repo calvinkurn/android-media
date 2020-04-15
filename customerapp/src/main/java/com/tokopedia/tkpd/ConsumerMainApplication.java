@@ -410,7 +410,6 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         try {
             FirebaseApp.initializeApp(this);
             FacebookSdk.sdkInitialize(this);
-            FacebookSdk.fullyInitialize();
         } catch (Exception e) {
 
         }
