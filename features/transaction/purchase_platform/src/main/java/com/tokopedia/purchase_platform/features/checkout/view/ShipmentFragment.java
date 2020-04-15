@@ -509,7 +509,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             }
             if (errorShopCount == 0 || errorShopCount < shipmentCartItemModelList.size()) {
                 if (lastApplyUiModel != null && !lastApplyUiModel.getAdditionalInfo().getErrorDetail().getMessage().isEmpty()) {
-                    PromoRevampAnalytics.INSTANCE.eventCartViewPromoChanged(lastApplyUiModel.getAdditionalInfo().getErrorDetail().getMessage());
+                    PromoRevampAnalytics.INSTANCE.eventCartViewPromoMessage(lastApplyUiModel.getAdditionalInfo().getErrorDetail().getMessage());
                 }
                 shipmentAdapter.addLastApplyUiDataModel(lastApplyUiModel);
             }
