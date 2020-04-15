@@ -1,9 +1,14 @@
 package com.tokopedia.play.ui.video
 
+import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import androidx.annotation.Nullable
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
 import com.google.android.exoplayer2.ExoPlayer
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
@@ -11,6 +16,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.R
 import com.tokopedia.play.component.UIView
+import com.tokopedia.play.view.type.ScreenOrientation
 
 /**
  * Created by jegul on 02/12/19
@@ -47,6 +53,20 @@ class VideoView(container: ViewGroup) : UIView(container) {
         pvVideo.textureView?.bitmap?.let {
             ivThumbnail.setImageBitmap(it)
         }
+    }
+
+    internal fun setOrientation(orientation: ScreenOrientation) {
+        pvVideo.orientation = orientation
+    }
+
+    internal fun setBackground(imageUrl: String) {
+        Glide.with(container.context).load(imageUrl).into(object : CustomTarget<Drawable?>() {
+            override fun onLoadCleared(@Nullable placeholder: Drawable?) {}
+
+            override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable?>?) {
+                pvVideo.background = resource
+            }
+        })
     }
 
     internal fun showThumbnail(shouldShow: Boolean) {

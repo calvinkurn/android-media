@@ -3,7 +3,6 @@ package com.tokopedia.play.ui.video
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Matrix
-import android.graphics.PointF
 import android.graphics.RectF
 import android.util.AttributeSet
 import android.view.LayoutInflater
@@ -14,7 +13,10 @@ import android.widget.FrameLayout
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
 import com.google.android.exoplayer2.video.VideoListener
+import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.play.R
+import com.tokopedia.play.view.type.ScreenOrientation
+
 
 @SuppressLint("SyntheticAccessor")
 class VideoPlayCustom(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : FrameLayout(context, attrs, defStyleAttr) {
@@ -23,12 +25,13 @@ class VideoPlayCustom(context: Context, attrs: AttributeSet?, defStyleAttr: Int)
     }
     private val componentListener: ComponentListener
     private var bufferingView: View? = null
-    private var containerContentFrame: FrameLayout? = null
     private var contentFrame: AspectRatioFrameLayout? = null
     private var player: Player? = null
     private var surfaceView: TextureView? = null
     private var textureViewRotation = 0
-    private var resizeMode = AspectRatioFrameLayout.RESIZE_MODE_ZOOM
+    private var resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIXED_WIDTH
+
+    private val marginTop = context.resources.getDimensionPixelOffset(R.dimen.play_video_margin_top)
 
     constructor(context: Context) : this(context, null, 0)
 
@@ -36,6 +39,14 @@ class VideoPlayCustom(context: Context, attrs: AttributeSet?, defStyleAttr: Int)
 
     val textureView: TextureView?
         get() = surfaceView
+
+    var orientation: ScreenOrientation = ScreenOrientation.Portrait
+        set(value) {
+            if (value.isLandscape) {
+                contentFrame?.setMargin(0, marginTop, 0, 0)
+            }
+            field = value
+        }
 
     init{
 
@@ -45,7 +56,6 @@ class VideoPlayCustom(context: Context, attrs: AttributeSet?, defStyleAttr: Int)
 
         // Content frame.
         contentFrame = findViewById(com.google.android.exoplayer2.ui.R.id.exo_content_frame)
-        containerContentFrame = findViewById(R.id.fl_video_custom)
         contentFrame?.let { setResizeModeRaw(it, resizeMode) }
 
         surfaceView = TextureView(context)
@@ -133,36 +143,24 @@ class VideoPlayCustom(context: Context, attrs: AttributeSet?, defStyleAttr: Int)
         // VideoListener implementation
         override fun onVideoSizeChanged(
                 width: Int, height: Int, unappliedRotationDegrees: Int, pixelWidthHeightRatio: Float) {
-            val videoAspectRatio: Float = if (height == 0 || width == 0) 1f else width * pixelWidthHeightRatio / height
-//            surfaceView?.let{
-//                if (surfaceView is TextureView) { // Try to apply rotation transformation when our surface is a TextureView.
-//                    // portrait
-//                    if (height > width) {
-//                        if (unappliedRotationDegrees == 90 || unappliedRotationDegrees == 270) { // We will apply a rotation 90/270 degree to the output texture of the TextureView.
-//                            // In this case, the output video's width and height will be swapped.
-//                            videoAspectRatio = 1 / videoAspectRatio
-//                        }
-//                        if (textureViewRotation != 0) {
-//                            surfaceView!!.removeOnLayoutChangeListener(this)
-//                        }
-//                        textureViewRotation = unappliedRotationDegrees
-//                        if (textureViewRotation != 0) { // The texture view's dimensions might be changed after layout step.
-//                            // So add an OnLayoutChangeListener to apply rotation after layout step.
-//                            surfaceView!!.addOnLayoutChangeListener(this)
-//                        }
-//                        applyTextureViewRotation(it, textureViewRotation)
-//                    } else {
-//                        val transformMatrix = Matrix()
-//                        val scaleFactor = PointF(1f, 1f)
-//                        transformMatrix.preScale(
-//                                scaleFactor.x,
-//                                scaleFactor.y,
-//                                0f,
-//                                0f)
-//                        it.setTransform(transformMatrix)
-//                    }
-//                }
-//            }
+            var videoAspectRatio: Float = if (height == 0 || width == 0) 1f else width * pixelWidthHeightRatio / height
+            surfaceView?.let{
+                if (surfaceView is TextureView) { // Try to apply rotation transformation when our surface is a TextureView.
+                    if (unappliedRotationDegrees == 90 || unappliedRotationDegrees == 270) { // We will apply a rotation 90/270 degree to the output texture of the TextureView.
+                        // In this case, the output video's width and height will be swapped.
+                        videoAspectRatio = 1 / videoAspectRatio
+                    }
+                    if (textureViewRotation != 0) {
+                        surfaceView!!.removeOnLayoutChangeListener(this)
+                    }
+                    textureViewRotation = unappliedRotationDegrees
+                    if (textureViewRotation != 0) { // The texture view's dimensions might be changed after layout step.
+                        // So add an OnLayoutChangeListener to apply rotation after layout step.
+                        surfaceView!!.addOnLayoutChangeListener(this)
+                    }
+                    applyTextureViewRotation(it, textureViewRotation)
+                }
+            }
             onContentAspectRatioChanged(videoAspectRatio, contentFrame)
         }
 
@@ -185,7 +183,7 @@ class VideoPlayCustom(context: Context, attrs: AttributeSet?, defStyleAttr: Int)
                 oldTop: Int,
                 oldRight: Int,
                 oldBottom: Int) {
-//            applyTextureViewRotation(view as TextureView, textureViewRotation)
+            applyTextureViewRotation(view as TextureView, textureViewRotation)
         }
     }
 }

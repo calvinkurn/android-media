@@ -51,6 +51,8 @@ object PlayUiMapper {
             id = channel.channelId,
             title = channel.title,
             description = channel.description,
+//            background = channel.backgroundUrl,
+            background = "https://i.pinimg.com/736x/d3/bb/7b/d3bb7b85f4e160d013f68fcde8d19844.jpg",
             channelType = if (channel.videoStream.isLive) PlayChannelType.Live else PlayChannelType.VOD,
             moderatorName = channel.moderatorName,
             partnerId = channel.partnerId,

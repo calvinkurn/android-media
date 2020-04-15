@@ -11,6 +11,7 @@ data class ChannelInfoUiModel(
         val title: String,
         val description: String,
         val channelType: PlayChannelType,
+        val background: String,
         val partnerId: Long,
         val partnerType: PartnerType,
         val moderatorName: String,
