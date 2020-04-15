@@ -243,7 +243,6 @@ public class ImageHandler {
                     .load(url)
                     .centerCrop()
                     .dontAnimate()
-                    .error(R.drawable.error_drawable)
                     .addListener(new RequestListener<Drawable>() {
                         @Override
                         public boolean onLoadFailed(@androidx.annotation.Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {

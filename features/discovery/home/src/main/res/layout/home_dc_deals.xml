@@ -96,7 +96,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-            <ImageView
+            <com.tokopedia.circular_view_pager.presentation.widgets.shimmeringImageView.ShimmeringImageView
                 android:id="@+id/deals_product_image"
                 android:layout_marginTop="@dimen/dp_8"
                 android:layout_marginStart="@dimen/dp_8"

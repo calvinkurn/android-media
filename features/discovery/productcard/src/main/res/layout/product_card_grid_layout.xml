@@ -17,7 +17,7 @@
         android:paddingBottom="@dimen/product_card_padding_bottom"
         tools:layout_height="match_parent">
 
-        <ImageView
+        <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/imageProduct"
             android:layout_width="@dimen/dp_0"
             android:layout_height="@dimen/dp_0"
@@ -25,6 +25,7 @@
             android:gravity="center"
             android:scaleType="centerCrop"
             android:visibility="visible"
+            app:unify_image_type="rect"
             app:layout_constraintDimensionRatio="H,1:1"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
