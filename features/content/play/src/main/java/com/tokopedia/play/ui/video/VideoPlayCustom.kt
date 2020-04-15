@@ -30,7 +30,6 @@ class VideoPlayCustom(context: Context, attrs: AttributeSet?, defStyleAttr: Int)
     private var player: Player? = null
     private var surfaceView: TextureView? = null
     private var textureViewRotation = 0
-    private var resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIXED_WIDTH
 
     private val marginTop = context.resources.getDimensionPixelOffset(R.dimen.play_video_margin_top)
 
@@ -42,15 +41,19 @@ class VideoPlayCustom(context: Context, attrs: AttributeSet?, defStyleAttr: Int)
         get() = surfaceView
 
     var screenOrientation: ScreenOrientation = ScreenOrientation.Portrait
-        set(value) {
-            if (value.isPortrait && videoOrientation.isLandscape) showMargin() else hideMargin()
-            field = value
+        set(screen) {
+            if (screen.isPortrait && videoOrientation.isLandscape) showMargin() else hideMargin()
+            field = screen
         }
 
     var videoOrientation: VideoOrientation = VideoOrientation.Unknown
-        set(value) {
-            if (value.isLandscape && screenOrientation.isPortrait) showMargin() else hideMargin()
-            field = value
+        set(video) {
+            if (video.isLandscape && screenOrientation.isPortrait) showMargin() else hideMargin()
+            if (video.isLandscape)
+                contentFrame?.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIXED_WIDTH
+            else
+                contentFrame?.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_ZOOM
+            field = video
         }
 
     init{
@@ -61,7 +64,6 @@ class VideoPlayCustom(context: Context, attrs: AttributeSet?, defStyleAttr: Int)
 
         // Content frame.
         contentFrame = findViewById(com.google.android.exoplayer2.ui.R.id.exo_content_frame)
-        contentFrame?.let { setResizeModeRaw(it, resizeMode) }
 
         surfaceView = TextureView(context)
         surfaceView?.id = R.id.fl_texture_view

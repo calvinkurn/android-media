@@ -35,7 +35,7 @@ open class VideoComponent(
             bus.getSafeManagedFlow(ScreenStateEvent::class.java)
                     .collect {
                         when (it) {
-                            ScreenStateEvent.Init -> uiView.hide()
+                            ScreenStateEvent.Init -> uiView.show()
                             is ScreenStateEvent.SetVideo -> uiView.setPlayer(it.videoPlayer)
                             is ScreenStateEvent.OnNewPlayRoomEvent -> if(it.event.isFreeze || it.event.isBanned) {
                                 uiView.hide()
@@ -46,7 +46,6 @@ open class VideoComponent(
                             is ScreenStateEvent.VideoStreamChanged -> {
                                 uiView.setVideoOrientation(it.videoStream.orientation)
                                 uiView.setBackground(it.videoStream.backgroundUrl)
-                                uiView.show()
                             }
                         }
                     }
