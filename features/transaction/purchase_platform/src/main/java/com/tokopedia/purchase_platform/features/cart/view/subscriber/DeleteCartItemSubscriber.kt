@@ -44,6 +44,12 @@ class DeleteCartItemSubscriber(private val view: ICartListView?,
                 } else {
                     view.onDeleteCartDataSuccess(toBeDeletedCartIds)
                 }
+
+                val params = view.generateGeneralParamValidateUse()
+                if ((view.checkHitValidateUseIsNeeded(params))) {
+                    view.showPromoCheckoutStickyButtonLoading()
+                    presenter.doUpdateCartAndValidateUse(params)
+                }
                 view.updateCartCounter(deleteCartData.cartCounter)
             } else {
                 view.showToastMessageRed(deleteCartData.message ?: "")

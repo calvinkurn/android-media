@@ -9,21 +9,20 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.design.countdown.CountDownView
 import com.tokopedia.home.R
 import com.tokopedia.home.analytics.HomePageTrackingV2
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.SimpleHorizontalLinearLayoutDecoration
+import com.tokopedia.home.util.setGradientBackground
 import com.tokopedia.productcard.ProductCardListView
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.unifyprinciples.Typography
 
 class RecommendationListCarouselViewHolder(itemView: View,
                                            private val listener: HomeCategoryListener,
-                                           private val countDownViewListener: CountDownView.CountDownListener,
                                            private val parentRecycledViewPool: RecyclerView.RecycledViewPool): DynamicChannelViewHolder(
-        itemView, listener, countDownViewListener) {
+        itemView, listener) {
     override fun setupContent(channel: DynamicHomeChannel.Channels) {
         val listCarouselTitle = itemView.findViewById<Typography>(R.id.list_carousel_title)
         val listCarouselDescription = itemView.findViewById<Typography>(R.id.list_carousel_description)
@@ -57,6 +56,8 @@ class RecommendationListCarouselViewHolder(itemView: View,
                 listCarouselView.setBackgroundColor(backColor)
                 listCarouselView.visibility = View.VISIBLE
             } else listCarouselView.visibility = View.GONE
+
+            listCarouselView.setGradientBackground(banner.gradientColor)
 
             if(banner.title.isEmpty()) listCarouselBannerHeader.visibility = View.GONE
             else listCarouselBannerHeader.visibility = View.VISIBLE

@@ -1,25 +1,22 @@
 package com.tokopedia.collapsing.tab.layout;
 
-import android.graphics.Typeface;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.os.Handler;
-import com.google.android.material.tabs.TabLayout;
-import androidx.viewpager.widget.ViewPager;
 import android.util.AttributeSet;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.viewpager.widget.ViewPager;
+
+import com.google.android.material.tabs.TabLayout;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
-import com.tokopedia.collapsing.tab.layout.R;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -340,7 +337,19 @@ public class CollapsingTabLayout extends TabLayout {
         TextView textView = (TextView) rootView.findViewById(R.id.tabTitle);
         textView.setText(tabItemDataList.get(position).getTitle());
         ImageView imageView = (ImageView) rootView.findViewById(R.id.tabBackgroundImage);
-        ImageHandler.loadImageWithoutPlaceholder(imageView, tabItemDataList.get(position).getImageUrl());
+        View shimmeringView = (View) rootView.findViewById(R.id.tabShimmeringView);
+        shimmeringView.setVisibility(View.VISIBLE);
+        ImageHandler.loadImageWithoutPlaceholder(imageView, tabItemDataList.get(position).getImageUrl(), new ImageHandler.ImageLoaderStateListener() {
+            @Override
+            public void successLoad() {
+                shimmeringView.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void failedLoad() {
+                shimmeringView.setVisibility(View.VISIBLE);
+            }
+        });
         int dp16 = rootView.getResources().getDimensionPixelSize(R.dimen.dp_16);
         if (position == 0) {
             rootView.setPadding(dp16, 0, 0, 0);

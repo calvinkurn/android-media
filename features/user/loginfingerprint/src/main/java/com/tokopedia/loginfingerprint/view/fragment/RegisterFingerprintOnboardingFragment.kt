@@ -10,6 +10,8 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.loginfingerprint.R
 import com.tokopedia.loginfingerprint.di.LoginFingerprintComponent
 import com.tokopedia.loginfingerprint.listener.ScanFingerprintInterface
@@ -58,11 +60,11 @@ class RegisterFingerprintOnboardingFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         setupObserver()
 
-        fingerprint_onboarding_aktivasi_btn.setOnClickListener {
+        fingerprint_onboarding_aktivasi_btn?.setOnClickListener {
             showFingerprintDialog()
         }
 
-        fingerprint_onboarding_skip_btn.setOnClickListener {
+        fingerprint_onboarding_skip_btn?.setOnClickListener {
             viewModel.unregisterFP()
             activity?.finish()
         }
@@ -90,9 +92,10 @@ class RegisterFingerprintOnboardingFragment : BaseDaggerFragment() {
             }
 
             override fun onFingerprintError(msg: String, errCode: Int) {
-                if(errCode == FingerprintManager.FINGERPRINT_ERROR_HW_UNAVAILABLE || errCode == FingerprintManager.FINGERPRINT_ERROR_UNABLE_TO_PROCESS){
+                if(errCode == FingerprintManager.FINGERPRINT_ERROR_HW_UNAVAILABLE || errCode == FingerprintManager.FINGERPRINT_ERROR_UNABLE_TO_PROCESS || errCode == ScanFingerprintDialog.FP_ERROR_KEY_NOT_INITIALIZED){
                     activity?.finish()
-                }else{
+                }
+                else{
                     onErrorRegisterFP(Throwable(message = msg))
                 }
             }
@@ -114,14 +117,14 @@ class RegisterFingerprintOnboardingFragment : BaseDaggerFragment() {
     }
 
     private fun showProgressBar(){
-        fingerprint_onboarding_aktivasi_btn.visibility = View.GONE
-        fingerprint_onboarding_skip_btn.visibility = View.GONE
-        fingerprint_onboarding_loader.visibility = View.VISIBLE
+        fingerprint_onboarding_aktivasi_btn?.hide()
+        fingerprint_onboarding_skip_btn?.hide()
+        fingerprint_onboarding_loader?.show()
     }
 
     private fun hideProgressBar(){
-        fingerprint_onboarding_aktivasi_btn.visibility = View.VISIBLE
-        fingerprint_onboarding_skip_btn.visibility = View.VISIBLE
-        fingerprint_onboarding_loader.visibility = View.GONE
+        fingerprint_onboarding_aktivasi_btn?.show()
+        fingerprint_onboarding_skip_btn?.show()
+        fingerprint_onboarding_loader?.hide()
     }
 }

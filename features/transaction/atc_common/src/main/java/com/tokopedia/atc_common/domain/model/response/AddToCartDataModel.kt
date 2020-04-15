@@ -15,6 +15,14 @@ data class AddToCartDataModel(
     var responseJson: String = ""
 ) : Parcelable {
 
+    fun isDataError(): Boolean {
+        return (data.success == 0 || !status.equals("OK", true)) && (data.message.isNotEmpty() || errorMessage.isNotEmpty())
+    }
+
+    fun getAtcErrorMessage(): String? {
+        return errorMessage.firstOrNull() ?: data.message.firstOrNull()
+    }
+
     constructor(parcel: Parcel) : this(
             parcel.createStringArrayList(),
             parcel.readString(),
