@@ -895,7 +895,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                                setCouponStateChanged(true);
                                                String messageInfo = validateUsePromoRevampUiModel.getPromoUiModel().getAdditionalInfoUiModel().getErrorDetailUiModel().getMessage();
                                                if (messageInfo.length() > 0) {
-                                                   getView().showToastNormal(messageInfo);
+                                                   getView().showToastError(messageInfo);
                                                }
                                                updateTickerAnnouncementData(validateUsePromoRevampUiModel);
                                                if (validateUsePromoRevampUiModel.getStatus().equalsIgnoreCase("ERROR")) {
@@ -909,12 +909,10 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                                } else {
                                                    getView().updateButtonPromoCheckout(validateUsePromoRevampUiModel.getPromoUiModel());
                                                    if (validateUsePromoRevampUiModel.getPromoUiModel().getMessageUiModel().getState().equals("red")) {
-                                                       getView().showToastError(validateUsePromoRevampUiModel.getPromoUiModel().getMessageUiModel().getText());
                                                        analyticsActionListener.sendAnalyticsViewPromoAfterAdjustItem(validateUsePromoRevampUiModel.getPromoUiModel().getMessageUiModel().getText());
                                                    } else {
                                                        for (PromoCheckoutVoucherOrdersItemUiModel voucherOrdersItemUiModel : validateUsePromoRevampUiModel.getPromoUiModel().getVoucherOrderUiModels()) {
                                                            if (voucherOrdersItemUiModel.getMessageUiModel().getState().equals("red")) {
-                                                               getView().showToastError(voucherOrdersItemUiModel.getMessageUiModel().getText());
                                                                analyticsActionListener.sendAnalyticsViewPromoAfterAdjustItem(voucherOrdersItemUiModel.getMessageUiModel().getText());
                                                                break;
                                                            }
