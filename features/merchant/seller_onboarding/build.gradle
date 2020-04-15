@@ -20,8 +20,6 @@ dependencies {
     implementation project(rootProject.ext.libraries.kotlinExtensions)
     implementation project(rootProject.ext.libraries.applink)
 
-    implementation rootProject.ext.tkpdInternalLibDependencies.usersession
-
     implementation rootProject.ext.supportLibDependencies.constraintLayout
 }
 

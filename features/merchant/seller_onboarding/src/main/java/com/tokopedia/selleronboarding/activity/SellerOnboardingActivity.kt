@@ -30,11 +30,6 @@ class SellerOnboardingActivity : BaseActivity() {
         setWhiteStatusBar()
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        onboardingFragment.onActivityResult(requestCode, resultCode, data)
-    }
-
     private fun showFragment() {
         supportFragmentManager.beginTransaction()
                 .replace(R.id.onboardingContainer, onboardingFragment)
