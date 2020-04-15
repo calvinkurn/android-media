@@ -2,10 +2,7 @@ package com.tokopedia.reviewseller.feature.reviewlist.view.model
 
 import com.tokopedia.reviewseller.feature.reviewlist.view.adapter.SellerReviewListTypeFactory
 
-data class FilterAndSortModel(
-        val filter: String? = "",
-        val sort: String? = ""
-): BaseReviewProduct {
+class SearchRatingProductUiModel: BaseReviewProduct {
     override fun type(typeFactory: SellerReviewListTypeFactory): Int {
         return typeFactory.type(this)
     }

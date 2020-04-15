@@ -45,24 +45,24 @@ class ReviewSellerViewModel @Inject constructor(
                     }
             )
 
-            val reviewProductList = asyncCatchError(
-                    dispatcherProvider.io(),
-                    block = {
-                        getProductReviewList(
-                                sortBy = sortBy,
-                                filterBy = filterBy)
-                    },
-                    onError = {
-                        _reviewProductList.postValue(Fail(it))
-                        null
-                    }
-            )
+//            val reviewProductList = asyncCatchError(
+//                    dispatcherProvider.io(),
+//                    block = {
+//                        getProductReviewList(
+//                                sortBy = sortBy,
+//                                filterBy = filterBy)
+//                    },
+//                    onError = {
+//                        _reviewProductList.postValue(Fail(it))
+//                        null
+//                    }
+//            )
 
             productRatingOverall.await()?.let {
                 _productRatingOverall.postValue(Success(it))
-                reviewProductList.await()?.let { reviewProductData ->
-                    _reviewProductList.postValue(Success(reviewProductData))
-                }
+//                reviewProductList.await()?.let { reviewProductData ->
+//                    _reviewProductList.postValue(Success(reviewProductData))
+//                }
             }
         }) {
         }
