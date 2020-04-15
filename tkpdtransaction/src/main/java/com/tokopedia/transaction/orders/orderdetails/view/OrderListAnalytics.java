@@ -587,7 +587,7 @@ public class OrderListAnalytics {
                                                 DataLayer.mapOf(
                                                         NAME, items.getTitle(),
                                                         ID, items.getId(),
-                                                        PRICE, items.getPrice(),
+                                                        PRICE, items.getUnformattedPrice(),
                                                         KEY_CATEGORY, NONE,
                                                         BRAND, NONE,
                                                         VARIANT, NONE,
