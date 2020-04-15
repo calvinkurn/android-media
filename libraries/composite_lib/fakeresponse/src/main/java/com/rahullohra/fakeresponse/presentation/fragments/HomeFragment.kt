@@ -1,4 +1,4 @@
-package com.rahullohra.fakeresponse.presentaiton.fragments
+package com.rahullohra.fakeresponse.presentation.fragments
 
 import android.os.Bundle
 import android.view.View
@@ -11,11 +11,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.rahullohra.fakeresponse.R
 import com.rahullohra.fakeresponse.data.models.ResponseListData
 import com.rahullohra.fakeresponse.data.diProvider.fragments.GqlFragmentProvider
-import com.rahullohra.fakeresponse.presentaiton.adapters.GqlRvAdapter
-import com.rahullohra.fakeresponse.presentaiton.livedata.Fail
-import com.rahullohra.fakeresponse.presentaiton.livedata.Loading
-import com.rahullohra.fakeresponse.presentaiton.livedata.Success
-import com.rahullohra.fakeresponse.presentaiton.viewmodels.FakeResponseModel
+import com.rahullohra.fakeresponse.presentation.adapters.GqlRvAdapter
+import com.rahullohra.fakeresponse.presentation.livedata.Fail
+import com.rahullohra.fakeresponse.presentation.livedata.Loading
+import com.rahullohra.fakeresponse.presentation.livedata.Success
+import com.rahullohra.fakeresponse.presentation.viewmodels.FakeResponseModel
 
 
 class HomeFragment : BaseFragment() {

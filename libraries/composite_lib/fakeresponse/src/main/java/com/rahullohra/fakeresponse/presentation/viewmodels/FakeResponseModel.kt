@@ -1,13 +1,13 @@
-package com.rahullohra.fakeresponse.presentaiton.viewmodels
+package com.rahullohra.fakeresponse.presentation.viewmodels
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.rahullohra.fakeresponse.data.models.ResponseListData
 import com.rahullohra.fakeresponse.domain.usecases.ShowRecordsUseCase
 import com.rahullohra.fakeresponse.domain.usecases.UpdateGqlUseCase
-import com.rahullohra.fakeresponse.presentaiton.livedata.Fail
-import com.rahullohra.fakeresponse.presentaiton.livedata.LiveDataResult
-import com.rahullohra.fakeresponse.presentaiton.livedata.Success
+import com.rahullohra.fakeresponse.presentation.livedata.Fail
+import com.rahullohra.fakeresponse.presentation.livedata.LiveDataResult
+import com.rahullohra.fakeresponse.presentation.livedata.Success
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope

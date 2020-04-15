@@ -7,8 +7,8 @@ import com.rahullohra.fakeresponse.domain.repository.GqlRepository
 import com.rahullohra.fakeresponse.domain.repository.RestRepository
 import com.rahullohra.fakeresponse.domain.usecases.ShowRecordsUseCase
 import com.rahullohra.fakeresponse.domain.usecases.UpdateGqlUseCase
-import com.rahullohra.fakeresponse.presentaiton.fragments.HomeFragment
-import com.rahullohra.fakeresponse.presentaiton.viewmodels.FakeResponseModel
+import com.rahullohra.fakeresponse.presentation.fragments.HomeFragment
+import com.rahullohra.fakeresponse.presentation.viewmodels.FakeResponseModel
 import kotlinx.coroutines.Dispatchers
 
 class GqlFragmentProvider : DiProvider<HomeFragment> {

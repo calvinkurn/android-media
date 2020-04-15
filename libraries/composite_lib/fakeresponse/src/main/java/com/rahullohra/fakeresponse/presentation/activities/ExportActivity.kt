@@ -1,4 +1,4 @@
-package com.rahullohra.fakeresponse.presentaiton.activities
+package com.rahullohra.fakeresponse.presentation.activities
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity

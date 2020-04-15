@@ -8,8 +8,8 @@ import com.rahullohra.fakeresponse.domain.repository.RemoteSqliteRepository
 import com.rahullohra.fakeresponse.domain.repository.RestRepository
 import com.rahullohra.fakeresponse.domain.usecases.DownloadSqliteUseCase
 import com.rahullohra.fakeresponse.domain.usecases.ShowRecordsUseCase
-import com.rahullohra.fakeresponse.presentaiton.fragments.FakeResponseFragment
-import com.rahullohra.fakeresponse.presentaiton.viewmodels.FakeResponseVM
+import com.rahullohra.fakeresponse.presentation.fragments.FakeResponseFragment
+import com.rahullohra.fakeresponse.presentation.viewmodels.FakeResponseVM
 import kotlinx.coroutines.Dispatchers
 
 class FakeResponseFragmentProvider :

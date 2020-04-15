@@ -1,11 +1,11 @@
-package com.rahullohra.fakeresponse.presentaiton.activities
+package com.rahullohra.fakeresponse.presentation.activities
 
 import android.os.Bundle
 import android.widget.FrameLayout
 import androidx.fragment.app.Fragment
 import com.rahullohra.fakeresponse.R
-import com.rahullohra.fakeresponse.presentaiton.fragments.DownloadFragment
-import com.rahullohra.fakeresponse.presentaiton.fragments.FakeResponseFragment
+import com.rahullohra.fakeresponse.presentation.fragments.DownloadFragment
+import com.rahullohra.fakeresponse.presentation.fragments.FakeResponseFragment
 
 class FakeResponseActivity : BaseActivity() {
 

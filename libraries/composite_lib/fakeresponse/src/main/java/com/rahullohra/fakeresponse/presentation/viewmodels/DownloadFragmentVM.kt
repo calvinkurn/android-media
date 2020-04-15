@@ -1,12 +1,12 @@
-package com.rahullohra.fakeresponse.presentaiton.viewmodels
+package com.rahullohra.fakeresponse.presentation.viewmodels
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.rahullohra.fakeresponse.domain.usecases.DownloadSqliteUseCase
-import com.rahullohra.fakeresponse.presentaiton.livedata.Fail
-import com.rahullohra.fakeresponse.presentaiton.livedata.LiveDataResult
-import com.rahullohra.fakeresponse.presentaiton.livedata.Loading
-import com.rahullohra.fakeresponse.presentaiton.livedata.Success
+import com.rahullohra.fakeresponse.presentation.livedata.Fail
+import com.rahullohra.fakeresponse.presentation.livedata.LiveDataResult
+import com.rahullohra.fakeresponse.presentation.livedata.Loading
+import com.rahullohra.fakeresponse.presentation.livedata.Success
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
 

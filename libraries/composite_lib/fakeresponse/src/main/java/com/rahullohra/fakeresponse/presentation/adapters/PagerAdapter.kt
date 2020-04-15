@@ -1,9 +1,9 @@
-package com.rahullohra.fakeresponse.presentaiton.adapters
+package com.rahullohra.fakeresponse.presentation.adapters
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
-import com.rahullohra.fakeresponse.presentaiton.fragments.HomeFragment
+import com.rahullohra.fakeresponse.presentation.fragments.HomeFragment
 
 class PagerAdapter : FragmentStatePagerAdapter {
 

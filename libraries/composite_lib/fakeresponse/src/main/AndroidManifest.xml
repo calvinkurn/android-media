@@ -5,19 +5,19 @@
 
     <application>
         <activity
-            android:name="com.rahullohra.fakeresponse.presentaiton.activities.BaseActivity"
+            android:name="com.rahullohra.fakeresponse.presentation.activities.BaseActivity"
             android:splitName="com.tokopedia.tkpd"
             android:theme="@style/FakeNoActionBar"
             tools:replace="android:splitName"
             tools:targetApi="o" />
         <activity
-            android:name="com.rahullohra.fakeresponse.presentaiton.activities.AddGqlActivity"
+            android:name="com.rahullohra.fakeresponse.presentation.activities.AddGqlActivity"
             android:splitName="com.tokopedia.tkpd"
             android:theme="@style/FakeNoActionBar"
             tools:replace="android:splitName"
             tools:targetApi="o" />
         <activity
-            android:name="com.rahullohra.fakeresponse.presentaiton.activities.AddRestResponseActivity"
+            android:name="com.rahullohra.fakeresponse.presentation.activities.AddRestResponseActivity"
             android:splitName="com.tokopedia.tkpd"
             android:theme="@style/FakeNoActionBar"
             tools:replace="android:splitName"
@@ -29,7 +29,13 @@
             tools:replace="android:splitName"
             tools:targetApi="o" />
         <activity
-            android:name="com.rahullohra.fakeresponse.presentaiton.activities.FakeResponseActivity"
+            android:name=".presentation.activities.PasteTextActivity"
+            android:splitName="com.tokopedia.tkpd"
+            android:theme="@style/FakeNoActionBar"
+            tools:replace="android:splitName"
+            tools:targetApi="o" />
+        <activity
+            android:name="com.rahullohra.fakeresponse.presentation.activities.FakeResponseActivity"
             android:launchMode="singleTask"
             android:splitName="com.tokopedia.tkpd"
             android:taskAffinity="fakeresponse.gqlTesting"

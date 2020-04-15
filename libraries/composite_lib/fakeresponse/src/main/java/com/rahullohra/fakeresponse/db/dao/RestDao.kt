@@ -29,6 +29,11 @@ interface RestDao {
     @Query("Select * FROM RestRecord where id = :id")
     fun getRestResponse(id: Int): RestRecord
 
+    @Query("Select * FROM RestRecord where id in (:id)")
+    fun getRestResponse(id: List<Int>): List<RestRecord>
+
+    @Query("Select id FROM RestRecord ORDER BY id DESC LIMIT 1")
+    fun getLastId(): Int
 
     @Query("DELETE from RestRecord")
     fun deleteAll()

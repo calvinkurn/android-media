@@ -1,7 +1,10 @@
 package com.rahullohra.fakeresponse.chuck.presentation.activities
 
+import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
+import android.view.Menu
+import android.view.MenuItem
 import android.widget.ProgressBar
 import android.widget.ViewFlipper
 import androidx.appcompat.app.AppCompatActivity
@@ -21,9 +24,9 @@ import com.rahullohra.fakeresponse.chuck.presentation.viewmodels.SearchViewModel
 import com.rahullohra.fakeresponse.data.diProvider.activities.SearchActivityProvider
 import com.rahullohra.fakeresponse.data.models.ResponseListData
 import com.rahullohra.fakeresponse.data.models.SearchType
-import com.rahullohra.fakeresponse.presentaiton.livedata.Fail
-import com.rahullohra.fakeresponse.presentaiton.livedata.Loading
-import com.rahullohra.fakeresponse.presentaiton.livedata.Success
+import com.rahullohra.fakeresponse.presentation.livedata.Fail
+import com.rahullohra.fakeresponse.presentation.livedata.Loading
+import com.rahullohra.fakeresponse.presentation.livedata.Success
 
 class SearchActivity : AppCompatActivity() {
 
@@ -92,16 +95,22 @@ class SearchActivity : AppCompatActivity() {
     fun setToolbar() {
         setSupportActionBar(toolbar)
         toolbar.setNavigationOnClickListener {
-            toggleSelectionMode()
+            toggleSelectionMode(false)
         }
+        val icon = if (isSelectionMode) R.drawable.fake_ic_close else R.drawable.fake_ic_back
+        toolbar.setNavigationIcon(icon)
     }
 
-    fun toggleSelectionMode(){
-        isSelectionMode = !isSelectionMode
+    fun toggleSelectionMode(selectionMode: Boolean) {
+        isSelectionMode = selectionMode
         searchList.forEach {
             it.isInExportMode = isSelectionMode
         }
         adapter.notifyDataSetChanged()
+
+        val icon = if (isSelectionMode) R.drawable.fake_ic_close else R.drawable.fake_ic_back
+        toolbar.setNavigationIcon(icon)
+        invalidateOptionsMenu()
     }
 
     fun setObservers() {
@@ -153,6 +162,25 @@ class SearchActivity : AppCompatActivity() {
                 }
             }
         })
+
+        viewModel.exportLiveData.observe(this, Observer {
+            when (it) {
+                is Success<String> -> {
+                    sendData(it.data)
+                }
+            }
+        })
+    }
+
+    fun sendData(string: String) {
+        val sendIntent: Intent = Intent().apply {
+            action = Intent.ACTION_SEND
+            putExtra(Intent.EXTRA_TEXT, string)
+            type = "text/plain"
+        }
+
+        val shareIntent = Intent.createChooser(sendIntent, null)
+        startActivity(shareIntent)
     }
 
     fun performSearch() {
@@ -165,5 +193,27 @@ class SearchActivity : AppCompatActivity() {
         } else {
             Router.routeToAddRest(this, transactionEntity.id?.toInt(), true)
         }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        val menuRes = if (isSelectionMode) R.menu.gql_send_menu else R.menu.gql_search_menu
+        menuInflater.inflate(menuRes, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        when (item?.itemId) {
+            R.id.gql_menu_send -> {
+                performSendOperation()
+            }
+            R.id.gql_menu_share -> {
+                toggleSelectionMode(true)
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    fun performSendOperation() {
+        viewModel.export(searchList)
     }
 }

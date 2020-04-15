@@ -8,8 +8,8 @@ import com.rahullohra.fakeresponse.data.diProvider.DiProvider
 import com.rahullohra.fakeresponse.data.diProvider.vm.VMFactory
 import com.rahullohra.fakeresponse.domain.repository.GqlRepository
 import com.rahullohra.fakeresponse.domain.usecases.AddToDbUseCase
-import com.rahullohra.fakeresponse.presentaiton.activities.AddGqlActivity
-import com.rahullohra.fakeresponse.presentaiton.viewmodels.AddGqlVM
+import com.rahullohra.fakeresponse.presentation.activities.AddGqlActivity
+import com.rahullohra.fakeresponse.presentation.viewmodels.AddGqlVM
 import kotlinx.coroutines.Dispatchers
 
 class AddGqlActivityProvider :

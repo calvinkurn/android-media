@@ -4,6 +4,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.rahullohra.fakeresponse.data.models.ResponseItemType
 import com.rahullohra.fakeresponse.data.models.ResponseListData
+import java.util.*
 
 @Entity(tableName = "RestRecord")
 data class RestRecord(
@@ -14,7 +15,7 @@ data class RestRecord(
         val enabled: Boolean,
         val url: String,
         var httpMethod: String,
-        val customTag: String?=null
+        val customTag: String? = null
 )
 
 fun RestRecord.toResponseListData(): ResponseListData? {
@@ -22,4 +23,10 @@ fun RestRecord.toResponseListData(): ResponseListData? {
         return ResponseListData(id = it, title = url, isChecked = enabled, responseType = ResponseItemType.REST, customName = customTag)
     }
     return null
+}
+
+fun RestRecord.toRestRecord(): RestRecord {
+    val date = Date()
+    val currentTime = date.time
+    return RestRecord(response = response, createdAt = currentTime, updatedAt = currentTime, enabled = true, url = url, httpMethod = httpMethod, customTag = customTag)
 }

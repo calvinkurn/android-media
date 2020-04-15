@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.rahullohra.fakeresponse.chuck.domain.usecase.ChuckSearchUseCase
 import com.rahullohra.fakeresponse.chuck.presentation.viewmodels.SearchViewModel
 import com.rahullohra.fakeresponse.domain.usecases.*
-import com.rahullohra.fakeresponse.presentaiton.viewmodels.*
+import com.rahullohra.fakeresponse.presentation.viewmodels.*
 import kotlinx.coroutines.CoroutineDispatcher
 
 class VMFactory(application: Application, val list: Array<Any>) :
@@ -48,6 +48,11 @@ class VMFactory(application: Application, val list: Array<Any>) :
                     list[0] as CoroutineDispatcher,
                     list[1] as ChuckSearchUseCase,
                     list[2] as ShowRecordsUseCase
+            ) as T
+        } else if (modelClass.isAssignableFrom(PasteTextViewModel::class.java)) {
+            return PasteTextViewModel(
+                    list[0] as CoroutineDispatcher,
+                    list[1] as ImportUseCase
             ) as T
         }
         return super.create(modelClass)

@@ -30,8 +30,16 @@ class GqlRepository(val dao: GqlDao) : BaseRepository {
         return dao.getRecordFromGqlQuery(id)
     }
 
+    fun getGqlRecords(ids:List<Int>):List<GqlRecord>{
+        return dao.getRecordFromGqlQuery(ids)
+    }
+
     fun updateResponse(gqlRecord: GqlRecord) {
         return dao.updateGql(gqlRecord)
+    }
+
+    fun getLastId(): Int {
+        return dao.getLastId()
     }
 
     fun search(tag: String? = null, response: String? = null): List<GqlRecord> {

@@ -1,4 +1,4 @@
-package com.rahullohra.fakeresponse.presentaiton.activities
+package com.rahullohra.fakeresponse.presentation.activities
 
 import android.os.Bundle
 import android.view.Menu
@@ -11,25 +11,25 @@ import com.google.gson.JsonParser
 import com.rahullohra.fakeresponse.R
 import com.rahullohra.fakeresponse.Router
 import com.rahullohra.fakeresponse.chuck.TransactionEntity
-import com.rahullohra.fakeresponse.data.diProvider.activities.AddGqlActivityProvider
-import com.rahullohra.fakeresponse.data.parsers.ParserRuleProvider
-import com.rahullohra.fakeresponse.db.entities.GqlRecord
-import com.rahullohra.fakeresponse.presentaiton.livedata.Fail
-import com.rahullohra.fakeresponse.presentaiton.livedata.Loading
-import com.rahullohra.fakeresponse.presentaiton.livedata.Success
-import com.rahullohra.fakeresponse.presentaiton.viewmodels.AddGqlVM
-import com.rahullohra.fakeresponse.presentaiton.viewmodels.data.AddGqlData
+import com.rahullohra.fakeresponse.data.diProvider.activities.RestActivityDiProvider
+import com.rahullohra.fakeresponse.db.entities.RestRecord
+import com.rahullohra.fakeresponse.presentation.livedata.Fail
+import com.rahullohra.fakeresponse.presentation.livedata.Loading
+import com.rahullohra.fakeresponse.presentation.livedata.Success
+import com.rahullohra.fakeresponse.presentation.viewmodels.AddRestVM
+import com.rahullohra.fakeresponse.presentation.viewmodels.data.AddRestData
 import com.rahullohra.fakeresponse.toast
 
-class AddGqlActivity : BaseActivity() {
+class AddRestResponseActivity : BaseActivity() {
 
-    lateinit var etGqlName: EditText
-    lateinit var etCustomName: EditText
+    lateinit var etRestUrl: EditText
+    lateinit var etMethodName: EditText
     lateinit var etResponse: EditText
+    lateinit var etTag: EditText
     lateinit var toolbar: Toolbar
 
-    override fun getLayout() = R.layout.fake_activity_add_gql
-    lateinit var viewModel: AddGqlVM
+    override fun getLayout() = R.layout.activity_add_rest
+    lateinit var viewModel: AddRestVM
 
     var id: Int? = null
     var isFromChuck: Boolean = false
@@ -39,7 +39,7 @@ class AddGqlActivity : BaseActivity() {
         setContentView(getLayout())
         initVars()
         initUi()
-        setListeners()
+        setObservers()
         getDataFromId()
     }
 
@@ -54,29 +54,30 @@ class AddGqlActivity : BaseActivity() {
     }
 
     fun initUi() {
-        etGqlName = findViewById(R.id.etGql)
-        etCustomName = findViewById(R.id.etCustomName)
+        etRestUrl = findViewById(R.id.etRest)
+        etMethodName = findViewById(R.id.etMethodName)
         etResponse = findViewById(R.id.etResponse)
+        etTag = findViewById(R.id.etTag)
         toolbar = findViewById(R.id.toolbar)
 
         id = intent.extras?.get(Router.BUNDLE_ARGS_ID) as Int?
         isFromChuck = intent.extras?.get(Router.BUNDLE_ARGS_FROM_CHUCK) as Boolean? ?: false
-
         setSupportActionBar(toolbar)
     }
 
     fun initVars() {
-        AddGqlActivityProvider().inject(this)
+        RestActivityDiProvider().inject(this)
     }
 
-    fun setListeners() {
+    fun setObservers() {
 
-        viewModel.liveDataGqlResponse.observe(this, Observer {
+        viewModel.liveDataRestResponse.observe(this, Observer {
             when (it) {
-                is Success<GqlRecord> -> {
-                    etGqlName.setText(it.data.gqlOperationName)
+                is Success<RestRecord> -> {
+                    etMethodName.setText(it.data.httpMethod)
+                    etRestUrl.setText(it.data.url)
                     etResponse.setText(it.data.response)
-                    etCustomName.setText(it.data.customTag)
+                    etTag.setText(it.data.customTag)
                 }
             }
         })
@@ -84,7 +85,7 @@ class AddGqlActivity : BaseActivity() {
         viewModel.liveDataCreate.observe(this, Observer {
             when (it) {
                 is Success<Long> -> {
-                    toast("New entry added")
+                    toast("New entry Added")
                 }
                 is Fail -> {
                     toast(it.ex.message)
@@ -94,10 +95,10 @@ class AddGqlActivity : BaseActivity() {
             }
         })
 
-        viewModel.liveDataGqlUpdate.observe(this, Observer {
+        viewModel.liveDataUpdate.observe(this, Observer {
             when (it) {
                 is Success<Boolean> -> {
-                    toast("New entry updated")
+                    toast("New entry Updated")
                 }
                 is Fail -> {
                     toast(it.ex.message)
@@ -119,10 +120,11 @@ class AddGqlActivity : BaseActivity() {
         })
     }
 
+
     fun updateUi(transactionEntity: TransactionEntity){
 
-        val parserRuleProvider = ParserRuleProvider()
-        etGqlName.setText(parserRuleProvider.parse(transactionEntity.requestBody?:""))
+        etMethodName.setText(transactionEntity.method?:"")
+        etRestUrl.setText(transactionEntity.url?:"")
 
         var response = transactionEntity.responseBody?:""
         response = gson.toJson(JsonParser().parse(response))
@@ -153,18 +155,20 @@ class AddGqlActivity : BaseActivity() {
     }
 
     fun saveData() {
-        val customName = etCustomName.text.toString()
-        val gqlName = etGqlName.text.toString()
-        val response = etResponse.text.toString()
 
-        val addGqlData =
-                AddGqlData(gqlQueryName = gqlName, response = response, customTag = customName)
+        val addRestData = AddRestData(
+                etRestUrl.text.toString(),
+                etMethodName.text.toString(),
+                etResponse.text.toString(),
+                etTag.text.toString()
+        )
 
         if (isExistingRecord()) {
-            viewModel.updateRecord(id!!, addGqlData)
+            viewModel.updateRecord(id!!, addRestData)
         } else {
-            viewModel.addToDb(addGqlData)
+            viewModel.addRecord(addRestData)
         }
+
     }
 
     fun isExistingRecord(): Boolean {

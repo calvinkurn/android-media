@@ -7,6 +7,7 @@
     <string name="gql_search">Search</string>
     <string name="gql_share">Share</string>
     <string name="gql_send">Send</string>
+    <string name="gql_paste_text">Paste text</string>
     <string name="gql_clear_records">Clear records</string>
     <string name="gql_add_record">Add gql record</string>
     <string name="gql_add_rest_record">Add rest record</string>

@@ -17,7 +17,8 @@ data class TransactionEntity(@SerializedName(TransactionEntityColumn.RESPONSE_BO
                              @SerializedName(TransactionEntityColumn.ID) val id: Long? = null,
                              val isGql:Boolean = false,
                              @Expose(serialize = false)
-                             var isSelectedForExport:Boolean = false, override var isInExportMode: Boolean = false
+                             override var isSelectedForExport:Boolean = false,
+                             override var isInExportMode: Boolean = false
 ): SearchType
 
 object TransactionEntityColumn {

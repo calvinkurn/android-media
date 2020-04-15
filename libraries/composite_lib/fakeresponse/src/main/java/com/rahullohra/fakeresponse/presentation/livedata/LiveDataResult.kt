@@ -1,4 +1,4 @@
-package com.rahullohra.fakeresponse.presentaiton.livedata
+package com.rahullohra.fakeresponse.presentation.livedata
 
 sealed class LiveDataResult<out T>
 data class Success<out T>(val data: T) : LiveDataResult<T>()

@@ -34,6 +34,14 @@ class RestRepository(val dao: RestDao) : BaseRepository {
         return dao.getRestResponse(id)
     }
 
+    fun getRestRecords(ids: List<Int>): List<RestRecord> {
+        return dao.getRestResponse(ids)
+    }
+
+    fun getLastId(): Int {
+        return dao.getLastId()
+    }
+
     fun search(url: String?, tag: String? = null, response: String? = null): List<RestRecord> {
 
         val items = arrayListOf<String>()

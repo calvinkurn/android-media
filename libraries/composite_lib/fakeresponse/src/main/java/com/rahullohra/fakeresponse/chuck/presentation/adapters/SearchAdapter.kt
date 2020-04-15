@@ -7,7 +7,7 @@ import com.rahullohra.fakeresponse.chuck.TransactionEntity
 import com.rahullohra.fakeresponse.chuck.presentation.viewholder.SearchViewHolder
 import com.rahullohra.fakeresponse.data.models.ResponseListData
 import com.rahullohra.fakeresponse.data.models.SearchType
-import com.rahullohra.fakeresponse.presentaiton.viewholder.ResponseVH
+import com.rahullohra.fakeresponse.presentation.viewholder.ResponseVH
 
 class SearchAdapter(val dataList: ArrayList<SearchType>,
                     val chuckClickCallback: (SearchType) -> Unit,

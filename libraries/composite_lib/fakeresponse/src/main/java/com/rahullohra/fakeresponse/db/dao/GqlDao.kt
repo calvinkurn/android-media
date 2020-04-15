@@ -26,9 +26,15 @@ interface GqlDao {
     @Query("Select * FROM GqlRecord where id= :id")
     fun getRecordFromGqlQuery(id: Int): GqlRecord
 
+    @Query("Select * FROM GqlRecord where id in (:ids)")
+    fun getRecordFromGqlQuery(ids: List<Int>): List<GqlRecord>
+
     @Query("DELETE from GqlRecord")
     fun deleteAll()
 
     @RawQuery
-    fun searchRecords(query: SupportSQLiteQuery):List<GqlRecord>
+    fun searchRecords(query: SupportSQLiteQuery): List<GqlRecord>
+
+    @Query("Select id FROM GqlRecord ORDER BY id DESC LIMIT 1")
+    fun getLastId(): Int
 }

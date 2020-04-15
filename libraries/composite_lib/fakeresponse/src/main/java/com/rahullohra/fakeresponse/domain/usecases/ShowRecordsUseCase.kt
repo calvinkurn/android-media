@@ -1,6 +1,8 @@
 package com.rahullohra.fakeresponse.domain.usecases
 
 import com.rahullohra.fakeresponse.data.models.ResponseListData
+import com.rahullohra.fakeresponse.db.entities.GqlRecord
+import com.rahullohra.fakeresponse.db.entities.RestRecord
 import com.rahullohra.fakeresponse.db.entities.toResponseListData
 import com.rahullohra.fakeresponse.domain.repository.GqlRepository
 import com.rahullohra.fakeresponse.domain.repository.RestRepository
@@ -27,6 +29,14 @@ class ShowRecordsUseCase constructor(val gqlRepository: GqlRepository, val restR
         list.addAll(restRepository.search(url, tag, response)
                 .mapNotNull { it.toResponseListData() })
         return list
+    }
+
+    fun getGqlRecords(ids: List<Int>): List<GqlRecord> {
+        return gqlRepository.getGqlRecords(ids)
+    }
+
+    fun getRestRecords(ids: List<Int>): List<RestRecord> {
+        return restRepository.getRestRecords(ids)
     }
 
     suspend fun deleteAllRecords() {

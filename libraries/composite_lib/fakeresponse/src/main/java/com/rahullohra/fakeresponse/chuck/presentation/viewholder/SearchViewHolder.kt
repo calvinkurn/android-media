@@ -48,12 +48,12 @@ class SearchViewHolder(itemView: View, val itemClickCallback: (TransactionEntity
     }
 
     fun handleExportClick(data: TransactionEntity){
+        data.isSelectedForExport = !data.isSelectedForExport
         if(data.isSelectedForExport){
             imageCheck.setBackgroundResource(R.drawable.fake_blue_circle)
         }else{
             imageCheck.setBackgroundResource(R.drawable.fake_grey_circle)
         }
-        data.isSelectedForExport = !data.isSelectedForExport
     }
 
     fun handleNormalClick(data: TransactionEntity){

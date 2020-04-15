@@ -8,8 +8,8 @@ import com.rahullohra.fakeresponse.data.diProvider.DiProvider
 import com.rahullohra.fakeresponse.data.diProvider.vm.VMFactory
 import com.rahullohra.fakeresponse.domain.repository.RestRepository
 import com.rahullohra.fakeresponse.domain.usecases.AddRestDaoUseCase
-import com.rahullohra.fakeresponse.presentaiton.activities.AddRestResponseActivity
-import com.rahullohra.fakeresponse.presentaiton.viewmodels.AddRestVM
+import com.rahullohra.fakeresponse.presentation.activities.AddRestResponseActivity
+import com.rahullohra.fakeresponse.presentation.viewmodels.AddRestVM
 import kotlinx.coroutines.Dispatchers
 
 class RestActivityDiProvider :

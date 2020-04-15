@@ -1,4 +1,4 @@
-package com.rahullohra.fakeresponse.presentaiton.viewholder
+package com.rahullohra.fakeresponse.presentation.viewholder
 
 import android.content.Context
 import android.view.View

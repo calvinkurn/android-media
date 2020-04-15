@@ -3,9 +3,10 @@ package com.rahullohra.fakeresponse
 import android.content.Context
 import android.content.Intent
 import com.rahullohra.fakeresponse.chuck.presentation.activities.SearchActivity
-import com.rahullohra.fakeresponse.presentaiton.activities.AddGqlActivity
-import com.rahullohra.fakeresponse.presentaiton.activities.AddRestResponseActivity
-import com.rahullohra.fakeresponse.presentaiton.activities.ExportActivity
+import com.rahullohra.fakeresponse.presentation.activities.AddGqlActivity
+import com.rahullohra.fakeresponse.presentation.activities.AddRestResponseActivity
+import com.rahullohra.fakeresponse.presentation.activities.ExportActivity
+import com.rahullohra.fakeresponse.presentation.activities.PasteTextActivity
 
 class Router {
 
@@ -35,6 +36,11 @@ class Router {
 
         fun routeToExportActivity(context: Context?) {
             val intent = Intent(context, ExportActivity::class.java)
+            context?.startActivity(intent)
+        }
+
+        fun routeToPasteTextActivity(context: Context?) {
+            val intent = Intent(context, PasteTextActivity::class.java)
             context?.startActivity(intent)
         }
     }

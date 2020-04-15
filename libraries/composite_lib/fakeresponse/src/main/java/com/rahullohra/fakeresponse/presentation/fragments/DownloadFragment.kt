@@ -1,13 +1,13 @@
-package com.rahullohra.fakeresponse.presentaiton.fragments
+package com.rahullohra.fakeresponse.presentation.fragments
 
 import androidx.lifecycle.Observer
 import com.rahullohra.fakeresponse.R
 import com.rahullohra.fakeresponse.data.diProvider.fragments.DownloadFragmentProvider
-import com.rahullohra.fakeresponse.presentaiton.activities.FakeResponseActivity
-import com.rahullohra.fakeresponse.presentaiton.livedata.Fail
-import com.rahullohra.fakeresponse.presentaiton.livedata.Loading
-import com.rahullohra.fakeresponse.presentaiton.livedata.Success
-import com.rahullohra.fakeresponse.presentaiton.viewmodels.DownloadFragmentVM
+import com.rahullohra.fakeresponse.presentation.activities.FakeResponseActivity
+import com.rahullohra.fakeresponse.presentation.livedata.Fail
+import com.rahullohra.fakeresponse.presentation.livedata.Loading
+import com.rahullohra.fakeresponse.presentation.livedata.Success
+import com.rahullohra.fakeresponse.presentation.viewmodels.DownloadFragmentVM
 import kotlinx.android.synthetic.main.gql_fragment_download.*
 
 class DownloadFragment : BaseFragment() {

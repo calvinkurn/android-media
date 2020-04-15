@@ -1,4 +1,4 @@
-package com.rahullohra.fakeresponse.presentaiton.fragments
+package com.rahullohra.fakeresponse.presentation.fragments
 
 import android.os.Bundle
 import android.view.LayoutInflater

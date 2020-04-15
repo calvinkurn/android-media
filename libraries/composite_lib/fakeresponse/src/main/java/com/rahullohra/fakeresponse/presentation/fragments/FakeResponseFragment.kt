@@ -1,4 +1,4 @@
-package com.rahullohra.fakeresponse.presentaiton.fragments
+package com.rahullohra.fakeresponse.presentation.fragments
 
 import android.os.Bundle
 import android.view.Menu
@@ -13,11 +13,11 @@ import com.google.android.material.tabs.TabLayout
 import com.rahullohra.fakeresponse.R
 import com.rahullohra.fakeresponse.Router
 import com.rahullohra.fakeresponse.data.diProvider.fragments.FakeResponseFragmentProvider
-import com.rahullohra.fakeresponse.presentaiton.activities.BaseActivity
-import com.rahullohra.fakeresponse.presentaiton.activities.FakeResponseActivity
-import com.rahullohra.fakeresponse.presentaiton.adapters.PagerAdapter
-import com.rahullohra.fakeresponse.presentaiton.livedata.Success
-import com.rahullohra.fakeresponse.presentaiton.viewmodels.FakeResponseVM
+import com.rahullohra.fakeresponse.presentation.activities.BaseActivity
+import com.rahullohra.fakeresponse.presentation.activities.FakeResponseActivity
+import com.rahullohra.fakeresponse.presentation.adapters.PagerAdapter
+import com.rahullohra.fakeresponse.presentation.livedata.Success
+import com.rahullohra.fakeresponse.presentation.viewmodels.FakeResponseVM
 
 
 class FakeResponseFragment : BaseFragment() {
@@ -93,9 +93,9 @@ class FakeResponseFragment : BaseFragment() {
     fun handleResetData() {
         if (context is FakeResponseActivity) {
             Toast.makeText(
-                context,
-                "All data cleared, Restart app to use this library again",
-                Toast.LENGTH_LONG
+                    context,
+                    "All data cleared, Restart app to use this library again",
+                    Toast.LENGTH_LONG
             ).show()
         }
     }
@@ -125,6 +125,9 @@ class FakeResponseFragment : BaseFragment() {
             }
             R.id.gql_menu_search -> {
                 Router.routeToSearch(context)
+            }
+            R.id.gql_menu_paste_text -> {
+                Router.routeToPasteTextActivity(activity)
             }
         }
         return true
