@@ -30,25 +30,20 @@ import kotlinx.android.synthetic.main.fragment_talk_reading.*
 import kotlinx.android.synthetic.main.partial_talk_reading_connection_error.view.*
 import javax.inject.Inject
 
-class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
+class TalkReadingFragment(private val productId: Int) : BaseListFragment<TalkReadingUiModel,
         TalkReadingAdapterTypeFactory>(), HasComponent<TalkReadingComponent>,
         OnFinishedListener {
 
     companion object {
 
-        const val PRODUCT_ID = "product_id"
-
         @JvmStatic
         fun createNewInstance(productId: Int): TalkReadingFragment =
-            TalkReadingFragment().apply {
-                arguments?.putInt(PRODUCT_ID, productId)
-            }
+            TalkReadingFragment(productId)
     }
 
     @Inject
     lateinit var viewModel: TalkReadingViewModel
 
-    private var productId: Int = 0
     private var sortOptionsBottomSheet: BottomSheetUnify? = null
 
     override fun getAdapterTypeFactory(): TalkReadingAdapterTypeFactory {
@@ -59,11 +54,6 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
         return talkReadingRecyclerView
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        getProductId()
-        super.onCreate(savedInstanceState)
-    }
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_talk_reading, container, false)
     }
@@ -72,8 +62,7 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
         observeProductHeader()
         observeSortOptions()
         showPageLoading()
-        initSortOptions()
-//        getHeaderData()
+        getHeaderData()
         super.onViewCreated(view, savedInstanceState)
     }
 
@@ -104,23 +93,18 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
         viewModel.updateSelectedSort(sortOption)
     }
 
-    private fun getProductId() {
-        arguments?.let {
-            productId = it.getInt(PRODUCT_ID)
-        }
-    }
-
     private fun showPageLoading() {
         pageLoading.visibility = View.VISIBLE
-        pageLoading.setOnClickListener {
-            showBottomSheet()
-        }
+    }
+
+    private fun hidePageLoading() {
+        pageLoading.visibility = View.GONE
     }
 
     private fun showPageError() {
         pageError.visibility = View.VISIBLE
         pageError.readingConnectionErrorRetryButton.setOnClickListener {
-            // Retry
+            getHeaderData()
         }
         pageError.readingConnectionErrorGoToSettingsButton.setOnClickListener {
             RouteManager.route(context, GENERAL_SETTING)
@@ -140,10 +124,12 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
             when (it) {
                 is Success -> {
                     bindHeader(
-                            TalkReadingMapper.mapDiscussionAggregateResponseToTalkReadingHeaderModel(it.data) {
+                            TalkReadingMapper.mapDiscussionAggregateResponseToTalkReadingHeaderModel(it.data.discussionAggregateResponse) {
                                 showBottomSheet()
                             }
                     )
+                    initSortOptions()
+                    hidePageLoading()
                 }
                 is Fail -> {
                     showPageError()

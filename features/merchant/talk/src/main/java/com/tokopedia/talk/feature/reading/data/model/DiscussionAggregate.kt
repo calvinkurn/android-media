@@ -7,6 +7,8 @@ data class DiscussionAggregate(
         val productName: String = "",
         @SerializedName("thumbnail")
         val thumbnail: String = "",
+        @SerializedName("url")
+        val url: String = "",
         @SerializedName("category")
         val category: List<DiscussionAggregateCategory> = listOf()
 )

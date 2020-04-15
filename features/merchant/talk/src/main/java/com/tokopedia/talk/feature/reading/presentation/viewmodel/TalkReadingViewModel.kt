@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.talk.common.coroutine.CoroutineDispatchers
-import com.tokopedia.talk.feature.reading.data.model.DiscussionAggregate
+import com.tokopedia.talk.feature.reading.data.model.DiscussionAggregateResponse
 import com.tokopedia.talk.feature.reading.data.model.DiscussionDataResponse
 import com.tokopedia.talk.feature.reading.data.model.SortOption
 import com.tokopedia.talk.feature.reading.domain.usecase.GetDiscussionAggregateUseCase
@@ -22,8 +22,8 @@ class TalkReadingViewModel @Inject constructor(
         private val dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.main) {
 
-    private val _discussionAggregate = MutableLiveData<Result<DiscussionAggregate>>()
-    val discussionAggregate: LiveData<Result<DiscussionAggregate>>
+    private val _discussionAggregate = MutableLiveData<Result<DiscussionAggregateResponse>>()
+    val discussionAggregate: LiveData<Result<DiscussionAggregateResponse>>
     get() = _discussionAggregate
 
     private val _sortOptions = MutableLiveData<List<SortOption>>()

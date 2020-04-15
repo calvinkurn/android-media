@@ -3,10 +3,11 @@ package com.tokopedia.talk.feature.reading.domain.usecase
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.talk.feature.reading.data.model.DiscussionAggregate
+import com.tokopedia.talk.feature.reading.data.model.DiscussionAggregateResponse
 import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
-class GetDiscussionAggregateUseCase @Inject constructor(graphqlRepository: GraphqlRepository) : GraphqlUseCase<DiscussionAggregate>(graphqlRepository) {
+class GetDiscussionAggregateUseCase @Inject constructor(graphqlRepository: GraphqlRepository) : GraphqlUseCase<DiscussionAggregateResponse>(graphqlRepository) {
 
     companion object {
         const val PARAM_PRODUCT_ID = "productID"
@@ -14,13 +15,14 @@ class GetDiscussionAggregateUseCase @Inject constructor(graphqlRepository: Graph
             val productID = "\$productID"
             """
             query discussionAggregateByProductID($productID: Int!) {
-                discussionAggregateByProductID(productID: $productID)
-                productName
-                thumbnail
-                category {
-                    name
-                    text
-                    counter
+                discussionAggregateByProductID(productID: $productID) {
+                    productName
+                    thumbnail
+                    category {
+                        name
+                        text
+                        counter
+                    }
                 }
             }
         """.trimIndent()
@@ -29,7 +31,7 @@ class GetDiscussionAggregateUseCase @Inject constructor(graphqlRepository: Graph
 
     init {
         setGraphqlQuery(query)
-        setTypeClass(DiscussionAggregate::class.java)
+        setTypeClass(DiscussionAggregateResponse::class.java)
     }
 
     fun setParams(productId: Int) {
