@@ -270,9 +270,6 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
             intent.putExtra(EXTRA_SHIPMENT_INPUT, shipmentInputModel)
             activity?.setResult(Activity.RESULT_OK, intent)
             activity?.finish()
-            ProductAddShippingTracking.clickFinish(shopId, true)
-        } else {
-            ProductAddShippingTracking.clickFinish(shopId, false)
         }
     }
 

@@ -1,7 +1,5 @@
 package com.tokopedia.product.manage.common.draft.data.db.source
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.Transformations
 import com.tokopedia.product.manage.common.draft.constant.AddEditProductDraftConstant
 import com.tokopedia.product.manage.common.draft.data.db.AddEditProductDraftDao
 import com.tokopedia.product.manage.common.draft.data.db.entity.AddEditProductDraftEntity

@@ -105,6 +105,7 @@ open class AddEditProductAddService : AddEditProductBaseService() {
                     deleteProductDraftUseCase.params = DeleteProductDraftUseCase.createRequestParams(productInputModel.draftId)
                     deleteProductDraftUseCase.executeOnBackground()
                 }
+                ProductAddShippingTracking.clickFinish(shopId, true)
                 return@withContext productAddUseCase.executeOnBackground()
             }
         }, onError = {
@@ -114,6 +115,7 @@ open class AddEditProductAddService : AddEditProductBaseService() {
                     saveProductDraftUseCase.params = SaveProductDraftUseCase.createRequestParams(mapProductInputModelDetailToDraft(productInputModel), productInputModel.draftId, false)
                     withContext(Dispatchers.IO){ saveProductDraftUseCase.executeOnBackground() }
                 }
+                ProductAddShippingTracking.clickFinish(shopId, false, errorMessage)
             }
         })
     }

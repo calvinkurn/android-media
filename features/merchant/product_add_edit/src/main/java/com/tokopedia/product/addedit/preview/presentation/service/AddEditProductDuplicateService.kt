@@ -10,6 +10,7 @@ import com.tokopedia.product.addedit.description.presentation.model.ProductVaria
 import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
 import com.tokopedia.product.addedit.preview.domain.usecase.ProductAddUseCase
 import com.tokopedia.product.addedit.shipment.presentation.model.ShipmentInputModel
+import com.tokopedia.product.addedit.tracking.ProductAddShippingTracking
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -60,9 +61,11 @@ class AddEditProductDuplicateService : AddEditProductAddService() {
             withContext(Dispatchers.IO) {
                 productAddUseCase.params = ProductAddUseCase.createRequestParams(param)
                 setUploadProductDataSuccess()
+                ProductAddShippingTracking.clickFinish(shopId, true)
                 return@withContext productAddUseCase.executeOnBackground()
             }
         }, onError = {
+            ProductAddShippingTracking.clickFinish(shopId, false)
             it.message?.let { errorMessage -> setUploadProductDataSuccess(errorMessage) }
         })
     }
