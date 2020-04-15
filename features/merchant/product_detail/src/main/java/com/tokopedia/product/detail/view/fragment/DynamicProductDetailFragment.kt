@@ -313,7 +313,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
     override fun onResume() {
         super.onResume()
-        updateCartNotification()
         reloadCartCounter()
     }
 
@@ -421,6 +420,9 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                     val phonePrice = data.getStringExtra(TradeInParams.PARAM_PHONE_PRICE)
                     buyAfterTradeinDiagnose(deviceId, phoneType, phonePrice)
                 }
+            }
+            ProductDetailConstant.REQUEST_CODE_CHECKOUT -> {
+                updateCartNotification()
             }
             ProductDetailConstant.REQUEST_CODE_ETALASE -> {
                 if (resultCode == Activity.RESULT_OK && data != null) {
@@ -1223,7 +1225,8 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     }
 
     private fun goToOneClickCheckout() {
-        RouteManager.route(context, ApplinkConstInternalMarketplace.ONE_CLICK_CHECKOUT)
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.ONE_CLICK_CHECKOUT)
+        startActivityForResult(intent, ProductDetailConstant.REQUEST_CODE_CHECKOUT)
     }
 
     private fun sendTrackingATC(cartId: String) {
@@ -1272,14 +1275,14 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         intent.putExtra(CheckoutConstant.EXTRA_IS_ONE_CLICK_SHIPMENT, true)
         intent.putExtras(shipmentFormRequest)
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        startActivity(intent)
+        startActivityForResult(intent, ProductDetailConstant.REQUEST_CODE_CHECKOUT)
     }
 
     private fun goToCartCheckout(cartId: String) {
         val intent = RouteManager.getIntent(context, ApplinkConst.CART)
         intent?.run {
             putExtra(ApplinkConst.Transaction.EXTRA_CART_ID, cartId)
-            startActivity(intent)
+            startActivityForResult(intent, ProductDetailConstant.REQUEST_CODE_CHECKOUT)
         }
     }
 
