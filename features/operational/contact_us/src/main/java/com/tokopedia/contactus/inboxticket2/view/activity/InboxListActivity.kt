@@ -96,6 +96,7 @@ class InboxListActivity : InboxBaseActivity(), InboxListView, View.OnClickListen
 
     override fun initView() {
         this.findingViewsId()
+        (mPresenter as InboxListPresenter).ticketList
         settingOnClickListener()
         btnFilterTv?.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable(this, R.drawable.contactus_ic_filter_list), null, null, null)
         rvEmailList?.addOnScrollListener(rvOnScrollListener)

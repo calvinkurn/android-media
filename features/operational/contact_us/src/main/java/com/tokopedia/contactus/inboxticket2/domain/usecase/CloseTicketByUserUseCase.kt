@@ -2,14 +2,16 @@ package com.tokopedia.contactus.inboxticket2.domain.usecase
 
 import android.content.Context
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.basemvvm.repository.BaseRepository
 import com.tokopedia.contactus.R
+import com.tokopedia.contactus.inboxticket2.data.ContactUsRepository
 import com.tokopedia.contactus.inboxticket2.data.model.ChipGetInboxDetail
 import com.tokopedia.contactus.inboxticket2.data.model.ChipInboxDetails
 import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
+import javax.inject.Named
 
-class CloseTicketByUserUseCase @Inject constructor(private val context: Context)  {
+class CloseTicketByUserUseCase @Inject constructor(@Named("close_ticket_by_user") val closeTicketQuery: String,
+                                                   private val repository: ContactUsRepository) {
 
     fun createRequestParams(caseID: String?, source: String?): RequestParams {
         val requestParams = RequestParams.create()
@@ -20,8 +22,7 @@ class CloseTicketByUserUseCase @Inject constructor(private val context: Context)
 
 
     suspend fun getChipInboxDetail(requestParams: RequestParams): ChipGetInboxDetail? {
-        return BaseRepository().getGQLData(GraphqlHelper.loadRawString(context.resources,
-                R.raw.close_ticket_by_user),ChipInboxDetails::class.java, requestParams.parameters).chipGetInboxDetail
+        return repository.getGQLData(closeTicketQuery, ChipInboxDetails::class.java, requestParams.parameters).chipGetInboxDetail
     }
 
     companion object {

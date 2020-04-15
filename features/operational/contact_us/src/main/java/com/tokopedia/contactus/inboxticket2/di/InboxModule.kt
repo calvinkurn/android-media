@@ -3,6 +3,8 @@ package com.tokopedia.contactus.inboxticket2.di
 import android.content.Context
 import android.content.SharedPreferences
 import android.preference.PreferenceManager
+import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.contactus.R
 import com.tokopedia.contactus.inboxticket2.domain.usecase.*
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxBaseContract.InboxBasePresenter
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxDetailContract.InboxDetailPresenter
@@ -45,4 +47,22 @@ class InboxModule(private val context: Context) {
         return InboxDetailPresenterImpl(messageUseCase, messageUseCase2, ratingUseCase, inboxOptionUseCase, submitRatingUseCase, closeTicketByUserUseCase,uploadImgeUseCase)
     }
 
+
+    @Named("close_ticket_by_user")
+    @Provides
+    fun provideCloseTicketQuery(): String {
+        return GraphqlHelper.loadRawString(context.resources, R.raw.close_ticket_by_user)
+    }
+
+    @Named("inbox_question_query")
+    @Provides
+    fun provideInboxQuestionQuery(): String {
+        return GraphqlHelper.loadRawString(context.resources, R.raw.inbox_question_query)
+    }
+
+    @Named("submit_rating")
+    @Provides
+    fun provideSubmitRatingQuery(): String {
+        return GraphqlHelper.loadRawString(context.resources, R.raw.submit_rating)
+    }
 }

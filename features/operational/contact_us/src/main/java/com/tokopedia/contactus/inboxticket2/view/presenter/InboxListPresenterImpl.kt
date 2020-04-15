@@ -10,6 +10,7 @@ import com.tokopedia.contactus.R
 import com.tokopedia.contactus.common.analytics.ContactUsTracking
 import com.tokopedia.contactus.common.analytics.InboxTicketTracking
 import com.tokopedia.contactus.home.view.ContactUsHomeActivity
+import com.tokopedia.contactus.inboxticket2.data.InboxEndpoint
 import com.tokopedia.contactus.inboxticket2.domain.TicketsItem
 import com.tokopedia.contactus.inboxticket2.domain.usecase.GetTicketListUseCase
 import com.tokopedia.contactus.inboxticket2.view.activity.InboxDetailActivity
@@ -19,6 +20,7 @@ import com.tokopedia.contactus.inboxticket2.view.contract.InboxListContract.Inbo
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxListContract.InboxListView
 import com.tokopedia.contactus.inboxticket2.view.customview.CustomEditText
 import com.tokopedia.contactus.inboxticket2.view.fragment.InboxBottomSheetFragment
+import com.tokopedia.core.network.constants.TkpdBaseURL
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -39,30 +41,32 @@ class InboxListPresenterImpl(private val mUseCase: GetTicketListUseCase) : Inbox
     private var mView: InboxListView? = null
     private val filterList: ArrayList<String> by lazy { ArrayList<String>() }
     private val originalList: ArrayList<TicketsItem> by lazy { ArrayList<TicketsItem>() }
-    private var isLoading = false
-    private var isLastPage = false
+    var isLoading = false
+    var isLastPage = false
     private var filterAdapter: InboxFilterAdapter? = null
-    private var fromFilter = false
+    var fromFilter: Boolean = false
     private var nextUrl: String? = null
     private lateinit var queryMap: MutableMap<String, Any>
+
+    companion object {
+        val TICKET_LIST_URL = TkpdBaseURL.BASE_CONTACT_US + InboxEndpoint.LIST_TICKET
+    }
 
     override fun attachView(view: InboxBaseView?) {
         mView = view as InboxListView
         filterList.addAll(Arrays.asList(*mView?.getActivity()?.resources?.getStringArray(R.array.filterarray)))
-        ticketList
     }
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + SupervisorJob()
 
-    private val ticketList: Unit
+    override val ticketList: Unit
         get() {
             mView?.showProgressBar()
-            mUseCase.url = ""
             launchCatchError(
                     block = {
                         if (!::queryMap.isInitialized) queryMap = HashMap()
-                        val ticketListResponse = mUseCase.getTicketListResponse(queryMap)
+                        val ticketListResponse = mUseCase.getTicketListResponse(queryMap, TICKET_LIST_URL)
                         when {
                             ticketListResponse.tickets?.isNotEmpty() == true -> {
                                 mView?.toggleEmptyLayout(View.GONE)
@@ -84,6 +88,7 @@ class InboxListPresenterImpl(private val mUseCase: GetTicketListUseCase) : Inbox
                                 mView?.hideFilter()
                             }
                         }
+
                         mView?.hideProgressBar()
 
                     },
@@ -150,9 +155,8 @@ class InboxListPresenterImpl(private val mUseCase: GetTicketListUseCase) : Inbox
     }
 
     override fun onClickTicket(index: Int, isOfficialStore: Boolean) {
-        val detailIntent = Intent(mView?.getActivity(), InboxDetailActivity::class.java)
-        detailIntent.putExtra(InboxDetailActivity.PARAM_TICKET_ID, originalList[index].id)
-        detailIntent.putExtra(InboxDetailActivity.IS_OFFICIAL_STORE, isOfficialStore)
+        val detailIntent =
+                InboxDetailActivity.getIntent(mView?.getActivity(), originalList[index].id, isOfficialStore)
         mView?.navigateToActivityRequest(detailIntent, InboxBaseView.REQUEST_DETAILS)
         ContactUsTracking.sendGTMInboxTicket("",
                 InboxTicketTracking.Category.EventInboxTicket,
@@ -215,7 +219,7 @@ class InboxListPresenterImpl(private val mUseCase: GetTicketListUseCase) : Inbox
     }
 
     override fun refreshLayout() {}
-    private fun checkIfToLoad(layoutManager: LinearLayoutManager) {
+    fun checkIfToLoad(layoutManager: LinearLayoutManager) {
         val visibleItemCount = layoutManager.childCount
         val totalItemCount = layoutManager.itemCount
         val firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition()
@@ -231,21 +235,21 @@ class InboxListPresenterImpl(private val mUseCase: GetTicketListUseCase) : Inbox
         }
     }
 
-    private fun loadMoreItems() {
+    fun loadMoreItems() {
         isLoading = true
-        mUseCase.url = nextUrl ?: ""
         launchCatchError(
                 block = {
-                    isLoading = false
-                    mView?.removeFooter()
                     if (!::queryMap.isInitialized) queryMap = HashMap()
-                    val ticketListResponse = mUseCase.getTicketListResponse(queryMap)
+                    val ticketListResponse = mUseCase.getTicketListResponse(queryMap, nextUrl ?: "")
                     if (ticketListResponse.tickets?.isNotEmpty() == true) {
                         originalList.addAll(ticketListResponse.tickets)
                         nextUrl = ticketListResponse.nextPage
                         isLastPage = nextUrl?.isEmpty() == true
                         mView?.updateDataSet()
                     }
+
+                    isLoading = false
+                    mView?.removeFooter()
                 },
                 onError = { isLoading = false }
         )

@@ -693,10 +693,10 @@ class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, OnSelectImageC
         const val PARAM_TICKET_ID = "ticket_id"
         const val PARAM_TICKET_T_ID = "id"
         const val IS_OFFICIAL_STORE = "is_official_store"
-        fun getIntent(context: Context?, ticketId: String?): Intent {
+        fun getIntent(context: Context?, ticketId: String?, officialStore: Boolean = false): Intent {
             val intent = Intent(context, InboxDetailActivity::class.java)
             intent.putExtra(PARAM_TICKET_ID, ticketId)
-            intent.putExtra(IS_OFFICIAL_STORE, false)
+            intent.putExtra(IS_OFFICIAL_STORE, officialStore)
             return intent
         }
     }

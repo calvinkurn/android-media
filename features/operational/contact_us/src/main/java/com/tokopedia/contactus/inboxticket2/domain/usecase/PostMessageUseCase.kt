@@ -3,6 +3,7 @@ package com.tokopedia.contactus.inboxticket2.domain.usecase
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.basemvvm.repository.BaseRepository
 import com.tokopedia.common.network.data.model.RequestType
+import com.tokopedia.contactus.inboxticket2.data.ContactUsRepository
 import com.tokopedia.contactus.inboxticket2.data.InboxEndpoint
 import com.tokopedia.contactus.inboxticket2.domain.InboxDataResponse
 import com.tokopedia.contactus.orderquery.data.CreateTicketResult
@@ -10,10 +11,15 @@ import com.tokopedia.core.network.constants.TkpdBaseURL
 import java.util.*
 import javax.inject.Inject
 
-class PostMessageUseCase @Inject constructor(){
+const val TICKET_ID = "ticket_id"
+const val MESSAGE = "message"
+const val IS_IMAGE = "p_photo"
+const val IMAGE_AS_STRING = "p_photo_all"
+
+class PostMessageUseCase @Inject constructor(private val repository: ContactUsRepository){
 
     suspend fun getCreateTicketResult(queryMap: MutableMap<String, Any>): InboxDataResponse<*>? {
-        return (BaseRepository().getRestData(
+        return (repository.getRestData(
                 url,
                 object : TypeToken<InboxDataResponse<CreateTicketResult>>() {}.type,
                 RequestType.POST,
@@ -26,10 +32,10 @@ class PostMessageUseCase @Inject constructor(){
 
     fun setQueryMap(id: String, message: String, photo: Int, photoall: String): MutableMap<String, Any>{
         val queryMap: MutableMap<String, Any> = HashMap()
-        queryMap["ticket_id"] = id
-        queryMap["message"] = message
-        if (photo == 1) queryMap["p_photo"] = 1
-        if (photoall.isNotEmpty()) queryMap["p_photo_all"] = photoall
+        queryMap[TICKET_ID] = id
+        queryMap[MESSAGE] = message
+        if (photo == 1) queryMap[IS_IMAGE] = 1
+        if (photoall.isNotEmpty()) queryMap[IMAGE_AS_STRING] = photoall
         return queryMap
     }
 

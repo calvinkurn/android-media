@@ -59,6 +59,14 @@ dependencies {
     implementation project(rootProject.ext.libraries.core_legacy)
     implementation rootProject.ext.tkpdInternalLibDependencies.network
 
+
+    //test
+    testImplementation rootProject.ext.testDependencies.mockk
+    testImplementation rootProject.ext.testDependencies.archCoreTesting
+    testImplementation rootProject.ext.testDependencies.junit
+    testImplementation rootProject.ext.miscDependencies.coroutineTest
+    testImplementation rootProject.ext.miscDependencies.coroutineCore
+
 }
 
 project.ext {

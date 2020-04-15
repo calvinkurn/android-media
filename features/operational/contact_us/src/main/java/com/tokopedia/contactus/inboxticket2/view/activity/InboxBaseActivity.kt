@@ -73,8 +73,8 @@ abstract class InboxBaseActivity : BaseSimpleActivity(), InboxBaseView {
         executeInjector()
         NetworkClient.init(this)
         mPresenter = getPresenter()
-        initView()
         mPresenter?.attachView(this)
+        initView()
     }
 
     override fun onRestart() {

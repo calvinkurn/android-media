@@ -25,5 +25,6 @@ interface InboxListContract {
         fun scrollList()
         fun onRecyclerViewScrolled(layoutManager: LinearLayoutManager)
         fun getSearchListener(): CustomEditText.Listener?
+        val ticketList: Unit
     }
 }

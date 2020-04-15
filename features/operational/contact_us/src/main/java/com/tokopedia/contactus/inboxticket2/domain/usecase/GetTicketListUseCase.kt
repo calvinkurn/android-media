@@ -1,11 +1,9 @@
 package com.tokopedia.contactus.inboxticket2.domain.usecase
 
 import com.google.gson.reflect.TypeToken
-import com.tokopedia.basemvvm.repository.BaseRepository
 import com.tokopedia.common.network.data.model.RequestType
-import com.tokopedia.contactus.inboxticket2.data.InboxEndpoint
+import com.tokopedia.contactus.inboxticket2.data.ContactUsRepository
 import com.tokopedia.contactus.inboxticket2.domain.TicketListResponse
-import com.tokopedia.core.network.constants.TkpdBaseURL
 import com.tokopedia.network.data.model.response.DataResponse
 import java.util.*
 import javax.inject.Inject
@@ -14,10 +12,9 @@ const val STATUS = "status"
 const val READ = "read"
 const val RATING = "rating"
 
-class GetTicketListUseCase @Inject constructor() {
-    private lateinit var mUrl: String
-    suspend fun getTicketListResponse(queryMap: MutableMap<String, Any>): TicketListResponse {
-        return (BaseRepository().getRestData(
+class GetTicketListUseCase @Inject constructor(private val repository: ContactUsRepository) {
+    suspend fun getTicketListResponse(queryMap: MutableMap<String, Any>, url: String): TicketListResponse {
+        return (repository.getRestData(
                 url,
                 object : TypeToken<DataResponse<TicketListResponse>>() {}.type,
                 RequestType.GET,
@@ -32,10 +29,4 @@ class GetTicketListUseCase @Inject constructor() {
         if (rating > 0) queryMap[RATING] = rating
         return queryMap
     }
-
-    var url: String
-        get() = if (::mUrl.isInitialized && mUrl.isNotEmpty()) mUrl else TkpdBaseURL.BASE_CONTACT_US + InboxEndpoint.LIST_TICKET
-        set(Url) {
-            mUrl = Url
-        }
 }

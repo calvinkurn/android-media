@@ -15,7 +15,6 @@ import java.util.regex.Pattern
 
 class Utils(private val mContext: Context) {
     private var mLocale: Locale? = null
-    var UPLOAD_URL = "https://u12.tokopedia.net"
     @JvmField
     var CLOSED = "closed"
     @JvmField

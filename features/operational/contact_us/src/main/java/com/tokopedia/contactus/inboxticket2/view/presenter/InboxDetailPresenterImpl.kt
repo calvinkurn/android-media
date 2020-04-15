@@ -87,9 +87,10 @@ class InboxDetailPresenterImpl(private val postMessageUseCase: PostMessageUseCas
         launchCatchError(
                 block = {
                     mView?.showProgressBar()
-                    val requestParams = submitRatingUseCase.createRequestParams(mView?.getCommentID(),
-                            data?.extras?.getInt(EMOJI_STATE).toString(),
-                            data?.getStringExtra(SELECTED_ITEM))
+                    val requestParams = submitRatingUseCase.createRequestParams(mView?.getCommentID()
+                            ?: "",
+                            data?.extras?.getInt(EMOJI_STATE) ?: 0,
+                            data?.getStringExtra(SELECTED_ITEM) ?: "")
 
                     val chipGetInboxDetail = submitRatingUseCase.getChipInboxDetail(requestParams)
 
@@ -329,7 +330,15 @@ class InboxDetailPresenterImpl(private val postMessageUseCase: PostMessageUseCas
                 mView?.getActivity()?.let {
                     launchCatchError(
                             block = {
-                                val list = uploadImageUseCase.uploadFile(it, mView?.imageList)
+                                val networkCalculator = uploadImageUseCase.getNetworkCalculator()
+                                val networkCalculatorList =
+                                        uploadImageUseCase.getNetworkCalculatorList(
+                                                mView?.imageList)
+                                val files = uploadImageUseCase.getFile(mView?.imageList)
+                                val list = uploadImageUseCase.uploadFile(
+                                        mView?.imageList,
+                                        networkCalculatorList,
+                                        files)
                                 var attachmentString = StringBuilder()
                                 list.forEach {
                                     attachmentString.append("~").append(it.imageId)
@@ -624,7 +633,7 @@ class InboxDetailPresenterImpl(private val postMessageUseCase: PostMessageUseCas
         mView?.showProgressBar()
         launchCatchError(
                 block = {
-                    val requestParams = submitRatingUseCase.createRequestParams(commentId, rating.toString(), "-")
+                    val requestParams = submitRatingUseCase.createRequestParams(commentId, rating, "-")
                     mView?.hideProgressBar()
                     val chipGetInboxDetail = submitRatingUseCase.getChipInboxDetail(requestParams)
                     if (chipGetInboxDetail?.messageError?.size ?: 0 > 0) {

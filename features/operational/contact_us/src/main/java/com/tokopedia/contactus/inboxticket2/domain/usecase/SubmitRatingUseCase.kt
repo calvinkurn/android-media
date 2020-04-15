@@ -1,28 +1,32 @@
 package com.tokopedia.contactus.inboxticket2.domain.usecase
 
-import android.content.Context
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.basemvvm.repository.BaseRepository
-import com.tokopedia.contactus.R
+import com.tokopedia.contactus.inboxticket2.data.ContactUsRepository
 import com.tokopedia.contactus.inboxticket2.data.model.ChipGetInboxDetail
 import com.tokopedia.contactus.inboxticket2.data.model.ChipInboxDetails
 import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
+import javax.inject.Named
 
-class SubmitRatingUseCase @Inject constructor(var context: Context) {
+const val COMMENT_ID = "commentID"
+const val CSAT_RATING = "rating"
+const val REASON = "reason"
 
-    fun createRequestParams(commentID: String?, rating: String, reason: String?): RequestParams {
+class SubmitRatingUseCase @Inject constructor(@Named("submit_rating") val submitRatingQuery: String,
+                                              private val repository: ContactUsRepository) {
+
+    fun createRequestParams(commentID: String, rating: Int, reason: String): RequestParams {
         val requestParams = RequestParams.create()
-        requestParams.putString("commentID", commentID)
-        requestParams.putInt("rating", rating.toInt())
-        requestParams.putString("reason", reason)
+        requestParams.putString(COMMENT_ID, commentID)
+        requestParams.putInt(CSAT_RATING, rating)
+        requestParams.putString(REASON, reason)
         return requestParams
     }
 
 
-    suspend fun getChipInboxDetail(requestParams: RequestParams):ChipGetInboxDetail?{
-       return BaseRepository().getGQLData(GraphqlHelper.loadRawString(context.resources,
-                R.raw.submit_rating),ChipInboxDetails::class.java, requestParams.parameters).chipGetInboxDetail
+    suspend fun getChipInboxDetail(requestParams: RequestParams): ChipGetInboxDetail? {
+        return repository.getGQLData(submitRatingQuery,
+                ChipInboxDetails::class.java,
+                requestParams.parameters).chipGetInboxDetail
     }
 
 }

@@ -3,6 +3,7 @@ package com.tokopedia.contactus.inboxticket2.domain.usecase
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.basemvvm.repository.BaseRepository
 import com.tokopedia.common.network.data.model.RequestType
+import com.tokopedia.contactus.inboxticket2.data.ContactUsRepository
 import com.tokopedia.contactus.inboxticket2.data.InboxEndpoint
 import com.tokopedia.contactus.inboxticket2.domain.InboxDataResponse
 import com.tokopedia.contactus.inboxticket2.domain.StepTwoResponse
@@ -10,10 +11,13 @@ import com.tokopedia.core.network.constants.TkpdBaseURL
 import java.util.*
 import javax.inject.Inject
 
-class PostMessageUseCase2 @Inject internal constructor() {
+const val FILE_UPLOADED = "file_uploaded"
+const val POST_KEY = "post_key"
+
+class PostMessageUseCase2 @Inject internal constructor(private val repository: ContactUsRepository) {
 
     suspend fun getInboxDataResponse(queryMap: MutableMap<String, Any>): InboxDataResponse<*>? {
-        return (BaseRepository().getRestData(
+        return (repository.getRestData(
                 url,
                 object : TypeToken<InboxDataResponse<StepTwoResponse>>() {}.type,
                 RequestType.POST,
@@ -27,8 +31,8 @@ class PostMessageUseCase2 @Inject internal constructor() {
     fun setQueryMap(fileUploaded: String, postKey: String): MutableMap<String, Any> {
         val queryMap: MutableMap<String, Any> = HashMap()
         queryMap.clear()
-        queryMap["file_uploaded"] = fileUploaded
-        queryMap["post_key"] = postKey
+        queryMap[FILE_UPLOADED] = fileUploaded
+        queryMap[POST_KEY] = postKey
         return queryMap
     }
 
