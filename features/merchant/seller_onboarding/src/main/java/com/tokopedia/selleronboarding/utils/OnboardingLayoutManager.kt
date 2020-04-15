@@ -17,28 +17,30 @@ class OnboardingLayoutManager(
         reverseLayout: Boolean
 ) : LinearLayoutManager(context, orientation, reverseLayout) {
 
-    private var currentItemPos = 0
-
     override fun scrollHorizontallyBy(dx: Int, recycler: RecyclerView.Recycler?, state: RecyclerView.State?): Int {
-        println("dx : $dx")
-        println("isMeasuring : ${state?.isMeasuring}")
-        println("currentItemPos : $currentItemPos")
-        val isScrollLeft = dx < 0
-        println("isScrollLeft : $isScrollLeft")
-        if (isScrollLeft) { //scroll to left
-            setLeftAlpha(getChildAt(currentItemPos.minus(1)))
-            setRightAlpha(getChildAt(currentItemPos))
-        } else { //scroll to right
-            setRightAlpha(getChildAt(currentItemPos.plus(1)))
-            setLeftAlpha(getChildAt(currentItemPos))
-        }
+        setTextHeaderAlphaOnSwipe(dx)
         return super.scrollHorizontallyBy(dx, recycler, state)
     }
 
-    override fun onScrollStateChanged(state: Int) {
-        super.onScrollStateChanged(state)
-        if (state == RecyclerView.SCROLL_STATE_IDLE) {
-            currentItemPos = findFirstCompletelyVisibleItemPosition()
+    /**
+     * Return the child view at the given index
+     * or return null if view not found/index out of bounds
+     * */
+    private fun getViewAt(index: Int): View? = getChildAt(index)
+
+    private fun setTextHeaderAlphaOnSwipe(dx: Int) {
+        val isScrollLeft = dx < 0
+        if (isScrollLeft) {
+            setLeftAlpha(getViewAt(0))
+            setRightAlpha(getViewAt(1))
+        } else {
+            for (i in 0..itemCount.minus(1)) {
+                setLeftAlpha(getViewAt(i))
+                when (i) {
+                    1 -> setRightAlpha(getViewAt(2))
+                    else -> setRightAlpha(getViewAt(1))
+                }
+            }
         }
     }
 
