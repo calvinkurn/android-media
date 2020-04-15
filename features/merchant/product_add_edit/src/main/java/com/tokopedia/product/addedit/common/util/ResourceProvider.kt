@@ -39,10 +39,6 @@ class ResourceProvider @Inject constructor(@ApplicationContext val context: Cont
         return getString(R.string.error_product_price_less_than_min_limit)
     }
 
-    fun getMaxLimitProductPriceErrorMessage(): String? {
-        return getString(R.string.error_product_price_exceeding_max_limit)
-    }
-
     // product whole sale quantity string properties
 
     fun getEmptyWholeSaleQuantityErrorMessage(): String? {
@@ -53,9 +49,12 @@ class ResourceProvider @Inject constructor(@ApplicationContext val context: Cont
         return getString(R.string.error_zero_wholesale_quantity)
     }
 
-    fun getMinLimitWholeSaleQuantityErrorMessage(min : Int): String? {
-        val errorMessage = getString(R.string.error_wholesale_quantity_less_than_two)
-        return errorMessage?.let { String.format(it, min)}
+    fun getMinLimitWholeSaleQuantityErrorMessage(): String? {
+        return getString(R.string.error_wholesale_quantity_less_min_order)
+    }
+
+    fun getPrevInputWholeSaleQuantityErrorMessage(): String? {
+        return getString(R.string.error_wholesale_quantity_must_bigger_than_previous_input)
     }
 
     // product whole sale price string properties
@@ -68,12 +67,12 @@ class ResourceProvider @Inject constructor(@ApplicationContext val context: Cont
         return getString(R.string.error_zero_wholesale_price)
     }
 
-    fun getMaxLimitWholeSalePriceErrorMessage(): String? {
-        return getString(R.string.error_wholesale_price_exceeding_max_limit)
-    }
-
     fun getWholeSalePriceTooExpensiveErrorMessage(): String? {
         return getString(R.string.error_wholesale_price_too_expensive)
+    }
+
+    fun getPrevInputWholeSalePriceErrorMessage(): String? {
+        return getString(R.string.error_wholesale_price_must_cheaper_than_previous_input)
     }
 
     // product stock string properties
