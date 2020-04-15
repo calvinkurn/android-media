@@ -37,7 +37,9 @@ class GetReviewProductListUseCase @Inject constructor(
 
         gqlUseCase.clearRequest()
         gqlUseCase.setCacheStrategy(GraphqlCacheStrategy
-                .Builder(CacheType.CLOUD_THEN_CACHE).build())
+                .Builder(CacheType.CLOUD_THEN_CACHE)
+                .setSessionIncluded(true)
+                .build())
 
         val gqlRequest = GraphqlRequest(gqlQuery, ProductReviewListResponse::class.java, params)
         gqlUseCase.addRequest(gqlRequest)
