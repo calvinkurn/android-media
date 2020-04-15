@@ -14,6 +14,7 @@ import com.tokopedia.product.addedit.draft.mapper.AddEditProductMapper
 import com.tokopedia.product.addedit.preview.domain.usecase.ProductAddUseCase
 import com.tokopedia.product.addedit.shipment.presentation.model.ShipmentInputModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -28,8 +29,6 @@ Step to submit duplicate product:
 class AddEditProductDuplicateService : AddEditProductAddService() {
 
     companion object {
-        private const val JOB_ID = 13131314
-
         fun startService(context: Context,
                          detailInputModel: DetailInputModel,
                          descriptionInputModel: DescriptionInputModel,
@@ -62,7 +61,6 @@ class AddEditProductDuplicateService : AddEditProductAddService() {
                             productInputModel.draftId, false)
             withContext(Dispatchers.IO){
                 productDraftId = saveProductDraftUseCase.executeOnBackground()
-
                 // (2)
                 uploadProductImages(filterPathOnly(detailInputModel.imageUrlOrPathList),
                         variantInputModel.productSizeChart?.filePath ?: "")
@@ -89,11 +87,11 @@ class AddEditProductDuplicateService : AddEditProductAddService() {
             withContext(Dispatchers.IO) {
                 productAddUseCase.params = ProductAddUseCase.createRequestParams(param)
                 productAddUseCase.executeOnBackground()
-                setUploadProductDataSuccess()
-
                 // (4)
                 clearProductDraft()
             }
+            delay(NOTIFICATION_CHANGE_DELAY)
+            setUploadProductDataSuccess()
         }, onError = {
             it.message?.let { errorMessage -> setUploadProductDataError(errorMessage) }
         })

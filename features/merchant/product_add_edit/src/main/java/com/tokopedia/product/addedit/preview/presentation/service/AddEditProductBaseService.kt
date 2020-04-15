@@ -22,8 +22,6 @@ import com.tokopedia.product.addedit.preview.domain.usecase.ProductEditUseCase
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.io.File
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
@@ -51,6 +49,11 @@ abstract class AddEditProductBaseService : JobIntentService(), CoroutineScope {
     lateinit var resourceProvider: ResourceProvider
 
     private var notificationManager: AddEditProductNotificationManager? = null
+
+    companion object {
+        const val JOB_ID = 13131314
+        const val NOTIFICATION_CHANGE_DELAY = 1000L
+    }
 
     override fun onCreate() {
         super.onCreate()

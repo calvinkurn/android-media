@@ -21,6 +21,7 @@ import com.tokopedia.product.addedit.preview.presentation.model.ProductInputMode
 import com.tokopedia.product.addedit.shipment.presentation.model.ShipmentInputModel
 import com.tokopedia.product.addedit.tracking.ProductEditStepperTracking
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -46,7 +47,6 @@ class AddEditProductEditService : AddEditProductBaseService() {
     private var variantInputModel: ProductVariantInputModel = ProductVariantInputModel()
 
     companion object {
-        private const val JOB_ID = 13131314
         private const val EXTRA_PRODUCT_ID_INPUT_EDIT = "EXTRA_PRODUCT_ID_INPUT_EDIT"
         private const val EXTRA_PRODUCT_INPUT_MODEL = "EXTRA_PRODUCT_INPUT_MODEL"
 
@@ -128,13 +128,12 @@ class AddEditProductEditService : AddEditProductBaseService() {
         launchCatchError(block = {
             withContext(Dispatchers.IO) {
                 productEditUseCase.params = ProductEditUseCase.createRequestParams(param)
-                val response = productEditUseCase.executeOnBackground()
-                setUploadProductDataSuccess()
-
-                // (4)
-                clearProductDraft()
-                return@withContext response
+                productEditUseCase.executeOnBackground()
             }
+            // (4)
+            clearProductDraft()
+            delay(NOTIFICATION_CHANGE_DELAY)
+            setUploadProductDataSuccess()
         }, onError = {
             it.message?.let { errorMessage -> setUploadProductDataError(errorMessage) }
         })
