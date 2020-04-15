@@ -55,11 +55,9 @@ import com.tokopedia.topads.dashboard.view.adapter.TopAdsStatisticPagerAdapter
 import com.tokopedia.topads.dashboard.view.adapter.TopAdsTabAdapter
 import com.tokopedia.topads.dashboard.view.listener.TopAdsDashboardView
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDashboardPresenter
-import com.tokopedia.topads.data.response.AutoAdsResponse
 import com.tokopedia.topads.debit.autotopup.data.model.AutoTopUpStatus
 import com.tokopedia.topads.debit.autotopup.view.activity.TopAdsAutoTopUpActivity
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption
-import com.tokopedia.topads.view.activity.AdCreationChooserActivity
 import kotlinx.android.synthetic.main.fragment_top_ads_dashboard.*
 import kotlinx.android.synthetic.main.partial_top_ads_dashboard_statistics.*
 import kotlinx.android.synthetic.main.partial_top_ads_shop_info.*
@@ -207,7 +205,7 @@ class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView {
     private fun noAds() {
         /*Ad switching is still in progress*/
         if (adCurrentState == 400 || adCurrentState == 300 || adCurrentState == 200) {
-            startActivity(Intent(activity, AdCreationChooserActivity::class.java))
+            startActivity(RouteManager.getIntent(context, ApplinkConstInternalTopAds.TOPADS_CREATE_CHOOSER))
         } else
             startActivity(RouteManager.getIntent(context, ApplinkConstInternalTopAds.TOPADS_CREATE_ADS))
     }
@@ -217,11 +215,11 @@ class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView {
     }
 
     private fun manualAds() {
-        startActivity(Intent(activity, AdCreationChooserActivity::class.java))
+        startActivity(RouteManager.getIntent(context, ApplinkConstInternalTopAds.TOPADS_CREATE_CHOOSER))
     }
 
     private fun autoAds() {
-        startActivity(Intent(activity, AdCreationChooserActivity::class.java))
+        startActivity(RouteManager.getIntent(context, ApplinkConstInternalTopAds.TOPADS_CREATE_CHOOSER))
     }
 
     private fun refreshData() {
