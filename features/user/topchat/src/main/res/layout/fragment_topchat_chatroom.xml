@@ -120,9 +120,12 @@
                 android:paddingTop="@dimen/dp_topchat_12"
                 android:paddingEnd="@dimen/spacing_lvl4"
                 android:visibility="gone"
+                tools:layout_marginBottom="@dimen/spacing_lvl3"
                 tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                tools:listitem="@layout/item_template_chat_layout"
                 tools:orientation="horizontal"
-                tools:scrollbars="horizontal" />
+                tools:scrollbars="horizontal"
+                tools:visibility="visible" />
 
             <include layout="@layout/layout_product_preview" />
 
