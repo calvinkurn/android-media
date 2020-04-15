@@ -910,10 +910,12 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                                    getView().updateButtonPromoCheckout(validateUsePromoRevampUiModel.getPromoUiModel());
                                                    if (validateUsePromoRevampUiModel.getPromoUiModel().getMessageUiModel().getState().equals("red")) {
                                                        getView().showToastError(validateUsePromoRevampUiModel.getPromoUiModel().getMessageUiModel().getText());
+                                                       analyticsActionListener.sendAnalyticsViewPromoAfterAdjustItem(validateUsePromoRevampUiModel.getPromoUiModel().getMessageUiModel().getText());
                                                    } else {
                                                        for (PromoCheckoutVoucherOrdersItemUiModel voucherOrdersItemUiModel : validateUsePromoRevampUiModel.getPromoUiModel().getVoucherOrderUiModels()) {
                                                            if (voucherOrdersItemUiModel.getMessageUiModel().getState().equals("red")) {
                                                                getView().showToastError(voucherOrdersItemUiModel.getMessageUiModel().getText());
+                                                               analyticsActionListener.sendAnalyticsViewPromoAfterAdjustItem(voucherOrdersItemUiModel.getMessageUiModel().getText());
                                                                break;
                                                            }
                                                        }
