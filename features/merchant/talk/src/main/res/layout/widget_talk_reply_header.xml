@@ -38,13 +38,12 @@
         app:typographyType="heading_4"
         app:typographyWeight="bold" />
 
-    <com.tokopedia.unifycomponents.ChipsUnify
-        android:id="@+id/replyHeaderFollowChip"
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/replyHeaderFollowButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/layout_lvl2"
-        app:chipText="Follow"
-        app:chipType="alternate"
+        app:unifyButtonVariant="ghost"
         app:layout_constraintStart_toStartOf="@id/replyHeaderDate"
         app:layout_constraintTop_toBottomOf="@id/replyHeaderMessage" />
 
@@ -60,7 +59,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/replyHeaderFollowChip" />
+        app:layout_constraintTop_toBottomOf="@id/replyHeaderFollowButton" />
 
     <com.tokopedia.unifycomponents.DividerUnify
         android:layout_width="match_parent"

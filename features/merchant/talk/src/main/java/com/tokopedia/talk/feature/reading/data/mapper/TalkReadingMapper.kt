@@ -10,6 +10,8 @@ import com.tokopedia.unifycomponents.list.ListItemUnify
 object TalkReadingMapper {
 
     const val SORT_CATEGORY = "Urutkan"
+    const val SORT_POPULAR = "Terpopuler"
+    const val SORT_LATEST = "Terbaru"
 
     fun mapDiscussionAggregateResponseToTalkReadingHeaderModel(discussionAggregate: DiscussionAggregate, showBottomSheet: () -> Unit): TalkReadingHeaderModel {
         return TalkReadingHeaderModel(
@@ -31,6 +33,20 @@ object TalkReadingMapper {
             result.add(itemToAdd)
         }
         return result
+    }
+
+    fun mapSelectedSortToSortFilterItem(selectedSortOption: SortOption): SortFilterItem {
+        return when(selectedSortOption) {
+            is SortOption.SortByInformativeness -> {
+                SortFilterItem(SORT_CATEGORY)
+            }
+            is SortOption.SortByLike -> {
+                SortFilterItem(SORT_POPULAR)
+            }
+            else -> {
+                SortFilterItem(SORT_LATEST)
+            }
+        }
     }
 
     private fun List<DiscussionAggregateCategory>.mapToSortFilter(showBottomSheet: () -> Unit): List<SortFilterItem> {

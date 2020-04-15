@@ -23,6 +23,7 @@ import com.tokopedia.talk.feature.reading.presentation.widget.OnFinishedListener
 import com.tokopedia.talk.feature.reading.presentation.widget.TalkReadingSortBottomSheet
 import com.tokopedia.talk_old.R
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_talk_reading.*
@@ -70,7 +71,7 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         observeProductHeader()
         observeSortOptions()
-        showPageError()
+        showPageLoading()
         initSortOptions()
 //        getHeaderData()
         super.onViewCreated(view, savedInstanceState)
@@ -151,9 +152,23 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
         })
     }
 
+    private fun observeDiscussionData() {
+        viewModel.discussionData.observe(this, Observer {
+            when(it) {
+                is Success -> {
+
+                }
+                is Fail -> {
+
+                }
+            }
+        })
+    }
+
     private fun observeSortOptions() {
         viewModel.sortOptions.observe(this, Observer { sortOptions ->
             val selectedSort = sortOptions.filter { it.isSelected }
+            updateSortHeader(selectedSort.first())
             // get talk with selected sort
         })
     }
@@ -172,5 +187,13 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
 
     private fun getHeaderData() {
         viewModel.getDiscussionAggregate(productId)
+    }
+
+    private fun showErrorToaster() {
+        view?.let { Toaster.make(it, getString(R.string.reading_connection_error_toaster_message), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR, getString(R.string.talk_retry)) }
+    }
+
+    private fun updateSortHeader(sortOption: SortOption) {
+        talkReadingHeader.updateSelectedSort(TalkReadingMapper.mapSelectedSortToSortFilterItem(sortOption))
     }
 }
