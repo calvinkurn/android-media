@@ -18,5 +18,6 @@ fun SuggestionItem.convertSuggestionItemToSingleLineVisitableList(searchTerm: St
     item.urlTracker = this.urlTracker
     item.searchTerm = searchTerm
     item.position = position
+    item.trackingCode = this.tracking.code
     return item
 }
