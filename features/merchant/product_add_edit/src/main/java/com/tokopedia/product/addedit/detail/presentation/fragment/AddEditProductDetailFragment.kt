@@ -70,6 +70,7 @@ import com.tokopedia.product.addedit.optionpicker.OptionPicker
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_BACK_PRESSED
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_IS_ADDING_PRODUCT
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_IS_DRAFTING_PRODUCT
+import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_IS_DUPLICATE
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_IS_EDITING_PRODUCT
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_PRODUCT_INPUT_MODEL
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
@@ -100,13 +101,14 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     companion object {
         private const val TAG_BULK_EDIT_PRICE: String = "TAG_BULK_EDIT_PRICE"
 
-        fun createInstance(productInputModel: ProductInputModel, isEditing: Boolean, isDrafting: Boolean, isAdding: Boolean): Fragment {
+        fun createInstance(productInputModel: ProductInputModel, isEditing: Boolean, isDrafting: Boolean, isAdding: Boolean, isDuplicating: Boolean): Fragment {
             return AddEditProductDetailFragment().apply {
                 val args = Bundle()
                 args.putParcelable(EXTRA_PRODUCT_INPUT_MODEL, productInputModel)
                 args.putBoolean(EXTRA_IS_EDITING_PRODUCT, isEditing)
                 args.putBoolean(EXTRA_IS_DRAFTING_PRODUCT, isDrafting)
                 args.putBoolean(EXTRA_IS_ADDING_PRODUCT, isAdding)
+                args.putBoolean(EXTRA_IS_DUPLICATE, isDuplicating)
                 arguments = args
             }
         }
@@ -215,6 +217,10 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         // set isAdding status
         arguments?.getBoolean(EXTRA_IS_ADDING_PRODUCT)?.run {
             viewModel.isAdding = this
+        }
+        // set isDuplicating status
+        arguments?.getBoolean(EXTRA_IS_DUPLICATE)?.run {
+            viewModel.isDuplicating = this
         }
 
         userSession = UserSession(requireContext())
@@ -402,7 +408,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         submitButton = view.findViewById(R.id.btn_submit)
         submitTextView = view.findViewById(R.id.tv_submit_text)
         submitLoadingIndicator = view.findViewById(R.id.lu_submit_loading_indicator)
-        if (viewModel.isEditing || viewModel.isDrafting || viewModel.isAdding) submitTextView?.text = getString(R.string.action_save)
+        if (viewModel.isEditing || viewModel.isDrafting || viewModel.isAdding || viewModel.isDuplicating) submitTextView?.text = getString(R.string.action_save)
         else submitTextView?.text = getString(R.string.action_continue)
 
         // fill the form with detail input model
@@ -534,9 +540,10 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                     val isEditing = viewModel.isEditing
                     val isDrafting = viewModel.isDrafting
                     val isAdding = viewModel.isAdding
+                    val isDuplicating = viewModel.isDuplicating
 
                     // navigate to preview page
-                    if (isEditing || isDrafting || isAdding) submitInputEdit()
+                    if (isEditing || isDrafting || isAdding || isDuplicating) submitInputEdit()
                     // navigate to description page
                     else moveToDescriptionActivity()
                 }
@@ -741,7 +748,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     }
 
     fun sendDataBack() {
-        if(!viewModel.isDrafting && !viewModel.isEditing && !viewModel.isAdding) {
+        if(!viewModel.isDrafting && !viewModel.isEditing && !viewModel.isAdding && !viewModel.isDuplicating) {
             inputAllDataInProductInputModel()
             val intent = Intent()
             intent.putExtra(EXTRA_PRODUCT_INPUT_MODEL, viewModel.productInputModel)

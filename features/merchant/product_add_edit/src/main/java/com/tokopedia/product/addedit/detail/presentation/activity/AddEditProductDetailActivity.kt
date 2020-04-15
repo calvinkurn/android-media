@@ -12,6 +12,7 @@ import com.tokopedia.product.addedit.detail.di.DaggerAddEditProductDetailCompone
 import com.tokopedia.product.addedit.detail.presentation.fragment.AddEditProductDetailFragment
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_IS_ADDING_PRODUCT
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_IS_DRAFTING_PRODUCT
+import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_IS_DUPLICATE
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_IS_EDITING_PRODUCT
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_PRODUCT_INPUT_MODEL
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
@@ -29,6 +30,7 @@ class AddEditProductDetailActivity : BaseSimpleActivity(), HasComponent<AddEditP
         var isEditing = false
         var isDrafting = false
         var isAdding = false
+        var isDuplicate = false
 
         // try to get passed extras from the cache manager
         cacheManagerId?.run {
@@ -40,8 +42,10 @@ class AddEditProductDetailActivity : BaseSimpleActivity(), HasComponent<AddEditP
                     ?: false
             isAdding = saveInstanceCacheManager.get(EXTRA_IS_ADDING_PRODUCT, Boolean::class.java)
                     ?: false
+            isDuplicate = saveInstanceCacheManager.get(EXTRA_IS_DUPLICATE, Boolean::class.java)
+                    ?: false
         }
-        return AddEditProductDetailFragment.createInstance(productInputModel, isEditing, isDrafting, isAdding)
+        return AddEditProductDetailFragment.createInstance(productInputModel, isEditing, isDrafting, isAdding, isDuplicate)
     }
 
     override fun getComponent(): AddEditProductDetailComponent {

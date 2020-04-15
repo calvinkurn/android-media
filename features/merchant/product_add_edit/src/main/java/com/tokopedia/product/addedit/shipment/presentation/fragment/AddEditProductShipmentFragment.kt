@@ -27,7 +27,8 @@ import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProdu
 import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.UNIT_KILOGRAM
 import com.tokopedia.product.addedit.shipment.presentation.model.ShipmentInputModel
 import com.tokopedia.product.addedit.shipment.presentation.viewmodel.AddEditProductShipmentViewModel
-import com.tokopedia.product.addedit.tracking.*
+import com.tokopedia.product.addedit.tracking.ProductAddShippingTracking
+import com.tokopedia.product.addedit.tracking.ProductEditShippingTracking
 import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
@@ -51,18 +52,13 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
     lateinit var shipmentViewModel: AddEditProductShipmentViewModel
 
     companion object {
-        fun createInstance(productInputModel: ProductInputModel): Fragment {
+        fun createInstance(productInputModel: ProductInputModel, shipmentInputModel: ShipmentInputModel?, isEditing: Boolean, isDuplicating: Boolean): Fragment {
             return AddEditProductShipmentFragment().apply {
                 arguments = Bundle().apply {
                     putParcelable(EXTRA_PRODUCT_INPUT_MODEL, productInputModel)
-                }
-            }
-        }
-        fun createInstanceEditMode(shipmentInputModel: ShipmentInputModel): Fragment {
-            return AddEditProductShipmentFragment().apply {
-                arguments = Bundle().apply {
                     putParcelable(EXTRA_SHIPMENT_INPUT_MODEL, shipmentInputModel)
-                    putBoolean(EXTRA_IS_EDITMODE, true)
+                    putBoolean(EXTRA_IS_EDITMODE, isEditing)
+                    putBoolean(EXTRA_IS_DUPLICATEMODE, isDuplicating)
                 }
             }
         }
@@ -76,6 +72,7 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
 
         const val EXTRA_SHIPMENT_INPUT_MODEL = "shipment_input_model"
         const val EXTRA_IS_EDITMODE = "shipment_is_editmode"
+        const val EXTRA_IS_DUPLICATEMODE = "shipment_is_duplicatemode"
         const val REQUEST_CODE_SHIPMENT = 0x04
     }
 
@@ -94,9 +91,11 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
         arguments?.run {
             val shipmentInputModel: ShipmentInputModel = getParcelable(EXTRA_SHIPMENT_INPUT_MODEL) ?: ShipmentInputModel()
             val isEditMode = getBoolean(EXTRA_IS_EDITMODE, false)
+            val isDuplicateMode = getBoolean(EXTRA_IS_DUPLICATEMODE, false)
             productInputModel = getParcelable(EXTRA_PRODUCT_INPUT_MODEL) ?: ProductInputModel()
             shipmentViewModel.shipmentInputModel = shipmentInputModel
             shipmentViewModel.isEditMode = isEditMode
+            shipmentViewModel.isDuplicateMode = isDuplicateMode
         }
         if (!shipmentViewModel.isEditMode) {
             ProductAddShippingTracking.trackScreen()
@@ -152,7 +151,7 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
     }
 
     fun sendDataBack() {
-        if(!shipmentViewModel.isEditMode) {
+        if(!shipmentViewModel.isEditMode && !shipmentViewModel.isDuplicateMode) {
             inputAllDataInInputDraftModel()
             val intent = Intent()
             intent.putExtra(AddEditProductPreviewConstants.EXTRA_PRODUCT_INPUT_MODEL, productInputModel)

@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.product.addedit.common.util.ResourceProvider
 import com.tokopedia.product.addedit.description.data.remote.model.variantbycat.ProductVariantByCatModel
 import com.tokopedia.product.addedit.description.domain.usecase.GetProductVariantUseCase
@@ -48,7 +49,7 @@ class AddEditProductPreviewViewModel @Inject constructor(
 
     // observing the product id, and will become true if product id exist
     val isEditing = Transformations.map(productId) { id ->
-        !id.isNullOrBlank()
+        !id.isNullOrBlank() && !isDuplicate
     }
 
     val isDrafting = Transformations.map(draftId) { id ->
@@ -106,7 +107,11 @@ class AddEditProductPreviewViewModel @Inject constructor(
                 productInputModel.value = when (it) {
                     is Success -> {
                         productDomain = it.data
-                        getProductMapper.mapRemoteModelToUiModel(it.data)
+                        val productInputModel = getProductMapper.mapRemoteModelToUiModel(it.data)
+                        if (!isDuplicate) {
+                            productInputModel.productId = it.data.productID.toLongOrZero()
+                        }
+                        productInputModel
                     }
                     is Fail -> ProductInputModel()
                 }
