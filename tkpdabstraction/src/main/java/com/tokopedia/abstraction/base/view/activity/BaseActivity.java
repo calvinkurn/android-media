@@ -155,15 +155,6 @@ public abstract class BaseActivity extends AppCompatActivity implements
     }
 
     public void showForceLogoutDialog() {
-//        DialogForceLogout.createShow(this, getScreenName(),
-//                new DialogForceLogout.ActionListener() {
-//                    @Override
-//                    public void onDialogClicked() {
-//                        if (getApplication() instanceof AbstractionRouter) {
-//                            ((AbstractionRouter) getApplication()).onForceLogout(BaseActivity.this);
-//                        }
-//                    }
-//                });
         BottomSheetUnify bottomSheetUnify = new BottomSheetUnify();
         bottomSheetUnify.setCustomPeekHeight(900);
         bottomSheetUnify.setOverlayClickDismiss(false);

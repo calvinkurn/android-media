@@ -25,7 +25,10 @@ public class ErrorHandler {
             return context.getString(R.string.msg_no_connection);
         } else if (e instanceof SocketTimeoutException) {
             return context.getString(R.string.default_request_error_timeout);
-        } else if (e instanceof RuntimeException) {
+        } else if (e instanceof RuntimeException &&
+                e.getLocalizedMessage() != null &&
+                !e.getLocalizedMessage().equals("") &&
+                e.getLocalizedMessage().length() <= 3) {
             try {
                 int code = Integer.parseInt(e.getLocalizedMessage());
                 switch (code) {
