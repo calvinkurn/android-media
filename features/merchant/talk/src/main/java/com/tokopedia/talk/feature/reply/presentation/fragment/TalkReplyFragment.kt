@@ -1,11 +1,16 @@
 package com.tokopedia.talk.feature.reply.presentation.fragment
 
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.talk.common.di.TalkComponent
 import com.tokopedia.talk.feature.reply.di.DaggerTalkReplyComponent
 import com.tokopedia.talk.feature.reply.di.TalkReplyComponent
 import com.tokopedia.talk.feature.report.presentation.fragment.TalkReportFragment
+import com.tokopedia.talk_old.R
 
 class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent> {
 
@@ -34,5 +39,17 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
         return DaggerTalkReplyComponent.builder().talkComponent(
                 getComponent(TalkComponent::class.java))
                 .build()
+    }
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return inflater.inflate(R.layout.fragment_talk_reply, container, false)
+    }
+
+    private fun initView() {
+
+    }
+
+    private fun showBottomSheet() {
+
     }
 }

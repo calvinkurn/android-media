@@ -27,7 +27,7 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_talk_reading.*
-import kotlinx.android.synthetic.main.partial_talk_reading_connection_error.view.*
+import kotlinx.android.synthetic.main.partial_talk_connection_error.view.*
 import javax.inject.Inject
 
 class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,

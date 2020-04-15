@@ -55,17 +55,11 @@
     <include
         android:id="@+id/pageLoading"
         layout="@layout/partial_talk_reading_shimmering"
-        android:visibility="gone"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:visibility="gone" />
 
     <include
         android:id="@+id/pageError"
-        layout="@layout/partial_talk_reading_connection_error"
-        android:visibility="gone"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent" />
+        layout="@layout/partial_talk_connection_error"
+        android:visibility="gone" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
