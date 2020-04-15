@@ -18,12 +18,12 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.design.component.Menus;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.pms.R;
 import com.tokopedia.pms.bankaccount.view.ChangeBankAccountActivity;
 import com.tokopedia.pms.clickbca.view.ChangeClickBcaActivity;
-import com.tokopedia.pms.invoice.InvoiceDetailActivity;
 import com.tokopedia.pms.payment.di.PaymentListModule;
 import com.tokopedia.pms.payment.view.adapter.PaymentListAdapterTypeFactory;
 import com.tokopedia.pms.payment.view.adapter.PaymentListViewHolder;
@@ -240,7 +240,6 @@ public class PaymentListFragment extends BaseListFragment<PaymentListModel, Paym
 
     @Override
     public void onClickSeeDetail(String invoiceUrl) {
-        Intent intent = InvoiceDetailActivity.createIntent(getActivity(), invoiceUrl);
-        startActivity(intent);
+        RouteManager.route(getActivity(), ApplinkConstInternalGlobal.WEBVIEW, invoiceUrl);
     }
 }

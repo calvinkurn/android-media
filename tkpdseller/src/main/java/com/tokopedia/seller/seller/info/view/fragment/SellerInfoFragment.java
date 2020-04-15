@@ -5,20 +5,20 @@ import androidx.annotation.NonNull;
 import android.text.TextUtils;
 import android.view.View;
 
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.base.list.seller.view.adapter.BaseListAdapter;
 import com.tokopedia.base.list.seller.view.adapter.BaseRetryDataBinder;
 import com.tokopedia.base.list.seller.view.emptydatabinder.EmptyDataBinder;
 import com.tokopedia.base.list.seller.view.fragment.BaseListFragment;
 import com.tokopedia.base.list.seller.view.old.NoResultDataBinder;
 import com.tokopedia.base.list.seller.view.old.RetryDataBinder;
-import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.presenter.BlankPresenter;
 import com.tokopedia.seller.seller.info.di.component.DaggerSellerInfoComponent;
 import com.tokopedia.seller.seller.info.view.SellerInfoTracking;
 import com.tokopedia.seller.seller.info.view.SellerInfoView;
-import com.tokopedia.seller.seller.info.view.activity.SellerInfoWebViewActivity;
 import com.tokopedia.seller.seller.info.view.adapter.SellerInfoAdapter;
 import com.tokopedia.seller.seller.info.view.model.SellerInfoModel;
 import com.tokopedia.seller.seller.info.view.model.SellerInfoSectionModel;
@@ -94,7 +94,7 @@ public class SellerInfoFragment extends BaseListFragment<BlankPresenter, SellerI
         SellerInfoTracking.eventClickItemSellerInfo(sellerInfoModel.getTitle());
         if(!sellerInfoModel.isRead())
             sellerInfoPresenter.markReadNotification(sellerInfoModel.getInfoId());
-        startActivity(SellerInfoWebViewActivity.getCallingIntent(getContext(), sellerInfoModel.getExternalLink()));
+        RouteManager.route(getContext(), ApplinkConstInternalGlobal.WEBVIEW, sellerInfoModel.getExternalLink());
     }
 
 

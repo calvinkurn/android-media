@@ -30,7 +30,6 @@ import com.tokopedia.common.payment.model.PaymentPassData
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.flight.R
 import com.tokopedia.flight.bookingV2.di.FlightBookingComponent
-import com.tokopedia.flight.bookingV2.presentation.activity.FlightInsuranceWebviewActivity
 import com.tokopedia.flight.bookingV2.presentation.viewmodel.FlightBookingCartData
 import com.tokopedia.flight.bookingV2.presentation.viewmodel.FlightBookingPassengerViewModel
 import com.tokopedia.flight.bookingV3.data.*
@@ -457,7 +456,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
             rv_insurance_list.adapter = flightInsuranceAdapter
             flightInsuranceAdapter.listener = object : FlightInsuranceAdapter.ViewHolder.ActionListener {
                 override fun onClickInsuranceTnc(tncUrl: String, tncTitle: String) {
-                    startActivity(FlightInsuranceWebviewActivity.getCallingIntent(activity, tncUrl, tncTitle))
+                    RouteManager.route(activity, ApplinkConstInternalGlobal.WEBVIEW_TITLE, tncTitle, tncUrl)
                 }
 
                 override fun onInsuranceChecked(insurance: FlightCart.Insurance, checked: Boolean) {
