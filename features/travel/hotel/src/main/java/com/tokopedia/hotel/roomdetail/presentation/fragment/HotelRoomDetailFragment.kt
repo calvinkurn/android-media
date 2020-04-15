@@ -48,6 +48,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_hotel_room_detail.*
+import kotlinx.android.synthetic.main.layout_hotel_image_slider.*
 import kotlinx.android.synthetic.main.widget_info_text_view.view.*
 import javax.inject.Inject
 import kotlin.math.roundToLong
@@ -210,7 +211,7 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
                 override fun onImageClicked(position: Int) {
                     trackingHotelUtil.hotelClickRoomDetailsPhoto(hotelRoom.additionalPropertyInfo.propertyId,
                             hotelRoom.roomId, hotelRoom.roomPrice.priceAmount.roundToLong().toString())
-                    ImagePreviewSlider.instance.start(context, hotelRoom.roomInfo.name, roomImageUrls, roomImageUrlsSquare, position, null)
+                    ImagePreviewSlider.instance.start(context, hotelRoom.roomInfo.name, roomImageUrls, roomImageUrlsSquare, position, image_banner)
                 }
             }
         }
@@ -225,21 +226,18 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
 
         room_detail_header_facilities.removeAllViews()
         context?.run {
-            val breakfastTextView = FacilityTextView(this)
-            if (hotelRoom.breakfastInfo.isBreakfastIncluded) {
-                breakfastTextView.setIconAndText(R.drawable.ic_hotel_free_breakfast, getString(R.string.hotel_room_list_free_breakfast))
-            } else {
-                breakfastTextView.setIconAndText(R.drawable.ic_hotel_no_breakfast, getString(R.string.hotel_room_list_breakfast_not_included))
-            }
-            room_detail_header_facilities.addView(breakfastTextView)
 
-            val refundableTextView = FacilityTextView(this)
-            if (hotelRoom.refundInfo.isRefundable) {
-                refundableTextView.setIconAndText(R.drawable.ic_hotel_refundable, getString(R.string.hotel_room_list_refundable_with_condition))
-            } else {
-                refundableTextView.setIconAndText(R.drawable.ic_hotel_not_refundable, getString(R.string.hotel_room_list_not_refundable))
+            if (hotelRoom.breakfastInfo.breakFast.isNotEmpty()) {
+                val breakfastTextView = FacilityTextView(this)
+                breakfastTextView.setIconAndText(hotelRoom.breakfastInfo.iconUrl, hotelRoom.breakfastInfo.breakFast)
+                room_detail_header_facilities.addView(breakfastTextView)
             }
-            room_detail_header_facilities.addView(refundableTextView)
+
+            if (hotelRoom.refundInfo.refundStatus.isNotEmpty()) {
+                val refundableTextView = FacilityTextView(this)
+                refundableTextView.setIconAndText(hotelRoom.refundInfo.iconUrl, hotelRoom.refundInfo.refundStatus)
+                room_detail_header_facilities.addView(refundableTextView)
+            }
         }
 
         if (hotelRoom.numberRoomLeft <= MINIMUM_ROOM_COUNT) {

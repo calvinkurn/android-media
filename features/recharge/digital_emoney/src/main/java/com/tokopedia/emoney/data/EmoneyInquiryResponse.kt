@@ -45,7 +45,8 @@ class AttributesEmoneyInquiry(
         val status: Int = 0,
         var formattedCardNumber: String = "",
         var issuer_id: Int = 0,
-        var operatorId: String = ""
+        var operatorId: String = "",
+        var pendingBalance: Int = 0
 
 )
 

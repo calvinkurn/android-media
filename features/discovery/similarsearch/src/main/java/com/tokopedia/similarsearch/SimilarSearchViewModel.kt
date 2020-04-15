@@ -11,6 +11,7 @@ import com.tokopedia.discovery.common.DispatcherProvider
 import com.tokopedia.discovery.common.Event
 import com.tokopedia.discovery.common.State
 import com.tokopedia.discovery.common.State.*
+import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.discovery.common.model.WishlistTrackingModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.similarsearch.divider.DividerViewModel
@@ -350,7 +351,7 @@ internal class SimilarSearchViewModel(
     }
 
     private fun trackAddToCartStatusOK(addToCartDataModel: AddToCartDataModel?) {
-        val cartId = addToCartDataModel?.data?.cartId ?: 0
+        val cartId = addToCartDataModel?.data?.cartId ?: ""
         val originalProductAsObjectDataLayerAddToCart = originalProduct.asObjectDataLayerAddToCart(cartId)
 
         trackingAddToCartEventLiveData.postValue(Event(originalProductAsObjectDataLayerAddToCart))
@@ -383,10 +384,66 @@ internal class SimilarSearchViewModel(
     }
 
     private fun trackBuyStatusOK(addToCartDataModel: AddToCartDataModel?) {
-        val cartId = addToCartDataModel?.data?.cartId ?: 0
+        val cartId = addToCartDataModel?.data?.cartId ?: ""
         val originalProductAsObjectDataLayerAddToCart = originalProduct.asObjectDataLayerAddToCart(cartId)
 
         trackingBuyEventLiveData.postValue(Event(originalProductAsObjectDataLayerAddToCart))
+    }
+
+    fun onReceiveProductCardOptionsWishlistResult(productCardOptionsModel: ProductCardOptionsModel) {
+        if (!productCardOptionsModel.wishlistResult.isUserLoggedIn) {
+            handleReceiveWishlistResultNonLogin(productCardOptionsModel)
+            return
+        }
+
+        if (productCardOptionsModel.wishlistResult.isSuccess)
+            handleReceiveWishlistResultSuccess(productCardOptionsModel)
+        else
+            handleReceiveWishlistResultFailed(productCardOptionsModel)
+    }
+
+    private fun handleReceiveWishlistResultNonLogin(productCardOptionsModel: ProductCardOptionsModel) {
+        trackingWishlistEventLiveData.postValue(Event(productCardOptionsModel.toWishlistTrackingModel()))
+        routeToLoginPageEventLiveData.postValue(Event(true))
+    }
+
+    private fun ProductCardOptionsModel.toWishlistTrackingModel(): WishlistTrackingModel {
+        return WishlistTrackingModel(
+                isAddWishlist = !isWishlisted,
+                productId = productId,
+                isTopAds = isTopAds,
+                keyword = similarSearchQuery,
+                isUserLoggedIn = wishlistResult.isUserLoggedIn
+        )
+    }
+
+    private fun handleReceiveWishlistResultSuccess(productCardOptionsModel: ProductCardOptionsModel) {
+        postWishlistEvent(true, productCardOptionsModel.wishlistResult.isAddWishlist)
+        updateSimilarProductItemWishlistStatus(productCardOptionsModel)
+        trackingWishlistEventLiveData.postValue(Event(productCardOptionsModel.toWishlistTrackingModel()))
+    }
+
+    private fun postWishlistEvent(isSuccess: Boolean, isAddWishlist: Boolean) {
+        if (isAddWishlist) {
+            addWishlistEventLiveData.postValue(Event(isSuccess))
+        }
+        else {
+            removeWishlistEventLiveData.postValue(Event(isSuccess))
+        }
+    }
+
+    private fun updateSimilarProductItemWishlistStatus(productCardOptionsModel: ProductCardOptionsModel) {
+        val similarProductItem = getSimilarProductItem(productCardOptionsModel.productId)
+        val isWishlistedFromProductCardOptions = productCardOptionsModel.wishlistResult.isAddWishlist
+        similarProductItem.isWishlisted = isWishlistedFromProductCardOptions
+    }
+
+    private fun getSimilarProductItem(productId: String): Product {
+        return similarSearchViewModelList.find { it is Product && it.id == productId } as Product
+    }
+
+    private fun handleReceiveWishlistResultFailed(productCardOptionsModel: ProductCardOptionsModel) {
+        postWishlistEvent(false, productCardOptionsModel.wishlistResult.isAddWishlist)
     }
 
     fun getUpdateWishlistOriginalProductEventLiveData(): LiveData<Event<Boolean>> {

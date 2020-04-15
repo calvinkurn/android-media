@@ -29,7 +29,8 @@ class MixTopTrackerTest : Spek({
                     price = "Rp 1.799.000",
                     imageUrl = "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/10/3/1321037/1321037_4d027c9e-dde8-4305-a63f-e66787598c7c_700_700.jpg",
                     freeOngkir = FreeOngkir(isActive = true, imageUrl = "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"),
-                    applink = "tokopedia://product/580739285"
+                    applink = "tokopedia://product/580739285",
+                    isTopads = true
                 ),
                 DynamicHomeChannel.Grid(
                     id = "183822484",
@@ -117,7 +118,7 @@ class MixTopTrackerTest : Spek({
                             "currencyCode","IDR",
                             "click", DataLayer.mapOf(
                                 "actionField", DataLayer.mapOf(
-                                "list", "/ - p5 - dynamic channel top carousel - Testing Top"
+                                "list", "/ - p5 - dynamic channel top carousel - Testing Top - topads"
                             ),
                         "products", DataLayer.listOf(
                             DataLayer.mapOf(
@@ -129,29 +130,9 @@ class MixTopTrackerTest : Spek({
                                     "category", "none / other",
                                     "position", "0",
                                     "dimension83", "bebas ongkir",
-                                    "dimension84", "21370"
-                            ),
-                            DataLayer.mapOf(
-                                    "name", "Monster Mass Iron Labs 90 Capsules IronLabs MonsterMass 90Caps 90 Caps",
-                                    "id","183822484",
-                                    "price", "200000",
-                                    "brand", "none / other",
-                                    "variant","none / other",
-                                    "category", "none / other",
-                                    "position", "1",
-                                    "dimension83", "bebas ongkir",
-                                    "dimension84", "21370"
-                            ),
-                            DataLayer.mapOf(
-                                    "name", "Samsung Galaxy A30S [4GB/64GB] - Garansi Resmi Indonesia",
-                                    "id", "558833181",
-                                    "price", "2715000",
-                                    "brand", "none / other",
-                                    "variant","none / other",
-                                    "category", "none / other",
-                                    "position", "2",
-                                    "dimension83", "bebas ongkir",
-                                    "dimension84", "21370"
+                                    "dimension84", "21370",
+                                    "list", "/ - p5 - dynamic channel top carousel - Testing Top - topads",
+                                    "dimension40", "/ - p5 - dynamic channel top carousel - Testing Top - topads"
                             )
                         )
                 )
@@ -159,7 +140,7 @@ class MixTopTrackerTest : Spek({
                 )
             }
             Then("must true") {
-                val result = areEqualKeyValues(testTracker.getTracker(), MixTopTracking.getMixTopClick(MixTopTracking.mapChannelToProductTracker(channel), channel.header.name, channel.id, positionOnWidgetHome.toString()))
+                val result = areEqualKeyValues(testTracker.getTracker(), MixTopTracking.getMixTopClick(listOf(MixTopTracking.mapGridToProductTracker(channel.grids.first(), channel.id, 0, channel.persoType, channel.categoryID)), channel.header.name, channel.id, positionOnWidgetHome.toString(), channel.campaignCode))
                 Assert.assertEquals(result, true)
             }
         }
@@ -186,7 +167,8 @@ class MixTopTrackerTest : Spek({
                                 "position", "0",
                                 "dimension83", "bebas ongkir",
                                 "dimension84", "21370",
-                                "list", "/ - p5 - dynamic channel top carousel - Testing Top"
+                                "list", "/ - p5 - dynamic channel top carousel - Testing Top - topads",
+                                "dimension40", "/ - p5 - dynamic channel top carousel - Testing Top - topads"
                         ),
                         DataLayer.mapOf(
                                 "name", "Monster Mass Iron Labs 90 Capsules IronLabs MonsterMass 90Caps 90 Caps",
@@ -198,7 +180,8 @@ class MixTopTrackerTest : Spek({
                                 "position", "1",
                                 "dimension83", "bebas ongkir",
                                 "dimension84", "21370",
-                                "list", "/ - p5 - dynamic channel top carousel - Testing Top"
+                                "list", "/ - p5 - dynamic channel top carousel - Testing Top",
+                                "dimension40", "/ - p5 - dynamic channel top carousel - Testing Top"
                         ),
                         DataLayer.mapOf(
                                 "name", "Samsung Galaxy A30S [4GB/64GB] - Garansi Resmi Indonesia",
@@ -210,7 +193,8 @@ class MixTopTrackerTest : Spek({
                                 "position", "2",
                                 "dimension83", "bebas ongkir",
                                 "dimension84", "21370",
-                                "list", "/ - p5 - dynamic channel top carousel - Testing Top"
+                                "list", "/ - p5 - dynamic channel top carousel - Testing Top",
+                                "dimension40", "/ - p5 - dynamic channel top carousel - Testing Top"
                         )
                     )
                 )

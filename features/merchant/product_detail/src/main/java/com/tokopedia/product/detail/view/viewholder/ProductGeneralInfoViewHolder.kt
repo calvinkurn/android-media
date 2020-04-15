@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.detail.R
@@ -30,8 +31,10 @@ class ProductGeneralInfoViewHolder(val view: View, private val listener: Dynamic
 
         element.data.run {
             if (element.data.firstOrNull()?.subtitle?.isEmpty() == true) {
+                view.info_separator.gone()
                 view.general_info_container.layoutParams.height = 0
             } else {
+                view.info_separator.show()
                 view.general_info_container.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
             }
 
@@ -61,19 +64,19 @@ class ProductGeneralInfoViewHolder(val view: View, private val listener: Dynamic
         }
     }
 
-    private fun hideLoading() {
-        view.rv_general_info.show()
-        view.pdp_info_title.show()
-        view.titleShimmering.hide()
-        view.descShimmering.hide()
+    private fun hideLoading() = with(view) {
+        rv_general_info.show()
+        pdp_info_title.show()
+        titleShimmering.hide()
+        descShimmering.hide()
     }
 
-    private fun showLoading() {
-        view.pdp_arrow_right.visibility = View.GONE
-        view.pdp_info_title.hide()
-        view.rv_general_info.hide()
-        view.titleShimmering.show()
-        view.descShimmering.show()
+    private fun showLoading() = with(view) {
+        pdp_arrow_right.hide()
+        pdp_info_title.hide()
+        rv_general_info.hide()
+        titleShimmering.show()
+        descShimmering.show()
     }
 
 
