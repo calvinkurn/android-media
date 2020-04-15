@@ -52,6 +52,7 @@ import com.tokopedia.product.addedit.description.presentation.model.DescriptionI
 import com.tokopedia.product.addedit.description.presentation.model.PictureViewModel
 import com.tokopedia.product.addedit.description.presentation.model.ProductVariantInputModel
 import com.tokopedia.product.addedit.detail.presentation.activity.AddEditProductDetailActivity
+import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.EXTRA_CASHBACK_SHOP_ID
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_PRODUCT_PHOTOS
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.PARAM_SET_CASHBACK_PRODUCT_PRICE
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.PARAM_SET_CASHBACK_VALUE
@@ -97,7 +98,6 @@ import com.tokopedia.product.addedit.tracking.ProductEditStepperTracking
 import com.tokopedia.product_photo_adapter.PhotoItemTouchHelperCallback
 import com.tokopedia.product_photo_adapter.ProductPhotoAdapter
 import com.tokopedia.product_photo_adapter.ProductPhotoViewHolder
-import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterOption
 import com.tokopedia.unifycomponents.DividerUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
@@ -107,8 +107,6 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_add_edit_product_preview.*
-import java.text.NumberFormat
-import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 
@@ -702,6 +700,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
                     .build()
                     .toString()
             val intent = RouteManager.getIntent(context, uri)
+            intent.putExtra(EXTRA_CASHBACK_SHOP_ID, shopId)
             startActivityForResult(intent, SET_CASHBACK_REQUEST_CODE)
         }
     }

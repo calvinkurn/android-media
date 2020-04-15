@@ -37,5 +37,6 @@ class AddEditProductDetailConstants {
         const val SET_CASHBACK_REQUEST_CODE = 3333
         const val SET_CASHBACK_CACHE_MANAGER_KEY = "set_cashback_cache_id"
         const val SET_CASHBACK_RESULT = "set_cashback_result"
+        const val EXTRA_CASHBACK_SHOP_ID = "extra_shop_id"
     }
 }
