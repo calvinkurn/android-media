@@ -1077,7 +1077,9 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                     onSuccessAtc(it.data)
                 }
             }, {
-                DynamicProductDetailTracking.Impression.eventViewErrorWhenAddToCart(it.message ?: "", viewModel.userId)
+                DynamicProductDetailTracking.Impression.eventViewErrorWhenAddToCart(it.message
+                        ?: "", viewModel.getDynamicProductInfoP1?.basic?.productID
+                        ?: "", viewModel.userId)
                 logException(it)
                 showToastError(it)
             })
