@@ -12,7 +12,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.Toast
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -66,7 +65,6 @@ import com.tokopedia.product.addedit.detail.presentation.model.WholeSaleInputMod
 import com.tokopedia.product.addedit.detail.presentation.viewholder.WholeSaleInputViewHolder
 import com.tokopedia.product.addedit.detail.presentation.viewmodel.AddEditProductDetailViewModel
 import com.tokopedia.product.addedit.detail.presentation.widget.ProductBulkPriceEditBottomSheetContent
-import com.tokopedia.product.addedit.draft.mapper.AddEditProductMapper.mapProductInputModelDetailToDraft
 import com.tokopedia.product.addedit.imagepicker.view.activity.ImagePickerAddProductActivity
 import com.tokopedia.product.addedit.optionpicker.OptionPicker
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_BACK_PRESSED
@@ -77,7 +75,6 @@ import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProduc
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.shipment.presentation.model.ShipmentInputModel
 import com.tokopedia.product.addedit.tracking.ProductAddMainTracking
-import com.tokopedia.product.addedit.tracking.ProductAddStepperTracking
 import com.tokopedia.product.addedit.tracking.ProductEditMainTracking
 import com.tokopedia.product_photo_adapter.PhotoItemTouchHelperCallback
 import com.tokopedia.product_photo_adapter.ProductPhotoAdapter
@@ -743,14 +740,6 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         }
     }
 
-    fun onCtaYesPressed() {
-        ProductAddStepperTracking.trackDraftYes(shopId)
-    }
-
-    fun onCtaNoPressed() {
-        ProductAddStepperTracking.trackDraftCancel(shopId)
-    }
-
     fun sendDataBack() {
         if(!viewModel.isDrafting && !viewModel.isEditing && !viewModel.isAdding) {
             inputAllDataInProductInputModel()
@@ -770,12 +759,6 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         } else {
             ProductAddMainTracking.trackBack(shopId)
         }
-    }
-
-    fun saveProductDraft(isUploading: Boolean) {
-        inputAllDataInProductInputModel()
-        viewModel.saveProductDraft(mapProductInputModelDetailToDraft(viewModel.productInputModel), viewModel.productInputModel.draftId, isUploading)
-        Toast.makeText(context, R.string.label_succes_save_draft, Toast.LENGTH_LONG).show()
     }
 
     private fun inputAllDataInProductInputModel() {

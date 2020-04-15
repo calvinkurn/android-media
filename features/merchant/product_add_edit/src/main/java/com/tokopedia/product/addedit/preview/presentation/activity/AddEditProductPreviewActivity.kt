@@ -94,7 +94,7 @@ class AddEditProductPreviewActivity : BaseSimpleActivity() {
                 onCtaYesPressedHitTracking()
             }
             setPrimaryCTAClickListener {
-                super.onBackPressed()
+                this.dismiss()
                 onCtaNoPressedHitTracking()
             }
         }.show()
