@@ -1410,7 +1410,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             cartListData.lastApplyShopGroupSimplifiedData?.let { lastApplyData ->
                 if (lastApplyData.additionalInfo.errorDetail.message.isNotEmpty()) {
                     showToaster(lastApplyData.additionalInfo.errorDetail.message, isShowOk = false)
-                    PromoRevampAnalytics.eventCartViewPromoChanged(lastApplyData.additionalInfo.errorDetail.message)
+                    PromoRevampAnalytics.eventCartViewPromoMessage(lastApplyData.additionalInfo.errorDetail.message)
                 }
             }
             renderPromoCheckout(it)
@@ -1496,7 +1496,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         promoCheckoutBtn.desc = getString(R.string.promo_desc_no_selected_item)
         promoCheckoutBtn.setOnClickListener {
             showToaster(getString(R.string.promo_choose_item_cart), isShowOk = false)
-            PromoRevampAnalytics.eventCartViewPromoChanged(getString(R.string.promo_choose_item_cart))
+            PromoRevampAnalytics.eventCartViewPromoMessage(getString(R.string.promo_choose_item_cart))
         }
     }
 
@@ -1535,7 +1535,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         promoCheckoutBtn.setOnClickListener {
             if (cartAdapter.selectedCartItemData.isEmpty()) {
                 showToaster(getString(R.string.promo_choose_item_cart), isShowOk = false)
-                PromoRevampAnalytics.eventCartViewPromoChanged(getString(R.string.promo_choose_item_cart))
+                PromoRevampAnalytics.eventCartViewPromoMessage(getString(R.string.promo_choose_item_cart))
             } else {
                 dPresenter.doUpdateCartForPromo()
                 // analytics
