@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.kotlin.extensions.view.afterTextChanged
@@ -17,7 +16,6 @@ import com.tokopedia.product.addedit.common.util.getText
 import com.tokopedia.product.addedit.common.util.getTextIntOrZero
 import com.tokopedia.product.addedit.common.util.setModeToNumberInput
 import com.tokopedia.product.addedit.common.util.setText
-import com.tokopedia.product.addedit.draft.mapper.AddEditProductMapper.mapProductInputModelDetailToDraft
 import com.tokopedia.product.addedit.optionpicker.OptionPicker
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
@@ -153,14 +151,6 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
         btnSave?.isLoading = false
     }
 
-    fun onCtaYesPressed() {
-        ProductAddStepperTracking.trackDraftYes(shopId)
-    }
-
-    fun onCtaNoPressed() {
-        ProductAddStepperTracking.trackDraftCancel(shopId)
-    }
-
     fun sendDataBack() {
         if(!shipmentViewModel.isEditMode) {
             inputAllDataInInputDraftModel()
@@ -180,12 +170,6 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
         } else {
             ProductAddShippingTracking.clickBack(shopId)
         }
-    }
-
-    fun saveProductDraft(isUploading: Boolean) {
-        inputAllDataInInputDraftModel()
-        productInputModel?.let { shipmentViewModel.saveProductDraft(mapProductInputModelDetailToDraft(it), it.draftId,isUploading) }
-        Toast.makeText(context, R.string.label_succes_save_draft, Toast.LENGTH_LONG).show()
     }
 
     private fun inputAllDataInInputDraftModel() {

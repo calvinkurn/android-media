@@ -8,7 +8,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import com.google.gson.reflect.TypeToken
@@ -255,14 +254,6 @@ class AddEditProductDescriptionFragment:
         loadData(0)
     }
 
-    fun onCtaYesPressed() {
-        ProductAddStepperTracking.trackDraftYes(shopId)
-    }
-
-    fun onCtaNoPressed() {
-        ProductAddStepperTracking.trackDraftCancel(shopId)
-    }
-
     fun sendDataBack() {
         if(!descriptionViewModel.isEditMode) {
             inputAllDataInInputDraftModel()
@@ -282,12 +273,6 @@ class AddEditProductDescriptionFragment:
         } else {
             ProductAddDescriptionTracking.clickBack(shopId)
         }
-    }
-
-    fun saveProductDraft(isUploading: Boolean) {
-        inputAllDataInInputDraftModel()
-        productInputModel?.let { descriptionViewModel.saveProductDraft(mapProductInputModelDetailToDraft(it), it.draftId, isUploading) }
-        Toast.makeText(context, R.string.label_succes_save_draft, Toast.LENGTH_LONG).show()
     }
 
     private fun inputAllDataInInputDraftModel() {

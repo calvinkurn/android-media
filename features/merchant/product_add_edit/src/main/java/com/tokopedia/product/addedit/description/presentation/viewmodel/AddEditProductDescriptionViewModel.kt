@@ -28,8 +28,7 @@ class AddEditProductDescriptionViewModel @Inject constructor(
         coroutineDispatcher: CoroutineDispatcher,
         private val resource: ResourceProvider,
         private val getProductVariantUseCase: GetProductVariantUseCase,
-        private val getYoutubeVideoUseCase: GetYoutubeVideoUseCase,
-        private val saveProductDraftUseCase: SaveProductDraftUseCase
+        private val getYoutubeVideoUseCase: GetYoutubeVideoUseCase
 ) : BaseViewModel(coroutineDispatcher) {
 
     var categoryId: String = ""
@@ -45,10 +44,6 @@ class AddEditProductDescriptionViewModel @Inject constructor(
 
     private val _videoYoutube = MutableLiveData<Result<YoutubeVideoModel>>()
     val videoYoutube: LiveData<Result<YoutubeVideoModel>> = _videoYoutube
-
-    private val _saveProductDraftResult = MutableLiveData<Result<Long>>()
-    val saveProductDraftResult: LiveData<Result<Long>>
-        get() = _saveProductDraftResult
 
     fun getVariants(categoryId: String) {
         launchCatchError(block = {
@@ -111,17 +106,6 @@ class AddEditProductDescriptionViewModel @Inject constructor(
             it.errorMessage.isNotEmpty()
         }
         return videoLinks.isEmpty()
-    }
-
-    fun saveProductDraft(productDraft: ProductDraft, productId: Long, isUploading: Boolean) {
-        launchCatchError(block = {
-            saveProductDraftUseCase.params = SaveProductDraftUseCase.createRequestParams(productDraft, productId, isUploading)
-            _saveProductDraftResult.value = withContext(Dispatchers.IO) {
-                saveProductDraftUseCase.executeOnBackground()
-            }.let { Success(it) }
-        }, onError = {
-            _saveProductDraftResult.value = Fail(it)
-        })
     }
 
     fun setVariantInput(productVariant: ArrayList<ProductVariantCombinationViewModel>,
