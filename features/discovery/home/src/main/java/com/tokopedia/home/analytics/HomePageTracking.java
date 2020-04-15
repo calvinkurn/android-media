@@ -1283,7 +1283,6 @@ public class HomePageTracking {
                 AFFINITY_LABEL, homeIconItem.getAffinityLabel(),
                 GALAXY_CATEGORY_ID, homeIconItem.getCategoryPersona(),
                 SHOP_ID, homeIconItem.getShopId(),
-                CAMPAIGN_CODE,
                 ECOMMERCE, DataLayer.mapOf(
                         PROMO_CLICK, DataLayer.mapOf(
                                 PROMOTIONS, DataLayer.listOf(
