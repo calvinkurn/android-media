@@ -92,6 +92,7 @@ class PreferenceModelMapper @Inject constructor() {
             gatewayName = payment.gatewayName
             image = payment.image
             url = payment.url
+            metadata = payment.metadata
         }
     }
 }

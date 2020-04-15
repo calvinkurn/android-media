@@ -15,7 +15,9 @@ class ServicesItemModel(
         var servicesName: String? = null,
         var servicesId: Int = -1,
         var texts: TextsModel? = null,
-        var isSelected: Boolean = false
+        var isSelected: Boolean = false,
+        var errorMessage: String = "",
+        var errorId: String = ""
 
 ) : ServicesItem()
 

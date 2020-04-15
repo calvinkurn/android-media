@@ -209,6 +209,7 @@ class AddressListFragment : BaseDaggerFragment(), SearchInputView.Listener, Addr
             if (selectedId > 0) {
                 preferenceListAnalytics.eventClickSimpanAlamatInPilihAlamatPage()
                 parent.setAddressId(selectedId)
+                setShippingParam()
                 parent.goBack()
             }
         }
@@ -256,6 +257,10 @@ class AddressListFragment : BaseDaggerFragment(), SearchInputView.Listener, Addr
             val saveAddressDataModel = data?.getParcelableExtra<SaveAddressDataModel>("EXTRA_ADDRESS_NEW")
             if (saveAddressDataModel != null) {
                 viewModel.selectedId = saveAddressDataModel.id.toString()
+                viewModel.destinationLongitude = saveAddressDataModel.longitude
+                viewModel.destinationLatitude = saveAddressDataModel.latitude
+                viewModel.destinationPostalCode = saveAddressDataModel.postalCode
+                viewModel.destinationDistrict = saveAddressDataModel.districtId.toString()
                 performSearch("")
                 goToNextStep()
             }
@@ -326,7 +331,23 @@ class AddressListFragment : BaseDaggerFragment(), SearchInputView.Listener, Addr
             if (selectedId > 0) {
                 preferenceListAnalytics.eventClickSimpanAlamatInPilihAlamatPage()
                 parent.setAddressId(selectedId)
+                setShippingParam()
                 parent.addFragment(ShippingDurationFragment())
+            }
+        }
+    }
+
+    private fun setShippingParam() {
+        val parent = activity
+        if(parent is PreferenceEditParent) {
+            val shippingParam = parent.getShippingParam()
+            if (shippingParam != null) {
+                shippingParam.destinationDistrictId = viewModel.destinationDistrict
+                shippingParam.addressId = viewModel.selectedId.toInt()
+                shippingParam.destinationLatitude = viewModel.destinationLatitude
+                shippingParam.destinationLongitude = viewModel.destinationLongitude
+                shippingParam.destinationPostalCode = viewModel.destinationPostalCode
+                shippingParam?.let { parent.setShippingParam(it) }
             }
         }
     }
