@@ -4,6 +4,8 @@ import com.tokopedia.reviewseller.feature.reviewlist.data.ProductRatingOverallRe
 import com.tokopedia.reviewseller.feature.reviewlist.data.ProductReviewListResponse
 import com.tokopedia.reviewseller.feature.reviewlist.view.model.ProductRatingOverallUiModel
 import com.tokopedia.reviewseller.feature.reviewlist.view.model.ProductReviewUiModel
+import com.tokopedia.unifycomponents.list.ListItemUnify
+import java.util.*
 
 object ReviewSellerMapper {
 
@@ -28,5 +30,15 @@ object ReviewSellerMapper {
             reviewCount = productGetProductRatingOverallByShop.reviewCount
             period = productGetProductRatingOverallByShop.filterBy
         }
+    }
+
+    fun mapToItemUnifyList(list: Array<String>): ArrayList<ListItemUnify> {
+        val itemUnifyList: ArrayList<ListItemUnify> = arrayListOf()
+        list.map {
+            val data = ListItemUnify(title = it, description = "")
+            data.setVariant(rightComponent = ListItemUnify.RADIO_BUTTON)
+            itemUnifyList.add(data)
+        }
+        return itemUnifyList
     }
 }
