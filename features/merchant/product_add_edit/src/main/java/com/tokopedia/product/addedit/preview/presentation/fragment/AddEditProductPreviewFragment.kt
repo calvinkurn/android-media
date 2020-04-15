@@ -77,7 +77,7 @@ import com.tokopedia.product.addedit.preview.di.DaggerAddEditProductPreviewCompo
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_BACK_PRESSED
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_DRAFT_ID
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_IS_ADDING_PRODUCT
-import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_IS_DUPLICATE
+import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_IS_DUPLICATING_PRODUCT
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_IS_EDITING_PRODUCT
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_PRODUCT_ID
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_PRODUCT_INPUT_MODEL
@@ -162,7 +162,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
                 arguments = Bundle().apply {
                     putString(EXTRA_PRODUCT_ID, productId)
                     putString(EXTRA_DRAFT_ID, draftId)
-                    putBoolean(EXTRA_IS_DUPLICATE, isDuplicate)
+                    putBoolean(EXTRA_IS_DUPLICATING_PRODUCT, isDuplicate)
                 }
             }
         }
@@ -178,7 +178,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
         arguments?.run {
             val draftId = getString(EXTRA_DRAFT_ID).orEmpty()
             viewModel.setProductId(getString(EXTRA_PRODUCT_ID) ?: "")
-            viewModel.setIsDuplicate(getBoolean(EXTRA_IS_DUPLICATE, false))
+            viewModel.setIsDuplicate(getBoolean(EXTRA_IS_DUPLICATING_PRODUCT, false))
             if (draftId.isNotBlank()) {
                 viewModel.setDraftId(draftId)
                 viewModel.getProductDraft(draftId.toLongOrZero())
