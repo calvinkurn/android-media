@@ -481,6 +481,7 @@ class PlayViewModel @Inject constructor(
      */
     fun setScreenOrientation(screenOrientation: ScreenOrientation) {
         _observableScreenOrientation.value = screenOrientation
+        triggerImmersive(false)
     }
 
     fun updateBadgeCart() {
