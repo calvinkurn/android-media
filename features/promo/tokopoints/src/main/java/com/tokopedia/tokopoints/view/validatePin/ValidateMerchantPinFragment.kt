@@ -11,12 +11,14 @@ import android.widget.TextView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.design.widget.PinEditText
 import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.di.DaggerTokopointBundleComponent
+import com.tokopedia.tokopoints.di.TokopointsQueryModule
 import com.tokopedia.tokopoints.view.model.CouponSwipeUpdate
 import com.tokopedia.tokopoints.view.util.CommonConstant
 import com.tokopedia.tokopoints.view.util.ErrorMessage
@@ -88,7 +90,10 @@ class ValidateMerchantPinFragment : BaseDaggerFragment(), ValidateMerchantPinCon
     }
 
     override fun initInjector() {
-        DaggerTokopointBundleComponent.builder().baseAppComponent((activity!!.application as BaseMainApplication).baseAppComponent).build().inject(this)
+        DaggerTokopointBundleComponent.builder()
+                .baseAppComponent((activity!!.application as BaseMainApplication).baseAppComponent)
+                .tokopointsQueryModule(TokopointsQueryModule(activity as BaseSimpleActivity))
+                .build().inject(this)
     }
 
     override fun getScreenName(): String? {
