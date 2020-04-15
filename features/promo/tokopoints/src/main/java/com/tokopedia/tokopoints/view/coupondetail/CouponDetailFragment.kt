@@ -667,9 +667,9 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
         val fragment = ValidateMerchantPinFragment.newInstance(bundle)
         fragment.setmValidatePinCallBack(object : ValidateMerchantPinFragment.ValidatePinCallBack {
             override fun onSuccess(couponSwipeUpdate: CouponSwipeUpdate?) {
-                mBottomSheetFragment?.dismiss()
                 card_swipe?.couponCode = couponSwipeUpdate?.partnerCode
                 showBarCodeView(couponSwipeUpdate?.note, "", "")
+                mBottomSheetFragment?.dismiss()
             }
         })
         mBottomSheetFragment = CloseableBottomSheetFragment.newInstance(fragment, true,
