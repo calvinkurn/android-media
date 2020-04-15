@@ -527,9 +527,12 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             val isInputValid = viewModel.isInputValid.value
             isInputValid?.let {
                 if (it) {
-                    val isEditing = viewModel.isEditing || viewModel.isDrafting || viewModel.isAdding
+                    val isEditing = viewModel.isEditing
+                    val isDrafting = viewModel.isDrafting
+                    val isAdding = viewModel.isAdding
+
                     // navigate to preview page
-                    if (isEditing) submitInputEdit()
+                    if (isEditing || isDrafting || isAdding) submitInputEdit()
                     // navigate to description page
                     else moveToDescriptionActivity()
                 }
@@ -999,14 +1002,16 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
 
     private fun createAddProductPhotoButtonOnClickListener(): View.OnClickListener {
         return View.OnClickListener {
-            val isEditing = viewModel.isEditing || viewModel.isDrafting || viewModel.isAdding
+            val isEditing = viewModel.isEditing
+            val isDrafting = viewModel.isDrafting
+            val isAdding = viewModel.isAdding
             val imageUrlOrPathList = productPhotoAdapter?.getProductPhotoPaths()?.map { urlOrPath ->
                 if (urlOrPath.startsWith(AddEditProductConstants.HTTP_PREFIX)) viewModel.detailInputModel.pictureList.find { it.urlThumbnail == urlOrPath }?.urlOriginal ?: urlOrPath
                 else urlOrPath
             }.orEmpty()
             val intent = ImagePickerAddProductActivity.getIntent(context, createImagePickerBuilder(ArrayList(imageUrlOrPathList)), isEditing)
             startActivityForResult(intent, REQUEST_CODE_IMAGE)
-            if (isEditing) {
+            if (isEditing || isDrafting || isAdding) {
                 ProductEditMainTracking.trackAddPhoto(shopId)
             } else {
                 ProductAddMainTracking.trackAddPhoto(shopId)
