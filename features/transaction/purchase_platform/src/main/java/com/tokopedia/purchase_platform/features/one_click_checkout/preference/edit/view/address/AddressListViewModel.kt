@@ -16,10 +16,8 @@ import javax.inject.Inject
 
 class AddressListViewModel @Inject constructor(val useCase: GetAddressCornerUseCase, dispatcher: CoroutineDispatcher) : BaseViewModel(dispatcher) {
 
-    private var currentPage: Int = 1
     var savedQuery: String = ""
     var selectedId = "-1"
-    var addressId: Int = 0
     var destinationLatitude: String = ""
     var destinationLongitude: String = ""
     var destinationDistrict: String = ""

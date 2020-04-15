@@ -62,9 +62,6 @@ class PreferenceEditActivity : BaseActivity(), HasComponent<PreferenceEditCompon
 
         _preferenceIndex = intent.getStringExtra(EXTRA_PREFERENCE_INDEX) ?: ""
         _profileId = intent.getIntExtra(EXTRA_PROFILE_ID, 0)
-//        _addressId = intent.getIntExtra(EXTRA_ADDRESS_ID, -1)
-//        _shippingId = intent.getIntExtra(EXTRA_SHIPPING_ID, -1)
-//        _gatewayCode = intent.getStringExtra(EXTRA_GATEWAY_CODE) ?: ""
         _shippingParam = intent.getParcelableExtra(EXTRA_SHIPPING_PARAM)
         _listShopShipment = intent.getParcelableArrayListExtra(EXTRA_LIST_SHOP_SHIPMENT)
         _should_show_delete_button = intent.getBooleanExtra(EXTRA_SHOW_DELETE_BUTTON, true)
