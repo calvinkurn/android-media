@@ -41,8 +41,8 @@ class InstantLoanModule {
     }
 
     @Provides
-    fun provideGetFilterDataUseCase(@ApplicationContext context: Context) : GetFilterDataUseCase {
-        return GetFilterDataUseCase(context)
+    fun provideGetFilterDataUseCase() : GetFilterDataUseCase {
+        return GetFilterDataUseCase()
     }
 
     @Provides
