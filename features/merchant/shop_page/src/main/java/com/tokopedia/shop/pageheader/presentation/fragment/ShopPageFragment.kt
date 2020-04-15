@@ -147,6 +147,7 @@ class ShopPageFragment :
     private val iconTabReview = R.drawable.ic_shop_tab_review_inactive
     private val intentData: Intent = Intent()
     private var isFirstLoading: Boolean = false
+    private var shouldOverrideTabToHome: Boolean = false
     private val customDimensionShopPage: CustomDimensionShopPage by lazy {
         CustomDimensionShopPage.create(shopId, isOfficialStore, isGoldMerchant)
     }
@@ -294,8 +295,9 @@ class ShopPageFragment :
                     if (shopDomain.isNullOrEmpty()) {
                         shopDomain = getQueryParameter(SHOP_DOMAIN)
                     }
-                    if (lastPathSegment.orEmpty() == PATH_HOME)
-                        tabPosition = TAB_POSITION_HOME
+                    if (lastPathSegment.orEmpty() == PATH_HOME) {
+                        shouldOverrideTabToHome = true
+                    }
                     shopRef = getQueryParameter(QUERY_SHOP_REF) ?: ""
                     shopAttribution = getQueryParameter(QUERY_SHOP_ATTRIBUTION) ?: ""
                 }
@@ -572,9 +574,16 @@ class ShopPageFragment :
                 add(getString(R.string.shop_info_title_tab_feed))
             add(getString(R.string.shop_info_title_tab_review))
         }
-        val selectedPosition = tabPosition
         viewPagerAdapter.setTabData(generateTabData())
         viewPagerAdapter.notifyDataSetChanged()
+        var selectedPosition = getSelectedTabPosition()
+        if(shouldOverrideTabToHome){
+            selectedPosition = if(viewPagerAdapter.isFragmentObjectExists(HomeProductFragment::class.java)){
+                viewPagerAdapter.getFragmentPosition(HomeProductFragment::class.java)
+            }else{
+                viewPagerAdapter.getFragmentPosition(ShopPageHomeFragment::class.java)
+            }
+        }
         tabLayout?.apply {
             for (i in 0 until tabCount) {
                 getTabAt(i)?.customView = viewPagerAdapter.getTabView(i, selectedPosition)
@@ -582,6 +591,18 @@ class ShopPageFragment :
         }
         setViewState(VIEW_CONTENT)
         viewPager.setCurrentItem(selectedPosition, false)
+    }
+
+    private fun getSelectedTabPosition(): Int {
+        return if (isShowHomeTab()) {
+            if (isShowNewHomeTab()) {
+                viewPagerAdapter.getFragmentPosition(ShopPageHomeFragment::class.java)
+            } else {
+                viewPagerAdapter.getFragmentPosition(ShopPageProductListFragment::class.java)
+            }
+        } else {
+            viewPagerAdapter.getFragmentPosition(ShopPageProductListFragment::class.java)
+        }
     }
 
     private fun isShowHomeTab(): Boolean {

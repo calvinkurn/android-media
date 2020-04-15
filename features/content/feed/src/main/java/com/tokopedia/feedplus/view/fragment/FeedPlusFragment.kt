@@ -1017,7 +1017,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         goToShopPage(shop.id)
 
         if (adapter.getlist()[positionInFeed] is TopadsShopViewModel) {
-            val (_, _, _, trackingList) = adapter.getlist()[positionInFeed] as TopadsShopViewModel
+            val (_, dataList, _, trackingList, _) = adapter.getlist()[positionInFeed] as TopadsShopViewModel
             for ((templateType, _, _, _, authorName, _, authorId, cardPosition, adId) in trackingList) {
                 if (TextUtils.equals(authorName, shop.name)) {
                     analytics.eventTopadsRecommendationClick(
@@ -1030,8 +1030,15 @@ class FeedPlusFragment : BaseDaggerFragment(),
                     break
                 }
             }
+            if (adapterPosition != RecyclerView.NO_POSITION) {
+                trackUrlEvent(dataList[adapterPosition].shopClickUrl)
+            }
             feedAnalytics.eventClickTopadsPromoted(shop.id)
         }
+    }
+
+    private fun trackUrlEvent(url: String) {
+        feedViewModel.doTrackAffiliate(url)
     }
 
     override fun onAddFavorite(positionInFeed: Int, adapterPosition: Int, data: Data) {
@@ -1228,9 +1235,9 @@ class FeedPlusFragment : BaseDaggerFragment(),
     override fun onAffiliateTrackClicked(trackList: List<TrackingViewModel>, isClick: Boolean) {
         for (track in trackList) {
             if (isClick) {
-                feedViewModel.doTrackAffiliate(track.clickURL)
+                trackUrlEvent(track.clickURL)
             } else {
-                feedViewModel.doTrackAffiliate(track.viewURL)
+                trackUrlEvent(track.viewURL)
             }
         }
     }

@@ -7,6 +7,7 @@ package com.tokopedia.common.payment;
 public class PaymentConstant {
 
     public static String EXTRA_PARAMETER_TOP_PAY_DATA = "EXTRA_PARAMETER_TOP_PAY_DATA";
+    public static String EXTRA_PARAMETER_TOP_PAY_TOASTER_MESSAGE = "EXTRA_PARAMETER_TOP_PAY_TOASTER_MESSAGE";
 
     public static final int REQUEST_CODE = 45675;
     public static final int PAYMENT_SUCCESS = 5;

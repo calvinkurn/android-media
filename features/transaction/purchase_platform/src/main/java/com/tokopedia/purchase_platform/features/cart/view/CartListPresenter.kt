@@ -1150,7 +1150,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
 
             compositeSubscription.add(
                     updateCartAndValidateUseUseCase.createObservable(requestParams)
-                            .subscribe(UpdateCartAndValidateUseSubscriber(cartListView, this))
+                            .subscribe(UpdateCartAndValidateUseSubscriber(cartListView))
             )
         }
     }

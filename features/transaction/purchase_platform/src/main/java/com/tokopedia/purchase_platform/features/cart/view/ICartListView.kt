@@ -115,6 +115,8 @@ interface ICartListView : CustomerView {
 
     fun updatePromoCheckoutStickyButton(promoUiModel: PromoUiModel)
 
+    fun renderPromoCheckoutButtonActiveDefault(listPromoApplied: List<String>)
+
     fun showPromoCheckoutStickyButtonInactive()
 
     fun showPromoCheckoutStickyButtonLoading()

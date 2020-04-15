@@ -67,7 +67,7 @@ class ETollUpdateBalanceResultView @JvmOverloads constructor(@NotNull context: C
     fun showError(errorMessage: String) {
         textLabelProgressTitle.visibility = View.VISIBLE
         textLabelProgressTitle.text = resources.getString(R.string.emoney_update_card_balance_failed_title)
-        textLabelProgressTitle.setTextColor(resources.getColor(R.color.red_600))
+        textLabelProgressTitle.setTextColor(resources.getColor(com.tokopedia.design.R.color.red_600))
         textLabelProgressMessage.visibility = View.VISIBLE
         textLabelProgressMessage.text = errorMessage
         textLabelProgressMessage.setTextColor(resources.getColor(R.color.emoney_grey))
