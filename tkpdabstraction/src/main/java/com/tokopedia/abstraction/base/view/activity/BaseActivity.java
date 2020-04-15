@@ -165,7 +165,7 @@ public abstract class BaseActivity extends AppCompatActivity implements
 //                    }
 //                });
         BottomSheetUnify bottomSheetUnify = new BottomSheetUnify();
-        bottomSheetUnify.setCustomPeekHeight(700);
+        bottomSheetUnify.setCustomPeekHeight(1000);
         bottomSheetUnify.setOverlayClickDismiss(false);
 
         View childView = View.inflate(this, R.layout.error_unauthorized, null);

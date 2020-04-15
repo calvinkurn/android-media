@@ -49,6 +49,6 @@
         app:unifyButtonVariant="filled"
         app:unifyButtonSize="medium"
         app:unifyButtonType="main"
-        android:paddingBottom="@dimen/dp_16"/>
+        android:layout_marginBottom="@dimen/dp_16"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
