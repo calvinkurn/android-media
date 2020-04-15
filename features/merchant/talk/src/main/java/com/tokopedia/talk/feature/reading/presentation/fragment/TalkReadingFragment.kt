@@ -8,6 +8,8 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.GENERAL_SETTING
 import com.tokopedia.talk.common.di.TalkComponent
 import com.tokopedia.talk.feature.reading.data.mapper.TalkReadingMapper
 import com.tokopedia.talk.feature.reading.data.model.SortOption
@@ -120,7 +122,7 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
             // Retry
         }
         pageError.readingConnectionErrorGoToSettingsButton.setOnClickListener {
-            // Go to Settings
+            RouteManager.route(context, GENERAL_SETTING)
         }
     }
 
