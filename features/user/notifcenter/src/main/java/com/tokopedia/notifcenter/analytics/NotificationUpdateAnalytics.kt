@@ -69,11 +69,11 @@ class NotificationUpdateAnalytics @Inject constructor(): NotificationAnalytics()
     fun trackMultiProductListImpression(
             userId: String,
             location: String = LABEL_LOCATION,
-            notification: BaseNotificationItemViewBean
+            notification: MultipleProductCardViewBean
     ) {
         val eventLabel = getImpressionTrackLabel(
                 notification.notificationId,
-                notification.products.first().price,
+                notification.product.price,
                 location
         )
         trackProductListImpression(
