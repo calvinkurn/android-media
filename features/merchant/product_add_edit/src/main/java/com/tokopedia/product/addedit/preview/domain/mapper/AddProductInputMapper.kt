@@ -171,7 +171,7 @@ open class AddProductInputMapper @Inject constructor() {
         videoLinkList.forEach {
             if (it.inputUrl.isNotEmpty()) {
                 val uri = Uri.parse(it.inputUrl)
-                val source = uri.host ?: ""
+                val source = uri.host ?: uri.pathSegments[0] ?: ""
                 val url = uri.getQueryParameter("v") ?: uri.lastPathSegment
                 data.add(Video(source, url))
             }
