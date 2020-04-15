@@ -54,6 +54,7 @@ query getProductVariant($productID:String!,$option:pdpGetProductVariantReqOption
         isUsingOvo
       }
       stock {
+        stock
         isLimitedStock
         stockWording
         stockWordingHTML

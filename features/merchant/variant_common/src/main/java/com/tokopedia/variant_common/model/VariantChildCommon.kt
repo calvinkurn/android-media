@@ -62,7 +62,7 @@ data class VariantChildCommon(
         val upcoming: VariantUpcoming? = null
 ) {
     val isBuyable: Boolean
-        get() = stock?.isBuyable ?: false
+        get() = stock?.stock ?: 0 > 0 && stock?.isBuyable ?: false
 
     val isFlashSale: Boolean
         get() = campaign?.isActive == true

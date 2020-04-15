@@ -46,7 +46,7 @@ class ProductSnapshotViewHolder(private val view: View,
                 view_picture_search_bar.renderShopStatusDynamicPdp(element.shopStatus, element.statusTitle, element.statusMessage,
                         it.basic.status)
             }
-
+            renderStockWording(element.getNearestWarehouse(),element.getCampaignModular())
             renderWishlist(element.isAllowManage, element.isWishlisted)
             renderTradein(element.showTradeIn())
             renderCod(element.showCod())
