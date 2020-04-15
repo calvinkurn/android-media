@@ -25,6 +25,9 @@ import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager;
 import com.tokopedia.abstraction.common.utils.view.DialogForceLogout;
 import com.tokopedia.inappupdate.AppUpdateManagerWrapper;
 import com.tokopedia.track.TrackApp;
+import com.tokopedia.unifycomponents.BottomSheetUnify;
+
+import kotlin.Unit;
 
 
 /**
@@ -151,15 +154,29 @@ public abstract class BaseActivity extends AppCompatActivity implements
     }
 
     public void showForceLogoutDialog() {
-        DialogForceLogout.createShow(this, getScreenName(),
-                new DialogForceLogout.ActionListener() {
-                    @Override
-                    public void onDialogClicked() {
-                        if (getApplication() instanceof AbstractionRouter) {
-                            ((AbstractionRouter) getApplication()).onForceLogout(BaseActivity.this);
-                        }
-                    }
-                });
+//        DialogForceLogout.createShow(this, getScreenName(),
+//                new DialogForceLogout.ActionListener() {
+//                    @Override
+//                    public void onDialogClicked() {
+//                        if (getApplication() instanceof AbstractionRouter) {
+//                            ((AbstractionRouter) getApplication()).onForceLogout(BaseActivity.this);
+//                        }
+//                    }
+//                });
+        BottomSheetUnify bottomSheetUnify = new BottomSheetUnify();
+        bottomSheetUnify.setCustomPeekHeight(400);
+        bottomSheetUnify.setOverlayClickDismiss(false);
+
+        View childView = View.inflate(this, R.layout.error_network_dialog, null);
+        bottomSheetUnify.setChild(childView);
+
+        bottomSheetUnify.setCloseClickListener(view -> {
+            bottomSheetUnify.dismiss();
+            return Unit.INSTANCE;
+        });
+
+        bottomSheetUnify.show(getSupportFragmentManager(), "TAG");
+
     }
 
     public void checkIfForceLogoutMustShow() {
