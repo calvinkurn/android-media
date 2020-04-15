@@ -6,6 +6,6 @@ import org.gradle.api.Project
 open class AppStatisticsPlugin : Plugin<Project> {
     override fun apply(project: Project) {
 
-        project.tasks.register( "appStatisticsTask", AppStatisticsTask::class.java)
+        project.tasks.register( "appStatistics", AppStatisticsTask::class.java)
     }
 }
