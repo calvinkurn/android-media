@@ -248,11 +248,12 @@ class NotificationUpdateAnalytics @Inject constructor(): NotificationAnalytics()
 
     fun trackMultiProductCheckoutCardClick(
             eventLocation: String = "notif_list",
+            productNumber: Int,
             notification: MultipleProductCardViewBean
     ) {
         val eventLabel = getImpressionTrackLabel(
                 notificationId = notification.notificationId,
-                productPrice = notification.product.price,
+                productNumber = productNumber + 1,
                 location = eventLocation
         )
         trackProductCheckoutCardClick(
@@ -432,11 +433,12 @@ class NotificationUpdateAnalytics @Inject constructor(): NotificationAnalytics()
 
     fun trackAtcOnMultiProductClick(
             eventLocation: String = "notif_list",
+            productNumber: Int,
             notification: MultipleProductCardViewBean
     ) {
         val eventLabel = getImpressionTrackLabel(
                 notificationId = notification.notificationId,
-                productPrice = notification.product.price,
+                productNumber = productNumber + 1,
                 location = eventLocation
         )
         trackAtcOnProductClick(
