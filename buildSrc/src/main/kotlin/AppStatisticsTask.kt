@@ -2,18 +2,20 @@ package com.tokopedia.plugin
 
 import org.gradle.api.DefaultTask
 import org.gradle.api.Project
-import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.TaskAction
 import java.io.File
 import java.lang.Math.round
 
 open class AppStatisticsTask : DefaultTask() {
 
-    var reportFile: File = File("finalReport.csv")
+    var reportFile: File = File("appStatistics.csv")
 
     var containCoreMap: MutableMap<String, Boolean> = hashMapOf()
     val flattenedAllSubProjects = mutableListOf<Module>()
-    val dfList = mutableSetOf<String>()
+    val dfListCustApp = mutableSetOf<String>()
+    val dfListCustAppIsOnDemand = mutableSetOf<String>()
+    val dfListSellerApp = mutableSetOf<String>()
+    val dfListSellerAppIsOnDemand = mutableSetOf<String>()
     val dfEnableList = mutableSetOf<String>()
     var ownerListMap: MutableMap<String, String> = hashMapOf()
     var javaFileCountMap: MutableMap<String, Int> = hashMapOf()
@@ -31,12 +33,16 @@ open class AppStatisticsTask : DefaultTask() {
 
     companion object {
         const val FILE_SEPARATOR = ","
+        const val CUSTOMERAPP = "customerapp"
+        const val SELLERAPP = "sellerapp"
+
         const val MODULE = "Module"
         const val MODULE_PATH = "Path"
         const val TYPE = "Type"
         const val CONTAIN_CORE = "Contain Core"
-        const val DF = "DF"
-        const val DF_ENABLED = "DF enabled"
+        const val DF_CUSTAPP_TYPE = "DF Cust App"
+        const val DF_SELLERAPP_TYPE = "DF Seller App"
+        const val DF_READY = "DF ready"
         const val OWNER = "Owner"
         const val JAVA_COUNT = "Java Count"
         const val JAVA_SIZE = "Java Size"
@@ -50,7 +56,8 @@ open class AppStatisticsTask : DefaultTask() {
         const val TOTAL_SIZE = "Total Size"
         const val HAS_UNIT_TEST = "Has Unit Test"
         const val HAS_ANDROID_TEST = "Has Android Test"
-        val metricList = listOf(MODULE, MODULE_PATH, TYPE, OWNER, CONTAIN_CORE, DF, DF_ENABLED,
+        val metricList = listOf(MODULE, MODULE_PATH, TYPE, OWNER, CONTAIN_CORE, DF_CUSTAPP_TYPE,
+            DF_SELLERAPP_TYPE, DF_READY,
             JAVA_COUNT, KOTLIN_COUNT, KOTLIN_COUNT_PERCENT,
             JAVA_SIZE, KOTLIN_SIZE, KOTLIN_SIZE_PERCENT, TOTAL_CODE_SIZE,
             DRAWABLE_SIZE, OTHER_RES_SIZE, TOTAL_SIZE, HAS_UNIT_TEST, HAS_ANDROID_TEST)
@@ -81,8 +88,6 @@ open class AppStatisticsTask : DefaultTask() {
                 ModuleType.APP -> {
                     projectItem.configurations.all { conf ->
                         conf.dependencies.forEach {
-                            // this is to make hashCode of combination of libraries and those version
-                            // If there are version changes in the libraries, the module will become a candidate for version increase.
                             val artifactName = it.name
                             if (artifactName == "tkpdcore" || artifactName == "core_legacy") {
                                 containCoreMap[module.key] = true
@@ -96,8 +101,6 @@ open class AppStatisticsTask : DefaultTask() {
                 ModuleType.LIBRARY -> {
                     projectItem.configurations.all { conf ->
                         conf.dependencies.forEach {
-                            // this is to make hashCode of combination of libraries and those version
-                            // If there are version changes in the libraries, the module will become a candidate for version increase.
                             val artifactName = it.name
                             if (artifactName == "tkpdcore" || artifactName == "core_legacy") {
                                 containCoreMap[module.key] = true
@@ -111,12 +114,25 @@ open class AppStatisticsTask : DefaultTask() {
                     moduleDir.calcFileStats(module.key)
                 }
                 ModuleType.DF -> {
+                    val isOnDemand = isOnDemand(projectItem.projectDir)
+                    val dfListTemp = mutableSetOf<String>()
                     projectItem.configurations.all { conf ->
                         conf.dependencies.forEach {
-                            // this is to make hashCode of combination of libraries and those version
-                            // If there are version changes in the libraries, the module will become a candidate for version increase.
                             val artifactName = it.name
-                            dfList.add(artifactName)
+                            dfListTemp.add(artifactName)
+                        }
+                    }
+                    if (dfListTemp.contains(CUSTOMERAPP)) {
+                        dfListTemp.remove(CUSTOMERAPP)
+                        dfListCustApp.addAll(dfListTemp)
+                        if (isOnDemand) {
+                            dfListCustAppIsOnDemand.addAll(dfListTemp)
+                        }
+                    } else if (dfListTemp.contains(SELLERAPP)) {
+                        dfListTemp.remove(SELLERAPP)
+                        dfListSellerApp.addAll(dfListTemp)
+                        if (isOnDemand) {
+                            dfListSellerApp.addAll(dfListTemp)
                         }
                     }
                 }
@@ -168,8 +184,9 @@ open class AppStatisticsTask : DefaultTask() {
                         MODULE_PATH -> path
                         TYPE -> getTypeString(it.type, path)
                         CONTAIN_CORE -> containCoreString(it.key)
-                        DF -> isDF(projectName)
-                        DF_ENABLED -> isDFenabled(projectName)
+                        DF_CUSTAPP_TYPE -> getDFCustomerappType(projectName)
+                        DF_SELLERAPP_TYPE -> getDFSellerappType(projectName)
+                        DF_READY -> isDFenabled(projectName)
                         OWNER -> getOwner(projectName)
                         JAVA_COUNT -> javaCount.toString()
                         KOTLIN_COUNT -> kotlinCount.toString()
@@ -267,6 +284,32 @@ open class AppStatisticsTask : DefaultTask() {
         }
     }
 
+    fun isOnDemand(file: File): Boolean {
+        file.listFiles()?.forEach {
+            if (it.isDirectory && (it.name == "src" || it.name == "main")
+            ) {
+                return isOnDemand(it)
+            } else {
+                if (it.name == "AndroidManifest.xml") {
+                    var isOnDemand = true
+                    it.forEachLine {
+                        if (it.isNotEmpty()) {
+                            if (it.contains("dist:install-time") ||
+                                it.contains("dist:onDemand=\"false\"")) {
+                                isOnDemand = false
+                            } else if (it.contains("dist:on-demand") ||
+                                it.contains("dist:onDemand=\"true\"")){
+                                isOnDemand = true
+                            }
+                        }
+                    }
+                    return isOnDemand
+                }
+            }
+        }
+        return false
+    }
+
     fun String.trimSymbol(): String {
         return replace("_", "").replace("-", "")
     }
@@ -279,9 +322,25 @@ open class AppStatisticsTask : DefaultTask() {
         }
     }
 
-    fun isDF(projectName: String): String {
-        return if (dfList.contains(projectName)) {
-            "OK"
+    fun getDFCustomerappType(projectName: String): String {
+        return if (dfListCustApp.contains(projectName)) {
+            if (dfListCustAppIsOnDemand.contains(projectName)) {
+                "on-demand"
+            } else {
+                "install-time"
+            }
+        } else {
+            " "
+        }
+    }
+
+    fun getDFSellerappType(projectName: String): String {
+        return if (dfListSellerApp.contains(projectName)) {
+            if (dfListSellerAppIsOnDemand.contains(projectName)) {
+                "on-demand"
+            } else {
+                "install-time"
+            }
         } else {
             " "
         }
