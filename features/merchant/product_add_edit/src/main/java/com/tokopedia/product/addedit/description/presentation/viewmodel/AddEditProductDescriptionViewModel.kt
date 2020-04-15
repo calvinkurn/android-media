@@ -180,13 +180,24 @@ class AddEditProductDescriptionViewModel @Inject constructor(
     }
 
     private fun setVariantNamesAndCount() {
+        // get variant count
+        val level1Options: ArrayList<Int> = arrayListOf()
+        val level2Options: ArrayList<Int> = arrayListOf()
+        variantInputModel.productVariant.forEach { productVariant ->
+            val level1Option = productVariant.opt.getOrNull(0)
+            val level2Option = productVariant.opt.getOrNull(1)
+            level1Option?.run { level1Options.add(this) }
+            level2Option?.run { level2Options.add(this) }
+        }
+        variantCountList[0] = level1Options.distinct().size
+        variantCountList[1] = level2Options.distinct().size
+
+        // get variant names
         variantInputModel.variantOptionParent.forEachIndexed { index, optionParent ->
             if (index < 2) {
                 variantNameList[index] = optionParent.name ?: ""
             }
         }
-        setVariantCountLevel1(variantInputModel.productVariant)
-        setVariantCountLevel2(variantInputModel.productVariant)
     }
 
     private fun setVariantCountLevel1(productVariant: ArrayList<ProductVariantCombinationViewModel>) {

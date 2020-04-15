@@ -8,8 +8,6 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.product.addedit.common.util.ResourceProvider
 import com.tokopedia.product.addedit.detail.domain.usecase.GetCategoryRecommendationUseCase
 import com.tokopedia.product.addedit.detail.domain.usecase.GetNameRecommendationUseCase
-import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.UNIT_DAY
-import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.UNIT_WEEK
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_PREORDER_DAYS
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_PREORDER_WEEKS
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_PRODUCT_STOCK_LIMIT
@@ -17,6 +15,8 @@ import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProduct
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MIN_PREORDER_DURATION
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MIN_PRODUCT_PRICE_LIMIT
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MIN_PRODUCT_STOCK_LIMIT
+import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.UNIT_DAY
+import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.UNIT_WEEK
 import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
 import com.tokopedia.product.addedit.draft.domain.usecase.SaveProductDraftUseCase
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
@@ -111,6 +111,9 @@ class AddEditProductDetailViewModel @Inject constructor(
         addSource(mIsOrderQuantityInputError) {
             this.value = isInputValid()
         }
+        addSource(isPreOrderActivated) {
+            this.value = isInputValid()
+        }
         addSource(mIsPreOrderDurationInputError) {
             this.value = isInputValid()
         }
@@ -187,7 +190,7 @@ class AddEditProductDetailViewModel @Inject constructor(
         mIsProductPriceInputError.value = false
     }
 
-    fun validateProductWholeSaleQuantityInput(wholeSaleQuantityInput: String, minWholeSaleQuantity: Int): String {
+    fun validateProductWholeSaleQuantityInput(wholeSaleQuantityInput: String, minOrderInput: String, previousInput: String): String {
         if (wholeSaleQuantityInput.isEmpty()) {
             provider.getEmptyWholeSaleQuantityErrorMessage()?.let { return it }
         }
@@ -195,13 +198,21 @@ class AddEditProductDetailViewModel @Inject constructor(
         if (wholeSaleQuantity == 0.toBigInteger()) {
             provider.getZeroWholeSaleQuantityErrorMessage()?.let { return it }
         }
-        if (wholeSaleQuantity < minWholeSaleQuantity.toBigInteger()) {
-            provider.getMinLimitWholeSaleQuantityErrorMessage(minWholeSaleQuantity)?.let { return it }
+        if (minOrderInput.isNotBlank()) {
+            if (wholeSaleQuantity < minOrderInput.toBigInteger()) {
+                provider.getMinLimitWholeSaleQuantityErrorMessage()?.let { return it }
+            }
+        }
+        if (previousInput.isNotBlank()) {
+            val previousQuantity = previousInput.toBigInteger()
+            if (previousQuantity >= wholeSaleQuantity) {
+                provider.getPrevInputWholeSaleQuantityErrorMessage()?.let { return it }
+            }
         }
         return ""
     }
 
-    fun validateProductWholeSalePriceInput(wholeSalePriceInput: String, productPriceInput: String): String {
+    fun validateProductWholeSalePriceInput(wholeSalePriceInput: String, productPriceInput: String, previousInput: String): String {
         if (wholeSalePriceInput.isEmpty()) {
             provider.getEmptyWholeSalePriceErrorMessage()?.let { return it }
         }
@@ -209,10 +220,16 @@ class AddEditProductDetailViewModel @Inject constructor(
         if (wholeSalePrice == 0.toBigInteger()) {
             provider.getZeroWholeSalePriceErrorMessage()?.let { return it }
         }
-        if (productPriceInput.isNotEmpty()) {
-            val productPrice = productPriceInput.toLong()
-            if (wholeSalePrice >= productPrice.toBigInteger()) {
+        if (productPriceInput.isNotBlank()) {
+            val productPrice = productPriceInput.toBigInteger()
+            if (wholeSalePrice >= productPrice) {
                 provider.getWholeSalePriceTooExpensiveErrorMessage()?.let { return it }
+            }
+        }
+        if (previousInput.isNotBlank()) {
+            val previousPrice = previousInput.toBigInteger()
+            if (previousPrice <= wholeSalePrice) {
+                provider.getPrevInputWholeSalePriceErrorMessage()?.let { return it }
             }
         }
         return ""
@@ -317,7 +334,8 @@ class AddEditProductDetailViewModel @Inject constructor(
         }.filterIndexed { index, _ -> !editted[index] }
 
         val imageUrlOrPathList = imagePickerResult.mapIndexed { index, urlOrPath ->
-            if (editted[index]) urlOrPath else pictureList.find { it.urlOriginal == originalImageUrl[index] }?.urlThumbnail ?: urlOrPath
+            if (editted[index]) urlOrPath else pictureList.find { it.urlOriginal == originalImageUrl[index] }?.urlThumbnail
+                    ?: urlOrPath
         }.toMutableList()
 
         this.detailInputModel = productInputModel.detailInputModel.apply {
