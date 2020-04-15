@@ -1,6 +1,5 @@
 package com.tokopedia.autocomplete.suggestion
 
-import com.tokopedia.autocomplete.suggestion.data.SuggestionResponse
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import com.tokopedia.user.session.UserSessionInterface
@@ -11,7 +10,7 @@ import org.junit.Test
 internal class OnSuggestionItemClickTest {
 
     private val suggestionView = mockk<SuggestionContract.View>(relaxed = true)
-    private val getSuggestionUseCase = mockk<UseCase<SuggestionResponse>>(relaxed = true)
+    private val getSuggestionUseCase = mockk<UseCase<SuggestionData>>(relaxed = true)
     private val suggestionTrackerUseCase = mockk<UseCase<Void?>>(relaxed = true)
     private val userSession = mockk<UserSessionInterface>(relaxed = true)
 
