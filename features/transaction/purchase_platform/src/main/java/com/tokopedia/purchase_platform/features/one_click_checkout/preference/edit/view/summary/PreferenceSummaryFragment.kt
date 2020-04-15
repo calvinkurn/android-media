@@ -380,21 +380,29 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
     private fun setDataToParent(data: GetPreferenceData) {
         val parent = activity
         if (parent is PreferenceEditParent) {
-            val addressId = data.addressModel?.addressId
-            if (addressId != null) {
-                parent.setAddressId(addressId)
+            if (parent.getAddressId() == 0) {
+                val addressId = data.addressModel?.addressId
+                if (addressId != null) {
+                    parent.setAddressId(addressId)
+                }
             }
-            val serviceId = data.shipmentModel?.serviceId
-            if (serviceId != null) {
-                parent.setShippingId(serviceId)
+            if (parent.getShippingId() == 0) {
+                val serviceId = data.shipmentModel?.serviceId
+                if (serviceId != null) {
+                    parent.setShippingId(serviceId)
+                }
             }
-            val gatewayCode = data.paymentModel?.gatewayCode
-            if (gatewayCode != null) {
-                parent.setGatewayCode(gatewayCode)
+            if (parent.getGatewayCode().isEmpty()) {
+                val gatewayCode = data.paymentModel?.gatewayCode
+                if (gatewayCode != null) {
+                    parent.setGatewayCode(gatewayCode)
+                }
             }
-            val metadata = data.paymentModel?.metadata
-            if (metadata != null) {
-                parent.setPaymentQuery(metadata)
+            if (parent.getPaymentQuery().isEmpty()) {
+                val metadata = data.paymentModel?.metadata
+                if (metadata != null) {
+                    parent.setPaymentQuery(metadata)
+                }
             }
         }
     }
