@@ -8,6 +8,7 @@
         android:id="@+id/replyAttachProductSearchBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:search_bar_placeholder="@string/reply_attach_product_bottom_sheet_search_place_holder"
         app:layout_constraintTop_toTopOf="parent"/>
 
     <androidx.recyclerview.widget.RecyclerView

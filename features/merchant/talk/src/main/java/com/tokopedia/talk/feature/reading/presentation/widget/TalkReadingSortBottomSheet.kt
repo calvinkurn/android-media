@@ -10,14 +10,14 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.android.synthetic.main.widget_talk_sort_bottomsheet.*
 
 class TalkReadingSortBottomSheet(
-        private val onFinishedListener: OnFinishedListener,
+        private val onFinishedSelectSortListener: OnFinishedSelectSortListener,
         private val sortOptions: List<SortOption>
 ) : BottomSheetUnify() {
 
     companion object {
 
-        fun createInstance(context: Context, sortOptions: List<SortOption>, onFinishedListener: OnFinishedListener) : TalkReadingSortBottomSheet {
-            return TalkReadingSortBottomSheet(onFinishedListener, sortOptions).apply{
+        fun createInstance(context: Context, sortOptions: List<SortOption>, onFinishedSelectSortListener: OnFinishedSelectSortListener) : TalkReadingSortBottomSheet {
+            return TalkReadingSortBottomSheet(onFinishedSelectSortListener, sortOptions).apply{
                 val view = View.inflate(context, R.layout.widget_talk_sort_bottomsheet,null)
                 setChild(view)
                 setTitle(context.getString(R.string.reading_sort_bottom_sheet_title))
@@ -36,14 +36,14 @@ class TalkReadingSortBottomSheet(
         talkReadingSortOptions.setData(data)
         talkReadingSortOptions.setOnItemClickListener { parent, view, position, id ->
             val chosenSortOption = sortOptions[position]
-            onFinishedListener.onFinishChooseSort(chosenSortOption)
+            onFinishedSelectSortListener.onFinishChooseSort(chosenSortOption)
             this.dismiss()
         }
         talkReadingSortOptions.onLoadFinish {
             data.forEachIndexed { index, listItemUnify ->
                 listItemUnify.listRightRadiobtn?.setOnClickListener {
                     val chosenSortOption = getSortOptionFromListUnify(listItemUnify.listTitleText)
-                    onFinishedListener.onFinishChooseSort(chosenSortOption)
+                    onFinishedSelectSortListener.onFinishChooseSort(chosenSortOption)
                     this.dismiss()
                 }
                 listItemUnify.listRightRadiobtn?.isChecked = sortOptions[index].isSelected

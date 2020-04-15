@@ -19,7 +19,7 @@ import com.tokopedia.talk.feature.reading.presentation.adapter.TalkReadingAdapte
 import com.tokopedia.talk.feature.reading.presentation.adapter.uimodel.TalkReadingHeaderModel
 import com.tokopedia.talk.feature.reading.presentation.adapter.uimodel.TalkReadingUiModel
 import com.tokopedia.talk.feature.reading.presentation.viewmodel.TalkReadingViewModel
-import com.tokopedia.talk.feature.reading.presentation.widget.OnFinishedListener
+import com.tokopedia.talk.feature.reading.presentation.widget.OnFinishedSelectSortListener
 import com.tokopedia.talk.feature.reading.presentation.widget.TalkReadingSortBottomSheet
 import com.tokopedia.talk_old.R
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -30,9 +30,9 @@ import kotlinx.android.synthetic.main.fragment_talk_reading.*
 import kotlinx.android.synthetic.main.partial_talk_reading_connection_error.view.*
 import javax.inject.Inject
 
-class TalkReadingFragment() : BaseListFragment<TalkReadingUiModel,
+class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
         TalkReadingAdapterTypeFactory>(), HasComponent<TalkReadingComponent>,
-        OnFinishedListener {
+        OnFinishedSelectSortListener {
 
     companion object {
 
