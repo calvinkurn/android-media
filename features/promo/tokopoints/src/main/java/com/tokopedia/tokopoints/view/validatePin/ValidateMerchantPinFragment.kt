@@ -85,7 +85,7 @@ class ValidateMerchantPinFragment : BaseDaggerFragment(), ValidateMerchantPinCon
                 return
             }
             KeyboardHandler.hideSoftKeyboard(activity)
-            mViewModel!!.swipeMyCoupon(arguments!!.getString(CommonConstant.EXTRA_COUPON_ID) ?: "", mEditPin!!.text.toString())
+            mViewModel.swipeMyCoupon(arguments!!.getString(CommonConstant.EXTRA_COUPON_ID) ?: "", mEditPin!!.text.toString())
         }
     }
 
@@ -115,7 +115,7 @@ class ValidateMerchantPinFragment : BaseDaggerFragment(), ValidateMerchantPinCon
     }
 
     override fun onSuccess(couponSwipeUpdate: CouponSwipeUpdate) {
-        mValidatePinCallBack!!.onSuccess(couponSwipeUpdate)
+        mValidatePinCallBack?.onSuccess(couponSwipeUpdate)
     }
 
     override fun onError(error: String) {
@@ -123,12 +123,12 @@ class ValidateMerchantPinFragment : BaseDaggerFragment(), ValidateMerchantPinCon
         mTextError!!.text = error
     }
 
-    override fun getAppContext(): Context {
-        return activity!!
+    override fun getAppContext(): Context? {
+        return activity
     }
 
-    override fun getActivityContext(): Context {
-        return activity!!
+    override fun getActivityContext(): Context? {
+        return activity
     }
 
     interface ValidatePinCallBack {
