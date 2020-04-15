@@ -12,26 +12,32 @@ buildscript {
     }
 }
 
-plugins { id 'base' }
+plugins {
+    id 'base'
+    id 'java-gradle-plugin'
+}
 apply plugin: 'kotlin'
 
 repositories {
+    google()
+    mavenCentral()
     jcenter()
 }
 
 compileKotlin { kotlinOptions { jvmTarget = "1.8" } }
 compileTestKotlin { kotlinOptions { jvmTarget = "1.8" } }
 
-dependencies {
-//    implementation "commons-io:commons-io:2.5"
-//    implementation "commons-codec:commons-codec:1.10"
-//    testImplementation gradleTestKit()
-//    testImplementation 'junit:junit:4.12'
-//    testImplementation('org.spockframework:spock-core:1.1-groovy-2.4') {
-//        exclude module: 'groovy-all'
-//    }
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.70"
+gradlePlugin {
+    plugins {
+        AppStatisticsPlugin {
+            id = 'com.tokopedia.plugin.appstatistics'
+            implementationClass = 'com.tokopedia.plugin.AppStatisticsPlugin'
+        }
+    }
+}
 
+dependencies {
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.70"
 }
 
 

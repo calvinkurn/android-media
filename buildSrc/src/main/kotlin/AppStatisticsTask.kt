@@ -9,7 +9,6 @@ import java.lang.Math.round
 
 open class AppStatisticsTask : DefaultTask() {
 
-    @OutputFile
     var reportFile: File = File("finalReport.csv")
 
     var containCoreMap: MutableMap<String, Boolean> = hashMapOf()

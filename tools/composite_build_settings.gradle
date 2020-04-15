@@ -82,7 +82,6 @@ if (enableComposite) {
                 includeBuild("${file.pathComposite.replace("$rootDir/", "").trim()}") {
                     dependencySubstitution {
                         file.listModuleComposite.each {
-                            println("Substitute " + "${it.project}:${it.module}" + " with " + "${it.moduleName}")
                             substitute module("${it.project}:${it.module}") with project(":${it.moduleName}")
                         }
                     }
