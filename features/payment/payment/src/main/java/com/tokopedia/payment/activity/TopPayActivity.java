@@ -18,10 +18,8 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.webkit.ConsoleMessage;
 import android.webkit.SslErrorHandler;
 import android.webkit.URLUtil;
-import android.webkit.WebChromeClient;
 import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebResourceResponse;
@@ -55,9 +53,6 @@ import com.tokopedia.payment.presenter.TopPayPresenter;
 import com.tokopedia.payment.router.IPaymentModuleRouter;
 import com.tokopedia.payment.utils.Constant;
 import com.tokopedia.network.constant.ErrorNetMessage;
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
-import com.tokopedia.remoteconfig.RemoteConfig;
-import com.tokopedia.remoteconfig.RemoteConfigKey;
 
 import java.io.ByteArrayOutputStream;
 import java.io.UnsupportedEncodingException;
@@ -69,6 +64,7 @@ import javax.inject.Inject;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -84,7 +80,6 @@ import static com.tokopedia.common.payment.PaymentConstant.EXTRA_PARAMETER_TOP_P
  */
 
 public class TopPayActivity extends AppCompatActivity implements TopPayContract.View, FingerPrintDialogPayment.ListenerPayment, FingerprintDialogRegister.ListenerRegister, FilePickerInterface {
-    private static final String TAG = TopPayActivity.class.getSimpleName();
 
     private static final String ACCOUNTS_URL = "accounts.tokopedia.com";
     public static final String KEY_QUERY_PAYMENT_ID = "id";
@@ -115,7 +110,6 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
     private FingerprintDialogRegister fingerPrintDialogRegister;
     private boolean isInterceptOtp = true;
     private CommonWebViewClient webChromeWebviewClient;
-    private RemoteConfig remoteConfig;
 
     private String mJsHciCallbackFuncName;
 
@@ -183,7 +177,8 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
 
         String message = getIntent().getStringExtra(EXTRA_PARAMETER_TOP_PAY_TOASTER_MESSAGE);
         if (!TextUtils.isEmpty(message)) {
-            Toaster.INSTANCE.make(scroogeWebView, message, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL, "", v -> {});
+            Toaster.INSTANCE.make(scroogeWebView, message, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL, "", v -> {
+            });
         }
     }
 
@@ -205,32 +200,21 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
         scroogeWebView.setWebChromeClient(webChromeWebviewClient);
         scroogeWebView.setOnKeyListener(getWebViewOnKeyListener());
         btnBack.setVisibility(View.VISIBLE);
-        btnBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onBackPressed();
-            }
-        });
-        btnClose.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                callbackPaymentCanceled();
-            }
-        });
+        btnBack.setOnClickListener(v -> onBackPressed());
+        btnClose.setOnClickListener(v -> callbackPaymentCanceled());
     }
 
     private void initVar() {
-        remoteConfig = new FirebaseRemoteConfigImpl(this);
         webChromeWebviewClient = new CommonWebViewClient(this, progressBar);
     }
 
     private void initView() {
         setContentView(R.layout.activity_top_pay_payment_module);
-        tvTitle = (TextView) findViewById(R.id.tv_title);
+        tvTitle = findViewById(R.id.tv_title);
         btnBack = findViewById(R.id.btn_back);
         btnClose = findViewById(R.id.btn_close);
-        scroogeWebView = (WebView) findViewById(R.id.scrooge_webview);
-        progressBar = (ProgressBar) findViewById(R.id.progressbar);
+        scroogeWebView = findViewById(R.id.scrooge_webview);
+        progressBar = findViewById(R.id.progressbar);
         progressDialog = new ProgressDialog(this);
         progressDialog.setMessage(getString(R.string.title_loading));
         tvTitle.setText(getString(R.string.toppay_title));
@@ -264,11 +248,6 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
     }
 
     @Override
-    public String getStringFromResource(int resId) {
-        return null;
-    }
-
-    @Override
     public PaymentPassData getPaymentPassData() {
         return paymentPassData;
     }
@@ -288,25 +267,6 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
     @Override
     public void showProgressBar() {
         showProgressLoading();
-    }
-
-    @Override
-    public void showTimeoutErrorOnUiThread() {
-
-    }
-
-    @Override
-    public void setWebPageTitle(String title) {
-        tvTitle.setText(title);
-    }
-
-    @Override
-    public void backStackAction() {
-        onBackPressed();
-    }
-
-    public void closeView() {
-        this.finish();
     }
 
     @Override
@@ -385,12 +345,10 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
     }
 
     private class TopPayWebViewClient extends WebViewClient {
-        private boolean timeout = true;
 
         @SuppressWarnings("deprecation")
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
-            //Log.d(TAG, "redirect url = " + url);
 
             if (!url.isEmpty() && url.contains(PaymentFingerprintConstant.APP_LINK_FINGERPRINT) &&
                     paymentModuleRouter.getEnableFingerprintPayment()) {
@@ -414,16 +372,7 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
                         + "?url=" + URLEncoder.encode(url);
                 RouteManager.route(TopPayActivity.this, deepLinkUrl);
                 return true;
-            } else {
-//                if (!url.isEmpty() && (url.contains(Constant.TempRedirectPayment.TOP_PAY_DOMAIN_URL_LIVE) ||
-//                        url.contains(Constant.TempRedirectPayment.TOP_PAY_DOMAIN_URL_STAGING))) {
-//                    paymentModuleRouter.actionAppLinkPaymentModule(
-//                            TopPayActivity.this, Constant.TempRedirectPayment.APP_LINK_SCHEME_HOME
-//                    );
-//                    return true;
-//                }
             }
-
             if (!TextUtils.isEmpty(paymentPassData.getCallbackSuccessUrl()) &&
                     url.contains(paymentPassData.getCallbackSuccessUrl())) {
                 view.stopLoading();
@@ -458,7 +407,6 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
                     else callbackPaymentCanceled();
                     return true;
                 } else if (RouteManager.isSupportApplink(TopPayActivity.this, url) && !URLUtil.isNetworkUrl(url)) {
-                    //  RouteManager.route(TopPayActivity.this, url);
                     Intent intent = RouteManager.getIntent(TopPayActivity.this, url);
                     intent.setData(Uri.parse(url));
                     navigateToActivity(intent);
@@ -506,7 +454,6 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
 
         @Override
         public void onPageFinished(WebView view, String url) {
-            timeout = false;
             presenter.clearTimeoutSubscription();
             if (progressBar != null) progressBar.setVisibility(View.GONE);
         }
@@ -534,34 +481,8 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
 
         @Override
         public void onPageStarted(final WebView view, String url, Bitmap favicon) {
-            //  Log.d(TAG, "start url = " + url);
-            if (remoteConfig.getBoolean(RemoteConfigKey.ENABLE_TOPPAY_TIMEOUT, true)) {
-                timerObservable(view);
-            } else {
-                timerThread(view);
-            }
+            timerObservable(view);
             if (progressBar != null) progressBar.setVisibility(View.VISIBLE);
-        }
-
-        private void timerThread(WebView view) {
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        Thread.sleep(FORCE_TIMEOUT);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    if (timeout) {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                showErrorTimeout(view);
-                            }
-                        });
-                    }
-                }
-            }).start();
         }
 
         private void timerObservable(WebView view) {
@@ -572,7 +493,6 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
                             .subscribe(new Subscriber<Long>() {
                                 @Override
                                 public void onCompleted() {
-
                                 }
 
                                 @Override
@@ -614,27 +534,6 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
             callbackPaymentFailed();
     }
 
-    private class TopPayWebViewChromeClient extends WebChromeClient {
-
-        @Override
-        public void onProgressChanged(WebView view, int newProgress) {
-            if (newProgress == 100) {
-                hideProgressBar();
-            }
-            super.onProgressChanged(view, newProgress);
-        }
-
-        @SuppressWarnings("deprecation")
-        public void onConsoleMessage(String message, int lineNumber, String sourceID) {
-            //        Log.d(TAG, message + " -- From line " + lineNumber + " of " + sourceID);
-        }
-
-        public boolean onConsoleMessage(ConsoleMessage cm) {
-            //        Log.d(TAG, cm.message() + " -- From line " + cm.lineNumber() + " of " + cm.sourceId());
-            return true;
-        }
-    }
-
     public boolean isEndThanksPage() {
         if (scroogeWebView.getUrl() == null || scroogeWebView.getUrl().isEmpty()) return false;
         for (String thanksUrl : THANK_PAGE_URL_LIST) {
@@ -646,18 +545,14 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
     }
 
     private View.OnKeyListener getWebViewOnKeyListener() {
-        return new View.OnKeyListener() {
-            @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if (event.getAction() == KeyEvent.ACTION_DOWN) {
-                    switch (keyCode) {
-                        case KeyEvent.KEYCODE_BACK:
-                            onBackPressed();
-                            return true;
-                    }
+        return (v, keyCode, event) -> {
+            if (event.getAction() == KeyEvent.ACTION_DOWN) {
+                if (keyCode == KeyEvent.KEYCODE_BACK) {
+                    onBackPressed();
+                    return true;
                 }
-                return false;
             }
+            return false;
         };
     }
 

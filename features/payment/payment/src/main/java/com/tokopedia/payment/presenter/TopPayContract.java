@@ -53,14 +53,6 @@ public interface TopPayContract {
 
         void showProgressBar();
 
-        void showTimeoutErrorOnUiThread();
-
-        void setWebPageTitle(String title);
-
-        void backStackAction();
-
-        String getStringFromResource(int resId);
-
         PaymentPassData getPaymentPassData();
 
         void navigateToActivity(Intent intentCart);
