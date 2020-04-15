@@ -26,6 +26,9 @@ enum class ScreenOrientation(
     val isLandscape: Boolean
         get() = this == Landscape || this == ReversedLandscape
 
+    val isPortrait: Boolean
+        get() = this == Portrait || this == ReversedPortrait
+
     companion object {
         private val values = values()
 

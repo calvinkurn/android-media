@@ -16,6 +16,7 @@ import com.google.android.exoplayer2.video.VideoListener
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.play.R
 import com.tokopedia.play.view.type.ScreenOrientation
+import com.tokopedia.play.view.type.VideoOrientation
 
 
 @SuppressLint("SyntheticAccessor")
@@ -40,10 +41,22 @@ class VideoPlayCustom(context: Context, attrs: AttributeSet?, defStyleAttr: Int)
     val textureView: TextureView?
         get() = surfaceView
 
-    var orientation: ScreenOrientation = ScreenOrientation.Portrait
+    var screenOrientation: ScreenOrientation = ScreenOrientation.Portrait
         set(value) {
-            if (value.isLandscape) {
+            if (value.isPortrait && videoOrientation.isLandscape) {
                 contentFrame?.setMargin(0, marginTop, 0, 0)
+            } else {
+                contentFrame?.setMargin(0, 0, 0, 0)
+            }
+            field = value
+        }
+
+    var videoOrientation: VideoOrientation = VideoOrientation.Unknown
+        set(value) {
+            if (value.isLandscape && screenOrientation.isPortrait) {
+                contentFrame?.setMargin(0, marginTop, 0, 0)
+            } else {
+                contentFrame?.setMargin(0, 0, 0, 0)
             }
             field = value
         }

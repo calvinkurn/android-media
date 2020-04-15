@@ -8,7 +8,7 @@ import com.tokopedia.play.component.EventBusFactory
 import com.tokopedia.play.component.UIComponent
 import com.tokopedia.play.util.CoroutineDispatcherProvider
 import com.tokopedia.play.view.event.ScreenStateEvent
-import com.tokopedia.play.view.type.ScreenOrientation
+import com.tokopedia.play.view.type.VideoOrientation
 import com.tokopedia.play_common.state.PlayVideoState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
@@ -43,11 +43,12 @@ open class VideoComponent(
                                 uiView.setPlayer(null)
                             }
                             is ScreenStateEvent.VideoPropertyChanged -> handleVideoStateChanged(it.videoProp.state)
+                            is ScreenStateEvent.ScreenOrientationChanged -> uiView.setScreenOrientation(it.orientation)
                         }
                     }
         }
         // TODO("testing")
-        uiView.setOrientation(ScreenOrientation.Landscape)
+        uiView.setVideoOrientation(VideoOrientation.Landscape)
         uiView.setBackground("https://i.pinimg.com/736x/d3/bb/7b/d3bb7b85f4e160d013f68fcde8d19844.jpg")
     }
 

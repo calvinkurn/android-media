@@ -17,6 +17,7 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.R
 import com.tokopedia.play.component.UIView
 import com.tokopedia.play.view.type.ScreenOrientation
+import com.tokopedia.play.view.type.VideoOrientation
 
 /**
  * Created by jegul on 02/12/19
@@ -55,8 +56,12 @@ class VideoView(container: ViewGroup) : UIView(container) {
         }
     }
 
-    internal fun setOrientation(orientation: ScreenOrientation) {
-        pvVideo.orientation = orientation
+    internal fun setVideoOrientation(orientation: VideoOrientation) {
+        pvVideo.videoOrientation = orientation
+    }
+
+    internal fun setScreenOrientation(orientation: ScreenOrientation) {
+        pvVideo.screenOrientation = orientation
     }
 
     internal fun setBackground(imageUrl: String) {

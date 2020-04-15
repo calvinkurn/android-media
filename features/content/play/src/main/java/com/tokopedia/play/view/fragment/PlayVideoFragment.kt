@@ -28,6 +28,7 @@ import com.tokopedia.play.util.event.EventObserver
 import com.tokopedia.play.view.custom.RoundedConstraintLayout
 import com.tokopedia.play.view.event.ScreenStateEvent
 import com.tokopedia.play.view.type.PlayRoomEvent
+import com.tokopedia.play.view.type.ScreenOrientation
 import com.tokopedia.play.view.uimodel.EventUiModel
 import com.tokopedia.play.view.uimodel.VideoPropertyUiModel
 import com.tokopedia.play.view.viewmodel.PlayVideoViewModel
@@ -111,6 +112,7 @@ class PlayVideoFragment : BaseDaggerFragment(), CoroutineScope {
         observeOneTapOnboarding()
         observeBottomInsetsState()
         observeEventUserInfo()
+        observeScreenOrientation()
     }
 
     override fun onDestroyView() {
@@ -163,6 +165,10 @@ class PlayVideoFragment : BaseDaggerFragment(), CoroutineScope {
                 else if(it.isFreeze) sendEventFreeze(it)
             }
         })
+    }
+
+    private fun observeScreenOrientation() {
+        playViewModel.observableScreenOrientation.observe(viewLifecycleOwner, Observer(::sendOrientationEvent))
     }
     //endregion
 
@@ -335,6 +341,16 @@ class PlayVideoFragment : BaseDaggerFragment(), CoroutineScope {
                                             btnUrl = eventUiModel.freezeButtonUrl
                                     )
                             )
+                    )
+        }
+    }
+
+    private fun sendOrientationEvent(screenOrientation: ScreenOrientation) {
+        launch {
+            EventBusFactory.get(viewLifecycleOwner)
+                    .emit(
+                            ScreenStateEvent::class.java,
+                            ScreenStateEvent.ScreenOrientationChanged(screenOrientation, playViewModel.stateHelper)
                     )
         }
     }
