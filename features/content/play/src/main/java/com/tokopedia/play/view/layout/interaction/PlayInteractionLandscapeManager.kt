@@ -39,7 +39,7 @@ class PlayInteractionLandscapeManager(
         layoutVideoControl(container = view, id = videoControlComponentId, sizeContainerComponentId = sizeContainerComponentId, likeComponentId = likeComponentId)
         layoutLike(container = view, id = likeComponentId, videoControlComponentId = videoControlComponentId, sizeContainerComponentId = sizeContainerComponentId)
         layoutPlayButton(container = view, id = playButtonComponentId, sizeContainerComponentId = sizeContainerComponentId)
-        layoutImmersiveBox(container = view, id = immersiveBoxComponentId, likeComponentId = likeComponentId, videoControlComponentId = videoControlComponentId)
+//        layoutImmersiveBox(container = view, id = immersiveBoxComponentId, likeComponentId = likeComponentId, videoControlComponentId = videoControlComponentId)
         layoutGradientBackground(container = view, id = gradientBackgroundComponentId)
         layoutVideoSettings(container = view, id = videoSettingsComponentId, sizeContainerComponentId = sizeContainerComponentId)
     }

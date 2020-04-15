@@ -1,6 +1,7 @@
 package com.tokopedia.play.util
 
 import android.animation.Animator
+import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
 import android.view.View
@@ -25,6 +26,28 @@ object PlayAnimationUtil {
             fromAlpha: Float = FULL_VISIBILITY_ALPHA
     ) = fadeAnimation(view, durationInMs, fromAlpha, FULL_INVISIBILITY_ALPHA)
 
+    fun fadeInThenFadeOutAnimatino(
+            view: View,
+            durationInMs: Long,
+            delayInMs: Long,
+            fromAlpha: Float = FULL_INVISIBILITY_ALPHA,
+            fadeInListener: Animator.AnimatorListener = createAnimatorListener(),
+            delayListener: Animator.AnimatorListener = createAnimatorListener(),
+            fadeOutListener: Animator.AnimatorListener = createAnimatorListener()
+    ): Animator {
+        val animatorSet = AnimatorSet()
+        val fadeIn = fadeInAnimation(view, durationInMs, fromAlpha).apply {
+            addListener(fadeInListener)
+        }
+        val delay = delay(delayInMs).apply {
+            addListener(delayListener)
+        }
+        val fadeOut = fadeOutAnimation(view, durationInMs)
+
+        animatorSet.playSequentially(fadeIn, delay, fadeOut)
+        return animatorSet
+    }
+
     fun fadeAnimation(
             view: View,
             durationInMs: Long,
@@ -40,5 +63,16 @@ object PlayAnimationUtil {
         return ValueAnimator.ofInt(0).apply {
             duration = durationInMs
         }
+    }
+
+    fun createAnimatorListener(
+            onStart: (Animator) -> Unit = {},
+            onCancel: (Animator) -> Unit = {},
+            onEnd: (Animator) -> Unit = {}
+    ) = object : Animator.AnimatorListener {
+        override fun onAnimationRepeat(animation: Animator?) {}
+        override fun onAnimationEnd(animation: Animator) { onEnd(animation) }
+        override fun onAnimationCancel(animation: Animator) { onCancel(animation) }
+        override fun onAnimationStart(animation: Animator) { onStart(animation) }
     }
 }

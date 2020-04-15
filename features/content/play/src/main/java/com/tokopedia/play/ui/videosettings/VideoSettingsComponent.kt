@@ -7,6 +7,7 @@ import com.tokopedia.play.component.UIComponent
 import com.tokopedia.play.ui.videosettings.interaction.VideoSettingsInteractionEvent
 import com.tokopedia.play.util.CoroutineDispatcherProvider
 import com.tokopedia.play.view.event.ScreenStateEvent
+import com.tokopedia.play.view.type.immersive.ImmersiveAction
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
@@ -30,8 +31,10 @@ open class VideoSettingsComponent(
             bus.getSafeManagedFlow(ScreenStateEvent::class.java)
                     .collect {
                         when (it) {
-                            ScreenStateEvent.Init -> uiView.show()
+                            ScreenStateEvent.Init -> uiView.hide()
+                            is ScreenStateEvent.VideoStreamChanged -> if (it.videoStream.orientation.isLandscape) uiView.show() else uiView.hide()
                             is ScreenStateEvent.ScreenOrientationChanged -> uiView.setFullscreen(it.orientation.isLandscape)
+                            is ScreenStateEvent.ImmersiveStateChanged -> if (it.shouldImmersive) uiView.fadeOut() else uiView.fadeIn()
                         }
                     }
         }

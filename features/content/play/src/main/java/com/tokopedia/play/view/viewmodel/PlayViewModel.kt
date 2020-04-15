@@ -88,8 +88,6 @@ class PlayViewModel @Inject constructor(
         get() = _observableBadgeCart
     val observableScreenOrientation: LiveData<ScreenOrientation>
         get() = _observableScreenOrientation
-    val observableImmersiveEvent: LiveData<Event<ImmersiveType>>
-        get() = _observableImmersiveEvent
 
     val screenOrientation: ScreenOrientation
         get() {
@@ -165,7 +163,6 @@ class PlayViewModel @Inject constructor(
     private val _observableBottomInsetsState = MutableLiveData<Map<BottomInsetsType, BottomInsetsState>>()
     private val _observablePinned = MediatorLiveData<PinnedUiModel>()
     private val _observableBadgeCart = MutableLiveData<CartUiModel>()
-    private val _observableImmersiveEvent = MutableLiveData<Event<ImmersiveType>>()
     private val _observableScreenOrientation = MutableLiveData<ScreenOrientation>()
     private val stateHandler: LiveData<Unit> = MediatorLiveData<Unit>().apply {
         addSource(playVideoManager.getObservablePlayVideoState()) {
@@ -487,7 +484,6 @@ class PlayViewModel @Inject constructor(
      */
     fun setScreenOrientation(screenOrientation: ScreenOrientation) {
         _observableScreenOrientation.value = screenOrientation
-        triggerImmersive(false)
     }
 
     fun updateBadgeCart() {
@@ -554,22 +550,6 @@ class PlayViewModel @Inject constructor(
             _observableSocketInfo.value = PlaySocketInfo.Error(it)
             startWebSocket(channelId, gcToken, settings)
         })
-    }
-
-    fun triggerImmersive(shouldImmersive: Boolean) {
-        val immersiveDuration = 200L
-        val fadeOutDuration = 3000L
-
-        val immersiveAction =
-                if (shouldImmersive) ImmersiveAction.Enter(immersiveDuration)
-                else ImmersiveAction.Exit(immersiveDuration, fadeOutDuration)
-
-        val immersiveType = when (screenOrientation) {
-            ScreenOrientation.Landscape, ScreenOrientation.ReversedLandscape -> ImmersiveType.Full(immersiveAction)
-            ScreenOrientation.Portrait, ScreenOrientation.ReversedPortrait, ScreenOrientation.Unknown -> ImmersiveType.Partial(immersiveAction)
-        }
-
-        if (_observableImmersiveEvent.value?.peekContent() != immersiveType) _observableImmersiveEvent.value = Event(immersiveType)
     }
 
     /**
