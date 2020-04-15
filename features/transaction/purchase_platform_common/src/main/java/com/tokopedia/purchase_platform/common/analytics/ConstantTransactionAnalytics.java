@@ -395,6 +395,7 @@ public interface ConstantTransactionAnalytics {
         String CLICK_KELUAR_HALAMAN = "click keluar halaman";
         String CLICK_RESET_PROMO = "click reset promo";
         String CLICK_BELI_TANPA_PROMO = "click beli tanpa promo";
+        String VIEW_PROMO_MESSAGE = "view promo message";
 
         //OCC
         String ADD_PREFERENCE_OCC = "click tambah preferensi from tambah pilihan";
