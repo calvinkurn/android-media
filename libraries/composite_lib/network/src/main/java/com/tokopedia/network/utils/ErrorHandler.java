@@ -44,7 +44,7 @@ public class ErrorHandler {
                     case ResponseStatus.SC_BAD_REQUEST:
                         return context.getString(R.string.default_request_error_bad_request);
                     case ResponseStatus.SC_UNAUTHORIZED:
-                        return "Sesi login habis. Coba masuk lagi, ya\nbiar bisa lanjut berbelanja.";
+                        return context.getString(R.string.msg_expired_session_or_unauthorized);
                     default:
                         return context.getString(R.string.default_request_error_unknown);
                 }
