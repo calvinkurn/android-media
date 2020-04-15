@@ -220,7 +220,7 @@ class InitialStatePresenter @Inject constructor(
 
     override fun getInitialStateData() {
         initialStateUseCase.execute(
-                InitialStateGqlUseCase.getParams(
+                InitialStateUseCase.getParams(
                         searchParameter,
                         userSession.deviceId,
                         userSession.userId
@@ -266,6 +266,8 @@ class InitialStatePresenter @Inject constructor(
     override fun detachView() {
         super.detachView()
         initialStateUseCase.unsubscribe()
+        deleteRecentSearchUseCase.unsubscribe()
+        refreshPopularSearchUseCase.unsubscribe()
     }
 
     override fun attachView(view: InitialStateContract.View) {

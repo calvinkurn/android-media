@@ -1,4 +1,4 @@
-package com.tokopedia.autocomplete.initialstate
+package com.tokopedia.autocomplete.initialstate.data
 
 import com.google.gson.annotations.SerializedName
 

@@ -13,7 +13,7 @@ import rx.functions.Func1
 import java.util.HashMap
 import com.tokopedia.discovery.common.constants.SearchConstant.GQL
 
-class InitialStateGqlUseCase(
+class InitialStateUseCase(
         private val graphqlRequest: GraphqlRequest,
         private val graphqlUseCase: GraphqlUseCase,
         private val initialStateDataModelMapper: Func1<GraphqlResponse, List<InitialStateData>>

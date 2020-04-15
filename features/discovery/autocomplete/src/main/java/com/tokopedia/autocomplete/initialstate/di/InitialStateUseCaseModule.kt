@@ -1,12 +1,11 @@
 package com.tokopedia.autocomplete.initialstate.di
 
 import android.content.Context
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.autocomplete.R
 import com.tokopedia.autocomplete.initialstate.InitialStateData
-import com.tokopedia.autocomplete.initialstate.InitialStateGqlResponse
-import com.tokopedia.autocomplete.initialstate.InitialStateGqlUseCase
+import com.tokopedia.autocomplete.initialstate.data.InitialStateGqlResponse
+import com.tokopedia.autocomplete.initialstate.InitialStateUseCase
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
@@ -22,13 +21,13 @@ class InitialStateUseCaseModule {
     @InitialStateScope
     @Provides
     internal fun provideInitialStateUseCase(
-            @ApplicationContext context: Context,
+            @InitialStateContext context: Context,
             initialStateDataModelMapper: Func1<GraphqlResponse, List<InitialStateData>>
     ): UseCase<List<InitialStateData>> {
         val graphqlRequest = GraphqlRequest(
                 GraphqlHelper.loadRawString(context.resources, R.raw.gql_universe_initial_state),
                 InitialStateGqlResponse::class.java
         )
-        return InitialStateGqlUseCase(graphqlRequest, GraphqlUseCase(), initialStateDataModelMapper)
+        return InitialStateUseCase(graphqlRequest, GraphqlUseCase(), initialStateDataModelMapper)
     }
 }

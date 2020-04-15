@@ -1,7 +1,6 @@
 package com.tokopedia.autocomplete.initialstate.data
 
 import com.tokopedia.autocomplete.initialstate.InitialStateData
-import com.tokopedia.autocomplete.initialstate.InitialStateGqlResponse
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import rx.functions.Func1
 

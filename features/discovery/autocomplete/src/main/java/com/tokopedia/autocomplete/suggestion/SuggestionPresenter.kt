@@ -42,8 +42,8 @@ class SuggestionPresenter @Inject constructor() : BaseDaggerPresenter<Suggestion
     )
 
     private fun createGetSuggestionSubscriber(): Subscriber<SuggestionData> = object : Subscriber<SuggestionData>() {
-        override fun onNext(data: SuggestionData) {
-            onSuccessReceivedSuggestion(data)
+        override fun onNext(suggestionData: SuggestionData) {
+            onSuccessReceivedSuggestion(suggestionData)
         }
 
         override fun onCompleted() { }
