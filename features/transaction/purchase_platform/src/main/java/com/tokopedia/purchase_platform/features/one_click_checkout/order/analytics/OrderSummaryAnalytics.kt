@@ -259,7 +259,26 @@ class OrderSummaryAnalytics : TransactionAnalytics() {
         )
     }
 
+    fun eventViewErrorMessage(error: String) {
+        sendEventCategoryActionLabel(
+                EventName.VIEW_CHECKOUT_EXPRESS_IRIS,
+                EventCategory.ORDER_SUMMARY,
+                EventAction.VIEW_ERROR_ON_OSP,
+                error
+        )
+    }
+
     companion object {
         private const val NOT_SUCCESS = "not success"
+
+        const val ERROR_ID_STOCK = "1"
+        const val ERROR_ID_SHOP_CLOSED = "2"
+        const val ERROR_ID_MAX_QTY = "5"
+        const val ERROR_ID_PRICE_CHANGE = "8"
+        const val ERROR_ID_LOGISTIC_DURATION_UNAVAILABLE = "9"
+        const val ERROR_ID_LOGISTIC_DISTANCE_EXCEED = "10"
+        const val ERROR_ID_LOGISTIC_WEIGHT_EXCEED = "11"
+        const val ERROR_ID_LOGISTIC_BBO_MINIMUM = "12"
+        const val ERROR_ID_PAYMENT_OVO_BALANCE = "13"
     }
 }

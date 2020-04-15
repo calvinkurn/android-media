@@ -426,7 +426,7 @@ public interface ConstantTransactionAnalytics {
         String CLICK_BAYAR_NOT_SUCCESS = "click bayar - not success";
         String CLICK_PILIH_PEMBAYARAN_NOT_SUCCESS = "click pilih pembayaran - not success";
         String CLICK_PILIH_PEMBAYARAN = "click pilih pembayaran";
-        String VIEW_ERROR_ON_OSP = "view error messagge";
+        String VIEW_ERROR_ON_OSP = "view error message";
         String CLICK_ADD_PREFERENSI_FROM_OSP = "preference - click tambah pilihan from ganti pilihan";
         String USER_CHANGES_PROFILE = "preference - click ganti pilihan on order summary";
         String USER_SETS_FIRST_PREFERENCE = "preference - click atur preferensi for new buyer";
