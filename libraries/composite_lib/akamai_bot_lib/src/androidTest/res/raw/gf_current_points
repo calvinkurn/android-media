@@ -1,0 +1,19 @@
+query UserPointsQuery {
+  tokopoints {
+    resultStatus {
+      code
+    }
+    status {
+      tier {
+        nameDesc
+        eggImageURL
+      }
+      points {
+        reward
+        rewardStr
+        loyalty
+        loyaltyStr
+      }
+    }
+  }
+}

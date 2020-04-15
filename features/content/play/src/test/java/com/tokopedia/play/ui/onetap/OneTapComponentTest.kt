@@ -4,8 +4,8 @@ import android.view.ViewGroup
 import androidx.lifecycle.LifecycleOwner
 import com.tokopedia.play.component.EventBusFactory
 import com.tokopedia.play.helper.TestCoroutineDispatchersProvider
+import com.tokopedia.play.model.ModelBuilder
 import com.tokopedia.play.view.event.ScreenStateEvent
-import com.tokopedia.play.view.type.PlayRoomEvent
 import io.mockk.confirmVerified
 import io.mockk.every
 import io.mockk.mockk
@@ -16,13 +16,15 @@ import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runBlockingTest
 import kotlinx.coroutines.test.setMain
-import org.junit.After
-import org.junit.Before
-import org.junit.Test
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.TestInstance
 
 /**
  * Created by jegul on 30/01/20
  */
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class OneTapComponentTest {
 
     private lateinit var component: OneTapComponent
@@ -31,7 +33,9 @@ class OneTapComponentTest {
     private val testDispatcher = TestCoroutineDispatcher()
     private val coroutineScope = CoroutineScope(testDispatcher)
 
-    @Before
+    private val modelBuilder = ModelBuilder()
+
+    @BeforeEach
     fun setUp() {
         Dispatchers.setMain(testDispatcher)
         every { owner.lifecycle } returns mockk(relaxed = true)
@@ -39,13 +43,13 @@ class OneTapComponentTest {
         component = OneTapComponentMock(mockk(relaxed = true), EventBusFactory.get(owner), coroutineScope)
     }
 
-    @After
+    @AfterEach
     fun tearDown() {
         Dispatchers.resetMain()
     }
 
     @Test
-    fun `test when show one tap`() = runBlockingTest(testDispatcher) {
+    fun `when one tap is called, then one tap should shown`() = runBlockingTest(testDispatcher) {
         EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.ShowOneTapOnboarding)
 
         verify { component.uiView.showAnimated() }
@@ -53,8 +57,17 @@ class OneTapComponentTest {
     }
 
     @Test
-    fun `test when channel is freeze`() = runBlockingTest(testDispatcher) {
-        val mockPlayRoomEvent = PlayRoomEvent.Freeze("", "", "", "")
+    fun `when channel is frozen, then one tap should be hidden`() = runBlockingTest(testDispatcher) {
+        val mockPlayRoomEvent = modelBuilder.buildPlayRoomFreezeEvent()
+        EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.OnNewPlayRoomEvent(mockPlayRoomEvent))
+
+        verify { component.uiView.hide() }
+        confirmVerified(component.uiView)
+    }
+
+    @Test
+    fun `when user is banned, then one tap should be hidden`() = runBlockingTest(testDispatcher) {
+        val mockPlayRoomEvent = modelBuilder.buildPlayRoomBannedEvent()
         EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.OnNewPlayRoomEvent(mockPlayRoomEvent))
 
         verify { component.uiView.hide() }

@@ -1,7 +1,7 @@
 package com.tokopedia.officialstore.analytics
 
 import android.content.Context
-import com.google.android.gms.tagmanager.DataLayer
+import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.officialstore.category.data.model.Category
 import com.tokopedia.officialstore.official.data.model.dynamic_channel.Banner
 import com.tokopedia.officialstore.official.data.model.dynamic_channel.Channel
@@ -43,6 +43,8 @@ class OfficialStoreTracking(context: Context) {
     private val PROMO_CLICK = "promoClick"
     private val PROMO_VIEW = "promoView"
     private val CATEGORY = "category"
+
+    private val CAMPAIGN_CODE = "campaignCode"
 
     private val OS_MICROSITE = "os microsite - "
 
@@ -141,6 +143,7 @@ class OfficialStoreTracking(context: Context) {
                 EVENT_CATEGORY, "$OS_MICROSITE$categoryName",
                 EVENT_ACTION, "banner - $CLICK",
                 EVENT_LABEL, "$CLICK banner",
+                CAMPAIGN_CODE, bannerItem.campaignCode,
                 ATTRIBUTION, bannerItem.galaxyAttribution,
                 AFFINITY_LABEL, bannerItem.persona,
                 CATEGORY_ID, bannerItem.categoryPersona,
@@ -216,7 +219,8 @@ class OfficialStoreTracking(context: Context) {
             additionalInformation: String,
             featuredBrandId: String,
             isLogin: Boolean,
-            shopId: String
+            shopId: String,
+            campaignId: String
     ) {
         val statusLogin = if (isLogin) "login" else "nonlogin"
         val data = DataLayer.mapOf(
@@ -224,6 +228,7 @@ class OfficialStoreTracking(context: Context) {
                 EVENT_CATEGORY, "$OS_MICROSITE$categoryName",
                 EVENT_ACTION, "$CLICK - shop - all brands - $statusLogin",
                 EVENT_LABEL, shopId,
+                CAMPAIGN_CODE, campaignId,
                 ECOMMERCE, DataLayer.mapOf(
                 PROMO_CLICK, DataLayer.mapOf(
                 "promotions",DataLayer.listOf(
@@ -311,6 +316,7 @@ class OfficialStoreTracking(context: Context) {
                 EVENT_CATEGORY, "os microsite - $categoryName",
                 EVENT_ACTION, "flash sale - product click",
                 EVENT_LABEL, "click product picture - $headerName",
+                CAMPAIGN_CODE, campaignId.toString(),
                 ECOMMERCE, ecommerceBody
         ))
     }
@@ -371,6 +377,7 @@ class OfficialStoreTracking(context: Context) {
                 AFFINITY_LABEL, channelData.persona,
                 CATEGORY_ID, channelData.categoryPersona,
                 SHOP_ID, channelData.brandId,
+                CAMPAIGN_CODE, channelData.campaignID.toString(),
                 ECOMMERCE, ecommerceBody
         ))
     }
@@ -392,7 +399,7 @@ class OfficialStoreTracking(context: Context) {
         ) as HashMap<String, Any>)
     }
 
-    fun dynamicChannelMixCardClick(categoryName: String, headerName: String, position: String, gridData: Grid) {
+    fun dynamicChannelMixCardClick(categoryName: String, headerName: String, position: String, gridData: Grid, campaignId: Int) {
         val ecommerceBody = DataLayer.mapOf(
                 "click", DataLayer.mapOf(
                     "actionField", DataLayer.mapOf("list", "/official-store/$categoryName - dynamic channel mix - $headerName"),
@@ -415,6 +422,7 @@ class OfficialStoreTracking(context: Context) {
                 EVENT_CATEGORY, "os microsite - $categoryName",
                 EVENT_ACTION, "dynamic channel mix - product click",
                 EVENT_LABEL, "click product picture - $headerName",
+                CAMPAIGN_CODE, campaignId.toString(),
                 ECOMMERCE, ecommerceBody
         ))
     }
@@ -471,6 +479,7 @@ class OfficialStoreTracking(context: Context) {
                 EVENT_CATEGORY, "os microsite - $categoryName",
                 EVENT_ACTION, "dynamic channel mix - banner click",
                 EVENT_LABEL, "click banner dc mix - ${bannerData.applink}",
+                CAMPAIGN_CODE, channelData.campaignID.toString(),
                 ATTRIBUTION, channelData.galaxyAttribution,
                 AFFINITY_LABEL, channelData.persona,
                 CATEGORY_ID, channelData.categoryPersona,

@@ -1,8 +1,9 @@
 package com.tokopedia.shop.open.shop_open_revamp.analytic
 
 import android.content.Context
-import com.google.android.gms.tagmanager.DataLayer
+import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.track.TrackApp
+import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.track.interfaces.ContextAnalytics
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import java.util.HashMap
@@ -11,95 +12,107 @@ import java.util.HashMap
 class ShopOpenRevampTracking (context: Context) {
 
     private val tracker: ContextAnalytics by lazy { TrackApp.getInstance().gtm }
-    private var trackingQueue = TrackingQueue(context)
-
-    private val EVENT = "event"
-    private val EVENT_CATEGORY = "eventCategory"
-    private val EVENT_ACTION = "eventAction"
-    private val EVENT_LABEL = "eventLabel"
 
     private val EVENT_VALUE = "clickCreateShop"
     private val EVENT_CATEGORY_VALUE = "registration page"
 
+    fun sendScreenHooray() {
+        val screenName = "/registration page - shop/hooray"
+        tracker.sendScreenAuthenticated(screenName)
+    }
+
+    fun sendScreenCongratulations() {
+        val screenName = "/registration page - shop/congratulation"
+        tracker.sendScreenAuthenticated(screenName)
+    }
+
     fun clickCreateShop(isSuccess: Boolean, shopDomainName: String) {
         val status = if (isSuccess) "succes" else "failed"
         val eventLabelValue = "$status $shopDomainName"
-        val data = DataLayer.mapOf(
-                EVENT, EVENT_VALUE,
-                EVENT_CATEGORY, "$EVENT_CATEGORY_VALUE - shop",
-                EVENT_ACTION, "click register shop",
-                EVENT_LABEL, eventLabelValue
+        tracker.sendGeneralEvent(
+                TrackAppUtils.gtmData(
+                        EVENT_VALUE,
+                        "$EVENT_CATEGORY_VALUE - shop",
+                        "click register shop",
+                        ""
+                )
         )
-        trackingQueue.putEETracking(data as HashMap<String, Any>)
     }
 
     fun clickShopDomainSuggestion(shopDomain: String) {
-        val data = DataLayer.mapOf(
-                EVENT, EVENT_VALUE,
-                EVENT_CATEGORY, "$EVENT_CATEGORY_VALUE - shop",
-                EVENT_ACTION, "click shop domain recommendation",
-                EVENT_LABEL, shopDomain
+        tracker.sendGeneralEvent(
+                TrackAppUtils.gtmData(
+                        EVENT_VALUE,
+                        "$EVENT_CATEGORY_VALUE - shop",
+                        "click shop domain recommendation",
+                        shopDomain
+                )
         )
-        trackingQueue.putEETracking(data as HashMap<String, Any>)
     }
 
     fun clickBackButtonFromInputShopPage() {
-        val data = DataLayer.mapOf(
-                EVENT, EVENT_VALUE,
-                EVENT_CATEGORY, "$EVENT_CATEGORY_VALUE - shop",
-                EVENT_ACTION, "click back",
-                EVENT_LABEL, ""
+        tracker.sendGeneralEvent(
+                TrackAppUtils.gtmData(
+                        EVENT_VALUE,
+                        "$EVENT_CATEGORY_VALUE - shop",
+                        "click back",
+                        ""
+                )
         )
-        trackingQueue.putEETracking(data as HashMap<String, Any>)
     }
 
     fun clickTextTermsAndConditions() {
-        val data = DataLayer.mapOf(
-                EVENT, EVENT_VALUE,
-                EVENT_CATEGORY, "$EVENT_CATEGORY_VALUE - shop",
-                EVENT_ACTION, "click term and condition",
-                EVENT_LABEL, ""
+        tracker.sendGeneralEvent(
+                TrackAppUtils.gtmData(
+                        EVENT_VALUE,
+                        "$EVENT_CATEGORY_VALUE - shop",
+                        "click term and condition",
+                        ""
+                )
         )
-        trackingQueue.putEETracking(data as HashMap<String, Any>)
     }
 
     fun clickTextPrivacyPolicy() {
-        val data = DataLayer.mapOf(
-                EVENT, EVENT_VALUE,
-                EVENT_CATEGORY, "$EVENT_CATEGORY_VALUE - shop",
-                EVENT_ACTION, "click privacy term",
-                EVENT_LABEL, ""
+        tracker.sendGeneralEvent(
+                TrackAppUtils.gtmData(
+                        EVENT_VALUE,
+                        "$EVENT_CATEGORY_VALUE - shop",
+                        "click privacy term",
+                        ""
+                )
         )
-        trackingQueue.putEETracking(data as HashMap<String, Any>)
     }
 
     fun clickBackButtonFromSurveyPage() {
-        val data = DataLayer.mapOf(
-                EVENT, EVENT_VALUE,
-                EVENT_CATEGORY, "$EVENT_CATEGORY_VALUE - survey",
-                EVENT_ACTION, "click back",
-                EVENT_LABEL, ""
+        tracker.sendGeneralEvent(
+                TrackAppUtils.gtmData(
+                        EVENT_VALUE,
+                        "$EVENT_CATEGORY_VALUE - survey",
+                        "click back",
+                        ""
+                )
         )
-        trackingQueue.putEETracking(data as HashMap<String, Any>)
     }
 
     fun clickButtonNextFromSurveyPage() {
-        val data = DataLayer.mapOf(
-                EVENT, EVENT_VALUE,
-                EVENT_CATEGORY, "$EVENT_CATEGORY_VALUE - survey",
-                EVENT_ACTION, "click continue",
-                EVENT_LABEL, ""
+        tracker.sendGeneralEvent(
+                TrackAppUtils.gtmData(
+                        EVENT_VALUE,
+                        "$EVENT_CATEGORY_VALUE - survey",
+                        "click continue",
+                        ""
+                )
         )
-        trackingQueue.putEETracking(data as HashMap<String, Any>)
     }
 
     fun clickTextSkipFromSurveyPage() {
-        val data = DataLayer.mapOf(
-                EVENT, EVENT_VALUE,
-                EVENT_CATEGORY, "$EVENT_CATEGORY_VALUE - survey",
-                EVENT_ACTION, "click skip",
-                EVENT_LABEL, ""
+        tracker.sendGeneralEvent(
+                TrackAppUtils.gtmData(
+                        EVENT_VALUE,
+                        "$EVENT_CATEGORY_VALUE - survey",
+                        "click skip",
+                        ""
+                )
         )
-        trackingQueue.putEETracking(data as HashMap<String, Any>)
     }
 }

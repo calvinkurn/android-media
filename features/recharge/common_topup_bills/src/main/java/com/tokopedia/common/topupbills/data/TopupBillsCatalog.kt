@@ -9,14 +9,14 @@ import com.google.gson.annotations.SerializedName
 class TopupBillsCatalog(
         @SerializedName("id")
         @Expose
-        val id: Int,
+        val id: Int = 0,
         @SerializedName("name")
         @Expose
-        val name: String,
+        val name: String = "",
         @SerializedName("label")
         @Expose
-        val label: String,
+        val label: String = "",
         @SerializedName("icon")
         @Expose
-        val icon: String
+        val icon: String = ""
 )

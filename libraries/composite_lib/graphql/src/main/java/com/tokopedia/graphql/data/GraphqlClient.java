@@ -12,6 +12,7 @@ import com.tokopedia.graphql.data.db.GraphqlDatabase;
 import com.tokopedia.graphql.data.source.cloud.api.GraphqlApi;
 import com.tokopedia.graphql.data.source.cloud.api.GraphqlApiSuspend;
 import com.tokopedia.graphql.data.source.cloud.api.GraphqlUrl;
+import com.tokopedia.grapqhl.beta.notif.BetaInterceptor;
 import com.tokopedia.network.CommonNetwork;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.converter.StringResponseConverter;
@@ -22,6 +23,12 @@ import com.tokopedia.network.interceptor.TkpdAuthInterceptor;
 import com.tokopedia.network.utils.TkpdOkHttpBuilder;
 import com.tokopedia.user.session.UserSession;
 
+import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
+import java.util.Map;
+
+import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import retrofit2.Retrofit;
@@ -41,9 +48,7 @@ public class GraphqlClient {
         if (sRetrofit == null) {
             UserSession userSession = new UserSession(context.getApplicationContext());
 
-            TkpdOkHttpBuilder tkpdOkHttpBuilder = new TkpdOkHttpBuilder(context.getApplicationContext(), new OkHttpClient.Builder());
-            tkpdOkHttpBuilder.addInterceptor(new RiskAnalyticsInterceptor(context));
-            tkpdOkHttpBuilder.addInterceptor(new GqlAkamaiBotInterceptor());
+            TkpdOkHttpBuilder tkpdOkHttpBuilder = getTkpdOkHttpBuilder(context);
 
             if (GlobalConfig.isAllowDebuggingTools()) {
                 tkpdOkHttpBuilder.addInterceptor(new DeprecatedApiInterceptor(context.getApplicationContext()));
@@ -61,6 +66,41 @@ public class GraphqlClient {
             sGraphqlDatabase = GraphqlDatabase.getInstance(context);
 
         }
+    }
+
+    public static void reInitRetrofitWithInterceptors(@NonNull List<Interceptor> interceptors,
+                                                      @NonNull Context context) {
+        UserSession userSession = new UserSession(context.getApplicationContext());
+        TkpdOkHttpBuilder tkpdOkHttpBuilder = new TkpdOkHttpBuilder(context.getApplicationContext(), new OkHttpClient.Builder());
+
+        for (Interceptor interceptor: interceptors) {
+            tkpdOkHttpBuilder.addInterceptor(interceptor);
+        }
+
+        tkpdOkHttpBuilder.addInterceptor(new RiskAnalyticsInterceptor(context));
+        tkpdOkHttpBuilder.addInterceptor(new GqlAkamaiBotInterceptor());
+        tkpdOkHttpBuilder.addInterceptor(new BetaInterceptor(context));
+
+        sRetrofit = CommonNetwork.createRetrofit(
+                GraphqlUrl.BASE_URL,
+                tkpdOkHttpBuilder,
+                new TkpdAuthInterceptor(context, (NetworkRouter) context.getApplicationContext(), userSession),
+                new FingerprintInterceptor((NetworkRouter) context.getApplicationContext(), userSession),
+                new StringResponseConverter(),
+                new GsonBuilder());
+    }
+
+    @NotNull
+    protected static TkpdOkHttpBuilder getTkpdOkHttpBuilder(@NonNull Context context) {
+        TkpdOkHttpBuilder tkpdOkHttpBuilder = new TkpdOkHttpBuilder(context.getApplicationContext(), new OkHttpClient.Builder());
+        tkpdOkHttpBuilder.addInterceptor(new RiskAnalyticsInterceptor(context));
+        tkpdOkHttpBuilder.addInterceptor(new GqlAkamaiBotInterceptor());
+        tkpdOkHttpBuilder.addInterceptor(new BetaInterceptor(context));
+
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            tkpdOkHttpBuilder.addInterceptor(new DeprecatedApiInterceptor(context.getApplicationContext()));
+        }
+        return tkpdOkHttpBuilder;
     }
 
     private static Retrofit getRetrofit() {

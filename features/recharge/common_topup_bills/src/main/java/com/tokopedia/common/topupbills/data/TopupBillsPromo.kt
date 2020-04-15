@@ -11,19 +11,19 @@ import com.google.gson.annotations.SerializedName
 class TopupBillsPromo(
         @SerializedName("id")
         @Expose
-        val id: Int,
+        val id: Int = 0,
         @SerializedName("img_url")
         @Expose
-        val urlBannerPromo: String,
+        val urlBannerPromo: String = "",
         @SerializedName("title")
         @Expose
-        val title: String,
+        val title: String = "",
         @SerializedName("subtitle")
         @Expose
-        val subtitle: String,
+        val subtitle: String = "",
         @SerializedName("promo_code")
         @Expose
-        val promoCode: String,
+        val promoCode: String = "",
         var voucherCodeCopied: Boolean = false
 ) : Parcelable {
     constructor(parcel: Parcel) : this(

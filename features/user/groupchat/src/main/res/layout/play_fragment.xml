@@ -11,6 +11,7 @@
     >
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -81,6 +82,7 @@
                     android:textColor="#ffffff"
                     android:textSize="@dimen/sp_16"
                     android:textStyle="bold"
+                    android:ellipsize="end"
                     tools:text="Ramadan Ekstra"/>
 
                 <LinearLayout
@@ -108,7 +110,8 @@
                         android:id="@+id/toolbar_live"
                         layout="@layout/play_live"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"/>
+                        android:layout_height="wrap_content"
+                        android:visibility="gone"/>
                 </LinearLayout>
 
             </RelativeLayout>
@@ -458,26 +461,17 @@
             app:layout_constraintEnd_toStartOf="@id/webview_icon"
             app:layout_constraintGuide_percent="0.85"/>
 
-        <RelativeLayout
+        <com.tokopedia.globalerror.GlobalError
             android:id="@+id/card_retry"
             android:layout_width="match_parent"
             android:layout_height="0dp"
+            android:gravity="center"
             android:background="@color/white"
-            android:paddingLeft="@dimen/dp_48"
-            android:paddingRight="@dimen/dp_48"
-            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/channel_banner"
-            tools:visibility="gone">
-
-            <include
-                layout="@layout/channel_not_found_layout"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"/>
-
-        </RelativeLayout>
-
+            android:visibility="gone"
+            tools:visibility="visible" />
 
         <RelativeLayout
             android:id="@+id/loading_view"

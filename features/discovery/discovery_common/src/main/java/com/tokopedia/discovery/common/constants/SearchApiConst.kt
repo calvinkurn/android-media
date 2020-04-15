@@ -53,6 +53,8 @@ class SearchApiConst {
         const val ORIGIN_FILTER = "origin_filter" // which page filter params come from
         const val TOKEN = "token"
         const val SEARCH_REF = "search_ref"
+        const val PREVIOUS_KEYWORD = "previous_keyword"
+        const val LANDING_PAGE = "landing_page"
 
         const val DEFAULT_VALUE_OF_PARAMETER_DEVICE = "android"
         const val DEFAULT_VALUE_OF_PARAMETER_MOBILE = "mobile"

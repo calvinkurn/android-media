@@ -43,6 +43,7 @@ import com.tokopedia.hotel.roomlist.presentation.activity.HotelRoomListActivity
 import com.tokopedia.imagepreviewslider.presentation.util.ImagePreviewSlider
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_hotel_detail.*
@@ -66,7 +67,7 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
     private var hotelHomepageModel = HotelHomepageModel()
     private var isButtonEnabled: Boolean = true
     private var hotelName: String = ""
-    private var hotelId: Int = 0
+    private var hotelId: Long = 0
     private var roomPrice: String = "0"
     private var roomPriceAmount: String = ""
     private var isDirectPayment: Boolean = true
@@ -90,7 +91,7 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
         }
 
         arguments?.let {
-            hotelHomepageModel.locId = it.getInt(HotelDetailActivity.EXTRA_PROPERTY_ID)
+            hotelHomepageModel.locId = it.getLong(HotelDetailActivity.EXTRA_PROPERTY_ID)
 
             if (it.getString(HotelDetailActivity.EXTRA_CHECK_IN_DATE).isNotEmpty()) {
                 hotelHomepageModel.checkInDate = it.getString(HotelDetailActivity.EXTRA_CHECK_IN_DATE,
@@ -106,7 +107,7 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
                         HotelHomepageActivity.TYPE_PROPERTY)
                 isDirectPayment = it.getBoolean(HotelDetailActivity.EXTRA_IS_DIRECT_PAYMENT, true)
             }
-            isButtonEnabled = hotelHomepageModel.checkInDate.isNotEmpty()
+            isButtonEnabled = it.getBoolean(EXTRA_SHOW_ROOM, true)
         }
     }
 
@@ -226,7 +227,7 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
         }
     }
 
-    private fun showErrorView(e : Throwable) {
+    private fun showErrorView(e: Throwable) {
         if (!isHotelDetailSuccess && !isHotelReviewSuccess && !isRoomListSuccess) {
             container_content.visibility = View.GONE
             container_error.visibility = View.VISIBLE
@@ -502,6 +503,12 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
             roomPriceAmount = round(data.first().roomPrice.priceAmount).toLong().toString()
             tv_hotel_price.text = roomPrice
 
+            var hotelDetailTag = data.first().additionalPropertyInfo.hotelTagging
+            if (hotelDetailTag.isNotEmpty()) {
+                hotel_detail_tag.show()
+                hotel_detail_tag.text = hotelDetailTag
+            } else hotel_detail_tag.hide()
+
             if (data[0].additionalPropertyInfo.isEnabled) {
                 isAvailable = true
 
@@ -547,6 +554,7 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
         } else {
             widget_hotel_global_search.hide()
         }
+        if (!isButtonEnabled) widget_hotel_global_search.hide()
     }
 
     private fun openImagePreview(imageList: MutableList<String>, index: Int, imageViewTransitionFrom: ImageView?) {
@@ -600,21 +608,25 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
         const val SAVED_SEARCH_PARAMETER = "SAVED_SEARCH_PARAMETER"
         const val SAVED_ENABLE_BUTTON = "SAVED_ENABLE_BUTTON"
 
+        const val EXTRA_SHOW_ROOM = "EXTRA_SHOW_ROOM"
+
         const val RESULT_ROOM_LIST = 101
         const val RESULT_REVIEW = 102
 
-        fun getInstance(checkInDate: String, checkOutDate: String, propertyId: Int, roomCount: Int,
-                        adultCount: Int, destinationType: String, destinationName: String, isDirectPayment: Boolean): HotelDetailFragment =
+        fun getInstance(checkInDate: String, checkOutDate: String, propertyId: Long, roomCount: Int,
+                        adultCount: Int, destinationType: String, destinationName: String,
+                        isDirectPayment: Boolean, isShowRoom: Boolean): HotelDetailFragment =
                 HotelDetailFragment().also {
                     it.arguments = Bundle().apply {
                         putString(HotelDetailActivity.EXTRA_CHECK_IN_DATE, checkInDate)
                         putString(HotelDetailActivity.EXTRA_CHECK_OUT_DATE, checkOutDate)
-                        putInt(HotelDetailActivity.EXTRA_PROPERTY_ID, propertyId)
+                        putLong(HotelDetailActivity.EXTRA_PROPERTY_ID, propertyId)
                         putInt(HotelDetailActivity.EXTRA_ROOM_COUNT, roomCount)
                         putInt(HotelDetailActivity.EXTRA_ADULT_COUNT, adultCount)
                         putString(HotelDetailActivity.EXTRA_DESTINATION_TYPE, destinationType)
                         putString(HotelDetailActivity.EXTRA_DESTINATION_NAME, destinationName)
                         putBoolean(HotelDetailActivity.EXTRA_IS_DIRECT_PAYMENT, isDirectPayment)
+                        putBoolean(EXTRA_SHOW_ROOM, isShowRoom)
                     }
                 }
 

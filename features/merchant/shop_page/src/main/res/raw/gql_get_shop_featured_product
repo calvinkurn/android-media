@@ -25,6 +25,11 @@ query getShopFeaturedProduct($shopId: Int!, $userID: Int!){
                 is_active
                 img_url
             }
+            label_groups {
+              position
+              type
+              title
+            }
             total_review
             rating
         }

@@ -3,7 +3,7 @@
 
     <string name="flight_label_show_detail_order">Lihat Order Detail</string>
     <string name="flight_label_cancel_ticket">Batalkan Tiket</string>
-    <string name="flight_title_help">Bantuan</string>
+    <string name="flight_title_help">Tokopedia Care</string>
 
     <string name="flight_order_status_all_label" translatable="false">Lihat Semua</string>
     <string name="flight_order_status_success_label" translatable="false">Berhasil</string>

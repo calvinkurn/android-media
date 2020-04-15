@@ -2,7 +2,7 @@ package com.tokopedia.product.detail.data.util
 
 import android.net.Uri
 import android.text.TextUtils
-import com.google.android.gms.tagmanager.DataLayer
+import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
@@ -74,6 +74,13 @@ object TrackingUtil {
         else
             mapEvent[ProductTrackingConstant.Tracking.KEY_COMPONENT] = ""
 
+        TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
+    }
+
+    fun addComponentOvoTracker(mapEvent: MutableMap<String, Any>, productId: String, userId: String) {
+        mapEvent[ProductTrackingConstant.Tracking.KEY_PRODUCT_ID] = productId
+        mapEvent[ProductTrackingConstant.Tracking.KEY_USER_ID_VARIANT] = userId
+        mapEvent[ProductTrackingConstant.Tracking.KEY_ISLOGGIN] = (userId != "0").toString()
         TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
     }
 

@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase;
 import com.tokopedia.search.R;
+import com.tokopedia.search.di.qualifier.SearchContext;
 import com.tokopedia.search.di.scope.SearchScope;
 import com.tokopedia.user.session.UserSessionInterface;
 import dagger.Module;
@@ -19,7 +20,7 @@ public class RecommendationModule {
     @Provides
     @SearchScope
     @Named("recommendationQuery")
-    String provideRecommendationRawQuery(@ApplicationContext Context context) {
+    String provideRecommendationRawQuery(@SearchContext Context context) {
         return GraphqlHelper.loadRawString(context.getResources(), com.tokopedia.recommendation_widget_common.R.raw.query_recommendation_widget);
     }
 

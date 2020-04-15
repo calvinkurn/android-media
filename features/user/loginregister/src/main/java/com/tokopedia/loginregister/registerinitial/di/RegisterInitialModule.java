@@ -1,6 +1,7 @@
 package com.tokopedia.loginregister.registerinitial.di;
 
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor;
+import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase;
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository;
 
 import dagger.Module;
@@ -20,7 +21,14 @@ public class RegisterInitialModule {
 
     @RegisterInitialScope
     @Provides
+    MultiRequestGraphqlUseCase provideMultiRequestGraphql(){
+        return GraphqlInteractor.getInstance().getMultiRequestGraphqlUseCase();
+    }
+
+    @RegisterInitialScope
+    @Provides
     CoroutineDispatcher provideMainDispatcher(){
         return Dispatchers.getMain();
     }
+
 }

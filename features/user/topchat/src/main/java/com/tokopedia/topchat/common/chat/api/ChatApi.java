@@ -5,7 +5,7 @@ import com.tokopedia.network.constant.TkpdBaseURL;
 import com.tokopedia.network.data.model.response.DataResponse;
 import com.tokopedia.topchat.chatlist.domain.pojo.message.MessageData;
 import com.tokopedia.topchat.chatlist.domain.pojo.search.SearchedMessage;
-import com.tokopedia.topchat.chatlist.viewmodel.DeleteChatListViewModel;
+import com.tokopedia.topchat.chatlist.viewmodel.DeleteChatListUiModel;
 import com.tokopedia.topchat.chattemplate.domain.pojo.TemplateData;
 
 import java.util.Map;
@@ -39,7 +39,7 @@ public interface ChatApi {
 
     @Headers("Content-Type: application/json")
     @POST(TkpdBaseURL.Chat.DELETE)
-    Observable<Response<DataResponse<DeleteChatListViewModel>>> deleteMessage(@Body JsonObject
+    Observable<Response<DataResponse<DeleteChatListUiModel>>> deleteMessage(@Body JsonObject
                                                                                       parameters);
 
     @GET(TkpdBaseURL.Chat.GET_TEMPLATE)

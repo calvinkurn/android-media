@@ -6,6 +6,11 @@ import android.os.Build
 import com.google.android.play.core.splitinstall.SplitInstallManager
 import com.google.android.play.core.splitinstall.SplitInstallManagerFactory
 import com.tokopedia.applink.ApplinkConst.*
+import com.tokopedia.applink.internal.ApplinkConsInternalDigital.CAMERA_OCR
+import com.tokopedia.applink.internal.ApplinkConsInternalDigital.CART_DIGITAL
+import com.tokopedia.applink.internal.ApplinkConsInternalDigital.DIGITAL_PRODUCT_FORM
+import com.tokopedia.applink.internal.ApplinkConsInternalDigital.GENERAL_TEMPLATE
+import com.tokopedia.applink.internal.ApplinkConsInternalDigital.INTERNAL_SMARTCARD
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital.TELCO_DIGITAL
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital.VOUCHER_GAME
 import com.tokopedia.applink.internal.ApplinkConsInternalHome.HOME_WISHLIST
@@ -17,10 +22,10 @@ import com.tokopedia.applink.internal.ApplinkConstInternalContent.INTERNAL_AFFIL
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery.AUTOCOMPLETE
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery.SEARCH_RESULT
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery.SIMILAR_SEARCH_RESULT_BASE
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.ADD_TALK
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.CHANGE_PHONE_NUMBER
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.CHAT_BOT
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.DETAIL_TALK
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.DYNAMIC_FEATURE_INSTALL
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.DYNAMIC_FEATURE_INSTALL_BASE
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.GLOBAL_INTERNAL_DIGITAL_DEAL
@@ -61,6 +66,10 @@ import com.tokopedia.applink.internal.ApplinkConstInternalTopAds.TOPADS_DASHBOAR
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds.TOPADS_DASHBOARD_SELLER
 import com.tokopedia.applink.internal.ApplinkConstInternalTravel.INTERNAL_FLIGHT
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.CHANGE_PASSWORD
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.DETAIL_TALK_BASE
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.LIVENESS_DETECTION
+import com.tokopedia.applink.internal.ApplinkConstInternalEntertainment.EVENT_HOME
+import com.tokopedia.applink.internal.ApplinkConstInternalNotification.NOTIFICATION_BUYER
 import com.tokopedia.config.GlobalConfig
 import tokopedia.applink.R
 import java.io.BufferedReader
@@ -85,14 +94,17 @@ import java.io.InputStreamReader
  */
 object DeeplinkDFMapper {
     // it should have the same name with the folder of dynamic feature
-
+    @JvmField
+    val DFM_EMONEY = "df_emoney"
     @JvmField
     val DFM_BASE = "df_base"
-    @JvmField
-    val DFM_ONBOARDING = DFM_BASE // "df_base_onboarding"
+
     private val DFM_CATEGORY_TRADEIN = "df_category_tradein"
     @JvmField
     val DFM_MERCHANT_SELLER_CUSTOMERAPP = "df_merchant_seller"
+
+    @JvmField
+    val DFM_FACE_DETECTION = "df_user_liveness"
 
     //sellerapp
     private val DFM_PRODUCT_MANAGE_SELLER = "product_manage_seller"
@@ -116,9 +128,17 @@ object DeeplinkDFMapper {
             // Content
             add(DFP({ it.startsWithPattern(PROFILE) }, DFM_BASE, R.string.applink_title_profile))
             add(DFP({ it.startsWithPattern(INTERNAL_AFFILIATE) }, DFM_BASE, R.string.applink_title_affiliate))
+            add(DFP({ it.startsWithPattern(PLAY_DETAIL) }, DFM_BASE, R.string.applink_title_play))
 
             // Digital
-            add(DFP({  it.startsWith(DIGITAL_RECHARGE) || it.startsWith(DIGITAL) }, DFM_BASE, R.string.title_digital_subhomepage))
+            add(DFP({ it.startsWith(DIGITAL_SUBHOMEPAGE_HOME) ||
+                    it.startsWith(TELCO_DIGITAL) ||
+                    it.startsWith(DIGITAL_PRODUCT_FORM) ||
+                    it.startsWith(GENERAL_TEMPLATE) ||
+                    it.startsWith(CAMERA_OCR) ||
+                    it.startsWith(VOUCHER_GAME) ||
+                    it.startsWith(CART_DIGITAL) || it.startsWith(DIGITAL_CART) }, DFM_BASE, R.string.title_digital_subhomepage))
+            add(DFP({ it.startsWithPattern(INTERNAL_SMARTCARD) }, DFM_EMONEY, R.string.title_digital_emoney))
 
             add(DFP({ it.startsWith(GLOBAL_INTERNAL_DIGITAL_DEAL) }, DFM_BASE, R.string.title_digital_deals))
             add(DFP({ it.startsWithPattern(GLOBAL_INTERNAL_DIGITAL_DEAL_SLUG) }, DFM_BASE, R.string.title_digital_deals))
@@ -128,19 +148,23 @@ object DeeplinkDFMapper {
 
             // Discovery
             add(DFP({ it.startsWith(SIMILAR_SEARCH_RESULT_BASE) }, DFM_BASE, R.string.title_similar_search))
-            add(DFP({ it.startsWith(SEARCH_RESULT) ||
-                    it.startsWith(AUTOCOMPLETE)}, DFM_BASE, R.string.title_search_result))
+            add(DFP({
+                it.startsWith(SEARCH_RESULT) ||
+                    it.startsWith(AUTOCOMPLETE)
+            }, DFM_BASE, R.string.title_search_result))
 
             // Fintech
-            add(DFP({it.startsWith(OVO_PAY_WITH_QR_ENTRY)}, DFM_BASE, R.string.ovo_pay_with_qr_title))
-            add(DFP({it.startsWith(OQR_PIN_URL_ENTRY)}, DFM_BASE, R.string.ovo_pay_with_qr_title))
-            add(DFP({ it.startsWith(OVO_WALLET)}, DFM_BASE, R.string.applink_wallet_title))
-            add(DFP({ it.startsWith(SALDO_DEPOSIT)}, DFM_BASE, R.string.applink_saldo_deposit_title))
-            add(DFP({ it.startsWith(SALDO_INTRO)}, DFM_BASE, R.string.applink_saldo_intro_title))
+            add(DFP({ it.startsWith(OVO_PAY_WITH_QR_ENTRY) }, DFM_BASE, R.string.ovo_pay_with_qr_title))
+            add(DFP({ it.startsWith(OQR_PIN_URL_ENTRY) }, DFM_BASE, R.string.ovo_pay_with_qr_title))
+            add(DFP({ it.startsWith(OVO_WALLET) }, DFM_BASE, R.string.applink_wallet_title))
+            add(DFP({ it.startsWith(SALDO_DEPOSIT) }, DFM_BASE, R.string.applink_saldo_deposit_title))
+            add(DFP({ it.startsWith(SALDO_INTRO) }, DFM_BASE, R.string.applink_saldo_intro_title))
             add(DFP({ it.startsWith(OVOP2PTRANSFERFORM_SHORT) }, DFM_BASE, R.string.title_ovop2p))
             add(DFP({ it.startsWith(GLOBAL_INTERNAL_INSTANT_LOAN) }, DFM_BASE, R.string.instant_loan_title))
-            add(DFP({ it.startsWith(GLOBAL_INTERNAL_INSTANT_LOAN_TAB) ||
-                    it.startsWith(GLOBAL_INTERNAL_PINJAMAN_ONLINE_TAB) }, DFM_BASE, R.string.instant_loan_title))
+            add(DFP({
+                it.startsWith(GLOBAL_INTERNAL_INSTANT_LOAN_TAB) ||
+                    it.startsWith(GLOBAL_INTERNAL_PINJAMAN_ONLINE_TAB)
+            }, DFM_BASE, R.string.instant_loan_title))
 
             // IM
             add(DFP({ it.startsWith(REFERRAL) }, DFM_BASE, R.string.applink_title_im_referral))
@@ -149,27 +173,47 @@ object DeeplinkDFMapper {
             add(DFP({ it.startsWithPattern(REPORT_PRODUCT) }, DFM_BASE, R.string.applink_report_title))
             add(DFP({ it.startsWith(OPEN_SHOP) }, DFM_BASE, R.string.title_open_shop))
 
-            add(DFP({ it.startsWith(PRODUCT_MANAGE_LIST) ||
-                    it.startsWith(POWER_MERCHANT_SUBSCRIBE) ||
-                    it.startsWith(SHOP_SETTINGS_BASE) ||
-                    it.startsWith(TOPADS_DASHBOARD_CUSTOMER) ||
-                    it.startsWith(TOPADS_DASHBOARD_INTERNAL) ||
-                    it.startsWith(OPPORTUNITY) ||
-                    it.startsWith(SELLER_TRANSACTION) ||
-                    it.startsWith(INTERNAL_SELLER)
-            }, DFM_MERCHANT_SELLER_CUSTOMERAPP, R.string.merchant_seller))
+            add(DFP({ it.startsWith(INTERNAL_SELLER) }, DFM_MERCHANT_SELLER_CUSTOMERAPP,
+                R.string.merchant_seller,
+                DFWebviewFallbackUrl.SELLER_ORDER))
+            add(DFP({ it.startsWith(PRODUCT_MANAGE_LIST) }, DFM_MERCHANT_SELLER_CUSTOMERAPP,
+                R.string.merchant_seller,
+                DFWebviewFallbackUrl.MANAGE_PRODUCT))
+            add(DFP({ it.startsWith(POWER_MERCHANT_SUBSCRIBE) }, DFM_MERCHANT_SELLER_CUSTOMERAPP,
+                R.string.merchant_seller,
+                DFWebviewFallbackUrl.POWER_MERCHANT))
+            add(DFP({ it.startsWith(SHOP_SETTINGS_BASE) }, DFM_MERCHANT_SELLER_CUSTOMERAPP,
+                R.string.merchant_seller,
+                DFWebviewFallbackUrl.SHOP_SETTINGS))
+            add(DFP({
+                it.startsWith(TOPADS_DASHBOARD_CUSTOMER) ||
+                    it.startsWith(TOPADS_DASHBOARD_INTERNAL)
+            }, DFM_MERCHANT_SELLER_CUSTOMERAPP,
+                R.string.merchant_seller,
+                DFWebviewFallbackUrl.TOP_ADS_DASHBOARD))
+            add(DFP({ it.startsWith(OPPORTUNITY) }, DFM_MERCHANT_SELLER_CUSTOMERAPP,
+                R.string.merchant_seller,
+                DFWebviewFallbackUrl.OPPORTUNITY))
+            add(DFP({ it.startsWith(SELLER_TRANSACTION) }, DFM_MERCHANT_SELLER_CUSTOMERAPP,
+                R.string.merchant_seller,
+                DFWebviewFallbackUrl.SELLER_ORDER))
 
             // Operational
-            add(DFP({ it.startsWith(CONTACT_US_NATIVE) ||
+            add(DFP({
+                it.startsWith(CONTACT_US_NATIVE) ||
                     it.startsWith(CONTACT_US) ||
-                    it.startsWithPattern(TICKET_DETAIL) }, DFM_BASE, R.string.applink_title_contact_us))
-            add(DFP({it.startsWith(CHAT_BOT)}, DFM_BASE, R.string.title_applink_chatbot))
+                    it.startsWithPattern(TICKET_DETAIL)
+            }, DFM_BASE, R.string.applink_title_contact_us))
+            add(DFP({ it.startsWith(CHAT_BOT) }, DFM_BASE, R.string.title_applink_chatbot))
 
             // Payment
             add(DFP({ it.startsWith(PAYMENT_SETTING) }, DFM_BASE, R.string.payment_settings_title))
 
             // Promo
-            add(DFP({ it.startsWith(INTERNAL_TOKOPOINTS)},DFM_BASE,R.string.title_tokopoints))
+            add(DFP({ it.startsWith(INTERNAL_TOKOPOINTS) }, DFM_BASE, R.string.title_tokopoints))
+
+            //Entertainment
+            add(DFP({ it.startsWith(EVENT_HOME)}, DFM_BASE, R.string.title_home_event))
 
             // Travel
             add(DFP({ it.startsWith(TRAVEL_SUBHOMEPAGE) }, DFM_BASE, R.string.title_travel_homepage))
@@ -188,27 +232,39 @@ object DeeplinkDFMapper {
             add(DFP({ it.startsWith(USER_IDENTIFICATION_FORM) }, DFM_BASE, R.string.user_identification_common_title))
             add(DFP({ it.startsWith(ATTACH_INVOICE) }, DFM_BASE, R.string.title_module_attachinvoice))
             add(DFP({ it.startsWith(ATTACH_VOUCHER) }, DFM_BASE, R.string.title_module_attachvoucher))
+            add(DFP({
+                it.startsWith(TOPCHAT_IDLESS) ||
+                    it.startsWith(ApplinkConstInternalGlobal.TOPCHAT)
+            }, DFM_BASE, R.string.title_topchat))
 
             add(DFP({ it.startsWith(INBOX_TALK) }, DFM_BASE, R.string.talk_title))
             add(DFP({ it.startsWith(SHOP_TALK) }, DFM_BASE, R.string.talk_title))
             add(DFP({ it.startsWith(PRODUCT_TALK) }, DFM_BASE, R.string.talk_title))
-            add(DFP({ it.startsWith(DETAIL_TALK) }, DFM_BASE, R.string.talk_title))
+            add(DFP({ it.startsWith(DETAIL_TALK_BASE) }, DFM_BASE, R.string.talk_title))
             add(DFP({ it.startsWith(ADD_TALK) }, DFM_BASE, R.string.talk_title))
+
+            add(DFP({ it.startsWith(ADD_FINGERPRINT_ONBOARDING) }, DFM_BASE, R.string.fingerprint_onboarding))
 
             add(DFP({ it.startsWith(SALAM_UMRAH_HOME_PAGE) }, DFM_BASE, R.string.title_salam))
             add(DFP({ it.startsWith(SALAM_ORDER_DETAIL) }, DFM_BASE, R.string.title_salam))
             add(DFP({ it.startsWith(NOTIFICATION) }, DFM_BASE, R.string.title_notification_center))
+            add(DFP({ it.startsWith(NOTIFICATION_BUYER) }, DFM_BASE, R.string.title_notification_center))
 
             add(DFP({ it.startsWith(HOME_WISHLIST) }, DFM_BASE, R.string.title_wishlist))
+
+            add(DFP({ it.startsWith(LIVENESS_DETECTION) }, DFM_FACE_DETECTION, R.string.applink_liveness_detection))
         }
     }
 
     private val deeplinkDFPatternListSellerApp: List<DFP> by lazy {
         mutableListOf<DFP>().apply {
-            add(DFP({ it.startsWith(SHOP_SETTINGS_BASE) }, DFM_SHOP_SETTINGS_SELLERAPP, R.string.shop_settings_title))
-            add(DFP({ it.startsWith(TOPADS_DASHBOARD_SELLER) ||
-                it.startsWith(TOPADS_DASHBOARD_INTERNAL) }, DFM_SELLER_TOPADS_DASHBOARD, R.string.applink_topads_dashboard_title))
-            add(DFP({ it.startsWith(PRODUCT_MANAGE_LIST) }, DFM_PRODUCT_MANAGE_SELLER, R.string.title_applink_product_manage))
+            add(DFP({ it.startsWith(SHOP_SETTINGS_BASE) }, DFM_SHOP_SETTINGS_SELLERAPP, R.string.shop_settings_title, DFWebviewFallbackUrl.SHOP_SETTINGS))
+            add(DFP({
+                it.startsWith(TOPADS_DASHBOARD_SELLER) ||
+                    it.startsWith(TOPADS_DASHBOARD_INTERNAL)
+            }, DFM_SELLER_TOPADS_DASHBOARD, R.string.applink_topads_dashboard_title, DFWebviewFallbackUrl.TOP_ADS_DASHBOARD))
+            add(DFP({ it.startsWith(PRODUCT_MANAGE_LIST) }, DFM_PRODUCT_MANAGE_SELLER, R.string.title_applink_product_manage,
+                DFWebviewFallbackUrl.MANAGE_PRODUCT))
         }
     }
 
@@ -256,7 +312,7 @@ object DeeplinkDFMapper {
         list?.forEach {
             if (it.logic(deeplink)) {
                 return getDFDeeplinkIfNotInstalled(context,
-                        deeplink, it.moduleId, context.getString(it.moduleNameResourceId))
+                    deeplink, it.moduleId, context.getString(it.moduleNameResourceId), it.webviewFallback)
             }
         }
         return null
@@ -264,19 +320,18 @@ object DeeplinkDFMapper {
 
     private fun getDFDeeplinkIfNotInstalled(context: Context, deeplink: String,
                                             moduleId: String, moduleName: String,
-                                            isAuto: Boolean? = true,
-                                            imageUrl: String? = ""): String? {
+                                            fallbackUrl: String = ""): String? {
         getSplitManager(context)?.let {
-            if (it.installedModules.contains(moduleId)) {
+            val hasInstalled = it.installedModules.contains(moduleId)
+            if (hasInstalled) {
                 return null
             } else {
                 return UriUtil.buildUri(
-                        DYNAMIC_FEATURE_INSTALL,
-                        moduleId,
-                        moduleName,
-                        Uri.encode(deeplink).toString(),
-                        isAuto.toString(),
-                        imageUrl)
+                    DYNAMIC_FEATURE_INSTALL,
+                    moduleId,
+                    moduleName,
+                    Uri.encode(deeplink).toString(),
+                    fallbackUrl)
             }
         } ?: return null
     }
@@ -339,7 +394,8 @@ object DeeplinkDFMapper {
 class DFP(
     val logic: ((deeplink: String) -> Boolean),
     val moduleId: String,
-    val moduleNameResourceId: Int
+    val moduleNameResourceId: Int,
+    val webviewFallback: String = ""
 )
 
 fun String.startsWithPattern(prefix: String): Boolean {

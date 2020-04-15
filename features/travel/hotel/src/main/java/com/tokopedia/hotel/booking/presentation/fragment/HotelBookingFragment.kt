@@ -173,7 +173,7 @@ class HotelBookingFragment : HotelBaseFragment() {
         showLoadingBar()
 
         bookingViewModel.getCartData(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_get_cart), hotelBookingPageModel.cartId)
-        bookingViewModel.getContactList(GraphqlHelper.loadRawString(resources, com.tokopedia.common.travel.R.raw.query_get_travel_contact_list))
+        bookingViewModel.getContactList(GraphqlHelper.loadRawString(resources, com.tokopedia.travel.passenger.R.raw.query_get_travel_contact_list))
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -190,7 +190,11 @@ class HotelBookingFragment : HotelBaseFragment() {
             }
 
             REQUEST_CODE_ADD_EMAIL -> {
-                activity?.recreate()
+                if (resultCode == Activity.RESULT_OK) {
+                    activity?.recreate()
+                } else {
+                    activity?.finish()
+                }
             }
 
             COUPON_EXTRA_LIST_ACTIVITY_RESULT, COUPON_EXTRA_DETAIL_ACTIVITY_RESULT -> {

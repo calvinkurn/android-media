@@ -1,0 +1,11 @@
+<resources>
+
+    <string name="qr_scanner_title_scan_qr">Scan Kode QR</string>
+    <string name="qr_scanner_title_dialog_wrong_scan">Oops!</string>
+    <string name="qr_scanner_msg_dialog_wrong_scan">Kode QR yang Anda scan invalid.</string>
+    <string name="qr_scanner_btn_dialog_wrong_scan">OK</string>
+    <string name="qr_scanner_scanner_info">Arahkan kode QR ke area yang telah ditentukan</string>
+    <string name="qr_scanner_no_available_feature">Fitur akan segera hadir untuk anda.</string>
+    <string name="qr_scanner_error_actiivty_open_permission">Gagal membuka scan kode QR</string>
+
+</resources>

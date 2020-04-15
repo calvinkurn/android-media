@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName
 class BrizziInquiryLogResponse(
         @SerializedName("rechargeEmoneyInquiryLog")
         @Expose
-        val emoneyInquiryLog: BrizziInquiryLog? = null
+        val brizziInquiryLog: BrizziInquiryLog? = null
 )
 
 class BrizziInquiryLog(

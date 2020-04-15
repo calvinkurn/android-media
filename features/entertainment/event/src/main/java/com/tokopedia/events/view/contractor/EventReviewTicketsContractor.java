@@ -31,6 +31,8 @@ public class EventReviewTicketsContractor {
         void hideTooltip();
 
         boolean validateAllFields();
+
+        void showErrorRenderFromPackage();
     }
 
     public interface EventReviewTicketPresenter extends EventBaseContract.EventBasePresenter {

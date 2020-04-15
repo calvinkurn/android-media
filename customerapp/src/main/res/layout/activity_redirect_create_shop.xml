@@ -67,7 +67,7 @@
         android:text="@string/textview_redirect_seller_app"
         />
 
-    <ImageView
+    <com.tkpd.remoteresourcerequest.view.DeferredImageView
         android:id="@+id/imageview2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -76,6 +76,6 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="23dp"
         android:padding="@dimen/padding_med"
-        app:srcCompat="@drawable/ic_icon_redirect_seller_app"
+        app:remoteFileName="ic_icon_redirect_seller_app.png"
         />
 </RelativeLayout>

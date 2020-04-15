@@ -27,7 +27,12 @@ class PromoCheckoutListHotelActivity : BaseSimpleActivity(), HasComponent<PromoC
         return PromoCheckoutListComponentInstance.getPromoCheckoutListComponent(application)
     }
 
+    override fun getScreenName(): String = HOTEL_PROMO_SCREEN_NAME
+
     companion object {
+
+        const val HOTEL_PROMO_SCREEN_NAME = "/hotel/checkoutpromo"
+
         fun newInstance(activity: Context, isCouponActive: Boolean, promoCode: String, cartID: String, pageTracking: Int): Intent {
             val intent = Intent(activity, PromoCheckoutListHotelActivity::class.java)
             val bundle = Bundle()

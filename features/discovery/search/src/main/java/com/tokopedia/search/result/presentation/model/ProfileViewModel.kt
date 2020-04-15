@@ -1,6 +1,6 @@
 package com.tokopedia.search.result.presentation.model
 
-import com.google.android.gms.tagmanager.DataLayer
+import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.search.result.presentation.view.typefactory.ProfileListTypeFactory
 

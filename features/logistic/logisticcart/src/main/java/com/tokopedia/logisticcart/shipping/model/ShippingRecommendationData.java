@@ -11,8 +11,8 @@ import java.util.List;
 
 public class ShippingRecommendationData implements Parcelable {
 
-    private List<ShippingDurationViewModel> shippingDurationViewModels;
-    private LogisticPromoViewModel logisticPromo;
+    private List<ShippingDurationUiModel> shippingDurationUiModels;
+    private LogisticPromoUiModel logisticPromo;
     private String errorMessage;
     private String errorId;
     private String blackboxInfo;
@@ -20,12 +20,12 @@ public class ShippingRecommendationData implements Parcelable {
     public ShippingRecommendationData() {
     }
 
-    public List<ShippingDurationViewModel> getShippingDurationViewModels() {
-        return shippingDurationViewModels;
+    public List<ShippingDurationUiModel> getShippingDurationViewModels() {
+        return shippingDurationUiModels;
     }
 
-    public void setShippingDurationViewModels(List<ShippingDurationViewModel> shippingDurationViewModels) {
-        this.shippingDurationViewModels = shippingDurationViewModels;
+    public void setShippingDurationViewModels(List<ShippingDurationUiModel> shippingDurationUiModels) {
+        this.shippingDurationUiModels = shippingDurationUiModels;
     }
 
     public String getErrorMessage() {
@@ -44,11 +44,11 @@ public class ShippingRecommendationData implements Parcelable {
         this.errorId = errorId;
     }
 
-    public LogisticPromoViewModel getLogisticPromo() {
+    public LogisticPromoUiModel getLogisticPromo() {
         return logisticPromo;
     }
 
-    public void setLogisticPromo(LogisticPromoViewModel logisticPromo) {
+    public void setLogisticPromo(LogisticPromoUiModel logisticPromo) {
         this.logisticPromo = logisticPromo;
     }
 
@@ -63,7 +63,7 @@ public class ShippingRecommendationData implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeTypedList(this.shippingDurationViewModels);
+        dest.writeTypedList(this.shippingDurationUiModels);
         dest.writeParcelable(this.logisticPromo, flags);
         dest.writeString(this.errorMessage);
         dest.writeString(this.errorId);
@@ -71,8 +71,8 @@ public class ShippingRecommendationData implements Parcelable {
     }
 
     protected ShippingRecommendationData(Parcel in) {
-        this.shippingDurationViewModels = in.createTypedArrayList(ShippingDurationViewModel.CREATOR);
-        this.logisticPromo = in.readParcelable(LogisticPromoViewModel.class.getClassLoader());
+        this.shippingDurationUiModels = in.createTypedArrayList(ShippingDurationUiModel.CREATOR);
+        this.logisticPromo = in.readParcelable(LogisticPromoUiModel.class.getClassLoader());
         this.errorMessage = in.readString();
         this.errorId = in.readString();
         this.blackboxInfo = in.readString();

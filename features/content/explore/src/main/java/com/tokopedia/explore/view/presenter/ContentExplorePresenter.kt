@@ -27,7 +27,8 @@ class ContentExplorePresenter @Inject constructor(
 
     companion object {
         private const val QUERY_ACTIVITY_ID = "activity_id"
-        private const val TRACKING_IMPERESSION_MAX_BATCH_COUNT = 20
+        private const val QUERY_RECOM_ID = "recom_id"
+        private const val TRACKING_IMPERESSION_MAX_BATCH_COUNT = 15
     }
 
     private val job: Job = SupervisorJob()
@@ -109,15 +110,30 @@ class ContentExplorePresenter @Inject constructor(
         }
     }
 
+    override fun onPullToRefreshTriggered() {
+        launch {
+            if (impressionTrackList.isNotEmpty()) {
+                trackBulkAffiliate(impressionTrackList)
+                impressionTrackList.clear()
+            }
+        }
+    }
+
     private fun trackBulkAffiliate(urlList: MutableList<String>) {
         if (urlList.isNotEmpty()) {
            val activityIdListString = urlList
                     .mapNotNull { Uri.parse(it).getQueryParameter(QUERY_ACTIVITY_ID) }
                     .joinToString(",")
+            val recomIdListString = urlList
+                    .mapNotNull { Uri.parse(it).getQueryParameter(QUERY_RECOM_ID) }
+                    .joinToString(",")
 
-            trackAffiliate(
+            var finalUrl =
                     Uri.parse(urlList.first()).setParameter(QUERY_ACTIVITY_ID, activityIdListString).toString().decodeToUtf8()
-            )
+            finalUrl =
+                    Uri.parse(finalUrl).setParameter(QUERY_RECOM_ID, recomIdListString).toString().decodeToUtf8()
+            trackAffiliate(
+                    finalUrl)
         }
     }
 

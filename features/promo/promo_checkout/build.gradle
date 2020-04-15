@@ -28,7 +28,11 @@ dependencies {
     implementation project(rootProject.ext.features.promoCheckoutCommon)
     implementation project(rootProject.ext.libraries.commonNetwork)
     implementation project(rootProject.ext.libraries.applink)
+    implementation project(rootProject.ext.libraries.remoteResourceRequest)
 
+    implementation rootProject.ext.unifyDependencies.principles
+    implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.unifyDependencies.global_error
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.graphql
     implementation rootProject.ext.tkpdInternalLibDependencies.network
@@ -41,19 +45,18 @@ dependencies {
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     kapt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
     implementation rootProject.ext.networkDependencies.glide
-    implementation rootProject.ext.unifyDependencies.principles
-    implementation rootProject.ext.unifyDependencies.components
     implementation project(rootProject.ext.libraries.track)
-    implementation rootProject.ext.playServicesDependencies.tagManagerImpl
     implementation project(rootProject.ext.libraries.remoteConfig)
+    implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
 
 }
 
 project.ext {
     artifactId = 'checkout'
     groupId = 'com.tokopedia.promo'
-    versionName = "0.0.1"
+    versionName = "0.0.2"
     artifactName ="promo_checkout-release"
 }
 
 apply from: '../../../publish_local.gradle'
+apply from: '../../../jacoco_task.gradle'

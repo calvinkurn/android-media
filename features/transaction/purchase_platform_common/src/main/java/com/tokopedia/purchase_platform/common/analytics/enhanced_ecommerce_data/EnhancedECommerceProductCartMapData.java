@@ -28,7 +28,7 @@ public class EnhancedECommerceProductCartMapData {
     private static final String KEY_CATEGORY_ID = "dimension82";
     private static final String KEY_CART_ID = "dimension45";
     private static final String KEY_POS = "position";
-    private static final String KEY_LIST = "list";
+    public static final String KEY_LIST = "list";
     private static final String KEY_DIMENSION_38 = "dimension38";
     private static final String KEY_DIMENSION_40 = "dimension40";
     private static final String KEY_DIMENSION_45 = "dimension45";

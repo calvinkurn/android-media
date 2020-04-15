@@ -256,17 +256,7 @@ public class FingerPrintDialog extends BottomSheets {
                 KeyFactory factory = KeyFactory.getInstance(publicKey.getAlgorithm());
                 X509EncodedKeySpec spec = new X509EncodedKeySpec(publicKey.getEncoded());
                 return factory.generatePublic(spec);
-            } catch (NoSuchAlgorithmException | InvalidAlgorithmParameterException e) {
-                e.printStackTrace();
-            } catch (NoSuchProviderException e) {
-                e.printStackTrace();
-            } catch (CertificateException e) {
-                e.printStackTrace();
-            } catch (KeyStoreException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (InvalidKeySpecException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
             return publicKey;
