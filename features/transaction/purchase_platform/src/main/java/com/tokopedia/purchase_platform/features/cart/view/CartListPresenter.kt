@@ -527,7 +527,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
             setPrice(cartItemData.originData?.pricePlanInt.toString())
             setBrand(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER)
             setCategory(
-                    if (cartItemData.originData?.categoryForAnalytics?.isBlank() == true) {
+                    if (cartItemData.originData?.categoryForAnalytics.isNullOrBlank()) {
                         EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER
                     } else {
                         cartItemData.originData?.categoryForAnalytics ?: ""
@@ -540,28 +540,28 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
             setShopName(cartItemData.originData?.shopName ?: "")
             setCategoryId(cartItemData.originData?.categoryId)
             setAttribution(
-                    if (cartItemData.originData?.trackerAttribution?.isBlank() == true) {
+                    if (cartItemData.originData?.trackerAttribution.isNullOrBlank()) {
                         EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER
                     } else {
                         cartItemData.originData?.trackerAttribution ?: ""
                     }
             )
             setDimension38(
-                    if (cartItemData.originData?.trackerAttribution?.isBlank() == true) {
+                    if (cartItemData.originData?.trackerAttribution.isNullOrBlank()) {
                         EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER
                     } else {
                         cartItemData.originData?.trackerAttribution ?: ""
                     }
             )
             setListName(
-                    if (cartItemData.originData?.trackerListName?.isBlank() == true) {
+                    if (cartItemData.originData?.trackerListName.isNullOrBlank()) {
                         EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER
                     } else {
                         cartItemData.originData?.trackerListName ?: ""
                     }
             )
             setDimension40(
-                    if (cartItemData.originData?.trackerListName?.isBlank() == true) {
+                    if (cartItemData.originData?.trackerListName.isNullOrBlank()) {
                         EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER
                     } else {
                         cartItemData.originData?.trackerListName ?: ""
@@ -591,7 +591,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
             setProductName(recommendationItem.name)
             setPrice(recommendationItem.price.replace("[^0-9]".toRegex(), ""))
             setBrand(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER)
-            setCategory(if (recommendationItem.categoryBreadcrumbs?.isBlank() == true)
+            setCategory(if (recommendationItem.categoryBreadcrumbs.isBlank())
                 EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER
             else
                 recommendationItem.categoryBreadcrumbs)
@@ -680,7 +680,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
             setProductName(recommendationItem.name)
             setPrice(recommendationItem.price.replace("[^0-9]".toRegex(), ""))
             setBrand(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER)
-            setCategory(if (recommendationItem.categoryBreadcrumbs?.isBlank() == true)
+            setCategory(if (recommendationItem.categoryBreadcrumbs.isBlank())
                 EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER
             else
                 recommendationItem.categoryBreadcrumbs)
@@ -829,7 +829,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
     private fun getCheckoutEnhancedECommerceProductCartMapData(cartItemData: CartItemData): EnhancedECommerceProductCartMapData {
         val enhancedECommerceProductCartMapData = EnhancedECommerceProductCartMapData().apply {
             setDimension80(
-                    if (cartItemData.originData?.trackerAttribution?.isBlank() == true) {
+                    if (cartItemData.originData?.trackerAttribution.isNullOrBlank()) {
                         EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER
                     } else {
                         cartItemData.originData?.trackerAttribution ?: ""
@@ -843,7 +843,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
             setPrice(cartItemData.originData?.pricePlanInt.toString())
             setBrand(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER)
             setCategory(
-                    if (cartItemData.originData?.category?.isBlank() == true) {
+                    if (cartItemData.originData?.category.isNullOrBlank()) {
                         EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER
                     } else {
                         cartItemData.originData?.category ?: ""
