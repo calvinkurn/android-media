@@ -30,20 +30,25 @@ import kotlinx.android.synthetic.main.fragment_talk_reading.*
 import kotlinx.android.synthetic.main.partial_talk_reading_connection_error.view.*
 import javax.inject.Inject
 
-class TalkReadingFragment(private val productId: Int) : BaseListFragment<TalkReadingUiModel,
+class TalkReadingFragment() : BaseListFragment<TalkReadingUiModel,
         TalkReadingAdapterTypeFactory>(), HasComponent<TalkReadingComponent>,
         OnFinishedListener {
 
     companion object {
 
+        const val PARAM_PRODUCT_ID = "productID"
         @JvmStatic
         fun createNewInstance(productId: Int): TalkReadingFragment =
-            TalkReadingFragment(productId)
+            TalkReadingFragment().apply {
+                arguments = Bundle()
+                arguments?.putInt(PARAM_PRODUCT_ID, productId)
+            }
     }
 
     @Inject
     lateinit var viewModel: TalkReadingViewModel
 
+    private var productId: Int = 0
     private var sortOptionsBottomSheet: BottomSheetUnify? = null
 
     override fun getAdapterTypeFactory(): TalkReadingAdapterTypeFactory {
@@ -59,6 +64,7 @@ class TalkReadingFragment(private val productId: Int) : BaseListFragment<TalkRea
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        getProductIdFromBundle()
         observeProductHeader()
         observeSortOptions()
         showPageLoading()
@@ -181,5 +187,11 @@ class TalkReadingFragment(private val productId: Int) : BaseListFragment<TalkRea
 
     private fun updateSortHeader(sortOption: SortOption) {
         talkReadingHeader.updateSelectedSort(TalkReadingMapper.mapSelectedSortToSortFilterItem(sortOption))
+    }
+
+    private fun getProductIdFromBundle() {
+        arguments?.let {
+            productId = it.getInt(PARAM_PRODUCT_ID)
+        }
     }
 }
