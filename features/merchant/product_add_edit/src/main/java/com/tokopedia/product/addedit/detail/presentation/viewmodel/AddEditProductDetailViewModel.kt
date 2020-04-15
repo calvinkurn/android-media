@@ -36,11 +36,7 @@ class AddEditProductDetailViewModel @Inject constructor(
 
     var isEditing = false
 
-    var isDrafting = false
-
     var isAdding = false
-
-    var isDuplicating = false
 
     var productInputModel = ProductInputModel()
 

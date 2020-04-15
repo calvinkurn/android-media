@@ -69,8 +69,6 @@ import com.tokopedia.product.addedit.imagepicker.view.activity.ImagePickerAddPro
 import com.tokopedia.product.addedit.optionpicker.OptionPicker
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_BACK_PRESSED
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_IS_ADDING_PRODUCT
-import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_IS_DRAFTING_PRODUCT
-import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_IS_DUPLICATE
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_IS_EDITING_PRODUCT
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_PRODUCT_INPUT_MODEL
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
@@ -101,14 +99,12 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     companion object {
         private const val TAG_BULK_EDIT_PRICE: String = "TAG_BULK_EDIT_PRICE"
 
-        fun createInstance(productInputModel: ProductInputModel, isEditing: Boolean, isDrafting: Boolean, isAdding: Boolean, isDuplicating: Boolean): Fragment {
+        fun createInstance(productInputModel: ProductInputModel, isEditing: Boolean, isAdding: Boolean): Fragment {
             return AddEditProductDetailFragment().apply {
                 val args = Bundle()
                 args.putParcelable(EXTRA_PRODUCT_INPUT_MODEL, productInputModel)
                 args.putBoolean(EXTRA_IS_EDITING_PRODUCT, isEditing)
-                args.putBoolean(EXTRA_IS_DRAFTING_PRODUCT, isDrafting)
                 args.putBoolean(EXTRA_IS_ADDING_PRODUCT, isAdding)
-                args.putBoolean(EXTRA_IS_DUPLICATE, isDuplicating)
                 arguments = args
             }
         }
@@ -210,23 +206,15 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         arguments?.getBoolean(EXTRA_IS_EDITING_PRODUCT)?.run {
             viewModel.isEditing = this
         }
-        // set isDrafting status
-        arguments?.getBoolean(EXTRA_IS_DRAFTING_PRODUCT)?.run {
-            viewModel.isDrafting = this
-        }
         // set isAdding status
         arguments?.getBoolean(EXTRA_IS_ADDING_PRODUCT)?.run {
             viewModel.isAdding = this
-        }
-        // set isDuplicating status
-        arguments?.getBoolean(EXTRA_IS_DUPLICATE)?.run {
-            viewModel.isDuplicating = this
         }
 
         userSession = UserSession(requireContext())
         shopId = userSession.shopId
 
-        if (viewModel.isEditing) {
+        if (viewModel.isEditing && !viewModel.isAdding) {
             ProductEditMainTracking.trackScreen()
         } else {
             ProductAddMainTracking.trackScreen()
@@ -282,7 +270,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
 
         productCategoryPickerButton?.setOnClickListener {
             // is editing
-            if (viewModel.isEditing) {
+            if (viewModel.isEditing && !viewModel.isAdding) {
                 ProductEditMainTracking.clickOtherCategory(shopId)
             }
             // is adding
@@ -309,7 +297,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         wholeSaleInputFormsAdapter = WholeSalePriceInputAdapter(this,
 
                 onDeleteWholesale = {
-                    if (viewModel.isEditing) {
+                    if (viewModel.isEditing && !viewModel.isAdding) {
                         ProductEditMainTracking.clickRemoveWholesale(shopId)
                     } else {
                         ProductAddMainTracking.clickRemoveWholesale(shopId)
@@ -318,7 +306,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                 },
 
                 onAddWholesale = {
-                    if (viewModel.isEditing) {
+                    if (viewModel.isEditing && !viewModel.isAdding) {
                         ProductEditMainTracking.clickAddWholesale(shopId)
                     } else {
                         ProductAddMainTracking.clickAddWholesale(shopId)
@@ -354,7 +342,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         preOrderDurationUnitField?.textFieldInput?.inputType = InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS
 
         preOrderSwitch?.setOnCheckedChangeListener { _, isChecked ->
-            if (viewModel.isEditing) {
+            if (viewModel.isEditing && !viewModel.isAdding) {
                 ProductEditMainTracking.clickPreorderButton(shopId)
             } else {
                 ProductAddMainTracking.clickPreorderButton(shopId)
@@ -408,7 +396,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         submitButton = view.findViewById(R.id.btn_submit)
         submitTextView = view.findViewById(R.id.tv_submit_text)
         submitLoadingIndicator = view.findViewById(R.id.lu_submit_loading_indicator)
-        if (viewModel.isEditing || viewModel.isDrafting || viewModel.isAdding || viewModel.isDuplicating) submitTextView?.text = getString(R.string.action_save)
+        if (viewModel.isEditing) submitTextView?.text = getString(R.string.action_save)
         else submitTextView?.text = getString(R.string.action_continue)
 
         // fill the form with detail input model
@@ -465,7 +453,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         productWholeSaleSwitch?.setOnCheckedChangeListener { _, isChecked ->
             viewModel.isWholeSalePriceActivated.value = isChecked
             if (isChecked) {
-                if (viewModel.isEditing) {
+                if (viewModel.isEditing && !viewModel.isAdding) {
                     ProductEditMainTracking.clickWholesale(shopId)
                 } else {
                     ProductAddMainTracking.clickWholesale(shopId)
@@ -538,12 +526,9 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             isInputValid?.let {
                 if (it) {
                     val isEditing = viewModel.isEditing
-                    val isDrafting = viewModel.isDrafting
-                    val isAdding = viewModel.isAdding
-                    val isDuplicating = viewModel.isDuplicating
 
                     // navigate to preview page
-                    if (isEditing || isDrafting || isAdding || isDuplicating) submitInputEdit()
+                    if (isEditing) submitInputEdit()
                     // navigate to description page
                     else moveToDescriptionActivity()
                 }
@@ -655,11 +640,11 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                     val categoryList = ListUnifyUtil.getSelected(productCategoryRecListView)
                     if (categoryList != null) {
                         ListUnifyUtil.getShownRadioButton(categoryList)?.isChecked = false
-                        if (viewModel.isEditing) {
+                        if (viewModel.isEditing && !viewModel.isAdding) {
                             ProductEditMainTracking.clickSaveOtherCategory(shopId)
                         }
                     } else {
-                        if (viewModel.isEditing) {
+                        if (viewModel.isEditing && !viewModel.isAdding) {
                             ProductEditMainTracking.clickBackOtherCategory(shopId)
                         }
                     }
@@ -689,7 +674,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     }
 
     override fun onStartDrag(viewHolder: RecyclerView.ViewHolder) {
-        if (viewModel.isEditing) {
+        if (viewModel.isEditing && !viewModel.isAdding) {
             ProductEditMainTracking.trackDragPhoto(shopId)
         } else {
             ProductAddMainTracking.trackDragPhoto(shopId)
@@ -698,7 +683,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     }
 
     override fun onRemovePhoto(viewHolder: RecyclerView.ViewHolder) {
-        if (viewModel.isEditing) {
+        if (viewModel.isEditing && !viewModel.isAdding) {
             ProductEditMainTracking.trackRemovePhoto(shopId)
         } else {
             ProductAddMainTracking.trackRemovePhoto(shopId)
@@ -713,7 +698,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
 
         productNameField?.textFieldInput?.setText(productName)
 
-        if (!viewModel.isEditing) {
+        if (!viewModel.isEditing && !viewModel.isAdding) {
             ProductAddMainTracking.clickProductNameRecom(shopId, productName)
         }
     }
@@ -748,7 +733,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     }
 
     fun sendDataBack() {
-        if(!viewModel.isDrafting && !viewModel.isEditing && !viewModel.isAdding && !viewModel.isDuplicating) {
+        if(!viewModel.isEditing) {
             inputAllDataInProductInputModel()
             val intent = Intent()
             intent.putExtra(EXTRA_PRODUCT_INPUT_MODEL, viewModel.productInputModel)
@@ -761,7 +746,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     }
 
     fun onBackPressed() {
-        if (viewModel.isEditMode) {
+        if (viewModel.isEditMode && !viewModel.isAdding) {
             ProductEditMainTracking.trackBack(shopId)
         } else {
             ProductAddMainTracking.trackBack(shopId)
@@ -981,7 +966,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             if (it) preOrderInputLayout?.visible()
             else preOrderInputLayout?.hide()
 
-            if (viewModel.isEditing) {
+            if (viewModel.isEditing && !viewModel.isAdding) {
                 ProductEditMainTracking.clickPreorderButton(shopId)
             } else {
                 ProductAddMainTracking.clickPreorderButton(shopId)
@@ -1015,7 +1000,6 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     private fun createAddProductPhotoButtonOnClickListener(): View.OnClickListener {
         return View.OnClickListener {
             val isEditing = viewModel.isEditing
-            val isDrafting = viewModel.isDrafting
             val isAdding = viewModel.isAdding
             val imageUrlOrPathList = productPhotoAdapter?.getProductPhotoPaths()?.map { urlOrPath ->
                 if (urlOrPath.startsWith(AddEditProductConstants.HTTP_PREFIX)) viewModel.detailInputModel.pictureList.find { it.urlThumbnail == urlOrPath }?.urlOriginal
@@ -1024,7 +1008,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             }.orEmpty()
             val intent = ImagePickerAddProductActivity.getIntent(context, createImagePickerBuilder(ArrayList(imageUrlOrPathList)), isEditing)
             startActivityForResult(intent, REQUEST_CODE_IMAGE)
-            if (isEditing || isDrafting || isAdding) {
+            if (isEditing && !isAdding) {
                 ProductEditMainTracking.trackAddPhoto(shopId)
             } else {
                 ProductAddMainTracking.trackAddPhoto(shopId)
@@ -1087,7 +1071,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         fragmentManager?.let {
             val optionPicker = OptionPicker()
             optionPicker.setCloseClickListener {
-                if (viewModel.isEditing) {
+                if (viewModel.isEditing && !viewModel.isAdding) {
                     ProductEditMainTracking.clickCancelPreOrderDuration(shopId)
                 } else {
                     ProductAddMainTracking.clickCancelPreOrderDuration(shopId)
@@ -1106,7 +1090,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                 setItemMenuList(options)
                 show(it, null)
 
-                if (viewModel.isEditing) {
+                if (viewModel.isEditing && !viewModel.isAdding) {
                     ProductEditMainTracking.clickPreorderDropDownMenu(shopId)
                 } else {
                     ProductAddMainTracking.clickPreorderDropDownMenu(shopId)
@@ -1114,7 +1098,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             }
 
             optionPicker.setOnItemClickListener { selectedText: String, selectedPosition: Int ->
-                if (viewModel.isEditing) {
+                if (viewModel.isEditing && !viewModel.isAdding) {
                     ProductEditMainTracking.clickPreOrderDuration(shopId, selectedPosition == 0)
                 } else {
                     ProductAddMainTracking.clickPreOrderDuration(shopId, selectedPosition == 0)
@@ -1128,7 +1112,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     }
 
     private fun moveToDescriptionActivity() {
-        if (viewModel.isEditing) {
+        if (viewModel.isEditing && !viewModel.isAdding) {
             ProductEditMainTracking.clickContinue(shopId)
         } else {
             ProductAddMainTracking.clickContinue(shopId)
@@ -1198,14 +1182,14 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     private fun createCategoryRecommendationItemClickListener(items: List<ListItemUnify>) = productCategoryRecListView?.run {
         productCategoryRecListView?.setOnItemClickListener { _, _, position, _ ->
             ListUnifyUtil.setSelected(this, position) {
-                onCategoryRecommendationSelected(ListUnifyUtil.getCategoryId(it).toString())
+                // disini ngapain kalau dia diselect
             }
         }
 
         items.forEachIndexed { index, item ->
             item.listRightRadiobtn?.setOnClickListener {
                 ListUnifyUtil.setSelected(this, index) {
-                    onCategoryRecommendationSelected(ListUnifyUtil.getCategoryId(it).toString())
+                    // disini ngapain kalau dia diselect
                 }
             }
         }

@@ -19,9 +19,11 @@ class AddEditProductShipmentActivity : BaseSimpleActivity(), HasComponent<AddEdi
     override fun getNewFragment(): Fragment {
         val shipmentInputModel:ShipmentInputModel? = intent.getParcelableExtra(PARAM_SHIPMENT_INPUT_MODEL)
         val productInputModel: ProductInputModel = intent.getParcelableExtra(AddEditProductUploadConstant.EXTRA_PRODUCT_INPUT_MODEL) ?: ProductInputModel()
-        val isEditing: Boolean = intent.getBooleanExtra(PARAM_IS_EDITING, false)
-        val isDuplicating: Boolean = intent.getBooleanExtra(PARAM_IS_DUPLICATING, false)
-        return AddEditProductShipmentFragment.createInstance(productInputModel, shipmentInputModel, isEditing, isDuplicating)
+        val isAddMode: Boolean = intent.getBooleanExtra(PARAM_IS_ADD_MODE, false)
+        shipmentInputModel?.run {
+            return AddEditProductShipmentFragment.createInstanceEditMode(this, isAddMode)
+        }
+        return AddEditProductShipmentFragment.createInstance(productInputModel)
     }
 
     override fun getComponent(): AddEditProductShipmentComponent {
@@ -34,14 +36,12 @@ class AddEditProductShipmentActivity : BaseSimpleActivity(), HasComponent<AddEdi
 
     companion object {
         private const val PARAM_SHIPMENT_INPUT_MODEL = "param_shipment_input_model"
-        private const val PARAM_IS_EDITING = "param_is_editing"
-        private const val PARAM_IS_DUPLICATING = "param_is_duplicating"
+        private const val PARAM_IS_ADD_MODE = "param_shipment_is_add_mode"
         fun createInstance(context: Context?) = Intent(context, AddEditProductShipmentActivity::class.java)
-        fun createInstance(context: Context?, shipmentInputModel: ShipmentInputModel, isEditing: Boolean, isDuplicating: Boolean): Intent =
+        fun createInstanceEditMode(context: Context?, shipmentInputModel: ShipmentInputModel, isAddMode: Boolean): Intent =
                 Intent(context, AddEditProductShipmentActivity::class.java)
                         .putExtra(PARAM_SHIPMENT_INPUT_MODEL, shipmentInputModel)
-                        .putExtra(PARAM_IS_EDITING, isEditing)
-                        .putExtra(PARAM_IS_DUPLICATING, isDuplicating)
+                        .putExtra(PARAM_IS_ADD_MODE, isAddMode)
 
     }
 

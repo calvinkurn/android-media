@@ -44,7 +44,7 @@ import com.tokopedia.product.addedit.description.di.AddEditProductDescriptionMod
 import com.tokopedia.product.addedit.description.di.DaggerAddEditProductDescriptionComponent
 import com.tokopedia.product.addedit.description.presentation.activity.AddEditProductDescriptionActivity.Companion.PARAM_CATEGORY_ID
 import com.tokopedia.product.addedit.description.presentation.activity.AddEditProductDescriptionActivity.Companion.PARAM_DESCRIPTION_INPUT_MODEL
-import com.tokopedia.product.addedit.description.presentation.activity.AddEditProductDescriptionActivity.Companion.PARAM_IS_DUPLICATE_MODE
+import com.tokopedia.product.addedit.description.presentation.activity.AddEditProductDescriptionActivity.Companion.PARAM_IS_ADD_MODE
 import com.tokopedia.product.addedit.description.presentation.activity.AddEditProductDescriptionActivity.Companion.PARAM_IS_EDIT_MODE
 import com.tokopedia.product.addedit.description.presentation.activity.AddEditProductDescriptionActivity.Companion.PARAM_PRODUCT_INPUT_MODEL
 import com.tokopedia.product.addedit.description.presentation.activity.AddEditProductDescriptionActivity.Companion.PARAM_VARIANT_INPUT_MODEL
@@ -93,14 +93,14 @@ class AddEditProductDescriptionFragment:
                            descriptionInputModel: DescriptionInputModel,
                            variantInputModel: ProductVariantInputModel,
                            isEditMode: Boolean,
-                           isDuplicateMode: Boolean): Fragment {
+                           isAddMode: Boolean): Fragment {
             return AddEditProductDescriptionFragment().apply {
                 arguments = Bundle().apply {
                     putString(PARAM_CATEGORY_ID, categoryId)
                     putParcelable(PARAM_DESCRIPTION_INPUT_MODEL, descriptionInputModel)
                     putParcelable(PARAM_VARIANT_INPUT_MODEL, variantInputModel)
                     putBoolean(PARAM_IS_EDIT_MODE, isEditMode)
-                    putBoolean(PARAM_IS_DUPLICATE_MODE, isDuplicateMode)
+                    putBoolean(PARAM_IS_ADD_MODE, isAddMode)
                 }
             }
         }
@@ -131,7 +131,7 @@ class AddEditProductDescriptionFragment:
     }
 
     override fun onDeleteClicked(videoLinkModel: VideoLinkModel, position: Int) {
-        if (descriptionViewModel.isEditMode) {
+        if (descriptionViewModel.isEditMode && !descriptionViewModel.isAddMode) {
             ProductEditDescriptionTracking.clickRemoveVideoLink(shopId)
         } else {
             ProductAddDescriptionTracking.clickRemoveVideoLink(shopId)
@@ -181,7 +181,7 @@ class AddEditProductDescriptionFragment:
         arguments?.let {
             val categoryId: String = it.getString(PARAM_CATEGORY_ID) ?: ""
             val isEditMode: Boolean = it.getBoolean(PARAM_IS_EDIT_MODE, false)
-            val isDuplicateMode: Boolean = it.getBoolean(PARAM_IS_DUPLICATE_MODE, false)
+            val isAddMode: Boolean = it.getBoolean(PARAM_IS_ADD_MODE, false)
             val descriptionInputModel : DescriptionInputModel =
                     it.getParcelable(PARAM_DESCRIPTION_INPUT_MODEL) ?: DescriptionInputModel()
             val variantInputModel : ProductVariantInputModel =
@@ -190,7 +190,7 @@ class AddEditProductDescriptionFragment:
             descriptionViewModel.descriptionInputModel = descriptionInputModel
             descriptionViewModel.setVariantInput(variantInputModel)
             descriptionViewModel.isEditMode = isEditMode
-            descriptionViewModel.isDuplicateMode = isDuplicateMode
+            descriptionViewModel.isAddMode = isAddMode
             productInputModel = it.getParcelable(PARAM_PRODUCT_INPUT_MODEL) ?: ProductInputModel()
         }
     }
@@ -211,10 +211,10 @@ class AddEditProductDescriptionFragment:
         textFieldDescription.textFieldInput.setSingleLine(false)
         textFieldDescription.textFieldInput.imeOptions = EditorInfo.IME_FLAG_NO_ENTER_ACTION
 
-        if (descriptionViewModel.isEditMode || descriptionViewModel.isDuplicateMode) applyEditMode()
+        if (descriptionViewModel.isEditMode) applyEditMode()
 
         textViewAddVideo.setOnClickListener {
-            if (descriptionViewModel.isEditMode) {
+            if (descriptionViewModel.isEditMode && !descriptionViewModel.isAddMode) {
                 ProductEditDescriptionTracking.clickAddVideoLink(shopId)
             } else {
                 ProductAddDescriptionTracking.clickAddVideoLink(shopId)
@@ -231,7 +231,7 @@ class AddEditProductDescriptionFragment:
         }
 
         tvAddVariant.setOnClickListener {
-            if (descriptionViewModel.isEditMode) {
+            if (descriptionViewModel.isEditMode && !descriptionViewModel.isAddMode) {
                 ProductEditDescriptionTracking.clickAddProductVariant(shopId)
             } else {
                 ProductAddDescriptionTracking.clickAddProductVariant(shopId)
@@ -258,7 +258,7 @@ class AddEditProductDescriptionFragment:
     }
 
     fun sendDataBack() {
-        if(!descriptionViewModel.isEditMode && !descriptionViewModel.isDuplicateMode) {
+        if(!descriptionViewModel.isEditMode) {
             inputAllDataInInputDraftModel()
             val intent = Intent()
             intent.putExtra(AddEditProductPreviewConstants.EXTRA_PRODUCT_INPUT_MODEL, productInputModel)
@@ -271,7 +271,7 @@ class AddEditProductDescriptionFragment:
     }
 
     fun onBackPressed() {
-        if (descriptionViewModel.isEditMode) {
+        if (descriptionViewModel.isEditMode && !descriptionViewModel.isAddMode) {
             ProductEditDescriptionTracking.clickBack(shopId)
         } else {
             ProductAddDescriptionTracking.clickBack(shopId)
@@ -413,7 +413,7 @@ class AddEditProductDescriptionFragment:
     }
 
     private fun showVariantTips() {
-        if (descriptionViewModel.isEditMode) {
+        if (descriptionViewModel.isEditMode && !descriptionViewModel.isAddMode) {
             ProductEditDescriptionTracking.clickHelpVariant(shopId)
         } else {
             ProductAddDescriptionTracking.clickHelpVariant(shopId)
@@ -471,7 +471,7 @@ class AddEditProductDescriptionFragment:
     }
 
     private fun moveToShipmentActivity() {
-        if (descriptionViewModel.isEditMode) {
+        if (descriptionViewModel.isEditMode && !descriptionViewModel.isAddMode) {
             ProductEditDescriptionTracking.clickContinue(shopId)
         } else {
             ProductAddDescriptionTracking.clickContinue(shopId)

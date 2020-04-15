@@ -52,13 +52,19 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
     lateinit var shipmentViewModel: AddEditProductShipmentViewModel
 
     companion object {
-        fun createInstance(productInputModel: ProductInputModel, shipmentInputModel: ShipmentInputModel?, isEditing: Boolean, isDuplicating: Boolean): Fragment {
+        fun createInstance(productInputModel: ProductInputModel): Fragment {
             return AddEditProductShipmentFragment().apply {
                 arguments = Bundle().apply {
                     putParcelable(EXTRA_PRODUCT_INPUT_MODEL, productInputModel)
+                }
+            }
+        }
+        fun createInstanceEditMode(shipmentInputModel: ShipmentInputModel, isAddMode: Boolean): Fragment {
+            return AddEditProductShipmentFragment().apply {
+                arguments = Bundle().apply {
                     putParcelable(EXTRA_SHIPMENT_INPUT_MODEL, shipmentInputModel)
-                    putBoolean(EXTRA_IS_EDITMODE, isEditing)
-                    putBoolean(EXTRA_IS_DUPLICATEMODE, isDuplicating)
+                    putBoolean(EXTRA_IS_EDITMODE, true)
+                    putBoolean(EXTRA_IS_ADD_MODE, isAddMode)
                 }
             }
         }
@@ -72,7 +78,7 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
 
         const val EXTRA_SHIPMENT_INPUT_MODEL = "shipment_input_model"
         const val EXTRA_IS_EDITMODE = "shipment_is_editmode"
-        const val EXTRA_IS_DUPLICATEMODE = "shipment_is_duplicatemode"
+        const val EXTRA_IS_ADD_MODE = "shipment_is_add_mode"
         const val REQUEST_CODE_SHIPMENT = 0x04
     }
 
@@ -91,11 +97,11 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
         arguments?.run {
             val shipmentInputModel: ShipmentInputModel = getParcelable(EXTRA_SHIPMENT_INPUT_MODEL) ?: ShipmentInputModel()
             val isEditMode = getBoolean(EXTRA_IS_EDITMODE, false)
-            val isDuplicateMode = getBoolean(EXTRA_IS_DUPLICATEMODE, false)
+            val isAddMode = getBoolean(EXTRA_IS_ADD_MODE, false)
             productInputModel = getParcelable(EXTRA_PRODUCT_INPUT_MODEL) ?: ProductInputModel()
             shipmentViewModel.shipmentInputModel = shipmentInputModel
             shipmentViewModel.isEditMode = isEditMode
-            shipmentViewModel.isDuplicateMode = isDuplicateMode
+            shipmentViewModel.isAddMode = isAddMode
         }
         if (!shipmentViewModel.isEditMode) {
             ProductAddShippingTracking.trackScreen()
@@ -136,7 +142,7 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
             submitInputEdit()
         }
         switchInsurance?.setOnCheckedChangeListener { buttonView, isChecked ->
-            if (shipmentViewModel.isEditMode) {
+            if (shipmentViewModel.isEditMode && !shipmentViewModel.isAddMode) {
                 ProductEditShippingTracking.clickInsurance(shopId)
             } else {
                 ProductAddShippingTracking.clickInsurance(shopId)
@@ -151,7 +157,7 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
     }
 
     fun sendDataBack() {
-        if(!shipmentViewModel.isEditMode && !shipmentViewModel.isDuplicateMode) {
+        if(!shipmentViewModel.isEditMode) {
             inputAllDataInInputDraftModel()
             val intent = Intent()
             intent.putExtra(AddEditProductPreviewConstants.EXTRA_PRODUCT_INPUT_MODEL, productInputModel)
@@ -164,7 +170,7 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
     }
 
     fun onBackPressed() {
-        if (shipmentViewModel.isEditMode) {
+        if (shipmentViewModel.isEditMode && !shipmentViewModel.isAddMode) {
             ProductEditShippingTracking.clickBack(shopId)
         } else {
             ProductAddShippingTracking.clickBack(shopId)
@@ -192,7 +198,7 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
     }
 
     private fun showUnitWeightOption() {
-        if (shipmentViewModel.isEditMode) {
+        if (shipmentViewModel.isEditMode && !shipmentViewModel.isAddMode) {
             ProductEditShippingTracking.clickWeightDropDown(shopId)
         } else {
             ProductAddShippingTracking.clickWeightDropDown(shopId)
@@ -200,7 +206,7 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
         fragmentManager?.let {
             val optionPicker = OptionPicker()
             optionPicker.setCloseClickListener {
-                if (shipmentViewModel.isEditMode) {
+                if (shipmentViewModel.isEditMode && !shipmentViewModel.isAddMode) {
                     ProductEditShippingTracking.clickCancelChangeWeight(shopId)
                 } else {
                     ProductAddShippingTracking.clickCancelChangeWeight(shopId)
@@ -221,7 +227,7 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
             }
 
             optionPicker.setOnItemClickListener { selectedText: String, selectedPosition: Int ->
-                if (shipmentViewModel.isEditMode) {
+                if (shipmentViewModel.isEditMode && !shipmentViewModel.isAddMode) {
                     ProductEditShippingTracking.clickChooseWeight(shopId, selectedPosition == 0)
                 } else {
                     ProductAddShippingTracking.clickChooseWeight(shopId, selectedPosition == 0)
