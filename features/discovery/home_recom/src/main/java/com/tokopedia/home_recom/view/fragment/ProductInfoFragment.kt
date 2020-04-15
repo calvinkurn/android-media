@@ -278,7 +278,7 @@ class ProductInfoFragment : BaseDaggerFragment() {
                         productId, shopId, minOrder,
                         success = { result ->
                             recommendationItem.cartId = result[CART_ID] as Int
-                            RecommendationPageTracking.eventUserClickAddToCartWithProductId(recommendationItem, ref)
+                            RecommendationPageTracking.eventUserClickAddToCartWithProductId(recommendationItem, ref, internalRef)
                             add_to_cart?.isEnabled = true
                             if(result.containsKey(STATUS) && !(result[STATUS] as Boolean)){
                                 showToastError(MessageErrorException(result[MESSAGE].toString()))
@@ -318,7 +318,7 @@ class ProductInfoFragment : BaseDaggerFragment() {
                             if(result.containsKey(STATUS) && !(result[STATUS] as Boolean)){
                                 showToastError(MessageErrorException(result[MESSAGE].toString()))
                             }else if(result.containsKey(CART_ID) && result[CART_ID].toString().isNotEmpty()){
-                                RecommendationPageTracking.eventUserClickBuyWithProductId(recommendationItem, ref)
+                                RecommendationPageTracking.eventUserClickBuyWithProductId(recommendationItem, ref, internalRef)
                                 goToCart()
                             }
                         },

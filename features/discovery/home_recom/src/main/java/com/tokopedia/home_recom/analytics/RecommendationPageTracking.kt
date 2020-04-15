@@ -184,7 +184,7 @@ class RecommendationPageTracking {
         }
 
         private fun convertProductToDataClickAddToCart(item: RecommendationItem,
-                                               list: String): Any {
+                                               list: String, internalRef: String): Any {
             return DataLayer.mapOf(
                     FIELD_PRODUCTS, DataLayer.listOf(
                         DataLayer.mapOf(
@@ -200,7 +200,8 @@ class RecommendationPageTracking {
                                 FIELD_SHOP_NAME, item.shopName,
                                 FIELD_CATEGORY_ID, item.departmentId.toString(),
                                 FIELD_DIMENSION_40, list,
-                                FIELD_DIMENSION_45, item.cartId.toString()
+                                FIELD_DIMENSION_45, item.cartId.toString(),
+                                FIELD_DIMENSION_90, internalRef
                         )
                     )
             )
@@ -312,7 +313,8 @@ class RecommendationPageTracking {
         // No 15 Done
         fun eventUserClickAddToCart(
                 recommendationItem: RecommendationItem,
-                ref: String
+                ref: String,
+                internalRef: String
         ){
             val tracker = getTracker()
             val data = DataLayer.mapOf(
@@ -324,7 +326,8 @@ class RecommendationPageTracking {
                         ECOMMERCE_CURRENCY_CODE, VALUE_IDR,
                         ECOMMERCE_ADD, convertProductToDataClickAddToCart(
                             recommendationItem,
-                            String.format(VALUE_LIST_PRIMARY_PRODUCT_RECOMMENDATION_WITH_SOURCE, if(ref.isEmpty()) "null" else ref)
+                            String.format(VALUE_LIST_PRIMARY_PRODUCT_RECOMMENDATION_WITH_SOURCE, if(ref.isEmpty()) "null" else ref),
+                            internalRef
                         )
                     )
             )
@@ -492,7 +495,8 @@ class RecommendationPageTracking {
         // No 47 Done
         fun eventUserClickBuy(
                 recommendationItem: RecommendationItem,
-                ref: String
+                ref: String,
+                internalRef: String
         ){
             val tracker = getTracker()
             val data = DataLayer.mapOf(
@@ -504,7 +508,8 @@ class RecommendationPageTracking {
                         ECOMMERCE_CURRENCY_CODE, VALUE_IDR,
                         ECOMMERCE_ADD, convertProductToDataClickAddToCart(
                             recommendationItem,
-                            String.format(VALUE_LIST_PRIMARY_PRODUCT_RECOMMENDATION_WITH_SOURCE, if(ref.isEmpty()) "null" else ref)
+                            String.format(VALUE_LIST_PRIMARY_PRODUCT_RECOMMENDATION_WITH_SOURCE, if(ref.isEmpty()) "null" else ref),
+                            internalRef
                         )
                     )
             )
@@ -659,7 +664,8 @@ class RecommendationPageTracking {
         // No 73
         fun eventUserClickAddToCartWithProductId(
                 recommendationItem: RecommendationItem,
-                ref: String
+                ref: String,
+                internalRef: String
         ){
             val tracker = getTracker()
             val data = DataLayer.mapOf(
@@ -671,7 +677,8 @@ class RecommendationPageTracking {
                     ECOMMERCE_CURRENCY_CODE, VALUE_IDR,
                     ECOMMERCE_ADD, convertProductToDataClickAddToCart(
                     recommendationItem,
-                    String.format(VALUE_LIST_PRIMARY_PRODUCT_RECOMMENDATION_PRODUCT_ID_WITH_SOURCE, if(ref.isEmpty()) "null" else ref)
+                    String.format(VALUE_LIST_PRIMARY_PRODUCT_RECOMMENDATION_PRODUCT_ID_WITH_SOURCE, if(ref.isEmpty()) "null" else ref),
+                    internalRef
             )
             )
             )
@@ -717,7 +724,8 @@ class RecommendationPageTracking {
         // No 77
         fun eventUserClickBuyWithProductId(
                 recommendationItem: RecommendationItem,
-                ref: String
+                ref: String,
+                internalRef: String
         ){
             val tracker = getTracker()
             val data = DataLayer.mapOf(
@@ -729,7 +737,8 @@ class RecommendationPageTracking {
                     ECOMMERCE_CURRENCY_CODE, VALUE_IDR,
                     ECOMMERCE_ADD, convertProductToDataClickAddToCart(
                     recommendationItem,
-                    String.format(VALUE_LIST_PRIMARY_PRODUCT_RECOMMENDATION_PRODUCT_ID_WITH_SOURCE, if(ref.isEmpty()) "null" else ref)
+                    String.format(VALUE_LIST_PRIMARY_PRODUCT_RECOMMENDATION_PRODUCT_ID_WITH_SOURCE, if(ref.isEmpty()) "null" else ref),
+                    internalRef
             )
             )
             )
