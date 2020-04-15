@@ -362,7 +362,7 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
 
     open fun processMenuDetail(data: TopupBillsMenuDetail) {
         isExpressCheckout = data.isExpressCheckout
-        categoryName = data.catalog.name.toLowerCase()
+        categoryName = data.catalog.label
     }
 
     abstract fun processFavoriteNumbers(data: TopupBillsFavNumber)

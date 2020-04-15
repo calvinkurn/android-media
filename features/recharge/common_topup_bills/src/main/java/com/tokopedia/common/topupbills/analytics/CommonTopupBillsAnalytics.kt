@@ -10,7 +10,7 @@ class CommonTopupBillsAnalytics {
     fun eventClickUsePromo() {
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 Event.CLICK_HOMEPAGE,
-                Category.DIGITAL_HOMEPAGE,
+                Category.DIGITAL_NATIVE,
                 Action.CLICK_USE_PROMO,
                 ""
         )
@@ -44,7 +44,7 @@ class CommonTopupBillsAnalytics {
                         NAME, productName,
                         ID, productId,
                         PRICE, productPrice,
-                        BRAND, "",
+                        BRAND, operatorName,
                         CATEGORY, categoryName,
                         VARIANT, "",
                         QUANTITY, 1,
