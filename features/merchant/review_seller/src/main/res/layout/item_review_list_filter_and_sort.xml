@@ -4,35 +4,38 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="@dimen/dp_12"
-    android:layout_marginTop="@dimen/dp_8">
+    android:layout_marginBottom="@dimen/spacing_lvl4">
 
     <com.tokopedia.unifycomponents.ChipsUnify
         android:id="@+id/review_period_filter_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dp_4"
-        android:layout_marginStart="@dimen/dp_4"
         app:chipSize="medium"
-        app:chipText="30 Hari Terakhir"
         app:chipType="normal"
         app:centerText="true"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        />
+        app:layout_constraintWidth_percent="0.46"/>
 
     <com.tokopedia.unifycomponents.ChipsUnify
         android:id="@+id/review_sort_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginRight="@dimen/dp_4"
-        android:layout_marginEnd="@dimen/dp_4"
         app:chipSize="medium"
-        app:chipText="Rating Tertinggi"
+        android:layout_marginLeft="@dimen/spacing_lvl3"
+        android:layout_marginStart="@dimen/spacing_lvl3"
         app:chipType="normal"
         app:centerText="true"
+        app:layout_constraintStart_toEndOf="@id/guideline1"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.46" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
