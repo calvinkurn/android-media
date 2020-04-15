@@ -10,6 +10,7 @@ import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.valid
 
 
 object LastApplyUiMapper {
+    val RED_STATE = "red"
     fun mapValidateUsePromoUiModelToLastApplyUiModel(promoUiModel: PromoUiModel): LastApplyUiModel {
         return LastApplyUiModel(
                 codes = promoUiModel.codes,
@@ -23,7 +24,11 @@ object LastApplyUiMapper {
     private fun mapVoucherOrders(voucherOrderUiModels: List<PromoCheckoutVoucherOrdersItemUiModel?>): List<LastApplyVoucherOrdersItemUiModel> {
         val listLastApplyVoucherOrders = arrayListOf<LastApplyVoucherOrdersItemUiModel>()
         voucherOrderUiModels.forEach {
-            it?.let { it1 -> listLastApplyVoucherOrders.add(mapVoucherOrdersItem(it1)) }
+            it?.let { it1 ->
+                if (!it1.messageUiModel.state.equals(RED_STATE, true)) {
+                    listLastApplyVoucherOrders.add(mapVoucherOrdersItem(it1))
+                }
+            }
         }
         return listLastApplyVoucherOrders
     }

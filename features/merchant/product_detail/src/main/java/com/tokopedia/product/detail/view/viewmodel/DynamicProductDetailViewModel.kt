@@ -22,6 +22,8 @@ import com.tokopedia.common_tradein.model.ValidateTradeInResponse
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.data.model.carttype.CartRedirection
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.common.data.model.pdplayout.Media
@@ -154,6 +156,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     val toggleTeaserNotifyMe: LiveData<Result<Boolean>>
         get() = _toggleTeaserNotifyMe
 
+    var notifyMeAction: String = ProductDetailCommonConstant.VALUE_TEASER_ACTION_UNREGISTER
     var multiOrigin: Map<String, VariantMultiOriginWarehouse> = mapOf()
     var selectedMultiOrigin: VariantMultiOriginWarehouse = VariantMultiOriginWarehouse()
     var cartTypeData: CartRedirection? = null
@@ -172,10 +175,10 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     private var updateCartCounterSubscription: Subscription? = null
 
     fun hasShopAuthority(): Boolean {
-        return isShopOwner(getDynamicProductInfoP1?.basic?.getShopId() ?: 0) || shopInfo?.allowManage == true
+        return isShopOwner() || shopInfo?.allowManage == true
     }
 
-    fun isShopOwner(shopId: Int): Boolean = userSessionInterface.shopId.toIntOrNull() == shopId
+    fun isShopOwner(): Boolean = isUserSessionActive && userSessionInterface.shopId.toIntOrNull() == getDynamicProductInfoP1?.basic?.getShopId()
     val isUserSessionActive: Boolean
         get() = userSessionInterface.isLoggedIn
     val userId: String
@@ -338,7 +341,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         withContext(dispatcher.io()) {
             val result = addToCartUseCase.createObservable(requestParams).toBlocking().single()
             if (result.isDataError()) {
-                _addToCartLiveData.postValue(result.errorMessage.asThrowable().asFail())
+                _addToCartLiveData.postValue(MessageErrorException(result.errorMessage.firstOrNull() ?: "").asFail())
             } else {
                 _addToCartLiveData.postValue(result.asSuccess())
             }
@@ -349,8 +352,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         withContext(dispatcher.io()) {
             val result = addToCartOcsUseCase.createObservable(requestParams).toBlocking().single()
             if (result.isDataError()) {
-                _addToCartLiveData.postValue(result.errorMessage.asThrowable().asFail())
-
+                _addToCartLiveData.postValue(MessageErrorException(result.errorMessage.firstOrNull() ?: "").asFail())
             } else {
                 _addToCartLiveData.postValue(result.asSuccess())
             }
@@ -470,10 +472,9 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         val isOfficialStore = getDynamicProductInfoP1?.data?.isOS == true
         val isVariant = getDynamicProductInfoP1?.data?.variant?.isVariant == true
         val isTeaser = getDynamicProductInfoP1?.shouldShowNotifyMe() ?: false
-        val shopId = getDynamicProductInfoP1?.basic?.shopID.toIntOrZero()
 
         val removedData = initialLayoutData.map {
-            if ((!isTradein || isShopOwner(shopId)) && it.name() == ProductDetailConstant.TRADE_IN) {
+            if ((!isTradein || isShopOwner()) && it.name() == ProductDetailConstant.TRADE_IN) {
                 it
             } else if (!hasWholesale && it.name() == ProductDetailConstant.PRODUCT_WHOLESALE_INFO) {
                 it
@@ -705,6 +706,17 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         }
     }
 
+    fun toggleTeaserNotifyMe(campaignId: Int, productId: Int, source: String) {
+        launchCatchError(block = {
+            toggleNotifyMeUseCase.createParams(campaignId, productId, notifyMeAction, source)
+            val isSuccess = toggleNotifyMeUseCase.executeOnBackground().result.isSuccess
+            if (!isSuccess) _toggleTeaserNotifyMe.value = Throwable().asFail()
+            _toggleTeaserNotifyMe.value = isSuccess.asSuccess()
+        }) {
+            _toggleTeaserNotifyMe.value = it.asFail()
+        }
+    }
+
     fun cancelWarehouseUseCase() {
         moveProductToWarehouseUseCase.cancelJobs()
     }
@@ -759,16 +771,5 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         getPdpLayoutUseCase.forceRefresh = forceRefresh
         getPdpLayoutUseCase.enableCaching = enableCaching
         return getPdpLayoutUseCase.executeOnBackground()
-    }
-
-    fun toggleTeaserNotifyMe(campaignId: Int, productId: Int, action: String, source: String) {
-        launchCatchError(block = {
-            toggleNotifyMeUseCase.createParams(campaignId, productId, action, source)
-            val isSuccess = toggleNotifyMeUseCase.executeOnBackground().result.isSuccess
-            if (!isSuccess) _toggleTeaserNotifyMe.value = Throwable().asFail()
-            _toggleTeaserNotifyMe.value = isSuccess.asSuccess()
-        }) {
-            _toggleTeaserNotifyMe.value = it.asFail()
-        }
     }
 }
