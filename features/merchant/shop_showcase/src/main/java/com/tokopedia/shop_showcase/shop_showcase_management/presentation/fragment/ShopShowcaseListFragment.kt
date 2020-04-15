@@ -209,7 +209,7 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
         observeTotalProduct()
 
         btnAddEtalase.setOnClickListener {
-            isNeedToGoToAddShowcase = true
+//            isNeedToGoToAddShowcase = true
             tracking?.clickTambahEtalase(shopId, shopType)
             checkTotalProduct()
         }
@@ -351,10 +351,11 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
                         if (totalProduct < 1) {
                             showErrorResponse(getString(R.string.error_product_less_than_one))
                         } else if (totalProduct > 0) {
-                            if (isNeedToGoToAddShowcase) {
-                                isNeedToGoToAddShowcase = false
-                                goToAddShowcase()
-                            }
+                            goToAddShowcase()
+//                            if (isNeedToGoToAddShowcase) {
+//                                // isNeedToGoToAddShowcase = false
+//                                goToAddShowcase()
+//                            }
                         }
                     }
                 }
