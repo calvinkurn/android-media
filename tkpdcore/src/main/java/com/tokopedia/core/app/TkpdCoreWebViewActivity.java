@@ -6,6 +6,8 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core2.R;
 import com.tokopedia.core.router.InboxRouter;
 
@@ -55,8 +57,7 @@ public class TkpdCoreWebViewActivity extends TActivity {
             finish();
             return true;
         } else if (item.getItemId() == R.id.menu_help) {
-            Intent intent = InboxRouter.getContactUsActivityIntent(this);
-            startActivity(intent);
+            RouteManager.route(this, ApplinkConst.CONTACT_US_NATIVE);
         }
         return super.onOptionsItemSelected(item);
     }
