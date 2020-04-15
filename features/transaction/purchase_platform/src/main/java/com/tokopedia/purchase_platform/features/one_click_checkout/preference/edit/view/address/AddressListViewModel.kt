@@ -19,6 +19,11 @@ class AddressListViewModel @Inject constructor(val useCase: GetAddressCornerUseC
     private var currentPage: Int = 1
     var savedQuery: String = ""
     var selectedId = "-1"
+    var addressId: Int = 0
+    var destinationLatitude: String = ""
+    var destinationLongitude: String = ""
+    var destinationDistrict: String = ""
+    var destinationPostalCode: String = ""
     var token: Token? = null
     private var addressListModel: AddressListModel? = null
 
@@ -58,6 +63,12 @@ class AddressListViewModel @Inject constructor(val useCase: GetAddressCornerUseC
                val addressList = addressListModel.listAddress
                 for (item in addressList){
                     item.isSelected = item.id == selectedId
+                    if (item.id == selectedId) {
+                        destinationDistrict = item.destinationDistrictId
+                        destinationLatitude = item.latitude
+                        destinationLongitude = item.longitude
+                        destinationPostalCode = item.postalCode
+                    }
                 }
                 addressListModel.listAddress = addressList
             }
