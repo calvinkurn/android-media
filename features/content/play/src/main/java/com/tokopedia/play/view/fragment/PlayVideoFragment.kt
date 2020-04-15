@@ -31,6 +31,7 @@ import com.tokopedia.play.view.type.PlayRoomEvent
 import com.tokopedia.play.view.type.ScreenOrientation
 import com.tokopedia.play.view.uimodel.EventUiModel
 import com.tokopedia.play.view.uimodel.VideoPropertyUiModel
+import com.tokopedia.play.view.uimodel.VideoStreamUiModel
 import com.tokopedia.play.view.viewmodel.PlayVideoViewModel
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.unifycomponents.dpToPx
@@ -113,6 +114,7 @@ class PlayVideoFragment : BaseDaggerFragment(), CoroutineScope {
         observeBottomInsetsState()
         observeEventUserInfo()
         observeScreenOrientation()
+        observeVideoStream()
     }
 
     override fun onDestroyView() {
@@ -169,6 +171,10 @@ class PlayVideoFragment : BaseDaggerFragment(), CoroutineScope {
 
     private fun observeScreenOrientation() {
         playViewModel.observableScreenOrientation.observe(viewLifecycleOwner, Observer(::sendOrientationEvent))
+    }
+
+    private fun observeVideoStream() {
+        playViewModel.observableVideoStream.observe(viewLifecycleOwner, Observer(::setVideoStream))
     }
     //endregion
 
@@ -351,6 +357,16 @@ class PlayVideoFragment : BaseDaggerFragment(), CoroutineScope {
                     .emit(
                             ScreenStateEvent::class.java,
                             ScreenStateEvent.ScreenOrientationChanged(screenOrientation, playViewModel.stateHelper)
+                    )
+        }
+    }
+
+    private fun setVideoStream(videoStream: VideoStreamUiModel) {
+        launch {
+            EventBusFactory.get(viewLifecycleOwner)
+                    .emit(
+                            ScreenStateEvent::class.java,
+                            ScreenStateEvent.VideoStreamChanged(videoStream, playViewModel.stateHelper)
                     )
         }
     }

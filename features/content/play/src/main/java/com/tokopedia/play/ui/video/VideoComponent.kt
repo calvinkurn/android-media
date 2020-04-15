@@ -8,7 +8,6 @@ import com.tokopedia.play.component.EventBusFactory
 import com.tokopedia.play.component.UIComponent
 import com.tokopedia.play.util.CoroutineDispatcherProvider
 import com.tokopedia.play.view.event.ScreenStateEvent
-import com.tokopedia.play.view.type.VideoOrientation
 import com.tokopedia.play_common.state.PlayVideoState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
@@ -36,7 +35,7 @@ open class VideoComponent(
             bus.getSafeManagedFlow(ScreenStateEvent::class.java)
                     .collect {
                         when (it) {
-                            ScreenStateEvent.Init -> uiView.show()
+                            ScreenStateEvent.Init -> uiView.hide()
                             is ScreenStateEvent.SetVideo -> uiView.setPlayer(it.videoPlayer)
                             is ScreenStateEvent.OnNewPlayRoomEvent -> if(it.event.isFreeze || it.event.isBanned) {
                                 uiView.hide()
@@ -44,12 +43,14 @@ open class VideoComponent(
                             }
                             is ScreenStateEvent.VideoPropertyChanged -> handleVideoStateChanged(it.videoProp.state)
                             is ScreenStateEvent.ScreenOrientationChanged -> uiView.setScreenOrientation(it.orientation)
+                            is ScreenStateEvent.VideoStreamChanged -> {
+                                uiView.setVideoOrientation(it.videoStream.orientation)
+                                uiView.setBackground(it.videoStream.backgroundUrl)
+                                uiView.show()
+                            }
                         }
                     }
         }
-        // TODO("testing")
-        uiView.setVideoOrientation(VideoOrientation.Landscape)
-        uiView.setBackground("https://i.pinimg.com/736x/d3/bb/7b/d3bb7b85f4e160d013f68fcde8d19844.jpg")
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)

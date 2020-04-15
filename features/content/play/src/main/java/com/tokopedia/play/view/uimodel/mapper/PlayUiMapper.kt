@@ -21,12 +21,15 @@ object PlayUiMapper {
             isBanned: Boolean
     ) = PlayCompleteInfoUiModel(
             channelInfo = mapChannelInfo(channel),
-            videoStream = mapVideoStream(channel.videoStream, channel.isActive),
+            videoStream = mapVideoStream(
+                    channel.videoStream,
+                    channel.isActive,
+                    channel.backgroundUrl),
             pinnedMessage = mapPinnedMessage(
                     partnerName,
                     channel.pinnedMessage
             ),
-            pinnedProduct = PlayUiMapper.mapPinnedProduct(
+            pinnedProduct = mapPinnedProduct(
                     partnerName,
                     channel.isShowProductTagging,
                     channel.pinnedProduct),
@@ -51,7 +54,6 @@ object PlayUiMapper {
             id = channel.channelId,
             title = channel.title,
             description = channel.description,
-            background = channel.backgroundUrl,
             channelType = if (channel.videoStream.isLive) PlayChannelType.Live else PlayChannelType.VOD,
             moderatorName = channel.moderatorName,
             partnerId = channel.partnerId,
@@ -77,11 +79,17 @@ object PlayUiMapper {
             isPromo = pinnedProduct.isShowDiscount
     ) else null
 
-    fun mapVideoStream(videoStream: VideoStream, isActive: Boolean) = VideoStreamUiModel(
+    // TODO("testing")
+    fun mapVideoStream(videoStream: VideoStream, isActive: Boolean, backgroundUrl: String) = VideoStreamUiModel(
             uriString = videoStream.config.streamUrl,
             channelType = if (videoStream.isLive
                     && videoStream.type.equals(PlayChannelType.Live.value, true))
                 PlayChannelType.Live else PlayChannelType.VOD,
+            orientation = VideoOrientation.Landscape,
+//            orientation = if (videoStream.orientation.equals(VideoOrientation.Portrait.value, true))
+//                VideoOrientation.Portrait else VideoOrientation.Landscape,
+//            backgroundUrl = backgroundUrl,
+            backgroundUrl = "https://i.pinimg.com/736x/d3/bb/7b/d3bb7b85f4e160d013f68fcde8d19844.jpg",
             isActive = isActive
     )
 

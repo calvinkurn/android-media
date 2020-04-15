@@ -43,21 +43,13 @@ class VideoPlayCustom(context: Context, attrs: AttributeSet?, defStyleAttr: Int)
 
     var screenOrientation: ScreenOrientation = ScreenOrientation.Portrait
         set(value) {
-            if (value.isPortrait && videoOrientation.isLandscape) {
-                contentFrame?.setMargin(0, marginTop, 0, 0)
-            } else {
-                contentFrame?.setMargin(0, 0, 0, 0)
-            }
+            if (value.isPortrait && videoOrientation.isLandscape) showMargin() else hideMargin()
             field = value
         }
 
     var videoOrientation: VideoOrientation = VideoOrientation.Unknown
         set(value) {
-            if (value.isLandscape && screenOrientation.isPortrait) {
-                contentFrame?.setMargin(0, marginTop, 0, 0)
-            } else {
-                contentFrame?.setMargin(0, 0, 0, 0)
-            }
+            if (value.isLandscape && screenOrientation.isPortrait) showMargin() else hideMargin()
             field = value
         }
 
@@ -95,6 +87,14 @@ class VideoPlayCustom(context: Context, attrs: AttributeSet?, defStyleAttr: Int)
 
     private fun setResizeModeRaw(aspectRatioFrame: AspectRatioFrameLayout, resizeMode: Int) {
         aspectRatioFrame.resizeMode = resizeMode
+    }
+
+    private fun showMargin() {
+        contentFrame?.setMargin(0, marginTop, 0, 0)
+    }
+
+    private fun hideMargin() {
+        contentFrame?.setMargin(0, 0, 0, 0)
     }
 
     private fun applyTextureViewRotation(textureView: TextureView, textureViewRotation: Int) {
