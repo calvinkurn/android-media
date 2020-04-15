@@ -1199,8 +1199,8 @@ public class MainParentActivity extends BaseActivity implements
                         HOME_PERFORMANCE_MONITORING_CACHE_ATTRIBUTION,
                         HOME_PERFORMANCE_MONITORING_NETWORK_VALUE);
             }
-            getPageLoadTimePerformanceInterface().stopMonitoring();
             getPageLoadTimePerformanceInterface().stopRenderPerformanceMonitoring();
+            getPageLoadTimePerformanceInterface().stopMonitoring();
             pageLoadTimePerformanceCallback = null;
         }
     }
