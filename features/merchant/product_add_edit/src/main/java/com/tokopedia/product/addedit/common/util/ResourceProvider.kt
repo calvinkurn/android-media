@@ -146,6 +146,7 @@ class ResourceProvider @Inject constructor(@ApplicationContext val context: Cont
     }
 
     // product add validation string properties
+
     fun getInvalidCategoryIdErrorMessage(): String? {
         return getString(R.string.error_invalid_category_id)
     }
@@ -156,6 +157,12 @@ class ResourceProvider @Inject constructor(@ApplicationContext val context: Cont
 
     fun getInvalidPhotoReachErrorMessage(): String? {
         return getString(R.string.error_invalid_photo_reach_maximum)
+    }
+
+    // Network errors
+
+    fun getGqlErrorMessage(): String? {
+        return getString(R.string.error_gql_failed)
     }
 
 }

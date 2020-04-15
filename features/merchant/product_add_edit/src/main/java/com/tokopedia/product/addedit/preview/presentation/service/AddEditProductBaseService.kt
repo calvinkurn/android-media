@@ -6,8 +6,10 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.mediauploader.data.state.UploadResult
 import com.tokopedia.mediauploader.domain.UploaderUseCase
 import com.tokopedia.product.addedit.common.AddEditProductComponentBuilder
+import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.Companion.GQL_ERROR_SUBSTRING
 import com.tokopedia.product.addedit.common.constant.AddEditProductExtraConstant.Companion.IMAGE_SOURCE_ID
 import com.tokopedia.product.addedit.common.util.AddEditProductNotificationManager
+import com.tokopedia.product.addedit.common.util.ResourceProvider
 import com.tokopedia.product.addedit.draft.domain.usecase.DeleteProductDraftUseCase
 import com.tokopedia.product.addedit.draft.domain.usecase.SaveProductDraftUseCase
 import com.tokopedia.product.addedit.preview.di.AddEditProductPreviewModule
@@ -45,6 +47,8 @@ abstract class AddEditProductBaseService : JobIntentService(), CoroutineScope {
     lateinit var deleteProductDraftUseCase: DeleteProductDraftUseCase
     @Inject
     lateinit var duplicateProductInputMapper: DuplicateProductInputMapper
+    @Inject
+    lateinit var resourceProvider: ResourceProvider
 
     private var notificationManager: AddEditProductNotificationManager? = null
 
@@ -71,7 +75,12 @@ abstract class AddEditProductBaseService : JobIntentService(), CoroutineScope {
     }
 
     fun setUploadProductDataError(errorMessage: String) {
-        notificationManager?.onFailedUpload(errorMessage)
+        // don't display gql error message to user
+        if (errorMessage.contains(GQL_ERROR_SUBSTRING)) {
+            notificationManager?.onFailedUpload(resourceProvider.getGqlErrorMessage() ?: "")
+        } else {
+            notificationManager?.onFailedUpload(errorMessage)
+        }
     }
 
     fun uploadProductImages(imageUrlOrPathList: List<String>, sizeChartPath: String) {

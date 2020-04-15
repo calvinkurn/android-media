@@ -38,7 +38,7 @@ class ProductEditUseCase @Inject constructor(private val graphqlRepository: Grap
 
     companion object {
         const val PARAM_INPUT = "input"
-        const val STRING_JOIN_SEPARATOR = ", "
+        const val STRING_JOIN_SEPARATOR = "\n"
         @JvmStatic
         fun createRequestParams(param: ProductEditParam): RequestParams {
             val requestParams = RequestParams.create()
