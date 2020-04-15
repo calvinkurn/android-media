@@ -4,10 +4,10 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.*
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.dynamic_icon.DynamicIconSectionDataModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.spotlight.SpotlightViewModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.spotlight.SpotlightDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.GeoLocationPromptDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderDataModel
-import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeRecommendationFeedViewModel
+import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeRecommendationFeedDataModel
 
 /**
  * Created by Lukas on 2019-08-20
@@ -22,7 +22,7 @@ interface HomeTypeFactory {
 
     fun type(businessUnitWidgetDataModel: NewBusinessUnitWidgetDataModel): Int
 
-    fun type(useCaseIconSectionViewModel: UseCaseIconSectionViewModel): Int
+    fun type(useCaseIconSectionDataModel: UseCaseIconSectionDataModel): Int
 
     fun type(dynamicIconSectionDataModel: DynamicIconSectionDataModel): Int
 
@@ -38,9 +38,9 @@ interface HomeTypeFactory {
 
     fun type(dynamicChannelDataModel: DynamicChannelDataModel): Int
 
-    fun type(spotlightViewModel: SpotlightViewModel): Int
+    fun type(spotlightDataModel: SpotlightDataModel): Int
 
-    fun type(homeRecommendationFeedViewModel: HomeRecommendationFeedViewModel): Int
+    fun type(homeRecommendationFeedDataModel: HomeRecommendationFeedDataModel): Int
 
     fun type(geoLocationPromptDataModel: GeoLocationPromptDataModel): Int
 

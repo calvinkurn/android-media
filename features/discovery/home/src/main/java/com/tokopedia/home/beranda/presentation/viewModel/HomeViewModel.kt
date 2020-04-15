@@ -31,7 +31,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_ch
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.GeoLocationPromptDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderDataModel
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeHeaderWalletAction
-import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeRecommendationFeedViewModel
+import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeRecommendationFeedDataModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
 import com.tokopedia.stickylogin.domain.usecase.coroutine.StickyLoginUseCase
@@ -510,7 +510,7 @@ open class HomeViewModel @Inject constructor(
     }
 
     private fun evaluateRecommendationSection(homeDataModel: HomeDataModel?): HomeDataModel? {
-        val detectHomeRecom = _homeLiveData.value?.list?.find { visitable -> visitable is HomeRecommendationFeedViewModel }
+        val detectHomeRecom = _homeLiveData.value?.list?.find { visitable -> visitable is HomeRecommendationFeedDataModel }
         homeDataModel?.let {
             if (detectHomeRecom != null) {
                 val currentList = homeDataModel.list.toMutableList()
@@ -698,12 +698,12 @@ open class HomeViewModel @Inject constructor(
                 visitable -> visitable is HomeRetryModel
             }
             val findRecommendationModel = _homeLiveData.value?.list?.find {
-                visitable -> visitable is HomeRecommendationFeedViewModel
+                visitable -> visitable is HomeRecommendationFeedDataModel
             }
 
             if (findRecommendationModel != null) return@launchCatchError
 
-            val homeRecommendationFeedViewModel = HomeRecommendationFeedViewModel()
+            val homeRecommendationFeedViewModel = HomeRecommendationFeedDataModel()
             homeRecommendationFeedViewModel.recommendationTabDataModel = homeRecommendationTabs
             homeRecommendationFeedViewModel.isNewData = true
             updateWidget(UpdateLiveDataModel(ACTION_DELETE, findRetryModel as HomeVisitable?))

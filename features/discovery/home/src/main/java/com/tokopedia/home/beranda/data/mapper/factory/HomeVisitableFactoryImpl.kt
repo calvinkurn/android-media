@@ -13,7 +13,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_ch
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.dynamic_icon.DynamicIconSectionDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.dynamic_icon.HomeIconItem
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.spotlight.SpotlightItemDataModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.spotlight.SpotlightViewModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.spotlight.SpotlightDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.GeoLocationPromptDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderDataModel
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils
@@ -401,7 +401,7 @@ class HomeVisitableFactoryImpl(val userSessionInterface: UserSessionInterface) :
                     spotlightItem.categoryPersona
             ))
         }
-        val viewModel = SpotlightViewModel(spotlightItems, spotlight.channelId)
+        val viewModel = SpotlightDataModel(spotlightItems, spotlight.channelId)
         if (!isCache) {
             viewModel.setTrackingData(spotlight.enhanceImpressionSpotlightHomePage)
             viewModel.isTrackingCombined = false

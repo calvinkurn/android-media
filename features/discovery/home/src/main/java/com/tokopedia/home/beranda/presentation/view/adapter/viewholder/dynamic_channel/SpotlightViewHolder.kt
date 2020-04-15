@@ -26,14 +26,14 @@ import com.tokopedia.home.beranda.helper.DynamicLinkHelper
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.LinearHorizontalSpacingDecoration
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.spotlight.SpotlightItemDataModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.spotlight.SpotlightViewModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.spotlight.SpotlightDataModel
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.unifyprinciples.Typography
 
 import java.util.ArrayList
 
-class SpotlightViewHolder(itemView: View, val listener: HomeCategoryListener) : AbstractViewHolder<SpotlightViewModel>(itemView) {
+class SpotlightViewHolder(itemView: View, val listener: HomeCategoryListener) : AbstractViewHolder<SpotlightDataModel>(itemView) {
     private val recyclerView: RecyclerView
     private val adapter: SpotlightAdapter
 
@@ -48,7 +48,7 @@ class SpotlightViewHolder(itemView: View, val listener: HomeCategoryListener) : 
                 LinearLayoutManager.HORIZONTAL, false)
     }
 
-    override fun bind(element: SpotlightViewModel) {
+    override fun bind(element: SpotlightDataModel) {
         adapter.setData(element.spotlightItems)
         if (!element.isCache) {
             itemView.addOnImpressionListener(
@@ -152,14 +152,14 @@ class SpotlightViewHolder(itemView: View, val listener: HomeCategoryListener) : 
 }
 
 class OnSpotlightImpression(
-        val spotlightViewModel: SpotlightViewModel,
+        val spotlightDataModel: SpotlightDataModel,
         val listener: HomeCategoryListener,
         val position: Int) : ViewHintListener {
     override fun onViewHint() {
         listener.putEEToIris(
                 HomePageTracking.getIrisEnhanceImpressionSpotlightHomePage(
-                        spotlightViewModel.channelId,
-                        spotlightViewModel.spotlightItems,
+                        spotlightDataModel.channelId,
+                        spotlightDataModel.spotlightItems,
                         position
                 )
         )

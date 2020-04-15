@@ -13,7 +13,7 @@ import com.tokopedia.home.beranda.listener.HomeInspirationListener
 import com.tokopedia.home.beranda.listener.HomeReviewListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.*
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.dynamic_icon.DynamicIconSectionDataModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.spotlight.SpotlightViewModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.spotlight.SpotlightDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.GeoLocationPromptDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.RetryModel
@@ -26,7 +26,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_ch
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.GeolocationPromptViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.OvoViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeRecommendationFeedViewHolder
-import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeRecommendationFeedViewModel
+import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeRecommendationFeedDataModel
 import java.util.*
 
 /**
@@ -70,7 +70,7 @@ class HomeAdapterFactory(private val fragmentManager: FragmentManager, private v
         return NewBusinessViewHolder.LAYOUT
     }
 
-    override fun type(useCaseIconSectionViewModel: UseCaseIconSectionViewModel): Int {
+    override fun type(useCaseIconSectionDataModel: UseCaseIconSectionDataModel): Int {
         return UseCaseIconSectionViewHolder.LAYOUT
     }
 
@@ -92,7 +92,7 @@ class HomeAdapterFactory(private val fragmentManager: FragmentManager, private v
         else OvoViewHolder.NON_LOGIN_LAYOUT
     }
 
-    override fun type(homeRecommendationFeedViewModel: HomeRecommendationFeedViewModel): Int {
+    override fun type(homeRecommendationFeedDataModel: HomeRecommendationFeedDataModel): Int {
         return HomeRecommendationFeedViewHolder.LAYOUT
     }
 
@@ -109,7 +109,7 @@ class HomeAdapterFactory(private val fragmentManager: FragmentManager, private v
         return getDynamicChannelLayoutFromType(layout)
     }
 
-    override fun type(spotlightViewModel: SpotlightViewModel): Int {
+    override fun type(spotlightDataModel: SpotlightDataModel): Int {
         return SpotlightViewHolder.LAYOUT
     }
 
