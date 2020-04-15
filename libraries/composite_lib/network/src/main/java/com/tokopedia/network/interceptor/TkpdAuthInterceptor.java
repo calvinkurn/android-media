@@ -397,6 +397,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
 
     protected Response checkForceLogout(Chain chain, Response response, Request finalRequest) throws
             IOException {
+        int code = response.code();
         try {
             if (isNeedGcmUpdate(response)) {
                 return refreshTokenAndGcmUpdate(chain, response, finalRequest);
@@ -405,7 +406,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
             } else if (isInvalidGrantWhenRefreshToken(finalRequest, response)) {
                 networkRouter.logInvalidGrant(response);
                 return response;
-            } else if (response.code() == ERROR_UNAUTHORIZED_REQUEST) {
+            } else if (code == ERROR_UNAUTHORIZED_REQUEST) {
                 networkRouter.showForceLogoutTokenDialog(response.message());
                 return response;
             } else {
