@@ -58,12 +58,14 @@ class MultipleProductCardViewHolder(
             is SourceMultipleProductView.NotificationCenter -> {
                 listener.getAnalytic().trackMultiProductListImpression(
                         userId = element.userInfo.userId,
+                        productNumber = adapterPosition,
                         notification = element
                 )
             }
             is SourceMultipleProductView.BottomSheetDetail -> {
                 listener.getAnalytic().trackMultiProductListImpression(
                         userId = element.userInfo.userId,
+                        productNumber = adapterPosition,
                         location = LABEL_BOTTOM_SHEET_LOCATION,
                         notification = element
                 )

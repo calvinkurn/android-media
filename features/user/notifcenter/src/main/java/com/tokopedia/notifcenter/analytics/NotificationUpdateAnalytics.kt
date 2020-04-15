@@ -68,13 +68,14 @@ class NotificationUpdateAnalytics @Inject constructor(): NotificationAnalytics()
     // multi product
     fun trackMultiProductListImpression(
             userId: String,
+            productNumber: Int,
             location: String = LABEL_LOCATION,
             notification: MultipleProductCardViewBean
     ) {
         val eventLabel = getImpressionTrackLabel(
-                notification.notificationId,
-                notification.product.price,
-                location
+                notificationId = notification.notificationId,
+                productNumber = productNumber + 1,
+                location = location
         )
         trackProductListImpression(
                 userId = userId,
@@ -235,7 +236,7 @@ class NotificationUpdateAnalytics @Inject constructor(): NotificationAnalytics()
     ) {
         val eventLabel = getImpressionTrackLabel(
                 notificationId = notification.notificationId,
-                productNumber = notification.getAtcProduct()?.price?: "",
+                productPrice = notification.getAtcProduct()?.price?: "",
                 location = eventLocation
         )
         trackProductCheckoutCardClick(
@@ -251,7 +252,7 @@ class NotificationUpdateAnalytics @Inject constructor(): NotificationAnalytics()
     ) {
         val eventLabel = getImpressionTrackLabel(
                 notificationId = notification.notificationId,
-                productNumber = notification.product.price,
+                productPrice = notification.product.price,
                 location = eventLocation
         )
         trackProductCheckoutCardClick(
@@ -435,7 +436,7 @@ class NotificationUpdateAnalytics @Inject constructor(): NotificationAnalytics()
     ) {
         val eventLabel = getImpressionTrackLabel(
                 notificationId = notification.notificationId,
-                productNumber = notification.product.price,
+                productPrice = notification.product.price,
                 location = eventLocation
         )
         trackAtcOnProductClick(
@@ -463,7 +464,7 @@ class NotificationUpdateAnalytics @Inject constructor(): NotificationAnalytics()
                 "quantity", "1",
                 "dimension79", userInfo.shopId,
                 "dimension81", "", //shop type
-                "dimension80", "", //shop name
+                "dimension80", product?.shop?.name, //shop name
                 "dimension82", "", //category child id
                 "dimension45", "", //cart_id
                 "dimension40", "/notifcenter" //list name
