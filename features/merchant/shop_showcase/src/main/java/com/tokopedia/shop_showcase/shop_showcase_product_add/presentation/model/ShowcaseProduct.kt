@@ -17,6 +17,10 @@ data class ShowcaseProduct(
         val ratingStarAvg: Float,
         val totalReview: Int,
         val productImageUrl: String,
+        val isPo: Boolean = false,
+        val isWholesale: Boolean = false,
+        val isWishlist: Boolean = false,
+        val isSold: Boolean = false,
         var ishighlighted: Boolean = false,
         var isCloseable: Boolean = false
 ): BaseShowcaseProduct, Parcelable

@@ -18,7 +18,11 @@ class ProductMapper @Inject constructor() {
                     productPrice = it.productPrice.value,
                     ratingStarAvg = it.productStatistic.rating.toFloat(),
                     totalReview = it.productStatistic.totalReview,
-                    productImageUrl = it.productImage.thumbnail
+                    productImageUrl = it.productImage.thumbnail,
+                    isPo = it.productFlags.isPreorder,
+                    isWholesale = it.productFlags.isWholesale,
+                    isWishlist = it.productFlags.isWishlist,
+                    isSold = it.productFlags.isSold
             )
         }
     }
