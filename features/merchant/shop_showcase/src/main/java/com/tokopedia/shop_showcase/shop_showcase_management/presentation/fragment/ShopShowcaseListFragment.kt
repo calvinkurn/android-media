@@ -135,16 +135,22 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
         when (requestCode) {
             REQUEST_CODE_ADD_ETALASE -> {
                 if (resultCode == Activity.RESULT_OK) {
-                    val intent = Intent()
-                    activity?.let {
-                        it.setResult(Activity.RESULT_OK, intent)
-                        it.finish()
+                    if (isNeedToGoToAddShowcase) {
+                        isNeedToGoToAddShowcase = false
+                        activity?.let {
+                            val intent = Intent()
+                            it.setResult(Activity.RESULT_OK, intent)
+                            it.finish()
+                        }
                     }
                 } else if (resultCode == Activity.RESULT_CANCELED) {
-                    val intent = Intent()
                     activity?.let {
-                        it.setResult(Activity.RESULT_CANCELED, intent)
-                        it.finish()
+                        if (isNeedToGoToAddShowcase) {
+                            isNeedToGoToAddShowcase = false
+                            val intent = Intent()
+                            it.setResult(Activity.RESULT_CANCELED, intent)
+                            it.finish()
+                        }
                     }
                 }
             }
