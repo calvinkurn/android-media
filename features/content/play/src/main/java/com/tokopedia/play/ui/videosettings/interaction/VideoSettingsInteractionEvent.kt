@@ -7,6 +7,6 @@ import com.tokopedia.play.component.ComponentEvent
  */
 sealed class VideoSettingsInteractionEvent : ComponentEvent {
 
-    object OnEnterFullscreen : VideoSettingsInteractionEvent()
-    object OnExitFullscreen : VideoSettingsInteractionEvent()
+    object EnterFullScreenClicked : VideoSettingsInteractionEvent()
+    object ExitFullScreenClicked : VideoSettingsInteractionEvent()
 }

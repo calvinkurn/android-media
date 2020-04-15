@@ -7,6 +7,7 @@ import com.tokopedia.play.view.type.BottomInsetsState
 import com.tokopedia.play.view.type.BottomInsetsType
 import com.tokopedia.play.view.type.PlayRoomEvent
 import com.tokopedia.play.view.type.ScreenOrientation
+import com.tokopedia.play.view.type.immersive.ImmersiveAction
 import com.tokopedia.play.view.uimodel.*
 import com.tokopedia.play.view.wrapper.PlayResult
 
@@ -45,7 +46,7 @@ sealed class ScreenStateEvent : ComponentEvent {
      */
     data class FollowPartner(val shouldFollow: Boolean) : ScreenStateEvent()
     /**
-     * Keyboard
+     * Bottom Insets (Keyboard & BottomSheet)
      */
     data class BottomInsetsChanged(
             val insetsViewMap: Map<BottomInsetsType, BottomInsetsState>,
@@ -53,13 +54,6 @@ sealed class ScreenStateEvent : ComponentEvent {
             val isAnyHidden: Boolean,
             val stateHelper: StateHelperUiModel
     ) : ScreenStateEvent()
-
-    @Deprecated(
-            message = "Use BottomInsetsView with type BottomInsetsType.Keyboard",
-            replaceWith = ReplaceWith("BottomInsetsView(BottomInsetsType.Keyboard, isShown)", "com.tokopedia.play.view.event.ScreenStateEvent", "com.tokopedia.play.view.type.BottomInsetsType"),
-            level = DeprecationLevel.WARNING
-    )
-    data class KeyboardStateChanged(val isShown: Boolean) : ScreenStateEvent()
     /**
      * Video
      */
@@ -70,11 +64,15 @@ sealed class ScreenStateEvent : ComponentEvent {
      */
     data class OnNewPlayRoomEvent(val event: PlayRoomEvent) : ScreenStateEvent()
 
-
     /**
      * Orientation
      */
     data class ScreenOrientationChanged(val orientation: ScreenOrientation, val stateHelper: StateHelperUiModel) : ScreenStateEvent()
+
+    /**
+     * Immersive
+     */
+    data class ImmersiveStateChanged(val action: ImmersiveAction) : ScreenStateEvent()
 
     object OnNoMoreAction : ScreenStateEvent()
     object ShowOneTapOnboarding : ScreenStateEvent()

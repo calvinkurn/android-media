@@ -14,15 +14,15 @@ import com.tokopedia.play.data.mapper.PlaySocketMapper
 import com.tokopedia.play.data.websocket.PlaySocket
 import com.tokopedia.play.data.websocket.PlaySocketInfo
 import com.tokopedia.play.domain.*
-import com.tokopedia.play.extensions.isAnyBottomSheetsShown
-import com.tokopedia.play.extensions.isKeyboardShown
 import com.tokopedia.play.ui.chatlist.model.PlayChat
 import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.util.CoroutineDispatcherProvider
+import com.tokopedia.play.util.event.Event
 import com.tokopedia.play.view.type.*
+import com.tokopedia.play.view.type.immersive.ImmersiveAction
+import com.tokopedia.play.view.type.immersive.ImmersiveType
 import com.tokopedia.play.view.uimodel.*
 import com.tokopedia.play.view.uimodel.mapper.PlayUiMapper
-import com.tokopedia.play.view.uimodel.mocker.PlayUiMocker
 import com.tokopedia.play.view.wrapper.PlayResult
 import com.tokopedia.play_common.model.PlayBufferControl
 import com.tokopedia.play_common.player.PlayVideoManager
@@ -88,6 +88,8 @@ class PlayViewModel @Inject constructor(
         get() = _observableBadgeCart
     val observableScreenOrientation: LiveData<ScreenOrientation>
         get() = _observableScreenOrientation
+    val observableImmersiveEvent: LiveData<Event<ImmersiveType>>
+        get() = _observableImmersiveEvent
 
     val screenOrientation: ScreenOrientation
         get() {
@@ -163,6 +165,7 @@ class PlayViewModel @Inject constructor(
     private val _observableBottomInsetsState = MutableLiveData<Map<BottomInsetsType, BottomInsetsState>>()
     private val _observablePinned = MediatorLiveData<PinnedUiModel>()
     private val _observableBadgeCart = MutableLiveData<CartUiModel>()
+    private val _observableImmersiveEvent = MutableLiveData<Event<ImmersiveType>>()
     private val _observableScreenOrientation = MutableLiveData<ScreenOrientation>()
     private val stateHandler: LiveData<Unit> = MediatorLiveData<Unit>().apply {
         addSource(playVideoManager.getObservablePlayVideoState()) {
@@ -389,7 +392,6 @@ class PlayViewModel @Inject constructor(
     }
     //endregion
 
-    //region API & Socket
     fun getChannelInfo(channelId: String) {
 
         var retryCount = 0
@@ -481,6 +483,91 @@ class PlayViewModel @Inject constructor(
         _observableScreenOrientation.value = screenOrientation
     }
 
+    fun updateBadgeCart() {
+        val channelInfo = _observableGetChannelInfo.value
+        if (channelInfo != null && channelInfo is Success) {
+            launch { getBadgeCart(channelInfo.data.isShowCart) }
+        }
+    }
+
+    fun startWebSocket(channelId: String, gcToken: String, settings: Channel.Settings) {
+        playSocket.channelId = channelId
+        playSocket.gcToken = gcToken
+        playSocket.settings = settings
+        playSocket.connect(onMessageReceived = { response ->
+            launch {
+                val result = withContext(dispatchers.io) {
+                    val socketMapper = PlaySocketMapper(response)
+                    socketMapper.mapping()
+                }
+                when (result) {
+                    is TotalLike -> {
+                        _observableTotalLikes.value = PlayUiMapper.mapTotalLikes(result)
+                    }
+                    is TotalView -> {
+                        _observableTotalViews.value = PlayUiMapper.mapTotalViews(result)
+                    }
+                    is PlayChat -> {
+                        _observableNewChat.value = PlayUiMapper.mapPlayChat(userSession.userId, result)
+                    }
+                    is PinnedMessage -> {
+                        val partnerName = _observablePartnerInfo.value?.name.orEmpty()
+                        _observablePinnedMessage.value = PlayUiMapper.mapPinnedMessage(partnerName, result)
+                    }
+                    is QuickReply -> {
+                        _observableQuickReply.value = PlayUiMapper.mapQuickReply(result)
+                    }
+                    is BannedFreeze -> {
+                        if (result.channelId.isNotEmpty() && result.channelId.equals(channelId, true)) {
+                            _observableEvent.value = _observableEvent.value?.copy(
+                                    isFreeze = result.isFreeze,
+                                    isBanned = result.isBanned && result.userId.isNotEmpty()
+                                            && result.userId.equals(userSession.userId, true))
+                        }
+                    }
+                    is ProductTag -> {
+                        val productSheet = _observableProductSheetContent.value
+                        val currentProduct = if (productSheet is PlayResult.Success) productSheet.data else ProductSheetUiModel.empty()
+                        _observableProductSheetContent.value = PlayResult.Success(
+                                data = currentProduct.copy(productList = PlayUiMapper.mapItemProducts(result.listOfProducts))
+                        )
+                    }
+                    is MerchantVoucher -> {
+                        val productSheet = _observableProductSheetContent.value
+                        val currentProduct = if (productSheet is PlayResult.Success) productSheet.data else ProductSheetUiModel.empty()
+                        _observableProductSheetContent.value = PlayResult.Success(
+                                data = currentProduct.copy(voucherList = PlayUiMapper.mapItemVouchers(result.listOfVouchers))
+                        )
+                    }
+                }
+            }
+        }, onReconnect = {
+            _observableSocketInfo.value = PlaySocketInfo.Reconnect
+        }, onError = {
+            _observableSocketInfo.value = PlaySocketInfo.Error(it)
+            startWebSocket(channelId, gcToken, settings)
+        })
+    }
+
+    fun triggerImmersive(shouldImmersive: Boolean) {
+        val immersiveDuration = 200L
+        val fadeOutDuration = 3000L
+
+        val immersiveAction =
+                if (shouldImmersive) ImmersiveAction.Enter(immersiveDuration)
+                else ImmersiveAction.Exit(immersiveDuration, fadeOutDuration)
+
+        val immersiveType = when (screenOrientation) {
+            ScreenOrientation.Landscape, ScreenOrientation.ReversedLandscape -> ImmersiveType.Full(immersiveAction)
+            ScreenOrientation.Portrait, ScreenOrientation.ReversedPortrait, ScreenOrientation.Unknown -> ImmersiveType.Partial(immersiveAction)
+        }
+
+        if (_observableImmersiveEvent.value?.peekContent() != immersiveType) _observableImmersiveEvent.value = Event(immersiveType)
+    }
+
+    /**
+     * Private Method
+     */
     private fun destroy() {
         playSocket.destroy()
     }
@@ -561,72 +648,6 @@ class PlayViewModel @Inject constructor(
                 launch { if (channel.isShowProductTagging) getProductTagItems(channel) }
             }
         }
-    }
-
-    fun updateBadgeCart() {
-        val channelInfo = _observableGetChannelInfo.value
-        if (channelInfo != null && channelInfo is Success) {
-            launch { getBadgeCart(channelInfo.data.isShowCart) }
-        }
-    }
-
-    fun startWebSocket(channelId: String, gcToken: String, settings: Channel.Settings) {
-        playSocket.channelId = channelId
-        playSocket.gcToken = gcToken
-        playSocket.settings = settings
-        playSocket.connect(onMessageReceived = { response ->
-            launch {
-                val result = withContext(dispatchers.io) {
-                    val socketMapper = PlaySocketMapper(response)
-                    socketMapper.mapping()
-                }
-                when (result) {
-                    is TotalLike -> {
-                        _observableTotalLikes.value = PlayUiMapper.mapTotalLikes(result)
-                    }
-                    is TotalView -> {
-                        _observableTotalViews.value = PlayUiMapper.mapTotalViews(result)
-                    }
-                    is PlayChat -> {
-                        _observableNewChat.value = PlayUiMapper.mapPlayChat(userSession.userId, result)
-                    }
-                    is PinnedMessage -> {
-                        val partnerName = _observablePartnerInfo.value?.name.orEmpty()
-                        _observablePinnedMessage.value = PlayUiMapper.mapPinnedMessage(partnerName, result)
-                    }
-                    is QuickReply -> {
-                        _observableQuickReply.value = PlayUiMapper.mapQuickReply(result)
-                    }
-                    is BannedFreeze -> {
-                        if (result.channelId.isNotEmpty() && result.channelId.equals(channelId, true)) {
-                            _observableEvent.value = _observableEvent.value?.copy(
-                                    isFreeze = result.isFreeze,
-                                    isBanned = result.isBanned && result.userId.isNotEmpty()
-                                            && result.userId.equals(userSession.userId, true))
-                        }
-                    }
-                    is ProductTag -> {
-                        val productSheet = _observableProductSheetContent.value
-                        val currentProduct = if (productSheet is PlayResult.Success) productSheet.data else ProductSheetUiModel.empty()
-                        _observableProductSheetContent.value = PlayResult.Success(
-                                data = currentProduct.copy(productList = PlayUiMapper.mapItemProducts(result.listOfProducts))
-                        )
-                    }
-                    is MerchantVoucher -> {
-                        val productSheet = _observableProductSheetContent.value
-                        val currentProduct = if (productSheet is PlayResult.Success) productSheet.data else ProductSheetUiModel.empty()
-                        _observableProductSheetContent.value = PlayResult.Success(
-                                data = currentProduct.copy(voucherList = PlayUiMapper.mapItemVouchers(result.listOfVouchers))
-                        )
-                    }
-                }
-            }
-        }, onReconnect = {
-            _observableSocketInfo.value = PlaySocketInfo.Reconnect
-        }, onError = {
-            _observableSocketInfo.value = PlaySocketInfo.Error(it)
-            startWebSocket(channelId, gcToken, settings)
-        })
     }
 
     private fun mapBufferControl(bufferControl: VideoStream.BufferControl) = PlayBufferControl(

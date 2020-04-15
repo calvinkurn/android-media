@@ -47,13 +47,13 @@ open class VideoSettingsComponent(
 
     override fun onEnterFullscreen(view: VideoSettingsView) {
         launch {
-            bus.emit(VideoSettingsInteractionEvent::class.java, VideoSettingsInteractionEvent.OnEnterFullscreen)
+            bus.emit(VideoSettingsInteractionEvent::class.java, VideoSettingsInteractionEvent.EnterFullScreenClicked)
         }
     }
 
     override fun onExitFullscreen(view: VideoSettingsView) {
         launch {
-            bus.emit(VideoSettingsInteractionEvent::class.java, VideoSettingsInteractionEvent.OnExitFullscreen)
+            bus.emit(VideoSettingsInteractionEvent::class.java, VideoSettingsInteractionEvent.ExitFullScreenClicked)
         }
     }
 

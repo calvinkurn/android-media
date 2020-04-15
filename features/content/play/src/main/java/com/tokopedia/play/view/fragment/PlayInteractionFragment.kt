@@ -1,5 +1,7 @@
 package com.tokopedia.play.view.fragment
 
+import android.animation.Animator
+import android.animation.AnimatorSet
 import android.app.Activity
 import android.content.Intent
 import android.content.pm.ActivityInfo
@@ -57,6 +59,7 @@ import com.tokopedia.play.ui.videocontrol.VideoControlComponent
 import com.tokopedia.play.ui.videosettings.VideoSettingsComponent
 import com.tokopedia.play.ui.videosettings.interaction.VideoSettingsInteractionEvent
 import com.tokopedia.play.util.CoroutineDispatcherProvider
+import com.tokopedia.play.util.PlayAnimationUtil
 import com.tokopedia.play.util.event.EventObserver
 import com.tokopedia.play.view.bottomsheet.PlayMoreActionBottomSheet
 import com.tokopedia.play.view.event.ScreenStateEvent
@@ -66,6 +69,8 @@ import com.tokopedia.play.view.type.BottomInsetsState
 import com.tokopedia.play.view.type.BottomInsetsType
 import com.tokopedia.play.view.type.PlayRoomEvent
 import com.tokopedia.play.view.type.ScreenOrientation
+import com.tokopedia.play.view.type.immersive.ImmersiveAction
+import com.tokopedia.play.view.type.immersive.ImmersiveType
 import com.tokopedia.play.view.uimodel.*
 import com.tokopedia.play.view.viewmodel.PlayInteractionViewModel
 import com.tokopedia.play.view.viewmodel.PlayViewModel
@@ -95,7 +100,6 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
 
         private const val INVISIBLE_ALPHA = 0f
         private const val VISIBLE_ALPHA = 1f
-        private const val VISIBILITY_ANIMATION_DURATION = 200L
 
         fun newInstance(channelId: String): PlayInteractionFragment {
             return PlayInteractionFragment().apply {
@@ -222,6 +226,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
         observeBottomInsetsState()
         observeEventUserInfo()
         observeScreenOrientation()
+        observeImmersiveEvent()
 
         observeLoggedInInteractionEvent()
     }
@@ -238,7 +243,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
 
     override fun onWatchModeClicked(bottomSheet: PlayMoreActionBottomSheet) {
         PlayAnalytics.clickWatchMode(channelId, playViewModel.channelType)
-        triggerImmersive(clPlayInteraction, VISIBLE_ALPHA)
+        triggerImmersive(VISIBLE_ALPHA)
         bottomSheet.dismiss()
     }
 
@@ -413,6 +418,10 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
     private fun observeScreenOrientation() {
         playViewModel.observableScreenOrientation.observe(viewLifecycleOwner, Observer(::sendOrientationEvent))
     }
+
+    private fun observeImmersiveEvent() {
+        playViewModel.observableImmersiveEvent.observe(viewLifecycleOwner, EventObserver(::handleImmersive))
+    }
     //endregion
 
     private fun setupView(view: View) {
@@ -420,29 +429,13 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
 
         clPlayInteraction.setOnClickListener {
             triggerImmersive(
-                    view = clPlayInteraction,
                     whenAlpha = INVISIBLE_ALPHA
             )
         }
     }
 
-    private fun triggerImmersive(view: View, whenAlpha: Float) {
-        view.animate().apply {
-            val finalAlpha = if (whenAlpha == VISIBLE_ALPHA) INVISIBLE_ALPHA else VISIBLE_ALPHA
-
-            if (view.alpha == whenAlpha) alpha(finalAlpha)
-            duration = VISIBILITY_ANIMATION_DURATION
-        }
-                .withStartAction {
-                    view.isClickable = false
-
-                    systemUiVisibility =
-                            if (whenAlpha == VISIBLE_ALPHA) layoutManager.onEnterImmersive()
-                            else layoutManager.onExitImmersive()
-                }
-                .withEndAction {
-                    view.isClickable = true
-                }
+    private fun triggerImmersive(whenAlpha: Float) {
+        playViewModel.triggerImmersive(whenAlpha == VISIBLE_ALPHA)
     }
 
     //region Component Initialization
@@ -559,8 +552,8 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
             videoSettingsComponent.getUserInteractionEvents()
                     .collect {
                         when (it) {
-                            VideoSettingsInteractionEvent.OnEnterFullscreen -> enterFullscreen()
-                            VideoSettingsInteractionEvent.OnExitFullscreen -> exitFullscreen()
+                            VideoSettingsInteractionEvent.EnterFullScreenClicked -> enterFullscreen()
+                            VideoSettingsInteractionEvent.ExitFullScreenClicked -> exitFullscreen()
                         }
                     }
         }
@@ -623,7 +616,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
                         when (it) {
                             ImmersiveBoxInteractionEvent.BoxClicked -> {
                                 PlayAnalytics.clickWatchArea(channelId, playViewModel.channelType)
-                                triggerImmersive(clPlayInteraction, VISIBLE_ALPHA)
+                                triggerImmersive(VISIBLE_ALPHA)
                             }
                         }
                     }
@@ -775,6 +768,106 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
         }
     }
     //endregion
+
+    private fun handleImmersive(type: ImmersiveType) {
+
+        fun handleFullImmersive(view: View, shouldImmersive: Boolean, durationInMs: Long, fadeOutDelayInMs: Long?) {
+            val currentAnimator = view.tag as? Animator
+            currentAnimator?.cancel()
+
+            val animator = if (!shouldImmersive) {
+                val animatorSet = AnimatorSet()
+                val fadeIn = PlayAnimationUtil.fadeInAnimation(view, durationInMs, view.alpha)
+                fadeIn.addListener(object : Animator.AnimatorListener {
+                    override fun onAnimationRepeat(animation: Animator?) {
+                    }
+
+                    override fun onAnimationEnd(animation: Animator?) {
+                        animation?.removeAllListeners()
+                        view.isClickable = true
+                    }
+
+                    override fun onAnimationCancel(animation: Animator?) {
+                        animation?.removeAllListeners()
+                        view.isClickable = true
+                    }
+
+                    override fun onAnimationStart(animation: Animator?) {
+                        view.isClickable = false
+                    }
+                })
+
+                if (fadeOutDelayInMs != null) {
+                    val delay = PlayAnimationUtil.delay(fadeOutDelayInMs)
+                    delay.addListener(object : Animator.AnimatorListener {
+                        override fun onAnimationRepeat(animation: Animator?) {
+                        }
+
+                        override fun onAnimationEnd(animation: Animator?) {
+                            animation?.removeAllListeners()
+                            triggerImmersive(VISIBLE_ALPHA)
+                        }
+
+                        override fun onAnimationCancel(animation: Animator?) {
+                            animation?.removeAllListeners()
+                        }
+
+                        override fun onAnimationStart(animation: Animator?) {
+                        }
+                    })
+                    animatorSet.playSequentially(fadeIn, delay)
+                } else animatorSet.play(fadeIn)
+
+                animatorSet
+
+            } else {
+                val fadeOut = PlayAnimationUtil.fadeOutAnimation(view, durationInMs, view.alpha)
+                fadeOut.addListener(object : Animator.AnimatorListener {
+                    override fun onAnimationRepeat(animation: Animator?) {
+                    }
+
+                    override fun onAnimationEnd(animation: Animator?) {
+                        animation?.removeAllListeners()
+                        view.isClickable = true
+                    }
+
+                    override fun onAnimationCancel(animation: Animator?) {
+                        animation?.removeAllListeners()
+                        view.isClickable = true
+                    }
+
+                    override fun onAnimationStart(animation: Animator?) {
+                        view.isClickable = false
+                    }
+                })
+
+                fadeOut
+            }
+
+            view.tag = animator
+
+            animator.start()
+        }
+
+        fun handlePartialImmersive(action: ImmersiveAction) {
+            launch {
+                EventBusFactory.get(viewLifecycleOwner)
+                        .emit(
+                                ScreenStateEvent::class.java,
+                                ScreenStateEvent.ImmersiveStateChanged(action)
+                        )
+            }
+        }
+
+        when (type) {
+            is ImmersiveType.Full -> handleFullImmersive(
+                    clPlayInteraction,
+                    type.action is ImmersiveAction.Enter,
+                    type.action.durationInMs,
+                    if (type.action is ImmersiveAction.Exit) (type.action as ImmersiveAction.Exit).delayBeforeFadeOutInMs else null)
+            is ImmersiveType.Partial -> handlePartialImmersive(type.action)
+        }
+    }
 
     private fun enterFullscreen() {
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
