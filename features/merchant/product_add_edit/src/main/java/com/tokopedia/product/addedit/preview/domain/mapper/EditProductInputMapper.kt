@@ -22,7 +22,6 @@ class EditProductInputMapper @Inject constructor() {
 
     companion object{
         const val PRICE_CURRENCY = "IDR"
-        const val STOCK_STATUS = "LIMITED"
         const val UNIT_GRAM = "GR"
         const val UNIT_KILOGRAM = "KG"
         const val UNIT_DAY = "DAY"
@@ -111,7 +110,7 @@ class EditProductInputMapper @Inject constructor() {
                     mapProductCombination(it.opt),
                     it.priceVar,
                     it.sku,
-                    STOCK_STATUS,
+                    getActiveStatus(it.st),
                     it.stock
             )
             products.add(product)

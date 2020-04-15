@@ -152,7 +152,7 @@
 
     <!--Shipment-->
     <string name="label_shipment_insurance">Asuransi pengiriman</string>
-    <string name="label_shipment_insurance_description">Gunakan asuransi pengiriman untuk menjamin produk aman sampai pembeli</string>
+    <string name="label_shipment_insurance_description">Gunakan asuransi pengiriman untuk menjamin produk aman sampai ke pembeli</string>
     <string name="label_shipment_detail">Tentukan detail pengirimanmu</string>
     <string name="label_shipment_description">Pastikan berat produk dan pengiriman sesuai</string>
     <string name="label_unit">Satuan</string>
@@ -187,4 +187,6 @@
     <string name="label_title_on_dialog">Yakin ingin keluar?</string>
     <string name="label_succes_save_draft">TopSeller: Produk berhasil disimpan dalam draft</string>
 
+    <!-- set cash back -->
+    <string name="product_manage_set_cashback_success">Pengaturan Cashback untuk \"%1$s\" berhasil.</string>
 </resources>

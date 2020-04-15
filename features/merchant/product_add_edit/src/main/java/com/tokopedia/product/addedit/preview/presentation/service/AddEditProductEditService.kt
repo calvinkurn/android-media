@@ -84,7 +84,7 @@ class AddEditProductEditService : AddEditProductBaseService() {
             }
 
             override fun getFailedIntent(errorMessage: String): PendingIntent {
-                ProductEditStepperTracking.trackFinishService(userSession.shopId, false)
+                ProductEditStepperTracking.trackFinishService(userSession.shopId)
                 val intent = AddEditProductPreviewActivity
                         .createInstance(context, isFromSuccessNotif = false, isFromNotifEditMode = true)
                 return PendingIntent.getActivity(context, 0, intent, 0)

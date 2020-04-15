@@ -19,6 +19,7 @@ import com.tokopedia.product.addedit.common.util.setModeToNumberInput
 import com.tokopedia.product.addedit.common.util.setText
 import com.tokopedia.product.addedit.draft.mapper.AddEditProductMapper.mapProductInputModelDetailToDraft
 import com.tokopedia.product.addedit.optionpicker.OptionPicker
+import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.shipment.di.AddEditProductShipmentComponent
 import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.MAX_WEIGHT_GRAM
@@ -158,6 +159,19 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
 
     fun onCtaNoPressed() {
         ProductAddStepperTracking.trackDraftCancel(shopId)
+    }
+
+    fun sendDataBack() {
+        if(!shipmentViewModel.isEditMode) {
+            inputAllDataInInputDraftModel()
+            val intent = Intent()
+            intent.putExtra(AddEditProductPreviewConstants.EXTRA_PRODUCT_INPUT_MODEL, productInputModel)
+            intent.putExtra(AddEditProductPreviewConstants.EXTRA_BACK_PRESSED, 3)
+            activity?.setResult(Activity.RESULT_OK, intent)
+            activity?.finish()
+        } else {
+            activity?.finish()
+        }
     }
 
     fun onBackPressed() {

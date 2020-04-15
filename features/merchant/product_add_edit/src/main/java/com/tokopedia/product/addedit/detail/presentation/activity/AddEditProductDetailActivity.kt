@@ -14,6 +14,7 @@ import com.tokopedia.product.addedit.detail.di.AddEditProductDetailComponent
 import com.tokopedia.product.addedit.detail.di.AddEditProductDetailModule
 import com.tokopedia.product.addedit.detail.di.DaggerAddEditProductDetailComponent
 import com.tokopedia.product.addedit.detail.presentation.fragment.AddEditProductDetailFragment
+import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_IS_ADDING_PRODUCT
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_IS_DRAFTING_PRODUCT
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_IS_EDITING_PRODUCT
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_PRODUCT_INPUT_MODEL
@@ -31,6 +32,7 @@ class AddEditProductDetailActivity : BaseSimpleActivity(), HasComponent<AddEditP
         var productInputModel = ProductInputModel()
         var isEditing = false
         var isDrafting = false
+        var isAdding = false
 
         // try to get passed extras from the cache manager
         cacheManagerId?.run {
@@ -40,8 +42,10 @@ class AddEditProductDetailActivity : BaseSimpleActivity(), HasComponent<AddEditP
                     ?: false
             isDrafting = saveInstanceCacheManager.get(EXTRA_IS_DRAFTING_PRODUCT, Boolean::class.java)
                     ?: false
+            isAdding = saveInstanceCacheManager.get(EXTRA_IS_ADDING_PRODUCT, Boolean::class.java)
+                    ?: false
         }
-        return AddEditProductDetailFragment.createInstance(productInputModel, isEditing, isDrafting)
+        return AddEditProductDetailFragment.createInstance(productInputModel, isEditing, isDrafting, isAdding)
     }
 
     override fun getComponent(): AddEditProductDetailComponent {
@@ -65,7 +69,7 @@ class AddEditProductDetailActivity : BaseSimpleActivity(), HasComponent<AddEditP
                 onCtaYesPressedHitTracking()
             }
             setPrimaryCTAClickListener {
-                super.onBackPressed()
+                sendDataBack()
                 onCtaNoPressedHitTracking()
             }
         }.show()
@@ -95,6 +99,13 @@ class AddEditProductDetailActivity : BaseSimpleActivity(), HasComponent<AddEditP
         val f = fragment
         if (f != null && f is AddEditProductDetailFragment) {
             f.onCtaNoPressed()
+        }
+    }
+
+    private fun sendDataBack() {
+        val f = fragment
+        if (f != null && f is AddEditProductDetailFragment) {
+            f.sendDataBack()
         }
     }
 
