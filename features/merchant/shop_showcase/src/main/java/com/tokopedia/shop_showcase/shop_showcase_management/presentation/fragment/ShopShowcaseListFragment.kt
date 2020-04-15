@@ -490,12 +490,12 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
 
     private fun setupBuyerView() {
         btnAddEtalase.visibility = View.GONE
-//        btnReorder.visibility = View.GONE
+        headerUnify.actionTextView?.visibility = View.GONE
     }
 
     private fun setupSellerView() {
         btnAddEtalase.visibility = View.VISIBLE
-//        btnReorder.visibility = View.VISIBLE
+        headerUnify.actionTextView?.visibility = View.VISIBLE
     }
 
     private fun gotoShowcaseResultPage(showcaseId: String, shopId: String) {

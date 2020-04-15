@@ -121,7 +121,6 @@ class ShopShowcaseListReorderFragment : BaseDaggerFragment(),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val itemTouchHelperCallback = SimpleItemTouchHelperCallback(shopShowcaseListReorderAdapter)
-//        enableReorderMode(true)
         initHeaderUnify()
         initRecyclerView()
         itemTouchHelper = ItemTouchHelper(itemTouchHelperCallback)
@@ -172,16 +171,7 @@ class ShopShowcaseListReorderFragment : BaseDaggerFragment(),
                 }
             }
         }
-//        enableReorderMode(false)
         viewModel.reorderShopShowcaseList(shopShowcaseList)
-    }
-
-    private fun enableReorderMode(isEnabled: Boolean) {
-        if (isEnabled) {
-//            btnSubmit.isEnabled = true
-        } else {
-//            btnSubmit.isEnabled = false
-        }
     }
 
     private fun observeReorderShopShowcase() {
