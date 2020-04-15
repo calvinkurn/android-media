@@ -15,6 +15,8 @@ query universe_suggestion($params: String!) {
         shortcut_image
         image_url
         url_tracker
+        label
+        label_type
         tracking {
           code
         }
