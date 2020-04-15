@@ -17,6 +17,7 @@ query universe_initial_state($params: String!){
         label
         label_type
         shortcut_image
+        type
       }
     }
   }
