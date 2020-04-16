@@ -87,6 +87,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     private static final String PARAM_EXTERNAL = "tokopedia_external=true";
     private static final String PARAM_WEBVIEW_BACK = "tokopedia://back";
     public static final String CUST_OVERLAY_URL = "imgurl";
+    private static final String CUST_HEADER = "header_text";
 
     @NonNull
     protected String url = "";
@@ -503,6 +504,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         Uri uri = Uri.parse(url);
         if (goToLoginGoogle(uri)) return true;
         String queryParam = uri.getQueryParameter(CUST_OVERLAY_URL);
+        String headerText = uri.getQueryParameter(CUST_HEADER);
 
         if (url.contains(HCI_CAMERA_KTP)) {
             mJsHciCallbackFuncName = uri.getLastPathSegment();
@@ -516,6 +518,8 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             Intent intent = RouteManager.getIntent(getActivity(), ApplinkConst.HOME_CREDIT_SELFIE_WITHOUT_TYPE);
             if (queryParam != null)
                 intent.putExtra(CUST_OVERLAY_URL, queryParam);
+            if(headerText != null)
+                intent.putExtra(CUST_HEADER, headerText);
             startActivityForResult(intent, HCI_CAMERA_REQUEST_CODE);
             return true;
         } else if (PARAM_WEBVIEW_BACK.equalsIgnoreCase(url)

@@ -62,6 +62,7 @@ public class HomeCreditBaseCameraFragment extends BaseDaggerFragment {
     private ProgressDialog progressDialog;
     public String finalCameraResultFilePath;
     protected ImageView cameraOverlayImage;
+    protected TextView headerText;
 
     @Override
     protected void initInjector() {
@@ -107,11 +108,11 @@ public class HomeCreditBaseCameraFragment extends BaseDaggerFragment {
 
     private void setUIFlashCamera(int flashEnum) {
         if (flashEnum == Flash.AUTO.ordinal()) {
-            flashControl.setImageDrawable(MethodChecker.getDrawable(getActivity(),com.tokopedia.imagepicker.R.drawable.ic_auto_flash));
+            flashControl.setImageDrawable(MethodChecker.getDrawable(getActivity(), com.tokopedia.imagepicker.R.drawable.ic_auto_flash));
         } else if (flashEnum == Flash.ON.ordinal()) {
-            flashControl.setImageDrawable(MethodChecker.getDrawable(getActivity(),com.tokopedia.imagepicker.R.drawable.ic_on_flash));
+            flashControl.setImageDrawable(MethodChecker.getDrawable(getActivity(), com.tokopedia.imagepicker.R.drawable.ic_on_flash));
         } else if (flashEnum == Flash.OFF.ordinal()) {
-            flashControl.setImageDrawable(MethodChecker.getDrawable(getActivity(),com.tokopedia.imagepicker.R.drawable.ic_off_flash));
+            flashControl.setImageDrawable(MethodChecker.getDrawable(getActivity(), com.tokopedia.imagepicker.R.drawable.ic_off_flash));
         }
     }
 
@@ -302,4 +303,18 @@ public class HomeCreditBaseCameraFragment extends BaseDaggerFragment {
         super.onResume();
         onVisible();
     }
+
+    protected void setCameraOverlayImage(ImageView cameraOverlayImg, String overlayType) {
+        String cameraType = getActivity().getIntent().getStringExtra(Constants.CAMERA_TYPE);
+        String cutOutImgUrl = getActivity().getIntent().getStringExtra(Constants.CUST_OVERLAY_URL);
+        String customHeaderText = getActivity().getIntent().getStringExtra(Constants.CUST_HEADER);
+        if (!TextUtils.isEmpty(customHeaderText))
+            headerText.setText(customHeaderText);
+        if (!TextUtils.isEmpty(cameraType) && overlayType.equalsIgnoreCase(cameraType)) {
+            cameraOverlayImg.setVisibility(View.GONE);
+        } else if (!TextUtils.isEmpty(cutOutImgUrl)) {
+            ImageHandler.loadImageAndCache(cameraOverlayImg, cutOutImgUrl);
+        }
+    }
+
 }
