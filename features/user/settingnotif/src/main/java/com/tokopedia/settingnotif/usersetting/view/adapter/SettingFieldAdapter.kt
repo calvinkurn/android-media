@@ -9,6 +9,7 @@ import com.tokopedia.settingnotif.usersetting.domain.pojo.NotificationActivation
 import com.tokopedia.settingnotif.usersetting.domain.pojo.ParentSetting
 import com.tokopedia.settingnotif.usersetting.view.adapter.factory.SettingFieldTypeFactory
 import com.tokopedia.settingnotif.usersetting.view.adapter.viewholder.SettingViewHolder
+import com.tokopedia.settingnotif.usersetting.view.dataview.NotificationActivationDataView.activationPushNotif
 
 typealias ItemAdapter = SettingFieldAdapter<Visitable<SettingFieldTypeFactory>>
 
@@ -32,7 +33,7 @@ class SettingFieldAdapter<T : Visitable<SettingFieldTypeFactory>>(
     override fun updateSettingView(positions: List<Int>) {
         if (positions.isEmpty()) return
         if (positions.size == 1) {
-            notifySinglePosition(positions[0])
+            notifySinglePosition(positions.first())
         } else if (positions.size > 1) {
             notifyRangedPosition(positions)
         }
@@ -68,8 +69,48 @@ class SettingFieldAdapter<T : Visitable<SettingFieldTypeFactory>>(
         settingFieldAdapterListener.requestUpdateUserSetting(notificationType, updatedSettingIds)
     }
 
-    fun removeNotificationPermission() {
-        visitables.removeFirst { it is NotificationActivation }
+    private fun removeFirstPinnedActivation() {
+        visitables.removeFirst {
+            it is NotificationActivation
+        }
+    }
+
+    fun removePinnedActivation() {
+        removeFirstPinnedActivation()
+        notifyDataSetChanged()
+    }
+
+    fun addPinnedActivation() {
+        val indexPinned = 0
+        removeFirstPinnedActivation()
+        addElement(indexPinned, activationPushNotif())
+    }
+
+    fun enableSwitchComponent(temporaryList: List<Visitable<*>>) {
+        if (temporaryList.isEmpty()) return
+
+        val visitableList = mutableListOf<Visitable<*>>()
+        visitables.zip(temporaryList).forEach {
+            if (it.first is ParentSetting && it.second is ParentSetting) {
+                val currentItem = it.first as ParentSetting
+                val lastConfigItem = it.second as ParentSetting
+                currentItem.status = lastConfigItem.status
+                currentItem.isEnabled = true
+            }
+            visitableList.add(it.first)
+        }
+
+        visitables = visitableList
+        notifyDataSetChanged()
+    }
+
+    fun disableSwitchComponent() {
+        visitables.forEach {
+            if (it is ParentSetting) {
+                it.isEnabled = false
+                it.status = false
+            }
+        }
         notifyDataSetChanged()
     }
 
