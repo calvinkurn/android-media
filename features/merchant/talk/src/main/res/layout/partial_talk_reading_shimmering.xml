@@ -6,7 +6,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <com.elyeproj.loaderviewlibrary.LoaderImageView
-        android:id="@+id/shimmerHeaderImage"
+        android:id="@+id/talk_reading_shimmer_header_image"
         android:layout_width="@dimen/layout_lvl6"
         android:layout_height="@dimen/layout_lvl6"
         android:layout_marginTop="@dimen/layout_lvl1"
@@ -16,30 +16,29 @@
         app:layout_constraintStart_toStartOf="parent" />
     
     <com.elyeproj.loaderviewlibrary.LoaderTextView
-        android:id="@+id/shimmerHeaderTitle"
+        android:id="@+id/talk_reading_shimmer_header_title"
         android:layout_width="@dimen/dp_234"
         android:layout_height="@dimen/dp_12"
         android:layout_marginTop="@dimen/layout_lvl2"
-        android:layout_marginStart="@dimen/layout_lvl2"
-        android:layout_marginLeft="@dimen/layout_lvl2"
-        app:layout_constraintStart_toEndOf="@id/shimmerHeaderImage"
+        android:layout_marginStart="@dimen/dp_14"
+        android:layout_marginLeft="@dimen/dp_14"
+        app:layout_constraintStart_toEndOf="@id/talk_reading_shimmer_header_image"
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:layout_width="@dimen/dp_168"
         android:layout_height="@dimen/dp_12"
         android:layout_marginTop="@dimen/layout_lvl1"
-        android:layout_marginStart="@dimen/layout_lvl2"
-        android:layout_marginLeft="@dimen/layout_lvl2"
-        app:layout_constraintStart_toEndOf="@id/shimmerHeaderImage"
-        app:layout_constraintTop_toBottomOf="@id/shimmerHeaderTitle" />
+        app:layout_constraintStart_toStartOf="@id/talk_reading_shimmer_header_title"
+        app:layout_constraintStart_toEndOf="@id/talk_reading_shimmer_header_image"
+        app:layout_constraintTop_toBottomOf="@id/talk_reading_shimmer_header_title" />
 
     <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/shimmerHeaderDivider"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_1"
         android:layout_marginTop="@dimen/layout_lvl1"
-        app:layout_constraintTop_toBottomOf="@id/shimmerHeaderImage"/>
+        app:layout_constraintTop_toBottomOf="@id/talk_reading_shimmer_header_image"/>
 
     <include layout="@layout/item_talk_reading_shimmer"
         android:id="@+id/shimmerItem"
