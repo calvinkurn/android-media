@@ -167,6 +167,8 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     // product conditions
     private var productConditionListView: ListUnify? = null
     private val productConditions = ArrayList<ListItemUnify>()
+    private var newCondition: ListItemUnify? = null
+    private var secondHandCondition: ListItemUnify? = null
     private var isProductConditionNew = true
 
     private lateinit var userSession: UserSessionInterface
@@ -365,29 +367,19 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
 
         // add edit product conditions views
         productConditionListView = view.findViewById(R.id.lvu_product_conditions)
+
         // new condition
-        val newCondition = ListItemUnify(getString(R.string.label_new), "")
-        newCondition.setVariant(null, ListItemUnify.RADIO_BUTTON, null)
-        productConditions.add(NEW_PRODUCT_INDEX, newCondition)
+        newCondition = ListItemUnify(getString(R.string.label_new), "")
+        newCondition?.setVariant(null, ListItemUnify.RADIO_BUTTON, null)
+        newCondition?.run { productConditions.add(NEW_PRODUCT_INDEX, this) }
 
         // secondhand condition
-        val secondHandCondition = ListItemUnify(getString(R.string.label_secondhand), "")
-        secondHandCondition.setVariant(null, ListItemUnify.RADIO_BUTTON, getString(R.string.label_secondhand))
-        productConditions.add(USED_PRODUCT_INDEX, secondHandCondition)
+        secondHandCondition = ListItemUnify(getString(R.string.label_secondhand), "")
+        secondHandCondition?.setVariant(null, ListItemUnify.RADIO_BUTTON, getString(R.string.label_secondhand))
+        secondHandCondition?.run { productConditions.add(USED_PRODUCT_INDEX, this) }
 
         // add new and secondhand condition to the view
         productConditionListView?.setData(productConditions)
-        productConditionListView?.onLoadFinish {
-            newCondition.listRightRadiobtn?.isChecked = true
-            newCondition.listRightRadiobtn?.setOnCheckedChangeListener { _, isChecked ->
-                if (isChecked) secondHandCondition.listRightRadiobtn?.isChecked = false
-                isProductConditionNew = true
-            }
-            secondHandCondition.listRightRadiobtn?.setOnCheckedChangeListener { _, isChecked ->
-                if (isChecked) newCondition.listRightRadiobtn?.isChecked = false
-                isProductConditionNew = false
-            }
-        }
 
         // add edit product sku views
         productSkuField = view.findViewById(R.id.tfu_sku)
@@ -656,7 +648,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                     productCategoryRecListView?.setData(selectedCategory)
                 }
                 REQUEST_CODE_DESCRIPTION -> {
-                    if(data.getIntExtra(EXTRA_BACK_PRESSED, 0) != 0) {
+                    if (data.getIntExtra(EXTRA_BACK_PRESSED, 0) != 0) {
                         activity?.setResult(Activity.RESULT_OK, data)
                         activity?.finish()
                         return
@@ -733,7 +725,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     }
 
     fun sendDataBack() {
-        if(!viewModel.isEditing) {
+        if (!viewModel.isEditing) {
             inputAllDataInProductInputModel()
             val intent = Intent()
             intent.putExtra(EXTRA_PRODUCT_INPUT_MODEL, viewModel.productInputModel)
@@ -892,10 +884,19 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         productMinOrderField?.textFieldInput?.setText(detailInputModel.minOrder.toString())
 
         // product condition
-        val isProductConditionNew = detailInputModel.condition == CONDITION_NEW
         productConditionListView?.onLoadFinish {
-            if (isProductConditionNew) productConditions[NEW_PRODUCT_INDEX].listRightRadiobtn?.isChecked = true
-            else productConditions[USED_PRODUCT_INDEX].listRightRadiobtn?.isChecked = true
+
+            if (detailInputModel.condition == CONDITION_NEW) newCondition?.listRightRadiobtn?.isChecked = true
+            else secondHandCondition?.listRightRadiobtn?.isChecked = true
+
+            newCondition?.listRightRadiobtn?.setOnCheckedChangeListener { _, isChecked ->
+                if (isChecked) secondHandCondition?.listRightRadiobtn?.isChecked = false
+                isProductConditionNew = true
+            }
+            secondHandCondition?.listRightRadiobtn?.setOnCheckedChangeListener { _, isChecked ->
+                if (isChecked) newCondition?.listRightRadiobtn?.isChecked = false
+                isProductConditionNew = false
+            }
         }
 
         // product sku
