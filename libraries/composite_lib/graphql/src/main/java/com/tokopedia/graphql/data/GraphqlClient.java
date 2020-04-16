@@ -1,11 +1,11 @@
 package com.tokopedia.graphql.data;
 
 import android.content.Context;
+
 import androidx.annotation.NonNull;
 
-import com.tokopedia.akamai_bot_lib.interceptor.AkamaiBotInterceptor;
-import com.tokopedia.akamai_bot_lib.interceptor.GqlAkamaiBotInterceptor;
 import com.google.gson.GsonBuilder;
+import com.tokopedia.akamai_bot_lib.interceptor.GqlAkamaiBotInterceptor;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.graphql.FingerprintManager;
 import com.tokopedia.graphql.TestingInterceptorProvider;
@@ -27,14 +27,10 @@ import com.tokopedia.user.session.UserSession;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
-import java.util.Map;
 
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
-import okhttp3.Request;
 import retrofit2.Retrofit;
-
-import static com.tokopedia.authentication.AuthHelper.getUserAgent;
 
 public class GraphqlClient {
     private static Retrofit sRetrofit = null;
@@ -80,7 +76,7 @@ public class GraphqlClient {
         UserSession userSession = new UserSession(context.getApplicationContext());
         TkpdOkHttpBuilder tkpdOkHttpBuilder = new TkpdOkHttpBuilder(context.getApplicationContext(), new OkHttpClient.Builder());
 
-        for (Interceptor interceptor: interceptors) {
+        for (Interceptor interceptor : interceptors) {
             tkpdOkHttpBuilder.addInterceptor(interceptor);
         }
 
