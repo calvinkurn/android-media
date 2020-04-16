@@ -25,6 +25,14 @@
             android:exported="true"/>
 
         <activity
+            android:name=".validator.AnalyticsValidatorActivity"
+            android:launchMode="singleTask"
+            android:label="Analytics Validator"
+            android:taskAffinity="com.tokopedia.analytics.task"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            android:exported="true"/>
+
+        <activity
             android:name=".debugger.ui.activity.AnalyticsDebuggerActivity"
             android:launchMode="singleTask"
             android:label="Analytics Debugger"
