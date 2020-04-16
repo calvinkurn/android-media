@@ -181,6 +181,7 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
         val view = inflater.inflate(R.layout.fragment_shop_showcase_list, container, false)
         headerUnify = view.findViewById(R.id.showcase_list_toolbar)
         headerLayout = view.findViewById(R.id.header_layout)
+        swipeRefreshLayout = view.findViewById(R.id.swipe_refresh)
         btnAddEtalase = view.findViewById(R.id.btn_add_etalase)
         loading = view.findViewById(R.id.loading)
         searchbar = view.findViewById(R.id.searchbar)
@@ -199,6 +200,8 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
         super.onViewCreated(view, savedInstanceState)
         showLoading(true)
         initHeaderUnify()
+        initSearchbar()
+        initSwipeRefresh()
         initRecyclerView()
         setupBuyerSellerView()
 
@@ -212,7 +215,16 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
             tracking?.clickTambahEtalase(shopId, shopType)
             checkTotalProduct()
         }
+    }
 
+    private fun initSwipeRefresh() {
+        swipeRefreshLayout.setOnRefreshListener {
+            showLoadingSwipeToRefresh(true)
+            loadData()
+        }
+    }
+
+    private fun initSearchbar() {
         searchbar.searchBarTextField.setOnFocusChangeListener(object : View.OnFocusChangeListener {
             override fun onFocusChange(v: View?, hasFocus: Boolean) {
                 if (hasFocus) {
@@ -321,6 +333,7 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
             when (it) {
                 is Success -> {
                     showLoading(false)
+                    showLoadingSwipeToRefresh(false)
                     val errorMessage = it.data.shopShowcases.error.message
                     if (errorMessage.isNotEmpty()) {
                         showErrorResponse(errorMessage)
@@ -529,6 +542,14 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
     private fun showSuccessMessage(message: String) {
         view?.let {
             Toaster.showNormal(it, message, Snackbar.LENGTH_LONG)
+        }
+    }
+
+    private fun showLoadingSwipeToRefresh(isLoading: Boolean){
+        if (isLoading) {
+            swipeRefreshLayout.isRefreshing = true
+        } else {
+            swipeRefreshLayout.isRefreshing = false
         }
     }
 
