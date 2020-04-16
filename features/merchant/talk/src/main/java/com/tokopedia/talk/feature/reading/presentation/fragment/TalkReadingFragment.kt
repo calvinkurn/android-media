@@ -111,6 +111,8 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
         pageError.visibility = View.VISIBLE
         pageError.readingConnectionErrorRetryButton.setOnClickListener {
             getHeaderData()
+            hidePageError()
+            showPageLoading()
         }
         pageError.readingConnectionErrorGoToSettingsButton.setOnClickListener {
             RouteManager.route(context, GENERAL_SETTING)
@@ -122,9 +124,7 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
     }
 
     private fun bindHeader(talkReadingHeaderModel: TalkReadingHeaderModel) {
-        talkReadingHeader.bind(talkReadingHeaderModel) {
-            showBottomSheet()
-        }
+        talkReadingHeader.bind(talkReadingHeaderModel)
     }
 
     private fun observeProductHeader() {
@@ -142,6 +142,7 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
                 }
                 is Fail -> {
                     showPageError()
+                    hidePageLoading()
                 }
             }
         })

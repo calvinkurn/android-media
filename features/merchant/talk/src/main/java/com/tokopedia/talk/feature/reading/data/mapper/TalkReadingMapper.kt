@@ -5,6 +5,7 @@ import com.tokopedia.talk.feature.reading.data.model.DiscussionAggregate
 import com.tokopedia.talk.feature.reading.data.model.DiscussionAggregateCategory
 import com.tokopedia.talk.feature.reading.data.model.SortOption
 import com.tokopedia.talk.feature.reading.presentation.adapter.uimodel.TalkReadingHeaderModel
+import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.list.ListItemUnify
 
 object TalkReadingMapper {
@@ -46,13 +47,30 @@ object TalkReadingMapper {
     private fun List<DiscussionAggregateCategory>.mapToSortFilter(showBottomSheet: () -> Unit): ArrayList<SortFilterItem> {
         val result = arrayListOf<SortFilterItem>()
         val stringBuilder = StringBuilder()
-        result.add(SortFilterItem(title = SORT_CATEGORY, listener = showBottomSheet))
+        val sortChip = SortFilterItem(title = SORT_CATEGORY, listener = showBottomSheet)
+        result.add(sortChip)
         this.forEach {
             val sortFilterItem = SortFilterItem(stringBuilder.append(it.text).append(" (").append(it.counter).append(")").toString())
+            sortFilterItem.setChipListener {  }
             result.add(sortFilterItem)
             stringBuilder.clear()
         }
         return result
+    }
+
+    private fun SortFilterItem.setChipListener(someFunction: () -> Unit) {
+        this.listener = {
+            this.toggle()
+            someFunction()
+        }
+    }
+
+    private fun SortFilterItem.toggle() {
+        type = if(type == ChipsUnify.TYPE_NORMAL) {
+            ChipsUnify.TYPE_SELECTED
+        } else {
+            ChipsUnify.TYPE_NORMAL
+        }
     }
 
 

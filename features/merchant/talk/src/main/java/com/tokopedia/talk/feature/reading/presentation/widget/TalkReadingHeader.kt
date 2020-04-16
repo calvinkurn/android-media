@@ -6,11 +6,11 @@ import android.view.View
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.sortfilter.SortFilter.Companion.RELATIONSHIP_AND
 import com.tokopedia.sortfilter.SortFilter.Companion.TYPE_QUICK
-import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.talk.feature.reading.data.mapper.TalkReadingMapper.SORT_CATEGORY
 import com.tokopedia.talk.feature.reading.presentation.adapter.uimodel.TalkReadingHeaderModel
 import com.tokopedia.talk_old.R
 import com.tokopedia.unifycomponents.BaseCustomView
+import com.tokopedia.unifycomponents.ChipsUnify
 import kotlinx.android.synthetic.main.widget_talk_reading_header.view.*
 
 class TalkReadingHeader : BaseCustomView {
@@ -30,17 +30,20 @@ class TalkReadingHeader : BaseCustomView {
         View.inflate(context, R.layout.widget_talk_reading_header, this)
     }
 
-    fun bind(talkReadingHeaderModel: TalkReadingHeaderModel, showBottomSheet: () -> Unit) {
+    fun bind(talkReadingHeaderModel: TalkReadingHeaderModel) {
         this.readingHeaderProductImage.loadImage(talkReadingHeaderModel.productImageUrl)
         this.readingHeaderProductName.text = talkReadingHeaderModel.productName
         this.readingHeaderChips.addItem(talkReadingHeaderModel.categories)
-        setChevronOnSort(showBottomSheet)
+        this.readingHeaderChips.chipItems.first().refChipUnify.setChevronClickListener {}
         initSortFilter()
     }
 
     fun updateSelectedSort(chipText: String) {
-        val currentChips = this.readingHeaderChips.chipItems
-        currentChips.first().refChipUnify.chipText = chipText
+        if(chipText != SORT_CATEGORY) {
+            val sortChip = this.readingHeaderChips.chipItems.first()
+            sortChip.refChipUnify.chipType = ChipsUnify.TYPE_SELECTED
+            sortChip.refChipUnify.chipText = chipText
+        }
     }
 
     private fun initSortFilter() {
@@ -48,12 +51,6 @@ class TalkReadingHeader : BaseCustomView {
             filterRelationship = RELATIONSHIP_AND
             filterType = TYPE_QUICK
             visibility = View.VISIBLE
-        }
-    }
-
-    private fun setChevronOnSort(showBottomSheet: () -> Unit) {
-        this.readingHeaderChips.chipItems.first().refChipUnify.setChevronClickListener {
-            showBottomSheet()
         }
     }
 
