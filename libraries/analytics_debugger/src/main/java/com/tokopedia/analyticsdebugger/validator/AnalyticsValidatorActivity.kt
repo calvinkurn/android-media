@@ -5,12 +5,21 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.analyticsdebugger.R
+import com.tokopedia.analyticsdebugger.database.GtmLogDB
 import timber.log.Timber
 
 class AnalyticsValidatorActivity : AppCompatActivity() {
+
+    val viewModel: ValidatorViewModel by lazy {
+        ViewModelProvider(this, ViewModelProvider.AndroidViewModelFactory(this.application))
+                .get(ValidatorViewModel::class.java)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -19,12 +28,15 @@ class AnalyticsValidatorActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
         toolbar.subtitle = "Tokopedia Client Analytics Validator"
         val jsonTest = Utils.getJsonDataFromAsset(this, "add_address_cvr.json")
-        Timber.d("Json Query \n %s", jsonTest)
+        Timber.d("Validator Json Query \n %s", jsonTest)
 
         val jsonType = object : TypeToken<Map<String, Any>>() {}.type
         val testQuery = Gson().fromJson<Map<String, Any>>(jsonTest, jsonType)
-        Timber.d("Test Query Map \n %s", testQuery)
+        Timber.d("Validator Test Query Map \n %s", testQuery)
 
+        viewModel.gtmLog.observe(this, Observer<List<GtmLogDB>> {
+            Timber.d("Validator got ${it.size}")
+        })
 //        if (savedInstanceState == null) {
 //            supportFragmentManager.beginTransaction()
 //                    .add(R.id.container, AnalyticsDebuggerFragment.newInstance(), AnalyticsDebuggerFragment.TAG)
