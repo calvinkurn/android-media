@@ -141,7 +141,8 @@ class PlayViewModel @Inject constructor(
                     shouldShowPinned = pinned is PinnedMessageUiModel || pinned is PinnedProductUiModel,
                     channelType = channelType,
                     bottomInsets = bottomInsets ?: getDefaultBottomInsetsMapState(),
-                    screenOrientation = screenOrientation
+                    screenOrientation = screenOrientation,
+                    videoOrientation = videoOrientation
             )
         }
 

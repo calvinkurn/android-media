@@ -42,9 +42,9 @@ open class VideoComponent(
                                 uiView.setPlayer(null)
                             }
                             is ScreenStateEvent.VideoPropertyChanged -> handleVideoStateChanged(it.videoProp.state)
-                            is ScreenStateEvent.ScreenOrientationChanged -> uiView.setScreenOrientation(it.orientation)
+                            is ScreenStateEvent.ScreenOrientationChanged -> uiView.setOrientation(it.orientation, it.stateHelper.videoOrientation)
                             is ScreenStateEvent.VideoStreamChanged -> {
-                                uiView.setVideoOrientation(it.videoStream.orientation)
+                                uiView.setOrientation(it.stateHelper.screenOrientation, it.videoStream.orientation)
                                 uiView.setBackground(it.videoStream.backgroundUrl)
                             }
                         }

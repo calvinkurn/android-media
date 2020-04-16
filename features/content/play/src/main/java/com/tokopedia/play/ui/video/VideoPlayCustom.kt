@@ -40,22 +40,6 @@ class VideoPlayCustom(context: Context, attrs: AttributeSet?, defStyleAttr: Int)
     val textureView: TextureView?
         get() = surfaceView
 
-    var screenOrientation: ScreenOrientation = ScreenOrientation.Portrait
-        set(screen) {
-            if (screen.isPortrait && videoOrientation.isLandscape) showMargin() else hideMargin()
-            field = screen
-        }
-
-    var videoOrientation: VideoOrientation = VideoOrientation.Unknown
-        set(video) {
-            if (video.isLandscape && screenOrientation.isPortrait) showMargin() else hideMargin()
-            if (video.isLandscape)
-                contentFrame?.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIXED_WIDTH
-            else
-                contentFrame?.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_ZOOM
-            field = video
-        }
-
     init{
 
         LayoutInflater.from(context).inflate(playerLayoutId, this)
@@ -142,6 +126,16 @@ class VideoPlayCustom(context: Context, attrs: AttributeSet?, defStyleAttr: Int)
             }
             player.addListener(componentListener)
         }
+    }
+
+    fun setOrientation(screen: ScreenOrientation, video: VideoOrientation) {
+        if (screen.isPortrait && video.isLandscape) showMargin() else hideMargin()
+        contentFrame?.resizeMode = if (video.isLandscape) {
+            when {
+                screen.isLandscape -> AspectRatioFrameLayout.RESIZE_MODE_FIT
+                else -> AspectRatioFrameLayout.RESIZE_MODE_FIXED_WIDTH
+            }
+        } else AspectRatioFrameLayout.RESIZE_MODE_ZOOM
     }
 
     fun release(){
