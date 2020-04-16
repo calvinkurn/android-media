@@ -31,6 +31,17 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:visibility="visible" />
+        <com.elyeproj.loaderviewlibrary.LoaderImageView
+            android:id="@+id/imageLoadingProduct"
+            android:layout_width="@dimen/dp_0"
+            android:layout_height="@dimen/dp_0"
+            app:layout_constraintDimensionRatio="H,1:1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:corners="8"
+            tools:visibility="visible"/>
+
         <View
             android:id="@+id/outOfStockOverlay"
             android:layout_width="0dp"

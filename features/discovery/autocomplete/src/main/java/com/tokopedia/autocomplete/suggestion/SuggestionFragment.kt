@@ -160,8 +160,8 @@ class SuggestionFragment : BaseDaggerFragment(), SuggestionContract.View, Sugges
         AutocompleteTracking.eventClickKeyword(eventLabel)
     }
 
-    override fun trackEventClickCurated(eventLabel: String) {
-        AutocompleteTracking.eventClickCurated(eventLabel)
+    override fun trackEventClickCurated(eventLabel: String, campaignCode: String) {
+        AutocompleteTracking.eventClickCurated(eventLabel, campaignCode)
     }
 
     override fun trackEventClickShop(eventLabel: String) {

@@ -73,6 +73,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.core_legacy)
     implementation project(rootProject.ext.libraries.track)
 
+    implementation project(rootProject.ext.libraries.analyticsDebugger)
     implementation rootProject.ext.firebase.core
     implementation rootProject.ext.testDependencies.androidRulesVersion
 
@@ -104,6 +105,7 @@ dependencies {
         exclude group: 'org.jetbrains.kotlin:kotlin-reflect'
         exclude group: 'org.jetbrains.kotlin:kotlin-stdlib-jdk7'
     }
+    implementation rootProject.ext.tkpdInternalLibDependencies.betaNotif
 }
 
 project.ext {
