@@ -7,6 +7,10 @@ import com.tokopedia.rechargegeneral.model.*
 import com.tokopedia.rechargegeneral.presentation.viewmodel.RechargeGeneralViewModel
 import javax.inject.Inject
 
+/**
+ * This mapper used to transform old response API to new response API
+ * without much change in ui general recharge
+ */
 class RechargeGeneralDynamicInputMapper @Inject constructor() {
 
     fun mapDynamicInputToProductData(dynamicInput: RechargeGeneralDynamicInput): RechargeGeneralProductData {
