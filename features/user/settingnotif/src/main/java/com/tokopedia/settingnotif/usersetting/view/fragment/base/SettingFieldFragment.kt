@@ -2,14 +2,14 @@ package com.tokopedia.settingnotif.usersetting.view.fragment.base
 
 import android.app.Activity
 import android.os.Bundle
-import androidx.annotation.RawRes
-import androidx.annotation.StringRes
-import com.google.android.material.snackbar.Snackbar
-import androidx.appcompat.app.AppCompatActivity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.RawRes
+import androidx.annotation.StringRes
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationManagerCompat
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
@@ -22,14 +22,13 @@ import com.tokopedia.settingnotif.usersetting.di.DaggerUserSettingComponent
 import com.tokopedia.settingnotif.usersetting.di.UserSettingModule
 import com.tokopedia.settingnotif.usersetting.domain.pojo.setusersetting.SetUserSettingResponse
 import com.tokopedia.settingnotif.usersetting.view.activity.ParentActivity
-import com.tokopedia.settingnotif.usersetting.view.listener.SectionItemListener
-import com.tokopedia.settingnotif.usersetting.view.activity.UserNotificationSettingActivity
 import com.tokopedia.settingnotif.usersetting.view.adapter.ItemAdapter
 import com.tokopedia.settingnotif.usersetting.view.adapter.SettingFieldAdapter
 import com.tokopedia.settingnotif.usersetting.view.adapter.factory.SettingFieldTypeFactory
 import com.tokopedia.settingnotif.usersetting.view.adapter.factory.SettingFieldTypeFactoryImpl
-import com.tokopedia.settingnotif.usersetting.view.listener.SettingFieldContract
 import com.tokopedia.settingnotif.usersetting.view.dataview.UserSettingViewModel
+import com.tokopedia.settingnotif.usersetting.view.listener.SectionItemListener
+import com.tokopedia.settingnotif.usersetting.view.listener.SettingFieldContract
 import com.tokopedia.settingnotif.usersetting.widget.NotifSettingBigDividerDecoration
 import com.tokopedia.settingnotif.usersetting.widget.NotifSettingDividerDecoration
 import com.tokopedia.unifycomponents.Toaster
@@ -164,12 +163,12 @@ abstract class SettingFieldFragment : BaseListFragment<Visitable<*>,
         }
     }
 
-    protected fun isNotificationEnabled(): Boolean? {
+    protected fun isNotificationEnabled(): Boolean {
         return context?.let {
             NotificationManagerCompat
                     .from(it)
                     .areNotificationsEnabled()
-        }
+        }?: true
     }
 
     override fun isLoadMoreEnabledByDefault(): Boolean = false
@@ -177,10 +176,11 @@ abstract class SettingFieldFragment : BaseListFragment<Visitable<*>,
     override fun onItemClicked(item: Visitable<*>?) = Unit
 
     companion object {
-        const val SELLER_NOTIF_TYPE = "sellernotif"
-        const val PUSH_NOTIF_TYPE = "pushnotif"
-        const val EMAIL_TYPE = "email"
-        const val SMS_TYPE = "sms"
+        // these type will consume for graphql params
+        const val TYPE_SELLER_NOTIF = "sellernotif"
+        const val TYPE_PUSH_NOTIF = "pushnotif"
+        const val TYPE_EMAIL = "email"
+        const val TYPE_SMS = "sms"
     }
 
 }

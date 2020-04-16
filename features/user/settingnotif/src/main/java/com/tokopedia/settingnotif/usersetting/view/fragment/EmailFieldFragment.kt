@@ -44,7 +44,7 @@ class EmailFieldFragment: SettingFieldFragment() {
     }
 
     override fun getScreenName() = getString(R.string.settingnotif_email)
-    override fun getNotificationType() = EMAIL_TYPE
+    override fun getNotificationType() = TYPE_EMAIL
 
     private fun removeBuyerNotificationSetting(items: List<Data>): List<Data> {
         var include = true
