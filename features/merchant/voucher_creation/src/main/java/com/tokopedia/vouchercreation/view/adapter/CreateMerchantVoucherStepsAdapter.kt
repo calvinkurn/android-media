@@ -3,22 +3,18 @@ package com.tokopedia.vouchercreation.view.adapter
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import com.tokopedia.vouchercreation.view.fragment.MerchantVoucherTargetFragment
+import com.tokopedia.vouchercreation.view.fragment.BaseCreateMerchantVoucherFragment
 
-class CreateMerchantVoucherStepsAdapter(fragmentActivity: FragmentActivity) :
+class CreateMerchantVoucherStepsAdapter(fragmentActivity: FragmentActivity,
+                                        private val fragmentList: List<BaseCreateMerchantVoucherFragment>) :
         FragmentStateAdapter(fragmentActivity) {
 
-    private val createMerchantVoucherFragments by lazy {
-        arrayOf(
-                MerchantVoucherTargetFragment.createInstance(::onNextStep),
-                MerchantVoucherTargetFragment.createInstance(::onNextStep))
-    }
 
     override fun createFragment(position: Int): Fragment {
-        return createMerchantVoucherFragments[position]
+        return fragmentList[position]
     }
 
-    override fun getItemCount(): Int = createMerchantVoucherFragments.size
+    override fun getItemCount(): Int = fragmentList.size
 
     private fun onNextStep() {
 
