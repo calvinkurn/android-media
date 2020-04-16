@@ -1,8 +1,10 @@
 package com.tokopedia.vouchercreation.view.activity
 
 import android.animation.ObjectAnimator
+import android.content.res.Resources
 import android.os.Build
 import android.os.Bundle
+import android.view.View
 import android.view.animation.AccelerateDecelerateInterpolator
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
@@ -57,13 +59,22 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
         object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
-                val stepInfo = fragmentStepsHashMap.toList()[position].first
-                viewModel.setStepPosition(stepInfo)
+                viewModel.setStepPosition(position)
             }
         }
     }
 
     private val progressBarInterpolator by lazy { AccelerateDecelerateInterpolator() }
+
+    private val onNavigationClickListener by lazy {
+        View.OnClickListener {
+            if (currentStepPosition == 0) {
+                super.onBackPressed()
+            } else {
+                onBackStep()
+            }
+        }
+    }
 
     private var currentStepPosition = 0
 
@@ -86,16 +97,34 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
 
     private fun setupView() {
         setupStatusBar()
+        setupToolbar()
         setupViewPager()
     }
 
     private fun setupStatusBar() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            setStatusBarColor(ContextCompat.getColor(this, R.color.white))
+            try {
+                setStatusBarColor(ContextCompat.getColor(this, R.color.white))
+            } catch (ex: Resources.NotFoundException) {
+                ex.printStackTrace()
+            }
         }
     }
 
+    private fun setupToolbar() {
+        createMerchantVoucherHeader?.run {
+            try {
+                addRightIcon(R.drawable.ic_tips)
+            } catch (ex: Resources.NotFoundException) {
+                ex.printStackTrace()
+            }
+            setNavigationOnClickListener(onNavigationClickListener)
+        }
+
+    }
+
     private fun setupViewPager() {
+        viewModel.setMaxPosition(fragmentStepsHashMap.size - 1)
         createMerchantVoucherViewPager.run {
             adapter = viewPagerAdapter
             registerOnPageChangeCallback(viewPagerOnPageChangeCallback)
@@ -103,8 +132,10 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
     }
 
     private fun observeLiveData() {
-        viewModel.stepPositionLiveData.observe(this, Observer { stepInfo ->
+        viewModel.stepPositionLiveData.observe(this, Observer { position ->
+            val stepInfo = fragmentStepsHashMap.toList()[position].first
             changeStepsInformation(stepInfo)
+            createMerchantVoucherViewPager?.currentItem = stepInfo.stepPosition
         })
     }
 
@@ -123,8 +154,12 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
         }
     }
 
-    private fun onNextStep() {
+    private fun onBackStep() {
+        viewModel.setBackStep()
+    }
 
+    private fun onNextStep() {
+        viewModel.setNextStep()
     }
 
 }
