@@ -8,6 +8,7 @@ import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.view.WindowInsetsCompat
 import com.tokopedia.play.util.PlayFullScreenHelper
 import com.tokopedia.play.util.changeConstraint
+import com.tokopedia.play.view.type.VideoOrientation
 
 /**
  * Created by jegul on 13/04/20
@@ -39,7 +40,7 @@ class PlayInteractionLandscapeManager(
         layoutVideoControl(container = view, id = videoControlComponentId, sizeContainerComponentId = sizeContainerComponentId, likeComponentId = likeComponentId)
         layoutLike(container = view, id = likeComponentId, videoControlComponentId = videoControlComponentId, sizeContainerComponentId = sizeContainerComponentId)
         layoutPlayButton(container = view, id = playButtonComponentId, sizeContainerComponentId = sizeContainerComponentId)
-//        layoutImmersiveBox(container = view, id = immersiveBoxComponentId, likeComponentId = likeComponentId, videoControlComponentId = videoControlComponentId)
+        layoutImmersiveBox(container = view, id = immersiveBoxComponentId, likeComponentId = likeComponentId, videoControlComponentId = videoControlComponentId)
         layoutGradientBackground(container = view, id = gradientBackgroundComponentId)
         layoutVideoSettings(container = view, id = videoSettingsComponentId, sizeContainerComponentId = sizeContainerComponentId)
     }
@@ -61,6 +62,10 @@ class PlayInteractionLandscapeManager(
 
     override fun onExitImmersive(): Int {
         return PlayFullScreenHelper.getHideSystemUiVisibility()
+    }
+
+    override fun onVideoOrientationChanged(container: View, videoOrientation: VideoOrientation) {
+
     }
 
     private fun layoutSizeContainer(container: View, @IdRes id: Int) {

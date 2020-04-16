@@ -33,8 +33,7 @@ import com.tokopedia.play.component.EventBusFactory
 import com.tokopedia.play.component.UIComponent
 import com.tokopedia.play.di.DaggerPlayComponent
 import com.tokopedia.play.di.PlayModule
-import com.tokopedia.play.extensions.isAnyHidden
-import com.tokopedia.play.extensions.isAnyShown
+import com.tokopedia.play.extensions.*
 import com.tokopedia.play.ui.chatlist.ChatListComponent
 import com.tokopedia.play.ui.endliveinfo.EndLiveInfoComponent
 import com.tokopedia.play.ui.endliveinfo.interaction.EndLiveInfoInteractionEvent
@@ -323,7 +322,10 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
     }
 
     private fun observeVideoStream() {
-        playViewModel.observableVideoStream.observe(viewLifecycleOwner, Observer(::setVideoStream))
+        playViewModel.observableVideoStream.observe(viewLifecycleOwner, Observer {
+            layoutManager.onVideoOrientationChanged(requireView(), it.orientation)
+            setVideoStream(it)
+        })
     }
 
     private fun observeToolbarInfo() {
@@ -434,7 +436,8 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
     private fun setupView(view: View) {
         clPlayInteraction = view.findViewById(R.id.cl_play_interaction)
         clPlayInteraction.setOnClickListener {
-            if (playViewModel.screenOrientation.isLandscape) triggerImmersive(it.alpha == VISIBLE_ALPHA)
+            if (playViewModel.screenOrientation.isLandscape && clPlayInteraction.hasAlpha)
+                triggerImmersive(it.alpha == VISIBLE_ALPHA)
         }
         triggerImmersive(false)
     }
@@ -642,8 +645,8 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
                         when (it) {
                             is ImmersiveBoxInteractionEvent.BoxClicked -> {
                                 PlayAnalytics.clickWatchArea(channelId, playViewModel.channelType)
-                                val alpha = if (playViewModel.screenOrientation.isLandscape) clPlayInteraction.alpha else it.currentAlpha
-                                triggerImmersive(alpha == VISIBLE_ALPHA)
+                                if (playViewModel.screenOrientation.isLandscape && clPlayInteraction.hasAlpha) clPlayInteraction.performClick()
+                                else triggerImmersive(it.currentAlpha == VISIBLE_ALPHA)
                             }
                         }
                     }
