@@ -17,7 +17,7 @@ public interface ApplinkConst {
     String FIND = "tokopedia://find";
     String AMP_FIND = "tokopedia://amp/find";
     String FEED_HASHTAG = "tokopedia://feed/hashtag/{hashtag}";
-    String FEED_DETAILS = "tokopedia://feedcommunicationdetail/{extra_detail_id}";
+    String FEED_DETAILS = "tokopedia://feedcommunicationdetail";
     String HOME_CATEGORY = "tokopedia://home/category";
     String HOME_HOTLIST = "tokopedia://hot";
     String HOST_CATEGORY_P = "p";
@@ -81,8 +81,6 @@ public interface ApplinkConst {
     String NEW_WISHLIST = "tokopedia://new-wishlist";
     String WISHLIST_HOME = "tokopedia://wishlisthome";
     String RECENT_VIEW = "tokopedia://recentlyviewed";
-    String TOPPICKS = "tokopedia://toppicks";
-    String TOPPICK_DETAIL = "tokopedia://toppicks/{toppick_id}";
     String LOGIN = "tokopedia://login";
     String OFFICIAL_STORES = "tokopedia://official-stores";
     String OFFICIAL_STORE = "tokopedia://official-store";
@@ -277,7 +275,6 @@ public interface ApplinkConst {
     String SMC_REFERRAL = "tokopedia://smc-referral";
 
     String CATEGORY_BELANJA = "tokopedia://category_belanja/{CATEGORY_NAME}";
-    String CATEGORY_BELANJA_DEFAULT = "tokopedia://category_belanja/";
 
     String POWER_MERCHANT_SUBSCRIBE = "tokopedia://power_merchant/subscribe";
 
@@ -310,6 +307,7 @@ public interface ApplinkConst {
     interface Gamification {
         String CRACK = "tokopedia://gamification";
         String TAP_TAP_MANTAP = "tokopedia://gamification2";
+        String DAILY_GIFT_BOX = "tokopedia://gamification_gift_daily";
     }
 
     interface Digital {
@@ -437,6 +435,11 @@ public interface ApplinkConst {
         String PARAM_HAS_TITLEBAR = "titlebar";
         String PARAM_URL = "url";
         String HOST = "groupchat";
+    }
+
+    interface Notification {
+        String BUYER_HOST = "notif-center";
+        String GENERAL_HOST = "notification";
     }
 
     interface Profile {

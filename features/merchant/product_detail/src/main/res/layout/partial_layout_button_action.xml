@@ -3,6 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/base_btn_action"
+    android:visibility="gone"
+    tools:visibility="visible"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/bg_shadow_top">
@@ -37,7 +39,7 @@
         android:layout_marginLeft="@dimen/dp_8"
         android:layout_marginTop="@dimen/dp_8"
         android:layout_marginBottom="@dimen/dp_8"
-        android:background="@drawable/white_topchat_button_rounded_pdp"
+        android:background="@drawable/variant_topchat_green"
         android:padding="@dimen/dp_4"
         android:scaleType="center"
         android:visibility="gone"
@@ -47,9 +49,7 @@
         app:layout_constraintRight_toLeftOf="@+id/btn_buy_now"
         app:layout_constraintStart_toEndOf="@+id/btn_byme"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_goneMarginLeft="@dimen/dp_16"
-        app:layout_goneMarginStart="@dimen/dp_16"
-        app:srcCompat="@drawable/ic_topchat"
+        app:srcCompat="@drawable/ic_topchat_variant_green"
         tools:visibility="visible" />
 
     <com.tokopedia.unifycomponents.UnifyButton
@@ -64,7 +64,6 @@
         android:layout_marginRight="@dimen/dp_8"
         android:layout_marginBottom="@dimen/dp_8"
         app:unifyButtonSize="medium"
-        app:layout_constraintHorizontal_weight="0.7"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/btn_add_to_cart"
         app:layout_constraintLeft_toRightOf="@+id/btn_topchat"
@@ -89,7 +88,6 @@
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_weight="1"
         app:layout_constraintLeft_toRightOf="@+id/btn_buy_now"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintStart_toEndOf="@+id/btn_buy_now"

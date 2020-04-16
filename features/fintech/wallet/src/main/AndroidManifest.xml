@@ -40,6 +40,23 @@
             </intent-filter>
 
         </activity>
+
+        <activity
+            android:name=".ovoactivationflashdeals.InactiveOvoActivity"
+            android:label="@string/wallet_title_header_activation_ovo"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White.PopupTransparent" >
+
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <data
+                    android:scheme="@string/tokopedia_scheme"
+                    android:host="@string/host_ovo"
+                    android:path="@string/path_intro_ovo_flash_deal" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

@@ -66,9 +66,10 @@ class ChatListView(
 
     init {
         rvChatList.apply {
-            layoutManager = LinearLayoutManager(view.context, RecyclerView.VERTICAL, false).apply {
-                stackFromEnd = true
-            }
+            val layoutMan = LinearLayoutManager(view.context, RecyclerView.VERTICAL, false)
+            layoutMan.stackFromEnd = true
+            layoutManager = layoutMan
+
             adapter = chatAdapter
             addOnScrollListener(scrollListener)
             addItemDecoration(ChatListItemDecoration(view.context))

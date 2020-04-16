@@ -1,9 +1,11 @@
 package com.tokopedia.notifcenter.presentation.fragment
 
 import android.content.Context
+import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.FragmentManager
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
@@ -16,9 +18,11 @@ import com.tokopedia.notifcenter.analytics.StockHandlerAnalytics
 import com.tokopedia.notifcenter.data.entity.ProductStockReminder
 import com.tokopedia.notifcenter.data.viewbean.NotificationItemViewBean
 import com.tokopedia.notifcenter.domain.ProductStockReminderUseCase
+import com.tokopedia.notifcenter.listener.NotificationItemListener
 import com.tokopedia.notifcenter.presentation.BaseBottomSheetDialog
 import com.tokopedia.notifcenter.widget.CampaignRedView
 import com.tokopedia.unifycomponents.CardUnify
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
@@ -31,7 +35,7 @@ class ProductStockReminderDialog(
         private val userSession: UserSessionInterface,
         fragmentManager: FragmentManager,
         private val context: Context,
-        val onSuccess: () -> Unit
+        private val listener: NotificationItemListener
 ): BaseBottomSheetDialog<NotificationItemViewBean>(context, fragmentManager) {
 
     private val productCard = container?.findViewById<CardUnify>(R.id.productCard)
@@ -70,15 +74,6 @@ class ProductStockReminderDialog(
         element.getAtcProduct()?.let { product ->
             buttonReminderValidation(product.typeButton)
 
-            productCard?.setOnClickListener {
-                analytics.productCardClicked(element, userSession.userId)
-                RouteManager.route(
-                        context,
-                        ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
-                        product.productId
-                )
-            }
-
             ImageHandler.loadImage2(
                     thumbnail,
                     product.imageUrl,
@@ -90,14 +85,27 @@ class ProductStockReminderDialog(
             productCampaign?.setCampaign(product.campaign)
 
             if (product.shop?.freeShippingIcon != null &&
-                product.shop.freeShippingIcon.isNotEmpty()) {
+                    product.shop.freeShippingIcon.isNotEmpty()) {
                 campaignTag?.loadImage(product.shop.freeShippingIcon)
                 campaignTag?.show()
             }
 
+            productCard?.setOnClickListener {
+                analytics.productCardClicked(element, userSession.userId)
+                RouteManager.route(
+                        context,
+                        ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
+                        product.productId
+                )
+            }
+
             btnReminder?.setOnClickListener {
                 analytics.stockReminderClicked(element, userSession.userId)
-                setReminder(product.productId, element.notificationId)
+                if (product.stock < SINGLE_PRODUCT_STOCK) {
+                    setReminder(product.productId, element.notificationId)
+                } else {
+                    listener.addProductToCheckout(element.userInfo, element)
+                }
             }
         }
     }
@@ -122,19 +130,21 @@ class ProductStockReminderDialog(
     private fun setReminder(productId: String, notificationId: String) {
         val params = stockReminderParams(notificationId, productId)
         useCase.get(params, {
-            showToast()
+            isSuccessProductReminder()
         }, {})
     }
 
-    private fun showToast() {
-        bottomSheet.dismiss()
-        onSuccess()
+    private fun isSuccessProductReminder() {
+        btnReminder?.isEnabled = false
+        listener.onSuccessReminderStock()
     }
 
     companion object {
         private const val TYPE_BUY_BUTTON = 0
         private const val TYPE_REMINDER_BUTTON = 1
         private const val TYPE_OUT_OF_STOCK_BUTTON = 2
+
+        private const val SINGLE_PRODUCT_STOCK = 1
     }
 
 }

@@ -1,6 +1,5 @@
 package com.tokopedia.navigation.presentation.activity;
 
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
@@ -21,8 +20,11 @@ import android.os.Handler;
 import android.os.PersistableBundle;
 import android.preference.PreferenceManager;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.annotation.RestrictTo;
 import com.google.android.material.bottomnavigation.LabelVisibilityMode;
+
+import androidx.asynclayoutinflater.view.AsyncLayoutInflater;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
@@ -32,10 +34,10 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import android.text.TextUtils;
 import android.util.SparseArray;
-import android.view.FrameMetrics;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Toast;
@@ -56,6 +58,8 @@ import com.tokopedia.abstraction.common.utils.DisplayMetricUtils;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.analytics.performance.util.JankyFrameMonitoringUtil;
+import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback;
+import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.DeeplinkDFMapper;
@@ -71,7 +75,6 @@ import com.tokopedia.navigation.GlobalNavAnalytics;
 import com.tokopedia.navigation.GlobalNavConstant;
 import com.tokopedia.navigation.GlobalNavRouter;
 import com.tokopedia.navigation.R;
-import com.tokopedia.navigation.analytics.performance.HomePerformanceData;
 import com.tokopedia.navigation.analytics.performance.PerformanceData;
 import com.tokopedia.navigation.domain.model.Notification;
 import com.tokopedia.navigation.presentation.di.DaggerGlobalNavComponent;
@@ -101,7 +104,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -147,6 +149,14 @@ public class MainParentActivity extends BaseActivity implements
     private static final String ANDROID_CUSTOMER_NEW_OS_HOME_ENABLED = "android_customer_new_os_home_enabled";
     private static final String SOURCE_ACCOUNT = "account";
     private static final String HOME_PERFORMANCE_MONITORING_KEY = "mp_home";
+    private static final String HOME_PERFORMANCE_MONITORING_PREPARE_METRICS = "home_plt_start_page_metrics";
+    private static final String HOME_PERFORMANCE_MONITORING_NETWORK_METRICS = "home_plt_network_request_page_metrics";
+    private static final String HOME_PERFORMANCE_MONITORING_RENDER_METRICS = "home_plt_render_page_metrics";
+
+    private static final String HOME_PERFORMANCE_MONITORING_CACHE_ATTRIBUTION = "Data source";
+    private static final String HOME_PERFORMANCE_MONITORING_CACHE_VALUE = "Cache";
+    private static final String HOME_PERFORMANCE_MONITORING_NETWORK_VALUE= "Network";
+
     private static final String MAIN_PARENT_PERFORMANCE_MONITORING_KEY = "mp_slow_rendering_perf";
     private static final String FPM_METRIC_ALL_FRAMES = "all_frames";
     private static final String FPM_METRIC_JANKY_FRAMES = "janky_frames";
@@ -175,9 +185,9 @@ public class MainParentActivity extends BaseActivity implements
     private CoordinatorLayout fragmentContainer;
     private boolean isFirstNavigationImpression = false;
 
-    private PerformanceMonitoring homePerformanceMonitoring;
-
     private PerformanceMonitoring mainParentPerformanceMonitoring;
+
+    private PageLoadTimePerformanceCallback pageLoadTimePerformanceCallback;
 
     // animate icon OS
     private MenuItem osMenu;
@@ -273,13 +283,18 @@ public class MainParentActivity extends BaseActivity implements
         if (userSession.hasShop() && !DFInstaller.isInstalled(getApplication(), DFM_MERCHANT_SELLER_CUSTOMERAPP)) {
             ArrayList<String> list = new ArrayList<>();
             list.add(DFM_MERCHANT_SELLER_CUSTOMERAPP);
-            new DFInstaller().installOnBackground(this.getApplication(), list, null, null, "Home");
+            DFInstaller.installOnBackground(this.getApplication(), list, "Home");
         }
     }
 
     private void startJankyFrameMonitoringUtil() {
         jankyFrameMonitoringUtil = new JankyFrameMonitoringUtil();
-        jankyFrameMonitoringUtil.init(this);
+        jankyFrameMonitoringUtil.init(this, new JankyFrameMonitoringUtil.OnFrameListener() {
+            @Override
+            public void onFrameRendered(@NotNull com.tokopedia.analytics.performance.util.FpiPerformanceData fpiPerformanceData) {
+
+            }
+        });
     }
 
     @NotNull
@@ -309,12 +324,10 @@ public class MainParentActivity extends BaseActivity implements
             }
         }
 
-        if (DFInstaller.isInstalled(this.getApplication(), DeeplinkDFMapper.DFM_ONBOARDING)) {
-            Intent intent = RouteManager.getIntent(this,
-                    ApplinkConstInternalMarketplace.ONBOARDING);
-            startActivity(intent);
-            finish();
-        }
+        Intent intent = RouteManager.getIntent(this,
+                ApplinkConstInternalMarketplace.ONBOARDING);
+        startActivity(intent);
+        finish();
     }
 
     private void setDefaultShakeEnable() {
@@ -352,17 +365,7 @@ public class MainParentActivity extends BaseActivity implements
         isFirstNavigationImpression = true;
         setContentView(R.layout.activity_main_parent);
 
-        bottomNavigation = findViewById(R.id.bottomnav);
         fragmentContainer = findViewById(R.id.container);
-
-        bottomNavigation.setItemIconTintList(null);
-        bottomNavigation.setLabelVisibilityMode(LabelVisibilityMode.LABEL_VISIBILITY_LABELED);
-        bottomNavigation.setOnNavigationItemSelectedListener(this::onNavigationItemSelected);
-        bottomNavigation.setOnNavigationItemReselectedListener(item -> {
-            Fragment fragment = fragmentList.get(getPositionFragmentByMenu(item));
-            scrollToTop(fragment); // enable feature scroll to top for home & feed
-        });
-
         fragmentList = fragments();
 
         WeaveInterface firstTimeWeave = new WeaveInterface() {
@@ -373,12 +376,38 @@ public class MainParentActivity extends BaseActivity implements
             }
         };
         Weaver.Companion.executeWeaveCoRoutineWithFirebase(firstTimeWeave, RemoteConfigKey.ENABLE_ASYNC_FIRSTTIME_EVENT, getContext());
-
-        handleAppLinkBottomNavigation(savedInstanceState);
+        showSelectedPage();
         checkAppUpdateAndInApp();
         checkApplinkCouponCode(getIntent());
+        inflateBottomNavigationViewAsync(savedInstanceState);
+    }
 
+    private void inflateBottomNavigationViewAsync(Bundle savedInstanceState){
+        AsyncLayoutInflater asyncLayoutInflater = new AsyncLayoutInflater(getContext());
+        AsyncLayoutInflater.OnInflateFinishedListener inflationCompleteListener = new AsyncLayoutInflater.OnInflateFinishedListener() {
+            @Override
+            public void onInflateFinished(@NonNull View view, int resid, @Nullable ViewGroup parent) {
+                parent.addView(view);
+                afterBottomNaviagtionInflation(savedInstanceState);
+            }
+        };
+        final ViewGroup viewGroup = (ViewGroup) ((ViewGroup) this
+                .findViewById(android.R.id.content)).getChildAt(0);
+        asyncLayoutInflater.inflate(R.layout.bottom_navigation_view, viewGroup, inflationCompleteListener);
+    }
+
+    private void afterBottomNaviagtionInflation(Bundle savedInstanceState){
+        bottomNavigation = findViewById(R.id.bottomnav);
+        bottomNavigation.setItemIconTintList(null);
+        bottomNavigation.setLabelVisibilityMode(LabelVisibilityMode.LABEL_VISIBILITY_LABELED);
+        bottomNavigation.setOnNavigationItemSelectedListener(MainParentActivity.this::onNavigationItemSelected);
+        bottomNavigation.setOnNavigationItemReselectedListener(item -> {
+            Fragment fragment = fragmentList.get(getPositionFragmentByMenu(item));
+            scrollToTop(fragment); // enable feature scroll to top for home & feed
+        });
+        handleAppLinkBottomNavigation(savedInstanceState);
         initNewFeedClickReceiver();
+        registerNewFeedClickedReceiver();
     }
 
     @NotNull
@@ -387,6 +416,18 @@ public class MainParentActivity extends BaseActivity implements
             globalNavAnalytics.trackFirstTime(MainParentActivity.this);
         }
         return true;
+    }
+
+    private void showSelectedPage(){
+        int tabPosition = HOME_MENU;
+        if (getIntent().getExtras() != null) {
+            tabPosition = getIntent().getExtras().getInt(ARGS_TAB_POSITION, HOME_MENU);
+        }
+        Fragment fragment = fragmentList.get(tabPosition);
+        if (fragment != null) {
+            this.currentFragment = fragment;
+            selectFragment(fragment);
+        }
     }
 
     private void handleAppLinkBottomNavigation(Bundle savedInstanceState) {
@@ -414,7 +455,6 @@ public class MainParentActivity extends BaseActivity implements
             }
         } else if (savedInstanceState == null) {
             onNavigationItemSelected(bottomNavigation.getMenu().findItem(R.id.menu_home));
-            this.currentFragment = fragmentList.get(HOME_MENU);
         }
     }
 
@@ -627,8 +667,6 @@ public class MainParentActivity extends BaseActivity implements
         };
         Weaver.Companion.executeWeaveCoRoutineWithFirebase(addShortcutsWeave, RemoteConfigKey.ENABLE_ASYNC_ADDSHORTCUTS, getContext());
 
-        registerNewFeedClickedReceiver();
-
         WeaveInterface checkAppSignatureWeave = new WeaveInterface() {
             @NotNull
             @Override
@@ -701,14 +739,16 @@ public class MainParentActivity extends BaseActivity implements
     @Override
     public void renderNotification(Notification notification) {
         this.notification = notification;
-        bottomNavigation.setNotification(notification.getTotalCart(), CART_MENU);
-        if (notification.getHaveNewFeed()) {
-            bottomNavigation.setNotification(-1, FEED_MENU);
-            Intent intent = new Intent(BROADCAST_FEED);
-            intent.putExtra(PARAM_BROADCAST_NEW_FEED, notification.getHaveNewFeed());
-            LocalBroadcastManager.getInstance(getContext().getApplicationContext()).sendBroadcast(intent);
-        } else {
-            bottomNavigation.setNotification(0, FEED_MENU);
+        if(bottomNavigation != null) {
+            bottomNavigation.setNotification(notification.getTotalCart(), CART_MENU);
+            if (notification.getHaveNewFeed()) {
+                bottomNavigation.setNotification(-1, FEED_MENU);
+                Intent intent = new Intent(BROADCAST_FEED);
+                intent.putExtra(PARAM_BROADCAST_NEW_FEED, notification.getHaveNewFeed());
+                LocalBroadcastManager.getInstance(getContext().getApplicationContext()).sendBroadcast(intent);
+            } else {
+                bottomNavigation.setNotification(0, FEED_MENU);
+            }
         }
         if (currentFragment != null)
             setBadgeNotifCounter(currentFragment);
@@ -797,38 +837,41 @@ public class MainParentActivity extends BaseActivity implements
     @Override
     public void onReadytoShowBoarding(ArrayList<ShowCaseObject> showCaseObjects) {
 
-        playAnimOsIcon(); // show animation icon
+        if(bottomNavigation != null) {
 
-        final String showCaseTag = MainParentActivity.class.getName() + ".bottomNavigation";
-        if (ShowCasePreference.hasShown(this, showCaseTag) || showCaseDialog != null
-                || showCaseObjects == null) {
-            return;
+            playAnimOsIcon(); // show animation icon
+
+            final String showCaseTag = MainParentActivity.class.getName() + ".bottomNavigation";
+            if (ShowCasePreference.hasShown(this, showCaseTag) || showCaseDialog != null
+                    || showCaseObjects == null) {
+                return;
+            }
+
+            showCaseDialog = createShowCase();
+
+            int bottomNavTopPos = bottomNavigation.getTop();
+            int bottomNavBottomPos = bottomNavigation.getBottom();
+
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+                bottomNavBottomPos =
+                        bottomNavBottomPos - DisplayMetricUtils.getStatusBarHeight(this);
+                bottomNavTopPos =
+                        bottomNavTopPos - DisplayMetricUtils.getStatusBarHeight(this);
+            }
+            ArrayList<ShowCaseObject> showcases = new ArrayList<>();
+            showcases.add(new ShowCaseObject(
+                    bottomNavigation,
+                    getString(R.string.title_showcase),
+                    getString(R.string.desc_showcase))
+                    .withCustomTarget(new int[]{
+                            bottomNavigation.getLeft(),
+                            bottomNavTopPos,
+                            bottomNavigation.getRight(),
+                            bottomNavBottomPos}));
+            showcases.addAll(showCaseObjects);
+
+            showCaseDialog.show(this, showCaseTag, showcases);
         }
-
-        showCaseDialog = createShowCase();
-
-        int bottomNavTopPos = bottomNavigation.getTop();
-        int bottomNavBottomPos = bottomNavigation.getBottom();
-
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            bottomNavBottomPos =
-                    bottomNavBottomPos - DisplayMetricUtils.getStatusBarHeight(this);
-            bottomNavTopPos =
-                    bottomNavTopPos - DisplayMetricUtils.getStatusBarHeight(this);
-        }
-        ArrayList<ShowCaseObject> showcases = new ArrayList<>();
-        showcases.add(new ShowCaseObject(
-                bottomNavigation,
-                getString(R.string.title_showcase),
-                getString(R.string.desc_showcase))
-                .withCustomTarget(new int[]{
-                        bottomNavigation.getLeft(),
-                        bottomNavTopPos,
-                        bottomNavigation.getRight(),
-                        bottomNavBottomPos}));
-        showcases.addAll(showCaseObjects);
-
-        showCaseDialog.show(this, showCaseTag, showcases);
     }
 
     private Boolean isFirstTime() {
@@ -1124,21 +1167,47 @@ public class MainParentActivity extends BaseActivity implements
         lottieOsDrawable.setProgress(progress);
     }
 
-    @Override
-    public void startHomePerformanceMonitoring() {
-        homePerformanceMonitoring = PerformanceMonitoring.start(HOME_PERFORMANCE_MONITORING_KEY);
-    }
-
     private void startMainParentPerformanceMonitoring() {
         mainParentPerformanceMonitoring = PerformanceMonitoring.start(MAIN_PARENT_PERFORMANCE_MONITORING_KEY);
     }
 
     @Override
-    public void stopHomePerformanceMonitoring() {
-        if (homePerformanceMonitoring != null) {
-            homePerformanceMonitoring.stopTrace();
-            homePerformanceMonitoring = null;
+    public void startHomePerformanceMonitoring() {
+        pageLoadTimePerformanceCallback = new PageLoadTimePerformanceCallback(
+                HOME_PERFORMANCE_MONITORING_PREPARE_METRICS,
+                HOME_PERFORMANCE_MONITORING_NETWORK_METRICS,
+                HOME_PERFORMANCE_MONITORING_RENDER_METRICS,
+                0,
+                0,
+                0,
+                0,
+                null
+        );
+        getPageLoadTimePerformanceInterface().startMonitoring(HOME_PERFORMANCE_MONITORING_KEY);
+        getPageLoadTimePerformanceInterface().startPreparePagePerformanceMonitoring();
+    }
+
+    @Override
+    public void stopHomePerformanceMonitoring(boolean isCache) {
+        if (getPageLoadTimePerformanceInterface() != null) {
+            if (isCache) {
+                getPageLoadTimePerformanceInterface().addAttribution(
+                        HOME_PERFORMANCE_MONITORING_CACHE_ATTRIBUTION,
+                        HOME_PERFORMANCE_MONITORING_CACHE_VALUE);
+            } else {
+                getPageLoadTimePerformanceInterface().addAttribution(
+                        HOME_PERFORMANCE_MONITORING_CACHE_ATTRIBUTION,
+                        HOME_PERFORMANCE_MONITORING_NETWORK_VALUE);
+            }
+            getPageLoadTimePerformanceInterface().stopMonitoring();
+            getPageLoadTimePerformanceInterface().stopRenderPerformanceMonitoring();
+            pageLoadTimePerformanceCallback = null;
         }
+    }
+
+    @Override
+    public PageLoadTimePerformanceInterface getPageLoadTimePerformanceInterface() {
+        return pageLoadTimePerformanceCallback;
     }
 
     @Override

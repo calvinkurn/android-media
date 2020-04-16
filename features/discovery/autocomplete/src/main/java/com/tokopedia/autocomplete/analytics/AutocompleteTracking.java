@@ -47,6 +47,7 @@ public class AutocompleteTracking {
     public static final String EVENT_CLICK_SEARCH_RESULT = "clickSearchResult";
 
     public static final String EVENTCATEGORY_TOP_NAV = "top nav";
+    public static final String EVENT_CATEGORY_DIGITAL_TOP_NAV = "digital - top nav";
 
     public static final String CLICK_POPULAR_SEARCH = "click - popular search";
     public static final String CLICK_RECENT_SEARCH = "click - recent search";
@@ -58,6 +59,7 @@ public class AutocompleteTracking {
     public static final String CLICK_REFRESH_POPULAR_SEARCH = "click refresh on popular search";
     public static final String CLICK_SHOP_SUGGESTION = "click - shop autocomplete";
     public static final String CLICK_KEYWORD_SUGGESTION = "click - product autocomplete";
+    public static final String EVENT_ACTION_CLICK_RECENT_SEARCH_AUTOCOMPLETE = "click - recent search autocomplete";
 
     public static final String ECOMMERCE = "ecommerce";
     public static final String PRODUCT_CLICK = "productClick";
@@ -78,6 +80,7 @@ public class AutocompleteTracking {
     private static final String LABEL_RECENT_VIEW_CLICK = "po: %s - applink: %s";
     private static final String LABEL_HOTLIST_CLICK = "keyword: %s - hotlist: %s - hotlist id: %s - po: %s - applink: %s";
     public static final String ACTION_CLICK_HOTLIST_SUGGESTION = "click - hotlist suggestion";
+    public static final String CAMPAIGN_CODE = "campaignCode";
 
     public static void eventClickPopularSearch(Context context, String label) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(
@@ -124,12 +127,14 @@ public class AutocompleteTracking {
         );
     }
 
-    public static void eventClickCurated(String label) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(
-                EVENT_CLICK_SEARCH_RESULT,
-                EVENTCATEGORY_TOP_NAV,
-                CLICK_DIGITAL_PRODUCT_SUGGESTION,
-                label
+    public static void eventClickCurated(String label, String campaignCode) {
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
+                DataLayer.mapOf(EVENT, EVENT_CLICK_TOP_NAV,
+                        EVENT_CATEGORY, EVENT_CATEGORY_DIGITAL_TOP_NAV,
+                        EVENT_ACTION, CLICK_DIGITAL_PRODUCT_SUGGESTION,
+                        EVENT_LABEL, label,
+                        CAMPAIGN_CODE, campaignCode
+                )
         );
     }
 
@@ -185,6 +190,15 @@ public class AutocompleteTracking {
                 EVENTCATEGORY_TOP_NAV + " - homepage",
                 CLICK_REFRESH_POPULAR_SEARCH,
                 ""
+        );
+    }
+
+    public static void eventClickRecentKeyword(String keyword) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                EVENT_CLICK_TOP_NAV,
+                EVENTCATEGORY_TOP_NAV + " - homepage",
+                EVENT_ACTION_CLICK_RECENT_SEARCH_AUTOCOMPLETE,
+                keyword
         );
     }
 }

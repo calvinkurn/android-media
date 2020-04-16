@@ -142,7 +142,7 @@ class CodFragment : BaseDaggerFragment(), CodContract.View {
                         enhancedECommerceProductCartMapData.setDimension38(productDataCheckoutRequest.productAttribution)
                         enhancedECommerceProductCartMapData.setDimension40(productDataCheckoutRequest.productListName)
                         enhancedECommerceProductCartMapData.setDimension45(productDataCheckoutRequest.cartId.toString())
-                        enhancedECommerceCheckout.addProduct(enhancedECommerceProductCartMapData.product)
+                        enhancedECommerceCheckout.addProduct(enhancedECommerceProductCartMapData.getProduct())
                     }
                 }
             }

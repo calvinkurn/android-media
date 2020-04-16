@@ -1,5 +1,6 @@
 package com.tokopedia.home.constant;
 
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.url.TokopediaUrl;
 
 public class BerandaUrl {
@@ -10,4 +11,7 @@ public class BerandaUrl {
 
     public static final String PROMO_URL = DOMAIN_URL + "promo/";
     public static final String FLAG_APP = "?flag_app=1";
+
+    public static final String PLAY_CHANNEL_LIST = String.format("%s?url=%s",
+            ApplinkConst.WEBVIEW, DOMAIN_URL + "play/channels/?is_app=1");
 }

@@ -1,15 +1,11 @@
 package com.tokopedia.logger.datasource.cloud
 
-import com.tokopedia.logger.datasource.db.Logger
 import com.tokopedia.logger.utils.Constants
-import com.tokopedia.logger.utils.decrypt
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import timber.log.Timber
 import java.io.DataOutputStream
 import java.net.HttpURLConnection
 import java.net.URL
-import javax.crypto.SecretKey
 
 class LoggerCloudDatasource {
     suspend fun sendLogToServer(serverSeverity: Int, TOKEN: Array<String>,
