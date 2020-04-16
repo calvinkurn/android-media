@@ -232,6 +232,7 @@ class AddEditProductDetailViewModel @Inject constructor(
     }
 
     fun validateProductStockInput(productStockInput: String) {
+        if (hasVariants) return
         if (productStockInput.isEmpty()) {
             val errorMessage = provider.getEmptyProductStockErrorMessage()
             errorMessage?.let { productStockMessage = it }
@@ -269,7 +270,7 @@ class AddEditProductDetailViewModel @Inject constructor(
             mIsOrderQuantityInputError.value = true
             return
         }
-        if (productStockInput.isNotEmpty()) {
+        if (!hasVariants && productStockInput.isNotEmpty()) {
             val productStock = productStockInput.toBigInteger()
             if (productMinOrder > productStock) {
                 val errorMessage = provider.getMaxLimitOrderQuantityErrorMessage()

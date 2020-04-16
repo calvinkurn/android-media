@@ -299,32 +299,34 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
             val validateMessage = viewModel.validateProductInput()
             if (validateMessage.isNotEmpty()) {
                 Toaster.make(view, validateMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
-            }
-            // when we perform add product, the productId will be 0
-            // when we perform edit product, the productId will be provided from the getProductV3 response
-            // when we perform open draft, previous state before we save the product to draft will be the same
-            if (viewModel.productInputModel.value?.productId.orZero() != 0L) {
-                context?.let {
-                    viewModel.productInputModel.value?.run {
-                        AddEditProductEditService.startService(it, this)
-                        moveToManageProduct()
-                    }
-                }
             } else {
-                context?.apply {
-                    viewModel.productInputModel.value?.let { productInputModel ->
-                        AddEditProductAddService.startService(
-                                context = this,
-                                detailInputModel = productInputModel.detailInputModel,
-                                descriptionInputModel = productInputModel.descriptionInputModel,
-                                shipmentInputModel = productInputModel.shipmentInputModel,
-                                variantInputModel = productInputModel.variantInputModel,
-                                draftId = viewModel.getDraftId()
-                        )
-                        moveToManageProduct()
+                // when we perform add product, the productId will be 0
+                // when we perform edit product, the productId will be provided from the getProductV3 response
+                // when we perform open draft, previous state before we save the product to draft will be the same
+                if (viewModel.productInputModel.value?.productId.orZero() != 0L) {
+                    context?.let {
+                        viewModel.productInputModel.value?.run {
+                            AddEditProductEditService.startService(it, this)
+                            moveToManageProduct()
+                        }
+                    }
+                } else {
+                    context?.apply {
+                        viewModel.productInputModel.value?.let { productInputModel ->
+                            AddEditProductAddService.startService(
+                                    context = this,
+                                    detailInputModel = productInputModel.detailInputModel,
+                                    descriptionInputModel = productInputModel.descriptionInputModel,
+                                    shipmentInputModel = productInputModel.shipmentInputModel,
+                                    variantInputModel = productInputModel.variantInputModel,
+                                    draftId = viewModel.getDraftId()
+                            )
+                            moveToManageProduct()
+                        }
                     }
                 }
             }
+
         }
 
         addProductPhotoTipsLayout?.setOnClickListener {
@@ -778,7 +780,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
     @SuppressLint("WrongConstant")
     private fun createImagePickerBuilder(selectedImagePathList: ArrayList<String>?): ImagePickerBuilder {
 
-        val title = getString(R.string.action_pick_image)
+        val title = getString(R.string.action_pick_photo)
 
         val placeholderDrawableRes = arrayListOf(
                 R.drawable.ic_utama,

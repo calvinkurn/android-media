@@ -838,7 +838,6 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                         inputResult.add(item)
                     }
                 }
-
             }
         }
         return inputResult
@@ -894,8 +893,10 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
 
         // product condition
         val isProductConditionNew = detailInputModel.condition == CONDITION_NEW
-        if (isProductConditionNew) productConditions[NEW_PRODUCT_INDEX].listRightRadiobtn?.isChecked = true
-        else productConditions[USED_PRODUCT_INDEX].listRightRadiobtn?.isChecked = true
+        productConditionListView?.onLoadFinish {
+            if (isProductConditionNew) productConditions[NEW_PRODUCT_INDEX].listRightRadiobtn?.isChecked = true
+            else productConditions[USED_PRODUCT_INDEX].listRightRadiobtn?.isChecked = true
+        }
 
         // product sku
         productSkuField?.textFieldInput?.setText(detailInputModel.sku)
@@ -1019,7 +1020,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     @SuppressLint("WrongConstant")
     private fun createImagePickerBuilder(selectedImagePathList: ArrayList<String>?): ImagePickerBuilder {
 
-        val title = getString(R.string.action_pick_image)
+        val title = getString(R.string.action_pick_photo)
 
         val placeholderDrawableRes = arrayListOf(
                 R.drawable.ic_utama,
