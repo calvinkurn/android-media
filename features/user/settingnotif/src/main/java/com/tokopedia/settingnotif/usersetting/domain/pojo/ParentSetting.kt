@@ -4,7 +4,7 @@ package com.tokopedia.settingnotif.usersetting.domain.pojo
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.settingnotif.usersetting.view.adapter.factory.SettingFieldTypeFactory
 
-class ParentSetting(
+open class ParentSetting(
         name: String,
         icon: String,
         key: String,
