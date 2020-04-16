@@ -5,19 +5,24 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.settingnotif.R
 import com.tokopedia.settingnotif.usersetting.domain.pojo.SellerSection
-import com.tokopedia.settingnotif.usersetting.util.inflateView
 import com.tokopedia.settingnotif.usersetting.view.adapter.SettingFieldAdapter
 import com.tokopedia.settingnotif.usersetting.view.adapter.factory.VisitableSettings
 import com.tokopedia.settingnotif.usersetting.view.dataview.NotificationActivationDataView.activationPushNotif
 import com.tokopedia.settingnotif.usersetting.view.dataview.UserSettingViewModel
 import com.tokopedia.settingnotif.usersetting.view.fragment.base.SettingFieldFragment
-import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.settingnotif.usersetting.view.fragment.dialog.InformationDialog.showInformationDialog
 
 class PushNotifFieldFragment : SettingFieldFragment() {
 
-    private val _adapter by lazy { adapter as SettingFieldAdapter }
+    private val pinnedItems = arrayListOf<VisitableSettings>()
+    private var temporaryList = mutableListOf<Visitable<*>>()
+
+    private val _adapter by lazy(LazyThreadSafetyMode.NONE) {
+        adapter as SettingFieldAdapter
+    }
 
     override fun getGqlRawQuery(): Int {
         return R.raw.query_push_notif_setting
@@ -35,50 +40,67 @@ class PushNotifFieldFragment : SettingFieldFragment() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when(item.itemId) {
-            R.id.mn_information -> showInformationDialog()
+            R.id.mn_information -> {
+                showInformationDialog(screenName)
+            }
         }
         return super.onOptionsItemSelected(item)
     }
 
     override fun onResume() {
         super.onResume()
-        if (isNotificationEnabled() == true) {
-            _adapter.removeNotificationPermission()
+        if (temporaryList.isNotEmpty()) {
+            itemValidation()
         }
+    }
+
+    private fun itemValidation() {
+        if (isNotificationEnabled()) {
+            _adapter.removePinnedActivation()
+            _adapter.enableSwitchComponent(temporaryList)
+        } else {
+            _adapter.addPinnedActivation()
+            _adapter.disableSwitchComponent()
+        }
+    }
+
+    private fun addPinnedItem(data: UserSettingViewModel) {
+        // showing pinned message if
+        // notification permission turned off
+        if (!isNotificationEnabled()) {
+            pinnedItems.add(activationPushNotif())
+        }
+
+        // showing seller sub menu card
+        // is user has a shop
+        if (userSession.hasShop()) {
+            pinnedItems.add(SellerSection())
+        }
+
+        // store pinned data
+        pinnedItems.addAll(data.data)
     }
 
     override fun onSuccessGetUserSetting(data: UserSettingViewModel) {
-        val pinnedData = arrayListOf<VisitableSettings>()
-        /*
-        * showing pinned message
-        * if notification permission turn off
-        * */
-        if (isNotificationEnabled() == false) {
-            pinnedData.add(activationPushNotif())
-        }
-        /*
-        * showing seller sub menu card
-        * is user has a shop
-        * */
-        if (userSession.hasShop()) {
-            pinnedData.add(SellerSection())
-        }
-        pinnedData.addAll(data.data)
-        data.data = pinnedData.toList()
+        addPinnedItem(data)
+
+        // replace the data with adding
+        // all of pinned items
+        data.data = pinnedItems.toList()
         super.onSuccessGetUserSetting(data)
     }
 
-    private fun showInformationDialog() {
-        val customDialogView = context.inflateView(R.layout.dialog_push_notif_information)
-        val informationSheet = BottomSheetUnify().apply {
-            setTitle(screenName)
-            setChild(customDialogView)
-            setCloseClickListener { dismiss() }
-        }
-        informationSheet.show(childFragmentManager, screenName)
+    override fun renderList(list: MutableList<Visitable<*>>) {
+        super.renderList(list)
+
+        // make a temporary data
+        temporaryList.clear()
+        temporaryList.addAll(list)
+
+        itemValidation()
     }
 
     override fun getScreenName() = getString(R.string.settingnotif_dialog_info_title)
-    override fun getNotificationType() = PUSH_NOTIF_TYPE
+    override fun getNotificationType() = TYPE_PUSH_NOTIF
 
 }
