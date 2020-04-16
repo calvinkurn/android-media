@@ -228,6 +228,7 @@ import okhttp3.Interceptor;
 import okhttp3.Response;
 import rx.Observable;
 import rx.functions.Func1;
+import timber.log.Timber;
 
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_DESCRIPTION;
 import static com.tokopedia.kyc.Constants.Keys.KYC_CARDID_CAMERA;
@@ -739,9 +740,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public void onForceLogoutAnomaly(Activity activity) {
         userSession.logoutSession();
-        RouteManager.route(activity, ApplinkConstInternalGlobal.LOGOUT);
+        RouteManager.route(activity, ApplinkConstInternalGlobal.LOGOUT, false);
         Intent intent = getLoginIntent(activity);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
     }
 
@@ -767,6 +767,16 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         ServerErrorHandler.showForceLogoutDialog();
         ServerErrorHandler.sendForceLogoutTokenAnalytics(response);
     }
+
+    @Override
+    public void sendAnalyticsAnomalyResponse(String title,
+                                             String accessToken, String refreshToken,
+                                             String userId, String response, String request) {
+        Timber.w("AnomalyResponse = title:" + title + " | accessToken:" + accessToken + " | refreshToken:" + refreshToken + " | userId:"
+                + userId + " | response:" + response + " | request:" + request);
+    }
+
+
 
     @Override
     public void showServerError(Response response) {

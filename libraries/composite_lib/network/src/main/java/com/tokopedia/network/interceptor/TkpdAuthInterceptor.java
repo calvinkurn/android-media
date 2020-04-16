@@ -9,6 +9,7 @@ import com.tokopedia.network.refreshtoken.AccessTokenRefresh;
 import com.tokopedia.network.utils.CommonUtils;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
+import com.tokopedia.user.session.util.EncoderDecoder;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -354,7 +355,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
     protected Response refreshTokenAndGcmUpdate(Chain chain, Response response, Request finalRequest) throws IOException {
         AccessTokenRefresh accessTokenRefresh = new AccessTokenRefresh();
         try {
-            String newAccessToken = accessTokenRefresh.refreshToken(context, userSession, networkRouter);
+            String newAccessToken = accessTokenRefresh.refreshToken(context, userSession, networkRouter, finalRequest);
             networkRouter.doRelogin(newAccessToken);
 
             Request newestRequest;
@@ -370,18 +371,20 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
 
             return chain.proceed(newestRequest);
         } catch (IOException e) {
+            sendAnalyticsAnomalyResponse(response, finalRequest);
             e.printStackTrace();
             return response;
         }
     }
 
-    protected Response refreshToken(Chain chain, Response response)  {
+    protected Response refreshToken(Chain chain, Response response, Request finalRequest)  {
         AccessTokenRefresh accessTokenRefresh = new AccessTokenRefresh();
         try {
-            accessTokenRefresh.refreshToken(context, userSession, networkRouter);
+            accessTokenRefresh.refreshToken(context, userSession, networkRouter, finalRequest);
             Request newest = recreateRequestWithNewAccessToken(chain);
             return chain.proceed(newest);
         } catch (IOException e) {
+            sendAnalyticsAnomalyResponse(response, finalRequest);
             e.printStackTrace();
             return response;
         }
@@ -400,12 +403,13 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
         int code = response.code();
         try {
             if (code == ERROR_UNAUTHORIZED_REQUEST) {
+                sendAnalyticsAnomalyResponse(response, finalRequest);
                 networkRouter.showForceLogoutTokenDialog(response.message());
                 return response;
             } else if (isNeedGcmUpdate(response)) {
                 return refreshTokenAndGcmUpdate(chain, response, finalRequest);
             } else if (isUnauthorized(finalRequest, response)) {
-                return refreshToken(chain, response);
+                return refreshToken(chain, response, finalRequest);
             } else if (isInvalidGrantWhenRefreshToken(finalRequest, response)) {
                 networkRouter.logInvalidGrant(response);
                 return response;
@@ -418,6 +422,26 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
         }
     }
 
+    private void sendAnalyticsAnomalyResponse(Response response, Request finalRequest){
+        try {
+            networkRouter.sendAnalyticsAnomalyResponse(Integer.toString(ERROR_UNAUTHORIZED_REQUEST),
+                    userSession.getAccessToken(), EncoderDecoder.Decrypt(userSession.getFreshToken(), userSession.getRefreshTokenIV()),
+                    userSession.getUserId(), response.peekBody(BYTE_COUNT).toString(), requestToString(finalRequest));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static String requestToString(final Request request){
+        try {
+            final Request copy = request.newBuilder().build();
+            final Buffer buffer = new Buffer();
+            copy.body().writeTo(buffer);
+            return buffer.readUtf8();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     private Request recreateRequestWithNewAccessTokenAccountsAuth(Chain chain) {
         String freshAccessToken = userSession.getAccessToken();
