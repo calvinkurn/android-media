@@ -214,10 +214,13 @@ class AddEditProductDescriptionFragment:
         if (descriptionViewModel.isEditMode) applyEditMode()
 
         textViewAddVideo.setOnClickListener {
-            if (descriptionViewModel.isEditMode && !descriptionViewModel.isAddMode) {
-                ProductEditDescriptionTracking.clickAddVideoLink(shopId)
-            } else {
-                ProductAddDescriptionTracking.clickAddVideoLink(shopId)
+            if (getFilteredValidVideoLink().size == adapter.dataSize) {
+                if (descriptionViewModel.isEditMode && !descriptionViewModel.isAddMode) {
+                    ProductEditDescriptionTracking.clickAddVideoLink(shopId)
+                } else {
+                    ProductAddDescriptionTracking.clickAddVideoLink(shopId)
+                }
+                addEmptyVideoUrl()
             }
         }
 
@@ -250,6 +253,10 @@ class AddEditProductDescriptionFragment:
 
         observeProductVariant()
         observeProductVideo()
+    }
+
+    private fun addEmptyVideoUrl() {
+        loadData(0)
     }
 
     override fun loadInitialData() {
@@ -511,10 +518,6 @@ class AddEditProductDescriptionFragment:
     }
 
     private fun getFilteredValidVideoLink() = adapter.data.filter {
-        it.inputUrl.isNotBlank() &&
-                it.inputTitle.isNotBlank() &&
-                it.inputImage.isNotBlank() &&
-                it.inputDescription.isNotBlank() &&
-                it.errorMessage.isBlank()
+        it.inputUrl.isNotBlank() && it.errorMessage.isBlank()
     }
 }
