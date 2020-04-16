@@ -14,20 +14,20 @@ import com.tokopedia.play.view.type.VideoOrientation
 class PlayInteractionLayoutManagerImpl(
         context: Context,
         private val orientation: ScreenOrientation,
-        @IdRes private val sizeContainerComponentId: Int,
-        @IdRes private val sendChatComponentId: Int,
-        @IdRes private val likeComponentId: Int,
-        @IdRes private val pinnedComponentId: Int,
-        @IdRes private val chatListComponentId: Int,
-        @IdRes private val videoControlComponentId: Int,
-        @IdRes private val gradientBackgroundComponentId: Int,
-        @IdRes private val toolbarComponentId: Int,
-        @IdRes private val statsInfoComponentId: Int,
-        @IdRes private val playButtonComponentId: Int,
-        @IdRes private val immersiveBoxComponentId: Int,
-        @IdRes private val quickReplyComponentId: Int,
-        @IdRes private val endLiveInfoComponentId: Int,
-        @IdRes private val videoSettingsComponentId: Int
+        @IdRes sizeContainerComponentId: Int,
+        @IdRes sendChatComponentId: Int,
+        @IdRes likeComponentId: Int,
+        @IdRes pinnedComponentId: Int,
+        @IdRes chatListComponentId: Int,
+        @IdRes videoControlComponentId: Int,
+        @IdRes gradientBackgroundComponentId: Int,
+        @IdRes toolbarComponentId: Int,
+        @IdRes statsInfoComponentId: Int,
+        @IdRes playButtonComponentId: Int,
+        @IdRes immersiveBoxComponentId: Int,
+        @IdRes quickReplyComponentId: Int,
+        @IdRes endLiveInfoComponentId: Int,
+        @IdRes videoSettingsComponentId: Int
 ) : PlayInteractionLayoutManager {
 
     private val portraitManager = PlayInteractionPortraitManager(

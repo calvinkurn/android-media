@@ -4,9 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.annotation.IdRes
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.constraintlayout.widget.ConstraintSet
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -23,12 +20,14 @@ import com.tokopedia.play.ui.loading.VideoLoadingComponent
 import com.tokopedia.play.ui.onetap.OneTapComponent
 import com.tokopedia.play.ui.overlayvideo.OverlayVideoComponent
 import com.tokopedia.play.ui.video.VideoComponent
+import com.tokopedia.play.ui.videobackground.VideoBackgroundComponent
 import com.tokopedia.play.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play.util.event.EventObserver
 import com.tokopedia.play.view.custom.RoundedConstraintLayout
 import com.tokopedia.play.view.event.ScreenStateEvent
+import com.tokopedia.play.view.layout.video.PlayVideoLayoutManager
+import com.tokopedia.play.view.layout.video.PlayVideoLayoutManagerImpl
 import com.tokopedia.play.view.type.PlayRoomEvent
-import com.tokopedia.play.view.type.ScreenOrientation
 import com.tokopedia.play.view.uimodel.EventUiModel
 import com.tokopedia.play.view.uimodel.VideoPropertyUiModel
 import com.tokopedia.play.view.uimodel.VideoStreamUiModel
@@ -48,6 +47,8 @@ import kotlin.coroutines.CoroutineContext
 class PlayVideoFragment : BaseDaggerFragment(), CoroutineScope {
 
     companion object {
+
+        private const val TOP_BOUNDS_LANDSCAPE_VIDEO = "top_bounds_landscape_video"
 
         fun newInstance(channelId: String): PlayVideoFragment {
             return PlayVideoFragment().apply {
@@ -74,7 +75,11 @@ class PlayVideoFragment : BaseDaggerFragment(), CoroutineScope {
     private lateinit var playViewModel: PlayViewModel
     private lateinit var viewModel: PlayVideoViewModel
 
+    private lateinit var layoutManager: PlayVideoLayoutManager
+
     private var channelId: String = ""
+
+    private var topBounds: Int? = null
 
     private lateinit var containerVideo: RoundedConstraintLayout
 
@@ -101,7 +106,13 @@ class PlayVideoFragment : BaseDaggerFragment(), CoroutineScope {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_play_video, container, false)
         containerVideo = view.findViewById(R.id.container_video)
-        initComponents(view as ViewGroup)
+
+        if (savedInstanceState?.containsKey(TOP_BOUNDS_LANDSCAPE_VIDEO) == true) {
+            topBounds = savedInstanceState.getInt(TOP_BOUNDS_LANDSCAPE_VIDEO, 0)
+        }
+
+        initComponents(view as ViewGroup, topBounds)
+
         return view
     }
 
@@ -113,13 +124,24 @@ class PlayVideoFragment : BaseDaggerFragment(), CoroutineScope {
         observeOneTapOnboarding()
         observeBottomInsetsState()
         observeEventUserInfo()
-        observeScreenOrientation()
         observeVideoStream()
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         job.cancel()
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        topBounds?.let { outState.putInt(TOP_BOUNDS_LANDSCAPE_VIDEO, it) }
+        super.onSaveInstanceState(outState)
+    }
+
+    fun setVideoTopBounds(topBounds: Int) {
+        if (this.topBounds == null && topBounds > 0) {
+            this.topBounds = topBounds
+            layoutManager.onVideoTopBoundsChanged(requireView(), topBounds)
+        }
     }
 
     //region observe
@@ -169,31 +191,37 @@ class PlayVideoFragment : BaseDaggerFragment(), CoroutineScope {
         })
     }
 
-    private fun observeScreenOrientation() {
-        playViewModel.observableScreenOrientation.observe(viewLifecycleOwner, Observer(::sendOrientationEvent))
-    }
-
     private fun observeVideoStream() {
         playViewModel.observableVideoStream.observe(viewLifecycleOwner, Observer(::setVideoStream))
     }
     //endregion
 
     //region Component Initialization
-    private fun initComponents(container: ViewGroup) {
+    private fun initComponents(container: ViewGroup, topBounds: Int?) {
+        val videoBackgroundComponent = initVideoBackgroundComponent(container)
         val videoComponent = initVideoComponent(container)
         val videoLoadingComponent = initVideoLoadingComponent(container)
         val oneTapComponent = initOneTapComponent(container)
         val overlayVideoComponent = initOverlayVideoComponent(container)
 
-        sendInitState()
-
-        layoutView(
-                container = container,
+        layoutManager = PlayVideoLayoutManagerImpl(
+                context = requireContext(),
+                orientation = playViewModel.screenOrientation,
+                topBounds = topBounds,
+                videoBackgroundComponentId = videoBackgroundComponent.getContainerId(),
                 videoComponentId = videoComponent.getContainerId(),
                 videoLoadingComponentId = videoLoadingComponent.getContainerId(),
                 oneTapComponentId = oneTapComponent.getContainerId(),
                 overlayVideoComponentId = overlayVideoComponent.getContainerId()
         )
+
+        sendInitState()
+
+        layoutManager.layoutView(container)
+    }
+
+    private fun initVideoBackgroundComponent(container: ViewGroup): UIComponent<Unit> {
+        return VideoBackgroundComponent(container, EventBusFactory.get(viewLifecycleOwner), this, dispatchers)
     }
 
     private fun initVideoComponent(container: ViewGroup): UIComponent<Unit> {
@@ -218,85 +246,10 @@ class PlayVideoFragment : BaseDaggerFragment(), CoroutineScope {
         launch(dispatchers.immediate) {
             EventBusFactory.get(viewLifecycleOwner).emit(
                     ScreenStateEvent::class.java,
-                    ScreenStateEvent.Init
+                    ScreenStateEvent.Init(playViewModel.screenOrientation, playViewModel.stateHelper)
             )
         }
     }
-
-    //region layouting
-    private fun layoutView(
-            container: ViewGroup,
-            @IdRes videoComponentId: Int,
-            @IdRes videoLoadingComponentId: Int,
-            @IdRes oneTapComponentId: Int,
-            @IdRes overlayVideoComponentId: Int
-    ) {
-
-        fun layoutVideo(container: ViewGroup, @IdRes id: Int) {
-            val constraintSet = ConstraintSet()
-
-            constraintSet.clone(container as ConstraintLayout)
-
-            constraintSet.apply {
-                connect(id, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START)
-                connect(id, ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END)
-                connect(id, ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM)
-                connect(id, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP)
-            }
-
-            constraintSet.applyTo(container)
-        }
-
-        fun layoutVideoLoading(container: ViewGroup, @IdRes id: Int) {
-            val constraintSet = ConstraintSet()
-
-            constraintSet.clone(container as ConstraintLayout)
-
-            constraintSet.apply {
-                connect(id, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START)
-                connect(id, ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END)
-                connect(id, ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM)
-                connect(id, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP)
-            }
-
-            constraintSet.applyTo(container)
-        }
-
-        fun layoutOneTap(container: ViewGroup, @IdRes id: Int) {
-            val constraintSet = ConstraintSet()
-
-            constraintSet.clone(container as ConstraintLayout)
-
-            constraintSet.apply {
-                connect(id, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START)
-                connect(id, ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END)
-                connect(id, ConstraintSet.TOP, R.id.gl_one_tap_post, ConstraintSet.BOTTOM)
-            }
-
-            constraintSet.applyTo(container)
-        }
-
-        fun layoutOverlayVideo(container: ViewGroup, @IdRes id: Int) {
-            val constraintSet = ConstraintSet()
-
-            constraintSet.clone(container as ConstraintLayout)
-
-            constraintSet.apply {
-                connect(id, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START)
-                connect(id, ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END)
-                connect(id, ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM)
-                connect(id, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP)
-            }
-
-            constraintSet.applyTo(container)
-        }
-
-        layoutVideo(container, videoComponentId)
-        layoutVideoLoading(container, videoLoadingComponentId)
-        layoutOneTap(container , oneTapComponentId)
-        layoutOverlayVideo(container, overlayVideoComponentId)
-    }
-    //endregion
 
     private fun delegateVideoProperty(prop: VideoPropertyUiModel) {
         launch {
@@ -347,16 +300,6 @@ class PlayVideoFragment : BaseDaggerFragment(), CoroutineScope {
                                             btnUrl = eventUiModel.freezeButtonUrl
                                     )
                             )
-                    )
-        }
-    }
-
-    private fun sendOrientationEvent(screenOrientation: ScreenOrientation) {
-        launch {
-            EventBusFactory.get(viewLifecycleOwner)
-                    .emit(
-                            ScreenStateEvent::class.java,
-                            ScreenStateEvent.ScreenOrientationChanged(screenOrientation, playViewModel.stateHelper)
                     )
         }
     }

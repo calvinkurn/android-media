@@ -35,17 +35,18 @@ open class VideoComponent(
             bus.getSafeManagedFlow(ScreenStateEvent::class.java)
                     .collect {
                         when (it) {
-                            ScreenStateEvent.Init -> uiView.show()
+                            is ScreenStateEvent.Init -> {
+                                uiView.setOrientation(it.screenOrientation, it.stateHelper.videoOrientation)
+                                uiView.hide()
+                            }
                             is ScreenStateEvent.SetVideo -> uiView.setPlayer(it.videoPlayer)
-                            is ScreenStateEvent.OnNewPlayRoomEvent -> if(it.event.isFreeze || it.event.isBanned) {
+                            is ScreenStateEvent.OnNewPlayRoomEvent -> if (it.event.isFreeze || it.event.isBanned) {
                                 uiView.hide()
                                 uiView.setPlayer(null)
                             }
                             is ScreenStateEvent.VideoPropertyChanged -> handleVideoStateChanged(it.videoProp.state)
-                            is ScreenStateEvent.ScreenOrientationChanged -> uiView.setOrientation(it.orientation, it.stateHelper.videoOrientation)
                             is ScreenStateEvent.VideoStreamChanged -> {
                                 uiView.setOrientation(it.stateHelper.screenOrientation, it.videoStream.orientation)
-                                uiView.setBackground(it.videoStream.backgroundUrl)
                             }
                         }
                     }
@@ -83,6 +84,7 @@ open class VideoComponent(
         when (state) {
             PlayVideoState.NoMedia -> uiView.showThumbnail(true)
             PlayVideoState.Playing, PlayVideoState.Pause -> {
+                uiView.show()
                 uiView.showThumbnail(false)
                 isReadyAfterOnResume = true
             }

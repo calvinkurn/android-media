@@ -276,7 +276,7 @@ class PlayBottomSheetFragment : BaseDaggerFragment(), CoroutineScope {
         launch(dispatchers.immediate) {
             EventBusFactory.get(viewLifecycleOwner).emit(
                     ScreenStateEvent::class.java,
-                    ScreenStateEvent.Init
+                    ScreenStateEvent.Init(playViewModel.screenOrientation, playViewModel.stateHelper)
             )
         }
     }

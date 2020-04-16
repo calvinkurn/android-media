@@ -31,7 +31,7 @@ open class QuickReplyComponent(
             bus.getSafeManagedFlow(ScreenStateEvent::class.java)
                     .collect {
                         when (it) {
-                            ScreenStateEvent.Init -> uiView.hide()
+                            is ScreenStateEvent.Init ->  uiView.hide()
                             is ScreenStateEvent.SetQuickReply -> uiView.setQuickReply(it.quickReply)
                             is ScreenStateEvent.BottomInsetsChanged -> {
                                 /**

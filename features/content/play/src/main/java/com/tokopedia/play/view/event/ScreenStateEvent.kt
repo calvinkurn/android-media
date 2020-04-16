@@ -16,7 +16,7 @@ import com.tokopedia.play.view.wrapper.PlayResult
  */
 sealed class ScreenStateEvent : ComponentEvent {
 
-    object Init : ScreenStateEvent()
+    data class Init(val screenOrientation: ScreenOrientation, val stateHelper: StateHelperUiModel) : ScreenStateEvent()
 
     /**
      * Setter
@@ -67,7 +67,7 @@ sealed class ScreenStateEvent : ComponentEvent {
     /**
      * Orientation
      */
-    data class ScreenOrientationChanged(val orientation: ScreenOrientation, val stateHelper: StateHelperUiModel) : ScreenStateEvent()
+    data class VideoPositionOnScreenChanged(val topBounds: Int, val stateHelper: StateHelperUiModel) : ScreenStateEvent()
 
     /**
      * Immersive

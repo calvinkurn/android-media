@@ -31,7 +31,7 @@ open class EndLiveInfoComponent(
             bus.getSafeManagedFlow(ScreenStateEvent::class.java)
                     .collect {
                         when (it) {
-                            ScreenStateEvent.Init -> uiView.hide()
+                            is ScreenStateEvent.Init ->  uiView.hide()
                             is ScreenStateEvent.OnNewPlayRoomEvent -> if(it.event is PlayRoomEvent.Freeze) {
                                 uiView.setInfo(
                                         title = it.event.title,

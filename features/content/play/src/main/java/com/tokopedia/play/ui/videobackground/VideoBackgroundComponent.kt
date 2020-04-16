@@ -1,4 +1,4 @@
-package com.tokopedia.play.ui.loading
+package com.tokopedia.play.ui.videobackground
 
 import android.view.ViewGroup
 import androidx.annotation.VisibleForTesting
@@ -6,7 +6,6 @@ import com.tokopedia.play.component.EventBusFactory
 import com.tokopedia.play.component.UIComponent
 import com.tokopedia.play.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play.view.event.ScreenStateEvent
-import com.tokopedia.play_common.state.PlayVideoState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
@@ -14,11 +13,11 @@ import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.launch
 
 /**
- * Created by jegul on 09/12/19
+ * Created by jegul on 16/04/20
  */
-open class VideoLoadingComponent(
+open class VideoBackgroundComponent(
         container: ViewGroup,
-        bus: EventBusFactory,
+        private val bus: EventBusFactory,
         coroutineScope: CoroutineScope,
         dispatchers: CoroutineDispatcherProvider
 ) : UIComponent<Unit>, CoroutineScope by coroutineScope {
@@ -31,8 +30,11 @@ open class VideoLoadingComponent(
             bus.getSafeManagedFlow(ScreenStateEvent::class.java)
                     .collect {
                         when (it) {
-                            is ScreenStateEvent.Init ->  uiView.hide()
-                            is ScreenStateEvent.VideoPropertyChanged -> handleVideoStateChanged(it.videoProp.state)
+                            is ScreenStateEvent.Init -> uiView.hide()
+                            is ScreenStateEvent.VideoStreamChanged -> {
+                                uiView.setBackground(it.videoStream.backgroundUrl)
+                                uiView.show()
+                            }
                         }
                     }
         }
@@ -47,12 +49,5 @@ open class VideoLoadingComponent(
     }
 
     protected open fun initView(container: ViewGroup) =
-            VideoLoadingView(container)
-
-    private fun handleVideoStateChanged(state: PlayVideoState) {
-        when (state) {
-            PlayVideoState.Buffering -> uiView.show()
-            PlayVideoState.Playing, PlayVideoState.Ended, PlayVideoState.NoMedia, PlayVideoState.Pause -> uiView.hide()
-        }
-    }
+            VideoBackgroundView(container)
 }

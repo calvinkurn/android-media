@@ -190,7 +190,7 @@ class PlayInteractionPortraitManager(
     private fun layoutVideoSettings(container: View, @IdRes id: Int, @IdRes sizeContainerComponentId: Int, @IdRes statsInfoComponentId: Int) {
         container.changeConstraint {
             connect(id, ConstraintSet.END, sizeContainerComponentId, ConstraintSet.END, offset16)
-            connect(id, ConstraintSet.TOP, statsInfoComponentId, ConstraintSet.BOTTOM, offset16)
+            connect(id, ConstraintSet.TOP, statsInfoComponentId, ConstraintSet.BOTTOM, offset24)
         }
     }
 }

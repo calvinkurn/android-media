@@ -31,7 +31,6 @@
                 android:id="@+id/pv_video"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@color/play_video_background"
                 tools:parentTag="android.widget.FrameLayout" />
 
         </FrameLayout>
@@ -45,7 +44,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
             tools:layout_width="match_parent"
             tools:layout_height="match_parent"
             tools:visibility="visible"

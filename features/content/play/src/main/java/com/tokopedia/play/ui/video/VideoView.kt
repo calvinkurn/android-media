@@ -1,14 +1,10 @@
 package com.tokopedia.play.ui.video
 
-import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import androidx.annotation.Nullable
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.target.CustomTarget
-import com.bumptech.glide.request.transition.Transition
+import androidx.constraintlayout.widget.ConstraintSet
 import com.google.android.exoplayer2.ExoPlayer
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
@@ -16,6 +12,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.R
 import com.tokopedia.play.component.UIView
+import com.tokopedia.play.util.changeConstraint
 import com.tokopedia.play.view.type.ScreenOrientation
 import com.tokopedia.play.view.type.VideoOrientation
 
@@ -58,16 +55,10 @@ class VideoView(container: ViewGroup) : UIView(container) {
 
     internal fun setOrientation(screenOrientation: ScreenOrientation, videoOrientation: VideoOrientation) {
         pvVideo.setOrientation(screenOrientation, videoOrientation)
-    }
-
-    internal fun setBackground(imageUrl: String) {
-        Glide.with(container.context).load(imageUrl).into(object : CustomTarget<Drawable?>() {
-            override fun onLoadCleared(@Nullable placeholder: Drawable?) {}
-
-            override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable?>?) {
-                pvVideo.background = resource
-            }
-        })
+        view.changeConstraint {
+            if (videoOrientation.isLandscape && !screenOrientation.isLandscape) clear(ivThumbnail.id, ConstraintSet.BOTTOM)
+            else connect(ivThumbnail.id, ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM)
+        }
     }
 
     internal fun showThumbnail(shouldShow: Boolean) {
