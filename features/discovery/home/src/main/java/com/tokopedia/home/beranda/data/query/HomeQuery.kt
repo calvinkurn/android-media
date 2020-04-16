@@ -37,6 +37,7 @@ object HomeQuery{
               expire_time
               slide_index
               type
+              campaignCode
             }
           }
           dynamicHomeIcon {
@@ -74,6 +75,7 @@ object HomeQuery{
               showPromoBadge
               categoryID
               perso_type
+              campaignCode
               header {
                 id
                 name

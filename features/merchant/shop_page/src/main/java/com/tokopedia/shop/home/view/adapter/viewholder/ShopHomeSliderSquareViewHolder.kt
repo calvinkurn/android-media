@@ -2,7 +2,6 @@ package com.tokopedia.shop.home.view.adapter.viewholder
 
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -24,6 +23,7 @@ import kotlinx.android.synthetic.main.widget_shop_page_home_slider_square.view.*
 
 class ShopHomeSliderSquareViewHolder(
         itemView: View,
+        private val previousViewHolder: AbstractViewHolder<*>?,
         listener: ShopHomeDisplayWidgetListener
 ) : AbstractViewHolder<ShopHomeDisplayWidgetUiModel>(itemView) {
 
@@ -62,6 +62,11 @@ class ShopHomeSliderSquareViewHolder(
                             layoutParams.rightMargin,
                             layoutParams.bottomMargin
                     )
+                }
+                if (previousViewHolder is ShopHomeSliderSquareViewHolder || previousViewHolder is ShopHomeCarousellProductViewHolder) {
+                    (itemView.layoutParams as? ViewGroup.MarginLayoutParams)?.apply {
+                        setMargins(leftMargin, 16.toPx(), rightMargin, bottomMargin)
+                    }
                 }
             } else {
                 show()

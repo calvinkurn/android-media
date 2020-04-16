@@ -8,14 +8,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.DisplayMetricUtils
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.R
@@ -241,25 +239,27 @@ class PlayBottomSheetFragment : BaseDaggerFragment(), CoroutineScope {
                 playViewModel.updateBadgeCart()
                 when (it.action) {
                     ProductAction.Buy -> RouteManager.route(requireContext(), ApplinkConstInternalMarketplace.CART)
-                    ProductAction.AddToCart -> Toaster.make(requireView(),
-                            getString(R.string.play_add_to_cart_message_success),
-                            Snackbar.LENGTH_LONG,
+                    ProductAction.AddToCart -> sendVariantToaster(
+                            toasterType = Toaster.TYPE_NORMAL,
+                            message = getString(R.string.play_add_to_cart_message_success),
                             actionText = getString(R.string.play_action_view),
-                            clickListener = View.OnClickListener {
+                            actionClickListener = View.OnClickListener {
                                 RouteManager.route(requireContext(), ApplinkConstInternalMarketplace.CART)
                                 PlayAnalytics.clickSeeToasterAfterAtc(channelId, playViewModel.channelType)
-                            })
+                            }
+                    )
                 }
                 if (it.bottomInsetsType == BottomInsetsType.VariantSheet) {
                     closeVariantSheet()
                 }
                 PlayAnalytics.clickProductAction(trackingQueue, channelId, it.product, it.cartId, playViewModel.channelType, it.action, it.bottomInsetsType)
             }
-            else Toaster.make(
-                    requireView(),
-                    if (it.errorMessage.isNotEmpty() && it.errorMessage.isNotBlank()) it.errorMessage else generalErrorMessage,
-                    Snackbar.LENGTH_LONG,
-                    type = Toaster.TYPE_ERROR)
+            else {
+                sendVariantToaster(
+                        toasterType = Toaster.TYPE_ERROR,
+                        message = if (it.errorMessage.isNotEmpty() && it.errorMessage.isNotBlank()) it.errorMessage else generalErrorMessage
+                )
+            }
         })
     }
 
@@ -363,6 +363,21 @@ class PlayBottomSheetFragment : BaseDaggerFragment(), CoroutineScope {
 
     private fun shouldDoActionProduct(product: ProductLineUiModel, action: ProductAction, type: BottomInsetsType) {
         viewModel.doInteractionEvent(InteractionEvent.DoActionProduct(product, action, type))
+    }
+
+    private fun sendVariantToaster(toasterType: Int, message: String, actionText: String? = null, actionClickListener: View.OnClickListener? = null) {
+        launch {
+            EventBusFactory.get(viewLifecycleOwner)
+                    .emit(
+                            ScreenStateEvent::class.java,
+                            ScreenStateEvent.SetVariantToaster(
+                                    toasterType = toasterType,
+                                    message = message,
+                                    actionText = actionText,
+                                    actionClickListener = actionClickListener
+                            )
+                    )
+        }
     }
 
     private fun pushParentPlayBySheetHeight(productSheetHeight: Int) {

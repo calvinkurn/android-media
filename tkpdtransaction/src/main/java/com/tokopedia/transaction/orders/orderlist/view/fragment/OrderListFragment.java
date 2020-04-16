@@ -31,6 +31,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.RefreshHandler;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel;
 import com.tokopedia.datepicker.DatePickerUnify;
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog;
@@ -95,7 +96,7 @@ import kotlin.Unit;
 public class OrderListFragment extends BaseDaggerFragment implements
 
         OrderListRecomListViewHolder.ActionListener, RefreshHandler.OnRefreshHandlerListener,
-        OrderListContract.View, QuickSingleFilterView.ActionListener, SearchInputView.Listener,QuickSingleFilterView.QuickFilterAnalytics,
+        OrderListContract.View, QuickSingleFilterView.ActionListener, SearchInputView.Listener, QuickSingleFilterView.QuickFilterAnalytics,
         SearchInputView.ResetListener, OrderListViewHolder.OnMenuItemListener, View.OnClickListener,
         OrderListViewHolder.OnActionButtonListener, EmptyStateMarketPlaceFilterViewHolder.ActionListener {
 
@@ -128,8 +129,8 @@ public class OrderListFragment extends BaseDaggerFragment implements
     private static final String ACTION_SIMILAR_PRODUCT = "rekomendasi";
     private static final String CLICK_SIMILAR_PRODUCT = "click lihat produk serupa";
     private static final String CLICK_TULIS_REVIEW = "click button tulis review";
-    private static final String  MULAI_DARI= "Mulai Dari";
-    private static final String  SAMPAI= "Sampai";
+    private static final String MULAI_DARI = "Mulai Dari";
+    private static final String SAMPAI = "Sampai";
     private static final int DEFAULT_FILTER_YEAR = 2017;
     private static final int DEFAULT_FILTER_MONTH = 0;
     private static final int DEFAULT_FILTER_DATE = 1;
@@ -147,7 +148,7 @@ public class OrderListFragment extends BaseDaggerFragment implements
     private UnifyButton terapkan;
     private RelativeLayout datePickerlayout;
     private RadioGroup radioGroup;
-    private RadioButtonUnify radio1,radio2;
+    private RadioButtonUnify radio1, radio2;
     private DatePickerUnify datePickerUnify;
     private RefreshHandler refreshHandler;
     private TextView reset;
@@ -167,13 +168,13 @@ public class OrderListFragment extends BaseDaggerFragment implements
     private static final String DATE_FORMAT = "dd/MM/yyyy";
     private static final String DATE_FORMAT_1 = "yyyy/MM/dd";
     private static final String DATE_FORMAT_2 = "d MMM yyyy";
-    private static final String DATE_FORMAT_3= "d M yyyy";
+    private static final String DATE_FORMAT_3 = "d M yyyy";
     private static long _days90 = 90;
 
     private int orderId = 1;
     private String selectedOrderId = "0";
     private String actionButtonUri = "";
-    private HashMap<String,String>selectedDateMap= new HashMap<>();
+    private HashMap<String, String> selectedDateMap = new HashMap<>();
     private SimpleDateFormat format = new SimpleDateFormat(DATE_FORMAT, Locale.getDefault());
     private SimpleDateFormat format1 = new SimpleDateFormat(DATE_FORMAT_1, Locale.getDefault());
     private SimpleDateFormat format2 = new SimpleDateFormat(DATE_FORMAT_2, new Locale("ind", "IND"));
@@ -567,14 +568,9 @@ public class OrderListFragment extends BaseDaggerFragment implements
 
     @Override
     public void startUri(String uri) {
-        if (!uri.equals(""))
-            try {
-                startActivity(((UnifiedOrderListRouter) getActivity()
-                        .getApplication()).getWebviewActivityWithIntent(getContext(),
-                        URLEncoder.encode(uri, "UTF-8")));
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-            }
+        if (!uri.equals("")) {
+            RouteManager.route(getActivity(), ApplinkConstInternalGlobal.WEBVIEW, uri);
+        }
     }
 
     @Override
@@ -658,7 +654,7 @@ public class OrderListFragment extends BaseDaggerFragment implements
         }
         endlessRecyclerViewScrollListener.updateStateAfterGetData();
         swipeToRefresh.setVisibility(View.VISIBLE);
-        if ((mOrderCategory.equalsIgnoreCase(OrderListContants.BELANJA) || (mOrderCategory.equalsIgnoreCase(OrderListContants.MARKETPLACE)) && !isRecommendation )|| orderLabelList.getOrderCategory().equalsIgnoreCase(OrderCategory.DIGITAL)) {
+        if ((mOrderCategory.equalsIgnoreCase(OrderListContants.BELANJA) || (mOrderCategory.equalsIgnoreCase(OrderListContants.MARKETPLACE)) && !isRecommendation) || orderLabelList.getOrderCategory().equalsIgnoreCase(OrderCategory.DIGITAL)) {
             filterDate.setVisibility(View.VISIBLE);
         }
     }
@@ -690,8 +686,8 @@ public class OrderListFragment extends BaseDaggerFragment implements
     @Override
     public void onSearchSubmitted(String text) {
 
-            searchedString = text;
-            orderListAnalytics.sendSearchFilterClickEvent(text);
+        searchedString = text;
+        orderListAnalytics.sendSearchFilterClickEvent(text);
 
     }
 
@@ -847,11 +843,11 @@ public class OrderListFragment extends BaseDaggerFragment implements
         datePickerUnify.getDatePickerButton().setOnClickListener((View v) -> {
             Integer[] date = datePickerUnify.getDate();
             if (title.equalsIgnoreCase(SAMPAI)) {
-                sampaiButton.setText(date[0] + " " + Utils.convertMonth(date[1],getActivity()) + " " + date[2]);
+                sampaiButton.setText(date[0] + " " + Utils.convertMonth(date[1], getActivity()) + " " + date[2]);
                 datePickerEndDate = date[0] + "/" + date[1] + "/" + date[2];
 
             } else {
-                mulaiButton.setText(date[0] + " " + Utils.convertMonth(date[1],getActivity()) + " " + date[2]);
+                mulaiButton.setText(date[0] + " " + Utils.convertMonth(date[1], getActivity()) + " " + date[2]);
                 datePickerStartDate = date[0] + "/" + date[1] + "/" + date[2];
             }
             datePickerUnify.dismiss();
@@ -913,7 +909,7 @@ public class OrderListFragment extends BaseDaggerFragment implements
     @Override
     public void setSelectFilterName(String selectFilterName) {
         orderListAnalytics.sendQuickFilterClickEvent(selectFilterName);
-}
+    }
 
 
     public void handleActionButtonClick(@NotNull Order order, @Nullable ActionButton actionButton) {
@@ -922,7 +918,7 @@ public class OrderListFragment extends BaseDaggerFragment implements
         this.selectedOrderId = order.id();
         switch (actionButton.label().toLowerCase()) {
             case ACTION_BUY_AGAIN:
-                if(mOrderCategory.equalsIgnoreCase(OrderListContants.BELANJA) || mOrderCategory.equalsIgnoreCase(OrderListContants.MARKETPLACE))
+                if (mOrderCategory.equalsIgnoreCase(OrderListContants.BELANJA) || mOrderCategory.equalsIgnoreCase(OrderListContants.MARKETPLACE))
                     presenter.setOrderDetails(selectedOrderId, mOrderCategory, actionButton.label().toLowerCase());
                 else
                     handleDefaultCase(actionButton);
@@ -961,19 +957,13 @@ public class OrderListFragment extends BaseDaggerFragment implements
         if (newUri.startsWith(KEY_URI)) {
             if (newUri.contains(KEY_URI_PARAMETER)) {
                 Uri url = Uri.parse(newUri);
-                String queryParameter = url.getQueryParameter(KEY_URI_PARAMETER) != null ? url.getQueryParameter(KEY_URI_PARAMETER):"";
+                String queryParameter = url.getQueryParameter(KEY_URI_PARAMETER) != null ? url.getQueryParameter(KEY_URI_PARAMETER) : "";
                 newUri = newUri.replace(queryParameter, "");
                 newUri = newUri.replace(KEY_URI_PARAMETER_EQUAL, "");
             }
             RouteManager.route(getActivity(), newUri);
         } else if (!TextUtils.isEmpty(newUri)) {
-            try {
-                startActivity(((UnifiedOrderListRouter) getActivity()
-                        .getApplication()).getWebviewActivityWithIntent(getContext(),
-                        URLEncoder.encode(newUri, "UTF-8")));
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-            }
+            RouteManager.route(getActivity(), ApplinkConstInternalGlobal.WEBVIEW, newUri);
         }
     }
 
@@ -987,7 +977,8 @@ public class OrderListFragment extends BaseDaggerFragment implements
                 Toaster.INSTANCE.showErrorWithAction(mainContent,
                         presenter.getCancelTime(),
                         Snackbar.LENGTH_LONG,
-                        getResources().getString(R.string.title_ok), v -> {});
+                        getResources().getString(R.string.title_ok), v -> {
+                        });
             } else
                 startActivityForResult(RequestCancelActivity.getInstance(getContext(), selectedOrderId, actionButtonUri, 1), REQUEST_CANCEL_ORDER);
         } else if (status.status().equals(STATUS_CODE_11)) {

@@ -351,10 +351,7 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
                 RouteManager.route(getActivity(), ApplinkConst.REPUTATION);
                 break;
             case HELP_MENU:
-                if (getActivity().getApplication() instanceof GlobalNavRouter) {
-                    startActivity(((GlobalNavRouter) getActivity().getApplication())
-                            .getInboxTicketCallingIntent(getActivity()));
-                }
+                RouteManager.route(getActivity(),ApplinkConst.INBOX_TICKET);
                 break;
         }
     }
