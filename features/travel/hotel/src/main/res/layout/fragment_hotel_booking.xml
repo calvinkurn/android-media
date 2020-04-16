@@ -212,7 +212,7 @@
                         android:layout_marginLeft="@dimen/layout_lvl1"
                         android:text="@string/hotel_booking_add_request_label"
                         android:textColor="@color/hotel_green_250"
-                        app:typographyType="small" />
+                        app:typographyType="body_2" />
 
                 </LinearLayout>
 
@@ -225,24 +225,35 @@
                     android:visibility="gone"
                     tools:visibility="visible">
 
-                    <com.tokopedia.design.text.TkpdHintTextInputLayout
-                        android:id="@+id/til_room_request"
-                        style="@style/HintTextInputLayout"
+                    <com.tokopedia.unifycomponents.TextFieldUnify
+                        android:id="@+id/tv_room_request_input"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        app:text_field_placeholder="@string/hotel_booking_request_form_hint"
                         android:layout_marginBottom="@dimen/layout_lvl1"
-                        app:counterEnabled="true"
-                        app:counterOverflowTextAppearance="@style/ErrorTextAppearance">
+                        app:text_field_label="@string/hotel_booking_request_form_title"
+                        app:text_field_label_static="true"
+                        app:text_field_input_type="text"
+                        />
 
-                        <androidx.appcompat.widget.AppCompatEditText
-                            android:id="@+id/tv_room_request_input"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:focusable="true"
-                            android:hint="@string/hotel_booking_request_form_hint"
-                            android:inputType="textMultiLine" />
+                    <!--                    <com.tokopedia.design.text.TkpdHintTextInputLayout-->
+<!--                        android:id="@+id/til_room_request"-->
+<!--                        style="@style/HintTextInputLayout"-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:layout_marginBottom="@dimen/layout_lvl1"-->
+<!--                        app:counterEnabled="true"-->
+<!--                        app:counterOverflowTextAppearance="@style/ErrorTextAppearance">-->
 
-                    </com.tokopedia.design.text.TkpdHintTextInputLayout>
+<!--                        <androidx.appcompat.widget.AppCompatEditText-->
+<!--                            android:id="@+id/tv_room_request_input"-->
+<!--                            android:layout_width="match_parent"-->
+<!--                            android:layout_height="wrap_content"-->
+<!--                            android:focusable="true"-->
+<!--                            android:hint="@string/hotel_booking_request_form_hint"-->
+<!--                            android:inputType="textMultiLine" />-->
+
+<!--                    </com.tokopedia.design.text.TkpdHintTextInputLayout>-->
 
                     <com.tokopedia.unifyprinciples.Typography
                         android:id="@+id/tv_room_request_notice"
@@ -541,7 +552,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/layout_lvl6"
                     app:unifyButtonType="transaction"
-                    app:unifyButtonSize="large"/>
+                    app:unifyButtonSize="large"
+                    android:text="@string/hotel_booking_button"/>
 
             </LinearLayout>
 

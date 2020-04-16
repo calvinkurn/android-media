@@ -52,7 +52,6 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
     lateinit var viewModelFactory: ViewModelProvider.Factory
     lateinit var searchResultviewModel: HotelSearchResultViewModel
     lateinit var sortMenu: HotelClosedSortBottomSheets
-    private var onFilterClick: View.OnClickListener? = null
 
     @Inject
     lateinit var trackingHotelUtil: TrackingHotelUtil
@@ -205,11 +204,6 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
                 startActivityForResult(HotelSearchFilterActivity.createIntent(it, cacheManager.id), REQUEST_FILTER)
             }
         }
-
-        val filterTextView1: TextView = bottom_action_view.findViewById(com.tokopedia.design.R.id.text_view_label_1)
-        val filterTextView2: TextView = bottom_action_view.findViewById(com.tokopedia.design.R.id.text_view_label_2)
-        filterTextView1.typeface = Typeface.DEFAULT
-        filterTextView2.typeface = Typeface.DEFAULT
     }
 
     private fun generateSortMenu(sort: List<Sort>) {

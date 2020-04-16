@@ -16,6 +16,7 @@ import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import android.widget.AutoCompleteTextView
 import android.widget.TextView
 import androidx.core.app.TaskStackBuilder
@@ -357,21 +358,27 @@ class HotelBookingFragment : HotelBaseFragment() {
         if (cart.specialRequest.isNotEmpty()) hotelBookingPageModel.roomRequest = cart.specialRequest
         if (hotelBookingPageModel.roomRequest.isNotEmpty()) {
             showRequestForm()
-            tv_room_request_input.setText(hotelBookingPageModel.roomRequest)
+            tv_room_request_input.textFieldInput.setText(hotelBookingPageModel.roomRequest)
         } else {
             add_request_container.setOnClickListener {
                 showRequestForm()
             }
         }
 
-        til_room_request.setLabel(getString(R.string.hotel_booking_request_form_title))
-        til_room_request.setErrorTextAppearance(R.style.ErrorTextAppearance)
-        til_room_request.counterMaxLength = roomRequestMaxCharCount
-        tv_room_request_input.addTextChangedListener(object : AfterTextWatcher() {
+        //to be checked again
+        tv_room_request_input.textFieldInput.inputType = EditorInfo.TYPE_TEXT_FLAG_MULTI_LINE
+        tv_room_request_input.setCounter(roomRequestMaxCharCount)
+        tv_room_request_input.textFieldInput.addTextChangedListener(object : AfterTextWatcher() {
             override fun afterTextChanged(s: Editable) {
                 when (s.length > roomRequestMaxCharCount) {
-                    true -> til_room_request.error = getString(R.string.hotel_booking_request_char_count_error, roomRequestMaxCharCount)
-                    false -> til_room_request.error = null
+                    true -> {
+                        tv_room_request_input.setMessage(getString(R.string.hotel_booking_request_char_count_error, roomRequestMaxCharCount))
+                        tv_room_request_input.setError(true)
+                    }
+                    false -> {
+                        tv_room_request_input.setMessage("")
+                        tv_room_request_input.setError(false)
+                    }
                 }
 
             }
@@ -610,7 +617,7 @@ class HotelBookingFragment : HotelBaseFragment() {
             if (radio_button_contact_guest.isChecked && tv_guest_input.text.toString().isNotEmpty())
                 hotelBookingPageModel.guestName = tv_guest_input.text.toString()
             else hotelBookingPageModel.guestName = hotelBookingPageModel.contactData.name
-            hotelBookingPageModel.roomRequest = tv_room_request_input.text.toString()
+            hotelBookingPageModel.roomRequest = tv_room_request_input.getEditableValue().toString()
             trackingHotelUtil.hotelClickNext(hotelCart, destinationType, destinationName, roomCount, guestCount,
                     hotelBookingPageModel.isForOtherGuest == 0)
 
@@ -631,7 +638,7 @@ class HotelBookingFragment : HotelBaseFragment() {
 
     private fun validateData(): Boolean {
         var isValid = true
-        if ((tv_room_request_input.text?.length ?: 0) > roomRequestMaxCharCount) isValid = false
+        if ((tv_room_request_input.getEditableValue().toString().length) > roomRequestMaxCharCount) isValid = false
         if (radio_button_contact_guest.isChecked && tv_guest_input.text.isEmpty()) {
             toggleGuestFormError(true)
             isValid = false
