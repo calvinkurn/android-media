@@ -79,9 +79,7 @@ class HomeProductFragment : BaseDaggerFragment() {
         }
         clearCache(shopPageNestedWebView)
         if (shopProductPromoViewModel.isLogin) {
-            shopPageNestedWebView.loadAuthUrl(shopProductPromoViewModel.url,
-                    shopProductPromoViewModel.userId,
-                    shopProductPromoViewModel.accessToken)
+            shopPageNestedWebView.loadAuthUrl(shopProductPromoViewModel.url, userSession)
         } else {
             shopPageNestedWebView.loadUrl(shopProductPromoViewModel.url)
         }

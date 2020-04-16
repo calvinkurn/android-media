@@ -134,10 +134,6 @@
             android:label="@string/title_activity_loyalty_detail"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.tokopedia.core.home.TopPicksWebView"
-            android:label="@string/title_activity_top_picks"
-            android:screenOrientation="portrait" />
-        <activity
             android:name="com.tokopedia.core.geolocation.activity.GeolocationActivity"
             android:configChanges="orientation|keyboardHidden"
             android:label="@string/choose_location"
