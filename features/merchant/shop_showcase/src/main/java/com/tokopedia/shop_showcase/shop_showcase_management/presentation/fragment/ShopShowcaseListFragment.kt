@@ -104,6 +104,8 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
     private var isMyShop: Boolean = false
     private var shopType = ""
     private var isNeedToGoToAddShowcase = false
+    private var isNeedToReloadShopPage = false
+    private var isReorderList = false
 
 
     override fun getScreenName(): String {
@@ -135,6 +137,7 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
         when (requestCode) {
             REQUEST_CODE_ADD_ETALASE -> {
                 if (resultCode == Activity.RESULT_OK) {
+                    isNeedToReloadShopPage = true
                     if (isNeedToGoToAddShowcase) {
                         isNeedToGoToAddShowcase = false
                         activity?.let {
@@ -512,7 +515,9 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
             } else {
                 UriUtil.buildUri(ApplinkConst.SHOP, shopId)
             })
-            intent.putExtra("isNeedToReloadData", true)
+//            val _isNeedToReloadData = if (isNeedToReloadShopPage) true else false
+            intent.putExtra("isNeedToReloadData", isNeedToReloadShopPage)
+            isNeedToReloadShopPage = false
             it.context?.startActivity(intent)
         }
     }

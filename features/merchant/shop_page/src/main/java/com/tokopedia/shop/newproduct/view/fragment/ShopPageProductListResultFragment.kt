@@ -175,6 +175,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                     val productList = it.data.second
                     shopPageTracking?.searchProduct(keyword, productList.isEmpty(), isMyShop, customDimensionShopPage)
                     renderProductList(productList, it.data.first)
+                    isNeedToReloadData = false
                 }
                 is Fail -> showGetListError(it.throwable)
             }
@@ -369,7 +370,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         showLoading()
 
         if (isNeedToReloadData) {
-            isNeedToReloadData = false
+//            isNeedToReloadData = false
             viewModel.clearCache()
         }
 
@@ -386,13 +387,13 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
 
     private fun loadShopPageList(shopInfo: ShopInfo, page: Int, forceNoEtalase: Boolean = false) {
         if (viewModel.isEtalaseEmpty && !forceNoEtalase) {
-            viewModel.getEtalaseData(shopInfo.shopCore.shopID, isMyShop)
+            viewModel.getEtalaseData(shopInfo.shopCore.shopID, isMyShop, isNeedToReloadData)
         } else {
             // continue to load ProductData
             viewModel.getShopProduct(shopInfo.shopCore.shopID, page,
                     ShopPageConstant.DEFAULT_PER_PAGE,
                     sortValue.toIntOrZero(), selectedEtalaseId,
-                    keyword)
+                    keyword, isNeedToReloadData)
         }
     }
 
