@@ -1,0 +1,17 @@
+{
+  "verifyOrder": [
+    {
+      "screenName": "user/address/create"
+    },
+    {
+      "eventCategory": "cart change address",
+      "eventAction": "click button pilih lokasi",
+      "eventLabel": "logistic"
+    },
+    {
+      "eventCategory": "cart change address",
+      "eventAction": "click button pilih lokasi",
+      "eventLabel": "success-logistic"
+    }
+  ]
+}
