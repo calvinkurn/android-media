@@ -19,12 +19,14 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.textfield.TextInputEditText
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
+import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.R
 import com.tokopedia.design.text.TkpdHintTextInputLayout
 import com.tokopedia.tokopoints.di.TokopointBundleComponent
 import com.tokopedia.tokopoints.view.catalogdetail.CouponCatalogDetailsActivity
+import com.tokopedia.tokopoints.view.couponlisting.CouponListingStackedFragment
 import com.tokopedia.tokopoints.view.util.*
 
 class SendGiftFragment : BottomSheetDialogFragment(), SendGiftContract.View, View.OnClickListener, TextWatcher {
@@ -37,9 +39,13 @@ class SendGiftFragment : BottomSheetDialogFragment(), SendGiftContract.View, Vie
     var tokoPointComponent: TokopointBundleComponent? = null
 
     lateinit var mViewModel: SendGiftViewModel
+    private var sendGiftPerformanceMonitoring1: PerformanceMonitoring? = null
+    private var sendGiftPerformanceMonitoring2: PerformanceMonitoring? = null
+    private var isTraceSTopped = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        sendGiftPerformanceMonitoring1 = PerformanceMonitoring.start(FPM_SENDGIFT_TOKOPOINT_1)
         setStyle(STYLE_NORMAL, R.style.TransparentBottomSheetDialogTheme)
     }
 
@@ -79,19 +85,21 @@ class SendGiftFragment : BottomSheetDialogFragment(), SendGiftContract.View, Vie
         addPreValidationObserver()
     }
 
-    private fun addPreValidationObserver() = mViewModel.prevalidateLiveData.observe(this , Observer {
+    private fun addPreValidationObserver() = mViewModel.prevalidateLiveData.observe(this, Observer {
         it?.let {
-            when(it) {
+            when (it) {
                 is Loading -> showLoading()
                 is ErrorMessage -> {
                     hideLoading()
                     if (!it.data.isEmpty()) {
                         onErrorPreValidate(it.data)
                     }
+                    stopPerformanceTrace(sendGiftPerformanceMonitoring2)
                 }
                 is Success -> {
                     hideLoading()
                     openPreConfirmationWindow()
+                    stopPerformanceTrace(sendGiftPerformanceMonitoring2)
                 }
             }
         }
@@ -99,25 +107,38 @@ class SendGiftFragment : BottomSheetDialogFragment(), SendGiftContract.View, Vie
 
     private fun addSendGiftObserver() = mViewModel.sendGiftLiveData.observe(this, Observer {
         it?.let {
-            when(it) {
+            when (it) {
                 is Loading -> showLoadingSendNow()
                 is Success -> {
                     hideLoadingSendNow()
                     val title = if (it.data.title is Int) getString(it.data.title) else it.data.title.toString()
                     val message = if (it.data.messsage is Int) getString(it.data.messsage) else it.data.messsage.toString()
-                    showPopup(title,message,it.data.success)
+                    showPopup(title, message, it.data.success)
+                    stopPerformanceTrace(sendGiftPerformanceMonitoring1)
                 }
-                is ErrorMessage -> hideLoadingSendNow()
+                is ErrorMessage -> {
+                    hideLoadingSendNow()
+                    stopPerformanceTrace(sendGiftPerformanceMonitoring1)
+                }
             }
         }
     })
 
+    private fun stopPerformanceTrace(traceName: PerformanceMonitoring?) {
+        if (!isTraceSTopped) {
+            traceName?.stopTrace()
+            isTraceSTopped = true
+        }
+    }
 
     override fun onClick(view: View) {
         if (view.id == com.tokopedia.tokopoints.R.id.button_send) {
             if (arguments == null || activity == null) {
                 return
             }
+            isTraceSTopped = false
+            sendGiftPerformanceMonitoring2 = PerformanceMonitoring.start(FPM_SENDGIFT_TOKOPOINT_2)
+
             KeyboardHandler.hideSoftKeyboard(activity)
             mViewModel!!.preValidateGift(arguments!!.getInt(CommonConstant.EXTRA_COUPON_ID), mEditEmail!!.text.toString())
         } else if (view.id == com.tokopedia.tokopoints.R.id.button_send_now) {
@@ -273,6 +294,8 @@ class SendGiftFragment : BottomSheetDialogFragment(), SendGiftContract.View, Vie
     companion object {
         private const val CONTAINER_SEND_FORM = 0
         private const val CONTAINER_PRE_CONFIRMATION = 1
+        private const val FPM_SENDGIFT_TOKOPOINT_1 = "fpm_sendgift_tokopoint_1"
+        private const val FPM_SENDGIFT_TOKOPOINT_2 = "fpm_sendgift_tokopoint_2"
         fun newInstance(extras: Bundle?): Fragment {
             val fragment: Fragment = SendGiftFragment()
             fragment.arguments = extras

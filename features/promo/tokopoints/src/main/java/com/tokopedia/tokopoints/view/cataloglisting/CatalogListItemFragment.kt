@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.library.baseadapter.AdapterCallback
@@ -62,6 +63,15 @@ class CatalogListItemFragment : BaseDaggerFragment(), CatalogListItemContract.Vi
     lateinit var viewModel: CatalogListItemViewModel
     private var mSwipeToRefresh: SwipeToRefresh? = null
     private var showFirstTimeLoader = true
+
+    private var performanceMonitoring: PerformanceMonitoring? = null
+    private var isTraceStopped = false
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        performanceMonitoring = PerformanceMonitoring.start(FPM_CATALOGLISTITEM_TOKOPOINT)
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         initInjector()
         fetchRemoteConfig()
@@ -94,20 +104,23 @@ class CatalogListItemFragment : BaseDaggerFragment(), CatalogListItemContract.Vi
     }
 
     private fun addLatestStatusObserver() = viewModel.latestStatusLiveData.observe(this, androidx.lifecycle.Observer {
-        it?.let { refreshCatalog(it)}
+        it?.let {
+            refreshCatalog(it)
+            stopPerformanceTrace()
+        }
     })
 
     private fun addRedeemCouponObserver() = viewModel.onRedeemCouponLiveData.observe(this, androidx.lifecycle.Observer {
-        it?.let { RouteManager.route(context,it) }
+        it?.let { RouteManager.route(context, it) }
     })
 
-    private fun addStartSaveCouponObserver() = viewModel.startSaveCouponLiveData.observe(this , androidx.lifecycle.Observer {
+    private fun addStartSaveCouponObserver() = viewModel.startSaveCouponLiveData.observe(this, androidx.lifecycle.Observer {
         it?.let {
-            when(it){
-                is Success -> showConfirmRedeemDialog(it.data.cta,it.data.code,it.data.title)
-                is ValidationError<*,*> -> {
-                    if (it.data is ValidateMessageDialog){
-                     showValidationMessageDialog(it.data.item,it.data.title,it.data.desc,it.data.messageCode)
+            when (it) {
+                is Success -> showConfirmRedeemDialog(it.data.cta, it.data.code, it.data.title)
+                is ValidationError<*, *> -> {
+                    if (it.data is ValidateMessageDialog) {
+                        showValidationMessageDialog(it.data.item, it.data.title, it.data.desc, it.data.messageCode)
                     }
                 }
             }
@@ -119,6 +132,13 @@ class CatalogListItemFragment : BaseDaggerFragment(), CatalogListItemContract.Vi
             showValidationMessageDialog(it.item, it.title, it.desc, it.messageCode)
         }
     })
+
+    private fun stopPerformanceTrace() {
+        if (!isTraceStopped) {
+            performanceMonitoring?.stopTrace()
+            isTraceStopped = true
+        }
+    }
 
     override fun onClick(view: View) {
         if (view.id == R.id.text_failed_action) {
@@ -491,11 +511,13 @@ class CatalogListItemFragment : BaseDaggerFragment(), CatalogListItemContract.Vi
     fun getCatalog(categoryId: Int, subCategoryId: Int, showLoader: Boolean) {
         populateCatalog(categoryId, subCategoryId, viewModel.pointRange, showLoader)
     }
+
     companion object {
         private const val CONTAINER_LOADER = 0
         private const val CONTAINER_DATA = 1
         private const val CONTAINER_ERROR = 2
         private const val CONTAINER_EMPTY = 3
+        private const val FPM_CATALOGLISTITEM_TOKOPOINT = "fpm_cataloglistitem_tokopoint"
         fun newInstance(categoryId: Int, subCategoryId: Int, isPointsAvailable: Boolean): Fragment {
             val fragment: Fragment = CatalogListItemFragment()
             val bundle = Bundle()

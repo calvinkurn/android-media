@@ -25,6 +25,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.tokopoints.di.DaggerTokopointBundleComponent
 import com.tokopedia.tokopoints.di.TokopointsQueryModule
 import com.tokopedia.tokopoints.view.util.Loading
@@ -35,14 +36,17 @@ import kotlin.math.roundToInt
 class AddPointsFragment : BottomSheetDialogFragment(), TokopointAddPointContract.View, AddPointGridViewHolder.ListenerItemClick {
 
     @Inject
-    lateinit var factory : ViewModelFactory
+    lateinit var factory: ViewModelFactory
 
-    private val  viewModel: AddPointViewModel by lazy { ViewModelProviders.of(this,factory).get(AddPointViewModel::class.java) }
+    private val viewModel: AddPointViewModel by lazy { ViewModelProviders.of(this, factory).get(AddPointViewModel::class.java) }
 
     private val addPointsAdapter: AddPointsAdapter by lazy { AddPointsAdapter(ArrayList(), this) }
+    private var performanceMonitoring: PerformanceMonitoring? = null
+    private var isTraceSTopped = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        performanceMonitoring = PerformanceMonitoring.start(FPM_ADDPOINT_TOKOPOINT)
         initInjector()
         setStyle(STYLE_NORMAL, com.tokopedia.design.R.style.TransparentBottomSheetDialogTheme)
     }
@@ -74,17 +78,25 @@ class AddPointsFragment : BottomSheetDialogFragment(), TokopointAddPointContract
         addSheetObserver()
     }
 
-    private fun addSheetObserver() = viewModel.sheetLiveData.observe(this , Observer {
+    private fun addSheetObserver() = viewModel.sheetLiveData.observe(this, Observer {
         it?.let {
-            when(it){
+            when (it) {
                 is Loading -> inflateContainerLayout(false)
                 is Success -> {
                     inflateContainerLayout(true)
                     inflatePointsData(it.data)
+                    stopPerformanceTrace()
                 }
             }
         }
     })
+
+    private fun stopPerformanceTrace() {
+        if (!isTraceSTopped) {
+            performanceMonitoring?.stopTrace()
+            isTraceSTopped = true
+        }
+    }
 
     private fun initView(view: View) {
         view.rv_section.layoutManager = LinearLayoutManager(context)
@@ -175,5 +187,9 @@ class AddPointsFragment : BottomSheetDialogFragment(), TokopointAddPointContract
             return px.roundToInt()
         }
         return 0
+    }
+
+    companion object {
+        private const val FPM_ADDPOINT_TOKOPOINT = "ft_addpoint_tokopoint"
     }
 }

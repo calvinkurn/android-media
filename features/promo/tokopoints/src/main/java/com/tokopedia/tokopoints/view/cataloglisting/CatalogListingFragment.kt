@@ -19,6 +19,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.design.utils.CurrencyFormatUtil
@@ -26,6 +27,7 @@ import com.tokopedia.design.utils.StringUtils
 import com.tokopedia.design.viewpagerindicator.CirclePageIndicator
 import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.di.TokopointBundleComponent
+import com.tokopedia.tokopoints.view.coupondetail.CouponDetailFragment
 import com.tokopedia.tokopoints.view.couponlisting.CouponListingStackedActivity.Companion.getCallingIntent
 import com.tokopedia.tokopoints.view.customview.ServerErrorView
 import com.tokopedia.tokopoints.view.fragment.FiltersBottomSheet
@@ -56,9 +58,9 @@ class CatalogListingFragment : BaseDaggerFragment(), CatalogListingContract.View
     private var mAppBarHeader: AppBarLayout? = null
 
     @Inject
-    lateinit var  factory: ViewModelFactory
+    lateinit var factory: ViewModelFactory
 
-    private val mViewModel: CatalogListingViewModel by lazy { ViewModelProviders.of(this, factory).get(CatalogListingViewModel::class.java)}
+    private val mViewModel: CatalogListingViewModel by lazy { ViewModelProviders.of(this, factory).get(CatalogListingViewModel::class.java) }
 
     private var bottomViewMembership: LinearLayout? = null
     private var mContainerPointDetail: ConstraintLayout? = null
@@ -68,8 +70,14 @@ class CatalogListingFragment : BaseDaggerFragment(), CatalogListingContract.View
     private var menuItemFilter: MenuItem? = null
     private var serverErrorView: ServerErrorView? = null
 
+    private var performanceMonitoring: PerformanceMonitoring? = null
+    private var isTraceStopped = false
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        performanceMonitoring = PerformanceMonitoring.start(FPM_CATALOGLIST_TOKOPOINT)
 
+    }
 
     override fun onErrorFilter(errorMessage: String, hasInternet: Boolean) {
         mContainerMain!!.displayedChild = CONTAINER_ERROR
@@ -126,7 +134,7 @@ class CatalogListingFragment : BaseDaggerFragment(), CatalogListingContract.View
 
     private fun addPointObserver() = mViewModel.pointLiveData.observe(this, androidx.lifecycle.Observer {
         it?.let {
-            when(it){
+            when (it) {
                 is ErrorMessage -> onErrorPoint(it.data)
                 is Success -> onSuccessPoints(it.data.points.rewardStr,
                         it.data.points.reward,
@@ -136,24 +144,34 @@ class CatalogListingFragment : BaseDaggerFragment(), CatalogListingContract.View
         }
     })
 
-    private fun addFlterObserver()  = mViewModel.filterLiveData.observe(this, androidx.lifecycle.Observer {
+    private fun addFlterObserver() = mViewModel.filterLiveData.observe(this, androidx.lifecycle.Observer {
         it?.let {
-            when(it){
+            when (it) {
                 is Loading -> showLoader()
                 is ErrorMessage -> onErrorFilter(it.data, NetworkDetector.isConnectedToInternet(context))
-                is Success -> onSuccessFilter(it.data)
+                is Success -> {
+                    onSuccessFilter(it.data)
+                    stopPerformanceTrace()
+                }
             }
         }
     })
 
     private fun addBannerOberser() = mViewModel.bannerLiveDate.observe(this, androidx.lifecycle.Observer {
         it?.let {
-            when(it){
+            when (it) {
                 is Success -> onSuccessBanners(it.data.banners)
                 is ErrorMessage -> onErrorBanners(it.data)
             }
         }
     })
+
+    private fun stopPerformanceTrace() {
+        if (!isTraceStopped) {
+            performanceMonitoring?.stopTrace()
+            isTraceStopped = true
+        }
+    }
 
     override fun onDestroy() {
         super.onDestroy()
@@ -175,8 +193,8 @@ class CatalogListingFragment : BaseDaggerFragment(), CatalogListingContract.View
     override fun refreshTab() {
         val fragment = mViewPagerAdapter!!.getRegisteredFragment(mPagerSortType!!.currentItem) as CatalogListItemFragment?
         if (fragment != null && fragment.isAdded) {
-                fragment.viewModel.pointRange = mViewModel.pointRangeId
-                fragment.getCatalog(mViewModel.currentCategoryId, mViewModel.currentSubCategoryId, true)
+            fragment.viewModel.pointRange = mViewModel.pointRangeId
+            fragment.getCatalog(mViewModel.currentCategoryId, mViewModel.currentSubCategoryId, true)
         }
     }
 
@@ -191,7 +209,7 @@ class CatalogListingFragment : BaseDaggerFragment(), CatalogListingContract.View
             return
         }
         val pager: ViewPager = view!!.findViewById(R.id.view_pager_banner)
-        pager.adapter = CatalogBannerPagerAdapter(context, banners,this)
+        pager.adapter = CatalogBannerPagerAdapter(context, banners, this)
         //adding bottom dots(Page Indicator)
         val pageIndicator: CirclePageIndicator = view!!.findViewById(R.id.page_indicator)
         pageIndicator.fillColor = ContextCompat.getColor(context!!, com.tokopedia.design.R.color.tkpd_main_green)
@@ -257,10 +275,10 @@ class CatalogListingFragment : BaseDaggerFragment(), CatalogListingContract.View
                     val fragment = mViewPagerAdapter!!.getRegisteredFragment(position) as CatalogListItemFragment?
                     if (fragment != null
                             && fragment.isAdded) {
-                            mViewModel.currentCategoryId = filters.categories[0].id
-                            mViewModel.currentSubCategoryId = filters.categories[0].subCategory[position].id
-                            fragment.viewModel.pointRange = mViewModel.pointRangeId
-                            fragment.getCatalog(mViewModel.currentCategoryId, mViewModel.currentSubCategoryId, true)
+                        mViewModel.currentCategoryId = filters.categories[0].id
+                        mViewModel.currentSubCategoryId = filters.categories[0].subCategory[position].id
+                        fragment.viewModel.pointRange = mViewModel.pointRangeId
+                        fragment.getCatalog(mViewModel.currentCategoryId, mViewModel.currentSubCategoryId, true)
                     }
                     if (filters.categories[0].subCategory[position].timeRemainingSeconds > 0) {
                         startFlashTimer(filters.categories[0].subCategory[position])
@@ -490,6 +508,7 @@ class CatalogListingFragment : BaseDaggerFragment(), CatalogListingContract.View
         private const val CONTAINER_LOADER = 0
         private const val CONTAINER_DATA = 1
         private const val CONTAINER_ERROR = 2
+        private const val FPM_CATALOGLIST_TOKOPOINT = "fpm_cataloglist_tokopoint"
         fun newInstance(extras: Bundle?): Fragment {
             val fragment: Fragment = CatalogListingFragment()
             fragment.arguments = extras

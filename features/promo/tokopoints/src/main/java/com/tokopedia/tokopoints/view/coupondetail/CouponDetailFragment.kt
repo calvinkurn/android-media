@@ -5,6 +5,13 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.CountDownTimer
+
+import com.google.android.material.snackbar.Snackbar
+
+import androidx.fragment.app.Fragment
+import androidx.core.content.ContextCompat
+import androidx.appcompat.app.AlertDialog
+
 import android.text.TextUtils
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -14,22 +21,20 @@ import android.webkit.WebView
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.AppCompatImageView
-import androidx.core.content.ContextCompat
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import com.google.android.material.snackbar.Snackbar
+
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.analytics.performance.PerformanceMonitoring
+import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.di.TokopointBundleComponent
@@ -51,14 +56,14 @@ import kotlinx.android.synthetic.main.tp_fragment_coupon_detail.*
 import kotlinx.android.synthetic.main.tp_layout_coupon_detail_button.*
 import kotlinx.android.synthetic.main.tp_layout_swipe_coupon_code.*
 import kotlinx.android.synthetic.main.tp_layput_container_swipe.*
+import java.util.Locale
+import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 import rx.Observable
 import rx.Subscriber
 import rx.Subscription
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
-import java.util.*
-import java.util.concurrent.TimeUnit
-import javax.inject.Inject
 
 
 class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, View.OnClickListener {
@@ -69,6 +74,8 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
     var phoneVerificationState: Boolean? = null
     var mCTA: String = ""
     var mCode: String = ""
+    private var performanceMonitoring: PerformanceMonitoring? = null
+    private var isTraceStopped = false
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -77,6 +84,11 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
 
     private var mRealCode: String? = null
     private var mBottomSheetFragment: CloseableBottomSheetFragment? = null
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        performanceMonitoring = PerformanceMonitoring.start(FPM_COUPONDETAIL_TOKOPOINT)
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         initInjector()
@@ -154,12 +166,24 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
         it?.let {
             when (it) {
                 is Loading -> showLoader()
-                is ErrorMessage -> showError(NetworkDetector.isConnectedToInternet(context))
-                is Success -> setCouponToUi(it.data)
+                is ErrorMessage -> {
+                    showError(NetworkDetector.isConnectedToInternet(context))
+                    stopPerformanceTrace()
+                }
+                is Success -> {
+                    setCouponToUi(it.data)
+                    stopPerformanceTrace()
+                }
             }
         }
     })
 
+    private fun stopPerformanceTrace() {
+        if (!isTraceStopped) {
+            performanceMonitoring?.stopTrace()
+            isTraceStopped = true
+        }
+    }
 
     override fun onDestroy() {
         if (mTimer != null) {
@@ -707,6 +731,7 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
     companion object {
         val AB_TESTING_CTA_VARIANT_A = "CTA Phone Verify 2"
         val AB_TEST_PHONE_VERIFICATION_KEY = "CTA Phone Verify 2"
+        private const val FPM_COUPONDETAIL_TOKOPOINT = "fpm_coupondetail_tokopoint"
         private val REQUEST_CODE_VERIFICATION_PHONE = 301
         private val CONTAINER_LOADER = 0
         private val CONTAINER_DATA = 1

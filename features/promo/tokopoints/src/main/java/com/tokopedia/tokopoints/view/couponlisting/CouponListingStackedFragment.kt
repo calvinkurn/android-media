@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
@@ -22,6 +23,7 @@ import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.di.DaggerTokopointBundleComponent
 import com.tokopedia.tokopoints.di.TokopointsQueryModule
 import com.tokopedia.tokopoints.view.adapter.SpacesItemDecoration
+import com.tokopedia.tokopoints.view.addPoint.AddPointsFragment
 import com.tokopedia.tokopoints.view.cataloglisting.CatalogListingActivity
 import com.tokopedia.tokopoints.view.model.TokoPointPromosEntity
 import com.tokopedia.tokopoints.view.util.*
@@ -39,7 +41,13 @@ class CouponListingStackedFragment : BaseDaggerFragment(), CouponListingStackedC
     val presenter: CouponLisitingStackedViewModel by lazy { ViewModelProviders.of(this, factory)[CouponLisitingStackedViewModel::class.java] }
 
     private val mAdapter: CouponListStackedBaseAdapter by lazy { CouponListStackedBaseAdapter(presenter, this) }
+    private var performanceMonitoring: PerformanceMonitoring? = null
+    private var isTraceSTopped = false
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        performanceMonitoring = PerformanceMonitoring.start(FPM_COUPONLISTSTACK_TOKOPOINT)
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.tp_fragment_stacked_coupon_listing, container, false)
@@ -81,9 +89,9 @@ class CouponListingStackedFragment : BaseDaggerFragment(), CouponListingStackedC
 
     override fun initInjector() {
         DaggerTokopointBundleComponent.builder()
-            .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
-            .tokopointsQueryModule(TokopointsQueryModule(requireActivity()))
-            .build().inject(this)
+                .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
+                .tokopointsQueryModule(TokopointsQueryModule(requireActivity()))
+                .build().inject(this)
     }
 
     override fun onClick(source: View) {
@@ -120,7 +128,7 @@ class CouponListingStackedFragment : BaseDaggerFragment(), CouponListingStackedC
 
         swipe_refresh_layout.setOnRefreshListener {
             val id = presenter.category
-            id?.let {  presenter.getCoupons(id) }
+            id?.let { presenter.getCoupons(id) }
         }
 
         addListObserver()
@@ -141,12 +149,24 @@ class CouponListingStackedFragment : BaseDaggerFragment(), CouponListingStackedC
                     mAdapter.notifyDataSetChanged()
                     mAdapter.startDataLoading()
                 }
-                is Success -> mAdapter.onSuccess(it.data)
-                is ErrorMessage -> mAdapter.onError()
+                is Success -> {
+                    mAdapter.onSuccess(it.data)
+                    stopPerformanceTrace()
+                }
+                is ErrorMessage -> {
+                    mAdapter.onError()
+                    stopPerformanceTrace()
+                }
             }
         }
     })
 
+    private fun stopPerformanceTrace() {
+        if (!isTraceSTopped) {
+            performanceMonitoring?.stopTrace()
+            isTraceSTopped = true
+        }
+    }
 
     override fun openWebView(url: String) {
         RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, url)
@@ -261,6 +281,7 @@ class CouponListingStackedFragment : BaseDaggerFragment(), CouponListingStackedC
         private val CONTAINER_EMPTY = 3
         val REQUEST_CODE_STACKED_IN_ADAPTER = 4
         val REQUEST_CODE_STACKED_ADAPTER = 5
+        private const val FPM_COUPONLISTSTACK_TOKOPOINT = "fpm_couponliststack_tokopoint"
 
         fun newInstance(): CouponListingStackedFragment {
             return CouponListingStackedFragment()

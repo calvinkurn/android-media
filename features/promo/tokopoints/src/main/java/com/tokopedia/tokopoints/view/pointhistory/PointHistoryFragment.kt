@@ -13,6 +13,7 @@ import androidx.lifecycle.ViewModelProviders
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
 import com.tokopedia.design.utils.CurrencyFormatUtil
@@ -40,12 +41,20 @@ class PointHistoryFragment : BaseDaggerFragment(), PointHistoryContract.View, Vi
     private var mStrLoyaltyExpInfo: String? = null
 
     @Inject
-    lateinit var viewModelFactory : ViewModelProvider.Factory
+    lateinit var viewModelFactory: ViewModelProvider.Factory
 
     @Inject
     lateinit var mAdapter: PointHistoryListAdapter
 
-    private  val mPresenter: PointHistoryViewModel by  lazy { ViewModelProviders.of(this,viewModelFactory).get(PointHistoryViewModel::class.java) }
+    private val mPresenter: PointHistoryViewModel by lazy { ViewModelProviders.of(this, viewModelFactory).get(PointHistoryViewModel::class.java) }
+    private var performanceMonitoring: PerformanceMonitoring? = null
+    private var isTraceSTopped = false
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        performanceMonitoring = PerformanceMonitoring.start(FPM_POINTHISTORY_TOKOPOINT)
+
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         initInjector()
@@ -77,15 +86,17 @@ class PointHistoryFragment : BaseDaggerFragment(), PointHistoryContract.View, Vi
             it?.let {
                 when (it) {
                     is Loading -> mAdapter.startDataLoading()
-                    is ErrorMessage ->{
-                        if (it.data.isEmpty()){
+                    is ErrorMessage -> {
+                        if (it.data.isEmpty()) {
                             onEmptyList()
                             return@let
                         }
                         onError(it.data)
+                        stopPerformanceTrace()
                     }
                     is Success -> {
                         mAdapter.showData(it.data)
+                        stopPerformanceTrace()
                     }
 
                 }
@@ -118,6 +129,12 @@ class PointHistoryFragment : BaseDaggerFragment(), PointHistoryContract.View, Vi
         }
     }
 
+    private fun stopPerformanceTrace() {
+        if (!isTraceSTopped) {
+            performanceMonitoring?.stopTrace()
+            isTraceSTopped = true
+        }
+    }
 
     override fun initInjector() {
         getComponent(TokopointBundleComponent::class.java).inject(this)
@@ -155,7 +172,6 @@ class PointHistoryFragment : BaseDaggerFragment(), PointHistoryContract.View, Vi
     }
 
 
-
     override fun onClick(v: View) {
         if (v.id == R.id.btn_history_info) {
             showHistoryExpiryBottomSheet(mStrPointExpInfo, mStrLoyaltyExpInfo)
@@ -183,6 +199,7 @@ class PointHistoryFragment : BaseDaggerFragment(), PointHistoryContract.View, Vi
         private val CONTAINER_LOADER = 0
         private val CONTAINER_DATA = 1
         private val CONTAINER_ERROR = 2
+        private const val FPM_POINTHISTORY_TOKOPOINT = "fpm_pointhistory_tokopoint"
 
         fun newInstance(extras: Bundle?): Fragment {
             val fragment = PointHistoryFragment()
