@@ -324,6 +324,8 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
     private fun observeVideoStream() {
         playViewModel.observableVideoStream.observe(viewLifecycleOwner, Observer {
             layoutManager.onVideoOrientationChanged(requireView(), it.orientation)
+            triggerImmersive(false)
+
             setVideoStream(it)
         })
     }
@@ -436,22 +438,30 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
     private fun setupView(view: View) {
         clPlayInteraction = view.findViewById(R.id.cl_play_interaction)
         clPlayInteraction.setOnClickListener {
-            if (playViewModel.screenOrientation.isLandscape && clPlayInteraction.hasAlpha)
-                triggerImmersive(it.alpha == VISIBLE_ALPHA)
+            if (
+                    (playViewModel.screenOrientation.isLandscape && clPlayInteraction.hasAlpha) ||
+                    (!playViewModel.screenOrientation.isLandscape && !playViewModel.videoOrientation.isLandscape)
+            ) triggerImmersive(it.alpha == VISIBLE_ALPHA)
         }
-        triggerImmersive(false)
     }
 
     private fun triggerImmersive(shouldImmersive: Boolean) {
-        if (playViewModel.screenOrientation.isLandscape) {
-            cancelAllAnimations()
-            if (shouldImmersive) {
-                fadeOutAnimation.start(clPlayInteraction)
-            } else {
-                fadeInFadeOutAnimation.start(clPlayInteraction)
+        cancelAllAnimations()
+
+        fun triggerFullImmersive(shouldImmersive: Boolean, fadeOutAfterFadeIn: Boolean) {
+            val animation = when {
+                shouldImmersive -> fadeOutAnimation
+                fadeOutAfterFadeIn -> fadeInFadeOutAnimation
+                else -> fadeInAnimation
             }
-        } else {
-            sendImmersiveEvent(shouldImmersive)
+
+            animation.start(clPlayInteraction)
+        }
+
+        when {
+            playViewModel.screenOrientation.isLandscape -> triggerFullImmersive(shouldImmersive, true)
+            playViewModel.videoOrientation.isLandscape -> sendImmersiveEvent(shouldImmersive)
+            else -> triggerFullImmersive(shouldImmersive, false)
         }
     }
 

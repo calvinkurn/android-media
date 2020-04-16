@@ -91,6 +91,11 @@ class PlayViewModel @Inject constructor(
             val screenOrientation = _observableScreenOrientation.value
             return screenOrientation ?: ScreenOrientation.Unknown
         }
+    val videoOrientation: VideoOrientation
+        get() {
+            val videoOrientation = _observableVideoStream.value
+            return videoOrientation?.orientation ?: VideoOrientation.Unknown
+        }
     val channelType: PlayChannelType
         get() {
             val videoStream = _observableVideoStream.value
