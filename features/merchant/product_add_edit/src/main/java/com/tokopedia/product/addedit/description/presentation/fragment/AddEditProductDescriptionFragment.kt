@@ -92,7 +92,8 @@ class AddEditProductDescriptionFragment:
         fun createInstance(categoryId: String,
                            descriptionInputModel: DescriptionInputModel,
                            variantInputModel: ProductVariantInputModel,
-                           isEditMode: Boolean, isAddMode: Boolean): Fragment {
+                           isEditMode: Boolean,
+                           isAddMode: Boolean): Fragment {
             return AddEditProductDescriptionFragment().apply {
                 arguments = Bundle().apply {
                     putString(PARAM_CATEGORY_ID, categoryId)
@@ -130,7 +131,7 @@ class AddEditProductDescriptionFragment:
     }
 
     override fun onDeleteClicked(videoLinkModel: VideoLinkModel, position: Int) {
-        if (descriptionViewModel.isEditMode) {
+        if (descriptionViewModel.isEditMode && !descriptionViewModel.isAddMode) {
             ProductEditDescriptionTracking.clickRemoveVideoLink(shopId)
         } else {
             ProductAddDescriptionTracking.clickRemoveVideoLink(shopId)
@@ -213,7 +214,7 @@ class AddEditProductDescriptionFragment:
         if (descriptionViewModel.isEditMode) applyEditMode()
 
         textViewAddVideo.setOnClickListener {
-            if (descriptionViewModel.isEditMode) {
+            if (descriptionViewModel.isEditMode && !descriptionViewModel.isAddMode) {
                 ProductEditDescriptionTracking.clickAddVideoLink(shopId)
             } else {
                 ProductAddDescriptionTracking.clickAddVideoLink(shopId)
@@ -230,7 +231,7 @@ class AddEditProductDescriptionFragment:
         }
 
         tvAddVariant.setOnClickListener {
-            if (descriptionViewModel.isEditMode) {
+            if (descriptionViewModel.isEditMode && !descriptionViewModel.isAddMode) {
                 ProductEditDescriptionTracking.clickAddProductVariant(shopId)
             } else {
                 ProductAddDescriptionTracking.clickAddProductVariant(shopId)
@@ -270,7 +271,7 @@ class AddEditProductDescriptionFragment:
     }
 
     fun onBackPressed() {
-        if (descriptionViewModel.isEditMode) {
+        if (descriptionViewModel.isEditMode && !descriptionViewModel.isAddMode) {
             ProductEditDescriptionTracking.clickBack(shopId)
         } else {
             ProductAddDescriptionTracking.clickBack(shopId)
@@ -412,7 +413,7 @@ class AddEditProductDescriptionFragment:
     }
 
     private fun showVariantTips() {
-        if (descriptionViewModel.isEditMode) {
+        if (descriptionViewModel.isEditMode && !descriptionViewModel.isAddMode) {
             ProductEditDescriptionTracking.clickHelpVariant(shopId)
         } else {
             ProductAddDescriptionTracking.clickHelpVariant(shopId)
@@ -470,7 +471,7 @@ class AddEditProductDescriptionFragment:
     }
 
     private fun moveToShipmentActivity() {
-        if (descriptionViewModel.isEditMode) {
+        if (descriptionViewModel.isEditMode && !descriptionViewModel.isAddMode) {
             ProductEditDescriptionTracking.clickContinue(shopId)
         } else {
             ProductAddDescriptionTracking.clickContinue(shopId)

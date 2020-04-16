@@ -5,6 +5,7 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant
 import com.tokopedia.product.addedit.common.util.AddEditProductNotificationManager
 import com.tokopedia.product.addedit.description.presentation.model.DescriptionInputModel
@@ -66,9 +67,14 @@ open class AddEditProductAddService : AddEditProductBaseService() {
             it.variantInputModel = variantInputModel
             it.draftId = draftId
         }
-        uploadProductImages(detailInputModel.imageUrlOrPathList,
+        uploadProductImages(filterPathOnly(detailInputModel.imageUrlOrPathList),
                 variantInputModel.productSizeChart?.filePath ?: "")
     }
+
+    private fun filterPathOnly(imageUrlOrPathList: List<String>): List<String> =
+            imageUrlOrPathList.filterNot {
+                it.startsWith(AddEditProductConstants.HTTP_PREFIX)
+            }
 
     override fun onUploadProductImagesDone(uploadIdList: ArrayList<String>, sizeChartId: String) {
         addProduct(uploadIdList, sizeChartId)

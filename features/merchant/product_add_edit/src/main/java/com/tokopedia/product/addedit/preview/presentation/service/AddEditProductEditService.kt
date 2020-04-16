@@ -26,7 +26,6 @@ import kotlinx.coroutines.withContext
  */
 
 class AddEditProductEditService : AddEditProductBaseService() {
-    private var productId = ""
     private var productInputModel: ProductInputModel = ProductInputModel()
     private var shipmentInputModel: ShipmentInputModel = ShipmentInputModel()
     private var descriptionInputModel: DescriptionInputModel = DescriptionInputModel()
@@ -35,14 +34,11 @@ class AddEditProductEditService : AddEditProductBaseService() {
 
     companion object {
         private const val JOB_ID = 13131314
-        private const val EXTRA_PRODUCT_ID_INPUT_EDIT = "EXTRA_PRODUCT_ID_INPUT_EDIT"
         private const val EXTRA_PRODUCT_INPUT_MODEL = "EXTRA_PRODUCT_INPUT_MODEL"
 
         fun startService(context: Context,
-                         productId: String,
                          productInputModel: ProductInputModel) {
             val work = Intent(context, AddEditProductBaseService::class.java).apply {
-                putExtra(EXTRA_PRODUCT_ID_INPUT_EDIT, productId)
                 putExtra(EXTRA_PRODUCT_INPUT_MODEL, productInputModel)
             }
             enqueueWork(context, AddEditProductEditService::class.java, JOB_ID, work)
@@ -50,7 +46,6 @@ class AddEditProductEditService : AddEditProductBaseService() {
     }
 
     override fun onHandleWork(intent: Intent) {
-        productId = intent.getStringExtra(EXTRA_PRODUCT_ID_INPUT_EDIT)
         productInputModel = intent.getParcelableExtra(EXTRA_PRODUCT_INPUT_MODEL)
 
         productInputModel.let {
@@ -94,7 +89,7 @@ class AddEditProductEditService : AddEditProductBaseService() {
 
     private fun editProduct(uploadIdList: ArrayList<String>, sizeChartId: String) {
         val shopId = userSession.shopId
-        val param = editProductInputMapper.mapInputToParam(shopId, productId,
+        val param = editProductInputMapper.mapInputToParam(shopId, productInputModel.productId.toString(),
                 uploadIdList, sizeChartId, detailInputModel, descriptionInputModel,
                 shipmentInputModel, variantInputModel)
         launchCatchError(block = {

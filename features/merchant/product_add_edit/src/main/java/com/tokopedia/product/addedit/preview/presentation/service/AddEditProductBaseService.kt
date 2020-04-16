@@ -12,7 +12,6 @@ import com.tokopedia.product.addedit.draft.domain.usecase.SaveProductDraftUseCas
 import com.tokopedia.product.addedit.preview.di.AddEditProductPreviewModule
 import com.tokopedia.product.addedit.preview.di.DaggerAddEditProductPreviewComponent
 import com.tokopedia.product.addedit.preview.domain.mapper.AddProductInputMapper
-import com.tokopedia.product.addedit.preview.domain.mapper.DuplicateProductInputMapper
 import com.tokopedia.product.addedit.preview.domain.mapper.EditProductInputMapper
 import com.tokopedia.product.addedit.preview.domain.usecase.ProductAddUseCase
 import com.tokopedia.product.addedit.preview.domain.usecase.ProductEditUseCase
@@ -41,8 +40,6 @@ abstract class AddEditProductBaseService : JobIntentService(), CoroutineScope {
     lateinit var saveProductDraftUseCase: SaveProductDraftUseCase
     @Inject
     lateinit var deleteProductDraftUseCase: DeleteProductDraftUseCase
-    @Inject
-    lateinit var duplicateProductInputMapper: DuplicateProductInputMapper
 
     private var notificationManager: AddEditProductNotificationManager? = null
 

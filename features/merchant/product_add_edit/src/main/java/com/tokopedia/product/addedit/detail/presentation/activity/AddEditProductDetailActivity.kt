@@ -11,7 +11,6 @@ import com.tokopedia.product.addedit.detail.di.AddEditProductDetailModule
 import com.tokopedia.product.addedit.detail.di.DaggerAddEditProductDetailComponent
 import com.tokopedia.product.addedit.detail.presentation.fragment.AddEditProductDetailFragment
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_IS_ADDING_PRODUCT
-import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_IS_DRAFTING_PRODUCT
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_IS_EDITING_PRODUCT
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_PRODUCT_INPUT_MODEL
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
@@ -27,7 +26,6 @@ class AddEditProductDetailActivity : BaseSimpleActivity(), HasComponent<AddEditP
         // extras that will be passed to fragment
         var productInputModel = ProductInputModel()
         var isEditing = false
-        var isDrafting = false
         var isAdding = false
 
         // try to get passed extras from the cache manager
@@ -36,12 +34,10 @@ class AddEditProductDetailActivity : BaseSimpleActivity(), HasComponent<AddEditP
                     ?: ProductInputModel()
             isEditing = saveInstanceCacheManager.get(EXTRA_IS_EDITING_PRODUCT, Boolean::class.java)
                     ?: false
-            isDrafting = saveInstanceCacheManager.get(EXTRA_IS_DRAFTING_PRODUCT, Boolean::class.java)
-                    ?: false
             isAdding = saveInstanceCacheManager.get(EXTRA_IS_ADDING_PRODUCT, Boolean::class.java)
                     ?: false
         }
-        return AddEditProductDetailFragment.createInstance(productInputModel, isEditing, isDrafting, isAdding)
+        return AddEditProductDetailFragment.createInstance(productInputModel, isEditing, isAdding)
     }
 
     override fun getComponent(): AddEditProductDetailComponent {

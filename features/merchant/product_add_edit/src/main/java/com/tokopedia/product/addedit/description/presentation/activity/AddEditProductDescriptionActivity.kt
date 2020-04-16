@@ -54,7 +54,8 @@ class AddEditProductDescriptionActivity : BaseSimpleActivity() {
         fun createInstanceEditMode(context: Context?,
                                    categoryId: String,
                                    descriptionInputModel: DescriptionInputModel,
-                                   variantInputModel: ProductVariantInputModel, isAddMode: Boolean): Intent =
+                                   variantInputModel: ProductVariantInputModel,
+                                   isAddMode: Boolean): Intent =
                 Intent(context, AddEditProductDescriptionActivity::class.java)
                         .putExtra(PARAM_CATEGORY_ID, categoryId)
                         .putExtra(PARAM_DESCRIPTION_INPUT_MODEL, descriptionInputModel)

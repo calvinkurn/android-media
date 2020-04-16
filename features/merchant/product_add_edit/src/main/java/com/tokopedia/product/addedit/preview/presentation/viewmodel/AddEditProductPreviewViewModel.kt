@@ -6,6 +6,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.product.addedit.common.util.ResourceProvider
 import com.tokopedia.product.addedit.description.data.remote.model.variantbycat.ProductVariantByCatModel
 import com.tokopedia.product.addedit.description.domain.usecase.GetProductVariantUseCase
@@ -40,23 +42,11 @@ class AddEditProductPreviewViewModel @Inject constructor(
 
     private val productId = MutableLiveData<String>()
 
-    private val draftId = MutableLiveData<String>()
-
     private val detailInputModel = MutableLiveData<DetailInputModel>()
-
-    var isAdding = MutableLiveData<Boolean>()
 
     // observing the product id, and will become true if product id exist
     val isEditing = Transformations.map(productId) { id ->
-        !id.isNullOrBlank()
-    }
-
-    val isDrafting = Transformations.map(draftId) { id ->
-        if(id != "") {
-            id.toLong() > 0
-        } else {
-            false
-        }
+        (!id.isNullOrBlank() || productInputModel.value?.productId.orZero() != 0L) && !isDuplicate
     }
 
     val productAddResult = MutableLiveData<ProductInputModel>()
@@ -93,7 +83,11 @@ class AddEditProductPreviewViewModel @Inject constructor(
     private val mGetProductDraftResult = MutableLiveData<Result<ProductDraft>>()
     val getProductDraftResult: LiveData<Result<ProductDraft>> get() = mGetProductDraftResult
 
+    val isAdding: Boolean get() = getDraftId() == 0L && getProductId().isBlank()
+
     var isDuplicate: Boolean = false
+
+    private var draftId = ""
 
     var productDomain: Product = Product()
 
@@ -106,7 +100,11 @@ class AddEditProductPreviewViewModel @Inject constructor(
                 productInputModel.value = when (it) {
                     is Success -> {
                         productDomain = it.data
-                        getProductMapper.mapRemoteModelToUiModel(it.data)
+                        val productInputModel = getProductMapper.mapRemoteModelToUiModel(it.data)
+                        if (!isDuplicate) {
+                            productInputModel.productId = it.data.productID.toLongOrZero()
+                        }
+                        productInputModel
                     }
                     is Fail -> ProductInputModel()
                 }
@@ -115,17 +113,13 @@ class AddEditProductPreviewViewModel @Inject constructor(
                 productInputModel.value = productInputModel.value?.apply { this.detailInputModel = it }
             }
             addSource(getProductDraftResult) {
-                if(isDrafting.value == true) {
-                    productInputModel.value = when(it) {
-                        is Success -> mapDraftToProductInputModel(it.data)
-                        is Fail -> ProductInputModel()
-                    }
+                productInputModel.value = when(it) {
+                    is Success -> mapDraftToProductInputModel(it.data)
+                    is Fail -> ProductInputModel()
                 }
             }
             addSource(productAddResult) {
-                if(isAdding.value == true && isDrafting.value == false) {
-                    productInputModel.value = it
-                }
+                productInputModel.value = it
             }
         }
     }
@@ -135,10 +129,7 @@ class AddEditProductPreviewViewModel @Inject constructor(
     }
 
     fun getDraftId(): Long {
-        if (draftId.value != "") {
-            return draftId.value?.toLong() ?: 0
-        }
-        return 0
+        return if (draftId.isBlank()) 0 else draftId.toLong()
     }
 
     fun setProductId(id: String) {
@@ -146,7 +137,7 @@ class AddEditProductPreviewViewModel @Inject constructor(
     }
 
     fun setDraftId(id: String) {
-        draftId.value = id
+        draftId = id
     }
 
     fun setIsDuplicate(isDuplicate: Boolean) {
