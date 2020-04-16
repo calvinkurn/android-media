@@ -16,6 +16,7 @@ class BuyerCardPresenterTest {
     @RelaxedMockK
     private lateinit var buyerView: BuyerCardContract.View
 
+    private lateinit var buyerCard: BuyerCard
     private val buyerPresenter by lazy {
         BuyerCardPresenter()
     }
@@ -27,11 +28,11 @@ class BuyerCardPresenterTest {
     fun setup() {
         MockKAnnotations.init(this)
         buyerPresenter.attachView(buyerView)
+        buyerCard = BuyerCard()
     }
 
     @Test
     fun `set data | status incomplete`() {
-        val buyerCard = BuyerCard()
         buyerCard.progress = 80
 
         buyerPresenter.setData(buyerCard)
@@ -54,7 +55,6 @@ class BuyerCardPresenterTest {
 
     @Test
     fun `set data | status completed`() {
-        val buyerCard = BuyerCard()
         buyerCard.progress = 100
 
         buyerPresenter.setData(buyerCard)
