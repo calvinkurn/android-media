@@ -1768,7 +1768,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         if (!fallbackUrl.endsWith("/")) {
             fallbackUrl += "/"
         }
-        fallbackUrl.replace("www.", "m.")
+        fallbackUrl = fallbackUrl.replace("www.", "m.")
         fallbackUrl += "report/"
         return fallbackUrl
     }
