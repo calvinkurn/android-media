@@ -33,9 +33,8 @@ data class SettingTypeDataView(
 
         fun createSellerType(): SettingTypeDataView {
             return SettingTypeDataView(
-                    icon = 0,
-                    name = R.string.settingnotif_seller,
-                    fragment = SellerFieldFragment::class.java
+                    fragment = SellerFieldFragment::class.java,
+                    name = R.string.settingnotif_seller
             )
         }
     }
