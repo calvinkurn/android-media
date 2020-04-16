@@ -2,8 +2,6 @@ package com.tokopedia.reviewseller.feature.reviewlist.domain
 
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
-import com.tokopedia.graphql.data.model.CacheType
-import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.reviewseller.common.GQL_GET_PRODUCT_REVIEW_LIST
@@ -36,10 +34,6 @@ class GetReviewProductListUseCase @Inject constructor(
     override suspend fun executeOnBackground(): ProductReviewListResponse.ProductShopRatingAggregate {
 
         gqlUseCase.clearRequest()
-        gqlUseCase.setCacheStrategy(GraphqlCacheStrategy
-                .Builder(CacheType.CLOUD_THEN_CACHE)
-                .setSessionIncluded(true)
-                .build())
 
         val gqlRequest = GraphqlRequest(gqlQuery, ProductReviewListResponse::class.java, params)
         gqlUseCase.addRequest(gqlRequest)
