@@ -7,13 +7,16 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.analyticsdebugger.database.GtmLogDB
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import rx.Subscriber
+import rx.Subscription
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
+import rx.subscriptions.CompositeSubscription
 import timber.log.Timber
 
 class ValidatorViewModel constructor(val context: Application) : AndroidViewModel(context) {
 
     private val dao: GtmLogDBSource by lazy { GtmLogDBSource(context) }
+    private val disposables: CompositeSubscription by lazy { CompositeSubscription() }
 
     private val _gtmLog: MutableLiveData<List<GtmLogDB>> by lazy {
         MutableLiveData<List<GtmLogDB>>().also {
@@ -23,6 +26,11 @@ class ValidatorViewModel constructor(val context: Application) : AndroidViewMode
 
     val gtmLog: LiveData<List<GtmLogDB>>
         get() = _gtmLog
+
+    override fun onCleared() {
+        super.onCleared()
+        disposables.clear()
+    }
 
     private fun fetchGtmLog() {
         dao.getAllLogs()
@@ -42,6 +50,11 @@ class ValidatorViewModel constructor(val context: Application) : AndroidViewMode
                                 Timber.w(e)
                             }
                         }
-                )
+                ).toSubs()
     }
+
+    private fun Subscription.toSubs() {
+        disposables.add(this)
+    }
+
 }
