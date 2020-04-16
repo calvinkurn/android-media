@@ -1182,14 +1182,14 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     private fun createCategoryRecommendationItemClickListener(items: List<ListItemUnify>) = productCategoryRecListView?.run {
         productCategoryRecListView?.setOnItemClickListener { _, _, position, _ ->
             ListUnifyUtil.setSelected(this, position) {
-                // disini ngapain kalau dia diselect
+                onCategoryRecommendationSelected(ListUnifyUtil.getCategoryId(it).toString())
             }
         }
 
         items.forEachIndexed { index, item ->
             item.listRightRadiobtn?.setOnClickListener {
                 ListUnifyUtil.setSelected(this, index) {
-                    // disini ngapain kalau dia diselect
+                    onCategoryRecommendationSelected(ListUnifyUtil.getCategoryId(it).toString())
                 }
             }
         }

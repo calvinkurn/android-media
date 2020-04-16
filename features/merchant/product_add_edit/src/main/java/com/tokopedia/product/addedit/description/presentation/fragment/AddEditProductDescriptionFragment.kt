@@ -219,7 +219,6 @@ class AddEditProductDescriptionFragment:
             } else {
                 ProductAddDescriptionTracking.clickAddVideoLink(shopId)
             }
-            addEmptyVideoUrl()
         }
 
         layoutDescriptionTips.setOnClickListener {
@@ -253,8 +252,8 @@ class AddEditProductDescriptionFragment:
         observeProductVideo()
     }
 
-    private fun addEmptyVideoUrl() {
-        loadData(0)
+    override fun loadInitialData() {
+        loadData(1)
     }
 
     fun sendDataBack() {
@@ -281,7 +280,7 @@ class AddEditProductDescriptionFragment:
     private fun inputAllDataInInputDraftModel() {
         productInputModel?.descriptionInputModel = DescriptionInputModel(
                 textFieldDescription.getText(),
-                adapter.data
+                getFilteredValidVideoLink()
         )
     }
 
@@ -487,7 +486,7 @@ class AddEditProductDescriptionFragment:
     private fun submitInput(shipmentInputModel: ShipmentInputModel) {
         val descriptionInputModel = DescriptionInputModel(
                 textFieldDescription.getText(),
-                adapter.data
+                getFilteredValidVideoLink()
         )
         val intent = Intent()
         intent.putExtra(EXTRA_DESCRIPTION_INPUT, descriptionInputModel)
@@ -501,7 +500,7 @@ class AddEditProductDescriptionFragment:
         if (descriptionViewModel.validateInputVideo(adapter.data)) {
             val descriptionInputModel = DescriptionInputModel(
                     textFieldDescription.getText(),
-                    adapter.data
+                    getFilteredValidVideoLink()
             )
             val intent = Intent()
             intent.putExtra(EXTRA_DESCRIPTION_INPUT, descriptionInputModel)
@@ -511,4 +510,11 @@ class AddEditProductDescriptionFragment:
         }
     }
 
+    private fun getFilteredValidVideoLink() = adapter.data.filter {
+        it.inputUrl.isNotBlank() &&
+                it.inputTitle.isNotBlank() &&
+                it.inputImage.isNotBlank() &&
+                it.inputDescription.isNotBlank() &&
+                it.errorMessage.isBlank()
+    }
 }
