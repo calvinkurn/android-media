@@ -89,7 +89,7 @@ class SettingFieldAdapter<T : Visitable<SettingFieldTypeFactory>>(
 
         val visitableList = mutableListOf<Visitable<*>>()
         visitables.zip(temporaryList).forEach {
-            if (it.first is ParentSetting && it.second is ParentSetting) {
+            if (it.first is ParentSetting) {
                 val currentItem = it.first as ParentSetting
                 val lastConfigItem = it.second as ParentSetting
                 currentItem.status = lastConfigItem.status

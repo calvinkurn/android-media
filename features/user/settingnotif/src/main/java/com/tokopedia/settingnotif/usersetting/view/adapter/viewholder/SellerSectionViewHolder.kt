@@ -27,8 +27,10 @@ class SellerSectionViewHolder(
         txtTitle?.text = context?.getString(R.string.settingnotif_settings_seller_title)
         imgIcon?.setImageResource(R.drawable.ic_notifsetting_seller)
 
-        container?.setOnClickListener {
-            listener.onItemClicked()
+        if (element?.isEnabled == true) {
+            container?.setOnClickListener {
+                listener.onItemClicked()
+            }
         }
     }
 
