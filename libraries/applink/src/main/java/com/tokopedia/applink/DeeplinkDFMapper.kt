@@ -76,6 +76,7 @@ import tokopedia.applink.R
 import java.io.BufferedReader
 import java.io.FileNotFoundException
 import java.io.InputStreamReader
+import java.net.URLDecoder
 
 /**
  * Dynamic Feature Deeplink Mapper
@@ -205,8 +206,7 @@ object DeeplinkDFMapper {
             add(DFP({ it.startsWith(GROUPCHAT_DETAIL) }, DF_BASE, R.string.title_groupchat))
 
             add(DFP({ it.startsWith(SETTING_PROFILE) }, DF_USER_SETTINGS, R.string.applink_profile_completion_title, { DFWebviewFallbackUrl.USER_PROFILE_SETTINGS }))
-            add(DFP({ it.startsWithPattern(REPORT_PRODUCT) }, DF_USER_SETTINGS, R.string.applink_report_title,
-                { url -> DeeplinkDFFallbackGenerator.generateProductReportFallback(url) }))
+            add(DFP({ it.startsWithPattern(REPORT_PRODUCT) }, DF_USER_SETTINGS, R.string.applink_report_title, ::getDefaultFallbackUrl))
             add(DFP({ it.startsWith(CHANGE_PHONE_NUMBER) }, DF_BASE, R.string.applink_change_phone_number))
             add(DFP({ it.startsWith(CHANGE_PASSWORD) }, DF_BASE, R.string.applink_change_password))
             add(DFP({ it.startsWith(SETTING_BANK) }, DF_BASE, R.string.applink_setting_bank_title))
@@ -339,6 +339,12 @@ object DeeplinkDFMapper {
             }
         }
         return resultList
+    }
+
+    private fun getDefaultFallbackUrl(deeplink: String): String {
+        val uri = Uri.parse(deeplink)
+        val fallbackUrl = uri.getQueryParameter(DFFALLBACKURL_KEY) ?: return ""
+        return URLDecoder.decode(fallbackUrl, "UTF-8")
     }
 
     /**

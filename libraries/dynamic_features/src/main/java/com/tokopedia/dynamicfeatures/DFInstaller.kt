@@ -70,7 +70,8 @@ object DFInstaller {
     @JvmStatic
     fun isInstalled(context: Context, moduleName: String): Boolean {
         val manager = getManager(context.applicationContext) ?: return false
-        return manager.installedModules.contains(moduleName)
+        val isInstalled = manager.installedModules.contains(moduleName)
+        return isInstalled
     }
 
     internal fun getManager(context: Context): SplitInstallManager? {
