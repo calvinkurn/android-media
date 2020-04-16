@@ -183,9 +183,11 @@
     <string name="confirm_msg_2b">sebelum batas respons berakhir</string>
     <string name="confirm_msg_3">Cetak label pengiriman atau tulis kode booking di kemasan paket</string>
     <string name="title_bottomsheet_accept_order">Konfirmasi terima pesanan</string>
+    <string name="title_dialog_set_delivered">Ubah Status Pengiriman</string>
     <string name="ic_checklist_desc">ic_checklist</string>
     <string name="action_batal">Batal</string>
     <string name="action_terima">Terima</string>
+    <string name="action_ubah">Ubah Status</string>
 
     <string name="title_dialog_cancel_order">Batalkan Pesanan</string>
 
@@ -269,8 +271,8 @@
     <string name="coachmark_terima_pesanan_info">Setelah menerima pesanan, kamu bisa langsung mengemas barang untuk segera dikirimkan.</string>
     <string name="coachmark_booking">Wajib Tulis Kode Booking</string>
     <string name="coachmark_booking_info">Cetak label pengiriman atau tulis kode booking di paket yang akan di kirim.</string>
-
-
+    <string name="dialog_receiver_name">Nama Penerima</string>
+    <string name="et_empty_error">Tidak Boleh Kosong</string>
 
 
 </resources>
