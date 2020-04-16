@@ -4,7 +4,7 @@ import android.view.ViewGroup
 import androidx.annotation.VisibleForTesting
 import com.tokopedia.play.component.EventBusFactory
 import com.tokopedia.play.component.UIComponent
-import com.tokopedia.play.util.CoroutineDispatcherProvider
+import com.tokopedia.play.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play.view.event.ScreenStateEvent
 import com.tokopedia.play_common.state.PlayVideoState
 import kotlinx.coroutines.CoroutineScope

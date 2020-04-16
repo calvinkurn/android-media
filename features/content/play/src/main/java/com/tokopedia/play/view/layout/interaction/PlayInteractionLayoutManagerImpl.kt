@@ -6,6 +6,7 @@ import androidx.annotation.IdRes
 import androidx.core.view.WindowInsetsCompat
 import com.tokopedia.play.view.layout.PlayLayoutManager
 import com.tokopedia.play.view.type.ScreenOrientation
+import com.tokopedia.play.view.type.VideoOrientation
 
 /**
  * Created by jegul on 01/04/20
@@ -82,6 +83,10 @@ class PlayInteractionLayoutManagerImpl(
 
     override fun onExitImmersive(): Int {
         return getManager().onExitImmersive()
+    }
+
+    override fun onVideoOrientationChanged(container: View, videoOrientation: VideoOrientation) {
+        return getManager().onVideoOrientationChanged(container, videoOrientation)
     }
 
     private fun getManager(): PlayInteractionLayoutManager = when (orientation) {

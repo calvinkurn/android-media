@@ -5,7 +5,7 @@ import androidx.annotation.VisibleForTesting
 import com.tokopedia.play.component.EventBusFactory
 import com.tokopedia.play.component.UIComponent
 import com.tokopedia.play.ui.immersivebox.interaction.ImmersiveBoxInteractionEvent
-import com.tokopedia.play.util.CoroutineDispatcherProvider
+import com.tokopedia.play.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play.view.event.ScreenStateEvent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
@@ -33,6 +33,7 @@ open class ImmersiveBoxComponent(
                             ScreenStateEvent.Init -> uiView.show()
                             is ScreenStateEvent.BottomInsetsChanged -> if (it.isAnyShown) uiView.hide() else uiView.show()
                             is ScreenStateEvent.OnNewPlayRoomEvent -> if(it.event.isFreeze || it.event.isBanned) uiView.hide()
+                            is ScreenStateEvent.ImmersiveStateChanged -> if (it.shouldImmersive) uiView.fadeOut() else uiView.fadeIn()
                         }
                     }
         }
@@ -46,9 +47,9 @@ open class ImmersiveBoxComponent(
         return bus.getSafeManagedFlow(ImmersiveBoxInteractionEvent::class.java)
     }
 
-    override fun onImmersiveBoxClicked(view: ImmersiveBoxView) {
+    override fun onImmersiveBoxClicked(view: ImmersiveBoxView, currentAlpha: Float) {
         launch {
-            bus.emit(ImmersiveBoxInteractionEvent::class.java, ImmersiveBoxInteractionEvent.BoxClicked)
+            bus.emit(ImmersiveBoxInteractionEvent::class.java, ImmersiveBoxInteractionEvent.BoxClicked(currentAlpha))
         }
     }
 

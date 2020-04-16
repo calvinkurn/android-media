@@ -56,12 +56,8 @@ class VideoView(container: ViewGroup) : UIView(container) {
         }
     }
 
-    internal fun setVideoOrientation(orientation: VideoOrientation) {
-        pvVideo.videoOrientation = orientation
-    }
-
-    internal fun setScreenOrientation(orientation: ScreenOrientation) {
-        pvVideo.screenOrientation = orientation
+    internal fun setOrientation(screenOrientation: ScreenOrientation, videoOrientation: VideoOrientation) {
+        pvVideo.setOrientation(screenOrientation, videoOrientation)
     }
 
     internal fun setBackground(imageUrl: String) {

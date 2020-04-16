@@ -28,7 +28,7 @@ import com.tokopedia.play.ui.productsheet.ProductSheetComponent
 import com.tokopedia.play.ui.productsheet.interaction.ProductSheetInteractionEvent
 import com.tokopedia.play.ui.variantsheet.VariantSheetComponent
 import com.tokopedia.play.ui.variantsheet.interaction.VariantSheetInteractionEvent
-import com.tokopedia.play.util.CoroutineDispatcherProvider
+import com.tokopedia.play.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play.util.event.EventObserver
 import com.tokopedia.play.view.event.ScreenStateEvent
 import com.tokopedia.play.view.type.BottomInsetsState

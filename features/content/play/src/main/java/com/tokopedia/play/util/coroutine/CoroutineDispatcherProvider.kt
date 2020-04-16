@@ -1,4 +1,4 @@
-package com.tokopedia.play.util
+package com.tokopedia.play.util.coroutine
 
 import kotlinx.coroutines.CoroutineDispatcher
 

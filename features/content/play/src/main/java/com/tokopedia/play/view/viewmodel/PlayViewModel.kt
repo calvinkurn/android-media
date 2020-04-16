@@ -14,15 +14,12 @@ import com.tokopedia.play.data.mapper.PlaySocketMapper
 import com.tokopedia.play.data.websocket.PlaySocket
 import com.tokopedia.play.data.websocket.PlaySocketInfo
 import com.tokopedia.play.domain.*
-import com.tokopedia.play.extensions.isAnyBottomSheetsShown
-import com.tokopedia.play.extensions.isKeyboardShown
 import com.tokopedia.play.ui.chatlist.model.PlayChat
 import com.tokopedia.play.ui.toolbar.model.PartnerType
-import com.tokopedia.play.util.CoroutineDispatcherProvider
+import com.tokopedia.play.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.*
 import com.tokopedia.play.view.uimodel.mapper.PlayUiMapper
-import com.tokopedia.play.view.uimodel.mocker.PlayUiMocker
 import com.tokopedia.play.view.wrapper.PlayResult
 import com.tokopedia.play_common.model.PlayBufferControl
 import com.tokopedia.play_common.player.PlayVideoManager
@@ -94,6 +91,11 @@ class PlayViewModel @Inject constructor(
             val screenOrientation = _observableScreenOrientation.value
             return screenOrientation ?: ScreenOrientation.Unknown
         }
+    val videoOrientation: VideoOrientation
+        get() {
+            val videoOrientation = _observableVideoStream.value
+            return videoOrientation?.orientation ?: VideoOrientation.Unknown
+        }
     val channelType: PlayChannelType
         get() {
             val videoStream = _observableVideoStream.value
@@ -139,7 +141,8 @@ class PlayViewModel @Inject constructor(
                     shouldShowPinned = pinned is PinnedMessageUiModel || pinned is PinnedProductUiModel,
                     channelType = channelType,
                     bottomInsets = bottomInsets ?: getDefaultBottomInsetsMapState(),
-                    screenOrientation = screenOrientation
+                    screenOrientation = screenOrientation,
+                    videoOrientation = videoOrientation
             )
         }
 
@@ -395,7 +398,6 @@ class PlayViewModel @Inject constructor(
     }
     //endregion
 
-    //region API & Socket
     fun getChannelInfo(channelId: String) {
 
         var retryCount = 0
@@ -487,6 +489,75 @@ class PlayViewModel @Inject constructor(
         _observableScreenOrientation.value = screenOrientation
     }
 
+    fun updateBadgeCart() {
+        val channelInfo = _observableGetChannelInfo.value
+        if (channelInfo != null && channelInfo is Success) {
+            launch { getBadgeCart(channelInfo.data.isShowCart) }
+        }
+    }
+
+    fun startWebSocket(channelId: String, gcToken: String, settings: Channel.Settings) {
+        playSocket.channelId = channelId
+        playSocket.gcToken = gcToken
+        playSocket.settings = settings
+        playSocket.connect(onMessageReceived = { response ->
+            launch {
+                val result = withContext(dispatchers.io) {
+                    val socketMapper = PlaySocketMapper(response)
+                    socketMapper.mapping()
+                }
+                when (result) {
+                    is TotalLike -> {
+                        _observableTotalLikes.value = PlayUiMapper.mapTotalLikes(result)
+                    }
+                    is TotalView -> {
+                        _observableTotalViews.value = PlayUiMapper.mapTotalViews(result)
+                    }
+                    is PlayChat -> {
+                        _observableNewChat.value = PlayUiMapper.mapPlayChat(userSession.userId, result)
+                    }
+                    is PinnedMessage -> {
+                        val partnerName = _observablePartnerInfo.value?.name.orEmpty()
+                        _observablePinnedMessage.value = PlayUiMapper.mapPinnedMessage(partnerName, result)
+                    }
+                    is QuickReply -> {
+                        _observableQuickReply.value = PlayUiMapper.mapQuickReply(result)
+                    }
+                    is BannedFreeze -> {
+                        if (result.channelId.isNotEmpty() && result.channelId.equals(channelId, true)) {
+                            _observableEvent.value = _observableEvent.value?.copy(
+                                    isFreeze = result.isFreeze,
+                                    isBanned = result.isBanned && result.userId.isNotEmpty()
+                                            && result.userId.equals(userSession.userId, true))
+                        }
+                    }
+                    is ProductTag -> {
+                        val productSheet = _observableProductSheetContent.value
+                        val currentProduct = if (productSheet is PlayResult.Success) productSheet.data else ProductSheetUiModel.empty()
+                        _observableProductSheetContent.value = PlayResult.Success(
+                                data = currentProduct.copy(productList = PlayUiMapper.mapItemProducts(result.listOfProducts))
+                        )
+                    }
+                    is MerchantVoucher -> {
+                        val productSheet = _observableProductSheetContent.value
+                        val currentProduct = if (productSheet is PlayResult.Success) productSheet.data else ProductSheetUiModel.empty()
+                        _observableProductSheetContent.value = PlayResult.Success(
+                                data = currentProduct.copy(voucherList = PlayUiMapper.mapItemVouchers(result.listOfVouchers))
+                        )
+                    }
+                }
+            }
+        }, onReconnect = {
+            _observableSocketInfo.value = PlaySocketInfo.Reconnect
+        }, onError = {
+            _observableSocketInfo.value = PlaySocketInfo.Error(it)
+            startWebSocket(channelId, gcToken, settings)
+        })
+    }
+
+    /**
+     * Private Method
+     */
     private fun destroy() {
         playSocket.destroy()
     }
@@ -567,72 +638,6 @@ class PlayViewModel @Inject constructor(
                 launch { if (channel.isShowProductTagging) getProductTagItems(channel) }
             }
         }
-    }
-
-    fun updateBadgeCart() {
-        val channelInfo = _observableGetChannelInfo.value
-        if (channelInfo != null && channelInfo is Success) {
-            launch { getBadgeCart(channelInfo.data.isShowCart) }
-        }
-    }
-
-    fun startWebSocket(channelId: String, gcToken: String, settings: Channel.Settings) {
-        playSocket.channelId = channelId
-        playSocket.gcToken = gcToken
-        playSocket.settings = settings
-        playSocket.connect(onMessageReceived = { response ->
-            launch {
-                val result = withContext(dispatchers.io) {
-                    val socketMapper = PlaySocketMapper(response)
-                    socketMapper.mapping()
-                }
-                when (result) {
-                    is TotalLike -> {
-                        _observableTotalLikes.value = PlayUiMapper.mapTotalLikes(result)
-                    }
-                    is TotalView -> {
-                        _observableTotalViews.value = PlayUiMapper.mapTotalViews(result)
-                    }
-                    is PlayChat -> {
-                        _observableNewChat.value = PlayUiMapper.mapPlayChat(userSession.userId, result)
-                    }
-                    is PinnedMessage -> {
-                        val partnerName = _observablePartnerInfo.value?.name.orEmpty()
-                        _observablePinnedMessage.value = PlayUiMapper.mapPinnedMessage(partnerName, result)
-                    }
-                    is QuickReply -> {
-                        _observableQuickReply.value = PlayUiMapper.mapQuickReply(result)
-                    }
-                    is BannedFreeze -> {
-                        if (result.channelId.isNotEmpty() && result.channelId.equals(channelId, true)) {
-                            _observableEvent.value = _observableEvent.value?.copy(
-                                    isFreeze = result.isFreeze,
-                                    isBanned = result.isBanned && result.userId.isNotEmpty()
-                                            && result.userId.equals(userSession.userId, true))
-                        }
-                    }
-                    is ProductTag -> {
-                        val productSheet = _observableProductSheetContent.value
-                        val currentProduct = if (productSheet is PlayResult.Success) productSheet.data else ProductSheetUiModel.empty()
-                        _observableProductSheetContent.value = PlayResult.Success(
-                                data = currentProduct.copy(productList = PlayUiMapper.mapItemProducts(result.listOfProducts))
-                        )
-                    }
-                    is MerchantVoucher -> {
-                        val productSheet = _observableProductSheetContent.value
-                        val currentProduct = if (productSheet is PlayResult.Success) productSheet.data else ProductSheetUiModel.empty()
-                        _observableProductSheetContent.value = PlayResult.Success(
-                                data = currentProduct.copy(voucherList = PlayUiMapper.mapItemVouchers(result.listOfVouchers))
-                        )
-                    }
-                }
-            }
-        }, onReconnect = {
-            _observableSocketInfo.value = PlaySocketInfo.Reconnect
-        }, onError = {
-            _observableSocketInfo.value = PlaySocketInfo.Error(it)
-            startWebSocket(channelId, gcToken, settings)
-        })
     }
 
     private fun mapBufferControl(bufferControl: VideoStream.BufferControl) = PlayBufferControl(

@@ -1,6 +1,5 @@
 package com.tokopedia.play.view.layout.interaction
 
-import android.app.Activity
 import android.content.Context
 import android.view.View
 import android.view.ViewGroup
@@ -9,7 +8,7 @@ import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.view.WindowInsetsCompat
 import com.tokopedia.play.util.PlayFullScreenHelper
 import com.tokopedia.play.util.changeConstraint
-import com.tokopedia.play.view.layout.PlayLayoutManager
+import com.tokopedia.play.view.type.VideoOrientation
 
 /**
  * Created by jegul on 13/04/20
@@ -75,6 +74,10 @@ class PlayInteractionPortraitManager(
 
     override fun onExitImmersive(): Int {
         return PlayFullScreenHelper.getShowSystemUiVisibility()
+    }
+
+    override fun onVideoOrientationChanged(container: View, videoOrientation: VideoOrientation) {
+
     }
 
     private fun layoutSizeContainer(container: View, @IdRes id: Int) {

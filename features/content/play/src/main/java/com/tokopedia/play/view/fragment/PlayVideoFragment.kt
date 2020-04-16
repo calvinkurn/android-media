@@ -23,7 +23,7 @@ import com.tokopedia.play.ui.loading.VideoLoadingComponent
 import com.tokopedia.play.ui.onetap.OneTapComponent
 import com.tokopedia.play.ui.overlayvideo.OverlayVideoComponent
 import com.tokopedia.play.ui.video.VideoComponent
-import com.tokopedia.play.util.CoroutineDispatcherProvider
+import com.tokopedia.play.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play.util.event.EventObserver
 import com.tokopedia.play.view.custom.RoundedConstraintLayout
 import com.tokopedia.play.view.event.ScreenStateEvent

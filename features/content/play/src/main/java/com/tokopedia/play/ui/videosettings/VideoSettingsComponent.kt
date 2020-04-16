@@ -5,7 +5,7 @@ import androidx.annotation.VisibleForTesting
 import com.tokopedia.play.component.EventBusFactory
 import com.tokopedia.play.component.UIComponent
 import com.tokopedia.play.ui.videosettings.interaction.VideoSettingsInteractionEvent
-import com.tokopedia.play.util.CoroutineDispatcherProvider
+import com.tokopedia.play.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play.view.event.ScreenStateEvent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
@@ -30,8 +30,10 @@ open class VideoSettingsComponent(
             bus.getSafeManagedFlow(ScreenStateEvent::class.java)
                     .collect {
                         when (it) {
-                            ScreenStateEvent.Init -> uiView.show()
+                            ScreenStateEvent.Init -> uiView.hide()
+                            is ScreenStateEvent.VideoStreamChanged -> if (it.videoStream.orientation.isLandscape) uiView.show() else uiView.hide()
                             is ScreenStateEvent.ScreenOrientationChanged -> uiView.setFullscreen(it.orientation.isLandscape)
+                            is ScreenStateEvent.ImmersiveStateChanged -> if (it.shouldImmersive) uiView.fadeOut() else uiView.fadeIn()
                         }
                     }
         }
@@ -47,13 +49,13 @@ open class VideoSettingsComponent(
 
     override fun onEnterFullscreen(view: VideoSettingsView) {
         launch {
-            bus.emit(VideoSettingsInteractionEvent::class.java, VideoSettingsInteractionEvent.OnEnterFullscreen)
+            bus.emit(VideoSettingsInteractionEvent::class.java, VideoSettingsInteractionEvent.EnterFullScreenClicked)
         }
     }
 
     override fun onExitFullscreen(view: VideoSettingsView) {
         launch {
-            bus.emit(VideoSettingsInteractionEvent::class.java, VideoSettingsInteractionEvent.OnExitFullscreen)
+            bus.emit(VideoSettingsInteractionEvent::class.java, VideoSettingsInteractionEvent.ExitFullScreenClicked)
         }
     }
 

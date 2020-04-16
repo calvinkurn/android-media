@@ -7,18 +7,14 @@ import androidx.lifecycle.OnLifecycleEvent
 import com.tokopedia.play.component.EventBusFactory
 import com.tokopedia.play.component.UIComponent
 import com.tokopedia.play.extensions.isAnyBottomSheetsShown
-import com.tokopedia.play.extensions.isAnyHidden
-import com.tokopedia.play.extensions.isAnyShown
-import com.tokopedia.play.util.CoroutineDispatcherProvider
+import com.tokopedia.play.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play.view.event.ScreenStateEvent
 import com.tokopedia.play.view.type.BottomInsetsType
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.launch
-import kotlin.coroutines.CoroutineContext
 
 /**
  * Created by jegul on 03/12/19
