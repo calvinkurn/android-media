@@ -9,6 +9,7 @@ import com.tokopedia.kotlin.extensions.view.toFloatOrZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.common.coroutine.CoroutineDispatchers
+import com.tokopedia.product.manage.feature.filter.data.mapper.ProductManageFilterMapper.Companion.countSelectedFilter
 import com.tokopedia.product.manage.feature.filter.data.model.FilterOptionWrapper
 import com.tokopedia.product.manage.feature.filter.domain.GetProductListMetaUseCase
 import com.tokopedia.product.manage.feature.list.view.mapper.ProductMapper.mapToFilterTabResult
@@ -391,10 +392,18 @@ class ProductManageViewModel @Inject constructor(
                     val list = arrayListOf<Boolean>()
                     list.addAll(filters.filterShownState)
                     list[list.size - 1] = true
-                    filters.copy(filterOptions = selectedFilter, filterShownState = list, selectedFilterCount = countFilter(selectedFilter))
+
+                    var selectedFilterCount = countSelectedFilter(selectedFilter)
+                    _selectedFilterAndSort.value?.sortOption?.let { selectedFilterCount++ }
+
+                    filters.copy(
+                        filterOptions = selectedFilter,
+                        filterShownState = list,
+                        selectedFilterCount = selectedFilterCount
+                    )
                 }
             } else {
-                FilterOptionWrapper(null, selectedFilter, listOf(true, true, false, false), countFilter(selectedFilter))
+                FilterOptionWrapper(null, selectedFilter, listOf(true, true, false, false))
             }
         }
     }
@@ -443,18 +452,5 @@ class ProductManageViewModel @Inject constructor(
 
     private fun hideProgressDialog() {
         _viewState.value = HideProgressDialog
-    }
-
-    private fun countFilter(filterOptions: List<FilterOption>?): Int {
-        var totalCount = 0
-        filterOptions?.forEach {
-            when(it) {
-                is FilterOption.FilterByCondition -> totalCount++
-                is FilterOption.FilterByCategory -> totalCount += it.categoryIds.size
-                is FilterOption.FilterByMenu -> totalCount += it.menuIds.size
-                else -> totalCount += 0
-            }
-        }
-        return totalCount
     }
 }
