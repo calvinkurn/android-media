@@ -1,3 +1,0 @@
-package com.rahullohra.fakeresponse.domain.repository
-
-interface BaseRepository

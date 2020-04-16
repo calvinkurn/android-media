@@ -7,8 +7,8 @@ import androidx.annotation.NonNull;
 import com.google.gson.GsonBuilder;
 import com.tokopedia.akamai_bot_lib.interceptor.GqlAkamaiBotInterceptor;
 import com.tokopedia.config.GlobalConfig;
+import com.tokopedia.fakeresponse.FakeResponseInterceptorProvider;
 import com.tokopedia.graphql.FingerprintManager;
-import com.tokopedia.graphql.TestingInterceptorProvider;
 import com.tokopedia.graphql.data.db.GraphqlDatabase;
 import com.tokopedia.graphql.data.source.cloud.api.GraphqlApi;
 import com.tokopedia.graphql.data.source.cloud.api.GraphqlApiSuspend;
@@ -50,8 +50,8 @@ public class GraphqlClient {
             if (GlobalConfig.isAllowDebuggingTools()) {
                 tkpdOkHttpBuilder.addInterceptor(new DeprecatedApiInterceptor(context.getApplicationContext()));
 
-                TestingInterceptorProvider provider = new TestingInterceptorProvider();
-                Interceptor interceptor = provider.getGqlTestingInterceptor(context.getApplicationContext());
+                FakeResponseInterceptorProvider provider = new FakeResponseInterceptorProvider();
+                Interceptor interceptor = provider.getInterceptor(context.getApplicationContext());
                 if (interceptor != null) {
                     tkpdOkHttpBuilder.addInterceptor(interceptor);
                 }

@@ -35,4 +35,3 @@ project.ext {
 }
 
 apply from: '../publish_local.gradle'
-//apply from:'./bintrayinfo.gradle'
