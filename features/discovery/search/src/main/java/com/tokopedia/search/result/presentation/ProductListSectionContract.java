@@ -155,6 +155,14 @@ public interface ProductListSectionContract {
         void sendGTMTrackingProductClick(ProductItemViewModel item, int adapterPosition, String userId);
 
         void routeToProductDetail(ProductItemViewModel item, int adapterPosition);
+
+        void stopPreparePagePerformanceMonitoring();
+
+        void startNetworkRequestPerformanceMonitoring();
+
+        void stopNetworkRequestPerformanceMonitoring();
+
+        void startRenderPerformanceMonitoring();
     }
 
     interface Presenter extends CustomerPresenter<View> {
