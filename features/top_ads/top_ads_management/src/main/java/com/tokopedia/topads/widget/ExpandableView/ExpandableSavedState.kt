@@ -1,4 +1,4 @@
-package com.tokopedia.design.widget.ExpandableView
+package com.tokopedia.topads.widget.ExpandableView
 
 import android.os.Parcel
 import android.os.Parcelable

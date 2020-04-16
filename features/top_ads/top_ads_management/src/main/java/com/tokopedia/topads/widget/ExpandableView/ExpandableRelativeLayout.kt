@@ -1,4 +1,4 @@
-package com.tokopedia.design.widget.ExpandableView
+package com.tokopedia.topads.widget.ExpandableView
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
@@ -9,11 +9,11 @@ import android.os.Parcelable
 import android.util.AttributeSet
 import android.view.animation.LinearInterpolator
 import android.widget.RelativeLayout
-import com.tokopedia.design.R
 import com.tokopedia.design.utils.InterpolatorUtils
-import com.tokopedia.design.widget.ExpandableView.ExpandableLayout.Companion.DEFAULT_DURATION
-import com.tokopedia.design.widget.ExpandableView.ExpandableLayout.Companion.DEFAULT_EXPANDED
-import com.tokopedia.design.widget.ExpandableView.ExpandableLayout.Companion.VERTICAL
+import com.tokopedia.topads.R
+import com.tokopedia.topads.widget.ExpandableView.ExpandableLayout.Companion.DEFAULT_DURATION
+import com.tokopedia.topads.widget.ExpandableView.ExpandableLayout.Companion.DEFAULT_EXPANDED
+import com.tokopedia.topads.widget.ExpandableView.ExpandableLayout.Companion.VERTICAL
 
 class ExpandableRelativeLayout @JvmOverloads constructor(
         context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
