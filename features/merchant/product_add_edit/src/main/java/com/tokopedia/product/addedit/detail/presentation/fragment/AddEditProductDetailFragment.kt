@@ -835,6 +835,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         return inputResult
     }
 
+    @Suppress("RedundantIf", "LiftReturnOrAssignment")
     private fun fillProductDetailForm(detailInputModel: DetailInputModel) {
 
         // product photo
@@ -889,6 +890,17 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             if (detailInputModel.condition == CONDITION_NEW) newCondition?.listRightRadiobtn?.isChecked = true
             else secondHandCondition?.listRightRadiobtn?.isChecked = true
 
+            // list item click listener
+            productConditionListView?.run {
+                this.setOnItemClickListener { _, _, position, _ ->
+                    ListUnifyUtil.setSelected(this, position) {
+                        if (position == NEW_PRODUCT_INDEX) isProductConditionNew = true
+                        else isProductConditionNew = false
+                    }
+                }
+            }
+
+            // radio button click listener
             newCondition?.listRightRadiobtn?.setOnCheckedChangeListener { _, isChecked ->
                 if (isChecked) secondHandCondition?.listRightRadiobtn?.isChecked = false
                 isProductConditionNew = true

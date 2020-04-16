@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.widget.AppCompatTextView
+import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -111,6 +112,8 @@ import kotlinx.android.synthetic.main.fragment_add_edit_product_preview.*
 import javax.inject.Inject
 
 class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHolder.OnPhotoChangeListener {
+
+    private var toolbar: Toolbar? = null
 
     // action button
     private var doneButton: AppCompatTextView? = null
@@ -225,6 +228,10 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        // activity toolbar
+        toolbar = activity?.findViewById(R.id.toolbar)
+        toolbar?.title = getString(R.string.title_add_product)
+
         // action button
         doneButton = activity?.findViewById(R.id.tv_done)
 
@@ -272,18 +279,29 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
         productStatusSwitch = view.findViewById(R.id.su_product_status)
 
         addEditProductPhotoButton?.setOnClickListener {
+
+            // tracking
             if (viewModel.isEditing.value == true) {
                 ProductEditStepperTracking.trackClickChangeProductPic(shopId)
             } else {
                 ProductAddStepperTracking.trackStart(shopId)
             }
-            val imageUrlOrPathList = productPhotoAdapter?.getProductPhotoPaths()?.map { urlOrPath ->
-                if (urlOrPath.startsWith(HTTP_PREFIX)) viewModel.productInputModel.value?.detailInputModel?.pictureList?.find { it.urlThumbnail == urlOrPath }?.urlOriginal
-                        ?: urlOrPath
-                else urlOrPath
-            }.orEmpty()
-            val intent = ImagePickerAddProductActivity.getIntent(context, createImagePickerBuilder(ArrayList(imageUrlOrPathList)), viewModel.isEditing.value ?: false)
-            startActivityForResult(intent, REQUEST_CODE_IMAGE)
+
+            productPhotoAdapter?.run {
+                // show error message when maximum product image is reached
+                val productPhotoSize = this.getProductPhotoPaths().size
+                if (productPhotoSize == MAX_PRODUCT_PHOTOS) showMaxProductImageErrorToast(getString(R.string.error_max_product_photo))
+                else {
+                    val imageUrlOrPathList = productPhotoAdapter?.getProductPhotoPaths()?.map { urlOrPath ->
+                        if (urlOrPath.startsWith(HTTP_PREFIX)) viewModel.productInputModel.value?.detailInputModel?.pictureList?.find { it.urlThumbnail == urlOrPath }?.urlOriginal
+                                ?: urlOrPath
+                        else urlOrPath
+                    }.orEmpty()
+                    val intent = ImagePickerAddProductActivity.getIntent(context, createImagePickerBuilder(ArrayList(imageUrlOrPathList)), viewModel.isEditing.value
+                            ?: false)
+                    startActivityForResult(intent, REQUEST_CODE_IMAGE)
+                }
+            }
         }
 
         productStatusSwitch?.setOnCheckedChangeListener { buttonView, isChecked ->
@@ -566,6 +584,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
     }
 
     private fun displayEditMode() {
+        toolbar?.title = getString(R.string.title_edit_product)
         doneButton?.show()
         enablePhotoEdit()
         enableDetailEdit()
@@ -774,6 +793,12 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
                                 ?: ""
                         viewModel.getVariantList(categoryId)
                     })
+        }
+    }
+
+    private fun showMaxProductImageErrorToast(errorMessage: String) {
+        view?.let {
+            Toaster.make(it, errorMessage, type = Toaster.TYPE_ERROR)
         }
     }
 
