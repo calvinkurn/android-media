@@ -23,6 +23,7 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.data.model.carttype.CartRedirection
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.common.data.model.pdplayout.Media
@@ -155,6 +156,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     val toggleTeaserNotifyMe: LiveData<Result<Boolean>>
         get() = _toggleTeaserNotifyMe
 
+    var notifyMeAction: String = ProductDetailCommonConstant.VALUE_TEASER_ACTION_UNREGISTER
     var multiOrigin: Map<String, VariantMultiOriginWarehouse> = mapOf()
     var selectedMultiOrigin: VariantMultiOriginWarehouse = VariantMultiOriginWarehouse()
     var cartTypeData: CartRedirection? = null
@@ -704,6 +706,17 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         }
     }
 
+    fun toggleTeaserNotifyMe(campaignId: Int, productId: Int, source: String) {
+        launchCatchError(block = {
+            toggleNotifyMeUseCase.createParams(campaignId, productId, notifyMeAction, source)
+            val isSuccess = toggleNotifyMeUseCase.executeOnBackground().result.isSuccess
+            if (!isSuccess) _toggleTeaserNotifyMe.value = Throwable().asFail()
+            _toggleTeaserNotifyMe.value = isSuccess.asSuccess()
+        }) {
+            _toggleTeaserNotifyMe.value = it.asFail()
+        }
+    }
+
     fun cancelWarehouseUseCase() {
         moveProductToWarehouseUseCase.cancelJobs()
     }
@@ -758,16 +771,5 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         getPdpLayoutUseCase.forceRefresh = forceRefresh
         getPdpLayoutUseCase.enableCaching = enableCaching
         return getPdpLayoutUseCase.executeOnBackground()
-    }
-
-    fun toggleTeaserNotifyMe(campaignId: Int, productId: Int, action: String, source: String) {
-        launchCatchError(block = {
-            toggleNotifyMeUseCase.createParams(campaignId, productId, action, source)
-            val isSuccess = toggleNotifyMeUseCase.executeOnBackground().result.isSuccess
-            if (!isSuccess) _toggleTeaserNotifyMe.value = Throwable().asFail()
-            _toggleTeaserNotifyMe.value = isSuccess.asSuccess()
-        }) {
-            _toggleTeaserNotifyMe.value = it.asFail()
-        }
     }
 }

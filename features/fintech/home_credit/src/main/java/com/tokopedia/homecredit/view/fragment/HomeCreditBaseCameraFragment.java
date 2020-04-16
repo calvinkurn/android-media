@@ -304,4 +304,11 @@ public class HomeCreditBaseCameraFragment extends BaseDaggerFragment {
         super.onResume();
         onVisible();
     }
+
+    @Override
+    public void onDestroy() {
+        hideLoading();
+        cameraView.close();
+        super.onDestroy();
+    }
 }
