@@ -96,7 +96,6 @@ import java.io.InputStreamReader
 object DeeplinkDFMapper {
     // it should have the same name with the folder of dynamic feature
     private const val DF_BASE = "df_base"
-    val DFM_EMONEY = "df_emoney"
     private const val DF_CATEGORY_TRADE_IN = "df_category_trade_in"
     const val DF_MERCHANT_SELLER = "df_merchant_seller"
     const val DF_OPERATIONAL_CONTACT_US = "df_operational_contact_us"
@@ -133,13 +132,13 @@ object DeeplinkDFMapper {
                     it.startsWith(GENERAL_TEMPLATE) ||
                     it.startsWith(CAMERA_OCR) ||
                     it.startsWith(VOUCHER_GAME) ||
-                    it.startsWith(CART_DIGITAL) || it.startsWith(DIGITAL_CART) }, DFM_BASE, R.string.title_digital_subhomepage))
-            add(DFP({ it.startsWithPattern(INTERNAL_SMARTCARD) }, DFM_EMONEY, R.string.title_digital_emoney))
-            add(DFP({ it.startsWith(GLOBAL_INTERNAL_DIGITAL_DEAL) }, DFM_BASE, R.string.title_digital_deals))
-            add(DFP({ it.startsWithPattern(GLOBAL_INTERNAL_DIGITAL_DEAL_SLUG) }, DFM_BASE, R.string.title_digital_deals))
-            add(DFP({ it.startsWith(GLOBAL_INTERNAL_DIGITAL_DEAL_CATEGORY) }, DFM_BASE, R.string.title_digital_deals))
-            add(DFP({ it.startsWith(GLOBAL_INTERNAL_DIGITAL_DEAL_ALL_BRANDS) }, DFM_BASE, R.string.title_digital_deals))
-            add(DFP({ it.startsWith(GLOBAL_INTERNAL_DIGITAL_DEAL_BRAND_DETAIL) }, DFM_BASE, R.string.title_digital_deals))
+                    it.startsWith(CART_DIGITAL) || it.startsWith(DIGITAL_CART) }, DF_BASE, R.string.title_digital_subhomepage))
+            add(DFP({ it.startsWithPattern(INTERNAL_SMARTCARD) }, DF_BASE, R.string.title_digital_emoney))
+            add(DFP({ it.startsWith(GLOBAL_INTERNAL_DIGITAL_DEAL) }, DF_BASE, R.string.title_digital_deals))
+            add(DFP({ it.startsWithPattern(GLOBAL_INTERNAL_DIGITAL_DEAL_SLUG) }, DF_BASE, R.string.title_digital_deals))
+            add(DFP({ it.startsWith(GLOBAL_INTERNAL_DIGITAL_DEAL_CATEGORY) }, DF_BASE, R.string.title_digital_deals))
+            add(DFP({ it.startsWith(GLOBAL_INTERNAL_DIGITAL_DEAL_ALL_BRANDS) }, DF_BASE, R.string.title_digital_deals))
+            add(DFP({ it.startsWith(GLOBAL_INTERNAL_DIGITAL_DEAL_BRAND_DETAIL) }, DF_BASE, R.string.title_digital_deals))
 
             // Discovery
             add(DFP({ it.startsWith(SIMILAR_SEARCH_RESULT_BASE) }, DF_BASE, R.string.title_similar_search))
