@@ -53,7 +53,7 @@ class OrderSummaryPageEnhanceECommerce {
     }
 
     fun setPromoCode(promoCodes: List<String>) {
-        data[KEY_PROMO_CODE] = promoCodes.joinToString(",")
+        data[KEY_PROMO_CODE] = promoCodes.joinToString("-")
     }
 
     fun setPromoDetails(promoDetails: String) {
