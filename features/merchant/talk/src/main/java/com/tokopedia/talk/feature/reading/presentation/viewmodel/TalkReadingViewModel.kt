@@ -34,10 +34,10 @@ class TalkReadingViewModel @Inject constructor(
     val discussionData: LiveData<Result<DiscussionDataResponse>>
     get() = _discussionData
 
-    fun getDiscussionAggregate(productId: Int) {
+    fun getDiscussionAggregate(productId: Int, shopId: Int) {
         launchCatchError(block = {
             val response = withContext(dispatcher.io) {
-                getDiscussionAggregateUseCase.setParams(productId)
+                getDiscussionAggregateUseCase.setParams(productId, shopId)
                 getDiscussionAggregateUseCase.executeOnBackground()
             }
             _discussionAggregate.postValue(Success(response))
@@ -46,10 +46,10 @@ class TalkReadingViewModel @Inject constructor(
         }
     }
 
-    fun getDiscussionData(productId: Int, page: Int, limit: Int, sortBy: String, category: String) {
+    fun getDiscussionData(productId: Int, shopId: Int, page: Int, limit: Int, sortBy: String, category: String) {
         launchCatchError(block = {
             val response = withContext(dispatcher.io) {
-                getDiscussionDataUseCase.setParams(productId, page, limit, sortBy, category)
+                getDiscussionDataUseCase.setParams(productId, shopId, page, limit, sortBy, category)
                 getDiscussionDataUseCase.executeOnBackground()
             }
             _discussionData.postValue(Success(response))

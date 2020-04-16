@@ -9,7 +9,6 @@
         android:id="@+id/readingQuestionTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Hi mau tanya klo beli produk ini ada bonusnya gak ya?"
         android:layout_marginStart="@dimen/layout_lvl2"
         android:layout_marginLeft="@dimen/layout_lvl2"
         app:layout_constraintTop_toTopOf="parent"
@@ -41,7 +40,6 @@
         android:id="@+id/readingDisplayName"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/dp_18"
-        android:text="Laura"
         android:layout_marginStart="@dimen/dp_4"
         android:layout_marginLeft="@dimen/dp_4"
         app:layout_goneMarginStart="@dimen/layout_lvl2"
@@ -54,7 +52,6 @@
         android:id="@+id/readingDate"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/dp_18"
-        android:text="\u2022 30 Feb 2020"
         android:layout_marginStart="@dimen/dp_4"
         android:layout_marginLeft="@dimen/dp_4"
         app:typographyType="body_3"
@@ -64,7 +61,6 @@
     
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/readingMessage"
-        android:text="Yaaaaaah, kayanya sih gak ada nih kak"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_goneMarginStart="@dimen/layout_lvl2"

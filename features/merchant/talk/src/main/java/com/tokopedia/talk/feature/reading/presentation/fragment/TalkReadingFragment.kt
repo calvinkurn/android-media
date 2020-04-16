@@ -35,13 +35,15 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
         OnFinishedSelectSortListener {
 
     companion object {
-
         const val PARAM_PRODUCT_ID = "productID"
+        const val PARAM_SHOP_ID = "shopID"
+
         @JvmStatic
-        fun createNewInstance(productId: Int): TalkReadingFragment =
+        fun createNewInstance(productId: Int, shopId: Int): TalkReadingFragment =
             TalkReadingFragment().apply {
                 arguments = Bundle()
                 arguments?.putInt(PARAM_PRODUCT_ID, productId)
+                arguments?.putInt(PARAM_SHOP_ID, shopId)
             }
     }
 
@@ -49,6 +51,7 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
     lateinit var viewModel: TalkReadingViewModel
 
     private var productId: Int = 0
+    private var shopId: Int = 0
     private var sortOptionsBottomSheet: BottomSheetUnify? = null
 
     override fun getAdapterTypeFactory(): TalkReadingAdapterTypeFactory {
@@ -64,7 +67,7 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        getProductIdFromBundle()
+        getDataFromBundle()
         observeProductHeader()
         observeSortOptions()
         showPageLoading()
@@ -182,7 +185,7 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
     }
 
     private fun getHeaderData() {
-        viewModel.getDiscussionAggregate(productId)
+        viewModel.getDiscussionAggregate(productId, shopId)
     }
 
     private fun showErrorToaster() {
@@ -197,9 +200,10 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
         talkReadingContainer.visibility = View.VISIBLE
     }
 
-    private fun getProductIdFromBundle() {
+    private fun getDataFromBundle() {
         arguments?.let {
             productId = it.getInt(PARAM_PRODUCT_ID)
+            shopId = it.getInt(PARAM_SHOP_ID)
         }
     }
 }

@@ -11,13 +11,16 @@ class GetDiscussionAggregateUseCase @Inject constructor(graphqlRepository: Graph
 
     companion object {
         const val PARAM_PRODUCT_ID = "productID"
+        const val PARAM_SHOP_ID = "shopID"
         private val query by lazy {
             val productID = "\$productID"
+            val shopID = "\$shopID"
             """
-            query discussionAggregateByProductID($productID: Int!) {
-                discussionAggregateByProductID(productID: $productID) {
+            query discussionAggregateByProductID($productID: Int!, $shopID: Int!) {
+                discussionAggregateByProductID(productID: $productID, shopID: $shopID) {
                     productName
                     thumbnail
+                    url
                     category {
                         name
                         text
@@ -34,9 +37,10 @@ class GetDiscussionAggregateUseCase @Inject constructor(graphqlRepository: Graph
         setTypeClass(DiscussionAggregateResponse::class.java)
     }
 
-    fun setParams(productId: Int) {
+    fun setParams(productId: Int, shopId: Int) {
         val requestParams = RequestParams()
         requestParams.putInt(PARAM_PRODUCT_ID, productId)
+        requestParams.putInt(PARAM_SHOP_ID, shopId)
         setRequestParams(requestParams.parameters)
     }
 

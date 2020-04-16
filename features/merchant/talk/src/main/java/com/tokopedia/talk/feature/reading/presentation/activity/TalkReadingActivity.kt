@@ -14,6 +14,7 @@ import com.tokopedia.talk.feature.reading.presentation.fragment.TalkReadingFragm
 class TalkReadingActivity : BaseSimpleActivity(), HasComponent<TalkComponent> {
 
     private var productId: Int = 0
+    private var shopId: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         getProductIdFromAppLink()
@@ -22,7 +23,7 @@ class TalkReadingActivity : BaseSimpleActivity(), HasComponent<TalkComponent> {
     }
 
     override fun getNewFragment(): Fragment? {
-        return TalkReadingFragment.createNewInstance(productId)
+        return TalkReadingFragment.createNewInstance(productId, shopId)
     }
 
     override fun getComponent(): TalkComponent {
@@ -32,9 +33,13 @@ class TalkReadingActivity : BaseSimpleActivity(), HasComponent<TalkComponent> {
 
     private fun getProductIdFromAppLink() {
         val uri = intent.data ?: return
-        val productIdString = uri.lastPathSegment ?: return
+        val productIdString = uri.pathSegments[uri.pathSegments.size - 2] ?: return
         if (productIdString.isNotEmpty()) {
             this.productId = productIdString.toIntOrZero()
+        }
+        val shopIdString = uri.lastPathSegment ?: return
+        if (shopIdString.isNotEmpty()) {
+            this.shopId = shopIdString.toIntOrZero()
         }
     }
 
