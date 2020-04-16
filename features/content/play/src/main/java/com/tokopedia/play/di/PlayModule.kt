@@ -12,8 +12,8 @@ import com.tokopedia.network.CommonNetwork
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.play.KEY_GROUPCHAT_PREFERENCES
 import com.tokopedia.play.data.network.PlayApi
-import com.tokopedia.play.util.CoroutineDispatcherProvider
-import com.tokopedia.play.util.DefaultCoroutineDispatcherProvider
+import com.tokopedia.play.util.coroutine.CoroutineDispatcherProvider
+import com.tokopedia.play.util.coroutine.DefaultCoroutineDispatcherProvider
 import com.tokopedia.play_common.player.PlayVideoManager
 import com.tokopedia.play_common.util.PlayLifecycleObserver
 import com.tokopedia.play_common.util.PlayProcessLifecycleObserver

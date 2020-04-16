@@ -6,17 +6,17 @@ import android.view.View
 import com.tokopedia.play.util.animation.PlayAnimationUtil
 
 /**
- * Created by jegul on 15/04/20
+ * Created by jegul on 16/04/20
  */
-class PlayFadeOutAnimation(
+class PlayFadeInAnimation(
         private val durationInMs: Long
 ) : PlayAnimation {
 
     private val animatorSet = AnimatorSet()
 
     override fun start(targetView: View) {
-        val fadeOut = PlayAnimationUtil.fadeOutAnimation(targetView, durationInMs, targetView.alpha)
-        animatorSet.play(fadeOut)
+        val fadeIn = PlayAnimationUtil.fadeInAnimation(targetView, durationInMs, targetView.alpha)
+        animatorSet.play(fadeIn)
         animatorSet.addListener(getListener(targetView))
         animatorSet.start()
     }

@@ -1,4 +1,4 @@
-package com.tokopedia.play.util
+package com.tokopedia.play.util.animation
 
 import android.animation.Animator
 import android.animation.AnimatorSet

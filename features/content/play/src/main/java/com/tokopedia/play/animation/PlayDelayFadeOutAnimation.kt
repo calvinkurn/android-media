@@ -6,9 +6,9 @@ import android.view.View
 import com.tokopedia.play.util.animation.PlayAnimationUtil
 
 /**
- * Created by jegul on 15/04/20
+ * Created by jegul on 16/04/20
  */
-class PlayFadeInFadeOutAnimation(
+class PlayDelayFadeOutAnimation(
         private val durationInMs: Long,
         private val delayInMs: Long
 ) : PlayAnimation {
@@ -16,9 +16,6 @@ class PlayFadeInFadeOutAnimation(
     private val animatorSet = AnimatorSet()
 
     override fun start(targetView: View) {
-        val fadeIn = PlayAnimationUtil.fadeInAnimation(targetView, durationInMs, targetView.alpha).apply {
-            addListener(getFadeListener(targetView))
-        }
         val delay = PlayAnimationUtil.delay(delayInMs).apply {
             addListener(getDelayListener(targetView))
         }
@@ -26,7 +23,7 @@ class PlayFadeInFadeOutAnimation(
             addListener(getFadeListener(targetView))
         }
 
-        animatorSet.playSequentially(fadeIn, delay, fadeOut)
+        animatorSet.playSequentially(delay, fadeOut)
         animatorSet.start()
     }
 

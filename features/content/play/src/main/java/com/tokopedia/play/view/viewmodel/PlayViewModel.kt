@@ -16,11 +16,8 @@ import com.tokopedia.play.data.websocket.PlaySocketInfo
 import com.tokopedia.play.domain.*
 import com.tokopedia.play.ui.chatlist.model.PlayChat
 import com.tokopedia.play.ui.toolbar.model.PartnerType
-import com.tokopedia.play.util.CoroutineDispatcherProvider
-import com.tokopedia.play.util.event.Event
+import com.tokopedia.play.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play.view.type.*
-import com.tokopedia.play.view.type.immersive.ImmersiveAction
-import com.tokopedia.play.view.type.immersive.ImmersiveType
 import com.tokopedia.play.view.uimodel.*
 import com.tokopedia.play.view.uimodel.mapper.PlayUiMapper
 import com.tokopedia.play.view.wrapper.PlayResult

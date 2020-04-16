@@ -25,6 +25,8 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.R
 import com.tokopedia.play.analytic.PlayAnalytics
+import com.tokopedia.play.animation.PlayDelayFadeOutAnimation
+import com.tokopedia.play.animation.PlayFadeInAnimation
 import com.tokopedia.play.animation.PlayFadeInFadeOutAnimation
 import com.tokopedia.play.animation.PlayFadeOutAnimation
 import com.tokopedia.play.component.EventBusFactory
@@ -56,9 +58,10 @@ import com.tokopedia.play.ui.toolbar.interaction.PlayToolbarInteractionEvent
 import com.tokopedia.play.ui.toolbar.model.PartnerFollowAction
 import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.ui.videocontrol.VideoControlComponent
+import com.tokopedia.play.ui.videocontrol.interaction.VideoControlInteractionEvent
 import com.tokopedia.play.ui.videosettings.VideoSettingsComponent
 import com.tokopedia.play.ui.videosettings.interaction.VideoSettingsInteractionEvent
-import com.tokopedia.play.util.CoroutineDispatcherProvider
+import com.tokopedia.play.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play.util.event.EventObserver
 import com.tokopedia.play.view.bottomsheet.PlayMoreActionBottomSheet
 import com.tokopedia.play.view.event.ScreenStateEvent
@@ -179,8 +182,11 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
     /**
      * Animation
      */
-    private val immersiveFadeOutAnimation = PlayFadeOutAnimation(FADE_DURATION)
-    private val immersiveFadeInFadeOutAnimation = PlayFadeInFadeOutAnimation(FADE_DURATION, FADE_TRANSITION_DELAY)
+    private val fadeInAnimation = PlayFadeInAnimation(FADE_DURATION)
+    private val fadeOutAnimation = PlayFadeOutAnimation(FADE_DURATION)
+    private val fadeInFadeOutAnimation = PlayFadeInFadeOutAnimation(FADE_DURATION, FADE_TRANSITION_DELAY)
+    private val delayFadeOutAnimation = PlayDelayFadeOutAnimation(FADE_DURATION, FADE_TRANSITION_DELAY)
+    private val fadeAnimationList = arrayOf(fadeInAnimation, fadeOutAnimation, fadeInFadeOutAnimation, delayFadeOutAnimation)
 
     override fun getScreenName(): String = "Play Interaction"
 
@@ -427,24 +433,19 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
 
     private fun setupView(view: View) {
         clPlayInteraction = view.findViewById(R.id.cl_play_interaction)
-
         clPlayInteraction.setOnClickListener {
             if (playViewModel.screenOrientation.isLandscape) triggerImmersive(it.alpha == VISIBLE_ALPHA)
         }
+        triggerImmersive(false)
     }
 
     private fun triggerImmersive(shouldImmersive: Boolean) {
-        fun cancelAllAnimations() {
-            immersiveFadeOutAnimation.cancel()
-            immersiveFadeInFadeOutAnimation.cancel()
-        }
-
         if (playViewModel.screenOrientation.isLandscape) {
             cancelAllAnimations()
             if (shouldImmersive) {
-                immersiveFadeOutAnimation.start(clPlayInteraction)
+                fadeOutAnimation.start(clPlayInteraction)
             } else {
-                immersiveFadeInFadeOutAnimation.start(clPlayInteraction)
+                fadeInFadeOutAnimation.start(clPlayInteraction)
             }
         } else {
             sendImmersiveEvent(shouldImmersive)
@@ -553,9 +554,21 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
                 .also(viewLifecycleOwner.lifecycle::addObserver)
     }
 
-    private fun initVideoControlComponent(container: ViewGroup): UIComponent<Unit> {
-        return VideoControlComponent(container, EventBusFactory.get(viewLifecycleOwner), this, dispatchers)
+    private fun initVideoControlComponent(container: ViewGroup): UIComponent<VideoControlInteractionEvent> {
+        val videoControlComponent = VideoControlComponent(container, EventBusFactory.get(viewLifecycleOwner), this, dispatchers)
                 .also(viewLifecycleOwner.lifecycle::addObserver)
+
+        launch {
+            videoControlComponent.getUserInteractionEvents()
+                    .collect {
+                        when (it) {
+                            VideoControlInteractionEvent.VideoScrubStarted -> onScrubStarted()
+                            VideoControlInteractionEvent.VideoScrubEnded -> onScrubEnded()
+                        }
+                    }
+        }
+
+        return videoControlComponent
     }
 
     private fun initVideoSettingsComponent(container: ViewGroup): UIComponent<VideoSettingsInteractionEvent> {
@@ -782,6 +795,20 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
         }
     }
     //endregion
+
+    private fun onScrubStarted() {
+        if (!playViewModel.screenOrientation.isLandscape) return
+
+        cancelAllAnimations()
+        fadeInAnimation.start(clPlayInteraction)
+    }
+
+    private fun onScrubEnded() {
+        if (!playViewModel.screenOrientation.isLandscape) return
+
+        cancelAllAnimations()
+        delayFadeOutAnimation.start(clPlayInteraction)
+    }
 
     private fun enterFullscreen() {
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
@@ -1027,5 +1054,9 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
         val interactionTopmostY = getScreenHeight() - (estimatedKeyboardHeight + sendChatViewTotalHeight + chatListViewTotalHeight + quickReplyViewTotalHeight + statusBarHeight + requiredMargin)
 
         playFragment.onBottomInsetsViewShown(interactionTopmostY)
+    }
+
+    private fun cancelAllAnimations() {
+        fadeAnimationList.forEach { it.cancel() }
     }
 }
