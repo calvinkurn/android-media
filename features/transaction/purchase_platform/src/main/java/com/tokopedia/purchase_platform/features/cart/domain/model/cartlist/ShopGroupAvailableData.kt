@@ -31,7 +31,6 @@ data class ShopGroupAvailableData(
         var fulfillmentName: String? = null,
         var isHasPromoList: Boolean = false,
         var cartString: String? = null,
-        var voucherOrdersItemData: VoucherOrdersItemData? = null,
         var promoCodes: List<String>? = emptyList(),
 
         // Total data which is calculated from cartItemDataList
@@ -79,7 +78,6 @@ data class ShopGroupAvailableData(
         fulfillmentName = parcel.readString()
         isHasPromoList = parcel.readByte() != 0.toByte()
         cartString = parcel.readString()
-        voucherOrdersItemData = parcel.readParcelable(VoucherOrdersItemData::class.java.classLoader)
         totalPrice = parcel.readLong()
         totalCashback = parcel.readLong()
         totalItem = parcel.readInt()
@@ -105,7 +103,6 @@ data class ShopGroupAvailableData(
         parcel.writeString(fulfillmentName)
         parcel.writeByte(if (isHasPromoList) 1 else 0)
         parcel.writeString(cartString)
-        parcel.writeParcelable(voucherOrdersItemData, flags)
         parcel.writeLong(totalPrice)
         parcel.writeLong(totalCashback)
         parcel.writeInt(totalItem)

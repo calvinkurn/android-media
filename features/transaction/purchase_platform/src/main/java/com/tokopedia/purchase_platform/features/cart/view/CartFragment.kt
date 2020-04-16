@@ -660,27 +660,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         return null
     }
 
-    private fun getAppliedPromoCodeList(toBeDeletedCartItemDataList: List<CartItemData>?): ArrayList<String> {
-        val appliedPromoList = ArrayList<String>()
-        val cartShopHolderDataList = cartAdapter.allShopGroupDataList
-        for (cartShopHolderData in cartShopHolderDataList) {
-            if (!TextUtils.isEmpty(cartShopHolderData.shopGroupAvailableData.voucherOrdersItemData?.code) &&
-                    !appliedPromoList.contains(cartShopHolderData.shopGroupAvailableData.voucherOrdersItemData?.code)) {
-                toBeDeletedCartItemDataList?.let {
-                    for (cartItemData in toBeDeletedCartItemDataList) {
-                        if (cartShopHolderData.shopGroupAvailableData.cartString == cartItemData.originData?.cartString) {
-                            appliedPromoList.add(cartShopHolderData.shopGroupAvailableData.voucherOrdersItemData?.code
-                                    ?: "")
-                            break
-                        }
-                    }
-                }
-            }
-        }
-
-        return appliedPromoList
-    }
-
     override fun onToolbarRemoveAllCart() {
         sendAnalyticsOnClickRemoveButtonHeader()
         val toBeDeletedCartItemDataList = getAllSelectedCartDataList()

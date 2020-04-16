@@ -104,17 +104,6 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
             it.isHasPromoList = shopGroupAvailable.hasPromoList
             it.cartString = shopGroupAvailable.cartString
             it.promoCodes = shopGroupAvailable.promoCodes
-
-            if (cartDataListResponse.autoApplyStack.voucherOrders.isNotEmpty()) {
-                for (voucherOrdersItem in cartDataListResponse.autoApplyStack.voucherOrders) {
-                    if (voucherOrdersItem.uniqueId == it.cartString && voucherOrdersItem.type.isNotEmpty()
-                            && voucherOrdersItem.type.equals(MERCHANT_VOUCHER_TYPE, ignoreCase = true)) {
-                        it.voucherOrdersItemData = mapVoucherOrdersItemData(voucherOrdersItem)
-                        break
-                    }
-                }
-            }
-
             it.cartItemHolderDataList = mapCartItemHolderDataList(shopGroupAvailable.cartDetails, shopGroupAvailable, it, cartDataListResponse, false)
 
             it
