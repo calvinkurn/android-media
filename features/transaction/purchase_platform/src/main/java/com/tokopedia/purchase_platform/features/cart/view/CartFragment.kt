@@ -1416,6 +1416,12 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                     }
                     renderPromoCheckout(lastApplyData)
                 }
+
+                // Render promo from last validate use from cart page (check / uncheck result) if any
+                dPresenter.getUpdateCartAndValidateUseLastResponse()?.promoUiModel?.let {
+                    val lastApplyUiModel = LastApplyUiMapper.mapValidateUsePromoUiModelToLastApplyUiModel(it)
+                    renderPromoCheckout(lastApplyUiModel)
+                }
             } else {
                 // Render promo from last validate use from promo page
                 dPresenter.getValidateUseLastResponse()?.promoUiModel?.let {
@@ -1423,8 +1429,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                     renderPromoCheckout(lastApplyUiModel)
                 }
 
-                // Render promo from last validate use from cart page (check / uncheck result)
-                // getUpdateCartAndValidateUseLastResponse() will null if getValidateUseLastResponse() is not null
+                // Render promo from last validate use from cart page (check / uncheck result) if any
                 dPresenter.getUpdateCartAndValidateUseLastResponse()?.promoUiModel?.let {
                     val lastApplyUiModel = LastApplyUiMapper.mapValidateUsePromoUiModelToLastApplyUiModel(it)
                     renderPromoCheckout(lastApplyUiModel)
