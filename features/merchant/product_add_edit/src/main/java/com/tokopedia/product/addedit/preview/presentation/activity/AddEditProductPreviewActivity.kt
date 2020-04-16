@@ -113,7 +113,7 @@ class AddEditProductPreviewActivity : BaseSimpleActivity() {
     private fun saveProductToDraft() {
         val f = fragment
         if (f != null && f is AddEditProductPreviewFragment) {
-            f.saveProductDraft(false)
+            f.saveProductDraft()
         }
     }
 

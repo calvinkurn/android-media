@@ -7,6 +7,7 @@ import android.content.Intent
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant
 import com.tokopedia.product.addedit.common.util.AddEditProductNotificationManager
 import com.tokopedia.product.addedit.description.presentation.model.DescriptionInputModel
@@ -87,15 +88,19 @@ open class AddEditProductAddService : AddEditProductBaseService() {
             saveProductDraftUseCase.params = SaveProductDraftUseCase
                     .createRequestParams(mapProductInputModelDetailToDraft(productInputModel),
                             productInputModel.draftId, false)
-            withContext(Dispatchers.IO){
-                productDraftId = saveProductDraftUseCase.executeOnBackground()
-
-                // (2)
-                uploadProductImages(detailInputModel.imageUrlOrPathList,
-                        variantInputModel.productSizeChart?.filePath ?: "")
+            productDraftId = withContext(Dispatchers.IO){
+                saveProductDraftUseCase.executeOnBackground()
             }
+            // (2)
+            uploadProductImages(filterPathOnly(detailInputModel.imageUrlOrPathList),
+                    variantInputModel.productSizeChart?.filePath ?: "")
         }
     }
+
+    private fun filterPathOnly(imageUrlOrPathList: List<String>): List<String> =
+            imageUrlOrPathList.filterNot {
+                it.startsWith(AddEditProductConstants.HTTP_PREFIX)
+            }
 
     override fun onUploadProductImagesDone(uploadIdList: ArrayList<String>, sizeChartId: String) {
         // (3)
@@ -141,7 +146,7 @@ open class AddEditProductAddService : AddEditProductBaseService() {
         })
     }
 
-    protected suspend fun clearProductDraft() {
+    private suspend fun clearProductDraft() {
         if(productDraftId > 0) {
             deleteProductDraftUseCase.params = DeleteProductDraftUseCase.createRequestParams(productDraftId)
             deleteProductDraftUseCase.executeOnBackground()

@@ -15,13 +15,14 @@ import com.tokopedia.product.addedit.draft.domain.usecase.SaveProductDraftUseCas
 import com.tokopedia.product.addedit.preview.di.AddEditProductPreviewModule
 import com.tokopedia.product.addedit.preview.di.DaggerAddEditProductPreviewComponent
 import com.tokopedia.product.addedit.preview.domain.mapper.AddProductInputMapper
-import com.tokopedia.product.addedit.preview.domain.mapper.DuplicateProductInputMapper
 import com.tokopedia.product.addedit.preview.domain.mapper.EditProductInputMapper
 import com.tokopedia.product.addedit.preview.domain.usecase.ProductAddUseCase
 import com.tokopedia.product.addedit.preview.domain.usecase.ProductEditUseCase
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.io.File
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
@@ -44,15 +45,13 @@ abstract class AddEditProductBaseService : JobIntentService(), CoroutineScope {
     @Inject
     lateinit var deleteProductDraftUseCase: DeleteProductDraftUseCase
     @Inject
-    lateinit var duplicateProductInputMapper: DuplicateProductInputMapper
-    @Inject
     lateinit var resourceProvider: ResourceProvider
 
     private var notificationManager: AddEditProductNotificationManager? = null
 
     companion object {
         const val JOB_ID = 13131314
-        const val NOTIFICATION_CHANGE_DELAY = 1000L
+        const val NOTIFICATION_CHANGE_DELAY = 500L
     }
 
     override fun onCreate() {
@@ -105,6 +104,7 @@ abstract class AddEditProductBaseService : JobIntentService(), CoroutineScope {
             if (sizeChartPath.isNotEmpty()) { // if sizeChartPath valid then upload the image
                 sizeChartUploadId = uploadImageAndGetId(sizeChartPath)
             }
+            delay(NOTIFICATION_CHANGE_DELAY)
             onUploadProductImagesDone(uploadIdList, sizeChartUploadId)
         }, onError = {
             it.message?.let { errorMessage -> setUploadProductDataError(errorMessage) }
