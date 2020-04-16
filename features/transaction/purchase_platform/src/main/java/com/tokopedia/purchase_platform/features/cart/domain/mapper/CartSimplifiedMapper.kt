@@ -6,16 +6,11 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.purchase_platform.R
 import com.tokopedia.purchase_platform.common.constant.CartConstant.STATE_RED
 import com.tokopedia.purchase_platform.common.data.model.response.Messages
-import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.data.model.Message
-import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.model.MessageData
-import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.model.VoucherOrdersItemData
-import com.tokopedia.purchase_platform.common.feature.promo_checkout.data.model.response.*
 import com.tokopedia.purchase_platform.common.feature.promo_checkout.domain.model.PromoCheckoutErrorDefault
 import com.tokopedia.purchase_platform.common.feature.promo_checkout.domain.model.last_apply.*
-import com.tokopedia.purchase_platform.common.feature.promo_global.data.model.response.GlobalCouponAttr
-import com.tokopedia.purchase_platform.common.feature.promo_global.domain.model.GlobalCouponAttrData
 import com.tokopedia.purchase_platform.common.feature.ticker_announcement.TickerData
 import com.tokopedia.purchase_platform.features.cart.data.model.response.*
+import com.tokopedia.purchase_platform.features.cart.data.model.response.promo.*
 import com.tokopedia.purchase_platform.features.cart.data.model.response.shopgroupsimplified.WholesalePrice
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.*
 import com.tokopedia.purchase_platform.features.cart.view.uimodel.CartItemHolderData
@@ -32,8 +27,6 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
         const val SHOP_TYPE_OFFICIAL_STORE = "official_store"
         const val SHOP_TYPE_GOLD_MERCHANT = "gold_merchant"
         const val SHOP_TYPE_REGULER = "reguler"
-
-        const val MERCHANT_VOUCHER_TYPE = "merchant"
     }
 
     fun convertToCartItemDataList(cartDataListResponse: CartDataListResponse): CartListData {
@@ -55,7 +48,6 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
             cartListData.cartTickerErrorData = mapCartTickerErrorData(errorCount)
         }
 
-        cartListData.globalCouponAttrData = mapGlobalCouponAttr(cartDataListResponse.globalCouponAttr)
         cartListData.lastApplyShopGroupSimplifiedData = mapLastApplySimplified(cartDataListResponse.promo.lastApplyPromo.lastApplyPromoData)
         cartListData.errorDefault = mapPromoCheckoutErrorDefault(cartDataListResponse.promo.errorDefault)
         cartListData.isAllSelected = cartDataListResponse.isGlobalCheckboxState
@@ -130,36 +122,6 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
             it.isError = shopError
         }
         return isDisableAllProducts1
-    }
-
-    private fun mapVoucherOrdersItemData(voucherOrdersItem: com.tokopedia.purchase_platform.common.feature.promo_auto_apply.data.model.VoucherOrdersItem): VoucherOrdersItemData {
-        return VoucherOrdersItemData().let {
-            it.code = voucherOrdersItem.code
-            it.isSuccess = voucherOrdersItem.isSuccess
-            it.uniqueId = voucherOrdersItem.uniqueId
-            it.cartId = voucherOrdersItem.cartId
-            it.shopId = voucherOrdersItem.shopId
-            it.isPO = voucherOrdersItem.isPo
-            it.addressId = voucherOrdersItem.addressId
-            it.type = voucherOrdersItem.type
-            it.cashbackWalletAmount = voucherOrdersItem.cashbackWalletAmount
-            it.discountAmount = voucherOrdersItem.discountAmount
-            it.invoiceDescription = voucherOrdersItem.invoiceDescription
-            it.variant = voucherOrdersItem.type
-            it.titleDescription = voucherOrdersItem.titleDescription
-            it.messageData = mapMessageData(voucherOrdersItem.message)
-            it.isAutoapply = true
-            it
-        }
-    }
-
-    private fun mapMessageData(message: Message): MessageData {
-        return MessageData().let {
-            it.state = message.state
-            it.color = message.color
-            it.text = message.text
-            it
-        }
     }
 
     private fun mapCartItemHolderDataList(cartDetails: List<CartDetail>?,
@@ -468,14 +430,6 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
             it.errorCount = errorItemCount
             it.errorInfo = String.format(context.getString(R.string.cart_error_message), errorItemCount)
             it.actionInfo = context.getString(R.string.cart_error_action)
-            it
-        }
-    }
-
-    private fun mapGlobalCouponAttr(globalCouponAttr: GlobalCouponAttr): GlobalCouponAttrData {
-        return GlobalCouponAttrData().let {
-            it.description = globalCouponAttr.description
-            it.quantityLabel = globalCouponAttr.quantityLabel
             it
         }
     }

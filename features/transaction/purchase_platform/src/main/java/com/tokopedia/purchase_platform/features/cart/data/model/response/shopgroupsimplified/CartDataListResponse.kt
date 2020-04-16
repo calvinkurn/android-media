@@ -3,8 +3,7 @@ package com.tokopedia.purchase_platform.features.cart.data.model.response
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.purchase_platform.common.data.model.response.Messages
-import com.tokopedia.purchase_platform.common.feature.promo_checkout.data.model.response.CartPromoData
-import com.tokopedia.purchase_platform.common.feature.promo_global.data.model.response.GlobalCouponAttr
+import com.tokopedia.purchase_platform.features.cart.data.model.response.promo.CartPromoData
 import java.util.*
 
 /**
@@ -39,9 +38,6 @@ data class CartDataListResponse(
     @SerializedName("donation")
     @Expose
     val donation: Donation = Donation(),
-    @SerializedName("global_coupon_attr")
-    @Expose
-    val globalCouponAttr: GlobalCouponAttr = GlobalCouponAttr(),
     @SerializedName("global_checkbox_state")
     @Expose
     val isGlobalCheckboxState: Boolean = false,

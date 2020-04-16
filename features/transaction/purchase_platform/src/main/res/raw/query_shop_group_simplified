@@ -23,10 +23,6 @@ query shop_group_simplified($lang: String, $selected_cart_id: String) {
           Nominal
           Description
         }
-        global_coupon_attr {
-          description
-          quantity_label
-        }
         tickers {
           id
           message

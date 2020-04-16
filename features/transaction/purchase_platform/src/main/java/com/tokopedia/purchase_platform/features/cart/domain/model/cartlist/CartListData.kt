@@ -4,7 +4,6 @@ import android.os.Parcel
 import android.os.Parcelable
 import com.tokopedia.purchase_platform.common.feature.promo_checkout.domain.model.PromoCheckoutErrorDefault
 import com.tokopedia.purchase_platform.common.feature.promo_checkout.domain.model.last_apply.LastApplyUiModel
-import com.tokopedia.purchase_platform.common.feature.promo_global.domain.model.GlobalCouponAttrData
 import com.tokopedia.purchase_platform.common.feature.ticker_announcement.TickerData
 import java.util.*
 
@@ -20,7 +19,6 @@ data class CartListData(
         var shopGroupWithErrorDataList: List<ShopGroupWithErrorData> = ArrayList(),
         var isPromoCouponActive: Boolean = false,
         var cartTickerErrorData: CartTickerErrorData? = null,
-        var globalCouponAttrData: GlobalCouponAttrData? = null,
         var defaultPromoDialogTab: String? = null,
         var isAllSelected: Boolean = false,
         var isShowOnboarding: Boolean = false,
@@ -38,7 +36,6 @@ data class CartListData(
             parcel.createTypedArrayList(ShopGroupWithErrorData),
             parcel.readByte() != 0.toByte(),
             parcel.readParcelable(CartTickerErrorData::class.java.classLoader),
-            parcel.readParcelable(GlobalCouponAttrData::class.java.classLoader),
             parcel.readString(),
             parcel.readByte() != 0.toByte(),
             parcel.readByte() != 0.toByte(),
@@ -69,7 +66,6 @@ data class CartListData(
         parcel.writeTypedList(shopGroupWithErrorDataList)
         parcel.writeByte(if (isPromoCouponActive) 1 else 0)
         parcel.writeParcelable(cartTickerErrorData, flags)
-        parcel.writeParcelable(globalCouponAttrData, flags)
         parcel.writeString(defaultPromoDialogTab)
         parcel.writeByte(if (isAllSelected) 1 else 0)
         parcel.writeByte(if (isShowOnboarding) 1 else 0)

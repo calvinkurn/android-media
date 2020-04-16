@@ -3,7 +3,6 @@ package com.tokopedia.purchase_platform.features.checkout.subfeature.multiple_ad
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.tokopedia.purchase_platform.common.data.model.response.Messages;
-import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.data.model.AutoApplyStack;
 import com.tokopedia.purchase_platform.features.cart.data.model.response.Donation;
 
 import java.util.ArrayList;
@@ -39,16 +38,9 @@ public class CartMultipleAddressDataListResponse {
     @SerializedName("cart_list")
     @Expose
     private List<CartList> cartList = new ArrayList<>();
-    @SerializedName("autoapply_stack")
-    @Expose
-    private AutoApplyStack autoapplyStack;
     @SerializedName("is_show_onboarding")
     @Expose
     private boolean isShowOnboarding;
-
-    public AutoApplyStack getAutoapplyStack() {
-        return autoapplyStack;
-    }
 
     public int getIsCouponActive() {
         return isCouponActive;

@@ -1,11 +1,11 @@
-package com.tokopedia.purchase_platform.common.feature.promo_checkout.data.model.response
+package com.tokopedia.purchase_platform.features.cart.data.model.response.promo
 
 import com.google.gson.annotations.SerializedName
 
 /**
  * Created by fwidjaja on 09/03/20.
  */
-data class MessageVoucherOrders (
+data class MessageGlobalPromo (
         @SerializedName("state")
         var state: String = "",
 

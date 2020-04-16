@@ -261,12 +261,6 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
                         it.uiData.preAppliedPromoCode = preAppliedPromoCodes
                         it.uiState.hasPreAppliedPromo = tmpHasPreSelectedPromo
                         it.uiState.hasAnyPromoSelected = tmpHasPreSelectedPromo
-                        val rewardPointInfo = response.couponListRecommendation.data.rewardPointsInfo
-                        if (rewardPointInfo.gainRewardPointsTnc.tncDetails.isNotEmpty()) {
-                            it.uiData.tokopointsTncLabel = rewardPointInfo.message
-                            it.uiData.tokopointsTncTitle = rewardPointInfo.gainRewardPointsTnc.title
-                            it.uiData.tokopointsTncDetails = uiModelMapper.mapTokoPointsTncDetails(rewardPointInfo.gainRewardPointsTnc.tncDetails)
-                        }
                         _fragmentUiModel.value = it
                     }
 

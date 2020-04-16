@@ -2,7 +2,6 @@ package com.tokopedia.purchase_platform.features.checkout.data.model.response.sh
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.tokopedia.purchase_platform.common.feature.promo_global.data.model.response.GlobalCouponAttr;
 import com.tokopedia.purchase_platform.features.cart.data.model.response.Ticker;
 import com.tokopedia.purchase_platform.features.checkout.data.model.response.egold.EgoldAttributes;
 import com.tokopedia.purchase_platform.features.checkout.data.model.response.shipment_address_form.promo_checkout.PromoSAFResponse;
@@ -57,9 +56,6 @@ public class ShipmentAddressFormDataResponse {
     @SerializedName("egold_attributes")
     @Expose
     private EgoldAttributes egoldAttributes;
-    @SerializedName("global_coupon_attr")
-    @Expose
-    private GlobalCouponAttr globalCouponAttr;
     @SerializedName("is_show_onboarding")
     @Expose
     private boolean isShowOnboarding;
@@ -150,8 +146,6 @@ public class ShipmentAddressFormDataResponse {
     public void setEgoldAttributes(EgoldAttributes egoldAttributes) {
         this.egoldAttributes = egoldAttributes;
     }
-
-    public GlobalCouponAttr getGlobalCouponAttr() { return globalCouponAttr; }
 
     public boolean isShowOnboarding() {
         return isShowOnboarding;

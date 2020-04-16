@@ -6,8 +6,6 @@ import com.tokopedia.logisticcart.shipping.model.AnalyticsProductCheckoutData;
 import com.tokopedia.logisticcart.shipping.model.CodModel;
 import com.tokopedia.logisticcart.shipping.model.ShipProd;
 import com.tokopedia.logisticcart.shipping.model.ShopShipment;
-import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.data.model.Message;
-import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.model.MessageData;
 import com.tokopedia.purchase_platform.common.feature.promo_checkout.domain.model.PromoCheckoutErrorDefault;
 import com.tokopedia.purchase_platform.common.feature.promo_checkout.domain.model.last_apply.LastApplyAdditionalInfoUiModel;
 import com.tokopedia.purchase_platform.common.feature.promo_checkout.domain.model.last_apply.LastApplyEmptyCartInfoUiModel;
@@ -17,7 +15,6 @@ import com.tokopedia.purchase_platform.common.feature.promo_checkout.domain.mode
 import com.tokopedia.purchase_platform.common.feature.promo_checkout.domain.model.last_apply.LastApplyUiModel;
 import com.tokopedia.purchase_platform.common.feature.promo_checkout.domain.model.last_apply.LastApplyUsageSummariesUiModel;
 import com.tokopedia.purchase_platform.common.feature.promo_checkout.domain.model.last_apply.LastApplyVoucherOrdersItemUiModel;
-import com.tokopedia.purchase_platform.common.feature.promo_global.domain.model.GlobalCouponAttrData;
 import com.tokopedia.purchase_platform.common.feature.ticker_announcement.TickerData;
 import com.tokopedia.purchase_platform.common.utils.UtilsKt;
 import com.tokopedia.purchase_platform.features.cart.data.model.response.Ticker;
@@ -210,17 +207,6 @@ public class ShipmentMapper implements IShipmentMapper {
 
                     dataResult.setEgoldAttributes(egoldAttributeModel);
                 }
-            }
-
-            if (shipmentAddressFormDataResponse.getGlobalCouponAttr() != null) {
-                GlobalCouponAttrData globalCouponAttrData = new GlobalCouponAttrData();
-                if (shipmentAddressFormDataResponse.getGlobalCouponAttr() != null) {
-                    if (shipmentAddressFormDataResponse.getGlobalCouponAttr().getDescription() != null) {
-                        globalCouponAttrData.setDescription(shipmentAddressFormDataResponse.getGlobalCouponAttr().getDescription());
-                    }
-                    globalCouponAttrData.setQuantityLabel(shipmentAddressFormDataResponse.getGlobalCouponAttr().getQuantityLabel());
-                }
-                dataResult.setGlobalCouponAttrData(globalCouponAttrData);
             }
 
             if (!isDisableDonation) {
@@ -805,14 +791,6 @@ public class ShipmentMapper implements IShipmentMapper {
         else if (shop.getGoldMerchant().isGoldBadge())
             return SHOP_TYPE_GOLD_MERCHANT;
         else return SHOP_TYPE_REGULER;
-    }
-
-    private MessageData convertToMessageData(Message message) {
-        MessageData messageData = new MessageData();
-        messageData.setColor(message.getColor());
-        messageData.setState(message.getState());
-        messageData.setText(message.getText());
-        return messageData;
     }
 
     private ArrayList<String> mapCreateListRedPromosCheckout(Data data) {
