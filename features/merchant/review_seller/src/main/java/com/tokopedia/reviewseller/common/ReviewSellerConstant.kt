@@ -6,16 +6,20 @@ package com.tokopedia.reviewseller.common
 
 object ReviewSellerConstant {
 
-    val mapSortReviewProduct = mutableMapOf<String, String>().apply {
-        "review_count desc" to "Ulasan Terbanyak"
-        "rating_avg desc" to "Rating Tertinggi - Terendah"
-        "rating_avg asc" to "Rating Terendah - Tertinggi"
+    fun mapSortReviewProduct(): MutableMap<String, String> {
+        val map = mutableMapOf<String, String>()
+        map["review_count desc"] = "Ulasan Terbanyak"
+        map["rating_avg desc"] = "Rating Tertinggi - Terendah"
+        map["rating_avg asc"] = "Rating Terendah - Tertinggi"
+        return map
     }
 
-    val mapRatingReviewProduct = mutableMapOf<String, String>().apply {
-        "time=7d" to "7 Hari Terakhir"
-        "time=30d" to "30 Hari Terakhir"
-        "time=1y" to "1 Tahun Terakhir"
+    fun mapFilterReviewProduct(): MutableMap<String, String> {
+        val map = mutableMapOf<String, String>()
+        map["time=7d"] = "7 Hari Terakhir"
+        map["time=30d"] = "30 Hari Terakhir"
+        map["time=1y"] = "1 Tahun Terakhir"
+        return map
     }
 
     const val DEFAULT_PER_PAGE = 10
