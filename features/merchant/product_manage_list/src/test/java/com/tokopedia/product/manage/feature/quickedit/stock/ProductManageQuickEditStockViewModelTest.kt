@@ -8,12 +8,14 @@ import org.junit.Test
 class ProductManageQuickEditStockViewModelTest: ProductManageQuickEditStockViewModelTestFixture() {
 
     @Test
-    fun `when stock too low should set status to inactive and set stock to minimum value`() {
+    fun `when stock too low should NOT set status to inactive and set stock to minimum value`() {
+        val veryHighStock = 1000000
         val veryLowStock = -1
 
+        viewModel.updateStock(veryHighStock)
         viewModel.updateStock(veryLowStock)
 
-        val expectedStatus = ProductStatus.INACTIVE
+        val expectedStatus = ProductStatus.ACTIVE
         val expectedStock = ProductManageQuickEditStockFragment.MINIMUM_STOCK
 
         verifyStockEquals(expectedStock)

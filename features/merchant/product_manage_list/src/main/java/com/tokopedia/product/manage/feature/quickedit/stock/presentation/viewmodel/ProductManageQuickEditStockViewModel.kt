@@ -21,7 +21,6 @@ class ProductManageQuickEditStockViewModel @Inject constructor() : ViewModel() {
         when {
             isStockTooLow(stock) -> {
                 _stock.value = ProductManageQuickEditStockFragment.MINIMUM_STOCK
-                _status.value = ProductStatus.INACTIVE
             }
             isStockTooHigh(stock) -> {
                 _stock.value = ProductManageQuickEditStockFragment.MAXIMUM_STOCK

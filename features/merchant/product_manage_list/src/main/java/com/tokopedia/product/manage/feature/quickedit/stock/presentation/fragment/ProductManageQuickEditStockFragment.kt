@@ -182,7 +182,6 @@ class ProductManageQuickEditStockFragment(private val onFinishedListener: OnFini
                 && quickEditStockActivateSwitch != null
                 && quickEditStockQuantityEditor != null) {
             zeroStockInfo.visibility = View.VISIBLE
-            quickEditStockActivateSwitch.isEnabled = false
             quickEditStockQuantityEditor.subtractButton.isEnabled = false
         }
     }
