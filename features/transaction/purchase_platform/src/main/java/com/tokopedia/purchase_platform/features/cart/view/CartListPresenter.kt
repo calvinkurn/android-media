@@ -996,11 +996,12 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
         return hasChanges
     }
 
-    override fun processGetRecentViewData() {
+    override fun processGetRecentViewData(allProductIds: List<String>) {
         try {
             val userId = Integer.parseInt(userSessionInterface.userId)
             val requestParams = RequestParams.create()
             requestParams.putInt(GetRecentViewUseCase.PARAM_USER_ID, userId)
+            requestParams.putString(GetRecentViewUseCase.PARAM_PRODUCT_IDS, allProductIds.joinToString(separator = ","))
             compositeSubscription.add(
                     getRecentViewUseCase?.createObservable(requestParams)
                             ?.subscribe(GetRecentViewSubscriber(view))
