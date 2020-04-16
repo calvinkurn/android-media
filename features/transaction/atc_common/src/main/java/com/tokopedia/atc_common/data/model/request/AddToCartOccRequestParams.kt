@@ -15,7 +15,7 @@ data class AddToCartOccRequestParams(
         var quantity: String,
         @SerializedName("warehouse_id")
         @Expose
-        var warehouseId: String = "",
+        var warehouseId: String = "0",
         @SerializedName("lang")
         @Expose
         var lang: String = "id",
