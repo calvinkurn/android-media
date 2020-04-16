@@ -7,35 +7,41 @@
     android:layout_marginBottom="@dimen/spacing_lvl4">
 
     <com.tokopedia.unifycomponents.ChipsUnify
-        android:id="@+id/review_period_filter_button"
-        android:layout_width="wrap_content"
+        android:id="@+id/review_period_filter_chips"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:layout_marginStart="@dimen/spacing_lvl3"
+        android:layout_marginLeft="@dimen/spacing_lvl3"
         app:chipSize="medium"
         app:chipType="normal"
         app:centerText="true"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintWidth_percent="0.46"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/guideline1"
+        app:layout_constraintWidth_percent="0.47"/>
 
     <com.tokopedia.unifycomponents.ChipsUnify
-        android:id="@+id/review_sort_button"
-        android:layout_width="wrap_content"
+        android:id="@+id/review_sort_chips"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl4"
         app:chipSize="medium"
         android:layout_marginLeft="@dimen/spacing_lvl3"
         android:layout_marginStart="@dimen/spacing_lvl3"
+        android:layout_marginRight="@dimen/spacing_lvl3"
+        android:layout_marginEnd="@dimen/spacing_lvl3"
         app:chipType="normal"
         app:centerText="true"
         app:layout_constraintStart_toEndOf="@id/guideline1"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        />
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.46" />
+        app:layout_constraintGuide_percent="0.47" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

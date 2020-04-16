@@ -12,18 +12,23 @@
         android:layout_height="wrap_content"
         tools:context=".feature.reviewlist.view.fragment.RatingProductFragment">
 
+        <include
+            android:id="@+id/filter_and_sort_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            layout="@layout/item_review_list_filter_and_sort" />
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvRatingProduct"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:clipToPadding="false"
             android:paddingStart="@dimen/spacing_lvl4"
             android:paddingLeft="@dimen/spacing_lvl4"
             android:paddingRight="@dimen/spacing_lvl4"
             android:paddingEnd="@dimen/spacing_lvl4"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@id/filter_and_sort_layout" />
 
         <com.tokopedia.globalerror.GlobalError
             android:id="@+id/globalError_reviewSeller"
