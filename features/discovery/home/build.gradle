@@ -25,22 +25,22 @@ android {
         exclude 'META-INF/**'
     }
 
-//    flavorDimensions "tier", "client"
-//    productFlavors {
-//        prod {
-//            dimension "client"
-//            testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
-//        }
-//        live {
-//            dimension "tier"
-//        }
-//        staging {
-//            dimension "tier"
-//        }
-//        dev {
-//            dimension "client"
-//        }
-//    }
+    flavorDimensions "tier", "client"
+    productFlavors {
+        prod {
+            dimension "client"
+            testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
+        }
+        live {
+            dimension "tier"
+        }
+        staging {
+            dimension "tier"
+        }
+        dev {
+            dimension "client"
+        }
+    }
 
     defaultConfig {
         defaultConfig {
