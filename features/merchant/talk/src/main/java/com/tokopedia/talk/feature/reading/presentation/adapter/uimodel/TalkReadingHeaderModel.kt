@@ -5,5 +5,5 @@ import com.tokopedia.sortfilter.SortFilterItem
 data class TalkReadingHeaderModel(
         val productName: String = "",
         val productImageUrl: String = "",
-        val categories: List<SortFilterItem> = listOf()
+        val categories: ArrayList<SortFilterItem> = arrayListOf()
 )

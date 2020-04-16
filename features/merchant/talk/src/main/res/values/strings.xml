@@ -110,6 +110,7 @@
     <string name="delete_cancel_button">Batal</string>
 
     <string name="toaster_report_success">Laporanmu berhasil dikirim dan akan segera ditindaklanjuti.</string>
+    <string name="toaster_report_fail">Laporanmu gagal dikirim. Cek koneksi internetmu dan coba lagi, ya.</string>
     <string name="report_header">Bantu kami memahami apa yang terjadi. Mengapa kamu melaporkan hal ini?</string>
     <string name="report_spam_option">Ini adalah spam</string>
     <string name="report_content_option">Konten mengandung SARA, diskriminasi, vulgar, ancaman, dan pelanggaran nilai/norma sosial</string>

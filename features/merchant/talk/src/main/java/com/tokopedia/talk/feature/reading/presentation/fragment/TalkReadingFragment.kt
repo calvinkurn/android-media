@@ -122,7 +122,9 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
     }
 
     private fun bindHeader(talkReadingHeaderModel: TalkReadingHeaderModel) {
-        talkReadingHeader.bind(talkReadingHeaderModel)
+        talkReadingHeader.bind(talkReadingHeaderModel) {
+            showBottomSheet()
+        }
     }
 
     private fun observeProductHeader() {
@@ -136,6 +138,7 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
                     )
                     initSortOptions()
                     hidePageLoading()
+                    showContainer()
                 }
                 is Fail -> {
                     showPageError()
@@ -187,6 +190,10 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
 
     private fun updateSortHeader(sortOption: SortOption) {
         talkReadingHeader.updateSelectedSort(TalkReadingMapper.mapSelectedSortToSortFilterItem(sortOption))
+    }
+
+    private fun showContainer() {
+        talkReadingContainer.visibility = View.VISIBLE
     }
 
     private fun getProductIdFromBundle() {

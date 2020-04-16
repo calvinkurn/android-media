@@ -63,9 +63,11 @@ class TalkReadingViewModel @Inject constructor(
     }
 
     fun updateSelectedSort(sortOption: SortOption) {
-        _sortOptions.value?.forEach {
+        val sortOptions = _sortOptions.value
+        sortOptions?.forEach {
             it.isSelected = it.id == sortOption.id
         }
+        _sortOptions.value = sortOptions
     }
 
 }

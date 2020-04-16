@@ -30,22 +30,17 @@ class TalkReadingHeader : BaseCustomView {
         View.inflate(context, R.layout.widget_talk_reading_header, this)
     }
 
-    fun bind(talkReadingHeaderModel: TalkReadingHeaderModel) {
+    fun bind(talkReadingHeaderModel: TalkReadingHeaderModel, showBottomSheet: () -> Unit) {
         this.readingHeaderProductImage.loadImage(talkReadingHeaderModel.productImageUrl)
         this.readingHeaderProductName.text = talkReadingHeaderModel.productName
-        talkReadingHeaderModel.categories.forEach {
-            this.readingHeaderChips.chipItems.add(it)
-            if(it.title.contains(SORT_CATEGORY)) {
-                it.refChipUnify.setChevronClickListener {  }
-            }
-        }
+        this.readingHeaderChips.addItem(talkReadingHeaderModel.categories)
+        setChevronOnSort(showBottomSheet)
         initSortFilter()
     }
 
-    fun updateSelectedSort(itemUnify: SortFilterItem) {
-        this.readingHeaderChips.chipItems.removeAt(0)
-        this.readingHeaderChips.chipItems.add(0, itemUnify)
-        this.readingHeaderChips.chipItems.first().refChipUnify.setChevronClickListener {  }
+    fun updateSelectedSort(chipText: String) {
+        val currentChips = this.readingHeaderChips.chipItems
+        currentChips.first().refChipUnify.chipText = chipText
     }
 
     private fun initSortFilter() {
@@ -53,6 +48,12 @@ class TalkReadingHeader : BaseCustomView {
             filterRelationship = RELATIONSHIP_AND
             filterType = TYPE_QUICK
             visibility = View.VISIBLE
+        }
+    }
+
+    private fun setChevronOnSort(showBottomSheet: () -> Unit) {
+        this.readingHeaderChips.chipItems.first().refChipUnify.setChevronClickListener {
+            showBottomSheet()
         }
     }
 

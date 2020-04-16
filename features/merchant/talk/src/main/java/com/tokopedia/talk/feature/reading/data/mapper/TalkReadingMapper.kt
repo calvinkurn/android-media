@@ -35,30 +35,22 @@ object TalkReadingMapper {
         return result
     }
 
-    fun mapSelectedSortToSortFilterItem(selectedSortOption: SortOption): SortFilterItem {
+    fun mapSelectedSortToSortFilterItem(selectedSortOption: SortOption): String {
         return when(selectedSortOption) {
-            is SortOption.SortByInformativeness -> {
-                SortFilterItem(SORT_CATEGORY)
-            }
-            is SortOption.SortByLike -> {
-                SortFilterItem(SORT_POPULAR)
-            }
-            else -> {
-                SortFilterItem(SORT_LATEST)
-            }
+            is SortOption.SortByInformativeness -> SORT_CATEGORY
+            is SortOption.SortByLike -> SORT_POPULAR
+            else -> SORT_LATEST
         }
     }
 
-    private fun List<DiscussionAggregateCategory>.mapToSortFilter(showBottomSheet: () -> Unit): List<SortFilterItem> {
-        val result = mutableListOf<SortFilterItem>()
+    private fun List<DiscussionAggregateCategory>.mapToSortFilter(showBottomSheet: () -> Unit): ArrayList<SortFilterItem> {
+        val result = arrayListOf<SortFilterItem>()
         val stringBuilder = StringBuilder()
+        result.add(SortFilterItem(title = SORT_CATEGORY, listener = showBottomSheet))
         this.forEach {
-            val sortFilterItem = if(it.text != SORT_CATEGORY) {
-                SortFilterItem(stringBuilder.append(it.text).append(" (").append(it.counter).append(")").toString())
-            } else {
-                SortFilterItem(it.text, showBottomSheet)
-            }
+            val sortFilterItem = SortFilterItem(stringBuilder.append(it.text).append(" (").append(it.counter).append(")").toString())
             result.add(sortFilterItem)
+            stringBuilder.clear()
         }
         return result
     }
