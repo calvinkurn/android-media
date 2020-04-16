@@ -774,7 +774,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
     @SuppressLint("WrongConstant")
     private fun createImagePickerBuilder(selectedImagePathList: ArrayList<String>?): ImagePickerBuilder {
 
-        val title = getString(R.string.action_pick_image)
+        val title = getString(R.string.action_pick_photo)
 
         val placeholderDrawableRes = arrayListOf(
                 R.drawable.ic_utama,
