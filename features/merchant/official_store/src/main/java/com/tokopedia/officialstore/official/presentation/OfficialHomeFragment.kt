@@ -79,7 +79,6 @@ class OfficialHomeFragment :
         fun newInstance(bundle: Bundle?) = OfficialHomeFragment().apply { arguments = bundle }
     }
 
-    private var jankyFramesMonitoringListener: JankyFramesMonitoringListener? = null
     private val sentDynamicChannelTrackers = mutableSetOf<String>()
 
     @Inject
@@ -144,14 +143,7 @@ class OfficialHomeFragment :
         val adapterTypeFactory = OfficialHomeAdapterTypeFactory(this, this, this)
         adapter = OfficialHomeAdapter(adapterTypeFactory)
         recyclerView?.adapter = adapter
-
-        recyclerView?.let { jankyFramesMonitoringListener?.mainJankyFrameMonitoringUtil?.recordRecyclerViewScrollPerformance(it, pageName = PERFORMANCE_OS_PAGE_NAME) }
         return view
-    }
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        jankyFramesMonitoringListener = castContextToJankyFramesMonitoring(context)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -169,12 +161,6 @@ class OfficialHomeFragment :
     override fun onPause() {
         super.onPause()
         tracking?.sendAll()
-    }
-
-    private fun castContextToJankyFramesMonitoring(context: Context): JankyFramesMonitoringListener? {
-        return if (context is JankyFramesMonitoringListener) {
-            context
-        } else null
     }
 
     private fun resetData() {

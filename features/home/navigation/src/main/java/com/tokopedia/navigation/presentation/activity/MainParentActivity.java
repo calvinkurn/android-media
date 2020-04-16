@@ -57,12 +57,10 @@ import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.abstraction.common.utils.DisplayMetricUtils;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
-import com.tokopedia.analytics.performance.util.JankyFrameMonitoringUtil;
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback;
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.ApplinkRouter;
-import com.tokopedia.applink.DeeplinkDFMapper;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory;
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
@@ -86,7 +84,6 @@ import com.tokopedia.navigation_common.listener.AllNotificationListener;
 import com.tokopedia.navigation_common.listener.CartNotifyListener;
 import com.tokopedia.navigation_common.listener.FragmentListener;
 import com.tokopedia.navigation_common.listener.HomePerformanceMonitoringListener;
-import com.tokopedia.navigation_common.listener.JankyFramesMonitoringListener;
 import com.tokopedia.navigation_common.listener.RefreshNotificationListener;
 import com.tokopedia.navigation_common.listener.ShowCaseListener;
 import com.tokopedia.navigation_common.listener.MainParentStatusBarListener;
@@ -123,8 +120,7 @@ public class MainParentActivity extends BaseActivity implements
         CartNotifyListener,
         RefreshNotificationListener,
         MainParentStatusBarListener,
-        HomePerformanceMonitoringListener,
-        JankyFramesMonitoringListener {
+        HomePerformanceMonitoringListener{
 
     public static final String MO_ENGAGE_COUPON_CODE = "coupon_code";
     public static final String ARGS_TAB_POSITION = "TAB_POSITION";
@@ -195,7 +191,6 @@ public class MainParentActivity extends BaseActivity implements
     private float OS_STATE_SELECTED = 1f;
     private float OS_STATE_UNSELECTED = 0f;
     private float OS_STATE_ANIMATED = 0.7f;
-    private JankyFrameMonitoringUtil jankyFrameMonitoringUtil;
 
     @DeepLink({ApplinkConst.HOME, ApplinkConst.HOME_CATEGORY})
     public static Intent getApplinkIntent(Context context, Bundle bundle) {
@@ -261,7 +256,6 @@ public class MainParentActivity extends BaseActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         startHomePerformanceMonitoring();
         startMainParentPerformanceMonitoring();
-        startJankyFrameMonitoringUtil();
 
         super.onCreate(savedInstanceState);
         initInjector();
@@ -285,16 +279,6 @@ public class MainParentActivity extends BaseActivity implements
             list.add(DFM_MERCHANT_SELLER_CUSTOMERAPP);
             DFInstaller.installOnBackground(this.getApplication(), list, "Home");
         }
-    }
-
-    private void startJankyFrameMonitoringUtil() {
-        jankyFrameMonitoringUtil = new JankyFrameMonitoringUtil();
-        jankyFrameMonitoringUtil.init(this, new JankyFrameMonitoringUtil.OnFrameListener() {
-            @Override
-            public void onFrameRendered(@NotNull com.tokopedia.analytics.performance.util.FpiPerformanceData fpiPerformanceData) {
-
-            }
-        });
     }
 
     @NotNull
@@ -1230,10 +1214,5 @@ public class MainParentActivity extends BaseActivity implements
             setWindowFlag(this, WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, false);
             this.getWindow().setStatusBarColor(Color.TRANSPARENT);
         }
-    }
-
-    @Override
-    public JankyFrameMonitoringUtil getMainJankyFrameMonitoringUtil() {
-        return jankyFrameMonitoringUtil;
     }
 }
