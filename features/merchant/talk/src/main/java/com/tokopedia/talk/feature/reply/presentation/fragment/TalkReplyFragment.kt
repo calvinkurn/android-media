@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.Observer
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
@@ -13,15 +14,18 @@ import com.tokopedia.talk.common.TalkConstants
 import com.tokopedia.talk.common.di.TalkComponent
 import com.tokopedia.talk.feature.reply.di.DaggerTalkReplyComponent
 import com.tokopedia.talk.feature.reply.di.TalkReplyComponent
+import com.tokopedia.talk.feature.reply.presentation.viewmodel.TalkReplyViewModel
 import com.tokopedia.talk.feature.reply.presentation.widget.OnTermsAndConditionsClickedListener
 import com.tokopedia.talk.feature.report.presentation.fragment.TalkReportFragment
 import com.tokopedia.talk_old.R
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_talk_reading.*
 import kotlinx.android.synthetic.main.fragment_talk_reading.pageError
 import kotlinx.android.synthetic.main.fragment_talk_reading.pageLoading
 import kotlinx.android.synthetic.main.fragment_talk_reply.*
 import kotlinx.android.synthetic.main.partial_talk_connection_error.view.*
+import javax.inject.Inject
 
 class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>,
     OnTermsAndConditionsClickedListener {
@@ -30,6 +34,8 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
 
         const val TALK_ID = "talk_id"
         const val COMMENT_ID = "comment_id"
+        const val FOLLOWING = true
+        const val NOT_FOLLOWING = false
 
         @JvmStatic
         fun createNewInstance(talkId: Int = 0, commentId: Int = 0): TalkReportFragment =
@@ -38,6 +44,9 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
                     arguments?.putInt(COMMENT_ID, commentId)
                 }
     }
+
+    @Inject
+    lateinit var viewModel: TalkReplyViewModel
 
     override fun getScreenName(): String {
         return ""
@@ -59,6 +68,11 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_talk_reply, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        observeFollowUnfollowResponse()
+        super.onViewCreated(view, savedInstanceState)
     }
 
     private fun showPageLoading() {
@@ -100,14 +114,37 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
     private fun onSuccessFollowThread() {
         talkReplyHeader.setButtonToFollowed()
         showSuccessToaster(getString(R.string.toaster_follow_success))
+        viewModel.setIsFollowing(FOLLOWING)
     }
 
     private fun onSuccessUnfollowThread() {
         talkReplyHeader.setButtonToUnfollowed()
         showSuccessToaster(getString(R.string.toaster_unfollow_success))
+        viewModel.setIsFollowing(NOT_FOLLOWING)
+    }
+
+    private fun onFailFollowUnfollowThread() {
+
     }
 
     private fun goToTermsAndConditionsPage() {
         RouteManager.route(activity, "${ApplinkConst.WEBVIEW}?url=${TalkConstants.TERMS_AND_CONDITIONS_PAGE_URL}")
+    }
+
+    private fun observeFollowUnfollowResponse() {
+        viewModel.followUnfollowResult.observe(this, Observer {
+            when(it) {
+                is Success -> {
+                    if(viewModel.getIsFollowing()) {
+                        onSuccessUnfollowThread()
+                    } else {
+                        onSuccessFollowThread()
+                    }
+                }
+                else -> {
+                    onFailFollowUnfollowThread()
+                }
+            }
+        })
     }
 }
