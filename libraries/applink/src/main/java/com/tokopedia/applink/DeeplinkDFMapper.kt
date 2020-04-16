@@ -126,13 +126,15 @@ object DeeplinkDFMapper {
             add(DFP({ it.startsWithPattern(PLAY_DETAIL) }, DF_BASE, R.string.applink_title_play))
 
             // Digital
-            add(DFP({ it.startsWith(DIGITAL_SUBHOMEPAGE_HOME) ||
+            add(DFP({
+                it.startsWith(DIGITAL_SUBHOMEPAGE_HOME) ||
                     it.startsWith(TELCO_DIGITAL) ||
                     it.startsWith(DIGITAL_PRODUCT_FORM) ||
                     it.startsWith(GENERAL_TEMPLATE) ||
                     it.startsWith(CAMERA_OCR) ||
                     it.startsWith(VOUCHER_GAME) ||
-                    it.startsWith(CART_DIGITAL) || it.startsWith(DIGITAL_CART) }, DF_BASE, R.string.title_digital_subhomepage))
+                    it.startsWith(CART_DIGITAL) || it.startsWith(DIGITAL_CART)
+            }, DF_BASE, R.string.title_digital_subhomepage))
             add(DFP({ it.startsWithPattern(INTERNAL_SMARTCARD) }, DF_BASE, R.string.title_digital_emoney))
             add(DFP({ it.startsWith(GLOBAL_INTERNAL_DIGITAL_DEAL) }, DF_BASE, R.string.title_digital_deals))
             add(DFP({ it.startsWithPattern(GLOBAL_INTERNAL_DIGITAL_DEAL_SLUG) }, DF_BASE, R.string.title_digital_deals))
@@ -161,25 +163,24 @@ object DeeplinkDFMapper {
             add(DFP({ it.startsWith(REFERRAL) }, DF_BASE, R.string.applink_title_im_referral))
 
             // Merchant
-            add(DFP({ it.startsWithPattern(REPORT_PRODUCT) }, DF_BASE, R.string.applink_report_title))
             add(DFP({ it.startsWith(OPEN_SHOP) }, DF_BASE, R.string.title_open_shop))
 
-            add(DFP({ it.startsWith(INTERNAL_SELLER) }, DF_MERCHANT_SELLER, R.string.merchant_seller, DFWebviewFallbackUrl.SELLER_ORDER))
-            add(DFP({ it.startsWith(PRODUCT_MANAGE_LIST) }, DF_MERCHANT_SELLER, R.string.merchant_seller, DFWebviewFallbackUrl.MANAGE_PRODUCT))
-            add(DFP({ it.startsWith(POWER_MERCHANT_SUBSCRIBE) }, DF_MERCHANT_SELLER, R.string.merchant_seller, DFWebviewFallbackUrl.POWER_MERCHANT))
-            add(DFP({ it.startsWith(SHOP_SETTINGS_BASE) }, DF_MERCHANT_SELLER, R.string.merchant_seller, DFWebviewFallbackUrl.SHOP_SETTINGS))
+            add(DFP({ it.startsWith(INTERNAL_SELLER) }, DF_MERCHANT_SELLER, R.string.merchant_seller, { DFWebviewFallbackUrl.SELLER_ORDER }))
+            add(DFP({ it.startsWith(PRODUCT_MANAGE_LIST) }, DF_MERCHANT_SELLER, R.string.merchant_seller, { DFWebviewFallbackUrl.MANAGE_PRODUCT }))
+            add(DFP({ it.startsWith(POWER_MERCHANT_SUBSCRIBE) }, DF_MERCHANT_SELLER, R.string.merchant_seller, { DFWebviewFallbackUrl.POWER_MERCHANT }))
+            add(DFP({ it.startsWith(SHOP_SETTINGS_BASE) }, DF_MERCHANT_SELLER, R.string.merchant_seller, { DFWebviewFallbackUrl.SHOP_SETTINGS }))
             add(DFP({
                 it.startsWith(TOPADS_DASHBOARD_CUSTOMER) || it.startsWith(TOPADS_DASHBOARD_INTERNAL)
-            }, DF_MERCHANT_SELLER, R.string.merchant_seller, DFWebviewFallbackUrl.TOP_ADS_DASHBOARD))
-            add(DFP({ it.startsWith(OPPORTUNITY) }, DF_MERCHANT_SELLER, R.string.merchant_seller, DFWebviewFallbackUrl.OPPORTUNITY))
-            add(DFP({ it.startsWith(SELLER_TRANSACTION) }, DF_MERCHANT_SELLER, R.string.merchant_seller, DFWebviewFallbackUrl.SELLER_ORDER))
+            }, DF_MERCHANT_SELLER, R.string.merchant_seller, { DFWebviewFallbackUrl.TOP_ADS_DASHBOARD }))
+            add(DFP({ it.startsWith(OPPORTUNITY) }, DF_MERCHANT_SELLER, R.string.merchant_seller, { DFWebviewFallbackUrl.OPPORTUNITY }))
+            add(DFP({ it.startsWith(SELLER_TRANSACTION) }, DF_MERCHANT_SELLER, R.string.merchant_seller, { DFWebviewFallbackUrl.SELLER_ORDER }))
 
             // Operational
             add(DFP({
                 it.startsWith(CONTACT_US_NATIVE) || it.startsWith(CONTACT_US) || it.startsWithPattern(TICKET_DETAIL) ||
-                        it.startsWith(INTERNAL_INBOX_LIST)
-            }, DF_OPERATIONAL_CONTACT_US, R.string.applink_title_contact_us, DFWebviewFallbackUrl.OPERATIONAL_CONTACT_US))
-            add(DFP({ it.startsWith(CHAT_BOT) }, DF_OPERATIONAL_CONTACT_US, R.string.title_applink_chatbot, DFWebviewFallbackUrl.OPERATIONAL_CHAT_BOT))
+                    it.startsWith(INTERNAL_INBOX_LIST)
+            }, DF_OPERATIONAL_CONTACT_US, R.string.applink_title_contact_us, { DFWebviewFallbackUrl.OPERATIONAL_CONTACT_US }))
+            add(DFP({ it.startsWith(CHAT_BOT) }, DF_OPERATIONAL_CONTACT_US, R.string.title_applink_chatbot, { DFWebviewFallbackUrl.OPERATIONAL_CHAT_BOT }))
 
             // Payment
             add(DFP({ it.startsWith(PAYMENT_SETTING) }, DF_BASE, R.string.payment_settings_title))
@@ -188,10 +189,10 @@ object DeeplinkDFMapper {
             add(DFP({ it.startsWith(INTERNAL_TOKOPOINTS) }, DF_BASE, R.string.title_tokopoints))
 
             //Entertainment
-            add(DFP({ it.startsWith(EVENT_HOME)}, DF_BASE, R.string.title_home_event))
+            add(DFP({ it.startsWith(EVENT_HOME) }, DF_BASE, R.string.title_home_event))
             // Salam
-            add(DFP({ it.startsWith(SALAM_UMRAH_HOME_PAGE) }, DF_SALAM_UMRAH, R.string.title_salam, DFWebviewFallbackUrl.SALAM_UMRAH))
-            add(DFP({ it.startsWith(SALAM_ORDER_DETAIL) }, DF_SALAM_UMRAH, R.string.title_salam, DFWebviewFallbackUrl.SALAM_UMRAH))
+            add(DFP({ it.startsWith(SALAM_UMRAH_HOME_PAGE) }, DF_SALAM_UMRAH, R.string.title_salam, { DFWebviewFallbackUrl.SALAM_UMRAH }))
+            add(DFP({ it.startsWith(SALAM_ORDER_DETAIL) }, DF_SALAM_UMRAH, R.string.title_salam, { DFWebviewFallbackUrl.SALAM_UMRAH }))
 
             // Travel
             add(DFP({ it.startsWith(TRAVEL_SUBHOMEPAGE) }, DF_BASE, R.string.title_travel_homepage))
@@ -202,7 +203,10 @@ object DeeplinkDFMapper {
             // User
             add(DFP({ it.startsWith(GROUPCHAT_LIST) }, DF_BASE, R.string.title_groupchat))
             add(DFP({ it.startsWith(GROUPCHAT_DETAIL) }, DF_BASE, R.string.title_groupchat))
-            add(DFP({ it.startsWith(SETTING_PROFILE) }, DF_USER_SETTINGS, R.string.applink_profile_completion_title, DFWebviewFallbackUrl.USER_PROFILE_SETTINGS))
+
+            add(DFP({ it.startsWith(SETTING_PROFILE) }, DF_USER_SETTINGS, R.string.applink_profile_completion_title, { DFWebviewFallbackUrl.USER_PROFILE_SETTINGS }))
+            add(DFP({ it.startsWithPattern(REPORT_PRODUCT) }, DF_USER_SETTINGS, R.string.applink_report_title,
+                { url -> DeeplinkDFFallbackGenerator.generateProductReportFallback(url) }))
             add(DFP({ it.startsWith(CHANGE_PHONE_NUMBER) }, DF_BASE, R.string.applink_change_phone_number))
             add(DFP({ it.startsWith(CHANGE_PASSWORD) }, DF_BASE, R.string.applink_change_password))
             add(DFP({ it.startsWith(SETTING_BANK) }, DF_BASE, R.string.applink_setting_bank_title))
@@ -230,13 +234,13 @@ object DeeplinkDFMapper {
 
     private val deeplinkDFPatternListSellerApp: List<DFP> by lazy {
         mutableListOf<DFP>().apply {
-            add(DFP({ it.startsWith(SHOP_SETTINGS_BASE) }, DFM_SHOP_SETTINGS_SELLERAPP, R.string.shop_settings_title, DFWebviewFallbackUrl.SHOP_SETTINGS))
+            add(DFP({ it.startsWith(SHOP_SETTINGS_BASE) }, DFM_SHOP_SETTINGS_SELLERAPP, R.string.shop_settings_title, { DFWebviewFallbackUrl.SHOP_SETTINGS }))
             add(DFP({
                 it.startsWith(TOPADS_DASHBOARD_SELLER) ||
                     it.startsWith(TOPADS_DASHBOARD_INTERNAL)
-            }, DFM_SELLER_TOPADS_DASHBOARD, R.string.applink_topads_dashboard_title, DFWebviewFallbackUrl.TOP_ADS_DASHBOARD))
+            }, DFM_SELLER_TOPADS_DASHBOARD, R.string.applink_topads_dashboard_title, { DFWebviewFallbackUrl.TOP_ADS_DASHBOARD }))
             add(DFP({ it.startsWith(PRODUCT_MANAGE_LIST) }, DFM_PRODUCT_MANAGE_SELLER, R.string.title_applink_product_manage,
-                DFWebviewFallbackUrl.MANAGE_PRODUCT))
+                { DFWebviewFallbackUrl.MANAGE_PRODUCT }))
         }
     }
 
@@ -284,7 +288,8 @@ object DeeplinkDFMapper {
         list?.forEach {
             if (it.logic(deeplink)) {
                 return getDFDeeplinkIfNotInstalled(context,
-                    deeplink, it.moduleId, context.getString(it.moduleNameResourceId), it.webviewFallback)
+                    deeplink, it.moduleId, context.getString(it.moduleNameResourceId), (it.webviewFallbackLogic?.invoke(deeplink))
+                    ?: "")
             }
         }
         return null
@@ -367,7 +372,7 @@ class DFP(
     val logic: ((deeplink: String) -> Boolean),
     val moduleId: String,
     val moduleNameResourceId: Int,
-    val webviewFallback: String = ""
+    val webviewFallbackLogic: ((deeplink: String) -> String)? = null
 )
 
 fun String.startsWithPattern(prefix: String): Boolean {

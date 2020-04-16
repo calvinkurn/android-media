@@ -1750,8 +1750,8 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         viewModel.getDynamicProductInfoP1?.run {
             doActionOrLogin({
                 context?.let {
-                    val intent = RouteManager.getIntent(it, ApplinkConstInternalMarketplace.REPORT_PRODUCT,
-                            basic.productID)
+                    val intent = RouteManager.getIntent(it, ApplinkConstInternalMarketplace.REPORT_PRODUCT_URL,
+                            basic.productID, basic.url)
                     startActivityForResult(intent, ProductDetailConstant.REQUEST_CODE_REPORT)
                 }
                 productDetailTracking.eventReportLogin()
