@@ -18,7 +18,7 @@ class SellerFieldFragment: SettingFieldFragment() {
         * showing pinned message
         * if notification permission turn off
         * */
-        if (isNotificationEnabled() == false) {
+        if (!isNotificationEnabled()) {
             pinnedData.add(activationPushNotif())
         }
         pinnedData.addAll(data.data)
@@ -40,6 +40,6 @@ class SellerFieldFragment: SettingFieldFragment() {
     }
 
     override fun getScreenName() = getString(R.string.settingnotif_settings_seller_title)
-    override fun getNotificationType() = SELLER_NOTIF_TYPE
+    override fun getNotificationType() = TYPE_SELLER_NOTIF
 
 }
