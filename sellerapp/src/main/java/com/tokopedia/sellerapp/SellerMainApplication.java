@@ -38,12 +38,12 @@ import com.tokopedia.sellerapp.fcm.AppNotificationReceiver;
 import com.tokopedia.sellerapp.utils.CacheApiWhiteList;
 import com.tokopedia.sellerapp.utils.timber.TimberWrapper;
 import com.tokopedia.sellerhome.view.activity.SellerHomeActivity;
-import com.tokopedia.tokofix.TokoFix;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.url.TokopediaUrl;
 
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
+
 import timber.log.Timber;
 
 /**
@@ -150,7 +150,6 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         }
         TimberWrapper.init(this);
         super.onCreate();
-        TokoFix.init(this, BuildConfig.VERSION_NAME);
         MoEPushCallBacks.getInstance().setOnMoEPushNavigationAction(this);
         InAppManager.getInstance().setInAppListener(this);
         initCacheApi();

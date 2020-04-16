@@ -80,7 +80,6 @@ ext {
             tkpddesign              : ":tkpddesign",
             translator              : ":libraries:translator",
             traceroute              : ":libraries:traceroute",
-            imagePreviewSlider      : ":libraries:imagepreviewslider",
-            tokofix                 : ":libraries:tokofix"
+            imagePreviewSlider      : ":libraries:imagepreviewslider"
     ]
 }
