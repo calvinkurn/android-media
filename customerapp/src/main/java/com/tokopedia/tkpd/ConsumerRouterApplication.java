@@ -300,6 +300,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     private Iris mIris;
     private UserSessionInterface userSession;
 
+    private static int REQUEST_LOGOUT = 1000;
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -740,9 +742,20 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public void onForceLogoutAnomaly(Activity activity) {
         userSession.logoutSession();
-        RouteManager.route(activity, ApplinkConstInternalGlobal.LOGOUT, false);
-        Intent intent = getLoginIntent(activity);
-        startActivity(intent);
+        Intent intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.LOGOUT);
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_RETURN_HOME, false);
+        startActivityForResult(intent, REQUEST_LOGOUT);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        int rsCode = resultCode;
+        if (requestCode == REQUEST_LOGOUT && rsCode == Activity.RESULT_OK) {
+            Intent intent = getLoginIntent(activity);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+        }
     }
 
     @Override
