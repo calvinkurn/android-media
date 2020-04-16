@@ -12,6 +12,7 @@ import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 import rx.subscriptions.CompositeSubscription
 import timber.log.Timber
+import kotlin.system.measureTimeMillis
 
 class ValidatorViewModel constructor(val context: Application) : AndroidViewModel(context) {
 
@@ -33,6 +34,7 @@ class ValidatorViewModel constructor(val context: Application) : AndroidViewMode
     }
 
     private fun fetchGtmLog() {
+        val startTime = System.currentTimeMillis()
         dao.getAllLogs()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -43,7 +45,8 @@ class ValidatorViewModel constructor(val context: Application) : AndroidViewMode
                             }
 
                             override fun onCompleted() {
-
+                                val endTime = System.currentTimeMillis()
+                                Timber.i("Elapsed time %d", endTime-startTime)
                             }
 
                             override fun onError(e: Throwable?) {
