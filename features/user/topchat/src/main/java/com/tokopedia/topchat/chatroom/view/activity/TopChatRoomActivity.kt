@@ -36,6 +36,11 @@ class TopChatRoomActivity : BaseChatToolbarActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         useLightNotificationBar()
+        initWindowBackground()
+    }
+
+    private fun initWindowBackground() {
+        window.decorView.setBackgroundColor(Color.WHITE)
     }
 
     private fun useLightNotificationBar() {
