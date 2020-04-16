@@ -17,6 +17,12 @@ class OnboardingLayoutManager(
         reverseLayout: Boolean
 ) : LinearLayoutManager(context, orientation, reverseLayout) {
 
+    companion object {
+        private const val SLIDE_1 = 0
+        private const val SLIDE_2 = 1
+        private const val SLIDE_3 = 2
+    }
+
     override fun scrollHorizontallyBy(dx: Int, recycler: RecyclerView.Recycler?, state: RecyclerView.State?): Int {
         setTextHeaderAlphaOnSwipe(dx)
         return super.scrollHorizontallyBy(dx, recycler, state)
@@ -31,14 +37,14 @@ class OnboardingLayoutManager(
     private fun setTextHeaderAlphaOnSwipe(dx: Int) {
         val isScrollLeft = dx < 0
         if (isScrollLeft) {
-            setLeftAlpha(getViewAt(0))
-            setRightAlpha(getViewAt(1))
+            setLeftAlpha(getViewAt(SLIDE_1))
+            setRightAlpha(getViewAt(SLIDE_2))
         } else {
             for (i in 0..itemCount.minus(1)) {
                 setLeftAlpha(getViewAt(i))
                 when (i) {
-                    1 -> setRightAlpha(getViewAt(2))
-                    else -> setRightAlpha(getViewAt(1))
+                    1 -> setRightAlpha(getViewAt(SLIDE_3))
+                    else -> setRightAlpha(getViewAt(SLIDE_2))
                 }
             }
         }
