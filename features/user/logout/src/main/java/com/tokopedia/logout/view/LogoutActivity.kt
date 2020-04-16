@@ -58,6 +58,7 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
     private val logoutViewModel by lazy { viewModelProvider.get(LogoutViewModel::class.java) }
 
     private var isReturnToHome = true
+    private var isSessionExpired = false
 
     private lateinit var mGoogleSignInClient: GoogleSignInClient
 
@@ -92,6 +93,7 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
     private fun getParams() {
         if (intent.extras != null) {
             isReturnToHome = intent.extras?.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_RETURN_HOME, true) as Boolean
+            isSessionExpired = intent.extras?.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_SESSION_EXPIRED, false) as Boolean
         }
     }
 
@@ -168,8 +170,12 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
                 RouteManager.route(applicationContext, ApplinkConst.HOME)
             }
         } else {
-            setResult(Activity.RESULT_OK)
-            finish()
+            if(isSessionExpired) {
+                RouteManager.getIntent(applicationContext, ApplinkConst.LOGIN)
+            } else {
+                setResult(Activity.RESULT_OK)
+                finish()
+            }
         }
     }
 

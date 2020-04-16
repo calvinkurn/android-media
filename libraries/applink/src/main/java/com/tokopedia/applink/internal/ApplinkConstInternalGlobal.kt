@@ -401,6 +401,12 @@ object ApplinkConstInternalGlobal {
     @JvmField
     val PARAM_IS_RETURN_HOME = "return_to_home"
 
+    /**
+     *
+     */
+    @JvmField
+    val PARAM_IS_SESSION_EXPIRED = "is_session_expired"
+
     // AdvancedSettingActivity
     // tokopedia-android-internal://global/advanced-setting
     @JvmField
