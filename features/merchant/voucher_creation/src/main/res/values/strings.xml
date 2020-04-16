@@ -2,4 +2,5 @@
 <resources>
     <string name="app_name">Voucher Creation</string>
     <string name="create_voucher_title">Tambah Voucher Toko</string>
+    <string name="voucher_creation_step_next">Lanjutkan</string>
 </resources>

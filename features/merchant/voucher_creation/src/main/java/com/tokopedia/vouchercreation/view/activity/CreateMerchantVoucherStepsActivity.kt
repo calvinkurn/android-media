@@ -68,11 +68,7 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
 
     private val onNavigationClickListener by lazy {
         View.OnClickListener {
-            if (currentStepPosition == 0) {
-                super.onBackPressed()
-            } else {
-                onBackStep()
-            }
+            onBackPressed()
         }
     }
 
@@ -86,6 +82,14 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
         initInjector()
         setupView()
         observeLiveData()
+    }
+
+    override fun onBackPressed() {
+        if (currentStepPosition == 0) {
+            super.onBackPressed()
+        } else {
+            onBackStep()
+        }
     }
 
     private fun initInjector() {
@@ -126,6 +130,7 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
     private fun setupViewPager() {
         viewModel.setMaxPosition(fragmentStepsHashMap.size - 1)
         createMerchantVoucherViewPager.run {
+            isUserInputEnabled = false
             adapter = viewPagerAdapter
             registerOnPageChangeCallback(viewPagerOnPageChangeCallback)
         }
