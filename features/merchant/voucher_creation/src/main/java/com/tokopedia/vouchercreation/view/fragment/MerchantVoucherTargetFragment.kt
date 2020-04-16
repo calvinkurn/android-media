@@ -4,14 +4,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.vouchercreation.R
 
-class MerchantVoucherTargetFragment : BaseDaggerFragment() {
+class MerchantVoucherTargetFragment(onNextInvoker: () -> Unit = {}) : BaseCreateMerchantVoucherFragment(onNextInvoker) {
 
     companion object {
         @JvmStatic
-        fun createInstance() = MerchantVoucherTargetFragment()
+        fun createInstance(onNext: () -> Unit) = MerchantVoucherTargetFragment(onNext)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

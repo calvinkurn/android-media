@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.tokopedia.header.HeaderUnify
+        android:id="@+id/createMerchantVoucherHeader"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        app:unify_header_title="@string/create_voucher_title"/>
+
+    <ProgressBar
+        android:id="@+id/createMerchantVoucherProgressBar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:max="100"
+        android:background="@color/white"
+        android:progress="30"/>
+
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/createMerchantVoucherViewPager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+</LinearLayout>

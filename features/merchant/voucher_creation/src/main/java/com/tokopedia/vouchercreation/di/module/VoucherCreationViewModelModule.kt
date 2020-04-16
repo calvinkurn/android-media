@@ -1,0 +1,26 @@
+package com.tokopedia.vouchercreation.di.module
+
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
+import com.tokopedia.vouchercreation.di.scope.VoucherCreationScope
+import com.tokopedia.vouchercreation.view.viewmodel.CreateMerchantVoucherStepsViewModel
+import dagger.Binds
+import dagger.Module
+import dagger.multibindings.IntoMap
+
+@VoucherCreationScope
+@Module
+abstract class VoucherCreationViewModelModule {
+
+    @Binds
+    @VoucherCreationScope
+    abstract fun provideViewModelFactory(viewModelFactory: ViewModelFactory): ViewModelProvider.Factory
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(CreateMerchantVoucherStepsViewModel::class)
+    abstract fun provideCreateMerchantVoucherStepsViewModel(createMerchantVoucherStepsViewModel: CreateMerchantVoucherStepsViewModel): ViewModel
+
+}

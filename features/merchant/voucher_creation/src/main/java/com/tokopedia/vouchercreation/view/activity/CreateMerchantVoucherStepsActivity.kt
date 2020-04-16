@@ -1,11 +1,30 @@
 package com.tokopedia.vouchercreation.view.activity
 
-import androidx.fragment.app.Fragment
-import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
-import com.tokopedia.vouchercreation.view.fragment.MerchantVoucherTargetFragment
+import android.os.Bundle
+import androidx.fragment.app.FragmentActivity
+import com.tokopedia.vouchercreation.R
+import com.tokopedia.vouchercreation.view.adapter.CreateMerchantVoucherStepsAdapter
+import kotlinx.android.synthetic.main.activity_create_merchant_voucher_steps.*
 
-class CreateMerchantVoucherStepsActivity : BaseSimpleActivity() {
+class CreateMerchantVoucherStepsActivity : FragmentActivity() {
 
-    override fun getNewFragment(): Fragment = MerchantVoucherTargetFragment.createInstance()
+    private val viewPagerAdapter by lazy {
+        CreateMerchantVoucherStepsAdapter(this)
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_create_merchant_voucher_steps)
+        setupAdapter()
+        observeLiveData()
+    }
+
+    private fun setupAdapter() {
+        createMerchantVoucherViewPager.adapter = viewPagerAdapter
+    }
+
+    private fun observeLiveData() {
+
+    }
 
 }
