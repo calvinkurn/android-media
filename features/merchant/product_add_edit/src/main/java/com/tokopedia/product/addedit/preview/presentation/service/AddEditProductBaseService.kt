@@ -2,23 +2,26 @@ package com.tokopedia.product.addedit.preview.presentation.service
 
 import androidx.core.app.JobIntentService
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.mediauploader.data.state.UploadResult
 import com.tokopedia.mediauploader.domain.UploaderUseCase
 import com.tokopedia.product.addedit.common.AddEditProductComponentBuilder
+import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.Companion.GQL_ERROR_SUBSTRING
 import com.tokopedia.product.addedit.common.constant.AddEditProductExtraConstant.Companion.IMAGE_SOURCE_ID
 import com.tokopedia.product.addedit.common.util.AddEditProductNotificationManager
+import com.tokopedia.product.addedit.common.util.ResourceProvider
 import com.tokopedia.product.addedit.draft.domain.usecase.DeleteProductDraftUseCase
 import com.tokopedia.product.addedit.draft.domain.usecase.SaveProductDraftUseCase
 import com.tokopedia.product.addedit.preview.di.AddEditProductPreviewModule
 import com.tokopedia.product.addedit.preview.di.DaggerAddEditProductPreviewComponent
 import com.tokopedia.product.addedit.preview.domain.mapper.AddProductInputMapper
-import com.tokopedia.product.addedit.preview.domain.mapper.DuplicateProductInputMapper
 import com.tokopedia.product.addedit.preview.domain.mapper.EditProductInputMapper
 import com.tokopedia.product.addedit.preview.domain.usecase.ProductAddUseCase
 import com.tokopedia.product.addedit.preview.domain.usecase.ProductEditUseCase
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.io.File
 import javax.inject.Inject
@@ -42,9 +45,14 @@ abstract class AddEditProductBaseService : JobIntentService(), CoroutineScope {
     @Inject
     lateinit var deleteProductDraftUseCase: DeleteProductDraftUseCase
     @Inject
-    lateinit var duplicateProductInputMapper: DuplicateProductInputMapper
+    lateinit var resourceProvider: ResourceProvider
 
     private var notificationManager: AddEditProductNotificationManager? = null
+
+    companion object {
+        const val JOB_ID = 13131314
+        const val NOTIFICATION_CHANGE_DELAY = 500L
+    }
 
     override fun onCreate() {
         super.onCreate()
@@ -68,8 +76,13 @@ abstract class AddEditProductBaseService : JobIntentService(), CoroutineScope {
         notificationManager?.onSuccessUpload()
     }
 
-    fun setUploadProductDataSuccess(errorMessage: String) {
-        notificationManager?.onFailedUpload(errorMessage)
+    fun setUploadProductDataError(errorMessage: String) {
+        // don't display gql error message to user
+        if (errorMessage.contains(GQL_ERROR_SUBSTRING)) {
+            notificationManager?.onFailedUpload(resourceProvider.getGqlErrorMessage() ?: "")
+        } else {
+            notificationManager?.onFailedUpload(errorMessage)
+        }
     }
 
     fun uploadProductImages(imageUrlOrPathList: List<String>, sizeChartPath: String) {
@@ -83,7 +96,7 @@ abstract class AddEditProductBaseService : JobIntentService(), CoroutineScope {
             getNotificationManager(urlImageCount)
         }
         notificationManager?.onSubmitUpload()
-        launch(coroutineContext) {
+        launchCatchError(block = {
             repeat(urlImageCount) { i ->
                 val imageId = uploadImageAndGetId(imageUrlOrPathList[i])
                 uploadIdList.add(imageId)
@@ -91,8 +104,11 @@ abstract class AddEditProductBaseService : JobIntentService(), CoroutineScope {
             if (sizeChartPath.isNotEmpty()) { // if sizeChartPath valid then upload the image
                 sizeChartUploadId = uploadImageAndGetId(sizeChartPath)
             }
+            delay(NOTIFICATION_CHANGE_DELAY)
             onUploadProductImagesDone(uploadIdList, sizeChartUploadId)
-        }
+        }, onError = {
+            it.message?.let { errorMessage -> setUploadProductDataError(errorMessage) }
+        })
     }
 
     private suspend fun uploadImageAndGetId(imagePath: String): String {

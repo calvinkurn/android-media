@@ -18,9 +18,7 @@ import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProduct
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.UNIT_DAY
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.UNIT_WEEK
 import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
-import com.tokopedia.product.addedit.draft.domain.usecase.SaveProductDraftUseCase
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
-import com.tokopedia.product.manage.common.draft.data.model.ProductDraft
 import com.tokopedia.unifycomponents.list.ListItemUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -33,13 +31,10 @@ import javax.inject.Inject
 class AddEditProductDetailViewModel @Inject constructor(
         val provider: ResourceProvider, dispatcher: CoroutineDispatcher,
         private val getNameRecommendationUseCase: GetNameRecommendationUseCase,
-        private val getCategoryRecommendationUseCase: GetCategoryRecommendationUseCase,
-        private val saveProductDraftUseCase: SaveProductDraftUseCase
+        private val getCategoryRecommendationUseCase: GetCategoryRecommendationUseCase
 ) : BaseViewModel(dispatcher) {
 
     var isEditing = false
-
-    var isDrafting = false
 
     var isAdding = false
 
@@ -87,14 +82,6 @@ class AddEditProductDetailViewModel @Inject constructor(
     val isPreOrderDurationInputError: LiveData<Boolean>
         get() = mIsPreOrderDurationInputError
     var preOrderDurationMessage: String = ""
-
-    private val saveProductDraftResultMutableLiveData = MutableLiveData<Result<Long>>()
-    val saveProductDraftResultLiveData: LiveData<Result<Long>>
-        get() = saveProductDraftResultMutableLiveData
-
-    private val getProductDraftResultMutableLiveData = MutableLiveData<Result<ProductDraft>>()
-    val getProductDraftResultLiveData: LiveData<Result<ProductDraft>>
-        get() = getProductDraftResultMutableLiveData
 
     var isEditMode: Boolean = false
 
@@ -376,17 +363,6 @@ class AddEditProductDetailViewModel @Inject constructor(
             })
         }, onError = {
             productCategoryRecommendationLiveData.value = Fail(it)
-        })
-    }
-
-    fun saveProductDraft(productDraft: ProductDraft, productId: Long, isUploading: Boolean) {
-        launchCatchError(block = {
-            saveProductDraftUseCase.params = SaveProductDraftUseCase.createRequestParams(productDraft, productId, isUploading)
-            saveProductDraftResultMutableLiveData.value = withContext(Dispatchers.IO) {
-                saveProductDraftUseCase.executeOnBackground()
-            }.let { Success(it) }
-        }, onError = {
-            saveProductDraftResultMutableLiveData.value = Fail(it)
         })
     }
 }

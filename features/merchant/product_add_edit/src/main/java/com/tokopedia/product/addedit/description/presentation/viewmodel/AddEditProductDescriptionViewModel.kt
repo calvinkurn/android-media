@@ -13,8 +13,6 @@ import com.tokopedia.product.addedit.description.domain.usecase.GetProductVarian
 import com.tokopedia.product.addedit.description.domain.usecase.GetYoutubeVideoUseCase
 import com.tokopedia.product.addedit.description.presentation.model.*
 import com.tokopedia.product.addedit.description.presentation.model.youtube.YoutubeVideoModel
-import com.tokopedia.product.addedit.draft.domain.usecase.SaveProductDraftUseCase
-import com.tokopedia.product.manage.common.draft.data.model.ProductDraft
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -28,8 +26,7 @@ class AddEditProductDescriptionViewModel @Inject constructor(
         coroutineDispatcher: CoroutineDispatcher,
         private val resource: ResourceProvider,
         private val getProductVariantUseCase: GetProductVariantUseCase,
-        private val getYoutubeVideoUseCase: GetYoutubeVideoUseCase,
-        private val saveProductDraftUseCase: SaveProductDraftUseCase
+        private val getYoutubeVideoUseCase: GetYoutubeVideoUseCase
 ) : BaseViewModel(coroutineDispatcher) {
 
     var categoryId: String = ""
@@ -38,6 +35,7 @@ class AddEditProductDescriptionViewModel @Inject constructor(
     var descriptionInputModel: DescriptionInputModel = DescriptionInputModel()
     var variantInputModel: ProductVariantInputModel = ProductVariantInputModel()
     var isEditMode: Boolean = false
+    var isAddMode: Boolean = false
 
     private val _productVariant = MutableLiveData<Result<List<ProductVariantByCatModel>>>()
     val productVariant: LiveData<Result<List<ProductVariantByCatModel>>>
@@ -45,10 +43,6 @@ class AddEditProductDescriptionViewModel @Inject constructor(
 
     private val _videoYoutube = MutableLiveData<Result<YoutubeVideoModel>>()
     val videoYoutube: LiveData<Result<YoutubeVideoModel>> = _videoYoutube
-
-    private val _saveProductDraftResult = MutableLiveData<Result<Long>>()
-    val saveProductDraftResult: LiveData<Result<Long>>
-        get() = _saveProductDraftResult
 
     fun getVariants(categoryId: String) {
         launchCatchError(block = {
@@ -111,17 +105,6 @@ class AddEditProductDescriptionViewModel @Inject constructor(
             it.errorMessage.isNotEmpty()
         }
         return videoLinks.isEmpty()
-    }
-
-    fun saveProductDraft(productDraft: ProductDraft, productId: Long, isUploading: Boolean) {
-        launchCatchError(block = {
-            saveProductDraftUseCase.params = SaveProductDraftUseCase.createRequestParams(productDraft, productId, isUploading)
-            _saveProductDraftResult.value = withContext(Dispatchers.IO) {
-                saveProductDraftUseCase.executeOnBackground()
-            }.let { Success(it) }
-        }, onError = {
-            _saveProductDraftResult.value = Fail(it)
-        })
     }
 
     fun setVariantInput(productVariant: ArrayList<ProductVariantCombinationViewModel>,

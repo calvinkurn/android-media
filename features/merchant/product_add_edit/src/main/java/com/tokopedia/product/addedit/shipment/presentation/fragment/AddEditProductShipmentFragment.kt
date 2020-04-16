@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.kotlin.extensions.view.afterTextChanged
@@ -17,7 +16,6 @@ import com.tokopedia.product.addedit.common.util.getText
 import com.tokopedia.product.addedit.common.util.getTextIntOrZero
 import com.tokopedia.product.addedit.common.util.setModeToNumberInput
 import com.tokopedia.product.addedit.common.util.setText
-import com.tokopedia.product.addedit.draft.mapper.AddEditProductMapper.mapProductInputModelDetailToDraft
 import com.tokopedia.product.addedit.optionpicker.OptionPicker
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
@@ -29,7 +27,8 @@ import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProdu
 import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.UNIT_KILOGRAM
 import com.tokopedia.product.addedit.shipment.presentation.model.ShipmentInputModel
 import com.tokopedia.product.addedit.shipment.presentation.viewmodel.AddEditProductShipmentViewModel
-import com.tokopedia.product.addedit.tracking.*
+import com.tokopedia.product.addedit.tracking.ProductAddShippingTracking
+import com.tokopedia.product.addedit.tracking.ProductEditShippingTracking
 import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
@@ -60,11 +59,12 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
                 }
             }
         }
-        fun createInstanceEditMode(shipmentInputModel: ShipmentInputModel): Fragment {
+        fun createInstanceEditMode(shipmentInputModel: ShipmentInputModel, isAddMode: Boolean): Fragment {
             return AddEditProductShipmentFragment().apply {
                 arguments = Bundle().apply {
                     putParcelable(EXTRA_SHIPMENT_INPUT_MODEL, shipmentInputModel)
                     putBoolean(EXTRA_IS_EDITMODE, true)
+                    putBoolean(EXTRA_IS_ADD_MODE, isAddMode)
                 }
             }
         }
@@ -78,6 +78,7 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
 
         const val EXTRA_SHIPMENT_INPUT_MODEL = "shipment_input_model"
         const val EXTRA_IS_EDITMODE = "shipment_is_editmode"
+        const val EXTRA_IS_ADD_MODE = "shipment_is_add_mode"
         const val REQUEST_CODE_SHIPMENT = 0x04
     }
 
@@ -96,9 +97,11 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
         arguments?.run {
             val shipmentInputModel: ShipmentInputModel = getParcelable(EXTRA_SHIPMENT_INPUT_MODEL) ?: ShipmentInputModel()
             val isEditMode = getBoolean(EXTRA_IS_EDITMODE, false)
+            val isAddMode = getBoolean(EXTRA_IS_ADD_MODE, false)
             productInputModel = getParcelable(EXTRA_PRODUCT_INPUT_MODEL) ?: ProductInputModel()
             shipmentViewModel.shipmentInputModel = shipmentInputModel
             shipmentViewModel.isEditMode = isEditMode
+            shipmentViewModel.isAddMode = isAddMode
         }
         if (!shipmentViewModel.isEditMode) {
             ProductAddShippingTracking.trackScreen()
@@ -139,7 +142,7 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
             submitInputEdit()
         }
         switchInsurance?.setOnCheckedChangeListener { buttonView, isChecked ->
-            if (shipmentViewModel.isEditMode) {
+            if (shipmentViewModel.isEditMode && !shipmentViewModel.isAddMode) {
                 ProductEditShippingTracking.clickInsurance(shopId)
             } else {
                 ProductAddShippingTracking.clickInsurance(shopId)
@@ -151,14 +154,6 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
         super.onResume()
         btnEnd?.isLoading = false
         btnSave?.isLoading = false
-    }
-
-    fun onCtaYesPressed() {
-        ProductAddStepperTracking.trackDraftYes(shopId)
-    }
-
-    fun onCtaNoPressed() {
-        ProductAddStepperTracking.trackDraftCancel(shopId)
     }
 
     fun sendDataBack() {
@@ -175,17 +170,11 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
     }
 
     fun onBackPressed() {
-        if (shipmentViewModel.isEditMode) {
+        if (shipmentViewModel.isEditMode && !shipmentViewModel.isAddMode) {
             ProductEditShippingTracking.clickBack(shopId)
         } else {
             ProductAddShippingTracking.clickBack(shopId)
         }
-    }
-
-    fun saveProductDraft(isUploading: Boolean) {
-        inputAllDataInInputDraftModel()
-        productInputModel?.let { shipmentViewModel.saveProductDraft(mapProductInputModelDetailToDraft(it), it.draftId,isUploading) }
-        Toast.makeText(context, R.string.label_succes_save_draft, Toast.LENGTH_LONG).show()
     }
 
     private fun inputAllDataInInputDraftModel() {
@@ -209,7 +198,7 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
     }
 
     private fun showUnitWeightOption() {
-        if (shipmentViewModel.isEditMode) {
+        if (shipmentViewModel.isEditMode && !shipmentViewModel.isAddMode) {
             ProductEditShippingTracking.clickWeightDropDown(shopId)
         } else {
             ProductAddShippingTracking.clickWeightDropDown(shopId)
@@ -217,7 +206,7 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
         fragmentManager?.let {
             val optionPicker = OptionPicker()
             optionPicker.setCloseClickListener {
-                if (shipmentViewModel.isEditMode) {
+                if (shipmentViewModel.isEditMode && !shipmentViewModel.isAddMode) {
                     ProductEditShippingTracking.clickCancelChangeWeight(shopId)
                 } else {
                     ProductAddShippingTracking.clickCancelChangeWeight(shopId)
@@ -238,7 +227,7 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
             }
 
             optionPicker.setOnItemClickListener { selectedText: String, selectedPosition: Int ->
-                if (shipmentViewModel.isEditMode) {
+                if (shipmentViewModel.isEditMode && !shipmentViewModel.isAddMode) {
                     ProductEditShippingTracking.clickChooseWeight(shopId, selectedPosition == 0)
                 } else {
                     ProductAddShippingTracking.clickChooseWeight(shopId, selectedPosition == 0)

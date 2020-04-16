@@ -71,20 +71,4 @@ class AddEditProductDescriptionModule {
         return GetYoutubeVideoUseCase(restRepository)
     }
 
-    @AddEditProductDescriptionScope
-    @Provides
-    fun provideProductDraftDb(@ApplicationContext context: Context): AddEditProductDraftDb = AddEditProductDraftDb.getInstance(context)
-
-    @AddEditProductDescriptionScope
-    @Provides
-    fun provideProductDraftDao(draftDb: AddEditProductDraftDb): AddEditProductDraftDao = draftDb.getDraftDao()
-
-    @AddEditProductDescriptionScope
-    @Provides
-    fun provideProductDraftRepository(
-            draftDataSource: AddEditProductDraftDataSource,
-            userSession: UserSessionInterface
-    ): AddEditProductDraftRepository {
-        return AddEditProductDraftRepositoryImpl(draftDataSource, userSession)
-    }
 }
