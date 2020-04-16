@@ -37,10 +37,15 @@ class TopChatRoomActivity : BaseChatToolbarActivity() {
         super.onCreate(savedInstanceState)
         useLightNotificationBar()
         initWindowBackground()
+        initTopchatToolbar()
     }
 
     private fun initWindowBackground() {
         window.decorView.setBackgroundColor(Color.WHITE)
+    }
+
+    private fun initTopchatToolbar() {
+        supportActionBar?.setBackgroundDrawable(null)
     }
 
     private fun useLightNotificationBar() {
