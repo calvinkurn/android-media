@@ -452,13 +452,13 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         // product whole sale checked change listener
         productWholeSaleSwitch?.setOnCheckedChangeListener { _, isChecked ->
             viewModel.isWholeSalePriceActivated.value = isChecked
-            if (isChecked) {
-                if (viewModel.isEditing && !viewModel.isAdding) {
-                    ProductEditMainTracking.clickWholesale(shopId)
-                } else {
-                    ProductAddMainTracking.clickWholesale(shopId)
-                }
+            if (viewModel.isEditing && !viewModel.isAdding) {
+                ProductEditMainTracking.clickWholesale(shopId)
+            } else {
+                ProductAddMainTracking.clickWholesale(shopId)
+            }
 
+            if (isChecked) {
                 val productPriceInput = productPriceField?.textFieldInput?.editableText.toString().replace(".", "")
                 wholeSaleInputFormsAdapter?.setProductPrice(productPriceInput)
                 val wholesalePriceExist = wholeSaleInputFormsAdapter?.itemCount != 0
