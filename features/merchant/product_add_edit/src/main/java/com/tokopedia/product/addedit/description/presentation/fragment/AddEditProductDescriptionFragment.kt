@@ -280,13 +280,7 @@ class AddEditProductDescriptionFragment:
     private fun inputAllDataInInputDraftModel() {
         productInputModel?.descriptionInputModel = DescriptionInputModel(
                 textFieldDescription.getText(),
-                adapter.data.filter {
-                    it.inputUrl.isNotBlank() &&
-                            it.inputTitle.isNotBlank() &&
-                            it.inputImage.isNotBlank() &&
-                            it.inputDescription.isNotBlank() &&
-                            it.errorMessage.isBlank()
-                }
+                getFilteredValidVideoLink()
         )
     }
 
@@ -492,13 +486,7 @@ class AddEditProductDescriptionFragment:
     private fun submitInput(shipmentInputModel: ShipmentInputModel) {
         val descriptionInputModel = DescriptionInputModel(
                 textFieldDescription.getText(),
-                adapter.data.filter {
-                    it.inputUrl.isNotBlank() &&
-                    it.inputTitle.isNotBlank() &&
-                    it.inputImage.isNotBlank() &&
-                    it.inputDescription.isNotBlank() &&
-                    it.errorMessage.isBlank()
-                }
+                getFilteredValidVideoLink()
         )
         val intent = Intent()
         intent.putExtra(EXTRA_DESCRIPTION_INPUT, descriptionInputModel)
@@ -512,13 +500,7 @@ class AddEditProductDescriptionFragment:
         if (descriptionViewModel.validateInputVideo(adapter.data)) {
             val descriptionInputModel = DescriptionInputModel(
                     textFieldDescription.getText(),
-                    adapter.data.filter {
-                        it.inputUrl.isNotBlank() &&
-                        it.inputTitle.isNotBlank() &&
-                        it.inputImage.isNotBlank() &&
-                        it.inputDescription.isNotBlank() &&
-                        it.errorMessage.isBlank()
-                    }
+                    getFilteredValidVideoLink()
             )
             val intent = Intent()
             intent.putExtra(EXTRA_DESCRIPTION_INPUT, descriptionInputModel)
@@ -528,4 +510,11 @@ class AddEditProductDescriptionFragment:
         }
     }
 
+    private fun getFilteredValidVideoLink() = adapter.data.filter {
+        it.inputUrl.isNotBlank() &&
+                it.inputTitle.isNotBlank() &&
+                it.inputImage.isNotBlank() &&
+                it.inputDescription.isNotBlank() &&
+                it.errorMessage.isBlank()
+    }
 }
