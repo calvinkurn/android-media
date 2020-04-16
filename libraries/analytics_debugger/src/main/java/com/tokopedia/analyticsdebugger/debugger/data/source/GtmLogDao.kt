@@ -26,4 +26,8 @@ interface GtmLogDao {
 
     @Query("SELECT * FROM gtm_log WHERE name LIKE :keyword OR data LIKE :keyword OR category LIKE :keyword " + "ORDER BY timestamp DESC LIMIT 20 OFFSET :offset")
     fun getData(keyword: String, offset: Int): List<GtmLogDB>
+
+    @Query("SELECT * FROM gtm_log")
+    fun getAll(): List<GtmLogDB>
+
 }
