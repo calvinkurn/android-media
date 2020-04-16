@@ -27,7 +27,6 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.android.synthetic.main.activity_base_tab.*
 import javax.inject.Inject
 
 class ProductInstallmentActivity : BaseTabActivity(), HasComponent<ProductDetailComponent> {
@@ -98,7 +97,7 @@ class ProductInstallmentActivity : BaseTabActivity(), HasComponent<ProductDetail
                 viewPager.post { updateFragmentPager(viewPager.currentItem) }
             }
             is Fail -> {
-                Toaster.make(coordinator, ProductDetailErrorHandler.getErrorMessage(this, it.throwable), Snackbar.LENGTH_LONG,
+                Toaster.make(findViewById(android.R.id.content), ProductDetailErrorHandler.getErrorMessage(this, it.throwable), Snackbar.LENGTH_LONG,
                         Toaster.TYPE_ERROR, getString(R.string.retry_label), View.OnClickListener {
                     viewModel.loadInstallment(intent.getFloatExtra(PRODUCT_PRICE, 0f))
                 })
