@@ -22,7 +22,6 @@ import com.tokopedia.settingnotif.usersetting.di.DaggerUserSettingComponent
 import com.tokopedia.settingnotif.usersetting.di.UserSettingModule
 import com.tokopedia.settingnotif.usersetting.domain.pojo.setusersetting.SetUserSettingResponse
 import com.tokopedia.settingnotif.usersetting.view.activity.ParentActivity
-import com.tokopedia.settingnotif.usersetting.view.adapter.ItemAdapter
 import com.tokopedia.settingnotif.usersetting.view.adapter.SettingFieldAdapter
 import com.tokopedia.settingnotif.usersetting.view.adapter.factory.SettingFieldTypeFactory
 import com.tokopedia.settingnotif.usersetting.view.adapter.factory.SettingFieldTypeFactoryImpl
@@ -87,7 +86,7 @@ abstract class SettingFieldFragment : BaseListFragment<Visitable<*>,
     }
 
     override fun createAdapterInstance(): BaseListAdapter<Visitable<*>, BaseAdapterTypeFactory> {
-        val adapter = ItemAdapter(
+        val adapter = SettingFieldAdapter<Visitable<SettingFieldTypeFactory>>(
                 getNotificationType(),
                 this,
                 adapterTypeFactory as SettingFieldTypeFactory,

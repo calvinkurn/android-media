@@ -11,8 +11,6 @@ import com.tokopedia.settingnotif.usersetting.view.adapter.factory.SettingFieldT
 import com.tokopedia.settingnotif.usersetting.view.adapter.viewholder.SettingViewHolder
 import com.tokopedia.settingnotif.usersetting.view.dataview.NotificationActivationDataView.activationPushNotif
 
-typealias ItemAdapter = SettingFieldAdapter<Visitable<SettingFieldTypeFactory>>
-
 class SettingFieldAdapter<T : Visitable<SettingFieldTypeFactory>>(
         private val notificationType: String,
         private val settingFieldAdapterListener: SettingFieldAdapterListener,
