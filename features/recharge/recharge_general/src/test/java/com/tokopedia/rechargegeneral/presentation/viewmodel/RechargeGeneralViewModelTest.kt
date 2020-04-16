@@ -12,6 +12,7 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.rechargegeneral.model.RechargeGeneralOperatorCluster
 import com.tokopedia.rechargegeneral.model.RechargeGeneralProductData
 import com.tokopedia.rechargegeneral.model.RechargeGeneralProductItemData
+import com.tokopedia.rechargegeneral.model.mapper.RechargeGeneralDynamicInputMapper
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.MockKAnnotations
@@ -33,6 +34,8 @@ class RechargeGeneralViewModelTest {
 
     @MockK
     lateinit var graphqlRepository: GraphqlRepository
+    @MockK
+    lateinit var mapper: RechargeGeneralDynamicInputMapper
 
     lateinit var rechargeGeneralViewModel: RechargeGeneralViewModel
 
@@ -45,7 +48,7 @@ class RechargeGeneralViewModelTest {
                 mapOf(MessageErrorException::class.java to listOf(GraphqlError())), false)
 
         rechargeGeneralViewModel =
-                RechargeGeneralViewModel(graphqlRepository, RechargeGeneralTestDispatchersProvider())
+                RechargeGeneralViewModel(mapper, graphqlRepository, RechargeGeneralTestDispatchersProvider())
     }
 
     @Test

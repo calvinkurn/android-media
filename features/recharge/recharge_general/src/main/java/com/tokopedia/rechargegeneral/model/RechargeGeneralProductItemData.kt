@@ -13,10 +13,10 @@ data class RechargeGeneralProductItemData(
 
         @SerializedName("name")
         @Expose
-        val name: String = "",
+        var name: String = "",
         @SerializedName("text")
         @Expose
-        val text: String = "",
+        var text: String = "",
         @SerializedName("dataCollections")
         @Expose
         var dataCollections: List<CatalogProductData.DataCollection> = listOf(),
