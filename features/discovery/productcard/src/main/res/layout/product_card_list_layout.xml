@@ -28,7 +28,7 @@
             android:visibility="visible"
             android:layout_marginLeft="@dimen/dp_8"
             android:layout_marginStart="@dimen/dp_8"
-            app:unify_image_type="circle"
+            app:unify_image_type="rect"
             app:unify_image_corner_radius="8"
             app:layout_constraintDimensionRatio="H,1:1"
             app:layout_constraintStart_toStartOf="parent"
