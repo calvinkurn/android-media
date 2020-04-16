@@ -440,6 +440,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
             return buffer.readUtf8();
         } catch (Exception e) {
             e.printStackTrace();
+            return "";
         }
     }
 

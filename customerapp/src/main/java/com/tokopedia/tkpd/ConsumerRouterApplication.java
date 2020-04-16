@@ -776,8 +776,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 + userId + " | response:" + response + " | request:" + request);
     }
 
-
-
     @Override
     public void showServerError(Response response) {
         ServerErrorHandler.sendErrorNetworkAnalytics(response.request().url().toString(), response.code());
