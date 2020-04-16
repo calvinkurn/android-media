@@ -142,6 +142,7 @@ open class AddEditProductAddService : AddEditProductBaseService() {
             delay(NOTIFICATION_CHANGE_DELAY)
             setUploadProductDataSuccess()
         }, onError = {
+            delay(NOTIFICATION_CHANGE_DELAY)
             it.message?.let { errorMessage -> setUploadProductDataError(errorMessage) }
         })
     }
