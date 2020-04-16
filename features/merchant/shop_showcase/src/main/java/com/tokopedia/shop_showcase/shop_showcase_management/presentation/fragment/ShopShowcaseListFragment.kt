@@ -11,7 +11,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
-import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.fragment.app.FragmentManager
 
@@ -19,7 +18,6 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
@@ -104,7 +102,6 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
     private var isMyShop: Boolean = false
     private var shopType = ""
     private var isNeedToGoToAddShowcase = false
-    private var isNeedToReloadShopPage = false
     private var isReorderList = false
 
 
@@ -137,7 +134,6 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
         when (requestCode) {
             REQUEST_CODE_ADD_ETALASE -> {
                 if (resultCode == Activity.RESULT_OK) {
-                    isNeedToReloadShopPage = true
                     if (isNeedToGoToAddShowcase) {
                         isNeedToGoToAddShowcase = false
                         activity?.let {
@@ -355,10 +351,6 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
                             showErrorResponse(getString(R.string.error_product_less_than_one))
                         } else if (totalProduct > 0) {
                             goToAddShowcase()
-//                            if (isNeedToGoToAddShowcase) {
-//                                // isNeedToGoToAddShowcase = false
-//                                goToAddShowcase()
-//                            }
                         }
                     }
                 }
@@ -515,9 +507,7 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
             } else {
                 UriUtil.buildUri(ApplinkConst.SHOP, shopId)
             })
-//            val _isNeedToReloadData = if (isNeedToReloadShopPage) true else false
-            intent.putExtra("isNeedToReloadData", isNeedToReloadShopPage)
-            isNeedToReloadShopPage = false
+            intent.putExtra("isNeedToReloadData", true)
             it.context?.startActivity(intent)
         }
     }
