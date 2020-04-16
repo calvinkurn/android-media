@@ -23,7 +23,6 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.design.component.Dialog
-import com.tokopedia.design.component.TextViewCompat
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.common.presentation.HotelBaseActivity
 import com.tokopedia.hotel.common.util.ErrorHandlerHotel
@@ -55,7 +54,7 @@ class HotelRecommendationFragment : BaseListFragment<PopularSearch, PopularSearc
     lateinit var viewModelFactory: ViewModelProvider.Factory
     lateinit var destinationViewModel: HotelDestinationViewModel
 
-    lateinit var currentLocationTextView: TextViewCompat
+    lateinit var currentLocationTextView: TextView
     lateinit var currentLocationLayout: View
     lateinit var deleteSearchTextView: TextView
     lateinit var recentSearchLayout: View
@@ -105,7 +104,7 @@ class HotelRecommendationFragment : BaseListFragment<PopularSearch, PopularSearc
                 .setOrientation(ChipsLayoutManager.HORIZONTAL)
                 .setRowStrategy(ChipsLayoutManager.STRATEGY_DEFAULT)
                 .build()
-        val staticDimen8dp = context?.getResources()?.getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_8)
+        val staticDimen8dp = context?.getResources()?.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.layout_lvl1)
         val recentSearchRecyclerView = view.findViewById(R.id.recent_search_recycler_view) as RecyclerView
         recentSearchRecyclerView.addItemDecoration(SpacingItemDecoration(staticDimen8dp
                 ?: 0, staticDimen8dp ?: 0))
@@ -129,7 +128,6 @@ class HotelRecommendationFragment : BaseListFragment<PopularSearch, PopularSearc
     fun initCurrentLocationTextView(view: View) {
 
         currentLocationTextView = view.findViewById(R.id.current_location_tv)
-        currentLocationTextView.setDrawableLeft(com.tokopedia.resources.common.R.drawable.ic_system_action_currentlocation_grayscale_24)
 
         currentLocationLayout = view.findViewById(R.id.current_location_layout)
         currentLocationLayout.setOnClickListener {

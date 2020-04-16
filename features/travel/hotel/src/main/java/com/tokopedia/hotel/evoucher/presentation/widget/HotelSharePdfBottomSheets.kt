@@ -7,14 +7,14 @@ import androidx.recyclerview.widget.RecyclerView
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
+import androidx.appcompat.widget.AppCompatEditText
 import androidx.fragment.app.DialogFragment
 import com.tokopedia.design.component.BottomSheets
-import com.tokopedia.design.component.ButtonCompat
-import com.tokopedia.design.component.EditTextCompat
-import com.tokopedia.design.component.TextViewCompat
 import com.tokopedia.design.utils.StringUtils
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.evoucher.presentation.adapter.HotelShareAsPdfAdapter
+import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.bottom_sheets_share_as_pdf.view.*
 
 /**
@@ -28,9 +28,9 @@ class HotelSharePdfBottomSheets : BottomSheets(), HotelShareAsPdfAdapter.ShareAs
 
     lateinit var recyclerView: RecyclerView
     lateinit var divider: View
-    lateinit var evEmail: EditTextCompat
-    lateinit var btnSend: ButtonCompat
-    lateinit var evError: TextViewCompat
+    lateinit var evEmail: AppCompatEditText
+    lateinit var btnSend: UnifyButton
+    lateinit var evError: Typography
     lateinit var containerEmail: View
 
     override fun getLayoutResourceId(): Int = R.layout.bottom_sheets_share_as_pdf
@@ -51,7 +51,7 @@ class HotelSharePdfBottomSheets : BottomSheets(), HotelShareAsPdfAdapter.ShareAs
             evError = ev_error_email
             containerEmail = container_add_email
 
-            evError.setTextColor(ContextCompat.getColor(context, com.tokopedia.design.R.color.red_500))
+            evError.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Red_R500))
 
             val layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             recyclerView.layoutManager = layoutManager

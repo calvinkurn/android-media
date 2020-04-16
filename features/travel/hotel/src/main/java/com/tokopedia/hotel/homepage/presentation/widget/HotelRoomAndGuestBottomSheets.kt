@@ -3,8 +3,8 @@ package com.tokopedia.hotel.homepage.presentation.widget
 import android.view.View
 import com.tokopedia.common.travel.widget.SelectPassengerView
 import com.tokopedia.design.component.BottomSheets
-import com.tokopedia.design.component.ButtonCompat
 import com.tokopedia.hotel.R
+import com.tokopedia.unifycomponents.UnifyButton
 
 /**
  * @author by furqan on 09/04/19
@@ -15,7 +15,7 @@ class HotelRoomAndGuestBottomSheets : BottomSheets() {
 
     private lateinit var spvRoomCounter: SelectPassengerView
     private lateinit var spvAdultCounter: SelectPassengerView
-    private lateinit var btnSave: ButtonCompat
+    private lateinit var btnSave: UnifyButton
 
     var roomCount = DEFAULT_ROOM
     var adultCount = DEFAULT_ADULT
@@ -25,7 +25,7 @@ class HotelRoomAndGuestBottomSheets : BottomSheets() {
     override fun initView(view: View) {
         spvRoomCounter = view.findViewById(R.id.spv_hotel_room) as SelectPassengerView
         spvAdultCounter = view.findViewById(R.id.spv_hotel_adult) as SelectPassengerView
-        btnSave = view.findViewById(R.id.btn_hotel_save_guest) as ButtonCompat
+        btnSave = view.findViewById(R.id.btn_hotel_save_guest) as UnifyButton
 
         spvRoomCounter.hideSubtitle()
         spvAdultCounter.hideSubtitle()

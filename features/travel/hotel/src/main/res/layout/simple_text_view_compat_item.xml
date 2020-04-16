@@ -8,11 +8,12 @@
     android:paddingLeft="@dimen/layout_lvl2"
     android:paddingRight="@dimen/layout_lvl2">
 
-    <com.tokopedia.design.component.TextViewCompat
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/text_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:lineSpacingExtra="@dimen/spacing_lvl2"
-        app:fontSize="small" />
+        android:textColor="@color/Neutral_N700_68"
+        app:typographyType="body_2" />
 
 </androidx.core.widget.NestedScrollView>

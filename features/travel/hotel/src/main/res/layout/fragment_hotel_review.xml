@@ -33,7 +33,7 @@
                     android:paddingRight="@dimen/layout_lvl2"
                     android:paddingBottom="@dimen/layout_lvl2">
 
-                    <com.tokopedia.design.component.TextViewCompat
+                    <com.tokopedia.unifyprinciples.Typography
                         android:id="@+id/review_point_text_view"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -41,10 +41,10 @@
                         android:textSize="@dimen/dp_28"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:weight="medium"
+                        app:typographyType="heading_1"
                         tools:text="8,6" />
 
-                    <com.tokopedia.design.component.TextViewCompat
+                    <com.tokopedia.unifyprinciples.Typography
                         android:id="@+id/review_headline_text"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -55,6 +55,7 @@
                         app:layout_constraintBottom_toBottomOf="@+id/review_point_text_view"
                         app:layout_constraintLeft_toRightOf="@+id/review_point_text_view"
                         app:layout_constraintStart_toEndOf="@+id/review_point_text_view"
+                        app:typographyType="body_2"
                         tools:text="Mengesankan" />
 
                     <ImageView
@@ -65,23 +66,25 @@
                         app:layout_constraintTop_toBottomOf="@+id/review_point_text_view"
                         app:srcCompat="@drawable/ic_booking_logo" />
 
-                    <com.tokopedia.design.component.TextViewCompat
+                    <com.tokopedia.unifyprinciples.Typography
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/hotel_6dp"
                         android:layout_marginLeft="@dimen/hotel_6dp"
                         android:text="Booking.com"
-                        app:fontSize="micro"
+                        app:typographyType="body_3"
+                        android:textColor="@color/Neutral_N700_68"
                         app:layout_constraintBottom_toBottomOf="@+id/booking_logo"
                         app:layout_constraintStart_toEndOf="@+id/booking_logo"
                         app:layout_constraintTop_toTopOf="@+id/booking_logo" />
 
-                    <com.tokopedia.design.component.TextViewCompat
+                    <com.tokopedia.unifyprinciples.Typography
                         android:id="@+id/review_total_count_text"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="8.230 Ulasan"
-                        app:fontSize="micro"
+                        android:textColor="@color/Neutral_N700_68"
+                        app:typographyType="body_3"
                         app:layout_constraintBottom_toBottomOf="@+id/booking_logo"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintRight_toRightOf="parent"
@@ -98,14 +101,16 @@
                     android:layout_height="wrap_content"
                     android:padding="@dimen/layout_lvl2">
 
-                    <com.tokopedia.design.component.TextViewCompat
+                    <com.tokopedia.unifyprinciples.Typography
                         android:layout_width="@dimen/layout_lvl0"
                         android:layout_height="wrap_content"
                         android:text="Hanya ulasan dari Indonesia"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:typographyType="body_2"
+                        android:textColor="@color/Neutral_N700_68"/>
 
                     <Switch
                         android:id="@+id/indonesia_review_switch"

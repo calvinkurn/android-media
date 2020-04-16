@@ -29,7 +29,7 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:src="@color/Blue_B300" />
 
-        <com.tokopedia.design.component.TextViewCompat
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/deals_tag"
             android:layout_width="@dimen/layout_lvl0"
             android:layout_height="wrap_content"
@@ -39,18 +39,18 @@
             android:lineSpacingExtra="@dimen/sp_4"
             android:padding="@dimen/layout_lvl1"
             android:visibility="gone"
-            app:fontSize="micro"
+            app:typographyType="body_3"
+            app:typographyWeight="bold"
+            android:textColor="@color/Neutral_N0"
             app:layout_constraintBottom_toBottomOf="@+id/image"
             app:layout_constraintEnd_toEndOf="@+id/image"
             app:layout_constraintLeft_toLeftOf="@+id/image"
             app:layout_constraintRight_toRightOf="@+id/image"
             app:layout_constraintStart_toStartOf="@+id/image"
-            app:textViewTheme="darkPrimary"
-            app:weight="medium"
             tools:text="Deals of Year End"
             tools:visibility="visible" />
 
-        <com.tokopedia.design.component.TextViewCompat
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/title"
             android:layout_width="@dimen/layout_lvl0"
             android:layout_height="wrap_content"
@@ -62,17 +62,16 @@
             android:ellipsize="end"
             android:singleLine="true"
             android:textColor="@color/Neutral_N700_96"
-            app:fontSize="small"
+            app:typographyType="body_2"
+            app:typographyWeight="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintLeft_toRightOf="@+id/image"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintStart_toEndOf="@+id/image"
             app:layout_constraintTop_toTopOf="parent"
-            app:textViewTheme="lightPrimary"
-            app:weight="medium"
             tools:text="Comfy Room in Karet" />
 
-        <com.tokopedia.design.component.TextViewCompat
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/type"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -86,12 +85,11 @@
             android:paddingRight="@dimen/hotel_6dp"
             android:paddingBottom="@dimen/spacing_lvl2"
             android:textColor="@color/Neutral_N200"
-            android:textSize="@dimen/sp_10"
-            app:fontSize="micro"
+            app:typographyType="small"
+            app:typographyWeight="bold"
             app:layout_constraintLeft_toLeftOf="@+id/title"
             app:layout_constraintStart_toStartOf="@+id/title"
             app:layout_constraintTop_toBottomOf="@+id/title"
-            app:weight="medium"
             tools:text="Hotel" />
 
 
@@ -106,7 +104,7 @@
             app:layout_constraintStart_toEndOf="@+id/type"
             app:layout_constraintTop_toTopOf="@+id/type" />
 
-        <com.tokopedia.design.component.TextViewCompat
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/location"
             android:layout_width="@dimen/layout_lvl0"
             android:layout_height="wrap_content"
@@ -116,16 +114,16 @@
             android:gravity="center_vertical"
             android:singleLine="true"
             app:drawableLeftCompat="@drawable/ic_location_fill"
-            app:fontSize="micro"
+            app:typographyType="body_3"
+            android:textColor="@color/Neutral_N700_68"
             app:layout_constraintEnd_toEndOf="@+id/title"
             app:layout_constraintLeft_toLeftOf="@+id/title"
             app:layout_constraintRight_toRightOf="@+id/title"
             app:layout_constraintStart_toStartOf="@+id/title"
             app:layout_constraintTop_toBottomOf="@+id/type"
-            app:textViewTheme="lightSecondary"
             tools:text="Kuningan" />
 
-        <com.tokopedia.design.component.TextViewCompat
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/rating_counter"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -138,14 +136,14 @@
             android:paddingBottom="@dimen/spacing_lvl1"
             android:singleLine="true"
             android:textColor="@color/Neutral_N0"
-            app:fontSize="micro"
+            app:typographyType="body_3"
+            app:typographyWeight="bold"
             app:layout_constraintLeft_toLeftOf="@+id/title"
             app:layout_constraintStart_toStartOf="@+id/title"
             app:layout_constraintTop_toBottomOf="@+id/location"
-            app:weight="medium"
             tools:text="8,6" />
 
-        <com.tokopedia.design.component.TextViewCompat
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/rate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -156,7 +154,7 @@
             android:ellipsize="end"
             android:singleLine="true"
             android:textColor="@color/blue_booking"
-            app:fontSize="micro"
+            app:typographyType="body_3"
             app:layout_constraintBaseline_toBaselineOf="@+id/rating_counter"
             app:layout_constraintEnd_toEndOf="@+id/location"
             app:layout_constraintHorizontal_bias="0.0"
@@ -223,7 +221,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/hotel_property_item_tag"
                 app:layout_goneMarginTop="@dimen/layout_lvl2">
 
-                <com.tokopedia.design.component.TextViewCompat
+                <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/info"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -231,7 +229,7 @@
                     android:singleLine="true"
                     android:textColor="@color/Red_R500"
                     android:visibility="gone"
-                    app:fontSize="micro"
+                    app:typographyType="body_3"
                     tools:text="Sisa 2 kamar"
                     tools:visibility="visible" />
 
@@ -250,33 +248,32 @@
 
             </LinearLayout>
 
-            <com.tokopedia.design.component.TextViewCompat
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/price"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
                 android:singleLine="true"
-                app:fontSize="small"
+                android:textColor="@color/Neutral_N700_96"
+                app:typographyType="body_2"
+                app:typographyWeight="bold"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/container_price_origin"
                 app:layout_goneMarginTop="@dimen/dp_34"
-                app:textViewTheme="lightPrimary"
-                app:weight="medium"
                 tools:text="Rp10.800.0000" />
 
-            <com.tokopedia.design.component.TextViewCompat
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/include_tax"
                 android:layout_width="@dimen/layout_lvl0"
                 android:layout_height="wrap_content"
                 android:gravity="end"
                 android:text="@string/hotel_item_list_include_pajak"
-                android:textSize="@dimen/sp_10"
-                app:fontSize="micro"
+                app:typographyType="small"
+                android:textColor="@color/Neutral_N700_68"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/price"
-                app:textViewTheme="lightSecondary" />
+                app:layout_constraintTop_toBottomOf="@+id/price" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <LinearLayout
@@ -305,20 +302,17 @@
                 android:layout_marginRight="@dimen/spacing_lvl2"
                 app:srcCompat="@drawable/ic_hotel" />
 
-            <com.tokopedia.design.component.TextViewCompat
+            <com.tokopedia.unifyprinciples.Typography
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/hotel_12dp"
                 android:layout_marginRight="@dimen/hotel_12dp"
                 android:gravity="end"
                 android:text="@string/hotel_room_list_pay_in_hotel"
-                android:textSize="@dimen/sp_10"
-                app:fontSize="micro"
-                app:weight="medium">
-
-            </com.tokopedia.design.component.TextViewCompat>
+                app:typographyType="small"
+                android:textColor="@color/Neutral_N700_68"
+                app:typographyWeight="bold"/>
         </LinearLayout>
-
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

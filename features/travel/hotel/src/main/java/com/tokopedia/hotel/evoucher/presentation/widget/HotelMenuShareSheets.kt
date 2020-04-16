@@ -2,8 +2,8 @@
 package com.tokopedia.hotel.evoucher.presentation.widget
 
 import android.view.View
+import android.widget.TextView
 import com.tokopedia.design.component.BottomSheets
-import com.tokopedia.design.component.TextViewCompat
 import com.tokopedia.hotel.R
 
 /**
@@ -13,9 +13,9 @@ class HotelMenuShareSheets : BottomSheets() {
 
     lateinit var listener: HotelShareListener
 
-    private lateinit var menuOrderList: TextViewCompat
-    private lateinit var menuPromo: TextViewCompat
-    private lateinit var menuHelp: TextViewCompat
+    private lateinit var menuOrderList: TextView
+    private lateinit var menuPromo: TextView
+    private lateinit var menuHelp: TextView
     private lateinit var firstSeparator: View
     private lateinit var secondSeparator: View
 

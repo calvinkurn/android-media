@@ -21,23 +21,22 @@
                 android:layout_height="wrap_content"
                 android:padding="@dimen/layout_lvl2">
 
-                <com.tokopedia.design.component.TextViewCompat
+                <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/transaction_status_hint"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/hotel_order_detail_status"
-                    app:fontSize="micro"
+                    android:textColor="@color/Neutral_N700_68"
+                    app:typographyType="body_3"
                     tools:textSize="@dimen/hotel_12dp" />
 
-                <com.tokopedia.design.component.TextViewCompat
+                <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/transaction_status"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/Neutral_N700_96"
-                    app:fontSize="title"
+                    app:typographyType="heading_4"
                     app:layout_constraintTop_toBottomOf="@+id/transaction_status_hint"
-                    app:textViewTheme="lightPrimary"
-                    app:weight="medium"
                     tools:text="Transaksi Berhasil"
                     tools:textSize="@dimen/sp_17"
                     tools:textStyle="bold" />
@@ -50,7 +49,7 @@
                     android:background="@color/hotel_grey_300"
                     app:layout_constraintTop_toBottomOf="@+id/transaction_status" />
 
-                <com.tokopedia.design.component.TextViewCompat
+                <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/top_conditional_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -64,8 +63,11 @@
                     android:paddingRight="@dimen/layout_lvl3"
                     android:paddingBottom="@dimen/hotel_10dp"
                     android:visibility="gone"
+                    android:textColor="@color/Neutral_N700_68"
+                    app:typographyType="body_3"
                     app:layout_constraintTop_toBottomOf="@+id/transaction_seperator"
-                    tools:text="Dana Pembayaran akan dikembalikan ke Saldo Tokopedia/OVO/Limit Kartu Kredit" />
+                    tools:text="Dana Pembayaran akan dikembalikan ke Saldo Tokopedia/OVO/Limit Kartu Kredit"
+                    tools:visibility="visible"/>
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/transaction_detail_title_recycler_view"
@@ -88,31 +90,31 @@
                 android:layout_height="wrap_content"
                 android:padding="@dimen/layout_lvl2">
 
-                <com.tokopedia.design.component.TextViewCompat
+                <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/invoice_number"
                     android:layout_width="@dimen/layout_lvl0"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/layout_lvl2"
-                    app:fontSize="micro"
+                    app:typographyType="body_3"
+                    android:textColor="@color/Neutral_N700_96"
                     app:layout_constraintEnd_toStartOf="@+id/invoice_see_button"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:textViewTheme="lightPrimary"
                     tools:text="IVR/20170713/XVII/VII/16205811"
                     tools:textColor="@color/Neutral_N700_96"
                     tools:textSize="@dimen/sp_12" />
 
-                <com.tokopedia.design.component.TextViewCompat
+                <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/invoice_see_button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:padding="@dimen/hotel_6dp"
                     android:text="@string/hotel_order_detail_see_invoice_text"
                     android:textColor="@color/Green_G500"
-                    app:fontSize="micro"
+                    app:typographyType="body_3"
+                    app:typographyWeight="bold"
                     app:layout_constraintBottom_toBottomOf="@+id/invoice_number"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="@+id/invoice_number"
-                    app:weight="medium"
                     tools:textSize="@dimen/sp_12"
                     tools:textStyle="bold" />
 
@@ -134,16 +136,16 @@
             android:layout_height="wrap_content"
             android:padding="@dimen/layout_lvl2">
 
-            <com.tokopedia.design.component.TextViewCompat
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/see_evoucher_text"
                 android:layout_width="@dimen/layout_lvl0"
                 android:layout_height="25dp"
                 android:text="@string/hotel_order_detail_see_evoucher_text"
                 android:textColor="@color/Green_G500"
-                app:fontSize="small"
+                app:typographyType="body_2"
+                app:typographyWeight="bold"
                 app:layout_constraintEnd_toStartOf="@+id/see_evoucher_next_icon"
                 app:layout_constraintStart_toStartOf="parent"
-                app:weight="medium"
                 tools:layout_editor_absoluteY="16dp"
                 tools:textSize="@dimen/sp_14"
                 tools:textStyle="bold" />

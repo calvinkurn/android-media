@@ -13,30 +13,30 @@
         android:gravity="center_horizontal"
         android:orientation="vertical">
 
-        <com.tokopedia.design.component.TextViewCompat
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/hotel_check_in_label"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/hotel_homepage_check_in"
-            app:fontSize="micro"
-            app:textViewTheme="lightSecondary" />
+            android:textColor="@color/Neutral_N700_68"
+            app:typographyType="body_3" />
 
-        <com.tokopedia.design.component.TextViewCompat
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/hotel_check_in_date"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textStyle="bold"
-            app:fontSize="small"
-            app:textViewTheme="lightPrimary"
+            android:textColor="@color/Neutral_N700_96"
+            app:typographyType="body_2"
+            app:typographyWeight="bold"
             tools:text="18 Des 2018" />
 
-        <com.tokopedia.design.component.TextViewCompat
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/hotel_check_in_time"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:visibility="gone"
-            app:fontSize="micro"
-            app:textViewTheme="lightSecondary"
+            android:textColor="@color/Neutral_N700_68"
+            app:typographyType="body_3"
             tools:text="Senin, 14:00"
             tools:visibility="visible"/>
 
@@ -53,30 +53,30 @@
         android:gravity="center_vertical"
         android:orientation="vertical">
 
-        <com.tokopedia.design.component.TextViewCompat
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/hotel_check_out_label"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/hotel_homepage_check_out"
-            app:fontSize="micro"
-            app:textViewTheme="lightSecondary" />
+            android:textColor="@color/Neutral_N700_68"
+            app:typographyType="body_3" />
 
-        <com.tokopedia.design.component.TextViewCompat
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/hotel_check_out_date"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textStyle="bold"
-            app:fontSize="small"
-            app:textViewTheme="lightPrimary"
+            app:typographyType="body_2"
+            app:typographyWeight="bold"
+            android:textColor="@color/Neutral_N700_96"
             tools:text="28 Des 2018" />
 
-        <com.tokopedia.design.component.TextViewCompat
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/hotel_check_out_time"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:visibility="gone"
-            app:fontSize="micro"
-            app:textViewTheme="lightSecondary"
+            app:typographyType="body_3"
+            android:textColor="@color/Neutral_N700_68"
             tools:text="Kamis, 12:00"
             tools:visibility="visible" />
 
@@ -87,7 +87,7 @@
         android:layout_height="match_parent"
         android:layout_weight="1" />
 
-    <com.tokopedia.design.component.TextViewCompat
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/hotel_room_night_count"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -98,7 +98,7 @@
         android:paddingBottom="@dimen/spacing_lvl1"
         android:text="@string/hotel_room_night_count"
         android:textColor="#9e9fa3"
-        android:textStyle="bold"
-        app:fontSize="micro"
+        app:typographyType="body_3"
+        app:typographyWeight="bold"
         tools:text="10 Malam" />
 </LinearLayout>

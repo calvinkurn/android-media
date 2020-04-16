@@ -40,16 +40,17 @@
 
         </com.tokopedia.design.text.TkpdHintTextInputLayout>
 
-        <com.tokopedia.design.component.TextViewCompat
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_contact_phone_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingLeft="@dimen/spacing_lvl1"
             android:text="@string/travel_contact_data_phone_number_title"
-            app:fontSize="micro"
+            app:typographyType="body_3"
+            android:textColor="@color/Neutral_N700_44"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/til_contact_email"
-            app:textViewTheme="lightDisabled" />
+            />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -90,12 +91,13 @@
 
     </LinearLayout>
 
-    <com.tokopedia.design.component.ButtonCompat
+    <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/contact_data_button"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/layout_lvl6"
+        android:layout_height="wrap_content"
         android:text="@string/travel_select_passenger_submit_button"
         android:layout_alignParentBottom="true"
-        app:buttonCompatType="primary" />
+        app:unifyButtonType="main"
+        app:unifyButtonSize="large"/>
 
 </RelativeLayout>

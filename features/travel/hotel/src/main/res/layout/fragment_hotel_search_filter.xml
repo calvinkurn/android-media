@@ -23,19 +23,19 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/layout_lvl2"
+                android:layout_marginTop="@dimen/layout_lvl1"
                 android:layout_marginRight="@dimen/layout_lvl2">
 
-                <com.tokopedia.design.component.TextViewCompat
+                <com.tokopedia.unifyprinciples.Typography
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
                     android:layout_centerVertical="true"
                     android:layout_toLeftOf="@+id/switch_pay_at_hotel"
                     android:text="@string/hotel_search_filter_only_show_pay_at_hotel"
-                    app:fontSize="small"
-                    app:textViewTheme="lightPrimary"
-                    app:weight="medium" />
+                    android:textColor="@color/Neutral_N700_96"
+                    app:typographyType="body_2"
+                    app:typographyWeight="bold" />
 
                 <Switch
                     android:id="@+id/switch_pay_at_hotel"
@@ -53,14 +53,14 @@
                 android:layout_marginTop="@dimen/layout_lvl2"
                 android:background="@color/hotel_divider_color_gray" />
 
-            <com.tokopedia.design.component.TextViewCompat
+            <com.tokopedia.unifyprinciples.Typography
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/layout_lvl2"
                 android:text="@string/hotel_search_filter_star_title"
-                app:fontSize="small"
-                app:textViewTheme="lightPrimary"
-                app:weight="medium" />
+                android:textColor="@color/Neutral_N700_96"
+                app:typographyType="body_2"
+                app:typographyWeight="bold" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/filter_star"
@@ -68,9 +68,9 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="@dimen/hotel_12dp"
-                android:paddingRight="@dimen/layout_lvl1"
+                android:clipToPadding="false"
                 android:paddingEnd="@dimen/layout_lvl1"
-                android:clipToPadding="false"/>
+                android:paddingRight="@dimen/layout_lvl1" />
 
             <View
                 android:layout_width="match_parent"
@@ -78,14 +78,14 @@
                 android:layout_marginTop="@dimen/layout_lvl2"
                 android:background="@color/hotel_divider_color_gray" />
 
-            <com.tokopedia.design.component.TextViewCompat
+            <com.tokopedia.unifyprinciples.Typography
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/layout_lvl2"
                 android:text="@string/hotel_search_filter_range_price_title"
-                app:fontSize="small"
-                app:textViewTheme="lightPrimary"
-                app:weight="medium" />
+                android:textColor="@color/Neutral_N700_96"
+                app:typographyType="body_2"
+                app:typographyWeight="bold" />
 
             <com.tokopedia.hotel.search.presentation.widget.HotelFilterPriceRangeSlider
                 android:id="@+id/price_range_input_view"
@@ -93,7 +93,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/hotel_12dp"
                 android:layout_marginEnd="@dimen/layout_lvl2"
-                android:layout_marginRight="@dimen/layout_lvl2"/>
+                android:layout_marginRight="@dimen/layout_lvl2" />
 
             <View
                 android:layout_width="match_parent"
@@ -101,14 +101,14 @@
                 android:layout_marginTop="@dimen/layout_lvl2"
                 android:background="@color/hotel_divider_color_gray" />
 
-            <com.tokopedia.design.component.TextViewCompat
+            <com.tokopedia.unifyprinciples.Typography
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/layout_lvl2"
                 android:text="@string/hotel_search_filter_rating_title"
-                app:fontSize="small"
-                app:textViewTheme="lightPrimary"
-                app:weight="medium" />
+                android:textColor="@color/Neutral_N700_96"
+                app:typographyType="body_2"
+                app:typographyWeight="bold" />
 
             <SeekBar
                 android:id="@+id/rating_seekbar"
@@ -145,14 +145,14 @@
                 android:layout_marginTop="@dimen/layout_lvl2"
                 android:background="@color/hotel_divider_color_gray" />
 
-            <com.tokopedia.design.component.TextViewCompat
+            <com.tokopedia.unifyprinciples.Typography
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/layout_lvl2"
                 android:text="@string/hotel_search_filter_accomodation_type_title"
-                app:fontSize="small"
-                app:textViewTheme="lightPrimary"
-                app:weight="medium" />
+                android:textColor="@color/Neutral_N700_96"
+                app:typographyType="body_2"
+                app:typographyWeight="bold" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/filter_accomodation_type"
@@ -166,13 +166,21 @@
 
     </ScrollView>
 
-    <com.tokopedia.design.component.FloatingButton
-        android:id="@+id/save_filter"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:buttonTextAllCaps="false"
-        app:floatButtonSize="big"
-        app:floatButtonType="primary"
-        app:shadowTop="true"
-        app:text="@string/label_save" />
+        android:layout_marginTop="@dimen/spacing_lvl2"
+        android:background="@color/Neutral_N0"
+        android:elevation="@dimen/spacing_lvl2"
+        android:padding="@dimen/layout_lvl2">
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/save_filter"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:buttonTextAllCaps="false"
+            app:unifyButtonSize="large"
+            app:unifyButtonType="main"
+            android:text="@string/label_save" />
+    </LinearLayout>
 </LinearLayout>

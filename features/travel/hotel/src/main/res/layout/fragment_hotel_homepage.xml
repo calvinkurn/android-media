@@ -41,22 +41,23 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
 
-                    <com.tokopedia.design.component.TextViewCompat
+                    <com.tokopedia.unifyprinciples.Typography
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/hotel_3dp"
                         android:layout_marginLeft="@dimen/hotel_3dp"
                         android:text="@string/hotel_homepage_destination"
-                        app:fontSize="micro" />
+                        android:textColor="@color/Neutral_N700_68"
+                        app:typographyType="body_3" />
 
-                    <com.tokopedia.design.component.EditTextCompat
+                    <androidx.appcompat.widget.AppCompatEditText
                         android:id="@+id/tv_hotel_homepage_destination"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:clickable="true"
                         android:focusable="false"
                         android:hint="@string/hotel_homepage_destination_hint"
-                        android:inputType="textNoSuggestions" />
+                        android:inputType="textNoSuggestions"/>
 
                 </LinearLayout>
             </LinearLayout>
@@ -81,15 +82,16 @@
                     android:layout_weight="1"
                     android:orientation="vertical">
 
-                    <com.tokopedia.design.component.TextViewCompat
+                    <com.tokopedia.unifyprinciples.Typography
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/hotel_3dp"
                         android:layout_marginLeft="@dimen/hotel_3dp"
                         android:text="@string/hotel_homepage_check_in"
-                        app:fontSize="micro" />
+                        android:textColor="@color/Neutral_N700_68"
+                        app:typographyType="body_3"/>
 
-                    <com.tokopedia.design.component.EditTextCompat
+                    <androidx.appcompat.widget.AppCompatEditText
                         android:id="@+id/tv_hotel_homepage_checkin_date"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -113,15 +115,15 @@
                     android:paddingRight="@dimen/hotel_6dp"
                     android:paddingBottom="@dimen/spacing_lvl1">
 
-                    <com.tokopedia.design.component.TextViewCompat
+                    <com.tokopedia.unifyprinciples.Typography
                         android:id="@+id/tv_hotel_homepage_night_count"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerInParent="true"
                         android:layout_gravity="center"
                         app:drawableRightCompat="@drawable/ic_hotel_night"
-                        app:fontSize="micro"
-                        tools:text="10" />
+                        app:typographyType="body_3"
+                        android:textColor="@color/Neutral_N700_68" />
 
                 </RelativeLayout>
 
@@ -131,15 +133,16 @@
                     android:layout_weight="1"
                     android:orientation="vertical">
 
-                    <com.tokopedia.design.component.TextViewCompat
+                    <com.tokopedia.unifyprinciples.Typography
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/hotel_3dp"
                         android:layout_marginLeft="@dimen/hotel_3dp"
                         android:text="@string/hotel_homepage_check_out"
-                        app:fontSize="micro" />
+                        android:textColor="@color/Neutral_N700_68"
+                        app:typographyType="body_3" />
 
-                    <com.tokopedia.design.component.EditTextCompat
+                    <androidx.appcompat.widget.AppCompatEditText
                         android:id="@+id/tv_hotel_homepage_checkout_date"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -170,15 +173,16 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
 
-                    <com.tokopedia.design.component.TextViewCompat
+                    <com.tokopedia.unifyprinciples.Typography
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/hotel_3dp"
                         android:layout_marginLeft="@dimen/hotel_3dp"
                         android:text="@string/hotel_homepage_guest_info"
-                        app:fontSize="micro" />
+                        android:textColor="@color/Neutral_N700_68"
+                        app:typographyType="body_3"/>
 
-                    <com.tokopedia.design.component.EditTextCompat
+                    <androidx.appcompat.widget.AppCompatEditText
                         android:id="@+id/tv_hotel_homepage_guest_info"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -190,15 +194,15 @@
                 </LinearLayout>
             </LinearLayout>
 
-            <com.tokopedia.design.component.ButtonCompat
+            <com.tokopedia.unifycomponents.UnifyButton
                 android:id="@+id/btn_hotel_homepage_search"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/layout_lvl4"
                 android:text="@string/hotel_homepage_button_search"
-                app:buttonCompatSize="big"
-                app:buttonCompatTextAllCaps="false"
-                app:buttonCompatType="primary" />
+                app:unifyButtonType="main"
+                app:unifyButtonSize="large"
+                />
 
         </LinearLayout>
 
@@ -215,24 +219,24 @@
                 android:paddingLeft="@dimen/layout_lvl2"
                 android:paddingRight="@dimen/layout_lvl2">
 
-                <com.tokopedia.design.component.TextViewCompat
+                <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/tv_hotel_last_search_title"
                     android:layout_width="@dimen/layout_lvl0"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/hotel_homepage_last_search_title"
-                    app:fontSize="title"
-                    app:textViewTheme="lightPrimary"
-                    app:weight="medium" />
+                    app:typographyType="heading_4"
+                    android:textColor="@color/Neutral_N700_96"
+                    />
 
-                <com.tokopedia.design.component.TextViewCompat
+                <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/tv_hotel_homepage_delete_last_search"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:text="@string/hotel_delete_all_last_search"
                     android:textColor="@color/Green_G500"
-                    app:fontSize="micro" />
+                    app:typographyType="body_3" />
 
             </LinearLayout>
 
@@ -258,23 +262,23 @@
                 android:paddingLeft="@dimen/layout_lvl2"
                 android:paddingRight="@dimen/layout_lvl2">
 
-                <com.tokopedia.design.component.TextViewCompat
+                <com.tokopedia.unifyprinciples.Typography
                     android:layout_width="@dimen/layout_lvl0"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/hotel_homepage_promo_title"
-                    app:fontSize="title"
-                    app:textViewTheme="lightPrimary"
-                    app:weight="medium" />
+                    app:typographyType="heading_4"
+                    android:textColor="@color/Neutral_N700_96"
+                    />
 
-                <com.tokopedia.design.component.TextViewCompat
+                <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/tv_hotel_homepage_all_promo"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:text="@string/hotel_show_all_text"
                     android:textColor="@color/Green_G500"
-                    app:fontSize="micro" />
+                    app:typographyType="body_3" />
 
             </LinearLayout>
 

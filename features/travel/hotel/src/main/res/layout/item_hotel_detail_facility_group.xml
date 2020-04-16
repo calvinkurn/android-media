@@ -20,17 +20,16 @@
             android:layout_height="@dimen/layout_lvl2"
             android:layout_gravity="center" />
 
-        <com.tokopedia.design.component.TextViewCompat
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_facility_group_name"
             android:layout_width="@dimen/layout_lvl0"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/layout_lvl1"
             android:layout_marginLeft="@dimen/layout_lvl1"
             android:layout_weight="1"
-            app:fontSize="title"
-            app:weight="medium"
+            app:typographyType="heading_4"
+            android:textColor="@color/Neutral_N700_96"
             tools:text="Fasilitas Umum"
-            app:textViewTheme="lightPrimary"
             />
 
     </LinearLayout>

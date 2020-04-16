@@ -20,7 +20,7 @@
             android:layout_gravity="center"
             app:srcCompat="@drawable/ic_hotel_location" />
 
-        <com.tokopedia.design.component.TextViewCompat
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_policy_name"
             android:layout_width="@dimen/layout_lvl0"
             android:layout_height="wrap_content"
@@ -28,14 +28,13 @@
             android:layout_marginLeft="@dimen/layout_lvl1"
             android:layout_weight="1"
             android:lineSpacingExtra="@dimen/spacing_lvl1"
-            app:fontSize="title"
-            app:textViewTheme="lightPrimary"
-            app:weight="medium"
+            android:textColor="@color/Neutral_N700_96"
+            app:typographyType="heading_4"
             tools:text="Fasilitas Umum" />
 
     </LinearLayout>
 
-    <com.tokopedia.design.component.TextViewCompat
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_policy_content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -43,7 +42,8 @@
         android:layout_marginLeft="@dimen/layout_lvl3"
         android:layout_marginTop="@dimen/spacing_lvl2"
         android:lineSpacingExtra="@dimen/spacing_lvl2"
-        app:fontSize="small"
+        app:typographyType="body_2"
+        android:textColor="@color/Neutral_N700_68"
         tools:text="Fasilitas Umum" />
 
 </LinearLayout>

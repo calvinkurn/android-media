@@ -4,10 +4,10 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import com.tokopedia.common.travel.utils.TravelDateUtil
-import com.tokopedia.design.base.BaseCustomView
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.common.util.HotelUtils
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.unifycomponents.BaseCustomView
 import kotlinx.android.synthetic.main.widget_hotel_room_duration.view.*
 
 /**

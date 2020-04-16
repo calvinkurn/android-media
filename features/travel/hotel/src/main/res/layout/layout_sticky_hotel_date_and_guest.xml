@@ -39,7 +39,7 @@
                 android:layout_marginRight="@dimen/spacing_lvl2"
                 app:srcCompat="@drawable/ic_hotel_calendar" />
 
-            <com.tokopedia.design.component.TextViewCompat
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/date_text_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -47,7 +47,8 @@
                 android:ellipsize="end"
                 android:lineSpacingExtra="@dimen/hotel_6dp"
                 android:lines="1"
-                app:fontSize="micro"
+                app:typographyType="body_3"
+                android:textColor="@color/Neutral_N700_68"
                 tools:text="18 Des 2019 - 20 Jan 2020" />
         </LinearLayout>
 
@@ -80,7 +81,7 @@
                     android:layout_marginRight="@dimen/spacing_lvl2"
                     app:srcCompat="@drawable/ic_hotel_room" />
 
-                <com.tokopedia.design.component.TextViewCompat
+                <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/total_room_text_view"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -90,7 +91,8 @@
                     android:lines="1"
                     android:paddingEnd="@dimen/layout_lvl1"
                     android:paddingRight="@dimen/layout_lvl1"
-                    app:fontSize="micro"
+                    app:typographyType="body_3"
+                    android:textColor="@color/Neutral_N700_68"
                     tools:text="1" />
             </LinearLayout>
 
@@ -107,7 +109,7 @@
                     android:layout_marginRight="@dimen/spacing_lvl2"
                     app:srcCompat="@drawable/ic_hotel_adult" />
 
-                <com.tokopedia.design.component.TextViewCompat
+                <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/total_guest_text_view"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -117,7 +119,8 @@
                     android:lines="1"
                     android:paddingEnd="@dimen/layout_lvl1"
                     android:paddingRight="@dimen/layout_lvl1"
-                    app:fontSize="micro"
+                    app:typographyType="body_3"
+                    android:textColor="@color/Neutral_N700_68"
                     tools:text="2" />
             </LinearLayout>
         </LinearLayout>

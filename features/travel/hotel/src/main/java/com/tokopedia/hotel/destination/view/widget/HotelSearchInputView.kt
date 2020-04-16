@@ -7,8 +7,8 @@ import android.text.TextWatcher
 import android.util.AttributeSet
 import android.view.View
 import android.widget.EditText
-import com.tokopedia.design.base.BaseCustomView
 import com.tokopedia.hotel.R
+import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.SearchBarUnify
 
 /**

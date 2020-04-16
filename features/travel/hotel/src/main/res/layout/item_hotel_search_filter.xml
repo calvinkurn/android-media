@@ -18,12 +18,13 @@
         android:visibility="gone"
         tools:visibility="visible"/>
 
-    <com.tokopedia.design.component.TextViewCompat
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:lineSpacingExtra="@dimen/sp_6"
         tools:text="@string/label_filter"
-        app:fontSize="small"/>
+        app:typographyType="body_2"
+        android:textColor="@color/Neutral_N700_68"/>
 
 </LinearLayout>

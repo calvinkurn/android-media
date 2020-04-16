@@ -2,9 +2,9 @@ package com.tokopedia.hotel.common.presentation.widget
 
 import android.content.Context
 import android.view.View
-import com.tokopedia.design.base.BaseCustomView
 import com.tokopedia.hotel.R
 import com.tokopedia.kotlin.extensions.view.loadImage
+import com.tokopedia.unifycomponents.BaseCustomView
 import kotlinx.android.synthetic.main.item_hotel_room_facility_list.view.*
 
 /**

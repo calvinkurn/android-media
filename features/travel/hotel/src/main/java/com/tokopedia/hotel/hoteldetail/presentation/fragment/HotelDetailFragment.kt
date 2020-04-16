@@ -15,7 +15,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.appbar.AppBarLayout
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.common.travel.utils.TravelDateUtil
-import com.tokopedia.design.component.ButtonCompat
 import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.common.analytics.TrackingHotelUtil
@@ -44,6 +43,7 @@ import com.tokopedia.imagepreviewslider.presentation.util.ImagePreviewSlider
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_hotel_detail.*
@@ -254,7 +254,7 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
         (activity as HotelDetailActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         val navIcon = detail_toolbar.navigationIcon
-        navIcon?.setColorFilter(resources.getColor(com.tokopedia.design.R.color.white), PorterDuff.Mode.SRC_ATOP)
+        navIcon?.setColorFilter(resources.getColor(com.tokopedia.unifyprinciples.R.color.Neutral_N0), PorterDuff.Mode.SRC_ATOP)
         (activity as HotelDetailActivity).supportActionBar?.setHomeAsUpIndicator(navIcon)
 
         collapsing_toolbar.title = ""
@@ -268,11 +268,11 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
                 }
                 if (scrollRange + verticalOffset == 0) {
                     collapsing_toolbar.title = data.property.name
-                    navIcon?.setColorFilter(resources.getColor(com.tokopedia.design.R.color.black), PorterDuff.Mode.SRC_ATOP)
+                    navIcon?.setColorFilter(resources.getColor(com.tokopedia.unifyprinciples.R.color.Neutral_N700_96), PorterDuff.Mode.SRC_ATOP)
                     isShow = true
                 } else if (isShow) {
                     collapsing_toolbar.title = " "
-                    navIcon?.setColorFilter(resources.getColor(com.tokopedia.design.R.color.white), PorterDuff.Mode.SRC_ATOP)
+                    navIcon?.setColorFilter(resources.getColor(com.tokopedia.unifyprinciples.R.color.Neutral_N0), PorterDuff.Mode.SRC_ATOP)
                     isShow = false
                 }
 
@@ -513,7 +513,7 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
                 isAvailable = true
 
                 btn_see_room.text = getString(R.string.hotel_detail_show_room_text)
-                btn_see_room.buttonCompatType = ButtonCompat.TRANSACTION
+                btn_see_room.buttonType = UnifyButton.Type.TRANSACTION
                 btn_see_room.setOnClickListener {
                     trackingHotelUtil.hotelChooseViewRoom(hotelHomepageModel, hotelId, hotelName)
                     context?.run {
@@ -525,7 +525,7 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
             } else {
                 btn_see_room.text = getString(R.string.hotel_detail_coming_soon_text)
                 btn_see_room.isEnabled = false
-                btn_see_room.buttonCompatType = ButtonCompat.DISABLE
+//                btn_see_room.buttonCompatType = ButtonCompat.DISABLE
             }
             trackingHotelUtil.hotelViewDetails(hotelHomepageModel, hotelName, hotelId, isAvailable, "0", data.first().additionalPropertyInfo.isDirectPayment)
         } else {
@@ -535,7 +535,7 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
 
         if (!isButtonEnabled) {
             btn_see_room.isEnabled = false
-            btn_see_room.buttonCompatType = ButtonCompat.DISABLE
+//            btn_see_room.buttonCompatType = ButtonCompat.DISABLE
         }
 
         setupGlobalSearchWidget()

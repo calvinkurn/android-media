@@ -1,8 +1,8 @@
 package com.tokopedia.hotel.common.presentation.widget
 
 import android.view.View
+import android.widget.TextView
 import com.tokopedia.design.component.BottomSheets
-import com.tokopedia.design.component.TextViewCompat
 import com.tokopedia.hotel.R
 
 /**
@@ -12,9 +12,9 @@ class HotelMenuBottomSheets : BottomSheets() {
 
     lateinit var listener: HotelMenuListener
 
-    private lateinit var menuOrderList: TextViewCompat
-    private lateinit var menuPromo: TextViewCompat
-    private lateinit var menuHelp: TextViewCompat
+    private lateinit var menuOrderList: TextView
+    private lateinit var menuPromo: TextView
+    private lateinit var menuHelp: TextView
 
     override fun getLayoutResourceId(): Int = R.layout.bottom_sheets_hotel_menu
 

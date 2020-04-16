@@ -23,7 +23,6 @@ import com.tokopedia.design.list.adapter.SpaceItemDecoration
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.common.analytics.TrackingHotelUtil
 import com.tokopedia.hotel.common.util.ErrorHandlerHotel
-import com.tokopedia.hotel.globalsearch.presentation.activity.HotelChangeSearchActivity
 import com.tokopedia.hotel.hoteldetail.presentation.activity.HotelDetailActivity
 import com.tokopedia.hotel.search.data.model.Filter
 import com.tokopedia.hotel.search.data.model.Property
@@ -33,7 +32,6 @@ import com.tokopedia.hotel.search.data.model.params.ParamFilter
 import com.tokopedia.hotel.search.data.util.CommonParam
 import com.tokopedia.hotel.search.di.HotelSearchPropertyComponent
 import com.tokopedia.hotel.search.presentation.activity.HotelSearchFilterActivity
-import com.tokopedia.hotel.search.presentation.activity.HotelSearchResultActivity.Companion.CHANGE_SEARCH_REQ_CODE
 import com.tokopedia.hotel.search.presentation.adapter.HotelOptionMenuAdapter
 import com.tokopedia.hotel.search.presentation.adapter.HotelOptionMenuAdapter.Companion.MODE_CHECKED
 import com.tokopedia.hotel.search.presentation.adapter.HotelSearchResultAdapter
@@ -143,10 +141,10 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
         val recyclerView = getRecyclerView(view)
         recyclerView.removeItemDecorationAt(0)
         context?.let {
-            recyclerView.addItemDecoration(SpaceItemDecoration(it.resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_12),
+            recyclerView.addItemDecoration(SpaceItemDecoration(it.resources.getDimensionPixelSize(R.dimen.hotel_12dp),
                     LinearLayoutManager.VERTICAL))
         }
-        bottom_action_view.setButton1OnClickListener {
+        bottom_action_view.sortItem.listener = {
             if (::sortMenu.isInitialized)
                 sortMenu.show(childFragmentManager, javaClass.simpleName)
         }
@@ -197,7 +195,7 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
     }
 
     private fun initializeFilterClick(filter: Filter) {
-        onFilterClick = View.OnClickListener {
+        bottom_action_view.filterItem.listener = {
             searchResultviewModel.filter = filter
             context?.let {
                 val cacheManager = SaveInstanceCacheManager(it, true).apply {
@@ -207,7 +205,6 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
                 startActivityForResult(HotelSearchFilterActivity.createIntent(it, cacheManager.id), REQUEST_FILTER)
             }
         }
-        bottom_action_view.setButton2OnClickListener(onFilterClick)
 
         val filterTextView1: TextView = bottom_action_view.findViewById(com.tokopedia.design.R.id.text_view_label_1)
         val filterTextView2: TextView = bottom_action_view.findViewById(com.tokopedia.design.R.id.text_view_label_2)

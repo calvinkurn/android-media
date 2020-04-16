@@ -19,14 +19,14 @@
         android:paddingRight="@dimen/layout_lvl2"
         android:paddingBottom="@dimen/dp_25">
 
-        <com.tokopedia.design.component.TextViewCompat
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/payment_info_hint"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/hotel_order_detail_information"
-            app:fontSize="small"
-            app:textViewTheme="lightPrimary"
-            app:weight="medium"
+            android:textColor="@color/Neutral_N700_96"
+            app:typographyType="body_2"
+            app:typographyWeight="bold"
             tools:textColor="@color/Neutral_N700_96"
             tools:textSize="@dimen/sp_14"
             tools:textStyle="bold" />
@@ -65,12 +65,13 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/layout_lvl2" />
 
-        <com.tokopedia.design.component.TextViewCompat
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/bottom_conditional_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/layout_lvl2"
-            app:fontSize="micro"
+            app:typographyType="body_3"
+            android:textColor="@color/Neutral_N700_68"
             tools:text="Kartu Kredit Anda tidak akan terpotong biaya apapun dikarenakan transaksi gagal."
             tools:textSize="@dimen/sp_12" />
 

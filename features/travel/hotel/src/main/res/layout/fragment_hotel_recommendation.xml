@@ -18,15 +18,16 @@
             android:orientation="horizontal"
             android:padding="@dimen/layout_lvl2">
 
-            <com.tokopedia.design.component.TextViewCompat
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/current_location_tv"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:drawablePadding="@dimen/layout_lvl1"
                 android:gravity="center_vertical"
                 android:text="@string/hotel_destination_nearest_location"
-                app:fontSize="small"
-                app:textViewTheme="lightPrimary" />
+                android:textColor="@color/Neutral_N700_96"
+                app:drawableLeftCompat="@drawable/ic_system_action_currentlocation_grayscale_24"
+                app:typographyType="body_2"/>
         </FrameLayout>
 
         <View
@@ -51,16 +52,16 @@
                 android:paddingRight="@dimen/layout_lvl2"
                 android:paddingBottom="@dimen/layout_lvl1">
 
-                <com.tokopedia.design.component.TextViewCompat
+                <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/title_text_view"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/hotel_destination_recent_search_title"
-                    app:fontSize="title"
-                    app:textViewTheme="lightPrimary"
-                    app:weight="medium" />
+                    android:textColor="@color/Neutral_N700_96"
+                    app:typographyType="heading_4"
+                    />
 
-                <com.tokopedia.design.component.TextViewCompat
+                <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/delete_text_view"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -69,7 +70,7 @@
                     android:gravity="end"
                     android:text="@string/hotel_destination_recent_search_delete_all"
                     android:textColor="@color/Green_G500"
-                    app:fontSize="micro" />
+                    app:typographyType="body_3"/>
             </RelativeLayout>
 
             <androidx.recyclerview.widget.RecyclerView
@@ -106,13 +107,13 @@
                 android:paddingRight="@dimen/layout_lvl2"
                 android:paddingBottom="@dimen/hotel_12dp">
 
-                <com.tokopedia.design.component.TextViewCompat
+                <com.tokopedia.unifyprinciples.Typography
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/hotel_destination_popular_search_title"
-                    app:fontSize="title"
-                    app:textViewTheme="lightPrimary"
-                    app:weight="medium" />
+                    app:typographyType="heading_4"
+                    android:textColor="@color/Neutral_N700_96"
+                    />
             </RelativeLayout>
 
             <androidx.recyclerview.widget.RecyclerView

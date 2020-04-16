@@ -18,13 +18,13 @@
         android:layout_gravity="center_horizontal"
         tools:src="@drawable/status_no_result" />
 
-    <com.tokopedia.design.component.TextViewCompat
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_main_facility_description"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
-        android:textSize="@dimen/sp_10"
-        app:fontSize="micro"
+        app:typographyType="small"
+        android:textColor="@color/Neutral_N700_68"
         tools:text="Wi-Fi Hotel Kencang"
         android:maxLines="2"
         android:ellipsize="end"/>

@@ -16,25 +16,26 @@
         android:paddingRight="@dimen/layout_lvl2"
         android:paddingBottom="@dimen/hotel_18dp">
 
-        <com.tokopedia.design.component.TextViewCompat
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/contact_number"
             android:layout_width="@dimen/layout_lvl0"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/layout_lvl4"
             android:layout_marginRight="@dimen/layout_lvl4"
-            app:fontSize="small"
+            app:typographyType="body_2"
+            app:typographyWeight="bold"
+            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/contact_button"
             app:layout_constraintStart_toStartOf="parent"
-            app:weight="medium"
             tools:text="+62 21 345 6788" />
 
-        <com.tokopedia.design.component.TextViewCompat
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/contact_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Hubungi"
             android:textColor="@color/Green_G500"
-            app:fontSize="micro"
+            app:typographyType="body_3"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />

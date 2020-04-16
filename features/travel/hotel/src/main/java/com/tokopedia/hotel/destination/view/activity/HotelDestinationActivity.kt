@@ -5,7 +5,6 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.common.presentation.HotelBaseActivity
 import com.tokopedia.hotel.destination.di.DaggerHotelDestinationComponent

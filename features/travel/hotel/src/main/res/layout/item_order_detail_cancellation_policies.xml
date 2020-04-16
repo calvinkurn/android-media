@@ -12,20 +12,21 @@
     android:paddingRight="@dimen/layout_lvl2"
     android:paddingBottom="@dimen/layout_lvl1">
 
-    <com.tokopedia.design.component.TextViewCompat
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:fontSize="small"
-        app:textViewTheme="lightPrimary"
-        app:weight="medium"
+        app:typographyType="body_2"
+        android:textColor="@color/Neutral_N700_96"
+        app:typographyWeight="bold"
         tools:text="Title" />
 
-    <com.tokopedia.design.component.TextViewCompat
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_lvl2"
-        app:fontSize="micro"
+        android:textColor="@color/Neutral_N700_68"
+        app:typographyType="body_3"
         tools:text="Content" />
 </LinearLayout>

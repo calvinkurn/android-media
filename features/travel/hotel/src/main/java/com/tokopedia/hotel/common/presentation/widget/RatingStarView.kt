@@ -1,8 +1,8 @@
 package com.tokopedia.hotel.common.presentation.widget
 
 import android.content.Context
-import com.tokopedia.design.base.BaseCustomView
 import com.tokopedia.hotel.R
+import com.tokopedia.unifycomponents.BaseCustomView
 
 /**
  * @author by furqan on 23/04/19
