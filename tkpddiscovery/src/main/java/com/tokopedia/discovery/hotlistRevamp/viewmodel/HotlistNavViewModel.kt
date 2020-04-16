@@ -3,10 +3,7 @@ package com.tokopedia.discovery.hotlistRevamp.viewmodel
 import androidx.lifecycle.*
 import com.tokopedia.discovery.categoryrevamp.data.productModel.ProductListResponse
 import com.tokopedia.discovery.categoryrevamp.data.productModel.ProductsItem
-import com.tokopedia.discovery.categoryrevamp.domain.usecase.CategoryProductUseCase
-import com.tokopedia.discovery.categoryrevamp.domain.usecase.DynamicFilterUseCase
-import com.tokopedia.discovery.categoryrevamp.domain.usecase.GetProductListUseCase
-import com.tokopedia.discovery.categoryrevamp.domain.usecase.QuickFilterUseCase
+import com.tokopedia.discovery.categoryrevamp.domain.usecase.*
 import com.tokopedia.discovery.hotlistRevamp.data.cpmAds.CpmItem
 import com.tokopedia.discovery.hotlistRevamp.data.hotListDetail.HotListDetailResponse
 import com.tokopedia.discovery.hotlistRevamp.domain.usecases.CpmAdsUseCase
@@ -25,7 +22,8 @@ class HotlistNavViewModel @Inject constructor(private var hotlistDetailUseCase: 
                                               private var categoryProductUseCase: CategoryProductUseCase,
                                               private var quickFilterUseCase: QuickFilterUseCase,
                                               private var dynamicFilterUseCase: DynamicFilterUseCase,
-                                              private var cpmAdsUseCase: CpmAdsUseCase) : ViewModel(), LifecycleObserver {
+                                              private var cpmAdsUseCase: CpmAdsUseCase,
+                                              var sendTopAdsUseCase: SendTopAdsUseCase) : ViewModel(), LifecycleObserver {
 
     val mHotListDetailResponse = MutableLiveData<Result<HotListDetailResponse>>()
     val mProductList = MutableLiveData<Result<List<ProductsItem>>>()
@@ -146,6 +144,10 @@ class HotlistNavViewModel @Inject constructor(private var hotlistDetailUseCase: 
                 mCpmTopAdsData.value = Fail(e)
             }
         })
+    }
+
+    fun sendTopAds(url: String) {
+        sendTopAdsUseCase.executeOnBackground(url)
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
