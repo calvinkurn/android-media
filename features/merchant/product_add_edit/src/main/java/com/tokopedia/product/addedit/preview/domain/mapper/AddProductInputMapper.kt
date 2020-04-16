@@ -124,7 +124,7 @@ class AddProductInputMapper @Inject constructor() {
     private fun getVariantImage(variantPicturePath: List<String>, index: Int?): List<Picture> {
         var variantPictureList = listOf<Picture>()
         index?.apply {
-            variantPicturePath.getOrNull(this)?.apply {
+            variantPicturePath.getOrNull(this - 1)?.apply {
                 variantPictureList = listOf(Picture(uploadId = this))
             }
         }
