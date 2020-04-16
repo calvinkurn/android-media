@@ -293,6 +293,11 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
 
         doneButton?.setOnClickListener {
             updateImageList()
+            ProductEditStepperTracking.trackFinishButton(shopId)
+            val validateMessage = viewModel.validateProductInput()
+            if (validateMessage.isNotEmpty()) {
+                Toaster.make(view, validateMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
+            }
             // when we perform add product, the productId will be 0
             // when we perform edit product, the productId will be provided from the getProductV3 response
             // when we perform open draft, previous state before we save the product to draft will be the same
@@ -300,7 +305,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
                 context?.let {
                     viewModel.productInputModel.value?.run {
                         AddEditProductEditService.startService(it, this)
-                        activity?.finish()
+                        moveToManageProduct()
                     }
                 }
             } else {
@@ -314,7 +319,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
                                 variantInputModel = productInputModel.variantInputModel,
                                 draftId = viewModel.getDraftId()
                         )
-                        activity?.finish()
+                        moveToManageProduct()
                     }
                 }
             }
@@ -373,7 +378,6 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
         }
 
         editProductPromotionButton?.setOnClickListener {
-            //TODO functionality
             if (viewModel.isEditing.value == true) {
                 ProductEditStepperTracking.trackChangePromotion(shopId)
             }
@@ -454,7 +458,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
                             activity?.finish()
                         } else {
                             view?.let { view ->
-                                Toaster.make(view, validateMessage, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR)
+                                Toaster.make(view, validateMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
                             }
                         }
                     }
@@ -528,9 +532,11 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
     }
 
     private fun onSuccessSetCashback(setCashbackResult: SetCashbackResult) {
-        Toaster.make(main_layout, getString(
+        view?.let {
+            Toaster.make(it, getString(
                 R.string.product_manage_set_cashback_success, setCashbackResult.productName),
                 Snackbar.LENGTH_SHORT, Toaster.TYPE_NORMAL)
+        }
     }
 
     override fun getScreenName(): String {
@@ -879,5 +885,10 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
         }
         viewModel.productInputModel.value?.detailInputModel?.pictureList = newPictureList
         viewModel.productInputModel.value?.detailInputModel?.imageUrlOrPathList = imageUrlOrPathList
+    }
+
+    private fun moveToManageProduct() {
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PRODUCT_MANAGE_LIST)
+        startActivity(intent)
     }
 }
