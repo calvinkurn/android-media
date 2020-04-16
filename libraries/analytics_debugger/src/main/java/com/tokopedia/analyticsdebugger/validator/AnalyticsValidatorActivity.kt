@@ -8,6 +8,8 @@ import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.analyticsdebugger.R
@@ -37,11 +39,13 @@ class AnalyticsValidatorActivity : AppCompatActivity() {
         viewModel.gtmLog.observe(this, Observer<List<GtmLogDB>> {
             Timber.d("Validator got ${it.size}")
         })
-//        if (savedInstanceState == null) {
-//            supportFragmentManager.beginTransaction()
-//                    .add(R.id.container, AnalyticsDebuggerFragment.newInstance(), AnalyticsDebuggerFragment.TAG)
-//                    .commit()
-//        }
+        val rv = findViewById<RecyclerView>(R.id.rv)
+        val itemAdapter = ValidatorResultAdapter()
+        itemAdapter.setData(testQuery["verifyOrder"] as List<Map<String, Any>>)
+        with(rv) {
+            layoutManager = LinearLayoutManager(this@AnalyticsValidatorActivity)
+            adapter = itemAdapter
+        }
     }
 
     companion object {

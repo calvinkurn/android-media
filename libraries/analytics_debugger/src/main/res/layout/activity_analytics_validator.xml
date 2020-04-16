@@ -20,10 +20,9 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <FrameLayout
-        android:id="@+id/container"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:ignore="MergeRootFrame" />
+        android:layout_height="match_parent" />
 
 </LinearLayout>
