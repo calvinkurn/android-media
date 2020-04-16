@@ -1,5 +1,6 @@
 package com.tokopedia.selleronboarding.adapter
 
+import android.content.res.Resources
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -41,7 +42,11 @@ class SlideAdapter : RecyclerView.Adapter<SlideAdapter.SlideViewHolder>() {
 
         fun bind(item: SlideUiModel) = with(itemView) {
             tvHeaderText.text = item.headerText
-            imgIllustrationSob.loadImageDrawable(item.drawableRes)
+            try {
+                imgIllustrationSob.loadImageDrawable(item.drawableRes)
+            } catch (e: Resources.NotFoundException) {
+                e.printStackTrace()
+            }
         }
     }
 }
