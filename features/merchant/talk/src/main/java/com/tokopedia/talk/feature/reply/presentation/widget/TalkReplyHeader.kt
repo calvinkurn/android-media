@@ -41,12 +41,12 @@ class TalkReplyHeader : BaseCustomView{
         setButtonToUnfollowed()
     }
 
-    private fun setButtonToFollowed() {
+    fun setButtonToFollowed() {
         this.replyHeaderFollowButton.text = FOLLOWING_TEXT
         this.replyHeaderFollowButton.buttonType = UnifyButton.Type.ALTERNATE
     }
 
-    private fun setButtonToUnfollowed() {
+    fun setButtonToUnfollowed() {
         this.replyHeaderFollowButton.text = UNFOLLOWED_TEXT
         this.replyHeaderFollowButton.buttonType = UnifyButton.Type.MAIN
     }

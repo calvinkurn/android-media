@@ -13,7 +13,11 @@ import com.tokopedia.talk.feature.reply.di.DaggerTalkReplyComponent
 import com.tokopedia.talk.feature.reply.di.TalkReplyComponent
 import com.tokopedia.talk.feature.report.presentation.fragment.TalkReportFragment
 import com.tokopedia.talk_old.R
+import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.fragment_talk_reading.*
+import kotlinx.android.synthetic.main.fragment_talk_reading.pageError
+import kotlinx.android.synthetic.main.fragment_talk_reading.pageLoading
+import kotlinx.android.synthetic.main.fragment_talk_reply.*
 import kotlinx.android.synthetic.main.partial_talk_connection_error.view.*
 
 class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent> {
@@ -77,5 +81,21 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
 
     private fun showBottomSheet() {
 
+    }
+
+    private fun showSuccessToaster(successMessage: String) {
+        view?.let {
+            Toaster.make(it, successMessage, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL, getString(R.string.talk_ok))
+        }
+    }
+
+    private fun onSuccessFollowThread() {
+        talkReplyHeader.setButtonToFollowed()
+        showSuccessToaster(getString(R.string.toaster_follow_success))
+    }
+
+    private fun onSuccessUnfollowThread() {
+        talkReplyHeader.setButtonToUnfollowed()
+        showSuccessToaster(getString(R.string.toaster_unfollow_success))
     }
 }

@@ -78,6 +78,7 @@
 
     <string name="talk_send">Kirim</string>
     <string name="talk_retry">Refresh</string>
+    <string name="talk_ok">Oke</string>
 
     <string name="reading_connection_error_title">Koneksi internetmu terganggu!</string>
     <string name="reading_connection_error_subtitle">Yuk, pastikan internetmu lancar dengan cek ulang paket data, WiFi, atau jaringan di tempatmu.</string>

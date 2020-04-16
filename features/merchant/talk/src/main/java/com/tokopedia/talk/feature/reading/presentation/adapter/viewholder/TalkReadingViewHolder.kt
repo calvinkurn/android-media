@@ -11,7 +11,9 @@ import kotlinx.android.synthetic.main.item_talk_reading.view.*
 class TalkReadingViewHolder(view: View) : AbstractViewHolder<TalkReadingUiModel>(view) {
 
     companion object {
-        const val BULLET_POINT = "\u2022"
+        const val BULLET_POINT = "\u2022 %s"
+        const val ATTACHED_PRODUCT = "%d produk"
+        const val OTHER_ANSWERS = "Lihat %d Jawaban Lainnya"
         val LAYOUT = R.layout.item_talk_reading
     }
 
@@ -24,6 +26,8 @@ class TalkReadingViewHolder(view: View) : AbstractViewHolder<TalkReadingUiModel>
             readingDate.text = addBulletPointToDate(element.question.answer.createTimeFormatted)
             readingMessage.text = element.question.answer.content
             showNumberOfLikesWithCondition(element.question.likeCount)
+            showNumberOfAttachedProductsWithCondition(element.question.answer.attachedProductCount)
+            showNumberOfOtherAnswersWithCondition(element.question.totalAnswer)
         }
     }
 
@@ -34,8 +38,7 @@ class TalkReadingViewHolder(view: View) : AbstractViewHolder<TalkReadingUiModel>
     }
 
     private fun addBulletPointToDate(date: String): String {
-        val stringBuilder = StringBuilder()
-        return stringBuilder.append(BULLET_POINT).append(date).toString()
+        return String.format(BULLET_POINT, date)
     }
 
     private fun showNumberOfLikesWithCondition(likeCount: String) {
@@ -43,4 +46,21 @@ class TalkReadingViewHolder(view: View) : AbstractViewHolder<TalkReadingUiModel>
             itemView.likeCount.text = likeCount
         }
     }
+
+    private fun showNumberOfAttachedProductsWithCondition(attachedProductCount: Int) {
+        if(attachedProductCount > 0) {
+            itemView.attachedProductIcon.visibility = View.VISIBLE
+            itemView.attachedProductCount.text = String.format(ATTACHED_PRODUCT, attachedProductCount)
+            itemView.attachedProductCount.visibility = View.VISIBLE
+        }
+    }
+
+    private fun showNumberOfOtherAnswersWithCondition(otherAnswers: Int) {
+        if(otherAnswers > 0) {
+            itemView.seeOtherAnswers.text = String.format(OTHER_ANSWERS, otherAnswers)
+            itemView.visibility = View.VISIBLE
+        }
+    }
+
+
 }
