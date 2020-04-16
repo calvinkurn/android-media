@@ -737,10 +737,9 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public void onForceUnauthorizedForceLogout(Activity activity) {
+    public void onForceLogoutAnomaly(Activity activity) {
         userSession.logoutSession();
-        SessionHandler sessionHandler = new SessionHandler(activity);
-        sessionHandler.forceLogout();
+        RouteManager.route(activity, ApplinkConstInternalGlobal.LOGOUT);
         Intent intent = getLoginIntent(activity);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);

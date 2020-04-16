@@ -42,5 +42,5 @@ public interface AbstractionRouter {
 
     void onNewIntent(Context context, Intent intent);
 
-    void onForceUnauthorizedForceLogout(Activity activity);
+    void onForceLogoutAnomaly(Activity activity);
 }
