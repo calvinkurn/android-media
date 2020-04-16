@@ -46,8 +46,6 @@
 /features/discovery/flashsale_management/               @tokopedia/minion-stuart
 /features/discovery/flashsale_management_common/        @tokopedia/minion-stuart
 
-/features/fintech/mitra_toppers/                        @tokopedia/minion-stuart
-
 /features/merchant/atc_variant/                         @tokopedia/minion-stuart
 /features/merchant/brandlist/                           @tokopedia/minion-stuart
 /features/merchant/gold_merchant/                       @tokopedia/minion-stuart
@@ -106,7 +104,7 @@
 
 /features/salam/umrah                                   @tokopedia/minion-mark
 /libraries/travel_calendar                              @tokopedia/minion-mark
-/features/recharge_slice                                @tokopedia/minion-mark
+/features/recharge/recharge_slice                       @tokopedia/minion-mark
 
 /features/payment/payment/                      		@tokopedia/minion-bob
 /features/payment/payment_setting/              		@tokopedia/minion-bob
@@ -161,7 +159,6 @@
 
 /features/operational/contact_us        				@tokopedia/minion-darth
 
-/features/fintech/wallet                				@tokopedia/minion-solo
 /features/fintech/common_wallet         				@tokopedia/minion-solo
 /features/fintech/instant_loan          				@tokopedia/minion-solo
 /features/fintech/ovo_pay_with_qr       				@tokopedia/minion-solo
@@ -184,6 +181,8 @@
 /features/im/common_promo                               @tokopedia/minion-yoda
 /features/ovop2p                                        @tokopedia/minion-yoda
 /features/payment/common_payment                        @tokopedia/minion-yoda
+/features/digital/instant_debit_bca                     @tokopedia/minion-yoda
+/features/fintech/wallet                				@tokopedia/minion-yoda
 
 
 /libraries/adapter_delegate/							@tokopedia/core-team
@@ -233,6 +232,7 @@
 /libraries/translator/									@tokopedia/core-team
 /libraries/travel_calendar/								@tokopedia/core-team
 /libraries/twitter_share/								@tokopedia/core-team
+/libraries/utils                                        @tokopedia/core-team
 /libraries/video_recorder/								@tokopedia/core-team
 /libraries/videoplayer/									@tokopedia/core-team
 /libraries/videouploader/								@tokopedia/core-team

@@ -6,7 +6,8 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:clipToPadding="false"
-    android:clipChildren="false">
+    android:clipChildren="false"
+    android:layout_marginBottom="@dimen/dp_4">
 
     <include
         android:id="@+id/etalase_header_container"
@@ -17,7 +18,6 @@
         android:id="@+id/recyclerViewCarousel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_8"
         android:descendantFocusability="blocksDescendants"
         android:scrollbars="none"
         app:useDefaultItemDecorator="false" />

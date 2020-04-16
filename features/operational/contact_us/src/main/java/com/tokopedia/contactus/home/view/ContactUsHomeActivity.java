@@ -13,10 +13,11 @@ import com.tokopedia.contactus.createticket.ContactUsConstant;
 import com.tokopedia.contactus.home.view.fragment.ContactUsHomeFragment;
 import com.tokopedia.contactus.home.view.presenter.ContactUsHomeContract;
 import com.tokopedia.contactus.inboxticket2.view.activity.InboxListActivity;
-import com.tokopedia.core.home.fragment.SimpleWebViewWithFilePickerFragment;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.url.TokopediaUrl;
+import com.tokopedia.webview.BaseSessionWebViewFragment;
+import com.tokopedia.webview.BaseWebViewFragment;
 
 /**
  * Created by sandeepgoyal on 02/04/18.
@@ -32,9 +33,9 @@ public class ContactUsHomeActivity extends BaseSimpleActivity {
         if (!isNative()) {
             String url = getIntent().getStringExtra(ContactUsConstant.EXTRAS_PARAM_URL);
             if (url != null && url.length() > 0) {
-                return SimpleWebViewWithFilePickerFragment.createInstance(url);
+                return BaseSessionWebViewFragment.newInstance(url);
             } else {
-                return SimpleWebViewWithFilePickerFragment.createInstance(URL_HELP);
+                return BaseSessionWebViewFragment.newInstance(URL_HELP);
             }
         } else {
             return ContactUsHomeFragment.newInstance();
@@ -62,9 +63,9 @@ public class ContactUsHomeActivity extends BaseSimpleActivity {
     public void onBackPressed() {
         if (!isNative()) {
             try {
-                SimpleWebViewWithFilePickerFragment webViewFragment = (SimpleWebViewWithFilePickerFragment) getFragment();
-                if (webViewFragment != null && webViewFragment.getWebview().canGoBack()) {
-                    webViewFragment.getWebview().goBack();
+                BaseWebViewFragment webViewFragment = (BaseWebViewFragment) getFragment();
+                if (webViewFragment != null && webViewFragment.getWebView().canGoBack()) {
+                    webViewFragment.getWebView().goBack();
                 } else {
                     super.onBackPressed();
                 }

@@ -93,7 +93,8 @@ class MixTopBannerViewHolder(
                 listOf(MixTopTracking.mapGridToProductTracker(grid, channel.id, position, channel.persoType, channel.categoryID)),
                 channel.header.name,
                 channel.id,
-                adapterPosition.toString()
+                adapterPosition.toString(),
+                channel.campaignCode
         ) as HashMap<String, Any>)
         homeCategoryListener.onDynamicChannelClicked(grid.applink)
     }
@@ -236,12 +237,6 @@ class MixTopBannerViewHolder(
                     blankSpaceConfig = BlankSpaceConfig(),
                     grid = element,
                     applink = element.applink,
-                    listener = this
-            ))
-        }
-        if (isHasSeeMoreApplink(channel)) {
-            list.add(SeeMorePdpDataModel(
-                    applink = channel.header.applink,
                     listener = this
             ))
         }

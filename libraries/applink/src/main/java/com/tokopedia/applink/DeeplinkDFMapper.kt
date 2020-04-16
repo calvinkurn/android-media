@@ -6,6 +6,13 @@ import android.os.Build
 import com.google.android.play.core.splitinstall.SplitInstallManager
 import com.google.android.play.core.splitinstall.SplitInstallManagerFactory
 import com.tokopedia.applink.ApplinkConst.*
+import com.tokopedia.applink.internal.ApplinkConsInternalDigital.CAMERA_OCR
+import com.tokopedia.applink.internal.ApplinkConsInternalDigital.CART_DIGITAL
+import com.tokopedia.applink.internal.ApplinkConsInternalDigital.DIGITAL_PRODUCT_FORM
+import com.tokopedia.applink.internal.ApplinkConsInternalDigital.GENERAL_TEMPLATE
+import com.tokopedia.applink.internal.ApplinkConsInternalDigital.INTERNAL_SMARTCARD
+import com.tokopedia.applink.internal.ApplinkConsInternalDigital.TELCO_DIGITAL
+import com.tokopedia.applink.internal.ApplinkConsInternalDigital.VOUCHER_GAME
 import com.tokopedia.applink.internal.ApplinkConsInternalHome.HOME_WISHLIST
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory.AGE_RESTRICTION
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory.FINAL_PRICE
@@ -89,7 +96,7 @@ import java.io.InputStreamReader
 object DeeplinkDFMapper {
     // it should have the same name with the folder of dynamic feature
     private const val DF_BASE = "df_base"
-
+    val DFM_EMONEY = "df_emoney"
     private const val DF_CATEGORY_TRADE_IN = "df_category_trade_in"
     const val DF_MERCHANT_SELLER = "df_merchant_seller"
     const val DF_OPERATIONAL_CONTACT_US = "df_operational_contact_us"
@@ -120,12 +127,19 @@ object DeeplinkDFMapper {
             add(DFP({ it.startsWithPattern(PLAY_DETAIL) }, DF_BASE, R.string.applink_title_play))
 
             // Digital
-            add(DFP({ it.startsWith(DIGITAL_RECHARGE) || it.startsWith(DIGITAL) }, DF_BASE, R.string.title_digital_subhomepage))
-            add(DFP({ it.startsWith(GLOBAL_INTERNAL_DIGITAL_DEAL) }, DF_BASE, R.string.title_digital_deals))
-            add(DFP({ it.startsWithPattern(GLOBAL_INTERNAL_DIGITAL_DEAL_SLUG) }, DF_BASE, R.string.title_digital_deals))
-            add(DFP({ it.startsWith(GLOBAL_INTERNAL_DIGITAL_DEAL_CATEGORY) }, DF_BASE, R.string.title_digital_deals))
-            add(DFP({ it.startsWith(GLOBAL_INTERNAL_DIGITAL_DEAL_ALL_BRANDS) }, DF_BASE, R.string.title_digital_deals))
-            add(DFP({ it.startsWith(GLOBAL_INTERNAL_DIGITAL_DEAL_BRAND_DETAIL) }, DF_BASE, R.string.title_digital_deals))
+            add(DFP({ it.startsWith(DIGITAL_SUBHOMEPAGE_HOME) ||
+                    it.startsWith(TELCO_DIGITAL) ||
+                    it.startsWith(DIGITAL_PRODUCT_FORM) ||
+                    it.startsWith(GENERAL_TEMPLATE) ||
+                    it.startsWith(CAMERA_OCR) ||
+                    it.startsWith(VOUCHER_GAME) ||
+                    it.startsWith(CART_DIGITAL) || it.startsWith(DIGITAL_CART) }, DFM_BASE, R.string.title_digital_subhomepage))
+            add(DFP({ it.startsWithPattern(INTERNAL_SMARTCARD) }, DFM_EMONEY, R.string.title_digital_emoney))
+            add(DFP({ it.startsWith(GLOBAL_INTERNAL_DIGITAL_DEAL) }, DFM_BASE, R.string.title_digital_deals))
+            add(DFP({ it.startsWithPattern(GLOBAL_INTERNAL_DIGITAL_DEAL_SLUG) }, DFM_BASE, R.string.title_digital_deals))
+            add(DFP({ it.startsWith(GLOBAL_INTERNAL_DIGITAL_DEAL_CATEGORY) }, DFM_BASE, R.string.title_digital_deals))
+            add(DFP({ it.startsWith(GLOBAL_INTERNAL_DIGITAL_DEAL_ALL_BRANDS) }, DFM_BASE, R.string.title_digital_deals))
+            add(DFP({ it.startsWith(GLOBAL_INTERNAL_DIGITAL_DEAL_BRAND_DETAIL) }, DFM_BASE, R.string.title_digital_deals))
 
             // Discovery
             add(DFP({ it.startsWith(SIMILAR_SEARCH_RESULT_BASE) }, DF_BASE, R.string.title_similar_search))

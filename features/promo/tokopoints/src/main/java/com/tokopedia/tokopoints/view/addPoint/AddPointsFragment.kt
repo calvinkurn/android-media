@@ -13,7 +13,6 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.tokopoints.R
-import com.tokopedia.tokopoints.di.DaggerTokoPointComponent
 import com.tokopedia.tokopoints.view.adapter.AddPointGridViewHolder
 import com.tokopedia.tokopoints.view.adapter.AddPointsAdapter
 import com.tokopedia.tokopoints.view.model.addpointsection.SectionsItem
@@ -24,8 +23,10 @@ import javax.inject.Inject
 import android.widget.GridLayout
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.tokopoints.di.DaggerTokopointBundleComponent
+import com.tokopedia.tokopoints.di.TokopointsQueryModule
 import com.tokopedia.tokopoints.view.util.Loading
 import com.tokopedia.tokopoints.view.util.Success
 import kotlin.math.roundToInt
@@ -124,6 +125,7 @@ class AddPointsFragment : BottomSheetDialogFragment(), TokopointAddPointContract
     fun initInjector() {
         DaggerTokopointBundleComponent.builder()
                 .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
+                .tokopointsQueryModule(TokopointsQueryModule(activity as BaseSimpleActivity))
                 .build()
                 .inject(this)
     }
