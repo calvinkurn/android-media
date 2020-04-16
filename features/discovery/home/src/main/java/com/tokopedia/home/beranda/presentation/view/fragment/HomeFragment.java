@@ -106,7 +106,6 @@ import com.tokopedia.iris.util.IrisSession;
 import com.tokopedia.locationmanager.DeviceLocation;
 import com.tokopedia.locationmanager.LocationDetectorHelper;
 import com.tokopedia.loyalty.view.activity.PromoListActivity;
-import com.tokopedia.loyalty.view.activity.TokoPointWebviewActivity;
 import com.tokopedia.navigation_common.listener.AllNotificationListener;
 import com.tokopedia.navigation_common.listener.FragmentListener;
 import com.tokopedia.navigation_common.listener.HomePerformanceMonitoringListener;
@@ -502,14 +501,14 @@ public class HomeFragment extends BaseDaggerFragment implements
         }
 
         if (recyclerView.canScrollVertically(1)) {
-            if(homeMainToolbar != null) {
+            if(homeMainToolbar != null && homeMainToolbar.getViewHomeMainToolBar() != null) {
                 homeMainToolbar.showShadow();
             }
             showFeedSectionViewHolderShadow(false);
             homeRecyclerView.setNestedCanScroll(false);
         } else {
             //home feed now can scroll up, so hide maintoolbar shadow
-            if(homeMainToolbar != null) {
+            if(homeMainToolbar != null && homeMainToolbar.getViewHomeMainToolBar() != null) {
                 homeMainToolbar.hideShadow();
             }
             showFeedSectionViewHolderShadow(true);
@@ -628,7 +627,7 @@ public class HomeFragment extends BaseDaggerFragment implements
             /*
              * set notification gimmick
              */
-            if(homeMainToolbar != null) {
+            if(homeMainToolbar != null && homeMainToolbar.getViewHomeMainToolBar() != null) {
                 homeMainToolbar.setNotificationNumber(0);
             }
         });
@@ -684,9 +683,17 @@ public class HomeFragment extends BaseDaggerFragment implements
     }
 
     private void observeSearchHint(){
-        viewModel.getSearchHint().observe(getViewLifecycleOwner(), data -> {
-            setHint(data);
-        });
+        if(getView() != null && !viewModel.getSearchHint().hasObservers() && homeMainToolbar != null && homeMainToolbar.getViewHomeMainToolBar() != null){
+            viewModel.getSearchHint().observe(getViewLifecycleOwner(), data -> {
+                setHint(data);
+            });
+        }
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        observeSearchHint();
     }
 
     private void observeSendLocation(){
@@ -790,7 +797,7 @@ public class HomeFragment extends BaseDaggerFragment implements
         if (offsetAlpha < 0) {
             offsetAlpha = 0;
         }
-        if(homeMainToolbar != null) {
+        if(homeMainToolbar != null && homeMainToolbar.getViewHomeMainToolBar() != null) {
             if (offsetAlpha >= 150) {
                 homeMainToolbar.switchToDarkToolbar();
                 if (isLightThemeStatusBar) requestStatusBarDark();
@@ -804,7 +811,7 @@ public class HomeFragment extends BaseDaggerFragment implements
             offsetAlpha = 255;
         }
 
-        if(homeMainToolbar != null) {
+        if(homeMainToolbar != null && homeMainToolbar.getViewHomeMainToolBar() != null) {
             if (offsetAlpha >= 0 && offsetAlpha <= 255) {
                 homeMainToolbar.setBackgroundAlpha(offsetAlpha);
                 setStatusBarAlpha(offsetAlpha);
@@ -983,9 +990,9 @@ public class HomeFragment extends BaseDaggerFragment implements
             openApplink(appLink);
         } else {
             if (TextUtils.isEmpty(pageTitle))
-                startActivity(TokoPointWebviewActivity.getIntent(getActivity(), tokoPointUrl));
+                RouteManager.route(getActivity(), ApplinkConstInternalGlobal.WEBVIEW, tokoPointUrl);
             else
-                startActivity(TokoPointWebviewActivity.getIntentWithTitle(getActivity(), tokoPointUrl, pageTitle));
+                RouteManager.route(getActivity(), ApplinkConstInternalGlobal.WEBVIEW_TITLE, pageTitle, tokoPointUrl);
         }
     }
 
@@ -1656,7 +1663,7 @@ public class HomeFragment extends BaseDaggerFragment implements
 
     @Override
     public void onNotificationChanged(int notificationCount, int inboxCount) {
-        if (homeMainToolbar != null) {
+        if (homeMainToolbar != null && homeMainToolbar.getViewHomeMainToolBar() != null) {
             homeMainToolbar.setNotificationNumber(notificationCount);
             homeMainToolbar.setInboxNumber(inboxCount);
         }

@@ -302,8 +302,10 @@ class SaldoTransactionHistoryFragment : BaseDaggerFragment(), SaldoHistoryContra
 
     override fun initInjector() {
         try {
-            val saldoDetailsComponent = SaldoDetailsComponentInstance.getComponent(activity!!.application)
-            saldoDetailsComponent!!.inject(this)
+            activity?.let {
+                val saldoDetailsComponent = SaldoDetailsComponentInstance.getComponent(it)
+                saldoDetailsComponent.inject(this)
+            }
         } catch (e: NullPointerException) {
 
         }
