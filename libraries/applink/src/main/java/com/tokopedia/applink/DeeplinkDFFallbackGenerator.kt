@@ -11,6 +11,7 @@ object DeeplinkDFFallbackGenerator {
         if (!fallbackUrl.endsWith("/")) {
             fallbackUrl += "/"
         }
+        fallbackUrl.replace("www.", "m.")
         fallbackUrl += "report/"
         return fallbackUrl
     }
