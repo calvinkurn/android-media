@@ -4,6 +4,8 @@ import android.content.Context
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.centralizedpromo.view.FirstVoucherDataSource
 import com.tokopedia.centralizedpromo.view.adapter.FirstVoucherAdapter
 import com.tokopedia.sellerhome.R
@@ -18,6 +20,13 @@ class FirstVoucherBottomSheetView(context: Context) : ConstraintLayout(context) 
 
     private fun setupLayout() {
         setupAdapter()
+        setupOnClick()
+    }
+
+    private fun setupOnClick() {
+        firstVoucherButton.setOnClickListener {
+            RouteManager.route(context, ApplinkConstInternalSellerapp.CREATE_VOUCHER)
+        }
     }
 
     private fun setupAdapter() {
