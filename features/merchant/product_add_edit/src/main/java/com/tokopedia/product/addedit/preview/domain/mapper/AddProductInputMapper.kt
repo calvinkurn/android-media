@@ -42,7 +42,7 @@ class AddProductInputMapper @Inject constructor() {
 
     fun mapInputToParam(shopId: String,
                         uploadIdList: ArrayList<String>,
-                        variantPicturePath: List<String>,
+                        variantOptionUploadId: List<String>,
                         sizeChartUploadId: String,
                         detailInputModel: DetailInputModel,
                         descriptionInputModel: DescriptionInputModel,
@@ -70,14 +70,14 @@ class AddProductInputMapper @Inject constructor() {
                 mapPreorderParam(detailInputModel.preorder),
                 mapWholesaleParam(detailInputModel.wholesaleList),
                 mapVideoParam(descriptionInputModel.videoLinkList),
-                mapVariantParam(variantInputModel, sizeChartUploadId, variantPicturePath)
+                mapVariantParam(variantInputModel, sizeChartUploadId, variantOptionUploadId)
 
         )
     }
 
     private fun mapVariantParam(variantInputModel: ProductVariantInputModel,
                                 sizeChartUploadId: String,
-                                variantPicturePath: List<String>): Variant? {
+                                variantOptionUploadId: List<String>): Variant? {
         if (variantInputModel.variantOptionParent.size == 0 &&
                 variantInputModel.productVariant.size == 0) {
             return null
@@ -85,7 +85,7 @@ class AddProductInputMapper @Inject constructor() {
 
         return Variant(
                 mapVariantSelectionParam(variantInputModel.variantOptionParent),
-                mapVariantProducts(variantInputModel.productVariant, variantPicturePath),
+                mapVariantProducts(variantInputModel.productVariant, variantOptionUploadId),
                 mapVariantSizeChart(variantInputModel.productSizeChart, sizeChartUploadId)
         )
     }
@@ -104,7 +104,7 @@ class AddProductInputMapper @Inject constructor() {
 
     private fun mapVariantProducts(
             productVariant: ArrayList<ProductVariantCombinationViewModel>,
-            variantPicturePath: List<String>): List<Product> {
+            variantOptionUploadId: List<String>): List<Product> {
         val products: ArrayList<Product> = ArrayList()
         productVariant.forEach {
             val levelIndex = it.opt.firstOrNull()
@@ -114,17 +114,17 @@ class AddProductInputMapper @Inject constructor() {
                     it.sku,
                     getActiveStatus(it.st),
                     it.stock,
-                    getVariantImage(variantPicturePath, levelIndex)
+                    getVariantImage(variantOptionUploadId, levelIndex)
             )
             products.add(product)
         }
         return products
     }
 
-    private fun getVariantImage(variantPicturePath: List<String>, index: Int?): List<Picture> {
+    private fun getVariantImage(variantOptionUploadId: List<String>, index: Int?): List<Picture> {
         var variantPictureList = listOf<Picture>()
         index?.apply {
-            variantPicturePath.getOrNull(this - 1)?.apply {
+            variantOptionUploadId.getOrNull(this - 1)?.apply {
                 variantPictureList = listOf(Picture(uploadId = this))
             }
         }

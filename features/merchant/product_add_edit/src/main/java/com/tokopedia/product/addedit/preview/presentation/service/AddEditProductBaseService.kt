@@ -6,6 +6,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.mediauploader.data.state.UploadResult
 import com.tokopedia.mediauploader.domain.UploaderUseCase
 import com.tokopedia.product.addedit.common.AddEditProductComponentBuilder
+import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.Companion.GQL_ERROR_SUBSTRING
 import com.tokopedia.product.addedit.common.constant.AddEditProductExtraConstant.Companion.IMAGE_SOURCE_ID
 import com.tokopedia.product.addedit.common.util.AddEditProductNotificationManager
@@ -121,6 +122,12 @@ abstract class AddEditProductBaseService : JobIntentService(), CoroutineScope {
             sourceId = IMAGE_SOURCE_ID,
             filePath = filePath
         )
+
+        // check picture availability
+        if (!filePath.exists()) {
+            return ""
+        }
+
         return when (val result = uploaderUseCase(params)) {
             is UploadResult.Success -> {
                 notificationManager?.onAddProgress(filePath)
@@ -134,5 +141,5 @@ abstract class AddEditProductBaseService : JobIntentService(), CoroutineScope {
     }
 
     abstract fun getNotificationManager(urlImageCount: Int): AddEditProductNotificationManager
-    abstract fun onUploadProductImagesDone(uploadIdList: ArrayList<String>, variantPicturePath: List<String>, sizeChartId: String)
+    abstract fun onUploadProductImagesDone(uploadIdList: ArrayList<String>, variantOptionUploadId: List<String>, sizeChartId: String)
 }

@@ -119,9 +119,9 @@ open class AddEditProductAddService : AddEditProductBaseService() {
         return imageList
     }
 
-    override fun onUploadProductImagesDone(uploadIdList: ArrayList<String>, variantPicturePath: List<String>, sizeChartId: String) {
+    override fun onUploadProductImagesDone(uploadIdList: ArrayList<String>, variantOptionUploadId: List<String>, sizeChartId: String) {
         // (3)
-        addProduct(uploadIdList, variantPicturePath, sizeChartId)
+        addProduct(uploadIdList, variantOptionUploadId, sizeChartId)
     }
 
     override fun getNotificationManager(urlImageCount: Int): AddEditProductNotificationManager {
@@ -144,12 +144,12 @@ open class AddEditProductAddService : AddEditProductBaseService() {
         }
     }
 
-    private fun addProduct(uploadIdList: ArrayList<String>, variantPicturePath: List<String>, sizeChartId: String) {
+    private fun addProduct(uploadIdList: ArrayList<String>, variantOptionUploadId: List<String>, sizeChartId: String) {
         val shopId = userSession.shopId
         val param = addProductInputMapper.mapInputToParam(
                 shopId,
                 uploadIdList,
-                variantPicturePath,
+                variantOptionUploadId,
                 sizeChartId,
                 detailInputModel,
                 descriptionInputModel,
