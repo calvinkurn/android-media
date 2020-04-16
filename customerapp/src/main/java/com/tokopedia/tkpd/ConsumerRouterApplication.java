@@ -743,7 +743,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         SessionHandler sessionHandler = new SessionHandler(activity);
         sessionHandler.forceLogout();
         Intent intent = getLoginIntent(activity);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
     }
 
