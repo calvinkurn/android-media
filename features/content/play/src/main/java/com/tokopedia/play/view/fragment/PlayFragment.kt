@@ -252,6 +252,7 @@ class PlayFragment : BaseDaggerFragment(), SensorOrientationManager.OrientationL
     override fun onOrientationChanged(screenOrientation: ScreenOrientation) {
         if (requestedOrientation != screenOrientation.requestedOrientation)
             requestedOrientation = screenOrientation.requestedOrientation
+        sendTrackerWhenRotateScreen(screenOrientation)
     }
 
     fun onBottomInsetsViewShown(bottomMostBounds: Int) {
@@ -490,5 +491,14 @@ class PlayFragment : BaseDaggerFragment(), SensorOrientationManager.OrientationL
     private fun hideAllInsets() {
         hideKeyboard()
         playViewModel.hideInsets(isKeyboardHandled = true)
+    }
+
+    private fun sendTrackerWhenRotateScreen(screenOrientation: ScreenOrientation) {
+        if (screenOrientation.isLandscape) {
+            PlayAnalytics.userTiltFromPortraitToLandscape(
+                    userId = userSession.userId,
+                    channelId = channelId,
+                    channelType = playViewModel.channelType)
+        }
     }
 }
