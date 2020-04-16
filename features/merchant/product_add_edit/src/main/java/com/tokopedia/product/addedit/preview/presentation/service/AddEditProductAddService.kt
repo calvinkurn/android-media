@@ -4,6 +4,8 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant
@@ -20,13 +22,24 @@ import com.tokopedia.product.addedit.preview.presentation.model.ProductInputMode
 import com.tokopedia.product.addedit.shipment.presentation.model.ShipmentInputModel
 import com.tokopedia.product.addedit.tracking.ProductAddShippingTracking
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 /**
  * Created by faisalramd on 2020-04-05.
  */
 
+/*
+Step to submit add product:
+(1). Save product data to draft and get productDraftId
+(2). Upload product images and get uploadIdList
+(3). Hit gql for add product
+(4). clear product from draft if add data success
+ */
+
 open class AddEditProductAddService : AddEditProductBaseService() {
+    protected var productDraftId = 0L
     protected var productInputModel: ProductInputModel = ProductInputModel()
     protected var shipmentInputModel: ShipmentInputModel = ShipmentInputModel()
     protected var descriptionInputModel: DescriptionInputModel = DescriptionInputModel()
@@ -34,8 +47,6 @@ open class AddEditProductAddService : AddEditProductBaseService() {
     protected var variantInputModel: ProductVariantInputModel = ProductVariantInputModel()
 
     companion object {
-        private const val JOB_ID = 13131314
-
         fun startService(context: Context,
                          detailInputModel: DetailInputModel,
                          descriptionInputModel: DescriptionInputModel,
@@ -67,8 +78,23 @@ open class AddEditProductAddService : AddEditProductBaseService() {
             it.variantInputModel = variantInputModel
             it.draftId = draftId
         }
-        uploadProductImages(filterPathOnly(detailInputModel.imageUrlOrPathList),
-                variantInputModel.productSizeChart?.filePath ?: "")
+
+        // (1)
+        saveProductToDraft()
+    }
+
+    private fun saveProductToDraft() {
+        launch {
+            saveProductDraftUseCase.params = SaveProductDraftUseCase
+                    .createRequestParams(mapProductInputModelDetailToDraft(productInputModel),
+                            productInputModel.draftId, false)
+            productDraftId = withContext(Dispatchers.IO){
+                saveProductDraftUseCase.executeOnBackground()
+            }
+            // (2)
+            uploadProductImages(filterPathOnly(detailInputModel.imageUrlOrPathList),
+                    variantInputModel.productSizeChart?.filePath ?: "")
+        }
     }
 
     private fun filterPathOnly(imageUrlOrPathList: List<String>): List<String> =
@@ -77,6 +103,7 @@ open class AddEditProductAddService : AddEditProductBaseService() {
             }
 
     override fun onUploadProductImagesDone(uploadIdList: ArrayList<String>, sizeChartId: String) {
+        // (3)
         addProduct(uploadIdList, sizeChartId)
     }
 
@@ -85,15 +112,17 @@ open class AddEditProductAddService : AddEditProductBaseService() {
         return object : AddEditProductNotificationManager(urlImageCount, manager,
                 this@AddEditProductAddService) {
             override fun getSuccessIntent(): PendingIntent {
-                val intent = AddEditProductPreviewActivity
-                        .createInstance(context, isFromSuccessNotif = true, isFromNotifEditMode = false)
+                ProductAddShippingTracking.clickFinish(userSession.shopId, true)
+                val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PRODUCT_MANAGE_LIST)
                 return PendingIntent.getActivity(context, 0, intent, 0)
             }
 
             override fun getFailedIntent(errorMessage: String): PendingIntent {
-                val intent = AddEditProductPreviewActivity
-                        .createInstance(context, isFromSuccessNotif = false, isFromNotifEditMode = false)
-                return PendingIntent.getActivity(context, 0, intent, 0)
+                ProductAddShippingTracking.clickFinish(userSession.shopId, false)
+                val draftId = productDraftId.toString()
+                val intent = AddEditProductPreviewActivity.createInstance(context, draftId,
+                        isFromSuccessNotif = false, isFromNotifEditMode = false)
+                return PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
             }
         }
     }
@@ -106,23 +135,25 @@ open class AddEditProductAddService : AddEditProductBaseService() {
         launchCatchError(block = {
             withContext(Dispatchers.IO) {
                 productAddUseCase.params = ProductAddUseCase.createRequestParams(param)
-                setUploadProductDataSuccess()
-                if(productInputModel.draftId > 0) {
-                    deleteProductDraftUseCase.params = DeleteProductDraftUseCase.createRequestParams(productInputModel.draftId)
-                    deleteProductDraftUseCase.executeOnBackground()
-                }
-                ProductAddShippingTracking.clickFinish(shopId, true)
-                return@withContext productAddUseCase.executeOnBackground()
+                productAddUseCase.executeOnBackground()
             }
+            // (4)
+            clearProductDraft()
+            delay(NOTIFICATION_CHANGE_DELAY)
+            setUploadProductDataSuccess()
+            ProductAddShippingTracking.clickFinish(shopId, true)
         }, onError = {
             it.message?.let { errorMessage ->
-                setUploadProductDataSuccess(errorMessage)
-                if(productInputModel.draftId > 0) {
-                    saveProductDraftUseCase.params = SaveProductDraftUseCase.createRequestParams(mapProductInputModelDetailToDraft(productInputModel), productInputModel.draftId, false)
-                    withContext(Dispatchers.IO){ saveProductDraftUseCase.executeOnBackground() }
-                }
+                setUploadProductDataError(errorMessage)
                 ProductAddShippingTracking.clickFinish(shopId, false, errorMessage)
             }
         })
+    }
+
+    private suspend fun clearProductDraft() {
+        if(productDraftId > 0) {
+            deleteProductDraftUseCase.params = DeleteProductDraftUseCase.createRequestParams(productDraftId)
+            deleteProductDraftUseCase.executeOnBackground()
+        }
     }
 }

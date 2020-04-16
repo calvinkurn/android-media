@@ -14,8 +14,7 @@ class AddEditProductDraftDataManager @Inject constructor(private val draftDao: A
         draft.isUploading = isUploading
         draft.shopId = shopId
         draft.version = AddEditProductDraftConstant.DB_VERSION
-        draftDao.insertDraft(draft)
-        return draft.id
+        return draftDao.insertDraft(draft)
     }
 
     fun getDraft(productId: Long): AddEditProductDraftEntity {
