@@ -399,15 +399,15 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
             IOException {
         int code = response.code();
         try {
-            if (isNeedGcmUpdate(response)) {
+            if (code == ERROR_UNAUTHORIZED_REQUEST) {
+                networkRouter.showForceLogoutTokenDialog(response.message());
+                return response;
+            } else if (isNeedGcmUpdate(response)) {
                 return refreshTokenAndGcmUpdate(chain, response, finalRequest);
             } else if (isUnauthorized(finalRequest, response)) {
                 return refreshToken(chain, response);
             } else if (isInvalidGrantWhenRefreshToken(finalRequest, response)) {
                 networkRouter.logInvalidGrant(response);
-                return response;
-            } else if (code == ERROR_UNAUTHORIZED_REQUEST) {
-                networkRouter.showForceLogoutTokenDialog(response.message());
                 return response;
             } else {
                 return response;

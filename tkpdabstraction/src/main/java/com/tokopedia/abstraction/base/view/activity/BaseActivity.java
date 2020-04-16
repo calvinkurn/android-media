@@ -170,7 +170,7 @@ public abstract class BaseActivity extends AppCompatActivity implements
 
         unifyButton.setOnClickListener(view -> {
             if (getApplication() instanceof AbstractionRouter) {
-                ((AbstractionRouter) getApplication()).onForceLogout(BaseActivity.this);
+                ((AbstractionRouter) getApplication()).onForceUnauthorizedForceLogout(BaseActivity.this);
             }
         });
 

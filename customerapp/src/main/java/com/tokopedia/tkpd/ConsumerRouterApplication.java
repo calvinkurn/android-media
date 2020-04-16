@@ -297,6 +297,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     private TetraDebugger tetraDebugger;
     private Iris mIris;
+    private UserSessionInterface userSession;
 
     @Override
     public void onCreate() {
@@ -310,10 +311,15 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         initTetraDebugger();
         DeeplinkHandlerActivity.createApplinkDelegateInBackground();
         initResourceDownloadManager();
+        initUserSession();
     }
 
     private void initResourceDownloadManager() {
         (new DeferredResourceInitializer()).initializeResourceDownloadManager(context);
+    }
+
+    private void initUserSession() {
+       userSession = new UserSession(this);
     }
 
     private void initDaggerInjector() {
@@ -726,6 +732,14 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         SessionHandler sessionHandler = new SessionHandler(activity);
         sessionHandler.forceLogout();
         Intent intent = CustomerRouter.getSplashScreenIntent(getBaseContext());
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+    }
+
+    @Override
+    public void onForceUnauthorizedForceLogout(Activity activity) {
+        userSession.logoutSession();
+        Intent intent = getLoginIntent();
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
     }
@@ -1250,7 +1264,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public String getUserId() {
-        UserSessionInterface userSession = new UserSession(this);
         return userSession.getUserId();
     }
 

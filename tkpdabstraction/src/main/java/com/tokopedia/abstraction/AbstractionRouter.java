@@ -41,4 +41,6 @@ public interface AbstractionRouter {
     boolean isAllowLogOnChuckInterceptorNotification();
 
     void onNewIntent(Context context, Intent intent);
+
+    void onForceUnauthorizedForceLogout(Activity activity);
 }
