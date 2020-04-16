@@ -103,7 +103,7 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
             shipmentViewModel.isEditMode = isEditMode
             shipmentViewModel.isAddMode = isAddMode
         }
-        if (!shipmentViewModel.isEditMode) {
+        if (!shipmentViewModel.isEditMode || shipmentViewModel.isAddMode) {
             ProductAddShippingTracking.trackScreen()
         }
     }
@@ -285,6 +285,9 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
             intent.putExtra(EXTRA_SHIPMENT_INPUT, shipmentInputModel)
             activity?.setResult(Activity.RESULT_OK, intent)
             activity?.finish()
+            ProductEditShippingTracking.clickFinish(shopId, true)
+        } else {
+            ProductEditShippingTracking.clickFinish(shopId, false)
         }
     }
 }

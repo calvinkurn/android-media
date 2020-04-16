@@ -199,11 +199,6 @@ object ProductManageTracking {
         eventEditProduct(action, shopId)
     }
 
-    fun eventClickRemoveCashbackToaster(shopId: String) {
-        val action = ProductManageDataLayer.EVENT_ACTION_CLICK_REMOVE_CASHBACK_TOASTER
-        eventEditProduct(action, shopId)
-    }
-
     fun eventClickCashbackValue(value: Int, shopId: String) {
         val action = "${ProductManageDataLayer.EVENT_ACTION_CLICK_CASHBACK_VALUE} $value%"
         eventEditProduct(action, shopId)

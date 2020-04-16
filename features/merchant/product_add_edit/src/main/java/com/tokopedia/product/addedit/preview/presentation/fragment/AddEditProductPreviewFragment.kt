@@ -54,6 +54,7 @@ import com.tokopedia.product.addedit.description.presentation.model.DescriptionI
 import com.tokopedia.product.addedit.description.presentation.model.PictureViewModel
 import com.tokopedia.product.addedit.description.presentation.model.ProductVariantInputModel
 import com.tokopedia.product.addedit.detail.presentation.activity.AddEditProductDetailActivity
+import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.EXTRA_CASHBACK_SHOP_ID
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_PRODUCT_PHOTOS
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.PARAM_SET_CASHBACK_PRODUCT_PRICE
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.PARAM_SET_CASHBACK_VALUE
@@ -71,6 +72,7 @@ import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.PictureInputModel
 import com.tokopedia.product.addedit.draft.mapper.AddEditProductMapper
 import com.tokopedia.product.addedit.imagepicker.view.activity.ImagePickerAddProductActivity
+import com.tokopedia.product.addedit.preview.data.source.api.response.Cashback
 import com.tokopedia.product.addedit.preview.data.source.api.response.Product
 import com.tokopedia.product.addedit.preview.di.AddEditProductPreviewModule
 import com.tokopedia.product.addedit.preview.di.DaggerAddEditProductPreviewComponent
@@ -297,32 +299,34 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
             val validateMessage = viewModel.validateProductInput()
             if (validateMessage.isNotEmpty()) {
                 Toaster.make(view, validateMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
-            }
-            // when we perform add product, the productId will be 0
-            // when we perform edit product, the productId will be provided from the getProductV3 response
-            // when we perform open draft, previous state before we save the product to draft will be the same
-            if (viewModel.productInputModel.value?.productId.orZero() != 0L) {
-                context?.let {
-                    viewModel.productInputModel.value?.run {
-                        AddEditProductEditService.startService(it, this)
-                        moveToManageProduct()
-                    }
-                }
             } else {
-                context?.apply {
-                    viewModel.productInputModel.value?.let { productInputModel ->
-                        AddEditProductAddService.startService(
-                                context = this,
-                                detailInputModel = productInputModel.detailInputModel,
-                                descriptionInputModel = productInputModel.descriptionInputModel,
-                                shipmentInputModel = productInputModel.shipmentInputModel,
-                                variantInputModel = productInputModel.variantInputModel,
-                                draftId = viewModel.getDraftId()
-                        )
-                        moveToManageProduct()
+                // when we perform add product, the productId will be 0
+                // when we perform edit product, the productId will be provided from the getProductV3 response
+                // when we perform open draft, previous state before we save the product to draft will be the same
+                if (viewModel.productInputModel.value?.productId.orZero() != 0L) {
+                    context?.let {
+                        viewModel.productInputModel.value?.run {
+                            AddEditProductEditService.startService(it, this)
+                            moveToManageProduct()
+                        }
+                    }
+                } else {
+                    context?.apply {
+                        viewModel.productInputModel.value?.let { productInputModel ->
+                            AddEditProductAddService.startService(
+                                    context = this,
+                                    detailInputModel = productInputModel.detailInputModel,
+                                    descriptionInputModel = productInputModel.descriptionInputModel,
+                                    shipmentInputModel = productInputModel.shipmentInputModel,
+                                    variantInputModel = productInputModel.variantInputModel,
+                                    draftId = viewModel.getDraftId()
+                            )
+                            moveToManageProduct()
+                        }
                     }
                 }
             }
+
         }
 
         addProductPhotoTipsLayout?.setOnClickListener {
@@ -512,7 +516,8 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
                     val setCashbackResult: SetCashbackResult? = cacheManager?.get(SET_CASHBACK_RESULT, SetCashbackResult::class.java)
                     setCashbackResult?.let { cashbackResult ->
                         if(!cashbackResult.limitExceeded) {
-                            viewModel.productDomain.cashback.copy(percentage = cashbackResult.cashback)
+                            val cashbackProduct = Cashback(cashbackResult.cashback)
+                            viewModel.productDomain = viewModel.productDomain.copy(cashback = cashbackProduct)
                             onSuccessSetCashback(cashbackResult)
                         }
                     }
@@ -686,10 +691,11 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
             val uri = Uri.parse(newUri)
                     .buildUpon()
                     .appendQueryParameter(PARAM_SET_CASHBACK_VALUE, viewModel.productDomain.cashback.percentage.toString())
-                    .appendQueryParameter(PARAM_SET_CASHBACK_PRODUCT_PRICE, viewModel.productDomain.price.toString())
+                    .appendQueryParameter(PARAM_SET_CASHBACK_PRODUCT_PRICE, productInputModel.detailInputModel.price.toString())
                     .build()
                     .toString()
             val intent = RouteManager.getIntent(context, uri)
+            intent.putExtra(EXTRA_CASHBACK_SHOP_ID, shopId)
             startActivityForResult(intent, SET_CASHBACK_REQUEST_CODE)
         }
     }

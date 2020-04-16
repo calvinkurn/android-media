@@ -141,8 +141,13 @@ open class AddEditProductAddService : AddEditProductBaseService() {
             clearProductDraft()
             delay(NOTIFICATION_CHANGE_DELAY)
             setUploadProductDataSuccess()
+            ProductAddShippingTracking.clickFinish(shopId, true)
         }, onError = {
-            it.message?.let { errorMessage -> setUploadProductDataError(errorMessage) }
+            it.message?.let { errorMessage ->
+                delay(NOTIFICATION_CHANGE_DELAY)
+                setUploadProductDataError(errorMessage)
+                ProductAddShippingTracking.clickFinish(shopId, false, errorMessage)
+            }
         })
     }
 

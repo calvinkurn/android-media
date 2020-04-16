@@ -392,7 +392,7 @@ class AddEditProductDescriptionFragment:
     }
 
     private fun showDescriptionTips() {
-        if (!descriptionViewModel.isEditMode) {
+        if (!descriptionViewModel.isEditMode || descriptionViewModel.isAddMode) {
             ProductAddDescriptionTracking.clickHelpWriteDescription(shopId)
         }
         fragmentManager?.let {
