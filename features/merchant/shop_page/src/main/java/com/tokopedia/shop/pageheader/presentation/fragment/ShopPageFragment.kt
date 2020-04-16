@@ -25,6 +25,7 @@ import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.design.drawable.CountDrawable
@@ -483,8 +484,12 @@ class ShopPageFragment :
 
     private fun redirectToShopSettingsPage() {
         context?.let { context ->
-            shopId?.let { shopId ->
-                startActivity(ShopPageSettingActivity.createIntent(context, shopId))
+            if (GlobalConfig.isSellerApp()) {
+                RouteManager.route(context, ApplinkConstInternalSellerapp.MENU_SETTING)
+            } else {
+                shopId?.let { shopId ->
+                    startActivity(ShopPageSettingActivity.createIntent(context, shopId))
+                }
             }
         }
     }

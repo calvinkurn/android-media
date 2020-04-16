@@ -29,6 +29,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.abstraction.constant.TkpdState
+import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
@@ -54,6 +55,7 @@ import com.tokopedia.product.manage.feature.etalase.view.fragment.EtalasePickerF
 import com.tokopedia.product.manage.feature.etalase.view.fragment.EtalasePickerFragment.Companion.REQUEST_CODE_PICK_ETALASE
 import com.tokopedia.product.manage.feature.filter.data.model.FilterOptionWrapper
 import com.tokopedia.product.manage.feature.filter.presentation.fragment.ProductManageFilterFragment
+import com.tokopedia.product.manage.feature.list.constant.ProductManageAnalytics.MP_PRODUCT_MANAGE
 import com.tokopedia.product.manage.feature.list.constant.ProductManageUrl
 import com.tokopedia.product.manage.feature.list.di.ProductManageListComponent
 import com.tokopedia.product.manage.feature.list.utils.ProductManageTracking
@@ -133,12 +135,14 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     private val productManageListAdapter by lazy { adapter as ProductManageListAdapter }
     private var defaultFilterOptions: List<FilterOption> = emptyList()
     private var itemsChecked: MutableList<ProductViewModel> = mutableListOf()
+    private var performanceMonitoring: PerformanceMonitoring? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(getLayoutRes(), container, false)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        startPerformanceMonitoring()
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
     }
@@ -349,6 +353,10 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
             multiEditBottomSheet?.show()
             ProductManageTracking.eventBulkSettings()
         }
+    }
+
+    private fun startPerformanceMonitoring() {
+        performanceMonitoring = PerformanceMonitoring.start(MP_PRODUCT_MANAGE)
     }
 
     private fun setupDialogFeaturedProduct() {
@@ -1387,7 +1395,12 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
                 is Fail -> showErrorToast()
             }
             hidePageLoading()
+            stopPerformanceMonitoring()
         }
+    }
+
+    private fun stopPerformanceMonitoring() {
+        performanceMonitoring?.stopTrace()
     }
 
     private fun observeFilterTabs() {
@@ -1444,6 +1457,10 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
 
     private fun resetProductList() {
         clearAllData()
+        resetMultiSelect()
+    }
+
+    private fun resetMultiSelect() {
         resetSelectAllCheckBox()
         clearSelectedProduct()
         renderCheckedView()
@@ -1472,6 +1489,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     private fun observeFilter() {
         observe(viewModel.selectedFilterAndSort) {
             clearAllData()
+            resetMultiSelect()
             getProductList()
             setTabFilterCount(it)
         }
