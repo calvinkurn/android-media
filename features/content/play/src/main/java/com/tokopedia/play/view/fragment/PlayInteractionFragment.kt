@@ -75,6 +75,7 @@ import com.tokopedia.play_common.state.PlayVideoState
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.delay
@@ -119,6 +120,9 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
 
     @Inject
     lateinit var trackingQueue: TrackingQueue
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     private val offset16 by lazy { resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4) }
 
@@ -559,7 +563,14 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
             videoSettingsComponent.getUserInteractionEvents()
                     .collect {
                         when (it) {
-                            VideoSettingsInteractionEvent.OnEnterFullscreen -> enterFullscreen()
+                            VideoSettingsInteractionEvent.OnEnterFullscreen -> {
+                                PlayAnalytics.clickCtaFullScreenFromPortraitToLandscape(
+                                        userId = userSession.userId,
+                                        channelId = channelId,
+                                        channelType = playViewModel.channelType
+                                )
+                                enterFullscreen()
+                            }
                             VideoSettingsInteractionEvent.OnExitFullscreen -> exitFullscreen()
                         }
                     }
@@ -622,7 +633,12 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
                     .collect {
                         when (it) {
                             ImmersiveBoxInteractionEvent.BoxClicked -> {
-                                PlayAnalytics.clickWatchArea(channelId, playViewModel.channelType)
+                                PlayAnalytics.clickWatchArea(
+                                        channelId,
+                                        userSession.userId,
+                                        playViewModel.channelType,
+                                        playViewModel.screenOrientation
+                                )
                                 triggerImmersive(clPlayInteraction, VISIBLE_ALPHA)
                             }
                         }

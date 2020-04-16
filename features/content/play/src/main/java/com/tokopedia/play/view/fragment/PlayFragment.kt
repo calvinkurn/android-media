@@ -42,6 +42,7 @@ import com.tokopedia.play_common.state.PlayVideoState
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.dpToPx
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_play.*
 import javax.inject.Inject
 
@@ -85,6 +86,9 @@ class PlayFragment : BaseDaggerFragment(), SensorOrientationManager.OrientationL
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     private val offset12 by lazy { resources.getDimensionPixelOffset(R.dimen.dp_12) }
 
@@ -411,7 +415,10 @@ class PlayFragment : BaseDaggerFragment(), SensorOrientationManager.OrientationL
                 if (bufferTrackingModel.shouldTrackNext) {
                     PlayAnalytics.trackVideoBuffering(
                             bufferCount = bufferTrackingModel.bufferCount,
-                            bufferDurationInSecond = ((System.currentTimeMillis() - bufferTrackingModel.lastBufferMs) / 1000).toInt()
+                            bufferDurationInSecond = ((System.currentTimeMillis() - bufferTrackingModel.lastBufferMs) / 1000).toInt(),
+                            userId = userSession.userId,
+                            channelId = channelId,
+                            channelType = playViewModel.channelType
                     )
                 }
 
