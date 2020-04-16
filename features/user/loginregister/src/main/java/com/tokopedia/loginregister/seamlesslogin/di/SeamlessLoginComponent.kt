@@ -9,12 +9,12 @@ import dagger.Component
  * @author by nisie on 10/25/18.
  */
 @SeamlessLoginScope
-@SessionCommonScope
 @Component(modules = [
     SeamlessLoginModule::class,
     SeamlessLoginQueryModule::class,
-    SeamlessLoginUseCaseModule::class
+    SeamlessLoginUseCaseModule::class,
+    SeamlessLoginViewModelModule::class
 ], dependencies = [LoginRegisterComponent::class])
 interface SeamlessLoginComponent {
-    fun inject(service: RemoteService)
+//    fun inject(service: RemoteService)
 }

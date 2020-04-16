@@ -19,13 +19,13 @@ class RemoteService : Service() {
 
     override fun onCreate() {
         super.onCreate()
-        DaggerSeamlessLoginComponent.builder()
-                .seamlessLoginModule(SeamlessLoginModule())
-                .seamlessLoginQueryModule(SeamlessLoginQueryModule())
-                .seamlessLoginUseCaseModule(SeamlessLoginUseCaseModule())
-                .loginRegisterComponent(((application as BaseMainApplication).baseAppComponent))
-                .build()
-                .inject(this)
+//        DaggerSeamlessLoginComponent.builder()
+//                .seamlessLoginModule(SeamlessLoginModule())
+//                .seamlessLoginQueryModule(SeamlessLoginQueryModule())
+//                .seamlessLoginUseCaseModule(SeamlessLoginUseCaseModule())
+//                .loginRegisterComponent(((application as BaseMainApplication).baseAppComponent))
+//                .build()
+//                .inject(this)
     }
 
     @Inject lateinit var viewModel: SeamlessLoginViewModel
