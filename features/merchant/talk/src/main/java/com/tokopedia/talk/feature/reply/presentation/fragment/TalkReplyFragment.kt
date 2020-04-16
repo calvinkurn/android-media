@@ -6,11 +6,14 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.talk.common.TalkConstants
 import com.tokopedia.talk.common.di.TalkComponent
 import com.tokopedia.talk.feature.reply.di.DaggerTalkReplyComponent
 import com.tokopedia.talk.feature.reply.di.TalkReplyComponent
+import com.tokopedia.talk.feature.reply.presentation.widget.OnTermsAndConditionsClickedListener
 import com.tokopedia.talk.feature.report.presentation.fragment.TalkReportFragment
 import com.tokopedia.talk_old.R
 import com.tokopedia.unifycomponents.Toaster
@@ -20,7 +23,8 @@ import kotlinx.android.synthetic.main.fragment_talk_reading.pageLoading
 import kotlinx.android.synthetic.main.fragment_talk_reply.*
 import kotlinx.android.synthetic.main.partial_talk_connection_error.view.*
 
-class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent> {
+class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>,
+    OnTermsAndConditionsClickedListener {
 
     companion object {
 
@@ -47,6 +51,10 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
         return DaggerTalkReplyComponent.builder().talkComponent(
                 getComponent(TalkComponent::class.java))
                 .build()
+    }
+
+    override fun onTermsAndConditionsClicked() {
+        goToTermsAndConditionsPage()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -97,5 +105,9 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
     private fun onSuccessUnfollowThread() {
         talkReplyHeader.setButtonToUnfollowed()
         showSuccessToaster(getString(R.string.toaster_unfollow_success))
+    }
+
+    private fun goToTermsAndConditionsPage() {
+        RouteManager.route(activity, "${ApplinkConst.WEBVIEW}?url=${TalkConstants.TERMS_AND_CONDITIONS_PAGE_URL}")
     }
 }
