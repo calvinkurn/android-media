@@ -823,7 +823,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     override fun onCartItemDeleteButtonClicked(cartItemHolderData: CartItemHolderData, position: Int, parentPosition: Int) {
         sendAnalyticsOnClickRemoveIconCartItem()
-        val appliedPemromoCodes = ArrayList<String>()
+        val appliedPromoCodes = ArrayList<String>()
         val cartShopHolderData = cartAdapter.getCartShopHolderDataByIndex(parentPosition)
         if (!TextUtils.isEmpty(cartShopHolderData?.shopGroupAvailableData?.voucherOrdersItemData?.code)) {
             appliedPromoCodes.add(cartShopHolderData?.shopGroupAvailableData?.voucherOrdersItemData?.code
