@@ -3,8 +3,10 @@ package com.tokopedia.product.addedit.preview.domain.mapper
 import android.net.Uri
 import com.tokopedia.kotlin.extensions.view.toFloatOrZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
 import com.tokopedia.product.addedit.description.presentation.model.*
 import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
+import com.tokopedia.product.addedit.detail.presentation.model.PictureInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.PreorderInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.WholeSaleInputModel
 import com.tokopedia.product.addedit.preview.data.model.params.add.*
@@ -63,7 +65,7 @@ open class AddProductInputMapper @Inject constructor() {
                 Catalog(detailInputModel.catalogId),
                 Category(detailInputModel.categoryId),
                 ProductEtalase(), // TODO product etalase not implemented yet
-                mapPictureParam(uploadIdList),
+                mapPictureParam(detailInputModel.imageUrlOrPathList, detailInputModel.pictureList, uploadIdList),
                 mapPreorderParam(detailInputModel.preorder),
                 mapWholesaleParam(detailInputModel.wholesaleList),
                 mapVideoParam(descriptionInputModel.videoLinkList),
@@ -169,7 +171,7 @@ open class AddProductInputMapper @Inject constructor() {
         videoLinkList.forEach {
             if (it.inputUrl.isNotEmpty()) {
                 val uri = Uri.parse(it.inputUrl)
-                val source = uri.host ?: ""
+                val source = uri.host ?: uri.pathSegments[0] ?: ""
                 val url = uri.getQueryParameter("v") ?: uri.lastPathSegment
                 data.add(Video(source, url))
             }
@@ -177,10 +179,26 @@ open class AddProductInputMapper @Inject constructor() {
         return Videos(data)
     }
 
-    private fun mapPictureParam(uploadIdList: ArrayList<String>): Pictures {
+    private fun mapPictureParam(imageUrlOrPathList: List<String>, pictureList: List<PictureInputModel>, uploadIdList: ArrayList<String>): Pictures {
         val data: ArrayList<Picture> = ArrayList()
-        uploadIdList.forEach {
-            data.add(Picture(uploadId = it))
+        var idxPictureList = 0
+        var idxUploadIdList = 0
+        imageUrlOrPathList.forEach { urlOrPath ->
+            if (urlOrPath.startsWith(AddEditProductConstants.HTTP_PREFIX)) {
+                with (pictureList[idxPictureList++]) {
+                    data.add(Picture(
+                            description,
+                            fileName,
+                            filePath,
+                            "",
+                            isFromIG.contains("true"),
+                            width,
+                            height
+                    ))
+                }
+            } else {
+                data.add(Picture(uploadId = uploadIdList[idxUploadIdList++]))
+            }
         }
         return Pictures(data)
     }

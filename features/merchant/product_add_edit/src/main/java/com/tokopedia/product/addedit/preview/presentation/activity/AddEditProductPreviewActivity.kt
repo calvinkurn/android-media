@@ -5,12 +5,12 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
-import com.tokopedia.applink.UriUtil
-import com.tokopedia.applink.internal.ApplinkConstInternalMechant
-import com.tokopedia.product.addedit.R
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_FROM_NOTIF_EDIT_PRODUCT
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_FROM_NOTIF_SUCCESS
 import com.tokopedia.product.addedit.preview.presentation.fragment.AddEditProductPreviewFragment
@@ -109,7 +109,7 @@ class AddEditProductPreviewActivity : BaseSimpleActivity() {
     private fun saveProductToDraft() {
         val f = fragment
         if (f != null && f is AddEditProductPreviewFragment) {
-            f.saveProductDraft(false)
+            f.saveProductDraft()
         }
     }
 

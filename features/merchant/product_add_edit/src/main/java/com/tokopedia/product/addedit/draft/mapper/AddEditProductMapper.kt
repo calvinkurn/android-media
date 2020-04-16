@@ -10,6 +10,7 @@ object AddEditProductMapper {
 
     fun mapProductInputModelDetailToDraft(productInputModel: ProductInputModel): ProductDraft {
         val productDraft = ProductDraft()
+        productDraft.productId = productInputModel.productId
         productDraft.detailInputModel.productName = productInputModel.detailInputModel.productName
         productDraft.detailInputModel.categoryId = productInputModel.detailInputModel.categoryId
         productDraft.detailInputModel.price = productInputModel.detailInputModel.price
@@ -84,7 +85,9 @@ object AddEditProductMapper {
             }
 
     fun mapDraftToProductInputModel(productDraft: ProductDraft): ProductInputModel {
-        val productInputModel = ProductInputModel()
+        val productInputModel = ProductInputModel().apply {
+            productId = productDraft.productId
+        }
         productInputModel.detailInputModel.apply {
             productName = productDraft.detailInputModel.productName
             categoryId = productDraft.detailInputModel.categoryId
