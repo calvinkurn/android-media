@@ -8,5 +8,6 @@ import androidx.annotation.DrawableRes
 
 data class SlideUiModel(
         val headerText: String,
-        @DrawableRes val drawableRes: Int
+        @DrawableRes val vectorDrawableRes: Int,
+        @DrawableRes val pngDrawableRes: Int
 )

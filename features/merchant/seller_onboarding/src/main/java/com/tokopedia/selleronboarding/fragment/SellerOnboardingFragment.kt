@@ -1,6 +1,5 @@
 package com.tokopedia.selleronboarding.fragment
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -73,15 +72,15 @@ class SellerOnboardingFragment : Fragment() {
 
     private fun initOnboardingSlides() {
         sliderAdapter.clearSlideItems()
-        sliderAdapter.addSlideItem(getSlideItem(getString(R.string.sob_header_text_page_1), R.drawable.sob_illustration_onboarding_1))
-        sliderAdapter.addSlideItem(getSlideItem(getString(R.string.sob_header_text_page_2), R.drawable.sob_illustration_onboarding_2))
-        sliderAdapter.addSlideItem(getSlideItem(getString(R.string.sob_header_text_page_3), R.drawable.sob_illustration_onboarding_3))
+        sliderAdapter.addSlideItem(getSlideItem(getString(R.string.sob_header_text_page_1), R.drawable.sob_vector_illustration_onboarding_1, R.drawable.sob_illustration_onboarding_1))
+        sliderAdapter.addSlideItem(getSlideItem(getString(R.string.sob_header_text_page_2), R.drawable.sob_vector_illustration_onboarding_2, R.drawable.sob_illustration_onboarding_2))
+        sliderAdapter.addSlideItem(getSlideItem(getString(R.string.sob_header_text_page_3), R.drawable.sob_vector_illustration_onboarding_3, R.drawable.sob_illustration_onboarding_3))
 
         view?.pageIndicatorSob?.setIndicator(sliderAdapter.itemCount)
     }
 
-    private fun getSlideItem(headerText: String, @DrawableRes drawableRes: Int): SlideUiModel {
-        return SlideUiModel(headerText, drawableRes)
+    private fun getSlideItem(headerText: String, @DrawableRes vectorDrawableRes: Int, @DrawableRes drawableRes: Int): SlideUiModel {
+        return SlideUiModel(headerText, vectorDrawableRes, drawableRes)
     }
 
     private fun openApp() = view?.run {

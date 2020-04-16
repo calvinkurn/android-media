@@ -42,10 +42,19 @@ class SlideAdapter : RecyclerView.Adapter<SlideAdapter.SlideViewHolder>() {
 
         fun bind(item: SlideUiModel) = with(itemView) {
             tvHeaderText.text = item.headerText
+            showIllustrationImage(item)
+        }
+
+        private fun showIllustrationImage(item: SlideUiModel) = with(itemView) {
             try {
-                imgIllustrationSob.loadImageDrawable(item.drawableRes)
-            } catch (e: Resources.NotFoundException) {
+                imgIllustrationSob.loadImageDrawable(item.vectorDrawableRes)
+            } catch (e: Exception) {
                 e.printStackTrace()
+                try {
+                    imgIllustrationSob.loadImageDrawable(item.pngDrawableRes)
+                } catch (nfe: Resources.NotFoundException) {
+                    nfe.printStackTrace()
+                }
             }
         }
     }
