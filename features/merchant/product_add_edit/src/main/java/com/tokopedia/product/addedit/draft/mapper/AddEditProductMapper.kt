@@ -33,7 +33,7 @@ object AddEditProductMapper {
         }
         productDraft.descriptionInputModel.apply {
             productDescription = productInputModel.descriptionInputModel.productDescription
-            val videoLinkList = MutableList(productInputModel.descriptionInputModel.videoLinkList.size) { VideoLinkListModel() }
+            val videoLinkList = mutableListOf<VideoLinkListModel>()
             productInputModel.descriptionInputModel.videoLinkList.forEach { videoLink ->
                 val title = videoLink.inputTitle
                 val description = videoLink.inputDescription
