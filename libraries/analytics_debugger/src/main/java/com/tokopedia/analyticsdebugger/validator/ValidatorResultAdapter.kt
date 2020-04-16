@@ -3,6 +3,7 @@ package com.tokopedia.analyticsdebugger.validator
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.item_autocomplete_text.view.*
 
@@ -20,7 +21,7 @@ class ValidatorResultAdapter : RecyclerView.Adapter<ValidatorResultAdapter.Resul
     }
 
     override fun onBindViewHolder(holder: ResultItemViewHolder, position: Int) {
-        holder.itemView.text1.text = position.toString()
+        holder.itemView.findViewById<TextView>(android.R.id.text1).text = position.toString()
     }
 
     fun setData(list: List<Map<String, Any>>) {
