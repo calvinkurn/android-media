@@ -5,8 +5,8 @@ import com.rahullohra.fakeresponse.data.diProvider.DiProvider
 import com.rahullohra.fakeresponse.data.diProvider.vm.VMFactory
 import com.rahullohra.fakeresponse.domain.repository.RemoteSqliteRepository
 import com.rahullohra.fakeresponse.domain.usecases.DownloadSqliteUseCase
-import com.rahullohra.fakeresponse.presentaiton.fragments.DownloadFragment
-import com.rahullohra.fakeresponse.presentaiton.viewmodels.DownloadFragmentVM
+import com.rahullohra.fakeresponse.presentation.fragments.DownloadFragment
+import com.rahullohra.fakeresponse.presentation.viewmodels.DownloadFragmentVM
 import kotlinx.coroutines.Dispatchers
 
 class DownloadFragmentProvider :

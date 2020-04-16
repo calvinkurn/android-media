@@ -3,12 +3,12 @@ package com.rahullohra.fakeresponse.data.diProvider.fragments
 import androidx.lifecycle.ViewModelProvider
 import com.rahullohra.fakeresponse.data.diProvider.DiProvider
 import com.rahullohra.fakeresponse.data.diProvider.vm.VMFactory
-import com.rahullohra.fakeresponse.domain.repository.LocalRepository
+import com.rahullohra.fakeresponse.domain.repository.GqlRepository
 import com.rahullohra.fakeresponse.domain.repository.RestRepository
 import com.rahullohra.fakeresponse.domain.usecases.ShowRecordsUseCase
 import com.rahullohra.fakeresponse.domain.usecases.UpdateGqlUseCase
-import com.rahullohra.fakeresponse.presentaiton.fragments.HomeFragment
-import com.rahullohra.fakeresponse.presentaiton.viewmodels.FakeResponseModel
+import com.rahullohra.fakeresponse.presentation.fragments.HomeFragment
+import com.rahullohra.fakeresponse.presentation.viewmodels.FakeResponseModel
 import kotlinx.coroutines.Dispatchers
 
 class GqlFragmentProvider : DiProvider<HomeFragment> {
@@ -18,7 +18,7 @@ class GqlFragmentProvider : DiProvider<HomeFragment> {
             val workerDispatcher = Dispatchers.IO
 
             val dao = getDatabase(activity).gqlDao()
-            val repository = LocalRepository(dao)
+            val repository = GqlRepository(dao)
 
             val restDao = getDatabase(activity).restDao()
             val restRepository = RestRepository(restDao)

@@ -5,7 +5,12 @@ class SimpleParserRule : GqlParserRule {
         val regex = Regex("[\\w]+")
         val result = regex.findAll(rawQuery)
         if (result.count() > 1) {
-            return result.iterator().next().value.trim()
+            val ignoredKeywords = getIgnoredKeywords()
+            for (s in result.iterator()) {
+                if (!ignoredKeywords.contains(s.value) && s.value.length > 2) {
+                    return s.value
+                }
+            }
         }
         return ""
     }

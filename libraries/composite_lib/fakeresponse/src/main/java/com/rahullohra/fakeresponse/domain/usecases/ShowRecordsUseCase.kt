@@ -1,27 +1,46 @@
 package com.rahullohra.fakeresponse.domain.usecases
 
-import com.rahullohra.fakeresponse.ResponseItemType
-import com.rahullohra.fakeresponse.ResponseListData
-import com.rahullohra.fakeresponse.domain.repository.LocalRepository
+import com.rahullohra.fakeresponse.data.models.ResponseListData
+import com.rahullohra.fakeresponse.db.entities.GqlRecord
+import com.rahullohra.fakeresponse.db.entities.RestRecord
+import com.rahullohra.fakeresponse.db.entities.toResponseListData
+import com.rahullohra.fakeresponse.domain.repository.GqlRepository
 import com.rahullohra.fakeresponse.domain.repository.RestRepository
 
-class ShowRecordsUseCase constructor(val repository: LocalRepository, val restRepository: RestRepository) :
-    BaseUseCase<LocalRepository>(repository) {
+class ShowRecordsUseCase constructor(val gqlRepository: GqlRepository, val restRepository: RestRepository) :
+        BaseUseCase<GqlRepository>(gqlRepository) {
 
     suspend fun getAllQueries(): List<ResponseListData> {
         val list = mutableListOf<ResponseListData>()
 
-        list.addAll(repository.getAllGql()
-            .map { ResponseListData(it.id!!, it.gqlOperationName, it.enabled, responseType = ResponseItemType.GQL) })
+        list.addAll(gqlRepository.getAllGql()
+                .mapNotNull { it.toResponseListData() })
 
         list.addAll(restRepository.getAll()
-            .map { ResponseListData(it.id!!, it.url, it.enabled, responseType = ResponseItemType.REST) })
+                .mapNotNull { it.toResponseListData() })
 
         return list
     }
 
+    fun search(url: String? = null, tag: String? = null, response: String? = null): List<ResponseListData> {
+        val list = mutableListOf<ResponseListData>()
+        list.addAll(gqlRepository.search(tag, response)
+                .mapNotNull { it.toResponseListData() })
+        list.addAll(restRepository.search(url, tag, response)
+                .mapNotNull { it.toResponseListData() })
+        return list
+    }
+
+    fun getGqlRecords(ids: List<Int>): List<GqlRecord> {
+        return gqlRepository.getGqlRecords(ids)
+    }
+
+    fun getRestRecords(ids: List<Int>): List<RestRecord> {
+        return restRepository.getRestRecords(ids)
+    }
+
     suspend fun deleteAllRecords() {
-        repository.deleteAllRecords()
+        gqlRepository.deleteAllRecords()
         restRepository.deleteAllRecords()
     }
 }
