@@ -3,7 +3,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/spacing_lvl4">
 
     <ImageView
         android:id="@+id/image_error"
@@ -48,7 +49,6 @@
         app:unifyButtonVariant="filled"
         app:unifyButtonSize="medium"
         app:unifyButtonType="main"
-        android:layout_marginTop="@dimen/spacing_lvl5"
-        android:layout_marginBottom="@dimen/spacing_lvl4"/>
+        android:layout_marginTop="@dimen/spacing_lvl5"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
