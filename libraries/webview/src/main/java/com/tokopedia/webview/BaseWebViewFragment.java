@@ -438,6 +438,14 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
 
 
     class MyWebViewClient extends WebViewClient {
+
+        @Nullable
+        @Override
+        public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
+            webViewClientShouldInterceptRequest(view, request);
+            return super.shouldInterceptRequest(view, request);
+        }
+
         @Override
         public void onPageStarted(WebView view, String url, Bitmap favicon) {
             super.onPageStarted(view, url, favicon);
@@ -493,6 +501,11 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             super.onReceivedHttpError(view, request, errorResponse);
             Timber.w("P1#WEBVIEW_ERROR_RESPONSE#'%s';status_code=%s;reason='%s'", request.getUrl(), errorResponse.getStatusCode(), errorResponse.getReasonPhrase());
         }
+    }
+
+    // to be overridden
+    protected void webViewClientShouldInterceptRequest(WebView view, WebResourceRequest request) {
+        //noop
     }
 
     protected boolean shouldOverrideUrlLoading(@Nullable WebView webview, @NonNull String url) {

@@ -52,7 +52,6 @@ import com.tokopedia.tokopoints.notification.model.PopupNotification
 import com.tokopedia.tokopoints.view.adapter.SectionCategoryAdapter
 import com.tokopedia.tokopoints.view.adapter.SectionTickerPagerAdapter
 import com.tokopedia.tokopoints.view.cataloglisting.ValidateMessageDialog
-import com.tokopedia.tokopoints.view.contract.TokoPointsHomeContract
 import com.tokopedia.tokopoints.view.couponlisting.CouponListingStackedActivity.Companion.getCallingIntent
 import com.tokopedia.tokopoints.view.customview.CustomViewPager
 import com.tokopedia.tokopoints.view.customview.ServerErrorView
