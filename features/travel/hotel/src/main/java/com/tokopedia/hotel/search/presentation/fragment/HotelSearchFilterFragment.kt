@@ -82,6 +82,9 @@ class HotelSearchFilterFragment: BaseDaggerFragment() {
 
     private fun setupPayAtHotel() {
         switch_pay_at_hotel.isChecked = selectedFilter.paymentType == PAYMENT_TYPE_PAY_AT_HOTEL
+
+        // need to hide pay at hotel filter for now
+        hidePayAtHotelFilter()
     }
 
     private fun setupAccomodationType(accomodation: List<Filter.FilterAccomodation>) {
@@ -158,6 +161,11 @@ class HotelSearchFilterFragment: BaseDaggerFragment() {
                 LinearLayoutManager.HORIZONTAL))
         filter_star.adapter = starAdapter
         starAdapter.updateItems(filterStars, selectedFilter.star.map { it.toString() }.toSet())
+    }
+
+    private fun hidePayAtHotelFilter() {
+        layout_filter_pay_at_hotel.visibility = View.GONE
+        divider_layout_pay_at_hotel.visibility = View.GONE
     }
 
     companion object {
