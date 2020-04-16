@@ -20,7 +20,12 @@ data class GqlRecord(
 
 fun GqlRecord.toResponseListData(): ResponseListData? {
     id?.let {
-        return ResponseListData(id = it, title = gqlOperationName, isChecked = enabled, responseType = ResponseItemType.GQL, customName = customTag)
+        return ResponseListData(id = it,
+                title = gqlOperationName,
+                isChecked = enabled,
+                responseType = ResponseItemType.GQL,
+                customName = customTag,
+                updatedAt = updatedAt)
     }
     return null
 }

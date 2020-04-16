@@ -14,6 +14,7 @@ import com.rahullohra.fakeresponse.Router
 import com.rahullohra.fakeresponse.data.models.ResponseItemType
 import com.rahullohra.fakeresponse.data.models.ResponseListData
 import com.rahullohra.fakeresponse.data.models.SearchType
+import java.text.DateFormat
 
 class ResponseVH(itemView: View, val itemClickCallback: (SearchType, Boolean) -> Unit) :
         RecyclerView.ViewHolder(itemView) {
@@ -27,7 +28,7 @@ class ResponseVH(itemView: View, val itemClickCallback: (SearchType, Boolean) ->
     val cb: CheckBox = itemView.findViewById(R.id.cb)
     val imageCheck: AppCompatImageView = itemView.findViewById(R.id.imageCheck)
     val tvResponseType: AppCompatTextView = itemView.findViewById(R.id.tvResponseType)
-
+    val tvLastUpdated: AppCompatTextView = itemView.findViewById(R.id.tvLastUpdated)
 
     fun setData(data: ResponseListData) {
         tvQueryName.text = data.title
@@ -60,7 +61,9 @@ class ResponseVH(itemView: View, val itemClickCallback: (SearchType, Boolean) ->
             tvResponseType.text = itemView.context.getString(R.string.gql_rest_text)
             tvResponseType.supportBackgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(itemView.context, R.color.gqlColorPurple))
         }
-
+        data.updatedAt?.let {
+            tvLastUpdated.text = DateFormat.getTimeInstance().format(data.updatedAt)
+        }
     }
 
     fun handleExportClick(data: ResponseListData) {

@@ -6,13 +6,14 @@ data class ResponseListData(
         var isChecked: Boolean,
         val customName: String? = null,
         val responseType: ResponseItemType,
-        override var isSelectedForExport:Boolean = false,
+        val updatedAt: Long? = null,
+        override var isSelectedForExport: Boolean = false,
         override var isInExportMode: Boolean = false
-):SearchType
+) : SearchType
 
 enum class ResponseItemType { GQL, REST }
 
-interface SearchType{
-    var isInExportMode:Boolean
-    var isSelectedForExport:Boolean
+interface SearchType {
+    var isInExportMode: Boolean
+    var isSelectedForExport: Boolean
 }

@@ -20,7 +20,12 @@ data class RestRecord(
 
 fun RestRecord.toResponseListData(): ResponseListData? {
     id?.let {
-        return ResponseListData(id = it, title = url, isChecked = enabled, responseType = ResponseItemType.REST, customName = customTag)
+        return ResponseListData(id = it,
+                title = url,
+                isChecked = enabled,
+                responseType = ResponseItemType.REST,
+                customName = customTag,
+                updatedAt = updatedAt)
     }
     return null
 }
