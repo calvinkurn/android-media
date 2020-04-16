@@ -53,6 +53,7 @@ import com.tokopedia.kotlin.util.getParamInt
 import com.tokopedia.kotlin.util.getParamString
 import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.sharedata.DefaultShareData
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -612,7 +613,7 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
 
     override fun setSnackBarConnectingWebSocket() {
         if (userSession.isLoggedIn && !viewState.errorViewShown()) {
-            snackBarWebSocket = ToasterError.make(activity?.findViewById<View>(android.R.id.content), getString(R.string.connecting))
+            snackBarWebSocket = Snackbar.make(activity?.findViewById<View>(android.R.id.content)!!, getString(R.string.connecting), Snackbar.LENGTH_INDEFINITE)
             isSnackbarEnded = false
             snackBarWebSocket?.removeCallback(snackBarCallback)
             snackBarWebSocket?.addCallback(snackBarCallback)
@@ -695,7 +696,9 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
 
     private fun onErrorSendMessage(pendingChatViewModel: PendingChatViewModel, exception: Exception?) {
         viewState.onErrorSendMessage(pendingChatViewModel, exception)
-        ToasterError.make(activity?.findViewById<View>(android.R.id.content), exception?.message)
+        view?.let {
+            Toaster.make(it, exception?.message!!, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
+        }
     }
 
     override fun onFloatingIconClicked(it: DynamicButton, applink: String) {
@@ -820,7 +823,9 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
                 loadFirstTime()
             }
             STICKY_COMPONENT -> {
-                ToasterError.make(activity?.findViewById<View>(android.R.id.content), getString(R.string.play_atc_success))
+                view?.let {
+                    Toaster.make(it, getString(R.string.play_atc_success), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
+                }
             }
         }
     }

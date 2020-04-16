@@ -4,10 +4,6 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.graphics.Color;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -16,6 +12,11 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.LinearLayoutManager;
+
+import com.google.android.material.snackbar.Snackbar;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.contactus.R;
@@ -25,10 +26,10 @@ import com.tokopedia.contactus.inboxticket2.di.InboxComponent;
 import com.tokopedia.contactus.inboxticket2.di.InboxModule;
 import com.tokopedia.contactus.inboxticket2.view.contract.ProvideRatingContract;
 import com.tokopedia.contactus.inboxticket2.view.customview.CustomQuickOptionView;
-import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.design.quickfilter.QuickFilterItem;
 import com.tokopedia.design.quickfilter.QuickSingleFilterView;
 import com.tokopedia.design.quickfilter.custom.CustomViewQuickFilterItem;
+import com.tokopedia.unifycomponents.Toaster;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -174,7 +175,7 @@ public class FragmentProvideRating extends BaseDaggerFragment implements Provide
 
     @Override
     public void showErrorMessage(String o) {
-        ToasterError.make(getView(), o).show();
+        Toaster.INSTANCE.make(getView(), o, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, "", v->{});
     }
 
 

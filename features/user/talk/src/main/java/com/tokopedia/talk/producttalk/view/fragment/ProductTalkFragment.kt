@@ -5,10 +5,10 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import com.google.android.material.snackbar.Snackbar
+import android.view.*
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import android.view.*
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
@@ -23,7 +23,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.Menus
-import com.tokopedia.design.component.ToasterNormal
 import com.tokopedia.talk.ProductTalkTypeFactoryImpl
 import com.tokopedia.talk.R
 import com.tokopedia.talk.common.adapter.TalkProductAttachmentAdapter
@@ -50,6 +49,7 @@ import com.tokopedia.talk.producttalk.view.viewmodel.TalkState
 import com.tokopedia.talk.producttalk.view.viewmodel.TalkThreadViewModel
 import com.tokopedia.talk.reporttalk.view.activity.ReportTalkActivity
 import com.tokopedia.talk.talkdetails.view.activity.TalkDetailsActivity
+import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.product_talk.*
 import java.util.*
 import javax.inject.Inject
@@ -712,7 +712,9 @@ class ProductTalkFragment : BaseDaggerFragment(),
         } else if (requestCode == REQUEST_CREATE_TALK) {
             if (resultCode == Activity.RESULT_OK) {
                 onRefreshData()
-                ToasterNormal.make(view, activity!!.getString(R.string.success_send_talk), Snackbar.LENGTH_LONG).show()
+                view?.let {
+                    Toaster.make(it, getString(R.string.success_send_talk), Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL)
+                }
             }
         } else if (requestCode == REQUEST_GO_TO_DETAIL) {
             data?.run {

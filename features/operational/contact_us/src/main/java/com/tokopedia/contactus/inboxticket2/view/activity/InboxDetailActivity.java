@@ -39,7 +39,6 @@ import com.tokopedia.contactus.inboxticket2.view.utils.Utils;
 import com.tokopedia.contactus.orderquery.data.ImageUpload;
 import com.tokopedia.contactus.orderquery.view.adapter.ImageUploadAdapter;
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog;
-import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef;
@@ -419,7 +418,7 @@ public class InboxDetailActivity extends InboxBaseActivity
 
     @Override
     public void showErrorMessage(String error) {
-        ToasterError.make(getRootView(), error).show();
+        Toaster.INSTANCE.make(getRootView(), error, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, "", v->{});
     }
 
     void sendMessage() {

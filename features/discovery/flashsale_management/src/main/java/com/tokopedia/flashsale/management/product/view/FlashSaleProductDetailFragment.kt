@@ -5,17 +5,16 @@ import android.app.ProgressDialog
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import androidx.core.content.ContextCompat
 import android.text.Editable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.KMNumbers
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
-import com.tokopedia.design.base.BaseToaster
-import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.intdef.CurrencyEnum
 import com.tokopedia.design.text.watcher.AfterTextWatcher
 import com.tokopedia.design.text.watcher.CurrencyTextWatcher
@@ -26,6 +25,7 @@ import com.tokopedia.flashsale.management.di.CampaignComponent
 import com.tokopedia.flashsale.management.product.data.*
 import com.tokopedia.flashsale.management.product.view.presenter.FlashSaleProductDetailPresenter
 import com.tokopedia.graphql.data.GraphqlClient
+import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.fragment_flash_sale_product_detail.*
 import javax.inject.Inject
 
@@ -346,12 +346,14 @@ class FlashSaleProductDetailFragment : BaseDaggerFragment() {
         activity?.finish()
     }
 
-    private fun onErrorDoAction(it: Throwable) {
+    private fun onErrorDoAction(t: Throwable) {
         hideProgressDialog()
-        ToasterError.make(view, ErrorHandler.getErrorMessage(context, it), BaseToaster.LENGTH_INDEFINITE)
-                .setAction(R.string.retry_label) {
-                    onBtnRequestProductClicked()
-                }.show()
+        view?.let {
+            Toaster.make(it, ErrorHandler.getErrorMessage(context, t), Snackbar.LENGTH_INDEFINITE, Toaster.TYPE_ERROR,
+                    getString(R.string.retry_label), View.OnClickListener {
+                onBtnRequestProductClicked()
+            })
+        }
     }
 
     private fun isInputValid(): Boolean {

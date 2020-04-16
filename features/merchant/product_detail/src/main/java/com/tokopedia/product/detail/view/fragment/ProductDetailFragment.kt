@@ -53,9 +53,6 @@ import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.common_tradein.model.ValidateTradeInResponse
 import com.tokopedia.common_tradein.utils.TradeInUtils
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.design.base.BaseToaster
-import com.tokopedia.design.component.ToasterError
-import com.tokopedia.design.component.ToasterNormal
 import com.tokopedia.design.drawable.CountDrawable
 import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.dialog.DialogUnify
@@ -73,8 +70,6 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
-import com.tokopedia.product.detail.common.data.model.carttype.CartRedirection
-import com.tokopedia.product.detail.common.data.model.carttype.CartTypeData
 import com.tokopedia.product.detail.common.data.model.constant.ProductStatusTypeDef
 import com.tokopedia.product.detail.common.data.model.product.*
 import com.tokopedia.product.detail.common.data.model.warehouse.MultiOriginWarehouse
@@ -569,7 +564,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                         activity?.run {
                             val statusMessage = productInfo?.basic?.statusMessage(this)
                             if (statusMessage?.isNotEmpty() == true) {
-                                ToasterError.showClose(this, getString(R.string.product_is_at_status_x, statusMessage))
+                                Toaster.make(view!!, getString(R.string.product_is_at_status_x, statusMessage), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
                             }
                         }
                     }
@@ -1214,8 +1209,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                 if (resultCode == RESULT_CODE_ERROR && data != null) {
                     val message = data.getStringExtra(EXTRA_MESSAGES_ERROR)
                     if (message != null && message.isNotEmpty()) {
-                        ToasterError.make(view, data.getStringExtra(EXTRA_MESSAGES_ERROR), BaseToaster.LENGTH_SHORT)
-                                .show()
+                        Toaster.make(view!!, data.getStringExtra(EXTRA_MESSAGES_ERROR), Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR)
                     } else {
                         errorBottomsheets.setData(
                                 getString(R.string.bottomsheet_title_global_error),
@@ -1268,7 +1262,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
     private fun onErrorSubmitHelpTicket(e: Throwable?) {
         hideProgressDialog()
         view?.also {
-            Toaster.showError(it, ErrorHandler.getErrorMessage(context, e), BaseToaster.LENGTH_SHORT)
+            Toaster.make(it, ErrorHandler.getErrorMessage(context, e), Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR)
         }
     }
 
@@ -1289,7 +1283,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             }
         } else {
             view?.also {
-                Toaster.showError(it, result.message, BaseToaster.LENGTH_SHORT)
+                Toaster.make(it, result.message, Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR)
             }
         }
     }
@@ -1666,7 +1660,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
     }
 
     private fun onErrorGetProductInfo(throwable: Throwable) {
-        context?.let { ToasterError.make(coordinator, ProductDetailErrorHandler.getErrorMessage(it, throwable)).show() }
+        context?.let { Toaster.make(coordinator, ProductDetailErrorHandler.getErrorMessage(it, throwable), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR) }
     }
 
     private fun onSuccessGetProductInfo(productInfoP1: ProductInfoP1) {
@@ -1810,8 +1804,8 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
 
     private fun onFailFavoriteShop(t: Throwable) {
         context?.let {
-            ToasterError.make(view, ProductDetailErrorHandler.getErrorMessage(it, t))
-                    .setAction(R.string.retry_label) { onShopFavoriteClick() }
+            Toaster.make(view!!, ProductDetailErrorHandler.getErrorMessage(it, t),
+                    Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, getString(R.string.retry_label), View.OnClickListener { onShopFavoriteClick() })
         }
         productShopView.toggleClickableFavoriteBtn(true)
     }
@@ -1824,26 +1818,24 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
 
     private fun showToastError(throwable: Throwable) {
         activity?.run {
-            ToasterError.make(findViewById(android.R.id.content),
+            Toaster.make(findViewById(android.R.id.content),
                     ProductDetailErrorHandler.getErrorMessage(this, throwable),
-                    ToasterError.LENGTH_LONG)
-                    .show()
+                    Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
         }
     }
 
     private fun showToastSuccess(message: String) {
         activity?.run {
-            ToasterNormal.make(findViewById(android.R.id.content),
+            Toaster.make(findViewById(android.R.id.content),
                     message,
-                    ToasterNormal.LENGTH_LONG)
-                    .show()
+                    Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL)
         }
     }
 
     private fun showToastSuccessReport() {
         activity?.run {
-            Toaster.showNormal(findViewById(android.R.id.content),
-                    getString(R.string.success_to_report), Snackbar.LENGTH_LONG)
+            Toaster.make(findViewById(android.R.id.content),
+                    getString(R.string.success_to_report), Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL)
         }
     }
 

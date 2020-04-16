@@ -8,12 +8,11 @@ import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.design.base.BaseToaster
-import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.text.watcher.AfterTextWatcher
 import com.tokopedia.gm.common.constant.IMG_URL_POWER_MERCHANT_IDLE_POPUP
 import com.tokopedia.gm.common.constant.IMG_URL_REGULAR_MERCHANT_POPUP
@@ -24,6 +23,7 @@ import com.tokopedia.shop.settings.etalase.data.ShopEtalaseViewModel
 import com.tokopedia.shop.settings.etalase.view.activity.ShopSettingsEtalaseAddEditActivity
 import com.tokopedia.shop.settings.etalase.view.listener.ShopSettingsEtalaseAddEditView
 import com.tokopedia.shop.settings.etalase.view.presenter.ShopSettingsEtalaseAddEditPresenter
+import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.fragment_shop_etalase_add_edit.*
 import javax.inject.Inject
 
@@ -146,10 +146,13 @@ class ShopSettingsEtalaseAddEditFragment : BaseDaggerFragment(),
     }
 
     private fun showToasterError(throwable: Throwable?, onRetry: () -> Unit) {
-        ToasterError.make(view, ErrorHandler.getErrorMessage(activity, throwable), BaseToaster.LENGTH_LONG)
-                .setAction(R.string.title_retry) {
-                    onRetry()
-                }.show()
+        view?.let {
+            Toaster.make(it, ErrorHandler.getErrorMessage(activity, throwable), Snackbar.LENGTH_LONG,
+                    Toaster.TYPE_ERROR, getString(R.string.title_retry), View.OnClickListener {
+                onRetry()
+            })
+        }
+
     }
 
     private fun isIdlePowerMerchant(): Boolean {

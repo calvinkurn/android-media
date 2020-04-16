@@ -33,7 +33,6 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.Group;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -51,10 +50,7 @@ import com.tokopedia.abstraction.common.utils.view.PropertiesEventsWatcher;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
-import com.tokopedia.design.base.BaseToaster;
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog;
-import com.tokopedia.design.component.ToasterError;
-import com.tokopedia.design.component.ToasterNormal;
 import com.tokopedia.design.intdef.CurrencyEnum;
 import com.tokopedia.design.text.TkpdHintTextInputLayout;
 import com.tokopedia.design.text.watcher.AfterTextWatcher;
@@ -118,8 +114,6 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
     private TextView withdrawButton;
     private View withdrawAll;
     private BankAdapter bankAdapter;
-    private Snackbar snackBarInfo;
-    private Snackbar snackBarError;
     private EditText totalWithdrawal;
     private View loadingLayout;
 
@@ -392,25 +386,6 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
         });
         addObserverToWithdrawalEditText(totalWithdrawal);
 
-        snackBarError = ToasterError.make(getActivity().findViewById(android.R.id.content),
-                "", BaseToaster.LENGTH_LONG)
-                .setAction(getActivity().getString(R.string.title_close), new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        analytics.eventClickCloseErrorMessage();
-                        snackBarError.dismiss();
-                    }
-                });
-
-        snackBarInfo = ToasterNormal.make(getActivity().findViewById(android.R.id.content),
-                "", BaseToaster.LENGTH_LONG)
-                .setAction(getActivity().getString(R.string.title_close), new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        snackBarInfo.dismiss();
-                    }
-                });
-
         presenter.getWithdrawForm();
         presenter.getPremiumAccountData();
         tvWithDrawInfo.setText(createTermsAndConditionSpannable());
@@ -654,8 +629,9 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
 
     @Override
     public void showError(String error) {
-        snackBarError.setText(error);
-        snackBarError.show();
+        Toaster.INSTANCE.make(getView(), error, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, getString(R.string.title_close),v->{
+            analytics.eventClickCloseErrorMessage();
+        });
     }
 
     @Override
