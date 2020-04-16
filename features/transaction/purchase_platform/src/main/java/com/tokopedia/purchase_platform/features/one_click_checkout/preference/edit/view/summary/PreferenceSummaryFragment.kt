@@ -327,6 +327,7 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
                     } else {
                         viewModel.createPreference(parent.getAddressId(), parent.getShippingId(), parent.getGatewayCode(), parent.getPaymentQuery())
                     }
+                    preferenceListAnalytics.eventClickSimpanOnSummaryPurchaseSetting()
                 }
             }
         }
