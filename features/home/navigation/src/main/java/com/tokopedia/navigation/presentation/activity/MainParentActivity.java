@@ -16,7 +16,6 @@ import android.graphics.drawable.Icon;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Debug;
 import android.os.Handler;
 import android.os.PersistableBundle;
 import android.preference.PreferenceManager;
@@ -400,8 +399,6 @@ public class MainParentActivity extends BaseActivity implements
     private void afterBottomNaviagtionInflation(Bundle savedInstanceState){
         bottomNavigation = findViewById(R.id.bottomnav);
         bottomNavigation.setItemIconTintList(null);
-        //set this from xml as this expensive Method
-        //bottomNavigation.setLabelVisibilityMode(LabelVisibilityMode.LABEL_VISIBILITY_LABELED);
         bottomNavigation.setOnNavigationItemSelectedListener(MainParentActivity.this::onNavigationItemSelected);
         bottomNavigation.setOnNavigationItemReselectedListener(item -> {
             Fragment fragment = fragmentList.get(getPositionFragmentByMenu(item));
@@ -1186,7 +1183,6 @@ public class MainParentActivity extends BaseActivity implements
                 null
         );
 
-        //Debug.startMethodTracingSampling("mp_home", 50 * 1024 * 1024, 1000);
         getPageLoadTimePerformanceInterface().startMonitoring(HOME_PERFORMANCE_MONITORING_KEY);
         getPageLoadTimePerformanceInterface().startPreparePagePerformanceMonitoring();
     }
@@ -1203,7 +1199,6 @@ public class MainParentActivity extends BaseActivity implements
                         HOME_PERFORMANCE_MONITORING_CACHE_ATTRIBUTION,
                         HOME_PERFORMANCE_MONITORING_NETWORK_VALUE);
             }
-            //Debug.stopMethodTracing();
             getPageLoadTimePerformanceInterface().stopMonitoring();
             getPageLoadTimePerformanceInterface().stopRenderPerformanceMonitoring();
             pageLoadTimePerformanceCallback = null;

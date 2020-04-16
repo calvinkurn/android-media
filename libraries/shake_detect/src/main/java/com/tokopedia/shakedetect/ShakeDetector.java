@@ -97,7 +97,6 @@ public class ShakeDetector implements SensorEventListener {
   }
 
   @Override public void onSensorChanged(SensorEvent event) {
-
     boolean accelerating = isAccelerating(event);
     long timestamp = event.timestamp;
     queue.add(timestamp, accelerating);
