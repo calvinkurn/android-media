@@ -46,7 +46,6 @@ class ProductSnapshotViewHolder(private val view: View,
                 view_picture_search_bar.renderShopStatusDynamicPdp(element.shopStatus, element.statusTitle, element.statusMessage,
                         it.basic.status)
             }
-            renderStockWording(element.getNearestWarehouse(),element.getCampaignModular())
             renderWishlist(element.isAllowManage, element.isWishlisted)
             renderTradein(element.showTradeIn())
             renderCod(element.showCod())
@@ -73,8 +72,6 @@ class ProductSnapshotViewHolder(private val view: View,
             ProductDetailConstant.PAYLOAD_WISHLIST -> renderWishlist(element.isAllowManage, element.isWishlisted)
             ProductDetailConstant.PAYLOAD_P3 -> {
                 view.label_cod.visibility = if (element.shouldShowCod) View.VISIBLE else View.GONE
-                renderStockWording(element.getNearestWarehouse(), element.getCampaignModular(), element.dynamicProductInfoP1?.data?.variant?.isVariant
-                        ?: false)
                 renderCod(element.showCod())
             }
             ProductDetailConstant.PAYLOAD_VARIANT_SELECTED -> {

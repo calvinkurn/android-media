@@ -23,22 +23,23 @@ class GetProductInfoP3VariantUseCase @Inject constructor(private val rawQueries:
                                                          private val graphqlRepository: GraphqlRepository) : UseCase<ProductInfoP3Variant>() {
 
     companion object {
-        fun createParams(isVariant: Boolean, needRequestCod: Boolean,
+        fun createParams(isVariant: Boolean,
                          cartTypeParam: List<CartRedirectionParams>): RequestParams = RequestParams.create().apply {
             putBoolean(VariantConstant.PARAM_IS_VARIANT, isVariant)
-            putBoolean(ProductDetailCommonConstant.PARAM_NEED_REQUEST_COD, needRequestCod)
             putObject(ProductDetailCommonConstant.PARAM_CART_TYPE, cartTypeParam)
         }
     }
-
+    private var forceRefresh = false
     var requestParams = RequestParams.EMPTY
-    var forceRefresh = false
+
+    fun setRefresh(forceRefresh:Boolean) {
+        this.forceRefresh = forceRefresh
+    }
 
     override suspend fun executeOnBackground(): ProductInfoP3Variant {
         val p3VariantResponse = ProductInfoP3Variant()
         val cartTypeParams = requestParams.getObject(ProductDetailCommonConstant.PARAM_CART_TYPE)
         val isVariant = requestParams.getBoolean(VariantConstant.PARAM_IS_VARIANT, false)
-        val needRequestCod = requestParams.getBoolean(ProductDetailCommonConstant.PARAM_NEED_REQUEST_COD, false)
 
         val p3VariantRequest = mutableListOf<GraphqlRequest>()
 
@@ -49,24 +50,11 @@ class GetProductInfoP3VariantUseCase @Inject constructor(private val rawQueries:
             p3VariantRequest.add(getCartTypeRequest)
         }
 
-
-        if (needRequestCod) {
-            val userCodParams = mapOf(ProductDetailCommonConstant.PARAM_IS_PDP to true)
-            val userCodRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_USER_COD_STATUS],
-                    UserCodStatus.Response::class.java, userCodParams)
-            p3VariantRequest.add(userCodRequest)
-        }
-
         try {
             val gqlResponse = graphqlRepository.getReseponse(p3VariantRequest, CacheStrategyUtil.getCacheStrategy(forceRefresh))
 
             if (gqlResponse.getError(CartRedirectionResponse::class.java)?.isNotEmpty() != true) {
                 p3VariantResponse.cartRedirectionResponse = gqlResponse.getData<CartRedirectionResponse>(CartRedirectionResponse::class.java)
-            }
-
-            if (needRequestCod && gqlResponse.getError(UserCodStatus.Response::class.java)?.isNotEmpty() != true) {
-                p3VariantResponse.userCod = gqlResponse.getData<UserCodStatus.Response>(UserCodStatus.Response::class.java)
-                        .result.userCodStatus.isCod
             }
 
         } catch (t: Throwable) {

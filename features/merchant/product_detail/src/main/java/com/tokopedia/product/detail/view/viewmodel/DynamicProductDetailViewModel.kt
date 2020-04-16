@@ -5,7 +5,6 @@ import androidx.collection.ArrayMap
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.affiliatecommon.domain.TrackAffiliateUseCase
 import com.tokopedia.applink.ApplinkConst
@@ -178,17 +177,32 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     private var shopDomain: String? = null
     private var submitTicketSubscription: Subscription? = null
     private var updateCartCounterSubscription: Subscription? = null
+    private val isUserHasShop: Boolean
+        get() = userSessionInterface.hasShop()
 
+    fun hasShopAuthority(): Boolean {
+        return isShopOwner() || shopInfo?.allowManage == true
+    }
+
+    fun isShopOwner(): Boolean = isUserSessionActive && userSessionInterface.shopId.toIntOrNull() == getDynamicProductInfoP1?.basic?.getShopId()
+    val isUserSessionActive: Boolean
+        get() = userSessionInterface.isLoggedIn
+    val userId: String
+        get() = userSessionInterface.userId
+    var deviceId: String = userSessionInterface.deviceId
 
     init {
         _p3VariantResponse.addSource(_p2General){ p2General ->
             launchCatchError(block = {
                 getDynamicProductInfoP1?.let { p1 ->
                     val isVariant = p1.data.variant.isVariant && p2General.variantResp != null
-                    _p3VariantResponse.postValue(getProductInfoP3Variant(isVariant, p1.shouldShowCod))
+                    getProductInfoP3Variant(isVariant).let {
+                        cartTypeData = it.cartRedirectionResponse?.cartRedirection
+                        _p3VariantResponse.postValue(it)
+                    }
                 }
             }){
-
+                Timber.d(it)
             }
         }
 
@@ -201,23 +215,10 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                     }
                 }
             }) {
-
+                Timber.d(it)
             }
         }
     }
-
-    fun hasShopAuthority(): Boolean {
-        return isShopOwner() || shopInfo?.allowManage == true
-    }
-
-    fun isShopOwner(): Boolean = isUserSessionActive && userSessionInterface.shopId.toIntOrNull() == getDynamicProductInfoP1?.basic?.getShopId()
-    val isUserSessionActive: Boolean
-        get() = userSessionInterface.isLoggedIn
-    val userId: String
-        get() = userSessionInterface.userId
-    val isUserHasShop: Boolean
-        get() = userSessionInterface.hasShop()
-    var deviceId: String = userSessionInterface.deviceId
 
     override fun flush() {
         super.flush()
@@ -448,9 +449,9 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         }
     }
 
-    private suspend fun getProductInfoP3Variant(isVariant: Boolean, shouldShowCod: Boolean): ProductInfoP3Variant {
-            getProductInfoP3VariantUseCase.requestParams = GetProductInfoP3VariantUseCase.createParams(isVariant, shouldShowCod, DynamicProductDetailMapper.generateCartTypeVariantParams(getDynamicProductInfoP1, variantData))
-            getProductInfoP3VariantUseCase.forceRefresh = forceRefresh
+    private suspend fun getProductInfoP3Variant(isVariant: Boolean): ProductInfoP3Variant {
+            getProductInfoP3VariantUseCase.requestParams = GetProductInfoP3VariantUseCase.createParams(isVariant, DynamicProductDetailMapper.generateCartTypeVariantParams(getDynamicProductInfoP1, variantData))
+            getProductInfoP3VariantUseCase.setRefresh(forceRefresh)
             return getProductInfoP3VariantUseCase.executeOnBackground()
     }
 
@@ -460,7 +461,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         val domain = shopDomain ?: p2ShopValue.shopInfo?.shopCore?.domain ?: return null
         val origin = if (selectedMultiOrigin.warehouseInfo.isFulfillment) selectedMultiOrigin.warehouseInfo.getOrigin() else null
 
-        return getProductInfoP3RateEstimate(productInfo.basic.getWeightUnit(), domain, origin)
+        return getProductInfoP3RateEstimate(productInfo.basic.getWeightUnit(), domain, origin, productInfo.shouldShowCod)
     }
 
     private fun updateShippingValue(shippingPriceValue: Int?) {
@@ -761,8 +762,9 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         }
     }
 
-    private suspend fun getProductInfoP3RateEstimate(weight: Float, shopDomain: String, origin: String?): ProductInfoP3 {
-        getProductInfoP3RateEstimateUseCase.mapOfParam = GetProductInfoP3RateEstimateUseCase.createParams(weight, shopDomain, forceRefresh, origin)
+    private suspend fun getProductInfoP3RateEstimate(weight: Float, shopDomain: String, origin: String?, needRequestCod:Boolean): ProductInfoP3 {
+        getProductInfoP3RateEstimateUseCase.mapOfParam = GetProductInfoP3RateEstimateUseCase.createParams(weight, shopDomain, origin, needRequestCod)
+        getProductInfoP3RateEstimateUseCase.setRefresh(forceRefresh)
         return getProductInfoP3RateEstimateUseCase.executeOnBackground()
     }
 

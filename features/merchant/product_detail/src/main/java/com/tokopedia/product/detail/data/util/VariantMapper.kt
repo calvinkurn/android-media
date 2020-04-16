@@ -5,14 +5,29 @@ import com.tokopedia.product.detail.common.data.model.pdplayout.BasicInfo
 import com.tokopedia.product.detail.common.data.model.pdplayout.ComponentData
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.common.data.model.pdplayout.Media
+import com.tokopedia.product.detail.common.data.model.product.Stock
 import com.tokopedia.product.detail.view.util.toDate
 import com.tokopedia.variant_common.model.ProductVariantCommon
 import com.tokopedia.variant_common.model.VariantChildCommon
+import com.tokopedia.variant_common.model.VariantMultiOriginWarehouse
 
 /**
  * Created by Yehezkiel on 2020-02-26
  */
 object VariantMapper {
+
+    fun updateSelectedMultiOrigin(oldData: VariantMultiOriginWarehouse, newData: VariantChildCommon?): VariantMultiOriginWarehouse {
+        val newWarehouseInfo = oldData.warehouseInfo.copy(
+                // id = newData?.warehouseid
+                // isFulfillment = newData?.isFulfillment
+        )
+        return  oldData.copy(
+                productId = newData?.productId.toString(),
+                stock = newData?.stock?.stock ?: 0,
+                price = newData?.price?.toInt() ?: 0,
+                warehouseInfo = newWarehouseInfo
+        )
+    }
 
     fun updateDynamicProductInfo(oldData: DynamicProductInfoP1?, newData: VariantChildCommon?, existingListMedia: List<Media>?): DynamicProductInfoP1? {
         if (oldData == null) return null
@@ -60,6 +75,11 @@ object VariantMapper {
                 value = newData?.price?.toInt() ?: 0
         )
 
+        val newStock = oldData.data.stock.copy(
+                value = newData?.stock?.stock ?: 0,
+                stockWording = newData?.stock?.stockWording ?: ""
+        )
+
         val data = oldData.data.copy(
                 isCOD = newData?.isCod ?: false,
                 isWishlist = newData?.isWishlist ?: false,
@@ -67,7 +87,8 @@ object VariantMapper {
                 price = newPrice,
                 name= newData?.name ?: "",
                 media = newMedia,
-        //upcoming campaign data
+                stock = newStock,
+                //upcoming campaign data
                 campaignId = newData?.upcoming?.campaignId ?: "",
                 campaignType = newData?.upcoming?.campaignType ?: "",
                 campaignTypeName = newData?.upcoming?.campaignTypeName ?: "",
