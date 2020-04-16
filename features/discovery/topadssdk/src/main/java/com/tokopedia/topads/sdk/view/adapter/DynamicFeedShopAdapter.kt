@@ -118,13 +118,11 @@ class DynamicFeedShopAdapter(private val itemClickListener: LocalAdsClickListene
         private fun initListener(data: Data) {
             itemView.setOnClickListener { itemClickListener.onShopItemClicked(adapterPosition, data) }
             btnFollow.setOnClickListener {
-                if (data.isFavorit) {
-                    itemClickListener.onShopItemClicked(adapterPosition, data)
-                } else {
-                    itemClickListener.onAddFavorite(adapterPosition, data)
+                if (!data.isFavorit) {
                     btnFollow.buttonCompatType = ButtonCompat.SECONDARY
                     btnFollow.text = btnFollow.context.getString(R.string.topads_visit_shop)
                 }
+                itemClickListener.onAddFavorite(adapterPosition, data)
             }
         }
 
