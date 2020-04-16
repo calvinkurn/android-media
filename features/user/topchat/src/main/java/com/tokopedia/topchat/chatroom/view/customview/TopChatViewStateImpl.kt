@@ -423,7 +423,7 @@ class TopChatViewStateImpl(
     private fun showDeleteChatDialog(headerMenuListener: HeaderMenuListener, myAlertDialog: Dialog) {
         myAlertDialog.setTitle(view.context.getString(R.string.delete_chat_question))
         myAlertDialog.setDesc(view.context.getString(R.string.delete_chat_warning_message))
-        myAlertDialog.setBtnOk(view.context.getString(R.string.delete))
+        myAlertDialog.setBtnOk(view.context.getString(R.string.topchat_chat_delete_confirm))
         myAlertDialog.setOnOkClickListener {
             headerMenuListener.onDeleteConversation()
         }
