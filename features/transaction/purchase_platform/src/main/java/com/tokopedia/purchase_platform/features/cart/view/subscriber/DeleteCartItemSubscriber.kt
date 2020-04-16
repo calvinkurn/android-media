@@ -30,7 +30,6 @@ class DeleteCartItemSubscriber(private val view: ICartListView?,
         view?.let { view ->
             view.hideProgressLoading()
             view.renderLoadGetCartDataFinish()
-            view.showPromoCheckoutStickyButtonLoading()
 
             if (deleteCartData.isSuccess) {
                 if (removeInsurance) {
@@ -40,6 +39,7 @@ class DeleteCartItemSubscriber(private val view: ICartListView?,
                 }
 
                 if (removeAllItems) {
+                    view.resetRecentViewList()
                     presenter.processInitialGetCartData(view.getCartId(), false, false)
                 } else {
                     view.onDeleteCartDataSuccess(toBeDeletedCartIds)
@@ -47,6 +47,7 @@ class DeleteCartItemSubscriber(private val view: ICartListView?,
 
                 val params = view.generateGeneralParamValidateUse()
                 if ((view.checkHitValidateUseIsNeeded(params))) {
+                    view.showPromoCheckoutStickyButtonLoading()
                     presenter.doUpdateCartAndValidateUse(params)
                 }
                 view.updateCartCounter(deleteCartData.cartCounter)

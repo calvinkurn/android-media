@@ -35,8 +35,6 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_0"
         app:layout_constraintDimensionRatio="H,16:9"
-        android:layout_marginLeft="@dimen/dp_minus12"
-        android:layout_marginRight="@dimen/dp_minus12"
         android:adjustViewBounds="true"
         android:scaleType="fitXY"
         app:layout_constraintBottom_toBottomOf="parent"

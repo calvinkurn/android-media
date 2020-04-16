@@ -511,12 +511,10 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
                     .collect {
                         when (it) {
                             is PinnedInteractionEvent.PinnedMessageClicked -> {
-                                PlayAnalytics.clickPinnedMessage(channelId, it.message, playViewModel.channelType)
+                                PlayAnalytics.clickPinnedMessage(channelId, it.message, it.applink, playViewModel.channelType)
                                 openPageByApplink(it.applink)
                             }
-                            PinnedInteractionEvent.PinnedProductClicked -> {
-                                openProductSheet()
-                            }
+                            PinnedInteractionEvent.PinnedProductClicked -> doClickPinnedProduct()
                         }
                     }
         }
@@ -784,6 +782,10 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
         viewModel.doInteractionEvent(InteractionEvent.Like(shouldLike))
     }
 
+    private fun doClickPinnedProduct() {
+        viewModel.doInteractionEvent(InteractionEvent.ClickPinnedProduct)
+    }
+
     private fun doClickFollow(partnerId: Long, followAction: PartnerFollowAction) {
         viewModel.doInteractionEvent(InteractionEvent.Follow(partnerId, followAction))
     }
@@ -808,6 +810,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
         when (event) {
             InteractionEvent.CartPage -> openPageByApplink(ApplinkConst.CART)
             InteractionEvent.SendChat -> sendEventComposeChat()
+            InteractionEvent.ClickPinnedProduct -> openProductSheet()
             is InteractionEvent.Like -> doLikeUnlike(event.shouldLike)
             is InteractionEvent.Follow -> doActionFollowPartner(event.partnerId, event.partnerAction)
         }

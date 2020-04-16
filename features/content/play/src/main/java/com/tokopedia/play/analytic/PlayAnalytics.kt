@@ -61,12 +61,12 @@ object PlayAnalytics {
         )
     }
 
-    fun clickPinnedMessage(channelId: String, message: String, channelType: PlayChannelType) {
+    fun clickPinnedMessage(channelId: String, message: String, appLink: String, channelType: PlayChannelType) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 KEY_TRACK_CLICK_GROUP_CHAT,
                 KEY_TRACK_GROUP_CHAT_ROOM,
                 "$KEY_TRACK_CLICK on admin pinned message",
-                "$channelId - $message - ${channelType.value}"
+                "$channelId - $message - $appLink - ${channelType.value}"
         )
     }
 
