@@ -7,10 +7,10 @@ import androidx.lifecycle.OnLifecycleEvent
 import com.tokopedia.play.component.EventBusFactory
 import com.tokopedia.play.component.UIComponent
 import com.tokopedia.play.extensions.isAnyShown
-import com.tokopedia.play.util.CoroutineDispatcherProvider
+import com.tokopedia.play.ui.videocontrol.interaction.VideoControlInteractionEvent
+import com.tokopedia.play.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play.view.event.ScreenStateEvent
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.emptyFlow
@@ -24,7 +24,7 @@ open class VideoControlComponent(
         private val bus: EventBusFactory,
         coroutineScope: CoroutineScope,
         dispatchers: CoroutineDispatcherProvider
-) : UIComponent<Unit>, CoroutineScope by coroutineScope {
+) : UIComponent<VideoControlInteractionEvent>, VideoControlView.Listener, CoroutineScope by coroutineScope {
 
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
     val uiView = initView(container)
@@ -55,6 +55,18 @@ open class VideoControlComponent(
         }
     }
 
+    override fun onStartSeeking(view: VideoControlView) {
+        launch {
+            bus.emit(VideoControlInteractionEvent::class.java, VideoControlInteractionEvent.VideoScrubStarted)
+        }
+    }
+
+    override fun onEndSeeking(view: VideoControlView) {
+        launch {
+            bus.emit(VideoControlInteractionEvent::class.java, VideoControlInteractionEvent.VideoScrubEnded)
+        }
+    }
+
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
     fun onDestroy() {
         uiView.onDestroy()
@@ -64,10 +76,10 @@ open class VideoControlComponent(
         return uiView.containerId
     }
 
-    override fun getUserInteractionEvents(): Flow<Unit> {
-        return emptyFlow()
+    override fun getUserInteractionEvents(): Flow<VideoControlInteractionEvent> {
+        return bus.getSafeManagedFlow(VideoControlInteractionEvent::class.java)
     }
 
     protected open fun initView(container: ViewGroup) =
-            VideoControlView(container)
+            VideoControlView(container, this)
 }

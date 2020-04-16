@@ -7,7 +7,7 @@ import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.play.domain.PostAddToCartUseCase
-import com.tokopedia.play.util.CoroutineDispatcherProvider
+import com.tokopedia.play.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play.util.event.Event
 import com.tokopedia.play.view.type.BottomInsetsType
 import com.tokopedia.play.view.type.ProductAction

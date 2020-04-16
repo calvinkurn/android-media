@@ -7,7 +7,7 @@ import com.tokopedia.play.component.UIComponent
 import com.tokopedia.play.ui.toolbar.interaction.PlayToolbarInteractionEvent
 import com.tokopedia.play.ui.toolbar.model.PartnerFollowAction
 import com.tokopedia.play.ui.toolbar.model.PartnerType
-import com.tokopedia.play.util.CoroutineDispatcherProvider
+import com.tokopedia.play.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play.view.event.ScreenStateEvent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow

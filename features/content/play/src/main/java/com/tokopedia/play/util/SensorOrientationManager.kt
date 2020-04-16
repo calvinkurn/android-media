@@ -2,6 +2,7 @@ package com.tokopedia.play.util
 
 import android.content.Context
 import android.hardware.SensorManager
+import android.provider.Settings
 import android.view.OrientationEventListener
 import com.tokopedia.play.view.type.ScreenOrientation
 
@@ -9,7 +10,7 @@ import com.tokopedia.play.view.type.ScreenOrientation
  * Created by jegul on 14/04/20
  */
 class SensorOrientationManager(
-        context: Context,
+        private val context: Context,
         private val listener: OrientationListener
 ) : OrientationEventListener(context, SensorManager.SENSOR_DELAY_NORMAL) {
 
@@ -23,6 +24,18 @@ class SensorOrientationManager(
 
         //TODO("Readjust the range")
     }
+
+    /**
+     * Might be worth checking
+     * https://stackoverflow.com/questions/6190779/monitor-android-system-settings-values/6191153
+     */
+    private val isAutoRotateEnabled: Boolean
+        get() {
+            return try {
+                Settings.System.getInt(context.contentResolver,
+                        Settings.System.ACCELEROMETER_ROTATION) == 1
+            } catch (e: Exception) { false }
+        }
 
     private var currentOrientation = ScreenOrientation.Unknown
 
@@ -41,7 +54,7 @@ class SensorOrientationManager(
             return
         } else if (newOrientation != currentOrientation) {
             currentOrientation = newOrientation
-            listener.onOrientationChanged(currentOrientation)
+            if (isAutoRotateEnabled) listener.onOrientationChanged(currentOrientation)
         }
     }
 
