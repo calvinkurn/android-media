@@ -1,14 +1,17 @@
 package com.tokopedia.vouchercreation.view.activity
 
 import android.animation.ObjectAnimator
+import android.os.Build
 import android.os.Bundle
-import android.view.animation.LinearInterpolator
+import android.view.animation.AccelerateDecelerateInterpolator
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager2.widget.ViewPager2
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.kotlin.extensions.view.setStatusBarColor
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.di.component.DaggerVoucherCreationComponent
 import com.tokopedia.vouchercreation.view.adapter.CreateMerchantVoucherStepsAdapter
@@ -60,9 +63,7 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
         }
     }
 
-    private val linearInterpolator by lazy {
-        LinearInterpolator()
-    }
+    private val progressBarInterpolator by lazy { AccelerateDecelerateInterpolator() }
 
     private var currentStepPosition = 0
 
@@ -72,7 +73,7 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_create_merchant_voucher_steps)
         initInjector()
-        setupViewPager()
+        setupView()
         observeLiveData()
     }
 
@@ -81,6 +82,17 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
                 .baseAppComponent((applicationContext as BaseMainApplication).baseAppComponent)
                 .build()
                 .inject(this)
+    }
+
+    private fun setupView() {
+        setupStatusBar()
+        setupViewPager()
+    }
+
+    private fun setupStatusBar() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            setStatusBarColor(ContextCompat.getColor(this, R.color.white))
+        }
     }
 
     private fun setupViewPager() {
@@ -103,7 +115,7 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
             createMerchantVoucherProgressBar?.run {
                 ObjectAnimator.ofInt(createMerchantVoucherProgressBar, PROGRESS_ATTR_TAG, currentProgress, progressPercentage).run {
                     duration = PROGRESS_DURATION
-                    interpolator = linearInterpolator
+                    interpolator = progressBarInterpolator
                     start()
                 }
                 currentProgress = progressPercentage
