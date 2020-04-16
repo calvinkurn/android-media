@@ -743,7 +743,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         Intent intent = RouteManager.getIntent(activity, ApplinkConstInternalGlobal.LOGOUT);
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_RETURN_HOME, false);
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_SESSION_EXPIRED, true);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
     }
 
