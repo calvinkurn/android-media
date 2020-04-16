@@ -81,7 +81,6 @@ import com.tokopedia.purchase_platform.features.cart.view.adapter.CartItemAdapte
 import com.tokopedia.purchase_platform.features.cart.view.compoundview.ToolbarRemoveView
 import com.tokopedia.purchase_platform.features.cart.view.compoundview.ToolbarRemoveWithBackView
 import com.tokopedia.purchase_platform.features.cart.view.di.DaggerCartComponent
-import com.tokopedia.purchase_platform.features.cart.view.mapper.PromoMapper
 import com.tokopedia.purchase_platform.features.cart.view.mapper.RecentViewMapper
 import com.tokopedia.purchase_platform.features.cart.view.mapper.WishlistMapper
 import com.tokopedia.purchase_platform.features.cart.view.uimodel.*
@@ -153,8 +152,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     lateinit var wishlistMapper: WishlistMapper
     @Inject
     lateinit var recentViewMapper: RecentViewMapper
-    @Inject
-    lateinit var promoMapper: PromoMapper
     @Inject
     lateinit var compositeSubscription: CompositeSubscription
 
@@ -826,7 +823,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     override fun onCartItemDeleteButtonClicked(cartItemHolderData: CartItemHolderData, position: Int, parentPosition: Int) {
         sendAnalyticsOnClickRemoveIconCartItem()
-        val appliedPromoCodes = ArrayList<String>()
+        val appliedPemromoCodes = ArrayList<String>()
         val cartShopHolderData = cartAdapter.getCartShopHolderDataByIndex(parentPosition)
         if (!TextUtils.isEmpty(cartShopHolderData?.shopGroupAvailableData?.voucherOrdersItemData?.code)) {
             appliedPromoCodes.add(cartShopHolderData?.shopGroupAvailableData?.voucherOrdersItemData?.code
@@ -2054,11 +2051,9 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     private fun navigateToShipmentPage() {
         FLAG_BEGIN_SHIPMENT_PROCESS = true
         FLAG_SHOULD_CLEAR_RECYCLERVIEW = true
-        val isAutoApplyPromoStackCodeApplied = dPresenter.getCartListData()?.autoApplyStackData?.isSuccess
-                ?: false
         activity?.let {
             val intent = ShipmentActivity.createInstance(it, cartAdapter.promoStackingGlobalData,
-                    cartListData?.defaultPromoDialogTab, isAutoApplyPromoStackCodeApplied
+                    cartListData?.defaultPromoDialogTab
             )
             startActivityForResult(intent, ShipmentActivity.REQUEST_CODE)
         }

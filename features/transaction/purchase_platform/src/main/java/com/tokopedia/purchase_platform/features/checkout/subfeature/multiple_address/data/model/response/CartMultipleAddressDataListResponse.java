@@ -3,10 +3,7 @@ package com.tokopedia.purchase_platform.features.checkout.subfeature.multiple_ad
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.tokopedia.purchase_platform.common.data.model.response.Messages;
-import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.data.model.AutoApply;
 import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.data.model.AutoApplyStack;
-import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.data.model.AutoapplyV2;
-import com.tokopedia.purchase_platform.features.cart.data.model.response.CartList;
 import com.tokopedia.purchase_platform.features.cart.data.model.response.Donation;
 
 import java.util.ArrayList;
@@ -33,9 +30,6 @@ public class CartMultipleAddressDataListResponse {
     @SerializedName("messages")
     @Expose
     private Messages messages;
-    @SerializedName("autoapply")
-    @Expose
-    private AutoApply autoApply;
     @SerializedName("default_promo_dialog_tab")
     @Expose
     private String defaultPromoDialogTab;
@@ -45,9 +39,6 @@ public class CartMultipleAddressDataListResponse {
     @SerializedName("cart_list")
     @Expose
     private List<CartList> cartList = new ArrayList<>();
-    @SerializedName("autoapply_v2")
-    @Expose
-    private AutoapplyV2 autoapplyV2;
     @SerializedName("autoapply_stack")
     @Expose
     private AutoApplyStack autoapplyStack;
@@ -57,14 +48,6 @@ public class CartMultipleAddressDataListResponse {
 
     public AutoApplyStack getAutoapplyStack() {
         return autoapplyStack;
-    }
-
-    public AutoapplyV2 getAutoapplyV2() {
-        return autoapplyV2;
-    }
-
-    public void setAutoapplyV2(AutoapplyV2 autoapplyV2) {
-        this.autoapplyV2 = autoapplyV2;
     }
 
     public int getIsCouponActive() {
@@ -93,10 +76,6 @@ public class CartMultipleAddressDataListResponse {
 
     public String getDefaultPromoDialogTab() {
         return defaultPromoDialogTab;
-    }
-
-    public AutoApply getAutoApply() {
-        return autoApply;
     }
 
     public Donation getDonation() {

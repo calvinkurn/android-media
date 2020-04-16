@@ -92,15 +92,6 @@ public class ShipmentDataRequestConverter {
                 .cartString(shipmentCartItemModel.getCartString())
                 .productData(convertToProductDataCheckout(shipmentCartItemModel));
 
-        ArrayList<String> promoCodes = new ArrayList<>();
-        if (shipmentCartItemModel.getVoucherOrdersItemUiModel() != null) {
-            promoCodes.add(shipmentCartItemModel.getVoucherOrdersItemUiModel().getCode());
-        }
-
-        if (promoCodes.size() > 0) {
-            shopProductCheckoutBuilder.promoCodes(promoCodes);
-        }
-
         return shopProductCheckoutBuilder.build();
     }
 
@@ -144,13 +135,6 @@ public class ShipmentDataRequestConverter {
 
                 ArrayList<String> promoCodes = new ArrayList<>();
                 List<PromoRequest> promoRequests = new ArrayList<>();
-                if (shipmentCartItemModel.getVoucherOrdersItemUiModel() != null) {
-                    promoCodes.add(shipmentCartItemModel.getVoucherOrdersItemUiModel().getCode());
-                    PromoRequest promoRequest = new PromoRequest();
-                    promoRequest.setCode(shipmentCartItemModel.getVoucherOrdersItemUiModel().getCode());
-                    promoRequest.setType(PromoRequest.TYPE_MERCHANT);
-                    promoRequests.add(promoRequest);
-                }
 
                 if (shipmentCartItemModel.getVoucherLogisticItemUiModel() != null) {
                     promoCodes.add(shipmentCartItemModel.getVoucherLogisticItemUiModel().getCode());

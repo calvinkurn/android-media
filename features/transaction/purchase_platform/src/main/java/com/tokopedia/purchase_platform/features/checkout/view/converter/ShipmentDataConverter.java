@@ -7,13 +7,7 @@ import androidx.annotation.NonNull;
 import com.tokopedia.logisticcart.shipping.model.CartItemModel;
 import com.tokopedia.logisticcart.shipping.model.RecipientAddressModel;
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;
-import com.tokopedia.promocheckout.common.view.uimodel.MessageUiModel;
-import com.tokopedia.promocheckout.common.view.uimodel.VoucherLogisticItemUiModel;
-import com.tokopedia.promocheckout.common.view.uimodel.VoucherOrdersItemUiModel;
 import com.tokopedia.logisticdata.data.entity.address.LocationDataModel;
-import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.model.MessageData;
-import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.model.VoucherOrdersItemData;
-import com.tokopedia.purchase_platform.common.utils.Utils;
 import com.tokopedia.purchase_platform.features.checkout.domain.model.cartshipmentform.AddressesData;
 import com.tokopedia.purchase_platform.features.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.purchase_platform.features.checkout.domain.model.cartshipmentform.GroupAddress;
@@ -190,28 +184,6 @@ public class ShipmentDataConverter {
                     shipmentCartItemModel.setIsBlackbox(cartShipmentAddressFormData.getIsBlackbox());
                     shipmentCartItemModel.setAddressId(cartShipmentAddressFormData.getGroupAddress()
                             .get(addressIndex).getUserAddress().getAddressId());
-
-
-                    if (cartShipmentAddressFormData.getAutoApplyStackData() != null) {
-                        if (cartShipmentAddressFormData.getAutoApplyStackData().getVoucherOrdersItemDataList() != null) {
-                            for (VoucherOrdersItemData voucherOrdersItemData : cartShipmentAddressFormData.getAutoApplyStackData().getVoucherOrdersItemDataList()) {
-                                if (groupShop.getCartString().equalsIgnoreCase(voucherOrdersItemData.getUniqueId())) {
-                                    if (voucherOrdersItemData.getType().equalsIgnoreCase(MERCHANT_VOUCHER_TYPE)) {
-                                        shipmentCartItemModel.setVoucherOrdersItemUiModel(convertFromVoucherOrdersItem(voucherOrdersItemData));
-                                    } else if (voucherOrdersItemData.getType().equalsIgnoreCase(LOGISTIC_VOUCHER_TYPE)) {
-                                        VoucherLogisticItemUiModel voucherLogisticItemUiModel = new VoucherLogisticItemUiModel();
-                                        voucherLogisticItemUiModel.setCode(voucherOrdersItemData.getCode());
-                                        voucherLogisticItemUiModel.setCouponDesc(voucherOrdersItemData.getTitleDescription());
-                                        voucherLogisticItemUiModel.setCouponAmount(Utils.getFormattedCurrency(voucherOrdersItemData.getDiscountAmount()));
-                                        voucherLogisticItemUiModel.setCouponAmountRaw(voucherOrdersItemData.getDiscountAmount());
-                                        voucherLogisticItemUiModel.setMessage(convertFromMessage(voucherOrdersItemData.getMessageData()));
-                                        shipmentCartItemModel.setVoucherLogisticItemUiModel(voucherLogisticItemUiModel);
-                                    }
-                                }
-                            }
-                        }
-                    }
-
                     getShipmentItem(shipmentCartItemModel, userAddress, groupShop,
                             cartShipmentAddressFormData.getKeroToken(),
                             String.valueOf(cartShipmentAddressFormData.getKeroUnixTime()), true, hasTradeInDropOffAddress);
@@ -234,29 +206,6 @@ public class ShipmentDataConverter {
                 shipmentCartItemModel.setHidingCourier(cartShipmentAddressFormData.isHidingCourier());
                 shipmentCartItemModel.setAddressId(cartShipmentAddressFormData.getGroupAddress()
                         .get(0).getUserAddress().getAddressId());
-
-                if (cartShipmentAddressFormData.getAutoApplyStackData() != null) {
-                    if (cartShipmentAddressFormData.getAutoApplyStackData().getVoucherOrdersItemDataList() != null) {
-                        for (VoucherOrdersItemData voucherOrdersItemData : cartShipmentAddressFormData.getAutoApplyStackData().getVoucherOrdersItemDataList()) {
-                            if (groupShop.getCartString().equalsIgnoreCase(voucherOrdersItemData.getUniqueId())) {
-                                if (voucherOrdersItemData.getType().equalsIgnoreCase(MERCHANT_VOUCHER_TYPE)) {
-                                    shipmentCartItemModel.setVoucherOrdersItemUiModel(convertFromVoucherOrdersItem(voucherOrdersItemData));
-                                } else if (voucherOrdersItemData.getType().equalsIgnoreCase(LOGISTIC_VOUCHER_TYPE)) {
-                                    VoucherLogisticItemUiModel voucherLogisticItemUiModel = new VoucherLogisticItemUiModel();
-                                    voucherLogisticItemUiModel.setCode(voucherOrdersItemData.getCode());
-                                    voucherLogisticItemUiModel.setCouponDesc(voucherOrdersItemData.getTitleDescription());
-                                    voucherLogisticItemUiModel.setCouponAmount(Utils.getFormattedCurrency(voucherOrdersItemData.getDiscountAmount()));
-                                    voucherLogisticItemUiModel.setCouponAmountRaw(voucherOrdersItemData.getDiscountAmount());
-                                    voucherLogisticItemUiModel.setMessage(convertFromMessage(voucherOrdersItemData.getMessageData()));
-                                    shipmentCartItemModel.setVoucherLogisticItemUiModel(voucherLogisticItemUiModel);
-                                } else {
-                                    shipmentCartItemModel.setVoucherOrdersItemUiModel(null);
-                                    shipmentCartItemModel.setVoucherLogisticItemUiModel(null);
-                                }
-                            }
-                        }
-                    }
-                }
 
                 getShipmentItem(shipmentCartItemModel, userAddress, groupShop, cartShipmentAddressFormData.getKeroToken(),
                         String.valueOf(cartShipmentAddressFormData.getKeroUnixTime()), false, hasTradeInDropOffAddress);
@@ -327,26 +276,6 @@ public class ShipmentDataConverter {
         shipmentCartItemModel.setCartItemModels(cartItemModels);
         shipmentCartItemModel.setProductIsPreorder(fobject.isPreOrder() == 1);
 
-        // set promo merchant
-        if (groupShop.getShop().getVoucherOrdersItemData() != null) {
-            if (groupShop.getShop().getVoucherOrdersItemData().getType().equalsIgnoreCase(MERCHANT_VOUCHER_TYPE)) {
-                shipmentCartItemModel.setVoucherOrdersItemUiModel(convertFromVoucherOrdersItem(groupShop.getShop().getVoucherOrdersItemData()));
-            } else if (groupShop.getShop().getVoucherOrdersItemData().getType().equalsIgnoreCase(LOGISTIC_VOUCHER_TYPE)) {
-                VoucherLogisticItemUiModel voucherLogisticItemUiModel = new VoucherLogisticItemUiModel();
-                voucherLogisticItemUiModel.setCode(groupShop.getShop().getVoucherOrdersItemData().getCode());
-                voucherLogisticItemUiModel.setCouponDesc(groupShop.getShop().getVoucherOrdersItemData().getTitleDescription());
-                voucherLogisticItemUiModel.setCouponAmount(Utils.getFormattedCurrency(groupShop.getShop().getVoucherOrdersItemData().getDiscountAmount()));
-                voucherLogisticItemUiModel.setCouponAmountRaw(groupShop.getShop().getVoucherOrdersItemData().getDiscountAmount());
-                voucherLogisticItemUiModel.setCashbackAmount(groupShop.getShop().getVoucherOrdersItemData().getCashbackWalletAmount());
-                voucherLogisticItemUiModel.setDiscountAmount(groupShop.getShop().getVoucherOrdersItemData().getDiscountAmount());
-                voucherLogisticItemUiModel.setMessage(convertFromMessage(groupShop.getShop().getVoucherOrdersItemData().getMessageData()));
-                shipmentCartItemModel.setVoucherLogisticItemUiModel(voucherLogisticItemUiModel);
-            } else {
-                shipmentCartItemModel.setVoucherOrdersItemUiModel(null);
-                shipmentCartItemModel.setVoucherLogisticItemUiModel(null);
-            }
-        }
-
         shipmentCartItemModel.setShipmentCartData(new RatesDataConverter()
                 .getShipmentCartData(userAddress, groupShop, shipmentCartItemModel, keroToken, keroUnixTime));
     }
@@ -359,26 +288,6 @@ public class ShipmentDataConverter {
         }
 
         return cartItemModels;
-    }
-
-    private VoucherOrdersItemUiModel convertFromVoucherOrdersItem(VoucherOrdersItemData voucherOrdersItemData) {
-        VoucherOrdersItemUiModel voucherOrdersItemUiModel = new VoucherOrdersItemUiModel();
-        voucherOrdersItemUiModel.setCartId(voucherOrdersItemData.getCartId());
-        voucherOrdersItemUiModel.setCashbackWalletAmount(voucherOrdersItemData.getCashbackWalletAmount());
-        voucherOrdersItemUiModel.setCode(voucherOrdersItemData.getCode());
-        voucherOrdersItemUiModel.setDiscountAmount(voucherOrdersItemData.getDiscountAmount());
-        voucherOrdersItemUiModel.setInvoiceDescription(voucherOrdersItemData.getInvoiceDescription());
-        voucherOrdersItemUiModel.setSuccess(voucherOrdersItemData.isSuccess());
-        voucherOrdersItemUiModel.setMessage(convertFromMessage(voucherOrdersItemData.getMessageData()));
-        return voucherOrdersItemUiModel;
-    }
-
-    private MessageUiModel convertFromMessage(MessageData messageData) {
-        MessageUiModel messageUiModel = new MessageUiModel();
-        messageUiModel.setColor(messageData.getColor());
-        messageUiModel.setState(messageData.getState());
-        messageUiModel.setText(messageData.getText());
-        return messageUiModel;
     }
 
     private CartItemModel convertFromProduct(Product product) {

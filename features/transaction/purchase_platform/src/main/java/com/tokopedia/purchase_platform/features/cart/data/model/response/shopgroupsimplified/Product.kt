@@ -2,8 +2,8 @@ package com.tokopedia.purchase_platform.features.cart.data.model.response
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.purchase_platform.common.data.model.response.WholesalePrice
-import com.tokopedia.transactiondata.entity.response.cartlist.shopgroup.FreeShipping
+import com.tokopedia.purchase_platform.features.cart.data.model.response.shopgroupsimplified.WholesalePrice
+import com.tokopedia.purchase_platform.features.cart.data.model.response.shopgroupsimplified.FreeShipping
 import java.util.*
 
 /**

@@ -23,105 +23,6 @@ query shop_group_simplified($lang: String, $selected_cart_id: String) {
           Nominal
           Description
         }
-        autoapply_stack {
-          global_success
-          success
-          message {
-            state
-            color
-            text
-          }
-          codes
-          promo_code_id
-          title_description
-          discount_amount
-          cashback_wallet_amount
-          cashback_advocate_referral_amount
-          cashback_voucher_description
-          invoice_description
-          gateway_id
-          is_coupon
-          coupon_description
-          voucher_orders {
-            address_id
-            code
-            success
-            unique_id
-            cart_id
-            type
-            cashback_wallet_amount
-            discount_amount
-            title_description
-            invoice_description
-            message {
-              state
-              color
-              text
-            }
-            is_po
-            shop_id
-          }
-          benefit_summary_info {
-            final_benefit_text
-            final_benefit_amount
-            final_benefit_amount_str
-            summaries {
-              description
-              type
-              amount_str
-              amount
-              details {
-                description
-                type
-                amount_str
-                amount
-              }
-            }
-          }
-          clashing_info_detail {
-            clash_message
-            clash_reason
-            is_clashed_promos
-            options{
-              voucher_orders {
-                cart_id
-                code
-                shop_name
-                potential_benefit
-                promo_name
-                unique_id
-              }
-            }
-          }
-          tracking_details {
-            product_id
-            promo_codes_tracking
-            promo_details_tracking
-          }
-          ticker_info {
-            unique_id
-            status_code
-            message
-          }
-          benefit_details {
-            code
-            type
-            order_id
-            unique_id
-            discount_amount
-            cashback_amount
-            promo_type {
-              is_exclusive_shipping
-              is_bebas_ongkir
-            }
-            benefit_product_details {
-              product_id
-              cashback_amount
-              discount_amount
-              is_bebas_ongkir
-            }
-          }
-        }
         global_coupon_attr {
           description
           quantity_label
@@ -536,6 +437,11 @@ query shop_group_simplified($lang: String, $selected_cart_id: String) {
                   text
                 }
                 codes
+                tracking_details {
+                  product_id
+                  promo_codes_tracking
+                  promo_details_tracking
+                }
                 voucher_orders {
                   code
                   unique_id

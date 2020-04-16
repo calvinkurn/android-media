@@ -68,17 +68,9 @@ public interface ShipmentContract {
 
         void renderInsuranceCartData(InsuranceCartResponse insuranceCartResponse);
 
-        void renderErrorDataHasChangedCheckShipmentPrepareCheckout(
-                CartShipmentAddressFormData cartShipmentAddressFormData, boolean needToRefreshItemList
-        );
-
         void renderNoRecipientAddressShipmentForm(CartShipmentAddressFormData cartShipmentAddressFormData);
 
         void renderDataChanged();
-
-        void renderErrorDataHasChangedAfterCheckout(List<ShipmentCartItemModel> shipmentCartItemModelList);
-
-        void renderThanksTopPaySuccess(String message);
 
         void renderCheckoutCartSuccess(CheckoutData checkoutData);
 
@@ -117,21 +109,13 @@ public interface ShipmentContract {
 
         Activity getActivityContext();
 
-        boolean checkCourierPromoStillExist();
-
         void setCourierPromoApplied(int itemPosition);
 
         void showBottomSheetError(String htmlMessage);
 
         void navigateToCodConfirmationPage(Data data, CheckoutRequest checkoutRequest);
 
-        void setPromoStackingData(CartShipmentAddressFormData cartShipmentAddressFormData);
-
-        void showToastFailedTickerPromo(String text);
-
         void stopTrace();
-
-        void onFailedClearPromoStack(boolean ignoreAPIResponse);
 
         void onSuccessClearPromoLogistic(int position, boolean isLastAppliedPromo);
 
@@ -173,23 +157,9 @@ public interface ShipmentContract {
 
         void sendAnalyticsOnClickChooseOtherAddressShipment();
 
-        void sendAnalyticsOnClickChooseToMultipleAddressShipment();
-
         void sendAnalyticsOnClickTopDonation();
 
         void sendAnalyticsOnClickChangeAddress();
-
-        void sendAnalyticsOnClickChooseCourierSelection();
-
-        void sendAnalyticsOnBottomShetCourierSelectionShow(List<ShopShipment> shopShipmentList);
-
-        void sendAnalyticsOnImpressionCourierSelectionShow();
-
-        void sendAnalyticsOnClickUsePromoCodeAndCoupon();
-
-        void sendAnalyticsOnClickCancelUsePromoCodeAndCouponBanner();
-
-        void sendAnalyticsOnClickShipmentCourierItem(String agent, String service);
 
         void sendAnalyticsOnClickSubtotal();
 
@@ -207,8 +177,6 @@ public interface ShipmentContract {
 
         void sendAnalyticsDropshipperNotComplete();
 
-        void sendAnalyticsOnCourierChanged(String agent, String service);
-
         void sendAnalyticsOnClickChooseShipmentDurationOnShipmentRecomendation(String isBlackbox);
 
         void sendAnalyticsOnClickButtonCloseShipmentRecommendationDuration();
@@ -219,15 +187,9 @@ public interface ShipmentContract {
 
         void sendAnalyticsOnClickChangeCourierShipmentRecommendation(ShipmentCartItemModel shipmentCartItemModel);
 
-        void sendAnalyticsOnClickSelectedCourierShipmentRecommendation(String courierName);
-
         void sendAnalyticsOnClickButtonCloseShipmentRecommendationCourier();
 
         void sendAnalyticsOnClickChangeDurationShipmentRecommendation();
-
-        void sendAnalyticsOnViewPromoAutoApply();
-
-        void sendAnalyticsOnViewPromoManualApply(String type);
 
         void sendAnalyticsOnViewPreselectedCourierAfterPilihDurasi(int shippingProductId);
 
@@ -287,8 +249,6 @@ public interface ShipmentContract {
 
         void setDataCheckoutRequestList(List<DataCheckoutRequest> dataCheckoutRequestList);
 
-        void setDataChangeAddressRequestList(List<DataChangeAddressRequest> dataChangeAddressRequestList);
-
         ShipmentCostModel getShipmentCostModel();
 
         EgoldAttributeModel getEgoldAttributeModel();
@@ -327,10 +287,6 @@ public interface ShipmentContract {
         void setCouponStateChanged(boolean appliedCoupon);
 
         boolean getCouponStateChanged();
-
-        void setHasDeletePromoAfterChecKPromoCodeFinal(boolean state);
-
-        boolean getHasDeletePromoAfterChecKPromoCodeFinal();
 
         CodModel getCodData();
 

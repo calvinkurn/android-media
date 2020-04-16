@@ -1,4 +1,4 @@
-package com.tokopedia.transactiondata.entity.response.cartlist.shopgroup
+package com.tokopedia.purchase_platform.features.cart.data.model.response.shopgroupsimplified
 
 import com.google.gson.annotations.SerializedName
 

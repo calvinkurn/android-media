@@ -1,4 +1,4 @@
-package com.tokopedia.purchase_platform.features.cart.data.model.response
+package com.tokopedia.purchase_platform.features.checkout.subfeature.multiple_address.data.model.response
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName

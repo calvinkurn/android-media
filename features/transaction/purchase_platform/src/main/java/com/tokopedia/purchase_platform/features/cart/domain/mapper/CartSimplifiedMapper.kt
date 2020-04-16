@@ -3,14 +3,10 @@ package com.tokopedia.purchase_platform.features.cart.domain.mapper
 import android.content.Context
 import android.text.TextUtils
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.network.constant.TkpdBaseURL
 import com.tokopedia.purchase_platform.R
 import com.tokopedia.purchase_platform.common.constant.CartConstant.STATE_RED
 import com.tokopedia.purchase_platform.common.data.model.response.Messages
-import com.tokopedia.purchase_platform.common.data.model.response.WholesalePrice
-import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.data.model.AutoApplyStack
 import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.data.model.Message
-import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.model.AutoApplyStackData
 import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.model.MessageData
 import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.model.VoucherOrdersItemData
 import com.tokopedia.purchase_platform.common.feature.promo_checkout.data.model.response.*
@@ -18,9 +14,9 @@ import com.tokopedia.purchase_platform.common.feature.promo_checkout.domain.mode
 import com.tokopedia.purchase_platform.common.feature.promo_checkout.domain.model.last_apply.*
 import com.tokopedia.purchase_platform.common.feature.promo_global.data.model.response.GlobalCouponAttr
 import com.tokopedia.purchase_platform.common.feature.promo_global.domain.model.GlobalCouponAttrData
-import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.SimilarProductData
 import com.tokopedia.purchase_platform.common.feature.ticker_announcement.TickerData
 import com.tokopedia.purchase_platform.features.cart.data.model.response.*
+import com.tokopedia.purchase_platform.features.cart.data.model.response.shopgroupsimplified.WholesalePrice
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.*
 import com.tokopedia.purchase_platform.features.cart.view.uimodel.CartItemHolderData
 import javax.inject.Inject
@@ -59,14 +55,13 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
             cartListData.cartTickerErrorData = mapCartTickerErrorData(errorCount)
         }
 
-        cartListData.autoApplyStackData = mapAutoApplyStackData(cartDataListResponse.autoApplyStack)
         cartListData.globalCouponAttrData = mapGlobalCouponAttr(cartDataListResponse.globalCouponAttr)
         cartListData.lastApplyShopGroupSimplifiedData = mapLastApplySimplified(cartDataListResponse.promo.lastApplyPromo.lastApplyPromoData)
         cartListData.errorDefault = mapPromoCheckoutErrorDefault(cartDataListResponse.promo.errorDefault)
         cartListData.isAllSelected = cartDataListResponse.isGlobalCheckboxState
         cartListData.isShowOnboarding = false
 
-        mapPromoAnalytics(cartDataListResponse.autoApplyStack, cartListData.shopGroupAvailableDataList)
+        mapPromoAnalytics(cartDataListResponse.promo.lastApplyPromo.lastApplyPromoData, cartListData.shopGroupAvailableDataList)
 
         return cartListData
     }
@@ -392,10 +387,10 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
         }
     }
 
-    private fun mapPromoAnalytics(autoApplyStack: AutoApplyStack,
+    private fun mapPromoAnalytics(lastApplyPromoData: LastApplyPromoData,
                                   shopGroupAvailableDataList: List<ShopGroupAvailableData>) {
-        if (autoApplyStack.trackingDetails != null && autoApplyStack.trackingDetails.size > 0) {
-            for (trackingDetail in autoApplyStack.trackingDetails) {
+        if (lastApplyPromoData.trackingDetails.isNotEmpty()) {
+            for (trackingDetail in lastApplyPromoData.trackingDetails) {
                 for (shopGroupAvailableData in shopGroupAvailableDataList) {
                     val cartItemDataList = shopGroupAvailableData.cartItemDataList
                     cartItemDataList?.let {
@@ -486,33 +481,6 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
             it.actionInfo = context.getString(R.string.cart_error_action)
             it
         }
-    }
-
-    private fun mapAutoApplyStackData(autoApplyStack: AutoApplyStack): AutoApplyStackData {
-        return AutoApplyStackData().let {
-            it.promoCodeId = autoApplyStack.promoCodeId
-            it.voucherOrdersItemDataList = mapVoucherOrdersItemDataList(autoApplyStack.voucherOrders)
-            it.discountAmount = autoApplyStack.discountAmount
-            it.titleDescription = autoApplyStack.titleDescription
-            it.code = if (autoApplyStack.codes.isNotEmpty()) autoApplyStack.codes[0] else ""
-            it.isCoupon = autoApplyStack.isCoupon
-            it.isSuccess = autoApplyStack.isSuccess
-            if (autoApplyStack.message != null) {
-                it.messageSuccess = autoApplyStack.message.text
-                it.state = autoApplyStack.message.state
-            }
-            it
-        }
-    }
-
-    private fun mapVoucherOrdersItemDataList(voucherOrdersItemList: List<com.tokopedia.purchase_platform.common.feature.promo_auto_apply.data.model.VoucherOrdersItem>?): List<VoucherOrdersItemData> {
-        val voucherOrderItemsDataList = arrayListOf<VoucherOrdersItemData>()
-        voucherOrdersItemList?.forEach {
-            val voucherOrderItemData = mapVoucherOrdersItemData(it)
-            voucherOrderItemsDataList.add(voucherOrderItemData)
-        }
-
-        return voucherOrderItemsDataList
     }
 
     private fun mapGlobalCouponAttr(globalCouponAttr: GlobalCouponAttr): GlobalCouponAttrData {

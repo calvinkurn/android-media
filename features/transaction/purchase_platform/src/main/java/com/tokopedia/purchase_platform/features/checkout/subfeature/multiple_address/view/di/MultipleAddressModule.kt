@@ -4,7 +4,7 @@ import com.tokopedia.purchase_platform.common.di.PurchasePlatformBaseModule
 import com.tokopedia.purchase_platform.common.di.PurchasePlatformCommonModule
 import com.tokopedia.purchase_platform.common.di.PurchasePlatformNetworkModule
 import com.tokopedia.purchase_platform.common.di.PurchasePlatformQualifier
-import com.tokopedia.purchase_platform.features.cart.domain.mapper.CartMapper
+import com.tokopedia.purchase_platform.features.checkout.subfeature.multiple_address.domain.mapper.CartMapper
 import com.tokopedia.purchase_platform.features.cart.domain.mapper.ICartMapper
 import com.tokopedia.purchase_platform.features.checkout.domain.usecase.ChangeShippingAddressUseCase
 import com.tokopedia.purchase_platform.features.checkout.subfeature.multiple_address.data.api.MultipleAddressApi

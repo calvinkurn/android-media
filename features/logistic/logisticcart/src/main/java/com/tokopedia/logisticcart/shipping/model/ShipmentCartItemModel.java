@@ -87,7 +87,6 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
 
     // promo stacking
     private boolean hasPromoList;
-    private VoucherOrdersItemUiModel voucherOrdersItemUiModel;
     private VoucherLogisticItemUiModel voucherLogisticItemUiModel;
 
     private boolean isLeasingProduct;
@@ -152,7 +151,6 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         fulfillmentId = in.readInt();
         fulfillmentName = in.readString();
         hasPromoList = in.readByte() != 0;
-        voucherOrdersItemUiModel = in.readParcelable(VoucherOrdersItemUiModel.class.getClassLoader());
         voucherLogisticItemUiModel = in.readParcelable(VoucherLogisticItemUiModel.class.getClassLoader());
         isLeasingProduct = in.readByte() != 0;
         bookingFee = in.readInt();
@@ -211,7 +209,6 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         dest.writeInt(fulfillmentId);
         dest.writeString(fulfillmentName);
         dest.writeByte((byte) (hasPromoList ? 1 : 0));
-        dest.writeParcelable(voucherOrdersItemUiModel, flags);
         dest.writeParcelable(voucherLogisticItemUiModel, flags);
         dest.writeByte((byte) (isLeasingProduct ? 1 : 0));
         dest.writeInt(bookingFee);
@@ -285,7 +282,6 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         newShipmentCartItemModel.setFulfillmentName(shipmentCartItemModel.getFulfillmentName());
         newShipmentCartItemModel.setBlackboxInfo(shipmentCartItemModel.getBlackboxInfo());
         newShipmentCartItemModel.setHasPromoList(shipmentCartItemModel.getHasPromoList());
-        newShipmentCartItemModel.setVoucherOrdersItemUiModel(shipmentCartItemModel.getVoucherOrdersItemUiModel());
         newShipmentCartItemModel.setVoucherLogisticItemUiModel(shipmentCartItemModel.getVoucherLogisticItemUiModel());
         newShipmentCartItemModel.setIsLeasingProduct(shipmentCartItemModel.getIsLeasingProduct());
         newShipmentCartItemModel.setListPromoCodes(shipmentCartItemModel.getListPromoCodes());
@@ -664,14 +660,6 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
 
     public void setHasPromoList(boolean hasPromoList) {
         this.hasPromoList = hasPromoList;
-    }
-
-    public VoucherOrdersItemUiModel getVoucherOrdersItemUiModel() {
-        return voucherOrdersItemUiModel;
-    }
-
-    public void setVoucherOrdersItemUiModel(VoucherOrdersItemUiModel voucherOrdersItemUiModel) {
-        this.voucherOrdersItemUiModel = voucherOrdersItemUiModel;
     }
 
     public VoucherLogisticItemUiModel getVoucherLogisticItemUiModel() {

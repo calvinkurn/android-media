@@ -3,8 +3,6 @@ package com.tokopedia.purchase_platform.features.checkout.domain.model.cartshipm
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.model.VoucherOrdersItemData;
-
 /**
  * @author anggaprasetiyo on 22/02/18.
  */
@@ -31,7 +29,6 @@ public class Shop implements Parcelable {
     private int provinceId;
     private int cityId;
     private String cityName;
-    private VoucherOrdersItemData voucherOrdersItemData;
 
     public void setShopId(int shopId) {
         this.shopId = shopId;
@@ -209,14 +206,6 @@ public class Shop implements Parcelable {
         this.shopBadge = shopBadge;
     }
 
-    public VoucherOrdersItemData getVoucherOrdersItemData() {
-        return voucherOrdersItemData;
-    }
-
-    public void setVoucherOrdersItemData(VoucherOrdersItemData voucherOrdersItemData) {
-        this.voucherOrdersItemData = voucherOrdersItemData;
-    }
-
     @Override
     public int describeContents() {
         return 0;
@@ -246,7 +235,6 @@ public class Shop implements Parcelable {
         dest.writeInt(this.cityId);
         dest.writeString(this.cityName);
         dest.writeString(this.shopBadge);
-        dest.writeParcelable(voucherOrdersItemData, flags);
     }
 
     public Shop() {
@@ -275,7 +263,6 @@ public class Shop implements Parcelable {
         this.cityId = in.readInt();
         this.cityName = in.readString();
         this.shopBadge = in.readString();
-        this.voucherOrdersItemData = in.readParcelable(VoucherOrdersItemData.class.getClassLoader());
     }
 
     public static final Parcelable.Creator<Shop> CREATOR = new Parcelable.Creator<Shop>() {

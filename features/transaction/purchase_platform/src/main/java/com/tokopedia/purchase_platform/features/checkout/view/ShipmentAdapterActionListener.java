@@ -49,8 +49,6 @@ public interface ShipmentAdapterActionListener {
 
     void resetTotalPrice();
 
-    void showBottomSheetTotalBenefit();
-
     void onInsuranceChecked(int position);
 
     void onPriorityChecked(int position);

@@ -172,11 +172,9 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     private ValidateUsePromoRequest lastValidateUsePromoRequest;
 
     private List<DataCheckoutRequest> dataCheckoutRequestList;
-    private List<DataChangeAddressRequest> changeAddressRequestList;
     private CheckoutData checkoutData;
     private boolean partialCheckout;
     private boolean couponStateChanged;
-    private boolean hasDeletePromoAfterChecKPromoCodeFinal;
     private Map<Integer, List<ShippingCourierUiModel>> shippingCourierViewModelsState;
     private boolean isPurchaseProtectionPage = false;
     private boolean isShowOnboarding;
@@ -287,11 +285,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     @Override
     public void setDataCheckoutRequestList(List<DataCheckoutRequest> dataCheckoutRequestList) {
         this.dataCheckoutRequestList = dataCheckoutRequestList;
-    }
-
-    @Override
-    public void setDataChangeAddressRequestList(List<DataChangeAddressRequest> dataChangeAddressRequestList) {
-        this.changeAddressRequestList = dataChangeAddressRequestList;
     }
 
     @Override
@@ -1898,18 +1891,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     public boolean getCouponStateChanged() {
         return couponStateChanged;
     }
-
-    @Override
-    public void setHasDeletePromoAfterChecKPromoCodeFinal(
-            boolean hasDeletePromoAfterChecKPromoCodeFinal) {
-        this.hasDeletePromoAfterChecKPromoCodeFinal = hasDeletePromoAfterChecKPromoCodeFinal;
-    }
-
-    @Override
-    public boolean getHasDeletePromoAfterChecKPromoCodeFinal() {
-        return hasDeletePromoAfterChecKPromoCodeFinal;
-    }
-
 
     @Override
     public CodModel getCodData() {

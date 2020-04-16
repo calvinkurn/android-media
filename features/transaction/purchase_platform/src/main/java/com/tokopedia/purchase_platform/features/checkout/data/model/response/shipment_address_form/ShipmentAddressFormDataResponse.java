@@ -2,9 +2,6 @@ package com.tokopedia.purchase_platform.features.checkout.data.model.response.sh
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.data.model.AutoApply;
-import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.data.model.AutoApplyStack;
-import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.data.model.AutoapplyV2;
 import com.tokopedia.purchase_platform.common.feature.promo_global.data.model.response.GlobalCouponAttr;
 import com.tokopedia.purchase_platform.features.cart.data.model.response.Ticker;
 import com.tokopedia.purchase_platform.features.checkout.data.model.response.egold.EgoldAttributes;
@@ -57,18 +54,9 @@ public class ShipmentAddressFormDataResponse {
     @SerializedName("is_blackbox")
     @Expose
     private int isBlackbox;
-    @SerializedName("autoapply")
-    @Expose
-    private AutoApply autoApply;
-    @SerializedName("autoapply_v2")
-    @Expose
-    private AutoapplyV2 autoapplyV2;
     @SerializedName("egold_attributes")
     @Expose
     private EgoldAttributes egoldAttributes;
-    @SerializedName("autoapply_stack")
-    @Expose
-    private AutoApplyStack autoapplyStack;
     @SerializedName("global_coupon_attr")
     @Expose
     private GlobalCouponAttr globalCouponAttr;
@@ -102,11 +90,6 @@ public class ShipmentAddressFormDataResponse {
     @SerializedName("potential_gained_points")
     @Expose
     private PotentialGainedPoints potentialGainedPoints;
-
-    @Deprecated
-    public AutoapplyV2 getAutoapplyV2() {
-        return autoapplyV2;
-    }
 
     public List<String> getErrors() {
         return errors;
@@ -160,9 +143,6 @@ public class ShipmentAddressFormDataResponse {
         return isBlackbox;
     }
 
-    @Deprecated
-    public AutoApply getAutoApply() { return autoApply; }
-
     public EgoldAttributes getEgoldAttributes() {
         return egoldAttributes;
     }
@@ -170,7 +150,6 @@ public class ShipmentAddressFormDataResponse {
     public void setEgoldAttributes(EgoldAttributes egoldAttributes) {
         this.egoldAttributes = egoldAttributes;
     }
-    public AutoApplyStack getAutoapplyStack() { return autoapplyStack; }
 
     public GlobalCouponAttr getGlobalCouponAttr() { return globalCouponAttr; }
 

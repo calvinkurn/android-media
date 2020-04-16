@@ -2,14 +2,11 @@ package com.tokopedia.purchase_platform.features.cart.domain.model.cartlist
 
 import android.os.Parcel
 import android.os.Parcelable
-
-import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.model.AutoApplyStackData
 import com.tokopedia.purchase_platform.common.feature.promo_checkout.domain.model.PromoCheckoutErrorDefault
 import com.tokopedia.purchase_platform.common.feature.promo_checkout.domain.model.last_apply.LastApplyUiModel
 import com.tokopedia.purchase_platform.common.feature.promo_global.domain.model.GlobalCouponAttrData
 import com.tokopedia.purchase_platform.common.feature.ticker_announcement.TickerData
-
-import java.util.ArrayList
+import java.util.*
 
 /**
  * @author anggaprasetiyo on 15/02/18.
@@ -23,7 +20,6 @@ data class CartListData(
         var shopGroupWithErrorDataList: List<ShopGroupWithErrorData> = ArrayList(),
         var isPromoCouponActive: Boolean = false,
         var cartTickerErrorData: CartTickerErrorData? = null,
-        var autoApplyStackData: AutoApplyStackData? = null,
         var globalCouponAttrData: GlobalCouponAttrData? = null,
         var defaultPromoDialogTab: String? = null,
         var isAllSelected: Boolean = false,
@@ -42,7 +38,6 @@ data class CartListData(
             parcel.createTypedArrayList(ShopGroupWithErrorData),
             parcel.readByte() != 0.toByte(),
             parcel.readParcelable(CartTickerErrorData::class.java.classLoader),
-            parcel.readParcelable(AutoApplyStackData::class.java.classLoader),
             parcel.readParcelable(GlobalCouponAttrData::class.java.classLoader),
             parcel.readString(),
             parcel.readByte() != 0.toByte(),
@@ -74,7 +69,6 @@ data class CartListData(
         parcel.writeTypedList(shopGroupWithErrorDataList)
         parcel.writeByte(if (isPromoCouponActive) 1 else 0)
         parcel.writeParcelable(cartTickerErrorData, flags)
-        parcel.writeParcelable(autoApplyStackData, flags)
         parcel.writeParcelable(globalCouponAttrData, flags)
         parcel.writeString(defaultPromoDialogTab)
         parcel.writeByte(if (isAllSelected) 1 else 0)

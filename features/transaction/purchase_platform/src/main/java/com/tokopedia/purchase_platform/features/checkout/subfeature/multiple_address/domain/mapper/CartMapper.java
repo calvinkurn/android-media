@@ -1,4 +1,4 @@
-package com.tokopedia.purchase_platform.features.cart.domain.mapper;
+package com.tokopedia.purchase_platform.features.checkout.subfeature.multiple_address.domain.mapper;
 
 import android.content.Context;
 import android.text.TextUtils;
@@ -6,19 +6,17 @@ import android.text.TextUtils;
 import com.google.android.gms.common.util.Strings;
 import com.tokopedia.purchase_platform.R;
 import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.data.model.Message;
-import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.data.model.VoucherOrdersItem;
-import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.model.AutoApplyStackData;
 import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.model.MessageData;
-import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.model.VoucherOrdersItemData;
 import com.tokopedia.purchase_platform.common.utils.UtilsKt;
-import com.tokopedia.purchase_platform.features.cart.data.model.response.CartList;
-import com.tokopedia.purchase_platform.features.cart.data.model.response.Shop;
+import com.tokopedia.purchase_platform.features.cart.domain.mapper.ICartMapper;
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.CartItemData;
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.CartListData;
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.CartTickerErrorData;
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.ShopGroupAvailableData;
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.WholesalePriceData;
+import com.tokopedia.purchase_platform.features.checkout.subfeature.multiple_address.data.model.response.CartList;
 import com.tokopedia.purchase_platform.features.checkout.subfeature.multiple_address.data.model.response.CartMultipleAddressDataListResponse;
+import com.tokopedia.purchase_platform.features.checkout.subfeature.multiple_address.data.model.response.Shop;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -182,44 +180,9 @@ public class CartMapper implements ICartMapper {
         }
         cartListData.setShopGroupAvailableDataList(shopGroupDataList);
         cartListData.setPromoCouponActive(cartDataListResponse.getIsCouponActive() == 1);
-
-        if (cartDataListResponse.getAutoapplyStack() != null) {
-            AutoApplyStackData autoApplyStackData = new AutoApplyStackData();
-            autoApplyStackData.setCode(cartDataListResponse.getAutoapplyStack().getCodes().get(0));
-            autoApplyStackData.setDiscountAmount(cartDataListResponse.getAutoapplyStack().getDiscountAmount());
-            autoApplyStackData.setIsCoupon(cartDataListResponse.getAutoapplyStack().getIsCoupon());
-            autoApplyStackData.setMessageSuccess(cartDataListResponse.getAutoapplyStack().getMessage().getText());
-            autoApplyStackData.setPromoCodeId(cartDataListResponse.getAutoapplyStack().getPromoCodeId());
-            autoApplyStackData.setSuccess(cartDataListResponse.getAutoapplyStack().isSuccess());
-            autoApplyStackData.setTitleDescription(cartDataListResponse.getAutoapplyStack().getTitleDescription());
-            autoApplyStackData.setState(cartDataListResponse.getAutoapplyStack().getMessage().getState());
-
-            List<VoucherOrdersItemData> voucherOrdersItemDataList = new ArrayList<>();
-            for (VoucherOrdersItem voucherOrdersItem : cartDataListResponse.getAutoapplyStack().getVoucherOrders()) {
-                VoucherOrdersItemData voucherOrdersItemData = new VoucherOrdersItemData();
-                voucherOrdersItemData.setCode(voucherOrdersItem.getCode());
-                voucherOrdersItemData.setSuccess(voucherOrdersItem.isSuccess());
-                voucherOrdersItemData.setUniqueId(voucherOrdersItem.getUniqueId());
-                voucherOrdersItemData.setCartId(voucherOrdersItem.getCartId());
-                voucherOrdersItemData.setShopId(voucherOrdersItem.getShopId());
-                voucherOrdersItemData.setIsPO(voucherOrdersItem.getIsPo());
-                voucherOrdersItemData.setAddressId(voucherOrdersItem.getAddressId());
-                voucherOrdersItemData.setType(voucherOrdersItem.getType());
-                voucherOrdersItemData.setCashbackWalletAmount(voucherOrdersItem.getCashbackWalletAmount());
-                voucherOrdersItemData.setDiscountAmount(voucherOrdersItem.getDiscountAmount());
-                voucherOrdersItemData.setInvoiceDescription(voucherOrdersItem.getInvoiceDescription());
-                voucherOrdersItemData.setMessageData(convertToMessageData(voucherOrdersItem.getMessage()));
-                voucherOrdersItemData.setIsAutoapply(true);
-                voucherOrdersItemDataList.add(voucherOrdersItemData);
-            }
-            autoApplyStackData.setVoucherOrdersItemDataList(voucherOrdersItemDataList);
-            cartListData.setAutoApplyStackData(autoApplyStackData);
-        }
-
         cartListData.setShowOnboarding(cartDataListResponse.isShowOnboarding());
 
         return cartListData;
-
     }
 
     private String generateShopType(Shop shop) {
