@@ -80,6 +80,7 @@ class AddEditProductEditService : AddEditProductBaseService() {
             }
             // (2)
             uploadProductImages(filterPathOnly(detailInputModel.imageUrlOrPathList),
+                    arrayListOf(""),
                     variantInputModel.productSizeChart?.filePath ?: "")
         }
     }
@@ -89,7 +90,7 @@ class AddEditProductEditService : AddEditProductBaseService() {
                 it.startsWith(HTTP_PREFIX)
             }
 
-    override fun onUploadProductImagesDone(uploadIdList: ArrayList<String>, sizeChartId: String) {
+    override fun onUploadProductImagesDone(uploadIdList: ArrayList<String>, variantPicturePath: List<String>, sizeChartId: String) {
         // (3)
         editProduct(uploadIdList, sizeChartId)
     }
