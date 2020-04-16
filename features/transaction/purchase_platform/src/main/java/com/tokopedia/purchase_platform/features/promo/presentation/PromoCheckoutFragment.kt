@@ -76,7 +76,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
         ViewModelProviders.of(this, viewModelFactory)[PromoCheckoutViewModel::class.java]
     }
 
-    // Use single recycler view to prevent NPE caused by nested recyclerview
+    // Use single recycler view to prevent memory leak & OOM caused by nested recyclerview
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: PromoCheckoutAdapter
 
@@ -170,6 +170,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
                 val bboPromoCodes = arguments?.getStringArrayList(ARGS_BBO_PROMO_CODES) as ArrayList<String>?
                 viewModel.clearPromo(GraphqlHelper.loadRawString(it.resources, R.raw.clear_promo), validateUsePromoRequest, bboPromoCodes
                         ?: ArrayList())
+                viewModel.sendAnalyticsClickBeliTanpaPromo()
             }
         }
 
