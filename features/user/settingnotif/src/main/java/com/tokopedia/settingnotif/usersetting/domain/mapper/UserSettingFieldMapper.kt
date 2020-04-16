@@ -17,6 +17,7 @@ class UserSettingFieldMapper : Func1<UserNotificationResponse, UserSettingViewMo
             outputData.add(settingSection)
             for (setting in settingSection.listSettings) {
                 if (setting == null) continue
+                setting.apply { this.isEnabled = true }
                 outputData.add(setting)
                 for (childSetting in setting.childSettings) {
                     if (childSetting == null) continue
