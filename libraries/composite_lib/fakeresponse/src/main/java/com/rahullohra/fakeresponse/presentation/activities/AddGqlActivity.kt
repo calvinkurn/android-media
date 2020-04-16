@@ -7,11 +7,11 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.Observer
-import com.google.gson.JsonParser
 import com.rahullohra.fakeresponse.R
 import com.rahullohra.fakeresponse.Router
 import com.rahullohra.fakeresponse.chuck.TransactionEntity
 import com.rahullohra.fakeresponse.data.diProvider.activities.AddGqlActivityProvider
+import com.rahullohra.fakeresponse.data.models.ResponseItemType
 import com.rahullohra.fakeresponse.data.parsers.ParserRuleProvider
 import com.rahullohra.fakeresponse.db.entities.GqlRecord
 import com.rahullohra.fakeresponse.presentation.livedata.Fail
@@ -49,6 +49,7 @@ class AddGqlActivity : BaseActivity() {
                 viewModel.loadRecordFromChuck(it)
             } else {
                 viewModel.loadRecord(it)
+                supportActionBar?.title = "Update Gql"
             }
         }
     }
@@ -63,6 +64,9 @@ class AddGqlActivity : BaseActivity() {
         isFromChuck = intent.extras?.get(Router.BUNDLE_ARGS_FROM_CHUCK) as Boolean? ?: false
 
         setSupportActionBar(toolbar)
+        supportActionBar?.title = "Add Gql"
+        toolbar.setNavigationIcon(R.drawable.fake_ic_back)
+        toolbar.setNavigationOnClickListener { onBackPressed() }
     }
 
     fun initVars() {
@@ -75,8 +79,13 @@ class AddGqlActivity : BaseActivity() {
             when (it) {
                 is Success<GqlRecord> -> {
                     etGqlName.setText(it.data.gqlOperationName)
-                    etResponse.setText(it.data.response)
                     etCustomName.setText(it.data.customTag)
+
+                    try {
+                        setPrettyText(it.data.response, etResponse)
+                    } catch (ex: Exception) {
+                        ex.printStackTrace()
+                    }
                 }
             }
         })
@@ -108,24 +117,31 @@ class AddGqlActivity : BaseActivity() {
         })
 
         viewModel.liveDataTransactionEntity.observe(this, Observer {
-            when(it){
-                is Success<TransactionEntity>->{
+            when (it) {
+                is Success<TransactionEntity> -> {
                     updateUi(it.data)
                 }
-                is Fail->{
+                is Fail -> {
                     toast(it.ex.message)
                 }
             }
         })
+
+        viewModel.liveDataExport.observe(this, Observer {
+            when (it) {
+                is Success<String> -> sendData(it.data)
+                is Fail -> toast(it.ex.message)
+            }
+        })
     }
 
-    fun updateUi(transactionEntity: TransactionEntity){
+    fun updateUi(transactionEntity: TransactionEntity) {
 
         val parserRuleProvider = ParserRuleProvider()
-        etGqlName.setText(parserRuleProvider.parse(transactionEntity.requestBody?:""))
+        etGqlName.setText(parserRuleProvider.parse(transactionEntity.requestBody ?: ""))
 
-        var response = transactionEntity.responseBody?:""
-        response = gson.toJson(JsonParser().parse(response))
+        var response = transactionEntity.responseBody ?: ""
+        response = gson.toJson(jsonParser.parse(response))
         etResponse.setText(response)
     }
 
@@ -141,12 +157,13 @@ class AddGqlActivity : BaseActivity() {
             }
             R.id.gql_menu_pretty -> {
                 try {
-                    var response = etResponse.text.toString()
-                    response = gson.toJson(JsonParser().parse(response))
-                    etResponse.setText(response)
+                    setPrettyText(etResponse.text.toString(), etResponse)
                 } catch (e: Exception) {
                     Toast.makeText(this, "Wrong Json", Toast.LENGTH_SHORT).show()
                 }
+            }
+            R.id.gql_menu_export -> {
+                performExport()
             }
         }
         return true
@@ -169,5 +186,12 @@ class AddGqlActivity : BaseActivity() {
 
     fun isExistingRecord(): Boolean {
         return id != null && !isFromChuck
+    }
+
+    fun performExport() {
+        id?.let {
+            viewModel.export(it, ResponseItemType.GQL)
+        }
+
     }
 }

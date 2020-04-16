@@ -4,8 +4,10 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.rahullohra.fakeresponse.chuck.TransactionEntity
 import com.rahullohra.fakeresponse.chuck.domain.usecase.ChuckSearchUseCase
+import com.rahullohra.fakeresponse.data.models.ResponseItemType
 import com.rahullohra.fakeresponse.db.entities.RestRecord
 import com.rahullohra.fakeresponse.domain.usecases.AddRestDaoUseCase
+import com.rahullohra.fakeresponse.domain.usecases.ExportUseCase
 import com.rahullohra.fakeresponse.presentation.livedata.Fail
 import com.rahullohra.fakeresponse.presentation.livedata.LiveDataResult
 import com.rahullohra.fakeresponse.presentation.livedata.Success
@@ -19,13 +21,15 @@ import kotlin.coroutines.CoroutineContext
 class AddRestVM constructor(
         val workerDispatcher: CoroutineDispatcher,
         val usecase: AddRestDaoUseCase,
-        val chuckSearchUseCase: ChuckSearchUseCase
+        val chuckSearchUseCase: ChuckSearchUseCase,
+        val exportUseCase: ExportUseCase
 ) : ViewModel(), CoroutineScope {
 
     val liveDataCreate = MutableLiveData<LiveDataResult<Long>>()
     val liveDataUpdate = MutableLiveData<LiveDataResult<Boolean>>()
     val liveDataRestResponse = MutableLiveData<LiveDataResult<RestRecord>>()
     val liveDataTransactionEntity = MutableLiveData<LiveDataResult<TransactionEntity>>()
+    val liveDataExport = MutableLiveData<LiveDataResult<String>>()
 
     override val coroutineContext: CoroutineContext
         get() = workerDispatcher + ceh
@@ -77,6 +81,17 @@ class AddRestVM constructor(
                 liveDataTransactionEntity.postValue(Success(result))
             } catch (ex: Exception) {
                 liveDataTransactionEntity.postValue(Fail(ex))
+            }
+        }
+    }
+
+    fun export(id: Int, responseItemType: ResponseItemType) {
+        launch {
+            try {
+                val text = exportUseCase.export(id, responseItemType)
+                liveDataExport.postValue(Success(text))
+            } catch (ex: Exception) {
+                liveDataExport.postValue(Fail(ex))
             }
         }
     }

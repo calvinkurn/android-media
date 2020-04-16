@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:navigationIcon="@drawable/fake_ic_close"
-        app:title="Search"/>
+        app:title="Search" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -25,7 +25,9 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etResponse"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/gqlColorLightGrey"
+                android:textSize="14sp" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
@@ -36,7 +38,9 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etRequest"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/gqlColorLightGrey"
+                android:textSize="14sp" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <LinearLayout
@@ -54,7 +58,8 @@
                     android:id="@+id/etUrl"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                     />
+                    android:backgroundTint="@color/gqlColorLightGrey"
+                    android:textSize="14sp" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -67,7 +72,8 @@
                     android:id="@+id/etTag"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                     />
+                    android:backgroundTint="@color/gqlColorLightGrey"
+                    android:textSize="14sp" />
             </com.google.android.material.textfield.TextInputLayout>
 
         </LinearLayout>

@@ -17,7 +17,8 @@ class VMFactory(application: Application, val list: Array<Any>) :
             return AddGqlVM(
                     list[0] as CoroutineDispatcher,
                     list[1] as AddToDbUseCase,
-                    list[2] as ChuckSearchUseCase
+                    list[2] as ChuckSearchUseCase,
+                    list[3] as ExportUseCase
             ) as T
         } else if (modelClass.isAssignableFrom(DownloadFragmentVM::class.java)) {
             return DownloadFragmentVM(
@@ -41,7 +42,8 @@ class VMFactory(application: Application, val list: Array<Any>) :
             return AddRestVM(
                     list[0] as CoroutineDispatcher,
                     list[1] as AddRestDaoUseCase,
-                    list[2] as ChuckSearchUseCase
+                    list[2] as ChuckSearchUseCase,
+                    list[3] as ExportUseCase
             ) as T
         } else if (modelClass.isAssignableFrom(SearchViewModel::class.java)) {
             return SearchViewModel(

@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import android.widget.ViewFlipper
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -51,9 +52,16 @@ class HomeFragment : BaseFragment() {
         rv = view.findViewById(R.id.rv)
         rv.layoutManager = LinearLayoutManager(context)
 
-        rv.addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
-        rv.adapter = adapter
+        context?.let { c->
+            val itemDecoration = DividerItemDecoration(c, DividerItemDecoration.VERTICAL)
+            val dividerLine = ContextCompat.getDrawable(c, R.drawable.fake_divider_line)
+            dividerLine?.let {
+                itemDecoration.setDrawable(it)
+            }
+            rv.addItemDecoration(itemDecoration)
+        }
 
+        rv.adapter = adapter
         mapOfData = mutableMapOf()
     }
 

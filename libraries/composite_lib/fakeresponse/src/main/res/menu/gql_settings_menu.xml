@@ -12,10 +12,6 @@
         android:title="@string/gql_reset" />
 
     <item
-        android:id="@+id/gql_menu_export"
-        android:title="@string/gql_export" />
-
-    <item
         android:id="@+id/gql_menu_import"
         android:title="@string/gql_import">
         <menu>

@@ -12,6 +12,7 @@ import com.rahullohra.fakeresponse.R
 import com.rahullohra.fakeresponse.Router
 import com.rahullohra.fakeresponse.chuck.TransactionEntity
 import com.rahullohra.fakeresponse.data.diProvider.activities.RestActivityDiProvider
+import com.rahullohra.fakeresponse.data.models.ResponseItemType
 import com.rahullohra.fakeresponse.db.entities.RestRecord
 import com.rahullohra.fakeresponse.presentation.livedata.Fail
 import com.rahullohra.fakeresponse.presentation.livedata.Loading
@@ -49,6 +50,7 @@ class AddRestResponseActivity : BaseActivity() {
                 viewModel.loadRecordFromChuck(it)
             } else {
                 viewModel.loadRecord(it)
+                supportActionBar?.title = "Update Rest"
             }
         }
     }
@@ -63,6 +65,10 @@ class AddRestResponseActivity : BaseActivity() {
         id = intent.extras?.get(Router.BUNDLE_ARGS_ID) as Int?
         isFromChuck = intent.extras?.get(Router.BUNDLE_ARGS_FROM_CHUCK) as Boolean? ?: false
         setSupportActionBar(toolbar)
+
+        supportActionBar?.title = "Add Rest"
+        toolbar.setNavigationIcon(R.drawable.fake_ic_back)
+        toolbar.setNavigationOnClickListener { onBackPressed() }
     }
 
     fun initVars() {
@@ -76,8 +82,13 @@ class AddRestResponseActivity : BaseActivity() {
                 is Success<RestRecord> -> {
                     etMethodName.setText(it.data.httpMethod)
                     etRestUrl.setText(it.data.url)
-                    etResponse.setText(it.data.response)
                     etTag.setText(it.data.customTag)
+
+                    try {
+                        setPrettyText(it.data.response, etResponse)
+                    } catch (ex: Exception) {
+                        ex.printStackTrace()
+                    }
                 }
             }
         })
@@ -109,30 +120,41 @@ class AddRestResponseActivity : BaseActivity() {
         })
 
         viewModel.liveDataTransactionEntity.observe(this, Observer {
-            when(it){
-                is Success<TransactionEntity>->{
+            when (it) {
+                is Success<TransactionEntity> -> {
                     updateUi(it.data)
                 }
-                is Fail->{
+                is Fail -> {
                     toast(it.ex.message)
                 }
+            }
+        })
+
+        viewModel.liveDataExport.observe(this, Observer {
+            when (it) {
+                is Success<String> -> sendData(it.data)
+                is Fail -> toast(it.ex.message)
             }
         })
     }
 
 
-    fun updateUi(transactionEntity: TransactionEntity){
+    fun updateUi(transactionEntity: TransactionEntity) {
 
-        etMethodName.setText(transactionEntity.method?:"")
-        etRestUrl.setText(transactionEntity.url?:"")
+        etMethodName.setText(transactionEntity.method ?: "")
+        etRestUrl.setText(transactionEntity.url ?: "")
 
-        var response = transactionEntity.responseBody?:""
-        response = gson.toJson(JsonParser().parse(response))
+        var response = transactionEntity.responseBody ?: ""
+        response = gson.toJson(jsonParser.parse(response))
         etResponse.setText(response)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.gql_add_response_menu, menu)
+        if (isFromChuck) {
+            menuInflater.inflate(R.menu.gql_add_response_menu, menu)
+        } else {
+            menuInflater.inflate(R.menu.gql_add_response_menu_export, menu)
+        }
         return true
     }
 
@@ -143,12 +165,13 @@ class AddRestResponseActivity : BaseActivity() {
             }
             R.id.gql_menu_pretty -> {
                 try {
-                    var response = etResponse.text.toString()
-                    response = gson.toJson(JsonParser().parse(response))
-                    etResponse.setText(response)
+                    setPrettyText(etResponse.text.toString(), etResponse)
                 } catch (e: Exception) {
                     Toast.makeText(this, "Wrong Json", Toast.LENGTH_SHORT).show()
                 }
+            }
+            R.id.gql_menu_export -> {
+                performExport()
             }
         }
         return true
@@ -173,5 +196,12 @@ class AddRestResponseActivity : BaseActivity() {
 
     fun isExistingRecord(): Boolean {
         return id != null && !isFromChuck
+    }
+
+    fun performExport() {
+        id?.let {
+            viewModel.export(it, ResponseItemType.REST)
+        }
+
     }
 }

@@ -1,15 +1,18 @@
 package com.rahullohra.fakeresponse.presentation.viewholder
 
 import android.content.Context
+import android.content.res.ColorStateList
 import android.view.View
 import android.widget.CheckBox
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatImageView
+import androidx.appcompat.widget.AppCompatTextView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.rahullohra.fakeresponse.R
+import com.rahullohra.fakeresponse.Router
 import com.rahullohra.fakeresponse.data.models.ResponseItemType
 import com.rahullohra.fakeresponse.data.models.ResponseListData
-import com.rahullohra.fakeresponse.Router
 import com.rahullohra.fakeresponse.data.models.SearchType
 
 class ResponseVH(itemView: View, val itemClickCallback: (SearchType, Boolean) -> Unit) :
@@ -23,6 +26,7 @@ class ResponseVH(itemView: View, val itemClickCallback: (SearchType, Boolean) ->
     val tvCustomName: TextView = itemView.findViewById(R.id.tvCustomName)
     val cb: CheckBox = itemView.findViewById(R.id.cb)
     val imageCheck: AppCompatImageView = itemView.findViewById(R.id.imageCheck)
+    val tvResponseType: AppCompatTextView = itemView.findViewById(R.id.tvResponseType)
 
 
     fun setData(data: ResponseListData) {
@@ -43,25 +47,33 @@ class ResponseVH(itemView: View, val itemClickCallback: (SearchType, Boolean) ->
         imageCheck.visibility = if (data.isInExportMode) View.VISIBLE else View.GONE
 
         itemView.setOnClickListener {
-            if(data.isInExportMode){
+            if (data.isInExportMode) {
                 handleExportClick(data)
-            }else {
+            } else {
                 handleNormalCLickBehaviour(data, it.context)
             }
         }
+        if (data.responseType == ResponseItemType.GQL) {
+            tvResponseType.text = itemView.context.getString(R.string.gql_text)
+            tvResponseType.supportBackgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(itemView.context, R.color.gqlColorBlue))
+        } else {
+            tvResponseType.text = itemView.context.getString(R.string.gql_rest_text)
+            tvResponseType.supportBackgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(itemView.context, R.color.gqlColorPurple))
+        }
+
     }
 
-    fun handleExportClick(data: ResponseListData){
+    fun handleExportClick(data: ResponseListData) {
         data.isSelectedForExport = !data.isSelectedForExport
 
-        if(data.isSelectedForExport){
+        if (data.isSelectedForExport) {
             imageCheck.setBackgroundResource(R.drawable.fake_blue_circle)
-        }else{
+        } else {
             imageCheck.setBackgroundResource(R.drawable.fake_grey_circle)
         }
     }
 
-    fun handleNormalCLickBehaviour(data: ResponseListData, context:Context){
+    fun handleNormalCLickBehaviour(data: ResponseListData, context: Context) {
         if (data.responseType == ResponseItemType.REST) {
             Router.routeToAddRest(context, data.id)
         } else {

@@ -1,7 +1,7 @@
 package com.rahullohra.fakeresponse.presentation.activities
 
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
+import android.widget.Toast
 import androidx.lifecycle.Observer
 import com.rahullohra.fakeresponse.R
 import com.rahullohra.fakeresponse.data.diProvider.activities.PasteTextActivityProvider
@@ -12,9 +12,9 @@ import com.rahullohra.fakeresponse.presentation.viewmodels.PasteTextViewModel
 import com.rahullohra.fakeresponse.toast
 import kotlinx.android.synthetic.main.fake_activity_paste_text.*
 
-class PasteTextActivity : AppCompatActivity() {
+class PasteTextActivity : BaseActivity() {
 
-    fun getLayout() = R.layout.fake_activity_paste_text
+    override fun getLayout() = R.layout.fake_activity_paste_text
     lateinit var viewModel: PasteTextViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -60,6 +60,14 @@ class PasteTextActivity : AppCompatActivity() {
         })
         button.setOnClickListener {
             viewModel.performImport(etResponse.text.toString())
+        }
+
+        btnPretty.setOnClickListener {
+            try {
+                setPrettyText(etResponse.text.toString(), etResponse)
+            } catch (e: Exception) {
+                Toast.makeText(this, "Wrong Json", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 }
