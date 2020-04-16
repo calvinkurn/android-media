@@ -43,6 +43,6 @@ class SmsFieldFragment: SettingFieldFragment() {
     }
 
     override fun getScreenName() = getString(R.string.settingnotif_sms)
-    override fun getNotificationType() = SMS_TYPE
+    override fun getNotificationType() = TYPE_SMS
 
 }
