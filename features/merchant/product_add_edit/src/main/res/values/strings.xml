@@ -2,9 +2,11 @@
 
     <!-- add edit product screen name -->
     <string name="product_add_edit_detail">Detail Produk</string>
+    <string name="title_add_product">Tambah Produk</string>
+    <string name="title_edit_product">Ubah Produk</string>
 
     <!-- add edit preview -->
-    <string name="product_subtitle_product_information">Yuk, lengkapi informasi produk kamu</string>
+    <string name="product_subtitle_product_information">Yuk, isi informasi produk kamu</string>
     <string name="label_add_product_photo">Foto Produk</string>
     <string name="label_add_product_detail">Detail Produk</string>
     <string name="label_add_product_description">Deskripsi Produk</string>
@@ -13,7 +15,7 @@
     <string name="label_add_product_promotion">Promosi</string>
     <string name="label_edit_product_status">Status Produk</string>
     <string name="label_product_status_description">Jika status aktif, berarti produkmu\ndapat dicari pembeli</string>
-    <string name="preview_label_add_product_photo_tips">Tips Memilih foto produk yang benar</string>
+    <string name="preview_label_add_product_photo_tips">Tips memilih foto produk yang benar</string>
     <string name="preview_label_add_product_variant_tips">Tips atur stok &amp; harga dengan fitur Varian</string>
     <string name="action_start">Mulai</string>
     <string name="action_change">Ubah</string>
@@ -25,7 +27,8 @@
     <string name="add_product_photo_header">Foto Produk</string>
     <string name="label_primary">Utama</string>
     <string name="action_add_product_photo">Tambah Foto</string>
-    <string name="action_pick_image">Pilih Gambar</string>
+    <string name="action_pick_photo">Pilih Foto</string>
+    <string name="action_edit_photo">Ubah Foto</string>
 
     <!-- add edit product name -->
     <string name="add_product_name_header">Isi nama produk yang kamu jual</string>
