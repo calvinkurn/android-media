@@ -69,7 +69,9 @@ data class DynamicHomeChannel(
             @SerializedName("promoName")
             var promoName: String = "",
             @SerializedName("homeAttribution")
-            private val homeAttribution: String = ""
+            val homeAttribution: String = "",
+            @SerializedName("has_close_button")
+            val hasCloseButton: Boolean = false
     ) : ImpressHolder() {
 
         private var position: Int = 0
@@ -560,6 +562,15 @@ data class DynamicHomeChannel(
             @SerializedName("id")
             val id: String = "",
             @Expose
+            @SerializedName("warehouseID")
+            val warehouseId: String = "",
+            @Expose
+            @SerializedName("minOrder")
+            val minOrder: Int = 0,
+            @Expose
+            @SerializedName("shop")
+            val shop: Shop = Shop(),
+            @Expose
             @SerializedName("price")
             val price: String = "0",
             @Expose
@@ -696,5 +707,11 @@ data class DynamicHomeChannel(
             @Expose
             @SerializedName("coupon_code")
             val couponCode: String = ""
+    )
+
+    data class Shop(
+        @Expose
+        @SerializedName("shopID")
+        val shopId: String = ""
     )
 }

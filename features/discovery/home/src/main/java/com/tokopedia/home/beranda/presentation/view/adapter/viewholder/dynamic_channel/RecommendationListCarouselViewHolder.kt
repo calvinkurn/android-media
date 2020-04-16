@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
+import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -15,8 +16,11 @@ import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.SimpleHorizontalLinearLayoutDecoration
 import com.tokopedia.home.util.setGradientBackground
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.productcard.ProductCardListView
 import com.tokopedia.productcard.ProductCardModel
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 
 class RecommendationListCarouselViewHolder(itemView: View,
@@ -29,11 +33,20 @@ class RecommendationListCarouselViewHolder(itemView: View,
         val listCarouselView = itemView.findViewById<View>(R.id.list_carousel_view)
         val listCarouselRecyclerView = itemView.findViewById<RecyclerView>(R.id.recycleList)
         val listCarouselBannerHeader = itemView.findViewById<View>(R.id.list_carousel_banner_header)
+        val listCarouselCloseButton = itemView.findViewById<AppCompatImageView>(R.id.buy_again_close_image_view)
 
         val banner = channel.banner
         banner.let {
             val textColor = if (banner.textColor.isEmpty())
                 ContextCompat.getColor(itemView.context, R.color.Neutral_N50) else Color.parseColor(banner.textColor)
+            if(channel.hasCloseButton){
+                listCarouselCloseButton.show()
+                listCarouselCloseButton.setOnClickListener {
+                    listener.onBuyAgainCloseChannelClick(channel, adapterPosition)
+                }
+            }else {
+                listCarouselCloseButton.hide()
+            }
 
             if (banner.title.isNotEmpty()) {
                 listCarouselTitle.apply {
@@ -156,9 +169,15 @@ class RecommendationListCarouselViewHolder(itemView: View,
                                 productName = recommendation.recommendationTitle,
                                 discountPercentage = recommendation.recommendationDiscountLabel,
                                 slashedPrice = recommendation.recommendationSlashedPrice,
-                                formattedPrice = recommendation.recommendationPrice
+                                formattedPrice = recommendation.recommendationPrice,
+                                hasAddToCartButton = recommendation.channel.hasCloseButton
                         )
                 )
+                val addToCartButton = holder.recommendationCard.findViewById<UnifyButton>(R.id.buttonAddToCart)
+                addToCartButton.text = holder.itemView.context.getString(R.string.home_buy_again)
+                holder.recommendationCard.setAddToCartOnClickListener {
+                    homeCategoryListener.onBuyAgainOneClickCheckOutClick(recommendation.grid, recommendation.channel)
+                }
                 holder.itemView.setOnClickListener {
                     HomePageTrackingV2.RecommendationList.sendRecommendationListClick(recommendation.channel, recommendation.grid, position)
                     homeCategoryListener.onSectionItemClicked(recommendation.recommendationApplink)

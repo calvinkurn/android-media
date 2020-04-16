@@ -205,7 +205,7 @@ class HomeAdapterFactory(private val fragmentManager: FragmentManager, private v
             /**
              * refer to recommendation list carousel com.tokopedia.home.R.layout#home_dc_list_carousel
              */
-            DynamicHomeChannel.Channels.LAYOUT_LIST_CAROUSEL -> BuyAgainViewHolder.LAYOUT
+            DynamicHomeChannel.Channels.LAYOUT_LIST_CAROUSEL -> RecommendationListCarouselViewHolder.LAYOUT
             /**
              * refer to mix top carousel com.tokopedia.home.R.layout#home_mix_top_banner
              */
@@ -246,7 +246,6 @@ class HomeAdapterFactory(private val fragmentManager: FragmentManager, private v
             PopularKeywordViewHolder.LAYOUT -> viewHolder = PopularKeywordViewHolder(view, listener, popularKeywordListener)
             MixLeftViewHolder.LAYOUT -> viewHolder = MixLeftViewHolder(view, listener, parentRecycledViewPool)
             RecommendationListCarouselViewHolder.LAYOUT -> viewHolder = RecommendationListCarouselViewHolder(view, listener, parentRecycledViewPool)
-            BuyAgainViewHolder.LAYOUT -> viewHolder = BuyAgainViewHolder(view, listener, parentRecycledViewPool)
             MixTopBannerViewHolder.LAYOUT -> viewHolder = MixTopBannerViewHolder(view, listener)
             ProductHighlightViewHolder.LAYOUT -> viewHolder = ProductHighlightViewHolder(view, listener)
             else -> viewHolder = super.createViewHolder(view, type)

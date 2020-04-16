@@ -607,19 +607,21 @@ open class HomeViewModel @Inject constructor(
         }){}
     }
 
-    fun getOneClickCheckout(productId: String){
+    fun getOneClickCheckout(productId: String, minQuantity: Int, shopId: String, warehouseId: String){
         val requestParams = RequestParams()
         requestParams.putObject(AddToCartOccUseCase.REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST, AddToCartOccRequestParams(
                 productId = productId,
-                quantity = "1",
-                shopId = ""
+                quantity = minQuantity.toString(),
+                shopId = shopId,
+                warehouseId = warehouseId
         ))
         getAtcUseCase.createObservable(requestParams)
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
                 .subscribe (
                     {
-                        _oneClickCheckout.postValue(Event(it))
+                        if(!it.isDataError()) _oneClickCheckout.postValue(Event(it))
+                        else _oneClickCheckout.postValue(Event(Throwable()))
                     },
                     {
                         _oneClickCheckout.postValue(Event(it))

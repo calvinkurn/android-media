@@ -1381,7 +1381,7 @@ public class HomeFragment extends BaseDaggerFragment implements
 
     @Override
     public void onBuyAgainOneClickCheckOutClick(@NotNull DynamicHomeChannel.Grid grid, @NotNull DynamicHomeChannel.Channels channel) {
-        viewModel.getOneClickCheckout(grid.getId());
+        viewModel.getOneClickCheckout(grid.getId(), grid.getMinOrder(), grid.getShop().getShopId(), grid.getWarehouseId());
     }
 
     @Override
