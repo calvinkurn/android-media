@@ -54,6 +54,8 @@ object ApplinkConstInternalSellerapp {
     //CentralizedPromoActivity
     @JvmField
     val CENTRALIZED_PROMO = "$INTERNAL_SELLERAPP/centralized-promo"
+    @JvmField
+    val CENTRALIZED_PROMO_FIRST_VOUCHER = "$INTERNAL_SELLERAPP/first-voucher-centralized-promo"
 
     //MenuSettingActivity
     @JvmField

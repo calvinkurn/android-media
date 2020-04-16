@@ -1,5 +1,6 @@
 package com.tokopedia.centralizedpromo.view
 
+import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.centralizedpromo.view.model.PromoCreationListUiModel
 import com.tokopedia.centralizedpromo.view.model.PromoCreationUiModel
 import com.tokopedia.sellerhome.R
@@ -21,6 +22,13 @@ object PromoCreationStaticData {
                             "Tingkatkan penjualan dengan kirim pesan promosi ke pembeli",
                             "",
                             "tokopedia://webview?url=https://m.tokopedia.com/broadcast-chat/create"
+                    ),
+                    PromoCreationUiModel(
+                            R.drawable.ic_broadcast_chat,
+                            "Voucher Toko",
+                            "Gunakan voucher toko yang sesuai target pembeli tokomu",
+                            "",
+                            ApplinkConstInternalSellerapp.CENTRALIZED_PROMO_FIRST_VOUCHER
                     )
             ),
             errorMessage = ""
