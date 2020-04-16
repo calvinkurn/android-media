@@ -5,8 +5,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.iris.util.IrisSession
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.loadImageDrawable
 import com.tokopedia.selleronboarding.R
+import com.tokopedia.selleronboarding.analytic.SellerOnboardingAnalytic
 import com.tokopedia.selleronboarding.model.SlideUiModel
 import kotlinx.android.synthetic.main.viewholder_sob_onboarding.view.*
 
@@ -43,6 +46,10 @@ class SlideAdapter : RecyclerView.Adapter<SlideAdapter.SlideViewHolder>() {
         fun bind(item: SlideUiModel) = with(itemView) {
             tvHeaderText.text = item.headerText
             showIllustrationImage(item)
+
+            addOnImpressionListener(item.impressHolder) {
+                sendOpenSlideAnalytics()
+            }
         }
 
         private fun showIllustrationImage(item: SlideUiModel) = with(itemView) {
@@ -56,6 +63,12 @@ class SlideAdapter : RecyclerView.Adapter<SlideAdapter.SlideViewHolder>() {
                     nfe.printStackTrace()
                 }
             }
+        }
+
+        private fun sendOpenSlideAnalytics() {
+            val irisSession = IrisSession(itemView.context)
+            val position = adapterPosition.plus(1)
+            SellerOnboardingAnalytic.sendEventOpenScreen(position, irisSession.getSessionId(), irisSession.getDeviceId())
         }
     }
 }

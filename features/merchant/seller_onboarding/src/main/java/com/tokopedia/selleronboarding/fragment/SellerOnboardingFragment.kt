@@ -11,9 +11,11 @@ import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.iris.util.IrisSession
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.selleronboarding.R
 import com.tokopedia.selleronboarding.adapter.SlideAdapter
+import com.tokopedia.selleronboarding.analytic.SellerOnboardingAnalytic
 import com.tokopedia.selleronboarding.model.SlideUiModel
 import com.tokopedia.selleronboarding.utils.OnboardingLayoutManager
 import kotlinx.android.synthetic.main.fragment_sob_onboarding.view.*
@@ -84,7 +86,17 @@ class SellerOnboardingFragment : Fragment() {
     }
 
     private fun openApp() = view?.run {
+        sendEventOpenApp()
         RouteManager.route(context, ApplinkConst.LOGIN)
         activity?.finish()
+    }
+
+    private fun sendEventOpenApp() {
+        val mLayoutManager = view?.rvSliderSob?.layoutManager as? LinearLayoutManager
+        val position = mLayoutManager?.findFirstCompletelyVisibleItemPosition() ?: -1
+        if (position >= 0) {
+            val irisSession = IrisSession(context ?: return)
+            SellerOnboardingAnalytic.sendEventClickOpenApp(position, irisSession.getSessionId(), irisSession.getDeviceId())
+        }
     }
 }
