@@ -1,5 +1,6 @@
 package com.tokopedia.flight.searchV4.data
 
+import com.tokopedia.common.travel.constant.TravelSortOption
 import com.tokopedia.flight.search.data.cache.FlightSearchDataCacheSource
 import com.tokopedia.flight.search.data.db.FlightComboTable
 import com.tokopedia.flight.search.data.db.FlightJourneyTable
@@ -89,9 +90,63 @@ class FlightSearchRepository @Inject constructor(
         return meta
     }
 
+    // call search single api and then combine the result with combo, airport and airline db
+    suspend fun getSearchSingleCombined(searchParam: FlightSearchRequestModel, isReturnTrip: Boolean): FlightSearchMetaEntity {
+        val searchData = flightSearchDataCloudSource.getSearchSingleData(searchParam)
+        val journeyAndRouteList = searchData.data.map { data ->
+            generateJourneyAndRoutes(data, searchData.included, isReturnTrip).let { journeyAndRoutes ->
+                flightSearchCombineDataDbSource.getSearchOnwardCombined(data.id).let { combos ->
+                    if (combos.isNotEmpty()) {
+                        val comboBestPairing = combos.find { it.isBestPairing }
+                        val journeyTable = journeyAndRoutes.flightJourneyTable
+                        if (comboBestPairing != null) {
+                            journeyAndRoutes.flightJourneyTable =
+                                    createJourneyWithCombo(journeyTable, comboBestPairing)
+                        } else {
+                            journeyAndRoutes.flightJourneyTable =
+                                    createJourneyWithCombo(journeyTable, combos[0])
+                        }
+                        journeyAndRoutes
+                    } else {
+                        journeyAndRoutes
+                    }
+                }
+            }
+        }.toList()
+        flightSearchSingleDataDbSource.insertList(journeyAndRouteList)
+        return searchData.meta.apply {
+            airlineList = getAirlines(journeyAndRouteList)
+        }
+    }
+
+    suspend fun getJourneyById(journeyId: String): JourneyAndRoutes =
+            flightSearchSingleDataDbSource.getJourneyById(journeyId)
+
     suspend fun getSearchFilter(flightSortOption: Int, flightFilterModel: FlightFilterModel): JourneyAndRoutesModel =
             JourneyAndRoutesModel(flightSearchSingleDataDbSource.getFilteredJourneys(flightFilterModel, flightSortOption),
                     flightSearchDataCacheSource.cacheCoroutine)
+
+    suspend fun getComboKey(onwardJourneyId: String, returnJourneyId: String): String =
+            flightSearchCombineDataDbSource.getComboData(onwardJourneyId, returnJourneyId).let {
+                if (it.isNotEmpty()) {
+                    it[0].comboId
+                } else {
+                    ""
+                }
+            }
+
+    suspend fun deleteAllFlightSearchData() {
+        flightSearchSingleDataDbSource.deleteAllSearchData()
+        flightSearchCombineDataDbSource.deleteAllSearchCombinedData()
+    }
+
+    suspend fun deleteFlightSearchReturnData() {
+        val filterModel = FlightFilterModel()
+        filterModel.isReturn = true
+        flightSearchSingleDataDbSource.getFilteredJourneys(filterModel, TravelSortOption.CHEAPEST).let {
+            flightSearchSingleDataDbSource.deleteSearchReturnData(it)
+        }
+    }
 
     private fun generateJourneyAndRoutes(journeyResponse: FlightSearchData,
                                          includedList: List<FlightSearchIncluded>,

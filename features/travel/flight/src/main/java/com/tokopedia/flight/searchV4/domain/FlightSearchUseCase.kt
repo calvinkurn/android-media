@@ -9,23 +9,21 @@ import javax.inject.Inject
 /**
  * @author by furqan on 09/04/2020
  */
-class FlightSearchSingleUseCase @Inject constructor(private val flightSearchRepository: FlightSearchRepository) {
+class FlightSearchUseCase @Inject constructor(private val flightSearchRepository: FlightSearchRepository) {
 
     suspend fun execute(searchParams: FlightSearchRequestModel,
                         isRoundTrip: Boolean,
                         isReturnTrip: Boolean,
                         onwardJourneyId: String = ""): FlightSearchMetaModel {
 
-        /*return if (isRoundTrip && !isReturnTrip) {
-
+        return return if (isRoundTrip && !isReturnTrip) {
+            mapToFlightSearchMetaViewModel(flightSearchRepository.getSearchSingleCombined(searchParams, isReturnTrip), searchParams)
         } else if (isRoundTrip && isReturnTrip) {
-
-        } else {*/
-            return flightSearchRepository.getSearchSingle(searchParams, isReturnTrip).let {
-                mapToFlightSearchMetaViewModel(it, searchParams)
-            }
-//        }
-
+            // need changed
+            mapToFlightSearchMetaViewModel(flightSearchRepository.getSearchSingle(searchParams, isReturnTrip), searchParams)
+        } else {
+            mapToFlightSearchMetaViewModel(flightSearchRepository.getSearchSingle(searchParams, isReturnTrip), searchParams)
+        }
     }
 
     private fun mapToFlightSearchMetaViewModel(meta: FlightSearchMetaEntity,

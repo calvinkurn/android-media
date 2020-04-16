@@ -17,4 +17,6 @@
 
     <dimen name="margin_top_flight_dashboard">60dp</dimen>
     <dimen name="flight_search_arrow_padding">7dp</dimen>
+
+    <dimen name="flight_horizontal_height">3dp</dimen>
 </resources>

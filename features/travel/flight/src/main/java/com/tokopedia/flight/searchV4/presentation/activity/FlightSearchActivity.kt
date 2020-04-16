@@ -14,6 +14,7 @@ import com.tokopedia.coachmark.CoachMarkBuilder
 import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.flight.R
 import com.tokopedia.flight.airport.view.model.FlightAirportModel
+import com.tokopedia.flight.bookingV3.presentation.activity.FlightBookingActivity
 import com.tokopedia.flight.common.constant.FlightFlowConstant
 import com.tokopedia.flight.common.constant.FlightFlowExtraConstant
 import com.tokopedia.flight.common.util.FlightAnalytics
@@ -21,6 +22,7 @@ import com.tokopedia.flight.common.util.FlightDateUtil
 import com.tokopedia.flight.common.util.FlightFlowUtil
 import com.tokopedia.flight.common.view.BaseFlightActivity
 import com.tokopedia.flight.dashboard.view.fragment.model.FlightPassengerModel
+import com.tokopedia.flight.search.presentation.model.FlightPriceModel
 import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataModel
 import com.tokopedia.flight.search.util.FlightSearchCache
 import com.tokopedia.flight.searchV4.presentation.fragment.FlightSearchFragment
@@ -33,6 +35,7 @@ import kotlinx.android.synthetic.main.activity_flight_search.*
  * @author by furqan on 06/04/2020
  */
 open class FlightSearchActivity : BaseFlightActivity(),
+        FlightSearchFragment.OnFlightSearchFragmentListener,
         FlightSearchUniversalBottomSheet.Listener {
 
     protected lateinit var flightSearchPassDataModel: FlightSearchPassDataModel
@@ -120,6 +123,25 @@ open class FlightSearchActivity : BaseFlightActivity(),
                 (fragment as FlightSearchFragment).refreshData()
             }*/
         }
+    }
+
+    override fun selectFlight(selectedFlightID: String, selectedTerm: String, flightPriceModel: FlightPriceModel, isBestPairing: Boolean, isCombineDone: Boolean, requestId: String) {
+        flightSearchPassDataModel.searchRequestId = requestId
+        if (flightSearchPassDataModel.isOneWay) {
+            startActivityForResult(FlightBookingActivity.getCallingIntent(this,
+                    flightSearchPassDataModel, selectedFlightID, selectedTerm, flightPriceModel),
+                    REQUEST_CODE_BOOKING)
+        } else {
+            startActivityForResult(FlightSearchReturnActivity.getCallingIntent(this,
+                    flightSearchPassDataModel, selectedFlightID, selectedTerm, isBestPairing,
+                    flightPriceModel, isCombineDone), REQUEST_CODE_RETURN)
+        }
+    }
+
+    override fun changeDate(flightSearchPassDataModel: FlightSearchPassDataModel) {
+        this.flightSearchPassDataModel = flightSearchPassDataModel
+        initializeToolbarData()
+        setupSearchToolbarText()
     }
 
     open fun initializeToolbarData() {
@@ -243,15 +265,15 @@ open class FlightSearchActivity : BaseFlightActivity(),
                 Intent(context, FlightSearchActivity::class.java)
                         .putExtra(EXTRA_PASS_DATA, passDataModel)
 
-       /* fun getCallingIntent(context: Context): Intent {
+/*        fun getCallingIntent(context: Context): Intent {
             val passDataModel = FlightSearchPassDataModel(
-                    "2020-10-01",
-                    "",
-                    true,
+                    "2020-05-01",
+                    "2020-06-01",
+                    false,
                     FlightPassengerModel(1, 0, 0),
                     FlightAirportModel().apply {
-                        cityName = "Tokyo"
-                        cityCode = "TKYA"
+                        cityName = "Medan"
+                        cityCode = "KNO"
                     },
                     FlightAirportModel().apply {
                         cityName = "Jakarta"
