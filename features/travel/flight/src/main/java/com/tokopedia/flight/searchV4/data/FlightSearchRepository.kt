@@ -126,6 +126,15 @@ class FlightSearchRepository @Inject constructor(
             JourneyAndRoutesModel(flightSearchSingleDataDbSource.getFilteredJourneys(flightFilterModel, flightSortOption),
                     flightSearchDataCacheSource.cacheCoroutine)
 
+    suspend fun getComboKey(onwardJourneyId: String, returnJourneyId: String): String =
+            flightSearchCombineDataDbSource.getComboData(onwardJourneyId, returnJourneyId).let {
+                if (it.isNotEmpty()) {
+                    it[0].comboId
+                } else {
+                    ""
+                }
+            }
+
     suspend fun deleteAllFlightSearchData() {
         flightSearchSingleDataDbSource.deleteAllSearchData()
         flightSearchCombineDataDbSource.deleteAllSearchCombinedData()

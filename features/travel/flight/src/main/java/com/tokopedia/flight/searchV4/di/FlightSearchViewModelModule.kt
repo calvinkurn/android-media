@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
+import com.tokopedia.flight.searchV4.presentation.viewmodel.FlightSearchReturnViewModel
 import com.tokopedia.flight.searchV4.presentation.viewmodel.FlightSearchViewModel
 import dagger.Binds
 import dagger.Module
@@ -25,4 +26,11 @@ abstract class FlightSearchViewModelModule {
     @IntoMap
     @ViewModelKey(FlightSearchViewModel::class)
     abstract fun flightSearchViewModel(viewModel: FlightSearchViewModel): ViewModel
+
+    @FlightSearchScope
+    @Binds
+    @IntoMap
+    @ViewModelKey(FlightSearchReturnViewModel::class)
+    abstract fun flightSearchReturnViewModel(viewModel: FlightSearchReturnViewModel): ViewModel
+
 }

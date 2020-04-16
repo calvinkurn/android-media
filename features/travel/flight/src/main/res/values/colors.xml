@@ -23,4 +23,5 @@
     <color name="flight_search_reverse_background">#f3f4f5</color>
     <color name="flight_dashed_line">#1e000000</color>
     <color name="flight_search_list_background">#e5e7e9</color>
+    <color name="flight_departure_trip_label_background">#f9f9f9</color>
 </resources>
