@@ -44,6 +44,7 @@ import com.tokopedia.product.addedit.description.di.AddEditProductDescriptionMod
 import com.tokopedia.product.addedit.description.di.DaggerAddEditProductDescriptionComponent
 import com.tokopedia.product.addedit.description.presentation.activity.AddEditProductDescriptionActivity.Companion.PARAM_CATEGORY_ID
 import com.tokopedia.product.addedit.description.presentation.activity.AddEditProductDescriptionActivity.Companion.PARAM_DESCRIPTION_INPUT_MODEL
+import com.tokopedia.product.addedit.description.presentation.activity.AddEditProductDescriptionActivity.Companion.PARAM_IS_ADD_MODE
 import com.tokopedia.product.addedit.description.presentation.activity.AddEditProductDescriptionActivity.Companion.PARAM_IS_EDIT_MODE
 import com.tokopedia.product.addedit.description.presentation.activity.AddEditProductDescriptionActivity.Companion.PARAM_PRODUCT_INPUT_MODEL
 import com.tokopedia.product.addedit.description.presentation.activity.AddEditProductDescriptionActivity.Companion.PARAM_VARIANT_INPUT_MODEL
@@ -54,7 +55,6 @@ import com.tokopedia.product.addedit.description.presentation.model.ProductVaria
 import com.tokopedia.product.addedit.description.presentation.model.VideoLinkModel
 import com.tokopedia.product.addedit.description.presentation.model.youtube.YoutubeVideoModel
 import com.tokopedia.product.addedit.description.presentation.viewmodel.AddEditProductDescriptionViewModel
-import com.tokopedia.product.addedit.draft.mapper.AddEditProductMapper.mapProductInputModelDetailToDraft
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_BACK_PRESSED
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
@@ -64,7 +64,6 @@ import com.tokopedia.product.addedit.shipment.presentation.model.ShipmentInputMo
 import com.tokopedia.product.addedit.tooltip.model.NumericTooltipModel
 import com.tokopedia.product.addedit.tooltip.presentation.TooltipBottomSheet
 import com.tokopedia.product.addedit.tracking.ProductAddDescriptionTracking
-import com.tokopedia.product.addedit.tracking.ProductAddStepperTracking
 import com.tokopedia.product.addedit.tracking.ProductEditDescriptionTracking
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
@@ -93,13 +92,15 @@ class AddEditProductDescriptionFragment:
         fun createInstance(categoryId: String,
                            descriptionInputModel: DescriptionInputModel,
                            variantInputModel: ProductVariantInputModel,
-                           isEditMode: Boolean): Fragment {
+                           isEditMode: Boolean,
+                           isAddMode: Boolean): Fragment {
             return AddEditProductDescriptionFragment().apply {
                 arguments = Bundle().apply {
                     putString(PARAM_CATEGORY_ID, categoryId)
                     putParcelable(PARAM_DESCRIPTION_INPUT_MODEL, descriptionInputModel)
                     putParcelable(PARAM_VARIANT_INPUT_MODEL, variantInputModel)
                     putBoolean(PARAM_IS_EDIT_MODE, isEditMode)
+                    putBoolean(PARAM_IS_ADD_MODE, isAddMode)
                 }
             }
         }
@@ -130,7 +131,7 @@ class AddEditProductDescriptionFragment:
     }
 
     override fun onDeleteClicked(videoLinkModel: VideoLinkModel, position: Int) {
-        if (descriptionViewModel.isEditMode) {
+        if (descriptionViewModel.isEditMode && !descriptionViewModel.isAddMode) {
             ProductEditDescriptionTracking.clickRemoveVideoLink(shopId)
         } else {
             ProductAddDescriptionTracking.clickRemoveVideoLink(shopId)
@@ -180,6 +181,7 @@ class AddEditProductDescriptionFragment:
         arguments?.let {
             val categoryId: String = it.getString(PARAM_CATEGORY_ID) ?: ""
             val isEditMode: Boolean = it.getBoolean(PARAM_IS_EDIT_MODE, false)
+            val isAddMode: Boolean = it.getBoolean(PARAM_IS_ADD_MODE, false)
             val descriptionInputModel : DescriptionInputModel =
                     it.getParcelable(PARAM_DESCRIPTION_INPUT_MODEL) ?: DescriptionInputModel()
             val variantInputModel : ProductVariantInputModel =
@@ -188,6 +190,7 @@ class AddEditProductDescriptionFragment:
             descriptionViewModel.descriptionInputModel = descriptionInputModel
             descriptionViewModel.setVariantInput(variantInputModel)
             descriptionViewModel.isEditMode = isEditMode
+            descriptionViewModel.isAddMode = isAddMode
             productInputModel = it.getParcelable(PARAM_PRODUCT_INPUT_MODEL) ?: ProductInputModel()
         }
     }
@@ -211,12 +214,11 @@ class AddEditProductDescriptionFragment:
         if (descriptionViewModel.isEditMode) applyEditMode()
 
         textViewAddVideo.setOnClickListener {
-            if (descriptionViewModel.isEditMode) {
+            if (descriptionViewModel.isEditMode && !descriptionViewModel.isAddMode) {
                 ProductEditDescriptionTracking.clickAddVideoLink(shopId)
             } else {
                 ProductAddDescriptionTracking.clickAddVideoLink(shopId)
             }
-            addEmptyVideoUrl()
         }
 
         layoutDescriptionTips.setOnClickListener {
@@ -228,7 +230,7 @@ class AddEditProductDescriptionFragment:
         }
 
         tvAddVariant.setOnClickListener {
-            if (descriptionViewModel.isEditMode) {
+            if (descriptionViewModel.isEditMode && !descriptionViewModel.isAddMode) {
                 ProductEditDescriptionTracking.clickAddProductVariant(shopId)
             } else {
                 ProductAddDescriptionTracking.clickAddProductVariant(shopId)
@@ -250,8 +252,8 @@ class AddEditProductDescriptionFragment:
         observeProductVideo()
     }
 
-    private fun addEmptyVideoUrl() {
-        loadData(0)
+    override fun loadInitialData() {
+        loadData(1)
     }
 
     fun sendDataBack() {
@@ -268,7 +270,7 @@ class AddEditProductDescriptionFragment:
     }
 
     fun onBackPressed() {
-        if (descriptionViewModel.isEditMode) {
+        if (descriptionViewModel.isEditMode && !descriptionViewModel.isAddMode) {
             ProductEditDescriptionTracking.clickBack(shopId)
         } else {
             ProductAddDescriptionTracking.clickBack(shopId)
@@ -278,7 +280,7 @@ class AddEditProductDescriptionFragment:
     private fun inputAllDataInInputDraftModel() {
         productInputModel?.descriptionInputModel = DescriptionInputModel(
                 textFieldDescription.getText(),
-                adapter.data
+                getFilteredValidVideoLink()
         )
     }
 
@@ -390,7 +392,7 @@ class AddEditProductDescriptionFragment:
     }
 
     private fun showDescriptionTips() {
-        if (!descriptionViewModel.isEditMode) {
+        if (!descriptionViewModel.isEditMode || descriptionViewModel.isAddMode) {
             ProductAddDescriptionTracking.clickHelpWriteDescription(shopId)
         }
         fragmentManager?.let {
@@ -410,7 +412,7 @@ class AddEditProductDescriptionFragment:
     }
 
     private fun showVariantTips() {
-        if (descriptionViewModel.isEditMode) {
+        if (descriptionViewModel.isEditMode && !descriptionViewModel.isAddMode) {
             ProductEditDescriptionTracking.clickHelpVariant(shopId)
         } else {
             ProductAddDescriptionTracking.clickHelpVariant(shopId)
@@ -468,7 +470,7 @@ class AddEditProductDescriptionFragment:
     }
 
     private fun moveToShipmentActivity() {
-        if (descriptionViewModel.isEditMode) {
+        if (descriptionViewModel.isEditMode && !descriptionViewModel.isAddMode) {
             ProductEditDescriptionTracking.clickContinue(shopId)
         } else {
             ProductAddDescriptionTracking.clickContinue(shopId)
@@ -484,7 +486,7 @@ class AddEditProductDescriptionFragment:
     private fun submitInput(shipmentInputModel: ShipmentInputModel) {
         val descriptionInputModel = DescriptionInputModel(
                 textFieldDescription.getText(),
-                adapter.data
+                getFilteredValidVideoLink()
         )
         val intent = Intent()
         intent.putExtra(EXTRA_DESCRIPTION_INPUT, descriptionInputModel)
@@ -498,7 +500,7 @@ class AddEditProductDescriptionFragment:
         if (descriptionViewModel.validateInputVideo(adapter.data)) {
             val descriptionInputModel = DescriptionInputModel(
                     textFieldDescription.getText(),
-                    adapter.data
+                    getFilteredValidVideoLink()
             )
             val intent = Intent()
             intent.putExtra(EXTRA_DESCRIPTION_INPUT, descriptionInputModel)
@@ -508,4 +510,11 @@ class AddEditProductDescriptionFragment:
         }
     }
 
+    private fun getFilteredValidVideoLink() = adapter.data.filter {
+        it.inputUrl.isNotBlank() &&
+                it.inputTitle.isNotBlank() &&
+                it.inputImage.isNotBlank() &&
+                it.inputDescription.isNotBlank() &&
+                it.errorMessage.isBlank()
+    }
 }

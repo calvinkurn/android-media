@@ -66,7 +66,6 @@ object ProductManageDataLayer {
     const val EVENT_ACTION_CLICK_ON_MORE_OTHERS_FILTER_SAVE = "$CLICK_ON_MORE_OTHERS_FILTER - save"
 
     const val EVENT_ACTION_CLICK_ON_PROMOTION_PAGE = "click back on promotion page"
-    const val EVENT_ACTION_CLICK_REMOVE_CASHBACK_TOASTER = "click remove cashback toaster"
     const val EVENT_ACTION_CLICK_CASHBACK_VALUE = "click cashback "
     const val EVENT_ACTION_CLICK_NO_CASHBACK_VALUE = "click no cashback"
     const val EVENT_ACTION_CLICK_SAVE_PROMOTION = "click save promotion"

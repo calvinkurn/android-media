@@ -8,7 +8,7 @@ import com.tokopedia.product.manage.common.draft.data.db.entity.AddEditProductDr
 interface AddEditProductDraftDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertDraft(draft: AddEditProductDraftEntity)
+    fun insertDraft(draft: AddEditProductDraftEntity): Long
 
     @Update(onConflict = OnConflictStrategy.REPLACE)
     fun updateDraft(draft: AddEditProductDraftEntity)

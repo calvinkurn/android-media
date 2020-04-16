@@ -5,7 +5,6 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.product.addedit.preview.data.model.params.add.Variant
 import com.tokopedia.product.addedit.preview.data.model.params.edit.ProductEditParam
 import com.tokopedia.product.addedit.preview.data.model.responses.ProductAddEditV3Response
 import com.tokopedia.usecase.RequestParams
@@ -30,7 +29,7 @@ class ProductEditUseCase @Inject constructor(private val graphqlRepository: Grap
                 return data
             } else {
                 val exceptionMessages = data.productAddEditV3Data.header.errorMessage
-                throw MessageErrorException(exceptionMessages.joinToString(ProductAddUseCase.STRING_JOIN_SEPARATOR))
+                throw MessageErrorException(exceptionMessages.joinToString(STRING_JOIN_SEPARATOR))
             }
         } else {
             throw MessageErrorException(gqlErrors.first().message)
@@ -39,6 +38,7 @@ class ProductEditUseCase @Inject constructor(private val graphqlRepository: Grap
 
     companion object {
         const val PARAM_INPUT = "input"
+        const val STRING_JOIN_SEPARATOR = "\n"
         @JvmStatic
         fun createRequestParams(param: ProductEditParam): RequestParams {
             val requestParams = RequestParams.create()

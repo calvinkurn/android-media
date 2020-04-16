@@ -8,16 +8,19 @@
 
         <activity
             android:name=".imagepicker.view.activity.ImagePickerAddProductActivity"
+            android:label="@string/action_pick_photo"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
 
         <activity
             android:name=".imagepicker.view.activity.ImagePickerEditPhotoActivity"
+            android:label="@string/action_edit_photo"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
 
         <activity
             android:name=".preview.presentation.activity.AddEditProductPreviewActivity"
+            android:label="@string/title_add_product"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White">
 
@@ -38,7 +41,7 @@
         <activity
             android:name=".detail.presentation.activity.AddEditProductDetailActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White"/>
+            android:theme="@style/Theme.White" />
 
         <activity
             android:name=".description.presentation.activity.AddEditProductDescriptionActivity"
@@ -57,11 +60,6 @@
 
         <service
             android:name="com.tokopedia.product.addedit.preview.presentation.service.AddEditProductEditService"
-            android:enabled="true"
-            android:permission="android.permission.BIND_JOB_SERVICE" />
-
-        <service
-            android:name="com.tokopedia.product.addedit.preview.presentation.service.AddEditProductDuplicateService"
             android:enabled="true"
             android:permission="android.permission.BIND_JOB_SERVICE" />
 

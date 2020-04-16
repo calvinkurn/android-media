@@ -777,6 +777,10 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         }
     }
 
+    override fun onEditProductClick(product: ProductSnapshotDataModel, productInfo: DynamicProductInfoP1?, componentTrackDataModel: ComponentTrackDataModel) {
+        DynamicProductDetailTracking.Click.eventEditProductClick(product, viewModel.isUserSessionActive, viewModel.getDynamicProductInfoP1, componentTrackDataModel)
+    }
+
     override fun getParentRecyclerViewPool(): RecyclerView.RecycledViewPool? {
         return getRecyclerView(view).recycledViewPool
     }

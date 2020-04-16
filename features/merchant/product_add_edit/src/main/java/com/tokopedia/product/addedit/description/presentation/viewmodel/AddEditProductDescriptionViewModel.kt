@@ -13,8 +13,6 @@ import com.tokopedia.product.addedit.description.domain.usecase.GetProductVarian
 import com.tokopedia.product.addedit.description.domain.usecase.GetYoutubeVideoUseCase
 import com.tokopedia.product.addedit.description.presentation.model.*
 import com.tokopedia.product.addedit.description.presentation.model.youtube.YoutubeVideoModel
-import com.tokopedia.product.addedit.draft.domain.usecase.SaveProductDraftUseCase
-import com.tokopedia.product.manage.common.draft.data.model.ProductDraft
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -37,6 +35,7 @@ class AddEditProductDescriptionViewModel @Inject constructor(
     var descriptionInputModel: DescriptionInputModel = DescriptionInputModel()
     var variantInputModel: ProductVariantInputModel = ProductVariantInputModel()
     var isEditMode: Boolean = false
+    var isAddMode: Boolean = false
 
     private val _productVariant = MutableLiveData<Result<List<ProductVariantByCatModel>>>()
     val productVariant: LiveData<Result<List<ProductVariantByCatModel>>>
