@@ -346,6 +346,11 @@ open class FlightSearchSingleDataDbSource @Inject constructor(
         }
     }
 
+    suspend fun deleteAllSearchData() {
+        flightJourneyDao.deleteTable()
+        flightRouteDao.deleteTable()
+    }
+
     suspend fun deleteSearchReturnData(journeyAndRoutesList: List<JourneyAndRoutes>) {
         for (journeyAndRoutes in journeyAndRoutesList) {
             flightRouteDao.deleteByJourneyId(journeyAndRoutes.flightJourneyTable.id)

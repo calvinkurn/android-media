@@ -8,14 +8,11 @@ import com.tokopedia.common.travel.utils.TravelDispatcherProvider
 import com.tokopedia.flight.airport.view.model.FlightAirportModel
 import com.tokopedia.flight.common.util.FlightAnalytics
 import com.tokopedia.flight.common.util.FlightRequestUtil
-import com.tokopedia.flight.search.presentation.model.FlightAirportCombineModel
-import com.tokopedia.flight.search.presentation.model.FlightJourneyModel
-import com.tokopedia.flight.search.presentation.model.FlightSearchMetaModel
-import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataModel
+import com.tokopedia.flight.search.presentation.model.*
 import com.tokopedia.flight.search.presentation.model.filter.FlightFilterModel
 import com.tokopedia.flight.searchV4.data.cloud.single.FlightSearchRequestModel
-import com.tokopedia.flight.searchV4.domain.FlightSearchSingleUseCase
-import com.tokopedia.flight.searchV4.domain.FlightSortAndFilterUseCase
+import com.tokopedia.flight.searchV4.domain.*
+import com.tokopedia.flight.searchV4.presentation.model.FlightSearchSelectedModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import kotlinx.coroutines.delay
 import java.util.concurrent.TimeUnit
@@ -24,9 +21,12 @@ import javax.inject.Inject
 /**
  * @author by furqan on 09/04/2020
  */
-open class FlightSearchViewModel @Inject constructor(
-        private val flightSearchSingleUseCase: FlightSearchSingleUseCase,
+class FlightSearchViewModel @Inject constructor(
+        private val flightSearchUseCase: FlightSearchUseCase,
         private val flightSortAndFilterUseCase: FlightSortAndFilterUseCase,
+        private val flightSearchDeleteAllDataUseCase: FlightSearchDeleteAllDataUseCase,
+        private val flightSearchDeleteReturnDataUseCase: FlightSearchDeleteReturnDataUseCase,
+        private val flightSearchJourneyByIdUseCase: FlightSearchJouneyByIdUseCase,
         private val flightAnalytics: FlightAnalytics,
         private val dispatcherProvider: TravelDispatcherProvider)
     : BaseViewModel(dispatcherProvider.io()) {
@@ -34,6 +34,7 @@ open class FlightSearchViewModel @Inject constructor(
     lateinit var flightSearchPassData: FlightSearchPassDataModel
     lateinit var flightAirportCombine: FlightAirportCombineModel
     lateinit var filterModel: FlightFilterModel
+    var isCombineDone: Boolean = false
     var selectedSortOption: Int = TravelSortOption.CHEAPEST
     val isInFilterMode: Boolean
         get() {
@@ -49,6 +50,10 @@ open class FlightSearchViewModel @Inject constructor(
     val journeyList: LiveData<List<FlightJourneyModel>>
         get() = mutableJourneyList
 
+    private val mutableSelectedJourney = MutableLiveData<FlightSearchSelectedModel>()
+    val selectedJourney: LiveData<FlightSearchSelectedModel>
+        get() = mutableSelectedJourney
+
     val progress = MutableLiveData<Int>()
 
     init {
@@ -58,9 +63,9 @@ open class FlightSearchViewModel @Inject constructor(
     fun initialize(needDeleteData: Boolean, isReturnTrip: Boolean) {
         if (needDeleteData) {
             if (isReturnTrip) {
-//                deleteFlightReturnSearch()
+                deleteFlightReturnSearch {}
             } else {
-//                deleteAllSearchData()
+                deleteAllSearchData()
             }
         }
     }
@@ -86,9 +91,9 @@ open class FlightSearchViewModel @Inject constructor(
                 delay(TimeUnit.SECONDS.toMillis(delayInSeconds))
             }
 
-            val data = flightSearchSingleUseCase.execute(requestModel,
-                    isReturnTrip,
+            val data = flightSearchUseCase.execute(requestModel,
                     !flightSearchPassData.isOneWay,
+                    isReturnTrip,
                     filterModel.journeyId)
 
             onGetSearchMeta(data, isReturnTrip)
@@ -97,20 +102,20 @@ open class FlightSearchViewModel @Inject constructor(
         }
     }
 
-    fun buildAirportCombineModel(): FlightAirportCombineModel {
-        val departureAirport = if (getDepartureAirport().airportCode == null || getDepartureAirport().airportCode.isEmpty()) {
-            getDepartureAirport().cityCode
+    fun buildAirportCombineModel(departureAirport: FlightAirportModel, arrivalAirport: FlightAirportModel): FlightAirportCombineModel {
+        val departureAirportCode = if (departureAirport.airportCode == null || departureAirport.airportCode.isEmpty()) {
+            departureAirport.cityCode
         } else {
-            getDepartureAirport().airportCode
+            departureAirport.airportCode
         }
 
-        val arrivalAirport = if (getArrivalAirport().airportCode == null || getArrivalAirport().airportCode.isEmpty()) {
-            getArrivalAirport().cityCode
+        val arrivalAirportCode = if (arrivalAirport.airportCode == null || arrivalAirport.airportCode.isEmpty()) {
+            arrivalAirport.cityCode
         } else {
-            getArrivalAirport().airportCode
+            arrivalAirport.airportCode
         }
 
-        return FlightAirportCombineModel(departureAirport, arrivalAirport)
+        return FlightAirportCombineModel(departureAirportCode, arrivalAirportCode)
     }
 
     fun fetchSortAndFilter() {
@@ -121,6 +126,28 @@ open class FlightSearchViewModel @Inject constructor(
             }
         }) {
             it.printStackTrace()
+        }
+    }
+
+    fun onSearchItemClicked(journeyModel: FlightJourneyModel? = null, adapterPosition: Int = -1, selectedId: String = "") {
+        if (selectedId.isEmpty()) {
+            if (adapterPosition == -1) {
+                flightAnalytics.eventSearchProductClickFromList(flightSearchPassData, journeyModel)
+            } else {
+                flightAnalytics.eventSearchProductClickFromList(flightSearchPassData, journeyModel, adapterPosition)
+            }
+            journeyModel?.let {
+                deleteFlightReturnSearch { getOnNextDeleteReturnFunction(it) }
+            }
+        } else {
+            launchCatchError(context = dispatcherProvider.ui(), block = {
+                flightSearchJourneyByIdUseCase.execute(selectedId).let {
+                    flightAnalytics.eventSearchProductClickFromDetail(flightSearchPassData, it)
+                    deleteFlightReturnSearch { getOnNextDeleteReturnFunction(it) }
+                }
+            }) {
+                it.printStackTrace()
+            }
         }
     }
 
@@ -157,12 +184,29 @@ open class FlightSearchViewModel @Inject constructor(
         flightAnalytics.eventQuickFilterClick(filterName)
     }
 
-    open fun getDepartureAirport(): FlightAirportModel = flightSearchPassData.departureAirport
+    private fun deleteAllSearchData() {
+        launchCatchError(dispatcherProvider.ui(), block = {
+            flightSearchDeleteAllDataUseCase.execute()
+        }) {
+            it.printStackTrace()
+        }
+    }
 
-    open fun getArrivalAirport(): FlightAirportModel = flightSearchPassData.arrivalAirport
+    private fun deleteFlightReturnSearch(onNext: () -> Unit) {
+        launchCatchError(dispatcherProvider.ui(), block = {
+            flightSearchDeleteReturnDataUseCase.execute().let {
+                onNext()
+            }
+        }) {
+            it.printStackTrace()
+        }
+    }
 
-    open fun buildFilterModel(filterModel: FlightFilterModel) {
-        this.filterModel = filterModel
+    private fun getOnNextDeleteReturnFunction(journeyModel: FlightJourneyModel) {
+        val priceViewModel = FlightPriceModel()
+        priceViewModel.departurePrice = buildFare(journeyModel.fare, !flightSearchPassData.isOneWay)
+
+        mutableSelectedJourney.postValue(FlightSearchSelectedModel(journeyModel, priceViewModel))
     }
 
     private fun onGetSearchMeta(flightSearchMeta: FlightSearchMetaModel, returnTrip: Boolean) {
@@ -192,6 +236,39 @@ open class FlightSearchViewModel @Inject constructor(
 
         fetchSortAndFilter()
     }
+
+    private fun buildFare(journeyFare: FlightFareModel, isNeedCombo: Boolean): FlightFareModel =
+            if (isNeedCombo) {
+                FlightFareModel(
+                        journeyFare.adult,
+                        journeyFare.adultCombo,
+                        journeyFare.child,
+                        journeyFare.childCombo,
+                        journeyFare.infant,
+                        journeyFare.infantCombo,
+                        journeyFare.adultNumeric,
+                        journeyFare.adultNumericCombo,
+                        journeyFare.childNumeric,
+                        journeyFare.childNumericCombo,
+                        journeyFare.infantNumeric,
+                        journeyFare.infantNumericCombo
+                )
+            } else {
+                FlightFareModel(
+                        journeyFare.adult,
+                        "",
+                        journeyFare.child,
+                        "",
+                        journeyFare.infant,
+                        "",
+                        journeyFare.adultNumeric,
+                        0,
+                        journeyFare.childNumeric,
+                        0,
+                        journeyFare.infantNumeric,
+                        0
+                )
+            }
 
     companion object {
         private const val DEFAULT_PROGRESS_VALUE = 0

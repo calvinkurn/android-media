@@ -26,7 +26,7 @@ class FlightSearchCombineDataDbSource @Inject constructor(private val flightComb
         flightComboDao.insert(item)
     }
 
-    suspend fun deleteAllFlightSearchCombinedData() {
+    suspend fun deleteAllSearchCombinedData() {
         flightComboDao.deleteTable()
     }
 

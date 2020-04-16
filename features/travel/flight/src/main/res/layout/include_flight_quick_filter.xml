@@ -16,4 +16,9 @@
         app:sort_filter_type="advanced"
         tools:visibility="visible" />
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/flight_search_list_background" />
+
 </merge>

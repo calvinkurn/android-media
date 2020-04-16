@@ -1,5 +1,8 @@
 package com.tokopedia.flight.search.presentation.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.flight.search.data.api.single.response.Route;
 import com.tokopedia.flight.search.presentation.model.filter.RefundableEnum;
@@ -11,7 +14,7 @@ import java.util.List;
  * Created by User on 10/30/2017.
  */
 
-public class FlightJourneyModel implements Visitable<FlightSearchAdapterTypeFactory> {
+public class FlightJourneyModel implements Visitable<FlightSearchAdapterTypeFactory>, Parcelable {
 
     public static final int ONE_HOURS_DAY = 2400;
 
@@ -87,6 +90,88 @@ public class FlightJourneyModel implements Visitable<FlightSearchAdapterTypeFact
         this.comboId = comboId;
         this.specialTagText = specialTagText;
     }
+
+    protected FlightJourneyModel(Parcel in) {
+        term = in.readString();
+        id = in.readString();
+        departureAirport = in.readString();
+        departureAirportName = in.readString();
+        departureAirportCity = in.readString();
+        departureTime = in.readString();
+        departureTimeInt = in.readInt();
+        arrivalAirport = in.readString();
+        arrivalAirportName = in.readString();
+        arrivalAirportCity = in.readString();
+        arrivalTime = in.readString();
+        arrivalTimeInt = in.readInt();
+        totalTransit = in.readInt();
+        addDayArrival = in.readInt();
+        duration = in.readString();
+        durationMinute = in.readInt();
+        total = in.readString();
+        totalNumeric = in.readInt();
+        comboPrice = in.readString();
+        comboPriceNumeric = in.readInt();
+        isBestPairing = in.readByte() != 0;
+        beforeTotal = in.readString();
+        showSpecialPriceTag = in.readByte() != 0;
+        isReturning = in.readByte() != 0;
+        fare = in.readParcelable(FlightFareModel.class.getClassLoader());
+        routeList = in.createTypedArrayList(Route.CREATOR);
+        airlineDataList = in.createTypedArrayList(FlightAirlineModel.CREATOR);
+        comboId = in.readString();
+        specialTagText = in.readString();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(term);
+        dest.writeString(id);
+        dest.writeString(departureAirport);
+        dest.writeString(departureAirportName);
+        dest.writeString(departureAirportCity);
+        dest.writeString(departureTime);
+        dest.writeInt(departureTimeInt);
+        dest.writeString(arrivalAirport);
+        dest.writeString(arrivalAirportName);
+        dest.writeString(arrivalAirportCity);
+        dest.writeString(arrivalTime);
+        dest.writeInt(arrivalTimeInt);
+        dest.writeInt(totalTransit);
+        dest.writeInt(addDayArrival);
+        dest.writeString(duration);
+        dest.writeInt(durationMinute);
+        dest.writeString(total);
+        dest.writeInt(totalNumeric);
+        dest.writeString(comboPrice);
+        dest.writeInt(comboPriceNumeric);
+        dest.writeByte((byte) (isBestPairing ? 1 : 0));
+        dest.writeString(beforeTotal);
+        dest.writeByte((byte) (showSpecialPriceTag ? 1 : 0));
+        dest.writeByte((byte) (isReturning ? 1 : 0));
+        dest.writeParcelable(fare, flags);
+        dest.writeTypedList(routeList);
+        dest.writeTypedList(airlineDataList);
+        dest.writeString(comboId);
+        dest.writeString(specialTagText);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<FlightJourneyModel> CREATOR = new Creator<FlightJourneyModel>() {
+        @Override
+        public FlightJourneyModel createFromParcel(Parcel in) {
+            return new FlightJourneyModel(in);
+        }
+
+        @Override
+        public FlightJourneyModel[] newArray(int size) {
+            return new FlightJourneyModel[size];
+        }
+    };
 
     public String getTerm() {
         return term;
