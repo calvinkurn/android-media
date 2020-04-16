@@ -4,16 +4,14 @@
     android:id="@+id/recharge_recommendation_widget_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/recharge_recommendation_bg_color"
-    android:paddingLeft="@dimen/spacing_lvl4"
-    android:paddingTop="@dimen/spacing_lvl3"
-    android:paddingRight="@dimen/spacing_lvl4"
-    android:paddingBottom="@dimen/spacing_lvl4">
+    android:background="@color/recharge_recommendation_bg_color">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/recharge_recommendation_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/spacing_lvl3"
         android:layout_marginRight="@dimen/spacing_lvl4"
         android:ellipsize="end"
         android:lines="1"
@@ -28,6 +26,8 @@
         android:id="@+id/ic_close_recharge_recommendation"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:layout_marginRight="@dimen/spacing_lvl4"
         app:layout_constraintBottom_toBottomOf="@id/recharge_recommendation_title"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="@id/recharge_recommendation_title"
@@ -36,7 +36,10 @@
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/spacing_lvl4"
         android:layout_marginTop="@dimen/spacing_lvl4"
+        android:layout_marginRight="@dimen/spacing_lvl4"
+        android:layout_marginBottom="@dimen/spacing_lvl4"
         app:cardCornerRadius="@dimen/layout_lvl1"
         app:cardElevation="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -115,13 +118,17 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <include
-            android:id="@+id/home_recharge_recommendation_loading"
-            layout="@layout/home_recharge_recommendation_item_shimmering"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:visibility="gone" />
-
     </androidx.cardview.widget.CardView>
+
+    <include
+        android:id="@+id/home_recharge_recommendation_loading"
+        layout="@layout/home_recharge_recommendation_item_shimmering"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

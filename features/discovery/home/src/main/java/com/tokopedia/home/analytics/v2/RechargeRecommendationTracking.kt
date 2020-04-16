@@ -29,14 +29,14 @@ object RechargeRecommendationTracking : BaseTracking() {
             recommendation: RechargeRecommendationData
     ) {
         val productName = recommendation.applink
-        trackingQueue.putEETracking(getBasicPromotionClick(
-                Event.PROMO_CLICK,
-                RECHARGE_RECOMMENDATION_EVENT_CATEGORY,
-                Action.CLICK_ON.format(RECHARGE_RECOMMENDATION_NAME),
-                productName,
-                "", "", "", "", "",
-                listOf(mapToPromotionTracker(recommendation))
-        ) as? HashMap<String, Any>)
+        val promotionClickData = DataLayer.mapOf(
+                Event.KEY, Event.PROMO_CLICK,
+                Category.KEY, RECHARGE_RECOMMENDATION_EVENT_CATEGORY,
+                Action.KEY, Action.CLICK_ON.format(RECHARGE_RECOMMENDATION_NAME),
+                Label.KEY, productName,
+                Ecommerce.KEY, Ecommerce.getEcommercePromoClick(listOf(mapToPromotionTracker(recommendation)))
+        )
+        trackingQueue.putEETracking(promotionClickData as? HashMap<String, Any>)
     }
 
     fun homeRechargeRecommendationOnCloseTracker(recommendation: RechargeRecommendationData) {
@@ -46,16 +46,6 @@ object RechargeRecommendationTracking : BaseTracking() {
                 RECHARGE_RECOMMENDATION_EVENT_CATEGORY,
                 CLICK_CLOSE_ON.format(RECHARGE_RECOMMENDATION_NAME),
                 productName
-        )
-    }
-
-    override fun getBasicPromotionClick(event: String, eventCategory: String, eventAction: String, eventLabel: String, channelId: String, affinity: String, attribution: String, categoryId: String, shopId: String, promotions: List<Promotion>): Map<String, Any> {
-        return DataLayer.mapOf(
-                Event.KEY, event,
-                Category.KEY, eventCategory,
-                Action.KEY, eventAction,
-                Label.KEY, eventLabel,
-                Ecommerce.KEY, Ecommerce.getEcommercePromoClick(promotions)
         )
     }
 
