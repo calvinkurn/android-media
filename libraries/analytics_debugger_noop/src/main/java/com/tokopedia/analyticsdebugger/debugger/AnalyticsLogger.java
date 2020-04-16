@@ -15,6 +15,8 @@ public interface AnalyticsLogger {
     void openActivity();
     void openErrorActivity();
 
+    void navigateToValidator();
+
     void enableNotification(boolean status);
 
     boolean isNotificationEnabled();
