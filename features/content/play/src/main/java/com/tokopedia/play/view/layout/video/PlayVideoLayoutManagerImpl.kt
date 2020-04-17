@@ -12,7 +12,6 @@ import com.tokopedia.play.view.type.ScreenOrientation
 class PlayVideoLayoutManagerImpl(
         context: Context,
         private val orientation: ScreenOrientation,
-        topBounds: Int?,
         @IdRes videoComponentId: Int,
         @IdRes videoLoadingComponentId: Int,
         @IdRes oneTapComponentId: Int,
@@ -21,7 +20,6 @@ class PlayVideoLayoutManagerImpl(
 
     private val portraitManager = PlayVideoPortraitManager(
             context = context,
-            topBounds = topBounds,
             videoComponentId = videoComponentId,
             videoLoadingComponentId = videoLoadingComponentId,
             oneTapComponentId = oneTapComponentId,
@@ -35,10 +33,6 @@ class PlayVideoLayoutManagerImpl(
             oneTapComponentId = oneTapComponentId,
             overlayVideoComponentId = overlayVideoComponentId
     )
-
-    override fun onVideoTopBoundsChanged(view: View, topBounds: Int) {
-        getManager().onVideoTopBoundsChanged(view, topBounds)
-    }
 
     override fun layoutView(view: View) {
         getManager().layoutView(view)

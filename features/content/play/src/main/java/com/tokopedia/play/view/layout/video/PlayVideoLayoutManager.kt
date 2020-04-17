@@ -1,6 +1,5 @@
 package com.tokopedia.play.view.layout.video
 
-import android.view.View
 import com.tokopedia.play.view.layout.PlayLayoutManager
 
 /**
@@ -8,5 +7,4 @@ import com.tokopedia.play.view.layout.PlayLayoutManager
  */
 interface PlayVideoLayoutManager : PlayLayoutManager {
 
-    fun onVideoTopBoundsChanged(view: View, topBounds: Int)
 }

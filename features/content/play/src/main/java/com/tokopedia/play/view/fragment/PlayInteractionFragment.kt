@@ -63,6 +63,7 @@ import com.tokopedia.play.view.bottomsheet.PlayMoreActionBottomSheet
 import com.tokopedia.play.view.event.ScreenStateEvent
 import com.tokopedia.play.view.layout.interaction.PlayInteractionLayoutManager
 import com.tokopedia.play.view.layout.interaction.PlayInteractionLayoutManagerImpl
+import com.tokopedia.play.view.layout.parent.PlayParentLayoutManagerImpl
 import com.tokopedia.play.view.type.BottomInsetsState
 import com.tokopedia.play.view.type.BottomInsetsType
 import com.tokopedia.play.view.type.PlayRoomEvent
@@ -402,7 +403,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
                     }
                 }
 
-                if (keyboardState?.isHidden == true) delay(PlayFragment.ANIMATION_DURATION)
+                if (keyboardState?.isHidden == true) delay(PlayParentLayoutManagerImpl.ANIMATION_DURATION)
                 EventBusFactory.get(viewLifecycleOwner)
                         .emit(
                                 ScreenStateEvent::class.java,

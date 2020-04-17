@@ -13,6 +13,8 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.FrameLayout
 import android.widget.ImageView
 import androidx.annotation.Nullable
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.view.ViewCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -39,9 +41,13 @@ import com.tokopedia.play.di.PlayModule
 import com.tokopedia.play.extensions.isAnyBottomSheetsShown
 import com.tokopedia.play.util.SensorOrientationManager
 import com.tokopedia.play.util.PlayFullScreenHelper
+import com.tokopedia.play.util.changeConstraint
 import com.tokopedia.play.util.keyboard.KeyboardWatcher
 import com.tokopedia.play.view.contract.PlayNewChannelInteractor
+import com.tokopedia.play.view.layout.parent.PlayParentLayoutManager
+import com.tokopedia.play.view.layout.parent.PlayParentLayoutManagerImpl
 import com.tokopedia.play.view.type.ScreenOrientation
+import com.tokopedia.play.view.type.VideoOrientation
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play_common.state.PlayVideoState
 import com.tokopedia.unifycomponents.Toaster
@@ -57,18 +63,14 @@ import javax.inject.Inject
 class PlayFragment : BaseDaggerFragment(), SensorOrientationManager.OrientationListener {
 
     companion object {
-        const val ANIMATION_DURATION = 300L
+        private const val TOP_BOUNDS_LANDSCAPE_VIDEO = "top_bounds_landscape_video"
 
         private const val EXTRA_TOTAL_VIEW = "EXTRA_TOTAL_VIEW"
-
-        private val MARGIN_CHAT_VIDEO = 16f.dpToPx()
 
         private const val VIDEO_FRAGMENT_TAG = "FRAGMENT_VIDEO"
         private const val INTERACTION_FRAGMENT_TAG = "FRAGMENT_INTERACTION"
         private const val BOTTOM_SHEET_FRAGMENT_TAG = "FRAGMENT_INTERACTION"
         private const val ERROR_FRAGMENT_TAG = "FRAGMENT_ERROR"
-
-        private const val FULL_SCALE_FACTOR = 1.0f
 
         fun newInstance(channelId: String?): PlayFragment {
             return PlayFragment().apply {
@@ -80,6 +82,11 @@ class PlayFragment : BaseDaggerFragment(), SensorOrientationManager.OrientationL
     }
 
     private var channelId = ""
+
+    private val offset12: Int
+        get() = resources.getDimensionPixelOffset(R.dimen.dp_12)
+
+    private var topBounds: Int? = null
 
     @TrackingField
     private var bufferTrackingModel = BufferTrackingModel(
@@ -95,40 +102,6 @@ class PlayFragment : BaseDaggerFragment(), SensorOrientationManager.OrientationL
     @Inject
     lateinit var userSession: UserSessionInterface
 
-    private val offset12 by lazy { resources.getDimensionPixelOffset(R.dimen.dp_12) }
-
-    private val videoScaleAnimator = AnimatorSet()
-    private val onBottomInsetsShownAnimatorListener = object : Animator.AnimatorListener {
-        override fun onAnimationRepeat(animation: Animator?) {
-        }
-
-        override fun onAnimationEnd(animation: Animator?) {
-            flVideo.isClickable = true
-        }
-
-        override fun onAnimationCancel(animation: Animator?) {
-        }
-
-        override fun onAnimationStart(animation: Animator?) {
-            flVideo.isClickable = false
-        }
-    }
-    private val onBottomInsetsHiddenAnimatorListener = object : Animator.AnimatorListener {
-        override fun onAnimationRepeat(animation: Animator?) {
-        }
-
-        override fun onAnimationEnd(animation: Animator?) {
-            flVideo.isClickable = false
-        }
-
-        override fun onAnimationCancel(animation: Animator?) {
-        }
-
-        override fun onAnimationStart(animation: Animator?) {
-            flVideo.isClickable = false
-        }
-    }
-
     private lateinit var playViewModel: PlayViewModel
 
     private lateinit var ivClose: ImageView
@@ -136,6 +109,8 @@ class PlayFragment : BaseDaggerFragment(), SensorOrientationManager.OrientationL
     private lateinit var flInteraction: FrameLayout
     private lateinit var flBottomSheet: FrameLayout
     private lateinit var flGlobalError: FrameLayout
+
+    private lateinit var layoutManager: PlayParentLayoutManager
 
     private lateinit var videoFragment: PlayVideoFragment
 
@@ -175,6 +150,10 @@ class PlayFragment : BaseDaggerFragment(), SensorOrientationManager.OrientationL
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        if (savedInstanceState?.containsKey(TOP_BOUNDS_LANDSCAPE_VIDEO) == true) {
+            topBounds = savedInstanceState.getInt(TOP_BOUNDS_LANDSCAPE_VIDEO, 0)
+        }
+
         return inflater.inflate(R.layout.fragment_play, container, false)
     }
 
@@ -258,8 +237,13 @@ class PlayFragment : BaseDaggerFragment(), SensorOrientationManager.OrientationL
     override fun onDestroy() {
         super.onDestroy()
 
-        videoScaleAnimator.cancel()
+        layoutManager.onDestroy()
         if (::orientationManager.isInitialized) orientationManager.disable()
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        topBounds?.let { outState.putInt(TOP_BOUNDS_LANDSCAPE_VIDEO, it) }
+        super.onSaveInstanceState(outState)
     }
 
     override fun onOrientationChanged(screenOrientation: ScreenOrientation) {
@@ -269,48 +253,11 @@ class PlayFragment : BaseDaggerFragment(), SensorOrientationManager.OrientationL
     }
 
     fun onBottomInsetsViewShown(bottomMostBounds: Int) {
-        flInteraction.layoutParams = flInteraction.layoutParams.apply {
-            height = ViewGroup.LayoutParams.WRAP_CONTENT
-        }
-
-        videoScaleAnimator.cancel()
-
-        val currentHeight = flVideo.height
-        val destHeight = bottomMostBounds.toFloat() - (MARGIN_CHAT_VIDEO + offset12) //offset12 for the range between video and status bar
-        val scaleFactor = destHeight / currentHeight
-        val animatorY = ObjectAnimator.ofFloat(flVideo, View.SCALE_Y,FULL_SCALE_FACTOR, scaleFactor)
-        val animatorX = ObjectAnimator.ofFloat(flVideo ,View.SCALE_X,FULL_SCALE_FACTOR, scaleFactor)
-        animatorY.duration = ANIMATION_DURATION
-        animatorX.duration = ANIMATION_DURATION
-
-        flVideo.pivotX = (flVideo.width / 2).toFloat()
-        val marginTop = (ivClose.layoutParams as ViewGroup.MarginLayoutParams).topMargin
-        val marginTopXt = marginTop * scaleFactor
-        flVideo.pivotY = ivClose.y + (ivClose.y * scaleFactor) + marginTopXt
-        videoScaleAnimator.apply {
-            removeAllListeners()
-            addListener(onBottomInsetsShownAnimatorListener)
-            playTogether(animatorX, animatorY)
-        }.start()
+        layoutManager.onBottomInsetsShown(requireView(), bottomMostBounds)
     }
 
     fun onBottomInsetsViewHidden() {
-        flInteraction.layoutParams = flInteraction.layoutParams.apply {
-            height = ViewGroup.LayoutParams.MATCH_PARENT
-        }
-
-        videoScaleAnimator.cancel()
-
-        val animatorY = ObjectAnimator.ofFloat(flVideo, View.SCALE_Y, flVideo.scaleY, FULL_SCALE_FACTOR)
-        val animatorX = ObjectAnimator.ofFloat(flVideo ,View.SCALE_X, flVideo.scaleX, FULL_SCALE_FACTOR)
-        animatorY.duration = ANIMATION_DURATION
-        animatorX.duration = ANIMATION_DURATION
-
-        videoScaleAnimator.apply {
-            removeAllListeners()
-            addListener(onBottomInsetsHiddenAnimatorListener)
-            playTogether(animatorX, animatorY)
-        }.start()
+        layoutManager.onBottomInsetsHidden(requireView())
     }
 
     fun setResultBeforeFinish() {
@@ -321,7 +268,10 @@ class PlayFragment : BaseDaggerFragment(), SensorOrientationManager.OrientationL
     }
 
     fun setVideoTopBounds(topBounds: Int) {
-        videoFragment.setVideoTopBounds(topBounds)
+        if (this.topBounds == null && topBounds > 0) {
+            this.topBounds = topBounds
+            layoutManager.onVideoTopBoundsChanged(requireView(), topBounds)
+        }
     }
 
     /**
@@ -352,6 +302,15 @@ class PlayFragment : BaseDaggerFragment(), SensorOrientationManager.OrientationL
             flBottomSheet = findViewById(R.id.fl_bottom_sheet)
             flGlobalError = findViewById(R.id.fl_global_error)
         }
+
+        layoutManager = PlayParentLayoutManagerImpl(
+                context = requireContext(),
+                ivClose = ivClose,
+                flVideo = flVideo,
+                flInteraction = flInteraction,
+                flBottomSheet = flBottomSheet,
+                flGlobalError = flGlobalError
+        )
     }
 
     private fun setupView(view: View) {
@@ -378,9 +337,8 @@ class PlayFragment : BaseDaggerFragment(), SensorOrientationManager.OrientationL
 
     private fun setInsets(view: View) {
         ViewCompat.setOnApplyWindowInsetsListener(view) { _, insets ->
-            val closeLp = ivClose.layoutParams as ViewGroup.MarginLayoutParams
-            ivClose.setMargin(closeLp.leftMargin, offset12 + insets.systemWindowInsetTop, closeLp.rightMargin, closeLp.bottomMargin)
 
+            layoutManager.setupInsets(view, insets)
             insets
         }
     }
@@ -448,6 +406,8 @@ class PlayFragment : BaseDaggerFragment(), SensorOrientationManager.OrientationL
                 )
 
             }
+
+            layoutManager.onVideoStateChanged(requireView(), it.state, playViewModel.videoOrientation)
         })
     }
 
@@ -455,6 +415,8 @@ class PlayFragment : BaseDaggerFragment(), SensorOrientationManager.OrientationL
         playViewModel.observableVideoStream.observe(viewLifecycleOwner, Observer {
             setWindowSoftInputMode(it.channelType.isLive)
             setBackground(it.backgroundUrl)
+
+            layoutManager.onVideoStreamChanged(requireView())
         })
     }
 
