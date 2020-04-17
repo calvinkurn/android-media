@@ -33,8 +33,6 @@ class FragmentFramePerformanceIndexMonitoring : LifecycleObserver, CoroutineScop
     var mainPerformanceData = FpiPerformanceData()
     private set
 
-    var isFragmentUserVisible = true
-
     protected val masterJob = SupervisorJob()
 
     override val coroutineContext: CoroutineContext
@@ -57,10 +55,22 @@ class FragmentFramePerformanceIndexMonitoring : LifecycleObserver, CoroutineScop
         }
     }
 
+    fun onFragmentHidden(isHidden: Boolean) {
+        if (isHidden) {
+            stopRecordingFramePerformanceIndex()
+        } else {
+            startRecordingFramePerformanceIndex()
+        }
+    }
+
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
     private fun sendRemainingPerformanceData() {
+        startRecordingFramePerformanceIndex()
+    }
+
+    private fun startRecordingFramePerformanceIndex() {
         launch {
-            pageName?.let { pageName->
+            pageName?.let { pageName ->
                 val cacheFpiDatabaseModel = cacheManager?.get<FpiDatabaseModel>(
                         pageName, FpiDatabaseModel::class.java, null
                 )
@@ -79,14 +89,19 @@ class FragmentFramePerformanceIndexMonitoring : LifecycleObserver, CoroutineScop
 
     @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
     private fun saveToDatabase() {
+        stopRecordingFramePerformanceIndex()
+    }
+
+    private fun stopRecordingFramePerformanceIndex() {
         launch {
-            pageName?.let {pageName->
+            pageName?.let { pageName ->
                 cacheManager?.put(
                         customId = pageName,
                         objectToPut = getFpiDatabaseModel()
                 )
             }
         }
+        stopFrameMetrics()
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
@@ -109,7 +124,7 @@ class FragmentFramePerformanceIndexMonitoring : LifecycleObserver, CoroutineScop
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N && onFrameMetricAvailableListener == null) {
             onFrameMetricAvailableListener = Window.OnFrameMetricsAvailableListener { window, frameMetrics, dropCountSinceLastInvocation ->
                 val frameMetricsCopy = FrameMetrics(frameMetrics)
-                if (isFragmentUserVisible) recordFrames(frameMetricsCopy)
+                recordFrames(frameMetricsCopy)
             }
             onFrameMetricAvailableListener?.let {
                 withContext(Dispatchers.Main) {
@@ -140,7 +155,7 @@ class FragmentFramePerformanceIndexMonitoring : LifecycleObserver, CoroutineScop
         }
     }
 
-    open fun flush(){
+    private fun flush(){
         stopFrameMetrics()
         if (isActive && !masterJob.isCancelled){
             masterJob.children.map { it.cancel() }

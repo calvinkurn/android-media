@@ -1576,7 +1576,7 @@ public class HomeFragment extends BaseDaggerFragment implements
 
     public void onHiddenChanged(boolean hidden) {
         super.onHiddenChanged(hidden);
-        if (fragmentFramePerformanceIndexMonitoring != null) fragmentFramePerformanceIndexMonitoring.setFragmentUserVisible(!hidden);
+        if (fragmentFramePerformanceIndexMonitoring != null) fragmentFramePerformanceIndexMonitoring.onFragmentHidden(hidden);
         setUserVisibleHint(!hidden);
     }
 
