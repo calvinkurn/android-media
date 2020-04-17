@@ -51,7 +51,7 @@
             android:id="@+id/img_move"
             android:layout_width="@dimen/dp_24"
             android:layout_height="@dimen/dp_24"
-            android:layout_marginRight="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_12"
             android:layout_gravity="center_vertical"
             app:srcCompat="@drawable/ic_material" />
     </LinearLayout>
