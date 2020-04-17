@@ -70,18 +70,13 @@ class AddEditProductPreviewActivity : BaseSimpleActivity() {
                 }
             }
         }
-
-        if (intent.hasExtra(EXTRA_FROM_NOTIF_SUCCESS) &&
-                intent.hasExtra(EXTRA_FROM_NOTIF_EDIT_PRODUCT) &&
-                intent.getBooleanExtra(EXTRA_FROM_NOTIF_SUCCESS, false)) {
-            val isEdit = intent.getBooleanExtra(EXTRA_FROM_NOTIF_EDIT_PRODUCT, false)
-            if (isEdit) {
-                ProductEditNotifTracking.clickFailed(UserSession(this).shopId)
-            } else {
-                ProductAddNotifTracking.clickFailed(UserSession(this).shopId)
-            }
+        val isNotifSuccess = intent.getBooleanExtra(EXTRA_FROM_NOTIF_SUCCESS, false)
+        val isNotifEditProduct = intent.getBooleanExtra(EXTRA_FROM_NOTIF_EDIT_PRODUCT, false)
+        if (!isNotifSuccess && !isNotifEditProduct) {
+            ProductAddNotifTracking.clickFailed(UserSession(this).shopId)
+        } else if (!isNotifSuccess && isNotifEditProduct) {
+            ProductEditNotifTracking.clickFailed(UserSession(this).shopId)
         }
-
         super.onCreate(savedInstanceState)
     }
 

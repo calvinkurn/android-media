@@ -7,13 +7,14 @@ import android.net.Uri;
 import androidx.fragment.app.Fragment;
 
 import com.tokopedia.core.base.di.component.HasComponent;
+import com.tokopedia.product.addedit.tracking.ProductEditMainTracking;
 import com.tokopedia.product.manage.item.category.view.istener.CategoryPickerFragmentListener;
 import com.tokopedia.seller.ProductEditItemComponentInstance;
-import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.product.manage.item.common.di.component.ProductComponent;
 import com.tokopedia.seller.product.category.view.fragment.CategoryPickerFragment;
 import com.tokopedia.core.common.category.view.model.CategoryViewModel;
+import com.tokopedia.user.session.UserSession;
 
 import org.parceler.Parcels;
 
@@ -86,5 +87,11 @@ public class CategoryPickerActivity extends BaseSimpleActivity implements
     @Override
     protected boolean isToolbarWhite() {
         return true;
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        ProductEditMainTracking.INSTANCE.clickBackOtherCategory(new UserSession(getApplicationContext()).getShopId());
     }
 }
