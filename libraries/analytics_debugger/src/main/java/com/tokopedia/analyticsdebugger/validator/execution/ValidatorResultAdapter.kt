@@ -1,4 +1,4 @@
-package com.tokopedia.analyticsdebugger.validator
+package com.tokopedia.analyticsdebugger.validator.execution
 
 import android.view.LayoutInflater
 import android.view.View
@@ -6,8 +6,11 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.analyticsdebugger.R
+import com.tokopedia.analyticsdebugger.validator.core.Status
+import com.tokopedia.analyticsdebugger.validator.core.Validator
 
-class ValidatorResultAdapter : RecyclerView.Adapter<ValidatorResultAdapter.ResultItemViewHolder>() {
+class ValidatorResultAdapter(private val listener: (Validator) -> Unit)
+    : RecyclerView.Adapter<ValidatorResultAdapter.ResultItemViewHolder>() {
 
     private val mData: MutableList<Validator> by lazy { mutableListOf<Validator>() }
 
@@ -22,6 +25,7 @@ class ValidatorResultAdapter : RecyclerView.Adapter<ValidatorResultAdapter.Resul
 
     override fun onBindViewHolder(holder: ResultItemViewHolder, position: Int) {
         holder.bind(mData[position], position)
+        holder.itemView.setOnClickListener { listener.invoke(mData[position]) }
     }
 
     fun setData(list: List<Validator>) {
@@ -39,7 +43,7 @@ class ValidatorResultAdapter : RecyclerView.Adapter<ValidatorResultAdapter.Resul
         fun bind(dataItem: Validator, position: Int) {
             tvNum.text = position.toString()
             tvTitle.text = dataItem.name
-            tvStatus.text = when(dataItem.status) {
+            tvStatus.text = when (dataItem.status) {
                 Status.SUCCESS -> "V"
                 Status.FAILURE -> "X"
                 Status.PENDING -> "-"

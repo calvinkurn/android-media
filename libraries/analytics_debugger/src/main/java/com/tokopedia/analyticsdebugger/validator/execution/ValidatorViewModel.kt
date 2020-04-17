@@ -1,10 +1,13 @@
-package com.tokopedia.analyticsdebugger.validator
+package com.tokopedia.analyticsdebugger.validator.execution
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
+import com.tokopedia.analyticsdebugger.validator.core.Validator
+import com.tokopedia.analyticsdebugger.validator.core.ValidatorEngine
+import com.tokopedia.analyticsdebugger.validator.core.toDefaultValidator
 import rx.Subscriber
 import rx.Subscription
 import rx.android.schedulers.AndroidSchedulers

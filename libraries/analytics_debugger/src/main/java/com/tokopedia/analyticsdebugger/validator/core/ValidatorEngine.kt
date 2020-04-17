@@ -1,7 +1,8 @@
-package com.tokopedia.analyticsdebugger.validator
+package com.tokopedia.analyticsdebugger.validator.core
 
 import com.tokopedia.analyticsdebugger.database.GtmLogDB
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
+import com.tokopedia.analyticsdebugger.validator.Utils
 import rx.Observable
 
 class ValidatorEngine constructor(private val dao: GtmLogDBSource) {

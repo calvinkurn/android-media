@@ -1,8 +1,9 @@
-package com.tokopedia.analyticsdebugger.validator
+package com.tokopedia.analyticsdebugger.validator.execution
 
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.Observer
@@ -13,6 +14,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.analyticsdebugger.R
+import com.tokopedia.analyticsdebugger.validator.Utils
+import com.tokopedia.analyticsdebugger.validator.core.Validator
 import timber.log.Timber
 
 class AnalyticsValidatorActivity : AppCompatActivity() {
@@ -23,7 +26,7 @@ class AnalyticsValidatorActivity : AppCompatActivity() {
     }
 
     private val mAdapter: ValidatorResultAdapter by lazy {
-        val itemAdapter = ValidatorResultAdapter()
+        val itemAdapter = ValidatorResultAdapter { goToDetail(it) }
         itemAdapter
     }
 
@@ -51,6 +54,10 @@ class AnalyticsValidatorActivity : AppCompatActivity() {
             addItemDecoration(DividerItemDecoration(this@AnalyticsValidatorActivity, DividerItemDecoration.VERTICAL))
             adapter = mAdapter
         }
+    }
+
+    private fun goToDetail(item: Validator) {
+        Toast.makeText(this, "Toast dulu gan ${item.name}", Toast.LENGTH_SHORT).show()
     }
 
     companion object {

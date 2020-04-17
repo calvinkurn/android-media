@@ -3,7 +3,6 @@ package com.tokopedia.analyticsdebugger.debugger
 import android.content.Context
 import android.text.TextUtils
 
-import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmErrorLogDBSource
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
@@ -13,7 +12,7 @@ import com.tokopedia.analyticsdebugger.debugger.ui.activity.AnalyticsGtmErrorDeb
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.analyticsdebugger.database.GtmErrorLogDB
-import com.tokopedia.analyticsdebugger.validator.AnalyticsValidatorActivity
+import com.tokopedia.analyticsdebugger.validator.execution.AnalyticsValidatorActivity
 
 import java.net.URLDecoder
 

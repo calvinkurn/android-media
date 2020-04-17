@@ -25,7 +25,7 @@
             android:exported="true"/>
 
         <activity
-            android:name=".validator.AnalyticsValidatorActivity"
+            android:name=".validator.execution.AnalyticsValidatorActivity"
             android:launchMode="singleTask"
             android:label="Analytics Validator"
             android:taskAffinity="com.tokopedia.analytics.task"
