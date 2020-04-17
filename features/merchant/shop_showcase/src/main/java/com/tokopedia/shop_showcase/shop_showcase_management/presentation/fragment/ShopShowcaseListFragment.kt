@@ -11,7 +11,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
-import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.fragment.app.FragmentManager
 
@@ -19,7 +18,6 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
@@ -104,6 +102,7 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
     private var isMyShop: Boolean = false
     private var shopType = ""
     private var isNeedToGoToAddShowcase = false
+    private var isReorderList = false
 
 
     override fun getScreenName(): String {
@@ -135,16 +134,22 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
         when (requestCode) {
             REQUEST_CODE_ADD_ETALASE -> {
                 if (resultCode == Activity.RESULT_OK) {
-                    val intent = Intent()
-                    activity?.let {
-                        it.setResult(Activity.RESULT_OK, intent)
-                        it.finish()
+                    if (isNeedToGoToAddShowcase) {
+                        isNeedToGoToAddShowcase = false
+                        activity?.let {
+                            val intent = Intent()
+                            it.setResult(Activity.RESULT_OK, intent)
+                            it.finish()
+                        }
                     }
                 } else if (resultCode == Activity.RESULT_CANCELED) {
-                    val intent = Intent()
                     activity?.let {
-                        it.setResult(Activity.RESULT_CANCELED, intent)
-                        it.finish()
+                        if (isNeedToGoToAddShowcase) {
+                            isNeedToGoToAddShowcase = false
+                            val intent = Intent()
+                            it.setResult(Activity.RESULT_CANCELED, intent)
+                            it.finish()
+                        }
                     }
                 }
             }
@@ -176,6 +181,7 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
         val view = inflater.inflate(R.layout.fragment_shop_showcase_list, container, false)
         headerUnify = view.findViewById(R.id.showcase_list_toolbar)
         headerLayout = view.findViewById(R.id.header_layout)
+        swipeRefreshLayout = view.findViewById(R.id.swipe_refresh)
         btnAddEtalase = view.findViewById(R.id.btn_add_etalase)
         loading = view.findViewById(R.id.loading)
         searchbar = view.findViewById(R.id.searchbar)
@@ -194,6 +200,8 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
         super.onViewCreated(view, savedInstanceState)
         showLoading(true)
         initHeaderUnify()
+        initSearchbar()
+        initSwipeRefresh()
         initRecyclerView()
         setupBuyerSellerView()
 
@@ -203,11 +211,20 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
         observeTotalProduct()
 
         btnAddEtalase.setOnClickListener {
-            isNeedToGoToAddShowcase = true
+//            isNeedToGoToAddShowcase = true
             tracking?.clickTambahEtalase(shopId, shopType)
             checkTotalProduct()
         }
+    }
 
+    private fun initSwipeRefresh() {
+        swipeRefreshLayout.setOnRefreshListener {
+            showLoadingSwipeToRefresh(true)
+            loadData()
+        }
+    }
+
+    private fun initSearchbar() {
         searchbar.searchBarTextField.setOnFocusChangeListener(object : View.OnFocusChangeListener {
             override fun onFocusChange(v: View?, hasFocus: Boolean) {
                 if (hasFocus) {
@@ -316,6 +333,7 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
             when (it) {
                 is Success -> {
                     showLoading(false)
+                    showLoadingSwipeToRefresh(false)
                     val errorMessage = it.data.shopShowcases.error.message
                     if (errorMessage.isNotEmpty()) {
                         showErrorResponse(errorMessage)
@@ -345,10 +363,7 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
                         if (totalProduct < 1) {
                             showErrorResponse(getString(R.string.error_product_less_than_one))
                         } else if (totalProduct > 0) {
-                            if (isNeedToGoToAddShowcase) {
-                                isNeedToGoToAddShowcase = false
-                                goToAddShowcase()
-                            }
+                            goToAddShowcase()
                         }
                     }
                 }
@@ -527,6 +542,14 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
     private fun showSuccessMessage(message: String) {
         view?.let {
             Toaster.showNormal(it, message, Snackbar.LENGTH_LONG)
+        }
+    }
+
+    private fun showLoadingSwipeToRefresh(isLoading: Boolean){
+        if (isLoading) {
+            swipeRefreshLayout.isRefreshing = true
+        } else {
+            swipeRefreshLayout.isRefreshing = false
         }
     }
 

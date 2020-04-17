@@ -26,5 +26,5 @@ public class ShopParamConstant {
     public static final String KEY_KEYWORD = "search";
     public static final String KEY_SORT = "sort";
     public static final String KEY_SHOP_REF = "shop_ref";
-    public static final String KEY_RELOAD_STATE = "key_reload_state";
+    public static final String KEY_RELOAD_STATE = "isNeedToReloadData";
 }

@@ -128,6 +128,7 @@ public class ShopProductListActivity extends BaseSimpleActivity
         etalaseId = getIntent().getStringExtra(ShopParamConstant.EXTRA_ETALASE_ID);
         sort = getIntent().getStringExtra(ShopParamConstant.EXTRA_SORT_ID) == null ? "" : getIntent().getStringExtra(ShopParamConstant.EXTRA_SORT_ID);
         attribution = getIntent().getStringExtra(ShopParamConstant.EXTRA_ATTRIBUTION);
+        isNeedToReloadData = getIntent().getBooleanExtra(ShopParamConstant.EXTRA_IS_NEED_TO_RELOAD_DATA, false);
         if (savedInstanceState == null) {
             keyword = getIntent().getStringExtra(ShopParamConstant.EXTRA_PRODUCT_KEYWORD);
             if (null == keyword) {

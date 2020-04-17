@@ -11,6 +11,7 @@
         android:id="@+id/header_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:cardElevation="@dimen/dp_0"
         app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout

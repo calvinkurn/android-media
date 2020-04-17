@@ -66,16 +66,16 @@ class ShopPageProductListResultViewModel @Inject constructor(private val userSes
         }
     }
 
-    fun getEtalaseData(shopId: String, isOwner: Boolean) {
+    fun getEtalaseData(shopId: String, isOwner: Boolean, isNeedToReloadData: Boolean = false) {
         launchCatchError(coroutineContext, block = {
-            val etalaseListDataResult = withContext(Dispatchers.IO) { getShopEtalaseData(shopId, isOwner) }
+            val etalaseListDataResult = withContext(Dispatchers.IO) { getShopEtalaseData(shopId, isOwner, isNeedToReloadData) }
             etalaseListData.postValue(Success(etalaseListDataResult))
         }) {
             etalaseListData.postValue(Fail(it))
         }
     }
 
-    private fun getShopEtalaseData(shopId: String, isOwner: Boolean): List<ShopProductEtalaseChipItemViewModel> {
+    private fun getShopEtalaseData(shopId: String, isOwner: Boolean, isNeedToReloadData: Boolean = false): List<ShopProductEtalaseChipItemViewModel> {
         var params: RequestParams
 
         if (isOwner) {
@@ -94,6 +94,7 @@ class ShopPageProductListResultViewModel @Inject constructor(private val userSes
             )
         }
 
+        getShopEtalaseByShopUseCase.isFromCacheFirst = !isNeedToReloadData
         val listShopEtalaseResponse = getShopEtalaseByShopUseCase.createObservable(params).toBlocking().first()
         return ShopPageProductListMapper.mapToShopProductEtalaseListDataModel(listShopEtalaseResponse)
     }

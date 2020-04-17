@@ -460,7 +460,7 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
                     val responseData = it.data
                     if(responseData.success) {
                         // navigate back to origin create showcase entry point
-//                        activity?.setResult(Activity.RESULT_OK)
+                        activity?.setResult(Activity.RESULT_OK)
                         activity?.finish()
                     }
                     else {
