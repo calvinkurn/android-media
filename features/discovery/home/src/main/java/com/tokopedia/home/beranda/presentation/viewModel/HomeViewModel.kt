@@ -7,6 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.atc_common.data.model.request.AddToCartOccRequestParams
+import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel.Companion.STATUS_OK
 import com.tokopedia.atc_common.domain.usecase.AddToCartOccUseCase
 import com.tokopedia.common_wallet.balance.view.WalletBalanceModel
 import com.tokopedia.home.beranda.common.HomeDispatcherProvider
@@ -804,7 +805,7 @@ open class HomeViewModel @Inject constructor(
                 .observeOn(Schedulers.io())
                 .subscribe (
                         {
-                            if(!it.isDataError()) {
+                            if(it.status == STATUS_OK) {
                                 _oneClickCheckout.postValue(Event(
                                         mapOf(
                                                 ATC to it,
