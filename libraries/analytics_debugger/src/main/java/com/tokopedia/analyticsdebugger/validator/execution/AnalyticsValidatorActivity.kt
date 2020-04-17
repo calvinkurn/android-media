@@ -16,6 +16,7 @@ import com.google.gson.reflect.TypeToken
 import com.tokopedia.analyticsdebugger.R
 import com.tokopedia.analyticsdebugger.validator.Utils
 import com.tokopedia.analyticsdebugger.validator.core.Validator
+import com.tokopedia.analyticsdebugger.validator.detail.ValidatorDetailActivity
 import timber.log.Timber
 
 class AnalyticsValidatorActivity : AppCompatActivity() {
@@ -38,6 +39,7 @@ class AnalyticsValidatorActivity : AppCompatActivity() {
         toolbar.subtitle = "Tokopedia Client Analytics Validator"
         val jsonTest = Utils.getJsonDataFromAsset(this, "add_address_cvr.json")
         Timber.d("Validator Json Query \n %s", jsonTest)
+        Timber.d("Asset %s", assets.list("")?.joinToString { "\n" })
 
         val jsonType = object : TypeToken<Map<String, Any>>() {}.type
         val testQuery = Gson().fromJson<Map<String, Any>>(jsonTest, jsonType)
@@ -57,7 +59,11 @@ class AnalyticsValidatorActivity : AppCompatActivity() {
     }
 
     private fun goToDetail(item: Validator) {
-        Toast.makeText(this, "Toast dulu gan ${item.name}", Toast.LENGTH_SHORT).show()
+        val exp = item.data.toString()
+        val act = item.match?.data ?: ""
+
+        val intent = ValidatorDetailActivity.newIntent(this, exp, act)
+        startActivity(intent)
     }
 
     companion object {
