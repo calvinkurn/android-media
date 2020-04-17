@@ -6,21 +6,23 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.talk.common.TalkConstants.COMMENT_ID
+import com.tokopedia.talk.common.TalkConstants.TALK_ID
 import com.tokopedia.talk.common.di.TalkComponent
 import com.tokopedia.talk.feature.report.data.mapper.TalkReportMapper
 import com.tokopedia.talk.feature.report.presentation.uimodel.TalkReportUiModel
 import com.tokopedia.talk.feature.report.di.DaggerTalkReportComponent
 import com.tokopedia.talk.feature.report.di.TalkReportComponent
+import com.tokopedia.talk.feature.report.presentation.viewmodel.TalkReportViewModel
 import com.tokopedia.talk_old.R
+import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.fragment_talk_report.*
+import javax.inject.Inject
 
 
 class TalkReportFragment : BaseDaggerFragment(), HasComponent<TalkReportComponent> {
 
     companion object {
-
-        const val TALK_ID = "talk_id"
-        const val COMMENT_ID = "comment_id"
 
         @JvmStatic
         fun createNewInstance(talkId: Int = 0, commentId: Int = 0): TalkReportFragment =
@@ -31,7 +33,12 @@ class TalkReportFragment : BaseDaggerFragment(), HasComponent<TalkReportComponen
                 }
     }
 
+    @Inject
+    lateinit var viewModel: TalkReportViewModel
+
     private val reportUiModelOptions: List<TalkReportUiModel> = listOf()
+    private var talkId = 0
+    private var commentId = 0
 
     override fun getScreenName(): String {
         return ""
@@ -52,6 +59,7 @@ class TalkReportFragment : BaseDaggerFragment(), HasComponent<TalkReportComponen
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        getDataFromArguments()
         initReportOptions()
         initView()
         super.onViewCreated(view, savedInstanceState)
@@ -73,12 +81,22 @@ class TalkReportFragment : BaseDaggerFragment(), HasComponent<TalkReportComponen
         }
     }
 
+    private fun onSuccessSendReport() {
+
+    }
+
+    private fun onErrorSendReport() {
+        showErrorToaster()
+    }
+
     private fun initReportOptions() {
 
     }
 
     private fun showErrorToaster() {
-
+        view?.let {
+            Toaster.make(it, getString(R.string.toaster_report_fail), Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR, getString(R.string.talk_ok))
+        }
     }
 
     private fun sendReport() {
@@ -87,5 +105,12 @@ class TalkReportFragment : BaseDaggerFragment(), HasComponent<TalkReportComponen
 
     private fun observeSendReportResult() {
 
+    }
+
+    private fun getDataFromArguments() {
+        arguments?.let {
+            talkId = it.getInt(TALK_ID)
+            commentId = it.getInt(COMMENT_ID)
+        }
     }
 }

@@ -29,6 +29,19 @@
 
         </com.google.android.material.appbar.AppBarLayout>
 
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/talkReadingContainer">
+
+            <com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
+                android:id="@+id/talkReadingRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone" />
+
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/addFloatingActionButton"
             android:layout_width="wrap_content"
@@ -39,19 +52,6 @@
             app:srcCompat="@drawable/talk_reading_ic_plus"/>
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
-
-    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/talkReadingContainer">
-
-        <com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
-            android:id="@+id/talkReadingRecyclerView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:visibility="gone" />
-
-    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     <include
         android:id="@+id/pageLoading"

@@ -95,7 +95,9 @@
     <string name="reading_seller_label">Penjual</string>
 
     <string name="toaster_follow_success">Kamu berhasil follow Tanya-Jawab ini. Nantikan notifikasinya di Inbox, ya!</string>
-    <string name="toaster_unfollow_success">Kamu sudah tidak lagi follow Tanya-Jawab ini.</string>
+    <string name="toaster_unfollow_success">Kamu sudah unfollow Tanya-Jawab ini.</string>
+    <string name="toaster_follow_fail">Gagal follow Tanya-Jawab. Cek koneksi internetmu dan coba lagi, ya.</string>
+    <string name="toaster_unfollow_fail">Gagal unfollow Tanya-Jawab. Cek koneksi internetmu dan coba lagi, ya.</string>
     <string name="reply_editText_placeholder">Tulis jawabanmu…</string>
     <string name="reply_header_tnc">Inilah tempat buat kamu ngobrolin segala hal seputar barang ini. Baca juga <b>syarat &amp; ketentuan</b> dan ketentuannya, ya.</string>
     <string name="reply_toaster_success">Yay, jawabanmu berhasil dikirim. Tunggu notifikasi balasan di Inbox, ya.</string>

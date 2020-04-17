@@ -67,4 +67,36 @@
         app:typographyType="body_2"
         app:typographyWeight="reguler" />
 
+    <ImageView
+        android:id="@+id/likeIcon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/layout_lvl2"
+        app:layout_goneMarginStart="@dimen/layout_lvl2"
+        app:srcCompat="@drawable/talk_ic_like"
+        app:layout_constraintStart_toStartOf="@id/replyMessage"
+        app:layout_constraintTop_toBottomOf="@id/replyMessage" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/likeCount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Like"
+        android:layout_marginStart="@dimen/layout_lvl1"
+        android:layout_marginLeft="@dimen/layout_lvl1"
+        app:typographyType="body_3"
+        app:typographyWeight="reguler"
+        app:layout_constraintStart_toEndOf="@id/likeIcon"
+        app:layout_constraintTop_toTopOf="@id/likeIcon" />
+
+    <ImageView
+        android:id="@+id/replyHeaderKebab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/layout_lvl3"
+        android:layout_marginRight="@dimen/layout_lvl3"
+        app:layout_constraintTop_toTopOf="@id/likeIcon"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/talk_ic_kebab" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

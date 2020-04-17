@@ -167,6 +167,8 @@ object ApplinkConstInternalGlobal {
     @JvmField
     val PRODUCT_TALK = "$PRODUCT_TALK_BASE{product_id}/{shop_id}/"
     @JvmField
+    val PRODUCT_TALK_REPORT = "$PRODUCT_TALK_BASE/report/{talk_id}/{comment_id}"
+    @JvmField
     val PARAM_PRODUCT_ID = "product_id"
 
     // TalkDetailsActivity

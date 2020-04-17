@@ -12,14 +12,45 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/write_category_header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/layout_lvl2"
         android:layout_marginEnd="@dimen/layout_lvl2"
         android:text="@string/write_category_title"
         app:typographyWeight="bold"
-        app:typographyType="heading_5"
+        app:typographyType="heading_4"
         app:layout_constraintTop_toBottomOf="@id/talkWriteHeader" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/writeCategoryChips"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingStart="@dimen/layout_lvl2"
+        android:paddingEnd="@dimen/layout_lvl2"
+        android:layout_marginTop="@dimen/dp_12"
+        app:layout_constraintTop_toBottomOf="@id/write_category_header"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/write_question_header"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:text="@string/write_question_title"
+        android:layout_marginTop="@dimen/layout_lvl3"
+        app:layout_constraintStart_toStartOf="@id/write_category_header"
+        app:layout_constraintEnd_toEndOf="@id/write_category_header"
+        app:typographyWeight="bold"
+        app:typographyType="heading_4"
+        app:layout_constraintTop_toBottomOf="@id/writeCategoryChips" />
+
+    <com.tokopedia.unifycomponents.TextFieldUnify
+        android:id="@+id/writeQuestionTextField"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="@id/write_category_header"
+        app:layout_constraintEnd_toEndOf="@id/write_category_header"
+        app:text_field_placeholder="@string/write_question_placeholder"
+        app:layout_constraintTop_toBottomOf="@id/write_question_header"/>
 
     <include
         android:id="@+id/pageLoading"

@@ -31,11 +31,16 @@ class TalkReplyHeader : BaseCustomView{
         View.inflate(context, R.layout.widget_talk_reply_header, this)
     }
 
-    fun bind(talkReplyHeaderModel: TalkReplyHeaderModel, onTermsAndConditionsClickedListener: OnTermsAndConditionsClickedListener) {
+    fun bind(talkReplyHeaderModel: TalkReplyHeaderModel,
+             onTermsAndConditionsClickedListener: OnTermsAndConditionsClickedListener,
+             onKebabClickedListener: OnKebabClickedListener) {
         this.replyHeaderDate.text = talkReplyHeaderModel.date
         this.replyHeaderMessage.text = talkReplyHeaderModel.question
         this.replyHeaderTNC.setOnClickListener {
             onTermsAndConditionsClickedListener.onTermsAndConditionsClicked()
+        }
+        this.replyHeaderKebab.setOnClickListener {
+            onKebabClickedListener.onKebabClicked()
         }
         if(talkReplyHeaderModel.isFollowed) {
             setButtonToFollowed()

@@ -52,7 +52,6 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
 
     private var productId: Int = 0
     private var shopId: Int = 0
-    private var sortOptionsBottomSheet: BottomSheetUnify? = null
 
     override fun getAdapterTypeFactory(): TalkReadingAdapterTypeFactory {
         return TalkReadingAdapterTypeFactory()
@@ -67,7 +66,7 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        getDataFromBundle()
+        getDataFromArguments()
         observeProductHeader()
         observeSortOptions()
         showPageLoading()
@@ -173,7 +172,7 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
     }
 
     private fun showBottomSheet() {
-        sortOptionsBottomSheet = context?.let { context ->
+        val sortOptionsBottomSheet = context?.let { context ->
             viewModel.sortOptions.value?.let {
                 TalkReadingSortBottomSheet.createInstance(context,it , this) }
         }
@@ -200,7 +199,7 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
         talkReadingContainer.visibility = View.VISIBLE
     }
 
-    private fun getDataFromBundle() {
+    private fun getDataFromArguments() {
         arguments?.let {
             productId = it.getInt(PARAM_PRODUCT_ID)
             shopId = it.getInt(PARAM_SHOP_ID)
