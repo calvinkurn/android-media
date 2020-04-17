@@ -88,4 +88,7 @@ class HotlistNavUseCaseModule {
         return RemoveWishListUseCase(context)
     }
 
+    @HotlistNavScope
+    @Provides
+    fun provideSendTopAdsUseCase() = SendTopAdsUseCase()
 }

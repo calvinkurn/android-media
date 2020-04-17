@@ -24,6 +24,8 @@ import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.shop.open.R
@@ -40,7 +42,6 @@ import com.tokopedia.shop.open.shop_open_revamp.listener.FragmentNavigationInter
 import com.tokopedia.shop.open.shop_open_revamp.listener.InputShopInterface
 import com.tokopedia.shop.open.shop_open_revamp.presentation.adapter.ShopOpenRevampShopsSuggestionAdapter
 import com.tokopedia.shop.open.shop_open_revamp.presentation.viewmodel.ShopOpenRevampViewModel
-import com.tokopedia.shop.open.view.activity.ShopOpenWebViewActivity
 import com.tokopedia.shop.open.view.watcher.AfterTextWatcher
 import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -424,11 +425,8 @@ class ShopOpenRevampInputShopFragment : BaseDaggerFragment(),
                     } else {
                         shopOpenRevampTracking?.clickTextPrivacyPolicy()
                     }
-                    val intent = ShopOpenWebViewActivity.newInstance(activity!!, url, title)
-                    startActivity(intent)
+                    RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW_TITLE, title, url)
                 }
-
-
             }
         }
     }

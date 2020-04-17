@@ -24,11 +24,18 @@ class PartialAttributeInfoView private constructor(private val view: View) {
         }
     }
 
-    fun renderDataDynamicPdp(countView: Int, txStats: TxStatsDynamicPdp? = null) {
+    fun renderDataDynamicPdp(countView: Int, txStats: TxStatsDynamicPdp? = null, isSocialProofPv:Boolean) {
         with(view) {
             txt_seen.text = countView.thousandFormatted()
-            txt_tx_success.text = context.getString(R.string.template_success_rate,
-                    txStats?.getSuccessRateRound, txStats?.countSold?.toIntOrNull()?.thousandFormatted())
+            if (isSocialProofPv) {
+                label_tx_success.text = context.getString(R.string.label_dibeli)
+                txt_tx_success.text = txStats?.itemSoldPaymentVerified?.toIntOrNull()?.thousandFormatted()
+            } else {
+                label_tx_success.text = context.getString(R.string.label_success_transaction)
+                txt_tx_success.text = context.getString(R.string.template_success_rate,
+                        txStats?.getSuccessRateRound, txStats?.countSold?.toIntOrNull()?.thousandFormatted())
+            }
+
             visible()
         }
     }

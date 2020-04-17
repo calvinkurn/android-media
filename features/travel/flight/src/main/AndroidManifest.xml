@@ -164,11 +164,6 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White.Flight" />
         <activity
-            android:name=".bookingV2.presentation.activity.FlightInsuranceWebviewActivity"
-            android:label="@string/flight_insurance_webview_toolbar_title"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White.Flight" />
-        <activity
             android:name=".detail.view.activity.FlightInvoiceActivity"
             android:label="@string/flight_order_invoice_toolbar_title"
             android:screenOrientation="portrait"

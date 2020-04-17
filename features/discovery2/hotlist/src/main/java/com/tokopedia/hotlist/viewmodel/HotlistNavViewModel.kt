@@ -3,10 +3,7 @@ package com.tokopedia.hotlist.viewmodel
 import androidx.lifecycle.*
 import com.tokopedia.common_category.model.productModel.ProductListResponse
 import com.tokopedia.common_category.model.productModel.ProductsItem
-import com.tokopedia.common_category.usecase.CategoryProductUseCase
-import com.tokopedia.common_category.usecase.DynamicFilterUseCase
-import com.tokopedia.common_category.usecase.GetProductListUseCase
-import com.tokopedia.common_category.usecase.QuickFilterUseCase
+import com.tokopedia.common_category.usecase.*
 import com.tokopedia.hotlist.data.cpmAds.CpmItem
 import com.tokopedia.hotlist.data.hotListDetail.HotListDetailResponse
 import com.tokopedia.hotlist.domain.usecases.CpmAdsUseCase
@@ -25,7 +22,8 @@ class HotlistNavViewModel @Inject constructor(private var hotlistDetailUseCase: 
                                               private var categoryProductUseCase: CategoryProductUseCase,
                                               private var quickFilterUseCase: QuickFilterUseCase,
                                               private var dynamicFilterUseCase: DynamicFilterUseCase,
-                                              private var cpmAdsUseCase: CpmAdsUseCase) : ViewModel(), LifecycleObserver {
+                                              private var cpmAdsUseCase: CpmAdsUseCase,
+                                              var sendTopAdsUseCase: SendTopAdsUseCase) : ViewModel(), LifecycleObserver {
 
     val mHotListDetailResponse = MutableLiveData<Result<HotListDetailResponse>>()
     val mProductList = MutableLiveData<Result<List<ProductsItem>>>()
@@ -146,6 +144,10 @@ class HotlistNavViewModel @Inject constructor(private var hotlistDetailUseCase: 
                 mCpmTopAdsData.value = Fail(e)
             }
         })
+    }
+
+    fun sendTopAds(url: String) {
+        sendTopAdsUseCase.executeOnBackground(url)
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
