@@ -51,7 +51,7 @@ public class AccessTokenRefresh {
             Response<String> response = responseCall.clone().execute();
             okhttp3.ResponseBody responseBody = response.errorBody();
             if (responseBody != null) {
-                tokenResponseError = response.errorBody().string();
+                tokenResponseError = responseBody.string();
                 checkShowForceLogout(tokenResponseError, networkRouter, userSession, finalRequest);
             } else if (response.body() != null) {
                 tokenResponse = response.body();
