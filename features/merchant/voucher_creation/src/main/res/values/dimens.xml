@@ -2,4 +2,6 @@
 <resources>
     <dimen name="voucher_creation_progressbar_padding_top">6dp</dimen>
     <dimen name="voucher_creation_next_button_margin">16dp</dimen>
+    <dimen name="mvc_dimen_20dp">20dp</dimen>
+    <dimen name="mvc_dimen_12dp">12dp</dimen>
 </resources>
