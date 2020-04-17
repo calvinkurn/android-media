@@ -1,10 +1,12 @@
 package com.tokopedia.analyticsdebugger.validator
 
+import com.tokopedia.analyticsdebugger.database.GtmLogDB
+
 data class Validator(
         val name: String,
         val data: Map<String, Any>,
-        var timeStamp: String = "",
-        var status: Status = Status.PENDING
+        var status: Status = Status.PENDING,
+        var match: GtmLogDB? = null
 )
 
 enum class Status {
