@@ -94,10 +94,10 @@ class SettingFieldAdapter<T : Visitable<SettingFieldTypeFactory>>(
         notifyDataSetChanged()
     }
 
-    fun addPinnedActivation() {
+    fun addPinnedActivation(pinned: NotificationActivation) {
         val indexPinned = 0
         removeFirstPinnedActivation()
-        addElement(indexPinned, activationPushNotif())
+        addElement(indexPinned, pinned)
     }
 
     fun enableSwitchComponent(temporaryList: List<ParentSetting>) {
