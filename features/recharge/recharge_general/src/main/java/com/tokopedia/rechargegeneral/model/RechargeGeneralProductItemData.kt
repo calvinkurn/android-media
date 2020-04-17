@@ -1,27 +1,11 @@
 package com.tokopedia.rechargegeneral.model
 
-import com.google.gson.annotations.Expose
-import com.google.gson.annotations.SerializedName
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.common.topupbills.data.product.CatalogProductData
 import com.tokopedia.rechargegeneral.presentation.adapter.RechargeGeneralAdapterFactory
 
 /**
  * Created by resakemal on 26/11/19.
  */
-data class RechargeGeneralProductItemData(
-
-        @SerializedName("name")
-        @Expose
-        var name: String = "",
-        @SerializedName("text")
-        @Expose
-        var text: String = "",
-        @SerializedName("dataCollections")
-        @Expose
-        var dataCollections: List<CatalogProductData.DataCollection> = listOf(),
-        var selectedId: String = ""
-
-) : Visitable<RechargeGeneralAdapterFactory> {
-        override fun type(typeFactory: RechargeGeneralAdapterFactory) = typeFactory.type(this)
+class RechargeGeneralProductItemData : RechargeGeneralProductInput(), Visitable<RechargeGeneralAdapterFactory> {
+    override fun type(typeFactory: RechargeGeneralAdapterFactory) = typeFactory.type(this)
 }

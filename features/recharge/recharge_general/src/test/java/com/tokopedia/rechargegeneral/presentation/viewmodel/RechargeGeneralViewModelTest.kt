@@ -4,13 +4,12 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.rechargegeneral.RechargeGeneralTestDispatchersProvider
 import com.tokopedia.common.topupbills.data.product.CatalogOperator
 import com.tokopedia.common.topupbills.data.product.CatalogProduct
-import com.tokopedia.common.topupbills.data.product.CatalogProductData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.rechargegeneral.model.*
-import com.tokopedia.rechargegeneral.model.mapper.RechargeGeneralDynamicInputMapper
+import com.tokopedia.rechargegeneral.model.mapper.RechargeGeneralMapper
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.MockKAnnotations
@@ -44,7 +43,7 @@ class RechargeGeneralViewModelTest {
                 mapOf(MessageErrorException::class.java to listOf(GraphqlError())), false)
 
         rechargeGeneralViewModel =
-                RechargeGeneralViewModel(RechargeGeneralDynamicInputMapper(), graphqlRepository, RechargeGeneralTestDispatchersProvider())
+                RechargeGeneralViewModel(RechargeGeneralMapper(), graphqlRepository, RechargeGeneralTestDispatchersProvider())
     }
 
     @Test
@@ -113,11 +112,10 @@ class RechargeGeneralViewModelTest {
         rechargeGeneralViewModel.getProductList("", mapParams)
         val actualData = rechargeGeneralViewModel.productList.value
         assert(actualData is Success)
-        val product = (actualData as Success).data.product
+        val product = (actualData as Success).data.enquiryFields
         assertNotNull(product)
         product?.run {
-            assertEquals(product.dataCollections.first().products.first().id, "1")
-        }
+            assertEquals(actualData.data.enquiryFields[0].dataCollections[0].products[0].id, "1") }
     }
 
     // Field value in response is null

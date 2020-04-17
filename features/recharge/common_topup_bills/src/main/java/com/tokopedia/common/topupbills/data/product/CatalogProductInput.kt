@@ -53,8 +53,14 @@ class CatalogProductInput (
         )
 
         class DataCollection(
+                @SerializedName("name")
+                @Expose
+                var name: String = "",
                 @SerializedName("value")
                 @Expose
-                var value: String = ""
+                var value: String = "",
+                @SerializedName("products")
+                @Expose
+                var products: List<CatalogProduct> = listOf()
         )
 }

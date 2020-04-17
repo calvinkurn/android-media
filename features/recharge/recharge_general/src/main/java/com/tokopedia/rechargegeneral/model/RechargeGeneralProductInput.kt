@@ -9,7 +9,7 @@ import com.tokopedia.rechargegeneral.presentation.adapter.RechargeGeneralAdapter
 /**
  * Created by resakemal on 26/11/19.
  */
-data class RechargeGeneralProductInput (
+open class RechargeGeneralProductInput (
 
         @SerializedName("id")
         @Expose
@@ -38,7 +38,8 @@ data class RechargeGeneralProductInput (
         @SerializedName("validations")
         @Expose
         var validations: List<CatalogProductInput.Validation> = listOf(),
-        var value: String = ""
+        var value: String = "",
+        var selectedProductId: String = ""
 
 ) : Visitable<RechargeGeneralAdapterFactory> {
         override fun type(typeFactory: RechargeGeneralAdapterFactory) = typeFactory.type(this)

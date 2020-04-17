@@ -32,9 +32,7 @@ data class RechargeGeneralDynamicField(
         val dataCollections: List<DataCollection> = listOf(),
         @SerializedName("validations")
         @Expose
-        val validations: List<Validation> = listOf(),
-        var value: String = ""
-
+        val validations: List<Validation> = listOf()
 ) {
 
     class DataCollection(

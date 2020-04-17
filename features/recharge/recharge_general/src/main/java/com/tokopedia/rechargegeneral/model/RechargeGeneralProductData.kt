@@ -16,10 +16,7 @@ data class RechargeGeneralProductData(
         var isShowingProduct: Boolean = true,
         @SerializedName("enquiryFields")
         @Expose
-        var enquiryFields: List<RechargeGeneralProductInput> = listOf(),
-        @SerializedName("product")
-        @Expose
-        var product: RechargeGeneralProductItemData? = RechargeGeneralProductItemData()
+        var enquiryFields: List<RechargeGeneralProductInput> = listOf()
 
 ) {
         class Response(
