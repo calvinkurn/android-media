@@ -18,6 +18,7 @@ import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProduct
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.UNIT_DAY
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.UNIT_WEEK
 import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
+import com.tokopedia.product.addedit.detail.presentation.model.WholeSaleInputModel
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.unifycomponents.list.ListItemUnify
 import com.tokopedia.usecase.coroutines.Fail
@@ -323,6 +324,16 @@ class AddEditProductDetailViewModel @Inject constructor(
     private fun isProductNameBanned(productNameInput: String): Boolean {
         // TODO: replace the validation with API check
         return false
+    }
+
+    fun recalculateWholeSaleMinOrder(wholesaleList: List<WholeSaleInputModel>) : List<WholeSaleInputModel> {
+        wholesaleList.forEach { wholesaleInputModel ->
+            // recalculate wholesale min order because of > symbol
+            val oldValue = wholesaleInputModel.quantity.toBigInteger()
+            val newValue = oldValue - 1.toBigInteger()
+            wholesaleInputModel.quantity = newValue.toString()
+        }
+        return wholesaleList
     }
 
     fun updateProductPhotos(imagePickerResult: ArrayList<String>, originalImageUrl: ArrayList<String>, editted: ArrayList<Boolean>) {

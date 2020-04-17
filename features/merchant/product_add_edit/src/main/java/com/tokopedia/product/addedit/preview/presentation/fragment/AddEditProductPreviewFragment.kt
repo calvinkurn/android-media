@@ -319,6 +319,12 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
             if (validateMessage.isNotEmpty()) {
                 Toaster.make(view, validateMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
             } else {
+
+                // recalculate wholesale min order because of > symbol
+                viewModel.productInputModel.value?.run {
+                    this.detailInputModel.wholesaleList = viewModel.recalculateWholeSaleMinOrder(this.detailInputModel.wholesaleList)
+                }
+
                 // when we perform add product, the productId will be 0
                 // when we perform edit product, the productId will be provided from the getProductV3 response
                 // when we perform open draft, previous state before we save the product to draft will be the same
