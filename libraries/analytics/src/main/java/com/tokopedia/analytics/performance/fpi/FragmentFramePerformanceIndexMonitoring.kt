@@ -103,7 +103,7 @@ class FragmentFramePerformanceIndexMonitoring : LifecycleObserver, CoroutineScop
     }
 
     @TargetApi(Build.VERSION_CODES.N)
-    private fun startFrameMetrics() {
+    private suspend fun startFrameMetrics() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N && onFrameMetricAvailableListener == null) {
             onFrameMetricAvailableListener = Window.OnFrameMetricsAvailableListener { window, frameMetrics, dropCountSinceLastInvocation ->
                 val frameMetricsCopy = FrameMetrics(frameMetrics)
@@ -117,7 +117,9 @@ class FragmentFramePerformanceIndexMonitoring : LifecycleObserver, CoroutineScop
                 }
             }
             onFrameMetricAvailableListener?.let {
-                fragment?.activity?.window?.addOnFrameMetricsAvailableListener(it, Handler())
+                withContext(Dispatchers.Main) {
+                    fragment?.activity?.window?.addOnFrameMetricsAvailableListener(it, Handler())
+                }
             }
         }
     }
@@ -133,6 +135,7 @@ class FragmentFramePerformanceIndexMonitoring : LifecycleObserver, CoroutineScop
     }
 
     open fun flush(){
+        stopFrameMetrics()
         if (isActive && !masterJob.isCancelled){
             masterJob.children.map { it.cancel() }
         }
