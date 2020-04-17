@@ -6,7 +6,6 @@ import com.tokopedia.topads.sdk.listener.ImpressionListener;
 import com.tokopedia.topads.sdk.network.HttpMethod;
 import com.tokopedia.topads.sdk.network.HttpRequest;
 import com.tokopedia.topads.sdk.network.RawHttpRequestExecutor;
-import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import java.io.IOException;
