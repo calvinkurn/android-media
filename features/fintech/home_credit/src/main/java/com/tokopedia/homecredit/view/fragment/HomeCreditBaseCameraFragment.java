@@ -9,14 +9,15 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Build;
-import androidx.annotation.NonNull;
-import androidx.core.app.ActivityCompat;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
 
 import com.otaliastudios.cameraview.CameraListener;
 import com.otaliastudios.cameraview.CameraOptions;
@@ -28,6 +29,7 @@ import com.otaliastudios.cameraview.controls.Flash;
 import com.otaliastudios.cameraview.size.Size;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.imagepicker.common.util.ImageUtils;
 
 import java.io.File;
@@ -35,7 +37,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
-import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 public class HomeCreditBaseCameraFragment extends BaseDaggerFragment {
 
@@ -62,6 +63,7 @@ public class HomeCreditBaseCameraFragment extends BaseDaggerFragment {
     private ProgressDialog progressDialog;
     public String finalCameraResultFilePath;
     protected ImageView cameraOverlayImage;
+    protected TextView headerText;
 
     @Override
     protected void initInjector() {

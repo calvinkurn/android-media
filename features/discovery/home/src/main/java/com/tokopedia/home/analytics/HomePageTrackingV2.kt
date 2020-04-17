@@ -424,7 +424,7 @@ object HomePageTrackingV2 : BaseTracking() {
                     )
                 },
                 list = String.format(
-                        Value.LIST, "1", LIST_VALUE_SPRINT_SALE
+                        Value.LIST_WITH_HEADER, "1", LIST_VALUE_SPRINT_SALE, channel.header.name
                 )
         )
         private fun getSprintSaleClick(channel: DynamicHomeChannel.Channels, currentCountDown: String, grid: DynamicHomeChannel.Grid, position: Int) = getBasicProductChannelClick(
@@ -451,7 +451,7 @@ object HomePageTrackingV2 : BaseTracking() {
                         )
                 ),
                 list = String.format(
-                        Value.LIST, "1", LIST_VALUE_SPRINT_SALE
+                        Value.LIST_WITH_HEADER, "1", LIST_VALUE_SPRINT_SALE, channel.header.name
                 )
         )
 
@@ -464,7 +464,7 @@ object HomePageTrackingV2 : BaseTracking() {
                     Event.KEY, Event.CLICK_HOMEPAGE,
                     Category.KEY, Category.HOMEPAGE,
                     Action.KEY, EVENT_ACTION_SPRINT_SALE_CLICK_VIEW_ALL,
-                    Label.KEY, Value.EMPTY,
+                    Label.KEY, channel.header.name,
                     ChannelId.KEY, channel.id
             ) as HashMap<String, Any>
         }

@@ -19,19 +19,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.PersistableBundle;
 import android.preference.PreferenceManager;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.annotation.RestrictTo;
-import com.google.android.material.bottomnavigation.LabelVisibilityMode;
-
-import androidx.asynclayoutinflater.view.AsyncLayoutInflater;
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
-import com.google.android.material.navigation.NavigationView;
-import com.google.android.material.snackbar.Snackbar;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import android.text.TextUtils;
 import android.util.SparseArray;
 import android.view.Menu;
@@ -42,11 +29,24 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.RestrictTo;
+import androidx.asynclayoutinflater.view.AsyncLayoutInflater;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.airbnb.lottie.LottieComposition;
 import com.airbnb.lottie.LottieCompositionFactory;
 import com.airbnb.lottie.LottieDrawable;
 import com.airbnb.lottie.LottieTask;
+import com.google.android.material.bottomnavigation.LabelVisibilityMode;
+import com.google.android.material.navigation.NavigationView;
+import com.google.android.material.snackbar.Snackbar;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseActivity;
 import com.tokopedia.abstraction.base.view.appupdate.AppUpdateDialogBuilder;
@@ -84,9 +84,9 @@ import com.tokopedia.navigation_common.listener.AllNotificationListener;
 import com.tokopedia.navigation_common.listener.CartNotifyListener;
 import com.tokopedia.navigation_common.listener.FragmentListener;
 import com.tokopedia.navigation_common.listener.HomePerformanceMonitoringListener;
+import com.tokopedia.navigation_common.listener.MainParentStatusBarListener;
 import com.tokopedia.navigation_common.listener.RefreshNotificationListener;
 import com.tokopedia.navigation_common.listener.ShowCaseListener;
-import com.tokopedia.navigation_common.listener.MainParentStatusBarListener;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.showcase.ShowCaseBuilder;
 import com.tokopedia.showcase.ShowCaseDialog;
@@ -104,7 +104,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import static com.tokopedia.applink.DeeplinkDFMapper.DFM_MERCHANT_SELLER_CUSTOMERAPP;
 import static com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PARAM_SOURCE;
 import static com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.OPEN_SHOP;
 import static com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.SHOP_PAGE;
@@ -273,12 +272,20 @@ public class MainParentActivity extends BaseActivity implements
             }
         };
         Weaver.Companion.executeWeaveCoRoutineWithFirebase(executeEventsWeave, RemoteConfigKey.ENABLE_ASYNC_OPENHOME_EVENT, getContext());
+        installDFonBackground();
+    }
 
-        if (userSession.hasShop() && !DFInstaller.isInstalled(getApplication(), DFM_MERCHANT_SELLER_CUSTOMERAPP)) {
-            ArrayList<String> list = new ArrayList<>();
-            list.add(DFM_MERCHANT_SELLER_CUSTOMERAPP);
-            DFInstaller.installOnBackground(this.getApplication(), list, "Home");
+    private void installDFonBackground() {
+        List<String> moduleNameList = new ArrayList<>();
+        moduleNameList.add(DeeplinkDFMapper.DF_SALAM_UMRAH);
+        if (userSession.isLoggedIn()) {
+            moduleNameList.add(DeeplinkDFMapper.DF_USER_SETTINGS);
+            moduleNameList.add(DeeplinkDFMapper.DF_OPERATIONAL_CONTACT_US);
         }
+        if (userSession.hasShop()) {
+            moduleNameList.add(DeeplinkDFMapper.DF_MERCHANT_SELLER);
+        }
+        DFInstaller.installOnBackground(this.getApplication(), moduleNameList, "Home");
     }
 
     @NotNull
@@ -307,10 +314,7 @@ public class MainParentActivity extends BaseActivity implements
                 return;
             }
         }
-
-        Intent intent = RouteManager.getIntent(this,
-                ApplinkConstInternalMarketplace.ONBOARDING);
-        startActivity(intent);
+        RouteManager.route(this, ApplinkConstInternalMarketplace.ONBOARDING);
         finish();
     }
 
@@ -383,7 +387,6 @@ public class MainParentActivity extends BaseActivity implements
     private void afterBottomNaviagtionInflation(Bundle savedInstanceState){
         bottomNavigation = findViewById(R.id.bottomnav);
         bottomNavigation.setItemIconTintList(null);
-        bottomNavigation.setLabelVisibilityMode(LabelVisibilityMode.LABEL_VISIBILITY_LABELED);
         bottomNavigation.setOnNavigationItemSelectedListener(MainParentActivity.this::onNavigationItemSelected);
         bottomNavigation.setOnNavigationItemReselectedListener(item -> {
             Fragment fragment = fragmentList.get(getPositionFragmentByMenu(item));
@@ -1167,6 +1170,7 @@ public class MainParentActivity extends BaseActivity implements
                 0,
                 null
         );
+
         getPageLoadTimePerformanceInterface().startMonitoring(HOME_PERFORMANCE_MONITORING_KEY);
         getPageLoadTimePerformanceInterface().startPreparePagePerformanceMonitoring();
     }
