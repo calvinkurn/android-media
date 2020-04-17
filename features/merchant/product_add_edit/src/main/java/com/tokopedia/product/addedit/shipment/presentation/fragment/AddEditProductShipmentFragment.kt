@@ -197,8 +197,10 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
         tfWeightUnit.setText(weightUnit)
         tfWeightAmount.setText(inputModel.weight.toString())
         switchInsurance?.isChecked = inputModel.isMustInsurance
-        btnEnd?.visibility = View.GONE
-        btnSave?.visibility = View.VISIBLE
+        if (shipmentViewModel.isEditMode || shipmentViewModel.isAddMode) {
+            btnEnd?.visibility = View.GONE
+            btnSave?.visibility = View.VISIBLE
+        }
     }
 
     private fun showUnitWeightOption() {
@@ -289,9 +291,13 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
             intent.putExtra(EXTRA_SHIPMENT_INPUT, shipmentInputModel)
             activity?.setResult(Activity.RESULT_OK, intent)
             activity?.finish()
-            ProductEditShippingTracking.clickFinish(shopId, true)
+            if (shipmentViewModel.isEditMode) {
+                ProductEditShippingTracking.clickFinish(shopId, true)
+            }
         } else {
-            ProductEditShippingTracking.clickFinish(shopId, false)
+            if (shipmentViewModel.isEditMode) {
+                ProductEditShippingTracking.clickFinish(shopId, false)
+            }
         }
     }
 }
