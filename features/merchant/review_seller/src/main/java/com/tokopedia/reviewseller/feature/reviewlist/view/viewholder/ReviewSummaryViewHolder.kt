@@ -7,7 +7,8 @@ import com.tokopedia.reviewseller.R
 import com.tokopedia.reviewseller.feature.reviewlist.view.model.ProductRatingOverallUiModel
 import com.tokopedia.unifyprinciples.Typography
 
-class ReviewSummaryViewHolder(itemView: View): AbstractViewHolder<ProductRatingOverallUiModel>(itemView) {
+class ReviewSummaryViewHolder(itemView: View,
+                              private val listener: ReviewSummaryViewHolder.Listener): AbstractViewHolder<ProductRatingOverallUiModel>(itemView) {
 
     private val tgCountRating: Typography = itemView.findViewById(R.id.tgCountRating)
     private val tgCountReview: Typography = itemView.findViewById(R.id.tgCountReview)
@@ -20,10 +21,16 @@ class ReviewSummaryViewHolder(itemView: View): AbstractViewHolder<ProductRatingO
         tgCountReview.text = element?.reviewCount?.toString()
         tgFiveReview.text = getString(R.string.rating_overall_product)
         tgPeriodReview.text = "1 Des 2019 - Hari Ini"
+
+        listener.onAddedCoachMarkOverallRating(itemView)
     }
 
     companion object {
         @LayoutRes
         val LAYOUT_RES = R.layout.summary_review_product
+    }
+
+    interface Listener {
+        fun onAddedCoachMarkOverallRating(view: View)
     }
 }
