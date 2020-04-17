@@ -105,6 +105,7 @@ import com.tokopedia.topads.sdk.utils.ImpresionTask
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.data.source.cloud.model.Wishlist
 import com.tokopedia.wishlist.common.listener.WishListActionListener
@@ -2848,5 +2849,10 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     override fun resetRecentViewList() {
         shouldReloadRecentViewList = true
+    }
+
+    override fun sendATCTrackingURL(clickurl: String) {
+        var url = "$clickurl&click_source=ATC_direct_click";
+        ImpresionTask(UserSession(context)).execute(url)
     }
 }
