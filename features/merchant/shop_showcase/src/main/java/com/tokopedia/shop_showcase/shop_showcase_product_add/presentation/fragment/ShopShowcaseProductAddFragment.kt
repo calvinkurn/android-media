@@ -303,25 +303,22 @@ class ShopShowcaseProductAddFragment : BaseDaggerFragment(),
                 is Success -> {
 
                     val productList: MutableList<ShowcaseProduct> = it.data.toMutableList()
+                    val selectedProductList = activity?.intent?.getParcelableArrayListExtra<BaseShowcaseProduct>(ShopShowcaseAddFragment.SELECTED_SHOWCASE_PRODUCT)?.filterIsInstance<ShowcaseProduct>()
+                    val appendedProductList = activity?.intent?.getParcelableArrayListExtra<BaseShowcaseProduct>(ShopShowcaseAddFragment.NEW_APPENDED_SHOWCASE_PRODUCT)?.filterIsInstance<ShowcaseProduct>()
+                    val isActionEdit = activity?.intent?.getBooleanExtra(ShopShowcaseEditParam.EXTRA_IS_ACTION_EDIT, false)
+
                     if(productList.size == 0 && !isLoadNextPage) {
                         showEmptyViewProductSearch(true)
-                        showcaseProductListAdapter?.updateShopProductList(isLoadNextPage, productList, isActionEdit = false)
+                        showcaseProductListAdapter?.updateShopProductList(isLoadNextPage, productList, selectedProductList!!, appendedProductList!!, isActionEdit!!)
                     } else {
                         showEmptyViewProductSearch(false)
-                        var selectedProductList = activity?.intent?.getParcelableArrayListExtra<BaseShowcaseProduct>(ShopShowcaseAddFragment.SELECTED_SHOWCASE_PRODUCT)?.filterIsInstance<ShowcaseProduct>()
-                        val isActionEdit = activity?.intent?.getBooleanExtra(ShopShowcaseEditParam.EXTRA_IS_ACTION_EDIT, false)
-                        selectedProductList?.run {
-                            if(isEmpty()) {
-                                selectedProductList = showcaseProductListAdapter?.getSelectedProduct()
-                            }
-                        }
                         productList.forEach { showcaseProduct->
                             selectedProductList?.forEach { selectedProduct ->
                                 if(selectedProduct.productId == showcaseProduct.productId)
                                     showcaseProduct.ishighlighted = true
                             }
                         }
-                        showcaseProductListAdapter?.updateShopProductList(isLoadNextPage, productList, isActionEdit)
+                        showcaseProductListAdapter?.updateShopProductList(isLoadNextPage, productList, selectedProductList!!, appendedProductList!!, isActionEdit!!)
                         if (isLoadNextPage)
                             scrollListener.updateStateAfterGetData()
                     }

@@ -37,14 +37,22 @@ class ShopShowcaseAddAdapter(private val context: Context, private var listener:
                 if(!selectedProductList.contains(showcaseProduct))
                     selectedProductList.add(showcaseProduct)
             }
-//            selectedProductList.addAll(it)
         }
         notifyDataSetChanged()
     }
 
     fun updateAppendedDataSet(newAppendedProductList: ArrayList<ShowcaseProduct>?) {
-        newAppendedProductList?.let {
-            appendedProductList.addAll(it)
+        newAppendedProductList?.let { newAppendedList ->
+            val filteredList = selectedProductList.filter {
+                !(it as ShowcaseProduct).isNewAppended
+            }
+            appendedProductList.clear()
+            appendedProductList.addAll(newAppendedList)
+            selectedProductList.apply {
+                clear()
+                addAll(filteredList)
+                addAll(newAppendedList)
+            }
         }
     }
 

@@ -63,12 +63,17 @@ class ShowcaseProductListAdapter(
         if (item is ShowcaseProduct) {
             holder.itemView.parent_card_view.setOnClickListener {
                 val cardState = !item.ishighlighted
+                val appendState = !item.isNewAppended
                 if (cardState) {
                     selectedProduct.add(shopProductList[position] as ShowcaseProduct)
                 } else {
-                    selectedProduct.remove(shopProductList[position])
+                    val deletedProduct = shopProductList[position] as ShowcaseProduct
+                    selectedProduct.remove(selectedProduct.single {
+                        it.productId == deletedProduct.productId
+                    })
                 }
                 item.ishighlighted = cardState
+                item.isNewAppended = appendState
                 holder.renderCardState(item)
                 showProductCounter(getSelectedProductSize())
                 viewListener.onCLickProductCardTracking()
@@ -76,26 +81,20 @@ class ShowcaseProductListAdapter(
         }
     }
 
-    fun updateShopProductList(isLoadNextPage: Boolean, productList: List<ShowcaseProduct>, isActionEdit: Boolean?) {
+    fun updateShopProductList(isLoadNextPage: Boolean, productList: List<ShowcaseProduct>, previouslySelectedProduct: List<ShowcaseProduct>, appendedProductList: List<ShowcaseProduct>, isActionEdit: Boolean) {
         if (!isLoadNextPage) {
             shopProductList = productList.toMutableList()
         } else {
             shopProductList.addAll(productList.toMutableList())
         }
         if(selectedProduct.isEmpty()) {
-            selectedProduct = ArrayList(productList.filter { it.ishighlighted })
+            selectedProduct = if(!isActionEdit) {
+                ArrayList(previouslySelectedProduct)
+            } else {
+                ArrayList(appendedProductList)
+            }
             showProductCounter(getSelectedProductSize())
         }
-//        isActionEdit?.let { actionEdit ->
-//            if(!actionEdit && selectedProduct.isEmpty()) {
-//                selectedProduct = ArrayList(productList.filter { it.ishighlighted })
-////                productList.forEach {
-////                    if(it.ishighlighted && selectedProduct.isEmpty())
-////                        selectedProduct.add(it)
-////                }
-//                showProductCounter(getSelectedProductSize())
-//            }
-//        }
         notifyDataSetChanged()
     }
 
@@ -141,4 +140,5 @@ class ShowcaseProductListAdapter(
     private fun getSelectedProductSize(): Int {
         return selectedProduct.size
     }
+
 }
