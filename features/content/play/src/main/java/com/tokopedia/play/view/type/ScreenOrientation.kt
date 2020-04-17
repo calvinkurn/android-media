@@ -8,20 +8,21 @@ import android.content.res.Configuration
  */
 enum class ScreenOrientation(
         private val orientationInt: Int,
-        val requestedOrientation: Int
+        val requestedOrientation: Int,
+        val value: String
 ) {
 
-    Portrait(Configuration.ORIENTATION_PORTRAIT, ActivityInfo.SCREEN_ORIENTATION_PORTRAIT),
-    Landscape(Configuration.ORIENTATION_LANDSCAPE, ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE),
+    Portrait(Configuration.ORIENTATION_PORTRAIT, ActivityInfo.SCREEN_ORIENTATION_PORTRAIT, "portrait"),
+    Landscape(Configuration.ORIENTATION_LANDSCAPE, ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE, "landscape"),
 
     /**
      * The int in the reversed mode is incorrect
      * This should not be used to match by int
      */
-    ReversedPortrait(Configuration.ORIENTATION_PORTRAIT * -1, ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT),
-    ReversedLandscape(Configuration.ORIENTATION_LANDSCAPE * -1, ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE),
+    ReversedPortrait(Configuration.ORIENTATION_PORTRAIT * -1, ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT, "portrait"),
+    ReversedLandscape(Configuration.ORIENTATION_LANDSCAPE * -1, ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE, "landscape"),
 
-    Unknown(Configuration.ORIENTATION_UNDEFINED, ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
+    Unknown(Configuration.ORIENTATION_UNDEFINED, ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED, "unknown");
 
     val isLandscape: Boolean
         get() = this == Landscape || this == ReversedLandscape
