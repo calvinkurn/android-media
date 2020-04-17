@@ -92,6 +92,6 @@ public class CategoryPickerActivity extends BaseSimpleActivity implements
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        ProductEditMainTracking.INSTANCE.clickBackOtherCategory(new UserSession(getApplicationContext()).getShopId());
+        ProductEditMainTracking.INSTANCE.clickBackOtherCategory(new UserSession(this).getShopId());
     }
 }
