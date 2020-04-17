@@ -24,13 +24,13 @@ class SellerSectionViewHolder(
     }
 
     override fun bind(element: SellerSection?) {
-        txtTitle?.text = context?.getString(R.string.settingnotif_settings_seller_title)
-        imgIcon?.setImageResource(R.drawable.ic_notifsetting_seller)
+        if (element == null) return
 
-        if (element?.isEnabled == true) {
-            container?.setOnClickListener {
-                listener.onItemClicked()
-            }
+        txtTitle?.text = context?.getString(element.title)
+        imgIcon?.setImageResource(element.resourceIcon)
+
+        container?.setOnClickListener {
+            listener.onItemClicked()
         }
     }
 
