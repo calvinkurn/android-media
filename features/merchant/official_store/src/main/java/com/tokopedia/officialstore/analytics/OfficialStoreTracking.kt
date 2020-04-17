@@ -623,7 +623,7 @@ class OfficialStoreTracking(context: Context) {
         val eventAction = "$IMPRESSION on product $valueDynamicMix"
         val data = DataLayer.mapOf(
                 EVENT, EVENT_PRODUCT_VIEW,
-                EVENT_CATEGORY, String.format(OS_MICROSITE, categoryName),
+                EVENT_CATEGORY, "$OS_MICROSITE$categoryName",
                 EVENT_ACTION, eventAction,
                 EVENT_LABEL, channel.id,
                 ECOMMERCE, DataLayer.mapOf(
@@ -686,7 +686,7 @@ class OfficialStoreTracking(context: Context) {
         val eventAction = "$CLICK on product $valueDynamicMix"
         val data = DataLayer.mapOf(
                 EVENT, EVENT_PRODUCT_CLICK,
-                EVENT_CATEGORY, String.format(OS_MICROSITE, categoryName),
+                EVENT_CATEGORY, "$OS_MICROSITE$categoryName",
                 EVENT_ACTION, eventAction,
                 EVENT_LABEL, channel.id,
                 "campaignCode", channel.campaignID,
@@ -716,7 +716,7 @@ class OfficialStoreTracking(context: Context) {
         val eventActionValue = "click view all on $valueDynamicMix"
         tracker.sendGeneralEvent(DataLayer.mapOf(
                 EVENT, CLICK_OS_MICROSITE,
-                EVENT_CATEGORY, "$OS_MICROSITE - $categoryName",
+                EVENT_CATEGORY, "$OS_MICROSITE$categoryName",
                 EVENT_ACTION, eventActionValue,
                 EVENT_LABEL, channel.id
         ))
@@ -726,7 +726,7 @@ class OfficialStoreTracking(context: Context) {
         val eventActionValue = "$CLICK $buttonName on $VALUE_DYNAMIC_MIX_TOP_CAROUSEL"
         tracker.sendGeneralEvent(DataLayer.mapOf(
                 EVENT, CLICK_OS_MICROSITE,
-                EVENT_CATEGORY, "$OS_MICROSITE - $categoryName",
+                EVENT_CATEGORY, "$OS_MICROSITE$categoryName",
                 EVENT_ACTION, eventActionValue,
                 EVENT_LABEL, channelId
         ))

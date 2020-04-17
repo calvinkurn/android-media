@@ -1,6 +1,7 @@
 package com.tokopedia.officialstore.official.presentation.dynamic_channel
 
 import android.graphics.Color
+import android.graphics.drawable.GradientDrawable
 import android.view.View
 import android.widget.ImageView
 import androidx.annotation.LayoutRes
@@ -12,25 +13,16 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.design.countdown.CountDownView
 import com.tokopedia.kotlin.extensions.view.loadImage
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.officialstore.R
 import com.tokopedia.officialstore.official.data.model.dynamic_channel.Channel
-import com.tokopedia.officialstore.official.data.model.dynamic_channel.Grid
-import com.tokopedia.officialstore.official.data.model.dynamic_channel.Header
 import com.tokopedia.officialstore.official.presentation.viewmodel.ProductFlashSaleDataModel
-import com.tokopedia.productcard.ProductCardFlashSaleModel
 import com.tokopedia.productcard.ProductCardModel
-import com.tokopedia.productcard.utils.getMaxHeightForGridView
 import com.tokopedia.unifyprinciples.Typography
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.launch
 
 class DynamicChannelMixLeftViewHolder(
         view: View?,
         private val dcEventHandler: DynamicChannelEventHandler
-) : AbstractViewHolder<DynamicChannelViewModel>(view), CoroutineScope {
+) : AbstractViewHolder<DynamicChannelViewModel>(view) {
 
     companion object {
         @LayoutRes
@@ -38,8 +30,6 @@ class DynamicChannelMixLeftViewHolder(
         const val OPACITY_MAX_THRESHOLD = 0.2f
     }
 
-    private val masterJob = SupervisorJob()
-    override val coroutineContext = masterJob + Dispatchers.Main
     private val headerContainer = itemView.findViewById<ConstraintLayout>(R.id.dc_header_main_container)
     private val headerTitle = itemView.findViewById<Typography>(R.id.dc_header_title)
     private val headerCountDown = itemView.findViewById<CountDownView>(R.id.dc_header_count_down)
@@ -101,11 +91,9 @@ class DynamicChannelMixLeftViewHolder(
     }
 
     private fun setupBackground(channel: Channel) {
-        if (channel.banner?.backColor?.isNotEmpty() == true) {
-            bannerBackground.setBackgroundColor(Color.parseColor(channel.banner.backColor))
-        }
-        if (channel.banner?.imageUrl?.isNotEmpty() == true) {
-            image.loadImage(channel.banner.imageUrl)
+        channel.banner?.let{ banner ->
+            setGradientBackground(bannerBackground, banner.gradientColor)
+            image.loadImage(banner.imageUrl)
         }
     }
 
@@ -119,13 +107,6 @@ class DynamicChannelMixLeftViewHolder(
         adapter = MixLeftAdapter(typeFactoryImpl)
         adapter?.addElement(productDataList)
         recyclerViewProductList.adapter = adapter
-        launch {
-            try {
-//                recyclerViewProductList.setHeightBasedOnProductCardMaxHeight(productDataList.map { it.productModel })
-            } catch (throwable: Throwable) {
-                throwable.printStackTrace()
-            }
-        }
         recyclerViewProductList.addOnScrollListener(getParallaxEffect())
     }
 
@@ -186,17 +167,17 @@ class DynamicChannelMixLeftViewHolder(
         this.layoutParams = carouselLayoutParams
     }
 
-    private suspend fun RecyclerView.setHeightBasedOnProductCardMaxHeight(
-            productCardModelList: List<ProductCardModel>) {
-        val productCardHeight = getProductCardMaxHeight(productCardModelList)
-
-        val carouselLayoutParams = this.layoutParams
-        carouselLayoutParams?.height = productCardHeight
-        this.layoutParams = carouselLayoutParams
-    }
-
-    private suspend fun getProductCardMaxHeight(productCardModelList: List<ProductCardModel>): Int {
-        val productCardWidth = itemView.context.resources.getDimensionPixelSize(com.tokopedia.productcard.R.dimen.product_card_flashsale_width)
-        return productCardModelList.getMaxHeightForGridView(itemView.context, Dispatchers.Default, productCardWidth)
+    private fun setGradientBackground(view: View, colorArray: MutableList<String>) {
+        if (colorArray.size > 1) {
+            val colors = IntArray(colorArray.size)
+            for (i in 0 until colorArray.size) {
+                colors[i] = Color.parseColor(colorArray[i])
+            }
+            val gradient = GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, colors)
+            gradient.cornerRadius = 0f
+            view.background = gradient
+        } else {
+            view.setBackgroundColor(Color.parseColor(colorArray[0]))
+        }
     }
 }
