@@ -230,125 +230,132 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View, ListenerPayment
     }
 
     private inner class TopPayWebViewClient : WebViewClient() {
-        override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
-            // fingerprint
-            if (url.isNotEmpty() && url.contains(PaymentFingerprintConstant.APP_LINK_FINGERPRINT) &&
-                    paymentModuleRouter?.enableFingerprintPayment == true) {
-                showFingerprintDialogRegister(url)
-                return true
-            }
 
-            /*
+        override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
+            if (url != null) {
+                // fingerprint
+                if (url.isNotEmpty() && url.contains(PaymentFingerprintConstant.APP_LINK_FINGERPRINT) &&
+                        paymentModuleRouter?.enableFingerprintPayment == true) {
+                    showFingerprintDialogRegister(url)
+                    return true
+                }
+
+                /*
               HANYA SEMENTARA HARCODE, NANTI PAKAI APPLINK
              */
-            if (url.isNotEmpty() && (url.contains(Constant.TempRedirectPayment.TOP_PAY_DOMAIN_URL_LIVE + Constant.TempRedirectPayment.TOP_PAY_PATH_HELP_URL_TEMPORARY) ||
-                            url.contains(Constant.TempRedirectPayment.TOP_PAY_DOMAIN_URL_STAGING + Constant.TempRedirectPayment.TOP_PAY_PATH_HELP_URL_TEMPORARY))) {
-                val deepLinkUrl = (ApplinkConst.WEBVIEW_PARENT_HOME + "?url=" + URLEncoder.encode(url))
-                RouteManager.route(this@TopPayActivity, deepLinkUrl)
-                return true
-            }
+                if (url.isNotEmpty() && (url.contains(Constant.TempRedirectPayment.TOP_PAY_DOMAIN_URL_LIVE + Constant.TempRedirectPayment.TOP_PAY_PATH_HELP_URL_TEMPORARY) ||
+                                url.contains(Constant.TempRedirectPayment.TOP_PAY_DOMAIN_URL_STAGING + Constant.TempRedirectPayment.TOP_PAY_PATH_HELP_URL_TEMPORARY))) {
+                    val deepLinkUrl = (ApplinkConst.WEBVIEW_PARENT_HOME + "?url=" + URLEncoder.encode(url))
+                    RouteManager.route(this@TopPayActivity, deepLinkUrl)
+                    return true
+                }
 
-            // success payment
-            if (!paymentPassData?.callbackSuccessUrl.isNullOrEmpty() && url.contains(paymentPassData!!.callbackSuccessUrl)) {
-                view.stopLoading()
-                callbackPaymentSucceed()
-                return true
-            }
+                // success payment
+                if (!paymentPassData?.callbackSuccessUrl.isNullOrEmpty() && url.contains(paymentPassData!!.callbackSuccessUrl)) {
+                    view?.stopLoading()
+                    callbackPaymentSucceed()
+                    return true
+                }
 
-            // failed payment
-            if (!paymentPassData?.callbackFailedUrl.isNullOrEmpty() && url.contains(paymentPassData!!.callbackFailedUrl)) {
-                view.stopLoading()
-                callbackPaymentFailed()
-                return true
-            }
+                // failed payment
+                if (!paymentPassData?.callbackFailedUrl.isNullOrEmpty() && url.contains(paymentPassData!!.callbackFailedUrl)) {
+                    view?.stopLoading()
+                    callbackPaymentFailed()
+                    return true
+                }
 
-            if (url.contains(ACCOUNTS_URL)) {
-                view.stopLoading()
-                processRedirectUrlContainsAccountsUrl(url)
-                return true
-            }
-            if (url.contains(LOGIN_URL)) {
-                view.stopLoading()
-                showToastMessageWithForceCloseView(getString(R.string.toppay_error_login))
-                return true
-            }
+                if (url.contains(ACCOUNTS_URL)) {
+                    view?.stopLoading()
+                    processRedirectUrlContainsAccountsUrl(url)
+                    return true
+                }
+                if (url.contains(LOGIN_URL)) {
+                    view?.stopLoading()
+                    showToastMessageWithForceCloseView(getString(R.string.toppay_error_login))
+                    return true
+                }
 
-            // hci
-            if (url.contains(HCI_CAMERA_KTP)) {
-                view.stopLoading()
-                mJsHciCallbackFuncName = Uri.parse(url).lastPathSegment
-                startActivityForResult(RouteManager.getIntent(this@TopPayActivity, ApplinkConst.HOME_CREDIT_KTP_WITH_TYPE), HCI_CAMERA_REQUEST_CODE)
-                return true
-            }
-            if (url.contains(HCI_CAMERA_SELFIE)) {
-                view.stopLoading()
-                mJsHciCallbackFuncName = Uri.parse(url).lastPathSegment
-                startActivityForResult(RouteManager.getIntent(this@TopPayActivity, ApplinkConst.HOME_CREDIT_SELFIE_WITH_TYPE), HCI_CAMERA_REQUEST_CODE)
-                return true
-            }
+                // hci
+                if (url.contains(HCI_CAMERA_KTP)) {
+                    view?.stopLoading()
+                    mJsHciCallbackFuncName = Uri.parse(url).lastPathSegment
+                    startActivityForResult(RouteManager.getIntent(this@TopPayActivity, ApplinkConst.HOME_CREDIT_KTP_WITH_TYPE), HCI_CAMERA_REQUEST_CODE)
+                    return true
+                }
+                if (url.contains(HCI_CAMERA_SELFIE)) {
+                    view?.stopLoading()
+                    mJsHciCallbackFuncName = Uri.parse(url).lastPathSegment
+                    startActivityForResult(RouteManager.getIntent(this@TopPayActivity, ApplinkConst.HOME_CREDIT_SELFIE_WITH_TYPE), HCI_CAMERA_REQUEST_CODE)
+                    return true
+                }
 
-            // back
-            if (ApplinkConst.PAYMENT_BACK_TO_DEFAULT.equals(url, ignoreCase = true)) {
-                if (isEndThanksPage(url)) callbackPaymentSucceed() else callbackPaymentCanceled()
-                return true
-            }
+                // back
+                if (ApplinkConst.PAYMENT_BACK_TO_DEFAULT.equals(url, ignoreCase = true)) {
+                    if (isEndThanksPage(url)) callbackPaymentSucceed() else callbackPaymentCanceled()
+                    return true
+                }
 
-            // applink
-            if (RouteManager.isSupportApplink(this@TopPayActivity, url) && !URLUtil.isNetworkUrl(url)) {
-                val intent = RouteManager.getIntent(this@TopPayActivity, url)
-                intent.data = Uri.parse(url)
-                navigateToActivity(intent)
-                return true
-            }
+                // applink
+                if (RouteManager.isSupportApplink(this@TopPayActivity, url) && !URLUtil.isNetworkUrl(url)) {
+                    val intent = RouteManager.getIntent(this@TopPayActivity, url)
+                    intent.data = Uri.parse(url)
+                    navigateToActivity(intent)
+                    return true
+                }
 
-            val urlFinal = paymentModuleRouter?.getGeneratedOverrideRedirectUrlPayment(url)
-            if (urlFinal != null) {
-                view.loadUrl(urlFinal, paymentModuleRouter?.getGeneratedOverrideRedirectHeaderUrlPayment(urlFinal))
-                return true
+                val urlFinal = paymentModuleRouter?.getGeneratedOverrideRedirectUrlPayment(url)
+                if (urlFinal != null) {
+                    view?.loadUrl(urlFinal, paymentModuleRouter?.getGeneratedOverrideRedirectHeaderUrlPayment(urlFinal))
+                    return true
+                }
             }
 
             return super.shouldOverrideUrlLoading(view, url)
         }
 
         @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-        override fun shouldInterceptRequest(view: WebView, request: WebResourceRequest): WebResourceResponse? {
-            val uri = request.url
-            val uriString = uri.toString()
-            if ((uriString.contains(PaymentFingerprintConstant.TOP_PAY_PATH_CREDIT_CARD_SPRINTASIA) || uriString.contains(PaymentFingerprintConstant.TOP_PAY_PATH_CREDIT_CARD_VERITRANS)) &&
-                    isInterceptOtp && uri.getQueryParameter(PaymentFingerprintConstant.ENABLE_FINGERPRINT).equals("true", true) &&
-                    paymentModuleRouter?.enableFingerprintPayment == true) {
-                fingerPrintDialogPayment = createInstance(presenter.userId, uriString,
-                        uri.getQueryParameter(PaymentFingerprintConstant.TRANSACTION_ID))
-                fingerPrintDialogPayment?.apply {
-                    setListenerPayment(this@TopPayActivity)
-                    context = this@TopPayActivity
-                    show(supportFragmentManager, "fingerprintPayment")
+        override fun shouldInterceptRequest(view: WebView?, request: WebResourceRequest?): WebResourceResponse? {
+            val uri = request?.url
+            if (uri != null) {
+                val uriString = uri.toString()
+                if ((uriString.contains(PaymentFingerprintConstant.TOP_PAY_PATH_CREDIT_CARD_SPRINTASIA) || uriString.contains(PaymentFingerprintConstant.TOP_PAY_PATH_CREDIT_CARD_VERITRANS)) &&
+                        isInterceptOtp && uri.getQueryParameter(PaymentFingerprintConstant.ENABLE_FINGERPRINT).equals("true", true) &&
+                        paymentModuleRouter?.enableFingerprintPayment == true) {
+                    fingerPrintDialogPayment = createInstance(presenter.userId, uriString,
+                            uri.getQueryParameter(PaymentFingerprintConstant.TRANSACTION_ID))
+                    fingerPrintDialogPayment?.apply {
+                        setListenerPayment(this@TopPayActivity)
+                        context = this@TopPayActivity
+                        show(supportFragmentManager, "fingerprintPayment")
+                    }
+                    view?.post { view.stopLoading() }
                 }
-                view.post { view.stopLoading() }
             }
             return super.shouldInterceptRequest(view, request)
         }
 
-        override fun onPageFinished(view: WebView, url: String) {
+        override fun onPageFinished(view: WebView?, url: String?) {
             presenter.clearTimeoutSubscription()
             hideProgressLoading()
         }
 
-        override fun onReceivedSslError(view: WebView, handler: SslErrorHandler, error: SslError) {
+        override fun onReceivedSslError(view: WebView?, handler: SslErrorHandler?, error: SslError?) {
             super.onReceivedSslError(view, handler, error)
-            handler.cancel()
+            handler?.cancel()
             hideProgressLoading()
         }
 
         @TargetApi(Build.VERSION_CODES.M)
-        override fun onReceivedError(view: WebView, request: WebResourceRequest, error: WebResourceError) {
+        override fun onReceivedError(view: WebView?, request: WebResourceRequest?, error: WebResourceError?) {
             super.onReceivedError(view, request, error)
-            Timber.w("P1#WEBVIEW_ERROR#'%s';error_code=%s;desc='%s'", request.url, error.errorCode, error.description)
+            Timber.w("P1#WEBVIEW_ERROR#'%s';error_code=%s;desc='%s'", request?.url, error?.errorCode, error?.description)
         }
 
-        override fun onPageStarted(view: WebView, url: String, favicon: Bitmap) {
-            timerObservable(view)
-            showProgressLoading()
+        override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
+            view?.let {
+                timerObservable(it)
+                showProgressLoading()
+            }
         }
 
         private fun timerObservable(view: WebView) {
