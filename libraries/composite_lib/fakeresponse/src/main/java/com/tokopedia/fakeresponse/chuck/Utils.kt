@@ -2,11 +2,11 @@ package com.tokopedia.fakeresponse.chuck
 
 import android.database.Cursor
 
-object Utils{
+object Utils {
 
-    val KEYWORDS_FOR_GQL = arrayListOf<String>("\"operationName\":","\"query\":","\"variables\":")
+    val KEYWORDS_FOR_GQL = arrayListOf<String>("\"operationName\":", "\"query\":", "\"variables\":")
 
-    fun cursorToTransactionEntity(it: Cursor):TransactionEntity{
+    fun cursorToTransactionEntity(it: Cursor): TransactionEntity {
         val responseBody = it.getString(it.getColumnIndex(TransactionEntityColumn.RESPONSE_BODY))
         val requestDate = it.getLong(it.getColumnIndex(TransactionEntityColumn.REQUEST_DATE))
         val requestBody = it.getString(it.getColumnIndex(TransactionEntityColumn.REQUEST_BODY))
@@ -19,12 +19,12 @@ object Utils{
 
         var isGql = true
         KEYWORDS_FOR_GQL.forEach {
-            if(!requestBody.isNullOrEmpty() && !requestBody.contains(it)){
+            if (!requestBody.isNullOrEmpty() && !requestBody.contains(it)) {
                 isGql = false
                 return@forEach
             }
         }
-        if(requestBody.isNullOrEmpty()){
+        if (requestBody.isNullOrEmpty()) {
             isGql = false
         }
 
@@ -34,9 +34,23 @@ object Utils{
                 path = path,
                 host = host,
                 method = method,
-                url= url,
+                url = url,
                 requestDate = requestDate,
                 id = id,
                 isGql = isGql)
+    }
+
+    fun isGqlRequest(requestBody: String?): Boolean {
+        var isGql = true
+        Utils.KEYWORDS_FOR_GQL.forEach {
+            if (!requestBody.isNullOrEmpty() && !requestBody.contains(it)) {
+                isGql = false
+                return@forEach
+            }
+        }
+        if (requestBody.isNullOrEmpty()) {
+            isGql = false
+        }
+        return isGql
     }
 }
