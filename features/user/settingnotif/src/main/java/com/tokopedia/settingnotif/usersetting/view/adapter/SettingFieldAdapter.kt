@@ -21,6 +21,7 @@ class SettingFieldAdapter<T : Visitable<SettingFieldTypeFactory>>(
 
     interface SettingFieldAdapterListener {
         fun requestUpdateUserSetting(notificationType: String, updatedSettingIds: List<Map<String, Any>>)
+        fun updateSettingState(setting: ParentSetting?)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AbstractViewHolder<out Visitable<*>> {
@@ -59,12 +60,25 @@ class SettingFieldAdapter<T : Visitable<SettingFieldTypeFactory>>(
         return null
     }
 
+    private inline fun getParentSettingByIndex(index: Int, get: (setting: ParentSetting?) -> Unit) {
+        if (visitables[index] is ParentSetting) {
+            get(visitables[index] as ParentSetting)
+        }
+    }
+
     override fun getNotificationType(): String {
         return notificationType
     }
 
     override fun requestUpdateUserSetting(notificationType: String, updatedSettingIds: List<Map<String, Any>>) {
         settingFieldAdapterListener.requestUpdateUserSetting(notificationType, updatedSettingIds)
+    }
+
+    override fun updateParentSettingLastState(position: Int) {
+        // this is will used for update temporary state
+        getParentSettingByIndex(position) {
+            settingFieldAdapterListener.updateSettingState(it)
+        }
     }
 
     private fun removeFirstPinnedActivation() {
@@ -84,7 +98,7 @@ class SettingFieldAdapter<T : Visitable<SettingFieldTypeFactory>>(
         addElement(indexPinned, activationPushNotif())
     }
 
-    fun enableSwitchComponent(temporaryList: List<Visitable<*>>) {
+    fun enableSwitchComponent(temporaryList: List<ParentSetting>) {
         if (temporaryList.isEmpty()) return
 
         val visitableList = mutableListOf<Visitable<*>>()
@@ -98,7 +112,6 @@ class SettingFieldAdapter<T : Visitable<SettingFieldTypeFactory>>(
             visitableList.add(it.first)
         }
 
-        visitables = visitableList
         notifyDataSetChanged()
     }
 
