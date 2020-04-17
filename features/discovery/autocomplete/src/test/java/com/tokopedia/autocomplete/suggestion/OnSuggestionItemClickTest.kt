@@ -10,7 +10,7 @@ import org.junit.Test
 internal class OnSuggestionItemClickTest {
 
     private val suggestionView = mockk<SuggestionContract.View>(relaxed = true)
-    private val getSuggestionUseCase = mockk<SuggestionUseCase>(relaxed = true)
+    private val getSuggestionUseCase = mockk<UseCase<SuggestionData>>(relaxed = true)
     private val suggestionTrackerUseCase = mockk<UseCase<Void?>>(relaxed = true)
     private val userSession = mockk<UserSessionInterface>(relaxed = true)
 

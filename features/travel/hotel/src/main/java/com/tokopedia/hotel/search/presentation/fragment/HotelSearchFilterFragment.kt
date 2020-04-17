@@ -20,6 +20,7 @@ import com.tokopedia.hotel.search.data.model.params.ParamFilter
 import com.tokopedia.hotel.search.data.util.CommonParam
 import com.tokopedia.hotel.search.presentation.adapter.HotelSearchResultFilterAdapter
 import com.tokopedia.hotel.search.presentation.widget.HotelFilterPriceRangeSlider
+import com.tokopedia.kotlin.extensions.view.setMargin
 import kotlinx.android.synthetic.main.fragment_hotel_search_filter.*
 import kotlin.math.max
 
@@ -82,6 +83,9 @@ class HotelSearchFilterFragment: BaseDaggerFragment() {
 
     private fun setupPayAtHotel() {
         switch_pay_at_hotel.isChecked = selectedFilter.paymentType == PAYMENT_TYPE_PAY_AT_HOTEL
+
+        // need to hide pay at hotel filter for now
+        hidePayAtHotelFilter()
     }
 
     private fun setupAccomodationType(accomodation: List<Filter.FilterAccomodation>) {
@@ -158,6 +162,12 @@ class HotelSearchFilterFragment: BaseDaggerFragment() {
                 LinearLayoutManager.HORIZONTAL))
         filter_star.adapter = starAdapter
         starAdapter.updateItems(filterStars, selectedFilter.star.map { it.toString() }.toSet())
+    }
+
+    private fun hidePayAtHotelFilter() {
+        layout_filter_pay_at_hotel.visibility = View.GONE
+        divider_layout_pay_at_hotel.visibility = View.GONE
+        hotel_filter_rating_title.setMargin(0,0,0,0)
     }
 
     companion object {
