@@ -23,6 +23,9 @@ object ReviewSellerConstant {
     }
 
     const val DEFAULT_PER_PAGE = 10
+    const val HAS_TAB_RATING_PRODUCT = "hasTabRatingProduct"
+    const val HAS_FILTER_AND_SORT = "hasFilterAndSort"
+    const val HAS_OVERALL_RATING_PRODUCT = "hasOverallRatingProduct"
 }
 
 const val GQL_GET_PRODUCT_REVIEW_LIST = "GQL_GET_PRODUCT_REVIEW_LIST"
