@@ -107,7 +107,6 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.fragment_add_edit_product_preview.*
 import javax.inject.Inject
 
 class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHolder.OnPhotoChangeListener {
@@ -169,8 +168,11 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
             }
         }
 
-        // TODO faisalramd
-        const val TEST_IMAGE_URL = "https://ecs7.tokopedia.net/img/cache/700/product-1/2018/9/16/36162992/36162992_778e5d1e-06fd-4e4a-b650-50c232815b24_1080_1080.jpg"
+        val photoTipsUrl = listOf(
+                "https://ecs7.tokopedia.net/android/others/stuart/product_photo_choosing_tips_1.png",
+                "https://ecs7.tokopedia.net/android/others/stuart/product_photo_choosing_tips_2.png",
+                "https://ecs7.tokopedia.net/android/others/stuart/product_photo_choosing_tips_3.png"
+        )
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -734,13 +736,14 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
             val tooltipBottomSheet = TooltipBottomSheet()
             val tips: ArrayList<ImageTooltipModel> = ArrayList()
             val tooltipTitle = getString(R.string.title_tooltip_photo_tips)
-            tips.add(ImageTooltipModel(getString(R.string.message_tooltip_photo_tips_1), TEST_IMAGE_URL))
-            tips.add(ImageTooltipModel(getString(R.string.message_tooltip_photo_tips_2), TEST_IMAGE_URL))
-            tips.add(ImageTooltipModel(getString(R.string.message_tooltip_photo_tips_3), TEST_IMAGE_URL))
+            tips.add(ImageTooltipModel(getString(R.string.message_tooltip_photo_tips_1), photoTipsUrl[0]))
+            tips.add(ImageTooltipModel(getString(R.string.message_tooltip_photo_tips_2), photoTipsUrl[1]))
+            tips.add(ImageTooltipModel(getString(R.string.message_tooltip_photo_tips_3), photoTipsUrl[2]))
 
             tooltipBottomSheet.apply {
                 setTitle(tooltipTitle)
                 setItemMenuList(tips)
+                setDividerVisible(true)
                 show(it, null)
             }
         }
@@ -759,6 +762,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
             tooltipBottomSheet.apply {
                 setTitle(tooltipTitle)
                 setItemMenuList(tips)
+                setDividerVisible(false)
                 show(it, null)
             }
         }

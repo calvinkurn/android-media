@@ -413,6 +413,7 @@ class AddEditProductDescriptionFragment:
             tooltipBottomSheet.apply {
                 setTitle(tooltipTitle)
                 setItemMenuList(tips)
+                setDividerVisible(false)
                 show(it, null)
             }
         }
@@ -436,6 +437,7 @@ class AddEditProductDescriptionFragment:
             tooltipBottomSheet.apply {
                 setTitle(tooltipTitle)
                 setItemMenuList(tips)
+                setDividerVisible(false)
                 show(it, null)
             }
         }

@@ -4,7 +4,6 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.tooltip.model.ImageTooltipModel
-import com.tokopedia.product.addedit.tooltip.model.TooltipModel
 import kotlinx.android.synthetic.main.item_tooltip_image.view.*
 
 /**
