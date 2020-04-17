@@ -1,7 +1,7 @@
 package com.tokopedia.settingnotif.usersetting.domain.pojo
 
-
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.settingnotif.usersetting.util.dataClone
 import com.tokopedia.settingnotif.usersetting.view.adapter.factory.SettingFieldTypeFactory
 
 open class ParentSetting(
@@ -16,6 +16,8 @@ open class ParentSetting(
     override fun type(typeFactory: SettingFieldTypeFactory): Int {
         return typeFactory.type(this)
     }
+
+    fun deepCopy() = dataClone<ParentSetting>(this)
 
     fun hasDescription(): Boolean = description.isNotEmpty()
 
