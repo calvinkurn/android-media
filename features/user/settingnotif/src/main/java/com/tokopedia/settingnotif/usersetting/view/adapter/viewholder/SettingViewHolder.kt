@@ -22,6 +22,7 @@ abstract class SettingViewHolder<T : BaseSetting>(
         fun getParentSetting(childAdapterPosition: Int): Pair<ParentSetting, Int>?
         fun getNotificationType(): String
         fun requestUpdateUserSetting(notificationType: String, updatedSettingIds: List<Map<String, Any>>)
+        fun updateParentSettingLastState(position: Int)
     }
 
     override fun bind(element: T?) {
@@ -55,6 +56,7 @@ abstract class SettingViewHolder<T : BaseSetting>(
         val notificationType: String = settingListener.getNotificationType()
         val updatedSettingIds: List<Map<String, Any>> = getUpdatedSettingIds(element, checked)
         settingListener.requestUpdateUserSetting(notificationType, updatedSettingIds)
+        settingListener.updateParentSettingLastState(adapterPosition)
     }
 
     protected fun getMapSettingToChange(element: BaseSetting, checked: Boolean) : Map<String, Any> {
