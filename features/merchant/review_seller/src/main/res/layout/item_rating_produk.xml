@@ -8,8 +8,8 @@
 
     <com.tokopedia.unifycomponents.CardUnify
         android:id="@+id/cvItemProduct"
-        android:layout_width="@dimen/dp_80"
-        android:layout_height="@dimen/dp_80"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:layout_marginTop="@dimen/dp_8"
