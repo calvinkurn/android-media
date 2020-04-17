@@ -425,7 +425,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                     it.basic.getProductId(), it.data.price.value,
                     it.basic.condition,
                     it.getProductName,
-                    categoryId, it.basic.catalogID, userIdInt, it.basic.minOrder, warehouseId, it.data.variant.parentID)
+                    categoryId, it.basic.catalogID, userIdInt, it.basic.minOrder, warehouseId, it.data.variant.isVariant)
 
             _p2ShopDataResp.value = p2ShopDeferred.await().also {
                 shopInfo = it.shopInfo
@@ -755,9 +755,9 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     private fun getProductInfoP2GeneralAsync(shopId: Int, productId: Int, productPrice: Int,
                                              condition: String, productTitle: String, categoryId: Int, catalogId: String,
                                              userId: Int, minOrder: Int,
-                                             warehouseId: String?, parentProductId: String): Deferred<ProductInfoP2General> {
+                                             warehouseId: String?, isVariant: Boolean): Deferred<ProductInfoP2General> {
         return async {
-            getProductInfoP2GeneralUseCase.requestParams = GetProductInfoP2GeneralUseCase.createParams(shopId, productId, productPrice, condition, productTitle, categoryId, catalogId, userId, forceRefresh, minOrder, warehouseId,parentProductId)
+            getProductInfoP2GeneralUseCase.requestParams = GetProductInfoP2GeneralUseCase.createParams(shopId, productId, productPrice, condition, productTitle, categoryId, catalogId, userId, forceRefresh, minOrder, warehouseId, isVariant)
             getProductInfoP2GeneralUseCase.executeOnBackground()
         }
     }

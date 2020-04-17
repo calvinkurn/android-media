@@ -64,6 +64,13 @@ query getProductVariant($productID:String!,$option:pdpGetProductVariantReqOption
         isBuyable
         alwaysAvailable
       }
+      warehouseInfo{
+        warehouseID
+        isFulfillment
+        districtID
+        postalCode
+        geoLocation
+      }
       picture {
         url
         url200

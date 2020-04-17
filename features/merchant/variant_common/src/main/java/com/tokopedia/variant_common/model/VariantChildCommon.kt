@@ -59,7 +59,11 @@ data class VariantChildCommon(
 
         @SerializedName("upcomingCampaignInfo")
         @Expose
-        val upcoming: VariantUpcoming? = null
+        val upcoming: VariantUpcoming? = null,
+
+        @SerializedName("warehouseInfo")
+        @Expose
+        val warehouseInfo: WarehouseInfoVariant? = null
 ) {
     val isBuyable: Boolean
         get() = stock?.stock ?: 0 > 0 && stock?.isBuyable ?: false

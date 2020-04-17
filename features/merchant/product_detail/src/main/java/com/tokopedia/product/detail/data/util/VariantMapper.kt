@@ -17,11 +17,16 @@ import com.tokopedia.variant_common.model.VariantMultiOriginWarehouse
 object VariantMapper {
 
     fun updateSelectedMultiOrigin(oldData: VariantMultiOriginWarehouse, newData: VariantChildCommon?): VariantMultiOriginWarehouse {
+
         val newWarehouseInfo = oldData.warehouseInfo.copy(
-                // id = newData?.warehouseid
-                // isFulfillment = newData?.isFulfillment
+                id = newData?.warehouseInfo?.warehouseId ?: "",
+                isFulfillment = newData?.warehouseInfo?.isFulfillment ?: false,
+                districtId = newData?.warehouseInfo?.districtId ?: "",
+                postalCode = newData?.warehouseInfo?.postalCode ?: "",
+                geoLocation = newData?.warehouseInfo?.geoLocation ?: ""
         )
-        return  oldData.copy(
+
+        return oldData.copy(
                 productId = newData?.productId.toString(),
                 stock = newData?.stock?.stock ?: 0,
                 price = newData?.price?.toInt() ?: 0,
@@ -85,7 +90,7 @@ object VariantMapper {
                 isWishlist = newData?.isWishlist ?: false,
                 campaign = newCampaign,
                 price = newPrice,
-                name= newData?.name ?: "",
+                name = newData?.name ?: "",
                 media = newMedia,
                 stock = newStock,
                 //upcoming campaign data
@@ -122,6 +127,7 @@ object VariantMapper {
         val data = oldData?.data?.copy(
                 media = media
         )
-        return DynamicProductInfoP1(basic ?: BasicInfo(),data ?: ComponentData(), oldData?.layoutName ?: "")
+        return DynamicProductInfoP1(basic ?: BasicInfo(), data
+                ?: ComponentData(), oldData?.layoutName ?: "")
     }
 }

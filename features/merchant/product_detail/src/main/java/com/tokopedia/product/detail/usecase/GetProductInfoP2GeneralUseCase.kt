@@ -39,7 +39,7 @@ class GetProductInfoP2GeneralUseCase @Inject constructor(private val rawQueries:
     companion object {
         fun createParams(shopId: Int, productId: Int, productPrice: Int,
                          condition: String, productTitle: String, categoryId: Int, catalogId: String,
-                         userId: Int, forceRefresh: Boolean, minOrder: Int, warehouseId: String?, parentProductId: String): RequestParams =
+                         userId: Int, forceRefresh: Boolean, minOrder: Int, warehouseId: String?, isVariant: Boolean): RequestParams =
                 RequestParams.create().apply {
                     putInt(ProductDetailCommonConstant.PARAM_SHOP_IDS, shopId)
                     putInt(ProductDetailCommonConstant.PARAM_PRODUCT_ID, productId)
@@ -52,7 +52,7 @@ class GetProductInfoP2GeneralUseCase @Inject constructor(private val rawQueries:
                     putBoolean(ProductDetailCommonConstant.FORCE_REFRESH, forceRefresh)
                     putInt(ProductDetailCommonConstant.PARAM_MIN_ORDER, minOrder)
                     putString(ProductDetailCommonConstant.PARAM_WAREHOUSE_ID, warehouseId)
-                    putString(ProductDetailCommonConstant.PARAM_PARENT_PRODUCT_ID, parentProductId)
+                    putBoolean(ProductDetailCommonConstant.PARAM_IS_VARIANT, isVariant)
                 }
     }
 
@@ -72,12 +72,10 @@ class GetProductInfoP2GeneralUseCase @Inject constructor(private val rawQueries:
         val forceRefresh = requestParams.getBoolean(ProductDetailCommonConstant.FORCE_REFRESH, false)
         val minOrder = requestParams.getInt(ProductDetailCommonConstant.PARAM_MIN_ORDER, 0)
         val warehouseId = requestParams.getString(ProductDetailCommonConstant.PARAM_WAREHOUSE_ID, null)
-        val parentProductId = requestParams.getString(ProductDetailCommonConstant.PARAM_PARENT_PRODUCT_ID, productId.toString())
-
-        val p2GeneralRequest = mutableListOf<GraphqlRequest>()
+        val isVariant = requestParams.getBoolean(ProductDetailCommonConstant.PARAM_IS_VARIANT, false)
 
         val paramsVariant = mapOf(
-                ProductDetailCommonConstant.PARAM_PRODUCT_ID to parentProductId,
+                ProductDetailCommonConstant.PARAM_PRODUCT_ID to productId.toString(),
                 ProductDetailConstant.PARAM_OPTION to mapOf(
                         ProductDetailConstant.KEY_USER_ID to userId.toString(),
                         ProductDetailConstant.PARAM_INCLUDE_CAMPAIGN to true,
@@ -151,14 +149,14 @@ class GetProductInfoP2GeneralUseCase @Inject constructor(private val rawQueries:
                 shopBadgeRequest, shopCommitmentRequest, installmentRequest, imageReviewRequest,
                 helpfulReviewRequest, latestTalkRequest, productPurchaseProtectionRequest, shopFeatureRequest, productCatalogRequest, pdpFinancingRecommendationRequest, pdpFinancingCalculationRequest)
 
-        if (parentProductId != "0") {
+        if (isVariant) {
             requests.add(variantRequest)
         }
 
         try {
             val gqlResponse = graphqlRepository.getReseponse(requests, CacheStrategyUtil.getCacheStrategy(forceRefresh))
 
-            if (gqlResponse.getError(ProductDetailVariantCommonResponse::class.java)?.isNotEmpty() != true) {
+            if (gqlResponse.getError(ProductDetailVariantCommonResponse::class.java)?.isNotEmpty() != true && isVariant) {
                 productInfoP2.variantResp = gqlResponse.getData<ProductDetailVariantCommonResponse>(ProductDetailVariantCommonResponse::class.java).data
             }
 

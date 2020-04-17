@@ -22,8 +22,7 @@ object ProductDetailCommonConstant{
     const val PARAM_WAREHOUSE_ID = "warehouseID"
     const val PARAM_CART_TYPE = "cartTypeParam"
     const val PARAM_INCLUDE_WAREHOUSE = "includeWarehouse"
-    const val PARAM_IS_USER_SESSION_ACTIVE = "isUsersessionActive"
-    const val PARAM_PARENT_PRODUCT_ID = "parentProductId"
+    const val PARAM_IS_VARIANT = "isVariant"
 
     const val PARAM_SHOP_IDS = "shopIds"
     const val PARAM_SHOP_FIELDS = "fields"
