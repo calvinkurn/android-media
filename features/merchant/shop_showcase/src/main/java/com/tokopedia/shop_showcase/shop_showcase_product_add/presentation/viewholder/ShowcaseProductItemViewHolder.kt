@@ -30,7 +30,8 @@ class ShowcaseProductItemViewHolder(itemView: View, private val context: Context
             itemView.product_price.text = element.productPrice.getCurrencyFormatted()
             renderProductRating(element)
 //            ImageHandler.LoadImage(itemView.product_image, element.productImageUrl)
-            ImageHandler.loadImage2(itemView.product_image, element.productImageUrl, R.drawable.loading_page)
+//            ImageHandler.loadImage2(itemView.product_image, element.productImageUrl, R.drawable.loading_page)
+            itemView.product_image.setImageUrl(element.productImageUrl)
             renderCardState(element)
         }
     }
@@ -50,6 +51,9 @@ class ShowcaseProductItemViewHolder(itemView: View, private val context: Context
             itemView.total_review.text = itemView.resources.getString(R.string.product_total_review, element.totalReview.toString())
             itemView.ratingBar.visibility = View.VISIBLE
             itemView.total_review.visibility = View.VISIBLE
+        } else {
+            itemView.ratingBar.visibility = View.GONE
+            itemView.total_review.visibility = View.GONE
         }
     }
 
