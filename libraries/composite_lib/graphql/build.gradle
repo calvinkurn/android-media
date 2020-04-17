@@ -57,11 +57,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.dagger
     kapt rootProject.ext.miscDependencies.daggerCompiler
 
-    if (rootProject.ext.debugToolsEnabled) {
-        implementation project(path: ':fakeresponse')
-    } else {
-        implementation project(path: ':fakeresponse-no-op')
-    }
+    debugImplementation project(path: ':fakeresponse')
 }
 
 apply from: '../publish_local.gradle'
