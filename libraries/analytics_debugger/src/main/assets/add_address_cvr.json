@@ -11,7 +11,7 @@
     {
       "eventCategory": "cart change address",
       "eventAction": "click button pilih lokasi",
-      "eventLabel": "success-logistic"
+      "eventLabel": "success - logistic"
     }
   ]
 }
