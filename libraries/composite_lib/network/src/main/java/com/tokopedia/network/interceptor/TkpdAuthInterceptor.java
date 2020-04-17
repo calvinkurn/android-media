@@ -371,7 +371,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
 
             return chain.proceed(newestRequest);
         } catch (IOException e) {
-            sendAnalyticsAnomalyResponse(response, finalRequest);
+            sendAnalyticsAnomalyResponse("refresh_token_update_gcm_failed", response, finalRequest);
             e.printStackTrace();
             return response;
         }
@@ -384,7 +384,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
             Request newest = recreateRequestWithNewAccessToken(chain);
             return chain.proceed(newest);
         } catch (IOException e) {
-            sendAnalyticsAnomalyResponse(response, finalRequest);
+            sendAnalyticsAnomalyResponse("refresh_token_failed", response, finalRequest);
             e.printStackTrace();
             return response;
         }
@@ -403,7 +403,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
         int code = response.code();
         try {
             if (code == ERROR_UNAUTHORIZED_REQUEST) {
-                sendAnalyticsAnomalyResponse(response, finalRequest);
+                sendAnalyticsAnomalyResponse(Integer.toString(ERROR_UNAUTHORIZED_REQUEST), response, finalRequest);
                 networkRouter.showForceLogoutTokenDialog(response.message());
                 return response;
             } else if (isNeedGcmUpdate(response)) {
@@ -422,9 +422,9 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
         }
     }
 
-    private void sendAnalyticsAnomalyResponse(Response response, Request finalRequest){
+    private void sendAnalyticsAnomalyResponse(String errorCase, Response response, Request finalRequest){
         try {
-            networkRouter.sendAnalyticsAnomalyResponse(Integer.toString(ERROR_UNAUTHORIZED_REQUEST),
+            networkRouter.sendAnalyticsAnomalyResponse(errorCase,
                     userSession.getAccessToken(), EncoderDecoder.Decrypt(userSession.getFreshToken(), userSession.getRefreshTokenIV()),
                     userSession.getUserId(), response.peekBody(BYTE_COUNT).toString(), requestToString(finalRequest));
         } catch (Exception e) {

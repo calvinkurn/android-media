@@ -104,7 +104,7 @@ public class AccessTokenRefresh {
     protected void checkShowForceLogout(String response, NetworkRouter networkRouter, UserSessionInterface userSession, Request finalRequest) {
         if (isRequestDenied(response)) {
             try {
-                networkRouter.sendAnalyticsAnomalyResponse("401",
+                networkRouter.sendAnalyticsAnomalyResponse("failed_request_with_token_refreshed",
                         userSession.getAccessToken(), EncoderDecoder.Decrypt(userSession.getFreshToken(), userSession.getRefreshTokenIV()),
                         userSession.getUserId(), response, TkpdAuthInterceptor.requestToString(finalRequest));
             } catch (Exception e) {
