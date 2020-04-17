@@ -10,7 +10,6 @@ import com.tokopedia.user.session.UserSessionInterface;
 
 import java.io.IOException;
 
-import javax.inject.Inject;
 
 /**
  * @author by errysuprayogi on 7/12/17.
