@@ -8,6 +8,7 @@ import java.util.*
 object RechargeRecommendationTracking : BaseTracking() {
     private const val RECHARGE_RECOMMENDATION_NAME = "digital bills"
     private const val RECHARGE_RECOMMENDATION_EVENT_CATEGORY = "homepage-digital"
+    private const val RECHARGE_RECOMMENDATION_CLICK_EVENT = "clickHomepage"
     private const val CLICK_CLOSE_ON = "click close on %s"
 
     fun homeRechargeRecommendationImpressionTracker(
@@ -42,7 +43,7 @@ object RechargeRecommendationTracking : BaseTracking() {
     fun homeRechargeRecommendationOnCloseTracker(recommendation: RechargeRecommendationData) {
         val productName = recommendation.applink
         getTracker().sendGeneralEvent(
-                "clickHomepage",
+                RECHARGE_RECOMMENDATION_CLICK_EVENT,
                 RECHARGE_RECOMMENDATION_EVENT_CATEGORY,
                 CLICK_CLOSE_ON.format(RECHARGE_RECOMMENDATION_NAME),
                 productName
@@ -51,8 +52,8 @@ object RechargeRecommendationTracking : BaseTracking() {
 
     private fun mapToPromotionTracker(model: RechargeRecommendationData) = Promotion(
             id = model.contentID,
-            creative = "",
+            creative = model.iconURL,
             name = "$RECHARGE_RECOMMENDATION_NAME - ${model.applink}",
             creativeUrl = model.iconURL,
-            position = "0")
+            position = "none/other")
 }
