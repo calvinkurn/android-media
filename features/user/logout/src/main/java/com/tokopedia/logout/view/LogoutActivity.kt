@@ -171,7 +171,7 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
             }
         } else {
             if(isSessionExpired) {
-                RouteManager.route(applicationContext, ApplinkConst.LOGIN)
+                RouteManager.route(this, ApplinkConst.LOGIN)
             } else {
                 setResult(Activity.RESULT_OK)
                 finish()
