@@ -64,17 +64,25 @@ class ShowcaseProductListAdapter(
             holder.itemView.parent_card_view.setOnClickListener {
                 val cardState = !item.ishighlighted
                 val appendState = !item.isNewAppended
+
                 if (cardState) {
-                    selectedProduct.add(shopProductList[position] as ShowcaseProduct)
+                    if(!item.isNoNeedToAppend)
+                        selectedProduct.add(shopProductList[position] as ShowcaseProduct)
                 } else {
+
                     val deletedProduct = shopProductList[position] as ShowcaseProduct
-                    val targetedProduct = selectedProduct.single {
-                        it.productId == deletedProduct.productId
+                    try {
+                        val targetedProduct = selectedProduct.single {
+                            it.productId == deletedProduct.productId
+                        }
+                        selectedProduct.run {
+                            if(contains(targetedProduct))
+                                remove(targetedProduct)
+                        }
+                    } catch (e: Exception) {
+                        item.isNoNeedToAppend = true
                     }
-                    selectedProduct.run {
-                        if(contains(targetedProduct))
-                            remove(targetedProduct)
-                    }
+
                 }
                 item.ishighlighted = cardState
                 item.isNewAppended = appendState
