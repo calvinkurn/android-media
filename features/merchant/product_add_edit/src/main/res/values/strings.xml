@@ -2,8 +2,8 @@
 
     <!-- add edit product screen name -->
     <string name="product_add_edit_detail">Detail Produk</string>
-    <string name="title_add_product">Tambah Produk</string>
-    <string name="title_edit_product">Ubah Produk</string>
+    <string name="label_title_add_product">Tambah Produk</string>
+    <string name="label_title_edit_product">Ubah Produk</string>
 
     <!-- add edit preview -->
     <string name="product_subtitle_product_information">Yuk, isi informasi produk kamu</string>

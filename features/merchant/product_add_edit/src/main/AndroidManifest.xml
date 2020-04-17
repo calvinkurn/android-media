@@ -20,7 +20,7 @@
 
         <activity
             android:name=".preview.presentation.activity.AddEditProductPreviewActivity"
-            android:label="@string/title_add_product"
+            android:label="@string/label_title_add_product"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White">
 
