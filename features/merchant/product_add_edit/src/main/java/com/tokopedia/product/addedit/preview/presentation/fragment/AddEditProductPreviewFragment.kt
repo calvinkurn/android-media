@@ -184,19 +184,18 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
         super.onCreate(savedInstanceState)
         arguments?.run {
             val draftId = getString(EXTRA_DRAFT_ID).orEmpty()
+            val productId = getString(EXTRA_PRODUCT_ID) ?: ""
             viewModel.setProductId(getString(EXTRA_PRODUCT_ID) ?: "")
             viewModel.setIsDuplicate(getBoolean(EXTRA_IS_DUPLICATING_PRODUCT, false))
             if (draftId.isNotBlank()) {
                 viewModel.setDraftId(draftId)
                 viewModel.getProductDraft(draftId.toLongOrZero())
             }
-        }
-
-        if (viewModel.isEditing.value == true) {
-            //TODO is goldmerchant and isregular
-            ProductEditStepperTracking.trackScreen(shopId, false, false)
-        } else {
-            ProductAddStepperTracking.trackScreen()
+            if (productId != "") {
+                ProductEditStepperTracking.trackScreen(shopId, false, false)
+            } else {
+                ProductAddStepperTracking.trackScreen()
+            }
         }
     }
 
