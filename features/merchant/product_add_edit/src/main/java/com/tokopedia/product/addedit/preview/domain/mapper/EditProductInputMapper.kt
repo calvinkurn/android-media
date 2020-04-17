@@ -43,6 +43,7 @@ class EditProductInputMapper @Inject constructor() {
     fun mapInputToParam(shopId: String,
                         productId: String,
                         uploadIdList: ArrayList<String>,
+                        variantOptionUploadId: List<String>,
                         sizeChartUploadId: String,
                         detailInputModel: DetailInputModel,
                         descriptionInputModel: DescriptionInputModel,
@@ -71,12 +72,13 @@ class EditProductInputMapper @Inject constructor() {
                 mapPreorderParam(detailInputModel.preorder),
                 mapWholesaleParam(detailInputModel.wholesaleList),
                 mapVideoParam(descriptionInputModel.videoLinkList),
-                mapVariantParam(variantInputModel, sizeChartUploadId)
+                mapVariantParam(variantInputModel, variantOptionUploadId, sizeChartUploadId)
 
         )
     }
 
     private fun mapVariantParam(variantInputModel: ProductVariantInputModel,
+                                variantOptionUploadId: List<String>,
                                 sizeChartUploadId: String): Variant? {
         if (variantInputModel.variantOptionParent.size == 0 &&
                 variantInputModel.productVariant.size == 0) {
@@ -85,7 +87,7 @@ class EditProductInputMapper @Inject constructor() {
 
         return Variant(
                 mapVariantSelectionParam(variantInputModel.variantOptionParent),
-                mapVariantProducts(variantInputModel.productVariant),
+                mapVariantProducts(variantInputModel, variantOptionUploadId),
                 mapVariantSizeChart(variantInputModel.productSizeChart, sizeChartUploadId)
         )
     }
@@ -103,19 +105,63 @@ class EditProductInputMapper @Inject constructor() {
     }
 
     private fun mapVariantProducts(
-            productVariant: ArrayList<ProductVariantCombinationViewModel>): List<Product> {
+            variantInputModel: ProductVariantInputModel,
+            variantOptionUploadId: List<String>): List<Product> {
         val products: ArrayList<Product> = ArrayList()
+        val productVariant  = variantInputModel.productVariant
+        val variantOption  = variantInputModel.variantOptionParent
         productVariant.forEach {
+            val levelIndex = it.opt.firstOrNull()
             val product = Product(
                     mapProductCombination(it.opt),
                     it.priceVar,
                     it.sku,
                     getActiveStatus(it.st),
-                    it.stock
+                    it.stock,
+                    getVariantImage(variantOption, variantOptionUploadId, levelIndex)
             )
             products.add(product)
         }
         return products
+    }
+
+    private fun getVariantImage(
+            variantOption: List<ProductVariantOptionParent>,
+            variantOptionUploadId: List<String>,
+            index: Int?
+    ): List<Picture> {
+        val variantOptionParent = variantOption.getOrNull(0)
+        var variantPictureList = listOf<Picture>()
+        index?.apply {
+            variantOptionParent?.let { optionParent ->
+                optionParent.productVariantOptionChild?.getOrNull(this - 1)?.let { optionChild ->
+                    optionChild.productPictureViewModelList?.getOrNull(0)?.let {
+                        variantPictureList = transformPictureVariant(it)
+                    }
+                }
+            }
+            variantOptionUploadId.getOrNull(this - 1)?.apply {
+                if (this.isNotEmpty()) {
+                    variantPictureList = listOf(Picture(uploadId = this))
+                }
+            }
+        }
+        return variantPictureList
+    }
+
+    private fun transformPictureVariant(picture: PictureViewModel): List<Picture> {
+        var result = listOf<Picture>()
+        if (picture.urlOriginal.isNotEmpty()) {
+            val pictureVariant = Picture(
+                    picID = picture.id.toString(),
+                    fileName = picture.fileName,
+                    filePath = picture.filePath,
+                    width = picture.x.toInt(),
+                    height = picture.y.toInt()
+            )
+            result = listOf(pictureVariant)
+        }
+        return result
     }
 
     private fun mapProductCombination(opt: List<Int>): List<Int> = opt.map { it - 1 }

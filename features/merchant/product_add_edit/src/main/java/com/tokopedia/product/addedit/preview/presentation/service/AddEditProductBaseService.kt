@@ -6,6 +6,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.mediauploader.data.state.UploadResult
 import com.tokopedia.mediauploader.domain.UploaderUseCase
 import com.tokopedia.product.addedit.common.AddEditProductComponentBuilder
+import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.Companion.GQL_ERROR_SUBSTRING
 import com.tokopedia.product.addedit.common.constant.AddEditProductExtraConstant.Companion.IMAGE_SOURCE_ID
 import com.tokopedia.product.addedit.common.util.AddEditProductNotificationManager
@@ -22,7 +23,6 @@ import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import java.io.File
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
@@ -85,8 +85,9 @@ abstract class AddEditProductBaseService : JobIntentService(), CoroutineScope {
         }
     }
 
-    fun uploadProductImages(imageUrlOrPathList: List<String>, sizeChartPath: String) {
+    fun uploadProductImages(imageUrlOrPathList: List<String>, variantPicturePath: List<String>, sizeChartPath: String) {
         val uploadIdList: ArrayList<String> = ArrayList()
+        val variantOptionUploadId: ArrayList<String> = ArrayList()
         val urlImageCount = imageUrlOrPathList.size
         var sizeChartUploadId = ""
         // if sizeChartPath valid then add to progress
@@ -101,11 +102,15 @@ abstract class AddEditProductBaseService : JobIntentService(), CoroutineScope {
                 val imageId = uploadImageAndGetId(imageUrlOrPathList[i])
                 uploadIdList.add(imageId)
             }
+            repeat(variantPicturePath.size) { i ->
+                val imageId = uploadImageAndGetId(variantPicturePath[i])
+                variantOptionUploadId.add(imageId)
+            }
             if (sizeChartPath.isNotEmpty()) { // if sizeChartPath valid then upload the image
                 sizeChartUploadId = uploadImageAndGetId(sizeChartPath)
             }
             delay(NOTIFICATION_CHANGE_DELAY)
-            onUploadProductImagesDone(uploadIdList, sizeChartUploadId)
+            onUploadProductImagesDone(uploadIdList, variantOptionUploadId, sizeChartUploadId)
         }, onError = {
             it.message?.let { errorMessage -> setUploadProductDataError(errorMessage) }
         })
@@ -117,6 +122,12 @@ abstract class AddEditProductBaseService : JobIntentService(), CoroutineScope {
             sourceId = IMAGE_SOURCE_ID,
             filePath = filePath
         )
+
+        // check picture availability
+        if (!filePath.exists()) {
+            return ""
+        }
+
         return when (val result = uploaderUseCase(params)) {
             is UploadResult.Success -> {
                 notificationManager?.onAddProgress(filePath)
@@ -130,5 +141,5 @@ abstract class AddEditProductBaseService : JobIntentService(), CoroutineScope {
     }
 
     abstract fun getNotificationManager(urlImageCount: Int): AddEditProductNotificationManager
-    abstract fun onUploadProductImagesDone(uploadIdList: ArrayList<String>, sizeChartId: String)
+    abstract fun onUploadProductImagesDone(uploadIdList: ArrayList<String>, variantOptionUploadId: List<String>, sizeChartId: String)
 }

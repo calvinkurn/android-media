@@ -289,7 +289,7 @@ class AddEditProductDescriptionFragment:
         descriptionViewModel.productVariant.observe(viewLifecycleOwner, Observer { result ->
             when (result) {
                 is Success -> showVariantDialog(result.data)
-                is Fail -> showVariantErrorToast(getString(R.string.title_tooltip_description_tips))
+                is Fail -> showVariantErrorToast(getString(R.string.default_request_error_timeout))
             }
         })
     }

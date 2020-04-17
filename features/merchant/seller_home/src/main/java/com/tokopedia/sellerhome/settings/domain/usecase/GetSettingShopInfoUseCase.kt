@@ -18,7 +18,8 @@ class GetSettingShopInfoUseCase @Inject constructor(private val graphQlRepositor
                 "    }\n" +
                 "  }\n" +
                 "  balance {\n" +
-                "    seller_usable_fmt\n" +
+                "    seller_usable\n" +
+                "    buyer_usable\n" +
                 "  }\n" +
                 "}"
 

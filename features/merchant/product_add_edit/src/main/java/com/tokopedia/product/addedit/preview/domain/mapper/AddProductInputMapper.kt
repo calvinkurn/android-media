@@ -17,7 +17,7 @@ import javax.inject.Inject
  * Created by faisalramd on 2020-03-23.
  */
 
-open class AddProductInputMapper @Inject constructor() {
+class AddProductInputMapper @Inject constructor() {
 
     companion object{
         const val PRICE_CURRENCY = "IDR"
@@ -40,8 +40,9 @@ open class AddProductInputMapper @Inject constructor() {
                 }
     }
 
-    open fun mapInputToParam(shopId: String,
+    fun mapInputToParam(shopId: String,
                         uploadIdList: ArrayList<String>,
+                        variantOptionUploadId: List<String>,
                         sizeChartUploadId: String,
                         detailInputModel: DetailInputModel,
                         descriptionInputModel: DescriptionInputModel,
@@ -69,13 +70,14 @@ open class AddProductInputMapper @Inject constructor() {
                 mapPreorderParam(detailInputModel.preorder),
                 mapWholesaleParam(detailInputModel.wholesaleList),
                 mapVideoParam(descriptionInputModel.videoLinkList),
-                mapVariantParam(variantInputModel, sizeChartUploadId)
+                mapVariantParam(variantInputModel, sizeChartUploadId, variantOptionUploadId)
 
         )
     }
 
-    protected fun mapVariantParam(variantInputModel: ProductVariantInputModel,
-                                sizeChartUploadId: String): Variant? {
+    private fun mapVariantParam(variantInputModel: ProductVariantInputModel,
+                                sizeChartUploadId: String,
+                                variantOptionUploadId: List<String>): Variant? {
         if (variantInputModel.variantOptionParent.size == 0 &&
                 variantInputModel.productVariant.size == 0) {
             return null
@@ -83,7 +85,7 @@ open class AddProductInputMapper @Inject constructor() {
 
         return Variant(
                 mapVariantSelectionParam(variantInputModel.variantOptionParent),
-                mapVariantProducts(variantInputModel.productVariant),
+                mapVariantProducts(variantInputModel.productVariant, variantOptionUploadId),
                 mapVariantSizeChart(variantInputModel.productSizeChart, sizeChartUploadId)
         )
     }
@@ -101,19 +103,32 @@ open class AddProductInputMapper @Inject constructor() {
     }
 
     private fun mapVariantProducts(
-            productVariant: ArrayList<ProductVariantCombinationViewModel>): List<Product> {
+            productVariant: ArrayList<ProductVariantCombinationViewModel>,
+            variantOptionUploadId: List<String>): List<Product> {
         val products: ArrayList<Product> = ArrayList()
         productVariant.forEach {
+            val levelIndex = it.opt.firstOrNull()
             val product = Product(
                     mapProductCombination(it.opt),
                     it.priceVar,
                     it.sku,
                     getActiveStatus(it.st),
-                    it.stock
+                    it.stock,
+                    getVariantImage(variantOptionUploadId, levelIndex)
             )
             products.add(product)
         }
         return products
+    }
+
+    private fun getVariantImage(variantOptionUploadId: List<String>, index: Int?): List<Picture> {
+        var variantPictureList = listOf<Picture>()
+        index?.apply {
+            variantOptionUploadId.getOrNull(this - 1)?.apply {
+                variantPictureList = listOf(Picture(uploadId = this))
+            }
+        }
+        return variantPictureList
     }
 
     private fun mapProductCombination(opt: List<Int>): List<Int> = opt.map { it - 1 }
@@ -147,7 +162,7 @@ open class AddProductInputMapper @Inject constructor() {
         return options
     }
 
-    protected fun mapWholesaleParam(wholesaleList: List<WholeSaleInputModel>): Wholesales? {
+    private fun mapWholesaleParam(wholesaleList: List<WholeSaleInputModel>): Wholesales? {
         val data: ArrayList<Wholesale> = ArrayList()
         wholesaleList.forEach {
             val quantity = it.quantity.replace(".", "").toIntOrZero()
@@ -162,11 +177,11 @@ open class AddProductInputMapper @Inject constructor() {
         return Wholesales(data)
     }
 
-    protected fun mapShipmentUnit(weightUnit: Int): String? {
+    private fun mapShipmentUnit(weightUnit: Int): String? {
         return if (weightUnit == 0) UNIT_GRAM else UNIT_KILOGRAM
     }
 
-    protected fun mapVideoParam(videoLinkList: List<VideoLinkModel>): Videos {
+    private fun mapVideoParam(videoLinkList: List<VideoLinkModel>): Videos {
         val data: ArrayList<Video> = ArrayList()
         videoLinkList.forEach {
             if (it.inputUrl.isNotEmpty()) {
@@ -203,7 +218,7 @@ open class AddProductInputMapper @Inject constructor() {
         return Pictures(data)
     }
 
-    protected fun mapPreorderParam(preorder: PreorderInputModel): Preorder {
+    private fun mapPreorderParam(preorder: PreorderInputModel): Preorder {
         if (preorder.duration == 0) return Preorder()
         return Preorder(
                 preorder.duration,
