@@ -42,6 +42,7 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation rootProject.ext.miscDependencies.gson
     implementation rootProject.ext.miscDependencies.rxJava
+    implementation project(rootProject.ext.libraries.irisSession)
 
     implementation rootProject.ext.debugToolsDependencies.chuck
 

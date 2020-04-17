@@ -19,14 +19,17 @@ import rx.Subscriber
 import rx.schedulers.Schedulers
 import java.util.*
 import kotlin.collections.HashMap
+import com.tokopedia.iris.util.IrisSession
 
 class AbTestPlatform @JvmOverloads constructor (val context: Context): RemoteConfig {
 
     private lateinit var userSession: UserSession
+    private lateinit var irisSession: IrisSession
     private val graphqlUseCase: GraphqlUseCase = GraphqlUseCase()
 
     init {
         userSession = UserSession(context)
+        irisSession = IrisSession(context)
     }
 
     private val sharedPreferences = context.getSharedPreferences(SHARED_PREFERENCE_AB_TEST_PLATFORM, Context.MODE_PRIVATE)
@@ -43,14 +46,7 @@ class AbTestPlatform @JvmOverloads constructor (val context: Context): RemoteCon
         return defaultValue
     }
 
-    val KEY_TIMESTAMP_PREVIOUS = "timestamp_previous"
-    val KEY_SESSION_ID = "session_id"
-    val SHARED_PREFERENCES = "com.tokopedia.iris.SHARED_PREFERENCES"
 
-    fun getIrisSessionId(): String {
-        val sharedPreferences = context.getSharedPreferences(SHARED_PREFERENCES, Context.MODE_PRIVATE)
-        return sharedPreferences.getString(KEY_SESSION_ID, "") ?: ""
-    }
     override fun getByteArray(key: String?): ByteArray {
         throw RuntimeException("Method is not implemented yet")
     }
@@ -116,7 +112,7 @@ class AbTestPlatform @JvmOverloads constructor (val context: Context): RemoteCon
         } else {
             payloads[ID] = userSession.deviceId
         }
-        payloads[IRIS_SESSION_ID] = getIrisSessionId()
+        payloads[IRIS_SESSION_ID] = irisSession.getSessionId()
 
         val graphqlRequest = GraphqlRequest(GraphqlHelper.loadRawString(context.resources,
                 R.raw.gql_rollout_feature_variant), AbTestVariantPojo::class.java, payloads, false)
