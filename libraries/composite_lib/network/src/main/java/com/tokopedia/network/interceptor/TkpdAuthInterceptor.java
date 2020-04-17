@@ -130,9 +130,14 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
             // Improvement for response, only check maintenance, server error and timezone by only peeking the body
             // instead of getting all string and create the new response.
             bodyResponse = response.peekBody(BYTE_COUNT).string();
+            int code = response.code();
             if (isMaintenance(bodyResponse)) {
                 showMaintenancePage();
-            } else if (isServerError(response.code()) && !isHasErrorMessage(bodyResponse)) {
+            } else if (code == ERROR_UNAUTHORIZED_REQUEST) {
+                sendAnalyticsAnomalyResponse("401_after_refresh_token", response, response.request());
+                networkRouter.showForceLogoutTokenDialog(bodyResponse);
+            }
+            else if (isServerError(response.code()) && !isHasErrorMessage(bodyResponse)) {
                 showServerError(response);
             } else if (isForbiddenRequest(bodyResponse, response.code())
                     && isTimezoneNotAutomatic()) {
