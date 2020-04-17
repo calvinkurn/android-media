@@ -1,4 +1,4 @@
-package com.tokopedia.vouchercreation.view.viewmodel
+package com.tokopedia.vouchercreation.create.view.viewmodel
 
 import androidx.annotation.IntRange
 import androidx.lifecycle.LiveData

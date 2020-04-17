@@ -5,7 +5,7 @@
         android:label="@string/app_name"
         android:supportsRtl="true">
         <activity
-            android:name=".view.activity.CreateMerchantVoucherStepsActivity"
+            android:name="com.tokopedia.vouchercreation.create.view.activity.CreateMerchantVoucherStepsActivity"
             android:exported="true"
             android:label="@string/create_voucher_title"
             android:screenOrientation="portrait"

@@ -1,4 +1,4 @@
-package com.tokopedia.vouchercreation.view.fragment
+package com.tokopedia.vouchercreation.create.view.fragment
 
 import android.os.Bundle
 import android.view.LayoutInflater

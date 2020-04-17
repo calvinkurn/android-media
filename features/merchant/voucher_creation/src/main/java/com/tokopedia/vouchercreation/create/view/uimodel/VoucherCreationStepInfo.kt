@@ -1,4 +1,4 @@
-package com.tokopedia.vouchercreation.view.uimodel
+package com.tokopedia.vouchercreation.create.view.uimodel
 
 enum class VoucherCreationStepInfo(val stepPosition: Int,
                                    val stepDescription: String,

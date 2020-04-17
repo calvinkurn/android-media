@@ -1,4 +1,4 @@
-package com.tokopedia.vouchercreation.view.activity
+package com.tokopedia.vouchercreation.create.view.activity
 
 import android.animation.ObjectAnimator
 import android.content.res.Resources
@@ -15,12 +15,12 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.kotlin.extensions.view.setStatusBarColor
 import com.tokopedia.vouchercreation.R
+import com.tokopedia.vouchercreation.create.view.adapter.CreateMerchantVoucherStepsAdapter
+import com.tokopedia.vouchercreation.create.view.fragment.BaseCreateMerchantVoucherFragment
+import com.tokopedia.vouchercreation.create.view.fragment.MerchantVoucherTargetFragment
+import com.tokopedia.vouchercreation.create.view.uimodel.VoucherCreationStepInfo
+import com.tokopedia.vouchercreation.create.view.viewmodel.CreateMerchantVoucherStepsViewModel
 import com.tokopedia.vouchercreation.di.component.DaggerVoucherCreationComponent
-import com.tokopedia.vouchercreation.view.adapter.CreateMerchantVoucherStepsAdapter
-import com.tokopedia.vouchercreation.view.fragment.BaseCreateMerchantVoucherFragment
-import com.tokopedia.vouchercreation.view.fragment.MerchantVoucherTargetFragment
-import com.tokopedia.vouchercreation.view.uimodel.VoucherCreationStepInfo
-import com.tokopedia.vouchercreation.view.viewmodel.CreateMerchantVoucherStepsViewModel
 import kotlinx.android.synthetic.main.activity_create_merchant_voucher_steps.*
 import javax.inject.Inject
 
