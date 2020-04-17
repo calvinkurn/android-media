@@ -15,6 +15,7 @@ import com.tokopedia.play.view.type.VideoOrientation
  */
 class PlayInteractionPortraitManager(
         context: Context,
+        private val videoOrientation: VideoOrientation,
         @IdRes private val sizeContainerComponentId: Int,
         @IdRes private val sendChatComponentId: Int,
         @IdRes private val likeComponentId: Int,
@@ -45,7 +46,7 @@ class PlayInteractionPortraitManager(
         layoutChatList(container = view, id = chatListComponentId, quickReplyComponentId = quickReplyComponentId, likeComponentId = likeComponentId, sizeContainerComponentId = sizeContainerComponentId)
         layoutPinned(container = view, id = pinnedComponentId, chatListComponentId = chatListComponentId, likeComponentId = likeComponentId, sizeContainerComponentId = sizeContainerComponentId)
         layoutPlayButton(container = view, id = playButtonComponentId, sizeContainerComponentId = sizeContainerComponentId)
-        layoutImmersiveBox(container = view, id = immersiveBoxComponentId, toolbarComponentId = toolbarComponentId, pinnedComponentId = pinnedComponentId)
+        layoutImmersiveBox(container = view, videoOrientation = videoOrientation, id = immersiveBoxComponentId, pinnedComponentId = pinnedComponentId, statsInfoComponentId = statsInfoComponentId)
         layoutQuickReply(container = view, id = quickReplyComponentId, sendChatComponentId = sendChatComponentId, sizeContainerComponentId = sizeContainerComponentId)
         layoutGradientBackground(container = view, id = gradientBackgroundComponentId)
         layoutEndLiveComponent(container = view, id = endLiveInfoComponentId)
@@ -77,7 +78,8 @@ class PlayInteractionPortraitManager(
     }
 
     override fun onVideoOrientationChanged(container: View, videoOrientation: VideoOrientation) {
-
+        if (this.videoOrientation != videoOrientation)
+            layoutImmersiveBox(container = container, videoOrientation = videoOrientation, id = immersiveBoxComponentId, pinnedComponentId = pinnedComponentId, statsInfoComponentId = statsInfoComponentId)
     }
 
     private fun layoutSizeContainer(container: View, @IdRes id: Int) {
@@ -161,12 +163,20 @@ class PlayInteractionPortraitManager(
         }
     }
 
-    private fun layoutImmersiveBox(container: View, @IdRes id: Int, toolbarComponentId: Int, @IdRes pinnedComponentId: Int) {
+    private fun layoutImmersiveBox(container: View, videoOrientation: VideoOrientation, @IdRes id: Int, @IdRes pinnedComponentId: Int, @IdRes statsInfoComponentId: Int) {
         container.changeConstraint {
+
             connect(id, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START)
             connect(id, ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END)
-            connect(id, ConstraintSet.TOP, toolbarComponentId, ConstraintSet.BOTTOM)
-            connect(id, ConstraintSet.BOTTOM, pinnedComponentId, ConstraintSet.TOP, offset16)
+
+            if (videoOrientation.isLandscape) {
+                connect(id, ConstraintSet.TOP, statsInfoComponentId, ConstraintSet.BOTTOM, offset16)
+                clear(id, ConstraintSet.BOTTOM)
+                setDimensionRatio(id, "H,16:9")
+            } else {
+                connect(id, ConstraintSet.TOP, statsInfoComponentId, ConstraintSet.BOTTOM)
+                connect(id, ConstraintSet.BOTTOM, pinnedComponentId, ConstraintSet.TOP, offset16)
+            }
         }
     }
 

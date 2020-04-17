@@ -327,7 +327,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
 
     private fun observeVideoStream() {
         playViewModel.observableVideoStream.observe(viewLifecycleOwner, Observer {
-            layoutManager.onVideoOrientationChanged(requireView(), it.orientation)
+            layoutManager.onVideoOrientationChanged(clPlayInteraction, it.orientation)
             triggerImmersive(false)
             if (it.orientation.isLandscape) setupVideoLandscape(playViewModel.screenOrientation)
 
@@ -441,7 +441,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
         clPlayInteraction.setOnClickListener {
             if (
                     (playViewModel.screenOrientation.isLandscape && clPlayInteraction.hasAlpha) ||
-                    (!playViewModel.screenOrientation.isLandscape && !playViewModel.videoOrientation.isLandscape)
+                    (!playViewModel.screenOrientation.isLandscape && !playViewModel.videoOrientation.isLandscape && clPlayInteraction.hasAlpha)
             ) triggerImmersive(it.alpha == VISIBLE_ALPHA)
         }
     }
@@ -487,6 +487,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
         layoutManager = PlayInteractionLayoutManagerImpl(
                 context = requireContext(),
                 orientation = playViewModel.screenOrientation,
+                videoOrientation = playViewModel.videoOrientation,
                 sizeContainerComponentId = sizeContainerComponent.getContainerId(),
                 sendChatComponentId = sendChatComponent.getContainerId(),
                 likeComponentId = likeComponent.getContainerId(),
