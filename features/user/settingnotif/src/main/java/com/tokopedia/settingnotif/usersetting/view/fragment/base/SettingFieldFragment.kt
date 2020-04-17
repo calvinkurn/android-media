@@ -21,6 +21,7 @@ import com.tokopedia.network.constant.ErrorNetMessage.MESSAGE_ERROR_SERVER
 import com.tokopedia.settingnotif.R
 import com.tokopedia.settingnotif.usersetting.di.DaggerUserSettingComponent
 import com.tokopedia.settingnotif.usersetting.di.module.UserSettingModule
+import com.tokopedia.settingnotif.usersetting.domain.pojo.NotificationActivation
 import com.tokopedia.settingnotif.usersetting.domain.pojo.ParentSetting
 import com.tokopedia.settingnotif.usersetting.domain.pojo.setusersetting.SetUserSettingResponse
 import com.tokopedia.settingnotif.usersetting.view.activity.ParentActivity
@@ -170,12 +171,16 @@ abstract class SettingFieldFragment : BaseListFragment<Visitable<*>,
         }
     }
 
-    protected fun permissionValidation(lastStateItems: List<ParentSetting>) {
-        if (isNotificationEnabled()) {
+    protected fun permissionValidation(
+            validation: Boolean,
+            pinnedItem: NotificationActivation,
+            lastStateItems: List<ParentSetting>
+    ) {
+        if (validation) {
             settingFieldAdapter.removePinnedActivation()
             settingFieldAdapter.enableSwitchComponent(lastStateItems)
         } else {
-            settingFieldAdapter.addPinnedActivation()
+            settingFieldAdapter.addPinnedActivation(pinnedItem)
             settingFieldAdapter.disableSwitchComponent()
         }
     }
