@@ -54,7 +54,6 @@ class BuyerAccountFragment : BaseAccountFragment(), BuyerAccount.View, FragmentL
     lateinit var remoteConfig: RemoteConfig
 
     private val adapter:BuyerAccountAdapter = BuyerAccountAdapter(AccountTypeFactory(this), arrayListOf())
-    private var snackBar: Snackbar? = null
     private var endlessRecyclerViewScrollListener: EndlessRecyclerViewScrollListener? = null
     private var fpmBuyer: PerformanceMonitoring? = null
     private var layoutManager: StaggeredGridLayoutManager = StaggeredGridLayoutManager(
@@ -135,9 +134,9 @@ class BuyerAccountFragment : BaseAccountFragment(), BuyerAccount.View, FragmentL
             model.items?.let {
                 adapter.clearAllElements()
                 adapter.setElement(it)
-
-                snackBar?.dismiss()
-                snackBar = null
+                try{
+                    Toaster.snackBar.dismiss()
+                } catch (e: Exception){}
             }
         } else {
             context?.let {
@@ -165,11 +164,8 @@ class BuyerAccountFragment : BaseAccountFragment(), BuyerAccount.View, FragmentL
     override fun showError(message: String) {
         if (view != null && userVisibleHint) {
             view?.let {
-                Toaster.make(it, message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
-            }
-            snackBar?.let {
-                it.setAction(getString(R.string.title_try_again)) { getData() }
-                it.show()
+                Toaster.make(it, message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR,
+                        getString(R.string.title_try_again), View.OnClickListener { getData() })
             }
         }
         fpmBuyer?.run { stopTrace() }
@@ -179,11 +175,8 @@ class BuyerAccountFragment : BaseAccountFragment(), BuyerAccount.View, FragmentL
         if (view != null && context != null && userVisibleHint) {
             val message = "${ErrorHandler.getErrorMessage(context, e)} ($errorCode)"
             view?.let {
-                Toaster.make(it, message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
-            }
-            snackBar?.let {
-                it.setAction(getString(R.string.title_try_again)) { getData() }
-                it.show()
+                Toaster.make(it, message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR,
+                        getString(R.string.title_try_again), View.OnClickListener { getData() })
             }
         }
         AccountHomeErrorHandler.logExceptionToCrashlytics(e, userSession.userId, userSession.email, errorCode)

@@ -3,7 +3,6 @@ package com.tokopedia.groupchat.room.view.fragment
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.*
-import android.content.pm.ActivityInfo
 import android.content.res.Configuration
 import android.os.Build
 import android.os.Bundle
@@ -26,7 +25,6 @@ import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.component.Dialog
-import com.tokopedia.design.component.ToasterError
 import com.tokopedia.groupchat.R
 import com.tokopedia.groupchat.channel.view.activity.ChannelActivity
 import com.tokopedia.groupchat.chatroom.data.ChatroomUrl
@@ -612,8 +610,10 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
     }
 
     override fun setSnackBarConnectingWebSocket() {
-        if (userSession.isLoggedIn && !viewState.errorViewShown()) {
-            snackBarWebSocket = Snackbar.make(activity?.findViewById<View>(android.R.id.content)!!, getString(R.string.connecting), Snackbar.LENGTH_INDEFINITE)
+        if (userSession.isLoggedIn && !viewState.errorViewShown() && view!=null) {
+            Toaster.make(view!!, getString(R.string.connecting), Snackbar.LENGTH_INDEFINITE,
+                    Toaster.TYPE_ERROR)
+            snackBarWebSocket = Toaster.snackBar
             isSnackbarEnded = false
             snackBarWebSocket?.removeCallback(snackBarCallback)
             snackBarWebSocket?.addCallback(snackBarCallback)
@@ -625,8 +625,10 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
     }
 
     override fun setSnackBarRetryConnectingWebSocket() {
-        if (userSession.isLoggedIn && !viewState.errorViewShown()) {
-            if (isPortrait) snackBarWebSocket = ToasterError.make(activity?.findViewById<View>(android.R.id.content), getString(R.string.error_websocket_play))
+        if (userSession.isLoggedIn && !viewState.errorViewShown() && view!=null) {
+            Toaster.make(view!!, getString(R.string.error_websocket_play), Snackbar.LENGTH_INDEFINITE,
+                    Toaster.TYPE_ERROR)
+            if (isPortrait) snackBarWebSocket = Toaster.snackBar
             isSnackbarEnded = false
             snackBarWebSocket?.removeCallback(snackBarCallback)
             snackBarWebSocket?.addCallback(snackBarCallback)
