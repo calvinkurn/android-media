@@ -48,6 +48,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         app:typographyType="heading_3"
+                        android:textColor="@color/Neutral_N700_96"
                         tools:text="Avissa Suites" />
 
                     <LinearLayout
@@ -83,7 +84,7 @@
                         android:layout_height="wrap_content"
                         android:ellipsize="end"
                         android:maxLines="2"
-                        android:textColor="@color/hotel_textview_light"
+                        android:textColor="@color/Neutral_N700_68"
                         app:typographyType="body_3"
                         tools:text="Jalan Cihampelas No 211-217 Bandung 40131, Cihampelas" />
                 </LinearLayout>
@@ -236,25 +237,6 @@
                         app:text_field_input_type="text"
                         />
 
-                    <!--                    <com.tokopedia.design.text.TkpdHintTextInputLayout-->
-<!--                        android:id="@+id/til_room_request"-->
-<!--                        style="@style/HintTextInputLayout"-->
-<!--                        android:layout_width="match_parent"-->
-<!--                        android:layout_height="wrap_content"-->
-<!--                        android:layout_marginBottom="@dimen/layout_lvl1"-->
-<!--                        app:counterEnabled="true"-->
-<!--                        app:counterOverflowTextAppearance="@style/ErrorTextAppearance">-->
-
-<!--                        <androidx.appcompat.widget.AppCompatEditText-->
-<!--                            android:id="@+id/tv_room_request_input"-->
-<!--                            android:layout_width="match_parent"-->
-<!--                            android:layout_height="wrap_content"-->
-<!--                            android:focusable="true"-->
-<!--                            android:hint="@string/hotel_booking_request_form_hint"-->
-<!--                            android:inputType="textMultiLine" />-->
-
-<!--                    </com.tokopedia.design.text.TkpdHintTextInputLayout>-->
-
                     <com.tokopedia.unifyprinciples.Typography
                         android:id="@+id/tv_room_request_notice"
                         android:layout_width="match_parent"
@@ -333,6 +315,7 @@
                     android:orientation="vertical"
                     android:visibility="gone"
                     tools:visibility="visible">
+
 
                     <com.tokopedia.design.text.TkpdHintTextInputLayout
                         android:id="@+id/til_guest"

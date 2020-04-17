@@ -24,6 +24,7 @@
     <color name="hotel_black_disable_38">#61000000</color>
 
     <color name="hotel_textview_light">#ae31353b</color>
+    <color name="hotel_color_active_rail">#42b549</color>
 
     <color name="search_subtitle">#7031353b</color>
 </resources>

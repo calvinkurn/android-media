@@ -4,10 +4,9 @@ import android.app.Activity
 import android.app.ProgressDialog
 import android.content.Intent
 import android.graphics.Typeface
+import android.os.Build
 import android.os.Bundle
-import android.text.Editable
-import android.text.Spannable
-import android.text.SpannableString
+import android.text.*
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.text.style.ForegroundColorSpan
@@ -16,7 +15,6 @@ import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.EditorInfo
 import android.widget.AutoCompleteTextView
 import android.widget.TextView
 import androidx.core.app.TaskStackBuilder
@@ -33,7 +31,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalPayment
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
 import com.tokopedia.applink.internal.ApplinkConstInternalTravel
 import com.tokopedia.common.payment.model.PaymentPassData
-import com.tokopedia.design.text.watcher.AfterTextWatcher
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.booking.data.model.*
 import com.tokopedia.hotel.booking.di.HotelBookingComponent
@@ -296,7 +293,9 @@ class HotelBookingFragment : HotelBaseFragment() {
             context?.run { hotel_info_rating_container.addView(RatingStarView(this)) }
         }
         tv_hotel_info_address.text = property.address
-        iv_hotel_info_image.clipToOutline = true
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            iv_hotel_info_image.clipToOutline = true
+        }
         iv_hotel_info_image.loadImage(property.image.urlMax300, R.drawable.ic_failed_load_image)
     }
 
@@ -365,24 +364,9 @@ class HotelBookingFragment : HotelBaseFragment() {
             }
         }
 
-        //to be checked again
-        tv_room_request_input.textFieldInput.inputType = EditorInfo.TYPE_TEXT_FLAG_MULTI_LINE
         tv_room_request_input.setCounter(roomRequestMaxCharCount)
-        tv_room_request_input.textFieldInput.addTextChangedListener(object : AfterTextWatcher() {
-            override fun afterTextChanged(s: Editable) {
-                when (s.length > roomRequestMaxCharCount) {
-                    true -> {
-                        tv_room_request_input.setMessage(getString(R.string.hotel_booking_request_char_count_error, roomRequestMaxCharCount))
-                        tv_room_request_input.setError(true)
-                    }
-                    false -> {
-                        tv_room_request_input.setMessage("")
-                        tv_room_request_input.setError(false)
-                    }
-                }
-
-            }
-        })
+        tv_room_request_input.textFieldInput.inputType = InputType.TYPE_CLASS_TEXT or
+                InputType.TYPE_TEXT_FLAG_MULTI_LINE
     }
 
     private fun showRequestForm() {
@@ -433,6 +417,7 @@ class HotelBookingFragment : HotelBaseFragment() {
                 hotelBookingPageModel.isForOtherGuest = 0
             }
         }
+
 
         til_guest.setLabel(getString(R.string.hotel_booking_guest_form_title))
         til_guest.setErrorTextAppearance(R.style.ErrorTextAppearance)
