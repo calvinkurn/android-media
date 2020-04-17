@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.os.Bundle
 import android.view.View
+import androidx.core.app.TaskStackBuilder
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -171,7 +172,7 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
             }
         } else {
             if(isSessionExpired) {
-                RouteManager.route(this, ApplinkConst.LOGIN)
+                startActivityLoginWithBackTask()
             } else {
                 setResult(Activity.RESULT_OK)
                 finish()
@@ -199,6 +200,21 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
 
     private fun hideLoading() {
         logoutLoading?.visibility = View.GONE
+    }
+
+    private fun startActivityLoginWithBackTask() {
+        val taskStackBuilder = TaskStackBuilder.create(this)
+        val defferedDeeplinkPath = TrackApp.getInstance().appsFlyer.defferedDeeplinkPathIfExists
+        val homeIntent = RouteManager.getIntent(this, ApplinkConst.HOME)
+        val page = RouteManager.getIntent(this, ApplinkConst.LOGIN)
+
+        if (defferedDeeplinkPath.isEmpty()) {
+            taskStackBuilder.addNextIntent(homeIntent)
+            taskStackBuilder.addNextIntent(page)
+            taskStackBuilder.startActivities()
+        } else {
+            RouteManager.route(this, TrackApp.getInstance().appsFlyer.defferedDeeplinkPathIfExists)
+        }
     }
 
     companion object {
