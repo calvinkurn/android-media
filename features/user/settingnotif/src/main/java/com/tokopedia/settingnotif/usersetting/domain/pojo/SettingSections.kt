@@ -7,9 +7,8 @@ import com.tokopedia.settingnotif.usersetting.view.adapter.factory.SettingFieldT
 
 data class SettingSections(
         @SerializedName("list_settings") var listSettings: List<ParentSetting?> = emptyList(),
-        @SerializedName("section") var title: String = "",
-        @SerializedName("icon") var icon: String = ""
-) : Visitable<SettingFieldTypeFactory> {
+        @SerializedName("section") var title: String = ""
+) : BaseSetting(), Visitable<SettingFieldTypeFactory> {
 
         override fun type(typeFactory: SettingFieldTypeFactory): Int {
                 return typeFactory.type(this)
