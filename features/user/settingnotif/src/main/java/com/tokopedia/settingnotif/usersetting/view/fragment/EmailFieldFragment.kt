@@ -69,6 +69,11 @@ class EmailFieldFragment: SettingFieldFragment() {
         viewModel.updateSettingState(setting)
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        viewModel.cleared()
+    }
+
     override fun getScreenName() = getString(R.string.settingnotif_email)
     override fun getNotificationType() = TYPE_EMAIL
 

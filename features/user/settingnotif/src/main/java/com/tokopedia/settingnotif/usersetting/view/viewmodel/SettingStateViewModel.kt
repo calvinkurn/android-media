@@ -29,6 +29,7 @@ interface PushNotifContract {
     fun getPinnedItems(): List<VisitableSettings>
     fun getSettingStates(): List<ParentSetting>
     fun updateSettingState(setting: ParentSetting?)
+    fun cleared()
 }
 
 class SettingStateViewModel @Inject constructor(
@@ -37,6 +38,10 @@ class SettingStateViewModel @Inject constructor(
 
     private val pinnedItems = arrayListOf<VisitableSettings>()
     private val temporaryList = arrayListOf<ParentSetting>()
+
+    override fun getPinnedItems(): List<VisitableSettings> = pinnedItems
+
+    override fun getSettingStates(): List<ParentSetting> = temporaryList
 
     private fun addPinnedItems(
             data: UserSettingViewModel,
@@ -113,8 +118,8 @@ class SettingStateViewModel @Inject constructor(
         }
     }
 
-    override fun getPinnedItems(): List<VisitableSettings> = pinnedItems
-
-    override fun getSettingStates(): List<ParentSetting> = temporaryList
+    override fun cleared() {
+        this.onCleared()
+    }
 
 }
