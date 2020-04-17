@@ -72,7 +72,7 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        officialStorePerformanceMonitoringListener = context?.let { castContextToHomePerformanceMonitoring(it) }
+        officialStorePerformanceMonitoringListener = context?.let { castContextToOfficialStorePerformanceMonitoring(it) }
         startOfficialStorePerformanceMonitoring()
         super.onCreate(savedInstanceState)
         categoryPerformanceMonitoring = PerformanceMonitoring.start(FirebasePerformanceMonitoringConstant.CATEGORY)
@@ -242,7 +242,7 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
         onNotificationChanged(badgeNumberNotification, badgeNumberInbox) // notify badge after toolbar created
     }
 
-    private fun castContextToHomePerformanceMonitoring(context: Context): OfficialStorePerformanceMonitoringListener? {
+    private fun castContextToOfficialStorePerformanceMonitoring(context: Context): OfficialStorePerformanceMonitoringListener? {
         return if (context is OfficialStorePerformanceMonitoringListener) {
             context
         } else null
