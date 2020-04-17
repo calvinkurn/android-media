@@ -4,7 +4,7 @@ import android.content.Context;
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.network.utils.TKPDMapParam;
-import com.tokopedia.purchase_platform.features.cart.domain.mapper.ICartMapper;
+import com.tokopedia.purchase_platform.features.checkout.subfeature.multiple_address.domain.mapper.ICartMapper;
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.CartListData;
 import com.tokopedia.purchase_platform.features.checkout.subfeature.multiple_address.data.model.response.CartMultipleAddressDataListResponse;
 import com.tokopedia.purchase_platform.features.checkout.subfeature.multiple_address.data.repository.IMultipleAddressRepository;

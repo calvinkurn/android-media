@@ -6,7 +6,6 @@ import android.text.TextUtils;
 import com.google.android.gms.common.util.Strings;
 import com.tokopedia.purchase_platform.R;
 import com.tokopedia.purchase_platform.common.utils.UtilsKt;
-import com.tokopedia.purchase_platform.features.cart.domain.mapper.ICartMapper;
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.CartItemData;
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.CartListData;
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.CartTickerErrorData;
