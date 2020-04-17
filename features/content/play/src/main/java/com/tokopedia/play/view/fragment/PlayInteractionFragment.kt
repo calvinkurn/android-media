@@ -878,8 +878,8 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
     }
 
     private fun openPartnerPage(partnerId: Long, partnerType: PartnerType) {
-        if (partnerType == PartnerType.SHOP) openShopPage(partnerId)
-        else if (partnerType == PartnerType.INFLUENCER) openProfilePage(partnerId)
+        if (partnerType == PartnerType.Shop) openShopPage(partnerId)
+        else if (partnerType == PartnerType.Influencer) openProfilePage(partnerId)
     }
 
     private fun openShopPage(partnerId: Long) {

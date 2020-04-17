@@ -235,8 +235,6 @@ class PlayViewModel @Inject constructor(
         }
 
         _observableBottomInsetsState.value = getLatestBottomInsetsMapState()
-
-        mock()
     }
 
     //region lifecycle
@@ -374,17 +372,17 @@ class PlayViewModel @Inject constructor(
     }
 
     private fun initiateVideo(channel: Channel) {
-//        startVideoWithUrlString(
-//                channel.videoStream.config.streamUrl,
-//                bufferControl = channel.videoStream.bufferControl?.let { mapBufferControl(it) }
-//                        ?: PlayBufferControl()
-//        )
         startVideoWithUrlString(
-                "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
-//                "https://assets.mixkit.co/videos/preview/mixkit-womans-feet-splashing-in-the-pool-1261-large.mp4",
+                channel.videoStream.config.streamUrl,
                 bufferControl = channel.videoStream.bufferControl?.let { mapBufferControl(it) }
                         ?: PlayBufferControl()
         )
+//        startVideoWithUrlString(
+//                "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
+////                "https://assets.mixkit.co/videos/preview/mixkit-womans-feet-splashing-in-the-pool-1261-large.mp4",
+//                bufferControl = channel.videoStream.bufferControl?.let { mapBufferControl(it) }
+//                        ?: PlayBufferControl()
+//        )
         playVideoManager.setRepeatMode(false)
     }
 
@@ -591,7 +589,7 @@ class PlayViewModel @Inject constructor(
 
     private suspend fun getPartnerInfo(channel: ChannelInfoUiModel): PartnerInfoUiModel {
         val partnerId = channel.partnerId
-        return if (channel.partnerType == PartnerType.ADMIN) {
+        return if (channel.partnerType == PartnerType.Admin) {
             PartnerInfoUiModel(
                     id = partnerId,
                     name = channel.moderatorName,
@@ -663,24 +661,5 @@ class PlayViewModel @Inject constructor(
         private const val MAX_RETRY_CHANNEL_INFO = 3
 
         private const val MS_PER_SECOND = 1000
-    }
-
-    private fun mock() {
-        launch {
-            delay(5000)
-            _observablePinnedProduct.value = PinnedProductUiModel(
-                    partnerName = "aaa",
-                    title = "bbb",
-                    isPromo = true
-            )
-
-            _observableProductSheetContent.value = PlayResult.Success(
-                    ProductSheetUiModel(
-                            title = "ahaha",
-                            voucherList = List(5) { VoucherPlaceholderUiModel },
-                            productList = List(5) { ProductPlaceholderUiModel }
-                    )
-            )
-        }
     }
 }
