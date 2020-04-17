@@ -267,13 +267,13 @@ open class FlightSearchActivity : BaseFlightActivity(),
 
 /*        fun getCallingIntent(context: Context): Intent {
             val passDataModel = FlightSearchPassDataModel(
-                    "2020-05-01",
-                    "2020-06-01",
+                    "2020-08-01",
+                    "2020-10-01",
                     false,
                     FlightPassengerModel(1, 0, 0),
                     FlightAirportModel().apply {
-                        cityName = "Medan"
-                        cityCode = "KNO"
+                        cityName = "Banda Aceh"
+                        cityCode = "BTJ"
                     },
                     FlightAirportModel().apply {
                         cityName = "Jakarta"

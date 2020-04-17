@@ -16,7 +16,7 @@ class FlightSearchCombineUseCase @Inject constructor(private val flightSearchRep
 
         val numOfAttempts = intArrayOf(0)
         val pollDelay = intArrayOf(0)
-        var isStillLooping: Boolean
+        var isStopLooping: Boolean
 
         do {
             delay(TimeUnit.SECONDS.toMillis(pollDelay[0].toLong()))
@@ -25,11 +25,11 @@ class FlightSearchCombineUseCase @Inject constructor(private val flightSearchRep
                 pollDelay[0] = it.refreshTime
                 numOfAttempts[0]++
 
-                isStillLooping = (it.needRefresh) || (numOfAttempts[0] < it.maxRetry)
+                isStopLooping = !it.needRefresh || numOfAttempts[0] >= it.maxRetry
             }
-        } while (isStillLooping)
+        } while (!isStopLooping)
 
-        return !isStillLooping
+        return isStopLooping
     }
 
 }

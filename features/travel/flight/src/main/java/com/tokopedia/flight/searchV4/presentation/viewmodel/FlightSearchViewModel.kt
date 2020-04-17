@@ -10,6 +10,8 @@ import com.tokopedia.flight.common.util.FlightAnalytics
 import com.tokopedia.flight.common.util.FlightRequestUtil
 import com.tokopedia.flight.search.presentation.model.*
 import com.tokopedia.flight.search.presentation.model.filter.FlightFilterModel
+import com.tokopedia.flight.searchV4.data.cloud.combine.FlightCombineRequestModel
+import com.tokopedia.flight.searchV4.data.cloud.combine.FlightCombineRouteRequest
 import com.tokopedia.flight.searchV4.data.cloud.single.FlightSearchRequestModel
 import com.tokopedia.flight.searchV4.domain.*
 import com.tokopedia.flight.searchV4.presentation.model.FlightSearchSelectedModel
@@ -27,6 +29,7 @@ class FlightSearchViewModel @Inject constructor(
         private val flightSearchDeleteAllDataUseCase: FlightSearchDeleteAllDataUseCase,
         private val flightSearchDeleteReturnDataUseCase: FlightSearchDeleteReturnDataUseCase,
         private val flightSearchJourneyByIdUseCase: FlightSearchJouneyByIdUseCase,
+        private val flightSearchCombineUseCase: FlightSearchCombineUseCase,
         private val flightAnalytics: FlightAnalytics,
         private val dispatcherProvider: TravelDispatcherProvider)
     : BaseViewModel(dispatcherProvider.io()) {
@@ -68,6 +71,15 @@ class FlightSearchViewModel @Inject constructor(
                 deleteAllSearchData()
             }
         }
+
+        if (!flightSearchPassData.isOneWay && !isCombineDone) {
+            fetchCombineData()
+            runFireAndForgetForReturn(isReturnTrip)
+        }
+    }
+
+    fun setProgress(progress: Int) {
+        this.progress.postValue(progress)
     }
 
     fun fetchSearchDataCloud(isReturnTrip: Boolean, delayInSeconds: Long = -1) {
@@ -97,6 +109,41 @@ class FlightSearchViewModel @Inject constructor(
                     filterModel.journeyId)
 
             onGetSearchMeta(data, isReturnTrip)
+        }) {
+            it.printStackTrace()
+        }
+    }
+
+    private fun fetchCombineData() {
+        val departureAirport = if (flightSearchPassData.departureAirport.airportCode != null &&
+                flightSearchPassData.departureAirport.airportCode.isNotEmpty()) {
+            flightSearchPassData.departureAirport.airportCode
+        } else {
+            flightSearchPassData.departureAirport.cityCode
+        }
+
+        val arrivalAirport = if (flightSearchPassData.arrivalAirport.airportCode != null &&
+                flightSearchPassData.arrivalAirport.airportCode.isNotEmpty()) {
+            flightSearchPassData.arrivalAirport.airportCode
+        } else {
+            flightSearchPassData.arrivalAirport.cityCode
+        }
+
+        val routes = arrayListOf(
+                FlightCombineRouteRequest(departureAirport, arrivalAirport, flightSearchPassData.getDate(false)),
+                FlightCombineRouteRequest(arrivalAirport, departureAirport, flightSearchPassData.getDate(true)))
+
+        val combineRequestModel = FlightCombineRequestModel(
+                routes,
+                flightSearchPassData.flightPassengerViewModel.adult,
+                flightSearchPassData.flightPassengerViewModel.children,
+                flightSearchPassData.flightPassengerViewModel.infant,
+                flightSearchPassData.flightClass.id,
+                FlightRequestUtil.getLocalIpAddress(),
+                flightSearchPassData.searchRequestId)
+
+        launchCatchError(context = dispatcherProvider.ui(), block = {
+            isCombineDone = flightSearchCombineUseCase.execute(combineRequestModel)
         }) {
             it.printStackTrace()
         }
@@ -235,6 +282,34 @@ class FlightSearchViewModel @Inject constructor(
                 else MAX_PROGRESS)
 
         fetchSortAndFilter()
+    }
+
+    private fun runFireAndForgetForReturn(isReturnTrip: Boolean) {
+        if (!isReturnTrip) {
+            val date: String = flightSearchPassData.getDate(true)
+            val adult = flightSearchPassData.flightPassengerViewModel.adult
+            val child = flightSearchPassData.flightPassengerViewModel.children
+            val infant = flightSearchPassData.flightPassengerViewModel.infant
+            val classId = flightSearchPassData.flightClass.id
+            val searchRequestId = flightSearchPassData.searchRequestId
+
+            val requestModel = FlightSearchRequestModel(
+                    flightAirportCombine.arrAirport,
+                    flightAirportCombine.depAirport,
+                    date, adult, child, infant, classId,
+                    flightAirportCombine.airlines,
+                    FlightRequestUtil.getLocalIpAddress(),
+                    searchRequestId)
+
+            launchCatchError(dispatcherProvider.ui(), {
+                flightSearchUseCase.execute(requestModel,
+                        !flightSearchPassData.isOneWay,
+                        true,
+                        filterModel.journeyId)
+            }) {
+                it.printStackTrace()
+            }
+        }
     }
 
     private fun buildFare(journeyFare: FlightFareModel, isNeedCombo: Boolean): FlightFareModel =
