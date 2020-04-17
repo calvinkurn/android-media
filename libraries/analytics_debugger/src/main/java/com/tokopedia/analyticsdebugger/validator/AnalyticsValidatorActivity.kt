@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
@@ -47,6 +48,7 @@ class AnalyticsValidatorActivity : AppCompatActivity() {
         viewModel.run(testQuery["verifyOrder"] as List<Map<String, Any>>)
         with(rv) {
             layoutManager = LinearLayoutManager(this@AnalyticsValidatorActivity)
+            addItemDecoration(DividerItemDecoration(this@AnalyticsValidatorActivity, DividerItemDecoration.VERTICAL))
             adapter = mAdapter
         }
     }

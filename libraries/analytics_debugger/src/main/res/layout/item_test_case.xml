@@ -26,6 +26,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginLeft="16dp"
         android:layout_marginTop="16dp"
+        android:textStyle="italic"
         app:layout_constraintStart_toEndOf="@+id/tv_number"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="Title of test case" />
