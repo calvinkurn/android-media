@@ -30,12 +30,13 @@ class FlightSearchReturnFragment : FlightSearchFragment() {
             val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
             flightSearchReturnViewModel = viewModelProvider.get(FlightSearchReturnViewModel::class.java)
 
-            arguments?.let {
-                flightSearchReturnViewModel.setSelectedDepartureId(it.getString(EXTRA_DEPARTURE_ID, ""))
-                flightSearchReturnViewModel.isViewOnlyBestPairing = it.getBoolean(EXTRA_IS_BEST_PAIRING, false)
-                flightSearchReturnViewModel.isBestPairing = it.getBoolean(EXTRA_IS_BEST_PAIRING, false)
-                flightSearchReturnViewModel.priceModel = it.getParcelable(EXTRA_PRICE_MODEL)
-                flightSearchViewModel.isCombineDone = it.getBoolean(EXTRA_IS_COMBINE_DONE, true)
+            arguments?.let { args ->
+                flightSearchReturnViewModel.setSelectedDepartureId(args.getString(EXTRA_DEPARTURE_ID, ""))
+                flightSearchReturnViewModel.isViewOnlyBestPairing = args.getBoolean(EXTRA_IS_BEST_PAIRING, false)
+                flightSearchReturnViewModel.isBestPairing = args.getBoolean(EXTRA_IS_BEST_PAIRING, false)
+                args.getParcelable<FlightPriceModel>(EXTRA_PRICE_MODEL)?.let {
+                    flightSearchReturnViewModel.priceModel = it
+                }
             }
 
             flightSearchReturnViewModel.getDepartureJourneyDetail()

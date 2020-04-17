@@ -34,6 +34,7 @@ import com.tokopedia.flight.search.util.unselect
 import com.tokopedia.flight.searchV4.di.DaggerFlightSearchComponent
 import com.tokopedia.flight.searchV4.di.FlightSearchComponent
 import com.tokopedia.flight.searchV4.presentation.activity.FlightSearchActivity
+import com.tokopedia.flight.searchV4.presentation.activity.FlightSearchReturnActivity.Companion.EXTRA_IS_COMBINE_DONE
 import com.tokopedia.flight.searchV4.presentation.adapter.viewholder.FlightSearchAdapterTypeFactory
 import com.tokopedia.flight.searchV4.presentation.viewmodel.FlightSearchViewModel
 import com.tokopedia.kotlin.extensions.view.hide
@@ -71,8 +72,11 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
             val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
             flightSearchViewModel = viewModelProvider.get(FlightSearchViewModel::class.java)
 
-            arguments?.let {
-                flightSearchViewModel.flightSearchPassData = it.getParcelable(FlightSearchActivity.EXTRA_PASS_DATA)!!
+            arguments?.let { args ->
+                args.getParcelable<FlightSearchPassDataModel>(FlightSearchActivity.EXTRA_PASS_DATA)?.let {
+                    flightSearchViewModel.flightSearchPassData = it
+                }
+                flightSearchViewModel.isCombineDone = args.getBoolean(EXTRA_IS_COMBINE_DONE, false)
             }
 
             if (savedInstanceState == null) {
