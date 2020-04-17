@@ -1,6 +1,5 @@
 package com.tokopedia.product.addedit.tooltip.presentation
 
-import android.content.res.Resources
 import android.graphics.Canvas
 import android.graphics.Rect
 import android.graphics.drawable.Drawable
@@ -16,7 +15,6 @@ class ImageDividerItemDecoration(
         private val paddingTop: Int = 0) : RecyclerView.ItemDecoration() {
 
     override fun onDraw(canvas: Canvas, parent: RecyclerView, state: RecyclerView.State) {
-        val displayMetrics = Resources.getSystem().displayMetrics
         val dividerLeft = paddingLeft + parent.paddingLeft
         val dividerRight = parent.width - paddingRight - parent.paddingRight
 
