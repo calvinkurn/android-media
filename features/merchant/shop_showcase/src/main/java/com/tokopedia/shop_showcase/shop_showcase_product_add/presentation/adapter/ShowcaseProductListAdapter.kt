@@ -68,9 +68,13 @@ class ShowcaseProductListAdapter(
                     selectedProduct.add(shopProductList[position] as ShowcaseProduct)
                 } else {
                     val deletedProduct = shopProductList[position] as ShowcaseProduct
-                    selectedProduct.remove(selectedProduct.single {
+                    val targetedProduct = selectedProduct.single {
                         it.productId == deletedProduct.productId
-                    })
+                    }
+                    selectedProduct.run {
+                        if(contains(targetedProduct))
+                            remove(targetedProduct)
+                    }
                 }
                 item.ishighlighted = cardState
                 item.isNewAppended = appendState
