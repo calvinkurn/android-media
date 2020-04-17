@@ -34,7 +34,7 @@ open class VideoControlComponent(
             bus.getSafeManagedFlow(ScreenStateEvent::class.java)
                     .collect {
                         when (it) {
-                            ScreenStateEvent.Init -> uiView.hide()
+                            is ScreenStateEvent.Init -> uiView.hide()
                             is ScreenStateEvent.SetVideo -> {
                                 uiView.setPlayer(it.videoPlayer)
                             }

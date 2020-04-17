@@ -132,6 +132,8 @@ class PlayFragment : BaseDaggerFragment(), SensorOrientationManager.OrientationL
     private lateinit var flBottomSheet: FrameLayout
     private lateinit var flGlobalError: FrameLayout
 
+    private lateinit var videoFragment: PlayVideoFragment
+
     private val keyboardWatcher = KeyboardWatcher()
 
     private lateinit var orientationManager: SensorOrientationManager
@@ -178,10 +180,16 @@ class PlayFragment : BaseDaggerFragment(), SensorOrientationManager.OrientationL
         setupView(view)
         setupScreen(view)
 
-        if (childFragmentManager.findFragmentByTag(VIDEO_FRAGMENT_TAG) == null) {
+        val fragmentVideo = childFragmentManager.findFragmentByTag(VIDEO_FRAGMENT_TAG)
+        videoFragment = if (fragmentVideo == null) {
+            val videoFragment = PlayVideoFragment.newInstance(channelId)
             childFragmentManager.beginTransaction()
-                    .replace(flVideo.id, PlayVideoFragment.newInstance(channelId), VIDEO_FRAGMENT_TAG)
+                    .replace(flVideo.id, videoFragment, VIDEO_FRAGMENT_TAG)
                     .commit()
+
+            videoFragment
+        } else {
+            fragmentVideo as PlayVideoFragment
         }
 
         if (childFragmentManager.findFragmentByTag(INTERACTION_FRAGMENT_TAG) == null) {
@@ -305,6 +313,10 @@ class PlayFragment : BaseDaggerFragment(), SensorOrientationManager.OrientationL
             val totalView = playViewModel.totalView
             if (!totalView.isNullOrEmpty()) putExtra(EXTRA_TOTAL_VIEW, totalView)
         })
+    }
+
+    fun setVideoTopBounds(topBounds: Int) {
+        videoFragment.setVideoTopBounds(topBounds)
     }
 
     /**

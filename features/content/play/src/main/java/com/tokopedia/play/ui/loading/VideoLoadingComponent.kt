@@ -31,7 +31,7 @@ open class VideoLoadingComponent(
             bus.getSafeManagedFlow(ScreenStateEvent::class.java)
                     .collect {
                         when (it) {
-                            ScreenStateEvent.Init -> uiView.hide()
+                            is ScreenStateEvent.Init -> uiView.hide()
                             is ScreenStateEvent.VideoPropertyChanged -> handleVideoStateChanged(it.videoProp.state)
                         }
                     }

@@ -18,10 +18,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.DisplayMetricUtils.getStatusBarHeight
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.kotlin.extensions.view.getScreenHeight
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.R
 import com.tokopedia.play.analytic.PlayAnalytics
@@ -164,6 +161,10 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
         get() = requireView().findViewById(quickReplyComponent.getContainerId())
     private val chatListView: View
         get() = requireView().findViewById(chatListComponent.getContainerId())
+    private val toolbarView: View
+        get() = requireView().findViewById(toolbarComponent.getContainerId())
+    private val statsInfoView: View
+        get() = requireView().findViewById(statsInfoComponent.getContainerId())
 
     private var channelId: String = ""
 
@@ -240,7 +241,6 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
         observeLikeContent()
         observeBottomInsetsState()
         observeEventUserInfo()
-        observeScreenOrientation()
 
         observeLoggedInInteractionEvent()
     }
@@ -329,6 +329,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
         playViewModel.observableVideoStream.observe(viewLifecycleOwner, Observer {
             layoutManager.onVideoOrientationChanged(requireView(), it.orientation)
             triggerImmersive(false)
+            if (it.orientation.isLandscape) setupVideoLandscape(playViewModel.screenOrientation)
 
             setVideoStream(it)
         })
@@ -388,7 +389,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
 
     private fun observeBottomInsetsState() {
         playViewModel.observableBottomInsetsState.observe(viewLifecycleOwner, Observer {
-            requireView().gone()
+            if (it.isAnyShown) requireView().gone()
 
             launch {
                 val keyboardState = it[BottomInsetsType.Keyboard]
@@ -432,10 +433,6 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
 
     private fun observeCartInfo() {
         playViewModel.observableBadgeCart.observe(viewLifecycleOwner, Observer(::setCartInfo))
-    }
-
-    private fun observeScreenOrientation() {
-        playViewModel.observableScreenOrientation.observe(viewLifecycleOwner, Observer(::sendOrientationEvent))
     }
     //endregion
 
@@ -489,7 +486,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
 
         layoutManager = PlayInteractionLayoutManagerImpl(
                 context = requireContext(),
-                orientation = ScreenOrientation.getByInt(resources.configuration.orientation),
+                orientation = playViewModel.screenOrientation,
                 sizeContainerComponentId = sizeContainerComponent.getContainerId(),
                 sendChatComponentId = sendChatComponent.getContainerId(),
                 likeComponentId = likeComponent.getContainerId(),
@@ -724,7 +721,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
         launch(dispatchers.immediate) {
             EventBusFactory.get(viewLifecycleOwner).emit(
                     ScreenStateEvent::class.java,
-                    ScreenStateEvent.Init
+                    ScreenStateEvent.Init(playViewModel.screenOrientation, playViewModel.stateHelper)
             )
         }
     }
@@ -759,16 +756,6 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
                     .emit(
                             ScreenStateEvent::class.java,
                             ScreenStateEvent.SetTotalCart(cartUiModel)
-                    )
-        }
-    }
-
-    private fun sendOrientationEvent(screenOrientation: ScreenOrientation) {
-        launch {
-            EventBusFactory.get(viewLifecycleOwner)
-                    .emit(
-                            ScreenStateEvent::class.java,
-                            ScreenStateEvent.ScreenOrientationChanged(screenOrientation, playViewModel.stateHelper)
                     )
         }
     }
@@ -1087,5 +1074,27 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
 
     private fun cancelAllAnimations() {
         fadeAnimationList.forEach { it.cancel() }
+    }
+
+    private fun setupVideoLandscape(screenOrientation: ScreenOrientation) {
+        if (screenOrientation.isLandscape) {
+            return
+        }
+
+        val toolbarViewTotalHeight = run {
+            val height = toolbarView.height
+            val marginLp = toolbarView.layoutParams as ViewGroup.MarginLayoutParams
+            height + marginLp.bottomMargin + marginLp.topMargin
+        }
+
+        val statsInfoTotalHeight = run {
+            val height = statsInfoView.height
+            val marginLp = statsInfoView.layoutParams as ViewGroup.MarginLayoutParams
+            height + marginLp.bottomMargin + marginLp.topMargin
+        }
+
+        val statusBarHeight = view?.let { getStatusBarHeight(it.context) }.orZero()
+
+        playFragment.setVideoTopBounds(toolbarViewTotalHeight + statsInfoTotalHeight + statusBarHeight)
     }
 }

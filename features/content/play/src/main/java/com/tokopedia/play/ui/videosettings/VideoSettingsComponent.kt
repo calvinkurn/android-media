@@ -30,9 +30,11 @@ open class VideoSettingsComponent(
             bus.getSafeManagedFlow(ScreenStateEvent::class.java)
                     .collect {
                         when (it) {
-                            ScreenStateEvent.Init -> uiView.hide()
+                            is ScreenStateEvent.Init -> {
+                                uiView.setFullscreen(it.screenOrientation.isLandscape)
+                                if (!it.stateHelper.videoOrientation.isLandscape) uiView.hide()
+                            }
                             is ScreenStateEvent.VideoStreamChanged -> if (it.videoStream.orientation.isLandscape) uiView.show() else uiView.hide()
-                            is ScreenStateEvent.ScreenOrientationChanged -> uiView.setFullscreen(it.orientation.isLandscape)
                             is ScreenStateEvent.ImmersiveStateChanged -> if (it.shouldImmersive) uiView.fadeOut() else uiView.fadeIn()
                         }
                     }

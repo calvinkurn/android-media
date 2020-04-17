@@ -1,4 +1,4 @@
-package com.tokopedia.play.ui.gradientbg
+package com.tokopedia.play.ui.videobackground
 
 import android.view.ViewGroup
 import androidx.annotation.VisibleForTesting
@@ -13,9 +13,9 @@ import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.launch
 
 /**
- * Created by jegul on 10/01/20
+ * Created by jegul on 16/04/20
  */
-open class GradientBackgroundComponent(
+open class VideoBackgroundComponent(
         container: ViewGroup,
         private val bus: EventBusFactory,
         coroutineScope: CoroutineScope,
@@ -30,9 +30,11 @@ open class GradientBackgroundComponent(
             bus.getSafeManagedFlow(ScreenStateEvent::class.java)
                     .collect {
                         when (it) {
-                            is ScreenStateEvent.Init -> uiView.show()
-                            is ScreenStateEvent.BottomInsetsChanged -> if (it.isAnyShown) uiView.hide() else uiView.show()
-                            is ScreenStateEvent.OnNewPlayRoomEvent -> if(it.event.isFreeze || it.event.isBanned) uiView.hide()
+                            is ScreenStateEvent.Init -> uiView.hide()
+                            is ScreenStateEvent.VideoStreamChanged -> {
+                                uiView.setBackground(it.videoStream.backgroundUrl)
+                                uiView.show()
+                            }
                         }
                     }
         }
@@ -47,5 +49,5 @@ open class GradientBackgroundComponent(
     }
 
     protected open fun initView(container: ViewGroup) =
-            GradientBackgroundView(container)
+            VideoBackgroundView(container)
 }

@@ -32,7 +32,7 @@ open class ToolbarComponent(
             bus.getSafeManagedFlow(ScreenStateEvent::class.java)
                     .collect {
                         when (it) {
-                            ScreenStateEvent.Init -> uiView.show()
+                            is ScreenStateEvent.Init -> if (it.screenOrientation.isLandscape) uiView.hide() else uiView.show()
                             is ScreenStateEvent.SetPartnerInfo ->
                                 uiView.setPartnerInfo(it.partnerInfo)
                             is ScreenStateEvent.BottomInsetsChanged -> if (!it.isAnyShown && !it.stateHelper.screenOrientation.isLandscape) uiView.show() else uiView.hide()
@@ -40,7 +40,6 @@ open class ToolbarComponent(
                             is ScreenStateEvent.OnNoMoreAction -> uiView.hideActionMore()
                             is ScreenStateEvent.FollowPartner -> uiView.setFollowStatus(it.shouldFollow)
                             is ScreenStateEvent.SetTotalCart -> uiView.setCartInfo(it.cartUiModel)
-                            is ScreenStateEvent.ScreenOrientationChanged -> if (it.orientation.isLandscape) uiView.hide() else uiView.show()
                         }
                     }
         }
