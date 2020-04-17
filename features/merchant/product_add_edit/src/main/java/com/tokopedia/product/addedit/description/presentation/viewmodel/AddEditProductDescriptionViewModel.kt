@@ -38,8 +38,7 @@ class AddEditProductDescriptionViewModel @Inject constructor(
     var isAddMode: Boolean = false
 
     private val _productVariant = MutableLiveData<Result<List<ProductVariantByCatModel>>>()
-    val productVariant: LiveData<Result<List<ProductVariantByCatModel>>>
-        get() = _productVariant
+    val productVariant: LiveData<Result<List<ProductVariantByCatModel>>> = _productVariant
 
     private val _videoYoutube = MutableLiveData<Result<YoutubeVideoModel>>()
     val videoYoutube: LiveData<Result<YoutubeVideoModel>> = _videoYoutube

@@ -115,6 +115,7 @@ class AddEditProductDescriptionFragment:
     }
 
     private var productInputModel: ProductInputModel? = null
+    private var variantOptions: List<ProductVariantByCatModel>? = null
 
     private lateinit var userSession: UserSessionInterface
     private lateinit var shopId: String
@@ -238,7 +239,9 @@ class AddEditProductDescriptionFragment:
             } else {
                 ProductAddDescriptionTracking.clickAddProductVariant(shopId)
             }
-            descriptionViewModel.getVariants(descriptionViewModel.categoryId)
+            variantOptions?.let {
+                showVariantDialog(it)
+            }
         }
 
         btnNext.setOnClickListener {
@@ -250,6 +253,8 @@ class AddEditProductDescriptionFragment:
             btnSave.isLoading = true
             submitInputEdit()
         }
+
+        descriptionViewModel.getVariants(descriptionViewModel.categoryId)
 
         observeProductVariant()
         observeProductVideo()
@@ -293,9 +298,13 @@ class AddEditProductDescriptionFragment:
     }
 
     private fun observeProductVariant() {
+        tvAddVariant.isEnabled = false
         descriptionViewModel.productVariant.observe(viewLifecycleOwner, Observer { result ->
             when (result) {
-                is Success -> showVariantDialog(result.data)
+                is Success -> {
+                    tvAddVariant.isEnabled = true
+                    variantOptions = result.data
+                }
                 is Fail -> showVariantErrorToast(getString(R.string.default_request_error_timeout))
             }
         })
