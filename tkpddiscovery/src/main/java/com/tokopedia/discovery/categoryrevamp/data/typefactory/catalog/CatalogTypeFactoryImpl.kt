@@ -2,6 +2,7 @@ package com.tokopedia.discovery.categoryrevamp.data.typefactory.catalog
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.common_category.constants.CategoryNavConstants
 import com.tokopedia.discovery.categoryrevamp.adapters.viewHolders.CatalogShimmer.BigListcatalogShimmerViewHolder
 import com.tokopedia.discovery.categoryrevamp.adapters.viewHolders.CatalogShimmer.GridListCatalogShimmerViewHolder
 import com.tokopedia.discovery.categoryrevamp.adapters.viewHolders.CatalogShimmer.ListCatalogShimmerViewHolder
@@ -31,9 +32,9 @@ class CatalogTypeFactoryImpl(val catalogCardListener: CatalogCardListener) : Bas
 
     override fun type(catalogItem: CatalogItem): Int {
         return when (getRecyclerViewItem()) {
-            com.tokopedia.common_category.constants.CategoryNavConstants.RecyclerView.VIEW_PRODUCT -> ListCatalogCardViewHolder.LAYOUT
-            com.tokopedia.common_category.constants.CategoryNavConstants.RecyclerView.VIEW_PRODUCT_GRID_1 -> BigGridCatalogCardViewHolder.LAYOUT
-            com.tokopedia.common_category.constants.CategoryNavConstants.RecyclerView.VIEW_PRODUCT_GRID_2 -> SmallGridCatalogCardViewHolder.LAYOUT
+            CategoryNavConstants.RecyclerView.VIEW_PRODUCT -> ListCatalogCardViewHolder.LAYOUT
+            CategoryNavConstants.RecyclerView.VIEW_PRODUCT_GRID_1 -> BigGridCatalogCardViewHolder.LAYOUT
+            CategoryNavConstants.RecyclerView.VIEW_PRODUCT_GRID_2 -> SmallGridCatalogCardViewHolder.LAYOUT
             else -> SmallGridCatalogCardViewHolder.LAYOUT
         }
     }

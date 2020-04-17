@@ -1,14 +1,14 @@
 package com.tokopedia.discovery.categoryrevamp.data.typefactory.catalog
 
 import com.tokopedia.abstraction.base.view.adapter.factory.AdapterTypeFactory
+import com.tokopedia.common_category.factory.BaseProductTypeFactory
 import com.tokopedia.discovery.categoryrevamp.adapters.viewHolders.CatalogShimmer.model.BigListCatalogShimmerModel
 import com.tokopedia.discovery.categoryrevamp.adapters.viewHolders.CatalogShimmer.model.GridListCatalogShimmerModel
 import com.tokopedia.discovery.categoryrevamp.adapters.viewHolders.CatalogShimmer.model.ListCatalogShimmerModel
 import com.tokopedia.discovery.categoryrevamp.data.catalogModel.CatalogItem
-import com.tokopedia.common_category.factory.BaseProductTypeFactory
 
 
-interface CatalogTypeFactory : com.tokopedia.common_category.factory.BaseProductTypeFactory, AdapterTypeFactory {
+interface CatalogTypeFactory : BaseProductTypeFactory, AdapterTypeFactory {
 
     fun type(catalogItem: CatalogItem): Int
 

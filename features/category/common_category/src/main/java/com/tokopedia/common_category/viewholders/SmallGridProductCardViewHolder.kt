@@ -3,10 +3,11 @@ package com.tokopedia.common_category.viewholders
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.common_category.R
+import com.tokopedia.common_category.interfaces.ProductCardListener
 import com.tokopedia.common_category.model.productModel.ProductsItem
 import kotlinx.android.synthetic.main.category_product_card_small_grid.view.*
 
-class SmallGridProductCardViewHolder(itemView: View,productCardListener: com.tokopedia.common_category.interfaces.ProductCardListener) : ProductCardViewHolder(itemView,productCardListener) {
+class SmallGridProductCardViewHolder(itemView: View,productCardListener: ProductCardListener) : ProductCardViewHolder(itemView,productCardListener) {
 
     companion object {
         @LayoutRes

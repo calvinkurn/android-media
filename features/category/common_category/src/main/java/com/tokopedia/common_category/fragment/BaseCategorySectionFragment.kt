@@ -12,6 +12,8 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.common_category.R
+import com.tokopedia.common_category.adapter.BaseCategoryAdapter
+import com.tokopedia.common_category.constants.CategoryNavConstants
 import com.tokopedia.common_category.interfaces.CategoryNavigationListener
 import com.tokopedia.common_category.util.ParamMapToUrl
 import com.tokopedia.discovery.common.constants.SearchApiConst
@@ -76,7 +78,7 @@ abstract class BaseCategorySectionFragment : BaseDaggerFragment() {
         refreshLayout?.isRefreshing = false
     }
 
-    protected abstract fun getAdapter(): com.tokopedia.common_category.adapter.BaseCategoryAdapter?
+    protected abstract fun getAdapter(): BaseCategoryAdapter?
 
     abstract fun reloadData()
     abstract fun getDepartMentId(): String
@@ -338,19 +340,19 @@ abstract class BaseCategorySectionFragment : BaseDaggerFragment() {
 
     private fun switchCatalogcategory() {
         when (getAdapter()?.getCurrentLayoutType()) {
-            com.tokopedia.common_category.constants.CategoryNavConstants.RecyclerView.GridType.GRID_1 -> {
+            CategoryNavConstants.RecyclerView.GridType.GRID_1 -> {
                 spanCount = 1
                 gridLayoutManager?.spanCount = spanCount
                 staggeredGridLayoutManager?.spanCount = spanCount
                 getAdapter()?.changeSingleGridView()
             }
-            com.tokopedia.common_category.constants.CategoryNavConstants.RecyclerView.GridType.GRID_2 -> {
+            CategoryNavConstants.RecyclerView.GridType.GRID_2 -> {
                 spanCount = 1
                 gridLayoutManager?.spanCount = spanCount
                 staggeredGridLayoutManager?.spanCount = spanCount
                 getAdapter()?.changeListView()
             }
-            com.tokopedia.common_category.constants.CategoryNavConstants.RecyclerView.GridType.GRID_3 -> {
+            CategoryNavConstants.RecyclerView.GridType.GRID_3 -> {
                 spanCount = 2
                 gridLayoutManager?.spanCount = spanCount
                 staggeredGridLayoutManager?.spanCount = spanCount

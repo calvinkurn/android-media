@@ -28,9 +28,9 @@ class CategoryNavRepository @Inject constructor() {
 
     private fun getSubCategoryParam(departmentId: String): RequestParams {
         val subCategoryMap = RequestParams()
-        subCategoryMap.putString(com.tokopedia.common_category.constants.CategoryNavConstants.IDENTIFIER, departmentId)
-        subCategoryMap.putBoolean(com.tokopedia.common_category.constants.CategoryNavConstants.INTERMEDIARY, false)
-        subCategoryMap.putBoolean(com.tokopedia.common_category.constants.CategoryNavConstants.SAFESEARCH, false)
+        subCategoryMap.putString(CategoryNavConstants.IDENTIFIER, departmentId)
+        subCategoryMap.putBoolean(CategoryNavConstants.INTERMEDIARY, false)
+        subCategoryMap.putBoolean(CategoryNavConstants.SAFESEARCH, false)
         return subCategoryMap
     }
 

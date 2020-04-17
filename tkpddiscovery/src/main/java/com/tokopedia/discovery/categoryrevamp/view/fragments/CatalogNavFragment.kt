@@ -78,7 +78,7 @@ class CatalogNavFragment : BaseBannedProductFragment(),
         }
     }
 
-    override fun getAdapter(): com.tokopedia.common_category.adapter.BaseCategoryAdapter? {
+    override fun getAdapter(): BaseCategoryAdapter? {
         return catalogNavListAdapter
     }
 

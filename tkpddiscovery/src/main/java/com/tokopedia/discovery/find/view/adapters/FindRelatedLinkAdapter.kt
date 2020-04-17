@@ -24,8 +24,8 @@ class FindRelatedLinkAdapter(private var relatedLinkList: ArrayList<RelatedLinkD
                 RelatedLinkViewHolder(v)
             }
             else -> {
-                val v = LayoutInflater.from(parent.context).inflate(com.tokopedia.common_category.adapter.QuickFilterAdapter.ShimmerViewHolder.Layout, parent, false)
-                return com.tokopedia.common_category.adapter.QuickFilterAdapter.ShimmerViewHolder(v)
+                val v = LayoutInflater.from(parent.context).inflate(QuickFilterAdapter.ShimmerViewHolder.Layout, parent, false)
+                return QuickFilterAdapter.ShimmerViewHolder(v)
             }
         }
     }

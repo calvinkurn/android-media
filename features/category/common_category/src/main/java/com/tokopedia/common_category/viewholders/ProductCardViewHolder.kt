@@ -2,6 +2,7 @@ package com.tokopedia.common_category.viewholders
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.common_category.interfaces.ProductCardListener
 import com.tokopedia.common_category.model.productModel.BadgesItem
 import com.tokopedia.common_category.model.productModel.FreeOngkir
 import com.tokopedia.common_category.model.productModel.LabelGroupsItem
@@ -10,7 +11,7 @@ import com.tokopedia.productcard.ProductCardModel
 import kotlin.math.roundToInt
 
 abstract class ProductCardViewHolder(itemView: View,
-                                     var productListener: com.tokopedia.common_category.interfaces.ProductCardListener) : AbstractViewHolder<ProductsItem>(itemView) {
+                                     var productListener: ProductCardListener) : AbstractViewHolder<ProductsItem>(itemView) {
 
     protected val context = itemView.context!!
 
@@ -53,7 +54,8 @@ abstract class ProductCardViewHolder(itemView: View,
 
     private fun List<LabelGroupsItem?>?.toProductCardModelLabelGroup(): List<ProductCardModel.LabelGroup> {
         return this?.map {
-            ProductCardModel.LabelGroup(position = it?.position ?: "", title = it?.title ?: "", type = it?.type ?: "")
+            ProductCardModel.LabelGroup(position = it?.position ?: "", title = it?.title
+                    ?: "", type = it?.type ?: "")
         } ?: listOf()
     }
 

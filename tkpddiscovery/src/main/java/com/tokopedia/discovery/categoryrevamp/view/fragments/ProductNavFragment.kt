@@ -23,6 +23,11 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory.INTERNAL_BELANJA_CATEGORY
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.common_category.adapter.BaseCategoryAdapter
+import com.tokopedia.common_category.adapter.ProductNavListAdapter
+import com.tokopedia.common_category.adapter.QuickFilterAdapter
+import com.tokopedia.common_category.factory.ProductTypeFactory
+import com.tokopedia.common_category.factory.product.ProductTypeFactoryImpl
 import com.tokopedia.common_category.interfaces.ProductCardListener
 import com.tokopedia.common_category.interfaces.QuickFilterListener
 import com.tokopedia.core.gcm.GCMHandler
@@ -68,7 +73,7 @@ private const val REQUEST_ACTIVITY_SORT_PRODUCT = 102
 private const val REQUEST_ACTIVITY_FILTER_PRODUCT = 103
 
 open class ProductNavFragment : BaseBannedProductFragment(),
-        com.tokopedia.common_category.adapter.BaseCategoryAdapter.OnItemChangeView,
+        BaseCategoryAdapter.OnItemChangeView,
         QuickFilterListener,
         ProductCardListener,
         SubCategoryListener,
@@ -95,17 +100,17 @@ open class ProductNavFragment : BaseBannedProductFragment(),
 
     private lateinit var gcmHandler: GCMHandler
 
-    private lateinit var productTypeFactory: com.tokopedia.common_category.factory.ProductTypeFactory
+    private lateinit var productTypeFactory: ProductTypeFactory
 
     private var subCategoryAdapter: SubCategoryAdapter? = null
 
-    private var quickFilterAdapter: com.tokopedia.common_category.adapter.QuickFilterAdapter? = null
+    private var quickFilterAdapter: QuickFilterAdapter? = null
 
     private lateinit var categoryNavComponent: CategoryNavComponent
 
-    private var productNavListAdapter: com.tokopedia.common_category.adapter.ProductNavListAdapter? = null
+    private var productNavListAdapter: ProductNavListAdapter? = null
 
-    private var list: ArrayList<Visitable<com.tokopedia.common_category.factory.ProductTypeFactory>> = ArrayList()
+    private var list: ArrayList<Visitable<ProductTypeFactory>> = ArrayList()
 
     private var quickFilterList = ArrayList<Filter>()
     private var mDepartmentId: String = ""
@@ -223,7 +228,7 @@ open class ProductNavFragment : BaseBannedProductFragment(),
         }
     }
 
-    override fun getAdapter(): com.tokopedia.common_category.adapter.BaseCategoryAdapter? {
+    override fun getAdapter(): BaseCategoryAdapter? {
         return productNavListAdapter
     }
 
@@ -250,8 +255,8 @@ open class ProductNavFragment : BaseBannedProductFragment(),
     }
 
     private fun setUpAdapter() {
-        productTypeFactory = com.tokopedia.common_category.factory.product.ProductTypeFactoryImpl(this)
-        productNavListAdapter = com.tokopedia.common_category.adapter.ProductNavListAdapter(productTypeFactory, list, this)
+        productTypeFactory = ProductTypeFactoryImpl(this)
+        productNavListAdapter = ProductNavListAdapter(productTypeFactory, list, this)
         product_recyclerview.adapter = productNavListAdapter
         product_recyclerview.layoutManager = getStaggeredGridLayoutManager()
         productNavListAdapter?.addShimmer()
@@ -259,7 +264,7 @@ open class ProductNavFragment : BaseBannedProductFragment(),
     }
 
     private fun setQuickFilterAdapter(productCount: String) {
-        quickFilterAdapter = com.tokopedia.common_category.adapter.QuickFilterAdapter(quickFilterList, this, productCount)
+        quickFilterAdapter = QuickFilterAdapter(quickFilterList, this, productCount)
         quickfilter_recyclerview.adapter = quickFilterAdapter
         quickfilter_recyclerview.layoutManager = LinearLayoutManager(activity,
                 RecyclerView.HORIZONTAL, false)
@@ -309,7 +314,7 @@ open class ProductNavFragment : BaseBannedProductFragment(),
 
                     if (it.data.isNotEmpty()) {
                         showNoDataScreen(false)
-                        list.addAll(it.data as ArrayList<Visitable<com.tokopedia.common_category.factory.ProductTypeFactory>>)
+                        list.addAll(it.data as ArrayList<Visitable<ProductTypeFactory>>)
                         productNavListAdapter?.removeLoading()
                         product_recyclerview.adapter?.notifyDataSetChanged()
                         isPagingAllowed = true

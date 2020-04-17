@@ -6,6 +6,8 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.common_category.constants.CategoryNavConstants
+import com.tokopedia.common_category.factory.BaseProductTypeFactory
 import com.tokopedia.common_category.factory.ProductTypeFactory
 import com.tokopedia.common_category.model.productModel.ProductsItem
 import com.tokopedia.common_category.model.shimmer.BigListShimmerModel
@@ -17,7 +19,7 @@ import com.tokopedia.common_category.viewholders.ProductCardViewHolder
 
 class ProductNavListAdapter(val productTypeFactory: ProductTypeFactory,
                             val visitables: ArrayList<Visitable<ProductTypeFactory>>,
-                            val onItemChangeView: OnItemChangeView) : com.tokopedia.common_category.adapter.BaseCategoryAdapter(onItemChangeView) {
+                            val onItemChangeView: OnItemChangeView) : BaseCategoryAdapter(onItemChangeView) {
 
     private val loadingMoreModel: LoadingMoreModel by lazy { LoadingMoreModel() }
 
@@ -48,7 +50,7 @@ class ProductNavListAdapter(val productTypeFactory: ProductTypeFactory,
         currentDimension = dimension
     }
 
-    override fun getTypeFactory(): com.tokopedia.common_category.factory.BaseProductTypeFactory {
+    override fun getTypeFactory(): BaseProductTypeFactory {
         return productTypeFactory
     }
 
@@ -79,14 +81,14 @@ class ProductNavListAdapter(val productTypeFactory: ProductTypeFactory,
 
     private fun getShimmerItem(): Visitable<ProductTypeFactory> {
         return when (getCurrentLayoutType()) {
-            com.tokopedia.common_category.constants.CategoryNavConstants.RecyclerView.GridType.GRID_1 -> {
+            CategoryNavConstants.RecyclerView.GridType.GRID_1 -> {
                 listShimmerModel
             }
 
-            com.tokopedia.common_category.constants.CategoryNavConstants.RecyclerView.GridType.GRID_2 -> {
+            CategoryNavConstants.RecyclerView.GridType.GRID_2 -> {
                 gridShimmerModelGrid
             }
-            com.tokopedia.common_category.constants.CategoryNavConstants.RecyclerView.GridType.GRID_3 -> {
+            CategoryNavConstants.RecyclerView.GridType.GRID_3 -> {
                 bigListShimmerModel
             }
         }
@@ -132,8 +134,8 @@ class ProductNavListAdapter(val productTypeFactory: ProductTypeFactory,
 
     fun updateWishlistStatus(productId: Int, isWishlisted: Boolean) {
         for (i in visitables.indices) {
-            if (visitables.get(i) is ProductsItem) {
-                val model = visitables.get(i) as ProductsItem
+            if (visitables[i] is ProductsItem) {
+                val model = visitables[i] as ProductsItem
                 if (productId == model.id) {
                     model.wishlist = isWishlisted
                     notifyItemChanged(i)
@@ -145,8 +147,8 @@ class ProductNavListAdapter(val productTypeFactory: ProductTypeFactory,
 
     fun setWishlistButtonEnabled(productId: Int, isEnabled: Boolean) {
         for (i in visitables.indices) {
-            if (visitables.get(i) is ProductsItem) {
-                val model = visitables.get(i) as ProductsItem
+            if (visitables[i] is ProductsItem) {
+                val model = visitables[i] as ProductsItem
                 if (productId == model.id) {
                     model.isWishListEnabled = isEnabled
                     notifyItemChanged(i)

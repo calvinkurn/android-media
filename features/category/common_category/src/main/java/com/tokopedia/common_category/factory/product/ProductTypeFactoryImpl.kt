@@ -2,7 +2,9 @@ package com.tokopedia.common_category.factory.product
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.common_category.constants.CategoryNavConstants
 import com.tokopedia.common_category.factory.BaseProductTypeFactoryImpl
+import com.tokopedia.common_category.factory.ProductTypeFactory
 import com.tokopedia.common_category.interfaces.ProductCardListener
 import com.tokopedia.common_category.model.productModel.ProductsItem
 import com.tokopedia.common_category.model.shimmer.BigListShimmerModel
@@ -17,7 +19,7 @@ import com.tokopedia.common_category.viewholders.shimmer.GridListShimmerViewHold
 import com.tokopedia.common_category.viewholders.shimmer.ListShimmerViewHolder
 
 
-class ProductTypeFactoryImpl(var productCardListener: ProductCardListener) : BaseProductTypeFactoryImpl(), com.tokopedia.common_category.factory.ProductTypeFactory {
+class ProductTypeFactoryImpl(private var productCardListener: ProductCardListener) : BaseProductTypeFactoryImpl(), ProductTypeFactory {
 
     override fun type(bigListShimmerModel: BigListShimmerModel): Int {
         return BigListShimmerViewHolder.LAYOUT
@@ -33,9 +35,9 @@ class ProductTypeFactoryImpl(var productCardListener: ProductCardListener) : Bas
 
     override fun type(productsItem: ProductsItem): Int {
         when (getRecyclerViewItem()) {
-            com.tokopedia.common_category.constants.CategoryNavConstants.RecyclerView.VIEW_PRODUCT -> return ListProductCardViewHolder.LAYOUT
-            com.tokopedia.common_category.constants.CategoryNavConstants.RecyclerView.VIEW_PRODUCT_GRID_1 -> return BigGridProductCardViewHolder.LAYOUT
-            com.tokopedia.common_category.constants.CategoryNavConstants.RecyclerView.VIEW_PRODUCT_GRID_2 -> return SmallGridProductCardViewHolder.LAYOUT
+            CategoryNavConstants.RecyclerView.VIEW_PRODUCT -> return ListProductCardViewHolder.LAYOUT
+            CategoryNavConstants.RecyclerView.VIEW_PRODUCT_GRID_1 -> return BigGridProductCardViewHolder.LAYOUT
+            CategoryNavConstants.RecyclerView.VIEW_PRODUCT_GRID_2 -> return SmallGridProductCardViewHolder.LAYOUT
             else -> return SmallGridProductCardViewHolder.LAYOUT
         }
     }

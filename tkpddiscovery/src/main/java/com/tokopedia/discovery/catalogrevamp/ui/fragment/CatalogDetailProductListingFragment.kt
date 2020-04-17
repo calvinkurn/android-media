@@ -19,6 +19,15 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.authentication.AuthHelper
+import com.tokopedia.common_category.adapter.BaseCategoryAdapter
+import com.tokopedia.common_category.adapter.ProductNavListAdapter
+import com.tokopedia.common_category.adapter.QuickFilterAdapter
+import com.tokopedia.common_category.constants.CategoryNavConstants
+import com.tokopedia.common_category.factory.ProductTypeFactory
+import com.tokopedia.common_category.factory.product.ProductTypeFactoryImpl
+import com.tokopedia.common_category.fragment.BaseCategorySectionFragment
+import com.tokopedia.common_category.interfaces.ProductCardListener
+import com.tokopedia.common_category.interfaces.QuickFilterListener
 import com.tokopedia.core.gcm.GCMHandler
 import com.tokopedia.design.utils.CurrencyFormatHelper
 import com.tokopedia.discovery.R
@@ -43,10 +52,10 @@ import kotlinx.android.synthetic.main.fragment_catalog_detail_product_listing.*
 import kotlinx.android.synthetic.main.layout_nav_no_product.*
 import javax.inject.Inject
 
-class CatalogDetailProductListingFragment : com.tokopedia.common_category.fragment.BaseCategorySectionFragment(),
-        com.tokopedia.common_category.adapter.BaseCategoryAdapter.OnItemChangeView,
-        com.tokopedia.common_category.interfaces.QuickFilterListener,
-        com.tokopedia.common_category.interfaces.ProductCardListener,
+class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
+        BaseCategoryAdapter.OnItemChangeView,
+        QuickFilterListener,
+        ProductCardListener,
         WishListActionListener {
 
     @Inject
@@ -67,16 +76,16 @@ class CatalogDetailProductListingFragment : com.tokopedia.common_category.fragme
     private var departmentId: String = ""
     private var departmentName: String = ""
 
-    var productNavListAdapter: com.tokopedia.common_category.adapter.ProductNavListAdapter? = null
-    private lateinit var quickFilterAdapter: com.tokopedia.common_category.adapter.QuickFilterAdapter
+    var productNavListAdapter: ProductNavListAdapter? = null
+    private lateinit var quickFilterAdapter: QuickFilterAdapter
 
     var pageCount = 0
     var isPagingAllowed: Boolean = true
 
-    var list: ArrayList<Visitable<com.tokopedia.common_category.factory.ProductTypeFactory>> = ArrayList()
+    var list: ArrayList<Visitable<ProductTypeFactory>> = ArrayList()
     var quickFilterList = ArrayList<Filter>()
 
-    private lateinit var productTypeFactory: com.tokopedia.common_category.factory.ProductTypeFactory
+    private lateinit var productTypeFactory: ProductTypeFactory
 
     lateinit var userSession: UserSession
     private lateinit var gcmHandler: GCMHandler
@@ -92,7 +101,7 @@ class CatalogDetailProductListingFragment : com.tokopedia.common_category.fragme
         private val REQUEST_ACTIVITY_FILTER_PRODUCT = 103
 
         @JvmStatic
-        fun newInstance(catalogId: String, catalogName: String, departmentid: String?, departmentName: String?): com.tokopedia.common_category.fragment.BaseCategorySectionFragment {
+        fun newInstance(catalogId: String, catalogName: String, departmentid: String?, departmentName: String?): BaseCategorySectionFragment {
             val fragment = CatalogDetailProductListingFragment()
             val bundle = Bundle()
             bundle.putString(ARG_EXTRA_CATALOG_ID, catalogId)
@@ -147,14 +156,14 @@ class CatalogDetailProductListingFragment : com.tokopedia.common_category.fragme
         val quickFilterParam = RequestParams()
         val daFilterQueryType = DAFilterQueryType()
         daFilterQueryType.sc = departmentId
-        quickFilterParam.putObject(com.tokopedia.common_category.constants.CategoryNavConstants.FILTER, daFilterQueryType)
-        quickFilterParam.putString(com.tokopedia.common_category.constants.CategoryNavConstants.SOURCE, "quick_filter")
+        quickFilterParam.putObject(CategoryNavConstants.FILTER, daFilterQueryType)
+        quickFilterParam.putString(CategoryNavConstants.SOURCE, "quick_filter")
         return quickFilterParam
     }
 
     private fun setUpAdapter() {
-        productTypeFactory = com.tokopedia.common_category.factory.product.ProductTypeFactoryImpl(this)
-        productNavListAdapter = com.tokopedia.common_category.adapter.ProductNavListAdapter(productTypeFactory, list, this)
+        productTypeFactory = ProductTypeFactoryImpl(this)
+        productNavListAdapter = ProductNavListAdapter(productTypeFactory, list, this)
         product_recyclerview.adapter = productNavListAdapter
         product_recyclerview.layoutManager = getStaggeredGridLayoutManager()
         productNavListAdapter?.addShimmer()
@@ -162,8 +171,8 @@ class CatalogDetailProductListingFragment : com.tokopedia.common_category.fragme
         attachScrollListener()
     }
 
-    private fun setQuickFilterAdapter(productCount:String){
-        quickFilterAdapter = com.tokopedia.common_category.adapter.QuickFilterAdapter(quickFilterList, this, productCount)
+    private fun setQuickFilterAdapter(productCount: String) {
+        quickFilterAdapter = QuickFilterAdapter(quickFilterList, this, productCount)
         quickfilter_recyclerview.adapter = quickFilterAdapter
         quickfilter_recyclerview.layoutManager = LinearLayoutManager(activity,
                 RecyclerView.HORIZONTAL, false)
@@ -198,7 +207,7 @@ class CatalogDetailProductListingFragment : com.tokopedia.common_category.fragme
 
                     if (it.data.isNotEmpty()) {
                         showNoDataScreen(false)
-                        list.addAll(it.data as ArrayList<Visitable<com.tokopedia.common_category.factory.ProductTypeFactory>>)
+                        list.addAll(it.data as ArrayList<Visitable<ProductTypeFactory>>)
                         productNavListAdapter?.removeLoading()
                         product_recyclerview.adapter?.notifyDataSetChanged()
                         staggeredGridLayoutLoadMoreTriggerListener?.updateStateAfterGetData()
@@ -267,10 +276,10 @@ class CatalogDetailProductListingFragment : com.tokopedia.common_category.fragme
         val paramMap = RequestParams()
         val daFilterQueryType = DAFilterQueryType()
         daFilterQueryType.sc = departmentId
-        paramMap.putString(com.tokopedia.common_category.constants.CategoryNavConstants.SOURCE, "search_product")
-        paramMap.putObject(com.tokopedia.common_category.constants.CategoryNavConstants.FILTER, daFilterQueryType)
-        paramMap.putString(com.tokopedia.common_category.constants.CategoryNavConstants.Q, "")
-        paramMap.putString(com.tokopedia.common_category.constants.CategoryNavConstants.SOURCE, "directory")
+        paramMap.putString(CategoryNavConstants.SOURCE, "search_product")
+        paramMap.putObject(CategoryNavConstants.FILTER, daFilterQueryType)
+        paramMap.putString(CategoryNavConstants.Q, "")
+        paramMap.putString(CategoryNavConstants.SOURCE, "directory")
         return paramMap
     }
 
@@ -295,7 +304,7 @@ class CatalogDetailProductListingFragment : com.tokopedia.common_category.fragme
 
     }
 
-    override fun getAdapter(): com.tokopedia.common_category.adapter.BaseCategoryAdapter? {
+    override fun getAdapter(): BaseCategoryAdapter? {
         return productNavListAdapter
     }
 
@@ -350,29 +359,29 @@ class CatalogDetailProductListingFragment : com.tokopedia.common_category.fragme
 
 
         val searchProductRequestParams = RequestParams.create()
-        searchProductRequestParams.putString(com.tokopedia.common_category.constants.CategoryNavConstants.START, (start * 10).toString())
-        searchProductRequestParams.putString(com.tokopedia.common_category.constants.CategoryNavConstants.SC, departmentId)
-        searchProductRequestParams.putString(com.tokopedia.common_category.constants.CategoryNavConstants.DEVICE, "android")
-        searchProductRequestParams.putString(com.tokopedia.common_category.constants.CategoryNavConstants.UNIQUE_ID, getUniqueId())
-        searchProductRequestParams.putString(com.tokopedia.common_category.constants.CategoryNavConstants.KEY_SAFE_SEARCH, "false")
-        searchProductRequestParams.putString(com.tokopedia.common_category.constants.CategoryNavConstants.ROWS, "10")
-        searchProductRequestParams.putString(com.tokopedia.common_category.constants.CategoryNavConstants.SOURCE, "search_product")
-        searchProductRequestParams.putString(com.tokopedia.common_category.constants.CategoryNavConstants.CTG_ID, catalogId)
+        searchProductRequestParams.putString(CategoryNavConstants.START, (start * 10).toString())
+        searchProductRequestParams.putString(CategoryNavConstants.SC, departmentId)
+        searchProductRequestParams.putString(CategoryNavConstants.DEVICE, "android")
+        searchProductRequestParams.putString(CategoryNavConstants.UNIQUE_ID, getUniqueId())
+        searchProductRequestParams.putString(CategoryNavConstants.KEY_SAFE_SEARCH, "false")
+        searchProductRequestParams.putString(CategoryNavConstants.ROWS, "10")
+        searchProductRequestParams.putString(CategoryNavConstants.SOURCE, "search_product")
+        searchProductRequestParams.putString(CategoryNavConstants.CTG_ID, catalogId)
         searchProductRequestParams.putAllString(getSelectedSort())
         searchProductRequestParams.putAllString(getSelectedFilter())
         param.putString("product_params", createParametersForQuery(searchProductRequestParams.parameters))
 
 
         val topAdsRequestParam = RequestParams.create()
-        topAdsRequestParam.putString(com.tokopedia.common_category.constants.CategoryNavConstants.KEY_SAFE_SEARCH, "false")
-        topAdsRequestParam.putString(com.tokopedia.common_category.constants.CategoryNavConstants.DEVICE, "android")
-        topAdsRequestParam.putString(com.tokopedia.common_category.constants.CategoryNavConstants.KEY_SRC, "directory")
-        topAdsRequestParam.putString(com.tokopedia.common_category.constants.CategoryNavConstants.KEY_PAGE, start.toString())
-        topAdsRequestParam.putString(com.tokopedia.common_category.constants.CategoryNavConstants.KEY_EP, "product")
-        topAdsRequestParam.putString(com.tokopedia.common_category.constants.CategoryNavConstants.KEY_ITEM, "2")
-        topAdsRequestParam.putString(com.tokopedia.common_category.constants.CategoryNavConstants.KEY_F_SHOP, "1")
-        topAdsRequestParam.putString(com.tokopedia.common_category.constants.CategoryNavConstants.KEY_DEPT_ID, departmentId)
-        topAdsRequestParam.putString(com.tokopedia.common_category.constants.CategoryNavConstants.CTG_ID, catalogId)
+        topAdsRequestParam.putString(CategoryNavConstants.KEY_SAFE_SEARCH, "false")
+        topAdsRequestParam.putString(CategoryNavConstants.DEVICE, "android")
+        topAdsRequestParam.putString(CategoryNavConstants.KEY_SRC, "directory")
+        topAdsRequestParam.putString(CategoryNavConstants.KEY_PAGE, start.toString())
+        topAdsRequestParam.putString(CategoryNavConstants.KEY_EP, "product")
+        topAdsRequestParam.putString(CategoryNavConstants.KEY_ITEM, "2")
+        topAdsRequestParam.putString(CategoryNavConstants.KEY_F_SHOP, "1")
+        topAdsRequestParam.putString(CategoryNavConstants.KEY_DEPT_ID, departmentId)
+        topAdsRequestParam.putString(CategoryNavConstants.CTG_ID, catalogId)
 
         topAdsRequestParam.putAllString(getSelectedSort())
 

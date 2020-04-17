@@ -4,6 +4,7 @@ import android.os.Parcel
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.common_category.factory.ProductTypeFactory
 import com.tokopedia.topads.sdk.domain.model.ImpressHolder
 
 data class ProductsItem(
@@ -118,10 +119,10 @@ data class ProductsItem(
 
 
 
-) : ImpressHolder(), Parcelable, Visitable<com.tokopedia.common_category.factory.ProductTypeFactory> {
+) : ImpressHolder(), Parcelable, Visitable<ProductTypeFactory> {
 
 
-    override fun type(typeFactory: com.tokopedia.common_category.factory.ProductTypeFactory?): Int {
+    override fun type(typeFactory: ProductTypeFactory?): Int {
         return typeFactory!!.type(this)
     }
 

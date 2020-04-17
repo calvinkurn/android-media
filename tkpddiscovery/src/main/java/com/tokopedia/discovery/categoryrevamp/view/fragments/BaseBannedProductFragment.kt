@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
+import com.tokopedia.common_category.fragment.BaseCategorySectionFragment
 import com.tokopedia.discovery.R
 import com.tokopedia.discovery.categoryrevamp.data.bannedCategory.Data
 import com.tokopedia.discovery.categoryrevamp.di.CategoryNavComponent
@@ -25,7 +26,7 @@ private const val KEY_ADVERTISING_ID = "KEY_ADVERTISINGID"
 private const val ADVERTISING_ID = "ADVERTISINGID"
 private const val QUERY_APP_CLIENT_ID = "?appClientId="
 
-abstract class BaseBannedProductFragment : com.tokopedia.common_category.fragment.BaseCategorySectionFragment() {
+abstract class BaseBannedProductFragment : BaseCategorySectionFragment() {
     protected var categoryName: String = ""
     private var listenerBanned: OnBannedFragmentInteractionListener? = null
     private lateinit var categoryNavComponent: CategoryNavComponent
