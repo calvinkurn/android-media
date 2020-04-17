@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
+import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
 import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.flight.FlightComponentInstance
 import com.tokopedia.flight.R
@@ -119,6 +120,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        setupSwipeRefresh()
         setupQuickFilter()
     }
 
@@ -348,6 +350,16 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
         }
     }
 
+    private fun setupSwipeRefresh() {
+        val swipeRefreshLayout = requireView().findViewById<SwipeToRefresh>(swipeRefreshLayoutResourceId)
+        swipeRefreshLayout.setSwipeDistance()
+        swipeRefreshLayout.setOnRefreshListener {
+            hideLoading()
+            swipeRefreshLayout.isRefreshing = false
+            resetDateAndReload()
+        }
+    }
+
     private fun setupQuickFilter() {
         buildQuickFilterView()
     }
@@ -499,6 +511,21 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
                     isBestPairing, flightSearchViewModel.isCombineDone,
                     flightSearchViewModel.flightSearchPassData.searchRequestId)
         }
+    }
+
+    private fun resetDateAndReload() {
+        flightSearchViewModel.flush()
+        onFlightSearchFragmentListener?.changeDate(flightSearchViewModel.flightSearchPassData)
+
+        horizontal_progress_bar.visibility = View.VISIBLE
+        flightSearchViewModel.setProgress(0)
+        flight_sort_filter.visibility = View.GONE
+
+        clearAllData()
+        showLoading()
+
+        flightSearchViewModel.initialize(true, isReturnTrip())
+        flightSearchViewModel.fetchSearchDataCloud(isReturnTrip())
     }
 
     interface OnFlightSearchFragmentListener {

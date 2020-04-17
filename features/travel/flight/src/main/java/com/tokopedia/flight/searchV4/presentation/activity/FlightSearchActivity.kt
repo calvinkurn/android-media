@@ -273,8 +273,8 @@ open class FlightSearchActivity : BaseFlightActivity(),
                     false,
                     FlightPassengerModel(1, 0, 0),
                     FlightAirportModel().apply {
-                        cityName = "Singapore"
-                        cityCode = "SIN"
+                        cityName = "Banda Aceh"
+                        cityCode = "BTJ"
                     },
                     FlightAirportModel().apply {
                         cityName = "Jakarta"

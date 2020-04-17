@@ -78,6 +78,10 @@ class FlightSearchViewModel @Inject constructor(
         }
     }
 
+    fun setProgress(progress: Int) {
+        this.progress.postValue(progress)
+    }
+
     fun fetchSearchDataCloud(isReturnTrip: Boolean, delayInSeconds: Long = -1) {
         val date: String = flightSearchPassData.getDate(isReturnTrip)
         val adult = flightSearchPassData.flightPassengerViewModel.adult
