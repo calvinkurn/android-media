@@ -37,6 +37,7 @@ class LogoutViewModel @Inject constructor(
             override fun onNext(t: LogoutDomain) {
                 if (t.is_success) {
                     logoutMutableLiveData.postValue(Success(t))
+                    userSession.logoutSession()
                 } else {
                     logoutMutableLiveData.postValue(Fail(Throwable("gagal logout")))
                 }
