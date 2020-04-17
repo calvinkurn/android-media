@@ -26,10 +26,9 @@
 
         <ImageView
             android:id="@+id/parallax_image"
-            android:layout_width="@dimen/product_card_carousel_item_width"
-            android:layout_height="match_parent"
-            android:layout_gravity="bottom"
-            tools:srcCompat="@drawable/banner_copy" />
+            android:adjustViewBounds="true"
+            android:layout_width="144dp"
+            android:layout_height="match_parent" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_product"

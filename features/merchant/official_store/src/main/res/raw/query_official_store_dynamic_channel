@@ -44,6 +44,11 @@ query dynamicHomeChannel($type: String) {
                     isActive
                     imageUrl
                 }
+                labelGroup {
+                    position
+                    title
+                    type
+                }
             }
             banner {
                 id
@@ -60,6 +65,7 @@ query dynamicHomeChannel($type: String) {
                 text_color
                 image_url
                 back_color
+                gradient_color
                 attribution
             }
             galaxy_attribution

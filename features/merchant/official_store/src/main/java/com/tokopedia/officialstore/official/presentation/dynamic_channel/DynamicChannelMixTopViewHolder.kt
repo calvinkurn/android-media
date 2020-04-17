@@ -4,6 +4,7 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.graphics.Color
+import android.graphics.drawable.GradientDrawable
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
@@ -29,6 +30,7 @@ import com.tokopedia.officialstore.R
 import com.tokopedia.officialstore.official.data.model.dynamic_channel.*
 import com.tokopedia.officialstore.official.presentation.viewmodel.ProductFlashSaleDataModel
 import com.tokopedia.productcard.ProductCardFlashSaleModel
+import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.utils.getMaxHeightForGridView
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
@@ -116,16 +118,9 @@ class DynamicChannelMixTopViewHolder(
         channel.banner?.let{banner ->
             val ctaData = banner.cta
             var textColor = ContextCompat.getColor(bannerTitle.context, R.color.Neutral_N50)
-            var backColor: Int = ContextCompat.getColor(bannerTitle.context, R.color.Neutral_N50)
             if(banner.textColor.isNotEmpty()){
                 try {
                     textColor = Color.parseColor(banner.textColor)
-                } catch (e: IllegalArgumentException) { }
-            }
-
-            if(banner.backColor.isNotEmpty()) {
-                try {
-                    backColor = Color.parseColor(banner.backColor)
                 } catch (e: IllegalArgumentException) { }
             }
 
@@ -133,7 +128,7 @@ class DynamicChannelMixTopViewHolder(
             bannerTitle.visibility = if(banner.title.isEmpty()) View.GONE else View.VISIBLE
             bannerDescription.text = banner.description
             bannerDescription.visibility = if(banner.description.isEmpty()) View.GONE else View.VISIBLE
-            bannerBackground.setBackgroundColor(backColor)
+            setGradientBackground(bannerBackground, banner.gradientColor)
             bannerTitle.setTextColor(textColor)
             bannerDescription.setTextColor(textColor)
             ctaData?.let{
@@ -196,7 +191,7 @@ class DynamicChannelMixTopViewHolder(
         recyclerViewProductList.adapter = adapter
         launch {
             try {
-                recyclerViewProductList.setHeightBasedOnProductCardMaxHeight(productDataList.map { it.productModel })
+//                recyclerViewProductList.setHeightBasedOnProductCardMaxHeight(productDataList.map { it.productModel })
             } catch (throwable: Throwable) {
                 throwable.printStackTrace()
             }
@@ -209,16 +204,21 @@ class DynamicChannelMixTopViewHolder(
             listGridData.onEach { gridData ->
                 gridData?.let { grid ->
                     list.add(ProductFlashSaleDataModel(
-                            ProductCardFlashSaleModel(
+                            ProductCardModel(
                                     slashedPrice = grid.slashedPrice,
                                     productName = grid.name,
                                     formattedPrice = grid.price,
                                     productImageUrl = grid.imageUrl,
-                                    discountPercentage = "${grid.discountPercentage}%".takeIf {
-                                        grid.discountPercentage.toIntOrZero() != 0
-                                    } ?: "",
-                                    stockBarLabel = grid.label,
-                                    stockBarPercentage = grid.soldPercentage.toInt()
+                                    discountPercentage = grid.discount,
+                                    freeOngkir = ProductCardModel.FreeOngkir(grid.freeOngkir?.isActive ?: false, grid.freeOngkir?.imageUrl ?: ""),
+                                    labelGroupList = grid.labelGroup.map {
+                                        ProductCardModel.LabelGroup(
+                                                position = it.position,
+                                                title = it.title,
+                                                type = it.type
+                                        )
+                                    },
+                                    hasThreeDots = false
                             ),
                             gridData,
                             grid.applink
@@ -236,7 +236,7 @@ class DynamicChannelMixTopViewHolder(
     }
 
     private suspend fun RecyclerView.setHeightBasedOnProductCardMaxHeight(
-            productCardModelList: List<ProductCardFlashSaleModel>) {
+            productCardModelList: List<ProductCardModel>) {
         val productCardHeight = getProductCardMaxHeight(productCardModelList)
 
         val carouselLayoutParams = this.layoutParams
@@ -244,8 +244,22 @@ class DynamicChannelMixTopViewHolder(
         this.layoutParams = carouselLayoutParams
     }
 
-    private suspend fun getProductCardMaxHeight(productCardModelList: List<ProductCardFlashSaleModel>): Int {
+    private suspend fun getProductCardMaxHeight(productCardModelList: List<ProductCardModel>): Int {
         val productCardWidth = itemView.context.resources.getDimensionPixelSize(com.tokopedia.productcard.R.dimen.product_card_flashsale_width)
         return productCardModelList.getMaxHeightForGridView(itemView.context, Dispatchers.Default, productCardWidth)
+    }
+
+    private fun setGradientBackground(view: View, colorArray: MutableList<String>) {
+        if (colorArray.size > 1) {
+            val colors = IntArray(colorArray.size)
+            for (i in 0 until colorArray.size) {
+                colors[i] = Color.parseColor(colorArray[i])
+            }
+            val gradient = GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, colors)
+            gradient.cornerRadius = 0f
+            view.background = gradient
+        } else {
+            view.setBackgroundColor(Color.parseColor(colorArray[0]))
+        }
     }
 }

@@ -19,6 +19,7 @@ import com.tokopedia.officialstore.official.data.model.dynamic_channel.Grid
 import com.tokopedia.officialstore.official.data.model.dynamic_channel.Header
 import com.tokopedia.officialstore.official.presentation.viewmodel.ProductFlashSaleDataModel
 import com.tokopedia.productcard.ProductCardFlashSaleModel
+import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.utils.getMaxHeightForGridView
 import com.tokopedia.unifyprinciples.Typography
 import kotlinx.coroutines.CoroutineScope
@@ -59,7 +60,7 @@ class DynamicChannelMixLeftViewHolder(
     }
 
     private fun setupHeader(channel: Channel) {
-        channel.header?.let{header ->
+        channel.header?.let { header ->
             if (header.name.isNotEmpty()) {
                 headerContainer.visibility = View.VISIBLE
                 headerTitle.text = header.name
@@ -81,7 +82,7 @@ class DynamicChannelMixLeftViewHolder(
                     headerActionText.apply {
                         visibility = View.VISIBLE
                         setOnClickListener {
-                            dcEventHandler.onMixFlashSaleSeeAllClicked( channel,header.applink)
+                            dcEventHandler.onMixFlashSaleSeeAllClicked(channel, header.applink)
                         }
                         setTextColor(MethodChecker.getColor(itemView.context, R.color.bg_button_green_border_outline))
                     }
@@ -120,7 +121,7 @@ class DynamicChannelMixLeftViewHolder(
         recyclerViewProductList.adapter = adapter
         launch {
             try {
-                recyclerViewProductList.setHeightBasedOnProductCardMaxHeight(productDataList.map { it.productModel })
+//                recyclerViewProductList.setHeightBasedOnProductCardMaxHeight(productDataList.map { it.productModel })
             } catch (throwable: Throwable) {
                 throwable.printStackTrace()
             }
@@ -136,7 +137,7 @@ class DynamicChannelMixLeftViewHolder(
                     val firstView = layoutManager?.findViewByPosition(layoutManager?.findFirstVisibleItemPosition()!!)
                     firstView?.let { it ->
                         val distanceFromLeft = it.left
-                        val translateX = distanceFromLeft * 0.1f
+                        val translateX = (recyclerViewProductList.paddingLeft - distanceFromLeft) * -0.1f
                         image.translationX = translateX
                         val alpha = distanceFromLeft.toFloat() / recyclerViewProductList.paddingLeft.toFloat()
                         image.alpha = alpha.takeIf { alphaValue -> alphaValue > OPACITY_MAX_THRESHOLD }
@@ -153,16 +154,22 @@ class DynamicChannelMixLeftViewHolder(
             listGridData.onEach { gridData ->
                 gridData?.let { grid ->
                     list.add(ProductFlashSaleDataModel(
-                            ProductCardFlashSaleModel(
+                            ProductCardModel(
                                     slashedPrice = grid.slashedPrice,
                                     productName = grid.name,
                                     formattedPrice = grid.price,
                                     productImageUrl = grid.imageUrl,
-                                    discountPercentage = "${grid.discountPercentage}%".takeIf {
-                                        grid.discountPercentage.toIntOrZero() != 0
-                                    } ?: "",
-                                    stockBarLabel = grid.label,
-                                    stockBarPercentage = grid.soldPercentage.toInt()
+                                    discountPercentage = grid.discount,
+                                    freeOngkir = ProductCardModel.FreeOngkir(grid.freeOngkir?.isActive
+                                            ?: false, grid.freeOngkir?.imageUrl ?: ""),
+                                    labelGroupList = grid.labelGroup.map {
+                                        ProductCardModel.LabelGroup(
+                                                position = it.position,
+                                                title = it.title,
+                                                type = it.type
+                                        )
+                                    },
+                                    hasThreeDots = false
                             ),
                             gridData,
                             grid.applink
@@ -180,7 +187,7 @@ class DynamicChannelMixLeftViewHolder(
     }
 
     private suspend fun RecyclerView.setHeightBasedOnProductCardMaxHeight(
-            productCardModelList: List<ProductCardFlashSaleModel>) {
+            productCardModelList: List<ProductCardModel>) {
         val productCardHeight = getProductCardMaxHeight(productCardModelList)
 
         val carouselLayoutParams = this.layoutParams
@@ -188,7 +195,7 @@ class DynamicChannelMixLeftViewHolder(
         this.layoutParams = carouselLayoutParams
     }
 
-    private suspend fun getProductCardMaxHeight(productCardModelList: List<ProductCardFlashSaleModel>): Int {
+    private suspend fun getProductCardMaxHeight(productCardModelList: List<ProductCardModel>): Int {
         val productCardWidth = itemView.context.resources.getDimensionPixelSize(com.tokopedia.productcard.R.dimen.product_card_flashsale_width)
         return productCardModelList.getMaxHeightForGridView(itemView.context, Dispatchers.Default, productCardWidth)
     }

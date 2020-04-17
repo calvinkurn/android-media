@@ -15,6 +15,7 @@ data class Banner(
         @Expose @SerializedName("text_color") val textColor: String,
         @Expose @SerializedName("image_url") val imageUrl: String,
         @Expose @SerializedName("back_color") val backColor: String,
+        @Expose @SerializedName("gradient_color") val gradientColor: ArrayList<String> = arrayListOf("#ffffff"),
         val attribution: String
 ) : Parcelable {
 
@@ -28,6 +29,7 @@ data class Banner(
             textColor = parcel.readString() ?: "",
             imageUrl = parcel.readString() ?: "",
             backColor = parcel.readString() ?: "",
+            gradientColor = parcel.createStringArrayList() ?: arrayListOf(),
             attribution = parcel.readString() ?: ""
     )
 
@@ -42,6 +44,7 @@ data class Banner(
             writeString(textColor)
             writeString(imageUrl)
             writeString(backColor)
+            writeStringList(gradientColor)
             writeString(attribution)
         }
     }
