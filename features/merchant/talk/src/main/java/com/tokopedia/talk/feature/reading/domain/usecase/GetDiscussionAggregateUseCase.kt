@@ -16,7 +16,7 @@ class GetDiscussionAggregateUseCase @Inject constructor(graphqlRepository: Graph
             val productID = "\$productID"
             val shopID = "\$shopID"
             """
-            query discussionAggregateByProductID($productID: Int!, $shopID: Int!) {
+            query discussionAggregateByProductID($productID: String!, $shopID: String!) {
                 discussionAggregateByProductID(productID: $productID, shopID: $shopID) {
                     productName
                     thumbnail
@@ -37,10 +37,10 @@ class GetDiscussionAggregateUseCase @Inject constructor(graphqlRepository: Graph
         setTypeClass(DiscussionAggregateResponse::class.java)
     }
 
-    fun setParams(productId: Int, shopId: Int) {
+    fun setParams(productId: String, shopId: String) {
         val requestParams = RequestParams()
-        requestParams.putInt(PARAM_PRODUCT_ID, productId)
-        requestParams.putInt(PARAM_SHOP_ID, shopId)
+        requestParams.putString(PARAM_PRODUCT_ID, productId)
+        requestParams.putString(PARAM_SHOP_ID, shopId)
         setRequestParams(requestParams.parameters)
     }
 

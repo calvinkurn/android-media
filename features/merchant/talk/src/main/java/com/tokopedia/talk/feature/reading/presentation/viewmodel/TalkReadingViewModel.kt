@@ -6,7 +6,8 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.talk.common.coroutine.CoroutineDispatchers
 import com.tokopedia.talk.feature.reading.data.model.DiscussionAggregateResponse
 import com.tokopedia.talk.feature.reading.data.model.DiscussionDataResponse
-import com.tokopedia.talk.feature.reading.data.model.SortOption
+import com.tokopedia.talk.feature.reading.data.model.DiscussionDataResponseWrapper
+import com.tokopedia.talk.feature.reading.presentation.uimodel.SortOption
 import com.tokopedia.talk.feature.reading.domain.usecase.GetDiscussionAggregateUseCase
 import com.tokopedia.talk.feature.reading.domain.usecase.GetDiscussionDataUseCase
 import com.tokopedia.usecase.coroutines.Fail
@@ -30,11 +31,11 @@ class TalkReadingViewModel @Inject constructor(
     val sortOptions: LiveData<List<SortOption>>
     get() = _sortOptions
 
-    private val _discussionData = MutableLiveData<Result<DiscussionDataResponse>>()
-    val discussionData: LiveData<Result<DiscussionDataResponse>>
+    private val _discussionData = MutableLiveData<Result<DiscussionDataResponseWrapper>>()
+    val discussionData: LiveData<Result<DiscussionDataResponseWrapper>>
     get() = _discussionData
 
-    fun getDiscussionAggregate(productId: Int, shopId: Int) {
+    fun getDiscussionAggregate(productId: String, shopId: String) {
         launchCatchError(block = {
             val response = withContext(dispatcher.io) {
                 getDiscussionAggregateUseCase.setParams(productId, shopId)
@@ -46,7 +47,7 @@ class TalkReadingViewModel @Inject constructor(
         }
     }
 
-    fun getDiscussionData(productId: Int, shopId: Int, page: Int, limit: Int, sortBy: String, category: String) {
+    fun getDiscussionData(productId: String, shopId: String, page: Int, limit: Int, sortBy: String = "", category: String = "") {
         launchCatchError(block = {
             val response = withContext(dispatcher.io) {
                 getDiscussionDataUseCase.setParams(productId, shopId, page, limit, sortBy, category)

@@ -10,11 +10,11 @@ data class Answer(
         @SerializedName("userThumbnail")
         val userThumbnail: String = "",
         @SerializedName("userID")
-        val userId: Int = 0,
+        val userId: String = "",
         @SerializedName("isSeller")
         val isSeller: Boolean = false,
         @SerializedName("createTime")
-        val createTime: Int = 0,
+        val createTime: String = "",
         @SerializedName("createTimeFormatted")
         val createTimeFormatted: String = "",
         @SerializedName("attachedProductCount")

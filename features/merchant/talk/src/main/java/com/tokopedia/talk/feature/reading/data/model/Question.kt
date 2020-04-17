@@ -12,11 +12,11 @@ data class Question(
         @SerializedName("userID")
         val userId: Int = 0,
         @SerializedName("createTime")
-        val createTime: Int = 0,
+        val createTime: String = "",
         @SerializedName("createTimeFormatted")
         val createTimeFormatted: String = "",
         @SerializedName("likeCount")
-        val likeCount: String = "",
+        val likeCount: Int = 0,
         @SerializedName("state")
         val state: State = State(),
         @SerializedName("totalAnswer")

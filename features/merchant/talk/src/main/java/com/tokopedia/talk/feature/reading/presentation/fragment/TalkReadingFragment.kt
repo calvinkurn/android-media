@@ -6,23 +6,26 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.GENERAL_SETTING
 import com.tokopedia.talk.common.di.TalkComponent
 import com.tokopedia.talk.feature.reading.data.mapper.TalkReadingMapper
-import com.tokopedia.talk.feature.reading.data.model.SortOption
+import com.tokopedia.talk.feature.reading.presentation.uimodel.SortOption
 import com.tokopedia.talk.feature.reading.di.DaggerTalkReadingComponent
 import com.tokopedia.talk.feature.reading.di.TalkReadingComponent
+import com.tokopedia.talk.feature.reading.presentation.adapter.TalkReadingAdapter
 import com.tokopedia.talk.feature.reading.presentation.adapter.TalkReadingAdapterTypeFactory
 import com.tokopedia.talk.feature.reading.presentation.adapter.uimodel.TalkReadingHeaderModel
 import com.tokopedia.talk.feature.reading.presentation.adapter.uimodel.TalkReadingUiModel
 import com.tokopedia.talk.feature.reading.presentation.viewmodel.TalkReadingViewModel
+import com.tokopedia.talk.feature.reading.presentation.widget.OnCategorySelectedListener
 import com.tokopedia.talk.feature.reading.presentation.widget.OnFinishedSelectSortListener
 import com.tokopedia.talk.feature.reading.presentation.widget.TalkReadingSortBottomSheet
+import com.tokopedia.talk.feature.write.presentation.activity.TalkWriteActivity
 import com.tokopedia.talk_old.R
-import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -32,26 +35,27 @@ import javax.inject.Inject
 
 class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
         TalkReadingAdapterTypeFactory>(), HasComponent<TalkReadingComponent>,
-        OnFinishedSelectSortListener {
+        OnFinishedSelectSortListener, OnCategorySelectedListener {
 
     companion object {
         const val PARAM_PRODUCT_ID = "productID"
         const val PARAM_SHOP_ID = "shopID"
+        const val DEFAULT_DISCUSSION_DATA_LIMIT = 10
 
         @JvmStatic
-        fun createNewInstance(productId: Int, shopId: Int): TalkReadingFragment =
+        fun createNewInstance(productId: String, shopId: String): TalkReadingFragment =
             TalkReadingFragment().apply {
                 arguments = Bundle()
-                arguments?.putInt(PARAM_PRODUCT_ID, productId)
-                arguments?.putInt(PARAM_SHOP_ID, shopId)
+                arguments?.putString(PARAM_PRODUCT_ID, productId)
+                arguments?.putString(PARAM_SHOP_ID, shopId)
             }
     }
 
     @Inject
     lateinit var viewModel: TalkReadingViewModel
 
-    private var productId: Int = 0
-    private var shopId: Int = 0
+    private var productId: String = ""
+    private var shopId: String = ""
 
     override fun getAdapterTypeFactory(): TalkReadingAdapterTypeFactory {
         return TalkReadingAdapterTypeFactory()
@@ -69,8 +73,10 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
         getDataFromArguments()
         observeProductHeader()
         observeSortOptions()
+        observeDiscussionData()
         showPageLoading()
         getHeaderData()
+        loadInitialData()
         super.onViewCreated(view, savedInstanceState)
     }
 
@@ -87,7 +93,7 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
     }
 
     override fun loadData(page: Int) {
-        // get data
+        getDiscussionData(page)
     }
 
     override fun getComponent(): TalkReadingComponent {
@@ -96,13 +102,31 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
                 .build()
     }
 
-
     override fun onFinishChooseSort(sortOption: SortOption) {
         viewModel.updateSelectedSort(sortOption)
     }
 
+    override fun onSwipeRefresh() {
+        isLoadingInitialData = true
+        swipeToRefresh.isRefreshing = true
+        showPageLoading()
+        hideSnackBarRetry()
+        getDiscussionData()
+    }
+
+    override fun onCategorySelected(categoryName: String, chipType: String) {
+        updateCategories()
+    }
+
+    override fun createAdapterInstance(): BaseListAdapter<TalkReadingUiModel, TalkReadingAdapterTypeFactory> {
+        return TalkReadingAdapter(adapterTypeFactory)
+    }
+
     private fun showPageLoading() {
         pageLoading.visibility = View.VISIBLE
+        pageLoading.setOnClickListener {
+            goToWriteActivity()
+        }
     }
 
     private fun hidePageLoading() {
@@ -134,12 +158,12 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
             when (it) {
                 is Success -> {
                     bindHeader(
-                            TalkReadingMapper.mapDiscussionAggregateResponseToTalkReadingHeaderModel(it.data.discussionAggregateResponse) {
-                                showBottomSheet()
-                            }
-                    )
+                            TalkReadingMapper.mapDiscussionAggregateResponseToTalkReadingHeaderModel(
+                                    it.data.discussionAggregateResponse,
+                                    { showBottomSheet() },
+                                    this
+                            ))
                     initSortOptions()
-                    hidePageLoading()
                     showContainer()
                 }
                 is Fail -> {
@@ -152,14 +176,18 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
 
     private fun observeDiscussionData() {
         viewModel.discussionData.observe(this, Observer {
-            when(it) {
+            when (it) {
                 is Success -> {
-
+                    renderDiscussionData(
+                            TalkReadingMapper.mapDiscussionDataResponseToTalkReadingUiModel(it.data.discussionData),
+                            it.data.discussionData.hasNext)
                 }
                 is Fail -> {
-
+                    hidePageLoading()
+                    showPageError()
                 }
             }
+            hidePageLoading()
         })
     }
 
@@ -201,8 +229,28 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
 
     private fun getDataFromArguments() {
         arguments?.let {
-            productId = it.getInt(PARAM_PRODUCT_ID)
-            shopId = it.getInt(PARAM_SHOP_ID)
+            productId = it.getString(PARAM_PRODUCT_ID, "")
+            shopId = it.getString(PARAM_SHOP_ID, "")
         }
     }
+
+    private fun goToWriteActivity() {
+        val intent = context?.let { TalkWriteActivity.createIntent(it) }
+        startActivity(intent)
+    }
+
+    private fun getDiscussionData(page: Int = 1) {
+        val selectedSort = viewModel.sortOptions.value?.filter { it.isSelected }?.joinToString() ?: ""
+//        val selectedCategories = viewModel.categories.value?.filter { it.isSelected }?.joinToString() ?: ""
+        viewModel.getDiscussionData(productId, shopId, page, DEFAULT_DISCUSSION_DATA_LIMIT, selectedSort, "")
+    }
+
+    private fun renderDiscussionData(discussionData: List<TalkReadingUiModel>, hasNextPage: Boolean) {
+        renderList(discussionData, hasNextPage)
+    }
+
+    private fun updateCategories() {
+
+    }
+
 }

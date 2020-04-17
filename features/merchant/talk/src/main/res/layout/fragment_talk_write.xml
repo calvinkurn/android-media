@@ -50,6 +50,7 @@
         app:layout_constraintStart_toStartOf="@id/write_category_header"
         app:layout_constraintEnd_toEndOf="@id/write_category_header"
         app:text_field_placeholder="@string/write_question_placeholder"
+        app:text_field_input_type="text"
         app:layout_constraintTop_toBottomOf="@id/write_question_header"/>
 
     <include
@@ -61,11 +62,5 @@
         android:id="@+id/pageError"
         layout="@layout/partial_talk_connection_error"
         android:visibility="gone" />
-
-
-
-
-
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

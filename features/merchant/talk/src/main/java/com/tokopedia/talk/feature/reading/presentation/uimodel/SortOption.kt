@@ -1,4 +1,4 @@
-package com.tokopedia.talk.feature.reading.data.model
+package com.tokopedia.talk.feature.reading.presentation.uimodel
 
 sealed class SortOption(open val id: SortId, open val displayName: String, open var isSelected: Boolean) {
 

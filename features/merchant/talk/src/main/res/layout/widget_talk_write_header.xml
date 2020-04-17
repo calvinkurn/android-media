@@ -17,7 +17,7 @@
     
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/talkWriteProductName"
-        android:layout_width="wrap_content"
+        android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/layout_lvl2"
         android:layout_marginStart="@dimen/layout_lvl2"

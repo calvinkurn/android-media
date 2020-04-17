@@ -3,7 +3,6 @@ package com.tokopedia.talk.feature.reading.presentation.adapter.viewholder
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.loadImage
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.talk.feature.reading.presentation.adapter.uimodel.TalkReadingUiModel
 import com.tokopedia.talk_old.R
 import kotlinx.android.synthetic.main.item_talk_reading.view.*
@@ -20,14 +19,52 @@ class TalkReadingViewHolder(view: View) : AbstractViewHolder<TalkReadingUiModel>
     override fun bind(element: TalkReadingUiModel) {
         itemView.apply {
             readingQuestionTitle.text = element.question.content
-            readingProfilePicture.loadImage(element.question.answer.userThumbnail)
-            showSellerLabelWithCondition(element.question.answer.isSeller)
-            readingDisplayName.text = element.question.answer.userName
-            readingDate.text = addBulletPointToDate(element.question.answer.createTimeFormatted)
-            readingMessage.text = element.question.answer.content
-            showNumberOfLikesWithCondition(element.question.likeCount)
-            showNumberOfAttachedProductsWithCondition(element.question.answer.attachedProductCount)
-            showNumberOfOtherAnswersWithCondition(element.question.totalAnswer)
+            if(element.question.totalAnswer > 0) {
+                showProfilePicture(element.question.answer.userThumbnail)
+                showSellerLabelWithCondition(element.question.answer.isSeller)
+                showDisplayName(element.question.answer.userName)
+                showDate(element.question.answer.createTimeFormatted)
+                showAnswer(element.question.answer.content)
+                showNumberOfLikesWithCondition(element.question.likeCount)
+                showNumberOfAttachedProductsWithCondition(element.question.answer.attachedProductCount)
+                showNumberOfOtherAnswersWithCondition(element.question.totalAnswer)
+            }
+        }
+    }
+
+    private fun showProfilePicture(userThumbNail: String) {
+        if(userThumbNail.isNotEmpty()) {
+            itemView.readingProfilePicture.apply {
+                loadImage(userThumbNail)
+                visibility = View.VISIBLE
+            }
+        }
+    }
+
+    private fun showDisplayName(userName: String) {
+        if(userName.isNotEmpty()) {
+            itemView.readingDisplayName.apply{
+                text = userName
+                visibility = View.VISIBLE
+            }
+        }
+    }
+
+    private fun showAnswer(answer: String) {
+        if(answer.isNotEmpty()) {
+            itemView.apply {
+                readingMessage.text = answer
+                visibility = View.VISIBLE
+            }
+        }
+    }
+
+    private fun showDate(date: String) {
+        if(date.isNotEmpty()) {
+            itemView.apply {
+                readingDate.text = addBulletPointToDate(date)
+                visibility = View.VISIBLE
+            }
         }
     }
 
@@ -41,9 +78,9 @@ class TalkReadingViewHolder(view: View) : AbstractViewHolder<TalkReadingUiModel>
         return String.format(BULLET_POINT, date)
     }
 
-    private fun showNumberOfLikesWithCondition(likeCount: String) {
-        if(likeCount.toIntOrZero() > 0) {
-            itemView.likeCount.text = likeCount
+    private fun showNumberOfLikesWithCondition(likeCount: Int) {
+        if(likeCount > 0) {
+            itemView.likeCount.text = likeCount.toString()
         }
     }
 

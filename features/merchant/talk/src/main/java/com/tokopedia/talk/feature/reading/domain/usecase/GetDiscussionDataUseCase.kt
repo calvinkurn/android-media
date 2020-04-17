@@ -3,10 +3,11 @@ package com.tokopedia.talk.feature.reading.domain.usecase
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.talk.feature.reading.data.model.DiscussionDataResponse
+import com.tokopedia.talk.feature.reading.data.model.DiscussionDataResponseWrapper
 import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
-class GetDiscussionDataUseCase @Inject constructor(graphqlRepository: GraphqlRepository) : GraphqlUseCase<DiscussionDataResponse>(graphqlRepository) {
+class GetDiscussionDataUseCase @Inject constructor(graphqlRepository: GraphqlRepository) : GraphqlUseCase<DiscussionDataResponseWrapper>(graphqlRepository) {
 
     companion object {
 
@@ -24,52 +25,37 @@ class GetDiscussionDataUseCase @Inject constructor(graphqlRepository: GraphqlRep
             val limit = "\$limit"
             val sortBy = "\$sortBy"
             val category = "\$category"
-
             """
-            query discussionDataByProductID(
-                $productID: Int!,
-                $shopID: Int!,
-                $page: Int!,
-                $limit: Int!,
-                $sortBy: String,
-                $category: String
-            ) {
-                discussionDataByProductID(
-                            productID: $productID,
-                            shopID: $shopID,
-                            page: $page,
-                            limit: $limit!,
-                            sortBy: $sortBy,
-                            category: $category
+            query discussionDataByProductID($productID: String!, $shopID: String!, $page: Int!, $limit: Int!, $sortBy: String, $category: String) {
+              discussionDataByProductID(productID: $productID, shopID: $shopID, page: $page, limit: $limit, sortBy: $sortBy, category: $category) {
                 hasNext
                 totalQuestion
                 question {
+                  content
+                  maskedContent
+                  userName
+                  userID
+                  createTime
+                  createTimeFormatted
+                  likeCount
+                  state {
+                    isMasked
+                    isLiked
+                    allowLike
+                  }
+                  totalAnswer
+                  answer {
                     content
-                    maskedContent
                     userName
+                    userThumbnail
                     userID
+                    isSeller
                     createTime
                     createTimeFormatted
-                    
-                    likeCount
-                    state {
-                        isMasked
-                        isLiked
-                        allowLike
-                    }
-                    
-                    totalAnswer
-                    answer {
-                        content
-                        userName
-                        userThumbnail
-                        userID
-                        isSeller
-                        createTime
-                        createTimeFormatted
-                        attachedProductCount
-                    }
+                    attachedProductCount
+                  }
                 }
+              }
             }
         """.trimIndent()
         }
@@ -77,13 +63,13 @@ class GetDiscussionDataUseCase @Inject constructor(graphqlRepository: GraphqlRep
 
     init {
         setGraphqlQuery(query)
-        setTypeClass(DiscussionDataResponse::class.java)
+        setTypeClass(DiscussionDataResponseWrapper::class.java)
     }
 
-    fun setParams(productId: Int, shopId: Int, page: Int, limit: Int, sortBy: String, category: String) {
+    fun setParams(productId: String, shopId: String, page: Int, limit: Int, sortBy: String, category: String) {
         val requestParams = RequestParams()
-        requestParams.putInt(PARAM_PRODUCT_ID, productId)
-        requestParams.putInt(PARAM_SHOP_ID, shopId)
+        requestParams.putString(PARAM_PRODUCT_ID, productId)
+        requestParams.putString(PARAM_SHOP_ID, shopId)
         requestParams.putInt(PARAM_PAGE, page)
         requestParams.putInt(PARAM_LIMIT, limit)
         requestParams.putString(PARAM_SORT, sortBy)
