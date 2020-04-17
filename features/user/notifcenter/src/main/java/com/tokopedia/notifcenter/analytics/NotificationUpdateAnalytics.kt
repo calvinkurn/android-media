@@ -237,7 +237,7 @@ class NotificationUpdateAnalytics @Inject constructor(): NotificationAnalytics()
     ) {
         val eventLabel = getImpressionTrackLabel(
                 notificationId = notification.notificationId,
-                productNumber = productNumber,
+                productNumber = productNumber + 1,
                 location = eventLocation
         )
         trackProductCheckoutCardClick(
