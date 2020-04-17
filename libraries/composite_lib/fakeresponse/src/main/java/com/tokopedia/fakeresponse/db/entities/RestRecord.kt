@@ -15,7 +15,7 @@ data class RestRecord(
         val enabled: Boolean,
         val url: String,
         var httpMethod: String,
-        val customTag: String? = null
+        val customTag: String
 )
 
 fun RestRecord.toResponseListData(): ResponseListData? {

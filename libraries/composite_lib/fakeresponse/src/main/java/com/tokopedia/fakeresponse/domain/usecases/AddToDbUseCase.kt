@@ -18,9 +18,10 @@ class AddToDbUseCase(val repository: GqlRepository) : BaseUseCase<GqlRepository>
         return repository.addToDb(data.toGqlRecord())
     }
 
-    fun updateRestRecord(id: Int, data: AddGqlData) {
+    fun updateRecord(id: Int, data: AddGqlData) {
         validateData(data)
-        return repository.updateResponse(data.toGqlRecord(id))
+        val record = getRecordFromTable(id)
+        return repository.updateResponse(data.toGqlRecord(id, record.createdAt))
     }
 
     fun getRecordFromTable(id: Int): GqlRecord {

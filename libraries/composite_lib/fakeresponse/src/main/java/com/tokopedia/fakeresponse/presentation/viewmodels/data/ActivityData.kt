@@ -8,32 +8,34 @@ data class AddGqlData(val gqlQueryName: String?, val customTag: String? = null, 
 
 data class AddRestData(val url: String?, val methodName: String, val response: String?, val customTag: String? = null)
 
-fun AddGqlData.toGqlRecord(id: Int? = null): GqlRecord {
+fun AddGqlData.toGqlRecord(id: Int? = null, createdAt: Long? = null): GqlRecord {
     val date = Date()
+    val currentTime = date.time
 
     val gql = GqlRecord(
             id = id,
             gqlOperationName = gqlQueryName ?: "",
-            createdAt = date.time,
-            updatedAt = date.time,
+            createdAt = createdAt ?: currentTime,
+            updatedAt = currentTime,
             enabled = true,
-            customTag = customTag,
+            customTag = customTag ?: "",
             response = response!!
 
     )
     return gql
 }
 
-fun AddRestData.toRestRecord(id: Int? = null): RestRecord {
+fun AddRestData.toRestRecord(id: Int? = null, createdAt: Long? = null): RestRecord {
     val date = Date()
+    val currentTime = date.time
     return RestRecord(
             id = id,
             url = url ?: "",
             httpMethod = methodName,
-            createdAt = date.time,
-            updatedAt = date.time,
+            createdAt = createdAt ?: currentTime,
+            updatedAt = currentTime,
             enabled = true,
             response = response ?: "",
-            customTag = customTag
+            customTag = customTag ?: ""
     )
 }

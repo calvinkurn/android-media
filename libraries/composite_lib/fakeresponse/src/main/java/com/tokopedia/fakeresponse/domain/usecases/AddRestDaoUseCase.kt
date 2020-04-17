@@ -17,11 +17,10 @@ class AddRestDaoUseCase(val repository: RestRepository) : BaseUseCase<RestReposi
         return repository.addToDb(data.toRestRecord())
     }
 
-    fun updateRestRecord(id:Int, data: AddRestData) {
+    fun updateRestRecord(id: Int, data: AddRestData) {
         validateData(data)
         val restResponse = getRecordFromTable(id)
-        restResponse.httpMethod = data.methodName
-        return repository.updateResponse(data.toRestRecord(id))
+        return repository.updateResponse(data.toRestRecord(id, restResponse.createdAt))
     }
 
     private fun validateData(data: AddRestData) {

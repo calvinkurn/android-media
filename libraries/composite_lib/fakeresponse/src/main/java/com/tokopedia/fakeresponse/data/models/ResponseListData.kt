@@ -4,9 +4,9 @@ data class ResponseListData(
         val id: Int,
         val title: String,
         var isChecked: Boolean,
-        val customName: String? = null,
+        val customName: String,
         val responseType: ResponseItemType,
-        val updatedAt: Long? = null,
+        val updatedAt: Long,
         override var isSelectedForExport: Boolean = false,
         override var isInExportMode: Boolean = false
 ) : SearchType

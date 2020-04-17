@@ -54,7 +54,7 @@ class AddGqlVM constructor(
     fun updateRecord(id: Int, data: AddGqlData) {
         launch {
             try {
-                useCase.updateRestRecord(id, data)
+                useCase.updateRecord(id, data)
                 liveDataGqlUpdate.postValue(Success(true))
             } catch (ex: Exception) {
                 ex.printStackTrace()
