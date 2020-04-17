@@ -22,7 +22,8 @@ data class ShowcaseProduct(
         val isWishlist: Boolean = false,
         val isSold: Boolean = false,
         var ishighlighted: Boolean = false,
-        var isCloseable: Boolean = false
+        var isCloseable: Boolean = false,
+        var isNewAppended: Boolean = false
 ): BaseShowcaseProduct, Parcelable
 
 @Parcelize

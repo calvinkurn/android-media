@@ -68,6 +68,7 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
         const val SUCCESS_EDIT_SHOWCASE = 1
         const val MAX_SHOWCASE_NAME_LENGTH = 128
         const val SELECTED_SHOWCASE_PRODUCT = "selected_product_list"
+        const val NEW_APPENDED_SHOWCASE_PRODUCT = "appended_product_list"
         const val DEFAULT_SHOWCASE_ID = "0"
         const val ERROR_TOASTER = Toaster.TYPE_ERROR
 
@@ -364,6 +365,7 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
     private fun goToChooseProduct() {
         val intent = Intent(activity, ShopShowcaseProductAddActivity::class.java)
         intent.putParcelableArrayListExtra(SELECTED_SHOWCASE_PRODUCT, showcaseAddAdapter?.getSelectedProductList())
+        intent.putParcelableArrayListExtra(NEW_APPENDED_SHOWCASE_PRODUCT, showcaseAddAdapter?.getAppendedProductList())
         intent.putExtra(ShopShowcaseEditParam.EXTRA_IS_ACTION_EDIT, isActionEdit)
         intent.putExtra(ShopShowcaseEditParam.EXTRA_SHOWCASE_ID, showcaseId)
         startActivityForResult(intent, START_PRODUCT_SHOWCASE_ACTIVITY)
