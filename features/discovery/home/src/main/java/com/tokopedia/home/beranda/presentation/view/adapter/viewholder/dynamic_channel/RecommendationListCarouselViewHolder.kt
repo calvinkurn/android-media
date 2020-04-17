@@ -76,14 +76,14 @@ class RecommendationListCarouselViewHolder(itemView: View,
             else listCarouselBannerHeader.visibility = View.VISIBLE
         }
 
-        channel.let {channel->
+        channel.let { channel->
             listCarouselRecyclerView.apply {
                 layoutManager = if (channel.grids.size > 1) {
                     LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
                 } else {
                     GridLayoutManager(itemView.context, 1)
                 }
-                adapter = RecommendationListAdapter(channel.grids.map {
+                val newList : MutableList<HomeRecommendationListCarousel> = channel.grids.map {
                     HomeRecommendationListData(
                             it.imageUrl,
                             it.name,
@@ -93,9 +93,12 @@ class RecommendationListCarouselViewHolder(itemView: View,
                             it.applink,
                             channel.grids.size > 1,
                             channel,
-                            it
+                            it,
+                            listener
                     )
-                }, listener)
+                }.toMutableList()
+                if(channel.grids.size > 1) newList.add(HomeRecommendationListSeeMoreData(channel, listener))
+                adapter = RecommendationListAdapter(newList)
                 setRecycledViewPool(parentRecycledViewPool)
                 clearItemRecyclerViewDecoration(this)
                 if (channel.grids.size > 1) {
@@ -124,46 +127,18 @@ class RecommendationListCarouselViewHolder(itemView: View,
         val LAYOUT = R.layout.home_dc_list_carousel
     }
 
-    class HomeRecommendationListViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
-        val recommendationCard = itemView.findViewById<ProductCardListView>(R.id.productCardView)
+    abstract class RecommendationListCarouselItem(itemView: View): RecyclerView.ViewHolder(itemView){
+        abstract fun bind(homeRecommendationListData: HomeRecommendationListCarousel)
     }
 
-    data class HomeRecommendationListData(
-            val recommendationImageUrl: String,
-            val recommendationTitle: String,
-            val recommendationDiscountLabel: String,
-            val recommendationSlashedPrice: String,
-            val recommendationPrice: String,
-            val recommendationApplink: String,
-            val isCarousel: Boolean,
-            val channel: DynamicHomeChannel.Channels,
-            val grid: DynamicHomeChannel.Grid
-    )
+    class HomeRecommendationListViewHolder(
+            itemView: View
+    ): RecommendationListCarouselItem(itemView) {
+        private val recommendationCard = itemView.findViewById<ProductCardListView>(R.id.productCardView)
 
-    class RecommendationListAdapter(val recommendationList: List<HomeRecommendationListData>,
-                                    val homeCategoryListener: HomeCategoryListener): RecyclerView.Adapter<HomeRecommendationListViewHolder>() {
-        val LAYOUT_TYPE_CAROUSEL = 87
-        val LAYOUT_TYPE_NON_CAROUSEL = 90
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HomeRecommendationListViewHolder {
-            val inflater = LayoutInflater.from(parent.context)
-            val view = if (viewType == LAYOUT_TYPE_CAROUSEL) {
-                inflater.inflate(R.layout.home_recommendation_list_card_carousel, parent, false)
-            } else inflater.inflate(R.layout.home_recommendation_list_card, parent, false)
-            return HomeRecommendationListViewHolder(view)
-        }
-
-        override fun getItemCount(): Int {
-            return recommendationList.size
-        }
-
-        override fun getItemViewType(position: Int): Int {
-            return if (recommendationList[position].isCarousel) LAYOUT_TYPE_CAROUSEL else LAYOUT_TYPE_NON_CAROUSEL
-        }
-
-        override fun onBindViewHolder(holder: HomeRecommendationListViewHolder, position: Int) {
-            if (recommendationList.size > position) {
-                val recommendation = recommendationList[position]
-                holder.recommendationCard.setProductModel(
+        override fun bind(recommendation: HomeRecommendationListCarousel) {
+            if(recommendation is HomeRecommendationListData) {
+                recommendationCard.setProductModel(
                         ProductCardModel(
                                 productImageUrl = recommendation.recommendationImageUrl,
                                 productName = recommendation.recommendationTitle,
@@ -173,16 +148,81 @@ class RecommendationListCarouselViewHolder(itemView: View,
                                 hasAddToCartButton = recommendation.channel.hasCloseButton
                         )
                 )
-                val addToCartButton = holder.recommendationCard.findViewById<UnifyButton>(R.id.buttonAddToCart)
-                addToCartButton.text = holder.itemView.context.getString(R.string.home_buy_again)
-                holder.recommendationCard.setAddToCartOnClickListener {
-                    homeCategoryListener.onBuyAgainOneClickCheckOutClick(recommendation.grid, recommendation.channel, position)
+                val addToCartButton = recommendationCard.findViewById<UnifyButton>(R.id.buttonAddToCart)
+                addToCartButton.text = itemView.context.getString(R.string.home_buy_again)
+                recommendationCard.setAddToCartOnClickListener {
+                    recommendation.listener.onBuyAgainOneClickCheckOutClick(recommendation.grid, recommendation.channel, position)
                 }
-                holder.itemView.setOnClickListener {
-                    HomePageTrackingV2.RecommendationList.sendRecommendationListClick(recommendation.channel, recommendation.grid, position, homeCategoryListener.userId)
-                    homeCategoryListener.onSectionItemClicked(recommendation.recommendationApplink)
+                itemView.setOnClickListener {
+                    HomePageTrackingV2.RecommendationList.sendRecommendationListClick(recommendation.channel, recommendation.grid, position, recommendation.listener.userId)
+                    recommendation.listener.onSectionItemClicked(recommendation.recommendationApplink)
                 }
             }
+        }
+    }
+
+    class HomeRecommendationSeeMoreViewHolder(
+            itemView: View
+    ): RecommendationListCarouselItem(itemView){
+
+        private val container: View by lazy { itemView.findViewById<View>(R.id.container_banner_mix_more) }
+        override fun bind(homeRecommendationListData: HomeRecommendationListCarousel) {
+            if(homeRecommendationListData is HomeRecommendationListSeeMoreData) {
+                container.setOnClickListener {
+                    HomePageTrackingV2.RecommendationList.sendRecommendationListSeeAllClick(homeRecommendationListData.channel)
+                    homeRecommendationListData.listener.onDynamicChannelClicked(applink = homeRecommendationListData.channel.header.applink)
+                }
+            }
+        }
+
+    }
+
+    interface HomeRecommendationListCarousel
+    data class HomeRecommendationListData(
+            val recommendationImageUrl: String,
+            val recommendationTitle: String,
+            val recommendationDiscountLabel: String,
+            val recommendationSlashedPrice: String,
+            val recommendationPrice: String,
+            val recommendationApplink: String,
+            val isCarousel: Boolean,
+            val channel: DynamicHomeChannel.Channels,
+            val grid: DynamicHomeChannel.Grid,
+            val listener: HomeCategoryListener
+    ): HomeRecommendationListCarousel
+
+    data class HomeRecommendationListSeeMoreData(
+            val channel: DynamicHomeChannel.Channels,
+            val listener: HomeCategoryListener
+    ): HomeRecommendationListCarousel
+
+    class RecommendationListAdapter(private val recommendationList: List<HomeRecommendationListCarousel>): RecyclerView.Adapter<RecommendationListCarouselItem>() {
+        companion object{
+            private const val LAYOUT_TYPE_CAROUSEL = 87
+            private const val LAYOUT_TYPE_NON_CAROUSEL = 90
+            private const val LAYOUT_SEE_ALL_BUTTON = 91
+        }
+
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecommendationListCarouselItem {
+            val inflater = LayoutInflater.from(parent.context)
+            return when (viewType) {
+                LAYOUT_TYPE_CAROUSEL -> HomeRecommendationListViewHolder(inflater.inflate(R.layout.home_recommendation_list_card_carousel, parent, false))
+                LAYOUT_SEE_ALL_BUTTON -> HomeRecommendationSeeMoreViewHolder(inflater.inflate(R.layout.home_banner_item_carousel_see_more, parent, false))
+                else -> HomeRecommendationListViewHolder(inflater.inflate(R.layout.home_recommendation_list_card, parent, false))
+            }
+        }
+
+        override fun getItemCount(): Int {
+            return recommendationList.size
+        }
+
+        override fun getItemViewType(position: Int): Int {
+            return if(recommendationList[position] is HomeRecommendationListSeeMoreData) LAYOUT_SEE_ALL_BUTTON
+            else if (recommendationList[position] is HomeRecommendationListData && (recommendationList[position] as HomeRecommendationListData).isCarousel) LAYOUT_TYPE_CAROUSEL else LAYOUT_TYPE_NON_CAROUSEL
+        }
+
+        override fun onBindViewHolder(holder: RecommendationListCarouselItem, position: Int) {
+            holder.bind(recommendationList[position])
         }
     }
 }
