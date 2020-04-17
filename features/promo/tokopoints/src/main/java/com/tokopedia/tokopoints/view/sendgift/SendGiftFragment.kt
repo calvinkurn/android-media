@@ -294,7 +294,7 @@ class SendGiftFragment : BottomSheetDialogFragment(), SendGiftContract.View, Vie
         private const val CONTAINER_SEND_FORM = 0
         private const val CONTAINER_PRE_CONFIRMATION = 1
         private const val SENDGIFT1_TOKOPOINT_PLT = "sendgift1tokopoint_plt"
-        private const val SENDGIFT2_TOKOPOINT_PLT = "fpm_sendgift2tokopoint_plt"
+        private const val SENDGIFT2_TOKOPOINT_PLT = "sendgift2tokopoint_plt"
         fun newInstance(extras: Bundle?): Fragment {
             val fragment: Fragment = SendGiftFragment()
             fragment.arguments = extras
