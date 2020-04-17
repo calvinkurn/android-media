@@ -56,13 +56,14 @@
                 android:background="@color/divider_color" />
 
             <com.tokopedia.design.component.TextViewCompat
+                android:id="@+id/hotel_filter_rating_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/hotel_search_filter_star_title"
+                android:layout_marginTop="@dimen/layout_lvl2"
                 app:fontSize="small"
                 app:textViewTheme="lightPrimary"
                 app:weight="medium" />
-            <!--                android:layout_marginTop="@dimen/dp_16"-->
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/filter_star"
