@@ -100,17 +100,16 @@ class SettingFieldAdapter<T : Visitable<SettingFieldTypeFactory>>(
 
     fun enableSwitchComponent(temporaryList: List<ParentSetting>) {
         if (temporaryList.isEmpty()) return
+        if (visitables == temporaryList) return
 
-        val visitableList = mutableListOf<Visitable<*>>()
-        visitables.zip(temporaryList).forEach {
-            if (it.first is ParentSetting) {
-                val currentItem = it.first as ParentSetting
-                val lastConfigItem = it.second as ParentSetting
-                currentItem.status = lastConfigItem.status
-                currentItem.isEnabled = true
-            }
-            visitableList.add(it.first)
-        }
+        visitables.filterIsInstance<ParentSetting>()
+                .zip(temporaryList)
+                .forEach {
+                    val currentItem = it.first
+                    val lastConfigItem = it.second
+                    currentItem.status = lastConfigItem.status
+                    currentItem.isEnabled = true
+                }
 
         notifyDataSetChanged()
     }
