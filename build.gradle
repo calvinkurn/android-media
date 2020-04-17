@@ -53,8 +53,8 @@ buildscript {
 
 apply from: 'buildproj.gradle'
 apply plugin: 'com.uber.okbuck'
-//apply plugin: 'com.gradle.build-scan'
-//apply from: 'buildconfig/build-scan.gradle'
+apply plugin: 'com.gradle.build-scan'
+apply from: 'buildconfig/build-scan.gradle'
 
 okbuck {
 
