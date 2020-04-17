@@ -31,8 +31,8 @@ class RechargeGeneralViewModel @Inject constructor(
     val operatorCluster: LiveData<Result<RechargeGeneralOperatorCluster>>
         get() = mutableOperatorCluster
 
-    private val mutableProductList = MutableLiveData<Result<RechargeGeneralProductData>>()
-    val productList: LiveData<Result<RechargeGeneralProductData>>
+    private val mutableProductList = MutableLiveData<Result<RechargeGeneralDynamicInput>>()
+    val productList: LiveData<Result<RechargeGeneralDynamicInput>>
         get() = mutableProductList
 
     fun getOperatorCluster(rawQuery: String, mapParams: Map<String, Any>, isLoadFromCloud: Boolean = false) {
@@ -61,12 +61,11 @@ class RechargeGeneralViewModel @Inject constructor(
                 graphqlRepository.getReseponse(listOf(graphqlRequest), graphqlCacheStrategy)
             }.getSuccessData<RechargeGeneralDynamicInput.Response>()
 
-            val foundProduct = data.response.enquiryFields.find { it.paramName == PARAM_PRODUCT }
+            val foundProduct = data.response.enquiryFields.find { it.name == PARAM_PRODUCT }
             if (foundProduct == null) {
                 throw MessageErrorException(NULL_PRODUCT_ERROR)
             } else {
-                val productData = rechargeGeneralMapper.mapDynamicInputToProductData(data.response)
-                mutableProductList.postValue(Success(productData))
+                mutableProductList.postValue(Success(data.response))
             }
         }) {
             mutableProductList.postValue(Fail(it))
@@ -85,6 +84,6 @@ class RechargeGeneralViewModel @Inject constructor(
         const val PARAM_MENU_ID = "menuID"
         const val PARAM_OPERATOR = "operator"
         const val NULL_PRODUCT_ERROR = "null product"
-        const val PARAM_PRODUCT = "product"
+        const val PARAM_PRODUCT = "product_id"
     }
 }

@@ -2,25 +2,14 @@ package com.tokopedia.rechargegeneral.model.mapper
 
 import com.tokopedia.common.topupbills.data.product.CatalogProduct
 import com.tokopedia.common.topupbills.data.product.CatalogProductInput
-import com.tokopedia.rechargegeneral.model.*
+import com.tokopedia.rechargegeneral.model.RechargeGeneralDynamicField
+import com.tokopedia.rechargegeneral.model.RechargeGeneralProductInput
+import com.tokopedia.rechargegeneral.model.RechargeGeneralProductItemData
 import javax.inject.Inject
 
 class RechargeGeneralMapper @Inject constructor() {
 
-    fun mapDynamicInputToProductData(dynamicInput: RechargeGeneralDynamicInput): RechargeGeneralProductData {
-        val productData = RechargeGeneralProductData()
-        productData.isShowingProduct = dynamicInput.isShowingProduct
-        productData.needEnquiry = dynamicInput.needEnquiry
-
-        val listEnquiryField = mutableListOf<RechargeGeneralProductInput>()
-        dynamicInput.enquiryFields.map {
-            listEnquiryField.add(mapEnquiryFields(it))
-        }
-        productData.enquiryFields = listEnquiryField
-        return productData
-    }
-
-    private fun mapEnquiryFields(dynamicField: RechargeGeneralDynamicField): RechargeGeneralProductInput {
+    fun mapDynamicInputToProductData(dynamicField: RechargeGeneralDynamicField): RechargeGeneralProductInput {
         val productInput = RechargeGeneralProductInput()
         productInput.name = dynamicField.name
         productInput.text = dynamicField.text
@@ -88,7 +77,7 @@ class RechargeGeneralMapper @Inject constructor() {
         return productInput
     }
 
-    fun mapInputToProductItemData(dynamicField: RechargeGeneralProductInput): RechargeGeneralProductItemData {
+    fun mapInputToProductItemData(dynamicField: RechargeGeneralDynamicField): RechargeGeneralProductItemData {
         val productInput = RechargeGeneralProductItemData()
         productInput.name = dynamicField.name
         productInput.text = dynamicField.text

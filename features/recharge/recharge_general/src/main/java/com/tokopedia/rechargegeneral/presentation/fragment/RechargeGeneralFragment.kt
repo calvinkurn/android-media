@@ -42,9 +42,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.rechargegeneral.R
 import com.tokopedia.rechargegeneral.di.RechargeGeneralComponent
-import com.tokopedia.rechargegeneral.model.RechargeGeneralOperatorCluster
-import com.tokopedia.rechargegeneral.model.RechargeGeneralProductData
-import com.tokopedia.rechargegeneral.model.RechargeGeneralProductInput
+import com.tokopedia.rechargegeneral.model.*
 import com.tokopedia.rechargegeneral.model.mapper.RechargeGeneralMapper
 import com.tokopedia.rechargegeneral.presentation.adapter.RechargeGeneralAdapter
 import com.tokopedia.rechargegeneral.presentation.adapter.RechargeGeneralAdapterFactory
@@ -393,7 +391,7 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
         }
     }
 
-    private fun setupInputAndProduct(productData: RechargeGeneralProductData) {
+    private fun setupInputAndProduct(productData: RechargeGeneralDynamicInput) {
         val dataList: MutableList<Visitable<RechargeGeneralAdapterFactory>> = mutableListOf()
 
         if (productData.enquiryFields.isNotEmpty()) {
@@ -409,13 +407,13 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
             inputDataKeys.clear()
             enquiryFields.map {
                 // processing product
-                if (it.paramName == RechargeGeneralViewModel.PARAM_PRODUCT) {
+                if (it.name == RechargeGeneralViewModel.PARAM_PRODUCT) {
                     // Show product field if there is > 1 product
+                    val rechargeGeneralProductItemData = mapper.mapInputToProductItemData(it)
                     if (productData.isShowingProduct) {
                         val productSelectData = it
                         productSelectData?.apply {
-                            selectedProduct?.run { it.selectedProductId = id }
-                            val rechargeGeneralProductItemData = mapper.mapInputToProductItemData(this)
+                            selectedProduct?.run { rechargeGeneralProductItemData.selectedProductId = id }
                             dataList.add(rechargeGeneralProductItemData)
                         }
                     } else {
@@ -436,14 +434,15 @@ class RechargeGeneralFragment : BaseTopupBillsFragment(),
                 } else {
                     //processing enquiry fields
                     if (productData.needEnquiry) {
+                        val enquiryField = mapper.mapDynamicInputToProductData(it)
                         // Set favorite number if available
                         if (it.name == PARAM_CLIENT_NUMBER && hasFavoriteNumbers) {
                             it.style = INPUT_TYPE_FAVORITE_NUMBER
-                            dataList.add(it)
                         }
                         if (inputData.containsKey(it.name)) {
-                            it.value = inputData[it.name]!!
+                            enquiryField.value = inputData[it.name]!!
                         }
+                        dataList.add(enquiryField)
                         inputDataKeys.add(it.name)
                     } else {
                         // do nothing

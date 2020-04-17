@@ -97,7 +97,7 @@ class RechargeGeneralViewModelTest {
     fun getProductList_Success() {
         val productData = RechargeGeneralDynamicInput.Response(RechargeGeneralDynamicInput(
                 enquiryFields = listOf(RechargeGeneralDynamicField(
-                        paramName = "product",
+                        name = "product_id",
                         dataCollections = listOf(RechargeGeneralDynamicField.DataCollection(
                                 products = listOf(CatalogProduct(id = "1"))
                         ))
