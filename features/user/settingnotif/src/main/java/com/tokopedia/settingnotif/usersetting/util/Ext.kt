@@ -9,6 +9,7 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.settingnotif.R
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import rx.Subscriber
@@ -81,4 +82,13 @@ fun Context.intent(appLink: String): Intent {
  */
 fun Context?.inflateView(@LayoutRes layoutId: Int): View {
     return View.inflate(this, layoutId, null)
+}
+
+/**
+ * Component text color based on isEnabled
+ * switch any view colors with grey if component is disabled,
+ * and switch the color back if component is enabled
+ */
+fun componentTextColor(state: Boolean): Int {
+    return if (state) R.color.charcoal_grey_96 else R.color.grey_600
 }
