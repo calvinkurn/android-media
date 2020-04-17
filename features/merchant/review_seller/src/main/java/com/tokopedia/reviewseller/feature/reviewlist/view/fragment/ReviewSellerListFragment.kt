@@ -6,6 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayout.TabLayoutOnPageChangeListener
+import com.google.android.material.tabs.TabLayout.ViewPagerOnTabSelectedListener
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.reviewseller.R
 import com.tokopedia.reviewseller.feature.reviewlist.view.adapter.ReviewFragmentAdapter
@@ -41,27 +43,31 @@ class ReviewSellerListFragment : BaseDaggerFragment() {
 
     private fun initTabReview(view: View, tabLayout: TabLayout) {
         viewPager = view.findViewById(R.id.pager_review)
-        tabList.add(ReviewFragmentAdapter.ReviewFragmentItem(getString(R.string.title_review_rating_product), RatingProductFragment()))
-        tabList.add(ReviewFragmentAdapter.ReviewFragmentItem(getString(R.string.title_review_inbox), InboxReviewFragment()))
+        tabList.add(ReviewFragmentAdapter.ReviewFragmentItem(RatingProductFragment()))
+//        tabList.add(ReviewFragmentAdapter.ReviewFragmentItem(RatingProductFragment()))
+        tabList.add(ReviewFragmentAdapter.ReviewFragmentItem(InboxReviewFragment()))
+//        tabList.add(ReviewFragmentAdapter.ReviewFragmentItem(InboxReviewFragment()))
 
         fragmentAdapter = ReviewFragmentAdapter(childFragmentManager)
         fragmentAdapter?.setItemList(tabList)
         viewPager?.adapter = fragmentAdapter
-        tabLayout.setupWithViewPager(viewPager)
-        fragmentAdapter?.setupLayout(context, tab_review.getUnifyTabLayout())
-
-        tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
-            override fun onTabReselected(tab: TabLayout.Tab?) {
-                fragmentAdapter?.handleSelectedTab(context, tab, true)
-            }
-
-            override fun onTabUnselected(tab: TabLayout.Tab?) {
-                fragmentAdapter?.handleSelectedTab(context, tab, false)
-            }
-
-            override fun onTabSelected(tab: TabLayout.Tab?) {
-                fragmentAdapter?.handleSelectedTab(context, tab, true)
-            }
-        })
+        tabLayout.addOnTabSelectedListener(ViewPagerOnTabSelectedListener(viewPager))
+        viewPager?.addOnPageChangeListener(TabLayoutOnPageChangeListener(tabLayout))
+//        tabLayout.setupWithViewPager(viewPager)
+////        fragmentAdapter?.setupLayout(context, tab_review.getUnifyTabLayout())
+//
+////        tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+////            override fun onTabReselected(tab: TabLayout.Tab?) {
+////                fragmentAdapter?.handleSelectedTab(context, tab, true)
+////            }
+////
+////            override fun onTabUnselected(tab: TabLayout.Tab?) {
+////                fragmentAdapter?.handleSelectedTab(context, tab, false)
+////            }
+////
+////            override fun onTabSelected(tab: TabLayout.Tab?) {
+////                fragmentAdapter?.handleSelectedTab(context, tab, true)
+////            }
+////        })
     }
 }
