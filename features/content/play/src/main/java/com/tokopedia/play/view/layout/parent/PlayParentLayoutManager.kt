@@ -16,7 +16,7 @@ interface PlayParentLayoutManager : PlayLayoutManager {
 
     fun onVideoTopBoundsChanged(view: View, topBounds: Int)
 
-    fun onBottomInsetsShown(view: View, bottomMostBounds: Int)
+    fun onBottomInsetsShown(view: View, bottomMostBounds: Int, videoOrientation: VideoOrientation)
 
     fun onBottomInsetsHidden(view: View)
 }

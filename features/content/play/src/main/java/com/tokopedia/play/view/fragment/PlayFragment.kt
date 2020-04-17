@@ -253,7 +253,7 @@ class PlayFragment : BaseDaggerFragment(), SensorOrientationManager.OrientationL
     }
 
     fun onBottomInsetsViewShown(bottomMostBounds: Int) {
-        layoutManager.onBottomInsetsShown(requireView(), bottomMostBounds)
+        layoutManager.onBottomInsetsShown(requireView(), bottomMostBounds, playViewModel.videoOrientation)
     }
 
     fun onBottomInsetsViewHidden() {

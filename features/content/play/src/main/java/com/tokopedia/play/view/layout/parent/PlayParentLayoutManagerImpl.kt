@@ -8,14 +8,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ImageView
-import androidx.annotation.IdRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.view.WindowInsetsCompat
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.play.R
 import com.tokopedia.play.util.changeConstraint
-import com.tokopedia.play.view.fragment.PlayFragment
 import com.tokopedia.play.view.type.VideoOrientation
 import com.tokopedia.play_common.state.PlayVideoState
 import com.tokopedia.unifycomponents.dpToPx
@@ -36,9 +34,11 @@ class PlayParentLayoutManagerImpl(
         const val ANIMATION_DURATION = 300L
         private val MARGIN_CHAT_VIDEO = 16f.dpToPx()
         private const val FULL_SCALE_FACTOR = 1.0f
+        private const val NO_TRANSLATION = 0f
     }
 
-    private val offset12 = context.resources.getDimensionPixelOffset(R.dimen.dp_12)
+    private val offset8 = context.resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3)
+    private val offset12 = context.resources.getDimensionPixelOffset(R.dimen.play_offset_12)
     private val offset16 = context.resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4)
 
     private var hasHandledVideoLayout = false
@@ -48,7 +48,7 @@ class PlayParentLayoutManagerImpl(
     /**
      * Animation
      */
-    private val videoScaleAnimator = AnimatorSet()
+    private var videoScaleAnimator: Animator = AnimatorSet()
     private val onBottomInsetsShownAnimatorListener = object : Animator.AnimatorListener {
         override fun onAnimationRepeat(animation: Animator?) {
         }
@@ -98,30 +98,18 @@ class PlayParentLayoutManagerImpl(
     override fun layoutView(view: View) {
     }
 
-    override fun onBottomInsetsShown(view: View, bottomMostBounds: Int) {
+    override fun onBottomInsetsShown(view: View, bottomMostBounds: Int, videoOrientation: VideoOrientation) {
         flInteraction.layoutParams = flInteraction.layoutParams.apply {
             height = ViewGroup.LayoutParams.WRAP_CONTENT
         }
 
         videoScaleAnimator.cancel()
 
-        val currentHeight = flVideo.height
-        val destHeight = bottomMostBounds.toFloat() - (MARGIN_CHAT_VIDEO + offset12) //offset12 for the range between video and status bar
-        val scaleFactor = destHeight / currentHeight
-        val animatorY = ObjectAnimator.ofFloat(flVideo, View.SCALE_Y, FULL_SCALE_FACTOR, scaleFactor)
-        val animatorX = ObjectAnimator.ofFloat(flVideo ,View.SCALE_X, FULL_SCALE_FACTOR, scaleFactor)
-        animatorY.duration = ANIMATION_DURATION
-        animatorX.duration = ANIMATION_DURATION
+        videoScaleAnimator =
+                if (videoOrientation.isLandscape) animateInsetsShownIfVideoLandscape(bottomMostBounds)
+                else animateInsetsShownIfVideoPortrait(bottomMostBounds)
 
-        flVideo.pivotX = (flVideo.width / 2).toFloat()
-        val marginTop = (ivClose.layoutParams as ViewGroup.MarginLayoutParams).topMargin
-        val marginTopXt = marginTop * scaleFactor
-        flVideo.pivotY = ivClose.y + (ivClose.y * scaleFactor) + marginTopXt
-        videoScaleAnimator.apply {
-            removeAllListeners()
-            addListener(onBottomInsetsShownAnimatorListener)
-            playTogether(animatorX, animatorY)
-        }.start()
+        videoScaleAnimator.start()
     }
 
     override fun onBottomInsetsHidden(view: View) {
@@ -131,16 +119,9 @@ class PlayParentLayoutManagerImpl(
 
         videoScaleAnimator.cancel()
 
-        val animatorY = ObjectAnimator.ofFloat(flVideo, View.SCALE_Y, flVideo.scaleY, FULL_SCALE_FACTOR)
-        val animatorX = ObjectAnimator.ofFloat(flVideo ,View.SCALE_X, flVideo.scaleX, FULL_SCALE_FACTOR)
-        animatorY.duration = ANIMATION_DURATION
-        animatorX.duration = ANIMATION_DURATION
+        videoScaleAnimator = animateInsetsHidden()
 
-        videoScaleAnimator.apply {
-            removeAllListeners()
-            addListener(onBottomInsetsHiddenAnimatorListener)
-            playTogether(animatorX, animatorY)
-        }.start()
+        videoScaleAnimator.start()
     }
 
     override fun setupInsets(view: View, insets: WindowInsetsCompat) {
@@ -191,5 +172,86 @@ class PlayParentLayoutManagerImpl(
             layoutParams.topMargin = topBounds
             flVideo.layoutParams = layoutParams
         }
+    }
+
+    private fun animateInsetsShownIfVideoLandscape(bottomMostBounds: Int): Animator {
+        val animator = AnimatorSet()
+
+        val currentWidth = flVideo.width
+        val destWidth = 2 * (ivClose.x + ivClose.width + offset16)
+
+        val scaleFactorFromWidth = 1 - (destWidth / currentWidth)
+        val bottomBoundsFromScaleFactor = ivClose.y + scaleFactorFromWidth * flVideo.height
+
+        val bottomMostBoundsWithMargin = bottomMostBounds - MARGIN_CHAT_VIDEO
+
+        val scaleFactor = if (bottomBoundsFromScaleFactor > bottomMostBoundsWithMargin) {
+            bottomMostBoundsWithMargin / (ivClose.y + flVideo.height)
+        } else scaleFactorFromWidth
+
+        val animatorScaleY = ObjectAnimator.ofFloat(flVideo, View.SCALE_Y, FULL_SCALE_FACTOR, scaleFactor)
+        val animatorScaleX = ObjectAnimator.ofFloat(flVideo ,View.SCALE_X, FULL_SCALE_FACTOR, scaleFactor)
+
+        animatorScaleY.duration = ANIMATION_DURATION
+        animatorScaleX.duration = ANIMATION_DURATION
+
+        val currentY = flVideo.y
+        val destY = ivClose.y
+        val translateDelta = destY - currentY
+        val animatorTranslateY = ObjectAnimator.ofFloat(flVideo, View.TRANSLATION_Y, NO_TRANSLATION, translateDelta)
+
+        animatorTranslateY.duration = ANIMATION_DURATION
+
+        flVideo.pivotX = (flVideo.width / 2).toFloat()
+        flVideo.pivotY = ivClose.y - (ivClose.y * scaleFactor) - offset12
+        animator.apply {
+            removeAllListeners()
+            addListener(onBottomInsetsShownAnimatorListener)
+            playTogether(animatorScaleX, animatorScaleY, animatorTranslateY)
+        }
+
+        return animator
+    }
+
+    private fun animateInsetsShownIfVideoPortrait(bottomMostBounds: Int): Animator {
+        val animator = AnimatorSet()
+
+        val currentHeight = flVideo.height
+        val destHeight = bottomMostBounds.toFloat() - (MARGIN_CHAT_VIDEO + offset12) //offset12 for the range between video and status bar
+        val scaleFactor = destHeight / currentHeight
+        val animatorY = ObjectAnimator.ofFloat(flVideo, View.SCALE_Y, FULL_SCALE_FACTOR, scaleFactor)
+        val animatorX = ObjectAnimator.ofFloat(flVideo ,View.SCALE_X, FULL_SCALE_FACTOR, scaleFactor)
+        animatorY.duration = ANIMATION_DURATION
+        animatorX.duration = ANIMATION_DURATION
+
+        flVideo.pivotX = (flVideo.width / 2).toFloat()
+        val marginTop = (ivClose.layoutParams as ViewGroup.MarginLayoutParams).topMargin
+        val marginTopXt = marginTop * scaleFactor
+        flVideo.pivotY = ivClose.y + (ivClose.y * scaleFactor) + marginTopXt
+        animator.apply {
+            removeAllListeners()
+            addListener(onBottomInsetsShownAnimatorListener)
+            playTogether(animatorX, animatorY)
+        }
+
+        return animator
+    }
+
+    private fun animateInsetsHidden(): Animator {
+        val animator = AnimatorSet()
+
+        val animatorScaleY = ObjectAnimator.ofFloat(flVideo, View.SCALE_Y, flVideo.scaleY, FULL_SCALE_FACTOR)
+        val animatorScaleX = ObjectAnimator.ofFloat(flVideo ,View.SCALE_X, flVideo.scaleX, FULL_SCALE_FACTOR)
+        val animatorTranslateY = ObjectAnimator.ofFloat(flVideo ,View.TRANSLATION_Y, flVideo.translationY, NO_TRANSLATION)
+        animatorScaleY.duration = ANIMATION_DURATION
+        animatorScaleX.duration = ANIMATION_DURATION
+
+        animator.apply {
+            removeAllListeners()
+            addListener(onBottomInsetsHiddenAnimatorListener)
+            playTogether(animatorScaleX, animatorScaleY, animatorTranslateY)
+        }
+
+        return animator
     }
 }
