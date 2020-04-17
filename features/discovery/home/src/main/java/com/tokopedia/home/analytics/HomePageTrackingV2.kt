@@ -248,6 +248,7 @@ object HomePageTrackingV2 : BaseTracking() {
         fun getAddToCartOnDynamicListCarousel(channel: DynamicHomeChannel.Channels, grid: DynamicHomeChannel.Grid, position: Int, cartId: String, userId: String = "") = DataLayer.mapOf(
                 Event.KEY, Event.PRODUCT_ADD_TO_CART,
                 Category.KEY, Category.HOMEPAGE,
+                Label.KEY, channel.header.name,
                 Action.KEY,RECOMMENDATION_LIST_CLICK_ADD_TO_CART_EVENT_ACTION,
                 Label.CHANNEL_LABEL, channel.header.name,
                 Label.CAMPAIGN_CODE, channel.campaignCode,
