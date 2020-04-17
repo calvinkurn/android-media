@@ -18,6 +18,7 @@ class InvoiceTypeFactory : BaseAdapterTypeFactory() {
             ObtainedBenefitViewHolder.LAYOUT_ID -> return ObtainedBenefitViewHolder(parent!!)
             PaymentMethodViewHolder.LAYOUT_ID -> return PaymentMethodViewHolder(parent!!)
             PurchasedProductTagViewHolder.LAYOUT_ID -> return PurchasedProductTagViewHolder(parent!!)
+            ShopDividerViewHolder.LAYOUT_ID -> return ShopDividerViewHolder(parent!!)
         }
         return super.createViewHolder(parent, type)
     }
@@ -48,6 +49,10 @@ class InvoiceTypeFactory : BaseAdapterTypeFactory() {
 
     fun type(purchasedProductTag: PurchasedProductTag): Int {
         return PurchasedProductTagViewHolder.LAYOUT_ID
+    }
+
+    fun type(shopDivider: ShopDivider) : Int{
+        return ShopDividerViewHolder.LAYOUT_ID
     }
 
 }

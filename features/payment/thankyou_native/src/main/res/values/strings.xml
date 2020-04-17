@@ -9,8 +9,9 @@
     <string name="thank_payment_method">Metode Pembayaran</string>
     <string name="thank_see_transaction_list">Lihat Daftar Transaksi</string>
     <string name="thankyou_rp">Rp %s</string>
-    <string name="thankyou_discounted_rp">- Rp %s</string>
-    <string name="thank_payment_deadline">Batas akhir pembayaran</string>
+    <string name="thankyou_rp_without_space">Rp%s</string>
+    <string name="thankyou_discounted_rp">- Rp%s</string>
+    <string name="thank_payment_deadline">Batas Akhir Pembayaran</string>
     <string name="thank_copy">Salin</string>
     <string name="thank_total_amount_label">Total Pembayaran</string>
     <string name="thank_see_detail">Lihat Detail</string>
@@ -68,7 +69,7 @@
     <string name="thank_invoice_total_discount">Total Diskon Barang</string>
     <string name="thank_invoice_total_product_protect">Total Proteksi Produk</string>
     <string name="thank_invoice_total_shipping_price">Total Ongkos Kirim</string>
-    <string name="thank_invoice_total_shipping_discount">Total Potongan Ongkos Kirim</string>
+    <string name="thank_invoice_total_shipping_discount">Total Diskon Ongkos Kirim</string>
     <string name="thank_invoice_total_shipping_insurance">Total Asuransi Pengiriman</string>
     <string name="thank_invoice_total_donation">Donasi</string>
     <string name="thank_invoice_eGold">Pembulatan Emas</string>
@@ -77,7 +78,7 @@
     <string name="thank_invoice_item_discount">Diskon Barang</string>
     <string name="thank_invoice_item_protection">Proteksi Produk</string>
     <string name="thank_invoice_item_shipping_fee">Ongkos Kirim</string>
-    <string name="thank_invoice_item_shipping_discount">Potongan Ongkos Kirim</string>
+    <string name="thank_invoice_item_shipping_discount">Diskon Ongkos Kirim</string>
     <string name="thank_invoice_item_shipping_insurance">Asuransi Pengiriman</string>
     <string name="thank_invoice_item_shipping_address">Alamat Pengiriman</string>
     <string name="thank_invoice_item_count_price">%1$d X Rp%2$s</string>

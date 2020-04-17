@@ -1,14 +1,11 @@
 package com.tokopedia.thankyou_native.presentation.adapter.viewholder
 
-import android.view.LayoutInflater
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.thankyou_native.R
 import com.tokopedia.thankyou_native.presentation.adapter.model.PurchasedProductTag
 
 class PurchasedProductTagViewHolder(val view: View) : AbstractViewHolder<PurchasedProductTag>(view) {
-
-    private lateinit var inflater: LayoutInflater
 
     override fun bind(element: PurchasedProductTag?) {
     }

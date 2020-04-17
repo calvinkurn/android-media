@@ -73,7 +73,7 @@
                 app:layout_constraintEnd_toStartOf="@+id/ivPaymentGatewayImage"
                 app:layout_constraintStart_toStartOf="@+id/tvDeadlineTime"
                 app:layout_constraintTop_toBottomOf="@+id/view_divider_1"
-                app:typographyType="body_2"
+                app:typographyType="heading_5"
                 app:typographyWeight="bold"
                 tools:text="Name of Payment Gateway" />
 
@@ -254,7 +254,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/view_divider_4"
-                app:typographyType="heading_6" />
+                app:typographyType="body_3" />
 
 
             <com.tokopedia.unifyprinciples.Typography

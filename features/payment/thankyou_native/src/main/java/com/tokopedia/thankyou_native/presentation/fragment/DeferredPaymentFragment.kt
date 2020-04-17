@@ -45,7 +45,7 @@ class DeferredPaymentFragment : ThankYouBaseFragment(), ThankYouPageTimerView.Th
 
     var paymentType: PaymentType? = null
 
-    var dialogOrigin: DialogOrigin? = null
+    private var dialogOrigin: DialogOrigin? = null
 
     private lateinit var thanksPageData: ThanksPageData
 

@@ -7,6 +7,8 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.header.HeaderUnify
+import com.tokopedia.thankyou_native.R
 import com.tokopedia.thankyou_native.di.component.DaggerThankYouPageComponent
 import com.tokopedia.thankyou_native.di.component.ThankYouPageComponent
 import com.tokopedia.thankyou_native.domain.model.ThanksPageData
@@ -15,6 +17,7 @@ import com.tokopedia.thankyou_native.presentation.fragment.DeferredPaymentFragme
 import com.tokopedia.thankyou_native.presentation.fragment.InstantPaymentFragment
 import com.tokopedia.thankyou_native.presentation.fragment.LoaderFragment
 import com.tokopedia.thankyou_native.presentation.fragment.ProcessingPaymentFragment
+import kotlinx.android.synthetic.main.thank_activity_thank_you.*
 
 
 class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComponent>,
@@ -23,6 +26,13 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
         super.onCreate(savedInstanceState)
         updateTitle("")
     }
+
+    override fun getLayoutRes() = R.layout.thank_activity_thank_you
+
+    override fun getToolbarResourceID() = R.id.thank_header
+
+    override fun getParentViewResourceID(): Int = R.id.thank_parent_view
+
 
     override fun getNewFragment(): Fragment? {
         val bundle = Bundle()
@@ -47,6 +57,8 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
         }
     }
 
+    fun getHeader(): HeaderUnify = thank_header
+
     override fun getComponent(): ThankYouPageComponent = DaggerThankYouPageComponent.builder()
             .baseAppComponent((applicationContext as BaseMainApplication)
                     .baseAppComponent).build()
@@ -58,20 +70,24 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
         }
         return when (PaymentPageMapper.getPaymentPageType(thanksPageData.pageType)) {
             is ProcessingPaymentPage -> {
-                updateTitle(ProcessingPaymentFragment.SCREEN_NAME)
+                updateHeaderTitle(ProcessingPaymentFragment.SCREEN_NAME)
                 ProcessingPaymentFragment.getFragmentInstance(bundle, thanksPageData)
             }
             is InstantPaymentPage -> {
-                updateTitle(InstantPaymentFragment.SCREEN_NAME)
+                updateHeaderTitle(InstantPaymentFragment.SCREEN_NAME)
                 InstantPaymentFragment.getLoaderFragmentInstance(bundle, thanksPageData)
             }
             is WaitingPaymentPage -> {
-                updateTitle(DeferredPaymentFragment.SCREEN_NAME)
+                updateHeaderTitle(DeferredPaymentFragment.SCREEN_NAME)
                 DeferredPaymentFragment.getFragmentInstance(bundle, thanksPageData)
             }
             else -> null
         }
 
+    }
+
+    private fun updateHeaderTitle(screenName: String) {
+        thank_header.title = screenName
     }
 
     /**
@@ -101,8 +117,7 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
         const val ARG_PAYMENT_ID = "paymentID"
         const val ARG_MERCHANT = "merchant"
 
-        fun createIntent(context: Context, paymentID: String, merchant: String)
-                = Intent(context, ThankYouPageActivity::class.java).apply {
+        fun createIntent(context: Context, paymentID: String, merchant: String) = Intent(context, ThankYouPageActivity::class.java).apply {
             putExtra(ARG_MERCHANT, merchant)
             putExtra(ARG_PAYMENT_ID, paymentID)
         }

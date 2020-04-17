@@ -55,6 +55,7 @@ query ThanksPageData($paymentID : Int!, $merchant: String!){
             price
             price_str
             quantity
+            product_plan_protection
             weight
             weight_unit
             total_price

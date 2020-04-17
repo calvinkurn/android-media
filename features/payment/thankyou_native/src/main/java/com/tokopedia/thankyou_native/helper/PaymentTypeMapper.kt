@@ -17,7 +17,7 @@ object PaymentTypeMapper {
         return when (paymentTypeStr) {
             "BANKTRANSFER" -> BankTransfer
             "VA" -> VirtualAccount
-            "REATAIL" -> Retail
+            "RETAIL" -> Retail
             "COD" -> CashOnDelivery
             "SMSPAYMENT" -> SmsPayment
             "TOKOPEDIA" -> Tokopedia

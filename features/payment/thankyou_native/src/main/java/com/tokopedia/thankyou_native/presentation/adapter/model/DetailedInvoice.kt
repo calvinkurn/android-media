@@ -69,6 +69,13 @@ class PurchasedProductTag : Visitable<InvoiceTypeFactory> {
     }
 }
 
+class ShopDivider : Visitable<InvoiceTypeFactory>{
+    override fun type(typeFactory: InvoiceTypeFactory): Int {
+        return typeFactory.type(this)
+    }
+
+}
+
 data class ShopInvoice(
         val shopName: String,
         val orderedItem: List<OrderedItem>,

@@ -17,7 +17,7 @@ class BillDetailViewHolder(val view: View) : AbstractViewHolder<BillDetail>(view
 
             element.serviceFee?.let {
                 view.findViewById<TextView>(R.id.tvInvoiceServiceTaxValue)
-                        .text = getString(R.string.thankyou_rp, element.serviceFee)
+                        .text = getString(R.string.thankyou_rp_without_space, element.serviceFee)
                 view.findViewById<TextView>(R.id.tvInvoiceServiceTaxValue).visible()
                 view.findViewById<TextView>(R.id.tvInvoiceServiceTax).visible()
             } ?: run {

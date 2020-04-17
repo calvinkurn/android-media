@@ -28,47 +28,11 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
     private lateinit var howToPayBottomSheets: CloseableBottomSheetFragment
     private lateinit var dialogHelper: DialogHelper
 
-
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.thank_menu_detail, menu)
-        super.onCreateOptionsMenu(menu, inflater)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return if (item.itemId == R.id.menu_info) {
-            openInvoiceDetail(getThankPageData())
-            true
-        } else {
-            super.onOptionsItemSelected(item)
-        }
-    }
-
     abstract fun getThankPageData(): ThanksPageData
     abstract fun getRecommendationView(): PDPThankYouPageView?
 
     fun openHowTOPay(thanksPageData: ThanksPageData) {
-        if (!::howToPayBottomSheets.isInitialized)
-            howToPayBottomSheets = CloseableBottomSheetFragment
-                    .newInstance(HowToPayFragment.getInstance(thanksPageData.howToPay),
-                            true,
-                            getString(R.string.thank_payment_method_bottom_sheet),
-                            null,
-                            CloseableBottomSheetFragment.STATE_FULL)
-        activity?.let {
-            howToPayBottomSheets.showNow(it.supportFragmentManager, "")
-        }
-
-
-        /* val uriBuilder = Uri.Builder()
-                 .appendQueryParameter("transaction_id", thanksPageData.paymentID.toString())
-                 .appendQueryParameter("gateway_name", thanksPageData.gatewayName)
- //                .appendQueryParameter("gateway_code", thanksPageData.profileCode)
-                 .appendQueryParameter("total_amount", thanksPageData.amount.toString())
-                 .appendQueryParameter("payment_type", thanksPageData.paymentType)
-                 .appendQueryParameter("deadline", thanksPageData.expireTimeUnix.toString())
-                 .appendQueryParameter("gateway_logo", thanksPageData.gatewayImage)
-                 .appendQueryParameter("payment_code", thanksPageData.profileCode)
-         RouteManager.route(context!!, ApplinkConst.HOWTOPAY + uriBuilder.toString())*/
+        RouteManager.route(context, thanksPageData.howToPay)
     }
 
     fun showPaymentStatusDialog(dialogOrigin: DialogOrigin?, thanksPageData: ThanksPageData) {

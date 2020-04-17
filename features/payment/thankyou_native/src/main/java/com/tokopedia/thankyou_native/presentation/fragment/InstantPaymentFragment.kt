@@ -16,6 +16,7 @@ import com.tokopedia.thankyou_native.R
 import com.tokopedia.thankyou_native.di.component.ThankYouPageComponent
 import com.tokopedia.thankyou_native.domain.model.ThanksPageData
 import com.tokopedia.thankyou_native.helper.getMaskedNumberSubStringPayment
+import com.tokopedia.thankyou_native.presentation.activity.ThankYouPageActivity
 import com.tokopedia.thankyou_native.presentation.viewModel.CheckWhiteListViewModel
 import com.tokopedia.thankyou_native.recommendation.presentation.view.PDPThankYouPageView
 import com.tokopedia.usecase.coroutines.Fail
@@ -61,7 +62,7 @@ class InstantPaymentFragment : ThankYouBaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setHasOptionsMenu(true)
+        setActionMenu()
         pdp_recommendation_instant.fragment = this
         if (!::thanksPageData.isInitialized)
             activity?.finish()
@@ -70,6 +71,12 @@ class InstantPaymentFragment : ThankYouBaseFragment() {
             checkCreditCardRegisteredForRBA(it)
         }
         observeViewModel()
+    }
+
+    private fun setActionMenu() {
+        val headerUnify = (activity as ThankYouPageActivity).getHeader()
+        headerUnify.actionText = getString(R.string.thank_menu_detail)
+        headerUnify.actionTextView?.setOnClickListener { openInvoiceDetail(thanksPageData) }
     }
 
     override fun getThankPageData(): ThanksPageData {
@@ -111,7 +118,7 @@ class InstantPaymentFragment : ThankYouBaseFragment() {
             }
         } else
             tv_instant_payment_method_name.text = thanksPageData.gatewayName
-        tv_instant_payment_amount.text = getString(R.string.thankyou_rp, thanksPageData.amountStr)
+        tv_instant_payment_amount.text = getString(R.string.thankyou_rp_without_space, thanksPageData.amountStr)
         btn_instant_see_transaction_list.setOnClickListener { gotoOrderList() }
     }
 

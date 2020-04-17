@@ -74,8 +74,10 @@ class DetailInvoiceMapper(val thanksPageData: ThanksPageData) {
 
         visitableList.add(invoiceSummery)
 
-        val billDetail = BillDetail(thanksPageData.orderAmountStr, null, totalServiceFeeStr)
-        visitableList.add(billDetail)
+        totalServiceFeeStr?.let {
+            val billDetail = BillDetail(thanksPageData.orderAmountStr, null, totalServiceFeeStr)
+            visitableList.add(billDetail)
+        }
 
         thanksPageData.paymentDetails?.forEach { paymentDetail ->
             paymentModeMapList.add(PaymentModeMap(paymentDetail.gatewayName, paymentDetail.amountStr))
@@ -92,34 +94,46 @@ class DetailInvoiceMapper(val thanksPageData: ThanksPageData) {
     }
 
     private fun createShopsSummery(thanksPageData: ThanksPageData) {
+        if (thanksPageData.shopOrder.isNotEmpty())
+            visitableList.add(PurchasedProductTag())
+        var currentIndex = 0
         thanksPageData.shopOrder.forEach { shopOrder ->
+            if (currentIndex > 0)
+                visitableList.add(ShopDivider())
             val orderedItemList = arrayListOf<OrderedItem>()
+            var totalProductProtectionForShop = 0.0
             shopOrder.purchaseItemList.forEach { purchasedItem ->
                 orderedItemList.add(OrderedItem(purchasedItem.productName, purchasedItem.quantity,
                         purchasedItem.priceStr, purchasedItem.totalPriceStr))
+                totalProductProtectionForShop += purchasedItem.productPlanProtection
             }
 
             var logisticDiscountStr: String? = null
+            var discountFromMerchant: String? = null
 
             shopOrder.promoData?.forEach {
                 when (it.promoCode) {
                     PromoDataKey.LOGISTIC -> logisticDiscountStr = it.totalDiscountStr
+                    PromoDataKey.MERCHANT -> discountFromMerchant = it.totalDiscountStr
                 }
             }
 
-            visitableList.add(PurchasedProductTag())
             val shopInvoice = ShopInvoice(
                     shopOrder.storeName,
                     orderedItemList,
-                    null,//todo not available merchant
-                    if (shopOrder.insuranceAmount > 0F) shopOrder.insuranceAmountStr else null,
+                    discountFromMerchant,
+                    if (shopOrder.shippingAmount > 0.0)
+                        CurrencyFormatUtil.convertPriceValue(totalProductProtectionForShop,
+                                false)
+                    else null,
                     if (shopOrder.shippingAmount > 0F) shopOrder.shippingAmountStr else null,
                     shopOrder.logisticType,
                     logisticDiscountStr,
-                    null,//todo no available
+                    if (shopOrder.insuranceAmount > 0F) shopOrder.insuranceAmountStr else null,
                     shopOrder.address)
 
             visitableList.add(shopInvoice)
+            currentIndex++
         }
     }
 
@@ -127,6 +141,7 @@ class DetailInvoiceMapper(val thanksPageData: ThanksPageData) {
 
 object PromoDataKey {
     const val LOGISTIC = "logistic"
+    const val MERCHANT = "merchant"
 }
 
 object PaymentItemKey {

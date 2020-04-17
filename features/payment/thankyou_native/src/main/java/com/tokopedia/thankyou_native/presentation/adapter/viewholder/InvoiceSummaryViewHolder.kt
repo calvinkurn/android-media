@@ -40,7 +40,7 @@ class InvoiceSummaryViewHolder(val view: View) : AbstractViewHolder<InvoiceSumme
         element?.let {
             tvInvoiceSummaryTotalPrice.text = getString(R.string.thank_invoice_total_price, element.totalItemCount)
 
-            tvInvoiceSummaryTotalPriceValue.text = getString(R.string.thankyou_rp, element.totalPriceStr)
+            tvInvoiceSummaryTotalPriceValue.text = getString(R.string.thankyou_rp_without_space, element.totalPriceStr)
 
             element.totalItemDiscountStr?.let {
                 tvInvoiceSummaryTotalDiscountValue.text = getString(R.string.thankyou_discounted_rp, element.totalItemDiscountStr)
@@ -62,7 +62,7 @@ class InvoiceSummaryViewHolder(val view: View) : AbstractViewHolder<InvoiceSumme
             }
 
             element.totalProductProtectionStr?.let {
-                tvInvoiceSummaryTotalProductProtectionValue.text = getString(R.string.thankyou_rp, element.totalProductProtectionStr)
+                tvInvoiceSummaryTotalProductProtectionValue.text = getString(R.string.thankyou_rp_without_space, element.totalProductProtectionStr)
                 tvInvoiceSummaryTotalProductProtectionValue.visible()
                 tvInvoiceSummaryTotalProductProtection.visible()
             } ?: run {
@@ -71,7 +71,7 @@ class InvoiceSummaryViewHolder(val view: View) : AbstractViewHolder<InvoiceSumme
             }
 
             element.totalShippingChargeStr?.let {
-                tvInvoiceSummaryTotalShippingCostValue.text = getString(R.string.thankyou_rp, element.totalShippingChargeStr)
+                tvInvoiceSummaryTotalShippingCostValue.text = getString(R.string.thankyou_rp_without_space, element.totalShippingChargeStr)
                 tvInvoiceSummaryTotalShippingCostValue.visible()
                 tvInvoiceSummaryTotalShippingCost.visible()
             } ?: run {
@@ -88,7 +88,7 @@ class InvoiceSummaryViewHolder(val view: View) : AbstractViewHolder<InvoiceSumme
             }
 
             element.totalShippingInsuranceStr?.let {
-                tvInvoiceSummaryTotalShippingInsuranceValue.text = getString(R.string.thankyou_rp, element.totalShippingInsuranceStr)
+                tvInvoiceSummaryTotalShippingInsuranceValue.text = getString(R.string.thankyou_rp_without_space, element.totalShippingInsuranceStr)
                 tvInvoiceSummaryTotalShippingInsuranceValue.visible()
                 tvInvoiceSummaryTotalShippingInsurance.visible()
             } ?: run {
@@ -98,7 +98,7 @@ class InvoiceSummaryViewHolder(val view: View) : AbstractViewHolder<InvoiceSumme
 
 
             element.donationAmountStr?.let {
-                tvInvoiceSummaryTotalDonationValue.text = getString(R.string.thankyou_rp, element.donationAmountStr)
+                tvInvoiceSummaryTotalDonationValue.text = getString(R.string.thankyou_rp_without_space, element.donationAmountStr)
                 tvInvoiceSummaryTotalDonationValue.visible()
                 tvInvoiceSummaryTotalDonation.visible()
             } ?: run {
@@ -106,7 +106,7 @@ class InvoiceSummaryViewHolder(val view: View) : AbstractViewHolder<InvoiceSumme
                 tvInvoiceSummaryTotalDonation.gone()
             }
             element.eGoldPriceStr?.let {
-                tvInvoiceSummaryTotalEGoldValue.text = getString(R.string.thankyou_rp, element.eGoldPriceStr)
+                tvInvoiceSummaryTotalEGoldValue.text = getString(R.string.thankyou_rp_without_space, element.eGoldPriceStr)
                 tvInvoiceSummaryTotalEGoldValue.visible()
                 tvInvoiceSummaryTotalEGold.visible()
             } ?: run {

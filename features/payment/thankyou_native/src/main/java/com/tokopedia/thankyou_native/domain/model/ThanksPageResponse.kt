@@ -359,7 +359,9 @@ data class PurchaseItem(
         @SerializedName("variant")
         val variant: String,
         @SerializedName("thumbnail_product")
-        val thumbnailProduct: String
+        val thumbnailProduct: String,
+        @SerializedName("product_plan_protection")
+        val productPlanProtection: Double
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
             parcel.readString() ?: "",
@@ -375,7 +377,8 @@ data class PurchaseItem(
             parcel.readString() ?: "",
             parcel.readString() ?: "",
             parcel.readString() ?: "",
-            parcel.readString() ?: "")
+            parcel.readString() ?: "",
+            parcel.readDouble())
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(productId)
@@ -392,6 +395,7 @@ data class PurchaseItem(
         parcel.writeString(category)
         parcel.writeString(variant)
         parcel.writeString(thumbnailProduct)
+        parcel.writeDouble(productPlanProtection)
     }
 
     override fun describeContents(): Int {

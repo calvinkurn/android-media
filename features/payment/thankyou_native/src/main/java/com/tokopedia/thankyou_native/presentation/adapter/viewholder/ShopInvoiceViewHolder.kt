@@ -78,8 +78,12 @@ class ShopInvoiceViewHolder(val view: View) : AbstractViewHolder<ShopInvoice>(vi
 
 
             element.shippingTypeStr?.let {
-                tvInvoiceShopItemCourier.text = element.shippingTypeStr
-                tvInvoiceShopItemCourier.visible()
+                if(it.isNotEmpty()) {
+                    tvInvoiceShopItemCourier.text = element.shippingTypeStr
+                    tvInvoiceShopItemCourier.visible()
+                }else{
+                    tvInvoiceShopItemCourier.gone()
+                }
             } ?: run {
                 tvInvoiceShopItemCourier.gone()
             }
@@ -126,7 +130,7 @@ class ShopInvoiceViewHolder(val view: View) : AbstractViewHolder<ShopInvoice>(vi
             inflater = LayoutInflater.from(context)
         val shopItemView = inflater.inflate(R.layout.thank_widget_shop_item, null, false)
         shopItemView.findViewById<TextView>(R.id.tvInvoiceShopItemName).text = orderedItem.itemName
-        shopItemView.findViewById<TextView>(R.id.tvInvoiceShopItemNameTotalPrice).text = getString(R.string.thankyou_rp, orderedItem.itemTotalPriceStr)
+        shopItemView.findViewById<TextView>(R.id.tvInvoiceShopItemNameTotalPrice).text = getString(R.string.thankyou_rp_without_space, orderedItem.itemTotalPriceStr)
 
         shopItemView.findViewById<TextView>(R.id.tvInvoiceShopItemNameCountPrice)
                 .text = itemView.context.getString(R.string.thank_invoice_item_count_price, orderedItem.itemCount, orderedItem.itemTotalPriceStr!!)
