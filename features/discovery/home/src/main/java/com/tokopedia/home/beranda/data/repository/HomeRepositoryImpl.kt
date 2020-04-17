@@ -38,11 +38,11 @@ class HomeRepositoryImpl @Inject constructor(
             }
         }
         val homeData = response.getSuccessData<HomeData>()
-        if (homeData.dynamicHomeChannel.channels.isEmpty()) {
+//        if (homeData.dynamicHomeChannel.channels.isEmpty()) {
             homeCachedDataSource.saveToDatabase(homeDefaultDataSource.getDefaultHomeData())
-        } else {
-            homeCachedDataSource.saveToDatabase(homeData)
-        }
+//        } else {
+//            homeCachedDataSource.saveToDatabase(homeData)
+//        }
         emit(Result.success(null))
     }
 

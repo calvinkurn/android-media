@@ -818,40 +818,40 @@ open class HomeViewModel @Inject constructor(
 
     private suspend fun updateChannel(channel: Channel<UpdateLiveDataModel>){
         for(data in channel){
-//            if(data.action == ACTION_UPDATE_HOME_DATA){
-//                data.homeData?.let { homeData ->
-//                    var homeDataModel = evaluateGeolocationComponent(homeData)
-//                    homeDataModel = evaluateAvailableComponent(homeDataModel)
-//                    withContext(homeDispatcher.ui()) {
-//                        _homeLiveData.value = homeDataModel
-//                    }
-//                }
-//            } else {
-//                val newList = _homeLiveData.value?.list?.toMutableList()
-//                data.visitable?.let { homeVisitable ->
-//                    if(newList != null && newList.size >  data.position) {
-//                        when (data.action) {
-//                            ACTION_ADD -> {
-//                                if(data.position == -1 || data.position > newList.size) newList.add(homeVisitable)
-//                                else newList.add(data.position, homeVisitable)
-//                            }
-//                            ACTION_UPDATE -> {
-//                                if (data.position != -1 && newList.isNotEmpty() && newList.size > data.position && newList[data.position]::class.java == homeVisitable::class.java) {
-//                                    newList[data.position] = homeVisitable
-//                                } else {
-//                                    newList.withIndex().find { it::class.java == homeVisitable::class.java }?.let {
-//                                        newList[it.index] = homeVisitable
-//                                    }
-//                                }
-//                            }
-//                            ACTION_DELETE -> newList.remove(homeVisitable)
-//                        }
-//                        withContext(homeDispatcher.ui()) {
-//                            _homeLiveData.value = _homeLiveData.value?.copy(list = newList)
-//                        }
-//                    }
-//                }
-            _homeLiveData.value = HomeDataModel()
+            if(data.action == ACTION_UPDATE_HOME_DATA){
+                data.homeData?.let { homeData ->
+                    var homeDataModel = evaluateGeolocationComponent(homeData)
+                    homeDataModel = evaluateAvailableComponent(homeDataModel)
+                    withContext(homeDispatcher.ui()) {
+                        _homeLiveData.value = homeDataModel
+                    }
+                }
+            } else {
+                val newList = _homeLiveData.value?.list?.toMutableList()
+                data.visitable?.let { homeVisitable ->
+                    if(newList != null && newList.size >  data.position) {
+                        when (data.action) {
+                            ACTION_ADD -> {
+                                if(data.position == -1 || data.position > newList.size) newList.add(homeVisitable)
+                                else newList.add(data.position, homeVisitable)
+                            }
+                            ACTION_UPDATE -> {
+                                if (data.position != -1 && newList.isNotEmpty() && newList.size > data.position && newList[data.position]::class.java == homeVisitable::class.java) {
+                                    newList[data.position] = homeVisitable
+                                } else {
+                                    newList.withIndex().find { it::class.java == homeVisitable::class.java }?.let {
+                                        newList[it.index] = homeVisitable
+                                    }
+                                }
+                            }
+                            ACTION_DELETE -> newList.remove(homeVisitable)
+                        }
+                        withContext(homeDispatcher.ui()) {
+                            _homeLiveData.value = _homeLiveData.value?.copy(list = newList)
+                        }
+                    }
+                }
+            }
         }
     }
 
