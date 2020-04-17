@@ -1,8 +1,5 @@
 package com.tokopedia.play.view.fragment
 
-import android.animation.Animator
-import android.animation.AnimatorSet
-import android.animation.ObjectAnimator
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
@@ -13,8 +10,6 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.FrameLayout
 import android.widget.ImageView
 import androidx.annotation.Nullable
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.view.ViewCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -26,7 +21,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.invisible
-import com.tokopedia.kotlin.extensions.view.setMargin
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.ERR_STATE_SOCKET
 import com.tokopedia.play.ERR_STATE_VIDEO
@@ -39,19 +34,17 @@ import com.tokopedia.play.data.websocket.PlaySocketInfo
 import com.tokopedia.play.di.DaggerPlayComponent
 import com.tokopedia.play.di.PlayModule
 import com.tokopedia.play.extensions.isAnyBottomSheetsShown
-import com.tokopedia.play.util.SensorOrientationManager
+import com.tokopedia.play.extensions.isKeyboardShown
 import com.tokopedia.play.util.PlayFullScreenHelper
-import com.tokopedia.play.util.changeConstraint
+import com.tokopedia.play.util.SensorOrientationManager
 import com.tokopedia.play.util.keyboard.KeyboardWatcher
 import com.tokopedia.play.view.contract.PlayNewChannelInteractor
 import com.tokopedia.play.view.layout.parent.PlayParentLayoutManager
 import com.tokopedia.play.view.layout.parent.PlayParentLayoutManagerImpl
 import com.tokopedia.play.view.type.ScreenOrientation
-import com.tokopedia.play.view.type.VideoOrientation
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play_common.state.PlayVideoState
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.unifycomponents.dpToPx
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_play.*
@@ -82,9 +75,6 @@ class PlayFragment : BaseDaggerFragment(), SensorOrientationManager.OrientationL
     }
 
     private var channelId = ""
-
-    private val offset12: Int
-        get() = resources.getDimensionPixelOffset(R.dimen.dp_12)
 
     private var topBounds: Int? = null
 
@@ -270,8 +260,8 @@ class PlayFragment : BaseDaggerFragment(), SensorOrientationManager.OrientationL
     fun setVideoTopBounds(topBounds: Int) {
         if (this.topBounds == null && topBounds > 0) {
             this.topBounds = topBounds
-            layoutManager.onVideoTopBoundsChanged(requireView(), topBounds)
         }
+        this.topBounds?.let { layoutManager.onVideoTopBoundsChanged(requireView(), it) }
     }
 
     /**
@@ -305,12 +295,15 @@ class PlayFragment : BaseDaggerFragment(), SensorOrientationManager.OrientationL
 
         layoutManager = PlayParentLayoutManagerImpl(
                 context = requireContext(),
+                screenOrientation = playViewModel.screenOrientation,
                 ivClose = ivClose,
                 flVideo = flVideo,
                 flInteraction = flInteraction,
                 flBottomSheet = flBottomSheet,
                 flGlobalError = flGlobalError
         )
+
+        topBounds?.let { setVideoTopBounds(it) }
     }
 
     private fun setupView(view: View) {
@@ -318,7 +311,9 @@ class PlayFragment : BaseDaggerFragment(), SensorOrientationManager.OrientationL
             hideKeyboard()
         }
         flVideo.setOnClickListener {
-            hideAllInsets()
+            //TODO("Figure out a better way")
+            if (playViewModel.bottomInsets.isKeyboardShown) hideKeyboard()
+            else hideAllInsets()
         }
 
         hideAllInsets()

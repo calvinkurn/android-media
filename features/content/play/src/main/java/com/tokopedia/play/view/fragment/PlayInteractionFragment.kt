@@ -331,6 +331,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
             layoutManager.onVideoOrientationChanged(clPlayInteraction, it.orientation)
             triggerImmersive(false)
             if (it.orientation.isLandscape) setupVideoLandscape(playViewModel.screenOrientation)
+            else setupVideoPortrait()
 
             setVideoStream(it)
         })
@@ -1080,6 +1081,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
 
     private fun setupVideoLandscape(screenOrientation: ScreenOrientation) {
         if (screenOrientation.isLandscape) {
+            playFragment.setVideoTopBounds(0)
             return
         }
 
@@ -1098,5 +1100,9 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
         val statusBarHeight = view?.let { getStatusBarHeight(it.context) }.orZero()
 
         playFragment.setVideoTopBounds(toolbarViewTotalHeight + statsInfoTotalHeight + statusBarHeight)
+    }
+
+    private fun setupVideoPortrait() {
+        playFragment.setVideoTopBounds(0)
     }
 }

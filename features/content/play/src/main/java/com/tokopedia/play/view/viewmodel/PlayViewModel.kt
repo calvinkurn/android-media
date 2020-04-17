@@ -83,8 +83,6 @@ class PlayViewModel @Inject constructor(
         get() = _observableProductSheetContent
     val observableBadgeCart: LiveData<CartUiModel>
         get() = _observableBadgeCart
-    val observableScreenOrientation: LiveData<ScreenOrientation>
-        get() = _observableScreenOrientation
 
     val screenOrientation: ScreenOrientation
         get() {
@@ -127,6 +125,11 @@ class PlayViewModel @Inject constructor(
             } else {
                 0
             }
+        }
+    val bottomInsets: Map<BottomInsetsType, BottomInsetsState>
+        get() {
+            val value = _observableBottomInsetsState.value
+            return value ?: getDefaultBottomInsetsMapState()
         }
     val partnerId: Long?
         get() = _observablePartnerInfo.value?.id
@@ -232,6 +235,8 @@ class PlayViewModel @Inject constructor(
         }
 
         _observableBottomInsetsState.value = getLatestBottomInsetsMapState()
+
+        mock()
     }
 
     //region lifecycle
@@ -658,5 +663,24 @@ class PlayViewModel @Inject constructor(
         private const val MAX_RETRY_CHANNEL_INFO = 3
 
         private const val MS_PER_SECOND = 1000
+    }
+
+    private fun mock() {
+        launch {
+            delay(5000)
+            _observablePinnedProduct.value = PinnedProductUiModel(
+                    partnerName = "aaa",
+                    title = "bbb",
+                    isPromo = true
+            )
+
+            _observableProductSheetContent.value = PlayResult.Success(
+                    ProductSheetUiModel(
+                            title = "ahaha",
+                            voucherList = List(5) { VoucherPlaceholderUiModel },
+                            productList = List(5) { ProductPlaceholderUiModel }
+                    )
+            )
+        }
     }
 }

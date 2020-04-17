@@ -14,6 +14,7 @@ import androidx.core.view.WindowInsetsCompat
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.play.R
 import com.tokopedia.play.util.changeConstraint
+import com.tokopedia.play.view.type.ScreenOrientation
 import com.tokopedia.play.view.type.VideoOrientation
 import com.tokopedia.play_common.state.PlayVideoState
 import com.tokopedia.unifycomponents.dpToPx
@@ -23,6 +24,7 @@ import com.tokopedia.unifycomponents.dpToPx
  */
 class PlayParentLayoutManagerImpl(
         context: Context,
+        private val screenOrientation: ScreenOrientation,
         private val ivClose: ImageView,
         private val flVideo: FrameLayout,
         private val flInteraction: FrameLayout,
@@ -37,7 +39,6 @@ class PlayParentLayoutManagerImpl(
         private const val NO_TRANSLATION = 0f
     }
 
-    private val offset8 = context.resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3)
     private val offset12 = context.resources.getDimensionPixelOffset(R.dimen.play_offset_12)
     private val offset16 = context.resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4)
 
@@ -92,12 +93,15 @@ class PlayParentLayoutManagerImpl(
     }
 
     override fun onVideoTopBoundsChanged(view: View, topBounds: Int) {
-        this.topBounds = topBounds + offset16
+        this.topBounds =
+                if (!screenOrientation.isLandscape) topBounds + offset16
+                else 0
     }
 
     override fun layoutView(view: View) {
     }
 
+    //TODO("Figure out a better way")
     override fun onBottomInsetsShown(view: View, bottomMostBounds: Int, videoOrientation: VideoOrientation) {
         flInteraction.layoutParams = flInteraction.layoutParams.apply {
             height = ViewGroup.LayoutParams.WRAP_CONTENT
@@ -112,6 +116,7 @@ class PlayParentLayoutManagerImpl(
         videoScaleAnimator.start()
     }
 
+    //TODO("Figure out a better way")
     override fun onBottomInsetsHidden(view: View) {
         flInteraction.layoutParams = flInteraction.layoutParams.apply {
             height = ViewGroup.LayoutParams.MATCH_PARENT
@@ -174,6 +179,9 @@ class PlayParentLayoutManagerImpl(
         }
     }
 
+    /**
+     * Animation
+     */
     private fun animateInsetsShownIfVideoLandscape(bottomMostBounds: Int): Animator {
         val animator = AnimatorSet()
 
