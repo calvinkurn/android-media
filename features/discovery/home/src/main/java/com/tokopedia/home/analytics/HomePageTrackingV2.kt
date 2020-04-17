@@ -154,10 +154,12 @@ object HomePageTrackingV2 : BaseTracking() {
     }
 
     object RecommendationList{
-        private const val RECOMMENDATION_LIST_CAROUSEL_PRODUCT = "dynamic channel list"
-        private const val RECOMMENDATION_LIST_IMPRESSION_EVENT_ACTION = "impression on dynamic channel list"
-        private const val RECOMMENDATION_LIST_CLICK_EVENT_ACTION = "click on dynamic channel list"
-        private const val RECOMMENDATION_LIST_SEE_ALL_EVENT_ACTION = "click view all on dynamic channel list"
+        private const val RECOMMENDATION_LIST_CAROUSEL_PRODUCT = "dynamic channel list carousel"
+        private const val RECOMMENDATION_LIST_IMPRESSION_EVENT_ACTION = "impression on dynamic channel list carousel"
+        private const val RECOMMENDATION_LIST_CLICK_EVENT_ACTION = "click on dynamic channel list carousel"
+        private const val RECOMMENDATION_LIST_CLICK_ADD_TO_CART_EVENT_ACTION = "click add to cart on dynamic channel list carousel"
+        private const val RECOMMENDATION_LIST_SEE_ALL_EVENT_ACTION = "click view all on dynamic channel list carousel"
+        private const val RECOMMENDATION_LIST_CLOSE_EVENT_ACTION = "click on close dynamic channel list carousel"
 
         fun getRecommendationListImpression(channel: DynamicHomeChannel.Channels, isToIris: Boolean = false, userId: String) = getBasicProductChannelView(
                 event = if(isToIris) Event.PRODUCT_VIEW_IRIS else Event.PRODUCT_VIEW,
@@ -232,6 +234,50 @@ object HomePageTrackingV2 : BaseTracking() {
         fun sendRecommendationListSeeAllClick(channel: DynamicHomeChannel.Channels) {
             getTracker().sendGeneralEvent(getRecommendationListSeeAllClick(channel))
         }
+
+        fun getCloseClickOnDynamicListCarousel(channel: DynamicHomeChannel.Channels, userId: String = "") = DataLayer.mapOf(
+                Event.KEY, Event.CLICK_HOMEPAGE,
+                Category.KEY, Category.HOMEPAGE,
+                Action.KEY, RECOMMENDATION_LIST_CLOSE_EVENT_ACTION,
+                Label.KEY, channel.header.name,
+                Screen.KEY, Screen.DEFAULT,
+                UserId.KEY, userId,
+                CurrentSite.KEY, CurrentSite.DEFAULT
+        )
+
+        fun getAddToCartOnDynamicListCarousel(channel: DynamicHomeChannel.Channels, grid: DynamicHomeChannel.Grid, position: Int, cartId: String, userId: String = "") = DataLayer.mapOf(
+                Event.KEY, Event.PRODUCT_ADD_TO_CART,
+                Category.KEY, Category.HOMEPAGE,
+                Action.KEY,RECOMMENDATION_LIST_CLICK_ADD_TO_CART_EVENT_ACTION,
+                Label.CHANNEL_LABEL, channel.header.name,
+                Label.CAMPAIGN_CODE, channel.campaignCode,
+                Screen.KEY, Screen.DEFAULT,
+                CurrentSite.KEY, CurrentSite.DEFAULT,
+                UserId.KEY, userId,
+                Ecommerce.KEY, Ecommerce.getEcommerceProductAddToCart(
+                    products = listOf(
+                            Product(
+                                    name = grid.name,
+                                    id = grid.id,
+                                    productPrice = convertRupiahToInt(grid.price).toString(),
+                                    brand = Value.NONE_OTHER,
+                                    category = Value.NONE_OTHER,
+                                    variant = Value.NONE_OTHER,
+                                    productPosition = (position + 1).toString(),
+                                    channelId = channel.id,
+                                    isFreeOngkir = grid.freeOngkir.isActive,
+                                    persoType = channel.persoType,
+                                    categoryId = channel.categoryID,
+                                    isTopAds = grid.isTopads,
+                                    cartId = cartId
+                            )
+                    ),
+                    list = String.format(
+                            Value.LIST_WITH_HEADER, "1", RECOMMENDATION_LIST_CAROUSEL_PRODUCT, channel.header.name
+                    )
+                )
+
+        )
     }
 
     object MixLeft {

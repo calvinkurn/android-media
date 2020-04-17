@@ -22,6 +22,7 @@ abstract class BaseTracking {
         const val PRODUCT_CLICK = "productClick"
         const val PROMO_VIEW_IRIS = "promoViewIris"
         const val CLICK_HOMEPAGE = "clickHomepage"
+        const val PRODUCT_ADD_TO_CART = "addToCart"
     }
 
     protected object Category{
@@ -47,6 +48,21 @@ abstract class BaseTracking {
         const val CAMPAIGN_CODE = "campaignCode"
         const val NONE = ""
         const val FORMAT_2_ITEMS = "%s - %s"
+    }
+
+    protected object Screen{
+        const val KEY = "screenName"
+        const val DEFAULT = "/"
+    }
+
+    protected object UserId{
+        const val KEY = "userId"
+        const val DEFAULT = ""
+    }
+
+    protected object CurrentSite{
+        const val KEY = "currentSite"
+        const val DEFAULT = "tokopediamarketplace"
     }
 
     protected object ChannelId{
