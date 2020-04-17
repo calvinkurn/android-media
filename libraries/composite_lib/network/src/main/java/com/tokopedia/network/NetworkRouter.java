@@ -33,5 +33,5 @@ public interface NetworkRouter {
 
     void sendAnalyticsAnomalyResponse(String title,
                                       String accessToken, String refreshToken,
-                                      String userId, String response, String request);
+                                      String response, String request);
 }

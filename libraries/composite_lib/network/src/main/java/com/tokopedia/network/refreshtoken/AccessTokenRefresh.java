@@ -107,7 +107,7 @@ public class AccessTokenRefresh {
             try {
                 networkRouter.sendAnalyticsAnomalyResponse("failed_refresh_token",
                         userSession.getAccessToken(), EncoderDecoder.Decrypt(userSession.getFreshToken(), userSession.getRefreshTokenIV()),
-                        userSession.getUserId(), response, TkpdAuthInterceptor.requestToString(finalRequest));
+                        response, TkpdAuthInterceptor.requestToString(finalRequest));
             } catch (Exception e) {
                 e.printStackTrace();
             }

@@ -757,9 +757,10 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public void sendAnalyticsAnomalyResponse(String title,
                                              String accessToken, String refreshToken,
-                                             String userId, String response, String request) {
-        Timber.w("AnomalyResponse = title:" + title + " | accessToken:" + accessToken + " | refreshToken:" + refreshToken + " | userId:"
-                + userId + " | response:" + response + " | request:" + request);
+                                             String response, String request) {
+        Timber.w("P2#USER_ANOMALY_REPONSE#AnomalyResponse;title=" + title +
+                ";accessToken=" + accessToken + ";refreshToken=" + refreshToken +
+                ";response=" + response + ";request=" + request);
     }
 
     @Override
