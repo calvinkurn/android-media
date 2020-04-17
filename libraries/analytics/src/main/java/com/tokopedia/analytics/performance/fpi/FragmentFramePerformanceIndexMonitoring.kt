@@ -58,7 +58,7 @@ class FragmentFramePerformanceIndexMonitoring : LifecycleObserver {
             )
             cacheFpiDatabaseModel?.let {
                 if (it.fragmentHashCode != fragment?.hashCode().toString()) {
-                    sendPerformanceMonitoringData(pageName)
+                    sendPerformanceMonitoringData(it.fpiPerformanceData, pageName)
                     cacheManager?.delete(pageName)
                 } else {
                     mainPerformanceData = it.fpiPerformanceData
@@ -77,13 +77,13 @@ class FragmentFramePerformanceIndexMonitoring : LifecycleObserver {
         }
     }
 
-    private fun sendPerformanceMonitoringData(pageName: String) {
+    private fun sendPerformanceMonitoringData(performanceData: FpiPerformanceData, pageName: String) {
         val performanceMonitoring = PerformanceMonitoring()
         performanceMonitoring.startTrace(String.format(METRICS_PERFORMANCE_MONITORING, pageName))
-        performanceMonitoring.putMetric(METRICS_ALL_FRAMES, mainPerformanceData.allFrames.toLong())
-        performanceMonitoring.putMetric(METRICS_JANKY_FRAMES, mainPerformanceData.jankyFrames.toLong())
-        performanceMonitoring.putMetric(METRICS_JANKY_FRAMES_PERCENTAGE, mainPerformanceData.jankyFramePercentage.toLong())
-        performanceMonitoring.putMetric(METRICS_FRAME_PERFORMANCE_INDEX, mainPerformanceData.framePerformanceIndex.toLong())
+        performanceMonitoring.putMetric(METRICS_ALL_FRAMES, performanceData.allFrames.toLong())
+        performanceMonitoring.putMetric(METRICS_JANKY_FRAMES, performanceData.jankyFrames.toLong())
+        performanceMonitoring.putMetric(METRICS_JANKY_FRAMES_PERCENTAGE, performanceData.jankyFramePercentage.toLong())
+        performanceMonitoring.putMetric(METRICS_FRAME_PERFORMANCE_INDEX, performanceData.framePerformanceIndex.toLong())
         performanceMonitoring.stopTrace()
     }
 
