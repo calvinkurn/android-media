@@ -63,7 +63,7 @@
                 android:paddingRight="5dp"
                 android:text="@string/label_pay_cod"
                 android:textColor="@color/price_label"
-                android:visibility="gone"
+                android:visibility="visible"
                 tools:visibility="visible"
                 app:typographyType="heading_6"
                 app:typographyWeight="bold"/>
