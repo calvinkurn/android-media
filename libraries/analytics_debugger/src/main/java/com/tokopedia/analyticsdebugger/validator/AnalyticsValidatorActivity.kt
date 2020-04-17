@@ -12,14 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.analyticsdebugger.R
-import com.tokopedia.analyticsdebugger.database.GtmLogDB
 import timber.log.Timber
-
-private val validatorResultAdapter: ValidatorResultAdapter
-    get() {
-        val itemAdapter = ValidatorResultAdapter()
-        return itemAdapter
-    }
 
 class AnalyticsValidatorActivity : AppCompatActivity() {
 

@@ -45,12 +45,13 @@ class ValidatorViewModel constructor(val context: Application) : AndroidViewMode
                 .subscribe(
                         object : Subscriber<List<Validator>>() {
                             override fun onNext(t: List<Validator>?) {
+                                val endTime = System.currentTimeMillis()
+                                Timber.i("Elapsed time %d", endTime - startTime)
                                 _testCases.value = t
                             }
 
                             override fun onCompleted() {
-                                val endTime = System.currentTimeMillis()
-                                Timber.i("Elapsed time %d", endTime - startTime)
+
                             }
 
                             override fun onError(e: Throwable?) {
