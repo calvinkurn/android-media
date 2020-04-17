@@ -1,10 +1,11 @@
 package com.tokopedia.product.addedit.draft.mapper
 
-import com.tokopedia.product.addedit.description.presentation.model.VideoLinkModel
+import com.tokopedia.product.addedit.description.presentation.model.*
 import com.tokopedia.product.addedit.detail.presentation.model.PictureInputModel
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.manage.common.draft.data.model.ProductDraft
 import com.tokopedia.product.manage.common.draft.data.model.description.VideoLinkListModel
+import java.util.ArrayList
 
 object AddEditProductMapper {
 
@@ -41,145 +42,159 @@ object AddEditProductMapper {
                 )
             }
 
-    private fun mapProductInputModelToDraftVariant(productDraft: ProductDraft, productInputModel: ProductInputModel): ProductDraft {
+    private fun mapDraftToProductInputModelVariant(productDraft: ProductDraft, productInputModel: ProductInputModel) {
+
         productDraft.variantInputModel.productSizeChart?.apply {
-            id = productInputModel.variantInputModel.productSizeChart?.id ?: 0
-            x = productInputModel.variantInputModel.productSizeChart?.x ?: 0L
-            y = productInputModel.variantInputModel.productSizeChart?.y ?: 0L
-            fileName = productInputModel.variantInputModel.productSizeChart?.fileName ?: ""
-            filePath = productInputModel.variantInputModel.productSizeChart?.filePath ?: ""
-            fromIg = productInputModel.variantInputModel.productSizeChart?.fromIg ?: 0
-            status = productInputModel.variantInputModel.productSizeChart?.status ?: 0
-            urlOriginal = productInputModel.variantInputModel.productSizeChart?.urlOriginal ?: ""
-            urlThumbnail = productInputModel.variantInputModel.productSizeChart?.urlThumbnail ?: ""
+            productInputModel.variantInputModel.productSizeChart?.id = id
+            productInputModel.variantInputModel.productSizeChart?.x = x
+            productInputModel.variantInputModel.productSizeChart?.y = y
+            productInputModel.variantInputModel.productSizeChart?.fileName = fileName
+            productInputModel.variantInputModel.productSizeChart?.filePath = filePath
+            productInputModel.variantInputModel.productSizeChart?.fromIg = fromIg
+            productInputModel.variantInputModel.productSizeChart?.status = status
+            productInputModel.variantInputModel.productSizeChart?.urlOriginal = urlOriginal
+            productInputModel.variantInputModel.productSizeChart?.urlThumbnail = urlThumbnail
         }
 
-        productDraft.variantInputModel.productVariant.map { productVariantDraft ->
-            productInputModel.variantInputModel.productVariant.map { productVariantInputModel ->
-                productVariantDraft.apply {
-                    level1String = productVariantInputModel.level1String
-                    level2String = productVariantInputModel.level2String
-                    opt = productVariantInputModel.opt
-                    priceVar = productVariantInputModel.priceVar
-                    sku = productVariantInputModel.sku
-                    st = productVariantInputModel.st
-                    stock = productVariantInputModel.stock
-                }
+        val listProductVariantCombinationViewModelInputModel = ArrayList<ProductVariantCombinationViewModel>()
+        val productVariantCombinationViewModelInputModel = ProductVariantCombinationViewModel()
+        productDraft.variantInputModel.productVariant.forEach { productVariantDraft ->
+            productVariantCombinationViewModelInputModel.apply {
+                level1String = productVariantDraft.level1String
+                level2String = productVariantDraft.level2String
+                opt = productVariantDraft.opt
+                priceVar = productVariantDraft.priceVar
+                sku = productVariantDraft.sku
+                st = productVariantDraft.st
+                stock = productVariantDraft.stock
             }
+            listProductVariantCombinationViewModelInputModel.add(productVariantCombinationViewModelInputModel)
         }
+        productInputModel.variantInputModel.productVariant = listProductVariantCombinationViewModelInputModel
 
-        productDraft.variantInputModel.variantOptionParent.map { variantOptionDraft ->
-            productInputModel.variantInputModel.variantOptionParent.map { variantOptionInputModel ->
-                variantOptionDraft.apply {
-                    name = variantOptionInputModel.name
-                    position = variantOptionInputModel.position
-                    identifier = variantOptionInputModel.identifier
-                    productVariantOptionChild?.map { optionChildDraft ->
-                        variantOptionInputModel.productVariantOptionChild?.map { optionChildInputModel ->
-                            optionChildDraft.apply {
-                                hex = optionChildInputModel.hex
-                                pvo = optionChildInputModel.pvo
-                                tId = optionChildInputModel.tId
-                                value = optionChildInputModel.value
-                                vuv = optionChildInputModel.vuv
-                                productPictureViewModelList?.map { pictureDraft ->
-                                    optionChildInputModel.productPictureViewModelList?.map { pictureInputModel ->
-                                        pictureDraft.apply {
-                                            id = pictureInputModel.id
-                                            x = pictureInputModel.x
-                                            y = pictureInputModel.y
-                                            urlThumbnail = pictureInputModel.urlThumbnail
-                                            urlOriginal = pictureInputModel.urlOriginal
-                                            status = pictureInputModel.status
-                                            fromIg = pictureInputModel.fromIg
-                                            filePath = pictureInputModel.filePath
-                                            fileName = pictureInputModel.fileName
-                                        }
-                                    }
-                                }
-                            }
+        val listProductVariantOptionParentInputModel = ArrayList<ProductVariantOptionParent>()
+        val productVariantOptionParentInputModel = ProductVariantOptionParent()
+        val listProductVariantOptionChildInputModel = ArrayList<ProductVariantOptionChild>()
+        val productVariantOptionChildInputModel = ProductVariantOptionChild()
+        val listPictureViewModelInputModel = ArrayList<PictureViewModel>()
+        val pictureViewModelInputModel = PictureViewModel()
+
+        productDraft.variantInputModel.variantOptionParent.forEach { variantOptionDraft ->
+            productVariantOptionParentInputModel.name = variantOptionDraft.name
+            productVariantOptionParentInputModel.position = variantOptionDraft.position
+            productVariantOptionParentInputModel.identifier = variantOptionDraft.identifier
+            variantOptionDraft.productVariantOptionChild?.forEach { optionChildDraft ->
+                optionChildDraft.apply {
+                    productVariantOptionChildInputModel.hex = hex
+                    productVariantOptionChildInputModel.pvo = pvo
+                    productVariantOptionChildInputModel.tId = tId
+                    productVariantOptionChildInputModel.value = value
+                    productVariantOptionChildInputModel.vuv = vuv
+                    optionChildDraft.productPictureViewModelList?.forEach { pictureDraft ->
+                        pictureDraft.apply {
+                            pictureViewModelInputModel.id = id
+                            pictureViewModelInputModel.x = x
+                            pictureViewModelInputModel.y = y
+                            pictureViewModelInputModel.urlThumbnail = urlThumbnail
+                            pictureViewModelInputModel.urlOriginal = urlOriginal
+                            pictureViewModelInputModel.status = status
+                            pictureViewModelInputModel.fromIg = fromIg
+                            pictureViewModelInputModel.filePath = filePath
+                            pictureViewModelInputModel.fileName = fileName
                         }
+                        listPictureViewModelInputModel.add(pictureViewModelInputModel)
                     }
-                    unitName = variantOptionInputModel.unitName
-                    v = variantOptionInputModel.v
-                    vu = variantOptionInputModel.vu
+                    productVariantOptionChildInputModel.productPictureViewModelList = listPictureViewModelInputModel
                 }
+                listProductVariantOptionChildInputModel.add(productVariantOptionChildInputModel)
             }
+            productVariantOptionParentInputModel.productVariantOptionChild = listProductVariantOptionChildInputModel
+            productVariantOptionParentInputModel.unitName = variantOptionDraft.unitName
+            productVariantOptionParentInputModel.v = variantOptionDraft.v
+            productVariantOptionParentInputModel.vu = variantOptionDraft.vu
+            listProductVariantOptionParentInputModel.add(productVariantOptionParentInputModel)
         }
-        return productDraft
+        productInputModel.variantInputModel.variantOptionParent = listProductVariantOptionParentInputModel
     }
 
-    private fun mapDraftToProductInputModelVariant(productDraft: ProductDraft, productInputModel: ProductInputModel): ProductInputModel {
+    private fun mapProductInputModelToDraftVariant(productDraft: ProductDraft, productInputModel: ProductInputModel) {
         productInputModel.variantInputModel.productSizeChart?.apply {
-            id = productDraft.variantInputModel.productSizeChart?.id ?: 0
-            x = productDraft.variantInputModel.productSizeChart?.x ?: 0L
-            y = productDraft.variantInputModel.productSizeChart?.y ?: 0L
-            fileName = productDraft.variantInputModel.productSizeChart?.fileName ?: ""
-            filePath = productDraft.variantInputModel.productSizeChart?.filePath ?: ""
-            fromIg = productDraft.variantInputModel.productSizeChart?.fromIg ?: 0
-            status = productDraft.variantInputModel.productSizeChart?.status ?: 0
-            urlOriginal = productDraft.variantInputModel.productSizeChart?.urlOriginal ?: ""
-            urlThumbnail = productDraft.variantInputModel.productSizeChart?.urlThumbnail ?: ""
+            productDraft.variantInputModel.productSizeChart?.id = id
+            productDraft.variantInputModel.productSizeChart?.x = x
+            productDraft.variantInputModel.productSizeChart?.y = y
+            productDraft.variantInputModel.productSizeChart?.fileName = fileName
+            productDraft.variantInputModel.productSizeChart?.filePath = filePath
+            productDraft.variantInputModel.productSizeChart?.fromIg = fromIg
+            productDraft.variantInputModel.productSizeChart?.status = status
+            productDraft.variantInputModel.productSizeChart?.urlOriginal = urlOriginal
+            productDraft.variantInputModel.productSizeChart?.urlThumbnail = urlThumbnail
         }
 
-        productDraft.variantInputModel.productVariant.map { productVariantDraft ->
-            productInputModel.variantInputModel.productVariant.map { productVariantInputModel ->
-                productVariantInputModel.apply {
-                    level1String = productVariantDraft.level1String
-                    level2String = productVariantDraft.level2String
-                    opt = productVariantDraft.opt
-                    priceVar = productVariantDraft.priceVar
-                    sku = productVariantDraft.sku
-                    st = productVariantDraft.st
-                    stock = productVariantDraft.stock
-                }
+        val listProductVariantCombinationViewModelDraft = ArrayList<com.tokopedia.product.manage.common.draft.data.model.description.ProductVariantCombinationViewModel>()
+        val productVariantCombinationViewModelDraft = com.tokopedia.product.manage.common.draft.data.model.description.ProductVariantCombinationViewModel()
+        productInputModel.variantInputModel.productVariant.forEach { productVariantInputModel ->
+            productVariantCombinationViewModelDraft.apply {
+                level1String = productVariantInputModel.level1String
+                level2String = productVariantInputModel.level2String
+                opt = productVariantInputModel.opt
+                priceVar = productVariantInputModel.priceVar
+                sku = productVariantInputModel.sku
+                st = productVariantInputModel.st
+                stock = productVariantInputModel.stock
             }
+            listProductVariantCombinationViewModelDraft.add(productVariantCombinationViewModelDraft)
         }
+        productDraft.variantInputModel.productVariant = listProductVariantCombinationViewModelDraft
 
-        productInputModel.variantInputModel.variantOptionParent.map { variantOptionInputModel ->
-            productDraft.variantInputModel.variantOptionParent.map { variantOptionDraft ->
-                variantOptionInputModel.apply {
-                    name = variantOptionDraft.name
-                    position = variantOptionDraft.position
-                    identifier = variantOptionDraft.identifier
-                    productVariantOptionChild?.map { optionChildInputModel ->
-                        variantOptionDraft.productVariantOptionChild?.map { optionChildDraft ->
-                            optionChildInputModel.apply {
-                                hex = optionChildDraft.hex
-                                pvo = optionChildDraft.pvo
-                                tId = optionChildDraft.tId
-                                value = optionChildDraft.value
-                                vuv = optionChildDraft.vuv
-                                productPictureViewModelList?.map { pictureInputModel ->
-                                    optionChildInputModel.productPictureViewModelList?.map { pictureDraft ->
-                                        pictureInputModel.apply {
-                                            id = pictureDraft.id
-                                            x = pictureDraft.x
-                                            y = pictureDraft.y
-                                            urlThumbnail = pictureDraft.urlThumbnail
-                                            urlOriginal = pictureDraft.urlOriginal
-                                            status = pictureDraft.status
-                                            fromIg = pictureDraft.fromIg
-                                            filePath = pictureDraft.filePath
-                                            fileName = pictureDraft.fileName
-                                        }
-                                    }
-                                }
-                            }
+        val listProductVariantOptionParentDraft = ArrayList<com.tokopedia.product.manage.common.draft.data.model.description.ProductVariantOptionParent>()
+        val productVariantOptionParentDraft = com.tokopedia.product.manage.common.draft.data.model.description.ProductVariantOptionParent()
+        val listProductVariantOptionChildDraft = ArrayList<com.tokopedia.product.manage.common.draft.data.model.description.ProductVariantOptionChild>()
+        val productVariantOptionChildDraft = com.tokopedia.product.manage.common.draft.data.model.description.ProductVariantOptionChild()
+        val listPictureViewModelDraft = ArrayList<com.tokopedia.product.manage.common.draft.data.model.description.PictureViewModel>()
+        val pictureViewModelDraft = com.tokopedia.product.manage.common.draft.data.model.description.PictureViewModel()
+
+        productDraft.variantInputModel.variantOptionParent.forEach { variantOptionDraft ->
+            productVariantOptionParentDraft.name = variantOptionDraft.name
+            productVariantOptionParentDraft.position = variantOptionDraft.position
+            productVariantOptionParentDraft.identifier = variantOptionDraft.identifier
+            variantOptionDraft.productVariantOptionChild?.forEach { optionChildDraft ->
+                optionChildDraft.apply {
+                    productVariantOptionChildDraft.hex = hex
+                    productVariantOptionChildDraft.pvo = pvo
+                    productVariantOptionChildDraft.tId = tId
+                    productVariantOptionChildDraft.value = value
+                    productVariantOptionChildDraft.vuv = vuv
+                    optionChildDraft.productPictureViewModelList?.forEach { pictureDraft ->
+                        pictureDraft.apply {
+                            pictureViewModelDraft.id = id
+                            pictureViewModelDraft.x = x
+                            pictureViewModelDraft.y = y
+                            pictureViewModelDraft.urlThumbnail = urlThumbnail
+                            pictureViewModelDraft.urlOriginal = urlOriginal
+                            pictureViewModelDraft.status = status
+                            pictureViewModelDraft.fromIg = fromIg
+                            pictureViewModelDraft.filePath = filePath
+                            pictureViewModelDraft.fileName = fileName
                         }
+                        listPictureViewModelDraft.add(pictureViewModelDraft)
                     }
-                    unitName = variantOptionDraft.unitName
-                    v = variantOptionDraft.v
-                    vu = variantOptionDraft.vu
+                    productVariantOptionChildDraft.productPictureViewModelList = listPictureViewModelDraft
                 }
+                listProductVariantOptionChildDraft.add(productVariantOptionChildDraft)
             }
+            productVariantOptionParentDraft.productVariantOptionChild = listProductVariantOptionChildDraft
+            productVariantOptionParentDraft.unitName = variantOptionDraft.unitName
+            productVariantOptionParentDraft.v = variantOptionDraft.v
+            productVariantOptionParentDraft.vu = variantOptionDraft.vu
+            listProductVariantOptionParentDraft.add(productVariantOptionParentDraft)
         }
-        return productInputModel
+        productDraft.variantInputModel.variantOptionParent = listProductVariantOptionParentDraft
     }
+
 
     fun mapProductInputModelDetailToDraft(productInputModel: ProductInputModel): ProductDraft {
-        var productDraft = ProductDraft()
-        productDraft = mapProductInputModelToDraftVariant(productDraft, productInputModel)
+        val productDraft = ProductDraft()
+        mapProductInputModelToDraftVariant(productDraft, productInputModel)
         productDraft.productId = productInputModel.productId
         productDraft.detailInputModel.productName = productInputModel.detailInputModel.productName
         productDraft.detailInputModel.categoryId = productInputModel.detailInputModel.categoryId
@@ -222,10 +237,9 @@ object AddEditProductMapper {
     }
 
     fun mapDraftToProductInputModel(productDraft: ProductDraft): ProductInputModel {
-        var productInputModel = ProductInputModel().apply {
-            productId = productDraft.productId
-        }
-        productInputModel = mapDraftToProductInputModelVariant(productDraft, productInputModel)
+        val productInputModel = ProductInputModel()
+        mapDraftToProductInputModelVariant(productDraft, productInputModel)
+        productInputModel.productId = productDraft.productId
         productInputModel.detailInputModel.apply {
             productName = productDraft.detailInputModel.productName
             categoryId = productDraft.detailInputModel.categoryId
