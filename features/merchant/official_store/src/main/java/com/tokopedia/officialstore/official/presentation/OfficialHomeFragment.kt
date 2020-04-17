@@ -19,6 +19,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.analytics.performance.PerformanceMonitoring
+import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
@@ -29,7 +30,7 @@ import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.navigation_common.listener.JankyFramesMonitoringListener
-import com.tokopedia.navigation_common.listener.HomePerformanceMonitoringListener
+import com.tokopedia.navigation_common.listener.OfficialStorePerformanceMonitoringListener
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.officialstore.FirebasePerformanceMonitoringConstant
 import com.tokopedia.officialstore.OfficialStoreInstance
@@ -82,7 +83,7 @@ class OfficialHomeFragment :
     }
 
     private var jankyFramesMonitoringListener: JankyFramesMonitoringListener? = null
-    private var homePerformanceMonitoringListener: HomePerformanceMonitoringListener? = null
+    private var officialStorePerformanceMonitoringListener: OfficialStorePerformanceMonitoringListener? = null
     private val sentDynamicChannelTrackers = mutableSetOf<String>()
 
     @Inject
@@ -128,7 +129,7 @@ class OfficialHomeFragment :
             category = it.getParcelable(BUNDLE_CATEGORY)
         }
         context?.let { tracking = OfficialStoreTracking(it) }
-        homePerformanceMonitoringListener = context?.let { castContextToHomePerformanceMonitoring(it) }
+        officialStorePerformanceMonitoringListener = context?.let { castContextToOfficialStorePerformanceMonitoring(it) }
     }
 
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
@@ -157,9 +158,9 @@ class OfficialHomeFragment :
     private fun setPerformanceListenerForRecyclerView(){
         recyclerView?.viewTreeObserver?.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener{
             override fun onGlobalLayout() {
-                if(homePerformanceMonitoringListener != null){
-                    homePerformanceMonitoringListener!!.stopOfficialStorePerformanceMonitoring()
-                    homePerformanceMonitoringListener = null
+                if(officialStorePerformanceMonitoringListener != null){
+                    officialStorePerformanceMonitoringListener!!.stopOfficialStorePerformanceMonitoring()
+                    officialStorePerformanceMonitoringListener = null
                     recyclerView?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
                 }
             }
@@ -173,6 +174,10 @@ class OfficialHomeFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        if (getOfficialStorePageLoadTimeCallback() != null) {
+            getOfficialStorePageLoadTimeCallback()!!.stopPreparePagePerformanceMonitoring()
+            getOfficialStorePageLoadTimeCallback()!!.startNetworkRequestPerformanceMonitoring()
+        }
         observeBannerData()
         observeBenefit()
         observeFeaturedShop()
@@ -702,6 +707,10 @@ class OfficialHomeFragment :
     }
 
     private fun removeLoading() {
+        if (getOfficialStorePageLoadTimeCallback() != null) {
+            getOfficialStorePageLoadTimeCallback()?.stopNetworkRequestPerformanceMonitoring()
+            getOfficialStorePageLoadTimeCallback()?.startRenderPerformanceMonitoring()
+        }
         recyclerView?.post {
             adapter?.getVisitables()?.removeAll {
                 it is LoadingModel
@@ -751,9 +760,15 @@ class OfficialHomeFragment :
         dynamicChannelPerformanceMonitoring = PerformanceMonitoring.start(dynamicChannelConstant)
     }
 
-    private fun castContextToHomePerformanceMonitoring(context: Context): HomePerformanceMonitoringListener? {
-        return if (context is HomePerformanceMonitoringListener) {
+    private fun castContextToOfficialStorePerformanceMonitoring(context: Context): OfficialStorePerformanceMonitoringListener? {
+        return if (context is OfficialStorePerformanceMonitoringListener) {
             context
+        } else null
+    }
+
+    private fun getOfficialStorePageLoadTimeCallback(): PageLoadTimePerformanceInterface? {
+        return if (officialStorePerformanceMonitoringListener != null && officialStorePerformanceMonitoringListener!!.getOfficialStorePageLoadTimePerformanceInterface() != null) {
+            officialStorePerformanceMonitoringListener!!.getOfficialStorePageLoadTimePerformanceInterface()
         } else null
     }
 }

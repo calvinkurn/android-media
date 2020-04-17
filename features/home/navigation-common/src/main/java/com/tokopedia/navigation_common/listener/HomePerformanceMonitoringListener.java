@@ -9,6 +9,4 @@ public interface HomePerformanceMonitoringListener {
     void startHomePerformanceMonitoring();
     void stopHomePerformanceMonitoring(boolean isCache);
     PageLoadTimePerformanceInterface getPageLoadTimePerformanceInterface();
-    void stopOfficialStorePerformanceMonitoring();
-    void startOfficialStorePerformanceMonitoring();
 }

@@ -17,7 +17,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.navigation_common.listener.AllNotificationListener
-import com.tokopedia.navigation_common.listener.HomePerformanceMonitoringListener
+import com.tokopedia.navigation_common.listener.OfficialStorePerformanceMonitoringListener
 import com.tokopedia.officialstore.ApplinkConstant
 import com.tokopedia.officialstore.FirebasePerformanceMonitoringConstant
 import com.tokopedia.officialstore.OfficialStoreInstance
@@ -65,14 +65,14 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
 
     private lateinit var tracking: OfficialStoreTracking
     private lateinit var categoryPerformanceMonitoring: PerformanceMonitoring
-    private var homePerformanceMonitoringListener: HomePerformanceMonitoringListener? = null
+    private var officialStorePerformanceMonitoringListener: OfficialStorePerformanceMonitoringListener? = null
 
     private val tabAdapter: OfficialHomeContainerAdapter by lazy {
         OfficialHomeContainerAdapter(context, childFragmentManager)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        homePerformanceMonitoringListener = context?.let { castContextToHomePerformanceMonitoring(it) }
+        officialStorePerformanceMonitoringListener = context?.let { castContextToHomePerformanceMonitoring(it) }
         startOfficialStorePerformanceMonitoring()
         super.onCreate(savedInstanceState)
         categoryPerformanceMonitoring = PerformanceMonitoring.start(FirebasePerformanceMonitoringConstant.CATEGORY)
@@ -242,14 +242,14 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
         onNotificationChanged(badgeNumberNotification, badgeNumberInbox) // notify badge after toolbar created
     }
 
-    private fun castContextToHomePerformanceMonitoring(context: Context): HomePerformanceMonitoringListener? {
-        return if (context is HomePerformanceMonitoringListener) {
+    private fun castContextToHomePerformanceMonitoring(context: Context): OfficialStorePerformanceMonitoringListener? {
+        return if (context is OfficialStorePerformanceMonitoringListener) {
             context
         } else null
     }
 
     private fun startOfficialStorePerformanceMonitoring(){
-        homePerformanceMonitoringListener?.startOfficialStorePerformanceMonitoring()
-        homePerformanceMonitoringListener = null
+        officialStorePerformanceMonitoringListener?.startOfficialStorePerformanceMonitoring()
+        officialStorePerformanceMonitoringListener = null
     }
 }
