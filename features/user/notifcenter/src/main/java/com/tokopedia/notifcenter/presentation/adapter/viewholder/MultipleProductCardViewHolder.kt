@@ -58,14 +58,12 @@ class MultipleProductCardViewHolder(
             is SourceMultipleProductView.NotificationCenter -> {
                 listener.getAnalytic().trackMultiProductListImpression(
                         userId = element.userInfo.userId,
-                        productNumber = adapterPosition,
                         notification = element
                 )
             }
             is SourceMultipleProductView.BottomSheetDetail -> {
                 listener.getAnalytic().trackMultiProductListImpression(
                         userId = element.userInfo.userId,
-                        productNumber = adapterPosition,
                         location = LABEL_BOTTOM_SHEET_LOCATION,
                         notification = element
                 )
@@ -87,15 +85,13 @@ class MultipleProductCardViewHolder(
             when(sourceView) {
                 is SourceMultipleProductView.NotificationCenter -> {
                     listener.getAnalytic().trackMultiProductCheckoutCardClick(
-                            notification = element,
-                            productNumber = adapterPosition
+                            notification = element
                     )
                 }
                 is SourceMultipleProductView.BottomSheetDetail -> {
                     listener.getAnalytic().trackMultiProductCheckoutCardClick(
                             eventLocation = LABEL_BOTTOM_SHEET_LOCATION,
-                            notification = element,
-                            productNumber = adapterPosition
+                            notification = element
                     )
                 }
             }
@@ -110,15 +106,13 @@ class MultipleProductCardViewHolder(
             when(sourceView) {
                 is SourceMultipleProductView.NotificationCenter -> {
                     listener.getAnalytic().trackAtcOnMultiProductClick(
-                            notification = element,
-                            productNumber = adapterPosition
+                            notification = element
                     )
                 }
                 is SourceMultipleProductView.BottomSheetDetail -> {
                     listener.getAnalytic().trackAtcOnMultiProductClick(
                             eventLocation = LABEL_BOTTOM_SHEET_LOCATION,
-                            notification = element,
-                            productNumber = adapterPosition
+                            notification = element
                     )
                 }
             }

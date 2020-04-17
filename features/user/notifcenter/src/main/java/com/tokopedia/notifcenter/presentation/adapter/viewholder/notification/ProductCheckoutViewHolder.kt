@@ -65,7 +65,6 @@ class ProductCheckoutViewHolder(
             lstProduct.show()
             listener.getAnalytic().trackMultiProductListImpression(
                     userId = element.userInfo.userId,
-                    productNumber = adapterPosition,
                     location = LABEL_BOTTOM_SHEET_LOCATION,
                     notification = element
             )
@@ -101,8 +100,7 @@ class ProductCheckoutViewHolder(
             )
         } else if (element.totalProduct > SINGLE_PRODUCT) {
             listener.getAnalytic().trackMultiProductCheckoutCardClick(
-                    notification = element,
-                    productNumber = adapterPosition
+                    notification = element
             )
         }
     }

@@ -68,13 +68,11 @@ class NotificationUpdateAnalytics @Inject constructor(): NotificationAnalytics()
     // multi product
     fun trackMultiProductListImpression(
             userId: String,
-            productNumber: Int,
             location: String = LABEL_LOCATION,
             notification: BaseNotificationItemViewBean
     ) {
         val eventLabel = getImpressionTrackLabel(
                 notificationId = notification.notificationId,
-                productNumber = productNumber + 1,
                 location = location
         )
         trackProductListImpression(
@@ -232,12 +230,10 @@ class NotificationUpdateAnalytics @Inject constructor(): NotificationAnalytics()
 
     fun trackMultiProductCheckoutCardClick(
             eventLocation: String = "notif_list",
-            productNumber: Int,
             notification: NotificationItemViewBean
     ) {
         val eventLabel = getImpressionTrackLabel(
                 notificationId = notification.notificationId,
-                productNumber = productNumber + 1,
                 location = eventLocation
         )
         trackProductCheckoutCardClick(
@@ -249,12 +245,10 @@ class NotificationUpdateAnalytics @Inject constructor(): NotificationAnalytics()
 
     fun trackMultiProductCheckoutCardClick(
             eventLocation: String = "notif_list",
-            productNumber: Int,
             notification: MultipleProductCardViewBean
     ) {
         val eventLabel = getImpressionTrackLabel(
                 notificationId = notification.notificationId,
-                productNumber = productNumber + 1,
                 location = eventLocation
         )
         trackProductCheckoutCardClick(
@@ -434,12 +428,10 @@ class NotificationUpdateAnalytics @Inject constructor(): NotificationAnalytics()
 
     fun trackAtcOnMultiProductClick(
             eventLocation: String = "notif_list",
-            productNumber: Int,
             notification: MultipleProductCardViewBean
     ) {
         val eventLabel = getImpressionTrackLabel(
                 notificationId = notification.notificationId,
-                productNumber = productNumber + 1,
                 location = eventLocation
         )
         trackAtcOnProductClick(
