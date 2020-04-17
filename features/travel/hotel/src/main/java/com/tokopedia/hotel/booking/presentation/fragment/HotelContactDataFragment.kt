@@ -103,7 +103,6 @@ class HotelContactDataFragment : BaseDaggerFragment(), TravelContactArrayAdapter
             (til_contact_name.getAutoCompleteTextView() as AutoCompleteTextView).setAdapter(travelContactArrayAdapter)
 
             (til_contact_name.getAutoCompleteTextView() as AutoCompleteTextView).setOnItemClickListener { parent, view, position, id -> autofillView(travelContactArrayAdapter.getItem(position)) }
-
         }
 
         til_contact_name.setEditableText(contactData.name)
