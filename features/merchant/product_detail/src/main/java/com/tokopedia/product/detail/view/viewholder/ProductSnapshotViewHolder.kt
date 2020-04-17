@@ -89,11 +89,6 @@ class ProductSnapshotViewHolder(private val view: View,
         }
     }
 
-    private fun renderStockWording(nearestWarehouseData: ProductSnapshotDataModel.NearestWarehouseDataModel, campaign: CampaignModular, variant: Boolean) {
-        if (nearestWarehouseData.nearestWarehouseId.isNotBlank())
-            header?.updateStockAndPriceWarehouse(nearestWarehouseData, campaign, variant)
-    }
-
     private fun renderCod(shouldShowCod: Boolean) = with(view){
         label_cod.showWithCondition(shouldShowCod)
         header?.renderCod(shouldShowCod)
