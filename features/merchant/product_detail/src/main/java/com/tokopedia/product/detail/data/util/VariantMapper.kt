@@ -28,8 +28,9 @@ object VariantMapper {
 
         return oldData.copy(
                 productId = newData?.productId.toString(),
-                stock = newData?.stock?.stock ?: 0,
+                stock = newData?.getVariantFinalStock() ?: 0,
                 price = newData?.price?.toInt() ?: 0,
+                stockWording = newData?.stock?.stockWordingHTML ?: "",
                 warehouseInfo = newWarehouseInfo
         )
     }
