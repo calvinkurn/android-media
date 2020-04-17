@@ -12,6 +12,7 @@ import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstan
 import com.tokopedia.product.addedit.common.util.AddEditProductNotificationManager
 import com.tokopedia.product.addedit.description.presentation.model.DescriptionInputModel
 import com.tokopedia.product.addedit.description.presentation.model.ProductVariantInputModel
+import com.tokopedia.product.addedit.description.presentation.model.ProductVariantOptionParent
 import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
 import com.tokopedia.product.addedit.draft.domain.usecase.DeleteProductDraftUseCase
 import com.tokopedia.product.addedit.draft.domain.usecase.SaveProductDraftUseCase
@@ -92,7 +93,9 @@ open class AddEditProductAddService : AddEditProductBaseService() {
                 saveProductDraftUseCase.executeOnBackground()
             }
             // (2)
-            uploadProductImages(filterPathOnly(detailInputModel.imageUrlOrPathList),
+            uploadProductImages(
+                    filterPathOnly(detailInputModel.imageUrlOrPathList),
+                    getVariantFilePath(variantInputModel.variantOptionParent),
                     variantInputModel.productSizeChart?.filePath ?: "")
         }
     }
@@ -102,9 +105,23 @@ open class AddEditProductAddService : AddEditProductBaseService() {
                 it.startsWith(AddEditProductConstants.HTTP_PREFIX)
             }
 
-    override fun onUploadProductImagesDone(uploadIdList: ArrayList<String>, sizeChartId: String) {
+    private fun getVariantFilePath(variantOptionParent: ArrayList<ProductVariantOptionParent>): List<String> {
+        val imageList: ArrayList<String> = ArrayList()
+        val optionParent = variantOptionParent.firstOrNull()
+        optionParent?.apply {
+            productVariantOptionChild?.forEach { optionChild ->
+                val picture = optionChild.productPictureViewModelList?.firstOrNull()
+                picture?.apply {
+                    imageList.add(filePath)
+                }
+            }
+        }
+        return imageList
+    }
+
+    override fun onUploadProductImagesDone(uploadIdList: ArrayList<String>, variantOptionUploadId: List<String>, sizeChartId: String) {
         // (3)
-        addProduct(uploadIdList, sizeChartId)
+        addProduct(uploadIdList, variantOptionUploadId, sizeChartId)
     }
 
     override fun getNotificationManager(urlImageCount: Int): AddEditProductNotificationManager {
@@ -127,10 +144,16 @@ open class AddEditProductAddService : AddEditProductBaseService() {
         }
     }
 
-    private fun addProduct(uploadIdList: ArrayList<String>, sizeChartId: String) {
+    private fun addProduct(uploadIdList: ArrayList<String>, variantOptionUploadId: List<String>, sizeChartId: String) {
         val shopId = userSession.shopId
-        val param = addProductInputMapper.mapInputToParam(shopId, uploadIdList,
-                sizeChartId, detailInputModel, descriptionInputModel, shipmentInputModel,
+        val param = addProductInputMapper.mapInputToParam(
+                shopId,
+                uploadIdList,
+                variantOptionUploadId,
+                sizeChartId,
+                detailInputModel,
+                descriptionInputModel,
+                shipmentInputModel,
                 variantInputModel)
         launchCatchError(block = {
             withContext(Dispatchers.IO) {

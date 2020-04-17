@@ -26,7 +26,7 @@ class GetProductMapper @Inject constructor() {
 
     private fun mapVariantInputModel(variant: Variant): ProductVariantInputModel =
             ProductVariantInputModel(
-                    mapProductVariantOption(variant.selections),
+                    mapProductVariantOption(variant.selections, variant.products),
                     mapProductVariant(variant.products),
                     mapSizeChart(variant.sizecharts).firstOrNull()
             )
@@ -62,7 +62,10 @@ class GetProductMapper @Inject constructor() {
     private fun mapProductVariantCombination(combination: List<Int>): List<Int> =
             combination.map { it + 1 }
 
-    private fun mapProductVariantOption(selections: List<Selection>): ArrayList<ProductVariantOptionParent> {
+    private fun mapProductVariantOption(
+            selections: List<Selection>,
+            products: List<ProductVariant>
+    ): ArrayList<ProductVariantOptionParent> {
         var position = 0
         val variantOptions = selections.map {
             position++
@@ -70,7 +73,7 @@ class GetProductMapper @Inject constructor() {
                     it.variantId.toIntOrZero(),
                     it.unitID.toIntOrZero(),
                     position,
-                    mapProductVariantOptionChild(it.options),
+                    mapProductVariantOptionChild(it.options, products),
                     it.variantName,
                     it.identifier,
                     it.unitName
@@ -79,7 +82,10 @@ class GetProductMapper @Inject constructor() {
         return ArrayList(variantOptions)
     }
 
-    private fun mapProductVariantOptionChild(options: List<Option>): List<ProductVariantOptionChild>?{
+    private fun mapProductVariantOptionChild(
+            options: List<Option>,
+            products: List<ProductVariant>
+    ): List<ProductVariantOptionChild>?{
         var pvo = 0
         return options.map {
             pvo += 1 // generate pvo id
@@ -87,9 +93,43 @@ class GetProductMapper @Inject constructor() {
                     hex = it.hexCode,
                     value = it.value,
                     vuv = it.unitValueID.toIntOrZero(),
-                    pvo = pvo
+                    pvo = pvo,
+                    productPictureViewModelList = mapProductVariantPicture(products, pvo - 1)
             )
         }
+    }
+
+    private fun mapProductVariantPicture(
+            productVariant: List<ProductVariant>,
+            index: Int
+    ): List<PictureViewModel> {
+        var variantPicture = listOf<PictureViewModel>()
+        productVariant.forEach { variant ->
+            val level1Combination = variant.combination.getOrNull(0)
+            level1Combination?.apply {
+                if (this == index) {
+                    variantPicture = transformProductVariantPicture(variant.pictures.getOrNull(0))
+                }
+            }
+        }
+        return variantPicture
+    }
+
+    private fun transformProductVariantPicture(picture: Picture?): List<PictureViewModel> {
+        var variantPicture = listOf<PictureViewModel>()
+        picture?.let {
+            val pictureViewModel = PictureViewModel(
+                    id = it.picID.toLongOrZero(),
+                    fileName = it.fileName,
+                    filePath = it.filePath,
+                    urlOriginal = it.urlOriginal,
+                    urlThumbnail = it.urlThumbnail,
+                    x = it.width.toLongOrZero(),
+                    y = it.height.toLongOrZero()
+            )
+            variantPicture = listOf(pictureViewModel)
+        }
+        return variantPicture
     }
 
     private fun mapDetailInputModel(product: Product): DetailInputModel =
