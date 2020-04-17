@@ -7,6 +7,8 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.kotlin.extensions.view.removeFirst
 import com.tokopedia.settingnotif.usersetting.domain.pojo.NotificationActivation
 import com.tokopedia.settingnotif.usersetting.domain.pojo.ParentSetting
+import com.tokopedia.settingnotif.usersetting.domain.pojo.SellerSection
+import com.tokopedia.settingnotif.usersetting.domain.pojo.SettingSections
 import com.tokopedia.settingnotif.usersetting.view.adapter.factory.SettingFieldTypeFactory
 import com.tokopedia.settingnotif.usersetting.view.adapter.viewholder.SettingViewHolder
 import com.tokopedia.settingnotif.usersetting.view.dataview.NotificationActivationDataView.activationPushNotif
@@ -102,7 +104,18 @@ class SettingFieldAdapter<T : Visitable<SettingFieldTypeFactory>>(
         if (temporaryList.isEmpty()) return
         if (visitables == temporaryList) return
 
-        visitables.filterIsInstance<ParentSetting>()
+        // setting section
+        visitableFilter<SettingSections>().map {
+            it.isEnabled = true
+        }
+
+        // seller section
+        visitableFilter<SellerSection>().map {
+            it.isEnabled = true
+        }
+
+        // notification setting handler
+        visitableFilter<ParentSetting>()
                 .zip(temporaryList)
                 .forEach {
                     val currentItem = it.first
@@ -114,11 +127,21 @@ class SettingFieldAdapter<T : Visitable<SettingFieldTypeFactory>>(
         notifyDataSetChanged()
     }
 
+    private inline fun <reified T> visitableFilter(): List<T> {
+        return visitables.filterIsInstance<T>()
+    }
+
     fun disableSwitchComponent() {
         visitables.forEach {
             if (it is ParentSetting) {
                 it.isEnabled = false
                 it.status = false
+            }
+            if (it is SettingSections) {
+                it.isEnabled = false
+            }
+            if (it is SellerSection) {
+                it.isEnabled = false
             }
         }
         notifyDataSetChanged()
