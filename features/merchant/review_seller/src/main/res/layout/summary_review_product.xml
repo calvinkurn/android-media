@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.tokopedia.unifycomponents.CardUnify
-    xmlns:android="http://schemas.android.com/apk/res/android"
+
+<com.tokopedia.unifycomponents.CardUnify xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/cardSummary"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="@dimen/spacing_lvl4"
-    app:cardUseCompatPadding="true"
     app:card_type="border">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -18,41 +17,41 @@
             android:id="@+id/ivRatingReview"
             android:layout_width="@dimen/dp_28"
             android:layout_height="@dimen/dp_28"
-            android:layout_marginTop="@dimen/dp_24"
-            android:layout_marginBottom="@dimen/dp_24"
             android:layout_marginStart="@dimen/dp_14"
+            android:layout_marginTop="@dimen/dp_24"
             android:layout_marginEnd="@dimen/dp_14"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginBottom="@dimen/dp_24"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/ic_rating_star_summary" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tgCountRating"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_12"
+            android:layout_marginStart="@dimen/dp_8"
             android:layout_marginLeft="@dimen/dp_8"
+            android:layout_marginTop="@dimen/dp_12"
             android:textColor="@color/clr_f531353b"
-            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toEndOf="@id/ivRatingReview"
+            app:layout_constraintTop_toTopOf="parent"
             app:typographyType="heading_1"
             app:typographyWeight="bold"
-            android:layout_marginStart="@dimen/dp_8"
             tools:text="4.6" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tgFiveReview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_4"
+            android:layout_marginLeft="@dimen/dp_4"
+            android:layout_marginTop="@dimen/dp_24"
+            android:textColor="@color/clr_31353b"
+            app:layout_constraintStart_toEndOf="@id/tgCountRating"
+            app:layout_constraintTop_toTopOf="parent"
             app:typographyType="body_1"
             app:typographyWeight="reguler"
-            android:textColor="@color/clr_31353b"
-            android:layout_marginTop="@dimen/dp_24"
-            android:layout_marginLeft="@dimen/dp_4"
-            android:layout_marginStart="@dimen/dp_4"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toEndOf="@id/tgCountRating"
             tools:text="/ 5.0" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -79,13 +78,13 @@
             android:layout_marginLeft="@dimen/dp_4"
             android:layout_marginTop="@dimen/dp_5"
             android:layout_marginBottom="@dimen/dp_12"
+            android:text="@string/review_text"
             android:textColor="@color/clr_31353b"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tgFiveReview"
             app:layout_constraintLeft_toRightOf="@id/tgCountReview"
+            app:layout_constraintTop_toBottomOf="@id/tgFiveReview"
             app:typographyType="body_1"
-            app:typographyWeight="reguler"
-            android:text="@string/review_text" />
+            app:typographyWeight="reguler" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tgLabelPeriodReview"
