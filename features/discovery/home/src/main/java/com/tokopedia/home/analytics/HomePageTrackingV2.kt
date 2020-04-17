@@ -255,6 +255,7 @@ object HomePageTrackingV2 : BaseTracking() {
                 Screen.KEY, Screen.DEFAULT,
                 CurrentSite.KEY, CurrentSite.DEFAULT,
                 UserId.KEY, userId,
+                Label.CHANNEL_LABEL, channel.id,
                 Ecommerce.KEY, Ecommerce.getEcommerceProductAddToCart(
                     products = listOf(
                             Product(
