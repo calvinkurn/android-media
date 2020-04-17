@@ -33,6 +33,8 @@ class FragmentFramePerformanceIndexMonitoring : LifecycleObserver, CoroutineScop
     var mainPerformanceData = FpiPerformanceData()
     private set
 
+    var isFragmentUserVisible = true
+
     protected val masterJob = SupervisorJob()
 
     override val coroutineContext: CoroutineContext
@@ -107,7 +109,7 @@ class FragmentFramePerformanceIndexMonitoring : LifecycleObserver, CoroutineScop
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N && onFrameMetricAvailableListener == null) {
             onFrameMetricAvailableListener = Window.OnFrameMetricsAvailableListener { window, frameMetrics, dropCountSinceLastInvocation ->
                 val frameMetricsCopy = FrameMetrics(frameMetrics)
-                if (fragment?.isVisible == true) recordFrames(frameMetricsCopy)
+                if (isFragmentUserVisible) recordFrames(frameMetricsCopy)
             }
             onFrameMetricAvailableListener?.let {
                 withContext(Dispatchers.Main) {
