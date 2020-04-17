@@ -3,6 +3,7 @@ package com.tokopedia.analyticsdebugger.validator.execution
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.analyticsdebugger.R
@@ -38,16 +39,17 @@ class ValidatorResultAdapter(private val listener: (Validator) -> Unit)
 
         private val tvNum: TextView = itemView.findViewById(R.id.tv_number)
         private val tvTitle: TextView = itemView.findViewById(R.id.tv_title)
-        private val tvStatus: TextView = itemView.findViewById(R.id.tv_status)
+        private val ivStatus: ImageView = itemView.findViewById(R.id.iv_status)
 
         fun bind(dataItem: Validator, position: Int) {
             tvNum.text = position.toString()
             tvTitle.text = dataItem.name
-            tvStatus.text = when (dataItem.status) {
-                Status.SUCCESS -> "V"
-                Status.FAILURE -> "X"
-                Status.PENDING -> "-"
+            val resId = when (dataItem.status) {
+                Status.SUCCESS -> R.drawable.ic_done_green_24dp
+                Status.FAILURE -> R.drawable.ic_close_red_24dp
+                Status.PENDING -> R.drawable.ic_block_yellow_24dp
             }
+            ivStatus.setImageResource(resId)
         }
     }
 }
