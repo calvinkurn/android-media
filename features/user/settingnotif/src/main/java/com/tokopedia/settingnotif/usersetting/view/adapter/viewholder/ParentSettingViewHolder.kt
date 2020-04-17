@@ -6,6 +6,7 @@ import android.widget.Switch
 import android.widget.TextView
 import com.tokopedia.settingnotif.R
 import com.tokopedia.settingnotif.usersetting.domain.pojo.ParentSetting
+import com.tokopedia.settingnotif.usersetting.util.componentTextColor
 import androidx.core.content.ContextCompat.getColor as color
 
 class ParentSettingViewHolder(
@@ -16,9 +17,7 @@ class ParentSettingViewHolder(
     private val switchTitle: TextView? = itemView?.findViewById(R.id.tv_sw_title)
     private val description: TextView? = itemView?.findViewById(R.id.tv_desc)
 
-    private val context by lazy {
-        itemView?.context
-    }
+    private val context by lazy { itemView?.context }
 
     override fun getSwitchView(itemView: View?): Switch? {
         return itemView?.findViewById(R.id.sw_setting)
@@ -39,10 +38,7 @@ class ParentSettingViewHolder(
 
             // change text color
             context?.let {
-                val colorId = if (setting.isEnabled) {
-                    R.color.charcoal_grey_96
-                } else R.color.grey_600
-
+                val colorId = componentTextColor(setting.isEnabled)
                 switchTitle?.setTextColor(color(it, colorId))
             }
         }
