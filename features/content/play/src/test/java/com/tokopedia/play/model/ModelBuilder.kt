@@ -1,6 +1,5 @@
 package com.tokopedia.play.model
 
-import android.provider.MediaStore.Video
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
@@ -17,7 +16,6 @@ import com.tokopedia.play_common.state.PlayVideoState
 import com.tokopedia.variant_common.model.ProductDetailVariantCommonResponse
 import com.tokopedia.variant_common.model.ProductVariantCommon
 import com.tokopedia.variant_common.model.VariantCategory
-import java.util.*
 
 
 /**
@@ -1213,7 +1211,7 @@ class ModelBuilder {
             description: String = "Ini Channel live",
             channelType: PlayChannelType = PlayChannelType.Live,
             partnerId: Long = 123151,
-            partnerType: PartnerType = PartnerType.ADMIN,
+            partnerType: PartnerType = PartnerType.Admin,
             moderatorName: String = "Lisa",
             contentId: Int = 1412,
             contentType: Int = 2,
@@ -1267,7 +1265,7 @@ class ModelBuilder {
     fun buildPartnerInfoUiModel(
             id: Long = 10213,
             name: String = "Partner",
-            type: PartnerType = PartnerType.SHOP,
+            type: PartnerType = PartnerType.Shop,
             isFollowed: Boolean = false,
             isFollowable: Boolean = true
     ) = PartnerInfoUiModel(

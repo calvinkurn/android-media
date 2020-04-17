@@ -5,10 +5,10 @@ package com.tokopedia.play.ui.toolbar.model
  * Created by mzennis on 2019-12-12.
  */
 enum class PartnerType(val value: Int) {
-    ADMIN(0),
-    SHOP(1),
-    INFLUENCER(4),
-    UNKNOWN(-1);
+    Admin(0),
+    Shop(1),
+    Influencer(4),
+    Unknown(-1);
 
     companion object {
         private val values = values()
@@ -17,7 +17,7 @@ enum class PartnerType(val value: Int) {
             values.forEach {
                 if (it.value == value) return it
             }
-            return UNKNOWN
+            return Unknown
         }
     }
 }

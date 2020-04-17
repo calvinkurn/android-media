@@ -63,6 +63,7 @@ import com.tokopedia.play.view.bottomsheet.PlayMoreActionBottomSheet
 import com.tokopedia.play.view.event.ScreenStateEvent
 import com.tokopedia.play.view.layout.interaction.PlayInteractionLayoutManager
 import com.tokopedia.play.view.layout.interaction.PlayInteractionLayoutManagerImpl
+import com.tokopedia.play.view.layout.parent.PlayParentLayoutManagerImpl
 import com.tokopedia.play.view.type.BottomInsetsState
 import com.tokopedia.play.view.type.BottomInsetsType
 import com.tokopedia.play.view.type.PlayRoomEvent
@@ -330,6 +331,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
             layoutManager.onVideoOrientationChanged(clPlayInteraction, it.orientation)
             triggerImmersive(false)
             if (it.orientation.isLandscape) setupVideoLandscape(playViewModel.screenOrientation)
+            else setupVideoPortrait()
 
             setVideoStream(it)
         })
@@ -402,7 +404,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
                     }
                 }
 
-                if (keyboardState?.isHidden == true) delay(PlayFragment.ANIMATION_DURATION)
+                if (keyboardState?.isHidden == true) delay(PlayParentLayoutManagerImpl.ANIMATION_DURATION)
                 EventBusFactory.get(viewLifecycleOwner)
                         .emit(
                                 ScreenStateEvent::class.java,
@@ -876,8 +878,8 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
     }
 
     private fun openPartnerPage(partnerId: Long, partnerType: PartnerType) {
-        if (partnerType == PartnerType.SHOP) openShopPage(partnerId)
-        else if (partnerType == PartnerType.INFLUENCER) openProfilePage(partnerId)
+        if (partnerType == PartnerType.Shop) openShopPage(partnerId)
+        else if (partnerType == PartnerType.Influencer) openProfilePage(partnerId)
     }
 
     private fun openShopPage(partnerId: Long) {
@@ -1079,6 +1081,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
 
     private fun setupVideoLandscape(screenOrientation: ScreenOrientation) {
         if (screenOrientation.isLandscape) {
+            playFragment.setVideoTopBounds(0)
             return
         }
 
@@ -1097,5 +1100,9 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
         val statusBarHeight = view?.let { getStatusBarHeight(it.context) }.orZero()
 
         playFragment.setVideoTopBounds(toolbarViewTotalHeight + statsInfoTotalHeight + statusBarHeight)
+    }
+
+    private fun setupVideoPortrait() {
+        playFragment.setVideoTopBounds(0)
     }
 }

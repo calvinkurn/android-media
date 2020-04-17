@@ -20,7 +20,6 @@ import com.tokopedia.play.ui.loading.VideoLoadingComponent
 import com.tokopedia.play.ui.onetap.OneTapComponent
 import com.tokopedia.play.ui.overlayvideo.OverlayVideoComponent
 import com.tokopedia.play.ui.video.VideoComponent
-import com.tokopedia.play.ui.videobackground.VideoBackgroundComponent
 import com.tokopedia.play.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play.util.event.EventObserver
 import com.tokopedia.play.view.custom.RoundedConstraintLayout
@@ -47,8 +46,6 @@ import kotlin.coroutines.CoroutineContext
 class PlayVideoFragment : BaseDaggerFragment(), CoroutineScope {
 
     companion object {
-
-        private const val TOP_BOUNDS_LANDSCAPE_VIDEO = "top_bounds_landscape_video"
 
         fun newInstance(channelId: String): PlayVideoFragment {
             return PlayVideoFragment().apply {
@@ -79,8 +76,6 @@ class PlayVideoFragment : BaseDaggerFragment(), CoroutineScope {
 
     private var channelId: String = ""
 
-    private var topBounds: Int? = null
-
     private lateinit var containerVideo: RoundedConstraintLayout
 
     override fun getScreenName(): String = "Play Video"
@@ -107,11 +102,9 @@ class PlayVideoFragment : BaseDaggerFragment(), CoroutineScope {
         val view = inflater.inflate(R.layout.fragment_play_video, container, false)
         containerVideo = view.findViewById(R.id.container_video)
 
-        if (savedInstanceState?.containsKey(TOP_BOUNDS_LANDSCAPE_VIDEO) == true) {
-            topBounds = savedInstanceState.getInt(TOP_BOUNDS_LANDSCAPE_VIDEO, 0)
-        }
 
-        initComponents(view as ViewGroup, topBounds)
+
+        initComponents(view as ViewGroup)
 
         return view
     }
@@ -130,18 +123,6 @@ class PlayVideoFragment : BaseDaggerFragment(), CoroutineScope {
     override fun onDestroyView() {
         super.onDestroyView()
         job.cancel()
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        topBounds?.let { outState.putInt(TOP_BOUNDS_LANDSCAPE_VIDEO, it) }
-        super.onSaveInstanceState(outState)
-    }
-
-    fun setVideoTopBounds(topBounds: Int) {
-        if (this.topBounds == null && topBounds > 0) {
-            this.topBounds = topBounds
-            layoutManager.onVideoTopBoundsChanged(requireView(), topBounds)
-        }
     }
 
     //region observe
@@ -197,8 +178,7 @@ class PlayVideoFragment : BaseDaggerFragment(), CoroutineScope {
     //endregion
 
     //region Component Initialization
-    private fun initComponents(container: ViewGroup, topBounds: Int?) {
-        val videoBackgroundComponent = initVideoBackgroundComponent(container)
+    private fun initComponents(container: ViewGroup) {
         val videoComponent = initVideoComponent(container)
         val videoLoadingComponent = initVideoLoadingComponent(container)
         val oneTapComponent = initOneTapComponent(container)
@@ -207,8 +187,6 @@ class PlayVideoFragment : BaseDaggerFragment(), CoroutineScope {
         layoutManager = PlayVideoLayoutManagerImpl(
                 context = requireContext(),
                 orientation = playViewModel.screenOrientation,
-                topBounds = topBounds,
-                videoBackgroundComponentId = videoBackgroundComponent.getContainerId(),
                 videoComponentId = videoComponent.getContainerId(),
                 videoLoadingComponentId = videoLoadingComponent.getContainerId(),
                 oneTapComponentId = oneTapComponent.getContainerId(),
@@ -218,10 +196,6 @@ class PlayVideoFragment : BaseDaggerFragment(), CoroutineScope {
         sendInitState()
 
         layoutManager.layoutView(container)
-    }
-
-    private fun initVideoBackgroundComponent(container: ViewGroup): UIComponent<Unit> {
-        return VideoBackgroundComponent(container, EventBusFactory.get(viewLifecycleOwner), this, dispatchers)
     }
 
     private fun initVideoComponent(container: ViewGroup): UIComponent<Unit> {

@@ -13,18 +13,13 @@ import com.tokopedia.play.util.changeConstraint
  */
 class PlayVideoLandscapeManager(
         context: Context,
-        @IdRes private val videoBackgroundComponentId: Int,
         @IdRes private val videoComponentId: Int,
         @IdRes private val videoLoadingComponentId: Int,
         @IdRes private val oneTapComponentId: Int,
         @IdRes private val overlayVideoComponentId: Int
 ) : PlayVideoLayoutManager {
 
-    override fun onVideoTopBoundsChanged(view: View, topBounds: Int) {
-    }
-
     override fun layoutView(view: View) {
-        layoutVideoBackground(container = view, id = videoBackgroundComponentId)
         layoutVideo(container = view, id = videoComponentId)
         layoutVideoLoading(container = view, id = videoLoadingComponentId)
         layoutOneTap(container = view, id = oneTapComponentId)
@@ -35,15 +30,6 @@ class PlayVideoLandscapeManager(
     }
 
     override fun onDestroy() {
-    }
-
-    private fun layoutVideoBackground(container: View, @IdRes id: Int) {
-        container.changeConstraint {
-            connect(id, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START)
-            connect(id, ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END)
-            connect(id, ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM)
-            connect(id, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP)
-        }
     }
 
     private fun layoutVideo(container: View, @IdRes id: Int) {

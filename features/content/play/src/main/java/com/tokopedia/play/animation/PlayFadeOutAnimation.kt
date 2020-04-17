@@ -9,7 +9,8 @@ import com.tokopedia.play.util.animation.PlayAnimationUtil
  * Created by jegul on 15/04/20
  */
 class PlayFadeOutAnimation(
-        private val durationInMs: Long
+        private val durationInMs: Long,
+        private val listener: Animator.AnimatorListener? = null
 ) : PlayAnimation {
 
     private val animatorSet = AnimatorSet()
@@ -17,7 +18,7 @@ class PlayFadeOutAnimation(
     override fun start(targetView: View) {
         val fadeOut = PlayAnimationUtil.fadeOutAnimation(targetView, durationInMs, targetView.alpha)
         animatorSet.play(fadeOut)
-        animatorSet.addListener(getListener(targetView))
+        animatorSet.addListener(listener ?: getListener(targetView))
         animatorSet.start()
     }
 

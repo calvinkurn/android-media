@@ -10,20 +10,22 @@ import com.tokopedia.play.util.animation.PlayAnimationUtil
  */
 class PlayFadeInFadeOutAnimation(
         private val durationInMs: Long,
-        private val delayInMs: Long
+        private val delayInMs: Long,
+        private val fadeInListener: Animator.AnimatorListener? = null,
+        private val fadeOutListener: Animator.AnimatorListener? = null
 ) : PlayAnimation {
 
     private val animatorSet = AnimatorSet()
 
     override fun start(targetView: View) {
         val fadeIn = PlayAnimationUtil.fadeInAnimation(targetView, durationInMs, targetView.alpha).apply {
-            addListener(getFadeListener(targetView))
+            addListener(fadeInListener ?: getFadeListener(targetView))
         }
         val delay = PlayAnimationUtil.delay(delayInMs).apply {
             addListener(getDelayListener(targetView))
         }
         val fadeOut = PlayAnimationUtil.fadeOutAnimation(targetView, durationInMs).apply {
-            addListener(getFadeListener(targetView))
+            addListener(fadeOutListener ?: getFadeListener(targetView))
         }
 
         animatorSet.playSequentially(fadeIn, delay, fadeOut)

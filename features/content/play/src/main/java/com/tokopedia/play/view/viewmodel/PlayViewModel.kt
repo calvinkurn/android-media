@@ -83,8 +83,6 @@ class PlayViewModel @Inject constructor(
         get() = _observableProductSheetContent
     val observableBadgeCart: LiveData<CartUiModel>
         get() = _observableBadgeCart
-    val observableScreenOrientation: LiveData<ScreenOrientation>
-        get() = _observableScreenOrientation
 
     val screenOrientation: ScreenOrientation
         get() {
@@ -127,6 +125,11 @@ class PlayViewModel @Inject constructor(
             } else {
                 0
             }
+        }
+    val bottomInsets: Map<BottomInsetsType, BottomInsetsState>
+        get() {
+            val value = _observableBottomInsetsState.value
+            return value ?: getDefaultBottomInsetsMapState()
         }
     val partnerId: Long?
         get() = _observablePartnerInfo.value?.id
@@ -369,17 +372,17 @@ class PlayViewModel @Inject constructor(
     }
 
     private fun initiateVideo(channel: Channel) {
-//        startVideoWithUrlString(
-//                channel.videoStream.config.streamUrl,
-//                bufferControl = channel.videoStream.bufferControl?.let { mapBufferControl(it) }
-//                        ?: PlayBufferControl()
-//        )
         startVideoWithUrlString(
-                "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
-//                "https://assets.mixkit.co/videos/preview/mixkit-womans-feet-splashing-in-the-pool-1261-large.mp4",
+                channel.videoStream.config.streamUrl,
                 bufferControl = channel.videoStream.bufferControl?.let { mapBufferControl(it) }
                         ?: PlayBufferControl()
         )
+//        startVideoWithUrlString(
+//                "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
+////                "https://assets.mixkit.co/videos/preview/mixkit-womans-feet-splashing-in-the-pool-1261-large.mp4",
+//                bufferControl = channel.videoStream.bufferControl?.let { mapBufferControl(it) }
+//                        ?: PlayBufferControl()
+//        )
         playVideoManager.setRepeatMode(false)
     }
 
@@ -586,7 +589,7 @@ class PlayViewModel @Inject constructor(
 
     private suspend fun getPartnerInfo(channel: ChannelInfoUiModel): PartnerInfoUiModel {
         val partnerId = channel.partnerId
-        return if (channel.partnerType == PartnerType.ADMIN) {
+        return if (channel.partnerType == PartnerType.Admin) {
             PartnerInfoUiModel(
                     id = partnerId,
                     name = channel.moderatorName,

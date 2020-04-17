@@ -85,11 +85,11 @@ object PlayUiMapper {
             channelType = if (videoStream.isLive
                     && videoStream.type.equals(PlayChannelType.Live.value, true))
                 PlayChannelType.Live else PlayChannelType.VOD,
-            orientation = VideoOrientation.Landscape,
-//            orientation = if (videoStream.orientation.equals(VideoOrientation.Portrait.value, true))
-//                VideoOrientation.Portrait else VideoOrientation.Landscape,
-//            backgroundUrl = backgroundUrl,
-            backgroundUrl = "https://i.pinimg.com/736x/d3/bb/7b/d3bb7b85f4e160d013f68fcde8d19844.jpg",
+            orientation = if (videoStream.orientation.equals(VideoOrientation.Portrait.value, true))
+                VideoOrientation.Portrait else VideoOrientation.Landscape,
+            backgroundUrl = backgroundUrl,
+//            orientation = VideoOrientation.Landscape,
+//            backgroundUrl = "https://i.pinimg.com/736x/d3/bb/7b/d3bb7b85f4e160d013f68fcde8d19844.jpg",
             isActive = isActive
     )
 
@@ -113,7 +113,7 @@ object PlayUiMapper {
     fun mapPartnerInfoFromShop(shopId: String, shopInfo: ShopInfo) = PartnerInfoUiModel(
             id = shopInfo.shopCore.shopId.toLong(),
             name = shopInfo.shopCore.name,
-            type = PartnerType.SHOP,
+            type = PartnerType.Shop,
             isFollowed = shopInfo.favoriteData.alreadyFavorited == 1,
             isFollowable = shopId != shopInfo.shopCore.shopId
     )
