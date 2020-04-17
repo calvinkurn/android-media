@@ -598,7 +598,7 @@ class RecommendationPageTracking {
             )
             )
 
-            tracker.sendGeneralEvent(data)
+            tracker.sendEnhanceEcommerceEvent(data)
         }
 
         // 70
@@ -631,7 +631,7 @@ class RecommendationPageTracking {
             )
             )
 
-            tracker.sendGeneralEvent(data)
+            tracker.sendEnhanceEcommerceEvent(data)
         }
 
         // No 71

@@ -277,7 +277,7 @@ class ProductInfoFragment : BaseDaggerFragment() {
                 addToCart(
                         productId, shopId, minOrder,
                         success = { result ->
-                            recommendationItem.cartId = result[CART_ID] as Int
+                            recommendationItem.cartId = result[CART_ID].toString()
                             RecommendationPageTracking.eventUserClickAddToCartWithProductId(recommendationItem, ref, internalRef)
                             add_to_cart?.isEnabled = true
                             if(result.containsKey(STATUS) && !(result[STATUS] as Boolean)){
@@ -557,7 +557,7 @@ class ProductInfoFragment : BaseDaggerFragment() {
             slashedPrice = productDataModel.productDetailData.slashedPrice,
             discountPercentageInt = productDataModel.productDetailData.discountPercentage,
             slashedPriceInt = productDataModel.productDetailData.slashedPriceInt,
-            cartId = -1,
+            cartId = "",
             shopId = productDataModel.productDetailData.shop.id,
             shopName = productDataModel.productDetailData.shop.name,
             shopType = if(productDataModel.productDetailData.shop.isGold) "gold_merchant" else "reguler",
