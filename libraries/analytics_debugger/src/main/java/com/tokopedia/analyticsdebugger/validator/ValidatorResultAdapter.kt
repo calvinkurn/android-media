@@ -5,14 +5,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import kotlinx.android.synthetic.main.item_autocomplete_text.view.*
+import com.tokopedia.analyticsdebugger.R
 
 class ValidatorResultAdapter : RecyclerView.Adapter<ValidatorResultAdapter.ResultItemViewHolder>() {
 
     private val mData: MutableList<Map<String, Any>> by lazy { mutableListOf<Map<String, Any>>() }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ResultItemViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(android.R.layout.simple_list_item_1, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_test_case, parent, false)
         return ResultItemViewHolder(view)
     }
 
@@ -21,7 +21,7 @@ class ValidatorResultAdapter : RecyclerView.Adapter<ValidatorResultAdapter.Resul
     }
 
     override fun onBindViewHolder(holder: ResultItemViewHolder, position: Int) {
-        holder.itemView.findViewById<TextView>(android.R.id.text1).text = position.toString()
+        holder.bind(mData[position], position)
     }
 
     fun setData(list: List<Map<String, Any>>) {
@@ -30,7 +30,13 @@ class ValidatorResultAdapter : RecyclerView.Adapter<ValidatorResultAdapter.Resul
         notifyDataSetChanged()
     }
 
-    inner class ResultItemViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
+    inner class ResultItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
+        private val tvNum: TextView = itemView.findViewById(R.id.tv_number)
+        private val tvTitle: TextView = itemView.findViewById(R.id.tv_title)
+
+        fun bind(map: Map<String, Any>, position: Int) {
+            tvNum.text = position.toString()
+        }
     }
 }
