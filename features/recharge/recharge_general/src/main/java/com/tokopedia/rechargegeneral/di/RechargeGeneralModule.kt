@@ -1,6 +1,6 @@
 package com.tokopedia.rechargegeneral.di
 
-import com.tokopedia.rechargegeneral.model.mapper.RechargeGeneralDynamicInputMapper
+import com.tokopedia.rechargegeneral.model.mapper.RechargeGeneralMapper
 import com.tokopedia.rechargegeneral.util.RechargeGeneralAnalytics
 import com.tokopedia.rechargegeneral.util.RechargeGeneralDispatchersProvider
 import dagger.Module
@@ -22,5 +22,5 @@ class RechargeGeneralModule {
 
     @RechargeGeneralScope
     @Provides
-    fun provideRechargeGeneralMapper(): RechargeGeneralDynamicInputMapper = RechargeGeneralDynamicInputMapper()
+    fun provideRechargeGeneralMapper(): RechargeGeneralMapper = RechargeGeneralMapper()
 }
