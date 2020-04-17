@@ -49,8 +49,8 @@ public class AccessTokenRefresh {
         String tokenResponseError = null;
         try {
             Response<String> response = responseCall.clone().execute();
-
-            if (response.errorBody() != null) {
+            okhttp3.ResponseBody responseBody = response.errorBody();
+            if (responseBody != null) {
                 tokenResponseError = response.errorBody().string();
                 checkShowForceLogout(tokenResponseError, networkRouter, userSession, finalRequest);
             } else if (response.body() != null) {
@@ -98,7 +98,8 @@ public class AccessTokenRefresh {
     }
 
     protected Boolean isRequestDenied(String responseString) {
-        return responseString.toLowerCase().contains(FORCE_LOGOUT);
+        Boolean isDenied = responseString.toLowerCase().contains(FORCE_LOGOUT);
+        return isDenied;
     }
 
     protected void checkShowForceLogout(String response, NetworkRouter networkRouter, UserSessionInterface userSession, Request finalRequest) {

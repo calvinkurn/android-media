@@ -404,8 +404,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
         try {
             if (code == ERROR_UNAUTHORIZED_REQUEST) {
                 sendAnalyticsAnomalyResponse(Integer.toString(ERROR_UNAUTHORIZED_REQUEST), response, finalRequest);
-                networkRouter.showForceLogoutTokenDialog(response.message());
-                return response;
+                return refreshToken(chain, response, finalRequest);
             } else if (isNeedGcmUpdate(response)) {
                 return refreshTokenAndGcmUpdate(chain, response, finalRequest);
             } else if (isUnauthorized(finalRequest, response)) {
