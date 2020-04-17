@@ -12,8 +12,10 @@ import androidx.lifecycle.OnLifecycleEvent
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.cachemanager.CacheManager
 import com.tokopedia.cachemanager.PersistentCacheManager
+import kotlinx.coroutines.*
+import kotlin.coroutines.CoroutineContext
 
-class FragmentFramePerformanceIndexMonitoring : LifecycleObserver {
+class FragmentFramePerformanceIndexMonitoring : LifecycleObserver, CoroutineScope {
     private val DEFAULT_WARNING_LEVEL_MS = 17f
     private val METRICS_ALL_FRAMES = "all_frames"
     private val METRICS_JANKY_FRAMES = "janky_frames"
@@ -31,6 +33,11 @@ class FragmentFramePerformanceIndexMonitoring : LifecycleObserver {
     var mainPerformanceData = FpiPerformanceData()
     private set
 
+    protected val masterJob = SupervisorJob()
+
+    override val coroutineContext: CoroutineContext
+        get() = Dispatchers.IO + masterJob
+
     interface OnFrameListener {
         fun onFrameRendered(fpiPerformanceData: FpiPerformanceData)
     }
@@ -46,35 +53,43 @@ class FragmentFramePerformanceIndexMonitoring : LifecycleObserver {
         fragment.activity?.applicationContext?.let {
             this.cacheManager = PersistentCacheManager(it)
         }
-
-        startFrameMetrics()
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
     private fun sendRemainingPerformanceData() {
-        pageName?.let { pageName->
-            val cacheFpiDatabaseModel = cacheManager?.get<FpiDatabaseModel>(
-                    pageName, FpiDatabaseModel::class.java, null
-            )
-            cacheFpiDatabaseModel?.let {
-                if (it.fragmentHashCode != fragment?.hashCode().toString()) {
-                    sendPerformanceMonitoringData(it.fpiPerformanceData, pageName)
-                    cacheManager?.delete(pageName)
-                } else {
-                    mainPerformanceData = it.fpiPerformanceData
+        launch {
+            pageName?.let { pageName->
+                val cacheFpiDatabaseModel = cacheManager?.get<FpiDatabaseModel>(
+                        pageName, FpiDatabaseModel::class.java, null
+                )
+                cacheFpiDatabaseModel?.let {
+                    if (it.fragmentHashCode != fragment?.hashCode().toString()) {
+                        sendPerformanceMonitoringData(it.fpiPerformanceData, pageName)
+                        cacheManager?.delete(pageName)
+                    } else {
+                        mainPerformanceData = it.fpiPerformanceData
+                    }
                 }
             }
+            startFrameMetrics()
         }
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
     private fun saveToDatabase() {
-        pageName?.let {pageName->
-            cacheManager?.put(
-                    customId = pageName,
-                    objectToPut = getFpiDatabaseModel()
-            )
+        launch {
+            pageName?.let {pageName->
+                cacheManager?.put(
+                        customId = pageName,
+                        objectToPut = getFpiDatabaseModel()
+                )
+            }
         }
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
+    private fun destroyInstance() {
+        flush()
     }
 
     private fun sendPerformanceMonitoringData(performanceData: FpiPerformanceData, pageName: String) {
@@ -114,6 +129,12 @@ class FragmentFramePerformanceIndexMonitoring : LifecycleObserver {
                 fragment?.activity?.window?.removeOnFrameMetricsAvailableListener(it)
             }
             onFrameMetricAvailableListener = null
+        }
+    }
+
+    open fun flush(){
+        if (isActive && !masterJob.isCancelled){
+            masterJob.children.map { it.cancel() }
         }
     }
 }
