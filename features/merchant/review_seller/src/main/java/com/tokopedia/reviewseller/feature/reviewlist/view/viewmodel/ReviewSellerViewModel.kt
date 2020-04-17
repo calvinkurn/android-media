@@ -32,6 +32,15 @@ class ReviewSellerViewModel @Inject constructor(
     private val _productRatingOverall = MutableLiveData<Result<ProductRatingOverallUiModel>>()
     val productRatingOverall: LiveData<Result<ProductRatingOverallUiModel>> = _productRatingOverall
 
+    var sortBy: String? = ""
+    var filterBy: String? = ""
+
+    var chipsSortText: String? = ""
+    var chipsFilterText: String? = ""
+
+    var positionFilter = 0
+    var positionSort = 0
+
     fun getProductRatingData(sortBy: String, filterBy: String) {
         launchCatchError(block = {
             val productRatingOverall = asyncCatchError(
@@ -58,6 +67,10 @@ class ReviewSellerViewModel @Inject constructor(
 //                    }
 //            )
 
+//            reviewProductList.await()?.let { reviewProductData ->
+//                _reviewProductList.postValue(Success(reviewProductData))
+//            }
+
             productRatingOverall.await()?.let {
                 _productRatingOverall.postValue(Success(it))
 //                reviewProductList.await()?.let { reviewProductData ->
@@ -79,7 +92,7 @@ class ReviewSellerViewModel @Inject constructor(
         })
     }
 
-    private suspend fun getProductRatingOverall(filterBy: String): ProductRatingOverallUiModel  {
+    private suspend fun getProductRatingOverall(filterBy: String): ProductRatingOverallUiModel {
         getProductRatingOverallUseCase.params = GetProductRatingOverallUseCase.createParams(filterBy)
         return ReviewSellerMapper.mapToProductRatingOverallModel(getProductRatingOverallUseCase.executeOnBackground())
     }
