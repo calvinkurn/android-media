@@ -2853,6 +2853,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     override fun sendATCTrackingURL(clickurl: String) {
         var url = "$clickurl&click_source=ATC_direct_click";
-        ImpresionTask(UserSession(context)).execute(url)
+        ImpresionTask(userSession).execute(url);
     }
 }

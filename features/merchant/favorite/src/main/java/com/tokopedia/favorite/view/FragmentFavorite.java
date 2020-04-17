@@ -358,7 +358,7 @@ public class FragmentFavorite extends BaseDaggerFragment
 
     @Override
     public void sendFavoriteShopImpression(String clickUrl) {
-        new ImpresionTask(new UserSession(getContext())).execute(clickUrl);
+        new ImpresionTask(userSession).execute(clickUrl);
     }
 
     @Override

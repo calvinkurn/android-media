@@ -11,6 +11,8 @@ import com.tokopedia.user.session.UserSessionInterface;
 
 import java.io.IOException;
 
+import javax.inject.Inject;
+
 /**
  * @author by errysuprayogi on 7/12/17.
  */
@@ -20,7 +22,7 @@ public class ImpresionTask extends AsyncTask<String, Void, String> {
 
     private ImpressionListener impressionListener;
 
-    private UserSession userSession;
+    private UserSessionInterface userSession;
 
     public ImpresionTask() {
     }
@@ -29,7 +31,7 @@ public class ImpresionTask extends AsyncTask<String, Void, String> {
         this.impressionListener = impressionListener;
     }
 
-    public ImpresionTask(UserSession userSession) {
+    public ImpresionTask(UserSessionInterface userSession) {
         this.userSession = userSession;
     }
 

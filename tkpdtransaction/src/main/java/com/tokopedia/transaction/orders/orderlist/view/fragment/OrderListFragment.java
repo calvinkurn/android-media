@@ -75,7 +75,7 @@ import com.tokopedia.transaction.util.Utils;
 import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.unifycomponents.UnifyButton;
 import com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify;
-import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -184,6 +184,9 @@ public class OrderListFragment extends BaseDaggerFragment implements
 
     @Inject
     OrderListAnalytics orderListAnalytics;
+
+    @Inject
+    UserSessionInterface userSession;
 
     private String selectedFilter = "0";
 
@@ -645,7 +648,7 @@ public class OrderListFragment extends BaseDaggerFragment implements
     @Override
     public void sendATCTrackingUrl(String url) {
         String clickUrl = url + "&click_source=ATC_direct_click";
-        new ImpresionTask(new UserSession(this.getContext())).execute(clickUrl);
+        new ImpresionTask(userSession).execute(clickUrl);
     }
 
     @Override
