@@ -36,7 +36,7 @@ open class VariantSheetComponent(
             bus.getSafeManagedFlow(ScreenStateEvent::class.java)
                     .collect {
                         when (it) {
-                            is ScreenStateEvent.Init ->  uiView.hide()
+                            is ScreenStateEvent.Init -> uiView.hide()
                             is ScreenStateEvent.BottomInsetsChanged -> { it.insetsViewMap[BottomInsetsType.VariantSheet]?.let(::handleShowHideVariantSheet) }
                             is ScreenStateEvent.SetVariantSheet -> when (it.variantResult) {
                                 is PlayResult.Loading -> if (it.variantResult.showPlaceholder) uiView.showPlaceholder()

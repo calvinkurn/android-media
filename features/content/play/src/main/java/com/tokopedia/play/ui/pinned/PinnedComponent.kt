@@ -37,7 +37,7 @@ open class PinnedComponent(
             bus.getSafeManagedFlow(ScreenStateEvent::class.java)
                     .collect {
                         when (it) {
-                            is ScreenStateEvent.Init ->  uiView.hide()
+                            is ScreenStateEvent.Init -> uiView.hide()
                             is ScreenStateEvent.SetPinned -> setPinned(it.pinned, it.stateHelper.bottomInsets.isAnyShown, it.stateHelper.screenOrientation.isLandscape)
                             is ScreenStateEvent.BottomInsetsChanged -> {
                                 if (!it.isAnyShown && it.stateHelper.shouldShowPinned && !it.stateHelper.screenOrientation.isLandscape) uiView.show() else uiView.hide()

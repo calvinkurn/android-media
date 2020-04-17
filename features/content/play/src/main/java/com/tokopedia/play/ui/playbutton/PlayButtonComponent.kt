@@ -31,7 +31,7 @@ open class PlayButtonComponent(
             bus.getSafeManagedFlow(ScreenStateEvent::class.java)
                     .collect {
                         when (it) {
-                            is ScreenStateEvent.Init ->  uiView.hide()
+                            is ScreenStateEvent.Init -> uiView.hide()
                             is ScreenStateEvent.VideoPropertyChanged -> handleVideoStateChanged(it.stateHelper.channelType.isVod, it.videoProp.state)
                             is ScreenStateEvent.OnNewPlayRoomEvent -> if(it.event.isFreeze) uiView.hide()
                         }
