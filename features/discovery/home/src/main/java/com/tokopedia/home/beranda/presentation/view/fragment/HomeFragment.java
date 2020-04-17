@@ -1450,7 +1450,6 @@ public class HomeFragment extends BaseDaggerFragment implements
         super.setUserVisibleHint(isVisibleToUser);
         trackScreen(isVisibleToUser);
         restartBanner(isVisibleToUser);
-        if (fragmentFramePerformanceIndexMonitoring != null) fragmentFramePerformanceIndexMonitoring.setFragmentUserVisible(isVisibleToUser);
     }
 
     private void restartBanner(boolean isVisibleToUser) {
@@ -1577,6 +1576,7 @@ public class HomeFragment extends BaseDaggerFragment implements
 
     public void onHiddenChanged(boolean hidden) {
         super.onHiddenChanged(hidden);
+        if (fragmentFramePerformanceIndexMonitoring != null) fragmentFramePerformanceIndexMonitoring.setFragmentUserVisible(!hidden);
         setUserVisibleHint(!hidden);
     }
 
