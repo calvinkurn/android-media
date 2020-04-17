@@ -9,6 +9,7 @@ import androidx.annotation.RawRes
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationManagerCompat
+import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -19,7 +20,8 @@ import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
 import com.tokopedia.network.constant.ErrorNetMessage.MESSAGE_ERROR_SERVER
 import com.tokopedia.settingnotif.R
 import com.tokopedia.settingnotif.usersetting.di.DaggerUserSettingComponent
-import com.tokopedia.settingnotif.usersetting.di.UserSettingModule
+import com.tokopedia.settingnotif.usersetting.di.module.UserSettingModule
+import com.tokopedia.settingnotif.usersetting.domain.pojo.ParentSetting
 import com.tokopedia.settingnotif.usersetting.domain.pojo.setusersetting.SetUserSettingResponse
 import com.tokopedia.settingnotif.usersetting.view.activity.ParentActivity
 import com.tokopedia.settingnotif.usersetting.view.adapter.SettingFieldAdapter
@@ -41,6 +43,7 @@ abstract class SettingFieldFragment : BaseListFragment<Visitable<*>,
         SectionItemListener {
 
     @Inject lateinit var presenter: SettingFieldContract.Presenter
+    @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
     @Inject lateinit var userSession: UserSessionInterface
 
     /*
@@ -54,6 +57,11 @@ abstract class SettingFieldFragment : BaseListFragment<Visitable<*>,
     * it will be use it into set user setting
     *  */
     abstract fun getNotificationType(): String
+
+    // setting field adapter
+    private val settingFieldAdapter by lazy(LazyThreadSafetyMode.NONE) {
+        adapter as SettingFieldAdapter
+    }
 
     @RawRes abstract fun getGqlRawQuery(): Int
 
@@ -162,6 +170,16 @@ abstract class SettingFieldFragment : BaseListFragment<Visitable<*>,
         }
     }
 
+    protected fun permissionValidation(lastStateItems: List<ParentSetting>) {
+        if (isNotificationEnabled()) {
+            settingFieldAdapter.removePinnedActivation()
+            settingFieldAdapter.enableSwitchComponent(lastStateItems)
+        } else {
+            settingFieldAdapter.addPinnedActivation()
+            settingFieldAdapter.disableSwitchComponent()
+        }
+    }
+
     protected fun isNotificationEnabled(): Boolean {
         return context?.let {
             NotificationManagerCompat
@@ -174,8 +192,10 @@ abstract class SettingFieldFragment : BaseListFragment<Visitable<*>,
 
     override fun onItemClicked(item: Visitable<*>?) = Unit
 
+    override fun updateSettingState(setting: ParentSetting?) = Unit
+
     companion object {
-        // these type will consume for graphql params
+        // types will consume for graphql params
         const val TYPE_SELLER_NOTIF = "sellernotif"
         const val TYPE_PUSH_NOTIF = "pushnotif"
         const val TYPE_EMAIL = "email"
