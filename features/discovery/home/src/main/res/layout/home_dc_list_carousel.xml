@@ -66,7 +66,7 @@
             app:layout_constraintEnd_toStartOf="@+id/buy_again_close_image_view"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:typographyType="heading_5"
+            app:typographyType="heading_3"
             tools:text="Gratis Ongkir" />
 
         <com.tokopedia.unifyprinciples.Typography

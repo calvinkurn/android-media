@@ -64,13 +64,16 @@ class RecommendationListCarouselViewHolder(itemView: View,
                 }
             } else listCarouselDescription.visibility = View.GONE
 
-            if (banner.backColor.isNotEmpty()) {
-                val backColor = Color.parseColor(banner.backColor)
-                listCarouselView.setBackgroundColor(backColor)
+            if(banner.gradientColor.isNotEmpty()){
                 listCarouselView.visibility = View.VISIBLE
-            } else listCarouselView.visibility = View.GONE
-
-            listCarouselView.setGradientBackground(banner.gradientColor)
+                listCarouselView.setGradientBackground(banner.gradientColor)
+            } else {
+                if (banner.backColor.isNotEmpty()) {
+                    val backColor = Color.parseColor(banner.backColor)
+                    listCarouselView.setBackgroundColor(backColor)
+                    listCarouselView.visibility = View.VISIBLE
+                } else listCarouselView.visibility = View.GONE
+            }
 
             if(banner.title.isEmpty()) listCarouselBannerHeader.visibility = View.GONE
             else listCarouselBannerHeader.visibility = View.VISIBLE
