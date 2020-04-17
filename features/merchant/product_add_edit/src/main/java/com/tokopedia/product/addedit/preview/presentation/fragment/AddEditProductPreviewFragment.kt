@@ -190,13 +190,12 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
                 viewModel.setDraftId(draftId)
                 viewModel.getProductDraft(draftId.toLongOrZero())
             }
-        }
-
-        if (viewModel.isEditing.value == true) {
-            //TODO is goldmerchant and isregular
-            ProductEditStepperTracking.trackScreen(shopId, false, false)
-        } else {
-            ProductAddStepperTracking.trackScreen()
+            if (viewModel.getProductId().isNotEmpty()) {
+                //TODO is goldmerchant and isregular
+                ProductEditStepperTracking.trackScreen(shopId, false, false)
+            } else {
+                ProductAddStepperTracking.trackScreen()
+            }
         }
     }
 
