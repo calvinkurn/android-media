@@ -1,6 +1,7 @@
 package com.tokopedia.sellerhome.settings.domain.entity
 
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
 
 data class ShopInfo(
         @SerializedName("shopInfoMoengage")
@@ -22,6 +23,14 @@ data class Info (
 )
 
 data class Balance (
-        @SerializedName("seller_usable_fmt")
-        var sellerBalance: String = "") {
+        @SerializedName("seller_usable")
+        var sellerBalance: Float = 0f,
+        @SerializedName("buyer_usable")
+        var buyerBalance: Float = 0f) {
+
+        val totalBalance: String?
+                get() {
+                        val total = sellerBalance + buyerBalance
+                        return total.getCurrencyFormatted()
+                }
 }
