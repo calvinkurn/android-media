@@ -282,6 +282,7 @@ class AddEditProductDescriptionFragment:
                 textFieldDescription.getText(),
                 getFilteredValidVideoLink()
         )
+        productInputModel?.variantInputModel = descriptionViewModel.variantInputModel
     }
 
     private fun observeProductVariant() {

@@ -1,6 +1,8 @@
 package com.tokopedia.product.addedit.draft.mapper
 
-import com.tokopedia.product.addedit.description.presentation.model.VideoLinkModel
+import com.google.gson.reflect.TypeToken
+import com.tokopedia.abstraction.common.utils.network.CacheUtil
+import com.tokopedia.product.addedit.description.presentation.model.*
 import com.tokopedia.product.addedit.detail.presentation.model.PictureInputModel
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.manage.common.draft.data.model.ProductDraft
@@ -8,8 +10,42 @@ import com.tokopedia.product.manage.common.draft.data.model.description.VideoLin
 
 object AddEditProductMapper {
 
+    private fun mapProductInputModelPictureListToDraftPictureList(pictureList: List<PictureInputModel>) = pictureList.map {
+        com.tokopedia.product.manage.common.draft.data.model.detail.PictureInputModel(
+                picID = it.picID,
+                description = it.description,
+                filePath = it.filePath,
+                fileName = it.fileName,
+                width = it.width,
+                height = it.height,
+                isFromIG = it.isFromIG,
+                urlOriginal = it.urlOriginal,
+                urlThumbnail = it.urlThumbnail,
+                url300 = it.url300,
+                status = it.status
+        )
+    }
+
+    private fun mapDraftPictureListToProductInputModelPictureList(pictureList: List<com.tokopedia.product.manage.common.draft.data.model.detail.PictureInputModel>) =
+            pictureList.map {
+                PictureInputModel(
+                        picID = it.picID,
+                        description = it.description,
+                        filePath = it.filePath,
+                        fileName = it.fileName,
+                        width = it.width,
+                        height = it.height,
+                        isFromIG = it.isFromIG,
+                        urlOriginal = it.urlOriginal,
+                        urlThumbnail = it.urlThumbnail,
+                        url300 = it.url300,
+                        status = it.status
+                )
+            }
+
     fun mapProductInputModelDetailToDraft(productInputModel: ProductInputModel): ProductDraft {
         val productDraft = ProductDraft()
+        productDraft.variantInputModel = mapProductInputModelToJsonString(productInputModel.variantInputModel)
         productDraft.productId = productInputModel.productId
         productDraft.detailInputModel.productName = productInputModel.detailInputModel.productName
         productDraft.detailInputModel.categoryId = productInputModel.detailInputModel.categoryId
@@ -51,43 +87,10 @@ object AddEditProductMapper {
         return productDraft
     }
 
-    private fun mapProductInputModelPictureListToDraftPictureList(pictureList: List<PictureInputModel>) = pictureList.map {
-        com.tokopedia.product.manage.common.draft.data.model.detail.PictureInputModel(
-                picID = it.picID,
-                description = it.description,
-                filePath = it.filePath,
-                fileName = it.fileName,
-                width = it.width,
-                height = it.height,
-                isFromIG = it.isFromIG,
-                urlOriginal = it.urlOriginal,
-                urlThumbnail = it.urlThumbnail,
-                url300 = it.url300,
-                status = it.status
-        )
-    }
-
-    private fun mapDraftPictureListToProductInputModelPictureList(pictureList: List<com.tokopedia.product.manage.common.draft.data.model.detail.PictureInputModel>) =
-            pictureList.map {
-                PictureInputModel(
-                        picID = it.picID,
-                        description = it.description,
-                        filePath = it.filePath,
-                        fileName = it.fileName,
-                        width = it.width,
-                        height = it.height,
-                        isFromIG = it.isFromIG,
-                        urlOriginal = it.urlOriginal,
-                        urlThumbnail = it.urlThumbnail,
-                        url300 = it.url300,
-                        status = it.status
-                )
-            }
-
     fun mapDraftToProductInputModel(productDraft: ProductDraft): ProductInputModel {
-        val productInputModel = ProductInputModel().apply {
-            productId = productDraft.productId
-        }
+        val productInputModel = ProductInputModel()
+        productInputModel.variantInputModel = mapJsonToProductInputModel(productDraft.variantInputModel)
+        productInputModel.productId = productDraft.productId
         productInputModel.detailInputModel.apply {
             productName = productDraft.detailInputModel.productName
             categoryId = productDraft.detailInputModel.categoryId
@@ -129,6 +132,14 @@ object AddEditProductMapper {
         }
         productInputModel.draftId = productDraft.draftId
         return productInputModel
+    }
+
+    private fun mapProductInputModelToJsonString(productVariantInputModel: ProductVariantInputModel): String {
+        return CacheUtil.convertModelToString(productVariantInputModel, object : TypeToken<ProductVariantInputModel>() {}.type)
+    }
+
+    private fun mapJsonToProductInputModel(jsonData : String): ProductVariantInputModel {
+        return CacheUtil.convertStringToModel(jsonData, ProductVariantInputModel::class.java)
     }
 }
 
