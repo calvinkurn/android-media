@@ -124,9 +124,6 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
 
     private fun showPageLoading() {
         pageLoading.visibility = View.VISIBLE
-        pageLoading.setOnClickListener {
-            goToWriteActivity()
-        }
     }
 
     private fun hidePageLoading() {
@@ -225,6 +222,7 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
 
     private fun showContainer() {
         talkReadingContainer.visibility = View.VISIBLE
+        initFab()
     }
 
     private fun getDataFromArguments() {
@@ -251,6 +249,12 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
 
     private fun updateCategories() {
 
+    }
+
+    private fun initFab() {
+        addFloatingActionButton.setOnClickListener {
+            goToWriteActivity()
+        }
     }
 
 }

@@ -54,10 +54,13 @@
             android:id="@+id/addFloatingActionButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@color/Green_G500"
-            android:visibility="gone"
+            android:layout_gravity="bottom|end"
+            android:layout_marginEnd="@dimen/layout_lvl2"
+            android:layout_marginRight="@dimen/layout_lvl2"
+            android:layout_marginBottom="@dimen/layout_lvl3"
+            app:backgroundTint="@color/Green_G500"
             app:fabSize="normal"
-            app:srcCompat="@drawable/talk_reading_ic_plus"/>
+            app:srcCompat="@drawable/talk_reading_ic_plus" />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
