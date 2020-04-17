@@ -65,4 +65,7 @@ object ApplinkConstInternalSellerapp {
     @JvmField
     val CREATE_VOUCHER = "$INTERNAL_SELLERAPP/create-voucher"
 
+    //VoucherListActivity
+    @JvmField
+    val VOUCHER_LIST = "$INTERNAL_SELLERAPP/voucher-list"
 }
