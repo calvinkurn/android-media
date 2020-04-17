@@ -14,6 +14,7 @@ import com.tokopedia.play.view.type.VideoOrientation
 class PlayInteractionLayoutManagerImpl(
         context: Context,
         private val orientation: ScreenOrientation,
+        videoOrientation: VideoOrientation,
         @IdRes sizeContainerComponentId: Int,
         @IdRes sendChatComponentId: Int,
         @IdRes likeComponentId: Int,
@@ -32,6 +33,7 @@ class PlayInteractionLayoutManagerImpl(
 
     private val portraitManager = PlayInteractionPortraitManager(
             context = context,
+            videoOrientation = videoOrientation,
             sizeContainerComponentId = sizeContainerComponentId,
             sendChatComponentId = sendChatComponentId,
             likeComponentId = likeComponentId,
