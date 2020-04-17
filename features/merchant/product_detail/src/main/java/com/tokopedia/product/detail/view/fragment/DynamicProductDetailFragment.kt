@@ -1752,7 +1752,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                 context?.let {
                     var deeplink = UriUtil.buildUri(ApplinkConstInternalMarketplace.REPORT_PRODUCT, basic.productID)
                     deeplink = Uri.parse(deeplink).buildUpon().appendQueryParameter(ApplinkConst.DFFALLBACKURL_KEY,
-                        generateProductReportFallback(basic.url)) .toString()
+                        DynamicProductDetailMapper.generateProductReportFallback(basic.url)) .toString()
                     val intent = RouteManager.getIntent(it, deeplink)
                     startActivityForResult(intent, ProductDetailConstant.REQUEST_CODE_REPORT)
                 }
@@ -1761,16 +1761,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                 productDetailTracking.eventReportNoLogin()
             })
         }
-    }
-
-    private fun generateProductReportFallback(productUrl: String): String {
-        var fallbackUrl = productUrl
-        if (!fallbackUrl.endsWith("/")) {
-            fallbackUrl += "/"
-        }
-        fallbackUrl = fallbackUrl.replace("www.", "m.")
-        fallbackUrl += "report/"
-        return fallbackUrl
     }
 
     private fun warehouseProduct() {
