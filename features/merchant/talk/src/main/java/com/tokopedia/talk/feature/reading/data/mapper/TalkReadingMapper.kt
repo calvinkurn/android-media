@@ -53,6 +53,10 @@ object TalkReadingMapper {
         }
     }
 
+    fun mapSelectedSortToString(selectedSortOption: SortOption?): String {
+        return selectedSortOption?.id?.name?.toLowerCase() ?: ""
+    }
+
     private fun List<DiscussionAggregateCategory>.mapToSortFilter(showBottomSheet: () -> Unit,
                                                                   onCategorySelectedListener: OnCategorySelectedListener): ArrayList<SortFilterItem> {
         val result = arrayListOf<SortFilterItem>()

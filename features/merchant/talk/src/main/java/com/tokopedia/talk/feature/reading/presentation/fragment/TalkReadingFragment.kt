@@ -41,6 +41,7 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
         const val PARAM_PRODUCT_ID = "productID"
         const val PARAM_SHOP_ID = "shopID"
         const val DEFAULT_DISCUSSION_DATA_LIMIT = 10
+        const val DEFAULT_INITIAL_PAGE = 0
 
         @JvmStatic
         fun createNewInstance(productId: String, shopId: String): TalkReadingFragment =
@@ -122,6 +123,10 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
         return TalkReadingAdapter(adapterTypeFactory)
     }
 
+    override fun loadInitialData() {
+        loadData(DEFAULT_INITIAL_PAGE)
+    }
+
     private fun showPageLoading() {
         pageLoading.visibility = View.VISIBLE
     }
@@ -181,7 +186,11 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
                 }
                 is Fail -> {
                     hidePageLoading()
-                    showPageError()
+                    if(currentPage > 0) {
+                        showErrorToaster()
+                    } else {
+                        showPageError()
+                    }
                 }
             }
             hidePageLoading()
@@ -192,7 +201,8 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
         viewModel.sortOptions.observe(this, Observer { sortOptions ->
             val selectedSort = sortOptions.filter { it.isSelected }
             updateSortHeader(selectedSort.first())
-            // get talk with selected sort
+            clearAllData()
+            getDiscussionData()
         })
     }
 
@@ -237,8 +247,8 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
         startActivity(intent)
     }
 
-    private fun getDiscussionData(page: Int = 1) {
-        val selectedSort = viewModel.sortOptions.value?.filter { it.isSelected }?.joinToString() ?: ""
+    private fun getDiscussionData(page: Int = DEFAULT_INITIAL_PAGE) {
+        val selectedSort = TalkReadingMapper.mapSelectedSortToString(viewModel.sortOptions.value?.first { it.isSelected })
 //        val selectedCategories = viewModel.categories.value?.filter { it.isSelected }?.joinToString() ?: ""
         viewModel.getDiscussionData(productId, shopId, page, DEFAULT_DISCUSSION_DATA_LIMIT, selectedSort, "")
     }
