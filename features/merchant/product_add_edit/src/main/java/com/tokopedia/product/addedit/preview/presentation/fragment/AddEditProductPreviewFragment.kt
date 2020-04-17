@@ -230,7 +230,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
 
         // activity toolbar
         toolbar = activity?.findViewById(R.id.toolbar)
-        toolbar?.title = getString(R.string.title_add_product)
+        toolbar?.title = getString(R.string.label_title_add_product)
 
         // action button
         doneButton = activity?.findViewById(R.id.tv_done)
@@ -584,7 +584,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
     }
 
     private fun displayEditMode() {
-        toolbar?.title = getString(R.string.title_edit_product)
+        toolbar?.title = getString(R.string.label_title_edit_product)
         doneButton?.show()
         enablePhotoEdit()
         enableDetailEdit()
