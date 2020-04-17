@@ -6,7 +6,6 @@ import android.graphics.Rect
 import android.graphics.drawable.Drawable
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.kotlin.extensions.view.dpToPx
 
 class ImageDividerItemDecoration(
         private val drawable: Drawable,
@@ -18,8 +17,8 @@ class ImageDividerItemDecoration(
 
     override fun onDraw(canvas: Canvas, parent: RecyclerView, state: RecyclerView.State) {
         val displayMetrics = Resources.getSystem().displayMetrics
-        val dividerLeft = paddingLeft.dpToPx(displayMetrics) + parent.paddingLeft
-        val dividerRight = parent.width - paddingRight.dpToPx(displayMetrics) - parent.paddingRight
+        val dividerLeft = paddingLeft + parent.paddingLeft
+        val dividerRight = parent.width - paddingRight - parent.paddingRight
 
         val childCount = parent.childCount
         val lastChildIndex = if (drawOnLastItem) childCount - 1 else childCount - 2
