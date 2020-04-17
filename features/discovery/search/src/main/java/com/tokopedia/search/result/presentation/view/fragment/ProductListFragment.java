@@ -581,6 +581,7 @@ public class ProductListFragment
                     @Override
                     public void onGlobalLayout() {
                         if (searchPerformanceMonitoringListener != null) {
+                            searchPerformanceMonitoringListener.stopRenderPerformanceMonitoring();
                             searchPerformanceMonitoringListener.stopPerformanceMonitoring();
                         }
 
@@ -1657,5 +1658,33 @@ public class ProductListFragment
         }
 
         return "";
+    }
+
+    @Override
+    public void stopPreparePagePerformanceMonitoring() {
+        if (searchPerformanceMonitoringListener != null) {
+            searchPerformanceMonitoringListener.stopPreparePagePerformanceMonitoring();
+        }
+    }
+
+    @Override
+    public void startNetworkRequestPerformanceMonitoring() {
+        if (searchPerformanceMonitoringListener != null) {
+            searchPerformanceMonitoringListener.startNetworkRequestPerformanceMonitoring();
+        }
+    }
+
+    @Override
+    public void stopNetworkRequestPerformanceMonitoring() {
+        if (searchPerformanceMonitoringListener != null) {
+            searchPerformanceMonitoringListener.stopNetworkRequestPerformanceMonitoring();
+        }
+    }
+
+    @Override
+    public void startRenderPerformanceMonitoring() {
+        if (searchPerformanceMonitoringListener != null) {
+            searchPerformanceMonitoringListener.startRenderPerformanceMonitoring();
+        }
     }
 }
