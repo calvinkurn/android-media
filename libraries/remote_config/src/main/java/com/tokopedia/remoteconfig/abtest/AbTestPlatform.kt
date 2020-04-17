@@ -15,7 +15,6 @@ import com.tokopedia.track.TrackApp
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
-import org.json.JSONObject
 import rx.Subscriber
 import rx.schedulers.Schedulers
 import java.util.*
@@ -44,6 +43,16 @@ class AbTestPlatform @JvmOverloads constructor (val context: Context): RemoteCon
         return defaultValue
     }
 
+    val KEY_TIMESTAMP_PREVIOUS = "timestamp_previous"
+    val KEY_SESSION_ID = "session_id"
+
+    fun getIrisSessionId(): String {
+
+        val beginningCurrent = Calendar.getInstance().timeInMillis
+        val beginningPrevious = sharedPreferences.getString(KEY_TIMESTAMP_PREVIOUS, beginningCurrent.toString())
+
+        return sharedPreferences.getString(KEY_SESSION_ID, "") ?: ""
+    }
     override fun getByteArray(key: String?): ByteArray {
         throw RuntimeException("Method is not implemented yet")
     }
@@ -109,6 +118,7 @@ class AbTestPlatform @JvmOverloads constructor (val context: Context): RemoteCon
         } else {
             payloads[ID] = userSession.deviceId
         }
+        payloads[IRIS_SESSION_ID] = getIrisSessionId()
 
         val graphqlRequest = GraphqlRequest(GraphqlHelper.loadRawString(context.resources,
                 R.raw.gql_rollout_feature_variant), AbTestVariantPojo::class.java, payloads, false)
@@ -178,6 +188,7 @@ class AbTestPlatform @JvmOverloads constructor (val context: Context): RemoteCon
         val REVISION = "rev"
         val CLIENTID = "client_id"
         val ID = "id"
+        val IRIS_SESSION_ID = "iris_session_id"
         val ANDROID_CLIENTID = 1
         val KEY_SP_TIMESTAMP_AB_TEST = "key_sp_timestamp_ab_test"
         val SHARED_PREFERENCE_AB_TEST_PLATFORM = "tkpd-ab-test-platform"
