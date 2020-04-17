@@ -153,18 +153,18 @@ object AddEditProductMapper {
         val listPictureViewModelDraft = ArrayList<com.tokopedia.product.manage.common.draft.data.model.description.PictureViewModel>()
         val pictureViewModelDraft = com.tokopedia.product.manage.common.draft.data.model.description.PictureViewModel()
 
-        productDraft.variantInputModel.variantOptionParent.forEach { variantOptionDraft ->
-            productVariantOptionParentDraft.name = variantOptionDraft.name
-            productVariantOptionParentDraft.position = variantOptionDraft.position
-            productVariantOptionParentDraft.identifier = variantOptionDraft.identifier
-            variantOptionDraft.productVariantOptionChild?.forEach { optionChildDraft ->
-                optionChildDraft.apply {
+        productInputModel.variantInputModel.variantOptionParent.forEach { variantOptionInputModel ->
+            productVariantOptionParentDraft.name = variantOptionInputModel.name
+            productVariantOptionParentDraft.position = variantOptionInputModel.position
+            productVariantOptionParentDraft.identifier = variantOptionInputModel.identifier
+            variantOptionInputModel.productVariantOptionChild?.forEach { optionChildInputModel ->
+                optionChildInputModel.apply {
                     productVariantOptionChildDraft.hex = hex
                     productVariantOptionChildDraft.pvo = pvo
                     productVariantOptionChildDraft.tId = tId
                     productVariantOptionChildDraft.value = value
                     productVariantOptionChildDraft.vuv = vuv
-                    optionChildDraft.productPictureViewModelList?.forEach { pictureDraft ->
+                    optionChildInputModel.productPictureViewModelList?.forEach { pictureDraft ->
                         pictureDraft.apply {
                             pictureViewModelDraft.id = id
                             pictureViewModelDraft.x = x
@@ -183,9 +183,9 @@ object AddEditProductMapper {
                 listProductVariantOptionChildDraft.add(productVariantOptionChildDraft)
             }
             productVariantOptionParentDraft.productVariantOptionChild = listProductVariantOptionChildDraft
-            productVariantOptionParentDraft.unitName = variantOptionDraft.unitName
-            productVariantOptionParentDraft.v = variantOptionDraft.v
-            productVariantOptionParentDraft.vu = variantOptionDraft.vu
+            productVariantOptionParentDraft.unitName = variantOptionInputModel.unitName
+            productVariantOptionParentDraft.v = variantOptionInputModel.v
+            productVariantOptionParentDraft.vu = variantOptionInputModel.vu
             listProductVariantOptionParentDraft.add(productVariantOptionParentDraft)
         }
         productDraft.variantInputModel.variantOptionParent = listProductVariantOptionParentDraft
