@@ -45,12 +45,10 @@ class AbTestPlatform @JvmOverloads constructor (val context: Context): RemoteCon
 
     val KEY_TIMESTAMP_PREVIOUS = "timestamp_previous"
     val KEY_SESSION_ID = "session_id"
+    val SHARED_PREFERENCES = "com.tokopedia.iris.SHARED_PREFERENCES"
 
     fun getIrisSessionId(): String {
-
-        val beginningCurrent = Calendar.getInstance().timeInMillis
-        val beginningPrevious = sharedPreferences.getString(KEY_TIMESTAMP_PREVIOUS, beginningCurrent.toString())
-
+        val sharedPreferences = context.getSharedPreferences(SHARED_PREFERENCES, Context.MODE_PRIVATE)
         return sharedPreferences.getString(KEY_SESSION_ID, "") ?: ""
     }
     override fun getByteArray(key: String?): ByteArray {
