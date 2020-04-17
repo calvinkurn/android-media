@@ -250,11 +250,17 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
     }
 
     private PromoDigitalModel getPromoDigitalModel() {
+        Long price;
+        if(inputPriceHolderView.getVisibility() == View.VISIBLE){
+            price = inputPriceHolderView.getPriceInput();
+        }else{
+            price = cartDigitalInfoData.getAttributes() != null ? cartDigitalInfoData.getAttributes().getPricePlain() : 0
+        }
         return new PromoDigitalModel(
                 Integer.parseInt(Objects.requireNonNull(cartPassData.getCategoryId())),
                 getProductId(),
                 cartPassData.getClientNumber() != null ? cartPassData.getClientNumber() : "",
-                cartDigitalInfoData.getAttributes() != null ? cartDigitalInfoData.getAttributes().getPricePlain() : 0
+                price
         );
     }
 
