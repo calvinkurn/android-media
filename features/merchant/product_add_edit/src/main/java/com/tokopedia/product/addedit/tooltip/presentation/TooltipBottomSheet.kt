@@ -8,21 +8,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.RelativeLayout
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
-import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration
 import com.tokopedia.kotlin.extensions.view.toDp
-import com.tokopedia.kotlin.extensions.view.toPx
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.tooltip.adapter.TooltipTypeFactory
 import com.tokopedia.product.addedit.tooltip.model.TooltipModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import com.tokopedia.unifycomponents.toDp
-import com.tokopedia.unifycomponents.toPx
 import kotlinx.android.synthetic.main.bottom_sheet_list.view.*
 
-class TooltipBottomSheet: BottomSheetUnify() {
+class TooltipBottomSheet : BottomSheetUnify() {
 
     private var contentView: View? = null
     private var isDividerVisible: Boolean = false
@@ -33,6 +30,10 @@ class TooltipBottomSheet: BottomSheetUnify() {
         setCloseClickListener {
             dismiss()
         }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -48,7 +49,7 @@ class TooltipBottomSheet: BottomSheetUnify() {
     }
 
     private fun changeCloseButtonSize() {
-        val fontSize = resources.getDimension(R.dimen.fontSize_lvl7).toDp()
+        val fontSize = resources.getDimension(R.dimen.fontSize_lvl5).toDp()
         bottomSheetTitle.setTextSize(TypedValue.COMPLEX_UNIT_SP, fontSize)
         bottomSheetClose.drawable?.apply {
             val bitmap = (this as BitmapDrawable).bitmap
@@ -78,7 +79,16 @@ class TooltipBottomSheet: BottomSheetUnify() {
         contentView?.rvList?.apply {
             setHasFixedSize(true)
             adapter = listAdapter
-            if (isDividerVisible) addItemDecoration(DividerItemDecoration(context))
+            if (isDividerVisible) {
+                ContextCompat.getDrawable(context, R.drawable.tooltip_divider)?.also {
+                    addItemDecoration(ImageDividerItemDecoration(
+                            drawable = it,
+                            drawOnLastItem = false,
+                            paddingLeft = context.resources.getDimension(R.dimen.tooltip_divider_padding_left).toInt(),
+                            paddingTop = context.resources.getDimension(R.dimen.layout_lvl1).toInt(),
+                            paddingBottom = context.resources.getDimension(R.dimen.layout_lvl1).toInt()))
+                }
+            }
             layoutManager = LinearLayoutManager(context)
         }
         setChild(contentView)
@@ -88,7 +98,7 @@ class TooltipBottomSheet: BottomSheetUnify() {
         listAdapter?.setElement(data)
     }
 
-    fun notifyDataSetChanged(){
+    fun notifyDataSetChanged() {
         listAdapter?.notifyDataSetChanged()
     }
 

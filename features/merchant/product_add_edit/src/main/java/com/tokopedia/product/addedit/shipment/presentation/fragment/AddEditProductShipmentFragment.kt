@@ -139,7 +139,11 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
         }
         btnSave?.setOnClickListener {
             btnSave?.isLoading = true
-            submitInputEdit()
+            if(shipmentViewModel.isAddMode) {
+                submitInput()
+            } else {
+                submitInputEdit()
+            }
         }
         switchInsurance?.setOnCheckedChangeListener { buttonView, isChecked ->
             if (shipmentViewModel.isEditMode && !shipmentViewModel.isAddMode) {

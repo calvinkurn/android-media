@@ -42,7 +42,7 @@ object ProductAddShippingTracking {
         if (isSuccess) {
             sendAddProductClick(SCREEN, shopId, "click finish success", "")
         } else {
-            sendAddProductClick(SCREEN, shopId, "click finish error", errorName)
+            sendAddProductClick(shopId, "click finish error", errorName)
         }
     }
 

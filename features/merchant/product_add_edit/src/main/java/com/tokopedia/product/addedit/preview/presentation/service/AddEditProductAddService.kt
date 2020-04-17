@@ -129,13 +129,11 @@ open class AddEditProductAddService : AddEditProductBaseService() {
         return object : AddEditProductNotificationManager(urlImageCount, manager,
                 this@AddEditProductAddService) {
             override fun getSuccessIntent(): PendingIntent {
-                ProductAddShippingTracking.clickFinish(userSession.shopId, true)
                 val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PRODUCT_MANAGE_LIST)
                 return PendingIntent.getActivity(context, 0, intent, 0)
             }
 
             override fun getFailedIntent(errorMessage: String): PendingIntent {
-                ProductAddShippingTracking.clickFinish(userSession.shopId, false)
                 val draftId = productDraftId.toString()
                 val intent = AddEditProductPreviewActivity.createInstance(context, draftId,
                         isFromSuccessNotif = false, isFromNotifEditMode = false)
