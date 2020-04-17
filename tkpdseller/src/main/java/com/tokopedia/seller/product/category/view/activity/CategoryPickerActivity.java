@@ -31,6 +31,7 @@ public class CategoryPickerActivity extends BaseSimpleActivity implements
     public static final String CATEGORY_RESULT_LEVEL = "CATEGORY_RESULT_LEVEL";
     public static final String CATEGORY_RESULT_ID = "CATEGORY_RESULT_ID";
     public static final String CATEGORY_RESULT_NAME = "CATEGORY_RESULT_NAME";
+    public static final String CATEGORY_RESULT_FULL_NAME = "CATEGORY_RESULT_FULL_NAME";
 
     public static void start(Activity activity, int requestCode, long depId) {
         Intent intent = createIntent(activity, depId);
@@ -55,6 +56,19 @@ public class CategoryPickerActivity extends BaseSimpleActivity implements
         return intent;
     }
 
+    private String getCategoryResultFullName(List<CategoryViewModel> listCategory) {
+        StringBuilder sb = new StringBuilder();
+        if (listCategory != null) {
+            String prefix = "";
+            for(CategoryViewModel category: listCategory) {
+                sb.append(prefix);
+                prefix = "/";
+                sb.append(category.getName());
+            }
+        }
+        return sb.toString();
+    }
+
     @Override
     public void selectSetCategory(List<CategoryViewModel> listCategory) {
         Intent intent = new Intent();
@@ -62,6 +76,7 @@ public class CategoryPickerActivity extends BaseSimpleActivity implements
         CategoryViewModel chosenCategory = listCategory.get(listCategory.size() - 1);
         intent.putExtra(CATEGORY_RESULT_ID, chosenCategory.getId());
         intent.putExtra(CATEGORY_RESULT_NAME, chosenCategory.getName());
+        intent.putExtra(CATEGORY_RESULT_FULL_NAME, getCategoryResultFullName(listCategory));
         setResult(Activity.RESULT_OK, intent);
         finish();
     }

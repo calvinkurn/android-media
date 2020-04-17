@@ -46,8 +46,8 @@ import com.tokopedia.product.addedit.detail.di.AddEditProductDetailComponent
 import com.tokopedia.product.addedit.detail.presentation.adapter.NameRecommendationAdapter
 import com.tokopedia.product.addedit.detail.presentation.adapter.WholeSalePriceInputAdapter
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants
+import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.CATEGORY_RESULT_FULL_NAME
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.CATEGORY_RESULT_ID
-import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.CATEGORY_RESULT_NAME
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.CONDITION_NEW
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.CONDITION_USED
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.DEBOUNCE_DELAY_MILLIS
@@ -624,7 +624,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                 REQUEST_CODE_CATEGORY -> {
 
                     val categoryId = data.getLongExtra(CATEGORY_RESULT_ID, 0)
-                    val categoryName = data.getStringExtra(CATEGORY_RESULT_NAME)
+                    val categoryName = data.getStringExtra(CATEGORY_RESULT_FULL_NAME)
 
                     viewModel.productInputModel.detailInputModel.categoryId = categoryId.toString()
                     viewModel.productInputModel.detailInputModel.categoryName = categoryName
@@ -835,6 +835,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         return inputResult
     }
 
+    @Suppress("RedundantIf", "LiftReturnOrAssignment")
     private fun fillProductDetailForm(detailInputModel: DetailInputModel) {
 
         // product photo
@@ -889,6 +890,17 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             if (detailInputModel.condition == CONDITION_NEW) newCondition?.listRightRadiobtn?.isChecked = true
             else secondHandCondition?.listRightRadiobtn?.isChecked = true
 
+            // list item click listener
+            productConditionListView?.run {
+                this.setOnItemClickListener { _, _, position, _ ->
+                    ListUnifyUtil.setSelected(this, position) {
+                        if (position == NEW_PRODUCT_INDEX) isProductConditionNew = true
+                        else isProductConditionNew = false
+                    }
+                }
+            }
+
+            // radio button click listener
             newCondition?.listRightRadiobtn?.setOnCheckedChangeListener { _, isChecked ->
                 if (isChecked) secondHandCondition?.listRightRadiobtn?.isChecked = false
                 isProductConditionNew = true
