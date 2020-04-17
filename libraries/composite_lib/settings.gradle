@@ -17,7 +17,7 @@ buildCache {
 }
 
 include ":authentication"
-//include ":akamai_bot_lib"
+include ":akamai_bot_lib"
 include ":authentication_common"
 include ":analytic_constant"
 include ":cache_api"
