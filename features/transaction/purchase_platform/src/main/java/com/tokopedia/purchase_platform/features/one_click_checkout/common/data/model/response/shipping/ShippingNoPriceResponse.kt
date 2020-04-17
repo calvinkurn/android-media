@@ -1,8 +1,6 @@
-package com.tokopedia.purchase_platform.features.one_click_checkout.common.data.model.response
+package com.tokopedia.purchase_platform.features.one_click_checkout.common.data.model.response.shipping
 
 import com.google.gson.annotations.SerializedName
-import dagger.Provides
-
 
 data class ShippingNoPriceResponse (
         @SerializedName("ongkir_shipper_service")
