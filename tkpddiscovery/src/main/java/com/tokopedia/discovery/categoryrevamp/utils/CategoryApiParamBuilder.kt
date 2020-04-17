@@ -1,6 +1,7 @@
 package com.tokopedia.discovery.categoryrevamp.utils
 
 import com.tokopedia.authentication.AuthHelper
+import com.tokopedia.common_category.constants.CategoryNavConstants
 import com.tokopedia.core.gcm.GCMHandler
 import com.tokopedia.common_category.util.ParamMapToUrl
 import com.tokopedia.common_category.model.filter.DAFilterQueryType
@@ -17,16 +18,16 @@ class CategoryApiParamBuilder {
         val quickFilterParam = RequestParams()
         val daFilterQueryType = DAFilterQueryType()
         daFilterQueryType.sc = mDepartmentId
-        quickFilterParam.putObject(com.tokopedia.common_category.constants.CategoryNavConstants.FILTER, daFilterQueryType)
-        quickFilterParam.putString(com.tokopedia.common_category.constants.CategoryNavConstants.SOURCE, "quick_filter")
+        quickFilterParam.putObject(CategoryNavConstants.FILTER, daFilterQueryType)
+        quickFilterParam.putString(CategoryNavConstants.SOURCE, "quick_filter")
         return quickFilterParam
     }
 
     fun generateSubCategoryParam(mDepartmentId: String): RequestParams {
         val subCategoryMap = RequestParams()
-        subCategoryMap.putString(com.tokopedia.common_category.constants.CategoryNavConstants.IDENTIFIER, mDepartmentId)
-        subCategoryMap.putBoolean(com.tokopedia.common_category.constants.CategoryNavConstants.INTERMEDIARY, false)
-        subCategoryMap.putBoolean(com.tokopedia.common_category.constants.CategoryNavConstants.SAFESEARCH, false)
+        subCategoryMap.putString(CategoryNavConstants.IDENTIFIER, mDepartmentId)
+        subCategoryMap.putBoolean(CategoryNavConstants.INTERMEDIARY, false)
+        subCategoryMap.putBoolean(CategoryNavConstants.SAFESEARCH, false)
         return subCategoryMap
     }
 
@@ -41,13 +42,13 @@ class CategoryApiParamBuilder {
 
 
         val searchProductRequestParams = RequestParams.create()
-        searchProductRequestParams.putString(com.tokopedia.common_category.constants.CategoryNavConstants.START, (start * 10).toString())
-        searchProductRequestParams.putString(com.tokopedia.common_category.constants.CategoryNavConstants.SC, mDepartmentId)
-        searchProductRequestParams.putString(com.tokopedia.common_category.constants.CategoryNavConstants.DEVICE, "android")
-        searchProductRequestParams.putString(com.tokopedia.common_category.constants.CategoryNavConstants.UNIQUE_ID, getUniqueId(userSession, gcmHandler))
-        searchProductRequestParams.putString(com.tokopedia.common_category.constants.CategoryNavConstants.KEY_SAFE_SEARCH, "false")
-        searchProductRequestParams.putString(com.tokopedia.common_category.constants.CategoryNavConstants.ROWS, "10")
-        searchProductRequestParams.putString(com.tokopedia.common_category.constants.CategoryNavConstants.SOURCE, "search_product")
+        searchProductRequestParams.putString(CategoryNavConstants.START, (start * 10).toString())
+        searchProductRequestParams.putString(CategoryNavConstants.SC, mDepartmentId)
+        searchProductRequestParams.putString(CategoryNavConstants.DEVICE, "android")
+        searchProductRequestParams.putString(CategoryNavConstants.UNIQUE_ID, getUniqueId(userSession, gcmHandler))
+        searchProductRequestParams.putString(CategoryNavConstants.KEY_SAFE_SEARCH, "false")
+        searchProductRequestParams.putString(CategoryNavConstants.ROWS, "10")
+        searchProductRequestParams.putString(CategoryNavConstants.SOURCE, "search_product")
         if (defaultSelectedFilter.isNotEmpty()) {
             searchProductRequestParams.putAllString(defaultSelectedFilter)
             defaultSelectedFilter.clear()
@@ -59,14 +60,14 @@ class CategoryApiParamBuilder {
 
 
         val topAdsRequestParam = RequestParams.create()
-        topAdsRequestParam.putString(com.tokopedia.common_category.constants.CategoryNavConstants.KEY_SAFE_SEARCH, "false")
-        topAdsRequestParam.putString(com.tokopedia.common_category.constants.CategoryNavConstants.DEVICE, "android")
-        topAdsRequestParam.putString(com.tokopedia.common_category.constants.CategoryNavConstants.KEY_SRC, "directory")
-        topAdsRequestParam.putString(com.tokopedia.common_category.constants.CategoryNavConstants.KEY_PAGE, start.toString())
-        topAdsRequestParam.putString(com.tokopedia.common_category.constants.CategoryNavConstants.KEY_EP, "product")
-        topAdsRequestParam.putString(com.tokopedia.common_category.constants.CategoryNavConstants.KEY_ITEM, "2")
-        topAdsRequestParam.putString(com.tokopedia.common_category.constants.CategoryNavConstants.KEY_F_SHOP, "1")
-        topAdsRequestParam.putString(com.tokopedia.common_category.constants.CategoryNavConstants.KEY_DEPT_ID, mDepartmentId)
+        topAdsRequestParam.putString(CategoryNavConstants.KEY_SAFE_SEARCH, "false")
+        topAdsRequestParam.putString(CategoryNavConstants.DEVICE, "android")
+        topAdsRequestParam.putString(CategoryNavConstants.KEY_SRC, "directory")
+        topAdsRequestParam.putString(CategoryNavConstants.KEY_PAGE, start.toString())
+        topAdsRequestParam.putString(CategoryNavConstants.KEY_EP, "product")
+        topAdsRequestParam.putString(CategoryNavConstants.KEY_ITEM, "2")
+        topAdsRequestParam.putString(CategoryNavConstants.KEY_F_SHOP, "1")
+        topAdsRequestParam.putString(CategoryNavConstants.KEY_DEPT_ID, mDepartmentId)
 
         topAdsRequestParam.putAllString(selectedSortList)
         if (defaultSelectedFilter.isNotEmpty()) {
@@ -84,10 +85,10 @@ class CategoryApiParamBuilder {
         val paramMap = RequestParams()
         val daFilterQueryType = DAFilterQueryType()
         daFilterQueryType.sc = mDepartmentId
-        paramMap.putString(com.tokopedia.common_category.constants.CategoryNavConstants.SOURCE, "search_product")
-        paramMap.putObject(com.tokopedia.common_category.constants.CategoryNavConstants.FILTER, daFilterQueryType)
-        paramMap.putString(com.tokopedia.common_category.constants.CategoryNavConstants.Q, "")
-        paramMap.putString(com.tokopedia.common_category.constants.CategoryNavConstants.SOURCE, "directory")
+        paramMap.putString(CategoryNavConstants.SOURCE, "search_product")
+        paramMap.putObject(CategoryNavConstants.FILTER, daFilterQueryType)
+        paramMap.putString(CategoryNavConstants.Q, "")
+        paramMap.putString(CategoryNavConstants.SOURCE, "directory")
         return paramMap
 
     }

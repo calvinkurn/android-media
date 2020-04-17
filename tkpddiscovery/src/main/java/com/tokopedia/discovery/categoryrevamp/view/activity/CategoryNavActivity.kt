@@ -22,6 +22,7 @@ import com.tokopedia.core.gcm.Constants
 import com.tokopedia.core.router.discovery.BrowseProductRouter
 import com.tokopedia.discovery.R
 import com.tokopedia.common_category.customview.SearchNavigationView
+import com.tokopedia.common_category.fragment.BaseCategorySectionFragment
 import com.tokopedia.discovery.categoryrevamp.adapters.CategoryNavigationPagerAdapter
 import com.tokopedia.discovery.categoryrevamp.analytics.CategoryPageAnalytics.Companion.catAnalyticsInstance
 import com.tokopedia.discovery.categoryrevamp.data.CategorySectionItem
@@ -64,7 +65,7 @@ private const val STATE_BIG = 3
 
 class CategoryNavActivity : BaseActivity(), CategoryNavigationListener,
         SearchNavigationView.SearchNavClickListener,
-        com.tokopedia.common_category.fragment.BaseCategorySectionFragment.SortAppliedListener,
+        BaseCategorySectionFragment.SortAppliedListener,
         BaseBannedProductFragment.OnBannedFragmentInteractionListener,
         BottomSheetListener {
 
@@ -135,7 +136,7 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener,
         }
 
         @JvmStatic
-        fun getCategoryIntentWithFilter(context: Context,
+        fun  getCategoryIntentWithFilter(context: Context,
                                         categoryUrl: String): Intent {
             val intent = Intent(context, CategoryNavActivity::class.java)
             intent.putExtra(BrowseProductRouter.EXTRA_CATEGORY_URL, categoryUrl)
@@ -158,7 +159,7 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener,
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_category_nav)
         bottomSheetFilterView = findViewById(R.id.bottomSheetFilter)
-        searchNavContainer = findViewById(R.id.search_nav_container)
+        searchNavContainer = findViewById(R.id.category_search_nav_container)
         initInjector()
         prepareView()
         handleIntent(intent)
@@ -356,7 +357,7 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener,
     }
 
     private fun sendBottomSheetHideEvent() {
-        val selectedFragment = categorySectionPagerAdapter?.getItem(pager.currentItem) as com.tokopedia.common_category.fragment.BaseCategorySectionFragment
+        val selectedFragment = categorySectionPagerAdapter?.getItem(pager.currentItem) as BaseCategorySectionFragment
         selectedFragment.onBottomSheetHide()
     }
 
@@ -364,7 +365,7 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener,
 
         if (filterParameter == null) return
 
-        val selectedFragment = categorySectionPagerAdapter?.getItem(pager.currentItem) as com.tokopedia.common_category.fragment.BaseCategorySectionFragment
+        val selectedFragment = categorySectionPagerAdapter?.getItem(pager.currentItem) as BaseCategorySectionFragment
 
         if (filterParameter.isNotEmpty() && (filterParameter.size > 1 || !filterParameter.containsKey(ORDER_BY))) {
             searchNavContainer?.onFilterSelected(true)
@@ -468,8 +469,8 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener,
     private fun onPageSelectedCalled(position: Int) {
         this.isForceSwipeToShop = false
         this.activeTabPosition = position
-        if (categorySectionPagerAdapter?.getItem(pager.currentItem) is com.tokopedia.common_category.fragment.BaseCategorySectionFragment) {
-            val selectedFragment = categorySectionPagerAdapter?.getItem(pager.currentItem) as com.tokopedia.common_category.fragment.BaseCategorySectionFragment
+        if (categorySectionPagerAdapter?.getItem(pager.currentItem) is BaseCategorySectionFragment) {
+            val selectedFragment = categorySectionPagerAdapter?.getItem(pager.currentItem) as BaseCategorySectionFragment
             selectedFragment.resetSortTick()
             val filterParameter = selectedFragment.getSelectedFilter()
             if (filterParameter.isNotEmpty() && (filterParameter.size > 1 || !filterParameter.containsKey(ORDER_BY))) {

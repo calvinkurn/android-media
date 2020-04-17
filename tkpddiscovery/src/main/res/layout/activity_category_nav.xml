@@ -55,7 +55,7 @@
     </FrameLayout>
 
     <com.tokopedia.common_category.customview.SearchNavigationView
-        android:id="@+id/search_nav_container"
+        android:id="@+id/category_search_nav_container"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|center_horizontal"

@@ -103,7 +103,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.viewModelKtx
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
     implementation project(rootProject.ext.features.basemvvm)
-    implementation project(rootProject.ext.features.commonCategory)
+    api project(rootProject.ext.features.commonCategory)
 
 }
 

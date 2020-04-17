@@ -75,7 +75,7 @@ class CategoryLevelTwoFragment : Fragment(), Listener, HasComponent<CategoryNavi
     }
 
     private fun setUpObserver() {
-        categoryLevelTwoViewModel.getCategoryChildren().observe(viewLifecycleOwner, Observer {
+            categoryLevelTwoViewModel.getCategoryChildren().observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     childList.clear()

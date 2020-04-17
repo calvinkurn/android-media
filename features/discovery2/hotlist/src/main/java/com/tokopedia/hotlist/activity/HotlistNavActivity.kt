@@ -10,6 +10,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.common_category.customview.SearchNavigationView
 import com.tokopedia.common_category.fragment.BaseCategorySectionFragment
+import com.tokopedia.common_category.interfaces.CategoryNavigationListener
 import com.tokopedia.hotlist.analytics.HotlistNavAnalytics.Companion.hotlistNavAnalytics
 import com.tokopedia.hotlist.fragment.HotlistNavFragment
 import com.tokopedia.filter.common.data.Filter
@@ -17,7 +18,6 @@ import com.tokopedia.filter.newdynamicfilter.analytics.FilterEventTracking
 import com.tokopedia.filter.newdynamicfilter.analytics.FilterTrackingData
 import com.tokopedia.filter.newdynamicfilter.view.BottomSheetListener
 import com.tokopedia.filter.widget.BottomSheetFilterView
-import com.tokopedia.hotlist.CategoryNavigationListener
 import com.tokopedia.hotlist.R
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
