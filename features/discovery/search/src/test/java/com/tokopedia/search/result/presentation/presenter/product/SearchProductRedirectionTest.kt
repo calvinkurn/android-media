@@ -59,8 +59,6 @@ internal class SearchProductRedirectionTest: ProductListPresenterTestFixtures() 
 
             verifyHideLoading(productListView)
         }
-
-        confirmVerified(productListView)
     }
 
     private fun `Then verify get dynamic filter use case is not executed`() {
