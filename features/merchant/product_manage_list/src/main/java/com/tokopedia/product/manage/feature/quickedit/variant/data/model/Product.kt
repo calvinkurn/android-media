@@ -13,7 +13,7 @@ data class Product (
     @SerializedName("isPrimary")
     val isPrimary: Boolean,
     @SerializedName("price")
-    val price: Float,
+    val price: Int,
     @SerializedName("sku")
     val sku: String,
     @SerializedName("stock")
