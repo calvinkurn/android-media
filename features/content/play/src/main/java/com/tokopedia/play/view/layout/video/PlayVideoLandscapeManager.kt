@@ -13,7 +13,6 @@ import com.tokopedia.play.util.changeConstraint
  */
 class PlayVideoLandscapeManager(
         context: Context,
-        @IdRes private val videoBackgroundComponentId: Int,
         @IdRes private val videoComponentId: Int,
         @IdRes private val videoLoadingComponentId: Int,
         @IdRes private val oneTapComponentId: Int,
@@ -24,7 +23,6 @@ class PlayVideoLandscapeManager(
     }
 
     override fun layoutView(view: View) {
-        layoutVideoBackground(container = view, id = videoBackgroundComponentId)
         layoutVideo(container = view, id = videoComponentId)
         layoutVideoLoading(container = view, id = videoLoadingComponentId)
         layoutOneTap(container = view, id = oneTapComponentId)

@@ -20,7 +20,6 @@ import com.tokopedia.play.ui.loading.VideoLoadingComponent
 import com.tokopedia.play.ui.onetap.OneTapComponent
 import com.tokopedia.play.ui.overlayvideo.OverlayVideoComponent
 import com.tokopedia.play.ui.video.VideoComponent
-import com.tokopedia.play.ui.videobackground.VideoBackgroundComponent
 import com.tokopedia.play.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play.util.event.EventObserver
 import com.tokopedia.play.view.custom.RoundedConstraintLayout
@@ -198,7 +197,6 @@ class PlayVideoFragment : BaseDaggerFragment(), CoroutineScope {
 
     //region Component Initialization
     private fun initComponents(container: ViewGroup, topBounds: Int?) {
-        val videoBackgroundComponent = initVideoBackgroundComponent(container)
         val videoComponent = initVideoComponent(container)
         val videoLoadingComponent = initVideoLoadingComponent(container)
         val oneTapComponent = initOneTapComponent(container)
@@ -208,7 +206,6 @@ class PlayVideoFragment : BaseDaggerFragment(), CoroutineScope {
                 context = requireContext(),
                 orientation = playViewModel.screenOrientation,
                 topBounds = topBounds,
-                videoBackgroundComponentId = videoBackgroundComponent.getContainerId(),
                 videoComponentId = videoComponent.getContainerId(),
                 videoLoadingComponentId = videoLoadingComponent.getContainerId(),
                 oneTapComponentId = oneTapComponent.getContainerId(),
@@ -218,10 +215,6 @@ class PlayVideoFragment : BaseDaggerFragment(), CoroutineScope {
         sendInitState()
 
         layoutManager.layoutView(container)
-    }
-
-    private fun initVideoBackgroundComponent(container: ViewGroup): UIComponent<Unit> {
-        return VideoBackgroundComponent(container, EventBusFactory.get(viewLifecycleOwner), this, dispatchers)
     }
 
     private fun initVideoComponent(container: ViewGroup): UIComponent<Unit> {

@@ -33,9 +33,11 @@ open class VideoSettingsComponent(
                             is ScreenStateEvent.Init -> {
                                 uiView.setFullscreen(it.screenOrientation.isLandscape)
                                 if (!it.stateHelper.videoOrientation.isLandscape) uiView.hide()
+                                else uiView.show()
                             }
                             is ScreenStateEvent.VideoStreamChanged -> if (it.videoStream.orientation.isLandscape) uiView.show() else uiView.hide()
                             is ScreenStateEvent.ImmersiveStateChanged -> if (it.shouldImmersive) uiView.fadeOut() else uiView.fadeIn()
+                            is ScreenStateEvent.BottomInsetsChanged -> if (!it.isAnyShown && it.stateHelper.videoOrientation.isLandscape) uiView.show() else uiView.hide()
                         }
                     }
         }

@@ -6,14 +6,19 @@ import android.animation.ObjectAnimator
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.*
 import android.view.inputmethod.InputMethodManager
 import android.widget.FrameLayout
 import android.widget.ImageView
+import androidx.annotation.Nullable
 import androidx.core.view.ViewCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
@@ -356,6 +361,8 @@ class PlayFragment : BaseDaggerFragment(), SensorOrientationManager.OrientationL
         flVideo.setOnClickListener {
             hideAllInsets()
         }
+
+        hideAllInsets()
     }
 
     private fun setupScreen(view: View) {
@@ -447,6 +454,7 @@ class PlayFragment : BaseDaggerFragment(), SensorOrientationManager.OrientationL
     private fun observeVideoStream() {
         playViewModel.observableVideoStream.observe(viewLifecycleOwner, Observer {
             setWindowSoftInputMode(it.channelType.isLive)
+            setBackground(it.backgroundUrl)
         })
     }
 
@@ -512,5 +520,15 @@ class PlayFragment : BaseDaggerFragment(), SensorOrientationManager.OrientationL
                     channelId = channelId,
                     channelType = playViewModel.channelType)
         }
+    }
+
+    private fun setBackground(backgroundUrl: String) {
+        Glide.with(requireContext()).load(backgroundUrl).into(object : CustomTarget<Drawable?>() {
+            override fun onLoadCleared(@Nullable placeholder: Drawable?) {}
+
+            override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable?>?) {
+                view?.background = resource
+            }
+        })
     }
 }

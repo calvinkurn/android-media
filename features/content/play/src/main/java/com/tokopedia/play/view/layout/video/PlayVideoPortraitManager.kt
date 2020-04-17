@@ -14,7 +14,6 @@ import com.tokopedia.play.util.changeConstraint
 class PlayVideoPortraitManager(
         context: Context,
         private val topBounds: Int?,
-        @IdRes private val videoBackgroundComponentId: Int,
         @IdRes private val videoComponentId: Int,
         @IdRes private val videoLoadingComponentId: Int,
         @IdRes private val oneTapComponentId: Int,
@@ -28,7 +27,6 @@ class PlayVideoPortraitManager(
     }
 
     override fun layoutView(view: View) {
-        layoutVideoBackground(container = view, id = videoBackgroundComponentId)
         layoutVideo(container = view, id = videoComponentId, topBounds = if (topBounds != null) topBounds + offset16 else 0)
         layoutVideoLoading(container = view, id = videoLoadingComponentId)
         layoutOneTap(container = view, id = oneTapComponentId)
