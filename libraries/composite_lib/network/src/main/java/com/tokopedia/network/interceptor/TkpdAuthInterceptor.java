@@ -426,7 +426,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
         try {
             networkRouter.sendAnalyticsAnomalyResponse(errorCase,
                     userSession.getAccessToken(), EncoderDecoder.Decrypt(userSession.getFreshToken(), userSession.getRefreshTokenIV()),
-                    userSession.getUserId(), response.peekBody(BYTE_COUNT).toString(), requestToString(finalRequest));
+                    userSession.getUserId(), response.peekBody(BYTE_COUNT).string(), requestToString(finalRequest));
         } catch (Exception e) {
             e.printStackTrace();
         }
