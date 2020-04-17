@@ -1,8 +1,9 @@
-package com.tokopedia.settingnotif.usersetting.di
+package com.tokopedia.settingnotif.usersetting.di.module
 
 import android.content.Context
 import androidx.annotation.RawRes
 import com.tokopedia.graphql.domain.GraphqlUseCase
+import com.tokopedia.settingnotif.usersetting.di.UserSettingScope
 import com.tokopedia.settingnotif.usersetting.domain.usecase.GetUserSettingUseCase
 import com.tokopedia.settingnotif.usersetting.domain.usecase.SetUserSettingUseCase
 import com.tokopedia.settingnotif.usersetting.presenter.SettingFieldPresenter
@@ -13,7 +14,10 @@ import dagger.Module
 import dagger.Provides
 
 
-@Module class UserSettingModule(var context: Context?, @RawRes val gqlQueryRaw: Int) {
+@Module class UserSettingModule(
+        var context: Context?,
+        @RawRes val gqlQueryRaw: Int
+) {
 
     @UserSettingScope
     @Provides
