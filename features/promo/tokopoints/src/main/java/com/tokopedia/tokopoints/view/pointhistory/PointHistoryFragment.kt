@@ -51,9 +51,8 @@ class PointHistoryFragment : BaseDaggerFragment(), PointHistoryContract.View, Vi
     private var isTraceSTopped = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        performanceMonitoring = PerformanceMonitoring.start(POINTHISTORY_TOKOPOINT_PLT)
         super.onCreate(savedInstanceState)
-        performanceMonitoring = PerformanceMonitoring.start(FPM_POINTHISTORY_TOKOPOINT)
-
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -199,7 +198,7 @@ class PointHistoryFragment : BaseDaggerFragment(), PointHistoryContract.View, Vi
         private val CONTAINER_LOADER = 0
         private val CONTAINER_DATA = 1
         private val CONTAINER_ERROR = 2
-        private const val FPM_POINTHISTORY_TOKOPOINT = "fpm_pointhistory_tokopoint"
+        private const val POINTHISTORY_TOKOPOINT_PLT = "pointhistorytokopoint_plt"
 
         fun newInstance(extras: Bundle?): Fragment {
             val fragment = PointHistoryFragment()

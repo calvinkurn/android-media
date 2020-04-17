@@ -70,8 +70,8 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
     private val mViewModel: CouponCatalogViewModel by lazy { ViewModelProviders.of(this, factory)[CouponCatalogViewModel::class.java] }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        fpmDetailTokopoint = PerformanceMonitoring.start(CATALOGDETAIL_TOKOPOINT_PLT)
         mUserSession = UserSession(appContext)
-        fpmDetailTokopoint = PerformanceMonitoring.start(FPM_CATALOGDETAIL_TOKOPOINT)
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
     }
@@ -680,6 +680,7 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
 
     override fun onFinishRendering() {
         if (fpmDetailTokopoint != null) fpmDetailTokopoint?.stopTrace()
+        fpmDetailTokopoint = null
     }
 
 
@@ -694,7 +695,7 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
     }
 
     companion object {
-        private const val FPM_CATALOGDETAIL_TOKOPOINT = "fpm_catalogdetail_tokopoint"
+        private const val CATALOGDETAIL_TOKOPOINT_PLT = "catalogdetailtokopoint_plt"
         private const val CONTAINER_LOADER = 0
         private const val CONTAINER_DATA = 1
         private const val CONTAINER_ERROR = 2

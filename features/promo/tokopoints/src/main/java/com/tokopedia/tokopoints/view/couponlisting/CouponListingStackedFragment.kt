@@ -45,8 +45,8 @@ class CouponListingStackedFragment : BaseDaggerFragment(), CouponListingStackedC
     private var isTraceSTopped = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        performanceMonitoring = PerformanceMonitoring.start(COUPONLISTSTACK_TOKOPOINT_PLT)
         super.onCreate(savedInstanceState)
-        performanceMonitoring = PerformanceMonitoring.start(FPM_COUPONLISTSTACK_TOKOPOINT)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -281,7 +281,7 @@ class CouponListingStackedFragment : BaseDaggerFragment(), CouponListingStackedC
         private val CONTAINER_EMPTY = 3
         val REQUEST_CODE_STACKED_IN_ADAPTER = 4
         val REQUEST_CODE_STACKED_ADAPTER = 5
-        private const val FPM_COUPONLISTSTACK_TOKOPOINT = "fpm_couponliststack_tokopoint"
+        private const val COUPONLISTSTACK_TOKOPOINT_PLT = "couponliststacktokopoint_plt"
 
         fun newInstance(): CouponListingStackedFragment {
             return CouponListingStackedFragment()

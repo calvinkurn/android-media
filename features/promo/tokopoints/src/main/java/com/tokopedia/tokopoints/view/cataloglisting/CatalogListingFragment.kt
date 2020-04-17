@@ -74,9 +74,8 @@ class CatalogListingFragment : BaseDaggerFragment(), CatalogListingContract.View
     private var isTraceStopped = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        performanceMonitoring = PerformanceMonitoring.start(CATALOGLIST_TOKOPOINT_PLT)
         super.onCreate(savedInstanceState)
-        performanceMonitoring = PerformanceMonitoring.start(FPM_CATALOGLIST_TOKOPOINT)
-
     }
 
     override fun onErrorFilter(errorMessage: String, hasInternet: Boolean) {
@@ -508,7 +507,7 @@ class CatalogListingFragment : BaseDaggerFragment(), CatalogListingContract.View
         private const val CONTAINER_LOADER = 0
         private const val CONTAINER_DATA = 1
         private const val CONTAINER_ERROR = 2
-        private const val FPM_CATALOGLIST_TOKOPOINT = "fpm_cataloglist_tokopoint"
+        private const val CATALOGLIST_TOKOPOINT_PLT = "cataloglisttokopoint_plt"
         fun newInstance(extras: Bundle?): Fragment {
             val fragment: Fragment = CatalogListingFragment()
             fragment.arguments = extras

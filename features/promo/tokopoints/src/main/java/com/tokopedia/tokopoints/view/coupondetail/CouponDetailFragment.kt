@@ -86,8 +86,8 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
     private var mBottomSheetFragment: CloseableBottomSheetFragment? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        performanceMonitoring = PerformanceMonitoring.start(COUPONDETAIL_TOKOPOINT_PLT)
         super.onCreate(savedInstanceState)
-        performanceMonitoring = PerformanceMonitoring.start(FPM_COUPONDETAIL_TOKOPOINT)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -731,7 +731,7 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
     companion object {
         val AB_TESTING_CTA_VARIANT_A = "CTA Phone Verify 2"
         val AB_TEST_PHONE_VERIFICATION_KEY = "CTA Phone Verify 2"
-        private const val FPM_COUPONDETAIL_TOKOPOINT = "fpm_coupondetail_tokopoint"
+        private const val COUPONDETAIL_TOKOPOINT_PLT = "coupondetailtokopoint_plt"
         private val REQUEST_CODE_VERIFICATION_PHONE = 301
         private val CONTAINER_LOADER = 0
         private val CONTAINER_DATA = 1

@@ -26,7 +26,6 @@ import com.tokopedia.design.R
 import com.tokopedia.design.text.TkpdHintTextInputLayout
 import com.tokopedia.tokopoints.di.TokopointBundleComponent
 import com.tokopedia.tokopoints.view.catalogdetail.CouponCatalogDetailsActivity
-import com.tokopedia.tokopoints.view.couponlisting.CouponListingStackedFragment
 import com.tokopedia.tokopoints.view.util.*
 
 class SendGiftFragment : BottomSheetDialogFragment(), SendGiftContract.View, View.OnClickListener, TextWatcher {
@@ -44,8 +43,8 @@ class SendGiftFragment : BottomSheetDialogFragment(), SendGiftContract.View, Vie
     private var isTraceSTopped = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        sendGiftPerformanceMonitoring1 = PerformanceMonitoring.start(SENDGIFT1_TOKOPOINT_PLT)
         super.onCreate(savedInstanceState)
-        sendGiftPerformanceMonitoring1 = PerformanceMonitoring.start(FPM_SENDGIFT_TOKOPOINT_1)
         setStyle(STYLE_NORMAL, R.style.TransparentBottomSheetDialogTheme)
     }
 
@@ -137,7 +136,7 @@ class SendGiftFragment : BottomSheetDialogFragment(), SendGiftContract.View, Vie
                 return
             }
             isTraceSTopped = false
-            sendGiftPerformanceMonitoring2 = PerformanceMonitoring.start(FPM_SENDGIFT_TOKOPOINT_2)
+            sendGiftPerformanceMonitoring2 = PerformanceMonitoring.start(SENDGIFT2_TOKOPOINT_PLT)
 
             KeyboardHandler.hideSoftKeyboard(activity)
             mViewModel!!.preValidateGift(arguments!!.getInt(CommonConstant.EXTRA_COUPON_ID), mEditEmail!!.text.toString())
@@ -294,8 +293,8 @@ class SendGiftFragment : BottomSheetDialogFragment(), SendGiftContract.View, Vie
     companion object {
         private const val CONTAINER_SEND_FORM = 0
         private const val CONTAINER_PRE_CONFIRMATION = 1
-        private const val FPM_SENDGIFT_TOKOPOINT_1 = "fpm_sendgift_tokopoint_1"
-        private const val FPM_SENDGIFT_TOKOPOINT_2 = "fpm_sendgift_tokopoint_2"
+        private const val SENDGIFT1_TOKOPOINT_PLT = "sendgift1tokopoint_plt"
+        private const val SENDGIFT2_TOKOPOINT_PLT = "fpm_sendgift2tokopoint_plt"
         fun newInstance(extras: Bundle?): Fragment {
             val fragment: Fragment = SendGiftFragment()
             fragment.arguments = extras

@@ -45,8 +45,8 @@ class AddPointsFragment : BottomSheetDialogFragment(), TokopointAddPointContract
     private var isTraceSTopped = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        performanceMonitoring = PerformanceMonitoring.start(ADDTOKOPOINT_PLT)
         super.onCreate(savedInstanceState)
-        performanceMonitoring = PerformanceMonitoring.start(FPM_ADDPOINT_TOKOPOINT)
         initInjector()
         setStyle(STYLE_NORMAL, com.tokopedia.design.R.style.TransparentBottomSheetDialogTheme)
     }
@@ -190,6 +190,6 @@ class AddPointsFragment : BottomSheetDialogFragment(), TokopointAddPointContract
     }
 
     companion object {
-        private const val FPM_ADDPOINT_TOKOPOINT = "ft_addpoint_tokopoint"
+        private const val ADDTOKOPOINT_PLT = "addtokopoint_plt"
     }
 }

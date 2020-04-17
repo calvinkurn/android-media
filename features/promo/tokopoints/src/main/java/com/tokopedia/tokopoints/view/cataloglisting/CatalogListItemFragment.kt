@@ -68,8 +68,8 @@ class CatalogListItemFragment : BaseDaggerFragment(), CatalogListItemContract.Vi
     private var isTraceStopped = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        performanceMonitoring = PerformanceMonitoring.start(CATALOGLISTITEM_TOKOPOINT_PLT)
         super.onCreate(savedInstanceState)
-        performanceMonitoring = PerformanceMonitoring.start(FPM_CATALOGLISTITEM_TOKOPOINT)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -517,7 +517,7 @@ class CatalogListItemFragment : BaseDaggerFragment(), CatalogListItemContract.Vi
         private const val CONTAINER_DATA = 1
         private const val CONTAINER_ERROR = 2
         private const val CONTAINER_EMPTY = 3
-        private const val FPM_CATALOGLISTITEM_TOKOPOINT = "fpm_cataloglistitem_tokopoint"
+        private const val CATALOGLISTITEM_TOKOPOINT_PLT = "cataloglistitemtokopoint_plt"
         fun newInstance(categoryId: Int, subCategoryId: Int, isPointsAvailable: Boolean): Fragment {
             val fragment: Fragment = CatalogListItemFragment()
             val bundle = Bundle()
