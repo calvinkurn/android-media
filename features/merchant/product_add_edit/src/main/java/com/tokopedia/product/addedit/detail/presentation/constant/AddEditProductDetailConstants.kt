@@ -15,7 +15,7 @@ class AddEditProductDetailConstants {
         const val REQUEST_CODE_VARIANT_DIALOG_EDIT = 7
         const val EXTRA_CATEGORY_ID = "CATEGORY_ID"
         const val CATEGORY_RESULT_ID = "CATEGORY_RESULT_ID"
-        const val CATEGORY_RESULT_NAME = "CATEGORY_RESULT_NAME"
+        const val CATEGORY_RESULT_FULL_NAME = "CATEGORY_RESULT_FULL_NAME"
         const val UNIT_DAY = 0
         const val UNIT_WEEK = 1
         const val NEW_PRODUCT_INDEX = 0
