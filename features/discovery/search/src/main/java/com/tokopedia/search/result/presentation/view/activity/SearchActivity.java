@@ -77,8 +77,6 @@ import javax.inject.Named;
 
 import static com.tokopedia.discovery.common.constants.SearchConstant.Cart.CACHE_TOTAL_CART;
 import static com.tokopedia.discovery.common.constants.SearchConstant.EXTRA_SEARCH_PARAMETER_MODEL;
-import static com.tokopedia.discovery.common.constants.SearchConstant.GCM.GCM_ID;
-import static com.tokopedia.discovery.common.constants.SearchConstant.GCM.GCM_STORAGE;
 import static com.tokopedia.discovery.common.constants.SearchConstant.SEARCH_RESULT_TRACE;
 import static com.tokopedia.discovery.common.constants.SearchConstant.SearchTabPosition.TAB_FIRST_POSITION;
 import static com.tokopedia.discovery.common.constants.SearchConstant.SearchTabPosition.TAB_FORTH_POSITION;
@@ -490,14 +488,9 @@ public class SearchActivity extends BaseActivity
     private void setSearchParameterUniqueId() {
         String uniqueId = userSession.isLoggedIn() ?
                 AuthHelper.getMD5Hash(userSession.getUserId()) :
-                AuthHelper.getMD5Hash(getRegistrationId(this));
+                AuthHelper.getMD5Hash(userSession.getDeviceId());
 
         searchParameter.set(SearchApiConst.UNIQUE_ID, uniqueId);
-    }
-
-    private String getRegistrationId(Context context) {
-        LocalCacheHandler cache = new LocalCacheHandler(context, GCM_STORAGE);
-        return cache.getString(GCM_ID, "");
     }
 
     private void setSearchParameterUserIdIfLoggedIn() {

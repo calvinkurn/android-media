@@ -17,22 +17,15 @@ class ProductManageQuickEditStockViewModel @Inject constructor() : ViewModel() {
     private val _stock = MutableLiveData<Int>()
     private val _status = MutableLiveData<ProductStatus>()
 
-    fun updateStock(stock: Int, isSubmit: Boolean = false) {
+    fun updateStock(stock: Int) {
         when {
             isStockTooLow(stock) -> {
                 _stock.value = ProductManageQuickEditStockFragment.MINIMUM_STOCK
-                _status.value = ProductStatus.INACTIVE
             }
             isStockTooHigh(stock) -> {
                 _stock.value = ProductManageQuickEditStockFragment.MAXIMUM_STOCK
-                _status.value = ProductStatus.ACTIVE
             }
-            else -> {
-                _stock.value = stock
-                if(!isSubmit) {
-                    _status.value = ProductStatus.ACTIVE
-                }
-            }
+            else -> _stock.value = stock
         }
     }
 
