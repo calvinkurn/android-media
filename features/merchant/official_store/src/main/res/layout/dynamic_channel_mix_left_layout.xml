@@ -28,12 +28,13 @@
             android:id="@+id/parallax_image"
             android:adjustViewBounds="true"
             android:layout_width="144dp"
+            android:scaleType="fitXY"
             android:layout_height="match_parent" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_product"
             android:layout_width="match_parent"
-            android:layout_height="300dp"
+            android:layout_height="match_parent"
             android:layout_marginTop="@dimen/dp_16"
             android:layout_marginBottom="@dimen/dp_16"
             android:clipToPadding="false"

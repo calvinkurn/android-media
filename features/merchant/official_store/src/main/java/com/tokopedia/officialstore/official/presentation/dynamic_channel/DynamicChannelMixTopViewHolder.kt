@@ -24,19 +24,27 @@ import com.tokopedia.officialstore.R
 import com.tokopedia.officialstore.official.data.model.dynamic_channel.*
 import com.tokopedia.officialstore.official.presentation.viewmodel.ProductFlashSaleDataModel
 import com.tokopedia.productcard.ProductCardModel
+import com.tokopedia.productcard.utils.getMaxHeightForGridView
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
 
 class DynamicChannelMixTopViewHolder(
         view: View?,
         private val dcEventHandler: DynamicChannelEventHandler
-) : AbstractViewHolder<DynamicChannelViewModel>(view) {
+) : AbstractViewHolder<DynamicChannelViewModel>(view), CoroutineScope {
 
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.dynamic_channel_mix_top_layout
     }
 
+    private val masterJob = SupervisorJob()
+
+    override val coroutineContext = masterJob + Dispatchers.Main
     private val headerContainer = itemView.findViewById<ConstraintLayout>(R.id.dc_header_main_container)
     private val headerTitle = itemView.findViewById<Typography>(R.id.dc_header_title)
     private val headerCountDown = itemView.findViewById<CountDownView>(R.id.dc_header_count_down)
@@ -174,6 +182,29 @@ class DynamicChannelMixTopViewHolder(
         adapter = MixLeftAdapter(typeFactoryImpl)
         adapter?.addElement(productDataList)
         recyclerViewProductList.adapter = adapter
+        launch {
+            try {
+                recyclerViewProductList.setHeightBasedOnProductCardMaxHeight(productDataList.map {it.productModel})
+            }
+            catch (throwable: Throwable) {
+                throwable.printStackTrace()
+            }
+        }
+    }
+
+    private suspend fun RecyclerView.setHeightBasedOnProductCardMaxHeight(
+            productCardModelList: List<ProductCardModel>
+    ) {
+        val productCardHeight = getProductCardMaxHeight(productCardModelList)
+
+        val carouselLayoutParams = this.layoutParams
+        carouselLayoutParams?.height = productCardHeight
+        this.layoutParams = carouselLayoutParams
+    }
+
+    private suspend fun getProductCardMaxHeight(productCardModelList: List<ProductCardModel>): Int {
+        val productCardWidth = itemView.context.resources.getDimensionPixelSize(R.dimen.product_card_carousel_item_width)
+        return productCardModelList.getMaxHeightForGridView(itemView.context, Dispatchers.Default, productCardWidth)
     }
 
     private fun convertDataToProductData(channel: Channel): List<ProductFlashSaleDataModel> {
