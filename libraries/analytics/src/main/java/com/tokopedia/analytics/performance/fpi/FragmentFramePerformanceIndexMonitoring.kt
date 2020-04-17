@@ -107,20 +107,24 @@ class FragmentFramePerformanceIndexMonitoring : LifecycleObserver, CoroutineScop
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N && onFrameMetricAvailableListener == null) {
             onFrameMetricAvailableListener = Window.OnFrameMetricsAvailableListener { window, frameMetrics, dropCountSinceLastInvocation ->
                 val frameMetricsCopy = FrameMetrics(frameMetrics)
-                mainPerformanceData.incrementAllFrames()
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                    val totalDurationMs = (0.000001 * frameMetricsCopy.getMetric(FrameMetrics.TOTAL_DURATION)).toFloat()
-                    if (totalDurationMs > DEFAULT_WARNING_LEVEL_MS) {
-                        mainPerformanceData.incremenetJankyFrames()
-                    }
-                    onFrameListener?.onFrameRendered(mainPerformanceData)
-                }
+                if (fragment?.isVisible == true) recordFrames(frameMetricsCopy)
             }
             onFrameMetricAvailableListener?.let {
                 withContext(Dispatchers.Main) {
                     fragment?.activity?.window?.addOnFrameMetricsAvailableListener(it, Handler())
                 }
             }
+        }
+    }
+
+    private fun recordFrames(frameMetricsCopy: FrameMetrics) {
+        mainPerformanceData.incrementAllFrames()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            val totalDurationMs = (0.000001 * frameMetricsCopy.getMetric(FrameMetrics.TOTAL_DURATION)).toFloat()
+            if (totalDurationMs > DEFAULT_WARNING_LEVEL_MS) {
+                mainPerformanceData.incremenetJankyFrames()
+            }
+            onFrameListener?.onFrameRendered(mainPerformanceData)
         }
     }
 
