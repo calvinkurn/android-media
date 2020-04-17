@@ -84,7 +84,7 @@ class FindNavViewModel @Inject constructor() : ViewModel(), CoroutineScope {
     }
 
     private fun checkForBannedData(searchProduct: SearchProduct): Boolean {
-        return searchProduct.errorMessage != null && (searchProduct.errorMessage != null && searchProduct.errorMessage!!.isNotEmpty())
+        return searchProduct.errorMessage != null &&  searchProduct.errorMessage!!.isNotEmpty()
     }
 
     fun fetchQuickFilterList(productId: String) {
