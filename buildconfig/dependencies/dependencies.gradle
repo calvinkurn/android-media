@@ -78,8 +78,8 @@ ext {
 
     unifyIconVersion = '0.0.4'
     unifyPrinciplesVersion = '1.1.1'
-    unifyComponentsVersion = '1.1.14-beta-2'
-    unifyCoachMarkVersion = '1.2.0'
+    unifyComponentsVersion = '1.1.30'
+    unifyCoachMarkVersion = '1.2.3'
     unifyCalendarVersion = '1.0.2'
     unifyBannerVersion = '1.0.3'
     unifyDialogVersion = '1.0.0'
@@ -87,6 +87,7 @@ ext {
     unifyEmptyStateVersion = '1.0.2'
     unifyGlobalErrorVersion = '1.0.4'
     unifyHeaderVersion = '1.0.0'
+    unifyListVersion = '1.0.2'
 
     gradlePlugin = [
         crashlytics : "io.fabric.tools:gradle:${crashlyticsGradleVersion}",
@@ -296,6 +297,7 @@ ext {
        datepicker   : "com.tokopedia.unify.compositions:datepicker:${unifyDatePickerVersion}@aar",
        empty_state  : "com.tokopedia.unify.compositions:empty_state:${unifyEmptyStateVersion}@aar",
        global_error : "com.tokopedia.unify.compositions:global_error:${unifyGlobalErrorVersion}@aar",
-       header       : "com.tokopedia.unify.compositions:header:${unifyHeaderVersion}@aar"
+       header       : "com.tokopedia.unify.compositions:header:${unifyHeaderVersion}@aar",
+       list         : "com.tokopedia.unify.compositions:list:${unifyListVersion}@aar"
     ]
 }
