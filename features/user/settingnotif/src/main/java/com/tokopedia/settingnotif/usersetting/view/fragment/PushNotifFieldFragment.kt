@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.settingnotif.R
 import com.tokopedia.settingnotif.usersetting.domain.pojo.ParentSetting
+import com.tokopedia.settingnotif.usersetting.view.dataview.NotificationActivationDataView.activationPushNotif
 import com.tokopedia.settingnotif.usersetting.view.dataview.UserSettingViewModel
 import com.tokopedia.settingnotif.usersetting.view.fragment.base.SettingFieldFragment
 import com.tokopedia.settingnotif.usersetting.view.fragment.dialog.InformationDialog.showInformationDialog
@@ -53,15 +54,13 @@ class PushNotifFieldFragment : SettingFieldFragment() {
     override fun onResume() {
         super.onResume()
         if (settingStates.isNotEmpty()) {
-            permissionValidation(settingStates)
+            pushNotifValidation()
         }
     }
 
     override fun onSuccessGetUserSetting(data: UserSettingViewModel) {
-        // add pinned items
-        viewModel.addPinnedItems(isNotificationEnabled(), data)
+        viewModel.addPinnedPushNotifItems(isNotificationEnabled(), data)
         data.data = viewModel.getPinnedItems().toList()
-
         super.onSuccessGetUserSetting(data)
     }
 
@@ -72,11 +71,19 @@ class PushNotifFieldFragment : SettingFieldFragment() {
         viewModel.saveLastStateAll(list)
 
         // view validation
-        permissionValidation(settingStates)
+        pushNotifValidation()
     }
 
     override fun updateSettingState(setting: ParentSetting?) {
         viewModel.updateSettingState(setting)
+    }
+
+    private fun pushNotifValidation() {
+        permissionValidation(
+                isNotificationEnabled(),
+                activationPushNotif(),
+                settingStates
+        )
     }
 
     override fun getScreenName() = getString(R.string.settingnotif_dialog_info_title)
