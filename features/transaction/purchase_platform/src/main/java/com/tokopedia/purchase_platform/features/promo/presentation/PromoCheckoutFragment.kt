@@ -19,6 +19,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -676,6 +677,18 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
 
     override fun onClickPromoEligibilityHeader(element: PromoEligibilityHeaderUiModel) {
         viewModel.updateIneligiblePromoList(element)
+        val index = adapter.data.indexOf(element)
+        if (index != RecyclerView.NO_POSITION && !element.uiState.isCollapsed) {
+            recyclerView.layoutManager?.let {
+                val linearSmoothScroller = object : LinearSmoothScroller(recyclerView.context) {
+                    override fun getVerticalSnapPreference(): Int {
+                        return SNAP_TO_START
+                    }
+                }
+                linearSmoothScroller.targetPosition = index
+                it.startSmoothScroll(linearSmoothScroller)
+            }
+        }
     }
 
     override fun onClickEmptyStateButton(element: PromoEmptyStateUiModel) {
