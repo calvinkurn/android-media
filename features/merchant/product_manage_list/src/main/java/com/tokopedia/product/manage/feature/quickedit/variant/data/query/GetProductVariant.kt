@@ -28,6 +28,18 @@ internal object GetProductVariant {
                   status
                 }
               }
+              selections {
+                  variantName
+                  unitName
+                  unitID
+                  unitName
+                  identifier
+                  options {
+                    unitValueID
+                    value
+                    hexCode
+                  }
+              }
             }
           }
         }
