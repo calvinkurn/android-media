@@ -176,10 +176,10 @@ class RecommendationListCarouselViewHolder(itemView: View,
                 val addToCartButton = holder.recommendationCard.findViewById<UnifyButton>(R.id.buttonAddToCart)
                 addToCartButton.text = holder.itemView.context.getString(R.string.home_buy_again)
                 holder.recommendationCard.setAddToCartOnClickListener {
-                    homeCategoryListener.onBuyAgainOneClickCheckOutClick(recommendation.grid, recommendation.channel)
+                    homeCategoryListener.onBuyAgainOneClickCheckOutClick(recommendation.grid, recommendation.channel, position)
                 }
                 holder.itemView.setOnClickListener {
-                    HomePageTrackingV2.RecommendationList.sendRecommendationListClick(recommendation.channel, recommendation.grid, position)
+                    HomePageTrackingV2.RecommendationList.sendRecommendationListClick(recommendation.channel, recommendation.grid, position, homeCategoryListener.userId)
                     homeCategoryListener.onSectionItemClicked(recommendation.recommendationApplink)
                 }
             }

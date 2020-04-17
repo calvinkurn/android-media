@@ -55,6 +55,7 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalContent;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
+import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.design.countdown.CountDownView;
 import com.tokopedia.design.keyboard.KeyboardHelper;
@@ -637,10 +638,15 @@ public class HomeFragment extends BaseDaggerFragment implements
         observeUpdateNetworkStatusData();
         observeOneClickCheckout();
         observePopupIntroOvo();
+        observeErrorEvent();
         observeSendLocation();
         observeStickyLogin();
         observeTrackingData();
         observeRequestImagePlayBanner();
+    }
+
+    private void observeErrorEvent(){
+        viewModel.getErrorEventLiveData().observe(getViewLifecycleOwner(), data -> showToaster(getString(R.string.home_error_connection), Toaster.TYPE_ERROR));
     }
 
     private void observeHomeData(){
@@ -690,13 +696,20 @@ public class HomeFragment extends BaseDaggerFragment implements
     }
 
     private void observeOneClickCheckout(){
-        viewModel.getOneClickCheckout().observe(this, event -> {
+        viewModel.getOneClickCheckout().observe(getViewLifecycleOwner(), event -> {
             Object data = event.peekContent();
             if(data instanceof Throwable){
                 // error
                 showToaster(getString(R.string.home_error_connection), Toaster.TYPE_ERROR);
             } else {
-               // true
+                Map dataMap = (Map) data;
+               sendEETracking((HashMap<String, Object>) HomePageTrackingV2.RecommendationList.INSTANCE.getAddToCartOnDynamicListCarousel(
+                        (DynamicHomeChannel.Channels) dataMap.get(HomeViewModel.CHANNEL),
+                        (DynamicHomeChannel.Grid) dataMap.get(HomeViewModel.GRID),
+                        (int) dataMap.get(HomeViewModel.POSITION),
+                        ((AddToCartDataModel) dataMap.get(HomeViewModel.ATC)).getData().getCartId(),
+                       viewModel.getUserId()
+               ));
                RouteManager.route(getContext(), ApplinkConstInternalMarketplace.ONE_CLICK_CHECKOUT);
             }
         });
@@ -1380,13 +1393,14 @@ public class HomeFragment extends BaseDaggerFragment implements
     }
 
     @Override
-    public void onBuyAgainOneClickCheckOutClick(@NotNull DynamicHomeChannel.Grid grid, @NotNull DynamicHomeChannel.Channels channel) {
-        viewModel.getOneClickCheckout(grid.getId(), grid.getMinOrder(), grid.getShop().getShopId(), grid.getWarehouseId());
+    public void onBuyAgainOneClickCheckOutClick(@NotNull DynamicHomeChannel.Grid grid, @NotNull DynamicHomeChannel.Channels channel, int position) {
+        viewModel.getOneClickCheckout(channel, grid, position);
     }
 
     @Override
     public void onBuyAgainCloseChannelClick(@NotNull DynamicHomeChannel.Channels channel, int position) {
         viewModel.onCloseBuyAgain(channel, position);
+        TrackApp.getInstance().getGTM().sendGeneralEvent(HomePageTrackingV2.RecommendationList.INSTANCE.getCloseClickOnDynamicListCarousel(channel, viewModel.getUserId()));
     }
 
     private void onActionLinkClicked(String actionLink, String trackingAttribution) {
@@ -1699,6 +1713,12 @@ public class HomeFragment extends BaseDaggerFragment implements
     @Override
     public TrackingQueue getTrackingQueue() {
         return trackingQueue;
+    }
+
+    @NotNull
+    @Override
+    public String getUserId() {
+        return viewModel.getUserId();
     }
 
     @Override
@@ -2052,7 +2072,7 @@ public class HomeFragment extends BaseDaggerFragment implements
                 putEEToIris((HashMap<String, Object>) HomePageTrackingV2.MixLeft.INSTANCE.getMixLeftProductView(channel, true));
                 break;
             case TYPE_RECOMMENDATION_LIST:
-                putEEToIris((HashMap<String, Object>) HomePageTrackingV2.RecommendationList.INSTANCE.getRecommendationListImpression(channel, true));
+                putEEToIris((HashMap<String, Object>) HomePageTrackingV2.RecommendationList.INSTANCE.getRecommendationListImpression(channel, true, viewModel.getUserId()));
                 break;
             case TYPE_PRODUCT_HIGHLIGHT:
                 putEEToIris((HashMap<String, Object>) ProductHighlightTracking.INSTANCE.getProductHighlightImpression(

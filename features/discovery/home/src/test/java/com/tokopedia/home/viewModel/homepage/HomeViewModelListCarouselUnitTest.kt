@@ -1,7 +1,6 @@
 package com.tokopedia.home.viewModel.homepage
 
 import androidx.lifecycle.Observer
-import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartOccUseCase
 import com.tokopedia.home.beranda.data.usecase.HomeUseCase
 import com.tokopedia.home.beranda.domain.interactor.GetDynamicChannelsUseCase
@@ -19,7 +18,7 @@ import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.gherkin.Feature
 import rx.Observable
 
-class HomeViewModelBuyAgainUnitTest : Spek({
+class HomeViewModelListCarouselUnitTest : Spek({
     InstantTaskExecutorRuleSpek(this)
 
     Feature("Test express checkout"){
@@ -32,12 +31,9 @@ class HomeViewModelBuyAgainUnitTest : Spek({
 
         Scenario("Get dynamic channel data success with single data and try express checkout") {
             val dataModel = DynamicChannelDataModel()
-            dataModel.channel = DynamicHomeChannel.Channels(id = "1")
-            val dynamicChannel = DynamicHomeChannel.Channels(id = "2")
-            val dynamicChannelViewModel = DynamicChannelDataModel()
+            dataModel.channel = DynamicHomeChannel.Channels(id = "1", grids = listOf(DynamicHomeChannel.Grid()))
             val observerHome: Observer<HomeDataModel> = mockk(relaxed = true)
             val observerExpressCheckout: Observer<Event<Any>> = mockk(relaxed = true)
-            dynamicChannelViewModel.channel = dynamicChannel
 
 
             Given("dynamic channel") {
@@ -61,12 +57,12 @@ class HomeViewModelBuyAgainUnitTest : Spek({
 
             Given("dynamic data returns success") {
                 getDynamicChannelsUseCase.givenGetDynamicChannelsUseCase(
-                        dynamicChannelDataModels = listOf(dynamicChannelViewModel)
+                        dynamicChannelDataModels = listOf(dataModel)
                 )
             }
 
             When("Express checkout clicked"){
-                homeViewModel.getOneClickCheckout("")
+                homeViewModel.getOneClickCheckout(dataModel.channel!!, dataModel.channel!!.grids.first(), 0)
             }
 
             Then("Expect channel updated") {
@@ -82,20 +78,16 @@ class HomeViewModelBuyAgainUnitTest : Spek({
 
             Then("Event express checkout should be triggered"){
                 verifyOrder {
-                    observerExpressCheckout.onChanged(match { it.peekContent() is AddToCartDataModel })
+                    observerExpressCheckout.onChanged(match { it.peekContent() is Map<*,*> })
                 }
             }
         }
 
         Scenario("Get dynamic channel data success with single data and fail express checkout") {
             val dataModel = DynamicChannelDataModel()
-            dataModel.channel = DynamicHomeChannel.Channels(id = "1")
-            val dynamicChannel = DynamicHomeChannel.Channels(id = "2")
-            val dynamicChannelViewModel = DynamicChannelDataModel()
+            dataModel.channel = DynamicHomeChannel.Channels(id = "1", grids = listOf(DynamicHomeChannel.Grid()))
             val observerHome: Observer<HomeDataModel> = mockk(relaxed = true)
             val observerExpressCheckout: Observer<Event<Any>> = mockk(relaxed = true)
-            dynamicChannelViewModel.channel = dynamicChannel
-
 
             Given("dynamic channel") {
                 getHomeUseCase.givenGetHomeDataReturn(
@@ -118,12 +110,12 @@ class HomeViewModelBuyAgainUnitTest : Spek({
 
             Given("dynamic data returns success") {
                 getDynamicChannelsUseCase.givenGetDynamicChannelsUseCase(
-                        dynamicChannelDataModels = listOf(dynamicChannelViewModel)
+                        dynamicChannelDataModels = listOf(dataModel)
                 )
             }
 
             When("Express checkout clicked"){
-                homeViewModel.getOneClickCheckout("")
+                homeViewModel.getOneClickCheckout(dataModel.channel!!, dataModel.channel!!.grids.first(), 0)
             }
 
             Then("Expect channel updated") {

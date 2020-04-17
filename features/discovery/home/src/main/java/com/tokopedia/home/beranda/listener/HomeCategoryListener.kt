@@ -34,6 +34,8 @@ interface HomeCategoryListener {
 
     val homeMainToolbarHeight: Int
 
+    val userId: String
+
     fun onSectionItemClicked(actionLink: String)
 
     fun onCloseTicker()
@@ -106,7 +108,7 @@ interface HomeCategoryListener {
 
     fun updateExpiredChannel(dynamicChannelDataModel: DynamicChannelDataModel, position: Int)
 
-    fun onBuyAgainOneClickCheckOutClick(grid: DynamicHomeChannel.Grid, channel: DynamicHomeChannel.Channels)
+    fun onBuyAgainOneClickCheckOutClick(grid: DynamicHomeChannel.Grid, channel: DynamicHomeChannel.Channels, position: Int)
 
     fun onBuyAgainCloseChannelClick(channel: DynamicHomeChannel.Channels, position: Int)
 }

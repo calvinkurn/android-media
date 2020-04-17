@@ -58,6 +58,7 @@ import javax.inject.Inject
 open class HomeViewModel @Inject constructor(
         private val homeUseCase: HomeUseCase,
         private val userSession: UserSessionInterface,
+        private val closeChannelUseCase: CloseChannelUseCase,
         private val dismissHomeReviewUseCase: DismissHomeReviewUseCase,
         private val getAtcUseCase: AddToCartOccUseCase,
         private val getBusinessUnitDataUseCase: GetBusinessUnitDataUseCase,
@@ -83,6 +84,10 @@ open class HomeViewModel @Inject constructor(
         private const val ACTION_UPDATE = 3
         private const val ACTION_UPDATE_HOME_DATA = 4
         private const val HOME_LIMITER_KEY = "HOME_LIMITER_KEY"
+        const val ATC = "atc"
+        const val CHANNEL = "channel"
+        const val GRID = "grid"
+        const val POSITION = "position"
         private var lastRequestTimeHomeData: Long = 0
         private var lastRequestTimeSendGeolocation: Long = 0
         private val REQUEST_DELAY_SEND_GEOLOCATION = TimeUnit.HOURS.toMillis(1) // 1 hour
@@ -132,6 +137,10 @@ open class HomeViewModel @Inject constructor(
 
     val updateNetworkLiveData: LiveData<Result<Any>> get() = _updateNetworkLiveData
     private val _updateNetworkLiveData = MutableLiveData<Result<Any>>()
+
+    val errorEventLiveData: LiveData<Event<String>>
+            get() = _errorEventLiveData
+    private val _errorEventLiveData = MutableLiveData<Event<String>>()
 
 // ============================================================================================
 // ==================================== Helper Local Job ======================================
@@ -413,7 +422,19 @@ open class HomeViewModel @Inject constructor(
     fun onCloseBuyAgain(channel: DynamicHomeChannel.Channels, position: Int){
         val dynamicChannelDataModel = _homeLiveData.value?.list?.find { visitable -> visitable is DynamicChannelDataModel && visitable.channel?.id == channel.id }
         if (dynamicChannelDataModel is DynamicChannelDataModel){
-            launch(coroutineContext) { updateWidget(UpdateLiveDataModel(ACTION_DELETE, dynamicChannelDataModel, position)) }
+            launchCatchError(coroutineContext, block = {
+                closeChannelUseCase.setParams(channel.id)
+                val closeChannel = closeChannelUseCase.executeOnBackground()
+                if(closeChannel.success){
+                    updateWidget(UpdateLiveDataModel(ACTION_DELETE, dynamicChannelDataModel, position))
+                } else {
+                    _errorEventLiveData.postValue(Event(""))
+                }
+            }){
+                it.printStackTrace()
+                _errorEventLiveData.postValue(Event(it.message ?: ""))
+            }
+
         }
     }
 
@@ -512,19 +533,17 @@ open class HomeViewModel @Inject constructor(
     private fun evaluateRecommendationSection(homeDataModel: HomeDataModel?): HomeDataModel? {
         val detectHomeRecom = _homeLiveData.value?.list?.find { visitable -> visitable is HomeRecommendationFeedDataModel }
         homeDataModel?.let {
-            if (detectHomeRecom != null) {
+            return if (detectHomeRecom != null) {
                 val currentList = homeDataModel.list.toMutableList()
                 currentList.add(detectHomeRecom)
-                return homeDataModel.copy(list = currentList)
+                homeDataModel.copy(list = currentList)
             } else {
                 val visitableMutableList: MutableList<Visitable<*>> = homeDataModel.list.toMutableList()
-                val findRetryModel = homeDataModel.list.find {
-                    visitable -> visitable is HomeRetryModel
+                val findRetryModel = homeDataModel.list.find { visitable -> visitable is HomeRetryModel
                 }
                 visitableMutableList.remove(findRetryModel)
-                val newHomeViewModel = homeDataModel.copy(
+                homeDataModel.copy(
                         list = visitableMutableList)
-                return newHomeViewModel
             }
         }
         return homeDataModel
@@ -605,28 +624,6 @@ open class HomeViewModel @Inject constructor(
         dismissReviewJob = launchCatchError(coroutineContext, block = {
             dismissHomeReviewUseCase.executeOnBackground()
         }){}
-    }
-
-    fun getOneClickCheckout(productId: String, minQuantity: Int, shopId: String, warehouseId: String){
-        val requestParams = RequestParams()
-        requestParams.putObject(AddToCartOccUseCase.REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST, AddToCartOccRequestParams(
-                productId = productId,
-                quantity = minQuantity.toString(),
-                shopId = shopId,
-                warehouseId = warehouseId
-        ))
-        getAtcUseCase.createObservable(requestParams)
-                .subscribeOn(Schedulers.io())
-                .observeOn(Schedulers.io())
-                .subscribe (
-                    {
-                        if(!it.isDataError()) _oneClickCheckout.postValue(Event(it))
-                        else _oneClickCheckout.postValue(Event(Throwable()))
-                    },
-                    {
-                        _oneClickCheckout.postValue(Event(it))
-                    }
-                )
     }
 
     fun getBusinessUnitTabData(position: Int){
@@ -793,6 +790,41 @@ open class HomeViewModel @Inject constructor(
         sendTopAdsUseCase.executeOnBackground(url)
     }
 
+
+    fun getOneClickCheckout(channel: DynamicHomeChannel.Channels, grid: DynamicHomeChannel.Grid, position: Int){
+        val requestParams = RequestParams()
+        requestParams.putObject(AddToCartOccUseCase.REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST, AddToCartOccRequestParams(
+                productId = grid.id,
+                quantity = grid.minOrder.toString(),
+                shopId = grid.shop.shopId,
+                warehouseId = grid.warehouseId
+        ))
+        getAtcUseCase.createObservable(requestParams)
+                .subscribeOn(Schedulers.io())
+                .observeOn(Schedulers.io())
+                .subscribe (
+                        {
+                            if(!it.isDataError()) {
+                                _oneClickCheckout.postValue(Event(
+                                        mapOf(
+                                                ATC to it,
+                                                CHANNEL to channel,
+                                                GRID to grid,
+                                                POSITION to position
+
+                                        )
+                                ))
+                            }
+                            else {
+                                _oneClickCheckout.postValue(Event(Throwable()))
+                            }
+                        },
+                        {
+                            _oneClickCheckout.postValue(Event(it))
+                        }
+                )
+    }
+
     private fun getTokocashBalance() {
         if(getTokocashJob?.isActive == true) return
         getTokocashJob = launchCatchError(coroutineContext, block = {
@@ -847,6 +879,8 @@ open class HomeViewModel @Inject constructor(
             )
         }
     }
+
+    fun getUserId() = userSession.userId ?: ""
 
 // ============================================================================================
 // ================================ Live Data Controller ======================================

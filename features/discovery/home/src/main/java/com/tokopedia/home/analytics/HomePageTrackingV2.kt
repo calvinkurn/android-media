@@ -159,11 +159,12 @@ object HomePageTrackingV2 : BaseTracking() {
         private const val RECOMMENDATION_LIST_CLICK_EVENT_ACTION = "click on dynamic channel list"
         private const val RECOMMENDATION_LIST_SEE_ALL_EVENT_ACTION = "click view all on dynamic channel list"
 
-        fun getRecommendationListImpression(channel: DynamicHomeChannel.Channels, isToIris: Boolean = false) = getBasicProductChannelView(
+        fun getRecommendationListImpression(channel: DynamicHomeChannel.Channels, isToIris: Boolean = false, userId: String) = getBasicProductChannelView(
                 event = if(isToIris) Event.PRODUCT_VIEW_IRIS else Event.PRODUCT_VIEW,
                 eventCategory = Category.HOMEPAGE,
                 eventAction = RECOMMENDATION_LIST_IMPRESSION_EVENT_ACTION,
                 eventLabel = Label.NONE,
+                userId = userId,
                 products = channel.grids.mapIndexed { index, grid ->
                     Product(
                             name = grid.name,
@@ -186,13 +187,14 @@ object HomePageTrackingV2 : BaseTracking() {
                 channelId = channel.id
         )
 
-        private fun getRecommendationListClick(channel: DynamicHomeChannel.Channels, grid: DynamicHomeChannel.Grid, position: Int) = getBasicProductChannelClick(
+        private fun getRecommendationListClick(channel: DynamicHomeChannel.Channels, grid: DynamicHomeChannel.Grid, position: Int, userId: String) = getBasicProductChannelClick(
                 event = Event.PRODUCT_CLICK,
                 eventCategory = Category.HOMEPAGE,
                 eventAction = RECOMMENDATION_LIST_CLICK_EVENT_ACTION,
                 eventLabel = grid.attribution,
                 channelId = channel.id,
                 campaignCode = channel.campaignCode,
+                userId = userId,
                 products = listOf(
                         Product(
                                 name = grid.name,
@@ -214,8 +216,8 @@ object HomePageTrackingV2 : BaseTracking() {
                 )
         )
 
-        fun sendRecommendationListClick(channel: DynamicHomeChannel.Channels, grid: DynamicHomeChannel.Grid, position: Int) {
-            getTracker().sendEnhanceEcommerceEvent(getRecommendationListClick(channel, grid, position))
+        fun sendRecommendationListClick(channel: DynamicHomeChannel.Channels, grid: DynamicHomeChannel.Grid, position: Int, userId: String) {
+            getTracker().sendEnhanceEcommerceEvent(getRecommendationListClick(channel, grid, position, userId))
         }
 
         private fun getRecommendationListSeeAllClick(channel: DynamicHomeChannel.Channels): HashMap<String, Any>{
