@@ -75,9 +75,6 @@ import com.tokopedia.logisticaddaddress.features.manage.ManagePeopleAddressActiv
 import com.tokopedia.logisticaddaddress.features.pinpoint.GeolocationActivity;
 import com.tokopedia.logisticdata.data.entity.address.Token;
 import com.tokopedia.merchantvoucher.MerchantVoucherModuleRouter;
-import com.tokopedia.mitratoppers.MitraToppersRouter;
-import com.tokopedia.mitratoppers.MitraToppersRouterInternal;
-import com.tokopedia.mlp.router.MLPRouter;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
 import com.tokopedia.network.service.AccountsService;
@@ -134,7 +131,6 @@ import com.tokopedia.tkpd.tkpdreputation.review.shop.view.ReviewShopFragment;
 import com.tokopedia.topads.TopAdsComponentInstance;
 import com.tokopedia.topads.TopAdsManagementRouter;
 import com.tokopedia.topads.TopAdsModuleRouter;
-import com.tokopedia.topads.common.TopAdsWebViewRouter;
 import com.tokopedia.topads.dashboard.di.component.TopAdsComponent;
 import com.tokopedia.topads.dashboard.domain.interactor.GetDepositTopAdsUseCase;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity;
@@ -170,9 +166,12 @@ public abstract class SellerRouterApplication extends MainApplication
         implements TkpdCoreRouter, SellerModuleRouter, PdpRouter, GMModuleRouter, TopAdsModuleRouter,
         IPaymentModuleRouter, IDigitalModuleRouter, TkpdInboxRouter, TransactionRouter,
         ReputationRouter, LogisticRouter,
-        MitraToppersRouter, AbstractionRouter, ShopModuleRouter,
+        AbstractionRouter,
+        ShopModuleRouter,
         ApplinkRouter,
-        NetworkRouter, TopAdsWebViewRouter, ContactUsModuleRouter, WithdrawRouter,
+        NetworkRouter, TopChatRouter,
+        ContactUsModuleRouter, WithdrawRouter,
+        TopAdsWebViewRouter,
         PhoneVerificationRouter,
         TopAdsManagementRouter,
         BroadcastMessageRouter,
@@ -181,7 +180,7 @@ public abstract class SellerRouterApplication extends MainApplication
         CoreNetworkRouter,
         FlashSaleRouter,
         LinkerRouter,
-        ResolutionRouter,
+        ResolutionRouter {
         MLPRouter,
         SellerHomeRouter {
 
@@ -266,10 +265,6 @@ public abstract class SellerRouterApplication extends MainApplication
     public void resetAddProductCache(Context context) {
         EtalaseUtils.clearEtalaseCache(context);
         EtalaseUtils.clearDepartementCache(context);
-    }
-
-    public Intent getMitraToppersActivityIntent(Context context) {
-        return MitraToppersRouterInternal.getMitraToppersActivityIntent(context);
     }
 
     @Override
@@ -696,8 +691,7 @@ public abstract class SellerRouterApplication extends MainApplication
         if (remoteConfig.getBoolean(APP_ENABLE_SALDO_SPLIT_FOR_SELLER_APP, false)) {
             RouteManager.route(context, ApplinkConstInternalGlobal.SALDO_DEPOSIT);
         } else {
-            Intent intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.WEBVIEW, ApplinkConst.WebViewUrl.SALDO_DETAIL);
-            context.startActivity(intent);
+            RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, ApplinkConst.WebViewUrl.SALDO_DETAIL);
         }
     }
 
@@ -745,11 +739,6 @@ public abstract class SellerRouterApplication extends MainApplication
         intent.setData(Uri.parse(applink));
 
         return intent;
-    }
-
-    @Override
-    public Intent getSellerWebViewIntent(Context context, String webviewUrl) {
-        return RouteManager.getIntent(context, ApplinkConstInternalGlobal.WEBVIEW, webviewUrl);
     }
 
     @Override

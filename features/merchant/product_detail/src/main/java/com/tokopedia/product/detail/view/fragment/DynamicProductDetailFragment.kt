@@ -2659,10 +2659,13 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     }
 
     private fun observeToggleNotifyMe() {
-        viewLifecycleOwner.observe(viewModel.toggleTeaserNotifyMe) {data ->
+        viewLifecycleOwner.observe(viewModel.toggleTeaserNotifyMe) { data ->
             data.doSuccessOrFail({
-                viewModel.variantData = VariantMapper.updateVariantDeals(viewModel.variantData, viewModel.getDynamicProductInfoP1?.basic?.getProductId() ?: 0)
-            },{
+                val messageSuccess = if (viewModel.notifyMeAction == ProductDetailCommonConstant.VALUE_TEASER_ACTION_REGISTER) getString(R.string.notify_me_success_registered_message) else getString(R.string.notify_me_success_unregistered_message)
+                showToastSuccess(messageSuccess)
+                viewModel.variantData = VariantMapper.updateVariantDeals(viewModel.variantData, viewModel.getDynamicProductInfoP1?.basic?.getProductId()
+                        ?: 0)
+            }, {
                 onFailNotifyMe(it)
             })
         }
@@ -2683,13 +2686,13 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         try {
             activity?.let {
                 if (viewModel.isUserSessionActive) {
-                    val action = if (data.notifyMe) ProductDetailCommonConstant.VALUE_TEASER_ACTION_UNREGISTER else
+                    viewModel.notifyMeAction = if (data.notifyMe) ProductDetailCommonConstant.VALUE_TEASER_ACTION_UNREGISTER else
                         ProductDetailCommonConstant.VALUE_TEASER_ACTION_REGISTER
                     pdpHashMapUtil?.notifyMeMap?.notifyMe?.let { notifyMe -> trackToggleNotifyMe(componentTrackDataModel, notifyMe) }
                     pdpHashMapUtil?.notifyMeMap?.notifyMe = !data.notifyMe
                     dynamicAdapter.notifyNotifyMe(pdpHashMapUtil?.notifyMeMap, ProductDetailConstant.PAYLOAD_NOTIFY_ME)
                     viewModel.toggleTeaserNotifyMe(data.campaignID.toInt(), productId?.toInt()
-                            ?: 0, action, ProductDetailCommonConstant.VALUE_TEASER_SOURCE)
+                            ?: 0, ProductDetailCommonConstant.VALUE_TEASER_SOURCE)
                 } else {
                     goToLogin()
                 }

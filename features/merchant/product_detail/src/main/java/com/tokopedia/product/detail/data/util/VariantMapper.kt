@@ -43,6 +43,7 @@ object VariantMapper {
                 appLinks = newData?.campaign?.applinks ?: "",
                 percentageAmount = newData?.campaign?.discountedPercentage?.toInt() ?: 0,
                 stockSoldPercentage = newData?.campaign?.stockSoldPercentage?.toInt() ?: 0,
+                isCheckImei = newData?.campaign?.isCheckImei ?: false,
                 isUsingOvo = newData?.campaign?.isUsingOvo ?: false
         )
 

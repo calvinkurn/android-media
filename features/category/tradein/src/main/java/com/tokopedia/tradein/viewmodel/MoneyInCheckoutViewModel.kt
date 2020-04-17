@@ -11,10 +11,7 @@ import com.tokopedia.tradein.usecase.MoneyInPickupScheduleUseCase
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
 import javax.inject.Inject
-import kotlin.coroutines.CoroutineContext
 
 
 class MoneyInCheckoutViewModel @Inject constructor(
@@ -35,7 +32,7 @@ class MoneyInCheckoutViewModel @Inject constructor(
 
     fun getPickupScheduleOption() {
         launchCatchError(block = {
-            val response = moneyInPickupScheduleUseCase.getPickupScheduleOption()
+            val response = moneyInPickupScheduleUseCase.getPickupScheduleOption(getResource())
             pickupScheduleOptionLiveData.value = Success(response.getPickupScheduleOption!!)
         }, onError = {
             it.printStackTrace()
@@ -45,7 +42,7 @@ class MoneyInCheckoutViewModel @Inject constructor(
 
     fun getCourierRates(destination: String) {
         launchCatchError(block = {
-            val response = moneyInCourierRatesUseCase.getCourierRates(destination)
+            val response = moneyInCourierRatesUseCase.getCourierRates(getResource(), destination)
             courierRatesLiveData.value = Success(response.ratesV4.data)
         }, onError = {
             it.printStackTrace()
@@ -55,7 +52,7 @@ class MoneyInCheckoutViewModel @Inject constructor(
 
     fun makeCheckoutMutation(hardwareId: String, addressId : Int, spId: Int, pickupTimeStart: Int, pickupTimeEnd: Int) {
         launchCatchError(block = {
-            val response = moneyInCheckoutUseCase.makeCheckoutMutation(
+            val response = moneyInCheckoutUseCase.makeCheckoutMutation(getResource(),
                     moneyInCheckoutUseCase.createRequestParams(hardwareId, addressId, spId, pickupTimeStart, pickupTimeEnd))
             if (response.checkoutGeneral.data.success == SUCCESS) {
                 checkoutDataLiveData.value = Success(response.checkoutGeneral.data.data)

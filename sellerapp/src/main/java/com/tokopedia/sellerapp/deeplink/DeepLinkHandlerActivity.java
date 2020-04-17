@@ -16,7 +16,6 @@ import com.tokopedia.applink.SessionApplinkModule;
 import com.tokopedia.applink.SessionApplinkModuleLoader;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.deeplink.CoreDeeplinkModule;
-import com.tokopedia.core.deeplink.CoreDeeplinkModuleLoader;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.createpost.view.applink.CreatePostModule;
@@ -105,7 +104,6 @@ public class DeepLinkHandlerActivity extends AppCompatActivity {
                 new InboxDeeplinkModuleLoader(),
                 new TrackingAppLinkModuleLoader(),
                 new TopChatAppLinkModuleLoader(),
-                new CoreDeeplinkModuleLoader(),
                 new SessionApplinkModuleLoader(),
                 new ProductDetailApplinkModuleLoader(),
                 new LoginRegisterApplinkModuleLoader(),

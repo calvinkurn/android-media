@@ -7,9 +7,9 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.inflateLayout
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.purchase_platform.R
-import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.shippingprice.ServicesItem
-import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.shippingprice.ServicesItemModel
-import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.shippingprice.ServicesItemModelNoPrice
+import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.shipping.ServicesItem
+import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.shipping.ServicesItemModel
+import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.shipping.ServicesItemModelNoPrice
 import kotlinx.android.synthetic.main.item_shipping_duration.view.*
 
 class ShippingDurationItemAdapter(var listener: OnShippingMenuSelected) : RecyclerView.Adapter<ShippingDurationItemAdapter.ShippingDurationViewHolder>(){
