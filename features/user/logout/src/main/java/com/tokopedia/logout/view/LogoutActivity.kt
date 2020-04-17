@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.Context
 import android.os.Bundle
 import android.view.View
-import androidx.core.app.TaskStackBuilder
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -59,7 +58,6 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
     private val logoutViewModel by lazy { viewModelProvider.get(LogoutViewModel::class.java) }
 
     private var isReturnToHome = true
-    private var isSessionExpired = false
 
     private lateinit var mGoogleSignInClient: GoogleSignInClient
 
@@ -94,7 +92,6 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
     private fun getParams() {
         if (intent.extras != null) {
             isReturnToHome = intent.extras?.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_RETURN_HOME, true) as Boolean
-            isSessionExpired = intent.extras?.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_SESSION_EXPIRED, false) as Boolean
         }
     }
 
@@ -171,12 +168,8 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
                 RouteManager.route(applicationContext, ApplinkConst.HOME)
             }
         } else {
-            if(isSessionExpired) {
-                startActivityLoginWithBackTask()
-            } else {
-                setResult(Activity.RESULT_OK)
-                finish()
-            }
+            setResult(Activity.RESULT_OK)
+            finish()
         }
     }
 
@@ -200,21 +193,6 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
 
     private fun hideLoading() {
         logoutLoading?.visibility = View.GONE
-    }
-
-    private fun startActivityLoginWithBackTask() {
-        val taskStackBuilder = TaskStackBuilder.create(this)
-        val defferedDeeplinkPath = TrackApp.getInstance().appsFlyer.defferedDeeplinkPathIfExists
-        val homeIntent = RouteManager.getIntent(this, ApplinkConst.HOME)
-        val page = RouteManager.getIntent(this, ApplinkConst.LOGIN)
-
-        if (defferedDeeplinkPath.isEmpty()) {
-            taskStackBuilder.addNextIntent(homeIntent)
-            taskStackBuilder.addNextIntent(page)
-            taskStackBuilder.startActivities()
-        } else {
-            RouteManager.route(this, TrackApp.getInstance().appsFlyer.defferedDeeplinkPathIfExists)
-        }
     }
 
     companion object {
