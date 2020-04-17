@@ -28,7 +28,7 @@ class SavePublicKeyUseCase @Inject constructor(private val fingerprintRepository
     }
 
     companion object {
-        const val USER_ID = "user_id"
+        private const val USER_ID = "user_id"
         private const val PUBLIC_KEY = "public_key"
     }
 

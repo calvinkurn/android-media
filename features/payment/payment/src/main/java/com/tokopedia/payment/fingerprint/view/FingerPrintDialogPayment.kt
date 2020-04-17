@@ -47,9 +47,7 @@ class FingerPrintDialogPayment : FingerPrintDialog(), FingerPrintDialog.Callback
     }
 
     private fun generateDate(): String {
-        val calendar = Calendar.getInstance()
-        val dateFormat = SimpleDateFormat(DATE_FORMAT, Locale.ENGLISH)
-        return dateFormat.format(calendar.time)
+        return SimpleDateFormat(DATE_FORMAT, Locale.ENGLISH).format(Calendar.getInstance().time)
     }
 
     override fun initView(view: View) {
@@ -87,11 +85,11 @@ class FingerPrintDialogPayment : FingerPrintDialog(), FingerPrintDialog.Callback
         listenerPayment?.onGoToOtpPage(transactionId, urlOtp)
     }
 
-    override fun onAuthenticationError(errMsgId: Int, errString: CharSequence) {
+    override fun onAuthenticationError(errMsgId: Int, errString: CharSequence?) {
         updateCounterError()
     }
 
-    override fun onAuthenticationHelp(helpMsgId: Int, helpString: CharSequence) {
+    override fun onAuthenticationHelp(helpMsgId: Int, helpString: CharSequence?) {
         updateCounterError()
     }
 
@@ -110,9 +108,9 @@ class FingerPrintDialogPayment : FingerPrintDialog(), FingerPrintDialog.Callback
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val dialog = super.onCreateDialog(savedInstanceState)
-        dialog.setCanceledOnTouchOutside(false)
-        return dialog
+        return super.onCreateDialog(savedInstanceState).apply {
+            setCanceledOnTouchOutside(false)
+        }
     }
 
     interface ListenerPayment {
@@ -122,7 +120,7 @@ class FingerPrintDialogPayment : FingerPrintDialog(), FingerPrintDialog.Callback
 
     companion object {
         private const val MAX_ERROR = 3
-        const val USER_ID = "USER_ID"
+        private const val USER_ID = "USER_ID"
         private const val URL_OTP = "URL_OTP"
         private const val TRANSACTION_ID = "TRANSACTION_ID"
         private const val DATE_FORMAT = "EEE, dd MMM yyyy HH:mm:ss ZZZ"

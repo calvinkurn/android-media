@@ -25,6 +25,9 @@ class TopPayPresenter(private val saveFingerPrintUseCase: SaveFingerPrintUseCase
 
     private val compositeSubscription = CompositeSubscription()
 
+    override val userId: String
+        get() = userSession.userId
+
     override fun processUriPayment() {
         val paymentPassData = view?.paymentPassData
         if (paymentPassData != null) {
@@ -34,7 +37,7 @@ class TopPayPresenter(private val saveFingerPrintUseCase: SaveFingerPrintUseCase
                 if (method == null) {
                     method = PaymentPassData.METHOD_POST
                 }
-                view?.renderWebViewPostUrl(paymentPassData.redirectUrl, postData, method.equals(PaymentPassData.METHOD_GET, ignoreCase = true))
+                view?.renderWebViewPostUrl(paymentPassData.redirectUrl, postData, method.equals(PaymentPassData.METHOD_GET, true))
             } catch (e: Exception) {
                 e.printStackTrace()
                 view?.showToastMessageWithForceCloseView(ErrorNetMessage.MESSAGE_ERROR_DEFAULT)
@@ -45,25 +48,28 @@ class TopPayPresenter(private val saveFingerPrintUseCase: SaveFingerPrintUseCase
     }
 
     override fun registerFingerPrint(transactionId: String?, publicKey: String?, date: String?, accountSignature: String?, userId: String?) {
-        view?.showProgressDialog()
-        saveFingerPrintUseCase.execute(saveFingerPrintUseCase.createRequestParams(transactionId, publicKey, date, accountSignature, userId),
-                subscriberRegisterFingerPrint)
+        view?.let {
+            it.showProgressDialog()
+            saveFingerPrintUseCase.execute(saveFingerPrintUseCase.createRequestParams(transactionId, publicKey, date, accountSignature, userId),
+                    subscriberRegisterFingerPrint)
+        }
     }
 
     override fun paymentFingerPrint(transactionId: String?, publicKey: String?, date: String?, accountSignature: String?, userId: String?) {
-        view?.showProgressDialog()
-        paymentFingerprintUseCase.execute(paymentFingerprintUseCase.createRequestParams(transactionId, publicKey, date, accountSignature, userId!!),
-                subscriberPaymentFingerPrint)
+        view?.let {
+            it.showProgressDialog()
+            paymentFingerprintUseCase.execute(paymentFingerprintUseCase.createRequestParams(transactionId, publicKey, date, accountSignature, userId!!),
+                    subscriberPaymentFingerPrint)
+        }
     }
 
     override fun getPostDataOtp(transactionId: String, urlOtp: String) {
-        view?.showProgressDialog()
-        getPostDataOtpUseCase.execute(getPostDataOtpUseCase.createRequestParams(transactionId),
-                getSubscriberPostDataOTP(urlOtp))
+        view?.let {
+            it.showProgressDialog()
+            getPostDataOtpUseCase.execute(getPostDataOtpUseCase.createRequestParams(transactionId),
+                    getSubscriberPostDataOTP(urlOtp))
+        }
     }
-
-    override val userId: String
-        get() = userSession.userId
 
     override fun clearTimeoutSubscription() {
         compositeSubscription.clear()
@@ -107,6 +113,7 @@ class TopPayPresenter(private val saveFingerPrintUseCase: SaveFingerPrintUseCase
         return sb.toString()
     }
 
+    @Throws(UnsupportedOperationException::class)
     private fun urlEncodeUTF8(s: String): String {
         return try {
             URLEncoder.encode(s, UTF8)
@@ -159,6 +166,6 @@ class TopPayPresenter(private val saveFingerPrintUseCase: SaveFingerPrintUseCase
     }
 
     companion object {
-        const val UTF8 = "UTF-8"
+        private const val UTF8 = "UTF-8"
     }
 }

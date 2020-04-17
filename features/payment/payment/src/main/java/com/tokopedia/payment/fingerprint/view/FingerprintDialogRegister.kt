@@ -25,7 +25,7 @@ class FingerprintDialogRegister : FingerPrintDialog(), FingerPrintDialog.Callbac
         transactionId = arguments?.getString(TRANSACTION_ID) ?: ""
     }
 
-    fun setListenerRegister(listenerRegister: ListenerRegister?) {
+    fun setListenerRegister(listenerRegister: ListenerRegister) {
         this.listenerRegister = listenerRegister
     }
 
@@ -39,10 +39,7 @@ class FingerprintDialogRegister : FingerPrintDialog(), FingerPrintDialog.Callbac
     }
 
     private fun generateDate(): String {
-        val calendar = Calendar.getInstance()
-        val dateFormat = SimpleDateFormat(
-                DATE_FORMAT, Locale.ENGLISH)
-        return dateFormat.format(calendar.time)
+        return SimpleDateFormat(DATE_FORMAT, Locale.ENGLISH).format(Calendar.getInstance().time)
     }
 
     override fun initView(view: View) {
@@ -68,11 +65,11 @@ class FingerprintDialogRegister : FingerPrintDialog(), FingerPrintDialog.Callbac
         }
     }
 
-    override fun onAuthenticationError(errMsgId: Int, errString: CharSequence) {
+    override fun onAuthenticationError(errMsgId: Int, errString: CharSequence?) {
         updateCounterError()
     }
 
-    override fun onAuthenticationHelp(helpMsgId: Int, helpString: CharSequence) {
+    override fun onAuthenticationHelp(helpMsgId: Int, helpString: CharSequence?) {
         updateCounterError()
     }
 
@@ -91,9 +88,9 @@ class FingerprintDialogRegister : FingerPrintDialog(), FingerPrintDialog.Callbac
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val dialog = super.onCreateDialog(savedInstanceState)
-        dialog.setCanceledOnTouchOutside(false)
-        return dialog
+        return super.onCreateDialog(savedInstanceState).apply {
+            setCanceledOnTouchOutside(false)
+        }
     }
 
     interface ListenerRegister {
@@ -103,7 +100,7 @@ class FingerprintDialogRegister : FingerPrintDialog(), FingerPrintDialog.Callbac
 
     companion object {
         private const val MAX_ERROR = 3
-        const val USER_ID = "USER_ID"
+        private const val USER_ID = "USER_ID"
         private const val TRANSACTION_ID = "TRANSACTION_ID"
         private const val DATE_FORMAT = "EEE, dd MMM yyyy HH:mm:ss ZZZ"
 

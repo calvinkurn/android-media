@@ -43,8 +43,8 @@ class SaveFingerPrintUseCase @Inject constructor(private val fingerprintReposito
         private const val PUBLIC_KEY = "public_key"
         private const val DATE = "date"
         private const val ACCOUNT_SIGNATURE = "account_signature"
-        const val USER_ID = "user_id"
-        const val OS = "os"
+        private const val USER_ID = "user_id"
+        private const val OS = "os"
         private const val OS_ANDROID_VALUE = "1"
     }
 

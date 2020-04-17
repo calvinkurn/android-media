@@ -11,19 +11,19 @@ import rx.Subscription
 interface TopPayContract {
 
     interface Presenter : CustomerPresenter<View?> {
+        val userId: String
         fun processUriPayment()
         fun registerFingerPrint(transactionId: String?, publicKey: String?, date: String?, accountSignature: String?, userId: String?)
         fun paymentFingerPrint(transactionId: String?, publicKey: String?, date: String?, accountSignature: String?, userId: String?)
         fun getPostDataOtp(transactionId: String, urlOtp: String)
-        val userId: String
         fun clearTimeoutSubscription()
         fun addTimeoutSubscription(subscribe: Subscription)
     }
 
     interface View : CustomerView {
+        val paymentPassData: PaymentPassData?
         fun renderWebViewPostUrl(url: String, postData: ByteArray, isGet: Boolean)
         fun showToastMessageWithForceCloseView(message: String)
-        val paymentPassData: PaymentPassData?
         fun onSuccessRegisterFingerPrint()
         fun hideProgressDialog()
         fun showProgressDialog()
