@@ -25,8 +25,4 @@ internal object Utils {
         else ""
     }
 
-    fun jsonToMap(s: String): Map<String, Any> {
-        val jsonType = object : TypeToken<Map<String, Any>>() {}.type
-        return Gson().fromJson(s, jsonType)
-    }
 }

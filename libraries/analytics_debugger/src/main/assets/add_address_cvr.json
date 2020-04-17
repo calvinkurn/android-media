@@ -1,5 +1,5 @@
 {
-  "verifyOrder": [
+  "verifyAll": [
     {
       "screenName": "/user/address/create"
     },
@@ -10,7 +10,7 @@
     },
     {
       "eventCategory": "cart change address",
-      "eventAction": "click button pilih lokasi",
+      "eventAction": "click button pilih lokasi ini",
       "eventLabel": "success - logistic"
     }
   ]

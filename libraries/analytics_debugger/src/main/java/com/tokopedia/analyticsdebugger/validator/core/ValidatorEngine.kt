@@ -32,7 +32,7 @@ class ValidatorEngine constructor(private val dao: GtmLogDBSource) {
 
     private fun List<GtmLogDB>.findContaining(comparator: Validator): GtmLogDB? {
         for (gtm in this) {
-            val mapGtm = Utils.jsonToMap(gtm.data!!)
+            val mapGtm = gtm.data!!.toJsonMap()
             var exact = true
             inner@ for (entry in comparator.data) {
                 if (!mapGtm.containsKeyValue(entry)) {

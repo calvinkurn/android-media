@@ -7,7 +7,13 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <application>
-        <activity android:name=".validator.detail.ValidatorDetailActivity"></activity>
+        <activity
+            android:name=".validator.detail.ValidatorDetailActivity"
+            android:exported="true"
+            android:label="Applink Debugger"
+            android:launchMode="singleTask"
+            android:taskAffinity="com.tokopedia.analytics.task"
+            android:theme="@style/Theme.AppCompat.Light" />
         <activity
             android:name=".debugger.ui.activity.ApplinkDebuggerActivity"
             android:exported="true"
