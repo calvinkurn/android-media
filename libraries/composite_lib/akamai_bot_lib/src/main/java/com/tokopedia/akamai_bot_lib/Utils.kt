@@ -91,7 +91,7 @@ fun Context.setAkamaiValue(realAkamaiValue: String) {
 fun Context.getAkamaiValue(): String {
     return this.getSharedPreferences(
             KEY_AKAMAI_EXPIRED_TIME, MODE_PRIVATE
-    ).getString(KEY_VALUE_AKAMAI_EXPIRED_TIME, "") ?: ""
+    ).getString(KEY_REAL_VALUE_AKAMAI, "") ?: ""
 }
 
 
