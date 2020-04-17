@@ -9,7 +9,7 @@ import com.tokopedia.analyticsdebugger.R
 
 class ValidatorResultAdapter : RecyclerView.Adapter<ValidatorResultAdapter.ResultItemViewHolder>() {
 
-    private val mData: MutableList<Map<String, Any>> by lazy { mutableListOf<Map<String, Any>>() }
+    private val mData: MutableList<Validator> by lazy { mutableListOf<Validator>() }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ResultItemViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_test_case, parent, false)
@@ -24,7 +24,7 @@ class ValidatorResultAdapter : RecyclerView.Adapter<ValidatorResultAdapter.Resul
         holder.bind(mData[position], position)
     }
 
-    fun setData(list: List<Map<String, Any>>) {
+    fun setData(list: List<Validator>) {
         mData.clear()
         mData.addAll(list)
         notifyDataSetChanged()
@@ -34,9 +34,16 @@ class ValidatorResultAdapter : RecyclerView.Adapter<ValidatorResultAdapter.Resul
 
         private val tvNum: TextView = itemView.findViewById(R.id.tv_number)
         private val tvTitle: TextView = itemView.findViewById(R.id.tv_title)
+        private val tvStatus: TextView = itemView.findViewById(R.id.tv_status)
 
-        fun bind(map: Map<String, Any>, position: Int) {
+        fun bind(dataItem: Validator, position: Int) {
             tvNum.text = position.toString()
+            tvTitle.text = dataItem.name
+            tvStatus.text = when(dataItem.status) {
+                Status.SUCCESS -> "V"
+                Status.FAILURE -> "X"
+                Status.PENDING -> "-"
+            }
         }
     }
 }

@@ -15,11 +15,22 @@ import com.tokopedia.analyticsdebugger.R
 import com.tokopedia.analyticsdebugger.database.GtmLogDB
 import timber.log.Timber
 
+private val validatorResultAdapter: ValidatorResultAdapter
+    get() {
+        val itemAdapter = ValidatorResultAdapter()
+        return itemAdapter
+    }
+
 class AnalyticsValidatorActivity : AppCompatActivity() {
 
     val viewModel: ValidatorViewModel by lazy {
         ViewModelProvider(this, ViewModelProvider.AndroidViewModelFactory(this.application))
                 .get(ValidatorViewModel::class.java)
+    }
+
+    private val mAdapter: ValidatorResultAdapter by lazy {
+        val itemAdapter = ValidatorResultAdapter()
+        itemAdapter
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -35,15 +46,15 @@ class AnalyticsValidatorActivity : AppCompatActivity() {
         val testQuery = Gson().fromJson<Map<String, Any>>(jsonTest, jsonType)
         Timber.d("Validator Test Query Map \n %s", testQuery)
 
-        viewModel.gtmLog.observe(this, Observer<List<GtmLogDB>> {
+        viewModel.testCases.observe(this, Observer<List<Validator>> {
             Timber.d("Validator got ${it.size}")
+            mAdapter.setData(it)
         })
         val rv = findViewById<RecyclerView>(R.id.rv)
-        val itemAdapter = ValidatorResultAdapter()
-        itemAdapter.setData(testQuery["verifyOrder"] as List<Map<String, Any>>)
+        viewModel.run(testQuery["verifyOrder"] as List<Map<String, Any>>)
         with(rv) {
             layoutManager = LinearLayoutManager(this@AnalyticsValidatorActivity)
-            adapter = itemAdapter
+            adapter = mAdapter
         }
     }
 

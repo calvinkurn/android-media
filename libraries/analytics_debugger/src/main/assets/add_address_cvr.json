@@ -1,7 +1,7 @@
 {
   "verifyOrder": [
     {
-      "screenName": "user/address/create"
+      "screenName": "/user/address/create"
     },
     {
       "eventCategory": "cart change address",
