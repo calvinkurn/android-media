@@ -49,7 +49,6 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.betaNotif
     implementation rootProject.ext.tkpdInternalLibDependencies.akamaiBMP
 
-    //room
     implementation rootProject.ext.dbDependencies.dbRoomRuntime
     kapt rootProject.ext.dbDependencies.dbRoomCompiler
     androidTestImplementation rootProject.ext.dbDependencies.dbRoomTesting
@@ -57,7 +56,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.dagger
     kapt rootProject.ext.miscDependencies.daggerCompiler
 
-    debugImplementation project(path: ':fakeresponse')
+    debugImplementation rootProject.ext.tkpdInternalLibDependencies.fakeresponse
 }
 
 apply from: '../publish_local.gradle'
