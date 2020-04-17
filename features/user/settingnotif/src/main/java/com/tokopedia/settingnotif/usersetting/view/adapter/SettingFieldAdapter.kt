@@ -133,15 +133,13 @@ class SettingFieldAdapter<T : Visitable<SettingFieldTypeFactory>>(
 
     fun disableSwitchComponent() {
         visitables.forEach {
-            if (it is ParentSetting) {
-                it.isEnabled = false
-                it.status = false
-            }
-            if (it is SettingSections) {
-                it.isEnabled = false
-            }
-            if (it is SellerSection) {
-                it.isEnabled = false
+            when (it) {
+                is SettingSections -> it.isEnabled = false
+                is SellerSection -> it.isEnabled = false
+                is ParentSetting -> {
+                    it.isEnabled = false
+                    it.status = false
+                }
             }
         }
         notifyDataSetChanged()
