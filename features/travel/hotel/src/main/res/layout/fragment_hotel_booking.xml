@@ -316,25 +316,12 @@
                     android:visibility="gone"
                     tools:visibility="visible">
 
-
-                    <com.tokopedia.design.text.TkpdHintTextInputLayout
-                        android:id="@+id/til_guest"
-                        style="@style/HintTextInputLayout"
+                    <com.tokopedia.hotel.common.presentation.widget.HotelAutoCompleteTextField
+                        android:id="@+id/tv_guest_input"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="@dimen/layout_lvl1"
-                        app:errorEnabled="true"
-                        app:helperEnabled="true">
-
-                        <com.tokopedia.common.travel.widget.InstantAutoCompleteTextView
-                            android:id="@+id/tv_guest_input"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:focusable="true"
-                            android:hint="@string/hotel_booking_guest_form_hint" />
-
-                    </com.tokopedia.design.text.TkpdHintTextInputLayout>
-
+                        />
                 </LinearLayout>
 
             </LinearLayout>

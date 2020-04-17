@@ -258,15 +258,16 @@ class HotelBookingFragment : HotelBaseFragment() {
         booking_button.setOnClickListener { onBookingButtonClicked() }
     }
 
-    fun initGuestInfoEditText() {
+    private fun initGuestInfoEditText() {
+        tv_guest_input.setHint(getString(R.string.hotel_booking_guest_form_hint))
         context?.let {
             travelContactArrayAdapter = TravelContactArrayAdapter(it, com.tokopedia.travel.passenger.R.layout.layout_travel_passenger_autocompletetv,
                     arrayListOf(), object : TravelContactArrayAdapter.ContactArrayListener {
                 override fun getFilterText(): String {
-                    return til_guest.editText.text.toString()
+                    return tv_guest_input.getEditableValue()
                 }
             })
-            (til_guest.editText as AutoCompleteTextView).setAdapter(travelContactArrayAdapter)
+            (tv_guest_input.getAutoCompleteTextView() as AutoCompleteTextView).setAdapter(travelContactArrayAdapter)
         }
     }
 
@@ -405,7 +406,7 @@ class HotelBookingFragment : HotelBaseFragment() {
 
         if (hotelBookingPageModel.guestName.isNotEmpty() && hotelBookingPageModel.isForOtherGuest == 1) {
             radio_button_contact_guest.isChecked = true
-            tv_guest_input.setText(hotelBookingPageModel.guestName)
+            tv_guest_input.setEditableText(hotelBookingPageModel.guestName)
             toggleShowGuestForm(true)
         }
         radio_group_contact.setOnCheckedChangeListener { _, checkedId ->
@@ -419,9 +420,7 @@ class HotelBookingFragment : HotelBaseFragment() {
         }
 
 
-        til_guest.setLabel(getString(R.string.hotel_booking_guest_form_title))
-        til_guest.setErrorTextAppearance(R.style.ErrorTextAppearance)
-        til_guest.setHelperTextAppearance(R.style.HelperTextAppearance)
+        tv_guest_input.setLabel(getString(R.string.hotel_booking_guest_form_title))
         toggleGuestFormError(false)
     }
 
@@ -445,12 +444,10 @@ class HotelBookingFragment : HotelBaseFragment() {
         val noticeString = getString(R.string.hotel_booking_guest_form_notice)
         when (value) {
             true -> {
-                til_guest.setHelper(null)
-                til_guest.error = noticeString
+                tv_guest_input.setError(noticeString)
             }
             false -> {
-                til_guest.setHelper(noticeString)
-                til_guest.error = null
+                tv_guest_input.setHelper(noticeString)
             }
         }
     }
@@ -599,8 +596,8 @@ class HotelBookingFragment : HotelBaseFragment() {
     private fun onBookingButtonClicked() {
         progressDialog.show()
         if (validateData()) {
-            if (radio_button_contact_guest.isChecked && tv_guest_input.text.toString().isNotEmpty())
-                hotelBookingPageModel.guestName = tv_guest_input.text.toString()
+            if (radio_button_contact_guest.isChecked && tv_guest_input.getEditableValue().isNotEmpty())
+                hotelBookingPageModel.guestName = tv_guest_input.getEditableValue()
             else hotelBookingPageModel.guestName = hotelBookingPageModel.contactData.name
             hotelBookingPageModel.roomRequest = tv_room_request_input.getEditableValue().toString()
             trackingHotelUtil.hotelClickNext(hotelCart, destinationType, destinationName, roomCount, guestCount,
@@ -624,10 +621,10 @@ class HotelBookingFragment : HotelBaseFragment() {
     private fun validateData(): Boolean {
         var isValid = true
         if ((tv_room_request_input.getEditableValue().toString().length) > roomRequestMaxCharCount) isValid = false
-        if (radio_button_contact_guest.isChecked && tv_guest_input.text.isEmpty()) {
+        if (radio_button_contact_guest.isChecked && tv_guest_input.getEditableValue().isEmpty()) {
             toggleGuestFormError(true)
             isValid = false
-        } else if (tv_guest_input.text.isNotEmpty() && !validateNameIsAlphabetOnly(tv_guest_input.text.toString())) {
+        } else if (tv_guest_input.getEditableValue().isNotEmpty() && !validateNameIsAlphabetOnly(tv_guest_input.getEditableValue())) {
             toggleGuestFormError(true)
             isValid = false
         }
