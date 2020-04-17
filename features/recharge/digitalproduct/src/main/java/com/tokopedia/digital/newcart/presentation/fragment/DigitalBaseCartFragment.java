@@ -385,7 +385,8 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
     @Override
     public void showToastMessage(String message) {
         View view = getView();
-        if (view != null) Toaster.INSTANCE.make(getView(), message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, getString(R.string.close), v->{});
+        if (view != null) Toaster.INSTANCE.make(getView(), message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR,
+                getString(com.tokopedia.abstraction.R.string.close), v->{});
         else Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
     }
 
