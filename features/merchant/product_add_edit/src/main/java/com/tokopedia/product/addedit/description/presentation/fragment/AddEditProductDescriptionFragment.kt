@@ -115,7 +115,6 @@ class AddEditProductDescriptionFragment:
     }
 
     private var productInputModel: ProductInputModel? = null
-    private var variantOptions: List<ProductVariantByCatModel>? = null
 
     private lateinit var userSession: UserSessionInterface
     private lateinit var shopId: String
@@ -239,7 +238,7 @@ class AddEditProductDescriptionFragment:
             } else {
                 ProductAddDescriptionTracking.clickAddProductVariant(shopId)
             }
-            variantOptions?.let {
+            descriptionViewModel.productVariantData?.let {
                 showVariantDialog(it)
             }
         }
@@ -301,10 +300,7 @@ class AddEditProductDescriptionFragment:
         tvAddVariant.isEnabled = false
         descriptionViewModel.productVariant.observe(viewLifecycleOwner, Observer { result ->
             when (result) {
-                is Success -> {
-                    tvAddVariant.isEnabled = true
-                    variantOptions = result.data
-                }
+                is Success -> tvAddVariant.isEnabled = true
                 is Fail -> showVariantErrorToast(getString(R.string.default_request_error_timeout))
             }
         })
