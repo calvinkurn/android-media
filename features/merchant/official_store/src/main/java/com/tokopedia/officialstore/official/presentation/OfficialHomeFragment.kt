@@ -27,7 +27,6 @@ import com.tokopedia.discovery.common.manager.showProductCardOptions
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.navigation_common.listener.JankyFramesMonitoringListener
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.officialstore.FirebasePerformanceMonitoringConstant
 import com.tokopedia.officialstore.OfficialStoreInstance
@@ -79,7 +78,6 @@ class OfficialHomeFragment :
         fun newInstance(bundle: Bundle?) = OfficialHomeFragment().apply { arguments = bundle }
     }
 
-    private var jankyFramesMonitoringListener: JankyFramesMonitoringListener? = null
     private val sentDynamicChannelTrackers = mutableSetOf<String>()
 
     @Inject
@@ -144,14 +142,7 @@ class OfficialHomeFragment :
         val adapterTypeFactory = OfficialHomeAdapterTypeFactory(this, this, this)
         adapter = OfficialHomeAdapter(adapterTypeFactory)
         recyclerView?.adapter = adapter
-
-        recyclerView?.let { jankyFramesMonitoringListener?.mainJankyFrameMonitoringUtil?.recordRecyclerViewScrollPerformance(it, pageName = PERFORMANCE_OS_PAGE_NAME) }
         return view
-    }
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        jankyFramesMonitoringListener = castContextToJankyFramesMonitoring(context)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -169,12 +160,6 @@ class OfficialHomeFragment :
     override fun onPause() {
         super.onPause()
         tracking?.sendAll()
-    }
-
-    private fun castContextToJankyFramesMonitoring(context: Context): JankyFramesMonitoringListener? {
-        return if (context is JankyFramesMonitoringListener) {
-            context
-        } else null
     }
 
     private fun resetData() {
