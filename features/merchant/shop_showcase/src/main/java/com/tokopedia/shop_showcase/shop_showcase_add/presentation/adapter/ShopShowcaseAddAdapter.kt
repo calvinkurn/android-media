@@ -73,7 +73,8 @@ class ShopShowcaseAddAdapter(private val context: Context, private var listener:
     fun undoDeleteSelectedProduct() {
         deletedProductList.forEach {
             selectedProductList.add(0, it)
-            appendedProductList.add(it)
+            if((it as ShowcaseProduct).isNewAppended)
+                appendedProductList.add(it)
             notifyItemInserted(0)
         }
         deletedProductList.clear()

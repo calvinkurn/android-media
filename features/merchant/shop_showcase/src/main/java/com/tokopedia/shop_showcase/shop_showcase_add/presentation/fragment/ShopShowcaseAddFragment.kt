@@ -389,6 +389,7 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
                             this.dismiss()
                             showcaseAddAdapter?.undoDeleteSelectedProduct()
                             goToChooseProduct()
+                            showSelectedProductList()
                         }
                         show()
                     }
