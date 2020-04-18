@@ -47,20 +47,20 @@ class ComparatorKtTest {
     fun `regex match given * when compared to any string should return true`() {
         val tesVal = "{{.*}}"
         val objVal = "any string would match"
-        assertTrue(regexCompare(tesVal, objVal))
+        assertTrue(regexEquals(tesVal, objVal))
     }
 
     @Test
     fun `regex match given d* when compared to any string should return true`() {
         val tesVal = "{{\\d*}}"
         val objVal = "55643"
-        assertTrue(regexCompare(tesVal, objVal))
+        assertTrue(regexEquals(tesVal, objVal))
     }
 
     @Test
     fun `regex match given idd* when compared to any string should return true`() {
         val tesVal = "{{id/\\d*}}"
         val objVal = "id/55643"
-        assertTrue(regexCompare(tesVal, objVal))
+        assertTrue(regexEquals(tesVal, objVal))
     }
 }
