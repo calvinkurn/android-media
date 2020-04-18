@@ -381,9 +381,8 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
             if (viewModel.isEditing.value == true) {
                 ProductEditStepperTracking.trackAddProductVariant(shopId)
             }
-            val categoryId: String = viewModel.productInputModel.value?.detailInputModel?.categoryId
-                    ?: ""
-            viewModel.getVariantList(categoryId)
+            viewModel.productVariantListData?.apply {
+                showVariantDialog(this) }
         }
 
         addProductVariantTipsLayout?.setOnClickListener {
@@ -407,12 +406,14 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
             setCashback()
         }
 
+        viewModel.getVariantList(viewModel.getCategoryId())
+
         observeIsEditingStatus()
         observeProductData()
         observeProductInputModel()
         observeProductVariant()
         observeImageUrlOrPathList()
-        observeProductVariantList()
+        observeVariantList()
     }
 
     @Suppress("UNCHECKED_CAST")
@@ -696,10 +697,11 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
         })
     }
 
-    private fun observeProductVariantList() {
-        viewModel.productVariantList.observe(viewLifecycleOwner, Observer { result ->
+    private fun observeVariantList() {
+        addEditProductVariantButton?.isEnabled = false
+        viewModel.productVariantList.observe(this, Observer { result ->
             when (result) {
-                is Success -> showVariantDialog(result.data)
+                is Success -> addEditProductVariantButton?.isEnabled = true
                 is Fail -> showVariantErrorToast(getString(R.string.error_cannot_get_variants))
             }
         })

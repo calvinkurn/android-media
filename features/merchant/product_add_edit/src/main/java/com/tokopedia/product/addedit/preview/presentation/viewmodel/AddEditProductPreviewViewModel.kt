@@ -44,7 +44,6 @@ class AddEditProductPreviewViewModel @Inject constructor(
 ) : BaseViewModel(dispatcher) {
 
     private val productId = MutableLiveData<String>()
-
     private val detailInputModel = MutableLiveData<DetailInputModel>()
 
     // observing the product id, and will become true if product id exist
@@ -82,6 +81,12 @@ class AddEditProductPreviewViewModel @Inject constructor(
 
     private val mProductVariantList = MutableLiveData<Result<List<ProductVariantByCatModel>>>()
     val productVariantList: LiveData<Result<List<ProductVariantByCatModel>>> get() = mProductVariantList
+    val productVariantListData get() = mProductVariantList.value.let {
+        when(it) {
+            is Success -> it.data
+            else -> null
+        }
+    }
 
     private val mGetProductDraftResult = MutableLiveData<Result<ProductDraft>>()
     val getProductDraftResult: LiveData<Result<ProductDraft>> get() = mGetProductDraftResult
@@ -133,6 +138,10 @@ class AddEditProductPreviewViewModel @Inject constructor(
 
     fun getDraftId(): Long {
         return if (draftId.isBlank()) 0 else draftId.toLong()
+    }
+
+    fun getCategoryId(): String {
+        return productInputModel.value?.detailInputModel?.categoryId ?: ""
     }
 
     fun setProductId(id: String) {
