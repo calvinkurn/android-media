@@ -26,6 +26,19 @@ class SellerFieldFragment: SettingFieldFragment() {
         super.onSuccessGetUserSetting(data)
     }
 
+    /*
+    * especially for seller push notif,
+    * request update setting must be use `pushnotif`
+    * as a notification key
+    * */
+    override fun requestUpdateUserSetting(
+            notificationType: String,
+            updatedSettingIds: List<Map<String, Any>>
+    ) {
+        presenter.requestUpdateUserSetting(TYPE_PUSH_NOTIF, updatedSettingIds)
+        presenter.requestUpdateMoengageUserSetting(updatedSettingIds)
+    }
+
     override fun getScreenName() = getString(R.string.settingnotif_settings_seller_title)
     override fun getNotificationType() = SELLER_NOTIF_TYPE
 
