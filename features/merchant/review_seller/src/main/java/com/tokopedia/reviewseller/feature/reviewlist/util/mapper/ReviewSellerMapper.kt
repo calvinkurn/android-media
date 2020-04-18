@@ -24,7 +24,8 @@ object ReviewSellerMapper {
         return productReviewListUiModel
     }
 
-    fun mapToProductRatingOverallModel(productGetProductRatingOverallByShop: ProductRatingOverallResponse.ProductGetProductRatingOverallByShop): ProductRatingOverallUiModel {
+    fun mapToProductRatingOverallModel(productGetProductRatingOverallByShop:
+                                       ProductRatingOverallResponse.ProductGetProductRatingOverallByShop): ProductRatingOverallUiModel {
         return ProductRatingOverallUiModel().apply {
             rating = productGetProductRatingOverallByShop.rating
             reviewCount = productGetProductRatingOverallByShop.reviewCount
