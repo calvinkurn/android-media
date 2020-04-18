@@ -796,7 +796,7 @@ open class HomeViewModel @Inject constructor(
         val requestParams = RequestParams()
         requestParams.putObject(AddToCartOccUseCase.REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST, AddToCartOccRequestParams(
                 productId = grid.id,
-                quantity = grid.minOrder.toString(),
+                quantity = "1",
                 shopId = grid.shop.shopId,
                 warehouseId = grid.warehouseId
         ))
