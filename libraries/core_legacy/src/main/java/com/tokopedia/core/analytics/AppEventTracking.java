@@ -246,7 +246,6 @@ public interface AppEventTracking {
         String GM_STATISTIC_DATE_PICKER = "GM Statistic - Date Picker";
         String MANAGE_PRODUCT = "Manage Product";
         String DRAFT_PRODUCT = "Draft Product";
-        String DRAFT_PRODUCT_PAGE = "draft product page";
         String CATEGORY_PAGE = "Category Page";
         String INTERMEDIARY_PAGE = "IntermediaryPage";
         String CATEGORY_DRAWER = "Category Drawer";
@@ -517,9 +516,6 @@ public interface AppEventTracking {
         String CLICK_CATALOG = "click - catalog";
         String CLICK_TAB = "click - tab";
         String CLICK_PRODUCT = "click-product";
-
-        String CLICK_ADD_PRODUCT_WITHOUT_DRAFT = "click add product without draft";
-        String CLICK_ADD_PRODUCT = "click add product";
     }
 
     interface ImageEditor {

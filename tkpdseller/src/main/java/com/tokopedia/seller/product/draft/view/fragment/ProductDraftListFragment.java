@@ -37,6 +37,7 @@ import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.presenter.BlankPresenter;
 import com.tokopedia.seller.product.draft.di.component.DaggerProductDraftListComponent;
 import com.tokopedia.seller.product.draft.di.module.ProductDraftListModule;
+import com.tokopedia.seller.product.draft.tracking.AddEditDraftTracking;
 import com.tokopedia.seller.product.draft.view.adapter.ProductDraftAdapter;
 import com.tokopedia.seller.product.draft.view.adapter.ProductEmptyDataBinder;
 import com.tokopedia.seller.product.draft.view.listener.ProductDraftListView;
@@ -180,13 +181,12 @@ public class ProductDraftListFragment extends BaseListFragment<BlankPresenter, P
                     });
             AlertDialog dialog = alertDialogBuilder.create();
             dialog.show();
-
             return true;
         } else if (item.getItemId() == R.id.add_product_menu) {
             item.getSubMenu().findItem(R.id.label_view_add_image).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
                 @Override
                 public boolean onMenuItemClick(MenuItem item) {
-                    eventAddEditDraftProductClicked(AppEventTracking.Action.CLICK_ADD_PRODUCT_WITHOUT_DRAFT);
+                    AddEditDraftTracking.INSTANCE.eventAddEditDraftClicked(shopId, AddEditDraftTracking.CLICK_ADD_PRODUCT_WITHOUT_DRAFT);
                     RouteManager.route(getContext(), ApplinkConstInternalMechant.MERCHANT_OPEN_PRODUCT_PREVIEW);
                     return true;
                 }
@@ -322,7 +322,7 @@ public class ProductDraftListFragment extends BaseListFragment<BlankPresenter, P
     @Override
     public void onEmptyButtonClicked() {
         eventDraftProductClicked(AppEventTracking.EventLabel.ADD_PRODUCT);
-        eventAddEditDraftProductClicked(AppEventTracking.Action.CLICK_ADD_PRODUCT);
+        AddEditDraftTracking.INSTANCE.eventAddEditDraftClicked(shopId, AddEditDraftTracking.CLICK_ADD_PRODUCT);
         RouteManager.route(getContext(), ApplinkConstInternalMechant.MERCHANT_OPEN_PRODUCT_PREVIEW);
     }
 
@@ -332,16 +332,6 @@ public class ProductDraftListFragment extends BaseListFragment<BlankPresenter, P
                 AppEventTracking.Category.DRAFT_PRODUCT,
                 AppEventTracking.Action.CLICK,
                 label);
-    }
-
-    public void eventAddEditDraftProductClicked(String action) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(
-                AppEventTracking.AddProduct.EVENT_CLICK_ADD_PRODUCT,
-                AppEventTracking.Category.DRAFT_PRODUCT_PAGE,
-                action,
-                "",
-                shopId
-        );
     }
 
     @Override
