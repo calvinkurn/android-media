@@ -232,7 +232,6 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                 sortValue = it.getString(ShopParamConstant.EXTRA_SORT_ID, Integer.MIN_VALUE.toString())
                 shopId = it.getString(ShopParamConstant.EXTRA_SHOP_ID, "")
                 shopRef = it.getString(ShopParamConstant.EXTRA_SHOP_REF, "")
-//                needReloadData = it.getBoolean(ShopParamConstant.EXTRA_IS_NEED_TO_RELOAD_DATA)
                 isNeedToReloadData = it.getBoolean(ShopParamConstant.EXTRA_IS_NEED_TO_RELOAD_DATA)
             }
         } else {
@@ -244,7 +243,6 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
             shopId = savedInstanceState.getString(SAVED_SHOP_ID)
             shopRef = savedInstanceState.getString(SAVED_SHOP_REF).orEmpty()
             needReloadData = savedInstanceState.getBoolean(ShopParamConstant.EXTRA_IS_NEED_TO_RELOAD_DATA)
-//            isNeedToReloadData = savedInstanceState.getBoolean(SAVED_RELOAD_STATE)
         }
         shopPageProductListResultFragmentListener?.onSortValueUpdated(sortValue ?: "")
         setHasOptionsMenu(true)
@@ -370,7 +368,6 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         showLoading()
 
         if (isNeedToReloadData) {
-//            isNeedToReloadData = false
             viewModel.clearCache()
         }
 
@@ -788,19 +785,9 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
     override fun onResume() {
         super.onResume()
         if (needReloadData) {
-//            hideEtalaseList()
-//            viewModel.etalaseListData.value = null
-//            viewModel.clearCache()
-//            shopProductEtalaseAdapter.clearAllElements()
-//            viewModel.clearCache()
             loadInitialData()
             needReloadData = false
         }
-
-//        if (isNeedToReloadData) {
-//            onSwipeRefresh()
-//            isNeedToReloadData = false
-//        }
     }
 
     override fun onPause() {
