@@ -408,8 +408,6 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
             setCashback()
         }
 
-        viewModel.getVariantList(viewModel.getCategoryId())
-
         observeIsEditingStatus()
         observeProductData()
         observeProductInputModel()
@@ -718,10 +716,14 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
     }
 
     private fun observeVariantList() {
+        addEditProductVariantButton?.alpha = 0.5F
         addEditProductVariantButton?.isEnabled = false
         viewModel.productVariantList.observe(this, Observer { result ->
             when (result) {
-                is Success -> addEditProductVariantButton?.isEnabled = true
+                is Success -> {
+                    addEditProductVariantButton?.isEnabled = true
+                    addEditProductVariantButton?.alpha = 1F
+                }
                 is Fail -> showVariantErrorToast(getString(R.string.error_cannot_get_variants))
             }
         })
