@@ -1,6 +1,7 @@
 package com.tokopedia.analyticsdebugger.validator.core
 
 import com.tokopedia.analyticsdebugger.FileUtils
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
@@ -14,6 +15,14 @@ class ComparatorKtTest {
         val db = fu.getJsonArrayResources("ana_actual.json")
 
         assertTrue(tes.first().compare(db.first()))
+    }
+
+    @Test
+    fun `regular subset with strictly compare should return false`() {
+        val tes = fu.getJsonArrayResources("ana.json")
+        val db = fu.getJsonArrayResources("ana_actual.json")
+
+        assertFalse(tes.first().compare(db.first(), strict = true))
     }
 
     @Test
