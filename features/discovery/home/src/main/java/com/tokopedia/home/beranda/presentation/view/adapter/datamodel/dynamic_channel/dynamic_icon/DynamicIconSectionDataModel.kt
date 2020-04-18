@@ -6,9 +6,9 @@ import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeTypeFact
 
 import java.util.ArrayList
 
-class DynamicIconSectionViewModel : HomeVisitable {
+class DynamicIconSectionDataModel : HomeVisitable {
     override fun equalsWith(b: Any?): Boolean {
-        if (b is DynamicIconSectionViewModel) {
+        if (b is DynamicIconSectionDataModel) {
             return itemList == b.itemList
         }
         return false

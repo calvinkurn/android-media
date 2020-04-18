@@ -9,7 +9,7 @@
         tools:replace="android:label">
 
         <activity
-            android:name="test.activity.HomeActivityTest"
+            android:name=".test.activity.HomeActivityTest"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
 
         <activity

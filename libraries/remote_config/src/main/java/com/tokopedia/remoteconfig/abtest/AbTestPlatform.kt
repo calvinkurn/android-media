@@ -15,19 +15,21 @@ import com.tokopedia.track.TrackApp
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
-import org.json.JSONObject
 import rx.Subscriber
 import rx.schedulers.Schedulers
 import java.util.*
 import kotlin.collections.HashMap
+import com.tokopedia.iris.util.IrisSession
 
 class AbTestPlatform @JvmOverloads constructor (val context: Context): RemoteConfig {
 
     private lateinit var userSession: UserSession
+    private lateinit var irisSession: IrisSession
     private val graphqlUseCase: GraphqlUseCase = GraphqlUseCase()
 
     init {
         userSession = UserSession(context)
+        irisSession = IrisSession(context)
     }
 
     private val sharedPreferences = context.getSharedPreferences(SHARED_PREFERENCE_AB_TEST_PLATFORM, Context.MODE_PRIVATE)
@@ -43,6 +45,7 @@ class AbTestPlatform @JvmOverloads constructor (val context: Context): RemoteCon
         }
         return defaultValue
     }
+
 
     override fun getByteArray(key: String?): ByteArray {
         throw RuntimeException("Method is not implemented yet")
@@ -109,6 +112,7 @@ class AbTestPlatform @JvmOverloads constructor (val context: Context): RemoteCon
         } else {
             payloads[ID] = userSession.deviceId
         }
+        payloads[IRIS_SESSION_ID] = irisSession.getSessionId()
 
         val graphqlRequest = GraphqlRequest(GraphqlHelper.loadRawString(context.resources,
                 R.raw.gql_rollout_feature_variant), AbTestVariantPojo::class.java, payloads, false)
@@ -178,6 +182,7 @@ class AbTestPlatform @JvmOverloads constructor (val context: Context): RemoteCon
         val REVISION = "rev"
         val CLIENTID = "client_id"
         val ID = "id"
+        val IRIS_SESSION_ID = "iris_session_id"
         val ANDROID_CLIENTID = 1
         val KEY_SP_TIMESTAMP_AB_TEST = "key_sp_timestamp_ab_test"
         val SHARED_PREFERENCE_AB_TEST_PLATFORM = "tkpd-ab-test-platform"
