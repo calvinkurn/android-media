@@ -59,12 +59,12 @@ abstract class SettingFieldFragment : BaseListFragment<Visitable<*>,
     *  */
     abstract fun getNotificationType(): String
 
+    @RawRes abstract fun getGqlRawQuery(): Int
+
     // setting field adapter
     private val settingFieldAdapter by lazy(LazyThreadSafetyMode.NONE) {
         adapter as SettingFieldAdapter
     }
-
-    @RawRes abstract fun getGqlRawQuery(): Int
 
     override fun onCreateView(
             inflater: LayoutInflater,
