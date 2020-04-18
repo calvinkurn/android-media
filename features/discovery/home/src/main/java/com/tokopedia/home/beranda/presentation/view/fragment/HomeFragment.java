@@ -49,11 +49,13 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarRetry;
 import com.tokopedia.analytics.performance.util.JankyFrameMonitoringUtil;
+import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalContent;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
+import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.design.countdown.CountDownView;
 import com.tokopedia.design.keyboard.KeyboardHelper;
@@ -68,7 +70,6 @@ import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel;
 import com.tokopedia.home.beranda.domain.model.HomeFlag;
 import com.tokopedia.home.beranda.domain.model.SearchPlaceholder;
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel;
-import com.tokopedia.home.beranda.domain.model.review.SuggestedProductReviewResponse;
 import com.tokopedia.home.beranda.helper.Result;
 import com.tokopedia.home.beranda.helper.ViewHelper;
 import com.tokopedia.home.beranda.listener.ActivityStateListener;
@@ -82,7 +83,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecycleAdapter;
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable;
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitableDiffUtil;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.CashBackData;
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelViewModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelDataModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomepageBannerDataModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeAdapterFactory;
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.HomeRecyclerDecoration;
@@ -103,7 +104,6 @@ import com.tokopedia.iris.util.IrisSession;
 import com.tokopedia.locationmanager.DeviceLocation;
 import com.tokopedia.locationmanager.LocationDetectorHelper;
 import com.tokopedia.loyalty.view.activity.PromoListActivity;
-import com.tokopedia.loyalty.view.activity.TokoPointWebviewActivity;
 import com.tokopedia.navigation_common.listener.AllNotificationListener;
 import com.tokopedia.navigation_common.listener.FragmentListener;
 import com.tokopedia.navigation_common.listener.HomePerformanceMonitoringListener;
@@ -295,6 +295,11 @@ public class HomeFragment extends BaseDaggerFragment implements
         searchBarTransitionRange = getResources().getDimensionPixelSize(R.dimen.home_searchbar_transition_range);
         startToTransitionOffset = (getResources().getDimensionPixelSize(R.dimen.banner_background_height)) / 2;
 
+        if (getPageLoadTimeCallback() != null) {
+            getPageLoadTimeCallback().stopPreparePagePerformanceMonitoring();
+            getPageLoadTimeCallback().startNetworkRequestPerformanceMonitoring();
+        }
+
         initViewModel();
         setGeolocationPermission();
         needToShowGeolocationComponent();
@@ -373,7 +378,7 @@ public class HomeFragment extends BaseDaggerFragment implements
         homeMainToolbar = view.findViewById(R.id.toolbar);
         homeMainToolbar.setAfterInflationCallable(getAfterInflationCallable());
         statusBarBackground = view.findViewById(R.id.status_bar_bg);
-        homeRecyclerView = view.findViewById(R.id.list);
+        homeRecyclerView = view.findViewById(R.id.home_fragment_recycler_view);
         homeRecyclerView.setHasFixedSize(true);
         refreshLayout = view.findViewById(R.id.home_swipe_refresh_layout);
         floatingTextButton = view.findViewById(R.id.recom_action_button);
@@ -494,14 +499,14 @@ public class HomeFragment extends BaseDaggerFragment implements
         }
 
         if (recyclerView.canScrollVertically(1)) {
-            if(homeMainToolbar != null) {
+            if(homeMainToolbar != null && homeMainToolbar.getViewHomeMainToolBar() != null) {
                 homeMainToolbar.showShadow();
             }
             showFeedSectionViewHolderShadow(false);
             homeRecyclerView.setNestedCanScroll(false);
         } else {
             //home feed now can scroll up, so hide maintoolbar shadow
-            if(homeMainToolbar != null) {
+            if(homeMainToolbar != null && homeMainToolbar.getViewHomeMainToolBar() != null) {
                 homeMainToolbar.hideShadow();
             }
             showFeedSectionViewHolderShadow(true);
@@ -620,7 +625,7 @@ public class HomeFragment extends BaseDaggerFragment implements
             /*
              * set notification gimmick
              */
-            if(homeMainToolbar != null) {
+            if(homeMainToolbar != null && homeMainToolbar.getViewHomeMainToolBar() != null) {
                 homeMainToolbar.setNotificationNumber(0);
             }
         });
@@ -630,11 +635,17 @@ public class HomeFragment extends BaseDaggerFragment implements
     private void subscribeHome(){
         observeHomeData();
         observeUpdateNetworkStatusData();
+        observeOneClickCheckout();
         observePopupIntroOvo();
+        observeErrorEvent();
         observeSendLocation();
         observeStickyLogin();
         observeTrackingData();
         observeRequestImagePlayBanner();
+    }
+
+    private void observeErrorEvent(){
+        viewModel.getErrorEventLiveData().observe(getViewLifecycleOwner(), data -> showToaster(getString(R.string.home_error_connection), Toaster.TYPE_ERROR));
     }
 
     private void observeHomeData(){
@@ -676,9 +687,37 @@ public class HomeFragment extends BaseDaggerFragment implements
     }
 
     private void observeSearchHint(){
-        viewModel.getSearchHint().observe(getViewLifecycleOwner(), data -> {
-            setHint(data);
+        if(getView() != null && !viewModel.getSearchHint().hasObservers() && homeMainToolbar != null && homeMainToolbar.getViewHomeMainToolBar() != null){
+            viewModel.getSearchHint().observe(getViewLifecycleOwner(), data -> {
+                setHint(data);
+            });
+        }
+    }
+
+    private void observeOneClickCheckout(){
+        viewModel.getOneClickCheckout().observe(getViewLifecycleOwner(), event -> {
+            Object data = event.peekContent();
+            if(data instanceof Throwable){
+                // error
+                showToaster(getString(R.string.home_error_connection), Toaster.TYPE_ERROR);
+            } else {
+                Map dataMap = (Map) data;
+               sendEETracking((HashMap<String, Object>) HomePageTrackingV2.RecommendationList.INSTANCE.getAddToCartOnDynamicListCarousel(
+                        (DynamicHomeChannel.Channels) dataMap.get(HomeViewModel.CHANNEL),
+                        (DynamicHomeChannel.Grid) dataMap.get(HomeViewModel.GRID),
+                        (int) dataMap.get(HomeViewModel.POSITION),
+                        ((AddToCartDataModel) dataMap.get(HomeViewModel.ATC)).getData().getCartId(),
+                       viewModel.getUserId()
+               ));
+               RouteManager.route(getContext(), ApplinkConstInternalMarketplace.ONE_CLICK_CHECKOUT);
+            }
         });
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        observeSearchHint();
     }
 
     private void observeSendLocation(){
@@ -730,8 +769,14 @@ public class HomeFragment extends BaseDaggerFragment implements
 
     private void setData(List<HomeVisitable> data, boolean isCache){
         if(!data.isEmpty()) {
-            if (isCache && needToPerformanceMonitoring()) {
-                setOnRecyclerViewLayoutReady();
+            if (!isCache && getPageLoadTimeCallback() != null) {
+                getPageLoadTimeCallback().stopNetworkRequestPerformanceMonitoring();
+            }
+
+            if (needToPerformanceMonitoring() && getPageLoadTimeCallback() != null) {
+                getPageLoadTimeCallback().stopNetworkRequestPerformanceMonitoring();
+                getPageLoadTimeCallback().startRenderPerformanceMonitoring();
+                setOnRecyclerViewLayoutReady(isCache);
             }
 
             adapter.submitList(data);
@@ -776,7 +821,7 @@ public class HomeFragment extends BaseDaggerFragment implements
         if (offsetAlpha < 0) {
             offsetAlpha = 0;
         }
-        if(homeMainToolbar != null) {
+        if(homeMainToolbar != null && homeMainToolbar.getViewHomeMainToolBar() != null) {
             if (offsetAlpha >= 150) {
                 homeMainToolbar.switchToDarkToolbar();
                 if (isLightThemeStatusBar) requestStatusBarDark();
@@ -790,7 +835,7 @@ public class HomeFragment extends BaseDaggerFragment implements
             offsetAlpha = 255;
         }
 
-        if(homeMainToolbar != null) {
+        if(homeMainToolbar != null && homeMainToolbar.getViewHomeMainToolBar() != null) {
             if (offsetAlpha >= 0 && offsetAlpha <= 255) {
                 homeMainToolbar.setBackgroundAlpha(offsetAlpha);
                 setStatusBarAlpha(offsetAlpha);
@@ -968,9 +1013,9 @@ public class HomeFragment extends BaseDaggerFragment implements
             openApplink(appLink);
         } else {
             if (TextUtils.isEmpty(pageTitle))
-                startActivity(TokoPointWebviewActivity.getIntent(getActivity(), tokoPointUrl));
+                RouteManager.route(getActivity(), ApplinkConstInternalGlobal.WEBVIEW, tokoPointUrl);
             else
-                startActivity(TokoPointWebviewActivity.getIntentWithTitle(getActivity(), tokoPointUrl, pageTitle));
+                RouteManager.route(getActivity(), ApplinkConstInternalGlobal.WEBVIEW_TITLE, pageTitle, tokoPointUrl);
         }
     }
 
@@ -1050,7 +1095,7 @@ public class HomeFragment extends BaseDaggerFragment implements
             case REQUEST_CODE_REVIEW:
                 adapter.notifyDataSetChanged();
                 if (resultCode == Activity.RESULT_OK) {
-                    viewModel.removeSuggestedReview();
+                    viewModel.onRemoveSuggestedReview();
                 }
                 break;
             case REQUEST_CODE_PLAY_ROOM:
@@ -1124,7 +1169,7 @@ public class HomeFragment extends BaseDaggerFragment implements
         homeRecyclerView.setEnabled(true);
     }
 
-    private void setOnRecyclerViewLayoutReady() {
+    private void setOnRecyclerViewLayoutReady(boolean isCache) {
         homeRecyclerView.getViewTreeObserver()
                 .addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
                     @Override
@@ -1132,7 +1177,10 @@ public class HomeFragment extends BaseDaggerFragment implements
                         //At this point the layout is complete and the
                         //dimensions of recyclerView and any child views are known.
                         //Remove listener after changed RecyclerView's height to prevent infinite loop
-                        if (homePerformanceMonitoringListener != null) homePerformanceMonitoringListener.stopHomePerformanceMonitoring();
+                        if (homePerformanceMonitoringListener != null) {
+                            homePerformanceMonitoringListener.stopHomePerformanceMonitoring(isCache);
+                        }
+
                         homePerformanceMonitoringListener = null;
                         homeRecyclerView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
                     }
@@ -1339,8 +1387,19 @@ public class HomeFragment extends BaseDaggerFragment implements
     }
 
     @Override
-    public void updateExpiredChannel(@NotNull DynamicChannelViewModel dynamicChannelDataModel, int position) {
+    public void updateExpiredChannel(@NotNull DynamicChannelDataModel dynamicChannelDataModel, int position) {
         viewModel.getDynamicChannelData(dynamicChannelDataModel, position);
+    }
+
+    @Override
+    public void onBuyAgainOneClickCheckOutClick(@NotNull DynamicHomeChannel.Grid grid, @NotNull DynamicHomeChannel.Channels channel, int position) {
+        viewModel.getOneClickCheckout(channel, grid, position);
+    }
+
+    @Override
+    public void onBuyAgainCloseChannelClick(@NotNull DynamicHomeChannel.Channels channel, int position) {
+        viewModel.onCloseBuyAgain(channel, position);
+        TrackApp.getInstance().getGTM().sendGeneralEvent(HomePageTrackingV2.RecommendationList.INSTANCE.getCloseClickOnDynamicListCarousel(channel, viewModel.getUserId()));
     }
 
     private void onActionLinkClicked(String actionLink, String trackingAttribution) {
@@ -1638,7 +1697,7 @@ public class HomeFragment extends BaseDaggerFragment implements
 
     @Override
     public void onNotificationChanged(int notificationCount, int inboxCount) {
-        if (homeMainToolbar != null) {
+        if (homeMainToolbar != null && homeMainToolbar.getViewHomeMainToolBar() != null) {
             homeMainToolbar.setNotificationNumber(notificationCount);
             homeMainToolbar.setInboxNumber(inboxCount);
         }
@@ -1653,6 +1712,12 @@ public class HomeFragment extends BaseDaggerFragment implements
     @Override
     public TrackingQueue getTrackingQueue() {
         return trackingQueue;
+    }
+
+    @NotNull
+    @Override
+    public String getUserId() {
+        return viewModel.getUserId();
     }
 
     @Override
@@ -1921,21 +1986,21 @@ public class HomeFragment extends BaseDaggerFragment implements
         Toaster.INSTANCE.make(root, message, Snackbar.LENGTH_LONG, typeToaster, actionText, clickListener);
     }
 
-    public void addRecyclerViewScrollImpressionListener(DynamicChannelViewModel dynamicChannelViewModel, int adapterPosition) {
-        if (!impressionScrollListeners.containsKey(dynamicChannelViewModel.getChannel().getId())) {
+    public void addRecyclerViewScrollImpressionListener(DynamicChannelDataModel dynamicChannelDataModel, int adapterPosition) {
+        if (!impressionScrollListeners.containsKey(dynamicChannelDataModel.getChannel().getId())) {
             RecyclerView.OnScrollListener impressionScrollListener = new RecyclerView.OnScrollListener() {
                 @Override
                 public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                     super.onScrolled(recyclerView, dx, dy);
                     if (layoutManager.findLastVisibleItemPosition() >= adapterPosition) {
-                        sendIrisTracker(DynamicChannelViewHolder.Companion.getLayoutType(dynamicChannelViewModel.getChannel()),
-                                dynamicChannelViewModel.getChannel(),
+                        sendIrisTracker(DynamicChannelViewHolder.Companion.getLayoutType(dynamicChannelDataModel.getChannel()),
+                                dynamicChannelDataModel.getChannel(),
                                 adapterPosition);
                         homeRecyclerView.removeOnScrollListener(this);
                     }
                 }
             };
-            impressionScrollListeners.put(dynamicChannelViewModel.getChannel().getId(), impressionScrollListener);
+            impressionScrollListeners.put(dynamicChannelDataModel.getChannel().getId(), impressionScrollListener);
             homeRecyclerView.addOnScrollListener(impressionScrollListener);
         }
     }
@@ -2006,7 +2071,7 @@ public class HomeFragment extends BaseDaggerFragment implements
                 putEEToIris((HashMap<String, Object>) HomePageTrackingV2.MixLeft.INSTANCE.getMixLeftProductView(channel, true));
                 break;
             case TYPE_RECOMMENDATION_LIST:
-                putEEToIris((HashMap<String, Object>) HomePageTrackingV2.RecommendationList.INSTANCE.getRecommendationListImpression(channel, true));
+                putEEToIris((HashMap<String, Object>) HomePageTrackingV2.RecommendationList.INSTANCE.getRecommendationListImpression(channel, true, viewModel.getUserId()));
                 break;
             case TYPE_PRODUCT_HIGHLIGHT:
                 putEEToIris((HashMap<String, Object>) ProductHighlightTracking.INSTANCE.getProductHighlightImpression(
@@ -2019,10 +2084,10 @@ public class HomeFragment extends BaseDaggerFragment implements
     private void setupViewportImpression(List<Visitable> visitables) {
         int index = 0;
         for (Visitable visitable: visitables) {
-            if (visitable instanceof DynamicChannelViewModel) {
-                DynamicChannelViewModel dynamicChannelViewModel = ((DynamicChannelViewModel) visitable);
-                if (!dynamicChannelViewModel.isCache() && !dynamicChannelViewModel.getChannel().isInvoke()) {
-                    addRecyclerViewScrollImpressionListener(dynamicChannelViewModel, index);
+            if (visitable instanceof DynamicChannelDataModel) {
+                DynamicChannelDataModel dynamicChannelDataModel = ((DynamicChannelDataModel) visitable);
+                if (!dynamicChannelDataModel.isCache() && !dynamicChannelDataModel.getChannel().isInvoke()) {
+                    addRecyclerViewScrollImpressionListener(dynamicChannelDataModel, index);
                 }
             }
             index++;
@@ -2032,6 +2097,13 @@ public class HomeFragment extends BaseDaggerFragment implements
     @Override
     public JankyFrameMonitoringUtil getHomeJankyFramesUtil() {
         if (jankyFramesMonitoringListener != null && jankyFramesMonitoringListener.getMainJankyFrameMonitoringUtil() != null) return jankyFramesMonitoringListener.getMainJankyFrameMonitoringUtil();
+        return null;
+    }
+
+    private PageLoadTimePerformanceInterface getPageLoadTimeCallback() {
+        if (homePerformanceMonitoringListener != null && homePerformanceMonitoringListener.getPageLoadTimePerformanceInterface() != null) {
+            return homePerformanceMonitoringListener.getPageLoadTimePerformanceInterface();
+        }
         return null;
     }
 }

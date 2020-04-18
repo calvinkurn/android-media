@@ -32,6 +32,7 @@ class NewBusinessViewHolder(view: View, private val listener: HomeCategoryListen
     private val containerUnify= view.findViewById<ContainerUnify>(R.id.container_unify)
     private val viewPager = view.findViewById<ViewPager2>(R.id.view_pager)
     private val loadingView = view.findViewById<LinearLayout>(R.id.loading_view)
+    private val loadingGridView = view.findViewById<LinearLayout>(R.id.grid_loading_layout)
     private var model: NewBusinessUnitWidgetDataModel? = null
     private val adapterBusinessWidget = BusinessUnitAdapter(object: NewBusinessUnitViewHolder.BusinessUnitListener{
         override fun getBusinessUnit(position: Int) {
@@ -74,7 +75,7 @@ class NewBusinessViewHolder(view: View, private val listener: HomeCategoryListen
     }
 
     override fun bind(element: NewBusinessUnitWidgetDataModel?) {
-        loadingView.show()
+        showLoading()
         errorBuWidget.hide()
         tabLayout.show()
         viewPager.show()
@@ -82,7 +83,7 @@ class NewBusinessViewHolder(view: View, private val listener: HomeCategoryListen
         model = element
 
         if(element?.tabList == null) listener.getTabBusinessWidget(adapterPosition)
-        else loadingView.hide()
+        else hideLoading()
         if(element?.tabList != null && tabLayout.tabCount < 1){
             initTabLayout(element.tabList)
             initContainerColor(element.backColor)
@@ -101,10 +102,10 @@ class NewBusinessViewHolder(view: View, private val listener: HomeCategoryListen
                     errorBuWidget.show()
                     tabLayout.hide()
                     viewPager.hide()
-                    loadingView.hide()
+                    hideLoading()
                 } else if(bundle.containsKey(UPDATE_BUNDLE_TAB_LAYOUT)){
+                    hideLoading()
                     errorBuWidget.hide()
-                    loadingView.hide()
                     tabLayout.show()
                     viewPager.show()
                     if (element?.tabList != null) {
@@ -127,9 +128,9 @@ class NewBusinessViewHolder(view: View, private val listener: HomeCategoryListen
             }
         }catch (e: Exception){
             errorBuWidget.show()
-            loadingView.hide()
             tabLayout.hide()
             viewPager.hide()
+            hideLoading()
         }
     }
 
@@ -161,6 +162,16 @@ class NewBusinessViewHolder(view: View, private val listener: HomeCategoryListen
 
     private fun initViewPager(list: List<BusinessUnitDataModel>){
         adapterBusinessWidget.setItemList(list)
+    }
+    
+    private fun showLoading(){
+        loadingGridView.show()
+        loadingView.show()
+    }
+    
+    private fun hideLoading(){
+        loadingGridView.hide()
+        loadingView.hide()
     }
 
     companion object {

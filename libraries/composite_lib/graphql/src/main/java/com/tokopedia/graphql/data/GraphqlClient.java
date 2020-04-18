@@ -4,7 +4,9 @@ import android.content.Context;
 
 import androidx.annotation.NonNull;
 
+import com.akamai.botman.CYFMonitor;
 import com.google.gson.GsonBuilder;
+import com.tokopedia.akamai_bot_lib.UtilsKt;
 import com.tokopedia.akamai_bot_lib.interceptor.GqlAkamaiBotInterceptor;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.graphql.FingerprintManager;
@@ -24,14 +26,28 @@ import com.tokopedia.network.interceptor.TkpdAuthInterceptor;
 import com.tokopedia.network.utils.TkpdOkHttpBuilder;
 import com.tokopedia.user.session.UserSession;
 
+import org.jetbrains.annotations.NotNull;
+
+import java.lang.ref.WeakReference;
+import java.util.List;
+
+import kotlin.Unit;
+import kotlin.jvm.functions.Function0;
+import kotlin.jvm.functions.Function1;
+import okhttp3.Interceptor;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
+
+import static com.tokopedia.akamai_bot_lib.UtilsKt.getExpiredTime;
+import static com.tokopedia.akamai_bot_lib.UtilsKt.setExpiredTime;
 
 public class GraphqlClient {
     private static Retrofit sRetrofit = null;
     private static FingerprintManager sFingerprintManager;
     private static GraphqlDatabase sGraphqlDatabase;
+
+    private static Function function;
 
     private GraphqlClient() {
 
@@ -41,10 +57,7 @@ public class GraphqlClient {
         if (sRetrofit == null) {
             UserSession userSession = new UserSession(context.getApplicationContext());
 
-            TkpdOkHttpBuilder tkpdOkHttpBuilder = new TkpdOkHttpBuilder(context.getApplicationContext(), new OkHttpClient.Builder());
-            tkpdOkHttpBuilder.addInterceptor(new RiskAnalyticsInterceptor(context));
-            tkpdOkHttpBuilder.addInterceptor(new GqlAkamaiBotInterceptor());
-            tkpdOkHttpBuilder.addInterceptor(new BetaInterceptor(context));
+            TkpdOkHttpBuilder tkpdOkHttpBuilder = getTkpdOkHttpBuilder(context);
 
             if (GlobalConfig.isAllowDebuggingTools()) {
                 tkpdOkHttpBuilder.addInterceptor(new DeprecatedApiInterceptor(context.getApplicationContext()));
@@ -67,6 +80,85 @@ public class GraphqlClient {
 
             sGraphqlDatabase = GraphqlDatabase.getInstance(context);
 
+            function = new Function(context);
+
+        }
+    }
+
+    public static Function getFunction() {
+        if (function == null) {
+            throw new RuntimeException("Please call init() before using graphql library");
+        }
+        return function;
+    }
+
+    public static void reInitRetrofitWithInterceptors(@NonNull List<Interceptor> interceptors,
+                                                      @NonNull Context context) {
+        UserSession userSession = new UserSession(context.getApplicationContext());
+        TkpdOkHttpBuilder tkpdOkHttpBuilder = new TkpdOkHttpBuilder(context.getApplicationContext(), new OkHttpClient.Builder());
+
+        for (Interceptor interceptor: interceptors) {
+            tkpdOkHttpBuilder.addInterceptor(interceptor);
+        }
+
+        tkpdOkHttpBuilder.addInterceptor(new RiskAnalyticsInterceptor(context));
+        tkpdOkHttpBuilder.addInterceptor(new GqlAkamaiBotInterceptor());
+        tkpdOkHttpBuilder.addInterceptor(new BetaInterceptor(context));
+
+        sRetrofit = CommonNetwork.createRetrofit(
+                GraphqlUrl.BASE_URL,
+                tkpdOkHttpBuilder,
+                new TkpdAuthInterceptor(context, (NetworkRouter) context.getApplicationContext(), userSession),
+                new FingerprintInterceptor((NetworkRouter) context.getApplicationContext(), userSession),
+                new StringResponseConverter(),
+                new GsonBuilder());
+    }
+
+    @NotNull
+    protected static TkpdOkHttpBuilder getTkpdOkHttpBuilder(@NonNull Context context) {
+        TkpdOkHttpBuilder tkpdOkHttpBuilder = new TkpdOkHttpBuilder(context.getApplicationContext(), new OkHttpClient.Builder());
+        tkpdOkHttpBuilder.addInterceptor(new RiskAnalyticsInterceptor(context));
+        tkpdOkHttpBuilder.addInterceptor(new GqlAkamaiBotInterceptor());
+        tkpdOkHttpBuilder.addInterceptor(new BetaInterceptor(context));
+
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            tkpdOkHttpBuilder.addInterceptor(new DeprecatedApiInterceptor(context.getApplicationContext()));
+        }
+        return tkpdOkHttpBuilder;
+    }
+
+    public static class Function {
+        Function0<Long> currentTime;
+        Function0<Long> getExpiredTime;
+        Function1<Long, Unit> setExpiredTime;
+        Function0<Unit> setAkamaiValue;
+        Function0<String> getAkamaiValue;
+        private WeakReference<Context> context;
+
+        public Function(Context mContext) {
+            this.context = new WeakReference<>(mContext);
+
+            currentTime = () -> System.currentTimeMillis() / 1000;
+            getExpiredTime = () -> getExpiredTime(context.get());
+            setExpiredTime = (time) -> {
+                setExpiredTime(context.get(), time);
+                return null;
+            };
+            setAkamaiValue = () -> {
+                UtilsKt.setAkamaiValue(context.get(), CYFMonitor.getSensorData());
+                return null;
+            };
+            getAkamaiValue = () -> UtilsKt.getAkamaiValue(context.get());
+        }
+
+        public String getAkamaiValue() {
+            return UtilsKt.setExpire(
+                    currentTime,
+                    getExpiredTime,
+                    setExpiredTime,
+                    setAkamaiValue,
+                    getAkamaiValue
+            );
         }
     }
 

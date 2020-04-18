@@ -4,26 +4,24 @@ import android.annotation.TargetApi
 import android.app.Activity
 import android.os.Build
 import android.os.Handler
-import android.util.Log
 import android.view.FrameMetrics
 import android.view.Window
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.SCROLL_STATE_DRAGGING
 import androidx.recyclerview.widget.RecyclerView.SCROLL_STATE_IDLE
 import com.tokopedia.analytics.performance.PerformanceMonitoring
-import java.lang.StringBuilder
 
 /**
  * @author by yoasfs on 2020-03-03
  */
-class JankyFrameMonitoringUtil {
+open class JankyFrameMonitoringUtil {
 
     private var activity: Activity? = null
     private var performanceMonitoring: PerformanceMonitoring? = null
     private var isPerformanceMonitoringActive: Boolean = false
 
     private var onFrameMetricAvailableListener: Window.OnFrameMetricsAvailableListener? = null
-    private val mainPerformanceData = PerformanceData()
+    private val mainPerformanceData = FpiPerformanceData()
     private val DEFAULT_WARNING_LEVEL_MS = 17f
 
     private val TYPE_INIT = "init"
@@ -32,18 +30,24 @@ class JankyFrameMonitoringUtil {
     private val PERF_JANKY_FRAMES_SUB_PAGE_TAG = "janky_frames_%s_%s_%s"
 
     private val initPerformanceMonitoring = mutableMapOf<String, PerformanceMonitoring>()
-    private val initPerformanceDatas = mutableMapOf<String, PerformanceData>()
+    private val initPerformanceDatas = mutableMapOf<String, FpiPerformanceData>()
 
-    fun init(activity: Activity) {
+    private var onFrameListener: OnFrameListener? = null
+
+    interface OnFrameListener {
+        fun onFrameRendered(fpiPerformanceData: FpiPerformanceData)
+    }
+
+    fun init(activity: Activity, onFrameListener: OnFrameListener? = null) {
         this.activity = activity
+        this.onFrameListener = onFrameListener
         startFrameMetrics()
     }
 
-    fun recordRecyclerViewScrollPerformance(recyclerView: RecyclerView,
+    open fun recordRecyclerViewScrollPerformance(recyclerView: RecyclerView,
                                             pageName: String,
                                             subPageName: String = "") {
-        var tag = if (subPageName.isEmpty()) String.format(PERF_JANKY_FRAMES_TAG, TYPE_SCROLL, pageName)
-        else String.format(PERF_JANKY_FRAMES_SUB_PAGE_TAG, TYPE_SCROLL, pageName, subPageName)
+        val tag = getPageTag(pageName, subPageName)
 
         val performanceMonitoring = PerformanceMonitoring()
         performanceMonitoring.startTrace(tag)
@@ -73,7 +77,7 @@ class JankyFrameMonitoringUtil {
 
                         val allFramesInSession = endAllFramesCount - startAllFramesCount
                         val allJankyFramesInSession = endJankyFramesCount - startJankyFramesCount
-                        val performanceData = PerformanceData(
+                        val performanceData = FpiPerformanceData(
                                 allFrames = allFramesInSession,
                                 jankyFrames = allJankyFramesInSession
                         )
@@ -82,7 +86,9 @@ class JankyFrameMonitoringUtil {
                         performanceMonitoring.putMetric(performanceData.jankyFramesTag, performanceData.jankyFrames.toLong())
                         performanceMonitoring.putMetric(performanceData.jankyFramesPercentageTag, performanceData.jankyFramePercentage.toLong())
 
+                        onFrameListener?.onFrameRendered(performanceData)
                         performanceMonitoring.stopTrace()
+                        isScrolling = false
 
                         startAllFramesCount = mainPerformanceData.allFrames
                         startJankyFramesCount = mainPerformanceData.jankyFrames
@@ -92,9 +98,14 @@ class JankyFrameMonitoringUtil {
         })
     }
 
+    open fun getPageTag(pageName: String, subPageName: String): String {
+        return if (subPageName.isEmpty()) String.format(PERF_JANKY_FRAMES_TAG, TYPE_SCROLL, pageName)
+        else String.format(PERF_JANKY_FRAMES_SUB_PAGE_TAG, TYPE_SCROLL, pageName, subPageName)
+    }
+
     fun startInitPerformanceMonitoring(pageName: String) {
         val tag = String.format(PERF_JANKY_FRAMES_TAG, TYPE_INIT, pageName)
-        val performanceData = PerformanceData(
+        val performanceData = FpiPerformanceData(
                 mainPerformanceData.allFrames, mainPerformanceData.jankyFrames
         )
         val performanceMonitoring = PerformanceMonitoring()
@@ -114,7 +125,7 @@ class JankyFrameMonitoringUtil {
 
             val allFramesInSession = endAllFramesCount - it.allFrames
             val allJankyFramesInSession = endJankyFramesCount - it.jankyFrames
-            val performanceData = PerformanceData(
+            val performanceData = FpiPerformanceData(
                     allFrames = allFramesInSession,
                     jankyFrames = allJankyFramesInSession
             )
@@ -143,6 +154,7 @@ class JankyFrameMonitoringUtil {
                     if (totalDurationMs > DEFAULT_WARNING_LEVEL_MS) {
                         mainPerformanceData.incremenetJankyFrames()
                     }
+                    onFrameListener?.onFrameRendered(mainPerformanceData)
                 }
             }
             onFrameMetricAvailableListener?.let {

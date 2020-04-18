@@ -18,7 +18,6 @@ import com.tokopedia.home.analytics.v2.MixTopTracking
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.helper.GravitySnapHelper
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelViewModel
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.SimpleHorizontalLinearLayoutDecoration
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicChannelViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.pdpview.dataModel.FlashSaleDataModel
@@ -93,7 +92,8 @@ class MixTopBannerViewHolder(
                 listOf(MixTopTracking.mapGridToProductTracker(grid, channel.id, position, channel.persoType, channel.categoryID)),
                 channel.header.name,
                 channel.id,
-                adapterPosition.toString()
+                adapterPosition.toString(),
+                channel.campaignCode
         ) as HashMap<String, Any>)
         homeCategoryListener.onDynamicChannelClicked(grid.applink)
     }
@@ -236,12 +236,6 @@ class MixTopBannerViewHolder(
                     blankSpaceConfig = BlankSpaceConfig(),
                     grid = element,
                     applink = element.applink,
-                    listener = this
-            ))
-        }
-        if (isHasSeeMoreApplink(channel)) {
-            list.add(SeeMorePdpDataModel(
-                    applink = channel.header.applink,
                     listener = this
             ))
         }
