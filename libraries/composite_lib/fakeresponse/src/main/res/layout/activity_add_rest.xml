@@ -20,7 +20,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:context=".presentaiton.activities.AddGqlActivity">
+            tools:context=".presentation.activities.AddGqlActivity">
 
             <TextView
                 android:id="@+id/tvRest"
@@ -29,6 +29,7 @@
                 android:paddingStart="10dp"
                 android:paddingEnd="10dp"
                 android:text="Full Url"
+                android:textSize="12sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -36,20 +37,13 @@
                 android:id="@+id/etRest"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:backgroundTint="@color/gqlColorLightGrey"
                 android:hint="Enter full url"
                 android:paddingStart="10dp"
                 android:paddingEnd="10dp"
+                android:textSize="14sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tvRest" />
-
-            <View
-                android:id="@+id/viewDividerGql"
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/gqlColorGrey"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/etRest" />
-
 
             <TextView
                 android:id="@+id/tvMethodName"
@@ -59,26 +53,46 @@
                 android:paddingStart="10dp"
                 android:paddingEnd="10dp"
                 android:text="Method Name"
+                android:textSize="12sp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/viewDividerGql" />
+                app:layout_constraintTop_toBottomOf="@+id/etRest" />
 
             <EditText
                 android:id="@+id/etMethodName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:backgroundTint="@color/gqlColorLightGrey"
                 android:hint="Enter Method Name"
                 android:paddingStart="10dp"
                 android:paddingEnd="10dp"
+                android:textSize="14sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tvMethodName" />
 
-            <View
-                android:id="@+id/viewDividerCN"
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/gqlColorGrey"
+            <TextView
+                android:id="@+id/tvTag"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                android:text="Custom Tag"
+                android:textSize="12sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/etMethodName" />
+
+            <EditText
+                android:id="@+id/etTag"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/gqlColorLightGrey"
+                android:hint="Enter Custom tag"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                android:textSize="14sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvTag" />
+
 
             <EditText
                 android:id="@+id/etResponse"
@@ -95,7 +109,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/viewDividerCN" />
+                app:layout_constraintTop_toBottomOf="@+id/etTag" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

@@ -30,7 +30,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath ('com.android.tools.build:gradle:3.6.1') {
+        classpath ('com.android.tools.build:gradle:3.5.3') {
             exclude module: 'proguard-gradle'
         }
         classpath "org.jacoco:org.jacoco.core:$jacocoVersion"

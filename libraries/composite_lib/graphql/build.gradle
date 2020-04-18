@@ -6,7 +6,6 @@ buildscript {
     repositories {
         mavenCentral()
         maven { url 'https://hansel.io/maven' }
-        maven { url 'https://dl.bintray.com/iamdangerous/FakeResponse/' }
     }
     dependencies {
         classpath rootProject.ext.miscDependencies.hansel
@@ -50,15 +49,14 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.betaNotif
     implementation rootProject.ext.tkpdInternalLibDependencies.akamaiBMP
 
-    //room
     implementation rootProject.ext.dbDependencies.dbRoomRuntime
     kapt rootProject.ext.dbDependencies.dbRoomCompiler
     androidTestImplementation rootProject.ext.dbDependencies.dbRoomTesting
 
     implementation rootProject.ext.miscDependencies.dagger
     kapt rootProject.ext.miscDependencies.daggerCompiler
-//    debugImplementation project(rootProject.ext.libraries.fakeresponse)
-    debugImplementation "com.tokopedia.fakeresponse:fakeresponse:0.0.1"
+
+    debugImplementation rootProject.ext.tkpdInternalLibDependencies.fakeresponse
 }
 
 apply from: '../publish_local.gradle'

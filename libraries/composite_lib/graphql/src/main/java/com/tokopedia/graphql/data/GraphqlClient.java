@@ -9,8 +9,8 @@ import com.google.gson.GsonBuilder;
 import com.tokopedia.akamai_bot_lib.UtilsKt;
 import com.tokopedia.akamai_bot_lib.interceptor.GqlAkamaiBotInterceptor;
 import com.tokopedia.config.GlobalConfig;
+import com.tokopedia.graphql.FakeResponseInterceptorProvider;
 import com.tokopedia.graphql.FingerprintManager;
-import com.tokopedia.graphql.TestingInterceptorProvider;
 import com.tokopedia.graphql.data.db.GraphqlDatabase;
 import com.tokopedia.graphql.data.source.cloud.api.GraphqlApi;
 import com.tokopedia.graphql.data.source.cloud.api.GraphqlApiSuspend;
@@ -62,8 +62,8 @@ public class GraphqlClient {
             if (GlobalConfig.isAllowDebuggingTools()) {
                 tkpdOkHttpBuilder.addInterceptor(new DeprecatedApiInterceptor(context.getApplicationContext()));
 
-                TestingInterceptorProvider provider = new TestingInterceptorProvider();
-                Interceptor interceptor = provider.getGqlTestingInterceptor(context.getApplicationContext());
+                FakeResponseInterceptorProvider provider = new FakeResponseInterceptorProvider();
+                Interceptor interceptor = provider.getInterceptor(context.getApplicationContext());
                 if (interceptor != null) {
                     tkpdOkHttpBuilder.addInterceptor(interceptor);
                 }
@@ -97,7 +97,7 @@ public class GraphqlClient {
         UserSession userSession = new UserSession(context.getApplicationContext());
         TkpdOkHttpBuilder tkpdOkHttpBuilder = new TkpdOkHttpBuilder(context.getApplicationContext(), new OkHttpClient.Builder());
 
-        for (Interceptor interceptor: interceptors) {
+        for (Interceptor interceptor : interceptors) {
             tkpdOkHttpBuilder.addInterceptor(interceptor);
         }
 
