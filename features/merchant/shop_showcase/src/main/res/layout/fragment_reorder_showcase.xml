@@ -11,6 +11,7 @@
         android:id="@+id/header_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:cardElevation="@dimen/dp_0"
         app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
@@ -48,8 +49,7 @@
         android:id="@+id/rv_list_showcase"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginLeft="@dimen/dp_12"
-        android:layout_marginRight="@dimen/dp_12"
+        android:layout_marginLeft="@dimen/dp_2"
         android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/header_layout" />

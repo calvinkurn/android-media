@@ -13,6 +13,7 @@ import static com.tokopedia.user.session.Constants.AUTOFILL_USER_DATA;
 import static com.tokopedia.user.session.Constants.EMAIL;
 import static com.tokopedia.user.session.Constants.FULL_NAME;
 import static com.tokopedia.user.session.Constants.GCM_ID;
+import static com.tokopedia.user.session.Constants.GCM_ID_TIMESTAMP;
 import static com.tokopedia.user.session.Constants.GCM_STORAGE;
 import static com.tokopedia.user.session.Constants.GC_TOKEN;
 import static com.tokopedia.user.session.Constants.GTM_LOGIN_ID;
@@ -92,8 +93,9 @@ public class UserSession extends MigratedUserSession implements UserSessionInter
 
     public boolean isShopOfficialStore() {
         boolean isShopOfficialStore = getAndTrimOldBoolean(LOGIN_SESSION, IS_SHOP_OFFICIAL_STORE, false);
-        return isShopOfficialStore ;
+        return isShopOfficialStore;
     }
+
     public void setIsShopOfficialStore(boolean isShopOfficialStore) {
         setBoolean(LOGIN_SESSION, IS_SHOP_OFFICIAL_STORE, isShopOfficialStore);
     }
@@ -159,6 +161,11 @@ public class UserSession extends MigratedUserSession implements UserSessionInter
 
     public String getTemporaryUserId() {
         return getAndTrimOldString(LOGIN_SESSION, TEMP_USER_ID, "");
+    }
+
+    @Override
+    public void setDeviceId(String deviceId) {
+        setString(GCM_STORAGE, GCM_ID, deviceId);
     }
 
     /**
@@ -374,6 +381,14 @@ public class UserSession extends MigratedUserSession implements UserSessionInter
         return getAndTrimOldString(LOGIN_SESSION, REFRESH_TOKEN_KEY, KEY_IV);
     }
 
+    public long getFcmTimestamp() {
+        return getLong(GCM_STORAGE, GCM_ID_TIMESTAMP, 0);
+    }
+
+    public void setFcmTimestamp() {
+        setLong(GCM_STORAGE, GCM_ID_TIMESTAMP, System.currentTimeMillis());
+    }
+
     @Override
     public void setLoginSession(boolean isLogin, String userId, String fullName,
                                 String shopId, boolean isMsisdnVerified, String shopName,
@@ -412,7 +427,7 @@ public class UserSession extends MigratedUserSession implements UserSessionInter
         cleanKey(LOGIN_SESSION, TWITTER_ACCESS_TOKEN);
         cleanKey(LOGIN_SESSION, TWITTER_ACCESS_TOKEN_SECRET);
         setString(LOGIN_SESSION, LOGIN_METHOD, "");
-        setBoolean(LOGIN_SESSION,TWITTER_SHOULD_POST, false);
+        setBoolean(LOGIN_SESSION, TWITTER_SHOULD_POST, false);
         cleanKey(LOGIN_SESSION, IS_SHOP_OFFICIAL_STORE);
     }
 

@@ -158,4 +158,10 @@ public interface UserSessionInterface {
 
     boolean isShopOfficialStore();
 
+    void setDeviceId(String deviceId);
+
+    void setFcmTimestamp();
+
+    long getFcmTimestamp();
+
 }

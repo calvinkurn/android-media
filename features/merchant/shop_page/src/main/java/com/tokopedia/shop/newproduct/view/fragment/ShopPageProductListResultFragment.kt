@@ -175,6 +175,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                     val productList = it.data.second
                     shopPageTracking?.searchProduct(keyword, productList.isEmpty(), isMyShop, customDimensionShopPage)
                     renderProductList(productList, it.data.first)
+                    isNeedToReloadData = false
                 }
                 is Fail -> showGetListError(it.throwable)
             }
@@ -231,6 +232,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                 sortValue = it.getString(ShopParamConstant.EXTRA_SORT_ID, Integer.MIN_VALUE.toString())
                 shopId = it.getString(ShopParamConstant.EXTRA_SHOP_ID, "")
                 shopRef = it.getString(ShopParamConstant.EXTRA_SHOP_REF, "")
+//                needReloadData = it.getBoolean(ShopParamConstant.EXTRA_IS_NEED_TO_RELOAD_DATA)
                 isNeedToReloadData = it.getBoolean(ShopParamConstant.EXTRA_IS_NEED_TO_RELOAD_DATA)
             }
         } else {
@@ -241,7 +243,8 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
             sortValue = savedInstanceState.getString(SAVED_SORT_VALUE)
             shopId = savedInstanceState.getString(SAVED_SHOP_ID)
             shopRef = savedInstanceState.getString(SAVED_SHOP_REF).orEmpty()
-            isNeedToReloadData = savedInstanceState.getBoolean(SAVED_RELOAD_STATE)
+            needReloadData = savedInstanceState.getBoolean(ShopParamConstant.EXTRA_IS_NEED_TO_RELOAD_DATA)
+//            isNeedToReloadData = savedInstanceState.getBoolean(SAVED_RELOAD_STATE)
         }
         shopPageProductListResultFragmentListener?.onSortValueUpdated(sortValue ?: "")
         setHasOptionsMenu(true)
@@ -365,6 +368,12 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         shopProductAdapter.clearProductList()
         shopProductAdapter.clearAllNonDataElement()
         showLoading()
+
+        if (isNeedToReloadData) {
+//            isNeedToReloadData = false
+            viewModel.clearCache()
+        }
+
         loadData(defaultInitialPage)
     }
 
@@ -378,13 +387,13 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
 
     private fun loadShopPageList(shopInfo: ShopInfo, page: Int, forceNoEtalase: Boolean = false) {
         if (viewModel.isEtalaseEmpty && !forceNoEtalase) {
-            viewModel.getEtalaseData(shopInfo.shopCore.shopID, isMyShop)
+            viewModel.getEtalaseData(shopInfo.shopCore.shopID, isMyShop, isNeedToReloadData)
         } else {
             // continue to load ProductData
             viewModel.getShopProduct(shopInfo.shopCore.shopID, page,
                     ShopPageConstant.DEFAULT_PER_PAGE,
                     sortValue.toIntOrZero(), selectedEtalaseId,
-                    keyword)
+                    keyword, isNeedToReloadData)
         }
     }
 
@@ -778,10 +787,20 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
 
     override fun onResume() {
         super.onResume()
-        if (needReloadData || isNeedToReloadData) {
+        if (needReloadData) {
+//            hideEtalaseList()
+//            viewModel.etalaseListData.value = null
+//            viewModel.clearCache()
+//            shopProductEtalaseAdapter.clearAllElements()
+//            viewModel.clearCache()
             loadInitialData()
             needReloadData = false
         }
+
+//        if (isNeedToReloadData) {
+//            onSwipeRefresh()
+//            isNeedToReloadData = false
+//        }
     }
 
     override fun onPause() {

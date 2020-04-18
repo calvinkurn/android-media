@@ -19,13 +19,18 @@ import javax.inject.Inject
 class GetShopEtalaseByShopUseCase @Inject
 constructor(@ApplicationContext context: Context) : UseCase<ArrayList<ShopEtalaseModel>>() {
     private val graphQLUseCase: SingleGraphQLUseCase<ShopEtalaseByShopQuery>
+    var isFromCacheFirst: Boolean = true
 
     init {
         graphQLUseCase = object : SingleGraphQLUseCase<ShopEtalaseByShopQuery>(context, ShopEtalaseByShopQuery::class.java) {
             override val graphQLRawResId: Int
                 get() = R.raw.gql_query_shop_etalase_by_shop
 
+            var cacheType: CacheType = CacheType.CACHE_FIRST
+
             override fun createGraphQLVariable(requestParams: RequestParams): HashMap<String, Any> {
+                cacheType =  if (isFromCacheFirst) CacheType.CACHE_FIRST else CacheType.ALWAYS_CLOUD
+
                 val variables = HashMap<String, Any>()
                 variables[SHOP_ID] = requestParams.getString(SHOP_ID, "")
                 variables[HIDE_NO_COUNT] = requestParams.getBoolean(HIDE_NO_COUNT, true)
@@ -35,7 +40,7 @@ constructor(@ApplicationContext context: Context) : UseCase<ArrayList<ShopEtalas
             }
 
             override fun createGraphQLCacheStrategy(): GraphqlCacheStrategy? {
-                return GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST)
+                return GraphqlCacheStrategy.Builder(cacheType)
                         .setSessionIncluded(true)
                         .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_30.`val`())
                         .build();
@@ -78,7 +83,11 @@ constructor(@ApplicationContext context: Context) : UseCase<ArrayList<ShopEtalas
         }
 
         @JvmStatic
-        fun createRequestParams(shopId: String, hideNoCount: Boolean, hideShowCaseGroup: Boolean, isOwner: Boolean): RequestParams {
+        fun createRequestParams(
+                shopId: String,
+                hideNoCount: Boolean,
+                hideShowCaseGroup: Boolean,
+                isOwner: Boolean): RequestParams {
             val requestParams = RequestParams.create()
             requestParams.putString(SHOP_ID, shopId)
             requestParams.putBoolean(HIDE_NO_COUNT, hideNoCount)

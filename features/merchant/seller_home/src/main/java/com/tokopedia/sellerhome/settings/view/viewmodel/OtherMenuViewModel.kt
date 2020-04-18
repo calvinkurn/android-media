@@ -4,12 +4,15 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.sellerhome.common.viewmodel.NonNullLiveData
 import com.tokopedia.sellerhome.settings.domain.usecase.GetAllShopInfoUseCase
 import com.tokopedia.sellerhome.settings.view.uimodel.shopinfo.SettingShopInfoUiModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 import javax.inject.Named
 class OtherMenuViewModel @Inject constructor(
@@ -22,7 +25,7 @@ class OtherMenuViewModel @Inject constructor(
     }
 
     private val _settingShopInfoLiveData = MutableLiveData<Result<SettingShopInfoUiModel>>()
-    private val _isToasterAlreadyShown = MutableLiveData<Boolean>().apply { value = false }
+    private val _isToasterAlreadyShown = NonNullLiveData(false)
     private val _isStatusBarInitialState = MutableLiveData<Boolean>().apply { value = true }
 
     val settingShopInfoLiveData: LiveData<Result<SettingShopInfoUiModel>>
@@ -47,16 +50,14 @@ class OtherMenuViewModel @Inject constructor(
 
     private fun getAllShopInfoData() {
         launchCatchError(block = {
-            _settingShopInfoLiveData.value = Success(withContext(Dispatchers.IO) {
-                getAllShopInfoUseCase.executeOnBackground()
-            })
+            _settingShopInfoLiveData.value = Success(getAllShopInfoUseCase.executeOnBackground())
         }, onError = {
             _settingShopInfoLiveData.value = Fail(it)
         })
     }
 
     private suspend fun checkDelayErrorResponseTrigger() {
-        _isToasterAlreadyShown.value?.let { isToasterAlreadyShown ->
+        _isToasterAlreadyShown.value.let { isToasterAlreadyShown ->
             if (!isToasterAlreadyShown){
                 _isToasterAlreadyShown.value = true
                 delay(DELAY_TIME)
