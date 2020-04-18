@@ -100,7 +100,7 @@ class RecommendationListCarouselViewHolder(itemView: View,
                             listener
                     )
                 }.toMutableList()
-                if(channel.grids.size > 1) newList.add(HomeRecommendationListSeeMoreData(channel, listener))
+                if(channel.grids.size > 1 && channel.header.applink.isNotEmpty()) newList.add(HomeRecommendationListSeeMoreData(channel, listener))
                 adapter = RecommendationListAdapter(newList)
                 setRecycledViewPool(parentRecycledViewPool)
                 clearItemRecyclerViewDecoration(this)
