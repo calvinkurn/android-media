@@ -10,11 +10,11 @@ import java.util.List;
  * Created by errysuprayogi on 2/20/18.
  */
 
-public class TopAdsViewModel implements Visitable<HomeTypeFactory> {
+public class TopAdsDataModel implements Visitable<HomeTypeFactory> {
 
     private List<Data> dataList;
 
-    public TopAdsViewModel(List<Data> dataList) {
+    public TopAdsDataModel(List<Data> dataList) {
         this.dataList = dataList;
     }
 

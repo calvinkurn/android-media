@@ -12,7 +12,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeTypeFact
  */
 
 @Deprecated
-public class SellViewModel implements Visitable<HomeTypeFactory> {
+public class SellDataModel implements Visitable<HomeTypeFactory> {
 
     private String title;
     private String subtitle;

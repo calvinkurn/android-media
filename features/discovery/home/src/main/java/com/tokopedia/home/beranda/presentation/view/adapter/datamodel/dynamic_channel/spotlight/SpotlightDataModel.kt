@@ -5,10 +5,10 @@ import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeTypeFactory
 import com.tokopedia.kotlin.model.ImpressHolder
 
-class SpotlightViewModel(val spotlightItems: List<SpotlightItemViewModel>,
+class SpotlightDataModel(val spotlightItems: List<SpotlightItemDataModel>,
                          var channelId: String?) : ImpressHolder(), HomeVisitable {
     override fun equalsWith(b: Any?): Boolean {
-        if (b is SpotlightViewModel) {
+        if (b is SpotlightDataModel) {
             return spotlightItems == b.spotlightItems
         }
         return false

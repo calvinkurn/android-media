@@ -15,7 +15,7 @@ import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeHeaderWalletAc
  * @author anggaprasetiyo on 11/12/17.
  */
 
-data class HeaderViewModel(
+data class HeaderDataModel(
                       var homeHeaderWalletActionData: HomeHeaderWalletAction? = null,
                       var tokoPointDrawerData: TokopointHomeDrawerData? = null,
                       var tokopointsDrawerHomeData: TokopointsDrawer? = null,
@@ -90,7 +90,7 @@ data class HeaderViewModel(
     }
 
     override fun equalsWith(b: Any?): Boolean {
-        return b is HeaderViewModel && homeHeaderWalletActionData == b.homeHeaderWalletActionData &&
+        return b is HeaderDataModel && homeHeaderWalletActionData == b.homeHeaderWalletActionData &&
                     tokoPointDrawerData == b.tokoPointDrawerData &&
                     tokopointsDrawerHomeData == b.tokopointsDrawerHomeData &&
                     cashBackData == b.cashBackData
@@ -103,12 +103,12 @@ data class HeaderViewModel(
     companion object {
 
         @JvmField
-        val CREATOR: Parcelable.Creator<HeaderViewModel> = object : Parcelable.Creator<HeaderViewModel> {
-            override fun createFromParcel(`in`: Parcel): HeaderViewModel {
-                return HeaderViewModel(`in`)
+        val CREATOR: Parcelable.Creator<HeaderDataModel> = object : Parcelable.Creator<HeaderDataModel> {
+            override fun createFromParcel(`in`: Parcel): HeaderDataModel {
+                return HeaderDataModel(`in`)
             }
 
-            override fun newArray(size: Int): Array<HeaderViewModel?> {
+            override fun newArray(size: Int): Array<HeaderDataModel?> {
                 return arrayOfNulls(size)
             }
         }

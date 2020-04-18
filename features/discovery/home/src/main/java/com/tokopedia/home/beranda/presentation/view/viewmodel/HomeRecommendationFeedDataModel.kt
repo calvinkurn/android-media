@@ -9,7 +9,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeTypeFact
  * Created by devarafikry on 27/08/19.
  */
 
-class HomeRecommendationFeedViewModel : HomeVisitable {
+class HomeRecommendationFeedDataModel : HomeVisitable {
 
     //keep this section if exist, because this viewholder is heavy to render
     override fun equalsWith(b: Any?): Boolean {

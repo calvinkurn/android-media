@@ -9,7 +9,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeTypeFact
 import com.tokopedia.kotlin.model.ImpressHolder
 import java.util.*
 
-data class PlayCardViewModel(
+data class PlayCardDataModel(
         val channel: DynamicHomeChannel.Channels,
         val playCardHome: PlayChannel? = null
 ): HomeVisitable, ImpressHolder() {
@@ -18,7 +18,7 @@ data class PlayCardViewModel(
     }
 
     override fun equalsWith(b: Any?): Boolean {
-        if (b is PlayCardViewModel) {
+        if (b is PlayCardDataModel) {
             return channel.id == b.channel.id
                     && channel.name == b.channel.name
                     && channel.header.name == b.channel.header.name

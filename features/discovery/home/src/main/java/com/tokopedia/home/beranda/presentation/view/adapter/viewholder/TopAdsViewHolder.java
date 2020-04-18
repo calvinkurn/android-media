@@ -11,7 +11,7 @@ import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.home.R;
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.TopAdsViewModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.TopAdsDataModel;
 import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
@@ -25,7 +25,7 @@ import com.tokopedia.topads.sdk.widget.TopAdsWidgetView;
  * Created by errysuprayogi on 2/20/18.
  */
 
-public class TopAdsViewHolder extends AbstractViewHolder<TopAdsViewModel> implements TopAdsItemClickListener {
+public class TopAdsViewHolder extends AbstractViewHolder<TopAdsDataModel> implements TopAdsItemClickListener {
 
     @LayoutRes
     public static final int LAYOUT = R.layout.layout_item_ads;
@@ -42,7 +42,7 @@ public class TopAdsViewHolder extends AbstractViewHolder<TopAdsViewModel> implem
     }
 
     @Override
-    public void bind(TopAdsViewModel element) {
+    public void bind(TopAdsDataModel element) {
         topAdsWidgetView.setAdapterPosition(getAdapterPosition());
         topAdsWidgetView.setData(element.getDataList());
     }
