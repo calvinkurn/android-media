@@ -58,7 +58,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.dagger
     kapt rootProject.ext.miscDependencies.daggerCompiler
 //    debugImplementation project(rootProject.ext.libraries.fakeresponse)
-    debugImplementation project(path: ':fakeresponse')
+    debugImplementation "com.tokopedia.fakeresponse:fakeresponse:0.0.1"
 }
 
 apply from: '../publish_local.gradle'
