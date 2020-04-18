@@ -71,15 +71,15 @@ class ShowcaseProductListAdapter(
                 } else {
 
                     val deletedProduct = shopProductList[position] as ShowcaseProduct
-                    try {
-                        val targetedProduct = selectedProduct.single {
-                            it.productId == deletedProduct.productId
-                        }
+                    val targetedProduct = selectedProduct.singleOrNull {
+                        it.productId == deletedProduct.productId
+                    }
+                    if(targetedProduct != null) {
                         selectedProduct.run {
                             if(contains(targetedProduct))
                                 remove(targetedProduct)
                         }
-                    } catch (e: Exception) {
+                    } else {
                         item.isNoNeedToAppend = true
                     }
 
