@@ -18,7 +18,7 @@ import com.tokopedia.analyticsdebugger.validator.core.toJsonMap
 import com.tokopedia.analyticsdebugger.validator.detail.ValidatorDetailActivity
 import timber.log.Timber
 
-class AnalyticsValidatorActivity : AppCompatActivity() {
+class MainValidatorActivity : AppCompatActivity() {
 
     val viewModel: ValidatorViewModel by lazy {
         ViewModelProvider(this, ViewModelProvider.AndroidViewModelFactory(this.application))
@@ -50,8 +50,8 @@ class AnalyticsValidatorActivity : AppCompatActivity() {
         val rv = findViewById<RecyclerView>(R.id.rv)
         viewModel.run(testQuery["verifyAll"] as List<Map<String, Any>>)
         with(rv) {
-            layoutManager = LinearLayoutManager(this@AnalyticsValidatorActivity)
-            addItemDecoration(DividerItemDecoration(this@AnalyticsValidatorActivity, DividerItemDecoration.VERTICAL))
+            layoutManager = LinearLayoutManager(this@MainValidatorActivity)
+            addItemDecoration(DividerItemDecoration(this@MainValidatorActivity, DividerItemDecoration.VERTICAL))
             adapter = mAdapter
         }
     }
@@ -67,7 +67,7 @@ class AnalyticsValidatorActivity : AppCompatActivity() {
     companion object {
 
         fun newInstance(context: Context): Intent {
-            return Intent(context, AnalyticsValidatorActivity::class.java).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            return Intent(context, MainValidatorActivity::class.java).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         }
     }
 }

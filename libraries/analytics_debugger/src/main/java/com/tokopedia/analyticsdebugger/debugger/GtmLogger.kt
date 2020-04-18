@@ -12,7 +12,7 @@ import com.tokopedia.analyticsdebugger.debugger.ui.activity.AnalyticsGtmErrorDeb
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.analyticsdebugger.database.GtmErrorLogDB
-import com.tokopedia.analyticsdebugger.validator.execution.AnalyticsValidatorActivity
+import com.tokopedia.analyticsdebugger.validator.execution.MainValidatorActivity
 
 import java.net.URLDecoder
 
@@ -88,7 +88,7 @@ class GtmLogger private constructor(private val context: Context) : AnalyticsLog
     }
 
     override fun navigateToValidator() {
-        context.startActivity(AnalyticsValidatorActivity.newInstance(context))
+        context.startActivity(MainValidatorActivity.newInstance(context))
     }
 
     override fun enableNotification(isEnabled: Boolean) {

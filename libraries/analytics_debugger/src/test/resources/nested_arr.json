@@ -1,0 +1,28 @@
+[
+  {
+    "promotions": [
+      {
+        "creative_name": "Play-CMP_OTHERS_badak",
+        "creative_slot": "1",
+        "item_id": "2491"
+      }
+    ],
+    "eventCategory": "homepage-cmp",
+    "eventLabel": "Play-CMP_OTHERS_badak - 2491 - vod"
+  },
+  {
+    "promotions": [
+      {
+        "creative_name": "Play-CMP_OTHERS_badak",
+        "creative_slot": "1",
+        "item_id": "2491",
+        "item_name": "/ - p1 - play dynamic banner - Resep Kekinian Buat Koki Dadakan",
+        "creative_url": "https://ecs7.tokopedia.net/img/cache/1400/attachment/2020/4/16/1587009998249/1587009998249_cea483ba-a329-4cf6-89b9-79cd935fb6d8.jpg"
+      }
+    ],
+    "eventCategory": "homepage-cmp",
+    "event": "view_item",
+    "eventAction": "impression on play dynamic banner",
+    "eventLabel": "Play-CMP_OTHERS_badak - 2491 - vod"
+  }
+]
