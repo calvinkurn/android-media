@@ -32,6 +32,7 @@ import com.tokopedia.reviewseller.R
 import com.tokopedia.reviewseller.common.ReviewSellerConstant
 import com.tokopedia.reviewseller.feature.reviewlist.di.component.ReviewProductListComponent
 import com.tokopedia.reviewseller.feature.reviewlist.util.ReviewSellerUtil
+import com.tokopedia.reviewseller.feature.reviewlist.util.getKeyByValue
 import com.tokopedia.reviewseller.feature.reviewlist.util.mapper.ReviewSellerMapper
 import com.tokopedia.reviewseller.feature.reviewlist.view.adapter.DataEndlessScrollListener
 import com.tokopedia.reviewseller.feature.reviewlist.view.adapter.ReviewSellerAdapter
@@ -123,8 +124,8 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(ReviewSellerViewModel::class.java)
         linearLayoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         prefs = context?.getSharedPreferences(prefKey, Context.MODE_PRIVATE)
-//        viewModel?.sortBy = ReviewSellerConstant.mapSortReviewProduct().filterValues { it == getString(R.string.most_review) }.keys.firstOrNull().orEmpty()
-//        viewModel?.filterBy = ReviewSellerConstant.mapFilterReviewProduct().filterValues { it == getString(R.string.last_week) }.keys.firstOrNull().orEmpty()
+        viewModel?.sortBy = ReviewSellerConstant.mapSortReviewProduct().getKeyByValue(getString(R.string.most_review))
+        viewModel?.filterBy = ReviewSellerConstant.mapFilterReviewProduct().getKeyByValue(getString(R.string.last_week))
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -340,6 +341,7 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
 
         coachMark.onFinishListener = {
             isCompletedCoachMark = true
+            firstTabItem?.setBackgroundColor(Color.TRANSPARENT)
         }
 
         return coachMark
@@ -487,9 +489,7 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
         viewModel?.chipsFilterText = filterListItemUnify[position].listTitleText
         chipsFilter?.chip_text?.text = viewModel?.chipsFilterText
         ReviewSellerUtil.setSelectedFilterOrSort(filterListUnify, position)
-        viewModel?.filterBy = ReviewSellerConstant.mapFilterReviewProduct().filterValues { value ->
-            value == viewModel?.chipsFilterText
-        }.keys.firstOrNull().orEmpty()
+        viewModel?.filterBy = ReviewSellerConstant.mapFilterReviewProduct().getKeyByValue(viewModel?.chipsFilterText)
         loadInitialData()
         bottomSheetFilter?.dismiss()
     }
@@ -499,9 +499,7 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
         viewModel?.chipsSortText = sortListItemUnify[position].listTitleText
         chipsSort?.chip_text?.text = viewModel?.chipsSortText
         ReviewSellerUtil.setSelectedFilterOrSort(sortListUnify, position)
-        viewModel?.sortBy = ReviewSellerConstant.mapSortReviewProduct().filterValues { value ->
-            value == viewModel?.chipsSortText
-        }.keys.firstOrNull().orEmpty()
+        viewModel?.sortBy = ReviewSellerConstant.mapSortReviewProduct().getKeyByValue(viewModel?.chipsSortText)
         loadInitialData()
         bottomSheetSort?.dismiss()
     }

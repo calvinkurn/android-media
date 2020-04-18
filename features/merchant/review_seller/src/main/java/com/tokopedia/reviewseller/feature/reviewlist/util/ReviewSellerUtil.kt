@@ -3,6 +3,7 @@ package com.tokopedia.reviewseller.feature.reviewlist.util
 import android.widget.ListView
 import com.tokopedia.unifycomponents.list.ListItemUnify
 import com.tokopedia.unifycomponents.list.ListUnify
+import java.util.*
 
 object ReviewSellerUtil {
 
@@ -20,6 +21,10 @@ object ReviewSellerUtil {
             }
         }
     }
+}
+
+fun Map<String, String>.getKeyByValue(value: String?): String {
+    return this.filterValues { it == value }.keys.firstOrNull().orEmpty()
 }
 
 fun <T : Any> T.getValue(field: String): Any {
