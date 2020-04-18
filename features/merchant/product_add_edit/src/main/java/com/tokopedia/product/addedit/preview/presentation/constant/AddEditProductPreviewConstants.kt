@@ -12,5 +12,6 @@ class AddEditProductPreviewConstants {
         const val EXTRA_IS_DUPLICATING_PRODUCT = "IS_ADDING_PRODUCT"
         const val EXTRA_FROM_NOTIF_SUCCESS = "FROM_NOTIF_SUCCESS"
         const val EXTRA_FROM_NOTIF_EDIT_PRODUCT = "FROM_NOTIF_EDIT_PRODUCT"
+        const val EXTRA_FROM_UPLOADING = "EXTRA_UPLOADING"
     }
 }

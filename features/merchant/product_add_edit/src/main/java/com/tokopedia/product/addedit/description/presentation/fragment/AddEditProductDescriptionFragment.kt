@@ -235,7 +235,9 @@ class AddEditProductDescriptionFragment:
             } else {
                 ProductAddDescriptionTracking.clickAddProductVariant(shopId)
             }
-            descriptionViewModel.getVariants(descriptionViewModel.categoryId)
+            descriptionViewModel.productVariantData?.let {
+                showVariantDialog(it)
+            }
         }
 
         btnNext.setOnClickListener {
@@ -249,6 +251,7 @@ class AddEditProductDescriptionFragment:
         }
 
         getRecyclerView(view).itemAnimator = null
+        descriptionViewModel.getVariants(descriptionViewModel.categoryId)
 
         observeProductVariant()
         observeProductVideo()
@@ -292,9 +295,10 @@ class AddEditProductDescriptionFragment:
     }
 
     private fun observeProductVariant() {
+        tvAddVariant.isEnabled = false
         descriptionViewModel.productVariant.observe(viewLifecycleOwner, Observer { result ->
             when (result) {
-                is Success -> showVariantDialog(result.data)
+                is Success -> tvAddVariant.isEnabled = true
                 is Fail -> showVariantErrorToast(getString(R.string.default_request_error_timeout))
             }
         })
