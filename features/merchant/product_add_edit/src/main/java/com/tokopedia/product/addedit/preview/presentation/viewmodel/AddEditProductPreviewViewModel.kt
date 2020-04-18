@@ -112,21 +112,28 @@ class AddEditProductPreviewViewModel @Inject constructor(
                         if (!isDuplicate) {
                             productInputModel.productId = it.data.productID.toLongOrZero()
                         }
+                        getVariantList(productInputModel.detailInputModel.categoryId)
                         productInputModel
                     }
                     is Fail -> ProductInputModel()
                 }
             }
             addSource(detailInputModel) {
+                getVariantList(it.categoryId)
                 productInputModel.value = productInputModel.value?.apply { this.detailInputModel = it }
             }
             addSource(getProductDraftResult) {
                 productInputModel.value = when(it) {
-                    is Success -> mapDraftToProductInputModel(it.data)
+                    is Success -> {
+                        val productInputModel = mapDraftToProductInputModel(it.data)
+                        getVariantList(productInputModel.detailInputModel.categoryId)
+                        productInputModel
+                    }
                     is Fail -> ProductInputModel()
                 }
             }
             addSource(productAddResult) {
+                getVariantList(it.detailInputModel.categoryId)
                 productInputModel.value = it
             }
         }
@@ -138,10 +145,6 @@ class AddEditProductPreviewViewModel @Inject constructor(
 
     fun getDraftId(): Long {
         return if (draftId.isBlank()) 0 else draftId.toLong()
-    }
-
-    fun getCategoryId(): String {
-        return productInputModel.value?.detailInputModel?.categoryId ?: ""
     }
 
     fun setProductId(id: String) {
