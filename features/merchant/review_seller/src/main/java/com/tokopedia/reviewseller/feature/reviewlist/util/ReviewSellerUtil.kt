@@ -12,7 +12,7 @@ object ReviewSellerUtil {
             val clickedItem = this.getItemAtPosition(position) as ListItemUnify
             when (choiceMode) {
                 ListView.CHOICE_MODE_SINGLE -> {
-                    (listUnify.getValue("array") as ArrayList<ListItemUnify>).filter { it.listRightRadiobtn?.isChecked ?: false }
+                    (this.getValue("array") as ArrayList<ListItemUnify>).filter { it.listRightRadiobtn?.isChecked ?: false }
                             .filterNot { it == clickedItem }
                             .onEach { it.listRightRadiobtn?.isChecked = false }
 
