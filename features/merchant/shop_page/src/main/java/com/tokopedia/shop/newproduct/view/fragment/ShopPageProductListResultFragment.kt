@@ -50,6 +50,10 @@ import com.tokopedia.shop.newproduct.view.datamodel.BaseShopProductViewModel
 import com.tokopedia.shop.newproduct.view.datamodel.ShopProductEtalaseChipItemViewModel
 import com.tokopedia.shop.newproduct.view.datamodel.ShopProductEtalaseListViewModel
 import com.tokopedia.shop.newproduct.view.datamodel.ShopProductViewModel
+import com.tokopedia.shop.newproduct.view.fragment.ShopPageProductListFragment.Companion.BUNDLE_IS_SHOW_DEFAULT
+import com.tokopedia.shop.newproduct.view.fragment.ShopPageProductListFragment.Companion.BUNDLE_IS_SHOW_ZERO_PRODUCT
+import com.tokopedia.shop.newproduct.view.fragment.ShopPageProductListFragment.Companion.BUNDLE_SELECTED_ETALASE_ID
+import com.tokopedia.shop.newproduct.view.fragment.ShopPageProductListFragment.Companion.BUNDLE_SHOP_ID
 import com.tokopedia.shop.newproduct.view.listener.ShopProductClickedListener
 import com.tokopedia.shop.newproduct.view.listener.ShopProductImpressionListener
 import com.tokopedia.shop.newproduct.view.viewholder.ShopProductEtalaseListViewHolder
@@ -448,12 +452,12 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                             it.goldOS.isOfficial == 1, it.goldOS.isGold == 1))
             context?.let { context ->
                 val bundle = Bundle()
-                bundle.putString("selectedEtalaseId", selectedEtalaseId)
-                bundle.putBoolean("isShowDefault", true)
-                bundle.putBoolean("isShowZeroProduct", false)
-                bundle.putString("shopId", it.shopCore.shopID)
+                bundle.putString(BUNDLE_SELECTED_ETALASE_ID, selectedEtalaseId)
+                bundle.putBoolean(BUNDLE_IS_SHOW_DEFAULT, true)
+                bundle.putBoolean(BUNDLE_IS_SHOW_ZERO_PRODUCT, false)
+                bundle.putString(BUNDLE_SHOP_ID, it.shopCore.shopID)
                 val intent = RouteManager.getIntent(context, ApplinkConstInternalMechant.MERCHANT_SHOP_SHOWCASE_LIST)
-                intent.putExtra("bundle", bundle)
+                intent.putExtra(BUNDLE, bundle)
                 startActivity(intent)
             }
         }
@@ -867,6 +871,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         val SAVED_KEYWORD = "saved_keyword"
         val SAVED_SORT_VALUE = "saved_sort_name"
         val SAVED_RELOAD_STATE = "saved_reload_state"
+        val BUNDLE = "bundle"
 
         @JvmStatic
         fun createInstance(shopId: String,
