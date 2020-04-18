@@ -28,10 +28,9 @@ class ShowcaseProductItemViewHolder(itemView: View, private val context: Context
         if (element is ShowcaseProduct) {
             itemView.product_name.text = element.productName
             itemView.product_price.text = element.productPrice.getCurrencyFormatted()
+            ImageHandler.LoadImage(itemView.product_image, element.productImageUrl)
+            /*itemView.product_image.setImageUrl(element.productImageUrl)*/
             renderProductRating(element)
-//            ImageHandler.LoadImage(itemView.product_image, element.productImageUrl)
-//            ImageHandler.loadImage2(itemView.product_image, element.productImageUrl, R.drawable.loading_page)
-            itemView.product_image.setImageUrl(element.productImageUrl)
             renderCardState(element)
         }
     }

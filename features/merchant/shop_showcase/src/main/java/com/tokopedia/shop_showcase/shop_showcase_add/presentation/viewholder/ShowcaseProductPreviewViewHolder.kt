@@ -25,8 +25,8 @@ class ShowcaseProductPreviewViewHolder(itemView: View, private val previewListen
         }
         itemView.product_name.text = element.productName
         itemView.product_price.text = element.productPrice.getCurrencyFormatted()
+        ImageHandler.LoadImage(itemView.product_image, element.productImageUrl)
         renderProductRating(element)
-        ImageHandler.loadImage2(itemView.product_image, element.productImageUrl, R.drawable.loading_page)
     }
 
     private fun renderDeleteButton() {
