@@ -1574,10 +1574,11 @@ public class HomeFragment extends BaseDaggerFragment implements
         return userSession.getShopId();
     }
 
+    @Override
     public void onHiddenChanged(boolean hidden) {
         super.onHiddenChanged(hidden);
-        if (fragmentFramePerformanceIndexMonitoring != null) fragmentFramePerformanceIndexMonitoring.onFragmentHidden(hidden);
         setUserVisibleHint(!hidden);
+        if (fragmentFramePerformanceIndexMonitoring != null) fragmentFramePerformanceIndexMonitoring.onFragmentHidden(hidden);
     }
 
     private void fetchTokopointsNotification(String type) {

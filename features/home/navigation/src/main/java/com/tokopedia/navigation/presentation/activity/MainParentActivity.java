@@ -579,19 +579,24 @@ public class MainParentActivity extends BaseActivity implements
 
             Fragment currentFrag = manager.findFragmentByTag(backStateName);
             if (currentFrag != null && manager.getFragments().size() > 0) {
-                for (int i = 0; i < manager.getFragments().size(); i++) {
-                    Fragment frag = manager.getFragments().get(i);
-                    if (frag.getClass().getName().equalsIgnoreCase(fragment.getClass().getName())) {
-                        ft.show(frag); // only show fragment what you want to show
-                    } else {
-                        ft.hide(frag); // hide all fragment
-                    }
-                }
+                showSelectedFragment(fragment, manager, ft);
             } else {
                 ft.add(R.id.container, fragment, backStateName); // add fragment if there re not registered on fragmentManager
+                showSelectedFragment(fragment, manager, ft);
             }
             ft.commitNowAllowingStateLoss();
         });
+    }
+
+    private void showSelectedFragment(Fragment fragment, FragmentManager manager, FragmentTransaction ft) {
+        for (int i = 0; i < manager.getFragments().size(); i++) {
+            Fragment frag = manager.getFragments().get(i);
+            if (frag.getClass().getName().equalsIgnoreCase(fragment.getClass().getName())) {
+                ft.show(frag); // only show fragment what you want to show
+            } else {
+                ft.hide(frag); // hide all fragment
+            }
+        }
     }
 
     private void configureStatusBarBasedOnFragment(Fragment fragment) {
