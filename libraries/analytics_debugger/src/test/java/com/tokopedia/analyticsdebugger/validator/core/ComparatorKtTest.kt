@@ -4,7 +4,7 @@ import com.tokopedia.analyticsdebugger.FileUtils
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
-class MapsComparatorKtTest {
+class ComparatorKtTest {
 
     private val fu: FileUtils by lazy { FileUtils() }
 
@@ -41,5 +41,26 @@ class MapsComparatorKtTest {
         val db = tesCase[1]
 
         assertTrue(tes == db)
+    }
+
+    @Test
+    fun `regex match given * when compared to any string should return true`() {
+        val tesVal = "{{.*}}"
+        val objVal = "any string would match"
+        assertTrue(regexCompare(tesVal, objVal))
+    }
+
+    @Test
+    fun `regex match given d* when compared to any string should return true`() {
+        val tesVal = "{{\\d*}}"
+        val objVal = "55643"
+        assertTrue(regexCompare(tesVal, objVal))
+    }
+
+    @Test
+    fun `regex match given idd* when compared to any string should return true`() {
+        val tesVal = "{{id/\\d*}}"
+        val objVal = "id/55643"
+        assertTrue(regexCompare(tesVal, objVal))
     }
 }
