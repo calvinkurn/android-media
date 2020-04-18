@@ -104,7 +104,6 @@ import com.tokopedia.iris.util.IrisSession;
 import com.tokopedia.locationmanager.DeviceLocation;
 import com.tokopedia.locationmanager.LocationDetectorHelper;
 import com.tokopedia.loyalty.view.activity.PromoListActivity;
-import com.tokopedia.loyalty.view.activity.TokoPointWebviewActivity;
 import com.tokopedia.navigation_common.listener.AllNotificationListener;
 import com.tokopedia.navigation_common.listener.FragmentListener;
 import com.tokopedia.navigation_common.listener.HomePerformanceMonitoringListener;
@@ -1014,9 +1013,9 @@ public class HomeFragment extends BaseDaggerFragment implements
             openApplink(appLink);
         } else {
             if (TextUtils.isEmpty(pageTitle))
-                startActivity(TokoPointWebviewActivity.getIntent(getActivity(), tokoPointUrl));
+                RouteManager.route(getActivity(), ApplinkConstInternalGlobal.WEBVIEW, tokoPointUrl);
             else
-                startActivity(TokoPointWebviewActivity.getIntentWithTitle(getActivity(), tokoPointUrl, pageTitle));
+                RouteManager.route(getActivity(), ApplinkConstInternalGlobal.WEBVIEW_TITLE, pageTitle, tokoPointUrl);
         }
     }
 

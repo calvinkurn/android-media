@@ -38,9 +38,9 @@ class HomeVisitableFactoryImpl(val userSessionInterface: UserSessionInterface) :
     val DEFAULT_BANNER_APPLINK_2 = ApplinkConst.OFFICIAL_STORE
     val DEFAULT_BANNER_APPLINK_3 = ApplinkConst.PROMO
 
-    val DEFAULT_BANNER_IMAGE_URL_1 = "https://ecs7.tokopedia.net/defaultpage/banner/bannerbelanja1000.jpg"
-    val DEFAULT_BANNER_IMAGE_URL_2 = "https://ecs7.tokopedia.net/defaultpage/banner/banneros1000.jpg"
-    val DEFAULT_BANNER_IMAGE_URL_3 = "https://ecs7.tokopedia.net/defaultpage/banner/bannerpromo1000.jpg"
+    val DEFAULT_BANNER_IMAGE_URL_1 = "https://ecs7.tokopedia.net/defaultpage/banner/bannerbelanja500new.jpg"
+    val DEFAULT_BANNER_IMAGE_URL_2 = "https://ecs7.tokopedia.net/defaultpage/banner/banneros500new.jpg"
+    val DEFAULT_BANNER_IMAGE_URL_3 = "https://ecs7.tokopedia.net/defaultpage/banner/bannerpromo500new.jpg"
 
     override fun buildVisitableList(homeData: HomeData, isCache: Boolean, trackingQueue: TrackingQueue, context: Context): HomeVisitableFactory {
         this.homeData = homeData

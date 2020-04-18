@@ -74,8 +74,8 @@ class DynamicProductDetailHashMap(private val context: Context, private val mapO
     val productNewVariantDataModel: VariantDataModel?
         get() = mapOfData[ProductDetailConstant.VARIANT_OPTIONS] as? VariantDataModel
 
-    val productSocialProofPvDataModel: ProductSocialProofPvDataModel?
-        get() = mapOfData[ProductDetailConstant.SOCIAL_PROOF_PV] as? ProductSocialProofPvDataModel
+    val productSocialProofPvDataModel: ProductSocialProofDataModel?
+        get() = mapOfData[ProductDetailConstant.SOCIAL_PROOF_PV] as? ProductSocialProofDataModel
 
     val notifyMeMap: ProductNotifyMeDataModel?
         get() = mapOfData[ProductDetailConstant.UPCOMING_DEALS] as? ProductNotifyMeDataModel
@@ -222,7 +222,7 @@ class DynamicProductDetailHashMap(private val context: Context, private val mapO
                 wishListCount = it.wishlistCount.count
             }
 
-            productSocialProofPvDataModel?.run {
+            productSocialProofPvDataModel?.run{
                 wishListCount = it.wishlistCount.count
             }
 

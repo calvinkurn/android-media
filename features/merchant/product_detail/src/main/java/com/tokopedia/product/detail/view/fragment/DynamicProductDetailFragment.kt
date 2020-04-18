@@ -811,7 +811,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         activity?.let {
             val intent = ImagePreviewPdpActivity.createIntent(it, dynamicProductInfoData.basic.productID, isWishlisted,
                     dynamicProductInfoData.data.getImagePath(), null, position)
-            startActivityForResult(intent, ProductDetailFragment.REQUEST_CODE_IMAGE_PREVIEW)
+            startActivityForResult(intent, ProductDetailConstant.REQUEST_CODE_IMAGE_PREVIEW)
         }
     }
 
@@ -925,7 +925,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                     ApplinkConstInternalGlobal.PRODUCT_TALK,
                     viewModel.getDynamicProductInfoP1?.basic?.productID
             )
-            startActivityForResult(intent, ProductDetailFragment.REQUEST_CODE_TALK_PRODUCT)
+            startActivityForResult(intent, ProductDetailConstant.REQUEST_CODE_TALK_PRODUCT)
         }
     }
 
@@ -2095,7 +2095,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                                 if (GlobalConfig.isSellerApp()) TopAdsSourceOption.SA_PDP else TopAdsSourceOption.MA_PDP).build().toString()
 
                 context?.let {
-                    startActivityForResult(RouteManager.getIntent(it, applink), ProductDetailFragment.REQUEST_CODE_EDIT_PRODUCT)
+                    startActivityForResult(RouteManager.getIntent(it, applink), ProductDetailConstant.REQUEST_CODE_EDIT_PRODUCT)
                 }
             }
         }
@@ -2658,10 +2658,13 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     }
 
     private fun observeToggleNotifyMe() {
-        viewLifecycleOwner.observe(viewModel.toggleTeaserNotifyMe) {data ->
+        viewLifecycleOwner.observe(viewModel.toggleTeaserNotifyMe) { data ->
             data.doSuccessOrFail({
-                viewModel.variantData = VariantMapper.updateVariantDeals(viewModel.variantData, viewModel.getDynamicProductInfoP1?.basic?.getProductId() ?: 0)
-            },{
+                val messageSuccess = if (viewModel.notifyMeAction == ProductDetailCommonConstant.VALUE_TEASER_ACTION_REGISTER) getString(R.string.notify_me_success_registered_message) else getString(R.string.notify_me_success_unregistered_message)
+                showToastSuccess(messageSuccess)
+                viewModel.variantData = VariantMapper.updateVariantDeals(viewModel.variantData, viewModel.getDynamicProductInfoP1?.basic?.getProductId()
+                        ?: 0)
+            }, {
                 onFailNotifyMe(it)
             })
         }
@@ -2682,13 +2685,13 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         try {
             activity?.let {
                 if (viewModel.isUserSessionActive) {
-                    val action = if (data.notifyMe) ProductDetailCommonConstant.VALUE_TEASER_ACTION_UNREGISTER else
+                    viewModel.notifyMeAction = if (data.notifyMe) ProductDetailCommonConstant.VALUE_TEASER_ACTION_UNREGISTER else
                         ProductDetailCommonConstant.VALUE_TEASER_ACTION_REGISTER
                     pdpHashMapUtil?.notifyMeMap?.notifyMe?.let { notifyMe -> trackToggleNotifyMe(componentTrackDataModel, notifyMe) }
                     pdpHashMapUtil?.notifyMeMap?.notifyMe = !data.notifyMe
                     dynamicAdapter.notifyNotifyMe(pdpHashMapUtil?.notifyMeMap, ProductDetailConstant.PAYLOAD_NOTIFY_ME)
                     viewModel.toggleTeaserNotifyMe(data.campaignID.toInt(), productId?.toInt()
-                            ?: 0, action, ProductDetailCommonConstant.VALUE_TEASER_SOURCE)
+                            ?: 0, ProductDetailCommonConstant.VALUE_TEASER_SOURCE)
                 } else {
                     goToLogin()
                 }

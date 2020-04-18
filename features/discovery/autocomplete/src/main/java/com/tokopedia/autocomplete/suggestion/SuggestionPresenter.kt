@@ -16,7 +16,7 @@ class SuggestionPresenter @Inject constructor() : BaseDaggerPresenter<Suggestion
     private var querySearch = ""
 
     @Inject
-    lateinit var getSuggestionUseCase: SuggestionUseCase
+    lateinit var getSuggestionUseCase: UseCase<SuggestionData>
 
     @Inject
     lateinit var suggestionTrackerUseCase: UseCase<Void?>
@@ -156,7 +156,7 @@ class SuggestionPresenter @Inject constructor() : BaseDaggerPresenter<Suggestion
                 view?.trackEventClickKeyword(getKeywordEventLabelForTracking(item))
             }
             TYPE_CURATED -> {
-                view?.trackEventClickCurated(getCuratedEventLabelForTracking(item))
+                view?.trackEventClickCurated(getCuratedEventLabelForTracking(item), item.trackingCode)
             }
             TYPE_SHOP -> {
                 view?.trackEventClickShop(getShopEventLabelForTracking(item))

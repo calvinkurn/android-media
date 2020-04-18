@@ -239,12 +239,6 @@ class MixTopBannerViewHolder(
                     listener = this
             ))
         }
-        if (isHasSeeMoreApplink(channel)) {
-            list.add(SeeMorePdpDataModel(
-                    applink = channel.header.applink,
-                    listener = this
-            ))
-        }
         return list
     }
 }
