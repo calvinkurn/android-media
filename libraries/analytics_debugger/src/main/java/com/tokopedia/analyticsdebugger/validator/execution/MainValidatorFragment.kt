@@ -1,0 +1,82 @@
+package com.tokopedia.analyticsdebugger.validator.execution
+
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.analyticsdebugger.R
+import com.tokopedia.analyticsdebugger.validator.Utils
+import com.tokopedia.analyticsdebugger.validator.core.Validator
+import com.tokopedia.analyticsdebugger.validator.core.toJson
+import com.tokopedia.analyticsdebugger.validator.core.toJsonMap
+import timber.log.Timber
+
+class MainValidatorFragment : Fragment() {
+
+    val viewModel: ValidatorViewModel by lazy {
+        activity?.application?.let {
+            ViewModelProvider(this, ViewModelProvider.AndroidViewModelFactory(it))
+                    .get(ValidatorViewModel::class.java)
+        } ?: throw IllegalArgumentException("Requires activity, fragment should be attached")
+    }
+
+    private val mAdapter: ValidatorResultAdapter by lazy {
+        val itemAdapter = ValidatorResultAdapter { goToDetail(it) }
+        itemAdapter
+    }
+
+    private var callback: Listener? = null
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return inflater.inflate(R.layout.fragment_main_validator, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        var jsonTest: String = ""
+        context?.let {
+            jsonTest = Utils.getJsonDataFromAsset(it, "add_address_cvr.json") ?: ""
+            Timber.d("Asset %s", it.assets.list("")?.joinToString { "\n" })
+        }
+        Timber.d("Validator Json Query \n %s", jsonTest)
+
+        val testQuery = jsonTest.toJsonMap()
+        Timber.d("Validator Test Query Map \n %s", testQuery)
+
+        viewModel.testCases.observe(this, Observer<List<Validator>> {
+            Timber.d("Validator got ${it.size}")
+            mAdapter.setData(it)
+        })
+        val rv = view.findViewById<RecyclerView>(R.id.rv)
+        viewModel.run(testQuery["verifyAll"] as List<Map<String, Any>>)
+        with(rv) {
+            layoutManager = androidx.recyclerview.widget.LinearLayoutManager(context)
+            addItemDecoration(androidx.recyclerview.widget.DividerItemDecoration(context, androidx.recyclerview.widget.DividerItemDecoration.VERTICAL))
+            adapter = mAdapter
+        }
+    }
+
+    fun setCallback(callback: Listener) {
+        this.callback = callback
+    }
+
+    private fun goToDetail(item: Validator) {
+        val exp = item.data.toJson()
+        val act = item.match?.data ?: ""
+
+        callback?.goDetail(exp, act)
+    }
+
+    interface Listener {
+        fun goDetail(expected: String, actual: String)
+    }
+
+    companion object {
+        fun newInstance(): MainValidatorFragment = MainValidatorFragment()
+    }
+
+}

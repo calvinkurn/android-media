@@ -26,7 +26,7 @@ private fun List<Map<String, Any>>.validateArray(arr: List<Map<String, Any>>): B
 private fun Any.eq(v: Any): Boolean = when {
     this is LinkedTreeMap<*, *> && v is LinkedTreeMap<*, *> -> (this as Map<String, Any>).canValidate(v as Map<String, Any>)
     this is ArrayList<*> && v is ArrayList<*> -> (this as List<Map<String, Any>>).validateArray(v as List<Map<String, Any>>)
-    this is String && v is String && this.contains("\\{\\{.*}}".toRegex()) -> regexEquals(this, v)
+    this is String && v is String && this.contains("\\{\\{.*\\}\\}".toRegex()) -> regexEquals(this, v)
     else -> this == v
 }
 
