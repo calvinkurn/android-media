@@ -2,5 +2,12 @@
 <resources>
     <string name="app_name">Voucher Creation</string>
     <string name="create_voucher_title">Tambah Voucher Toko</string>
-    <string name="voucher_creation_step_next">Lanjutkan</string>
+    <string name="mvc_create_step_next">Lanjutkan</string>
+    <string name="mvc_create_display_voucher">Lihat Tampilan Voucher</string>
+    <string name="mvc_create_step_desc_voucher_target">Target dan nama voucher</string>
+    <string name="mvc_create_step_desc_promo_type">Jenis dan budget promosi</string>
+    <string name="mvc_create_step_desc_voucher_period">Periode voucher</string>
+    <string name="mvc_create_step_desc_voucher_review">Review voucher</string>
+    <string name="mvc_create_promo_code">Kode Promo:&#160;</string>
+    <string name="mvc_create_promo_code_change">Ubah</string>
 </resources>

@@ -14,6 +14,7 @@ import androidx.viewpager2.widget.ViewPager2
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.kotlin.extensions.view.setStatusBarColor
+import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.create.view.adapter.CreateMerchantVoucherStepsAdapter
 import com.tokopedia.vouchercreation.create.view.fragment.BaseCreateMerchantVoucherFragment
@@ -147,7 +148,7 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
     private fun changeStepsInformation(stepInfo: VoucherCreationStepInfo) {
         stepInfo.run {
             currentStepPosition = stepPosition
-            createMerchantVoucherHeader?.headerSubTitle = stepDescription
+            createMerchantVoucherHeader?.headerSubTitle = resources?.getString(stepDescriptionRes).toBlankOrString()
             createMerchantVoucherProgressBar?.run {
                 ObjectAnimator.ofInt(createMerchantVoucherProgressBar, PROGRESS_ATTR_TAG, currentProgress, progressPercentage).run {
                     duration = PROGRESS_DURATION
