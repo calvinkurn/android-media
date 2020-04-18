@@ -17,7 +17,7 @@ import java.util.ArrayList
  */
 
 @Deprecated("")
-class UseCaseIconSectionViewModel : HomeVisitable {
+class UseCaseIconSectionDataModel : HomeVisitable {
 
     private val itemList: MutableList<HomeIconItem>
     private var isCache: Boolean = false
@@ -26,7 +26,7 @@ class UseCaseIconSectionViewModel : HomeVisitable {
     private var isCombined: Boolean = false
 
     override fun equalsWith(b: Any?): Boolean {
-        if (b is UseCaseIconSectionViewModel) {
+        if (b is UseCaseIconSectionDataModel) {
             return itemList == b.itemList
         }
         return false

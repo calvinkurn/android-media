@@ -9,7 +9,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeTypeFact
  * Created by henrypriyono on 31/01/18.
  */
 
-class DynamicChannelViewModel : HomeVisitable {
+class DynamicChannelDataModel : HomeVisitable {
 
     var channel: DynamicHomeChannel.Channels? = null
 
@@ -25,7 +25,7 @@ class DynamicChannelViewModel : HomeVisitable {
     }
 
     override fun equalsWith(b: Any?): Boolean {
-        if (b is DynamicChannelViewModel) {
+        if (b is DynamicChannelDataModel) {
             if (isExpiredTimeChanged(b)) return false
             if (isGridSizeChanged(b)) return false
             if (isLayoutChanged(b)) return false
@@ -43,13 +43,13 @@ class DynamicChannelViewModel : HomeVisitable {
         return false
     }
 
-    private fun isLayoutChanged(b: DynamicChannelViewModel) =
+    private fun isLayoutChanged(b: DynamicChannelDataModel) =
             channel?.layout ?: "" != b.channel?.layout ?: ""
 
-    private fun isGridSizeChanged(b: DynamicChannelViewModel) =
+    private fun isGridSizeChanged(b: DynamicChannelDataModel) =
             channel?.grids?.size != b.channel?.grids?.size ?: 0
 
-    private fun isExpiredTimeChanged(b: DynamicChannelViewModel): Boolean {
+    private fun isExpiredTimeChanged(b: DynamicChannelDataModel): Boolean {
         if (channel?.header?.expiredTime?.isNotEmpty() == true && channel?.header?.expiredTime != b.channel?.header?.expiredTime)
             return true
         return false
@@ -57,7 +57,7 @@ class DynamicChannelViewModel : HomeVisitable {
 
     override fun getChangePayloadFrom(b: Any?): Bundle? {
         val bundle = Bundle()
-        if (b is DynamicChannelViewModel) {
+        if (b is DynamicChannelDataModel) {
             if (isDcMixType(b) && isBannerImageSame(b)) {
                 bundle.putString(HOME_RV_BANNER_IMAGE_URL, b.channel?.banner?.imageUrl)
             }
@@ -69,21 +69,21 @@ class DynamicChannelViewModel : HomeVisitable {
         return bundle
     }
 
-    private fun isSprintType(b: DynamicChannelViewModel): Boolean {
+    private fun isSprintType(b: DynamicChannelDataModel): Boolean {
         return b.channel?.layout == DynamicHomeChannel.Channels.LAYOUT_SPRINT ||
                 b.channel?.layout == DynamicHomeChannel.Channels.LAYOUT_SPRINT_LEGO ||
                 b.channel?.layout == DynamicHomeChannel.Channels.LAYOUT_SPRINT_CAROUSEL
     }
 
-    private fun isSprintBackImageSame(b: DynamicChannelViewModel) =
+    private fun isSprintBackImageSame(b: DynamicChannelDataModel) =
             channel?.header?.backImage != b.channel?.header?.backImage ?: ""
 
-    private fun isBannerImageSame(b: DynamicChannelViewModel) =
+    private fun isBannerImageSame(b: DynamicChannelDataModel) =
             channel?.banner?.imageUrl != b.channel?.banner?.imageUrl ?: ""
 
-    private fun isDcMixType(dynamicChannelViewModel: DynamicChannelViewModel): Boolean {
-        return dynamicChannelViewModel.channel?.layout == DynamicHomeChannel.Channels.LAYOUT_BANNER_CAROUSEL ||
-                dynamicChannelViewModel.channel?.layout == DynamicHomeChannel.Channels.LAYOUT_BANNER_ORGANIC
+    private fun isDcMixType(dynamicChannelDataModel: DynamicChannelDataModel): Boolean {
+        return dynamicChannelDataModel.channel?.layout == DynamicHomeChannel.Channels.LAYOUT_BANNER_CAROUSEL ||
+                dynamicChannelDataModel.channel?.layout == DynamicHomeChannel.Channels.LAYOUT_BANNER_ORGANIC
     }
 
     override fun isCache(): Boolean {

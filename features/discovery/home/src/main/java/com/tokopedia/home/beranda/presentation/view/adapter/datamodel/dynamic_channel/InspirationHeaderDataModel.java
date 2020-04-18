@@ -3,11 +3,11 @@ package com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_c
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeTypeFactory;
 
-public class InspirationHeaderViewModel implements Visitable<HomeTypeFactory> {
+public class InspirationHeaderDataModel implements Visitable<HomeTypeFactory> {
 
     private String title;
 
-    public InspirationHeaderViewModel(String title) {
+    public InspirationHeaderDataModel(String title) {
         this.title = title;
     }
 
