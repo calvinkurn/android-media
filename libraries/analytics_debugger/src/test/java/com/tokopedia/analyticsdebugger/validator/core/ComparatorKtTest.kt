@@ -14,7 +14,7 @@ class ComparatorKtTest {
         val tes = fu.getJsonArrayResources("ana.json")
         val db = fu.getJsonArrayResources("ana_actual.json")
 
-        assertTrue(tes.first().compare(db.first()))
+        assertTrue(tes.first().canValidate(db.first()))
     }
 
     @Test
@@ -22,7 +22,7 @@ class ComparatorKtTest {
         val tes = fu.getJsonArrayResources("ana.json")
         val db = fu.getJsonArrayResources("ana_actual.json")
 
-        assertFalse(tes.first().compare(db.first(), strict = true))
+        assertFalse(tes.first().canValidate(db.first(), strict = true))
     }
 
     @Test
@@ -31,7 +31,7 @@ class ComparatorKtTest {
         val tes = tesCase[0]
         val db = tesCase[1]
 
-        assertTrue(tes.compare(db))
+        assertTrue(tes.canValidate(db))
     }
 
     @Test
@@ -40,7 +40,7 @@ class ComparatorKtTest {
         val tes = tesCase[0]
         val db = tesCase[1]
 
-        assertTrue(tes.compare(db))
+        assertTrue(tes.canValidate(db))
     }
 
     @Test
@@ -49,7 +49,7 @@ class ComparatorKtTest {
         val tes = tesCase[0]
         val db = tesCase[1]
 
-        assertTrue(tes.compare(db, strict = true))
+        assertTrue(tes.canValidate(db, strict = true))
     }
 
     @Test

@@ -2,7 +2,7 @@ package com.tokopedia.analyticsdebugger.validator.core
 
 import com.google.gson.internal.LinkedTreeMap
 
-internal fun Map<String, Any>.compare(obj: Map<String, Any>, strict: Boolean = false): Boolean {
+internal fun Map<String, Any>.canValidate(obj: Map<String, Any>, strict: Boolean = false): Boolean {
     for (entry in this) {
         if (!obj.containsKey(entry.key)) return false
         val objVal = obj[entry.key]
@@ -14,20 +14,20 @@ internal fun Map<String, Any>.compare(obj: Map<String, Any>, strict: Boolean = f
     }
 }
 
-@Suppress("UNCHECKED_CAST")
-private fun Any.eq(v: Any): Boolean = when {
-    this is LinkedTreeMap<*, *> && v is LinkedTreeMap<*, *> -> (this as Map<String, Any>).compare(v as Map<String, Any>)
-    this is ArrayList<*> && v is ArrayList<*> -> (this as List<Map<String, Any>>).compareArray(v as List<Map<String, Any>>)
-    this is String && v is String && this.contains("\\{\\{.*}}".toRegex()) -> regexEquals(this, v)
-    else -> this == v
-}
-
-private fun List<Map<String, Any>>.compareArray(arr: List<Map<String, Any>>): Boolean {
+private fun List<Map<String, Any>>.validateArray(arr: List<Map<String, Any>>): Boolean {
     if (this.size > 1) throw Exception("Tracker Query array should only contains one element")
     for (map in arr) {
-        if (!this[0].compare(map)) return false
+        if (!this[0].canValidate(map)) return false
     }
     return true
+}
+
+@Suppress("UNCHECKED_CAST")
+private fun Any.eq(v: Any): Boolean = when {
+    this is LinkedTreeMap<*, *> && v is LinkedTreeMap<*, *> -> (this as Map<String, Any>).canValidate(v as Map<String, Any>)
+    this is ArrayList<*> && v is ArrayList<*> -> (this as List<Map<String, Any>>).validateArray(v as List<Map<String, Any>>)
+    this is String && v is String && this.contains("\\{\\{.*}}".toRegex()) -> regexEquals(this, v)
+    else -> this == v
 }
 
 fun regexEquals(s: String, v: String): Boolean {

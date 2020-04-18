@@ -2,7 +2,6 @@ package com.tokopedia.analyticsdebugger.validator.core
 
 import com.tokopedia.analyticsdebugger.database.GtmLogDB
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
-import com.tokopedia.analyticsdebugger.validator.Utils
 import rx.Observable
 
 class ValidatorEngine constructor(private val dao: GtmLogDBSource) {
@@ -33,20 +32,11 @@ class ValidatorEngine constructor(private val dao: GtmLogDBSource) {
     private fun List<GtmLogDB>.findContaining(comparator: Validator): GtmLogDB? {
         for (gtm in this) {
             val mapGtm = gtm.data!!.toJsonMap()
-            var exact = true
-            inner@ for (entry in comparator.data) {
-                if (!mapGtm.containsKeyValue(entry)) {
-                    exact = false
-                    break@inner
-                }
-            }
-            if (exact) {
+            if (comparator.data.canValidate(mapGtm)){
                 return gtm
             }
         }
         return null
     }
 
-    private fun Map<String, Any>.containsKeyValue(kv: Map.Entry<String, Any>): Boolean =
-            (this.containsKey(kv.key) && this[kv.key] == kv.value)
 }
