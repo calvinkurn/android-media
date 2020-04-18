@@ -29,8 +29,8 @@ dependencies {
 project.ext {
     artifactId = 'fakeresponse'
     groupId = 'com.tokopedia.fakeresponse'
-    versionName = "0.0.2"
-    artifactName = "fakeresponse"
+    versionName = "0.0.3"
+    artifactName = "fakeresponse-release"
 }
 
 apply from: '../publish_local.gradle'
