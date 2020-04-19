@@ -679,7 +679,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
                 }
                 is Fail -> {
                     context?.let {
-                        showVariantErrorToast(ErrorHandler.getErrorMessage(it, result.throwable))
+                        showGetProductErrorToast(ErrorHandler.getErrorMessage(it, result.throwable))
                     }
                 }
             }
