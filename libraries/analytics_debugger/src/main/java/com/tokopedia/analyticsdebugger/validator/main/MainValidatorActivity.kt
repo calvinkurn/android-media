@@ -35,7 +35,7 @@ class MainValidatorActivity : AppCompatActivity(), MainValidatorFragment.Listene
     override fun goDetail(expected: String, actual: String) {
         supportFragmentManager.beginTransaction()
                 .addToBackStack("detail")
-                .setCustomAnimations(R.anim.anim_slide_up_in, R.anim.anim_slide_out_up)
+                .setCustomAnimations(R.anim.slide_left_in, 0, R.anim.pop_delay_in, R.anim.slide_right_out)
                 .replace(R.id.container, ValidatorDetailFragment.newIntent(expected, actual))
                 .commit()
     }
@@ -49,7 +49,6 @@ class MainValidatorActivity : AppCompatActivity(), MainValidatorFragment.Listene
     override fun runTest(filepath: String) {
         supportFragmentManager.beginTransaction()
                 .addToBackStack("runner")
-                .setCustomAnimations(R.anim.anim_slide_up_in, R.anim.anim_slide_out_up)
                 .replace(R.id.container, MainValidatorFragment.newInstance(filepath))
                 .commit()
     }
