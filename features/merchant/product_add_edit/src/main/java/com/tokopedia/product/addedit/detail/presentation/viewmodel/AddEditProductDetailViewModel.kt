@@ -37,9 +37,11 @@ class AddEditProductDetailViewModel @Inject constructor(
 
     var isAdding = false
 
-    var productInputModel = ProductInputModel()
-
     var hasVariants = false
+
+    var shouldUpdateVariant = false
+
+    var productInputModel = ProductInputModel()
 
     var productPhotoPaths: MutableList<String> = mutableListOf()
 

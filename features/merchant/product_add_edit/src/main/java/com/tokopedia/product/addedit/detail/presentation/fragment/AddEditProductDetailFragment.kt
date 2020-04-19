@@ -1252,6 +1252,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                     productPriceBulkPriceEditBottomSheetContent.tfu_product_price?.textFieldInput?.let { editText ->
                         InputPriceUtil.applyPriceFormatToInputField(editText, it, this)
                     }
+                    viewModel.shouldUpdateVariant = true
                 }
             }
         })
@@ -1298,6 +1299,8 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     }
 
     private fun submitInputEdit() {
+        val intent = Intent()
+
         val detailInputModel = viewModel.productInputModel.detailInputModel
         detailInputModel.apply {
             productName = productNameField.getText()
@@ -1314,10 +1317,18 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                     preOrderSwitch?.isChecked ?: false)
             wholesaleList = getWholesaleInput()
         }
-
         updateImageList(detailInputModel)
-        val intent = Intent()
         intent.putExtra(EXTRA_DETAIL_INPUT, detailInputModel)
+
+        val variantInputModel = viewModel.productInputModel.variantInputModel
+        if (viewModel.shouldUpdateVariant) {
+            variantInputModel.productVariant.forEach {
+                it.priceVar = productPriceField.getTextBigIntegerOrZero().toDouble()
+            }
+            viewModel.shouldUpdateVariant = false
+        }
+        intent.putExtra(EXTRA_VARIANT_INPUT, variantInputModel)
+
         activity?.setResult(Activity.RESULT_OK, intent)
         activity?.finish()
     }

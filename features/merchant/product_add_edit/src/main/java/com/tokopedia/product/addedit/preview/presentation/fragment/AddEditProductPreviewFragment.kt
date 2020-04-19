@@ -490,7 +490,10 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
                 REQUEST_CODE_DETAIL_EDIT -> {
                     val detailInputModel =
                             data.getParcelableExtra<DetailInputModel>(EXTRA_DETAIL_INPUT)
+                    val variantInputModel =
+                            data.getParcelableExtra<ProductVariantInputModel>(EXTRA_VARIANT_INPUT)
                     viewModel.updateDetailInputModel(detailInputModel)
+                    viewModel.updateVariantInputModel(variantInputModel)
                 }
                 REQUEST_CODE_DESCRIPTION_EDIT -> {
                     val descriptionInputModel =
