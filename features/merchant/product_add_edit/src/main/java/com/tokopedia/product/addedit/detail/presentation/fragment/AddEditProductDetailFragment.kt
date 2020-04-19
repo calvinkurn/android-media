@@ -1235,7 +1235,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
 
     private fun getEditAllVariantPriceBottomSheetContent(): ProductBulkPriceEditBottomSheetContent {
         val productPriceBulkPriceEditBottomSheetContent = ProductBulkPriceEditBottomSheetContent(requireContext())
-        productPriceBulkPriceEditBottomSheetContent.setPrice(viewModel.detailInputModel.price.toString())
+        productPriceBulkPriceEditBottomSheetContent.setPrice(productPriceField?.getTextBigIntegerOrZero().toString())
         productPriceBulkPriceEditBottomSheetContent.setPriceTextWatcher(object : TextWatcher {
 
             override fun afterTextChanged(p0: Editable?) {}
