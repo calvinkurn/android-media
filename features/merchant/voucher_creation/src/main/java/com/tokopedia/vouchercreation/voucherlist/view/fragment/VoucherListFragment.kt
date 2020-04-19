@@ -10,16 +10,21 @@ import com.tokopedia.kotlin.extensions.view.getBooleanArgs
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.di.component.DaggerVoucherCreationComponent
 import com.tokopedia.vouchercreation.voucherlist.model.BaseVoucherListUiModel
+import com.tokopedia.vouchercreation.voucherlist.model.BottomSheetMenuUiModel
 import com.tokopedia.vouchercreation.voucherlist.model.VoucherUiModel
-import com.tokopedia.vouchercreation.voucherlist.view.adapter.VoucherListAdapterFactoryImpl
+import com.tokopedia.vouchercreation.voucherlist.view.adapter.factory.VoucherListAdapterFactoryImpl
+import com.tokopedia.vouchercreation.voucherlist.view.viewholder.MenuViewHolder
+import com.tokopedia.vouchercreation.voucherlist.view.viewholder.VoucherViewHolder
 import com.tokopedia.vouchercreation.voucherlist.view.viewmodel.VoucherListViewModel
+import com.tokopedia.vouchercreation.voucherlist.view.widget.VoucherListBottomSheet
 import javax.inject.Inject
 
 /**
  * Created By @ilhamsuaib on 17/04/20
  */
 
-class VoucherListFragment : BaseListFragment<BaseVoucherListUiModel, VoucherListAdapterFactoryImpl>() {
+class VoucherListFragment : BaseListFragment<BaseVoucherListUiModel, VoucherListAdapterFactoryImpl>(),
+        VoucherViewHolder.Listener, MenuViewHolder.Listener {
 
     companion object {
         private const val KEY_IS_ACTIVE_VOUCHER = "is_active_voucher"
@@ -48,7 +53,7 @@ class VoucherListFragment : BaseListFragment<BaseVoucherListUiModel, VoucherList
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        hasOptionsMenu()
+        setHasOptionsMenu(true)
 
         setupView()
     }
@@ -61,7 +66,7 @@ class VoucherListFragment : BaseListFragment<BaseVoucherListUiModel, VoucherList
     override fun getRecyclerViewResourceId(): Int = R.id.rvVoucherList
 
     override fun getAdapterTypeFactory(): VoucherListAdapterFactoryImpl {
-        return VoucherListAdapterFactoryImpl(isActiveVoucher)
+        return VoucherListAdapterFactoryImpl(this, isActiveVoucher)
     }
 
     override fun getScreenName(): String = VoucherListFragment::class.java.simpleName
@@ -81,6 +86,16 @@ class VoucherListFragment : BaseListFragment<BaseVoucherListUiModel, VoucherList
 
     }
 
+    override fun onMoreClickListener(voucher: VoucherUiModel) {
+        val parent = (view as? ViewGroup) ?: return
+        VoucherListBottomSheet(parent, this)
+                .show(voucher, childFragmentManager)
+    }
+
+    override fun onMenuClickListener(menu: BottomSheetMenuUiModel) {
+        dismissBottomSheet()
+    }
+
     private fun setupView() {
         showDummyData()
     }
@@ -92,8 +107,15 @@ class VoucherListFragment : BaseListFragment<BaseVoucherListUiModel, VoucherList
     private fun getDummyData(): List<VoucherUiModel> {
         val list = mutableListOf<VoucherUiModel>()
         repeat(10) {
-            list.add(VoucherUiModel("x"))
+            list.add(VoucherUiModel("Voucher Hura Nyoba Doang", it % 2 == 0))
         }
         return list
+    }
+
+    private fun dismissBottomSheet() {
+        val bottomSheet = childFragmentManager.findFragmentByTag(VoucherListBottomSheet.TAG)
+        if (bottomSheet is VoucherListBottomSheet) {
+            bottomSheet.dismiss()
+        }
     }
 }
