@@ -86,6 +86,7 @@ import com.tokopedia.navigation_common.listener.CartNotifyListener;
 import com.tokopedia.navigation_common.listener.FragmentListener;
 import com.tokopedia.navigation_common.listener.HomePerformanceMonitoringListener;
 import com.tokopedia.navigation_common.listener.MainParentStatusBarListener;
+import com.tokopedia.navigation_common.listener.OfficialStorePerformanceMonitoringListener;
 import com.tokopedia.navigation_common.listener.RefreshNotificationListener;
 import com.tokopedia.navigation_common.listener.ShowCaseListener;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
@@ -120,7 +121,8 @@ public class MainParentActivity extends BaseActivity implements
         CartNotifyListener,
         RefreshNotificationListener,
         MainParentStatusBarListener,
-        HomePerformanceMonitoringListener{
+        HomePerformanceMonitoringListener,
+        OfficialStorePerformanceMonitoringListener {
 
     public static final String MO_ENGAGE_COUPON_CODE = "coupon_code";
     public static final String ARGS_TAB_POSITION = "TAB_POSITION";
@@ -153,6 +155,11 @@ public class MainParentActivity extends BaseActivity implements
     private static final String HOME_PERFORMANCE_MONITORING_CACHE_VALUE = "Cache";
     private static final String HOME_PERFORMANCE_MONITORING_NETWORK_VALUE= "Network";
 
+    private static final String OFFICIAL_STORE_PERFORMANCE_MONITORING_KEY = "mp_official_store";
+    private static final String OFFICIAL_STORE_PERFORMANCE_MONITORING_PREPARE_METRICS = "official_store_plt_start_page_metrics";
+    private static final String OFFICIAL_STORE_PERFORMANCE_MONITORING_NETWORK_METRICS = "official_store_plt_network_request_page_metrics";
+    private static final String OFFICIAL_STORE_PERFORMANCE_MONITORING_RENDER_METRICS = "official_store_plt_render_page_metrics";
+
     private static final String MAIN_PARENT_PERFORMANCE_MONITORING_KEY = "mp_slow_rendering_perf";
     private static final String FPM_METRIC_ALL_FRAMES = "all_frames";
     private static final String FPM_METRIC_JANKY_FRAMES = "janky_frames";
@@ -181,9 +188,12 @@ public class MainParentActivity extends BaseActivity implements
     private CoordinatorLayout fragmentContainer;
     private boolean isFirstNavigationImpression = false;
 
+    private PerformanceMonitoring officialStorePerformanceMonitoring;
+
     private PerformanceMonitoring mainParentPerformanceMonitoring;
 
     private PageLoadTimePerformanceCallback pageLoadTimePerformanceCallback;
+    private PageLoadTimePerformanceCallback officialStorePageLoadTimePerformanceCallback;
 
     // animate icon OS
     private MenuItem osMenu;
@@ -254,7 +264,7 @@ public class MainParentActivity extends BaseActivity implements
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        startHomePerformanceMonitoring();
+        startSelectedPagePerformanceMonitoring();
         startMainParentPerformanceMonitoring();
 
         super.onCreate(savedInstanceState);
@@ -415,6 +425,20 @@ public class MainParentActivity extends BaseActivity implements
         if (fragment != null) {
             this.currentFragment = fragment;
             selectFragment(fragment);
+        }
+    }
+
+    private void startSelectedPagePerformanceMonitoring(){
+        int tabPosition = HOME_MENU;
+        if (getIntent().getExtras() != null) {
+            tabPosition = getIntent().getExtras().getInt(ARGS_TAB_POSITION, HOME_MENU);
+        }
+        switch (tabPosition){
+            case HOME_MENU:
+                startHomePerformanceMonitoring();
+                break;
+            case OS_MENU:
+                startOfficialStorePerformanceMonitoring();
         }
     }
 
@@ -1224,5 +1248,37 @@ public class MainParentActivity extends BaseActivity implements
             setWindowFlag(this, WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, false);
             this.getWindow().setStatusBarColor(Color.TRANSPARENT);
         }
+    }
+
+    @Override
+    public void stopOfficialStorePerformanceMonitoring() {
+        if(getOfficialStorePageLoadTimePerformanceInterface() != null){
+            getOfficialStorePageLoadTimePerformanceInterface().stopRenderPerformanceMonitoring();
+            getOfficialStorePageLoadTimePerformanceInterface().stopMonitoring();
+            officialStorePageLoadTimePerformanceCallback = null;
+        }
+    }
+
+    @Override
+    public void startOfficialStorePerformanceMonitoring() {
+        if(officialStorePageLoadTimePerformanceCallback == null) {
+            officialStorePageLoadTimePerformanceCallback = new PageLoadTimePerformanceCallback(
+                    OFFICIAL_STORE_PERFORMANCE_MONITORING_PREPARE_METRICS,
+                    OFFICIAL_STORE_PERFORMANCE_MONITORING_NETWORK_METRICS,
+                    OFFICIAL_STORE_PERFORMANCE_MONITORING_RENDER_METRICS,
+                    0,
+                    0,
+                    0,
+                    0,
+                    null
+            );
+            getOfficialStorePageLoadTimePerformanceInterface().startMonitoring(OFFICIAL_STORE_PERFORMANCE_MONITORING_KEY);
+            getOfficialStorePageLoadTimePerformanceInterface().startPreparePagePerformanceMonitoring();
+        }
+    }
+
+    @Override
+    public PageLoadTimePerformanceInterface getOfficialStorePageLoadTimePerformanceInterface() {
+        return officialStorePageLoadTimePerformanceCallback;
     }
 }
