@@ -1187,7 +1187,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                 ListUnifyUtil.setSelected(this, 0) {
                     val categoryId = ListUnifyUtil.getCategoryId(it).toString()
                     viewModel.productInputModel.detailInputModel.categoryId = categoryId
-                    ProductAddMainTracking.clickProductCategoryRecom(shopId)
+                    true
                 }
             }
         }
