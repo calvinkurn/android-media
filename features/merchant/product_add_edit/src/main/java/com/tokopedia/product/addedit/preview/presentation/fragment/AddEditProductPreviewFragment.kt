@@ -813,7 +813,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
             Toaster.make(it, errorMessage,
                     type = Toaster.TYPE_ERROR,
                     actionText = getString(R.string.title_try_again),
-                    duration = Toaster.LENGTH_LONG,
+                    duration = Snackbar.LENGTH_INDEFINITE,
                     clickListener = View.OnClickListener {
                         viewModel.getProductData(viewModel.getProductId())
                     })
@@ -825,7 +825,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
             Toaster.make(it, errorMessage,
                     type = Toaster.TYPE_ERROR,
                     actionText = getString(R.string.title_try_again),
-                    duration = Toaster.LENGTH_LONG,
+                    duration = Snackbar.LENGTH_INDEFINITE,
                     clickListener = View.OnClickListener {
                         val categoryId: String = viewModel.productInputModel.value?.detailInputModel?.categoryId.orEmpty()
                         viewModel.getVariantList(categoryId)
