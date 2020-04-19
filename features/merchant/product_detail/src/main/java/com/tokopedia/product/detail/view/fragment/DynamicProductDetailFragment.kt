@@ -1022,6 +1022,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         updateButtonAfterClickVariant(indexOfSelectedVariant)
 
         renderFullfillment()
+        dynamicAdapter.notifyGeneralInfo(pdpHashMapUtil?.productFullfilmentMap)
         dynamicAdapter.notifySnapshotWithPayloads(pdpHashMapUtil?.snapShotMap)
         dynamicAdapter.notifyVariantSection(pdpHashMapUtil?.productNewVariantDataModel, 1)
         dynamicAdapter.notifyNotifyMe(pdpHashMapUtil?.notifyMeMap, null)
@@ -1338,7 +1339,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         } else {
             pdpHashMapUtil?.updateDataTradein(tradeinResponse)
         }
-
+        renderFullfillment()
         pdpHashMapUtil?.updateDataP2Shop(it)
         adapter.notifyDataSetChanged()
     }
@@ -1466,7 +1467,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         pdpHashMapUtil?.productFullfilmentMap?.run {
             data.first().subtitle = fullFillmentText
         }
-        dynamicAdapter.notifyGeneralInfo(pdpHashMapUtil?.productFullfilmentMap)
     }
 
     private fun logException(t: Throwable) {
