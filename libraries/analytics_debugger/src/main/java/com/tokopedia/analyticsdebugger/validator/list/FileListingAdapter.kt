@@ -7,7 +7,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.analyticsdebugger.R
 
-class FileListingAdapter: RecyclerView.Adapter<FileListingAdapter.ItemViewHolder>() {
+class FileListingAdapter : RecyclerView.Adapter<FileListingAdapter.ItemViewHolder>() {
 
     private val mItems: MutableList<String> = mutableListOf()
     private var callback: ((String) -> Unit)? = null
@@ -39,5 +39,5 @@ class FileListingAdapter: RecyclerView.Adapter<FileListingAdapter.ItemViewHolder
         }
     }
 
-    inner class ItemViewHolder(itemView: View): RecyclerView.ViewHolder(itemView)
+    inner class ItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 }

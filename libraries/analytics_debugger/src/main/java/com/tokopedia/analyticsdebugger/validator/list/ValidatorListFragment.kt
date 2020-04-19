@@ -14,7 +14,7 @@ import timber.log.Timber
 
 class ValidatorListFragment : Fragment() {
 
-    private var listener: ValidatorListFragment.Listener? = null
+    private var listener: Listener? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_validator_list, container, false)
@@ -34,11 +34,11 @@ class ValidatorListFragment : Fragment() {
             adapter = listingAdapter
         }
 
-        listingAdapter.setOnItemClickListener { listener?.runTest(it)  }
+        listingAdapter.setOnItemClickListener { listener?.runTest(it) }
         listingAdapter.setItems(listTests)
     }
 
-    fun setListener(listener: ValidatorListFragment.Listener) {
+    fun setListener(listener: Listener) {
         this.listener = listener
     }
 
