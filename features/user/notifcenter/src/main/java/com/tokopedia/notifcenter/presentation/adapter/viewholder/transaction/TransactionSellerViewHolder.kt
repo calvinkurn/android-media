@@ -14,7 +14,7 @@ import com.tokopedia.notifcenter.presentation.adapter.viewholder.base.BaseTransa
 class TransactionSellerViewHolder(
         view: View,
         listener: TransactionMenuListener
-): BaseTransactionViewHolder<SellerNotificationViewBean>(view, listener) {
+) : BaseTransactionViewHolder<SellerNotificationViewBean>(view, listener) {
 
     override fun bind(element: SellerNotificationViewBean) {
         if (element.id != PENJUALAN) return

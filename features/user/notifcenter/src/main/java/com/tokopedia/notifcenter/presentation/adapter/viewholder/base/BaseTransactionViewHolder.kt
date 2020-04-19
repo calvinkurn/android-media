@@ -16,7 +16,7 @@ import com.tokopedia.notifcenter.listener.TransactionMenuListener
 abstract class BaseTransactionViewHolder<T: Visitable<*>>(
         view: View,
         val listener: TransactionMenuListener
-): AbstractViewHolder<T>(view) {
+) : AbstractViewHolder<T>(view) {
 
     private val txtHeaderTitle: TextView? = view.findViewById(R.id.txtHeaderTitle)
     private val btnLoadMore: TextView? = view.findViewById(R.id.btnLoadMore)
