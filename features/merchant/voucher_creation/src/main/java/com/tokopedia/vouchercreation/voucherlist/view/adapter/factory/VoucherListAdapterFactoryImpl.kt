@@ -1,15 +1,11 @@
-package com.tokopedia.vouchercreation.voucherlist.view.adapter
+package com.tokopedia.vouchercreation.voucherlist.view.adapter.factory
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
-import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
-import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.vouchercreation.voucherlist.model.VoucherUiModel
-import com.tokopedia.vouchercreation.voucherlist.view.viewholder.EmptyStateViewHolder
-import com.tokopedia.vouchercreation.voucherlist.view.viewholder.VoucherActiveLoadingStateViewHolder
-import com.tokopedia.vouchercreation.voucherlist.view.viewholder.VoucherInactiveLoadingStateViewHolder
+import com.tokopedia.vouchercreation.voucherlist.view.fragment.VoucherListFragment
 import com.tokopedia.vouchercreation.voucherlist.view.viewholder.VoucherViewHolder
 
 /**
@@ -17,6 +13,7 @@ import com.tokopedia.vouchercreation.voucherlist.view.viewholder.VoucherViewHold
  */
 
 class VoucherListAdapterFactoryImpl(
+        private val fragment: VoucherListFragment,
         private val isActiveVoucher: Boolean
 ) : BaseAdapterTypeFactory(), VoucherListAdapterFactory {
 
@@ -32,7 +29,7 @@ class VoucherListAdapterFactoryImpl(
 
     override fun createViewHolder(parent: View?, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
-            VoucherViewHolder.RES_LAYOUT -> VoucherViewHolder(parent)
+            VoucherViewHolder.RES_LAYOUT -> VoucherViewHolder(parent, fragment)
             else -> super.createViewHolder(parent, type)
         }
     }

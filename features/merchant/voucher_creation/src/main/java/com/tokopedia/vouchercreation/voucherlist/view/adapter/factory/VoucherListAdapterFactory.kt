@@ -1,4 +1,4 @@
-package com.tokopedia.vouchercreation.voucherlist.view.adapter
+package com.tokopedia.vouchercreation.voucherlist.view.adapter.factory
 
 import com.tokopedia.vouchercreation.voucherlist.model.VoucherUiModel
 

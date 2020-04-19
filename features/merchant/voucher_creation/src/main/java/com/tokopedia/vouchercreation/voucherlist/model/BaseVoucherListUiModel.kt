@@ -1,7 +1,7 @@
 package com.tokopedia.vouchercreation.voucherlist.model
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.vouchercreation.voucherlist.view.adapter.VoucherListAdapterFactory
+import com.tokopedia.vouchercreation.voucherlist.view.adapter.factory.VoucherListAdapterFactory
 
 /**
  * Created By @ilhamsuaib on 17/04/20

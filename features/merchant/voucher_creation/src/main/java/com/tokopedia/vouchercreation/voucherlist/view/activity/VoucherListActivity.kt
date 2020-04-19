@@ -18,7 +18,13 @@ class VoucherListActivity : BaseSimpleActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        setupLayout(savedInstanceState)
+        setupView()
         setWhiteStatusBar()
+    }
+
+    private fun setupView() {
+        setSupportActionBar(toolbar)
     }
 
     private fun setWhiteStatusBar() {
