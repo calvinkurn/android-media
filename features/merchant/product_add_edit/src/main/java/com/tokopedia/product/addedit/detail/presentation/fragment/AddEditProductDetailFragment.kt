@@ -730,7 +730,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     }
 
     fun onBackPressed() {
-        if (viewModel.isEditMode && !viewModel.isAdding) {
+        if (!viewModel.isAdding) {
             ProductEditMainTracking.trackBack(shopId)
         } else {
             ProductAddMainTracking.trackBack(shopId)
