@@ -15,7 +15,6 @@ import com.tokopedia.product.addedit.description.domain.usecase.GetProductVarian
 import com.tokopedia.product.addedit.description.presentation.model.*
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_PRODUCT_PHOTOS
 import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
-import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel.Companion.STATUS_ACTIVE
 import com.tokopedia.product.addedit.draft.domain.usecase.GetProductDraftUseCase
 import com.tokopedia.product.addedit.draft.domain.usecase.SaveProductDraftUseCase
 import com.tokopedia.product.addedit.draft.mapper.AddEditProductMapper.mapDraftToProductInputModel
@@ -194,7 +193,11 @@ class AddEditProductPreviewViewModel @Inject constructor(
     }
 
     fun updateProductStatus(isActive: Boolean) {
-        productInputModel.value?.detailInputModel?.status = if (isActive) ProductStatus.STATUS_ACTIVE else ProductStatus.STATUS_INACTIVE
+        val newStatus = if (isActive) ProductStatus.STATUS_ACTIVE else ProductStatus.STATUS_INACTIVE
+        productInputModel.value?.detailInputModel?.status = newStatus
+        productInputModel.value?.variantInputModel?.productVariant?.forEach {
+            it.st = newStatus
+        }
     }
 
     fun getNewProductInputModel(imageUrlOrPathList: ArrayList<String>): ProductInputModel {
