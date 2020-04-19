@@ -30,7 +30,6 @@ class GetReviewProductListUseCase @Inject constructor(
 
     var params = mapOf<String, Any>()
 
-
     override suspend fun executeOnBackground(): ProductReviewListResponse.ProductShopRatingAggregate {
 
         gqlUseCase.clearRequest()

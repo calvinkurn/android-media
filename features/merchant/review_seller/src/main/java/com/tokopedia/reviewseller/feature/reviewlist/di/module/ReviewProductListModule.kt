@@ -7,10 +7,10 @@ import com.tokopedia.graphql.coroutines.data.Interactor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.reviewseller.R
 import com.tokopedia.reviewseller.common.GQL_GET_PRODUCT_RATING_OVERALL
-import com.tokopedia.reviewseller.common.GQL_GET_PRODUCT_REVIEW_LIST
+import com.tokopedia.reviewseller.common.GQL_GET_PRODUCT_REVIEW_DETAIL_OVERALL
+import com.tokopedia.reviewseller.common.util.CoroutineDispatcherProvider
+import com.tokopedia.reviewseller.common.util.CoroutineDispatcherProviderImpl
 import com.tokopedia.reviewseller.feature.reviewlist.di.scope.ReviewProductListScope
-import com.tokopedia.reviewseller.feature.reviewlist.util.CoroutineDispatcherProvider
-import com.tokopedia.reviewseller.feature.reviewlist.util.CoroutineDispatcherProviderImpl
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -19,8 +19,8 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import javax.inject.Named
 
-@Module(includes = [ReviewSellerViewModelModule::class])
 @ReviewProductListScope
+@Module(includes = [ReviewProductListViewModelModule::class])
 class ReviewProductListModule {
 
     @ReviewProductListScope
@@ -50,7 +50,7 @@ class ReviewProductListModule {
 
     @ReviewProductListScope
     @Provides
-    @Named(GQL_GET_PRODUCT_REVIEW_LIST)
+    @Named(GQL_GET_PRODUCT_REVIEW_DETAIL_OVERALL)
     fun getProductReviewList(@ApplicationContext context: Context): String {
         return GraphqlHelper.loadRawString(context.resources, R.raw.gql_product_review_list)
     }
