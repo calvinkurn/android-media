@@ -13,11 +13,8 @@ class NextStepButton @JvmOverloads constructor(
         @LayoutRes layoutResource: Int = R.layout.mvc_next_step_button
 ) : BaseVoucherView(context, attrs, defStyleAttr, defStyleRes, layoutResource, intArrayOf()) {
 
-    override fun setupAttributes() {
+    override fun setupAttributes() {}
 
-    }
+    override fun setupView() {}
 
-    override fun setupView() {
-
-    }
 }
