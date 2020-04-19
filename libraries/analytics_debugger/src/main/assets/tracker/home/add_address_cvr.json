@@ -1,5 +1,5 @@
 {
-  "verifyAll": [
+  "subset": [
     {
       "screenName": "/user/address/create"
     },

@@ -29,20 +29,12 @@ class ValidatorViewModel constructor(val context: Application) : AndroidViewMode
     val testCases: LiveData<List<Validator>>
         get() = _testCases
 
-    fun run(queries: List<Map<String, Any>>) {
+    fun run(queries: List<Map<String, Any>>, mode: String) {
         val v = queries.map { it.toDefaultValidator() }
         _testCases.value = v
-        fetchGtmLog(v)
-    }
 
-    override fun onCleared() {
-        super.onCleared()
-        disposables.clear()
-    }
-
-    private fun fetchGtmLog(param: List<Validator>) {
         val startTime = System.currentTimeMillis()
-        engine.compute(param)
+        engine.compute(v, mode)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
@@ -63,6 +55,11 @@ class ValidatorViewModel constructor(val context: Application) : AndroidViewMode
                             }
                         }
                 ).toSubs()
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        disposables.clear()
     }
 
     private fun Subscription.toSubs() {

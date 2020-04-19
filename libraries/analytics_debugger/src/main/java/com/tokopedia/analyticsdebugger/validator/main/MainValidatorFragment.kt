@@ -52,7 +52,9 @@ class MainValidatorFragment : Fragment() {
             mAdapter.setData(it)
         })
         val rv = view.findViewById<RecyclerView>(R.id.rv)
-        viewModel.run(testQuery["verifyAll"] as List<Map<String, Any>>)
+        val key = testQuery.keys.first()
+        val value = testQuery[key]
+        viewModel.run(value as List<Map<String, Any>>, key)
         with(rv) {
             layoutManager = androidx.recyclerview.widget.LinearLayoutManager(context)
             addItemDecoration(androidx.recyclerview.widget.DividerItemDecoration(context, androidx.recyclerview.widget.DividerItemDecoration.VERTICAL))
