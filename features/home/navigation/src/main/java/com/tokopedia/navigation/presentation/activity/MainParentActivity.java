@@ -1251,11 +1251,6 @@ public class MainParentActivity extends BaseActivity implements
     }
 
     @Override
-    public JankyFrameMonitoringUtil getMainJankyFrameMonitoringUtil() {
-        return jankyFrameMonitoringUtil;
-    }
-
-    @Override
     public void stopOfficialStorePerformanceMonitoring() {
         if(getOfficialStorePageLoadTimePerformanceInterface() != null){
             getOfficialStorePageLoadTimePerformanceInterface().stopRenderPerformanceMonitoring();
