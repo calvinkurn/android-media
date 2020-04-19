@@ -31,7 +31,7 @@ android {
 project.ext {
     artifactId = 'graphql'
     groupId = 'com.tokopedia.graphql'
-    versionName = "1.1.9"
+    versionName = "1-rahul"
     artifactName = "graphql-debug"
 }
 
@@ -56,7 +56,10 @@ dependencies {
     implementation rootProject.ext.miscDependencies.dagger
     kapt rootProject.ext.miscDependencies.daggerCompiler
 
-    debugImplementation rootProject.ext.tkpdInternalLibDependencies.fakeresponse
+//    implementation project(path: ':fakeresponse')
+    implementation rootProject.ext.supportLibDependencies.constraintLayout
+    implementation rootProject.ext.tkpdInternalLibDependencies.fakeresponse
+//    releaseImplementation rootProject.ext.tkpdInternalLibDependencies.fakeresponseNoOp
 }
 
 apply from: '../publish_local.gradle'

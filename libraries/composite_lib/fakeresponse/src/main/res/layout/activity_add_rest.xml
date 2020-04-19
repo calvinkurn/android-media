@@ -18,6 +18,7 @@
             app:title="Add Rest" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constraintLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             tools:context=".presentation.activities.AddGqlActivity">
@@ -30,8 +31,8 @@
                 android:paddingEnd="10dp"
                 android:text="Full Url"
                 android:textSize="12sp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintStart_toStartOf="@id/constraintLayout"
+                app:layout_constraintTop_toTopOf="@id/constraintLayout" />
 
             <EditText
                 android:id="@+id/etRest"
@@ -42,7 +43,7 @@
                 android:paddingStart="10dp"
                 android:paddingEnd="10dp"
                 android:textSize="14sp"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintStart_toStartOf="@id/constraintLayout"
                 app:layout_constraintTop_toBottomOf="@+id/tvRest" />
 
             <TextView
@@ -54,7 +55,7 @@
                 android:paddingEnd="10dp"
                 android:text="Method Name"
                 android:textSize="12sp"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintStart_toStartOf="@id/constraintLayout"
                 app:layout_constraintTop_toBottomOf="@+id/etRest" />
 
             <EditText
@@ -66,7 +67,7 @@
                 android:paddingStart="10dp"
                 android:paddingEnd="10dp"
                 android:textSize="14sp"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintStart_toStartOf="@id/constraintLayout"
                 app:layout_constraintTop_toBottomOf="@+id/tvMethodName" />
 
             <TextView
@@ -78,7 +79,7 @@
                 android:paddingEnd="10dp"
                 android:text="Custom Tag"
                 android:textSize="12sp"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintStart_toStartOf="@id/constraintLayout"
                 app:layout_constraintTop_toBottomOf="@+id/etMethodName" />
 
             <EditText
@@ -90,7 +91,7 @@
                 android:paddingStart="10dp"
                 android:paddingEnd="10dp"
                 android:textSize="14sp"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintStart_toStartOf="@id/constraintLayout"
                 app:layout_constraintTop_toBottomOf="@+id/tvTag" />
 
 
@@ -106,9 +107,9 @@
                 android:hint="Paste your response"
                 android:inputType="textMultiLine"
                 android:padding="4dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintBottom_toBottomOf="@id/constraintLayout"
+                app:layout_constraintEnd_toEndOf="@id/constraintLayout"
+                app:layout_constraintStart_toStartOf="@id/constraintLayout"
                 app:layout_constraintTop_toBottomOf="@+id/etTag" />
 
 
