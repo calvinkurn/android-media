@@ -56,10 +56,13 @@ dependencies {
     implementation rootProject.ext.miscDependencies.dagger
     kapt rootProject.ext.miscDependencies.daggerCompiler
 
-//    implementation project(path: ':fakeresponse')
+    /*
+    1. ContraintLayout is required, because fakeresponse is has impl of constraintLayout
+    And without adding ContraintLayout, we will get error in assembleRelease of Graphql
+    2. Adding impl of constraintLayout does not increase the aar size of graphql
+    * */
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.tkpdInternalLibDependencies.fakeresponse
-//    releaseImplementation rootProject.ext.tkpdInternalLibDependencies.fakeresponseNoOp
 }
 
 apply from: '../publish_local.gradle'
