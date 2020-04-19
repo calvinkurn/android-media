@@ -8,14 +8,14 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.product.addedit.common.constant.ProductStatus
 import com.tokopedia.product.addedit.common.util.ResourceProvider
 import com.tokopedia.product.addedit.description.data.remote.model.variantbycat.ProductVariantByCatModel
 import com.tokopedia.product.addedit.description.domain.usecase.GetProductVariantUseCase
-import com.tokopedia.product.addedit.description.presentation.model.DescriptionInputModel
-import com.tokopedia.product.addedit.description.presentation.model.ProductVariantInputModel
-import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_PRODUCT_PHOTOS
 import com.tokopedia.product.addedit.description.presentation.model.*
+import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_PRODUCT_PHOTOS
 import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
+import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel.Companion.STATUS_ACTIVE
 import com.tokopedia.product.addedit.draft.domain.usecase.GetProductDraftUseCase
 import com.tokopedia.product.addedit.draft.domain.usecase.SaveProductDraftUseCase
 import com.tokopedia.product.addedit.draft.mapper.AddEditProductMapper.mapDraftToProductInputModel
@@ -194,7 +194,7 @@ class AddEditProductPreviewViewModel @Inject constructor(
     }
 
     fun updateProductStatus(isActive: Boolean) {
-        productInputModel.value?.detailInputModel?.status = if (isActive) 1 else 0
+        productInputModel.value?.detailInputModel?.status = if (isActive) ProductStatus.STATUS_ACTIVE else ProductStatus.STATUS_INACTIVE
     }
 
     fun getNewProductInputModel(imageUrlOrPathList: ArrayList<String>): ProductInputModel {
