@@ -1121,9 +1121,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     }
 
     private fun moveToDescriptionActivity() {
-        if (viewModel.isEditing && !viewModel.isAdding) {
-            ProductEditMainTracking.clickContinue(shopId)
-        } else {
+        if (viewModel.isAdding) {
             ProductAddMainTracking.clickContinue(shopId)
         }
         val categoryId = viewModel.productInputModel.detailInputModel.categoryId
@@ -1279,6 +1277,11 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     }
 
     private fun submitInputEdit() {
+        if (viewModel.isEditing && !viewModel.isAdding) {
+            ProductEditMainTracking.clickContinue(shopId)
+        } else {
+            ProductAddMainTracking.clickContinue(shopId)
+        }
         val detailInputModel = viewModel.detailInputModel
         detailInputModel.apply {
             productName = productNameField.getText()
