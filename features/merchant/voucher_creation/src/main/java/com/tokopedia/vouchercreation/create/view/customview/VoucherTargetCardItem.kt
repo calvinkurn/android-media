@@ -4,7 +4,9 @@ import android.content.Context
 import android.graphics.drawable.GradientDrawable
 import android.util.AttributeSet
 import android.view.View
+import androidx.annotation.DrawableRes
 import androidx.annotation.LayoutRes
+import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
@@ -25,9 +27,21 @@ class VoucherTargetCardItem @JvmOverloads constructor(
         private const val TARGET_SPECIAL_TYPE = 1
     }
 
+    private var voucherTargetCardType: VoucherTargetCardType = VoucherTargetCardType.PUBLIC
+
     var voucherTargetType: Int = TARGET_PUBLIC_TYPE
         set(value) {
             field = value
+            voucherTargetCardType =
+                    when (value) {
+                        TARGET_PUBLIC_TYPE -> {
+                            VoucherTargetCardType.PUBLIC
+                        }
+                        TARGET_SPECIAL_TYPE -> {
+                            VoucherTargetCardType.SPECIAL
+                        }
+                        else -> return
+                    }
             setupView()
         }
     var isItemEnabled: Boolean = false
@@ -60,39 +74,24 @@ class VoucherTargetCardItem @JvmOverloads constructor(
             setupIcon()
             setupTitle()
             setupDescription()
-            setupItemEnability()
+            setupItemEnabling()
             setupPromoCode()
         }
     }
 
     private fun View.setupIcon() {
-        val targetIconDrawableRes = when (voucherTargetType) {
-            TARGET_PUBLIC_TYPE -> R.drawable.ic_im_umum
-            TARGET_SPECIAL_TYPE -> R.drawable.ic_im_terbatas
-            else -> R.drawable.ic_im_umum
-        }
-        voucherTargetItemIcon?.setImageDrawable(ContextCompat.getDrawable(context, targetIconDrawableRes))
+        voucherTargetItemIcon?.setImageDrawable(ContextCompat.getDrawable(context, voucherTargetCardType.iconDrawableRes))
     }
 
     private fun View.setupTitle() {
-        val targetTitleRes = when(voucherTargetType) {
-            TARGET_PUBLIC_TYPE -> R.string.mvc_create_target_public
-            TARGET_SPECIAL_TYPE -> R.string.mvc_create_target_special
-            else -> R.string.mvc_create_target_public
-        }
-        voucherTargetItemTitle.text = resources.getString(targetTitleRes)
+        voucherTargetItemTitle.text = resources.getString(voucherTargetCardType.titleStringRes)
     }
 
     private fun View.setupDescription() {
-        val targetDescRes = when(voucherTargetType) {
-            TARGET_PUBLIC_TYPE -> R.string.mvc_create_target_public_desc
-            TARGET_SPECIAL_TYPE -> R.string.mvc_create_target_special_desc
-            else -> R.string.mvc_create_target_public_desc
-        }
-        voucherTargetItemDescription.text = resources.getString(targetDescRes)
+        voucherTargetItemDescription.text = resources.getString(voucherTargetCardType.descriptionStringRes)
     }
 
-    private fun View.setupItemEnability() {
+    private fun View.setupItemEnabling() {
         setupBorderColor()
         voucherTargetItemRadioButton?.isChecked = isItemEnabled
     }
@@ -115,9 +114,18 @@ class VoucherTargetCardItem @JvmOverloads constructor(
             voucherTargetPromoCodeInfo?.run {
                 visibility = View.VISIBLE
                 isChangeEnabled = isItemEnabled
-                promoCodeString = promoCode
+                promoCodeString = promoCode.toBlankOrString()
             }
         }
+    }
+
+    enum class VoucherTargetCardType(@DrawableRes val iconDrawableRes: Int,
+                                     @StringRes val titleStringRes: Int,
+                                     @StringRes val descriptionStringRes: Int) {
+
+        PUBLIC(R.drawable.ic_im_umum, R.string.mvc_create_target_public, R.string.mvc_create_target_public_desc),
+        SPECIAL(R.drawable.ic_im_terbatas, R.string.mvc_create_target_special, R.string.mvc_create_target_special_desc)
+
     }
 
 }

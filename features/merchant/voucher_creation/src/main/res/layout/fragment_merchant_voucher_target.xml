@@ -16,20 +16,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/test1"
-        app:layout_constraintStart_toStartOf="parent"
-        app:targetType="targetSpecial"
-        app:isHavePromoCode="true"
-        app:isEnabled="true"/>
+        app:layout_constraintStart_toStartOf="parent"/>
 
-    <com.tokopedia.unifycomponents.UnifyButton
+    <com.tokopedia.vouchercreation.create.view.customview.NextStepButton
         android:id="@+id/nextButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/mvc_create_next_button_margin"
-        android:text="@string/mvc_create_step_next"
-        app:unifyButtonVariant="filled"
-        app:unifyButtonSize="medium"
-        app:unifyButtonType="main"
         app:layout_constraintBottom_toBottomOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
