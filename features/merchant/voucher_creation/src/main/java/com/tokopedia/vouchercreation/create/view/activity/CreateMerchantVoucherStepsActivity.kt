@@ -139,9 +139,11 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
 
     private fun observeLiveData() {
         viewModel.stepPositionLiveData.observe(this, Observer { position ->
-            val stepInfo = fragmentStepsHashMap.toList()[position].first
-            changeStepsInformation(stepInfo)
-            createMerchantVoucherViewPager?.currentItem = stepInfo.stepPosition
+            val stepInfo = fragmentStepsHashMap.toList().getOrNull(position)?.first
+            stepInfo?.run {
+                changeStepsInformation(this)
+                createMerchantVoucherViewPager?.currentItem = stepPosition
+            }
         })
     }
 

@@ -11,7 +11,7 @@
         android:theme="@style/progressBarGreen"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="@dimen/voucher_creation_progressbar_padding_top"
+        android:paddingTop="@dimen/mvc_create_progressbar_padding_top"
         android:max="@integer/progress_bar_max_value"
         android:background="@color/white"
         app:layout_constraintTop_toBottomOf="@id/createMerchantVoucherHeader"
