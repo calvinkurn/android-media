@@ -8,37 +8,47 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.notifcenter.R
+import com.tokopedia.notifcenter.listener.TransactionMenuListener
 
 abstract class BaseTransactionViewHolder<T: Visitable<*>>(
-        view: View
+        view: View,
+        val listener: TransactionMenuListener
 ): AbstractViewHolder<T>(view) {
 
-    private val txtHeaderTitle = view.findViewById<TextView>(R.id.txtHeaderTitle)
-    protected val btnLoadMore = view.findViewById<TextView>(R.id.btnLoadMore)
-    private val btnWaitingPayment = view.findViewById<RelativeLayout>(R.id.btnWaitingPayment)
-    protected val lstMenuItem = view.findViewById<RecyclerView>(R.id.lstMenuItem)
+    private val txtHeaderTitle: TextView? = view.findViewById(R.id.txtHeaderTitle)
+    private val btnLoadMore: TextView? = view.findViewById(R.id.btnLoadMore)
+    private val btnWaitingPayment: RelativeLayout? = view.findViewById(R.id.btnWaitingPayment)
+    private val txtCounterWaitingPayment: TextView? = view.findViewById(R.id.txtCounterWaitingPayment)
+    protected val lstMenuItem: RecyclerView? = view.findViewById(R.id.lstMenuItem)
 
     protected val context: Context? by lazy { view.context }
 
-    abstract fun onLoadMoreClicked(element: T)
+    abstract fun initChildItem(element: T)
 
     override fun bind(element: T) {
-        lstMenuItem.layoutManager = GridLayoutManager(context, 4)
+        lstMenuItem?.layoutManager = GridLayoutManager(context, 4)
     }
 
-    protected fun setHeader(title: String, invoke: () -> Unit) {
-        txtHeaderTitle.text = title
-        btnLoadMore.setOnClickListener { invoke() }
+    protected fun setHeader(title: String, applink: String) {
+        txtHeaderTitle?.text = title
+        btnLoadMore?.setOnClickListener {
+            listener.sendTrackingData(title, btnLoadMore.text.toString())
+            RouteManager.route(context, applink)
+        }
     }
 
-    protected fun isHasWaitingPayment(hasWaitingPayment: Boolean) {
-        if (hasWaitingPayment) {
-            btnWaitingPayment?.show()
-        } else {
-            btnWaitingPayment?.hide()
+    protected fun addWaitingPaymentMenu(badgeCount: Int? = 0, onClick: () -> Unit = {}) {
+        // action button
+        btnWaitingPayment?.setOnClickListener { onClick() }
+        btnWaitingPayment?.show()
+
+        // badge counter
+        if (badgeCount != null && badgeCount != 0) {
+            txtCounterWaitingPayment?.text = badgeCount.toString()
+            txtCounterWaitingPayment?.show()
         }
     }
 
