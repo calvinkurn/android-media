@@ -85,6 +85,9 @@ class AddEditProductPreviewViewModel @Inject constructor(
     private val mGetProductDraftResult = MutableLiveData<Result<ProductDraft>>()
     val getProductDraftResult: LiveData<Result<ProductDraft>> get() = mGetProductDraftResult
 
+    private val mIsLoading = MutableLiveData<Boolean>()
+    val isLoading: LiveData<Boolean> get() = mIsLoading
+
     val isAdding: Boolean get() = getDraftId() == 0L && getProductId().isBlank()
 
     var isDuplicate: Boolean = false
@@ -206,24 +209,28 @@ class AddEditProductPreviewViewModel @Inject constructor(
     }
 
     fun getProductData(productId: String) {
+        mIsLoading.value = true
         launchCatchError(block = {
             val data = withContext(Dispatchers.IO) {
                 getProductUseCase.params = GetProductUseCase.createRequestParams(productId)
                 getProductUseCase.executeOnBackground()
             }
             mGetProductResult.value = Success(data)
+            mIsLoading.value = false
         }, onError = {
             mGetProductResult.value = Fail(it)
         })
     }
 
     fun getVariantList(categoryId: String) {
+        mIsLoading.value = true
         launchCatchError(block = {
             mProductVariantList.value = Success(withContext(Dispatchers.IO) {
                 getProductVariantUseCase.params =
                         GetProductVariantUseCase.createRequestParams(categoryId)
                 getProductVariantUseCase.executeOnBackground()
             })
+            mIsLoading.value = false
         }, onError = {
             mProductVariantList.value = Fail(it)
         })

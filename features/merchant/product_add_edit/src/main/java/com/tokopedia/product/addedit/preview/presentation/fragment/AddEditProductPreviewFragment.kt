@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
@@ -21,6 +22,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
@@ -158,6 +160,9 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
     private var editProductStatusLayout: ViewGroup? = null
     private var productStatusSwitch: SwitchUnify? = null
 
+    //loading
+    private var loadingLayout: View? = null
+
     private lateinit var userSession: UserSessionInterface
     private lateinit var shopId: String
 
@@ -276,6 +281,9 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
         // status
         editProductStatusLayout = view.findViewById(R.id.edit_product_status_layout)
         productStatusSwitch = view.findViewById(R.id.su_product_status)
+
+        //loading
+        loadingLayout = view.findViewById(R.id.loading_layout)
 
         addEditProductPhotoButton?.setOnClickListener {
 
@@ -411,6 +419,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
         observeProductVariant()
         observeImageUrlOrPathList()
         observeProductVariantList()
+        observeIsLoading()
     }
 
     @Suppress("UNCHECKED_CAST")
@@ -708,6 +717,16 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
         })
     }
 
+    private fun observeIsLoading() {
+        viewModel.isLoading.observe(viewLifecycleOwner, Observer { isLoading ->
+            if (isLoading) {
+                showLoading()
+            } else {
+                hideLoading()
+            }
+        })
+    }
+
     private fun setCashback() {
         viewModel.productInputModel.value?.let { productInputModel ->
             val newUri = UriUtil.buildUri(ApplinkConstInternalMarketplace.SET_CASHBACK, viewModel.getProductId(), productInputModel.detailInputModel.productName)
@@ -937,5 +956,13 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
     private fun moveToManageProduct() {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PRODUCT_MANAGE_LIST)
         startActivity(intent)
+    }
+
+    private fun showLoading() {
+        loadingLayout?.show()
+    }
+
+    private fun hideLoading() {
+        loadingLayout?.hide()
     }
 }
