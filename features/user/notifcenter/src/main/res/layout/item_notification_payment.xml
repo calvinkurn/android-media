@@ -4,6 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/btnWaitingPayment"
     android:layout_width="match_parent"
+    android:visibility="gone"
+    tools:visibility="visible"
     android:layout_height="@dimen/dp_56">
 
     <TextView
@@ -16,7 +18,7 @@
         android:textColor="@color/black_68"/>
 
     <TextView
-        android:id="@+id/txtWaitingPayment"
+        android:id="@+id/txtCounterWaitingPayment"
         android:layout_width="@dimen/dp_16"
         android:layout_height="@dimen/dp_16"
         android:layout_marginEnd="@dimen/dp_16"
