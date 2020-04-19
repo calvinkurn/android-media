@@ -151,7 +151,9 @@ class AddEditProductDescriptionFragment:
     }
 
     override fun onItemClicked(t: VideoLinkModel?) {
-        ProductEditDescriptionTracking.clickPlayVideo(shopId)
+        if(descriptionViewModel.isEditMode && !descriptionViewModel.isAddMode) {
+            ProductEditDescriptionTracking.clickPlayVideo(shopId)
+        }
         try {
             startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(t?.inputUrl)))
         } catch (e: Throwable) {
