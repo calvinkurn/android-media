@@ -38,6 +38,10 @@ import com.tokopedia.product.addedit.common.AddEditProductComponentBuilder
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.EXTRA_CACHE_MANAGER_ID
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.HTTP_PREFIX
+import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.PHOTO_TIPS_URL_1
+import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.PHOTO_TIPS_URL_2
+import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.PHOTO_TIPS_URL_3
+import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.photoTipsUrl
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_DESCRIPTION_INPUT
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_DETAIL_INPUT
@@ -170,12 +174,6 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
                 }
             }
         }
-
-        val photoTipsUrl = listOf(
-                "https://ecs7.tokopedia.net/android/others/stuart/product_photo_choosing_tips_1.png",
-                "https://ecs7.tokopedia.net/android/others/stuart/product_photo_choosing_tips_2.png",
-                "https://ecs7.tokopedia.net/android/others/stuart/product_photo_choosing_tips_3.png"
-        )
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -757,9 +755,9 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
             val tooltipBottomSheet = TooltipBottomSheet()
             val tips: ArrayList<ImageTooltipModel> = ArrayList()
             val tooltipTitle = getString(R.string.title_tooltip_photo_tips)
-            tips.add(ImageTooltipModel(getString(R.string.message_tooltip_photo_tips_1), photoTipsUrl[0]))
-            tips.add(ImageTooltipModel(getString(R.string.message_tooltip_photo_tips_2), photoTipsUrl[1]))
-            tips.add(ImageTooltipModel(getString(R.string.message_tooltip_photo_tips_3), photoTipsUrl[2]))
+            tips.add(ImageTooltipModel(getString(R.string.message_tooltip_photo_tips_1), PHOTO_TIPS_URL_1))
+            tips.add(ImageTooltipModel(getString(R.string.message_tooltip_photo_tips_2), PHOTO_TIPS_URL_2))
+            tips.add(ImageTooltipModel(getString(R.string.message_tooltip_photo_tips_3), PHOTO_TIPS_URL_3))
 
             tooltipBottomSheet.apply {
                 setTitle(tooltipTitle)
