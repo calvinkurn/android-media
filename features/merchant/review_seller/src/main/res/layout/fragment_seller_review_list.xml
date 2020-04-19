@@ -9,10 +9,10 @@
     <com.tokopedia.header.HeaderUnify
         android:id="@+id/review_toolbar"
         android:layout_width="match_parent"
-        android:layout_height="?actionBarSize"
-        app:headerHasBackButton="true"
-        app:headerHasShadow="false"
-        app:headerTitle="@string/review_text" />
+        android:layout_height="wrap_content"
+        app:unify_header_is_show_shadow="false"
+        app:unify_header_is_show_back_button="true"
+        app:unify_header_title="@string/review_text" />
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:id="@+id/coordinator"
