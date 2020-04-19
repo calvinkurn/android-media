@@ -17,7 +17,6 @@ import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProduct
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MIN_PRODUCT_STOCK_LIMIT
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.UNIT_DAY
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.UNIT_WEEK
-import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.unifycomponents.list.ListItemUnify
 import com.tokopedia.usecase.coroutines.Fail
@@ -39,8 +38,6 @@ class AddEditProductDetailViewModel @Inject constructor(
     var isAdding = false
 
     var productInputModel = ProductInputModel()
-
-    var detailInputModel = DetailInputModel()
 
     var hasVariants = false
 
@@ -335,7 +332,7 @@ class AddEditProductDetailViewModel @Inject constructor(
                     ?: urlOrPath
         }.toMutableList()
 
-        this.detailInputModel = productInputModel.detailInputModel.apply {
+        this.productInputModel.detailInputModel = productInputModel.detailInputModel.apply {
             this.pictureList = pictureList
             this.imageUrlOrPathList = imageUrlOrPathList
         }
