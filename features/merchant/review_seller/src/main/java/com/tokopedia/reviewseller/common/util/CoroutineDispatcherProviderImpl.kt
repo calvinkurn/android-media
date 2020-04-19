@@ -1,4 +1,4 @@
-package com.tokopedia.reviewseller.feature.reviewlist.util
+package com.tokopedia.reviewseller.common.util
 
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers

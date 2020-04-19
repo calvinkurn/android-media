@@ -8,8 +8,8 @@ import com.tokopedia.reviewseller.common.di.scope.ReviewSellerScope
 import dagger.Module
 import dagger.Provides
 
-@ReviewSellerScope
 @Module
+@ReviewSellerScope
 class ReviewSellerModule {
 
     @ReviewSellerScope
