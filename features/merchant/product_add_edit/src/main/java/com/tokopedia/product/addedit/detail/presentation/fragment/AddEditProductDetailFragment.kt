@@ -121,6 +121,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     lateinit var viewModel: AddEditProductDetailViewModel
 
     private var selectedDurationPosition: Int = UNIT_DAY
+    private var isPreOrderFirstTime = false
 
     // product photo
     private var addProductPhotoButton: AppCompatTextView? = null
@@ -344,11 +345,6 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         preOrderDurationUnitField?.textFieldInput?.inputType = InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS
 
         preOrderSwitch?.setOnCheckedChangeListener { _, isChecked ->
-            if (viewModel.isEditing && !viewModel.isAdding) {
-                ProductEditMainTracking.clickPreorderButton(shopId)
-            } else {
-                ProductAddMainTracking.clickPreorderButton(shopId)
-            }
             if (isChecked) {
                 preOrderInputLayout?.visibility = View.VISIBLE
             } else {
@@ -634,10 +630,6 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                         ListUnifyUtil.getShownRadioButton(categoryList)?.isChecked = false
                         if (viewModel.isEditing && !viewModel.isAdding) {
                             ProductEditMainTracking.clickSaveOtherCategory(shopId)
-                        }
-                    } else {
-                        if (viewModel.isEditing && !viewModel.isAdding) {
-                            ProductEditMainTracking.clickBackOtherCategory(shopId)
                         }
                     }
                     productCategoryLayout?.show()
@@ -980,11 +972,14 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             if (it) preOrderInputLayout?.visible()
             else preOrderInputLayout?.hide()
 
-            if (viewModel.isEditing && !viewModel.isAdding) {
-                ProductEditMainTracking.clickPreorderButton(shopId)
-            } else {
-                ProductAddMainTracking.clickPreorderButton(shopId)
+            if (isPreOrderFirstTime) {
+                if (viewModel.isEditing && !viewModel.isAdding) {
+                    ProductEditMainTracking.clickPreorderButton(shopId)
+                } else {
+                    ProductAddMainTracking.clickPreorderButton(shopId)
+                }
             }
+            isPreOrderFirstTime = true
         })
     }
 
