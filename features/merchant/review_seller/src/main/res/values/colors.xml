@@ -3,4 +3,8 @@
     <color name="clr_31353b">#31353B</color>
     <color name="clr_03ac0e">#03AC0E</color>
     <color name="clr_ad31353b">#AD31353B</color>
+
+    <color name="typography_black">#F531353B</color>
+    <color name="progress_bar_green">#42B549</color>
+    <color name="progress_bar_empty">#E5E7E9</color>
 </resources>
