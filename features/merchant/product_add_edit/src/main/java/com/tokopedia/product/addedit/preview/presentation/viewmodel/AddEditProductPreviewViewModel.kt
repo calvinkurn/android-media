@@ -56,7 +56,7 @@ class AddEditProductPreviewViewModel @Inject constructor(
     // observing the product id, and will execute the use case when product id is changed
     private val mGetProductResult = MediatorLiveData<Result<Product>>().apply {
         addSource(productId) {
-            if (!productId.value.isNullOrBlank()) loadProductData(it)
+            if (!productId.value.isNullOrBlank()) getProductData(it)
         }
     }
     val getProductResult: LiveData<Result<Product>> get() = mGetProductResult
@@ -205,11 +205,7 @@ class AddEditProductPreviewViewModel @Inject constructor(
         return ProductInputModel().apply { this.detailInputModel = detailInputModel }
     }
 
-    private fun loadProductData(productId: String) {
-        getProduct(productId)
-    }
-
-    private fun getProduct(productId: String) {
+    fun getProductData(productId: String) {
         launchCatchError(block = {
             val data = withContext(Dispatchers.IO) {
                 getProductUseCase.params = GetProductUseCase.createRequestParams(productId)

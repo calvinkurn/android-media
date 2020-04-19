@@ -33,6 +33,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.common.AddEditProductComponentBuilder
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
@@ -660,15 +661,17 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
     }
 
     private fun observeProductData() {
-        viewModel.getProductResult.observe(this, Observer {
-            when (it) {
+        viewModel.getProductResult.observe(this, Observer { result ->
+            when (result) {
                 is Success -> {
-                    val isVariantEmpty = it.data.variant.products.isEmpty()
+                    val isVariantEmpty = result.data.variant.products.isEmpty()
                     showEmptyVariantState(isVariantEmpty)
-                    showProductStatus(it.data)
+                    showProductStatus(result.data)
                 }
                 is Fail -> {
-
+                    context?.let {
+                        showVariantErrorToast(ErrorHandler.getErrorMessage(it, result.throwable))
+                    }
                 }
             }
         })
@@ -786,14 +789,24 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
         }
     }
 
+    private fun showGetProductErrorToast(errorMessage: String) {
+        view?.let {
+            Toaster.make(it, errorMessage,
+                    type = Toaster.TYPE_ERROR,
+                    actionText = getString(R.string.title_try_again),
+                    clickListener = View.OnClickListener {
+                        viewModel.getProductData(viewModel.getProductId())
+                    })
+        }
+    }
+
     private fun showVariantErrorToast(errorMessage: String) {
         view?.let {
             Toaster.make(it, errorMessage,
                     type = Toaster.TYPE_ERROR,
                     actionText = getString(R.string.title_try_again),
                     clickListener = View.OnClickListener {
-                        val categoryId: String = viewModel.productInputModel.value?.detailInputModel?.categoryId
-                                ?: ""
+                        val categoryId: String = viewModel.productInputModel.value?.detailInputModel?.categoryId.orEmpty()
                         viewModel.getVariantList(categoryId)
                     })
         }
