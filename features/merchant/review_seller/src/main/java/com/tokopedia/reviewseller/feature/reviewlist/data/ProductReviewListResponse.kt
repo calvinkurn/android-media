@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName
 
 data class ProductReviewListResponse(
         @SerializedName("productrevShopRatingAggregate")
-    val productShopRatingAggregate: ProductShopRatingAggregate
+    val productShopRatingAggregate: ProductShopRatingAggregate = ProductShopRatingAggregate()
 ) {
     data class ProductShopRatingAggregate(
             @SerializedName("data")
