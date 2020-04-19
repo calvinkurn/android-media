@@ -14,6 +14,7 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_DRAFT_ID
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_FROM_NOTIF_EDIT_PRODUCT
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_FROM_NOTIF_SUCCESS
+import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_FROM_UPLOADING
 import com.tokopedia.product.addedit.preview.presentation.fragment.AddEditProductPreviewFragment
 import com.tokopedia.product.addedit.tracking.ProductAddNotifTracking
 import com.tokopedia.product.addedit.tracking.ProductEditNotifTracking
@@ -34,6 +35,7 @@ class AddEditProductPreviewActivity : BaseSimpleActivity() {
                     putExtra(EXTRA_DRAFT_ID, draftId)
                     putExtra(EXTRA_FROM_NOTIF_SUCCESS, isFromSuccessNotif)
                     putExtra(EXTRA_FROM_NOTIF_EDIT_PRODUCT, isFromNotifEditMode)
+                    putExtra(EXTRA_FROM_UPLOADING, true)
                 }
             }
             return intent
@@ -70,12 +72,15 @@ class AddEditProductPreviewActivity : BaseSimpleActivity() {
                 }
             }
         }
-        val isNotifSuccess = intent.getBooleanExtra(EXTRA_FROM_NOTIF_SUCCESS, false)
-        val isNotifEditProduct = intent.getBooleanExtra(EXTRA_FROM_NOTIF_EDIT_PRODUCT, false)
-        if (!isNotifSuccess && !isNotifEditProduct) {
-            ProductAddNotifTracking.clickFailed(UserSession(this).shopId)
-        } else if (!isNotifSuccess && isNotifEditProduct) {
-            ProductEditNotifTracking.clickFailed(UserSession(this).shopId)
+        val fromUpload = intent.getBooleanExtra(EXTRA_FROM_UPLOADING, false)
+        if(fromUpload) {
+            val isNotifSuccess = intent.getBooleanExtra(EXTRA_FROM_NOTIF_SUCCESS, false)
+            val isNotifEditProduct = intent.getBooleanExtra(EXTRA_FROM_NOTIF_EDIT_PRODUCT, false)
+            if (!isNotifSuccess && !isNotifEditProduct) {
+                ProductAddNotifTracking.clickFailed(UserSession(this).shopId)
+            } else if (!isNotifSuccess && isNotifEditProduct) {
+                ProductEditNotifTracking.clickFailed(UserSession(this).shopId)
+            }
         }
         super.onCreate(savedInstanceState)
     }
