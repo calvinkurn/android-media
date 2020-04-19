@@ -12,7 +12,6 @@ import android.view.inputmethod.EditorInfo
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -30,17 +29,18 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.reviewseller.R
 import com.tokopedia.reviewseller.common.ReviewSellerConstant
+import com.tokopedia.reviewseller.common.util.ReviewSellerUtil
+import com.tokopedia.reviewseller.common.util.getKeyByValue
 import com.tokopedia.reviewseller.feature.reviewlist.di.component.ReviewProductListComponent
-import com.tokopedia.reviewseller.feature.reviewlist.util.ReviewSellerUtil
-import com.tokopedia.reviewseller.feature.reviewlist.util.getKeyByValue
-import com.tokopedia.reviewseller.feature.reviewlist.util.mapper.ReviewSellerMapper
+import com.tokopedia.reviewseller.feature.reviewlist.util.mapper.SellerReviewProductListMapper
 import com.tokopedia.reviewseller.feature.reviewlist.view.adapter.DataEndlessScrollListener
 import com.tokopedia.reviewseller.feature.reviewlist.view.adapter.ReviewSellerAdapter
 import com.tokopedia.reviewseller.feature.reviewlist.view.adapter.SellerReviewListTypeFactory
 import com.tokopedia.reviewseller.feature.reviewlist.view.model.ProductRatingOverallUiModel
 import com.tokopedia.reviewseller.feature.reviewlist.view.model.ProductReviewUiModel
 import com.tokopedia.reviewseller.feature.reviewlist.view.viewholder.ReviewSummaryViewHolder
-import com.tokopedia.reviewseller.feature.reviewlist.view.viewmodel.ReviewSellerViewModel
+import com.tokopedia.reviewseller.feature.reviewlist.view.viewholder.SellerReviewListViewHolder
+import com.tokopedia.reviewseller.feature.reviewlist.view.viewmodel.SellerReviewListViewModel
 import com.tokopedia.unifycomponents.*
 import com.tokopedia.unifycomponents.list.ListItemUnify
 import com.tokopedia.unifycomponents.list.ListUnify
@@ -54,7 +54,8 @@ import javax.inject.Inject
 /**
  * A simple [Fragment] subclass.
  */
-class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTypeFactory>(), ReviewSummaryViewHolder.Listener {
+class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTypeFactory>(),
+        ReviewSummaryViewHolder.ReviewSummaryViewListener, SellerReviewListViewHolder.SellerReviewListListener {
 
     companion object {
         val chipsPaddingRight = 8.toPx()
@@ -64,7 +65,7 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-    private var viewModel: ReviewSellerViewModel? = null
+    private var viewModelListReviewList: SellerReviewListViewModel? = null
 
     private var linearLayoutManager: LinearLayoutManager? = null
 
@@ -72,7 +73,7 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
         get() = adapter as ReviewSellerAdapter
 
     private val sellerReviewListTypeFactory by lazy {
-        SellerReviewListTypeFactory(this)
+        SellerReviewListTypeFactory(this, this)
     }
 
     private val prefKey = this.javaClass.name + ".pref"
@@ -94,8 +95,6 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
 
     private var tabReview: ViewGroup? = null
     private var firstTabItem: View? = null
-
-    private var isCompletedCoachMark = false
 
     private val coachMark: CoachMark by lazy {
         initCoachMark()
@@ -121,11 +120,11 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = ViewModelProviders.of(this, viewModelFactory).get(ReviewSellerViewModel::class.java)
+        viewModelListReviewList = ViewModelProvider(this, viewModelFactory).get(SellerReviewListViewModel::class.java)
         linearLayoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         prefs = context?.getSharedPreferences(prefKey, Context.MODE_PRIVATE)
-        viewModel?.sortBy = ReviewSellerConstant.mapSortReviewProduct().getKeyByValue(getString(R.string.most_review))
-        viewModel?.filterBy = ReviewSellerConstant.mapFilterReviewProduct().getKeyByValue(getString(R.string.last_week))
+//        viewModel?.sortBy = ReviewSellerConstant.mapSortReviewProduct().getKeyByValue(getString(R.string.most_review))
+//        viewModel?.filterBy = ReviewSellerConstant.mapFilterReviewProduct().getKeyByValue(getString(R.string.last_week))
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -146,9 +145,9 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
     }
 
     override fun onDestroy() {
-        viewModel?.reviewProductList?.removeObservers(this)
-        viewModel?.productRatingOverall?.removeObservers(this)
-        viewModel?.flush()
+        viewModelListReviewList?.reviewProductList?.removeObservers(this)
+        viewModelListReviewList?.productRatingOverall?.removeObservers(this)
+        viewModelListReviewList?.flush()
         super.onDestroy()
     }
 
@@ -176,7 +175,7 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
         search_bar_layout?.hide()
         filter_and_sort_layout?.hide()
         showLoading()
-        viewModel?.getProductRatingData(viewModel?.sortBy.toString(), viewModel?.filterBy.toString())
+        viewModelListReviewList?.getProductRatingData(viewModelListReviewList?.sortBy.toString(), viewModelListReviewList?.filterBy.toString())
     }
 
     override fun createEndlessRecyclerViewListener(): EndlessRecyclerViewScrollListener {
@@ -226,7 +225,7 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
     }
 
     private fun observeLiveData() {
-        viewModel?.productRatingOverall?.observe(this, Observer {
+        viewModelListReviewList?.productRatingOverall?.observe(this, Observer {
             hideLoading()
             when (it) {
                 is Success -> {
@@ -238,7 +237,7 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
             }
         })
 
-        viewModel?.reviewProductList?.observe(this, Observer {
+        viewModelListReviewList?.reviewProductList?.observe(this, Observer {
             hideLoading()
             when (it) {
                 is Success -> {
@@ -292,9 +291,9 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
     }
 
     fun loadNextPage(page: Int) {
-        viewModel?.getNextProductReviewList(
-                sortBy = viewModel?.sortBy.toString(),
-                filterBy = viewModel?.filterBy.toString(),
+        viewModelListReviewList?.getNextProductReviewList(
+                sortBy = viewModelListReviewList?.sortBy.toString(),
+                filterBy = viewModelListReviewList?.filterBy.toString(),
                 page = page
         )
     }
@@ -340,7 +339,7 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
 
 
         coachMark.onFinishListener = {
-            isCompletedCoachMark = true
+            viewModelListReviewList?.isCompletedCoachMark = true
             firstTabItem?.setBackgroundColor(Color.TRANSPARENT)
         }
 
@@ -371,23 +370,25 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
     }
 
     private fun showCoachMark() {
-        if(!isCompletedCoachMark) {
-            coachMark.show(activity, TAG_COACH_MARK_RATING_PRODUCT, coachMarkItems)
+        viewModelListReviewList?.let {
+            if (!it.isCompletedCoachMark) {
+                coachMark.show(activity, TAG_COACH_MARK_RATING_PRODUCT, coachMarkItems)
+            }
         }
     }
 
     private fun initChipsSort(view: View) {
         chipsSort = view.findViewById(R.id.review_sort_chips)
 
-        viewModel?.chipsSortText = getString(R.string.most_review)
-        chipsSort?.chip_text?.text = viewModel?.chipsSortText
+        viewModelListReviewList?.chipsSortText = getString(R.string.most_review)
+        chipsSort?.chip_text?.text = viewModelListReviewList?.chipsSortText
         chipsSort?.chip_right_icon?.setPadding(0, 0, chipsPaddingRight, 0)
         chipsSort?.chip_text?.width = maxChipTextWidth
         chipsSort?.chip_text?.ellipsize = TextUtils.TruncateAt.END
 
         val sortList: Array<String> = resources.getStringArray(R.array.sort_review_product_array)
 
-        val sortListItemUnify = ReviewSellerMapper.mapToItemUnifyList(sortList)
+        val sortListItemUnify = SellerReviewProductListMapper.mapToItemUnifyList(sortList)
         sortListUnify?.setData(sortListItemUnify)
 
         chipsSort?.apply {
@@ -402,15 +403,15 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
 
     private fun initChipsFilter(view: View) {
         chipsFilter = view.findViewById(R.id.review_period_filter_chips)
-        viewModel?.chipsFilterText = getString(R.string.last_week)
-        chipsFilter?.chip_text?.text = viewModel?.chipsFilterText
+        viewModelListReviewList?.chipsFilterText = getString(R.string.last_week)
+        chipsFilter?.chip_text?.text = viewModelListReviewList?.chipsFilterText
 
         chipsFilter?.chip_right_icon?.setPadding(0, 0, chipsPaddingRight, 0)
         chipsFilter?.chip_text?.ellipsize = TextUtils.TruncateAt.END
 
         val filterList: Array<String> = resources.getStringArray(R.array.filter_review_product_array)
 
-        val filterListItemUnify = ReviewSellerMapper.mapToItemUnifyList(filterList)
+        val filterListItemUnify = SellerReviewProductListMapper.mapToItemUnifyList(filterList)
 
         filterListUnify?.setData(filterListItemUnify)
 
@@ -436,7 +437,7 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
 
         filterListUnify?.let { it ->
             it.onLoadFinish {
-                ReviewSellerUtil.setSelectedFilterOrSort(it, viewModel?.positionFilter.orZero())
+                ReviewSellerUtil.setSelectedFilterOrSort(it, viewModelListReviewList?.positionFilter.orZero())
                 it.setOnItemClickListener { _, _, position, _ ->
                     onItemFilterClickedBottomSheet(position, filterListItemUnify, it)
                 }
@@ -466,7 +467,7 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
 
         sortListUnify?.let { it ->
             it.onLoadFinish {
-                ReviewSellerUtil.setSelectedFilterOrSort(it, viewModel?.positionSort.orZero())
+                ReviewSellerUtil.setSelectedFilterOrSort(it, viewModelListReviewList?.positionSort.orZero())
                 it.setOnItemClickListener { _, _, position, _ ->
                     onItemSortClickedBottomSheet(position, sortListItemUnify, it)
                 }
@@ -484,24 +485,35 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
         }
     }
 
-    private fun onItemFilterClickedBottomSheet(position: Int, filterListItemUnify: ArrayList<ListItemUnify>, filterListUnify: ListUnify) {
-        viewModel?.positionFilter = position
-        viewModel?.chipsFilterText = filterListItemUnify[position].listTitleText
-        chipsFilter?.chip_text?.text = viewModel?.chipsFilterText
-        ReviewSellerUtil.setSelectedFilterOrSort(filterListUnify, position)
-        viewModel?.filterBy = ReviewSellerConstant.mapFilterReviewProduct().getKeyByValue(viewModel?.chipsFilterText)
-        loadInitialData()
-        bottomSheetFilter?.dismiss()
+    private fun onItemFilterClickedBottomSheet(position: Int, filterListItemUnify: ArrayList<ListItemUnify>,
+                                               filterListUnify: ListUnify) {
+        try {
+            viewModelListReviewList?.positionFilter = position
+            viewModelListReviewList?.chipsFilterText = filterListItemUnify[position].listTitleText
+            chipsFilter?.chip_text?.text = viewModelListReviewList?.chipsFilterText
+            ReviewSellerUtil.setSelectedFilterOrSort(filterListUnify, position)
+            viewModelListReviewList?.filterBy =
+                    ReviewSellerConstant.mapFilterReviewProduct().getKeyByValue(viewModelListReviewList?.chipsFilterText)
+            loadInitialData()
+            bottomSheetFilter?.dismiss()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 
     private fun onItemSortClickedBottomSheet(position: Int, sortListItemUnify: ArrayList<ListItemUnify>, sortListUnify: ListUnify) {
-        viewModel?.positionSort = position
-        viewModel?.chipsSortText = sortListItemUnify[position].listTitleText
-        chipsSort?.chip_text?.text = viewModel?.chipsSortText
-        ReviewSellerUtil.setSelectedFilterOrSort(sortListUnify, position)
-        viewModel?.sortBy = ReviewSellerConstant.mapSortReviewProduct().getKeyByValue(viewModel?.chipsSortText)
-        loadInitialData()
-        bottomSheetSort?.dismiss()
+        try {
+            viewModelListReviewList?.positionSort = position
+            viewModelListReviewList?.chipsSortText = sortListItemUnify[position].listTitleText
+            chipsSort?.chip_text?.text = viewModelListReviewList?.chipsSortText
+            ReviewSellerUtil.setSelectedFilterOrSort(sortListUnify, position)
+            viewModelListReviewList?.sortBy =
+                    ReviewSellerConstant.mapSortReviewProduct().getKeyByValue(viewModelListReviewList?.chipsSortText)
+            loadInitialData()
+            bottomSheetSort?.dismiss()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 
     private fun initViewBottomSheet() {
@@ -519,5 +531,9 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
 
     private fun onErrorLoadMoreToaster(message: String, action: String) {
         view?.let { Toaster.make(it, message, actionText = action, type = Toaster.TYPE_ERROR) }
+    }
+
+    override fun onItemProductReviewClicked(productId: Int) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 }

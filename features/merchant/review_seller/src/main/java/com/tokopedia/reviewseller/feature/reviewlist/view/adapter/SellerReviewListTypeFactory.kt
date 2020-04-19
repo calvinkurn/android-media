@@ -10,7 +10,8 @@ import com.tokopedia.reviewseller.feature.reviewlist.view.viewholder.ReviewSelle
 import com.tokopedia.reviewseller.feature.reviewlist.view.viewholder.ReviewSummaryViewHolder
 import com.tokopedia.reviewseller.feature.reviewlist.view.viewholder.SellerReviewListViewHolder
 
-class SellerReviewListTypeFactory(private val listenerSummary: ReviewSummaryViewHolder.Listener):
+class SellerReviewListTypeFactory(private val reviewSummaryListener: ReviewSummaryViewHolder.ReviewSummaryViewListener,
+                                  private val sellerReviewListener: SellerReviewListViewHolder.SellerReviewListListener):
         BaseAdapterTypeFactory(), TypeFactoryViewHolder {
 
     override fun type(productRatingOverallUiModel: ProductRatingOverallUiModel): Int {
@@ -27,8 +28,8 @@ class SellerReviewListTypeFactory(private val listenerSummary: ReviewSummaryView
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
-            ReviewSummaryViewHolder.LAYOUT_RES -> ReviewSummaryViewHolder(parent, listenerSummary)
-            SellerReviewListViewHolder.LAYOUT_RES -> SellerReviewListViewHolder(parent)
+            ReviewSummaryViewHolder.LAYOUT_RES -> ReviewSummaryViewHolder(parent, reviewSummaryListener)
+            SellerReviewListViewHolder.LAYOUT_RES -> SellerReviewListViewHolder(parent, sellerReviewListener)
             ReviewSellerLoadingViewHolder.LAYOUT_RES -> ReviewSellerLoadingViewHolder(parent)
             else -> return super.createViewHolder(parent, type)
         }

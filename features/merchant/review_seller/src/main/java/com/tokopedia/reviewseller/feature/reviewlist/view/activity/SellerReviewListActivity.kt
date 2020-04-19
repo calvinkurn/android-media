@@ -8,14 +8,14 @@ import com.tokopedia.reviewseller.common.ReviewSellerComponentBuilder
 import com.tokopedia.reviewseller.feature.reviewlist.di.component.DaggerReviewProductListComponent
 import com.tokopedia.reviewseller.feature.reviewlist.di.component.ReviewProductListComponent
 import com.tokopedia.reviewseller.feature.reviewlist.di.module.ReviewProductListModule
-import com.tokopedia.reviewseller.feature.reviewlist.view.fragment.ReviewSellerListFragment
+import com.tokopedia.reviewseller.feature.reviewlist.view.fragment.SellerReviewListFragment
 
 /**
  * @author by milhamj on 2020-02-14.
  */
 class SellerReviewListActivity : BaseSimpleActivity(), HasComponent<ReviewProductListComponent> {
 
-    override fun getNewFragment(): Fragment = ReviewSellerListFragment()
+    override fun getNewFragment(): Fragment = SellerReviewListFragment()
 
     override fun getLayoutRes(): Int {
         return R.layout.activity_seller_review_list

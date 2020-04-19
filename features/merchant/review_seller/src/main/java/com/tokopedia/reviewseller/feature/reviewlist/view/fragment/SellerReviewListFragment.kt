@@ -16,7 +16,7 @@ import kotlinx.android.synthetic.main.fragment_seller_review_list.*
 /**
  * @author by milhamj on 2020-02-14.
  */
-class ReviewSellerListFragment : BaseDaggerFragment() {
+class SellerReviewListFragment : BaseDaggerFragment() {
 
     private val tabList = ArrayList<ReviewFragmentAdapter.ReviewFragmentItem>()
     private var fragmentAdapter: ReviewFragmentAdapter? = null
@@ -39,35 +39,20 @@ class ReviewSellerListFragment : BaseDaggerFragment() {
 
     private fun setupToolbar() {
         review_toolbar.headerView?.textSize = resources.getDimension(R.dimen.toolbar_font_size)
+        review_toolbar?.setOnClickListener {
+            activity?.onBackPressed()
+        }
     }
 
     private fun initTabReview(view: View, tabLayout: TabLayout) {
         viewPager = view.findViewById(R.id.pager_review)
         tabList.add(ReviewFragmentAdapter.ReviewFragmentItem(RatingProductFragment()))
-//        tabList.add(ReviewFragmentAdapter.ReviewFragmentItem(RatingProductFragment()))
         tabList.add(ReviewFragmentAdapter.ReviewFragmentItem(InboxReviewFragment()))
-//        tabList.add(ReviewFragmentAdapter.ReviewFragmentItem(InboxReviewFragment()))
 
         fragmentAdapter = ReviewFragmentAdapter(childFragmentManager)
         fragmentAdapter?.setItemList(tabList)
         viewPager?.adapter = fragmentAdapter
         tabLayout.addOnTabSelectedListener(ViewPagerOnTabSelectedListener(viewPager))
         viewPager?.addOnPageChangeListener(TabLayoutOnPageChangeListener(tabLayout))
-//        tabLayout.setupWithViewPager(viewPager)
-////        fragmentAdapter?.setupLayout(context, tab_review.getUnifyTabLayout())
-//
-////        tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
-////            override fun onTabReselected(tab: TabLayout.Tab?) {
-////                fragmentAdapter?.handleSelectedTab(context, tab, true)
-////            }
-////
-////            override fun onTabUnselected(tab: TabLayout.Tab?) {
-////                fragmentAdapter?.handleSelectedTab(context, tab, false)
-////            }
-////
-////            override fun onTabSelected(tab: TabLayout.Tab?) {
-////                fragmentAdapter?.handleSelectedTab(context, tab, true)
-////            }
-////        })
     }
 }
