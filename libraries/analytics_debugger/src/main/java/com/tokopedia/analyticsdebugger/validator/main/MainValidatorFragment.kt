@@ -1,4 +1,4 @@
-package com.tokopedia.analyticsdebugger.validator.execution
+package com.tokopedia.analyticsdebugger.validator.main
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -38,9 +38,9 @@ class MainValidatorFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         var jsonTest: String = ""
+        val testPath = arguments?.getString(ARGUMENT_TEST_PATH)
         context?.let {
-            jsonTest = Utils.getJsonDataFromAsset(it, "add_address_cvr.json") ?: ""
-            Timber.d("Asset %s", it.assets.list("")?.joinToString { "\n" })
+            jsonTest = Utils.getJsonDataFromAsset(it, testPath!!) ?: ""
         }
         Timber.d("Validator Json Query \n %s", jsonTest)
 
@@ -76,7 +76,14 @@ class MainValidatorFragment : Fragment() {
     }
 
     companion object {
-        fun newInstance(): MainValidatorFragment = MainValidatorFragment()
+
+        private const val ARGUMENT_TEST_PATH = "ARGUMENT_TEST_PATH"
+
+        fun newInstance(path: String): MainValidatorFragment = MainValidatorFragment().apply {
+            arguments = Bundle().apply {
+                putString(ARGUMENT_TEST_PATH, path)
+            }
+        }
     }
 
 }

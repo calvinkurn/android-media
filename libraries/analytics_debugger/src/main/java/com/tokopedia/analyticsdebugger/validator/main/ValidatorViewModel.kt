@@ -1,4 +1,4 @@
-package com.tokopedia.analyticsdebugger.validator.execution
+package com.tokopedia.analyticsdebugger.validator.main
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
