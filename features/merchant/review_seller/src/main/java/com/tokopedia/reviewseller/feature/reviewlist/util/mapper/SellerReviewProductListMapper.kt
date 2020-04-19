@@ -7,7 +7,7 @@ import com.tokopedia.reviewseller.feature.reviewlist.view.model.ProductReviewUiM
 import com.tokopedia.unifycomponents.list.ListItemUnify
 import java.util.*
 
-object ReviewSellerMapper {
+object SellerReviewProductListMapper {
 
     fun mapToProductReviewListUiModel(productShopRatingAggregate: ProductReviewListResponse.ProductShopRatingAggregate): List<ProductReviewUiModel> {
         val productReviewListUiModel = mutableListOf<ProductReviewUiModel>()

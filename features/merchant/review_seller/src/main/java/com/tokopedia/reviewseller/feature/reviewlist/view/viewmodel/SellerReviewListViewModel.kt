@@ -5,10 +5,10 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.reviewseller.common.ReviewSellerConstant
+import com.tokopedia.reviewseller.common.util.CoroutineDispatcherProvider
 import com.tokopedia.reviewseller.feature.reviewlist.domain.GetProductRatingOverallUseCase
 import com.tokopedia.reviewseller.feature.reviewlist.domain.GetReviewProductListUseCase
-import com.tokopedia.reviewseller.feature.reviewlist.util.CoroutineDispatcherProvider
-import com.tokopedia.reviewseller.feature.reviewlist.util.mapper.ReviewSellerMapper
+import com.tokopedia.reviewseller.feature.reviewlist.util.mapper.SellerReviewProductListMapper
 import com.tokopedia.reviewseller.feature.reviewlist.view.model.ProductRatingOverallUiModel
 import com.tokopedia.reviewseller.feature.reviewlist.view.model.ProductReviewUiModel
 import com.tokopedia.usecase.coroutines.Fail
@@ -19,7 +19,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-class ReviewSellerViewModel @Inject constructor(
+class SellerReviewListViewModel @Inject constructor(
         private val dispatcherProvider: CoroutineDispatcherProvider,
         private val userSession: UserSessionInterface,
         private val getProductRatingOverallUseCase: GetProductRatingOverallUseCase,
@@ -40,6 +40,8 @@ class ReviewSellerViewModel @Inject constructor(
 
     var positionFilter = 0
     var positionSort = 0
+
+    var isCompletedCoachMark = false
 
     fun getProductRatingData(sortBy: String, filterBy: String) {
         launchCatchError(block = {
@@ -94,7 +96,7 @@ class ReviewSellerViewModel @Inject constructor(
 
     private suspend fun getProductRatingOverall(filterBy: String): ProductRatingOverallUiModel {
         getProductRatingOverallUseCase.params = GetProductRatingOverallUseCase.createParams(filterBy)
-        return ReviewSellerMapper.mapToProductRatingOverallModel(getProductRatingOverallUseCase.executeOnBackground())
+        return SellerReviewProductListMapper.mapToProductRatingOverallModel(getProductRatingOverallUseCase.executeOnBackground())
     }
 
     private suspend fun getProductReviewList(sortBy: String, filterBy: String, page: Int = 1): Pair<Boolean, List<ProductReviewUiModel>> {
@@ -109,9 +111,8 @@ class ReviewSellerViewModel @Inject constructor(
 //        val isHastNextPage = ReviewSellerUtil.isHasNextPage(page, ReviewSellerConstant.DEFAULT_PER_PAGE, productRatingListResponse.data.size)
         return Pair(
                 productRatingListResponse.hasNext,
-                ReviewSellerMapper.mapToProductReviewListUiModel(productRatingListResponse)
+                SellerReviewProductListMapper.mapToProductReviewListUiModel(productRatingListResponse)
         )
-
     }
 
     fun clearCache() {

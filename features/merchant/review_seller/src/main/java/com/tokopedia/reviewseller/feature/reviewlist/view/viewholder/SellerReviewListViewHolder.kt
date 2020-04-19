@@ -9,7 +9,8 @@ import com.tokopedia.reviewseller.R
 import com.tokopedia.reviewseller.feature.reviewlist.view.model.ProductReviewUiModel
 import com.tokopedia.unifyprinciples.Typography
 
-class SellerReviewListViewHolder(itemView: View): AbstractViewHolder<ProductReviewUiModel>(itemView) {
+class SellerReviewListViewHolder(itemView: View,
+                                 private val listenerSellerReview: SellerReviewListListener): AbstractViewHolder<ProductReviewUiModel>(itemView) {
 
     companion object {
         @LayoutRes
@@ -26,5 +27,13 @@ class SellerReviewListViewHolder(itemView: View): AbstractViewHolder<ProductRevi
         tgTitleProduct.text = element?.productName
         tgRatingCount.text = element?.rating?.toString()
         tgReviewCount.text = String.format(getString(R.string.period_seller_review), element?.reviewCount.toString())
+
+        itemView.setOnClickListener {
+            listenerSellerReview.onItemProductReviewClicked(element?.productID ?: 0)
+        }
+    }
+
+    interface SellerReviewListListener {
+        fun onItemProductReviewClicked(productId: Int)
     }
 }
