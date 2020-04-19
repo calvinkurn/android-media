@@ -21,7 +21,7 @@ object ReviewSellerConstant {
         map["time=1y"] = "1 Tahun Terakhir"
         return map
     }
-
+    
     const val DEFAULT_PER_PAGE = 10
     const val HAS_TAB_RATING_PRODUCT = "hasTabRatingProduct"
     const val HAS_FILTER_AND_SORT = "hasFilterAndSort"
@@ -30,3 +30,5 @@ object ReviewSellerConstant {
 
 const val GQL_GET_PRODUCT_REVIEW_LIST = "GQL_GET_PRODUCT_REVIEW_LIST"
 const val GQL_GET_PRODUCT_RATING_OVERALL = "GQL_GET_PRODUCT_RATING_OVERALL"
+const val GQL_GET_PRODUCT_REVIEW_DETAIL_OVERALL = "GQL_GET_PRODUCT_REVIEW_DETAIL_OVERALL"
+const val GQL_GET_PRODUCT_FEEDBACK_LIST_DETAIL = "GQL_GET_PRODUCT_FEEDBACK_LIST_DETAIL"

@@ -1,4 +1,4 @@
-package com.tokopedia.reviewseller.feature.reviewlist.util
+package com.tokopedia.reviewseller.common.util
 
 import android.widget.ListView
 import com.tokopedia.unifycomponents.list.ListItemUnify
@@ -23,8 +23,20 @@ object ReviewSellerUtil {
     }
 }
 
-fun Map<String, String>.getKeyByValue(value: String?): String {
+fun Map<String, Any>.getKeyByValue(value: String?): String {
     return this.filterValues { it == value }.keys.firstOrNull().orEmpty()
+}
+
+fun Map<String, Any>.getValueByKey(key: String?): Any? {
+    return this.filterKeys { it == key }.values.firstOrNull()
+}
+
+fun Map<String, List<Any>>.getValueListByKey(key: String?): List<Any>? {
+    return this.filterKeys { it == key }.values.firstOrNull()
+}
+
+fun Map<String, Map<String, Any>>.geValueMapByKey(key: String?): Map<String, Any>? {
+    return this.filterKeys { it == key }.values.firstOrNull()
 }
 
 fun <T : Any> T.getValue(field: String): Any {
