@@ -1034,6 +1034,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
         var productId = 0
         var shopId = 0
         var externalSource = ""
+        var clickUrl = ""
         if (productModel is CartWishlistItemHolderData) {
             productId = if (productModel.id.isNotBlank()) Integer.parseInt(productModel.id) else 0
             shopId = if (productModel.shopId.isNotBlank()) Integer.parseInt(productModel.shopId) else 0
@@ -1047,7 +1048,11 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
             productId = recommendationItem.productId
             shopId = recommendationItem.shopId
             externalSource = AddToCartRequestParams.ATC_FROM_RECOMMENDATION
+            clickUrl = recommendationItem.clickUrl
         }
+
+        if(!clickUrl.isEmpty())
+            view?.sendATCTrackingURL(clickUrl)
 
         val addToCartRequestParams = AddToCartRequestParams().apply {
             this.productId = productId.toLong()

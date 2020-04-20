@@ -329,6 +329,7 @@ public class FavoritePresenter
                 favoriteShopViewModel.setShopLocation(shopItem.getShopLocation());
                 favoriteShopViewModel.setFavoriteShop(shopItem.isFav());
                 getView().addFavoriteShop(favoriteShopViewModel);
+                getView().sendFavoriteShopImpression(shopItem.getShopClickUrl());
             }
         }
     }
