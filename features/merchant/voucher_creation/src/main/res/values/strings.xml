@@ -16,4 +16,7 @@
     <string name="mvc_create_promo_code_change">Ubah</string>
     <string name="mvc_create_target_widget_title">Pilih target voucher</string>
     <string name="mvc_create_voucher_name_widget_title">Isi nama voucher</string>
+    <string name="mvc_create_voucher_name_textfield_hint">Nama voucher</string>
+    <string name="mvc_create_voucher_name_alert_restricted">Mengandung kata yang dilarang</string>
+    <string name="mvc_create_voucher_name_alert_minimum">Min. 5 huruf</string>
 </resources>

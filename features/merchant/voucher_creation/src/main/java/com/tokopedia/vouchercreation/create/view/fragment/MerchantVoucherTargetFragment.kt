@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.create.view.typefactory.VoucherTargetAdapterTypeFactory
 import com.tokopedia.vouchercreation.create.view.typefactory.VoucherTargetTypeFactory
+import com.tokopedia.vouchercreation.create.view.uimodel.FillVoucherNameUiModel
 import com.tokopedia.vouchercreation.create.view.uimodel.NextButtonUiModel
 import com.tokopedia.vouchercreation.create.view.uimodel.VoucherTargetUiModel
 
@@ -42,6 +43,7 @@ class MerchantVoucherTargetFragment(onNextInvoker: () -> Unit = {}) : BaseCreate
     private fun setupView() {
         val widgetList = listOf(
                 VoucherTargetUiModel(),
+                FillVoucherNameUiModel(),
                 NextButtonUiModel(onNext))
         adapter?.data?.addAll(widgetList)
         adapter?.notifyDataSetChanged()
