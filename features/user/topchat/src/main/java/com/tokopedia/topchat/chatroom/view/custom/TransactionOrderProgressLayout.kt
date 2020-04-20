@@ -138,8 +138,8 @@ class TransactionOrderProgressLayout : LinearLayout {
     private fun bindClickOpenCloseState() {
         val clickListener = OnClickListener {
             doWhenState(
-                    isOpen = { changeState(stateClose) },
-                    isClose = { changeState(stateOpen) }
+                    isOpen = { changeState(State.CLOSE) },
+                    isClose = { changeState(State.OPEN) }
             )
         }
         stateChanger?.setOnClickListener(clickListener)
@@ -157,7 +157,7 @@ class TransactionOrderProgressLayout : LinearLayout {
 
     private fun renderBackgroundHasBeenSeen() {
         if (!state.haBeenSeen) {
-            cardOrderContainer?.setBackgroundColor(colorStateSeen.toInt())
+            cardOrderContainer?.setBackgroundColor(State.COLOR_SEEN.toInt())
         } else {
             cardOrderContainer?.setBackgroundColor(Color.WHITE)
         }
@@ -186,8 +186,8 @@ class TransactionOrderProgressLayout : LinearLayout {
             isClose: () -> Unit
     ) {
         when (state.bodyVisibility) {
-            stateOpen -> isOpen()
-            stateClose -> isClose()
+            State.OPEN -> isOpen()
+            State.CLOSE -> isClose()
         }
     }
 
@@ -236,20 +236,21 @@ class TransactionOrderProgressLayout : LinearLayout {
     data class State(
             var bodyVisibility: String = DEFAULT_BODY_VISIBILITY,
             var haBeenSeen: Boolean = DEFAULT_HAS_SEEN
-    )
+    ) {
+        companion object {
+            const val COLOR_SEEN = 0xFFEBFFEF
+
+            const val OPEN = "Tutup"
+            const val CLOSE = "Lihat"
+
+            private const val DEFAULT_BODY_VISIBILITY = OPEN
+            private const val DEFAULT_HAS_SEEN = false
+        }
+    }
 
     companion object {
         private val LAYOUT = R.layout.partial_transaction_order_progress
-
-        private const val colorStateSeen = 0xFFEBFFEF
-
-        private const val stateOpen = "Tutup"
-        private const val stateClose = "Lihat"
-
-        private const val DEFAULT_BODY_VISIBILITY = stateOpen
-        private const val DEFAULT_HAS_SEEN = false
         private val DEFAULT_STATE = CommonUtil.toJson(State())
-
         private const val PREF_NAME = "Chat_TransactionOrderProgressPreference"
     }
 }
