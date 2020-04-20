@@ -152,6 +152,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
         super.onResume()
 
         if (::flightSearchViewModel.isInitialized) {
+            clearAllData()
             flightSearchViewModel.fetchSortAndFilter()
         }
     }
