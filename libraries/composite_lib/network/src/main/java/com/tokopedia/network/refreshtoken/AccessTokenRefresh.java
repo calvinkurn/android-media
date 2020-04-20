@@ -10,7 +10,7 @@ import com.tokopedia.network.converter.StringResponseConverter;
 import com.tokopedia.network.interceptor.FingerprintInterceptor;
 import com.tokopedia.network.utils.TkpdOkHttpBuilder;
 import com.tokopedia.user.session.UserSessionInterface;
-import com.tokopedia.user.session.util.EncoderDecoder;
+import com.tokopedia.network.refreshtoken.EncoderDecoder;
 
 import java.io.IOException;
 import java.util.HashMap;
