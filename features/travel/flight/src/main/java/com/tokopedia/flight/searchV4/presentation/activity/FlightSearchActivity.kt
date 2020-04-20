@@ -265,28 +265,5 @@ open class FlightSearchActivity : BaseFlightActivity(),
                 Intent(context, FlightSearchActivity::class.java)
                         .putExtra(EXTRA_PASS_DATA, passDataModel)
 
-/*        fun getCallingIntent(context: Context): Intent {
-            val passDataModel = FlightSearchPassDataModel(
-                    "2020-08-01",
-                    "2020-10-01",
-                    false,
-                    FlightPassengerModel(1, 0, 0),
-                    FlightAirportModel().apply {
-                        cityName = "Banda Aceh"
-                        cityCode = "BTJ"
-                    },
-                    FlightAirportModel().apply {
-                        cityName = "Jakarta"
-                        cityCode = "JKTA"
-                    },
-                    FlightClassModel().apply {
-                        id = 1
-                        title = "Ekonomi"
-                    },
-                    "", ""
-            )
-
-            return getCallingIntent(context, passDataModel)
-        }*/
     }
 }
