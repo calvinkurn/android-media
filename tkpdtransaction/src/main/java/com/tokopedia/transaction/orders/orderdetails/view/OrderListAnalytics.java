@@ -582,17 +582,18 @@ public class OrderListAnalytics {
                         CURRENCY_CODE, IDR,
                         CLICK, DataLayer.mapOf(
                                 ACTION_FIELD, DataLayer.mapOf(
-                                        LIST, "/order list "+status,
-                                        PRODUCTS, DataLayer.listOf(
-                                                DataLayer.mapOf(
-                                                        NAME, items.getTitle(),
-                                                        ID, items.getId(),
-                                                        PRICE, items.getPrice(),
-                                                        KEY_CATEGORY, NONE,
-                                                        BRAND, NONE,
-                                                        VARIANT, NONE,
-                                                        POSITION, position + 1
-                                                )))))));
+                                        LIST, "/order list "+status),
+
+                                PRODUCTS, DataLayer.listOf(
+                                        DataLayer.mapOf(
+                                                NAME, items.getTitle(),
+                                                ID, items.getId(),
+                                                PRICE, items.getUnformattedPrice(),
+                                                KEY_CATEGORY, NONE,
+                                                BRAND, NONE,
+                                                VARIANT, NONE,
+                                                POSITION, position + 1
+                                        ))))));
 
     }
 }

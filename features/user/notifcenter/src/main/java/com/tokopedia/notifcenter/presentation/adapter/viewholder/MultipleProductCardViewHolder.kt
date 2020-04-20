@@ -56,14 +56,16 @@ class MultipleProductCardViewHolder(
     private fun impressionTracker(element: MultipleProductCardViewBean) {
         when(sourceView) {
             is SourceMultipleProductView.NotificationCenter -> {
-                listener.getAnalytic().trackProductListImpression(
+                listener.getAnalytic().trackMultiProductListImpression(
                         userId = element.userInfo.userId,
+                        productNumber = adapterPosition,
                         notification = element
                 )
             }
             is SourceMultipleProductView.BottomSheetDetail -> {
-                listener.getAnalytic().trackProductListImpression(
+                listener.getAnalytic().trackMultiProductListImpression(
                         userId = element.userInfo.userId,
+                        productNumber = adapterPosition,
                         location = LABEL_BOTTOM_SHEET_LOCATION,
                         notification = element
                 )

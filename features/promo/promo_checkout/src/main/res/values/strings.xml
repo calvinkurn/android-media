@@ -32,8 +32,8 @@
     <string name="promo_checkout_error_desc_redeem">Points Anda tidak terpotong.Permintaan gagal diverifikasi</string>
     <string name="promo_phone_verification_message">Sebelum menggunakan promo ini, harap melakukan verifikasi pada nomor handphone Anda</string>
     <string name="promo_phone_verification_desc">Sebelum menggunakan promo ini, verifikasi dulu nomor HP kamu, ya.</string>
-    <string name="promo_verifikasi_title">Verifikasi Nomor HP</string>
-    <string name="promo_btn_verifikasi">Verifikasi</string>
+    <string name="promo_verifikasi_title">Ayo verifikasi nomor HP kamu!</string>
+    <string name="promo_btn_verifikasi">Verifikasi Nomor HP</string>
     <string name="promo_phone_verification_message_v2">Kamu baru bisa pakai promo ini setelah verifikasi nomor HP.</string>
 
 </resources>
