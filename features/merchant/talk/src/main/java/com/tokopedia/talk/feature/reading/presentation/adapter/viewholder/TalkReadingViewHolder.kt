@@ -23,7 +23,7 @@ class TalkReadingViewHolder(view: View, private val onThreadClickListener: OnThr
             readingQuestionTitle.setOnClickListener {
                 onThreadClickListener.onThreadClicked(element.question.questionID)
             }
-            if(element.question.totalAnswer > 0) {
+            if(element.question.totalAnswer > 0 && element.question.answer.answerID.isNotEmpty()) {
                 element.question.apply {
                     showProfilePicture(answer.userThumbnail)
                     showSellerLabelWithCondition(answer.isSeller)

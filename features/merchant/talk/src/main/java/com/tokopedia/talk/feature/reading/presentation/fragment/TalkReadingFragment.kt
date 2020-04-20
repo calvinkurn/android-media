@@ -49,7 +49,7 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
     companion object {
         const val PRODUCT_ID = "productID"
         const val DEFAULT_DISCUSSION_DATA_LIMIT = 10
-        const val DEFAULT_INITIAL_PAGE = 0
+        const val DEFAULT_INITIAL_PAGE = 1
         const val DONT_LOAD_INITAL_DATA = false
 
         @JvmStatic
@@ -125,7 +125,6 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
         swipeToRefresh.isRefreshing = true
         clearAllData()
         showPageLoading()
-        hideSnackBarRetry()
         loadInitialData()
     }
 
@@ -143,10 +142,6 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
 
     override fun createAdapterInstance(): BaseListAdapter<TalkReadingUiModel, TalkReadingAdapterTypeFactory> {
         return TalkReadingAdapter(adapterTypeFactory)
-    }
-
-    override fun loadInitialData() {
-        loadData(DEFAULT_INITIAL_PAGE)
     }
 
     override fun getLoadingModel(): LoadingModel {
@@ -230,17 +225,18 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
 
     private fun observeSortOptions() {
         viewModel.sortOptions.observe(this, Observer { sortOptions ->
-            val selectedSort = sortOptions.filter { it.isSelected }
-            updateSortHeader(selectedSort.first())
-            clearAllData()
-            getDiscussionData()
+            updateSortHeader(sortOptions.first { it.isSelected })
+            if(!isLoadingInitialData) {
+                loadInitialData()
+            }
         })
     }
 
     private fun observeFilterCategories() {
         viewModel.filterCategories.observe(this, Observer {
-            clearAllData()
-            getDiscussionData()
+            if(!isLoadingInitialData) {
+                loadInitialData()
+            }
         })
     }
 
