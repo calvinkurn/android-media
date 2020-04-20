@@ -36,8 +36,8 @@ import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.common.AddEditProductComponentBuilder
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
-import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.Companion.EXTRA_CACHE_MANAGER_ID
-import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.Companion.HTTP_PREFIX
+import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.EXTRA_CACHE_MANAGER_ID
+import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.HTTP_PREFIX
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_DESCRIPTION_INPUT
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_DETAIL_INPUT
@@ -131,6 +131,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
     private var productNameView: Typography? = null
     private var productPriceView: Typography? = null
     private var productStockView: Typography? = null
+    private var dividerDetail: DividerUnify? = null
 
     // description
     private var addEditProductDescriptionTitle: Typography? = null
@@ -140,7 +141,6 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
     private var addEditProductVariantLayout: ViewGroup? = null
     private var addEditProductVariantButton: Typography? = null
     private var addProductVariantTipsLayout: ViewGroup? = null
-    private var variantDivider: DividerUnify? = null
 
     // shipment
     private var addEditProductShipmentTitle: Typography? = null
@@ -256,6 +256,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
         productNameView = view.findViewById(R.id.tv_product_name)
         productPriceView = view.findViewById(R.id.tv_product_price)
         productStockView = view.findViewById(R.id.tv_product_stock)
+        dividerDetail = view.findViewById(R.id.divider_detail)
 
         // description
         addEditProductDescriptionTitle = view.findViewById(R.id.tv_product_description)
@@ -265,7 +266,6 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
         addEditProductVariantLayout = view.findViewById(R.id.add_product_variant_step_layout)
         addEditProductVariantButton = view.findViewById(R.id.tv_start_add_edit_product_variant)
         addProductVariantTipsLayout = view.findViewById(R.id.add_product_variant_tips_layout)
-        variantDivider = view.findViewById(R.id.du_fourth)
 
         // shipment
         addEditProductShipmentTitle = view.findViewById(R.id.tv_product_shipment)
@@ -314,7 +314,9 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
 
         doneButton?.setOnClickListener {
             updateImageList()
-            ProductEditStepperTracking.trackFinishButton(shopId)
+            if (viewModel.isEditing.value == true) {
+                ProductEditStepperTracking.trackFinishButton(shopId)
+            }
             val validateMessage = viewModel.validateProductInput()
             if (validateMessage.isNotEmpty()) {
                 Toaster.make(view, validateMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
@@ -387,9 +389,8 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
             if (viewModel.isEditing.value == true) {
                 ProductEditStepperTracking.trackAddProductVariant(shopId)
             }
-            val categoryId: String = viewModel.productInputModel.value?.detailInputModel?.categoryId
-                    ?: ""
-            viewModel.getVariantList(categoryId)
+            viewModel.productVariantListData?.apply {
+                showVariantDialog(this) }
         }
 
         addProductVariantTipsLayout?.setOnClickListener {
@@ -418,7 +419,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
         observeProductInputModel()
         observeProductVariant()
         observeImageUrlOrPathList()
-        observeProductVariantList()
+        observeVariantList()
     }
 
     @Suppress("UNCHECKED_CAST")
@@ -533,6 +534,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
                                     object : TypeToken<PictureViewModel>() {}.type, PictureViewModel())
                             viewModel.updateSizeChart(productPictureViewModel)
                         }
+                        showEmptyVariantState(productInputModel.variantInputModel.productSizeChart == null)
                     }
                 }
                 SET_CASHBACK_REQUEST_CODE -> {
@@ -544,6 +546,8 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
                             val cashbackProduct = Cashback(cashbackResult.cashback)
                             viewModel.productDomain = viewModel.productDomain.copy(cashback = cashbackProduct)
                             onSuccessSetCashback(cashbackResult)
+                        } else {
+                            onFailedSetCashback()
                         }
                     }
                 }
@@ -563,9 +567,23 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
 
     private fun onSuccessSetCashback(setCashbackResult: SetCashbackResult) {
         view?.let {
+            if(setCashbackResult.cashback == 0) {
+                Toaster.make(it, getString(
+                        R.string.product_manage_set_cashback_no_cashback_success),
+                        Snackbar.LENGTH_SHORT, Toaster.TYPE_NORMAL)
+            } else {
+                Toaster.make(it, getString(
+                        R.string.product_manage_set_cashback_success, setCashbackResult.cashback),
+                        Snackbar.LENGTH_SHORT, Toaster.TYPE_NORMAL)
+            }
+        }
+    }
+
+    private fun onFailedSetCashback() {
+        view?.let {
             Toaster.make(it, getString(
-                R.string.product_manage_set_cashback_success, setCashbackResult.productName),
-                Snackbar.LENGTH_SHORT, Toaster.TYPE_NORMAL)
+                    R.string.product_manage_set_cashback_error),
+                    Snackbar.LENGTH_SHORT, Toaster.TYPE_NORMAL)
         }
     }
 
@@ -603,7 +621,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
     }
 
     private fun enablePhotoEdit() {
-        addEditProductPhotoButton?.text = getString(R.string.label_change)
+        addEditProductPhotoButton?.text = getString(R.string.action_add_product_photo)
         addProductPhotoTipsLayout?.hide()
         productPhotosView?.show()
     }
@@ -613,6 +631,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
             addEditProductDetailTitle?.setTextColor(ContextCompat.getColor(it, android.R.color.black))
             addEditProductDetailButton?.text = getString(R.string.label_change)
             addEditProductDetailButton?.show()
+            dividerDetail?.hide()
         }
     }
 
@@ -626,7 +645,6 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
 
     private fun enableVariantEdit() {
         addEditProductVariantLayout?.show()
-        variantDivider?.show()
     }
 
     private fun enableShipmentEdit() {
@@ -684,6 +702,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
         viewModel.productInputModel.observe(this, Observer {
             showProductPhotoPreview(it)
             showProductDetailPreview(it)
+            showEmptyVariantState(viewModel.productInputModel.value?.variantInputModel?.productSizeChart == null)
             if (viewModel.getDraftId() != 0L || it.productId != 0L || viewModel.getProductId().isNotBlank()) {
                 displayEditMode()
             }
@@ -702,10 +721,15 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
         })
     }
 
-    private fun observeProductVariantList() {
-        viewModel.productVariantList.observe(viewLifecycleOwner, Observer { result ->
+    private fun observeVariantList() {
+        addEditProductVariantButton?.alpha = 0.5F
+        addEditProductVariantButton?.isEnabled = false
+        viewModel.productVariantList.observe(this, Observer { result ->
             when (result) {
-                is Success -> showVariantDialog(result.data)
+                is Success -> {
+                    addEditProductVariantButton?.isEnabled = true
+                    addEditProductVariantButton?.alpha = 1F
+                }
                 is Fail -> showVariantErrorToast(getString(R.string.error_cannot_get_variants))
             }
         })
@@ -747,6 +771,9 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
         if (isVariantEmpty) {
             addEditProductVariantButton?.text = getString(R.string.label_add)
             addProductVariantTipsLayout?.show()
+        } else {
+            addEditProductVariantButton?.text = getString(R.string.label_change)
+            addProductVariantTipsLayout?.hide()
         }
     }
 

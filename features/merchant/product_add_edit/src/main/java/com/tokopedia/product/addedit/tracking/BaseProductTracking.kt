@@ -16,6 +16,7 @@ object ProductAddEditTracking {
     const val EVENT_CLICK_EDIT_PRODUCT = "clickEditProduct"
     const val CAT_ADD_PRODUCT_PAGE = "add product page"
     const val CAT_EDIT_PRODUCT_PAGE = "edit product page"
+    const val CAT_DRAFT_PRODUCT_PAGE = "draft product page"
 
     fun getTracker(): ContextAnalytics {
         if (gtmTracker == null) {

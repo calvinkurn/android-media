@@ -1,16 +1,16 @@
 package com.tokopedia.product.addedit.description.presentation.adapter
 
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.product.addedit.R
-import com.tokopedia.product.addedit.description.presentation.model.VideoLinkModel
-import kotlinx.android.synthetic.main.item_product_add_video.view.*
-import android.text.TextWatcher
-import android.text.Editable
 import com.tokopedia.product.addedit.common.util.placeCursorToEnd
 import com.tokopedia.product.addedit.common.util.setText
+import com.tokopedia.product.addedit.description.presentation.model.VideoLinkModel
+import kotlinx.android.synthetic.main.item_product_add_video.view.*
 
 class VideoLinkTypeFactory: BaseAdapterTypeFactory(){
     private var listener: VideoLinkListener? = null
@@ -82,7 +82,7 @@ class VideoLinkTypeFactory: BaseAdapterTypeFactory(){
                 imgThumbnail.urlSrc = imageUrl
                 tvVideoTitle.text = inputTitle
                 tvVideoSubtitle.text = inputDescription
-                if (errorMessage.isNotEmpty()) {
+                if (errorMessage.isNotEmpty() && !textFieldUrl.textFieldInput.text.isBlank()) {
                     textFieldUrl.setError(true)
                     textFieldUrl.setMessage(errorMessage)
                 } else {

@@ -45,7 +45,6 @@ class AddEditProductPreviewViewModel @Inject constructor(
 ) : BaseViewModel(dispatcher) {
 
     private val productId = MutableLiveData<String>()
-
     private val detailInputModel = MutableLiveData<DetailInputModel>()
 
     // observing the product id, and will become true if product id exist
@@ -83,6 +82,12 @@ class AddEditProductPreviewViewModel @Inject constructor(
 
     private val mProductVariantList = MutableLiveData<Result<List<ProductVariantByCatModel>>>()
     val productVariantList: LiveData<Result<List<ProductVariantByCatModel>>> get() = mProductVariantList
+    val productVariantListData get() = mProductVariantList.value.let {
+        when(it) {
+            is Success -> it.data
+            else -> null
+        }
+    }
 
     private val mGetProductDraftResult = MutableLiveData<Result<ProductDraft>>()
     val getProductDraftResult: LiveData<Result<ProductDraft>> get() = mGetProductDraftResult
@@ -108,21 +113,28 @@ class AddEditProductPreviewViewModel @Inject constructor(
                         if (!isDuplicate) {
                             productInputModel.productId = it.data.productID.toLongOrZero()
                         }
+                        getVariantList(productInputModel.detailInputModel.categoryId)
                         productInputModel
                     }
                     is Fail -> ProductInputModel()
                 }
             }
             addSource(detailInputModel) {
+                getVariantList(it.categoryId)
                 productInputModel.value = productInputModel.value?.apply { this.detailInputModel = it }
             }
             addSource(getProductDraftResult) {
                 productInputModel.value = when(it) {
-                    is Success -> mapDraftToProductInputModel(it.data)
+                    is Success -> {
+                        val productInputModel = mapDraftToProductInputModel(it.data)
+                        getVariantList(productInputModel.detailInputModel.categoryId)
+                        productInputModel
+                    }
                     is Fail -> ProductInputModel()
                 }
             }
             addSource(productAddResult) {
+                getVariantList(it.detailInputModel.categoryId)
                 productInputModel.value = it
             }
         }

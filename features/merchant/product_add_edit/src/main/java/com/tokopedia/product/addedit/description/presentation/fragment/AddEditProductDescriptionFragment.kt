@@ -137,19 +137,16 @@ class AddEditProductDescriptionFragment:
             ProductAddDescriptionTracking.clickRemoveVideoLink(shopId)
         }
         adapter.data.removeAt(position)
-        adapter.notifyDataSetChanged()
+        adapter.notifyItemRemoved(position)
         textViewAddVideo.visibility =
                 if (adapter.dataSize < MAX_VIDEOS) View.VISIBLE else View.GONE
     }
 
     override fun onTextChanged(url: String, position: Int) {
-        adapter.data[position].inputUrl = url
-        if (url.isNotBlank()) {
+        adapter.data.getOrNull(position)?.run {
+            inputUrl = url
             positionVideoChanged = position
             descriptionViewModel.getVideoYoutube(url)
-        } else {
-            adapter.data[position].errorMessage = ""
-            getRecyclerView(view).post { adapter.notifyItemChanged(position) }
         }
     }
 
@@ -238,7 +235,9 @@ class AddEditProductDescriptionFragment:
             } else {
                 ProductAddDescriptionTracking.clickAddProductVariant(shopId)
             }
-            descriptionViewModel.getVariants(descriptionViewModel.categoryId)
+            descriptionViewModel.productVariantData?.let {
+                showVariantDialog(it)
+            }
         }
 
         btnNext.setOnClickListener {
@@ -251,12 +250,15 @@ class AddEditProductDescriptionFragment:
             submitInputEdit()
         }
 
+        getRecyclerView(view).itemAnimator = null
+        descriptionViewModel.getVariants(descriptionViewModel.categoryId)
+
         observeProductVariant()
         observeProductVideo()
     }
 
     private fun addEmptyVideoUrl() {
-        loadData(0)
+        loadData(adapter.dataSize + 1)
     }
 
     override fun loadInitialData() {
@@ -293,9 +295,10 @@ class AddEditProductDescriptionFragment:
     }
 
     private fun observeProductVariant() {
+        tvAddVariant.isEnabled = false
         descriptionViewModel.productVariant.observe(viewLifecycleOwner, Observer { result ->
             when (result) {
-                is Success -> showVariantDialog(result.data)
+                is Success -> tvAddVariant.isEnabled = true
                 is Fail -> showVariantErrorToast(getString(R.string.default_request_error_timeout))
             }
         })
@@ -321,16 +324,16 @@ class AddEditProductDescriptionFragment:
     }
 
     private fun displayErrorOnSelectedVideo() {
-        adapter.data[positionVideoChanged].apply {
+        adapter.data.getOrNull(positionVideoChanged)?.apply {
             inputTitle = ""
             inputDescription = ""
             inputImage = ""
-            errorMessage = getString(R.string.error_video_not_valid)
+            errorMessage = if (inputUrl.isBlank()) "" else getString(R.string.error_video_not_valid)
         }
     }
 
     private fun setDataOnSelectedVideo(youtubeVideoModel: YoutubeVideoModel) {
-        adapter.data[positionVideoChanged].apply {
+        adapter.data.getOrNull(positionVideoChanged)?.apply {
             inputTitle = youtubeVideoModel.title.orEmpty()
             inputDescription = youtubeVideoModel.description.orEmpty()
             inputImage = youtubeVideoModel.thumbnailUrl.orEmpty()
