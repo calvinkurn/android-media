@@ -19,16 +19,7 @@ interface GraphqlApiSuspend {
 
     @POST("./")
     @Headers(GraphqlConstant.GqlApiKeys.GRAPHQL_HEADER)
-    suspend fun getResponseSuspend(
-            @Body requestObject: MutableList<GraphqlRequest>,
-            @HeaderMap header: Map<String, String>
-    ) : JsonArray
-    suspend fun getResponseSuspend(@Body requestObject:MutableList<GraphqlRequest> ) : JsonArray
-
-    @POST("./")
-    @Headers(GraphqlConstant.GqlApiKeys.GRAPHQL_HEADER)
-    suspend fun getResponseSuspend(@Body requestObject:MutableList<GraphqlRequest>,
-                    @Header(GraphqlConstant.GqlApiKeys.CACHE) values: String?): Response<JsonArray>
-}
-
+    suspend fun getResponseSuspend(@Body requestObject: MutableList<GraphqlRequest>,
+                                   @HeaderMap header: Map<String, String>,
+                                   @Header(GraphqlConstant.GqlApiKeys.CACHE) values: String?): Response<JsonArray>
 }

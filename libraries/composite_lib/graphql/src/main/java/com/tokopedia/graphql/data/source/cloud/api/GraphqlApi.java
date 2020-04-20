@@ -23,14 +23,7 @@ public interface GraphqlApi {
 
     @POST("./")
     @Headers(GraphqlConstant.GqlApiKeys.GRAPHQL_HEADER)
-    Observable<JsonArray> getResponse(
-            @Body List<GraphqlRequest> requestObject,
-            @HeaderMap Map<String, String> headerMap
-    );
-    Observable<JsonArray> getResponse(@Body List<GraphqlRequest> requestObject);
-
-    @POST("./")
-    @Headers(GraphqlConstant.GqlApiKeys.GRAPHQL_HEADER)
     Observable<Response<JsonArray>> getResponse(@Body List<GraphqlRequest> requestObject,
+                                                @HeaderMap Map<String, String> headerMap,
                                                 @Header(GraphqlConstant.GqlApiKeys.CACHE) String values);
 }

@@ -28,6 +28,7 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import okhttp3.internal.http2.ConnectionShutdownException;
+import retrofit2.Response;
 import rx.Observable;
 import timber.log.Timber;
 
@@ -55,14 +56,14 @@ public class GraphqlCloudDataStore implements GraphqlDataStore {
     * the hash will be passing into header of
     * X-acf-sensor-data;
     * */
-    private Observable<JsonArray> getResponse(List<GraphqlRequest> requests) {
+    private Observable<Response<JsonArray>> getResponse(List<GraphqlRequest> requests) {
         CYFMonitor.setLogLevel(CYFMonitor.INFO);
         if (isAkamai(requests.get(0).getQuery())) {
             Map<String, String> header = new HashMap<>();
             header.put(AKAMAI_SENSOR_DATA_HEADER, GraphqlClient.getFunction().getAkamaiValue());
-            return mApi.getResponse(requests, header);
+            return mApi.getResponse(requests, header, FingerprintManager.getQueryDigest(requests));
         } else {
-            return mApi.getResponse(requests, new HashMap<>());
+            return mApi.getResponse(requests, new HashMap<>(), FingerprintManager.getQueryDigest(requests));
         }
     }
 
@@ -73,7 +74,7 @@ public class GraphqlCloudDataStore implements GraphqlDataStore {
             return Observable.just(new GraphqlResponseInternal(null, false));
         }
 
-        return mApi.getResponse(requests, FingerprintManager.getQueryDigest(requests))
+        return getResponse(requests)
                 .doOnError(throwable -> {
                     if (!(throwable instanceof UnknownHostException) &&
                             !(throwable instanceof SocketException) &&

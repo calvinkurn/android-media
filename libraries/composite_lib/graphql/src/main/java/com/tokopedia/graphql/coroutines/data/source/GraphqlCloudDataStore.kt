@@ -13,6 +13,7 @@ import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponseInternal
 import com.tokopedia.graphql.data.source.cloud.api.GraphqlApiSuspend
+import com.tokopedia.graphql.util.CacheHelper
 import com.tokopedia.graphql.util.Const.AKAMAI_SENSOR_DATA_HEADER
 import kotlinx.coroutines.*
 import timber.log.Timber
@@ -30,18 +31,18 @@ class GraphqlCloudDataStore @Inject constructor(
 ) : GraphqlDataStore {
 
     /*
-    * akamai wrapper for generating a sensor data
-    * the hash will be passing into header of
-    * X-acf-sensor-data;
-    * */
-    private suspend fun getResponse(requests: List<GraphqlRequest>): JsonArray {
+   * akamai wrapper for generating a sensor data
+   * the hash will be passing into header of
+   * X-acf-sensor-data;
+   * */
+    private suspend fun getResponse(requests: List<GraphqlRequest>): Response<JsonArray> {
         CYFMonitor.setLogLevel(CYFMonitor.INFO)
         return if (isAkamai(requests.first().query)) {
             val header = mutableMapOf<String, String>()
             header[AKAMAI_SENSOR_DATA_HEADER] = CYFMonitor.getSensorData() ?: ""
-            api.getResponseSuspend(requests.toMutableList(), header)
+            api.getResponseSuspend(requests.toMutableList(), header, FingerprintManager.getQueryDigest(requests))
         } else {
-            api.getResponseSuspend(requests.toMutableList(), mapOf())
+            api.getResponseSuspend(requests.toMutableList(), mapOf(), FingerprintManager.getQueryDigest(requests))
         }
     }
 
@@ -58,7 +59,7 @@ class GraphqlCloudDataStore @Inject constructor(
                     return@withContext GraphqlResponseInternal(null, false)
                 }
 
-                result = api.getResponseSuspend(requests.toMutableList(), FingerprintManager.getQueryDigest(requests))
+                result = getResponse(requests.toMutableList())
             } catch (e: Throwable) {
                 if (e !is UnknownHostException &&
                         e !is SocketException &&
