@@ -55,6 +55,7 @@ query getProductVariant($productID:String!,$option:pdpGetProductVariantReqOption
         isUsingOvo
       }
       stock {
+        stock
         isLimitedStock
         stockWording
         stockWordingHTML
@@ -63,6 +64,13 @@ query getProductVariant($productID:String!,$option:pdpGetProductVariantReqOption
         maximumOrder
         isBuyable
         alwaysAvailable
+      }
+      warehouseInfo{
+        warehouseID
+        isFulfillment
+        districtID
+        postalCode
+        geoLocation
       }
       picture {
         url
