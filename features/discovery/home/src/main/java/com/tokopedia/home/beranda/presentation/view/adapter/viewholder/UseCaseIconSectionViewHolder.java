@@ -18,7 +18,7 @@ import com.tokopedia.home.R;
 import com.tokopedia.home.beranda.helper.DynamicLinkHelper;
 import com.tokopedia.home.beranda.listener.HomeCategoryListener;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.dynamic_icon.HomeIconItem;
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.UseCaseIconSectionViewModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.UseCaseIconSectionDataModel;
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils;
 
 /**
@@ -29,7 +29,7 @@ import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils;
  */
 
 @Deprecated
-public class UseCaseIconSectionViewHolder extends AbstractViewHolder<UseCaseIconSectionViewModel> {
+public class UseCaseIconSectionViewHolder extends AbstractViewHolder<UseCaseIconSectionDataModel> {
 
     @LayoutRes
     public static final int LAYOUT = R.layout.layout_use_case_icon_section;
@@ -48,14 +48,14 @@ public class UseCaseIconSectionViewHolder extends AbstractViewHolder<UseCaseIcon
     }
 
     @Override
-    public void bind(UseCaseIconSectionViewModel element) {
+    public void bind(UseCaseIconSectionDataModel element) {
         adapter.setSectionViewModel(element);
     }
 
     public static class UseCaseIconAdapter extends RecyclerView.Adapter<UseCaseIconViewHolder> {
 
         private final Context context;
-        private UseCaseIconSectionViewModel sectionViewModel;
+        private UseCaseIconSectionDataModel sectionViewModel;
         private HomeCategoryListener listener;
 
         public UseCaseIconAdapter(Context context, HomeCategoryListener listener) {
@@ -63,7 +63,7 @@ public class UseCaseIconSectionViewHolder extends AbstractViewHolder<UseCaseIcon
             this.listener = listener;
         }
 
-        public void setSectionViewModel(UseCaseIconSectionViewModel sectionViewModel) {
+        public void setSectionViewModel(UseCaseIconSectionDataModel sectionViewModel) {
             this.sectionViewModel = sectionViewModel;
             notifyDataSetChanged();
             HomeTrackingUtils.homeUsedCaseImpression(context, sectionViewModel.getItemList());

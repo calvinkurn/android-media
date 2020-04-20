@@ -31,6 +31,9 @@
     <string name="flight_insurance_webview_toolbar_title">Asuransi Perjalanan</string>
     <string name="flight_order_invoice_toolbar_title">Tokopedia</string>
 
+    <!--User Settings-->
+    <string name="title_module_user_settings">Settings</string>
+
     <!--Profile completion-->
     <string name="title_module_setting_profile">Data Diri Module</string>
     <string name="title_setting_profile">Data Diri</string>
@@ -77,6 +80,7 @@
     <string name="digital_cart_toolbar_title">Checkout</string>
     <string name="digital_title_fav_number">Nomor Favorit</string>
     <string name="accessibility_service_description">Layanan ini digunakan untuk membaca saldo pulsa dari ussd popup</string>
+    <string name="cc_title_toolbar">Bayar Kartu Kredit</string>
 
     <!-- Dynamic feature for Discovery-->
     <string name="title_image_search">Pencarian Gambar</string>
@@ -178,7 +182,7 @@
     <string name="title_af_tokopedia_byme">Tokopedia By Me</string>
 
     <!-- Dynamic feature for manage product list-->
-    <string name="title_product_manage">Daftar Produk</string>
+    <string name="title_df_merchant">Merchant</string>
 
     <!-- Dynamic feature for opportunity-->
     <string name="opportunity_name">Opportunity</string>
@@ -203,8 +207,7 @@
 
 
     <!-- Dynamic feature for Umrah-->
-    <string name="salam_title_df">Salam</string>
-    <string name="umrah_title_df">Umrah</string>
+    <string name="df_title_salam_umrah">Umrah</string>
     <string name="umrah_search_title">Cari Paket Umrah</string>
     <string name="umrah_label_filter">Filter</string>
     <string name="umrah_label_pdp">Pilih Detail</string>
@@ -229,6 +232,13 @@
     <string name="topchat_title">Chat</string>
     <string name="title_inbox_chat">Chat</string>
     <string name="chat_incoming_settings">Atur Penerimaan Chat</string>
+
+    <!-- Dynamic feature for event-->
+    <string name="entertainment_event_hiburan"><![CDATA[Event & Hiburan]]></string>
+    <string name="entertainment_event_search"><![CDATA[Search Event]]></string>
+    <string name="entertainment_event_location"><![CDATA[Lokasi]]></string>
+
+
 
     <!--Play-->
     <string name="title_play_df">Play</string>

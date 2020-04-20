@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName
 
 data class CartRedirectionResponse(
         @SerializedName("cart_redirection")
-        val cartRedirection: CartRedirection = CartRedirection()
+        val cartRedirection: CartRedirection? = null
 )
 
 data class CartTypeData(
@@ -39,5 +39,7 @@ data class AvailableButton(
         @SerializedName("text")
         val text: String = "",
         @SerializedName("show_recommendation")
-        val showRecommendation: Boolean = false
+        val showRecommendation: Boolean = false,
+        @SerializedName("onboarding_message")
+        val onboardingMessage: String = ""
 )

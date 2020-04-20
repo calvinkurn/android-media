@@ -21,6 +21,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarRetry
 import com.tokopedia.applink.AppUtil
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.datepicker.range.view.activity.DatePickerActivity
@@ -34,7 +35,6 @@ import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 
 import com.tokopedia.topads.auto.view.widget.AutoAdsWidgetView
 import com.tokopedia.topads.common.TopAdsMenuBottomSheets
-import com.tokopedia.topads.common.TopAdsWebViewActivity
 import com.tokopedia.topads.common.constant.TopAdsAddingOption
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant
 import com.tokopedia.topads.common.data.model.DataDeposit
@@ -50,7 +50,6 @@ import com.tokopedia.topads.dashboard.data.model.DataStatistic
 import com.tokopedia.topads.dashboard.data.model.TotalAd
 import com.tokopedia.topads.dashboard.data.utils.TopAdsDatePeriodUtil
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
-import com.tokopedia.topads.dashboard.view.activity.SellerCenterActivity
 import com.tokopedia.topads.dashboard.view.activity.TopAdsAddCreditActivity
 import com.tokopedia.topads.dashboard.view.adapter.TopAdsStatisticPagerAdapter
 import com.tokopedia.topads.dashboard.view.adapter.TopAdsTabAdapter
@@ -180,7 +179,7 @@ class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView {
                     startActivityForResult(RouteManager.getIntent(context, ApplinkConstInternalTopAds.TOPADS_ADD_PROMO_OPTION), REQUEST_CODE_AD_OPTION)
                 } else {
                     if (isShowAutoAddPromo){
-                        startActivity(TopAdsWebViewActivity.createIntent(it, TopAdsDashboardConstant.URL_ONECLICKPROMO))
+                        RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, TopAdsDashboardConstant.URL_ONECLICKPROMO);
                     } else {
                         RouteManager.route(context, ApplinkConstInternalTopAds.TOPADS_DASHBOARD_INTERNAL)
                     }
@@ -201,7 +200,10 @@ class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView {
     private fun initTicker() {
         ticker_view.setListMessage(arrayListOf())
         ticker_view.setOnPartialTextClickListener { _, messageClick ->
-            context?.let { startActivity(TopAdsWebViewActivity.createIntent(it, messageClick)) }}
+            context?.let {
+                RouteManager.route(it, ApplinkConstInternalGlobal.WEBVIEW, messageClick)
+            }
+        }
         ticker_view.buildView()
     }
 
@@ -809,7 +811,7 @@ class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView {
                     }
                     1 -> {
                         menus.dismiss()
-                        startActivity(Intent(it, SellerCenterActivity::class.java))
+                        RouteManager.route(it, ApplinkConstInternalGlobal.WEBVIEW, SELLER_CENTER_URL)
                     }
                     else -> {
                     }
@@ -832,6 +834,7 @@ class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView {
         val REQUEST_CODE_ADD_PRODUCT = 4
         val REQUEST_CODE_ADD_KEYWORD = 5
         private const val REQUEST_CODE_SET_AUTO_TOPUP = 6
+        private const val SELLER_CENTER_URL = "https://seller.tokopedia.com/edu/about-topads/iklan/?source=help&medium=android"
 
         fun createInstance(): TopAdsDashboardFragment {
             return TopAdsDashboardFragment()

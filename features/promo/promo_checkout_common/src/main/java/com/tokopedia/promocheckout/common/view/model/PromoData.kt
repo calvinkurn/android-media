@@ -19,6 +19,10 @@ data class PromoData(var typePromo: Int = 0,
         }
     }
 
+    fun isActive(): Boolean {
+        return state == TickerCheckoutView.State.ACTIVE
+    }
+
     constructor(parcel: Parcel) : this(
             parcel.readInt(),
             parcel.readString(),

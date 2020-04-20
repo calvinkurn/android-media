@@ -8,6 +8,8 @@ data class DynamicProductInfoP1(
         val layoutName: String = ""
 ) {
 
+    fun isProductActive(nearestWarehouseStock: Int): Boolean = nearestWarehouseStock > 0 && basic.isActive()
+
     val parentProductId: String
         get() =
             if (data.variant.isVariant && data.variant.parentID.isNotEmpty() && data.variant.parentID.toInt() > 0) {
@@ -68,7 +70,7 @@ data class DynamicProductInfoP1(
     fun shouldShowNotifyMe(): Boolean {
         return try {
             val now = System.currentTimeMillis()
-            val startTime = data.startDate.toLong() * 1000L
+            val startTime = (data.startDate.toLongOrNull() ?: 0) * 1000L
             val dayLeft = TimeUnit.MICROSECONDS.toDays(now - startTime)
             !(data.campaignId.isEmpty() || dayLeft > 3)
         } catch (ex: Exception) {

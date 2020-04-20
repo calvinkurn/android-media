@@ -110,7 +110,6 @@ class SaldoHistoryViewModel @Inject constructor(val getDepositSummaryUseCase: Ge
     }
 
     private fun setData(data: GqlAllDepositSummaryResponse) {
-        Thread.sleep(2000)
         allDepositResponseLiveData.value = Success(data.allDepositHistory!!)
         buyerResponseLiveData.value = Success(data.buyerDepositHistory!!)
         sellerResponseLiveData.value = Success(data.sellerDepositHistory!!)

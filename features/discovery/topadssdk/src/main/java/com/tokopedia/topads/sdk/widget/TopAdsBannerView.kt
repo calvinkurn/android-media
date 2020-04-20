@@ -47,6 +47,7 @@ import com.tokopedia.topads.sdk.view.adapter.viewholder.banner.BannerShowMoreVie
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopProductViewModel
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopViewModel
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopViewMoreModel
+import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.layout_ads_banner_digital.view.*
 import kotlinx.android.synthetic.main.layout_ads_banner_digital.view.description
 import kotlinx.android.synthetic.main.layout_ads_banner_shop_b.view.*
@@ -92,8 +93,10 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
     private fun renderViewCpmShop(context: Context, cpmData: CpmData, appLink: String, adsClickUrl: String) {
         if (activityIsFinishing(context))
             return
+
+        var defaultVariant = if (isLoggedIn()) VARIANT_NO_HEADLINE else VARIANT_A
         if (template == NO_TEMPLATE && isEligible(cpmData)) {
-            var variant = RemoteConfigInstance.getInstance().abTestPlatform.getString(AB_TEST_KEY, VARIANT_NO_HEADLINE)
+            var variant = RemoteConfigInstance.getInstance().abTestPlatform.getString(AB_TEST_KEY, defaultVariant)
             if (variant.equals(VARIANT_B)) {
                 View.inflate(getContext(), R.layout.layout_ads_banner_shop_b_pager, this)
                 BannerShopProductViewHolder.LAYOUT = R.layout.layout_ads_banner_shop_b_product
@@ -144,6 +147,11 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
             template = SHOP_TEMPLATE
         }
         setHeadlineShopData(cpmData, appLink, adsClickUrl)
+    }
+
+    private fun isLoggedIn(): Boolean {
+        var userSession = UserSession(context)
+        return userSession.isLoggedIn
     }
 
     private fun setHeadlineShopData(cpmData: CpmData?, appLink: String, adsClickUrl: String) {

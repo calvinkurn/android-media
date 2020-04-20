@@ -113,9 +113,6 @@ class TopChatRoomPresenter @Inject constructor(
         dummyList = arrayListOf()
     }
 
-    override fun clearText() {
-    }
-
     override fun connectWebSocket(messageId: String) {
         thisMessageId = messageId
         webSocketUrl = CHAT_WEBSOCKET_DOMAIN + ChatUrl.CONNECT_WEBSOCKET +
@@ -326,7 +323,7 @@ class TopChatRoomPresenter @Inject constructor(
     }
 
     private fun onErrorUploadImage(throwable: Throwable, image: ImageUploadViewModel) {
-        view.onErrorUploadImage(ErrorHandler.getErrorMessage(view.context, throwable), image)
+        view?.onErrorUploadImage(ErrorHandler.getErrorMessage(view?.context, throwable), image)
     }
 
     private fun sendImageByWebSocket(uploadId: String, image: ImageUploadViewModel) {
@@ -701,6 +698,8 @@ class TopChatRoomPresenter @Inject constructor(
     override fun updateMinReplyTime(chatRoom: ChatroomViewModel) {
         paramBeforeReplyTime = chatRoom.minReplyTime
     }
+
+    override fun clearText() { }
 
     override fun getOrderProgress(messageId: String) {
         orderProgressUseCase.getOrderProgress(

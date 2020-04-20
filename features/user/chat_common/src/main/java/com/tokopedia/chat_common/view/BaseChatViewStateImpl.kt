@@ -324,7 +324,7 @@ open class BaseChatViewStateImpl(
         return attachmentMenu.hideMenu()
     }
 
-    open fun getInterlocutorName(headerName: CharSequence): CharSequence = ""
+    open fun getInterlocutorName(headerName: CharSequence): CharSequence = headerName
     open fun getRecyclerViewId() = R.id.recycler_view
     open fun getProgressId() = R.id.progress
     open fun getNewCommentId() = R.id.new_comment

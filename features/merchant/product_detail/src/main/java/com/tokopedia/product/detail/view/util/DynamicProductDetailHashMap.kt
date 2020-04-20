@@ -3,12 +3,9 @@ package com.tokopedia.product.detail.view.util
 import android.content.Context
 import com.tokopedia.common_tradein.model.ValidateTradeInResponse
 import com.tokopedia.design.utils.CurrencyFormatUtil
-import com.tokopedia.kotlin.extensions.toFormattedString
-import com.tokopedia.kotlin.extensions.view.joinToStringWithLast
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.common.data.model.pdplayout.Media
-import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.data.model.ProductInfoP2General
 import com.tokopedia.product.detail.data.model.ProductInfoP2Login
 import com.tokopedia.product.detail.data.model.ProductInfoP2ShopData
@@ -21,7 +18,6 @@ import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.data.util.getCurrencyFormatted
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
-import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.math.roundToLong
 
@@ -78,8 +74,8 @@ class DynamicProductDetailHashMap(private val context: Context, private val mapO
     val productNewVariantDataModel: VariantDataModel?
         get() = mapOfData[ProductDetailConstant.VARIANT_OPTIONS] as? VariantDataModel
 
-    val productSocialProofPvDataModel: ProductSocialProofPvDataModel?
-        get() = mapOfData[ProductDetailConstant.SOCIAL_PROOF_PV] as? ProductSocialProofPvDataModel
+    val productSocialProofPvDataModel: ProductSocialProofDataModel?
+        get() = mapOfData[ProductDetailConstant.SOCIAL_PROOF_PV] as? ProductSocialProofDataModel
 
     val notifyMeMap: ProductNotifyMeDataModel?
         get() = mapOfData[ProductDetailConstant.UPCOMING_DEALS] as? ProductNotifyMeDataModel
@@ -126,7 +122,7 @@ class DynamicProductDetailHashMap(private val context: Context, private val mapO
                 rating = it.basic.stats.rating
             }
 
-            productSocialProofPvDataModel?.run {
+             productSocialProofPvDataModel?.run {
                 txStats = it.basic.txStats
                 stats = it.basic.stats
                 rating = it.basic.stats.rating
@@ -176,6 +172,7 @@ class DynamicProductDetailHashMap(private val context: Context, private val mapO
 
     fun updateDataP2Shop(dataP2: ProductInfoP2ShopData?) {
         dataP2?.let {
+            val multiOriginNearestWarehouse = it.variantMultiOrigin
             shopInfoMap?.run {
                 shopInfo = it.shopInfo
             }
@@ -185,6 +182,8 @@ class DynamicProductDetailHashMap(private val context: Context, private val mapO
                 statusTitle = it.shopInfo?.statusInfo?.statusTitle ?: ""
                 statusMessage = it.shopInfo?.statusInfo?.statusMessage ?: ""
                 shopStatus = it.shopInfo?.statusInfo?.shopStatus ?: 1
+                nearestWarehouseDataModel = ProductSnapshotDataModel.NearestWarehouseDataModel(multiOriginNearestWarehouse.warehouseInfo.id,
+                        multiOriginNearestWarehouse.price,multiOriginNearestWarehouse.stockWording)
             }
 
             productInfoMap?.run {
@@ -226,7 +225,7 @@ class DynamicProductDetailHashMap(private val context: Context, private val mapO
                 wishListCount = it.wishlistCount.count
             }
 
-            productSocialProofPvDataModel?.run {
+            productSocialProofPvDataModel?.run{
                 wishListCount = it.wishlistCount.count
             }
 

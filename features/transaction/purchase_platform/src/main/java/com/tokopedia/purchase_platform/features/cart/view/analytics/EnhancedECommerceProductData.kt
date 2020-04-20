@@ -11,35 +11,35 @@ class EnhancedECommerceProductData {
     private val product = HashMap<String, Any>()
 
     fun setProductName(name: String) {
-        this.product.put(KEY_NAME, if (!TextUtils.isEmpty(name)) name else DEFAULT_VALUE_NONE_OTHER)
+        this.product.put(KEY_NAME, if (name.isNotBlank()) name else DEFAULT_VALUE_NONE_OTHER)
     }
 
     fun setProductID(id: String) {
-        this.product.put(KEY_ID, if (!TextUtils.isEmpty(id)) id else DEFAULT_VALUE_NONE_OTHER)
+        this.product.put(KEY_ID, if (id.isNotBlank()) id else DEFAULT_VALUE_NONE_OTHER)
     }
 
     fun setPrice(price: String) {
-        this.product.put(KEY_PRICE, if (!TextUtils.isEmpty(price)) price else DEFAULT_VALUE_NONE_OTHER)
+        this.product.put(KEY_PRICE, if (price.isNotBlank()) price else DEFAULT_VALUE_NONE_OTHER)
     }
 
     fun setBrand(brand: String) {
-        this.product.put(KEY_BRAND, if (!TextUtils.isEmpty(brand)) brand else DEFAULT_VALUE_NONE_OTHER)
+        this.product.put(KEY_BRAND, if (brand.isNotBlank()) brand else DEFAULT_VALUE_NONE_OTHER)
     }
 
     fun setVariant(variant: String) {
-        this.product.put(KEY_VARIANT, if (!TextUtils.isEmpty(variant)) variant else DEFAULT_VALUE_NONE_OTHER)
+        this.product.put(KEY_VARIANT, if (variant.isNotBlank()) variant else DEFAULT_VALUE_NONE_OTHER)
     }
 
     fun setCategory(category: String) {
-        this.product.put(KEY_CATEGORY, if (!TextUtils.isEmpty(category)) category else DEFAULT_VALUE_NONE_OTHER)
+        this.product.put(KEY_CATEGORY, if (category.isNotBlank()) category else DEFAULT_VALUE_NONE_OTHER)
     }
 
     fun setPosition(position: String) {
-        this.product.put(KEY_POSITION, if (!TextUtils.isEmpty(position)) position else DEFAULT_VALUE_NONE_OTHER)
+        this.product.put(KEY_POSITION, if (position.isNotBlank()) position else DEFAULT_VALUE_NONE_OTHER)
     }
 
     fun setList(list: String) {
-        this.product.put(KEY_LIST, if (!TextUtils.isEmpty(list)) list else DEFAULT_VALUE_NONE_OTHER)
+        this.product.put(KEY_LIST, if (list.isNotBlank()) list else DEFAULT_VALUE_NONE_OTHER)
     }
 
     fun getProduct(): Map<String, Any> {

@@ -1,7 +1,7 @@
 package com.tokopedia.akamai_bot_lib.interceptor
 
-import com.akamai.botman.CYFMonitor
 import com.tokopedia.akamai_bot_lib.getAny
+import com.tokopedia.akamai_bot_lib.registeredGqlFunctions
 import okhttp3.Headers
 import okhttp3.Interceptor
 import okhttp3.Request
@@ -15,30 +15,9 @@ import java.io.IOException
 import java.nio.charset.Charset
 import kotlin.system.measureTimeMillis
 
-val registeredGqlFunctions = mapOf(
-        "login_token" to "login",
-        "register" to "register",
-        "pdpGetLayout" to "pdpGetLayout",
-        "checkout_general" to "checkout",
-        "atcOCS" to "atconeclickshipment",
-        "getPDPInfo" to "product_info",
-        "shopInfoByID" to "shop_info",
-        "followShop" to "followshop",
-        "validate_use_promo_revamp" to	"promorevamp",
-        "crackResult" to	"crackresult",
-        "gamiCrack" to	"gamicrack",
-        "add_to_cart_occ" to	"atcocc",
-        "one_click_checkout" to	"checkoutocc",
-        "add_to_cart_transactional" to "atc"
-)
-
-
-
 class GqlAkamaiBotInterceptor : Interceptor {
     @Throws(IOException::class)
     override fun intercept(chain: Interceptor.Chain): Response  {
-        CYFMonitor.setLogLevel(CYFMonitor.INFO)
-
         val request = chain.request()
         val newRequest: Request.Builder = request.newBuilder()
 
@@ -56,10 +35,9 @@ class GqlAkamaiBotInterceptor : Interceptor {
             if (isPlaintext(buffer)) {
                 charset?.let {
                     readFromBuffer(buffer, it).let {
-
                         // start time
                         try {
-                            val time = measureTimeMillis {
+                            measureTimeMillis {
                                 val jsonArray = JSONArray(it)
                                 val jsonObject: JSONObject = jsonArray.getJSONObject(0)
                                 val query = jsonObject.getString("query")
@@ -73,8 +51,6 @@ class GqlAkamaiBotInterceptor : Interceptor {
                                 }.firstOrNull()
 
                                 if (!xTkpdAkamai.isNullOrEmpty()) {
-                                    newRequest.addHeader("X-acf-sensor-data", CYFMonitor.getSensorData()
-                                            ?: "")
                                     newRequest.addHeader("X-TKPD-AKAMAI", xTkpdAkamai)
                                 }
                                         
@@ -93,7 +69,7 @@ class GqlAkamaiBotInterceptor : Interceptor {
     private fun isPlaintext(buffer: Buffer): Boolean {
         try {
             val prefix = Buffer()
-            val byteCount = if (buffer.size < 64) buffer.size else 64
+            val byteCount = if (buffer.size() < 64) buffer.size() else 64
             buffer.copyTo(prefix, 0, byteCount)
             for (i in 0..15) {
                 if (prefix.exhausted()) {
@@ -117,7 +93,7 @@ class GqlAkamaiBotInterceptor : Interceptor {
     }
 
     private fun readFromBuffer(buffer: Buffer, charset: Charset): String {
-        val bufferSize = buffer.size
+        val bufferSize = buffer.size()
         val maxBytes = Math.min(bufferSize, 250000L)
         var body = ""
         try {

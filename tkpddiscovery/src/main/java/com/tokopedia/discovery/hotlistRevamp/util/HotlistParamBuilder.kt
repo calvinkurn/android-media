@@ -48,7 +48,8 @@ class HotlistParamBuilder {
 
     enum class SourceType(val value: String) {
         DIRECTORY("directory"),
-        QUICK_FILTER("quick_filter")
+        QUICK_FILTER("quick_filter"),
+        HOTLIST("hotlist")
     }
 
     enum class EpType(val value: String) {
@@ -157,7 +158,7 @@ class HotlistParamBuilder {
         if (sortParam.isNotEmpty()) {
             param = "$param&$sortParam"
         }
-        param = "$param&$strFilterAttribute&device=$DEVICE_TYPE&page=$page&item=$TOP_ADS_PER_PAGE&ep=${EpType.PRODUCT.value}&$KEY_F_SHOP=1&src=${SourceType.DIRECTORY.value}"
+        param = "$param&$strFilterAttribute&device=$DEVICE_TYPE&page=$page&item=$TOP_ADS_PER_PAGE&ep=${EpType.PRODUCT.value}&$KEY_F_SHOP=1&src=${SourceType.HOTLIST.value}"
         return param
     }
 
