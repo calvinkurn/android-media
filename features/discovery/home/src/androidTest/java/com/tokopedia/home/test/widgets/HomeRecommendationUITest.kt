@@ -36,7 +36,7 @@ import org.junit.Test
 import java.util.concurrent.TimeoutException
 
 @ExperimentalCoroutinesApi
-class HomeRecommendationUITest {
+class HomeRecommendationUITest{
     @Rule
     @JvmField
     val activityRule = ActivityTestRule(HomeActivityTest::class.java, true, true)

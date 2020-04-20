@@ -497,7 +497,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
 
     fun renderOpenBoxError(message: String, actionText: String) {
         if (context != null) {
-            val internetAvailable = DeviceConnectionInfo.isInternetAvailable(context!!, checkWifi = true, checkCellular = true)
+            val internetAvailable = isConnectedToInternet()
             if (!internetAvailable) {
                 showNoInterNetDialog(viewModel::getRewards, context!!)
             } else {
@@ -508,7 +508,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
 
     fun showRemindMeError(message: String, actionText: String) {
         if (context != null) {
-            val internetAvailable = DeviceConnectionInfo.isInternetAvailable(context!!, checkWifi = true, checkCellular = true)
+            val internetAvailable = isConnectedToInternet()
             if (!internetAvailable) {
                 showNoInterNetDialog(viewModel::setReminder, context!!)
             } else {
@@ -539,7 +539,10 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
         giftBoxDailyView.fmGiftBox.doOnLayout { fmGiftBox ->
             val heightOfRvCoupons = fmGiftBox.context.resources.getDimension(R.dimen.gami_rv_coupons_height)
             val lidTop = fmGiftBox.top
-            val translationY = lidTop - heightOfRvCoupons + fmGiftBox.dpToPx(3)
+            var translationY = lidTop - heightOfRvCoupons + fmGiftBox.dpToPx(3)
+            if(isTablet){
+                translationY -= fmGiftBox.dpToPx(8)
+            }
 
             rewardContainer.rvCoupons.translationY = translationY
             val distanceFromLidTop = fmGiftBox.dpToPx(29)
@@ -731,7 +734,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
 
     fun checkInternetOnButtonActionAndRedirect() {
         if (context != null) {
-            var internetAvailable = DeviceConnectionInfo.isInternetAvailable(context!!, checkWifi = true, checkCellular = true)
+            var internetAvailable = isConnectedToInternet()
             if (!internetAvailable) {
                 showNoInterNetDialog(this::checkInternetOnButtonActionAndRedirect, context!!)
             } else {
@@ -742,7 +745,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
 
     fun renderGiftBoxError(message: String, actionText: String) {
         if (context != null) {
-            val internetAvailable = DeviceConnectionInfo.isInternetAvailable(context!!, checkWifi = true, checkCellular = true)
+            val internetAvailable = isConnectedToInternet()
             if (!internetAvailable) {
                 showNoInterNetDialog(viewModel::getGiftBox, context!!)
             } else {

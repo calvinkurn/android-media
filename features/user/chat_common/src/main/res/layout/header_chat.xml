@@ -49,74 +49,79 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
+        android:layout_marginStart="@dimen/chatcommon_9dp"
+        android:layout_marginLeft="@dimen/chatcommon_9dp"
         android:layout_marginEnd="@dimen/chatcommon_60dp"
         android:layout_marginRight="@dimen/chatcommon_60dp"
         android:layout_toEndOf="@+id/flPhotoContainer"
         android:layout_toRightOf="@+id/flPhotoContainer"
         android:gravity="center_vertical">
 
-        <LinearLayout
-            android:id="@+id/clTitleContainer"
+        <ImageView
+            android:id="@+id/ivBadge"
+            android:layout_width="@dimen/chatcommon_26dp"
+            android:layout_height="@dimen/chatcommon_22dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginTop="@dimen/chatcommon_1dp"
+            android:layout_marginEnd="@dimen/spacing_lvl2"
+            android:layout_marginRight="@dimen/spacing_lvl2"
+            android:paddingEnd="@dimen/spacing_lvl2"
+            android:paddingRight="@dimen/spacing_lvl2"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="RtlSymmetry"
+            tools:src="@drawable/ic_badge_shop_official"
+            tools:visibility="visible" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/chatcommon_9dp"
-            android:layout_marginLeft="@dimen/chatcommon_9dp"
-            android:orientation="horizontal"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            android:ellipsize="end"
+            android:includeFontPadding="false"
+            android:maxLines="1"
+            android:textColor="@color/black_70"
+            app:layout_constrainedWidth="true"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toEndOf="@+id/ivBadge"
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="heading_4"
+            tools:text="@tools:sample/lorem/random" />
 
-            <ImageView
-                android:id="@+id/ivBadge"
-                android:layout_width="@dimen/chatcommon_22dp"
-                android:layout_height="@dimen/chatcommon_22dp"
-                android:layout_gravity="center_vertical"
-                android:layout_marginEnd="@dimen/spacing_lvl2"
-                android:layout_marginRight="@dimen/spacing_lvl2"
-                android:visibility="gone"
-                tools:src="@drawable/ic_badge_shop_official"
-                tools:visibility="visible" />
-
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:ellipsize="end"
-                android:includeFontPadding="false"
-                android:maxEms="8"
-                android:maxLines="1"
-                android:textColor="@color/black_70"
-                app:typographyType="heading_4"
-                tools:text="Really Long text that cuts tasdfasdf" />
-
-            <TextView
-                android:id="@id/label"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginLeft="@dimen/dp_7"
-                android:layout_marginRight="@dimen/dp_7"
-                android:background="@drawable/label_user_chat"
-                android:fontFamily="sans-serif"
-                android:padding="@dimen/dp_4"
-                android:textColor="@color/medium_green"
-                android:textSize="@dimen/chat_person_tag_text_size"
-                android:textStyle="normal"
-                android:visibility="gone"
-                tools:text="Penjual"
-                tools:visibility="visible" />
-        </LinearLayout>
+        <TextView
+            android:id="@id/label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="@dimen/dp_7"
+            android:layout_marginLeft="@dimen/dp_7"
+            android:background="@drawable/label_user_chat"
+            android:fontFamily="sans-serif"
+            android:padding="@dimen/dp_4"
+            android:textColor="@color/medium_green"
+            android:textSize="@dimen/chat_person_tag_text_size"
+            android:textStyle="normal"
+            android:visibility="gone"
+            app:layout_constrainedWidth="true"
+            app:layout_constraintBottom_toBottomOf="@+id/title"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toEndOf="@+id/title"
+            app:layout_constraintTop_toTopOf="@+id/title"
+            tools:text="Penjual"
+            tools:visibility="visible" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/subtitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/chatcommon_9dp"
-            android:layout_marginLeft="@dimen/chatcommon_9dp"
+            android:layout_marginTop="@dimen/chatcommon_1dp"
             android:includeFontPadding="false"
             android:textColor="@color/black_38"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/clTitleContainer"
+            app:layout_constraintTop_toBottomOf="@+id/title"
             app:typographyType="body_3"
             tools:text="Terakhir online 3 menit yang lalu" />
     </androidx.constraintlayout.widget.ConstraintLayout>

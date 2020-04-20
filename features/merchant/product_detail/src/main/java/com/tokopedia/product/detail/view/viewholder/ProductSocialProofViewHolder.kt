@@ -39,14 +39,13 @@ class ProductSocialProofViewHolder(val view: View, private val listener: Dynamic
             listener.onImpressComponent(getComponentTrackData(element))
         }
 
-
         element.rating?.run {
             productStatsView?.renderRatingNew(this.toString())
         }
         attributeInfoView?.renderWishlistCount(element.wishListCount)
 
         productStatsView?.renderData(stats.countReview, stats.countTalk, listener::onReviewClick, listener::onDiscussionClicked, getComponentTrackData(element))
-        attributeInfoView?.renderDataDynamicPdp(stats.countView, txStats)
+        attributeInfoView?.renderDataDynamicPdp(stats.countView, txStats, element.isSocialProofPv)
 
         productStatsView?.renderClickShipping {
             listener.onShipmentSocialProofClicked(getComponentTrackData(element))

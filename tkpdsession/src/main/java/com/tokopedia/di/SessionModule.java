@@ -146,7 +146,9 @@ public class SessionModule {
 
     @SessionScope
     @Provides
-    OkHttpClient provideRegisterOkHttpClient(TkpdAuthInterceptor authInterceptor, AccountsAuthInterceptor accountsAuthInterceptor, ChuckerInterceptor chuckInterceptor) {
+    OkHttpClient provideRegisterOkHttpClient(
+            @ApplicationContext Context context,
+            TkpdAuthInterceptor authInterceptor, AccountsAuthInterceptor accountsAuthInterceptor, ChuckerInterceptor chuckInterceptor) {
         return new OkHttpClient.Builder()
                 .addInterceptor(authInterceptor)
                 .addInterceptor(accountsAuthInterceptor)
@@ -156,7 +158,7 @@ public class SessionModule {
                     newRequest.addHeader("User-Agent", getUserAgent());
                     return chain.proceed(newRequest.build());
                 })
-                .addInterceptor(new AkamaiBotInterceptor())
+                .addInterceptor(new AkamaiBotInterceptor(context))
                 .build();
     }
 

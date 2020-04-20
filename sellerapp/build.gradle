@@ -317,6 +317,7 @@ dependencies {
         implementation project(rootProject.ext.libraries.analyticsDebuggerNoop)
     }
 
+    implementation rootProject.ext.tkpdInternalLibDependencies.fakeresponseNoOp
     implementation(rootProject.ext.analyticsDependencies.moengage)
 
     implementation rootProject.ext.playServicesDependencies.analytics
