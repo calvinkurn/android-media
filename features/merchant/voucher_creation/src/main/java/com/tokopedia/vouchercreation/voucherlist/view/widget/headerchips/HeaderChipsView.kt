@@ -47,13 +47,13 @@ class HeaderChipsView : RecyclerView {
                 super.getItemOffsets(outRect, view, parent, state)
 
                 val position = parent.getChildAdapterPosition(view)
-                val isResetButton = chipAdapter.items[position].type == ChipType.CHIP_RESET
 
                 if (position == 0) {
-                    if (isResetButton) {
+                    val isVisible = chipAdapter.items[position].isVisible
+                    if (isVisible) {
                         outRect.left = view.resources.getDimensionPixelSize(R.dimen.layout_lvl2)
                     } else {
-                        outRect.left = view.resources.getDimensionPixelSize(R.dimen.layout_lvl0)
+                        outRect.left = view.resources.getDimensionPixelSize(R.dimen.layout_lvl1)
                     }
                 }
 
@@ -64,7 +64,7 @@ class HeaderChipsView : RecyclerView {
         }
     }
 
-    private fun getItems(): List<HeaderChipUiModel> = listOf(resetChip, sortChip, filterChip, sortChip, filterChip, sortChip, filterChip)
+    private fun getItems(): List<HeaderChipUiModel> = listOf(resetChip, sortChip, filterChip)
 
     private fun notifyItem(model: HeaderChipUiModel) {
         val position = getItems().indexOf(model)
