@@ -254,7 +254,7 @@ class DynamicChannelMixTopViewHolder(
             gradient.cornerRadius = 0f
             view.background = gradient
         } else {
-            view.setBackgroundColor(Color.parseColor(colorArray[0]))
+            view.setBackgroundColor(Color.parseColor(colorArray.getOrNull(0) ?: "#ffffff"))
         }
     }
 }
