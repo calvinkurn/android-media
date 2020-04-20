@@ -80,7 +80,7 @@ class AddEditProductPreviewViewModel @Inject constructor(
 
     private val mProductVariantList = MutableLiveData<Result<List<ProductVariantByCatModel>>>()
     val productVariantList: LiveData<Result<List<ProductVariantByCatModel>>> get() = mProductVariantList
-    val productVariantListData get() = mProductVariantList.value.let {
+    val productVariantListData: List<ProductVariantByCatModel>? get() = mProductVariantList.value.let {
         when(it) {
             is Success -> it.data
             else -> null
