@@ -48,11 +48,12 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.common_tradein.model.ValidateTradeInResponse
 import com.tokopedia.common_tradein.utils.TradeInUtils
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.common_tradein.model.ValidateTradeInResponse
 import com.tokopedia.design.base.BaseToaster
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.component.ToasterNormal
@@ -277,6 +278,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
 
         const val EXTRA_IMAGE_URL_LIST = "EXTRA_IMAGE_URL_LIST"
         const val EXTRA_DEFAULT_POSITION = "EXTRA_DEFAULT_POSITION"
+        const val EXTRA_PRODUCT_ID = "PRODUCT_ID"
 
         const val SAVED_NOTE = "saved_note"
         const val SAVED_QUANTITY = "saved_quantity"
@@ -1657,7 +1659,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
     private fun gotoEditProduct() {
         val id = productInfo?.parentProductId ?: return
         context?.let {
-            val intent = RouteManager.getIntent(it, ApplinkConstInternalMarketplace.PRODUCT_EDIT_ITEM, id)
+            val intent = RouteManager.getIntent(it, ApplinkConst.PRODUCT_EDIT, id)
             intent?.run { startActivityForResult(this, REQUEST_CODE_EDIT_PRODUCT) }
         }
     }

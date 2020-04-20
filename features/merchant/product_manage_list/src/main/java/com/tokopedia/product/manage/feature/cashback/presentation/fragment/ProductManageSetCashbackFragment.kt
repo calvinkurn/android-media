@@ -47,6 +47,8 @@ class ProductManageSetCashbackFragment : Fragment(), SelectClickListener,
         const val PARAM_SET_CASHBACK_VALUE = "cashback"
         const val SET_CASHBACK_PRODUCT_NAME = "product_name"
         const val PARAM_SET_CASHBACK_PRODUCT_PRICE = "price"
+        const val PARAM_SET_CASHBACK_SHOP_ID = "shop_id"
+        const val EXTRA_CASHBACK_SHOP_ID = "extra_shop_id"
 
         fun createInstance(productId: String, cashback: Int, productName: String, price: String): ProductManageSetCashbackFragment{
             return ProductManageSetCashbackFragment().apply {
@@ -55,6 +57,18 @@ class ProductManageSetCashbackFragment : Fragment(), SelectClickListener,
                     putInt(PARAM_SET_CASHBACK_VALUE, cashback)
                     putString(SET_CASHBACK_PRODUCT_NAME, productName)
                     putString(PARAM_SET_CASHBACK_PRODUCT_PRICE, price)
+                }
+            }
+        }
+
+        fun createInstance(productId: String, cashback: Int, productName: String, price: String, shopId: String): ProductManageSetCashbackFragment{
+            return ProductManageSetCashbackFragment().apply {
+                arguments = Bundle().apply {
+                    putString(SET_CASHBACK_PRODUCT_ID, productId)
+                    putInt(PARAM_SET_CASHBACK_VALUE, cashback)
+                    putString(SET_CASHBACK_PRODUCT_NAME, productName)
+                    putString(PARAM_SET_CASHBACK_PRODUCT_PRICE, price)
+                    putString(PARAM_SET_CASHBACK_SHOP_ID, shopId)
                 }
             }
         }
@@ -68,6 +82,7 @@ class ProductManageSetCashbackFragment : Fragment(), SelectClickListener,
     private var cashback = 0
     private var productName = ""
     private var price = ""
+    private var shopId = ""
 
     override fun getComponent(): ProductManageSetCashbackComponent? {
         return activity?.run {
@@ -86,6 +101,7 @@ class ProductManageSetCashbackFragment : Fragment(), SelectClickListener,
             cashback = it.getInt(PARAM_SET_CASHBACK_VALUE)
             productName = it.getString(SET_CASHBACK_PRODUCT_NAME, "")
             price = it.getString(PARAM_SET_CASHBACK_PRODUCT_PRICE, "")
+            shopId = it.getString(PARAM_SET_CASHBACK_SHOP_ID, "")
         }
     }
 
@@ -107,6 +123,19 @@ class ProductManageSetCashbackFragment : Fragment(), SelectClickListener,
     override fun onSelectClick(element: SelectUiModel) {
         cashback = element.value.toIntOrZero()
         setCashbackList()
+        if(shopId != "") {
+            if(cashback != 0) {
+                ProductManageTracking.eventClickCashbackValue(cashback, shopId)
+            } else {
+                ProductManageTracking.eventClickNoCashbackValue(shopId)
+            }
+        }
+    }
+
+    fun setTrackerOnBackPressed() {
+        if(shopId != "") {
+            ProductManageTracking.eventClickBackOnPromotionPage(shopId)
+        }
     }
 
     private fun initInjector() {
@@ -134,7 +163,11 @@ class ProductManageSetCashbackFragment : Fragment(), SelectClickListener,
     private fun initButton() {
         submitCashbackButton.setOnClickListener {
             viewModel.setCashback(productId, productName, cashback)
-            ProductManageTracking.eventCashbackSettingsSave(productId)
+            if(shopId != "") {
+                ProductManageTracking.eventClickSavePromotion(shopId)
+            } else {
+                ProductManageTracking.eventCashbackSettingsSave(productId)
+            }
         }
     }
 
@@ -199,6 +232,5 @@ class ProductManageSetCashbackFragment : Fragment(), SelectClickListener,
                             productName = setCashbackResult.productName, cashback = setCashbackResult.cashback)
                 })
     }
-
 
 }
