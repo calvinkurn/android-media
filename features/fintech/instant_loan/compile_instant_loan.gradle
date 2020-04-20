@@ -1,4 +1,5 @@
 include "features:fintech:instant_loan"
+include "features:promo:promotions_target"
 include "features:common:resources_common"
 include 'tkpdabstraction'
 include 'tkpddesign'
@@ -9,7 +10,6 @@ include "libraries:inappupdate"
 include "libraries:kotlin_extensions"
 include 'libraries:permissionchecker'
 include "libraries:play_core"
-include "libraries:promotions_target"
 include "libraries:remote_config"
 include "libraries:track"
 include "libraries:webview"
