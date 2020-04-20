@@ -924,7 +924,9 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
 
     fun updatePromoListAfterClickPromoHeader(element: PromoListHeaderUiModel) {
         if (!element.uiState.isCollapsed) {
-            promoListUiModel.value?.indexOf(element)?.let {
+            val headerIndex = promoListUiModel.value?.indexOf(element)
+            if (headerIndex == -1) return
+            headerIndex?.let {
                 // Get the header data and set inverse collapsed value
                 val headerData = promoListUiModel.value?.get(it) as PromoListHeaderUiModel
                 headerData.uiState.isCollapsed = !headerData.uiState.isCollapsed
@@ -954,7 +956,9 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
                 _tmpUiModel.value = Update(headerData)
             }
         } else {
-            promoListUiModel.value?.indexOf(element)?.let {
+            val headerIndex = promoListUiModel.value?.indexOf(element)
+            if (headerIndex == -1) return
+            headerIndex?.let {
                 // Get the header data and set inverse collapsed value
                 val headerData = promoListUiModel.value?.get(it) as PromoListHeaderUiModel
                 headerData.uiState.isCollapsed = !headerData.uiState.isCollapsed
@@ -981,7 +985,9 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
 
     fun updatePromoListAfterClickPromoItem(element: PromoListItemUiModel) {
         // Set to selected / un selected
-        promoListUiModel.value?.indexOf(element)?.let {
+        val itemIndex = promoListUiModel.value?.indexOf(element)
+        if (itemIndex == -1) return
+        itemIndex?.let {
             // Get the promo item data and set inverted selected value
             val promoItem = promoListUiModel.value?.get(it) as PromoListItemUiModel
             promoItem.uiState.isSelected = !promoItem.uiState.isSelected
@@ -1393,5 +1399,9 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
 
     fun sendAnalyticsClickPakaiPromoFailed(errorMessage: String) {
         analytics.eventClickPakaiPromoFailed(getPageSource(), errorMessage)
+    }
+
+    fun sendAnalyticsClickBeliTanpaPromo() {
+        analytics.eventClickBeliTanpaPromo(getPageSource())
     }
 }

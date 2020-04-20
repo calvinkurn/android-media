@@ -174,6 +174,8 @@ object ProductDetailConstant {
     const val REQUEST_CODE_LOGIN_THEN_TRADE_IN = 564
     const val REQUEST_CODE_LOGIN_THEN_APPLY_CREDIT = 569
 
+    const val REQUEST_CODE_CHECKOUT = 12382
+
     //OVO
     const val OVO_INACTIVE_STATUS = 1;
     const val OVO_INSUFFICIENT_BALANCE_STATUS = 2;

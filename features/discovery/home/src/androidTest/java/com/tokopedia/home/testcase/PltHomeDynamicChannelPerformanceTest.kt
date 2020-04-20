@@ -60,6 +60,8 @@ class PltHomeDynamicChannelPerformanceTest {
         var datasource = ""
         if (activityRule.activity.isFromCache) {
             datasource = "cache"
+        } else if (!pltPerformanceData.isSuccess) {
+            datasource = "failed"
         } else datasource = "network"
         perfReportPlt.appendText(
                 "$testCaseName," +

@@ -302,8 +302,8 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         RouteManager.route(activity, ApplinkConst.PROFILE.replace("{user_id}", opponentId))
     }
 
-    override fun showErrorWebSocket(b: Boolean) {
-        getViewState().showErrorWebSocket(b)
+    override fun showErrorWebSocket(isWebSocketError: Boolean) {
+        getViewState().showErrorWebSocket(isWebSocketError)
     }
 
     private fun onSuccessGetPreviousChat(): (ChatroomViewModel) -> Unit {
