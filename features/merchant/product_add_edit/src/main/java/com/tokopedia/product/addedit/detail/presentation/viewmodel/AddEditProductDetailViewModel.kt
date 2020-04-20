@@ -8,10 +8,11 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.product.addedit.common.util.ResourceProvider
 import com.tokopedia.product.addedit.detail.domain.usecase.GetCategoryRecommendationUseCase
 import com.tokopedia.product.addedit.detail.domain.usecase.GetNameRecommendationUseCase
+import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_MIN_ORDER_QUANTITY
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_PREORDER_DAYS
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_PREORDER_WEEKS
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_PRODUCT_STOCK_LIMIT
-import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MIN_ORDER_QUANTITY
+import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MIN_MIN_ORDER_QUANTITY
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MIN_PREORDER_DURATION
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MIN_PRODUCT_PRICE_LIMIT
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MIN_PRODUCT_STOCK_LIMIT
@@ -256,16 +257,22 @@ class AddEditProductDetailViewModel @Inject constructor(
         mIsProductStockInputError.value = false
     }
 
-    fun validateProductMinOrderInput(productStockInput: String, orderQuantityInput: String) {
-        if (orderQuantityInput.isEmpty()) {
+    fun validateProductMinOrderInput(productStockInput: String, minOrderQuantityInput: String) {
+        if (minOrderQuantityInput.isEmpty()) {
             val errorMessage = provider.getEmptyOrderQuantityErrorMessage()
             errorMessage?.let { orderQuantityMessage = it }
             mIsOrderQuantityInputError.value = true
             return
         }
-        val productMinOrder = orderQuantityInput.toBigInteger()
-        if (productMinOrder < MIN_ORDER_QUANTITY.toBigInteger()) {
+        val productMinOrder = minOrderQuantityInput.toBigInteger()
+        if (productMinOrder < MIN_MIN_ORDER_QUANTITY.toBigInteger()) {
             val errorMessage = provider.getMinLimitOrderQuantityErrorMessage()
+            errorMessage?.let { orderQuantityMessage = it }
+            mIsOrderQuantityInputError.value = true
+            return
+        }
+        if (productMinOrder > MAX_MIN_ORDER_QUANTITY.toBigInteger()) {
+            val errorMessage = provider.getMaxLimitOrderQuantityErrorMessage()
             errorMessage?.let { orderQuantityMessage = it }
             mIsOrderQuantityInputError.value = true
             return
@@ -273,7 +280,7 @@ class AddEditProductDetailViewModel @Inject constructor(
         if (!hasVariants && productStockInput.isNotEmpty()) {
             val productStock = productStockInput.toBigInteger()
             if (productMinOrder > productStock) {
-                val errorMessage = provider.getMaxLimitOrderQuantityErrorMessage()
+                val errorMessage = provider.getMinOrderExceedStockErrorMessage()
                 errorMessage?.let { orderQuantityMessage = it }
                 mIsOrderQuantityInputError.value = true
                 return
