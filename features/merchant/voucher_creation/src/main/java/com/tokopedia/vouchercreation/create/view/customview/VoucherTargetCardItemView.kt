@@ -13,14 +13,14 @@ import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.vouchercreation.R
 import kotlinx.android.synthetic.main.mvc_voucher_target_item.view.*
 
-class VoucherTargetCardItem @JvmOverloads constructor(
+class VoucherTargetCardItemView @JvmOverloads constructor(
         context: Context,
         attrs: AttributeSet? = null,
         defStyleAttr: Int = 0,
         defStyleRes: Int = 0,
         @LayoutRes layoutResource: Int = R.layout.mvc_voucher_target_item,
-        styleableResource: IntArray = R.styleable.VoucherTargetCardItem
-) : BaseVoucherView(context, attrs, defStyleAttr, defStyleRes, layoutResource, styleableResource) {
+        styleableResource: IntArray = R.styleable.VoucherTargetCardItemView
+) : BaseVoucherCustomView(context, attrs, defStyleAttr, defStyleRes, layoutResource, styleableResource) {
 
     companion object {
         const val TARGET_PUBLIC_TYPE = 0
@@ -49,10 +49,10 @@ class VoucherTargetCardItem @JvmOverloads constructor(
 
     override fun setupAttributes() {
         attributes?.run {
-            voucherTargetType = getInt(R.styleable.VoucherTargetCardItem_targetType, voucherTargetType)
-            isItemEnabled = getBoolean(R.styleable.VoucherTargetCardItem_isEnabled, isItemEnabled)
-            isHavePromoCode = getBoolean(R.styleable.VoucherTargetCardItem_isHavePromoCode, isHavePromoCode)
-            promoCode = getString(R.styleable.VoucherTargetCardItem_promoCode).toBlankOrString()
+            voucherTargetType = getInt(R.styleable.VoucherTargetCardItemView_targetType, voucherTargetType)
+            isItemEnabled = getBoolean(R.styleable.VoucherTargetCardItemView_isEnabled, isItemEnabled)
+            isHavePromoCode = getBoolean(R.styleable.VoucherTargetCardItemView_isHavePromoCode, isHavePromoCode)
+            promoCode = getString(R.styleable.VoucherTargetCardItemView_promoCode).toBlankOrString()
         }
         setupView()
     }
@@ -76,7 +76,7 @@ class VoucherTargetCardItem @JvmOverloads constructor(
     }
 
     private fun View.setupDescription() {
-        voucherTargetItemDescription.text = resources.getString(voucherTargetCardType.descriptionStringRes)
+        voucherTargetItemDescription.text = resources.getText(voucherTargetCardType.descriptionStringRes)
     }
 
     private fun View.setupItemEnabling() {

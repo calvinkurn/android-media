@@ -9,14 +9,14 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.vouchercreation.R
 import kotlinx.android.synthetic.main.mvc_promo_code_info.view.*
 
-class VoucherTargetPromoCodeInfo @JvmOverloads constructor(
+class VoucherTargetPromoCodeInfoView @JvmOverloads constructor(
         context: Context,
         attrs: AttributeSet? = null,
         defStyleAttr: Int = 0,
         defStyleRes: Int = 0,
         @LayoutRes layoutResource: Int = R.layout.mvc_promo_code_info,
-        styleableResource: IntArray = R.styleable.VoucherTargetPromoCodeInfo
-) : BaseVoucherView(context, attrs, defStyleAttr, defStyleRes, layoutResource, styleableResource) {
+        styleableResource: IntArray = R.styleable.VoucherTargetPromoCodeInfoView
+) : BaseVoucherCustomView(context, attrs, defStyleAttr, defStyleRes, layoutResource, styleableResource) {
 
     init {
         setupAttributes()
@@ -36,8 +36,8 @@ class VoucherTargetPromoCodeInfo @JvmOverloads constructor(
 
     override fun setupAttributes() {
         attributes?.run {
-            promoCodeString = getString(R.styleable.VoucherTargetPromoCodeInfo_code).toBlankOrString()
-            isChangeEnabled = getBoolean(R.styleable.VoucherTargetPromoCodeInfo_isChangeEnabled, isChangeEnabled)
+            promoCodeString = getString(R.styleable.VoucherTargetPromoCodeInfoView_code).toBlankOrString()
+            isChangeEnabled = getBoolean(R.styleable.VoucherTargetPromoCodeInfoView_isChangeEnabled, isChangeEnabled)
         }
     }
 

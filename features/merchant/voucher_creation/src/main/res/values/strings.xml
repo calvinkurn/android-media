@@ -10,8 +10,10 @@
     <string name="mvc_create_step_desc_voucher_review">Review voucher</string>
     <string name="mvc_create_target_public">Publik</string>
     <string name="mvc_create_target_special">Khusus</string>
-    <string name="mvc_create_target_public_desc">Voucher akan tampil di tokomu dan dapat langsung digunakan oleh <b>semua pembeli untuk</b> bertransaksi.</string>
+    <string name="mvc_create_target_public_desc">Voucher akan tampil di tokomu dan dapat langsung digunakan oleh <b>semua pembeli</b> untuk bertransaksi.</string>
     <string name="mvc_create_target_special_desc">Kode promo hanya dapat digunakan oleh pembeli yang <b>menerima kode khusus</b> dari tokomu.</string>
     <string name="mvc_create_promo_code">Kode Promo:&#160;</string>
     <string name="mvc_create_promo_code_change">Ubah</string>
+    <string name="mvc_create_target_widget_title">Pilih target voucher</string>
+    <string name="mvc_create_voucher_name_widget_title">Isi nama voucher</string>
 </resources>

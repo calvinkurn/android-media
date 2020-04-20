@@ -48,7 +48,7 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
     }
 
     private val fragmentStepsHashMap by lazy {
-        LinkedHashMap<VoucherCreationStepInfo, BaseCreateMerchantVoucherFragment>().apply {
+        LinkedHashMap<VoucherCreationStepInfo, BaseCreateMerchantVoucherFragment<*,*>>().apply {
             put(VoucherCreationStepInfo.STEP_ONE, MerchantVoucherTargetFragment.createInstance(::onNextStep))
             put(VoucherCreationStepInfo.STEP_TWO, MerchantVoucherTargetFragment.createInstance(::onNextStep))
             put(VoucherCreationStepInfo.STEP_THREE, MerchantVoucherTargetFragment.createInstance(::onNextStep))

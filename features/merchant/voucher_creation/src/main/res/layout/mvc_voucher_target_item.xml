@@ -39,7 +39,7 @@
     <TextView
         android:id="@+id/voucherTargetItemDescription"
         android:layout_width="0dp"
-        android:layout_height="@dimen/mvc_create_target_description_height"
+        android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/mvc_create_target_description_margin_top"
         android:layout_marginEnd="@dimen/mvc_create_target_description_margin_right"
         android:layout_marginRight="@dimen/mvc_create_target_description_margin_right"
@@ -58,10 +58,11 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="@id/voucherTargetItem"/>
 
-    <com.tokopedia.vouchercreation.create.view.customview.VoucherTargetPromoCodeInfo
+    <com.tokopedia.vouchercreation.create.view.customview.VoucherTargetPromoCodeInfoView
         android:id="@+id/voucherTargetPromoCodeInfo"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/mvc_create_target_card_margin"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/voucherTargetItemDescription"/>

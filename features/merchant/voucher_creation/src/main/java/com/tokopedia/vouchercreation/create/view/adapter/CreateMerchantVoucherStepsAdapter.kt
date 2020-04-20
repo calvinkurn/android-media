@@ -6,7 +6,7 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.tokopedia.vouchercreation.create.view.fragment.BaseCreateMerchantVoucherFragment
 
 class CreateMerchantVoucherStepsAdapter(fragmentActivity: FragmentActivity,
-                                        private val fragmentList: List<BaseCreateMerchantVoucherFragment>) :
+                                        private val fragmentList: List<BaseCreateMerchantVoucherFragment<*,*>>) :
         FragmentStateAdapter(fragmentActivity) {
 
 
