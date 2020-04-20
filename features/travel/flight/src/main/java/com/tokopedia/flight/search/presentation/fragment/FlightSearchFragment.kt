@@ -524,7 +524,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
         val emptyResultViewModel = EmptyResultModel()
         emptyResultViewModel.iconRes = R.drawable.ic_flight_empty_state
         if (inFilterMode) {
-            emptyResultViewModel.contentRes = R.string.flight_there_is_zero_flight_for_the_filter
+            emptyResultViewModel.contentRes = R.string.flight_there_is_zero_flight_for_the_filter_description
             emptyResultViewModel.buttonTitleRes = R.string.reset_filter
             emptyResultViewModel.callback = object : EmptyResultViewHolder.Callback {
                 override fun onEmptyContentItemTextClicked() {
@@ -536,8 +536,8 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
                 }
             }
         } else {
-            emptyResultViewModel.contentRes = R.string.flight_there_is_no_flight_available
-            emptyResultViewModel.buttonTitleRes = R.string.change_date
+            emptyResultViewModel.contentRes = R.string.flight_there_is_no_flight_available_description
+            emptyResultViewModel.buttonTitleRes = R.string.flight_search_change_search_empty_button_label
             emptyResultViewModel.callback = object : EmptyResultViewHolder.Callback {
                 override fun onEmptyContentItemTextClicked() {
 

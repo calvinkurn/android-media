@@ -259,7 +259,6 @@ class FlightSearchViewModel @Inject constructor(
     fun sendQuickFilterTrack(filterName: String) {
         flightAnalytics.eventQuickFilterClick(filterName)
     }
-
     private fun deleteAllSearchData() {
         launchCatchError(dispatcherProvider.ui(), block = {
             flightSearchDeleteAllDataUseCase.execute()

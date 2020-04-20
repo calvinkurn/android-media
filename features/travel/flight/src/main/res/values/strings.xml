@@ -209,9 +209,11 @@
     <string name="flight_booking_passenger_meal_fill_label">Isi Data</string>
     <string name="flight_booking_luggage_toolbar_title">Bagasi</string>
     <string name="flight_booking_meal_toolbar_title">Makanan</string>
-    <string name="flight_there_is_no_flight_available">Tidak ada penerbangan yang tersedia</string>
-    <string name="flight_there_is_zero_flight_for_the_filter">Terdapat 0 penerbangan yang sesuai dengan filter.</string>
-    <string name="change_date">Ubah Tanggal</string>
+    <string name="flight_there_is_no_flight_available_title">Yaah... Rute ini nggak ada</string>
+    <string name="flight_there_is_no_flight_available_description">Rute yang kamu cari belum tersedia. Coba cari rute lainnya, yuk!</string>
+    <string name="flight_there_is_zero_flight_for_the_filter_title">Yang kamu cari nggak ada di sini</string>
+    <string name="flight_there_is_zero_flight_for_the_filter_description">Jangan panik, coba ubah filter kamu dulu.</string>
+    <string name="flight_search_change_search_empty_button_label">Cari Rute Lainnya</string>
     <string name="reset_filter">Reset Filter</string>
     <string name="flight_booking_passenger_first_name_hint">Nama Depan (sesuai KTP/Paspor/Lainnya)</string>
     <string name="flight_booking_passenger_firstname_secondary_hint">Isi Nama Depan</string>

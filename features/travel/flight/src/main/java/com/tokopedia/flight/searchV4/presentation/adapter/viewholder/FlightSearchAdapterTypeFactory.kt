@@ -7,7 +7,6 @@ import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.base.view.adapter.viewholders.ErrorNetworkViewHolder
 import com.tokopedia.common.travel.presentation.adapter.TravelSearchShimmeringViewHolder
-import com.tokopedia.flight.search.presentation.adapter.viewholder.EmptyResultViewHolder
 import com.tokopedia.flight.search.presentation.model.FlightJourneyModel
 import com.tokopedia.flight.search.presentation.model.FlightSearchSeeAllResultModel
 import com.tokopedia.flight.search.presentation.model.FlightSearchSeeOnlyBestPairingModel

@@ -3,7 +3,7 @@ package com.tokopedia.flight.searchV4.presentation.model
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.flight.search.presentation.adapter.viewholder.EmptyResultViewHolder
+import com.tokopedia.flight.searchV4.presentation.adapter.viewholder.EmptyResultViewHolder
 import com.tokopedia.flight.searchV4.presentation.adapter.viewholder.FlightSearchAdapterTypeFactory
 
 /**
