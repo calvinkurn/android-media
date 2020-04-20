@@ -8,7 +8,7 @@
     <FrameLayout
         android:id="@+id/progressBarFrame"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/mvc_create_progressbar_frame_height"
+        android:layout_height="@dimen/mvc_create_progressbar_height"
         app:layout_constraintTop_toBottomOf="@id/createMerchantVoucherHeader">
 
         <ProgressBar
@@ -16,7 +16,7 @@
             style="?android:attr/progressBarStyleHorizontal"
             android:theme="@style/progressBarGreen"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/mvc_create_progressbar_height"
             android:max="@integer/progress_bar_max_value"
             android:background="@color/white"
             app:layout_constraintTop_toBottomOf="@id/createMerchantVoucherHeader"

@@ -4,14 +4,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.vouchercreation.R
-import com.tokopedia.vouchercreation.create.view.adapter.MerchantVoucherTargetAdapter
 import com.tokopedia.vouchercreation.create.view.typefactory.VoucherTargetAdapterTypeFactory
 import com.tokopedia.vouchercreation.create.view.typefactory.VoucherTargetTypeFactory
+import com.tokopedia.vouchercreation.create.view.uimodel.NextButtonUiModel
 import com.tokopedia.vouchercreation.create.view.uimodel.VoucherTargetUiModel
-import kotlinx.android.synthetic.main.fragment_merchant_voucher_target.*
 
 class MerchantVoucherTargetFragment(onNextInvoker: () -> Unit = {}) : BaseCreateMerchantVoucherFragment<VoucherTargetTypeFactory, VoucherTargetAdapterTypeFactory>(onNextInvoker) {
 
@@ -42,19 +40,12 @@ class MerchantVoucherTargetFragment(onNextInvoker: () -> Unit = {}) : BaseCreate
     override fun loadData(page: Int) {}
 
     private fun setupView() {
-        renderList(listOf(VoucherTargetUiModel()))
-        voucherTargetRecyclerView?.adapter = MerchantVoucherTargetAdapter(::onRequestNotify)
-        voucherTargetRecyclerView?.layoutManager = LinearLayoutManager(context)
-        nextButton?.setOnClickListener {
-            onNext()
-        }
-    }
+        val widgetList = listOf(
+                VoucherTargetUiModel(),
+                NextButtonUiModel(onNext))
+        adapter?.data?.addAll(widgetList)
+        adapter?.notifyDataSetChanged()
+        renderList(widgetList)
 
-    private fun onRequestNotify() {
-        voucherTargetRecyclerView?.run {
-            post {
-                adapter?.notifyDataSetChanged()
-            }
-        }
     }
 }
