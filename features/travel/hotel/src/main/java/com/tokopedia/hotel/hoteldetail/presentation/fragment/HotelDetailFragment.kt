@@ -15,12 +15,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.appbar.AppBarLayout
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.common.travel.utils.TravelDateUtil
-import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.common.analytics.TrackingHotelUtil
 import com.tokopedia.hotel.common.presentation.HotelBaseFragment
 import com.tokopedia.hotel.common.presentation.widget.RatingStarView
 import com.tokopedia.hotel.common.util.ErrorHandlerHotel
+import com.tokopedia.hotel.common.util.HotelStringUtils
 import com.tokopedia.hotel.globalsearch.presentation.activity.HotelGlobalSearchActivity
 import com.tokopedia.hotel.globalsearch.presentation.widget.HotelGlobalSearchWidget
 import com.tokopedia.hotel.homepage.presentation.activity.HotelHomepageActivity
@@ -388,7 +388,7 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
             var hasHeadline = false
             if (data.totalReview > 0) {
                 tv_hotel_rating_count.text = getString(R.string.hotel_detail_based_on_review_number,
-                        CurrencyFormatUtil.convertPriceValue(data.totalReview.toDouble(), false))
+                        HotelStringUtils.convertPriceValue(data.totalReview.toDouble(), false))
                 tv_hotel_rating_detail.text = data.headline
                 hasHeadline = true
             } else if (!hasHeadline) {

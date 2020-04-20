@@ -11,6 +11,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -22,7 +23,7 @@ import com.google.android.gms.location.LocationServices
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
-import com.tokopedia.design.component.Dialog
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.common.presentation.HotelBaseActivity
 import com.tokopedia.hotel.common.util.ErrorHandlerHotel
@@ -273,16 +274,16 @@ class HotelRecommendationFragment : BaseListFragment<PopularSearch, PopularSearc
     }
 
     private fun showDialogEnableGPS() {
-        val dialog = Dialog(activity, Dialog.Type.PROMINANCE)
+        val dialog = DialogUnify(activity as AppCompatActivity, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
         dialog.setTitle(getString(R.string.hotel_recommendation_gps_dialog_title))
-        dialog.setDesc(getString(R.string.hotel_recommendation_gps_dialog_desc))
-        dialog.setBtnOk(getString(R.string.hotel_recommendation_gps_dialog_ok))
-        dialog.setBtnCancel(getString(R.string.hotel_recommendation_gps_dialog_cancel))
-        dialog.setOnOkClickListener {
+        dialog.setDescription(getString(R.string.hotel_recommendation_gps_dialog_desc))
+        dialog.setPrimaryCTAText(getString(R.string.hotel_recommendation_gps_dialog_ok))
+        dialog.setPrimaryCTAClickListener {
             startActivityForResult(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS), REQUEST_CODE_GPS)
             dialog.dismiss()
         }
-        dialog.setOnCancelClickListener {
+        dialog.setSecondaryCTAText(getString(R.string.hotel_recommendation_gps_dialog_cancel))
+        dialog.setSecondaryCTAClickListener {
             onErrorGetLocation()
             dialog.dismiss()
         }

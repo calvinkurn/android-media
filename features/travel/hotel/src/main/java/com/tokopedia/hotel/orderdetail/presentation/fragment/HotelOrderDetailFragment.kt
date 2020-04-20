@@ -400,8 +400,8 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
                 buttonCompat.layoutParams = params
 
                 if (button.weight == 1) {
-                    buttonCompat.background = resources.getDrawable(com.tokopedia.design.R.drawable.rect_white_rounded_stroke_gray)
-                    buttonCompat.setTextColor(resources.getColor(R.color.hotel_grey_500))
+                    buttonCompat.background = ContextCompat.getDrawable(it, R.drawable.bg_hotel_rect_rounded_stroke_gray)
+                    buttonCompat.setTextColor(ContextCompat.getColor(it, R.color.hotel_grey_500))
                 } else if (button.weight == 2) {
                     buttonCompat.buttonType = UnifyButton.Type.TRANSACTION
                 }
@@ -454,10 +454,9 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
             context?.let { ctx ->
                 val textView = Typography(ctx)
                 textView.text = notes
-                importantNotesBottomSheets.title = getString(R.string.hotel_important_info_title)
+                importantNotesBottomSheets.setTitle(getString(R.string.hotel_important_info_title))
                 importantNotesBottomSheets.addContentView(textView)
                 importantNotesBottomSheets.show(it.supportFragmentManager, HotelBookingFragment.TAG_HOTEL_IMPORTANT_NOTES)
-
             }
         }
     }

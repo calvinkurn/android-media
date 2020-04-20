@@ -23,7 +23,7 @@ class ImageViewPagerAdapter(private val images: MutableList<String>, private val
         if (images[position] != null && images[position].isNotEmpty()) {
             if (clickListener != null) holder.bannerImage.setOnClickListener { clickListener.onImageClicked(position) }
         }
-        holder.bannerImage.loadImage(images.get(position), com.tokopedia.design.R.drawable.ic_loading_image)
+        holder.bannerImage.loadImage(images[position], R.drawable.ic_hotel_loading_image)
     }
 
     fun addImages(list: List<String>) {

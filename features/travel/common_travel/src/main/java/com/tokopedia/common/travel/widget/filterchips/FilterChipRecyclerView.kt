@@ -5,7 +5,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import android.util.AttributeSet
 import android.view.View
 import com.tokopedia.common.travel.R
-import com.tokopedia.design.base.BaseCustomView
+import com.tokopedia.unifycomponents.BaseCustomView
 import kotlinx.android.synthetic.main.widget_filter_chip_recycler_view.view.*
 
 /**

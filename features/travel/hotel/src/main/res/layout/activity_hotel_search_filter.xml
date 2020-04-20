@@ -5,15 +5,16 @@
     android:clipToPadding="false"
     android:orientation="vertical">
 
-    <androidx.appcompat.widget.Toolbar android:id="@+id/toolbar"
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?actionBarSize"
-        app:elevation="@dimen/spacing_lvl2"
         android:elevation="@dimen/spacing_lvl2"
         android:theme="?toolbarTheme"
         app:contentInsetLeft="@dimen/layout_lvl0"
         app:contentInsetStart="@dimen/layout_lvl0"
         app:contentInsetStartWithNavigation="@dimen/layout_lvl0"
+        app:elevation="@dimen/spacing_lvl2"
         app:subtitleTextAppearance="?subtitleTextAppearance"
         app:titleTextAppearance="?titleTextAppearance">
 
@@ -22,17 +23,15 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end"
-            android:text="@string/hotel_filter_reset"
-            app:typographyType="heading_4"
-            android:paddingTop="@dimen/layout_lvl1"
-            android:paddingBottom="@dimen/layout_lvl1"
-            android:paddingLeft="@dimen/layout_lvl1"
-            android:paddingRight="@dimen/layout_lvl1"
-            android:layout_marginRight="@dimen/hotel_14dp"
             android:layout_marginEnd="@dimen/hotel_14dp"
+            android:layout_marginRight="@dimen/hotel_14dp"
             android:background="?attr/selectableItemBackground"
             android:clickable="true"
-            android:focusable="true"/>
+            android:focusable="true"
+            android:paddingLeft="@dimen/layout_lvl1"
+            android:text="@string/hotel_filter_reset"
+            android:textColor="@color/Green_G500"
+            app:typographyType="body_1" />
 
     </androidx.appcompat.widget.Toolbar>
 

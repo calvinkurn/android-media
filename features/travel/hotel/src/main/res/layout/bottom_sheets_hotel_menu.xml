@@ -9,6 +9,7 @@
         android:id="@+id/tv_hotel_menu_order_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingTop="@dimen/layout_lvl1"
         android:paddingBottom="@dimen/layout_lvl3"
         app:typographyType="body_2"
         app:typographyWeight="bold"

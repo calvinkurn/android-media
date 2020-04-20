@@ -4,9 +4,9 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import androidx.core.content.ContextCompat
-import com.tokopedia.design.intdef.CurrencyEnum
-import com.tokopedia.design.text.watcher.CurrencyTextWatcher
 import com.tokopedia.hotel.R
+import com.tokopedia.hotel.common.util.CurrencyEnum
+import com.tokopedia.hotel.common.util.CurrencyTextWatcher
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.RangeSliderUnify
 import kotlinx.android.synthetic.main.layout_hotel_filter_price_range_slider.view.*

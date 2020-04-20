@@ -17,7 +17,6 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHold
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
-import com.tokopedia.design.list.adapter.SpaceItemDecoration
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.common.analytics.TrackingHotelUtil
 import com.tokopedia.hotel.common.util.ErrorHandlerHotel
@@ -34,6 +33,7 @@ import com.tokopedia.hotel.search.presentation.adapter.HotelOptionMenuAdapter
 import com.tokopedia.hotel.search.presentation.adapter.HotelOptionMenuAdapter.Companion.MODE_CHECKED
 import com.tokopedia.hotel.search.presentation.adapter.HotelSearchResultAdapter
 import com.tokopedia.hotel.search.presentation.adapter.PropertyAdapterTypeFactory
+import com.tokopedia.hotel.search.presentation.adapter.viewholder.SpaceItemDecoration
 import com.tokopedia.hotel.search.presentation.viewmodel.HotelSearchResultViewModel
 import com.tokopedia.hotel.search.presentation.widget.HotelClosedSortBottomSheets
 import com.tokopedia.iris.util.IrisSession
@@ -141,9 +141,12 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
             recyclerView.addItemDecoration(SpaceItemDecoration(it.resources.getDimensionPixelSize(R.dimen.hotel_12dp),
                     LinearLayoutManager.VERTICAL))
         }
+        bottom_action_view.sortItem.title = getString(R.string.hotel_search_sort_label)
         bottom_action_view.sortItem.listener = {
-            if (::sortMenu.isInitialized)
+            if (::sortMenu.isInitialized) {
+                sortMenu.setTitle(getString(R.string.hotel_bottomsheet_sort_title))
                 sortMenu.show(childFragmentManager, javaClass.simpleName)
+            }
         }
     }
 

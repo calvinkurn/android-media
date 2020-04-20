@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.search.data.model.Sort
 import com.tokopedia.hotel.search.presentation.adapter.HotelOptionMenuAdapter
@@ -40,8 +41,9 @@ class HotelClosedSortBottomSheets : BottomSheetUnify() {
         initView(view)
     }
 
-    private fun initView(view: View?) {
-        val recyclerView = view?.findViewById<RecyclerView>(R.id.hotel_closed_sort_recycler_view)
+    private fun initView(view: View) {
+        val recyclerView = view.findViewById<VerticalRecyclerView>(R.id.hotel_closed_sort_recycler_view)
+        recyclerView.clearItemDecoration()
         val adapter = HotelOptionMenuAdapter(mode, menu)
                 .apply {
                     listener = onMenuSelect

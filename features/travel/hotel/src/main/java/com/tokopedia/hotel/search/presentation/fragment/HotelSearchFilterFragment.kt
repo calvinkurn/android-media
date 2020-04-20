@@ -12,13 +12,13 @@ import android.widget.SeekBar
 import android.widget.TextView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
-import com.tokopedia.design.list.adapter.SpaceItemDecoration
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.common.presentation.widget.SpanningLinearLayoutManager
 import com.tokopedia.hotel.search.data.model.Filter
 import com.tokopedia.hotel.search.data.model.params.ParamFilter
 import com.tokopedia.hotel.search.data.util.CommonParam
 import com.tokopedia.hotel.search.presentation.adapter.HotelSearchResultFilterAdapter
+import com.tokopedia.hotel.search.presentation.adapter.viewholder.SpaceItemDecoration
 import com.tokopedia.hotel.search.presentation.widget.HotelFilterPriceRangeSlider
 import kotlinx.android.synthetic.main.fragment_hotel_search_filter.*
 import kotlin.math.max

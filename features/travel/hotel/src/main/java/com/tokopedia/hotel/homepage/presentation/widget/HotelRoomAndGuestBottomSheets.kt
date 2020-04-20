@@ -1,15 +1,18 @@
 package com.tokopedia.hotel.homepage.presentation.widget
 
+import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import com.tokopedia.common.travel.widget.SelectPassengerView
-import com.tokopedia.design.component.BottomSheets
 import com.tokopedia.hotel.R
+import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.UnifyButton
 
 /**
  * @author by furqan on 09/04/19
  */
-class HotelRoomAndGuestBottomSheets : BottomSheets() {
+class HotelRoomAndGuestBottomSheets : BottomSheetUnify() {
 
     lateinit var listener: HotelGuestListener
 
@@ -20,9 +23,23 @@ class HotelRoomAndGuestBottomSheets : BottomSheets() {
     var roomCount = DEFAULT_ROOM
     var adultCount = DEFAULT_ADULT
 
-    override fun getLayoutResourceId(): Int = R.layout.bottom_sheets_hotel_room_and_guest
+    init {
+        isFullpage = false
+        isDragable = false
+    }
 
-    override fun initView(view: View) {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        initChildLayout()
+        return super.onCreateView(inflater, container, savedInstanceState)
+    }
+
+    private fun initChildLayout() {
+        val view = View.inflate(context, R.layout.bottom_sheets_hotel_room_and_guest, null)
+        setChild(view)
+        initView(view)
+    }
+
+    fun initView(view: View) {
         spvRoomCounter = view.findViewById(R.id.spv_hotel_room) as SelectPassengerView
         spvAdultCounter = view.findViewById(R.id.spv_hotel_adult) as SelectPassengerView
         btnSave = view.findViewById(R.id.btn_hotel_save_guest) as UnifyButton
@@ -51,11 +68,9 @@ class HotelRoomAndGuestBottomSheets : BottomSheets() {
             }
             dismiss()
         }
+
+        setTitle(getString(R.string.hotel_bottom_sheets_room_guest_title))
     }
-
-    override fun title(): String = getString(R.string.hotel_bottom_sheets_room_guest_title)
-
-    override fun state(): BottomSheetsState = BottomSheetsState.FLEXIBLE
 
     interface HotelGuestListener {
 

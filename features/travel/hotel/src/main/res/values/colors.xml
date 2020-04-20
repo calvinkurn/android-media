@@ -9,6 +9,7 @@
     <color name="ticket_end_gradient">#d1ffdd</color>
     <color name="ticket_divider">#e5e7e9</color>
     <color name="bg_green_e_voucher">#82ef95</color>
+    <color name="hotel_snackbar_border">#87d58b</color>
     <color name="green_all_facility_tab_underlined">#42b549</color>
 
     <color name="hotel_divider_color_gray">#ededed</color>

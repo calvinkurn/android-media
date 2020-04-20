@@ -338,7 +338,7 @@ class HotelBookingFragment : HotelBaseFragment() {
     private fun onCancellationPolicyClicked(property: HotelPropertyData) {
         if (property.rooms.isNotEmpty()) {
             val hotelCancellationPolicyBottomSheets = HotelBookingBottomSheets()
-            hotelCancellationPolicyBottomSheets.title = getString(R.string.hotel_booking_cancellation_policy_title)
+            hotelCancellationPolicyBottomSheets.setTitle(getString(R.string.hotel_booking_cancellation_policy_title))
 
             for (policy in property.rooms[0].cancellationPolicies.details) {
                 context?.run {
@@ -585,7 +585,7 @@ class HotelBookingFragment : HotelBaseFragment() {
             val importantNotesBottomSheets = HotelBookingBottomSheets()
             val textView = TextView(this)
             textView.text = notes
-            importantNotesBottomSheets.title = getString(R.string.hotel_important_info_title)
+            importantNotesBottomSheets.setTitle(getString(R.string.hotel_important_info_title))
             importantNotesBottomSheets.addContentView(textView)
             activity?.let {
                 importantNotesBottomSheets.show(it.supportFragmentManager, TAG_HOTEL_IMPORTANT_NOTES)
