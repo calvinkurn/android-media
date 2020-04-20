@@ -37,7 +37,6 @@ import com.tokopedia.product.detail.common.data.model.warehouse.MultiOriginWareh
 import com.tokopedia.product.detail.common.data.model.warehouse.WarehouseInfo
 import com.tokopedia.product.detail.data.model.*
 import com.tokopedia.product.detail.data.model.ProductInfoP1
-import com.tokopedia.product.detail.data.model.checkouttype.GetCheckoutTypeResponse
 import com.tokopedia.product.detail.data.model.financing.FinancingDataResponse
 import com.tokopedia.product.detail.data.model.financing.PDPInstallmentRecommendationResponse
 import com.tokopedia.product.detail.data.model.installment.InstallmentResponse
@@ -56,8 +55,8 @@ import com.tokopedia.product.detail.data.util.weightInKg
 import com.tokopedia.product.detail.di.RawQueryKeyConstant
 import com.tokopedia.product.detail.estimasiongkir.data.model.v3.RatesEstimationModel
 import com.tokopedia.purchase_platform.common.data.model.request.helpticket.SubmitHelpTicketRequest
-import com.tokopedia.purchase_platform.common.sharedata.helpticket.SubmitTicketResult
-import com.tokopedia.purchase_platform.common.usecase.SubmitHelpTicketUseCase
+import com.tokopedia.purchase_platform.common.feature.helpticket.SubmitTicketResult
+import com.tokopedia.purchase_platform.common.domain.usecase.SubmitHelpTicketUseCase
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.shop.common.domain.interactor.model.favoriteshop.DataFollowShop

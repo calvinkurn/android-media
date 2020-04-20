@@ -11,8 +11,8 @@ import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.promocheckout.common.view.widget.ButtonPromoCheckoutView
 import com.tokopedia.purchase_platform.R
-import com.tokopedia.purchase_platform.common.feature.promo_checkout.domain.model.last_apply.LastApplyUiModel
-import com.tokopedia.purchase_platform.common.feature.promo_checkout.domain.model.last_apply.LastApplyUsageSummariesUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUsageSummariesUiModel
 import com.tokopedia.purchase_platform.features.checkout.view.ShipmentAdapterActionListener
 import com.tokopedia.unifyprinciples.Typography
 

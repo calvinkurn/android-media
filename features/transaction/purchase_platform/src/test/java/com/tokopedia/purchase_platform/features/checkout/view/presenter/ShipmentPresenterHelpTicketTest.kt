@@ -5,7 +5,6 @@ import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesR
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesApiUseCase
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
 import com.tokopedia.logisticdata.data.analytics.CodAnalytics
-import com.tokopedia.promocheckout.common.data.entity.request.CheckPromoParam
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
 import com.tokopedia.purchase_platform.common.data.api.CommonPurchaseApiUrl
@@ -13,8 +12,8 @@ import com.tokopedia.purchase_platform.common.data.model.request.helpticket.Subm
 import com.tokopedia.purchase_platform.common.domain.model.CheckoutData
 import com.tokopedia.purchase_platform.common.domain.model.ErrorReporter
 import com.tokopedia.purchase_platform.common.domain.usecase.GetInsuranceCartUseCase
-import com.tokopedia.purchase_platform.common.sharedata.helpticket.SubmitTicketResult
-import com.tokopedia.purchase_platform.common.usecase.SubmitHelpTicketUseCase
+import com.tokopedia.purchase_platform.common.feature.helpticket.SubmitTicketResult
+import com.tokopedia.purchase_platform.common.domain.usecase.SubmitHelpTicketUseCase
 import com.tokopedia.purchase_platform.features.checkout.analytics.CheckoutAnalyticsPurchaseProtection
 import com.tokopedia.purchase_platform.features.checkout.data.repository.ICheckoutRepository
 import com.tokopedia.purchase_platform.features.checkout.domain.mapper.ShipmentMapper
@@ -22,7 +21,7 @@ import com.tokopedia.purchase_platform.features.checkout.domain.usecase.*
 import com.tokopedia.purchase_platform.features.checkout.view.ShipmentContract
 import com.tokopedia.purchase_platform.features.checkout.view.ShipmentPresenter
 import com.tokopedia.purchase_platform.features.checkout.view.converter.ShipmentDataConverter
-import com.tokopedia.purchase_platform.features.promo.domain.usecase.ValidateUsePromoRevampUseCase
+import com.tokopedia.purchase_platform.common.domain.usecase.ValidateUsePromoRevampUseCase
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.every
 import io.mockk.mockk

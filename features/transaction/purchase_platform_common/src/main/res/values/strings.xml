@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">purchase_platform_common</string>
+    <string name="promo_funnel_label">Makin hemat pakai promo</string>
+
 </resources>

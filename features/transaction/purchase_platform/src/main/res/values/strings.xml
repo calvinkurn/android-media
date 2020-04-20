@@ -51,7 +51,6 @@
     <string name="label_order_priority_cost">Biaya Order Prioritas</string>
     <string name="alert_payment_canceled_or_failed_transaction_module">Pembayaran tidak berhasil atau dibatalkan</string>
     <string name="message_payment_succeded_transaction_module">Pembayaran berhasil</string>
-    <string name="checkout_module_label_hapus">Hapus</string>
     <string name="checkout_module_label_asuransi">Asuransi</string>
     <string name="checkout_module_message_cart_error">Terjadi kendala pada pesanan Anda, lihat di bawah untuk info lebih lengkap.</string>
     <string name="checkout_module_keranjang_belanja_kosong_new">Wah, keranjang belanjamu kosong</string>
@@ -73,32 +72,17 @@
     <string name="label_change_address_failed">Gagal mengubah alamat</string>
     <string name="label_change_address_success">Berhasil mengubah alamat</string>
     <string name="label_title_showcase_shipment_courier_recommendation">Pilih Durasi Pengiriman</string>
-    <string name="label_dialog_action_delete_and_add_to_wishlist_macro_insurance">Hapus Terpilih &amp; Tambah Wishlist</string>
-    <string name="label_dialog_title_delete_item">Hapus barang?</string>
-    <string name="label_dialog_title_delete_multiple_item">Hapus %1d barang?</string>
-    <string name="label_dialog_title_delete_disabled_item">Hapus barang yang nggak bisa dibeli?</string>
-    <string name="label_dialog_title_delete_disabled_multiple_item">Hapus %1d barang yang nggak bisa dibeli?</string>
-    <string name="label_dialog_title_delete_item_macro_insurance">Hapus Barang Terpilih?</string>
-    <string name="label_dialog_action_delete">Hapus Barang</string>
-    <string name="label_dialog_action_cancel">Kembali</string>
-    <string name="label_dialog_action_delete_macro_insurance">Hapus Terpilih</string>
     <string name="label_message_showcase_shipment_courier_recommendation">Pilih jangka waktu pengiriman yang didukung oleh toko ini.</string>
-    <string name="label_dialog_message_remove_cart_item">Barang ini akan dihapus dari keranjangmu.</string>
-    <string name="label_dialog_message_remove_cart_multiple_item">Barang yang kamu pilih akan dihapus dari keranjangmu.</string>
-    <string name="label_dialog_message_remove_cart_multiple_disabled_item">Semua barang ini akan dihapus dari keranjangmu.</string>
-    <string name="label_dialog_message_remove_cart_multiple_item_with_insurance">Karena pembeliannya harus disertai min. 1 barang lain, produk asuransi akan ikut terhapus dan nggak bisa ditambah ke Wishlist.</string>
     <string name="label_showcase_multiple_address_title">Kirim Barang Sama ke Beberapa Alamat.</string>
     <string name="label_showcase_multiple_address_message">Klik tombol untuk mengirim barang yang sama ke beda alamat.</string>
     <string name="label_hardcoded_courier_ticker">Pembelian dengan Instan dan Same Day diatas pk 14:00 berpotensi dikirim hari berikutnya.</string>
     <string name="label_hardcoded_prioritas_ticker">Hanya berlaku untuk pembelian pada pukul 09.00 – 21.00 WIB.</string>
     <string name="label_hardcoded_courier_blackbox_ticker">Pembelian diatas pk 14:00 berpotensi dikirim hari berikutnya.</string>
     <string name="cart_error_message">Ada %1d barang yang tidak dapat dibeli</string>
-    <string name="cart_error_message_no_count" formatted="false">Terdapat Produk Bermasalah</string>
     <string name="cart_error_action">Hapus Produk Bermasalah</string>
     <string name="message_payment_success">Pembayaran Berhasil</string>
     <string name="message_error_courier_not_selected_or_dropshipper_empty">Pastikan Anda telah memilih kurir pengiriman untuk semua alamat dan melengkapi informasi tambahan.</string>
     <string name="error_message_checkout_failed">Gagal memproses pembayaran. Silakan coba lagi.</string>
-    <string name="cart">Keranjang</string>
     <string name="label_selller_cashback">Potensi Cashback Penjual</string>
     <string name="label_donation">Donasi</string>
     <string name="label_emas">Pembulatan Emas</string>
@@ -120,13 +104,7 @@
     <string name="label_button_change_courier_recommendation">Ubah Kurir</string>
     <string name="label_hardcoded_courier_ticker_bold_part">pk 14:00</string>
     <string name="label_button_change_note">Ubah Catatan</string>
-    <string name="label_select_all_product">Pilih Semua Barang</string>
-    <string name="message_checkout_empty_selection">Silahkan pilih terlebih dahulu produk yang ingin anda checkout</string>
-    <string name="message_delete_empty_selection">Silahkan pilih terlebih dahulu produk yang ingin anda hapus</string>
-    <string name="label_price_total">Total Harga</string>
     <string name="label_shop_summary">Ringkasan belanja</string>
-    <string name="toast_message_add_wishlist_success">Sukses menambah wishlist</string>
-    <string name="toast_message_remove_wishlist_success">Sukses menghapus wishlist</string>
     <string name="label_change_courier">Ubah Kurir</string>
     <string name="label_shipping_duration">Durasi Pengiriman</string>
     <string name="label_shipping">Pengiriman</string>
@@ -140,7 +118,6 @@
     <string name="message_cannot_apply_courier_promo" formatted="false">Promo ini hanya berlaku untuk pembelian dengan kurir %s</string>
     <string name="message_tos_agreement">Dengan membayar, saya menyetujui syarat dan ketentuan asuransi</string>
     <string name="text_tos_agreement">syarat dan ketentuan asuransi</string>
-    <string name="title_activity_cart">Keranjang</string>
     <string name="ppp_more">Pelajari</string>
     <string name="error_dropshipper">Fitur dropshipper tidak dapat digunakan ketika menggunakan Proteksi Produk</string>
     <string name="title_activity_checkout_webview">Proteksi Produk</string>
@@ -264,7 +241,6 @@
     <string name="checkout_module_promo_activity_title">Pakai Kupon/Promo</string>
 
     <string name="promo_funnel_icon_desc">promo_funnel_icon</string>
-    <string name="promo_funnel_label">Makin hemat pakai promo</string>
     <string name="promo_desc_no_selected_item">Pilih barang dulu sebelum pakai promo</string>
     <string name="promo_benefit_info">3 promo dipakai</string>
     <string name="promo_funnel_icon_chev_desc">promo_funnel_icon_2</string>

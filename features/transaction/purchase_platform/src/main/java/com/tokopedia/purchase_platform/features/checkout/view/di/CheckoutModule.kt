@@ -21,9 +21,9 @@ import com.tokopedia.purchase_platform.common.di.*
 import com.tokopedia.purchase_platform.common.domain.schedulers.DefaultSchedulers
 import com.tokopedia.purchase_platform.common.domain.schedulers.ExecutorSchedulers
 import com.tokopedia.purchase_platform.common.domain.usecase.GetInsuranceCartUseCase
-import com.tokopedia.purchase_platform.common.usecase.SubmitHelpTicketUseCase
-import com.tokopedia.purchase_platform.features.cart.view.InsuranceItemActionListener
-import com.tokopedia.purchase_platform.features.cart.view.di.CartScope
+import com.tokopedia.purchase_platform.common.domain.usecase.SubmitHelpTicketUseCase
+import com.tokopedia.cart.view.InsuranceItemActionListener
+import com.tokopedia.cart.view.di.CartScope
 import com.tokopedia.purchase_platform.features.checkout.analytics.CheckoutAnalyticsPurchaseProtection
 import com.tokopedia.purchase_platform.features.checkout.data.api.CheckoutApi
 import com.tokopedia.purchase_platform.features.checkout.data.repository.CheckoutRepository
@@ -36,7 +36,7 @@ import com.tokopedia.purchase_platform.features.checkout.view.ShipmentContract
 import com.tokopedia.purchase_platform.features.checkout.view.ShipmentFragment
 import com.tokopedia.purchase_platform.features.checkout.view.ShipmentPresenter
 import com.tokopedia.purchase_platform.features.checkout.view.converter.ShipmentDataConverter
-import com.tokopedia.purchase_platform.features.promo.domain.usecase.ValidateUsePromoRevampUseCase
+import com.tokopedia.purchase_platform.common.domain.usecase.ValidateUsePromoRevampUseCase
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides

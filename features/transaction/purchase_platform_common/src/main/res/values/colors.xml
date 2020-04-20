@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="text_black">#f531353b</color>
+    <color name="price_label">#FA591D</color>
+    <color name="checkout_module_color_background">#f3f4f5</color>
+
+</resources>

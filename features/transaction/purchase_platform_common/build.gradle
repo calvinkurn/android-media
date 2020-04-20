@@ -33,18 +33,19 @@ buildscript {
     }
 }
 dependencies {
-    implementation project(rootProject.ext.features.resourcesCommon)
-    implementation rootProject.ext.firebase.core
+    implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.libraries.tkpddesign)
     implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.libraries.iris)
-    implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
-
+    implementation rootProject.ext.firebase.core
+    implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
-
+    implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.graphql
+
+    implementation project(rootProject.ext.features.resourcesCommon)
 
     //-------------------------------------------------------------------//
     //--------------------- Testing Library Section ---------------------//

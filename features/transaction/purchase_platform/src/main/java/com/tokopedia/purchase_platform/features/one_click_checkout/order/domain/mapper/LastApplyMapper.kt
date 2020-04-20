@@ -1,8 +1,8 @@
 package com.tokopedia.purchase_platform.features.one_click_checkout.order.domain.mapper
 
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
-import com.tokopedia.purchase_platform.common.feature.promo_checkout.domain.model.PromoCheckoutErrorDefault
-import com.tokopedia.purchase_platform.common.feature.promo_checkout.domain.model.last_apply.*
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.PromoCheckoutErrorDefault
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.*
 import com.tokopedia.purchase_platform.features.checkout.data.model.response.shipment_address_form.promo_checkout.PromoSAFResponse
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.model.OrderPromo
 

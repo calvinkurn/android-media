@@ -2,7 +2,7 @@ package com.tokopedia.purchase_platform.features.checkout.data.model.response.sh
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.tokopedia.purchase_platform.features.cart.data.model.response.Ticker;
+import com.tokopedia.cart.data.model.response.Ticker;
 import com.tokopedia.purchase_platform.features.checkout.data.model.response.egold.EgoldAttributes;
 import com.tokopedia.purchase_platform.features.checkout.data.model.response.shipment_address_form.promo_checkout.PromoSAFResponse;
 

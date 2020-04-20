@@ -73,8 +73,6 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
-import com.tokopedia.product.detail.common.data.model.carttype.CartRedirection
-import com.tokopedia.product.detail.common.data.model.carttype.CartTypeData
 import com.tokopedia.product.detail.common.data.model.constant.ProductStatusTypeDef
 import com.tokopedia.product.detail.common.data.model.product.*
 import com.tokopedia.product.detail.common.data.model.warehouse.MultiOriginWarehouse
@@ -121,9 +119,9 @@ import com.tokopedia.purchase_platform.common.constant.NormalCheckoutConstant.Co
 import com.tokopedia.purchase_platform.common.data.model.request.atc.AtcRequestParam
 import com.tokopedia.purchase_platform.common.sharedata.RESULT_CODE_ERROR_TICKET
 import com.tokopedia.purchase_platform.common.sharedata.RESULT_TICKET_DATA
-import com.tokopedia.purchase_platform.common.sharedata.helpticket.SubmitTicketResult
-import com.tokopedia.purchase_platform.common.view.error_bottomsheet.ErrorBottomsheets
-import com.tokopedia.purchase_platform.common.view.error_bottomsheet.ErrorBottomsheetsActionListenerWithRetry
+import com.tokopedia.purchase_platform.common.feature.helpticket.SubmitTicketResult
+import com.tokopedia.purchase_platform.common.feature.errorbottomsheet.ErrorBottomsheets
+import com.tokopedia.purchase_platform.common.feature.errorbottomsheet.ErrorBottomsheetsActionListenerWithRetry
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.referral.Constants.Action.Companion.ACTION_GET_REFERRAL_CODE
 import com.tokopedia.referral.ReferralAction

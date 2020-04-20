@@ -4,9 +4,9 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.tokopedia.logisticcart.shipping.model.CodModel;
-import com.tokopedia.purchase_platform.common.feature.promo_checkout.domain.model.PromoCheckoutErrorDefault;
-import com.tokopedia.purchase_platform.common.feature.promo_checkout.domain.model.last_apply.LastApplyUiModel;
-import com.tokopedia.purchase_platform.common.feature.ticker_announcement.TickerData;
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.PromoCheckoutErrorDefault;
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel;
+import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerData;
 import com.tokopedia.purchase_platform.features.checkout.view.uimodel.EgoldAttributeModel;
 
 import java.util.ArrayList;

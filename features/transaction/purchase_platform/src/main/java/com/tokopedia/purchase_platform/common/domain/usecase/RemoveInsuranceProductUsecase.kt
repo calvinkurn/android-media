@@ -7,9 +7,9 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.purchase_platform.R
-import com.tokopedia.purchase_platform.common.data.model.response.insurance.entity.request.RemoveInsuranceData
-import com.tokopedia.purchase_platform.common.data.model.response.insurance.entity.request.RemoveInsuranceProductRequest
-import com.tokopedia.purchase_platform.common.data.model.response.insurance.entity.response.RemoveInsuranceProductGqlResponse
+import com.tokopedia.purchase_platform.common.feature.insurance.request.RemoveInsuranceData
+import com.tokopedia.purchase_platform.common.feature.insurance.request.RemoveInsuranceProductRequest
+import com.tokopedia.purchase_platform.common.feature.insurance.response.RemoveInsuranceProductGqlResponse
 import com.tokopedia.usecase.RequestParams
 import rx.Subscriber
 import javax.inject.Inject

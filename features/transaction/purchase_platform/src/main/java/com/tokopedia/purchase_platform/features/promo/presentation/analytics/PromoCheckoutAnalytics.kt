@@ -3,15 +3,13 @@ package com.tokopedia.purchase_platform.features.promo.presentation.analytics
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.*
 import com.tokopedia.purchase_platform.common.analytics.TransactionAnalytics
+import com.tokopedia.purchase_platform.common.constant.PAGE_CART
+import com.tokopedia.purchase_platform.common.constant.PAGE_CHECKOUT
 import javax.inject.Inject
 
 class PromoCheckoutAnalytics @Inject constructor() : TransactionAnalytics() {
 
     companion object {
-        val PAGE_CART = 1
-        @JvmStatic
-        val PAGE_CHECKOUT = 2
-
         val EVENT_NAME_VIEW = "view"
         val EVENT_NAME_CLICK = "click"
     }

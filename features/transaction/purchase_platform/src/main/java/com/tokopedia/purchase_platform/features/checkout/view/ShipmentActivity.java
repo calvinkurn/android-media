@@ -1,13 +1,10 @@
 package com.tokopedia.purchase_platform.features.checkout.view;
 
-import android.content.Context;
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
-import com.tokopedia.promocheckout.common.view.model.PromoStackingData;
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection;
 import com.tokopedia.purchase_platform.common.base.BaseCheckoutActivity;
 import com.tokopedia.purchase_platform.common.constant.CartConstant;
@@ -20,24 +17,13 @@ import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.E
 
 public class ShipmentActivity extends BaseCheckoutActivity {
 
-    public static final int REQUEST_CODE = 983;
     public static final int RESULT_CODE_FORCE_RESET_CART_FROM_SINGLE_SHIPMENT = 2;
     public static final int RESULT_CODE_COUPON_STATE_CHANGED = 735;
 
-    public static final String EXTRA_PROMO_CODE_APPLIED_DATA = "EXTRA_PROMO_CODE_APPLIED_DATA";
     public static final String EXTRA_PROMO_CODE_COUPON_DEFAULT_SELECTED_TAB = "EXTRA_PROMO_CODE_COUPON_DEFAULT_SELECTED_TAB";
 
     private CheckoutAnalyticsCourierSelection checkoutAnalyticsCourierSelection;
     private ShipmentFragment shipmentFragment;
-
-    public static Intent createInstance(Context context,
-                                        PromoStackingData promoData,
-                                        String defaultSelectedTabPromo) {
-        Intent intent = new Intent(context, ShipmentActivity.class);
-        intent.putExtra(EXTRA_PROMO_CODE_APPLIED_DATA, promoData);
-        intent.putExtra(EXTRA_PROMO_CODE_COUPON_DEFAULT_SELECTED_TAB, defaultSelectedTabPromo);
-        return intent;
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,7 +54,6 @@ public class ShipmentActivity extends BaseCheckoutActivity {
             leasingId = deepLink.getQueryParameter(CartConstant.CHECKOUT_LEASING_ID);
         }
         shipmentFragment = ShipmentFragment.newInstance(
-                getIntent().getStringExtra(EXTRA_PROMO_CODE_COUPON_DEFAULT_SELECTED_TAB),
                 getIntent().getBooleanExtra(EXTRA_IS_ONE_CLICK_SHIPMENT, false),
                 leasingId,
                 getIntent().getExtras()

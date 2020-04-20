@@ -6,7 +6,8 @@ import com.tokopedia.purchase_platform.common.data.model.request.helpticket.Subm
 import com.tokopedia.purchase_platform.common.data.model.response.helpticket.SubmitHelpTicketGqlResponse
 import com.tokopedia.purchase_platform.common.data.model.response.helpticket.SubmitHelpTicketResponse
 import com.tokopedia.purchase_platform.common.data.model.response.helpticket.SubmitTicketDataResponse
-import com.tokopedia.purchase_platform.common.sharedata.helpticket.SubmitTicketResult
+import com.tokopedia.purchase_platform.common.domain.usecase.SubmitHelpTicketUseCase
+import com.tokopedia.purchase_platform.common.feature.helpticket.SubmitTicketResult
 import com.tokopedia.usecase.RequestParams
 import io.mockk.every
 import io.mockk.mockk

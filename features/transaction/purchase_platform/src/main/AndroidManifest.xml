@@ -60,7 +60,7 @@
         </activity>
 
         <activity
-            android:name="com.tokopedia.purchase_platform.features.cart.view.CartActivity"
+            android:name="com.tokopedia.cart.view.CartActivity"
             android:label="@string/checkout_module_title_activity_cart"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White">

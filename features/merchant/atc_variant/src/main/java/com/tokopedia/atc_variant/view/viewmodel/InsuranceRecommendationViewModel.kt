@@ -4,7 +4,7 @@ import android.os.Parcel
 import android.os.Parcelable
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.atc_variant.view.adapter.AddToCartVariantAdapterTypeFactory
-import com.tokopedia.purchase_platform.common.view.model.InsuranceCartShopsViewModel
+import com.tokopedia.purchase_platform.common.feature.insurance.InsuranceCartShopsViewModel
 
 data class InsuranceRecommendationViewModel(
 

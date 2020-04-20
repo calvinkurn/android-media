@@ -18,28 +18,22 @@ import com.tokopedia.logisticcart.shipping.model.RecipientAddressModel;
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;
 import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData;
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel;
-import com.tokopedia.promocheckout.common.util.TickerCheckoutUtilKt;
 import com.tokopedia.promocheckout.common.view.model.PromoStackingData;
-import com.tokopedia.promocheckout.common.view.uimodel.DataUiModel;
-import com.tokopedia.promocheckout.common.view.uimodel.DetailUiModel;
 import com.tokopedia.promocheckout.common.view.uimodel.SummariesUiModel;
-import com.tokopedia.promocheckout.common.view.uimodel.VoucherLogisticItemUiModel;
-import com.tokopedia.promocheckout.common.view.uimodel.VoucherOrdersItemUiModel;
 import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView;
 import com.tokopedia.purchase_platform.R;
 import com.tokopedia.purchase_platform.common.data.model.request.checkout.DataCheckoutRequest;
 import com.tokopedia.purchase_platform.common.data.model.response.macro_insurance.InsuranceCartDigitalProduct;
 import com.tokopedia.purchase_platform.common.data.model.response.macro_insurance.InsuranceCartShopItems;
 import com.tokopedia.purchase_platform.common.data.model.response.macro_insurance.InsuranceCartShops;
-import com.tokopedia.purchase_platform.common.feature.promo_checkout.domain.model.last_apply.LastApplyUiModel;
-import com.tokopedia.purchase_platform.common.feature.seller_cashback.ShipmentSellerCashbackModel;
-import com.tokopedia.purchase_platform.common.feature.seller_cashback.ShipmentSellerCashbackViewHolder;
-import com.tokopedia.purchase_platform.common.feature.ticker_announcement.TickerAnnouncementHolderData;
-import com.tokopedia.purchase_platform.common.feature.ticker_announcement.TickerAnnouncementViewHolder;
-import com.tokopedia.purchase_platform.common.utils.Utils;
-import com.tokopedia.purchase_platform.features.cart.view.InsuranceItemActionListener;
-import com.tokopedia.purchase_platform.features.cart.view.viewholder.InsuranceCartShopViewHolder;
-import com.tokopedia.purchase_platform.features.checkout.domain.mapper.LastApplyUiMapper;
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel;
+import com.tokopedia.purchase_platform.common.feature.sellercashback.ShipmentSellerCashbackModel;
+import com.tokopedia.purchase_platform.common.feature.sellercashback.ShipmentSellerCashbackViewHolder;
+import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementHolderData;
+import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementViewHolder;
+import com.tokopedia.cart.view.InsuranceItemActionListener;
+import com.tokopedia.cart.view.viewholder.InsuranceCartShopViewHolder;
+import com.tokopedia.purchase_platform.common.feature.promo.view.mapper.LastApplyUiMapper;
 import com.tokopedia.purchase_platform.features.checkout.domain.model.cartsingleshipment.ShipmentCostModel;
 import com.tokopedia.purchase_platform.features.checkout.view.ShipmentAdapterActionListener;
 import com.tokopedia.purchase_platform.features.checkout.view.ShipmentFragment;
@@ -60,9 +54,9 @@ import com.tokopedia.purchase_platform.features.checkout.view.viewholder.Shipmen
 import com.tokopedia.purchase_platform.features.checkout.view.viewholder.ShipmentItemViewHolder;
 import com.tokopedia.purchase_platform.features.checkout.view.viewholder.ShipmentNotifierViewHolder;
 import com.tokopedia.purchase_platform.features.checkout.view.viewholder.ShipmentRecipientAddressViewHolder;
-import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.validate_use.DetailsItemUiModel;
-import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.validate_use.PromoUiModel;
-import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.validate_use.SummariesItemUiModel;
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.DetailsItemUiModel;
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel;
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.SummariesItemUiModel;
 import com.tokopedia.showcase.ShowCaseBuilder;
 import com.tokopedia.showcase.ShowCaseDialog;
 import com.tokopedia.showcase.ShowCaseObject;
@@ -73,7 +67,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import static com.tokopedia.purchase_platform.common.insurance.utils.TransactionalInsuranceUtilsKt.PAGE_TYPE_CHECKOUT;
+import static com.tokopedia.purchase_platform.common.feature.insurance.TransactionalInsuranceUtilsKt.PAGE_TYPE_CHECKOUT;
 
 
 /**

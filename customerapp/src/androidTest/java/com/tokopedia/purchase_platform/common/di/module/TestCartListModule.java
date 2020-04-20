@@ -5,11 +5,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.tokopedia.purchase_platform.common.di.scope.CartListScope;
 import com.tokopedia.purchase_platform.common.utils.CartApiRequestParamGenerator;
-import com.tokopedia.purchase_platform.features.cart.domain.usecase.CheckPromoCodeCartListUseCase;
-import com.tokopedia.purchase_platform.features.cart.domain.usecase.DeleteCartListUseCase;
-import com.tokopedia.purchase_platform.features.cart.domain.usecase.GetCartListUseCase;
-import com.tokopedia.purchase_platform.features.cart.domain.usecase.ResetCartGetCartListUseCase;
-import com.tokopedia.purchase_platform.features.cart.domain.usecase.UpdateCartUseCase;
+import com.tokopedia.cart.domain.usecase.CheckPromoCodeCartListUseCase;
+import com.tokopedia.cart.domain.usecase.DeleteCartListUseCase;
+import com.tokopedia.cart.domain.usecase.GetCartListUseCase;
+import com.tokopedia.cart.domain.usecase.ResetCartGetCartListUseCase;
+import com.tokopedia.cart.domain.usecase.UpdateCartUseCase;
 import com.tokopedia.purchase_platform.features.checkout.view.adapter.CartListAdapter;
 import com.tokopedia.purchase_platform.features.checkout.view.view.cartlist.CartItemDecoration;
 import com.tokopedia.purchase_platform.features.checkout.view.view.cartlist.CartListPresenter;

@@ -6,6 +6,7 @@ import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.network.AuthUtil;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor;
+import com.tokopedia.purchase_platform.common.data.api.exception.CartResponseErrorException;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import java.io.IOException;
@@ -15,13 +16,14 @@ import javax.inject.Inject;
 
 import okhttp3.Response;
 
+import static com.tokopedia.purchase_platform.common.constant.CartConstant.CART_ERROR_GLOBAL;
+
 /**
  * @author anggaprasetiyo on 23/04/18.
  */
 public class CartApiInterceptor extends TkpdAuthInterceptor {
 
     private static final String RESPONSE_STATUS_REQUEST_DENIED = "REQUEST_DENIED";
-    public static final String CART_ERROR_GLOBAL = "Maaf, terjadi sedikit kendala. Coba ulangi beberapa saat lagi ya";
 
     @Inject
     public CartApiInterceptor(Context context,

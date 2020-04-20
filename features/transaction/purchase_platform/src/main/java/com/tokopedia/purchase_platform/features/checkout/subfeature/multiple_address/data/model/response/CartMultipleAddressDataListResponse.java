@@ -3,7 +3,7 @@ package com.tokopedia.purchase_platform.features.checkout.subfeature.multiple_ad
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.tokopedia.purchase_platform.common.data.model.response.Messages;
-import com.tokopedia.purchase_platform.features.cart.data.model.response.Donation;
+import com.tokopedia.cart.data.model.response.Donation;
 
 import java.util.ArrayList;
 import java.util.List;
