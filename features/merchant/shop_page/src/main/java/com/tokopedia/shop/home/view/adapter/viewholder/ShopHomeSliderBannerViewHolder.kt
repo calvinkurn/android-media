@@ -5,6 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.carousel.CarouselUnify
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.kotlin.extensions.view.hide
@@ -33,6 +34,8 @@ class ShopHomeSliderBannerViewHolder(
         @LayoutRes
         val LAYOUT_RES = R.layout.viewmodel_slider_banner
         const val DURATION_SLIDER_BANNER = 5000L
+        const val SHOP_HOME_IMAGE_SLIDER_BANNER_TRACE = "mp_shop_home_image_slider_banner"
+
     }
 
     private var carouselShopPage: CarouselUnify? = null
@@ -58,7 +61,11 @@ class ShopHomeSliderBannerViewHolder(
         carouselShopPage?.post {
             img.initialWidth = carouselShopPage?.measuredWidth
         }
+        val performanceMonitoring = PerformanceMonitoring.start(SHOP_HOME_IMAGE_SLIDER_BANNER_TRACE)
         img.setImageUrl(carouselItem.imageUrl, heightRatio = bannerData?.let { getHeightRatio(it) })
+        img.onUrlLoaded = {
+            performanceMonitoring.stopTrace()
+        }
     }
 
     init {
