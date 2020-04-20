@@ -9,9 +9,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.flight.R
 import com.tokopedia.flight.airport.view.model.FlightAirportModel
 import com.tokopedia.flight.common.util.FlightDateUtil
-import com.tokopedia.flight.search.presentation.model.FlightJourneyModel
-import com.tokopedia.flight.search.presentation.model.FlightPriceModel
-import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataModel
+import com.tokopedia.flight.search.presentation.model.*
 import com.tokopedia.flight.search.presentation.model.filter.FlightFilterModel
 import com.tokopedia.flight.searchV4.presentation.activity.FlightSearchActivity.Companion.EXTRA_PASS_DATA
 import com.tokopedia.flight.searchV4.presentation.activity.FlightSearchReturnActivity.Companion.EXTRA_DEPARTURE_ID
@@ -103,6 +101,18 @@ class FlightSearchReturnFragment : FlightSearchFragment() {
         return filterModel
     }
 
+    override fun renderSearchList(list: List<FlightJourneyModel>) {
+        if (flightSearchReturnViewModel.isBestPairing && !flightSearchReturnViewModel.isViewOnlyBestPairing) {
+            showSeeBestPairingResultView()
+        }
+
+        super.renderSearchList(list)
+
+        if (flightSearchViewModel.isDoneLoadData() && flightSearchReturnViewModel.isViewOnlyBestPairing) {
+            showSeeAllResultView()
+        }
+    }
+
     private fun renderDepartureJourney(flightJourneyModel: FlightJourneyModel) {
         if (flightJourneyModel.airlineDataList != null &&
                 flightJourneyModel.airlineDataList.size > 1) {
@@ -136,6 +146,18 @@ class FlightSearchReturnFragment : FlightSearchFragment() {
         } else {
             departureTripLabel.setPrice(flightSearchReturnViewModel.priceModel.departurePrice.adult)
         }
+    }
+
+    private fun showSeeAllResultView() {
+        adapter.addElement(FlightSearchSeeAllResultModel(flightSearchReturnViewModel
+                .priceModel.departurePrice.adult))
+        flightSearchReturnViewModel.isViewOnlyBestPairing = true
+    }
+
+    private fun showSeeBestPairingResultView() {
+        adapter.addElement(FlightSearchSeeOnlyBestPairingModel(flightSearchReturnViewModel
+                .priceModel.departurePrice.adultCombo))
+        flightSearchReturnViewModel.isViewOnlyBestPairing = false
     }
 
     private fun showReturnTimeShouldGreaterThanArrivalDeparture() {
