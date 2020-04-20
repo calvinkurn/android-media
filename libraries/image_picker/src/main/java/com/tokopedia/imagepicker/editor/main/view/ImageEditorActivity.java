@@ -276,6 +276,7 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImagePick
                 onDoneButtonClicked();
             }
         });
+        trackOpen();
     }
 
     private void onCancelEditClicked() {
@@ -839,6 +840,7 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImagePick
         ImageUtils.deleteCacheFolder(ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_CACHE_CAMERA);
         Intent intent = getFinishIntent(imageUrlOrPathList);
         setResult(Activity.RESULT_OK, intent);
+        trackContinue();
         finish();
     }
 
@@ -1022,6 +1024,7 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImagePick
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 ImageUtils.deleteCacheFolder(ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_CACHE);
                                 ImageEditorActivity.super.onBackPressed();
+                                trackBack();
                             }
                         }).setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface arg0, int arg1) {
@@ -1032,6 +1035,7 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImagePick
                 dialog.show();
             } else {
                 ImageEditorActivity.super.onBackPressed();
+                trackBack();
             }
         }
     }
@@ -1069,6 +1073,16 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImagePick
                 || currentEditActionType == ImageEditActionTypeDef.ACTION_CROP_ROTATE);
     }
 
+    public void trackOpen(){
+        //to be overridden
+    }
 
+    public void trackBack(){
+        //to be overridden
+    }
+
+    public void trackContinue(){
+        //to be overridden
+    }
 
 }

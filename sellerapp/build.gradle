@@ -90,8 +90,8 @@ buildscript {
 android {
 
     project.ext {
-        defaultVersionCode = 165000123;
-        defaultVersionName = "1.65.123";
+        defaultVersionCode = 200000123;
+        defaultVersionName = "2.00.123";
     }
 
     packagingOptions {
@@ -297,6 +297,7 @@ dependencies {
     implementation project(rootProject.ext.features.attachproduct)
     implementation project(rootProject.ext.features.talk)
     implementation project(rootProject.ext.features.productDetail)
+    implementation project(rootProject.ext.features.productAddEdit)
     implementation project(rootProject.ext.features.productManageItem)
     implementation project(rootProject.ext.features.productManageList)
     implementation project(rootProject.ext.features.broadcastMessage)

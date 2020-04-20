@@ -86,7 +86,7 @@ class ProductManageSellerFragment : ProductManageFragment(), ProductDraftListCou
         super.onResume()
         registerDraftReceiver()
         if (isMyServiceRunning(UploadProductService::class.java)) {
-            productDraftListCountPresenter.fetchAllDraftCount()
+            productDraftListCountPresenter.getAllDraftCount()
         } else {
             productDraftListCountPresenter.fetchAllDraftCountWithUpdateUploading()
         }
@@ -113,7 +113,7 @@ class ProductManageSellerFragment : ProductManageFragment(), ProductDraftListCou
         draftBroadCastReceiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context, intent: Intent) {
                 if (intent.action == UploadProductService.ACTION_DRAFT_CHANGED) {
-                    productDraftListCountPresenter.fetchAllDraftCount()
+                    productDraftListCountPresenter.getAllDraftCount()
                 }
             }
         }

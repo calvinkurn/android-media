@@ -113,6 +113,8 @@ ext {
             atc_variant                     : ":features:merchant:atc_variant",
             kyc                             : ":features:kyc",
             ovop2p                          : ":features:ovop2p",
+            productAddEdit                  : ":features:merchant:product_add_edit",
+            productManageCommon             : ":features:merchant:product_manage_common",
             productManageItem               : ":features:merchant:product_manage_item",
             productManageList               : ":features:merchant:product_manage_list",
             productShare                    : ":features:merchant:product_share",

@@ -721,6 +721,7 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
 
         const val EXTRA_NAME = "EXTRA_NAME"
         const val EXTRA_CATALOG = "EXTRA_CATALOG"
+        const val EXTRA_JSON_CATALOG = "EXTRA_JSON_CATALOG"
         const val EXTRA_CATEGORY = "EXTRA_CATEGORY"
         const val EXTRA_CATEGORY_LOCKED = "EXTRA_CATEGORY_LOCKED"
         const val EXTRA_IMAGES = "EXTRA_IMAGES"
