@@ -217,9 +217,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         userSession = UserSession(requireContext())
         shopId = userSession.shopId
 
-        if (viewModel.isEditing && !viewModel.isAdding) {
-            ProductEditMainTracking.trackScreen()
-        } else {
+        if (viewModel.isAdding) {
             ProductAddMainTracking.trackScreen()
         }
     }

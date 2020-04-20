@@ -103,7 +103,7 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
             shipmentViewModel.isEditMode = isEditMode
             shipmentViewModel.isAddMode = isAddMode
         }
-        if (!shipmentViewModel.isEditMode || shipmentViewModel.isAddMode) {
+        if (shipmentViewModel.isAddMode || !shipmentViewModel.isEditMode) {
             ProductAddShippingTracking.trackScreen()
         }
     }

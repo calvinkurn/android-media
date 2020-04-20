@@ -174,9 +174,6 @@ class AddEditProductDescriptionFragment:
         userSession = UserSession(requireContext())
         shopId = userSession.shopId
         super.onCreate(savedInstanceState)
-        if (!descriptionViewModel.isEditMode) {
-            ProductAddDescriptionTracking.trackScreen()
-        }
         arguments?.let {
             val categoryId: String = it.getString(PARAM_CATEGORY_ID) ?: ""
             val isEditMode: Boolean = it.getBoolean(PARAM_IS_EDIT_MODE, false)
@@ -191,6 +188,9 @@ class AddEditProductDescriptionFragment:
             descriptionViewModel.isEditMode = isEditMode
             descriptionViewModel.isAddMode = isAddMode
             productInputModel = it.getParcelable(PARAM_PRODUCT_INPUT_MODEL) ?: ProductInputModel()
+        }
+        if (descriptionViewModel.isAddMode || !descriptionViewModel.isEditMode) {
+            ProductAddDescriptionTracking.trackScreen()
         }
     }
 
