@@ -1014,9 +1014,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
                     break
                 }
             }
-            if (adapterPosition != RecyclerView.NO_POSITION) {
-                trackUrlEvent(dataList[adapterPosition].shopClickUrl)
-            }
             feedAnalytics.eventClickTopadsPromoted(shop.id)
         }
     }
@@ -1041,7 +1038,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     override fun onAddFavorite(positionInFeed: Int, adapterPosition: Int, data: Data) {
         if (data.isFavorit) {
-            visitShopPageWithAnalytics(positionInFeed, data.shop)
+            onShopItemClicked(positionInFeed, adapterPosition, data.shop)
         } else {
             feedViewModel.doToggleFavoriteShop(positionInFeed, adapterPosition, data.shop.id)
 
