@@ -81,7 +81,6 @@ include "features:operational:csat_rating"
 
 include "features:payment:common_payment"
 include "features:payment:payment"
-//include "features:payment:payment_no_op"
 include "features:payment:withdraw"
 include "features:payment:payment_setting"
 //include "features:payment:payment_setting_no_op"

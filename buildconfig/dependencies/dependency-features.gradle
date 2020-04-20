@@ -142,7 +142,6 @@ ext {
 
             commonPayment                   : ":features:payment:common_payment",
             payment                         : ":features:payment:payment",
-//            payment                         : ":features:payment:payment_no_op",
             paymentSetting                  : ":features:payment:payment_setting",
 //            paymentSetting                  : ":features:payment:payment_setting_no_op",
             pms                             : ":features:payment:pms",

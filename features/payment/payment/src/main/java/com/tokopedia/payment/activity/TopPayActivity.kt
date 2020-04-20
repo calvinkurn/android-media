@@ -12,6 +12,7 @@ import android.net.Uri
 import android.net.http.SslError
 import android.os.Build
 import android.os.Bundle
+import android.text.TextUtils
 import android.util.Base64
 import android.view.KeyEvent
 import android.view.View
@@ -25,6 +26,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.webview.CommonWebViewClient
 import com.tokopedia.abstraction.base.view.webview.FilePickerInterface
+import com.tokopedia.abstraction.common.utils.network.AuthUtil
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
@@ -32,6 +34,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.common.payment.PaymentConstant
 import com.tokopedia.common.payment.model.PaymentPassData
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.fingerprint.util.FingerprintConstant
 import com.tokopedia.network.constant.ErrorNetMessage
 import com.tokopedia.payment.R
 import com.tokopedia.payment.fingerprint.di.DaggerFingerprintComponent
@@ -41,9 +44,11 @@ import com.tokopedia.payment.fingerprint.view.FingerPrintDialogPayment
 import com.tokopedia.payment.fingerprint.view.FingerprintDialogRegister
 import com.tokopedia.payment.presenter.TopPayContract
 import com.tokopedia.payment.presenter.TopPayPresenter
-import com.tokopedia.payment.router.IPaymentModuleRouter
 import com.tokopedia.payment.utils.Constant
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.webview.WebViewHelper
 import rx.Observable
 import rx.Subscriber
@@ -70,7 +75,7 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
     override var paymentPassData: PaymentPassData? = null
         private set
 
-    private var paymentModuleRouter: IPaymentModuleRouter? = null
+    private val remoteConfig: RemoteConfig by lazy { FirebaseRemoteConfigImpl(this.applicationContext) }
 
     private var scroogeWebView: WebView? = null
     private var progressBar: ProgressBar? = null
@@ -113,9 +118,6 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
         initInjector()
         intent.extras?.let {
             setupBundlePass(it)
-        }
-        if (application is IPaymentModuleRouter) {
-            paymentModuleRouter = application as IPaymentModuleRouter
         }
         initView()
         initVar()
@@ -336,7 +338,6 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
         fingerPrintDialogPayment?.stopListening()
         fingerPrintDialogPayment?.dismiss()
         scroogeWebView?.loadUrl(String.format("%1\$s?%2\$s", url, paramEncode))
-//        scroogeWebView?.loadUrl("$url?$paramEncode")
     }
 
     override fun onPause() {
@@ -346,9 +347,8 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
     }
 
     override fun onBackPressed() {
-        val baseUrlDomainPayment = paymentModuleRouter?.baseUrlDomainPayment
         val url = scroogeWebView?.url
-        if (baseUrlDomainPayment != null && url != null && url.contains(baseUrlDomainPayment)) {
+        if (url != null && url.contains(getBaseUrlDomainPayment())) {
             scroogeWebView?.loadUrl("javascript:handlePopAndroid();")
         } else if (isEndThanksPage(url)) {
             callbackPaymentSucceed()
@@ -399,7 +399,7 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
             if (url != null) {
                 // fingerprint
                 if (url.isNotEmpty() && url.contains(PaymentFingerprintConstant.APP_LINK_FINGERPRINT) &&
-                        paymentModuleRouter?.enableFingerprintPayment == true) {
+                        getEnableFingerprintPayment()) {
                     showFingerprintDialogRegister(url)
                     return true
                 }
@@ -468,9 +468,9 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
                     return true
                 }
 
-                val urlFinal = paymentModuleRouter?.getGeneratedOverrideRedirectUrlPayment(url)
-                if (urlFinal != null) {
-                    view?.loadUrl(urlFinal, paymentModuleRouter?.getGeneratedOverrideRedirectHeaderUrlPayment(urlFinal))
+                val urlFinal = getGeneratedOverrideRedirectUrlPayment(url)
+                if (urlFinal.isNotEmpty()) {
+                    view?.loadUrl(urlFinal, getGeneratedOverrideRedirectHeaderUrlPayment(urlFinal))
                     return true
                 }
             }
@@ -485,7 +485,7 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
                 val uriString = uri.toString()
                 if ((uriString.contains(PaymentFingerprintConstant.TOP_PAY_PATH_CREDIT_CARD_SPRINTASIA) || uriString.contains(PaymentFingerprintConstant.TOP_PAY_PATH_CREDIT_CARD_VERITRANS)) &&
                         isInterceptOtp && uri.getQueryParameter(PaymentFingerprintConstant.ENABLE_FINGERPRINT).equals("true", true) &&
-                        paymentModuleRouter?.enableFingerprintPayment == true) {
+                        getEnableFingerprintPayment()) {
                     fingerPrintDialogPayment = FingerPrintDialogPayment.createInstance(presenter.userId, uriString,
                             uri.getQueryParameter(PaymentFingerprintConstant.TRANSACTION_ID))
                     fingerPrintDialogPayment?.apply {
@@ -546,6 +546,54 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
             view.stopLoading()
             showToastMessageWithForceCloseView(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT)
         }
+    }
+
+    private fun getBaseUrlDomainPayment(): String {
+        return TokopediaUrl.getInstance().PAY
+    }
+
+    fun getGeneratedOverrideRedirectUrlPayment(originUrl: String): String {
+        val originUri = Uri.parse(originUrl)
+        val uriBuilder = Uri.parse(originUrl).buildUpon()
+        if (!originUri.isOpaque) {
+            if (!TextUtils.isEmpty(originUri.getQueryParameter(AuthUtil.WEBVIEW_FLAG_PARAM_FLAG_APP))) {
+                uriBuilder.appendQueryParameter(
+                        AuthUtil.WEBVIEW_FLAG_PARAM_FLAG_APP,
+                        AuthUtil.DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_FLAG_APP
+                )
+            }
+            if (!TextUtils.isEmpty(originUri.getQueryParameter(AuthUtil.WEBVIEW_FLAG_PARAM_DEVICE))) {
+                uriBuilder.appendQueryParameter(
+                        AuthUtil.WEBVIEW_FLAG_PARAM_DEVICE,
+                        AuthUtil.DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_DEVICE
+                )
+            }
+            if (!TextUtils.isEmpty(originUri.getQueryParameter(AuthUtil.WEBVIEW_FLAG_PARAM_UTM_SOURCE))) {
+                uriBuilder.appendQueryParameter(
+                        AuthUtil.WEBVIEW_FLAG_PARAM_UTM_SOURCE,
+                        AuthUtil.DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_UTM_SOURCE
+                )
+            }
+            if (!TextUtils.isEmpty(originUri.getQueryParameter(AuthUtil.WEBVIEW_FLAG_PARAM_APP_VERSION))) {
+                uriBuilder.appendQueryParameter(
+                        AuthUtil.WEBVIEW_FLAG_PARAM_APP_VERSION, GlobalConfig.VERSION_NAME
+                )
+            }
+        }
+        return uriBuilder.build().toString().trim()
+    }
+
+    fun getGeneratedOverrideRedirectHeaderUrlPayment(originUrl: String): Map<String?, String?>? {
+        val urlQuery = Uri.parse(originUrl).query
+        return com.tokopedia.core.network.retrofit.utils.AuthUtil.generateWebviewHeaders(
+                Uri.parse(originUrl).path,
+                urlQuery ?: "",
+                "GET",
+                com.tokopedia.core.network.retrofit.utils.AuthUtil.KEY.KEY_WSV4)
+    }
+
+    fun getEnableFingerprintPayment(): Boolean {
+        return remoteConfig.getBoolean(FingerprintConstant.ENABLE_FINGERPRINT_MAINAPP)
     }
 
     companion object {
