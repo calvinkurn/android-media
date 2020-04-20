@@ -40,7 +40,7 @@ class ShipmentButtonPaymentViewHolder(val view: View, val actionListener: Shipme
             itemView.tv_total_payment.setPadding(itemView.resources.getDimensionPixelOffset(R.dimen.dp_8), 0,
                     itemView.resources.getDimensionPixelOffset(R.dimen.dp_8), 0)
         } else {
-            // itemView.tv_select_cod.visibility = View.GONE
+            itemView.tv_select_cod.visibility = View.GONE
         }
         itemView.tv_total_payment.text = model.totalPrice
         itemView.tv_select_payment_method.setOnClickListener {
