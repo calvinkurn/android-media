@@ -47,7 +47,7 @@ class DynamicChannelMixLeftViewHolder(
     private val image = itemView.findViewById<ImageView>(R.id.parallax_image)
     private val bannerBackground = itemView.findViewById<View>(R.id.banner_background)
     private var layoutManager: LinearLayoutManager? = null
-    private var adapter: MixLeftAdapter? = null
+    private var adapter: MixWidgetAdapter? = null
 
 
     override fun bind(element: DynamicChannelViewModel?) {
@@ -113,7 +113,7 @@ class DynamicChannelMixLeftViewHolder(
         recyclerViewProductList.layoutManager = layoutManager
         val typeFactoryImpl = OfficialStoreFlashSaleCardViewTypeFactoryImpl(dcEventHandler, channel)
         val productDataList = convertDataToProductData(channel)
-        adapter = MixLeftAdapter(typeFactoryImpl)
+        adapter = MixWidgetAdapter(typeFactoryImpl)
         adapter?.addElement(productDataList)
         recyclerViewProductList.adapter = adapter
         recyclerViewProductList.addOnScrollListener(getParallaxEffect())
