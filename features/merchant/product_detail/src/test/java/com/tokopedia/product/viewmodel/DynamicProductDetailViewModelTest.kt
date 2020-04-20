@@ -6,6 +6,7 @@ import com.tokopedia.affiliatecommon.domain.TrackAffiliateUseCase
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.model.response.ErrorReporterModel
 import com.tokopedia.atc_common.domain.model.response.ErrorReporterTextModel
+import com.tokopedia.atc_common.domain.usecase.AddToCartOccUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartOcsUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.product.detail.common.data.model.product.ProductParams
@@ -72,7 +73,7 @@ class DynamicProductDetailViewModelTest {
     @RelaxedMockK
     lateinit var getProductInfoP2GeneralUseCase: GetProductInfoP2GeneralUseCase
     @RelaxedMockK
-    lateinit var getProductInfoP3UseCase: GetProductInfoP3UseCase
+    lateinit var getProductInfoP3RateEstimateUseCase: GetProductInfoP3RateEstimateUseCase
     @RelaxedMockK
     lateinit var toggleFavoriteUseCase: ToggleFavoriteUseCase
     @RelaxedMockK
@@ -96,7 +97,9 @@ class DynamicProductDetailViewModelTest {
     @RelaxedMockK
     lateinit var addToCartOcsUseCase: AddToCartOcsUseCase
     @RelaxedMockK
-    lateinit var getP3VariantUseCase: GetP3VariantUseCase
+    lateinit var addToCartOccUseCase: AddToCartOccUseCase
+    @RelaxedMockK
+    lateinit var getCartTypeUseCase: GetCartTypeUseCase
     @RelaxedMockK
     lateinit var toggleNotifyMeUseCase: ToggleNotifyMeUseCase
     @RelaxedMockK
@@ -111,8 +114,8 @@ class DynamicProductDetailViewModelTest {
     }
 
     private val viewModel by lazy {
-        DynamicProductDetailViewModel(TestDispatcherProvider(), stickyLoginUseCase, getPdpLayoutUseCase, getProductInfoP2ShopUseCase, getProductInfoP2LoginUseCase, getProductInfoP2GeneralUseCase, getProductInfoP3UseCase, toggleFavoriteUseCase, removeWishlistUseCase, addWishListUseCase, getRecommendationUseCase,
-                moveProductToWarehouseUseCase, moveProductToEtalaseUseCase, trackAffiliateUseCase, submitHelpTicketUseCase, updateCartCounterUseCase, addToCartUseCase, addToCartOcsUseCase, getP3VariantUseCase, toggleNotifyMeUseCase, sendTopAdsUseCase, userSessionInterface)
+        DynamicProductDetailViewModel(TestDispatcherProvider(), stickyLoginUseCase, getPdpLayoutUseCase, getProductInfoP2ShopUseCase, getProductInfoP2LoginUseCase, getProductInfoP2GeneralUseCase, getProductInfoP3RateEstimateUseCase, toggleFavoriteUseCase, removeWishlistUseCase, addWishListUseCase, getRecommendationUseCase,
+                moveProductToWarehouseUseCase, moveProductToEtalaseUseCase, trackAffiliateUseCase, submitHelpTicketUseCase, updateCartCounterUseCase, addToCartUseCase, addToCartOcsUseCase, addToCartOccUseCase, getCartTypeUseCase, toggleNotifyMeUseCase, sendTopAdsUseCase, userSessionInterface)
     }
 
     /**
@@ -125,7 +128,7 @@ class DynamicProductDetailViewModelTest {
             userSessionInterface.shopId
         } returns shopId
 
-        val isShopOwner = viewModel.isShopOwner(shopId.toInt())
+        val isShopOwner = viewModel.isShopOwner()
 
         Assert.assertTrue(isShopOwner)
     }
@@ -138,7 +141,7 @@ class DynamicProductDetailViewModelTest {
             userSessionInterface.shopId
         } returns anotherShopId
 
-        val isShopOwner = viewModel.isShopOwner(shopId.toInt())
+        val isShopOwner = viewModel.isShopOwner()
 
         Assert.assertFalse(isShopOwner)
     }
@@ -357,7 +360,7 @@ class DynamicProductDetailViewModelTest {
         } returns dataP2General
 
         coEvery {
-            getProductInfoP3UseCase.executeOnBackground()
+            getProductInfoP3RateEstimateUseCase.executeOnBackground()
         } returns dataP3
 
         viewModel.getProductP1(productParams)
@@ -394,11 +397,11 @@ class DynamicProductDetailViewModelTest {
 
         //P3
         coVerify {
-            getProductInfoP3UseCase.executeOnBackground()
+            getProductInfoP3RateEstimateUseCase.executeOnBackground()
         }
-        Assert.assertNotNull(viewModel.productInfoP3resp.value)
-        Assert.assertNotNull(viewModel.productInfoP3resp.value?.rateEstSummarizeText)
-        Assert.assertEquals(viewModel.productInfoP3resp.value?.userCod, anyBoolean())
+        Assert.assertNotNull(viewModel.productInfoP3RateEstimate.value)
+        Assert.assertNotNull(viewModel.productInfoP3RateEstimate.value?.rateEstSummarizeText)
+        Assert.assertEquals(viewModel.productInfoP3RateEstimate.value?.userCod, anyBoolean())
     }
 
     @Test
@@ -431,7 +434,7 @@ class DynamicProductDetailViewModelTest {
 
         //P3
         coVerify(inverse = true) {
-            getProductInfoP3UseCase.executeOnBackground()
+            getProductInfoP3RateEstimateUseCase.executeOnBackground()
         }
     }
 
@@ -469,7 +472,7 @@ class DynamicProductDetailViewModelTest {
         } returns dataP2General
 
         coEvery {
-            getProductInfoP3UseCase.executeOnBackground()
+            getProductInfoP3RateEstimateUseCase.executeOnBackground()
         } returns dataP3
 
         viewModel.getProductP1(productParams)
@@ -503,7 +506,7 @@ class DynamicProductDetailViewModelTest {
         //P3
         //Make sure not called
         coVerify(inverse = true) {
-            getProductInfoP3UseCase.executeOnBackground()
+            getProductInfoP3RateEstimateUseCase.executeOnBackground()
         }
 
         Assert.assertTrue((viewModel.productLayout.value as Success).data.none {
@@ -900,7 +903,7 @@ class DynamicProductDetailViewModelTest {
         }
 
         verify {
-            getProductInfoP3UseCase.cancelJobs()
+            getProductInfoP3RateEstimateUseCase.cancelJobs()
         }
 
         verify {

@@ -2,22 +2,24 @@ package com.tokopedia.autocomplete.initialstate
 
 import android.text.TextUtils
 import com.tokopedia.authentication.AuthHelper
-import com.tokopedia.discovery.common.constants.SearchApiConst
+import com.tokopedia.autocomplete.util.UrlParamHelper
+import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import rx.Observable
+import rx.functions.Func1
 import java.util.HashMap
+import com.tokopedia.discovery.common.constants.SearchConstant.GQL
 
 class InitialStateUseCase(
-        private val initialStateRepository: InitialStateRepository
+        private val graphqlRequest: GraphqlRequest,
+        private val graphqlUseCase: GraphqlUseCase,
+        private val initialStateDataModelMapper: Func1<GraphqlResponse, List<InitialStateData>>
 ) : UseCase<List<InitialStateData>>() {
 
-    override fun createObservable(requestParams: RequestParams): Observable<List<InitialStateData>> {
-        return initialStateRepository.getInitialStateData(requestParams.parameters)
-    }
-
     companion object {
-
         private const val KEY_DEVICE = "device"
         private const val KEY_SOURCE = "source"
         private const val KEY_UNIQUE_ID = "unique_id"
@@ -27,12 +29,6 @@ class InitialStateUseCase(
         private const val DEFAULT_SOURCE = "searchbar"
         private const val DEFAULT_COUNT = "5"
         private const val DEVICE_ID = "device_id"
-
-        fun getParams(query: String, registrationId: String, userId: String): RequestParams {
-            val searchParameter = HashMap<String, Any>()
-            searchParameter[SearchApiConst.Q] = query
-            return getParams(searchParameter, registrationId, userId)
-        }
 
         fun getParams(searchParameter: Map<String, Any>, registrationId: String, userId: String): RequestParams {
             val params = RequestParams.create()
@@ -52,5 +48,21 @@ class InitialStateUseCase(
 
             return params
         }
+    }
+
+    override fun createObservable(requestParams: RequestParams): Observable<List<InitialStateData>> {
+        val variables = createParametersForQuery(requestParams.parameters)
+        graphqlRequest.variables = variables
+        graphqlUseCase.clearRequest()
+        graphqlUseCase.addRequest(graphqlRequest)
+        return graphqlUseCase
+                .createObservable(RequestParams.EMPTY)
+                .map(initialStateDataModelMapper)
+    }
+
+    private fun createParametersForQuery(parameters: Map<String, Any>): Map<String, Any> {
+        val variables: MutableMap<String, Any> = HashMap()
+        variables[GQL.KEY_PARAMS] = UrlParamHelper.generateUrlParamString(parameters)
+        return variables
     }
 }

@@ -86,6 +86,8 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     private static final String BRANCH_IO_HOST = "tokopedia.link";
     private static final String PARAM_EXTERNAL = "tokopedia_external=true";
     private static final String PARAM_WEBVIEW_BACK = "tokopedia://back";
+    public static final String CUST_OVERLAY_URL = "imgurl";
+    private static final String CUST_HEADER = "header_text";
 
     @NonNull
     protected String url = "";
@@ -438,6 +440,14 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
 
 
     class MyWebViewClient extends WebViewClient {
+
+        @Nullable
+        @Override
+        public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
+            webViewClientShouldInterceptRequest(view, request);
+            return super.shouldInterceptRequest(view, request);
+        }
+
         @Override
         public void onPageStarted(WebView view, String url, Bitmap favicon) {
             super.onPageStarted(view, url, favicon);
@@ -495,20 +505,35 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         }
     }
 
+    // to be overridden
+    protected void webViewClientShouldInterceptRequest(WebView view, WebResourceRequest request) {
+        //noop
+    }
+
     protected boolean shouldOverrideUrlLoading(@Nullable WebView webview, @NonNull String url) {
         if (getActivity() == null) {
             return false;
         }
         Uri uri = Uri.parse(url);
         if (goToLoginGoogle(uri)) return true;
+        String queryParam = uri.getQueryParameter(CUST_OVERLAY_URL);
+        String headerText = uri.getQueryParameter(CUST_HEADER);
 
         if (url.contains(HCI_CAMERA_KTP)) {
             mJsHciCallbackFuncName = uri.getLastPathSegment();
-            startActivityForResult(RouteManager.getIntent(getActivity(), ApplinkConst.HOME_CREDIT_KTP_WITH_TYPE), HCI_CAMERA_REQUEST_CODE);
+            Intent intent = RouteManager.getIntent(getActivity(), ApplinkConst.HOME_CREDIT_KTP_WITH_TYPE);
+            if (queryParam != null)
+                intent.putExtra(CUST_OVERLAY_URL, queryParam);
+            startActivityForResult(intent, HCI_CAMERA_REQUEST_CODE);
             return true;
         } else if (url.contains(HCI_CAMERA_SELFIE)) {
             mJsHciCallbackFuncName = uri.getLastPathSegment();
-            startActivityForResult(RouteManager.getIntent(getActivity(), ApplinkConst.HOME_CREDIT_SELFIE_WITHOUT_TYPE), HCI_CAMERA_REQUEST_CODE);
+            Intent intent = RouteManager.getIntent(getActivity(), ApplinkConst.HOME_CREDIT_SELFIE_WITHOUT_TYPE);
+            if (queryParam != null)
+                intent.putExtra(CUST_OVERLAY_URL, queryParam);
+            if(headerText != null)
+                intent.putExtra(CUST_HEADER, headerText);
+            startActivityForResult(intent, HCI_CAMERA_REQUEST_CODE);
             return true;
         } else if (PARAM_WEBVIEW_BACK.equalsIgnoreCase(url)
                 && getActivity() != null) {

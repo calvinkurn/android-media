@@ -234,10 +234,12 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
                     visitables.indexOf(mapOfDataModel[KEY_SHOP_PRODUCT_FIRST_DATA_MODEL])
                 }
             }
-            visitables.subList(indexStart, totalData).clear()
-            notifyItemRangeRemoved(indexStart, totalData)
-            shopProductViewModelList.clear()
-            mapDataModel()
+            if (indexStart >= 0 && totalData <= visitables.size && indexStart < totalData) {
+                visitables.subList(indexStart, totalData).clear()
+                notifyItemRangeRemoved(indexStart, totalData)
+                shopProductViewModelList.clear()
+                mapDataModel()
+            }
         }
     }
 

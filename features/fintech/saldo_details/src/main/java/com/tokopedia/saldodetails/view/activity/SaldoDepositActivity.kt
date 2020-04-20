@@ -56,11 +56,11 @@ class SaldoDepositActivity : BaseSimpleActivity(), HasComponent<SaldoDetailsComp
     }
 
     private fun initInjector() {
-        SaldoDetailsComponentInstance.getComponent(application).inject(this)
+        SaldoDetailsComponentInstance.getComponent(this).inject(this)
     }
 
     override fun getComponent(): SaldoDetailsComponent? {
-        return SaldoDetailsComponentInstance.getComponent(application)
+        return SaldoDetailsComponentInstance.getComponent(this)
     }
 
     override fun getLayoutRes(): Int {
