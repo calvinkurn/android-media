@@ -82,9 +82,9 @@ class FingerprintModule {
 
     @FingerprintScope
     @Provides
-    fun provideOkHttpClient(context: Context, httpLoggingInterceptor: HttpLoggingInterceptor): OkHttpClient {
+    fun provideOkHttpClient(context: Context, httpLoggingInterceptor: HttpLoggingInterceptor, userSession: UserSessionInterface): OkHttpClient {
         val builder = OkHttpClient.Builder()
-                .addInterceptor(TkpdAuthInterceptor(context, context as NetworkRouter, UserSession(context)))
+                .addInterceptor(TkpdAuthInterceptor(context, context as NetworkRouter, userSession))
                 .readTimeout(READ_TIMEOUT.toLong(), TimeUnit.SECONDS)
                 .writeTimeout(WRITE_TIMEOUT.toLong(), TimeUnit.SECONDS)
         if (GlobalConfig.isAllowDebuggingTools()) {
