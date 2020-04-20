@@ -6,14 +6,17 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.product.manage.feature.quickedit.variant.adapter.model.ProductVariant
 import com.tokopedia.product.manage.feature.quickedit.variant.adapter.viewholder.ProductVariantViewHolder
+import com.tokopedia.product.manage.feature.quickedit.variant.adapter.viewholder.ProductVariantViewHolder.*
 
-class ProductVariantAdapterFactoryImpl: BaseAdapterTypeFactory(), ProductVariantAdapterFactory {
+class ProductVariantAdapterFactoryImpl(
+    private val listener: ProductVariantListener
+): BaseAdapterTypeFactory(), ProductVariantAdapterFactory {
 
     override fun type(viewModel: ProductVariant): Int = ProductVariantViewHolder.LAYOUT
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when(type) {
-            ProductVariantViewHolder.LAYOUT -> ProductVariantViewHolder(parent)
+            ProductVariantViewHolder.LAYOUT -> ProductVariantViewHolder(parent, listener)
             else -> return super.createViewHolder(parent, type)
         }
     }
