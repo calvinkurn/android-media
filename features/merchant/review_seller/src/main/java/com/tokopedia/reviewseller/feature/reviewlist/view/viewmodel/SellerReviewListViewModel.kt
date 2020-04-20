@@ -35,9 +35,6 @@ class SellerReviewListViewModel @Inject constructor(
     var sortBy: String? = ""
     var filterBy: String? = ""
 
-    var chipsSortText: String? = ""
-    var chipsFilterText: String? = ""
-
     var positionFilter = 0
     var positionSort = 0
 
@@ -45,40 +42,40 @@ class SellerReviewListViewModel @Inject constructor(
 
     fun getProductRatingData(sortBy: String, filterBy: String) {
         launchCatchError(block = {
-            val productRatingOverall = asyncCatchError(
-                    dispatcherProvider.io(),
-                    block = {
-                        getProductRatingOverall(filterBy)
-                    },
-                    onError = {
-                        _productRatingOverall.postValue(Fail(it))
-                        null
-                    }
-            )
-
-//            val reviewProductList = asyncCatchError(
+//            val productRatingOverall = asyncCatchError(
 //                    dispatcherProvider.io(),
 //                    block = {
-//                        getProductReviewList(
-//                                sortBy = sortBy,
-//                                filterBy = filterBy)
+//                        getProductRatingOverall(filterBy)
 //                    },
 //                    onError = {
-//                        _reviewProductList.postValue(Fail(it))
+//                        _productRatingOverall.postValue(Fail(it))
 //                        null
 //                    }
 //            )
 
-//            reviewProductList.await()?.let { reviewProductData ->
-//                _reviewProductList.postValue(Success(reviewProductData))
-//            }
+            val reviewProductList = asyncCatchError(
+                    dispatcherProvider.io(),
+                    block = {
+                        getProductReviewList(
+                                sortBy = sortBy,
+                                filterBy = filterBy)
+                    },
+                    onError = {
+                        _reviewProductList.postValue(Fail(it))
+                        null
+                    }
+            )
 
-            productRatingOverall.await()?.let {
-                _productRatingOverall.postValue(Success(it))
-//                reviewProductList.await()?.let { reviewProductData ->
-//                    _reviewProductList.postValue(Success(reviewProductData))
-//                }
+            reviewProductList.await()?.let { reviewProductData ->
+                _reviewProductList.postValue(Success(reviewProductData))
             }
+
+//            productRatingOverall.await()?.let {
+//                _productRatingOverall.postValue(Success(it))
+////                reviewProductList.await()?.let { reviewProductData ->
+////                    _reviewProductList.postValue(Success(reviewProductData))
+////                }
+//            }
         }) {
         }
     }
