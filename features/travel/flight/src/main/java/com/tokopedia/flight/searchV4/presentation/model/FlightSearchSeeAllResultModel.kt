@@ -10,5 +10,4 @@ class FlightSearchSeeAllResultModel(val newPrice: String = "",
                                     val isOnlyBestPairing: Boolean = false)
     : Visitable<FlightSearchAdapterTypeFactory> {
     override fun type(typeFactory: FlightSearchAdapterTypeFactory): Int = typeFactory.type(this)
-
 }

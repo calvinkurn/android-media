@@ -291,6 +291,12 @@ class FlightSearchViewModel @Inject constructor(
             flightSearchPassData.searchRequestId = flightSearchMeta.searchRequestId
         }
 
+        for (item in flightSearchMeta.airlines) {
+            if (!flightAirportCombine.airlines.contains(item)) {
+                flightAirportCombine.airlines.add(item)
+            }
+        }
+
         if (flightAirportCombine.isNeedRefresh) {
             if (flightSearchMeta.isNeedRefresh) {
                 flightAirportCombine.noOfRetry++
