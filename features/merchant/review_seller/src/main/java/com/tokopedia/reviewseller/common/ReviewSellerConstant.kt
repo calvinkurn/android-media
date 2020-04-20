@@ -21,7 +21,7 @@ object ReviewSellerConstant {
         map["time=1y"] = "1 Tahun Terakhir"
         return map
     }
-    
+
     const val DEFAULT_PER_PAGE = 10
     const val HAS_TAB_RATING_PRODUCT = "hasTabRatingProduct"
     const val HAS_FILTER_AND_SORT = "hasFilterAndSort"
