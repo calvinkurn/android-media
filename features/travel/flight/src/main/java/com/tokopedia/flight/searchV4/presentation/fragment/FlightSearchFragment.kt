@@ -69,27 +69,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        activity?.run {
-            val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
-            flightSearchViewModel = viewModelProvider.get(FlightSearchViewModel::class.java)
-
-            arguments?.let { args ->
-                args.getParcelable<FlightSearchPassDataModel>(FlightSearchActivity.EXTRA_PASS_DATA)?.let {
-                    flightSearchViewModel.flightSearchPassData = it
-                }
-                flightSearchViewModel.isCombineDone = args.getBoolean(EXTRA_IS_COMBINE_DONE, false)
-            }
-
-            if (savedInstanceState == null) {
-                flightSearchViewModel.filterModel = buildFilterModel(FlightFilterModel())
-                flightSearchViewModel.flightAirportCombine = flightSearchViewModel.buildAirportCombineModel(
-                        getDepartureAirport(), getArrivalAirport())
-            }
-
-            flightSearchViewModel.initialize(true, isReturnTrip())
-            flightSearchViewModel.fetchSearchDataCloud(isReturnTrip())
-        }
-
+        initViewModels()
         coachMarkCache = FlightSearchCache(requireContext())
     }
 
@@ -248,6 +228,25 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
         return emptyResultViewModel
     }
 
+    open fun initViewModels() {
+        activity?.run {
+            val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
+            flightSearchViewModel = viewModelProvider.get(FlightSearchViewModel::class.java)
+
+            arguments?.let { args ->
+                args.getParcelable<FlightSearchPassDataModel>(FlightSearchActivity.EXTRA_PASS_DATA)?.let {
+                    flightSearchViewModel.flightSearchPassData = it
+                }
+                flightSearchViewModel.isCombineDone = args.getBoolean(EXTRA_IS_COMBINE_DONE, false)
+            }
+
+            flightSearchViewModel.filterModel = buildFilterModel(FlightFilterModel())
+            flightSearchViewModel.flightAirportCombine = flightSearchViewModel.buildAirportCombineModel(
+                    getDepartureAirport(), getArrivalAirport())
+            flightSearchViewModel.initialize(true, isReturnTrip())
+            flightSearchViewModel.fetchSearchDataCloud(isReturnTrip())
+        }
+    }
 
     open fun buildFilterModel(filterModel: FlightFilterModel): FlightFilterModel =
             filterModel

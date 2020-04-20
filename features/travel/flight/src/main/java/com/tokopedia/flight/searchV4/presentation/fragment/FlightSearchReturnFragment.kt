@@ -4,10 +4,12 @@ import android.os.Bundle
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.flight.R
+import com.tokopedia.flight.airport.view.model.FlightAirportModel
 import com.tokopedia.flight.common.util.FlightDateUtil
 import com.tokopedia.flight.search.presentation.model.FlightJourneyModel
 import com.tokopedia.flight.search.presentation.model.FlightPriceModel
 import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataModel
+import com.tokopedia.flight.search.presentation.model.filter.FlightFilterModel
 import com.tokopedia.flight.searchV4.presentation.activity.FlightSearchActivity.Companion.EXTRA_PASS_DATA
 import com.tokopedia.flight.searchV4.presentation.activity.FlightSearchReturnActivity.Companion.EXTRA_DEPARTURE_ID
 import com.tokopedia.flight.searchV4.presentation.activity.FlightSearchReturnActivity.Companion.EXTRA_IS_BEST_PAIRING
@@ -22,26 +24,6 @@ import kotlinx.android.synthetic.main.fragment_flight_search_return.*
 class FlightSearchReturnFragment : FlightSearchFragment() {
 
     private lateinit var flightSearchReturnViewModel: FlightSearchReturnViewModel
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        activity?.run {
-            val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
-            flightSearchReturnViewModel = viewModelProvider.get(FlightSearchReturnViewModel::class.java)
-
-            arguments?.let { args ->
-                flightSearchReturnViewModel.setSelectedDepartureId(args.getString(EXTRA_DEPARTURE_ID, ""))
-                flightSearchReturnViewModel.isViewOnlyBestPairing = args.getBoolean(EXTRA_IS_BEST_PAIRING, false)
-                flightSearchReturnViewModel.isBestPairing = args.getBoolean(EXTRA_IS_BEST_PAIRING, false)
-                args.getParcelable<FlightPriceModel>(EXTRA_PRICE_MODEL)?.let {
-                    flightSearchReturnViewModel.priceModel = it
-                }
-            }
-
-            flightSearchReturnViewModel.getDepartureJourneyDetail()
-        }
-    }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
@@ -65,6 +47,37 @@ class FlightSearchReturnFragment : FlightSearchFragment() {
 
     override fun onItemClicked(journeyViewModel: FlightJourneyModel?, adapterPosition: Int) {
         super.onItemClicked(journeyViewModel, adapterPosition)
+    }
+
+    override fun initViewModels() {
+        activity?.run {
+            val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
+            flightSearchReturnViewModel = viewModelProvider.get(FlightSearchReturnViewModel::class.java)
+
+            arguments?.let { args ->
+                flightSearchReturnViewModel.selectedFlightDepartureId = args.getString(EXTRA_DEPARTURE_ID, "")
+                flightSearchReturnViewModel.isViewOnlyBestPairing = args.getBoolean(EXTRA_IS_BEST_PAIRING, false)
+                flightSearchReturnViewModel.isBestPairing = args.getBoolean(EXTRA_IS_BEST_PAIRING, false)
+                args.getParcelable<FlightPriceModel>(EXTRA_PRICE_MODEL)?.let {
+                    flightSearchReturnViewModel.priceModel = it
+                }
+            }
+
+            flightSearchReturnViewModel.getDepartureJourneyDetail()
+        }
+        super.initViewModels()
+    }
+
+    override fun getDepartureAirport(): FlightAirportModel = flightSearchViewModel.flightSearchPassData.arrivalAirport
+
+    override fun getArrivalAirport(): FlightAirportModel = flightSearchViewModel.flightSearchPassData.departureAirport
+
+    override fun buildFilterModel(filterModel: FlightFilterModel): FlightFilterModel {
+        filterModel.isBestPairing = flightSearchReturnViewModel.isViewOnlyBestPairing
+        filterModel.journeyId = flightSearchReturnViewModel.selectedFlightDepartureId
+        filterModel.isReturn = isReturnTrip()
+
+        return filterModel
     }
 
     private fun renderDepartureJourney(flightJourneyModel: FlightJourneyModel) {

@@ -25,7 +25,7 @@ class FlightSearchReturnViewModel @Inject constructor(private val flightSearchJo
     var isBestPairing: Boolean = false
     var isViewOnlyBestPairing: Boolean = false
 
-    private var selectedFlightDepartureId: String = ""
+    var selectedFlightDepartureId: String = ""
 
     private val mutableDepartureJourney = MutableLiveData<FlightJourneyModel>()
     val departureJourney: LiveData<FlightJourneyModel>
@@ -37,10 +37,6 @@ class FlightSearchReturnViewModel @Inject constructor(private val flightSearchJo
         }) {
             it.printStackTrace()
         }
-    }
-
-    fun setSelectedDepartureId(selectedDepartureId: String) {
-        selectedFlightDepartureId = selectedDepartureId
     }
 
 }
