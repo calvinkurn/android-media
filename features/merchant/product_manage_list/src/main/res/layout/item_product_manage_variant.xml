@@ -4,19 +4,22 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="@dimen/spacing_lvl3"
     android:layout_marginBottom="@dimen/spacing_lvl3">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/spacing_lvl4"
+        android:paddingRight="@dimen/spacing_lvl4"
         android:textColor="@color/product_manage_title_color"
         app:typographyType="body_2"
         app:typographyWeight="bold"/>
 
     <com.tokopedia.unifycomponents.TextFieldUnify
         android:id="@+id/priceTextField"
+        android:paddingLeft="@dimen/spacing_lvl4"
+        android:paddingRight="@dimen/spacing_lvl4"
         android:layout_marginTop="@dimen/spacing_lvl4"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
