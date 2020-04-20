@@ -193,7 +193,6 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
             hideLoading()
             adapter.addElement(emptyDataViewModel)
         } else {
-            showLoading()
             isLoadingInitialData = false
         }
 
