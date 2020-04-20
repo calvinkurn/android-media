@@ -43,7 +43,7 @@ public class FlightSearchAdapterTypeFactory extends BaseAdapterTypeFactory
             return new EmptyResultViewHolder(parent);
         } else if (type == ErrorNetworkViewHolder.LAYOUT) {
             return new ErrorNetworkViewHolder(parent);
-        } else if (type == TravelSearchShimmeringViewHolder.LAYOUT) {
+        } else if (type == TravelSearchShimmeringViewHolder.Companion.getLAYOUT()) {
             return new TravelSearchShimmeringViewHolder(parent);
         } else {
             return super.createViewHolder(parent, type);
@@ -60,7 +60,7 @@ public class FlightSearchAdapterTypeFactory extends BaseAdapterTypeFactory
     }
 
     public int type(LoadingModel loadingModel) {
-        return TravelSearchShimmeringViewHolder.LAYOUT;
+        return TravelSearchShimmeringViewHolder.Companion.getLAYOUT();
     }
 
     public int type(EmptyResultModel viewModel) {
