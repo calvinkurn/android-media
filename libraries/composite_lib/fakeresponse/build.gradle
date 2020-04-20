@@ -1,0 +1,36 @@
+apply plugin: 'com.android.library'
+apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
+
+dependencies {
+
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    implementation rootProject.ext.supportLibDependencies.appCompactV7
+    implementation rootProject.ext.supportLibDependencies.constraintLayout
+    implementation rootProject.ext.supportLibDependencies.supportV4
+    implementation rootProject.ext.supportLibDependencies.recyclerViewV7
+    implementation rootProject.ext.supportLibDependencies.design
+
+    implementation rootProject.ext.miscDependencies.lifeCycleExtentions
+    implementation rootProject.ext.miscDependencies.viewModelKtx
+    implementation rootProject.ext.miscDependencies.gson
+
+    implementation rootProject.ext.dbDependencies.dbRoomRuntime
+    kapt rootProject.ext.dbDependencies.dbRoomCompiler
+    implementation rootProject.ext.dbDependencies.dbRoomKtx
+
+    implementation rootProject.ext.networkDependencies.okHttp
+
+    testImplementation rootProject.ext.testDependencies.junit
+    androidTestImplementation rootProject.ext.testDependencies.androidxTest
+    androidTestImplementation rootProject.ext.testDependencies.espressoCore
+}
+
+project.ext {
+    artifactId = 'fakeresponse'
+    groupId = 'com.tokopedia.fakeresponse'
+    versionName = "0.0.5"
+    artifactName = "fakeresponse-release"
+}
+
+apply from: '../publish_local.gradle'

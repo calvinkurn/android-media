@@ -7,6 +7,7 @@ import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
@@ -18,6 +19,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.analytics.performance.PerformanceMonitoring
+import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
@@ -27,7 +29,7 @@ import com.tokopedia.discovery.common.manager.showProductCardOptions
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.navigation_common.listener.JankyFramesMonitoringListener
+import com.tokopedia.navigation_common.listener.OfficialStorePerformanceMonitoringListener
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.officialstore.FirebasePerformanceMonitoringConstant
 import com.tokopedia.officialstore.OfficialStoreInstance
@@ -79,7 +81,7 @@ class OfficialHomeFragment :
         fun newInstance(bundle: Bundle?) = OfficialHomeFragment().apply { arguments = bundle }
     }
 
-    private var jankyFramesMonitoringListener: JankyFramesMonitoringListener? = null
+    private var officialStorePerformanceMonitoringListener: OfficialStorePerformanceMonitoringListener? = null
     private val sentDynamicChannelTrackers = mutableSetOf<String>()
 
     @Inject
@@ -125,6 +127,7 @@ class OfficialHomeFragment :
             category = it.getParcelable(BUNDLE_CATEGORY)
         }
         context?.let { tracking = OfficialStoreTracking(it) }
+        officialStorePerformanceMonitoringListener = context?.let { castContextToOfficialStorePerformanceMonitoring(it) }
     }
 
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
@@ -145,17 +148,28 @@ class OfficialHomeFragment :
         adapter = OfficialHomeAdapter(adapterTypeFactory)
         recyclerView?.adapter = adapter
 
-        recyclerView?.let { jankyFramesMonitoringListener?.mainJankyFrameMonitoringUtil?.recordRecyclerViewScrollPerformance(it, pageName = PERFORMANCE_OS_PAGE_NAME) }
+        setPerformanceListenerForRecyclerView()
         return view
     }
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        jankyFramesMonitoringListener = castContextToJankyFramesMonitoring(context)
+    private fun setPerformanceListenerForRecyclerView(){
+        recyclerView?.viewTreeObserver?.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener{
+            override fun onGlobalLayout() {
+                if(officialStorePerformanceMonitoringListener != null){
+                    officialStorePerformanceMonitoringListener!!.stopOfficialStorePerformanceMonitoring()
+                    officialStorePerformanceMonitoringListener = null
+                    recyclerView?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
+                }
+            }
+        })
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        if (getOfficialStorePageLoadTimeCallback() != null) {
+            getOfficialStorePageLoadTimeCallback()!!.stopPreparePagePerformanceMonitoring()
+            getOfficialStorePageLoadTimeCallback()!!.startNetworkRequestPerformanceMonitoring()
+        }
         observeBannerData()
         observeBenefit()
         observeFeaturedShop()
@@ -169,12 +183,6 @@ class OfficialHomeFragment :
     override fun onPause() {
         super.onPause()
         tracking?.sendAll()
-    }
-
-    private fun castContextToJankyFramesMonitoring(context: Context): JankyFramesMonitoringListener? {
-        return if (context is JankyFramesMonitoringListener) {
-            context
-        } else null
     }
 
     private fun resetData() {
@@ -685,6 +693,10 @@ class OfficialHomeFragment :
     }
 
     private fun removeLoading() {
+        if (getOfficialStorePageLoadTimeCallback() != null) {
+            getOfficialStorePageLoadTimeCallback()?.stopNetworkRequestPerformanceMonitoring()
+            getOfficialStorePageLoadTimeCallback()?.startRenderPerformanceMonitoring()
+        }
         recyclerView?.post {
             adapter?.getVisitables()?.removeAll {
                 it is LoadingModel
@@ -732,5 +744,17 @@ class OfficialHomeFragment :
 
         val dynamicChannelConstant = (FirebasePerformanceMonitoringConstant.DYNAMIC_CHANNEL).replace(SLUG_CONST, CATEGORY_CONST)
         dynamicChannelPerformanceMonitoring = PerformanceMonitoring.start(dynamicChannelConstant)
+    }
+
+    private fun castContextToOfficialStorePerformanceMonitoring(context: Context): OfficialStorePerformanceMonitoringListener? {
+        return if (context is OfficialStorePerformanceMonitoringListener) {
+            context
+        } else null
+    }
+
+    private fun getOfficialStorePageLoadTimeCallback(): PageLoadTimePerformanceInterface? {
+        return if (officialStorePerformanceMonitoringListener != null && officialStorePerformanceMonitoringListener!!.getOfficialStorePageLoadTimePerformanceInterface() != null) {
+            officialStorePerformanceMonitoringListener!!.getOfficialStorePageLoadTimePerformanceInterface()
+        } else null
     }
 }

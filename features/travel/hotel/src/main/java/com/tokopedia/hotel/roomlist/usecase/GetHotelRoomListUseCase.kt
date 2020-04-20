@@ -45,14 +45,14 @@ class GetHotelRoomListUseCase @Inject constructor(val useCase: MultiRequestGraph
 
         useCase.clearRequest()
 
-        try {
+        return try {
             val graphqlRequest = GraphqlRequest(rawQuery, HotelRoomData.Response::class.java, params)
             useCase.addRequest(graphqlRequest)
 
             val hotelRoomData = useCase.executeOnBackground().getSuccessData<HotelRoomData.Response>().response
-            return Success(mappingObjects(hotelRoomData, hotelRoomListPageModel.propertyName))
+            Success(mappingObjects(hotelRoomData, hotelRoomListPageModel.propertyName))
         } catch (throwable: Throwable) {
-            return Fail(throwable)
+            Fail(throwable)
         }
     }
 
