@@ -146,6 +146,14 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
         showLoading()
     }
 
+    override fun onResume() {
+        super.onResume()
+
+        if (::flightSearchViewModel.isInitialized) {
+            flightSearchViewModel.fetchSortAndFilter()
+        }
+    }
+
     override fun onAttachActivity(context: Context?) {
         super.onAttachActivity(context)
         onFlightSearchFragmentListener = context as OnFlightSearchFragmentListener

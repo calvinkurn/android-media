@@ -170,6 +170,7 @@ class FlightSearchViewModel @Inject constructor(
 
         launchCatchError(context = dispatcherProvider.ui(), block = {
             isCombineDone = flightSearchCombineUseCase.execute(combineRequestModel)
+            fetchSortAndFilter()
         }) {
             it.printStackTrace()
         }
@@ -259,6 +260,7 @@ class FlightSearchViewModel @Inject constructor(
     fun sendQuickFilterTrack(filterName: String) {
         flightAnalytics.eventQuickFilterClick(filterName)
     }
+
     private fun deleteAllSearchData() {
         launchCatchError(dispatcherProvider.ui(), block = {
             flightSearchDeleteAllDataUseCase.execute()
