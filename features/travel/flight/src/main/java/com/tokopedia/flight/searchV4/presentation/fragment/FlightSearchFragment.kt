@@ -143,6 +143,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
 
         setupSwipeRefresh()
         setupQuickFilter()
+        showLoading()
     }
 
     override fun onAttachActivity(context: Context?) {
@@ -194,6 +195,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
             adapter.addElement(emptyDataViewModel)
         } else {
             isLoadingInitialData = false
+            if (isListEmpty) showLoading()
         }
 
         if (flightSearchViewModel.isDoneLoadData()) {
