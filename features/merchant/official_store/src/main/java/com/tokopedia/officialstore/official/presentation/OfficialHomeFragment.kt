@@ -1,9 +1,12 @@
 package com.tokopedia.officialstore.official.presentation
 
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
+import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -41,6 +44,8 @@ import com.tokopedia.officialstore.common.listener.RecyclerViewScrollListener
 import com.tokopedia.officialstore.official.data.mapper.OfficialHomeMapper
 import com.tokopedia.officialstore.official.data.model.Shop
 import com.tokopedia.officialstore.official.data.model.dynamic_channel.Channel
+import com.tokopedia.officialstore.official.data.model.dynamic_channel.Cta
+import com.tokopedia.officialstore.official.data.model.dynamic_channel.Grid
 import com.tokopedia.officialstore.official.di.DaggerOfficialStoreHomeComponent
 import com.tokopedia.officialstore.official.di.OfficialStoreHomeComponent
 import com.tokopedia.officialstore.official.di.OfficialStoreHomeModule
@@ -63,8 +68,7 @@ class OfficialHomeFragment :
         HasComponent<OfficialStoreHomeComponent>,
         RecommendationListener,
         FeaturedShopListener,
-        DynamicChannelEventHandler
-{
+        DynamicChannelEventHandler {
 
     companion object {
         const val PRODUCT_RECOMM_GRID_SPAN_COUNT = 2
@@ -303,7 +307,8 @@ class OfficialHomeFragment :
     private fun observeTopAdsWishlist() {
         viewModel.topAdsWishlistResult.observe(this, Observer {
             when (it) {
-                is Success -> { }
+                is Success -> {
+                }
                 is Fail -> {
                     showErrorNetwork(it.throwable)
                 }
@@ -405,11 +410,11 @@ class OfficialHomeFragment :
         }
 
         handleProductCardOptionsActivityResult(
-                requestCode, resultCode, data, object: ProductCardOptionsWishlistCallback {
-                    override fun onReceiveWishlistResult(productCardOptionsModel: ProductCardOptionsModel) {
-                        handleWishlistAction(productCardOptionsModel)
-                    }
-                }
+                requestCode, resultCode, data, object : ProductCardOptionsWishlistCallback {
+            override fun onReceiveWishlistResult(productCardOptionsModel: ProductCardOptionsModel) {
+                handleWishlistAction(productCardOptionsModel)
+            }
+        }
         )
     }
 
@@ -508,6 +513,15 @@ class OfficialHomeFragment :
                     ProductRecommendationViewModel)?.productItem?.isWishlist = isWishlist
             adapter?.notifyItemChanged(position, isWishlist)
         }
+    }
+
+    private fun copyCoupon(view: View, cta: Cta) {
+        val clipboard = view.context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        val clipData = ClipData.newPlainText(getString(R.string.os_coupon_code_label), cta.couponCode)
+        clipboard.primaryClip = clipData
+        Toaster.make(view.parent as ViewGroup,
+                getString(R.string.os_toaster_coupon_copied),
+                Snackbar.LENGTH_LONG)
     }
 
     override fun onProductImpression(item: RecommendationItem) {
@@ -689,6 +703,56 @@ class OfficialHomeFragment :
         if (!sentDynamicChannelTrackers.contains(channelData.id + impressionTag)) {
             tracking?.dynamicChannelMixBannerImpression(viewModel.currentSlug, channelData)
             sentDynamicChannelTrackers.add(channelData.id + impressionTag)
+        }
+    }
+
+    override fun onFlashSaleCardImpressed(position: Int, grid: Grid, channel: Channel) {
+        tracking?.flashSaleCardImpression(
+                viewModel.currentSlug,
+                channel,
+                grid,
+                (position + 1).toString(),
+                viewModel.isLoggedIn()
+        )
+    }
+
+    override fun onMixFlashSaleSeeAllClicked(channel: Channel, applink: String) {
+        tracking?.seeAllMixFlashSaleClicked(
+                viewModel.currentSlug,
+                channel
+        )
+        if (!TextUtils.isEmpty(applink)) {
+            RouteManager.route(context, applink)
+        }
+    }
+
+    override fun onFlashSaleCardClicked(position: Int, channel: Channel, grid: Grid, applink: String) {
+        tracking?.flashSaleCardClicked(
+                viewModel.currentSlug,
+                channel,
+                grid,
+                (position + 1).toString(),
+                viewModel.isLoggedIn()
+        )
+        RouteManager.route(context, applink)
+    }
+
+    override fun onClickMixTopBannerItem(applink: String) {
+        RouteManager.route(context, applink)
+    }
+
+    override fun onClickMixTopBannerCtaButton(cta: Cta, channelId: String, applink: String) {
+        tracking?.mixTopBannerCtaButtonClicked(
+                viewModel.currentSlug,
+                cta.text,
+                channelId
+        )
+        if (cta.couponCode.isEmpty()) {
+            RouteManager.route(context, applink)
+        } else {
+            view?.let{
+                copyCoupon(it, cta)
+            }
         }
     }
 
