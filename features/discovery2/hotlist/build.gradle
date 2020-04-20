@@ -47,8 +47,7 @@ dependencies {
     implementation project(rootProject.ext.features.commonCategory)
     implementation project(rootProject.ext.libraries.linker)
     implementation rootProject.ext.tkpdInternalLibDependencies.authentication
-    implementation project(rootProject.ext.features.tkpdcore)
-
+    implementation project(rootProject.ext.libraries.sharedata)
 }
 
 project.ext {

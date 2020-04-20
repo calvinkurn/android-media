@@ -32,7 +32,6 @@ import com.tokopedia.common_category.interfaces.ProductCardListener
 import com.tokopedia.common_category.interfaces.QuickFilterListener
 import com.tokopedia.common_category.model.productModel.ProductsItem
 import com.tokopedia.core.gcm.GCMHandler
-import com.tokopedia.core.share.DefaultShare
 import com.tokopedia.design.image.ImageLoader
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.hotlist.analytics.HotlistNavAnalytics.Companion.hotlistNavAnalytics
@@ -54,7 +53,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey.HOTLIST_SHARE_MSG
-import com.tokopedia.topads.sdk.utils.ImpresionTask
+import com.tokopedia.sharedata.DefaultShareData
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -205,7 +204,7 @@ class HotlistNavFragment : BaseCategorySectionFragment(),
             it?.let {
                 setTotalSearchResultCount(it)
                 if (!TextUtils.isEmpty(it)) {
-                    setQuickFilterAdapter(getString(R.string.result_count_template_text, it))
+                    setQuickFilterAdapter(getString(R.string.hotlist_result_count_template_text, it))
                 } else {
                     setQuickFilterAdapter("")
                 }
@@ -260,8 +259,8 @@ class HotlistNavFragment : BaseCategorySectionFragment(),
     private fun showNoDataScreen(toShow: Boolean) {
         if (toShow) {
             layout_no_data.show()
-            txt_no_data_header.text = resources.getText(R.string.category_nav_product_no_data_title)
-            txt_no_data_description.text = resources.getText(R.string.category_nav_product_no_data_description)
+            txt_no_data_header.text = resources.getText(R.string.hotlist_nav_product_no_data_title)
+            txt_no_data_description.text = resources.getText(R.string.hotlist_nav_product_no_data_description)
         } else {
             layout_no_data.hide()
         }
@@ -623,7 +622,7 @@ class HotlistNavFragment : BaseCategorySectionFragment(),
     override fun onSuccessAddWishlist(productId: String) {
         productNavListAdapter?.updateWishlistStatus(parseStringToInt(productId), true)
         enableWishlistButton(productId)
-        NetworkErrorHelper.showSnackbar(activity, getString(R.string.msg_add_wishlist))
+        NetworkErrorHelper.showSnackbar(activity, getString(R.string.msg_success_add_wishlist))
     }
 
     override fun onErrorRemoveWishlist(errorMessage: String?, productId: String) {
@@ -634,7 +633,7 @@ class HotlistNavFragment : BaseCategorySectionFragment(),
     override fun onSuccessRemoveWishlist(productId: String) {
         productNavListAdapter?.updateWishlistStatus(parseStringToInt(productId), false)
         enableWishlistButton(productId)
-        NetworkErrorHelper.showSnackbar(activity, getString(R.string.msg_remove_wishlist))
+        NetworkErrorHelper.showSnackbar(activity, getString(R.string.msg_success_remove_wishlist))
     }
 
 
@@ -690,7 +689,7 @@ class HotlistNavFragment : BaseCategorySectionFragment(),
         val hotlistShareMsg = remoteConfig.getString(HOTLIST_SHARE_MSG)
         val shareData = LinkerData.Builder.getLinkerBuilder()
                 .setType(LinkerData.DISCOVERY_TYPE)
-                .setName(getString(R.string.message_share_catalog))
+                .setName(getString(R.string.hotlist_message_share_catalog))
                 .setTextContent(hotlistShareMsg)
                 .setCustMsg(hotlistShareMsg)
                 .setUri(HOTLIST_SHARE_URI + hotlistDetail?.aliasKey)
@@ -698,7 +697,7 @@ class HotlistNavFragment : BaseCategorySectionFragment(),
                 .build()
 
         shareData.type = LinkerData.HOTLIST_TYPE
-        DefaultShare(activity, shareData).show()
+        DefaultShareData(activity, shareData).show()
     }
 
     override fun topAdsTrackerUrlTrigger(url: String) {
