@@ -1,6 +1,6 @@
 package com.tokopedia.seller.product.draft.view.listener;
 
-import com.tokopedia.core.base.presentation.CustomerView;
+import com.tokopedia.abstraction.base.view.listener.CustomerView;
 
 import java.util.List;
 

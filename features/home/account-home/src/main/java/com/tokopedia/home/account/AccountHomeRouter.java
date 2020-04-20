@@ -15,7 +15,7 @@ import rx.Observable;
 
 public interface AccountHomeRouter {
 
-    void doLogoutAccount(Activity activity);
+    void doLogoutAccount(Context activity);
 
     Intent getManageAddressIntent(Context context);
 
@@ -28,8 +28,6 @@ public interface AccountHomeRouter {
     void goToSaldo(Context context);
 
     AccountHomeInjection getAccountHomeInjection();
-
-    Fragment getFavoriteFragment();
 
     String getStringRemoteConfig(String key, String defaultValue);
 

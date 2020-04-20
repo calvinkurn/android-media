@@ -13,6 +13,7 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
@@ -41,7 +42,8 @@ import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_FILTER_
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_FILTER_UNREAD
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_TAB_SELLER
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_TAB_USER
-import com.tokopedia.topchat.chatlist.di.ChatListComponent
+import com.tokopedia.topchat.chatlist.di.ChatListContextModule
+import com.tokopedia.topchat.chatlist.di.DaggerChatListComponent
 import com.tokopedia.topchat.chatlist.listener.ChatListContract
 import com.tokopedia.topchat.chatlist.listener.ChatListItemListener
 import com.tokopedia.topchat.chatlist.model.EmptyChatModel
@@ -54,7 +56,6 @@ import com.tokopedia.topchat.chatlist.pojo.ItemChatListPojo
 import com.tokopedia.topchat.chatlist.viewmodel.ChatItemListViewModel
 import com.tokopedia.topchat.chatlist.viewmodel.ChatItemListViewModel.Companion.arrayFilterParam
 import com.tokopedia.topchat.chatlist.widget.FilterMenu
-import com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivity
 import com.tokopedia.topchat.chatroom.view.viewmodel.ReplyParcelableModel
 import com.tokopedia.topchat.chatsetting.view.activity.ChatSettingActivity
 import com.tokopedia.topchat.common.TopChatInternalRouter
@@ -70,42 +71,41 @@ import javax.inject.Inject
 /**
  * @author : Steven 2019-08-06
  */
-class ChatListFragment : BaseListFragment<Visitable<*>,
-        BaseAdapterTypeFactory>(),
-        ChatListItemListener,
-        LifecycleOwner {
+class ChatListFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(),
+        ChatListItemListener, LifecycleOwner {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-
     @Inject
     lateinit var remoteConfig: RemoteConfig
-
-    private val viewModelFragmentProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
-
-    private val chatItemListViewModel by lazy { viewModelFragmentProvider.get(ChatItemListViewModel::class.java) }
-
-    private lateinit var performanceMonitoring: PerformanceMonitoring
-
-    private var activityContract: ChatListContract.Activity? = null
-
-    private var mUserSeen = false
-    private var mViewCreated = false
-    private var sightTag = ""
-
-    private var itemPositionLongClicked: Int = -1
-    private var filterChecked = 0
-
-    private var filterMenu = FilterMenu()
-
-    private lateinit var broadCastButton: FloatingActionButton
-
     @Inject
     lateinit var chatListAnalytics: ChatListAnalytic
 
+    private val viewModelFragmentProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
+    private val chatItemListViewModel by lazy { viewModelFragmentProvider.get(ChatItemListViewModel::class.java) }
+    private lateinit var performanceMonitoring: PerformanceMonitoring
+    private var chatTabListContract: ChatListContract.TabFragment? = null
+    private var mUserSeen = false
+    private var mViewCreated = false
+    private var sightTag = ""
+    private var itemPositionLongClicked: Int = -1
+    private var filterChecked = 0
+    private var filterMenu = FilterMenu()
+    private lateinit var broadCastButton: FloatingActionButton
+
+    override fun getRecyclerViewResourceId() = R.id.recycler_view
+    override fun getSwipeRefreshLayoutResourceId() = R.id.swipe_refresh_layout
+    override fun getScreenName(): String = ""
+
     override fun onAttachActivity(context: Context?) {
-        if (context is ChatListContract.Activity) {
-            activityContract = context
+        if (context is ChatListContract.TabFragment) {
+            chatTabListContract = context
+            return
+        }
+        parentFragment?.let { parent ->
+            if (parent is ChatListContract.TabFragment) {
+                chatTabListContract = parent
+            }
         }
     }
 
@@ -210,7 +210,10 @@ class ChatListFragment : BaseListFragment<Visitable<*>,
 
         chatItemListViewModel.deleteChat.observe(viewLifecycleOwner, Observer { result ->
             when (result) {
-                is Success -> adapter?.deleteItem(itemPositionLongClicked)
+                is Success -> {
+                    adapter?.deleteItem(itemPositionLongClicked)
+                    decreaseNotificationCounter()
+                }
                 is Fail -> view?.let {
                     Toaster.make(it, getString(R.string.delete_chat_default_error_message), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
                 }
@@ -226,15 +229,11 @@ class ChatListFragment : BaseListFragment<Visitable<*>,
                 return
             } else if (filterChecked == arrayFilterParam.indexOf(PARAM_FILTER_READ)) {
                 return
-            } else if (chatItemListViewModel.hasBeenUpdated(newChat)) {
-                return
             }
 
-            val existingThread = adapter.list.find {
-                it is ItemChatListPojo && it.msgId == newChat.messageId
+            val index = adapter.list.indexOfFirst { chat ->
+                return@indexOfFirst chat is ItemChatListPojo && chat.msgId == newChat.messageId
             }
-
-            val index = adapter.list.indexOf(existingThread)
 
             updateItemOnIndex(index, newChat)
         }
@@ -246,7 +245,6 @@ class ChatListFragment : BaseListFragment<Visitable<*>,
             readStatus: Int = ChatItemListViewHolder.STATE_CHAT_UNREAD
     ) {
         adapter?.let { adapter ->
-            chatItemListViewModel.updateLastReply(newChat)
             when {
                 //not found on list
                 index == -1 -> {
@@ -257,6 +255,7 @@ class ChatListFragment : BaseListFragment<Visitable<*>,
                     val item = ItemChatListPojo(newChat.messageId, attributes, "")
                     adapter.list.add(0, item)
                     adapter.notifyItemInserted(0)
+                    increaseNotificationCounter()
                     animateWhenOnTop()
                 }
                 //found on list, not the first
@@ -285,8 +284,15 @@ class ChatListFragment : BaseListFragment<Visitable<*>,
             if (index >= adapter.list.size) return
             adapter.list[index].apply {
                 if (this is ItemChatListPojo) {
+                    if (
+                            attributes?.readStatus == ChatItemListViewHolder.STATE_CHAT_READ &&
+                                    readStatus == ChatItemListViewHolder.STATE_CHAT_UNREAD
+                    ) {
+                        increaseNotificationCounter()
+                    }
                     attributes?.lastReplyMessage = newChat.message
                     attributes?.unreads = attributes?.unreads.toZeroIfNull() + 1
+                    attributes?.unreadReply = attributes?.unreadReply.toZeroIfNull() + 1
                     attributes?.readStatus = readStatus
                     attributes?.lastReplyTimeStr = newChat.time
                 }
@@ -380,7 +386,7 @@ class ChatListFragment : BaseListFragment<Visitable<*>,
                 else itemMenus.add(Menus.ItemMenus(title, false))
             }
 
-            val title = getString(R.string.label_filter)
+            val title = getString(com.tokopedia.design.R.string.label_filter)
             filterMenu.apply {
                 setTitle(title)
                 setItemMenuList(itemMenus)
@@ -394,12 +400,12 @@ class ChatListFragment : BaseListFragment<Visitable<*>,
         }
     }
 
-    override fun getScreenName(): String {
-        return ""
-    }
-
     override fun initInjector() {
-        getComponent(ChatListComponent::class.java).inject(this)
+        DaggerChatListComponent.builder()
+                .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
+                .chatListContextModule(context?.let { ChatListContextModule(it) })
+                .build()
+                .inject(this)
     }
 
     override fun loadData(page: Int) {
@@ -413,20 +419,9 @@ class ChatListFragment : BaseListFragment<Visitable<*>,
                         if (isTabSeller()) ChatListActivity.SELLER_ANALYTICS_LABEL
                         else ChatListActivity.BUYER_ANALYTICS_LABEL)
             }
-
-            val intent = TopChatRoomActivity.getCallingIntent(
-                    activity,
-                    element.msgId,
-                    element.attributes?.contact?.contactName,
-                    element.attributes?.contact?.tag,
-                    element.attributes?.contact?.contactId,
-                    element.attributes?.contact?.role,
-                    0,
-                    "",
-                    element.attributes?.contact?.thumbnail,
-                    itemPosition
-            )
+            val intent = RouteManager.getIntent(it, ApplinkConst.TOPCHAT, element.msgId)
             intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
+            intent.putExtra(TopChatInternalRouter.Companion.RESULT_INBOX_CHAT_PARAM_INDEX, itemPosition)
             this@ChatListFragment.startActivityForResult(intent, OPEN_DETAIL_MESSAGE)
             it.overridePendingTransition(0, 0)
         }
@@ -447,15 +442,15 @@ class ChatListFragment : BaseListFragment<Visitable<*>,
 
     override fun increaseNotificationCounter() {
         when (sightTag) {
-            PARAM_TAB_USER -> activityContract?.increaseUserNotificationCounter()
-            PARAM_TAB_SELLER -> activityContract?.increaseSellerNotificationCounter()
+            PARAM_TAB_USER -> chatTabListContract?.increaseUserNotificationCounter()
+            PARAM_TAB_SELLER -> chatTabListContract?.increaseSellerNotificationCounter()
         }
     }
 
     override fun decreaseNotificationCounter() {
         when (sightTag) {
-            PARAM_TAB_USER -> activityContract?.decreaseUserNotificationCounter()
-            PARAM_TAB_SELLER -> activityContract?.decreaseSellerNotificationCounter()
+            PARAM_TAB_USER -> chatTabListContract?.decreaseUserNotificationCounter()
+            PARAM_TAB_SELLER -> chatTabListContract?.decreaseSellerNotificationCounter()
         }
     }
 
@@ -510,7 +505,7 @@ class ChatListFragment : BaseListFragment<Visitable<*>,
 
     private fun onViewCreatedFirstSight(view: View?) {
         Timber.d("$sightTag onViewCreatedFirstSight")
-        (activity as ChatListContract.Activity).notifyViewCreated()
+        chatTabListContract?.notifyViewCreated()
         loadInitialData()
     }
 
@@ -557,6 +552,8 @@ class ChatListFragment : BaseListFragment<Visitable<*>,
                 image = CHAT_BUYER_EMPTY
                 title = it.getString(R.string.empty_chat_read_all_title)
                 subtitle = ""
+                ctaText = ""
+                ctaApplink = ""
             }
         }
 
@@ -565,7 +562,7 @@ class ChatListFragment : BaseListFragment<Visitable<*>,
 
     override fun onSwipeRefresh() {
         super.onSwipeRefresh()
-        activityContract?.loadNotificationCounter()
+        chatTabListContract?.loadNotificationCounter()
     }
 
     override fun trackChangeReadStatus(element: ItemChatListPojo) {

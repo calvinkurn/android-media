@@ -34,15 +34,17 @@
             android:textSize="@dimen/sp_14"
             android:gravity="center"/>
 
-        <com.tokopedia.design.component.ButtonCompat
+        <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/btn_retry"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textAllCaps="false"
             android:layout_marginStart="@dimen/dp_32" android:layout_marginLeft="@dimen/dp_32"
             android:layout_marginEnd="@dimen/dp_32" android:layout_marginRight="@dimen/dp_32"
-            app:buttonCompatType="primary"
-            app:buttonCompatSize="big"/>
+            app:unifyButtonSize="large"
+            app:unifyButtonType="main"
+            app:unifyButtonVariant="filled"
+            android:text="@string/forbidden_button"/>
 
     </LinearLayout>
 

@@ -4,7 +4,7 @@ import android.text.Html;
 import android.text.Spanned;
 import android.util.Log;
 
-import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.config.GlobalConfig;
 
 
 @Deprecated

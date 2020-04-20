@@ -21,50 +21,7 @@ fun createCombo(onwardJourneyId: String, returnJourneyId: String): FlightComboTa
 }
 
 fun createFlightJourneyTable(journeyId: String): FlightJourneyTable {
-    return FlightJourneyTable(
-            journeyId,
-            "CGKDPS",
-            "CGK",
-            "Cengkareng",
-            "jakarta",
-            "DPS",
-            "Denpasar",
-            "",
-            null,
-            "16.00",
-            123,
-            "18.00",
-            234,
-            0,
-            0,
-            0,
-            "2j",
-            0,
-            "Rp 500.000",
-            "",
-            500000,
-            0,
-            "Rp 200.000",
-            "",
-            200000,
-            0,
-            "Rp 0",
-            "",
-            0,
-            0,
-            "Rp 500000",
-            "",
-            500000,
-            0,
-            false,
-            "Rp 600000",
-            "Rp 500000",
-            500000,
-            false,
-            RefundableEnum.REFUNDABLE,
-            false,
-            "comboId"
-    )
+    return FlightJourneyTable()
 }
 
 fun createRoutes(journeyId: String): List<FlightRouteTable> {
@@ -73,7 +30,7 @@ fun createRoutes(journeyId: String): List<FlightRouteTable> {
             "CGK", "Cengkareng", "Jakarta", "DPS",
             "Denpasar", "Bali", "123", "234",
             "2j", "infos", "layover", "ABCDE", true,
-            "amenities", 1, "stopDetail"))
+            "amenities", 1, "stopDetail", ""))
     return routes
 }
 

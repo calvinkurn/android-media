@@ -117,6 +117,7 @@ public class FingerprintModelGenerator {
         String deviceLanguage = DeviceInfo.getLanguage();
         String ssid         = DeviceConnectionInfo.getSSID(context);
         String carrier      = DeviceConnectionInfo.getCarrierName(context);
+        String imei         = DeviceInfo.getImei(context);
         String isNakama = "False";
         if(context instanceof UserSessionInterface)
             isNakama = Utilities.isNakama((UserSessionInterface)context);
@@ -124,6 +125,9 @@ public class FingerprintModelGenerator {
         String deviceAvailableProcessor = DevicePerformanceInfo.INSTANCE.getAvailableProcessor(context.getApplicationContext());
         String deviceMemoryClass = DevicePerformanceInfo.INSTANCE.getDeviceMemoryClassCapacity(context.getApplicationContext());
         String deviceDpi = DevicePerformanceInfo.INSTANCE.getDeviceDpi(context.getApplicationContext());
+        String androidId = DeviceInfo.getAndroidId(context);
+        boolean isx86 = DeviceInfo.isx86();
+        String packageName = DeviceInfo.getPackageName(context);
 
         FingerPrint fp = new FingerPrint.FingerPrintBuilder()
                 .uniqueId(adsId)
@@ -147,6 +151,10 @@ public class FingerprintModelGenerator {
                 .availableProcessor(deviceAvailableProcessor)
                 .deviceMemoryClassCapacity(deviceMemoryClass)
                 .deviceDpi(deviceDpi)
+                .androidId(androidId)
+                .isx86(isx86)
+                .packageName(packageName)
+                .imei(imei)
                 .build();
 
         return new Gson().toJson(fp);

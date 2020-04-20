@@ -46,6 +46,15 @@ object ApplinkConstInternalMarketplace {
     // CartAddressChoiceActivity
     @JvmField
     val CHECKOUT_ADDRESS_SELECTION = "$INTERNAL_MARKETPLACE/checkout-address-selection"
+    // PreferenceListActivity
+    @JvmField
+    val PREFERENCE_LIST = "$INTERNAL_MARKETPLACE/preference-list"
+    // PreferenceEditActivity
+    @JvmField
+    val PREFERENCE_EDIT = "$INTERNAL_MARKETPLACE/preference-edit"
+    // OrderSummaryPageActivity
+    @JvmField
+    val ONE_CLICK_CHECKOUT = "$INTERNAL_MARKETPLACE/one-click-checkout"
 
     // ProductDetailActivity
     @JvmField
@@ -77,6 +86,12 @@ object ApplinkConstInternalMarketplace {
     @JvmField
     val CREATE_REVIEW = "$INTERNAL_MARKETPLACE/product-review/create/{reputation_id}/{product_id}/"
 
+    // InboxReputationActivity
+    val INBOX_REPUTATION = "$INTERNAL_MARKETPLACE/review"
+
+    // InboxReputationDetailActivity
+    val INBOX_REPUTATION_DETAIL = "$INTERNAL_MARKETPLACE/review/{reputation_id}/"
+
     @JvmField
     val HOME_RECOMMENDATION = "$INTERNAL_MARKETPLACE/rekomendasi/{id}/?ref={ref}"
 
@@ -99,10 +114,22 @@ object ApplinkConstInternalMarketplace {
     @JvmField
     val SHOP_PAGE = "$INTERNAL_MARKETPLACE/shop-page/{shop_id}/"
 
+    @JvmField
+    val SHOP_PAGE_HOME = "$INTERNAL_MARKETPLACE/shop-page/{shop_id}/home"
+
+    @JvmField
+    val SHOP_PAGE_INFO = "$INTERNAL_MARKETPLACE/shop-page/{shop_id}/info"
+
+    @JvmField
+    val SHOP_PAGE_PRODUCT_LIST = "$INTERNAL_MARKETPLACE/shop-page-product-list/{shop_id}/etalase/{etalase_id}/"
+
+    //ReviewShopInfoActiviy
+    @JvmField
+    val SHOP_REVIEW_APPLINK = "$INTERNAL_MARKETPLACE/shop/{shop_id}/review"
+
     // GmSubscribeHomeActivity
     @JvmField
     val GOLD_MERCHANT_SUBSCRIBE_DASHBOARD = "$INTERNAL_MARKETPLACE/gold-merchant-subscribe-dashboard"
-
 
     @JvmField
     val CONTACT_US = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://customercare/{ticket_id}"
@@ -179,6 +206,12 @@ object ApplinkConstInternalMarketplace {
     @JvmField
     val NOTIFICATION_CENTER = "$INTERNAL_MARKETPLACE/notification"
 
+    @JvmField
+    val NOTIFICATION_BUYER_INFO = "$INTERNAL_MARKETPLACE/notif-center"
+
+    @JvmField
+    val NOTIFICATION_BUYER_INFO_WITH_ID = "$INTERNAL_MARKETPLACE/notif-center/{id}/"
+
     // PowerMerchantSubscribeActivity
     @JvmField
     val POWER_MERCHANT_SUBSCRIBE = "$INTERNAL_MARKETPLACE/power-merchant-subscribe"
@@ -195,5 +228,11 @@ object ApplinkConstInternalMarketplace {
     // AttachVoucherActivity
     @JvmField
     val ATTACH_VOUCHER = "$INTERNAL_MARKETPLACE/user-attach-voucher"
+
+    @JvmField
+    val PARAM_IS_NEED_LOC = "IS_NEED_LOC"
+
+    @JvmField
+    val PARAM_FIRST_CREATE_SHOP = "FIRST_CREATE_SHOP"
 
 }

@@ -11,7 +11,6 @@ import com.tokopedia.shop.ShopComponentInstance
 import com.tokopedia.shop.common.data.model.ShopInfoData
 import com.tokopedia.shop.common.di.component.ShopComponent
 import com.tokopedia.shop.info.view.fragment.ShopInfoFragment
-import com.tokopedia.shop.oldpage.view.activity.ShopPageActivity.Companion.SHOP_ID
 
 /**
  * Navigate to ShopInfoActivity
@@ -39,6 +38,11 @@ class ShopInfoActivity: BaseSimpleActivity(), HasComponent<ShopComponent> {
 
     override fun getNewFragment(): Fragment? = createShopInfoFragment()
 
+    override fun onBackPressed() {
+        super.onBackPressed()
+        (fragment as? ShopInfoFragment)?.onBackPressed()
+    }
+
     private fun createShopInfoFragment(): ShopInfoFragment {
         val shopId = intent.getStringExtra(SHOP_ID) ?: intent.data?.lastPathSegment.orEmpty()
         val shopData = intent.getParcelableExtra<ShopInfoData?>(EXTRA_SHOP_INFO)
@@ -59,5 +63,6 @@ class ShopInfoActivity: BaseSimpleActivity(), HasComponent<ShopComponent> {
         }
 
         const val EXTRA_SHOP_INFO = "extra_shop_info"
+        const val SHOP_ID = "EXTRA_SHOP_ID"
     }
 }

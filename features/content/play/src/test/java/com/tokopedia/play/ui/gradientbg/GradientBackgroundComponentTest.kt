@@ -3,8 +3,11 @@ package com.tokopedia.play.ui.gradientbg
 import android.view.ViewGroup
 import androidx.lifecycle.LifecycleOwner
 import com.tokopedia.play.component.EventBusFactory
+import com.tokopedia.play.extensions.isAnyHidden
+import com.tokopedia.play.extensions.isAnyShown
+import com.tokopedia.play.helper.TestCoroutineDispatchersProvider
+import com.tokopedia.play.model.ModelBuilder
 import com.tokopedia.play.view.event.ScreenStateEvent
-import com.tokopedia.play.view.type.PlayRoomEvent
 import io.mockk.confirmVerified
 import io.mockk.every
 import io.mockk.mockk
@@ -15,13 +18,12 @@ import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runBlockingTest
 import kotlinx.coroutines.test.setMain
-import org.junit.After
-import org.junit.Before
-import org.junit.Test
+import org.junit.jupiter.api.*
 
 /**
  * Created by jegul on 30/01/20
  */
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class GradientBackgroundComponentTest {
 
     private lateinit var component: GradientBackgroundComponent
@@ -30,7 +32,9 @@ class GradientBackgroundComponentTest {
     private val testDispatcher = TestCoroutineDispatcher()
     private val coroutineScope = CoroutineScope(testDispatcher)
 
-    @Before
+    private val modelBuilder = ModelBuilder()
+
+    @BeforeEach
     fun setUp() {
         Dispatchers.setMain(testDispatcher)
         every { owner.lifecycle } returns mockk(relaxed = true)
@@ -38,39 +42,141 @@ class GradientBackgroundComponentTest {
         component = GradientBackgroundComponentMock(mockk(relaxed = true), EventBusFactory.get(owner), coroutineScope)
     }
 
-    @After
+    @AfterEach
     fun tearDown() {
         Dispatchers.resetMain()
     }
 
-    @Test
-    fun `test when keyboard is shown`() = runBlockingTest(testDispatcher) {
-        val isKeyboardShown = true
-        EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.KeyboardStateChanged(isKeyboardShown))
+    @Nested
+    @DisplayName("Keyboard state is changing")
+    inner class KeyboardState {
 
-        verify { component.uiView.hide() }
-        confirmVerified(component.uiView)
+        @Test
+        fun `when keyboard is shown, then gradient should be hidden`() = runBlockingTest(testDispatcher) {
+            val mockBottomInsets = modelBuilder.buildBottomInsetsMap(
+                    keyboardState = modelBuilder.buildBottomInsetsState(isShown = true)
+            )
+
+            val mockStateHelper = modelBuilder.buildStateHelperUiModel(
+                    bottomInsets = mockBottomInsets
+            )
+
+            EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.BottomInsetsChanged(mockBottomInsets, mockBottomInsets.isAnyShown, mockBottomInsets.isAnyHidden, mockStateHelper))
+
+            verify { component.uiView.hide() }
+            confirmVerified(component.uiView)
+        }
+
+        @Test
+        fun `when keyboard is hidden, then gradient should be shown`() = runBlockingTest(testDispatcher) {
+            val mockBottomInsets = modelBuilder.buildBottomInsetsMap(
+                    keyboardState = modelBuilder.buildBottomInsetsState(isShown = false)
+            )
+
+            val mockStateHelper = modelBuilder.buildStateHelperUiModel(
+                    bottomInsets = mockBottomInsets
+            )
+
+            EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.BottomInsetsChanged(mockBottomInsets, mockBottomInsets.isAnyShown, mockBottomInsets.isAnyHidden, mockStateHelper))
+
+            verify { component.uiView.show() }
+            confirmVerified(component.uiView)
+        }
+    }
+
+    @Nested
+    @DisplayName("Product Sheet state is changing")
+    inner class ProductSheetState {
+
+        @Test
+        fun `when product sheet is shown, then gradient should be hidden`() = runBlockingTest(testDispatcher) {
+            val mockBottomInsets = modelBuilder.buildBottomInsetsMap(
+                    productSheetState = modelBuilder.buildBottomInsetsState(isShown = true)
+            )
+
+            val mockStateHelper = modelBuilder.buildStateHelperUiModel(
+                    bottomInsets = mockBottomInsets
+            )
+
+            EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.BottomInsetsChanged(mockBottomInsets, mockBottomInsets.isAnyShown, mockBottomInsets.isAnyHidden, mockStateHelper))
+
+            verify { component.uiView.hide() }
+            confirmVerified(component.uiView)
+        }
+
+        @Test
+        fun `when product sheet is hidden, then gradient should be shown`() = runBlockingTest(testDispatcher) {
+            val mockBottomInsets = modelBuilder.buildBottomInsetsMap(
+                    productSheetState = modelBuilder.buildBottomInsetsState(isShown = false)
+            )
+
+            val mockStateHelper = modelBuilder.buildStateHelperUiModel(
+                    bottomInsets = mockBottomInsets
+            )
+
+            EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.BottomInsetsChanged(mockBottomInsets, mockBottomInsets.isAnyShown, mockBottomInsets.isAnyHidden, mockStateHelper))
+
+            verify { component.uiView.show() }
+            confirmVerified(component.uiView)
+        }
+    }
+
+    @Nested
+    @DisplayName("Variant Sheet state is changing")
+    inner class VariantSheetState {
+
+        @Test
+        fun `when variant sheet is shown, then gradient should be hidden`() = runBlockingTest(testDispatcher) {
+            val mockBottomInsets = modelBuilder.buildBottomInsetsMap(
+                    variantSheetState = modelBuilder.buildBottomInsetsState(isShown = true)
+            )
+
+            val mockStateHelper = modelBuilder.buildStateHelperUiModel(
+                    bottomInsets = mockBottomInsets
+            )
+
+            EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.BottomInsetsChanged(mockBottomInsets, mockBottomInsets.isAnyShown, mockBottomInsets.isAnyHidden, mockStateHelper))
+
+            verify { component.uiView.hide() }
+            confirmVerified(component.uiView)
+        }
+
+        @Test
+        fun `when variant sheet is hidden, then gradient should be shown`() = runBlockingTest(testDispatcher) {
+            val mockBottomInsets = modelBuilder.buildBottomInsetsMap(
+                    variantSheetState = modelBuilder.buildBottomInsetsState(isShown = false)
+            )
+
+            val mockStateHelper = modelBuilder.buildStateHelperUiModel(
+                    bottomInsets = mockBottomInsets
+            )
+
+            EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.BottomInsetsChanged(mockBottomInsets, mockBottomInsets.isAnyShown, mockBottomInsets.isAnyHidden, mockStateHelper))
+
+            verify { component.uiView.show() }
+            confirmVerified(component.uiView)
+        }
     }
 
     @Test
-    fun `test when keyboard is hidden`() = runBlockingTest(testDispatcher) {
-        val isKeyboardShown = false
-        EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.KeyboardStateChanged(isKeyboardShown))
-
-        verify { component.uiView.show() }
-        confirmVerified(component.uiView)
-    }
-
-    @Test
-    fun `test when channel is freeze`() = runBlockingTest(testDispatcher) {
-        val mockPlayRoomEvent = PlayRoomEvent.Freeze("", "", "", "")
+    fun `when channel is frozen, then gradient should be hidden`() = runBlockingTest(testDispatcher) {
+        val mockPlayRoomEvent = modelBuilder.buildPlayRoomFreezeEvent()
         EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.OnNewPlayRoomEvent(mockPlayRoomEvent))
 
         verify { component.uiView.hide() }
         confirmVerified(component.uiView)
     }
 
-    class GradientBackgroundComponentMock(container: ViewGroup, bus: EventBusFactory, coroutineScope: CoroutineScope) : GradientBackgroundComponent(container, bus, coroutineScope) {
+    @Test
+    fun `when user is banned, then gradient should be hidden`() = runBlockingTest(testDispatcher) {
+        val mockPlayRoomEvent = modelBuilder.buildPlayRoomBannedEvent()
+        EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.OnNewPlayRoomEvent(mockPlayRoomEvent))
+
+        verify { component.uiView.hide() }
+        confirmVerified(component.uiView)
+    }
+
+    class GradientBackgroundComponentMock(container: ViewGroup, bus: EventBusFactory, coroutineScope: CoroutineScope) : GradientBackgroundComponent(container, bus, coroutineScope, TestCoroutineDispatchersProvider) {
         override fun initView(container: ViewGroup): GradientBackgroundView {
             return mockk(relaxed = true)
         }

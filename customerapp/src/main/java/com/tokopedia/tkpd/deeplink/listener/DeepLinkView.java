@@ -15,9 +15,5 @@ public interface DeepLinkView {
 
     void networkError(Uri uriData);
 
-    void showLoading();
-
-    void finishLoading();
-
     void goToPage(Intent destination);
 }

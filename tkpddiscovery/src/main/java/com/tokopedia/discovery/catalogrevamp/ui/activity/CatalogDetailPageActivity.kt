@@ -6,7 +6,6 @@ import android.os.Build
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.appcompat.app.AppCompatActivity
-import android.view.View
 import com.airbnb.deeplinkdispatch.DeepLink
 import com.tkpd.library.utils.legacy.MethodChecker
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
@@ -15,7 +14,6 @@ import com.tokopedia.core.analytics.AppScreen
 import com.tokopedia.core.network.NetworkErrorHelper
 import com.tokopedia.core.share.DefaultShare
 import com.tokopedia.discovery.R
-import com.tokopedia.discovery.catalog.activity.CatalogDetailActivity
 import com.tokopedia.discovery.catalogrevamp.analytics.CatalogDetailPageAnalytics
 import com.tokopedia.discovery.catalogrevamp.ui.customview.SearchNavigationView
 import com.tokopedia.discovery.catalogrevamp.ui.fragment.CatalogDetailPageFragment
@@ -30,8 +28,6 @@ import com.tokopedia.filter.widget.BottomSheetFilterView
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.linker.model.LinkerData
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
-import com.tokopedia.remoteconfig.RemoteConfigKey
 import kotlinx.android.synthetic.main.activity_catalog_detail_page.*
 
 class CatalogDetailPageActivity : BaseActivity(),
@@ -75,11 +71,6 @@ class CatalogDetailPageActivity : BaseActivity(),
             intent.putExtra(EXTRA_CATALOG_ID, catalogId)
             return intent
         }
-        @JvmStatic
-        fun isCatalogRevampEnabled(context: Context): Boolean {
-            val remoteConfig = FirebaseRemoteConfigImpl(context)
-            return remoteConfig.getBoolean(RemoteConfigKey.APP_ENABLE_CATALOG_REVAMP, true)
-        }
     }
 
     override fun getScreenName(): String? {
@@ -106,15 +97,7 @@ class CatalogDetailPageActivity : BaseActivity(),
         bottomSheetFilterView = findViewById(R.id.bottomSheetFilter)
         searchNavContainer = findViewById(R.id.search_nav_container)
         catalogId = intent.getStringExtra(EXTRA_CATALOG_ID)
-        sendTo()
         prepareView()
-    }
-
-    private fun sendTo() {
-        if(!isCatalogRevampEnabled(this)){
-            startActivity(CatalogDetailActivity.createIntent(this, catalogId))
-            finish()
-        }
     }
 
     private fun prepareView() {

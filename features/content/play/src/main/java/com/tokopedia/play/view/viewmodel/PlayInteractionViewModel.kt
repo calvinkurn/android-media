@@ -41,15 +41,15 @@ class PlayInteractionViewModel @Inject constructor(
 
     fun doInteractionEvent(event: InteractionEvent) {
         _observableLoggedInInteractionEvent.value = Event(
-                if (event.needLogin && !userSession.isLoggedIn) LoginStateEvent.NeedLoggedIn
+                if (event.needLogin && !userSession.isLoggedIn) LoginStateEvent.NeedLoggedIn(event)
                 else LoginStateEvent.InteractionAllowed(event)
         )
     }
 
-    fun doLikeUnlike(contentId: Int, contentType: Int, likeType: Int, shouldLike: Boolean, isLive: Boolean) {
+    fun doLikeUnlike(contentId: Int, contentType: Int, likeType: Int, shouldLike: Boolean) {
         launchCatchError(block = {
             withContext(dispatchers.io) {
-                postLikeUseCase.params = PostLikeUseCase.createParam(contentId, contentType, likeType, shouldLike, isLive)
+                postLikeUseCase.params = PostLikeUseCase.createParam(contentId, contentType, likeType, shouldLike)
                 postLikeUseCase.executeOnBackground()
             }
         }) {}

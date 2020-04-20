@@ -46,6 +46,8 @@ public interface EditShippingViewListener {
 
     void setShopDetailedInformation(ShopShipping data);
 
+    void setGeoAddress(String address);
+
     void setShopLocationData(ShopShipping shopData);
 
     String getDistrictAndCity();

@@ -57,7 +57,7 @@ class DigitalHomePageSpotlightViewHolder(itemView: View?, val onItemBindListener
                             }
                         })
                     }
-                    onItemBindListener.onSectionItemImpression(items, SPOTLIGHT_IMPRESSION, true)
+                    onItemBindListener.onSectionItemImpression(items, SPOTLIGHT_IMPRESSION)
                 }
             } else {
                 itemView.digital_homepage_spotlight_shimmering.hide()
@@ -66,7 +66,6 @@ class DigitalHomePageSpotlightViewHolder(itemView: View?, val onItemBindListener
         } else {
             itemView.digital_homepage_spotlight_shimmering.show()
             itemView.digital_homepage_spotlight_container.hide()
-            onItemBindListener.onSpotlightItemDigitalBind(element.isLoadFromCloud)
         }
     }
 

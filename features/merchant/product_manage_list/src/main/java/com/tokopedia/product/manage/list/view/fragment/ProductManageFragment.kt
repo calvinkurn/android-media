@@ -32,7 +32,7 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListCheckableAdap
 import com.tokopedia.abstraction.base.view.adapter.holder.BaseCheckableViewHolder
 import com.tokopedia.abstraction.base.view.fragment.BaseSearchListFragment
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
-import com.tokopedia.abstraction.common.utils.GlobalConfig
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -178,7 +178,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        if (GlobalConfig.isCustomerApp()) {
+        if (!GlobalConfig.isSellerApp()) {
             inflater.inflate(R.menu.menu_product_manage_dark, menu)
         } else {
             inflater.inflate(R.menu.menu_product_manage, menu)
@@ -941,10 +941,8 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
     fun downloadBitmap(productManageViewModel: ProductManageViewModel) {
         activity?.let {
             val productShare = ProductShare(it, ProductShare.MODE_IMAGE)
-
-            val price = if (productManageViewModel.productCurrencyId == CurrencyTypeDef.TYPE_USD) productManageViewModel.productPricePlain else productManageViewModel.productPrice
             val data = ProductData()
-            data.priceText = productManageViewModel.productCurrencySymbol + " " + price
+            data.priceText = productManageViewModel.productPrice
             data.cashbacktext = if (productManageViewModel.productCashback > 0) getString(com.tokopedia.product.manage.list.R.string.pml_sticker_cashback, productManageViewModel.productCashback) else ""
             data.currencySymbol = productManageViewModel.productCurrencySymbol
             data.productId = productManageViewModel.productId

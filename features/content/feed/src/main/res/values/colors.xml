@@ -8,6 +8,7 @@
     <color name="shadow_color_4">#20CCCCCC</color>
     <color name="shadow_color_5">#25CCCCCC</color>
     <color name="feed_new_cards_border">#e0e0e0</color>
+    <color name="feed_color_black_grey">#31353b</color>
     <color name="feed_bg_color">#fafbfc</color>
     <color name="trans_black_70">#B3000000</color>
 

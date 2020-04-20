@@ -1,0 +1,9 @@
+mutation deleteChat($messageId: Int!) {
+ chatMoveToTrash(ids:[$messageId]) {
+   list{
+     IsSuccess
+     DetailResponse
+     MsgID
+   }
+ }
+}

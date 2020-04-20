@@ -2,7 +2,7 @@ package com.tokopedia.topchat.chattemplate.domain.usecase;
 
 
 import com.tokopedia.topchat.chattemplate.data.repository.EditTemplateRepository;
-import com.tokopedia.topchat.chattemplate.view.viewmodel.EditTemplateViewModel;
+import com.tokopedia.topchat.chattemplate.view.viewmodel.EditTemplateUiModel;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 
@@ -14,7 +14,7 @@ import rx.Observable;
  * Created by stevenfredian on 12/27/17.
  */
 
-public class EditTemplateUseCase extends UseCase<EditTemplateViewModel> {
+public class EditTemplateUseCase extends UseCase<EditTemplateUiModel> {
 
     private final EditTemplateRepository templateRepository;
 
@@ -25,7 +25,7 @@ public class EditTemplateUseCase extends UseCase<EditTemplateViewModel> {
     }
 
     @Override
-    public Observable<EditTemplateViewModel> createObservable(RequestParams requestParams) {
+    public Observable<EditTemplateUiModel> createObservable(RequestParams requestParams) {
         return templateRepository.editTemplate(requestParams.getInt("index", 0)
                                                 , requestParams.getParameters()
                                                 , requestParams.getBoolean("is_seller", false));

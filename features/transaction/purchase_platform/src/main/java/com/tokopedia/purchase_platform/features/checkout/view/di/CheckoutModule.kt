@@ -18,10 +18,12 @@ import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.promocheckout.common.domain.mapper.CheckPromoStackingCodeMapper
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
 import com.tokopedia.purchase_platform.common.di.*
+import com.tokopedia.purchase_platform.common.domain.schedulers.DefaultSchedulers
+import com.tokopedia.purchase_platform.common.domain.schedulers.ExecutorSchedulers
 import com.tokopedia.purchase_platform.common.domain.usecase.GetInsuranceCartUseCase
-import com.tokopedia.purchase_platform.common.feature.promo_global.PromoActionListener
 import com.tokopedia.purchase_platform.common.usecase.SubmitHelpTicketUseCase
 import com.tokopedia.purchase_platform.features.cart.view.InsuranceItemActionListener
+import com.tokopedia.purchase_platform.features.cart.view.di.CartScope
 import com.tokopedia.purchase_platform.features.checkout.analytics.CheckoutAnalyticsPurchaseProtection
 import com.tokopedia.purchase_platform.features.checkout.data.api.CheckoutApi
 import com.tokopedia.purchase_platform.features.checkout.data.repository.CheckoutRepository
@@ -33,6 +35,8 @@ import com.tokopedia.purchase_platform.features.checkout.view.ShipmentAdapterAct
 import com.tokopedia.purchase_platform.features.checkout.view.ShipmentContract
 import com.tokopedia.purchase_platform.features.checkout.view.ShipmentFragment
 import com.tokopedia.purchase_platform.features.checkout.view.ShipmentPresenter
+import com.tokopedia.purchase_platform.features.checkout.view.converter.ShipmentDataConverter
+import com.tokopedia.purchase_platform.features.promo.domain.usecase.ValidateUsePromoRevampUseCase
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
@@ -97,6 +101,9 @@ class CheckoutModule constructor(val shipmentFragment: ShipmentFragment) {
         return MainScheduler()
     }
 
+    @Provides
+    @CartScope
+    fun provideExecutorSchedulers(): ExecutorSchedulers = DefaultSchedulers
 
     @Provides
     @CheckoutScope
@@ -121,9 +128,11 @@ class CheckoutModule constructor(val shipmentFragment: ShipmentFragment) {
                                  analyticsPurchaseProtection: CheckoutAnalyticsPurchaseProtection,
                                  codAnalytics: CodAnalytics,
                                  checkoutAnalytics: CheckoutAnalyticsCourierSelection,
-                                 getInsuranceCartUseCase: GetInsuranceCartUseCase): ShipmentContract.Presenter {
-        return ShipmentPresenter(checkPromoStackingCodeFinalUseCase,
-                checkPromoStackingCodeUseCase, checkPromoStackingCodeMapper, compositeSubscription,
+                                 getInsuranceCartUseCase: GetInsuranceCartUseCase,
+                                 shipmentDataConverter: ShipmentDataConverter,
+                                 releaseBookingUseCase: ReleaseBookingUseCase,
+                                 validateUsePromoRevampUseCase: ValidateUsePromoRevampUseCase): ShipmentContract.Presenter {
+        return ShipmentPresenter(compositeSubscription,
                 checkoutUseCase, getShipmentAddressFormUseCase,
                 getShipmentAddressFormOneClickShipementUseCase,
                 editAddressUseCase, changeShippingAddressUseCase,
@@ -131,7 +140,8 @@ class CheckoutModule constructor(val shipmentFragment: ShipmentFragment) {
                 ratesUseCase, ratesApiUseCase,
                 codCheckoutUseCase, clearCacheAutoApplyStackUseCase, submitHelpTicketUseCase,
                 stateConverter, shippingCourierConverter, shipmentFragment, userSessionInterface,
-                analyticsPurchaseProtection, codAnalytics, checkoutAnalytics, getInsuranceCartUseCase)
+                analyticsPurchaseProtection, codAnalytics, checkoutAnalytics, getInsuranceCartUseCase,
+                shipmentDataConverter, releaseBookingUseCase, validateUsePromoRevampUseCase)
     }
 
     @Provides
@@ -143,12 +153,6 @@ class CheckoutModule constructor(val shipmentFragment: ShipmentFragment) {
     @Provides
     @CheckoutScope
     fun provideInsuranceItemActionListener(): InsuranceItemActionListener {
-        return shipmentFragment
-    }
-
-    @Provides
-    @CheckoutScope
-    fun providePromoActionListener(): PromoActionListener {
         return shipmentFragment
     }
 

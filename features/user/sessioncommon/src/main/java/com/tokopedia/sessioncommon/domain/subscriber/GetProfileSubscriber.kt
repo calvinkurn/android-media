@@ -50,7 +50,8 @@ class GetProfileSubscriber(val userSession: UserSessionInterface,
 
     private fun isShopGold(shopLevel: Int): Boolean {
         val LEVEL_GOLD = 1
-        return shopLevel == LEVEL_GOLD
+        val LEVEL_OFFICIAL_STORE = 2
+        return shopLevel == LEVEL_GOLD  ||  shopLevel == LEVEL_OFFICIAL_STORE
     }
 
     override fun onCompleted() {

@@ -2,15 +2,26 @@ package com.tokopedia.topchat.chatroom.view.adapter.viewholder
 
 import android.graphics.Color
 import android.view.View
-import android.widget.TextView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.chat_common.data.ImageUploadViewModel
 import com.tokopedia.chat_common.view.adapter.viewholder.ImageUploadViewHolder
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ImageUploadListener
 import com.tokopedia.topchat.R
 
-class TopchatImageUploadViewHolder(itemView: View?, listener: ImageUploadListener?)
+class TopchatImageUploadViewHolder(itemView: View?, listener: ImageUploadListener)
     : ImageUploadViewHolder(itemView, listener) {
+
+    override fun alwaysShowTime() = true
+    override fun useWhiteReadStatus() = true
+    override fun getDateId() = R.id.tvDate
+    override fun getImageId() = R.id.image
+    override fun getChatNameId() = R.id.name
+    override fun getLabelId() = R.id.label
+    override fun getDotId() = R.id.dot
+    override fun getProgressBarSendImageId() = R.id.progress_bar
+    override fun getLeftActionId() = R.id.left_action
+    override fun getReadStatusId() = R.id.chat_status
+    override fun getChatBalloonId() = R.id.fl_image_container
 
     override fun bind(element: ImageUploadViewModel?) {
         if (element == null) return
@@ -35,20 +46,6 @@ class TopchatImageUploadViewHolder(itemView: View?, listener: ImageUploadListene
                     element.imageUrl
             )
         }
-    }
-
-    override fun alignHour(alignment: Int, hour: TextView?) {}
-
-    override fun alwaysShowTime(): Boolean {
-        return true
-    }
-
-    override fun useWhiteReadStatus(): Boolean {
-        return true
-    }
-
-    override fun getDateId(): Int {
-        return R.id.tvDate
     }
 
     companion object {

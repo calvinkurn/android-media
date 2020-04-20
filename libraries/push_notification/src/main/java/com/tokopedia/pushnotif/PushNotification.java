@@ -6,8 +6,11 @@ import android.app.NotificationManager;
 import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
+
 import androidx.core.app.NotificationManagerCompat;
 
+import com.crashlytics.android.Crashlytics;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.tokopedia.pushnotif.factory.ChatNotificationFactory;
 import com.tokopedia.pushnotif.factory.GeneralNotificationFactory;
 import com.tokopedia.pushnotif.factory.ReviewNotificationFactory;
@@ -15,6 +18,7 @@ import com.tokopedia.pushnotif.factory.SummaryNotificationFactory;
 import com.tokopedia.pushnotif.factory.TalkNotificationFactory;
 import com.tokopedia.pushnotif.model.ApplinkNotificationModel;
 import com.tokopedia.pushnotif.util.NotificationTracker;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 
 /**
  * @author ricoharisin .
@@ -50,7 +54,33 @@ public class PushNotification {
             }
             if (isNotificationEnabled(context)) {
                 NotificationTracker.getInstance(context).trackDeliveredNotification(applinkNotificationModel);
+            } else {
+                logUserManuallyDisabledNotification(applinkNotificationModel);
             }
+        }
+    }
+
+    private static void logUserManuallyDisabledNotification(ApplinkNotificationModel applinkNotificationModel) {
+        try {
+            String whiteListedUsers = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.WHITELIST_USER_LOG_NOTIFICATION);
+            String userId = applinkNotificationModel.getToUserId();
+            if (!userId.isEmpty() && whiteListedUsers.contains(userId)) {
+                executeLogOnMessageReceived(applinkNotificationModel);
+            }
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+    }
+
+    private static void executeLogOnMessageReceived(ApplinkNotificationModel applinkNotificationModel) {
+        if (!BuildConfig.DEBUG) {
+            String errorMessage = "onNotification disabled, " +
+                    "userId: " + applinkNotificationModel.getToUserId() + ", " +
+                    "gId: " + applinkNotificationModel.getGId() + ", " +
+                    "createTime: " + applinkNotificationModel.getCreateTime() + ", " +
+                    "transactionId: " + applinkNotificationModel.getTransactionId() + ", " +
+                    "targetApp: " + applinkNotificationModel.getTargetApp();
+            Crashlytics.logException(new Exception(errorMessage));
         }
     }
 

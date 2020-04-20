@@ -1,6 +1,6 @@
 package com.tokopedia.shop.open.view.listener;
 
-import com.tokopedia.core.base.presentation.CustomerView;
+import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.shop.open.data.model.response.isreservedomain.ResponseIsReserveDomain;
 import com.tokopedia.shop.open.domain.model.ShopOpenSaveInfoResponseModel;
 

@@ -1,21 +1,13 @@
 package com.tokopedia.groupchat.chatroom.domain.source;
 
-import android.content.Context;
-import android.content.SharedPreferences;
-
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.groupchat.chatroom.data.ChatroomApi;
 import com.tokopedia.groupchat.chatroom.domain.mapper.ChannelInfoMapper;
 import com.tokopedia.groupchat.chatroom.domain.mapper.DynamicButtonsMapper;
 import com.tokopedia.groupchat.chatroom.domain.mapper.StickyComponentMapper;
 import com.tokopedia.groupchat.chatroom.domain.mapper.VideoStreamMapper;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.ChannelInfoViewModel;
-import com.tokopedia.groupchat.common.di.qualifier.GcpQualifier;
-import com.tokopedia.groupchat.room.view.activity.PlayActivity;
-import com.tokopedia.groupchat.room.view.fragment.PlayFragment;
 import com.tokopedia.groupchat.room.view.viewmodel.DynamicButtonsViewModel;
 import com.tokopedia.groupchat.room.view.viewmodel.VideoStreamViewModel;
-import com.tokopedia.groupchat.room.view.viewmodel.pinned.StickyComponentViewModel;
 import com.tokopedia.groupchat.room.view.viewmodel.pinned.StickyComponentsViewModel;
 
 import org.jetbrains.annotations.NotNull;
@@ -33,25 +25,18 @@ import rx.Observable;
 
 public class ChannelInfoSource {
 
-    private final Context context;
     private ChatroomApi chatroomApi;
-    private ChatroomApi gcpApi;
     private ChannelInfoMapper mapper;
     private DynamicButtonsMapper dynamicButtonsMapper;
     private StickyComponentMapper stickyComponentMapper;
     private VideoStreamMapper videoStreamMapper;
-    private SharedPreferences networkSharedPreferences;
 
     @Inject
-    public ChannelInfoSource(@ApplicationContext Context context,
-                             ChatroomApi chatroomApi,
-                             @GcpQualifier ChatroomApi gcpApi,
+    public ChannelInfoSource(ChatroomApi chatroomApi,
                              ChannelInfoMapper mapper,
                              DynamicButtonsMapper dynamicButtonsMapper,
                              StickyComponentMapper stickyComponentMapper,
                              VideoStreamMapper videoStreamMapper) {
-        this.context = context;
-        this.gcpApi = gcpApi;
         this.chatroomApi = chatroomApi;
         this.mapper = mapper;
         this.dynamicButtonsMapper = dynamicButtonsMapper;

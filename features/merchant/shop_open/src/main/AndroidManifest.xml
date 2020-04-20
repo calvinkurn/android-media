@@ -9,7 +9,6 @@
             android:screenOrientation="portrait">
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
-
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data
@@ -46,16 +45,17 @@
             android:screenOrientation="portrait"/>
 
         <activity
-            android:name=".view.activity.ShopOpenWebViewActivity"
-            android:theme="@style/Theme.White"
-            android:screenOrientation="portrait" />
-
-        <activity
             android:name=".view.activity.ShopOpenMandatoryActivity"
             android:exported="true"
             android:label="@string/title_shop_setting"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden" />
+
+        <activity
+            android:name="com.tokopedia.shop.open.shop_open_revamp.presentation.view.activity.ShopOpenRevampActivity"
+            android:windowSoftInputMode="adjustResize|stateAlwaysHidden"
+            android:theme="@style/Theme.White"
+            android:screenOrientation="portrait" />
 
     </application>
 

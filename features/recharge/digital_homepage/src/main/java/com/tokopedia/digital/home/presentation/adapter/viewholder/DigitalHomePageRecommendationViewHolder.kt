@@ -55,7 +55,7 @@ class DigitalHomePageRecommendationViewHolder(itemView: View?, val onItemBindLis
                             }
                         })
                     }
-                    onItemBindListener.onRecommendationImpression(items, true)
+                    onItemBindListener.onRecommendationImpression(items)
                 }
             } else {
                 itemView.digital_homepage_recommendation_shimmering.hide()
@@ -64,7 +64,6 @@ class DigitalHomePageRecommendationViewHolder(itemView: View?, val onItemBindLis
         } else {
             itemView.digital_homepage_recommendation_shimmering.show()
             itemView.digital_homepage_recommendation_container.hide()
-            onItemBindListener.onRecommendationItemDigitalBind(element.isLoadFromCloud)
         }
     }
 

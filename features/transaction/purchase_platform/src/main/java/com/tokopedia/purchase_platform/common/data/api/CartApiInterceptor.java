@@ -2,7 +2,7 @@ package com.tokopedia.purchase_platform.common.data.api;
 
 import android.content.Context;
 
-import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.network.AuthUtil;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor;

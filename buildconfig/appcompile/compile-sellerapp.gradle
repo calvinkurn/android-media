@@ -7,7 +7,7 @@ include "features:category:tradein"
 include "features:common:developer_options"
 include "features:common:nps"
 include "features:common:resources_common"
-include "features:common:common_tradein"
+include "features:category:common_tradein"
 
 include "features:home:navigation-common"
 
@@ -36,7 +36,6 @@ include "features:discovery:topadssdk"
 include "features:discovery:wishlist_common"
 include "features:discovery:carousel_productcard"
 
-include "features:fintech:mitra_toppers"
 include "features:fintech:saldo_details"
 include "features:fintech:common_wallet"
 //include "features:fintech:saldo_details_no_op"
@@ -48,7 +47,7 @@ include "features:im:referral"
 
 include "features:logistic:logisticaddaddress"
 include "features:logistic:logisticdata"
-include "features:logistic:tracking"
+include "features:logistic:logisticorder"
 include "features:logistic:logisticcart"
 
 include "features:category:tradein"
@@ -87,7 +86,7 @@ include "features:payment:withdraw"
 include "features:payment:payment_setting"
 //include "features:payment:payment_setting_no_op"
 
-include "features:product:gallery"
+include "features:merchant:gallery"
 
 include "features:promo:loyalty"
 include "features:promo:loyalty_common"
@@ -118,6 +117,7 @@ include "features:transaction:opportunity"
 include "features:top_ads:top_ads_widget"
 
 include "features:user:attachproduct"
+include "features:user:attachcommon"
 include "features:user:chat_common"
 include "features:user:chatbot"
 include "features:user:changepassword"

@@ -6,6 +6,7 @@ import android.util.Log
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.notifications.CMPushNotificationManager
 import com.tokopedia.notifications.model.*
 import org.json.JSONObject
 import java.util.*
@@ -16,7 +17,7 @@ object PayloadConverter {
 
     private val TAG = PayloadConverter::class.java.simpleName
 
-    public fun convertMapToBundle(map: Map<String, String>?): Bundle {
+    fun convertMapToBundle(map: Map<String, String>?): Bundle {
         val bundle = Bundle(map?.size ?: 0)
         if (map != null) {
             for ((key, value) in map) {
@@ -57,6 +58,7 @@ object PayloadConverter {
         }
         model.isVibration = data.getBoolean(CMConstant.PayloadKeys.VIBRATE, true)
         model.isUpdateExisting = data.getBoolean(CMConstant.PayloadKeys.UPDATE_NOTIFICATION, false)
+        model.isTest = data.getBoolean(CMConstant.PayloadKeys.IS_TEST, false)
         val gridList = getGridList(data)
         if (gridList != null)
             model.gridList = gridList
@@ -88,10 +90,17 @@ object PayloadConverter {
         if (model.notificationMode != NotificationMode.OFFLINE && (model.startTime == 0L ||
                         model.endTime == 0L)) {
             model.startTime = System.currentTimeMillis()
-            model.endTime = System.currentTimeMillis() + HOURS_24_IN_MILLIS
+            model.endTime = System.currentTimeMillis() + CMPushNotificationManager.instance.cmPushEndTimeInterval
         }
 
         model.status = NotificationStatus.PENDING
+
+        //notification attribution
+        model.transactionId = data.getString(CMConstant.PayloadKeys.TRANSACTION_ID)
+        model.userTransactionId = data.getString(CMConstant.PayloadKeys.USER_TRANSACTION_ID)
+        model.userId = data.getString(CMConstant.PayloadKeys.USER_ID)
+        model.shopId = data.getString(CMConstant.PayloadKeys.SHOP_ID)
+        model.blastId = data.getString(CMConstant.PayloadKeys.BLAST_ID)
 
         return model
     }

@@ -78,6 +78,11 @@ public class ShipmentDataConverter {
                 }
             }
             RecipientAddressModel recipientAddressModel = createRecipientAddressModel(defaultAddress, tradeInAddress, isTradeIn, isTradeInDropOffEnable);
+            String disableMultipleAddressMessage = "";
+            if (cartShipmentAddressFormData.getDisabledFeaturesDetailData() != null) {
+                disableMultipleAddressMessage = cartShipmentAddressFormData.getDisabledFeaturesDetailData().getDisabledMultiAddressMessage();
+            }
+            recipientAddressModel.setDisabledMultiAddressMessage(disableMultipleAddressMessage);
             recipientAddressModel.setSelectedTabIndex(RecipientAddressModel.TAB_ACTIVE_ADDRESS_DEFAULT);
             if (cartShipmentAddressFormData.getAddressesData() != null) {
                 if (cartShipmentAddressFormData.getAddressesData().getActive().equalsIgnoreCase(AddressesData.DEFAULT_ADDRESS)) {
@@ -309,6 +314,7 @@ public class ShipmentDataConverter {
         shipmentCartItemModel.setSaveStateFlag(groupShop.isSaveStateFlag());
         shipmentCartItemModel.setIsLeasingProduct(groupShop.getIsLeasingProduct());
         shipmentCartItemModel.setBookingFee(groupShop.getBookingFee());
+        shipmentCartItemModel.setListPromoCodes(groupShop.getListPromoCodes());
 
         shipmentCartItemModel.setHasSetDropOffLocation(hasTradeInDropOffAddress);
 
@@ -407,6 +413,8 @@ public class ShipmentDataConverter {
         cartItemModel.setErrorMessageDescription(product.getErrorMessageDescription());
         cartItemModel.setFreeShipping(product.isFreeShipping());
         cartItemModel.setFreeShippingBadgeUrl(product.getFreeShippingBadgeUrl());
+        cartItemModel.setShowTicker(product.isShowTicker());
+        cartItemModel.setTickerMessage(product.getTickerMessage());
 
         if (product.getTradeInInfoData() != null && product.getTradeInInfoData().isValidTradeIn()) {
             cartItemModel.setValidTradeIn(true);

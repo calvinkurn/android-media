@@ -10,6 +10,7 @@ import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.R
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifyprinciples.Typography
@@ -18,6 +19,7 @@ import kotlinx.android.synthetic.main.product_card_layout_v2_small_grid.view.*
 /**
  * ProductCardView with Small Grid layout.
  */
+@Deprecated("Please use ProductCardGridView or ProductCardListView")
 class ProductCardViewSmallGrid: ProductCardView {
 
     private var imageShop: ImageView? = null
@@ -269,30 +271,6 @@ class ProductCardViewSmallGrid: ProductCardView {
         this?.configureVisibilityWithBlankSpaceConfigSkeleton(textValue.isNotEmpty(), viewSkeleton, blankSpaceConfigValue) {
             it.text = MethodChecker.fromHtml(textValue)
         }
-    }
-
-    fun setItemWithWrapBlankSpaceConfig(productCardModel: ProductCardModel,
-                                        blankSpaceConfig: BlankSpaceConfig) {
-        this.blankSpaceConfig = blankSpaceConfig
-
-        initProductImage(productCardModel.productImageUrl)
-        initWishlist(productCardModel.isWishlistVisible, productCardModel.isWishlisted)
-        initShopName(productCardModel.shopName)
-        initLabelPromo(productCardModel.labelPromo)
-        initProductName(productCardModel.productName)
-        initLabelDiscount(productCardModel.discountPercentage)
-        initSlashedPrice(productCardModel.slashedPrice)
-        initProductPrice(productCardModel.formattedPrice)
-        initShopBadgeList(productCardModel.shopBadgeList)
-        initShopLocation(productCardModel.shopLocation)
-        initRating(productCardModel.ratingCount)
-        initReview(productCardModel.reviewCount)
-        initLabelCredibility(productCardModel.ratingCount, productCardModel.reviewCount, productCardModel.labelCredibility)
-        initLabelOffers(productCardModel.labelOffers)
-        initFreeOngkir(productCardModel.freeOngkir)
-        initTopAdsIcon(productCardModel.isTopAds)
-
-        realignLayout()
     }
 
     internal fun getViewNotVisibleWithBlankSpaceConfig(blankSpaceConfigValue: Boolean): Int {

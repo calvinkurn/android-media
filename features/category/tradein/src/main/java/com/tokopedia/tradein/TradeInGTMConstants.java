@@ -15,6 +15,7 @@ public class TradeInGTMConstants {
     public static final String ACTION_VIEW_MONEYIN = "viewMoneyIn";
     public static final String ACTION_CLICK_TRADEIN = "clickTradeIn";
     public static final String ACTION_CLICK_MONEYIN = "clickMoneyIn";
+    public static final String ACTION_VIEW_TRADEIN_IRIS = "viewTradeInIris";
 
 
     public static final String ACTION_LAKU6_GTM = "laku6-gtm";
@@ -42,6 +43,11 @@ public class TradeInGTMConstants {
     public static final String VALUE = "value";
     public static final String SUCCESS = "success";
     public static final String FAILURE = "failure";
+    public static final String EVENT = "event";
+    public static final String EVENT_CATEGORY = "eventCategory";
+    public static final String EVENT_ACTION = "eventAction";
+    public static final String EVENT_LABEL = "eventLabel";
+    public static final String PRODUCT_ID = "productId";
 
     public static final String CATEGORY_TRADEIN_START_PAGE = "trade in start page";
     public static final String CATEGORY_TRADEIN_HARGA_FINAL ="harga final trade in";

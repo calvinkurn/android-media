@@ -16,18 +16,23 @@ import com.tokopedia.play.R
 import com.tokopedia.play.component.EventBusFactory
 import com.tokopedia.play.component.UIComponent
 import com.tokopedia.play.di.DaggerPlayComponent
+import com.tokopedia.play.di.PlayModule
+import com.tokopedia.play.extensions.isAnyHidden
+import com.tokopedia.play.extensions.isAnyShown
 import com.tokopedia.play.ui.loading.VideoLoadingComponent
 import com.tokopedia.play.ui.onetap.OneTapComponent
 import com.tokopedia.play.ui.overlayvideo.OverlayVideoComponent
 import com.tokopedia.play.ui.video.VideoComponent
 import com.tokopedia.play.util.CoroutineDispatcherProvider
 import com.tokopedia.play.util.event.EventObserver
+import com.tokopedia.play.view.custom.RoundedConstraintLayout
 import com.tokopedia.play.view.event.ScreenStateEvent
 import com.tokopedia.play.view.type.PlayRoomEvent
 import com.tokopedia.play.view.uimodel.EventUiModel
 import com.tokopedia.play.view.uimodel.VideoPropertyUiModel
 import com.tokopedia.play.view.viewmodel.PlayVideoViewModel
 import com.tokopedia.play.view.viewmodel.PlayViewModel
+import com.tokopedia.unifycomponents.dpToPx
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
@@ -56,6 +61,8 @@ class PlayVideoFragment : BaseDaggerFragment(), CoroutineScope {
     override val coroutineContext: CoroutineContext
         get() = job + dispatchers.main
 
+    private val cornerRadius = 16f.dpToPx()
+
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
@@ -67,6 +74,8 @@ class PlayVideoFragment : BaseDaggerFragment(), CoroutineScope {
 
     private var channelId: String = ""
 
+    private lateinit var containerVideo: RoundedConstraintLayout
+
     override fun getScreenName(): String = "Play Video"
 
     override fun initInjector() {
@@ -75,19 +84,21 @@ class PlayVideoFragment : BaseDaggerFragment(), CoroutineScope {
                 .baseAppComponent(
                         (requireContext().applicationContext as BaseMainApplication).baseAppComponent
                 )
+                .playModule(PlayModule(requireContext()))
                 .build()
                 .inject(this)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        playViewModel = ViewModelProvider(parentFragment!!, viewModelFactory).get(PlayViewModel::class.java)
+        playViewModel = ViewModelProvider(requireParentFragment(), viewModelFactory).get(PlayViewModel::class.java)
         viewModel = ViewModelProvider(this, viewModelFactory).get(PlayVideoViewModel::class.java)
         channelId  = arguments?.getString(PLAY_KEY_CHANNEL_ID).orEmpty()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_play_video, container, false)
+        containerVideo = view.findViewById(R.id.container_video)
         initComponents(view as ViewGroup)
         return view
     }
@@ -98,7 +109,7 @@ class PlayVideoFragment : BaseDaggerFragment(), CoroutineScope {
         observeVOD()
         observeVideoProperty()
         observeOneTapOnboarding()
-        observeKeyboardState()
+        observeBottomInsetsState()
         observeEventUserInfo()
     }
 
@@ -128,11 +139,19 @@ class PlayVideoFragment : BaseDaggerFragment(), CoroutineScope {
         viewModel.observableOneTapOnboarding.observe(viewLifecycleOwner, EventObserver { showOneTapOnboarding() })
     }
 
-    private fun observeKeyboardState() {
-        playViewModel.observableKeyboardState.observe(viewLifecycleOwner, Observer {
+    private fun observeBottomInsetsState() {
+        playViewModel.observableBottomInsetsState.observe(viewLifecycleOwner, Observer {
+            if (::containerVideo.isInitialized) {
+                if (it.isAnyShown) containerVideo.setCornerRadius(cornerRadius)
+                else containerVideo.setCornerRadius(0f)
+            }
+
             launch {
                 EventBusFactory.get(viewLifecycleOwner)
-                        .emit(ScreenStateEvent::class.java, ScreenStateEvent.KeyboardStateChanged(it.isShown))
+                        .emit(
+                                ScreenStateEvent::class.java,
+                                ScreenStateEvent.BottomInsetsChanged(it, it.isAnyShown, it.isAnyHidden, playViewModel.stateHelper)
+                        )
             }
         })
     }
@@ -166,25 +185,25 @@ class PlayVideoFragment : BaseDaggerFragment(), CoroutineScope {
     }
 
     private fun initVideoComponent(container: ViewGroup): UIComponent<Unit> {
-        return VideoComponent(container, EventBusFactory.get(viewLifecycleOwner), this)
+        return VideoComponent(container, EventBusFactory.get(viewLifecycleOwner), this, dispatchers)
                 .also(viewLifecycleOwner.lifecycle::addObserver)
     }
 
     private fun initVideoLoadingComponent(container: ViewGroup): UIComponent<Unit> {
-        return VideoLoadingComponent(container, EventBusFactory.get(viewLifecycleOwner), this)
+        return VideoLoadingComponent(container, EventBusFactory.get(viewLifecycleOwner), this, dispatchers)
     }
 
     private fun initOneTapComponent(container: ViewGroup): UIComponent<Unit> {
-        return OneTapComponent(container, EventBusFactory.get(viewLifecycleOwner), this)
+        return OneTapComponent(container, EventBusFactory.get(viewLifecycleOwner), this, dispatchers)
     }
 
     private fun initOverlayVideoComponent(container: ViewGroup): UIComponent<Unit> {
-        return OverlayVideoComponent(container, EventBusFactory.get(viewLifecycleOwner), this)
+        return OverlayVideoComponent(container, EventBusFactory.get(viewLifecycleOwner), this, dispatchers)
     }
     //endregion
 
     private fun sendInitState() {
-        launch {
+        launch(dispatchers.immediate) {
             EventBusFactory.get(viewLifecycleOwner).emit(
                     ScreenStateEvent::class.java,
                     ScreenStateEvent.Init
@@ -272,7 +291,7 @@ class PlayVideoFragment : BaseDaggerFragment(), CoroutineScope {
             EventBusFactory.get(viewLifecycleOwner)
                     .emit(
                             ScreenStateEvent::class.java,
-                            ScreenStateEvent.VideoPropertyChanged(prop)
+                            ScreenStateEvent.VideoPropertyChanged(prop, playViewModel.stateHelper)
                     )
         }
     }

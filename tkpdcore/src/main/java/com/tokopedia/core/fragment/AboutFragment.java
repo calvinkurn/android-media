@@ -17,7 +17,7 @@ import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.manage.general.ManageWebViewActivity;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.router.InboxRouter;
-import com.tokopedia.core.util.GlobalConfig;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core2.R;
 
 /**
@@ -127,10 +127,7 @@ public class AboutFragment extends TkpdBasePreferenceFragment {
         prefContactUs.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
-                Intent intent = InboxRouter.getContactUsActivityIntent(getActivity());
-                intent.putExtra(InboxRouter.PARAM_URL,
-                        URLGenerator.generateURLContactUs(TkpdBaseURL.BASE_CONTACT_US, getActivity()));
-                getActivity().startActivity(intent);
+                RouteManager.route(getActivity(), ApplinkConst.CONTACT_US_NATIVE);
                 return false;
             }
         });

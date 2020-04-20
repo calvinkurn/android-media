@@ -5,7 +5,10 @@ import androidx.annotation.VisibleForTesting
 import com.tokopedia.play.component.EventBusFactory
 import com.tokopedia.play.component.UIComponent
 import com.tokopedia.play.ui.quickreply.interaction.QuickReplyInteractionEvent
+import com.tokopedia.play.util.CoroutineDispatcherProvider
 import com.tokopedia.play.view.event.ScreenStateEvent
+import com.tokopedia.play.view.type.BottomInsetsState
+import com.tokopedia.play.view.type.BottomInsetsType
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
@@ -17,21 +20,33 @@ import kotlinx.coroutines.launch
 open class QuickReplyComponent(
         container: ViewGroup,
         private val bus: EventBusFactory,
-        coroutineScope: CoroutineScope
+        coroutineScope: CoroutineScope,
+        dispatchers: CoroutineDispatcherProvider
 ) : UIComponent<QuickReplyInteractionEvent>, CoroutineScope by coroutineScope, QuickReplyView.Listener {
 
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
     val uiView = initView(container)
 
     init {
-        launch {
+        launch(dispatchers.immediate) {
             bus.getSafeManagedFlow(ScreenStateEvent::class.java)
                     .collect {
                         when (it) {
                             ScreenStateEvent.Init -> uiView.hide()
                             is ScreenStateEvent.SetQuickReply -> uiView.setQuickReply(it.quickReply)
-                            is ScreenStateEvent.KeyboardStateChanged -> if (it.isShown) uiView.show() else uiView.hide()
-                            is ScreenStateEvent.OnNewPlayRoomEvent -> if(it.event.isFreeze) uiView.hide()
+                            is ScreenStateEvent.BottomInsetsChanged -> {
+                                /**
+                                 * If channel is Live && NO BottomSheet is shown && Keyboard is shown -> show()
+                                 * else -> hide()
+                                 */
+                                if (it.stateHelper.channelType.isLive &&
+                                        it.insetsViewMap[BottomInsetsType.ProductSheet]?.isShown == false &&
+                                        it.insetsViewMap[BottomInsetsType.VariantSheet]?.isShown == false &&
+                                        it.insetsViewMap[BottomInsetsType.Keyboard]?.isShown == true) {
+                                    uiView.show()
+                                } else uiView.hide()
+                            }
+                            is ScreenStateEvent.OnNewPlayRoomEvent -> if(it.event.isFreeze || it.event.isBanned) uiView.hide()
                         }
                     }
         }

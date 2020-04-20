@@ -1,48 +1,37 @@
 package com.tokopedia.tradein.viewmodel
 
-import android.app.Application
+import android.content.Intent
+import android.os.Build
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.MutableLiveData
-import android.content.Intent
 import com.google.gson.Gson
 import com.laku6.tradeinsdk.api.Laku6TradeIn
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.common_tradein.model.TradeInParams
 import com.tokopedia.common_tradein.model.ValidateTradePDP
 import com.tokopedia.design.utils.CurrencyFormatUtil
-import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.tradein.R
-import com.tokopedia.tradein.model.*
+import com.tokopedia.tradein.Constants
+import com.tokopedia.tradein.model.DeviceDiagInputResponse
+import com.tokopedia.tradein.model.DeviceDiagnostics
+import com.tokopedia.tradein.usecase.CheckMoneyInUseCase
+import com.tokopedia.tradein.usecase.ProcessMessageUseCase
 import com.tokopedia.tradein.view.viewcontrollers.BaseTradeInActivity.TRADEIN_MONEYIN
 import com.tokopedia.tradein.view.viewcontrollers.BaseTradeInActivity.TRADEIN_OFFLINE
-import com.tokopedia.tradein_common.Constants
-import com.tokopedia.tradein_common.viewmodel.BaseViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
+import com.tokopedia.user.session.UserSessionInterface
 import org.json.JSONException
 import org.json.JSONObject
-import rx.Subscriber
-import tradein_common.TradeInUtils
-import java.util.*
-import kotlin.coroutines.CoroutineContext
+import javax.inject.Inject
 
-class TradeInHomeViewModel(application: Application, val intent: Intent) : BaseViewModel(application),
-        CoroutineScope, LifecycleObserver, Laku6TradeIn.TradeInListener {
+class TradeInHomeViewModel @Inject constructor(
+        private val processMessageUseCase: ProcessMessageUseCase,
+        private val checkMoneyInUseCase: CheckMoneyInUseCase,
+        private val userSession: UserSessionInterface
+) : BaseTradeInViewModel(),
+        LifecycleObserver, Laku6TradeIn.TradeInListener {
     val homeResultData: MutableLiveData<HomeResult> = MutableLiveData()
     val askUserLogin = MutableLiveData<Int>()
-    var tradeInParams: TradeInParams
-
-    init {
-        tradeInParams = if (intent.hasExtra(TradeInParams::class.java.simpleName)) {
-            val parcelable = intent.getParcelableExtra(TradeInParams::class.java.simpleName) as TradeInParams?
-            parcelable ?: TradeInParams()
-        } else
-            TradeInParams()
-    }
+    var tradeInParams = TradeInParams()
+    var imeiStateLiveData: MutableLiveData<Boolean> = MutableLiveData()
 
     var tradeInType: Int = TRADEIN_OFFLINE
 
@@ -52,96 +41,53 @@ class TradeInHomeViewModel(application: Application, val intent: Intent) : BaseV
     }
 
     fun checkLogin() {
-        repository?.let {
-            if (!it.getUserLoginState()?.isLoggedIn)
-                askUserLogin.value = Constants.LOGIN_REQUIRED
-            else {
-                askUserLogin.value = Constants.LOGEED_IN
-            }
+        if (!userSession.isLoggedIn)
+            askUserLogin.value = Constants.LOGIN_REQUIRED
+        else {
+            askUserLogin.value = Constants.LOGEED_IN
         }
     }
 
     fun processMessage(intent: Intent) {
-        val result = intent.getStringExtra("test-result")
-        val diagnostics = Gson().fromJson(result, DeviceDiagnostics::class.java)
-        val variables = HashMap<String, Any>()
-        try {
-            val deviceDiagInput = DeviceDiagInput()
-            deviceDiagInput.uniqueCode = diagnostics.tradeInUniqueCode
-            val deviceAttr = DeviceAttr()
-            deviceAttr.brand = diagnostics.brand
-            deviceAttr.grade = diagnostics.grade
-            val imei = ArrayList<String>()
-            imei.add(diagnostics.imei)
-            deviceAttr.imei = imei
-            deviceAttr.model = diagnostics.model
-            deviceAttr.modelId = diagnostics.modelId
-            deviceAttr.ram = diagnostics.ram
-            deviceAttr.storage = diagnostics.storage
-            deviceDiagInput.deviceAttr = deviceAttr
-            deviceDiagInput.deviceId = diagnostics.imei
-            tradeInParams.deviceId = diagnostics.imei
-            deviceDiagInput.deviceReview = diagnostics.reviewDetails
-            deviceDiagInput.newPrice = tradeInParams.newPrice
-            deviceDiagInput.oldPrice = diagnostics.tradeInPrice
-            deviceDiagInput.tradeInType = tradeInType
-            variables["params"] = deviceDiagInput
-            val gqlDeviceDiagInput = GraphqlUseCase()
-            gqlDeviceDiagInput.clearRequest()
-            gqlDeviceDiagInput.addRequest(GraphqlRequest(GraphqlHelper.loadRawString(applicationInstance.resources,
-                    R.raw.gql_insert_device_diag), DeviceDiagInputResponse::class.java, variables, false))
-            gqlDeviceDiagInput.execute(object : Subscriber<GraphqlResponse>() {
-                override fun onCompleted() {
+        val diagnostics = getDiagnosticData(intent)
+        tradeInParams.deviceId = diagnostics.imei
+        launchCatchError(block = {
+            setDiagnoseResult(processMessageUseCase.processMessage(getResource(), tradeInParams, diagnostics), diagnostics)
+        }, onError = {
+            it.printStackTrace()
+            warningMessage.value = it.localizedMessage
+        })
+    }
 
+    fun setDiagnoseResult(response: DeviceDiagInputResponse?, diagnostics: DeviceDiagnostics) {
+        if (response != null && response.deviceDiagInputRepsponse != null) {
+            val result = HomeResult()
+            result.isSuccess = true
+            if (response.deviceDiagInputRepsponse.isEligible) {
+                if (homeResultData.value?.deviceDisplayName != null) {
+                    result.deviceDisplayName = homeResultData.value?.deviceDisplayName
                 }
-
-                override fun onError(e: Throwable) {
-                    e.printStackTrace()
-                }
-
-                override fun onNext(graphqlResponse: GraphqlResponse?) {
-                    if (graphqlResponse != null) {
-                        val deviceDiagInputResponse = graphqlResponse.getData<DeviceDiagInputResponse>(DeviceDiagInputResponse::class.java)
-                        if (deviceDiagInputResponse != null && deviceDiagInputResponse.deviceDiagInputRepsponse != null) {
-                            if (deviceDiagInputResponse.deviceDiagInputRepsponse.isEligible) {
-                                //                                finalPriceData = new MutableLiveData<>();
-                                //                                finalPriceData.setValue(inData);
-                                val result = HomeResult()
-                                result.isSuccess = true
-                                result.priceStatus = HomeResult.PriceState.DIAGNOSED_VALID
-                                homeResultData.setValue(result)
-                            } else {
-                                val result = HomeResult()
-                                result.isSuccess = true
-                                result.priceStatus = HomeResult.PriceState.DIAGNOSED_INVALID
-                                result.displayMessage = CurrencyFormatUtil.convertPriceValueToIdrFormat(diagnostics.tradeInPrice!!, true)
-                                homeResultData.value = result
-                                errorMessage.setValue(deviceDiagInputResponse.deviceDiagInputRepsponse.message)
-                            }
-                        }
-                    }
-
-                }
-            })
-        } catch (e: Exception) {
-            e.printStackTrace()
+                result.priceStatus = HomeResult.PriceState.DIAGNOSED_VALID
+            } else {
+                result.priceStatus = HomeResult.PriceState.DIAGNOSED_INVALID
+                result.displayMessage = CurrencyFormatUtil.convertPriceValueToIdrFormat(diagnostics.tradeInPrice!!, true)
+                errorMessage.setValue(response.deviceDiagInputRepsponse.message)
+            }
+            homeResultData.value = result
         }
+    }
 
+    fun getDiagnosticData(intent: Intent): DeviceDiagnostics {
+        val result = intent.getStringExtra("test-result")
+        return Gson().fromJson(result, DeviceDiagnostics::class.java)
     }
 
     fun checkMoneyIn(modelId: Int, jsonObject: JSONObject) {
         progBarVisibility.value = true
-        tradeInParams.deviceId = TradeInUtils.getDeviceId(applicationInstance)
-        tradeInParams.userId = repository.getUserLoginState().userId.toInt()
-        tradeInParams.tradeInType = 2
-        tradeInParams.modelID = modelId
-        val variables = HashMap<String, Any>()
-        variables["params"] = tradeInParams
         launchCatchError(block = {
-            val query = GraphqlHelper.loadRawString(applicationInstance.resources, com.tokopedia.common_tradein.R.raw.gql_validate_tradein)
-            val response = repository?.getGQLData(query, ValidateTradePDP::class.java, variables) as ValidateTradePDP?
-            checkIfElligible(response, jsonObject)
+            checkIfElligible(checkMoneyInUseCase.checkMoneyIn(getResource(), modelId, tradeInParams, userSession.userId), jsonObject)
         }, onError = {
+            progBarVisibility.value = false
             it.printStackTrace()
             warningMessage.value = it.localizedMessage
         })
@@ -173,13 +119,19 @@ class TradeInHomeViewModel(application: Application, val intent: Intent) : BaseV
         var modelId = 0
         try {
             modelId = jsonObject.getInt("model_id")
-        } catch (e: JSONException) {
+        } catch (e: Exception) {
             e.printStackTrace()
         }
-        if (tradeInType == 2) {
-            checkMoneyIn(modelId, jsonObject)
-        } else {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && (tradeInParams.deviceId == null || tradeInParams.deviceId == checkMoneyInUseCase.fcmDeviceId)) {
+            imeiStateLiveData.value = true
             setHomeResultData(jsonObject)
+        } else {
+            imeiStateLiveData.value = false
+            if (tradeInType == TRADEIN_MONEYIN) {
+                checkMoneyIn(modelId, jsonObject)
+            } else {
+                setHomeResultData(jsonObject)
+            }
         }
 
     }
@@ -193,11 +145,13 @@ class TradeInHomeViewModel(application: Application, val intent: Intent) : BaseV
             maxPrice = jsonObject.getInt("max_price")
             minPrice = jsonObject.getInt("min_price")
             devicedisplayname = jsonObject.getString("model_display_name")
-        } catch (e: JSONException) {
+        } catch (e: Exception) {
             e.printStackTrace()
         }
         val result = HomeResult()
         result.isSuccess = true
+        result.maxPrice = maxPrice
+        result.minPrice = minPrice
         if (diagnosedPrice > 0) {
             if (tradeInType != TRADEIN_MONEYIN) {
                 if (diagnosedPrice > tradeInParams.newPrice) {
@@ -215,7 +169,11 @@ class TradeInHomeViewModel(application: Application, val intent: Intent) : BaseV
             result.priceStatus = HomeResult.PriceState.NOT_DIAGNOSED
 
         }
-        result.deviceDisplayName = devicedisplayname
+        if (homeResultData.value?.deviceDisplayName != null) {
+            result.deviceDisplayName = homeResultData.value?.deviceDisplayName
+        } else {
+            result.deviceDisplayName = devicedisplayname
+        }
         progBarVisibility.value = false
         homeResultData.value = result
     }
@@ -240,6 +198,7 @@ class TradeInHomeViewModel(application: Application, val intent: Intent) : BaseV
         laku6TradeIn.getMinMaxPrice(this)
     }
 
-    override val coroutineContext: CoroutineContext
-        get() = Dispatchers.Main + SupervisorJob()
+    fun setDeviceId(deviceId: String?) {
+        tradeInParams.deviceId = deviceId
+    }
 }

@@ -1,6 +1,6 @@
 package com.tokopedia.affiliate.feature.explore.view.subscriber;
 
-import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.affiliate.feature.explore.data.pojo.AutoCompletePojo;
 import com.tokopedia.affiliate.feature.explore.data.pojo.AutoCompleteQuery;
 import com.tokopedia.affiliate.feature.explore.view.listener.ExploreContract;

@@ -2,6 +2,8 @@ package com.tokopedia.product.detail.usecase
 
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
+import com.tokopedia.graphql.data.model.CacheType
+import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
@@ -31,17 +33,29 @@ open class GetPdpLayoutUseCase @Inject constructor(private val rawQueries: Map<S
 
     var requestParams = RequestParams.EMPTY
     var forceRefresh = false
+    var enableCaching = false
 
     override suspend fun executeOnBackground(): ProductDetailDataModel {
         gqlUseCase.clearRequest()
         gqlUseCase.addRequest(GraphqlRequest(rawQueries[QUERY_GET_PDP_LAYOUT], ProductDetailLayout::class.java, requestParams.parameters))
-        gqlUseCase.setCacheStrategy(CacheStrategyUtil.getCacheStrategy(forceRefresh))
+        if (enableCaching) {
+            gqlUseCase.setCacheStrategy(CacheStrategyUtil.getCacheStrategy(forceRefresh))
+        } else {
+            gqlUseCase.setCacheStrategy(GraphqlCacheStrategy
+                    .Builder(CacheType.ALWAYS_CLOUD).build())
+        }
+
         val productId = requestParams.getString(ProductDetailCommonConstant.PARAM_PRODUCT_ID, "")
-        val cacheStrategyString = if (forceRefresh) "P1#PDP_CACHE#CACHE_FALSE;$productId" else "P1#PDP_CACHE#CACHE_TRUE;$productId"
 
         val gqlResponse = gqlUseCase.executeOnBackground()
         val error: List<GraphqlError>? = gqlResponse.getError(ProductDetailLayout::class.java)
         val data: PdpGetLayout = gqlResponse.getData<ProductDetailLayout>(ProductDetailLayout::class.java).data ?: PdpGetLayout()
+
+        if (gqlResponse.isCached) {
+            Timber.w("P2#PDP_CACHE#true;productId=$productId")
+        } else {
+            Timber.w("P2#PDP_CACHE#false;productId=$productId")
+        }
         val blacklistMessage = data.basicInfo.blacklistMessage
 
         if (error != null && error.isNotEmpty()) {
@@ -50,8 +64,6 @@ open class GetPdpLayoutUseCase @Inject constructor(private val rawQueries: Map<S
             gqlUseCase.clearCache()
             throw TobacoErrorException(blacklistMessage.description, blacklistMessage.title, blacklistMessage.button, blacklistMessage.url)
         }
-
-        Timber.d(cacheStrategyString)
         return mapIntoModel(data)
     }
 

@@ -52,8 +52,21 @@ data class ComponentData(
         @SerializedName("wholesale")
         val wholesale: List<Wholesale>? = null,
         @SerializedName("preorder")
-        val preOrder: PreOrder = PreOrder()
+        val preOrder: PreOrder = PreOrder(),
 
+        //upcoming deals / notifyMe
+        @SerializedName("campaignID")
+        val campaignId: String = "",
+        @SerializedName("campaignType")
+        val campaignType: String = "",
+        @SerializedName("campaignTypeName")
+        val campaignTypeName: String = "",
+        @SerializedName("endDate")
+        val endDate: String = "",
+        @SerializedName("startDate")
+        val startDate: String = "",
+        @SerializedName("notifyMe")
+        val notifyMe: Boolean = false
 ) {
 
     val hasWholesale: Boolean

@@ -2,6 +2,8 @@ package com.tokopedia.shop.setting.view.activity
 
 import android.content.Context
 import android.content.Intent
+import android.view.Menu
+import android.view.MenuItem
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.shop.R
@@ -32,5 +34,10 @@ class ShopPageSettingActivity : BaseSimpleActivity(), HasComponent<ShopPageSetti
                 .shopComponent(ShopComponentInstance.getComponent(application))
                 .shopPageSettingModule(ShopPageSettingModule())
                 .build()
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        (fragment as? ShopPageSettingFragment)?.onBackPressed()
     }
 }

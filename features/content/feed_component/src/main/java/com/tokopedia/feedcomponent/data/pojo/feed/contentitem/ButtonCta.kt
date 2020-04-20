@@ -10,4 +10,8 @@ data class ButtonCta (
     var appLink: String = "",
     @SerializedName("webLink")
     var webLink: String = ""
-)
+) {
+    fun copy(): ButtonCta {
+        return ButtonCta(text, appLink, webLink)
+    }
+}

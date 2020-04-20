@@ -16,12 +16,11 @@ import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.AbstractionRouter
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.common.travel.ticker.TravelTickerUtils
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerViewModel
 import com.tokopedia.flight.bookingV2.di.FlightBookingComponent
-import com.tokopedia.flight.bookingV2.presentation.activity.FlightInsuranceWebviewActivity
 import com.tokopedia.flight.bookingV2.presentation.adapter.*
 import com.tokopedia.flight.bookingV2.presentation.contract.FlightBookingContract
 import com.tokopedia.flight.bookingV2.presentation.presenter.FlightBookingPresenter
@@ -276,7 +275,7 @@ class FlightBookingFragment : BaseDaggerFragment(),
     }
 
     override fun navigateToOtpPage() {
-        startActivityForResult(RouteManager.getIntent(context, ApplinkConst.FLIGHT_PHONE_VERIFICATION), REQUEST_CODE_OTP)
+        startActivityForResult(RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_PHONE), REQUEST_CODE_OTP)
     }
 
     override fun closePage() {
@@ -302,7 +301,7 @@ class FlightBookingFragment : BaseDaggerFragment(),
                 }
 
                 override fun onMoreInfoClicked(tncUrl: String, title: String) {
-                    startActivity(FlightInsuranceWebviewActivity.getCallingIntent(activity, tncUrl, title))
+                    RouteManager.route(activity, ApplinkConstInternalGlobal.WEBVIEW_TITLE, title, tncUrl)
                     flightBookingPresenter.onMoreInsuranceInfoClicked()
                 }
 

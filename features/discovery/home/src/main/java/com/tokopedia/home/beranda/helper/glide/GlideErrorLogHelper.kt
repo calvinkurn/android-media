@@ -35,20 +35,17 @@ class GlideErrorLogHelper(): CoroutineScope {
         if (GlobalConfig.VERSION_CODE < traceRouteMinVersion) {
             return
         }
-
         if (!isNetworkAvailable(context)) {
-            Timber.w("P2#IMAGE_TRACEROUTE#network not available")
             return
         }
-
         val host = Uri.parse(url).host
         if (!TextUtils.isEmpty(host)) {
             val traceResult = TraceRoute.traceRoute(host!!)
-            Timber.w("P2#IMAGE_TRACEROUTE#%s: url= %s message= %s traceroute= %s",
+            Timber.w("P2#IMAGE_TRACEROUTE#%s;url=%s;traceroute='%s';message='%s'",
                     traceResult?.code?.toString() ?: "",
                     url,
-                    e?.message ?: "",
-                    traceResult?.message ?: "")
+                    traceResult?.message ?: "",
+                    e?.message ?: "")
         }
     }
 

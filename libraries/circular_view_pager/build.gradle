@@ -1,0 +1,47 @@
+apply plugin: 'com.android.library'
+apply plugin: 'io.hansel.preprocessor.module'
+apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
+
+repositories {
+    maven { url 'https://hansel.io/maven' }
+}
+
+
+buildscript {
+    repositories {
+        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+        mavenCentral()
+        jcenter()
+        maven { url 'https://hansel.io/maven' }
+        google()
+    }
+    dependencies {
+        classpath rootProject.ext.miscDependencies.hansel
+        classpath rootProject.ext.miscDependencies.androidjunit5
+    }
+}
+
+dependencies {
+    implementation project(rootProject.ext.features.resourcesCommon)
+    implementation project(rootProject.ext.libraries.tkpddesign)
+    implementation project(rootProject.ext.libraries.analytics)
+    
+    implementation rootProject.ext.supportLibDependencies.constraintLayout
+    implementation rootProject.ext.miscDependencies.loaderviewlibrary
+    implementation (rootProject.ext.miscDependencies.viewPager2){
+        ['androidx.collection', 'androidx.fragment'].each {
+            exclude group: it
+        }
+    }
+    implementation rootProject.ext.networkDependencies.glide
+}
+
+
+project.ext {
+    artifactId = 'circular-view-pager'
+    groupId = 'com.tokopedia.library'
+    versionName = "0.0.2"
+    artifactName ="circular_view_pager-release"
+}
+
+apply from: '../../publish_local.gradle'

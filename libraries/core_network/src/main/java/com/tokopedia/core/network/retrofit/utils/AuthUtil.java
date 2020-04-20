@@ -10,7 +10,7 @@ import com.tokopedia.authentication.AuthHelper;
 import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.CoreNetworkApplication;
-import com.tokopedia.core.util.GlobalConfig;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.user.session.UserSession;
 
 import java.security.InvalidKeyException;

@@ -8,7 +8,7 @@ import android.net.Uri;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 
-import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.nps.NpsAnalytics;
 import com.tokopedia.nps.presentation.di.DaggerFeedbackComponent;

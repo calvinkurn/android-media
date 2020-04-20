@@ -1,27 +1,26 @@
 package com.tokopedia.onboarding.analytics
 
-import android.content.Context
 import android.os.Build
 import com.tokopedia.track.TrackApp
 import timber.log.Timber
-import javax.inject.Inject
 
 /**
- * @author by nisie on 14/05/19.
- * https://docs.google.com/spreadsheets/d/1HK3M5bcl7lNeW16WgPwbKPhcWUmPCAbR_wnO8YbdP74/edit#gid=75924383
+ * Created by Ade Fulki on 2020-02-08.
+ * ade.hadian@tokopedia.com
  */
-class OnboardingAnalytics @Inject constructor() {
 
-    companion object {
-        val SCREEN_ONBOARDING = "Screen OnBoarding - %s"
-        var EVENT_ONBOARDING = "onBoardingEvent"
-        var CATEGORY_ONBOARDING = "onboarding"
+class OnboardingAnalytics {
 
+    fun trackScreen(position: Int) {
+        val screenName = String.format(SCREEN_ONBOARDING, position.toString())
+        Timber.w("P2#FINGERPRINT#screenName = " + screenName + " | " + Build.FINGERPRINT
+                + " | " + Build.MANUFACTURER + " | " + Build.BRAND + " | " + Build.DEVICE
+                + " | " + Build.PRODUCT + " | " + Build.MODEL + " | " + Build.TAGS)
+        TrackApp.getInstance().gtm.sendScreenAuthenticated(screenName)
+    }
 
-        val ACTION_ONBOARDING_LOGIN_AND_REGISTER_PAGE = "login and register page"
-
-        var ONBOARDING_SKIP_LABEL = "skip - "
-        var ONBOARDING_START_LABEL = "click mulai sekarang"
+    fun trackDynamicOnboardingPage(isEnable: Boolean, time: Long, message: String) {
+        Timber.w("P2#DYNAMIC_OBOARDING_PAGE#isEnable=$isEnable;loadTime=$time;message=$message")
     }
 
     fun trackMoengage() {
@@ -33,44 +32,46 @@ class OnboardingAnalytics @Inject constructor() {
 
     }
 
-    fun sendScreen(position: Int) {
-        val screenName = String.format(SCREEN_ONBOARDING, position.toString())
-        Timber.w("P2#FINGERPRINT#screenName = " + screenName + " | " + Build.FINGERPRINT + " | " + Build.MANUFACTURER + " | "
-                + Build.BRAND + " | " + Build.DEVICE + " | " + Build.PRODUCT + " | " + Build.MODEL
-                + " | " + Build.TAGS)
-        TrackApp.getInstance().gtm.sendScreenAuthenticated(screenName)
-    }
-
-    //#OB1
-    fun eventOnboardingSkip(context: Context?, currentPosition: Int) {
+    fun eventOnboardingSkip(currentPosition: Int) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 EVENT_ONBOARDING,
                 CATEGORY_ONBOARDING,
-                "click - skip button",
-                String.format("skip - %s", currentPosition.toString())
+                ACTION_CLICK_ON_BUTTON_SKIP,
+                String.format(LABEL_SKIP, currentPosition.toString())
         )
-
     }
 
-    //#OB1
-    fun trackClickLogin(currentPosition: Int) {
+    fun eventOnboardingNext(currentPosition: Int) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
-                EVENT_ONBOARDING,
+                EVENT_CLICK_ONBOARDING,
                 CATEGORY_ONBOARDING,
-                "click - login button",
-                String.format("login - %s", currentPosition.toString())
+                ACTION_CLICK_ON_BUTTON_SELANJUTNYA,
+                currentPosition.toString()
         )
-
     }
 
-    //#OB1
-    fun trackClickRegister(currentPosition: Int) {
+    fun eventOnboardingJoin(currentPosition: Int) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
-                EVENT_ONBOARDING,
+                EVENT_CLICK_ONBOARDING,
                 CATEGORY_ONBOARDING,
-                "click - register button",
-                String.format("register - %s", currentPosition.toString())
+                ACTION_CLICK_ONBOARDING_MAIN_BUTTON,
+                String.format(LABEL_LANDING_PAGE_ONBOARDING, currentPosition.toString())
         )
+    }
 
+    companion object {
+        const val SCREEN_ONBOARDING = "Screen OnBoarding - %s"
+
+        private const val EVENT_CLICK_ONBOARDING = "clickOnboarding"
+        private const val EVENT_ONBOARDING = "onBoardingEvent"
+
+        private const val CATEGORY_ONBOARDING = "onboarding"
+
+        private const val ACTION_CLICK_ONBOARDING_MAIN_BUTTON = "click onboarding main button"
+        private const val ACTION_CLICK_ON_BUTTON_SELANJUTNYA = "click on button selanjutnya"
+        private const val ACTION_CLICK_ON_BUTTON_SKIP = "click - skip button"
+
+        private const val LABEL_SKIP = "skip - %s"
+        private const val LABEL_LANDING_PAGE_ONBOARDING = "landing page onboarding - %s"
     }
 }

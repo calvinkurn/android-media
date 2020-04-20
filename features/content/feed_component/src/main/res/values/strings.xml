@@ -76,4 +76,6 @@
 
     <string name="feed_try_again">Coba Lagi</string>
 
+    <string name="feed_header_time_format" formatted="false">%s • %s</string>
+
 </resources>

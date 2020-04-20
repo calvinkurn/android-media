@@ -6,10 +6,14 @@ import android.net.Uri;
 import android.os.Bundle;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.core.SplashScreen;
 import com.tokopedia.core.gcm.FCMCacheManager;
+import com.tokopedia.fcmcommon.service.SyncFcmTokenService;
+import com.tokopedia.installreferral.InstallReferral;
+import com.tokopedia.installreferral.InstallReferralKt;
 import com.tokopedia.iris.Iris;
 import com.tokopedia.iris.IrisAnalytics;
 import com.tokopedia.navigation.presentation.activity.MainParentActivity;
@@ -17,6 +21,7 @@ import com.tokopedia.notifications.CMPushNotificationManager;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.tkpd.timber.TimberWrapper;
+import com.tokopedia.weaver.WeaveInterface;
 import com.tokopedia.weaver.Weaver;
 import com.tokopedia.weaver.WeaverFirebaseConditionCheck;
 
@@ -53,25 +58,44 @@ public class ConsumerSplashScreen extends SplashScreen {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        startWarmStart();
-        startSplashTrace();
-
         super.onCreate(savedInstanceState);
-        Weaver.Companion.executeWeaveCoRoutine(this::checkApkTempered,
-                new WeaverFirebaseConditionCheck(RemoteConfigKey.ENABLE_SEQ4_ASYNC, remoteConfig));
-
-        finishWarmStart();
-
+        createAndCallChkApk();
         CMPushNotificationManager.getInstance()
                 .refreshFCMTokenFromForeground(FCMCacheManager.getRegistrationId(this.getApplicationContext()), false);
 
 
-        trackIrisEventForAppOpen();
+        checkInstallReferrerInitialised();
+        syncFcmToken();
+    }
 
+    private void checkInstallReferrerInitialised() {
+        LocalCacheHandler localCacheHandler=new LocalCacheHandler(ConsumerSplashScreen.this, InstallReferralKt.KEY_INSTALL_REF_SHARED_PREF_FILE_NAME);
+        Boolean installRefInitialised = localCacheHandler.getBoolean(InstallReferralKt.KEY_INSTALL_REF_INITIALISED);
+        if (!installRefInitialised) {
+            localCacheHandler.applyEditor();
+            new InstallReferral().initilizeInstallReferral(this);
+        }
+    }
+
+    private void createAndCallChkApk(){
+        WeaveInterface chkTmprApkWeave = new WeaveInterface() {
+            @NotNull
+            @Override
+            public Boolean execute() {
+                trackIrisEventForAppOpen();
+                return checkApkTempered();
+            }
+        };
+        Weaver.Companion.executeWeaveCoRoutineWithFirebase(chkTmprApkWeave,
+                RemoteConfigKey.ENABLE_SEQ4_ASYNC, ConsumerSplashScreen.this);
+    }
+
+    private void syncFcmToken() {
+        SyncFcmTokenService.Companion.startService(this);
     }
 
     private void trackIrisEventForAppOpen() {
-        Iris instance = IrisAnalytics.Companion.getInstance(this);
+        Iris instance = IrisAnalytics.Companion.getInstance(ConsumerSplashScreen.this);
         Map<String, Object> map = new HashMap<>();
         map.put(IRIS_ANALYTICS_EVENT_KEY, IRIS_ANALYTICS_APP_SITE_OPEN);
         instance.saveEvent(map);
@@ -103,12 +127,18 @@ public class ConsumerSplashScreen extends SplashScreen {
             return;
         }
 
-        Intent homeIntent = new Intent(this, MainParentActivity.class)
-                .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        Intent homeIntent = new Intent(this, MainParentActivity.class);
+        boolean needClearTask = getIntent()== null || !getIntent().hasExtra("branch");
+        if (needClearTask) {
+            homeIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        }
         startActivity(homeIntent);
         overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-        finishSplashTrace();
-        finishAffinity();
+        if (needClearTask) {
+            finishAffinity();
+        } else {
+            finish();
+        }
     }
 
     private void startWarmStart() {

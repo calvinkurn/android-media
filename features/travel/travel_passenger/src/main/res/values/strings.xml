@@ -13,5 +13,6 @@
     <string name="travel_contact_data_email_error">Format e-mail salah</string>
     <string name="travel_contact_data_phone_number_error">Nomor telepon minimum 9 digit</string>
     <string name="travel_contact_data_notice">Pastikan data pemesan sudah benar, karena e-tiket akan dikirim ke kontak tercantum.</string>
+    <string name="travel_select_passenger_submit_button">Simpan</string>
 
 </resources>

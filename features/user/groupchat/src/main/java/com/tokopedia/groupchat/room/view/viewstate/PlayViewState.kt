@@ -1,16 +1,15 @@
 package com.tokopedia.groupchat.room.view.viewstate
 
-import android.content.Context
-import androidx.fragment.app.FragmentManager
 import androidx.appcompat.widget.Toolbar
+import androidx.fragment.app.FragmentManager
 import com.airbnb.lottie.LottieAnimationView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.groupchat.chatroom.view.viewmodel.ChannelInfoViewModel
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.*
+import com.tokopedia.groupchat.room.view.viewmodel.ChatPermitViewModel
 import com.tokopedia.groupchat.room.view.viewmodel.DynamicButton
 import com.tokopedia.groupchat.room.view.viewmodel.DynamicButtonsViewModel
 import com.tokopedia.groupchat.room.view.viewmodel.VideoStreamViewModel
-import com.tokopedia.groupchat.room.view.viewmodel.pinned.StickyComponentViewModel
 import com.tokopedia.groupchat.room.view.viewmodel.pinned.StickyComponentsViewModel
 
 /**
@@ -37,7 +36,7 @@ interface PlayViewState {
     fun onSuccessSendMessage(pendingChatViewModel: PendingChatViewModel)
     fun onErrorSendMessage(pendingChatViewModel: PendingChatViewModel, exception: Exception?)
     fun afterSendMessage()
-    fun onQuickReplyClicked(text: String?)
+    fun onQuickReplyClicked(message: String?)
     fun onKeyboardHidden()
     fun getChannelInfo(): ChannelInfoViewModel?
     fun onDynamicButtonUpdated(it: DynamicButtonsViewModel)
@@ -45,7 +44,7 @@ interface PlayViewState {
     fun onReceiveGamificationNotif(model: GroupChatPointsViewModel)
     fun onBackgroundUpdated(it: BackgroundViewModel)
     fun getDurationWatchVideo(): String?
-    fun onErrorGetInfo(it: String)
+    fun onErrorGetInfo(globalError: Int)
     fun onReceiveOverlayMessageFromWebsocket(it: ChannelInfoViewModel)
     fun onReceiveCloseOverlayMessageFromWebsocket()
     fun onShowOverlayCTAFromDynamicButton(it: DynamicButton)
@@ -67,4 +66,9 @@ interface PlayViewState {
     fun verticalVideoShown(): Boolean
     fun dismissAllBottomSheet()
     fun isChannelActive(): Boolean
+    fun setChatPermitDisabled(chatPermitViewModel: ChatPermitViewModel)
+    fun onChatDisabledError(message: String, action: String)
+
+    fun onOrientationChanged(orientation: Int)
+    fun exitFullScreen()
 }

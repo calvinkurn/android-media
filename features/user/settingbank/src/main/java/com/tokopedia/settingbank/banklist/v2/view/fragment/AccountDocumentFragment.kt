@@ -10,7 +10,6 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
 import com.tokopedia.imagepicker.picker.main.builder.*
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
@@ -228,7 +227,7 @@ class AccountDocumentFragment : BaseDaggerFragment() {
         message?.let {
             val intent = Intent()
             val bundle = Bundle()
-            bundle.putString(SettingBankActivity.UPALOAD_DOCUMENT_MESSAGE, message)
+            bundle.putString(SettingBankActivity.UPLOAD_DOCUMENT_MESSAGE, message)
             intent.putExtras(bundle)
             activity?.setResult(Activity.RESULT_OK, intent)
         }

@@ -17,12 +17,14 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
+import com.tokopedia.applink.internal.ApplinkConstInternalPromo
 import com.tokopedia.design.component.Tabs
 import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.di.BundleModule
 import com.tokopedia.tokopoints.di.DaggerTokopointBundleComponent
 import com.tokopedia.tokopoints.di.TokopointBundleComponent
-import com.tokopedia.tokopoints.view.contract.StackedCouponActivityContract
+import com.tokopedia.tokopoints.di.TokopointsQueryModule
 import com.tokopedia.tokopoints.view.couponlisting.CouponListingStackedFragment.Companion.REQUEST_CODE_STACKED_ADAPTER
 import com.tokopedia.tokopoints.view.couponlisting.CouponListingStackedFragment.Companion.REQUEST_CODE_STACKED_IN_ADAPTER
 import com.tokopedia.tokopoints.view.model.CouponFilterItem
@@ -38,6 +40,7 @@ class CouponListingStackedActivity : BaseSimpleActivity(), StackedCouponActivity
     private val tokoPointComponent: TokopointBundleComponent by lazy { initInjector() }
     private var mTabsFilter: Tabs? = null
     private var mAdapter: StackedCouponFilterPagerAdapter? = null
+    private var bundle : Bundle? = null
 
     @Inject
     internal lateinit var factory : ViewModelFactory
@@ -49,6 +52,7 @@ class CouponListingStackedActivity : BaseSimpleActivity(), StackedCouponActivity
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        forDeeplink()
         super.onCreate(savedInstanceState)
         val userSession = UserSession(this)
         updateTitle(getString(R.string.tp_label_my_coupon_new))
@@ -62,6 +66,12 @@ class CouponListingStackedActivity : BaseSimpleActivity(), StackedCouponActivity
             startActivityForResult(RouteManager.getIntent(this, ApplinkConst.LOGIN), REQUEST_CODE_LOGIN)
         } else {
             mPresenter.getFilter()
+        }
+    }
+    private fun forDeeplink() {
+        bundle = intent.extras
+        if (intent.data != null) {
+            bundle = UriUtil.destructiveUriBundle(ApplinkConstInternalPromo.TOKOPOINTS_COUPON_LISTING, intent.data, bundle)
         }
     }
 
@@ -94,8 +104,9 @@ class CouponListingStackedActivity : BaseSimpleActivity(), StackedCouponActivity
 
     private  fun initInjector()  =
         DaggerTokopointBundleComponent.builder()
-                .bundleModule(BundleModule( intent.extras ?: Bundle()))
+                .bundleModule(BundleModule( bundle ?: Bundle()))
                 .baseAppComponent((application as BaseMainApplication).baseAppComponent)
+                .tokopointsQueryModule(TokopointsQueryModule(this))
                 .build()
 
 

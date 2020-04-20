@@ -3,7 +3,6 @@ package com.tokopedia.search.result.presentation.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.tokopedia.filter.common.data.DataValue;
 import com.tokopedia.filter.common.data.DynamicFilterModel;
 import com.tokopedia.topads.sdk.domain.model.CpmModel;
 import com.tokopedia.topads.sdk.domain.model.TopAdsModel;
@@ -32,6 +31,7 @@ public class ProductViewModel implements Parcelable {
     private CpmModel cpmModel;
     private RelatedSearchViewModel relatedSearchModel;
     private GlobalNavViewModel globalNavViewModel;
+    private List<InspirationCarouselViewModel> inspirationCarouselViewModel = new ArrayList<>();
     private int defaultView;
 
     public TopAdsModel getAdsModel() {
@@ -179,6 +179,14 @@ public class ProductViewModel implements Parcelable {
 
     public void setGlobalNavViewModel(GlobalNavViewModel globalNavViewModel) {
         this.globalNavViewModel = globalNavViewModel;
+    }
+
+    public List<InspirationCarouselViewModel> getInspirationCarouselViewModel() {
+        return inspirationCarouselViewModel;
+    }
+
+    public void setInspirationCarouselViewModel(List<InspirationCarouselViewModel> inspirationCarouselViewModel) {
+        this.inspirationCarouselViewModel = inspirationCarouselViewModel;
     }
 
     public int getDefaultView() {

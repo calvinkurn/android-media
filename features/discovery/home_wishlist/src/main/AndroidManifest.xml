@@ -3,7 +3,7 @@
     <application>
         <activity
             android:name=".WishlistActivity"
-            android:label="@string/wishlist"
+            android:label="@string/title_home_wishlist_module_name"
             android:launchMode="singleTask"
             android:screenOrientation="portrait">
             <intent-filter android:autoVerify="true">

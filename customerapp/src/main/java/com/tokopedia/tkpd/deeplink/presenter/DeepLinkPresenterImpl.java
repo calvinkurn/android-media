@@ -12,7 +12,7 @@ import com.appsflyer.AppsFlyerLib;
 import com.crashlytics.android.Crashlytics;
 import com.tkpd.library.utils.URLParser;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
-import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.DeepLinkChecker;
 import com.tokopedia.applink.DeeplinkMapper;
@@ -42,10 +42,10 @@ import com.tokopedia.core.session.model.InfoModel;
 import com.tokopedia.core.session.model.SecurityModel;
 import com.tokopedia.core.util.AppUtils;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.discovery.catalog.fragment.CatalogDetailListFragment;
-import com.tokopedia.discovery.intermediary.view.IntermediaryActivity;
-import com.tokopedia.discovery.newdiscovery.category.presentation.CategoryActivity;
+import com.tokopedia.discovery.catalogrevamp.ui.activity.CatalogDetailPageActivity;
+import com.tokopedia.discovery.categoryrevamp.view.activity.CategoryNavActivity;
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase;
+import com.tokopedia.network.data.model.response.ResponseV4ErrorException;
 import com.tokopedia.product.detail.common.data.model.product.ProductInfo;
 import com.tokopedia.session.domain.interactor.SignInInteractor;
 import com.tokopedia.session.domain.interactor.SignInInteractorImpl;
@@ -95,12 +95,11 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     private static final String FORMAT_UTF_8 = "UTF-8";
     private static final String AF_ONELINK_HOST = "tokopedia.onelink.me";
     private static final String OVERRIDE_URL = "override_url";
+    private static final String ALLOW_OVERRIDE = "allow_override";
     private static final String PARAM_TITLEBAR = "titlebar";
     private static final String PARAM_NEED_LOGIN = "need_login";
     private static final String PARAM_EXTRA_REVIEW = "rating";
     private static final String PARAM_EXTRA_UTM_SOURCE = "utm_source";
-
-    private static final String TAG_FRAGMENT_CATALOG_DETAIL = "TAG_FRAGMENT_CATALOG_DETAIL";
 
     private final Activity context;
     private final DeepLinkView viewListener;
@@ -158,6 +157,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
             String screenName;
             int type = DeepLinkChecker.getDeepLinkType(context, uriData.toString());
             Timber.d("FCM wvlogin deeplink type " + type);
+            boolean keepActivityOn = false;
             switch (type) {
                 case DeepLinkChecker.HOME:
                     screenName = AppScreen.UnifyScreenTracker.SCREEN_UNIFY_HOME_BERANDA;
@@ -197,6 +197,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     screenName = AppScreen.SCREEN_CONTACT_US;
                     break;
                 case DeepLinkChecker.PRODUCT:
+                    keepActivityOn = true;
                     if (linkSegment.size() >= 2
                             && (linkSegment.get(1).equals("info") || isEtalase(linkSegment) || isShopHome(linkSegment))) {
                         openShopInfo(linkSegment, uriData, defaultBundle);
@@ -208,6 +209,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     break;
                 case DeepLinkChecker.ETALASE:
                 case DeepLinkChecker.SHOP:
+                    keepActivityOn = true;
                     openShopInfo(linkSegment, uriData, defaultBundle);
                     screenName = AppScreen.SCREEN_SHOP_INFO;
                     break;
@@ -310,7 +312,9 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     break;
             }
             sendCampaignGTM(activity, uriData.toString(), screenName);
-            context.finish();
+            if (!keepActivityOn && context != null) {
+                context.finish();
+            }
         }
     }
 
@@ -372,12 +376,9 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         if (linkSegment.size() == SEGMENT_GROUPCHAT) {
             intent = ((TkpdCoreRouter) context.getApplication()).getGroupChatIntent(
                     context, linkSegment.get(1));
-        } else {
-            intent = ((TkpdCoreRouter) context.getApplication()).getInboxChannelsIntent(
-                    context);
+            intent.putExtras(bundle);
+            context.startActivity(intent);
         }
-        intent.putExtras(bundle);
-        context.startActivity(intent);
     }
 
     private void openDigitalPage(String applink) {
@@ -545,8 +546,12 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
 
     private void prepareOpenWebView(Uri uriData) {
         boolean isAllowOverride = false;
-        String allowOverride = uriData.getQueryParameter(OVERRIDE_URL);
-        if ("1".equalsIgnoreCase(allowOverride) || "true".equalsIgnoreCase(allowOverride)) {
+        String overrideUrl = uriData.getQueryParameter(OVERRIDE_URL);
+        String allowOverride = uriData.getQueryParameter(ALLOW_OVERRIDE);
+        if ("1".equalsIgnoreCase(overrideUrl) ||
+            "true".equalsIgnoreCase(overrideUrl) ||
+            "1".equalsIgnoreCase(allowOverride) ||
+            "true".equalsIgnoreCase(allowOverride)) {
             isAllowOverride = true;
         }
         openWebView(uriData, isAllowOverride,
@@ -555,6 +560,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                 uriData.getQueryParameter(PARAM_NEED_LOGIN) != null &&
                         "true".equalsIgnoreCase(uriData.getQueryParameter(PARAM_NEED_LOGIN))
         );
+        context.finish();
     }
 
     private static boolean isPromo(List<String> linkSegment) {
@@ -587,7 +593,6 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     }
 
     private void openShopInfo(final List<String> linkSegment, final Uri uriData, Bundle bundle) {
-        viewListener.showLoading();
         getShopInfoUseCase.execute(GetShopInfoByDomainUseCase.createRequestParam(linkSegment.get(0), userSession.getUserId(), userSession.getDeviceId()), new Subscriber<ShopInfo>() {
             @Override
             public void onCompleted() {
@@ -596,44 +601,50 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
 
             @Override
             public void onError(Throwable e) {
-                viewListener.finishLoading();
-                prepareOpenWebView(uriData);
+                if (context!= null) {
+                    prepareOpenWebView(uriData);
+                }
+                if (e instanceof ResponseV4ErrorException) {
+                    Timber.w("P1#DEEPLINK_OPEN_WEBVIEW#OneSegment;link_segment='%s';uri='%s'", linkSegment.get(0), uriData.toString());
+                }
             }
 
             @Override
             public void onNext(ShopInfo shopInfo) {
-                viewListener.finishLoading();
-                if (shopInfo != null && shopInfo.getInfo() != null) {
-                    String shopId = shopInfo.getInfo().getShopId();
-                    String lastSegment = linkSegment.get(linkSegment.size() - 1);
-                    if (isEtalase(linkSegment)) {
-                        RouteManager.route(context,
-                                bundle,
-                                ApplinkConst.SHOP_ETALASE,
-                                shopId,
-                                lastSegment);
-                    } else if (lastSegment.equals("info")) {
-                        RouteManager.route(context,
-                                bundle,
-                                ApplinkConst.SHOP_INFO,
-                                shopId);
-                    } else if (isShopHome(linkSegment)) {
-                        RouteManager.route(context,
-                                bundle,
-                                ApplinkConst.SHOP_HOME,
-                                shopId);
-                    } else {
-                        Intent intent = ((TkpdCoreRouter) context.getApplication()).getShopPageIntent(context, shopId);
-                        intent.putExtras(bundle);
-                        context.startActivity(intent);
-                    }
+                if (context!= null) {
+                    if (shopInfo != null && shopInfo.getInfo() != null) {
+                        String shopId = shopInfo.getInfo().getShopId();
+                        String lastSegment = linkSegment.get(linkSegment.size() - 1);
+                        if (isEtalase(linkSegment)) {
+                            RouteManager.route(context,
+                                    bundle,
+                                    ApplinkConst.SHOP_ETALASE,
+                                    shopId,
+                                    lastSegment);
+                        } else if (lastSegment.equals("info")) {
+                            RouteManager.route(context,
+                                    bundle,
+                                    ApplinkConst.SHOP_INFO,
+                                    shopId);
+                        } else if (isShopHome(linkSegment)) {
+                            RouteManager.route(context,
+                                    bundle,
+                                    ApplinkConst.SHOP_HOME,
+                                    shopId);
+                        } else {
+                            Intent intent = ((TkpdCoreRouter) context.getApplication()).getShopPageIntent(context, shopId);
+                            intent.putExtras(bundle);
+                            context.startActivity(intent);
+                        }
 
-                    context.finish();
-                } else {
-                    if (!GlobalConfig.DEBUG) {
-                        Crashlytics.logException(new ShopNotFoundException(linkSegment.get(0)));
+                        context.finish();
+                    } else {
+                        Timber.w("P1#DEEPLINK_OPEN_WEBVIEW#OneSegment;link_segment='%s';uri='%s'", linkSegment.get(0), uriData.toString());
+                        if (!GlobalConfig.DEBUG) {
+                            Crashlytics.logException(new ShopNotFoundException(linkSegment.get(0)));
+                        }
+                        prepareOpenWebView(uriData);
                     }
-                    prepareOpenWebView(uriData);
                 }
             }
         });
@@ -643,6 +654,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         String lastSegment = linkSegment.get(linkSegment.size() - 1);
         return lastSegment.equals("preorder")
                 || lastSegment.equals("sold")
+                || lastSegment.equals("discount")
                 || (linkSegment.size() > 1 && linkSegment.get(1).equals("etalase"));
     }
 
@@ -652,11 +664,13 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     }
 
     private void openHomeRecommendation(final List<String> linkSegment, final Uri uriData, Bundle bundle) {
+        String internalSource = uriData.getQueryParameter("search_ref");
         String source = uriData.getQueryParameter("ref");
         String productId = linkSegment.size() > 1 ? linkSegment.get(1) : "";
         Intent intent = RouteManager.getIntent(context, ApplinkConsInternalHome.HOME_RECOMMENDATION);
         intent.putExtra(context.getString(R.string.home_recommendation_extra_product_id), productId);
         intent.putExtra(context.getString(R.string.home_recommendation_extra_ref), source == null ? "" : source);
+        intent.putExtra(context.getString(R.string.home_recommendation_extra_internal_ref), source == null ? "" : internalSource);
         intent.putExtras(bundle);
         intent.setData(uriData);
         context.startActivity(intent);
@@ -686,37 +700,45 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
 
             @Override
             public void onError(Throwable e) {
-                viewListener.finishLoading();
-                Intent intent = BaseDownloadAppLinkActivity.newIntent(context, uriData.toString(), true);
-                context.startActivity(intent);
-                context.finish();
+                if (context!= null) {
+                    Intent intent = BaseDownloadAppLinkActivity.newIntent(context, uriData.toString(), true);
+                    context.startActivity(intent);
+                    context.finish();
+                }
+                if (e instanceof ResponseV4ErrorException) {
+                    Timber.w("P1#DEEPLINK_OPEN_WEBVIEW#TwoSegments;link_segment='%s';uri='%s'",
+                            linkSegment.get(0) + "/" + linkSegment.get(1), uriData.toString());
+                }
             }
 
             @Override
             public void onNext(ShopInfo shopInfo) {
-                viewListener.finishLoading();
-                if (shopInfo != null && shopInfo.getInfo() != null) {
-                    //Add Affiliate string for tracking
-                    String affiliateString = "";
-                    if (!TextUtils.isEmpty(uriData.getQueryParameter("aff"))) {
-                        affiliateString = uriData.getQueryParameter("aff");
-                    }
+                if (context!= null) {
+                    if (shopInfo != null && shopInfo.getInfo() != null) {
+                        //Add Affiliate string for tracking
+                        String affiliateString = "";
+                        if (!TextUtils.isEmpty(uriData.getQueryParameter("aff"))) {
+                            affiliateString = uriData.getQueryParameter("aff");
+                        }
 
-                    context.startActivity(RouteManager.getIntent(context,
-                            ApplinkConstInternalMarketplace.PRODUCT_DETAIL_DOMAIN_WITH_AFFILIATE,
-                            uriData,
-                            linkSegment.get(0),
-                            linkSegment.get(1),
-                            affiliateString));
-                } else {
-                    if (!GlobalConfig.DEBUG) {
-                        Crashlytics.logException(new ShopNotFoundException(linkSegment.get(0)));
-                        Crashlytics.logException(new ProductNotFoundException(linkSegment.get(0) + "/" + linkSegment.get(1)));
+                        context.startActivity(RouteManager.getIntent(context,
+                                ApplinkConstInternalMarketplace.PRODUCT_DETAIL_DOMAIN_WITH_AFFILIATE,
+                                uriData,
+                                linkSegment.get(0),
+                                linkSegment.get(1),
+                                affiliateString));
+                    } else {
+                        Timber.w("P1#DEEPLINK_OPEN_WEBVIEW#TwoSegments;link_segment='%s';uri='%s'",
+                                linkSegment.get(0) + "/" + linkSegment.get(1), uriData.toString());
+                        if (!GlobalConfig.DEBUG) {
+                            Crashlytics.logException(new ShopNotFoundException(linkSegment.get(0)));
+                            Crashlytics.logException(new ProductNotFoundException(linkSegment.get(0) + "/" + linkSegment.get(1)));
+                        }
+                        Intent intent = BaseDownloadAppLinkActivity.newIntent(context, uriData.toString(), true);
+                        context.startActivity(intent);
                     }
-                    Intent intent = BaseDownloadAppLinkActivity.newIntent(context, uriData.toString(), true);
-                    context.startActivity(intent);
+                    context.finish();
                 }
-                context.finish();
             }
         });
     }
@@ -740,10 +762,8 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     private void openCatalogDetail(List<String> linkSegment) {
         try {
             String catalogId = linkSegment.get(1);
-            viewListener.inflateFragment(
-                    CatalogDetailListFragment.newInstance(catalogId),
-                    TAG_FRAGMENT_CATALOG_DETAIL
-            );
+            Intent intent = CatalogDetailPageActivity.createIntent(context, catalogId);
+            context.startActivity(intent);
         } catch (Exception e) {
             Crashlytics.log(e.getLocalizedMessage());
         }
@@ -794,11 +814,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     private void openCategory(String uriData, Bundle bundle) {
         URLParser urlParser = new URLParser(uriData);
         if (!urlParser.getParamKeyValueMap().isEmpty()) {
-            CategoryActivity.moveTo(
-                    context,
-                    uriData,
-                    bundle
-            );
+            context.startActivity(CategoryNavActivity.getCategoryIntentWithFilter(context,uriData));
         } else {
             RouteManager.route(context, bundle, ApplinkConstInternalMarketplace.DISCOVERY_CATEGORY_DETAIL, urlParser.getDepIDfromURI(context));
         }
@@ -820,7 +836,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
             intent.putExtras(defaultBundle);
             context.startActivity(intent);
         } else {
-            IntermediaryActivity.moveToClear(context, departmentId);
+            context.startActivity(CategoryNavActivity.getCategoryIntentWithDepartmentId(context,departmentId));
         }
     }
 
@@ -845,31 +861,31 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     @Override
     public void processAFlistener() {
         AppsFlyerLib.getInstance().registerConversionListener(context, new AppsFlyerConversionListener() {
-            @Override
-            public void onInstallConversionDataLoaded(Map<String, String> map) {
-
-            }
-
-            @Override
-            public void onInstallConversionFailure(String s) {
-
-            }
-
-            @Override
-            public void onAppOpenAttribution(Map<String, String> map) {
-                if (map.size() > 0) {
-                    if (map.get("link") != null) {
-                        String oriUri = map.get("link");
-                        processDeepLinkAction(context, DeeplinkUTMUtils.simplifyUrl(oriUri));
+                    @Override
+                    public void onConversionDataSuccess(Map<String, Object> map) {
+                        if (map.size() > 0) {
+                            if (map.get("link") != null) {
+                                String oriUri = map.get("link").toString();
+                                processDeepLinkAction(context, DeeplinkUTMUtils.simplifyUrl(oriUri));
+                            }
+                        }
                     }
-                }
-            }
 
-            @Override
-            public void onAttributionFailure(String s) {
+                    @Override
+                    public void onConversionDataFail(String s) {
 
-            }
-        });
+                    }
+
+                    @Override
+                    public void onAppOpenAttribution(Map<String, String> map) {
+
+                    }
+
+                    @Override
+                    public void onAttributionFailure(String s) {
+
+                    }
+                });
     }
 
     @Override

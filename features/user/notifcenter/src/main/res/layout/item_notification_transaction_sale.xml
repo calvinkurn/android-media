@@ -61,7 +61,7 @@
                         android:id="@+id/img_waiting_confirm"
                         android:layout_width="@dimen/dp_40"
                         android:layout_height="@dimen/dp_40"
-                        android:src="@mipmap/ic_launcher" />
+                        android:src="@mipmap/ic_launcher_customerapp" />
 
                     <TextView
                         android:id="@+id/txt_counter_waiting_confirm"
@@ -105,7 +105,7 @@
                         android:id="@+id/img_order_process"
                         android:layout_width="@dimen/dp_40"
                         android:layout_height="@dimen/dp_40"
-                        android:src="@mipmap/ic_launcher" />
+                        android:src="@mipmap/ic_launcher_customerapp" />
 
                     <TextView
                         android:id="@+id/txt_counter_order_process"
@@ -149,7 +149,7 @@
                         android:id="@+id/img_goods_sent"
                         android:layout_width="@dimen/dp_40"
                         android:layout_height="@dimen/dp_40"
-                        android:src="@mipmap/ic_launcher" />
+                        android:src="@mipmap/ic_launcher_customerapp" />
 
                     <TextView
                         android:id="@+id/txt_counter_goods_sent"
@@ -193,7 +193,7 @@
                         android:id="@+id/img_goods_receive"
                         android:layout_width="@dimen/dp_40"
                         android:layout_height="@dimen/dp_40"
-                        android:src="@mipmap/ic_launcher" />
+                        android:src="@mipmap/ic_launcher_customerapp" />
 
                     <TextView
                         android:id="@+id/txt_counter_goods_receive"

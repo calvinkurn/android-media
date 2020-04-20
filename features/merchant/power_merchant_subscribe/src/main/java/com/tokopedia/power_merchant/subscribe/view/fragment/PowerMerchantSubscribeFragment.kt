@@ -48,7 +48,9 @@ import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey.ANDROID_PM_F1_ENABLED
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.user_identification_common.KYCConstant
-import com.tokopedia.user_identification_common.domain.pojo.GetApprovalStatusPojo
+import com.tokopedia.user_identification_common.KYCConstant.MERCHANT_KYC_PROJECT_ID
+import com.tokopedia.user_identification_common.KYCConstant.PARAM_PROJECT_ID
+import com.tokopedia.user_identification_common.domain.pojo.KycUserProjectInfoPojo
 import kotlinx.android.synthetic.main.dialog_kyc_verification.*
 import kotlinx.android.synthetic.main.dialog_score_verification.*
 import kotlinx.android.synthetic.main.fragment_power_merchant_subscribe.*
@@ -65,7 +67,7 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
     lateinit var partialBenefitPmViewHolder: PartialBenefitPmViewHolder
     lateinit var partialTncViewHolder: PartialTncViewHolder
     lateinit var shopStatusModel: ShopStatusModel
-    lateinit var getApprovalStatusPojo: GetApprovalStatusPojo
+    lateinit var getApprovalStatusPojo: KycUserProjectInfoPojo
     lateinit var bottomSheetCommon: MerchantCommonBottomSheet
     lateinit var bottomSheetCancel: PowerMerchantCancelBottomSheet
 
@@ -97,6 +99,9 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
         const val TURN_OFF_AUTOEXTEND_INTENT_CODE = 322
         const val MINIMUM_SCORE_ACTIVATE_REGULAR = 75
         const val MINIMUM_SCORE_ACTIVATE_IDLE = 65
+
+        private const val APPLINK_PARAMS_KYC = "${PARAM_PROJECT_ID}=${MERCHANT_KYC_PROJECT_ID}"
+        const val APPLINK_POWER_MERCHANT_KYC = "${ApplinkConst.KYC_NO_PARAM}?$APPLINK_PARAMS_KYC"
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -111,7 +116,7 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
         renderInitialLayout()
         button_activate_root.setOnClickListener {
             powerMerchantTracking.eventUpgradeShopPm()
-            if (getApprovalStatusPojo.kycStatus.kycStatusDetailPojo.status == 1) {
+            if (getApprovalStatusPojo.kycProjectInfo.status == 1) {
                 if (shopStatusModel.isPowerMerchantInactive()) {
                     if (shopScore < MINIMUM_SCORE_ACTIVATE_REGULAR) {
                         setupDialogScore()?.show()
@@ -220,10 +225,8 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
             dialog.setCanceledOnTouchOutside(true)
             dialog.setContentView(R.layout.dialog_kyc_verification)
             dialog.btn_submit_kyc.setOnClickListener {
-                val intent = RouteManager.getIntent(activity, ApplinkConst.KYC)
-                intent.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, ApplinkConstInternalGlobal.PARAM_SOURCE_KYC_SELLER)
-                startActivity(intent)
-                activity?.finish()
+                clickSubmitKycBtn()
+                dialog.hide()
             }
             dialog.btn_close_kyc.setOnClickListener {
                 dialog.hide()
@@ -292,7 +295,7 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
 
     override fun onSuccessGetPmInfo(powerMerchantStatus: PowerMerchantStatus) {
         shopStatusModel = powerMerchantStatus.goldGetPmOsStatus.result.data
-        getApprovalStatusPojo = powerMerchantStatus.getApprovalStatusPojo
+        getApprovalStatusPojo = powerMerchantStatus.kycUserProjectInfoPojo
         shopScore = powerMerchantStatus.shopScore.data.value
         minScore = powerMerchantStatus.shopScore.badgeScore
         var isTransitionPeriod = shopStatusModel.isTransitionPeriod()
@@ -341,7 +344,7 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
         var isPowerMerchant = shopStatusModel.isPowerMerchantActive() or shopStatusModel.isPowerMerchantIdle()
         var isPending = shopStatusModel.isPowerMerchantPending()
         if (isPowerMerchant) {
-            var isNotKyc = getApprovalStatusPojo.kycStatus.kycStatusDetailPojo.status != KYCConstant.STATUS_VERIFIED
+            var isNotKyc = getApprovalStatusPojo.kycProjectInfo.status != KYCConstant.STATUS_VERIFIED
             if (isNotKyc) {
                 if (isAutoExtend()) {
                     showTickerYellowTransitionPeriod()
@@ -413,6 +416,29 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
         }
     }
 
+    private fun openKycPage() {
+        val intent = RouteManager.getIntent(activity, APPLINK_POWER_MERCHANT_KYC)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, ApplinkConstInternalGlobal.PARAM_SOURCE_KYC_SELLER)
+        startActivity(intent)
+    }
+
+    private fun openTnCPage() {
+        val intent = context?.let { PowerMerchantTermsActivity.createIntent(it, ACTION_ACTIVATE) }
+        startActivity(intent)
+    }
+
+    private fun clickSubmitKycBtn() {
+        if (isKycStatusNotVerified()) {
+            openTnCPage()
+        } else {
+            openKycPage()
+        }
+    }
+
+    private fun isKycStatusNotVerified(): Boolean {
+        val kycStatus = getApprovalStatusPojo.kycProjectInfo.status
+        return kycStatus == KYCConstant.STATUS_NOT_VERIFIED
+    }
 
     override fun showEmptyState(throwable: Throwable) {
         NetworkErrorHelper.showEmptyState(root_view_pm.context, root_view_pm, ErrorHandler.getErrorMessage(context, throwable)) {

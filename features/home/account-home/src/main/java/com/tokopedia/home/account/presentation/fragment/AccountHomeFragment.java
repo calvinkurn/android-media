@@ -173,7 +173,7 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements
 
         ImageButton menuSettings = toolbar.findViewById(R.id.action_settings);
 
-        menuSettings.setOnClickListener(v -> startActivity(GeneralSettingActivity.createIntent
+        menuSettings.setOnClickListener(v -> startActivity(GeneralSettingActivity.Companion.createIntent
                 (getActivity())));
         menuNotification.setOnClickListener(v -> {
             accountAnalytics.eventTrackingNotifCenter();
@@ -239,10 +239,10 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements
     }
 
     @Override
-    public void showError(Throwable e) {
+    public void showError(Throwable e, String errorCode) {
         Fragment currentFragment = adapter.getItem(viewPager.getCurrentItem());
         if (currentFragment != null && currentFragment instanceof BaseAccountView) {
-            ((BaseAccountView) currentFragment).showError(e);
+            ((BaseAccountView) currentFragment).showError(e, errorCode);
         }
     }
 

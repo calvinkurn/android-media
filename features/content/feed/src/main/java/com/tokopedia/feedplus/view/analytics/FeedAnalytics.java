@@ -1,6 +1,6 @@
 package com.tokopedia.feedplus.view.analytics;
 
-import com.google.android.gms.tagmanager.DataLayer;
+import com.tokopedia.analyticconstant.DataLayer;
 import com.tokopedia.feedcomponent.view.viewmodel.banner.TrackingBannerModel;
 import com.tokopedia.feedcomponent.view.viewmodel.recommendation.TrackingRecommendationModel;
 import com.tokopedia.feedcomponent.data.pojo.whitelist.Author;
@@ -38,12 +38,15 @@ public class FeedAnalytics {
 
     private static final String PRODUCT_VIEW = "productView";
     private static final String PRODUCT_CLICK = "productClick";
+    private static final String POST_CLICK_VALUE = "click new post";
 
     private static final String DASH = " - ";
     private static final String SINGLE = "single";
     private static final String MULTIPLE = "multiple";
     private static final String FORMAT_2_VALUE = "%s - %s";
-    private static final String FORMAT_PROMOTION_NAME = "%s - %s - %s - %s";
+    private static final String FORMAT_4_VALUE = "%s - %s - %s - %s";
+
+    private static final String POST_FORMAT_4_VALUE = "post - %s - %s - %s - %s";
 
     //region Content Feed
     private static final String CONTENT_FEED = "content feed";
@@ -186,6 +189,8 @@ public class FeedAnalytics {
         );
     }
 
+    //docs : https://docs.google.com/spreadsheets/d/1pnZfjiNKbAk8LR37DhNGSwm2jvM3wKqNJc2lfWLejXA/edit#gid=1878700964
+    //screenshot 1
     public void eventBannerClick(String templateType, String activityName, String mediaType,
                                  String bannerUrl, String applink, int totalBanner, int postId,
                                  int bannerPosition, int userId) {
@@ -202,14 +207,16 @@ public class FeedAnalytics {
         ));
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 getEventEcommerceClick(
-                        "click banner",
-                        String.valueOf(postId),
+                        "click",
+                        "banner - " + String.valueOf(postId),
                         promotionList,
                         userId
                 )
         );
     }
 
+    // docs : https://docs.google.com/spreadsheets/d/1pnZfjiNKbAk8LR37DhNGSwm2jvM3wKqNJc2lfWLejXA/edit#gid=1878700964
+    // screenshot 2
     public void eventCardPostElementClick(String element, String activityName, String mediaType,
                                           String activityId, int recomId) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(
@@ -264,8 +271,8 @@ public class FeedAnalytics {
         ));
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 getEventEcommerceClick(
-                        String.format("click avatar - %s recommendation", authorType),
-                        String.valueOf(authorId),
+                        "click",
+                        String.format("avatar - %s recommendation - %s", authorType, authorId),
                         promotionList,
                         userId
                 )
@@ -298,6 +305,9 @@ public class FeedAnalytics {
         );
     }
 
+    // docs : https://docs.google.com/spreadsheets/d/1pnZfjiNKbAk8LR37DhNGSwm2jvM3wKqNJc2lfWLejXA/edit#gid=1878700964
+    // screenshot 13
+
     public void eventTopadsRecommendationClick(String templateType, int adId, int authorId,
                                                int cardPosition, int userId) {
         List<FeedEnhancedTracking.Promotion> promotionList = new ArrayList<>();
@@ -313,8 +323,8 @@ public class FeedAnalytics {
         ));
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 getEventEcommerceClick(
-                        "click avatar - topads shop recommendation",
-                        String.valueOf(authorId),
+                        "click",
+                        String.format("avatar - topads shop recommendation - %s", String.valueOf(authorId)),
                         promotionList,
                         userId
                 )
@@ -411,8 +421,8 @@ public class FeedAnalytics {
         ));
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 getEventEcommerceClick(
-                        String.format("click post - %s - %s", activityName, mediaType),
-                        String.format(FORMAT_2_VALUE, postId, recomId),
+                        "click",
+                        String.format(POST_FORMAT_4_VALUE,activityName, mediaType, postId, recomId),
                         promotionList,
                         userId
                 )
@@ -493,8 +503,8 @@ public class FeedAnalytics {
         ));
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 getEventEcommerceView(
-                        String.format("click post - %s - %s", activityName, mediaType),
-                        String.format("%s - %s - %s", pollId, optionId, optionName),
+                        "click",
+                        String.format("post - %s - %s - %s - %s - %s", activityName, mediaType, pollId, optionId, optionName),
                         promotionList,
                         userId
                 )
@@ -541,6 +551,17 @@ public class FeedAnalytics {
                                 product,
                                 "/feed detail - product list"
                         )
+                )
+        );
+    }
+
+    public void eventNewPostClick() {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                DataLayer.mapOf(
+                        EVENT_NAME, EVENT_CLICK_FEED,
+                        EVENT_CATEGORY, CONTENT_FEED_TIMELINE,
+                        EVENT_ACTION, POST_CLICK_VALUE,
+                        EVENT_LABEL, ""
                 )
         );
     }

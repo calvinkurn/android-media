@@ -2,11 +2,11 @@ package com.tokopedia.discovery.categoryrevamp.domain.repository
 
 import android.content.res.Resources
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.basemvvm.repository.BaseRepository
 import com.tokopedia.discovery.R
 import com.tokopedia.discovery.categoryrevamp.constants.CategoryNavConstants
 import com.tokopedia.discovery.categoryrevamp.data.bannedCategory.BannedCategoryResponse
 import com.tokopedia.discovery.categoryrevamp.data.bannedCategory.Data
-import com.tokopedia.tradein_common.repository.BaseRepository
 import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 

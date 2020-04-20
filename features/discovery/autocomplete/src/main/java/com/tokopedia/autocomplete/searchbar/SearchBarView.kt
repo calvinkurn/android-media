@@ -6,7 +6,6 @@ import android.content.Intent
 import android.graphics.Rect
 import android.graphics.drawable.Drawable
 import android.os.Build
-import android.os.Handler
 import android.os.Parcel
 import android.os.Parcelable
 import android.speech.RecognizerIntent
@@ -31,15 +30,12 @@ import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.model.SearchParameter
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.remoteconfig.RemoteConfigKey
-import com.tokopedia.showcase.*
 import kotlinx.android.synthetic.main.autocomplete_search_bar_view.view.*
 import rx.Observable
 import rx.Subscriber
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 import rx.subscriptions.CompositeSubscription
-import java.util.*
 import java.util.concurrent.TimeUnit
 
 class SearchBarView constructor(private val mContext: Context, attrs: AttributeSet) : ConstraintLayout(mContext, attrs) {
@@ -420,11 +416,31 @@ class SearchBarView constructor(private val mContext: Context, attrs: AttributeS
 
         constructor(superState: Parcelable) : super(superState)
 
+        constructor(parcel: Parcel): super(parcel) {
+            query = parcel.readString()
+            isSearchOpen = parcel.readInt() == 1
+            hint = parcel.readString()
+        }
+
         override fun writeToParcel(out: Parcel, flags: Int) {
             super.writeToParcel(out, flags)
             out.writeString(query)
             out.writeInt(if (isSearchOpen) 1 else 0)
             out.writeString(hint)
+        }
+
+        override fun describeContents(): Int {
+            return 0
+        }
+
+        companion object CREATOR : Parcelable.Creator<SavedState> {
+            override fun createFromParcel(parcel: Parcel): SavedState {
+                return SavedState(parcel)
+            }
+
+            override fun newArray(size: Int): Array<SavedState?> {
+                return arrayOfNulls(size)
+            }
         }
     }
 

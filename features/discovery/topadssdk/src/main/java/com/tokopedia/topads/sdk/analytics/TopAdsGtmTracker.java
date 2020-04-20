@@ -5,7 +5,8 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.text.TextUtils;
 
-import com.google.android.gms.tagmanager.DataLayer;
+import com.tokopedia.analyticconstant.DataLayer;
+import com.tokopedia.iris.util.IrisSession;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.interfaces.Analytics;
 import com.tokopedia.topads.sdk.domain.model.CpmData;
@@ -17,6 +18,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import com.tokopedia.iris.util.ConstantKt;
 
 /**
  * Author errysuprayogi on 24,January,2019
@@ -86,7 +88,7 @@ public class TopAdsGtmTracker {
         tracker.sendEnhanceEcommerceEvent(map);
     }
 
-    public void eventSearchResultProductView(TrackingQueue trackingQueue, String keyword, String screenName) {
+    public void eventSearchResultProductView(TrackingQueue trackingQueue, String keyword, String screenName, String irisSessionId) {
         if (!dataLayerList.isEmpty()) {
             Map<String, Object> map = DataLayer.mapOf(
                     "event", "productView",
@@ -98,6 +100,8 @@ public class TopAdsGtmTracker {
                                     dataLayerList.toArray(new Object[dataLayerList.size()])
                             )
                     ));
+            if(!TextUtils.isEmpty(irisSessionId))
+                map.put(ConstantKt.KEY_SESSION_IRIS, irisSessionId);
             trackingQueue.putEETracking((HashMap<String, Object>) map);
             clearDataLayerList();
         }
@@ -295,6 +299,9 @@ public class TopAdsGtmTracker {
                                             "position", position,
                                             "dimension83", isFreeOngkirActive(item) ? "bebas ongkir" : "none / other"))))
             );
+            IrisSession irisSession = new IrisSession(context);
+            if(!TextUtils.isEmpty(irisSession.getSessionId()))
+                map.put(ConstantKt.KEY_SESSION_IRIS, irisSession.getSessionId());
             tracker.sendEnhanceEcommerceEvent(map);
         }
     }

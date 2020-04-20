@@ -7,8 +7,6 @@
     app:cardPreventCornerOverlap="false"
     app:cardUseCompatPadding="true"
     android:foreground="?attr/selectableItemBackground"
-    android:clickable="true"
-    android:focusable="true"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 

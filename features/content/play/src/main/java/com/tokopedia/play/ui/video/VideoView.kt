@@ -3,13 +3,14 @@ package com.tokopedia.play.ui.video
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import com.google.android.exoplayer2.ExoPlayer
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.R
 import com.tokopedia.play.component.UIView
-import com.tokopedia.play.view.custom.RoundedFrameLayout
-import com.tokopedia.unifycomponents.dpToPx
 
 /**
  * Created by jegul on 02/12/19
@@ -18,12 +19,10 @@ class VideoView(container: ViewGroup) : UIView(container) {
 
     private val view: View =
             LayoutInflater.from(container.context).inflate(R.layout.view_video, container, true)
-                    .findViewById(R.id.rfl_video_wrapper)
+                    .findViewById(R.id.cl_video_view)
 
-    private val rflVideoWrapper = view as RoundedFrameLayout
     private val pvVideo = view.findViewById<VideoPlayCustom>(R.id.pv_video)
-
-    private val cornerRadius = 16f.dpToPx()
+    private val ivThumbnail = view.findViewById<ImageView>(R.id.iv_thumbnail)
 
     override val containerId: Int = view.id
 
@@ -35,18 +34,27 @@ class VideoView(container: ViewGroup) : UIView(container) {
         view.hide()
     }
 
-    fun onDestroy() {
+    internal fun onDestroy() {
         setPlayer(null)
         pvVideo.release()
     }
 
-    fun setPlayer(exoPlayer: ExoPlayer?) {
+    internal fun setPlayer(exoPlayer: ExoPlayer?) {
         pvVideo.setPlayer(exoPlayer)
     }
 
-    fun showCornerRadius(shouldShow: Boolean) {
-        rflVideoWrapper.setCornerRadius(if (shouldShow) cornerRadius else 0f)
-        rflVideoWrapper.invalidate()
-        rflVideoWrapper.requestLayout()
+    internal fun setThumbnail() {
+        pvVideo.textureView?.bitmap?.let {
+            ivThumbnail.setImageBitmap(it)
+        }
     }
+
+    internal fun showThumbnail(shouldShow: Boolean) {
+        if (shouldShow) {
+            ivThumbnail.visible()
+        } else {
+            ivThumbnail.gone()
+        }
+    }
+
 }

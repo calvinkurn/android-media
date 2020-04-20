@@ -60,10 +60,6 @@ class RechargeGeneralRecentTransactionFragment: BaseDaggerFragment(), TopupBills
 
     }
 
-    fun toggleTitle(value: Boolean) {
-        recent_transaction_widget.toggleTitle(value)
-    }
-
     override fun getScreenName(): String {
         return ""
     }

@@ -1,22 +1,17 @@
 package com.tokopedia.home_wishlist.view.viewholder
 
 import android.os.Bundle
-import android.view.Gravity
 import android.view.View
 import android.widget.TextView
-import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.carouselproductcard.CarouselProductCardListener
 import com.tokopedia.carouselproductcard.CarouselProductCardView
-import com.tokopedia.home_wishlist.util.GravitySnapHelper
 import com.tokopedia.home_wishlist.R
-import com.tokopedia.home_wishlist.analytics.WishlistTracking
 import com.tokopedia.home_wishlist.model.datamodel.RecommendationCarouselDataModel
 import com.tokopedia.home_wishlist.model.datamodel.RecommendationCarouselItemDataModel
-import com.tokopedia.home_wishlist.view.custom.SpaceItemDecoration
 import com.tokopedia.home_wishlist.view.listener.WishlistListener
 import com.tokopedia.kotlin.model.ImpressHolder
-import com.tokopedia.productcard.v2.ProductCardModel
+import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.smart_recycler_helper.SmartAbstractViewHolder
 import com.tokopedia.smart_recycler_helper.SmartListener
 
@@ -32,36 +27,26 @@ class DynamicCarouselRecommendationViewHolder(val view: View) : SmartAbstractVie
         seeMore.setOnClickListener{
             RouteManager.route(it.context, element.seeMoreAppLink)
         }
-        carouselProductCardView.bindCarouselProductCardView(
-                parentView = view,
+        carouselProductCardView.bindCarouselProductCardViewGrid(
                 productCardModelList = convertIntoProductDataModel(element.list),
                 carouselProductCardOnItemClickListener = object : CarouselProductCardListener.OnItemClickListener{
-                    override fun onItemClick(productCardModel: ProductCardModel, childPosition: Int) {
-                        (listener as WishlistListener).onProductClick(element.list[childPosition], adapterPosition, childPosition)
-                    }
-                },
-                carouselProductCardOnWishlistItemClickListener = object : CarouselProductCardListener.OnWishlistItemClickListener{
-                    override fun onWishlistItemClick(productCardModel: ProductCardModel, childPosition: Int) {
-                        (listener as WishlistListener).onWishlistClick(adapterPosition, childPosition, productCardModel.isWishlisted)
-                        WishlistTracking.clickWishlistIconRecommendation(
-                                productId = element.list[childPosition].recommendationItem.productId.toString(),
-                                isAdd = !element.list[childPosition].recommendationItem.isWishlist,
-                                isTopAds = element.list[childPosition].recommendationItem.isTopAds,
-                                recomTitle = element.title
-                        )
+                    override fun onItemClick(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
+                        val wishlistDataModel = element.list.getOrNull(carouselProductCardPosition) ?: return
+
+                        (listener as WishlistListener).onProductClick(wishlistDataModel, adapterPosition, carouselProductCardPosition)
                     }
                 },
                 carouselProductCardOnItemImpressedListener = object : CarouselProductCardListener.OnItemImpressedListener{
-                    override fun getImpressHolder(adapterPosition: Int): ImpressHolder {
-                        return element.list[adapterPosition].recommendationItem
+                    override fun getImpressHolder(carouselProductCardPosition: Int): ImpressHolder? {
+                        return element.list.getOrNull(carouselProductCardPosition)?.recommendationItem
                     }
 
-                override fun onItemImpressed(productCardModel: ProductCardModel, adapterPosition: Int) {
-                    (listener as WishlistListener).onProductImpression(element.list[adapterPosition], adapterPosition)
+                    override fun onItemImpressed(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
+                        val wishlistDataModel = element.list.getOrNull(carouselProductCardPosition) ?: return
+                        (listener as WishlistListener).onProductImpression(wishlistDataModel, carouselProductCardPosition)
+                    }
                 }
-            }
         )
-        carouselProductCardView.setSnapHelper(GravitySnapHelper(Gravity.START))
     }
 
     override fun bind(element: RecommendationCarouselDataModel, listener: SmartListener, payloads: List<Any>) {
@@ -69,12 +54,6 @@ class DynamicCarouselRecommendationViewHolder(val view: View) : SmartAbstractVie
             val bundle = payloads[0] as Bundle
             if(bundle.containsKey("isOnBulkRemoveProgress")){
                 disabledView.visibility = if(bundle.getBoolean("isOnBulkRemoveProgress")) View.VISIBLE else View.GONE
-            }
-
-            if(bundle.containsKey("updateList")){
-                val index = bundle.getInt("updateList")
-                val isWishlist = bundle.getBoolean("updateIsWishlist")
-                carouselProductCardView.updateWishlist(index, isWishlist)
             }
         }
     }
@@ -94,12 +73,19 @@ class DynamicCarouselRecommendationViewHolder(val view: View) : SmartAbstractVie
                     isWishlistVisible = true,
                     isWishlisted = element.recommendationItem.isWishlist,
                     shopBadgeList = element.recommendationItem.badgesUrl.map {
-                        ProductCardModel.ShopBadge(imageUrl = it?:"")
+                        ProductCardModel.ShopBadge(imageUrl = it ?: "")
                     },
                     freeOngkir = ProductCardModel.FreeOngkir(
                             isActive = element.recommendationItem.isFreeOngkirActive,
                             imageUrl = element.recommendationItem.freeOngkirImageUrl
-                    )
+                    ),
+                    labelGroupList = element.recommendationItem.labelGroupList.map { recommendationLabel ->
+                        ProductCardModel.LabelGroup(
+                                position = recommendationLabel.position,
+                                title = recommendationLabel.title,
+                                type = recommendationLabel.type
+                        )
+                    }
             )
         }
     }

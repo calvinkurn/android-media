@@ -12,22 +12,23 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.tokopedia.cameraview.CameraView
+        <com.otaliastudios.cameraview.CameraView
             android:id="@+id/camera_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center"
             android:keepScreenOn="true"
-            app:camGestureLongTap="none"
-            app:camGesturePinch="zoom"
-            app:camGestureScrollHorizontal="none"
-            app:camGestureScrollVertical="none"
-            app:camGestureTap="focusWithMarker"
-            app:camGrid="off"
-            app:camFlash="off"
+            app:cameraGestureLongTap="none"
+            app:cameraGesturePinch="zoom"
+            app:cameraGestureScrollHorizontal="none"
+            app:cameraGestureScrollVertical="none"
+            app:cameraGestureTap="autoFocus"
+            app:cameraGrid="off"
+            app:cameraFlash="off"
             app:cameraPlaySounds="true"
+            app:cameraAudio="off"
             app:cameraMode="picture"
-            app:camFacing="back" />
+            app:cameraFacing="back" />
 
         <ImageButton
             android:id="@+id/image_button_flash"

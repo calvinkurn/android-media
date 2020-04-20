@@ -238,19 +238,6 @@ public class LinearLayoutManager extends androidx.recyclerview.widget.LinearLayo
         super.setOrientation(orientation);
     }
 
-    public void clearChildSize() {
-        hasChildSize = false;
-        setChildSize(DEFAULT_CHILD_SIZE);
-    }
-
-    public void setChildSize(int childSize) {
-        hasChildSize = true;
-        if (this.childSize != childSize) {
-            this.childSize = childSize;
-            requestLayout();
-        }
-    }
-
     private void measureChild(RecyclerView.Recycler recycler, int position, int widthSize, int heightSize, int[] dimensions) {
         final View child;
         try {

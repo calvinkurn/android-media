@@ -1,10 +1,8 @@
 package com.tokopedia.transaction.orders.orderdetails.view;
 
-import android.widget.TextView;
-
 import javax.inject.Inject;
 
-import com.google.android.gms.tagmanager.DataLayer;
+import com.tokopedia.analyticconstant.DataLayer;
 import com.google.gson.Gson;
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel;
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem;
@@ -15,7 +13,7 @@ import com.tokopedia.transaction.common.sharedata.buyagain.Datum;
 import com.tokopedia.transaction.orders.orderdetails.data.Items;
 import com.tokopedia.transaction.orders.orderdetails.data.MetaDataInfo;
 import com.tokopedia.transaction.orders.orderdetails.data.ShopInfo;
-import com.tokopedia.transaction.orders.orderdetails.data.recommendationPojo.RecommendationsItem;
+import com.tokopedia.transaction.orders.orderdetails.data.recommendationMPPojo.RecommendationsItem;
 import com.tokopedia.transaction.orders.orderdetails.data.recommendationPojo.WidgetGridItem;
 import com.tokopedia.transaction.orders.orderlist.data.Order;
 import com.tokopedia.transaction.orders.orderlist.view.adapter.viewModel.OrderListRecomViewModel;
@@ -40,9 +38,11 @@ public class OrderListAnalytics {
     private static final String EVENT_ACTION_CLICK_HELP = "click disini for help";
     private static final String EVENT_ACTION_LIHAT_INVOICE = "click lihat on invoice";
     private static final String EVENT_ACTION_LIHAT_STATUS = "click lihat on status order";
+    private static final String EVENT_ACTION_CLICK_SHOP_NAME = "click shop name";
     private static final String EVENT_TICKER_CLICK_ACTION = "click see more on ticker";
     private static final String EVENT_TICKER_CLICK_LINK_ACTION = "click link on ticker";
     private static final String EVENT_ACTION_DOWNLOAD_INVOICE = "click button download invoice";
+    private static final String EVENT_ACTION_TULIS_REVIEW = "click button tulis review";
     private static final String TEVENT_TICKER_CLOSE_ACTION = "click x on ticker";
 
     private static final String SEARCH_EVENT_ACTION = "submit search";
@@ -86,6 +86,7 @@ public class OrderListAnalytics {
     private static final String VARIANT = "variant";
     private static final String SHIPPING = "shipping";
     private static final String CATEGORY = "category";
+    private static final String ATTRIBUTION = "attribution";
     private static final String TAX = "tax";
     private static final String COUPON_CODE = "coupon";
     private static final String KEY_PRODUCTS = "products";
@@ -138,6 +139,10 @@ public class OrderListAnalytics {
         sendGtmDataDetails(EVENT_ACTION_DOWNLOAD_INVOICE, eventLabel);
     }
 
+    public void sendTulisReviewEventData(String eventLabel) {
+        sendGtmDataDetails(EVENT_ACTION_TULIS_REVIEW, eventLabel);
+    }
+
     public void sendHelpEventData(String eventLabel) {
         sendGtmDataDetails(EVENT_ACTION_CLICK_HELP, eventLabel);
     }
@@ -148,6 +153,10 @@ public class OrderListAnalytics {
 
     public void sendLihatStatusClick(String eventLabel) {
         sendGtmDataDetails(EVENT_ACTION_LIHAT_STATUS, eventLabel);
+    }
+
+    public void sendClickShopName(String eventLabel) {
+        sendGtmDataDetails(EVENT_ACTION_CLICK_SHOP_NAME, eventLabel);
     }
 
     public void sendDateFilterClickEvent() {
@@ -446,9 +455,9 @@ public class OrderListAnalytics {
 
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(DataLayer.mapOf(
                 EVENT, PRODUCT_CLICK,
-                EVENT_CATEGORY, "my purchase list - " + item.getName(),
+                EVENT_CATEGORY, EVENT_CATEGORY_BUY_AGAIN_DETAIL,
                 EVENT_ACTION, CLICK_ON_WIDGET_RECOMMENDATION,
-                EVENT_LABEL, "historical - " + item.getName() + " - " + (1 + position),
+                EVENT_LABEL, "recommendation - " + item.getName() + " - " + (1 + position),
                 ECOMMERCE, DataLayer.mapOf(
                         CLICK, DataLayer.mapOf(
                                 ACTION_FIELD, DataLayer.mapOf(
@@ -459,8 +468,12 @@ public class OrderListAnalytics {
                                                 NAME, item.getName(),
                                                 ID, item.getId(),
                                                 PRICE, item.getPrice(),
+                                                BRAND, "none",
+                                                CATEGORY, item.getName(),
+                                                VARIANT, "none",
                                                 LIST, item.getName(),
-                                                POSITION, position + 1
+                                                POSITION, position + 1,
+                                                ATTRIBUTION, "none"
                                         )
                                 )
                         )
@@ -469,11 +482,12 @@ public class OrderListAnalytics {
 
         ));
     }
+
     public static void eventRecommendationClick(@NotNull RecommendationsItem item, int position) {
 
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(DataLayer.mapOf(
                 EVENT, PRODUCT_CLICK,
-                EVENT_CATEGORY, "my purchase list - " + item.getCategoryName(),
+                EVENT_CATEGORY, EVENT_CATEGORY_BUY_AGAIN_DETAIL,
                 EVENT_ACTION, CLICK_ON_WIDGET_RECOMMENDATION,
                 EVENT_LABEL, "historical - " + item.getCategoryName() + " - " + (1 + position),
                 ECOMMERCE, DataLayer.mapOf(
@@ -487,8 +501,10 @@ public class OrderListAnalytics {
                                                         PRICE, item.getProductPrice(),
                                                         BRAND,"none",
                                                         CATEGORY , item.getCategoryName(),
+                                                        VARIANT, "none",
                                                         LIST, item.getCategoryName(),
-                                                        POSITION, position + 1
+                                                        POSITION, position + 1,
+                                                        ATTRIBUTION, "none"
                                                 )
                                         )
                                 )
@@ -502,7 +518,7 @@ public class OrderListAnalytics {
     public static void eventRecommendationListView(@NotNull RecommendationsItem recommendationsItem, int position) {
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(DataLayer.mapOf(
                 EVENT, PRODUCT_VIEW,
-                EVENT_CATEGORY, "my purchase list - " + recommendationsItem.getProductName(),
+                EVENT_CATEGORY, EVENT_CATEGORY_BUY_AGAIN_DETAIL,
                 EVENT_ACTION, IMPRESSION_ON_WIDGET_RECOMMENDATION,
                 EVENT_LABEL, "historical - " + recommendationsItem.getCategoryName() + " - " + (1 + position),
                 ECOMMERCE, DataLayer.mapOf(
@@ -513,6 +529,7 @@ public class OrderListAnalytics {
                                 PRICE, recommendationsItem.getProductPrice(),
                                 BRAND, "none",
                                 CATEGORY, recommendationsItem.getCategoryName(),
+                                VARIANT, "none",
                                 LIST, recommendationsItem.getCategoryName(),
                                 POSITION, position + 1
                                 )

@@ -29,7 +29,7 @@ class HotelRoomListActivity : HotelBaseActivity(), HasComponent<HotelRoomListCom
                     .build()
 
     override fun getNewFragment(): Fragment = HotelRoomListFragment.createInstance(
-            intent.getIntExtra(HotelRoomListFragment.ARG_PROPERTY_ID, 0),
+            intent.getLongExtra(HotelRoomListFragment.ARG_PROPERTY_ID, 0),
             intent.getStringExtra(HotelRoomListFragment.ARG_PROPERTY_NAME),
             intent.getStringExtra(HotelRoomListFragment.ARG_CHECK_IN),
             intent.getStringExtra(HotelRoomListFragment.ARG_CHECK_OUT),
@@ -41,8 +41,13 @@ class HotelRoomListActivity : HotelBaseActivity(), HasComponent<HotelRoomListCom
 
     override fun shouldShowOptionMenu(): Boolean = false
 
+    override fun getScreenName(): String = ROOM_LIST_SCREEN_NAME
+
     companion object {
-        fun createInstance(context: Context, propertyId: Int = 0, propertyName: String = "", checkIn: String = "", checkOut: String = "",
+
+        const val ROOM_LIST_SCREEN_NAME = "/hotel/roomlist"
+
+        fun createInstance(context: Context, propertyId: Long = 0, propertyName: String = "", checkIn: String = "", checkOut: String = "",
                            totalAdult: Int = 0, totalChildren: Int = 0, totalRoom: Int = 0, destinationType: String, destinationName: String): Intent =
                 Intent(context, HotelRoomListActivity::class.java)
                         .putExtra(HotelRoomListFragment.ARG_PROPERTY_ID, propertyId)

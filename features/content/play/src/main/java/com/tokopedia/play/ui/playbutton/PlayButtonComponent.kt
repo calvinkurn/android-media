@@ -5,8 +5,9 @@ import androidx.annotation.VisibleForTesting
 import com.tokopedia.play.component.EventBusFactory
 import com.tokopedia.play.component.UIComponent
 import com.tokopedia.play.ui.playbutton.interaction.PlayButtonInteractionEvent
+import com.tokopedia.play.util.CoroutineDispatcherProvider
 import com.tokopedia.play.view.event.ScreenStateEvent
-import com.tokopedia.play_common.state.TokopediaPlayVideoState
+import com.tokopedia.play_common.state.PlayVideoState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
@@ -18,19 +19,20 @@ import kotlinx.coroutines.launch
 open class PlayButtonComponent(
         container: ViewGroup,
         private val bus: EventBusFactory,
-        coroutineScope: CoroutineScope
+        coroutineScope: CoroutineScope,
+        dispatchers: CoroutineDispatcherProvider
 ) : UIComponent<PlayButtonInteractionEvent>, CoroutineScope by coroutineScope, PlayButtonView.Listener {
 
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
     val uiView = initView(container)
 
     init {
-        launch {
+        launch(dispatchers.immediate) {
             bus.getSafeManagedFlow(ScreenStateEvent::class.java)
                     .collect {
                         when (it) {
                             ScreenStateEvent.Init -> uiView.hide()
-                            is ScreenStateEvent.VideoPropertyChanged -> handleVideoStateChanged(it.videoProp.type.isVod, it.videoProp.state)
+                            is ScreenStateEvent.VideoPropertyChanged -> handleVideoStateChanged(it.stateHelper.channelType.isVod, it.videoProp.state)
                             is ScreenStateEvent.OnNewPlayRoomEvent -> if(it.event.isFreeze) uiView.hide()
                         }
                     }
@@ -57,14 +59,14 @@ open class PlayButtonComponent(
     protected open fun initView(container: ViewGroup) =
             PlayButtonView(container, this)
 
-    private fun handleVideoStateChanged(isVod: Boolean, state: TokopediaPlayVideoState) {
+    private fun handleVideoStateChanged(isVod: Boolean, state: PlayVideoState) {
         if (!isVod) {
             uiView.hide()
             return
         }
         when (state) {
-            TokopediaPlayVideoState.Pause -> uiView.showPlayButton()
-            TokopediaPlayVideoState.Ended -> uiView.showRepeatButton()
+            PlayVideoState.Pause -> uiView.showPlayButton()
+            PlayVideoState.Ended -> uiView.showRepeatButton()
             else -> uiView.hide()
         }
     }

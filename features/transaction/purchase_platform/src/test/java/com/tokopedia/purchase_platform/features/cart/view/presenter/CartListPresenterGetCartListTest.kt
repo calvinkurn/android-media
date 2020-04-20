@@ -1,6 +1,7 @@
 package com.tokopedia.purchase_platform.features.cart.view.presenter
 
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
+import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeUseCase
@@ -9,11 +10,14 @@ import com.tokopedia.purchase_platform.common.domain.schedulers.TestSchedulers
 import com.tokopedia.purchase_platform.common.domain.usecase.GetInsuranceCartUseCase
 import com.tokopedia.purchase_platform.common.domain.usecase.RemoveInsuranceProductUsecase
 import com.tokopedia.purchase_platform.common.domain.usecase.UpdateInsuranceProductDataUsecase
+import com.tokopedia.purchase_platform.features.cart.data.model.response.recentview.GqlRecentView
 import com.tokopedia.purchase_platform.features.cart.data.model.response.recentview.GqlRecentViewResponse
+import com.tokopedia.purchase_platform.features.cart.data.model.response.recentview.RecentView
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.CartListData
 import com.tokopedia.purchase_platform.features.cart.domain.usecase.*
 import com.tokopedia.purchase_platform.features.cart.view.CartListPresenter
 import com.tokopedia.purchase_platform.features.cart.view.ICartListView
+import com.tokopedia.purchase_platform.features.promo.domain.usecase.ValidateUsePromoRevampUseCase
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.seamless_login.domain.usecase.SeamlessLoginUsecase
 import com.tokopedia.user.session.UserSessionInterface
@@ -39,7 +43,8 @@ object CartListPresenterGetCartListTest : Spek({
     val getCartListSimplifiedUseCase: GetCartListSimplifiedUseCase = mockk()
     val deleteCartListUseCase: DeleteCartUseCase = mockk()
     val updateCartUseCase: UpdateCartUseCase = mockk()
-    val checkPromoStackingCodeUseCase: CheckPromoStackingCodeUseCase = mockk()
+    val updateCartAndValidateUseUseCase: UpdateCartAndValidateUseUseCase = mockk()
+    val validateUsePromoRevampUseCase: ValidateUsePromoRevampUseCase = mockk()
     val compositeSubscription = CompositeSubscription()
     val addWishListUseCase: AddWishListUseCase = mockk()
     val removeWishListUseCase: RemoveWishListUseCase = mockk()
@@ -54,19 +59,22 @@ object CartListPresenterGetCartListTest : Spek({
     val removeInsuranceProductUsecase: RemoveInsuranceProductUsecase = mockk()
     val updateInsuranceProductDataUsecase: UpdateInsuranceProductDataUsecase = mockk()
     val seamlessLoginUsecase: SeamlessLoginUsecase = mockk()
+    val updateCartCounterUseCase: UpdateCartCounterUseCase = mockk()
     val view: ICartListView = mockk(relaxed = true)
 
     Feature("get cart list") {
 
         val cartListPresenter by memoized {
             CartListPresenter(
-                    getCartListSimplifiedUseCase, deleteCartListUseCase, updateCartUseCase,
-                    checkPromoStackingCodeUseCase, compositeSubscription, addWishListUseCase,
-                    removeWishListUseCase, updateAndReloadCartUseCase, userSessionInterface,
-                    clearCacheAutoApplyStackUseCase, getRecentViewUseCase, getWishlistUseCase,
-                    getRecommendationUseCase, addToCartUseCase, getInsuranceCartUseCase,
-                    removeInsuranceProductUsecase, updateInsuranceProductDataUsecase,
-                    seamlessLoginUsecase, TestSchedulers
+                    getCartListSimplifiedUseCase, deleteCartListUseCase,
+                    updateCartUseCase, compositeSubscription,
+                    addWishListUseCase, removeWishListUseCase, updateAndReloadCartUseCase,
+                    userSessionInterface, clearCacheAutoApplyStackUseCase, getRecentViewUseCase,
+                    getWishlistUseCase, getRecommendationUseCase, addToCartUseCase,
+                    getInsuranceCartUseCase, removeInsuranceProductUsecase,
+                    updateInsuranceProductDataUsecase, seamlessLoginUsecase,
+                    updateCartCounterUseCase, updateCartAndValidateUseUseCase,
+                    validateUsePromoRevampUseCase, TestSchedulers
             )
         }
 
@@ -132,11 +140,7 @@ object CartListPresenterGetCartListTest : Spek({
 
             Given("throw error") {
                 every { getCartListSimplifiedUseCase.createObservable(any()) } returns Observable.error(exception)
-                every { getRecentViewUseCase.createObservable(any(), any()) } answers {
-                    Observable.just(GraphqlResponse(
-                            mapOf(GqlRecentViewResponse::class.java to GqlRecentViewResponse()), emptyMap(), false))
-                            .subscribe(secondArg() as Subscriber<GraphqlResponse>)
-                }
+                every { getRecentViewUseCase.createObservable(any()) } answers { Observable.just(GqlRecentViewResponse()) }
             }
 
             When("process initial get cart data") {
@@ -156,11 +160,7 @@ object CartListPresenterGetCartListTest : Spek({
 
             Given("throw error") {
                 every { getCartListSimplifiedUseCase.createObservable(any()) } returns Observable.error(exception)
-                every { getRecentViewUseCase.createObservable(any(), any()) } answers {
-                    Observable.just(GraphqlResponse(
-                            mapOf(GqlRecentViewResponse::class.java to GqlRecentViewResponse()), emptyMap(), false))
-                            .subscribe(secondArg() as Subscriber<GraphqlResponse>)
-                }
+                every { getRecentViewUseCase.createObservable(any()) } answers { Observable.just(GqlRecentViewResponse()) }
             }
 
             When("process initial get cart data") {

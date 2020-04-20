@@ -1,9 +1,7 @@
 package com.tokopedia.recommendation_widget_common.data.mapper
 
-import com.tokopedia.recommendation_widget_common.data.OfficialStoreRecommendationEntity
-
 import com.tokopedia.kotlin.util.throwIfNull
-import com.tokopedia.recommendation_widget_common.data.RecomendationEntity
+import com.tokopedia.recommendation_widget_common.data.OfficialStoreRecommendationEntity
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationLabel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
@@ -22,9 +20,6 @@ class OfficialStoreRecommendationEntityMapper : Func1<List<OfficialStoreRecommen
     }
 
     companion object {
-        private const val LABEL_POSITION_OFFERS = "offers"
-        private const val LABEL_POSITION_PROMO = "promo"
-        private const val LABEL_POSITION_CREDIBILITY = "credibility"
 
         fun mappingToRecommendationModel(recommendations: List<OfficialStoreRecommendationEntity.RecomendationData>): List<RecommendationWidget> {
             val recommendationWidgetList = arrayListOf<RecommendationWidget>()
@@ -70,28 +65,9 @@ class OfficialStoreRecommendationEntityMapper : Func1<List<OfficialStoreRecommen
                 position: Int,
                 layoutType: String): RecommendationItem {
 
-            val labelCredibility = RecommendationLabel()
-            val labelPromo = RecommendationLabel()
-            val labelOffers = RecommendationLabel()
-
-            data.labelGroups?.let {
-                for (label: OfficialStoreRecommendationEntity.Recommendation.LabelGroup in it){
-                    when(label.position){
-                        LABEL_POSITION_CREDIBILITY -> {
-                            labelCredibility.title = label.title?:""
-                            labelCredibility.title = label.type?:""
-                        }
-                        LABEL_POSITION_PROMO -> {
-                            labelPromo.title = label.title?:""
-                            labelPromo.title = label.type?:""
-                        }
-                        LABEL_POSITION_OFFERS -> {
-                            labelOffers.title = label.title?:""
-                            labelOffers.title = label.type?:""
-                        }
-                    }
-                }
-            }
+            val labelGroupList = data.labelGroups?.map {
+                RecommendationLabel(title = it.title ?: "", type = it.type ?: "", position = it.position)
+            } ?: listOf()
 
             return RecommendationItem(
                     data.id,
@@ -120,7 +96,7 @@ class OfficialStoreRecommendationEntityMapper : Func1<List<OfficialStoreRecommen
                     data.shop?.id ?: -1,
                     "",
                     data.shop?.name ?: "",
-                    -1,
+                    "",
                     1,
                     title,
                     pageName,
@@ -130,9 +106,7 @@ class OfficialStoreRecommendationEntityMapper : Func1<List<OfficialStoreRecommen
                     layoutType,
                     data.freeOngkirInformation?.isActive?:false,
                     data.freeOngkirInformation?.imageUrl?:"",
-                    labelPromo,
-                    labelOffers,
-                    labelCredibility,
+                    labelGroupList,
                     data.shop?.isGold ?: false
             )
 

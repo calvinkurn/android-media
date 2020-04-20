@@ -1,23 +1,15 @@
 package com.tokopedia.digital_deals.view.activity;
 
 import android.app.Activity;
-import android.content.Context;
-import android.content.Intent;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
-import com.google.android.material.tabs.TabLayout;
-import androidx.fragment.app.Fragment;
-import androidx.core.content.ContextCompat;
-import androidx.viewpager.widget.ViewPager;
 import android.text.Layout;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.style.AlignmentSpan;
 import android.text.style.StyleSpan;
-import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -26,6 +18,12 @@ import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+import androidx.viewpager.widget.ViewPager;
+
+import com.google.android.material.tabs.TabLayout;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
@@ -36,8 +34,8 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.UriUtil;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.digital_deals.data.source.DealsUrl;
-import com.tokopedia.digital_deals.di.DaggerDealsComponent;
 import com.tokopedia.digital_deals.di.DealsComponent;
+import com.tokopedia.digital_deals.di.DealsComponentInstance;
 import com.tokopedia.digital_deals.view.adapter.BrandsFragmentPagerAdapter;
 import com.tokopedia.digital_deals.view.contractor.AllBrandsHomeContract;
 import com.tokopedia.digital_deals.view.customview.SearchInputView;
@@ -129,21 +127,18 @@ public class AllBrandsActivity extends DealsBaseActivity implements AllBrandsHom
         if (!TextUtils.isEmpty(searchText)) {
             searchInputView.setSearchText(searchText);
         }
+
+        toolbarTitle.setOnClickListener(this);
+        Location location = Utils.getSingletonInstance().getLocation(this);
+        if (location != null) {
+            toolbarTitle.setText(location.getName());
+        }
+
         if (!TextUtils.isEmpty(fromVoucher)) {
-            title.setText(getResources().getString(com.tokopedia.digital_deals.R.string.voucher));
-            title.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
-            title.setTextColor(ContextCompat.getColor(this, com.tokopedia.design.R.color.clr_f531353b));
-            toolbarTitle.setVisibility(View.GONE);
             mPresenter.attachView(this);
             mPresenter.getAllCategories();
         } else {
             categoryList = getIntent().getParcelableArrayListExtra(EXTRA_LIST);
-            toolbarTitle.setOnClickListener(this);
-            Location location = Utils.getSingletonInstance().getLocation(this);
-            if (location != null) {
-                toolbarTitle.setText(location.getName());
-            }
-
             if (getIntent() != null && !TextUtils.isEmpty(getIntent().getStringExtra("cat_id"))) {
                 categoryId = Integer.parseInt(getIntent().getStringExtra("cat_id"));
                 for (int i = 0; i < categoryList.size(); i++) {
@@ -305,9 +300,7 @@ public class AllBrandsActivity extends DealsBaseActivity implements AllBrandsHom
 
     @Override
     public DealsComponent getComponent() {
-        return DaggerDealsComponent.builder()
-                .baseAppComponent(((BaseMainApplication) getApplication()).getBaseAppComponent())
-                .build();
+        return DealsComponentInstance.getDealsComponent(getActivity().getApplication());
     }
 
     @Override

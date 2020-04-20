@@ -29,7 +29,7 @@ import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.service.ErrorNetworkReceiver;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.core.util.AppWidgetUtil;
-import com.tokopedia.core.util.GlobalConfig;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core2.R;
 import com.tokopedia.track.TrackApp;

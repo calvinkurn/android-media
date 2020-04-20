@@ -1,6 +1,8 @@
 package com.tokopedia.hotel.roomdetail.presentation.fragment
 
+import android.app.Activity
 import android.app.ProgressDialog
+import android.content.Intent
 import android.graphics.PorterDuff
 import android.graphics.Typeface
 import android.os.Bundle
@@ -12,6 +14,7 @@ import android.text.style.StyleSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.appbar.AppBarLayout
@@ -20,13 +23,17 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.booking.presentation.activity.HotelBookingActivity
 import com.tokopedia.hotel.common.analytics.TrackingHotelUtil
+import com.tokopedia.hotel.common.data.HotelErrorException
 import com.tokopedia.hotel.common.presentation.HotelBaseFragment
 import com.tokopedia.hotel.common.presentation.widget.FacilityTextView
 import com.tokopedia.hotel.common.presentation.widget.InfoTextView
+import com.tokopedia.hotel.common.util.ErrorHandlerHotel
 import com.tokopedia.hotel.roomdetail.di.HotelRoomDetailComponent
 import com.tokopedia.hotel.roomdetail.presentation.activity.HotelRoomDetailActivity
 import com.tokopedia.hotel.roomdetail.presentation.viewmodel.HotelRoomDetailViewModel
@@ -35,10 +42,13 @@ import com.tokopedia.hotel.roomlist.data.model.HotelRoom
 import com.tokopedia.hotel.roomlist.data.model.HotelRoomDetailModel
 import com.tokopedia.hotel.roomlist.widget.ImageViewPager
 import com.tokopedia.imagepreviewslider.presentation.util.ImagePreviewSlider
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_hotel_room_detail.*
+import kotlinx.android.synthetic.main.layout_hotel_image_slider.*
 import kotlinx.android.synthetic.main.widget_info_text_view.view.*
 import javax.inject.Inject
 import kotlin.math.roundToLong
@@ -104,7 +114,13 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
                     }
                 }
                 is Fail -> {
-                    NetworkErrorHelper.showRedSnackbar(activity, ErrorHandler.getErrorMessage(activity, it.throwable))
+                    when {
+                        ErrorHandlerHotel.isPhoneNotVerfiedError(it.throwable) -> navigateToAddPhonePage()
+                        ErrorHandlerHotel.isGetFailedRoomError(it.throwable) -> {
+                            showFailedGetRoomErrorDialog((it as HotelErrorException).message)
+                        }
+                        else -> NetworkErrorHelper.showRedSnackbar(activity, ErrorHandler.getErrorMessage(activity, it.throwable))
+                    }
                 }
             }
             room_detail_button.isEnabled = true
@@ -118,6 +134,11 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
         super.onViewCreated(view, savedInstanceState)
         initView()
         initProgressDialog()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        trackingHotelUtil.hotelViewRoomDetail(hotelRoom, addToCartParam, roomIndex)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -190,7 +211,7 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
                 override fun onImageClicked(position: Int) {
                     trackingHotelUtil.hotelClickRoomDetailsPhoto(hotelRoom.additionalPropertyInfo.propertyId,
                             hotelRoom.roomId, hotelRoom.roomPrice.priceAmount.roundToLong().toString())
-                    ImagePreviewSlider.instance.start(context, hotelRoom.roomInfo.name, roomImageUrls, roomImageUrlsSquare, position, null)
+                    ImagePreviewSlider.instance.start(context, hotelRoom.roomInfo.name, roomImageUrls, roomImageUrlsSquare, position, image_banner)
                 }
             }
         }
@@ -203,22 +224,20 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
                 hotelRoom.occupancyInfo.occupancyText)
         tv_room_detail_size.text = getString(R.string.hotel_room_detail_header_room_size, hotelRoom.roomInfo.size, hotelRoom.bedInfo)
 
+        room_detail_header_facilities.removeAllViews()
         context?.run {
-            val breakfastTextView = FacilityTextView(this)
-            if (hotelRoom.breakfastInfo.isBreakfastIncluded) {
-                breakfastTextView.setIconAndText(R.drawable.ic_hotel_free_breakfast, getString(R.string.hotel_room_list_free_breakfast))
-            } else {
-                breakfastTextView.setIconAndText(R.drawable.ic_hotel_no_breakfast, getString(R.string.hotel_room_list_breakfast_not_included))
-            }
-            room_detail_header_facilities.addView(breakfastTextView)
 
-            val refundableTextView = FacilityTextView(this)
-            if (hotelRoom.refundInfo.isRefundable) {
-                refundableTextView.setIconAndText(R.drawable.ic_hotel_refundable, getString(R.string.hotel_room_list_refundable_with_condition))
-            } else {
-                refundableTextView.setIconAndText(R.drawable.ic_hotel_not_refundable, getString(R.string.hotel_room_list_not_refundable))
+            if (hotelRoom.breakfastInfo.breakFast.isNotEmpty()) {
+                val breakfastTextView = FacilityTextView(this)
+                breakfastTextView.setIconAndText(hotelRoom.breakfastInfo.iconUrl, hotelRoom.breakfastInfo.breakFast)
+                room_detail_header_facilities.addView(breakfastTextView)
             }
-            room_detail_header_facilities.addView(refundableTextView)
+
+            if (hotelRoom.refundInfo.refundStatus.isNotEmpty()) {
+                val refundableTextView = FacilityTextView(this)
+                refundableTextView.setIconAndText(hotelRoom.refundInfo.iconUrl, hotelRoom.refundInfo.refundStatus)
+                room_detail_header_facilities.addView(refundableTextView)
+            }
         }
 
         if (hotelRoom.numberRoomLeft <= MINIMUM_ROOM_COUNT) {
@@ -228,7 +247,7 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
         }
     }
 
-    fun setupRoomPayAtHotel() {
+    private fun setupRoomPayAtHotel() {
         if (!hotelRoom.additionalPropertyInfo.isDirectPayment) {
             pay_at_hotel_container.visibility = View.VISIBLE
 
@@ -246,7 +265,7 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
         }
     }
 
-    fun setupRoomCancellation() {
+    private fun setupRoomCancellation() {
         if (hotelRoom.cancelPolicy.isNotEmpty()) {
             val spannableStringBuilder = SpannableStringBuilder()
             for (policy in hotelRoom.cancelPolicy) {
@@ -264,21 +283,21 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
         }
     }
 
-    fun setupRoomTax() {
+    private fun setupRoomTax() {
         if (hotelRoom.taxes.isNotEmpty()) {
             room_detail_tax.setTitleAndDescription(getString(R.string.hotel_room_detail_tax), hotelRoom.taxes)
             room_detail_tax.buildView()
         }
     }
 
-    fun setupRoomDeposit() {
+    private fun setupRoomDeposit() {
         if (hotelRoom.depositInfo.isNeedDeposit) {
             room_detail_deposit.setTitleAndDescription(getString(R.string.hotel_room_detail_deposit), hotelRoom.depositInfo.depositText)
             room_detail_deposit.buildView()
         }
     }
 
-    fun setupRoomFacilities() {
+    private fun setupRoomFacilities() {
         if (hotelRoom.roomInfo.facility.isNotEmpty()) {
             val facilityList = hotelRoom.roomInfo.facility
             val stringBuilder = StringBuffer()
@@ -312,30 +331,36 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
         }
     }
 
-    fun setupRoomDescription() {
+    private fun setupRoomDescription() {
         if (hotelRoom.roomInfo.description.isNotEmpty()) {
             room_detail_description.setTitleAndDescription(getString(R.string.hotel_room_detail_description), hotelRoom.roomInfo.description)
             room_detail_description.buildView()
         }
     }
 
-    fun setupRoomBreakfast() {
+    private fun setupRoomBreakfast() {
         if (hotelRoom.breakfastInfo.mealPlan.isNotEmpty()) {
             room_detail_breakfast.setTitleAndDescription(getString(R.string.hotel_room_detail_breakfast), hotelRoom.breakfastInfo.mealPlan)
             room_detail_breakfast.buildView()
         }
     }
 
-    fun setupRoomExtraBed() {
+    private fun setupRoomExtraBed() {
         if (hotelRoom.extraBedInfo.content.isNotEmpty()) {
             room_detail_extra_bed.setTitleAndDescription(getString(R.string.hotel_room_detail_extra_bed), hotelRoom.extraBedInfo.content)
             room_detail_extra_bed.buildView()
         }
     }
 
-    fun setupRoomPrice() {
+    private fun setupRoomPrice() {
+        if (hotelRoom.roomPrice.deals.tagging.isNotEmpty()) {
+            room_detail_tagging.show()
+            room_detail_tagging.text = hotelRoom.roomPrice.deals.tagging
+        } else room_detail_tagging.hide()
+
         tv_room_detail_price.text = hotelRoom.roomPrice.roomPrice
         room_detail_button.text = getString(R.string.hotel_room_list_choose_room_button)
+        room_detail_button.isEnabled = true
         room_detail_button.setOnClickListener {
             progressDialog.show()
             if (userSessionInterface.isLoggedIn) {
@@ -343,15 +368,26 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
                 trackingHotelUtil.hotelChooseRoomDetails(hotelRoom, roomIndex, addToCartParam)
                 roomDetailViewModel.addToCart(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_add_to_cart), addToCartParam)
             } else {
-                goToLoginPage()
+                navigateToLoginPage()
             }
         }
     }
 
-    fun goToLoginPage() {
+    private fun navigateToLoginPage() {
         if (activity != null) {
             progressDialog.dismiss()
-            RouteManager.route(context, ApplinkConst.LOGIN)
+            context?.let { startActivityForResult(RouteManager.getIntent(it, ApplinkConst.LOGIN), REQ_CODE_LOGIN) }
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        when (requestCode) {
+            REQ_CODE_LOGIN -> if (resultCode == Activity.RESULT_OK) {
+                progressDialog.show()
+                activity?.setResult(Activity.RESULT_OK)
+                activity?.finish()
+            }
         }
     }
 
@@ -364,11 +400,33 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
     override fun onErrorRetryClicked() {
     }
 
+    private fun navigateToAddPhonePage() {
+        RouteManager.route(requireContext(), ApplinkConstInternalGlobal.ADD_PHONE)
+    }
+
+    private fun showFailedGetRoomErrorDialog(message: String) {
+        val dialog = DialogUnify(activity as AppCompatActivity, DialogUnify.SINGLE_ACTION, DialogUnify.WITH_ICON)
+        dialog.setTitle(getString(R.string.hotel_room_list_failed_get_room_availability_error_title))
+        dialog.setDescription(message)
+        dialog.setImageDrawable(R.drawable.ic_hotel_room_error_refresh)
+        dialog.setPrimaryCTAText(getString(R.string.hotel_room_list_failed_get_room_availability_cta_title))
+        dialog.setPrimaryCTAClickListener {
+            dialog.dismiss()
+            progressDialog.show()
+            activity?.setResult(Activity.RESULT_OK)
+            activity?.finish()
+        }
+        dialog.setCancelable(false)
+        dialog.setOverlayClose(false)
+        dialog.show()
+    }
+
     companion object {
         const val EXTRA_ROOM_DATA = "extra_room_data"
 
         const val MINIMUM_ROOM_COUNT = 3
         const val ROOM_FACILITY_DEFAULT_COUNT = 6
+        const val REQ_CODE_LOGIN = 1345
 
         fun getInstance(savedInstanceId: String, roomIndex: Int): HotelRoomDetailFragment =
                 HotelRoomDetailFragment().also {

@@ -14,10 +14,10 @@
         app:elevation="@dimen/dp_3">
 
         <LinearLayout
-            android:background="@color/white"
             android:id="@+id/header_product_review"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@color/white"
             android:orientation="vertical"
             app:layout_scrollFlags="scroll|enterAlways">
 
@@ -25,17 +25,17 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/dp_16"
+                app:cardBackgroundColor="@color/white"
                 app:cardCornerRadius="@dimen/dp_4"
-                app:cardElevation="@dimen/dp_3"
-                app:cardBackgroundColor="@color/white">
+                app:cardElevation="@dimen/dp_3">
 
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/dp_16"
                     android:layout_marginLeft="@dimen/dp_16"
-                    android:layout_marginRight="@dimen/dp_16"
                     android:layout_marginTop="@dimen/dp_16"
+                    android:layout_marginRight="@dimen/dp_16"
+                    android:layout_marginBottom="@dimen/dp_16"
                     android:background="@color/white">
 
                     <com.tokopedia.design.text.TkpdHintTextInputLayout
@@ -53,22 +53,22 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:hint="@string/promo_label_input_promo_code"
-                            android:textColor="#ae31353b"
-                            android:inputType="text" />
+                            android:inputType="text"
+                            android:textColor="#ae31353b" />
 
                     </com.tokopedia.design.text.TkpdHintTextInputLayout>
 
                     <TextView
-                        style="@style/TextView.Micro.WhitePrimary"
                         android:id="@+id/buttonUse"
+                        style="@style/TextView.Micro.WhitePrimary"
                         android:layout_alignParentRight="true"
                         android:layout_centerVertical="true"
                         android:layout_marginLeft="@dimen/dp_16"
                         android:background="@drawable/green_button_rounded"
-                        android:paddingTop="@dimen/dp_8"
-                        android:paddingBottom="@dimen/dp_8"
                         android:paddingLeft="@dimen/dp_16"
+                        android:paddingTop="@dimen/dp_8"
                         android:paddingRight="@dimen/dp_16"
+                        android:paddingBottom="@dimen/dp_8"
                         android:text="@string/promo_label_button_use" />
 
                 </RelativeLayout>
@@ -83,39 +83,46 @@
                 tools:visibility="gone">
 
                 <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/promo_checkout_list_last_seen_label"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_width="match_parent"
-                    app:typographyType="heading_4"
-                    android:visibility="visible"
-                    android:ellipsize="end"
-                    android:lineSpacingExtra="@dimen/sp_6"
-                    android:maxLines="2"
                     android:layout_marginLeft="@dimen/dp_16"
                     android:layout_marginBottom="@dimen/dp_8"
+                    android:ellipsize="end"
+                    android:maxLines="2"
+                    android:text="@string/promo_title_category"
                     android:textColor="@color/promo_checkout_catalogtitle_color"
-                    android:text="@string/promo_title_category" />
+                    android:visibility="visible"
+                    app:typographyType="body_3" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recyclerViewLastSeenPromo"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/dp_8"
                     android:clipToPadding="false"
                     android:orientation="horizontal"
+                    android:paddingLeft="@dimen/dp_16"
+                    android:paddingRight="@dimen/dp_16"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                     tools:listitem="@layout/item_last_seen_promo_history" />
             </LinearLayout>
 
             <include
-                android:id="@+id/container_exchnage_coupon"
+                android:id="@+id/container_exchange_coupon"
                 layout="@layout/fragment_list_exchange_coupon"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:visibility="gone" />
 
-            <TextView
-                style="@style/TextView.Micro.BlackSecondary"
+            <com.tokopedia.unifyprinciples.Typography
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/dp_16"
                 android:layout_marginBottom="@dimen/dp_8"
-                android:text="@string/promo_label_my_coupon" />
+                android:text="@string/promo_label_my_coupon"
+                android:textColor="@color/promo_checkout_catalogtitle_color"
+                app:typographyType="body_3" />
 
         </LinearLayout>
 

@@ -23,12 +23,13 @@ import com.tokopedia.cacheapi.domain.interactor.CacheApiWhiteListUseCase;
 import com.tokopedia.cacheapi.util.CacheApiLoggingUtils;
 import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.common.network.util.NetworkClient;
+import com.tokopedia.analyticsdebugger.debugger.FpmLogger;
 import com.tokopedia.core.analytics.container.AppsflyerAnalytics;
 import com.tokopedia.core.analytics.container.GTMAnalytics;
 import com.tokopedia.core.analytics.container.MoengageAnalytics;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
-import com.tokopedia.core.util.GlobalConfig;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.logger.LogManager;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
@@ -40,6 +41,8 @@ import com.tokopedia.sellerapp.utils.CacheApiWhiteList;
 import com.tokopedia.sellerapp.utils.timber.TimberWrapper;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.url.TokopediaUrl;
+import com.github.moduth.blockcanary.BlockCanary;
+import com.github.moduth.blockcanary.BlockCanaryContext;
 
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
@@ -125,11 +128,12 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         com.tokopedia.config.GlobalConfig.DEEPLINK_ACTIVITY_CLASS_NAME = DeepLinkActivity.class.getName();
         try {
             PackageInfo pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
-            com.tokopedia.core.util.GlobalConfig.VERSION_NAME = pInfo.versionName;
+            com.tokopedia.config.GlobalConfig.VERSION_NAME = pInfo.versionName;
             com.tokopedia.config.GlobalConfig.VERSION_NAME = pInfo.versionName;
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
+        FpmLogger.init(this);
         TokopediaUrl.Companion.init(this);
         generateSellerAppNetworkKeys();
 
@@ -155,6 +159,12 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         GraphqlClient.init(this);
         NetworkClient.init(this);
         initializeAbTestVariant();
+
+        initBlockCanary();
+    }
+
+    public void initBlockCanary(){
+        BlockCanary.install(context, new BlockCanaryContext()).start();
     }
 
     @Override

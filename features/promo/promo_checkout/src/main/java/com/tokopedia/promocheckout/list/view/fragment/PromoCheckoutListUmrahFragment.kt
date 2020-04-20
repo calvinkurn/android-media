@@ -27,10 +27,6 @@ open class PromoCheckoutListUmrahFragment : BasePromoCheckoutListFragment(), Pro
         if (promoCode.isNotEmpty()) promoCheckoutListUmrahPresenter.checkPromo(promoCode, totalPrice)
     }
 
-    override fun onClickRedeemCoupon(catalogId: Int?, slug: String?, title: String, creativeName: String, position: Int) {
-
-    }
-
     override fun onSuccessCheckPromo(data: DataUiModel) {
         val intent = Intent()
         val promoData = PromoData(data.isCoupon, textInputCoupon.text.toString(),

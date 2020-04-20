@@ -17,13 +17,43 @@ import com.tokopedia.promocheckout.common.util.mapToStatePromoStackingCheckout
 import com.tokopedia.promocheckout.common.view.uimodel.ResponseGetPromoStackUiModel
 import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView
 import com.tokopedia.promocheckout.list.model.listpromocatalog.ResponseExchangeCoupon
+import com.tokopedia.promocheckout.list.model.listpromolastseen.PromoLastSeenResponse
 import com.tokopedia.usecase.RequestParams
 import rx.Subscriber
+import java.util.HashMap
 
-class PromoCheckoutListMarketplacePresenter(private val checkPromoStackingCodeUseCase: CheckPromoStackingCodeUseCase, val checkPromoStackingCodeMapper: CheckPromoStackingCodeMapper, val getCatalogHighlightUseCase: GraphqlUseCase) : BaseDaggerPresenter<PromoCheckoutListMarketplaceContract.View>(), PromoCheckoutListMarketplaceContract.Presenter {
+class PromoCheckoutListMarketplacePresenter(val graphqlUseCase: GraphqlUseCase,
+                                            private val checkPromoStackingCodeUseCase: CheckPromoStackingCodeUseCase) : BaseDaggerPresenter<PromoCheckoutListMarketplaceContract.View>(), PromoCheckoutListMarketplaceContract.Presenter {
 
     private val paramGlobal = "global"
     private val statusOK = "OK"
+
+    override fun getListLastSeen(serviceId: String, resources: Resources) {
+
+        val variables = HashMap<String, Any>()
+        variables.put(SERVICE_ID, serviceId)
+        val graphqlRequest = GraphqlRequest(GraphqlHelper.loadRawString(resources,
+                R.raw.promo_checkout_last_seen), PromoLastSeenResponse::class.java, variables, false)
+        graphqlUseCase.clearRequest()
+        graphqlUseCase.addRequest(graphqlRequest)
+        graphqlUseCase.execute(RequestParams.create(), object : Subscriber<GraphqlResponse>() {
+            override fun onCompleted() {
+            }
+
+            override fun onError(e: Throwable) {
+                if (isViewAttached) {
+                    view.showGetListLastSeenError(e)
+                }
+            }
+
+            override fun onNext(objects: GraphqlResponse) {
+                val lastSeenPromoData = objects.getData<PromoLastSeenResponse>(PromoLastSeenResponse::class.java)
+                lastSeenPromoData?.let {
+                    view.renderListLastSeen(it.getPromoSuggestion)
+                }
+            }
+        })
+    }
 
     override fun checkPromoStackingCode(promoCode: String, oneClickShipment: Boolean, promo: Promo?) {
         if (promo == null) return
@@ -101,9 +131,9 @@ class PromoCheckoutListMarketplacePresenter(private val checkPromoStackingCodeUs
         view.showProgressBar()
         val graphqlRequest = GraphqlRequest(GraphqlHelper.loadRawString(resources,
                 R.raw.promo_checkout_exchange_coupon), ResponseExchangeCoupon::class.java, null, false)
-        getCatalogHighlightUseCase.clearRequest()
-        getCatalogHighlightUseCase.addRequest(graphqlRequest)
-        getCatalogHighlightUseCase.execute(RequestParams.create(), object : Subscriber<GraphqlResponse>() {
+        graphqlUseCase.clearRequest()
+        graphqlUseCase.addRequest(graphqlRequest)
+        graphqlUseCase.execute(RequestParams.create(), object : Subscriber<GraphqlResponse>() {
             override fun onCompleted() {
                 view.hideProgressBar()
             }
@@ -126,7 +156,11 @@ class PromoCheckoutListMarketplacePresenter(private val checkPromoStackingCodeUs
 
     override fun detachView() {
         checkPromoStackingCodeUseCase.unsubscribe()
-        getCatalogHighlightUseCase.unsubscribe()
+        graphqlUseCase.unsubscribe()
         super.detachView()
+    }
+
+    companion object {
+        const val SERVICE_ID = "serviceID"
     }
 }

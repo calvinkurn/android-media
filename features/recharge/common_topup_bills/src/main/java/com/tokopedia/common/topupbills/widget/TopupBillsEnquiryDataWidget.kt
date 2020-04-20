@@ -30,11 +30,13 @@ class TopupBillsEnquiryDataWidget @JvmOverloads constructor(@NotNull context: Co
 
     var enquiryData: TopupBillsEnquiry = TopupBillsEnquiry()
     set(value) {
-        field = value
-        with (rv_enquiry_data.adapter as TopupBillsEnquiryDataAdapter) {
-            items = value.attributes.mainInfoList
-            setupDecoration(value.attributes.mainInfoList)
-            notifyDataSetChanged()
+        value.attributes?.run {
+            field = value
+            with(rv_enquiry_data.adapter as TopupBillsEnquiryDataAdapter) {
+                items = mainInfoList
+                setupDecoration(mainInfoList)
+                notifyDataSetChanged()
+            }
         }
     }
     var title: String = ""
@@ -46,9 +48,11 @@ class TopupBillsEnquiryDataWidget @JvmOverloads constructor(@NotNull context: Co
     init {
         View.inflate(context, R.layout.view_widget_enquiry_data, this)
 
-        val enquiryDataItems = enquiryData.attributes.mainInfoList
-        rv_enquiry_data.adapter = TopupBillsEnquiryDataAdapter(enquiryDataItems)
-        setupDecoration(enquiryDataItems)
+        enquiryData.attributes?.run {
+            val enquiryDataItems = mainInfoList
+            rv_enquiry_data.adapter = TopupBillsEnquiryDataAdapter(enquiryDataItems)
+            setupDecoration(enquiryDataItems)
+        }
     }
 
     private fun setupDecoration(data: List<TopupBillsEnquiryMainInfo>) {

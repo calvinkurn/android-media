@@ -1,6 +1,5 @@
 package com.tokopedia.core.base.domain;
 
-import rx.Observable;
 import rx.Subscriber;
 
 /**
@@ -15,5 +14,4 @@ public interface Interactor<T> {
 
     void execute(RequestParams requestParams,Subscriber<T> subscriber);
 
-    Observable<T> getExecuteObservable(RequestParams requestParams);
 }

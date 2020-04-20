@@ -24,7 +24,7 @@ class DigitalHomePageNewUserZoneViewHolder(itemView: View?, val onItemBindListen
                     itemView.digital_homepage_new_user_zone_shimmering.hide()
                     itemView.digital_homepage_new_user_zone_container.show()
                     ImageHandler.loadImageWithoutFit(itemView.context, itemView.digital_homepage_new_user_zone_image, items[0].mediaUrl)
-                    onItemBindListener.onSectionItemImpression(items, NEW_USER_IMPRESSION, true)
+                    onItemBindListener.onSectionItemImpression(items, NEW_USER_IMPRESSION)
                     itemView.setOnClickListener { onItemBindListener.onSectionItemClicked(items[0], adapterPosition, NEW_USER_BANNER_CLICK) }
                 }
             } else {
@@ -34,7 +34,6 @@ class DigitalHomePageNewUserZoneViewHolder(itemView: View?, val onItemBindListen
         } else {
             itemView.digital_homepage_new_user_zone_shimmering.show()
             itemView.digital_homepage_new_user_zone_container.hide()
-            onItemBindListener.onNewUserZoneItemDigitalBind(element.isLoadFromCloud)
         }
     }
 

@@ -36,6 +36,10 @@ public class SearchProductModel {
     @Expose
     private GlobalNavModel globalNavModel = new GlobalNavModel();
 
+    @SerializedName("searchInspirationCarousel")
+    @Expose
+    private SearchInspirationCarousel searchInspirationCarousel = new SearchInspirationCarousel();
+
     public CpmModel getCpmModel() {
         return cpmModel;
     }
@@ -66,6 +70,10 @@ public class SearchProductModel {
 
     public GlobalNavModel getGlobalNavModel() {
         return globalNavModel;
+    }
+
+    public SearchInspirationCarousel getSearchInspirationCarousel() {
+        return searchInspirationCarousel;
     }
 
     public static class SearchProduct {
@@ -367,25 +375,25 @@ public class SearchProductModel {
 
         @SerializedName("currentKeyword")
         @Expose
-        private String currentKeyword;
+        private String currentKeyword = "";
         @SerializedName("suggestion")
         @Expose
-        private String suggestion;
+        private String suggestion = "";
         @SerializedName("suggestionCount")
         @Expose
-        private int suggestionCount;
+        private int suggestionCount = 0;
         @SerializedName("instead")
         @Expose
-        private String instead;
+        private String instead = "";
         @SerializedName("insteadCount")
         @Expose
-        private int insteadCount;
+        private int insteadCount = 0;
         @SerializedName("text")
         @Expose
-        private String text;
+        private String text = "";
         @SerializedName("query")
         @Expose
-        private String query;
+        private String query = "";
 
         public String getCurrentKeyword() {
             return currentKeyword;
@@ -487,6 +495,9 @@ public class SearchProductModel {
         @SerializedName("is_featured")
         @Expose
         private int isFeatured;
+        @SerializedName("rating_average")
+        @Expose
+        private String ratingAverage = "";
         @SerializedName("rating")
         @Expose
         private int rating;
@@ -526,6 +537,9 @@ public class SearchProductModel {
         @SerializedName("free_ongkir")
         @Expose
         private FreeOngkir freeOngkir = new FreeOngkir();
+        @SerializedName("booster_list")
+        @Expose
+        private String boosterList = "";
 
         public String getId() {
             return id;
@@ -607,6 +621,10 @@ public class SearchProductModel {
             return isFeatured;
         }
 
+        public String getRatingAverage() {
+            return ratingAverage;
+        }
+
         public int getRating() {
             return rating;
         }
@@ -669,6 +687,10 @@ public class SearchProductModel {
 
         public FreeOngkir getFreeOngkir() {
             return freeOngkir;
+        }
+
+        public String getBoosterList() {
+            return boosterList;
         }
     }
 
@@ -886,10 +908,15 @@ public class SearchProductModel {
         @SerializedName("see_all_url")
         private String seeAllUrl = "";
 
+        @SerializedName("show_topads")
+        private boolean isShowTopAds = false;
+
         @SerializedName("list")
         private List<GlobalNavItem> globalNavItems = new ArrayList<>();
 
-        public String getSource() { return source; }
+        public String getSource() {
+            return source;
+        }
 
         public String getTitle() {
             return title;
@@ -903,7 +930,9 @@ public class SearchProductModel {
             return navTemplate;
         }
 
-        public String getBackground() { return background; }
+        public String getBackground() {
+            return background;
+        }
 
         public String getSeeAllApplink() {
             return seeAllApplink;
@@ -911,6 +940,10 @@ public class SearchProductModel {
 
         public String getSeeAllUrl() {
             return seeAllUrl;
+        }
+
+        public boolean getIsShowTopAds() {
+            return isShowTopAds;
         }
 
         public List<GlobalNavItem> getGlobalNavItems() {
@@ -987,6 +1020,147 @@ public class SearchProductModel {
 
         public String getLogoUrl() {
             return logoUrl;
+        }
+    }
+
+    public static class SearchInspirationCarousel {
+        @SerializedName("data")
+        private List<InspirationCarouselData> data = new ArrayList<>();
+
+        public List<InspirationCarouselData> getData() {
+            return data;
+        }
+    }
+
+    public static class InspirationCarouselData {
+        @SerializedName("title")
+        private String title = "";
+
+        @SerializedName("type")
+        private String type = "";
+
+        @SerializedName("position")
+        private int position = 0;
+
+        @SerializedName("options")
+        private List<InspirationCarouselOption> inspirationCarouselOptions = new ArrayList<>();
+
+        public String getTitle() {
+            return title;
+        }
+
+        public String getType() {
+            return type;
+        }
+
+        public int getPosition() {
+            return position;
+        }
+
+        public List<InspirationCarouselOption> getInspirationCarouselOptions() {
+            return inspirationCarouselOptions;
+        }
+    }
+
+    public static class InspirationCarouselOption {
+        @SerializedName("title")
+        private String title = "";
+
+        @SerializedName("url")
+        private String url = "";
+
+        @SerializedName("applink")
+        private String applink = "";
+
+        @SerializedName("product")
+        private List<InspirationCarouselProduct> inspirationCarouselProducts = new ArrayList<>();
+
+        public String getTitle() {
+            return title;
+        }
+
+        public String getUrl() {
+            return url;
+        }
+
+        public String getApplink() {
+            return applink;
+        }
+
+        public List<InspirationCarouselProduct> getInspirationCarouselProducts() {
+            return inspirationCarouselProducts;
+        }
+    }
+
+    public static class InspirationCarouselProduct {
+        @SerializedName("id")
+        private String id = "";
+
+        @SerializedName("name")
+        private String name = "";
+
+        @SerializedName("price")
+        private int price = 0;
+
+        @SerializedName("image_url")
+        private String imgUrl = "";
+
+        @SerializedName("price_str")
+        private String priceStr = "";
+
+        @SerializedName("title")
+        private String title = "";
+
+        @SerializedName("rating")
+        private int rating = 0;
+
+        @SerializedName("count_review")
+        private int countReview = 0;
+
+        @SerializedName("url")
+        private String url = "";
+
+        @SerializedName("applink")
+        private String applink = "";
+
+        public String getId() {
+            return id;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public int getPrice() {
+            return price;
+        }
+
+        public String getImgUrl() {
+            return imgUrl;
+        }
+
+        public String getTitle() {
+            return title;
+        }
+
+        public int getRating() {
+            return rating;
+        }
+
+        public int countReview() {
+            return countReview;
+        }
+
+        public String getUrl() {
+            return url;
+        }
+
+        public String getApplink() {
+            return applink;
+        }
+
+        public String getPriceStr() {
+            return priceStr;
         }
     }
 }

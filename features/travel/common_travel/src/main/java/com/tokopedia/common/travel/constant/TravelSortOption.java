@@ -8,16 +8,16 @@ import java.lang.annotation.RetentionPolicy;
 /**
  * Created by nabillasabbaha on 28/08/18.
  */
-@IntDef({
+@IntDef(value = {
         TravelSortOption.NO_PREFERENCE,
+        TravelSortOption.CHEAPEST,
+        TravelSortOption.MOST_EXPENSIVE,
         TravelSortOption.EARLIEST_DEPARTURE,
         TravelSortOption.LATEST_DEPARTURE,
-        TravelSortOption.EARLIEST_ARRIVAL,
-        TravelSortOption.LATEST_ARRIVAL,
         TravelSortOption.SHORTEST_DURATION,
         TravelSortOption.LONGEST_DURATION,
-        TravelSortOption.CHEAPEST,
-        TravelSortOption.MOST_EXPENSIVE})
+        TravelSortOption.EARLIEST_ARRIVAL,
+        TravelSortOption.LATEST_ARRIVAL})
 @Retention(RetentionPolicy.SOURCE)
 public @interface TravelSortOption {
     int NO_PREFERENCE = 0;

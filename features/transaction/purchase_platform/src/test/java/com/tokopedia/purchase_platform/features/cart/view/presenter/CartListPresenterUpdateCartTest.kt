@@ -1,6 +1,7 @@
 package com.tokopedia.purchase_platform.features.cart.view.presenter
 
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
+import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
 import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeUseCase
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.data.api.CartResponseErrorException
@@ -16,6 +17,7 @@ import com.tokopedia.purchase_platform.features.cart.view.CartListPresenter
 import com.tokopedia.purchase_platform.features.cart.view.ICartListView
 import com.tokopedia.purchase_platform.features.cart.view.uimodel.CartItemHolderData
 import com.tokopedia.purchase_platform.features.cart.view.uimodel.CartShopHolderData
+import com.tokopedia.purchase_platform.features.promo.domain.usecase.ValidateUsePromoRevampUseCase
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.seamless_login.domain.usecase.SeamlessLoginUsecase
 import com.tokopedia.user.session.UserSessionInterface
@@ -39,7 +41,8 @@ object CartListPresenterUpdateCartTest : Spek({
     val getCartListSimplifiedUseCase: GetCartListSimplifiedUseCase = mockk()
     val deleteCartListUseCase: DeleteCartUseCase = mockk()
     val updateCartUseCase: UpdateCartUseCase = mockk()
-    val checkPromoStackingCodeUseCase: CheckPromoStackingCodeUseCase = mockk()
+    val updateCartAndValidateUseUseCase: UpdateCartAndValidateUseUseCase = mockk()
+    val validateUsePromoRevampUseCase: ValidateUsePromoRevampUseCase = mockk()
     val compositeSubscription = CompositeSubscription()
     val addWishListUseCase: AddWishListUseCase = mockk()
     val removeWishListUseCase: RemoveWishListUseCase = mockk()
@@ -54,19 +57,22 @@ object CartListPresenterUpdateCartTest : Spek({
     val removeInsuranceProductUsecase: RemoveInsuranceProductUsecase = mockk()
     val updateInsuranceProductDataUsecase: UpdateInsuranceProductDataUsecase = mockk()
     val seamlessLoginUsecase: SeamlessLoginUsecase = mockk()
+    val updateCartCounterUseCase: UpdateCartCounterUseCase = mockk()
     val view: ICartListView = mockk(relaxed = true)
 
     Feature("update cart list") {
 
         val cartListPresenter by memoized {
             CartListPresenter(
-                    getCartListSimplifiedUseCase, deleteCartListUseCase, updateCartUseCase,
-                    checkPromoStackingCodeUseCase, compositeSubscription, addWishListUseCase,
-                    removeWishListUseCase, updateAndReloadCartUseCase, userSessionInterface,
-                    clearCacheAutoApplyStackUseCase, getRecentViewUseCase, getWishlistUseCase,
-                    getRecommendationUseCase, addToCartUseCase, getInsuranceCartUseCase,
-                    removeInsuranceProductUsecase, updateInsuranceProductDataUsecase,
-                    seamlessLoginUsecase, TestSchedulers
+                    getCartListSimplifiedUseCase, deleteCartListUseCase,
+                    updateCartUseCase, compositeSubscription,
+                    addWishListUseCase, removeWishListUseCase, updateAndReloadCartUseCase,
+                    userSessionInterface, clearCacheAutoApplyStackUseCase, getRecentViewUseCase,
+                    getWishlistUseCase, getRecommendationUseCase, addToCartUseCase,
+                    getInsuranceCartUseCase, removeInsuranceProductUsecase,
+                    updateInsuranceProductDataUsecase, seamlessLoginUsecase,
+                    updateCartCounterUseCase, updateCartAndValidateUseUseCase,
+                    validateUsePromoRevampUseCase, TestSchedulers
             )
         }
 
@@ -100,7 +106,7 @@ object CartListPresenterUpdateCartTest : Spek({
             }
 
             When("process to update cart data") {
-                cartListPresenter.processUpdateCartData()
+                cartListPresenter.processUpdateCartData(false)
             }
 
             Then("should render success") {
@@ -140,7 +146,7 @@ object CartListPresenterUpdateCartTest : Spek({
             }
 
             When("process to update cart data") {
-                cartListPresenter.processUpdateCartData()
+                cartListPresenter.processUpdateCartData(false)
             }
 
             Then("should render success with eligible COD") {
@@ -176,7 +182,7 @@ object CartListPresenterUpdateCartTest : Spek({
             }
 
             When("process to update cart data") {
-                cartListPresenter.processUpdateCartData()
+                cartListPresenter.processUpdateCartData(false)
             }
 
             Then("should render success with not eligible COD") {
@@ -201,7 +207,7 @@ object CartListPresenterUpdateCartTest : Spek({
             }
 
             When("process to update cart data") {
-                cartListPresenter.processUpdateCartData()
+                cartListPresenter.processUpdateCartData(false)
             }
 
             Then("should render success with item change state ITEM_CHECKED_ALL_WITHOUT_CHANGES") {
@@ -226,7 +232,7 @@ object CartListPresenterUpdateCartTest : Spek({
             }
 
             When("process to update cart data") {
-                cartListPresenter.processUpdateCartData()
+                cartListPresenter.processUpdateCartData(false)
             }
 
             Then("should render success with item change state ITEM_CHECKED_ALL_WITH_CHANGES") {
@@ -263,7 +269,7 @@ object CartListPresenterUpdateCartTest : Spek({
             }
 
             When("process to update cart data") {
-                cartListPresenter.processUpdateCartData()
+                cartListPresenter.processUpdateCartData(false)
             }
 
             Then("should render success with item change state ITEM_CHECKED_PARTIAL_ITEM") {
@@ -298,7 +304,7 @@ object CartListPresenterUpdateCartTest : Spek({
             }
 
             When("process to update cart data") {
-                cartListPresenter.processUpdateCartData()
+                cartListPresenter.processUpdateCartData(false)
             }
 
             Then("should render success with item change state ITEM_CHECKED_PARTIAL_SHOP") {
@@ -351,7 +357,7 @@ object CartListPresenterUpdateCartTest : Spek({
             }
 
             When("process to update cart data") {
-                cartListPresenter.processUpdateCartData()
+                cartListPresenter.processUpdateCartData(false)
             }
 
             Then("should render success with item change state ITEM_CHECKED_PARTIAL_SHOP_AND_ITEM") {
@@ -373,7 +379,7 @@ object CartListPresenterUpdateCartTest : Spek({
             }
 
             When("process to update cart data") {
-                cartListPresenter.processUpdateCartData()
+                cartListPresenter.processUpdateCartData(false)
             }
 
             Then("should render error") {
@@ -392,7 +398,7 @@ object CartListPresenterUpdateCartTest : Spek({
             }
 
             When("process to update cart data") {
-                cartListPresenter.processUpdateCartData()
+                cartListPresenter.processUpdateCartData(false)
             }
 
             Then("should render error") {

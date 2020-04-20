@@ -21,12 +21,12 @@ import com.tokopedia.logisticcart.shipping.features.shippingduration.di.DaggerSh
 import com.tokopedia.logisticcart.shipping.features.shippingduration.di.ShippingDurationComponent;
 import com.tokopedia.logisticcart.shipping.features.shippingduration.di.ShippingDurationModule;
 import com.tokopedia.logisticcart.shipping.model.CourierItemData;
-import com.tokopedia.logisticcart.shipping.model.LogisticPromoViewModel;
+import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel;
 import com.tokopedia.logisticcart.shipping.model.Product;
 import com.tokopedia.logisticcart.shipping.model.RecipientAddressModel;
 import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData;
-import com.tokopedia.logisticcart.shipping.model.ShippingCourierViewModel;
-import com.tokopedia.logisticcart.shipping.model.ShippingDurationViewModel;
+import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel;
+import com.tokopedia.logisticcart.shipping.model.ShippingDurationUiModel;
 import com.tokopedia.logisticcart.shipping.model.ShippingParam;
 import com.tokopedia.logisticcart.shipping.model.ShopShipment;
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorProductData;
@@ -276,13 +276,13 @@ public class ShippingDurationBottomsheet extends BottomSheets
     }
 
     @Override
-    public void showData(List<ShippingDurationViewModel> shippingDurationViewModelList, LogisticPromoViewModel promoViewModel) {
-        shippingDurationAdapter.setShippingDurationViewModels(shippingDurationViewModelList, promoViewModel, isDisableOrderPrioritas);
+    public void showData(List<ShippingDurationUiModel> shippingDurationUiModelList, LogisticPromoUiModel promoViewModel) {
+        shippingDurationAdapter.setShippingDurationViewModels(shippingDurationUiModelList, promoViewModel, isDisableOrderPrioritas);
         shippingDurationAdapter.initiateShowcase();
         updateHeight();
-        boolean hasCourierPromo = checkHasCourierPromo(shippingDurationViewModelList);
+        boolean hasCourierPromo = checkHasCourierPromo(shippingDurationUiModelList);
         if (hasCourierPromo) {
-            sendAnalyticCourierPromo(shippingDurationViewModelList);
+            sendAnalyticCourierPromo(shippingDurationUiModelList);
         }
         if (promoViewModel != null) {
             mPromoTracker.eventViewPromoLogisticTicker(promoViewModel.getPromoCode());
@@ -292,10 +292,10 @@ public class ShippingDurationBottomsheet extends BottomSheets
         }
     }
 
-    private boolean checkHasCourierPromo(List<ShippingDurationViewModel> shippingDurationViewModelList) {
+    private boolean checkHasCourierPromo(List<ShippingDurationUiModel> shippingDurationUiModelList) {
         boolean hasCourierPromo = false;
-        for (ShippingDurationViewModel shippingDurationViewModel : shippingDurationViewModelList) {
-            if (shippingDurationViewModel.getServiceData().getIsPromo() == 1) {
+        for (ShippingDurationUiModel shippingDurationUiModel : shippingDurationUiModelList) {
+            if (shippingDurationUiModel.getServiceData().getIsPromo() == 1) {
                 hasCourierPromo = true;
                 break;
             }
@@ -303,11 +303,11 @@ public class ShippingDurationBottomsheet extends BottomSheets
         return hasCourierPromo;
     }
 
-    private void sendAnalyticCourierPromo(List<ShippingDurationViewModel> shippingDurationViewModelList) {
-        for (ShippingDurationViewModel shippingDurationViewModel : shippingDurationViewModelList) {
+    private void sendAnalyticCourierPromo(List<ShippingDurationUiModel> shippingDurationUiModelList) {
+        for (ShippingDurationUiModel shippingDurationUiModel : shippingDurationUiModelList) {
             shippingDurationBottomsheetListener.onShowDurationListWithCourierPromo(
-                    shippingDurationViewModel.getServiceData().getIsPromo() == 1,
-                    shippingDurationViewModel.getServiceData().getServiceName()
+                    shippingDurationUiModel.getServiceData().getIsPromo() == 1,
+                    shippingDurationUiModel.getServiceData().getServiceName()
             );
         }
     }
@@ -332,7 +332,7 @@ public class ShippingDurationBottomsheet extends BottomSheets
     }
 
     @Override
-    public void onShippingDurationChoosen(List<ShippingCourierViewModel> shippingCourierViewModels,
+    public void onShippingDurationChoosen(List<ShippingCourierUiModel> shippingCourierUiModels,
                                           int cartPosition, ServiceData serviceData) {
         boolean flagNeedToSetPinpoint = false;
         int selectedServiceId = 0;
@@ -343,27 +343,27 @@ public class ShippingDurationBottomsheet extends BottomSheets
                 selectedServiceId = serviceData.getServiceId();
             }
         } else {
-            for (ShippingCourierViewModel shippingCourierViewModel : shippingCourierViewModels) {
-                shippingCourierViewModel.setSelected(shippingCourierViewModel.getProductData().isRecommend());
-                if (shippingCourierViewModel.getProductData().getError() != null &&
-                        shippingCourierViewModel.getProductData().getError().getErrorMessage() != null &&
-                        shippingCourierViewModel.getProductData().getError().getErrorId() != null &&
-                        shippingCourierViewModel.getProductData().getError().getErrorId().equals(ErrorProductData.ERROR_PINPOINT_NEEDED)) {
+            for (ShippingCourierUiModel shippingCourierUiModel : shippingCourierUiModels) {
+                shippingCourierUiModel.setSelected(shippingCourierUiModel.getProductData().isRecommend());
+                if (shippingCourierUiModel.getProductData().getError() != null &&
+                        shippingCourierUiModel.getProductData().getError().getErrorMessage() != null &&
+                        shippingCourierUiModel.getProductData().getError().getErrorId() != null &&
+                        shippingCourierUiModel.getProductData().getError().getErrorId().equals(ErrorProductData.ERROR_PINPOINT_NEEDED)) {
                     flagNeedToSetPinpoint = true;
-                    selectedServiceId = shippingCourierViewModel.getServiceData().getServiceId();
-                    shippingCourierViewModel.getServiceData().getTexts().setTextRangePrice(
-                            shippingCourierViewModel.getProductData().getError().getErrorMessage());
+                    selectedServiceId = shippingCourierUiModel.getServiceData().getServiceId();
+                    shippingCourierUiModel.getServiceData().getTexts().setTextRangePrice(
+                            shippingCourierUiModel.getProductData().getError().getErrorMessage());
                 }
             }
         }
         if (shippingDurationBottomsheetListener != null) {
-            shippingDurationBottomsheetListener.onShippingDurationChoosen(
-                    shippingCourierViewModels, presenter.getCourierItemData(shippingCourierViewModels),
-                    mRecipientAddress, cartPosition, selectedServiceId, serviceData,
-                    flagNeedToSetPinpoint, true, true);
             try {
+                shippingDurationBottomsheetListener.onShippingDurationChoosen(
+                        shippingCourierUiModels, presenter.getCourierItemData(shippingCourierUiModels),
+                        mRecipientAddress, cartPosition, selectedServiceId, serviceData,
+                        flagNeedToSetPinpoint, true, true);
                 dismiss();
-            } catch (IllegalStateException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
@@ -379,10 +379,10 @@ public class ShippingDurationBottomsheet extends BottomSheets
     }
 
     @Override
-    public void onLogisticPromoClicked(LogisticPromoViewModel data) {
+    public void onLogisticPromoClicked(LogisticPromoUiModel data) {
         mPromoTracker.eventClickPromoLogisticTicker(data.getPromoCode());
         // Project Army
-        ShippingDurationViewModel serviceData = shippingDurationAdapter.getRatesDataFromLogisticPromo(data.getServiceId());
+        ShippingDurationUiModel serviceData = shippingDurationAdapter.getRatesDataFromLogisticPromo(data.getServiceId());
         if (serviceData == null) {
             showErrorPage(getString(R.string.logistic_promo_serviceid_mismatch_message));
             return;
@@ -401,14 +401,18 @@ public class ShippingDurationBottomsheet extends BottomSheets
         courierData.setPromoTitle(data.getTitle());
         courierData.setHideShipperName(data.getHideShipperName());
 
-        shippingDurationBottomsheetListener.onLogisticPromoChosen(
-                serviceData.getShippingCourierViewModelList(), courierData,
-                mRecipientAddress, mCartPosition,
-                serviceData.getServiceData(), false, data.getPromoCode(), data.getServiceId());
+        try {
+            shippingDurationBottomsheetListener.onLogisticPromoChosen(
+                    serviceData.getShippingCourierViewModelList(), courierData,
+                    mRecipientAddress, mCartPosition,
+                    serviceData.getServiceData(), false, data.getPromoCode(), data.getServiceId());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         dismiss();
     }
 
-    private void showPslDialog(LogisticPromoViewModel data) {
+    private void showPslDialog(LogisticPromoUiModel data) {
         Dialog tkpdDialog = new Dialog(getActivity(), Dialog.Type.PROMINANCE);
         tkpdDialog.setTitle(getString(R.string.tkpd_promo_brand));
         tkpdDialog.setDesc(MethodChecker.fromHtml(data.getDialogMsg()));
@@ -419,7 +423,7 @@ public class ShippingDurationBottomsheet extends BottomSheets
             tkpdDialog.dismiss();
         });
         tkpdDialog.setOnOkClickListener(view -> {
-            ShippingDurationViewModel serviceData = shippingDurationAdapter.getRatesDataFromLogisticPromo(data.getServiceId());
+            ShippingDurationUiModel serviceData = shippingDurationAdapter.getRatesDataFromLogisticPromo(data.getServiceId());
             if (serviceData == null) {
                 showErrorPage(getString(R.string.logistic_promo_serviceid_mismatch_message));
                 tkpdDialog.dismiss();

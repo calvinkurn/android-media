@@ -11,6 +11,7 @@ import android.text.Html
 import android.text.SpannableStringBuilder
 import android.text.Spanned
 import android.text.TextUtils
+import android.util.DisplayMetrics
 import android.util.Log
 import com.tokopedia.notifications.model.BaseNotificationModel
 import kotlinx.coroutines.CoroutineScope
@@ -200,6 +201,9 @@ object CMNotificationUtils {
         }
 
     }
+
+    fun getPXtoDP(context: Context, dip: Float) = dip * (context.resources.displayMetrics.densityDpi.toFloat() / DisplayMetrics.DENSITY_DEFAULT)
+
 
     fun getApplicationName(context: Context?): String {
         var appName = ""

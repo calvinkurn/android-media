@@ -69,15 +69,6 @@ public class CommonUtils {
         return UniqueDeviceID;
     }
 
-    public static float DptoPx(Context context, int dp) {
-        return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, context.getResources().getDisplayMetrics());
-    }
-
-    public static Boolean isUrl(String url) {
-        return url.contains("http");
-    }
-
-
     ///////////////////////////////////////////////////////////////////////////////
 
     public static String getDate(long time) {

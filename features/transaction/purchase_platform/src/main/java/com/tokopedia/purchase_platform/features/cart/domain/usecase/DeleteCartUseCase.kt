@@ -4,6 +4,7 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.domain.schedulers.ExecutorSchedulers
+import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
 import com.tokopedia.purchase_platform.features.cart.data.model.request.RemoveCartRequest
 import com.tokopedia.purchase_platform.features.cart.data.model.response.deletecart.DeleteCartGqlResponse
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.DeleteCartData
@@ -18,6 +19,7 @@ import javax.inject.Inject
  */
 
 class DeleteCartUseCase @Inject constructor(private val clearCacheAutoApplyStackUseCase: ClearCacheAutoApplyStackUseCase,
+                                            private val updaterCartCounterUseCase: UpdateCartCounterUseCase,
                                             private val graphqlUseCase: GraphqlUseCase,
                                             private val schedulers: ExecutorSchedulers) : UseCase<DeleteCartData>() {
 
@@ -64,18 +66,20 @@ class DeleteCartUseCase @Inject constructor(private val clearCacheAutoApplyStack
                             .map {
                                 val deleteCartGqlResponse = it.getData<DeleteCartGqlResponse>(DeleteCartGqlResponse::class.java)
                                 val deleteCartData = DeleteCartData()
-                                deleteCartData.isSuccess = deleteCartGqlResponse.deleteCartDataResponse.status == "OK"
-                                deleteCartData.message = if (deleteCartGqlResponse.deleteCartDataResponse.status == "OK") {
-                                    if (deleteCartGqlResponse.deleteCartDataResponse.data?.message?.isNotEmpty() == true) {
-                                        deleteCartGqlResponse.deleteCartDataResponse.data.message[0]
+                                if (deleteCartGqlResponse != null) {
+                                    deleteCartData.isSuccess = deleteCartGqlResponse.deleteCartDataResponse.status == "OK"
+                                    deleteCartData.message = if (deleteCartGqlResponse.deleteCartDataResponse.status == "OK") {
+                                        if (deleteCartGqlResponse.deleteCartDataResponse.data?.message?.isNotEmpty() == true) {
+                                            deleteCartGqlResponse.deleteCartDataResponse.data.message[0]
+                                        } else {
+                                            ""
+                                        }
                                     } else {
-                                        ""
-                                    }
-                                } else {
-                                    if (deleteCartGqlResponse.deleteCartDataResponse.errorMessage.isNotEmpty()) {
-                                        deleteCartGqlResponse.deleteCartDataResponse.errorMessage[0]
-                                    } else {
-                                        ""
+                                        if (deleteCartGqlResponse.deleteCartDataResponse.errorMessage.isNotEmpty()) {
+                                            deleteCartGqlResponse.deleteCartDataResponse.errorMessage[0]
+                                        } else {
+                                            ""
+                                        }
                                     }
                                 }
                                 deleteCartData
@@ -89,6 +93,12 @@ class DeleteCartUseCase @Inject constructor(private val clearCacheAutoApplyStack
                         clearCacheAutoApplyStackUseCase.createObservable(RequestParams.create())
                                 .map { deleteCartData }
                     }
+                }.flatMap { deleteCartData ->
+                    updaterCartCounterUseCase.createObservable(RequestParams.create())
+                            .map {
+                                deleteCartData.cartCounter = it
+                                deleteCartData
+                            }
                 }
                 .subscribeOn(schedulers.io)
                 .observeOn(schedulers.main)

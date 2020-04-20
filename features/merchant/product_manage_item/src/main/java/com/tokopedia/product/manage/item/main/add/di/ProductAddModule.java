@@ -4,7 +4,7 @@ import android.content.Context;
 
 import com.google.gson.JsonArray;
 import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.common.category.data.repository.CategoryRepositoryImpl;
 import com.tokopedia.core.common.category.data.source.CategoryDataSource;

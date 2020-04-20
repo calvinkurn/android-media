@@ -95,6 +95,7 @@ class AddTalkFragment : BaseDaggerFragment(),
         list_template.addItemDecoration(quickReplyItemDecoration)
         send_new_talk.setOnClickListener {
             send_progress.visibility = View.VISIBLE
+            analytics.trackClickSendNewTalk(productId)
             presenter.send(productId, message_talk.text.toString())
         }
     }

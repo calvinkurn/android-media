@@ -15,44 +15,52 @@ class DeferredResourceTask(
         private val resourceDB: ResourceDB
 ) :
         ImageDecodeRunnable.TaskDecodeProperties, ResourceDownloadRunnable.TaskDownloadProperties {
+    var isRequestedFromWorker: Boolean = false
+    private var mDecodeRunnable: Runnable? = null
 
-    private lateinit var mDecodeRunnable: Runnable
     var mDownloadRunnable: Runnable? = null
     private lateinit var mUrl: String
     private val downloadManager by lazy { resourceDownloadManager }
-
     var deferredImageView: WeakReference<DeferredImageView>? = null
+    var deferredTaskCallback: DeferredTaskCallback? = null
 
-    private lateinit var byteArray: ByteArray
+    private var byteArray: ByteArray? = null
 
-    var mThread: Thread? = null
+    private var currentThread: Thread? = null
 
-    private lateinit var bitmap: Bitmap
-
+    private var bitmap: Bitmap? = null
 
     override val mTargetWidth: Int
         get() = deferredImageView?.get()?.width ?: 0
 
+
     override val mTargetHeight: Int
         get() = deferredImageView?.get()?.height ?: 0
 
-
     fun initTask(
             url: String,
-            imageView: DeferredImageView?) {
+            imageView: DeferredImageView?,
+            deferredTaskCallback: DeferredTaskCallback?
+    ) {
         mUrl = url
         deferredImageView =
                 imageView?.let { WeakReference(it) }
+        this.deferredTaskCallback = deferredTaskCallback
     }
 
-    override fun getByteBuffer(): ByteArray = byteArray
 
-    override fun setByteBuffer(byteArray: ByteArray) {
+    override fun getByteBuffer(): ByteArray? = byteArray
+
+    override fun setByteBuffer(byteArray: ByteArray?) {
         this.byteArray = byteArray
     }
 
     override fun setCurrentThread(thread: Thread?) {
-        this.mThread = thread
+        this.currentThread = thread
+    }
+
+    override fun getCurrentThread(): Thread? {
+        return currentThread
     }
 
     override fun setImage(image: Bitmap) {
@@ -60,8 +68,7 @@ class DeferredResourceTask(
     }
 
     fun getBitmap(): Bitmap? {
-        return if (::bitmap.isInitialized) bitmap
-        else null
+        return bitmap
     }
 
     override fun getFileLocationFromDirectory(): File {
@@ -108,18 +115,36 @@ class DeferredResourceTask(
             downloadManager.getContextWrapper().resources.displayMetrics
 
     fun getDecodeRunnable(): Runnable {
-        if (!::mDecodeRunnable.isInitialized)
-            mDecodeRunnable = ImageDecodeRunnable(this)
-        return mDecodeRunnable
+        return mDecodeRunnable ?: ImageDecodeRunnable(this)
+    }
+
+    fun interruptDecodeRunnable() {
+        mDecodeRunnable?.let {
+            (mDecodeRunnable as ImageDecodeRunnable).stopDecoding()
+        }
     }
 
     fun getDownloadRunnable(): Runnable {
-        return mDownloadRunnable?: ResourceDownloadRunnable(this, okHttpClient, resourceDB)
+        return mDownloadRunnable ?: ResourceDownloadRunnable(this, okHttpClient, resourceDB)
     }
 
     fun removeDownloadRunnable() {
         mDownloadRunnable = null
     }
 
+    fun recycleTask() {
+        notifyDeferredWorker()
+        byteArray = null
+        mDownloadRunnable = null
+        mDecodeRunnable = null
+        deferredImageView?.clear()
+        deferredTaskCallback = null
+        bitmap = null
+    }
 
+    private fun notifyDeferredWorker() {
+        if (deferredTaskCallback != null) {
+            deferredTaskCallback?.onTaskCompleted(mUrl)
+        }
+    }
 }

@@ -91,6 +91,7 @@ open class TopupBillsSearchNumberFragment : BaseDaggerFragment(),
         searchInputNumber.setListener(this)
         searchInputNumber.setFocusChangeListener(this)
         searchInputNumber.setResetListener(this)
+        searchInputNumber.searchTextView.imeOptions = EditorInfo.IME_ACTION_DONE
 
         numberListAdapter = NumberListAdapter(this, clientNumbers)
         favNumberRecyclerView.layoutManager = LinearLayoutManager(activity)

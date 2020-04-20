@@ -2,10 +2,12 @@ package com.tokopedia.digital.home.di
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.digital.home.domain.GetSortListHomePageUseCase
+import com.tokopedia.digital.home.domain.DigitalHomePageUseCase
 import com.tokopedia.digital.home.domain.SearchCategoryHomePageUseCase
+import com.tokopedia.digital.home.presentation.Util.DigitalHomePageDispatchersProvider
 import com.tokopedia.digital.home.presentation.Util.DigitalHomeTrackingUtil
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
+import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -28,11 +30,17 @@ class DigitalHomePageModule {
 
     @DigitalHomePageScope
     @Provides
-    fun provideMainDispatcher(): CoroutineDispatcher = Dispatchers.Main
+    fun provideDispatcher(): DigitalHomePageDispatchersProvider = DigitalHomePageDispatchersProvider()
 
     @DigitalHomePageScope
     @Provides
-    fun provideGetEmptyVMsUseCase(): GetSortListHomePageUseCase = GetSortListHomePageUseCase()
+    fun provideDigitalHomePageUseCase(multiRequestGraphqlUseCase: MultiRequestGraphqlUseCase): DigitalHomePageUseCase =
+            DigitalHomePageUseCase(multiRequestGraphqlUseCase)
+
+    @DigitalHomePageScope
+    @Provides
+    fun provideMultiRequestGraphqlUseCase(graphqlRepository: GraphqlRepository): MultiRequestGraphqlUseCase =
+            MultiRequestGraphqlUseCase(graphqlRepository)
 
     @DigitalHomePageScope
     @Provides

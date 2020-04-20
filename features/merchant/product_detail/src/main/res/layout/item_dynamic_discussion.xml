@@ -5,10 +5,16 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/white"
-    android:paddingTop="@dimen/dp_16"
     android:paddingBottom="@dimen/dp_16"
     android:visibility="gone"
     tools:visibility="visible">
+
+    <View
+        android:id="@+id/discussion_separator"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_8"
+        android:background="@color/grey_separator"
+        app:layout_constraintTop_toTopOf="parent"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/title_latest_talk"
@@ -19,10 +25,11 @@
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_16"
         android:layout_marginEnd="@dimen/dp_16"
+        android:paddingTop="@dimen/dp_16"
         android:textColor="@color/charcoal_grey_88"
         app:typographyType="heading_4"
         app:typographyWeight="bold"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/discussion_separator"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintRight_toRightOf="parent"

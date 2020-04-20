@@ -17,8 +17,8 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.tokopoints.R;
-import com.tokopedia.tokopoints.view.activity.CouponCatalogDetailsActivity;
-import com.tokopedia.tokopoints.view.contract.CatalogPurchaseRedemptionPresenter;
+import com.tokopedia.tokopoints.view.catalogdetail.CouponCatalogDetailsActivity;
+import com.tokopedia.tokopoints.view.cataloglisting.CatalogPurchaseRedemptionPresenter;
 import com.tokopedia.tokopoints.view.model.CatalogsValueEntity;
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil;
 import com.tokopedia.tokopoints.view.util.CommonConstant;
@@ -192,7 +192,7 @@ public class CatalogListCarouselAdapter extends RecyclerView.Adapter<CatalogList
         holder.imgBanner.setOnClickListener(v -> {
             Bundle bundle = new Bundle();
             bundle.putString(CommonConstant.EXTRA_CATALOG_CODE, mItems.get(position).getSlug());
-            holder.imgBanner.getContext().startActivity(CouponCatalogDetailsActivity.getCatalogDetail(holder.imgBanner.getContext(), bundle), bundle);
+            holder.imgBanner.getContext().startActivity(CouponCatalogDetailsActivity.Companion.getCatalogDetail(holder.imgBanner.getContext(), bundle), bundle);
             sendClickEvent(holder.imgBanner.getContext(), item, position);
         });
 

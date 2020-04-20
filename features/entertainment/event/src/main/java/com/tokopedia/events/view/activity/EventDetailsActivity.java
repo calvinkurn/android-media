@@ -28,9 +28,10 @@ import android.widget.TextView;
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.events.EventModuleRouter;
 import com.tokopedia.events.R;
-import com.tokopedia.events.ScanQrCodeRouter;
 import com.tokopedia.events.data.source.EventsUrl;
 import com.tokopedia.events.domain.model.scanticket.ScanResponseInfo;
 import com.tokopedia.events.view.contractor.EventsDetailsContract;
@@ -49,6 +50,7 @@ import at.blogc.android.views.ExpandableTextView;
 public class EventDetailsActivity extends EventBaseActivity implements
         EventsDetailsContract.EventDetailsView, View.OnClickListener {
 
+    public static final String PARAM_NEED_RESULT = "1";
     public static final String SCREEN_NAME = "digital/events/detail";
 
     private ImageView eventDetailBanner;
@@ -137,7 +139,7 @@ public class EventDetailsActivity extends EventBaseActivity implements
         appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
             @Override
             public void onOffsetChanged(AppBarLayout appBarLayout, int offset) {
-                Drawable upArrow = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_arrow_back_white, null);
+                Drawable upArrow = ResourcesCompat.getDrawable(getResources(), com.tokopedia.events.R.drawable.events_ic_arrow_back_white, null);
                 if (offset < -200) {
                     upArrow.setColorFilter(Color.parseColor("#000000"), PorterDuff.Mode.SRC_ATOP);
                     getSupportActionBar().setHomeAsUpIndicator(upArrow);
@@ -206,8 +208,9 @@ public class EventDetailsActivity extends EventBaseActivity implements
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_scan_qr_code) {
-            startActivityForResult(((ScanQrCodeRouter) this.getApplicationContext())
-                    .gotoQrScannerPage(true), CODE);
+            Intent intent = RouteManager.getIntent(this, ApplinkConstInternalMarketplace.QR_SCANNEER, PARAM_NEED_RESULT);
+            startActivityForResult(intent, CODE);
+
             return true;
         }
         eventsDetailsPresenter.onClickOptionMenu(item.getItemId());

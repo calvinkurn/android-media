@@ -1,6 +1,6 @@
 package com.tokopedia.play.domain
 
-import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
@@ -13,17 +13,14 @@ import javax.inject.Inject
  * Created by mzennis on 2019-12-03.
  */
 
-class GetTotalLikeUseCase @Inject constructor(private val gqlUseCase: MultiRequestGraphqlUseCase) : UseCase<TotalLike>() {
+class GetTotalLikeUseCase @Inject constructor(private val gqlUseCase: GraphqlRepository) : UseCase<TotalLike>() {
 
     var params: HashMap<String, Any> = HashMap()
 
     override suspend fun executeOnBackground(): TotalLike {
         val gqlRequest = GraphqlRequest(query, TotalLikeContent.Response::class.java, params)
-        gqlUseCase.addRequest(gqlRequest)
-        gqlUseCase.setCacheStrategy(GraphqlCacheStrategy
+        val gqlResponse = gqlUseCase.getReseponse(listOf(gqlRequest), GraphqlCacheStrategy
                 .Builder(CacheType.ALWAYS_CLOUD).build())
-
-        val gqlResponse = gqlUseCase.executeOnBackground()
         val response = gqlResponse.getData<TotalLikeContent.Response>(TotalLikeContent.Response::class.java)
 
         if (response != null &&
@@ -66,11 +63,11 @@ class GetTotalLikeUseCase @Inject constructor(private val gqlUseCase: MultiReque
             """.trimIndent()
         }
 
-        fun createParam(contentId: Int, contentType: Int, isLive: Boolean): HashMap<String, Any> {
+        fun createParam(contentId: Int, contentType: Int, likeType: Int): HashMap<String, Any> {
             return hashMapOf(
                     CONTENT_ID to contentId.toString(),
                     CONTENT_TYPE to contentType,
-                    LIKE_TYPE to if(isLive) 1 else 2
+                    LIKE_TYPE to likeType
             )
         }
     }

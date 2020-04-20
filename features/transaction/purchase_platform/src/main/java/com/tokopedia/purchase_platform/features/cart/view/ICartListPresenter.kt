@@ -3,7 +3,6 @@ package com.tokopedia.purchase_platform.features.cart.view
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.promocheckout.common.data.entity.request.Promo
 import com.tokopedia.promocheckout.common.view.model.PromoStackingData
-import com.tokopedia.promocheckout.common.view.uimodel.ClashingVoucherOrderUiModel
 import com.tokopedia.purchase_platform.common.data.model.response.insurance.entity.request.UpdateInsuranceProductApplicationDetails
 import com.tokopedia.purchase_platform.common.data.model.response.macro_insurance.InsuranceCartDigitalProduct
 import com.tokopedia.purchase_platform.common.data.model.response.macro_insurance.InsuranceCartShops
@@ -14,6 +13,8 @@ import com.tokopedia.purchase_platform.features.cart.view.uimodel.CartRecentView
 import com.tokopedia.purchase_platform.features.cart.view.uimodel.CartRecommendationItemHolderData
 import com.tokopedia.purchase_platform.features.cart.view.uimodel.CartShopHolderData
 import com.tokopedia.purchase_platform.features.cart.view.uimodel.CartWishlistItemHolderData
+import com.tokopedia.purchase_platform.features.promo.data.request.validate_use.ValidateUsePromoRequest
+import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.validate_use.ValidateUsePromoRevampUiModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.wishlist.common.listener.WishListActionListener
 import java.util.*
@@ -36,25 +37,17 @@ interface ICartListPresenter {
 
     fun processDeleteCartItem(allCartItemData: List<CartItemData>, removedCartItems: List<CartItemData>, appliedPromoCodeList: ArrayList<String>?, addWishList: Boolean, removeInsurance: Boolean)
 
-    fun processUpdateCartData()
-
-    fun processUpdateCartDataPromoMerchant(cartItemDataList: List<CartItemData>, shopGroupAvailableData: ShopGroupAvailableData)
-
-    fun processUpdateCartDataPromoGlobal(cartItemDataList: List<CartItemData>, promoStackingData: PromoStackingData, goToDetail: Int)
+    fun processUpdateCartData(fireAndForget: Boolean)
 
     fun processToUpdateAndReloadCartData(cartId: String)
 
+    fun processUpdateCartCounter()
+
     fun reCalculateSubTotal(dataList: List<CartShopHolderData>, insuranceCartShopsArrayList: ArrayList<InsuranceCartShops>)
 
-    fun processCancelAutoApplyPromoStack(shopIndex: Int, promoCodeList: ArrayList<String>, ignoreAPIResponse: Boolean)
+    fun generateDeleteCartDataAnalytics(cartItemDataList: List<CartItemData>): Map<String, Any>
 
-    fun processCancelAutoApplyPromoStackAfterClash(promoStackingGlobalData: PromoStackingData, oldPromoList: ArrayList<String>, newPromoList: ArrayList<ClashingVoucherOrderUiModel>, type: String)
-
-    fun processApplyPromoStackAfterClash(promoStackingGlobalData: PromoStackingData, newPromoList: ArrayList<ClashingVoucherOrderUiModel>, type: String)
-
-    fun generateCartDataAnalytics(cartItemDataList: List<CartItemData>, enhancedECommerceAction: String): Map<String, Any>
-
-    fun generateRecommendationDataAnalytics(cartRecommendationItemHolderDataList: List<CartRecommendationItemHolderData>, isEmptyCart: Boolean): Map<String, Any>
+    fun generateRecommendationImpressionDataAnalytics(cartRecommendationItemHolderDataList: List<CartRecommendationItemHolderData>, isEmptyCart: Boolean): Map<String, Any>
 
     fun generateRecommendationDataOnClickAnalytics(recommendationItem: RecommendationItem, isEmptyCart: Boolean, position: Int): Map<String, Any>
 
@@ -80,7 +73,7 @@ interface ICartListPresenter {
 
     fun dataHasChanged(): Boolean
 
-    fun processGetRecentViewData()
+    fun processGetRecentViewData(allProductIds: List<String>)
 
     fun processGetWishlistData()
 
@@ -106,5 +99,21 @@ interface ICartListPresenter {
 
     fun redirectToLite(url: String)
 
-    fun generateCheckPromoFirstStepParam(promoStackingGlobalData: PromoStackingData): Promo
+    fun doUpdateCartForPromo()
+
+    fun doValidateUse(promoRequest: ValidateUsePromoRequest)
+
+    fun doUpdateCartAndValidateUse(promoRequest: ValidateUsePromoRequest)
+
+    fun doClearRedPromosBeforeGoToCheckout(promoCodeList: ArrayList<String>)
+
+    fun getValidateUseLastResponse(): ValidateUsePromoRevampUiModel?
+
+    fun setValidateUseLastResponse(response: ValidateUsePromoRevampUiModel?)
+
+    fun isLastApplyValid(): Boolean
+
+    fun setLastApplyNotValid()
+
+    fun setLastApplyValid()
 }
