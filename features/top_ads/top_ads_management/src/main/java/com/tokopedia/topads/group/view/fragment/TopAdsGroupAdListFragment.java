@@ -9,6 +9,8 @@ import android.view.View;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory;
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalTopAds;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.datepicker.range.view.constant.DatePickerConstant;
@@ -44,6 +46,7 @@ public class TopAdsGroupAdListFragment extends TopAdsBaseListFragment<GroupAd, B
         TopAdsGroupAdListPresenter> implements TopAdsGroupAdListView {
 
     @Inject TopAdsGroupAdListPresenter presenter;
+    private GroupAd ad ;
 
     @Override
     protected void initInjector() {
@@ -217,11 +220,11 @@ public class TopAdsGroupAdListFragment extends TopAdsBaseListFragment<GroupAd, B
 
     @Override
     public void onClickMore(final GroupAd ad) {
+        this.ad = ad;
         showBottomsheetOptionMore(ad.getName(), R.menu.menu_top_ads_group_bottomsheet,
                 getOptionMoreBottomSheetItemClickListener(Collections.nCopies(1, ad.getId())));
     }
 
-    @Override
     public TopAdsMenuBottomSheets.OnMenuItemSelected getOptionMoreBottomSheetItemClickListener(final List<String> ids){
         return new TopAdsMenuBottomSheets.OnMenuItemSelected() {
             @Override
@@ -232,8 +235,19 @@ public class TopAdsGroupAdListFragment extends TopAdsBaseListFragment<GroupAd, B
                     presenter.setGroupInactive(ids);
                 } else if (itemId == R.id.delete) {
                     deleteBulkAction(ids);
+                } else if(itemId == R.id.edit){
+                    editGroup(ids);
+
                 }
             }
         };
+    }
+
+    private void editGroup(List<String> ids) {
+        Bundle bundle = new Bundle();
+        bundle.putString("groupId",ids.get(0));
+        bundle.putString("groupName",ad.getName());
+        bundle.putString("status",ad.getStatusDesc());
+        RouteManager.route(getContext(),bundle, ApplinkConstInternalTopAds.TOPADS_EDIT_ADS);
     }
 }

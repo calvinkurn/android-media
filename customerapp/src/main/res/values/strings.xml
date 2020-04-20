@@ -174,4 +174,9 @@
     <string name="saldo_webview_title">Tokopedia</string>
   
     <string name="title_logout" translatable="false">logout</string>
+
+    <string name="create_group">Buat Group Iklan</string>
+    <string name="creat_ad">Buat Iklan Produk</string>
+    <string name="filter_expand_activity">Expand</string>
+
 </resources>

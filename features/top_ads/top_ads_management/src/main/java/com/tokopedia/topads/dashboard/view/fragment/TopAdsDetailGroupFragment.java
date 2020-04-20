@@ -10,6 +10,8 @@ import android.view.View;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalTopAds;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.datepicker.range.view.constant.DatePickerConstant;
@@ -22,7 +24,6 @@ import com.tokopedia.topads.dashboard.data.model.data.BulkAction;
 import com.tokopedia.topads.dashboard.data.model.data.GroupAd;
 import com.tokopedia.topads.dashboard.data.model.data.GroupAdBulkAction;
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsGroupAdInteractorImpl;
-import com.tokopedia.topads.dashboard.view.activity.TopAdsEditGroupMainPageActivity;
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDetailGroupPresenter;
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDetailGroupViewPresenterImpl;
 import com.tokopedia.topads.product.view.activity.TopAdsProductAdListActivity;
@@ -109,8 +110,19 @@ public class TopAdsDetailGroupFragment extends TopAdsDetailStatisticFragment<Top
 
     @Override
     protected void editAd() {
-        Intent intent = TopAdsEditGroupMainPageActivity.createIntent(getActivity(), null, ad.getId(), isForceRefresh);
-        startActivityForResult(intent, REQUEST_CODE_AD_EDIT);
+
+        //start the flow of top ads edit
+        Bundle bundle = new Bundle();
+        bundle.putString("groupId",ad.getId());
+        bundle.putString("groupName",ad.getName());
+        bundle.putString("status",ad.getStatusDesc());
+        RouteManager.route(getContext(),bundle, ApplinkConstInternalTopAds.TOPADS_EDIT_ADS);
+//        startActivity(new Intent(getContext(),EditFormAdActivity.class));
+//        RouteManager.route(getContext(), ApplinkConstInternalTopAds.TOPADS_AUTOADS_CREATE);
+//
+//
+//        Intent intent = TopAdsEditGroupMainPageActivity.createIntent(getActivity(), null, ad.getId(), isForceRefresh);
+//        startActivityForResult(intent, REQUEST_CODE_AD_EDIT);
     }
 
     @Override

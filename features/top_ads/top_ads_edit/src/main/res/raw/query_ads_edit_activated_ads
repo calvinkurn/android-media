@@ -1,0 +1,47 @@
+mutation topadsManageGroupAds($input: TopadsManageGroupAdsInput!){
+    topadsManageGroupAds(input: $input){
+            header {
+                process_time
+                total_data
+            }
+            groupResponse {
+                status {
+                    error_code
+                    message
+                }
+                data {
+                    id
+                    resourceUrl
+                }
+                errors {
+                    code
+                    detail
+                    object {
+                        type
+                        text
+                    }
+                    title
+                }
+            }
+            keywordResponse {
+                status {
+                    error_code
+                    message
+                }
+                data {
+                    id
+                    resourceUrl
+                }
+                errors {
+                    code
+                    detail
+                    object {
+                        type
+                        text
+                    }
+                    title
+                }
+            }
+
+    }
+}

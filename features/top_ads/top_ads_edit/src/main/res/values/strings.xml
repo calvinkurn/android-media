@@ -1,0 +1,53 @@
+<resources>
+    <string name="app_name">topAdsEdit</string>
+    <string name="nama_grup_iklan">Nama grup iklan</string>
+    <string name="ketik_nama_group_iklan">Ketik nama grup iklan</string>
+    <string name="atur_biaya">ATUR BIAYA</string>
+    <string name="tidak_dibatasi">Tidak dibatasi</string>
+    <string name="dibatasi">Dibatasi</string>
+    <string name="anggaran_harian">Anggaran harian</string>
+    <string name="simpan">Simpan</string>
+    <string name="keluar">Keluar</string>
+    <string name="sudah_diiklankan">Sudah Diiklankan</string>
+    <string name="belum_diiklankan">Belum Diiklankan</string>
+    <string name="cari_produk">Cari Produk</string>
+    <string name="keyword_edit_info_sheet_title_1">Pencarian luas</string>
+    <string name="keyword_edit_info_sheet_desc_1">Pencarian dengan kata kunci luas dapat meningkatkan frekuensi produkmu tampil.</string>
+    <string name="keyword_edit_info_sheet_desc_2">Gunakan pencarian dengan kata kunci spesifik untuk beriklan lebih efektif dan produkmu lebih mudah ditemukan pembeli.</string>
+    <string name="keyword_edit_info_sheet_title_2">Pencarian Spesifik</string>
+    <string name="info_sheet_title">Tipe Pencarian</string>
+    <string name="ubah_group">Ubah Grup</string>
+    <string name="no_keywords_desc">Tambahkan kata kunci agar produkmu lebih mudah ditemukan pembeli</string>
+    <string name="no_keywords_title">Belum ada kata kunci dipilih</string>
+    <string name="add_keword">Tambah Kata Kunci</string>
+    <string name="kata_kunci">Kata Kunci</string>
+    <string name="kata_kunci_negative_count">%d Kata Kunci Negatif</string>
+    <string name="kata_kunci_neg">Kata Kunci Negatif</string>
+    <!-- SELECT PRODUCT AND KEWORDS !-->
+    <string name="urutkan">Urutkan</string>
+    <string name="harga_terendah">Harga Terendah</string>
+    <string name="harga_tertinggi">Harga Tertinggi</string>
+    <string name="terbaru">Terbaru</string>
+    <string name="terlaris">Terlaris</string>
+    <string name="select_sort">Pencarian Luas</string>
+    <string name="leave_page_conf_dialog_title">Simpan Perubahan?</string>
+    <string name="leave_page_conf_dialog_desc">Kamu sudah mengubah pengaturan grup dan belum simpan perubahanmu</string>
+    <string name="delete_keyword_conf_dialog_title">Hapus Kata Kunci?</string>
+    <string name="delete_keyword_conf_dialog_desc">Apakah kamu yakin untuk menghapus kata kunci Kemeja Batik?</string>
+    <string name="delete_neg_keyword_conf_dialog_title">Hapus Kata Kunci Negatif?</string>
+    <string name="delete_neg_keyword_conf_dialog_desc">Apakah kamu yakin untuk menghapus kata kunci Kemeja Panjang?</string>
+    <string name="ya">Ya</string>
+    <string name="batal">Batal</string>
+    <string name="no_neg_keyword_title">Belum ada kata kunci negatif</string>
+    <string name="no_neg_keyword_desc">Tambahkan kata kunci negatif agar produkmu tidak tampil di hasil pencarian yang tidak relevan</string>
+    <string name="add_negative_keyword">Tambah Kata Kunci Negatif</string>
+    <string name="_0_kata_kunci_dipilih">%d kata kunci dipilih</string>
+    <string name="tambah">Tambah</string>
+    <string name="product_select_label">Pilih Produk</string>
+
+    <string name="ketik_kata_kunci">Ketik kata kunci</string>
+    <string name="duplicate_group_name_error">Nama grup iklan telah digunakan</string>
+    <string name="duplicate_group_name_error_wrong">Nama Grup Anda telah digunakan</string>
+
+
+</resources>
