@@ -13,6 +13,7 @@ import com.tokopedia.kotlin.extensions.view.isVisibleOnTheScreen
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.shop.R
+import com.tokopedia.shop.common.constant.ShopPagePeformanceMonitoringConstant.SHOP_HOME_IMAGE_SLIDER_BANNER_TRACE
 import com.tokopedia.shop.home.view.listener.ShopHomeDisplayWidgetListener
 import com.tokopedia.shop.home.view.model.ShopHomeDisplayWidgetUiModel
 import com.tokopedia.unifycomponents.ImageUnify
@@ -34,8 +35,6 @@ class ShopHomeSliderBannerViewHolder(
         @LayoutRes
         val LAYOUT_RES = R.layout.viewmodel_slider_banner
         const val DURATION_SLIDER_BANNER = 5000L
-        const val SHOP_HOME_IMAGE_SLIDER_BANNER_TRACE = "mp_shop_home_image_slider_banner"
-
     }
 
     private var carouselShopPage: CarouselUnify? = null

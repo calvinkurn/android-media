@@ -29,7 +29,6 @@ class ShopHomeMultipleImageColumnViewHolder(
     companion object {
         @LayoutRes
         val LAYOUT_RES = R.layout.widget_shop_home_multiple_image_column
-        const val SHOP_HOME_IMAGE_MULTIPLE_COLUMN_TRACE = "mp_shop_home_image_multiple_column"
         private const val SPAN_SIZE_SINGLE = 6
         private const val SPAN_SIZE_DOUBLE = 3
         private const val SPAN_SIZE_TRIPLE = 2

@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.shop.R
+import com.tokopedia.shop.common.constant.ShopPagePeformanceMonitoringConstant.SHOP_HOME_IMAGE_SLIDER_SQUARE_TRACE
 import com.tokopedia.shop.home.view.listener.ShopHomeDisplayWidgetListener
 import com.tokopedia.shop.home.view.model.ShopHomeDisplayWidgetUiModel
 import com.tokopedia.unifycomponents.ImageUnify
@@ -24,13 +25,13 @@ class ShopHomeItemSliderSquareViewHolder(
         const val ITEM_WIDTH_RATIO_DIVIDER = 1.8
     }
 
-    private val ivSliderSquare: ImageUnify = itemView.findViewById(R.id.ivSliderSquare)
     var displayWidgetUiModel: ShopHomeDisplayWidgetUiModel? = null
     var parentPosition: Int = 0
+    private val ivSliderSquare: ImageUnify = itemView.findViewById(R.id.ivSliderSquare)
     private var performanceMonitoring: PerformanceMonitoring? = null
 
     fun bind(data: ShopHomeDisplayWidgetUiModel.DisplayWidgetItem) {
-        performanceMonitoring = PerformanceMonitoring.start(ShopHomeSliderSquareViewHolder.SHOP_HOME_IMAGE_SLIDER_SQUARE_TRACE)
+        performanceMonitoring = PerformanceMonitoring.start(SHOP_HOME_IMAGE_SLIDER_SQUARE_TRACE)
         ivSliderSquare.setImageUrl(data.imageUrl, heightRatio = heightRatio)
         ivSliderSquare.onUrlLoaded = {
             performanceMonitoring?.stopTrace() ?: Unit

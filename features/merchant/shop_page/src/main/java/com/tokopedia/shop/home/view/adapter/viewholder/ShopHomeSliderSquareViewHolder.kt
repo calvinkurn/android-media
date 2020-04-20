@@ -30,8 +30,6 @@ class ShopHomeSliderSquareViewHolder(
     companion object {
         @LayoutRes
         val LAYOUT_RES = R.layout.widget_shop_page_home_slider_square
-        const val SHOP_HOME_IMAGE_SLIDER_SQUARE_TRACE = "mp_shop_home_image_slider_square"
-
     }
 
     private val shopHomeSliderSquareAdapter by lazy { ShopHomeSliderSquareAdapter(listener) }
