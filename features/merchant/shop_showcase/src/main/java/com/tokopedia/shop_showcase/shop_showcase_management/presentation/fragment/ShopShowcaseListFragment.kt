@@ -54,6 +54,10 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
         HasComponent<ShopShowcaseManagementComponent> {
 
     companion object {
+//        const val ADD_SHOWCASE_FROM_SHOWCASE_LIST = "ADD_SHOWCASE_FROM_SHOWCASE_LIST"
+//        const val ADD_SHOWCASE_PAGE = "ADD_SHOWCASE_PAGE"
+//        const val REORDER_SHOWCASE_PAGE = "REORDER_SHOWCASE_PAGE"
+
         @JvmStatic
         fun createInstance(shopType: String, shopId: String?, selectedEtalaseId: String?,
                            isShowDefault: Boolean? = false, isShowZeroProduct: Boolean? = false,
@@ -102,7 +106,8 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
     private var isMyShop: Boolean = false
     private var shopType = ""
     private var isNeedToGoToAddShowcase = false
-    private var isReorderList = false
+//    private var isNeedToGoToReorderList = false
+    private var routingPage: String = ""
 
 
     override fun getScreenName(): String {
@@ -134,8 +139,10 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
         when (requestCode) {
             REQUEST_CODE_ADD_ETALASE -> {
                 if (resultCode == Activity.RESULT_OK) {
-                    if (isNeedToGoToAddShowcase) {
-                        isNeedToGoToAddShowcase = false
+//                    if (isNeedToGoToAddShowcase) {
+//                        isNeedToGoToAddShowcase = false
+                    if (routingPage == PageType.ADD_SHOWCASE_PAGE) {
+                        routingPage = ""
                         activity?.let {
                             val intent = Intent()
                             it.setResult(Activity.RESULT_OK, intent)
@@ -144,8 +151,10 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
                     }
                 } else if (resultCode == Activity.RESULT_CANCELED) {
                     activity?.let {
-                        if (isNeedToGoToAddShowcase) {
-                            isNeedToGoToAddShowcase = false
+//                        if (isNeedToGoToAddShowcase) {
+//                            isNeedToGoToAddShowcase = false
+                        if (routingPage == PageType.ADD_SHOWCASE_PAGE) {
+                            routingPage = ""
                             val intent = Intent()
                             it.setResult(Activity.RESULT_CANCELED, intent)
                             it.finish()
@@ -173,6 +182,9 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
             isShowZeroProduct = it.getBoolean(ShopShowcaseListParam.EXTRA_IS_SHOW_ZERO_PRODUCT)
             isMyShop = it.getBoolean(ShopShowcaseListParam.EXTRA_IS_MY_SHOP)
             isNeedToGoToAddShowcase = it.getBoolean(ShopShowcaseListParam.EXTRA_IS_NEED_TO_GOTO_ADD_SHOWCASE)
+        }
+        if (isNeedToGoToAddShowcase) {
+            routingPage = PageType.ADD_SHOWCASE_PAGE
         }
         super.onCreate(savedInstanceState)
     }
@@ -212,6 +224,7 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
 
         btnAddEtalase.setOnClickListener {
 //            isNeedToGoToAddShowcase = true
+            routingPage = PageType.ADD_SHOWCASE_FROM_SHOWCASE_LIST
             tracking?.clickTambahEtalase(shopId, shopType)
             checkTotalProduct()
         }
@@ -363,7 +376,9 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
                         if (totalProduct < 1) {
                             showErrorResponse(getString(R.string.error_product_less_than_one))
                         } else if (totalProduct > 0) {
-                            goToAddShowcase()
+                            if (routingPage == PageType.ADD_SHOWCASE_PAGE || routingPage == PageType.ADD_SHOWCASE_FROM_SHOWCASE_LIST) {
+                                goToAddShowcase()
+                            }
                         }
                     }
                 }
@@ -401,7 +416,8 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
     }
 
     private fun loadData() {
-        if (isNeedToGoToAddShowcase && isMyShop) {
+//        if (isNeedToGoToAddShowcase && isMyShop) {
+        if (routingPage == PageType.ADD_SHOWCASE_PAGE && isMyShop) {
             checkTotalProduct()
             Handler().postDelayed({
                 viewModel.getShopShowcaseListAsSeller()
@@ -539,12 +555,6 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
         }
     }
 
-    private fun showSuccessMessage(message: String) {
-        view?.let {
-            Toaster.showNormal(it, message, Snackbar.LENGTH_LONG)
-        }
-    }
-
     private fun showLoadingSwipeToRefresh(isLoading: Boolean){
         if (isLoading) {
             swipeRefreshLayout.isRefreshing = true
@@ -567,6 +577,8 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
             }
             tracking?.clickSusun(shopId, shopType)
 
+//            isNeedToGoToAddShowcase = false
+            routingPage = PageType.REORDER_SHOWCASE_PAGE
             shopShowcaseFragmentNavigation.navigateToPage(
                     PageNameConstant.SHOWCASE_LIST_REORDER_PAGE,
                     null, shopShowcaseViewModelList)
