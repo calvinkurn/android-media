@@ -210,13 +210,9 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
         onFlightSearchFragmentListener = context as OnFlightSearchFragmentListener
     }
 
-    override fun loadInitialData() {
+    override fun loadInitialData() {}
 
-    }
-
-    override fun loadData(page: Int) {
-
-    }
+    override fun loadData(page: Int) {}
 
     override fun renderList(list: MutableList<FlightJourneyModel>) {
         hideLoading()

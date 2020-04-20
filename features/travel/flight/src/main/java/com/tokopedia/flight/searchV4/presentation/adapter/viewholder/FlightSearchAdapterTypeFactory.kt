@@ -8,10 +8,10 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.base.view.adapter.viewholders.ErrorNetworkViewHolder
 import com.tokopedia.common.travel.presentation.adapter.TravelSearchShimmeringViewHolder
 import com.tokopedia.flight.search.presentation.adapter.viewholder.EmptyResultViewHolder
-import com.tokopedia.flight.search.presentation.model.EmptyResultModel
 import com.tokopedia.flight.search.presentation.model.FlightJourneyModel
 import com.tokopedia.flight.search.presentation.model.FlightSearchSeeAllResultModel
 import com.tokopedia.flight.search.presentation.model.FlightSearchSeeOnlyBestPairingModel
+import com.tokopedia.flight.searchV4.presentation.model.EmptyResultModel
 
 /**
  * @author by furqan on 13/04/2020

@@ -9,7 +9,7 @@ import com.google.gson.annotations.SerializedName
 class FlightSearchErrorEntity(
         @SerializedName("id")
         @Expose
-        val id: Int = 0,
+        val id: String = "",
         @SerializedName("status")
         @Expose
         val status: String = "",

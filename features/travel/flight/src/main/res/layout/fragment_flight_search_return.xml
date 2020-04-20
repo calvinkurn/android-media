@@ -23,7 +23,7 @@
         app:layout_constraintTop_toBottomOf="@+id/horizontal_progress_bar" />
 
     <com.tokopedia.unifycomponents.ticker.Ticker
-        android:id="@+id/flight_ticker_view"
+        android:id="@+id/flight_search_ticker"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:visibility="gone"

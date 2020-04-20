@@ -13,17 +13,21 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
+import com.tokopedia.analytics.performance.PerformanceMonitoring
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.common.travel.ticker.TravelTickerUtils
+import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerModel
 import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.flight.FlightComponentInstance
 import com.tokopedia.flight.R
 import com.tokopedia.flight.airport.view.model.FlightAirportModel
+import com.tokopedia.flight.common.constant.FlightErrorConstant
 import com.tokopedia.flight.common.util.FlightAnalytics
 import com.tokopedia.flight.common.util.FlightDateUtil
 import com.tokopedia.flight.dashboard.view.widget.FlightCalendarOneWayWidget
 import com.tokopedia.flight.filter.presentation.FlightFilterFacilityEnum
 import com.tokopedia.flight.filter.presentation.bottomsheets.FlightFilterBottomSheet
 import com.tokopedia.flight.search.presentation.adapter.viewholder.EmptyResultViewHolder
-import com.tokopedia.flight.search.presentation.model.EmptyResultModel
 import com.tokopedia.flight.search.presentation.model.FlightJourneyModel
 import com.tokopedia.flight.search.presentation.model.FlightPriceModel
 import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataModel
@@ -32,18 +36,23 @@ import com.tokopedia.flight.search.presentation.model.filter.TransitEnum
 import com.tokopedia.flight.search.util.FlightSearchCache
 import com.tokopedia.flight.search.util.select
 import com.tokopedia.flight.search.util.unselect
+import com.tokopedia.flight.searchV4.data.FlightSearchThrowable
 import com.tokopedia.flight.searchV4.di.DaggerFlightSearchComponent
 import com.tokopedia.flight.searchV4.di.FlightSearchComponent
 import com.tokopedia.flight.searchV4.presentation.activity.FlightSearchActivity
 import com.tokopedia.flight.searchV4.presentation.activity.FlightSearchReturnActivity.Companion.EXTRA_IS_COMBINE_DONE
 import com.tokopedia.flight.searchV4.presentation.adapter.viewholder.FlightSearchAdapterTypeFactory
+import com.tokopedia.flight.searchV4.presentation.model.EmptyResultModel
 import com.tokopedia.flight.searchV4.presentation.viewmodel.FlightSearchViewModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.*
-import kotlinx.android.synthetic.main.fragment_search_flight.*
+import kotlinx.android.synthetic.main.fragment_flight_search.*
+import kotlinx.android.synthetic.main.fragment_search_flight.horizontal_progress_bar
 import kotlinx.android.synthetic.main.include_flight_quick_filter.*
 import kotlinx.android.synthetic.main.include_flight_search_title_route.*
 import java.util.*
@@ -63,6 +72,9 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
     private lateinit var flightSearchComponent: FlightSearchComponent
 
     private lateinit var coachMarkCache: FlightSearchCache
+    private lateinit var performanceMonitoringP1: PerformanceMonitoring
+    private lateinit var performanceMonitoringP2: PerformanceMonitoring
+    private var isTraceStop = false
 
     private val filterItems = arrayListOf<SortFilterItem>()
 
@@ -71,6 +83,8 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
 
         initViewModels()
         coachMarkCache = FlightSearchCache(requireContext())
+        performanceMonitoringP1 = PerformanceMonitoring.start(FLIGHT_SEARCH_P1_TRACE)
+        performanceMonitoringP2 = PerformanceMonitoring.start(FLIGHT_SEARCH_P2_TRACE)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
@@ -80,7 +94,21 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
         super.onActivityCreated(savedInstanceState)
 
         flightSearchViewModel.journeyList.observe(viewLifecycleOwner, Observer {
-            renderSearchList(it)
+            stopTrace()
+            when (it) {
+                is Success -> renderSearchList(it.data)
+                is Fail -> {
+                    if (it.throwable is FlightSearchThrowable) {
+                        val errors = (it.throwable as FlightSearchThrowable).errorList
+                        for (error in errors) {
+                            if (error.id == FlightErrorConstant.FLIGHT_ROUTE_NOT_FOUND) {
+                                showNoRouteFlightEmptyState(error.title)
+                                break
+                            }
+                        }
+                    }
+                }
+            }
         })
 
         flightSearchViewModel.progress.observe(viewLifecycleOwner, Observer {
@@ -93,6 +121,21 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
                         flightSearchSelectedModel.journeyModel.term,
                         flightSearchSelectedModel.priceModel,
                         flightSearchSelectedModel.journeyModel.isBestPairing)
+            }
+        })
+
+        flightSearchViewModel.tickerData.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Success -> {
+                    if (it.data.message.isNotEmpty()) {
+                        renderTickerView(it.data)
+                    } else {
+                        hideTickerView()
+                    }
+                }
+                is Fail -> {
+                    hideTickerView()
+                }
             }
         })
     }
@@ -137,11 +180,13 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
         updateScrollListenerState(false)
 
         if (isListEmpty && flightSearchViewModel.isDoneLoadData()) {
-
+            adapter.addElement(emptyDataViewModel)
+        } else {
+            isLoadingInitialData = false
         }
 
         if (flightSearchViewModel.isDoneLoadData()) {
-            // stop trace search
+            performanceMonitoringP2.stopTrace()
             if (!coachMarkCache.isSearchCoachMarkShowed()) {
                 (activity as FlightSearchActivity).setupAndShowCoachMark()
             }
@@ -153,6 +198,8 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
     override fun isListEmpty(): Boolean = !adapter.isContainData
 
     override fun onDestroyView() {
+        stopTrace()
+        performanceMonitoringP2.stopTrace()
         super.onDestroyView()
         this.clearFindViewByIdCache()
     }
@@ -192,7 +239,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
 
     override fun getRecyclerViewResourceId(): Int = R.id.recycler_view
 
-    open fun getLayout(): Int = R.layout.fragment_search_flight
+    open fun getLayout(): Int = R.layout.fragment_flight_search
 
     open fun isReturnTrip(): Boolean = false
 
@@ -274,6 +321,25 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
         } else if (!adapter.isContainData) {
             hideQuickFilter()
         }
+    }
+
+    private fun renderTickerView(travelTickerModel: TravelTickerModel) {
+        TravelTickerUtils.buildUnifyTravelTicker(travelTickerModel, flight_search_ticker)
+        if (travelTickerModel.url.isNotEmpty()) {
+            flight_search_ticker.setOnClickListener {
+                RouteManager.route(requireContext(), travelTickerModel.url)
+            }
+        }
+
+        showTickerView()
+    }
+
+    private fun showTickerView() {
+        flight_search_ticker.visibility = View.VISIBLE
+    }
+
+    private fun hideTickerView() {
+        flight_search_ticker.visibility = View.GONE
     }
 
     private fun fetchSortAndFilterData() {
@@ -503,8 +569,8 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
         getString(R.string.flight_search_choose_departure_flight)
     }
 
-    protected fun navigateToTheNextPage(selectedId: String, selectedTerm: String,
-                                        fareModel: FlightPriceModel, isBestPairing: Boolean) {
+    private fun navigateToTheNextPage(selectedId: String, selectedTerm: String,
+                                      fareModel: FlightPriceModel, isBestPairing: Boolean) {
         onFlightSearchFragmentListener?.let {
             it.selectFlight(selectedId, selectedTerm, fareModel,
                     isBestPairing, flightSearchViewModel.isCombineDone,
@@ -527,6 +593,36 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
         flightSearchViewModel.fetchSearchDataCloud(isReturnTrip())
     }
 
+    private fun stopTrace() {
+        if (!isTraceStop) {
+            performanceMonitoringP1.stopTrace()
+            isTraceStop = true
+        }
+    }
+
+    private fun showNoRouteFlightEmptyState(message: String) {
+        adapter.clearAllElements()
+        adapter.addElement(getNoFlightRouteDataModel(message))
+    }
+
+    private fun getNoFlightRouteDataModel(message: String): Visitable<FlightSearchAdapterTypeFactory> {
+        val emptyResultViewModel = EmptyResultModel()
+        emptyResultViewModel.iconRes = R.drawable.ic_flight_empty_state
+        emptyResultViewModel.title = message
+        emptyResultViewModel.buttonTitleRes = R.string.flight_change_search_content_button
+        emptyResultViewModel.callback = object : EmptyResultViewHolder.Callback {
+            override fun onEmptyButtonClicked() {
+                activity?.finish()
+            }
+
+            override fun onEmptyContentItemTextClicked() {
+
+            }
+        }
+
+        return emptyResultViewModel
+    }
+
     interface OnFlightSearchFragmentListener {
         fun selectFlight(selectedFlightID: String, selectedTerm: String, flightPriceModel: FlightPriceModel,
                          isBestPairing: Boolean, isCombineDone: Boolean, requestId: String)
@@ -536,6 +632,8 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
 
     companion object {
         private const val TAG_TRAVEL_CALENDAR = "travel calendar"
+        private const val FLIGHT_SEARCH_P1_TRACE = "tr_flight_search_p1"
+        private const val FLIGHT_SEARCH_P2_TRACE = "tr_flight_search_p2"
 
         private const val HIDE_HORIZONTAL_PROGRESS_DELAY: Long = 500
         private const val FILTER_SORT_ITEM_SIZE = 4
