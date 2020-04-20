@@ -63,12 +63,6 @@ sealed class ScreenStateEvent : ComponentEvent {
      * Room Event
      */
     data class OnNewPlayRoomEvent(val event: PlayRoomEvent) : ScreenStateEvent()
-
-    /**
-     * Orientation
-     */
-    data class VideoPositionOnScreenChanged(val topBounds: Int, val stateHelper: StateHelperUiModel) : ScreenStateEvent()
-
     /**
      * Immersive
      */
