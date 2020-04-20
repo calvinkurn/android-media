@@ -21,7 +21,7 @@ import com.tokopedia.library.baseadapter.AdapterCallback
 import com.tokopedia.library.baseadapter.BaseAdapter
 import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.view.catalogdetail.CouponCatalogDetailsActivity.Companion.getCatalogDetail
-import com.tokopedia.tokopoints.view.contract.CatalogPurchaseRedemptionPresenter
+import com.tokopedia.tokopoints.view.cataloglisting.CatalogPurchaseRedemptionPresenter
 import com.tokopedia.tokopoints.view.model.CatalogListingOuter
 import com.tokopedia.tokopoints.view.model.CatalogsValueEntity
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil

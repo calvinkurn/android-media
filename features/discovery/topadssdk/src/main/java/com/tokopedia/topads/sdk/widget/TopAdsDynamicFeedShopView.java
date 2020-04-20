@@ -105,4 +105,8 @@ public class TopAdsDynamicFeedShopView extends LinearLayout implements LocalAdsC
     public void setImpressionListener(DynamicFeedShopAdapter.TopAdsShopImpressionListener impressionListener) {
         adapter.setItemImpressionListener(impressionListener);
     }
+
+    public void setImpressionListener(DynamicFeedShopAdapter.TopAdsShopImpressionListener impressionListener) {
+        adapter.setItemImpressionListener(impressionListener);
+    }
 }
