@@ -1,8 +1,10 @@
 package com.tokopedia.vouchercreation.voucherlist.view.fragment
 
+import android.graphics.Rect
 import android.os.Bundle
 import android.view.*
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
@@ -60,6 +62,7 @@ class VoucherListFragment : BaseListFragment<BaseVoucherListUiModel, VoucherList
         setHasOptionsMenu(true)
 
         setupView()
+        showDummyData()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -106,11 +109,22 @@ class VoucherListFragment : BaseListFragment<BaseVoucherListUiModel, VoucherList
     }
 
     private fun setupView() = view?.run {
-        showDummyData()
-        headerChipMvc.init()
+        rvVoucherList.addItemDecoration(getMvcItemDecoration())
 
+        headerChipMvc.init()
         headerChipMvc.setOnItemClickListener {
             setOnChipListener(it)
+        }
+    }
+
+    private fun getMvcItemDecoration() = object : RecyclerView.ItemDecoration() {
+
+        override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
+            super.getItemOffsets(outRect, view, parent, state)
+            val position = parent.getChildAdapterPosition(view)
+            if (position == 0) {
+                outRect.top = view.resources.getDimensionPixelSize(R.dimen.mvc_dimen_12dp)
+            }
         }
     }
 

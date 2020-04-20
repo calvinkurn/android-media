@@ -19,11 +19,14 @@ class VoucherListActivity : BaseSimpleActivity() {
         super.onCreate(savedInstanceState)
 
         setupLayout(savedInstanceState)
-        setupView()
+        setupToolbar()
         setWhiteStatusBar()
     }
 
-    private fun setupView() {
+    private fun setupToolbar() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            toolbar.elevation = 0f
+        }
         setSupportActionBar(toolbar)
     }
 
