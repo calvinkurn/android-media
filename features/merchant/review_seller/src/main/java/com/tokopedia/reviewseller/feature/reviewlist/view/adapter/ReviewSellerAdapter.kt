@@ -9,11 +9,11 @@ class ReviewSellerAdapter(
         sellerReviewListTypeFactory: SellerReviewListTypeFactory
 ): BaseListAdapter<Visitable<*>,SellerReviewListTypeFactory>(sellerReviewListTypeFactory), DataEndlessScrollListener.OnDataEndlessScrollListener {
 
-    private var productReviewListViewModel: MutableList<ProductReviewUiModel>? = null
+    private var productReviewListViewModel: MutableList<ProductReviewUiModel> = mutableListOf()
 
     fun setProductListReviewData(productListReviewUiModel: List<ProductReviewUiModel>) {
         val lastIndex = visitables.size
-        productReviewListViewModel?.addAll(productListReviewUiModel)
+        productReviewListViewModel.addAll(productListReviewUiModel)
         visitables.addAll(productListReviewUiModel)
         notifyItemRangeInserted(lastIndex, productListReviewUiModel.size)
     }
@@ -25,7 +25,7 @@ class ReviewSellerAdapter(
     }
 
     override val endlessDataSize: Int
-        get() = productReviewListViewModel?.size ?: 0
+        get() = productReviewListViewModel.size
 
     override fun hideLoading() {
         if (visitables.contains(loadingModel)) {

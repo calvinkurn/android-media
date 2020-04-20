@@ -48,19 +48,20 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_rating_product.*
 import kotlinx.android.synthetic.main.item_search_rating_product.*
-import java.util.*
 import javax.inject.Inject
 
 /**
  * A simple [Fragment] subclass.
  */
 class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTypeFactory>(),
-        ReviewSummaryViewHolder.ReviewSummaryViewListener, SellerReviewListViewHolder.SellerReviewListListener {
+        ReviewSummaryViewHolder.ReviewSummaryViewListener,
+        SellerReviewListViewHolder.SellerReviewListListener {
 
     companion object {
+
+        private const val TAG_COACH_MARK_RATING_PRODUCT = "coachMarkRatingProduct"
         val chipsPaddingRight = 8.toPx()
         val maxChipTextWidth = 116.toPx()
-        private const val TAG_COACH_MARK_RATING_PRODUCT = "coachMarkRatingProduct"
     }
 
     @Inject
@@ -95,6 +96,9 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
 
     private var tabReview: ViewGroup? = null
     private var firstTabItem: View? = null
+
+    var chipsSortText: String? = ""
+    var chipsFilterText: String? = ""
 
     private val coachMark: CoachMark by lazy {
         initCoachMark()
@@ -168,12 +172,11 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
     }
 
     override fun loadInitialData() {
-        reviewSellerAdapter.clearAllElements()
+        clearAllData()
         rvRatingProduct?.visible()
+        appBar_layout_reviewSeller?.hide()
         globalError_reviewSeller?.hide()
         emptyState_reviewProduct?.hide()
-        search_bar_layout?.hide()
-        filter_and_sort_layout?.hide()
         showLoading()
         viewModelListReviewList?.getProductRatingData(viewModelListReviewList?.sortBy.toString(), viewModelListReviewList?.filterBy.toString())
     }
@@ -197,6 +200,7 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
         getRecyclerView(view).let {
             it.clearOnScrollListeners()
             it.layoutManager = linearLayoutManager
+            endlessRecyclerViewScrollListener = createEndlessRecyclerViewListener()
             it.addOnScrollListener(endlessRecyclerViewScrollListener)
         }
     }
@@ -252,15 +256,12 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
 
     private fun onSuccessGetProductRatingOverallData(data: ProductRatingOverallUiModel) {
         reviewSellerAdapter.hideLoading()
-        filter_and_sort_layout?.show()
-        search_bar_layout?.show()
         swipeToRefreshReviewSeller?.isRefreshing = false
         reviewSellerAdapter.setProductRatingOverallData(data)
     }
 
     private fun onErrorGetReviewSellerData(throwable: Throwable) {
         swipeToRefreshReviewSeller?.isRefreshing = false
-        search_bar_layout?.show()
         if (reviewSellerAdapter.endlessDataSize == 0) {
             if (throwable is Exception) {
                 globalError_reviewSeller?.setType(GlobalError.SERVER_ERROR)
@@ -281,13 +282,14 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
 
     private fun onSuccessGetReviewProductListData(hasNextPage: Boolean, reviewProductList: List<ProductReviewUiModel>) {
         reviewSellerAdapter.hideLoading()
+        appBar_layout_reviewSeller?.show()
         swipeToRefreshReviewSeller?.isRefreshing = false
         if (reviewProductList.isEmpty()) {
             emptyState_reviewProduct?.show()
         } else {
             reviewSellerAdapter.setProductListReviewData(reviewProductList)
+            updateScrollListenerState(hasNextPage)
         }
-        updateScrollListenerState(hasNextPage)
     }
 
     fun loadNextPage(page: Int) {
@@ -319,7 +321,6 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
     private fun initCoachMark(): CoachMark {
         val coachMark = CoachMarkBuilder().build()
 
-
         coachMark.setShowCaseStepListener(object : CoachMark.OnShowCaseStepListener {
             override fun onShowCaseGoTo(previousStep: Int, nextStep: Int, coachMarkItem: CoachMarkItem): Boolean {
 
@@ -337,7 +338,6 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
             }
         })
 
-
         coachMark.onFinishListener = {
             viewModelListReviewList?.isCompletedCoachMark = true
             firstTabItem?.setBackgroundColor(Color.TRANSPARENT)
@@ -348,7 +348,6 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
 
 
     override fun onAddedCoachMarkOverallRating(view: View) {
-
         coachMarkTabRatingProduct()
         coachMarkFilterAndSort()
 
@@ -358,14 +357,12 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
                     getString(R.string.average_rating_desc)
             )
         }
-
         prefs?.let {
             if (!it.getBoolean(ReviewSellerConstant.HAS_OVERALL_RATING_PRODUCT, false)) {
                 coachMarkItems.add(coachMarkSummary)
                 it.edit().putBoolean(ReviewSellerConstant.HAS_OVERALL_RATING_PRODUCT, true).apply()
             }
         }
-
         showCoachMark()
     }
 
@@ -379,9 +376,8 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
 
     private fun initChipsSort(view: View) {
         chipsSort = view.findViewById(R.id.review_sort_chips)
-
-        viewModelListReviewList?.chipsSortText = getString(R.string.most_review)
-        chipsSort?.chip_text?.text = viewModelListReviewList?.chipsSortText
+        chipsSortText = getString(R.string.most_review)
+        chipsSort?.chip_text?.text = chipsSortText
         chipsSort?.chip_right_icon?.setPadding(0, 0, chipsPaddingRight, 0)
         chipsSort?.chip_text?.width = maxChipTextWidth
         chipsSort?.chip_text?.ellipsize = TextUtils.TruncateAt.END
@@ -389,6 +385,7 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
         val sortList: Array<String> = resources.getStringArray(R.array.sort_review_product_array)
 
         val sortListItemUnify = SellerReviewProductListMapper.mapToItemUnifyList(sortList)
+
         sortListUnify?.setData(sortListItemUnify)
 
         chipsSort?.apply {
@@ -403,14 +400,13 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
 
     private fun initChipsFilter(view: View) {
         chipsFilter = view.findViewById(R.id.review_period_filter_chips)
-        viewModelListReviewList?.chipsFilterText = getString(R.string.last_week)
-        chipsFilter?.chip_text?.text = viewModelListReviewList?.chipsFilterText
+        chipsFilterText = getString(R.string.last_week)
+        chipsFilter?.chip_text?.text = chipsFilterText
 
         chipsFilter?.chip_right_icon?.setPadding(0, 0, chipsPaddingRight, 0)
         chipsFilter?.chip_text?.ellipsize = TextUtils.TruncateAt.END
 
         val filterList: Array<String> = resources.getStringArray(R.array.filter_review_product_array)
-
         val filterListItemUnify = SellerReviewProductListMapper.mapToItemUnifyList(filterList)
 
         filterListUnify?.setData(filterListItemUnify)
@@ -423,6 +419,29 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
                 initBottomSheetFilter(filterListItemUnify, getString(R.string.title_bottom_sheet_filter))
             }
         }
+    }
+
+    private fun initViewBottomSheet() {
+        val view = View.inflate(context, R.layout.bottom_sheet_sort_rating_product, null)
+        bottomSheetSort = BottomSheetUnify()
+        sortListUnify = view.findViewById(R.id.listSortRatingProduct)
+
+        val viewFilter = View.inflate(context, R.layout.bottom_sheet_filter_rating_product, null)
+        bottomSheetFilter = BottomSheetUnify()
+        filterListUnify = viewFilter.findViewById(R.id.listFilterRatingProduct)
+
+        bottomSheetSort?.setChild(view)
+        bottomSheetFilter?.setChild(viewFilter)
+    }
+
+    private fun onErrorLoadMoreToaster(message: String, action: String) {
+        view?.let { Toaster.make(it, message, actionText = action, type = Toaster.TYPE_ERROR, clickListener = View.OnClickListener {
+            loadInitialData()
+        }) }
+    }
+
+    override fun onItemProductReviewClicked(productId: Int) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     private fun initBottomSheetFilter(filterListItemUnify: ArrayList<ListItemUnify>, title: String) {
@@ -489,11 +508,11 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
                                                filterListUnify: ListUnify) {
         try {
             viewModelListReviewList?.positionFilter = position
-            viewModelListReviewList?.chipsFilterText = filterListItemUnify[position].listTitleText
-            chipsFilter?.chip_text?.text = viewModelListReviewList?.chipsFilterText
+            chipsFilterText = filterListItemUnify[position].listTitleText
+            chipsFilter?.chip_text?.text = chipsFilterText
             ReviewSellerUtil.setSelectedFilterOrSort(filterListUnify, position)
             viewModelListReviewList?.filterBy =
-                    ReviewSellerConstant.mapFilterReviewProduct().getKeyByValue(viewModelListReviewList?.chipsFilterText)
+                    ReviewSellerConstant.mapFilterReviewProduct().getKeyByValue(chipsFilterText)
             loadInitialData()
             bottomSheetFilter?.dismiss()
         } catch (e: Exception) {
@@ -504,36 +523,15 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
     private fun onItemSortClickedBottomSheet(position: Int, sortListItemUnify: ArrayList<ListItemUnify>, sortListUnify: ListUnify) {
         try {
             viewModelListReviewList?.positionSort = position
-            viewModelListReviewList?.chipsSortText = sortListItemUnify[position].listTitleText
-            chipsSort?.chip_text?.text = viewModelListReviewList?.chipsSortText
+            chipsSortText = sortListItemUnify[position].listTitleText
+            chipsSort?.chip_text?.text = chipsSortText
             ReviewSellerUtil.setSelectedFilterOrSort(sortListUnify, position)
             viewModelListReviewList?.sortBy =
-                    ReviewSellerConstant.mapSortReviewProduct().getKeyByValue(viewModelListReviewList?.chipsSortText)
+                    ReviewSellerConstant.mapSortReviewProduct().getKeyByValue(chipsSortText)
             loadInitialData()
             bottomSheetSort?.dismiss()
         } catch (e: Exception) {
             e.printStackTrace()
         }
-    }
-
-    private fun initViewBottomSheet() {
-        val view = View.inflate(context, R.layout.bottom_sheet_sort_rating_product, null)
-        bottomSheetSort = BottomSheetUnify()
-        sortListUnify = view.findViewById(R.id.listSortRatingProduct)
-
-        val viewFilter = View.inflate(context, R.layout.bottom_sheet_filter_rating_product, null)
-        bottomSheetFilter = BottomSheetUnify()
-        filterListUnify = viewFilter.findViewById(R.id.listFilterRatingProduct)
-
-        bottomSheetSort?.setChild(view)
-        bottomSheetFilter?.setChild(viewFilter)
-    }
-
-    private fun onErrorLoadMoreToaster(message: String, action: String) {
-        view?.let { Toaster.make(it, message, actionText = action, type = Toaster.TYPE_ERROR) }
-    }
-
-    override fun onItemProductReviewClicked(productId: Int) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 }
