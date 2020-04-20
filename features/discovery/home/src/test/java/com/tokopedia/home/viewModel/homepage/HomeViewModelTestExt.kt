@@ -42,6 +42,7 @@ fun TestBody.createHomeViewModel(): HomeViewModel{
     val getStickyLoginUseCase by memoized<StickyLoginUseCase>()
     val userSessionInterface by memoized<UserSessionInterface>()
     val sendTopAdsUseCase by memoized<SendTopAdsUseCase>()
+    val closeChannelUseCase by memoized<CloseChannelUseCase>()
     return HomeViewModel(
             dismissHomeReviewUseCase = dismissHomeReviewUseCase,
             getBusinessUnitDataUseCase = getBusinessUnitDataUseCase,
@@ -61,7 +62,8 @@ fun TestBody.createHomeViewModel(): HomeViewModel{
             sendGeolocationInfoUseCase = getSendGeolocationInfoUseCase,
             stickyLoginUseCase = getStickyLoginUseCase,
             getAtcUseCase = getAtcUseCase,
-            userSession = userSessionInterface
+            userSession = userSessionInterface,
+            closeChannelUseCase = closeChannelUseCase
     )
 }
 
@@ -84,6 +86,7 @@ fun FeatureBody.createHomeViewModelTestInstance() {
     val getPopularKeywordUseCase by memoized<GetPopularKeywordUseCase> { mockk(relaxed = true) }
     val getDynamicChannelsUseCase by memoized<GetDynamicChannelsUseCase> { mockk(relaxed = true) }
     val sendTopAdsUseCase by memoized<SendTopAdsUseCase> { mockk(relaxed = true) }
+    val closeChannelUseCase by memoized<CloseChannelUseCase> { mockk(relaxed = true) }
     val homeDataMapper by memoized<HomeDataMapper> { mockk(relaxed = true) }
 }
 

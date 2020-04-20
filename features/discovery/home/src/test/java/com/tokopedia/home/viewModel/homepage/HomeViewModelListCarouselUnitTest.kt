@@ -31,7 +31,7 @@ class HomeViewModelListCarouselUnitTest : Spek({
 
         Scenario("Get dynamic channel data success with single data and try express checkout") {
             val dataModel = DynamicChannelDataModel()
-            dataModel.channel = DynamicHomeChannel.Channels(id = "1", grids = listOf(DynamicHomeChannel.Grid()))
+            dataModel.channel = DynamicHomeChannel.Channels(id = "1", grids = arrayOf(DynamicHomeChannel.Grid()))
             val observerHome: Observer<HomeDataModel> = mockk(relaxed = true)
             val observerExpressCheckout: Observer<Event<Any>> = mockk(relaxed = true)
 
@@ -85,7 +85,7 @@ class HomeViewModelListCarouselUnitTest : Spek({
 
         Scenario("Get dynamic channel data success with single data and fail express checkout") {
             val dataModel = DynamicChannelDataModel()
-            dataModel.channel = DynamicHomeChannel.Channels(id = "1", grids = listOf(DynamicHomeChannel.Grid()))
+            dataModel.channel = DynamicHomeChannel.Channels(id = "1", grids = arrayOf(DynamicHomeChannel.Grid()))
             val observerHome: Observer<HomeDataModel> = mockk(relaxed = true)
             val observerExpressCheckout: Observer<Event<Any>> = mockk(relaxed = true)
 
