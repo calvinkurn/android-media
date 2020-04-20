@@ -4,7 +4,7 @@ import android.content.Context
 import android.os.Bundle
 import android.view.View
 import com.tokopedia.talk.common.TalkConstants.COMMENT_ID
-import com.tokopedia.talk.common.TalkConstants.TALK_ID
+import com.tokopedia.talk.common.TalkConstants.QUESTION_ID
 import com.tokopedia.talk_old.R
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.android.synthetic.main.widget_talk_report_bottom_sheet.*
@@ -13,11 +13,11 @@ class TalkReplyReportBottomSheet : BottomSheetUnify() {
 
     companion object {
 
-        fun createInstance(context: Context, talkId: Int, commentId: Int, onReportClickedListener: OnReportClickedListener) : TalkReplyReportBottomSheet {
+        fun createInstance(context: Context, talkId: String, commentId: Int, onReportClickedListener: OnReportClickedListener) : TalkReplyReportBottomSheet {
             return TalkReplyReportBottomSheet().apply{
                 arguments = Bundle()
                 arguments?.let {
-                    it.putInt(TALK_ID, talkId)
+                    it.putString(QUESTION_ID, talkId)
                     it.putInt(COMMENT_ID, commentId)
                 }
                 this.onReportClickedListener = onReportClickedListener
@@ -45,7 +45,7 @@ class TalkReplyReportBottomSheet : BottomSheetUnify() {
 
     private fun getDataFromArguments() {
         arguments?.let {
-            talkId = it.getInt(TALK_ID)
+            talkId = it.getInt(QUESTION_ID)
             commentId = it.getInt(COMMENT_ID)
         }
     }

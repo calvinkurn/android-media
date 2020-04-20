@@ -4,7 +4,7 @@ import android.content.Context
 import android.os.Bundle
 import android.view.View
 import com.tokopedia.talk.feature.reading.data.mapper.TalkReadingMapper
-import com.tokopedia.talk.feature.reading.presentation.uimodel.SortOption
+import com.tokopedia.talk.feature.reading.data.model.SortOption
 import com.tokopedia.talk_old.R
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.android.synthetic.main.widget_talk_sort_bottomsheet.*

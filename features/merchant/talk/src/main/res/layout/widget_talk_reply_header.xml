@@ -12,7 +12,6 @@
         android:layout_marginStart="@dimen/layout_lvl2"
         android:layout_marginLeft="@dimen/layout_lvl2"
         android:layout_marginTop="@dimen/layout_lvl1"
-        android:text="30 Feb 2020"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="body_3" />
@@ -40,8 +39,8 @@
 
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/replyHeaderFollowButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/dp_104"
+        android:layout_height="@dimen/layout_lvl3"
         android:layout_marginTop="@dimen/layout_lvl2"
         app:unifyButtonVariant="ghost"
         app:layout_constraintStart_toStartOf="@id/replyHeaderDate"
@@ -56,6 +55,7 @@
         android:paddingStart="@dimen/layout_lvl2"
         android:paddingEnd="@dimen/layout_lvl2"
         android:text="@string/reply_header_tnc"
+        app:typographyType="small"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

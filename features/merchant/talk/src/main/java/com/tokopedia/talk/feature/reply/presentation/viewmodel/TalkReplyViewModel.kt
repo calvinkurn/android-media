@@ -5,7 +5,9 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.talk.common.coroutine.CoroutineDispatchers
+import com.tokopedia.talk.feature.reply.data.model.DiscussionDataByQuestionIDResponseWrapper
 import com.tokopedia.talk.feature.reply.data.model.TalkFollowUnfollowTalkResponseWrapper
+import com.tokopedia.talk.feature.reply.domain.usecase.DiscussionDataByQuestionIDUseCase
 import com.tokopedia.talk.feature.reply.domain.usecase.TalkFollowUnfollowTalkUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -14,6 +16,7 @@ import com.tokopedia.usecase.coroutines.Result
 import javax.inject.Inject
 
 class TalkReplyViewModel @Inject constructor(
+        private val discussionDataByQuestionIDUseCase: DiscussionDataByQuestionIDUseCase,
         private val talkFollowUnfollowTalkUseCase: TalkFollowUnfollowTalkUseCase,
         private val dispatchers: CoroutineDispatchers
 ): BaseViewModel(dispatchers.main) {
@@ -21,6 +24,10 @@ class TalkReplyViewModel @Inject constructor(
     private val _followUnfollowResult = MutableLiveData<Result<TalkFollowUnfollowTalkResponseWrapper>>()
     val followUnfollowResult: LiveData<Result<TalkFollowUnfollowTalkResponseWrapper>>
     get() = _followUnfollowResult
+
+    private val _discussionData = MutableLiveData<Result<DiscussionDataByQuestionIDResponseWrapper>>()
+    val discussionData: LiveData<Result<DiscussionDataByQuestionIDResponseWrapper>>
+        get() = _discussionData
 
     private var isFollowing: Boolean = false
 
@@ -33,6 +40,18 @@ class TalkReplyViewModel @Inject constructor(
             _followUnfollowResult.postValue(Success(response))
         }) {
             _followUnfollowResult.postValue(Fail(it))
+        }
+    }
+
+    fun getDiscussionDataByQuestionID(questionId: String, shopId: String){
+        launchCatchError(block = {
+            val response = withContext(dispatchers.io) {
+                discussionDataByQuestionIDUseCase.setParams(questionId, shopId)
+                discussionDataByQuestionIDUseCase.executeOnBackground()
+            }
+            _discussionData.postValue(Success(response))
+        }) {
+            _discussionData.postValue(Fail(it))
         }
     }
 

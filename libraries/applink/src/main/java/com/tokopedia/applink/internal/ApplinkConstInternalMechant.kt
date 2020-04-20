@@ -23,4 +23,8 @@ object ApplinkConstInternalMechant {
     @JvmField
     val BRANDLIST_SEARCH = "${INTERNAL_MERCHANT}/official-store/brand-search"
 
+    // Talk Reply
+    @JvmField
+    val TALK_REPLY = "${INTERNAL_MERCHANT}/talk-reply/{question_id}/{shop_id}/"
+
 }

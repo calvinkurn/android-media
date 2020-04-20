@@ -31,20 +31,20 @@ class GetDiscussionDataUseCase @Inject constructor(graphqlRepository: GraphqlRep
                 hasNext
                 totalQuestion
                 question {
+                  questionID
                   content
                   maskedContent
                   userName
                   userID
                   createTime
                   createTimeFormatted
-                  likeCount
                   state {
                     isMasked
-                    isLiked
-                    allowLike
+                    allowReply
                   }
                   totalAnswer
                   answer {
+                    answerID
                     content
                     userName
                     userThumbnail
@@ -52,6 +52,7 @@ class GetDiscussionDataUseCase @Inject constructor(graphqlRepository: GraphqlRep
                     isSeller
                     createTime
                     createTimeFormatted
+                    likeCount
                     attachedProductCount
                   }
                 }

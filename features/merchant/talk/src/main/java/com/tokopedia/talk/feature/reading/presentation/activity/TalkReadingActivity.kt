@@ -5,7 +5,6 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.talk.common.TalkConstants.NO_SHADOW_ELEVATION
 import com.tokopedia.talk.common.di.DaggerTalkComponent
 import com.tokopedia.talk.common.di.TalkComponent
@@ -17,7 +16,7 @@ class TalkReadingActivity : BaseSimpleActivity(), HasComponent<TalkComponent> {
     private var shopId: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        getProductIdFromAppLink()
+        getDataFromAppLink()
         super.onCreate(savedInstanceState)
         setUpToolBar()
     }
@@ -31,7 +30,7 @@ class TalkReadingActivity : BaseSimpleActivity(), HasComponent<TalkComponent> {
                 (application as BaseMainApplication).baseAppComponent).build()
     }
 
-    private fun getProductIdFromAppLink() {
+    private fun getDataFromAppLink() {
         val uri = intent.data ?: return
         val productIdString = uri.pathSegments[uri.pathSegments.size - 2] ?: return
         if (productIdString.isNotEmpty()) {

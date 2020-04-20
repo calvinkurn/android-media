@@ -12,6 +12,6 @@ class TalkReadingShimmerViewHolder(view: View) : AbstractViewHolder<TalkReadingS
     }
 
     override fun bind(element: TalkReadingShimmerModel) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
     }
 }

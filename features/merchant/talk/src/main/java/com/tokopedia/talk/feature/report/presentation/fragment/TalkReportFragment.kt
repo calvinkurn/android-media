@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.talk.common.TalkConstants.COMMENT_ID
-import com.tokopedia.talk.common.TalkConstants.TALK_ID
+import com.tokopedia.talk.common.TalkConstants.QUESTION_ID
 import com.tokopedia.talk.common.di.TalkComponent
 import com.tokopedia.talk.feature.report.data.mapper.TalkReportMapper
 import com.tokopedia.talk.feature.report.presentation.uimodel.TalkReportUiModel
@@ -28,7 +28,7 @@ class TalkReportFragment : BaseDaggerFragment(), HasComponent<TalkReportComponen
         fun createNewInstance(talkId: Int = 0, commentId: Int = 0): TalkReportFragment =
                 TalkReportFragment().apply {
                     arguments = Bundle()
-                    arguments?.putInt(TALK_ID, talkId)
+                    arguments?.putInt(QUESTION_ID, talkId)
                     arguments?.putInt(COMMENT_ID, commentId)
                 }
     }
@@ -109,7 +109,7 @@ class TalkReportFragment : BaseDaggerFragment(), HasComponent<TalkReportComponen
 
     private fun getDataFromArguments() {
         arguments?.let {
-            talkId = it.getInt(TALK_ID)
+            talkId = it.getInt(QUESTION_ID)
             commentId = it.getInt(COMMENT_ID)
         }
     }

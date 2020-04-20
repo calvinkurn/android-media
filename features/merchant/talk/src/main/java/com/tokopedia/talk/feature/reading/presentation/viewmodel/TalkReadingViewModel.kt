@@ -5,11 +5,11 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.talk.common.coroutine.CoroutineDispatchers
 import com.tokopedia.talk.feature.reading.data.model.DiscussionAggregateResponse
-import com.tokopedia.talk.feature.reading.data.model.DiscussionDataResponse
 import com.tokopedia.talk.feature.reading.data.model.DiscussionDataResponseWrapper
-import com.tokopedia.talk.feature.reading.presentation.uimodel.SortOption
+import com.tokopedia.talk.feature.reading.data.model.SortOption
 import com.tokopedia.talk.feature.reading.domain.usecase.GetDiscussionAggregateUseCase
 import com.tokopedia.talk.feature.reading.domain.usecase.GetDiscussionDataUseCase
+import com.tokopedia.talk.feature.reading.data.model.TalkReadingCategory
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -35,6 +35,10 @@ class TalkReadingViewModel @Inject constructor(
     val discussionData: LiveData<Result<DiscussionDataResponseWrapper>>
     get() = _discussionData
 
+    private val _filterCategories = MutableLiveData<List<TalkReadingCategory>>()
+    val filterCategories: LiveData<List<TalkReadingCategory>>
+    get() = _filterCategories
+
     fun getDiscussionAggregate(productId: String, shopId: String) {
         launchCatchError(block = {
             val response = withContext(dispatcher.io) {
@@ -59,12 +63,35 @@ class TalkReadingViewModel @Inject constructor(
         }
     }
 
+    fun updateCategories(categories: List<TalkReadingCategory>) {
+        _filterCategories.value = categories
+    }
+
+    fun updateSelectedCategory(selectedCategory: String, isSelected: Boolean) {
+        val filterCategories = _filterCategories.value?.toMutableList()
+        val modifiedCategory = filterCategories?.first { selectedCategory.contains(it.displayName) }?.copy(isSelected = isSelected)
+        val index = filterCategories?.indexOfFirst { selectedCategory.contains(it.displayName) }
+        if (index != null && modifiedCategory != null) {
+                filterCategories[index] = modifiedCategory
+        }
+        _filterCategories.value = filterCategories
+    }
+
+    fun unselectAllCategories() {
+        val filterCategories = _filterCategories.value?.toMutableList()
+        val updatedCategories = mutableListOf<TalkReadingCategory>()
+        filterCategories?.forEachIndexed { index, talkReadingCategory ->
+            updatedCategories.add(index, talkReadingCategory.copy(isSelected = false))
+        }
+        _filterCategories.value = updatedCategories
+    }
+
     fun updateSortOptions(sortOptions: List<SortOption>) {
         _sortOptions.value = sortOptions
     }
 
     fun updateSelectedSort(sortOption: SortOption) {
-        val sortOptions = _sortOptions.value
+        val sortOptions = _sortOptions.value?.toMutableList()
         sortOptions?.forEach {
             it.isSelected = it.id == sortOption.id
         }

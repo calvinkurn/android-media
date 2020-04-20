@@ -1,4 +1,4 @@
-package com.tokopedia.talk.feature.reading.data.model
+package com.tokopedia.talk.feature.reply.data.model
 
 import com.google.gson.annotations.SerializedName
 

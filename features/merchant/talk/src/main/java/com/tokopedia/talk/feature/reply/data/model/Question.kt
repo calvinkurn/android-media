@@ -1,4 +1,4 @@
-package com.tokopedia.talk.feature.reading.data.model
+package com.tokopedia.talk.feature.reply.data.model
 
 import com.google.gson.annotations.SerializedName
 
@@ -22,5 +22,5 @@ data class Question(
         @SerializedName("totalAnswer")
         val totalAnswer: Int = 0,
         @SerializedName("answer")
-        val answer: Answer = Answer()
+        val answer: List<Answer> = listOf()
 )

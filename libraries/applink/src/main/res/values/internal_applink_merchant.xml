@@ -5,4 +5,6 @@
 
     <string name="path_brandlist" translatable="false">/official-store/brand/.*\\/</string>
     <string name="path_brandlist_search" translatable="false">/official-store/brand/search</string>
+
+    <string name="path_product_talk_reply" translatable="false">/talk-reply/.*\\/.*\\/</string>
 </resources>

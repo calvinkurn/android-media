@@ -99,7 +99,7 @@
     <string name="toaster_follow_fail">Gagal follow Tanya-Jawab. Cek koneksi internetmu dan coba lagi, ya.</string>
     <string name="toaster_unfollow_fail">Gagal unfollow Tanya-Jawab. Cek koneksi internetmu dan coba lagi, ya.</string>
     <string name="reply_editText_placeholder">Tulis jawabanmu…</string>
-    <string name="reply_header_tnc">Inilah tempat buat kamu ngobrolin segala hal seputar barang ini. Baca juga <b>syarat &amp; ketentuan</b> dan ketentuannya, ya.</string>
+    <string name="reply_header_tnc">Ini adalah forum buat kamu untuk ngobrolin segala hal seputar barang ini. Tetap sopan dan baca juga <b>syarat &amp; ketentuan.</b></string>
     <string name="reply_toaster_success">Yay, jawabanmu berhasil dikirim. Tunggu notifikasi balasan di Inbox, ya.</string>
     <string name="reply_toaster_message_too_long">Balasanmu terlalu panjang. Kurangi dikit, ya!</string>
     <string name="reply_toaster_network_error">Pertanyaanmu tidak terkirim. Cek koneksi internetmu dan coba lagi, ya.</string>
@@ -111,6 +111,7 @@
     <string name="delete_dialog_content">Soalnya, satu jawaban kamu bisa berikan manfaat bagi ratusan calon pembeli lain</string>
     <string name="delete_confirm_button">Hapus</string>
     <string name="delete_cancel_button">Batal</string>
+    <string name="reply_total_answer">Jawaban (%d)</string>
 
     <string name="toaster_report_success">Laporanmu berhasil dikirim dan akan segera ditindaklanjuti.</string>
     <string name="toaster_report_fail">Laporanmu gagal dikirim. Cek koneksi internetmu dan coba lagi, ya.</string>

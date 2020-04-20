@@ -1,14 +1,5 @@
 package com.tokopedia.talk.feature.reading.presentation.adapter.uimodel
 
-import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.talk.feature.reading.presentation.adapter.TalkReadingAdapterTypeFactory
+import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 
-class TalkReadingShimmerModel(
-
-) : Visitable<TalkReadingAdapterTypeFactory> {
-
-    override fun type(typeFactory: TalkReadingAdapterTypeFactory): Int {
-        return typeFactory.type(this)
-    }
-
-}
+class TalkReadingShimmerModel : LoadingModel()

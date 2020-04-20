@@ -8,8 +8,11 @@ import com.tokopedia.talk.feature.reading.presentation.adapter.uimodel.TalkReadi
 import com.tokopedia.talk.feature.reading.presentation.adapter.uimodel.TalkReadingUiModel
 import com.tokopedia.talk.feature.reading.presentation.adapter.viewholder.TalkReadingShimmerViewHolder
 import com.tokopedia.talk.feature.reading.presentation.adapter.viewholder.TalkReadingViewHolder
+import com.tokopedia.talk.feature.reading.presentation.widget.OnThreadClickListener
 
-class TalkReadingAdapterTypeFactory : BaseAdapterTypeFactory(), TalkReadingTypeFactory {
+class TalkReadingAdapterTypeFactory(
+        private val onThreadClickListener: OnThreadClickListener
+) : BaseAdapterTypeFactory(), TalkReadingTypeFactory {
 
     override fun type(talkReadingUiModel: TalkReadingUiModel): Int {
         return TalkReadingViewHolder.LAYOUT
@@ -21,7 +24,7 @@ class TalkReadingAdapterTypeFactory : BaseAdapterTypeFactory(), TalkReadingTypeF
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when(type) {
-            TalkReadingViewHolder.LAYOUT -> TalkReadingViewHolder(parent)
+            TalkReadingViewHolder.LAYOUT -> TalkReadingViewHolder(parent, onThreadClickListener)
             TalkReadingShimmerViewHolder.LAYOUT -> TalkReadingShimmerViewHolder(parent)
             else -> return super.createViewHolder(parent, type)
         }
