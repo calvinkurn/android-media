@@ -372,7 +372,7 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
         if (orderDetail.contactUs.helpText.isNotBlank()) {
             val helpLabel = TextView(context)
             helpLabel.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12f)
-            helpLabel.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.dark_N700_96))
+            helpLabel.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Neutral_N700_96))
 
             val spannableString = createHyperlinkText(orderDetail.contactUs.helpText,
                     orderDetail.contactUs.helpUrl)
@@ -394,10 +394,7 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
                 val buttonCompat = UnifyButton(it)
                 buttonCompat.text = button.label
                 buttonCompat.isAllCaps = false
-
-                val params = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-                params.topMargin = resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl1)
-                buttonCompat.layoutParams = params
+                buttonCompat.buttonSize = UnifyButton.Size.MEDIUM
 
                 if (button.weight == 1) {
                     buttonCompat.background = ContextCompat.getDrawable(it, R.drawable.bg_hotel_rect_rounded_stroke_gray)

@@ -199,6 +199,10 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
+            <View android:layout_width="match_parent"
+                android:layout_height="@dimen/hotel_1dp"
+                android:background="@color/hotel_divider_color_gray" />
+
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/call_hotel_layout"
                 android:layout_width="match_parent"
