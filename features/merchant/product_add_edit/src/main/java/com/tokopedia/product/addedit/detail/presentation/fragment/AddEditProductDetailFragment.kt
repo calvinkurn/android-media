@@ -682,7 +682,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
 
         productNameField?.textFieldInput?.setText(productName)
 
-        if (!viewModel.isEditing && viewModel.isAdding) {
+        if (viewModel.isAdding) {
             ProductAddMainTracking.clickProductNameRecom(shopId, productName)
         }
     }
@@ -1205,7 +1205,9 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     private fun onCategoryRecommendationSelected(categoryId: String) {
         productNameRecView?.hide()
         viewModel.productInputModel.detailInputModel.categoryId = categoryId
-        ProductAddMainTracking.clickProductCategoryRecom(shopId)
+        if(viewModel.isAdding) {
+            ProductAddMainTracking.clickProductCategoryRecom(shopId)
+        }
     }
 
     private fun showEditAllVariantPriceBottomSheet() {
