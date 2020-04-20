@@ -94,7 +94,9 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
         flightSearchViewModel.journeyList.observe(viewLifecycleOwner, Observer {
             stopTrace()
             when (it) {
-                is Success -> renderSearchList(it.data)
+                is Success -> {
+                    renderSearchList(it.data)
+                }
                 is Fail -> {
                     if (it.throwable is FlightSearchThrowable) {
                         val errors = (it.throwable as FlightSearchThrowable).errorList
@@ -350,6 +352,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
     }
 
     open fun renderSearchList(list: List<FlightJourneyModel>) {
+        clearAllData()
         if (!flightSearchViewModel.isOneWay() && !adapter.isContainData) {
             showSearchRouteTitle()
         }

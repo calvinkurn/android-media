@@ -122,9 +122,11 @@ class FlightSearchRepository @Inject constructor(
     suspend fun getJourneyById(journeyId: String): JourneyAndRoutes =
             flightSearchSingleDataDbSource.getJourneyById(journeyId)
 
-    suspend fun getSearchFilter(flightSortOption: Int, flightFilterModel: FlightFilterModel): JourneyAndRoutesModel =
-            JourneyAndRoutesModel(flightSearchSingleDataDbSource.getFilteredJourneys(flightFilterModel, flightSortOption),
-                    flightSearchDataCacheSource.cacheCoroutine)
+    suspend fun getSearchFilter(flightSortOption: Int, flightFilterModel: FlightFilterModel): JourneyAndRoutesModel {
+        val filteredJourney = flightSearchSingleDataDbSource.getFilteredJourneys(flightFilterModel, flightSortOption)
+        val specialTag = flightSearchDataCacheSource.cacheCoroutine
+        return JourneyAndRoutesModel(filteredJourney, specialTag)
+    }
 
     suspend fun getComboKey(onwardJourneyId: String, returnJourneyId: String): String =
             flightSearchCombineDataDbSource.getComboData(onwardJourneyId, returnJourneyId).let {
