@@ -1,6 +1,5 @@
 package com.tokopedia.play.view.layout.interaction
 
-import android.content.Context
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.IdRes
@@ -14,26 +13,21 @@ import com.tokopedia.play.view.type.VideoOrientation
  * Created by jegul on 13/04/20
  */
 class PlayInteractionLandscapeManager(
-        context: Context,
-        @IdRes private val sizeContainerComponentId: Int,
-        @IdRes private val sendChatComponentId: Int,
-        @IdRes private val likeComponentId: Int,
-        @IdRes private val pinnedComponentId: Int,
-        @IdRes private val chatListComponentId: Int,
-        @IdRes private val videoControlComponentId: Int,
-        @IdRes private val gradientBackgroundComponentId: Int,
-        @IdRes private val toolbarComponentId: Int,
-        @IdRes private val statsInfoComponentId: Int,
-        @IdRes private val playButtonComponentId: Int,
-        @IdRes private val immersiveBoxComponentId: Int,
-        @IdRes private val quickReplyComponentId: Int,
-        @IdRes private val endLiveInfoComponentId: Int,
-        @IdRes private val videoSettingsComponentId: Int
+        container: ViewGroup,
+        viewInitializer: PlayInteractionViewInitializer
 ) : PlayInteractionLayoutManager {
 
-    private val offset16 = context.resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4)
-    private val offset12 = context.resources.getDimensionPixelOffset(com.tokopedia.play.R.dimen.play_offset_12)
-    private val offset8 = context.resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3)
+    @IdRes private val sizeContainerComponentId: Int = viewInitializer.onInitSizeContainer(container)
+    @IdRes private val gradientBackgroundComponentId: Int = viewInitializer.onInitGradientBackground(container)
+    @IdRes private val immersiveBoxComponentId: Int = viewInitializer.onInitImmersiveBox(container)
+    @IdRes private val likeComponentId: Int = viewInitializer.onInitLike(container)
+    @IdRes private val videoControlComponentId: Int = viewInitializer.onInitVideoControl(container)
+    @IdRes private val videoSettingsComponentId: Int = viewInitializer.onInitVideoSettings(container)
+    //play button should be on top of other component so it can be clicked
+    @IdRes private val playButtonComponentId: Int = viewInitializer.onInitPlayButton(container)
+
+    private val offset16 = container.resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4)
+    private val offset8 = container.resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3)
 
     override fun layoutView(view: View) {
         layoutSizeContainer(container = view, id = sizeContainerComponentId)
@@ -66,6 +60,14 @@ class PlayInteractionLandscapeManager(
 
     override fun onVideoOrientationChanged(container: View, videoOrientation: VideoOrientation) {
 
+    }
+
+    override fun getVideoTopBounds(container: View, videoOrientation: VideoOrientation): Int {
+        return 0
+    }
+
+    override fun getVideoBottomBoundsOnKeyboardShown(container: View, estimatedKeyboardHeight: Int, hasQuickReply: Boolean): Int {
+        return 0
     }
 
     private fun layoutSizeContainer(container: View, @IdRes id: Int) {

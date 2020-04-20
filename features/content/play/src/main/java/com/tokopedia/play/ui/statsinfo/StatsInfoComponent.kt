@@ -30,9 +30,7 @@ open class StatsInfoComponent(
             bus.getSafeManagedFlow(ScreenStateEvent::class.java)
                     .collect {
                         when (it) {
-                            is ScreenStateEvent.Init -> {
-                                if (it.screenOrientation.isLandscape) uiView.hide() else uiView.show()
-                            }
+                            is ScreenStateEvent.Init -> uiView.show()
                             is ScreenStateEvent.VideoStreamChanged ->
                                 uiView.setLiveBadgeVisibility(it.videoStream.channelType.isLive)
                             is ScreenStateEvent.SetTotalViews -> uiView.setTotalViews(it.totalView)

@@ -186,7 +186,6 @@ class PlayVideoFragment : BaseDaggerFragment(), CoroutineScope {
 
         layoutManager = PlayVideoLayoutManagerImpl(
                 context = requireContext(),
-                orientation = playViewModel.screenOrientation,
                 videoComponentId = videoComponent.getContainerId(),
                 videoLoadingComponentId = videoLoadingComponent.getContainerId(),
                 oneTapComponentId = oneTapComponent.getContainerId(),

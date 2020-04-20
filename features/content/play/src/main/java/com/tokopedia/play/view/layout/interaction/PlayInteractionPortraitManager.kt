@@ -1,11 +1,14 @@
 package com.tokopedia.play.view.layout.interaction
 
-import android.content.Context
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.IdRes
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.view.WindowInsetsCompat
+import com.tokopedia.abstraction.common.utils.DisplayMetricUtils
+import com.tokopedia.kotlin.extensions.view.getScreenHeight
+import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.play.R
 import com.tokopedia.play.util.PlayFullScreenHelper
 import com.tokopedia.play.util.changeConstraint
 import com.tokopedia.play.view.type.VideoOrientation
@@ -14,28 +17,37 @@ import com.tokopedia.play.view.type.VideoOrientation
  * Created by jegul on 13/04/20
  */
 class PlayInteractionPortraitManager(
-        context: Context,
+        container: ViewGroup,
         private val videoOrientation: VideoOrientation,
-        @IdRes private val sizeContainerComponentId: Int,
-        @IdRes private val sendChatComponentId: Int,
-        @IdRes private val likeComponentId: Int,
-        @IdRes private val pinnedComponentId: Int,
-        @IdRes private val chatListComponentId: Int,
-        @IdRes private val videoControlComponentId: Int,
-        @IdRes private val gradientBackgroundComponentId: Int,
-        @IdRes private val toolbarComponentId: Int,
-        @IdRes private val statsInfoComponentId: Int,
-        @IdRes private val playButtonComponentId: Int,
-        @IdRes private val immersiveBoxComponentId: Int,
-        @IdRes private val quickReplyComponentId: Int,
-        @IdRes private val endLiveInfoComponentId: Int,
-        @IdRes private val videoSettingsComponentId: Int
+        viewInitializer: PlayInteractionViewInitializer
 ) : PlayInteractionLayoutManager {
 
-    private val offset24 = context.resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl5)
-    private val offset16 = context.resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4)
-    private val offset12 = context.resources.getDimensionPixelOffset(com.tokopedia.play.R.dimen.play_offset_12)
-    private val offset8 = context.resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3)
+    @IdRes private val sizeContainerComponentId: Int = viewInitializer.onInitSizeContainer(container)
+    @IdRes private val gradientBackgroundComponentId: Int = viewInitializer.onInitGradientBackground(container)
+    @IdRes private val immersiveBoxComponentId: Int = viewInitializer.onInitImmersiveBox(container)
+    @IdRes private val sendChatComponentId: Int = viewInitializer.onInitChat(container)
+    @IdRes private val likeComponentId: Int = viewInitializer.onInitLike(container)
+    @IdRes private val pinnedComponentId: Int = viewInitializer.onInitPinned(container)
+    @IdRes private val chatListComponentId: Int = viewInitializer.onInitChatList(container)
+    @IdRes private val videoControlComponentId: Int = viewInitializer.onInitVideoControl(container)
+    @IdRes private val videoSettingsComponentId: Int = viewInitializer.onInitVideoSettings(container)
+    @IdRes private val endLiveInfoComponentId: Int = viewInitializer.onInitEndLiveComponent(container)
+    @IdRes private val toolbarComponentId: Int = viewInitializer.onInitToolbar(container)
+    @IdRes private val statsInfoComponentId: Int = viewInitializer.onInitStatsInfo(container)
+    @IdRes private val quickReplyComponentId: Int = viewInitializer.onInitQuickReply(container)
+    //play button should be on top of other component so it can be clicked
+    @IdRes private val playButtonComponentId: Int = viewInitializer.onInitPlayButton(container)
+
+    private val toolbarView: View = container.findViewById(toolbarComponentId)
+    private val statsInfoView: View = container.findViewById(statsInfoComponentId)
+    private val sendChatView: View = container.findViewById(sendChatComponentId)
+    private val quickReplyView: View = container.findViewById(quickReplyComponentId)
+    private val chatListView: View = container.findViewById(chatListComponentId)
+
+    private val offset24 = container.resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl5)
+    private val offset16 = container.resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4)
+    private val offset12 = container.resources.getDimensionPixelOffset(com.tokopedia.play.R.dimen.play_offset_12)
+    private val offset8 = container.resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3)
 
     override fun layoutView(view: View) {
         layoutSizeContainer(container = view, id = sizeContainerComponentId)
@@ -75,6 +87,58 @@ class PlayInteractionPortraitManager(
 
     override fun onExitImmersive(): Int {
         return PlayFullScreenHelper.getShowSystemUiVisibility()
+    }
+
+    override fun getVideoTopBounds(container: View, videoOrientation: VideoOrientation): Int {
+        return if (videoOrientation.isLandscape) {
+            val toolbarViewTotalHeight = run {
+                val height = toolbarView.height
+                val marginLp = toolbarView.layoutParams as ViewGroup.MarginLayoutParams
+                height + marginLp.bottomMargin + marginLp.topMargin
+            }
+
+            val statsInfoTotalHeight = run {
+                val height = statsInfoView.height
+                val marginLp = statsInfoView.layoutParams as ViewGroup.MarginLayoutParams
+                height + marginLp.bottomMargin + marginLp.topMargin
+            }
+
+            val statusBarHeight = container.let { DisplayMetricUtils.getStatusBarHeight(it.context) }.orZero()
+
+            toolbarViewTotalHeight + statsInfoTotalHeight + statusBarHeight
+        } else 0
+    }
+
+    override fun getVideoBottomBoundsOnKeyboardShown(container: View, estimatedKeyboardHeight: Int, hasQuickReply: Boolean): Int {
+        val sendChatViewTotalHeight = run {
+            val height = sendChatView.height
+            val marginLp = sendChatView.layoutParams as ViewGroup.MarginLayoutParams
+            height + marginLp.bottomMargin + marginLp.topMargin
+        }
+
+        val quickReplyViewTotalHeight = run {
+            val height = if (hasQuickReply) {
+                if (quickReplyView.height <= 0) {
+                    quickReplyView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
+                    quickReplyView.measuredHeight
+                } else quickReplyView.height
+            } else 0
+            val marginLp = quickReplyView.layoutParams as ViewGroup.MarginLayoutParams
+            height + marginLp.bottomMargin + marginLp.topMargin
+        }
+
+        val chatListViewTotalHeight = run {
+            val height = container.resources.getDimensionPixelSize(R.dimen.play_chat_max_height)
+            val marginLp = chatListView.layoutParams as ViewGroup.MarginLayoutParams
+            height + marginLp.bottomMargin + marginLp.topMargin
+        }
+
+        val statusBarHeight = DisplayMetricUtils.getStatusBarHeight(container.context)
+        val requiredMargin = offset16
+
+        val interactionTopmostY = getScreenHeight() - (estimatedKeyboardHeight + sendChatViewTotalHeight + chatListViewTotalHeight + quickReplyViewTotalHeight + statusBarHeight + requiredMargin)
+
+        return interactionTopmostY
     }
 
     override fun onVideoOrientationChanged(container: View, videoOrientation: VideoOrientation) {

@@ -20,4 +20,8 @@ interface PlayInteractionLayoutManager : PlayLayoutManager {
     fun onExitImmersive(): Int
 
     fun onVideoOrientationChanged(container: View, videoOrientation: VideoOrientation)
+
+    fun getVideoTopBounds(container: View, videoOrientation: VideoOrientation): Int
+
+    fun getVideoBottomBoundsOnKeyboardShown(container: View, estimatedKeyboardHeight: Int, hasQuickReply: Boolean): Int
 }
