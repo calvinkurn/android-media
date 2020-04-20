@@ -352,7 +352,6 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
     }
 
     open fun renderSearchList(list: List<FlightJourneyModel>) {
-        clearAllData()
         if (!flightSearchViewModel.isOneWay() && !adapter.isContainData) {
             showSearchRouteTitle()
         }

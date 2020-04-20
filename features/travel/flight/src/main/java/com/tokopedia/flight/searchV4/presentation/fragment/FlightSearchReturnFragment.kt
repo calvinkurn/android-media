@@ -186,7 +186,7 @@ class FlightSearchReturnFragment : FlightSearchFragment() {
             flightSearchViewModel.filterModel.isBestPairing = false
             flightSearchReturnViewModel.isViewOnlyBestPairing = false
             clearAllData()
-            resetDateAndReload()
+            flightSearchViewModel.fetchSortAndFilter()
             resetDepartureLabelPrice()
             dialog.dismiss()
         }
@@ -206,7 +206,7 @@ class FlightSearchReturnFragment : FlightSearchFragment() {
             flightSearchViewModel.filterModel.isBestPairing = true
             flightSearchReturnViewModel.isViewOnlyBestPairing = true
             clearAllData()
-            resetDateAndReload()
+            flightSearchViewModel.fetchSortAndFilter()
             resetDepartureLabelPrice()
             dialog.dismiss()
         }
