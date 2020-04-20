@@ -1,5 +1,7 @@
 package com.tokopedia.vouchercreation.create.view.viewholder
 
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
@@ -16,6 +18,7 @@ class FillVoucherNameViewHolder(itemView: View) : AbstractViewHolder<FillVoucher
         val TEXFIELD_ALERT_MINIMUM = R.string.mvc_create_voucher_name_alert_minimum
 
         private const val MAX_TEXTFIELD_LENGTH = 30
+        private const val MIN_TEXTFIELD_LENGTH = 5
     }
 
     private var textFieldHint = itemView.resources?.getString(TEXTFIELD_HINT).toBlankOrString()
@@ -26,8 +29,32 @@ class FillVoucherNameViewHolder(itemView: View) : AbstractViewHolder<FillVoucher
         itemView.fillVoucherNameTextfield?.run {
             setCounter(MAX_TEXTFIELD_LENGTH)
             setPlaceholder(textFieldHint)
-            
-        }
+            textFieldInput.addTextChangedListener(object : TextWatcher {
+                override fun afterTextChanged(s: Editable?) {
+                    //No op
+                }
 
+                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                    //No op
+                }
+
+                override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+                    when {
+                        s.length < MIN_TEXTFIELD_LENGTH -> {
+                            setError(true)
+                            setMessage(alertMinimumMessage)
+                        }
+                        s.contains("shopee", ignoreCase = true) -> {
+                            setError(true)
+                            setMessage(alertRestrictedMessage)
+                        }
+                        else -> {
+                            setError(false)
+                            setMessage("")
+                        }
+                    }
+                }
+            })
+        }
     }
 }
