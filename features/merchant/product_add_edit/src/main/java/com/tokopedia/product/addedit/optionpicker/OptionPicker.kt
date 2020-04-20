@@ -1,0 +1,112 @@
+package com.tokopedia.product.addedit.optionpicker
+
+import android.graphics.Bitmap
+import android.graphics.drawable.BitmapDrawable
+import android.os.Bundle
+import android.util.TypedValue
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.RelativeLayout
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
+import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration
+import com.tokopedia.kotlin.extensions.view.toDp
+import com.tokopedia.product.addedit.R
+import com.tokopedia.product.addedit.optionpicker.adapter.OptionTypeFactory
+import com.tokopedia.product.addedit.optionpicker.model.OptionModel
+import com.tokopedia.unifycomponents.BottomSheetUnify
+import kotlinx.android.synthetic.main.bottom_sheet_list.view.*
+
+class OptionPicker: BottomSheetUnify(), OptionTypeFactory.OnItemClickListener {
+    private var selectedPosition: Int = -1
+    private var listener: ((selectedText: String, selectedPosition: Int) -> Unit)? = null
+    private var contentView: View? = null
+    private var isDividerVisible: Boolean = false
+    private var listAdapter: BaseListAdapter<OptionModel, OptionTypeFactory>? = null
+
+    init {
+        val optionTypeFactory = OptionTypeFactory()
+        optionTypeFactory.setOnItemClickListener(this)
+        listAdapter = BaseListAdapter(optionTypeFactory)
+        setCloseClickListener {
+            dismiss()
+        }
+    }
+
+    override fun onClick(selectedText: String, selectedPosition: Int) {
+        dismiss()
+        listener?.invoke(selectedText, selectedPosition)
+    }
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        initChildLayout()
+        return super.onCreateView(inflater, container, savedInstanceState)
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        changeCloseButtonSize()
+        removeContainerPadding()
+        addMarginCloseButton()
+    }
+
+    private fun changeCloseButtonSize() {
+        val fontSize = resources.getDimension(R.dimen.fontSize_lvl7).toDp()
+        bottomSheetTitle.setTextSize(TypedValue.COMPLEX_UNIT_SP, fontSize)
+        bottomSheetClose.drawable?.apply {
+            val bitmap = (this as BitmapDrawable).bitmap
+            val drawableSize = resources.getDimensionPixelSize(R.dimen.tooltip_close_size)
+            val scaled = BitmapDrawable(resources, Bitmap.createScaledBitmap(bitmap, drawableSize, drawableSize, true))
+            bottomSheetClose.setImageDrawable(scaled)
+        }
+    }
+
+    private fun removeContainerPadding() {
+        val padding = resources.getDimensionPixelSize(R.dimen.tooltip_padding)
+        val paddingTop = resources.getDimensionPixelSize(R.dimen.tooltip_padding_top)
+        bottomSheetWrapper.setPadding(padding, paddingTop, padding, padding)
+    }
+
+    private fun addMarginCloseButton() {
+        val topMargin = resources.getDimensionPixelSize(R.dimen.spacing_lvl3)
+        val horizontalMargin = resources.getDimensionPixelSize(R.dimen.tooltip_close_margin)
+        (bottomSheetClose.layoutParams as RelativeLayout.LayoutParams).apply {
+            setMargins(horizontalMargin, topMargin, horizontalMargin, 0)
+            addRule(RelativeLayout.CENTER_VERTICAL)
+        }
+    }
+
+    private fun initChildLayout() {
+        contentView = View.inflate(context, R.layout.bottom_sheet_list, null)
+        contentView?.rvList?.apply {
+            setHasFixedSize(true)
+            adapter = listAdapter
+            if (isDividerVisible) addItemDecoration(DividerItemDecoration(context))
+            layoutManager = LinearLayoutManager(context)
+        }
+        setChild(contentView)
+    }
+
+    fun setItemMenuList(data: List<String>) {
+        data.forEachIndexed { index, it ->
+            listAdapter?.addElement(OptionModel(it, index == selectedPosition))
+        }
+    }
+
+    fun setSelectedPosition(selectedPosition: Int){
+        this.selectedPosition = selectedPosition
+    }
+
+    fun setOnItemClickListener(listener: (selectedText: String, selectedPosition: Int) -> Unit){
+        this.listener = listener
+    }
+
+    fun notifyDataSetChanged(){
+        listAdapter?.notifyDataSetChanged()
+    }
+
+    fun setDividerVisible(visible: Boolean) {
+        isDividerVisible = visible
+    }
+}

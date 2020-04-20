@@ -1,0 +1,211 @@
+{
+  "data": {
+    "universe_search": {
+      "data": [
+        {
+          "id": "top_digital",
+          "name": "TOP DIGITAL",
+          "items": []
+        },
+        {
+          "id": "autocomplete",
+          "name": "AUTOCOMPLETE",
+          "items": [
+            {
+              "location": "",
+              "imageURI": "",
+              "applink": "tokopedia://search?q=batik&source=universe&st=product",
+              "url": "/search?q=batik&source=universe&st=product",
+              "keyword": "batik",
+              "recom": "",
+              "sc": 0,
+              "isOfficial": false,
+              "post_count": 0,
+              "affiliate_username": ""
+            },
+            {
+              "location": "",
+              "imageURI": "",
+              "applink": "tokopedia://search?q=batik+pria&source=universe&st=product",
+              "url": "/search?q=batik+pria&source=universe&st=product",
+              "keyword": "batik pria",
+              "recom": "",
+              "sc": 0,
+              "isOfficial": false,
+              "post_count": 0,
+              "affiliate_username": ""
+            },
+            {
+              "location": "",
+              "imageURI": "",
+              "applink": "tokopedia://search?q=batik+couple&source=universe&st=product",
+              "url": "/search?q=batik+couple&source=universe&st=product",
+              "keyword": "batik couple",
+              "recom": "",
+              "sc": 0,
+              "isOfficial": false,
+              "post_count": 0,
+              "affiliate_username": ""
+            },
+            {
+              "location": "",
+              "imageURI": "",
+              "applink": "tokopedia://search?q=baju+batik+wanita&source=universe&st=product",
+              "url": "/search?q=baju+batik+wanita&source=universe&st=product",
+              "keyword": "baju batik wanita",
+              "recom": "",
+              "sc": 0,
+              "isOfficial": false,
+              "post_count": 0,
+              "affiliate_username": ""
+            },
+            {
+              "location": "",
+              "imageURI": "",
+              "applink": "tokopedia://search?q=baju+batik+pria&source=universe&st=product",
+              "url": "/search?q=baju+batik+pria&source=universe&st=product",
+              "keyword": "baju batik pria",
+              "recom": "",
+              "sc": 0,
+              "isOfficial": false,
+              "post_count": 0,
+              "affiliate_username": ""
+            }
+          ]
+        },
+        {
+          "id": "shop",
+          "name": "SHOP",
+          "items": [
+            {
+              "location": "Semarang",
+              "imageURI": "https://ecs7.tokopedia.net/img/cache/100-square/shops-1/2019/8/13/6168547/6168547_7c3e41f7-baaa-47aa-94d1-9bc01afebf54.jpg",
+              "applink": "tokopedia://shop/6168547?source=universe&st=product",
+              "url": "/batikkultur?source=universe&st=product",
+              "keyword": "Batik Kultur",
+              "recom": "",
+              "sc": 0,
+              "isOfficial": true,
+              "post_count": 0,
+              "affiliate_username": ""
+            },
+            {
+              "location": "Jakarta",
+              "imageURI": "https://ecs7.tokopedia.net/img/cache/100-square/shops-1/2019/9/27/6308611/6308611_131f7dcd-3362-4ac4-986c-35e36bc6abb1.png",
+              "applink": "tokopedia://shop/6308611?source=universe&st=product",
+              "url": "/batikgalunggung?source=universe&st=product",
+              "keyword": "Batik Galunggung",
+              "recom": "",
+              "sc": 0,
+              "isOfficial": true,
+              "post_count": 0,
+              "affiliate_username": ""
+            },
+            {
+              "location": "Surakarta",
+              "imageURI": "https://ecs7.tokopedia.net/img/cache/100-square/shops-1/2017/10/15/588149/588149_ef451a07-512a-4362-98de-c4205c9a71f1.jpg",
+              "applink": "tokopedia://shop/588149?source=universe&st=product",
+              "url": "/grosirbatik-solo?source=universe&st=product",
+              "keyword": "Arumi Batik",
+              "recom": "",
+              "sc": 0,
+              "isOfficial": false,
+              "post_count": 0,
+              "affiliate_username": ""
+            },
+            {
+              "location": "Jakarta",
+              "imageURI": "https://ecs7.tokopedia.net/img/cache/100-square/shops-1/2018/12/28/294725/294725_f0e5a346-03fa-4412-9a6d-771b24759a9b.jpg",
+              "applink": "tokopedia://shop/294725?source=universe&st=product",
+              "url": "/linabatikdistro?source=universe&st=product",
+              "keyword": "Lina Batik Distro",
+              "recom": "",
+              "sc": 0,
+              "isOfficial": false,
+              "post_count": 0,
+              "affiliate_username": ""
+            },
+            {
+              "location": "Kab. Blitar",
+              "imageURI": "https://ecs7.tokopedia.net/img/cache/100-square/shops-1/2015/8/13/216919/216919_d6dac1ad-4e18-48e4-80c2-ac31210cf53c.jpg",
+              "applink": "tokopedia://shop/216919?source=universe&st=product",
+              "url": "/batiknitnot?source=universe&st=product",
+              "keyword": "Batik Nitnot",
+              "recom": "",
+              "sc": 0,
+              "isOfficial": false,
+              "post_count": 0,
+              "affiliate_username": ""
+            }
+          ]
+        },
+        {
+          "id": "profile",
+          "name": "PROFILE",
+          "items": [
+            {
+              "location": "",
+              "imageURI": "https://ecs7.tokopedia.net/img/cache/100-square/user-1/2017/10/9/23422405/23422405_1196aac4-1aa7-43e5-8957-dab64133cc1b.png",
+              "applink": "tokopedia://people/23422405",
+              "url": "/people/23422405",
+              "keyword": "Batik Benang Raja",
+              "recom": "",
+              "sc": 0,
+              "isOfficial": false,
+              "post_count": 0,
+              "affiliate_username": "@benangraja"
+            },
+            {
+              "location": "",
+              "imageURI": "https://ecs7.tokopedia.net/img/cache/100-square/user-1/2018/2/8/21174890/21174890_877df0ca-1ffe-47ab-b255-21ee8560c6a4.jpg",
+              "applink": "tokopedia://people/21174890",
+              "url": "/people/21174890",
+              "keyword": "Batik Arum Solo",
+              "recom": "",
+              "sc": 0,
+              "isOfficial": false,
+              "post_count": 1,
+              "affiliate_username": "@arumbatiksolo"
+            },
+            {
+              "location": "",
+              "imageURI": "https://ecs7.tokopedia.net/img/cache/100-square/user-1/2018/1/31/1931080/1931080_6ccc2ae4-8cb6-4b29-8d62-47ded1a079b2.jpg",
+              "applink": "tokopedia://people/1931080",
+              "url": "/people/1931080",
+              "keyword": "Grosir Batik Pekalongan",
+              "recom": "",
+              "sc": 0,
+              "isOfficial": false,
+              "post_count": 0,
+              "affiliate_username": "@gbatik"
+            },
+            {
+              "location": "",
+              "imageURI": "https://ecs7.tokopedia.net/img/cache/100-square/user-1/2019/2/10/45623510/45623510_ad5249bb-90f4-4c94-ade2-abe6a5b6c549.jpg",
+              "applink": "tokopedia://people/45623510",
+              "url": "/people/45623510",
+              "keyword": "Tunik Batik m",
+              "recom": "",
+              "sc": 0,
+              "isOfficial": false,
+              "post_count": 0,
+              "affiliate_username": "@tunik"
+            },
+            {
+              "location": "",
+              "imageURI": "https://ecs7.tokopedia.net/img/cache/100-square/user-1/2020/2/25/4860258/4860258_64daebae-286d-4ea8-8a32-3513f58a214c.jpg",
+              "applink": "tokopedia://people/4860258",
+              "url": "/people/4860258",
+              "keyword": "Endru Saputra",
+              "recom": "",
+              "sc": 0,
+              "isOfficial": false,
+              "post_count": 17,
+              "affiliate_username": "@batikshop"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}
