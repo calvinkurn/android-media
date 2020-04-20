@@ -12,6 +12,7 @@ import com.tokopedia.selleronboarding.R
 import com.tokopedia.selleronboarding.analytic.SellerOnboardingAnalytic
 import com.tokopedia.selleronboarding.model.SlideUiModel
 import kotlinx.android.synthetic.main.viewholder_sob_onboarding.view.*
+import timber.log.Timber
 
 /**
  * Created By @ilhamsuaib on 09/04/20
@@ -56,11 +57,11 @@ class SlideAdapter : RecyclerView.Adapter<SlideAdapter.SlideViewHolder>() {
             try {
                 imgIllustrationSob.loadImageDrawable(item.vectorDrawableRes)
             } catch (e: Exception) {
-                e.printStackTrace()
+                Timber.e(e)
                 try {
                     imgIllustrationSob.loadImageDrawable(item.pngDrawableRes)
                 } catch (nfe: Resources.NotFoundException) {
-                    nfe.printStackTrace()
+                    Timber.e(nfe)
                 }
             }
         }
