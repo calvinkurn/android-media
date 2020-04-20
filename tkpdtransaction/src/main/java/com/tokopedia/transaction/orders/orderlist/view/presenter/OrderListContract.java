@@ -72,6 +72,8 @@ public class OrderListContract {
         void showSuccessMessageWithAction(String message);
 
         void setFilterRange(DefaultDate defaultDate, CustomDate customDate);
+
+        void sendATCTrackingUrl(String clickUrl);
     }
 
     public interface Presenter extends CustomerPresenter<View> {

@@ -12,12 +12,13 @@ import com.tokopedia.autocomplete.initialstate.recentsearch.RecentSearchViewMode
 import com.tokopedia.autocomplete.initialstate.recentsearch.convertRecentSearchToVisitableList
 import com.tokopedia.autocomplete.initialstate.recentview.ReecentViewTitleViewModel
 import com.tokopedia.autocomplete.initialstate.recentview.convertRecentViewSearchToVisitableList
+import com.tokopedia.usecase.UseCase
 import com.tokopedia.user.session.UserSessionInterface
 import rx.Subscriber
 import javax.inject.Inject
 
 class InitialStatePresenter @Inject constructor(
-        private val initialStateUseCase: InitialStateUseCase,
+        private val initialStateUseCase: UseCase<List<InitialStateData>>,
         private val deleteRecentSearchUseCase: DeleteRecentSearchUseCase,
         private val refreshPopularSearchUseCase: RefreshPopularSearchUseCase,
         private val userSession: UserSessionInterface
@@ -265,6 +266,8 @@ class InitialStatePresenter @Inject constructor(
     override fun detachView() {
         super.detachView()
         initialStateUseCase.unsubscribe()
+        deleteRecentSearchUseCase.unsubscribe()
+        refreshPopularSearchUseCase.unsubscribe()
     }
 
     override fun attachView(view: InitialStateContract.View) {
