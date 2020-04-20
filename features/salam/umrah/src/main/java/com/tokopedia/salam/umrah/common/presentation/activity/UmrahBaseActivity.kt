@@ -71,7 +71,7 @@ abstract class UmrahBaseActivity : BaseSimpleActivity() {
         val menuBottomSheet = BottomSheetUnify()
         menuBottomSheet.setCloseClickListener { menuBottomSheet.dismiss() }
         menuBottomSheet.setTitle(resources.getString(R.string.umrah_menu_title))
-        val view = LayoutInflater.from(applicationContext).inflate(R.layout.bottom_sheets_umrah_menu, null)
+        val view = LayoutInflater.from(applicationContext).inflate(com.tokopedia.salam.umrah.R.layout.bottom_sheets_umrah_menu, null)
         menuBottomSheet.setChild(view)
         menuBottomSheet.show(supportFragmentManager, "")
         setMenuListener(menuBottomSheet, view)

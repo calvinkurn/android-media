@@ -110,7 +110,6 @@ import com.tokopedia.kotlin.extensions.view.hideLoadingTransparent
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showLoadingTransparent
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.navigation_common.listener.JankyFramesMonitoringListener
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.topads.sdk.domain.model.Data
@@ -155,7 +154,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
         EmptyFeedViewHolder.EmptyFeedListener,
         FeedPlusAdapter.OnLoadListener{
 
-    private var jankyFramesMonitoringListener: JankyFramesMonitoringListener? = null
     private lateinit var recyclerView: RecyclerView
     private lateinit var swipeToRefresh: SwipeToRefresh
     private lateinit var mainContent: View
@@ -273,17 +271,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
         }
         initVar()
         retainInstance = true
-    }
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        jankyFramesMonitoringListener = castContextToJankyFramesMonitoring(context)
-    }
-
-    private fun castContextToJankyFramesMonitoring(context: Context): JankyFramesMonitoringListener? {
-        return if (context is JankyFramesMonitoringListener) {
-            context
-        } else null
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -534,8 +521,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
         swipeToRefresh = parentView.findViewById(R.id.swipe_refresh_layout)
         mainContent = parentView.findViewById(R.id.main)
         newFeed = parentView.findViewById(R.id.layout_new_feed)
-
-        recyclerView.let { jankyFramesMonitoringListener?.mainJankyFrameMonitoringUtil?.recordRecyclerViewScrollPerformance(it, pageName = PERFORMANCE_FEED_PAGE_NAME) }
 
         prepareView()
         return parentView
@@ -1053,7 +1038,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     override fun onAddFavorite(positionInFeed: Int, adapterPosition: Int, data: Data) {
         if (data.isFavorit) {
-            visitShopPageWithAnalytics(positionInFeed, data.shop)
+            onShopItemClicked(positionInFeed, adapterPosition, data.shop)
         } else {
             feedViewModel.doToggleFavoriteShop(positionInFeed, adapterPosition, data.shop.id)
 
