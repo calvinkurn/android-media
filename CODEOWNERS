@@ -46,8 +46,6 @@
 /features/discovery/flashsale_management/               @tokopedia/minion-stuart
 /features/discovery/flashsale_management_common/        @tokopedia/minion-stuart
 
-/features/fintech/mitra_toppers/                        @tokopedia/minion-stuart
-
 /features/merchant/atc_variant/                         @tokopedia/minion-stuart
 /features/merchant/brandlist/                           @tokopedia/minion-stuart
 /features/merchant/gold_merchant/                       @tokopedia/minion-stuart
@@ -208,6 +206,7 @@
 /libraries/core_network/								@tokopedia/core-team
 /libraries/cpm/											@tokopedia/core-team
 /libraries/date_picker_range/							@tokopedia/core-team
+/libraries/device_info/                                 @tokopedia/core-team
 /libraries/dynamic_features/							@tokopedia/core-team
 /libraries/encryption/							        @tokopedia/core-team
 /libraries/fingerprint/									@tokopedia/core-team

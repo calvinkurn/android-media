@@ -52,7 +52,7 @@ class TradeInHomeViewModel @Inject constructor(
         val diagnostics = getDiagnosticData(intent)
         tradeInParams.deviceId = diagnostics.imei
         launchCatchError(block = {
-            setDiagnoseResult(processMessageUseCase.processMessage(tradeInParams, diagnostics), diagnostics)
+            setDiagnoseResult(processMessageUseCase.processMessage(getResource(), tradeInParams, diagnostics), diagnostics)
         }, onError = {
             it.printStackTrace()
             warningMessage.value = it.localizedMessage
@@ -85,7 +85,7 @@ class TradeInHomeViewModel @Inject constructor(
     fun checkMoneyIn(modelId: Int, jsonObject: JSONObject) {
         progBarVisibility.value = true
         launchCatchError(block = {
-            checkIfElligible(checkMoneyInUseCase.checkMoneyIn(modelId, tradeInParams, userSession.userId), jsonObject)
+            checkIfElligible(checkMoneyInUseCase.checkMoneyIn(getResource(), modelId, tradeInParams, userSession.userId), jsonObject)
         }, onError = {
             progBarVisibility.value = false
             it.printStackTrace()

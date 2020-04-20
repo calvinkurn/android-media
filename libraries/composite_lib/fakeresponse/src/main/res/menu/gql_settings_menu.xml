@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/gql_menu_search"
+        android:icon="@drawable/fake_ic_search"
+        android:title="@string/gql_search"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/gql_menu_reset"
+        android:title="@string/gql_reset" />
+
+    <item
+        android:id="@+id/gql_menu_import"
+        android:title="@string/gql_import">
+        <menu>
+            <item
+                android:id="@+id/gql_menu_paste_text"
+                android:title="@string/gql_paste_text" />
+        </menu>
+
+    </item>
+
+    <item
+        android:id="@+id/gql_menu_clear_records"
+        android:title="@string/gql_clear_records" />
+
+    <item
+        android:id="@+id/gql_add_gql_record"
+        android:title="@string/gql_add_record" />
+
+    <item
+        android:id="@+id/gql_add_rest_record"
+        android:title="@string/gql_add_rest_record" />
+
+</menu>

@@ -60,5 +60,6 @@ android {
 
 dependencies {
     implementation project(rootProject.ext.app.customerapp)
+
     implementation project(rootProject.ext.features.liveness)
 }
