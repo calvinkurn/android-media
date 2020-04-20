@@ -348,7 +348,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
                                     variantInputModel = productInputModel.variantInputModel,
                                     draftId = viewModel.getDraftId()
                             )
-                            moveToManageProduct()
+                            activity?.finish()
                         }
                     }
                 }

@@ -690,6 +690,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         viewModel.isNameRecommendationSelected = true
 
         productNameField?.textFieldInput?.setText(productName)
+        productNameField?.textFieldInput?.setSelection(productName.length)
 
         if (!viewModel.isEditing && !viewModel.isAdding) {
             ProductAddMainTracking.clickProductNameRecom(shopId, productName)
