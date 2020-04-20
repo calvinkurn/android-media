@@ -176,6 +176,7 @@ ext {
             transactionanalytics            : ":features:transaction:transactionanalytics",
             purchase_platform               : ":features:transaction:purchase_platform",
             purchase_platform_common        : ":features:transaction:purchase_platform_common",
+            cart                            : ":features:transaction:cart",
             loyalty                         : ":features:promo:loyalty",
             loyaltyCommon                   : ":features:promo:loyalty_common",
             sellerorder                     : ":features:transaction:sellerorder",
