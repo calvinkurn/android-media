@@ -81,6 +81,7 @@ import com.tokopedia.product.manage.feature.quickedit.price.data.model.EditPrice
 import com.tokopedia.product.manage.feature.quickedit.price.presentation.fragment.ProductManageQuickEditPriceFragment
 import com.tokopedia.product.manage.feature.quickedit.stock.data.model.EditStockResult
 import com.tokopedia.product.manage.feature.quickedit.stock.presentation.fragment.ProductManageQuickEditStockFragment
+import com.tokopedia.product.manage.feature.quickedit.variant.presentation.ui.QuickEditVariantPriceBottomSheet
 import com.tokopedia.product.manage.item.imagepicker.imagepickerbuilder.AddProductImagePickerBuilder
 import com.tokopedia.product.manage.oldlist.constant.ProductManageListConstant
 import com.tokopedia.product.manage.oldlist.constant.ProductManageListConstant.EXTRA_PRODUCT_NAME
@@ -182,6 +183,8 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         observeSetFeaturedProduct()
         observeViewState()
         observeFilter()
+
+        observeEditVariantPrice()
 
         getFiltersTab()
         getProductListFeaturedOnlySize()
@@ -928,9 +931,18 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         ProductManageTracking.eventEditStock(product.id)
     }
 
-    override fun onClickEditVariantButton(product: ProductViewModel) {
-        goToEditProduct(product.id)
-        ProductManageTracking.eventEditVariants(product.id)
+    override fun onClickEditVariantPriceButton(product: ProductViewModel) {
+        context?.let {
+            val editVariantBottomSheet = QuickEditVariantPriceBottomSheet.createInstance(it, product.id) { result ->
+                viewModel.editVariantsPrice(result)
+            }
+            editVariantBottomSheet.show(childFragmentManager, QuickEditVariantPriceBottomSheet.TAG)
+            ProductManageTracking.eventEditVariants(product.id)
+        }
+    }
+
+    override fun onClickEditVariantStockButton(product: ProductViewModel) {
+
     }
 
     override fun onClickContactCsButton(product: ProductViewModel) {
@@ -1515,6 +1527,20 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         }
     }
 
+    private fun observeEditVariantPrice() {
+        observe(viewModel.editVariantPriceResult) {
+            when (it) {
+                is Success -> {
+                    val message = context?.getString(R.string.product_manage_quick_edit_price_success,
+                        it.data.productName).orEmpty()
+                    showMessageToast(message)
+                }
+                is Fail -> showErrorToast()
+            }
+        }
+    }
+    // endregion
+
     private fun showPageLoading() {
         mainContainer.hide()
         pageLoading.show()
@@ -1524,7 +1550,6 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         mainContainer.show()
         pageLoading.hide()
     }
-    // endregion
 
     private fun initHeaderView(productList: List<ProductViewModel>) {
         if(isLoadingInitialData && showProductEmptyState()) {
