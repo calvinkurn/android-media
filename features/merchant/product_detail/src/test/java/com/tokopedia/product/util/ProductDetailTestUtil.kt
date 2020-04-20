@@ -1,8 +1,6 @@
 package com.tokopedia.product.util
 
 import com.tokopedia.graphql.CommonUtils
-import com.tokopedia.product.viewmodel.DynamicProductDetailViewModelTest
-import com.tokopedia.recommendation_widget_common.data.RecomendationEntity
 import java.io.File
 
 /**

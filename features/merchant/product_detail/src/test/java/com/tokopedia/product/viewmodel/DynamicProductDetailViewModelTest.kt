@@ -3,20 +3,28 @@ package com.tokopedia.product.viewmodel
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.affiliatecommon.data.pojo.productaffiliate.TopAdsPdpAffiliateResponse
 import com.tokopedia.affiliatecommon.domain.TrackAffiliateUseCase
+import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
+import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.atc_common.domain.model.response.ErrorReporterModel
 import com.tokopedia.atc_common.domain.model.response.ErrorReporterTextModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartOccUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartOcsUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
+import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
+import com.tokopedia.product.detail.common.data.model.carttype.CartRedirection
+import com.tokopedia.product.detail.common.data.model.carttype.CartRedirectionResponse
+import com.tokopedia.product.detail.common.data.model.carttype.CartTypeData
+import com.tokopedia.product.detail.common.data.model.pdplayout.BasicInfo
+import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.common.data.model.product.ProductParams
 import com.tokopedia.product.detail.data.model.*
 import com.tokopedia.product.detail.data.model.datamodel.ProductDetailDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductOpenShopDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductSnapshotDataModel
+import com.tokopedia.product.detail.estimasiongkir.data.model.v3.AddressModel
 import com.tokopedia.product.detail.estimasiongkir.data.model.v3.RatesModel
 import com.tokopedia.product.detail.estimasiongkir.data.model.v3.SummaryText
-import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
 import com.tokopedia.product.detail.usecase.*
 import com.tokopedia.product.detail.view.viewmodel.DynamicProductDetailViewModel
 import com.tokopedia.product.util.JsonFormatter
@@ -43,10 +51,7 @@ import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import org.junit.Assert
-import org.junit.Before
-import org.junit.Rule
-import org.junit.Test
+import org.junit.*
 import org.mockito.Matchers.anyBoolean
 import org.mockito.Matchers.anyString
 import rx.Observable
@@ -62,46 +67,67 @@ class DynamicProductDetailViewModelTest {
 
     @RelaxedMockK
     lateinit var userSessionInterface: UserSessionInterface
+
     @RelaxedMockK
     lateinit var stickyLoginUseCase: StickyLoginUseCase
+
     @RelaxedMockK
     lateinit var getPdpLayoutUseCase: GetPdpLayoutUseCase
+
     @RelaxedMockK
     lateinit var getProductInfoP2ShopUseCase: GetProductInfoP2ShopUseCase
+
     @RelaxedMockK
     lateinit var getProductInfoP2LoginUseCase: GetProductInfoP2LoginUseCase
+
     @RelaxedMockK
     lateinit var getProductInfoP2GeneralUseCase: GetProductInfoP2GeneralUseCase
+
     @RelaxedMockK
     lateinit var getProductInfoP3RateEstimateUseCase: GetProductInfoP3RateEstimateUseCase
+
     @RelaxedMockK
     lateinit var toggleFavoriteUseCase: ToggleFavoriteUseCase
+
     @RelaxedMockK
     lateinit var removeWishlistUseCase: RemoveWishListUseCase
+
     @RelaxedMockK
     lateinit var addWishListUseCase: AddWishListUseCase
+
     @RelaxedMockK
     lateinit var getRecommendationUseCase: GetRecommendationUseCase
+
     @RelaxedMockK
     lateinit var moveProductToWarehouseUseCase: MoveProductToWarehouseUseCase
+
     @RelaxedMockK
     lateinit var moveProductToEtalaseUseCase: MoveProductToEtalaseUseCase
+
     @RelaxedMockK
     lateinit var trackAffiliateUseCase: TrackAffiliateUseCase
+
     @RelaxedMockK
     lateinit var submitHelpTicketUseCase: SubmitHelpTicketUseCase
+
     @RelaxedMockK
     lateinit var updateCartCounterUseCase: UpdateCartCounterUseCase
+
     @RelaxedMockK
     lateinit var addToCartUseCase: AddToCartUseCase
+
     @RelaxedMockK
     lateinit var addToCartOcsUseCase: AddToCartOcsUseCase
+
     @RelaxedMockK
     lateinit var addToCartOccUseCase: AddToCartOccUseCase
+
     @RelaxedMockK
-    lateinit var getCartTypeUseCase: GetCartTypeUseCase
+    lateinit var getProductInfoP3VariantUseCase: GetProductInfoP3VariantUseCase
+
     @RelaxedMockK
     lateinit var toggleNotifyMeUseCase: ToggleNotifyMeUseCase
+
     @RelaxedMockK
     lateinit var sendTopAdsUseCase: SendTopAdsUseCase
 
@@ -113,9 +139,73 @@ class DynamicProductDetailViewModelTest {
         MockKAnnotations.init(this)
     }
 
+    @After
+    fun setupAfter() {
+        viewModel.p3VariantResponse.removeObserver { }
+        viewModel.productInfoP3RateEstimate.removeObserver { }
+    }
+
     private val viewModel by lazy {
         DynamicProductDetailViewModel(TestDispatcherProvider(), stickyLoginUseCase, getPdpLayoutUseCase, getProductInfoP2ShopUseCase, getProductInfoP2LoginUseCase, getProductInfoP2GeneralUseCase, getProductInfoP3RateEstimateUseCase, toggleFavoriteUseCase, removeWishlistUseCase, addWishListUseCase, getRecommendationUseCase,
-                moveProductToWarehouseUseCase, moveProductToEtalaseUseCase, trackAffiliateUseCase, submitHelpTicketUseCase, updateCartCounterUseCase, addToCartUseCase, addToCartOcsUseCase, addToCartOccUseCase, getCartTypeUseCase, toggleNotifyMeUseCase, sendTopAdsUseCase, userSessionInterface)
+                moveProductToWarehouseUseCase, moveProductToEtalaseUseCase, trackAffiliateUseCase, submitHelpTicketUseCase, updateCartCounterUseCase, addToCartUseCase, addToCartOcsUseCase, addToCartOccUseCase, getProductInfoP3VariantUseCase, toggleNotifyMeUseCase, sendTopAdsUseCase, userSessionInterface)
+    }
+
+    @Test
+    fun `has shop authority`() {
+        val shopInfo = ShopInfo(isAllowManage = 1)
+        every {
+            viewModel.isShopOwner()
+        } returns true
+
+        viewModel.shopInfo = shopInfo
+
+        val hasShopAuthority = viewModel.hasShopAuthority()
+
+        Assert.assertTrue(hasShopAuthority)
+        viewModel.shopInfo = null
+    }
+
+    @Test
+    fun `has not shop authority`() {
+        val shopInfo = ShopInfo(isAllowManage = 0)
+        every {
+            viewModel.isShopOwner()
+        } returns false
+
+        viewModel.shopInfo = shopInfo
+
+        val hasShopAuthority = viewModel.hasShopAuthority()
+
+        Assert.assertFalse(hasShopAuthority)
+        viewModel.shopInfo = null
+    }
+
+    @Test
+    fun `on success normal atc`(){
+
+        val addToCartOcsRequestParams = AddToCartRequestParams()
+        val atcResponseSuccess = AddToCartDataModel(data = DataModel(success = 1),status = "OK")
+
+        coEvery {
+            addToCartUseCase.createObservable(RequestParams()).toBlocking().single()
+        } returns atcResponseSuccess
+
+        viewModel.addToCart(addToCartOcsRequestParams)
+
+        coVerify {
+            addToCartUseCase.createObservable(any()).toBlocking()
+        }
+
+
+//        coVerify(inverse = true) {
+//            addToCartOcsUseCase.createObservable(any()).toBlocking()
+//        }
+//
+//        coVerify(inverse = true) {
+//            addToCartOccUseCase.createObservable(any()).toBlocking()
+//        }
+//        print(viewModel.addToCartLiveData.value)
+//        Assert.assertTrue(viewModel.addToCartLiveData.value is Fail)
     }
 
     /**
@@ -124,18 +214,25 @@ class DynamicProductDetailViewModelTest {
     @Test
     fun isShopOwnerTrue() {
         val shopId = "123"
+        val getDynamicProductInfo = DynamicProductInfoP1(BasicInfo(shopID = shopId))
+        viewModel.getDynamicProductInfoP1 = getDynamicProductInfo
+
         every {
             userSessionInterface.shopId
         } returns shopId
 
+        every {
+            viewModel.isUserSessionActive
+        } returns true
+
         val isShopOwner = viewModel.isShopOwner()
 
         Assert.assertTrue(isShopOwner)
+        viewModel.getDynamicProductInfoP1 = null
     }
 
     @Test
     fun isShowOwnerFalse() {
-        val shopId = "123"
         val anotherShopId = "312"
         every {
             userSessionInterface.shopId
@@ -327,13 +424,18 @@ class DynamicProductDetailViewModelTest {
         val data = ProductDetailDataModel(listOfLayout = mutableListOf(ProductSnapshotDataModel()))
         val productParams = ProductParams("", "", "", "", "", "")
 
+        val cartRedirectionData = CartRedirectionResponse(CartRedirection(data = listOf(CartTypeData(), CartTypeData())))
         val shopCore = ShopCore(domain = anyString())
-        val dataP2Shop = ProductInfoP2ShopData(shopInfo = ShopInfo(shopCore = shopCore), tradeinResponse = TradeinResponse())
+        val dataP2Shop = ProductInfoP2ShopData(shopInfo = ShopInfo(shopCore = shopCore), tradeinResponse = TradeinResponse(), cartRedirectionResponse = cartRedirectionData)
 
         val dataP2Login = ProductInfoP2Login(pdpAffiliate = TopAdsPdpAffiliateResponse.TopAdsPdpAffiliate.Data.PdpAffiliate())
         val dataP2General = ProductInfoP2General()
 
-        val dataP3 = ProductInfoP3(SummaryText(), RatesModel())
+        val dataP3RateEstimate = ProductInfoP3(SummaryText(), RatesModel(), false, AddressModel())
+        val dataP3Variant = ProductInfoP3Variant(CartRedirectionResponse())
+
+        viewModel.p3VariantResponse.observeForever { }
+        viewModel.productInfoP3RateEstimate.observeForever { }
 
         every {
             viewModel.userId
@@ -341,6 +443,10 @@ class DynamicProductDetailViewModelTest {
 
         every {
             userSessionInterface.isLoggedIn
+        } returns true
+
+        every {
+            viewModel.isUserSessionActive
         } returns true
 
         coEvery {
@@ -361,7 +467,11 @@ class DynamicProductDetailViewModelTest {
 
         coEvery {
             getProductInfoP3RateEstimateUseCase.executeOnBackground()
-        } returns dataP3
+        } returns dataP3RateEstimate
+
+        coEvery {
+            getProductInfoP3VariantUseCase.executeOnBackground()
+        } returns dataP3Variant
 
         viewModel.getProductP1(productParams)
 
@@ -383,6 +493,7 @@ class DynamicProductDetailViewModelTest {
         Assert.assertNotNull(viewModel.p2ShopDataResp.value?.nearestWarehouse)
         Assert.assertNotNull(viewModel.p2ShopDataResp.value?.tradeinResponse)
         Assert.assertEquals(viewModel.p2ShopDataResp.value?.shopCod, anyBoolean())
+        Assert.assertTrue(viewModel.p2ShopDataResp.value?.cartRedirectionResponse?.cartRedirection?.data?.size != 0)
 
         coVerify {
             getProductInfoP2LoginUseCase.executeOnBackground()
@@ -399,8 +510,10 @@ class DynamicProductDetailViewModelTest {
         coVerify {
             getProductInfoP3RateEstimateUseCase.executeOnBackground()
         }
+
         Assert.assertNotNull(viewModel.productInfoP3RateEstimate.value)
         Assert.assertNotNull(viewModel.productInfoP3RateEstimate.value?.rateEstSummarizeText)
+        Assert.assertNotNull(viewModel.productInfoP3RateEstimate.value?.ratesModel)
         Assert.assertEquals(viewModel.productInfoP3RateEstimate.value?.userCod, anyBoolean())
     }
 
@@ -659,6 +772,7 @@ class DynamicProductDetailViewModelTest {
         viewModel.toggleFavorite(shopId)
 
         verify {
+            toggleFavoriteUseCase.createRequestParam(shopId)
             toggleFavoriteUseCase.createRequestParam(shopId)
         }
         coVerify {
