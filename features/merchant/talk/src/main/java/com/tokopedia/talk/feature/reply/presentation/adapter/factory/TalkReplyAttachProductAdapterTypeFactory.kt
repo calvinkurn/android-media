@@ -1,4 +1,4 @@
-package com.tokopedia.talk.feature.reply.presentation.adapter
+package com.tokopedia.talk.feature.reply.presentation.adapter.factory
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
