@@ -4,7 +4,7 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
-import com.tokopedia.product.manage.feature.quickedit.variant.data.model.GetProductVariantResponse
+import com.tokopedia.product.manage.feature.quickedit.variant.data.model.response.GetProductVariantResponse
 import com.tokopedia.product.manage.feature.quickedit.variant.data.query.GetProductVariant
 import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
