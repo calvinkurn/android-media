@@ -242,7 +242,9 @@ class PlayFragment : BaseDaggerFragment(), SensorOrientationManager.OrientationL
     }
 
     override fun onOrientationChanged(screenOrientation: ScreenOrientation) {
-        if (requestedOrientation != screenOrientation.requestedOrientation)
+        val event = playViewModel.observableEvent.value
+        val isFreezeOrBanned = (event?.isFreeze ?: false) || (event?.isBanned ?: false)
+        if (requestedOrientation != screenOrientation.requestedOrientation && !isFreezeOrBanned)
             requestedOrientation = screenOrientation.requestedOrientation
         sendTrackerWhenRotateScreen(screenOrientation)
     }
@@ -287,7 +289,7 @@ class PlayFragment : BaseDaggerFragment(), SensorOrientationManager.OrientationL
         orientationManager.enable()
 
         val screenOrientation = ScreenOrientation.getByInt(resources.configuration.orientation)
-        isChangingOrientation = playViewModel.screenOrientation != ScreenOrientation.Unknown && playViewModel.screenOrientation != screenOrientation
+        isChangingOrientation = (playViewModel.screenOrientation != ScreenOrientation.Unknown) && (playViewModel.screenOrientation != screenOrientation)
         playViewModel.setScreenOrientation(screenOrientation)
     }
 
@@ -367,10 +369,14 @@ class PlayFragment : BaseDaggerFragment(), SensorOrientationManager.OrientationL
 
     private fun observeEventUserInfo() {
         playViewModel.observableEvent.observe(viewLifecycleOwner, Observer {
-            if (it.isFreeze)
-                try { Toaster.snackBar.dismiss() } catch (e: Exception) {}
-            else if (it.isBanned)
-                showEventDialog(it.bannedTitle, it.bannedMessage, it.bannedButtonTitle)
+            if (playViewModel.screenOrientation.isLandscape && (it.isFreeze || it.isBanned)) {
+                requestedOrientation = ScreenOrientation.Portrait.requestedOrientation
+            } else {
+                if (it.isFreeze)
+                    try { Toaster.snackBar.dismiss() } catch (e: Exception) {}
+                else if (it.isBanned)
+                    showEventDialog(it.bannedTitle, it.bannedMessage, it.bannedButtonTitle)
+            }
         })
     }
 
