@@ -34,7 +34,7 @@ object ProductAddEditTracking {
             mapOf(KEY_SHOP_ID to shopId, KEY_SCREEN_NAME to screen))
     }
 
-    fun sendAddProductClick(shopId: String, action: String, label: String = "") {
+    fun sendAddProductClickWithoutScreen(shopId: String, action: String, label: String = "") {
         getTracker().sendGeneralEventCustom(
                 EVENT_CLICK_ADD_PRODUCT,
                 CAT_ADD_PRODUCT_PAGE,
