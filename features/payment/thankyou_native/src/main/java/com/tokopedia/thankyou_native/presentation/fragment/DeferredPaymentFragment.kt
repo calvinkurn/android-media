@@ -110,7 +110,12 @@ class DeferredPaymentFragment : ThankYouBaseFragment(), ThankYouPageTimerView.Th
                     inflateWaitingUI(getString(R.string.thank_account_number), isCopyVisible = true, highlightAmountDigits = true)
                     showDigitAnnouncementTicker()
                 }
-                is VirtualAccount -> inflateWaitingUI(getString(R.string.thank_virtual_account_tag), isCopyVisible = true, highlightAmountDigits = false)
+                is VirtualAccount -> inflateWaitingUI(
+                        if (thanksPageData.gatewayName == GATEWAY_KLIK_BCA)
+                            getString(R.string.thank_klikBCA_virtual_account_tag)
+                        else
+                            getString(R.string.thank_virtual_account_tag),
+                        isCopyVisible = true, highlightAmountDigits = false)
                 is Retail -> inflateWaitingUI(getString(R.string.thank_payment_code), isCopyVisible = true, highlightAmountDigits = false)
                 is SmsPayment -> inflateWaitingUI(getString(R.string.thank_phone_number), isCopyVisible = false, highlightAmountDigits = false)
             }
@@ -203,7 +208,14 @@ class DeferredPaymentFragment : ThankYouBaseFragment(), ThankYouPageTimerView.Th
 
     private fun showToastCopySuccessFully(context: Context) {
         view?.let {
-            Toaster.make(it, getString(R.string.thankyou_account_copied), Toaster.LENGTH_SHORT)
+            val toasterMessage = when (paymentType) {
+                is BankTransfer -> getString(R.string.thankyou_bank_account_copied)
+                is VirtualAccount -> getString(R.string.thankyou_virtual_account_copied)
+                is Retail -> getString(R.string.thankyou_retail_account_copied)
+                else -> ""
+            }
+            if (toasterMessage.isNotBlank())
+                Toaster.make(it, toasterMessage, Toaster.LENGTH_SHORT)
         }
     }
 
@@ -250,6 +262,9 @@ class DeferredPaymentFragment : ThankYouBaseFragment(), ThankYouPageTimerView.Th
     companion object {
         private val COPY_BOARD_LABEL = "Tokopedia"
         const val SCREEN_NAME = "Selesaikan Pembayaran"
+
+        const val GATEWAY_KLIK_BCA = "KlickBCA"
+
         private const val ARG_THANK_PAGE_DATA = "arg_thank_page_data"
         fun getFragmentInstance(bundle: Bundle, thanksPageData: ThanksPageData):
                 DeferredPaymentFragment = DeferredPaymentFragment().apply {
@@ -258,5 +273,7 @@ class DeferredPaymentFragment : ThankYouBaseFragment(), ThankYouPageTimerView.Th
                 bundle.putParcelable(ARG_THANK_PAGE_DATA, thanksPageData)
             }
         }
+
+
     }
 }
