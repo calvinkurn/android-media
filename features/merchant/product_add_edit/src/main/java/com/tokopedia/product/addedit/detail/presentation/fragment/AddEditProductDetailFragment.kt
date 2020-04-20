@@ -121,6 +121,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     lateinit var viewModel: AddEditProductDetailViewModel
 
     private var selectedDurationPosition: Int = UNIT_DAY
+    private var isPreOrderFirstTime = false
 
     // product photo
     private var addProductPhotoButton: AppCompatTextView? = null
@@ -215,9 +216,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         userSession = UserSession(requireContext())
         shopId = userSession.shopId
 
-        if (viewModel.isEditing && !viewModel.isAdding) {
-            ProductEditMainTracking.trackScreen()
-        } else {
+        if (viewModel.isAdding) {
             ProductAddMainTracking.trackScreen()
         }
     }
@@ -343,11 +342,6 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         preOrderDurationUnitField?.textFieldInput?.inputType = InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS
 
         preOrderSwitch?.setOnCheckedChangeListener { _, isChecked ->
-            if (viewModel.isEditing && !viewModel.isAdding) {
-                ProductEditMainTracking.clickPreorderButton(shopId)
-            } else {
-                ProductAddMainTracking.clickPreorderButton(shopId)
-            }
             if (isChecked) {
                 preOrderInputLayout?.visibility = View.VISIBLE
             } else {
@@ -634,10 +628,6 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                         if (viewModel.isEditing && !viewModel.isAdding) {
                             ProductEditMainTracking.clickSaveOtherCategory(shopId)
                         }
-                    } else {
-                        if (viewModel.isEditing && !viewModel.isAdding) {
-                            ProductEditMainTracking.clickBackOtherCategory(shopId)
-                        }
                     }
                     productCategoryLayout?.show()
                     productCategoryRecListView?.show()
@@ -689,7 +679,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
 
         productNameField?.textFieldInput?.setText(productName)
 
-        if (!viewModel.isEditing && !viewModel.isAdding) {
+        if (viewModel.isAdding) {
             ProductAddMainTracking.clickProductNameRecom(shopId, productName)
         }
     }
@@ -737,7 +727,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     }
 
     fun onBackPressed() {
-        if (viewModel.isEditMode && !viewModel.isAdding) {
+        if (!viewModel.isAdding) {
             ProductEditMainTracking.trackBack(shopId)
         } else {
             ProductAddMainTracking.trackBack(shopId)
@@ -979,11 +969,14 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             if (it) preOrderInputLayout?.visible()
             else preOrderInputLayout?.hide()
 
-            if (viewModel.isEditing && !viewModel.isAdding) {
-                ProductEditMainTracking.clickPreorderButton(shopId)
-            } else {
-                ProductAddMainTracking.clickPreorderButton(shopId)
+            if (isPreOrderFirstTime) {
+                if (viewModel.isEditing && !viewModel.isAdding) {
+                    ProductEditMainTracking.clickPreorderButton(shopId)
+                } else {
+                    ProductAddMainTracking.clickPreorderButton(shopId)
+                }
             }
+            isPreOrderFirstTime = true
         })
     }
 
@@ -1127,9 +1120,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     }
 
     private fun moveToDescriptionActivity() {
-        if (viewModel.isEditing && !viewModel.isAdding) {
-            ProductEditMainTracking.clickContinue(shopId)
-        } else {
+        if (viewModel.isAdding) {
             ProductAddMainTracking.clickContinue(shopId)
         }
         val categoryId = viewModel.productInputModel.detailInputModel.categoryId
@@ -1188,7 +1179,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                 ListUnifyUtil.setSelected(this, 0) {
                     val categoryId = ListUnifyUtil.getCategoryId(it).toString()
                     viewModel.productInputModel.detailInputModel.categoryId = categoryId
-                    ProductAddMainTracking.clickProductCategoryRecom(shopId)
+                    true
                 }
             }
         }
@@ -1213,7 +1204,9 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     private fun onCategoryRecommendationSelected(categoryId: String) {
         productNameRecView?.hide()
         viewModel.productInputModel.detailInputModel.categoryId = categoryId
-        ProductAddMainTracking.clickProductCategoryRecom(shopId)
+        if(viewModel.isAdding) {
+            ProductAddMainTracking.clickProductCategoryRecom(shopId)
+        }
     }
 
     private fun showEditAllVariantPriceBottomSheet() {
@@ -1328,6 +1321,12 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             viewModel.shouldUpdateVariant = false
         }
         intent.putExtra(EXTRA_VARIANT_INPUT, variantInputModel)
+
+        if (viewModel.isEditing && !viewModel.isAdding) {
+            ProductEditMainTracking.clickContinue(shopId)
+        } else {
+            ProductAddMainTracking.clickContinue(shopId)
+        }
 
         activity?.setResult(Activity.RESULT_OK, intent)
         activity?.finish()

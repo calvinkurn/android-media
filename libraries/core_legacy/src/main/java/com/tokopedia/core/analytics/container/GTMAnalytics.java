@@ -88,18 +88,6 @@ public class GTMAnalytics extends ContextAnalytics {
         pushGeneralGtmV5Internal(map);
     }
 
-    @Override
-    public void sendGeneralEvent(String event, String category, String action, String label, String shopId) {
-        Map<String, Object> map = new HashMap<>();
-        map.put(KEY_EVENT, event);
-        map.put(KEY_CATEGORY, category);
-        map.put(KEY_ACTION, action);
-        map.put(KEY_LABEL, label);
-        map.put(SHOP_ID, shopId);
-
-        pushGeneralGtmV5Internal(map);
-    }
-
 
     @Override
     public void sendEnhanceEcommerceEvent(Map<String, Object> value) {

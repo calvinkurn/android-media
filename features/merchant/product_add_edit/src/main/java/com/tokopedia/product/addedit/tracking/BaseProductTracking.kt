@@ -16,6 +16,7 @@ object ProductAddEditTracking {
     const val EVENT_CLICK_EDIT_PRODUCT = "clickEditProduct"
     const val CAT_ADD_PRODUCT_PAGE = "add product page"
     const val CAT_EDIT_PRODUCT_PAGE = "edit product page"
+    const val CAT_DRAFT_PRODUCT_PAGE = "draft product page"
 
     fun getTracker(): ContextAnalytics {
         if (gtmTracker == null) {
@@ -33,7 +34,7 @@ object ProductAddEditTracking {
             mapOf(KEY_SHOP_ID to shopId, KEY_SCREEN_NAME to screen))
     }
 
-    fun sendAddProductClick(shopId: String, action: String, label: String = "") {
+    fun sendAddProductClickWithoutScreen(shopId: String, action: String, label: String = "") {
         getTracker().sendGeneralEventCustom(
                 EVENT_CLICK_ADD_PRODUCT,
                 CAT_ADD_PRODUCT_PAGE,

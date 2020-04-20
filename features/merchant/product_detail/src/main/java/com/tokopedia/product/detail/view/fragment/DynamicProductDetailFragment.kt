@@ -496,7 +496,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                     viewModel.p2General.value?.variantResp?.run {
                         onSuccessGetProductVariantInfo(this)
                     }
-                    userInputNotes = data.getStringExtra(ApplinkConst.Transaction.EXTRA_NOTES)
+                    userInputNotes = data.getStringExtra(ApplinkConst.Transaction.EXTRA_NOTES) ?: ""
                     userInputQuantity = data.getIntExtra(ApplinkConst.Transaction.EXTRA_QUANTITY, 0)
                     if (data.hasExtra(ApplinkConst.Transaction.RESULT_ATC_SUCCESS_MESSAGE)) {
                         val successMessage = data.getStringExtra(ApplinkConst.Transaction.RESULT_ATC_SUCCESS_MESSAGE)
@@ -741,8 +741,10 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                 openFtInstallmentBottomSheet(viewModel.installmentData ?: FinancingDataResponse())
             }
             ProductDetailConstant.PRODUCT_VARIANT_INFO -> {
-                DynamicProductDetailTracking.Click.eventClickVariant(generateVariantString(), viewModel.getDynamicProductInfoP1, componentTrackDataModel)
-                goToNormalCheckout(ATC_AND_BUY)
+                if(!GlobalConfig.isSellerApp()) {
+                    DynamicProductDetailTracking.Click.eventClickVariant(generateVariantString(), viewModel.getDynamicProductInfoP1, componentTrackDataModel)
+                    goToNormalCheckout(ATC_AND_BUY)
+                }
             }
             ProductDetailConstant.PRODUCT_WHOLESALE_INFO -> {
                 val data = DynamicProductDetailMapper.mapToWholesale(viewModel.getDynamicProductInfoP1?.data?.wholesale)

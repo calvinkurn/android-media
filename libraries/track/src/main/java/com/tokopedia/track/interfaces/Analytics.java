@@ -7,7 +7,6 @@ import java.util.Map;
 public interface Analytics {
     void sendGeneralEvent(Map<String, Object> value);
     void sendGeneralEvent(String event, String category, String action, String label);
-    void sendGeneralEvent(String event, String category, String action, String label, String shopId);
 
     @Deprecated
     void sendEnhanceEcommerceEvent(Map<String, Object> value);

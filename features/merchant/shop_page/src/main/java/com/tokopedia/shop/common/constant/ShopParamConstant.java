@@ -9,6 +9,7 @@ public class ShopParamConstant {
     public static final String EXTRA_SHOP_ID = "EXTRA_SHOP_ID";
     public static final String EXTRA_SHOP_REF = "EXTRA_SHOP_REF";
     public static final String EXTRA_ATTRIBUTION = "EXTRA_ATTRIBUTION";
+    public static final String EXTRA_IS_NEED_TO_RELOAD_DATA = "EXTRA_IS_NEED_TO_RELOAD_DATA";
 
     public static final String EXTRA_PRODUCT_KEYWORD = "EXTRA_PRODUCT_KEYWORD";
     public static final String EXTRA_ETALASE_ID = "EXTRA_ETALASE_ID";
@@ -25,4 +26,5 @@ public class ShopParamConstant {
     public static final String KEY_KEYWORD = "search";
     public static final String KEY_SORT = "sort";
     public static final String KEY_SHOP_REF = "shop_ref";
+    public static final String KEY_RELOAD_STATE = "isNeedToReloadData";
 }
