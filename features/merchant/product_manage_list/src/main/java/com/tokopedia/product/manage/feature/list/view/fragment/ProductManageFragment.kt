@@ -1033,37 +1033,41 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
             if(viewModel.isPowerMerchant() || isOfficialStore) {
                 productManageViewModel.isFeatured?.let { isFeatured ->
                     if(!isFeatured) {
-                        if(productListFeaturedOnlySize == 5) {
-                            setDialogFeaturedProduct(
+                        when (productListFeaturedOnlySize) {
+                            MAX_FEATURED_PRODUCT -> {
+                                setDialogFeaturedProduct(
                                     ProductManageUrl.ILLUSTRATION_MAX_FEATURED_PRODUCT_DOMAIN,
                                     getString(R.string.product_featured_max_dialog_title),
                                     getString(R.string.product_featured_max_dialog_desc),
                                     getString(R.string.product_featured_max_dialog_primary_cta),
                                     getString(R.string.product_featured_max_dialog_secondary_cta)
-                            )
-                            dialogFeaturedProduct?.setPrimaryCTAClickListener { dialogFeaturedProduct?.dismiss() }
-                            dialogFeaturedProduct?.setSecondaryCTAClickListener {
-                                dialogFeaturedProduct?.dismiss()
-                                viewModel.setSelectedFilter(listOf(FilterByCondition.FeaturedOnly))
+                                )
+                                dialogFeaturedProduct?.setPrimaryCTAClickListener { dialogFeaturedProduct?.dismiss() }
+                                dialogFeaturedProduct?.setSecondaryCTAClickListener {
+                                    dialogFeaturedProduct?.dismiss()
+                                    viewModel.setSelectedFilter(listOf(FilterByCondition.FeaturedOnly))
+                                }
+                                dialogFeaturedProduct?.show()
                             }
-                            dialogFeaturedProduct?.show()
-                        } else if(productListFeaturedOnlySize == 0) {
-                            setDialogFeaturedProduct(
+                            MIN_FEATURED_PRODUCT -> {
+                                setDialogFeaturedProduct(
                                     ProductManageUrl.ILLUSTRATION_ADD_FEATURED_PRODUCT_DOMAIN,
                                     getString(R.string.product_featured_add_dialog_title),
                                     getString(R.string.product_featured_add_dialog_desc),
                                     getString(R.string.product_featured_add_dialog_primary_cta),
                                     getString(R.string.product_featured_add_dialog_secondary_cta)
-                            )
-                            dialogFeaturedProduct?.setPrimaryCTAClickListener {
-                                addFeaturedProduct(productManageViewModel.id)
-                                dialogFeaturedProduct?.dismiss()
-                                ProductManageTracking.eventFeaturedProductPopUpSave()
+                                )
+                                dialogFeaturedProduct?.setPrimaryCTAClickListener {
+                                    addFeaturedProduct(productManageViewModel.id)
+                                    dialogFeaturedProduct?.dismiss()
+                                    ProductManageTracking.eventFeaturedProductPopUpSave()
+                                }
+                                dialogFeaturedProduct?.setSecondaryCTAClickListener { dialogFeaturedProduct?.dismiss() }
+                                dialogFeaturedProduct?.show()
                             }
-                            dialogFeaturedProduct?.setSecondaryCTAClickListener { dialogFeaturedProduct?.dismiss() }
-                            dialogFeaturedProduct?.show()
-                        } else {
-                           addFeaturedProduct(productManageViewModel.id)
+                            else -> {
+                                addFeaturedProduct(productManageViewModel.id)
+                            }
                         }
                     }
                 }
@@ -1590,5 +1594,9 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     companion object {
         private const val LOCAL_PATH_IMAGE_LIST = "loca_img_list"
         private const val DESC_IMAGE_LIST = "desc_img_list"
+
+        private const val MIN_FEATURED_PRODUCT = 0
+        private const val MAX_FEATURED_PRODUCT = 5
+
     }
 }
