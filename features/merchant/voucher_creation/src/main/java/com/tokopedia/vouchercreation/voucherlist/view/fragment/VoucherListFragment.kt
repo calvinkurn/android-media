@@ -28,6 +28,8 @@ class VoucherListFragment : BaseListFragment<BaseVoucherListUiModel, VoucherList
 
     companion object {
         private const val KEY_IS_ACTIVE_VOUCHER = "is_active_voucher"
+        private val MENU_VOUCHER_ACTIVE_ID = R.id.menuMvcShowVoucherActive
+        private val MENU_VOUCHER_HISTORY_ID = R.id.menuMvcShowVoucherHistory
 
         fun newInstance(isActiveVoucher: Boolean): VoucherListFragment {
             return VoucherListFragment().apply {
@@ -60,6 +62,11 @@ class VoucherListFragment : BaseListFragment<BaseVoucherListUiModel, VoucherList
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.menu_mvc_voucher_active_list, menu)
+        if (isActiveVoucher) {
+            menu.removeItem(MENU_VOUCHER_ACTIVE_ID)
+        } else {
+            menu.removeItem(MENU_VOUCHER_HISTORY_ID)
+        }
         super.onCreateOptionsMenu(menu, inflater)
     }
 

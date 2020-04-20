@@ -54,28 +54,28 @@ class VoucherListBottomSheet(
 
     private fun getPendingVoucherMenu(): List<BottomSheetMenuUiModel> {
         val menuItems = mutableListOf<BottomSheetMenuUiModel>()
-        menuItems.add(EditQuota(parent.context.getString(R.string.mvc_edit_quota), R.drawable.ic_mvc_share))
-        menuItems.add(EditQuota(parent.context.getString(R.string.mvc_edit_shown_period), R.drawable.ic_mvc_share))
-        menuItems.add(EditQuota(parent.context.getString(R.string.mvc_view_detail_and_edit_voucher), R.drawable.ic_mvc_share))
+        menuItems.add(EditQuota(parent.context.getString(R.string.mvc_edit_quota), R.drawable.ic_mvc_edit_quota))
+        menuItems.add(EditPeriod(parent.context.getString(R.string.mvc_edit_shown_period), R.drawable.ic_mvc_calendar))
+        menuItems.add(ViewDetail(parent.context.getString(R.string.mvc_view_detail_and_edit_voucher), R.drawable.ic_mvc_detail))
         menuItems.add(ItemDivider(ItemDivider.DIVIDER))
-        menuItems.add(EditQuota(parent.context.getString(R.string.mvc_download), R.drawable.ic_mvc_share))
-        menuItems.add(EditQuota(parent.context.getString(R.string.mvc_duplicate), R.drawable.ic_mvc_share))
+        menuItems.add(Download(parent.context.getString(R.string.mvc_download), R.drawable.ic_mvc_download))
+        menuItems.add(Duplicate(parent.context.getString(R.string.mvc_duplicate), R.drawable.ic_mvc_duplicate))
         menuItems.add(ItemDivider(ItemDivider.DIVIDER))
-        menuItems.add(EditQuota(parent.context.getString(R.string.mvc_cancel), R.drawable.ic_mvc_share))
+        menuItems.add(CancelVoucher(parent.context.getString(R.string.mvc_cancel), R.drawable.ic_mvc_cancel))
         menuItems.add(ItemDivider(ItemDivider.EMPTY_SPACE))
         return menuItems
     }
 
     private fun getOngoingVoucherMenu(): List<BottomSheetMenuUiModel> {
         val menuItems = mutableListOf<BottomSheetMenuUiModel>()
-        menuItems.add(EditQuota(parent.context.getString(R.string.mvc_edit_quota), R.drawable.ic_mvc_share))
-        menuItems.add(EditQuota(parent.context.getString(R.string.mvc_view_detail), R.drawable.ic_mvc_share))
+        menuItems.add(EditQuota(parent.context.getString(R.string.mvc_edit_quota), R.drawable.ic_mvc_edit_quota))
+        menuItems.add(ViewDetail(parent.context.getString(R.string.mvc_view_detail), R.drawable.ic_mvc_detail))
         menuItems.add(ItemDivider(ItemDivider.DIVIDER))
-        menuItems.add(EditQuota(parent.context.getString(R.string.mvc_share), R.drawable.ic_mvc_share))
-        menuItems.add(EditQuota(parent.context.getString(R.string.mvc_duplicate), R.drawable.ic_mvc_share))
-        menuItems.add(EditQuota(parent.context.getString(R.string.mvc_download), R.drawable.ic_mvc_share))
+        menuItems.add(Share(parent.context.getString(R.string.mvc_share), R.drawable.ic_mvc_share))
+        menuItems.add(Duplicate(parent.context.getString(R.string.mvc_duplicate), R.drawable.ic_mvc_duplicate))
+        menuItems.add(Download(parent.context.getString(R.string.mvc_download), R.drawable.ic_mvc_download))
         menuItems.add(ItemDivider(ItemDivider.DIVIDER))
-        menuItems.add(EditQuota(parent.context.getString(R.string.mvc_stop), R.drawable.ic_mvc_share))
+        menuItems.add(Stop(parent.context.getString(R.string.mvc_stop), R.drawable.ic_mvc_cancel))
         menuItems.add(ItemDivider(ItemDivider.EMPTY_SPACE))
         return menuItems
     }

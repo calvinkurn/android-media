@@ -24,6 +24,48 @@ sealed class BottomSheetMenuUiModel(
             override val icon: Int
     ) : BottomSheetMenuUiModel(title, icon)
 
+    data class Share(
+            override val title: String,
+            @DrawableRes
+            override val icon: Int
+    ) : BottomSheetMenuUiModel(title, icon)
+
+    data class EditPeriod(
+            override val title: String,
+            @DrawableRes
+            override val icon: Int
+    ) : BottomSheetMenuUiModel(title, icon)
+
+    data class ViewDetail(
+            override val title: String,
+            @DrawableRes
+            override val icon: Int
+    ) : BottomSheetMenuUiModel(title, icon)
+
+    data class Download(
+            override val title: String,
+            @DrawableRes
+            override val icon: Int
+    ) : BottomSheetMenuUiModel(title, icon)
+
+    data class Duplicate(
+            override val title: String,
+            @DrawableRes
+            override val icon: Int
+    ) : BottomSheetMenuUiModel(title, icon)
+
+    data class CancelVoucher(
+            override val title: String,
+            @DrawableRes
+            override val icon: Int
+    ) : BottomSheetMenuUiModel(title, icon)
+
+    data class Stop(
+            override val title: String,
+            @DrawableRes
+            override val icon: Int
+    ) : BottomSheetMenuUiModel(title, icon)
+
     data class ItemDivider(val type: Int = DIVIDER) : BottomSheetMenuUiModel() {
 
         companion object {
