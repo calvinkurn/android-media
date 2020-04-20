@@ -4,19 +4,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.tokopedia.vouchercreation.create.view.customview.VoucherTargetCardItem
-        android:id="@+id/test1"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/voucherTargetRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"/>
-
-    <com.tokopedia.vouchercreation.create.view.customview.VoucherTargetCardItem
-        android:id="@+id/test2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/test1"
-        app:layout_constraintStart_toStartOf="parent"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
 
     <com.tokopedia.vouchercreation.create.view.customview.NextStepButton
         android:id="@+id/nextButton"

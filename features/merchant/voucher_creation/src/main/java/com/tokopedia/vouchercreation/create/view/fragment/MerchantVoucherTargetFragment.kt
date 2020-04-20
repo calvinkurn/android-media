@@ -4,7 +4,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.vouchercreation.R
+import com.tokopedia.vouchercreation.create.view.adapter.MerchantVoucherTargetAdapter
 import kotlinx.android.synthetic.main.fragment_merchant_voucher_target.*
 
 class MerchantVoucherTargetFragment(onNextInvoker: () -> Unit = {}) : BaseCreateMerchantVoucherFragment(onNextInvoker) {
@@ -30,8 +32,18 @@ class MerchantVoucherTargetFragment(onNextInvoker: () -> Unit = {}) : BaseCreate
     }
 
     private fun setupView() {
+        voucherTargetRecyclerView?.adapter = MerchantVoucherTargetAdapter(::onRequestNotify)
+        voucherTargetRecyclerView?.layoutManager = LinearLayoutManager(context)
         nextButton?.setOnClickListener {
             onNext()
+        }
+    }
+
+    private fun onRequestNotify() {
+        voucherTargetRecyclerView?.run {
+            post {
+                adapter?.notifyDataSetChanged()
+            }
         }
     }
 }

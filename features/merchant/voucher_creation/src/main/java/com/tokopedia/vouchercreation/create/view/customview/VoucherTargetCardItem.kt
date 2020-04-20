@@ -23,13 +23,13 @@ class VoucherTargetCardItem @JvmOverloads constructor(
 ) : BaseVoucherView(context, attrs, defStyleAttr, defStyleRes, layoutResource, styleableResource) {
 
     companion object {
-        private const val TARGET_PUBLIC_TYPE = 0
-        private const val TARGET_SPECIAL_TYPE = 1
+        const val TARGET_PUBLIC_TYPE = 0
+        const val TARGET_SPECIAL_TYPE = 1
     }
 
     private var voucherTargetCardType: VoucherTargetCardType = VoucherTargetCardType.PUBLIC
 
-    var voucherTargetType: Int = TARGET_PUBLIC_TYPE
+    private var voucherTargetType: Int = TARGET_PUBLIC_TYPE
         set(value) {
             field = value
             voucherTargetCardType =
@@ -42,23 +42,10 @@ class VoucherTargetCardItem @JvmOverloads constructor(
                         }
                         else -> return
                     }
-            setupView()
         }
-    var isItemEnabled: Boolean = false
-        set(value) {
-            field = value
-            setupView()
-        }
-    var isHavePromoCode: Boolean = false
-        set(value) {
-            field = value
-            setupView()
-        }
-    var promoCode: String = ""
-        set(value) {
-            field = value
-            setupView()
-        }
+    private var isItemEnabled: Boolean = false
+    private var isHavePromoCode: Boolean = false
+    private var promoCode: String = ""
 
     override fun setupAttributes() {
         attributes?.run {
@@ -67,6 +54,7 @@ class VoucherTargetCardItem @JvmOverloads constructor(
             isHavePromoCode = getBoolean(R.styleable.VoucherTargetCardItem_isHavePromoCode, isHavePromoCode)
             promoCode = getString(R.styleable.VoucherTargetCardItem_promoCode).toBlankOrString()
         }
+        setupView()
     }
 
     override fun setupView() {
@@ -116,7 +104,21 @@ class VoucherTargetCardItem @JvmOverloads constructor(
                 isChangeEnabled = isItemEnabled
                 promoCodeString = promoCode.toBlankOrString()
             }
+        } else {
+            voucherTargetPromoCodeInfo?.visibility = View.GONE
         }
+    }
+
+    fun setupCurrentView(voucherTargetType: Int,
+                         isItemEnabled: Boolean,
+                         isHavePromoCode: Boolean,
+                         promoCode: String) {
+        this.voucherTargetType = voucherTargetType
+        this.isItemEnabled = isItemEnabled
+        this.isHavePromoCode = isHavePromoCode
+        this.promoCode = promoCode
+
+        setupView()
     }
 
     enum class VoucherTargetCardType(@DrawableRes val iconDrawableRes: Int,

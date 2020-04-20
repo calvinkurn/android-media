@@ -43,6 +43,7 @@ class VoucherTargetPromoCodeInfo @JvmOverloads constructor(
 
     override fun setupView() {
         view?.run {
+            layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
             voucherCreatePromoCodeValue?.text = promoCodeString
             voucherCreatePromoCodeChange?.setChangeTextColor(isChangeEnabled)
         }
