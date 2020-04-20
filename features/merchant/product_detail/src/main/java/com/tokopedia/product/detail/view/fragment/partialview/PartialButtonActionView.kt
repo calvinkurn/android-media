@@ -48,22 +48,6 @@ class PartialButtonActionView private constructor(val view: View,
         fun build(_view: View, _listener: View.OnClickListener) = PartialButtonActionView(_view, _listener)
     }
 
-    //OLD PDP
-    fun renderData(isWarehouseProduct: Boolean, hasShopAuthority: Boolean, preOrder: PreOrder?) {
-        this.isWarehouseProduct = isWarehouseProduct
-        this.hasShopAuthority = hasShopAuthority
-        this.preOrder = preOrder
-        renderButton()
-    }
-
-    //OLD PDP
-    fun renderData(isWarehouseProduct: Boolean, isExpressCheckout: Boolean, hasTopAdsActive: Boolean) {
-        this.isWarehouseProduct = isWarehouseProduct
-        this.isExpressCheckout = isExpressCheckout
-        this.hasTopAdsActive = hasTopAdsActive
-        renderButton()
-    }
-
     fun setButtonP1(preOrder: PreOrder?, isLeasing: Boolean) {
         this.preOrder = preOrder
         this.isLeasing = isLeasing

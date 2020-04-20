@@ -1,7 +1,6 @@
 package com.tokopedia.product.detail.view.viewholder
 
 import android.view.View
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -20,10 +19,11 @@ import com.tokopedia.product.detail.view.adapter.MostHelpfulReviewAdapter
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.product.detail.view.util.PaddingItemDecoration
 import com.tokopedia.product.detail.view.util.ProductDetailUtil
+import kotlinx.android.synthetic.main.item_dynamic_image_review.view.*
 import kotlinx.android.synthetic.main.item_dynamic_mosthelpful_review.view.*
 import kotlinx.android.synthetic.main.item_dynamic_mosthelpful_review.view.container_most_helpful_review
 import kotlinx.android.synthetic.main.item_dynamic_review.view.*
-import kotlinx.android.synthetic.main.partial_product_image_review.view.*
+import kotlinx.android.synthetic.main.item_dynamic_review.view.container_image_review
 
 class ProductReviewViewHolder(val view: View, val listener: DynamicProductDetailListener) :
         AbstractViewHolder<ProductMostHelpfulReviewDataModel>(view) {

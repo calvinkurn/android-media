@@ -6,6 +6,7 @@ import android.view.MenuItem;
 
 import androidx.fragment.app.Fragment;
 
+import com.google.android.play.core.splitcompat.SplitCompat;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.contactus.R;
 import com.tokopedia.contactus.createticket.ContactUsConstant;
@@ -77,6 +78,7 @@ public class ContactUsHomeActivity extends BaseSimpleActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        SplitCompat.installActivity(this);
         getMenuInflater().inflate(R.menu.contactus_menu_home, menu);
         return true;
     }
