@@ -1,5 +1,7 @@
 package com.tokopedia.topchat.chatroom.view.custom
 
+import android.animation.ArgbEvaluator
+import android.animation.ObjectAnimator
 import android.content.Context
 import android.content.SharedPreferences
 import android.graphics.Color
@@ -57,11 +59,13 @@ class TransactionOrderProgressLayout : LinearLayout {
         this.chatOrder = chatOrder
         if (!shouldBeRendered()) return
         loadPreviousState()
-        renderBackgroundHasBeenSeen()
+        renderBackgroundColor()
         renderStateDescription()
         renderStateChangerButton()
         renderOrderStatus()
         renderLayoutVisibility()
+        renderHasBeenSeen()
+        saveCurrentState()
     }
 
     private fun initViewLayout() {
@@ -88,6 +92,28 @@ class TransactionOrderProgressLayout : LinearLayout {
 
     private fun renderLayoutVisibility() {
         showWithCondition(chatOrder.enable)
+    }
+
+    private fun renderHasBeenSeen() {
+        if (!state.hasSeen) {
+            renderFirstTimeSeen()
+        }
+    }
+
+    private fun renderFirstTimeSeen() {
+        cardOrderContainer?.let {
+            ObjectAnimator.ofObject(
+                    it,
+                    "backgroundColor",
+                    ArgbEvaluator(),
+                    State.COLOR_NOT_SEEN.toInt(),
+                    State.COLOR_SEEN
+            ).apply {
+                duration = transitionTime.toLong()
+                start()
+            }
+            state.seen()
+        }
     }
 
     private fun renderOrderStatus() {
@@ -146,26 +172,12 @@ class TransactionOrderProgressLayout : LinearLayout {
         status?.setOnClickListener(clickListener)
     }
 
-    private fun loadPreviousState() {
-        try {
-            val stateJsonString = getPref()?.getString(getPrefOrderPrefKey(), DEFAULT_STATE)
-            state = CommonUtil.fromJson(stateJsonString, State::class.java)
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-    }
-
-    private fun renderBackgroundHasBeenSeen() {
-        if (!state.haBeenSeen) {
-            cardOrderContainer?.setBackgroundColor(State.COLOR_SEEN.toInt())
+    private fun renderBackgroundColor() {
+        if (!state.hasSeen) {
+            cardOrderContainer?.setBackgroundColor(State.COLOR_NOT_SEEN.toInt())
         } else {
-            cardOrderContainer?.setBackgroundColor(Color.WHITE)
+            cardOrderContainer?.setBackgroundColor(State.COLOR_SEEN)
         }
-    }
-
-    private fun saveCurrentState() {
-        val stateJsonString = CommonUtil.toJson(state)
-        getPref()?.edit()?.putString(getPrefOrderPrefKey(), stateJsonString)?.apply()
     }
 
     private fun getPref(): SharedPreferences? {
@@ -233,12 +245,31 @@ class TransactionOrderProgressLayout : LinearLayout {
         }
     }
 
+    private fun saveCurrentState() {
+        val stateJsonString = CommonUtil.toJson(state)
+        getPref()?.edit()?.putString(getPrefOrderPrefKey(), stateJsonString)?.apply()
+    }
+
+    private fun loadPreviousState() {
+        try {
+            val stateJsonString = getPref()?.getString(getPrefOrderPrefKey(), DEFAULT_STATE)
+            state = CommonUtil.fromJson(stateJsonString, State::class.java)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
     data class State(
             var bodyVisibility: String = DEFAULT_BODY_VISIBILITY,
-            var haBeenSeen: Boolean = DEFAULT_HAS_SEEN
+            var hasSeen: Boolean = DEFAULT_HAS_SEEN
     ) {
+        fun seen() {
+            this.hasSeen = true
+        }
+
         companion object {
-            const val COLOR_SEEN = 0xFFEBFFEF
+            const val COLOR_NOT_SEEN = 0xFFEBFFEF
+            const val COLOR_SEEN = Color.WHITE
 
             const val OPEN = "Tutup"
             const val CLOSE = "Lihat"
@@ -252,5 +283,6 @@ class TransactionOrderProgressLayout : LinearLayout {
         private val LAYOUT = R.layout.partial_transaction_order_progress
         private val DEFAULT_STATE = CommonUtil.toJson(State())
         private const val PREF_NAME = "Chat_TransactionOrderProgressPreference"
+        private const val transitionTime = 3000
     }
 }
