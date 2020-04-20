@@ -14,14 +14,6 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent" />
 
-    <com.tokopedia.flight.searchV4.presentation.widget.DepartureTripLabelView
-        android:id="@+id/departureTripLabel"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/horizontal_progress_bar" />
-
     <com.tokopedia.unifycomponents.ticker.Ticker
         android:id="@+id/flight_search_ticker"
         android:layout_width="match_parent"
@@ -29,9 +21,17 @@
         android:visibility="gone"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/departureTripLabel"
+        app:layout_constraintTop_toBottomOf="@+id/horizontal_progress_bar"
         app:tickerShapeType="full"
         tools:visibility="visible" />
+
+    <com.tokopedia.flight.searchV4.presentation.widget.DepartureTripLabelView
+        android:id="@+id/departureTripLabel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/flight_search_ticker" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -40,7 +40,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/flight_ticker_view">
+        app:layout_constraintTop_toBottomOf="@+id/departureTripLabel">
 
         <include layout="@layout/include_flight_search_title_route" />
 
