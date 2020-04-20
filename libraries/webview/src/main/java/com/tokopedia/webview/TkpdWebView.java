@@ -3,8 +3,10 @@ package com.tokopedia.webview;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Build;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.webkit.WebSettings;
@@ -18,6 +20,8 @@ import com.tokopedia.authentication.AuthConstant;
 import com.tokopedia.authentication.AuthHelper;
 import com.tokopedia.authentication.AuthKey;
 import com.tokopedia.config.GlobalConfig;
+import com.tokopedia.network.NetworkRouter;
+import com.tokopedia.network.data.model.FingerprintModel;
 import com.tokopedia.network.utils.URLGenerator;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
@@ -43,8 +47,11 @@ public class TkpdWebView extends WebView {
     private static final String GCM_STORAGE = "GCM_STORAGE";
     private static final String GCM_ID = "gcm_id";
     private RemoteConfig remoteConfig;
+    private static final String KEY_FINGERPRINT_DATA = "Fingerprint-Data";
+    private static final String KEY_FINGERPRINT_HASH = "Fingerprint-Hash";
 
-    private @Nullable TkpdWebView.WebviewScrollListener scrollListener = null;
+    private @Nullable
+    TkpdWebView.WebviewScrollListener scrollListener = null;
 
     public TkpdWebView(@NonNull Context context) {
         super(context);
@@ -63,16 +70,18 @@ public class TkpdWebView extends WebView {
 
     public interface WebviewScrollListener {
         void onTopReached();
+
         void onEndReached();
+
         void onHasScrolled();
     }
 
-    private void init(Context context){
+    private void init(Context context) {
         remoteConfig = new FirebaseRemoteConfigImpl(context);
         //set custom tracking, helpful for GA
         if (remoteConfig.getBoolean(RemoteConfigKey.ENABLE_CUSTOMER_USER_AGENT_IN_WEBVIEW, true)) {
             WebSettings webSettings = getSettings();
-            String userAgent = String.format("%s - Android %s","Tokopedia Webview", GlobalConfig.VERSION_NAME);
+            String userAgent = String.format("%s - Android %s", "Tokopedia Webview", GlobalConfig.VERSION_NAME);
             webSettings.setUserAgentString(userAgent);
         }
         SplitCompat.installActivity(context);
@@ -86,7 +95,7 @@ public class TkpdWebView extends WebView {
      * load url with the header for identification and security
      * isUseFlag=true will add custom query parameter
      */
-    public void loadAuthUrl(@NonNull String url,@Nullable UserSessionInterface userSession, boolean isUseFlag) {
+    public void loadAuthUrl(@NonNull String url, @Nullable UserSessionInterface userSession, boolean isUseFlag) {
         url = WebViewHelper.appendGAClientIdAsQueryParam(url, getContext());
 
         String urlToLoad;
@@ -102,7 +111,7 @@ public class TkpdWebView extends WebView {
             if (path == null) {
                 path = "";
             }
-            Map<String,String> header = AuthHelper.getDefaultHeaderMapOld(
+            Map<String, String> header = AuthHelper.getDefaultHeaderMapOld(
                     path,
                     getQuery(Uri.parse(url).getQuery()),
                     "GET",
@@ -116,17 +125,31 @@ public class TkpdWebView extends WebView {
                     getRegistrationIdWithTemp(getContext())
             );
             header.put(
-                    HEADER_TKPD_USER_AGENT ,
+                    HEADER_TKPD_USER_AGENT,
                     DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_DEVICE
             );
-            loadUrl(urlToLoad,header);
+            Context application = getContext().getApplicationContext();
+            if (application instanceof NetworkRouter) {
+                FingerprintModel fingerprintModel = ((NetworkRouter) (application)).getFingerprintModel();
+                String hash = fingerprintModel.getFingerprintHash();
+                header.put(
+                        KEY_FINGERPRINT_DATA,
+                        hash
+                );
+                header.put(
+                        KEY_FINGERPRINT_HASH,
+                        AuthHelper.Companion.getMD5Hash(hash + "+" + userSession.getUserId())
+                );
+            }
+            loadUrl(urlToLoad, header);
         }
     }
 
     private String getRegistrationIdWithTemp(Context context) {
         LocalCacheHandler cache = new LocalCacheHandler(context, GCM_STORAGE);
         if (cache.getString(GCM_ID, "").equals("")) {
-            String tempID = UUID.randomUUID().toString();;
+            String tempID = UUID.randomUUID().toString();
+            ;
             cache.putString(GCM_ID, tempID);
             cache.applyEditor();
             return tempID;
@@ -137,11 +160,11 @@ public class TkpdWebView extends WebView {
     /**
      * load url with the header for identification and security
      */
-    public void loadAuthUrl(@NonNull String url,@Nullable UserSessionInterface userSession) {
+    public void loadAuthUrl(@NonNull String url, @Nullable UserSessionInterface userSession) {
         loadAuthUrl(url, userSession, false);
     }
 
-    public void loadAuthUrlWithFlags(@NonNull String url,@Nullable UserSessionInterface userSession) {
+    public void loadAuthUrlWithFlags(@NonNull String url, @Nullable UserSessionInterface userSession) {
         loadAuthUrl(url, userSession, true);
     }
 
@@ -184,7 +207,7 @@ public class TkpdWebView extends WebView {
     @Override
     protected void onScrollChanged(int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
         TkpdWebView.WebviewScrollListener listener = scrollListener;
-        if (listener!= null) {
+        if (listener != null) {
             int height = (int) Math.floor(this.getContentHeight() * this.getScale());
             int webViewHeight = this.getMeasuredHeight();
             if (this.getScrollY() == 0) {
@@ -204,10 +227,10 @@ public class TkpdWebView extends WebView {
 
     @Override
     public void loadUrl(@NonNull String url, @NonNull Map<String, String> additionalHttpHeaders) {
-        if(WebViewHelper.isUrlValid(url)){
+        if (WebViewHelper.isUrlValid(url)) {
             super.loadUrl(url, additionalHttpHeaders);
-        }else {
-            if(!GlobalConfig.DEBUG)
+        } else {
+            if (!GlobalConfig.DEBUG)
                 Crashlytics.log(
                         getContext().getString(R.string.error_message_url_invalid_crashlytics) + url);
 

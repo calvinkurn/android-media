@@ -26,6 +26,7 @@ import com.tokopedia.topchat.chatroom.view.adapter.viewholder.textbubble.LeftCha
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.textbubble.RightChatMessageViewHolder
 import com.tokopedia.topchat.chatroom.view.listener.DualAnnouncementListener
 import com.tokopedia.topchat.chatroom.view.listener.TopChatVoucherListener
+import com.tokopedia.topchat.chatroom.view.uimodel.HeaderDateUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.ProductCarouselUiModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.ImageDualAnnouncementUiModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.QuotationUiModel
@@ -99,6 +100,10 @@ open class TopChatTypeFactoryImpl(
         return ProductCarouselListAttachmentViewHolder.LAYOUT
     }
 
+    override fun type(headerDateUiModel: HeaderDateUiModel): Int {
+        return HeaderDateViewHolder.LAYOUT
+    }
+
     override fun type(productAttachmentViewModel: ProductAttachmentViewModel): Int {
         return if (useNewProductCard) {
             TopchatProductAttachmentViewHolder.LAYOUT
@@ -133,6 +138,7 @@ open class TopChatTypeFactoryImpl(
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
+            HeaderDateViewHolder.LAYOUT -> HeaderDateViewHolder(parent)
             ProductAttachmentViewHolder.LAYOUT -> TopchatOldProductAttachmentViewHolder(parent, productAttachmentListener)
             TopchatProductAttachmentViewHolder.LAYOUT -> TopchatProductAttachmentViewHolder(parent, productAttachmentListener)
             TopchatEmptyViewHolder.LAYOUT -> TopchatEmptyViewHolder(parent)

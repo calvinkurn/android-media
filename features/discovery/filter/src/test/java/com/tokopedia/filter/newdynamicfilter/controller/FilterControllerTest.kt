@@ -746,4 +746,60 @@ class FilterControllerTest {
             "Actual list size ${this.size} is different with expected size ${expectedOptionList.size}"
         }
     }
+
+    @Test
+    fun `test appendFilterList`() {
+        val parameter = createParameterWithJabodetabekOptionSelected()
+
+        `Given initialized FilterController only with quick filters`(parameter)
+
+        `When FilterController add new filter`(parameter)
+
+        `Then verify FilterController getFilterViewState is refreshed with new filter`()
+    }
+
+    private fun `Given initialized FilterController only with quick filters`(parameter: Map<String, String>) {
+        val quickFilterList = createQuickFilterList()
+
+        filterController.initFilterController(parameter, quickFilterList)
+
+        assert(filterController.getFilterViewState(jakartaOption)) {
+            "Jakarta Option should be selected"
+        }
+    }
+
+    private fun createParameterWithJabodetabekOptionSelected(): Map<String, String> {
+        val parameter = mutableMapOf<String, String>()
+        parameter[SearchApiConst.Q] = QUERY_FOR_TEST_SAMSUNG
+        parameter[SearchApiConst.FCITY] = JABODETABEK_VALUE
+
+        return parameter
+    }
+
+    private fun createQuickFilterList(): List<Filter> {
+        // Quick filter usually has multiple filters with only 1 option per filter
+
+        val jakartaOptionList = mutableListOf<Option>().also { it.add(jakartaOption) }
+        val officialOptionList = mutableListOf<Option>().also { it.add(officialOption) }
+
+        return mutableListOf<Filter>().also {
+            it.add(createFilterWithOptions(jakartaOptionList))
+            it.add(createFilterWithOptions(officialOptionList))
+        }
+    }
+
+    private fun `When FilterController add new filter`(parameter: Map<String, String>) {
+        val filterList = createFilterList()
+        filterController.appendFilterList(parameter, filterList)
+    }
+
+    private fun `Then verify FilterController getFilterViewState is refreshed with new filter`() {
+        assert(!filterController.getFilterViewState(jakartaOption)) {
+            "Jakarta Option should not be selected anymore"
+        }
+
+        assert(filterController.getFilterViewState(jabodetabekOption)) {
+            "Jabodetabek Option should now be selected"
+        }
+    }
 }

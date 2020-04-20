@@ -18,6 +18,7 @@ import com.tokopedia.autocomplete.analytics.AppScreen
 import com.tokopedia.autocomplete.analytics.AutocompleteTracking
 import com.tokopedia.autocomplete.initialstate.di.DaggerInitialStateComponent
 import com.tokopedia.autocomplete.initialstate.di.InitialStateComponent
+import com.tokopedia.autocomplete.initialstate.di.InitialStateContextModule
 import com.tokopedia.autocomplete.util.getModifiedApplink
 import com.tokopedia.discovery.common.model.SearchParameter
 import kotlinx.android.synthetic.main.fragment_initial_state.*
@@ -53,6 +54,7 @@ class InitialStateFragment : BaseDaggerFragment(), InitialStateContract.View, In
     override fun initInjector() {
         val component: InitialStateComponent = DaggerInitialStateComponent.builder()
                 .baseAppComponent(getBaseAppComponent())
+                .initialStateContextModule(activity?.let { InitialStateContextModule(it) })
                 .build()
         component.inject(this)
         component.inject(presenter)

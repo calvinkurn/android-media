@@ -18,7 +18,7 @@ import com.tokopedia.home.beranda.helper.DynamicLinkHelper
 import com.tokopedia.home.beranda.helper.glide.FPM_USE_CASE_ICON
 import com.tokopedia.home.beranda.helper.glide.loadMiniImage
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.dynamic_icon.DynamicIconSectionViewModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.dynamic_icon.DynamicIconSectionDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.dynamic_icon.HomeIconItem
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
@@ -31,7 +31,7 @@ import com.tokopedia.kotlin.extensions.view.show
  */
 
 class DynamicIconTwoRowsSectionViewHolder(val view: View,
-                                          val listener: HomeCategoryListener) : AbstractViewHolder<DynamicIconSectionViewModel>(view) {
+                                          val listener: HomeCategoryListener) : AbstractViewHolder<DynamicIconSectionDataModel>(view) {
 
     private var adapter: DynamicIconAdapter? = null
 
@@ -46,11 +46,11 @@ class DynamicIconTwoRowsSectionViewHolder(val view: View,
         recyclerView.layoutManager = gridLayoutManager
         recyclerView.clearOnScrollListeners()
     }
-    override fun bind(element: DynamicIconSectionViewModel) {
+    override fun bind(element: DynamicIconSectionDataModel) {
         adapter?.run { setSectionData(element) }
     }
 
-    override fun bind(element: DynamicIconSectionViewModel, payloads: MutableList<Any>) {
+    override fun bind(element: DynamicIconSectionDataModel, payloads: MutableList<Any>) {
         adapter?.run { setSectionData(element) }
     }
 
@@ -58,16 +58,16 @@ class DynamicIconTwoRowsSectionViewHolder(val view: View,
             private val context: Context,
             private val listener: HomeCategoryListener) : RecyclerView.Adapter<DynamicIconViewHolder>() {
 
-        var sectionViewModel = DynamicIconSectionViewModel()
+        var sectionViewModel = DynamicIconSectionDataModel()
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DynamicIconViewHolder {
             return DynamicIconViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.layout_dynamic_icon_two_row, parent, false))
         }
 
-        fun setSectionData(sectionViewModel: DynamicIconSectionViewModel) {
-            this.sectionViewModel = sectionViewModel
+        fun setSectionData(sectionDataModel: DynamicIconSectionDataModel) {
+            this.sectionViewModel = sectionDataModel
             notifyDataSetChanged()
-            HomeTrackingUtils.homeUsedCaseImpression(context, sectionViewModel.itemList)
+            HomeTrackingUtils.homeUsedCaseImpression(context, sectionDataModel.itemList)
         }
 
         override fun onBindViewHolder(holder: DynamicIconViewHolder, position: Int) {

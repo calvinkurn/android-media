@@ -17,7 +17,9 @@ ext {
             williamchart            : "com.tokopedia.williamchart:williamchart:0.0.3",
             betaNotif               : "com.tokopedia.graphql:beta.notif:0.0.6",
             chuckNoOp               : "com.tokopedia.chuckernoop:chucker_no_op:0.0.1",
-            akamaiBMP               : "AkamaiBMP:AkamaiBMP:2.1.2"
+            akamaiBMP               : "AkamaiBMP:AkamaiBMP:2.1.2",
+            fakeresponse            : "com.tokopedia.fakeresponse:fakeresponse:0.0.5",
+            fakeresponseNoOp        : "com.tokopedia.fakeresponse:fakeresponse_no_op:0.0.4"
     ]
 
     // Sort and categorize alphabetically by folder name
@@ -50,6 +52,7 @@ ext {
             inappupdate             : ":libraries:inappupdate",
             instrumentation_test    : ":libraries:instrumentation_test",
             iris                    : ":libraries:iris",
+            irisSession             : ":libraries:iris_session",
 //            iris                    : ":libraries:iris_no_op",
             kotlinExtensions        : ":libraries:kotlin_extensions",
             linker                  : ":libraries:linker",
