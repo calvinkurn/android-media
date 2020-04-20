@@ -1,4 +1,4 @@
-package com.tokopedia.topads.internal
+package com.tokopedia.topads.common.data.internal
 
 /**
  * Author errysuprayogi on 25,October,2019

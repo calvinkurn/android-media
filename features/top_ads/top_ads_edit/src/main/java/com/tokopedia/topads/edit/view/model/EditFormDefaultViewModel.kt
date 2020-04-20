@@ -9,18 +9,18 @@ import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.topads.common.data.internal.ParamObject
+import com.tokopedia.topads.common.data.internal.ParamObject.KEYWORD
+import com.tokopedia.topads.common.data.internal.ParamObject.REQUEST_TYPE
+import com.tokopedia.topads.common.data.internal.ParamObject.SHOP_Id
+import com.tokopedia.topads.common.data.internal.ParamObject.SOURCE
+import com.tokopedia.topads.common.data.internal.ParamObject.SOURCE_VALUE
+import com.tokopedia.topads.common.data.internal.ParamObject.SUGGESTION
 import com.tokopedia.topads.edit.R
 import com.tokopedia.topads.edit.data.param.DataSuggestions
 import com.tokopedia.topads.edit.data.response.*
-import com.tokopedia.topads.internal.ParamObject
-import com.tokopedia.topads.internal.ParamObject.KEYWORD
-import com.tokopedia.topads.internal.ParamObject.REQUEST_TYPE
-import com.tokopedia.topads.internal.ParamObject.SHOP_Id
-import com.tokopedia.topads.internal.ParamObject.SOURCE
-import com.tokopedia.topads.internal.ParamObject.SOURCE_VALUE
-import com.tokopedia.topads.internal.ParamObject.SUGGESTION
+
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
-import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
