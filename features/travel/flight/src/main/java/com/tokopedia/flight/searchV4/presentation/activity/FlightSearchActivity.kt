@@ -105,6 +105,7 @@ open class FlightSearchActivity : BaseFlightActivity(),
         flightSearchPassDataModel.returnDate = flightSearchParams.returnDate
         flightSearchPassDataModel.flightPassengerViewModel = flightSearchParams.flightPassengerViewModel
         flightSearchPassDataModel.flightClass = flightSearchParams.flightClass
+        flightSearchPassDataModel.searchRequestId = ""
 
         if (isReturnPage()) {
             val intent = Intent()

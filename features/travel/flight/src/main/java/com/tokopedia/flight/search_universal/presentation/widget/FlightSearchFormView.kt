@@ -41,7 +41,10 @@ class FlightSearchFormView @JvmOverloads constructor(context: Context, attrs: At
 
     init {
         View.inflate(context, R.layout.layout_flight_search_view, this)
+        init()
+    }
 
+    fun init() {
         renderFromCache()
         setViewClickListener()
     }
@@ -161,7 +164,7 @@ class FlightSearchFormView @JvmOverloads constructor(context: Context, attrs: At
         switchFlightRoundTrip.setOnCheckedChangeListener { compoundButton, isChecked ->
             listener?.onRoundTripSwitchChanged(isChecked)
             toggleOneWay(isChecked)
-         }
+        }
         imgFlightReverseAirport.setOnClickListener { onReverseAirportClicked() }
         tvFlightOriginLabel.setOnClickListener { listener?.onDepartureAirportClicked() }
         tvFlightOriginAirport.setOnClickListener { listener?.onDepartureAirportClicked() }
