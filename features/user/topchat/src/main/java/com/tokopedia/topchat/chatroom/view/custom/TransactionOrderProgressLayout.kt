@@ -141,16 +141,14 @@ class TransactionOrderProgressLayout : LinearLayout {
                     isOpen = { changeState(stateClose) },
                     isClose = { changeState(stateOpen) }
             )
-            state.updateIsForceClose()
-            saveCurrentState()
         }
         stateChanger?.setOnClickListener(clickListener)
         status?.setOnClickListener(clickListener)
     }
 
     private fun loadPreviousState() {
-        val stateJsonString = getPref()?.getString(getPrefOrderPrefKey(), DEFAULT_STATE)
         try {
+            val stateJsonString = getPref()?.getString(getPrefOrderPrefKey(), DEFAULT_STATE)
             state = CommonUtil.fromJson(stateJsonString, State::class.java)
         } catch (e: Exception) {
             e.printStackTrace()
@@ -237,13 +235,8 @@ class TransactionOrderProgressLayout : LinearLayout {
 
     data class State(
             var bodyVisibility: String = DEFAULT_BODY_VISIBILITY,
-            var haBeenSeen: Boolean = DEFAULT_HAS_SEEN,
-            var isForceClose: Boolean = DEFAULT_IS_FORCE_CLOSE
-    ) {
-        fun updateIsForceClose() {
-            isForceClose = bodyVisibility == stateClose
-        }
-    }
+            var haBeenSeen: Boolean = DEFAULT_HAS_SEEN
+    )
 
     companion object {
         private val LAYOUT = R.layout.partial_transaction_order_progress
@@ -255,7 +248,6 @@ class TransactionOrderProgressLayout : LinearLayout {
 
         private const val DEFAULT_BODY_VISIBILITY = stateOpen
         private const val DEFAULT_HAS_SEEN = false
-        private const val DEFAULT_IS_FORCE_CLOSE = false
         private val DEFAULT_STATE = CommonUtil.toJson(State())
 
         private const val PREF_NAME = "Chat_TransactionOrderProgressPreference"
