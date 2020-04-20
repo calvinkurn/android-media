@@ -18,13 +18,13 @@ import com.tokopedia.home.analytics.v2.MixTopTracking
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.helper.GravitySnapHelper
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelViewModel
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.SimpleHorizontalLinearLayoutDecoration
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicChannelViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.pdpview.dataModel.FlashSaleDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.pdpview.dataModel.SeeMorePdpDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.pdpview.listener.FlashSaleCardListener
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.pdpview.typeFactory.FlashSaleCardViewTypeFactoryImpl
+import com.tokopedia.home.util.setGradientBackground
 import com.tokopedia.productcard.ProductCardFlashSaleModel
 import com.tokopedia.productcard.v2.BlankSpaceConfig
 import com.tokopedia.unifycomponents.Toaster
@@ -92,7 +92,8 @@ class MixTopBannerViewHolder(
                 listOf(MixTopTracking.mapGridToProductTracker(grid, channel.id, position, channel.persoType, channel.categoryID)),
                 channel.header.name,
                 channel.id,
-                adapterPosition.toString()
+                adapterPosition.toString(),
+                channel.campaignCode
         ) as HashMap<String, Any>)
         homeCategoryListener.onDynamicChannelClicked(grid.applink)
     }
@@ -113,16 +114,9 @@ class MixTopBannerViewHolder(
         val bannerItem = channel.banner
         val ctaData = channel.banner.cta
         var textColor = ContextCompat.getColor(bannerTitle.context, R.color.Neutral_N50)
-        var backColor: Int = ContextCompat.getColor(bannerTitle.context, R.color.Neutral_N50)
         if(bannerItem.textColor.isNotEmpty()){
             try {
                 textColor = Color.parseColor(bannerItem.textColor)
-            } catch (e: IllegalArgumentException) { }
-        }
-
-        if(bannerItem.backColor.isNotEmpty()) {
-            try {
-                backColor = Color.parseColor(bannerItem.backColor)
             } catch (e: IllegalArgumentException) { }
         }
 
@@ -130,8 +124,7 @@ class MixTopBannerViewHolder(
         bannerTitle.visibility = if(bannerItem.title.isEmpty()) View.GONE else View.VISIBLE
         bannerDescription.text = bannerItem.description
         bannerDescription.visibility = if(bannerItem.description.isEmpty()) View.GONE else View.VISIBLE
-
-        background.setBackgroundColor(backColor)
+        background.setGradientBackground(bannerItem.gradientColor)
         bannerTitle.setTextColor(textColor)
         bannerDescription.setTextColor(textColor)
 
@@ -230,17 +223,19 @@ class MixTopBannerViewHolder(
                             pdpViewCount = element.productViewCountFormatted,
                             stockBarLabel = element.label,
                             isTopAds = element.isTopads,
-                            stockBarPercentage = element.soldPercentage
+                            stockBarPercentage = element.soldPercentage,
+                            labelGroupList = element.labelGroup.map {
+                                ProductCardFlashSaleModel.LabelGroup(
+                                        position = it.position,
+                                        title = it.title,
+                                        type = it.type
+                                )
+                            },
+                            isOutOfStock = element.isOutOfStock
                     ),
                     blankSpaceConfig = BlankSpaceConfig(),
                     grid = element,
                     applink = element.applink,
-                    listener = this
-            ))
-        }
-        if (isHasSeeMoreApplink(channel)) {
-            list.add(SeeMorePdpDataModel(
-                    applink = channel.header.applink,
                     listener = this
             ))
         }

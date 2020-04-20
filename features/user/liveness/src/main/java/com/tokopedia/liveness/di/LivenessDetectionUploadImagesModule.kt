@@ -87,7 +87,8 @@ class LivenessDetectionUploadImagesModule {
 
     @LivenessDetectionScope
     @Provides
-    fun provideOkHttpClient(tkpdAuthInterceptor: TkpdAuthInterceptor,
+    fun provideOkHttpClient(@ApplicationContext context: Context,
+                            tkpdAuthInterceptor: TkpdAuthInterceptor,
                             retryPolicy: OkHttpRetryPolicy,
                             loggingInterceptor: HttpLoggingInterceptor,
                             errorHandlerInterceptor: ErrorResponseInterceptor,
@@ -96,7 +97,7 @@ class LivenessDetectionUploadImagesModule {
         builder.addInterceptor(errorHandlerInterceptor)
         builder.addInterceptor(tkpdAuthInterceptor)
         builder.addInterceptor(chuckerInterceptor)
-        builder.addInterceptor(AkamaiBotInterceptor())
+        builder.addInterceptor(AkamaiBotInterceptor(context))
 
         if (GlobalConfig.isAllowDebuggingTools()) {
             loggingInterceptor.level = HttpLoggingInterceptor.Level.BODY

@@ -10,7 +10,9 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.commonpromo.PromoCodeAutoApplyUseCase
 import com.tokopedia.notifications.R
 import com.tokopedia.notifications.common.*
-import com.tokopedia.notifications.data.AttributionManager
+import com.tokopedia.notifications.common.CMConstant.PayloadKeys.ADD_TO_CART
+import com.tokopedia.notifications.common.CMConstant.ReceiverExtraData.ACTION_BUTTON_EXTRA
+import com.tokopedia.notifications.data.DataManager
 import com.tokopedia.notifications.di.DaggerCMNotificationComponent
 import com.tokopedia.notifications.di.module.NotificationModule
 import com.tokopedia.notifications.factory.CarouselNotification
@@ -28,7 +30,7 @@ import kotlin.coroutines.CoroutineContext
  */
 class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
 
-    @Inject lateinit var attributionManager: AttributionManager
+    @Inject lateinit var dataManager: DataManager
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main
@@ -56,16 +58,13 @@ class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
                     }
 
                     CMConstant.ReceiverAction.ACTION_BANNER_CLICK -> {
-                        handleNotificationClick(context, intent, notificationId)
+                        handleNotificationClick(context, intent, notificationId, baseNotificationModel)
                         sendClickPushEvent(context, IrisAnalyticsEvents.PUSH_CLICKED, baseNotificationModel, CMConstant.NotificationType.GENERAL)
                     }
 
                     CMConstant.ReceiverAction.ACTION_NOTIFICATION_CLICK -> {
-                        handleNotificationClick(context, intent, notificationId)
+                        handleNotificationClick(context, intent, notificationId, baseNotificationModel)
                         sendClickPushEvent(context, IrisAnalyticsEvents.PUSH_CLICKED, baseNotificationModel, CMConstant.NotificationType.GENERAL)
-
-                        //post notification attribution
-                        attributionManager.post(baseNotificationModel)
                     }
 
                     CMConstant.ReceiverAction.ACTION_BUTTON -> {
@@ -247,7 +246,15 @@ class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
                 , Toast.LENGTH_LONG).show()
     }
 
-    private fun handleNotificationClick(context: Context, intent: Intent, notificationId: Int) {
+    private fun handleNotificationClick(
+            context: Context,
+            intent: Intent,
+            notificationId: Int,
+            baseNotificationModel: BaseNotificationModel?
+    ) {
+        // Notification attribution
+        dataManager.attribution(baseNotificationModel)
+
         handleMainClick(context, intent, notificationId)
         if (intent.hasExtra(CMConstant.CouponCodeExtra.COUPON_CODE)) {
             val coupon = intent.getStringExtra(CMConstant.CouponCodeExtra.COUPON_CODE)
@@ -256,22 +263,49 @@ class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
         }
     }
 
-    private fun handleActionButtonClick(context: Context, intent: Intent, notificationId: Int, baseNotificationModel: BaseNotificationModel) {
-        val actionButton: ActionButton? = intent.getParcelableExtra(CMConstant.ReceiverExtraData.ACTION_BUTTON_EXTRA)
-        actionButton?.apply {
+    private fun handleActionButtonClick(
+            context: Context,
+            intent: Intent,
+            notificationId: Int,
+            notificationData: BaseNotificationModel
+    ) {
+        intent.getParcelableExtra<ActionButton?>(ACTION_BUTTON_EXTRA)?.apply {
             pdActions?.let {
-                handleShareActionButtonClick(context, it, baseNotificationModel)
-            } ?: let {
-                val appLinkIntent = RouteManager.getIntent(context.applicationContext, it.appLink?:ApplinkConst.HOME)
-                intent.extras?.let { bundle->
-                    appLinkIntent.putExtras(bundle)
+                handleShareActionButtonClick(context, it, notificationData)
+            }?: let {
+                // validate if the action button is ATC
+                it.type?.let { type ->
+                    if (type == ADD_TO_CART) {
+                        handleAddToCartProduct(notificationData, it.addToCart)
+                    }
                 }
+
+                // applink handler for action button
+                val appLinkIntent = RouteManager.getIntent(
+                        context.applicationContext,
+                        it.appLink?: ApplinkConst.HOME
+                )
+                intent.extras?.let { bundle -> appLinkIntent.putExtras(bundle) }
                 startActivity(context, appLinkIntent)
-                sendElementClickPushEvent(context, IrisAnalyticsEvents.PUSH_CLICKED, baseNotificationModel, CMConstant.NotificationType.GENERAL, it.element_id)
+                sendElementClickPushEvent(
+                        context,
+                        IrisAnalyticsEvents.PUSH_CLICKED,
+                        notificationData,
+                        CMConstant.NotificationType.GENERAL,
+                        it.element_id
+                )
             }
         }
         NotificationManagerCompat.from(context.applicationContext).cancel(notificationId)
         context.sendBroadcast(Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS))
+    }
+
+    private fun handleAddToCartProduct(data: BaseNotificationModel?, addToCart: AddToCart?) {
+        data?.let {
+            val templateKey = it.campaignId.toString()
+            val userId = it.userId?: ""
+            dataManager.atcProduct(templateKey, userId, addToCart)
+        }
     }
 
     private fun handleCarouselImageClick(context: Context, intent: Intent, notificationId: Int, baseNotificationModel: BaseNotificationModel) {

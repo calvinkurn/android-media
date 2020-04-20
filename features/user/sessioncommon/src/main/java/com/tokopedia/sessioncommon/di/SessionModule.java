@@ -4,13 +4,13 @@ import android.content.Context;
 import android.content.res.Resources;
 
 import com.chuckerteam.chucker.api.ChuckerInterceptor;
-import com.tokopedia.akamai_bot_lib.interceptor.AkamaiBotInterceptor;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.network.exception.HeaderErrorListResponse;
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
 import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseInterceptor;
-import com.tokopedia.config.GlobalConfig;
+import com.tokopedia.akamai_bot_lib.interceptor.AkamaiBotInterceptor;
 import com.tokopedia.authentication.AuthHelper;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.interceptor.DebugInterceptor;
 import com.tokopedia.network.interceptor.FingerprintInterceptor;
@@ -99,7 +99,8 @@ public class SessionModule {
     @SessionCommonScope
     @Provides
     @Named(TOKEN)
-    OkHttpClient provideTokenOkHttpClient(BasicInterceptor basicInterceptor,
+    OkHttpClient provideTokenOkHttpClient(@ApplicationContext Context context,
+                                          BasicInterceptor basicInterceptor,
                                           ChuckerInterceptor chuckInterceptor,
                                           DebugInterceptor debugInterceptor,
                                           HttpLoggingInterceptor httpLoggingInterceptor,
@@ -108,7 +109,7 @@ public class SessionModule {
 
         builder.addInterceptor(fingerprintInterceptor);
         builder.addInterceptor(basicInterceptor);
-        builder.addInterceptor(new AkamaiBotInterceptor());
+        builder.addInterceptor(new AkamaiBotInterceptor(context));
         builder.addInterceptor(new HeaderErrorResponseInterceptor(HeaderErrorListResponse.class));
         builder.addInterceptor(new ErrorResponseInterceptor(TokenErrorResponse.class));
         builder.addInterceptor(chain -> {

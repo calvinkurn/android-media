@@ -1,5 +1,7 @@
 package com.tokopedia.search.result.presentation;
 
+import androidx.annotation.Nullable;
+
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
@@ -8,7 +10,6 @@ import com.tokopedia.discovery.common.model.ProductCardOptionsModel;
 import com.tokopedia.discovery.common.model.WishlistTrackingModel;
 import com.tokopedia.filter.common.data.DynamicFilterModel;
 import com.tokopedia.filter.common.data.Filter;
-import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.search.analytics.GeneralSearchTrackingModel;
 import com.tokopedia.search.result.presentation.model.GlobalNavViewModel;
@@ -142,6 +143,26 @@ public interface ProductListSectionContract {
         String getPreviousKeyword();
 
         boolean isLandingPage();
+
+        void logWarning(String message, @Nullable Throwable throwable);
+
+        void sendTopAdsTrackingUrl(String topAdsTrackingUrl);
+
+        void sendTopAdsGTMTrackingProductImpression(ProductItemViewModel item, int adapterPosition);
+
+        void sendTopAdsGTMTrackingProductClick(ProductItemViewModel item, int adapterPosition);
+
+        void sendGTMTrackingProductClick(ProductItemViewModel item, int adapterPosition, String userId);
+
+        void routeToProductDetail(ProductItemViewModel item, int adapterPosition);
+
+        void stopPreparePagePerformanceMonitoring();
+
+        void startNetworkRequestPerformanceMonitoring();
+
+        void stopNetworkRequestPerformanceMonitoring();
+
+        void startRenderPerformanceMonitoring();
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -179,5 +200,9 @@ public interface ProductListSectionContract {
         void onViewVisibilityChanged(boolean isViewVisible, boolean isViewAdded);
 
         void handleWishlistAction(ProductCardOptionsModel productCardOptionsModel);
+
+        void onProductImpressed(ProductItemViewModel item, int adapterPosition);
+
+        void onProductClick(ProductItemViewModel item, int adapterPosition);
     }
 }

@@ -7,6 +7,11 @@ repositories{
         dirs 'libs'
         dirs project(rootProject.ext.libraries.liveness_lib).file('libs')
     }
+    google()
+    mavenCentral()
+    mavenLocal()
+    jcenter()
+    maven { url "https://maven.google.com" }
 }
 
 buildscript {
@@ -55,5 +60,6 @@ android {
 
 dependencies {
     implementation project(rootProject.ext.app.customerapp)
+
     implementation project(rootProject.ext.features.liveness)
 }

@@ -36,8 +36,9 @@ dependencies {
     implementation project(rootProject.ext.features.topAdsSdk)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
 
-    implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.principles
+    implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.unifyDependencies.global_error
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
@@ -50,14 +51,14 @@ dependencies {
     androidTestImplementation rootProject.ext.testDependencies.androidTestRunner
     androidTestImplementation rootProject.ext.testDependencies.androidRulesVersion
     androidTestImplementation rootProject.ext.playServicesDependencies.core
-    androidTestImplementation rootProject.ext.firebase.core
-    androidTestImplementation project(rootProject.ext.libraries.core_legacy)
     androidTestImplementation rootProject.ext.testDependencies.junit
-    androidTestImplementation project(rootProject.ext.libraries.commonNetwork)
     androidTestImplementation rootProject.ext.tkpdInternalLibDependencies.akamaiBotLib
     androidTestImplementation rootProject.ext.tkpdInternalLibDependencies.network
     androidTestImplementation rootProject.ext.tkpdInternalLibDependencies.authentication
-    androidTestImplementation project(rootProject.ext.libraries.instrumentation_test)
+    androidTestImplementation project(rootProject.ext.libraries.instrumentation_test), {
+        exclude group: "com.google.android.gms"
+        exclude group: "com.google.firebase", module: "firebase-iid"
+    }
     androidTestImplementation rootProject.ext.testDependencies.espressoCore
     androidTestImplementation rootProject.ext.testDependencies.espressoContrib
 }
@@ -65,7 +66,7 @@ dependencies {
 project.ext {
     artifactId = 'product-card'
     groupId = 'com.tokopedia.discovery'
-    versionName = "0.0.1"
+    versionName = "0.0.2"
     artifactName = "productcard-release"
 }
 

@@ -9,18 +9,21 @@ import com.airbnb.deeplinkdispatch.DeepLink
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.constant.DeeplinkConstant
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.di.DaggerProductDetailComponent
 import com.tokopedia.product.detail.di.ProductDetailComponent
 import com.tokopedia.product.detail.view.fragment.DynamicProductDetailFragment
-import com.tokopedia.product.detail.view.fragment.ProductDetailFragment
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
+import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 
 
 /**
@@ -70,10 +73,17 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
     private var trackerListName: String? = null
     private var affiliateString: String? = null
     private var deeplinkUrl: String? = null
-
+    private var userSessionInterface: UserSessionInterface? = null
     private val remoteConfig: RemoteConfig by lazy {
         FirebaseRemoteConfigImpl(this)
     }
+
+    //Performance Monitoring
+    var performanceMonitoringP1: PerformanceMonitoring? = null
+    var performanceMonitoringP2: PerformanceMonitoring? = null
+    var performanceMonitoringP2General: PerformanceMonitoring? = null
+    var performanceMonitoringP2Login: PerformanceMonitoring? = null
+    var performanceMonitoringFull: PerformanceMonitoring? = null
 
     object DeeplinkIntents {
         @DeepLink(ApplinkConst.PRODUCT_INFO)
@@ -97,6 +107,26 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
         }
     }
 
+    fun stopMonitoringP1(){
+        performanceMonitoringP1?.stopTrace()
+    }
+
+    fun stopMonitoringP2(){
+        performanceMonitoringP2?.stopTrace()
+    }
+
+    fun stopMonitoringP2General(){
+        performanceMonitoringP2General?.stopTrace()
+    }
+
+    fun stopMonitoringP2Login(){
+        performanceMonitoringP2Login?.stopTrace()
+    }
+
+    fun stopMonitoringFull(){
+        performanceMonitoringFull?.stopTrace()
+    }
+
     fun goToHomePageClicked() {
         if (isTaskRoot) {
             RouteManager.route(this, ApplinkConst.HOME)
@@ -110,18 +140,11 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
         return "" // need only on success load data? (it needs custom dimension)
     }
 
-    override fun getNewFragment(): Fragment =
-            if (remoteConfig.getBoolean(RemoteConfigKey.ANDROID_MAIN_APP_ENABLED_OLD_PDP, false)) {
-                ProductDetailFragment.newInstance(productId, warehouseId, shopDomain,
+    override fun getNewFragment(): Fragment = DynamicProductDetailFragment.newInstance(productId, warehouseId, shopDomain,
                         productKey, isFromDeeplink,
                         isFromAffiliate, trackerAttribution,
                         trackerListName, affiliateString, deeplinkUrl)
-            } else {
-                DynamicProductDetailFragment.newInstance(productId, warehouseId, shopDomain,
-                        productKey, isFromDeeplink,
-                        isFromAffiliate, trackerAttribution,
-                        trackerListName, affiliateString, deeplinkUrl)
-            }
+
 
     override fun getComponent(): ProductDetailComponent = DaggerProductDetailComponent.builder()
             .baseAppComponent((applicationContext as BaseMainApplication).baseAppComponent).build()
@@ -129,6 +152,7 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
     override fun getLayoutRes(): Int = R.layout.activity_product_detail
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        userSessionInterface = UserSession(this)
         isFromDeeplink = intent.getBooleanExtra(PARAM_IS_FROM_DEEPLINK, false)
         val uri = intent.data
         val bundle = intent.extras
@@ -189,7 +213,20 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
             isFromDeeplink = true
         }
 
+        initPerformanceMonitoring()
+
         super.onCreate(savedInstanceState)
+    }
+
+    private fun initPerformanceMonitoring() {
+        performanceMonitoringP1 = PerformanceMonitoring.start(ProductDetailConstant.PDP_P1_TRACE)
+        performanceMonitoringP2 = PerformanceMonitoring.start(ProductDetailConstant.PDP_P2_TRACE)
+        performanceMonitoringP2General = PerformanceMonitoring.start(ProductDetailConstant.PDP_P2_GENERAL_TRACE)
+
+        if (userSessionInterface?.isLoggedIn == true) {
+            performanceMonitoringP2Login = PerformanceMonitoring.start(ProductDetailConstant.PDP_P2_LOGIN_TRACE)
+            performanceMonitoringFull = PerformanceMonitoring.start(ProductDetailConstant.PDP_P3_TRACE)
+        }
     }
 
     private fun generateApplink(applink: String): String {

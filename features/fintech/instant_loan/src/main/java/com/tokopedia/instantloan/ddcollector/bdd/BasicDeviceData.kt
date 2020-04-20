@@ -67,7 +67,7 @@ class BasicDeviceData(private val mContext: Context, private val mLocationManage
                 basicInfoMap[LONGITUDE] = "0.0"
             }
 
-            basicInfoMap[MODEL] = DeviceInfo.getDeviceModelNumber(mContext)
+            basicInfoMap[MODEL] = DeviceInfo.getDeviceModelNumber()
             basicInfoMap[DEVICE_SDK_VERSION] = Build.VERSION.SDK_INT.toString()
             basicInfoMap[DEVICE_SYSTEM_VERSION] = Build.VERSION.RELEASE.toString()
             basicInfoMap[SYSTEM_LANGUAGE] = DeviceInfo.systemLanguage

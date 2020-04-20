@@ -26,6 +26,7 @@ import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.deeplink.listener.DeepLinkView;
 import com.tokopedia.tkpd.deeplink.presenter.DeepLinkPresenter;
 import com.tokopedia.tkpd.deeplink.presenter.DeepLinkPresenterImpl;
+import com.tokopedia.utils.uri.DeeplinkUtils;
 
 import java.util.List;
 
@@ -59,6 +60,7 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
 
         ImageView loadingView = findViewById(R.id.iv_loading);
         ImageHandler.loadGif(loadingView, R.drawable.ic_loading_indeterminate, -1);
+        logDeeplink();
     }
 
     private void checkUrlMapToApplink() {
@@ -192,5 +194,13 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
             return Uri.parse(uriData.toString().replaceFirst(AMP + "/", ""));
         }
         return uriData;
+    }
+
+    private void logDeeplink() {
+        String referrer = DeeplinkUtils.INSTANCE.getReferrerCompatible(this);
+        Uri extraReferrer = DeeplinkUtils.INSTANCE.getExtraReferrer(this);
+        Uri uri = DeeplinkUtils.INSTANCE.getDataUri(this);
+        Timber.w("P1#DEEPLINK_OPEN_APP#%s;referrer='%s';extra_referrer='%s';uri='%s'",
+                getClass().getSimpleName(), referrer, extraReferrer.toString(), uri.toString());
     }
 }

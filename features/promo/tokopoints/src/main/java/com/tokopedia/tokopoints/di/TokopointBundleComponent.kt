@@ -1,15 +1,17 @@
 package com.tokopedia.tokopoints.di
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
+import com.tokopedia.tokopoints.view.addPoint.AddPointsFragment
 import com.tokopedia.tokopoints.view.catalogdetail.CouponCatalogFragment
 import com.tokopedia.tokopoints.view.cataloglisting.CatalogListItemFragment
 import com.tokopedia.tokopoints.view.cataloglisting.CatalogListingFragment
 import com.tokopedia.tokopoints.view.coupondetail.CouponDetailFragment
 import com.tokopedia.tokopoints.view.couponlisting.CouponListingStackedActivity
 import com.tokopedia.tokopoints.view.couponlisting.CouponListingStackedFragment
-import com.tokopedia.tokopoints.view.fragment.SendGiftFragment
 import com.tokopedia.tokopoints.view.pointhistory.PointHistoryFragment
+import com.tokopedia.tokopoints.view.sendgift.SendGiftFragment
 import com.tokopedia.tokopoints.view.tokopointhome.TokoPointsHomeFragmentNew
+import com.tokopedia.tokopoints.view.validatePin.ValidateMerchantPinFragment
 import dagger.Component
 
 
@@ -33,4 +35,8 @@ interface TokopointBundleComponent {
     fun inject(fragment: CatalogListItemFragment)
 
     fun inject(fragment: TokoPointsHomeFragmentNew)
+
+    fun inject(fragment: AddPointsFragment)
+
+    fun inject(fragment: ValidateMerchantPinFragment)
 }

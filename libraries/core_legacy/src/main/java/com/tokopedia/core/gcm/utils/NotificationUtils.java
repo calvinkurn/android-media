@@ -49,7 +49,9 @@ public class NotificationUtils {
     public static void setNotificationChannel(Context context) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-            notificationManager.createNotificationChannels(getNotificationChannels(context));
+            if (notificationManager != null) {
+                notificationManager.createNotificationChannels(getNotificationChannels(context));
+            }
         }
     }
 

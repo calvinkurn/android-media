@@ -186,5 +186,9 @@ public class AccountConstants {
 
     public interface ErrorCodes{
         String ERROR_CODE_NULL_MENU = "ACC001";
+        String ERROR_CODE_ACCOUNT_SETTING_CONFIG = "ASC001";
+        String ERROR_CODE_BUYER_ACCOUNT = "ACB001";
+        String ERROR_CODE_SELLER_ACCOUNT = "ACS001";
+
     }
 }
