@@ -17,6 +17,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.product.addedit.R
+import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_CURRENCY_TYPE
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_DEFAULT_PRICE
@@ -151,12 +152,20 @@ class AddEditProductDescriptionFragment:
     }
 
     override fun onItemClicked(t: VideoLinkModel?) {
-        if(descriptionViewModel.isEditMode && !descriptionViewModel.isAddMode) {
-            ProductEditDescriptionTracking.clickPlayVideo(shopId)
-        }
         try {
-            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(t?.inputUrl)))
+            t?.run {
+                val uri = if (inputUrl.startsWith(AddEditProductConstants.HTTP_PREFIX)) {
+                    Uri.parse(inputUrl)
+                } else {
+                    Uri.parse("${AddEditProductConstants.HTTP_PREFIX}://${inputUrl}")
+                }
+                startActivity(Intent(Intent.ACTION_VIEW, uri))
+                if(descriptionViewModel.isEditMode && !descriptionViewModel.isAddMode) {
+                    ProductEditDescriptionTracking.clickPlayVideo(shopId)
+                }
+            }
         } catch (e: Throwable) {
+            e.printStackTrace()
         }
     }
 

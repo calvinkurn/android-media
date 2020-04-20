@@ -5,4 +5,5 @@ object AddEditProductConstants {
 
     const val HTTP_PREFIX = "http"
     const val GQL_ERROR_SUBSTRING = "gql.tokopedia.com"
+    const val MAX_PRODUCT_IMAGE_SIZE_IN_KB = 2048
 }

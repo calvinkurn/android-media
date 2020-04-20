@@ -1,8 +1,9 @@
 package com.tokopedia.imagepicker.picker.main.view;
 
 import android.content.Context;
-import androidx.annotation.NonNull;
 import android.webkit.URLUtil;
+
+import androidx.annotation.NonNull;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.FutureTarget;
@@ -60,6 +61,9 @@ public class ImagePickerPresenter extends BaseDaggerPresenter<ImagePickerPresent
                                 //resize image
                                 String pathResult = ImageUtils.resizeBitmap(path, ImageUtils.DEF_WIDTH, ImageUtils.DEF_HEIGHT,
                                         true, ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_EDIT_RESULT);
+                                if (ImageUtils.getFileSizeInKb(pathResult) > maxFileSize) {
+                                    throw new FileSizeAboveMaximumException();
+                                }
                                 return Observable.just(pathResult);
                             } else {
                                 throw new FileSizeAboveMaximumException();
