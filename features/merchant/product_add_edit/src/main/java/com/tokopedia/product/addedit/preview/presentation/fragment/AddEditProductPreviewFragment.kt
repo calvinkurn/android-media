@@ -9,7 +9,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
@@ -22,7 +21,6 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
@@ -413,6 +411,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
             setCashback()
         }
 
+        //If you add another observe, don't forget to remove observers at removeObservers()
         observeIsEditingStatus()
         observeProductData()
         observeProductInputModel()
@@ -420,6 +419,11 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
         observeImageUrlOrPathList()
         observeProductVariantList()
         observeIsLoading()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        removeObservers()
     }
 
     @Suppress("UNCHECKED_CAST")
@@ -725,6 +729,16 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
                 hideLoading()
             }
         })
+    }
+
+    private fun removeObservers() {
+        viewModel.isEditing.removeObservers(viewLifecycleOwner)
+        viewModel.getProductResult.removeObservers(viewLifecycleOwner)
+        viewModel.productInputModel.removeObservers(viewLifecycleOwner)
+        viewModel.isVariantEmpty.removeObservers(viewLifecycleOwner)
+        viewModel.imageUrlOrPathList.removeObservers(viewLifecycleOwner)
+        viewModel.productVariantList.removeObservers(viewLifecycleOwner)
+        viewModel.isLoading.removeObservers(viewLifecycleOwner)
     }
 
     private fun setCashback() {
