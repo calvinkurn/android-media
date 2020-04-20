@@ -1,11 +1,13 @@
 package com.tokopedia.graphql.data;
 
 import android.content.Context;
+
 import androidx.annotation.NonNull;
 
-import com.tokopedia.akamai_bot_lib.interceptor.AkamaiBotInterceptor;
-import com.tokopedia.akamai_bot_lib.interceptor.GqlAkamaiBotInterceptor;
+import com.akamai.botman.CYFMonitor;
 import com.google.gson.GsonBuilder;
+import com.tokopedia.akamai_bot_lib.UtilsKt;
+import com.tokopedia.akamai_bot_lib.interceptor.GqlAkamaiBotInterceptor;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.graphql.FingerprintManager;
 import com.tokopedia.graphql.data.db.GraphqlDatabase;
@@ -25,20 +27,25 @@ import com.tokopedia.user.session.UserSession;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.lang.ref.WeakReference;
 import java.util.List;
-import java.util.Map;
 
+import kotlin.Unit;
+import kotlin.jvm.functions.Function0;
+import kotlin.jvm.functions.Function1;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
-import okhttp3.Request;
 import retrofit2.Retrofit;
 
-import static com.tokopedia.authentication.AuthHelper.getUserAgent;
+import static com.tokopedia.akamai_bot_lib.UtilsKt.getExpiredTime;
+import static com.tokopedia.akamai_bot_lib.UtilsKt.setExpiredTime;
 
 public class GraphqlClient {
     private static Retrofit sRetrofit = null;
     private static FingerprintManager sFingerprintManager;
     private static GraphqlDatabase sGraphqlDatabase;
+
+    private static Function function;
 
     private GraphqlClient() {
 
@@ -65,7 +72,16 @@ public class GraphqlClient {
 
             sGraphqlDatabase = GraphqlDatabase.getInstance(context);
 
+            function = new Function(context);
+
         }
+    }
+
+    public static Function getFunction() {
+        if (function == null) {
+            throw new RuntimeException("Please call init() before using graphql library");
+        }
+        return function;
     }
 
     public static void reInitRetrofitWithInterceptors(@NonNull List<Interceptor> interceptors,
@@ -101,6 +117,41 @@ public class GraphqlClient {
             tkpdOkHttpBuilder.addInterceptor(new DeprecatedApiInterceptor(context.getApplicationContext()));
         }
         return tkpdOkHttpBuilder;
+    }
+
+    public static class Function {
+        Function0<Long> currentTime;
+        Function0<Long> getExpiredTime;
+        Function1<Long, Unit> setExpiredTime;
+        Function0<Unit> setAkamaiValue;
+        Function0<String> getAkamaiValue;
+        private WeakReference<Context> context;
+
+        public Function(Context mContext) {
+            this.context = new WeakReference<>(mContext);
+
+            currentTime = () -> System.currentTimeMillis() / 1000;
+            getExpiredTime = () -> getExpiredTime(context.get());
+            setExpiredTime = (time) -> {
+                setExpiredTime(context.get(), time);
+                return null;
+            };
+            setAkamaiValue = () -> {
+                UtilsKt.setAkamaiValue(context.get(), CYFMonitor.getSensorData());
+                return null;
+            };
+            getAkamaiValue = () -> UtilsKt.getAkamaiValue(context.get());
+        }
+
+        public String getAkamaiValue() {
+            return UtilsKt.setExpire(
+                    currentTime,
+                    getExpiredTime,
+                    setExpiredTime,
+                    setAkamaiValue,
+                    getAkamaiValue
+            );
+        }
     }
 
     private static Retrofit getRetrofit() {

@@ -43,13 +43,17 @@
         android:id="@+id/label_error"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_16"
         android:layout_marginEnd="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_16"
+        android:maxWidth="@dimen/dp_120"
+        android:maxLines="2"
+        android:ellipsize="end"
         android:visibility="gone"
         app:labelType="general_dark_red"
-        app:layout_constraintBottom_toBottomOf="@+id/tv_shop_name"
         app:layout_constraintEnd_toEndOf="parent"
-        tools:labelTitle="Toko Tutup" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_header"
+        tools:labelTitle="Bukan barang testing" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_shop_location"
