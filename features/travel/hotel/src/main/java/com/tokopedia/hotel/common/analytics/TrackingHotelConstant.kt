@@ -1,5 +1,14 @@
 package com.tokopedia.hotel.common.analytics
 
+val SCREEN_NAME = "screenName"
+val CURRENT_SITE = "currentSite"
+val CLIENT_ID = "clientId"
+val SESSION_IRIS = "sessionIris"
+val USER_ID = "userId"
+val BUSINESS_UNIT = "businessUnit"
+val EVENT_NAME = "eventName"
+val OPEN_SCREEN_EVENT = "openScreen"
+
 val PROMO_VIEW = "promoView"
 val PROMO_CLICK = "promoClick"
 val CLICK_HOTEL = "clickHotel"
@@ -15,9 +24,13 @@ val DIGITAL_NATIVE = "digital - native"
 val DIGITAL_CHECKOUT = "digital - checkout"
 val DIGITAL_THANKS = "digital - thanks"
 
+val TOKOPEDIA_DIGITAL_HOTEL = "tokopediadigitalhotel"
+
 val BANNER_IMPRESSION = "banner impression"
 val ACTION_LAST_SEARCH_IMPRESSION = "view last search impression"
 val ACTION_LAST_SEARCH_CLICK = "click last search"
+val ACTION_CLICK_CHANGE_SEARCH = "click change on search result page"
+val ACTION_SAVE_CHANGE_SEARCH = "click search hotel on change search page"
 val CLICK_BANNER = "click banner"
 val SELECT_DESTINATION = "select destination"
 val CLICK_WIDGET_SELECT_DESTINATION = "click widget select destination"
@@ -76,3 +89,4 @@ val ONE_LABEL = "1"
 val TWO_LABEL = "2"
 
 val REGION_LABEL = "region"
+val LAST_SEARCH_LABEL = "last search"

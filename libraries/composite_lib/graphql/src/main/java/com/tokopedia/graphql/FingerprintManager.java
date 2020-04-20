@@ -10,6 +10,8 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
+import javax.inject.Inject;
+
 /**
  * For generating hashcode primarily use as a key of cache object
  */
@@ -17,6 +19,7 @@ public class FingerprintManager {
 
     private UserSession mUserSession;
 
+    @Inject
     public FingerprintManager(UserSession userSession) {
         this.mUserSession = userSession;
     }

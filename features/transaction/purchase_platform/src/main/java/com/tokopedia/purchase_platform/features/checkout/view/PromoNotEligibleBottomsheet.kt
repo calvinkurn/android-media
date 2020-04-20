@@ -12,6 +12,7 @@ import com.tokopedia.purchase_platform.features.checkout.view.adapter.PromoNotEl
 import com.tokopedia.purchase_platform.features.checkout.view.uimodel.NotEligiblePromoHolderdata
 import com.tokopedia.design.component.BottomSheets
 import com.tokopedia.design.component.ButtonCompat
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 
 /**
@@ -20,9 +21,10 @@ import com.tokopedia.unifyprinciples.Typography
 
 class PromoNotEligibleBottomsheet : BottomSheets() {
 
-    lateinit var tvInfo: TextView
+    lateinit var tvInfo: Typography
     lateinit var rvPromoList: RecyclerView
-    lateinit var btnContinue: ButtonCompat
+    lateinit var btnContinue: UnifyButton
+    lateinit var btnChooseOtherPromo: UnifyButton
     lateinit var actionListener: PromoNotEligibleActionListener
     lateinit var notEligiblePromoHolderDataList: ArrayList<NotEligiblePromoHolderdata>
     var checkoutType: Int = 0
@@ -32,10 +34,6 @@ class PromoNotEligibleBottomsheet : BottomSheets() {
         fun createInstance(): PromoNotEligibleBottomsheet {
             return PromoNotEligibleBottomsheet()
         }
-    }
-
-    fun setListener(actionListener: PromoNotEligibleActionListener) {
-        this.actionListener = actionListener
     }
 
     override fun getLayoutResourceId(): Int {
@@ -54,8 +52,12 @@ class PromoNotEligibleBottomsheet : BottomSheets() {
         tvInfo = dialogView.findViewById(R.id.tv_info)
         rvPromoList = dialogView.findViewById(R.id.rv_promo_list)
         btnContinue = dialogView.findViewById(R.id.btn_continue)
+        btnChooseOtherPromo = dialogView.findViewById(R.id.btn_choose_other_promo)
         btnContinue.setOnClickListener {
             actionListener.onButtonContinueClicked(checkoutType)
+        }
+        btnChooseOtherPromo.setOnClickListener {
+            actionListener.onButtonChooseOtherPromo()
         }
 
         val adapter = PromoNotEligibleAdapter()
@@ -68,7 +70,7 @@ class PromoNotEligibleBottomsheet : BottomSheets() {
     override fun setupDialog(dialog: Dialog, style: Int) {
         super.setupDialog(dialog, style)
         actionListener.onShow()
-        dialog?.run {
+        dialog.run {
             findViewById<FrameLayout>(R.id.design_bottom_sheet).setBackgroundResource(android.R.color.transparent)
         }
     }

@@ -2,8 +2,10 @@ package com.tokopedia.digital.home.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
+import com.tokopedia.digital.home.DigitalHomePageTestDispatchersProvider
 import com.tokopedia.digital.home.domain.SearchCategoryHomePageUseCase
 import com.tokopedia.digital.home.model.DigitalHomePageSearchCategoryModel
+import com.tokopedia.digital.home.presentation.Util.DigitalHomePageDispatchersProvider
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -22,8 +24,6 @@ class DigitalHomePageSearchViewModelTest {
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
-    private val errorMessage = "unable to retrieve data"
-
     @RelaxedMockK
     lateinit var searchCategoryHomePageUseCase: SearchCategoryHomePageUseCase
 
@@ -34,7 +34,7 @@ class DigitalHomePageSearchViewModelTest {
         MockKAnnotations.init(this)
 
         digitalHomePageSearchViewModel =
-                DigitalHomePageSearchViewModel(searchCategoryHomePageUseCase, Dispatchers.Unconfined)
+                DigitalHomePageSearchViewModel(searchCategoryHomePageUseCase, DigitalHomePageTestDispatchersProvider())
     }
 
     @Test
@@ -42,36 +42,21 @@ class DigitalHomePageSearchViewModelTest {
         coEvery { searchCategoryHomePageUseCase.searchCategoryList(any(), any(), any()) } returns
                 listOf(DigitalHomePageSearchCategoryModel(searchQuery = "test"))
 
-        val dataObserver = Observer<Result<List<DigitalHomePageSearchCategoryModel>>> {
-            assert(it is Success)
-            val response = it as Success
-            assert(response.data.isNotEmpty())
-            assertEquals(response.data[0].searchQuery, "test")
-        }
-
-        try {
-            digitalHomePageSearchViewModel.searchCategoryList.observeForever(dataObserver)
-            digitalHomePageSearchViewModel.searchCategoryList("", "test")
-        } finally {
-            digitalHomePageSearchViewModel.searchCategoryList.removeObserver(dataObserver)
-        }
+        digitalHomePageSearchViewModel.searchCategoryList("", "test")
+        val actualData = digitalHomePageSearchViewModel.searchCategoryList.value
+        assert(actualData is Success)
+        val response = actualData as Success
+        assert(response.data.isNotEmpty())
+        assertEquals(response.data[0].searchQuery, "test")
     }
 
     @Test
     fun getSearchCategoryList_Fail() {
         coEvery{ searchCategoryHomePageUseCase.searchCategoryList(any(), any(), any()) } throws
-                MessageErrorException(errorMessage)
+                MessageErrorException()
 
-        val dataObserver = Observer<Result<List<DigitalHomePageSearchCategoryModel>>> {
-            assert(it is Fail)
-            assertEquals((it as Throwable).message, errorMessage)
-        }
-
-        try {
-            digitalHomePageSearchViewModel.searchCategoryList.observeForever(dataObserver)
-            digitalHomePageSearchViewModel.searchCategoryList("", "test")
-        } finally {
-            digitalHomePageSearchViewModel.searchCategoryList.removeObserver(dataObserver)
-        }
+        digitalHomePageSearchViewModel.searchCategoryList("", "test")
+        val actualData = digitalHomePageSearchViewModel.searchCategoryList.value
+        assert(actualData is Fail)
     }
 }

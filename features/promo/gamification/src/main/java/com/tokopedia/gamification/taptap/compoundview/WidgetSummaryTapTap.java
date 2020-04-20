@@ -18,6 +18,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.tkpd.remoteresourcerequest.view.DeferredImageView;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.gamification.R;
 import com.tokopedia.gamification.data.entity.CrackBenefitEntity;
@@ -30,7 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class WidgetSummaryTapTap extends FrameLayout {
-    private ImageView imageSinar;
+    private DeferredImageView imageSinar;
     private Button btnBottomLeft;
     private Button btnBottomRight;
     private Button btnTop;
@@ -75,7 +76,7 @@ public class WidgetSummaryTapTap extends FrameLayout {
         ivImageStar = parentView.findViewById(R.id.image_star);
         rewardsAdapter = new RewardsAdapter(null);
         ImageHandler.loadImageWithId(ivImageStar, R.drawable.ic_star_summary);
-        ImageHandler.loadImageWithId(imageSinar, R.drawable.sinar_rewards_3_x);
+        imageSinar.loadRemoteImageDrawable("sinar_rewards_3_x.png");
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(getContext(), R.drawable.item_divider_summary_page);
         dividerItemDecoration.setHorizontalMargin(getResources().getDimensionPixelOffset(R.dimen.dp_8));
         rvRewards.addItemDecoration(dividerItemDecoration);

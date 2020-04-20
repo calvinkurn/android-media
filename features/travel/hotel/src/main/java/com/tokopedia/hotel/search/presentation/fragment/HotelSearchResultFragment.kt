@@ -23,6 +23,7 @@ import com.tokopedia.design.list.adapter.SpaceItemDecoration
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.common.analytics.TrackingHotelUtil
 import com.tokopedia.hotel.common.util.ErrorHandlerHotel
+import com.tokopedia.hotel.globalsearch.presentation.activity.HotelChangeSearchActivity
 import com.tokopedia.hotel.hoteldetail.presentation.activity.HotelDetailActivity
 import com.tokopedia.hotel.search.data.model.Filter
 import com.tokopedia.hotel.search.data.model.Property
@@ -32,14 +33,17 @@ import com.tokopedia.hotel.search.data.model.params.ParamFilter
 import com.tokopedia.hotel.search.data.util.CommonParam
 import com.tokopedia.hotel.search.di.HotelSearchPropertyComponent
 import com.tokopedia.hotel.search.presentation.activity.HotelSearchFilterActivity
+import com.tokopedia.hotel.search.presentation.activity.HotelSearchResultActivity.Companion.CHANGE_SEARCH_REQ_CODE
 import com.tokopedia.hotel.search.presentation.adapter.HotelOptionMenuAdapter
 import com.tokopedia.hotel.search.presentation.adapter.HotelOptionMenuAdapter.Companion.MODE_CHECKED
 import com.tokopedia.hotel.search.presentation.adapter.HotelSearchResultAdapter
 import com.tokopedia.hotel.search.presentation.adapter.PropertyAdapterTypeFactory
 import com.tokopedia.hotel.search.presentation.viewmodel.HotelSearchResultViewModel
 import com.tokopedia.hotel.search.presentation.widget.HotelClosedSortBottomSheets
+import com.tokopedia.iris.util.IrisSession
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.fragment_hotel_search_result.*
 import javax.inject.Inject
 
@@ -74,7 +78,7 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
 
         const val ARG_DESTINATION_NAME = "arg_destination_name"
 
-        fun createInstance(destinationName: String = "", destinationID: Int = 0, type: String = "",
+        fun createInstance(destinationName: String = "", destinationID: Long = 0, type: String = "",
                            latitude: Float = 0f, longitude: Float = 0f, checkIn: String = "",
                            checkOut: String = "", totalRoom: Int = 1, totalAdult: Int = 0,
                            totalChildren: Int = 0): HotelSearchResultFragment {
@@ -82,7 +86,7 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
             return HotelSearchResultFragment().also {
                 it.arguments = Bundle().apply {
                     putString(ARG_DESTINATION_NAME, destinationName)
-                    putInt(ARG_DESTINATION_ID, destinationID)
+                    putLong(ARG_DESTINATION_ID, destinationID)
                     putString(ARG_TYPE, type)
                     putFloat(ARG_LAT, latitude)
                     putFloat(ARG_LONG, longitude)
@@ -101,7 +105,7 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
         val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
         searchResultviewModel = viewModelProvider.get(HotelSearchResultViewModel::class.java)
         arguments?.let {
-            searchResultviewModel.initSearchParam(it.getInt(ARG_DESTINATION_ID),
+            searchResultviewModel.initSearchParam(it.getLong(ARG_DESTINATION_ID),
                     it.getString(ARG_TYPE, ""),
                     it.getFloat(ARG_LAT, 0f),
                     it.getFloat(ARG_LONG, 0f),
@@ -149,6 +153,8 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == REQUEST_FILTER && data != null && data.hasExtra(CommonParam.ARG_CACHE_FILTER_ID)) {
                 val cacheId = data.getStringExtra(CommonParam.ARG_CACHE_FILTER_ID)
@@ -161,7 +167,10 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
                 loadInitialData()
             }
         }
-        super.onActivityResult(requestCode, resultCode, data)
+    }
+
+    fun changeSearchParam() {
+        loadInitialData()
     }
 
     override fun createAdapterInstance(): BaseListAdapter<Property, PropertyAdapterTypeFactory> {
@@ -269,6 +278,13 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
 
     override fun onEmptyContentItemTextClicked() {
 
+    }
+
+    fun onClickChangeSearch(type: String, name: String, totalRoom: Int, totalGuest: Int, checkIn: String, checkOut: String, screenName: String) {
+        context?.let {
+            trackingHotelUtil.hotelClickChangeSearch(type, name, totalRoom, totalGuest, checkIn, checkOut, screenName,
+                    IrisSession(it).getSessionId(), UserSession(it).userId)
+        }
     }
 
     override fun onEmptyButtonClicked() {

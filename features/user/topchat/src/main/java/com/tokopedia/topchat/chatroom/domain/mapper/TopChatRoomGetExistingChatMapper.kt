@@ -7,11 +7,15 @@ import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_IMAGE_DUAL_A
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_QUOTATION
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_VOUCHER
 import com.tokopedia.chat_common.domain.mapper.GetExistingChatMapper
+import com.tokopedia.chat_common.domain.pojo.ChatRepliesItem
+import com.tokopedia.chat_common.domain.pojo.GetExistingChatPojo
 import com.tokopedia.chat_common.domain.pojo.Reply
 import com.tokopedia.merchantvoucher.common.gql.data.*
 import com.tokopedia.topchat.chatroom.domain.pojo.ImageDualAnnouncementPojo
 import com.tokopedia.topchat.chatroom.domain.pojo.QuotationAttributes
 import com.tokopedia.topchat.chatroom.domain.pojo.TopChatVoucherPojo
+import com.tokopedia.topchat.chatroom.view.uimodel.HeaderDateUiModel
+import com.tokopedia.topchat.chatroom.view.uimodel.ProductCarouselUiModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.ImageDualAnnouncementUiModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.QuotationUiModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.TopChatVoucherUiModel
@@ -21,7 +25,78 @@ import javax.inject.Inject
  * @author : Steven 02/01/19
  */
 
-open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingChatMapper() {
+open class TopChatRoomGetExistingChatMapper @Inject constructor(
+        private val useNewCard: Boolean,
+        private val useCarousel: Boolean
+) : GetExistingChatMapper() {
+
+    override fun mappingListChat(pojo: GetExistingChatPojo): ArrayList<Visitable<*>> {
+        val listChat: ArrayList<Visitable<*>> = ArrayList()
+        val replies = pojo.chatReplies.list
+        for ((index, chatItemPojo) in replies.withIndex()) {
+            listChat.add(createHeaderDate(chatItemPojo))
+            if (index == replies.lastIndex) {
+                latestHeaderDate = chatItemPojo.date
+            }
+            for (chatItemPojoByDate in chatItemPojo.chats) {
+                var index = 0
+                while (index < chatItemPojoByDate.replies.size) {
+                    val chatDateTime = chatItemPojoByDate.replies[index]
+                    if (hasAttachment(chatDateTime)) {
+                        val nextItem = chatItemPojoByDate.replies.getOrNull(index + 1)
+                        if (useNewCard && useCarousel && chatDateTime.isMultipleProductAttachment(nextItem)) {
+                            val products = mergeProduct(index, chatItemPojoByDate.replies)
+                            val carouselProducts = createCarouselProduct(chatDateTime, products)
+                            listChat.add(carouselProducts)
+                            index += products.size
+                        } else {
+                            listChat.add(mapAttachment(chatDateTime))
+                            index++
+                        }
+                    } else {
+                        listChat.add(convertToMessageViewModel(chatDateTime))
+                        index++
+                    }
+                }
+            }
+        }
+        return listChat
+    }
+
+    private fun createHeaderDate(chatItemPojo: ChatRepliesItem): Visitable<*> {
+        return HeaderDateUiModel(chatItemPojo.date)
+    }
+
+    private fun createCarouselProduct(chatDateTime: Reply, products: List<Visitable<*>>): ProductCarouselUiModel {
+        with(chatDateTime) {
+            return ProductCarouselUiModel(
+                    products = products,
+                    messageId = msgId.toString(),
+                    fromUid = senderId.toString(),
+                    from = senderName,
+                    fromRole = role,
+                    attachmentId = attachment?.id ?: "",
+                    attachmentType = attachment?.type.toString(),
+                    replyTime = replyTime,
+                    message = msg
+            )
+        }
+    }
+
+    private fun mergeProduct(index: Int, replies: List<Reply>): List<Visitable<*>> {
+        val products = mutableListOf<Visitable<*>>()
+        var idx = index
+        while (idx < replies.size) {
+            val chat = replies[idx]
+            if (chat.isProductAttachment()) {
+                products.add(convertToProductAttachment(chat))
+                idx++
+            } else {
+                break
+            }
+        }
+        return products
+    }
 
     override fun mapAttachment(chatItemPojoByDateByTime: Reply): Visitable<*> {
         return when (chatItemPojoByDateByTime.attachment?.type.toString()) {

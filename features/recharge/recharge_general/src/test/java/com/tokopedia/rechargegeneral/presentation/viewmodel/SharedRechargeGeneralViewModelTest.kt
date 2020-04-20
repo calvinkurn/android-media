@@ -2,16 +2,13 @@ package com.tokopedia.rechargegeneral.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
+import com.tokopedia.rechargegeneral.RechargeGeneralTestDispatchersProvider
 import com.tokopedia.common.topupbills.data.TopupBillsRecommendation
-import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import io.mockk.MockKAnnotations
-import io.mockk.impl.annotations.MockK
-import kotlinx.coroutines.Dispatchers
-import org.junit.Test
-
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
+import org.junit.Test
 
 class SharedRechargeGeneralViewModelTest {
 
@@ -24,7 +21,7 @@ class SharedRechargeGeneralViewModelTest {
     fun setUp() {
         MockKAnnotations.init(this)
 
-        sharedRechargeGeneralViewModel = SharedRechargeGeneralViewModel(Dispatchers.Unconfined)
+        sharedRechargeGeneralViewModel = SharedRechargeGeneralViewModel(RechargeGeneralTestDispatchersProvider())
     }
 
     @Test

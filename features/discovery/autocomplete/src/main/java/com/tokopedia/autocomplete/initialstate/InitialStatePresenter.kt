@@ -8,16 +8,17 @@ import com.tokopedia.autocomplete.initialstate.popularsearch.RefreshPopularSearc
 import com.tokopedia.autocomplete.initialstate.popularsearch.convertPopularSearchToVisitableList
 import com.tokopedia.autocomplete.initialstate.recentsearch.DeleteRecentSearchUseCase
 import com.tokopedia.autocomplete.initialstate.recentsearch.RecentSearchTitleViewModel
+import com.tokopedia.autocomplete.initialstate.recentsearch.RecentSearchViewModel
 import com.tokopedia.autocomplete.initialstate.recentsearch.convertRecentSearchToVisitableList
 import com.tokopedia.autocomplete.initialstate.recentview.ReecentViewTitleViewModel
 import com.tokopedia.autocomplete.initialstate.recentview.convertRecentViewSearchToVisitableList
-import com.tokopedia.discovery.common.model.SearchParameter
+import com.tokopedia.usecase.UseCase
 import com.tokopedia.user.session.UserSessionInterface
 import rx.Subscriber
 import javax.inject.Inject
 
 class InitialStatePresenter @Inject constructor(
-        private val initialStateUseCase: InitialStateUseCase,
+        private val initialStateUseCase: UseCase<List<InitialStateData>>,
         private val deleteRecentSearchUseCase: DeleteRecentSearchUseCase,
         private val refreshPopularSearchUseCase: RefreshPopularSearchUseCase,
         private val userSession: UserSessionInterface
@@ -30,7 +31,16 @@ class InitialStatePresenter @Inject constructor(
     }
 
     private var querySearch = ""
-    private var listVistable = listOf<Visitable<*>>()
+    private var listVistable = mutableListOf<Visitable<*>>()
+    private var searchParameter = HashMap<String, String>()
+
+    fun setSearchParameter(searchParameter: HashMap<String, String>) {
+        this.searchParameter = searchParameter
+    }
+
+    fun getSearchParameter(): Map<String, String> {
+        return searchParameter
+    }
 
     private fun getInitialStateSubscriber(): Subscriber<List<InitialStateData>> = object : Subscriber<List<InitialStateData>>() {
         override fun onCompleted() {}
@@ -84,13 +94,68 @@ class InitialStatePresenter @Inject constructor(
         }
     }
 
-    private fun getInitialStateResult(list: MutableList<InitialStateData>): List<Visitable<*>> {
+    private fun getDeleteRecentSearchSubscriber(keyword: String): Subscriber<Boolean> = object : Subscriber<Boolean>() {
+        override fun onCompleted() {}
+
+        override fun onError(e: Throwable) {
+            e.printStackTrace()
+        }
+
+        override fun onNext(isSuccessful: Boolean) {
+            if (isSuccessful) {
+                var needDelete = false
+                listVistable.forEachIndexed { _, visitable ->
+                    if (visitable is RecentSearchViewModel) {
+                        if (visitable.list.size == 1) {
+                            needDelete = true
+                        } else {
+                            val deleted = visitable.list.find { it.title == keyword }
+                            visitable.list.remove(deleted)
+                        }
+                    }
+                }
+                if (needDelete) {
+                    removeRecentSearchTitle()
+                    removeRecentSearch()
+                }
+                view.deleteRecentSearch(listVistable)
+            }
+        }
+    }
+
+    private fun removeRecentSearchTitle() {
+        val titleViewModel = listVistable.filterIsInstance<RecentSearchTitleViewModel>()
+        listVistable.removeAll(titleViewModel)
+    }
+
+    private fun removeRecentSearch() {
+        val recentSearchViewModel = listVistable.filterIsInstance<RecentSearchViewModel>()
+        listVistable.removeAll(recentSearchViewModel)
+    }
+
+    private fun getDeleteAllRecentSearchSubscriber(): Subscriber<Boolean> = object : Subscriber<Boolean>() {
+        override fun onCompleted() {}
+
+        override fun onError(e: Throwable) {
+            e.printStackTrace()
+        }
+
+        override fun onNext(isSuccessful: Boolean) {
+            if (isSuccessful) {
+                removeRecentSearchTitle()
+                removeRecentSearch()
+                view.deleteRecentSearch(listVistable)
+            }
+        }
+    }
+
+    private fun getInitialStateResult(list: MutableList<InitialStateData>): MutableList<Visitable<*>> {
         val data = mutableListOf<Visitable<*>>()
         for (initialStateData in list) {
             when (initialStateData.id) {
                 InitialStateData.INITIAL_STATE_RECENT_SEARCH -> {
                     data.addAll(
-                            initialStateData.convertRecentSearchToVisitableList().insertTitleWithDeleteAll(initialStateData.header)
+                            initialStateData.convertRecentSearchToVisitableList().insertTitleWithDeleteAll(initialStateData.header, initialStateData.labelAction)
                     )
                 }
                 InitialStateData.INITIAL_STATE_RECENT_VIEW -> {
@@ -100,7 +165,7 @@ class InitialStatePresenter @Inject constructor(
                 }
                 InitialStateData.INITIAL_STATE_POPULAR_SEARCH -> {
                     data.addAll(
-                            initialStateData.convertPopularSearchToVisitableList().insertTitleWithRefresh(initialStateData.header)
+                            initialStateData.convertPopularSearchToVisitableList().insertTitleWithRefresh(initialStateData.header, initialStateData.labelAction)
                     )
                 }
             }
@@ -108,23 +173,25 @@ class InitialStatePresenter @Inject constructor(
         return data
     }
 
-    private fun MutableList<Visitable<*>>.insertTitle(name: String): List<Visitable<*>> {
+    private fun MutableList<Visitable<*>>.insertTitle(title: String): List<Visitable<*>> {
         val titleSearch = ReecentViewTitleViewModel()
-        titleSearch.title = name
+        titleSearch.title = title
         this.add(0, titleSearch)
         return this
     }
 
-    private fun MutableList<Visitable<*>>.insertTitleWithDeleteAll(name: String): List<Visitable<*>> {
+    private fun MutableList<Visitable<*>>.insertTitleWithDeleteAll(title: String, labelAction: String): List<Visitable<*>> {
         val titleSearch = RecentSearchTitleViewModel(true)
-        titleSearch.title = name
+        titleSearch.title = title
+        titleSearch.labelAction = labelAction
         this.add(0, titleSearch)
         return this
     }
 
-    private fun MutableList<Visitable<*>>.insertTitleWithRefresh(name: String): List<Visitable<*>> {
+    private fun MutableList<Visitable<*>>.insertTitleWithRefresh(title: String, labelAction: String): List<Visitable<*>> {
         val titleSearch = PopularSearchTitleViewModel(true)
-        titleSearch.title = name
+        titleSearch.title = title
+        titleSearch.labelAction = labelAction
         this.add(0, titleSearch)
         return this
     }
@@ -135,7 +202,7 @@ class InitialStatePresenter @Inject constructor(
             val model = BaseItemInitialStateSearch(
                     template = item.template,
                     imageUrl = item.imageUrl,
-                    applink =  item.applink,
+                    applink = item.applink,
                     url = item.url,
                     title = item.title,
                     subtitle = item.subtitle,
@@ -151,10 +218,10 @@ class InitialStatePresenter @Inject constructor(
         return childList
     }
 
-    override fun getInitialStateData(searchParameter: SearchParameter) {
+    override fun getInitialStateData() {
         initialStateUseCase.execute(
                 InitialStateUseCase.getParams(
-                        searchParameter.getSearchParameterMap(),
+                        searchParameter,
                         userSession.deviceId,
                         userSession.userId
                 ),
@@ -170,7 +237,7 @@ class InitialStatePresenter @Inject constructor(
         )
         deleteRecentSearchUseCase.execute(
                 params,
-                getInitialStateSubscriber()
+                getDeleteRecentSearchSubscriber(keyword)
         )
     }
 
@@ -181,14 +248,14 @@ class InitialStatePresenter @Inject constructor(
         )
         deleteRecentSearchUseCase.execute(
                 params,
-                getInitialStateSubscriber()
+                getDeleteAllRecentSearchSubscriber()
         )
     }
 
-    override fun refreshPopularSearch(searchParameter: SearchParameter) {
+    override fun refreshPopularSearch() {
         refreshPopularSearchUseCase.execute(
-                InitialStateUseCase.getParams(
-                        searchParameter.getSearchParameterMap(),
+                RefreshPopularSearchUseCase.getParams(
+                        searchParameter,
                         userSession.deviceId,
                         userSession.userId
                 ),
@@ -199,6 +266,8 @@ class InitialStatePresenter @Inject constructor(
     override fun detachView() {
         super.detachView()
         initialStateUseCase.unsubscribe()
+        deleteRecentSearchUseCase.unsubscribe()
+        refreshPopularSearchUseCase.unsubscribe()
     }
 
     override fun attachView(view: InitialStateContract.View) {

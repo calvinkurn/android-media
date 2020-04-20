@@ -99,6 +99,7 @@ public class TopChatAnalytics {
         String CLICK_ADD_TO_WISHLIST = "add wishlist - chat";
         String CLICK_REMOVE_FROM_WISHLIST = "remove wishlist - chat";
         String CLICK_QUOTATION_ATTACHMENT = "click bayar on quotation thumbnail";
+        String CLICK_IMAGE_THUMBNAIL = "click image on product thumbnail ";
     }
 
     public interface Label {
@@ -294,15 +295,17 @@ public class TopChatAnalytics {
                         USER_ID, user.getUserId(),
                         ECOMMERCE, DataLayer.mapOf(
                                 "currencyCode", "IDR",
-                                "impressions", DataLayer.mapOf(
-                                        "name", product.getProductName(),
-                                        "id", product.getProductId(),
-                                        "price", product.getProductPrice(),
-                                        "brand", "none",
-                                        "category", product.getCategory(),
-                                        "variant", product.getVariants().toString(),
-                                        "list", getField(String.valueOf(product.getBlastId())),
-                                        "position", 0
+                                "impressions", DataLayer.listOf(
+                                        DataLayer.mapOf(
+                                                "name", product.getProductName(),
+                                                "id", product.getProductId(),
+                                                "price", product.getProductPrice(),
+                                                "brand", "none",
+                                                "category", product.getCategory(),
+                                                "variant", product.getVariants().toString(),
+                                                "list", getField(String.valueOf(product.getBlastId())),
+                                                "position", 0
+                                        )
                                 )
                         )
                 )
@@ -467,6 +470,16 @@ public class TopChatAnalytics {
                 Category.CHAT_DETAIL,
                 Action.CLICK_QUOTATION_ATTACHMENT,
                 msg.getQuotationId()
+        );
+    }
+
+    // #AP11
+    public void eventClickProductThumbnail(@NotNull ProductAttachmentViewModel product) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                Name.CHAT_DETAIL,
+                Category.CHAT_DETAIL,
+                Action.CLICK_IMAGE_THUMBNAIL,
+                getField(String.valueOf(product.getBlastId())) + " - " + product.getBlastId()
         );
     }
 

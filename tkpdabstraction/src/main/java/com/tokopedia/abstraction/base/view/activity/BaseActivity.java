@@ -24,8 +24,11 @@ import com.tokopedia.abstraction.common.utils.receiver.ErrorNetworkReceiver;
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager;
 import com.tokopedia.abstraction.common.utils.view.DialogForceLogout;
 import com.tokopedia.inappupdate.AppUpdateManagerWrapper;
-import com.tokopedia.promotionstarget.presentation.subscriber.GratificationSubscriber;
 import com.tokopedia.track.TrackApp;
+import com.tokopedia.unifycomponents.BottomSheetUnify;
+import com.tokopedia.unifycomponents.UnifyButton;
+
+import kotlin.Unit;
 
 
 /**
@@ -44,8 +47,6 @@ public abstract class BaseActivity extends AppCompatActivity implements
     private ErrorNetworkReceiver logoutNetworkReceiver;
     private BroadcastReceiver inappReceiver;
     private boolean pauseFlag;
-
-    private GratificationSubscriber gratificationSubscriber;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -163,6 +164,31 @@ public abstract class BaseActivity extends AppCompatActivity implements
                         }
                     }
                 });
+
+//        createBottomSheet();
+    }
+
+    private void createBottomSheet() {
+        BottomSheetUnify bottomSheetUnify = new BottomSheetUnify();
+        bottomSheetUnify.setCustomPeekHeight(900);
+        bottomSheetUnify.setOverlayClickDismiss(false);
+
+        View childView = View.inflate(this, R.layout.error_unauthorized, null);
+        bottomSheetUnify.setChild(childView);
+        UnifyButton unifyButton = childView.findViewById(R.id.unauthorized_button);
+
+        bottomSheetUnify.setCloseClickListener(view -> {
+            bottomSheetUnify.dismiss();
+            return Unit.INSTANCE;
+        });
+
+        unifyButton.setOnClickListener(view -> {
+            if (getApplication() instanceof AbstractionRouter) {
+                ((AbstractionRouter) getApplication()).onForceLogout(BaseActivity.this);
+            }
+        });
+
+        bottomSheetUnify.show(getSupportFragmentManager(), "Unauthorized Force Logout");
     }
 
     public void checkIfForceLogoutMustShow() {
@@ -204,19 +230,11 @@ public abstract class BaseActivity extends AppCompatActivity implements
         if (getApplication() instanceof AbstractionRouter) {
             ((AbstractionRouter) getApplication()).onNewIntent(this, intent);
         }
-
-        if (gratificationSubscriber == null) {
-            gratificationSubscriber = new GratificationSubscriber(getApplicationContext());
-        }
-        gratificationSubscriber.onNewIntent(this, intent);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (gratificationSubscriber != null) {
-            gratificationSubscriber.onActivityDestroyed(this);
-        }
         if (!GlobalConfig.isSellerApp() && getApplication() instanceof AbstractionRouter) {
             String screenName = getScreenName();
             if (screenName == null) {

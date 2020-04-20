@@ -38,7 +38,9 @@ import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestBuilder;
+import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool;
 import com.bumptech.glide.load.resource.bitmap.BitmapTransformation;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
@@ -231,6 +233,30 @@ public class ImageHandler {
                     .centerCrop()
                     .dontAnimate()
                     .error(R.drawable.error_drawable)
+                    .into(imageview);
+        }
+    }
+
+    public static void loadImageWithoutPlaceholder(ImageView imageview, String url, ImageLoaderStateListener imageLoaderStateListener) {
+        if (imageview.getContext() != null) {
+            Glide.with(imageview.getContext())
+                    .load(url)
+                    .centerCrop()
+                    .dontAnimate()
+                    .error(R.drawable.error_drawable)
+                    .addListener(new RequestListener<Drawable>() {
+                        @Override
+                        public boolean onLoadFailed(@androidx.annotation.Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                            imageLoaderStateListener.failedLoad();
+                            return false;
+                        }
+
+                        @Override
+                        public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                            imageLoaderStateListener.successLoad();
+                            return false;
+                        }
+                    })
                     .into(imageview);
         }
     }
@@ -848,4 +874,9 @@ public class ImageHandler {
                     }
                 });
     }
+    public interface ImageLoaderStateListener{
+        void successLoad();
+        void failedLoad();
+    }
 }
+

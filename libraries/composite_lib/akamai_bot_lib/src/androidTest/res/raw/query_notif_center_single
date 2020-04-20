@@ -1,0 +1,40 @@
+query ($notifId: String, $notifLang: String) {
+  notifcenter_singleList(notif_id: $notifId, notif_center_lang: $notifLang) {
+    paging {
+      has_next
+      has_prev
+    }
+    list {
+      template_key
+      notif_id
+      user_id
+      shop_id
+      section_key
+      subsection_key
+      title
+      short_description
+      content
+      type_of_user
+      create_time
+      create_time_unix
+      update_time
+      update_time_unix
+      status
+      read_status
+      data_notification {
+        app_link
+        desktop_link
+        info_thumbnail_url
+        mobile_link
+      }
+    }
+    section_list {
+      id
+      key
+      subsection_list {
+        key
+        text
+      }
+    }
+  }
+}

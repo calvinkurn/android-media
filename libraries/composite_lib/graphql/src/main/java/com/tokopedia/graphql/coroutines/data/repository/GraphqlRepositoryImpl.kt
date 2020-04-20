@@ -13,10 +13,11 @@ import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.data.model.GraphqlResponseInternal
 import com.tokopedia.graphql.data.model.GraphqlError
 import java.lang.reflect.Type
+import javax.inject.Inject
 import kotlin.Exception
 
-class GraphqlRepositoryImpl(private val graphqlCloudDataStore: GraphqlCloudDataStore,
-                            private val graphqlCacheDataStore: GraphqlCacheDataStore) : GraphqlRepository {
+class GraphqlRepositoryImpl @Inject constructor(private val graphqlCloudDataStore: GraphqlCloudDataStore,
+                                                private val graphqlCacheDataStore: GraphqlCacheDataStore) : GraphqlRepository {
 
     val mResults = mutableMapOf<Type, Any>()
     val mRefreshRequests = mutableListOf<GraphqlRequest>()

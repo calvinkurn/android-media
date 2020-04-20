@@ -48,6 +48,7 @@ public class UserIdentificationFormActivity extends BaseStepperActivity {
     private SnackbarRetry snackbar;
     private int projectId = -1;
     protected UserIdentificationCommonAnalytics analytics;
+    public static boolean isSupportedLiveness = true;
 
     public interface Listener {
         void trackOnBackPressed();
@@ -64,6 +65,7 @@ public class UserIdentificationFormActivity extends BaseStepperActivity {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         try {
             projectId = Integer.parseInt(getIntent().getData().getQueryParameter(ApplinkConstInternalGlobal.PARAM_PROJECT_ID));
+            getIntent().putExtra(ApplinkConstInternalGlobal.PARAM_PROJECT_ID, projectId);
         } catch (NumberFormatException | NullPointerException e) {
             projectId = KYCConstant.STATUS_DEFAULT;
         } catch (Exception e) {

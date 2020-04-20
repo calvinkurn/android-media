@@ -17,7 +17,7 @@ object PayloadConverter {
 
     private val TAG = PayloadConverter::class.java.simpleName
 
-    public fun convertMapToBundle(map: Map<String, String>?): Bundle {
+    fun convertMapToBundle(map: Map<String, String>?): Bundle {
         val bundle = Bundle(map?.size ?: 0)
         if (map != null) {
             for ((key, value) in map) {
@@ -58,6 +58,7 @@ object PayloadConverter {
         }
         model.isVibration = data.getBoolean(CMConstant.PayloadKeys.VIBRATE, true)
         model.isUpdateExisting = data.getBoolean(CMConstant.PayloadKeys.UPDATE_NOTIFICATION, false)
+        model.isTest = data.getBoolean(CMConstant.PayloadKeys.IS_TEST, false)
         val gridList = getGridList(data)
         if (gridList != null)
             model.gridList = gridList
@@ -93,6 +94,13 @@ object PayloadConverter {
         }
 
         model.status = NotificationStatus.PENDING
+
+        //notification attribution
+        model.transactionId = data.getString(CMConstant.PayloadKeys.TRANSACTION_ID)
+        model.userTransactionId = data.getString(CMConstant.PayloadKeys.USER_TRANSACTION_ID)
+        model.userId = data.getString(CMConstant.PayloadKeys.USER_ID)
+        model.shopId = data.getString(CMConstant.PayloadKeys.SHOP_ID)
+        model.blastId = data.getString(CMConstant.PayloadKeys.BLAST_ID)
 
         return model
     }

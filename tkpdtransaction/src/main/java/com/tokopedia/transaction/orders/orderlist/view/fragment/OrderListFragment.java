@@ -31,6 +31,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.RefreshHandler;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel;
 import com.tokopedia.datepicker.DatePickerUnify;
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog;
@@ -40,9 +41,9 @@ import com.tokopedia.design.quickfilter.QuickFilterItem;
 import com.tokopedia.design.quickfilter.QuickSingleFilterView;
 import com.tokopedia.design.quickfilter.custom.CustomViewRounderCornerFilterView;
 import com.tokopedia.design.text.SearchInputView;
+import com.tokopedia.topads.sdk.utils.ImpresionTask;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
 import com.tokopedia.transaction.R;
-import com.tokopedia.transaction.orders.UnifiedOrderListRouter;
 import com.tokopedia.transaction.orders.orderdetails.data.ShopInfo;
 import com.tokopedia.transaction.orders.orderdetails.data.Status;
 import com.tokopedia.transaction.orders.orderdetails.view.OrderListAnalytics;
@@ -72,6 +73,7 @@ import com.tokopedia.transaction.util.Utils;
 import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.unifycomponents.UnifyButton;
 import com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -95,7 +97,7 @@ import kotlin.Unit;
 public class OrderListFragment extends BaseDaggerFragment implements
 
         OrderListRecomListViewHolder.ActionListener, RefreshHandler.OnRefreshHandlerListener,
-        OrderListContract.View, QuickSingleFilterView.ActionListener, SearchInputView.Listener,QuickSingleFilterView.QuickFilterAnalytics,
+        OrderListContract.View, QuickSingleFilterView.ActionListener, SearchInputView.Listener, QuickSingleFilterView.QuickFilterAnalytics,
         SearchInputView.ResetListener, OrderListViewHolder.OnMenuItemListener, View.OnClickListener,
         OrderListViewHolder.OnActionButtonListener, EmptyStateMarketPlaceFilterViewHolder.ActionListener {
 
@@ -121,13 +123,15 @@ public class OrderListFragment extends BaseDaggerFragment implements
     private static final long KEYBOARD_SEARCH_WAITING_TIME = 300;
     public static final String ACTION_BUY_AGAIN = "beli lagi";
     public static final String ACTION_ASK_SELLER = "tanya penjual";
+    public static final String ACTION_TULIS_REVIEW = "tulis review";
     private static final String ACTION_TRACK_IT = "lacak";
     public static final String ACTION_SUBMIT_CANCELLATION = "ajukan pembatalan";
     private static final String ACTION_DONE = "selesai";
     private static final String ACTION_SIMILAR_PRODUCT = "rekomendasi";
     private static final String CLICK_SIMILAR_PRODUCT = "click lihat produk serupa";
-    private static final String  MULAI_DARI= "Mulai Dari";
-    private static final String  SAMPAI= "Sampai";
+    private static final String CLICK_TULIS_REVIEW = "click button tulis review";
+    private static final String MULAI_DARI = "Mulai Dari";
+    private static final String SAMPAI = "Sampai";
     private static final int DEFAULT_FILTER_YEAR = 2017;
     private static final int DEFAULT_FILTER_MONTH = 0;
     private static final int DEFAULT_FILTER_DATE = 1;
@@ -145,7 +149,7 @@ public class OrderListFragment extends BaseDaggerFragment implements
     private UnifyButton terapkan;
     private RelativeLayout datePickerlayout;
     private RadioGroup radioGroup;
-    private RadioButtonUnify radio1,radio2;
+    private RadioButtonUnify radio1, radio2;
     private DatePickerUnify datePickerUnify;
     private RefreshHandler refreshHandler;
     private TextView reset;
@@ -165,19 +169,22 @@ public class OrderListFragment extends BaseDaggerFragment implements
     private static final String DATE_FORMAT = "dd/MM/yyyy";
     private static final String DATE_FORMAT_1 = "yyyy/MM/dd";
     private static final String DATE_FORMAT_2 = "d MMM yyyy";
-    private static final String DATE_FORMAT_3= "d M yyyy";
+    private static final String DATE_FORMAT_3 = "d M yyyy";
     private static long _days90 = 90;
 
     private int orderId = 1;
     private String selectedOrderId = "0";
     private String actionButtonUri = "";
-    private HashMap<String,String>selectedDateMap= new HashMap<>();
+    private HashMap<String, String> selectedDateMap = new HashMap<>();
     private SimpleDateFormat format = new SimpleDateFormat(DATE_FORMAT, Locale.getDefault());
     private SimpleDateFormat format1 = new SimpleDateFormat(DATE_FORMAT_1, Locale.getDefault());
     private SimpleDateFormat format2 = new SimpleDateFormat(DATE_FORMAT_2, new Locale("ind", "IND"));
 
     @Inject
     OrderListAnalytics orderListAnalytics;
+
+    @Inject
+    UserSessionInterface userSession;
 
     private String selectedFilter = "0";
 
@@ -565,14 +572,9 @@ public class OrderListFragment extends BaseDaggerFragment implements
 
     @Override
     public void startUri(String uri) {
-        if (!uri.equals(""))
-            try {
-                startActivity(((UnifiedOrderListRouter) getActivity()
-                        .getApplication()).getWebviewActivityWithIntent(getContext(),
-                        URLEncoder.encode(uri, "UTF-8")));
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-            }
+        if (!uri.equals("")) {
+            RouteManager.route(getActivity(), ApplinkConstInternalGlobal.WEBVIEW, uri);
+        }
     }
 
     @Override
@@ -642,17 +644,27 @@ public class OrderListFragment extends BaseDaggerFragment implements
     }
 
     @Override
-    public void addData(List<Visitable> data, Boolean isRecommendation) {
+    public void sendATCTrackingUrl(String url) {
+        String clickUrl = url + "&click_source=ATC_direct_click";
+        new ImpresionTask(userSession).execute(clickUrl);
+    }
+
+    @Override
+    public void addData(List<Visitable> data, Boolean isRecommendation, boolean isInitial) {
         this.isRecommendation = isRecommendation;
         if (!hasRecyclerListener) {
             addRecyclerListener();
         }
         refreshHandler.finishRefresh();
         refreshHandler.setPullEnabled(true);
-        orderListAdapter.addElement(data);
+        if (isInitial) {
+            orderListAdapter.setElements(data);
+        } else {
+            orderListAdapter.addElement(data);
+        }
         endlessRecyclerViewScrollListener.updateStateAfterGetData();
         swipeToRefresh.setVisibility(View.VISIBLE);
-        if ((mOrderCategory.equalsIgnoreCase(OrderListContants.BELANJA) || (mOrderCategory.equalsIgnoreCase(OrderListContants.MARKETPLACE)) && !isRecommendation )|| orderLabelList.getOrderCategory().equalsIgnoreCase(OrderCategory.DIGITAL)) {
+        if ((mOrderCategory.equalsIgnoreCase(OrderListContants.BELANJA) || (mOrderCategory.equalsIgnoreCase(OrderListContants.MARKETPLACE)) && !isRecommendation) || orderLabelList.getOrderCategory().equalsIgnoreCase(OrderCategory.DIGITAL)) {
             filterDate.setVisibility(View.VISIBLE);
         }
     }
@@ -684,8 +696,8 @@ public class OrderListFragment extends BaseDaggerFragment implements
     @Override
     public void onSearchSubmitted(String text) {
 
-            searchedString = text;
-            orderListAnalytics.sendSearchFilterClickEvent(text);
+        searchedString = text;
+        orderListAnalytics.sendSearchFilterClickEvent(text);
 
     }
 
@@ -841,11 +853,11 @@ public class OrderListFragment extends BaseDaggerFragment implements
         datePickerUnify.getDatePickerButton().setOnClickListener((View v) -> {
             Integer[] date = datePickerUnify.getDate();
             if (title.equalsIgnoreCase(SAMPAI)) {
-                sampaiButton.setText(date[0] + " " + Utils.convertMonth(date[1],getActivity()) + " " + date[2]);
+                sampaiButton.setText(date[0] + " " + Utils.convertMonth(date[1], getActivity()) + " " + date[2]);
                 datePickerEndDate = date[0] + "/" + date[1] + "/" + date[2];
 
             } else {
-                mulaiButton.setText(date[0] + " " + Utils.convertMonth(date[1],getActivity()) + " " + date[2]);
+                mulaiButton.setText(date[0] + " " + Utils.convertMonth(date[1], getActivity()) + " " + date[2]);
                 datePickerStartDate = date[0] + "/" + date[1] + "/" + date[2];
             }
             datePickerUnify.dismiss();
@@ -907,7 +919,7 @@ public class OrderListFragment extends BaseDaggerFragment implements
     @Override
     public void setSelectFilterName(String selectFilterName) {
         orderListAnalytics.sendQuickFilterClickEvent(selectFilterName);
-}
+    }
 
 
     public void handleActionButtonClick(@NotNull Order order, @Nullable ActionButton actionButton) {
@@ -916,7 +928,7 @@ public class OrderListFragment extends BaseDaggerFragment implements
         this.selectedOrderId = order.id();
         switch (actionButton.label().toLowerCase()) {
             case ACTION_BUY_AGAIN:
-                if(mOrderCategory.equalsIgnoreCase(OrderListContants.BELANJA) || mOrderCategory.equalsIgnoreCase(OrderListContants.MARKETPLACE))
+                if (mOrderCategory.equalsIgnoreCase(OrderListContants.BELANJA) || mOrderCategory.equalsIgnoreCase(OrderListContants.MARKETPLACE))
                     presenter.setOrderDetails(selectedOrderId, mOrderCategory, actionButton.label().toLowerCase());
                 else
                     handleDefaultCase(actionButton);
@@ -939,7 +951,11 @@ public class OrderListFragment extends BaseDaggerFragment implements
                         eventLabel = String.valueOf(order.items().get(0).getId());
                     }
                     orderListAnalytics.sendActionButtonClickEventList(CLICK_SIMILAR_PRODUCT, eventLabel);
+
+                } else if (actionButton.label().equalsIgnoreCase(ACTION_TULIS_REVIEW)) {
+                    orderListAnalytics.sendActionButtonClickEventList(CLICK_TULIS_REVIEW, String.valueOf(order.status()));
                 }
+
                 handleDefaultCase(actionButton);
                 break;
         }
@@ -951,19 +967,13 @@ public class OrderListFragment extends BaseDaggerFragment implements
         if (newUri.startsWith(KEY_URI)) {
             if (newUri.contains(KEY_URI_PARAMETER)) {
                 Uri url = Uri.parse(newUri);
-                String queryParameter = url.getQueryParameter(KEY_URI_PARAMETER) != null ? url.getQueryParameter(KEY_URI_PARAMETER):"";
+                String queryParameter = url.getQueryParameter(KEY_URI_PARAMETER) != null ? url.getQueryParameter(KEY_URI_PARAMETER) : "";
                 newUri = newUri.replace(queryParameter, "");
                 newUri = newUri.replace(KEY_URI_PARAMETER_EQUAL, "");
             }
             RouteManager.route(getActivity(), newUri);
         } else if (!TextUtils.isEmpty(newUri)) {
-            try {
-                startActivity(((UnifiedOrderListRouter) getActivity()
-                        .getApplication()).getWebviewActivityWithIntent(getContext(),
-                        URLEncoder.encode(newUri, "UTF-8")));
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-            }
+            RouteManager.route(getActivity(), ApplinkConstInternalGlobal.WEBVIEW, newUri);
         }
     }
 
@@ -977,7 +987,8 @@ public class OrderListFragment extends BaseDaggerFragment implements
                 Toaster.INSTANCE.showErrorWithAction(mainContent,
                         presenter.getCancelTime(),
                         Snackbar.LENGTH_LONG,
-                        getResources().getString(R.string.title_ok), v -> {});
+                        getResources().getString(R.string.title_ok), v -> {
+                        });
             } else
                 startActivityForResult(RequestCancelActivity.getInstance(getContext(), selectedOrderId, actionButtonUri, 1), REQUEST_CANCEL_ORDER);
         } else if (status.status().equals(STATUS_CODE_11)) {

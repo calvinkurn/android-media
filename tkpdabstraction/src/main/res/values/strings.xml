@@ -44,7 +44,7 @@
 
     <string name="webview_label_menu">Menu</string>
     <string name="webview_label_menu_home">Beranda</string>
-    <string name="webview_label_menu_help">Bantuan</string>
+    <string name="webview_label_menu_help">Tokopedia care</string>
 
     <!-- app update -->
     <string name="appupdate_update">Update</string>
@@ -107,4 +107,9 @@
     <!-- String related WebView-->
     <string name="error_message_url_invalid">Url tidak valid</string>
     <string name="error_message_url_invalid_crashlytics">Invalid webview url - </string>
+
+    <!-- String error unauthorized-->
+    <string name="error_message_unautorized_title">Yaah, sesi kamu telah habis</string>
+    <string name="error_message_unautorized_body">Masuk kembali untuk lanjut berbelanja</string>
+    <string name="error_message_unautorized_button">Masuk Sekarang</string>
 </resources>

@@ -126,18 +126,13 @@ class FlexBoxChatLayout : FrameLayout {
             0f
         }
 
-        totalWidth = paddingLeft + paddingRight
-        totalHeight = paddingTop + paddingBottom
+        totalWidth = paddingLeft + paddingRight + messageWidth
+        totalHeight = paddingTop + paddingBottom + messageHeight
 
-        if (messageLineCount == 1 && (messageWidth + statusWidth <= availableWidth)) {
-            totalWidth += messageWidth + statusWidth
-            totalHeight += messageHeight
-        } else if (messageLineCount > 1 && (lastLineWidth + statusWidth <= availableWidth)) {
-            totalWidth += messageWidth
-            totalHeight += messageHeight
-        } else {
-            totalWidth += messageWidth
-            totalHeight += messageHeight + statusHeight
+        if (messageWidth + statusWidth <= availableWidth) {
+            totalWidth += statusWidth
+        } else if (lastLineWidth + statusWidth > availableWidth) {
+            totalHeight += statusHeight
         }
 
         setMeasuredDimension(totalWidth, totalHeight)

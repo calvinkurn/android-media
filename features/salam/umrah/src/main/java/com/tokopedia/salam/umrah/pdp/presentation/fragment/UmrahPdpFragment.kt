@@ -338,6 +338,7 @@ class UmrahPdpFragment : BaseDaggerFragment(), UmrahPdpActivity.OnBackListener, 
         uta_umrah_pdp_travel_agent.buildView()
 
         iw_umrah_pdp_travel_agent.setOnClickListener {
+            umrahTrackingUtil.umrahTravelAgentClickPDP()
             RouteManager.route(context,ApplinkConst.SALAM_UMRAH_AGEN, travelAgent.slugName)
         }
 

@@ -1,6 +1,7 @@
 package com.tokopedia.analytics.debugger.ui.fragment
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
@@ -170,12 +171,17 @@ class FpmDebuggerFragment : BaseSearchListFragment<Visitable<*>, FpmDebuggerType
     override fun onActivityResult(requestCode: Int, resultCode: Int, resultData: Intent?) {
         if (requestCode == GET_FILE_FOR_SAVING_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             val uri = resultData?.data
-            presenter?.writeAllDataToFile(uri)
+            uri?.let { it ->
+                presenter?.writeAllDataToFile(uri)
+            }
         }
     }
 
+    override fun getViewContext(): Context {
+        return requireContext()
+    }
     private fun openDetail(viewModel: com.tokopedia.analyticsdebugger.debugger.ui.model.FpmDebuggerViewModel) {
-        startActivity(FpmDebuggerDetailActivity.newInstance(context, viewModel))
+        startActivity(FpmDebuggerDetailActivity.newInstance(requireContext(), viewModel))
     }
 
     companion object {

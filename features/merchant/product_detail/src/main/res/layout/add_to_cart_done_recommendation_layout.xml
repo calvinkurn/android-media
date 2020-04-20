@@ -6,6 +6,7 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:layout_marginLeft="@dimen/dp_16"
+    android:layout_marginRight="@dimen/dp_16"
     android:layout_marginBottom="@dimen/dp_16"
     android:visibility="gone"
     tools:ignore="RtlSymmetry"
@@ -39,7 +40,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_8"
             android:descendantFocusability="blocksDescendants"
-            android:scrollbars="none"/>
+            android:scrollbars="none"
+            app:useDefaultItemDecorator="false"/>
 
     </FrameLayout>
 

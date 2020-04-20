@@ -1,0 +1,27 @@
+query CouponInStack($stackID: String!) {
+  coupons: tokopointsGetCouponStack(stackID: $stackID) {
+    coupons: tokopointsCouponDataStack {
+      id
+      promoID
+      code
+      imageURL
+      imageURLMobile
+      redirectURL
+      redirectAppLink
+      usage {
+        activeCountdown
+        expiredCountdown
+        text
+        usageStr
+        buttonUsage {
+          text
+          url
+          appLink
+          type
+        }
+      }
+      minimumUsage
+      minimumUsageLabel
+    }
+  }
+}

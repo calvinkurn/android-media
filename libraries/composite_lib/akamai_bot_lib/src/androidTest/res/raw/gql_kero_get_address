@@ -1,0 +1,31 @@
+{
+    kero_get_address(input: {
+        is_default: 1
+    }) {
+    data {
+        addr_id
+        receiver_name
+        addr_name
+        address_1
+        address_2
+        postal_code
+        province
+        city
+        district
+        phone
+        province_name
+        city_name
+        district_name
+        status
+        country
+        latitude
+        longitude
+        is_primary
+        is_active
+        is_whitelist
+    }
+    status
+    server_process_time
+    config
+   }
+}

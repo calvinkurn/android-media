@@ -42,6 +42,7 @@ import com.tokopedia.talk.producttalk.view.adapter.EmptyProductTalkViewHolder
 import com.tokopedia.talk.producttalk.view.adapter.LoadProductTalkThreadViewHolder
 import com.tokopedia.talk.producttalk.view.adapter.ProductTalkAdapter
 import com.tokopedia.talk.producttalk.view.adapter.ProductTalkThreadViewHolder
+import com.tokopedia.talk.producttalk.view.data.ChatBannerUiModel
 import com.tokopedia.talk.producttalk.view.listener.ProductTalkContract
 import com.tokopedia.talk.producttalk.view.viewmodel.ProductTalkTitleViewModel
 import com.tokopedia.talk.producttalk.view.viewmodel.ProductTalkViewModel
@@ -289,6 +290,7 @@ class ProductTalkFragment : BaseDaggerFragment(),
 
     override fun onSuccessResetTalk(productTalkViewModel: ProductTalkViewModel) {
         setupViewModel(productTalkViewModel)
+        productTalkViewModel.addChatTicker()
         adapter.setList(productTalkViewModel.listThread, ProductTalkTitleViewModel(productImage,
                 productName, productPrice))
         stopTrace()
@@ -774,5 +776,9 @@ class ProductTalkFragment : BaseDaggerFragment(),
 
     override fun onDismissChatTicker(position: Int) {
         adapter.removeElement(position)
+    }
+
+    override fun trackOnClickChatBanner(element: ChatBannerUiModel) {
+        analytics.trackOnClickChatBanner(element)
     }
 }
