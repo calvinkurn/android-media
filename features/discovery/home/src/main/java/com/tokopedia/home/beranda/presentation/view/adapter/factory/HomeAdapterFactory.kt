@@ -39,7 +39,8 @@ class HomeAdapterFactory(private val fragmentManager: FragmentManager, private v
                          private val countDownListener: CountDownView.CountDownListener,
                          private val homeReviewListener: HomeReviewListener,
                          private val parentRecycledViewPool: RecyclerView.RecycledViewPool,
-                         private val popularKeywordListener: PopularKeywordViewHolder.PopularKeywordListener) : BaseAdapterTypeFactory(), HomeTypeFactory {
+                         private val popularKeywordListener: PopularKeywordViewHolder.PopularKeywordListener,
+                         private val rechargeRecommendationListener: RechargeRecommendationViewHolder.RechargeRecommendationListener) : BaseAdapterTypeFactory(), HomeTypeFactory {
 
     private val productLayout = HashSet(
             listOf(
@@ -136,6 +137,10 @@ class HomeAdapterFactory(private val fragmentManager: FragmentManager, private v
 
     override fun type(popularKeywordListDataModel: PopularKeywordListDataModel): Int {
         return PopularKeywordViewHolder.LAYOUT
+    }
+
+    override fun type(rechargeRecommendationViewModel: RechargeRecommendationViewModel): Int {
+        return RechargeRecommendationViewHolder.LAYOUT
     }
 
     private fun getDynamicChannelLayoutFromType(layout: String): Int {
@@ -248,6 +253,7 @@ class HomeAdapterFactory(private val fragmentManager: FragmentManager, private v
             RecommendationListCarouselViewHolder.LAYOUT -> viewHolder = RecommendationListCarouselViewHolder(view, listener, parentRecycledViewPool)
             MixTopBannerViewHolder.LAYOUT -> viewHolder = MixTopBannerViewHolder(view, listener)
             ProductHighlightViewHolder.LAYOUT -> viewHolder = ProductHighlightViewHolder(view, listener)
+            RechargeRecommendationViewHolder.LAYOUT -> viewHolder = RechargeRecommendationViewHolder(view, rechargeRecommendationListener, listener)
             else -> viewHolder = super.createViewHolder(view, type)
         }
 

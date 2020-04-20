@@ -400,7 +400,6 @@ object ApplinkConstInternalGlobal {
     val LOGOUT = "$INTERNAL_GLOBAL/logout"
     @JvmField
     val PARAM_IS_RETURN_HOME = "return_to_home"
-
     // AdvancedSettingActivity
     // tokopedia-android-internal://global/advanced-setting
     @JvmField

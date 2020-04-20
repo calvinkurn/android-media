@@ -9,6 +9,7 @@ import com.google.gson.GsonBuilder;
 import com.tokopedia.akamai_bot_lib.UtilsKt;
 import com.tokopedia.akamai_bot_lib.interceptor.GqlAkamaiBotInterceptor;
 import com.tokopedia.config.GlobalConfig;
+import com.tokopedia.fakeresponse.FakeResponseInterceptorProvider;
 import com.tokopedia.graphql.FingerprintManager;
 import com.tokopedia.graphql.data.db.GraphqlDatabase;
 import com.tokopedia.graphql.data.source.cloud.api.GraphqlApi;
@@ -33,6 +34,7 @@ import java.util.List;
 import kotlin.Unit;
 import kotlin.jvm.functions.Function0;
 import kotlin.jvm.functions.Function1;
+import okhttp3.Interceptor;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
@@ -59,6 +61,12 @@ public class GraphqlClient {
 
             if (GlobalConfig.isAllowDebuggingTools()) {
                 tkpdOkHttpBuilder.addInterceptor(new DeprecatedApiInterceptor(context.getApplicationContext()));
+
+                FakeResponseInterceptorProvider provider = new FakeResponseInterceptorProvider();
+                Interceptor interceptor = provider.getInterceptor(context.getApplicationContext());
+                if (interceptor != null) {
+                    tkpdOkHttpBuilder.addInterceptor(interceptor);
+                }
             }
 
             sRetrofit = CommonNetwork.createRetrofit(
@@ -89,7 +97,7 @@ public class GraphqlClient {
         UserSession userSession = new UserSession(context.getApplicationContext());
         TkpdOkHttpBuilder tkpdOkHttpBuilder = new TkpdOkHttpBuilder(context.getApplicationContext(), new OkHttpClient.Builder());
 
-        for (Interceptor interceptor: interceptors) {
+        for (Interceptor interceptor : interceptors) {
             tkpdOkHttpBuilder.addInterceptor(interceptor);
         }
 

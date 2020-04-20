@@ -224,6 +224,7 @@ import okhttp3.Interceptor;
 import okhttp3.Response;
 import rx.Observable;
 import rx.functions.Func1;
+import timber.log.Timber;
 
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_DESCRIPTION;
 import static com.tokopedia.kyc.Constants.Keys.KYC_CARDID_CAMERA;
@@ -739,6 +740,15 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public void showForceLogoutTokenDialog(String response) {
         ServerErrorHandler.showForceLogoutDialog();
         ServerErrorHandler.sendForceLogoutTokenAnalytics(response);
+    }
+
+    @Override
+    public void sendAnalyticsAnomalyResponse(String title,
+                                             String accessToken, String refreshToken,
+                                             String response, String request) {
+        Timber.w("P2#USER_ANOMALY_REPONSE#AnomalyResponse;title=" + title +
+                ";accessToken=" + accessToken + ";refreshToken=" + refreshToken +
+                ";response=" + response + ";request=" + request);
     }
 
     @Override

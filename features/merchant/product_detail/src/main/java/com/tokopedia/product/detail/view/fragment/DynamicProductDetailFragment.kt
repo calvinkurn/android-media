@@ -418,6 +418,9 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                     buyAfterTradeinDiagnose(deviceId, phoneType, phonePrice)
                 }
             }
+            ProductDetailConstant.REQUEST_CODE_CHECKOUT -> {
+                updateCartNotification()
+            }
             ProductDetailConstant.REQUEST_CODE_ETALASE -> {
                 if (resultCode == Activity.RESULT_OK && data != null) {
                     val selectedEtalaseId = data.getStringExtra(ShopParamConstant.EXTRA_ETALASE_ID)
@@ -584,7 +587,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     override fun onEtalaseClicked(url: String, componentTrackDataModel: ComponentTrackDataModel) {
         val etalaseId = viewModel.getDynamicProductInfoP1?.basic?.menu?.id ?: ""
         val etalaseName = viewModel.getDynamicProductInfoP1?.basic?.menu?.name ?: ""
-        val shopId = viewModel.shopInfo?.shopCore?.shopID ?: ""
+        val shopId = viewModel.getDynamicProductInfoP1?.basic?.shopID ?: ""
 
         val intent = RouteManager.getIntent(context, if (etalaseId.isNotEmpty()) {
             UriUtil.buildUri(ApplinkConst.SHOP_ETALASE, shopId, etalaseId)
@@ -681,6 +684,8 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
      * PageErrorViewHolder
      */
     override fun onRetryClicked(forceRefresh: Boolean) {
+        clearAllData()
+        showLoading()
         onSwipeRefresh()
     }
 
@@ -1037,7 +1042,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
         viewModel.getDynamicProductInfoP1?.let {
             actionButtonView.renderData(!it.isProductActive(viewModel.selectedMultiOrigin.stock),
-                    viewModel.hasShopAuthority(), hasTopAds(),
+                    viewModel.hasShopAuthority(), viewModel.isShopOwner(), hasTopAds(),
                     viewModel.cartTypeData?.getCartTypeAtPosition(indexOfVariantButton ?: -1))
         }
     }
@@ -1073,6 +1078,9 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                     onSuccessAtc(it.data)
                 }
             }, {
+                DynamicProductDetailTracking.Impression.eventViewErrorWhenAddToCart(it.message
+                        ?: "", viewModel.getDynamicProductInfoP1?.basic?.productID
+                        ?: "", viewModel.userId)
                 logException(it)
                 showToastError(it)
             })
@@ -1221,7 +1229,8 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     }
 
     private fun goToOneClickCheckout() {
-        RouteManager.route(context, ApplinkConstInternalMarketplace.ONE_CLICK_CHECKOUT)
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.ONE_CLICK_CHECKOUT)
+        startActivityForResult(intent, ProductDetailConstant.REQUEST_CODE_CHECKOUT)
     }
 
     private fun sendTrackingATC(cartId: String) {
@@ -1245,19 +1254,20 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             activity?.let {
                 when (result.data.ovoValidationDataModel.status) {
                     ProductDetailConstant.OVO_INACTIVE_STATUS -> {
-                        val applink = "${result.data.ovoValidationDataModel.applink}&product_id=${viewModel.getDynamicProductInfoP1?.parentProductId ?: ""}"
+                        val applink = "${result.data.ovoValidationDataModel.applink}&product_id=${viewModel.getDynamicProductInfoP1?.parentProductId
+                                ?: ""}"
                         DynamicProductDetailTracking.Click.eventActivationOvo(
                                 viewModel.getDynamicProductInfoP1?.parentProductId ?: "",
                                 viewModel.userSessionInterface.userId)
                         RouteManager.route(it, applink)
                     }
                     ProductDetailConstant.OVO_INSUFFICIENT_BALANCE_STATUS -> {
-                            val bottomSheetOvoDeals = OvoFlashDealsBottomSheet(
-                                    viewModel.getDynamicProductInfoP1?.parentProductId ?: "",
-                                    viewModel.userSessionInterface.userId,
-                                    result.data.ovoValidationDataModel)
-                            bottomSheetOvoDeals.show(it.supportFragmentManager, "Ovo Deals")
-                        }
+                        val bottomSheetOvoDeals = OvoFlashDealsBottomSheet(
+                                viewModel.getDynamicProductInfoP1?.parentProductId ?: "",
+                                viewModel.userSessionInterface.userId,
+                                result.data.ovoValidationDataModel)
+                        bottomSheetOvoDeals.show(it.supportFragmentManager, "Ovo Deals")
+                    }
                     else -> showToastError(Throwable(getString(R.string.default_request_error_unknown)))
                 }
             }
@@ -1269,14 +1279,14 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         intent.putExtra(CheckoutConstant.EXTRA_IS_ONE_CLICK_SHIPMENT, true)
         intent.putExtras(shipmentFormRequest)
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        startActivity(intent)
+        startActivityForResult(intent, ProductDetailConstant.REQUEST_CODE_CHECKOUT)
     }
 
     private fun goToCartCheckout(cartId: String) {
         val intent = RouteManager.getIntent(context, ApplinkConst.CART)
         intent?.run {
             putExtra(ApplinkConst.Transaction.EXTRA_CART_ID, cartId)
-            startActivity(intent)
+            startActivityForResult(intent, ProductDetailConstant.REQUEST_CODE_CHECKOUT)
         }
     }
 
@@ -1306,7 +1316,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     private fun onSuccessGetDataP2Shop(it: ProductInfoP2ShopData) {
         viewModel.getDynamicProductInfoP1?.let { p1 ->
             val productStock = p1.getFinalStock(viewModel.selectedMultiOrigin.getOriginStock()).toIntOrZero()
-            actionButtonView.renderData(!p1.isProductActive(productStock), viewModel.hasShopAuthority(),
+            actionButtonView.renderData(!p1.isProductActive(productStock), viewModel.hasShopAuthority(), viewModel.isShopOwner(),
                     hasTopAds(), it.cartRedirectionResponse.cartRedirection?.data?.firstOrNull())
 
             trackProductView(viewModel.tradeInParams.isEligible == 1)
@@ -1613,7 +1623,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         cache.putInt(CartConstant.CACHE_TOTAL_CART, count)
         cache.applyEditor()
         if (isAdded) {
-            initToolBarMethod()
+            initToolBarMethod.invoke()
         }
     }
 
