@@ -5,7 +5,7 @@ import com.tokopedia.home.beranda.data.usecase.HomeUseCase
 import com.tokopedia.home.beranda.domain.interactor.GetDynamicChannelsUseCase
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDataModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelViewModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelDataModel
 import com.tokopedia.home.beranda.presentation.viewModel.HomeViewModel
 import com.tokopedia.home.rules.InstantTaskExecutorRuleSpek
 import io.mockk.confirmVerified
@@ -27,10 +27,10 @@ class HomeViewModelDynamicChannelTest : Spek({
         val getHomeUseCase by memoized<HomeUseCase>()
 
         Scenario("Get dynamic channel data success with single data") {
-            val dataModel = DynamicChannelViewModel()
+            val dataModel = DynamicChannelDataModel()
             dataModel.channel = DynamicHomeChannel.Channels(id = "1")
             val dynamicChannel = DynamicHomeChannel.Channels(id = "2")
-            val dynamicChannelViewModel = DynamicChannelViewModel()
+            val dynamicChannelViewModel = DynamicChannelDataModel()
             val observerHome: Observer<HomeDataModel> = mockk(relaxed = true)
             dynamicChannelViewModel.channel = dynamicChannel
             Given("dynamic banner almost expired time") {
@@ -49,7 +49,7 @@ class HomeViewModelDynamicChannelTest : Spek({
 
             Given("dynamic data returns success") {
                 getDynamicChannelsUseCase.givenGetDynamicChannelsUseCase(
-                        dynamicChannelViewModels = listOf(dynamicChannelViewModel)
+                        dynamicChannelDataModels = listOf(dynamicChannelViewModel)
                 )
             }
 
@@ -61,18 +61,18 @@ class HomeViewModelDynamicChannelTest : Spek({
                 verifyOrder {
                     // check on home data initial first channel is dynamic channel
                     observerHome.onChanged(match {
-                        it.list.isNotEmpty() && it.list.first() is DynamicChannelViewModel &&
-                                (it.list.first() as DynamicChannelViewModel).channel?.id == "1"
+                        it.list.isNotEmpty() && it.list.first() is DynamicChannelDataModel &&
+                                (it.list.first() as DynamicChannelDataModel).channel?.id == "1"
                     })
                     // check on second update data liveData is removed old dynamic channel
                     observerHome.onChanged(match {
-                        it.list.isNotEmpty() && it.list.first() !is DynamicChannelViewModel
+                        it.list.isNotEmpty() && it.list.first() !is DynamicChannelDataModel
                     })
 
                     // check after removed is must add new channel from list of channel
                     observerHome.onChanged(match {
-                        it.list.isNotEmpty() && it.list.first() is DynamicChannelViewModel &&
-                                (it.list.first() as DynamicChannelViewModel).channel?.id == "2"
+                        it.list.isNotEmpty() && it.list.first() is DynamicChannelDataModel &&
+                                (it.list.first() as DynamicChannelDataModel).channel?.id == "2"
                     })
                 }
                 confirmVerified(observerHome)
@@ -80,13 +80,13 @@ class HomeViewModelDynamicChannelTest : Spek({
         }
 
         Scenario("Get dynamic channel data success with multiple data") {
-            val dataModel = DynamicChannelViewModel()
+            val dataModel = DynamicChannelDataModel()
             val observerHome: Observer<HomeDataModel> = mockk(relaxed = true)
             dataModel.channel = DynamicHomeChannel.Channels(id = "1")
             val dynamicChannel = DynamicHomeChannel.Channels(id = "2")
             val dynamicChannel2 = DynamicHomeChannel.Channels(id = "3")
-            val dynamicChannelViewModel1 = DynamicChannelViewModel()
-            val dynamicChannelViewModel2 = DynamicChannelViewModel()
+            val dynamicChannelViewModel1 = DynamicChannelDataModel()
+            val dynamicChannelViewModel2 = DynamicChannelDataModel()
             dynamicChannelViewModel1.channel = dynamicChannel
             dynamicChannelViewModel2.channel = dynamicChannel2
 
@@ -106,7 +106,7 @@ class HomeViewModelDynamicChannelTest : Spek({
 
             Given("dynamic data returns success") {
                 getDynamicChannelsUseCase.givenGetDynamicChannelsUseCase(
-                        dynamicChannelViewModels = listOf(dynamicChannelViewModel1, dynamicChannelViewModel2)
+                        dynamicChannelDataModels = listOf(dynamicChannelViewModel1, dynamicChannelViewModel2)
                 )
             }
 
@@ -118,24 +118,24 @@ class HomeViewModelDynamicChannelTest : Spek({
                 verifyOrder {
                     // check on home data initial first channel is dynamic channel
                     observerHome.onChanged(match {
-                        it.list.isNotEmpty() && it.list.first() is DynamicChannelViewModel &&
-                                (it.list.first() as DynamicChannelViewModel).channel?.id == "1"
+                        it.list.isNotEmpty() && it.list.first() is DynamicChannelDataModel &&
+                                (it.list.first() as DynamicChannelDataModel).channel?.id == "1"
                     })
                     // check on second update data liveData is removed old dynamic channel
                     observerHome.onChanged(match {
-                        it.list.isNotEmpty() && it.list.first() !is DynamicChannelViewModel
+                        it.list.isNotEmpty() && it.list.first() !is DynamicChannelDataModel
                     })
 
                     // check after removed is must add new channel from list of channel
                     observerHome.onChanged(match {
-                        it.list.isNotEmpty() && it.list.first() is DynamicChannelViewModel &&
-                                (it.list.first() as DynamicChannelViewModel).channel?.id == "3"
+                        it.list.isNotEmpty() && it.list.first() is DynamicChannelDataModel &&
+                                (it.list.first() as DynamicChannelDataModel).channel?.id == "3"
                     })
 
                     // check the second new channel from list of channel
                     observerHome.onChanged(match {
-                        it.list.isNotEmpty() && it.list.first() is DynamicChannelViewModel &&
-                                (it.list.first() as DynamicChannelViewModel).channel?.id == "2"
+                        it.list.isNotEmpty() && it.list.first() is DynamicChannelDataModel &&
+                                (it.list.first() as DynamicChannelDataModel).channel?.id == "2"
                     })
                 }
                 confirmVerified(observerHome)
@@ -143,7 +143,7 @@ class HomeViewModelDynamicChannelTest : Spek({
         }
 
         Scenario("Get dynamic channel data success with empty data") {
-            val dataModel = DynamicChannelViewModel()
+            val dataModel = DynamicChannelDataModel()
             val observerHome: Observer<HomeDataModel> = mockk(relaxed = true)
             dataModel.channel = DynamicHomeChannel.Channels(id = "1")
 
@@ -163,7 +163,7 @@ class HomeViewModelDynamicChannelTest : Spek({
 
             Given("dynamic data returns success") {
                 getDynamicChannelsUseCase.givenGetDynamicChannelsUseCase(
-                        dynamicChannelViewModels = listOf()
+                        dynamicChannelDataModels = listOf()
                 )
             }
 
@@ -174,11 +174,11 @@ class HomeViewModelDynamicChannelTest : Spek({
             Then("Expect channel updated") {
                 verifyOrder {
                     observerHome.onChanged(match {
-                        it.list.isNotEmpty() && it.list.first() is DynamicChannelViewModel &&
-                                (it.list.first() as DynamicChannelViewModel).channel?.id == "1"
+                        it.list.isNotEmpty() && it.list.first() is DynamicChannelDataModel &&
+                                (it.list.first() as DynamicChannelDataModel).channel?.id == "1"
                     })
                     observerHome.onChanged(match {
-                        it.list.isNotEmpty() && it.list.first() !is DynamicChannelViewModel
+                        it.list.isNotEmpty() && it.list.first() !is DynamicChannelDataModel
                     })
                 }
                 confirmVerified(observerHome)
@@ -186,7 +186,7 @@ class HomeViewModelDynamicChannelTest : Spek({
         }
 
         Scenario("Get dynamic channel data error") {
-            val dataModel = DynamicChannelViewModel()
+            val dataModel = DynamicChannelDataModel()
             val observerHome: Observer<HomeDataModel> = mockk(relaxed = true)
             dataModel.channel = DynamicHomeChannel.Channels(id = "1")
 
@@ -215,8 +215,8 @@ class HomeViewModelDynamicChannelTest : Spek({
             Then("Expect channel updated") {
                 verifyOrder {
                     observerHome.onChanged(match {
-                        it.list.isNotEmpty() && it.list.first() is DynamicChannelViewModel &&
-                                (it.list.first() as DynamicChannelViewModel).channel?.id == "1"
+                        it.list.isNotEmpty() && it.list.first() is DynamicChannelDataModel &&
+                                (it.list.first() as DynamicChannelDataModel).channel?.id == "1"
                     })
                     observerHome.onChanged(match {
                         it.list.isNotEmpty()

@@ -19,7 +19,6 @@ import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.di.DaggerProductDetailComponent
 import com.tokopedia.product.detail.di.ProductDetailComponent
 import com.tokopedia.product.detail.view.fragment.DynamicProductDetailFragment
-import com.tokopedia.product.detail.view.fragment.ProductDetailFragment
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
@@ -141,18 +140,11 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
         return "" // need only on success load data? (it needs custom dimension)
     }
 
-    override fun getNewFragment(): Fragment =
-            if (remoteConfig.getBoolean(RemoteConfigKey.ANDROID_MAIN_APP_ENABLED_OLD_PDP, false)) {
-                ProductDetailFragment.newInstance(productId, warehouseId, shopDomain,
+    override fun getNewFragment(): Fragment = DynamicProductDetailFragment.newInstance(productId, warehouseId, shopDomain,
                         productKey, isFromDeeplink,
                         isFromAffiliate, trackerAttribution,
                         trackerListName, affiliateString, deeplinkUrl)
-            } else {
-                DynamicProductDetailFragment.newInstance(productId, warehouseId, shopDomain,
-                        productKey, isFromDeeplink,
-                        isFromAffiliate, trackerAttribution,
-                        trackerListName, affiliateString, deeplinkUrl)
-            }
+
 
     override fun getComponent(): ProductDetailComponent = DaggerProductDetailComponent.builder()
             .baseAppComponent((applicationContext as BaseMainApplication).baseAppComponent).build()

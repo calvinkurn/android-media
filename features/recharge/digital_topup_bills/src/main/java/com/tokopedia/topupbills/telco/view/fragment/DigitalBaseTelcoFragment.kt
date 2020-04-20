@@ -1,63 +1,55 @@
 package com.tokopedia.topupbills.telco.view.fragment
 
 import android.app.Activity
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import android.content.*
 import android.os.Bundle
 import android.os.Parcelable
 import android.provider.ContactsContract
-import com.google.android.material.snackbar.Snackbar
-import androidx.core.widget.NestedScrollView
 import android.text.TextUtils
 import android.view.View
 import android.widget.Toast
-import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import androidx.core.widget.NestedScrollView
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConsInternalDigital
 import com.tokopedia.common.topupbills.data.*
-import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
+import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity.Companion.EXTRA_CALLBACK_CLIENT_NUMBER
+import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity.Companion.EXTRA_CALLBACK_INPUT_NUMBER_ACTION_TYPE
+import com.tokopedia.common.topupbills.view.fragment.BaseTopupBillsFragment
+import com.tokopedia.common.topupbills.view.model.TopupBillsTrackPromo
+import com.tokopedia.common.topupbills.view.model.TopupBillsTrackRecentTransaction
+import com.tokopedia.common.topupbills.widget.TopupBillsCheckoutWidget
+import com.tokopedia.common.topupbills.widget.TopupBillsPromoListWidget
+import com.tokopedia.common.topupbills.widget.TopupBillsRecentTransactionWidget
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam
 import com.tokopedia.permissionchecker.PermissionCheckerHelper
 import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.common.DigitalTopupAnalytics
 import com.tokopedia.topupbills.covertContactUriToContactData
-import com.tokopedia.topupbills.generateRechargeCheckoutToken
-import com.tokopedia.topupbills.telco.data.*
-import com.tokopedia.topupbills.telco.view.di.DigitalTopupInstance
-import com.tokopedia.common.topupbills.view.model.TopupBillsTrackPromo
-import com.tokopedia.common.topupbills.view.model.TopupBillsTrackRecentTransaction
+import com.tokopedia.topupbills.telco.data.TelcoCustomComponentData
+import com.tokopedia.topupbills.telco.view.di.DigitalTopupComponent
 import com.tokopedia.topupbills.telco.view.viewmodel.DigitalTelcoCustomViewModel
-import com.tokopedia.topupbills.telco.view.viewmodel.TelcoCatalogMenuDetailViewModel
-import com.tokopedia.common.topupbills.widget.TopupBillsPromoListWidget
-import com.tokopedia.common.topupbills.widget.TopupBillsRecentTransactionWidget
-import com.tokopedia.common.topupbills.data.TopupBillsFavNumberItem
-import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity.Companion.EXTRA_CALLBACK_CLIENT_NUMBER
-import com.tokopedia.common.topupbills.view.activity.TopupBillsSearchNumberActivity.Companion.EXTRA_CALLBACK_INPUT_NUMBER_ACTION_TYPE
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerData
 import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
-import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.unifyprinciples.UnifyThemeHelper
 import javax.inject.Inject
 
 /**
  * Created by nabillasabbaha on 23/05/19.
  */
-open abstract class DigitalBaseTelcoFragment : BaseDaggerFragment() {
+abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
 
     protected lateinit var mainContainer: NestedScrollView
     protected lateinit var tickerView: Ticker
     protected lateinit var recentNumbersWidget: TopupBillsRecentTransactionWidget
     protected lateinit var promoListWidget: TopupBillsPromoListWidget
-    protected lateinit var checkoutPassData: DigitalCheckoutPassData
     protected lateinit var customViewModel: DigitalTelcoCustomViewModel
-    protected lateinit var catalogMenuDetailViewModel: TelcoCatalogMenuDetailViewModel
+    override var menuId = 0
 
-    @Inject
-    lateinit var userSession: UserSessionInterface
     @Inject
     lateinit var permissionCheckerHelper: PermissionCheckerHelper
     @Inject
@@ -68,42 +60,38 @@ open abstract class DigitalBaseTelcoFragment : BaseDaggerFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         activity?.let {
+            UnifyThemeHelper.setTheme(it)
+
             val viewModelProvider = ViewModelProviders.of(it, viewModelFactory)
             customViewModel = viewModelProvider.get(DigitalTelcoCustomViewModel::class.java)
-            catalogMenuDetailViewModel = viewModelProvider.get(TelcoCatalogMenuDetailViewModel::class.java)
         }
     }
 
     override fun initInjector() {
-        activity?.let {
-            val digitalTopupComponent = DigitalTopupInstance.getComponent(it.application)
-            digitalTopupComponent.inject(this)
-        }
+        getComponent(DigitalTopupComponent::class.java).inject(this)
     }
 
     protected abstract fun onSuccessCustomData(telcoData: TelcoCustomComponentData)
 
     protected abstract fun onErrorCustomData(error: Throwable)
 
-    open fun onSuccessCatalogMenuDetail(catalogMenuDetailData: TelcoCatalogMenuDetailData) {
-        renderPromoList(catalogMenuDetailData.catalogMenuDetailData.promos)
-        renderRecentTransactions(catalogMenuDetailData.catalogMenuDetailData.recommendations)
-        renderTicker(catalogMenuDetailData.catalogMenuDetailData.tickers)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        val checkoutView = getCheckoutView()
+        checkoutView?.run {
+            listener = object : TopupBillsCheckoutWidget.ActionListener {
+                override fun onClickNextBuyButton() {
+                    setupCheckoutData()
+                    processTransaction()
+                }
+            }
+        }
     }
 
-    fun onErrorCatalogMenuDetail(error: Throwable) {
-        Toast.makeText(activity, "catalog menu detail " + error.message, Toast.LENGTH_SHORT).show()
-    }
+    protected abstract fun setupCheckoutData()
 
-    fun onSuccessFavNumbers(data: TopupBillsFavNumberData) {
-        setFavNumbers(data)
-    }
-
-    fun onErrorFavNumbers(error: Throwable) {
-        Toast.makeText(activity, error.message, Toast.LENGTH_SHORT).show()
-    }
-
-    abstract fun setFavNumbers(data: TopupBillsFavNumberData)
+    abstract fun setFavNumbers(data: TopupBillsFavNumber)
 
     fun renderTicker(tickers: List<TopupBillsTicker>) {
         if (tickers.isNotEmpty()) {
@@ -161,28 +149,6 @@ open abstract class DigitalBaseTelcoFragment : BaseDaggerFragment() {
         } catch (e: ActivityNotFoundException) {
             NetworkErrorHelper.showSnackbar(activity,
                     getString(R.string.error_message_contact_not_found))
-        }
-    }
-
-    fun navigateToLoginPage() {
-        val intent = RouteManager.getIntent(activity, ApplinkConst.LOGIN)
-        startActivityForResult(intent, REQUEST_CODE_LOGIN)
-    }
-
-    fun processToCart() {
-        if (userSession.isLoggedIn) {
-            navigateToCart()
-        } else {
-            navigateToLoginPage()
-        }
-    }
-
-    private fun navigateToCart() {
-        if (::checkoutPassData.isInitialized) {
-            checkoutPassData.idemPotencyKey = userSession.userId.generateRechargeCheckoutToken()
-            val intent = RouteManager.getIntent(activity, ApplinkConsInternalDigital.CART_DIGITAL)
-            intent.putExtra(DigitalExtraParam.EXTRA_PASS_DIGITAL_CART_DATA, checkoutPassData)
-            startActivityForResult(intent, REQUEST_CODE_CART_DIGITAL)
         }
     }
 
@@ -301,6 +267,46 @@ open abstract class DigitalBaseTelcoFragment : BaseDaggerFragment() {
         }
     }
 
+    override fun processEnquiry(data: TopupBillsEnquiryData) {
+
+    }
+
+    override fun processMenuDetail(data: TopupBillsMenuDetail) {
+        super.processMenuDetail(data)
+
+        renderPromoList(data.promos)
+        renderRecentTransactions(data.recommendations)
+        renderTicker(data.tickers)
+    }
+
+    override fun processFavoriteNumbers(data: TopupBillsFavNumber) {
+        setFavNumbers(data)
+    }
+
+    override fun onEnquiryError(error: Throwable) {
+
+    }
+
+    override fun onMenuDetailError(error: Throwable) {
+        Toast.makeText(activity, error.message, Toast.LENGTH_SHORT).show()
+    }
+
+    override fun onCatalogPluginDataError(error: Throwable) {
+
+    }
+
+    override fun onFavoriteNumbersError(error: Throwable) {
+        Toast.makeText(activity, error.message, Toast.LENGTH_SHORT).show()
+    }
+
+    override fun onCheckVoucherError(error: Throwable) {
+        NetworkErrorHelper.showRedSnackbar(activity, error.message)
+    }
+
+    override fun onExpressCheckoutError(error: Throwable) {
+        NetworkErrorHelper.showRedSnackbar(activity, error.message)
+    }
+
     abstract fun clickCopyOnPromoCode(promoId: Int)
 
     abstract fun setInputNumberFromContact(contactNumber: String)
@@ -309,7 +315,6 @@ open abstract class DigitalBaseTelcoFragment : BaseDaggerFragment() {
 
     override fun onDestroy() {
         customViewModel.flush()
-        catalogMenuDetailViewModel.flush()
         super.onDestroy()
     }
 

@@ -8,7 +8,7 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.rule.ActivityTestRule
-import com.tokopedia.analytics.performance.util.FpiPerformanceData
+import com.tokopedia.analytics.performance.fpi.FpiPerformanceData
 import com.tokopedia.home.environment.InstrumentationHomeTestActivity
 import com.tokopedia.home.R
 import org.junit.Before

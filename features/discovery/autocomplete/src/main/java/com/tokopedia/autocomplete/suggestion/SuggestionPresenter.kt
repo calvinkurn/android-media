@@ -16,7 +16,7 @@ class SuggestionPresenter @Inject constructor() : BaseDaggerPresenter<Suggestion
     private var querySearch = ""
 
     @Inject
-    lateinit var getSuggestionUseCase: SuggestionUseCase
+    lateinit var getSuggestionUseCase: UseCase<SuggestionData>
 
     @Inject
     lateinit var suggestionTrackerUseCase: UseCase<Void?>
