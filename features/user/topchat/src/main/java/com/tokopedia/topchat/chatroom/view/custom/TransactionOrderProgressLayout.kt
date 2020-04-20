@@ -35,7 +35,6 @@ class TransactionOrderProgressLayout : LinearLayout {
     private var chatOrder: ChatOrderProgress = ChatOrderProgress()
     private var state = State()
 
-    private var isKeyboardOpened = false
     private var canBeRendered = false
 
     constructor(context: Context?) : super(context)
@@ -65,30 +64,8 @@ class TransactionOrderProgressLayout : LinearLayout {
         renderLayoutVisibility()
     }
 
-    fun onKeyboardOpened() {
-        if (!isKeyboardOpened) {
-            toggleKeyboardState()
-            automaticHide()
-        }
-    }
-
-    fun onKeyboardClosed() {
-        if (isKeyboardOpened) {
-            toggleKeyboardState()
-            if (!state.isForceClose) automaticShow()
-        }
-    }
-
     private fun initViewLayout() {
         View.inflate(context, LAYOUT, this)
-    }
-
-    private fun automaticHide() {
-        changeState(stateClose)
-    }
-
-    private fun automaticShow() {
-        changeState(stateOpen)
     }
 
     private fun initBindView() {
@@ -256,10 +233,6 @@ class TransactionOrderProgressLayout : LinearLayout {
                 RouteManager.route(context, chatOrder.button.uri)
             }
         }
-    }
-
-    private fun toggleKeyboardState() {
-        isKeyboardOpened = !isKeyboardOpened
     }
 
     data class State(

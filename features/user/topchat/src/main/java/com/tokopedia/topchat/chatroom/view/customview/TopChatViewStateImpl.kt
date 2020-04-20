@@ -123,12 +123,10 @@ class TopChatViewStateImpl(
 
     override fun onKeyboardOpened() {
         super.onKeyboardOpened()
-        orderProgress?.onKeyboardOpened()
     }
 
     override fun onKeyboardClosed() {
         super.onKeyboardClosed()
-        orderProgress?.onKeyboardClosed()
     }
 
     private fun initHeaderLayout() {
