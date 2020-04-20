@@ -246,9 +246,11 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
     override fun onSaveFilter(sortOption: Int, flightFilterModel: FlightFilterModel?, statisticPricePair: Pair<Int, Int>) {
         flightSearchViewModel.selectedSortOption = sortOption
         flightSearchViewModel.priceFilterStatistic = statisticPricePair
-        if (flightFilterModel != null) {
-            flightSearchViewModel.filterModel = flightFilterModel
+        flightFilterModel?.let {
+            flightSearchViewModel.filterModel = it
         }
+        adapter.clearAllElements()
+        flight_sort_filter.indicatorCounter = flightSearchViewModel.recountFilterCounter()
         fetchSortAndFilterData()
     }
 
@@ -397,7 +399,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
 
     private fun onResetFilterClicked() {
         flightSearchViewModel.filterModel = buildFilterModel(FlightFilterModel())
-        adapter.clearAllNonDataElement()
+        adapter.clearAllElements()
         showLoading()
         setupQuickFilter()
         fetchSortAndFilterData()
