@@ -5,6 +5,7 @@ internal object GetProductVariant {
     val QUERY = """
         query getProductV3(${'$'}productID:String!, ${'$'}options:OptionV3!){
           getProductV3(productID:${'$'}productID, options:${'$'}options){
+            productName
             variant{
               products{
                 productID
@@ -29,6 +30,7 @@ internal object GetProductVariant {
                 }
               }
               selections {
+                  variantID
                   variantName
                   unitName
                   unitID
@@ -39,6 +41,19 @@ internal object GetProductVariant {
                     value
                     hexCode
                   }
+              }
+              sizecharts {
+                  picID
+                  description
+                  filePath
+                  fileName
+                  width
+                  height
+                  isFromIG
+                  urlOriginal
+                  urlThumbnail
+                  url300
+                  status
               }
             }
           }
