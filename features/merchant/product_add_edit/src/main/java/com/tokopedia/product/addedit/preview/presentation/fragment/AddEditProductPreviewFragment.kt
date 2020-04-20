@@ -713,7 +713,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
     }
 
     private fun observeProductVariantList() {
-        viewModel.productVariantList.observe(viewLifecycleOwner, Observer { result ->
+        viewModel.productVariantList.observe(this, Observer { result ->
             when (result) {
                 is Success -> showVariantDialog(result.data)
                 is Fail -> showVariantErrorToast(getString(R.string.error_cannot_get_variants))
@@ -722,7 +722,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
     }
 
     private fun observeIsLoading() {
-        viewModel.isLoading.observe(viewLifecycleOwner, Observer { isLoading ->
+        viewModel.isLoading.observe(this, Observer { isLoading ->
             if (isLoading) {
                 showLoading()
             } else {
@@ -732,13 +732,13 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
     }
 
     private fun removeObservers() {
-        viewModel.isEditing.removeObservers(viewLifecycleOwner)
-        viewModel.getProductResult.removeObservers(viewLifecycleOwner)
-        viewModel.productInputModel.removeObservers(viewLifecycleOwner)
-        viewModel.isVariantEmpty.removeObservers(viewLifecycleOwner)
-        viewModel.imageUrlOrPathList.removeObservers(viewLifecycleOwner)
-        viewModel.productVariantList.removeObservers(viewLifecycleOwner)
-        viewModel.isLoading.removeObservers(viewLifecycleOwner)
+        viewModel.isEditing.removeObservers(this)
+        viewModel.getProductResult.removeObservers(this)
+        viewModel.productInputModel.removeObservers(this)
+        viewModel.isVariantEmpty.removeObservers(this)
+        viewModel.imageUrlOrPathList.removeObservers(this)
+        viewModel.productVariantList.removeObservers(this)
+        viewModel.isLoading.removeObservers(this)
     }
 
     private fun setCashback() {
