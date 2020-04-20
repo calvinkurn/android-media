@@ -8,9 +8,8 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.base.view.adapter.viewholders.ErrorNetworkViewHolder
 import com.tokopedia.common.travel.presentation.adapter.TravelSearchShimmeringViewHolder
 import com.tokopedia.flight.search.presentation.model.FlightJourneyModel
-import com.tokopedia.flight.search.presentation.model.FlightSearchSeeAllResultModel
-import com.tokopedia.flight.search.presentation.model.FlightSearchSeeOnlyBestPairingModel
 import com.tokopedia.flight.searchV4.presentation.model.EmptyResultModel
+import com.tokopedia.flight.searchV4.presentation.model.FlightSearchSeeAllResultModel
 
 /**
  * @author by furqan on 13/04/2020
@@ -24,6 +23,7 @@ class FlightSearchAdapterTypeFactory(private val onFlightSearchListener: OnFligh
             EmptyResultViewHolder.LAYOUT -> EmptyResultViewHolder(parent)
             ErrorNetworkViewHolder.LAYOUT -> ErrorNetworkViewHolder(parent)
             TravelSearchShimmeringViewHolder.LAYOUT -> TravelSearchShimmeringViewHolder(parent)
+            FlightSearchSeeAllViewHolder.LAYOUT -> FlightSearchSeeAllViewHolder(parent, onFlightSearchListener)
             else -> super.createViewHolder(parent, type)
         }
     }
@@ -32,9 +32,7 @@ class FlightSearchAdapterTypeFactory(private val onFlightSearchListener: OnFligh
 
     fun type(emptyModel: EmptyResultModel): Int = EmptyResultViewHolder.LAYOUT
 
-    fun type(seeAllResultModel: FlightSearchSeeAllResultModel): Int = -1
-
-    fun type(seeOnlyBestPairingModel: FlightSearchSeeOnlyBestPairingModel): Int = -1
+    fun type(seeAllResultModel: FlightSearchSeeAllResultModel): Int = FlightSearchSeeAllViewHolder.LAYOUT
 
     fun type(journeyModel: FlightJourneyModel): Int = FlightSearchViewHolder.LAYOUT
 
