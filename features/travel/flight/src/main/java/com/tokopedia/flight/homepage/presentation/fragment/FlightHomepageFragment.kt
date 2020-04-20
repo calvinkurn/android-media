@@ -140,11 +140,6 @@ class FlightHomepageFragment : BaseDaggerFragment(), FlightSearchFormView.Flight
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
             inflater.inflate(R.layout.fragment_flight_homepage, container, false)
 
-    override fun onResume() {
-        super.onResume()
-        flightHomepageSearchForm.init()
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -241,6 +236,10 @@ class FlightHomepageFragment : BaseDaggerFragment(), FlightSearchFormView.Flight
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode == REQUEST_CODE_SEARCH) {
+            flightHomepageSearchForm.init()
+        }
 
         if (resultCode == Activity.RESULT_OK) {
             when (requestCode) {
