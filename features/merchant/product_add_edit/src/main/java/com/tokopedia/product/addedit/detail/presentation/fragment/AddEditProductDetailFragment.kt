@@ -1013,7 +1013,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                         ?: urlOrPath
                 else urlOrPath
             }.orEmpty()
-            val intent = ImagePickerAddProductActivity.getIntent(context, createImagePickerBuilder(ArrayList(imageUrlOrPathList)), isEditing)
+            val intent = ImagePickerAddProductActivity.getIntent(context, createImagePickerBuilder(ArrayList(imageUrlOrPathList)), isEditing, isAdding)
             startActivityForResult(intent, REQUEST_CODE_IMAGE)
             if (isEditing && !isAdding) {
                 ProductEditMainTracking.trackAddPhoto(shopId)
