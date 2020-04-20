@@ -44,7 +44,7 @@
                         android:layout_width="@dimen/dp_128"
                         android:layout_height="@dimen/dp_128"
                         android:scaleType="centerCrop"
-                        tools:src="@mipmap/ic_launcher" />
+                        tools:src="@tools:sample/avatars" />
                 </FrameLayout>
 
                 <TextView
