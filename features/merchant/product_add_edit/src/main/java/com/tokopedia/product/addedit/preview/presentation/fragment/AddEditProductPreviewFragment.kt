@@ -112,6 +112,8 @@ import javax.inject.Inject
 
 class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHolder.OnPhotoChangeListener {
 
+    private var isProductStatusSwitchFirstTime = false
+
     private var toolbar: Toolbar? = null
 
     // action button
@@ -306,9 +308,12 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
         }
 
         productStatusSwitch?.setOnCheckedChangeListener { buttonView, isChecked ->
-            if (viewModel.isEditing.value == true) {
-                ProductEditStepperTracking.trackChangeProductStatus(shopId)
+            if (isProductStatusSwitchFirstTime) {
+                if (viewModel.isEditing.value == true) {
+                    ProductEditStepperTracking.trackChangeProductStatus(shopId)
+                }
             }
+            isProductStatusSwitchFirstTime = true
             viewModel.updateProductStatus(isChecked)
         }
 

@@ -682,7 +682,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
 
         productNameField?.textFieldInput?.setText(productName)
 
-        if (!viewModel.isEditing && !viewModel.isAdding) {
+        if (!viewModel.isEditing && viewModel.isAdding) {
             ProductAddMainTracking.clickProductNameRecom(shopId, productName)
         }
     }

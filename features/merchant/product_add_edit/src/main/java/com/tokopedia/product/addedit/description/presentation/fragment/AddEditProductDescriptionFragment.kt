@@ -512,6 +512,11 @@ class AddEditProductDescriptionFragment:
     }
 
     private fun submitInputEdit() {
+        if (descriptionViewModel.isEditMode && !descriptionViewModel.isAddMode) {
+            ProductEditDescriptionTracking.clickContinue(shopId)
+        } else {
+            ProductAddDescriptionTracking.clickContinue(shopId)
+        }
         if (descriptionViewModel.validateInputVideo(adapter.data)) {
             val descriptionInputModel = DescriptionInputModel(
                     textFieldDescription.getText(),
