@@ -224,11 +224,14 @@ class PlayFragment : BaseDaggerFragment(), SensorOrientationManager.OrientationL
         return super.onOptionsItemSelected(item)
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        if (::orientationManager.isInitialized) orientationManager.disable()
+    }
+
     override fun onDestroy() {
         super.onDestroy()
-
-        layoutManager.onDestroy()
-        if (::orientationManager.isInitialized) orientationManager.disable()
+        if (::layoutManager.isInitialized) layoutManager.onDestroy()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
