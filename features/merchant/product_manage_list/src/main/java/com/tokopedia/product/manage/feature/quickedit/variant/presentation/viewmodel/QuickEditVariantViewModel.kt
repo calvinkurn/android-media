@@ -5,8 +5,13 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.product.manage.common.coroutine.CoroutineDispatchers
-import com.tokopedia.product.manage.feature.quickedit.variant.adapter.model.ProductVariant
-import com.tokopedia.product.manage.feature.quickedit.variant.data.mapper.ProductManageVariantMapper.mapToProductVariants
+import com.tokopedia.product.manage.feature.quickedit.variant.data.mapper.ProductManageVariantMapper.mapToVariantsResult
+import com.tokopedia.product.manage.feature.quickedit.variant.data.mapper.ProductManageVariantMapper.updateVariantPrice
+import com.tokopedia.product.manage.feature.quickedit.variant.data.mapper.ProductManageVariantMapper.mapVariantsToEditResult
+import com.tokopedia.product.manage.feature.quickedit.variant.data.model.ViewState
+import com.tokopedia.product.manage.feature.quickedit.variant.data.model.ViewState.*
+import com.tokopedia.product.manage.feature.quickedit.variant.data.model.result.EditVariantResult
+import com.tokopedia.product.manage.feature.quickedit.variant.data.model.result.GetVariantResult
 import com.tokopedia.product.manage.feature.quickedit.variant.domain.GetProductVariantUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -19,24 +24,50 @@ class QuickEditVariantViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers
 ): BaseViewModel(dispatchers.main) {
 
-    val getProductVariantsResult: LiveData<Result<List<ProductVariant>>>
+    val getProductVariantsResult: LiveData<Result<GetVariantResult>>
         get() = _getProductVariantsResult
 
-    private val _getProductVariantsResult = MutableLiveData<Result<List<ProductVariant>>>()
+    val editVariantResult: LiveData<EditVariantResult>
+        get() = _editVariantResult
+
+    val viewState: LiveData<ViewState>
+        get() = _viewState
+
+    private val _getProductVariantsResult = MutableLiveData<Result<GetVariantResult>>()
+    private val _editVariantResult = MutableLiveData<EditVariantResult>()
+    private val _viewState = MutableLiveData<ViewState>()
 
     fun getProductVariants(productId: String) {
+        showProgressBar()
         launchCatchError(block = {
-            val productVariants = withContext(dispatchers.io) {
+            val result = withContext(dispatchers.io) {
                 val requestParams = GetProductVariantUseCase.createRequestParams(productId)
                 val response = getProductVariantUseCase.execute(requestParams)
 
-                val variant = response.getProductV3.variant
-                mapToProductVariants(variant)
+                val variant = response.getProductV3
+                mapToVariantsResult(variant)
             }
-
-            _getProductVariantsResult.value = Success(productVariants)
+            _getProductVariantsResult.value = Success(result)
+            _editVariantResult.value = mapVariantsToEditResult(productId, result)
+            hideProgressBar()
         }) {
             _getProductVariantsResult.value = Fail(it)
+            hideProgressBar()
         }
+    }
+
+    fun updateVariantPrice(variantId: String, price: Int) {
+        _editVariantResult.value?.let {
+            val editVariantResult = it.updateVariantPrice(variantId, price)
+            _editVariantResult.value = editVariantResult
+        }
+    }
+
+    private fun showProgressBar() {
+        _viewState.value = ShowProgressBar
+    }
+
+    private fun hideProgressBar() {
+        _viewState.value = HideProgressBar
     }
 }
