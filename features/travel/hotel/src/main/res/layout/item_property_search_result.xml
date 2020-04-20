@@ -61,6 +61,7 @@
             android:layout_marginRight="@dimen/dp_16"
             android:ellipsize="end"
             android:singleLine="true"
+            android:textColor="@color/Neutral_N700_96"
             app:fontSize="small"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintLeft_toRightOf="@+id/image"

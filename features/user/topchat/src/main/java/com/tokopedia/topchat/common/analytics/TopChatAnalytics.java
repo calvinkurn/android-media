@@ -258,7 +258,7 @@ public class TopChatAnalytics {
                         EVENT_NAME, Name.EVENT_NAME_PRODUCT_CLICK,
                         EVENT_CATEGORY, Category.CHAT_DETAIL,
                         EVENT_ACTION, Action.CLICK_PRODUCT_IMAGE,
-                        EVENT_LABEL, String.format("chat - %s", String.valueOf(product.getBlastId())),
+                        EVENT_LABEL, String.format("%s - %s", getField(product.getStringBlastId()), product.getStringBlastId()),
                         USER_ID, user.getUserId(),
                         ECOMMERCE, DataLayer.mapOf(
                                 "click", DataLayer.mapOf(
@@ -291,7 +291,7 @@ public class TopChatAnalytics {
                         EVENT_NAME, Name.EVENT_NAME_PRODUCT_PREVIEW,
                         EVENT_CATEGORY, Category.CHAT_DETAIL,
                         EVENT_ACTION, Action.VIEW_PRODUCT_PREVIEW,
-                        EVENT_LABEL, String.format("chat - %s", String.valueOf(product.getBlastId())),
+                        EVENT_LABEL, String.format("%s - %s", getField(product.getStringBlastId()), product.getStringBlastId()),
                         USER_ID, user.getUserId(),
                         ECOMMERCE, DataLayer.mapOf(
                                 "currencyCode", "IDR",
@@ -328,7 +328,7 @@ public class TopChatAnalytics {
                 EVENT_NAME, Name.CHAT_DETAIL,
                 EVENT_CATEGORY, Category.CHAT_DETAIL,
                 EVENT_ACTION, Action.CLICK_ATC_PRODUCT_THUMBNAIL,
-                EVENT_LABEL, String.format("chat - %s", String.valueOf(product.getBlastId())),
+                EVENT_LABEL, String.format("%s - %s", getField(product.getStringBlastId()), product.getStringBlastId()),
                 USER_ID, user.getUserId()
         ));
     }
@@ -341,7 +341,7 @@ public class TopChatAnalytics {
                 EVENT_NAME, Name.CHAT_DETAIL,
                 EVENT_CATEGORY, Category.CHAT_DETAIL,
                 EVENT_ACTION, Action.CLICK_BUY_PRODUCT_THUMBNAIL,
-                EVENT_LABEL, String.format("chat - %s", String.valueOf(product.getBlastId()))
+                EVENT_LABEL, String.format("%s - %s", getField(product.getStringBlastId()), product.getStringBlastId())
         ));
     }
 

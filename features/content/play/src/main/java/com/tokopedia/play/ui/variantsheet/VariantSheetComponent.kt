@@ -46,6 +46,7 @@ open class VariantSheetComponent(
                                         onError = it.variantResult.onRetry
                                 )
                             }
+                            is ScreenStateEvent.SetVariantToaster -> uiView.showToaster(it.toasterType, it.message, it.actionText, it.actionClickListener)
                         }
                     }
         }
