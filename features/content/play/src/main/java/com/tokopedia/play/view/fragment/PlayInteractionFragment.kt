@@ -9,16 +9,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.ViewCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.common.utils.DisplayMetricUtils.getStatusBarHeight
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.R
 import com.tokopedia.play.analytic.PlayAnalytics
@@ -27,10 +26,11 @@ import com.tokopedia.play.animation.PlayFadeInAnimation
 import com.tokopedia.play.animation.PlayFadeInFadeOutAnimation
 import com.tokopedia.play.animation.PlayFadeOutAnimation
 import com.tokopedia.play.component.EventBusFactory
-import com.tokopedia.play.component.UIComponent
 import com.tokopedia.play.di.DaggerPlayComponent
 import com.tokopedia.play.di.PlayModule
-import com.tokopedia.play.extensions.*
+import com.tokopedia.play.extensions.hasAlpha
+import com.tokopedia.play.extensions.isAnyHidden
+import com.tokopedia.play.extensions.isAnyShown
 import com.tokopedia.play.ui.chatlist.ChatListComponent
 import com.tokopedia.play.ui.endliveinfo.EndLiveInfoComponent
 import com.tokopedia.play.ui.endliveinfo.interaction.EndLiveInfoInteractionEvent
@@ -63,11 +63,11 @@ import com.tokopedia.play.view.bottomsheet.PlayMoreActionBottomSheet
 import com.tokopedia.play.view.event.ScreenStateEvent
 import com.tokopedia.play.view.layout.interaction.PlayInteractionLayoutManager
 import com.tokopedia.play.view.layout.interaction.PlayInteractionLayoutManagerImpl
+import com.tokopedia.play.view.layout.interaction.PlayInteractionViewInitializer
 import com.tokopedia.play.view.layout.parent.PlayParentLayoutManagerImpl
 import com.tokopedia.play.view.type.BottomInsetsState
 import com.tokopedia.play.view.type.BottomInsetsType
 import com.tokopedia.play.view.type.PlayRoomEvent
-import com.tokopedia.play.view.type.ScreenOrientation
 import com.tokopedia.play.view.uimodel.*
 import com.tokopedia.play.view.viewmodel.PlayInteractionViewModel
 import com.tokopedia.play.view.viewmodel.PlayViewModel
@@ -89,7 +89,11 @@ import kotlin.coroutines.CoroutineContext
 /**
  * Created by jegul on 29/11/19
  */
-class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreActionBottomSheet.Listener {
+class PlayInteractionFragment :
+        BaseDaggerFragment(),
+        PlayInteractionViewInitializer,
+        CoroutineScope,
+        PlayMoreActionBottomSheet.Listener {
 
     companion object {
         private const val REQUEST_CODE_LOGIN = 192
@@ -128,44 +132,18 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
     @Inject
     lateinit var userSession: UserSessionInterface
 
-    private val offset16 by lazy { resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4) }
-
     private lateinit var playViewModel: PlayViewModel
     private lateinit var viewModel: PlayInteractionViewModel
-
-    private lateinit var sendChatComponent: UIComponent<*>
-    private lateinit var likeComponent: UIComponent<*>
-    private lateinit var pinnedComponent: UIComponent<*>
-    private lateinit var chatListComponent: UIComponent<*>
-    private lateinit var immersiveBoxComponent: UIComponent<*>
-    private lateinit var videoControlComponent: UIComponent<*>
-    private lateinit var gradientBackgroundComponent: UIComponent<*>
-    private lateinit var sizeContainerComponent: UIComponent<*>
-    private lateinit var toolbarComponent: UIComponent<*>
-    private lateinit var statsInfoComponent: UIComponent<*>
-    private lateinit var quickReplyComponent: UIComponent<*>
-    private lateinit var playButtonComponent: UIComponent<*>
-    private lateinit var endLiveInfoComponent: UIComponent<*>
-    private lateinit var videoSettingsComponent: UIComponent<*>
 
     private lateinit var layoutManager: PlayInteractionLayoutManager
 
     private lateinit var bottomSheet: PlayMoreActionBottomSheet
-    private lateinit var clPlayInteraction: ConstraintLayout
+
+    private val container: View
+        get() = requireView()
 
     private val productSheetMaxHeight: Int
         get() = (requireView().height * PERCENT_PRODUCT_SHEET_HEIGHT).toInt()
-
-    private val sendChatView: View
-        get() = requireView().findViewById(sendChatComponent.getContainerId())
-    private val quickReplyView: View
-        get() = requireView().findViewById(quickReplyComponent.getContainerId())
-    private val chatListView: View
-        get() = requireView().findViewById(chatListComponent.getContainerId())
-    private val toolbarView: View
-        get() = requireView().findViewById(toolbarComponent.getContainerId())
-    private val statsInfoView: View
-        get() = requireView().findViewById(statsInfoComponent.getContainerId())
 
     private var channelId: String = ""
 
@@ -214,7 +192,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_play_interaction, container, false)
-        initComponents(view.findViewById(R.id.cl_play_interaction) as ViewGroup)
+        initComponents(view as ViewGroup)
         return view
     }
 
@@ -258,7 +236,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
 
     override fun onWatchModeClicked(bottomSheet: PlayMoreActionBottomSheet) {
         PlayAnalytics.clickWatchMode(channelId, playViewModel.channelType)
-        triggerImmersive(clPlayInteraction.alpha == VISIBLE_ALPHA)
+        triggerImmersive(container.alpha == VISIBLE_ALPHA)
         bottomSheet.dismiss()
     }
 
@@ -278,7 +256,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
 
     private fun setInsets(view: View) {
         ViewCompat.setOnApplyWindowInsetsListener(view) { _, insets ->
-            if (::layoutManager.isInitialized) layoutManager.setupInsets(view, insets)
+            layoutManager.setupInsets(view, insets)
             insets
         }
 
@@ -328,10 +306,9 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
 
     private fun observeVideoStream() {
         playViewModel.observableVideoStream.observe(viewLifecycleOwner, Observer {
-            layoutManager.onVideoOrientationChanged(clPlayInteraction, it.orientation)
+            layoutManager.onVideoOrientationChanged(container, it.orientation)
             triggerImmersive(false)
-            if (it.orientation.isLandscape) setupVideoLandscape(playViewModel.screenOrientation)
-            else setupVideoPortrait()
+            playFragment.setVideoTopBounds(layoutManager.getVideoTopBounds(container, it.orientation))
 
             setVideoStream(it)
         })
@@ -439,11 +416,10 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
     //endregion
 
     private fun setupView(view: View) {
-        clPlayInteraction = view.findViewById(R.id.cl_play_interaction)
-        clPlayInteraction.setOnClickListener {
+        container.setOnClickListener {
             if (
-                    (playViewModel.screenOrientation.isLandscape && clPlayInteraction.hasAlpha) ||
-                    (!playViewModel.screenOrientation.isLandscape && !playViewModel.videoOrientation.isLandscape && clPlayInteraction.hasAlpha)
+                    (playViewModel.screenOrientation.isLandscape && container.hasAlpha) ||
+                    (!playViewModel.screenOrientation.isLandscape && !playViewModel.videoOrientation.isLandscape && container.hasAlpha)
             ) triggerImmersive(it.alpha == VISIBLE_ALPHA)
         }
     }
@@ -458,52 +434,26 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
                 else -> fadeInAnimation
             }
 
-            animation.start(clPlayInteraction)
+            animation.start(container)
         }
 
         when {
             playViewModel.screenOrientation.isLandscape -> triggerFullImmersive(shouldImmersive, true)
             playViewModel.videoOrientation.isLandscape -> sendImmersiveEvent(shouldImmersive)
-            else -> triggerFullImmersive(shouldImmersive, false)
+            else -> {
+                systemUiVisibility = if (shouldImmersive) layoutManager.onEnterImmersive() else layoutManager.onExitImmersive()
+                triggerFullImmersive(shouldImmersive, false)
+            }
         }
     }
 
     //region Component Initialization
     private fun initComponents(container: ViewGroup) {
-        sizeContainerComponent = initSizeContainerComponent(container)
-        gradientBackgroundComponent = initGradientBackgroundComponent(container)
-        immersiveBoxComponent = initImmersiveBoxComponent(container)
-        sendChatComponent = initSendChatComponent(container)
-        likeComponent = initLikeComponent(container)
-        pinnedComponent = initPinnedComponent(container)
-        chatListComponent = initChatListComponent(container)
-        videoControlComponent = initVideoControlComponent(container)
-        videoSettingsComponent = initVideoSettingsComponent(container)
-        endLiveInfoComponent = initEndLiveInfoComponent(container)
-        toolbarComponent = initToolbarComponent(container)
-        statsInfoComponent = initStatsInfoComponent(container)
-        quickReplyComponent = initQuickReplyComponent(container)
-        //play button should be on top of other component so it can be clicked
-        playButtonComponent = initPlayButtonComponent(container)
-
         layoutManager = PlayInteractionLayoutManagerImpl(
-                context = requireContext(),
+                container = container,
                 orientation = playViewModel.screenOrientation,
                 videoOrientation = playViewModel.videoOrientation,
-                sizeContainerComponentId = sizeContainerComponent.getContainerId(),
-                sendChatComponentId = sendChatComponent.getContainerId(),
-                likeComponentId = likeComponent.getContainerId(),
-                pinnedComponentId = pinnedComponent.getContainerId(),
-                chatListComponentId = chatListComponent.getContainerId(),
-                videoControlComponentId = videoControlComponent.getContainerId(),
-                gradientBackgroundComponentId = gradientBackgroundComponent.getContainerId(),
-                toolbarComponentId = toolbarComponent.getContainerId(),
-                statsInfoComponentId = statsInfoComponent.getContainerId(),
-                playButtonComponentId = playButtonComponent.getContainerId(),
-                immersiveBoxComponentId = immersiveBoxComponent.getContainerId(),
-                quickReplyComponentId = quickReplyComponent.getContainerId(),
-                endLiveInfoComponentId = endLiveInfoComponent.getContainerId(),
-                videoSettingsComponentId = videoSettingsComponent.getContainerId()
+                viewInitializer = this
         )
 
         sendInitState()
@@ -511,7 +461,63 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
         layoutManager.layoutView(container)
     }
 
-    private fun initSendChatComponent(container: ViewGroup): UIComponent<SendChatInteractionEvent> {
+    override fun onInitSizeContainer(container: ViewGroup): Int {
+        return SizeContainerComponent(container)
+                .getContainerId()
+    }
+
+    override fun onInitToolbar(container: ViewGroup): Int {
+        val toolbarComponent = ToolbarComponent(container, EventBusFactory.get(viewLifecycleOwner), this, dispatchers)
+
+        launch {
+            toolbarComponent.getUserInteractionEvents()
+                    .collect {
+                        when (it) {
+                            PlayToolbarInteractionEvent.BackButtonClicked -> doLeaveRoom()
+                            is PlayToolbarInteractionEvent.FollowButtonClicked -> doClickFollow(it.partnerId, it.action)
+                            PlayToolbarInteractionEvent.MoreButtonClicked -> showMoreActionBottomSheet()
+                            is PlayToolbarInteractionEvent.PartnerNameClicked -> openPartnerPage(it.partnerId, it.type)
+                            PlayToolbarInteractionEvent.CartButtonClicked -> shouldOpenCartPage()
+                        }
+                    }
+        }
+
+        return toolbarComponent.getContainerId()
+    }
+
+    override fun onInitVideoControl(container: ViewGroup): Int {
+        val videoControlComponent = VideoControlComponent(container, EventBusFactory.get(viewLifecycleOwner), this, dispatchers)
+                .also(viewLifecycleOwner.lifecycle::addObserver)
+
+        launch {
+            videoControlComponent.getUserInteractionEvents()
+                    .collect {
+                        when (it) {
+                            VideoControlInteractionEvent.VideoScrubStarted -> onScrubStarted()
+                            VideoControlInteractionEvent.VideoScrubEnded -> onScrubEnded()
+                        }
+                    }
+        }
+
+        return videoControlComponent.getContainerId()
+    }
+
+    override fun onInitLike(container: ViewGroup): Int {
+        val likeComponent = LikeComponent(container, EventBusFactory.get(viewLifecycleOwner), this, dispatchers)
+
+        launch {
+            likeComponent.getUserInteractionEvents()
+                    .collect {
+                        when (it) {
+                            is LikeInteractionEvent.LikeClicked -> doClickLike(it.shouldLike)
+                        }
+                    }
+        }
+
+        return likeComponent.getContainerId()
+    }
+
+    override fun onInitChat(container: ViewGroup): Int {
         val sendChatComponent = SendChatComponent(container, EventBusFactory.get(viewLifecycleOwner), this, dispatchers)
                 .also(viewLifecycleOwner.lifecycle::addObserver)
 
@@ -528,25 +534,16 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
                     }
         }
 
-        return sendChatComponent
+        return sendChatComponent.getContainerId()
     }
 
-    private fun initLikeComponent(container: ViewGroup): UIComponent<LikeInteractionEvent> {
-        val likeComponent = LikeComponent(container, EventBusFactory.get(viewLifecycleOwner), this, dispatchers)
-
-        launch {
-            likeComponent.getUserInteractionEvents()
-                    .collect {
-                        when (it) {
-                            is LikeInteractionEvent.LikeClicked -> doClickLike(it.shouldLike)
-                        }
-                    }
-        }
-
-        return likeComponent
+    override fun onInitChatList(container: ViewGroup): Int {
+        return ChatListComponent(container, EventBusFactory.get(viewLifecycleOwner), this, dispatchers)
+                .also(viewLifecycleOwner.lifecycle::addObserver)
+                .getContainerId()
     }
 
-    private fun initPinnedComponent(container: ViewGroup): UIComponent<PinnedInteractionEvent> {
+    override fun onInitPinned(container: ViewGroup): Int {
         val pinnedComponent = PinnedComponent(container, EventBusFactory.get(viewLifecycleOwner), this, dispatchers)
                 .also(viewLifecycleOwner.lifecycle::addObserver)
 
@@ -563,32 +560,97 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
                     }
         }
 
-        return pinnedComponent
+        return pinnedComponent.getContainerId()
     }
 
-    private fun initChatListComponent(container: ViewGroup): UIComponent<Unit> {
-        return ChatListComponent(container, EventBusFactory.get(viewLifecycleOwner), this, dispatchers)
-                .also(viewLifecycleOwner.lifecycle::addObserver)
-    }
-
-    private fun initVideoControlComponent(container: ViewGroup): UIComponent<VideoControlInteractionEvent> {
-        val videoControlComponent = VideoControlComponent(container, EventBusFactory.get(viewLifecycleOwner), this, dispatchers)
-                .also(viewLifecycleOwner.lifecycle::addObserver)
+    override fun onInitPlayButton(container: ViewGroup): Int {
+        val playButtonComponent = PlayButtonComponent(container, EventBusFactory.get(viewLifecycleOwner), this, dispatchers)
 
         launch {
-            videoControlComponent.getUserInteractionEvents()
+            playButtonComponent.getUserInteractionEvents()
                     .collect {
                         when (it) {
-                            VideoControlInteractionEvent.VideoScrubStarted -> onScrubStarted()
-                            VideoControlInteractionEvent.VideoScrubEnded -> onScrubEnded()
+                            PlayButtonInteractionEvent.PlayClicked -> playViewModel.startCurrentVideo()
                         }
                     }
         }
 
-        return videoControlComponent
+        return playButtonComponent.getContainerId()
     }
 
-    private fun initVideoSettingsComponent(container: ViewGroup): UIComponent<VideoSettingsInteractionEvent> {
+    override fun onInitImmersiveBox(container: ViewGroup): Int {
+        val immersiveBoxComponent = ImmersiveBoxComponent(container, EventBusFactory.get(viewLifecycleOwner), this, dispatchers)
+
+        launch {
+            immersiveBoxComponent.getUserInteractionEvents()
+                    .collect {
+                        when (it) {
+                            is ImmersiveBoxInteractionEvent.BoxClicked -> {
+                                PlayAnalytics.clickWatchArea(
+                                        channelId = channelId,
+                                        userId = userSession.userId,
+                                        channelType = playViewModel.channelType,
+                                        screenOrientation = playViewModel.screenOrientation
+                                )
+                                if (playViewModel.screenOrientation.isLandscape && this@PlayInteractionFragment.container.hasAlpha) this@PlayInteractionFragment.container.performClick()
+                                else triggerImmersive(it.currentAlpha == VISIBLE_ALPHA)
+                            }
+                        }
+                    }
+        }
+
+        return immersiveBoxComponent.getContainerId()
+    }
+
+    override fun onInitQuickReply(container: ViewGroup): Int {
+        val quickReplyComponent = QuickReplyComponent(container, EventBusFactory.get(viewLifecycleOwner), this, dispatchers)
+
+        launch {
+            quickReplyComponent.getUserInteractionEvents()
+                    .collect {
+                        when (it) {
+                            is QuickReplyInteractionEvent.ReplyClicked -> {
+                                PlayAnalytics.clickQuickReply(channelId)
+                                doSendChat(it.replyString)
+                            }
+                        }
+                    }
+        }
+
+        return quickReplyComponent.getContainerId()
+    }
+
+    override fun onInitGradientBackground(container: ViewGroup): Int {
+        return GradientBackgroundComponent(container, EventBusFactory.get(viewLifecycleOwner), this, dispatchers)
+                .getContainerId()
+    }
+
+    override fun onInitEndLiveComponent(container: ViewGroup): Int {
+        val endLiveInfoComponent = EndLiveInfoComponent(container, EventBusFactory.get(viewLifecycleOwner), this, dispatchers)
+
+        launch {
+            endLiveInfoComponent.getUserInteractionEvents()
+                    .collect {
+                        when (it) {
+                            is EndLiveInfoInteractionEvent.ButtonActionClicked -> {
+                                openPageByApplink(
+                                        applink = it.buttonUrl,
+                                        shouldFinish = true
+                                )
+                            }
+                        }
+                    }
+        }
+
+        return endLiveInfoComponent.getContainerId()
+    }
+
+    override fun onInitStatsInfo(container: ViewGroup): Int {
+        return StatsInfoComponent(container, EventBusFactory.get(viewLifecycleOwner), this, dispatchers)
+                .getContainerId()
+    }
+
+    override fun onInitVideoSettings(container: ViewGroup): Int {
         val videoSettingsComponent =  VideoSettingsComponent(container, EventBusFactory.get(viewLifecycleOwner), this, dispatchers)
 
         launch {
@@ -608,115 +670,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
                     }
         }
 
-        return videoSettingsComponent
-    }
-
-    private fun initSizeContainerComponent(container: ViewGroup): UIComponent<Unit> {
-        return SizeContainerComponent(container)
-    }
-
-    private fun initGradientBackgroundComponent(container: ViewGroup): UIComponent<Unit> {
-        return GradientBackgroundComponent(container, EventBusFactory.get(viewLifecycleOwner), this, dispatchers)
-    }
-
-    private fun initToolbarComponent(container: ViewGroup): UIComponent<PlayToolbarInteractionEvent> {
-        val toolbarComponent = ToolbarComponent(container, EventBusFactory.get(viewLifecycleOwner), this, dispatchers)
-
-        launch {
-            toolbarComponent.getUserInteractionEvents()
-                    .collect {
-                        when (it) {
-                            PlayToolbarInteractionEvent.BackButtonClicked -> doLeaveRoom()
-                            is PlayToolbarInteractionEvent.FollowButtonClicked -> doClickFollow(it.partnerId, it.action)
-                            PlayToolbarInteractionEvent.MoreButtonClicked -> showMoreActionBottomSheet()
-                            is PlayToolbarInteractionEvent.PartnerNameClicked -> openPartnerPage(it.partnerId, it.type)
-                            PlayToolbarInteractionEvent.CartButtonClicked -> shouldOpenCartPage()
-                        }
-                    }
-        }
-
-        return toolbarComponent
-    }
-
-    private fun initStatsInfoComponent(container: ViewGroup): UIComponent<Unit> {
-        return StatsInfoComponent(container, EventBusFactory.get(viewLifecycleOwner), this, dispatchers)
-    }
-
-    private fun initPlayButtonComponent(container: ViewGroup): UIComponent<PlayButtonInteractionEvent> {
-        val playButtonComponent = PlayButtonComponent(container, EventBusFactory.get(viewLifecycleOwner), this, dispatchers)
-
-        launch {
-            playButtonComponent.getUserInteractionEvents()
-                    .collect {
-                        when (it) {
-                            PlayButtonInteractionEvent.PlayClicked -> playViewModel.startCurrentVideo()
-                        }
-                    }
-        }
-
-        return playButtonComponent
-    }
-
-    private fun initImmersiveBoxComponent(container: ViewGroup): UIComponent<ImmersiveBoxInteractionEvent> {
-        val immersiveBoxComponent = ImmersiveBoxComponent(container, EventBusFactory.get(viewLifecycleOwner), this, dispatchers)
-
-        launch {
-            immersiveBoxComponent.getUserInteractionEvents()
-                    .collect {
-                        when (it) {
-                            is ImmersiveBoxInteractionEvent.BoxClicked -> {
-                                PlayAnalytics.clickWatchArea(
-                                        channelId = channelId,
-                                        userId = userSession.userId,
-                                        channelType = playViewModel.channelType,
-                                        screenOrientation = playViewModel.screenOrientation
-                                )
-                                if (playViewModel.screenOrientation.isLandscape && clPlayInteraction.hasAlpha) clPlayInteraction.performClick()
-                                else triggerImmersive(it.currentAlpha == VISIBLE_ALPHA)
-                            }
-                        }
-                    }
-        }
-
-        return immersiveBoxComponent
-    }
-
-    private fun initQuickReplyComponent(container: ViewGroup): UIComponent<QuickReplyInteractionEvent> {
-        val quickReplyComponent = QuickReplyComponent(container, EventBusFactory.get(viewLifecycleOwner), this, dispatchers)
-
-        launch {
-            quickReplyComponent.getUserInteractionEvents()
-                    .collect {
-                        when (it) {
-                            is QuickReplyInteractionEvent.ReplyClicked -> {
-                                PlayAnalytics.clickQuickReply(channelId)
-                                doSendChat(it.replyString)
-                            }
-                        }
-                    }
-        }
-
-        return quickReplyComponent
-    }
-
-    private fun initEndLiveInfoComponent(container: ViewGroup): UIComponent<EndLiveInfoInteractionEvent> {
-        val endLiveInfoComponent = EndLiveInfoComponent(container, EventBusFactory.get(viewLifecycleOwner), this, dispatchers)
-
-        launch {
-            endLiveInfoComponent.getUserInteractionEvents()
-                    .collect {
-                        when (it) {
-                            is EndLiveInfoInteractionEvent.ButtonActionClicked -> {
-                                openPageByApplink(
-                                        applink = it.buttonUrl,
-                                        shouldFinish = true
-                                )
-                            }
-                        }
-                    }
-        }
-
-        return endLiveInfoComponent
+        return videoSettingsComponent.getContainerId()
     }
     //endregion
 
@@ -764,13 +718,13 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
     }
 
     private fun setTotalView(totalView: TotalViewUiModel) {
-       launch {
-           EventBusFactory.get(viewLifecycleOwner)
-                   .emit(
-                           ScreenStateEvent::class.java,
-                           ScreenStateEvent.SetTotalViews(totalView)
-                   )
-       }
+        launch {
+            EventBusFactory.get(viewLifecycleOwner)
+                    .emit(
+                            ScreenStateEvent::class.java,
+                            ScreenStateEvent.SetTotalViews(totalView)
+                    )
+        }
     }
 
 
@@ -796,11 +750,11 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
 
     private fun setPinned(pinnedMessage: PinnedUiModel) {
         launch {
-          EventBusFactory.get(viewLifecycleOwner)
-                  .emit(
-                          ScreenStateEvent::class.java,
-                          ScreenStateEvent.SetPinned(pinnedMessage, playViewModel.stateHelper)
-                  )
+            EventBusFactory.get(viewLifecycleOwner)
+                    .emit(
+                            ScreenStateEvent::class.java,
+                            ScreenStateEvent.SetPinned(pinnedMessage, playViewModel.stateHelper)
+                    )
         }
     }
 
@@ -819,14 +773,14 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
         if (!playViewModel.screenOrientation.isLandscape) return
 
         cancelAllAnimations()
-        fadeInAnimation.start(clPlayInteraction)
+        fadeInAnimation.start(container)
     }
 
     private fun onScrubEnded() {
         if (!playViewModel.screenOrientation.isLandscape) return
 
         cancelAllAnimations()
-        delayFadeOutAnimation.start(clPlayInteraction)
+        delayFadeOutAnimation.start(container)
     }
 
     private fun enterFullscreen() {
@@ -1044,65 +998,11 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
     }
 
     private fun pushParentPlayByKeyboardHeight(estimatedKeyboardHeight: Int) {
-        val sendChatViewTotalHeight = run {
-            val height = sendChatView.height
-            val marginLp = sendChatView.layoutParams as ViewGroup.MarginLayoutParams
-            height + marginLp.bottomMargin + marginLp.topMargin
-        }
-
-        val quickReplyViewTotalHeight = run {
-            val height = if (!playViewModel.observableQuickReply.value?.quickReplyList.isNullOrEmpty()) {
-                if (quickReplyView.height <= 0) {
-                    quickReplyView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
-                    quickReplyView.measuredHeight
-                } else quickReplyView.height
-            } else 0
-            val marginLp = quickReplyView.layoutParams as ViewGroup.MarginLayoutParams
-            height + marginLp.bottomMargin + marginLp.topMargin
-        }
-
-        val chatListViewTotalHeight = run {
-            val height = resources.getDimensionPixelSize(R.dimen.play_chat_max_height)
-            val marginLp = chatListView.layoutParams as ViewGroup.MarginLayoutParams
-            height + marginLp.bottomMargin + marginLp.topMargin
-        }
-
-        val statusBarHeight = view?.let { getStatusBarHeight(it.context) }.orZero()
-        val requiredMargin = offset16
-
-        val interactionTopmostY = getScreenHeight() - (estimatedKeyboardHeight + sendChatViewTotalHeight + chatListViewTotalHeight + quickReplyViewTotalHeight + statusBarHeight + requiredMargin)
-
-        playFragment.onBottomInsetsViewShown(interactionTopmostY)
+        val hasQuickReply = !playViewModel.observableQuickReply.value?.quickReplyList.isNullOrEmpty()
+        playFragment.onBottomInsetsViewShown(layoutManager.getVideoBottomBoundsOnKeyboardShown(container, estimatedKeyboardHeight, hasQuickReply))
     }
 
     private fun cancelAllAnimations() {
         fadeAnimationList.forEach { it.cancel() }
-    }
-
-    private fun setupVideoLandscape(screenOrientation: ScreenOrientation) {
-        if (screenOrientation.isLandscape) {
-            playFragment.setVideoTopBounds(0)
-            return
-        }
-
-        val toolbarViewTotalHeight = run {
-            val height = toolbarView.height
-            val marginLp = toolbarView.layoutParams as ViewGroup.MarginLayoutParams
-            height + marginLp.bottomMargin + marginLp.topMargin
-        }
-
-        val statsInfoTotalHeight = run {
-            val height = statsInfoView.height
-            val marginLp = statsInfoView.layoutParams as ViewGroup.MarginLayoutParams
-            height + marginLp.bottomMargin + marginLp.topMargin
-        }
-
-        val statusBarHeight = view?.let { getStatusBarHeight(it.context) }.orZero()
-
-        playFragment.setVideoTopBounds(toolbarViewTotalHeight + statsInfoTotalHeight + statusBarHeight)
-    }
-
-    private fun setupVideoPortrait() {
-        playFragment.setVideoTopBounds(0)
     }
 }

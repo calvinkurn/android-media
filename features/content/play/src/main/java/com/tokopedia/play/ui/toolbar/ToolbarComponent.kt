@@ -32,7 +32,7 @@ open class ToolbarComponent(
             bus.getSafeManagedFlow(ScreenStateEvent::class.java)
                     .collect {
                         when (it) {
-                            is ScreenStateEvent.Init -> if (it.screenOrientation.isLandscape) uiView.hide() else uiView.show()
+                            is ScreenStateEvent.Init -> uiView.show()
                             is ScreenStateEvent.SetPartnerInfo ->
                                 uiView.setPartnerInfo(it.partnerInfo)
                             is ScreenStateEvent.BottomInsetsChanged -> if (!it.isAnyShown && !it.stateHelper.screenOrientation.isLandscape) uiView.show() else uiView.hide()
