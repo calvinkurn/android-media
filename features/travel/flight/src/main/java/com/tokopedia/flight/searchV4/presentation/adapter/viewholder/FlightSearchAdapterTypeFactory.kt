@@ -45,8 +45,8 @@ class FlightSearchAdapterTypeFactory(private val onFlightSearchListener: OnFligh
 
     interface OnFlightSearchListener {
         fun onRetryClicked()
-        fun onDetailClicked(journeyViewModel: FlightJourneyModel?, adapterPosition: Int)
-        fun onItemClicked(journeyViewModel: FlightJourneyModel?, adapterPosition: Int)
+        fun onDetailClicked(journeyModel: FlightJourneyModel?, adapterPosition: Int)
+        fun onItemClicked(journeyModel: FlightJourneyModel?, adapterPosition: Int)
         fun onShowAllClicked()
         fun onShowBestPairingClicked()
     }

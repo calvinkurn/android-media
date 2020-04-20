@@ -167,8 +167,8 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
 //        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    override fun onItemClicked(journeyViewModel: FlightJourneyModel?, adapterPosition: Int) {
-        flightSearchViewModel.onSearchItemClicked(journeyViewModel, adapterPosition)
+    override fun onItemClicked(journeyModel: FlightJourneyModel?, adapterPosition: Int) {
+        flightSearchViewModel.onSearchItemClicked(journeyModel, adapterPosition)
     }
 
     override fun onShowAllClicked() {
@@ -503,8 +503,8 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
         getString(R.string.flight_search_choose_departure_flight)
     }
 
-    private fun navigateToTheNextPage(selectedId: String, selectedTerm: String,
-                                      fareModel: FlightPriceModel, isBestPairing: Boolean) {
+    protected fun navigateToTheNextPage(selectedId: String, selectedTerm: String,
+                                        fareModel: FlightPriceModel, isBestPairing: Boolean) {
         onFlightSearchFragmentListener?.let {
             it.selectFlight(selectedId, selectedTerm, fareModel,
                     isBestPairing, flightSearchViewModel.isCombineDone,
