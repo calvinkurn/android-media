@@ -1,5 +1,6 @@
 package com.tokopedia.graphql.coroutines.data.repository
 
+import android.util.Log
 import com.google.gson.Gson
 import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.coroutines.data.source.GraphqlCacheDataStore
@@ -17,12 +18,16 @@ import kotlin.Exception
 class GraphqlRepositoryImpl(private val graphqlCloudDataStore: GraphqlCloudDataStore,
                             private val graphqlCacheDataStore: GraphqlCacheDataStore) : GraphqlRepository {
 
+    val mResults = mutableMapOf<Type, Any>()
+    val mRefreshRequests = mutableListOf<GraphqlRequest>()
+    private val mIsCachedData = mutableMapOf<Type, Boolean>()
+    val gson = Gson()
 
     override suspend fun getReseponse(requests: List<GraphqlRequest>, cacheStrategy: GraphqlCacheStrategy)
             : GraphqlResponse {
         return when (cacheStrategy.type) {
             CacheType.NONE, CacheType.ALWAYS_CLOUD -> {
-                graphqlCloudDataStore.getResponse(requests, cacheStrategy)
+                getCloudResponse(requests.toMutableList(), cacheStrategy)
             }
             CacheType.CACHE_ONLY -> graphqlCacheDataStore.getResponse(requests, cacheStrategy)
             else -> {
@@ -34,7 +39,7 @@ class GraphqlRepositoryImpl(private val graphqlCloudDataStore: GraphqlCloudDataS
                     }
                     var responseCloud: GraphqlResponseInternal? = null
                     if (!tempRequestCloud.isNullOrEmpty()) {
-                        responseCloud = graphqlCloudDataStore.getResponse(tempRequestCloud, cacheStrategy);
+                        responseCloud = getCloudResponse(requests.toMutableList(), cacheStrategy)
                     }
                     responseCloud?.let {
                         responseCache.originalResponse.addAll(it.originalResponse)
@@ -42,7 +47,7 @@ class GraphqlRepositoryImpl(private val graphqlCloudDataStore: GraphqlCloudDataS
                     GraphqlResponseInternal(responseCache.originalResponse, responseCache.indexOfEmptyCached)
                 } catch (e: Exception) {
                     e.printStackTrace()
-                    graphqlCloudDataStore.getResponse(requests, cacheStrategy)
+                    getCloudResponse(requests.toMutableList(), cacheStrategy)
                 }
             }
         }.toGraphqlResponse(requests)
@@ -62,17 +67,17 @@ class GraphqlRepositoryImpl(private val graphqlCloudDataStore: GraphqlCloudDataS
     }
 
     fun GraphqlResponseInternal.toGraphqlResponse(requests: List<GraphqlRequest>): GraphqlResponse {
-        val gson = Gson()
-        val results = mutableMapOf<Type, Any>()
         val errors = mutableMapOf<Type, List<GraphqlError>>()
         val tempRequest = requests.regroup(indexOfEmptyCached)
 
-        originalResponse.forEachIndexed { index, jsonElement ->
+        originalResponse?.forEachIndexed { index, jsonElement ->
             try {
                 val typeOfT = tempRequest[index].typeOfT
                 val data = jsonElement.asJsonObject.get(GraphqlConstant.GqlApiKeys.DATA)
                 if (data != null && !data.isJsonNull) {
-                    results.put(typeOfT, gson.fromJson(data, typeOfT))
+                    //Lookup for data
+                    mResults.put(typeOfT, gson.fromJson(data, typeOfT))
+                    mIsCachedData.put(typeOfT, false)
                 }
 
                 val error = jsonElement.asJsonObject.get(GraphqlConstant.GqlApiKeys.ERROR)
@@ -84,6 +89,40 @@ class GraphqlRepositoryImpl(private val graphqlCloudDataStore: GraphqlCloudDataS
             }
         }
 
-        return GraphqlResponse(results, errors, isCached)
+        val graphqlResponse = GraphqlResponse(mResults, errors, mIsCachedData)
+
+        if (mRefreshRequests.isEmpty()) {
+            return graphqlResponse
+        }
+
+        //adding cached request.
+        graphqlResponse.refreshRequests = mRefreshRequests
+
+        return graphqlResponse
+    }
+
+    private suspend fun getCloudResponse(requests: MutableList<GraphqlRequest>, cacheStrategy: GraphqlCacheStrategy): GraphqlResponseInternal {
+        val counter = requests.size
+        for (i in 0 until counter) {
+            if (requests[i].isNoCache) {
+                continue
+            }
+
+            val cachesResponse = graphqlCloudDataStore.cacheManager
+                    .get(requests[i].cacheKey())
+
+            if (cachesResponse == null || cachesResponse.isEmpty()) {
+                continue
+            }
+
+            //Lookup for data
+            mResults[requests[i].typeOfT] = gson.fromJson(cachesResponse, requests[i].typeOfT)
+            mIsCachedData[requests[i].typeOfT] = true
+            requests[i].isNoCache = true
+            mRefreshRequests.add(requests[i])
+            requests.remove(requests[i])
+        }
+
+        return graphqlCloudDataStore.getResponse(requests, cacheStrategy)
     }
 }

@@ -8,7 +8,7 @@ import java.util.ArrayList;
  * Only for internal purposes of this library in order to rewrite the original response
  */
 final public class GraphqlResponseInternal {
-    private JsonArray originalResponse;
+    private JsonArray originalResponse ;
     // isCached = true only if all of the gql is retrived from database.
     // If there is a response coming from network, isCached should be false.
     private boolean isCached;
