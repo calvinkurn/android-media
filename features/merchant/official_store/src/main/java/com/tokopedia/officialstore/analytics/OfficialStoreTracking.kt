@@ -698,7 +698,7 @@ class OfficialStoreTracking(context: Context) {
                 EVENT_CATEGORY, "$OS_MICROSITE$categoryName",
                 EVENT_ACTION, eventAction,
                 EVENT_LABEL, channel.id,
-                "campaignCode", channel.campaignID,
+                CAMPAIGN_CODE, channel.campaignID,
                 ECOMMERCE, DataLayer.mapOf(
                         CLICK , DataLayer.mapOf(
                             FIELD_ACTION_FIELD , DataLayer.mapOf( FIELD_PRODUCT_LIST , listKeyValue),
