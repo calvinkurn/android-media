@@ -34,8 +34,14 @@ class TalkReadingViewHolder(view: View, private val onThreadClickListener: OnThr
                     showNumberOfAttachedProductsWithCondition(answer.attachedProductCount)
                     showNumberOfOtherAnswersWithCondition(totalAnswer)
                 }
+                return
             }
+            showNoAnswersText()
         }
+    }
+
+    private fun showNoAnswersText() {
+        itemView.readingNoAnswersText.visibility = View.VISIBLE
     }
 
     private fun showProfilePicture(userThumbNail: String) {

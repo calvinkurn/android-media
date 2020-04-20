@@ -85,6 +85,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        showPageLoading()
         getDataFromArguments()
         observeFollowUnfollowResponse()
         observeDiscussionData()
@@ -131,7 +132,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
     private fun showPageError() {
         pageError.visibility = View.VISIBLE
         pageError.readingConnectionErrorRetryButton.setOnClickListener {
-
+            getDiscussionData()
         }
         pageError.readingConnectionErrorGoToSettingsButton.setOnClickListener {
             RouteManager.route(context, ApplinkConstInternalGlobal.GENERAL_SETTING)
@@ -140,10 +141,6 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
 
     private fun hidePageError() {
         pageError.visibility = View.GONE
-    }
-
-    private fun initView() {
-
     }
 
     private fun showBottomSheet() {
@@ -235,6 +232,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
             when(it) {
                 is Success -> {
                     hidePageError()
+                    hidePageLoading()
                     bindHeader(TalkReplyMapper.mapDiscussionDataResponseToTalkReplyHeaderModel(it.data))
                     bindTotalAnswers(it.data.discussionDataByQuestionID.question.totalAnswer)
                 }
