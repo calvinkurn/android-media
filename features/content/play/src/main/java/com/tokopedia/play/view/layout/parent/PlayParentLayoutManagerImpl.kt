@@ -42,7 +42,7 @@ class PlayParentLayoutManagerImpl(
     private val offset12 = context.resources.getDimensionPixelOffset(R.dimen.play_offset_12)
     private val offset16 = context.resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4)
 
-    private var hasHandledVideoLayout = false
+    private var isVideoAlreadyPlaying = false
 
     private var topBounds = 0
 
@@ -82,20 +82,24 @@ class PlayParentLayoutManagerImpl(
     }
 
     override fun onVideoStreamChanged(view: View) {
-        hasHandledVideoLayout = false
     }
 
     override fun onVideoStateChanged(view: View, videoState: PlayVideoState, videoOrientation: VideoOrientation) {
-        if (videoState is PlayVideoState.Playing && !hasHandledVideoLayout) {
+        if (videoState is PlayVideoState.Playing && !isVideoAlreadyPlaying) {
             reconfigureLayout(view, videoOrientation)
-            hasHandledVideoLayout = true
+            isVideoAlreadyPlaying = true
         }
     }
 
     override fun onVideoTopBoundsChanged(view: View, topBounds: Int) {
+        val topBoundsWithOffset = topBounds + offset16
+        val shouldConfigureMargin = topBoundsWithOffset != this.topBounds
+
         this.topBounds =
-                if (!screenOrientation.isLandscape) topBounds + offset16
+                if (!screenOrientation.isLandscape) topBoundsWithOffset
                 else 0
+
+        if (shouldConfigureMargin && isVideoAlreadyPlaying) changeVideoMargin(flVideo, this.topBounds)
     }
 
     override fun layoutView(view: View) {

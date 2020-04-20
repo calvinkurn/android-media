@@ -108,6 +108,8 @@ class PlayFragment : BaseDaggerFragment(), SensorOrientationManager.OrientationL
 
     private lateinit var orientationManager: SensorOrientationManager
 
+    private var isChangingOrientation = false
+
     private var systemUiVisibility: Int
         get() = requireActivity().window.decorView.systemUiVisibility
         set(value) {
@@ -197,7 +199,7 @@ class PlayFragment : BaseDaggerFragment(), SensorOrientationManager.OrientationL
 
     override fun onResume() {
         super.onResume()
-        playViewModel.resumeWithChannelId(channelId)
+        if (!isChangingOrientation) playViewModel.resumeWithChannelId(channelId)
         requireView().post {
             registerKeyboardListener(requireView())
         }
@@ -284,7 +286,9 @@ class PlayFragment : BaseDaggerFragment(), SensorOrientationManager.OrientationL
         orientationManager = SensorOrientationManager(requireContext(), this)
         orientationManager.enable()
 
-        playViewModel.setScreenOrientation(ScreenOrientation.getByInt(resources.configuration.orientation))
+        val screenOrientation = ScreenOrientation.getByInt(resources.configuration.orientation)
+        isChangingOrientation = playViewModel.screenOrientation != ScreenOrientation.Unknown && playViewModel.screenOrientation != screenOrientation
+        playViewModel.setScreenOrientation(screenOrientation)
     }
 
     private fun initView(view: View) {
