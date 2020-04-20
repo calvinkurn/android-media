@@ -11,12 +11,14 @@ import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.di.component.DaggerVoucherCreationComponent
 import com.tokopedia.vouchercreation.voucherlist.model.BaseVoucherListUiModel
 import com.tokopedia.vouchercreation.voucherlist.model.BottomSheetMenuUiModel
+import com.tokopedia.vouchercreation.voucherlist.model.HeaderChipUiModel
 import com.tokopedia.vouchercreation.voucherlist.model.VoucherUiModel
 import com.tokopedia.vouchercreation.voucherlist.view.adapter.factory.VoucherListAdapterFactoryImpl
 import com.tokopedia.vouchercreation.voucherlist.view.viewholder.MenuViewHolder
 import com.tokopedia.vouchercreation.voucherlist.view.viewholder.VoucherViewHolder
 import com.tokopedia.vouchercreation.voucherlist.view.viewmodel.VoucherListViewModel
 import com.tokopedia.vouchercreation.voucherlist.view.widget.VoucherListBottomSheet
+import kotlinx.android.synthetic.main.fragment_mvc_voucher_list.view.*
 import javax.inject.Inject
 
 /**
@@ -103,8 +105,17 @@ class VoucherListFragment : BaseListFragment<BaseVoucherListUiModel, VoucherList
         dismissBottomSheet()
     }
 
-    private fun setupView() {
+    private fun setupView() = view?.run {
         showDummyData()
+        headerChipMvc.init()
+
+        headerChipMvc.setOnItemClickListener {
+            setOnChipListener(it)
+        }
+    }
+
+    private fun setOnChipListener(chip: HeaderChipUiModel) {
+
     }
 
     private fun showDummyData() {

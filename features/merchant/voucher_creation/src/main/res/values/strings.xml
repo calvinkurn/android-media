@@ -15,4 +15,6 @@
     <string name="mvc_duplicate">Duplikat</string>
     <string name="mvc_cancel">Batalkan</string>
     <string name="mvc_stop">Hentikan</string>
+    <string name="mvc_sort">Urutkan</string>
+    <string name="mvc_voucher_type">Jenis Voucher</string>
 </resources>

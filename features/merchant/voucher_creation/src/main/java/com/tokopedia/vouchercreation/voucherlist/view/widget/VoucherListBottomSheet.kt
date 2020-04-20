@@ -23,7 +23,7 @@ class VoucherListBottomSheet(
 ) : BottomSheetUnify() {
 
     companion object {
-        val TAG = VoucherListBottomSheet::class.java.simpleName
+        val TAG: String = VoucherListBottomSheet::class.java.simpleName
     }
 
     private val menuAdapter by lazy { MenuAdapter(listener) }
