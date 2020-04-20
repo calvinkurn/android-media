@@ -44,10 +44,7 @@ import com.tokopedia.affiliatecommon.data.pojo.productaffiliate.TopAdsPdpAffilia
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
-import com.tokopedia.applink.internal.ApplinkConstInternalCategory
-import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.internal.*
 import com.tokopedia.atc_common.data.model.request.AddToCartOccRequestParams
 import com.tokopedia.atc_common.data.model.request.AddToCartOcsRequestParams
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
@@ -922,7 +919,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         activity?.let {
             val intent = RouteManager.getIntent(
                     it,
-                    ApplinkConstInternalGlobal.PRODUCT_TALK,
+                    ApplinkConstInternalMechant.TALK_READING,
                     viewModel.getDynamicProductInfoP1?.basic?.productID,
                     viewModel.getDynamicProductInfoP1?.basic?.shopID
             )

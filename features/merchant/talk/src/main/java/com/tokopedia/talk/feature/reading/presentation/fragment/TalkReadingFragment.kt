@@ -6,14 +6,15 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.GENERAL_SETTING
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
+import com.tokopedia.talk.common.TalkConstants.SHOP_ID
 import com.tokopedia.talk.common.di.TalkComponent
 import com.tokopedia.talk.feature.reading.data.mapper.TalkReadingMapper
 import com.tokopedia.talk.feature.reading.data.model.SortOption
@@ -46,8 +47,7 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
         OnThreadClickListener {
 
     companion object {
-        const val PARAM_PRODUCT_ID = "productID"
-        const val PARAM_SHOP_ID = "shopID"
+        const val PRODUCT_ID = "productID"
         const val DEFAULT_DISCUSSION_DATA_LIMIT = 10
         const val DEFAULT_INITIAL_PAGE = 0
         const val DONT_LOAD_INITAL_DATA = false
@@ -56,8 +56,8 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
         fun createNewInstance(productId: String, shopId: String): TalkReadingFragment =
             TalkReadingFragment().apply {
                 arguments = Bundle()
-                arguments?.putString(PARAM_PRODUCT_ID, productId)
-                arguments?.putString(PARAM_SHOP_ID, shopId)
+                arguments?.putString(PRODUCT_ID, productId)
+                arguments?.putString(SHOP_ID, shopId)
             }
     }
 
@@ -137,8 +137,8 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
         unselectCategories()
     }
 
-    override fun getSwipeRefreshLayoutResourceId(): Int {
-        return R.id.readingSwipeToRefresh
+    override fun getSwipeRefreshLayout(view: View?): SwipeRefreshLayout? {
+        return readingSwipeToRefresh
     }
 
     override fun createAdapterInstance(): BaseListAdapter<TalkReadingUiModel, TalkReadingAdapterTypeFactory> {
@@ -275,8 +275,8 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
 
     private fun getDataFromArguments() {
         arguments?.let {
-            productId = it.getString(PARAM_PRODUCT_ID, "")
-            shopId = it.getString(PARAM_SHOP_ID, "")
+            productId = it.getString(PRODUCT_ID, "")
+            shopId = it.getString(SHOP_ID, "")
         }
     }
 
