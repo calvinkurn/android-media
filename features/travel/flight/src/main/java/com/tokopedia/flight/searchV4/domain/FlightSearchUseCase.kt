@@ -19,8 +19,7 @@ class FlightSearchUseCase @Inject constructor(private val flightSearchRepository
         return return if (isRoundTrip && !isReturnTrip) {
             mapToFlightSearchMetaViewModel(flightSearchRepository.getSearchSingleCombined(searchParams, isReturnTrip), searchParams)
         } else if (isRoundTrip && isReturnTrip) {
-            // need changed
-            mapToFlightSearchMetaViewModel(flightSearchRepository.getSearchSingle(searchParams, isReturnTrip), searchParams)
+            mapToFlightSearchMetaViewModel(flightSearchRepository.getSearchCombinedReturn(searchParams, onwardJourneyId, isReturnTrip), searchParams)
         } else {
             mapToFlightSearchMetaViewModel(flightSearchRepository.getSearchSingle(searchParams, isReturnTrip), searchParams)
         }
