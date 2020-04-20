@@ -13,6 +13,7 @@ import com.tokopedia.product.addedit.preview.data.model.params.add.*
 import com.tokopedia.product.addedit.preview.data.model.params.edit.ProductEditParam
 import com.tokopedia.product.addedit.shipment.presentation.model.ShipmentInputModel
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 
 /**
  * Created by faisalramd on 2020-03-23.
@@ -80,9 +81,9 @@ class EditProductInputMapper @Inject constructor() {
     private fun mapVariantParam(variantInputModel: ProductVariantInputModel,
                                 variantOptionUploadId: List<String>,
                                 sizeChartUploadId: String): Variant? {
-        if (variantInputModel.variantOptionParent.size == 0 &&
-                variantInputModel.productVariant.size == 0) {
-            return null
+        if (variantInputModel.productVariant.size == 0) {
+            // if product variant size is decreased to empty then use empty Variant() object
+            return if (variantInputModel.isRemoveVariant) Variant() else null
         }
 
         return Variant(
