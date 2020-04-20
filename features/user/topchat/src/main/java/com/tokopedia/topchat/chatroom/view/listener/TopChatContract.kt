@@ -61,6 +61,7 @@ interface TopChatContract {
     }
 
     interface Presenter : BaseChatContract.Presenter<View> {
+
         fun connectWebSocket(messageId: String)
 
         fun startTyping()
