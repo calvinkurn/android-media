@@ -6,5 +6,7 @@ data class Variant (
     @SerializedName("products")
     val products: List<Product>,
     @SerializedName("selections")
-    val selections: List<Selection>
+    val selections: List<Selection>,
+    @SerializedName("sizecharts")
+    val sizeCharts: List<Picture>
 )
