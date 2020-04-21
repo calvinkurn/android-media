@@ -26,16 +26,17 @@ private fun List<Map<String, Any>>.validateArray(arr: List<Map<String, Any>>): B
 private fun Any.eq(v: Any): Boolean = when {
     this is LinkedTreeMap<*, *> && v is LinkedTreeMap<*, *> -> (this as Map<String, Any>).canValidate(v as Map<String, Any>)
     this is ArrayList<*> && v is ArrayList<*> -> (this as List<Map<String, Any>>).validateArray(v as List<Map<String, Any>>)
-    this is String && v is String && this.contains("\\{\\{.*\\}\\}".toRegex()) -> regexEquals(this, v)
+    this is String && this.contains("\\{\\{.*\\}\\}".toRegex()) -> regexEquals(this, v)
     else -> this == v
 }
 
-fun regexEquals(s: String, v: String): Boolean {
+fun regexEquals(s: String, v: Any): Boolean {
     val syntax = Regex("\\{\\{(.*)}}")
     val m = syntax.find(s)
 
     val regex: Regex = m?.groupValues?.get(1)?.toRegex()
             ?: throw Exception("Syntax not parsed")
 
-    return regex.matchEntire(v) != null
+    val vString = v.toString()
+    return regex.matchEntire(vString) != null
 }
