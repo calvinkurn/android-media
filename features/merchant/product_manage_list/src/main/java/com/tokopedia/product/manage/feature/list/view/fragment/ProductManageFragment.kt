@@ -82,6 +82,7 @@ import com.tokopedia.product.manage.feature.quickedit.price.presentation.fragmen
 import com.tokopedia.product.manage.feature.quickedit.stock.data.model.EditStockResult
 import com.tokopedia.product.manage.feature.quickedit.stock.presentation.fragment.ProductManageQuickEditStockFragment
 import com.tokopedia.product.manage.feature.quickedit.variant.presentation.ui.QuickEditVariantPriceBottomSheet
+import com.tokopedia.product.manage.feature.quickedit.variant.presentation.ui.QuickEditVariantStockBottomSheet
 import com.tokopedia.product.manage.item.imagepicker.imagepickerbuilder.AddProductImagePickerBuilder
 import com.tokopedia.product.manage.oldlist.constant.ProductManageListConstant
 import com.tokopedia.product.manage.oldlist.constant.ProductManageListConstant.EXTRA_PRODUCT_NAME
@@ -185,6 +186,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         observeFilter()
 
         observeEditVariantPrice()
+        observeEditVariantStock()
 
         getFiltersTab()
         getProductListFeaturedOnlySize()
@@ -942,7 +944,13 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     }
 
     override fun onClickEditVariantStockButton(product: ProductViewModel) {
-
+        context?.let {
+            val editVariantStockBottomSheet = QuickEditVariantStockBottomSheet.createInstance(it, product.id) { result ->
+                viewModel.editVariantsStock(result)
+            }
+            editVariantStockBottomSheet.show(childFragmentManager, QuickEditVariantPriceBottomSheet.TAG)
+            ProductManageTracking.eventEditVariants(product.id)
+        }
     }
 
     override fun onClickContactCsButton(product: ProductViewModel) {
@@ -1535,8 +1543,24 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         observe(viewModel.editVariantPriceResult) {
             when (it) {
                 is Success -> {
-                    val message = context?.getString(R.string.product_manage_quick_edit_price_success,
-                        it.data.productName).orEmpty()
+                    val message = context?.getString(
+                        R.string.product_manage_quick_edit_price_success,
+                        it.data.productName
+                    ).orEmpty()
+                    showMessageToast(message)
+                }
+                is Fail -> showErrorToast()
+            }
+        }
+    }
+    private fun observeEditVariantStock() {
+        observe(viewModel.editVariantStockResult) {
+            when (it) {
+                is Success -> {
+                    val message = context?.getString(
+                        R.string.product_manage_quick_edit_stock_success,
+                        it.data.productName
+                    ).orEmpty()
                     showMessageToast(message)
                 }
                 is Fail -> showErrorToast()
