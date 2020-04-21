@@ -9,6 +9,7 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.graphql.CommonUtils
 import com.tokopedia.settingnotif.R
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
@@ -39,11 +40,11 @@ fun Context.notificationSetting(): Intent {
 fun <T> UseCase<T>.load(
         requestParams: RequestParams = RequestParams.EMPTY,
         onSuccess: (t: T?) -> Unit,
-        onError: () -> Unit
+        onError: (err: Throwable?) -> Unit
 ) {
     execute(requestParams, object : Subscriber<T>() {
         override fun onNext(t: T) = onSuccess(t)
-        override fun onError(e: Throwable?) = onError()
+        override fun onError(e: Throwable?) = onError(e)
         override fun onCompleted() {}
     })
 }
@@ -91,4 +92,14 @@ fun Context?.inflateView(@LayoutRes layoutId: Int): View {
  */
 fun componentTextColor(state: Boolean): Int {
     return if (state) R.color.charcoal_grey_96 else R.color.grey_600
+}
+
+
+/**
+ * cloning a data class object
+ * using json converter utilities
+ */
+inline fun <reified T> dataClone(src: Any): T {
+    val json = CommonUtils.toJson(src)
+    return CommonUtils.fromJson(json, T::class.java)
 }
