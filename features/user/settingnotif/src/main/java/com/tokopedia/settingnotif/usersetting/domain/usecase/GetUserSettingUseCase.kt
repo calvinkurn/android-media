@@ -7,7 +7,7 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.settingnotif.usersetting.domain.mapper.UserSettingFieldMapper
 import com.tokopedia.settingnotif.usersetting.domain.pojo.UserNotificationResponse
-import com.tokopedia.settingnotif.usersetting.view.dataview.UserSettingViewModel
+import com.tokopedia.settingnotif.usersetting.view.dataview.UserSettingDataView
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import rx.Observable
@@ -17,9 +17,9 @@ class GetUserSettingUseCase @Inject constructor(
         val context: Context?,
         private val useCase: GraphqlUseCase,
         @RawRes val query: Int
-) : UseCase<UserSettingViewModel>() {
+) : UseCase<UserSettingDataView>() {
 
-    override fun createObservable(requestParams: RequestParams?): Observable<UserSettingViewModel> {
+    override fun createObservable(requestParams: RequestParams?): Observable<UserSettingDataView> {
         if (context == null) return Observable.error(IllegalStateException("Something error. Try again later"))
 
         val query = GraphqlHelper.loadRawString(context.resources, query)

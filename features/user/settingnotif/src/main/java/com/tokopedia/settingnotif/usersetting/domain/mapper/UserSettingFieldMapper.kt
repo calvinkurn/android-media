@@ -3,12 +3,12 @@ package com.tokopedia.settingnotif.usersetting.domain.mapper
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.settingnotif.usersetting.domain.pojo.UserNotificationResponse
 import com.tokopedia.settingnotif.usersetting.view.adapter.factory.SettingFieldTypeFactory
-import com.tokopedia.settingnotif.usersetting.view.dataview.UserSettingViewModel
+import com.tokopedia.settingnotif.usersetting.view.dataview.UserSettingDataView
 import rx.functions.Func1
 
-class UserSettingFieldMapper : Func1<UserNotificationResponse, UserSettingViewModel> {
+class UserSettingFieldMapper : Func1<UserNotificationResponse, UserSettingDataView> {
 
-    override fun call(response: UserNotificationResponse): UserSettingViewModel {
+    override fun call(response: UserNotificationResponse): UserSettingDataView {
         val outputData = arrayListOf<Visitable<SettingFieldTypeFactory>>()
         val data = response.userSetting
 
@@ -27,7 +27,7 @@ class UserSettingFieldMapper : Func1<UserNotificationResponse, UserSettingViewMo
             }
         }
 
-        return UserSettingViewModel(outputData)
+        return UserSettingDataView(outputData)
     }
 
 }
