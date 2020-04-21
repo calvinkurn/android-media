@@ -4,7 +4,7 @@ import com.tokopedia.product.manage.feature.quickedit.variant.adapter.model.Prod
 import com.tokopedia.product.manage.feature.quickedit.variant.data.model.Picture
 import com.tokopedia.product.manage.feature.quickedit.variant.data.model.Selection
 
-class GetVariantResult(
+data class GetVariantResult(
     val productName: String,
     val variants: List<ProductVariant>,
     val selections: List<Selection>,
