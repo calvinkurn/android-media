@@ -126,7 +126,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
         GraphqlRequest graphqlRequest;
         Map<String, Object> variables = new HashMap<>();
         if (orderCategory.equalsIgnoreCase(OrderCategory.MARKETPLACE)) {
-            if (!orderId.isEmpty()) {
+            if (orderId != null && !orderId.isEmpty()) {
                 variables.put("orderCategory", orderCategory);
                 variables.put(ORDER_ID, orderId);
                 graphqlRequest = new
