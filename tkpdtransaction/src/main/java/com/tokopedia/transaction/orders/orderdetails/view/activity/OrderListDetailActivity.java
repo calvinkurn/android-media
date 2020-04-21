@@ -48,6 +48,7 @@ public class OrderListDetailActivity extends BaseSimpleActivity implements HasCo
     @DeepLink({ApplinkConst.Transaction.ORDER_DETAIL,
             ApplinkConst.Transaction.ORDER_OMS_DETAIL,
             ApplinkConst.Transaction.ORDER_MARKETPLACE_DETAIL,
+            ApplinkConst.Transaction.ORDER_MARKETPLACE_DETAIL_WAITING_INVOICE,
             ApplinkConst.Transaction.ORDER_OMS_DETAIL_UPSTREAM
     })
     public static Intent getOrderDetailIntent(Context context, Bundle bundle) {
