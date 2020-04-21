@@ -13,13 +13,12 @@ import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
-import com.bumptech.glide.signature.ObjectKey
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.gamification.R
 import com.tokopedia.gamification.giftbox.presentation.fragments.TokenUserState
 import com.tokopedia.gamification.giftbox.presentation.helpers.CubicBezierInterpolator
 import com.tokopedia.gamification.giftbox.presentation.helpers.addListener
 import com.tokopedia.gamification.giftbox.presentation.views.RewardContainer.Companion.NEGATIVE_DELAY_FOR_LARGE_REWARD_ANIM
+import timber.log.Timber
 import java.util.concurrent.atomic.AtomicInteger
 
 open class GiftBoxDailyView : FrameLayout {
@@ -38,7 +37,6 @@ open class GiftBoxDailyView : FrameLayout {
     open var TOTAL_ASYNC_IMAGES = 3
     var imagesLoaded = AtomicInteger(0)
     val GIFT_BOX_START_DELAY = 300L
-    val GLIDE_SIGNATURE = "giftbox"
     var LID_ANIMATION_DURATION = 450L
     var SCALE_UP_ANIMATION_DURATION = 500L
 
@@ -75,7 +73,6 @@ open class GiftBoxDailyView : FrameLayout {
         imageShadow = findViewById(R.id.imageShadow)
 
         imageFlatGlow.alpha = 0f
-
     }
 
 
@@ -85,8 +82,7 @@ open class GiftBoxDailyView : FrameLayout {
             startBoxOpenAnimation()
         }
     }
-
-
+    
     fun startBoxOpenAnimation() {
         initialBounceAnimatorSet?.end()
 
@@ -129,22 +125,12 @@ open class GiftBoxDailyView : FrameLayout {
                 .dontAnimate()
                 .addListener(getGlideListener(imageCallback))
                 .into(imageBg)
-
-        //download all lid images
-        for (url in lidImages) {
-            ImageHandler.downloadOriginalSizeImageWithSignature(
-                    context,
-                    url,
-                    ObjectKey(GLIDE_SIGNATURE),
-                    getGlideListener(imageCallback)
-            )
-        }
-
     }
 
     fun getGlideListener(imageCallback: ((isLoaded: Boolean) -> Unit)): RequestListener<Drawable> {
         return object : RequestListener<Drawable> {
             override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
+                Timber.e(e)
                 imageCallback.invoke(false)
                 return false
             }

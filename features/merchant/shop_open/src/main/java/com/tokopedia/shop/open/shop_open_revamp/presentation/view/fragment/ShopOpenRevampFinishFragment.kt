@@ -24,9 +24,9 @@ import kotlinx.android.synthetic.main.fragment_shop_open_revamp_finish.*
 class ShopOpenRevampFinishFragment : Fragment() {
 
     private val handler = Handler()
-    lateinit var fragmentNavigationInterface: FragmentNavigationInterface
     private lateinit var lottieAnimationView: LottieAnimationView
     private var shopOpenRevampTracking: ShopOpenRevampTracking? = null
+    private var fragmentNavigationInterface: FragmentNavigationInterface? = null
     private lateinit var loading: LoaderUnify
 
 

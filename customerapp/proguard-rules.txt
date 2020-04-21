@@ -412,3 +412,14 @@
 -dontwarn com.google.android.exoplayer2.audio.AudioAttributes
 -dontwarn com.google.android.exoplayer2.mediacodec.MediaCodecUtil
 -dontwarn com.google.android.exoplayer2.ui.DefaultTimeBar
+
+# -- product manage
+ -keep class com.tokopedia.product.manage.feature.cashback.data.** { *; }
+ -keep class com.tokopedia.product.manage.feature.filter.data.** { *; }
+ -keep class com.tokopedia.product.manage.feature.multiedit.data.** { *; }
+ -keep class com.tokopedia.product.manage.feature.quickedit.common.data.** { *; }
+ -keep class com.tokopedia.product.manage.feature.quickedit.delete.data.** { *; }
+ -keep class com.tokopedia.product.manage.feature.quickedit.price.data.** { *; }
+ -keep class com.tokopedia.product.manage.feature.quickedit.stock.data.** { *; }
+ -keep class com.tokopedia.shop.common.data.source.cloud.model.productlist.** { *; }
+ -keep class com.tokopedia.product.manage.feature.stockreminder.data.** { *; }

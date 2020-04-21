@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?android:attr/selectableItemBackground"
+    android:paddingTop="@dimen/layout_lvl1"
+    android:paddingBottom="@dimen/layout_lvl1">
+
+    <ImageView
+        android:id="@+id/ivPromotionPost"
+        android:layout_width="@dimen/centralized_promo_post_item_image_size"
+        android:layout_height="@dimen/centralized_promo_post_item_image_size"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/unify_globalerrors_connection" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvPromotionPostTitle"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/centralized_promo_post_title_left_margin"
+        android:layout_marginLeft="@dimen/centralized_promo_post_title_left_margin"
+        android:textColor="@color/Neutral_N700_96"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/ivPromotionPost"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintStart_toEndOf="@id/ivPromotionPost"
+        app:layout_constraintTop_toTopOf="@id/ivPromotionPost"
+        app:typographyType="heading_6"
+        tools:text="Pilih jenis promosi yang sesuai dengan tokomu!" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvPromotionPostTitleDescription"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/centralized_promo_post_desc_top_margin"
+        android:maxLines="1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintLeft_toLeftOf="@id/tvPromotionPostTitle"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintStart_toStartOf="@id/tvPromotionPostTitle"
+        app:layout_constraintTop_toBottomOf="@id/tvPromotionPostTitle"
+        app:typographyType="body_3"
+        tools:text="We'll give your recommendation based on your answers to the quiz" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

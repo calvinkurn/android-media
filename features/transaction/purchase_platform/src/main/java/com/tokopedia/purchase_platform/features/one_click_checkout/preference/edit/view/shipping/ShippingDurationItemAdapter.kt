@@ -2,6 +2,8 @@ package com.tokopedia.purchase_platform.features.one_click_checkout.preference.e
 
 import android.view.View
 import android.view.ViewGroup
+import android.widget.RadioButton
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.inflateLayout
@@ -10,7 +12,7 @@ import com.tokopedia.purchase_platform.R
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.shipping.ServicesItem
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.shipping.ServicesItemModel
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.shipping.ServicesItemModelNoPrice
-import kotlinx.android.synthetic.main.item_shipping_duration.view.*
+import com.tokopedia.unifyprinciples.Typography
 
 class ShippingDurationItemAdapter(var listener: OnShippingMenuSelected) : RecyclerView.Adapter<ShippingDurationItemAdapter.ShippingDurationViewHolder>(){
 
@@ -38,38 +40,44 @@ class ShippingDurationItemAdapter(var listener: OnShippingMenuSelected) : Recycl
     }
 
     inner class ShippingDurationViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+
+        private var itemShippingText = itemView.findViewById<Typography>(R.id.text_shipping_item)
+        private var itemShippingPrice = itemView.findViewById<Typography>(R.id.item_shipping_price)
+        private var itemShippingDesc = itemView.findViewById<Typography>(R.id.item_shipping_desc)
+        private var itemShippingRadio = itemView.findViewById<RadioButton>(R.id.item_shipping_radio)
+        private var itemList = itemView.findViewById<ConstraintLayout>(R.id.item_shipping_list)
+
+
         fun bind(data: ServicesItemModelNoPrice) {
-            with(itemView){
-                text_shipping_item.text = data.servicesDuration
-                item_shipping_price.visibility = View.GONE
-                item_shipping_desc.visibility = View.GONE
-
-                item_shipping_radio.isChecked = data.isSelected
-
-                item_shipping_list.setOnClickListener {
-                    listener.onSelect(data.serviceId)
-                }
+            itemShippingText.text = data.servicesDuration
+            itemShippingPrice.gone()
+            itemShippingDesc.gone()
+            itemShippingRadio.isChecked = data.isSelected
+            itemList.setOnClickListener {
+                listener.onSelect(data.serviceId)
             }
         }
 
         fun bind(data: ServicesItemModel) {
-            with(itemView){
-                text_shipping_item.text = data.servicesName
-                item_shipping_price.text = data.texts?.textRangePrice
-                if(data.texts?.textsServiceDesc?.isNotEmpty() == true) {
-                    item_shipping_desc.visible()
-                    item_shipping_desc.text = data.texts?.textsServiceDesc
-                } else {
-                    item_shipping_desc.gone()
+            itemShippingText.text = data.servicesName
+            itemShippingPrice.text = data.texts?.textRangePrice
+            when {
+                data.errorMessage.isNotEmpty() && data.errorMessage != "Belum PinPoint" -> {
+                    itemShippingDesc.visible()
+                    itemShippingDesc.text = data.errorMessage
                 }
-
-                item_shipping_radio.isChecked = data.isSelected
-
-                item_shipping_list.setOnClickListener {
-                    listener.onSelect(data.servicesId)
+                data.texts?.textsServiceDesc?.isNotEmpty() == true -> {
+                    itemShippingDesc.visible()
+                    itemShippingDesc.text = data.texts?.textsServiceDesc
                 }
+                else -> {
+                    itemShippingDesc.gone()
+                }
+            }
+            itemShippingRadio.isChecked = data.isSelected
 
-
+            itemList.setOnClickListener {
+                listener.onSelect(data.servicesId)
             }
         }
     }
