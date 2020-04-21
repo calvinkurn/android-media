@@ -39,7 +39,7 @@ class QuickEditVariantPriceBottomSheet(
     }
 
     override fun onPriceChanged(variantId: String, price: Int) {
-        viewModel.updateVariantPrice(variantId, price)
+        viewModel.setVariantPrice(variantId, price)
     }
 
     override fun onSaveButtonClicked(result: EditVariantResult) {

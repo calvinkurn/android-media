@@ -45,10 +45,10 @@ class QuickEditVariantStockBottomSheet(
     }
 
     override fun onStockChanged(variantId: String, stock: Int) {
-        viewModel.updateVariantStock(variantId, stock)
+        viewModel.setVariantStock(variantId, stock)
     }
 
     override fun onStatusChanged(variantId: String, status: ProductStatus) {
-        viewModel.updateVariantStatus(variantId, status)
+        viewModel.setVariantStatus(variantId, status)
     }
 }
