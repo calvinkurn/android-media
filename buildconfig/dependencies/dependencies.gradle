@@ -249,7 +249,6 @@ ext {
             viewPager2            : "androidx.viewpager2:viewpager2:$viewPager2",
             workManager           : "android.arch.work:work-runtime-ktx:$workManagerVersion",
             stfalconImageViewer   : "com.github.stfalcon:stfalcon-imageviewer:$stfalconVersion",
-            robust                : "com.meituan.robust:robust:0.4.95",
             liveness              : "ai.advance.liveness:guardian_core_v1.6@aar"
     ]
 
