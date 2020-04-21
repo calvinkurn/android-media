@@ -173,9 +173,9 @@ class CatalogDetailPageFragment : Fragment(),
     private fun generateCatalogShareData(catalogUrl: String, catalogId: String): LinkerData {
         return LinkerData.Builder.getLinkerBuilder()
                 .setId(catalogId)
-                .setName(activity?.getString(R.string.tkpd_discovery_message_share_catalog))
+                .setName(getString(R.string.tkpd_discovery_message_share_catalog))
                 .setType(LinkerData.CATALOG_TYPE)
-                .setTextContent(activity?.getString(R.string.tkpd_discovery_share_text_content))
+                .setTextContent(getString(R.string.tkpd_discovery_share_text_content))
                 .setUri(catalogUrl)
                 .build()
     }
