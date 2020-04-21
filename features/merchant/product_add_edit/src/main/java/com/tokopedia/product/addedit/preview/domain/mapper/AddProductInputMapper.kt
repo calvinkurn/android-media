@@ -78,8 +78,7 @@ class AddProductInputMapper @Inject constructor() {
     private fun mapVariantParam(variantInputModel: ProductVariantInputModel,
                                 sizeChartUploadId: String,
                                 variantOptionUploadId: List<String>): Variant? {
-        if (variantInputModel.variantOptionParent.size == 0 &&
-                variantInputModel.productVariant.size == 0) {
+        if (variantInputModel.productVariant.size == 0) {
             return null
         }
 
