@@ -266,10 +266,25 @@ class AddEditProductDescriptionViewModel @Inject constructor(
         } ?: ""
     }
 
+    fun getStatusStockViewVariant(): Int {
+        val isActive: Boolean = productInputModel.detailInputModel.status == 1
+        val stockCount: Int = productInputModel.detailInputModel.stock
+        return if (!isActive) {
+            TYPE_WAREHOUSE
+        } else if (isActive && stockCount > 0) {
+            TYPE_ACTIVE_LIMITED
+        } else {
+            TYPE_ACTIVE
+        }
+    }
+
     companion object {
         const val KEY_YOUTUBE_VIDEO_ID = "v"
         const val WEB_PREFIX_HTTP = "http://"
         const val WEB_PREFIX_HTTPS = "https://"
         const val WEB_YOUTUBE_PREFIX = "https://"
+        const val TYPE_ACTIVE = 1 // from api
+        const val TYPE_ACTIVE_LIMITED = 2 // only for view
+        const val TYPE_WAREHOUSE = 3 // from api
     }
 }

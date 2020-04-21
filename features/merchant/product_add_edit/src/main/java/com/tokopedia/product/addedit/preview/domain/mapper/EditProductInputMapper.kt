@@ -68,7 +68,7 @@ class EditProductInputMapper @Inject constructor() {
                 ShopParam(shopId),
                 Catalog(detailInputModel.catalogId),
                 Category(detailInputModel.categoryId),
-                ProductEtalase(), // TODO product etalase not implemented yet
+                ProductEtalase(),
                 mapPictureParam(detailInputModel.imageUrlOrPathList, detailInputModel.pictureList, uploadIdList),
                 mapPreorderParam(detailInputModel.preorder),
                 mapWholesaleParam(detailInputModel.wholesaleList),

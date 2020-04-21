@@ -22,7 +22,7 @@ data class DetailInputModel(
         var minOrder: Int = DEFAULT_MIN_ORDER_VALUE,
         var condition: String = CONDITION_NEW,
         var sku: String = "",
-        var status: Int = 0,
+        var status: Int = 1,
         var imageUrlOrPathList: List<String> = emptyList(),
         var preorder: PreorderInputModel = PreorderInputModel(),
         var wholesaleList: List<WholeSaleInputModel> = emptyList(),
