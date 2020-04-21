@@ -666,13 +666,10 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                         val msg = data.getStringExtra(RESULT_SET_DELIVERED)
                         refreshThenShowToasterOk(msg)
                     }
-                }
-            }
-        } else if (requestCode == FLAG_CONFIRM_REQ_PICKUP && resultCode == Activity.RESULT_OK) {
-            if (data != null) {
-                if (data.hasExtra(RESULT_PROCESS_REQ_PICKUP)) {
-                    val resultProcessReqPickup = data.getParcelableExtra<SomProcessReqPickup.Data.MpLogisticRequestPickup>(RESULT_PROCESS_REQ_PICKUP)
-                    refreshThenShowToasterOk(resultProcessReqPickup.listMessage.first())
+                    data.hasExtra(RESULT_PROCESS_REQ_PICKUP)  ->  {
+                        val resultProcessReqPickup = data.getParcelableExtra<SomProcessReqPickup.Data.MpLogisticRequestPickup>(RESULT_PROCESS_REQ_PICKUP)
+                        refreshThenShowToasterOk(resultProcessReqPickup.listMessage.first())
+                    }
                 }
             }
         }
