@@ -9,7 +9,6 @@ import com.tokopedia.unifycomponents.list.ListUnify
 object ListUnifyUtil {
     @Suppress("UNCHECKED_CAST")
     private fun getItems(instance: ListUnify) = with(instance) {
-        instance.arr
         this.javaClass.getDeclaredField("array").let {
             it.isAccessible = true
             it.get(this) as ArrayList<ListItemUnify>
