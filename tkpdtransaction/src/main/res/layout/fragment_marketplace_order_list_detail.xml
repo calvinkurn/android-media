@@ -97,6 +97,7 @@
                     </LinearLayout>
 
                     <View
+                        android:id="@+id/divider_invoice"
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/dp_1"
                         android:layout_marginStart="@dimen/dp_16"

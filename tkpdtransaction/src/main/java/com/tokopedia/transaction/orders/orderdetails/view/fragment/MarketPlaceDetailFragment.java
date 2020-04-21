@@ -128,6 +128,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
     private static final String CLICK_LIHAT_PRODUK_SERUPA_LEVEL_ORDER = "click lihat produk serupa - order";
 
     public static final String SIMILAR_PRODUCTS_ACTION_BUTTON_KEY = "see_similar_products";
+    public static final String WAITING_INVOICE_STATUS_TEXT = "Menunggu Invoice";
 
     public static final int REQUEST_CANCEL_ORDER = 101;
     public static final int REJECT_BUYER_REQUEST = 102;
@@ -142,6 +143,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
     private TextView statusValue;
     private TextView conditionalInfoText;
     private TextView invoiceView;
+    private View dividerInvoice;
     private LinearLayout invoiceLayout;
     private TextView lihat;
     private TextView detailLabel;
@@ -215,6 +217,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
         conditionalInfoText = view.findViewById(R.id.conditional_info);
         statusDetail = view.findViewById(R.id.status_detail);
         invoiceView = view.findViewById(R.id.invoice);
+        dividerInvoice = view.findViewById(R.id.divider_invoice);
         invoiceLayout = view.findViewById(R.id.ll_invoice);
         statusLihat = view.findViewById(R.id.lihat_status);
         lihat = view.findViewById(R.id.lihat);
@@ -265,16 +268,21 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
         statusValue.setText(status.statusText());
         if (!status.textColor().equals(""))
             statusValue.setTextColor(Color.parseColor(status.textColor()));
-        statusLihat.setVisibility(View.VISIBLE);
-        statusLihat.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                orderListAnalytics.sendLihatStatusClick(status.status());
-                startActivity(((UnifiedOrderListRouter) getActivity().getApplication()).getOrderHistoryIntent(
-                        getActivity(), getArguments().getString(KEY_ORDER_ID)
-                ));
-            }
-        });
+
+        if (status.statusText().equalsIgnoreCase(WAITING_INVOICE_STATUS_TEXT)) {
+            statusLihat.setVisibility(View.GONE);
+        } else {
+            statusLihat.setVisibility(View.VISIBLE);
+            statusLihat.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    orderListAnalytics.sendLihatStatusClick(status.status());
+                    startActivity(((UnifiedOrderListRouter) getActivity().getApplication()).getOrderHistoryIntent(
+                            getActivity(), getArguments().getString(KEY_ORDER_ID)
+                    ));
+                }
+            });
+        }
     }
 
     @Override
@@ -320,6 +328,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
     @Override
     public void setInvoice(final Invoice invoice) {
         if (!invoice.invoiceRefNum().isEmpty()) {
+            dividerInvoice.setVisibility(View.VISIBLE);
             invoiceLayout.setVisibility(View.VISIBLE);
             invoiceView.setText(invoice.invoiceRefNum());
             if (!presenter.isValidUrl(invoice.invoiceUrl())) {
@@ -334,6 +343,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                 startActivity(intent);
             });
         } else {
+            dividerInvoice.setVisibility(View.GONE);
             invoiceLayout.setVisibility(View.GONE);
         }
     }
