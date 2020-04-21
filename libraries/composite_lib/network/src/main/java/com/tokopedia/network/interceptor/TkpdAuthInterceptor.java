@@ -9,7 +9,7 @@ import com.tokopedia.network.refreshtoken.AccessTokenRefresh;
 import com.tokopedia.network.utils.CommonUtils;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
-import com.tokopedia.user.session.util.EncoderDecoder;
+import com.tokopedia.network.refreshtoken.EncoderDecoder;
 
 import org.json.JSONArray;
 import org.json.JSONException;
