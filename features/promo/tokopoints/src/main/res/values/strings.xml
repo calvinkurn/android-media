@@ -101,7 +101,7 @@
     <string name="tp_no_internet_label">Pastikan ada jaringan internet di tempatmu atau cek paket data / WiFi</string>
     <string name="tp_masukan_pin">Masukan PIN</string>
     <string name="tp_phone_verification_desc">Sebelum menggunakan promo ini, verifikasi dulu nomor HP kamu, ya.</string>
-    <string name="tp_verifikasi_title">Verifikasi Nomor HP</string>
-    <string name="tp_btn_verifikasi">Verifikasi</string>
+    <string name="tp_verifikasi_title">Ayo verifikasi nomor HP kamu!</string>
+    <string name="tp_btn_verifikasi">Verifikasi Nomor HP</string>
 
 </resources>

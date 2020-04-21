@@ -169,7 +169,7 @@
 /features/promo/gamification            				@tokopedia/minion-solo
 /features/payment/withdraw/             				@tokopedia/minion-solo
 /features/kyc                           				@tokopedia/minion-yoda
-/features/promo/merchant_voucher                        @tokopedia/minion-solo
+/features/promo/merchant_voucher                        @tokopedia/minion-stuart
 /features/promo/promo_gamification_common               @tokopedia/minion-solo
 /features/promo/loyalty                                 @tokopedia/minion-solo
 /features/promo/loyalty_common                          @tokopedia/minion-solo

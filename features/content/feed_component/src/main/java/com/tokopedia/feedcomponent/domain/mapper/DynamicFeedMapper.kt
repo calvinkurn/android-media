@@ -156,7 +156,6 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
                               template: Template) {
         val trackingRecommendationList = arrayListOf<TrackingRecommendationModel>()
         val trackingList = arrayListOf<TrackingViewModel>()
-
          if (feed.content.cardRecommendation.items.isNotEmpty()) {
 
              val topAdsShopList = feed.tracking.topads.filter {
