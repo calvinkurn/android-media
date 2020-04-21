@@ -7,5 +7,5 @@ data class AddShopShowcaseParam(
         @Expose
         @SerializedName("name") var name: String = "",
         @Expose
-        @SerializedName("productIds") var productIDs: MutableList<String> = mutableListOf()
+        @SerializedName("productIDs") var productIDs: MutableList<String> = mutableListOf()
 )
