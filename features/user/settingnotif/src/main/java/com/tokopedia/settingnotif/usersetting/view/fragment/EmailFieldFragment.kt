@@ -7,7 +7,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.settingnotif.R
 import com.tokopedia.settingnotif.usersetting.domain.pojo.ParentSetting
 import com.tokopedia.settingnotif.usersetting.view.dataview.NotificationActivationDataView.activationEmail
-import com.tokopedia.settingnotif.usersetting.view.dataview.UserSettingViewModel
+import com.tokopedia.settingnotif.usersetting.view.dataview.UserSettingDataView
 import com.tokopedia.settingnotif.usersetting.view.fragment.base.SettingFieldFragment
 import com.tokopedia.settingnotif.usersetting.view.viewmodel.SettingStateViewModel
 
@@ -41,7 +41,7 @@ class EmailFieldFragment: SettingFieldFragment() {
         }
     }
 
-    override fun onSuccessGetUserSetting(data: UserSettingViewModel) {
+    override fun onSuccessGetUserSetting(data: UserSettingDataView) {
         viewModel.addPinnedEmailItems(data)
         data.data = viewModel.getPinnedItems().toList()
         super.onSuccessGetUserSetting(data)
