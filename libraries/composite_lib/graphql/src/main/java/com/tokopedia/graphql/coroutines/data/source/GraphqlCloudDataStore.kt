@@ -26,7 +26,7 @@ import retrofit2.Response
 
 class GraphqlCloudDataStore @Inject constructor(
         private val api: GraphqlApiSuspend,
-        private val cacheManager: GraphqlCacheManager,
+        val cacheManager: GraphqlCacheManager,
         private val fingerprintManager: FingerprintManager
 ) : GraphqlDataStore {
 
