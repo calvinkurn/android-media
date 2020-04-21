@@ -1,7 +1,7 @@
 package com.tokopedia.settingnotif.usersetting.view.dataview
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.settingnotif.usersetting.domain.pojo.ParentSetting
+import com.tokopedia.settingnotif.usersetting.data.pojo.ParentSetting
 
 object SettingStateDataView {
 

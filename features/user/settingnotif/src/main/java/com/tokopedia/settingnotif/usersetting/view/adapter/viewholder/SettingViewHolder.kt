@@ -3,8 +3,8 @@ package com.tokopedia.settingnotif.usersetting.view.adapter.viewholder
 import android.view.View
 import android.widget.Switch
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.settingnotif.usersetting.domain.pojo.BaseSetting
-import com.tokopedia.settingnotif.usersetting.domain.pojo.ParentSetting
+import com.tokopedia.settingnotif.usersetting.data.pojo.BaseSetting
+import com.tokopedia.settingnotif.usersetting.data.pojo.ParentSetting
 
 abstract class SettingViewHolder<T : BaseSetting>(
         itemView: View?,

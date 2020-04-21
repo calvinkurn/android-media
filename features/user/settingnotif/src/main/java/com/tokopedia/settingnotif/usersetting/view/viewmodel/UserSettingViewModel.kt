@@ -3,9 +3,9 @@ package com.tokopedia.settingnotif.usersetting.view.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.tokopedia.settingnotif.usersetting.domain.pojo.setusersetting.SetUserSettingResponse
-import com.tokopedia.settingnotif.usersetting.domain.usecase.GetUserSettingUseCase
-import com.tokopedia.settingnotif.usersetting.domain.usecase.SetUserSettingUseCase
+import com.tokopedia.settingnotif.usersetting.data.pojo.setusersetting.SetUserSettingResponse
+import com.tokopedia.settingnotif.usersetting.domain.GetUserSettingUseCase
+import com.tokopedia.settingnotif.usersetting.domain.SetUserSettingUseCase
 import com.tokopedia.settingnotif.usersetting.util.SingleLiveEvent
 import com.tokopedia.settingnotif.usersetting.util.load
 import com.tokopedia.settingnotif.usersetting.view.adapter.viewholder.SettingViewHolder
@@ -14,7 +14,7 @@ import com.tokopedia.settingnotif.usersetting.view.listener.SettingFieldContract
 import com.tokopedia.settingnotif.usersetting.view.state.UserSettingErrorState
 import com.tokopedia.track.TrackApp
 import javax.inject.Inject
-import com.tokopedia.settingnotif.usersetting.domain.usecase.SetUserSettingUseCase.Companion.params as settingParams
+import com.tokopedia.settingnotif.usersetting.domain.SetUserSettingUseCase.Companion.params as settingParams
 
 class UserSettingViewModel @Inject constructor(
         private val getUserSettingUseCase: GetUserSettingUseCase,

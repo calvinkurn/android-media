@@ -2,9 +2,9 @@ package com.tokopedia.settingnotif.usersetting.view.viewmodel
 
 import androidx.lifecycle.ViewModel
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.settingnotif.usersetting.domain.pojo.NotificationActivation
-import com.tokopedia.settingnotif.usersetting.domain.pojo.ParentSetting
-import com.tokopedia.settingnotif.usersetting.domain.pojo.SellerSection.Companion.createSellerItem
+import com.tokopedia.settingnotif.usersetting.data.pojo.NotificationActivation
+import com.tokopedia.settingnotif.usersetting.data.pojo.ParentSetting
+import com.tokopedia.settingnotif.usersetting.data.pojo.SellerSection.Companion.createSellerItem
 import com.tokopedia.settingnotif.usersetting.view.adapter.factory.VisitableSettings
 import com.tokopedia.settingnotif.usersetting.view.dataview.ChangeItemDataView.changeEmail
 import com.tokopedia.settingnotif.usersetting.view.dataview.NotificationActivationDataView.activationEmail

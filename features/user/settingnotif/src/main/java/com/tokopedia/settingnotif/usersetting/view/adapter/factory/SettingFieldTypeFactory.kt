@@ -4,7 +4,7 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.AdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.settingnotif.usersetting.domain.pojo.*
+import com.tokopedia.settingnotif.usersetting.data.pojo.*
 import com.tokopedia.settingnotif.usersetting.view.adapter.viewholder.SettingViewHolder
 
 typealias VisitableSettings = Visitable<SettingFieldTypeFactory>

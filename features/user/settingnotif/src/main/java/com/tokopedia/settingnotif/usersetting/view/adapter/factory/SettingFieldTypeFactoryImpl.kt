@@ -3,7 +3,7 @@ package com.tokopedia.settingnotif.usersetting.view.adapter.factory
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.settingnotif.usersetting.domain.pojo.*
+import com.tokopedia.settingnotif.usersetting.data.pojo.*
 import com.tokopedia.settingnotif.usersetting.view.listener.SectionItemListener
 import com.tokopedia.settingnotif.usersetting.view.adapter.viewholder.*
 import com.tokopedia.user.session.UserSessionInterface

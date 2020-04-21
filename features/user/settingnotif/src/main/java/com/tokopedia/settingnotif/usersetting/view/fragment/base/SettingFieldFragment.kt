@@ -23,9 +23,9 @@ import com.tokopedia.network.constant.ErrorNetMessage.MESSAGE_ERROR_SERVER
 import com.tokopedia.settingnotif.R
 import com.tokopedia.settingnotif.usersetting.di.DaggerUserSettingComponent
 import com.tokopedia.settingnotif.usersetting.di.module.UserSettingModule
-import com.tokopedia.settingnotif.usersetting.domain.pojo.NotificationActivation
-import com.tokopedia.settingnotif.usersetting.domain.pojo.ParentSetting
-import com.tokopedia.settingnotif.usersetting.domain.pojo.setusersetting.SetUserSettingResponse
+import com.tokopedia.settingnotif.usersetting.data.pojo.NotificationActivation
+import com.tokopedia.settingnotif.usersetting.data.pojo.ParentSetting
+import com.tokopedia.settingnotif.usersetting.data.pojo.setusersetting.SetUserSettingResponse
 import com.tokopedia.settingnotif.usersetting.view.activity.ParentActivity
 import com.tokopedia.settingnotif.usersetting.view.adapter.SettingFieldAdapter
 import com.tokopedia.settingnotif.usersetting.view.adapter.factory.SettingFieldTypeFactory

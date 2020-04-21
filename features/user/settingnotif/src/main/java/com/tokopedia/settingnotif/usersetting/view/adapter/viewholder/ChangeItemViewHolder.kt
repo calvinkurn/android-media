@@ -7,7 +7,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.CHANGE_EMAIL_REGISTER
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.CHANGE_PHONE_NUMBER
 import com.tokopedia.settingnotif.R
-import com.tokopedia.settingnotif.usersetting.domain.pojo.ChangeSection
+import com.tokopedia.settingnotif.usersetting.data.pojo.ChangeSection
 import com.tokopedia.settingnotif.usersetting.state.Email
 import com.tokopedia.settingnotif.usersetting.state.Phone
 import com.tokopedia.settingnotif.usersetting.util.changeUserInfoIntent

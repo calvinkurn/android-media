@@ -5,13 +5,12 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.removeFirst
-import com.tokopedia.settingnotif.usersetting.domain.pojo.NotificationActivation
-import com.tokopedia.settingnotif.usersetting.domain.pojo.ParentSetting
-import com.tokopedia.settingnotif.usersetting.domain.pojo.SellerSection
-import com.tokopedia.settingnotif.usersetting.domain.pojo.SettingSections
+import com.tokopedia.settingnotif.usersetting.data.pojo.NotificationActivation
+import com.tokopedia.settingnotif.usersetting.data.pojo.ParentSetting
+import com.tokopedia.settingnotif.usersetting.data.pojo.SellerSection
+import com.tokopedia.settingnotif.usersetting.data.pojo.SettingSections
 import com.tokopedia.settingnotif.usersetting.view.adapter.factory.SettingFieldTypeFactory
 import com.tokopedia.settingnotif.usersetting.view.adapter.viewholder.SettingViewHolder
-import com.tokopedia.settingnotif.usersetting.view.dataview.NotificationActivationDataView.activationPushNotif
 
 class SettingFieldAdapter<T : Visitable<SettingFieldTypeFactory>>(
         private val notificationType: String,

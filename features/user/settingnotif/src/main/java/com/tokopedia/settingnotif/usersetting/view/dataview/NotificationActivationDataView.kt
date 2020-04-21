@@ -1,7 +1,7 @@
 package com.tokopedia.settingnotif.usersetting.view.dataview
 
 import com.tokopedia.settingnotif.R
-import com.tokopedia.settingnotif.usersetting.domain.pojo.NotificationActivation
+import com.tokopedia.settingnotif.usersetting.data.pojo.NotificationActivation
 import com.tokopedia.settingnotif.usersetting.state.Email
 import com.tokopedia.settingnotif.usersetting.state.Phone
 import com.tokopedia.settingnotif.usersetting.state.PushNotif
