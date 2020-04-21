@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.unifycomponents.CardUnify xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="@dimen/mvc_dimen_12dp"
+    android:layout_marginLeft="@dimen/mvc_dimen_12dp"
+    android:layout_marginTop="@dimen/spacing_lvl2"
+    android:layout_marginEnd="@dimen/mvc_dimen_12dp"
+    android:layout_marginRight="@dimen/mvc_dimen_12dp"
+    android:layout_marginBottom="@dimen/spacing_lvl2">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/Neutral_N0"
+        android:paddingStart="@dimen/layout_lvl0"
+        android:paddingLeft="@dimen/layout_lvl0"
+        android:paddingTop="@dimen/layout_lvl1"
+        android:paddingEnd="@dimen/layout_lvl1"
+        android:paddingRight="@dimen/layout_lvl1"
+        android:paddingBottom="@dimen/layout_lvl1">
+
+        <View
+            android:id="@+id/viewVoucherStatus"
+            android:layout_width="@dimen/spacing_lvl2"
+            android:layout_height="@dimen/mvc_dimen_20dp"
+            android:background="@drawable/mvc_view_voucher_status_ongoing"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvVoucherStatus"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/layout_lvl1"
+            android:layout_marginLeft="@dimen/layout_lvl0"
+            android:layout_marginEnd="@dimen/layout_lvl1"
+            android:layout_marginRight="@dimen/layout_lvl0"
+            android:text="Sedang Berlangsung"
+            android:textColor="@color/light_G500"
+            app:layout_constraintBottom_toBottomOf="@+id/viewVoucherStatus"
+            app:layout_constraintEnd_toStartOf="@+id/tvVoucherDuration"
+            app:layout_constraintStart_toEndOf="@+id/viewVoucherStatus"
+            app:layout_constraintTop_toTopOf="@+id/viewVoucherStatus"
+            app:typographyType="heading_6" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvVoucherDuration"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/spacing_lvl2"
+            android:layout_marginRight="@dimen/spacing_lvl2"
+            android:text="17 Jan 2020 - 16 Feb 2020"
+            android:textColor="@color/Neutral_N700_68"
+            app:layout_constraintBottom_toBottomOf="@+id/tvVoucherStatus"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/tvVoucherStatus"
+            app:typographyType="heading_6" />
+
+        <ImageView
+            android:id="@+id/imgVoucherType"
+            android:layout_width="@dimen/layout_lvl6"
+            android:layout_height="@dimen/layout_lvl6"
+            android:layout_marginTop="@dimen/mvc_dimen_12dp"
+            app:layout_constraintStart_toEndOf="@+id/viewVoucherStatus"
+            app:layout_constraintStart_toStartOf="@+id/tvVoucherStatus"
+            app:layout_constraintTop_toBottomOf="@+id/tvVoucherStatus"
+            tools:src="@tools:sample/avatars" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvVoucherName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/mvc_dimen_12dp"
+            android:layout_marginLeft="@dimen/mvc_dimen_12dp"
+            android:text="Hura Hura Hujan Rejeki"
+            android:textColor="@color/Neutral_N700_96"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/imgVoucherType"
+            app:layout_constraintTop_toTopOf="@+id/imgVoucherType"
+            app:typographyType="heading_5" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvVoucherDescription"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Cashback 10%"
+            android:textColor="@color/Neutral_N700_96"
+            app:layout_constraintStart_toStartOf="@+id/tvVoucherName"
+            app:layout_constraintTop_toBottomOf="@+id/tvVoucherName"
+            app:typographyType="body_3" />
+
+        <View
+            android:id="@+id/viewVoucherCode"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/layout_lvl3"
+            android:layout_marginTop="@dimen/voucher_creation_progressbar_padding_top"
+            android:layout_marginEnd="@dimen/spacing_lvl2"
+            android:layout_marginRight="@dimen/spacing_lvl2"
+            android:background="@drawable/mvc_rectangle_grey_f8fafc_radius_4dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/tvVoucherName"
+            app:layout_constraintTop_toBottomOf="@+id/tvVoucherDescription" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvLblCode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Kode Promo : "
+            android:textColor="@color/light_N700_96"
+            app:layout_constraintBottom_toBottomOf="@+id/viewVoucherCode"
+            app:layout_constraintEnd_toStartOf="@+id/tvVoucherCode"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toStartOf="@+id/viewVoucherCode"
+            app:layout_constraintTop_toTopOf="@+id/viewVoucherCode"
+            app:typographyType="small" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvVoucherCode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="LALAYEYE2020"
+            android:textColor="@color/light_N700_96"
+            app:layout_constraintBottom_toBottomOf="@+id/viewVoucherCode"
+            app:layout_constraintEnd_toEndOf="@+id/viewVoucherCode"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/tvLblCode"
+            app:layout_constraintTop_toTopOf="@+id/viewVoucherCode"
+            app:typographyType="body_3"
+            app:typographyWeight="bold" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvLblUsed"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/layout_lvl1"
+            android:layout_marginRight="@dimen/layout_lvl1"
+            android:text="@string/mvc_used"
+            android:textColor="@color/light_N700_96"
+            app:layout_constraintBottom_toTopOf="@+id/tvVoucherUsed"
+            app:layout_constraintEnd_toStartOf="@+id/unifyButton"
+            app:layout_constraintStart_toStartOf="@+id/tvVoucherName"
+            app:layout_constraintTop_toTopOf="@+id/unifyButton"
+            app:typographyType="small" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvVoucherUsed"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/layout_lvl1"
+            android:layout_marginRight="@dimen/layout_lvl1"
+            android:text="50/100"
+            android:textColor="@color/Neutral_N700_96"
+            app:layout_constraintBottom_toBottomOf="@+id/unifyButton"
+            app:layout_constraintEnd_toStartOf="@+id/unifyButton"
+            app:layout_constraintStart_toStartOf="@+id/tvVoucherName"
+            app:layout_constraintTop_toBottomOf="@+id/tvLblUsed"
+            app:typographyType="body_3" />
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/unifyButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/mvc_dimen_12dp"
+            android:layout_marginEnd="@dimen/layout_lvl1"
+            android:layout_marginRight="@dimen/layout_lvl1"
+            android:layout_marginBottom="@dimen/spacing_lvl2"
+            android:text="@string/mvc_share"
+            android:gravity="center"
+            android:minWidth="100dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/btnMore"
+            app:layout_constraintTop_toBottomOf="@+id/viewVoucherCode"
+            app:unifyButtonSize="small" />
+
+        <ImageView
+            android:id="@+id/btnMore"
+            android:layout_width="@dimen/layout_lvl3"
+            android:layout_height="@dimen/layout_lvl4"
+            android:background="@drawable/mvc_rectangle_white_radius_4dp"
+            android:scaleType="centerInside"
+            app:layout_constraintBottom_toBottomOf="@+id/unifyButton"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/unifyButton"
+            app:srcCompat="@drawable/ic_mvc_more" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</com.tokopedia.unifycomponents.CardUnify>

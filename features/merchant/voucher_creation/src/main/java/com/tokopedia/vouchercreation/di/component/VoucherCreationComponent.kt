@@ -5,6 +5,7 @@ import com.tokopedia.vouchercreation.di.module.VoucherCreationModule
 import com.tokopedia.vouchercreation.di.module.VoucherCreationViewModelModule
 import com.tokopedia.vouchercreation.di.scope.VoucherCreationScope
 import com.tokopedia.vouchercreation.create.view.activity.CreateMerchantVoucherStepsActivity
+import com.tokopedia.vouchercreation.voucherlist.view.fragment.VoucherListFragment
 import dagger.Component
 
 @VoucherCreationScope
@@ -17,4 +18,5 @@ import dagger.Component
 interface VoucherCreationComponent {
 
     fun inject(createMerchantVoucherStepsActivity: CreateMerchantVoucherStepsActivity)
+    fun inject(voucherListFragment: VoucherListFragment)
 }
