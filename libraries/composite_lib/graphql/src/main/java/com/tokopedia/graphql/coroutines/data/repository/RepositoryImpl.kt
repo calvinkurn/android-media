@@ -1,6 +1,5 @@
 package com.tokopedia.graphql.coroutines.data.repository
 
-import android.util.Log
 import com.google.gson.Gson
 import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.coroutines.data.source.GraphqlCacheDataStore
@@ -19,10 +18,10 @@ import kotlin.Exception
 open class RepositoryImpl @Inject constructor(private val graphqlCloudDataStore: GraphqlCloudDataStore,
                                               private val graphqlCacheDataStore: GraphqlCacheDataStore) : GraphqlRepository {
 
-    val mResults = mutableMapOf<Type, Any>()
-    val mRefreshRequests = mutableListOf<GraphqlRequest>()
+    private val mResults = mutableMapOf<Type, Any>()
+    private val mRefreshRequests = mutableListOf<GraphqlRequest>()
     private val mIsCachedData = mutableMapOf<Type, Boolean>()
-    val gson = Gson()
+    private val mGson = Gson()
 
     override suspend fun getReseponse(requests: List<GraphqlRequest>, cacheStrategy: GraphqlCacheStrategy)
             : GraphqlResponse {
@@ -78,13 +77,13 @@ open class RepositoryImpl @Inject constructor(private val graphqlCloudDataStore:
                 if (data != null && !data.isJsonNull) {
                     //Lookup for data03-19 00:06:47.537 32115-32488/com.tokopedia.tkpd D/OkHttp: x-tkpd-clc: AddToken-291ac79f54b52aa73eb4413dbe00703a,
 
-                    mResults.put(typeOfT, gson.fromJson(data, typeOfT))
+                    mResults.put(typeOfT, mGson.fromJson(data, typeOfT))
                     mIsCachedData.put(typeOfT, false)
                 }
 
                 val error = jsonElement.asJsonObject.get(GraphqlConstant.GqlApiKeys.ERROR)
                 if (error != null && !error.isJsonNull) {
-                    errors.put(typeOfT, gson.fromJson(error, Array<GraphqlError>::class.java).toList())
+                    errors.put(typeOfT, mGson.fromJson(error, Array<GraphqlError>::class.java).toList())
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -104,34 +103,32 @@ open class RepositoryImpl @Inject constructor(private val graphqlCloudDataStore:
     }
 
     private suspend fun getCloudResponse(requests: MutableList<GraphqlRequest>, cacheStrategy: GraphqlCacheStrategy): GraphqlResponseInternal {
-        val counter = requests.size
-        Log.e("x-tkpd-clc", "Size before cache lookup {$counter}");
-        for (i in 0 until counter) {
-            if (requests[i].isNoCache) {
-                Log.e("x-tkpd-clc", "isNoCache is true for this request so retruning from getCloudResponse()");
-                continue
+        try {
+            val counter = requests.size
+            for (i in 0 until counter) {
+                if (requests[i].isNoCache) {
+                    continue
+                }
+
+                val cKey = requests[i].cacheKey()
+                val cachesResponse = graphqlCloudDataStore.cacheManager
+                        .get(cKey)
+
+                if (cachesResponse == null || cachesResponse.isEmpty()) {
+                    continue
+                }
+
+                //Lookup for data
+                mResults[requests[i].typeOfT] = mGson.fromJson(cachesResponse, requests[i].typeOfT)
+                mIsCachedData[requests[i].typeOfT] = true
+                requests[i].isNoCache = true
+                mRefreshRequests.add(requests[i])
+                requests.remove(requests[i])
             }
-
-            val cKey = requests[i].cacheKey()
-            val cachesResponse = graphqlCloudDataStore.cacheManager
-                    .get(cKey)
-            Log.e("x-tkpd-clc", "cachesResponse {$cachesResponse} and keys is {$cKey}");
-
-
-            if (cachesResponse == null || cachesResponse.isEmpty()) {
-                Log.e("x-tkpd-clc", "cachesResponse is empty so returning from getCloudResponse()");
-                continue
-            }
-
-            //Lookup for data
-            mResults[requests[i].typeOfT] = gson.fromJson(cachesResponse, requests[i].typeOfT)
-            mIsCachedData[requests[i].typeOfT] = true
-            requests[i].isNoCache = true
-            mRefreshRequests.add(requests[i])
-            requests.remove(requests[i])
+        } catch (e:Exception){
+            e.printStackTrace()
         }
 
-        Log.e("x-tkpd-clc", "Size after cache lookup {${requests.size}}");
         return graphqlCloudDataStore.getResponse(requests, cacheStrategy)
     }
 }

@@ -1,7 +1,6 @@
 package com.tokopedia.graphql.data.source.cloud;
 
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.google.gson.JsonElement;
 import com.akamai.botman.CYFMonitor;
@@ -36,7 +35,7 @@ import static com.tokopedia.akamai_bot_lib.UtilsKt.isAkamai;
 import static com.tokopedia.graphql.util.Const.AKAMAI_SENSOR_DATA_HEADER;
 
 /**
- * Retrive the response from Cloud and dump the same in disk if cache was enable by consumer.
+ * Retrieve the response from Cloud and dump the same in disk if cache was enable by consumer.
  */
 public class GraphqlCloudDataStore implements GraphqlDataStore {
     private GraphqlApi mApi;
@@ -70,7 +69,6 @@ public class GraphqlCloudDataStore implements GraphqlDataStore {
     @Override
     public Observable<GraphqlResponseInternal> getResponse(List<GraphqlRequest> requests, GraphqlCacheStrategy cacheStrategy) {
         if (requests == null || requests.isEmpty()) {
-            Log.d(TAG, "No request available for network-call, hence stopping network communication.");
             return Observable.just(new GraphqlResponseInternal(null, false));
         }
 
@@ -84,11 +82,10 @@ public class GraphqlCloudDataStore implements GraphqlDataStore {
                     }
                 }).map(httpResponse -> {
                     if (httpResponse == null || httpResponse.code() != 200) {
-                        return null; //TODO lavekush-t need to handle and discuss the scenario with team.
+                        return null;
                     }
 
                     return new GraphqlResponseInternal(httpResponse.body(), false, httpResponse.headers().get(GraphqlConstant.GqlApiKeys.CACHE));
-
                 }).doOnNext(graphqlResponseInternal -> {
                     //Handling backend cache
                     Map<String, BackendCache> caches = CacheHelper.parseCacheHeaders(graphqlResponseInternal.getBeCache());
@@ -144,9 +141,5 @@ public class GraphqlCloudDataStore implements GraphqlDataStore {
 
     public GraphqlCacheManager getCacheManager() {
         return mCacheManager;
-    }
-
-    public FingerprintManager getFingerprintManager() {
-        return mFingerprintManager;
     }
 }

@@ -1,6 +1,5 @@
 package com.tokopedia.graphql.coroutines.data.source
 
-import android.util.Log
 import com.akamai.botman.CYFMonitor
 import com.google.gson.JsonArray
 import com.google.gson.JsonElement
@@ -55,7 +54,6 @@ class GraphqlCloudDataStore @Inject constructor(
             try {
 
                 if (requests == null || requests.isEmpty()) {
-                    Log.d("x-tkpd-clc", "No request available for network-call, hence stopping network communication.");
                     return@withContext GraphqlResponseInternal(null, false)
                 }
 
@@ -76,48 +74,54 @@ class GraphqlCloudDataStore @Inject constructor(
             yield()
 
             val gJsonArray = if (result?.body() == null) JsonArray() else result.body()
+
+            //Checking response CLC headers.
             val cacheHeaders = if (result?.headers()?.get(GraphqlConstant.GqlApiKeys.CACHE) == null) ""
             else result.headers().get(GraphqlConstant.GqlApiKeys.CACHE);
+
             val gResponse = GraphqlResponseInternal(gJsonArray, false, cacheHeaders)
-            result?.let {
 
-                launch(Dispatchers.IO) {
-                    //Handling backend cache
-                    val caches = CacheHelper.parseCacheHeaders(gResponse.beCache)
+            try {
+                result?.let {
 
-                    caches?.let {
-                        if (!caches.isEmpty()) {
-                            requests.forEachIndexed { index, request ->
-                                //Do nothing
-                                if (request == null || request.isNoCache || it[request.md5] == null) {
-                                    return@forEachIndexed
-                                }
+                    launch(Dispatchers.IO) {
+                        //Handling backend cache
+                        val caches = CacheHelper.parseCacheHeaders(gResponse.beCache)
 
-                                //TODO need to save response of individual query
-                                val cache = caches[request.md5]
-                                val objectData = gResponse.originalResponse[index].asJsonObject[GraphqlConstant.GqlApiKeys.DATA]
-                                if (objectData != null && cache != null) {
-                                    cacheManager.save(request.cacheKey(), objectData.toString(), cache.maxAge * 1000.toLong())
-                                    Log.e("x-tkpd-clc","responce saved {${objectData.toString()}}, key {${request.cacheKey()}}");
+                        caches?.let {
+                            if (!caches.isEmpty()) {
+                                requests.forEachIndexed { index, request ->
+                                    if (request.isNoCache || it[request.md5] == null) {
+                                        return@forEachIndexed  //Do nothing
+                                    }
 
+                                    //Saving response for indivisual query.
+                                    val cache = caches[request.md5]
+                                    val objectData = gResponse.originalResponse[index].asJsonObject[GraphqlConstant.GqlApiKeys.DATA]
+                                    if (objectData != null && cache != null) {
+                                        cacheManager.save(request.cacheKey(), objectData.toString(), cache.maxAge * 1000.toLong())
+                                    }
                                 }
                             }
                         }
-                    }
 
-                    when (cacheStrategy.type) {
-                        CacheType.CACHE_FIRST, CacheType.ALWAYS_CLOUD -> {
-                            gResponse.originalResponse.forEachIndexed { index, jsonElement ->
-                                if (!isError(jsonElement)) {
-                                    cacheManager.save(fingerprintManager.generateFingerPrint(requests[index].toString(),
-                                            cacheStrategy.isSessionIncluded),
-                                            jsonElement.toString(),
-                                            cacheStrategy.expiryTime)
+                        //Proceed for local cache as usual
+                        when (cacheStrategy.type) {
+                            CacheType.CACHE_FIRST, CacheType.ALWAYS_CLOUD -> {
+                                gResponse.originalResponse.forEachIndexed { index, jsonElement ->
+                                    if (!isError(jsonElement)) {
+                                        cacheManager.save(fingerprintManager.generateFingerPrint(requests[index].toString(),
+                                                cacheStrategy.isSessionIncluded),
+                                                jsonElement.toString(),
+                                                cacheStrategy.expiryTime)
+                                    }
                                 }
                             }
                         }
                     }
                 }
+            } catch (e: Exception) {
+                e.printStackTrace()
             }
 
             gResponse

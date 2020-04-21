@@ -2,13 +2,9 @@ package com.tokopedia.graphql.util;
 
 import android.text.TextUtils;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.tokopedia.config.GlobalConfig;
-import com.tokopedia.graphql.CommonUtils;
 import com.tokopedia.graphql.data.model.BackendCache;
 
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -38,18 +34,18 @@ public class CacheHelper {
         }
 
         String[] rules = cacheHeadersStr.split(SEP_CACHE);
+        Map<String, BackendCache> objCaches = new HashMap<>();
 
         if (rules.length < 1) {
-            return null;
+            return objCaches;
         }
 
-        Map<String, BackendCache> objCaches = new HashMap<>();
         for (String cacheItem : rules) {
             if (TextUtils.isEmpty(cacheItem)) {
                 continue;
             }
 
-            Map<String, String> items = getCachingParamMap(cacheItem.split(SEP_CACHE_ITEM));//String[] items = cacheItem.split(SEP_CACHE_ITEM);
+            Map<String, String> items = getCachingParamMap(cacheItem.split(SEP_CACHE_ITEM));
 
             if (items == null
                     || items.isEmpty()
@@ -99,22 +95,11 @@ public class CacheHelper {
         CACHE_FIRST
     }
 
-    public static Object getResponse(JsonArray arrays, Type type) {
-        //TODO lavekush-t please revisit for optimization
-        for (JsonElement responseItem : arrays) {
-            if (responseItem == null || responseItem.isJsonNull()) {
-                continue;
-            }
-
-            Object object = CommonUtils.fromJson(responseItem.getAsJsonObject().toString(), type);
-            if (object != null) {
-                return object;
-            }
-        }
-
-        return null;
-    }
-
+    /**
+     * to get query name from raw query
+     * @param query raw query
+     * @return query name
+     */
     public static String getQueryName(String query) {
         String oName = "not_supported";
         final Matcher m = Pattern.compile(REGEX_QUERY_NAME).matcher(query);
@@ -141,7 +126,7 @@ public class CacheHelper {
         return oName + "-v" + GlobalConfig.VERSION_NAME;
     }
 
-    public static Map<String, String> getCachingParamMap(String[] items) {
+    private static Map<String, String> getCachingParamMap(String[] items) {
         if (items == null || items.length < 1) {
             return null;
         }
@@ -159,7 +144,7 @@ public class CacheHelper {
             }
 
             if (TextUtils.isEmpty(keyVal[0]) || TextUtils.isEmpty(keyVal[1])) {
-
+                continue;
             }
 
             paramMap.put(keyVal[0], keyVal[1]);
@@ -167,5 +152,4 @@ public class CacheHelper {
 
         return paramMap;
     }
-
 }

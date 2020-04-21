@@ -49,10 +49,16 @@ public class FingerprintManager {
         return key.replace(" ", "");  //If exception caught then it will return plain string without spaces
     }
 
-    public static String md5(String s) {
+    /**
+     * To generate base64 of given string
+     *
+     * @param query Text which need to be convert
+     * @return
+     */
+    public static String md5(String query) {
         try {
             MessageDigest digest = java.security.MessageDigest.getInstance("MD5");
-            digest.update(s.getBytes());
+            digest.update(query.getBytes());
             byte[] messageDigest = digest.digest();
             StringBuilder hexString = new StringBuilder();
             for (byte b : messageDigest) {
@@ -67,11 +73,12 @@ public class FingerprintManager {
 
     /**
      * To generate list of hash for incoming request.
-     * @param requests
+     *
+     * @param requests list of incoming request object
      * @return
      */
     public static String getQueryDigest(List<GraphqlRequest> requests) {
-        if (requests == null) {
+        if (requests == null || requests.isEmpty()) {
             return "";
         }
 
@@ -88,6 +95,7 @@ public class FingerprintManager {
                 oName = request.getOperationName();
             }
 
+            //Preparing the comma separated digest
             digestBuilder.append(oName)
                     .append('-')
                     .append(request.getMd5())
@@ -95,9 +103,5 @@ public class FingerprintManager {
         }
 
         return digestBuilder.toString();
-    }
-
-    public String generateFingerPrint(String key) {
-        return generateFingerPrint(key, false);
     }
 }
