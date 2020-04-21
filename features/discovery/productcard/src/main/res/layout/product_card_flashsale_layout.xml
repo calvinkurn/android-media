@@ -15,8 +15,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingBottom="@dimen/product_card_padding_bottom"
-        tools:layout_height="match_parent"
-        android:background="@color/red_100">
+        tools:layout_height="match_parent">
 
         <ImageView
             android:id="@+id/imageProduct"
