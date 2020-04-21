@@ -87,25 +87,20 @@ class AddEditProductPreviewActivity : BaseSimpleActivity() {
 
     override fun onBackPressed() {
         onBackPressedHitTracking()
-        if(isEditing()) {
-            DialogUnify(this, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
-                setTitle(getString(R.string.label_title_on_dialog))
+        DialogUnify(this, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
+            setTitle(getString(R.string.label_title_on_dialog))
+            setPrimaryCTAText(getString(R.string.label_cta_primary_button_on_dialog))
+            setSecondaryCTAText(getString(R.string.label_cta_secondary_button_on_dialog))
+            if(isEditing()) {
                 setDescription(getString(R.string.label_description_on_dialog_edit))
-                setPrimaryCTAText(getString(R.string.label_cta_primary_button_on_dialog))
-                setSecondaryCTAText(getString(R.string.label_cta_secondary_button_on_dialog))
                 setSecondaryCTAClickListener {
                     super.onBackPressed()
                 }
                 setPrimaryCTAClickListener {
                     this.dismiss()
                 }
-            }.show()
-        } else {
-            DialogUnify(this, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
-                setTitle(getString(R.string.label_title_on_dialog))
+            } else {
                 setDescription(getString(R.string.label_description_on_dialog))
-                setPrimaryCTAText(getString(R.string.label_cta_primary_button_on_dialog))
-                setSecondaryCTAText(getString(R.string.label_cta_secondary_button_on_dialog))
                 setSecondaryCTAClickListener {
                     saveProductToDraft()
                     moveToManageProduct()
@@ -115,8 +110,8 @@ class AddEditProductPreviewActivity : BaseSimpleActivity() {
                     this.dismiss()
                     onCtaNoPressedHitTracking()
                 }
-            }.show()
-        }
+            }
+        }.show()
     }
 
     private fun moveToManageProduct() {
@@ -128,7 +123,7 @@ class AddEditProductPreviewActivity : BaseSimpleActivity() {
     private fun isEditing(): Boolean {
         val f = fragment
         if (f != null && f is AddEditProductPreviewFragment) {
-            return f.checkEdit()
+            return f.isEditing()
         }
         return false
     }

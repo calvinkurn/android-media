@@ -224,7 +224,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
         Toast.makeText(context, R.string.label_succes_save_draft, Toast.LENGTH_LONG).show()
     }
 
-    fun checkEdit(): Boolean {
+    fun isEditing(): Boolean {
         return viewModel.isEditing.value ?: false
     }
 
