@@ -344,7 +344,7 @@ class GiftBoxTapTapFragment : GiftBoxBaseFragment() {
 
     fun renderGiftBoxError(message: String, actionText: String) {
         if (context != null) {
-            val internetAvailable = DeviceConnectionInfo.isInternetAvailable(context!!, checkWifi = true, checkCellular = true)
+            val internetAvailable = isConnectedToInternet()
             if (!internetAvailable) {
                 showNoInterNetDialog(viewModel::getGiftBoxHome, context!!)
             } else {

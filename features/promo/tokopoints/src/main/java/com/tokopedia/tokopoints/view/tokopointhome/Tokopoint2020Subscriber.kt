@@ -2,7 +2,6 @@ package com.tokopedia.tokopoints.view.tokopointhome
 
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.tokopoints.notification.model.TokoPointDetailEntity
-import com.tokopedia.tokopoints.view.contract.TokoPointsHomeContract
 import rx.Subscriber
 
 class Tokopoint2020Subscriber(val view: TokoPointsHomeContract.View) : Subscriber<GraphqlResponse>() {

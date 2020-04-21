@@ -3,6 +3,7 @@ package com.tokopedia.hotel.common.di.component
 import android.content.Context
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.common.travel.utils.TravelDispatcherProvider
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.hotel.common.analytics.TrackingHotelUtil
 import com.tokopedia.hotel.common.di.module.HotelModule
@@ -29,6 +30,8 @@ interface HotelComponent {
     fun graphQlRepository(): GraphqlRepository
 
     fun trackingHotel(): TrackingHotelUtil
+
+    fun dispatcherProvider(): TravelDispatcherProvider
 
     fun inject(hotelBaseActivity: HotelBaseActivity)
 

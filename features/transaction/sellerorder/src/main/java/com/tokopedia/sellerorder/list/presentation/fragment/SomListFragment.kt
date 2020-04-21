@@ -24,6 +24,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.coachmark.CoachMark
 import com.tokopedia.coachmark.CoachMarkBuilder
 import com.tokopedia.coachmark.CoachMarkItem
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.design.quickfilter.QuickFilterItem
 import com.tokopedia.design.quickfilter.custom.CustomViewQuickFilterItem
 import com.tokopedia.design.text.SearchInputView
@@ -31,6 +32,7 @@ import com.tokopedia.kotlin.extensions.getCalculatedFormattedDate
 import com.tokopedia.kotlin.extensions.toFormattedString
 import com.tokopedia.kotlin.extensions.view.loadImageDrawable
 import com.tokopedia.sellerorder.R
+import com.tokopedia.sellerorder.SomComponentInstance
 import com.tokopedia.sellerorder.analytics.SomAnalytics
 import com.tokopedia.sellerorder.analytics.SomAnalytics.eventClickOrder
 import com.tokopedia.sellerorder.analytics.SomAnalytics.eventSubmitSearch
@@ -61,6 +63,7 @@ import com.tokopedia.sellerorder.list.data.model.SomListFilter
 import com.tokopedia.sellerorder.list.data.model.SomListOrder
 import com.tokopedia.sellerorder.list.data.model.SomListOrderParam
 import com.tokopedia.sellerorder.list.data.model.SomListTicker
+import com.tokopedia.sellerorder.list.di.DaggerSomListComponent
 import com.tokopedia.sellerorder.list.di.SomListComponent
 import com.tokopedia.sellerorder.list.presentation.activity.SomFilterActivity
 import com.tokopedia.sellerorder.list.presentation.activity.SomListActivity
@@ -150,7 +153,12 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     override fun getScreenName(): String = ""
 
     override fun initInjector() {
-        getComponent(SomListComponent::class.java).inject(this)
+        activity?.let {
+            DaggerSomListComponent.builder()
+                    .somComponent(SomComponentInstance.getSomComponent(it.application))
+                    .build()
+                    .inject(this)
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -543,14 +551,14 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         }
     }
 
-    private fun showCoachMarkProducts(){
-        if(!coachMark.hasShown(activity, TAG_COACHMARK)){
+    private fun showCoachMarkProducts() {
+        if (!coachMark.hasShown(activity, TAG_COACHMARK) && !GlobalConfig.isSellerApp()) {
             coachMark.show(activity, TAG_COACHMARK, arrayListOf(coachMarkSearch, coachMarkProduct, coachMarkFilter))
         }
     }
 
-    private fun showCoachMarkProductsEmpty(){
-        if(!coachMark.hasShown(activity, TAG_COACHMARK)){
+    private fun showCoachMarkProductsEmpty() {
+        if (!coachMark.hasShown(activity, TAG_COACHMARK) && !GlobalConfig.isSellerApp()) {
             coachMark.show(activity, TAG_COACHMARK, arrayListOf(coachMarkSearch, coachMarkFilter))
         }
     }
@@ -665,6 +673,10 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                     data.hasExtra(RESULT_CONFIRM_SHIPPING) -> {
                         val resultConfirmShippingMsg = data.getStringExtra(RESULT_CONFIRM_SHIPPING)
                         refreshThenShowToasterOk(resultConfirmShippingMsg)
+                    }
+                    data.hasExtra(RESULT_SET_DELIVERED) -> {
+                        val msg = data.getStringExtra(RESULT_SET_DELIVERED)
+                        refreshThenShowToasterOk(msg)
                     }
                     data.hasExtra(RESULT_SET_DELIVERED) -> {
                         val msg = data.getStringExtra(RESULT_SET_DELIVERED)

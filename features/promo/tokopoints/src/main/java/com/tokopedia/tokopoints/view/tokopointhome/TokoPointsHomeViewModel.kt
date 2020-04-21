@@ -5,7 +5,6 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.tokopoints.di.TokoPointScope
 import com.tokopedia.tokopoints.notification.TokoPointsNotificationManager
 import com.tokopedia.tokopoints.view.cataloglisting.CatalogPurchaseRedeemptionViewModel
-import com.tokopedia.tokopoints.view.contract.TokoPointsHomeContract
 import com.tokopedia.tokopoints.view.model.*
 import com.tokopedia.tokopoints.view.model.section.SectionContent
 import com.tokopedia.tokopoints.view.model.section.TokopointsSectionOuter

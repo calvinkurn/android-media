@@ -2,7 +2,6 @@ package com.tokopedia.sellerapp.deeplink;
 
 import android.app.Fragment;
 import android.app.FragmentTransaction;
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -99,8 +98,6 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
         if (getFragmentManager().getBackStackEntryCount() > 0) {
             getFragmentManager().popBackStack();
         } else {
-            Intent intent = new Intent(this, SellerRouter.getSellingActivityClass());
-            this.startActivity(intent);
             this.finish();
         }
     }
