@@ -20,4 +20,12 @@ data class ProductVariant(
     override fun type(typeFactory: ProductVariantAdapterFactory): Int {
         return typeFactory.type(this)
     }
+
+    fun isActive(): Boolean {
+        return status == ProductStatus.ACTIVE
+    }
+
+    fun isNotActive(): Boolean {
+        return status != ProductStatus.ACTIVE
+    }
 }
