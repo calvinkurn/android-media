@@ -382,15 +382,22 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
         }
     }
 
-    protected Response refreshToken(Chain chain, Response response, Request finalRequest)  {
-        AccessTokenRefresh accessTokenRefresh = new AccessTokenRefresh();
-        try {
-            accessTokenRefresh.refreshToken(context, userSession, networkRouter, finalRequest);
-            Request newest = recreateRequestWithNewAccessToken(chain);
-            return chain.proceed(newest);
-        } catch (IOException e) {
-            sendAnalyticsAnomalyResponse("refresh_token_failed", response, finalRequest);
-            e.printStackTrace();
+    protected Response refreshToken(Chain chain, Response response, Request finalRequest, int code)  {
+        if(!userSession.getAccessToken().isEmpty()) {
+            AccessTokenRefresh accessTokenRefresh = new AccessTokenRefresh();
+            try {
+                if(code == ERROR_UNAUTHORIZED_REQUEST) {
+                    sendAnalyticsAnomalyResponse(Integer.toString(ERROR_UNAUTHORIZED_REQUEST), response, finalRequest);
+                }
+                accessTokenRefresh.refreshToken(context, userSession, networkRouter, finalRequest);
+                Request newest = recreateRequestWithNewAccessToken(chain);
+                return chain.proceed(newest);
+            } catch (IOException e) {
+                sendAnalyticsAnomalyResponse("refresh_token_failed", response, finalRequest);
+                e.printStackTrace();
+                return response;
+            }
+        } else {
             return response;
         }
     }
@@ -408,12 +415,11 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
         int code = response.code();
         try {
             if (code == ERROR_UNAUTHORIZED_REQUEST) {
-                sendAnalyticsAnomalyResponse(Integer.toString(ERROR_UNAUTHORIZED_REQUEST), response, finalRequest);
-                return refreshToken(chain, response, finalRequest);
+                return refreshToken(chain, response, finalRequest, code);
             } else if (isNeedGcmUpdate(response)) {
                 return refreshTokenAndGcmUpdate(chain, response, finalRequest);
             } else if (isUnauthorized(finalRequest, response)) {
-                return refreshToken(chain, response, finalRequest);
+                return refreshToken(chain, response, finalRequest, code);
             } else if (isInvalidGrantWhenRefreshToken(finalRequest, response)) {
                 networkRouter.logInvalidGrant(response);
                 return response;
