@@ -38,12 +38,15 @@ object ProductManageVariantMapper {
         return GetVariantResult(productName, variants, variantSelections, variantSizeCharts)
     }
 
-    fun EditVariantResult.updateVariantPrice(variantId: String, price: Int): EditVariantResult {
+    fun EditVariantResult.updateVariant(
+        variantId: String,
+        updateBlock: (ProductVariant) -> ProductVariant
+    ): EditVariantResult {
         val variantList = variants.toMutableList()
         val variant = variants.find { it.id == variantId }
         val index = variants.indexOf(variant)
 
-        variantList[index] = variantList[index].copy(price = price)
+        variantList[index] = updateBlock.invoke(variantList[index])
         return EditVariantResult(productId, productName, variantList, selections, sizeCharts)
     }
 
