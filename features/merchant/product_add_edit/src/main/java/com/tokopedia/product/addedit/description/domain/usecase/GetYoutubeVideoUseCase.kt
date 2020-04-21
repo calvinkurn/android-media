@@ -5,8 +5,10 @@ import com.tokopedia.common.network.coroutines.usecase.RestRequestUseCase
 import com.tokopedia.common.network.data.model.RequestType
 import com.tokopedia.common.network.data.model.RestRequest
 import com.tokopedia.common.network.data.model.RestResponse
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.addedit.description.presentation.model.youtube.YoutubeVideoModel
 import java.lang.reflect.Type
+import java.util.concurrent.CancellationException
 import javax.inject.Inject
 
 class GetYoutubeVideoUseCase @Inject constructor(
@@ -27,16 +29,19 @@ class GetYoutubeVideoUseCase @Inject constructor(
     private var videoId: String? = ""
 
     override suspend fun executeOnBackground(): Map<Type, RestResponse> {
+        try {
+            val restRequest = RestRequest.Builder(YOUTUBE_LINK, YoutubeVideoModel::class.java)
+                    .setQueryParams(queryParams = generateRequestParam())
+                    .setRequestType(RequestType.GET)
+                    .build()
 
-        val restRequest = RestRequest.Builder(YOUTUBE_LINK, YoutubeVideoModel::class.java)
-                .setQueryParams(queryParams = generateRequestParam())
-                .setRequestType(RequestType.GET)
-                .build()
+            restRequestList.clear()
+            restRequestList.add(restRequest)
 
-        restRequestList.clear()
-        restRequestList.add(restRequest)
-
-        return repository.getResponses(restRequestList)
+            return repository.getResponses(restRequestList)
+        } catch (e: CancellationException) {
+            throw MessageErrorException("")
+        }
     }
 
     private fun generateRequestParam(): Map<String, Any> {

@@ -622,9 +622,14 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                     viewModel.productInputModel.detailInputModel.categoryId = categoryId.toString()
                     viewModel.productInputModel.detailInputModel.categoryName = categoryName
 
-                    val categoryList = ListUnifyUtil.getSelected(productCategoryRecListView)
+                    val categoryRecommendationResult = viewModel.productCategoryRecommendationLiveData.value
+                    val categoryList = if (categoryRecommendationResult != null && categoryRecommendationResult is Success) {
+                        productCategoryRecListView?.getSelected(categoryRecommendationResult.data)
+                    } else {
+                        null
+                    }
                     if (categoryList != null) {
-                        ListUnifyUtil.getShownRadioButton(categoryList)?.isChecked = false
+                        categoryList.getShownRadioButton()?.isChecked = false
                         if (viewModel.isEditing && !viewModel.isAdding) {
                             ProductEditMainTracking.clickSaveOtherCategory(shopId)
                         }
@@ -882,7 +887,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             // list item click listener
             productConditionListView?.run {
                 this.setOnItemClickListener { _, _, position, _ ->
-                    ListUnifyUtil.setSelected(this, position) {
+                    setSelected(productConditions, position) {
                         if (position == NEW_PRODUCT_INDEX) isProductConditionNew = true
                         else isProductConditionNew = false
                     }
@@ -1165,7 +1170,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         val items = ArrayList(result.data.take(3))
         productCategoryRecListView?.setData(items)
         productCategoryRecListView?.onLoadFinish {
-            selectFirstCategoryRecommendation()
+            selectFirstCategoryRecommendation(items)
             createCategoryRecommendationItemClickListener(items)
             productCategoryRecListView?.onLoadFinish {}
         }
@@ -1176,11 +1181,11 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         productCategoryRecListView?.hide()
     }
 
-    private fun selectFirstCategoryRecommendation() = productCategoryRecListView?.run {
-        productCategoryRecListView?.adapter?.count?.let {
-            if (it > 0) {
-                ListUnifyUtil.setSelected(this, 0) {
-                    val categoryId = ListUnifyUtil.getCategoryId(it).toString()
+    private fun selectFirstCategoryRecommendation(items: List<ListItemUnify>) = productCategoryRecListView?.run {
+        adapter?.count?.let { itemSize ->
+            if (itemSize > 0) {
+                setSelected(items, 0) {
+                    val categoryId = it.getCategoryId().toString()
                     viewModel.productInputModel.detailInputModel.categoryId = categoryId
                     true
                 }
@@ -1190,15 +1195,15 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
 
     private fun createCategoryRecommendationItemClickListener(items: List<ListItemUnify>) = productCategoryRecListView?.run {
         productCategoryRecListView?.setOnItemClickListener { _, _, position, _ ->
-            ListUnifyUtil.setSelected(this, position) {
-                onCategoryRecommendationSelected(ListUnifyUtil.getCategoryId(it).toString())
+            setSelected(items, position) {
+                onCategoryRecommendationSelected(it.getCategoryId().toString())
             }
         }
 
         items.forEachIndexed { index, item ->
             item.listRightRadiobtn?.setOnClickListener {
-                ListUnifyUtil.setSelected(this, index) {
-                    onCategoryRecommendationSelected(ListUnifyUtil.getCategoryId(it).toString())
+                setSelected(items, index) {
+                    onCategoryRecommendationSelected(it.getCategoryId().toString())
                 }
             }
         }

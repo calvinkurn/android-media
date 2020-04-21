@@ -365,19 +365,23 @@ class AddEditProductDescriptionFragment:
 
     private fun displayErrorOnSelectedVideo(index: Int) {
         adapter.data.getOrNull(index)?.apply {
-            inputTitle = ""
-            inputDescription = ""
-            inputImage = ""
-            errorMessage = if (inputUrl.isBlank()) "" else getString(R.string.error_video_not_valid)
+            if (descriptionViewModel.fetchedUrl[index] == inputUrl) {
+                inputTitle = ""
+                inputDescription = ""
+                inputImage = ""
+                errorMessage = if (inputUrl.isBlank()) "" else getString(R.string.error_video_not_valid)
+            }
         }
     }
 
     private fun setDataOnSelectedVideo(youtubeVideoModel: YoutubeVideoModel, index: Int) {
         adapter.data.getOrNull(index)?.apply {
-            inputTitle = youtubeVideoModel.title.orEmpty()
-            inputDescription = youtubeVideoModel.description.orEmpty()
-            inputImage = youtubeVideoModel.thumbnailUrl.orEmpty()
-            errorMessage = descriptionViewModel.validateDuplicateVideo(adapter.data, inputUrl)
+            if (descriptionViewModel.fetchedUrl[index] == inputUrl) {
+                inputTitle = youtubeVideoModel.title.orEmpty()
+                inputDescription = youtubeVideoModel.description.orEmpty()
+                inputImage = youtubeVideoModel.thumbnailUrl.orEmpty()
+                errorMessage = descriptionViewModel.validateDuplicateVideo(adapter.data, inputUrl)
+            }
         }
     }
 
