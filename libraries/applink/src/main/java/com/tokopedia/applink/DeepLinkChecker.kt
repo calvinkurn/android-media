@@ -76,8 +76,8 @@ object DeepLinkChecker {
         path = path.replaceLastSlash()
         val uriWithoutParam = "$host$path"
         val excludedHostList = excludedHost.split(",".toRegex())
-                .filter { it.isNotEmpty() }
-                .map { it.replaceFirstWww().replaceFirstM().replaceLastSlash() }
+            .filter { it.isNotEmpty() }
+            .map { it.replaceFirstWww().replaceFirstM().replaceLastSlash() }
         for (excludedString in excludedHostList) {
             if (uriWithoutParam.startsWith(excludedString)) {
                 return true
@@ -95,8 +95,8 @@ object DeepLinkChecker {
         var path = uriData.path ?: return false
         path = path.replaceLastSlash()
         val excludedUrlList = excludedUrl.split(",".toRegex())
-                .filter { it.isNotEmpty() }
-                .map { it.replaceLastSlash() }
+            .filter { it.isNotEmpty() }
+            .map { it.replaceLastSlash() }
         for (excludedString in excludedUrlList) {
             if (path.endsWith(excludedString)) {
                 return true
@@ -151,7 +151,7 @@ object DeepLinkChecker {
     }
 
     @JvmStatic
-    fun getRemoveAmpLink(context:Context, uriData: Uri): Uri? {
+    fun getRemoveAmpLink(context: Context, uriData: Uri): Uri? {
         val path = uriData.pathSegments
         return if (path != null && path.size > 1 && path[0] == AMP &&
             !isExcludedAmpPath(context, path[1])) {
@@ -159,7 +159,7 @@ object DeepLinkChecker {
         } else uriData
     }
 
-    private fun isExcludedAmpPath(context: Context, path:String): Boolean {
+    private fun isExcludedAmpPath(context: Context, path: String): Boolean {
         val firebaseRemoteConfig = FirebaseRemoteConfigImpl(context)
         val excludedPath = firebaseRemoteConfig.getString(EXCLUDED_AMP, defaultExcludedAmpValue())
         val excludedPathList = excludedPath.split(",".toRegex())
@@ -177,7 +177,7 @@ object DeepLinkChecker {
 
     private fun isHome(uriData: Uri): Boolean {
         return uriData.pathSegments.isEmpty() &&
-                (uriData.host?.contains(WEB_HOST) ?: false || uriData.host?.contains(MOBILE_HOST) ?: false)
+            (uriData.host?.contains(WEB_HOST) ?: false || uriData.host?.contains(MOBILE_HOST) ?: false)
     }
 
     @JvmStatic
