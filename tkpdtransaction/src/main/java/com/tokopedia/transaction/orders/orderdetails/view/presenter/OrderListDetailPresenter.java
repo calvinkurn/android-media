@@ -126,12 +126,22 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
         GraphqlRequest graphqlRequest;
         Map<String, Object> variables = new HashMap<>();
         if (orderCategory.equalsIgnoreCase(OrderCategory.MARKETPLACE)) {
-            variables.put("orderCategory", orderCategory);
-            variables.put(PAYMENT_ID, paymentId);
-            variables.put(CART_STRING, cartString);
-            graphqlRequest = new
-                    GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(),
-                    R.raw.orderdetail_marketplace), DetailsData.class, variables, false);
+            if (!orderId.isEmpty()) {
+                variables.put("orderCategory", orderCategory);
+                variables.put(ORDER_ID, orderId);
+                graphqlRequest = new
+                        GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(),
+                        R.raw.orderdetail_marketplace), DetailsData.class, variables, false);
+
+            } else {
+                variables.put("orderCategory", orderCategory);
+                variables.put(PAYMENT_ID, paymentId);
+                variables.put(CART_STRING, cartString);
+                graphqlRequest = new
+                        GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(),
+                        R.raw.orderdetail_marketplace_waiting_invoice), DetailsData.class, variables, false);
+            }
+
         } else {
             variables.put(ORDER_CATEGORY, orderCategory);
             variables.put(ORDER_ID, orderId);
