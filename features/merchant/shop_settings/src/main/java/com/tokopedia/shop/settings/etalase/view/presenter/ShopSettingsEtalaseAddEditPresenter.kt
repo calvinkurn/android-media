@@ -21,6 +21,7 @@ class ShopSettingsEtalaseAddEditPresenter @Inject constructor(private val addSho
 
     var etalaseCount = 0
     var listEtalaseModel: ArrayList<ShopEtalaseModel>? = null
+
     override fun detachView() {
         super.detachView()
         addShopEtalaseUseCase.unsubscribe()

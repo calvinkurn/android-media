@@ -46,7 +46,7 @@ dependencies {
     implementation rootProject.ext.debugToolsDependencies.chuck
 
     implementation rootProject.ext.firebase.core
-    implementation rootProject.ext.firebase.performance
+
 
     implementation rootProject.ext.miscDependencies.apacheLang
     implementation rootProject.ext.miscDependencies.chips

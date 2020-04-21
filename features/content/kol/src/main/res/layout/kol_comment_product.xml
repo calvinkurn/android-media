@@ -13,13 +13,12 @@
         android:layout_height="1dp"
         android:background="@color/grey_300"/>
 
-    <com.tokopedia.feedplus.view.customview.RoundedCornerImageView
+    <ImageView
         android:id="@+id/avatar"
         android:layout_width="@dimen/avatar_size"
         android:layout_height="@dimen/avatar_size"
         android:layout_margin="@dimen/dp_5"
-        android:layout_marginLeft="@dimen/dp_5"
-        tools:src="@drawable/ic_top_ads"/>
+        android:layout_marginLeft="@dimen/dp_5"/>
 
     <RelativeLayout
         android:layout_width="match_parent"

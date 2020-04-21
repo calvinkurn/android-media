@@ -1,8 +1,10 @@
 package com.tokopedia.iris.data.db.mapper
 
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.iris.data.db.table.Tracking
 import com.tokopedia.iris.util.KEY_CONTAINER
 import com.tokopedia.iris.util.KEY_EVENT
+import com.tokopedia.iris.util.KEY_EVENT_SELLERAPP
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
@@ -68,6 +70,10 @@ class TrackingMapper {
 
         fun reformatEvent(event: String, sessionId: String) : JSONObject {
             return try {
+                var keyEvent = KEY_EVENT
+                if (GlobalConfig.isSellerApp()) {
+                    keyEvent = KEY_EVENT_SELLERAPP
+                }
                 val item = JSONObject(event)
                 if (item.has("event") && item.get("event") != null) {
                     item.put("event_ga", item.get("event"))
@@ -75,7 +81,7 @@ class TrackingMapper {
                 }
                 item.put("iris_session_id", sessionId)
                 item.put("container", KEY_CONTAINER)
-                item.put("event", KEY_EVENT)
+                item.put("event", keyEvent)
                 item.put("hits_time", Calendar.getInstance().timeInMillis)
                 item
             } catch (e: JSONException) {
