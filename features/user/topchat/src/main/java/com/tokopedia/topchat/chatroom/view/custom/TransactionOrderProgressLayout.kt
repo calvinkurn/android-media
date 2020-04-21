@@ -14,6 +14,7 @@ import android.widget.LinearLayout
 import androidx.annotation.RequiresApi
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.common.network.util.CommonUtil
 import com.tokopedia.kotlin.extensions.view.*
@@ -228,7 +229,7 @@ class TransactionOrderProgressLayout : LinearLayout {
     }
 
     private fun renderProductName() {
-        productName?.text = chatOrder.name
+        productName?.text = MethodChecker.fromHtml(chatOrder.name)
     }
 
     private fun renderEstimation() {
