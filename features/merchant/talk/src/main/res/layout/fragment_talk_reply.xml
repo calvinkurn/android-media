@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <com.tokopedia.talk.feature.reply.presentation.widget.TalkReplyHeader
@@ -16,18 +17,33 @@
         android:layout_height="wrap_content"
         android:paddingTop="@dimen/layout_lvl2"
         android:paddingBottom="@dimen/layout_lvl2"
-        android:background="@android:color/white"
         android:paddingStart="@dimen/layout_lvl2"
         android:paddingEnd="@dimen/layout_lvl2"
         app:typographyType="heading_4"
         app:typographyWeight="bold"
         app:layout_constraintTop_toBottomOf="@id/talkReplyHeader" />
 
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/talkReplyEmptyState"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/layout_lvl7"
+        android:text="@string/reply_empty_state"
+        android:maxLines="2"
+        android:layout_marginStart="@dimen/dp_36"
+        android:layout_marginEnd="@dimen/dp_36"
+        android:gravity="center"
+        android:visibility="gone"
+        app:typographyType="body_1"
+        app:typographyWeight="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/talkReplyHeader"/>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/talkReplyRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@android:color/white"
         app:layout_constraintTop_toBottomOf="@id/talkReplyTotalAnswers"/>
 
     <include

@@ -51,7 +51,7 @@ class TalkReadingViewModel @Inject constructor(
         }
     }
 
-    fun getDiscussionData(productId: String, shopId: String, page: Int, limit: Int, sortBy: String = "", category: String = "") {
+    fun getDiscussionData(productId: String, shopId: String, page: Int, limit: Int, sortBy: String, category: String) {
         launchCatchError(block = {
             val response = withContext(dispatcher.io) {
                 getDiscussionDataUseCase.setParams(productId, shopId, page, limit, sortBy, category)
@@ -69,12 +69,15 @@ class TalkReadingViewModel @Inject constructor(
 
     fun updateSelectedCategory(selectedCategory: String, isSelected: Boolean) {
         val filterCategories = _filterCategories.value?.toMutableList()
-        val modifiedCategory = filterCategories?.first { selectedCategory.contains(it.displayName) }?.copy(isSelected = isSelected)
-        val index = filterCategories?.indexOfFirst { selectedCategory.contains(it.displayName) }
-        if (index != null && modifiedCategory != null) {
+        val categoryToModify = filterCategories?.filter { selectedCategory.contains(it.displayName) } ?: emptyList()
+        if(categoryToModify.isNotEmpty()) {
+            val modifiedCategory = categoryToModify.first().copy(isSelected = isSelected)
+            val index = filterCategories?.indexOfFirst { selectedCategory.contains(it.displayName) }
+            index?.let {
                 filterCategories[index] = modifiedCategory
+                _filterCategories.value = filterCategories
+            }
         }
-        _filterCategories.value = filterCategories
     }
 
     fun unselectAllCategories() {

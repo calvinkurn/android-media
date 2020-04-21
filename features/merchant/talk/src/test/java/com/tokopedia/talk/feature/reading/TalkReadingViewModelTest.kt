@@ -108,6 +108,18 @@ class TalkReadingViewModelTest : TalkReadingViewModelTestFixture() {
     }
 
     @Test
+    fun `when updateSelectedCategory for missing category should do nothing`() {
+        val categories = listOf(
+                TalkReadingCategory("stok", "Stok", false),
+                TalkReadingCategory("lainnya", "Lainnya", true) )
+
+        viewModel.updateCategories(categories)
+        viewModel.updateSelectedCategory("some category", false)
+
+        verifyCategoriesEqual(categories)
+    }
+
+    @Test
     fun `when unselectAllCategories should update all elements in _filterCategories to unselected`() {
         val categories = listOf(
                 TalkReadingCategory("stok", "Stok", false),
@@ -138,6 +150,18 @@ class TalkReadingViewModelTest : TalkReadingViewModelTestFixture() {
         val expectedSortOptions = listOf(SortOption.SortByInformativeness(isSelected = false), SortOption.SortByLike(), SortOption.SortByTime(isSelected = true))
         verifySortOptionsEquals(expectedSortOptions)
     }
+
+    @Test
+    fun `when data is null should do nothing`() {
+        viewModel.updateSelectedSort(SortOption.SortByTime())
+        viewModel.unselectAllCategories()
+    }
+
+    @Test
+    fun `when data is null updateSelectedCategory should do nothing`() {
+        viewModel.updateSelectedCategory("some category", false)
+    }
+
 
     private fun verifyDiscussionAggregateEquals(expectedResponse: Success<DiscussionAggregateResponse>) {
         val actualResponse = viewModel.discussionAggregate.value as Success<DiscussionAggregateResponse>

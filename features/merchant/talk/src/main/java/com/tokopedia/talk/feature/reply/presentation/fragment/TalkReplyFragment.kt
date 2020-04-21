@@ -17,6 +17,7 @@ import com.tokopedia.talk.common.TalkConstants.QUESTION_ID
 import com.tokopedia.talk.common.TalkConstants.SHOP_ID
 import com.tokopedia.talk.common.di.TalkComponent
 import com.tokopedia.talk.feature.reply.data.mapper.TalkReplyMapper
+import com.tokopedia.talk.feature.reply.data.model.DiscussionDataByQuestionIDResponseWrapper
 import com.tokopedia.talk.feature.reply.di.DaggerTalkReplyComponent
 import com.tokopedia.talk.feature.reply.di.TalkReplyComponent
 import com.tokopedia.talk.feature.reply.presentation.adapter.TalkReplyAdapter
@@ -238,8 +239,12 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
                     hidePageError()
                     hidePageLoading()
                     bindHeader(TalkReplyMapper.mapDiscussionDataResponseToTalkReplyHeaderModel(it.data))
-                    bindTotalAnswers(it.data.discussionDataByQuestionID.question.totalAnswer)
-                    adapter?.displayAnswers(TalkReplyMapper.mapDiscussionDataResponseToTalkReplyModels(it.data))
+                    if(it.data.discussionDataByQuestionID.question.totalAnswer > 0) {
+                        showAnswers(it.data)
+
+                    } else {
+                        onAnswersEmpty()
+                    }
                 }
                 else -> {
                     showPageError()
@@ -296,5 +301,19 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
 
     private fun initRecyclerView() {
         talkReplyRecyclerView.adapter = adapter
+    }
+
+    private fun onAnswersEmpty() {
+        talkReplyTotalAnswers.visibility = View.GONE
+        talkReplyRecyclerView.visibility = View.GONE
+        talkReplyEmptyState.visibility = View.VISIBLE
+    }
+
+    private fun showAnswers(discussionDataByQuestionIDResponseWrapper: DiscussionDataByQuestionIDResponseWrapper) {
+        bindTotalAnswers(discussionDataByQuestionIDResponseWrapper.discussionDataByQuestionID.question.totalAnswer)
+        adapter?.displayAnswers(TalkReplyMapper.mapDiscussionDataResponseToTalkReplyModels(discussionDataByQuestionIDResponseWrapper))
+        talkReplyTotalAnswers.visibility = View.VISIBLE
+        talkReplyRecyclerView.visibility = View.VISIBLE
+        talkReplyEmptyState.visibility = View.GONE
     }
 }
