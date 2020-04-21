@@ -377,6 +377,7 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
                             showErrorResponse(getString(R.string.error_product_less_than_one))
                         } else if (totalProduct > 0) {
                             if (routingPage == PageType.ADD_SHOWCASE_PAGE || routingPage == PageType.ADD_SHOWCASE_FROM_SHOWCASE_LIST) {
+                                routingPage = ""
                                 goToAddShowcase()
                             }
                         }
