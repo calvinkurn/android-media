@@ -1,4 +1,4 @@
-package com.tokopedia.settingnotif.usersetting.domain.pojo
+package com.tokopedia.settingnotif.usersetting.data.pojo
 
 
 import com.google.gson.annotations.SerializedName
