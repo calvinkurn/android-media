@@ -128,7 +128,10 @@ class PlayErrorFragment: BaseDaggerFragment(), CoroutineScope {
     private fun showGlobalError(throwable: Throwable) {
         throwable.message?.let {
             when(GlobalErrorCodeWrapper.wrap(it)) {
-                is GlobalErrorCodeWrapper.NotFound -> {
+                GlobalErrorCodeWrapper.Unknown -> {
+                    return
+                }
+                GlobalErrorCodeWrapper.NotFound -> {
                     globalError.setType(GlobalError.PAGE_NOT_FOUND)
                     globalError.setActionClickListener {
                         activity?.let { activity ->
@@ -136,14 +139,13 @@ class PlayErrorFragment: BaseDaggerFragment(), CoroutineScope {
                         }
                     }
                 }
-                is GlobalErrorCodeWrapper.PageFull -> {
+                GlobalErrorCodeWrapper.PageFull -> {
                     globalError.setType(GlobalError.PAGE_FULL)
                     globalError.setActionClickListener {
                         playViewModel.getChannelInfo(channelId)
                     }
                 }
-                is GlobalErrorCodeWrapper.ServerError,
-                is GlobalErrorCodeWrapper.Unknown -> {
+                GlobalErrorCodeWrapper.ServerError -> {
                     globalError.setType(GlobalError.SERVER_ERROR)
                     globalError.setActionClickListener {
                         playViewModel.getChannelInfo(channelId)

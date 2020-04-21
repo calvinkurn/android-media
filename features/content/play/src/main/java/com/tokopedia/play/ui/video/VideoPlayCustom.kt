@@ -41,7 +41,6 @@ class VideoPlayCustom(context: Context, attrs: AttributeSet?, defStyleAttr: Int)
 
         // Content frame.
         contentFrame = findViewById(com.google.android.exoplayer2.ui.R.id.exo_content_frame)
-        contentFrame?.let { setResizeModeRaw(it, AspectRatioFrameLayout.RESIZE_MODE_ZOOM) }
 
         surfaceView = TextureView(context)
         surfaceView?.id = R.id.fl_texture_view

@@ -42,6 +42,7 @@ import com.tokopedia.play.view.contract.PlayNewChannelInteractor
 import com.tokopedia.play.view.layout.parent.PlayParentLayoutManager
 import com.tokopedia.play.view.layout.parent.PlayParentLayoutManagerImpl
 import com.tokopedia.play.view.type.ScreenOrientation
+import com.tokopedia.play.view.type.VideoOrientation
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play_common.state.PlayVideoState
 import com.tokopedia.unifycomponents.Toaster
@@ -107,6 +108,8 @@ class PlayFragment : BaseDaggerFragment(), SensorOrientationManager.OrientationL
     private val keyboardWatcher = KeyboardWatcher()
 
     private lateinit var orientationManager: SensorOrientationManager
+
+    private var isChangingOrientation = false
 
     private var systemUiVisibility: Int
         get() = requireActivity().window.decorView.systemUiVisibility
@@ -197,7 +200,7 @@ class PlayFragment : BaseDaggerFragment(), SensorOrientationManager.OrientationL
 
     override fun onResume() {
         super.onResume()
-        playViewModel.resumeWithChannelId(channelId)
+        if (!isChangingOrientation) playViewModel.resumeWithChannelId(channelId)
         requireView().post {
             registerKeyboardListener(requireView())
         }
@@ -224,11 +227,14 @@ class PlayFragment : BaseDaggerFragment(), SensorOrientationManager.OrientationL
         return super.onOptionsItemSelected(item)
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        if (::orientationManager.isInitialized) orientationManager.disable()
+    }
+
     override fun onDestroy() {
         super.onDestroy()
-
-        layoutManager.onDestroy()
-        if (::orientationManager.isInitialized) orientationManager.disable()
+        if (::layoutManager.isInitialized) layoutManager.onDestroy()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -237,7 +243,9 @@ class PlayFragment : BaseDaggerFragment(), SensorOrientationManager.OrientationL
     }
 
     override fun onOrientationChanged(screenOrientation: ScreenOrientation) {
-        if (requestedOrientation != screenOrientation.requestedOrientation)
+        val event = playViewModel.observableEvent.value
+        val isFreezeOrBanned = (event?.isFreeze ?: false) || (event?.isBanned ?: false)
+        if (requestedOrientation != screenOrientation.requestedOrientation && !isFreezeOrBanned)
             requestedOrientation = screenOrientation.requestedOrientation
         sendTrackerWhenRotateScreen(screenOrientation)
     }
@@ -257,11 +265,11 @@ class PlayFragment : BaseDaggerFragment(), SensorOrientationManager.OrientationL
         })
     }
 
-    fun setVideoTopBounds(topBounds: Int) {
+    fun setVideoTopBounds(videoOrientation: VideoOrientation, topBounds: Int) {
         if (this.topBounds == null && topBounds > 0) {
             this.topBounds = topBounds
         }
-        this.topBounds?.let { layoutManager.onVideoTopBoundsChanged(requireView(), it) }
+        this.topBounds?.let { layoutManager.onVideoTopBoundsChanged(requireView(), videoOrientation, it) }
     }
 
     /**
@@ -281,7 +289,9 @@ class PlayFragment : BaseDaggerFragment(), SensorOrientationManager.OrientationL
         orientationManager = SensorOrientationManager(requireContext(), this)
         orientationManager.enable()
 
-        playViewModel.setScreenOrientation(ScreenOrientation.getByInt(resources.configuration.orientation))
+        val screenOrientation = ScreenOrientation.getByInt(resources.configuration.orientation)
+        isChangingOrientation = (playViewModel.screenOrientation != ScreenOrientation.Unknown) && (playViewModel.screenOrientation != screenOrientation)
+        playViewModel.setScreenOrientation(screenOrientation)
     }
 
     private fun initView(view: View) {
@@ -303,7 +313,7 @@ class PlayFragment : BaseDaggerFragment(), SensorOrientationManager.OrientationL
                 flGlobalError = flGlobalError
         )
 
-        topBounds?.let { setVideoTopBounds(it) }
+        topBounds?.let { setVideoTopBounds(playViewModel.videoOrientation, it) }
     }
 
     private fun setupView(view: View) {
@@ -360,10 +370,14 @@ class PlayFragment : BaseDaggerFragment(), SensorOrientationManager.OrientationL
 
     private fun observeEventUserInfo() {
         playViewModel.observableEvent.observe(viewLifecycleOwner, Observer {
-            if (it.isFreeze)
-                try { Toaster.snackBar.dismiss() } catch (e: Exception) {}
-            else if (it.isBanned)
-                showEventDialog(it.bannedTitle, it.bannedMessage, it.bannedButtonTitle)
+            if (playViewModel.screenOrientation.isLandscape && (it.isFreeze || it.isBanned)) {
+                requestedOrientation = ScreenOrientation.Portrait.requestedOrientation
+            } else {
+                if (it.isFreeze)
+                    try { Toaster.snackBar.dismiss() } catch (e: Exception) {}
+                else if (it.isBanned)
+                    showEventDialog(it.bannedTitle, it.bannedMessage, it.bannedButtonTitle)
+            }
         })
     }
 

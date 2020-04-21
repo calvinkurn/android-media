@@ -92,13 +92,19 @@ class PlayInteractionPortraitManager(
     override fun getVideoTopBounds(container: View, videoOrientation: VideoOrientation): Int {
         return if (videoOrientation.isLandscape) {
             val toolbarViewTotalHeight = run {
-                val height = toolbarView.height
+                val height = if (toolbarView.height <= 0) {
+                    toolbarView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
+                    toolbarView.measuredHeight
+                } else toolbarView.height
                 val marginLp = toolbarView.layoutParams as ViewGroup.MarginLayoutParams
                 height + marginLp.bottomMargin + marginLp.topMargin
             }
 
             val statsInfoTotalHeight = run {
-                val height = statsInfoView.height
+                val height = if (statsInfoView.height <= 0) {
+                    statsInfoView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
+                    statsInfoView.measuredHeight
+                } else statsInfoView.height
                 val marginLp = statsInfoView.layoutParams as ViewGroup.MarginLayoutParams
                 height + marginLp.bottomMargin + marginLp.topMargin
             }

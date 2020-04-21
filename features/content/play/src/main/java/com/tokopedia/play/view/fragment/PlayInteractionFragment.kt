@@ -308,7 +308,7 @@ class PlayInteractionFragment :
         playViewModel.observableVideoStream.observe(viewLifecycleOwner, Observer {
             layoutManager.onVideoOrientationChanged(container, it.orientation)
             triggerImmersive(false)
-            playFragment.setVideoTopBounds(layoutManager.getVideoTopBounds(container, it.orientation))
+            playFragment.setVideoTopBounds(it.orientation, layoutManager.getVideoTopBounds(container, it.orientation))
 
             setVideoStream(it)
         })
