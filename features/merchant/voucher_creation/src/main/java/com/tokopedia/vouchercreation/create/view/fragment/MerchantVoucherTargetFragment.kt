@@ -4,7 +4,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.ViewModelProvider
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.create.view.bottomsheet.CreateVoucherBottomSheetType
 import com.tokopedia.vouchercreation.create.view.customview.bottomsheet.CreatePromoCodeBottomSheetView
@@ -13,6 +16,9 @@ import com.tokopedia.vouchercreation.create.view.typefactory.VoucherTargetAdapte
 import com.tokopedia.vouchercreation.create.view.typefactory.VoucherTargetTypeFactory
 import com.tokopedia.vouchercreation.create.view.uimodel.FillVoucherNameUiModel
 import com.tokopedia.vouchercreation.create.view.uimodel.VoucherTargetUiModel
+import com.tokopedia.vouchercreation.create.view.viewmodel.MerchantVoucherTargetViewModel
+import com.tokopedia.vouchercreation.di.component.DaggerVoucherCreationComponent
+import javax.inject.Inject
 
 class MerchantVoucherTargetFragment(onNextInvoker: () -> Unit = {})
     : BaseCreateMerchantVoucherFragment<VoucherTargetTypeFactory, VoucherTargetAdapterTypeFactory>(onNextInvoker) {
@@ -20,6 +26,17 @@ class MerchantVoucherTargetFragment(onNextInvoker: () -> Unit = {})
     companion object {
         @JvmStatic
         fun createInstance(onNext: () -> Unit) = MerchantVoucherTargetFragment(onNext)
+    }
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelFactory
+
+    private val viewModelProvider by lazy {
+        ViewModelProvider(this, viewModelFactory)
+    }
+
+    private val viewModel by lazy {
+        viewModelProvider.get(MerchantVoucherTargetViewModel::class.java)
     }
 
     private val voucherTargetWidget by lazy {
@@ -37,7 +54,10 @@ class MerchantVoucherTargetFragment(onNextInvoker: () -> Unit = {})
     override fun getScreenName(): String = ""
 
     override fun initInjector() {
-
+        DaggerVoucherCreationComponent.builder()
+                .baseAppComponent((activity?.applicationContext as? BaseMainApplication)?.baseAppComponent)
+                .build()
+                .inject(this)
     }
 
     override fun getAdapterTypeFactory(): VoucherTargetAdapterTypeFactory = VoucherTargetAdapterTypeFactory()
@@ -76,7 +96,4 @@ class MerchantVoucherTargetFragment(onNextInvoker: () -> Unit = {})
 
     }
 
-    private fun onReturnVoucherTargetToInitial() {
-        setupView()
-    }
 }
