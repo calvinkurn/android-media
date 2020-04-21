@@ -668,7 +668,7 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
         RouteManager.route(context, routingAppLink)*/
 
         /*new*/
-        val intent = RouteManager.getIntent(activity, ApplinkConstInternalLogistic.ORDER_TRACKING, detailResponse.orderId.toString()).apply {
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalLogistic.ORDER_TRACKING.replace("{order_id}", detailResponse.orderId.toString())).apply {
             putExtra(ApplinkConst.Query.ORDER_TRACKING_URL_LIVE_TRACKING, buttonResp.url)
             putExtra(ApplinkConst.Query.ORDER_TRACKING_CALLER, PARAM_SELLER)
         }
