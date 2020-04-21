@@ -1,19 +1,15 @@
 package com.tokopedia.product.manage.feature.quickedit.variant.adapter.viewholder
 
-import android.content.Context
 import android.text.Editable
-import android.text.InputFilter
+import android.text.InputFilter.LengthFilter
 import android.text.TextWatcher
 import android.view.View
-import android.view.inputmethod.EditorInfo
-import android.view.inputmethod.InputMethodManager
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.feature.quickedit.variant.adapter.model.ProductVariant
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
-import com.tokopedia.unifycomponents.QuantityEditorUnify
 import kotlinx.android.synthetic.main.item_product_variant_stock.view.*
 
 class ProductVariantStockViewHolder(
@@ -41,13 +37,9 @@ class ProductVariantStockViewHolder(
     }
 
     private fun setupStockQuantityEditor(variant: ProductVariant) {
-        itemView.quantityEditorStock.apply {
-            setStockMinMaxValue()
-            setStockEditorValue(variant.stock)
-            setStockEditorOnActionListener()
-            setStockEditorFocusChangeListener()
-            addStockEditorTextChangedListener(variant)
-        }
+        setStockMinMaxValue()
+        setStockEditorValue(variant.stock)
+        addStockEditorTextChangedListener(variant)
     }
 
     private fun setupStatusSwitch(variant: ProductVariant) {
@@ -63,68 +55,39 @@ class ProductVariantStockViewHolder(
         }
     }
 
-    private fun QuantityEditorUnify.setStockEditorFocusChangeListener() {
-        editText.setOnFocusChangeListener { v, hasFocus ->
-            if (hasFocus) {
-                showSoftKeyboard()
-            } else {
-                hideSoftKeyboard()
-            }
+    private fun setStockMinMaxValue() {
+        itemView.quantityEditorStock.apply {
+            val maxLength = LengthFilter(MAXIMUM_LENGTH)
+            editText.filters = arrayOf(maxLength)
+            minValue = MINIMUM_STOCK
+            maxValue = MAXIMUM_STOCK
         }
     }
 
-    private fun QuantityEditorUnify.setStockMinMaxValue() {
-        minValue = MINIMUM_STOCK
-        maxValue = MAXIMUM_STOCK
-        editText.filters = arrayOf(InputFilter.LengthFilter(MAXIMUM_LENGTH))
+    private fun setStockEditorValue(stock: Int) {
+        itemView.quantityEditorStock.setValue(stock)
     }
 
-    private fun QuantityEditorUnify.setStockEditorValue(stock: Int) = setValue(stock)
-
-    private fun QuantityEditorUnify.setStockEditorOnActionListener() {
-        editText.setOnEditorActionListener { _, actionId, _ ->
-            if (actionId == EditorInfo.IME_ACTION_DONE) {
-                onClickDoneStockEditor()
-            }
-            true
-        }
-    }
-
-    private fun QuantityEditorUnify.onClickDoneStockEditor() {
-        if (editText.text.isEmpty()) {
-            setValue(MINIMUM_STOCK)
-        }
-        clearFocus()
-        hideSoftKeyboard()
-    }
-
-    private fun QuantityEditorUnify.addStockEditorTextChangedListener(variant: ProductVariant) {
-        editText.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(editor: Editable?) {
-                val input = editor.toString()
-
-                if (input.isNotEmpty()) {
-                    val stock = input.replace(".", "").toIntOrZero()
+    private fun addStockEditorTextChangedListener(variant: ProductVariant) {
+        itemView.quantityEditorStock.apply {
+            editText.addTextChangedListener(object : TextWatcher {
+                override fun afterTextChanged(editor: Editable?) {
+                    val input = editor.toString()
+                    val stock = if(input.isNotEmpty()) {
+                        input.replace(".", "").toIntOrZero()
+                    } else {
+                        MINIMUM_STOCK
+                    }
                     listener.onStockChanged(variant.id, stock)
                 }
-            }
 
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-            }
+                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                }
 
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-            }
-        })
-    }
-
-    private fun QuantityEditorUnify.showSoftKeyboard() {
-        val imm = itemView.context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        imm.hideSoftInputFromWindow(editText.windowToken, 0)
-    }
-
-    private fun QuantityEditorUnify.hideSoftKeyboard() {
-        val imm = itemView.context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        imm.hideSoftInputFromWindow(editText.windowToken, 0)
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                }
+            })
+        }
     }
 
     interface ProductVariantStockListener {
