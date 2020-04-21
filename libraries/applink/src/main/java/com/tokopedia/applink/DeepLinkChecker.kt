@@ -153,12 +153,9 @@ object DeepLinkChecker {
     @JvmStatic
     fun getRemoveAmpLink(context:Context, uriData: Uri): Uri? {
         val path = uriData.pathSegments
-        return if (path != null && path.size > 1 && path[0] == AMP) {
-            if (isExcludedAmpPath(context, path[1])) {
-                uriData
-            } else {
-                Uri.parse(uriData.toString().replaceFirst(AMP + "/".toRegex(), ""))
-            }
+        return if (path != null && path.size > 1 && path[0] == AMP &&
+            !isExcludedAmpPath(context, path[1])) {
+            Uri.parse(uriData.toString().replaceFirst(AMP + "/".toRegex(), ""))
         } else uriData
     }
 
