@@ -8,7 +8,7 @@ import com.tokopedia.settingnotif.usersetting.view.adapter.factory.VisitableSett
 import com.tokopedia.settingnotif.usersetting.view.dataview.ChangeItemDataView.changePhoneNumber
 import com.tokopedia.settingnotif.usersetting.view.dataview.NotificationActivationDataView.activationPhoneNumber
 import com.tokopedia.settingnotif.usersetting.view.fragment.base.SettingFieldFragment
-import com.tokopedia.settingnotif.usersetting.view.dataview.UserSettingViewModel
+import com.tokopedia.settingnotif.usersetting.view.dataview.UserSettingDataView
 
 class SmsFieldFragment: SettingFieldFragment() {
 
@@ -21,7 +21,7 @@ class SmsFieldFragment: SettingFieldFragment() {
         isRequestData = false
     }
 
-    override fun onSuccessGetUserSetting(data: UserSettingViewModel) {
+    override fun onSuccessGetUserSetting(data: UserSettingDataView) {
         val pinnedData = arrayListOf<VisitableSettings>()
         if (userSession.phoneNumber.isEmpty()) {
             /*
