@@ -69,6 +69,7 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImagePick
     public static final String EXTRA_IMAGE_DESCRIPTION_LIST = "IMG_DESC";
     public static final String EXTRA_BELOW_RESOLUTION_ERROR_MESSAGE = "EXTRA_BELOW_RESOLUTION_ERROR_MESSAGE";
     public static final String EXTRA_IMAGE_TOO_LARGE_ERROR_MESSAGE = "EXTRA_IMAGE_TOO_LARGE_ERROR_MESSAGE";
+    public static final String EXTRA_RECHECK_SIZE_AFTER_RESIZE = "EXTRA_RECHECK_SIZE_AFTER_RESIZE";
 
     public static final String SAVED_IMAGE_INDEX = "IMG_IDX";
     public static final String SAVED_EDITTED_PATHS = "SAVED_EDITTED_PATHS";
@@ -88,6 +89,7 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImagePick
     int[] imageEditActionType;
     private String belowMinResolutionErrorMessage = "";
     private String imageTooLargeErrorMessage = "";
+    private boolean recheckSizeAfterResize;
 
     private ArrayList<ArrayList<String>> edittedImagePaths;
 
@@ -146,7 +148,8 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImagePick
                                    long maxFileSize,
                                    ArrayList<ImageRatioTypeDef> ratioOptionList,
                                    String belowMinResolutionErrorMessage,
-                                   String imageTooLargeErrorMessage) {
+                                   String imageTooLargeErrorMessage,
+                                   boolean recheckSizeAfterResize) {
         Intent intent = new Intent(context, ImageEditorActivity.class);
         intent.putExtra(EXTRA_IMAGE_URLS, imageUrls);
         intent.putExtra(EXTRA_IMAGE_DESCRIPTION_LIST, imageDescription);
@@ -158,6 +161,7 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImagePick
         intent.putExtra(EXTRA_RATIO_OPTION_LIST, ratioOptionList);
         intent.putExtra(EXTRA_BELOW_RESOLUTION_ERROR_MESSAGE, belowMinResolutionErrorMessage);
         intent.putExtra(EXTRA_IMAGE_TOO_LARGE_ERROR_MESSAGE, imageTooLargeErrorMessage);
+        intent.putExtra(EXTRA_RECHECK_SIZE_AFTER_RESIZE, recheckSizeAfterResize);
         return intent;
     }
 
@@ -170,7 +174,7 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImagePick
                                    long maxFileSize,
                                    ArrayList<ImageRatioTypeDef> ratioOptionList) {
         return getIntent(context, imageUrls, imageDescription, minResolution, imageEditActionType, defaultRatio
-                , isCirclePreview, maxFileSize, ratioOptionList, "", "");
+                , isCirclePreview, maxFileSize, ratioOptionList, "", "", false);
     }
 
     public static Intent getIntent(Context context, String imageUrl, String imageDescription, int minResolution,
@@ -217,6 +221,7 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImagePick
         defaultRatio = (ImageRatioTypeDef) intent.getSerializableExtra(EXTRA_RATIO);
         imageRatioOptionList = (ArrayList<ImageRatioTypeDef>) intent.getSerializableExtra(EXTRA_RATIO_OPTION_LIST);
         imageDescriptionList = intent.getStringArrayListExtra(EXTRA_IMAGE_DESCRIPTION_LIST);
+        recheckSizeAfterResize = intent.getBooleanExtra(EXTRA_RECHECK_SIZE_AFTER_RESIZE, false);
 
         if (belowMinResolutionErrorMessage == null || belowMinResolutionErrorMessage.isEmpty()) {
             belowMinResolutionErrorMessage = getString(R.string.image_under_x_resolution, minResolution);
@@ -800,7 +805,7 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImagePick
     private void onFinishWithMultipleImageValidateFileSize(ArrayList<String> imagePathList) {
         showDoneLoading();
         initImagePickerPresenter();
-        imagePickerPresenter.resizeImage(imagePathList, maxFileSize);
+        imagePickerPresenter.resizeImage(imagePathList, maxFileSize, recheckSizeAfterResize);
     }
 
     @Override

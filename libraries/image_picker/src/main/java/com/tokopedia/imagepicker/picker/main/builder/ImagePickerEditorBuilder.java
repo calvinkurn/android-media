@@ -21,6 +21,7 @@ public class ImagePickerEditorBuilder implements Parcelable {
     private ArrayList<ImageRatioTypeDef> imageRatioTypeDefs;
     private String belowMinResolutionErrorMessage;
     private String imageTooLargeErrorMessage;
+    private boolean recheckSizeAfterResize;
 
 
     public static ImagePickerEditorBuilder getDefaultBuilder(){
@@ -64,6 +65,14 @@ public class ImagePickerEditorBuilder implements Parcelable {
 
     public void setImageTooLargeErrorMessage(String imageTooLargeErrorMessage) {
         this.imageTooLargeErrorMessage = imageTooLargeErrorMessage;
+    }
+
+    public boolean isRecheckSizeAfterResize() {
+        return recheckSizeAfterResize;
+    }
+
+    public void setRecheckSizeAfterResize(boolean recheckSizeAfterResize) {
+        this.recheckSizeAfterResize = recheckSizeAfterResize;
     }
 
     @Override

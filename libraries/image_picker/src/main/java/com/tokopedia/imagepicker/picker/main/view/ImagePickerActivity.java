@@ -540,7 +540,8 @@ public class ImagePickerActivity extends BaseSimpleActivity
                 imagePickerBuilder.getMaxFileSizeInKB(),
                 imagePickerBuilder.getRatioOptionList(),
                 imagePickerBuilder.getBelowMinResolutionErrorMessage(),
-                imagePickerBuilder.getImageTooLargeErrorMessage());
+                imagePickerBuilder.getImageTooLargeErrorMessage(),
+                imagePickerBuilder.isRecheckSizeAfterResize());
     }
 
     private void onFinishWithSingleImage(String imageUrlOrPath) {
@@ -565,7 +566,7 @@ public class ImagePickerActivity extends BaseSimpleActivity
         showFinishProgressDialog();
         initImagePickerPresenter();
         if (imagePickerBuilder.getGalleryType() == GalleryType.IMAGE_ONLY) {
-            imagePickerPresenter.resizeImage(imagePathList, maxFileSizeInKB);
+            imagePickerPresenter.resizeImage(imagePathList, maxFileSizeInKB, imagePickerBuilder.isRecheckSizeAfterResize());
         } else {
             onSuccessResizeImage(imagePathList);
         }

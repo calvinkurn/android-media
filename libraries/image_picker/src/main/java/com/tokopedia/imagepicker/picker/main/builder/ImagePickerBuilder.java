@@ -116,6 +116,10 @@ public class ImagePickerBuilder implements Parcelable {
         return imagePickerEditorBuilder.getImageTooLargeErrorMessage();
     }
 
+    public boolean isRecheckSizeAfterResize() {
+        return imagePickerEditorBuilder.isRecheckSizeAfterResize();
+    }
+
     public int getRatioX() {
         return imageRatioTypeDef.getRatioX();
     }
