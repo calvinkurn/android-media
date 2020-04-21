@@ -41,7 +41,6 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
     private Uri uriData;
     private static final String EXTRA_STATE_APP_WEB_VIEW = "EXTRA_STATE_APP_WEB_VIEW";
     private static final String APPLINK_URL = "url";
-    private static final String AMP = "amp";
     private View mainView;
 
     @Override
