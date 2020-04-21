@@ -528,6 +528,7 @@ data class DynamicHomeChannel(
             const val LAYOUT_MIX_LEFT: String = "left_carousel"
             const val LAYOUT_MIX_TOP: String = "top_carousel"
             const val LAYOUT_PRODUCT_HIGHLIGHT: String = "product_highlight"
+            const val LAYOUT_RECHARGE_RECOMMENDATION: String = "dg_bills"
             const val channelId: String = "channelId"
             const val campaignCodeLabel: String = "campaignCode"
         }

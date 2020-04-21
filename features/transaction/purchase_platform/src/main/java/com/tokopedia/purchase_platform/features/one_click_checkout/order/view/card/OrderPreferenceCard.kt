@@ -19,6 +19,7 @@ import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.logisticdata.data.constant.CourierConstant
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ServiceData
 import com.tokopedia.purchase_platform.R
+import com.tokopedia.purchase_platform.features.one_click_checkout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.OrderSummaryPageFragment
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.OrderSummaryPageViewModel
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.model.OrderPreference
@@ -26,7 +27,7 @@ import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifyprinciples.Typography
 
-class OrderPreferenceCard(private val view: View, private val listener: OrderPreferenceCardListener) {
+class OrderPreferenceCard(private val view: View, private val listener: OrderPreferenceCardListener, private val orderSummaryAnalytics: OrderSummaryAnalytics) {
 
     private lateinit var preference: OrderPreference
 
@@ -274,6 +275,9 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
             }
             if (shippingRecommendationData.logisticPromo != null) {
                 list.add(shippingRecommendationData.logisticPromo)
+                if (shippingRecommendationData.logisticPromo.disabled && shippingRecommendationData.logisticPromo.description.contains(BBO_DESCRIPTION_MINIMUM_LIMIT[0]) && shippingRecommendationData.logisticPromo.description.contains(BBO_DESCRIPTION_MINIMUM_LIMIT[1])) {
+                    orderSummaryAnalytics.eventViewErrorMessage(OrderSummaryAnalytics.ERROR_ID_LOGISTIC_BBO_MINIMUM)
+                }
             }
             ShippingCourierOccBottomSheet().showBottomSheet(fragment, list, object : ShippingCourierOccBottomSheetListener {
                 override fun onCourierChosen(shippingCourierViewModel: ShippingCourierUiModel) {
@@ -304,6 +308,10 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
                 }
             })
         }
+    }
+
+    companion object {
+        private val BBO_DESCRIPTION_MINIMUM_LIMIT = arrayOf("belum", "min")
     }
 
     interface OrderPreferenceCardListener {

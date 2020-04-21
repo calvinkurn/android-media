@@ -21,6 +21,7 @@ import android.webkit.URLUtil;
 import android.webkit.ValueCallback;
 import android.webkit.WebBackForwardList;
 import android.webkit.WebChromeClient;
+import android.webkit.WebHistoryItem;
 import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebResourceResponse;
@@ -590,8 +591,9 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     }
 
     private void logApplinkErrorOpen(String url) {
-        Timber.w("P1#APPLINK_OPEN_ERROR#%s;uri='%s'",
-                BaseWebViewFragment.this.getClass().getSimpleName(), url);
+        String referrer = getPreviousUri();
+        Timber.w("P1#APPLINK_OPEN_ERROR#Webview;source='%s';referrer='%s';uri='%s'",
+                getClass().getSimpleName(), referrer, url);
     }
 
     private void checkActivityFinish() {
@@ -624,6 +626,21 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         if (progressBar != null) {
             progressBar.setVisibility(View.GONE);
         }
+    }
+
+    private String getPreviousUri() {
+        if (webView == null) {
+            return "";
+        }
+        WebBackForwardList webBackForwardList = webView.copyBackForwardList();
+        if (webBackForwardList == null || webBackForwardList.getCurrentIndex() <= 0) {
+            return "";
+        }
+        WebHistoryItem webHistoryItem = webBackForwardList.getItemAtIndex(webBackForwardList.getCurrentIndex() - 1);
+        if (webHistoryItem == null) {
+            return "";
+        }
+        return webHistoryItem.getUrl();
     }
 
     public TkpdWebView getWebView() {

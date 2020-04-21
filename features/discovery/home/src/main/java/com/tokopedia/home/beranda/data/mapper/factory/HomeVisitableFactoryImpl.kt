@@ -236,6 +236,7 @@ class HomeVisitableFactoryImpl(val userSessionInterface: UserSessionInterface) :
                         trackingData = MixTopTracking.getMixTopView(MixTopTracking.mapChannelToProductTracker(channel), headerName = channel.header.name, positionOnWidgetHome = position.toString()),
                         isCombined = false
                 ) }
+                DynamicHomeChannel.Channels.LAYOUT_RECHARGE_RECOMMENDATION -> { createRechargeRecommendationWidget() }
             }
         }
 
@@ -421,6 +422,10 @@ class HomeVisitableFactoryImpl(val userSessionInterface: UserSessionInterface) :
 
     private fun createPopularKeywordChannel(channel: DynamicHomeChannel.Channels) {
         visitableList.add(PopularKeywordListDataModel(popularKeywordList = mutableListOf(), channel = channel))
+    }
+
+    private fun createRechargeRecommendationWidget() {
+        if (!isCache) visitableList.add(RechargeRecommendationViewModel())
     }
 
     override fun build(): List<Visitable<*>> = visitableList

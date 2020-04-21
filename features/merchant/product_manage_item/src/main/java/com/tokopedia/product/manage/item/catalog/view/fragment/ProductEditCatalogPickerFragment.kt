@@ -8,6 +8,7 @@ import android.view.*
 import android.widget.TextView
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.listener.EndlessLayoutManagerListener
+import com.tokopedia.core.common.category.di.module.CategoryPickerModule
 import com.tokopedia.product.manage.item.R
 import com.tokopedia.product.manage.item.common.di.component.ProductComponent
 import com.tokopedia.product.manage.item.category.di.ProductEditCategoryCatalogModule
@@ -54,6 +55,7 @@ class ProductEditCatalogPickerFragment : BaseListFragment<ProductCatalog, Produc
     override fun initInjector() {
         DaggerProductEditCategoryCatalogComponent.builder()
                 .productComponent(getComponent(ProductComponent::class.java))
+                .categoryPickerModule(CategoryPickerModule(requireActivity().applicationContext))
                 .productEditCategoryCatalogModule(ProductEditCategoryCatalogModule())
                 .build()
                 .inject(this)

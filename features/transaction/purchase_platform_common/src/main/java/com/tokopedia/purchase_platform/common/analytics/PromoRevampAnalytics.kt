@@ -72,10 +72,6 @@ object PromoRevampAnalytics {
         sendEventCategoryAction(VIEW_ATC_IRIS, CATEGORY_CART, AFTER_ADJUST_ITEM)
     }
 
-    fun eventCartViewPromoChanged(msg: String) {
-        sendEventCategoryAction(VIEW_ATC_IRIS, CATEGORY_CART, msg)
-    }
-
     fun eventCartViewPromoAlreadyApplied() {
         sendEventCategoryAction(VIEW_ATC_IRIS, CATEGORY_CART, VIEW_PROMO_ALREADY_APPLIED_IN_CART_LIST)
     }

@@ -1,6 +1,7 @@
 package com.tokopedia.product.manage.item.category.view.fragment
 
 import android.os.Bundle
+import com.tokopedia.core.common.category.di.module.CategoryPickerModule
 import com.tokopedia.product.manage.item.common.di.component.ProductComponent
 import com.tokopedia.product.manage.item.category.di.ProductEditCategoryCatalogModule
 import com.tokopedia.product.manage.item.catalog.view.model.ProductCatalog
@@ -17,6 +18,7 @@ class ProductEditCategoryFragment : BaseProductEditCategoryFragment() {
     override fun initInjector() {
         DaggerProductEditCategoryCatalogComponent.builder()
                 .productComponent(getComponent(ProductComponent::class.java))
+                .categoryPickerModule(CategoryPickerModule(requireActivity().applicationContext))
                 .productEditCategoryCatalogModule(ProductEditCategoryCatalogModule())
                 .build()
                 .inject(this)

@@ -712,11 +712,8 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
 
         secondaryBottomSheet = BottomSheetUnify().apply {
             setChild(viewBottomSheet)
-            showCloseIcon = false
-            showHeader = false
-            showKnob = true
-            isFullpage = false
-            isDragable = true
+            clearClose(true)
+            clearHeader(true)
             setCloseClickListener { dismiss() }
         }
 
@@ -736,6 +733,7 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
                     key.equals(KEY_ACCEPT_ORDER, true) -> setActionAcceptOrder(it)
                     key.equals(KEY_SET_DELIVERED, true) -> showSetDeliveredDialog()
                     key.equals(KEY_ASK_BUYER, true) -> goToAskBuyer()
+                    key.equals(KEY_SET_DELIVERED, true) -> showSetDeliveredDialog()
                 }
             }
         }
