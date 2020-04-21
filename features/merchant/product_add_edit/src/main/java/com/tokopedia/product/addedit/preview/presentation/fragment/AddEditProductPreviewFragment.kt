@@ -916,7 +916,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
                     put(AddEditProductUploadConstant.EXTRA_PRODUCT_VARIANT_SELECTION, productInputModel.variantInputModel)
                     put(AddEditProductUploadConstant.EXTRA_PRODUCT_SIZECHART, productInputModel.variantInputModel.productSizeChart)
                     put(AddEditProductUploadConstant.EXTRA_CURRENCY_TYPE, AddEditProductDescriptionFragment.TYPE_IDR)
-                    put(AddEditProductUploadConstant.EXTRA_DEFAULT_PRICE, productInputModel.detailInputModel.price)
+                    put(AddEditProductUploadConstant.EXTRA_DEFAULT_PRICE, 0.0)
                     put(AddEditProductUploadConstant.EXTRA_STOCK_TYPE, "")
                     put(AddEditProductUploadConstant.EXTRA_IS_OFFICIAL_STORE, false)
                     put(AddEditProductUploadConstant.EXTRA_DEFAULT_SKU, "")

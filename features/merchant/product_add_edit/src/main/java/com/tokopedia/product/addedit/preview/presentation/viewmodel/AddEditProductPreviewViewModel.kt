@@ -326,9 +326,13 @@ class AddEditProductPreviewViewModel @Inject constructor(
         return null
     }
 
-    // isRemoveVariant used for indicating productVariant size is decreased
+    // isRemoveVariant used for indicating productVariant size is decreased when not in draft mode
     private fun getIsRemoveVariant(productVariant: ArrayList<ProductVariantCombinationViewModel>): Boolean {
-        return productVariant.size < productInputModel.value?.variantInputModel?.productVariant?.size ?: 0
+        return if (draftId.isEmpty()) {
+            productVariant.size < productInputModel.value?.variantInputModel?.productVariant?.size ?: 0
+        } else {
+            false
+        }
     }
 
 }
