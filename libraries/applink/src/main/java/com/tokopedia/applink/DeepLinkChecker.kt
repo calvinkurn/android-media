@@ -14,6 +14,9 @@ object DeepLinkChecker {
 
     private val APP_EXCLUDED_URL = "app_excluded_url"
     private val APP_EXCLUDED_HOST_V2 = "app_excluded_host_v2"
+    private const val AMP = "amp"
+    private const val EXCLUDED_AMP = "excluded_amp"
+    private const val DEFAULT_EXCLUDED_AMP_VALUE = "stories"
 
     @JvmField
     val WEB_HOST = "www.tokopedia.com"
@@ -146,6 +149,34 @@ object DeepLinkChecker {
         }
 
     }
+
+    @JvmStatic
+    fun getRemoveAmpLink(context:Context, uriData: Uri): Uri? {
+        val path = uriData.pathSegments
+        return if (path != null && path.size > 1 && path[0] == AMP) {
+            if (isExcludedAmpPath(context, path[1])) {
+                uriData
+            } else {
+                Uri.parse(uriData.toString().replaceFirst(AMP + "/".toRegex(), ""))
+            }
+        } else uriData
+    }
+
+    private fun isExcludedAmpPath(context: Context, path:String): Boolean {
+        val firebaseRemoteConfig = FirebaseRemoteConfigImpl(context)
+        val excludedPath = firebaseRemoteConfig.getString(EXCLUDED_AMP, defaultExcludedAmpValue())
+        val excludedPathList = excludedPath.split(",".toRegex())
+            .filter { it.isNotEmpty() }
+            .map { it.replaceLastSlash() }
+        for (excludedString in excludedPathList) {
+            if (path == excludedString) {
+                return true
+            }
+        }
+        return false
+    }
+
+    private fun defaultExcludedAmpValue() = DEFAULT_EXCLUDED_AMP_VALUE
 
     private fun isHome(uriData: Uri): Boolean {
         return uriData.pathSegments.isEmpty() &&

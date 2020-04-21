@@ -430,4 +430,8 @@
         <key>android_async_checkappsignature</key>
         <value>true</value>
     </entry>
+    <entry>
+        <key>excluded_amp</key>
+        <value>stories</value>
+    </entry>
 </defaultsMap>
