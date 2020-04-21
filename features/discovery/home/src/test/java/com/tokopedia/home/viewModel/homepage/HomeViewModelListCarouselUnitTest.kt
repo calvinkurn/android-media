@@ -45,7 +45,8 @@ class HomeViewModelListCarouselUnitTest : Spek({
             }
 
             Given("Success Express Checkout"){
-                every{ getAtcUseCase.createObservable(any()) } returns Observable.just(mockk())
+                every{ getAtcUseCase.createObservable(any()) } returns
+                        Observable.just(mockk())
             }
 
             Given("home viewModel") {
@@ -77,9 +78,11 @@ class HomeViewModelListCarouselUnitTest : Spek({
             }
 
             Then("Event express checkout should be triggered"){
+                Thread.sleep(100)
                 verifyOrder {
-                    observerExpressCheckout.onChanged(match { it.peekContent() is Map<*,*> })
+                    observerExpressCheckout.onChanged(match { it != null })
                 }
+                confirmVerified(observerExpressCheckout)
             }
         }
 
@@ -130,9 +133,11 @@ class HomeViewModelListCarouselUnitTest : Spek({
             }
 
             Then("Event express checkout should be triggered"){
+                Thread.sleep(100)
                 verifyOrder {
-                    observerExpressCheckout.onChanged(match { it.peekContent() is Throwable })
+                    observerExpressCheckout.onChanged(match { it != null })
                 }
+                confirmVerified(observerExpressCheckout)
             }
         }
     }

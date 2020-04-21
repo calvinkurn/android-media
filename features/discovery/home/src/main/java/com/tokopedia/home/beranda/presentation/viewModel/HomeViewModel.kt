@@ -242,7 +242,7 @@ open class HomeViewModel @Inject constructor(
                                       isWalletDataError: Boolean? = null,
                                       isTokoPointDataError: Boolean? = null) {
         if(headerDataModel == null){
-            headerDataModel = _homeLiveData.value?.list?.find { visitable-> visitable is HeaderDataModel } as HeaderDataModel?
+            headerDataModel = (_homeLiveData.value?.list?.find { visitable-> visitable is HeaderDataModel } as HeaderDataModel?)?.copy()
         }
 
         val currentPosition = _homeLiveData.value?.list?.withIndex()?.find { (_, model) ->  model is HeaderDataModel }?.index ?: -1
@@ -270,7 +270,7 @@ open class HomeViewModel @Inject constructor(
                 headerViewModel.isTokoPointDataError = it
             }
             headerViewModel.isUserLogin = userSession.isLoggedIn
-            launch(coroutineContext) { updateWidget(UpdateLiveDataModel(ACTION_UPDATE, headerViewModel.copy(), currentPosition)) }
+            launch(coroutineContext) { updateWidget(UpdateLiveDataModel(ACTION_UPDATE, headerViewModel, currentPosition)) }
         }
 
     }
@@ -457,6 +457,7 @@ open class HomeViewModel @Inject constructor(
     }
 
     fun onRefreshTokoPoint() {
+        if (!userSession.isLoggedIn) return
         updateHeaderViewModel(
                 isTokoPointDataError = false,
                 tokopointsDrawer = null,
@@ -790,7 +791,6 @@ open class HomeViewModel @Inject constructor(
     fun sendTopAds(url: String){
         sendTopAdsUseCase.executeOnBackground(url)
     }
-
 
     fun getOneClickCheckout(channel: DynamicHomeChannel.Channels, grid: DynamicHomeChannel.Grid, position: Int){
         val requestParams = RequestParams()
