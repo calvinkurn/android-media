@@ -346,7 +346,7 @@ abstract class BaseTracking {
         rupiah = rupiah.replace(".", "")
         rupiah = rupiah.replace(" ", "")
         return Integer.parseInt(rupiah)
-}
+    }
 
     protected fun getTracker(): ContextAnalytics {
         return TrackApp.getInstance().gtm
