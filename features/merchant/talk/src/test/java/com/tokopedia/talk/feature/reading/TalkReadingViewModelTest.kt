@@ -1,34 +1,86 @@
 package com.tokopedia.talk.feature.reading
 
+import android.accounts.NetworkErrorException
 import com.tokopedia.talk.feature.reading.data.model.DiscussionAggregateResponse
 import com.tokopedia.talk.feature.reading.data.model.DiscussionDataResponseWrapper
 import com.tokopedia.talk.feature.reading.data.model.SortOption
 import com.tokopedia.talk.feature.reading.data.model.TalkReadingCategory
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
 import io.mockk.coVerify
 import org.junit.Assert.assertEquals
 import org.junit.Test
+import java.lang.Exception
 
 class TalkReadingViewModelTest : TalkReadingViewModelTestFixture() {
 
     @Test
     fun `when getDiscussionAggregate should execute expected use case and get expected data`() {
+        val response = DiscussionAggregateResponse()
+        val productId = "15267029"
+        val shopId = "480749"
 
+        onGetDiscussionAggregate_thenReturn(response)
+
+        viewModel.getDiscussionAggregate(productId, shopId)
+
+        val expectedResponse = Success(response)
+
+        verifyGetDiscussionAggregateUseCaseExecuted()
+        verifyDiscussionAggregateEquals(expectedResponse)
     }
 
     @Test
     fun `when getDiscussionAggregate should execute expected use case and fail with expected exception`() {
+        val productId = "15267029"
+        val shopId = "480749"
+        val exception = NetworkErrorException()
 
+        onGetDiscussionAggregateFail_thenReturn(exception)
+
+        viewModel.getDiscussionAggregate(productId, shopId)
+
+        verifyGetDiscussionAggregateUseCaseExecuted()
+        verifyDiscussionAggregateErrorEquals(Fail(exception))
     }
 
     @Test
     fun `when getDiscussionData should execute expected use case and get expected data`() {
+        val response = DiscussionDataResponseWrapper()
+        val productId = "15267029"
+        val shopId = "480749"
+        val page = 0
+        val limit = 10
+        val sortOption = ""
+        val categories = ""
 
+        onGetDiscussionData_thenReturn(response)
+
+        viewModel.getDiscussionData(productId, shopId, page, limit, sortOption, categories)
+
+        val expectedResponse = Success(response)
+
+        verifyGetDiscussionDataUseCaseExecuted()
+        verifyDiscussionDataEquals(expectedResponse)
     }
 
     @Test
     fun `when getDiscussionData should execute expected use case and fail with expected exception`() {
+        val productId = "15267029"
+        val shopId = "480749"
+        val page = 0
+        val limit = 10
+        val sortOption = ""
+        val categories = ""
+        val exception = NetworkErrorException()
 
+        onGetDiscussionDataFail_thenReturn(exception)
+
+        viewModel.getDiscussionData(productId, shopId, page, limit, sortOption, categories)
+
+        verifyGetDiscussionDataUseCaseExecuted()
+        verifyDiscussionDataErrorEquals(Fail(exception))
     }
 
     @Test
@@ -87,6 +139,26 @@ class TalkReadingViewModelTest : TalkReadingViewModelTestFixture() {
         verifySortOptionsEquals(expectedSortOptions)
     }
 
+    private fun verifyDiscussionAggregateEquals(expectedResponse: Success<DiscussionAggregateResponse>) {
+        val actualResponse = viewModel.discussionAggregate.value as Success<DiscussionAggregateResponse>
+        assertEquals(expectedResponse, actualResponse)
+    }
+
+    private fun verifyDiscussionDataEquals(expectedResponse: Success<DiscussionDataResponseWrapper>) {
+        val actualResponse = viewModel.discussionData.value as Success<DiscussionDataResponseWrapper>
+        assertEquals(expectedResponse, actualResponse)
+    }
+
+    private fun verifyDiscussionAggregateErrorEquals(expectedResponse: Fail) {
+        val actualResponse = viewModel.discussionAggregate.value as Fail
+        assertEquals(expectedResponse.throwable.message, actualResponse.throwable.message)
+    }
+
+    private fun verifyDiscussionDataErrorEquals(expectedResponse: Fail) {
+        val actualResponse = viewModel.discussionData.value as Fail
+        assertEquals(expectedResponse.throwable.message, actualResponse.throwable.message)
+    }
+
     private fun verifyCategoriesEqual(categories: List<TalkReadingCategory>) {
         viewModel.filterCategories.value?.forEachIndexed { index, talkReadingCategory ->
             assertEquals(categories[index], talkReadingCategory)
@@ -116,6 +188,14 @@ class TalkReadingViewModelTest : TalkReadingViewModelTestFixture() {
 
     private fun onGetDiscussionData_thenReturn(discussionDataResponseWrapper: DiscussionDataResponseWrapper) {
         coEvery { getDiscussionDataUseCase.executeOnBackground() } returns discussionDataResponseWrapper
+    }
+
+    private fun onGetDiscussionAggregateFail_thenReturn(exception: Exception) {
+        coEvery { getDiscussionAggregateUseCase.executeOnBackground() } throws exception
+    }
+
+    private fun onGetDiscussionDataFail_thenReturn(exception: Exception) {
+        coEvery { getDiscussionDataUseCase.executeOnBackground() } throws exception
     }
 
     private fun verifyGetDiscussionAggregateUseCaseExecuted() {
