@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.FrameLayout
+import android.widget.LinearLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout.LayoutParams
 import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -164,7 +165,7 @@ abstract class QuickEditVariantBottomSheet: BottomSheetUnify(), HasComponent<Qui
     private fun expandBottomSheet() {
         (view?.parent as? FrameLayout)?.apply {
             val params = LayoutParams(MATCH_PARENT, MATCH_PARENT)
-            container.layoutParams = params
+            container.layoutParams = LinearLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT)
             layoutParams = params
         }
     }
