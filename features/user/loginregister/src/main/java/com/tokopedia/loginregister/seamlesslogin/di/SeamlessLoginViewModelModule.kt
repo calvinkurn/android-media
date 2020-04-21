@@ -25,5 +25,5 @@ abstract class SeamlessLoginViewModelModule{
     @Binds
     @IntoMap
     @ViewModelKey(SeamlessLoginViewModel::class)
-    internal abstract fun registerInitialViewModel(viewModel: SeamlessLoginViewModel): ViewModel
+    internal abstract fun seamlessLoginViewModel(viewModel: SeamlessLoginViewModel): ViewModel
 }
