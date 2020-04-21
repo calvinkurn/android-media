@@ -33,11 +33,15 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.common.AddEditProductComponentBuilder
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.EXTRA_CACHE_MANAGER_ID
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.HTTP_PREFIX
+import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.PHOTO_TIPS_URL_1
+import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.PHOTO_TIPS_URL_2
+import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.PHOTO_TIPS_URL_3
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_DESCRIPTION_INPUT
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_DETAIL_INPUT
@@ -156,6 +160,9 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
     private var editProductStatusLayout: ViewGroup? = null
     private var productStatusSwitch: SwitchUnify? = null
 
+    //loading
+    private var loadingLayout: View? = null
+
     private lateinit var userSession: UserSessionInterface
     private lateinit var shopId: String
 
@@ -172,12 +179,6 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
                 }
             }
         }
-
-        val photoTipsUrl = listOf(
-                "https://ecs7.tokopedia.net/android/others/stuart/product_photo_choosing_tips_1.png",
-                "https://ecs7.tokopedia.net/android/others/stuart/product_photo_choosing_tips_2.png",
-                "https://ecs7.tokopedia.net/android/others/stuart/product_photo_choosing_tips_3.png"
-        )
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -280,6 +281,9 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
         // status
         editProductStatusLayout = view.findViewById(R.id.edit_product_status_layout)
         productStatusSwitch = view.findViewById(R.id.su_product_status)
+
+        //loading
+        loadingLayout = view.findViewById(R.id.loading_layout)
 
         addEditProductPhotoButton?.setOnClickListener {
 
@@ -413,12 +417,19 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
             setCashback()
         }
 
+        //If you add another observe, don't forget to remove observers at removeObservers()
         observeIsEditingStatus()
         observeProductData()
         observeProductInputModel()
         observeProductVariant()
         observeImageUrlOrPathList()
         observeVariantList()
+        observeIsLoading()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        removeObservers()
     }
 
     @Suppress("UNCHECKED_CAST")
@@ -496,7 +507,10 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
                 REQUEST_CODE_DETAIL_EDIT -> {
                     val detailInputModel =
                             data.getParcelableExtra<DetailInputModel>(EXTRA_DETAIL_INPUT)
+                    val variantInputModel =
+                            data.getParcelableExtra<ProductVariantInputModel>(EXTRA_VARIANT_INPUT)
                     viewModel.updateDetailInputModel(detailInputModel)
+                    viewModel.updateVariantInputModel(variantInputModel)
                 }
                 REQUEST_CODE_DESCRIPTION_EDIT -> {
                     val descriptionInputModel =
@@ -683,15 +697,17 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
     }
 
     private fun observeProductData() {
-        viewModel.getProductResult.observe(this, Observer {
-            when (it) {
+        viewModel.getProductResult.observe(this, Observer { result ->
+            when (result) {
                 is Success -> {
-                    val isVariantEmpty = it.data.variant.products.isEmpty()
+                    val isVariantEmpty = result.data.variant.products.isEmpty()
                     showEmptyVariantState(isVariantEmpty)
-                    showProductStatus(it.data)
+                    showProductStatus(result.data)
                 }
                 is Fail -> {
-
+                    context?.let {
+                        showGetProductErrorToast(ErrorHandler.getErrorMessage(it, result.throwable))
+                    }
                 }
             }
         })
@@ -732,6 +748,26 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
                 is Fail -> showVariantErrorToast(getString(R.string.error_cannot_get_variants))
             }
         })
+    }
+
+    private fun observeIsLoading() {
+        viewModel.isLoading.observe(this, Observer { isLoading ->
+            if (isLoading) {
+                showLoading()
+            } else {
+                hideLoading()
+            }
+        })
+    }
+
+    private fun removeObservers() {
+        viewModel.isEditing.removeObservers(this)
+        viewModel.getProductResult.removeObservers(this)
+        viewModel.productInputModel.removeObservers(this)
+        viewModel.isVariantEmpty.removeObservers(this)
+        viewModel.imageUrlOrPathList.removeObservers(this)
+        viewModel.productVariantList.removeObservers(this)
+        viewModel.isLoading.removeObservers(this)
     }
 
     private fun setCashback() {
@@ -786,9 +822,9 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
             val tooltipBottomSheet = TooltipBottomSheet()
             val tips: ArrayList<ImageTooltipModel> = ArrayList()
             val tooltipTitle = getString(R.string.title_tooltip_photo_tips)
-            tips.add(ImageTooltipModel(getString(R.string.message_tooltip_photo_tips_1), photoTipsUrl[0]))
-            tips.add(ImageTooltipModel(getString(R.string.message_tooltip_photo_tips_2), photoTipsUrl[1]))
-            tips.add(ImageTooltipModel(getString(R.string.message_tooltip_photo_tips_3), photoTipsUrl[2]))
+            tips.add(ImageTooltipModel(getString(R.string.message_tooltip_photo_tips_1), PHOTO_TIPS_URL_1))
+            tips.add(ImageTooltipModel(getString(R.string.message_tooltip_photo_tips_2), PHOTO_TIPS_URL_2))
+            tips.add(ImageTooltipModel(getString(R.string.message_tooltip_photo_tips_3), PHOTO_TIPS_URL_3))
 
             tooltipBottomSheet.apply {
                 setTitle(tooltipTitle)
@@ -818,14 +854,26 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
         }
     }
 
+    private fun showGetProductErrorToast(errorMessage: String) {
+        view?.let {
+            Toaster.make(it, errorMessage,
+                    type = Toaster.TYPE_ERROR,
+                    actionText = getString(R.string.title_try_again),
+                    duration = Snackbar.LENGTH_INDEFINITE,
+                    clickListener = View.OnClickListener {
+                        viewModel.getProductData(viewModel.getProductId())
+                    })
+        }
+    }
+
     private fun showVariantErrorToast(errorMessage: String) {
         view?.let {
             Toaster.make(it, errorMessage,
                     type = Toaster.TYPE_ERROR,
                     actionText = getString(R.string.title_try_again),
+                    duration = Snackbar.LENGTH_INDEFINITE,
                     clickListener = View.OnClickListener {
-                        val categoryId: String = viewModel.productInputModel.value?.detailInputModel?.categoryId
-                                ?: ""
+                        val categoryId: String = viewModel.productInputModel.value?.detailInputModel?.categoryId.orEmpty()
                         viewModel.getVariantList(categoryId)
                     })
         }
@@ -956,5 +1004,13 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
     private fun moveToManageProduct() {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PRODUCT_MANAGE_LIST)
         startActivity(intent)
+    }
+
+    private fun showLoading() {
+        loadingLayout?.show()
+    }
+
+    private fun hideLoading() {
+        loadingLayout?.hide()
     }
 }
