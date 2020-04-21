@@ -33,6 +33,7 @@ data class ChatOrderProgress(
     val hasActionButton: Boolean get() = button.key.isNotEmpty()
 
     fun isNotEmpty(): Boolean = state != stateEmpty
+    fun isStateFinished(): Boolean = state == stateFinish
 
     companion object {
         const val stateEmpty = "empty"

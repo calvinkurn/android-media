@@ -11,8 +11,10 @@ import android.view.View
 import android.view.View.OnClickListener
 import android.widget.ImageView
 import android.widget.LinearLayout
+import androidx.annotation.DrawableRes
 import androidx.annotation.RequiresApi
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
@@ -142,12 +144,31 @@ class TransactionOrderProgressLayout : LinearLayout {
             renderEstimation()
             renderActionButton()
         } else {
-            // TODO: impl this
+            hideDescription()
+            renderCloseStateChangerButton()
         }
     }
 
+    private fun renderCloseStateChangerButton() {
+        renderChangerButtonText(chatOrder.button.label)
+        renderChangerButtonTextColor()
+        renderChangerButtonCompoundDrawable(R.drawable.ic_topchat_arrow_small_right)
+    }
+
+    private fun renderChangerButtonTextColor() {
+        stateChanger?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.light_G500))
+    }
+
     private fun renderOpenCloseStateChangerButton() {
-        stateChanger?.text = state.bodyVisibility
+        renderChangerButtonText()
+        renderChangerButtonCompoundDrawable()
+    }
+
+    private fun renderChangerButtonCompoundDrawable(@DrawableRes customIcon: Int? = null) {
+        if (customIcon != null) {
+            stateChanger?.setCompoundDrawablesWithIntrinsicBounds(0, 0, customIcon, 0)
+            return
+        }
         doWhenState(
                 isOpen = {
                     stateChanger?.setCompoundDrawablesWithIntrinsicBounds(
@@ -160,6 +181,14 @@ class TransactionOrderProgressLayout : LinearLayout {
                     )
                 }
         )
+    }
+
+    private fun renderChangerButtonText(custom: String? = null) {
+        if (custom != null) {
+            stateChanger?.text = custom
+        } else {
+            stateChanger?.text = state.bodyVisibility
+        }
     }
 
     private fun bindClickOpenCloseState() {
@@ -190,8 +219,7 @@ class TransactionOrderProgressLayout : LinearLayout {
     }
 
     private fun openCloseState(): Boolean {
-        // TODO: impl this
-        return true
+        return !chatOrder.isStateFinished()
     }
 
     private fun doWhenState(
