@@ -125,7 +125,7 @@ class DeferredPaymentFragment : ThankYouBaseFragment(), ThankYouPageTimerView.Th
 
     private fun highlightLastThreeDigits(amountStr: String) {
         tvTotalAmount.setTextColor(resources.getColor(com.tokopedia.design.R.color.grey_796))
-        val spannable = SpannableString(getString(R.string.thankyou_rp, amountStr))
+        val spannable = SpannableString(getString(R.string.thankyou_rp_without_space, amountStr))
         if (amountStr.length > 3) {
             val startIndex = spannable.length - 3
             spannable.setSpan(ForegroundColorSpan(resources.getColor(com.tokopedia.design.R.color.orange_500)),
@@ -143,7 +143,7 @@ class DeferredPaymentFragment : ThankYouBaseFragment(), ThankYouPageTimerView.Th
         if (highlightAmountDigits)
             highlightLastThreeDigits(thanksPageData.amountStr)
         else
-            tvTotalAmount.text = getString(R.string.thankyou_rp, thanksPageData.amountStr)
+            tvTotalAmount.text = getString(R.string.thankyou_rp_without_space, thanksPageData.amountStr)
 
         if (isCopyVisible) {
             tvAccountNumberCopy.visible()
@@ -199,9 +199,11 @@ class DeferredPaymentFragment : ThankYouBaseFragment(), ThankYouPageTimerView.Th
             context?.let { context ->
                 val clipboard = context.getSystemService(Activity.CLIPBOARD_SERVICE)
                         as ClipboardManager
-                val clip = ClipData.newPlainText(COPY_BOARD_LABEL, str)
+                val clip = ClipData.newPlainText(COPY_BOARD_LABEL, str.replace("\\s+".toRegex(),""))
                 clipboard.primaryClip = clip
-                showToastCopySuccessFully(context)
+                clipboard.addPrimaryClipChangedListener {
+                    showToastCopySuccessFully(context)
+                }
             }
         }
     }
@@ -273,7 +275,5 @@ class DeferredPaymentFragment : ThankYouBaseFragment(), ThankYouPageTimerView.Th
                 bundle.putParcelable(ARG_THANK_PAGE_DATA, thanksPageData)
             }
         }
-
-
     }
 }

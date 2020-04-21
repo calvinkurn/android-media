@@ -13,7 +13,7 @@ class BillDetailViewHolder(val view: View) : AbstractViewHolder<BillDetail>(view
     override fun bind(element: BillDetail?) {
         element?.let {
             view.findViewById<TextView>(R.id.tvInvoiceTotalBillValue)
-                    .text = getString(R.string.thankyou_rp, element.totalBillAmountStr)
+                    .text = getString(R.string.thankyou_rp_without_space, element.totalBillAmountStr)
 
             element.serviceFee?.let {
                 view.findViewById<TextView>(R.id.tvInvoiceServiceTaxValue)

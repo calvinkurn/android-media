@@ -122,7 +122,7 @@ class DetailInvoiceMapper(val thanksPageData: ThanksPageData) {
                     shopOrder.storeName,
                     orderedItemList,
                     discountFromMerchant,
-                    if (shopOrder.shippingAmount > 0.0)
+                    if (totalProductProtectionForShop > 0.0)
                         CurrencyFormatUtil.convertPriceValue(totalProductProtectionForShop,
                                 false)
                     else null,

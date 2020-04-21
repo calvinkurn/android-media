@@ -10,25 +10,29 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_8"
-        android:text="@string/thank_invoice_item_discount"
+        android:maxLines="2"
+        android:ellipsize="end"
+        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginEnd="@dimen/dp_16"
         android:textColor="@color/Neutral_N700_96"
+        app:layout_constraintEnd_toStartOf="@+id/tvInvoiceShopItemNameTotalPrice"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="body_3"
-        app:typographyWeight="bold" />
+        app:typographyWeight="bold"
+        tools:text="Product Name" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvInvoiceShopItemNameTotalPrice"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_8"
         android:gravity="end"
         android:textColor="@color/Neutral_N700_96"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/tvInvoiceShopItemName"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="body_3"
-        tools:text="Rp12345678" />
+        tools:text="Rp123456783233232323232" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvInvoiceShopItemNameCountPrice"

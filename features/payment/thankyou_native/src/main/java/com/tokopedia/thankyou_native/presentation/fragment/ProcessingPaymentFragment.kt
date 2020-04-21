@@ -108,7 +108,7 @@ class ProcessingPaymentFragment : ThankYouBaseFragment() {
         tvPaymentGatewayName.text = thanksPageData.gatewayName
         tvCreditWithTimeLine.text = thanksPageData.additionalInfo.installmentInfo
         tvInterestRate.text = getString(R.string.thank_interest_rate, thanksPageData.additionalInfo.interest)
-        tvTotalAmount.text = getString(R.string.thankyou_rp, thanksPageData.amountStr)
+        tvTotalAmount.text = getString(R.string.thankyou_rp_without_space, thanksPageData.amountStr)
         tvSeeDetail.setOnClickListener { openInvoiceDetail(thanksPageData) }
     }
 

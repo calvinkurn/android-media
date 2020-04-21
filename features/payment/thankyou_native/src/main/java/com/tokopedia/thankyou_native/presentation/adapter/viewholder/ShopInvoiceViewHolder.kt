@@ -59,7 +59,7 @@ class ShopInvoiceViewHolder(val view: View) : AbstractViewHolder<ShopInvoice>(vi
             }
 
             element.productProtectionStr?.let {
-                tvInvoiceShopItemProtectionValue.text = getString(R.string.thankyou_rp, element.productProtectionStr)
+                tvInvoiceShopItemProtectionValue.text = getString(R.string.thankyou_rp_without_space, element.productProtectionStr)
                 tvInvoiceShopItemProtectionValue.visible()
                 tvInvoiceShopItemProtection.visible()
             } ?: run {
@@ -68,7 +68,7 @@ class ShopInvoiceViewHolder(val view: View) : AbstractViewHolder<ShopInvoice>(vi
             }
 
             element.shippingPriceStr?.let {
-                tvInvoiceShopItemShippingValue.text = getString(R.string.thankyou_rp, element.shippingPriceStr)
+                tvInvoiceShopItemShippingValue.text = getString(R.string.thankyou_rp_without_space, element.shippingPriceStr)
                 tvInvoiceShopItemShippingValue.visible()
                 tvInvoiceShopItemShipping.visible()
             } ?: run {
@@ -99,7 +99,7 @@ class ShopInvoiceViewHolder(val view: View) : AbstractViewHolder<ShopInvoice>(vi
 
 
             element.shippingInsurancePriceStr?.let {
-                tvInvoiceShopItemShippingInsuranceValue.text = getString(R.string.thankyou_rp, element.shippingInsurancePriceStr)
+                tvInvoiceShopItemShippingInsuranceValue.text = getString(R.string.thankyou_rp_without_space, element.shippingInsurancePriceStr)
                 tvInvoiceShopItemShippingInsuranceValue.visible()
                 tvInvoiceShopItemShippingInsurance.visible()
             } ?: run {
@@ -133,7 +133,7 @@ class ShopInvoiceViewHolder(val view: View) : AbstractViewHolder<ShopInvoice>(vi
         shopItemView.findViewById<TextView>(R.id.tvInvoiceShopItemNameTotalPrice).text = getString(R.string.thankyou_rp_without_space, orderedItem.itemTotalPriceStr)
 
         shopItemView.findViewById<TextView>(R.id.tvInvoiceShopItemNameCountPrice)
-                .text = itemView.context.getString(R.string.thank_invoice_item_count_price, orderedItem.itemCount, orderedItem.itemTotalPriceStr!!)
+                .text = itemView.context.getString(R.string.thank_invoice_item_count_price, orderedItem.itemCount, orderedItem.itemPrice)
         return shopItemView
     }
 

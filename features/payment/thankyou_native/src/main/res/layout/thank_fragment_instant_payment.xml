@@ -82,14 +82,13 @@
                 android:layout_marginTop="@dimen/dp_2"
                 android:layout_marginEnd="@dimen/dp_16"
                 android:gravity="center"
-                android:text="@string/thankyou_rp"
                 android:textColor="@color/Yellow_Y500"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_instant_payment_total_pay"
                 app:typographyType="body_2"
                 app:typographyWeight="bold"
-                tools:text="Rp 10000"
+                tools:text="Rp10000"
                 tools:visibility="visible" />
 
             <View
