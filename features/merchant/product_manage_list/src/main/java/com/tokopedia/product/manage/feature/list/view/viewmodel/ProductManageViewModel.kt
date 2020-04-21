@@ -105,6 +105,8 @@ class ProductManageViewModel @Inject constructor(
         get() = _productFiltersTab
     val editVariantPriceResult: LiveData<Result<EditVariantResult>>
         get() = _editVariantPriceResult
+    val editVariantStockResult: LiveData<Result<EditVariantResult>>
+        get() = _editVariantStockResult
 
     private val _viewState = MutableLiveData<ViewState>()
     private val _productListResult = MutableLiveData<Result<List<ProductViewModel>>>()
@@ -121,6 +123,7 @@ class ProductManageViewModel @Inject constructor(
     private val _selectedFilterAndSort = MutableLiveData<FilterOptionWrapper>()
     private val _productFiltersTab = MutableLiveData<Result<GetFilterTabResult>>()
     private val _editVariantPriceResult = MutableLiveData<Result<EditVariantResult>>()
+    private val _editVariantStockResult = MutableLiveData<Result<EditVariantResult>>()
 
     private var getProductListJob: Job? = null
     private var getFilterTabJob: Job? = null
@@ -334,6 +337,28 @@ class ProductManageViewModel @Inject constructor(
             hideProgressDialog()
         }) {
             _editVariantPriceResult.value = Fail(it)
+            hideProgressDialog()
+        }
+    }
+
+    fun editVariantsStock(result: EditVariantResult) {
+        showProgressDialog()
+        launchCatchError(block = {
+            val response = withContext(dispatchers.io) {
+                val shopId = userSessionInterface.shopId
+                val variantInputParam = mapResultToUpdateParam(shopId, result)
+                val requestParams = EditProductVariantUseCase.createRequestParams(variantInputParam)
+                editProductVariantUseCase.execute(requestParams).response
+            }
+
+            if(response.isSuccess) {
+                _editVariantStockResult.value = Success(result)
+            } else {
+                _editVariantStockResult.value = Fail(MessageErrorException())
+            }
+            hideProgressDialog()
+        }) {
+            _editVariantStockResult.value = Fail(it)
             hideProgressDialog()
         }
     }
