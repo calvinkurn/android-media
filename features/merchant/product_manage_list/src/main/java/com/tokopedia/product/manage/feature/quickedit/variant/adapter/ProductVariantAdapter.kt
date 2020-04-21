@@ -1,9 +1,9 @@
 package com.tokopedia.product.manage.feature.quickedit.variant.adapter
 
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
-import com.tokopedia.product.manage.feature.quickedit.variant.adapter.factory.ProductVariantAdapterFactoryImpl
-import com.tokopedia.product.manage.feature.quickedit.variant.adapter.model.ProductVariant
+import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 
 class ProductVariantAdapter(
-    adapterFactory: ProductVariantAdapterFactoryImpl
-): BaseListAdapter<ProductVariant, ProductVariantAdapterFactoryImpl>(adapterFactory)
+    adapterFactory: BaseAdapterTypeFactory
+): BaseListAdapter<Visitable<*>, BaseAdapterTypeFactory>(adapterFactory)
