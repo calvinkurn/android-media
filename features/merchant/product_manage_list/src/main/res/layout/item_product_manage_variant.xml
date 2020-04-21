@@ -7,7 +7,7 @@
     android:layout_marginBottom="@dimen/spacing_lvl3">
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/name"
+        android:id="@+id/textProductName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingLeft="@dimen/spacing_lvl4"
@@ -17,10 +17,11 @@
         app:typographyWeight="bold"/>
 
     <com.tokopedia.unifycomponents.TextFieldUnify
-        android:id="@+id/priceTextField"
+        android:id="@+id/textFieldPrice"
         android:paddingLeft="@dimen/spacing_lvl4"
         android:paddingRight="@dimen/spacing_lvl4"
         android:layout_marginTop="@dimen/spacing_lvl4"
+        android:focusable="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
