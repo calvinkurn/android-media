@@ -163,10 +163,10 @@ open class AddEditProductAddService : AddEditProductBaseService() {
             delay(NOTIFICATION_CHANGE_DELAY)
             setUploadProductDataSuccess()
             ProductAddShippingTracking.clickFinish(shopId, true)
-        }, onError = {
-            it.message?.let { errorMessage ->
+        }, onError = { throwable ->
+            throwable.message?.let { errorMessage ->
                 delay(NOTIFICATION_CHANGE_DELAY)
-                setUploadProductDataError(errorMessage)
+                setUploadProductDataError(throwable)
                 ProductAddShippingTracking.clickFinish(shopId, false, errorMessage)
             }
         })

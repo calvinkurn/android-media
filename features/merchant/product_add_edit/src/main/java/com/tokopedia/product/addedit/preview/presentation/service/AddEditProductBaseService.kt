@@ -75,12 +75,14 @@ abstract class AddEditProductBaseService : JobIntentService(), CoroutineScope {
         notificationManager?.onSuccessUpload()
     }
 
-    fun setUploadProductDataError(errorMessage: String) {
-        // don't display gql error message to user
-        if (errorMessage.contains(GQL_ERROR_SUBSTRING)) {
-            notificationManager?.onFailedUpload(resourceProvider.getGqlErrorMessage() ?: "")
-        } else {
-            notificationManager?.onFailedUpload(errorMessage)
+    fun setUploadProductDataError(throwable: Throwable) {
+        throwable.message?.let { errorMessage ->
+            // don't display gql error message to user
+            if (errorMessage.contains(GQL_ERROR_SUBSTRING)) {
+                notificationManager?.onFailedUpload(resourceProvider.getGqlErrorMessage() ?: "")
+            } else {
+                notificationManager?.onFailedUpload(errorMessage)
+            }
         }
     }
 
@@ -110,8 +112,8 @@ abstract class AddEditProductBaseService : JobIntentService(), CoroutineScope {
             }
             delay(NOTIFICATION_CHANGE_DELAY)
             onUploadProductImagesDone(uploadIdList, variantOptionUploadId, sizeChartUploadId)
-        }, onError = {
-            it.message?.let { errorMessage -> setUploadProductDataError(errorMessage) }
+        }, onError = { throwable ->
+            setUploadProductDataError(throwable)
         })
     }
 
