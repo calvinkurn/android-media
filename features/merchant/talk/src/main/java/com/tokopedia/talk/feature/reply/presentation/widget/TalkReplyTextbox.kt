@@ -3,8 +3,7 @@ package com.tokopedia.talk.feature.reply.presentation.widget
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
-import com.tokopedia.kotlin.extensions.view.loadImage
-import com.tokopedia.talk.feature.reply.presentation.uimodel.TalkReplyTextboxModel
+import com.tokopedia.kotlin.extensions.view.loadImageCircle
 import com.tokopedia.talk_old.R
 import com.tokopedia.unifycomponents.BaseCustomView
 import kotlinx.android.synthetic.main.widget_talk_reply_textbox.view.*
@@ -26,7 +25,7 @@ class TalkReplyTextbox : BaseCustomView {
         View.inflate(context, R.layout.widget_talk_reply_textbox, this)
     }
 
-    fun bind(talkReplyTextboxModel: TalkReplyTextboxModel) {
-        replyTextField.textFieldIcon1.loadImage(talkReplyTextboxModel.userThumbNail)
+    fun setProfilePicture(profilePicture: String) {
+        replyUserProfilePicture.loadImageCircle(profilePicture)
     }
 }

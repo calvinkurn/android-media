@@ -2,7 +2,6 @@ package com.tokopedia.talk.feature.reply.presentation.fragment
 
 import android.content.Intent
 import android.os.Bundle
-import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -28,14 +27,12 @@ import com.tokopedia.talk.feature.reply.presentation.adapter.TalkReplyAdapter
 import com.tokopedia.talk.feature.reply.presentation.adapter.factory.TalkReplyAdapterTypeFactory
 import com.tokopedia.talk.feature.reply.presentation.uimodel.TalkReplyHeaderModel
 import com.tokopedia.talk.feature.reply.presentation.viewmodel.TalkReplyViewModel
-import com.tokopedia.talk.feature.reply.presentation.widget.listeners.OnKebabClickedListener
-import com.tokopedia.talk.feature.reply.presentation.widget.listeners.OnReportClickedListener
 import com.tokopedia.talk.feature.reply.presentation.widget.TalkReplyReportBottomSheet
-import com.tokopedia.talk.feature.reply.presentation.widget.listeners.OnAttachedProductCardClickedListener
-import com.tokopedia.talk.feature.reply.presentation.widget.listeners.TalkReplyHeaderListener
+import com.tokopedia.talk.feature.reply.presentation.widget.listeners.*
 import com.tokopedia.talk_old.R
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_talk_reading.pageError
 import kotlinx.android.synthetic.main.fragment_talk_reading.pageLoading
 import kotlinx.android.synthetic.main.fragment_talk_reply.*
@@ -43,7 +40,8 @@ import kotlinx.android.synthetic.main.partial_talk_connection_error.view.*
 import javax.inject.Inject
 
 class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>, OnReportClickedListener,
-        OnKebabClickedListener, OnAttachedProductCardClickedListener, TalkReplyHeaderListener{
+        OnKebabClickedListener, OnAttachedProductCardClickedListener, TalkReplyHeaderListener,
+        OnMaximumLimitReachedListener {
 
     companion object {
 
@@ -64,6 +62,8 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
 
     @Inject
     lateinit var viewModel: TalkReplyViewModel
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     private var questionId = ""
     private var shopId = ""
@@ -138,6 +138,11 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
         removeObservers(viewModel.createNewCommentResult)
         super.onDestroy()
     }
+
+    override fun onMaximumLimitReached() {
+        onAnswerTooLong()
+    }
+
     private fun goToReportActivity(talkId: Int, commentId: Int) {
 
     }
@@ -347,6 +352,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
     private fun initView() {
         initAdapter()
         initRecyclerView()
+        getProfilePicture()
     }
 
     private fun initAdapter() {
@@ -398,5 +404,9 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
         } else {
             onSuccessFollowThread()
         }
+    }
+
+    private fun getProfilePicture() {
+        replyTextBox.setProfilePicture(userSession.profilePicture)
     }
 }
