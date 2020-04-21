@@ -2,7 +2,7 @@ package com.tokopedia.product.manage.feature.quickedit.variant.data.model.param
 
 import com.google.gson.annotations.SerializedName
 
-class VariantSizeChartInput(
+data class VariantSizeChartInput(
     @SerializedName("picID")
     val picId: String,
     @SerializedName("description")

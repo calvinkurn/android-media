@@ -3,7 +3,7 @@ package com.tokopedia.product.manage.feature.quickedit.variant.data.model.param
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.product.manage.feature.multiedit.data.param.ShopParam
 
-class UpdateVariantParam(
+data class UpdateVariantParam(
     @SerializedName("shop")
     val shop: ShopParam,
     @SerializedName("productID")

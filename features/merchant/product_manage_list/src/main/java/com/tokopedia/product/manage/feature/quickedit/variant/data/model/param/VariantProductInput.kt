@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName
 import com.tokopedia.product.manage.feature.quickedit.variant.data.model.Picture
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 
-class VariantProductInput(
+data class VariantProductInput(
     @SerializedName("status")
     val status: ProductStatus,
     @SerializedName("combination")

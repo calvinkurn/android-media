@@ -2,7 +2,7 @@ package com.tokopedia.product.manage.feature.quickedit.variant.data.model.param
 
 import com.google.gson.annotations.SerializedName
 
-class VariantInputParam(
+data class VariantInputParam(
     @SerializedName("products")
     val products: List<VariantProductInput>,
     @SerializedName("selections")
