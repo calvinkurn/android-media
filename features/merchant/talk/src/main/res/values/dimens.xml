@@ -22,7 +22,6 @@
     <dimen name="dp_215">215dp</dimen>
     <dimen name="dp_217">217dp</dimen>
     <dimen name="dp_234">234dp</dimen>
-    <dimen name="dp_328">328dp</dimen>
     <dimen name="empty_icon_talk_width">203dp</dimen>
     <dimen name="empty_icon_talk_height">116dp</dimen>
     <dimen name="margin_comment_seperator_left">58dp</dimen>

@@ -4,6 +4,8 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import com.tokopedia.talk.feature.reply.presentation.uimodel.TalkReplyHeaderModel
+import com.tokopedia.talk.feature.reply.presentation.widget.listeners.OnKebabClickedListener
+import com.tokopedia.talk.feature.reply.presentation.widget.listeners.TalkReplyHeaderListener
 import com.tokopedia.talk_old.R
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.UnifyButton
@@ -32,15 +34,18 @@ class TalkReplyHeader : BaseCustomView{
     }
 
     fun bind(talkReplyHeaderModel: TalkReplyHeaderModel,
-             onTermsAndConditionsClickedListener: OnTermsAndConditionsClickedListener,
+             talkReplyHeaderListener: TalkReplyHeaderListener,
              onKebabClickedListener: OnKebabClickedListener) {
-        this.replyHeaderDate.text = talkReplyHeaderModel.date
-        this.replyHeaderMessage.text = talkReplyHeaderModel.question
-        this.replyHeaderTNC.setOnClickListener {
-            onTermsAndConditionsClickedListener.onTermsAndConditionsClicked()
+        replyHeaderDate.text = talkReplyHeaderModel.date
+        replyHeaderMessage.text = talkReplyHeaderModel.question
+        replyHeaderTNC.setOnClickListener {
+            talkReplyHeaderListener.onTermsAndConditionsClicked()
         }
-        this.replyHeaderKebab.setOnClickListener {
+        replyHeaderKebab.setOnClickListener {
             onKebabClickedListener.onKebabClicked()
+        }
+        replyHeaderFollowButton.setOnClickListener {
+            talkReplyHeaderListener.onFollowUnfollowButtonClicked()
         }
         if(talkReplyHeaderModel.isFollowed) {
             setButtonToFollowed()
@@ -50,13 +55,13 @@ class TalkReplyHeader : BaseCustomView{
     }
 
     fun setButtonToFollowed() {
-        this.replyHeaderFollowButton.text = FOLLOWING_TEXT
-        this.replyHeaderFollowButton.buttonType = UnifyButton.Type.ALTERNATE
+        replyHeaderFollowButton.text = FOLLOWING_TEXT
+        replyHeaderFollowButton.buttonType = UnifyButton.Type.ALTERNATE
     }
 
     fun setButtonToUnfollowed() {
-        this.replyHeaderFollowButton.text = UNFOLLOWED_TEXT
-        this.replyHeaderFollowButton.buttonType = UnifyButton.Type.MAIN
+        replyHeaderFollowButton.text = UNFOLLOWED_TEXT
+        replyHeaderFollowButton.buttonType = UnifyButton.Type.MAIN
     }
 
 

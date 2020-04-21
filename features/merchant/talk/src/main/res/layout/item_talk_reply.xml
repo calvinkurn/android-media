@@ -64,15 +64,25 @@
         app:typographyType="body_2"
         app:typographyWeight="reguler" />
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/replyAttachedProductsRecyclerView"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_12"
+        app:layout_constraintStart_toStartOf="@id/replyMessage"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/replyMessage"/>
+
     <ImageView
         android:id="@+id/likeIcon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/layout_lvl2"
+        android:layout_marginTop="@dimen/dp_12"
+        app:layout_goneMarginTop="@dimen/dp_12"
         app:layout_goneMarginStart="@dimen/layout_lvl2"
         app:srcCompat="@drawable/talk_ic_like"
         app:layout_constraintStart_toStartOf="@id/replyMessage"
-        app:layout_constraintTop_toBottomOf="@id/replyMessage" />
+        app:layout_constraintTop_toBottomOf="@id/replyAttachedProductsRecyclerView" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/replyLikeCount"

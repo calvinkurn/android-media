@@ -8,8 +8,11 @@ import com.tokopedia.talk.feature.reply.presentation.adapter.uimodel.TalkReplySh
 import com.tokopedia.talk.feature.reply.presentation.adapter.uimodel.TalkReplyUiModel
 import com.tokopedia.talk.feature.reply.presentation.adapter.viewholder.TalkReplyShimmerViewHolder
 import com.tokopedia.talk.feature.reply.presentation.adapter.viewholder.TalkReplyViewHolder
+import com.tokopedia.talk.feature.reply.presentation.widget.listeners.OnAttachedProductCardClickedListener
 
-class TalkReplyAdapterTypeFactory : BaseAdapterTypeFactory(), TalkReplyTypeFactory {
+class TalkReplyAdapterTypeFactory(
+        private val onAttachedProductCardClickedListener: OnAttachedProductCardClickedListener
+) : BaseAdapterTypeFactory(), TalkReplyTypeFactory {
 
     override fun type(talkReplyUiModel: TalkReplyUiModel): Int {
         return TalkReplyViewHolder.LAYOUT
@@ -21,7 +24,7 @@ class TalkReplyAdapterTypeFactory : BaseAdapterTypeFactory(), TalkReplyTypeFacto
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when(type) {
-            TalkReplyViewHolder.LAYOUT -> TalkReplyViewHolder(parent)
+            TalkReplyViewHolder.LAYOUT -> TalkReplyViewHolder(parent, onAttachedProductCardClickedListener)
             TalkReplyShimmerViewHolder.LAYOUT -> TalkReplyShimmerViewHolder(parent)
             else -> super.createViewHolder(parent, type)
         }

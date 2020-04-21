@@ -4,12 +4,17 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.talk.feature.reading.presentation.adapter.viewholder.TalkReadingViewHolder
+import com.tokopedia.talk.feature.reply.data.model.AttachedProduct
+import com.tokopedia.talk.feature.reply.presentation.adapter.TalkReplyAttachedProductAdapter
 import com.tokopedia.talk.feature.reply.presentation.adapter.uimodel.TalkReplyUiModel
+import com.tokopedia.talk.feature.reply.presentation.widget.listeners.OnAttachedProductCardClickedListener
 import com.tokopedia.talk_old.R
 import kotlinx.android.synthetic.main.item_talk_reading.view.*
 import kotlinx.android.synthetic.main.item_talk_reply.view.*
 
-class TalkReplyViewHolder(view: View) : AbstractViewHolder<TalkReplyUiModel>(view) {
+class TalkReplyViewHolder(view: View,
+                          private val onAttachedProductCardClickedListener: OnAttachedProductCardClickedListener
+) : AbstractViewHolder<TalkReplyUiModel>(view) {
 
     companion object {
         val LAYOUT = R.layout.item_talk_reply
@@ -23,6 +28,9 @@ class TalkReplyViewHolder(view: View) : AbstractViewHolder<TalkReplyUiModel>(vie
             showSellerLabelWithCondition(isSeller)
             showAnswer(content, answerID)
             showNumberOfLikesWithCondition(likeCount)
+            if(attachedProductCount > 0) {
+                showAttachedProducts(attachedProducts)
+            }
         }
     }
 
@@ -76,6 +84,12 @@ class TalkReplyViewHolder(view: View) : AbstractViewHolder<TalkReplyUiModel>(vie
         if(likeCount > 0) {
             itemView.replyLikeCount.text = likeCount.toString()
         }
+    }
+
+    private fun showAttachedProducts(attachedProducts: List<AttachedProduct>) {
+        val adapter = TalkReplyAttachedProductAdapter(onAttachedProductCardClickedListener)
+        itemView.replyAttachedProductsRecyclerView.adapter = adapter
+        adapter.setData(attachedProducts)
     }
 
 

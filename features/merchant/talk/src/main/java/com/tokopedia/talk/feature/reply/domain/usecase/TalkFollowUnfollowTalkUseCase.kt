@@ -13,16 +13,16 @@ class TalkFollowUnfollowTalkUseCase @Inject constructor(graphqlRepository: Graph
         private val query by lazy {
             val talkId = "\$talk_id"
             """
-                query talkFollowUnfollowTalk($talkId: Int!) {
-                    talkFollowUnfollowTalk(talk_id: $talkId) {
-                        status
-                        messageError
-                        data {
-                            isSuccess
-                            talkID
-                        }
-                        messageErrorOriginal
+                mutation talkFollowUnfollowTalk($talkId: Int) {
+                  talkFollowUnfollowTalk(talk_id: $talkId) {
+                    status
+                    messageError
+                    data {
+                      isSuccess
+                      talkID
                     }
+                    messageErrorOriginal
+                  }
                 }
             """.trimIndent()
         }

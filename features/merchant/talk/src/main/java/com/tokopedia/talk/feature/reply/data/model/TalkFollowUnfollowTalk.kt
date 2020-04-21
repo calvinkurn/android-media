@@ -6,9 +6,9 @@ data class TalkFollowUnfollowTalk(
         @SerializedName("status")
         val status: String = "",
         @SerializedName("messageError")
-        val messageError: String = "",
+        val messageError: List<String> = listOf(),
         @SerializedName("data")
         val data: TalkFollowUnfollowTalkResultData = TalkFollowUnfollowTalkResultData(),
         @SerializedName("messageErrorOriginal")
-        val originalErrorMessage: String = ""
+        val originalErrorMessage: List<String> = listOf()
 )

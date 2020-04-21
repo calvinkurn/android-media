@@ -12,6 +12,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.talk.common.TalkConstants
 import com.tokopedia.talk.common.TalkConstants.QUESTION_ID
 import com.tokopedia.talk.common.TalkConstants.SHOP_ID
@@ -24,10 +25,11 @@ import com.tokopedia.talk.feature.reply.presentation.adapter.TalkReplyAdapter
 import com.tokopedia.talk.feature.reply.presentation.adapter.factory.TalkReplyAdapterTypeFactory
 import com.tokopedia.talk.feature.reply.presentation.uimodel.TalkReplyHeaderModel
 import com.tokopedia.talk.feature.reply.presentation.viewmodel.TalkReplyViewModel
-import com.tokopedia.talk.feature.reply.presentation.widget.OnKebabClickedListener
-import com.tokopedia.talk.feature.reply.presentation.widget.OnReportClickedListener
-import com.tokopedia.talk.feature.reply.presentation.widget.OnTermsAndConditionsClickedListener
+import com.tokopedia.talk.feature.reply.presentation.widget.listeners.OnKebabClickedListener
+import com.tokopedia.talk.feature.reply.presentation.widget.listeners.OnReportClickedListener
 import com.tokopedia.talk.feature.reply.presentation.widget.TalkReplyReportBottomSheet
+import com.tokopedia.talk.feature.reply.presentation.widget.listeners.OnAttachedProductCardClickedListener
+import com.tokopedia.talk.feature.reply.presentation.widget.listeners.TalkReplyHeaderListener
 import com.tokopedia.talk_old.R
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Success
@@ -37,9 +39,8 @@ import kotlinx.android.synthetic.main.fragment_talk_reply.*
 import kotlinx.android.synthetic.main.partial_talk_connection_error.view.*
 import javax.inject.Inject
 
-class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>,
-    OnTermsAndConditionsClickedListener, OnReportClickedListener,
-    OnKebabClickedListener {
+class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>, OnReportClickedListener,
+        OnKebabClickedListener, OnAttachedProductCardClickedListener, TalkReplyHeaderListener{
 
     companion object {
 
@@ -84,6 +85,10 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
         goToTermsAndConditionsPage()
     }
 
+    override fun onFollowUnfollowButtonClicked() {
+        followUnfollowTalk()
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_talk_reply, container, false)
     }
@@ -115,6 +120,9 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
         showBottomSheet()
     }
 
+    override fun onClickAttachedProduct(productId: String) {
+        goToPdp(productId)
+    }
     private fun goToReportActivity(talkId: Int, commentId: Int) {
 
     }
@@ -215,18 +223,10 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
         viewModel.followUnfollowResult.observe(this, Observer {
             when(it) {
                 is Success -> {
-                    if(viewModel.getIsFollowing()) {
-                        onSuccessUnfollowThread()
-                    } else {
-                        onSuccessFollowThread()
-                    }
+                    showFollowingSuccess()
                 }
                 else -> {
-                    if(viewModel.getIsFollowing()) {
-                        onFailFollowThread()
-                    } else {
-                        onFailUnfollowThread()
-                    }
+                    showFollowingError()
                 }
             }
         })
@@ -241,10 +241,10 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
                     bindHeader(TalkReplyMapper.mapDiscussionDataResponseToTalkReplyHeaderModel(it.data))
                     if(it.data.discussionDataByQuestionID.question.totalAnswer > 0) {
                         showAnswers(it.data)
-
                     } else {
                         onAnswersEmpty()
                     }
+                    setIsFollowing(it.data.discussionDataByQuestionID.question.questionState.isFollowed)
                 }
                 else -> {
                     showPageError()
@@ -296,7 +296,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
     }
 
     private fun initAdapter() {
-        adapter = TalkReplyAdapter(TalkReplyAdapterTypeFactory())
+        adapter = TalkReplyAdapter(TalkReplyAdapterTypeFactory(this))
     }
 
     private fun initRecyclerView() {
@@ -315,5 +315,33 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
         talkReplyTotalAnswers.visibility = View.VISIBLE
         talkReplyRecyclerView.visibility = View.VISIBLE
         talkReplyEmptyState.visibility = View.GONE
+    }
+
+    private fun goToPdp(productId: String) {
+
+    }
+
+    private fun followUnfollowTalk() {
+        viewModel.followUnfollowTalk(questionId.toIntOrZero())
+    }
+
+    private fun setIsFollowing(isFollowing: Boolean) {
+        viewModel.setIsFollowing(isFollowing)
+    }
+
+    private fun showFollowingError() {
+        if(viewModel.getIsFollowing()) {
+            onFailUnfollowThread()
+        } else {
+            onFailFollowThread()
+        }
+    }
+
+    private fun showFollowingSuccess() {
+        if(viewModel.getIsFollowing()) {
+            onSuccessUnfollowThread()
+        } else {
+            onSuccessFollowThread()
+        }
     }
 }

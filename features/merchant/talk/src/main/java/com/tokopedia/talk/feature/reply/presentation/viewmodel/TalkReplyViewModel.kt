@@ -21,6 +21,10 @@ class TalkReplyViewModel @Inject constructor(
         private val dispatchers: CoroutineDispatchers
 ): BaseViewModel(dispatchers.main) {
 
+    companion object {
+        const val MUTATION_SUCCESS = 1
+    }
+
     private val _followUnfollowResult = MutableLiveData<Result<TalkFollowUnfollowTalkResponseWrapper>>()
     val followUnfollowResult: LiveData<Result<TalkFollowUnfollowTalkResponseWrapper>>
     get() = _followUnfollowResult
@@ -37,7 +41,11 @@ class TalkReplyViewModel @Inject constructor(
                 talkFollowUnfollowTalkUseCase.setParams(talkId)
                 talkFollowUnfollowTalkUseCase.executeOnBackground()
             }
-            _followUnfollowResult.postValue(Success(response))
+            if(response.talkFollowUnfollowTalkResponse.data.isSuccess == MUTATION_SUCCESS) {
+                _followUnfollowResult.postValue(Success(response))
+            } else {
+                _followUnfollowResult.postValue(Fail(Throwable(message = response.talkFollowUnfollowTalkResponse.messageError.first())))
+            }
         }) {
             _followUnfollowResult.postValue(Fail(it))
         }
