@@ -6,6 +6,7 @@ import android.text.TextWatcher
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.feature.quickedit.variant.adapter.model.ProductVariant
@@ -30,6 +31,7 @@ class ProductVariantStockViewHolder(
         setProductName(variant)
         setupStockQuantityEditor(variant)
         setupStatusSwitch(variant)
+        setupStatusLabel(variant)
     }
 
     private fun setProductName(variant: ProductVariant) {
@@ -44,7 +46,7 @@ class ProductVariantStockViewHolder(
 
     private fun setupStatusSwitch(variant: ProductVariant) {
         itemView.switchStatus.setOnCheckedChangeListener(null)
-        itemView.switchStatus.isChecked = variant.status == ProductStatus.ACTIVE
+        itemView.switchStatus.isChecked = variant.isActive()
         itemView.switchStatus.setOnCheckedChangeListener { _, isChecked ->
             val status = if(isChecked) {
                 ProductStatus.ACTIVE
@@ -53,6 +55,10 @@ class ProductVariantStockViewHolder(
             }
             listener.onStatusChanged(variant.id, status)
         }
+    }
+
+    private fun setupStatusLabel(variant: ProductVariant) {
+        itemView.labelInactive.showWithCondition(variant.isNotActive())
     }
 
     private fun setStockMinMaxValue() {
