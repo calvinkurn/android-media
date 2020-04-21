@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import android.widget.TextView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -13,29 +14,32 @@ import androidx.lifecycle.ViewModelProviders
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.analytics.performance.PerformanceMonitoring
+import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
+import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
 import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.di.TokopointBundleComponent
 import com.tokopedia.tokopoints.view.adapter.SpacesItemDecoration
+import com.tokopedia.tokopoints.view.firebaseAnalytics.TokopointPerformanceConstant.PointhistoryPlt.Companion.POINTHISTORY_TOKOPOINT_PLT
+import com.tokopedia.tokopoints.view.firebaseAnalytics.TokopointPerformanceConstant.PointhistoryPlt.Companion.POINTHISTORY_TOKOPOINT_PLT_NETWORK_METRICS
+import com.tokopedia.tokopoints.view.firebaseAnalytics.TokopointPerformanceConstant.PointhistoryPlt.Companion.POINTHISTORY_TOKOPOINT_PLT_PREPARE_METRICS
+import com.tokopedia.tokopoints.view.firebaseAnalytics.TokopointPerformanceConstant.PointhistoryPlt.Companion.POINTHISTORY_TOKOPOINT_PLT_RENDER_METRICS
+import com.tokopedia.tokopoints.view.firebaseAnalytics.TokopointPerformanceMonitoringListener
 import com.tokopedia.tokopoints.view.model.TokoPointStatusPointsEntity
 import com.tokopedia.tokopoints.view.util.*
 import kotlinx.android.synthetic.main.layout_tp_server_error.view.*
+import kotlinx.android.synthetic.main.tp_content_point_history.*
 import kotlinx.android.synthetic.main.tp_content_point_history.view.*
+import kotlinx.android.synthetic.main.tp_content_point_history.view.rv_history_point
 import kotlinx.android.synthetic.main.tp_content_point_history_header.view.*
 import kotlinx.android.synthetic.main.tp_fragment_point_history.view.*
 import kotlinx.android.synthetic.main.tp_history_point_header.*
 
 import javax.inject.Inject
 
-class PointHistoryFragment : BaseDaggerFragment(), PointHistoryContract.View, View.OnClickListener {
-
-
-    override fun getScreenName(): String {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
+class PointHistoryFragment : BaseDaggerFragment(), PointHistoryContract.View, View.OnClickListener, TokopointPerformanceMonitoringListener {
 
     private var mStrPointExpInfo: String? = null
     private var mStrLoyaltyExpInfo: String? = null
@@ -47,11 +51,13 @@ class PointHistoryFragment : BaseDaggerFragment(), PointHistoryContract.View, Vi
     lateinit var mAdapter: PointHistoryListAdapter
 
     private val mPresenter: PointHistoryViewModel by lazy { ViewModelProviders.of(this, viewModelFactory).get(PointHistoryViewModel::class.java) }
-    private var performanceMonitoring: PerformanceMonitoring? = null
-    private var isTraceSTopped = false
+    private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
+
+
+    override fun getScreenName() = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        performanceMonitoring = PerformanceMonitoring.start(POINTHISTORY_TOKOPOINT_PLT)
+        startPerformanceMonitoring()
         super.onCreate(savedInstanceState)
     }
 
@@ -63,6 +69,8 @@ class PointHistoryFragment : BaseDaggerFragment(), PointHistoryContract.View, Vi
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         init(view)
+        stopPreparePagePerformanceMonitoring()
+        startNetworkRequestPerformanceMonitoring()
         initobserver()
     }
 
@@ -91,13 +99,13 @@ class PointHistoryFragment : BaseDaggerFragment(), PointHistoryContract.View, Vi
                             return@let
                         }
                         onError(it.data)
-                        stopPerformanceTrace()
                     }
                     is Success -> {
+                        stopNetworkRequestPerformanceMonitoring()
+                        startRenderPerformanceMonitoring()
+                        setOnRecyclerViewLayoutReady()
                         mAdapter.showData(it.data)
-                        stopPerformanceTrace()
                     }
-
                 }
             }
         })
@@ -125,13 +133,6 @@ class PointHistoryFragment : BaseDaggerFragment(), PointHistoryContract.View, Vi
             text_title_error.setText(R.string.tp_history_empty_title)
             text_label_error.setText(R.string.tp_history_empty_desc)
             text_failed_action.setText(R.string.tp_history_btn_action)
-        }
-    }
-
-    private fun stopPerformanceTrace() {
-        if (!isTraceSTopped) {
-            performanceMonitoring?.stopTrace()
-            isTraceSTopped = true
         }
     }
 
@@ -198,12 +199,78 @@ class PointHistoryFragment : BaseDaggerFragment(), PointHistoryContract.View, Vi
         private val CONTAINER_LOADER = 0
         private val CONTAINER_DATA = 1
         private val CONTAINER_ERROR = 2
-        private const val POINTHISTORY_TOKOPOINT_PLT = "pointhistorytokopoint_plt"
 
         fun newInstance(extras: Bundle?): Fragment {
             val fragment = PointHistoryFragment()
             fragment.arguments = extras
             return fragment
         }
+    }
+
+    override fun startPerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring = PageLoadTimePerformanceCallback(
+                POINTHISTORY_TOKOPOINT_PLT_PREPARE_METRICS,
+                POINTHISTORY_TOKOPOINT_PLT_NETWORK_METRICS,
+                POINTHISTORY_TOKOPOINT_PLT_RENDER_METRICS,
+                0,
+                0,
+                0,
+                0,
+                null
+        )
+
+        pageLoadTimePerformanceMonitoring?.startMonitoring(POINTHISTORY_TOKOPOINT_PLT)
+        pageLoadTimePerformanceMonitoring?.startPreparePagePerformanceMonitoring()
+    }
+
+    override fun stopPerformanceMonitoring() {
+        if (pageLoadTimePerformanceMonitoring != null) {
+            pageLoadTimePerformanceMonitoring?.stopMonitoring()
+            pageLoadTimePerformanceMonitoring = null
+        }
+    }
+
+    override fun stopPreparePagePerformanceMonitoring() {
+        if (pageLoadTimePerformanceMonitoring != null) {
+            pageLoadTimePerformanceMonitoring?.stopPreparePagePerformanceMonitoring()
+        }
+    }
+
+    override fun startNetworkRequestPerformanceMonitoring() {
+        if (pageLoadTimePerformanceMonitoring != null) {
+            pageLoadTimePerformanceMonitoring?.startNetworkRequestPerformanceMonitoring()
+        }
+    }
+
+    override fun stopNetworkRequestPerformanceMonitoring() {
+        if (pageLoadTimePerformanceMonitoring != null) {
+            pageLoadTimePerformanceMonitoring?.stopNetworkRequestPerformanceMonitoring()
+        }
+    }
+
+    override fun startRenderPerformanceMonitoring() {
+        if (pageLoadTimePerformanceMonitoring != null) {
+            pageLoadTimePerformanceMonitoring?.startRenderPerformanceMonitoring()
+        }
+    }
+
+    override fun stopRenderPerformanceMonitoring() {
+        if (pageLoadTimePerformanceMonitoring != null) {
+            pageLoadTimePerformanceMonitoring?.stopRenderPerformanceMonitoring()
+        }
+    }
+
+    private fun setOnRecyclerViewLayoutReady() {
+        rv_history_point.viewTreeObserver
+                .addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+                    override fun onGlobalLayout() {
+                        if (pageLoadTimePerformanceMonitoring != null) {
+                            stopRenderPerformanceMonitoring()
+                            stopPerformanceMonitoring()
+                        }
+                        pageLoadTimePerformanceMonitoring = null
+                        rv_history_point.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                    }
+                })
     }
 }

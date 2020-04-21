@@ -19,16 +19,22 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.textfield.TextInputEditText
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
-import com.tokopedia.analytics.performance.PerformanceMonitoring
+import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
+import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.R
 import com.tokopedia.design.text.TkpdHintTextInputLayout
 import com.tokopedia.tokopoints.di.TokopointBundleComponent
 import com.tokopedia.tokopoints.view.catalogdetail.CouponCatalogDetailsActivity
+import com.tokopedia.tokopoints.view.firebaseAnalytics.TokopointPerformanceConstant.SendgiftPlt.Companion.SENDGIFT_TOKOPOINT_PLT
+import com.tokopedia.tokopoints.view.firebaseAnalytics.TokopointPerformanceConstant.SendgiftPlt.Companion.SENDGIFT_TOKOPOINT_PLT_NETWORK_METRICS
+import com.tokopedia.tokopoints.view.firebaseAnalytics.TokopointPerformanceConstant.SendgiftPlt.Companion.SENDGIFT_TOKOPOINT_PLT_PREPARE_METRICS
+import com.tokopedia.tokopoints.view.firebaseAnalytics.TokopointPerformanceConstant.SendgiftPlt.Companion.SENDGIFT_TOKOPOINT_PLT_RENDER_METRICS
+import com.tokopedia.tokopoints.view.firebaseAnalytics.TokopointPerformanceMonitoringListener
 import com.tokopedia.tokopoints.view.util.*
 
-class SendGiftFragment : BottomSheetDialogFragment(), SendGiftContract.View, View.OnClickListener, TextWatcher {
+class SendGiftFragment : BottomSheetDialogFragment(), SendGiftContract.View, View.OnClickListener, TextWatcher, TokopointPerformanceMonitoringListener {
     private var mContainerMain: ViewFlipper? = null
     private var mEditEmail: TextInputEditText? = null
     private var mEditNotes: TextInputEditText? = null
@@ -38,12 +44,10 @@ class SendGiftFragment : BottomSheetDialogFragment(), SendGiftContract.View, Vie
     var tokoPointComponent: TokopointBundleComponent? = null
 
     lateinit var mViewModel: SendGiftViewModel
-    private var sendGiftPerformanceMonitoring1: PerformanceMonitoring? = null
-    private var sendGiftPerformanceMonitoring2: PerformanceMonitoring? = null
-    private var isTraceSTopped = false
+    private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        sendGiftPerformanceMonitoring1 = PerformanceMonitoring.start(SENDGIFT1_TOKOPOINT_PLT)
+        startPerformanceMonitoring()
         super.onCreate(savedInstanceState)
         setStyle(STYLE_NORMAL, R.style.TransparentBottomSheetDialogTheme)
     }
@@ -76,6 +80,8 @@ class SendGiftFragment : BottomSheetDialogFragment(), SendGiftContract.View, Vie
         mEditNotes?.addTextChangedListener(this)
         mBtnSendGift?.setOnClickListener(View.OnClickListener { view: View -> onClick(view) })
         mBtnSendNow?.setOnClickListener(View.OnClickListener { view: View -> onClick(view) })
+        stopPreparePagePerformanceMonitoring()
+        startNetworkRequestPerformanceMonitoring()
         addObserver()
     }
 
@@ -93,12 +99,14 @@ class SendGiftFragment : BottomSheetDialogFragment(), SendGiftContract.View, Vie
                     if (!it.data.isEmpty()) {
                         onErrorPreValidate(it.data)
                     }
-                    stopPerformanceTrace(sendGiftPerformanceMonitoring2)
                 }
                 is Success -> {
+                    stopNetworkRequestPerformanceMonitoring()
+                    startRenderPerformanceMonitoring()
                     hideLoading()
                     openPreConfirmationWindow()
-                    stopPerformanceTrace(sendGiftPerformanceMonitoring2)
+                    stopRenderPerformanceMonitoring()
+                    stopPerformanceMonitoring()
                 }
             }
         }
@@ -113,30 +121,19 @@ class SendGiftFragment : BottomSheetDialogFragment(), SendGiftContract.View, Vie
                     val title = if (it.data.title is Int) getString(it.data.title) else it.data.title.toString()
                     val message = if (it.data.messsage is Int) getString(it.data.messsage) else it.data.messsage.toString()
                     showPopup(title, message, it.data.success)
-                    stopPerformanceTrace(sendGiftPerformanceMonitoring1)
                 }
                 is ErrorMessage -> {
                     hideLoadingSendNow()
-                    stopPerformanceTrace(sendGiftPerformanceMonitoring1)
                 }
             }
         }
     })
-
-    private fun stopPerformanceTrace(traceName: PerformanceMonitoring?) {
-        if (!isTraceSTopped) {
-            traceName?.stopTrace()
-            isTraceSTopped = true
-        }
-    }
 
     override fun onClick(view: View) {
         if (view.id == com.tokopedia.tokopoints.R.id.button_send) {
             if (arguments == null || activity == null) {
                 return
             }
-            isTraceSTopped = false
-            sendGiftPerformanceMonitoring2 = PerformanceMonitoring.start(SENDGIFT2_TOKOPOINT_PLT)
 
             KeyboardHandler.hideSoftKeyboard(activity)
             mViewModel!!.preValidateGift(arguments!!.getInt(CommonConstant.EXTRA_COUPON_ID), mEditEmail!!.text.toString())
@@ -293,12 +290,63 @@ class SendGiftFragment : BottomSheetDialogFragment(), SendGiftContract.View, Vie
     companion object {
         private const val CONTAINER_SEND_FORM = 0
         private const val CONTAINER_PRE_CONFIRMATION = 1
-        private const val SENDGIFT1_TOKOPOINT_PLT = "sendgift1tokopoint_plt"
-        private const val SENDGIFT2_TOKOPOINT_PLT = "sendgift2tokopoint_plt"
         fun newInstance(extras: Bundle?): Fragment {
             val fragment: Fragment = SendGiftFragment()
             fragment.arguments = extras
             return fragment
+        }
+    }
+
+    override fun startPerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring = PageLoadTimePerformanceCallback(
+                SENDGIFT_TOKOPOINT_PLT_PREPARE_METRICS,
+                SENDGIFT_TOKOPOINT_PLT_NETWORK_METRICS,
+                SENDGIFT_TOKOPOINT_PLT_RENDER_METRICS,
+                0,
+                0,
+                0,
+                0,
+                null
+        )
+
+        pageLoadTimePerformanceMonitoring?.startMonitoring(SENDGIFT_TOKOPOINT_PLT)
+        pageLoadTimePerformanceMonitoring?.startPreparePagePerformanceMonitoring()
+    }
+
+    override fun stopPerformanceMonitoring() {
+        if (pageLoadTimePerformanceMonitoring != null) {
+            pageLoadTimePerformanceMonitoring?.stopMonitoring()
+            pageLoadTimePerformanceMonitoring = null
+        }
+    }
+
+    override fun stopPreparePagePerformanceMonitoring() {
+        if (pageLoadTimePerformanceMonitoring != null) {
+            pageLoadTimePerformanceMonitoring?.stopPreparePagePerformanceMonitoring()
+        }
+    }
+
+    override fun startNetworkRequestPerformanceMonitoring() {
+        if (pageLoadTimePerformanceMonitoring != null) {
+            pageLoadTimePerformanceMonitoring?.startNetworkRequestPerformanceMonitoring()
+        }
+    }
+
+    override fun stopNetworkRequestPerformanceMonitoring() {
+        if (pageLoadTimePerformanceMonitoring != null) {
+            pageLoadTimePerformanceMonitoring?.stopNetworkRequestPerformanceMonitoring()
+        }
+    }
+
+    override fun startRenderPerformanceMonitoring() {
+        if (pageLoadTimePerformanceMonitoring != null) {
+            pageLoadTimePerformanceMonitoring?.startRenderPerformanceMonitoring()
+        }
+    }
+
+    override fun stopRenderPerformanceMonitoring() {
+        if (pageLoadTimePerformanceMonitoring != null) {
+            pageLoadTimePerformanceMonitoring?.stopRenderPerformanceMonitoring()
         }
     }
 }

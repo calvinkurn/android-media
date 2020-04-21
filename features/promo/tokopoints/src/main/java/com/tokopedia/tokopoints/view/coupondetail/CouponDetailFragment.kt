@@ -31,7 +31,8 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.analytics.performance.PerformanceMonitoring
+import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
+import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
@@ -40,6 +41,11 @@ import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.di.TokopointBundleComponent
 import com.tokopedia.tokopoints.view.couponlisting.CouponListingStackedActivity
 import com.tokopedia.tokopoints.view.customview.SwipeCardView
+import com.tokopedia.tokopoints.view.firebaseAnalytics.TokopointPerformanceConstant.CoupondetailPlt.Companion.COUPONDETAIL_TOKOPOINT_PLT
+import com.tokopedia.tokopoints.view.firebaseAnalytics.TokopointPerformanceConstant.CoupondetailPlt.Companion.COUPONDETAIL_TOKOPOINT_PLT_NETWORK_METRICS
+import com.tokopedia.tokopoints.view.firebaseAnalytics.TokopointPerformanceConstant.CoupondetailPlt.Companion.COUPONDETAIL_TOKOPOINT_PLT_PREPARE_METRICS
+import com.tokopedia.tokopoints.view.firebaseAnalytics.TokopointPerformanceConstant.CoupondetailPlt.Companion.COUPONDETAIL_TOKOPOINT_PLT_RENDER_METRICS
+import com.tokopedia.tokopoints.view.firebaseAnalytics.TokopointPerformanceMonitoringListener
 import com.tokopedia.tokopoints.view.fragment.CloseableBottomSheetFragment
 import com.tokopedia.tokopoints.view.model.CatalogsValueEntity
 import com.tokopedia.tokopoints.view.model.CouponSwipeDetail
@@ -66,7 +72,7 @@ import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 
 
-class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, View.OnClickListener {
+class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, View.OnClickListener, TokopointPerformanceMonitoringListener {
     private var mSubscriptionCouponTimer: Subscription? = null
     private var mRefreshRepeatCount = 0
     private var mCouponName: String? = null
@@ -74,8 +80,7 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
     var phoneVerificationState: Boolean? = null
     var mCTA: String = ""
     var mCode: String = ""
-    private var performanceMonitoring: PerformanceMonitoring? = null
-    private var isTraceStopped = false
+    private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -86,7 +91,7 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
     private var mBottomSheetFragment: CloseableBottomSheetFragment? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        performanceMonitoring = PerformanceMonitoring.start(COUPONDETAIL_TOKOPOINT_PLT)
+        startPerformanceMonitoring()
         super.onCreate(savedInstanceState)
     }
 
@@ -100,6 +105,8 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
         super.onViewCreated(view, savedInstanceState)
         initObserver()
         initListener()
+        stopPreparePagePerformanceMonitoring()
+        startNetworkRequestPerformanceMonitoring()
         mPresenter.isPhonerVerfied()
     }
 
@@ -168,22 +175,17 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
                 is Loading -> showLoader()
                 is ErrorMessage -> {
                     showError(NetworkDetector.isConnectedToInternet(context))
-                    stopPerformanceTrace()
                 }
                 is Success -> {
+                    stopNetworkRequestPerformanceMonitoring()
+                    startRenderPerformanceMonitoring()
                     setCouponToUi(it.data)
-                    stopPerformanceTrace()
+                    stopRenderPerformanceMonitoring()
+                    stopPerformanceMonitoring()
                 }
             }
         }
     })
-
-    private fun stopPerformanceTrace() {
-        if (!isTraceStopped) {
-            performanceMonitoring?.stopTrace()
-            isTraceStopped = true
-        }
-    }
 
     override fun onDestroy() {
         if (mTimer != null) {
@@ -731,7 +733,6 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
     companion object {
         val AB_TESTING_CTA_VARIANT_A = "CTA Phone Verify 2"
         val AB_TEST_PHONE_VERIFICATION_KEY = "CTA Phone Verify 2"
-        private const val COUPONDETAIL_TOKOPOINT_PLT = "coupondetailtokopoint_plt"
         private val REQUEST_CODE_VERIFICATION_PHONE = 301
         private val CONTAINER_LOADER = 0
         private val CONTAINER_DATA = 1
@@ -743,6 +744,59 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
             val fragment = CouponDetailFragment()
             fragment.arguments = extras
             return fragment
+        }
+    }
+
+    override fun startPerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring = PageLoadTimePerformanceCallback(
+                COUPONDETAIL_TOKOPOINT_PLT_PREPARE_METRICS,
+                COUPONDETAIL_TOKOPOINT_PLT_NETWORK_METRICS,
+                COUPONDETAIL_TOKOPOINT_PLT_RENDER_METRICS,
+                0,
+                0,
+                0,
+                0,
+                null
+        )
+
+        pageLoadTimePerformanceMonitoring?.startMonitoring(COUPONDETAIL_TOKOPOINT_PLT)
+        pageLoadTimePerformanceMonitoring?.startPreparePagePerformanceMonitoring()
+    }
+
+    override fun stopPerformanceMonitoring() {
+        if (pageLoadTimePerformanceMonitoring != null) {
+            pageLoadTimePerformanceMonitoring?.stopMonitoring()
+            pageLoadTimePerformanceMonitoring = null
+        }
+    }
+
+    override fun stopPreparePagePerformanceMonitoring() {
+        if (pageLoadTimePerformanceMonitoring != null) {
+            pageLoadTimePerformanceMonitoring?.stopPreparePagePerformanceMonitoring()
+        }
+    }
+
+    override fun startNetworkRequestPerformanceMonitoring() {
+        if (pageLoadTimePerformanceMonitoring != null) {
+            pageLoadTimePerformanceMonitoring?.startNetworkRequestPerformanceMonitoring()
+        }
+    }
+
+    override fun stopNetworkRequestPerformanceMonitoring() {
+        if (pageLoadTimePerformanceMonitoring != null) {
+            pageLoadTimePerformanceMonitoring?.stopNetworkRequestPerformanceMonitoring()
+        }
+    }
+
+    override fun startRenderPerformanceMonitoring() {
+        if (pageLoadTimePerformanceMonitoring != null) {
+            pageLoadTimePerformanceMonitoring?.startRenderPerformanceMonitoring()
+        }
+    }
+
+    override fun stopRenderPerformanceMonitoring() {
+        if (pageLoadTimePerformanceMonitoring != null) {
+            pageLoadTimePerformanceMonitoring?.stopRenderPerformanceMonitoring()
         }
     }
 

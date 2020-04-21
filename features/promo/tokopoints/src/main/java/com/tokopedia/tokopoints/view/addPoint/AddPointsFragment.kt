@@ -70,6 +70,8 @@ class AddPointsFragment : BottomSheetDialogFragment(), TokopointAddPointContract
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initView(view)
+        stopPreparePagePerformanceMonitoring()
+        startNetworkRequestPerformanceMonitoring()
         viewModel.getRewardPoint()
         addObserver()
     }
@@ -83,6 +85,8 @@ class AddPointsFragment : BottomSheetDialogFragment(), TokopointAddPointContract
             when (it) {
                 is Loading -> inflateContainerLayout(false)
                 is Success -> {
+                    stopNetworkRequestPerformanceMonitoring()
+                    startRenderPerformanceMonitoring()
                     inflateContainerLayout(true)
                     inflatePointsData(it.data)
                     stopPerformanceTrace()
@@ -110,6 +114,7 @@ class AddPointsFragment : BottomSheetDialogFragment(), TokopointAddPointContract
         view?.tvDescription?.text = item.subTitle
 
         addPointsAdapter.item.clear()
+        setOnRecyclerViewLayoutReady()
         addPointsAdapter.item.addAll(item.sections as ArrayList<SectionsItem>)
         addPointsAdapter.notifyDataSetChanged()
         populateAddPointContainer()

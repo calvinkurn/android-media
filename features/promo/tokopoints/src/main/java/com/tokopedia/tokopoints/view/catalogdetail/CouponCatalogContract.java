@@ -52,7 +52,6 @@ public interface CouponCatalogContract {
 
         void gotoSendGiftPage(int id, String title, String pointStr, String banner);
 
-        void onFinishRendering();
     }
 
     interface Presenter {
