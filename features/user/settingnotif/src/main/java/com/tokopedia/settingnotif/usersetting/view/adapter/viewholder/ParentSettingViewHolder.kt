@@ -5,7 +5,7 @@ import android.view.View
 import android.widget.Switch
 import android.widget.TextView
 import com.tokopedia.settingnotif.R
-import com.tokopedia.settingnotif.usersetting.domain.pojo.ParentSetting
+import com.tokopedia.settingnotif.usersetting.data.pojo.ParentSetting
 import com.tokopedia.settingnotif.usersetting.util.componentTextColor
 import androidx.core.content.ContextCompat.getColor as color
 

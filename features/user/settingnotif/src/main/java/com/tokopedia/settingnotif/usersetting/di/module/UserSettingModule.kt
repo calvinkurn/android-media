@@ -4,8 +4,8 @@ import android.content.Context
 import androidx.annotation.RawRes
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.settingnotif.usersetting.di.UserSettingScope
-import com.tokopedia.settingnotif.usersetting.domain.usecase.GetUserSettingUseCase
-import com.tokopedia.settingnotif.usersetting.domain.usecase.SetUserSettingUseCase
+import com.tokopedia.settingnotif.usersetting.domain.GetUserSettingUseCase
+import com.tokopedia.settingnotif.usersetting.domain.SetUserSettingUseCase
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module

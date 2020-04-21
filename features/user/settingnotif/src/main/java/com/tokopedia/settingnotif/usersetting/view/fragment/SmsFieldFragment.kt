@@ -3,7 +3,7 @@ package com.tokopedia.settingnotif.usersetting.view.fragment
 import android.os.Bundle
 import android.view.View
 import com.tokopedia.settingnotif.R
-import com.tokopedia.settingnotif.usersetting.domain.pojo.SmsSection
+import com.tokopedia.settingnotif.usersetting.data.pojo.SmsSection
 import com.tokopedia.settingnotif.usersetting.view.adapter.factory.VisitableSettings
 import com.tokopedia.settingnotif.usersetting.view.dataview.ChangeItemDataView.changePhoneNumber
 import com.tokopedia.settingnotif.usersetting.view.dataview.NotificationActivationDataView.activationPhoneNumber
