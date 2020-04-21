@@ -2,12 +2,18 @@ package com.tokopedia.loginregister.seamlesslogin
 
 import android.app.Service
 import android.content.Intent
+import android.os.Bundle
 import android.os.IBinder
+import androidx.lifecycle.LifecycleService
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.loginregister.RemoteApi
+import com.tokopedia.loginregister.common.di.DaggerLoginRegisterComponent
+import com.tokopedia.loginregister.seamlesslogin.data.model.GenerateKeyData
+import com.tokopedia.loginregister.seamlesslogin.di.DaggerSeamlessLoginComponent
 import com.tokopedia.loginregister.seamlesslogin.di.SeamlessLoginModule
 import com.tokopedia.loginregister.seamlesslogin.di.SeamlessLoginQueryModule
 import com.tokopedia.loginregister.seamlesslogin.di.SeamlessLoginUseCaseModule
+import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 /**
@@ -19,38 +25,74 @@ class RemoteService : Service() {
 
     override fun onCreate() {
         super.onCreate()
-//        DaggerSeamlessLoginComponent.builder()
-//                .seamlessLoginModule(SeamlessLoginModule())
-//                .seamlessLoginQueryModule(SeamlessLoginQueryModule())
-//                .seamlessLoginUseCaseModule(SeamlessLoginUseCaseModule())
-//                .loginRegisterComponent(((application as BaseMainApplication).baseAppComponent))
-//                .build()
-//                .inject(this)
+        DaggerSeamlessLoginComponent.builder()
+                .seamlessLoginModule(SeamlessLoginModule(applicationContext))
+                .seamlessLoginQueryModule(SeamlessLoginQueryModule())
+                .seamlessLoginUseCaseModule(SeamlessLoginUseCaseModule())
+                .loginRegisterComponent(DaggerLoginRegisterComponent.builder().baseAppComponent((application as BaseMainApplication).baseAppComponent).build())
+                .build()
+                .inject(this)
     }
 
     @Inject lateinit var viewModel: SeamlessLoginViewModel
+    @Inject lateinit var userSession: UserSessionInterface
 
     override fun onBind(intent: Intent): IBinder {
         return binder
     }
 
-    private fun broadCastResult(data: String, taskId: String) {
+    private fun broadCastResult(data: Bundle, taskId: String) {
         val intent = Intent().apply {
+            `package` = "com.tokopedia.sellerapp"
             action = taskId
-            putExtra("data", data)
+            putExtras(data)
         }
         sendBroadcast(intent)
     }
 
-    fun hitDummyApi(taskId: String?) {
+    fun getKey(taskId: String?){
         taskId?.run {
-            broadCastResult("Ini Result", this)
+            val data = Bundle()
+            viewModel.getKey({
+                data.apply {
+                    putString("key", it.key)
+                }
+                broadCastResult(data, taskId = this@run)
+            }, {
+                data.apply {
+                    putString("error", it.cause?.message)
+                }
+                broadCastResult(data, taskId = this)
+            })
+        }
+    }
+
+    fun getUserData(taskId: String?){
+        taskId?.run {
+            val data = Bundle()
+            if(userSession.isLoggedIn) {
+                data.apply {
+                    putString("name", userSession.name)
+                    putString("email", userSession.email)
+                    putString("shop_avatar", userSession.shopAvatar)
+                    putString("shop_name", userSession.shopName)
+                }
+            }else {
+                data.apply {
+                    putString("error", "not logged in")
+                }
+            }
+            broadCastResult(data, taskId = this)
         }
     }
 
     private val binder = object : RemoteApi.Stub() {
         override fun getDummyKey(taskId: String?) {
-            hitDummyApi(taskId)
+            getKey(taskId)
+        }
+
+        override fun getUserProfile(taskId: String?) {
+            getUserData(taskId)
         }
     }
 }
