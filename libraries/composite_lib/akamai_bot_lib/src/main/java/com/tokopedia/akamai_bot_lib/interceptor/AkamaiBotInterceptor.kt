@@ -1,7 +1,6 @@
 package com.tokopedia.akamai_bot_lib.interceptor
 
 import android.content.Context
-import android.text.TextUtils
 import com.akamai.botman.CYFMonitor
 import com.tokopedia.akamai_bot_lib.*
 import okhttp3.Interceptor
@@ -25,7 +24,7 @@ class AkamaiBotInterceptor(val context: Context) : Interceptor {
         )
 
         newRequest.addHeader("X-acf-sensor-data",
-                if (TextUtils.isEmpty(akamaiValue)) akamaiValue else "")
+                if (akamaiValue.isNotEmpty()) akamaiValue else "")
 
         return chain.proceed(newRequest.build())
     }
