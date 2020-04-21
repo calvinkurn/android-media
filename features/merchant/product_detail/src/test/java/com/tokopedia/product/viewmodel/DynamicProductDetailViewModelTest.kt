@@ -3,6 +3,8 @@ package com.tokopedia.product.viewmodel
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.affiliatecommon.data.pojo.productaffiliate.TopAdsPdpAffiliateResponse
 import com.tokopedia.affiliatecommon.domain.TrackAffiliateUseCase
+import com.tokopedia.atc_common.data.model.request.AddToCartOccRequestParams
+import com.tokopedia.atc_common.data.model.request.AddToCartOcsRequestParams
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.model.response.DataModel
@@ -17,6 +19,7 @@ import com.tokopedia.product.detail.common.data.model.carttype.CartRedirectionRe
 import com.tokopedia.product.detail.common.data.model.carttype.CartTypeData
 import com.tokopedia.product.detail.common.data.model.pdplayout.BasicInfo
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
+import com.tokopedia.product.detail.common.data.model.pdplayout.Media
 import com.tokopedia.product.detail.common.data.model.product.ProductParams
 import com.tokopedia.product.detail.data.model.*
 import com.tokopedia.product.detail.data.model.datamodel.ProductDetailDataModel
@@ -45,15 +48,16 @@ import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.variant_common.model.ProductVariantCommon
 import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.runBlockingTest
 import org.junit.*
-import org.mockito.Matchers.anyBoolean
-import org.mockito.Matchers.anyString
+import org.mockito.Matchers.*
 import rx.Observable
 
 
@@ -150,6 +154,9 @@ class DynamicProductDetailViewModelTest {
                 moveProductToWarehouseUseCase, moveProductToEtalaseUseCase, trackAffiliateUseCase, submitHelpTicketUseCase, updateCartCounterUseCase, addToCartUseCase, addToCartOcsUseCase, addToCartOccUseCase, getProductInfoP3VariantUseCase, toggleNotifyMeUseCase, sendTopAdsUseCase, userSessionInterface)
     }
 
+    //=========================================VARIABLE SECTION======================================//
+    //==============================================================================================//
+
     @Test
     fun `has shop authority`() {
         val shopInfo = ShopInfo(isAllowManage = 1)
@@ -181,38 +188,7 @@ class DynamicProductDetailViewModelTest {
     }
 
     @Test
-    fun `on success normal atc`(){
-
-        val addToCartOcsRequestParams = AddToCartRequestParams()
-        val atcResponseSuccess = AddToCartDataModel(data = DataModel(success = 1),status = "OK")
-
-        coEvery {
-            addToCartUseCase.createObservable(RequestParams()).toBlocking().single()
-        } returns atcResponseSuccess
-
-        viewModel.addToCart(addToCartOcsRequestParams)
-
-        coVerify {
-            addToCartUseCase.createObservable(any()).toBlocking()
-        }
-
-
-//        coVerify(inverse = true) {
-//            addToCartOcsUseCase.createObservable(any()).toBlocking()
-//        }
-//
-//        coVerify(inverse = true) {
-//            addToCartOccUseCase.createObservable(any()).toBlocking()
-//        }
-//        print(viewModel.addToCartLiveData.value)
-//        Assert.assertTrue(viewModel.addToCartLiveData.value is Fail)
-    }
-
-    /**
-     * isShopOwner
-     */
-    @Test
-    fun isShopOwnerTrue() {
+    fun `is shop owner true`() {
         val shopId = "123"
         val getDynamicProductInfo = DynamicProductInfoP1(BasicInfo(shopID = shopId))
         viewModel.getDynamicProductInfoP1 = getDynamicProductInfo
@@ -232,20 +208,189 @@ class DynamicProductDetailViewModelTest {
     }
 
     @Test
-    fun isShowOwnerFalse() {
+    fun `is shop owner false`() {
         val anotherShopId = "312"
+        val getDynamicProductInfo = DynamicProductInfoP1(BasicInfo(shopID = "123"))
+        viewModel.getDynamicProductInfoP1 = getDynamicProductInfo
+
         every {
             userSessionInterface.shopId
         } returns anotherShopId
 
+        every {
+            viewModel.isUserSessionActive
+        } returns false
+
         val isShopOwner = viewModel.isShopOwner()
 
         Assert.assertFalse(isShopOwner)
+        viewModel.getDynamicProductInfoP1 = null
+    }
+    //===================================END OF VARIABLE SECTION====================================//
+    //==============================================================================================//
+
+    //=========================================ATC SECTION==========================================//
+    //==============================================================================================//
+    @Test
+    fun `on success normal atc`() = runBlockingTest {
+        val addToCartOcsRequestParams = AddToCartRequestParams()
+        val atcResponseSuccess = AddToCartDataModel(data = DataModel(success = 1), status = "OK")
+
+        coEvery {
+            addToCartUseCase.createObservable(any()).toBlocking().single()
+        } returns atcResponseSuccess
+
+        viewModel.addToCart(addToCartOcsRequestParams)
+
+        coVerify {
+            addToCartUseCase.createObservable(any()).toBlocking().single()
+        }
+
+        coVerify(inverse = true) {
+            addToCartOcsUseCase.createObservable(any()).toBlocking()
+        }
+
+        coVerify(inverse = true) {
+            addToCartOccUseCase.createObservable(any()).toBlocking()
+        }
+
+        Assert.assertTrue(viewModel.addToCartLiveData.value is Success)
     }
 
-    /**
-     * Recommendation Top Ads
-     */
+    @Test
+    fun `on error normal atc`() = runBlockingTest {
+        val addToCartOcsRequestParams = AddToCartRequestParams()
+        val atcResponseError = AddToCartDataModel(data = DataModel(success = 0), status = "", errorMessage = arrayListOf("gagal ya"))
+
+        coEvery {
+            addToCartUseCase.createObservable(any()).toBlocking().single()
+        } returns atcResponseError
+
+        viewModel.addToCart(addToCartOcsRequestParams)
+
+        coVerify {
+            addToCartUseCase.createObservable(any()).toBlocking().single()
+        }
+
+        coVerify(inverse = true) {
+            addToCartOcsUseCase.createObservable(any()).toBlocking()
+        }
+
+        coVerify(inverse = true) {
+            addToCartOccUseCase.createObservable(any()).toBlocking()
+        }
+
+        Assert.assertTrue(viewModel.addToCartLiveData.value is Fail)
+    }
+
+    @Test
+    fun `on success ocs atc`() = runBlockingTest {
+        val addToCartOcsRequestParams = AddToCartOcsRequestParams()
+        val atcResponseSuccess = AddToCartDataModel(data = DataModel(success = 1), status = "OK")
+
+        coEvery {
+            addToCartOcsUseCase.createObservable(any()).toBlocking().single()
+        } returns atcResponseSuccess
+
+        viewModel.addToCart(addToCartOcsRequestParams)
+
+        coVerify {
+            addToCartOcsUseCase.createObservable(any()).toBlocking().single()
+        }
+
+        coVerify(inverse = true) {
+            addToCartUseCase.createObservable(any()).toBlocking()
+        }
+
+        coVerify(inverse = true) {
+            addToCartOccUseCase.createObservable(any()).toBlocking()
+        }
+
+        Assert.assertTrue(viewModel.addToCartLiveData.value is Success)
+    }
+
+    @Test
+    fun `on error ocs atc`() = runBlockingTest {
+        val addToCartOcsRequestParams = AddToCartOcsRequestParams()
+        val atcResponseError = AddToCartDataModel(data = DataModel(success = 0), status = "", errorMessage = arrayListOf("gagal ya"))
+
+        coEvery {
+            addToCartOcsUseCase.createObservable(any()).toBlocking().single()
+        } returns atcResponseError
+
+        viewModel.addToCart(addToCartOcsRequestParams)
+
+        coVerify {
+            addToCartOcsUseCase.createObservable(any()).toBlocking().single()
+        }
+
+        coVerify(inverse = true) {
+            addToCartUseCase.createObservable(any()).toBlocking()
+        }
+
+        coVerify(inverse = true) {
+            addToCartOccUseCase.createObservable(any()).toBlocking()
+        }
+
+        Assert.assertTrue(viewModel.addToCartLiveData.value is Fail)
+    }
+
+    @Test
+    fun `on success occ atc`() = runBlockingTest {
+        val addToCartOccRequestParams = AddToCartOccRequestParams("123", "123", "1")
+        val atcResponseSuccess = AddToCartDataModel(data = DataModel(success = 1), status = "OK")
+
+        coEvery {
+            addToCartOccUseCase.createObservable(any()).toBlocking().single()
+        } returns atcResponseSuccess
+
+        viewModel.addToCart(addToCartOccRequestParams)
+
+        coVerify {
+            addToCartOccUseCase.createObservable(any()).toBlocking().single()
+        }
+
+        coVerify(inverse = true) {
+            addToCartUseCase.createObservable(any()).toBlocking()
+        }
+
+        coVerify(inverse = true) {
+            addToCartOcsUseCase.createObservable(any()).toBlocking()
+        }
+
+        Assert.assertTrue(viewModel.addToCartLiveData.value is Success)
+    }
+
+    @Test
+    fun `on error occ atc`() = runBlockingTest {
+        val addToCartOccRequestParams = AddToCartOccRequestParams("123", "123", "1")
+        val atcResponseError = AddToCartDataModel(data = DataModel(success = 0), status = "", errorMessage = arrayListOf("gagal ya"))
+
+        coEvery {
+            addToCartOccUseCase.createObservable(any()).toBlocking().single()
+        } returns atcResponseError
+
+        viewModel.addToCart(addToCartOccRequestParams)
+
+        coVerify {
+            addToCartOccUseCase.createObservable(any()).toBlocking().single()
+        }
+
+        coVerify(inverse = true) {
+            addToCartUseCase.createObservable(any()).toBlocking()
+        }
+
+        coVerify(inverse = true) {
+            addToCartOcsUseCase.createObservable(any()).toBlocking()
+        }
+
+        Assert.assertTrue(viewModel.addToCartLiveData.value is Fail)
+    }
+    //==================================END OF ATC SECTION==========================================//
+    //==============================================================================================//
+
+    //==================================TOP ADS SECTION=============================================//
+    //==============================================================================================//
     @Test
     fun `click recom product with zero top ads`() {
         var topAdsClickUrl = ""
@@ -417,6 +562,45 @@ class DynamicProductDetailViewModelTest {
     }
 
     /**
+     * RecommendationWidget
+     */
+    @Test
+    fun onSuccessLoadRecommendation() {
+        val listOfRecom = arrayListOf(RecommendationWidget(), RecommendationWidget())
+        coEvery {
+            getRecommendationUseCase.createObservable(any()).toBlocking().first()
+        } returns listOfRecom
+
+        viewModel.loadRecommendation()
+
+        coVerify {
+            getRecommendationUseCase.createObservable(any())
+        }
+
+        Assert.assertEquals((viewModel.loadTopAdsProduct.value as Success).data, listOfRecom)
+    }
+
+    @Test
+    fun onErrorLoadRecommendation() {
+        coEvery {
+            getRecommendationUseCase.createObservable(any()).toBlocking()
+        } throws Throwable()
+
+        viewModel.loadRecommendation()
+
+        coVerify {
+            getRecommendationUseCase.createObservable(any())
+        }
+        print(viewModel.loadTopAdsProduct.value)
+        Assert.assertTrue(viewModel.loadTopAdsProduct.value is Fail)
+    }
+    //==================================END OF TOP ADS SECTION======================================//
+    //==============================================================================================//
+
+
+    //======================================PDP SECTION=============================================//
+    //==============================================================================================//
+    /**
      * GetProductInfoP1
      */
     @Test
@@ -508,9 +692,13 @@ class DynamicProductDetailViewModelTest {
 
         //P3
         coVerify {
+            getProductInfoP3VariantUseCase.executeOnBackground()
+        }
+        coVerify {
             getProductInfoP3RateEstimateUseCase.executeOnBackground()
         }
 
+        Assert.assertNotNull(viewModel.p3VariantResponse.value)
         Assert.assertNotNull(viewModel.productInfoP3RateEstimate.value)
         Assert.assertNotNull(viewModel.productInfoP3RateEstimate.value?.rateEstSummarizeText)
         Assert.assertNotNull(viewModel.productInfoP3RateEstimate.value?.ratesModel)
@@ -545,6 +733,8 @@ class DynamicProductDetailViewModelTest {
             getProductInfoP2GeneralUseCase.executeOnBackground()
         }
 
+        coVerify(inverse = true) { getProductInfoP3VariantUseCase.executeOnBackground() }
+
         //P3
         coVerify(inverse = true) {
             getProductInfoP3RateEstimateUseCase.executeOnBackground()
@@ -562,7 +752,10 @@ class DynamicProductDetailViewModelTest {
         val dataP2Login = ProductInfoP2Login(pdpAffiliate = TopAdsPdpAffiliateResponse.TopAdsPdpAffiliate.Data.PdpAffiliate())
         val dataP2General = ProductInfoP2General()
 
+        val dataP3Variant = ProductInfoP3Variant(CartRedirectionResponse())
         val dataP3 = ProductInfoP3(SummaryText(), RatesModel())
+
+        viewModel.p3VariantResponse.observeForever { }
 
         every {
             userSessionInterface.isLoggedIn
@@ -583,6 +776,10 @@ class DynamicProductDetailViewModelTest {
         coEvery {
             getProductInfoP2GeneralUseCase.executeOnBackground()
         } returns dataP2General
+
+        coEvery {
+            getProductInfoP3VariantUseCase.executeOnBackground()
+        } returns dataP3Variant
 
         coEvery {
             getProductInfoP3RateEstimateUseCase.executeOnBackground()
@@ -617,6 +814,11 @@ class DynamicProductDetailViewModelTest {
         Assert.assertNotNull(viewModel.p2General.value)
 
         //P3
+        //Variant
+        coVerify { getProductInfoP3VariantUseCase.executeOnBackground() }
+        Assert.assertNotNull(viewModel.p3VariantResponse.value)
+
+        //RateEstimate
         //Make sure not called
         coVerify(inverse = true) {
             getProductInfoP3RateEstimateUseCase.executeOnBackground()
@@ -625,53 +827,78 @@ class DynamicProductDetailViewModelTest {
         Assert.assertTrue((viewModel.productLayout.value as Success).data.none {
             it is ProductOpenShopDataModel
         })
-
     }
 
     /**
-     *  StickyLogin
+     *  Variant Section
      */
     @Test
-    fun onSuccessStickyLogin() {
-        val stickyList = StickyLoginTickerPojo(listOf(StickyLoginTickerPojo.TickerDetail(message = "", layout = StickyLoginConstant.LAYOUT_FLOATING)))
-        val data = StickyLoginTickerPojo.TickerResponse(stickyList)
-        val onError = mockk<((Throwable) -> Unit)>()
+    fun `process initial variant`() {
+        viewModel.processVariant(ProductVariantCommon(), mutableMapOf())
 
-        every {
-            stickyLoginUseCase.execute(captureLambda(), any())
-        } answers {
-            val onSuccess = lambda<(StickyLoginTickerPojo.TickerResponse) -> Unit>()
-            onSuccess.invoke(data)
-        }
-
-
-        viewModel.getStickyLoginContent({
-            Assert.assertEquals(it, data.response.tickers.first())
-        }, onError)
-
-        verify {
-            stickyLoginUseCase.execute(any(), any())
-        }
+        Assert.assertTrue(viewModel.initialVariantData.value != null)
     }
 
     @Test
-    fun onErrorStickyLogin() {
-        val throwable = Throwable()
-        val onSuccess = mockk<((StickyLoginTickerPojo.TickerDetail) -> Unit)>()
-        every {
-            stickyLoginUseCase.execute(any(), captureLambda())
-        } answers {
-            val onError = lambda<(Throwable) -> Unit>()
-            onError.invoke(throwable)
-        }
+    fun `variant clicked not partial`() {
+        val partialySelect = false
+        val imageVariant = "image"
+        viewModel.onVariantClicked(ProductVariantCommon(), mutableMapOf(), partialySelect, anyInt(), imageVariant)
+        Assert.assertTrue(viewModel.onVariantClickedData.value != null)
+        Assert.assertTrue(viewModel.updatedImageVariant.value == null)
+    }
 
-        viewModel.getStickyLoginContent(onSuccess, {
-            Assert.assertEquals(it, throwable)
-        })
+    @Test
+    fun `variant clicked partialy with image not blank`() {
+        val partialySelect = true
+        val imageVariant = "image"
+        viewModel.listOfParentMedia = mutableListOf(Media(uRLOriginal = "gambar 1"))
+        viewModel.onVariantClicked(ProductVariantCommon(), mutableMapOf(), partialySelect, anyInt(), imageVariant)
+        Assert.assertTrue(viewModel.onVariantClickedData.value == null)
+        Assert.assertTrue(viewModel.updatedImageVariant.value != null)
+        Assert.assertTrue(viewModel.updatedImageVariant.value?.second?.first()?.uRLOriginal == imageVariant)
+    }
 
-        verify {
-            stickyLoginUseCase.execute(any(), any())
-        }
+    @Test
+    fun `variant clicked partialy with blank image`(){
+        val partialySelect = true
+        val imageVariant = "gambar gan"
+        viewModel.listOfParentMedia = null
+        viewModel.onVariantClicked(ProductVariantCommon(), mutableMapOf(), partialySelect, anyInt(), imageVariant)
+        Assert.assertTrue(viewModel.onVariantClickedData.value == null)
+        Assert.assertTrue(viewModel.updatedImageVariant.value != null)
+        Assert.assertTrue(viewModel.updatedImageVariant.value?.second?.isEmpty() == true)
+    }
+
+    /**
+     * Notify me
+     */
+    @Test
+    fun `on success toggle notify me`() = runBlockingTest {
+        val result = true
+
+        coEvery {
+            toggleNotifyMeUseCase.executeOnBackground().result.isSuccess
+        } returns result
+
+        viewModel.toggleTeaserNotifyMe(0, 0, "")
+        coVerify { toggleNotifyMeUseCase.executeOnBackground() }
+
+        Assert.assertTrue(viewModel.toggleTeaserNotifyMe.value is Success)
+    }
+
+    @Test
+    fun `on error toggle notify me`() = runBlockingTest {
+        val result = false
+
+        coEvery {
+            toggleNotifyMeUseCase.executeOnBackground().result.isSuccess
+        } returns result
+
+        viewModel.toggleTeaserNotifyMe(0, 0, "")
+        coVerify { toggleNotifyMeUseCase.executeOnBackground() }
+
+        Assert.assertTrue(!(viewModel.toggleTeaserNotifyMe.value as Success).data)
     }
 
     /**
@@ -746,7 +973,7 @@ class DynamicProductDetailViewModelTest {
     @Test
     fun onErrorHitSubmitTicket() {
         val data = SubmitTicketResult()
-        val request = AddToCartDataModel(errorReporter = ErrorReporterModel(texts = ErrorReporterTextModel(submitDescription = "error")))
+        val request = AddToCartDataModel(errorReporter = ErrorReporterModel(texts = ErrorReporterTextModel(submitDescription = "error")), errorMessage = arrayListOf("error ganteng"))
         val requestParams = RequestParams()
         val onSuccess = mockk<((SubmitTicketResult) -> Unit)>()
 
@@ -823,7 +1050,6 @@ class DynamicProductDetailViewModelTest {
 
     @Test
     fun onErrorMoveProductToWareHouse() {
-
         //Given
         coEvery {
             moveProductToWarehouseUseCase.executeOnBackground()
@@ -880,40 +1106,6 @@ class DynamicProductDetailViewModelTest {
         }
 
         Assert.assertTrue(viewModel.moveToEtalaseResult.value is Fail)
-    }
-
-    /**
-     * RecommendationWidget
-     */
-    @Test
-    fun onSuccessLoadRecommendation() {
-        val listOfRecom = arrayListOf(RecommendationWidget(), RecommendationWidget())
-        coEvery {
-            getRecommendationUseCase.createObservable(any()).toBlocking().first()
-        } returns listOfRecom
-
-        viewModel.loadRecommendation()
-
-        coVerify {
-            getRecommendationUseCase.createObservable(any())
-        }
-
-        Assert.assertEquals((viewModel.loadTopAdsProduct.value as Success).data, listOfRecom)
-    }
-
-    @Test
-    fun onErrorLoadRecommendation() {
-        coEvery {
-            getRecommendationUseCase.createObservable(any()).toBlocking()
-        } throws Throwable()
-
-        viewModel.loadRecommendation()
-
-        coVerify {
-            getRecommendationUseCase.createObservable(any())
-        }
-        print(viewModel.loadTopAdsProduct.value)
-        Assert.assertTrue(viewModel.loadTopAdsProduct.value is Fail)
     }
 
     /**
@@ -977,9 +1169,6 @@ class DynamicProductDetailViewModelTest {
         })
     }
 
-    /**
-     * Job Cancel
-     */
     @Test
     fun onSuccessCancelWarehouseJob() {
         viewModel.cancelWarehouseUseCase()
@@ -991,11 +1180,59 @@ class DynamicProductDetailViewModelTest {
         viewModel.cancelEtalaseUseCase()
         verify { viewModel.cancelEtalaseUseCase() }
     }
+    //======================================END OF PDP SECTION=======================================//
+    //==============================================================================================//
+
+    //======================================STICKY LOGIN SECTION=====================================//
+    //==============================================================================================//
+    @Test
+    fun onSuccessStickyLogin() {
+        val stickyList = StickyLoginTickerPojo(listOf(StickyLoginTickerPojo.TickerDetail(message = "", layout = StickyLoginConstant.LAYOUT_FLOATING)))
+        val data = StickyLoginTickerPojo.TickerResponse(stickyList)
+        val onError = mockk<((Throwable) -> Unit)>()
+
+        every {
+            stickyLoginUseCase.execute(captureLambda(), any())
+        } answers {
+            val onSuccess = lambda<(StickyLoginTickerPojo.TickerResponse) -> Unit>()
+            onSuccess.invoke(data)
+        }
+
+
+        viewModel.getStickyLoginContent({
+            Assert.assertEquals(it, data.response.tickers.first())
+        }, onError)
+
+        verify {
+            stickyLoginUseCase.execute(any(), any())
+        }
+    }
+
+    @Test
+    fun onErrorStickyLogin() {
+        val throwable = Throwable()
+        val onSuccess = mockk<((StickyLoginTickerPojo.TickerDetail) -> Unit)>()
+        every {
+            stickyLoginUseCase.execute(any(), captureLambda())
+        } answers {
+            val onError = lambda<(Throwable) -> Unit>()
+            onError.invoke(throwable)
+        }
+
+        viewModel.getStickyLoginContent(onSuccess, {
+            Assert.assertEquals(it, throwable)
+        })
+
+        verify {
+            stickyLoginUseCase.execute(any(), any())
+        }
+    }
+    //======================================END OF STICKY LOGIN SECTION==============================//
+    //==============================================================================================//
 
     @Test
     fun flush() {
         viewModel.flush()
-
         verify {
             stickyLoginUseCase.cancelJobs()
         }
