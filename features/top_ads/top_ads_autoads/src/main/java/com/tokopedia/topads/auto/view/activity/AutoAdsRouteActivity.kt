@@ -22,7 +22,6 @@ import com.tokopedia.topads.auto.view.viewmodel.TopAdsInfoViewModel
 import com.tokopedia.topads.common.constant.TopAdsAddingOption
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.topads.common.constant.TopAdsAddingOption
 import javax.inject.Inject
 
 class AutoAdsRouteActivity : AutoAdsBaseActivity() {
