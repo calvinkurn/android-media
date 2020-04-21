@@ -13,7 +13,7 @@ import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import com.tokopedia.utils.text.currency.CurrencyIdrTextWatcher
 import kotlinx.android.synthetic.main.item_product_manage_variant.view.*
 
-class ProductVariantViewHolder(
+class ProductVariantPriceViewHolder(
     itemView: View,
     private val listener: ProductVariantListener
 ): AbstractViewHolder<ProductVariant>(itemView) {
