@@ -2,6 +2,7 @@ package com.tokopedia.product.manage.feature.quickedit.variant.di
 
 import com.tokopedia.product.manage.common.di.ProductManageComponent
 import com.tokopedia.product.manage.feature.quickedit.variant.presentation.ui.QuickEditVariantPriceBottomSheet
+import com.tokopedia.product.manage.feature.quickedit.variant.presentation.ui.QuickEditVariantStockBottomSheet
 import dagger.Component
 
 @QuickEditVariantScope
@@ -11,4 +12,5 @@ import dagger.Component
 )
 interface QuickEditVariantComponent {
     fun inject(view: QuickEditVariantPriceBottomSheet)
+    fun inject(view: QuickEditVariantStockBottomSheet)
 }
