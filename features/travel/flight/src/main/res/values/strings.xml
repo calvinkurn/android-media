@@ -209,9 +209,11 @@
     <string name="flight_booking_passenger_meal_fill_label">Isi Data</string>
     <string name="flight_booking_luggage_toolbar_title">Bagasi</string>
     <string name="flight_booking_meal_toolbar_title">Makanan</string>
-    <string name="flight_there_is_no_flight_available">Tidak ada penerbangan yang tersedia</string>
-    <string name="flight_there_is_zero_flight_for_the_filter">Terdapat 0 penerbangan yang sesuai dengan filter.</string>
-    <string name="change_date">Ubah Tanggal</string>
+    <string name="flight_there_is_no_flight_available_title">Yaah... Rute ini nggak ada</string>
+    <string name="flight_there_is_no_flight_available_description">Rute yang kamu cari belum tersedia. Coba cari rute lainnya, yuk!</string>
+    <string name="flight_there_is_zero_flight_for_the_filter_title">Yang kamu cari nggak ada di sini</string>
+    <string name="flight_there_is_zero_flight_for_the_filter_description">Jangan panik, coba ubah filter kamu dulu.</string>
+    <string name="flight_search_change_search_empty_button_label">Cari Rute Lainnya</string>
     <string name="reset_filter">Reset Filter</string>
     <string name="flight_booking_passenger_first_name_hint">Nama Depan (sesuai KTP/Paspor/Lainnya)</string>
     <string name="flight_booking_passenger_firstname_secondary_hint">Isi Nama Depan</string>
@@ -519,4 +521,13 @@ di tempatmu.</string>
     <string name="flight_search_coach_mark_change_title">Ganti Pencarian</string>
     <string name="flight_search_coach_mark_change_description">Tidak menemukan penerbangan yang sesuai? Klik disini untuk mengganti pencarian yang sesuai.</string>
     <string name="flight_search_people_label">/orang</string>
+
+    <string name="flight_search_see_other_journey_title">Mau cek penerbangan pulang lainnya?</string>
+    <string name="flight_search_see_other_journey_description"><![CDATA[Kalau pilih penerbangan di luar paket Best Pairing, harga tiket berangkatmu akan berubah jadi <b>%1$s</b>.]]></string>
+    <string name="flight_search_see_other_journey_button">Cek Penerbangan Lain</string>
+
+    <string name="flight_search_see_only_best_pairing_journey_title">Mau pilih tiket dari halaman ini?</string>
+    <string name="flight_search_see_only_best_pairing_journey_description"><![CDATA[Harga tiket berangkatmu akan berubah jadi <b>%1$s</b>. Untuk mendapatkan harga semula, pilih paket Best Pairing.]]></string>
+    <string name="flight_search_see_only_best_pairing_journey_button">Cek Paket Best Pairing</string>
+
 </resources>

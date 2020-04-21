@@ -2,6 +2,7 @@ package com.tokopedia.flight.searchV4.presentation.adapter.viewholder
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.common.travel.utils.TextHtmlUtils
 import com.tokopedia.flight.R
 import com.tokopedia.flight.search.presentation.model.FlightJourneyModel
 import com.tokopedia.flight.search.util.DurationUtil
@@ -53,7 +54,7 @@ class FlightSearchViewHolder(itemView: View,
         with(itemView) {
             if (element.beforeTotal != null && element.beforeTotal.isNotEmpty()) {
                 tvFlightStrikePrice.visibility = View.VISIBLE
-                tvFlightStrikePrice.text = element.beforeTotal
+                tvFlightStrikePrice.text = TextHtmlUtils.getTextFromHtml(getString(R.string.flight_label_saving_price_html, element.beforeTotal))
             } else {
                 tvFlightStrikePrice.visibility = View.GONE
             }

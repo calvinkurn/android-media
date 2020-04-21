@@ -35,8 +35,8 @@ import com.tokopedia.flight.dashboard.view.fragment.model.FlightPassengerModel
 import com.tokopedia.flight.dashboard.view.widget.FlightCalendarOneWayWidget
 import com.tokopedia.flight.homepage.di.FlightHomepageComponent
 import com.tokopedia.flight.homepage.presentation.viewmodel.FlightHomepageViewModel
-import com.tokopedia.flight.search.presentation.activity.FlightSearchActivity
 import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataModel
+import com.tokopedia.flight.searchV4.presentation.activity.FlightSearchActivity
 import com.tokopedia.flight.search_universal.presentation.widget.FlightSearchFormView
 import com.tokopedia.travelcalendar.selectionrangecalendar.SelectionRangeCalendarWidget
 import com.tokopedia.usecase.coroutines.Fail
@@ -236,6 +236,10 @@ class FlightHomepageFragment : BaseDaggerFragment(), FlightSearchFormView.Flight
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode == REQUEST_CODE_SEARCH) {
+            flightHomepageSearchForm.init()
+        }
 
         if (resultCode == Activity.RESULT_OK) {
             when (requestCode) {

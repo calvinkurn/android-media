@@ -4,18 +4,26 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.common.travel.constant.TravelSortOption
+import com.tokopedia.common.travel.ticker.TravelTickerFlightPage
+import com.tokopedia.common.travel.ticker.TravelTickerInstanceId
+import com.tokopedia.common.travel.ticker.domain.TravelTickerCoroutineUseCase
+import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerModel
 import com.tokopedia.common.travel.utils.TravelDispatcherProvider
 import com.tokopedia.flight.airport.view.model.FlightAirportModel
 import com.tokopedia.flight.common.util.FlightAnalytics
 import com.tokopedia.flight.common.util.FlightRequestUtil
 import com.tokopedia.flight.search.presentation.model.*
 import com.tokopedia.flight.search.presentation.model.filter.FlightFilterModel
+import com.tokopedia.flight.searchV4.data.FlightSearchThrowable
 import com.tokopedia.flight.searchV4.data.cloud.combine.FlightCombineRequestModel
 import com.tokopedia.flight.searchV4.data.cloud.combine.FlightCombineRouteRequest
 import com.tokopedia.flight.searchV4.data.cloud.single.FlightSearchRequestModel
 import com.tokopedia.flight.searchV4.domain.*
 import com.tokopedia.flight.searchV4.presentation.model.FlightSearchSelectedModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.delay
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -30,6 +38,7 @@ class FlightSearchViewModel @Inject constructor(
         private val flightSearchDeleteReturnDataUseCase: FlightSearchDeleteReturnDataUseCase,
         private val flightSearchJourneyByIdUseCase: FlightSearchJouneyByIdUseCase,
         private val flightSearchCombineUseCase: FlightSearchCombineUseCase,
+        private val travelTickerUseCase: TravelTickerCoroutineUseCase,
         private val flightAnalytics: FlightAnalytics,
         private val dispatcherProvider: TravelDispatcherProvider)
     : BaseViewModel(dispatcherProvider.io()) {
@@ -49,18 +58,23 @@ class FlightSearchViewModel @Inject constructor(
 
     var priceFilterStatistic: Pair<Int, Int> = Pair(0, Int.MAX_VALUE)
 
-    private val mutableJourneyList = MutableLiveData<List<FlightJourneyModel>>()
-    val journeyList: LiveData<List<FlightJourneyModel>>
+    private val mutableJourneyList = MutableLiveData<Result<List<FlightJourneyModel>>>()
+    val journeyList: LiveData<Result<List<FlightJourneyModel>>>
         get() = mutableJourneyList
 
     private val mutableSelectedJourney = MutableLiveData<FlightSearchSelectedModel>()
     val selectedJourney: LiveData<FlightSearchSelectedModel>
         get() = mutableSelectedJourney
 
+    private val mutableTickerData = MutableLiveData<Result<TravelTickerModel>>()
+    val tickerData: LiveData<Result<TravelTickerModel>>
+        get() = mutableTickerData
+
     val progress = MutableLiveData<Int>()
 
     init {
         progress.value = DEFAULT_PROGRESS_VALUE
+        fetchTickerData()
     }
 
     fun initialize(needDeleteData: Boolean, isReturnTrip: Boolean) {
@@ -88,7 +102,7 @@ class FlightSearchViewModel @Inject constructor(
         val child = flightSearchPassData.flightPassengerViewModel.children
         val infant = flightSearchPassData.flightPassengerViewModel.infant
         val classId = flightSearchPassData.flightClass.id
-        val searchRequestId = flightSearchPassData.searchRequestId
+        val searchRequestId = flightSearchPassData.searchRequestId ?: ""
 
         val requestModel = FlightSearchRequestModel(
                 flightAirportCombine.depAirport,
@@ -109,6 +123,18 @@ class FlightSearchViewModel @Inject constructor(
                     filterModel.journeyId)
 
             onGetSearchMeta(data, isReturnTrip)
+        }) {
+            if (it is FlightSearchThrowable) {
+                mutableJourneyList.postValue(Fail(it))
+            }
+            it.printStackTrace()
+        }
+    }
+
+    private fun fetchTickerData() {
+        launchCatchError(context = dispatcherProvider.ui(), block = {
+            val tickerData = travelTickerUseCase.execute(TravelTickerInstanceId.FLIGHT, TravelTickerFlightPage.SEARCH)
+            mutableTickerData.postValue(tickerData)
         }) {
             it.printStackTrace()
         }
@@ -140,10 +166,11 @@ class FlightSearchViewModel @Inject constructor(
                 flightSearchPassData.flightPassengerViewModel.infant,
                 flightSearchPassData.flightClass.id,
                 FlightRequestUtil.getLocalIpAddress(),
-                flightSearchPassData.searchRequestId)
+                flightSearchPassData.searchRequestId ?: "")
 
         launchCatchError(context = dispatcherProvider.ui(), block = {
             isCombineDone = flightSearchCombineUseCase.execute(combineRequestModel)
+            fetchSortAndFilter()
         }) {
             it.printStackTrace()
         }
@@ -169,9 +196,12 @@ class FlightSearchViewModel @Inject constructor(
         launchCatchError(context = dispatcherProvider.ui(), block = {
             flightSortAndFilterUseCase.execute(selectedSortOption, filterModel).let {
                 flightAnalytics.eventSearchView(flightSearchPassData, true)
-                mutableJourneyList.postValue(it)
+                mutableJourneyList.postValue(Success(it))
             }
         }) {
+            if (it is FlightSearchThrowable) {
+                mutableJourneyList.postValue(Fail(it))
+            }
             it.printStackTrace()
         }
     }
@@ -261,6 +291,12 @@ class FlightSearchViewModel @Inject constructor(
             flightSearchPassData.searchRequestId = flightSearchMeta.searchRequestId
         }
 
+        for (item in flightSearchMeta.airlines) {
+            if (!flightAirportCombine.airlines.contains(item)) {
+                flightAirportCombine.airlines.add(item)
+            }
+        }
+
         if (flightAirportCombine.isNeedRefresh) {
             if (flightSearchMeta.isNeedRefresh) {
                 flightAirportCombine.noOfRetry++
@@ -299,7 +335,7 @@ class FlightSearchViewModel @Inject constructor(
                     date, adult, child, infant, classId,
                     flightAirportCombine.airlines,
                     FlightRequestUtil.getLocalIpAddress(),
-                    searchRequestId)
+                    searchRequestId ?: "")
 
             launchCatchError(dispatcherProvider.ui(), {
                 flightSearchUseCase.execute(requestModel,

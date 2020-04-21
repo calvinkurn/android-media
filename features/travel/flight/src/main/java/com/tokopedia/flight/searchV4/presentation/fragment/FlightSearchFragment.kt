@@ -11,19 +11,21 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
+import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
-import com.tokopedia.common.travel.utils.TravelDateUtil
+import com.tokopedia.analytics.performance.PerformanceMonitoring
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.common.travel.ticker.TravelTickerUtils
+import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerModel
 import com.tokopedia.flight.FlightComponentInstance
 import com.tokopedia.flight.R
 import com.tokopedia.flight.airport.view.model.FlightAirportModel
+import com.tokopedia.flight.common.constant.FlightErrorConstant
 import com.tokopedia.flight.common.util.FlightAnalytics
-import com.tokopedia.flight.common.util.FlightDateUtil
-import com.tokopedia.flight.dashboard.view.widget.FlightCalendarOneWayWidget
 import com.tokopedia.flight.filter.presentation.FlightFilterFacilityEnum
 import com.tokopedia.flight.filter.presentation.bottomsheets.FlightFilterBottomSheet
-import com.tokopedia.flight.search.presentation.adapter.viewholder.EmptyResultViewHolder
-import com.tokopedia.flight.search.presentation.model.EmptyResultModel
 import com.tokopedia.flight.search.presentation.model.FlightJourneyModel
 import com.tokopedia.flight.search.presentation.model.FlightPriceModel
 import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataModel
@@ -32,21 +34,26 @@ import com.tokopedia.flight.search.presentation.model.filter.TransitEnum
 import com.tokopedia.flight.search.util.FlightSearchCache
 import com.tokopedia.flight.search.util.select
 import com.tokopedia.flight.search.util.unselect
+import com.tokopedia.flight.searchV4.data.FlightSearchThrowable
 import com.tokopedia.flight.searchV4.di.DaggerFlightSearchComponent
 import com.tokopedia.flight.searchV4.di.FlightSearchComponent
 import com.tokopedia.flight.searchV4.presentation.activity.FlightSearchActivity
 import com.tokopedia.flight.searchV4.presentation.activity.FlightSearchReturnActivity.Companion.EXTRA_IS_COMBINE_DONE
+import com.tokopedia.flight.searchV4.presentation.adapter.viewholder.EmptyResultViewHolder
 import com.tokopedia.flight.searchV4.presentation.adapter.viewholder.FlightSearchAdapterTypeFactory
+import com.tokopedia.flight.searchV4.presentation.model.EmptyResultModel
 import com.tokopedia.flight.searchV4.presentation.viewmodel.FlightSearchViewModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.*
-import kotlinx.android.synthetic.main.fragment_search_flight.*
+import kotlinx.android.synthetic.main.fragment_flight_search.*
+import kotlinx.android.synthetic.main.fragment_search_flight.horizontal_progress_bar
 import kotlinx.android.synthetic.main.include_flight_quick_filter.*
 import kotlinx.android.synthetic.main.include_flight_search_title_route.*
-import java.util.*
 import javax.inject.Inject
 
 /**
@@ -63,34 +70,19 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
     private lateinit var flightSearchComponent: FlightSearchComponent
 
     private lateinit var coachMarkCache: FlightSearchCache
+    private lateinit var performanceMonitoringP1: PerformanceMonitoring
+    private lateinit var performanceMonitoringP2: PerformanceMonitoring
+    private var isTraceStop = false
 
     private val filterItems = arrayListOf<SortFilterItem>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        activity?.run {
-            val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
-            flightSearchViewModel = viewModelProvider.get(FlightSearchViewModel::class.java)
-
-            arguments?.let { args ->
-                args.getParcelable<FlightSearchPassDataModel>(FlightSearchActivity.EXTRA_PASS_DATA)?.let {
-                    flightSearchViewModel.flightSearchPassData = it
-                }
-                flightSearchViewModel.isCombineDone = args.getBoolean(EXTRA_IS_COMBINE_DONE, false)
-            }
-
-            if (savedInstanceState == null) {
-                flightSearchViewModel.filterModel = buildFilterModel(FlightFilterModel())
-                flightSearchViewModel.flightAirportCombine = flightSearchViewModel.buildAirportCombineModel(
-                        getDepartureAirport(), getArrivalAirport())
-            }
-
-            flightSearchViewModel.initialize(true, isReturnTrip())
-            flightSearchViewModel.fetchSearchDataCloud(isReturnTrip())
-        }
-
+        initViewModels()
         coachMarkCache = FlightSearchCache(requireContext())
+        performanceMonitoringP1 = PerformanceMonitoring.start(FLIGHT_SEARCH_P1_TRACE)
+        performanceMonitoringP2 = PerformanceMonitoring.start(FLIGHT_SEARCH_P2_TRACE)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
@@ -100,7 +92,23 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
         super.onActivityCreated(savedInstanceState)
 
         flightSearchViewModel.journeyList.observe(viewLifecycleOwner, Observer {
-            renderSearchList(it)
+            stopTrace()
+            when (it) {
+                is Success -> {
+                    renderSearchList(it.data)
+                }
+                is Fail -> {
+                    if (it.throwable is FlightSearchThrowable) {
+                        val errors = (it.throwable as FlightSearchThrowable).errorList
+                        for (error in errors) {
+                            if (error.id == FlightErrorConstant.FLIGHT_ROUTE_NOT_FOUND) {
+                                showNoRouteFlightEmptyState(error.title)
+                                break
+                            }
+                        }
+                    }
+                }
+            }
         })
 
         flightSearchViewModel.progress.observe(viewLifecycleOwner, Observer {
@@ -115,6 +123,21 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
                         flightSearchSelectedModel.journeyModel.isBestPairing)
             }
         })
+
+        flightSearchViewModel.tickerData.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Success -> {
+                    if (it.data.message.isNotEmpty()) {
+                        renderTickerView(it.data)
+                    } else {
+                        hideTickerView()
+                    }
+                }
+                is Fail -> {
+                    hideTickerView()
+                }
+            }
+        })
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -122,6 +145,16 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
 
         setupSwipeRefresh()
         setupQuickFilter()
+        showLoading()
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        if (::flightSearchViewModel.isInitialized) {
+            clearAllData()
+            flightSearchViewModel.fetchSortAndFilter()
+        }
     }
 
     override fun onAttachActivity(context: Context?) {
@@ -131,6 +164,18 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
 
     override fun getAdapterTypeFactory(): FlightSearchAdapterTypeFactory =
             FlightSearchAdapterTypeFactory(this)
+
+    override fun createAdapterInstance(): BaseListAdapter<FlightJourneyModel, FlightSearchAdapterTypeFactory> {
+        val adapter: BaseListAdapter<FlightJourneyModel, FlightSearchAdapterTypeFactory> = super.createAdapterInstance()
+
+        val errorNetworkModel: ErrorNetworkModel = adapter.errorNetworkModel
+        errorNetworkModel.iconDrawableRes = R.drawable.ic_flight_empty_state
+        errorNetworkModel.onRetryListener = this
+
+        adapter.errorNetworkModel = errorNetworkModel
+
+        return adapter
+    }
 
     override fun getScreenName(): String = FlightAnalytics.Screen.SEARCH
 
@@ -157,11 +202,15 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
         updateScrollListenerState(false)
 
         if (isListEmpty && flightSearchViewModel.isDoneLoadData()) {
-
+            hideLoading()
+            adapter.addElement(emptyDataViewModel)
+        } else {
+            isLoadingInitialData = false
+            if (isListEmpty) showLoading()
         }
 
         if (flightSearchViewModel.isDoneLoadData()) {
-            // stop trace search
+            performanceMonitoringP2.stopTrace()
             if (!coachMarkCache.isSearchCoachMarkShowed()) {
                 (activity as FlightSearchActivity).setupAndShowCoachMark()
             }
@@ -173,6 +222,8 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
     override fun isListEmpty(): Boolean = !adapter.isContainData
 
     override fun onDestroyView() {
+        stopTrace()
+        performanceMonitoringP2.stopTrace()
         super.onDestroyView()
         this.clearFindViewByIdCache()
     }
@@ -183,28 +234,35 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
 
     override fun loadData(page: Int) {}
 
+    override fun onRetryClicked() {
+        adapter.clearAllElements()
+        resetDateAndReload()
+    }
+
     override fun onDetailClicked(journeyViewModel: FlightJourneyModel?, adapterPosition: Int) {
 //        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    override fun onItemClicked(journeyViewModel: FlightJourneyModel?, adapterPosition: Int) {
-        flightSearchViewModel.onSearchItemClicked(journeyViewModel, adapterPosition)
+    override fun onItemClicked(journeyModel: FlightJourneyModel?, adapterPosition: Int) {
+        flightSearchViewModel.onSearchItemClicked(journeyModel, adapterPosition)
     }
 
     override fun onShowAllClicked() {
-//        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        // need for return page
     }
 
     override fun onShowBestPairingClicked() {
-//        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        // need for return page
     }
 
     override fun onSaveFilter(sortOption: Int, flightFilterModel: FlightFilterModel?, statisticPricePair: Pair<Int, Int>) {
         flightSearchViewModel.selectedSortOption = sortOption
         flightSearchViewModel.priceFilterStatistic = statisticPricePair
-        if (flightFilterModel != null) {
-            flightSearchViewModel.filterModel = flightFilterModel
+        flightFilterModel?.let {
+            flightSearchViewModel.filterModel = it
         }
+        adapter.clearAllElements()
+        flight_sort_filter.indicatorCounter = flightSearchViewModel.recountFilterCounter()
         fetchSortAndFilterData()
     }
 
@@ -212,35 +270,29 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
 
     override fun getRecyclerViewResourceId(): Int = R.id.recycler_view
 
-    open fun getLayout(): Int = R.layout.fragment_search_flight
+    open fun getLayout(): Int = R.layout.fragment_flight_search
 
     open fun isReturnTrip(): Boolean = false
 
     override fun getEmptyDataViewModel(): Visitable<*> {
         val emptyResultViewModel = EmptyResultModel()
-        emptyResultViewModel.iconRes = R.drawable.ic_flight_empty_state
+        emptyResultViewModel.iconRes = com.tokopedia.globalerror.R.drawable.unify_globalerrors_404
         if (flightSearchViewModel.isInFilterMode) {
-            emptyResultViewModel.contentRes = R.string.flight_there_is_zero_flight_for_the_filter
+            emptyResultViewModel.title = getString(R.string.flight_there_is_zero_flight_for_the_filter_title)
+            emptyResultViewModel.contentRes = R.string.flight_there_is_zero_flight_for_the_filter_description
             emptyResultViewModel.buttonTitleRes = R.string.reset_filter
             emptyResultViewModel.callback = object : EmptyResultViewHolder.Callback {
-                override fun onEmptyContentItemTextClicked() {
-
-                }
-
                 override fun onEmptyButtonClicked() {
                     onResetFilterClicked()
                 }
             }
         } else {
-            emptyResultViewModel.contentRes = R.string.flight_there_is_no_flight_available
-            emptyResultViewModel.buttonTitleRes = R.string.change_date
+            emptyResultViewModel.title = getString(R.string.flight_there_is_no_flight_available_title)
+            emptyResultViewModel.contentRes = R.string.flight_there_is_no_flight_available_description
+            emptyResultViewModel.buttonTitleRes = R.string.flight_search_change_search_empty_button_label
             emptyResultViewModel.callback = object : EmptyResultViewHolder.Callback {
-                override fun onEmptyContentItemTextClicked() {
-
-                }
-
                 override fun onEmptyButtonClicked() {
-                    onChangeDateClicked()
+                    (activity as FlightSearchActivity).showChangeSearchBottomSheet()
                 }
             }
         }
@@ -248,6 +300,46 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
         return emptyResultViewModel
     }
 
+    fun setSearchPassData(flightSearchPassDataModel: FlightSearchPassDataModel) {
+        flightSearchViewModel.flightSearchPassData = flightSearchPassDataModel
+    }
+
+    fun resetDateAndReload() {
+        flightSearchViewModel.flush()
+        onFlightSearchFragmentListener?.changeDate(flightSearchViewModel.flightSearchPassData)
+
+        horizontal_progress_bar.visibility = View.VISIBLE
+        flightSearchViewModel.setProgress(0)
+        flight_sort_filter.visibility = View.GONE
+
+        clearAllData()
+        showLoading()
+
+        flightSearchViewModel.flightAirportCombine = flightSearchViewModel.buildAirportCombineModel(
+                getDepartureAirport(), getArrivalAirport())
+        flightSearchViewModel.initialize(true, isReturnTrip())
+        flightSearchViewModel.fetchSearchDataCloud(isReturnTrip())
+    }
+
+    open fun initViewModels() {
+        activity?.run {
+            val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
+            flightSearchViewModel = viewModelProvider.get(FlightSearchViewModel::class.java)
+
+            arguments?.let { args ->
+                args.getParcelable<FlightSearchPassDataModel>(FlightSearchActivity.EXTRA_PASS_DATA)?.let {
+                    flightSearchViewModel.flightSearchPassData = it
+                }
+                flightSearchViewModel.isCombineDone = args.getBoolean(EXTRA_IS_COMBINE_DONE, false)
+            }
+
+            flightSearchViewModel.filterModel = buildFilterModel(FlightFilterModel())
+            flightSearchViewModel.flightAirportCombine = flightSearchViewModel.buildAirportCombineModel(
+                    getDepartureAirport(), getArrivalAirport())
+            flightSearchViewModel.initialize(true, isReturnTrip())
+            flightSearchViewModel.fetchSearchDataCloud(isReturnTrip())
+        }
+    }
 
     open fun buildFilterModel(filterModel: FlightFilterModel): FlightFilterModel =
             filterModel
@@ -260,14 +352,12 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
         flightSearchViewModel.onSearchItemClicked(selectedId = selectedId)
     }
 
-    private fun renderSearchList(list: List<FlightJourneyModel>) {
+    open fun renderSearchList(list: List<FlightJourneyModel>) {
         if (!flightSearchViewModel.isOneWay() && !adapter.isContainData) {
             showSearchRouteTitle()
         }
 
-        if (list.isNotEmpty()) {
-            renderList(list)
-        }
+        renderList(list)
 
         if (list.isNotEmpty()) {
             setupQuickFilter()
@@ -275,6 +365,25 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
         } else if (!adapter.isContainData) {
             hideQuickFilter()
         }
+    }
+
+    private fun renderTickerView(travelTickerModel: TravelTickerModel) {
+        TravelTickerUtils.buildUnifyTravelTicker(travelTickerModel, flight_search_ticker)
+        if (travelTickerModel.url.isNotEmpty()) {
+            flight_search_ticker.setOnClickListener {
+                RouteManager.route(requireContext(), travelTickerModel.url)
+            }
+        }
+
+        showTickerView()
+    }
+
+    private fun showTickerView() {
+        flight_search_ticker.visibility = View.VISIBLE
+    }
+
+    private fun hideTickerView() {
+        flight_search_ticker.visibility = View.GONE
     }
 
     private fun fetchSortAndFilterData() {
@@ -302,52 +411,10 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
 
     private fun onResetFilterClicked() {
         flightSearchViewModel.filterModel = buildFilterModel(FlightFilterModel())
-        adapter.clearAllNonDataElement()
+        adapter.clearAllElements()
         showLoading()
         setupQuickFilter()
         fetchSortAndFilterData()
-    }
-
-    private fun onChangeDateClicked() {
-        if (!activity!!.isFinishing) {
-            var maxDate = FlightDateUtil.addTimeToCurrentDate(Calendar.YEAR, MAX_DATE_ADDITION_YEAR)
-            maxDate = FlightDateUtil.addTimeToSpesificDate(maxDate, Calendar.DATE, -1)
-            maxDate = FlightDateUtil.trimDate(maxDate)
-            var minDate: Date
-
-            if (isReturnTrip()) {
-                val dateDepStr = flightSearchViewModel.flightSearchPassData.getDate(false)
-                val dateDep = FlightDateUtil.stringToDate(dateDepStr)
-                minDate = FlightDateUtil.trimDate(dateDep)
-            } else {
-                minDate = FlightDateUtil.trimDate(FlightDateUtil.getCurrentDate())
-
-                if (!flightSearchViewModel.flightSearchPassData.isOneWay) {
-                    val dateReturnStr = flightSearchViewModel.flightSearchPassData.getDate(true)
-                    val dateReturn = FlightDateUtil.stringToDate(dateReturnStr)
-                    maxDate = FlightDateUtil.trimDate(dateReturn)
-                }
-            }
-
-            val dateInput = flightSearchViewModel.flightSearchPassData.getDate(isReturnTrip())
-            val date = FlightDateUtil.stringToDate(dateInput)
-            val flightCalendarDialog = FlightCalendarOneWayWidget.newInstance(
-                    TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD, minDate),
-                    TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD, maxDate),
-                    TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD, date),
-                    flightSearchViewModel.flightSearchPassData.departureAirport.airportCode,
-                    flightSearchViewModel.flightSearchPassData.arrivalAirport.airportCode,
-                    flightSearchViewModel.flightSearchPassData.flightClass.id)
-            flightCalendarDialog.setListener(object : FlightCalendarOneWayWidget.ActionListener {
-                override fun onDateSelected(dateSelected: Date) {
-                    val calendar = FlightDateUtil.getCurrentCalendar()
-                    calendar.time = dateSelected
-                    /*flightSearchViewModel.onSuccessDateChanged(calendar.get(Calendar.YEAR),
-                            calendar.get(Calendar.MONTH), calendar.get(Calendar.DATE))*/
-                }
-            })
-            flightCalendarDialog.show(activity!!.supportFragmentManager, TAG_TRAVEL_CALENDAR)
-        }
     }
 
     private fun setupSwipeRefresh() {
@@ -356,6 +423,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
         swipeRefreshLayout.setOnRefreshListener {
             hideLoading()
             swipeRefreshLayout.isRefreshing = false
+            adapter.clearAllElements()
             resetDateAndReload()
         }
     }
@@ -513,19 +581,30 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
         }
     }
 
-    private fun resetDateAndReload() {
-        flightSearchViewModel.flush()
-        onFlightSearchFragmentListener?.changeDate(flightSearchViewModel.flightSearchPassData)
+    private fun stopTrace() {
+        if (!isTraceStop) {
+            performanceMonitoringP1.stopTrace()
+            isTraceStop = true
+        }
+    }
 
-        horizontal_progress_bar.visibility = View.VISIBLE
-        flightSearchViewModel.setProgress(0)
-        flight_sort_filter.visibility = View.GONE
+    private fun showNoRouteFlightEmptyState(message: String) {
+        adapter.clearAllElements()
+        adapter.addElement(getNoFlightRouteDataModel(message))
+    }
 
-        clearAllData()
-        showLoading()
-
-        flightSearchViewModel.initialize(true, isReturnTrip())
-        flightSearchViewModel.fetchSearchDataCloud(isReturnTrip())
+    private fun getNoFlightRouteDataModel(message: String): Visitable<FlightSearchAdapterTypeFactory> {
+        val emptyResultViewModel = EmptyResultModel()
+        emptyResultViewModel.iconRes = com.tokopedia.globalerror.R.drawable.unify_globalerrors_404
+        emptyResultViewModel.title = getString(R.string.flight_there_is_no_flight_available_title)
+        emptyResultViewModel.contentRes = R.string.flight_there_is_no_flight_available_description
+        emptyResultViewModel.buttonTitleRes = R.string.flight_search_change_search_empty_button_label
+        emptyResultViewModel.callback = object : EmptyResultViewHolder.Callback {
+            override fun onEmptyButtonClicked() {
+                (activity as FlightSearchActivity).showChangeSearchBottomSheet()
+            }
+        }
+        return emptyResultViewModel
     }
 
     interface OnFlightSearchFragmentListener {
@@ -537,6 +616,8 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
 
     companion object {
         private const val TAG_TRAVEL_CALENDAR = "travel calendar"
+        private const val FLIGHT_SEARCH_P1_TRACE = "tr_flight_search_p1"
+        private const val FLIGHT_SEARCH_P2_TRACE = "tr_flight_search_p2"
 
         private const val HIDE_HORIZONTAL_PROGRESS_DELAY: Long = 500
         private const val FILTER_SORT_ITEM_SIZE = 4

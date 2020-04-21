@@ -77,24 +77,19 @@ open class FlightSearchActivity : BaseFlightActivity(),
                 if (data != null) {
                     when (data.getIntExtra(FlightFlowExtraConstant.EXTRA_FLOW_DATA, 0)) {
                         FlightFlowConstant.PRICE_CHANGE -> {
-                            /*if (fragment is FlightSearchFragment) {
-                                (fragment as FlightSearchFragment).flightSearchPresenter
-                                        .attachView(fragment as FlightSearchFragment)
-                                (fragment as FlightSearchFragment).refreshData()
-                            }*/
+                            if (fragment is FlightSearchFragment) {
+                                (fragment as FlightSearchFragment).resetDateAndReload()
+                            }
                         }
                         FlightFlowConstant.EXPIRED_JOURNEY -> {
                             FlightFlowUtil.actionSetResultAndClose(this, intent,
                                     FlightFlowConstant.EXPIRED_JOURNEY)
                         }
                         FlightFlowConstant.CHANGE_SEARCH_PARAM -> {
-                            /*if (fragment is FlightSearchFragment) {
-                                (fragment as FlightSearchFragment).flightSearchPresenter
-                                        .attachView(fragment as FlightSearchFragment)
-                                (fragment as FlightSearchFragment)
-                                        .setSearchPassData((data.getParcelableExtra(EXTRA_PASS_DATA) as FlightSearchPassDataModel))
-                                (fragment as FlightSearchFragment).refreshData()
-                            }*/
+                            if (fragment is FlightSearchFragment) {
+                                (fragment as FlightSearchFragment).setSearchPassData((data.getParcelableExtra(EXTRA_PASS_DATA) as FlightSearchPassDataModel))
+                                (fragment as FlightSearchFragment).resetDateAndReload()
+                            }
                         }
                     }
                 }
@@ -110,18 +105,17 @@ open class FlightSearchActivity : BaseFlightActivity(),
         flightSearchPassDataModel.returnDate = flightSearchParams.returnDate
         flightSearchPassDataModel.flightPassengerViewModel = flightSearchParams.flightPassengerViewModel
         flightSearchPassDataModel.flightClass = flightSearchParams.flightClass
+        flightSearchPassDataModel.searchRequestId = ""
 
         if (isReturnPage()) {
             val intent = Intent()
             intent.putExtra(EXTRA_PASS_DATA, flightSearchPassDataModel)
             FlightFlowUtil.actionSetResultAndClose(this, intent, FlightFlowConstant.CHANGE_SEARCH_PARAM)
         } else {
-            /*if (fragment is FlightSearchFragment) {
-                (fragment as FlightSearchFragment).flightSearchPresenter
-                        .attachView(fragment as FlightSearchFragment)
-                (fragment as FlightSearchFragment).setSearchPassData(passDataModel)
-                (fragment as FlightSearchFragment).refreshData()
-            }*/
+            if (fragment is FlightSearchFragment) {
+                (fragment as FlightSearchFragment).setSearchPassData(flightSearchPassDataModel)
+                (fragment as FlightSearchFragment).resetDateAndReload()
+            }
         }
     }
 
@@ -216,7 +210,7 @@ open class FlightSearchActivity : BaseFlightActivity(),
         supportActionBar?.elevation = 0f
     }
 
-    private fun showChangeSearchBottomSheet() {
+    fun showChangeSearchBottomSheet() {
         flightAnalytics.eventChangeSearchClick()
 
         val flightChangeSearchBottomSheet = FlightSearchUniversalBottomSheet.getInstance()
@@ -265,28 +259,5 @@ open class FlightSearchActivity : BaseFlightActivity(),
                 Intent(context, FlightSearchActivity::class.java)
                         .putExtra(EXTRA_PASS_DATA, passDataModel)
 
-/*        fun getCallingIntent(context: Context): Intent {
-            val passDataModel = FlightSearchPassDataModel(
-                    "2020-08-01",
-                    "2020-10-01",
-                    false,
-                    FlightPassengerModel(1, 0, 0),
-                    FlightAirportModel().apply {
-                        cityName = "Banda Aceh"
-                        cityCode = "BTJ"
-                    },
-                    FlightAirportModel().apply {
-                        cityName = "Jakarta"
-                        cityCode = "JKTA"
-                    },
-                    FlightClassModel().apply {
-                        id = 1
-                        title = "Ekonomi"
-                    },
-                    "", ""
-            )
-
-            return getCallingIntent(context, passDataModel)
-        }*/
     }
 }

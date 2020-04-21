@@ -8,7 +8,6 @@ import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel;
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.ErrorNetworkViewHolder;
-import com.tokopedia.common.travel.presentation.adapter.TravelSearchShimmeringViewHolder;
 import com.tokopedia.flight.search.presentation.adapter.viewholder.EmptyResultViewHolder;
 import com.tokopedia.flight.search.presentation.adapter.viewholder.FlightSearchSeeAllViewHolder;
 import com.tokopedia.flight.search.presentation.adapter.viewholder.FlightSearchSeeOnlyBestPairingViewHolder;
@@ -17,6 +16,7 @@ import com.tokopedia.flight.search.presentation.model.EmptyResultModel;
 import com.tokopedia.flight.search.presentation.model.FlightJourneyModel;
 import com.tokopedia.flight.search.presentation.model.FlightSearchSeeAllResultModel;
 import com.tokopedia.flight.search.presentation.model.FlightSearchSeeOnlyBestPairingModel;
+import com.tokopedia.flight.searchV4.presentation.adapter.viewholder.FlightSearchShimmeringViewHolder;
 
 /**
  * @author by furqan on 02/10/18.
@@ -43,8 +43,8 @@ public class FlightSearchAdapterTypeFactory extends BaseAdapterTypeFactory
             return new EmptyResultViewHolder(parent);
         } else if (type == ErrorNetworkViewHolder.LAYOUT) {
             return new ErrorNetworkViewHolder(parent);
-        } else if (type == TravelSearchShimmeringViewHolder.LAYOUT) {
-            return new TravelSearchShimmeringViewHolder(parent);
+        } else if (type == FlightSearchShimmeringViewHolder.Companion.getLAYOUT()) {
+            return new FlightSearchShimmeringViewHolder(parent);
         } else {
             return super.createViewHolder(parent, type);
         }
@@ -60,7 +60,7 @@ public class FlightSearchAdapterTypeFactory extends BaseAdapterTypeFactory
     }
 
     public int type(LoadingModel loadingModel) {
-        return TravelSearchShimmeringViewHolder.LAYOUT;
+        return FlightSearchShimmeringViewHolder.Companion.getLAYOUT();
     }
 
     public int type(EmptyResultModel viewModel) {

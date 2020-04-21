@@ -99,17 +99,37 @@ class FlightSearchRepository @Inject constructor(
                     if (combos.isNotEmpty()) {
                         val comboBestPairing = combos.find { it.isBestPairing }
                         val journeyTable = journeyAndRoutes.flightJourneyTable
-                        if (comboBestPairing != null) {
-                            journeyAndRoutes.flightJourneyTable =
-                                    createJourneyWithCombo(journeyTable, comboBestPairing)
-                        } else {
-                            journeyAndRoutes.flightJourneyTable =
-                                    createJourneyWithCombo(journeyTable, combos[0])
-                        }
-                        journeyAndRoutes
-                    } else {
-                        journeyAndRoutes
+                        journeyAndRoutes.flightJourneyTable = comboBestPairing?.let {
+                            createJourneyWithCombo(journeyTable, it)
+                        } ?: createJourneyWithCombo(journeyTable, combos[0])
                     }
+
+                    journeyAndRoutes
+                }
+            }
+        }.toList()
+        flightSearchSingleDataDbSource.insertList(journeyAndRouteList)
+        return searchData.meta.apply {
+            airlineList = getAirlines(journeyAndRouteList)
+        }
+    }
+
+    suspend fun getSearchCombinedReturn(searchParams: FlightSearchRequestModel,
+                                        onwardJourneyId: String, isReturnTrip: Boolean)
+            : FlightSearchMetaEntity {
+        val searchData = flightSearchDataCloudSource.getSearchSingleData(searchParams)
+        val journeyAndRouteList = searchData.data.map { data ->
+            generateJourneyAndRoutes(data, searchData.included, isReturnTrip).let { journeyAndRoutes ->
+                flightSearchCombineDataDbSource.getSearchReturnCombined(data.id).let { combos ->
+                    if (combos.isNotEmpty()) {
+                        val combo = combos.firstOrNull { it.onwardJourneyId == onwardJourneyId }
+                        val journeyTable = journeyAndRoutes.flightJourneyTable
+                        journeyAndRoutes.flightJourneyTable = combo?.let {
+                            createJourneyWithCombo(journeyTable, it)
+                        } ?: journeyTable
+                    }
+
+                    journeyAndRoutes
                 }
             }
         }.toList()
@@ -122,9 +142,11 @@ class FlightSearchRepository @Inject constructor(
     suspend fun getJourneyById(journeyId: String): JourneyAndRoutes =
             flightSearchSingleDataDbSource.getJourneyById(journeyId)
 
-    suspend fun getSearchFilter(flightSortOption: Int, flightFilterModel: FlightFilterModel): JourneyAndRoutesModel =
-            JourneyAndRoutesModel(flightSearchSingleDataDbSource.getFilteredJourneys(flightFilterModel, flightSortOption),
-                    flightSearchDataCacheSource.cacheCoroutine)
+    suspend fun getSearchFilter(flightSortOption: Int, flightFilterModel: FlightFilterModel): JourneyAndRoutesModel {
+        val filteredJourney = flightSearchSingleDataDbSource.getFilteredJourneys(flightFilterModel, flightSortOption)
+        val specialTag = flightSearchDataCacheSource.cacheCoroutine
+        return JourneyAndRoutesModel(filteredJourney, specialTag)
+    }
 
     suspend fun getComboKey(onwardJourneyId: String, returnJourneyId: String): String =
             flightSearchCombineDataDbSource.getComboData(onwardJourneyId, returnJourneyId).let {
