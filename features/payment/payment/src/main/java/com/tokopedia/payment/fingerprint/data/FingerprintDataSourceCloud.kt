@@ -42,7 +42,7 @@ class FingerprintDataSourceCloud @Inject constructor(private val fingerprintApi:
     fun savePublicKey(params: HashMap<String, String?>): Observable<Boolean> {
         return accountFingerprintApi.savePublicKey(params).map { dataResponseResponse: Response<DataResponse<DataResponseSavePublicKey>> ->
             if (dataResponseResponse.isSuccessful && dataResponseResponse.body() != null && dataResponseResponse.body()?.data != null) {
-                return@map dataResponseResponse.body()?.data?.success ?: 0 == SUCCESS_VALUE
+                return@map (dataResponseResponse.body()?.data?.success ?: 0) == SUCCESS_VALUE
             } else {
                 return@map false
             }

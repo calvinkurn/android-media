@@ -16,6 +16,7 @@ class FingerprintDialogRegister : FingerPrintDialog(), FingerPrintDialog.Callbac
     private var userId: String = ""
     private var transactionId: String = ""
     private var counterError = 0
+
     private var listenerRegister: ListenerRegister? = null
     private var date: String? = null
 
@@ -48,7 +49,7 @@ class FingerprintDialogRegister : FingerPrintDialog(), FingerPrintDialog.Callbac
     }
 
     private fun updateCounterError(): Boolean {
-        return if (isResumed) {
+        if (isResumed) {
             counterError++
             updateDesc(getString(R.string.fingerprint_label_desc_default))
             updateTitle(getString(R.string.fingerprint_label_try_again))
@@ -56,13 +57,10 @@ class FingerprintDialogRegister : FingerPrintDialog(), FingerPrintDialog.Callbac
                 stopListening()
                 listenerRegister?.showErrorRegisterSnackbar()
                 dismiss()
-                false
-            } else {
-                true
+                return false
             }
-        } else {
-            true
         }
+        return true
     }
 
     override fun onAuthenticationError(errMsgId: Int, errString: CharSequence?) {
@@ -106,10 +104,10 @@ class FingerprintDialogRegister : FingerPrintDialog(), FingerPrintDialog.Callbac
 
         fun createInstance(userId: String, transactionId: String?): FingerprintDialogRegister {
             val fingerprintDialogRegister = FingerprintDialogRegister()
-            val bundle = Bundle()
-            bundle.putString(USER_ID, userId)
-            bundle.putString(TRANSACTION_ID, transactionId)
-            fingerprintDialogRegister.arguments = bundle
+            fingerprintDialogRegister.arguments = Bundle().apply {
+                putString(USER_ID, userId)
+                putString(TRANSACTION_ID, transactionId)
+            }
             return fingerprintDialogRegister
         }
     }

@@ -39,7 +39,6 @@ class TopPayPresenter(private val saveFingerPrintUseCase: SaveFingerPrintUseCase
                 }
                 view?.renderWebViewPostUrl(paymentPassData.redirectUrl, postData, method.equals(PaymentPassData.METHOD_GET, true))
             } catch (e: Exception) {
-                e.printStackTrace()
                 view?.showToastMessageWithForceCloseView(ErrorNetMessage.MESSAGE_ERROR_DEFAULT)
             }
         } else {
@@ -58,7 +57,7 @@ class TopPayPresenter(private val saveFingerPrintUseCase: SaveFingerPrintUseCase
     override fun paymentFingerPrint(transactionId: String?, publicKey: String?, date: String?, accountSignature: String?, userId: String?) {
         view?.let {
             it.showProgressDialog()
-            paymentFingerprintUseCase.execute(paymentFingerprintUseCase.createRequestParams(transactionId, publicKey, date, accountSignature, userId!!),
+            paymentFingerprintUseCase.execute(paymentFingerprintUseCase.createRequestParams(transactionId, publicKey, date, accountSignature, userId),
                     subscriberPaymentFingerPrint)
         }
     }

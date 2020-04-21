@@ -21,10 +21,10 @@ class SavePublicKeyUseCase @Inject constructor(private val fingerprintRepository
     }
 
     fun createRequestParams(userId: String?, publicKey: String?): RequestParams {
-        val requestParams = RequestParams.create()
-        requestParams.putString(USER_ID, userId)
-        requestParams.putString(PUBLIC_KEY, publicKey)
-        return requestParams
+        return RequestParams.create().apply {
+            putString(USER_ID, userId)
+            putString(PUBLIC_KEY, publicKey)
+        }
     }
 
     companion object {

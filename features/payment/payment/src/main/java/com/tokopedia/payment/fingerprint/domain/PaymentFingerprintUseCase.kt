@@ -31,16 +31,16 @@ class PaymentFingerprintUseCase @Inject constructor(private val fingerprintRepos
     }
 
     fun createRequestParams(
-            transactionId: String?, publicKey: String?, date: String?, accountSignature: String?, userId: String
+            transactionId: String?, publicKey: String?, date: String?, accountSignature: String?, userId: String?
     ): RequestParams {
-        val requestParams = RequestParams.create()
-        requestParams.putString(TRANSACTION_ID, transactionId)
-        requestParams.putString(PUBLIC_KEY, publicKey)
-        requestParams.putString(DATE, date)
-        requestParams.putString(ACCOUNT_SIGNATURE, accountSignature)
-        requestParams.putInt(USER_ID, userId.toInt())
-        requestParams.putString(OS, OS_ANDROID_VALUE)
-        return requestParams
+        return RequestParams.create().apply {
+            putString(TRANSACTION_ID, transactionId)
+            putString(PUBLIC_KEY, publicKey)
+            putString(DATE, date)
+            putString(ACCOUNT_SIGNATURE, accountSignature)
+            putInt(USER_ID, userId?.toInt() ?: 0)
+            putString(OS, OS_ANDROID_VALUE)
+        }
     }
 
     companion object {

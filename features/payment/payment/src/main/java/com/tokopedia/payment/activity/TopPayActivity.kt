@@ -349,7 +349,7 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
     override fun onBackPressed() {
         val url = scroogeWebView?.url
         if (url != null && url.contains(getBaseUrlDomainPayment())) {
-            scroogeWebView?.loadUrl("javascript:handlePopAndroid();")
+            scroogeWebView?.loadUrl(BACK_DIALOG_URL)
         } else if (isEndThanksPage(url)) {
             callbackPaymentSucceed()
         } else {
@@ -610,6 +610,8 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
         private const val HCI_CAMERA_SELFIE = "android-js-call://selfie"
         private const val HCI_KTP_IMAGE_PATH = "ktp_image_path"
         private val THANK_PAGE_URL_LIST = arrayOf("thanks", "thank")
+
+        private const val BACK_DIALOG_URL = "javascript:handlePopAndroid();"
 
         @JvmStatic
         fun createInstance(context: Context, paymentPassData: PaymentPassData?): Intent {

@@ -16,6 +16,7 @@ class FingerPrintDialogPayment : FingerPrintDialog(), FingerPrintDialog.Callback
 
     private var listenerPayment: ListenerPayment? = null
     private var containerOtp: View? = null
+
     private var userId: String = ""
     private var date: String? = null
     private var urlOtp: String = ""
@@ -55,30 +56,23 @@ class FingerPrintDialogPayment : FingerPrintDialog(), FingerPrintDialog.Callback
         view.findViewById<Button>(R.id.button_use_otp)?.setOnClickListener { listenerPayment?.onGoToOtpPage(transactionId, urlOtp) }
     }
 
-    private fun setVisibilityContainer(isVisible: Boolean) {
-        if (isVisible) {
-            containerOtp?.visibility = View.VISIBLE
-        } else {
-            containerOtp?.visibility = View.GONE
-        }
+    private fun setVisibilityContainer() {
+        containerOtp?.visibility = View.VISIBLE
         updateHeight()
     }
 
     private fun updateCounterError(): Boolean {
-        return if (isResumed) {
+        if (isResumed) {
             counterError++
             updateTitle(getString(R.string.fingerprint_label_failed_scan))
-            setVisibilityContainer(true)
+            setVisibilityContainer()
             if (counterError > MAX_ERROR) {
                 dismiss()
                 listenerPayment?.onGoToOtpPage(transactionId, urlOtp)
-                false
-            } else {
-                true
+                return false
             }
-        } else {
-            true
         }
+        return true
     }
 
     override fun onCloseButtonClick() {
@@ -127,11 +121,11 @@ class FingerPrintDialogPayment : FingerPrintDialog(), FingerPrintDialog.Callback
 
         fun createInstance(userId: String, urlOtp: String, transactionId: String?): FingerPrintDialogPayment {
             val fingerPrintDialogPayment = FingerPrintDialogPayment()
-            val bundle = Bundle()
-            bundle.putString(USER_ID, userId)
-            bundle.putString(URL_OTP, urlOtp)
-            bundle.putString(TRANSACTION_ID, transactionId)
-            fingerPrintDialogPayment.arguments = bundle
+            fingerPrintDialogPayment.arguments = Bundle().apply {
+                putString(USER_ID, userId)
+                putString(URL_OTP, urlOtp)
+                putString(TRANSACTION_ID, transactionId)
+            }
             return fingerPrintDialogPayment
         }
     }
