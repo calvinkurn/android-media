@@ -10,6 +10,8 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.DefaultItemAnimator
+import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
@@ -38,6 +40,7 @@ import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstan
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_VARIANT_INPUT
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_VARIANT_PICKER_RESULT_CACHE_ID
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_VARIANT_RESULT_CACHE_ID
+import com.tokopedia.product.addedit.common.util.ResourceProvider
 import com.tokopedia.product.addedit.common.util.getText
 import com.tokopedia.product.addedit.common.util.setText
 import com.tokopedia.product.addedit.description.data.remote.model.variantbycat.ProductVariantByCatModel
@@ -113,13 +116,14 @@ class AddEditProductDescriptionFragment:
 
         const val IS_ADD = 0
         const val REQUEST_CODE_DESCRIPTION = 0x03
+
+        const val VIDEO_REQUEST_DELAY = 250L
     }
 
     private var productInputModel: ProductInputModel? = null
 
     private lateinit var userSession: UserSessionInterface
     private lateinit var shopId: String
-    private var positionVideoChanged = 0
 
     @Inject
     lateinit var descriptionViewModel: AddEditProductDescriptionViewModel
@@ -146,28 +150,27 @@ class AddEditProductDescriptionFragment:
     override fun onTextChanged(url: String, position: Int) {
         adapter.data.getOrNull(position)?.run {
             inputUrl = url
-            positionVideoChanged = position
-            descriptionViewModel.getVideoYoutube(url)
+            descriptionViewModel.urlToFetch[position] = url
+            getVideoYoutube(url, position)
         }
     }
 
-    override fun onItemClicked(t: VideoLinkModel?) {
+    override fun onThumbnailClicked(url: String) {
         try {
-            t?.run {
-                val uri = if (inputUrl.startsWith(AddEditProductConstants.HTTP_PREFIX)) {
-                    Uri.parse(inputUrl)
-                } else {
-                    Uri.parse("${AddEditProductConstants.HTTP_PREFIX}://${inputUrl}")
-                }
-                startActivity(Intent(Intent.ACTION_VIEW, uri))
-                if(descriptionViewModel.isEditMode && !descriptionViewModel.isAddMode) {
-                    ProductEditDescriptionTracking.clickPlayVideo(shopId)
-                }
+            val uri = if (url.startsWith(AddEditProductConstants.HTTP_PREFIX)) {
+                Uri.parse(url)
+            } else {
+                Uri.parse("${AddEditProductConstants.HTTP_PREFIX}://${url}")
+            }
+            startActivity(Intent(Intent.ACTION_VIEW, uri))
+            if (descriptionViewModel.isEditMode && !descriptionViewModel.isAddMode) {
+                ProductEditDescriptionTracking.clickPlayVideo(shopId)
             }
         } catch (e: Throwable) {
-            e.printStackTrace()
         }
     }
+
+    override fun onItemClicked(t: VideoLinkModel?) { /* noop */ }
 
     override fun getScreenName(): String? = null
 
@@ -261,7 +264,12 @@ class AddEditProductDescriptionFragment:
             submitInputEdit()
         }
 
-        getRecyclerView(view).itemAnimator = null
+        getRecyclerView(view).itemAnimator = object: DefaultItemAnimator() {
+            override fun canReuseUpdatedViewHolder(viewHolder: RecyclerView.ViewHolder): Boolean {
+                return true
+            }
+        }
+
         descriptionViewModel.getVariants(descriptionViewModel.categoryId)
 
         observeProductVariant()
@@ -274,6 +282,21 @@ class AddEditProductDescriptionFragment:
 
     override fun loadInitialData() {
         loadData(1)
+    }
+
+    private fun getVideoYoutube(url: String, index: Int) {
+        if (!(descriptionViewModel.isFetchingVideoData[index] ?: false)) {
+            descriptionViewModel.isFetchingVideoData[index] = true
+            view?.postDelayed({
+                if (descriptionViewModel.urlToFetch[index] == url) {
+                    descriptionViewModel.fetchedUrl[index] = url
+                    descriptionViewModel.getVideoYoutube(descriptionViewModel.fetchedUrl[index].orEmpty(), index)
+                } else {
+                    descriptionViewModel.isFetchingVideoData[index] = false
+                    getVideoYoutube(descriptionViewModel.urlToFetch[index].orEmpty(), index)
+                }
+            }, VIDEO_REQUEST_DELAY)
+        }
     }
 
     fun sendDataBack() {
@@ -317,25 +340,31 @@ class AddEditProductDescriptionFragment:
 
     private fun observeProductVideo() {
         descriptionViewModel.videoYoutube.observe(viewLifecycleOwner, Observer { result ->
-            when (result) {
+            val position = result.first
+            descriptionViewModel.isFetchingVideoData[position] = false
+            when (val requestResult = result.second) {
                 is Success -> {
-                    val id  = result.data.id
+                    val id  = requestResult.data.id
                     if (id == null) {
-                        displayErrorOnSelectedVideo()
+                        displayErrorOnSelectedVideo(position)
                     } else {
-                        setDataOnSelectedVideo(result.data)
+                        setDataOnSelectedVideo(requestResult.data, position)
                     }
                 }
                 is Fail -> {
-                    displayErrorOnSelectedVideo()
+                    displayErrorOnSelectedVideo(position)
                 }
             }
-            adapter.notifyItemChanged(positionVideoChanged)
+            adapter.notifyItemChanged(position)
+            if (descriptionViewModel.fetchedUrl[position] != descriptionViewModel.urlToFetch[position]) {
+                getVideoYoutube(descriptionViewModel.urlToFetch[position].orEmpty(), position)
+            }
+            refreshDuplicateVideo(position)
         })
     }
 
-    private fun displayErrorOnSelectedVideo() {
-        adapter.data.getOrNull(positionVideoChanged)?.apply {
+    private fun displayErrorOnSelectedVideo(index: Int) {
+        adapter.data.getOrNull(index)?.apply {
             inputTitle = ""
             inputDescription = ""
             inputImage = ""
@@ -343,12 +372,22 @@ class AddEditProductDescriptionFragment:
         }
     }
 
-    private fun setDataOnSelectedVideo(youtubeVideoModel: YoutubeVideoModel) {
-        adapter.data.getOrNull(positionVideoChanged)?.apply {
+    private fun setDataOnSelectedVideo(youtubeVideoModel: YoutubeVideoModel, index: Int) {
+        adapter.data.getOrNull(index)?.apply {
             inputTitle = youtubeVideoModel.title.orEmpty()
             inputDescription = youtubeVideoModel.description.orEmpty()
             inputImage = youtubeVideoModel.thumbnailUrl.orEmpty()
             errorMessage = descriptionViewModel.validateDuplicateVideo(adapter.data, inputUrl)
+        }
+    }
+
+    private fun refreshDuplicateVideo(excludeIndex: Int) {
+        ResourceProvider(context).getDuplicateProductVideoErrorMessage()?.run {
+            adapter.data.forEachIndexed { index, video ->
+                if (index != excludeIndex && video.errorMessage == this) {
+                    getVideoYoutube(video.inputUrl, index)
+                }
+            }
         }
     }
 
