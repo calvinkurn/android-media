@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/setting_card_height"
+    android:layout_marginTop="@dimen/setting_logout_margin_top"
+    android:background="?attr/selectableItemBackground"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/logoutTitle"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:gravity="center_vertical"
+        android:textColor="@color/setting_green"
+        android:text="@string/setting_logout"
+        app:typographyType="body_1"
+        app:typographyWeight="reguler"
+        app:layout_constraintStart_toStartOf="@id/logoutGuidelineLeft"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/appVersionText"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:gravity="center_vertical"
+        android:textColor="@color/setting_grey_pale"
+        app:typographyType="body_1"
+        app:typographyWeight="reguler"
+        app:layout_constraintEnd_toStartOf="@id/logoutGuidelineRight"/>
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/logoutGuidelineLeft"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.15"/>
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/logoutGuidelineRight"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.95"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
