@@ -9,8 +9,8 @@
 
     <ImageView
         android:id="@+id/icMenu"
-        android:layout_width="@dimen/mvc_20dp"
-        android:layout_height="@dimen/mvc_20dp"
+        android:layout_width="@dimen/mvc_dimen_20dp"
+        android:layout_height="@dimen/mvc_dimen_20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
