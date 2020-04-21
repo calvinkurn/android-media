@@ -1,17 +1,17 @@
 {
   "subset": [
     {
-      "screenName": "/user/address/create"
-    },
-    {
-      "eventCategory": "cart change address",
-      "eventAction": "click button pilih lokasi",
-      "eventLabel": "logistic"
-    },
-    {
-      "eventCategory": "cart change address",
-      "eventAction": "click button pilih lokasi ini",
-      "eventLabel": "success - logistic"
+      "promotions": [
+        {
+          "creative_name": "{{.*}}",
+          "creative_slot": "{{\\d*}}",
+          "item_id": "{{\\d*}}",
+          "item_name": "/ - p1 - play dynamic banner - Resep Kekinian Buat Koki Dadakan"
+        }
+      ],
+      "eventCategory": "homepage-cmp",
+      "event": "view_item",
+      "eventAction": "impression on play dynamic banner"
     }
   ]
 }

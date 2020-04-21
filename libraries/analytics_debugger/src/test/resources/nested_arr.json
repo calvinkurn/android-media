@@ -4,11 +4,13 @@
       {
         "creative_name": "{{.*}}",
         "creative_slot": "{{\\d*}}",
-        "item_id": "{{\\d*}}"
+        "item_id": "{{\\d*}}",
+        "item_name": "/ - p1 - play dynamic banner - Resep Kekinian Buat Koki Dadakan"
       }
     ],
     "eventCategory": "homepage-cmp",
-    "eventLabel": "Play-CMP_OTHERS_badak - 2491 - vod"
+    "event": "view_item",
+    "eventAction": "impression on play dynamic banner"
   },
   {
     "promotions": [

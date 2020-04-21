@@ -72,4 +72,18 @@ class ComparatorKtTest {
         val objVal = "id/55643"
         assertTrue(regexEquals(tesVal, objVal))
     }
+
+    @Test
+    fun `regex match given d regex when compared to int json val should return true`() {
+        val tesVal = "{{\\d*}}"
+        val objVal = 55643
+        assertTrue(regexEquals(tesVal, objVal))
+    }
+
+    @Test
+    fun `regex match given bool regex when compared to bool json val should return true`() {
+        val tesVal = "{{true|false}}"
+        val objVal = true
+        assertTrue(regexEquals(tesVal, objVal))
+    }
 }
