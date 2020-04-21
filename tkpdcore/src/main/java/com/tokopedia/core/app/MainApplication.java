@@ -114,7 +114,7 @@ public abstract class MainApplication extends MainRouterApplication{
         locationUtils.initLocationBackground();
         initBranch();
         NotificationUtils.setNotificationChannel(this);
-
+        upgradeSecurityProvider();
         createAndCallBgWork();
     }
 
@@ -134,7 +134,6 @@ public abstract class MainApplication extends MainRouterApplication{
     private Boolean executeInBackground(){
         TooLargeTool.startLogging(MainApplication.this);
         init();
-        upgradeSecurityProvider();
         return true;
     }
 
