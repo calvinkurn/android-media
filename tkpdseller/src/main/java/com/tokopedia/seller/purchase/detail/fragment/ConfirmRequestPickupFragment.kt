@@ -18,7 +18,7 @@ import kotlinx.android.synthetic.main.fragment_confirm_request_pickup.*
 class ConfirmRequestPickupFragment: Fragment() {
     private var orderId = ""
     private var originAddress = ""
-    private lateinit var actionListener: ActionListener
+    private var actionListener: ActionListener? = null
 
     interface ActionListener {
         fun onClickRequestPickupBtn(orderId: String)
@@ -64,7 +64,7 @@ class ConfirmRequestPickupFragment: Fragment() {
 
     private fun setupListeners() {
         btn_req_pickup?.setOnClickListener {
-            actionListener.onClickRequestPickupBtn(orderId)
+            actionListener?.onClickRequestPickupBtn(orderId)
         }
     }
 

@@ -9,6 +9,7 @@ import com.tokopedia.topads.common.constant.TopAdsCommonConstant
 import com.tokopedia.topads.common.data.exception.ResponseErrorException
 import com.tokopedia.topads.credit.history.data.model.TopAdsCreditHistory
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.topads.debit.autotopup.data.model.AutoTopUpData
 import com.tokopedia.topads.debit.autotopup.data.model.AutoTopUpStatus
 import com.tokopedia.usecase.coroutines.Fail
@@ -33,8 +34,8 @@ class TopAdsCreditHistoryViewModel @Inject constructor(private val graphqlReposi
 
     fun getCreditHistory(rawQuery: String, startDate: Date? = null, endDate: Date? = null) {
         val params = mapOf(
-                PARAM_SHOP_ID to userSessionInterface.shopId.toInt(),
-                PARAM_USER_ID to userSessionInterface.userId.toInt(),
+                PARAM_SHOP_ID to userSessionInterface.shopId.toIntOrZero(),
+                PARAM_USER_ID to userSessionInterface.userId.toIntOrZero(),
                 PARAM_START_DATE to startDate?.let { SimpleDateFormat(TopAdsCommonConstant.REQUEST_DATE_FORMAT, Locale.ENGLISH).format(it) },
                 PARAM_END_DATE to endDate?.let { SimpleDateFormat(TopAdsCommonConstant.REQUEST_DATE_FORMAT, Locale.ENGLISH).format(it) }
         )

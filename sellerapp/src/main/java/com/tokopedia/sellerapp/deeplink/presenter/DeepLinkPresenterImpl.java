@@ -4,15 +4,12 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.analytics.deeplink.DeeplinkConst;
 import com.tokopedia.core.analytics.deeplink.DeeplinkUTMUtils;
 import com.tokopedia.core.analytics.nishikino.model.Campaign;
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.util.AppUtils;
 import com.tokopedia.core.util.SessionHandler;
@@ -26,8 +23,6 @@ import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity;
 import com.tokopedia.webview.BaseSessionWebViewFragment;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.Arrays;
 import java.util.List;
 
@@ -122,16 +117,16 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     }
 
     private boolean isTopAds(List<String> linkSegment) {
-        return linkSegment.size() > 0 && linkSegment.get(0).equals(DeeplinkConst.URL.TOPADS);
+        return linkSegment.size() > 0 && linkSegment.get(0).equals("topads");
     }
 
     private boolean isPeluang(List<String> linkSegment) {
         return linkSegment.size() > 0 && (
-                linkSegment.get(0).equals(DeeplinkConst.URL.PELUANG) || linkSegment.get(0).equals(DeeplinkConst.URL.PELUANGPL)
+                linkSegment.get(0).equals("peluang") || linkSegment.get(0).equals("peluang.pl")
         );
     }
     private static boolean isInvoice(List<String> linkSegment) {
-        return linkSegment.size() == 1 && linkSegment.get(0).startsWith(DeeplinkConst.URL.INVOICEPL);
+        return linkSegment.size() == 1 && linkSegment.get(0).startsWith("invoice.pl");
     }
 
     @Override
@@ -175,7 +170,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
 
     private void openTopAds(Uri uriData) {
 
-        String type = uriData.getQueryParameter(DeeplinkConst.PARAM.TYPE);
+        String type = uriData.getQueryParameter("type");
         Intent intentToLaunch = null;
         if (!SessionHandler.isUserHasShop(context)) {
             intentToLaunch = new Intent(context, SplashScreenActivity.class);
@@ -199,7 +194,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     }
 
     private void openPeluangPage(List<String> linkSegment, Uri uriData) {
-        String query = uriData.getQueryParameter(DeeplinkConst.PARAM.Q);
+        String query = uriData.getQueryParameter("q");
         Intent intent = SellerRouter.getActivitySellingTransactionOpportunity(context, query);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
