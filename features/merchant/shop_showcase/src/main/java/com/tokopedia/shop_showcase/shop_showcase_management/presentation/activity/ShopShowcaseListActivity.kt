@@ -69,7 +69,6 @@ class ShopShowcaseListActivity : BaseActivity(), ShopShowcaseFragmentNavigation 
 
     override fun navigateToPage(page: String, tag: String?, showcaseList: ArrayList<ShowcaseItem>?) {
         if (page == PageNameConstant.SHOWCASE_LIST_PAGE) {
-            // isNeedToGoToAddShowcase = false
             val fragmentShowcaseList = ShopShowcaseListFragment.createInstance(
                     shopType, shopId, selectedEtalaseId, isShowDefault,
                     isShowZeroProduct, isMyShop(), isNeedToGoToAddShowcase)
