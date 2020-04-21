@@ -10,7 +10,7 @@
         android:id="@+id/appBarMvc"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
-        android:elevation="@dimen/spacing_lvl2"
+        android:elevation="@dimen/layout_lvl0"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -19,6 +19,20 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/Neutral_N0">
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbarMvcList"
+                android:layout_width="match_parent"
+                android:layout_height="?actionBarSize"
+                android:theme="?toolbarTheme"
+                app:contentInsetLeft="0dp"
+                app:contentInsetStart="0dp"
+                app:contentInsetStartWithNavigation="0dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:subtitleTextAppearance="?subtitleTextAppearance"
+                app:titleTextAppearance="?titleTextAppearance" />
 
             <com.tokopedia.design.text.SearchInputView
                 android:id="@+id/searchBarMvc"
@@ -34,7 +48,7 @@
                 android:textSize="@dimen/fontSize_lvl2"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/toolbarMvcList"
                 app:layout_scrollFlags="scroll|snap"
                 app:siv_search_icon="@drawable/unify_search_ic" />
 

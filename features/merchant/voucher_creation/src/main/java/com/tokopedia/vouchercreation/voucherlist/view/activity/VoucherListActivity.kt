@@ -3,31 +3,30 @@ package com.tokopedia.vouchercreation.voucherlist.view.activity
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.kotlin.extensions.view.setLightStatusBar
 import com.tokopedia.kotlin.extensions.view.setStatusBarColor
+import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.voucherlist.view.fragment.VoucherListFragment
 
 /**
  * Created By @ilhamsuaib on 17/04/20
  */
 
-class VoucherListActivity : BaseSimpleActivity() {
+class VoucherListActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_mvc_voucher_list)
 
-        setupLayout(savedInstanceState)
-        setupToolbar()
+        setupFragment()
         setWhiteStatusBar()
     }
 
-    private fun setupToolbar() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            toolbar.elevation = 0f
-        }
-        setSupportActionBar(toolbar)
+    private fun setupFragment() {
+        supportFragmentManager.beginTransaction()
+                .replace(R.id.parent_view, VoucherListFragment.newInstance(true))
+                .commitNowAllowingStateLoss()
     }
 
     private fun setWhiteStatusBar() {
@@ -36,6 +35,4 @@ class VoucherListActivity : BaseSimpleActivity() {
             setLightStatusBar(true)
         }
     }
-
-    override fun getNewFragment(): Fragment? = VoucherListFragment.newInstance(true)
 }

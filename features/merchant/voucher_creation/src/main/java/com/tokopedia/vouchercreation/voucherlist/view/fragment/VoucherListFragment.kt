@@ -1,13 +1,16 @@
 package com.tokopedia.vouchercreation.voucherlist.view.fragment
 
 import android.graphics.Rect
+import android.os.Build
 import android.os.Bundle
 import android.view.*
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.getBooleanArgs
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.di.component.DaggerVoucherCreationComponent
@@ -104,17 +107,54 @@ class VoucherListFragment : BaseListFragment<BaseVoucherListUiModel, VoucherList
                 .show(voucher, childFragmentManager)
     }
 
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            android.R.id.home -> activity?.finish()
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
     override fun onMenuClickListener(menu: BottomSheetMenuUiModel) {
         dismissBottomSheet()
     }
 
     private fun setupView() = view?.run {
-        rvVoucherList.addItemDecoration(getMvcItemDecoration())
+        setupActionBar()
+        setupRecyclerViewVoucherList()
 
         headerChipMvc.init()
         headerChipMvc.setOnItemClickListener {
             setOnChipListener(it)
         }
+    }
+
+    private fun setupRecyclerViewVoucherList() {
+        val rvDirection = -1
+        view?.rvVoucherList?.run {
+            addItemDecoration(getMvcItemDecoration())
+            addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                    super.onScrollStateChanged(recyclerView, newState)
+                    val status = recyclerView.canScrollVertically(rvDirection)
+                    showAppBarElevation(status)
+                }
+            })
+        }
+    }
+
+    private fun showAppBarElevation(isShown: Boolean) = view?.run {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            val elevation: Float = if (isShown) context.dpToPx(4) else 0f
+            appBarMvc?.elevation = elevation
+        }
+    }
+
+    private fun setupActionBar() = view?.run {
+        (activity as? AppCompatActivity)?.let { activity ->
+            activity.setSupportActionBar(toolbarMvcList)
+            activity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        }
+        showAppBarElevation(false)
     }
 
     private fun getMvcItemDecoration() = object : RecyclerView.ItemDecoration() {
