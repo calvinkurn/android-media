@@ -54,10 +54,6 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
         HasComponent<ShopShowcaseManagementComponent> {
 
     companion object {
-//        const val ADD_SHOWCASE_FROM_SHOWCASE_LIST = "ADD_SHOWCASE_FROM_SHOWCASE_LIST"
-//        const val ADD_SHOWCASE_PAGE = "ADD_SHOWCASE_PAGE"
-//        const val REORDER_SHOWCASE_PAGE = "REORDER_SHOWCASE_PAGE"
-
         @JvmStatic
         fun createInstance(shopType: String, shopId: String?, selectedEtalaseId: String?,
                            isShowDefault: Boolean? = false, isShowZeroProduct: Boolean? = false,
@@ -106,7 +102,6 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
     private var isMyShop: Boolean = false
     private var shopType = ""
     private var isNeedToGoToAddShowcase = false
-//    private var isNeedToGoToReorderList = false
     private var routingPage: String = ""
 
 
@@ -139,8 +134,6 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
         when (requestCode) {
             REQUEST_CODE_ADD_ETALASE -> {
                 if (resultCode == Activity.RESULT_OK) {
-//                    if (isNeedToGoToAddShowcase) {
-//                        isNeedToGoToAddShowcase = false
                     if (routingPage == PageType.ADD_SHOWCASE_PAGE) {
                         routingPage = ""
                         activity?.let {
@@ -151,8 +144,6 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
                     }
                 } else if (resultCode == Activity.RESULT_CANCELED) {
                     activity?.let {
-//                        if (isNeedToGoToAddShowcase) {
-//                            isNeedToGoToAddShowcase = false
                         if (routingPage == PageType.ADD_SHOWCASE_PAGE) {
                             routingPage = ""
                             val intent = Intent()
@@ -223,7 +214,6 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
         observeTotalProduct()
 
         btnAddEtalase.setOnClickListener {
-//            isNeedToGoToAddShowcase = true
             routingPage = PageType.ADD_SHOWCASE_FROM_SHOWCASE_LIST
             tracking?.clickTambahEtalase(shopId, shopType)
             checkTotalProduct()
@@ -417,7 +407,6 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
     }
 
     private fun loadData() {
-//        if (isNeedToGoToAddShowcase && isMyShop) {
         if (routingPage == PageType.ADD_SHOWCASE_PAGE && isMyShop) {
             checkTotalProduct()
             Handler().postDelayed({
@@ -578,7 +567,6 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
             }
             tracking?.clickSusun(shopId, shopType)
 
-//            isNeedToGoToAddShowcase = false
             routingPage = PageType.REORDER_SHOWCASE_PAGE
             shopShowcaseFragmentNavigation.navigateToPage(
                     PageNameConstant.SHOWCASE_LIST_REORDER_PAGE,
