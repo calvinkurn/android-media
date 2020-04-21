@@ -10,41 +10,24 @@ import com.tokopedia.settingnotif.usersetting.view.dataview.ChangeItemDataView.c
 import com.tokopedia.settingnotif.usersetting.view.dataview.NotificationActivationDataView.activationEmail
 import com.tokopedia.settingnotif.usersetting.view.dataview.NotificationActivationDataView.activationPushNotif
 import com.tokopedia.settingnotif.usersetting.view.dataview.SettingStateDataView.mapCloneSettings
-import com.tokopedia.settingnotif.usersetting.view.dataview.UserSettingViewModel
+import com.tokopedia.settingnotif.usersetting.view.dataview.UserSettingDataView
+import com.tokopedia.settingnotif.usersetting.view.listener.SettingFieldContract
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
-interface PushNotifContract {
-    fun addPinnedPushNotifItems(
-            isNotificationEnabled: Boolean,
-            data: UserSettingViewModel
-    )
-    fun addPinnedPermission(
-            isNotificationEnabled: Boolean,
-            activation: NotificationActivation
-    )
-    fun addPinnedEmailItems(data: UserSettingViewModel)
-    fun addPinnedSellecSection()
-    fun saveLastStateAll(list: MutableList<Visitable<*>>)
-    fun getPinnedItems(): List<VisitableSettings>
-    fun getSettingStates(): List<ParentSetting>
-    fun updateSettingState(setting: ParentSetting?)
-    fun cleared()
-}
-
 class SettingStateViewModel @Inject constructor(
         private val userSession: UserSessionInterface
-): ViewModel(), PushNotifContract {
+): ViewModel(), SettingFieldContract.SettingState {
 
     private val pinnedItems = arrayListOf<VisitableSettings>()
     private val temporaryList = arrayListOf<ParentSetting>()
 
-    override fun getPinnedItems(): List<VisitableSettings> = pinnedItems
+    override fun getPinnedItems() = pinnedItems
 
-    override fun getSettingStates(): List<ParentSetting> = temporaryList
+    override fun getSettingStates() = temporaryList
 
     private fun addPinnedItems(
-            data: UserSettingViewModel,
+            data: UserSettingDataView,
             pinned: () -> Unit
     ) {
         // reset first
@@ -57,20 +40,20 @@ class SettingStateViewModel @Inject constructor(
         pinnedItems.addAll(data.data)
     }
 
-    override fun addPinnedPushNotifItems(
+    override fun addPinnedPushNotificationItems(
             isNotificationEnabled: Boolean,
-            data: UserSettingViewModel
+            data: UserSettingDataView
     ) {
         addPinnedItems(data) {
             // pinned permission
             addPinnedPermission(!isNotificationEnabled, activationPushNotif())
 
             // pinned seller
-            addPinnedSellecSection()
+            addPinnedSellerSection()
         }
     }
 
-    override fun addPinnedEmailItems(data: UserSettingViewModel) {
+    override fun addPinnedEmailItems(data: UserSettingDataView) {
         addPinnedItems(data) {
             val email = userSession.email
             val hasEmail = email.isNotEmpty()
@@ -94,7 +77,7 @@ class SettingStateViewModel @Inject constructor(
         }
     }
 
-    override fun addPinnedSellecSection() {
+    override fun addPinnedSellerSection() {
         // showing seller sub menu card
         // is user has a shop
         if (userSession.hasShop()) {
