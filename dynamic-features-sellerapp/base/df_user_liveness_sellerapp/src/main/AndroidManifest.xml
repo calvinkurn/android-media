@@ -1,9 +1,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:dist="http://schemas.android.com/apk/distribution"
-    package="com.tokopedia.df.user.liveness.sellerapp">
+    package="com.tokopedia.df.base.liveness.sellerapp">
 
     <dist:module
-        dist:onDemand="true"
+        dist:onDemand="false"
         dist:title="@string/title_liveness_detection">
         <dist:fusing dist:include="true" />
     </dist:module>
