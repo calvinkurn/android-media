@@ -10,7 +10,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.settingnotif.R
 import com.tokopedia.settingnotif.usersetting.domain.pojo.ParentSetting
 import com.tokopedia.settingnotif.usersetting.view.dataview.NotificationActivationDataView.activationPushNotif
-import com.tokopedia.settingnotif.usersetting.view.dataview.UserSettingViewModel
+import com.tokopedia.settingnotif.usersetting.view.dataview.UserSettingDataView
 import com.tokopedia.settingnotif.usersetting.view.fragment.base.SettingFieldFragment
 import com.tokopedia.settingnotif.usersetting.view.fragment.dialog.InformationDialog.showInformationDialog
 import com.tokopedia.settingnotif.usersetting.view.viewmodel.SettingStateViewModel
@@ -58,8 +58,8 @@ class PushNotifFieldFragment : SettingFieldFragment() {
         }
     }
 
-    override fun onSuccessGetUserSetting(data: UserSettingViewModel) {
-        viewModel.addPinnedPushNotifItems(isNotificationEnabled(), data)
+    override fun onSuccessGetUserSetting(data: UserSettingDataView) {
+        viewModel.addPinnedPushNotificationItems(isNotificationEnabled(), data)
         data.data = viewModel.getPinnedItems().toList()
         super.onSuccessGetUserSetting(data)
     }
