@@ -1,10 +1,17 @@
 package com.tokopedia.smartbills.di
 
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
+import com.tokopedia.smartbills.presentation.viewmodel.SmartBillsViewModel
 import dagger.Binds
 import dagger.Module
+import dagger.multibindings.IntoMap
 
+/**
+ * Created by resakemal on 15/04/20.
+ */
 @Module
 @SmartBillsScope
 abstract class SmartBillsViewModelModule {
@@ -13,8 +20,8 @@ abstract class SmartBillsViewModelModule {
     @Binds
     internal abstract fun bindViewModelFactory(viewModelFactory: ViewModelFactory): ViewModelProvider.Factory
 
-//    @Binds
-//    @IntoMap
-//    @ViewModelKey(SmartBillsViewModel::class)
-//    internal abstract fun rechargeCCViewModel(customViewModel: RechargeCCViewModel): ViewModel
+    @Binds
+    @IntoMap
+    @ViewModelKey(SmartBillsViewModel::class)
+    internal abstract fun smartBillsViewModel(viewModel: SmartBillsViewModel): ViewModel
 }
