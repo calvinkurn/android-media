@@ -934,23 +934,19 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     }
 
     override fun onClickEditVariantPriceButton(product: ProductViewModel) {
-        context?.let {
-            val editVariantBottomSheet = QuickEditVariantPriceBottomSheet.createInstance(it, product.id) { result ->
-                viewModel.editVariantsPrice(result)
-            }
-            editVariantBottomSheet.show(childFragmentManager, QuickEditVariantPriceBottomSheet.TAG)
-            ProductManageTracking.eventEditVariants(product.id)
+        val editVariantBottomSheet = QuickEditVariantPriceBottomSheet.createInstance(product.id) { result ->
+            viewModel.editVariantsPrice(result)
         }
+        editVariantBottomSheet.show(childFragmentManager, QuickEditVariantPriceBottomSheet.TAG)
+        ProductManageTracking.eventEditVariants(product.id)
     }
 
     override fun onClickEditVariantStockButton(product: ProductViewModel) {
-        context?.let {
-            val editVariantStockBottomSheet = QuickEditVariantStockBottomSheet.createInstance(it, product.id) { result ->
-                viewModel.editVariantsStock(result)
-            }
-            editVariantStockBottomSheet.show(childFragmentManager, QuickEditVariantPriceBottomSheet.TAG)
-            ProductManageTracking.eventEditVariants(product.id)
+        val editVariantStockBottomSheet = QuickEditVariantStockBottomSheet.createInstance(product.id) { result ->
+            viewModel.editVariantsStock(result)
         }
+        editVariantStockBottomSheet.show(childFragmentManager, QuickEditVariantStockBottomSheet.TAG)
+        ProductManageTracking.eventEditVariants(product.id)
     }
 
     override fun onClickContactCsButton(product: ProductViewModel) {
