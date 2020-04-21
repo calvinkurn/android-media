@@ -17,7 +17,7 @@ class TestRepeatRule : TestRule {
             description: Description
     ): Statement {
         //val args = InstrumentationRegistry.getArguments()!!
-        val repeatTestCount = 5
+        val repeatTestCount = 10
         return if (repeatTestCount > 1) {
             object : Statement() {
                 override fun evaluate() {
