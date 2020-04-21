@@ -134,6 +134,8 @@ class ChatbotPresenter @Inject constructor(
                 if (GlobalConfig.isAllowDebuggingTools()) {
                     Log.d("RxWebSocket Presenter", " on WebSocket open")
                 }
+                view.showErrorWebSocket(false)
+
             }
 
             override fun onMessage(text: String) {
@@ -190,6 +192,8 @@ class ChatbotPresenter @Inject constructor(
                 networkMode = MODE_WEBSOCKET
                 if (GlobalConfig.isAllowDebuggingTools()) {
                     Log.d("RxWebSocket Presenter", "onReconnect")
+                    view.showErrorWebSocket(true)
+
                 }
             }
 
@@ -200,6 +204,8 @@ class ChatbotPresenter @Inject constructor(
                     Log.d("RxWebSocket Presenter", "onClose")
                 }
                 destroyWebSocket()
+                view.showErrorWebSocket(true)
+                connectWebSocket(messageId)
 
             }
 

@@ -34,11 +34,11 @@ class SellerCenterUseCase @Inject constructor(private val graphqlUseCase: Graphq
 
         return graphqlUseCase.createObservable(requestParams).map {
             val data: ResponseSellerInfoModel? = it.getData(ResponseSellerInfoModel::class.java)
-            val error: List<GraphqlError> = it.getError(GraphqlError::class.java) ?: listOf()
+            val error: List<GraphqlError>? = it.getError(GraphqlError::class.java)
 
             if (data == null) {
                 throw RuntimeException()
-            } else if (error.isNotEmpty() && error.first().message.isNotEmpty()) {
+            } else if (error != null && error.isNotEmpty() && error.firstOrNull()?.message?.isNotEmpty() == true) {
                 throw MessageErrorException(error.first().message)
             }
 

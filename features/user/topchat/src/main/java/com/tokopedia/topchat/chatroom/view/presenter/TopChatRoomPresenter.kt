@@ -110,9 +110,6 @@ class TopChatRoomPresenter @Inject constructor(
         dummyList = arrayListOf()
     }
 
-    override fun clearText() {
-    }
-
     override fun connectWebSocket(messageId: String) {
         thisMessageId = messageId
         webSocketUrl = CHAT_WEBSOCKET_DOMAIN + ChatUrl.CONNECT_WEBSOCKET +
@@ -698,4 +695,6 @@ class TopChatRoomPresenter @Inject constructor(
     override fun updateMinReplyTime(chatRoom: ChatroomViewModel) {
         paramBeforeReplyTime = chatRoom.minReplyTime
     }
+
+    override fun clearText() { }
 }

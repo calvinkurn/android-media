@@ -1,12 +1,14 @@
 package com.tokopedia.seller.seller.info.view.fragment;
 
 import android.os.Bundle;
-import androidx.annotation.NonNull;
 import android.text.TextUtils;
 import android.view.View;
 
+import androidx.annotation.NonNull;
+
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.base.list.seller.view.adapter.BaseListAdapter;
 import com.tokopedia.base.list.seller.view.adapter.BaseRetryDataBinder;
 import com.tokopedia.base.list.seller.view.emptydatabinder.EmptyDataBinder;
@@ -41,7 +43,7 @@ public class SellerInfoFragment extends BaseListFragment<BlankPresenter, SellerI
     private SellerInfoDateUtil sellerInfoDateUtil;
 
     private static final String TAG = "SellerInfoFragment";
-
+    private String lastNotifId = "";
     @Inject
     SellerInfoPresenter sellerInfoPresenter;
 
@@ -74,7 +76,7 @@ public class SellerInfoFragment extends BaseListFragment<BlankPresenter, SellerI
 
     @Override
     protected void searchForPage(int page) {
-        sellerInfoPresenter.getSellerInfoList(page);
+        sellerInfoPresenter.getSellerInfoList(page, lastNotifId);
         hasNextPage = false;
     }
 
@@ -100,6 +102,9 @@ public class SellerInfoFragment extends BaseListFragment<BlankPresenter, SellerI
 
     @Override
     public void onSearchLoaded(@NonNull List<SellerInfoModel> list, int totalItem, boolean hasNext) {
+        if (list.size() != 0) {
+            lastNotifId = list.get(list.size() - 1).getNotifId();
+        }
         onSearchLoaded(list, totalItem);
         hasNextPage = hasNext  && list != null && !list.isEmpty() && totalItem > 0;
     }
@@ -111,8 +116,9 @@ public class SellerInfoFragment extends BaseListFragment<BlankPresenter, SellerI
 
     @Override
     protected void onPullToRefresh() {
-        if(adapter != null && adapter instanceof SellerInfoAdapter) {
-            ((SellerInfoAdapter)adapter).clearRawAdapter();
+        lastNotifId = "";
+        if (adapter != null && adapter instanceof SellerInfoAdapter) {
+            ((SellerInfoAdapter) adapter).clearRawAdapter();
         }
         super.onPullToRefresh();
     }

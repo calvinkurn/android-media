@@ -11,4 +11,6 @@
     <color name="selected_image_overlay">#99000000</color>
     <color name="auto_ads_grey">#888888</color>
     <color name="grey">#888888</color>
+    <color name="topads_heading_color">#F531353B</color>
+
 </resources>

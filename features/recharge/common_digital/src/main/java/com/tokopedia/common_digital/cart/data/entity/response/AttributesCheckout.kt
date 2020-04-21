@@ -7,7 +7,7 @@ import com.google.gson.annotations.SerializedName
  * @author anggaprasetiyo on 3/9/17.
  */
 
-class AttributesCheckout {
+open class AttributesCheckout {
     @SerializedName("redirect_url")
     @Expose
     var redirectUrl: String? = null

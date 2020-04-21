@@ -50,7 +50,7 @@ import kotlinx.android.synthetic.main.fragment_notification_update.*
 import javax.inject.Inject
 import com.tokopedia.notifcenter.data.mapper.ProductStockHandlerMapper.map as stockHandlerMapper
 
-class NotificationUpdateFragment : BaseNotificationFragment(),
+open class NotificationUpdateFragment : BaseNotificationFragment(),
         NotificationUpdateContract.View,
         NotificationLongerTextDialog.LongerContentListener {
 
@@ -63,7 +63,7 @@ class NotificationUpdateFragment : BaseNotificationFragment(),
     private val notificationUpdateListener by lazy { context as NotificationUpdateListener }
     private val _adapter by lazy { adapter as NotificationUpdateAdapter }
 
-    private val filterAdapter by lazy {
+    val filterAdapter by lazy {
         NotificationUpdateFilterAdapter(
                 NotificationUpdateFilterSectionTypeFactoryImpl(),
                 this,
@@ -215,7 +215,7 @@ class NotificationUpdateFragment : BaseNotificationFragment(),
         }
     }
 
-    private fun onSuccessGetFilter(): (ArrayList<NotificationUpdateFilterViewBean>) -> Unit {
+    open fun onSuccessGetFilter(): (ArrayList<NotificationUpdateFilterViewBean>) -> Unit {
         return {
             filterAdapter.updateData(it)
         }

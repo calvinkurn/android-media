@@ -253,7 +253,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         presenter.connectWebSocket(messageId)
         presenter.getShopFollowingStatus(shopId, onErrorGetShopFollowingStatus(),
                 onSuccessGetShopFollowingStatus())
-
+        adapter.setFirstHeaderDate(chatRoom.latestHeaderDate)
         renderList(chatRoom.listChat, chatRoom.canLoadMore)
         getViewState().onSuccessLoadFirstTime(chatRoom, onToolbarClicked(), this, alertDialog, onUnblockChatClicked())
         getViewState().onSetCustomMessage(customMessage)
@@ -300,12 +300,13 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         RouteManager.route(activity, ApplinkConst.PROFILE.replace("{user_id}", opponentId))
     }
 
-    override fun showErrorWebSocket(b: Boolean) {
-        getViewState().showErrorWebSocket(b)
+    override fun showErrorWebSocket(isWebSocketError: Boolean) {
+        getViewState().showErrorWebSocket(isWebSocketError)
     }
 
     private fun onSuccessGetPreviousChat(): (ChatroomViewModel) -> Unit {
         return {
+            adapter.removeLastHeaderDateIfSame(it.latestHeaderDate)
             renderList(it.listChat, it.canLoadMore)
             checkShowLoading(it.canLoadMore)
             loadChatRoomSettings(it)
@@ -465,7 +466,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
             throw IllegalStateException("getAdapterTypeFactory() must return TopChatTypeFactoryImpl")
         }
         val typeFactory = adapterTypeFactory as TopChatTypeFactoryImpl
-        return TopChatRoomAdapter(typeFactory).also {
+        return TopChatRoomAdapter(context, typeFactory).also {
             adapter = it
         }
     }

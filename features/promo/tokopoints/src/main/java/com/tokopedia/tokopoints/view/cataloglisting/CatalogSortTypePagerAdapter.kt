@@ -41,7 +41,7 @@ class CatalogSortTypePagerAdapter(fm: FragmentManager?, categoryId: Int, items: 
         super.destroyItem(container, position, `object`)
     }
 
-    fun getRegisteredFragment(position: Int): Fragment {
+    fun getRegisteredFragment(position: Int): Fragment? {
         return mrRegisteredFragments[position]
     }
 

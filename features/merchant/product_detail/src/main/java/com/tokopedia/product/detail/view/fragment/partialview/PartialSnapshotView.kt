@@ -46,6 +46,7 @@ class PartialSnapshotView(private val view: View,
 
         if (campaign.isActive) {
             renderCampaignActive(campaign, data.stock.getFinalStockWording(nearestWarehouseStockWording))
+            showCountDownTimer(campaign)
         } else {
             renderCampaignInactive(data.price.value.getCurrencyFormatted())
         }
@@ -94,7 +95,6 @@ class PartialSnapshotView(private val view: View,
         if (campaign.activeAndHasId) {
             text_title_discount_timer.text = campaign.campaignTypeName
             sale_text_stock_available.text = MethodChecker.fromHtml(stockWording)
-            showCountDownTimer(campaign)
             setProgressStockBar(campaign)
 
             discount_timer_holder.show()
@@ -113,19 +113,6 @@ class PartialSnapshotView(private val view: View,
         text_original_price.gone()
         sale_text_stock_available.gone()
         text_stock_available.show()
-    }
-
-    fun updateStockAndPriceWarehouse(nearestWarehouseData: ProductSnapshotDataModel.NearestWarehouseDataModel, campaign: CampaignModular, variant: Boolean) = with(view) {
-        if (campaign.activeAndHasId) {
-            tv_price_pdp.text = context.getString(R.string.template_price, "",
-                    nearestWarehouseData.nearestWarehousePrice.getCurrencyFormatted())
-            sale_text_stock_available.text = MethodChecker.fromHtml(nearestWarehouseData.nearestWarehouseStockWording)
-        } else {
-            text_stock_available.showWithCondition(!nearestWarehouseData.nearestWarehouseStockWording.isBlank() && !variant)
-            tv_price_pdp.text = context.getString(R.string.template_price, "",
-                    nearestWarehouseData.nearestWarehousePrice.getCurrencyFormatted())
-            text_stock_available.text = MethodChecker.fromHtml(nearestWarehouseData.nearestWarehouseStockWording)
-        }
     }
 
     fun renderCod(showCod: Boolean) = with(view) {
