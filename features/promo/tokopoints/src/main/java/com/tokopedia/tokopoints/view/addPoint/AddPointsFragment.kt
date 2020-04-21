@@ -5,35 +5,42 @@ import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import android.widget.FrameLayout
+import android.widget.GridLayout
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
+import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.tokopoints.R
+import com.tokopedia.tokopoints.di.DaggerTokopointBundleComponent
+import com.tokopedia.tokopoints.di.TokopointsQueryModule
 import com.tokopedia.tokopoints.view.adapter.AddPointGridViewHolder
 import com.tokopedia.tokopoints.view.adapter.AddPointsAdapter
+import com.tokopedia.tokopoints.view.firebaseAnalytics.TokopointPerformanceConstant.AddTokopointPlt.Companion.ADDTOKOPOINT_PLT
+import com.tokopedia.tokopoints.view.firebaseAnalytics.TokopointPerformanceConstant.AddTokopointPlt.Companion.ADDTOKOPOINT_PLT_NETWORK_METRICS
+import com.tokopedia.tokopoints.view.firebaseAnalytics.TokopointPerformanceConstant.AddTokopointPlt.Companion.ADDTOKOPOINT_PLT_PREPARE_METRICS
+import com.tokopedia.tokopoints.view.firebaseAnalytics.TokopointPerformanceConstant.AddTokopointPlt.Companion.ADDTOKOPOINT_PLT_RENDER_METRICS
+import com.tokopedia.tokopoints.view.firebaseAnalytics.TokopointPerformanceMonitoringListener
 import com.tokopedia.tokopoints.view.model.addpointsection.SectionsItem
 import com.tokopedia.tokopoints.view.model.addpointsection.SheetHowToGetV2
+import com.tokopedia.tokopoints.view.util.Loading
+import com.tokopedia.tokopoints.view.util.Success
 import kotlinx.android.synthetic.main.tp_add_point_section.*
 import kotlinx.android.synthetic.main.tp_add_point_section.view.*
 import javax.inject.Inject
-import android.widget.GridLayout
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
-import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
-import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
-import com.tokopedia.analytics.performance.PerformanceMonitoring
-import com.tokopedia.tokopoints.di.DaggerTokopointBundleComponent
-import com.tokopedia.tokopoints.di.TokopointsQueryModule
-import com.tokopedia.tokopoints.view.util.Loading
-import com.tokopedia.tokopoints.view.util.Success
 import kotlin.math.roundToInt
 
 
-class AddPointsFragment : BottomSheetDialogFragment(), TokopointAddPointContract.View, AddPointGridViewHolder.ListenerItemClick {
+class AddPointsFragment : BottomSheetDialogFragment(), TokopointAddPointContract.View, AddPointGridViewHolder.ListenerItemClick, TokopointPerformanceMonitoringListener {
 
     @Inject
     lateinit var factory: ViewModelFactory
@@ -41,11 +48,10 @@ class AddPointsFragment : BottomSheetDialogFragment(), TokopointAddPointContract
     private val viewModel: AddPointViewModel by lazy { ViewModelProviders.of(this, factory).get(AddPointViewModel::class.java) }
 
     private val addPointsAdapter: AddPointsAdapter by lazy { AddPointsAdapter(ArrayList(), this) }
-    private var performanceMonitoring: PerformanceMonitoring? = null
-    private var isTraceSTopped = false
+    private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        performanceMonitoring = PerformanceMonitoring.start(ADDTOKOPOINT_PLT)
+        startPerformanceMonitoring()
         super.onCreate(savedInstanceState)
         initInjector()
         setStyle(STYLE_NORMAL, com.tokopedia.design.R.style.TransparentBottomSheetDialogTheme)
@@ -89,18 +95,11 @@ class AddPointsFragment : BottomSheetDialogFragment(), TokopointAddPointContract
                     startRenderPerformanceMonitoring()
                     inflateContainerLayout(true)
                     inflatePointsData(it.data)
-                    stopPerformanceTrace()
                 }
             }
         }
     })
 
-    private fun stopPerformanceTrace() {
-        if (!isTraceSTopped) {
-            performanceMonitoring?.stopTrace()
-            isTraceSTopped = true
-        }
-    }
 
     private fun initView(view: View) {
         view.rv_section.layoutManager = LinearLayoutManager(context)
@@ -194,7 +193,70 @@ class AddPointsFragment : BottomSheetDialogFragment(), TokopointAddPointContract
         return 0
     }
 
-    companion object {
-        private const val ADDTOKOPOINT_PLT = "addtokopoint_plt"
+    override fun startPerformanceMonitoring() {
+        pageLoadTimePerformanceMonitoring = PageLoadTimePerformanceCallback(
+                ADDTOKOPOINT_PLT_PREPARE_METRICS,
+                ADDTOKOPOINT_PLT_NETWORK_METRICS,
+                ADDTOKOPOINT_PLT_RENDER_METRICS,
+                0,
+                0,
+                0,
+                0,
+                null
+        )
+
+        pageLoadTimePerformanceMonitoring?.startMonitoring(ADDTOKOPOINT_PLT)
+        pageLoadTimePerformanceMonitoring?.startPreparePagePerformanceMonitoring()
+    }
+
+    override fun stopPreparePagePerformanceMonitoring() {
+        if (pageLoadTimePerformanceMonitoring != null) {
+            pageLoadTimePerformanceMonitoring?.stopPreparePagePerformanceMonitoring()
+        }
+    }
+
+    override fun stopPerformanceMonitoring() {
+        if (pageLoadTimePerformanceMonitoring != null) {
+            pageLoadTimePerformanceMonitoring?.stopMonitoring()
+            pageLoadTimePerformanceMonitoring = null
+        }
+    }
+
+    override fun startNetworkRequestPerformanceMonitoring() {
+        if (pageLoadTimePerformanceMonitoring != null) {
+            pageLoadTimePerformanceMonitoring?.startNetworkRequestPerformanceMonitoring()
+        }
+    }
+
+    override fun stopNetworkRequestPerformanceMonitoring() {
+        if (pageLoadTimePerformanceMonitoring != null) {
+            pageLoadTimePerformanceMonitoring?.stopNetworkRequestPerformanceMonitoring()
+        }
+    }
+
+    override fun startRenderPerformanceMonitoring() {
+        if (pageLoadTimePerformanceMonitoring != null) {
+            pageLoadTimePerformanceMonitoring?.startRenderPerformanceMonitoring()
+        }
+    }
+
+    override fun stopRenderPerformanceMonitoring() {
+        if (pageLoadTimePerformanceMonitoring != null) {
+            pageLoadTimePerformanceMonitoring?.stopRenderPerformanceMonitoring()
+        }
+    }
+
+    private fun setOnRecyclerViewLayoutReady() {
+        rv_section.viewTreeObserver
+                .addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+                    override fun onGlobalLayout() {
+                        if (pageLoadTimePerformanceMonitoring != null) {
+                            stopRenderPerformanceMonitoring()
+                            stopPerformanceMonitoring()
+                        }
+                        pageLoadTimePerformanceMonitoring = null
+                        rv_section.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                    }
+                })
     }
 }
