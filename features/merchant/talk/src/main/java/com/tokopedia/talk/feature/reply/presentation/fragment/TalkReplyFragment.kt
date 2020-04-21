@@ -19,6 +19,8 @@ import com.tokopedia.talk.common.di.TalkComponent
 import com.tokopedia.talk.feature.reply.data.mapper.TalkReplyMapper
 import com.tokopedia.talk.feature.reply.di.DaggerTalkReplyComponent
 import com.tokopedia.talk.feature.reply.di.TalkReplyComponent
+import com.tokopedia.talk.feature.reply.presentation.adapter.TalkReplyAdapter
+import com.tokopedia.talk.feature.reply.presentation.adapter.factory.TalkReplyAdapterTypeFactory
 import com.tokopedia.talk.feature.reply.presentation.uimodel.TalkReplyHeaderModel
 import com.tokopedia.talk.feature.reply.presentation.viewmodel.TalkReplyViewModel
 import com.tokopedia.talk.feature.reply.presentation.widget.OnKebabClickedListener
@@ -61,6 +63,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
     private var questionId = ""
     private var shopId = ""
     private var commentId = 0
+    private var adapter: TalkReplyAdapter? = null
 
     override fun getScreenName(): String {
         return ""
@@ -86,6 +89,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         showPageLoading()
+        initView()
         getDataFromArguments()
         observeFollowUnfollowResponse()
         observeDiscussionData()
@@ -235,6 +239,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
                     hidePageLoading()
                     bindHeader(TalkReplyMapper.mapDiscussionDataResponseToTalkReplyHeaderModel(it.data))
                     bindTotalAnswers(it.data.discussionDataByQuestionID.question.totalAnswer)
+                    adapter?.displayAnswers(TalkReplyMapper.mapDiscussionDataResponseToTalkReplyModels(it.data))
                 }
                 else -> {
                     showPageError()
@@ -278,5 +283,18 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
             questionId = it.getString(QUESTION_ID, "")
             shopId = it.getString(SHOP_ID, "")
         }
+    }
+
+    private fun initView() {
+        initAdapter()
+        initRecyclerView()
+    }
+
+    private fun initAdapter() {
+        adapter = TalkReplyAdapter(TalkReplyAdapterTypeFactory())
+    }
+
+    private fun initRecyclerView() {
+        talkReplyRecyclerView.adapter = adapter
     }
 }

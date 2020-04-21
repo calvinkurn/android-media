@@ -21,6 +21,10 @@ data class Answer(
         val createTimeFormatted: String = "",
         @SerializedName("likeCount")
         val likeCount: Int = 0,
+        @SerializedName("state")
+        val state: AnswerState = AnswerState(),
         @SerializedName("attachedProductCount")
-        val attachedProductCount: Int = 0
+        val attachedProductCount: Int = 0,
+        @SerializedName("attachedProduct")
+        val attachedProducts: List<AttachedProduct> = listOf()
 )

@@ -6,6 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.talk.common.TalkConstants
 import com.tokopedia.talk.common.di.TalkComponent
 import com.tokopedia.talk.feature.write.di.DaggerTalkWriteComponent
 import com.tokopedia.talk.feature.write.di.TalkWriteComponent
@@ -40,10 +43,16 @@ class TalkWriteFragment : BaseDaggerFragment(), HasComponent<TalkWriteComponent>
     }
 
     private fun initView() {
-
+        writeTNC.setOnClickListener {
+            goToTermsAndConditionsPage()
+        }
     }
 
     private fun initQuestionTextField() {
 
+    }
+
+    private fun goToTermsAndConditionsPage() {
+        RouteManager.route(activity, "${ApplinkConst.WEBVIEW}?url=${TalkConstants.TERMS_AND_CONDITIONS_PAGE_URL}")
     }
 }

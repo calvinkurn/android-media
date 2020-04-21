@@ -18,7 +18,7 @@ data class Question(
         @SerializedName("createTimeFormatted")
         val createTimeFormatted: String = "",
         @SerializedName("state")
-        val state: State = State(),
+        val questionState: QuestionState = QuestionState(),
         @SerializedName("totalAnswer")
         val totalAnswer: Int = 0,
         @SerializedName("answer")

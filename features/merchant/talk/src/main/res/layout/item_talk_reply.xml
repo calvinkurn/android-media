@@ -31,7 +31,6 @@
         android:id="@+id/replyDisplayName"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/dp_18"
-        android:text="Laura"
         android:layout_marginStart="@dimen/dp_4"
         android:layout_marginLeft="@dimen/dp_4"
         app:layout_goneMarginStart="@dimen/layout_lvl2"
@@ -44,7 +43,6 @@
         android:id="@+id/replyDate"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/dp_18"
-        android:text="\u2022 30 Feb 2020"
         android:layout_marginStart="@dimen/dp_4"
         android:layout_marginLeft="@dimen/dp_4"
         app:typographyType="body_3"
@@ -60,7 +58,6 @@
         android:layout_marginEnd="@dimen/layout_lvl2"
         android:layout_marginRight="@dimen/layout_lvl2"
         app:layout_goneMarginStart="@dimen/layout_lvl2"
-        android:text="Pada dasarnya sih anti air gan, asal jangan disirem pake minyak jelantah aja yah masalahnya ntar jadi oily gitu gan"
         app:layout_constraintStart_toStartOf="@id/replySellerLabel"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/replyDisplayName"
@@ -78,7 +75,7 @@
         app:layout_constraintTop_toBottomOf="@id/replyMessage" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/likeCount"
+        android:id="@+id/replyLikeCount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Like"
