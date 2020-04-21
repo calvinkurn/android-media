@@ -6,13 +6,14 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.product.manage.common.coroutine.CoroutineDispatchers
 import com.tokopedia.product.manage.feature.quickedit.variant.data.mapper.ProductManageVariantMapper.mapToVariantsResult
-import com.tokopedia.product.manage.feature.quickedit.variant.data.mapper.ProductManageVariantMapper.updateVariantPrice
+import com.tokopedia.product.manage.feature.quickedit.variant.data.mapper.ProductManageVariantMapper.updateVariant
 import com.tokopedia.product.manage.feature.quickedit.variant.data.mapper.ProductManageVariantMapper.mapVariantsToEditResult
 import com.tokopedia.product.manage.feature.quickedit.variant.data.model.ViewState
 import com.tokopedia.product.manage.feature.quickedit.variant.data.model.ViewState.*
 import com.tokopedia.product.manage.feature.quickedit.variant.data.model.result.EditVariantResult
 import com.tokopedia.product.manage.feature.quickedit.variant.data.model.result.GetVariantResult
 import com.tokopedia.product.manage.feature.quickedit.variant.domain.GetProductVariantUseCase
+import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -58,7 +59,27 @@ class QuickEditVariantViewModel @Inject constructor(
 
     fun updateVariantPrice(variantId: String, price: Int) {
         _editVariantResult.value?.let {
-            val editVariantResult = it.updateVariantPrice(variantId, price)
+            val editVariantResult = it.updateVariant(variantId) { variant ->
+                variant.copy(price = price)
+            }
+            _editVariantResult.value = editVariantResult
+        }
+    }
+
+    fun updateVariantStock(variantId: String, stock: Int) {
+        _editVariantResult.value?.let {
+            val editVariantResult = it.updateVariant(variantId) { variant ->
+                variant.copy(stock = stock)
+            }
+            _editVariantResult.value = editVariantResult
+        }
+    }
+
+    fun updateVariantStatus(variantId: String, status: ProductStatus) {
+        editVariantResult.value?.let {
+            val editVariantResult = it.updateVariant(variantId) { variant ->
+                variant.copy(status = status)
+            }
             _editVariantResult.value = editVariantResult
         }
     }
