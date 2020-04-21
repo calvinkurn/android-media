@@ -44,6 +44,7 @@ class GetProductVariantUseCase @Inject constructor(
         val variantOption = mutableMapOf<String, Any>()
         variantOption["includeCampaign"] = true
         variantOption["userID"] = if (userSessionInterface.userId.isNotEmpty()) userSessionInterface.userId else "0"
+        variantOption["includeWarehouse"] = true
 
         val parent = mutableMapOf<String, Any>()
         parent["option"] = variantOption

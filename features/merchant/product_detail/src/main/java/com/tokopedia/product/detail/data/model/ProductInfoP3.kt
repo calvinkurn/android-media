@@ -1,5 +1,6 @@
 package com.tokopedia.product.detail.data.model
 
+import com.tokopedia.product.detail.common.data.model.carttype.CartRedirectionResponse
 import com.tokopedia.product.detail.estimasiongkir.data.model.v3.AddressModel
 import com.tokopedia.product.detail.estimasiongkir.data.model.v3.RatesModel
 import com.tokopedia.product.detail.estimasiongkir.data.model.v3.SummaryText

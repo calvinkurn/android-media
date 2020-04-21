@@ -30,10 +30,9 @@ class MoneyInCheckoutUseCaseTest{
     var rule = InstantTaskExecutorRule()
 
     private val tradeInRepository: TradeInRepository = mockk(relaxed = true)
-    val context: Context = mockk()
     private val resources: Resources = mockk()
 
-    private var moneyInCheckoutUseCase = spyk(MoneyInCheckoutUseCase(context, tradeInRepository))
+    private var moneyInCheckoutUseCase = spyk(MoneyInCheckoutUseCase(tradeInRepository))
 
     @Before
     @Throws(Exception::class)
@@ -86,10 +85,9 @@ class MoneyInCheckoutUseCaseTest{
         runBlocking {
             mockkStatic(GraphqlHelper::class)
             every { GraphqlHelper.loadRawString(any(), any()) } returns ""
-            every { context.resources } returns resources
             coEvery { tradeInRepository.getGQLData(any(), ResponseData::class.java, any())} returns responseData
 
-            moneyInCheckoutUseCase.makeCheckoutMutation(HashMap())
+            moneyInCheckoutUseCase.makeCheckoutMutation(resources, HashMap())
 
             coVerify { tradeInRepository.getGQLData(any(), ResponseData::class.java, any()) }
         }

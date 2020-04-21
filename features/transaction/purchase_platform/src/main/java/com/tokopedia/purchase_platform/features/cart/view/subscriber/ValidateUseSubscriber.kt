@@ -1,5 +1,6 @@
 package com.tokopedia.purchase_platform.features.cart.view.subscriber
 
+import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.UpdateAndValidateUseData
 import com.tokopedia.purchase_platform.features.cart.view.CartListPresenter
 import com.tokopedia.purchase_platform.features.cart.view.ICartListView
 import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.validate_use.ValidateUsePromoRevampUiModel
@@ -19,6 +20,9 @@ class ValidateUseSubscriber(private val view: ICartListView?,
     override fun onNext(response: ValidateUsePromoRevampUiModel?) {
         response?.promoUiModel?.let {
             view?.updateListRedPromos(response)
+            presenter.setUpdateCartAndValidateUseLastResponse(UpdateAndValidateUseData().apply {
+                promoUiModel = response.promoUiModel
+            })
             presenter.isLastApplyResponseStillValid = false
             view?.updatePromoCheckoutStickyButton(it)
         }

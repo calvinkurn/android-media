@@ -3,15 +3,15 @@ package com.tokopedia.purchase_platform.features.one_click_checkout.common.domai
 import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ServiceData
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ServiceTextData
-import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.shippingnoprice.ShippingListModel
-import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.shippingprice.ServicesItemModel
-import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.shippingprice.TextsModel
+import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.shipping.ServicesItemModel
+import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.shipping.ShippingListModel
+import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.shipping.TextsModel
 import javax.inject.Inject
 
 class ShippingDurationModelWithPriceMapper @Inject constructor() : ShippingDurationDataWithPriceMapper {
 
     override fun convertToDomainModelWithPrice(response: ShippingRecommendationData): ShippingListModel {
-        var servicesList: ArrayList<ServicesItemModel> = ArrayList()
+        val servicesList: ArrayList<ServicesItemModel> = ArrayList()
 
         return ShippingListModel().apply {
             for (item in response.shippingDurationViewModels) {
@@ -26,6 +26,8 @@ class ShippingDurationModelWithPriceMapper @Inject constructor() : ShippingDurat
             this.servicesId = it.serviceId
             this.servicesName = it.serviceName
             this.texts = textItemModel(it.texts)
+            this.errorMessage = it.error.errorMessage
+            this.errorId = it.error.errorId
         }
     }
 

@@ -66,8 +66,8 @@ def isFirebasePerformanceLogEnabled() {
 }
 
 project.ext {
-    defaultVersionCode = 341001101;
-    defaultVersionName = "3.41";
+    defaultVersionCode = 417001101;
+    defaultVersionName = "3.70";
     react = [
             nodeExecutableAndArgs: ["${nodeExecutableAndArgs}"],
             enableHermes         : true,
@@ -301,7 +301,6 @@ dependencies {
     implementation project(rootProject.ext.features.otp)
     implementation project(rootProject.ext.features.logout)
     implementation project(rootProject.ext.features.topAdsManagementCommon)
-    implementation project(rootProject.ext.features.topAdsAutoAds)
     implementation project(rootProject.ext.features.goldMerchantCommon)
     implementation project(rootProject.ext.features.homecredit)
     implementation project(rootProject.ext.features.instantDebitBca)
@@ -329,7 +328,6 @@ dependencies {
     implementation project(rootProject.ext.features.navigationCommon)
     implementation project(rootProject.ext.features.accountHome)
     implementation project(rootProject.ext.features.updateinactivephone)
-    implementation project(rootProject.ext.features.mitraToppers)
     implementation project(rootProject.ext.features.phoneVerification)
     implementation project(rootProject.ext.features.attachproduct)
     implementation project(rootProject.ext.features.basemvvm)
@@ -437,6 +435,13 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.akamaiBotLib
     implementation rootProject.ext.tkpdInternalLibDependencies.williamchart
+
+    if (rootProject.ext.debugToolsEnabled) {
+        implementation rootProject.ext.tkpdInternalLibDependencies.fakeresponse
+    } else {
+        implementation rootProject.ext.tkpdInternalLibDependencies.fakeresponseNoOp
+    }
+
     implementation rootProject.ext.playServicesDependencies.maps
     implementation project(rootProject.ext.libraries.playCore)
     implementation rootProject.ext.playServicesDependencies.auth
