@@ -5,6 +5,33 @@ import com.google.gson.annotations.SerializedName
 
 data class DataItem(
 
+        @SerializedName("chipSelectionType")
+        var chipSelectionType: String = "0",
+
+        @SerializedName("key")
+        val key: String? = "",
+
+        @SerializedName("target_component")
+        val targetComponent: String? = "",
+
+        @SerializedName("value")
+        val value: String? = "",
+
+        @SerializedName("target_component_id")
+        val targetComponentId: String? = "",
+
+        @SerializedName("background_image")
+        val backgroundImage: String? = "",
+
+        @SerializedName("filter")
+        val filter: String? = "",
+
+        @SerializedName("filter_value")
+        val filterValue: Int? = 0,
+
+        @SerializedName("isSelected")
+        var isSelected: Boolean = false,
+
         @SerializedName("end_date")
         val endDate: String? = "",
 
@@ -80,7 +107,7 @@ data class DataItem(
         @SerializedName("box_color")
         val boxColor: String? = "",
 
-        @SerializedName("font_color")
+        @SerializedName("font_color", alternate = ["text_color"])
         val fontColor: String? = "",
 
         @field:SerializedName("button_text")
