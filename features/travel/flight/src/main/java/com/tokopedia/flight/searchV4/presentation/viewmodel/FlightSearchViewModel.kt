@@ -261,6 +261,11 @@ class FlightSearchViewModel @Inject constructor(
         flightAnalytics.eventQuickFilterClick(filterName)
     }
 
+    fun sendDetailClickTrack(journeyModel: FlightJourneyModel, adapterPosition: Int) {
+        flightAnalytics.eventSearchDetailClick(journeyModel, adapterPosition)
+        flightAnalytics.eventProductDetailImpression(journeyModel, adapterPosition)
+    }
+
     private fun deleteAllSearchData() {
         launchCatchError(dispatcherProvider.ui(), block = {
             flightSearchDeleteAllDataUseCase.execute()

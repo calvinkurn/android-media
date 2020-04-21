@@ -3,6 +3,7 @@ package com.tokopedia.flight.detail.view.adapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.LayoutRes;
@@ -38,7 +39,7 @@ public class FlightDetailFacilityViewHolder extends AbstractViewHolder<FlightDet
     private final TextView airlineCode;
     private View separatorInfoView;
     private TextView facilityInfoTextView;
-    private TextView facilitySeparatorTextView;
+    private LinearLayout containerAmenity;
 
     public FlightDetailFacilityViewHolder(View itemView) {
         super(itemView);
@@ -49,7 +50,7 @@ public class FlightDetailFacilityViewHolder extends AbstractViewHolder<FlightDet
         airlineCode = (TextView) itemView.findViewById(R.id.airline_code);
         separatorInfoView = (View) itemView.findViewById(R.id.separator_info);
         facilityInfoTextView = (TextView) itemView.findViewById(R.id.title_info);
-        facilitySeparatorTextView = (TextView) itemView.findViewById(R.id.tv_facility_separator);
+        containerAmenity = itemView.findViewById(R.id.container_amenity);
 
         listInfo.setLayoutManager(new LinearLayoutManager(itemView.getContext()));
         adapterInfo = new ListInfoAdapter();
@@ -61,10 +62,13 @@ public class FlightDetailFacilityViewHolder extends AbstractViewHolder<FlightDet
 
     @Override
     public void bind(FlightDetailRouteModel route) {
+        if (route.getInfos().size() == 0) {
+            separatorInfoView.setVisibility(View.GONE);
+        }
         adapterInfo.addData(route.getInfos());
         setDefaultAmenities(route);
         airlineName.setText(route.getAirlineName());
-        airlineCode.setText(String.format("%s - %s", route.getAirlineCode(), route.getFlightNumber()));
+        airlineCode.setText(String.format("%s-%s", route.getAirlineCode(), route.getFlightNumber()));
         ImageHandler.loadImageWithoutPlaceholder(imageAirline, route.getAirlineLogo(),
                 ContextCompat.getDrawable(itemView.getContext(), com.tokopedia.flight.R.drawable.flight_ic_airline_default)
         );
@@ -72,14 +76,14 @@ public class FlightDetailFacilityViewHolder extends AbstractViewHolder<FlightDet
 
     public void setDefaultAmenities(FlightDetailRouteModel flightDetailRouteViewModel) {
         if (flightDetailRouteViewModel.getAmenities() != null && flightDetailRouteViewModel.getAmenities().size() > 0) {
+            containerAmenity.setVisibility(View.VISIBLE);
             gridAmenity.setVisibility(View.VISIBLE);
             separatorInfoView.setVisibility(View.VISIBLE);
             facilityInfoTextView.setVisibility(View.VISIBLE);
-            facilitySeparatorTextView.setVisibility(View.VISIBLE);
             adapterAmenity.addData(flightDetailRouteViewModel.getAmenities());
         } else {
-            facilitySeparatorTextView.setVisibility(View.GONE);
             separatorInfoView.setVisibility(View.GONE);
+            containerAmenity.setVisibility(View.GONE);
             gridAmenity.setVisibility(View.GONE);
             facilityInfoTextView.setVisibility(View.GONE);
         }

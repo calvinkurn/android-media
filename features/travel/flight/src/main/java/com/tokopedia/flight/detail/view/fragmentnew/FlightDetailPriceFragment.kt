@@ -29,7 +29,7 @@ class FlightDetailPriceFragment : Fragment() {
         updateView()
     }
 
-    fun updateView() {
+    private fun updateView() {
         if (::listener.isInitialized) {
             val flightDetailModel = listener.getDetailModel()
             val adultPriceTotal = flightDetailModel.adultNumericPrice * flightDetailModel.countAdult
