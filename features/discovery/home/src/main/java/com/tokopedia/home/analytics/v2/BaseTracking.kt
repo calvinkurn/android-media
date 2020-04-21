@@ -341,16 +341,13 @@ abstract class BaseTracking {
     }
 
     protected fun convertRupiahToInt(rupiah: String): Int {
-        try {
-            var rupiah = rupiah
-            rupiah = rupiah.replace("Rp", "")
-            rupiah = rupiah.replace(".", "")
-            rupiah = rupiah.replace(" ", "")
-            return Integer.parseInt(rupiah)
-        } catch (e : Exception) {
-            return 0
-        }
-    }
+        var rupiah = rupiah
+        rupiah = rupiah.replace("Rp", "")
+        rupiah = rupiah.replace(".", "")
+        rupiah = rupiah.replace(" ", "")
+        return Integer.parseInt(rupiah)
+        return 0
+}
 
     protected fun getTracker(): ContextAnalytics {
         return TrackApp.getInstance().gtm
