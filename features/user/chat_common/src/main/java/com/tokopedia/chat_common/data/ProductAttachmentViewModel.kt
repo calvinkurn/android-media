@@ -50,11 +50,20 @@ open class ProductAttachmentViewModel : SendableViewModel, Visitable<BaseChatTyp
     var status: Int = 0
     var wishList: Boolean = false
     var images: List<String> = emptyList()
+        get() {
+            return if (field.isNotEmpty()) {
+                field
+            } else {
+                listOf(productImage)
+            }
+        }
 
     val hasDiscount: Boolean
         get() {
             return priceBefore.isNotEmpty() && dropPercentage.isNotEmpty()
         }
+
+    val stringBlastId: String get() = blastId.toString()
 
     constructor(messageId: String, fromUid: String, from: String,
                 fromRole: String, attachmentId: String, attachmentType: String,

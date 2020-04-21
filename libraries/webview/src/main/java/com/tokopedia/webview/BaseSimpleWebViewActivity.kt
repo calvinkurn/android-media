@@ -30,9 +30,6 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         init(intent)
-        if (!::url.isInitialized || url.isEmpty()) {
-            finish()
-        }
         super.onCreate(savedInstanceState)
         setupToolbar()
     }

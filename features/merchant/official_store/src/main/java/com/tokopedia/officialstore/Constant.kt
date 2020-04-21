@@ -20,6 +20,8 @@ object DynamicChannelIdentifiers {
     val LAYOUT_SPRINT_LEGO = "sprint_lego"
     val LAYOUT_LEGO_3_IMAGE = "lego_3_image"
     val LAYOUT_6_IMAGE = "6_image"
+    val LAYOUT_MIX_LEFT = "left_carousel"
+    val LAYOUT_MIX_TOP = "top_carousel"
 
     val CTA_MODE_MAIN = "main"
     val CTA_MODE_TRANSACTION = "transaction"

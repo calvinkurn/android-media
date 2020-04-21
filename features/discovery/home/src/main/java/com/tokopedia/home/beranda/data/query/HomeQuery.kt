@@ -37,6 +37,7 @@ object HomeQuery{
               expire_time
               slide_index
               type
+              campaignCode
             }
           }
           dynamicHomeIcon {
@@ -74,6 +75,8 @@ object HomeQuery{
               showPromoBadge
               categoryID
               perso_type
+              campaignCode
+              has_close_button
               header {
                 id
                 name
@@ -116,6 +119,11 @@ object HomeQuery{
                 }
                 productViewCountFormatted
                 isOutOfStock
+                warehouseID
+                minOrder
+                shop{
+                    shopID
+                }
                 labelGroup {
                   title
                   position

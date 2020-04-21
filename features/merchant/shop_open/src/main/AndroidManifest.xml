@@ -17,6 +17,7 @@
                     android:path="@string/path_shop_open"/>
             </intent-filter>
         </activity>
+
         <activity
             android:name=".view.activity.ShopOpenPostalCodeChooserActivity"
             android:label="@string/title_shop_postal_code"
@@ -34,11 +35,6 @@
             android:theme="@style/Theme.White"
             android:label="@string/title_open_shop"
             android:screenOrientation="portrait"/>
-
-        <activity
-            android:name=".view.activity.ShopOpenWebViewActivity"
-            android:theme="@style/Theme.White"
-            android:screenOrientation="portrait" />
 
         <activity
             android:name="com.tokopedia.shop.open.shop_open_revamp.presentation.view.activity.ShopOpenRevampActivity"

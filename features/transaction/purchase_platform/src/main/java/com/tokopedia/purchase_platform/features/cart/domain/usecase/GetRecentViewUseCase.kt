@@ -21,6 +21,10 @@ class GetRecentViewUseCase @Inject constructor(val schedulers: ExecutorScheduler
     override fun createObservable(params: RequestParams): Observable<GqlRecentViewResponse> {
         val variables = HashMap<String, Any>()
         variables[USER_ID] = params.getInt(PARAM_USER_ID, 0)
+        variables[FILTER] = mapOf(
+                SOURCE to CART,
+                BLACKLISTPRODUCTIDS to params.getString(PARAM_PRODUCT_IDS, "")
+        )
 
         val graphqlRequest = GraphqlRequest(QUERY, GqlRecentViewResponse::class.java, variables)
         val graphqlUseCase = GraphqlUseCase()
@@ -36,12 +40,18 @@ class GetRecentViewUseCase @Inject constructor(val schedulers: ExecutorScheduler
 
     companion object {
         private val USER_ID = "userID"
+        private const val FILTER = "filter"
+        private const val BLACKLISTPRODUCTIDS = "blacklistProductIds"
+        private const val SOURCE = "source"
+        private const val CART = "cart"
+
         val PARAM_USER_ID = "PARAM_USER_ID"
+        val PARAM_PRODUCT_IDS = "PARAM_PRODUCT_IDS"
     }
 
     val QUERY = """
-        query recent_view(${'$'}userID: Int){
-          get_recent_view(userID: ${'$'}userID){
+        query recent_view(${'$'}userID: Int, ${'$'}filter: Filter){
+          get_recent_view(userID: ${'$'}userID, filter: ${'$'}filter){
             items{
               product_id,
               product_name,

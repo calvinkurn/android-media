@@ -286,7 +286,7 @@ class MLPWidgetAdapter(private val boxList: List<WidgetsItem>, val context: Cont
                 checkValidFilteredUrl = URLUtil.isValidUrl(filteredUrl)
 
                 if (checkValidFilteredUrl) {
-                    context.startActivity(RouteManager.getIntent(context, ApplinkConstInternalGlobal.WEBVIEW, filteredUrl))
+                    RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, filteredUrl)
                 }
             } else {
                 val bottomSheetLength: Int = boxList[position].bottomSheet?.size!!

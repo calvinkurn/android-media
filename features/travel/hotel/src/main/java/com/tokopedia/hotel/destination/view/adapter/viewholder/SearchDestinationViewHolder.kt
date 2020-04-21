@@ -25,7 +25,8 @@ class SearchDestinationViewHolder(val view: View, val searchDestinationListener:
     override fun bind(searchDestination: SearchDestination) {
         with(itemView) {
             search_destination_name.text = getSpandableBoldText(searchDestination.name, searchDestinationListener.getFilterText())
-            search_destination_location.text = getSpandableBoldText(searchDestination.location, searchDestinationListener.getFilterText())
+            search_destination_location.text = getSpandableBoldText(searchDestination.location, searchDestinationListener.getFilterText(),
+            ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Neutral_N700_68))
             search_destination_hotel_count.text = if (searchDestination.hotelCount > 0)
                 getString(R.string.hotel_destination_popular_search_hotel_count, CurrencyFormatUtil.convertPriceValue(searchDestination.hotelCount.toDouble(), false)) else ""
             search_destination_type.text = searchDestination.tag
@@ -33,7 +34,7 @@ class SearchDestinationViewHolder(val view: View, val searchDestinationListener:
         }
     }
 
-    private fun getSpandableBoldText(strToPut: String, stringToHighlighted: String): CharSequence {
+    private fun getSpandableBoldText(strToPut: String, stringToHighlighted: String, boldColor: Int? = null): CharSequence {
 
         var indexStartHighlighted = -1
         var indexEndHighlighted = -1
@@ -56,12 +57,21 @@ class SearchDestinationViewHolder(val view: View, val searchDestinationListener:
         if (indexStartHighlighted == -1) {
             spannableStringBuilder.setSpan(android.text.style.StyleSpan(android.graphics.Typeface.BOLD),
                     0, strToPut.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            if (boldColor != null) spannableStringBuilder.setSpan(ForegroundColorSpan(boldColor), 0, strToPut.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
             return spannableStringBuilder
         } else {
-            if (indexStartHighlighted > 0) spannableStringBuilder.setSpan(android.text.style.StyleSpan(android.graphics.Typeface.BOLD),
-                    0, indexStartHighlighted, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-            if (indexEndHighlighted < strToPut.length) spannableStringBuilder.setSpan(android.text.style.StyleSpan(android.graphics.Typeface.BOLD),
-                    indexEndHighlighted, strToPut.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            if (indexStartHighlighted > 0) {
+                spannableStringBuilder.setSpan(android.text.style.StyleSpan(android.graphics.Typeface.BOLD),
+                        0, indexStartHighlighted, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                if (boldColor != null) spannableStringBuilder.setSpan(ForegroundColorSpan(boldColor), 0, indexStartHighlighted, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            }
+
+            if (indexEndHighlighted < strToPut.length) {
+                spannableStringBuilder.setSpan(android.text.style.StyleSpan(android.graphics.Typeface.BOLD),
+                        indexEndHighlighted, strToPut.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                if (boldColor != null) spannableStringBuilder.setSpan(ForegroundColorSpan(boldColor), indexEndHighlighted, strToPut.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+
+            }
             return spannableStringBuilder
         }
     }

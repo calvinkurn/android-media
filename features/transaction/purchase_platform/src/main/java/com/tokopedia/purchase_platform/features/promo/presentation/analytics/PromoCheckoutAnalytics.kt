@@ -1,5 +1,6 @@
 package com.tokopedia.purchase_platform.features.promo.presentation.analytics
 
+import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.*
 import com.tokopedia.purchase_platform.common.analytics.TransactionAnalytics
 import javax.inject.Inject
@@ -10,6 +11,7 @@ class PromoCheckoutAnalytics @Inject constructor() : TransactionAnalytics() {
         val PAGE_CART = 1
         @JvmStatic
         val PAGE_CHECKOUT = 2
+        const val PAGE_OCC = 3
 
         val EVENT_NAME_VIEW = "view"
         val EVENT_NAME_CLICK = "click"
@@ -35,16 +37,43 @@ class PromoCheckoutAnalytics @Inject constructor() : TransactionAnalytics() {
                 eventNamePage = EventName.CLICK_COURIER
             }
             eventCategoryPage = EventCategory.COURIER_SELECTION
+        } else if (page == PAGE_OCC) {
+            if (event == EVENT_NAME_VIEW) {
+                eventNamePage = EventName.VIEW_CHECKOUT_EXPRESS_IRIS
+            } else if (event == EVENT_NAME_CLICK) {
+                eventNamePage = EventName.CLICK_CHECKOUT_EXPRESS
+            }
+            eventCategoryPage = EventCategory.ORDER_SUMMARY
         }
 
         if (eventNamePage != null && eventCategoryPage != null) {
             sendEventCategoryActionLabel(
-                    event,
+                    eventNamePage,
                     eventCategoryPage,
                     eventAction,
                     eventLabel
             )
         }
+    }
+
+    fun sendEventEnhancedEcommerceByPage(page: Int,
+                                         eventAction: String,
+                                         eventLabel: String,
+                                         eCommerceMapData: Map<String, Any>) {
+        val dataLayer = DataLayer.mapOf(
+                Key.EVENT, EventName.PROMO_VIEW,
+                Key.EVENT_CATEGORY,
+                when (page) {
+                    PAGE_CART -> EventCategory.CART
+                    PAGE_CHECKOUT -> EventCategory.COURIER_SELECTION
+                    PAGE_OCC -> EventCategory.ORDER_SUMMARY
+                    else -> ""
+                },
+                Key.EVENT_ACTION, eventAction,
+                Key.EVENT_LABEL, eventLabel,
+                Key.E_COMMERCE, eCommerceMapData
+        )
+        sendEnhancedEcommerce(dataLayer)
     }
 
     fun eventViewBlacklistErrorAfterApplyPromo(page: Int) {
@@ -74,13 +103,20 @@ class PromoCheckoutAnalytics @Inject constructor() : TransactionAnalytics() {
         )
     }
 
-    fun eventViewAvailablePromoListIneligibleProduct(page: Int) {
-        sendEventByPage(
+    fun eventViewAvailablePromoListEligiblePromo(page: Int, eCommerceMapData: Map<String, Any>) {
+        sendEventEnhancedEcommerceByPage(
                 page,
-                EVENT_NAME_VIEW,
                 EventAction.VIEW_AVAILABLE_PROMO_LIST,
-                EventLabel.INELIGIBLE_PRODUCT
-        )
+                EventLabel.ELIGIBLE_PROMO,
+                eCommerceMapData)
+    }
+
+    fun eventViewAvailablePromoListIneligibleProduct(page: Int, eCommerceMapData: Map<String, Any>) {
+        sendEventEnhancedEcommerceByPage(
+                page,
+                EventAction.VIEW_AVAILABLE_PROMO_LIST,
+                EventLabel.INELIGIBLE_PRODUCT,
+                eCommerceMapData)
     }
 
     fun eventViewAvailablePromoListNoPromo(page: Int) {
@@ -100,10 +136,13 @@ class PromoCheckoutAnalytics @Inject constructor() : TransactionAnalytics() {
         } else if (page == PAGE_CHECKOUT) {
             data["event"] = EventName.CLICK_COURIER
             data["eventCategory"] = EventCategory.COURIER_SELECTION
+        } else if (page == PAGE_OCC) {
+            data["event"] = EventName.CLICK_CHECKOUT_EXPRESS
+            data["eventCategory"] = EventCategory.ORDER_SUMMARY
         }
         data["eventAction"] = EventAction.CLICK_PILIH_PROMO_RECOMMENDATION
         data["eventLabel"] = ""
-        data["promoCode"] = promoCodes.joinToString(", ", "[", "]")
+        data["promoCode"] = promoCodes.joinToString(", ")
 
         if (data.containsKey("event") && data.containsKey("eventCategory")) {
             sendGeneralEvent(data)
@@ -253,10 +292,13 @@ class PromoCheckoutAnalytics @Inject constructor() : TransactionAnalytics() {
         } else if (page == PAGE_CHECKOUT) {
             data["event"] = EventName.CLICK_COURIER
             data["eventCategory"] = EventCategory.COURIER_SELECTION
+        } else if (page == PAGE_OCC) {
+            data["event"] = EventName.CLICK_CHECKOUT_EXPRESS
+            data["eventCategory"] = EventCategory.ORDER_SUMMARY
         }
         data["eventAction"] = EventAction.CLICK_PAKAI_PROMO
         data["eventLabel"] = "success - $status"
-        data["promoCode"] = promoCodes.joinToString(", ", "[", "]")
+        data["promoCode"] = promoCodes.joinToString(", ")
 
         if (data.containsKey("event") && data.containsKey("eventCategory")) {
             sendGeneralEvent(data)

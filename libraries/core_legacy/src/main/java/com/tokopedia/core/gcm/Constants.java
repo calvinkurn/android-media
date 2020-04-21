@@ -69,8 +69,6 @@ public interface Constants {
         String DISCOVERY_HOTLIST_DETAIL = "tokopedia://hot/{alias}";
         String DISCOVERY_CATALOG = "tokopedia://catalog/{EXTRA_CATALOG_ID}";
         String WISHLIST = "tokopedia://wishlist";
-        String TOPPICKS = "tokopedia://toppicks";
-        String TOPPICK_DETAIL = "tokopedia://toppicks/{toppick_id}";
         String LOGIN = "tokopedia://login";
         String OFFICIAL_STORES = "tokopedia://official-stores";
         String RESCENTER = "tokopedia://resolution/{resolution_id}";

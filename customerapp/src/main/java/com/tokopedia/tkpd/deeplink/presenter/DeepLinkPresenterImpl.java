@@ -45,6 +45,7 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.discovery.catalogrevamp.ui.activity.CatalogDetailPageActivity;
 import com.tokopedia.discovery.categoryrevamp.view.activity.CategoryNavActivity;
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase;
+import com.tokopedia.network.data.model.response.ResponseV4ErrorException;
 import com.tokopedia.product.detail.common.data.model.product.ProductInfo;
 import com.tokopedia.session.domain.interactor.SignInInteractor;
 import com.tokopedia.session.domain.interactor.SignInInteractorImpl;
@@ -602,6 +603,9 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                 if (context!= null) {
                     prepareOpenWebView(uriData);
                 }
+                if (e instanceof ResponseV4ErrorException) {
+                    Timber.w("P1#DEEPLINK_OPEN_WEBVIEW#OneSegment;link_segment='%s';uri='%s'", linkSegment.get(0), uriData.toString());
+                }
             }
 
             @Override
@@ -634,6 +638,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
 
                         context.finish();
                     } else {
+                        Timber.w("P1#DEEPLINK_OPEN_WEBVIEW#OneSegment;link_segment='%s';uri='%s'", linkSegment.get(0), uriData.toString());
                         if (!GlobalConfig.DEBUG) {
                             Crashlytics.logException(new ShopNotFoundException(linkSegment.get(0)));
                         }
@@ -658,11 +663,13 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     }
 
     private void openHomeRecommendation(final List<String> linkSegment, final Uri uriData, Bundle bundle) {
+        String internalSource = uriData.getQueryParameter("search_ref");
         String source = uriData.getQueryParameter("ref");
         String productId = linkSegment.size() > 1 ? linkSegment.get(1) : "";
         Intent intent = RouteManager.getIntent(context, ApplinkConsInternalHome.HOME_RECOMMENDATION);
         intent.putExtra(context.getString(R.string.home_recommendation_extra_product_id), productId);
         intent.putExtra(context.getString(R.string.home_recommendation_extra_ref), source == null ? "" : source);
+        intent.putExtra(context.getString(R.string.home_recommendation_extra_internal_ref), source == null ? "" : internalSource);
         intent.putExtras(bundle);
         intent.setData(uriData);
         context.startActivity(intent);
@@ -697,6 +704,10 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     context.startActivity(intent);
                     context.finish();
                 }
+                if (e instanceof ResponseV4ErrorException) {
+                    Timber.w("P1#DEEPLINK_OPEN_WEBVIEW#TwoSegments;link_segment='%s';uri='%s'",
+                            linkSegment.get(0) + "/" + linkSegment.get(1), uriData.toString());
+                }
             }
 
             @Override
@@ -716,6 +727,8 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                                 linkSegment.get(1),
                                 affiliateString));
                     } else {
+                        Timber.w("P1#DEEPLINK_OPEN_WEBVIEW#TwoSegments;link_segment='%s';uri='%s'",
+                                linkSegment.get(0) + "/" + linkSegment.get(1), uriData.toString());
                         if (!GlobalConfig.DEBUG) {
                             Crashlytics.logException(new ShopNotFoundException(linkSegment.get(0)));
                             Crashlytics.logException(new ProductNotFoundException(linkSegment.get(0) + "/" + linkSegment.get(1)));

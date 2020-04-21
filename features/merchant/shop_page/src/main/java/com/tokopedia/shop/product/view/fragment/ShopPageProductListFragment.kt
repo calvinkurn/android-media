@@ -49,6 +49,7 @@ import com.tokopedia.shop.common.graphql.data.membershipclaimbenefit.MembershipC
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.common.view.adapter.MembershipStampAdapter
 import com.tokopedia.shop.common.widget.MembershipBottomSheetSuccess
+import com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity
 import com.tokopedia.shop.product.view.adapter.ShopProductAdapter
 import com.tokopedia.shop.product.view.adapter.ShopProductAdapterTypeFactory
 import com.tokopedia.shop.product.view.datamodel.*
@@ -973,9 +974,6 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
     }
 
     private fun showErrorToasterWithRetry(error: Throwable) {
-        if (parentFragment is ShopPageFragment) {
-            (parentFragment as? ShopPageFragment)?.stopPerformanceMonitor()
-        }
         hideLoading()
         updateStateScrollListener()
         if (shopProductAdapter.shopProductViewModelList.size > 0) {
@@ -984,6 +982,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
             shopProductAdapter.clearAllElements()
             onGetListErrorWithEmptyData(error)
         }
+        stopPerformanceMonitoring()
     }
 
     private fun onErrorGetMerchantVoucher() {
@@ -1011,9 +1010,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
             shopProductAdapter.setProductListDataModel(productList)
             updateScrollListenerState(hasNextPage)
         }
-        if (parentFragment is ShopPageFragment) {
-            (parentFragment as? ShopPageFragment)?.stopPerformanceMonitor()
-        }
+        stopPerformanceMonitoring()
     }
 
     private fun onSuccessGetShopProductEtalaseTitleData(data: ShopProductEtalaseTitleViewModel) {
@@ -1132,6 +1129,10 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         activity?.let {
             ToasterError.showClose(it, ErrorHandler.getErrorMessage(context, t))
         }
+    }
+
+    private fun stopPerformanceMonitoring(){
+        (activity as? ShopPageActivity)?.stopShopProductTabPerformanceMonitoring()
     }
 
     fun clearCache() {

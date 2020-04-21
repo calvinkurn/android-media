@@ -1,6 +1,7 @@
 package com.tokopedia.withdraw.view.listener;
 
 import android.content.Context;
+import android.content.Intent;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
@@ -34,7 +35,13 @@ public class WithdrawContract {
 
         void resetView();
 
-        void showConfirmPassword();
+        void openUserVerificationScreen();
+
+        void onVerificationCompleted(Intent data);
+
+        void completeWithdrawalWithVerificationCode(String verificationCodeStr);
+
+        void openWithdrawalSuccessScreen(BankAccount bankAccount, String message, long amount);
 
         void goToAddBank();
 
@@ -57,7 +64,11 @@ public class WithdrawContract {
 
         void getPremiumAccountData();
 
-        void doWithdraw(String totalBalance, String totalWithdrawal, BankAccount selectedBank);
+        void validateWithdraw(String totalBalance, String totalWithdrawal, BankAccount selectedBank);
+
+        void doWithdrawal(long withdrawal, BankAccount bankAccount,
+                          String validateToken, boolean isSellerWithdrawal,
+                          String programName);
 
         void refreshBankList();
     }

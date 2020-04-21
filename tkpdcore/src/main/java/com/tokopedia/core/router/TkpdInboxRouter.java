@@ -30,7 +30,5 @@ public interface TkpdInboxRouter {
 
     void actionNavigateByApplinksUrl(Activity activity, String url, Bundle bundle);
 
-    Intent getWebviewActivityWithIntent(Context context, String url);
-
     boolean isSupportedDelegateDeepLink(String url);
 }

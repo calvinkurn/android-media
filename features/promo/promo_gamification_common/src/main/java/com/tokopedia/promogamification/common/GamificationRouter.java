@@ -9,7 +9,5 @@ import android.content.Intent;
 
 public interface GamificationRouter {
 
-    Intent getWebviewActivityWithIntent(Context context, String url, String title);
-
     void goToHome(Context context);
 }

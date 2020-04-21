@@ -91,7 +91,8 @@ class DigitalCommonModule {
     @Provides
     @DigitalCommonScope
     @DigitalRestApiClient
-    fun provideDigitalRestApiOkHttpClient(@ApplicationScope httpLoggingInterceptor: HttpLoggingInterceptor,
+    fun provideDigitalRestApiOkHttpClient(@ApplicationContext context: Context,
+                                          @ApplicationScope httpLoggingInterceptor: HttpLoggingInterceptor,
                                           digitalInterceptor: DigitalInterceptor,
                                           networkRouter: NetworkRouter,
                                           userSession: UserSession,
@@ -105,7 +106,7 @@ class DigitalCommonModule {
         builder.addInterceptor(digitalInterceptor)
         builder.addInterceptor(FingerprintInterceptor(networkRouter, userSession))
         builder.addInterceptor(ErrorResponseInterceptor(TkpdDigitalResponse.DigitalErrorResponse::class.java))
-        builder.addInterceptor(AkamaiBotInterceptor())
+        builder.addInterceptor(AkamaiBotInterceptor(context))
 
         if (GlobalConfig.isAllowDebuggingTools()) {
             builder.addInterceptor(httpLoggingInterceptor)

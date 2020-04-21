@@ -21,6 +21,11 @@
             android:layout_gravity="center_vertical"
             android:scaleType="centerCrop"
             />
+        <com.elyeproj.loaderviewlibrary.LoaderTextView
+            android:id="@+id/tabShimmeringView"
+            android:layout_width="@dimen/tab_home_feed_width"
+            android:layout_height="@dimen/tab_home_feed_max_height"
+            app:corners="16"/>
 
     </androidx.cardview.widget.CardView>
 

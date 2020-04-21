@@ -4,14 +4,12 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.tokopoints.view.contract.CatalogPurchaseRedemptionPresenter
 import com.tokopedia.tokopoints.view.model.CatalogsValueEntity
 import com.tokopedia.tokopoints.view.util.CommonConstant
 import com.tokopedia.tokopoints.view.util.Resources
 import com.tokopedia.tokopoints.view.util.Success
 import com.tokopedia.tokopoints.view.util.ValidationError
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.DisposableHandle
 
 open class CatalogPurchaseRedeemptionViewModel(private val repository: CatalogPurchaseRedeemptionRepository) : BaseViewModel(Dispatchers.Main), CatalogPurchaseRedemptionPresenter {
 
