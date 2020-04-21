@@ -126,6 +126,7 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
                     globalError?.gone()
                     mainContent?.visible()
                     setupViews(it.data)
+                    setDataToParent(it.data)
                 }
                 is OccState.Fail -> {
                     swipeRefreshLayout?.isRefreshing = false
@@ -326,6 +327,7 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
                     } else {
                         viewModel.createPreference(parent.getAddressId(), parent.getShippingId(), parent.getGatewayCode(), parent.getPaymentQuery())
                     }
+                    preferenceListAnalytics.eventClickSimpanOnSummaryPurchaseSetting()
                 }
             }
         }
@@ -372,6 +374,36 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
                 parent.setHeaderSubtitle(getString(R.string.lbl_summary_preference_subtitle))
                 parent.showStepper()
                 parent.setStepperValue(100, true)
+            }
+        }
+    }
+
+    private fun setDataToParent(data: GetPreferenceData) {
+        val parent = activity
+        if (parent is PreferenceEditParent) {
+            if (parent.getAddressId() == 0) {
+                val addressId = data.addressModel?.addressId
+                if (addressId != null) {
+                    parent.setAddressId(addressId)
+                }
+            }
+            if (parent.getShippingId() == 0) {
+                val serviceId = data.shipmentModel?.serviceId
+                if (serviceId != null) {
+                    parent.setShippingId(serviceId)
+                }
+            }
+            if (parent.getGatewayCode().isEmpty()) {
+                val gatewayCode = data.paymentModel?.gatewayCode
+                if (gatewayCode != null) {
+                    parent.setGatewayCode(gatewayCode)
+                }
+            }
+            if (parent.getPaymentQuery().isEmpty()) {
+                val metadata = data.paymentModel?.metadata
+                if (metadata != null) {
+                    parent.setPaymentQuery(metadata)
+                }
             }
         }
     }

@@ -36,6 +36,7 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.core.app.MainApplication;
@@ -276,8 +277,8 @@ public class OrderDetailActivity extends TActivity
             if (data.isShowUploadAwb()) {
                 btnUploadAwb.setVisibility(View.VISIBLE);
                 btnUploadAwb.setOnClickListener(view -> {
-                    Intent intent = RouteManager.getIntent(OrderDetailActivity.this, ApplinkConstInternalLogistic.UPLOAD_AWB);
-                    intent.putExtra(EXTRA_URL_UPLOAD, data.getAwbUploadProofUrl());
+                    Intent intent = RouteManager.getIntent(OrderDetailActivity.this, ApplinkConstInternalGlobal.WEBVIEW,
+                            data.getAwbUploadProofUrl());
                     startActivity(intent);
                 });
             } else {

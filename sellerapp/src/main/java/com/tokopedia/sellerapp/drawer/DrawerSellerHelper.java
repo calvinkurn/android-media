@@ -42,10 +42,10 @@ import com.tokopedia.profile.view.activity.ProfileActivity;
 import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.product.draft.view.activity.ProductDraftListActivity;
-import com.tokopedia.seller.seller.info.view.activity.SellerInfoActivity;
 import com.tokopedia.sellerapp.R;
-import com.tokopedia.sellerapp.dashboard.view.activity.DashboardActivity;
+import com.tokopedia.sellerhome.view.activity.SellerHomeActivity;
 import com.tokopedia.track.TrackApp;
+import com.tokopedia.url.TokopediaUrl;
 
 import java.util.ArrayList;
 
@@ -127,7 +127,7 @@ public class DrawerSellerHelper extends DrawerHelper
                 R.drawable.icon_setting,
                 TkpdState.DrawerPosition.SETTINGS,
                 true));
-        data.add(new DrawerItem(context.getString(R.string.title_activity_contact_us),
+        data.add(new DrawerItem(context.getString(R.string.title_activity_contact_us_drawer),
                 R.drawable.ic_contactus,
                 TkpdState.DrawerPosition.CONTACT_US,
                 true));
@@ -301,7 +301,7 @@ public class DrawerSellerHelper extends DrawerHelper
             switch (item.getId()) {
                 case TkpdState.DrawerPosition.INDEX_HOME:
                     eventDrawerClick(AppEventTracking.EventLabel.SELLER_HOME);
-                    context.startActivity(DashboardActivity.createInstance(context));
+                    context.startActivity(SellerHomeActivity.createIntent(context));
                     break;
                 case TkpdState.DrawerPosition.SELLER_GM_SUBSCRIBE_EXTEND:
                     if (context.getApplication() instanceof AbstractionRouter) {
@@ -372,9 +372,7 @@ public class DrawerSellerHelper extends DrawerHelper
                             AppEventTracking.EventLabel.STATISTIC);
                     break;
                 case TkpdState.DrawerPosition.SELLER_MITRA_TOPPERS:
-                    Intent mitraToppersIntent = ((MitraToppersRouter) context.getApplication())
-                            .getMitraToppersActivityIntent(context);
-                    context.startActivity(mitraToppersIntent);
+                    RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, TokopediaUrl.getInstance().getWEB() + "mitra-toppers/");
                     break;
                 case TkpdState.DrawerPosition.SELLER_TOP_ADS:
                     eventDrawerClick(AppEventTracking.EventLabel.TOPADS);
@@ -390,8 +388,7 @@ public class DrawerSellerHelper extends DrawerHelper
                     break;
                 case TkpdState.DrawerPosition.SELLER_INFO:
                     eventSellerInfo(AppEventTracking.Action.CLICK_HAMBURGER_ICON, AppEventTracking.EventLabel.SELLER_INFO);
-                    intent = new Intent(context, SellerInfoActivity.class);
-                    context.startActivity(intent);
+                    RouteManager.route(context, ApplinkConst.SELLER_INFO);
                     break;
                 case TkpdState.DrawerPosition.RESOLUTION_CENTER:
                     if (context.getApplication() instanceof TkpdCoreRouter) {

@@ -68,7 +68,6 @@ class ProductCheckoutViewHolder(
                     location = LABEL_BOTTOM_SHEET_LOCATION,
                     notification = element
             )
-            productStockTracker.productCardImpression(element, element.userInfo.userId)
             val factory = MultipleProductCardFactoryImpl(
                     sourceView = SourceMultipleProductView.NotificationCenter,
                     listener = listener

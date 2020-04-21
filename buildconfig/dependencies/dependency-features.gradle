@@ -89,11 +89,11 @@ ext {
             homecredit                      : ":features:fintech:home_credit",
             instantLoan                     : ":features:fintech:instant_loan",
             merchantLendingWidget           : ":features:fintech:merchant_lending_widget",
-            mitraToppers                    : ":features:fintech:mitra_toppers",
             saldodetails                    : ":features:fintech:saldo_details",
             commonWallet                    : ":features:fintech:common_wallet",
             wallet                          : ":features:fintech:wallet",
             ovoPayWithQr                    : ":features:fintech:ovo_pay_with_qr",
+            layanan                         : ":features:fintech:layanan_finansial",
 
             accountHome                     : ":features:home:account-home",
             dynamicBanner                   : ":features:home:dynamicbanner",
@@ -127,6 +127,7 @@ ext {
 
             reputation                      : ":features:merchant:reputation",
             reputationCommon                : ":features:merchant:reputation_common",
+            sellerHome                      : ":features:merchant:seller_home",
             shopCommon                      : ":features:merchant:shop_common",
             shopEtalasePicker               : ":features:merchant:shop_etalase_picker",
 //            shopEtalasePicker               : ":features:merchant:shop_etalase_picker_no_op",
@@ -164,6 +165,7 @@ ext {
 
             topAdsDashboard                 : ":features:top_ads:top_ads_dashboard",
             topAdsFreeClaim                 : ":features:top_ads:top_ads_free_claim",
+            topAdsCreate                 : ":features:top_ads:top_ads_create",
             topAdsAutoAds                : ":features:top_ads:top_ads_autoads",
             topAdsDetailSheet               : ":features:top_ads:top_ads_detail_sheet",
             topAdsWidget                    : ":features:top_ads:top_ads_widget",

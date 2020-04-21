@@ -21,7 +21,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.common.travel.ticker.TravelTickerUtils
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerViewModel
 import com.tokopedia.flight.bookingV2.di.FlightBookingComponent
-import com.tokopedia.flight.bookingV2.presentation.activity.FlightInsuranceWebviewActivity
 import com.tokopedia.flight.bookingV2.presentation.adapter.*
 import com.tokopedia.flight.bookingV2.presentation.contract.FlightBookingContract
 import com.tokopedia.flight.bookingV2.presentation.presenter.FlightBookingPresenter
@@ -302,7 +301,7 @@ class FlightBookingFragment : BaseDaggerFragment(),
                 }
 
                 override fun onMoreInfoClicked(tncUrl: String, title: String) {
-                    startActivity(FlightInsuranceWebviewActivity.getCallingIntent(activity, tncUrl, title))
+                    RouteManager.route(activity, ApplinkConstInternalGlobal.WEBVIEW_TITLE, title, tncUrl)
                     flightBookingPresenter.onMoreInsuranceInfoClicked()
                 }
 

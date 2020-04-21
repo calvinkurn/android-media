@@ -17,7 +17,6 @@ class ToolbarRemoveView : BaseCustomView {
 
     interface ToolbarCartListener {
         fun onToolbarRemoveAllCart()
-        fun onGoToChuck()
     }
 
     constructor(context: Context) : super(context) {

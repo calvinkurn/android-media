@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="gqlColorWhite">#ffffff</color>
+    <color name="gqlColorGrey">#C9C1C1</color>
+    <color name="gqlColorLightGrey">#EDEDED</color>
+    <color name="gqlColorDivider">@color/gqlColorLightGrey</color>
+    <color name="gqlColorYellow">#FFF8BB</color>
+    <color name="gqlColorBlue">#2196F3</color>
+    <color name="gqlColorPurple">#3F51B5</color>
+    <color name="gqlColorLightBlue">#00BCD4</color>
+</resources>
