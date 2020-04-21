@@ -1,12 +1,12 @@
-package com.tokopedia.settingnotif.usersetting.domain.usecase
+package com.tokopedia.settingnotif.usersetting.domain
 
 import android.content.Context
 import androidx.annotation.RawRes
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
-import com.tokopedia.settingnotif.usersetting.domain.mapper.UserSettingFieldMapper
-import com.tokopedia.settingnotif.usersetting.domain.pojo.UserNotificationResponse
+import com.tokopedia.settingnotif.usersetting.data.mapper.UserSettingFieldMapper
+import com.tokopedia.settingnotif.usersetting.data.pojo.UserNotificationResponse
 import com.tokopedia.settingnotif.usersetting.view.dataview.UserSettingDataView
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
