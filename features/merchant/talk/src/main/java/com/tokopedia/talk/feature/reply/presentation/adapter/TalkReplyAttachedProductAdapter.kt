@@ -3,7 +3,7 @@ package com.tokopedia.talk.feature.reply.presentation.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.talk.feature.reply.data.model.AttachedProduct
+import com.tokopedia.talk.feature.reply.data.model.discussion.AttachedProduct
 import com.tokopedia.talk.feature.reply.presentation.adapter.viewholder.TalkReplyAttachedProductViewHolder
 import com.tokopedia.talk.feature.reply.presentation.widget.listeners.OnAttachedProductCardClickedListener
 import com.tokopedia.talk_old.R

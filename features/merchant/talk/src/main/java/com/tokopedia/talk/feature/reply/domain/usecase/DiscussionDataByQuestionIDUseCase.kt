@@ -2,7 +2,7 @@ package com.tokopedia.talk.feature.reply.domain.usecase
 
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.talk.feature.reply.data.model.DiscussionDataByQuestionIDResponseWrapper
+import com.tokopedia.talk.feature.reply.data.model.discussion.DiscussionDataByQuestionIDResponseWrapper
 import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 

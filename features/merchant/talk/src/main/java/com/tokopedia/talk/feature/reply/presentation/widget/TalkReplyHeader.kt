@@ -11,7 +11,7 @@ import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.UnifyButton
 import kotlinx.android.synthetic.main.widget_talk_reply_header.view.*
 
-class TalkReplyHeader : BaseCustomView{
+class TalkReplyHeader : BaseCustomView {
 
     companion object {
         const val FOLLOWING_TEXT = "Following"

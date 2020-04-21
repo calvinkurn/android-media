@@ -5,12 +5,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     
     <com.tokopedia.unifycomponents.TextFieldUnify
+        android:id="@+id/replyTextBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@drawable/bg_rounded_chat_input"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:text_field_append_drawable_icon_1="@drawable/talk_ic_attached_product"
         app:text_field_placeholder="@string/reply_editText_placeholder"/>
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

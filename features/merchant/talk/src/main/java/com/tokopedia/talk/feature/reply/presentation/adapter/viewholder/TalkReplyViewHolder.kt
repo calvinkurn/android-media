@@ -4,12 +4,11 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.talk.feature.reading.presentation.adapter.viewholder.TalkReadingViewHolder
-import com.tokopedia.talk.feature.reply.data.model.AttachedProduct
+import com.tokopedia.talk.feature.reply.data.model.discussion.AttachedProduct
 import com.tokopedia.talk.feature.reply.presentation.adapter.TalkReplyAttachedProductAdapter
 import com.tokopedia.talk.feature.reply.presentation.adapter.uimodel.TalkReplyUiModel
 import com.tokopedia.talk.feature.reply.presentation.widget.listeners.OnAttachedProductCardClickedListener
 import com.tokopedia.talk_old.R
-import kotlinx.android.synthetic.main.item_talk_reading.view.*
 import kotlinx.android.synthetic.main.item_talk_reply.view.*
 
 class TalkReplyViewHolder(view: View,

@@ -1,6 +1,6 @@
 package com.tokopedia.talk.feature.reply.data.mapper
 
-import com.tokopedia.talk.feature.reply.data.model.DiscussionDataByQuestionIDResponseWrapper
+import com.tokopedia.talk.feature.reply.data.model.discussion.DiscussionDataByQuestionIDResponseWrapper
 import com.tokopedia.talk.feature.reply.presentation.adapter.uimodel.TalkReplyUiModel
 import com.tokopedia.talk.feature.reply.presentation.uimodel.TalkReplyHeaderModel
 

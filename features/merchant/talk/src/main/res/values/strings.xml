@@ -112,6 +112,8 @@
     <string name="delete_dialog_content">Soalnya, satu jawaban kamu bisa berikan manfaat bagi ratusan calon pembeli lain</string>
     <string name="delete_confirm_button">Hapus</string>
     <string name="delete_cancel_button">Batal</string>
+    <string name="delete_question_toaster_success">Pertanyaanmu berhasil dihapus.</string>
+    <string name="delete_question_toaster_fail">Pertanyaanmu belom terhapus. Cek koneksi internetmu dan coba lagi, ya.</string>
     <string name="reply_total_answer">Jawaban (%d)</string>
     <string name="reply_empty_state">Bantu orang bisa dari hal-hal kecil. Seperti kasih jawabanmu di sini</string>
 

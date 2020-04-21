@@ -14,6 +14,7 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.GENERAL_SETTING
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
+import com.tokopedia.kotlin.extensions.view.removeObservers
 import com.tokopedia.talk.common.TalkConstants.SHOP_ID
 import com.tokopedia.talk.common.di.TalkComponent
 import com.tokopedia.talk.feature.reading.data.mapper.TalkReadingMapper
@@ -150,6 +151,14 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
 
     override fun onThreadClicked(questionID: String) {
         goToReplyActivity(questionID)
+    }
+
+    override fun onDestroy() {
+        removeObservers(viewModel.discussionData)
+        removeObservers(viewModel.discussionAggregate)
+        removeObservers(viewModel.filterCategories)
+        removeObservers(viewModel.sortOptions)
+        super.onDestroy()
     }
 
     private fun showPageLoading() {

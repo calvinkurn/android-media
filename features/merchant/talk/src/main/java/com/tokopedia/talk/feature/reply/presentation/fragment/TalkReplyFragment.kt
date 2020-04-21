@@ -11,14 +11,16 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.kotlin.extensions.view.removeObservers
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.talk.common.TalkConstants
 import com.tokopedia.talk.common.TalkConstants.QUESTION_ID
 import com.tokopedia.talk.common.TalkConstants.SHOP_ID
 import com.tokopedia.talk.common.di.TalkComponent
 import com.tokopedia.talk.feature.reply.data.mapper.TalkReplyMapper
-import com.tokopedia.talk.feature.reply.data.model.DiscussionDataByQuestionIDResponseWrapper
+import com.tokopedia.talk.feature.reply.data.model.discussion.DiscussionDataByQuestionIDResponseWrapper
 import com.tokopedia.talk.feature.reply.di.DaggerTalkReplyComponent
 import com.tokopedia.talk.feature.reply.di.TalkReplyComponent
 import com.tokopedia.talk.feature.reply.presentation.adapter.TalkReplyAdapter
@@ -99,6 +101,8 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
         getDataFromArguments()
         observeFollowUnfollowResponse()
         observeDiscussionData()
+        observeDeleteCommentResponse()
+        observeDeleteQuestionResponse()
         super.onViewCreated(view, savedInstanceState)
         getDiscussionData()
     }
@@ -122,6 +126,14 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
 
     override fun onClickAttachedProduct(productId: String) {
         goToPdp(productId)
+    }
+
+    override fun onDestroy() {
+        removeObservers(viewModel.discussionData)
+        removeObservers(viewModel.deleteCommentResult)
+        removeObservers(viewModel.deleteTalkResult)
+        removeObservers(viewModel.followUnfollowResult)
+        super.onDestroy()
     }
     private fun goToReportActivity(talkId: Int, commentId: Int) {
 
@@ -195,12 +207,20 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
         showErrorToaster(getString(R.string.toaster_unfollow_fail))
     }
 
-    private fun onSuccessDeleteThread() {
+    private fun onSuccessDeleteComment() {
         showSuccessToaster(getString(R.string.delete_toaster_success))
     }
 
-    private fun onFailDeleteThread() {
+    private fun onFailDeleteComment() {
         showErrorToaster(getString(R.string.delete_toaster_network_error))
+    }
+
+    private fun onSuccessDeleteQuestion() {
+        showSuccessToaster(getString(R.string.delete_question_toaster_success))
+    }
+
+    private fun onFailDeleteQuestion() {
+        showErrorToaster(getString(R.string.delete_question_toaster_fail))
     }
 
     private fun onAnswerTooLong() {
@@ -253,6 +273,24 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
         })
     }
 
+    private fun observeDeleteQuestionResponse() {
+        viewModel.deleteTalkResult.observe(this, Observer {
+            when(it) {
+                is Success -> onSuccessDeleteQuestion()
+                else -> onFailDeleteQuestion()
+            }
+        })
+    }
+
+    private fun observeDeleteCommentResponse() {
+        viewModel.deleteCommentResult.observe(this, Observer {
+            when(it) {
+                is Success -> onSuccessDeleteComment()
+                else -> onFailDeleteComment()
+            }
+        })
+    }
+
     private fun bindHeader(talkReplyHeaderModel: TalkReplyHeaderModel) {
         talkReplyHeader.bind(talkReplyHeaderModel, this, this)
     }
@@ -276,7 +314,11 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
     }
 
     private fun deleteReply() {
+//        viewModel.deleteComment(questionId, )
+    }
 
+    private fun deleteQuestion() {
+        viewModel.deleteTalk(questionId)
     }
 
     private fun getDiscussionData() {
@@ -318,7 +360,8 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
     }
 
     private fun goToPdp(productId: String) {
-
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId)
+        startActivity(intent)
     }
 
     private fun followUnfollowTalk() {
