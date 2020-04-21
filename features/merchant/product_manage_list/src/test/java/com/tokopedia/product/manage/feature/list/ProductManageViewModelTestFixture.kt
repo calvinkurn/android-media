@@ -10,6 +10,7 @@ import com.tokopedia.product.manage.feature.multiedit.domain.MultiEditProductUse
 import com.tokopedia.product.manage.feature.quickedit.delete.domain.DeleteProductUseCase
 import com.tokopedia.product.manage.feature.quickedit.price.domain.EditPriceUseCase
 import com.tokopedia.product.manage.feature.quickedit.stock.domain.EditStockUseCase
+import com.tokopedia.product.manage.feature.quickedit.variant.domain.EditProductVariantUseCase
 import com.tokopedia.product.manage.oldlist.domain.PopupManagerAddProductUseCase
 import com.tokopedia.shop.common.domain.interactor.GQLGetProductListUseCase
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
@@ -50,6 +51,8 @@ abstract class ProductManageViewModelTestFixture {
     lateinit var multiEditProductUseCase: MultiEditProductUseCase
     @RelaxedMockK
     lateinit var getProductListMetaUseCase: GetProductListMetaUseCase
+    @RelaxedMockK
+    lateinit var editProductVariantUseCase: EditProductVariantUseCase
 
     protected lateinit var viewModel: ProductManageViewModel
 
@@ -69,6 +72,7 @@ abstract class ProductManageViewModelTestFixture {
                 deleteProductUseCase,
                 multiEditProductUseCase,
                 getProductListMetaUseCase,
+                editProductVariantUseCase,
                 TestCoroutineDispatchers
         )
     }
