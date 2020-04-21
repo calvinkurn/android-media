@@ -6,8 +6,8 @@
 
     <com.elyeproj.loaderviewlibrary.LoaderImageView
         android:id="@+id/reply_attach_product_shimmer_image"
-        android:layout_width="@dimen/dp_40"
-        android:layout_height="@dimen/dp_40"
+        android:layout_width="@dimen/layout_lvl5"
+        android:layout_height="@dimen/layout_lvl5"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"/>
 
@@ -17,8 +17,8 @@
         android:layout_height="@dimen/dp_12"
         android:layout_marginStart="@dimen/layout_lvl1"
         android:layout_marginLeft="@dimen/layout_lvl1"
-        android:layout_marginEnd="@dimen/dp_40"
-        android:layout_marginRight="@dimen/dp_40"
+        android:layout_marginEnd="@dimen/layout_lvl5"
+        android:layout_marginRight="@dimen/layout_lvl5"
         app:layout_constraintTop_toTopOf="@id/reply_attach_product_shimmer_image"
         app:layout_constraintStart_toEndOf="@id/reply_attach_product_shimmer_image"
         app:layout_constraintEnd_toEndOf="parent" />

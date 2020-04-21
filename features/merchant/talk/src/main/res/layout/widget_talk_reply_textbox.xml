@@ -1,17 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     
     <com.tokopedia.unifycomponents.TextFieldUnify
-        android:id="@+id/replyTextBox"
-        android:layout_width="match_parent"
+        android:id="@+id/replyTextField"
+        android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:background="@drawable/bg_rounded_chat_input"
+        android:layout_marginTop="@dimen/layout_lvl1"
+        android:layout_marginBottom="@dimen/layout_lvl1"
+        android:layout_marginStart="@dimen/layout_lvl2"
+        android:layout_marginLeft="@dimen/layout_lvl2"
+        android:layout_marginEnd="@dimen/layout_lvl1"
+        android:layout_marginRight="@dimen/layout_lvl1"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/replySendButton"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:text_field_append_drawable_icon_1="@drawable/talk_ic_attached_product"
-        app:text_field_placeholder="@string/reply_editText_placeholder"/>
+        app:text_field_placeholder="@string/reply_editText_placeholder" />
+
+    <ImageView
+        android:id="@+id/replySendButton"
+        android:layout_width="@dimen/spacing_lvl7"
+        android:layout_height="@dimen/spacing_lvl7"
+        android:layout_gravity="center"
+        android:layout_marginEnd="@dimen/layout_lvl2"
+        android:layout_marginRight="@dimen/layout_lvl2"
+        app:layout_constraintTop_toTopOf="@id/replyTextField"
+        app:layout_constraintBottom_toBottomOf="@id/replyTextField"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/ic_send_grey_chat_common" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

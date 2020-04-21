@@ -6,14 +6,13 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.talk.common.coroutine.CoroutineDispatchers
+import com.tokopedia.talk.feature.reply.data.model.createcomment.TalkCreateNewCommentResponseWrapper
 import com.tokopedia.talk.feature.reply.data.model.delete.comment.TalkDeleteCommentResponseWrapper
 import com.tokopedia.talk.feature.reply.data.model.delete.talk.TalkDeleteTalkResponseWrapper
+import com.tokopedia.talk.feature.reply.data.model.discussion.AttachedProduct
 import com.tokopedia.talk.feature.reply.data.model.discussion.DiscussionDataByQuestionIDResponseWrapper
 import com.tokopedia.talk.feature.reply.data.model.follow.TalkFollowUnfollowTalkResponseWrapper
-import com.tokopedia.talk.feature.reply.domain.usecase.DiscussionDataByQuestionIDUseCase
-import com.tokopedia.talk.feature.reply.domain.usecase.TalkDeleteCommentUseCase
-import com.tokopedia.talk.feature.reply.domain.usecase.TalkDeleteTalkUseCase
-import com.tokopedia.talk.feature.reply.domain.usecase.TalkFollowUnfollowTalkUseCase
+import com.tokopedia.talk.feature.reply.domain.usecase.*
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.withContext
@@ -25,6 +24,7 @@ class TalkReplyViewModel @Inject constructor(
         private val talkFollowUnfollowTalkUseCase: TalkFollowUnfollowTalkUseCase,
         private val talkDeleteTalkUseCase: TalkDeleteTalkUseCase,
         private val talkDeleteCommentUseCase: TalkDeleteCommentUseCase,
+        private val talkCreateNewCommentUseCase: TalkCreateNewCommentUseCase,
         private val dispatchers: CoroutineDispatchers
 ): BaseViewModel(dispatchers.main) {
 
@@ -47,6 +47,10 @@ class TalkReplyViewModel @Inject constructor(
     private val _deleteCommentResult = MutableLiveData<Result<TalkDeleteCommentResponseWrapper>>()
     val deleteCommentResult: LiveData<Result<TalkDeleteCommentResponseWrapper>>
         get() = _deleteCommentResult
+
+    private val _createNewCommentResult = MutableLiveData<Result<TalkCreateNewCommentResponseWrapper>>()
+    val createNewCommentResult: LiveData<Result<TalkCreateNewCommentResponseWrapper>>
+        get() = _createNewCommentResult
 
     private var isFollowing: Boolean = false
 
@@ -110,6 +114,10 @@ class TalkReplyViewModel @Inject constructor(
         }) {
             _deleteCommentResult.postValue(Fail(it))
         }
+    }
+
+    fun createNewComment(comment: String, questionId: String, attachedProducts: List<AttachedProduct>) {
+
     }
 
     fun setIsFollowing(isFollowing: Boolean) {

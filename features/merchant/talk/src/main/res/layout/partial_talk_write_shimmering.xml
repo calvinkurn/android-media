@@ -65,8 +65,8 @@
         android:id="@+id/talk_write_large_block_shimmer_2"
         android:layout_width="@dimen/dp_120"
         android:layout_height="@dimen/layout_lvl4"
-        android:layout_marginStart="@dimen/dp_4"
-        android:layout_marginLeft="@dimen/dp_4"
+        android:layout_marginStart="@dimen/spacing_lvl2"
+        android:layout_marginLeft="@dimen/spacing_lvl2"
         app:layout_constraintStart_toEndOf="@id/talk_write_large_block_shimmer"
         app:layout_constraintTop_toTopOf="@id/talk_write_large_block_shimmer" />
 
@@ -74,8 +74,8 @@
         android:id="@+id/talk_write_large_block_shimmer_3"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="@dimen/layout_lvl4"
-        android:layout_marginStart="@dimen/dp_4"
-        android:layout_marginLeft="@dimen/dp_4"
+        android:layout_marginStart="@dimen/spacing_lvl2"
+        android:layout_marginLeft="@dimen/spacing_lvl2"
         android:layout_marginEnd="@dimen/layout_lvl2"
         android:layout_marginRight="@dimen/layout_lvl2"
         app:layout_constraintEnd_toEndOf="parent"
@@ -94,8 +94,8 @@
         android:id="@+id/talk_write_large_block_shimmer_5"
         android:layout_width="@dimen/dp_120"
         android:layout_height="@dimen/layout_lvl4"
-        android:layout_marginStart="@dimen/dp_4"
-        android:layout_marginLeft="@dimen/dp_4"
+        android:layout_marginStart="@dimen/spacing_lvl2"
+        android:layout_marginLeft="@dimen/spacing_lvl2"
         app:layout_constraintStart_toEndOf="@id/talk_write_large_block_shimmer_4"
         app:layout_constraintTop_toTopOf="@id/talk_write_large_block_shimmer_4" />
 

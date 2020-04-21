@@ -27,6 +27,6 @@ class TalkReplyTextbox : BaseCustomView {
     }
 
     fun bind(talkReplyTextboxModel: TalkReplyTextboxModel) {
-        replyTextBox.textFieldIcon1.loadImage(talkReplyTextboxModel.userThumbNail)
+        replyTextField.textFieldIcon1.loadImage(talkReplyTextboxModel.userThumbNail)
     }
 }

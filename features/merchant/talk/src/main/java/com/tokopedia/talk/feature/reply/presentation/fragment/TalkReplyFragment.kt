@@ -2,6 +2,7 @@ package com.tokopedia.talk.feature.reply.presentation.fragment
 
 import android.content.Intent
 import android.os.Bundle
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -103,6 +104,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
         observeDiscussionData()
         observeDeleteCommentResponse()
         observeDeleteQuestionResponse()
+        observeCreateNewCommentResponse()
         super.onViewCreated(view, savedInstanceState)
         getDiscussionData()
     }
@@ -133,6 +135,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
         removeObservers(viewModel.deleteCommentResult)
         removeObservers(viewModel.deleteTalkResult)
         removeObservers(viewModel.followUnfollowResult)
+        removeObservers(viewModel.createNewCommentResult)
         super.onDestroy()
     }
     private fun goToReportActivity(talkId: Int, commentId: Int) {
@@ -227,11 +230,11 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
         showErrorToaster(getString(R.string.reply_toaster_message_too_long))
     }
 
-    private fun onSuccessSendQuestion() {
+    private fun onSuccessCreateComment() {
         showSuccessToaster(getString(R.string.reply_toaster_success))
     }
 
-    private fun onFailSendQuestion() {
+    private fun onFailCreateComment() {
         showErrorToaster(getString(R.string.reply_toaster_network_error))
     }
 
@@ -287,6 +290,15 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
             when(it) {
                 is Success -> onSuccessDeleteComment()
                 else -> onFailDeleteComment()
+            }
+        })
+    }
+
+    private fun observeCreateNewCommentResponse() {
+        viewModel.createNewCommentResult.observe(this, Observer {
+            when(it) {
+                is Success -> onSuccessCreateComment()
+                else -> onFailCreateComment()
             }
         })
     }

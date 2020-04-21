@@ -44,7 +44,14 @@
         android:id="@+id/talkReplyRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/talkReplyTotalAnswers"/>
+        app:layout_constraintTop_toBottomOf="@id/talkReplyTotalAnswers"
+        app:layout_constraintBottom_toTopOf="@id/replyTextBox"/>
+
+    <com.tokopedia.talk.feature.reply.presentation.widget.TalkReplyTextbox
+        android:id="@+id/replyTextBox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
     <include
         android:id="@+id/pageLoading"
