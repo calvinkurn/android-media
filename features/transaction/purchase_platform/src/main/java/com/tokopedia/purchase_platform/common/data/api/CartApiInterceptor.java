@@ -6,7 +6,7 @@ import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.network.AuthUtil;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor;
-import com.tokopedia.purchase_platform.common.data.api.exception.CartResponseErrorException;
+import com.tokopedia.purchase_platform.common.exception.CartResponseErrorException;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import java.io.IOException;

@@ -1,7 +1,7 @@
 package com.tokopedia.purchase_platform.features.promo.presentation.viewmodel
 
 import com.tokopedia.promocheckout.common.view.model.clearpromo.ClearPromoUiModel
-import com.tokopedia.purchase_platform.common.data.model.request.validateuse.ValidateUsePromoRequest
+import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
 
 data class ClearPromoResponseAction(

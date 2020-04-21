@@ -3,8 +3,8 @@ package com.tokopedia.cart.domain.usecase
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.network.exception.ResponseErrorException
-import com.tokopedia.purchase_platform.common.data.api.exception.CartResponseErrorException
-import com.tokopedia.purchase_platform.common.domain.schedulers.TestSchedulers
+import com.tokopedia.purchase_platform.common.exception.CartResponseErrorException
+import com.tokopedia.purchase_platform.common.schedulers.TestSchedulers
 import com.tokopedia.purchase_platform.features.cart.data.model.response.ShopGroupSimplifiedGqlResponse
 import com.tokopedia.purchase_platform.features.cart.data.model.response.ShopGroupSimplifiedResponse
 import com.tokopedia.cart.domain.mapper.CartSimplifiedMapper

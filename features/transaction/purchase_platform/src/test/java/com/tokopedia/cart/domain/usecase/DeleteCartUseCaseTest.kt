@@ -4,7 +4,7 @@ import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
-import com.tokopedia.purchase_platform.common.domain.schedulers.TestSchedulers
+import com.tokopedia.purchase_platform.common.schedulers.TestSchedulers
 import com.tokopedia.purchase_platform.features.cart.data.model.request.RemoveCartRequest
 import com.tokopedia.purchase_platform.features.cart.data.model.response.deletecart.Data
 import com.tokopedia.purchase_platform.features.cart.data.model.response.deletecart.DeleteCartDataResponse

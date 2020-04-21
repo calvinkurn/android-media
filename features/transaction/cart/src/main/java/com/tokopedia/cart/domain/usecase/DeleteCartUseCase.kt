@@ -3,7 +3,7 @@ package com.tokopedia.cart.domain.usecase
 import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
-import com.tokopedia.purchase_platform.common.domain.schedulers.ExecutorSchedulers
+import com.tokopedia.purchase_platform.common.schedulers.ExecutorSchedulers
 import com.tokopedia.cart.data.model.request.RemoveCartRequest
 import com.tokopedia.cart.data.model.response.deletecart.DeleteCartGqlResponse
 import com.tokopedia.cart.domain.model.cartlist.DeleteCartData

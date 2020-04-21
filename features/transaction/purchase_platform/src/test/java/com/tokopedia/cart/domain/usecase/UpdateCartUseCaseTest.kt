@@ -2,7 +2,7 @@ package com.tokopedia.cart.domain.usecase
 
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
-import com.tokopedia.purchase_platform.common.domain.schedulers.TestSchedulers
+import com.tokopedia.purchase_platform.common.schedulers.TestSchedulers
 import com.tokopedia.purchase_platform.features.cart.data.model.request.UpdateCartRequest
 import com.tokopedia.purchase_platform.features.cart.data.model.response.updatecart.Data
 import com.tokopedia.purchase_platform.features.cart.data.model.response.updatecart.UpdateCartDataResponse

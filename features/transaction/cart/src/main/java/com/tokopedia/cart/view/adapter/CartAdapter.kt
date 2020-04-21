@@ -7,8 +7,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.cart.R
 import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.promocheckout.common.view.model.PromoStackingData
-import com.tokopedia.purchase_platform.common.data.model.response.macro_insurance.InsuranceCartDigitalProduct
-import com.tokopedia.purchase_platform.common.data.model.response.macro_insurance.InsuranceCartShops
+import com.tokopedia.purchase_platform.common.feature.insurance.response.InsuranceCartDigitalProduct
+import com.tokopedia.purchase_platform.common.feature.insurance.response.InsuranceCartShops
 import com.tokopedia.purchase_platform.common.feature.sellercashback.ShipmentSellerCashbackModel
 import com.tokopedia.purchase_platform.common.feature.sellercashback.ShipmentSellerCashbackViewHolder
 import com.tokopedia.purchase_platform.common.feature.insurance.PAGE_TYPE_CART
@@ -18,6 +18,7 @@ import com.tokopedia.cart.view.ActionListener
 import com.tokopedia.purchase_platform.common.feature.insurance.InsuranceItemActionListener
 import com.tokopedia.cart.view.uimodel.*
 import com.tokopedia.cart.view.viewholder.*
+import com.tokopedia.purchase_platform.common.feature.insurance.InsuranceCartShopViewHolder
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementActionListener
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementHolderData
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementViewHolder

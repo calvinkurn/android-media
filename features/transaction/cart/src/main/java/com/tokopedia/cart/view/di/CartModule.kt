@@ -9,6 +9,11 @@ import com.tokopedia.atc_common.AtcConstant
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
 import com.tokopedia.cart.R
+import com.tokopedia.cart.domain.mapper.CartSimplifiedMapper
+import com.tokopedia.cart.domain.usecase.*
+import com.tokopedia.cart.view.CartItemDecoration
+import com.tokopedia.cart.view.CartListPresenter
+import com.tokopedia.cart.view.ICartListPresenter
 import com.tokopedia.graphql.coroutines.data.Interactor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.GraphqlUseCase
@@ -18,19 +23,14 @@ import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeUseCase
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.promocheckout.common.domain.mapper.CheckPromoStackingCodeMapper
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCart
-import com.tokopedia.purchase_platform.common.di.PurchasePlatformBaseModule
-import com.tokopedia.purchase_platform.common.domain.schedulers.DefaultSchedulers
-import com.tokopedia.purchase_platform.common.domain.schedulers.ExecutorSchedulers
-import com.tokopedia.purchase_platform.common.domain.schedulers.IOSchedulers
+import com.tokopedia.purchase_platform.common.base.PurchasePlatformBaseModule
+import com.tokopedia.purchase_platform.common.schedulers.DefaultSchedulers
+import com.tokopedia.purchase_platform.common.schedulers.ExecutorSchedulers
+import com.tokopedia.purchase_platform.common.schedulers.IOSchedulers
 import com.tokopedia.purchase_platform.common.feature.insurance.usecase.GetInsuranceCartUseCase
 import com.tokopedia.purchase_platform.common.feature.insurance.usecase.RemoveInsuranceProductUsecase
 import com.tokopedia.purchase_platform.common.feature.insurance.usecase.UpdateInsuranceProductDataUsecase
-import com.tokopedia.cart.domain.mapper.CartSimplifiedMapper
-import com.tokopedia.cart.domain.usecase.*
-import com.tokopedia.cart.view.CartItemDecoration
-import com.tokopedia.cart.view.CartListPresenter
-import com.tokopedia.cart.view.ICartListPresenter
-import com.tokopedia.purchase_platform.common.domain.usecase.ValidateUsePromoRevampUseCase
+import com.tokopedia.purchase_platform.common.feature.promo.domain.ValidateUsePromoRevampUseCase
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.seamless_login.domain.usecase.SeamlessLoginUsecase
 import com.tokopedia.user.session.UserSessionInterface
@@ -48,7 +48,6 @@ import javax.inject.Named
 
 @Module(includes = [
     PromoCheckoutModule::class,
-//    PurchasePlatformNetworkModule::class,
     PurchasePlatformBaseModule::class
 ])
 class CartModule {

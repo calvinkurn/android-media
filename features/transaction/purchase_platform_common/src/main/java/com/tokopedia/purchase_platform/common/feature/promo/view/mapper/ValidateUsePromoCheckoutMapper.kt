@@ -1,6 +1,6 @@
 package com.tokopedia.purchase_platform.common.feature.promo.view.mapper
 
-import com.tokopedia.purchase_platform.common.data.model.response.validateuse.*
+import com.tokopedia.purchase_platform.common.feature.promo.data.response.validateuse.*
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.*
 
 /**

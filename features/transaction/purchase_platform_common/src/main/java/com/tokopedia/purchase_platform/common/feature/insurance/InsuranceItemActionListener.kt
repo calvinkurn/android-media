@@ -1,8 +1,8 @@
 package com.tokopedia.purchase_platform.common.feature.insurance
 
 import com.tokopedia.purchase_platform.common.feature.insurance.request.UpdateInsuranceProductApplicationDetails
-import com.tokopedia.purchase_platform.common.data.model.response.macro_insurance.InsuranceCartDigitalProduct
-import com.tokopedia.purchase_platform.common.data.model.response.macro_insurance.InsuranceCartShops
+import com.tokopedia.purchase_platform.common.feature.insurance.response.InsuranceCartDigitalProduct
+import com.tokopedia.purchase_platform.common.feature.insurance.response.InsuranceCartShops
 import java.util.ArrayList
 
 interface InsuranceItemActionListener {

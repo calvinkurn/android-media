@@ -9,7 +9,7 @@ import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.purchase_platform.common.R
 import com.tokopedia.purchase_platform.common.feature.insurance.request.InsuranceCartRequest
-import com.tokopedia.purchase_platform.common.data.model.response.macro_insurance.InsuranceCartGqlResponse
+import com.tokopedia.purchase_platform.common.feature.insurance.response.InsuranceCartGqlResponse
 import com.tokopedia.usecase.RequestParams
 import rx.Subscriber
 import javax.inject.Inject

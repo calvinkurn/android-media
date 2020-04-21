@@ -66,8 +66,7 @@ import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.ca
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.card.OrderProductCard
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.model.*
 import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.view.PreferenceEditActivity
-import com.tokopedia.purchase_platform.common.data.model.request.validateuse.ValidateUsePromoRequest
-import com.tokopedia.purchase_platform.features.promo.presentation.analytics.PromoCheckoutAnalytics
+import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
 import com.tokopedia.purchase_platform.features.promo.presentation.analytics.PromoCheckoutAnalytics.Companion.PAGE_OCC

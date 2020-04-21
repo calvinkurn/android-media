@@ -1,6 +1,6 @@
 package com.tokopedia.cart.domain.usecase
 
-import com.tokopedia.purchase_platform.common.domain.schedulers.ExecutorSchedulers
+import com.tokopedia.purchase_platform.common.schedulers.ExecutorSchedulers
 import com.tokopedia.cart.data.model.request.UpdateCartRequest
 import com.tokopedia.cart.domain.model.cartlist.UpdateAndReloadCartListData
 import com.tokopedia.usecase.RequestParams

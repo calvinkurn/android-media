@@ -2,7 +2,7 @@ package com.tokopedia.purchase_platform.features.checkout.data.model.request;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.tokopedia.purchase_platform.common.data.model.request.checkout.CheckoutRequest;
+import com.tokopedia.purchase_platform.common.feature.checkout.request.CheckoutRequest;
 
 /**
  * Created by fajarnuha on 19/12/18.

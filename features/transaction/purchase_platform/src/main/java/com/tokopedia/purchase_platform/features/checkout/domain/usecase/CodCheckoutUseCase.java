@@ -9,7 +9,7 @@ import com.tokopedia.fingerprint.view.FingerPrintDialog;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.purchase_platform.R;
-import com.tokopedia.purchase_platform.common.data.model.request.checkout.CheckoutRequest;
+import com.tokopedia.purchase_platform.common.feature.checkout.request.CheckoutRequest;
 import com.tokopedia.purchase_platform.common.utils.FingerprintUtil;
 import com.tokopedia.purchase_platform.features.checkout.data.model.request.CodCheckoutRequest;
 import com.tokopedia.purchase_platform.features.checkout.data.model.response.cod.CodResponse;
