@@ -1,3 +1,7 @@
 package com.tokopedia.vouchercreation.create.view.typefactory
 
-interface CreateVoucherTypeFactory
+import com.tokopedia.vouchercreation.create.view.uimodel.NextButtonUiModel
+
+interface CreateVoucherTypeFactory {
+    fun type(nextButtonUiModel: NextButtonUiModel): Int
+}

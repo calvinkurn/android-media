@@ -13,7 +13,7 @@ abstract class BaseVoucherCustomView @JvmOverloads constructor(
         private val defStyleAttr: Int = 0,
         private val defStyleRes: Int = 0,
         private val layoutResource: Int,
-        private val styleableResource: IntArray
+        private val styleableResource: IntArray = intArrayOf()
 ) : ConstraintLayout(context, attrs, defStyleAttr, defStyleRes) {
 
     init {

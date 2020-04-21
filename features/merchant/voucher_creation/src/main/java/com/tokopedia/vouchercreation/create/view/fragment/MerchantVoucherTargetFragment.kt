@@ -6,26 +6,32 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.vouchercreation.R
+import com.tokopedia.vouchercreation.create.view.bottomsheet.CreateVoucherBottomSheetType
+import com.tokopedia.vouchercreation.create.view.customview.bottomsheet.CreatePromoCodeBottomSheetView
+import com.tokopedia.vouchercreation.create.view.typefactory.CreateVoucherTypeFactory
 import com.tokopedia.vouchercreation.create.view.typefactory.VoucherTargetAdapterTypeFactory
 import com.tokopedia.vouchercreation.create.view.typefactory.VoucherTargetTypeFactory
 import com.tokopedia.vouchercreation.create.view.uimodel.FillVoucherNameUiModel
-import com.tokopedia.vouchercreation.create.view.uimodel.NextButtonUiModel
 import com.tokopedia.vouchercreation.create.view.uimodel.VoucherTargetUiModel
 
-class MerchantVoucherTargetFragment(onNextInvoker: () -> Unit = {}) : BaseCreateMerchantVoucherFragment<VoucherTargetTypeFactory, VoucherTargetAdapterTypeFactory>(onNextInvoker) {
+class MerchantVoucherTargetFragment(onNextInvoker: () -> Unit = {})
+    : BaseCreateMerchantVoucherFragment<VoucherTargetTypeFactory, VoucherTargetAdapterTypeFactory>(onNextInvoker) {
 
     companion object {
         @JvmStatic
         fun createInstance(onNext: () -> Unit) = MerchantVoucherTargetFragment(onNext)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_merchant_voucher_target, container, false)
+    private val voucherTargetWidget by lazy {
+        VoucherTargetUiModel(::openBottomSheet)
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        setupView()
+    private val fillVoucherWidget by lazy {
+        FillVoucherNameUiModel()
+    }
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return inflater.inflate(R.layout.fragment_merchant_voucher_target, container, false)
     }
 
     override fun getScreenName(): String = ""
@@ -36,18 +42,41 @@ class MerchantVoucherTargetFragment(onNextInvoker: () -> Unit = {}) : BaseCreate
 
     override fun getAdapterTypeFactory(): VoucherTargetAdapterTypeFactory = VoucherTargetAdapterTypeFactory()
 
-    override fun onItemClicked(t: Visitable<VoucherTargetTypeFactory>?) {}
+    override fun onItemClicked(t: Visitable<CreateVoucherTypeFactory>?) {}
 
     override fun loadData(page: Int) {}
 
-    private fun setupView() {
-        val widgetList = listOf(
-                VoucherTargetUiModel(),
-                FillVoucherNameUiModel(),
-                NextButtonUiModel(onNext))
-        adapter?.data?.addAll(widgetList)
-        adapter?.notifyDataSetChanged()
-        renderList(widgetList)
+    override var extraWidget: List<Visitable<VoucherTargetTypeFactory>> =
+            listOf(voucherTargetWidget, fillVoucherWidget)
 
+    override fun setupView() {
+        super.setupView()
+        setupBottomSheet()
+    }
+
+    override fun onDismissBottomSheet(bottomSheetType: CreateVoucherBottomSheetType) {
+        when(bottomSheetType) {
+            CreateVoucherBottomSheetType.CREATE_PROMO_CODE -> {
+                setupView()
+            }
+        }
+    }
+
+    private fun setupBottomSheet() {
+        context?.run {
+            addBottomSheetView(CreateVoucherBottomSheetType.CREATE_PROMO_CODE, CreatePromoCodeBottomSheetView(this, ::onNextCreatePromoCode))
+        }
+    }
+
+    private fun openBottomSheet() {
+        showBottomSheet(CreateVoucherBottomSheetType.CREATE_PROMO_CODE)
+    }
+
+    private fun onNextCreatePromoCode(promoCode: String) {
+
+    }
+
+    private fun onReturnVoucherTargetToInitial() {
+        setupView()
     }
 }

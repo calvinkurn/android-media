@@ -6,7 +6,8 @@ import com.tokopedia.vouchercreation.create.data.source.VoucherTargetStaticDataS
 import com.tokopedia.vouchercreation.create.view.customview.VoucherTargetCardItemView
 import kotlinx.android.synthetic.main.mvc_voucher_target_item.view.*
 
-class MerchantVoucherTargetAdapter(private val onRequestNotifyLambda: () -> Unit = {}) : RecyclerView.Adapter<MerchantVoucherTargetAdapter.MerchantVoucherTargetViewHolder>() {
+class MerchantVoucherTargetAdapter(private val onRequestNotifyLambda: () -> Unit = {},
+                                   private val onShouldOpenBottomSheet: () -> Unit = {}) : RecyclerView.Adapter<MerchantVoucherTargetAdapter.MerchantVoucherTargetViewHolder>() {
 
     class MerchantVoucherTargetViewHolder(itemView: VoucherTargetCardItemView) : RecyclerView.ViewHolder(itemView)
 
@@ -26,6 +27,10 @@ class MerchantVoucherTargetAdapter(private val onRequestNotifyLambda: () -> Unit
                 voucherTargetItemRadioButton?.setOnCheckedChangeListener { _, isChecked ->
                     if (isChecked) {
                         onItemEnabled(position)
+                        val canShowBottomSheet = uiModel.voucherTargetType == VoucherTargetCardItemView.TARGET_SPECIAL_TYPE && !uiModel.isHavePromoCard
+                        if (canShowBottomSheet) {
+                            onShouldOpenBottomSheet()
+                        }
                     }
                 }
             }

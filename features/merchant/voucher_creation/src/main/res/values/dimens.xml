@@ -17,9 +17,13 @@
     <dimen name="mvc_create_promo_code_padding_vertical">10dp</dimen>
     <dimen name="mvc_create_promo_code_padding_horizontal">16.44dp</dimen>
     <dimen name="mvc_create_target_margin_bottom">8dp</dimen>
-    <dimen name="mvc_create_widget_margin">16dp</dimen>
+    <dimen name="mvc_create_margin_padding">16dp</dimen>
     <dimen name="mvc_create_widget_title_height">56dp</dimen>
     <dimen name="mvc_create_fill_voucher_name_margin_bottom">24dp</dimen>
+    <dimen name="mvc_create_promo_code_info_margin">26dp</dimen>
+    <dimen name="mvc_create_promo_code_button_margin">16dp</dimen>
+    <dimen name="mvc_create_promo_code_info_padding_vertical">10dp</dimen>
+    <dimen name="mvc_create_promo_code_info_padding_horizontal">8dp</dimen>
 
     <dimen name="mvc_create_target_description_size">12sp</dimen>
     <dimen name="mvc_create_target_description_line_spacing">4sp</dimen>

@@ -15,6 +15,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.kotlin.extensions.view.setStatusBarColor
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
+import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.create.view.adapter.CreateMerchantVoucherStepsAdapter
 import com.tokopedia.vouchercreation.create.view.fragment.BaseCreateMerchantVoucherFragment
@@ -70,6 +71,14 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
     private val onNavigationClickListener by lazy {
         View.OnClickListener {
             onBackPressed()
+        }
+    }
+
+    private val bottomSheet by lazy {
+        BottomSheetUnify().apply {
+            setCloseClickListener {
+                this.dismiss()
+            }
         }
     }
 

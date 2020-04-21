@@ -10,8 +10,7 @@ object VoucherTargetStaticDataSource {
                     VoucherTargetItemUiModel(
                             voucherTargetType = VoucherTargetCardItemView.TARGET_PUBLIC_TYPE,
                             isEnabled = true,
-                            isHavePromoCard = true,
-                            promoCode = "KOKUMIGRATIS100"),
+                            isHavePromoCard = false),
                     VoucherTargetItemUiModel(
                             voucherTargetType = VoucherTargetCardItemView.TARGET_SPECIAL_TYPE,
                             isEnabled = false,

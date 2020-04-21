@@ -17,7 +17,7 @@
         android:layout_margin="@dimen/mvc_create_next_button_margin"
         android:text="@string/mvc_create_step_next"
         app:unifyButtonVariant="filled"
-        app:unifyButtonSize="medium"
+        app:unifyButtonSize="large"
         app:unifyButtonType="main"
         app:layout_constraintTop_toBottomOf="@id/divider"
         app:layout_constraintBottom_toBottomOf="parent"/>
