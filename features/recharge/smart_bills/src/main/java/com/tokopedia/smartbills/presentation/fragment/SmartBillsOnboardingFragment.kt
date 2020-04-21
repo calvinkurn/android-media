@@ -43,7 +43,7 @@ class SmartBillsOnboardingFragment: BaseDaggerFragment() {
         smart_bills_onboarding_desc_2.text = secondDesc
 
         smart_bills_onboarding_button.setOnClickListener {
-            RouteManager.route(context, ApplinkConsInternalDigital.SMART_BILLS)
+            activity?.finish()
         }
     }
 

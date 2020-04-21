@@ -2,7 +2,9 @@ package com.tokopedia.smartbills.data
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.common.topupbills.data.RechargeField
+import com.tokopedia.smartbills.presentation.adapter.SmartBillsAdapterFactory
 
 class RechargeBills(
         @SerializedName("index")
@@ -52,5 +54,10 @@ class RechargeBills(
         val disabledText: String = "",
         @SerializedName("checkoutFields")
         @Expose
-        val checkoutFields: List<RechargeField> = listOf()
-)
+        val checkoutFields: List<RechargeField> = listOf(),
+        var selected: Boolean = false
+): Visitable<SmartBillsAdapterFactory> {
+        override fun type(typeFactory: SmartBillsAdapterFactory): Int {
+                return typeFactory.type(this)
+        }
+}

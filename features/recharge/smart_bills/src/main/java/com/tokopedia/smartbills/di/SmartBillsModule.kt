@@ -11,6 +11,7 @@ import com.tokopedia.network.utils.OkHttpRetryPolicy
 import com.tokopedia.smartbills.data.api.SmartBillsApi
 import com.tokopedia.smartbills.data.api.SmartBillsRepository
 import com.tokopedia.smartbills.data.api.SmartBillsRepositoryImpl
+import com.tokopedia.smartbills.util.SmartBillsDispatchersProvider
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
@@ -20,19 +21,19 @@ import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
 /**
- * Created by Resa on 15/04/20.
+ * Created by resakemal on 15/04/20.
  */
 @Module
 class SmartBillsModule {
 
-    @Provides
     @SmartBillsScope
+    @Provides
     internal fun provideOkHttpRetryPolicy(): OkHttpRetryPolicy {
         return OkHttpRetryPolicy.createdDefaultOkHttpRetryPolicy()
     }
 
-    @Provides
     @SmartBillsScope
+    @Provides
     internal fun provideOkHttpClient(httpLoggingInterceptor: HttpLoggingInterceptor,
                                      digitalInterceptor: DigitalInterceptor,
                                      okHttpRetryPolicy: OkHttpRetryPolicy): OkHttpClient {
@@ -46,21 +47,21 @@ class SmartBillsModule {
                 .build()
     }
 
-    @Provides
     @SmartBillsScope
+    @Provides
     internal fun provideNetworkRouter(@ApplicationContext context: Context): NetworkRouter {
         return context as NetworkRouter
     }
 
-    @Provides
     @SmartBillsScope
+    @Provides
     fun provideDigitalInterceptor(@ApplicationContext context: Context,
                                   networkRouter: AbstractionRouter): DigitalInterceptor {
         return DigitalInterceptor(context, networkRouter)
     }
 
-    @Provides
     @SmartBillsScope
+    @Provides
     fun provideGqlApiService(gson: Gson, client: OkHttpClient): SmartBillsApi {
         val retrofitBuilder = Retrofit.Builder()
                 .baseUrl(BASE_URL)
@@ -71,11 +72,15 @@ class SmartBillsModule {
         return retrofit.create(SmartBillsApi::class.java)
     }
 
-    @Provides
     @SmartBillsScope
-    fun provideRepository(rechargeCCApi: SmartBillsApi): SmartBillsRepository {
-        return SmartBillsRepositoryImpl(rechargeCCApi)
+    @Provides
+    fun provideRepository(smartBillsApi: SmartBillsApi): SmartBillsRepository {
+        return SmartBillsRepositoryImpl(smartBillsApi)
     }
+
+    @SmartBillsScope
+    @Provides
+    fun provideDispatcher(): SmartBillsDispatchersProvider = SmartBillsDispatchersProvider()
 
     companion object {
         const val BASE_URL = "https://pay.tokopedia.id/"

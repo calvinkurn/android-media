@@ -10,7 +10,7 @@ import dagger.Component
 import kotlinx.coroutines.CoroutineDispatcher
 
 /**
- * Created by Resa on 15/04/20.
+ * Created by resakemal on 15/04/20.
  */
 @SmartBillsScope
 @Component(modules = [SmartBillsModule::class, SmartBillsViewModelModule::class], dependencies = [CommonTopupBillsComponent::class])

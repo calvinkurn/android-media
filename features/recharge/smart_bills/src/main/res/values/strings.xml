@@ -6,5 +6,6 @@
     <string name="smart_bills_onboarding_desc_1">Bayar sekaligus tagihanmu dengan cepat dan mudah</string>
     <string name="smart_bills_onboarding_desc_2">Tagihan yang bisa dibayar sekaligus didapatkan dari riwayat transaksimu sebelumnya</string>
     <string name="smart_bills_select_all">Pilih Semua</string>
+    <string name="smart_bills_description">%1$s - %2$s</string>
     <string name="smart_bills_onboarding_label">Mulai Bayar</string>
 </resources>
