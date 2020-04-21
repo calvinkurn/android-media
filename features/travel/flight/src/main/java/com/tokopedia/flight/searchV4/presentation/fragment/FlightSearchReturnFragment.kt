@@ -7,7 +7,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.design.component.Dialog
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.flight.R
 import com.tokopedia.flight.airport.view.model.FlightAirportModel
 import com.tokopedia.flight.common.util.FlightDateUtil
@@ -176,13 +176,13 @@ class FlightSearchReturnFragment : FlightSearchFragment() {
     }
 
     private fun showSeeAllResultDialog(normalPrice: String) {
-        val dialog = Dialog(activity, Dialog.Type.PROMINANCE)
+        val dialog = DialogUnify(requireActivity(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
         dialog.setTitle(getString(R.string.flight_search_return_price_change_title_dialog))
-        dialog.setDesc(MethodChecker.fromHtml(
+        dialog.setDescription(MethodChecker.fromHtml(
                 getString(R.string.flight_search_return_price_change_desc_dialog, normalPrice)
         ))
-        dialog.setBtnOk(getString(R.string.flight_search_dialog_proceed_button_text))
-        dialog.setOnOkClickListener {
+        dialog.setPrimaryCTAText(getString(R.string.flight_search_dialog_proceed_button_text))
+        dialog.setPrimaryCTAClickListener {
             flightSearchViewModel.filterModel.isBestPairing = false
             flightSearchReturnViewModel.isViewOnlyBestPairing = false
             clearAllData()
@@ -190,19 +190,19 @@ class FlightSearchReturnFragment : FlightSearchFragment() {
             resetDepartureLabelPrice()
             dialog.dismiss()
         }
-        dialog.setBtnCancel(getString(R.string.flight_search_return_dialog_abort))
-        dialog.setOnCancelClickListener { dialog.dismiss() }
+        dialog.setSecondaryCTAText(getString(R.string.flight_search_return_dialog_abort))
+        dialog.setSecondaryCTAClickListener { dialog.dismiss() }
         dialog.show()
     }
 
     private fun showSeeBestPairingDialog(bestPairPrice: String) {
-        val dialog = Dialog(activity, Dialog.Type.PROMINANCE)
+        val dialog = DialogUnify(requireActivity(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
         dialog.setTitle(getString(R.string.flight_search_return_price_change_title_dialog))
-        dialog.setDesc(MethodChecker.fromHtml(
+        dialog.setDescription(MethodChecker.fromHtml(
                 getString(R.string.flight_search_return_price_change_desc_dialog, bestPairPrice)
         ))
-        dialog.setBtnOk(getString(R.string.flight_search_dialog_proceed_button_text))
-        dialog.setOnOkClickListener {
+        dialog.setPrimaryCTAText(getString(R.string.flight_search_dialog_proceed_button_text))
+        dialog.setPrimaryCTAClickListener {
             flightSearchViewModel.filterModel.isBestPairing = true
             flightSearchReturnViewModel.isViewOnlyBestPairing = true
             clearAllData()
@@ -210,8 +210,8 @@ class FlightSearchReturnFragment : FlightSearchFragment() {
             resetDepartureLabelPrice()
             dialog.dismiss()
         }
-        dialog.setBtnCancel(getString(R.string.flight_search_return_dialog_abort))
-        dialog.setOnCancelClickListener { dialog.dismiss() }
+        dialog.setSecondaryCTAText(getString(R.string.flight_search_return_dialog_abort))
+        dialog.setSecondaryCTAClickListener { dialog.dismiss() }
         dialog.show()
     }
 
