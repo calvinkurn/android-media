@@ -8,6 +8,7 @@
     android:orientation="horizontal">
 
     <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
+        android:id="@+id/smart_bills_item_checkbox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
