@@ -8,7 +8,7 @@ import com.tokopedia.product.manage.feature.quickedit.variant.adapter.model.Prod
 import com.tokopedia.product.manage.feature.quickedit.variant.adapter.viewholder.ProductVariantPriceViewHolder
 import com.tokopedia.product.manage.feature.quickedit.variant.adapter.viewholder.ProductVariantPriceViewHolder.*
 
-class ProductVariantAdapterFactoryImpl(
+class ProductVariantPriceAdapterFactoryImpl(
     private val listener: ProductVariantListener
 ): BaseAdapterTypeFactory(), ProductVariantAdapterFactory {
 

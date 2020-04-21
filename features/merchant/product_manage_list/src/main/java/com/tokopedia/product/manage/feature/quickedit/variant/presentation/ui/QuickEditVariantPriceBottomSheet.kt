@@ -6,7 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.feature.quickedit.variant.adapter.ProductVariantAdapter
-import com.tokopedia.product.manage.feature.quickedit.variant.adapter.factory.ProductVariantAdapterFactoryImpl
+import com.tokopedia.product.manage.feature.quickedit.variant.adapter.factory.ProductVariantPriceAdapterFactoryImpl
 import com.tokopedia.product.manage.feature.quickedit.variant.adapter.viewholder.ProductVariantPriceViewHolder.*
 import com.tokopedia.product.manage.feature.quickedit.variant.data.model.result.EditVariantResult
 
@@ -35,7 +35,7 @@ class QuickEditVariantPriceBottomSheet(
     }
 
     override fun createAdapter(): BaseListAdapter<Visitable<*>, BaseAdapterTypeFactory> {
-        return ProductVariantAdapter(ProductVariantAdapterFactoryImpl(this))
+        return ProductVariantAdapter(ProductVariantPriceAdapterFactoryImpl(this))
     }
 
     override fun onPriceChanged(variantId: String, price: Int) {
