@@ -15,19 +15,30 @@
         app:typographyWeight="bold"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="@id/leftGuideline"
-        app:layout_constraintRight_toLeftOf="@id/switchStatus"
+        app:layout_constraintRight_toLeftOf="@id/labelInactive"
         app:layout_constraintBottom_toTopOf="@id/textTotalStockLabel"
-        app:layout_constraintHorizontal_chainStyle="spread_inside"
         tools:text="Warna | Biru"/>
+
+    <com.tokopedia.unifycomponents.Label
+        android:id="@+id/labelInactive"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:layout_marginLeft="@dimen/spacing_lvl4"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        app:layout_constraintLeft_toRightOf="@id/textProductName"
+        app:layout_constraintTop_toTopOf="@id/textProductName"
+        app:layout_constraintTop_toBottomOf="@id/textProductName"
+        app:labelType="general_light_grey"
+        app:labelTitle="@string/product_manage_inactive"
+        tools:visibility="visible"/>
 
     <com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
         android:id="@+id/switchStatus"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintLeft_toRightOf="@id/textProductName"
-        app:layout_constraintRight_toRightOf="@id/rightGuideline"
-        app:layout_constraintHorizontal_chainStyle="spread_inside" />
+        app:layout_constraintRight_toRightOf="@id/rightGuideline" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/textTotalStockLabel"
@@ -41,7 +52,6 @@
         app:layout_constraintRight_toLeftOf="@id/quantityEditorStock"
         app:layout_constraintLeft_toLeftOf="@id/leftGuideline"
         app:layout_constraintHorizontal_chainStyle="spread_inside" />
-
 
     <com.tokopedia.unifycomponents.QuantityEditorUnify
         android:id="@+id/quantityEditorStock"
