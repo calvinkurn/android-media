@@ -136,7 +136,7 @@ object HomePageTrackingV2 : BaseTracking() {
                             id = CustomEvent.FORMAT_4_VALUE_UNDERSCORE.format(channel.id, grid.id, channel.persoType, channel.categoryID),
                             creative = it.attribution,
                             creativeUrl = it.imageUrl,
-                            name = Ecommerce.PROMOTION_NAME.format(position, LEGO_BANNER_4_IMAGE_NAME, channel.header.name),
+                            name = channel.promoName,
                             position = position.toString()
                     )
                 }
