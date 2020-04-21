@@ -9,7 +9,9 @@ import androidx.annotation.RawRes
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationManagerCompat
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -28,24 +30,26 @@ import com.tokopedia.settingnotif.usersetting.view.activity.ParentActivity
 import com.tokopedia.settingnotif.usersetting.view.adapter.SettingFieldAdapter
 import com.tokopedia.settingnotif.usersetting.view.adapter.factory.SettingFieldTypeFactory
 import com.tokopedia.settingnotif.usersetting.view.adapter.factory.SettingFieldTypeFactoryImpl
-import com.tokopedia.settingnotif.usersetting.view.dataview.UserSettingViewModel
+import com.tokopedia.settingnotif.usersetting.view.dataview.UserSettingDataView
 import com.tokopedia.settingnotif.usersetting.view.listener.SectionItemListener
-import com.tokopedia.settingnotif.usersetting.view.listener.SettingFieldContract
+import com.tokopedia.settingnotif.usersetting.view.viewmodel.UserSettingViewModel
 import com.tokopedia.settingnotif.usersetting.widget.NotifSettingBigDividerDecoration
 import com.tokopedia.settingnotif.usersetting.widget.NotifSettingDividerDecoration
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
+import com.tokopedia.settingnotif.usersetting.view.state.UserSettingErrorState.GetSettingError as GetSettingError
+import com.tokopedia.settingnotif.usersetting.view.state.UserSettingErrorState.SetSettingError as SetSettingError
 
 abstract class SettingFieldFragment : BaseListFragment<Visitable<*>,
         BaseAdapterTypeFactory>(),
         SettingFieldAdapter.SettingFieldAdapterListener,
-        SettingFieldContract.View,
         SectionItemListener {
 
-    @Inject lateinit var presenter: SettingFieldContract.Presenter
     @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
     @Inject lateinit var userSession: UserSessionInterface
+
+    protected lateinit var settingViewModel: UserSettingViewModel
 
     /*
     * a flag for preventing request network if needed
@@ -66,72 +70,71 @@ abstract class SettingFieldFragment : BaseListFragment<Visitable<*>,
         adapter as SettingFieldAdapter
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        initViewModel()
+    }
+
     override fun onCreateView(
             inflater: LayoutInflater,
             container: ViewGroup?,
             savedInstanceState: Bundle?
     ): View? {
+        initObservable()
         return super.onCreateView(inflater, container, savedInstanceState).also {
             setupToolbar()
             setupRecyclerView(it)
         }
     }
 
-    private fun setupToolbar() {
-        if (activity is AppCompatActivity) {
-            (activity as AppCompatActivity).supportActionBar?.title = screenName
-        }
+    private fun initViewModel() {
+        settingViewModel = ViewModelProviders
+                .of(this, viewModelFactory)
+                .get(UserSettingViewModel::class.java)
     }
 
-    private fun setupRecyclerView(view: View?) {
-        getRecyclerView(view).also {
-            if (it is VerticalRecyclerView) {
-                it.clearItemDecoration()
-                it.addItemDecoration(NotifSettingDividerDecoration(context))
-                it.addItemDecoration(NotifSettingBigDividerDecoration(context))
-                it.setHasFixedSize(true)
+    private fun initObservable() {
+        settingViewModel.userSetting.observe(viewLifecycleOwner, Observer {
+            onSuccessGetUserSetting(it)
+        })
+        settingViewModel.setUserSetting.observe(viewLifecycleOwner, Observer {
+            onSuccessSetUserSetting(it)
+        })
+        settingViewModel.errorErrorState.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is GetSettingError -> onErrorGetUserSetting()
+                is SetSettingError -> onErrorSetUserSetting()
             }
-        }
+        })
     }
 
-    override fun createAdapterInstance(): BaseListAdapter<Visitable<*>, BaseAdapterTypeFactory> {
-        val adapter = SettingFieldAdapter<Visitable<SettingFieldTypeFactory>>(
-                getNotificationType(),
-                this,
-                adapterTypeFactory as SettingFieldTypeFactory,
-                null
-        )
-        return adapter as BaseListAdapter<Visitable<*>, BaseAdapterTypeFactory>
-    }
-
-    override fun requestUpdateUserSetting(notificationType: String, updatedSettingIds: List<Map<String, Any>>) {
+    override fun requestUpdateUserSetting(
+            notificationType: String,
+            updatedSettingIds: List<Map<String, Any>>
+    ) {
         if (!isRequestData) return
-        presenter.requestUpdateUserSetting(notificationType, updatedSettingIds)
-        presenter.requestUpdateMoengageUserSetting(updatedSettingIds)
-    }
-
-    override fun getAdapterTypeFactory(): BaseAdapterTypeFactory {
-        return SettingFieldTypeFactoryImpl(this, userSession)
+        settingViewModel.requestUpdateUserSetting(notificationType, updatedSettingIds)
+        settingViewModel.requestUpdateMoengageUserSetting(updatedSettingIds)
     }
 
     override fun loadData(page: Int) {
         if (page != defaultInitialPage) return
-        presenter.loadUserSettings()
+        settingViewModel.loadUserSettings()
     }
 
-    override fun onSuccessGetUserSetting(data: UserSettingViewModel) {
+    protected open fun onSuccessGetUserSetting(data: UserSettingDataView) {
         renderList(data.data)
     }
 
-    override fun onSuccessSetUserSetting(data: SetUserSettingResponse) {
+    private fun onSuccessSetUserSetting(data: SetUserSettingResponse) {
         showMessage(R.string.state_success_set_user_setting)
     }
 
-    override fun onErrorSetUserSetting() {
+    private fun onErrorSetUserSetting() {
         showMessage(R.string.state_failed_set_user_setting)
     }
 
-    override fun onErrorGetUserSetting() {
+    private fun onErrorGetUserSetting() {
         showMessage(MESSAGE_ERROR_SERVER)
         activity?.let {
             renderList(emptyList())
@@ -148,20 +151,6 @@ abstract class SettingFieldFragment : BaseListFragment<Visitable<*>,
     private fun showMessage(message: String) {
         view?.let {
             Toaster.showNormal(it, message, Snackbar.LENGTH_SHORT)
-        }
-    }
-
-    override fun initInjector() {
-        if (activity != null && (activity as Activity).application != null) {
-            val application = (activity as Activity).application as BaseMainApplication
-            val baseAppComponent = application.baseAppComponent
-            val userSettingComponent = DaggerUserSettingComponent
-                    .builder()
-                    .baseAppComponent(baseAppComponent)
-                    .userSettingModule(UserSettingModule(context, getGqlRawQuery()))
-                    .build()
-            userSettingComponent.inject(this)
-            presenter.attachView(this)
         }
     }
 
@@ -193,10 +182,57 @@ abstract class SettingFieldFragment : BaseListFragment<Visitable<*>,
         }?: true
     }
 
+    private fun setupToolbar() {
+        if (activity is AppCompatActivity) {
+            (activity as AppCompatActivity).supportActionBar?.title = screenName
+        }
+    }
+
+    private fun setupRecyclerView(view: View?) {
+        getRecyclerView(view).also {
+            if (it is VerticalRecyclerView) {
+                it.clearItemDecoration()
+                it.addItemDecoration(NotifSettingDividerDecoration(context))
+                it.addItemDecoration(NotifSettingBigDividerDecoration(context))
+                it.setHasFixedSize(true)
+            }
+        }
+    }
+
+    override fun getAdapterTypeFactory(): BaseAdapterTypeFactory {
+        return SettingFieldTypeFactoryImpl(this, userSession)
+    }
+
+    override fun createAdapterInstance(): BaseListAdapter<Visitable<*>, BaseAdapterTypeFactory> {
+        val adapter = SettingFieldAdapter<Visitable<SettingFieldTypeFactory>>(
+                getNotificationType(),
+                this,
+                adapterTypeFactory as SettingFieldTypeFactory,
+                null
+        )
+        return adapter as BaseListAdapter<Visitable<*>, BaseAdapterTypeFactory>
+    }
+
+    override fun initInjector() {
+        if (activity != null && (activity as Activity).application != null) {
+            val application = (activity as Activity).application as BaseMainApplication
+            val baseAppComponent = application.baseAppComponent
+            DaggerUserSettingComponent
+                    .builder()
+                    .baseAppComponent(baseAppComponent)
+                    .userSettingModule(UserSettingModule(context, getGqlRawQuery()))
+                    .build()
+                    .inject(this)
+        }
+    }
+
+    // disable pagination
     override fun isLoadMoreEnabledByDefault(): Boolean = false
 
+    // the method comes from baseListAdapter
     override fun onItemClicked(item: Visitable<*>?) = Unit
 
+    // for save temporary setting state on adapter
     override fun updateSettingState(setting: ParentSetting?) = Unit
 
     companion object {
