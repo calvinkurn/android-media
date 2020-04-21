@@ -2,6 +2,6 @@
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
     <gradient
         android:angle="270"
-        android:endColor="@color/travel_blue_background"
+        android:endColor="@color/flight_booking_route_gradiend_end"
         android:startColor="@color/white" />
 </shape>

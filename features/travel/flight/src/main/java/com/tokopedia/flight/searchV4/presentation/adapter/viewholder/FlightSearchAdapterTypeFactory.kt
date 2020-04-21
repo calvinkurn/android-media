@@ -6,7 +6,6 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.base.view.adapter.viewholders.ErrorNetworkViewHolder
-import com.tokopedia.common.travel.presentation.adapter.TravelSearchShimmeringViewHolder
 import com.tokopedia.flight.search.presentation.model.FlightJourneyModel
 import com.tokopedia.flight.searchV4.presentation.model.EmptyResultModel
 import com.tokopedia.flight.searchV4.presentation.model.FlightSearchSeeAllResultModel
@@ -22,13 +21,13 @@ class FlightSearchAdapterTypeFactory(private val onFlightSearchListener: OnFligh
             FlightSearchViewHolder.LAYOUT -> FlightSearchViewHolder(parent, onFlightSearchListener)
             EmptyResultViewHolder.LAYOUT -> EmptyResultViewHolder(parent)
             ErrorNetworkViewHolder.LAYOUT -> ErrorNetworkViewHolder(parent)
-            TravelSearchShimmeringViewHolder.LAYOUT -> TravelSearchShimmeringViewHolder(parent)
+            FlightSearchShimmeringViewHolder.LAYOUT -> FlightSearchShimmeringViewHolder(parent)
             FlightSearchSeeAllViewHolder.LAYOUT -> FlightSearchSeeAllViewHolder(parent, onFlightSearchListener)
             else -> super.createViewHolder(parent, type)
         }
     }
 
-    override fun type(loadingModel: LoadingModel): Int = TravelSearchShimmeringViewHolder.LAYOUT
+    override fun type(loadingModel: LoadingModel): Int = FlightSearchShimmeringViewHolder.LAYOUT
 
     fun type(emptyModel: EmptyResultModel): Int = EmptyResultViewHolder.LAYOUT
 
