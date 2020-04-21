@@ -143,6 +143,17 @@ class AddEditProductDescriptionFragment:
         }
         adapter.data.removeAt(position)
         adapter.notifyItemRemoved(position)
+        with(descriptionViewModel) {
+            for (i in position until adapter.dataSize) {
+                adapter.data.getOrNull(i)?.run {
+                    isFetchingVideoData[i] = false
+                    urlToFetch[i] = inputUrl
+                    if (fetchedUrl[i + 1].orEmpty() != inputUrl) {
+                        onTextChanged(urlToFetch[i].orEmpty(), i)
+                    }
+                }
+            }
+        }
         textViewAddVideo.visibility =
                 if (adapter.dataSize < MAX_VIDEOS) View.VISIBLE else View.GONE
     }
@@ -151,6 +162,12 @@ class AddEditProductDescriptionFragment:
         adapter.data.getOrNull(position)?.run {
             inputUrl = url
             descriptionViewModel.urlToFetch[position] = url
+            if (inputImage.isNotEmpty() || inputTitle.isNotEmpty() || inputDescription.isNotEmpty()) {
+                inputImage = ""
+                inputTitle = ""
+                inputDescription = ""
+                adapter.notifyItemChanged(position)
+            }
             getVideoYoutube(url, position)
         }
     }
@@ -341,10 +358,11 @@ class AddEditProductDescriptionFragment:
     private fun observeProductVideo() {
         descriptionViewModel.videoYoutube.observe(viewLifecycleOwner, Observer { result ->
             val position = result.first
+            val isItemStillTheSame: Boolean
             descriptionViewModel.isFetchingVideoData[position] = false
-            when (val requestResult = result.second) {
+            isItemStillTheSame = when (val requestResult = result.second) {
                 is Success -> {
-                    val id  = requestResult.data.id
+                    val id = requestResult.data.id
                     if (id == null) {
                         displayErrorOnSelectedVideo(position)
                     } else {
@@ -356,33 +374,41 @@ class AddEditProductDescriptionFragment:
                 }
             }
             adapter.notifyItemChanged(position)
-            if (descriptionViewModel.fetchedUrl[position] != descriptionViewModel.urlToFetch[position]) {
+            if (isItemStillTheSame && descriptionViewModel.fetchedUrl[position] != descriptionViewModel.urlToFetch[position]) {
                 getVideoYoutube(descriptionViewModel.urlToFetch[position].orEmpty(), position)
             }
             refreshDuplicateVideo(position)
         })
     }
 
-    private fun displayErrorOnSelectedVideo(index: Int) {
+    private fun displayErrorOnSelectedVideo(index: Int): Boolean {
+        var isItemTheSame = false
         adapter.data.getOrNull(index)?.apply {
             if (descriptionViewModel.fetchedUrl[index] == inputUrl) {
                 inputTitle = ""
                 inputDescription = ""
                 inputImage = ""
                 errorMessage = if (inputUrl.isBlank()) "" else getString(R.string.error_video_not_valid)
+                isItemTheSame = true
             }
         }
+
+        return isItemTheSame
     }
 
-    private fun setDataOnSelectedVideo(youtubeVideoModel: YoutubeVideoModel, index: Int) {
+    private fun setDataOnSelectedVideo(youtubeVideoModel: YoutubeVideoModel, index: Int): Boolean {
+        var isItemTheSame = false
         adapter.data.getOrNull(index)?.apply {
             if (descriptionViewModel.fetchedUrl[index] == inputUrl) {
                 inputTitle = youtubeVideoModel.title.orEmpty()
                 inputDescription = youtubeVideoModel.description.orEmpty()
                 inputImage = youtubeVideoModel.thumbnailUrl.orEmpty()
                 errorMessage = descriptionViewModel.validateDuplicateVideo(adapter.data, inputUrl)
+                isItemTheSame = true
             }
         }
+
+        return isItemTheSame
     }
 
     private fun refreshDuplicateVideo(excludeIndex: Int) {
