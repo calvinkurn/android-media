@@ -6,13 +6,10 @@ import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.settingnotif.usersetting.di.UserSettingScope
 import com.tokopedia.settingnotif.usersetting.domain.usecase.GetUserSettingUseCase
 import com.tokopedia.settingnotif.usersetting.domain.usecase.SetUserSettingUseCase
-import com.tokopedia.settingnotif.usersetting.presenter.SettingFieldPresenter
-import com.tokopedia.settingnotif.usersetting.view.listener.SettingFieldContract
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
-
 
 @Module class UserSettingModule(
         var context: Context?,
@@ -23,15 +20,6 @@ import dagger.Provides
     @Provides
     fun provideUserSession(): UserSessionInterface {
         return UserSession(context)
-    }
-
-    @UserSettingScope
-    @Provides
-    fun provideSettingFieldPresenter(
-            getUserSettingUseCase: GetUserSettingUseCase,
-            setUserSettingUseCase: SetUserSettingUseCase
-    ): SettingFieldContract.Presenter {
-        return SettingFieldPresenter(getUserSettingUseCase, setUserSettingUseCase)
     }
 
     @UserSettingScope
