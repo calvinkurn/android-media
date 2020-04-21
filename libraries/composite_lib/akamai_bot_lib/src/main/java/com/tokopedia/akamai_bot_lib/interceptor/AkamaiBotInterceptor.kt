@@ -17,7 +17,7 @@ class AkamaiBotInterceptor(val context: Context) : Interceptor {
         var newRequest: Request.Builder = chain.request().newBuilder()
 
         val akamaiValue = setExpire(
-                { System.currentTimeMillis() / 1000 },
+                { System.currentTimeMillis() },
                 { context.getExpiredTime() },
                 { time -> context.setExpiredTime(time) },
                 { context.setAkamaiValue(CYFMonitor.getSensorData()) },
