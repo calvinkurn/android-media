@@ -20,12 +20,12 @@ data class Product(
         val variant: String,
         @DefaultValueString("none")
         @Key(Param.ITEM_BRAND)
-        val brand: String,
+        val brand: String?,
         @Key(Param.PRICE)
         val price: Double,
         @DefaultValueString("IDR")
         @Key(Param.CURRENCY)
-        val currency: String,
+        val currency: String?,
         @Key(KEY_DIMENSION_40)
         val keyDimension40: String,
         @DefaultValueLong(0)

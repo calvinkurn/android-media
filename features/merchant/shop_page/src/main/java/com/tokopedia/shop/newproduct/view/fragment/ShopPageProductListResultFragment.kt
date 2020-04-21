@@ -26,6 +26,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.network.exception.UserNotLoginException
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -49,6 +50,10 @@ import com.tokopedia.shop.newproduct.view.datamodel.BaseShopProductViewModel
 import com.tokopedia.shop.newproduct.view.datamodel.ShopProductEtalaseChipItemViewModel
 import com.tokopedia.shop.newproduct.view.datamodel.ShopProductEtalaseListViewModel
 import com.tokopedia.shop.newproduct.view.datamodel.ShopProductViewModel
+import com.tokopedia.shop.newproduct.view.fragment.ShopPageProductListFragment.Companion.BUNDLE_IS_SHOW_DEFAULT
+import com.tokopedia.shop.newproduct.view.fragment.ShopPageProductListFragment.Companion.BUNDLE_IS_SHOW_ZERO_PRODUCT
+import com.tokopedia.shop.newproduct.view.fragment.ShopPageProductListFragment.Companion.BUNDLE_SELECTED_ETALASE_ID
+import com.tokopedia.shop.newproduct.view.fragment.ShopPageProductListFragment.Companion.BUNDLE_SHOP_ID
 import com.tokopedia.shop.newproduct.view.listener.ShopProductClickedListener
 import com.tokopedia.shop.newproduct.view.listener.ShopProductImpressionListener
 import com.tokopedia.shop.newproduct.view.viewholder.ShopProductEtalaseListViewHolder
@@ -118,6 +123,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
     private var attribution: String? = null
 
     private var selectedEtalaseList: ArrayList<ShopProductEtalaseChipItemViewModel>? = null
+    private var isNeedToReloadData: Boolean = false
 
     private var recyclerView: RecyclerView? = null
     private var shopInfo: ShopInfo? = null
@@ -173,6 +179,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                     val productList = it.data.second
                     shopPageTracking?.searchProduct(keyword, productList.isEmpty(), isMyShop, customDimensionShopPage)
                     renderProductList(productList, it.data.first)
+                    isNeedToReloadData = false
                 }
                 is Fail -> showGetListError(it.throwable)
             }
@@ -229,6 +236,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                 sortValue = it.getString(ShopParamConstant.EXTRA_SORT_ID, Integer.MIN_VALUE.toString())
                 shopId = it.getString(ShopParamConstant.EXTRA_SHOP_ID, "")
                 shopRef = it.getString(ShopParamConstant.EXTRA_SHOP_REF, "")
+                isNeedToReloadData = it.getBoolean(ShopParamConstant.EXTRA_IS_NEED_TO_RELOAD_DATA)
             }
         } else {
             selectedEtalaseList = savedInstanceState.getParcelableArrayList(SAVED_SELECTED_ETALASE_LIST)
@@ -238,6 +246,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
             sortValue = savedInstanceState.getString(SAVED_SORT_VALUE)
             shopId = savedInstanceState.getString(SAVED_SHOP_ID)
             shopRef = savedInstanceState.getString(SAVED_SHOP_REF).orEmpty()
+            needReloadData = savedInstanceState.getBoolean(ShopParamConstant.EXTRA_IS_NEED_TO_RELOAD_DATA)
         }
         shopPageProductListResultFragmentListener?.onSortValueUpdated(sortValue ?: "")
         setHasOptionsMenu(true)
@@ -361,6 +370,11 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         shopProductAdapter.clearProductList()
         shopProductAdapter.clearAllNonDataElement()
         showLoading()
+
+        if (isNeedToReloadData) {
+            viewModel.clearCache()
+        }
+
         loadData(defaultInitialPage)
     }
 
@@ -374,13 +388,13 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
 
     private fun loadShopPageList(shopInfo: ShopInfo, page: Int, forceNoEtalase: Boolean = false) {
         if (viewModel.isEtalaseEmpty && !forceNoEtalase) {
-            viewModel.getEtalaseData(shopInfo.shopCore.shopID)
+            viewModel.getEtalaseData(shopInfo.shopCore.shopID, isMyShop, isNeedToReloadData)
         } else {
             // continue to load ProductData
             viewModel.getShopProduct(shopInfo.shopCore.shopID, page,
                     ShopPageConstant.DEFAULT_PER_PAGE,
                     sortValue.toIntOrZero(), selectedEtalaseId,
-                    keyword)
+                    keyword, isNeedToReloadData)
         }
     }
 
@@ -437,9 +451,14 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                     CustomDimensionShopPage.create(it.shopCore.shopID,
                             it.goldOS.isOfficial == 1, it.goldOS.isGold == 1))
             context?.let { context ->
-                val shopEtalaseIntent = ShopEtalasePickerActivity.createIntent(context, it.shopCore.shopID, selectedEtalaseId,
-                        true, false)
-                startActivityForResult(shopEtalaseIntent, REQUEST_CODE_ETALASE)
+                val bundle = Bundle()
+                bundle.putString(BUNDLE_SELECTED_ETALASE_ID, selectedEtalaseId)
+                bundle.putBoolean(BUNDLE_IS_SHOW_DEFAULT, true)
+                bundle.putBoolean(BUNDLE_IS_SHOW_ZERO_PRODUCT, false)
+                bundle.putString(BUNDLE_SHOP_ID, it.shopCore.shopID)
+                val intent = RouteManager.getIntent(context, ApplinkConstInternalMechant.MERCHANT_SHOP_SHOWCASE_LIST)
+                intent.putExtra(BUNDLE, bundle)
+                startActivity(intent)
             }
         }
     }
@@ -851,6 +870,8 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         val SAVED_SHOP_IS_GOLD_MERCHANT = "saved_shop_is_gold_merchant"
         val SAVED_KEYWORD = "saved_keyword"
         val SAVED_SORT_VALUE = "saved_sort_name"
+        val SAVED_RELOAD_STATE = "saved_reload_state"
+        val BUNDLE = "bundle"
 
         @JvmStatic
         fun createInstance(shopId: String,
@@ -858,7 +879,9 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                            keyword: String?,
                            etalaseId: String?,
                            sort: String?,
-                           attribution: String?): ShopPageProductListResultFragment = ShopPageProductListResultFragment().also {
+                           attribution: String?,
+                           isNeedToReloadData: Boolean? = false
+        ): ShopPageProductListResultFragment = ShopPageProductListResultFragment().also {
             it.arguments = Bundle().apply {
                 putString(ShopParamConstant.EXTRA_SHOP_ID, shopId)
                 putString(ShopParamConstant.EXTRA_SHOP_REF, shopRef.orEmpty())
@@ -866,6 +889,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                 putString(ShopParamConstant.EXTRA_ETALASE_ID, etalaseId ?: "")
                 putString(ShopParamConstant.EXTRA_SORT_ID, sort ?: "")
                 putString(ShopParamConstant.EXTRA_ATTRIBUTION, attribution ?: "")
+                putBoolean(ShopParamConstant.EXTRA_IS_NEED_TO_RELOAD_DATA, isNeedToReloadData ?: false)
             }
         }
     }

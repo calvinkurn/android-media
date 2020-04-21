@@ -12,6 +12,7 @@ import android.widget.ListView;
 
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
+import com.tokopedia.applink.internal.ApplinkConstInternalMechant;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
@@ -84,7 +85,8 @@ public class FragmentSettingShop extends TkpdFragment {
                         break;
                     case 2:
                         UnifyTracking.eventManageShopEtalase(getActivity());
-                        RouteManager.route(FragmentSettingShop.this.getActivity(), ApplinkConstInternalMarketplace.SHOP_SETTINGS_ETALASE);
+                        RouteManager.route(FragmentSettingShop.this.getActivity(), ApplinkConstInternalMechant.MERCHANT_SHOP_SHOWCASE_LIST);
+//                        RouteManager.route(FragmentSettingShop.this.getActivity(), ApplinkConstInternalMarketplace.SHOP_SETTINGS_ETALASE);
                         break;
                     case 3:
                         UnifyTracking.eventManageShopNotes(getActivity());

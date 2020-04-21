@@ -4,15 +4,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.tokopedia.unifycomponents.UnifyButton
-        android:id="@+id/nextButton"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/voucher_creation_next_button_margin"
-        android:text="@string/voucher_creation_step_next"
-        app:unifyButtonVariant="filled"
-        app:unifyButtonSize="medium"
-        app:unifyButtonType="main"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

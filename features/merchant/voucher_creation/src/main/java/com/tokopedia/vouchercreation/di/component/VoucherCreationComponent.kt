@@ -4,7 +4,7 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.vouchercreation.di.module.VoucherCreationModule
 import com.tokopedia.vouchercreation.di.module.VoucherCreationViewModelModule
 import com.tokopedia.vouchercreation.di.scope.VoucherCreationScope
-import com.tokopedia.vouchercreation.view.activity.CreateMerchantVoucherStepsActivity
+import com.tokopedia.vouchercreation.create.view.activity.CreateMerchantVoucherStepsActivity
 import com.tokopedia.vouchercreation.voucherlist.view.fragment.VoucherListFragment
 import dagger.Component
 

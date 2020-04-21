@@ -68,4 +68,8 @@ object ApplinkConstInternalSellerapp {
     //VoucherListActivity
     @JvmField
     val VOUCHER_LIST = "$INTERNAL_SELLERAPP/voucher-list"
+
+    //SellerOnboardingActivity
+    @JvmField
+    val SELLER_ONBOARDING = "$INTERNAL_SELLERAPP/seller-onboarding"
 }

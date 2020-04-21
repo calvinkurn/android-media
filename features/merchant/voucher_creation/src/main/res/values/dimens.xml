@@ -5,4 +5,27 @@
     <dimen name="mvc_dimen_20dp">20dp</dimen>
     <dimen name="mvc_dimen_12dp">12dp</dimen>
     <dimen name="mvc_20dp">20dp</dimen>
+    <dimen name="mvc_create_progressbar_height">2dp</dimen>
+    <dimen name="mvc_create_next_button_margin">16dp</dimen>
+    <dimen name="mvc_create_target_card_height">146dp</dimen>
+    <dimen name="mvc_create_target_card_margin">16dp</dimen>
+    <dimen name="mvc_create_target_card_padding">12dp</dimen>
+    <dimen name="mvc_create_target_card_border_width">1dp</dimen>
+    <dimen name="mvc_create_target_card_border_radius">8dp</dimen>
+    <dimen name="mvc_create_target_title_margin_left">8dp</dimen>
+    <dimen name="mvc_create_target_description_height">54dp</dimen>
+    <dimen name="mvc_create_target_description_margin_right">17dp</dimen>
+    <dimen name="mvc_create_target_description_margin_top">2dp</dimen>
+    <dimen name="mvc_create_divider_height">1dp</dimen>
+    <dimen name="mvc_create_divider_thick_height">8dp</dimen>
+    <dimen name="mvc_create_divider_margin">16dp</dimen>
+    <dimen name="mvc_create_promo_code_padding_vertical">10dp</dimen>
+    <dimen name="mvc_create_promo_code_padding_horizontal">16.44dp</dimen>
+    <dimen name="mvc_create_target_margin_bottom">8dp</dimen>
+    <dimen name="mvc_create_widget_margin">16dp</dimen>
+    <dimen name="mvc_create_widget_title_height">56dp</dimen>
+    <dimen name="mvc_create_fill_voucher_name_margin_bottom">24dp</dimen>
+
+    <dimen name="mvc_create_target_description_size">12sp</dimen>
+    <dimen name="mvc_create_target_description_line_spacing">4sp</dimen>
 </resources>
