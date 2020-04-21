@@ -91,7 +91,7 @@ class PlayParentLayoutManagerImpl(
         }
     }
 
-    override fun onVideoTopBoundsChanged(view: View, topBounds: Int) {
+    override fun onVideoTopBoundsChanged(view: View, videoOrientation: VideoOrientation, topBounds: Int) {
         val topBoundsWithOffset = topBounds + offset16
         val shouldConfigureMargin = topBoundsWithOffset != this.topBounds
 
@@ -99,7 +99,7 @@ class PlayParentLayoutManagerImpl(
                 if (!screenOrientation.isLandscape) topBoundsWithOffset
                 else 0
 
-        if (shouldConfigureMargin && isVideoAlreadyPlaying) changeVideoMargin(flVideo, this.topBounds)
+        if (shouldConfigureMargin && isVideoAlreadyPlaying) reconfigureLayout(view, videoOrientation)
     }
 
     override fun layoutView(view: View) {

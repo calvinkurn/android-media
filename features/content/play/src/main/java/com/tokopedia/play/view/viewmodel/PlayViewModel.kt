@@ -21,6 +21,8 @@ import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.*
 import com.tokopedia.play.view.uimodel.mapper.PlayUiMapper
 import com.tokopedia.play.view.wrapper.PlayResult
+import com.tokopedia.play.view.wrapper.GlobalErrorCodeWrapper
+import com.tokopedia.play.ERR_SERVER_ERROR
 import com.tokopedia.play_common.model.PlayBufferControl
 import com.tokopedia.play_common.player.PlayVideoManager
 import com.tokopedia.usecase.coroutines.Fail
@@ -197,7 +199,7 @@ class PlayViewModel @Inject constructor(
             } else _observablePinnedProduct.value = _observablePinnedProduct.value
         }
         addSource(observableEvent) {
-            if (it.isFreeze || it.isBanned) doOnFreezeBan()
+            if (it.isFreeze || it.isBanned) doOnForbidden()
         }
     }
 
@@ -436,7 +438,15 @@ class PlayViewModel @Inject constructor(
             _observablePartnerInfo.value = getPartnerInfo(completeInfoUiModel.channelInfo)
         }) {
             if (retryCount++ < MAX_RETRY_CHANNEL_INFO) getChannelInfoResponse(channelId)
-            else if (it !is CancellationException) _observableGetChannelInfo.value = Fail(it)
+            else if (it !is CancellationException) {
+                val error = if (_observableGetChannelInfo.value == null && GlobalErrorCodeWrapper.wrap(it.message.orEmpty()) == GlobalErrorCodeWrapper.Unknown)
+                    Throwable(ERR_SERVER_ERROR)
+                else it
+
+                if (GlobalErrorCodeWrapper.wrap(error.message.orEmpty()) != GlobalErrorCodeWrapper.Unknown) doOnForbidden()
+
+                _observableGetChannelInfo.value = Fail(error)
+            }
         }
 
         getChannelInfoResponse(channelId)
@@ -650,7 +660,7 @@ class PlayViewModel @Inject constructor(
             bufferForPlaybackAfterRebufferMs = bufferControl.bufferForPlaybackAfterRebuffer * MS_PER_SECOND
     )
 
-    private fun doOnFreezeBan() {
+    private fun doOnForbidden() {
         destroy()
         stopPlayer()
         hideInsets(isKeyboardHandled = false)

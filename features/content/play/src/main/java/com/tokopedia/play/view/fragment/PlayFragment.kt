@@ -42,6 +42,7 @@ import com.tokopedia.play.view.contract.PlayNewChannelInteractor
 import com.tokopedia.play.view.layout.parent.PlayParentLayoutManager
 import com.tokopedia.play.view.layout.parent.PlayParentLayoutManagerImpl
 import com.tokopedia.play.view.type.ScreenOrientation
+import com.tokopedia.play.view.type.VideoOrientation
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play_common.state.PlayVideoState
 import com.tokopedia.unifycomponents.Toaster
@@ -264,11 +265,11 @@ class PlayFragment : BaseDaggerFragment(), SensorOrientationManager.OrientationL
         })
     }
 
-    fun setVideoTopBounds(topBounds: Int) {
+    fun setVideoTopBounds(videoOrientation: VideoOrientation, topBounds: Int) {
         if (this.topBounds == null && topBounds > 0) {
             this.topBounds = topBounds
         }
-        this.topBounds?.let { layoutManager.onVideoTopBoundsChanged(requireView(), it) }
+        this.topBounds?.let { layoutManager.onVideoTopBoundsChanged(requireView(), videoOrientation, it) }
     }
 
     /**
@@ -312,7 +313,7 @@ class PlayFragment : BaseDaggerFragment(), SensorOrientationManager.OrientationL
                 flGlobalError = flGlobalError
         )
 
-        topBounds?.let { setVideoTopBounds(it) }
+        topBounds?.let { setVideoTopBounds(playViewModel.videoOrientation, it) }
     }
 
     private fun setupView(view: View) {
