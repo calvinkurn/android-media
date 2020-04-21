@@ -45,6 +45,7 @@ import com.tokopedia.seller.product.draft.view.activity.ProductDraftListActivity
 import com.tokopedia.sellerapp.R;
 import com.tokopedia.sellerhome.view.activity.SellerHomeActivity;
 import com.tokopedia.track.TrackApp;
+import com.tokopedia.url.TokopediaUrl;
 
 import java.util.ArrayList;
 
@@ -371,9 +372,7 @@ public class DrawerSellerHelper extends DrawerHelper
                             AppEventTracking.EventLabel.STATISTIC);
                     break;
                 case TkpdState.DrawerPosition.SELLER_MITRA_TOPPERS:
-                    Intent mitraToppersIntent = ((MitraToppersRouter) context.getApplication())
-                            .getMitraToppersActivityIntent(context);
-                    context.startActivity(mitraToppersIntent);
+                    RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, TokopediaUrl.getInstance().getWEB() + "mitra-toppers/");
                     break;
                 case TkpdState.DrawerPosition.SELLER_TOP_ADS:
                     eventDrawerClick(AppEventTracking.EventLabel.TOPADS);

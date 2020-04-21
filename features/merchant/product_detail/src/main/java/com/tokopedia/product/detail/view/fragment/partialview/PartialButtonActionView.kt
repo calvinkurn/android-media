@@ -16,7 +16,7 @@ import com.tokopedia.unifycomponents.UnifyButton
 import kotlinx.android.synthetic.main.partial_layout_button_action.view.*
 
 
-class PartialButtonActionView private constructor(private val view: View,
+class PartialButtonActionView private constructor(val view: View,
                                                   private val listener: View.OnClickListener)
     : View.OnClickListener by listener {
     var promoTopAdsClick: (() -> Unit)? = null
@@ -39,29 +39,14 @@ class PartialButtonActionView private constructor(private val view: View,
     var hasShopAuthority: Boolean = false
     var isLeasing: Boolean = false
     var hasTopAdsActive: Boolean = false
+    var isShopOwner: Boolean = false
     var preOrder: PreOrder? = PreOrder()
     var onSuccessGetCartType = false
     var showByMe = false
-    private var cartTypeData: CartTypeData? = null
+    var cartTypeData: CartTypeData? = null
 
     companion object {
         fun build(_view: View, _listener: View.OnClickListener) = PartialButtonActionView(_view, _listener)
-    }
-
-    //OLD PDP
-    fun renderData(isWarehouseProduct: Boolean, hasShopAuthority: Boolean, preOrder: PreOrder?) {
-        this.isWarehouseProduct = isWarehouseProduct
-        this.hasShopAuthority = hasShopAuthority
-        this.preOrder = preOrder
-        renderButton()
-    }
-
-    //OLD PDP
-    fun renderData(isWarehouseProduct: Boolean, isExpressCheckout: Boolean, hasTopAdsActive: Boolean) {
-        this.isWarehouseProduct = isWarehouseProduct
-        this.isExpressCheckout = isExpressCheckout
-        this.hasTopAdsActive = hasTopAdsActive
-        renderButton()
     }
 
     fun setButtonP1(preOrder: PreOrder?, isLeasing: Boolean) {
@@ -73,11 +58,12 @@ class PartialButtonActionView private constructor(private val view: View,
         this.hasTopAdsActive = hasTopAdsActive
     }
 
-    fun renderData(isWarehouseProduct: Boolean, hasShopAuthority: Boolean, hasTopAdsActive: Boolean, cartTypeData: CartTypeData? = null) {
+    fun renderData(isWarehouseProduct: Boolean, hasShopAuthority: Boolean, isShopOwner: Boolean, hasTopAdsActive: Boolean, cartTypeData: CartTypeData? = null) {
         this.isWarehouseProduct = isWarehouseProduct
         this.hasShopAuthority = hasShopAuthority
         this.hasTopAdsActive = hasTopAdsActive
         this.cartTypeData = cartTypeData
+        this.isShopOwner = isShopOwner
         this.onSuccessGetCartType = cartTypeData != null && cartTypeData.availableButtons.isNotEmpty()
         renderButton()
     }
@@ -237,8 +223,9 @@ class PartialButtonActionView private constructor(private val view: View,
         with(view) {
             changeTopChatLayoutParamsToHandleWarehouseButton()
             btn_byme.hide()
+            btn_top_ads.hide()
             btn_empty_stock.show()
-            btn_topchat.show()
+            btn_topchat.showWithCondition(!isShopOwner)
             btn_topchat.setOnClickListener(this@PartialButtonActionView)
         }
     }

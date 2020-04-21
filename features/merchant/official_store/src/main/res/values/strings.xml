@@ -8,5 +8,6 @@
     <string name="os_product_recommendation_title">Rekomendasi Untukmu</string>
 
     <string name="os_error_try_again">Coba lagi</string>
-
+    <string name="os_toaster_coupon_copied">Kode kupon berhasil disalin, gunakan saat transaksi.</string>
+    <string name="os_coupon_code_label">Coupon Code</string>
 </resources>

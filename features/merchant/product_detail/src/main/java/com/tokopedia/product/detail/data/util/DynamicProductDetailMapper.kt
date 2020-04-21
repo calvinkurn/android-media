@@ -39,7 +39,11 @@ object DynamicProductDetailMapper {
                     listOfComponent.add(ProductShopInfoDataModel(type = component.type, name = component.componentName))
                 }
                 ProductDetailConstant.SOCIAL_PROOF -> {
-                    listOfComponent.add(ProductSocialProofDataModel(type = component.type, name = component.componentName))
+                    if (component.componentName == ProductDetailConstant.SOCIAL_PROOF_PV) {
+                        listOfComponent.add(ProductSocialProofDataModel(type = component.type, name = component.componentName, isSocialProofPv = true))
+                    } else {
+                        listOfComponent.add(ProductSocialProofDataModel(type = component.type, name = component.componentName, isSocialProofPv = false))
+                    }
                 }
                 ProductDetailConstant.MOST_HELPFUL_REVIEW -> {
                     listOfComponent.add(ProductMostHelpfulReviewDataModel(type = component.type, name = component.componentName))
@@ -64,9 +68,6 @@ object DynamicProductDetailMapper {
                 }
                 ProductDetailConstant.VARIANT -> {
                     listOfComponent.add(VariantDataModel(type = component.type, name = component.componentName))
-                }
-                ProductDetailConstant.SOCIAL_PROOF_PV -> {
-                    listOfComponent.add(ProductSocialProofPvDataModel(type = component.type, name = component.componentName))
                 }
             }
         }
@@ -135,6 +136,9 @@ object DynamicProductDetailMapper {
             }
             it == ProductDetailConstant.KEY_OCS_BUTTON -> {
                 ProductDetailConstant.OCS_BUTTON
+            }
+            it == ProductDetailConstant.KEY_OCC_BUTTON -> {
+                ProductDetailConstant.OCC_BUTTON
             }
             else -> ProductDetailConstant.BUY_BUTTON
         }

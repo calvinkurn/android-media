@@ -209,7 +209,6 @@ dependencies {
     implementation project(rootProject.ext.features.shopPage)
     implementation project(rootProject.ext.features.sellerorder)
     implementation project(rootProject.ext.features.sellerHome)
-    implementation project(rootProject.ext.features.mitraToppers)
     implementation project(rootProject.ext.features.merchantLendingWidget)
     implementation project(rootProject.ext.features.goldMerchantCommon)
     implementation project(rootProject.ext.features.powerMerchantSubscribe)
@@ -318,6 +317,7 @@ dependencies {
         implementation project(rootProject.ext.libraries.analyticsDebuggerNoop)
     }
 
+    implementation rootProject.ext.tkpdInternalLibDependencies.fakeresponseNoOp
     implementation(rootProject.ext.analyticsDependencies.moengage)
 
     implementation rootProject.ext.playServicesDependencies.analytics

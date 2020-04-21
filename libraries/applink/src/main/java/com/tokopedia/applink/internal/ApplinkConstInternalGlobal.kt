@@ -266,7 +266,7 @@ object ApplinkConstInternalGlobal {
 
 
     @JvmField
-    val WEBVIEW_TITLE = "$INTERNAL_GLOBAL/webview?url={url}"
+    val WEBVIEW_TITLE = "$INTERNAL_GLOBAL/webview?title={title}&url={url}"
 
     // PhoneVerificationProfileActivity
     // tokopedia-android-internal://global/setting-profile-phone-verification
@@ -400,7 +400,6 @@ object ApplinkConstInternalGlobal {
     val LOGOUT = "$INTERNAL_GLOBAL/logout"
     @JvmField
     val PARAM_IS_RETURN_HOME = "return_to_home"
-
     // AdvancedSettingActivity
     // tokopedia-android-internal://global/advanced-setting
     @JvmField

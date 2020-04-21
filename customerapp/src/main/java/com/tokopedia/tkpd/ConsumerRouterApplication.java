@@ -68,7 +68,6 @@ import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.core.gcm.NotificationModHandler;
 import com.tokopedia.core.gcm.model.NotificationPass;
 import com.tokopedia.core.gcm.utils.NotificationUtils;
-import com.tokopedia.core.home.SimpleWebViewWithFilePickerActivity;
 import com.tokopedia.core.model.share.ShareData;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
@@ -137,8 +136,6 @@ import com.tokopedia.loyalty.view.data.PromoData;
 import com.tokopedia.loyalty.view.data.VoucherViewModel;
 import com.tokopedia.loyalty.view.fragment.LoyaltyNotifFragmentDialog;
 import com.tokopedia.merchantvoucher.MerchantVoucherModuleRouter;
-import com.tokopedia.mitratoppers.MitraToppersRouter;
-import com.tokopedia.mitratoppers.MitraToppersRouterInternal;
 import com.tokopedia.navigation.GlobalNavRouter;
 import com.tokopedia.navigation.presentation.activity.MainParentActivity;
 import com.tokopedia.network.NetworkRouter;
@@ -201,7 +198,6 @@ import com.tokopedia.tkpd.utils.FingerprintModelGenerator;
 import com.tokopedia.tkpdreactnative.react.ReactUtils;
 import com.tokopedia.tkpdreactnative.react.di.ReactNativeModule;
 import com.tokopedia.tkpdreactnative.router.ReactNativeRouter;
-import com.tokopedia.topads.common.TopAdsWebViewRouter;
 import com.tokopedia.topads.sdk.base.TopAdsRouter;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.transaction.common.TransactionRouter;
@@ -229,6 +225,7 @@ import okhttp3.Interceptor;
 import okhttp3.Response;
 import rx.Observable;
 import rx.functions.Func1;
+import timber.log.Timber;
 
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_DESCRIPTION;
 import static com.tokopedia.kyc.Constants.Keys.KYC_CARDID_CAMERA;
@@ -264,9 +261,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         GlobalNavRouter,
         AccountHomeRouter,
         OmsModuleRouter,
-        TopAdsWebViewRouter,
         EventModuleRouter,
-        MitraToppersRouter,
         DigitalBrowseRouter,
         PhoneVerificationRouter,
         TkpdAppsFlyerRouter,
@@ -558,7 +553,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         String PATH_USER_BOOKING_LIST = "/user/bookings";
         String PARAM_DIGITAL_ISPULSA = "?ispulsa=1";
         String TRAIN_ORDER_LIST = KAI_WEBVIEW + PATH_USER_BOOKING_LIST + PARAM_DIGITAL_ISPULSA;
-        return getWebviewActivityWithIntent(context, TRAIN_ORDER_LIST);
+        return RouteManager.getIntent(context, ApplinkConstInternalGlobal.WEBVIEW, TRAIN_ORDER_LIST);
     }
 
     @Override
@@ -713,16 +708,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent getWebviewActivityWithIntent(Context context, String url) {
-        return SimpleWebViewWithFilePickerActivity.getIntent(context, url);
-    }
-
-    @Override
-    public Intent getWebviewActivityWithIntent(Context context, String url, String title) {
-        return SimpleWebViewWithFilePickerActivity.getIntentWithTitle(context, url, title);
-    }
-
-    @Override
     public Intent getDetailResChatIntentBuyer(Context context, String resoId, String shopName) {
         return DetailResChatActivity.newBuyerInstance(context, resoId, shopName);
     }
@@ -762,6 +747,15 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public void showForceLogoutTokenDialog(String response) {
         ServerErrorHandler.showForceLogoutDialog();
         ServerErrorHandler.sendForceLogoutTokenAnalytics(response);
+    }
+
+    @Override
+    public void sendAnalyticsAnomalyResponse(String title,
+                                             String accessToken, String refreshToken,
+                                             String response, String request) {
+        Timber.w("P2#USER_ANOMALY_REPONSE#AnomalyResponse;title=" + title +
+                ";accessToken=" + accessToken + ";refreshToken=" + refreshToken +
+                ";response=" + response + ";request=" + request);
     }
 
     @Override
@@ -1075,11 +1069,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent getSellerWebViewIntent(Context context, String webviewUrl) {
-        return null;
-    }
-
-    @Override
     public Observable<VoucherViewModel> checkTrainVoucher(String trainReservationId,
                                                           String trainReservationCode,
                                                           String galaCode) {
@@ -1247,11 +1236,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public boolean isEnableInterestPick() {
         return remoteConfig.getBoolean("mainapp_enable_interest_pick", Boolean.TRUE);
-    }
-
-    @Override
-    public Intent getMitraToppersActivityIntent(Context context) {
-        return MitraToppersRouterInternal.getMitraToppersActivityIntent(context);
     }
 
     @Override

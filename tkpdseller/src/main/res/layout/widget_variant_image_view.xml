@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="@dimen/padding_vvs"
-        tools:src="@mipmap/ic_launcher" />
+        tools:src="@tools:sample/avatars" />
 
     <ImageView
         android:id="@+id/iv_plus"

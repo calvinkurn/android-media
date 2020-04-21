@@ -25,6 +25,10 @@ import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager;
 import com.tokopedia.abstraction.common.utils.view.DialogForceLogout;
 import com.tokopedia.inappupdate.AppUpdateManagerWrapper;
 import com.tokopedia.track.TrackApp;
+import com.tokopedia.unifycomponents.BottomSheetUnify;
+import com.tokopedia.unifycomponents.UnifyButton;
+
+import kotlin.Unit;
 
 
 /**
@@ -160,6 +164,31 @@ public abstract class BaseActivity extends AppCompatActivity implements
                         }
                     }
                 });
+
+//        createBottomSheet();
+    }
+
+    private void createBottomSheet() {
+        BottomSheetUnify bottomSheetUnify = new BottomSheetUnify();
+        bottomSheetUnify.setCustomPeekHeight(900);
+        bottomSheetUnify.setOverlayClickDismiss(false);
+
+        View childView = View.inflate(this, R.layout.error_unauthorized, null);
+        bottomSheetUnify.setChild(childView);
+        UnifyButton unifyButton = childView.findViewById(R.id.unauthorized_button);
+
+        bottomSheetUnify.setCloseClickListener(view -> {
+            bottomSheetUnify.dismiss();
+            return Unit.INSTANCE;
+        });
+
+        unifyButton.setOnClickListener(view -> {
+            if (getApplication() instanceof AbstractionRouter) {
+                ((AbstractionRouter) getApplication()).onForceLogout(BaseActivity.this);
+            }
+        });
+
+        bottomSheetUnify.show(getSupportFragmentManager(), "Unauthorized Force Logout");
     }
 
     public void checkIfForceLogoutMustShow() {
