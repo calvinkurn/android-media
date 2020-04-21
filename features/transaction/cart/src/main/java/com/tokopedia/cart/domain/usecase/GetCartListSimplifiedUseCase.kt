@@ -1,11 +1,11 @@
 package com.tokopedia.cart.domain.usecase
 
+import com.tokopedia.cart.data.model.response.shopgroupsimplified.ShopGroupSimplifiedGqlResponse
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.purchase_platform.common.data.api.exception.CartResponseErrorException
 import com.tokopedia.purchase_platform.common.domain.schedulers.ExecutorSchedulers
-import com.tokopedia.cart.data.model.response.ShopGroupSimplifiedGqlResponse
 import com.tokopedia.cart.domain.mapper.CartSimplifiedMapper
 import com.tokopedia.cart.domain.model.cartlist.CartListData
 import com.tokopedia.usecase.RequestParams

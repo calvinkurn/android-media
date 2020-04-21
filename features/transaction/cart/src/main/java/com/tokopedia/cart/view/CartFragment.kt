@@ -75,6 +75,7 @@ import com.tokopedia.purchase_platform.common.constant.CartConstant.CART_ERROR_G
 import com.tokopedia.purchase_platform.common.constant.CartConstant.PARAM_CART
 import com.tokopedia.purchase_platform.common.constant.CartConstant.PARAM_DEFAULT
 import com.tokopedia.purchase_platform.common.constant.CartConstant.STATE_RED
+import com.tokopedia.purchase_platform.common.constant.CheckoutConstant.Companion.RESULT_CODE_COUPON_STATE_CHANGED
 import com.tokopedia.purchase_platform.common.data.api.exception.CartResponseErrorException
 import com.tokopedia.purchase_platform.common.data.model.request.validateuse.OrdersItem
 import com.tokopedia.purchase_platform.common.data.model.request.validateuse.ProductDetailsItem
@@ -83,6 +84,7 @@ import com.tokopedia.purchase_platform.common.feature.insurance.request.UpdateIn
 import com.tokopedia.purchase_platform.common.data.model.response.macro_insurance.InsuranceCartDigitalProduct
 import com.tokopedia.purchase_platform.common.data.model.response.macro_insurance.InsuranceCartResponse
 import com.tokopedia.purchase_platform.common.data.model.response.macro_insurance.InsuranceCartShops
+import com.tokopedia.purchase_platform.common.feature.insurance.InsuranceItemActionListener
 import com.tokopedia.purchase_platform.common.feature.promo.data.Order
 import com.tokopedia.purchase_platform.common.feature.promo.data.ProductDetail
 import com.tokopedia.purchase_platform.common.feature.promo.data.PromoRequest
@@ -2266,7 +2268,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             } else {
                 dPresenter.processInitialGetCartData(getCartId(), false, false)
             }
-        } else if (resultCode == ShipmentActivity.RESULT_CODE_COUPON_STATE_CHANGED) {
+        } else if (resultCode == RESULT_CODE_COUPON_STATE_CHANGED) {
             refreshHandler?.isRefreshing = true
             dPresenter.processInitialGetCartData(getCartId(), false, false)
         }

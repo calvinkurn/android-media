@@ -25,5 +25,29 @@
     <string name="toast_message_remove_wishlist_success">Sukses menghapus wishlist</string>
     <string name="cart_error_message_no_count" formatted="false">Terdapat Produk Bermasalah</string>
     <string name="message_checkout_empty_selection">Silahkan pilih terlebih dahulu produk yang ingin anda checkout</string>
+    <string name="promo_desc_no_selected_item">Pilih barang dulu sebelum pakai promo</string>
+    <string name="promo_choose_item_cart">Pilih barang dulu biar bisa pakai berbagai promo terbaik</string>
+    <string name="label_ellipsize">...</string>
+    <string name="label_button_change_note">Ubah Catatan</string>
+    <string name="insurance_cart_label">Produk Asuransi</string>
+    <string name="ticker_text">Polis akan dikirim ke email / no. ponsel / TopChat setelah pembayaran berhasil</string>
+    <string name="text_details_change">Ubah</string>
+    <string name="text_ubah_data_asuransi">Ubah Data Asuransi</string>
+    <string name="checkout_module_title_recommendation">Rekomendasi</string>
+    <string name="checkout_module_title_wishlist">Wujudkan Wishlist kamu!</string>
+    <string name="checkout_module_title_recent_view">Kamu sempat lihat-lihat ini</string>
+    <string name="text_heading_produk_asuransi">Hapus Produk Asuransi</string>
+    <string name="text_desc_asuransi">Kamu akan menghapus asuransi demam berdarah. Apa kamu yakin?</string>
+    <string name="update_insurance_data_success">Rincian Aplikasi Asuransi Berhasil Diperbarui</string>
+    <string name="remove_macro_insurance_success">Produk Asuransi Berhasil Dihapus</string>
+    <string name="alert_payment_canceled_or_failed_transaction_module">Pembayaran tidak berhasil atau dibatalkan</string>
+    <string name="message_payment_success">Pembayaran Berhasil</string>
+    <string name="checkout_module_keranjang_belanja_kosong_new">Wah, keranjang belanjamu kosong</string>
+    <string name="checkout_empty_cart_sub_message_new">Daripada dianggurin, mending isi dengan barang-barang impianmu. Yuk, cek sekarang!</string>
+    <string name="checkout_module_mulai_belanja">Mulai Belanja</string>
+    <string name="cart_empty_with_promo_title">Ada promo menunggumu, nih!</string>
+    <string name="cart_empty_with_promo_desc">Ayo belanja min. Rp100.000 untuk pakai promo cashback 10% maks. Rp50.000!</string>
+    <string name="cart_empty_with_promo_btn">Belanja Pakai Promo</string>
+    <string name="cart_item_button_checkout_count_format" formatted="false">Beli (%s)</string>
 
 </resources>

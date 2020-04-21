@@ -17,9 +17,6 @@ import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.E
 
 public class ShipmentActivity extends BaseCheckoutActivity {
 
-    public static final int RESULT_CODE_FORCE_RESET_CART_FROM_SINGLE_SHIPMENT = 2;
-    public static final int RESULT_CODE_COUPON_STATE_CHANGED = 735;
-
     public static final String EXTRA_PROMO_CODE_COUPON_DEFAULT_SELECTED_TAB = "EXTRA_PROMO_CODE_COUPON_DEFAULT_SELECTED_TAB";
 
     private CheckoutAnalyticsCourierSelection checkoutAnalyticsCourierSelection;

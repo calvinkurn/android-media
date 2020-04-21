@@ -58,7 +58,7 @@ import com.tokopedia.purchase_platform.common.data.model.request.helpticket.Subm
 import com.tokopedia.purchase_platform.common.data.model.response.cod.Data;
 import com.tokopedia.purchase_platform.common.data.model.response.macro_insurance.InsuranceCartGqlResponse;
 import com.tokopedia.purchase_platform.common.domain.model.CheckoutData;
-import com.tokopedia.purchase_platform.common.domain.usecase.GetInsuranceCartUseCase;
+import com.tokopedia.purchase_platform.common.feature.insurance.usecase.GetInsuranceCartUseCase;
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel;
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementHolderData;
 import com.tokopedia.purchase_platform.common.feature.helpticket.SubmitTicketResult;

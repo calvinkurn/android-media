@@ -11,7 +11,7 @@ import com.tokopedia.purchase_platform.common.data.api.CommonPurchaseApiUrl
 import com.tokopedia.purchase_platform.common.data.model.request.helpticket.SubmitHelpTicketRequest
 import com.tokopedia.purchase_platform.common.domain.model.CheckoutData
 import com.tokopedia.purchase_platform.common.domain.model.ErrorReporter
-import com.tokopedia.purchase_platform.common.domain.usecase.GetInsuranceCartUseCase
+import com.tokopedia.purchase_platform.common.feature.insurance.usecase.GetInsuranceCartUseCase
 import com.tokopedia.purchase_platform.common.feature.helpticket.SubmitTicketResult
 import com.tokopedia.purchase_platform.common.domain.usecase.SubmitHelpTicketUseCase
 import com.tokopedia.purchase_platform.features.checkout.analytics.CheckoutAnalyticsPurchaseProtection

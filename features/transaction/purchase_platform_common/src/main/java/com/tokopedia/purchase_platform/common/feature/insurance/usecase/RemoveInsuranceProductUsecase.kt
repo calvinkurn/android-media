@@ -1,4 +1,4 @@
-package com.tokopedia.purchase_platform.common.domain.usecase
+package com.tokopedia.purchase_platform.common.feature.insurance.usecase
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
@@ -6,7 +6,7 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
-import com.tokopedia.purchase_platform.R
+import com.tokopedia.purchase_platform.common.R
 import com.tokopedia.purchase_platform.common.feature.insurance.request.RemoveInsuranceData
 import com.tokopedia.purchase_platform.common.feature.insurance.request.RemoveInsuranceProductRequest
 import com.tokopedia.purchase_platform.common.feature.insurance.response.RemoveInsuranceProductGqlResponse

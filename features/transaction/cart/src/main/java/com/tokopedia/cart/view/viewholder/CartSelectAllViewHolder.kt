@@ -2,8 +2,8 @@ package com.tokopedia.cart.view.viewholder
 
 import androidx.recyclerview.widget.RecyclerView
 import android.view.View
+import com.tokopedia.cart.R
 import com.tokopedia.kotlin.extensions.view.invisible
-import com.tokopedia.purchase_platform.R
 import com.tokopedia.cart.view.ActionListener
 import kotlinx.android.synthetic.main.item_select_all.view.*
 

@@ -2,7 +2,7 @@ package com.tokopedia.cart.view.viewholder
 
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.purchase_platform.R
+import com.tokopedia.cart.R
 import com.tokopedia.cart.view.ActionListener
 import com.tokopedia.cart.view.uimodel.CartItemTickerErrorHolderData
 import kotlinx.android.synthetic.main.holder_item_cart_ticker_error.view.*

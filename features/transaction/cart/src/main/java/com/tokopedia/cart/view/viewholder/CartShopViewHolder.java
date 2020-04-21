@@ -13,8 +13,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SimpleItemAnimator;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.cart.R;
 import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView;
-import com.tokopedia.purchase_platform.R;
 import com.tokopedia.purchase_platform.common.utils.CheckboxWatcher;
 import com.tokopedia.cart.view.ActionListener;
 import com.tokopedia.cart.view.adapter.CartItemAdapter;

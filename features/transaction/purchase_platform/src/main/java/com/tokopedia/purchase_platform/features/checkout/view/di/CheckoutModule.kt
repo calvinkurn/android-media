@@ -20,10 +20,9 @@ import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourier
 import com.tokopedia.purchase_platform.common.di.*
 import com.tokopedia.purchase_platform.common.domain.schedulers.DefaultSchedulers
 import com.tokopedia.purchase_platform.common.domain.schedulers.ExecutorSchedulers
-import com.tokopedia.purchase_platform.common.domain.usecase.GetInsuranceCartUseCase
+import com.tokopedia.purchase_platform.common.feature.insurance.usecase.GetInsuranceCartUseCase
 import com.tokopedia.purchase_platform.common.domain.usecase.SubmitHelpTicketUseCase
-import com.tokopedia.cart.view.InsuranceItemActionListener
-import com.tokopedia.cart.view.di.CartScope
+import com.tokopedia.purchase_platform.common.feature.insurance.InsuranceItemActionListener
 import com.tokopedia.purchase_platform.features.checkout.analytics.CheckoutAnalyticsPurchaseProtection
 import com.tokopedia.purchase_platform.features.checkout.data.api.CheckoutApi
 import com.tokopedia.purchase_platform.features.checkout.data.repository.CheckoutRepository
@@ -102,7 +101,7 @@ class CheckoutModule constructor(val shipmentFragment: ShipmentFragment) {
     }
 
     @Provides
-    @CartScope
+    @CheckoutScope
     fun provideExecutorSchedulers(): ExecutorSchedulers = DefaultSchedulers
 
     @Provides

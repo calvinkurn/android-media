@@ -2,9 +2,9 @@ package com.tokopedia.cart.view.viewholder
 
 import androidx.recyclerview.widget.RecyclerView
 import android.view.View
+import com.tokopedia.cart.R
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.productcard.ProductCardModel
-import com.tokopedia.purchase_platform.R
 import com.tokopedia.cart.view.ActionListener
 import com.tokopedia.cart.view.uimodel.CartRecommendationItemHolderData
 import kotlinx.android.synthetic.main.item_cart_recommendation.view.*

@@ -1,4 +1,4 @@
-package com.tokopedia.cart.view
+package com.tokopedia.purchase_platform.common.feature.insurance
 
 import com.tokopedia.purchase_platform.common.feature.insurance.request.UpdateInsuranceProductApplicationDetails
 import com.tokopedia.purchase_platform.common.data.model.response.macro_insurance.InsuranceCartDigitalProduct

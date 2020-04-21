@@ -1,7 +1,6 @@
 package com.tokopedia.cart.view.subscriber
 
 import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.purchase_platform.R
 import com.tokopedia.purchase_platform.common.feature.insurance.response.UpdateInsuranceDataGqlResponse
 import com.tokopedia.cart.view.ICartListPresenter
 import com.tokopedia.cart.view.ICartListView

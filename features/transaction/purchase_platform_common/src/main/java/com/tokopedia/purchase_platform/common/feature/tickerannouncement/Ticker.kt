@@ -1,4 +1,4 @@
-package com.tokopedia.cart.data.model.response
+package com.tokopedia.purchase_platform.common.feature.tickerannouncement
 
 
 import com.google.gson.annotations.SerializedName

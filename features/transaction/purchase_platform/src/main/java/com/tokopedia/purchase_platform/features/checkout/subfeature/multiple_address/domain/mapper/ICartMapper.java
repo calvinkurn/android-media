@@ -2,8 +2,8 @@ package com.tokopedia.purchase_platform.features.checkout.subfeature.multiple_ad
 
 import android.content.Context;
 
-import com.tokopedia.cart.domain.model.cartlist.CartListData;
 import com.tokopedia.purchase_platform.features.checkout.subfeature.multiple_address.data.model.response.CartMultipleAddressDataListResponse;
+import com.tokopedia.purchase_platform.features.checkout.subfeature.multiple_address.domain.model.cartlist.CartListData;
 
 /**
  * @author anggaprasetiyo on 31/01/18.

@@ -2,7 +2,7 @@ package com.tokopedia.cart.view.viewholder
 
 import androidx.recyclerview.widget.RecyclerView
 import android.view.View
-import com.tokopedia.purchase_platform.R
+import com.tokopedia.cart.R
 import com.tokopedia.cart.view.uimodel.CartLoadingHolderData
 
 /**

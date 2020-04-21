@@ -1,9 +1,10 @@
-package com.tokopedia.cart.data.model.response
+package com.tokopedia.cart.data.model.response.shopgroupsimplified
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.cart.data.model.response.promo.CartPromoData
 import com.tokopedia.cart.data.model.response.shopgroupsimplified.Messages
+import com.tokopedia.purchase_platform.common.feature.tickerannouncement.Ticker
 import java.util.*
 
 /**

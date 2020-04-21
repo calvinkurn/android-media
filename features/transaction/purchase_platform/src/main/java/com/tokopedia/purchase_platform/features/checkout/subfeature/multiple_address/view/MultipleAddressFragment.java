@@ -20,16 +20,15 @@ import com.tokopedia.purchase_platform.R;
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant;
 import com.tokopedia.purchase_platform.features.checkout.subfeature.multiple_address.domain.model.MultipleAddressAdapterData;
 import com.tokopedia.purchase_platform.features.checkout.subfeature.multiple_address.domain.model.MultipleAddressItemData;
-import com.tokopedia.cart.domain.model.cartlist.CartListData;
 import com.tokopedia.purchase_platform.common.base.BaseCheckoutFragment;
 import com.tokopedia.purchase_platform.features.checkout.subfeature.address_choice.view.CartAddressChoiceActivity;
-import com.tokopedia.cart.view.CartItemDecoration;
 import com.tokopedia.design.base.BaseToaster;
 import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsChangeAddress;
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsMultipleAddress;
 import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics;
 import com.tokopedia.logisticcart.shipping.model.RecipientAddressModel;
+import com.tokopedia.purchase_platform.features.checkout.subfeature.multiple_address.domain.model.cartlist.CartListData;
 import com.tokopedia.purchase_platform.features.checkout.subfeature.multiple_address.view.di.DaggerNewMultipleAddressComponent;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -402,9 +401,6 @@ public class MultipleAddressFragment extends BaseCheckoutFragment
     private void setRecyclerViewAdapter(List<MultipleAddressAdapterData> addressData, int itemPosition, boolean isInitialSetup, boolean isShowOnboarding) {
         multipleAddressAdapter = new MultipleAddressAdapter(addressData, this, isShowOnboarding);
         rvOrderAddressList.setAdapter(multipleAddressAdapter);
-        if (isInitialSetup) {
-            rvOrderAddressList.addItemDecoration(new CartItemDecoration());
-        }
         if (itemPosition != 0) {
             rvOrderAddressList.scrollToPosition(itemPosition);
         }

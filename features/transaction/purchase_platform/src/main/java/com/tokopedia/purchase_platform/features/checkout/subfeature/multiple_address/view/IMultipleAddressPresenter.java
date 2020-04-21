@@ -4,7 +4,7 @@ import android.content.Context;
 
 import com.tokopedia.logisticcart.shipping.model.RecipientAddressModel;
 import com.tokopedia.purchase_platform.features.checkout.subfeature.multiple_address.domain.model.MultipleAddressAdapterData;
-import com.tokopedia.cart.domain.model.cartlist.CartListData;
+import com.tokopedia.purchase_platform.features.checkout.subfeature.multiple_address.domain.model.cartlist.CartListData;
 
 import java.util.List;
 

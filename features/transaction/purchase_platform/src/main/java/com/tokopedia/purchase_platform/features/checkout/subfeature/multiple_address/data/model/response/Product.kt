@@ -2,15 +2,11 @@ package com.tokopedia.purchase_platform.features.checkout.subfeature.multiple_ad
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.cart.data.model.response.*
 import com.tokopedia.purchase_platform.common.data.model.response.WholesalePrice
-import com.tokopedia.purchase_platform.features.cart.data.model.response.FreeReturns
-import com.tokopedia.purchase_platform.features.cart.data.model.response.ProductPreorder
-import com.tokopedia.purchase_platform.features.cart.data.model.response.ProductShowCase
-import com.tokopedia.purchase_platform.features.cart.data.model.response.ProductTrackerData
-import com.tokopedia.purchase_platform.features.cart.data.model.response.ProductInvenageTotal
-import com.tokopedia.purchase_platform.features.cart.data.model.response.ProductImage
-import com.tokopedia.purchase_platform.features.cart.data.model.response.PriceChanges
-import com.tokopedia.purchase_platform.features.cart.data.model.response.shopgroupsimplified.FreeShipping
+import com.tokopedia.purchase_platform.features.checkout.data.model.response.shipment_address_form.FreeShipping
+import com.tokopedia.purchase_platform.features.checkout.data.model.response.shipment_address_form.ProductPreorder
+import com.tokopedia.purchase_platform.features.checkout.data.model.response.shipment_address_form.ProductTrackerData
 import java.util.*
 
 /**

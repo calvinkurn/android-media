@@ -1,7 +1,8 @@
-package com.tokopedia.cart.data.model.response
+package com.tokopedia.cart.data.model.response.shopgroupsimplified
 
 import javax.annotation.Generated
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.cart.data.model.response.shopgroupsimplified.ByProduct
 
 @Generated("com.robohorse.robopojogenerator")
 data class ProductInvenageTotal(

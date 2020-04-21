@@ -1,7 +1,5 @@
 package com.tokopedia.purchase_platform.common.constant
 
-import androidx.arch.core.executor.DefaultTaskExecutor
-
 /**
  * Created by Irfan Khoirul on 2019-09-24.
  */
@@ -21,6 +19,8 @@ class CheckoutConstant {
         const val PARAM_DEFAULT = "default"
         const val PARAM_CHECKOUT = "checkout"
         const val PARAM_OCC = "occ"
+        const val RESULT_CODE_FORCE_RESET_CART_FROM_SINGLE_SHIPMENT = 2
+        const val RESULT_CODE_COUPON_STATE_CHANGED = 735
     }
 
 }

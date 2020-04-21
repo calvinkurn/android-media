@@ -16,7 +16,8 @@ import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUsageSummariesUiModel;
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyVoucherOrdersItemUiModel;
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerData;
-import com.tokopedia.cart.data.model.response.Ticker;
+import com.tokopedia.purchase_platform.common.feature.tickerannouncement.Ticker;
+import com.tokopedia.purchase_platform.common.utils.UtilsKt;
 import com.tokopedia.purchase_platform.features.checkout.data.model.response.egold.EgoldTieringData;
 import com.tokopedia.purchase_platform.features.checkout.data.model.response.shipment_address_form.Addresses;
 import com.tokopedia.purchase_platform.features.checkout.data.model.response.shipment_address_form.CampaignTimer;

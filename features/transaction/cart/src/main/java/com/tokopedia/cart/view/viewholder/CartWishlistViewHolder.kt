@@ -3,7 +3,7 @@ package com.tokopedia.cart.view.viewholder
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.purchase_platform.R
+import com.tokopedia.cart.R
 import com.tokopedia.cart.view.ActionListener
 import com.tokopedia.cart.view.adapter.CartWishlistAdapter
 import com.tokopedia.cart.view.uimodel.CartWishlistHolderData

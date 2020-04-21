@@ -4,16 +4,15 @@ import android.content.Context
 import android.text.TextUtils
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.cart.R
-import com.tokopedia.purchase_platform.common.constant.CartConstant.STATE_RED
-import com.tokopedia.cart.data.model.response.*
 import com.tokopedia.cart.data.model.response.promo.*
-import com.tokopedia.cart.data.model.response.shopgroupsimplified.Messages
-import com.tokopedia.cart.data.model.response.shopgroupsimplified.WholesalePrice
+import com.tokopedia.cart.data.model.response.shopgroupsimplified.*
 import com.tokopedia.cart.domain.model.cartlist.*
 import com.tokopedia.cart.view.uimodel.CartItemHolderData
-import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerData
+import com.tokopedia.purchase_platform.common.constant.CartConstant.STATE_RED
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.PromoCheckoutErrorDefault
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.*
+import com.tokopedia.purchase_platform.common.feature.tickerannouncement.Ticker
+import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerData
 import javax.inject.Inject
 import kotlin.math.min
 

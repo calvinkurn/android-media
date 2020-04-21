@@ -4,9 +4,9 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import android.widget.TextView
+import com.tokopedia.cart.R
 
 import com.tokopedia.design.base.BaseCustomView
-import com.tokopedia.purchase_platform.R
 
 /**
  * Created by meta on 19/07/18.

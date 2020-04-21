@@ -97,7 +97,7 @@ import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerA
 import com.tokopedia.purchase_platform.common.sharedata.ShipmentFormRequest;
 import com.tokopedia.purchase_platform.common.feature.helpticket.SubmitTicketResult;
 import com.tokopedia.purchase_platform.common.utils.Utils;
-import com.tokopedia.cart.view.InsuranceItemActionListener;
+import com.tokopedia.purchase_platform.common.feature.insurance.InsuranceItemActionListener;
 import com.tokopedia.purchase_platform.features.checkout.analytics.CheckoutAnalyticsMacroInsurance;
 import com.tokopedia.purchase_platform.features.checkout.analytics.CheckoutAnalyticsPurchaseProtection;
 import com.tokopedia.purchase_platform.features.checkout.analytics.CornerAnalytics;
@@ -153,7 +153,10 @@ import rx.schedulers.Schedulers;
 import static com.tokopedia.logisticcart.cod.view.CodActivity.EXTRA_COD_DATA;
 import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.PARAM_CHECKOUT;
 import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.PARAM_DEFAULT;
+import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.RESULT_CODE_COUPON_STATE_CHANGED;
+import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.RESULT_CODE_FORCE_RESET_CART_FROM_SINGLE_SHIPMENT;
 import static com.tokopedia.purchase_platform.common.constant.Constant.EXTRA_CHECKOUT_REQUEST;
+import static com.tokopedia.purchase_platform.common.constant.PromoConstantKt.PAGE_CHECKOUT;
 import static com.tokopedia.remoteconfig.RemoteConfigKey.APP_ENABLE_INSURANCE_RECOMMENDATION;
 
 /**
@@ -1172,7 +1175,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     private void onResultFromMultipleAddress(int resultCode, Intent data) {
         if (resultCode == MultipleAddressFormActivity.RESULT_CODE_RELOAD_CART_PAGE) {
             if (getActivity() != null) {
-                getActivity().setResult(ShipmentActivity.RESULT_CODE_FORCE_RESET_CART_FROM_SINGLE_SHIPMENT);
+                getActivity().setResult(RESULT_CODE_FORCE_RESET_CART_FROM_SINGLE_SHIPMENT);
                 getActivity().finish();
             }
         } else if (data != null) {
@@ -2246,7 +2249,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     public int getResultCode() {
         if (shipmentPresenter.getCouponStateChanged()) {
-            return ShipmentActivity.RESULT_CODE_COUPON_STATE_CHANGED;
+            return RESULT_CODE_COUPON_STATE_CHANGED;
         } else {
             return Activity.RESULT_CANCELED;
         }
@@ -2542,7 +2545,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             ValidateUsePromoRequest validateUseRequestParam = generateValidateUsePromoRequest();
             PromoRequest promoRequestParam = generateCouponListRecommendationRequest();
             Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalPromo.PROMO_CHECKOUT_MARKETPLACE);
-            intent.putExtra(com.tokopedia.purchase_platform.common.constant.PromoConstantKt.ARGS_PAGE_SOURCE, PromoCheckoutAnalytics.getPAGE_CHECKOUT());
+            intent.putExtra(com.tokopedia.purchase_platform.common.constant.PromoConstantKt.ARGS_PAGE_SOURCE, PAGE_CHECKOUT);
             intent.putExtra(com.tokopedia.purchase_platform.common.constant.PromoConstantKt.ARGS_PROMO_REQUEST, promoRequestParam);
             intent.putExtra(com.tokopedia.purchase_platform.common.constant.PromoConstantKt.ARGS_VALIDATE_USE_REQUEST, validateUseRequestParam);
             intent.putStringArrayListExtra(com.tokopedia.purchase_platform.common.constant.PromoConstantKt.ARGS_BBO_PROMO_CODES, bboPromoCodes);
@@ -2779,7 +2782,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         ValidateUsePromoRequest validateUseRequestParam = generateValidateUsePromoRequest();
         PromoRequest promoRequestParam = generateCouponListRecommendationRequest();
         Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalPromo.PROMO_CHECKOUT_MARKETPLACE);
-        intent.putExtra(com.tokopedia.purchase_platform.common.constant.PromoConstantKt.ARGS_PAGE_SOURCE, PromoCheckoutAnalytics.getPAGE_CHECKOUT());
+        intent.putExtra(com.tokopedia.purchase_platform.common.constant.PromoConstantKt.ARGS_PAGE_SOURCE, PAGE_CHECKOUT);
         intent.putExtra(com.tokopedia.purchase_platform.common.constant.PromoConstantKt.ARGS_PROMO_REQUEST, promoRequestParam);
         intent.putExtra(com.tokopedia.purchase_platform.common.constant.PromoConstantKt.ARGS_VALIDATE_USE_REQUEST, validateUseRequestParam);
         intent.putStringArrayListExtra(com.tokopedia.purchase_platform.common.constant.PromoConstantKt.ARGS_BBO_PROMO_CODES, bboPromoCodes);

@@ -3,7 +3,7 @@ package com.tokopedia.purchase_platform.features.checkout.subfeature.multiple_ad
 import android.app.Activity;
 
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
-import com.tokopedia.cart.domain.model.cartlist.CartListData;
+import com.tokopedia.purchase_platform.features.checkout.subfeature.multiple_address.domain.model.cartlist.CartListData;
 
 /**
  * Created by kris on 2/5/18. Tokopedia

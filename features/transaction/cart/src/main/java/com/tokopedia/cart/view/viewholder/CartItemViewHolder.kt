@@ -24,7 +24,6 @@ import com.tokopedia.cart.view.uimodel.CartItemHolderData
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifyprinciples.Typography
 import kotlinx.coroutines.*
-import org.apache.commons.lang3.StringUtils
 import rx.Observable
 import rx.Subscriber
 import rx.Subscription
@@ -425,13 +424,13 @@ class CartItemViewHolder constructor(itemView: View,
             }
         }
 
-        if (!StringUtils.isBlank(data.cartItemData?.updatedData?.remark)) {
+        if (data.cartItemData?.updatedData?.remark?.isNotBlank() == true) {
             data.isStateRemarkExpanded = true
         }
 
         if (data.isStateRemarkExpanded) {
             // Has a notes from pdp or not at all but click add notes button
-            if (StringUtils.isBlank(data.cartItemData?.originData?.originalRemark) || data.cartItemData?.updatedData?.remark != data.cartItemData?.originData?.originalRemark) {
+            if (data.cartItemData?.originData?.originalRemark.isNullOrBlank() == true || data.cartItemData?.updatedData?.remark != data.cartItemData?.originData?.originalRemark) {
                 // Notes is empty after click add notes button or has value after use click change notes button
                 this.tvLabelFormRemark.visibility = View.VISIBLE
                 this.tvRemark.visibility = View.GONE
