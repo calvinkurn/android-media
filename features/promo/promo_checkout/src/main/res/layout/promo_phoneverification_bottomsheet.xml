@@ -61,6 +61,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/promo_btn_verifikasi"
+        android:textSize="@dimen/sp_16"
+        android:textStyle="bold"
         app:unifyButtonSize="large"
         app:unifyButtonType="main"
         app:unifyButtonVariant="filled"

@@ -10,6 +10,8 @@ import javax.inject.Inject
 class PromoCheckoutAnalytics @Inject constructor() : TransactionAnalytics() {
 
     companion object {
+        const val PAGE_OCC = 3
+
         val EVENT_NAME_VIEW = "view"
         val EVENT_NAME_CLICK = "click"
     }
@@ -34,6 +36,13 @@ class PromoCheckoutAnalytics @Inject constructor() : TransactionAnalytics() {
                 eventNamePage = EventName.CLICK_COURIER
             }
             eventCategoryPage = EventCategory.COURIER_SELECTION
+        } else if (page == PAGE_OCC) {
+            if (event == EVENT_NAME_VIEW) {
+                eventNamePage = EventName.VIEW_CHECKOUT_EXPRESS_IRIS
+            } else if (event == EVENT_NAME_CLICK) {
+                eventNamePage = EventName.CLICK_CHECKOUT_EXPRESS
+            }
+            eventCategoryPage = EventCategory.ORDER_SUMMARY
         }
 
         if (eventNamePage != null && eventCategoryPage != null) {
@@ -56,6 +65,7 @@ class PromoCheckoutAnalytics @Inject constructor() : TransactionAnalytics() {
                 when (page) {
                     PAGE_CART -> EventCategory.CART
                     PAGE_CHECKOUT -> EventCategory.COURIER_SELECTION
+                    PAGE_OCC -> EventCategory.ORDER_SUMMARY
                     else -> ""
                 },
                 Key.EVENT_ACTION, eventAction,
@@ -125,6 +135,9 @@ class PromoCheckoutAnalytics @Inject constructor() : TransactionAnalytics() {
         } else if (page == PAGE_CHECKOUT) {
             data["event"] = EventName.CLICK_COURIER
             data["eventCategory"] = EventCategory.COURIER_SELECTION
+        } else if (page == PAGE_OCC) {
+            data["event"] = EventName.CLICK_CHECKOUT_EXPRESS
+            data["eventCategory"] = EventCategory.ORDER_SUMMARY
         }
         data["eventAction"] = EventAction.CLICK_PILIH_PROMO_RECOMMENDATION
         data["eventLabel"] = ""
@@ -278,6 +291,9 @@ class PromoCheckoutAnalytics @Inject constructor() : TransactionAnalytics() {
         } else if (page == PAGE_CHECKOUT) {
             data["event"] = EventName.CLICK_COURIER
             data["eventCategory"] = EventCategory.COURIER_SELECTION
+        } else if (page == PAGE_OCC) {
+            data["event"] = EventName.CLICK_CHECKOUT_EXPRESS
+            data["eventCategory"] = EventCategory.ORDER_SUMMARY
         }
         data["eventAction"] = EventAction.CLICK_PAKAI_PROMO
         data["eventLabel"] = "success - $status"

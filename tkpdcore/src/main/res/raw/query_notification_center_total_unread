@@ -1,6 +1,6 @@
 query get_notification_update_unread($typeId: Int){
-  notifcenter_total_unread(type_id: $typeId) {
-            notif_total_unread
-            notif_total_unread_int
+  notifcenter_unread(type_id: $typeId) {
+            notif_unread
+            notif_unread_int
        }
 }

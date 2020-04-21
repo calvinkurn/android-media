@@ -33,7 +33,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation rootProject.ext.networkDependencies.glide
-    implementation rootProject.ext.firebase.performance
+
     implementation rootProject.ext.miscDependencies.parcelerApi
     annotationProcessor rootProject.ext.miscDependencies.parceler
     implementation rootProject.ext.miscDependencies.gson

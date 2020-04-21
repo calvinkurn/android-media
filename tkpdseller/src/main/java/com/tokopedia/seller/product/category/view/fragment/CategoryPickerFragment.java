@@ -2,12 +2,13 @@ package com.tokopedia.seller.product.category.view.fragment;
 
 import android.content.Context;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.tokopedia.base.list.seller.view.adapter.BaseRetryDataBinder;
 import com.tokopedia.base.list.seller.view.old.RetryDataBinder;
@@ -57,7 +58,7 @@ public class CategoryPickerFragment extends BaseDaggerFragment implements Catego
         DaggerCategoryPickerComponent
                 .builder()
                 .productComponent(getComponent(ProductComponent.class))
-                .categoryPickerModule(new CategoryPickerModule())
+                .categoryPickerModule(new CategoryPickerModule(requireActivity().getApplicationContext()))
                 .build()
                 .inject(this);
     }

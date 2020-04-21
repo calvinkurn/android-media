@@ -2843,4 +2843,9 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     override fun resetRecentViewList() {
         shouldReloadRecentViewList = true
     }
+
+    override fun sendATCTrackingURL(clickurl: String) {
+        var url = "$clickurl&click_source=ATC_direct_click";
+        ImpresionTask(userSession).execute(url);
+    }
 }

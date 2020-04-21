@@ -22,7 +22,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.Menus
 import com.tokopedia.talk.R
-import com.tokopedia.talk.common.TalkRouter
 import com.tokopedia.talk.common.adapter.TalkProductAttachmentAdapter
 import com.tokopedia.talk.common.adapter.viewholder.CommentTalkViewHolder
 import com.tokopedia.talk.common.adapter.viewholder.LoadMoreCommentTalkViewHolder
@@ -39,7 +38,6 @@ import com.tokopedia.talk.inboxtalk.view.viewmodel.InboxTalkViewModel
 import com.tokopedia.talk.producttalk.view.viewmodel.TalkState
 import com.tokopedia.talk.reporttalk.view.activity.ReportTalkActivity
 import com.tokopedia.talk.shoptalk.di.DaggerShopTalkComponent
-import com.tokopedia.talk.shoptalk.view.activity.ShopTalkActivity
 import com.tokopedia.talk.shoptalk.view.listener.ShopTalkContract
 import com.tokopedia.talk.shoptalk.view.presenter.ShopTalkPresenter
 import com.tokopedia.talk.talkdetails.view.activity.TalkDetailsActivity

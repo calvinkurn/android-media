@@ -978,9 +978,10 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
     }
 
     public void eventViewPromoAfterAdjustItem(String msg) {
-        sendEventCategoryAction(
+        sendEventCategoryActionLabel(
                 EventName.VIEW_COURIER_IRIS,
                 EventCategory.COURIER_SELECTION,
+                EventAction.VIEW_PROMO_MESSAGE,
                 msg
         );
     }

@@ -1,12 +1,12 @@
 package com.tokopedia.iris.data.network
 
 import android.content.Context
-import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.iris.util.*
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.interceptor.FingerprintInterceptor
+import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import okhttp3.OkHttpClient
@@ -27,7 +27,7 @@ class ApiService(private val context: Context) {
     fun makeRetrofitService(): ApiInterface {
         if (apiInterface == null)
             apiInterface = Retrofit.Builder()
-                .baseUrl(BASE_URL)
+                .baseUrl(TokopediaUrl.getInstance().HUB + VERSION)
                 .addConverterFactory(StringResponseConverter())
                 .client(createClient())
                 .build().create(ApiInterface::class.java)
