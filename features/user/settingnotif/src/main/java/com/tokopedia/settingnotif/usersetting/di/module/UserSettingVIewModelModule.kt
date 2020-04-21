@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.settingnotif.usersetting.di.UserSettingScope
 import com.tokopedia.settingnotif.usersetting.view.viewmodel.SettingStateViewModel
+import com.tokopedia.settingnotif.usersetting.view.viewmodel.UserSettingViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -24,6 +25,14 @@ import dagger.multibindings.IntoMap
     @ViewModelKey(SettingStateViewModel::class)
     internal abstract fun bindSettingStateViewModel(
             viewModel: SettingStateViewModel
+    ): ViewModel
+
+    @Binds
+    @IntoMap
+    @UserSettingScope
+    @ViewModelKey(UserSettingViewModel::class)
+    internal abstract fun bindUserSettingViewModel(
+            viewModel: UserSettingViewModel
     ): ViewModel
 
 }
