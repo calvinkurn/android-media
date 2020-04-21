@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
+    android:background="@color/green_400"
     android:layout_height="wrap_content">
 
     <ImageView
@@ -77,6 +78,7 @@
         android:maxLines="1"
         android:textColor="@color/charcoal_grey_44"
         android:visibility="gone"
+        android:background="@color/Blue_B200"
         app:layout_constraintBottom_toBottomOf="@id/labelDiscount"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/labelDiscount"
@@ -95,6 +97,7 @@
         android:textColor="@color/charcoal_grey_96"
         android:visibility="gone"
         android:gravity="center_vertical"
+        android:background="@color/yellow_200"
         app:layout_goneMarginBottom="@dimen/product_card_flashsale_text_view_price_gone_margin_bottom"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
