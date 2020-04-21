@@ -134,8 +134,10 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
             if (isMaintenance(bodyResponse)) {
                 showMaintenancePage();
             } else if (code == ERROR_UNAUTHORIZED_REQUEST) {
-                sendAnalyticsAnomalyResponse("401_after_refresh_token", response, response.request());
-                networkRouter.showForceLogoutTokenDialog(bodyResponse);
+                if(!userSession.getAccessToken().isEmpty()) {
+                    sendAnalyticsAnomalyResponse("401_after_refresh_token", response, response.request());
+                    networkRouter.showForceLogoutTokenDialog(bodyResponse);
+                }
             }
             else if (isServerError(response.code()) && !isHasErrorMessage(bodyResponse)) {
                 showServerError(response);
