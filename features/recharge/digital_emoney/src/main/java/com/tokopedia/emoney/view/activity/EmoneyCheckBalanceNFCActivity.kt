@@ -205,8 +205,8 @@ class EmoneyCheckBalanceNFCActivity : BaseSimpleActivity(), MandiriActionListene
                     abis.contains(ARCHITECTURE_ARM64) || abis.contains(ARCHITECTURE_ARM32)) {
                 brizziViewModel.getTokenBrizzi(GraphqlHelper.loadRawString(resources, R.raw.query_token_brizzi), refresh)
                 brizziViewModel.tokenBrizzi.observe(this, Observer { token ->
-//                    brizziInstance.Init(token, AuthKey.BRIZZI_CLIENT_SECRET)
-//                    brizziInstance.setUserName(AuthKey.BRIZZI_CLIENT_ID)
+                    brizziInstance.Init(token, AuthKey.BRIZZI_CLIENT_SECRET)
+                    brizziInstance.setUserName(AuthKey.BRIZZI_CLIENT_ID)
 
                     briBrizzi = BrizziCheckBalance(brizziInstance, this)
                     briBrizzi.processTagIntent(intent)
