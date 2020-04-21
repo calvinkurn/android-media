@@ -32,6 +32,7 @@ import com.tokopedia.abstraction.common.utils.view.RefreshHandler;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
+import com.tokopedia.applink.internal.ApplinkConstInternalLogistic;
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel;
 import com.tokopedia.datepicker.DatePickerUnify;
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog;
@@ -987,7 +988,7 @@ public class OrderListFragment extends BaseDaggerFragment implements
     }
 
     private void trackOrder() {
-        String routingAppLink;
+        /*String routingAppLink;
         routingAppLink = ApplinkConst.ORDER_TRACKING.replace("{order_id}", selectedOrderId);
         String trackingUrl;
         Uri uri = Uri.parse(actionButtonUri);
@@ -995,7 +996,14 @@ public class OrderListFragment extends BaseDaggerFragment implements
         Uri.Builder uriBuilder = new Uri.Builder();
         uriBuilder.appendQueryParameter(ApplinkConst.Query.ORDER_TRACKING_URL_LIVE_TRACKING, trackingUrl);
         routingAppLink += uriBuilder.toString();
-        RouteManager.route(getContext(), routingAppLink);
+        RouteManager.route(getContext(), routingAppLink);*/
+
+        String trackingUrl;
+        Uri uri = Uri.parse(actionButtonUri);
+        trackingUrl = uri.getQueryParameter("url");
+        Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalLogistic.ORDER_TRACKING, selectedOrderId);
+        intent.putExtra(ApplinkConst.Query.ORDER_TRACKING_URL_LIVE_TRACKING, trackingUrl);
+        startActivity(intent);
     }
 
     @Override

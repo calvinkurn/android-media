@@ -34,6 +34,7 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalLogistic;
 import com.tokopedia.core.drawer2.service.DrawerGetNotificationService;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.analytics.AppScreen;
@@ -570,7 +571,7 @@ public class FragmentSellingTransaction extends BaseFragment<SellingStatusTransa
 
             @Override
             public void onTrack(SellingStatusTxModel model) {
-                String routingAppLink;
+                /*String routingAppLink;
                 routingAppLink = ApplinkConst.ORDER_TRACKING;
                 Uri.Builder uriBuilder = new Uri.Builder();
                 uriBuilder.appendQueryParameter(
@@ -582,7 +583,14 @@ public class FragmentSellingTransaction extends BaseFragment<SellingStatusTransa
                             model.liveTracking);
                 }
                 routingAppLink += uriBuilder.toString();
-                RouteManager.route(getActivity(), routingAppLink);
+                RouteManager.route(getActivity(), routingAppLink);*/
+
+                Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalLogistic.ORDER_TRACKING);
+                intent.putExtra(ApplinkConst.Query.ORDER_TRACKING_ORDER_ID, model.OrderId);
+                if (!TextUtils.isEmpty(model.liveTracking)) {
+                    intent.putExtra(ApplinkConst.Query.ORDER_TRACKING_URL_LIVE_TRACKING, model.liveTracking);
+                }
+                startActivity(intent);
             }
 
             @Override

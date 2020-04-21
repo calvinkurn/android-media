@@ -50,6 +50,7 @@ import com.tokopedia.abstraction.common.utils.view.RefreshHandler;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
+import com.tokopedia.applink.internal.ApplinkConstInternalLogistic;
 import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.design.component.Dialog;
 import com.tokopedia.design.component.ToasterError;
@@ -774,7 +775,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                     } else if (actionButton.getLabel().equalsIgnoreCase("Lacak")) {
 
                         orderListAnalytics.sendActionButtonClickEvent(CLICK_TRACK);
-                        String routingAppLink;
+                        /*String routingAppLink;
                         routingAppLink = ApplinkConst.ORDER_TRACKING.replace("{order_id}", getArguments().getString(KEY_ORDER_ID));
 
                         String trackingUrl;
@@ -784,7 +785,15 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                         Uri.Builder uriBuilder = new Uri.Builder();
                         uriBuilder.appendQueryParameter(ApplinkConst.Query.ORDER_TRACKING_URL_LIVE_TRACKING, trackingUrl);
                         routingAppLink += uriBuilder.toString();
-                        RouteManager.route(getContext(), routingAppLink);
+                        RouteManager.route(getContext(), routingAppLink);*/
+
+                        String trackingUrl;
+                        Uri uri = Uri.parse(actionButton.getUri());
+                        trackingUrl = uri.getQueryParameter("url");
+                        Intent intentTracking = RouteManager.getIntent(getActivity(), ApplinkConstInternalLogistic.ORDER_TRACKING,  getArguments().getString(KEY_ORDER_ID));
+                        intentTracking.putExtra(ApplinkConst.Query.ORDER_TRACKING_URL_LIVE_TRACKING, trackingUrl);
+                        startActivity(intentTracking);
+
                     } else {
                         RouteManager.route(getContext(), actionButton.getUri());
                     }
