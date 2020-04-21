@@ -87,27 +87,50 @@ class AddEditProductPreviewActivity : BaseSimpleActivity() {
 
     override fun onBackPressed() {
         onBackPressedHitTracking()
-        DialogUnify(this, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
-            setTitle(getString(R.string.label_title_on_dialog))
-            setDescription(getString(R.string.label_description_on_dialog))
-            setPrimaryCTAText(getString(R.string.label_cta_primary_button_on_dialog))
-            setSecondaryCTAText(getString(R.string.label_cta_secondary_button_on_dialog))
-            setSecondaryCTAClickListener {
-                saveProductToDraft()
-                moveToManageProduct()
-                onCtaYesPressedHitTracking()
-            }
-            setPrimaryCTAClickListener {
-                this.dismiss()
-                onCtaNoPressedHitTracking()
-            }
-        }.show()
+        if(isEditing()) {
+            DialogUnify(this, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
+                setTitle(getString(R.string.label_title_on_dialog))
+                setDescription(getString(R.string.label_description_on_dialog_edit))
+                setPrimaryCTAText(getString(R.string.label_cta_primary_button_on_dialog))
+                setSecondaryCTAText(getString(R.string.label_cta_secondary_button_on_dialog))
+                setSecondaryCTAClickListener {
+                    super.onBackPressed()
+                }
+                setPrimaryCTAClickListener {
+                    this.dismiss()
+                }
+            }.show()
+        } else {
+            DialogUnify(this, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
+                setTitle(getString(R.string.label_title_on_dialog))
+                setDescription(getString(R.string.label_description_on_dialog))
+                setPrimaryCTAText(getString(R.string.label_cta_primary_button_on_dialog))
+                setSecondaryCTAText(getString(R.string.label_cta_secondary_button_on_dialog))
+                setSecondaryCTAClickListener {
+                    saveProductToDraft()
+                    moveToManageProduct()
+                    onCtaYesPressedHitTracking()
+                }
+                setPrimaryCTAClickListener {
+                    this.dismiss()
+                    onCtaNoPressedHitTracking()
+                }
+            }.show()
+        }
     }
 
     private fun moveToManageProduct() {
         val intent = RouteManager.getIntent(this, ApplinkConstInternalMarketplace.PRODUCT_MANAGE_LIST)
         startActivity(intent)
         finish()
+    }
+
+    private fun isEditing(): Boolean {
+        val f = fragment
+        if (f != null && f is AddEditProductPreviewFragment) {
+            return f.checkEdit()
+        }
+        return false
     }
 
     private fun saveProductToDraft() {

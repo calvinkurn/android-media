@@ -27,10 +27,7 @@ import com.tokopedia.imagepicker.editor.main.view.ImageEditorActivity
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
 import com.tokopedia.imagepicker.picker.main.builder.*
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.observe
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_DESCRIPTION_INPUT
@@ -278,8 +275,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             else {
                 ProductAddMainTracking.clickOtherCategory(shopId)
             }
-            // if has variant
-            if (viewModel.hasVariants) {
+            if (!viewModel.isAdding && viewModel.hasVariants) {
                 showImmutableCategoryDialog()
             } else {
                 val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PRODUCT_CATEGORY_PICKER, 0.toString())
@@ -921,12 +917,12 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                     viewModel.getProductNameRecommendation(query = productNameInput)
                 }
                 // show category recommendations to the product has no variants
-                if (!viewModel.hasVariants) viewModel.getCategoryRecommendation(productNameInput)
+                if (viewModel.isAdding) viewModel.getCategoryRecommendation(productNameInput)
             } else {
                 // show empty recommendations for input with error
                 productNameRecAdapter?.setProductNameRecommendations(emptyList())
                 // keep the category if the product has variants
-                if (!viewModel.hasVariants) productCategoryRecListView?.setData(ArrayList(emptyList()))
+                if (viewModel.isAdding) productCategoryRecListView?.setData(ArrayList(emptyList()))
             }
             // reset name selection status
             viewModel.isNameRecommendationSelected = false

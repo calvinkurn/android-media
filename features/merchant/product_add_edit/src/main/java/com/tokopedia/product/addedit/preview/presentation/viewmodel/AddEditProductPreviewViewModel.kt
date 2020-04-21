@@ -91,7 +91,7 @@ class AddEditProductPreviewViewModel @Inject constructor(
     private val mGetProductDraftResult = MutableLiveData<Result<ProductDraft>>()
     val getProductDraftResult: LiveData<Result<ProductDraft>> get() = mGetProductDraftResult
 
-    val isAdding: Boolean get() = getDraftId() == 0L && getProductId().isBlank()
+    val isAdding: Boolean get() = getProductId().isBlank()
 
     var isDuplicate: Boolean = false
 

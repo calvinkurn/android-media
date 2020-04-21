@@ -224,6 +224,10 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
         Toast.makeText(context, R.string.label_succes_save_draft, Toast.LENGTH_LONG).show()
     }
 
+    fun checkEdit(): Boolean {
+        return viewModel.isEditing.value ?: false
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_add_edit_product_preview, container, false)
     }
@@ -540,11 +544,15 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
                     val cacheManagerId = data.getStringExtra(SET_CASHBACK_CACHE_MANAGER_KEY)
                     val cacheManager = context?.let { context -> SaveInstanceCacheManager(context, cacheManagerId) }
                     val setCashbackResult: SetCashbackResult? = cacheManager?.get(SET_CASHBACK_RESULT, SetCashbackResult::class.java)
-                    setCashbackResult?.let { cashbackResult ->
+                    if(setCashbackResult == null) {
+                        onFailedSetCashback()
+                        return
+                    }
+                    setCashbackResult.let { cashbackResult ->
                         if(!cashbackResult.limitExceeded) {
                             val cashbackProduct = Cashback(cashbackResult.cashback)
                             viewModel.productDomain = viewModel.productDomain.copy(cashback = cashbackProduct)
-                            onSuccessSetCashback(cashbackResult)
+                            onSuccessSetCashback()
                         } else {
                             onFailedSetCashback()
                         }
@@ -564,25 +572,19 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
         }
     }
 
-    private fun onSuccessSetCashback(setCashbackResult: SetCashbackResult) {
+    private fun onSuccessSetCashback() {
         view?.let {
-            if(setCashbackResult.cashback == 0) {
-                Toaster.make(it, getString(
-                        R.string.product_manage_set_cashback_no_cashback_success),
-                        Snackbar.LENGTH_SHORT, Toaster.TYPE_NORMAL)
-            } else {
-                Toaster.make(it, getString(
-                        R.string.product_manage_set_cashback_success, setCashbackResult.cashback),
-                        Snackbar.LENGTH_SHORT, Toaster.TYPE_NORMAL)
-            }
+            Toaster.make(it, getString(
+                    R.string.product_edit_set_cashback_success),
+                    Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL)
         }
     }
 
     private fun onFailedSetCashback() {
         view?.let {
             Toaster.make(it, getString(
-                    R.string.product_manage_set_cashback_error),
-                    Snackbar.LENGTH_SHORT, Toaster.TYPE_NORMAL)
+                    R.string.product_edit_set_cashback_error),
+                    Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL)
         }
     }
 
