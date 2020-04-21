@@ -3,7 +3,7 @@ package com.tokopedia.product.manage.feature.quickedit.variant.data.model.respon
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.product.manage.feature.quickedit.variant.data.model.Header
 
-class ProductUpdateV3Data(
+data class ProductUpdateV3Data(
     @SerializedName("header")
     val header: Header?,
     @SerializedName("isSuccess")
