@@ -94,7 +94,18 @@ class PlayBottomSheetViewModel @Inject constructor(
             }
 
             _observableAddToCart.value = Event(mappingResponseCart(responseCart, product, action, type))
-        }) { }
+        }) {
+            _observableAddToCart.value = Event(
+                    CartFeedbackUiModel(
+                            isSuccess = false,
+                            errorMessage = it.localizedMessage.orEmpty(),
+                            cartId = "",
+                            product = product,
+                            action = action,
+                            bottomInsetsType = type
+                    )
+            )
+        }
     }
 
     fun onFreezeBan() {
