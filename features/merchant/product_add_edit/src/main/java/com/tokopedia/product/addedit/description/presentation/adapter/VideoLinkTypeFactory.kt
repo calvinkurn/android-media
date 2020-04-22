@@ -7,7 +7,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.product.addedit.R
-import com.tokopedia.product.addedit.common.util.placeCursorToEnd
+import com.tokopedia.product.addedit.common.util.replaceTextAndRestoreCursorPosition
 import com.tokopedia.product.addedit.common.util.setText
 import com.tokopedia.product.addedit.description.presentation.model.VideoLinkModel
 import kotlinx.android.synthetic.main.item_product_add_video.view.*
@@ -54,10 +54,9 @@ class VideoLinkTypeFactory: BaseAdapterTypeFactory(){
             } else {
                 itemView.textFieldUrl.apply {
                     textFieldInput.removeTextChangedListener(textWatcher)
-                    setText(element.inputUrl)
+                    replaceTextAndRestoreCursorPosition(element.inputUrl)
                     textFieldInput.addTextChangedListener(textWatcher)
                     requestFocus()
-                    placeCursorToEnd()
                 }
             }
 
@@ -89,6 +88,8 @@ class VideoLinkTypeFactory: BaseAdapterTypeFactory(){
                     textFieldUrl.setError(false)
                     textFieldUrl.setMessage("")
                 }
+
+                cardThumbnail.setOnClickListener { listener?.onThumbnailClicked(inputUrl) }
             }
         }
 
@@ -100,5 +101,6 @@ class VideoLinkTypeFactory: BaseAdapterTypeFactory(){
     interface VideoLinkListener {
         fun onDeleteClicked(videoLinkModel: VideoLinkModel, position: Int)
         fun onTextChanged(url: String, position: Int)
+        fun onThumbnailClicked(url: String)
     }
 }

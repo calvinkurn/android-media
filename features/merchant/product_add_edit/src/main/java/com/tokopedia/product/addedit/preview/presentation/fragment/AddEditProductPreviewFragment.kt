@@ -905,7 +905,11 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
                 ImagePickerTabTypeDef.TYPE_INSTAGRAM
         )
 
-        val imagePickerEditorBuilder = ImagePickerEditorBuilder.getDefaultBuilder()
+        val imagePickerEditorBuilder = ImagePickerEditorBuilder.getDefaultBuilder().apply {
+            this.belowMinResolutionErrorMessage = getString(R.string.error_image_under_x_resolution, ImagePickerBuilder.DEFAULT_MIN_RESOLUTION, ImagePickerBuilder.DEFAULT_MIN_RESOLUTION)
+            this.imageTooLargeErrorMessage = getString(R.string.error_image_too_large, (AddEditProductConstants.MAX_PRODUCT_IMAGE_SIZE_IN_KB / 1024))
+            this.isRecheckSizeAfterResize = true
+        }
 
         val imagePickerMultipleSelectionBuilder = ImagePickerMultipleSelectionBuilder(
                 selectedImagePathList,
@@ -917,7 +921,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
                 title,
                 imagePickerPickerTabTypeDef,
                 GalleryType.IMAGE_ONLY,
-                ImagePickerBuilder.DEFAULT_MAX_IMAGE_SIZE_IN_KB,
+                AddEditProductConstants.MAX_PRODUCT_IMAGE_SIZE_IN_KB,
                 ImagePickerBuilder.DEFAULT_MIN_RESOLUTION,
                 ImageRatioTypeDef.RATIO_1_1,
                 true,

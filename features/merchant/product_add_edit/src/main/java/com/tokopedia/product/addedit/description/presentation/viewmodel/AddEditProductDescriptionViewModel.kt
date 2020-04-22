@@ -2,6 +2,7 @@ package com.tokopedia.product.addedit.description.presentation.viewmodel
 
 import android.net.Uri
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.common.network.data.model.RestResponse
@@ -13,6 +14,7 @@ import com.tokopedia.product.addedit.description.domain.usecase.GetProductVarian
 import com.tokopedia.product.addedit.description.domain.usecase.GetYoutubeVideoUseCase
 import com.tokopedia.product.addedit.description.presentation.model.*
 import com.tokopedia.product.addedit.description.presentation.model.youtube.YoutubeVideoModel
+import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -48,6 +50,9 @@ class AddEditProductDescriptionViewModel @Inject constructor(
     val variantInputModel: ProductVariantInputModel get() {
         return productInputModel.variantInputModel
     }
+    var isFetchingVideoData: MutableMap<Int, Boolean> = mutableMapOf()
+    var urlToFetch: MutableMap<Int, String> = mutableMapOf()
+    var fetchedUrl: MutableMap<Int, String> = mutableMapOf()
 
     private val _productVariant = MutableLiveData<Result<List<ProductVariantByCatModel>>>()
     val productVariant: LiveData<Result<List<ProductVariantByCatModel>>> = _productVariant
@@ -58,8 +63,18 @@ class AddEditProductDescriptionViewModel @Inject constructor(
         }
     }
 
-    private val _videoYoutube = MutableLiveData<Result<YoutubeVideoModel>>()
-    val videoYoutube: LiveData<Result<YoutubeVideoModel>> = _videoYoutube
+    private val _videoYoutubeNew = MutableLiveData<Pair<Int, Result<YoutubeVideoModel>>>()
+    val videoYoutube: MediatorLiveData<Pair<Int, Result<YoutubeVideoModel>>> = MediatorLiveData()
+
+    init {
+        videoYoutube.addSource(_videoYoutubeNew) { pair ->
+            val position = pair.first
+            when (val result = pair.second) {
+                is Success -> videoYoutube.value = Pair(position, result)
+                is Fail -> videoYoutube.value = Pair(position, result)
+            }
+        }
+    }
 
     fun getVariants(categoryId: String) {
         launchCatchError(block = {
@@ -73,17 +88,17 @@ class AddEditProductDescriptionViewModel @Inject constructor(
         })
     }
 
-    fun getVideoYoutube(videoUrl: String) {
+    fun getVideoYoutube(videoUrl: String, position: Int) {
         launchCatchError( block = {
             getIdYoutubeUrl(videoUrl)?.let { youtubeId  ->
                 getYoutubeVideoUseCase.setVideoId(youtubeId)
                 val result = withContext(Dispatchers.IO) {
                     convertToYoutubeResponse(getYoutubeVideoUseCase.executeOnBackground())
                 }
-                _videoYoutube.value = Success(result)
+                _videoYoutubeNew.value = Pair(position, Success(result))
             }
         }, onError = {
-            _videoYoutube.value = Fail(it)
+            _videoYoutubeNew.value = Pair(position, Fail(it))
         })
     }
 
