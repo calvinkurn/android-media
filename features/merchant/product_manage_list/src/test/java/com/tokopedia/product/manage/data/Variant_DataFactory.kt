@@ -8,6 +8,7 @@ import com.tokopedia.product.manage.feature.quickedit.variant.data.model.Product
 import com.tokopedia.product.manage.feature.quickedit.variant.data.model.Selection
 import com.tokopedia.product.manage.feature.quickedit.variant.data.model.Variant
 import com.tokopedia.product.manage.feature.quickedit.variant.data.model.response.GetProductVariantResponse
+import com.tokopedia.product.manage.feature.quickedit.variant.data.model.result.EditVariantResult
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 
 fun createProductVariantResponse(
@@ -65,4 +66,14 @@ fun createGetVariantResponse(
     val variantResponse = Variant(products, selections, sizeCharts)
     val getProductV3Response = GetProductV3(productName, variantResponse)
     return GetProductVariantResponse(getProductV3Response)
+}
+
+fun createEditVariantResult(
+    productId: String = "1",
+    productName: String = "Produk",
+    variants: List<ProductVariant> = emptyList(),
+    selections: List<Selection> = emptyList(),
+    sizeCharts: List<Picture> = emptyList()
+): EditVariantResult {
+    return EditVariantResult(productId, productName, variants, selections, sizeCharts)
 }
