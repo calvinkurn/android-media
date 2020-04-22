@@ -128,7 +128,6 @@ public class GTMAnalytics extends ContextAnalytics {
         bundle.putString(USER_ID, userSession.getUserId());
         if (!CommonUtils.checkStringNotNull(bundle.getString("sessionIris")))
             bundle.putString("sessionIris", new IrisSession(context).getSessionId());
-        bundle.putString("currentSite", "");
         return bundle;
     }
 
