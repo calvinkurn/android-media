@@ -118,6 +118,11 @@ public class MyApplication extends BaseMainApplication
         }
     }
 
+    @Override
+    public void sendAnalyticsAnomalyResponse(String s, String s1, String s2, String s3, String s4) {
+
+    }
+
     public static class GTMAnalytics extends DummyAnalytics {
 
         public GTMAnalytics(Context context) {
