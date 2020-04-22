@@ -16,7 +16,8 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.analytics.performance.PerformanceMonitoring
+import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
+import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.invisible
@@ -69,8 +70,8 @@ class PlayFragment : BaseDaggerFragment() {
         }
     }
 
-    private lateinit var fpmPreparePage: PerformanceMonitoring
-    private lateinit var fpmRequestNetwork: PerformanceMonitoring
+    private lateinit var pageMonitoring: PageLoadTimePerformanceInterface
+//    private lateinit var fpmRequestNetwork: PerformanceMonitoring
 
     private var channelId = ""
 
@@ -144,7 +145,7 @@ class PlayFragment : BaseDaggerFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        fpmPreparePage = PerformanceMonitoring.start(PLAY_TRACE_PREPARE_PAGE)
+        startPageMonitoring()
         playViewModel = ViewModelProvider(this, viewModelFactory).get(PlayViewModel::class.java)
         channelId = arguments?.getString(PLAY_KEY_CHANNEL_ID) ?: ""
     }
@@ -196,9 +197,8 @@ class PlayFragment : BaseDaggerFragment() {
 
     override fun onResume() {
         super.onResume()
-        fpmRequestNetwork = PerformanceMonitoring.start(PLAY_TRACE_REQUEST_NETWORK)
+        startNetworkMonitoring()
         playViewModel.resumeWithChannelId(channelId)
-        fpmPreparePage.stopTrace()
         requireView().post {
             registerKeyboardListener(requireView())
         }
@@ -264,7 +264,7 @@ class PlayFragment : BaseDaggerFragment() {
                 is Success ->
                     PlayAnalytics.sendScreen(channelId, playViewModel.channelType)
             }
-            fpmRequestNetwork.stopTrace()
+            startRenderMonitoring()
         })
     }
 
@@ -317,7 +317,9 @@ class PlayFragment : BaseDaggerFragment() {
                         isBuffering = false,
                         shouldTrackNext = true
                 )
-
+            }
+            if (it.state is PlayVideoState.Playing) {
+                stopPageMonitoring()
             }
         })
     }
@@ -410,6 +412,34 @@ class PlayFragment : BaseDaggerFragment() {
             val totalView = playViewModel.totalView
             if (!totalView.isNullOrEmpty()) putExtra(EXTRA_TOTAL_VIEW, totalView)
         })
+    }
+
+    /**
+     * Performance Monitoring
+     */
+    private fun startPageMonitoring() {
+        pageMonitoring = PageLoadTimePerformanceCallback(
+                PLAY_TRACE_PREPARE_PAGE,
+                PLAY_TRACE_REQUEST_NETWORK,
+                PLAY_TRACE_RENDER_PAGE
+        )
+        pageMonitoring.startMonitoring(PLAY_TRACE_PAGE)
+        pageMonitoring.startPreparePagePerformanceMonitoring()
+    }
+
+    fun startNetworkMonitoring() {
+        pageMonitoring.stopPreparePagePerformanceMonitoring()
+        pageMonitoring.startNetworkRequestPerformanceMonitoring()
+    }
+
+    fun startRenderMonitoring() {
+        pageMonitoring.stopNetworkRequestPerformanceMonitoring()
+        pageMonitoring.startRenderPerformanceMonitoring()
+    }
+
+    private fun stopPageMonitoring() {
+        pageMonitoring.stopRenderPerformanceMonitoring()
+        pageMonitoring.stopMonitoring()
     }
 
     /**

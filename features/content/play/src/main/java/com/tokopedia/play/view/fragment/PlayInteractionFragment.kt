@@ -15,12 +15,13 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.DisplayMetricUtils.getStatusBarHeight
-import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.getScreenHeight
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
-import com.tokopedia.play.PLAY_TRACE_RENDER_PAGE
 import com.tokopedia.play.R
 import com.tokopedia.play.analytic.PlayAnalytics
 import com.tokopedia.play.component.EventBusFactory
@@ -115,8 +116,6 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
     @Inject
     lateinit var trackingQueue: TrackingQueue
 
-    private lateinit var fpmRenderPage: PerformanceMonitoring
-
     private val offset24 by lazy { resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl5) }
     private val offset16 by lazy { resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4) }
     private val offset12 by lazy { resources.getDimensionPixelOffset(com.tokopedia.play.R.dimen.play_offset_12) }
@@ -154,8 +153,6 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
         get() = requireView().findViewById(statsInfoComponent.getContainerId())
     private val chatListView: View
         get() = requireView().findViewById(chatListComponent.getContainerId())
-    private val toolbarView: View
-        get() = requireView().findViewById(toolbarComponent.getContainerId())
 
     private var channelId: String = ""
 
@@ -294,7 +291,6 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
 
     private fun observeTitleChannel() {
         playViewModel.observableGetChannelInfo.observe(viewLifecycleOwner, Observer {
-            fpmRenderPage = PerformanceMonitoring.start(PLAY_TRACE_RENDER_PAGE)
             if (it is Success) setChannelTitle(it.data.title)
         })
     }
@@ -414,10 +410,6 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
                     view = clPlayInteraction,
                     whenAlpha = INVISIBLE_ALPHA
             )
-        }
-
-        toolbarView.viewTreeObserver.addOnGlobalLayoutListener {
-            fpmRenderPage.stopTrace()
         }
     }
 

@@ -32,29 +32,27 @@ const val ERR_STATE_VIDEO = "Video Player"
 const val ERR_STATE_GLOBAL = "Global Error"
 
 /**
- * from open page until network requests
+ * Performance Monitoring for Play
+ */
+const val PLAY_TRACE_PAGE = "plt_play_page"
+
+/**
+ * Monitor duration between open page until network requests
  * Start: PlayFragment onCreate()
- * Stop: getChannelInfo(channelId)
+ * Stop: onResume() getChannelInfo(channelId)
  */
-const val PLAY_TRACE_PREPARE_PAGE = "mp_plt_play_page_prepare_page"
+const val PLAY_TRACE_PREPARE_PAGE = "plt_play_page_prepare_page"
 
 /**
- * from network requests until receiving responses
+ * Monitor duration between network requests until receiving responses
  * Start: PlayFragment getChannelInfo(channelId)
- * Stop: PlayFragment observableGetChannelInfo
+ * Stop: PlayFragment observeGetChannelInfo
  */
-const val PLAY_TRACE_REQUEST_NETWORK = "mp_plt_play_page_request_network"
+const val PLAY_TRACE_REQUEST_NETWORK = "plt_play_page_request_network"
 
 /**
- * from receive response until the UI is displayed
- * Start: PlayInteractionFragment observeTitleChannel()
- * Stop: PlayInteractionFragment setupView(view)
+ * Monitor duration between receive response until the UI is rendered
+ * Start: PlayFragment observeGetChannelInfo()
+ * Stop: PlayFragment observeVideoProperty when player is Playing
  */
-const val PLAY_TRACE_RENDER_PAGE = "mp_plt_play_page_render_page"
-
-/**
- * from receive response until the UI is displayed
- * Start: PlayVideoFragment observeChannelInfo()
- * Stop: PlayVideoFragment containerVideo.viewTreeObserver.addOnGlobalLayoutListener()
- */
-const val PLAY_TRACE_RENDER_VIDEO = "mp_plt_play_page_render_video"
+const val PLAY_TRACE_RENDER_PAGE = "plt_play_page_render_page"
