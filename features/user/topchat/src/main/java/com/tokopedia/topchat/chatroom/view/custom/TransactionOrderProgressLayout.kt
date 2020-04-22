@@ -1,7 +1,5 @@
 package com.tokopedia.topchat.chatroom.view.custom
 
-import android.animation.ArgbEvaluator
-import android.animation.ObjectAnimator
 import android.content.Context
 import android.content.SharedPreferences
 import android.graphics.Color
@@ -93,22 +91,21 @@ class TransactionOrderProgressLayout : LinearLayout {
         }
     }
 
-    private fun renderLayoutVisibility() {
-        showWithCondition(chatOrder.enable)
-    }
-
-    private fun renderHasBeenSeen() {
-        if (!state.hasSeen) {
-            renderFirstTimeSeen()
+    private fun loadPreviousState() {
+        try {
+            val stateJsonString = getPref()?.getString(getPrefOrderPrefKey(), DEFAULT_STATE)
+            state = CommonUtil.fromJson(stateJsonString, State::class.java)
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 
-    private fun renderFirstTimeSeen() {
-        state.seen()
-    }
-
-    private fun renderOrderStatus() {
-        status?.text = chatOrder.status
+    private fun renderBackgroundColor() {
+        if (!state.hasSeen) {
+            cardOrderContainer?.setBackgroundColor(State.COLOR_NOT_SEEN.toInt())
+        } else {
+            cardOrderContainer?.setBackgroundColor(State.COLOR_SEEN)
+        }
     }
 
     private fun renderStateDescription() {
@@ -138,9 +135,64 @@ class TransactionOrderProgressLayout : LinearLayout {
         }
     }
 
-    private fun bindClickCloseState() {
-        stateChanger?.setOnClickListener {
-            RouteManager.route(context, chatOrder.button.uri)
+    private fun renderOrderStatus() {
+        status?.text = chatOrder.status
+    }
+
+    private fun renderLayoutVisibility() {
+        showWithCondition(chatOrder.enable)
+    }
+
+    private fun renderHasBeenSeen() {
+        if (!state.hasSeen) {
+            renderFirstTimeSeen()
+        }
+    }
+
+    private fun saveCurrentState() {
+        val stateJsonString = CommonUtil.toJson(state)
+        getPref()?.edit()?.putString(getPrefOrderPrefKey(), stateJsonString)?.apply()
+    }
+
+    private fun openCloseState(): Boolean {
+        return !chatOrder.isStateFinished()
+    }
+
+    private fun bindClickOpenCloseState() {
+        val clickListener = OnClickListener {
+            doWhenState(
+                    isOpen = { changeState(State.CLOSE) },
+                    isClose = { changeState(State.OPEN) }
+            )
+        }
+        stateChanger?.setOnClickListener(clickListener)
+        status?.setOnClickListener(clickListener)
+    }
+
+    private fun renderImageThumbnail() {
+        ImageHandler.loadImageRounded2(
+                context,
+                productThumbnail,
+                chatOrder.imageUrl,
+                8f.toPx()
+        )
+    }
+
+    private fun renderProductName() {
+        productName?.text = MethodChecker.fromHtml(chatOrder.name)
+    }
+
+    private fun renderEstimation() {
+        estimateTitle?.text = chatOrder.label.title
+        estimateValue?.text = chatOrder.label.value
+    }
+
+    private fun renderActionButton() {
+        actionBtn?.shouldShowWithAction(chatOrder.hasActionButton) {
+            actionBtn?.text = chatOrder.button.label
+            actionBtn?.setOnClickListener {
+                RouteManager.route(context, chatOrder.button.uri)
+            }
         }
     }
 
@@ -148,6 +200,16 @@ class TransactionOrderProgressLayout : LinearLayout {
         renderChangerButtonText(chatOrder.button.label)
         renderChangerButtonTextColor()
         renderChangerButtonCompoundDrawable(R.drawable.ic_topchat_arrow_small_right)
+    }
+
+    private fun bindClickCloseState() {
+        stateChanger?.setOnClickListener {
+            RouteManager.route(context, chatOrder.button.uri)
+        }
+    }
+
+    private fun renderFirstTimeSeen() {
+        state.seen()
     }
 
     private fun renderChangerButtonTextColor() {
@@ -186,35 +248,12 @@ class TransactionOrderProgressLayout : LinearLayout {
         }
     }
 
-    private fun bindClickOpenCloseState() {
-        val clickListener = OnClickListener {
-            doWhenState(
-                    isOpen = { changeState(State.CLOSE) },
-                    isClose = { changeState(State.OPEN) }
-            )
-        }
-        stateChanger?.setOnClickListener(clickListener)
-        status?.setOnClickListener(clickListener)
-    }
-
-    private fun renderBackgroundColor() {
-        if (!state.hasSeen) {
-            cardOrderContainer?.setBackgroundColor(State.COLOR_NOT_SEEN.toInt())
-        } else {
-            cardOrderContainer?.setBackgroundColor(State.COLOR_SEEN)
-        }
-    }
-
     private fun getPref(): SharedPreferences? {
         return context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
     }
 
     private fun getPrefOrderPrefKey(): String {
         return chatOrder.orderId
-    }
-
-    private fun openCloseState(): Boolean {
-        return !chatOrder.isStateFinished()
     }
 
     private fun doWhenState(
@@ -240,47 +279,6 @@ class TransactionOrderProgressLayout : LinearLayout {
 
     private fun hideDescription() {
         descriptionContainer?.hide()
-    }
-
-    private fun renderImageThumbnail() {
-        ImageHandler.loadImageRounded2(
-                context,
-                productThumbnail,
-                chatOrder.imageUrl,
-                8f.toPx()
-        )
-    }
-
-    private fun renderProductName() {
-        productName?.text = MethodChecker.fromHtml(chatOrder.name)
-    }
-
-    private fun renderEstimation() {
-        estimateTitle?.text = chatOrder.label.title
-        estimateValue?.text = chatOrder.label.value
-    }
-
-    private fun renderActionButton() {
-        actionBtn?.shouldShowWithAction(chatOrder.hasActionButton) {
-            actionBtn?.text = chatOrder.button.label
-            actionBtn?.setOnClickListener {
-                RouteManager.route(context, chatOrder.button.uri)
-            }
-        }
-    }
-
-    private fun saveCurrentState() {
-        val stateJsonString = CommonUtil.toJson(state)
-        getPref()?.edit()?.putString(getPrefOrderPrefKey(), stateJsonString)?.apply()
-    }
-
-    private fun loadPreviousState() {
-        try {
-            val stateJsonString = getPref()?.getString(getPrefOrderPrefKey(), DEFAULT_STATE)
-            state = CommonUtil.fromJson(stateJsonString, State::class.java)
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
     }
 
     data class State(
