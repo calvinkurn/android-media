@@ -168,6 +168,8 @@ abstract class AddEditProductBaseService : JobIntentService(), CoroutineScope {
                 val exception = AddEditProductUploadException(message = message)
                 AddEditProductErrorHandler.logExceptionToCrashlytics(exception)
 
+                Timber.w("P2#PRODUCT_UPLOAD#%s", message)
+
                 notificationManager?.onFailedUpload(result.reason.name)
                 ""
             }
