@@ -258,11 +258,11 @@ class TalkReplyViewModelTest : TalkReplyViewModelTestFixture() {
         coVerify { talkFollowUnfollowTalkUseCase.executeOnBackground() }
     }
 
-    private fun verifyTalkDeleteTalkUseCaseExecuted() {
+    private fun verifyTalkDeleteCommentUseCaseExecuted() {
         coVerify { talkDeleteCommentUseCase.executeOnBackground() }
     }
 
-    private fun verifyTalkDeleteCommentUseCaseExecuted() {
+    private fun verifyTalkDeleteTalkUseCaseExecuted() {
         coVerify { talkDeleteTalkUseCase.executeOnBackground() }
     }
 
