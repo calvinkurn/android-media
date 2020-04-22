@@ -100,12 +100,14 @@ public class TopChatAnalytics {
         String CLICK_REMOVE_FROM_WISHLIST = "remove wishlist - chat";
         String CLICK_QUOTATION_ATTACHMENT = "click bayar on quotation thumbnail";
         String CLICK_IMAGE_THUMBNAIL = "click image on product thumbnail ";
+        String CLICK_OP_CARD_DESCRIPTION = "click on order progress card";
     }
 
     public interface Label {
         public static final String PRODUCT_PAGE = "message shop";
         public static final String FOLLOW_SHOP = "follow shop";
         public static final String UNFOLLOW_SHOP = "unfollow shop";
+        String BUYER = "buyer";
     }
 
     public void eventClickInboxChannel() {
@@ -483,4 +485,13 @@ public class TopChatAnalytics {
         );
     }
 
+    // #OP1
+    public void eventClickOrderProgressCardDescription() {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                Name.CHAT_DETAIL,
+                Category.CHAT_DETAIL,
+                Action.CLICK_OP_CARD_DESCRIPTION,
+                Label.BUYER
+        );
+    }
 }

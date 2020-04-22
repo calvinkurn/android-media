@@ -20,10 +20,15 @@ import com.tokopedia.common.network.util.CommonUtil
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.domain.pojo.orderprogress.ChatOrderProgress
+import com.tokopedia.topchat.common.analytics.TopChatAnalytics
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 
 class TransactionOrderProgressLayout : LinearLayout {
+
+    interface Listener {
+        fun getAnalytic(): TopChatAnalytics
+    }
 
     private var status: Typography? = null
     private var stateChanger: Typography? = null
@@ -34,11 +39,11 @@ class TransactionOrderProgressLayout : LinearLayout {
     private var estimateTitle: Typography? = null
     private var estimateValue: Typography? = null
     private var actionBtn: UnifyButton? = null
-
+    private var listener: Listener? = null
     private var chatOrder: ChatOrderProgress = ChatOrderProgress()
     private var state = State()
-
     private var canBeRendered = false
+    private val analytics: TopChatAnalytics? get() = listener?.getAnalytic()
 
     constructor(context: Context?) : super(context)
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
@@ -53,11 +58,11 @@ class TransactionOrderProgressLayout : LinearLayout {
 
     fun renderIfExist() {
         canBeRendered = true
-        render(this.chatOrder)
+        render(this.listener, this.chatOrder)
     }
 
-    fun render(chatOrder: ChatOrderProgress) {
-        this.chatOrder = chatOrder
+    fun render(listener: Listener?, chatOrder: ChatOrderProgress) {
+        assignFields(listener, chatOrder)
         if (!shouldBeRendered()) return
         loadPreviousState()
         renderBackgroundColor()
@@ -67,6 +72,11 @@ class TransactionOrderProgressLayout : LinearLayout {
         renderLayoutVisibility()
         renderHasBeenSeen()
         saveCurrentState()
+    }
+
+    private fun assignFields(listener: Listener?, chatOrder: ChatOrderProgress) {
+        this.chatOrder = chatOrder
+        this.listener = listener
     }
 
     private fun initViewLayout() {
@@ -172,6 +182,7 @@ class TransactionOrderProgressLayout : LinearLayout {
 
     private fun bindClickCardDescription() {
         descriptionContainer?.setOnClickListener {
+            analytics?.eventClickOrderProgressCardDescription()
             RouteManager.route(context, chatOrder.uri)
         }
     }

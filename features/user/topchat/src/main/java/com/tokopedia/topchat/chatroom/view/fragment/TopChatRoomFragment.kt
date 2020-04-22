@@ -96,7 +96,7 @@ import javax.inject.Inject
 class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         , TypingListener, SendButtonListener, ImagePickerListener, ChatTemplateListener,
         HeaderMenuListener, DualAnnouncementListener, TopChatVoucherListener,
-        InvoiceThumbnailListener, QuotationViewHolder.QuotationListener {
+        InvoiceThumbnailListener, QuotationViewHolder.QuotationListener, TransactionOrderProgressLayout.Listener {
 
     @Inject
     lateinit var presenter: TopChatRoomPresenter
@@ -132,6 +132,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
 
     override fun rvAttachmentMenuId() = R.id.rv_attachment_menu
     override fun getRecyclerViewResourceId() = R.id.recycler_view
+    override fun getAnalytic(): TopChatAnalytics = analytics
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_topchat_chatroom, container, false).also {
@@ -470,7 +471,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     }
 
     override fun renderOrderProgress(chatOrder: ChatOrderProgress) {
-        orderProgress?.render(chatOrder)
+        orderProgress?.render(this, chatOrder)
     }
 
     override fun createAdapterInstance(): BaseListAdapter<Visitable<*>, BaseAdapterTypeFactory> {
