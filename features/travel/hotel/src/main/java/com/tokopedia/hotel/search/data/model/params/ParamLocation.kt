@@ -22,5 +22,13 @@ data class ParamLocation(
 
         @SerializedName("longitude")
         @Expose
-        var longitude: Float = 0f
+        var longitude: Float = 0f,
+
+        @SerializedName("searchType")
+        @Expose
+        val searchType: String = "",
+
+        @SerializedName("searchID")
+        @Expose
+        val searchId: String= ""
 )
