@@ -742,8 +742,7 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
     private fun setActionUploadAwb(key: String) {
         detailResponse.button.forEach {
             if (key.equals(KEY_UPLOAD_AWB, true)) {
-                val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.WEBVIEW, it.url)
-                startActivity(intent)
+                openWebview(it.url)
             }
         }
     }
@@ -970,8 +969,7 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
     }
 
     override fun onInvalidResiUpload(awbUploadUrl: String) {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.WEBVIEW, awbUploadUrl)
-        startActivity(intent)
+        openWebview(awbUploadUrl)
     }
 
     override fun onSeeInvoice(url: String) {
@@ -1391,5 +1389,9 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
 
     override fun onRefresh(view: View?) {
         loadDetail()
+    }
+
+    private fun openWebview(url: String) {
+        startActivity(RouteManager.getIntent(context, ApplinkConstInternalGlobal.WEBVIEW, url))
     }
 }
