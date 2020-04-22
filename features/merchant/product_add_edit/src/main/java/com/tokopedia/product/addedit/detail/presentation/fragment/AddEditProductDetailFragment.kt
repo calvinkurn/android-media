@@ -168,8 +168,6 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     // product conditions
     private var productConditionListView: ListUnify? = null
     private val productConditions = ArrayList<ListItemUnify>()
-    private var newCondition: ListItemUnify? = null
-    private var secondHandCondition: ListItemUnify? = null
     private var isProductConditionNew = true
 
     private lateinit var userSession: UserSessionInterface
@@ -362,12 +360,12 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         productConditionListView = view.findViewById(R.id.lvu_product_conditions)
 
         // new condition
-        newCondition = ListItemUnify(getString(R.string.label_new), "")
+        val newCondition = ListItemUnify(getString(R.string.label_new), "")
         newCondition?.setVariant(null, ListItemUnify.RADIO_BUTTON, null)
         newCondition?.run { productConditions.add(NEW_PRODUCT_INDEX, this) }
 
         // secondhand condition
-        secondHandCondition = ListItemUnify(getString(R.string.label_secondhand), "")
+        val secondHandCondition = ListItemUnify(getString(R.string.label_secondhand), "")
         secondHandCondition?.setVariant(null, ListItemUnify.RADIO_BUTTON, getString(R.string.label_secondhand))
         secondHandCondition?.run { productConditions.add(USED_PRODUCT_INDEX, this) }
 
@@ -881,8 +879,8 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         // product condition
         productConditionListView?.onLoadFinish {
 
-            if (detailInputModel.condition == CONDITION_NEW) newCondition?.listRightRadiobtn?.isChecked = true
-            else secondHandCondition?.listRightRadiobtn?.isChecked = true
+            if (detailInputModel.condition == CONDITION_NEW) productConditionListView?.setSelected(productConditions, NEW_PRODUCT_INDEX) {}
+            else productConditionListView?.setSelected(productConditions, USED_PRODUCT_INDEX) {}
 
             // list item click listener
             productConditionListView?.run {
@@ -894,14 +892,13 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                 }
             }
 
-            // radio button click listener
-            newCondition?.listRightRadiobtn?.setOnCheckedChangeListener { _, isChecked ->
-                if (isChecked) secondHandCondition?.listRightRadiobtn?.isChecked = false
-                isProductConditionNew = true
-            }
-            secondHandCondition?.listRightRadiobtn?.setOnCheckedChangeListener { _, isChecked ->
-                if (isChecked) newCondition?.listRightRadiobtn?.isChecked = false
-                isProductConditionNew = false
+            productConditions.forEachIndexed { index, listItemUnify ->
+                listItemUnify.listRightRadiobtn?.setOnClickListener {
+                    productConditionListView?.setSelected(productConditions, index) {
+                        if (index == NEW_PRODUCT_INDEX) isProductConditionNew = true
+                        else isProductConditionNew = false
+                    }
+                }
             }
         }
 
