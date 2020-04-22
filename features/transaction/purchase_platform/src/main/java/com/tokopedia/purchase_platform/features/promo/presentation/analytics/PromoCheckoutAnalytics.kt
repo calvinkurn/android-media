@@ -5,13 +5,12 @@ import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnaly
 import com.tokopedia.purchase_platform.common.analytics.TransactionAnalytics
 import com.tokopedia.purchase_platform.common.constant.PAGE_CART
 import com.tokopedia.purchase_platform.common.constant.PAGE_CHECKOUT
+import com.tokopedia.purchase_platform.common.constant.PAGE_OCC
 import javax.inject.Inject
 
 class PromoCheckoutAnalytics @Inject constructor() : TransactionAnalytics() {
 
     companion object {
-        const val PAGE_OCC = 3
-
         val EVENT_NAME_VIEW = "view"
         val EVENT_NAME_CLICK = "click"
     }
