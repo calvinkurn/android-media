@@ -58,4 +58,10 @@ object ShopType {
     const val OFFICIAL_STORE = "OFFICIAL_STORE"
 }
 
+object PageType {
+    const val ADD_SHOWCASE_PAGE = "ADD_SHOWCASE_PAGE"
+    const val ADD_SHOWCASE_FROM_SHOWCASE_LIST = "ADD_SHOWCASE_FROM_SHOWCASE_LIST"
+    const val REORDER_SHOWCASE_PAGE = "REORDER_SHOWCASE_PAGE"
+}
+
 const val TOTAL_GENERATED_ID: Int = 10
