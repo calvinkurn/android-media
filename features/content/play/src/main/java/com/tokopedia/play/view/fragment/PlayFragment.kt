@@ -145,6 +145,7 @@ class PlayFragment : BaseDaggerFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         startPageMonitoring()
+        starPrepareMonitoring()
         playViewModel = ViewModelProvider(this, viewModelFactory).get(PlayViewModel::class.java)
         channelId = arguments?.getString(PLAY_KEY_CHANNEL_ID) ?: ""
     }
@@ -196,6 +197,7 @@ class PlayFragment : BaseDaggerFragment() {
 
     override fun onResume() {
         super.onResume()
+        stopPrepareMonitoring()
         startNetworkMonitoring()
         playViewModel.resumeWithChannelId(channelId)
         requireView().post {
@@ -419,21 +421,35 @@ class PlayFragment : BaseDaggerFragment() {
                 PLAY_TRACE_RENDER_PAGE
         )
         pageMonitoring.startMonitoring(PLAY_TRACE_PAGE)
+    }
+
+    private fun starPrepareMonitoring() {
         pageMonitoring.startPreparePagePerformanceMonitoring()
     }
 
-    private fun startNetworkMonitoring() {
+    private fun stopPrepareMonitoring() {
         pageMonitoring.stopPreparePagePerformanceMonitoring()
+    }
+
+    private fun startNetworkMonitoring() {
         pageMonitoring.startNetworkRequestPerformanceMonitoring()
     }
 
-    fun startRenderMonitoring() {
+    private fun stopNetworkMonitoring() {
         pageMonitoring.stopNetworkRequestPerformanceMonitoring()
+    }
+
+    fun startRenderMonitoring() {
+        stopNetworkMonitoring()
         pageMonitoring.startRenderPerformanceMonitoring()
     }
 
-    fun stopPageMonitoring() {
+    fun stopRenderMonitoring() {
         pageMonitoring.stopRenderPerformanceMonitoring()
+        stopPageMonitoring()
+    }
+
+    private fun stopPageMonitoring() {
         pageMonitoring.stopMonitoring()
     }
 

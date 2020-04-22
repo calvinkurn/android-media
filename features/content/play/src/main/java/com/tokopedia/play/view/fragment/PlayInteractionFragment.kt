@@ -442,7 +442,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
         if (!this::onToolbarGlobalLayoutListener.isInitialized) {
             onToolbarGlobalLayoutListener = object : ViewTreeObserver.OnGlobalLayoutListener{
                 override fun onGlobalLayout() {
-                    playFragment.stopPageMonitoring()
+                    playFragment.stopRenderMonitoring()
                     toolbarView.viewTreeObserver.removeOnGlobalLayoutListener(this)
                 }
             }
