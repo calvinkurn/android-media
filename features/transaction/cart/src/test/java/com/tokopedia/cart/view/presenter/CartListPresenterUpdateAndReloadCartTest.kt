@@ -1,39 +1,40 @@
 package com.tokopedia.cart.view.presenter
 
-import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
+import com.tokopedia.cart.domain.usecase.*
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
-import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceActionField
-import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceAdd
-import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceCartMapData
-import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceProductCartMapData
+import com.tokopedia.purchase_platform.common.exception.CartResponseErrorException
 import com.tokopedia.purchase_platform.common.schedulers.TestSchedulers
 import com.tokopedia.purchase_platform.common.feature.insurance.usecase.GetInsuranceCartUseCase
 import com.tokopedia.purchase_platform.common.feature.insurance.usecase.RemoveInsuranceProductUsecase
 import com.tokopedia.purchase_platform.common.feature.insurance.usecase.UpdateInsuranceProductDataUsecase
+import com.tokopedia.cart.domain.model.cartlist.CartItemData
+import com.tokopedia.cart.domain.model.cartlist.CartListData
+import com.tokopedia.cart.domain.model.cartlist.UpdateAndReloadCartListData
 import com.tokopedia.cart.view.CartListPresenter
 import com.tokopedia.cart.view.ICartListView
-import com.tokopedia.cart.view.uimodel.CartRecommendationItemHolderData
 import com.tokopedia.purchase_platform.common.feature.promo.domain.ValidateUsePromoRevampUseCase
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
-import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.seamless_login.domain.usecase.SeamlessLoginUsecase
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.GetWishlistUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
+import io.mockk.every
 import io.mockk.mockk
-import org.junit.Assert
+import io.mockk.verify
+import io.mockk.verifyOrder
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.gherkin.Feature
+import rx.Observable
 import rx.subscriptions.CompositeSubscription
 
 /**
- * Created by Irfan Khoirul on 2020-01-31.
+ * Created by Irfan Khoirul on 2020-01-08.
  */
 
-object CartListPresenterAddToCartRecommendationAnalyticsTest : Spek({
+object CartListPresenterUpdateAndReloadCartTest : Spek({
 
     val getCartListSimplifiedUseCase: GetCartListSimplifiedUseCase = mockk()
     val deleteCartListUseCase: DeleteCartUseCase = mockk()
@@ -57,7 +58,7 @@ object CartListPresenterAddToCartRecommendationAnalyticsTest : Spek({
     val updateCartCounterUseCase: UpdateCartCounterUseCase = mockk()
     val view: ICartListView = mockk(relaxed = true)
 
-    Feature("generate add to cart data analytics on recommendation") {
+    Feature("update and reload cart list") {
 
         val cartListPresenter by memoized {
             CartListPresenter(
@@ -77,48 +78,84 @@ object CartListPresenterAddToCartRecommendationAnalyticsTest : Spek({
             cartListPresenter.attachView(view)
         }
 
-        Scenario("1 item selected on non empty cart") {
+        Scenario("success update and reload empty cart") {
 
-            lateinit var result: Map<String, Any>
+            val emptyCartListData = UpdateAndReloadCartListData()
 
-            When("generate add to cart recommendation data analytics") {
-                result = cartListPresenter.generateAddToCartEnhanceEcommerceDataLayer(CartRecommendationItemHolderData(RecommendationItem()), AddToCartDataModel(), false)
+            Given("empty data") {
+                every { updateAndReloadCartUseCase.createObservable(any()) } returns Observable.just(emptyCartListData)
             }
 
-            Then("should be containing 1 product") {
-                val add = result[EnhancedECommerceCartMapData.ADD_ACTION] as Map<String, Any>
-                val products = add[EnhancedECommerceAdd.KEY_PRODUCT] as List<Any>
-                Assert.assertEquals(1, products.size)
+            When("process to update and reload cart data") {
+                cartListPresenter.processToUpdateAndReloadCartData("0")
             }
 
-            Then("key `list` value should be `cart`") {
-                val add = result[EnhancedECommerceCartMapData.ADD_ACTION] as Map<String, Any>
-                val actionFields = add[EnhancedECommerceAdd.KEY_ACTION_FIELD] as Map<String, Any>
-                Assert.assertTrue((actionFields[EnhancedECommerceProductCartMapData.KEY_LIST] as String) == EnhancedECommerceActionField.LIST_CART_RECOMMENDATION)
+            Then("should hide loading") {
+                verify {
+                    view.hideProgressLoading()
+                }
             }
-
         }
 
-        Scenario("1 item selected on empty cart") {
+        Scenario("success update and reload cart") {
 
-            lateinit var result: Map<String, Any>
-
-            When("generate add to cart recommendation data analytics") {
-                result = cartListPresenter.generateAddToCartEnhanceEcommerceDataLayer(CartRecommendationItemHolderData(RecommendationItem()), AddToCartDataModel(), true)
+            val cartItemData = CartItemData().apply {
+                updatedData = CartItemData.UpdatedData().apply {
+                    remark = ""
+                }
+                originData = CartItemData.OriginData()
+            }
+            val updateAndReloadCartListData = UpdateAndReloadCartListData().apply {
+                cartListData = CartListData()
             }
 
-            Then("should be containing 1 product") {
-                val add = result[EnhancedECommerceCartMapData.ADD_ACTION] as Map<String, Any>
-                val products = add[EnhancedECommerceAdd.KEY_PRODUCT] as List<Any>
-                Assert.assertEquals(1, products.size)
+            Given("cart data") {
+                every { updateAndReloadCartUseCase.createObservable(any()) } returns Observable.just(updateAndReloadCartListData)
             }
 
-            Then("key `list` value should be `empty cart`") {
-                val add = result[EnhancedECommerceCartMapData.ADD_ACTION] as Map<String, Any>
-                val actionFields = add[EnhancedECommerceAdd.KEY_ACTION_FIELD] as Map<String, Any>
-                Assert.assertTrue((actionFields[EnhancedECommerceProductCartMapData.KEY_LIST] as String) == EnhancedECommerceActionField.LIST_CART_RECOMMENDATION_ON_EMPTY_CART)
+            Given("all available cart data") {
+                every { view.getAllAvailableCartDataList() } returns arrayListOf(cartItemData)
             }
 
+            When("process to update and reload cart data") {
+                cartListPresenter.processToUpdateAndReloadCartData("0")
+            }
+
+            Then("should render success") {
+                verifyOrder {
+                    view.renderLoadGetCartDataFinish()
+                    view.renderInitialGetCartListDataSuccess(updateAndReloadCartListData.cartListData)
+                }
+            }
+        }
+
+        Scenario("failed update and reload cart with exception") {
+
+            val exception = CartResponseErrorException("error message")
+            val cartItemData = CartItemData().apply {
+                originData = CartItemData.OriginData()
+                updatedData = CartItemData.UpdatedData().apply {
+                    remark = ""
+                }
+            }
+
+            Given("cart data") {
+                every { updateAndReloadCartUseCase.createObservable(any()) } returns Observable.error(exception)
+            }
+
+            Given("all available cart data") {
+                every { view.getAllAvailableCartDataList() } returns arrayListOf(cartItemData)
+            }
+
+            When("process to update and reload cart data") {
+                cartListPresenter.processToUpdateAndReloadCartData("0")
+            }
+
+            Then("should render success") {
+                verify {
+                    view.showToastMessageRed(exception)
+                }
+            }
         }
 
     }

@@ -1,4 +1,4 @@
-package com.tokopedia.purchase_platform
+package com.tokopedia.cart
 
 val apiResponseAvailableShopJson = """
     {

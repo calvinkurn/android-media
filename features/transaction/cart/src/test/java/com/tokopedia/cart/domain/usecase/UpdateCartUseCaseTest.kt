@@ -1,12 +1,12 @@
 package com.tokopedia.cart.domain.usecase
 
+import com.tokopedia.cart.data.model.request.UpdateCartRequest
+import com.tokopedia.cart.data.model.response.updatecart.Data
+import com.tokopedia.cart.data.model.response.updatecart.UpdateCartDataResponse
+import com.tokopedia.cart.data.model.response.updatecart.UpdateCartGqlResponse
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.purchase_platform.common.schedulers.TestSchedulers
-import com.tokopedia.purchase_platform.features.cart.data.model.request.UpdateCartRequest
-import com.tokopedia.purchase_platform.features.cart.data.model.response.updatecart.Data
-import com.tokopedia.purchase_platform.features.cart.data.model.response.updatecart.UpdateCartDataResponse
-import com.tokopedia.purchase_platform.features.cart.data.model.response.updatecart.UpdateCartGqlResponse
 import com.tokopedia.cart.domain.model.cartlist.UpdateCartData
 import com.tokopedia.usecase.RequestParams
 import io.mockk.every

@@ -8,5 +8,7 @@
     <color name="disabled_washout_foreground">#88FFFFFF</color>
     <color name="subtext_black">#ae31353b</color>
     <color name="n_700_44">#7031353b</color>
+    <color name="background_cashback_enable">#e3f9e3</color>
+    <color name="error_red_outline">#f05f68</color>
 
 </resources>

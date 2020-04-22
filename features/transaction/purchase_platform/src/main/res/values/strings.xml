@@ -8,14 +8,11 @@
     <string name="label_button_choose_courier">Pilih Kurir</string>
     <string name="label_courier">Kurir Pengiriman</string>
     <string name="label_payment_total">Total Tagihan</string>
-    <string name="label_menu_cart_remove">Hapus</string>
     <string name="dialog_title_back_to_cart">Kembali Ke Keranjang?</string>
     <string name="dialog_message_back_to_cart">Perubahan yang Anda lakukan di halaman ini tidak akan disimpan</string>
     <string name="label_dialog_back_to_cart_button_positive"><![CDATA[Kembali & Hapus Perubahan]]></string>
     <string name="label_dialog_back_to_cart_button_negative">Tetap di Halaman Ini</string>
     <string name="label_sub_total">Subtotal</string>
-    <string name="label_free_return">Free Returns</string>
-    <string name="label_po">PO</string>
     <string name="label_add_new_shipment_new">Tambah Alamat Pengiriman</string>
     <string name="label_shipment_counter">Pengiriman #</string>
     <string name="label_item_count_summary_with_format">Total Harga (%d Barang)</string>
@@ -77,7 +74,6 @@
     <string name="cart_error_action">Hapus Produk Bermasalah</string>
     <string name="message_error_courier_not_selected_or_dropshipper_empty">Pastikan Anda telah memilih kurir pengiriman untuk semua alamat dan melengkapi informasi tambahan.</string>
     <string name="error_message_checkout_failed">Gagal memproses pembayaran. Silakan coba lagi.</string>
-    <string name="label_selller_cashback">Potensi Cashback Penjual</string>
     <string name="label_donation">Donasi</string>
     <string name="label_emas">Pembulatan Emas</string>
     <string name="order_prioritas_label">Biaya Order Prioritas</string>
@@ -100,8 +96,6 @@
     <string name="label_change_courier">Ubah Kurir</string>
     <string name="label_shipping_duration">Durasi Pengiriman</string>
     <string name="label_shipping">Pengiriman</string>
-    <string name="label_empty_cart_see_all">Lihat Semua</string>
-    <string name="label_empty_cart_recent_view">Terakhir Dilihat</string>
     <string name="label_no_courier_bottomsheet_title">Pengiriman</string>
     <string name="label_no_courier_bottomsheet_button">Saya Mengerti</string>
     <string name="label_no_courier_bottomsheet_message">Tidak ada kurir yang mendukung pengiriman ini ke lokasi Anda.</string>
@@ -112,7 +106,6 @@
     <string name="error_dropshipper">Fitur dropshipper tidak dapat digunakan ketika menggunakan Proteksi Produk</string>
     <string name="title_activity_checkout_webview">Proteksi Produk</string>
     <string name="title_activity_checkout_tnc_webview">Syarat dan Ketentuan</string>
-    <string name="label_cod">Bayar di Tempat</string>
     <string name="lebel_understood">Mengerti</string>
     <string name="hyperlink_learn_more">Pelajari selengkapnya</string>
     <string name="change_address">Ubah Alamat</string>

@@ -2,13 +2,13 @@ package com.tokopedia.cart.domain.mapper
 
 import android.content.Context
 import com.google.gson.Gson
-import com.tokopedia.purchase_platform.R
-import com.tokopedia.purchase_platform.apiResponseAllShopWithWholeSaleJson
-import com.tokopedia.purchase_platform.apiResponseAvailableShopJson
-import com.tokopedia.purchase_platform.apiResponseShopErrorJson
+import com.tokopedia.cart.R
+import com.tokopedia.cart.apiResponseAllShopWithWholeSaleJson
+import com.tokopedia.cart.apiResponseAvailableShopJson
+import com.tokopedia.cart.apiResponseShopErrorJson
+import com.tokopedia.cart.data.model.response.shopgroupsimplified.CartDataListResponse
+import com.tokopedia.cart.data.model.response.shopgroupsimplified.ShopGroupSimplifiedGqlResponse
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerData
-import com.tokopedia.purchase_platform.features.cart.data.model.response.CartDataListResponse
-import com.tokopedia.purchase_platform.features.cart.data.model.response.ShopGroupSimplifiedGqlResponse
 import com.tokopedia.cart.domain.model.cartlist.CartListData
 import com.tokopedia.cart.domain.model.cartlist.CartTickerErrorData
 import io.mockk.every

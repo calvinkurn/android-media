@@ -2,16 +2,17 @@ package com.tokopedia.cart.view.presenter
 
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
+import com.tokopedia.cart.data.model.response.recentview.GqlRecentViewResponse
+import com.tokopedia.cart.domain.usecase.*
+import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
-import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.*
 import com.tokopedia.purchase_platform.common.schedulers.TestSchedulers
 import com.tokopedia.purchase_platform.common.feature.insurance.usecase.GetInsuranceCartUseCase
 import com.tokopedia.purchase_platform.common.feature.insurance.usecase.RemoveInsuranceProductUsecase
 import com.tokopedia.purchase_platform.common.feature.insurance.usecase.UpdateInsuranceProductDataUsecase
+import com.tokopedia.cart.domain.model.cartlist.CartListData
 import com.tokopedia.cart.view.CartListPresenter
 import com.tokopedia.cart.view.ICartListView
-import com.tokopedia.cart.view.uimodel.CartRecentViewItemHolderData
-import com.tokopedia.cart.view.uimodel.CartWishlistItemHolderData
 import com.tokopedia.purchase_platform.common.feature.promo.domain.ValidateUsePromoRevampUseCase
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.seamless_login.domain.usecase.SeamlessLoginUsecase
@@ -19,17 +20,20 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.GetWishlistUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
+import io.mockk.every
 import io.mockk.mockk
-import org.junit.Assert
+import io.mockk.verify
+import io.mockk.verifyOrder
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.gherkin.Feature
+import rx.Observable
 import rx.subscriptions.CompositeSubscription
 
 /**
- * Created by Irfan Khoirul on 2020-01-31.
+ * Created by Irfan Khoirul on 2020-01-07.
  */
 
-object CartListPresenterClickWishlistAnalyticsTest : Spek({
+object CartListPresenterGetCartListTest : Spek({
 
     val getCartListSimplifiedUseCase: GetCartListSimplifiedUseCase = mockk()
     val deleteCartListUseCase: DeleteCartUseCase = mockk()
@@ -53,7 +57,7 @@ object CartListPresenterClickWishlistAnalyticsTest : Spek({
     val updateCartCounterUseCase: UpdateCartCounterUseCase = mockk()
     val view: ICartListView = mockk(relaxed = true)
 
-    Feature("generate wishlist data click analytics") {
+    Feature("get cart list") {
 
         val cartListPresenter by memoized {
             CartListPresenter(
@@ -73,48 +77,96 @@ object CartListPresenterClickWishlistAnalyticsTest : Spek({
             cartListPresenter.attachView(view)
         }
 
-        Scenario("1 item selected and cart is not empty") {
+        Scenario("initial load success") {
 
-            lateinit var result: Map<String, Any>
+            val emptyCartListData = CartListData()
 
-            When("generate wishlist data click analytics") {
-                result = cartListPresenter.generateWishlistProductClickDataLayer(CartWishlistItemHolderData(), 0)
+            Given("empty response") {
+                every { getCartListSimplifiedUseCase.createObservable(any()) } returns Observable.just(emptyCartListData)
             }
 
-            Then("should be containing 1 product") {
-                val add = result[EnhancedECommerceAdd.KEY_ADD] as Map<String, Any>
-                val productList = add[EnhancedECommerceAdd.KEY_PRODUCT] as ArrayList<Map<String, Any>>
-                Assert.assertEquals(1, productList.size)
+            When("process initial get cart data") {
+                cartListPresenter.processInitialGetCartData("", true, false)
             }
 
-            Then("key `list` value should be `cart`") {
-                val add = result[EnhancedECommerceAdd.KEY_ADD] as Map<String, Any>
-                val actionField = add[EnhancedECommerceCheckout.KEY_ACTION_FIELD] as Map<String, Any>
-                Assert.assertTrue((actionField[EnhancedECommerceProductCartMapData.KEY_LIST] as String) == EnhancedECommerceActionField.LIST_WISHLIST)
+            Then("should render success") {
+                verify {
+                    view.renderInitialGetCartListDataSuccess(emptyCartListData)
+                }
             }
 
+            Then("should render then finish loading") {
+                verify {
+                    view.renderLoadGetCartData()
+                    view.renderLoadGetCartDataFinish()
+                }
+            }
         }
 
-        Scenario("1 item selected and cart is empty") {
+        Scenario("refresh load success") {
 
-            lateinit var result: Map<String, Any>
+            val emptyCartListData = CartListData()
 
-            When("generate wishlist data click analytics") {
-                result = cartListPresenter.generateWishlistProductClickEmptyCartDataLayer(CartWishlistItemHolderData(), 0)
+            Given("empty response") {
+                every { getCartListSimplifiedUseCase.createObservable(any()) } returns Observable.just(emptyCartListData)
             }
 
-            Then("should be containing 1 product") {
-                val click = result[EnhancedECommerceCartMapData.KEY_CLICK] as Map<String, Any>
-                val productList = click[EnhancedECommerceCheckout.KEY_PRODUCT] as ArrayList<Map<String, Any>>
-                Assert.assertEquals(1, productList.size)
+            When("process initial get cart data") {
+                cartListPresenter.processInitialGetCartData("", false, false)
             }
 
-            Then("key `list` value should be `empty cart`") {
-                val click = result[EnhancedECommerceCartMapData.KEY_CLICK] as Map<String, Any>
-                val actionField = click[EnhancedECommerceCheckout.KEY_ACTION_FIELD] as Map<String, Any>
-                Assert.assertTrue((actionField[EnhancedECommerceProductCartMapData.KEY_LIST] as String) == EnhancedECommerceActionField.LIST_WISHLIST_ON_EMPTY_CART)
+            Then("should render success") {
+                verify {
+                    view.renderInitialGetCartListDataSuccess(emptyCartListData)
+                }
             }
 
+            Then("should show then hide progress loading") {
+                verifyOrder {
+                    view.showProgressLoading()
+                    view.hideProgressLoading()
+                }
+            }
+        }
+
+        Scenario("initial load failed") {
+
+            val exception = ResponseErrorException("Terjadi kesalahan pada server. Ulangi beberapa saat lagi")
+
+            Given("throw error") {
+                every { getCartListSimplifiedUseCase.createObservable(any()) } returns Observable.error(exception)
+                every { getRecentViewUseCase.createObservable(any()) } answers { Observable.just(GqlRecentViewResponse()) }
+            }
+
+            When("process initial get cart data") {
+                cartListPresenter.processInitialGetCartData("", true, true)
+            }
+
+            Then("should render error") {
+                verify {
+                    view.renderErrorInitialGetCartListData(exception)
+                }
+            }
+        }
+
+        Scenario("refresh load failed") {
+
+            val exception = ResponseErrorException("Terjadi kesalahan pada server. Ulangi beberapa saat lagi")
+
+            Given("throw error") {
+                every { getCartListSimplifiedUseCase.createObservable(any()) } returns Observable.error(exception)
+                every { getRecentViewUseCase.createObservable(any()) } answers { Observable.just(GqlRecentViewResponse()) }
+            }
+
+            When("process initial get cart data") {
+                cartListPresenter.processInitialGetCartData("", false, true)
+            }
+
+            Then("should render error") {
+                verify {
+                    view.renderErrorInitialGetCartListData(exception)
+                }
+            }
         }
 
     }

@@ -1,14 +1,14 @@
 package com.tokopedia.cart.domain.usecase
 
 import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
+import com.tokopedia.cart.data.model.request.RemoveCartRequest
+import com.tokopedia.cart.data.model.response.deletecart.Data
+import com.tokopedia.cart.data.model.response.deletecart.DeleteCartDataResponse
+import com.tokopedia.cart.data.model.response.deletecart.DeleteCartGqlResponse
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.schedulers.TestSchedulers
-import com.tokopedia.purchase_platform.features.cart.data.model.request.RemoveCartRequest
-import com.tokopedia.purchase_platform.features.cart.data.model.response.deletecart.Data
-import com.tokopedia.purchase_platform.features.cart.data.model.response.deletecart.DeleteCartDataResponse
-import com.tokopedia.purchase_platform.features.cart.data.model.response.deletecart.DeleteCartGqlResponse
 import com.tokopedia.cart.domain.model.cartlist.DeleteCartData
 import com.tokopedia.usecase.RequestParams
 import io.mockk.every
@@ -20,14 +20,12 @@ import rx.observers.AssertableSubscriber
 
 object DeleteCartUseCaseTest : Spek({
 
-    val clearCacheAutoApplyStackUseCase = mockk<ClearCacheAutoApplyStackUseCase>()
     val graphqlUseCase = mockk<GraphqlUseCase>(relaxed = true)
     val updateCartCounterUseCase = mockk<UpdateCartCounterUseCase>()
-    val useCase by memoized { DeleteCartUseCase(clearCacheAutoApplyStackUseCase, updateCartCounterUseCase, graphqlUseCase, TestSchedulers) }
+    val useCase by memoized { DeleteCartUseCase(updateCartCounterUseCase, graphqlUseCase, TestSchedulers) }
 
     val params = RequestParams().apply {
         putObject(DeleteCartUseCase.PARAM_REMOVE_CART_REQUEST, RemoveCartRequest())
-        putObject(DeleteCartUseCase.PARAM_TO_BE_REMOVED_PROMO_CODES, ArrayList<String>())
     }
 
     Feature("Delete Cart Use Case without promo") {

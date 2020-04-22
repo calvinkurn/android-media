@@ -2,7 +2,9 @@ package com.tokopedia.cart.view.presenter
 
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
+import com.tokopedia.cart.domain.usecase.*
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
+import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceCartMapData
 import com.tokopedia.purchase_platform.common.schedulers.TestSchedulers
 import com.tokopedia.purchase_platform.common.feature.insurance.usecase.GetInsuranceCartUseCase
 import com.tokopedia.purchase_platform.common.feature.insurance.usecase.RemoveInsuranceProductUsecase
@@ -17,7 +19,6 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.GetWishlistUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
-import io.mockk.every
 import io.mockk.mockk
 import org.junit.Assert
 import org.spekframework.spek2.Spek
@@ -28,7 +29,7 @@ import rx.subscriptions.CompositeSubscription
  * Created by Irfan Khoirul on 2020-01-31.
  */
 
-object CartListPresenterLocalDataChangeTest : Spek({
+object CartListPresenterDeleteCartAnalyticsTest : Spek({
 
     val getCartListSimplifiedUseCase: GetCartListSimplifiedUseCase = mockk()
     val deleteCartListUseCase: DeleteCartUseCase = mockk()
@@ -52,7 +53,7 @@ object CartListPresenterLocalDataChangeTest : Spek({
     val updateCartCounterUseCase: UpdateCartCounterUseCase = mockk()
     val view: ICartListView = mockk(relaxed = true)
 
-    Feature("Local data changes") {
+    Feature("generate delete cart data analytics") {
 
         val cartListPresenter by memoized {
             CartListPresenter(
@@ -72,102 +73,22 @@ object CartListPresenterLocalDataChangeTest : Spek({
             cartListPresenter.attachView(view)
         }
 
-        Scenario("Quantity changed") {
+        Scenario("1 item selected") {
 
-            var result = false
+            lateinit var result: Map<String, Any>
 
-            val cartDataList = mutableListOf<CartItemData>().apply {
-                add(CartItemData().apply {
-                    originData = CartItemData.OriginData(originalQty = 1)
-                    updatedData = CartItemData.UpdatedData(quantity = 2)
-                })
+            val cartItemDataList = mutableListOf<CartItemData>().apply {
+                add(CartItemData())
             }
 
-            Given("cart data") {
-                every { view.getAllCartDataList() } returns cartDataList
+            When("generate cart data analytics") {
+                result = cartListPresenter.generateDeleteCartDataAnalytics(cartItemDataList)
             }
 
-            When("check is data changed") {
-                result = cartListPresenter.dataHasChanged()
-            }
-
-            Then("data should be changed") {
-                Assert.assertTrue(result)
-            }
-
-        }
-
-        Scenario("Notes changed") {
-
-            var result = false
-
-            val cartDataList = mutableListOf<CartItemData>().apply {
-                add(CartItemData().apply {
-                    originData = CartItemData.OriginData(originalRemark = "note")
-                    updatedData = CartItemData.UpdatedData(remark = "note note")
-                })
-            }
-
-            Given("cart data") {
-                every { view.getAllCartDataList() } returns cartDataList
-            }
-
-            When("check is data changed") {
-                result = cartListPresenter.dataHasChanged()
-            }
-
-            Then("data should be changed") {
-                Assert.assertTrue(result)
-            }
-
-        }
-
-        Scenario("Quantity and notes changed") {
-
-            var result = false
-
-            val cartDataList = mutableListOf<CartItemData>().apply {
-                add(CartItemData().apply {
-                    originData = CartItemData.OriginData(originalQty = 1, originalRemark = "note")
-                    updatedData = CartItemData.UpdatedData(quantity = 2, remark = "note note")
-                })
-            }
-
-            Given("cart data") {
-                every { view.getAllCartDataList() } returns cartDataList
-            }
-
-            When("check is data changed") {
-                result = cartListPresenter.dataHasChanged()
-            }
-
-            Then("data should be changed") {
-                Assert.assertTrue(result)
-            }
-
-        }
-
-        Scenario("Quantity and notes did not changed") {
-
-            var result = false
-
-            val cartDataList = mutableListOf<CartItemData>().apply {
-                add(CartItemData().apply {
-                    originData = CartItemData.OriginData(originalQty = 1, originalRemark = "note")
-                    updatedData = CartItemData.UpdatedData(quantity = 1, remark = "note")
-                })
-            }
-
-            Given("cart data") {
-                every { view.getAllCartDataList() } returns cartDataList
-            }
-
-            When("check is data changed") {
-                result = cartListPresenter.dataHasChanged()
-            }
-
-            Then("data should not be changed") {
-                Assert.assertFalse(result)
+            Then("should be containing 1 product") {
+                val action = result[EnhancedECommerceCartMapData.REMOVE_ACTION] as Map<String, Any>
+                val products = action[EnhancedECommerceCartMapData.KEY_PRODUCTS] as List<Any>
+                Assert.assertEquals(1, products.size)
             }
 
         }
