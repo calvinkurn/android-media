@@ -17,6 +17,7 @@ import com.tokopedia.play.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play.view.type.BottomInsetsType
 import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play.view.type.ProductAction
+import com.tokopedia.play.view.type.VideoOrientation
 import com.tokopedia.play.view.uimodel.*
 import com.tokopedia.play.view.uimodel.mapper.PlayUiMapper
 import com.tokopedia.play.view.viewmodel.PlayViewModel
@@ -136,12 +137,14 @@ class PlayViewModelTest {
 
     @Test
     fun `test observe video stream`() {
-        val expectedModel = VideoStreamUiModel(
+        val expectedModel = modelBuilder.buildVideoStreamUiModel(
                 uriString = mockChannel.videoStream.config.streamUrl,
                 channelType = if (mockChannel.videoStream.isLive &&
                         mockChannel.videoStream.type.equals(PlayChannelType.Live.value, true))
                     PlayChannelType.Live else PlayChannelType.VOD,
-                isActive = mockChannel.isActive
+                isActive = mockChannel.isActive,
+                orientation = VideoOrientation.getByValue(mockChannel.videoStream.orientation),
+                backgroundUrl = mockChannel.backgroundUrl
         )
 
         playViewModel.getChannelInfo(mockChannel.channelId)

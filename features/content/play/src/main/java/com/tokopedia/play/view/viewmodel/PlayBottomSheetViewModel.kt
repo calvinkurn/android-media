@@ -63,7 +63,7 @@ class PlayBottomSheetViewModel @Inject constructor(
                         action = action,
                         parentVariant = response.data,
                         mapOfSelectedVariants = mapOfSelectedVariants,
-                        listOfVariantCategory = categoryVariants ?: emptyList()
+                        listOfVariantCategory = categoryVariants.orEmpty()
                 )
             }
             _observableProductVariant.value = PlayResult.Success(variantSheetUiModel)
