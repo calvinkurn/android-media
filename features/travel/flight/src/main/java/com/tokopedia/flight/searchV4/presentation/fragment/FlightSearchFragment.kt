@@ -63,7 +63,8 @@ import javax.inject.Inject
  */
 open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSearchAdapterTypeFactory>(),
         FlightSearchAdapterTypeFactory.OnFlightSearchListener,
-        FlightFilterBottomSheet.FlightFilterBottomSheetListener {
+        FlightFilterBottomSheet.FlightFilterBottomSheetListener,
+        FlightDetailBottomSheet.Listener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -259,6 +260,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
             val flightDetailBottomSheet = FlightDetailBottomSheet.getInstance()
             flightDetailBottomSheet.setDetailModel(flightDetailModel)
             flightDetailBottomSheet.setShowSubmitButton(true)
+            flightDetailBottomSheet.listener = this
             flightDetailBottomSheet.setShowListener { flightDetailBottomSheet.bottomSheet.state = BottomSheetBehavior.STATE_EXPANDED }
             flightDetailBottomSheet.show(requireFragmentManager(), FlightDetailBottomSheet.TAG_FLIGHT_DETAIL_BOTTOM_SHEET)
         }
@@ -321,6 +323,10 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
         return emptyResultViewModel
     }
 
+    override fun onSelectedFromDetail(selectedId: String) {
+        flightSearchViewModel.onSearchItemClicked(selectedId = selectedId)
+    }
+
     fun setSearchPassData(flightSearchPassDataModel: FlightSearchPassDataModel) {
         flightSearchViewModel.flightSearchPassData = flightSearchPassDataModel
     }
@@ -368,10 +374,6 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
     open fun getDepartureAirport(): FlightAirportModel = flightSearchViewModel.flightSearchPassData.departureAirport
 
     open fun getArrivalAirport(): FlightAirportModel = flightSearchViewModel.flightSearchPassData.arrivalAirport
-
-    open fun onSelectedFromDetail(selectedId: String, selectedTerm: String) {
-        flightSearchViewModel.onSearchItemClicked(selectedId = selectedId)
-    }
 
     open fun renderSearchList(list: List<FlightJourneyModel>) {
         if (!flightSearchViewModel.isOneWay() && !adapter.isContainData) {

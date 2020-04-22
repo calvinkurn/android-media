@@ -71,7 +71,7 @@ class FlightSearchReturnFragment : FlightSearchFragment() {
         flightSearchReturnViewModel.onFlightSearchSelected(flightSearchViewModel.flightSearchPassData, journeyModel, adapterPosition)
     }
 
-    override fun onSelectedFromDetail(selectedId: String, selectedTerm: String) {
+    override fun onSelectedFromDetail(selectedId: String) {
         flightSearchReturnViewModel.onFlightSearchSelectFromDetail(flightSearchViewModel.flightSearchPassData, selectedId)
     }
 

@@ -21,6 +21,8 @@ import kotlinx.android.synthetic.main.bottom_sheet_flight_detail.view.*
  */
 class FlightDetailBottomSheet : BottomSheetUnify() {
 
+    lateinit var listener: Listener
+
     private lateinit var mChildView: View
     private lateinit var flightAnalytics: FlightAnalytics
 
@@ -119,8 +121,9 @@ class FlightDetailBottomSheet : BottomSheetUnify() {
                     flightDetailButtonContainer.visibility = View.GONE
                 }
                 flightDetailSelectButton.setOnClickListener {
-                    // select
+                    if (::listener.isInitialized) listener.onSelectedFromDetail(flightDetailModel.id)
                 }
+
             }
         }
     }
@@ -203,6 +206,10 @@ class FlightDetailBottomSheet : BottomSheetUnify() {
                     TabLayout.TabLayoutOnPageChangeListener(flightDetailTabs.getUnifyTabLayout()) {})
             flightDetailViewPager.adapter = pagerStateAdapter
         }
+    }
+
+    interface Listener {
+        fun onSelectedFromDetail(selectedId: String)
     }
 
     companion object {
