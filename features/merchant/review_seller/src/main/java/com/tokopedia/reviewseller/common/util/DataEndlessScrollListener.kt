@@ -1,4 +1,4 @@
-package com.tokopedia.reviewseller.feature.reviewlist.view.adapter
+package com.tokopedia.reviewseller.common.util
 
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener

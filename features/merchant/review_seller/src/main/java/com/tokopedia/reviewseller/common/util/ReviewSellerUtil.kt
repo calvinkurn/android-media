@@ -1,6 +1,8 @@
 package com.tokopedia.reviewseller.common.util
 
 import android.widget.ListView
+import com.tokopedia.sortfilter.SortFilterItem
+import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.list.ListItemUnify
 import com.tokopedia.unifycomponents.list.ListUnify
 import java.util.*
@@ -21,6 +23,23 @@ object ReviewSellerUtil {
             }
         }
     }
+
+    private fun SortFilterItem.toggle() {
+        type = if(type == ChipsUnify.TYPE_NORMAL) {
+            ChipsUnify.TYPE_SELECTED
+        } else {
+            ChipsUnify.TYPE_NORMAL
+        }
+    }
+
+    fun setFilterMultipleFormat(old: String, newValue: String): String {
+        return String.format("$old,$newValue")
+    }
+
+    fun setFilterJoinValueFormat(old: String, newValue: String): String {
+        return String.format("$old;$newValue")
+    }
+
 }
 
 fun Map<String, Any>.getKeyByValue(value: String?): String {
