@@ -230,7 +230,9 @@ class PlayInteractionFragment :
     }
 
     override fun onDestroyView() {
+        destroyInsets(requireView())
         super.onDestroyView()
+        layoutManager.onDestroy()
         job.cancel()
     }
 
@@ -261,6 +263,10 @@ class PlayInteractionFragment :
         }
 
         invalidateInsets(view)
+    }
+
+    private fun destroyInsets(view: View) {
+        ViewCompat.setOnApplyWindowInsetsListener(view, null)
     }
 
     //region observe
@@ -419,7 +425,7 @@ class PlayInteractionFragment :
         container.setOnClickListener {
             if (
                     (playViewModel.screenOrientation.isLandscape && container.hasAlpha) ||
-                    (!playViewModel.screenOrientation.isLandscape && !playViewModel.videoOrientation.isLandscape && container.hasAlpha)
+                    (!playViewModel.screenOrientation.isLandscape && !playViewModel.videoOrientation.isHorizontal && container.hasAlpha)
             ) triggerImmersive(it.alpha == VISIBLE_ALPHA)
         }
     }
@@ -439,7 +445,7 @@ class PlayInteractionFragment :
 
         when {
             playViewModel.screenOrientation.isLandscape -> triggerFullImmersive(shouldImmersive, true)
-            playViewModel.videoOrientation.isLandscape -> sendImmersiveEvent(shouldImmersive)
+            playViewModel.videoOrientation.isHorizontal -> sendImmersiveEvent(shouldImmersive)
             else -> {
                 systemUiVisibility = if (shouldImmersive) layoutManager.onEnterImmersive() else layoutManager.onExitImmersive()
                 triggerFullImmersive(shouldImmersive, false)

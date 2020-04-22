@@ -35,13 +35,13 @@ class PlayBottomSheetViewModel @Inject constructor(
 
     private val job = SupervisorJob()
 
-    private val _observableAddToCart = MutableLiveData<CartFeedbackUiModel>()
+    private val _observableAddToCart = MutableLiveData<Event<CartFeedbackUiModel>>()
     private val _observableProductVariant = MutableLiveData<PlayResult<VariantSheetUiModel>>()
 
     private val _observableLoggedInInteractionEvent = MutableLiveData<Event<LoginStateEvent>>()
     val observableLoggedInInteractionEvent: LiveData<Event<LoginStateEvent>> = _observableLoggedInInteractionEvent
 
-    val observableAddToCart: LiveData<CartFeedbackUiModel> = _observableAddToCart
+    val observableAddToCart: LiveData<Event<CartFeedbackUiModel>> = _observableAddToCart
     val observableProductVariant: LiveData<PlayResult<VariantSheetUiModel>> = _observableProductVariant
 
     override fun flush() {
@@ -93,8 +93,19 @@ class PlayBottomSheetViewModel @Inject constructor(
                 postAddToCartUseCase.executeOnBackground()
             }
 
-            _observableAddToCart.value = mappingResponseCart(responseCart, product, action, type)
-        }) { }
+            _observableAddToCart.value = Event(mappingResponseCart(responseCart, product, action, type))
+        }) {
+            _observableAddToCart.value = Event(
+                    CartFeedbackUiModel(
+                            isSuccess = false,
+                            errorMessage = it.localizedMessage.orEmpty(),
+                            cartId = "",
+                            product = product,
+                            action = action,
+                            bottomInsetsType = type
+                    )
+            )
+        }
     }
 
     fun onFreezeBan() {

@@ -233,7 +233,7 @@ class PlayBottomSheetFragment : BaseDaggerFragment(), CoroutineScope {
     }
 
     private fun observeBuyEvent() {
-        viewModel.observableAddToCart.observe(viewLifecycleOwner, Observer {
+        viewModel.observableAddToCart.observe(viewLifecycleOwner, EventObserver {
             hideLoadingView()
             if (it.isSuccess) {
                 playViewModel.updateBadgeCart()

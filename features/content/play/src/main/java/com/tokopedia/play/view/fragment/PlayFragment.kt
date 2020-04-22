@@ -21,7 +21,6 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.invisible
-import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.ERR_STATE_SOCKET
 import com.tokopedia.play.ERR_STATE_VIDEO
@@ -36,7 +35,7 @@ import com.tokopedia.play.di.PlayModule
 import com.tokopedia.play.extensions.isAnyBottomSheetsShown
 import com.tokopedia.play.extensions.isKeyboardShown
 import com.tokopedia.play.util.PlayFullScreenHelper
-import com.tokopedia.play.util.SensorOrientationManager
+import com.tokopedia.play.util.PlaySensorOrientationManager
 import com.tokopedia.play.util.keyboard.KeyboardWatcher
 import com.tokopedia.play.view.contract.PlayNewChannelInteractor
 import com.tokopedia.play.view.layout.parent.PlayParentLayoutManager
@@ -54,7 +53,7 @@ import javax.inject.Inject
 /**
  * Created by jegul on 29/11/19
  */
-class PlayFragment : BaseDaggerFragment(), SensorOrientationManager.OrientationListener {
+class PlayFragment : BaseDaggerFragment(), PlaySensorOrientationManager.OrientationListener {
 
     companion object {
         private const val TOP_BOUNDS_LANDSCAPE_VIDEO = "top_bounds_landscape_video"
@@ -107,7 +106,7 @@ class PlayFragment : BaseDaggerFragment(), SensorOrientationManager.OrientationL
 
     private val keyboardWatcher = KeyboardWatcher()
 
-    private lateinit var orientationManager: SensorOrientationManager
+    private lateinit var orientationManager: PlaySensorOrientationManager
 
     private var isChangingOrientation = false
 
@@ -228,8 +227,10 @@ class PlayFragment : BaseDaggerFragment(), SensorOrientationManager.OrientationL
     }
 
     override fun onDestroyView() {
+        destroyInsets(requireView())
         super.onDestroyView()
         if (::orientationManager.isInitialized) orientationManager.disable()
+        layoutManager.onDestroy()
     }
 
     override fun onDestroy() {
@@ -285,8 +286,12 @@ class PlayFragment : BaseDaggerFragment(), SensorOrientationManager.OrientationL
         }
     }
 
+    private fun destroyInsets(view: View) {
+        ViewCompat.setOnApplyWindowInsetsListener(requireView(), null)
+    }
+
     private fun setOrientation() {
-        orientationManager = SensorOrientationManager(requireContext(), this)
+        orientationManager = PlaySensorOrientationManager(requireContext(), this)
         orientationManager.enable()
 
         val screenOrientation = ScreenOrientation.getByInt(resources.configuration.orientation)

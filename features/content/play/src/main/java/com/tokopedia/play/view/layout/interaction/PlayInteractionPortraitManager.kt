@@ -90,7 +90,7 @@ class PlayInteractionPortraitManager(
     }
 
     override fun getVideoTopBounds(container: View, videoOrientation: VideoOrientation): Int {
-        return if (videoOrientation.isLandscape) {
+        return if (videoOrientation.isHorizontal) {
             val toolbarViewTotalHeight = run {
                 val height = if (toolbarView.height <= 0) {
                     toolbarView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
@@ -239,7 +239,7 @@ class PlayInteractionPortraitManager(
             connect(id, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START)
             connect(id, ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END)
 
-            if (videoOrientation.isLandscape) {
+            if (videoOrientation.isHorizontal) {
                 connect(id, ConstraintSet.TOP, statsInfoComponentId, ConstraintSet.BOTTOM, offset16)
                 clear(id, ConstraintSet.BOTTOM)
                 setDimensionRatio(id, "H,16:9")

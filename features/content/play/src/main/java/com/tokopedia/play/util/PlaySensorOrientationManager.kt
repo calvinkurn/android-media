@@ -9,7 +9,7 @@ import com.tokopedia.play.view.type.ScreenOrientation
 /**
  * Created by jegul on 14/04/20
  */
-class SensorOrientationManager(
+class PlaySensorOrientationManager(
         private val context: Context,
         private val listener: OrientationListener
 ) : OrientationEventListener(context, SensorManager.SENSOR_DELAY_NORMAL) {
@@ -42,13 +42,15 @@ class SensorOrientationManager(
     override fun onOrientationChanged(orientation: Int) {
         if (orientation == ORIENTATION_UNKNOWN) return
 
-        val newOrientation: ScreenOrientation = when (orientation) {
-            in RANGE_REVERSED_LANDSCAPE -> ScreenOrientation.ReversedLandscape
-            in RANGE_REVERSED_PORTRAIT -> ScreenOrientation.ReversedPortrait
-            in RANGE_LANDSCAPE -> ScreenOrientation.Landscape
-            else -> ScreenOrientation.Portrait
+        when (orientation) {
+            in RANGE_REVERSED_LANDSCAPE -> requestOrientationChange(ScreenOrientation.ReversedLandscape)
+            in RANGE_REVERSED_PORTRAIT -> { /* The Product team does not want this */ }
+            in RANGE_LANDSCAPE -> requestOrientationChange(ScreenOrientation.Landscape)
+            else -> requestOrientationChange(ScreenOrientation.Portrait)
         }
+    }
 
+    private fun requestOrientationChange(newOrientation: ScreenOrientation) {
         if (currentOrientation == ScreenOrientation.Unknown) {
             currentOrientation = newOrientation
             return

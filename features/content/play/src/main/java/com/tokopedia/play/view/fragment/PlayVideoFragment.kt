@@ -102,8 +102,6 @@ class PlayVideoFragment : BaseDaggerFragment(), CoroutineScope {
         val view = inflater.inflate(R.layout.fragment_play_video, container, false)
         containerVideo = view.findViewById(R.id.container_video)
 
-
-
         initComponents(view as ViewGroup)
 
         return view

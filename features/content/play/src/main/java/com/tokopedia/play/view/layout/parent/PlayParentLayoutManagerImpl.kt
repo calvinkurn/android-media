@@ -114,7 +114,7 @@ class PlayParentLayoutManagerImpl(
         videoScaleAnimator.cancel()
 
         videoScaleAnimator =
-                if (videoOrientation.isLandscape) animateInsetsShownIfVideoLandscape(bottomMostBounds)
+                if (videoOrientation.isHorizontal) animateInsetsShownIfVideoLandscape(bottomMostBounds)
                 else animateInsetsShownIfVideoPortrait(bottomMostBounds)
 
         videoScaleAnimator.start()
@@ -146,7 +146,7 @@ class PlayParentLayoutManagerImpl(
         val paramsHeight = flVideo.layoutParams.height
         val paramsWidth = flVideo.layoutParams.width
 
-        if (videoOrientation.isLandscape) {
+        if (videoOrientation.isHorizontal) {
             if (paramsHeight != ViewGroup.LayoutParams.WRAP_CONTENT || paramsWidth != ViewGroup.LayoutParams.WRAP_CONTENT) {
                 flVideo.layoutParams = flVideo.layoutParams.apply {
                     height = ViewGroup.LayoutParams.WRAP_CONTENT

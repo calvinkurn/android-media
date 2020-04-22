@@ -6,6 +6,7 @@
             android:name=".view.activity.PlayActivity"
             android:theme="@style/Play.FullScreen"
             android:launchMode="singleTask"
+            android:screenOrientation="locked"
             android:windowSoftInputMode="stateAlwaysHidden">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
