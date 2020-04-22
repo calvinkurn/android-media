@@ -13,10 +13,7 @@ import com.tokopedia.thankyou_native.di.component.DaggerThankYouPageComponent
 import com.tokopedia.thankyou_native.di.component.ThankYouPageComponent
 import com.tokopedia.thankyou_native.domain.model.ThanksPageData
 import com.tokopedia.thankyou_native.helper.*
-import com.tokopedia.thankyou_native.presentation.fragment.DeferredPaymentFragment
-import com.tokopedia.thankyou_native.presentation.fragment.InstantPaymentFragment
-import com.tokopedia.thankyou_native.presentation.fragment.LoaderFragment
-import com.tokopedia.thankyou_native.presentation.fragment.ProcessingPaymentFragment
+import com.tokopedia.thankyou_native.presentation.fragment.*
 import kotlinx.android.synthetic.main.thank_activity_thank_you.*
 
 
@@ -36,6 +33,7 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
 
     override fun getNewFragment(): Fragment? {
         val bundle = Bundle()
+        //todo remove magical string...
         intent.data?.getQueryParameter("payment_id")?.let {
             intent.putExtra(ARG_MERCHANT, intent.data?.getQueryParameter("merchant"))
             intent.putExtra(ARG_PAYMENT_ID, it.toLong())
@@ -75,11 +73,17 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
             }
             is InstantPaymentPage -> {
                 updateHeaderTitle(InstantPaymentFragment.SCREEN_NAME)
-                InstantPaymentFragment.getLoaderFragmentInstance(bundle, thanksPageData)
+                InstantPaymentFragment.getFragmentInstance(bundle, thanksPageData)
             }
             is WaitingPaymentPage -> {
-                updateHeaderTitle(DeferredPaymentFragment.SCREEN_NAME)
-                DeferredPaymentFragment.getFragmentInstance(bundle, thanksPageData)
+                val paymentType = PaymentTypeMapper.getPaymentTypeByStr(thanksPageData.paymentType)
+                return if (paymentType == CashOnDelivery) {
+                    updateHeaderTitle(CashOnDeliveryFragment.SCREEN_NAME)
+                    CashOnDeliveryFragment.getFragmentInstance(bundle, thanksPageData)
+                } else {
+                    updateHeaderTitle(DeferredPaymentFragment.SCREEN_NAME)
+                    DeferredPaymentFragment.getFragmentInstance(bundle, thanksPageData)
+                }
             }
             else -> null
         }

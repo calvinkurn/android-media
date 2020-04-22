@@ -135,11 +135,16 @@ class DeferredPaymentFragment : ThankYouBaseFragment(), ThankYouPageTimerView.Th
         tvTotalAmount.text = spannable
     }
 
-    private fun inflateWaitingUI(numberTypeTitle: String, isCopyVisible: Boolean, highlightAmountDigits: Boolean) {
+    private fun inflateWaitingUI(numberTypeTitle: String?, isCopyVisible: Boolean, highlightAmountDigits: Boolean) {
         tvPaymentGatewayName.text = thanksPageData.gatewayName
         ImageLoader.LoadImage(ivPaymentGatewayImage, thanksPageData.gatewayImage)
-        tvAccountNumberTypeTag.text = numberTypeTitle
-        tvAccountNumber.text = thanksPageData.additionalInfo?.accountDest ?: ""
+        numberTypeTitle?.let {
+            tvAccountNumberTypeTag.text = numberTypeTitle
+            tvAccountNumber.text = thanksPageData.additionalInfo?.accountDest ?: ""
+        }?: run {
+            tvAccountNumberTypeTag.gone()
+            tvAccountNumber.gone()
+        }
         if (highlightAmountDigits)
             highlightLastThreeDigits(thanksPageData.amountStr)
         else
@@ -156,7 +161,7 @@ class DeferredPaymentFragment : ThankYouBaseFragment(), ThankYouPageTimerView.Th
             tvAccountNumberCopy.gone()
         }
         if (thanksPageData.additionalInfo.bankName.isNotBlank()) {
-            tvBankName.text = thanksPageData.additionalInfo.bankName
+            tvBankName.text ="${thanksPageData.additionalInfo.bankName} ${thanksPageData.additionalInfo.bankBranch}"
             tvBankName.visible()
         }
         tvSeeDetail.setOnClickListener { openInvoiceDetail(thanksPageData) }
@@ -199,7 +204,7 @@ class DeferredPaymentFragment : ThankYouBaseFragment(), ThankYouPageTimerView.Th
             context?.let { context ->
                 val clipboard = context.getSystemService(Activity.CLIPBOARD_SERVICE)
                         as ClipboardManager
-                val clip = ClipData.newPlainText(COPY_BOARD_LABEL, str.replace("\\s+".toRegex(),""))
+                val clip = ClipData.newPlainText(COPY_BOARD_LABEL, str.replace("\\s+".toRegex(), ""))
                 clipboard.primaryClip = clip
                 clipboard.addPrimaryClipChangedListener {
                     showToastCopySuccessFully(context)
@@ -265,7 +270,7 @@ class DeferredPaymentFragment : ThankYouBaseFragment(), ThankYouPageTimerView.Th
         private val COPY_BOARD_LABEL = "Tokopedia"
         const val SCREEN_NAME = "Selesaikan Pembayaran"
 
-        const val GATEWAY_KLIK_BCA = "KlickBCA"
+        const val GATEWAY_KLIK_BCA = "KlikBCA"
 
         private const val ARG_THANK_PAGE_DATA = "arg_thank_page_data"
         fun getFragmentInstance(bundle: Bundle, thanksPageData: ThanksPageData):

@@ -108,6 +108,7 @@
                 android:layout_marginTop="@dimen/dp_16"
                 android:layout_marginEnd="@dimen/dp_16"
                 android:layout_marginRight="@dimen/dp_16"
+                tools:visibility="visible"
                 android:textColor="@color/black_54"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/tvDeadlineTime"
@@ -118,6 +119,7 @@
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tvAccountNumber"
                 android:layout_width="0dp"
+                tools:visibility="visible"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_2"
                 android:textColor="@color/black_70"
@@ -139,7 +141,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/tvAccountNumber"
                 app:typographyType="small"
                 tools:text="Bank Name"
-                tools:visibility="visible" />
+                tools:visibility="gone" />
 
 
             <com.tokopedia.unifyprinciples.Typography
@@ -148,8 +150,10 @@
                 android:layout_height="wrap_content"
                 android:text="@string/thank_copy"
                 android:textColor="@color/thank_green_41"
+                android:layout_marginEnd="@dimen/dp_16"
+                android:layout_marginRight="@dimen/dp_16"
                 app:layout_constraintBottom_toBottomOf="@+id/tvAccountNumber"
-                app:layout_constraintEnd_toEndOf="@+id/tvAccountNumberTypeTag"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/tvAccountNumber"
                 app:typographyType="body_3"
                 app:typographyWeight="bold" />
@@ -184,9 +188,11 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:text="@string/thank_see_detail"
+                android:layout_marginEnd="@dimen/dp_16"
+                android:layout_marginRight="@dimen/dp_16"
                 android:textColor="@color/thank_green_41"
                 app:layout_constraintBottom_toBottomOf="@+id/tvTotalAmount"
-                app:layout_constraintEnd_toEndOf="@+id/tvAccountNumberTypeTag"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tvTotalAmountLabel"
                 app:typographyType="body_3"
                 app:typographyWeight="bold" />

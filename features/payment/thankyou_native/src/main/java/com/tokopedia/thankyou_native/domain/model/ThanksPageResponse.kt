@@ -155,6 +155,8 @@ data class AdditionalInfo(
         val accountDest: String,
         @SerializedName("bank_name")
         val bankName: String,
+        @SerializedName("bank_branch")
+        val bankBranch: String,
         @SerializedName("payment_code")
         val paymentCode: String,
         @SerializedName("masked_number")
@@ -172,6 +174,7 @@ data class AdditionalInfo(
             parcel.readString() ?: "",
             parcel.readString() ?: "",
             parcel.readString() ?: "",
+            parcel.readString() ?: "",
             parcel.readFloat(),
             parcel.readFloat())
 
@@ -179,6 +182,7 @@ data class AdditionalInfo(
         parcel.writeString(accountNumber)
         parcel.writeString(accountDest)
         parcel.writeString(bankName)
+        parcel.writeString(bankBranch)
         parcel.writeString(paymentCode)
         parcel.writeString(maskedNumber)
         parcel.writeString(installmentInfo)
