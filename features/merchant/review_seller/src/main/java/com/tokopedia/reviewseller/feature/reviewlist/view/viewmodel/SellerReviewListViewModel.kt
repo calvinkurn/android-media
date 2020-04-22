@@ -4,8 +4,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
-import com.tokopedia.reviewseller.common.ReviewSellerConstant
 import com.tokopedia.reviewseller.common.util.CoroutineDispatcherProvider
+import com.tokopedia.reviewseller.common.util.ReviewSellerConstant
 import com.tokopedia.reviewseller.feature.reviewlist.domain.GetProductRatingOverallUseCase
 import com.tokopedia.reviewseller.feature.reviewlist.domain.GetReviewProductListUseCase
 import com.tokopedia.reviewseller.feature.reviewlist.util.mapper.SellerReviewProductListMapper

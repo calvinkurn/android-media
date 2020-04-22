@@ -11,8 +11,9 @@
     <string name="review_text">Ulasan</string>
     <string name="period_seller_review">/ %s ulasan</string>
     <string name="no_reviews_yet">Tidak ada ulasan</string>
+    <string name="no_reviews_yet_content_detail">Tidak ada ulasan berdasarkan filtermu. Coba lagi dengan filter lain ya!</string>
     <string name="content_no_reviews_yet">Terus berjualan ya agar pembeli kasih kamu alasan yang bikin happy</string>
-    <string name="product_search">cari produk</string>
+    <string name="product_search">Cari nama produk</string>
     <string name="action_bottom_sheet_rating_product">Pilih</string>
     <string name="title_bottom_sheet_filter">Tampilkan periode ulasan dalam</string>
     <string name="title_bottom_sheet_sort">Urutkan rating berdasarkan</string>
@@ -44,4 +45,7 @@
     <string name="total_product_review">1.234 Ulasan</string>
     <string name="product_rating_bar_value">5</string>
     <string name="default_total_star_review">(1200)</string>
+    <string name="default_filter_detail">30 Hari Terakhir</string>
+    <string name="topic_review_detail_label">Topik Populer</string>
+    <string name="count_review_label">Menampilkan %s ulasan dari pembeli</string>
 </resources>

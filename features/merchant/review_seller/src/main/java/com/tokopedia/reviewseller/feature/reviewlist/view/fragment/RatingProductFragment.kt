@@ -1,6 +1,7 @@
 package com.tokopedia.reviewseller.feature.reviewlist.view.fragment
 
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.Color
 import android.os.Bundle
@@ -28,12 +29,14 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.reviewseller.R
-import com.tokopedia.reviewseller.common.ReviewSellerConstant
+import com.tokopedia.reviewseller.common.util.DataEndlessScrollListener
+import com.tokopedia.reviewseller.common.util.ReviewSellerConstant
 import com.tokopedia.reviewseller.common.util.ReviewSellerUtil
 import com.tokopedia.reviewseller.common.util.getKeyByValue
+import com.tokopedia.reviewseller.feature.reviewdetail.view.activity.SellerReviewDetailActivity
+import com.tokopedia.reviewseller.feature.reviewdetail.view.fragment.SellerReviewDetailFragment
 import com.tokopedia.reviewseller.feature.reviewlist.di.component.ReviewProductListComponent
 import com.tokopedia.reviewseller.feature.reviewlist.util.mapper.SellerReviewProductListMapper
-import com.tokopedia.reviewseller.feature.reviewlist.view.adapter.DataEndlessScrollListener
 import com.tokopedia.reviewseller.feature.reviewlist.view.adapter.ReviewSellerAdapter
 import com.tokopedia.reviewseller.feature.reviewlist.view.adapter.SellerReviewListTypeFactory
 import com.tokopedia.reviewseller.feature.reviewlist.view.model.ProductRatingOverallUiModel
@@ -58,7 +61,6 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
         SellerReviewListViewHolder.SellerReviewListListener {
 
     companion object {
-
         private const val TAG_COACH_MARK_RATING_PRODUCT = "coachMarkRatingProduct"
         val chipsPaddingRight = 8.toPx()
         val maxChipTextWidth = 116.toPx()
@@ -268,9 +270,12 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
             } else {
                 globalError_reviewSeller?.setType(GlobalError.NO_CONNECTION)
             }
-            globalError_reviewSeller?.show()
-            emptyState_reviewProduct?.hide()
+
             rvRatingProduct?.hide()
+            emptyState_reviewProduct?.hide()
+            filter_and_sort_layout?.hide()
+            globalError_reviewSeller?.show()
+
 
             globalError_reviewSeller.setActionClickListener {
                 loadInitialData()
@@ -441,7 +446,9 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
     }
 
     override fun onItemProductReviewClicked(productId: Int) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        startActivity(Intent(context, SellerReviewDetailActivity::class.java).apply {
+            putExtra(SellerReviewDetailFragment.PRODUCT_ID, productId)
+        })
     }
 
     private fun initBottomSheetFilter(filterListItemUnify: ArrayList<ListItemUnify>, title: String) {

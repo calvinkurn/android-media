@@ -18,7 +18,7 @@
         android:contentDescription="@string/rating_star_icon_content_description" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/rating_star_value"
+        android:id="@+id/rating_star_overall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         tools:text="@string/product_average_rating"
@@ -42,7 +42,7 @@
         android:layout_marginTop="@dimen/dp_20"
         android:layout_marginLeft="@dimen/spacing_lvl1"
         android:layout_marginStart="@dimen/spacing_lvl1"
-        app:layout_constraintLeft_toRightOf="@id/rating_star_value"
+        app:layout_constraintLeft_toRightOf="@id/rating_star_overall"
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -61,17 +61,17 @@
         android:layout_marginTop="@dimen/dp_4" />
 
     <com.tokopedia.unifycomponents.ChipsUnify
-        android:id="@+id/review_period_filter_button"
+        android:id="@+id/review_period_filter_button_detail"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:chipSize="medium"
         app:chipType="normal"
         app:centerText="true"
-        android:layout_marginRight="@dimen/dp_8"
-        android:layout_marginEnd="@dimen/dp_8"
-        android:layout_marginTop="@dimen/dp_10"
+        android:layout_marginRight="@dimen/spacing_lvl3"
+        android:layout_marginEnd="@dimen/spacing_lvl3"
+        android:layout_marginTop="@dimen/spacing_lvl3"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/rating_star_value" />
+        app:layout_constraintTop_toTopOf="@+id/rating_star_overall" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline1"

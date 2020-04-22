@@ -10,11 +10,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/transparent"
-        app:elevation="@dimen/spacing_lvl1">
+        app:elevation="@dimen/spacing_lvl2">
 
         <com.google.android.material.appbar.CollapsingToolbarLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             app:layout_scrollFlags="scroll|enterAlways">
 
             <LinearLayout
@@ -68,7 +68,7 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvRatingProduct"
                 android:layout_width="0dp"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:clipChildren="false"
                 android:clipToPadding="false"
                 android:orientation="vertical"
@@ -93,7 +93,7 @@
 
             <include
                 android:id="@+id/emptyState_reviewProduct"
-                layout="@layout/item_empty_state_list_rating_produk"
+                layout="@layout/item_empty_state_list_rating_product"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/spacing_lvl4"
