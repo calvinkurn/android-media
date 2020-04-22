@@ -24,6 +24,8 @@ import com.tokopedia.flight.R
 import com.tokopedia.flight.airport.view.model.FlightAirportModel
 import com.tokopedia.flight.common.constant.FlightErrorConstant
 import com.tokopedia.flight.common.util.FlightAnalytics
+import com.tokopedia.flight.detail.view.model.FlightDetailModel
+import com.tokopedia.flight.detail.view.widget.FlightDetailBottomSheet
 import com.tokopedia.flight.filter.presentation.FlightFilterFacilityEnum
 import com.tokopedia.flight.filter.presentation.bottomsheets.FlightFilterBottomSheet
 import com.tokopedia.flight.search.presentation.model.FlightJourneyModel
@@ -61,7 +63,8 @@ import javax.inject.Inject
  */
 open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSearchAdapterTypeFactory>(),
         FlightSearchAdapterTypeFactory.OnFlightSearchListener,
-        FlightFilterBottomSheet.FlightFilterBottomSheetListener {
+        FlightFilterBottomSheet.FlightFilterBottomSheetListener,
+        FlightDetailBottomSheet.Listener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -239,8 +242,28 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
         resetDateAndReload()
     }
 
-    override fun onDetailClicked(journeyViewModel: FlightJourneyModel?, adapterPosition: Int) {
-//        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun onDetailClicked(journeyModel: FlightJourneyModel?, adapterPosition: Int) {
+        journeyModel?.let {
+            flightSearchViewModel.sendDetailClickTrack(it, adapterPosition)
+            val flightDetailModel = FlightDetailModel()
+            flightDetailModel.build(it)
+            flightDetailModel.build(flightSearchViewModel.flightSearchPassData)
+
+            if (it.fare.adultNumericCombo != 0) {
+                flightDetailModel.total = journeyModel.comboPrice
+                flightDetailModel.totalNumeric = journeyModel.comboPriceNumeric
+                flightDetailModel.adultNumericPrice = journeyModel.fare.adultNumericCombo
+                flightDetailModel.childNumericPrice = journeyModel.fare.childNumericCombo
+                flightDetailModel.infantNumericPrice = journeyModel.fare.infantNumericCombo
+            }
+
+            val flightDetailBottomSheet = FlightDetailBottomSheet.getInstance()
+            flightDetailBottomSheet.setDetailModel(flightDetailModel)
+            flightDetailBottomSheet.setShowSubmitButton(true)
+            flightDetailBottomSheet.listener = this
+            flightDetailBottomSheet.setShowListener { flightDetailBottomSheet.bottomSheet.state = BottomSheetBehavior.STATE_EXPANDED }
+            flightDetailBottomSheet.show(requireFragmentManager(), FlightDetailBottomSheet.TAG_FLIGHT_DETAIL_BOTTOM_SHEET)
+        }
     }
 
     override fun onItemClicked(journeyModel: FlightJourneyModel?, adapterPosition: Int) {
@@ -300,6 +323,10 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
         return emptyResultViewModel
     }
 
+    override fun onSelectedFromDetail(selectedId: String) {
+        flightSearchViewModel.onSearchItemClicked(selectedId = selectedId)
+    }
+
     fun setSearchPassData(flightSearchPassDataModel: FlightSearchPassDataModel) {
         flightSearchViewModel.flightSearchPassData = flightSearchPassDataModel
     }
@@ -347,10 +374,6 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
     open fun getDepartureAirport(): FlightAirportModel = flightSearchViewModel.flightSearchPassData.departureAirport
 
     open fun getArrivalAirport(): FlightAirportModel = flightSearchViewModel.flightSearchPassData.arrivalAirport
-
-    open fun onSelectedFromDetail(selectedId: String, selectedTerm: String) {
-        flightSearchViewModel.onSearchItemClicked(selectedId = selectedId)
-    }
 
     open fun renderSearchList(list: List<FlightJourneyModel>) {
         if (!flightSearchViewModel.isOneWay() && !adapter.isContainData) {
@@ -469,7 +492,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
                 }
 
                 flightSearchViewModel.sendQuickFilterTrack(FLIGHT_QUICK_FILTER_DIRECT)
-                //need refresh false
+                clearAllData()
                 fetchSortAndFilterData()
             }
 
@@ -484,7 +507,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
                     quickBaggageFilter.select()
                 }
                 flightSearchViewModel.sendQuickFilterTrack(FLIGHT_QUICK_FILTER_BAGGAGE)
-                //need refresh false
+                clearAllData()
                 fetchSortAndFilterData()
             }
 
@@ -499,6 +522,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
                     quickMealFilter.select()
                 }
                 flightSearchViewModel.sendQuickFilterTrack(FLIGHT_QUICK_FILTER_MEAL)
+                clearAllData()
                 fetchSortAndFilterData()
             }
 
@@ -513,6 +537,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
                     quickTransitFilter.select()
                 }
                 flightSearchViewModel.sendQuickFilterTrack(FLIGHT_QUICK_FILTER_TRANSIT)
+                clearAllData()
                 fetchSortAndFilterData()
             }
 
@@ -615,7 +640,6 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
     }
 
     companion object {
-        private const val TAG_TRAVEL_CALENDAR = "travel calendar"
         private const val FLIGHT_SEARCH_P1_TRACE = "tr_flight_search_p1"
         private const val FLIGHT_SEARCH_P2_TRACE = "tr_flight_search_p2"
 
@@ -632,8 +656,6 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
         private const val FLIGHT_QUICK_FILTER_BAGGAGE = "Gratis Bagasi"
         private const val FLIGHT_QUICK_FILTER_MEAL = "In-flight Meal"
         private const val FLIGHT_QUICK_FILTER_TRANSIT = "Transit"
-
-        private const val MAX_DATE_ADDITION_YEAR = 1
 
         fun newInstance(flightSearchPassDataModel: FlightSearchPassDataModel): FlightSearchFragment =
                 FlightSearchFragment().also {
