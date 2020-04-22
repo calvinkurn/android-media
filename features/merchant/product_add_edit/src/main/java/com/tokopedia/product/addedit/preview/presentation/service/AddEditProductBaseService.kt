@@ -26,6 +26,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import timber.log.Timber
 import java.io.File
 import java.net.URLEncoder
 import javax.inject.Inject
@@ -129,6 +130,10 @@ abstract class AddEditProductBaseService : JobIntentService(), CoroutineScope {
                 userSession.email,
                 getErrorMessage(throwable),
                 URLEncoder.encode(gson.toJson(requestParams), "UTF-8"))
+        val exception = AddEditProductUploadException(errorMessage, throwable)
+        AddEditProductErrorHandler.logExceptionToCrashlytics(exception)
+
+        Timber.w("P2#PRODUCT_UPLOAD#%s", errorMessage)
     }
 
     private fun initInjector() {
