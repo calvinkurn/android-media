@@ -1,0 +1,92 @@
+package com.tokopedia.vouchercreation.voucherlist.view.widget.sortbottomsheet
+
+import android.content.Context
+import android.graphics.Rect
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.fragment.app.FragmentManager
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.vouchercreation.R
+import com.tokopedia.vouchercreation.voucherlist.model.SortUiModel
+import com.tokopedia.vouchercreation.voucherlist.toJson
+import com.tokopedia.vouchercreation.voucherlist.view.adapter.SortAdapter
+import kotlinx.android.synthetic.main.bottomsheet_mvc_sort.view.*
+
+/**
+ * Created By @ilhamsuaib on 20/04/20
+ */
+
+class SortBottomSheet(
+        parent: ViewGroup
+) : BottomSheetUnify() {
+
+    companion object {
+        val TAG: String = SortBottomSheet::class.java.simpleName
+    }
+
+    private val sortAdapter by lazy { SortAdapter(this::onSortItemClick) }
+
+    private var onApplyClick: (sort: SortUiModel?) -> Unit = {}
+
+    init {
+        setTitle(parent.context.getString(R.string.mvc_sort))
+
+        val childView = LayoutInflater.from(parent.context)
+                .inflate(R.layout.bottomsheet_mvc_sort, parent, false)
+
+        setupView(childView)
+    }
+
+    private fun setupView(view: View) = with(view) {
+        rvMcvSort.layoutManager = LinearLayoutManager(view.context)
+        rvMcvSort.adapter = sortAdapter
+        rvMcvSort.addItemDecoration(getSortItemDecoration())
+
+        btnMvcApplySort.btnMvcApplySort.setOnClickListener {
+            applySort()
+        }
+
+        setChild(view)
+    }
+
+    private fun getSortItemDecoration() = object : RecyclerView.ItemDecoration() {
+
+        override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
+            super.getItemOffsets(outRect, view, parent, state)
+            val position = parent.getChildAdapterPosition(view)
+            if (position == 0) {
+                outRect.top = view.resources.getDimensionPixelSize(R.dimen.layout_lvl1)
+            }
+            if (position == sortAdapter.sortItems.size.minus(1)) {
+                outRect.bottom = view.resources.getDimensionPixelSize(R.dimen.layout_lvl2)
+            }
+        }
+    }
+
+    private fun applySort() {
+        val sort = sortAdapter.sortItems.firstOrNull { it.isSelected }
+        onApplyClick(sort)
+        dismissAllowingStateLoss()
+    }
+
+    private fun onSortItemClick(sort: SortUiModel) {
+        if (sort.isSelected) return
+        sortAdapter.sortItems.forEach { it.isSelected = false }
+        sort.isSelected = true
+        sortAdapter.notifyDataSetChanged()
+    }
+
+    fun setOnApplySortListener(callback: (sort: SortUiModel?) -> Unit): SortBottomSheet {
+        onApplyClick = callback
+        return this
+    }
+
+    fun show(fm: FragmentManager, sortItems: List<SortUiModel>) {
+        sortAdapter.clearAllElements()
+        sortAdapter.addElement(sortItems)
+        show(fm, TAG)
+    }
+}

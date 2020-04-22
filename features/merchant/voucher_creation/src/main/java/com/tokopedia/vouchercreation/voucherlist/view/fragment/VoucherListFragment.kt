@@ -14,15 +14,15 @@ import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.getBooleanArgs
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.di.component.DaggerVoucherCreationComponent
-import com.tokopedia.vouchercreation.voucherlist.model.BaseVoucherListUiModel
-import com.tokopedia.vouchercreation.voucherlist.model.BottomSheetMenuUiModel
-import com.tokopedia.vouchercreation.voucherlist.model.HeaderChipUiModel
-import com.tokopedia.vouchercreation.voucherlist.model.VoucherUiModel
+import com.tokopedia.vouchercreation.voucherlist.model.*
 import com.tokopedia.vouchercreation.voucherlist.view.adapter.factory.VoucherListAdapterFactoryImpl
 import com.tokopedia.vouchercreation.voucherlist.view.viewholder.MenuViewHolder
 import com.tokopedia.vouchercreation.voucherlist.view.viewholder.VoucherViewHolder
 import com.tokopedia.vouchercreation.voucherlist.view.viewmodel.VoucherListViewModel
 import com.tokopedia.vouchercreation.voucherlist.view.widget.VoucherListBottomSheet
+import com.tokopedia.vouchercreation.voucherlist.view.widget.headerchips.ChipType
+import com.tokopedia.vouchercreation.voucherlist.view.widget.sortbottomsheet.SortBottomSheet
+import com.tokopedia.vouchercreation.voucherlist.view.widget.sortbottomsheet.SortBy
 import kotlinx.android.synthetic.main.fragment_mvc_voucher_list.view.*
 import javax.inject.Inject
 
@@ -55,6 +55,7 @@ class VoucherListFragment : BaseListFragment<BaseVoucherListUiModel, VoucherList
     }
 
     private val isActiveVoucher by lazy { getBooleanArgs(KEY_IS_ACTIVE_VOUCHER, true) }
+    private val sortItems: List<SortUiModel> by lazy { getMvcSortItems() }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_mvc_voucher_list, container, false)
@@ -122,8 +123,7 @@ class VoucherListFragment : BaseListFragment<BaseVoucherListUiModel, VoucherList
         setupActionBar()
         setupRecyclerViewVoucherList()
 
-        headerChipMvc.init()
-        headerChipMvc.setOnItemClickListener {
+        headerChipMvc.init {
             setOnChipListener(it)
         }
     }
@@ -169,7 +169,28 @@ class VoucherListFragment : BaseListFragment<BaseVoucherListUiModel, VoucherList
     }
 
     private fun setOnChipListener(chip: HeaderChipUiModel) {
+        when (chip.type) {
+            ChipType.CHIP_SORT -> showSortBottomSheet()
+        }
+    }
 
+    private fun showSortBottomSheet() {
+        val parent = view as? ViewGroup ?: return
+        SortBottomSheet(parent)
+                .setOnApplySortListener {
+
+                }
+                .show(childFragmentManager, sortItems)
+    }
+
+    private fun getMvcSortItems(): List<SortUiModel> {
+        if (null == context) {
+            return emptyList()
+        }
+        return listOf(
+                SortUiModel(requireContext().getString(R.string.mvc_newest_done_date), SortBy.NEWEST_DONE_DATE),
+                SortUiModel(requireContext().getString(R.string.mvc_oldest_done_date), SortBy.NEWEST_DONE_DATE)
+        )
     }
 
     private fun showDummyData() {

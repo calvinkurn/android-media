@@ -34,4 +34,7 @@
     <string name="mvc_create_voucher_name_textfield_hint">Nama voucher</string>
     <string name="mvc_create_voucher_name_alert_restricted">Mengandung kata yang dilarang</string>
     <string name="mvc_create_voucher_name_alert_minimum">Min. 5 huruf</string>
+    <string name="mvc_apply">Terapkan</string>
+    <string name="mvc_newest_done_date">Tanggal selesai terkini</string>
+    <string name="mvc_oldest_done_date">Tanggal selesai terlama</string>
 </resources>

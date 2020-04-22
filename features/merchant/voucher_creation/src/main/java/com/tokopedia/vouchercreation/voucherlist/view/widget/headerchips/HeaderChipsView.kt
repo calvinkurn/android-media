@@ -27,7 +27,9 @@ class HeaderChipsView : RecyclerView {
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
     constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
-    fun init() {
+    fun init(onClick: (element: HeaderChipUiModel) -> Unit) {
+        this.onChipClick = onClick
+
         layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         adapter = chipAdapter
         addItemDecoration(getItemDecoration())
