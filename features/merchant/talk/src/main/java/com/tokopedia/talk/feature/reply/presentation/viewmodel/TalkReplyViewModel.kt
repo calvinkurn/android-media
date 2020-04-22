@@ -52,6 +52,10 @@ class TalkReplyViewModel @Inject constructor(
     val createNewCommentResult: LiveData<Result<TalkCreateNewCommentResponseWrapper>>
         get() = _createNewCommentResult
 
+    private val _attachedProducts = MutableLiveData<MutableList<AttachedProduct>>()
+    val attachedProducts: LiveData<MutableList<AttachedProduct>>
+        get() = _attachedProducts
+
     private var isFollowing: Boolean = false
 
     fun followUnfollowTalk(talkId: Int) {
@@ -116,6 +120,16 @@ class TalkReplyViewModel @Inject constructor(
 
     fun createNewComment(comment: String, questionId: String, attachedProducts: List<AttachedProduct>) {
 
+    }
+
+    fun setAttachedProducts(attachedProducts: MutableList<AttachedProduct>) {
+        _attachedProducts.postValue(attachedProducts)
+    }
+
+    fun removeAttachedProduct(productId: String) {
+        val attachedProducts = _attachedProducts.value?.toMutableList()
+        val updatedAttachedProducts = attachedProducts?.filter { it.productId != productId }?.toMutableList()
+        _attachedProducts.postValue(updatedAttachedProducts)
     }
 
     fun setIsFollowing(isFollowing: Boolean) {

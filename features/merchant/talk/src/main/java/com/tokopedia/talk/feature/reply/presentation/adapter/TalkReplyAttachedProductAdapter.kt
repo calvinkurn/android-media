@@ -5,11 +5,11 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.talk.feature.reply.data.model.discussion.AttachedProduct
 import com.tokopedia.talk.feature.reply.presentation.adapter.viewholder.TalkReplyAttachedProductViewHolder
-import com.tokopedia.talk.feature.reply.presentation.widget.listeners.OnAttachedProductCardClickedListener
+import com.tokopedia.talk.feature.reply.presentation.widget.listeners.AttachedProductCardListener
 import com.tokopedia.talk_old.R
 
 class TalkReplyAttachedProductAdapter(
-        private val onAttachedProductCardClickedListener: OnAttachedProductCardClickedListener
+        private val attachedProductCardListener: AttachedProductCardListener
 ) : RecyclerView.Adapter<TalkReplyAttachedProductViewHolder>() {
 
     private var attachedProducts: List<AttachedProduct> = listOf()
@@ -24,7 +24,7 @@ class TalkReplyAttachedProductAdapter(
     }
 
     override fun onBindViewHolder(holder: TalkReplyAttachedProductViewHolder, position: Int) {
-       holder.bind(attachedProducts[position], onAttachedProductCardClickedListener)
+       holder.bind(attachedProducts[position], attachedProductCardListener)
     }
 
     fun setData(attachedProducts: List<AttachedProduct>) {

@@ -7,13 +7,13 @@ import com.tokopedia.talk.feature.reading.presentation.adapter.viewholder.TalkRe
 import com.tokopedia.talk.feature.reply.data.model.discussion.AttachedProduct
 import com.tokopedia.talk.feature.reply.presentation.adapter.TalkReplyAttachedProductAdapter
 import com.tokopedia.talk.feature.reply.presentation.adapter.uimodel.TalkReplyUiModel
-import com.tokopedia.talk.feature.reply.presentation.widget.listeners.OnAttachedProductCardClickedListener
+import com.tokopedia.talk.feature.reply.presentation.widget.listeners.AttachedProductCardListener
 import com.tokopedia.talk.feature.reply.presentation.widget.listeners.OnKebabClickedListener
 import com.tokopedia.talk_old.R
 import kotlinx.android.synthetic.main.item_talk_reply.view.*
 
 class TalkReplyViewHolder(view: View,
-                          private val onAttachedProductCardClickedListener: OnAttachedProductCardClickedListener,
+                          private val attachedProductCardListener: AttachedProductCardListener,
                           private val onKebabClickedListener: OnKebabClickedListener
 ) : AbstractViewHolder<TalkReplyUiModel>(view) {
 
@@ -89,7 +89,7 @@ class TalkReplyViewHolder(view: View,
     }
 
     private fun showAttachedProducts(attachedProducts: List<AttachedProduct>) {
-        val adapter = TalkReplyAttachedProductAdapter(onAttachedProductCardClickedListener)
+        val adapter = TalkReplyAttachedProductAdapter(attachedProductCardListener)
         itemView.replyAttachedProductsRecyclerView.adapter = adapter
         adapter.setData(attachedProducts)
     }

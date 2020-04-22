@@ -4,17 +4,20 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.talk.feature.reply.data.model.discussion.AttachedProduct
-import com.tokopedia.talk.feature.reply.presentation.widget.listeners.OnAttachedProductCardClickedListener
+import com.tokopedia.talk.feature.reply.presentation.widget.listeners.AttachedProductCardListener
 import kotlinx.android.synthetic.main.item_talk_reply_attached_product_answer.view.*
 
 class TalkReplyAttachedProductViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
-    fun bind(attachedProduct: AttachedProduct, onAttachedProductCardClickedListener: OnAttachedProductCardClickedListener) {
+    fun bind(attachedProduct: AttachedProduct, attachedProductCardListener: AttachedProductCardListener) {
         itemView.replyAttachedProductImage.loadImage(attachedProduct.thumbnail)
         itemView.replyAttachedProductName.text = attachedProduct.name
-        itemView.replyAttachedProductName.text = attachedProduct.priceFormatted
+        itemView.replyAttachedProductPrice.text = attachedProduct.priceFormatted
         itemView.setOnClickListener {
-            onAttachedProductCardClickedListener.onClickAttachedProduct(attachedProduct.productId)
+            attachedProductCardListener.onClickAttachedProduct(attachedProduct.productId)
+        }
+        itemView.replyAttachedProductRemoveButton.setOnClickListener {
+            attachedProductCardListener.onDeleteAttachedProduct(attachedProduct.productId)
         }
     }
 

@@ -23,10 +23,12 @@ import com.tokopedia.talk.common.TalkConstants
 import com.tokopedia.talk.common.TalkConstants.QUESTION_ID
 import com.tokopedia.talk.common.TalkConstants.SHOP_ID
 import com.tokopedia.talk.feature.reply.data.mapper.TalkReplyMapper
+import com.tokopedia.talk.feature.reply.data.model.discussion.AttachedProduct
 import com.tokopedia.talk.feature.reply.data.model.discussion.DiscussionDataByQuestionIDResponseWrapper
 import com.tokopedia.talk.feature.reply.di.DaggerTalkReplyComponent
 import com.tokopedia.talk.feature.reply.di.TalkReplyComponent
 import com.tokopedia.talk.feature.reply.presentation.adapter.TalkReplyAdapter
+import com.tokopedia.talk.feature.reply.presentation.adapter.TalkReplyAttachedProductAdapter
 import com.tokopedia.talk.feature.reply.presentation.adapter.factory.TalkReplyAdapterTypeFactory
 import com.tokopedia.talk.feature.reply.presentation.uimodel.TalkReplyHeaderModel
 import com.tokopedia.talk.feature.reply.presentation.viewmodel.TalkReplyViewModel
@@ -43,7 +45,7 @@ import kotlinx.android.synthetic.main.partial_talk_connection_error.view.*
 import javax.inject.Inject
 
 class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>, OnReplyBottomSheetClickedListener,
-        OnKebabClickedListener, OnAttachedProductCardClickedListener, TalkReplyHeaderListener,
+        OnKebabClickedListener, AttachedProductCardListener, TalkReplyHeaderListener,
         TalkReplyTextboxListener {
 
     companion object {
@@ -72,6 +74,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
     private var questionId = ""
     private var shopId = ""
     private var adapter: TalkReplyAdapter? = null
+    private var attachedProductAdapter: TalkReplyAttachedProductAdapter? = null
 
     override fun getScreenName(): String {
         return ""
@@ -111,6 +114,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
         observeDeleteCommentResponse()
         observeDeleteQuestionResponse()
         observeCreateNewCommentResponse()
+        observeAttachedProducts()
         super.onViewCreated(view, savedInstanceState)
         getDiscussionData()
     }
@@ -125,6 +129,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
                     if (!it.hasExtra(AttachProductActivity.TOKOPEDIA_ATTACH_PRODUCT_RESULT_KEY))
                         return
                     val resultProducts: ArrayList<ResultProduct> = it.getParcelableArrayListExtra(AttachProductActivity.TOKOPEDIA_ATTACH_PRODUCT_RESULT_KEY)
+                    setAttachedProducts(TalkReplyMapper.mapResultProductsToAttachedProducts(resultProducts))
                 }
                 else -> super.onActivityResult(requestCode, resultCode, data)
             }
@@ -147,12 +152,17 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
         goToPdp(productId)
     }
 
+    override fun onDeleteAttachedProduct(productId: String) {
+        removeAttachedProduct(productId)
+    }
+
     override fun onDestroy() {
         removeObservers(viewModel.discussionData)
         removeObservers(viewModel.deleteCommentResult)
         removeObservers(viewModel.deleteTalkResult)
         removeObservers(viewModel.followUnfollowResult)
         removeObservers(viewModel.createNewCommentResult)
+        removeObservers(viewModel.attachedProducts)
         super.onDestroy()
     }
 
@@ -170,6 +180,20 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
 
     private fun goToReportActivity(commentId: String) {
 
+    }
+
+    private fun goToAttachProductActivity() {
+        val intent = context?.let { AttachProductActivity.createInstance(it, shopId, "", userSession.shopId == shopId, AttachProductActivity.SOURCE_TALK) }
+        startActivityForResult(intent, ATTACH_PRODUCT_ACTIVITY_REQUEST_CODE)
+    }
+
+    private fun goToTermsAndConditionsPage() {
+        RouteManager.route(activity, "${ApplinkConst.WEBVIEW}?url=${TalkConstants.TERMS_AND_CONDITIONS_PAGE_URL}")
+    }
+
+    private fun goToPdp(productId: String) {
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId)
+        startActivity(intent)
     }
 
     private fun showDeleteDialog(commentId: String) {
@@ -206,6 +230,14 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
             TalkReplyReportBottomSheet.createInstance(context, commentId, this, allowReport, allowDelete)
         }
         this.childFragmentManager.let { reportBottomSheet?.show(it,"BottomSheetTag") }
+    }
+
+    private fun showAttachedProduct() {
+        replyAttachedProductContainer.visibility = View.VISIBLE
+    }
+
+    private fun hideAttachedProduct() {
+        replyAttachedProductContainer.visibility = View.GONE
     }
 
     private fun showSuccessToaster(successMessage: String) {
@@ -266,10 +298,6 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
 
     private fun onFailCreateComment() {
         showErrorToaster(getString(R.string.reply_toaster_network_error))
-    }
-
-    private fun goToTermsAndConditionsPage() {
-        RouteManager.route(activity, "${ApplinkConst.WEBVIEW}?url=${TalkConstants.TERMS_AND_CONDITIONS_PAGE_URL}")
     }
 
     private fun observeFollowUnfollowResponse() {
@@ -333,6 +361,45 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
         })
     }
 
+    private fun observeAttachedProducts() {
+        viewModel.attachedProducts.observe(this, Observer {
+            if(it.isNotEmpty()) {
+                attachedProductAdapter?.setData(it)
+                showAttachedProduct()
+            } else {
+                hideAttachedProduct()
+            }
+        })
+    }
+
+    private fun initView() {
+        initAdapter()
+        initAttachedProductAdapter()
+        initRecyclerView()
+        initAttachedProductRecyclerView()
+        initTextBox()
+    }
+
+    private fun initAdapter() {
+        adapter = TalkReplyAdapter(TalkReplyAdapterTypeFactory(this, this))
+    }
+
+    private fun initRecyclerView() {
+        talkReplyRecyclerView.adapter = adapter
+    }
+
+    private fun initTextBox() {
+        replyTextBox.bind(userSession.profilePicture, this)
+    }
+
+    private fun initAttachedProductAdapter() {
+        attachedProductAdapter = TalkReplyAttachedProductAdapter(this)
+    }
+
+    private fun initAttachedProductRecyclerView() {
+        replyAttachedProductReview.adapter = attachedProductAdapter
+    }
+
     private fun bindHeader(talkReplyHeaderModel: TalkReplyHeaderModel) {
         talkReplyHeader.bind(talkReplyHeaderModel, this, this)
     }
@@ -364,39 +431,6 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
         dialog.show()
     }
 
-    private fun deleteReply(commentId: String) {
-        viewModel.deleteComment(questionId, commentId)
-    }
-
-    private fun deleteQuestion() {
-        viewModel.deleteTalk(questionId)
-    }
-
-    private fun getDiscussionData() {
-        viewModel.getDiscussionDataByQuestionID(questionId, shopId)
-    }
-
-    private fun getDataFromArguments() {
-        arguments?.let {
-            questionId = it.getString(QUESTION_ID, "")
-            shopId = it.getString(SHOP_ID, "")
-        }
-    }
-
-    private fun initView() {
-        initAdapter()
-        initRecyclerView()
-        initTextBox()
-    }
-
-    private fun initAdapter() {
-        adapter = TalkReplyAdapter(TalkReplyAdapterTypeFactory(this, this))
-    }
-
-    private fun initRecyclerView() {
-        talkReplyRecyclerView.adapter = adapter
-    }
-
     private fun onAnswersEmpty() {
         talkReplyTotalAnswers.visibility = View.GONE
         talkReplyRecyclerView.visibility = View.GONE
@@ -411,9 +445,16 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
         talkReplyEmptyState.visibility = View.GONE
     }
 
-    private fun goToPdp(productId: String) {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId)
-        startActivity(intent)
+    private fun deleteReply(commentId: String) {
+        viewModel.deleteComment(questionId, commentId)
+    }
+
+    private fun deleteQuestion() {
+        viewModel.deleteTalk(questionId)
+    }
+
+    private fun getDiscussionData() {
+        viewModel.getDiscussionDataByQuestionID(questionId, shopId)
     }
 
     private fun followUnfollowTalk() {
@@ -440,16 +481,22 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
         }
     }
 
-    private fun initTextBox() {
-        replyTextBox.bind(userSession.profilePicture, this)
-    }
-
-    private fun goToAttachProductActivity() {
-        val intent = context?.let { AttachProductActivity.createInstance(it, shopId, "", userSession.shopId == shopId, AttachProductActivity.SOURCE_TALK) }
-        startActivityForResult(intent, ATTACH_PRODUCT_ACTIVITY_REQUEST_CODE)
+    private fun setAttachedProducts(attachedProducts: MutableList<AttachedProduct>) {
+        viewModel.setAttachedProducts(attachedProducts)
     }
 
     private fun sendComment(text: String, attachedProductIds: List<String>) {
 
+    }
+
+    private fun removeAttachedProduct(productId: String) {
+        viewModel.removeAttachedProduct(productId)
+    }
+
+    private fun getDataFromArguments() {
+        arguments?.let {
+            questionId = it.getString(QUESTION_ID, "")
+            shopId = it.getString(SHOP_ID, "")
+        }
     }
 }

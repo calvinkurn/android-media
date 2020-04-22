@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.tokopedia.unifycomponents.CardUnify xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     app:card_type="border"
     xmlns:app="http://schemas.android.com/apk/res-auto">
@@ -29,7 +29,6 @@
             android:layout_marginStart="@dimen/layout_lvl1"
             android:layout_marginLeft="@dimen/layout_lvl1"
             android:maxLines="1"
-            android:text="Iphone X Hijau 256 ..."
             app:typographyWeight="reguler"
             app:typographyType="body_3"
             app:layout_constraintTop_toTopOf="@id/replyAttachedProductImage"
@@ -40,12 +39,23 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:maxLines="1"
-            android:text="Rp 20.000.000"
             app:typographyWeight="bold"
             app:typographyType="body_3"
             app:layout_constraintStart_toStartOf="@id/replyAttachedProductName"
             app:layout_constraintTop_toBottomOf="@id/replyAttachedProductName"/>
 
+        <ImageView
+            android:id="@+id/replyAttachedProductRemoveButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/layout_lvl1"
+            android:layout_marginLeft="@dimen/layout_lvl1"
+            android:layout_marginEnd="@dimen/dp_12"
+            android:layout_marginRight="@dimen/dp_12"
+            app:layout_constraintStart_toEndOf="@id/replyAttachedProductName"
+            app:layout_constraintTop_toTopOf="@id/replyAttachedProductImage"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:srcCompat="@drawable/ic_remove_attached_product" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
