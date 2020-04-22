@@ -50,9 +50,15 @@ class QuickEditVariantViewModel @Inject constructor(
                 val variant = response.getProductV3
                 mapToVariantsResult(variant)
             }
-            setEditVariantResult(productId, result)
-            _getProductVariantsResult.value = result
-            hideProgressBar()
+
+            if(result.variants.isNotEmpty()) {
+                setEditVariantResult(productId, result)
+                _getProductVariantsResult.value = result
+                hideProgressBar()
+            } else {
+                hideProgressBar()
+                showErrorView()
+            }
         }) {
             hideProgressBar()
             showErrorView()
