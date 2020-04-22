@@ -42,12 +42,9 @@ import com.tokopedia.product.addedit.common.util.setText
 import com.tokopedia.product.addedit.description.data.remote.model.variantbycat.ProductVariantByCatModel
 import com.tokopedia.product.addedit.description.di.AddEditProductDescriptionModule
 import com.tokopedia.product.addedit.description.di.DaggerAddEditProductDescriptionComponent
-import com.tokopedia.product.addedit.description.presentation.activity.AddEditProductDescriptionActivity.Companion.PARAM_CATEGORY_ID
-import com.tokopedia.product.addedit.description.presentation.activity.AddEditProductDescriptionActivity.Companion.PARAM_DESCRIPTION_INPUT_MODEL
 import com.tokopedia.product.addedit.description.presentation.activity.AddEditProductDescriptionActivity.Companion.PARAM_IS_ADD_MODE
 import com.tokopedia.product.addedit.description.presentation.activity.AddEditProductDescriptionActivity.Companion.PARAM_IS_EDIT_MODE
 import com.tokopedia.product.addedit.description.presentation.activity.AddEditProductDescriptionActivity.Companion.PARAM_PRODUCT_INPUT_MODEL
-import com.tokopedia.product.addedit.description.presentation.activity.AddEditProductDescriptionActivity.Companion.PARAM_VARIANT_INPUT_MODEL
 import com.tokopedia.product.addedit.description.presentation.adapter.VideoLinkTypeFactory
 import com.tokopedia.product.addedit.description.presentation.model.DescriptionInputModel
 import com.tokopedia.product.addedit.description.presentation.model.PictureViewModel
@@ -55,8 +52,8 @@ import com.tokopedia.product.addedit.description.presentation.model.ProductVaria
 import com.tokopedia.product.addedit.description.presentation.model.VideoLinkModel
 import com.tokopedia.product.addedit.description.presentation.model.youtube.YoutubeVideoModel
 import com.tokopedia.product.addedit.description.presentation.viewmodel.AddEditProductDescriptionViewModel
-import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_BACK_PRESSED
+import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.EXTRA_PRODUCT_INPUT_MODEL
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.shipment.presentation.activity.AddEditProductShipmentActivity
 import com.tokopedia.product.addedit.shipment.presentation.fragment.AddEditProductShipmentFragment.Companion.REQUEST_CODE_SHIPMENT
@@ -81,24 +78,19 @@ class AddEditProductDescriptionFragment:
         VideoLinkTypeFactory.VideoLinkListener {
 
     companion object {
-        fun createInstance(categoryId: String, productInputModel: ProductInputModel): Fragment {
+        fun createInstance(productInputModel: ProductInputModel): Fragment {
             return AddEditProductDescriptionFragment().apply {
                 arguments = Bundle().apply {
-                    putString(PARAM_CATEGORY_ID, categoryId)
                     putParcelable(PARAM_PRODUCT_INPUT_MODEL, productInputModel)
                 }
             }
         }
-        fun createInstance(categoryId: String,
-                           descriptionInputModel: DescriptionInputModel,
-                           variantInputModel: ProductVariantInputModel,
+        fun createInstance(productInputModel: ProductInputModel,
                            isEditMode: Boolean,
                            isAddMode: Boolean): Fragment {
             return AddEditProductDescriptionFragment().apply {
                 arguments = Bundle().apply {
-                    putString(PARAM_CATEGORY_ID, categoryId)
-                    putParcelable(PARAM_DESCRIPTION_INPUT_MODEL, descriptionInputModel)
-                    putParcelable(PARAM_VARIANT_INPUT_MODEL, variantInputModel)
+                    putParcelable(PARAM_PRODUCT_INPUT_MODEL, productInputModel)
                     putBoolean(PARAM_IS_EDIT_MODE, isEditMode)
                     putBoolean(PARAM_IS_ADD_MODE, isAddMode)
                 }
@@ -113,8 +105,6 @@ class AddEditProductDescriptionFragment:
         const val IS_ADD = 0
         const val REQUEST_CODE_DESCRIPTION = 0x03
     }
-
-    private var productInputModel: ProductInputModel? = null
 
     private lateinit var userSession: UserSessionInterface
     private lateinit var shopId: String
@@ -175,19 +165,13 @@ class AddEditProductDescriptionFragment:
         shopId = userSession.shopId
         super.onCreate(savedInstanceState)
         arguments?.let {
-            val categoryId: String = it.getString(PARAM_CATEGORY_ID) ?: ""
             val isEditMode: Boolean = it.getBoolean(PARAM_IS_EDIT_MODE, false)
             val isAddMode: Boolean = it.getBoolean(PARAM_IS_ADD_MODE, false)
-            val descriptionInputModel : DescriptionInputModel =
-                    it.getParcelable(PARAM_DESCRIPTION_INPUT_MODEL) ?: DescriptionInputModel()
-            val variantInputModel : ProductVariantInputModel =
-                    it.getParcelable(PARAM_VARIANT_INPUT_MODEL) ?: ProductVariantInputModel()
-            descriptionViewModel.categoryId = categoryId
-            descriptionViewModel.descriptionInputModel = descriptionInputModel
-            descriptionViewModel.setVariantInput(variantInputModel)
             descriptionViewModel.isEditMode = isEditMode
             descriptionViewModel.isAddMode = isAddMode
-            productInputModel = it.getParcelable(PARAM_PRODUCT_INPUT_MODEL) ?: ProductInputModel()
+            descriptionViewModel.productInputModel =
+                    it.getParcelable(PARAM_PRODUCT_INPUT_MODEL) ?: ProductInputModel()
+
         }
         if (descriptionViewModel.isAddMode || !descriptionViewModel.isEditMode) {
             ProductAddDescriptionTracking.trackScreen()
@@ -271,8 +255,8 @@ class AddEditProductDescriptionFragment:
         if(!descriptionViewModel.isEditMode) {
             inputAllDataInInputDraftModel()
             val intent = Intent()
-            intent.putExtra(AddEditProductPreviewConstants.EXTRA_PRODUCT_INPUT_MODEL, productInputModel)
-            intent.putExtra(AddEditProductPreviewConstants.EXTRA_BACK_PRESSED, 2)
+            intent.putExtra(EXTRA_PRODUCT_INPUT_MODEL, descriptionViewModel.productInputModel)
+            intent.putExtra(EXTRA_BACK_PRESSED, 2)
             activity?.setResult(Activity.RESULT_OK, intent)
             activity?.finish()
         } else {
@@ -289,11 +273,10 @@ class AddEditProductDescriptionFragment:
     }
 
     private fun inputAllDataInInputDraftModel() {
-        productInputModel?.descriptionInputModel = DescriptionInputModel(
+        descriptionViewModel.productInputModel.descriptionInputModel = DescriptionInputModel(
                 textFieldDescription.getText(),
                 getFilteredValidVideoLink()
         )
-        productInputModel?.variantInputModel = descriptionViewModel.variantInputModel
     }
 
     private fun observeProductVariant() {
@@ -465,8 +448,8 @@ class AddEditProductDescriptionFragment:
                 put(EXTRA_PRODUCT_VARIANT_SELECTION, descriptionViewModel.variantInputModel)
                 put(EXTRA_PRODUCT_SIZECHART, descriptionViewModel.variantInputModel.productSizeChart)
                 put(EXTRA_CURRENCY_TYPE, TYPE_IDR)
-                put(EXTRA_DEFAULT_PRICE, 0.0) //TODO faisalramd put default price
-                put(EXTRA_STOCK_TYPE, "")
+                put(EXTRA_DEFAULT_PRICE, descriptionViewModel.productInputModel.detailInputModel.price)
+                put(EXTRA_STOCK_TYPE, descriptionViewModel.getStatusStockViewVariant())
                 put(EXTRA_IS_OFFICIAL_STORE, false)
                 put(EXTRA_DEFAULT_SKU, "")
                 put(EXTRA_NEED_RETAIN_IMAGE, false)
@@ -493,7 +476,7 @@ class AddEditProductDescriptionFragment:
         inputAllDataInInputDraftModel()
         if (descriptionViewModel.validateInputVideo(adapter.data)) {
             val intent = Intent(context, AddEditProductShipmentActivity::class.java)
-            intent.putExtra(AddEditProductUploadConstant.EXTRA_PRODUCT_INPUT_MODEL, productInputModel)
+            intent.putExtra(AddEditProductUploadConstant.EXTRA_PRODUCT_INPUT_MODEL, descriptionViewModel.productInputModel)
             startActivityForResult(intent, REQUEST_CODE_SHIPMENT)
         }
     }
