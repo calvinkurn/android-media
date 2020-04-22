@@ -41,16 +41,18 @@ class MerchantVoucherTargetFragment(onNextInvoker: () -> Unit = {})
     }
 
     private val createPromoCodeBottomSheet by lazy {
-        CreatePromoCodeBottomSheet.createInstance(context, ::onNextCreatePromoCode)
+        CreatePromoCodeBottomSheet.createInstance(context, ::onNextCreatePromoCode, ::getPromoCodeString)
+    }
+
+    private val fillVoucherWidget by lazy {
+        FillVoucherNameUiModel()
     }
 
     private var voucherTargetWidget = VoucherTargetUiModel(::openBottomSheet)
 
     private var shouldReturnToInitialValue = true
 
-    private val fillVoucherWidget by lazy {
-        FillVoucherNameUiModel()
-    }
+    private var promoCodeText = ""
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_merchant_voucher_target, container, false)
@@ -93,13 +95,19 @@ class MerchantVoucherTargetFragment(onNextInvoker: () -> Unit = {})
     }
 
     private fun observeLiveData() {
-        viewModel.voucherTargetListData.observe(viewLifecycleOwner, Observer { voucherTargetList ->
-            shouldReturnToInitialValue = false
-            dismissBottomSheet()
-            voucherTargetWidget = VoucherTargetUiModel(::openBottomSheet, voucherTargetList)
-            extraWidget = listOf(voucherTargetWidget, fillVoucherWidget)
-            super.setupView()
-        })
+        viewModel.run {
+            voucherTargetListData.observe(viewLifecycleOwner, Observer { voucherTargetList ->
+                shouldReturnToInitialValue = false
+                dismissBottomSheet()
+                voucherTargetWidget = VoucherTargetUiModel(::openBottomSheet, voucherTargetList)
+                extraWidget = listOf(voucherTargetWidget, fillVoucherWidget)
+                super.setupView()
+            })
+            specialVoucherPromoCode.observe(viewLifecycleOwner, Observer { promoCode ->
+                promoCodeText = promoCode
+            })
+
+        }
     }
 
     private fun setupBottomSheet() {
@@ -115,5 +123,7 @@ class MerchantVoucherTargetFragment(onNextInvoker: () -> Unit = {})
     private fun onNextCreatePromoCode(promoCode: String) {
         viewModel.validatePromoCode(promoCode)
     }
+
+    private fun getPromoCodeString() : String = promoCodeText
 
 }

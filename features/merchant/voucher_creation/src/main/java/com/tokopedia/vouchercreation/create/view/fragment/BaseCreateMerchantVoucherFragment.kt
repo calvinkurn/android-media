@@ -11,6 +11,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.vouchercreation.create.view.bottomsheet.CreateVoucherBottomSheetType
+import com.tokopedia.vouchercreation.create.view.customview.bottomsheet.VoucherBottomView
 import com.tokopedia.vouchercreation.create.view.typefactory.CreateVoucherTypeFactory
 import com.tokopedia.vouchercreation.create.view.uimodel.NextButtonUiModel
 
@@ -55,6 +56,9 @@ abstract class BaseCreateMerchantVoucherFragment<F : CreateVoucherTypeFactory, W
     protected fun showBottomSheet(bottomSheetType: CreateVoucherBottomSheetType) {
         activeBottomSheetType = bottomSheetType
         bottomSheetViewArray.get(bottomSheetType.key)?.run {
+            (this as? VoucherBottomView)?.title?.let { bottomSheetTitle ->
+                setTitle(bottomSheetTitle)
+            }
             setOnDismissListener {
                 dismissBottomView()
             }

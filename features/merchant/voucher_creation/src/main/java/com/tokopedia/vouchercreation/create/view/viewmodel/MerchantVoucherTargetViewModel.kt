@@ -22,6 +22,10 @@ class MerchantVoucherTargetViewModel @Inject constructor(
     val voucherTargetListData : LiveData<List<VoucherTargetItemUiModel>>
         get() = mVoucherTargetListData
 
+    private val mSpecialVoucherPromoCode = MutableLiveData<String>()
+    val specialVoucherPromoCode : LiveData<String>
+        get() = mSpecialVoucherPromoCode
+
     fun setVoucherTargetListData(list: List<VoucherTargetItemUiModel>) {
         mVoucherTargetListData.value = list
     }
@@ -43,6 +47,7 @@ class MerchantVoucherTargetViewModel @Inject constructor(
                             isHavePromoCard = true,
                             promoCode = promoCode)
             )
+            mSpecialVoucherPromoCode.value = promoCode
         }
     }
 
