@@ -269,8 +269,8 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
         })
         recharge_general_enquiry_button.isEnabled = false
         recharge_general_enquiry_button.setOnClickListener {
-            if (isExpressCheckout) enquire()
-            else processCheckout()
+            // If it's express checkout, open checkout bottomsheet; if not navigate to old checkout
+            if (isExpressCheckout) enquire() else processCheckout()
         }
 
         loadData()
