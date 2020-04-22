@@ -15,7 +15,6 @@ import com.tokopedia.product.addedit.description.domain.usecase.GetYoutubeVideoU
 import com.tokopedia.product.addedit.description.presentation.model.*
 import com.tokopedia.product.addedit.description.presentation.model.youtube.YoutubeVideoModel
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
-import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
