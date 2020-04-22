@@ -174,10 +174,14 @@ class NfcCheckBalanceFragment : BaseDaggerFragment() {
         val tag = intent.getParcelableExtra<Tag>(NfcAdapter.EXTRA_TAG)
         try {
             if (tag != null) {
-                val isodep = IsoDep.get(tag);
-                emoneyBalanceViewModel.processEmoneyTagIntent(isodep,
-                        GraphqlHelper.loadRawString(resources, R.raw.query_emoney_inquiry_balance),
-                        0)
+                var isodep = IsoDep.get(tag);
+                if (isodep != null) {
+                    emoneyBalanceViewModel.processEmoneyTagIntent(isodep,
+                            GraphqlHelper.loadRawString(resources, R.raw.query_emoney_inquiry_balance),
+                            0)
+                } else {
+                    showError(NfcCardErrorTypeDef.FAILED_READ_CARD)
+                }
             }
         } catch (e: Exception) {
             showError(NfcCardErrorTypeDef.FAILED_READ_CARD)
