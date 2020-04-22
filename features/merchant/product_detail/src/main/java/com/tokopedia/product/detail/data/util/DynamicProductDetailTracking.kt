@@ -864,14 +864,25 @@ object DynamicProductDetailTracking {
                                     ?: "",
                             "layout:${productInfo?.layoutName};catName:${productInfo?.basic?.category?.name};catId:${productInfo?.basic?.category?.id}",
                             "",
-                            irisSessionId
+                            irisSessionId,
+                            null,
+                            null,
+                            null,
+                            null,
+                            null,
+                            null
                     )
         }
 
-        fun eventEnhanceEcommerceProductDetail(irisSessionId: String, trackerListName: String?, productInfo: DynamicProductInfoP1?,
-                                               shopInfo: ShopInfo?, trackerAttribution: String?,
-                                               isTradeIn: Boolean, isDiagnosed: Boolean,
-                                               multiOrigin: Boolean, deeplinkUrl: String) {
+        fun eventEnhanceEcommerceProductDetail(irisSessionId: String,
+                                               trackerListName: String?,
+                                               productInfo: DynamicProductInfoP1?,
+                                               shopInfo: ShopInfo?,
+                                               trackerAttribution: String?,
+                                               isTradeIn: Boolean,
+                                               isDiagnosed: Boolean,
+                                               multiOrigin: Boolean,
+                                               deeplinkUrl: String) {
 
             sendTrackingBundle(
                             ProductDetailViewsBundler.KEY,

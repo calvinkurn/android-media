@@ -10,6 +10,7 @@ import androidx.annotation.Nullable;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.tagmanager.DataLayer;
 import com.google.firebase.analytics.FirebaseAnalytics;
+import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.analyticsdebugger.debugger.GtmLogger;
 import com.tokopedia.analyticsdebugger.debugger.TetraDebugger;
 import com.tokopedia.config.GlobalConfig;
@@ -20,9 +21,12 @@ import com.tokopedia.core.gcm.utils.RouterUtils;
 import com.tokopedia.core.util.PriceUtil;
 import com.tokopedia.iris.Iris;
 import com.tokopedia.iris.IrisAnalytics;
+import com.tokopedia.iris.util.IrisSession;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.track.interfaces.ContextAnalytics;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -60,6 +64,7 @@ public class GTMAnalytics extends ContextAnalytics {
     private TetraDebugger tetraDebugger;
     private final RemoteConfig remoteConfig;
     private String clientIdString = "";
+    private UserSessionInterface userSession;
 
     // have status that describe pending.
 
@@ -70,6 +75,7 @@ public class GTMAnalytics extends ContextAnalytics {
         }
         iris = IrisAnalytics.Companion.getInstance(context);
         remoteConfig = new FirebaseRemoteConfigImpl(context);
+        userSession = new UserSession(context);
     }
 
     @Override
@@ -117,9 +123,18 @@ public class GTMAnalytics extends ContextAnalytics {
         }
     }
 
+    public Bundle addWrapperValue(Bundle bundle) {
+        bundle.putString("clientId", getClientIDString());
+        bundle.putString(USER_ID, userSession.getUserId());
+        if (!CommonUtils.checkStringNotNull(bundle.getString("sessionIris")))
+            bundle.putString("sessionIris", new IrisSession(context).getSessionId());
+        bundle.putString("currentSite", "");
+        return bundle;
+    }
+
     @Override
     public void sendEnhanceEcommerceEvent(String eventName, Bundle value) {
-        pushEventV5(eventName, value, context);
+        pushEventV5(eventName, addWrapperValue(value), context);
     }
 
     @SuppressWarnings("unchecked")

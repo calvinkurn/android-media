@@ -21,37 +21,9 @@ object ProductTrackingConstant {
         }
 
         object Tracking {
-                const val KEY_SHOP_ID_SELLER = "shopId"
-                const val KEY_SHOP_TYPE = "shopType"
-                const val KEY_PAGE_TYPE = "pageType"
-                const val KEY_PRODUCT_ID_ = "productId"
-                const val KEY_EVENT = "event"
-                const val KEY_CATEGORY = "eventCategory"
-                const val KEY_ACTION = "eventAction"
-                const val KEY_LABEL = "eventLabel"
-                const val KEY_ECOMMERCE = "ecommerce"
-                const val KEY_PRODUCT_PROMO = "promoClick"
-                const val KEY_PROMOTIONS = "promotions"
-                const val KEY_USER_ID = "user_id"
-                const val KEY_DETAIl = "detail"
-                const val KEY_PROMO_ID = "promoId"
-                const val USER_NON_LOGIN = "non login"
-
-                const val PRODUCT_DETAIL_SCREEN_NAME = "/product"
 
                 const val ID = "id"
                 const val NAME = "name"
-                const val PROMO_NAME = "name"
-                const val PROMO_POSITION = "position"
-                const val PROMO_ID = "promo_id"
-                const val PROMO_CODE = "promo_id"
-
-                const val ACTION_FIELD = "actionField"
-                const val LIST = "list"
-                const val PRODUCTS = "products"
-                const val IMPRESSIONS = "impressions"
-                const val PRICE = "price"
-                const val BRAND = "brand"
                 const val DEFAULT_VALUE = "none / other"
                 const val VARIANT = "variant"
                 const val NON_VARIANT = "non variant"
@@ -221,7 +193,7 @@ data class Product(
         val dimension83: String,
         @Key(ProductTrackingConstant.Tracking.KEY_DIMENSION_81)
         val dimension81: String,
-        @DefaultValueLong(0)
+        @DefaultValueLong(1)
         @Key(Param.INDEX)
         val index: Long
 )
