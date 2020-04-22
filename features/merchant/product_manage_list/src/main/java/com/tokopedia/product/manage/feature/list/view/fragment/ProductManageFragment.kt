@@ -268,10 +268,14 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     }
 
     override fun getEmptyDataViewModel(): EmptyModel {
-        return if(showProductEmptyState()) {
-            ProductEmptyModel
-        } else {
-            SearchEmptyModel
+        return EmptyModel().apply {
+            if(showProductEmptyState()) {
+                contentRes = R.string.product_manage_list_empty_product
+                urlRes = ProductManageUrl.PRODUCT_MANAGE_LIST_EMPTY_STATE
+            } else {
+                contentRes = R.string.product_manage_list_empty_search
+                urlRes = ProductManageUrl.PRODUCT_MANAGE_SEARCH_EMPTY_STATE
+            }
         }
     }
 
