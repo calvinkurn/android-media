@@ -124,6 +124,7 @@ class TransactionOrderProgressLayout : LinearLayout {
         if (openCloseState()) {
             renderOpenCloseStateChangerButton()
             bindClickOpenCloseState()
+            bindClickCardDescription()
             renderImageThumbnail()
             renderProductName()
             renderEstimation()
@@ -167,6 +168,12 @@ class TransactionOrderProgressLayout : LinearLayout {
         }
         stateChanger?.setOnClickListener(clickListener)
         status?.setOnClickListener(clickListener)
+    }
+
+    private fun bindClickCardDescription() {
+        descriptionContainer?.setOnClickListener {
+            RouteManager.route(context, chatOrder.uri)
+        }
     }
 
     private fun renderImageThumbnail() {
