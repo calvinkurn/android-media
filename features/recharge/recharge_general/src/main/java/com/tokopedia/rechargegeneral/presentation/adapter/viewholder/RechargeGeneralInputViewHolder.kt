@@ -16,13 +16,8 @@ class RechargeGeneralInputViewHolder(val view: View, val listener: OnInputListen
         inputView.resetState()
         inputView.setLabel(enquiryData.text)
         inputView.setHint("")
-        if (enquiryData.style == INPUT_TYPE_FAVORITE_NUMBER) {
-            inputView.isCustomInput = true
-            inputView.setInputType(TopupBillsInputFieldWidget.INPUT_NUMERIC)
-        } else {
-            inputView.isCustomInput = false
-            inputView.setInputType(enquiryData.style)
-        }
+        inputView.setInputType(enquiryData.style)
+        inputView.isCustomInput = enquiryData.isFavoriteNumber
         // Add delay to reduce tracking events
         inputView.setDelayTextChanged(1000)
 
@@ -43,7 +38,7 @@ class RechargeGeneralInputViewHolder(val view: View, val listener: OnInputListen
 
             // Setup favorite number input
             override fun onCustomInputClick() {
-                listener.onCustomInputClick(inputView, adapterPosition)
+                listener.onCustomInputClick(inputView, enquiryData)
             }
         }
         if (enquiryData.help.isNotEmpty()) {
