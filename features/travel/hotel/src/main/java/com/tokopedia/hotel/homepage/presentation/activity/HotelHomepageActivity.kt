@@ -93,6 +93,7 @@ class HotelHomepageActivity : HotelBaseActivity(), HasComponent<HotelHomepageCom
         const val TYPE_DISTRICT = "district"
         const val TYPE_CITY = "city"
         const val TYPE_PROPERTY = "property"
+        const val TYPE_COORDINATE  = "coordinate"
 
         const val HOMEPAGE_SCREEN_NAME = "/hotel/homepage"
     }

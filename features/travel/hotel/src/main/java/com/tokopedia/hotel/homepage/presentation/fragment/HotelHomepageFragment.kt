@@ -26,6 +26,7 @@ import com.tokopedia.hotel.common.presentation.HotelBaseFragment
 import com.tokopedia.hotel.common.util.HotelUtils
 import com.tokopedia.hotel.destination.view.activity.HotelDestinationActivity
 import com.tokopedia.hotel.homepage.di.HotelHomepageComponent
+import com.tokopedia.hotel.homepage.presentation.activity.HotelHomepageActivity.Companion.TYPE_COORDINATE
 import com.tokopedia.hotel.homepage.presentation.activity.HotelHomepageActivity.Companion.TYPE_PROPERTY
 import com.tokopedia.hotel.homepage.presentation.adapter.HotelLastSearchAdapter
 import com.tokopedia.hotel.homepage.presentation.adapter.viewholder.HotelLastSearchViewHolder
@@ -34,6 +35,7 @@ import com.tokopedia.hotel.homepage.presentation.model.HotelRecentSearchModel
 import com.tokopedia.hotel.homepage.presentation.model.viewmodel.HotelHomepageViewModel
 import com.tokopedia.hotel.homepage.presentation.widget.HotelRoomAndGuestBottomSheets
 import com.tokopedia.hotel.hoteldetail.presentation.activity.HotelDetailActivity
+import com.tokopedia.hotel.search.data.model.HotelSearchModel
 import com.tokopedia.hotel.search.presentation.activity.HotelSearchResultActivity
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -185,9 +187,11 @@ class HotelHomepageFragment : HotelBaseFragment(),
                     onDestinationNearBy(data.getDoubleExtra(HotelDestinationActivity.HOTEL_CURRENT_LOCATION_LANG, 0.0),
                             data.getDoubleExtra(HotelDestinationActivity.HOTEL_CURRENT_LOCATION_LAT, 0.0))
                 } else {
-                    onDestinationChanged(data.getStringExtra(HotelDestinationActivity.HOTEL_DESTINATION_NAME),
+                    onDestinationChanged(data.getStringExtra(HotelDestinationActivity.HOTEL_DESTINATION_NAME) ?: "",
                             data.getLongExtra(HotelDestinationActivity.HOTEL_DESTINATION_ID, 0),
-                            data.getStringExtra(HotelDestinationActivity.HOTEL_DESTINATION_TYPE))
+                            data.getStringExtra(HotelDestinationActivity.HOTEL_DESTINATION_TYPE) ?: "",
+                            data.getStringExtra(HotelDestinationActivity.HOTEL_DESTINATION_SEARCH_TYPE) ?: "",
+                            data.getStringExtra(HotelDestinationActivity.HOTEL_DESTINATION_SEARCH_ID) ?: "")
                 }
             }
         }
@@ -300,10 +304,12 @@ class HotelHomepageFragment : HotelBaseFragment(),
         hotelHomepageModel.locLong = longitude
         hotelHomepageModel.locId = 0
         hotelHomepageModel.locType = ""
+        hotelHomepageModel.searchType = TYPE_COORDINATE
+        hotelHomepageModel.searchId = ""
         renderView()
     }
 
-    private fun onDestinationChanged(name: String, destinationId: Long, type: String) {
+    private fun onDestinationChanged(name: String, destinationId: Long, type: String, searchType: String, searchId: String) {
         trackingHotelUtil.hotelSelectDestination(type, name)
 
         hotelHomepageModel.locName = name
@@ -311,6 +317,8 @@ class HotelHomepageFragment : HotelBaseFragment(),
         hotelHomepageModel.locType = type
         hotelHomepageModel.locLat = 0.0
         hotelHomepageModel.locLong = 0.0
+        hotelHomepageModel.searchType = searchType
+        hotelHomepageModel.searchId = searchId
         renderView()
     }
 
@@ -331,11 +339,16 @@ class HotelHomepageFragment : HotelBaseFragment(),
                         hotelHomepageModel.locType, hotelHomepageModel.locName),
                         REQUEST_CODE_DETAIL)
             } else {
-                startActivityForResult(HotelSearchResultActivity.createIntent(this, hotelHomepageModel.locName,
-                        hotelHomepageModel.locId, hotelHomepageModel.locType, hotelHomepageModel.locLat.toFloat(),
-                        hotelHomepageModel.locLong.toFloat(), hotelHomepageModel.checkInDate, hotelHomepageModel.checkOutDate,
-                        hotelHomepageModel.roomCount, hotelHomepageModel.adultCount),
-                        REQUEST_CODE_SEARCH)
+                val hotelSearchModel = HotelSearchModel(name = hotelHomepageModel.locName,
+                        id = hotelHomepageModel.locId,
+                        type = hotelHomepageModel.locType,
+                        lat = hotelHomepageModel.locLat.toFloat(),
+                        long = hotelHomepageModel.locLong.toFloat(),
+                        checkIn = hotelHomepageModel.checkInDate,
+                        checkOut = hotelHomepageModel.checkOutDate,
+                        room = hotelHomepageModel.roomCount,
+                        adult = hotelHomepageModel.adultCount)
+                startActivityForResult(HotelSearchResultActivity.createIntent(this, hotelSearchModel), REQUEST_CODE_SEARCH)
             }
         }
     }
@@ -363,9 +376,14 @@ class HotelHomepageFragment : HotelBaseFragment(),
         banner_hotel_homepage_promo.setOnPromoClickListener { position ->
             onPromoClicked(promoDataList.getOrNull(position)
                     ?: TravelCollectiveBannerModel.Banner(), position)
-            if (RouteManager.isSupportApplink(context, promoDataList.getOrNull(position)?.attribute?.appUrl ?: "")) RouteManager.route(context, promoDataList.getOrNull(position)?.attribute?.appUrl ?: "")
-            else if (!getRegisteredNavigation(context!!, promoDataList.getOrNull(position)?.attribute?.appUrl ?: "").isEmpty()) RouteManager.route(context, getRegisteredNavigation(context!!, promoDataList.getOrNull(position)?.attribute?.appUrl ?: ""))
-            else if ((promoDataList.getOrNull(position)?.attribute?.webUrl ?: "").isNotEmpty()) RouteManager.route(context, promoDataList.getOrNull(position)?.attribute?.webUrl)
+            if (RouteManager.isSupportApplink(context, promoDataList.getOrNull(position)?.attribute?.appUrl
+                            ?: "")) RouteManager.route(context, promoDataList.getOrNull(position)?.attribute?.appUrl
+                    ?: "")
+            else if (!getRegisteredNavigation(context!!, promoDataList.getOrNull(position)?.attribute?.appUrl
+                            ?: "").isEmpty()) RouteManager.route(context, getRegisteredNavigation(context!!, promoDataList.getOrNull(position)?.attribute?.appUrl
+                    ?: ""))
+            else if ((promoDataList.getOrNull(position)?.attribute?.webUrl
+                            ?: "").isNotEmpty()) RouteManager.route(context, promoDataList.getOrNull(position)?.attribute?.webUrl)
         }
 
         renderBannerView(promoDataList)

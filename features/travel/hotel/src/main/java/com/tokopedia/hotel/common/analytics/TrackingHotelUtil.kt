@@ -12,6 +12,7 @@ import com.tokopedia.hotel.roomlist.data.model.HotelAddCartParam
 import com.tokopedia.hotel.roomlist.data.model.HotelRoom
 import com.tokopedia.hotel.roomlist.data.model.HotelRoomListPageModel
 import com.tokopedia.hotel.search.data.model.Filter
+import com.tokopedia.hotel.search.data.model.HotelSearchModel
 import com.tokopedia.hotel.search.data.model.Property
 import com.tokopedia.hotel.search.data.model.params.ParamFilter
 import com.tokopedia.hotel.search.data.model.params.SearchParam
@@ -497,13 +498,15 @@ class TrackingHotelUtil {
                 )))
     }
 
-    fun hotelClickChangeSearch(type: String, name: String, totalRoom: Int, totalGuest: Int, checkIn: String, checkOut: String, screenName: String,
+    fun hotelClickChangeSearch(hotelSearchModel: HotelSearchModel, screenName: String,
                                irisSessionId: String, userId: String) {
         val map = mutableMapOf<String, Any>()
         map[EVENT] = CLICK_HOTEL
         map[EVENT_CATEGORY] = DIGITAL_NATIVE
         map[EVENT_ACTION] = ACTION_CLICK_CHANGE_SEARCH
-        map[EVENT_LABEL] = "$HOTEL_LABEL - $type - $name - $totalRoom - $totalGuest - ${convertDate(checkIn)} - ${HotelUtils.countDayDifference(checkIn, checkOut)}"
+        map[EVENT_LABEL] = "$HOTEL_LABEL - ${hotelSearchModel.type} - ${hotelSearchModel.name} - " +
+                "${hotelSearchModel.room} - ${hotelSearchModel.adult} - " + "${convertDate(hotelSearchModel.checkIn)} - " +
+                "${HotelUtils.countDayDifference(hotelSearchModel.checkIn, hotelSearchModel.checkOut)}"
         map[SCREEN_NAME] = screenName
         map[CURRENT_SITE] = TOKOPEDIA_DIGITAL_HOTEL
         map[CLIENT_ID] = TrackApp.getInstance().gtm.clientIDString ?: ""
