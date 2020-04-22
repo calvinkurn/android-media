@@ -21,6 +21,9 @@ import com.tokopedia.product.addedit.draft.mapper.AddEditProductMapper.mapDraftT
 import com.tokopedia.product.addedit.preview.data.source.api.response.Product
 import com.tokopedia.product.addedit.preview.domain.GetProductUseCase
 import com.tokopedia.product.addedit.preview.domain.mapper.GetProductMapper
+import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.TYPE_ACTIVE
+import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.TYPE_ACTIVE_LIMITED
+import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.TYPE_WAREHOUSE
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.shipment.presentation.model.ShipmentInputModel
 import com.tokopedia.product.manage.common.draft.data.model.ProductDraft
@@ -93,7 +96,7 @@ class AddEditProductPreviewViewModel @Inject constructor(
     private val mIsLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> get() = mIsLoading
 
-    val isAdding: Boolean get() = getDraftId() == 0L && getProductId().isBlank()
+    val isAdding: Boolean get() = getProductId().isBlank()
 
     var isDuplicate: Boolean = false
 
@@ -188,11 +191,14 @@ class AddEditProductPreviewViewModel @Inject constructor(
     }
 
     fun updateVariantInputModel(variantInputModel: ProductVariantInputModel) {
+        variantInputModel.isRemoveVariant = getIsRemoveVariant(variantInputModel.productVariant)
         productInputModel.value?.variantInputModel = variantInputModel
     }
 
     fun updateVariantAndOption(productVariant: ArrayList<ProductVariantCombinationViewModel>,
                                variantOptionParent: ArrayList<ProductVariantOptionParent>) {
+        productInputModel.value?.variantInputModel?.isRemoveVariant =
+                getIsRemoveVariant(productVariant)
         productInputModel.value?.variantInputModel?.productVariant =
                 mapProductVariant(productVariant, variantOptionParent)
         productInputModel.value?.variantInputModel?.variantOptionParent =
@@ -327,6 +333,27 @@ class AddEditProductPreviewViewModel @Inject constructor(
             }
         }
         return null
+    }
+
+    fun getStatusStockViewVariant(): Int {
+        val isActive: Boolean = productInputModel.value?.detailInputModel?.status == 1
+        val stockCount: Int = productInputModel.value?.detailInputModel?.stock ?: 0
+        return if (!isActive) {
+            TYPE_WAREHOUSE
+        } else if (isActive && stockCount > 0) {
+            TYPE_ACTIVE_LIMITED
+        } else {
+            TYPE_ACTIVE
+        }
+    }
+
+    // isRemoveVariant used for indicating productVariant size is decreased when not in draft mode
+    private fun getIsRemoveVariant(productVariant: ArrayList<ProductVariantCombinationViewModel>): Boolean {
+        return if (draftId.isEmpty()) {
+            productVariant.size < productInputModel.value?.variantInputModel?.productVariant?.size ?: 0
+        } else {
+            false
+        }
     }
 
 }
