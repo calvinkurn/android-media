@@ -47,9 +47,8 @@ import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.user.session.UserSessionInterface
 import id.co.bri.sdk.Brizzi
-import kotlinx.android.synthetic.main.fragment_emoney_nfc_check_balance.*
-import java.io.IOException
 import java.lang.Exception
+import kotlinx.android.synthetic.main.fragment_emoney_nfc_check_balance.*
 import javax.inject.Inject
 
 class NfcCheckBalanceFragment : BaseDaggerFragment() {
@@ -180,7 +179,7 @@ class NfcCheckBalanceFragment : BaseDaggerFragment() {
                         GraphqlHelper.loadRawString(resources, R.raw.query_emoney_inquiry_balance),
                         0)
             }
-        } catch (e: IOException) {
+        } catch (e: Exception) {
             showError(NfcCardErrorTypeDef.FAILED_READ_CARD)
         }
 
