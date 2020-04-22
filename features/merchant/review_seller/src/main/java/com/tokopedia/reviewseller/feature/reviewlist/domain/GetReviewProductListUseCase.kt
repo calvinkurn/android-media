@@ -4,7 +4,7 @@ import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.reviewseller.common.GQL_GET_PRODUCT_REVIEW_LIST
+import com.tokopedia.reviewseller.common.util.GQL_GET_PRODUCT_REVIEW_LIST
 import com.tokopedia.reviewseller.feature.reviewlist.data.ProductReviewListResponse
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
