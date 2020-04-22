@@ -152,9 +152,9 @@ abstract class QuickEditVariantBottomSheet: BottomSheetUnify(), HasComponent<Qui
         observe(viewModel.showErrorView) { showErrorView ->
             if(showErrorView) {
                 expandBottomSheet()
-                errorView.show()
+                errorViewContainer.show()
             } else {
-                errorView.hide()
+                errorViewContainer.hide()
             }
         }
     }
