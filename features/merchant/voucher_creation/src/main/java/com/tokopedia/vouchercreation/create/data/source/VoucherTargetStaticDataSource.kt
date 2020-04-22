@@ -12,7 +12,7 @@ object VoucherTargetStaticDataSource {
                             isEnabled = true,
                             isHavePromoCard = false),
                     VoucherTargetItemUiModel(
-                            voucherTargetType = VoucherTargetCardItemView.TARGET_SPECIAL_TYPE,
+                            voucherTargetType = VoucherTargetCardItemView.TARGET_PRIVATE_TYPE,
                             isEnabled = false,
                             isHavePromoCard = false
                     ))

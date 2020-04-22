@@ -24,7 +24,7 @@ class VoucherTargetCardItemView @JvmOverloads constructor(
 
     companion object {
         const val TARGET_PUBLIC_TYPE = 0
-        const val TARGET_SPECIAL_TYPE = 1
+        const val TARGET_PRIVATE_TYPE = 1
 
         private const val PROMO_CODE_PREFIX = "TOKO"
     }
@@ -39,8 +39,8 @@ class VoucherTargetCardItemView @JvmOverloads constructor(
                         TARGET_PUBLIC_TYPE -> {
                             VoucherTargetCardType.PUBLIC
                         }
-                        TARGET_SPECIAL_TYPE -> {
-                            VoucherTargetCardType.SPECIAL
+                        TARGET_PRIVATE_TYPE -> {
+                            VoucherTargetCardType.PRIVATE
                         }
                         else -> return
                     }
@@ -128,7 +128,7 @@ class VoucherTargetCardItemView @JvmOverloads constructor(
                                      @StringRes val descriptionStringRes: Int) {
 
         PUBLIC(R.drawable.ic_im_umum, R.string.mvc_create_target_public, R.string.mvc_create_target_public_desc),
-        SPECIAL(R.drawable.ic_im_terbatas, R.string.mvc_create_target_special, R.string.mvc_create_target_special_desc)
+        PRIVATE(R.drawable.ic_im_terbatas, R.string.mvc_create_target_private, R.string.mvc_create_target_private_desc)
 
     }
 

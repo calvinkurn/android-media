@@ -23,7 +23,7 @@ class MerchantVoucherTargetAdapter(private val merchantVoucherTargetList: List<V
     override fun onBindViewHolder(holder: MerchantVoucherTargetViewHolder, position: Int) {
         merchantVoucherTargetList[position].let { uiModel ->
             (holder.itemView as? VoucherTargetCardItemView)?.run {
-                val canShowBottomSheet = uiModel.voucherTargetType == VoucherTargetCardItemView.TARGET_SPECIAL_TYPE && !uiModel.isHavePromoCard
+                val canShowBottomSheet = uiModel.voucherTargetType == VoucherTargetCardItemView.TARGET_PRIVATE_TYPE && !uiModel.isHavePromoCard
                 setupCurrentView(uiModel.voucherTargetType, uiModel.isEnabled, uiModel.isHavePromoCard, uiModel.promoCode)
                 voucherTargetItemRadioButton?.setOnCheckedChangeListener { _, isChecked ->
                     if (isChecked) {

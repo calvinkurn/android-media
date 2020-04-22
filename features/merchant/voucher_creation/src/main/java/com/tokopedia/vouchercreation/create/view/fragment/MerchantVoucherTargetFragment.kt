@@ -103,7 +103,7 @@ class MerchantVoucherTargetFragment(onNextInvoker: () -> Unit = {})
                 extraWidget = listOf(voucherTargetWidget, fillVoucherWidget)
                 super.setupView()
             })
-            specialVoucherPromoCode.observe(viewLifecycleOwner, Observer { promoCode ->
+            privateVoucherPromoCode.observe(viewLifecycleOwner, Observer { promoCode ->
                 promoCodeText = promoCode
             })
 

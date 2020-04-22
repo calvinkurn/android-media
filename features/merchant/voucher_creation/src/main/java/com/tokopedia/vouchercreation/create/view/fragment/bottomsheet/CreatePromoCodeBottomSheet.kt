@@ -23,6 +23,7 @@ class CreatePromoCodeBottomSheet(bottomSheetContext: Context?,
         private val TEXFIELD_ALERT_MINIMUM = R.string.mvc_create_alert_minimum
 
         private const val MIN_TEXTFIELD_LENGTH = 5
+        private const val MAX_TEXTFIELD_LENGTH = 10
 
         fun createInstance(context: Context?,
                            onNextClick: (String) -> Unit,
@@ -43,7 +44,7 @@ class CreatePromoCodeBottomSheet(bottomSheetContext: Context?,
         super.onViewCreated(view, savedInstanceState)
         createPromoCodeTextField?.run {
             textFieldInput.run {
-                filters = arrayOf(InputFilter.AllCaps())
+                filters = arrayOf(InputFilter.AllCaps(), InputFilter.LengthFilter(MAX_TEXTFIELD_LENGTH))
                 setOnFocusChangeListener { _, hasFocus ->
                     activity?.let {
                         if (hasFocus) {
