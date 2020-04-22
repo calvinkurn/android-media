@@ -714,8 +714,9 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
                     key.equals(KEY_REJECT_ORDER, true) -> setActionRejectOrder()
                     key.equals(KEY_BATALKAN_PESANAN, true) -> setActionRejectOrder()
                     key.equals(KEY_UBAH_NO_RESI, true) -> setActionUbahNoResi()
-                    key.equals(KEY_UPLOAD_AWB, true) -> setActionUploadAwb(key)
+                    key.equals(KEY_UPLOAD_AWB, true) -> setActionUploadAwb(it)
                     key.equals(KEY_CHANGE_COURIER, true) -> setActionChangeCourier()
+                    key.equals(KEY_ACCEPT_ORDER, true) -> setActionAcceptOrder(it)
                     key.equals(KEY_ASK_BUYER, true) -> goToAskBuyer()
                     key.equals(KEY_SET_DELIVERED, true) -> showSetDeliveredDialog()
                 }
@@ -727,12 +728,8 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
         createIntentConfirmShipping(true)
     }
 
-    private fun setActionUploadAwb(key: String) {
-        detailResponse.button.forEach {
-            if (key.equals(KEY_UPLOAD_AWB, true)) {
-                openWebview(it.url)
-            }
-        }
+    private fun setActionUploadAwb(buttonResp: SomDetailOrder.Data.GetSomDetail.Button) {
+        openWebview(buttonResp.url)
     }
 
     private fun createIntentConfirmShipping(isChangeShipping: Boolean) {
