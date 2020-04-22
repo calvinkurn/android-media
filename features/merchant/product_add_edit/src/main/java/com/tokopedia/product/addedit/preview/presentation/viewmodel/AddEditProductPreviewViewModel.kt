@@ -8,13 +8,12 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.product.addedit.common.constant.ProductStatus
 import com.tokopedia.product.addedit.common.util.ResourceProvider
 import com.tokopedia.product.addedit.description.data.remote.model.variantbycat.ProductVariantByCatModel
 import com.tokopedia.product.addedit.description.domain.usecase.GetProductVariantUseCase
-import com.tokopedia.product.addedit.description.presentation.model.DescriptionInputModel
-import com.tokopedia.product.addedit.description.presentation.model.ProductVariantInputModel
-import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_PRODUCT_PHOTOS
 import com.tokopedia.product.addedit.description.presentation.model.*
+import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_PRODUCT_PHOTOS
 import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.WholeSaleInputModel
 import com.tokopedia.product.addedit.draft.domain.usecase.GetProductDraftUseCase
@@ -57,7 +56,7 @@ class AddEditProductPreviewViewModel @Inject constructor(
     // observing the product id, and will execute the use case when product id is changed
     private val mGetProductResult = MediatorLiveData<Result<Product>>().apply {
         addSource(productId) {
-            if (!productId.value.isNullOrBlank()) loadProductData(it)
+            if (!productId.value.isNullOrBlank()) getProductData(it)
         }
     }
     val getProductResult: LiveData<Result<Product>> get() = mGetProductResult
@@ -82,7 +81,7 @@ class AddEditProductPreviewViewModel @Inject constructor(
 
     private val mProductVariantList = MutableLiveData<Result<List<ProductVariantByCatModel>>>()
     val productVariantList: LiveData<Result<List<ProductVariantByCatModel>>> get() = mProductVariantList
-    val productVariantListData get() = mProductVariantList.value.let {
+    val productVariantListData: List<ProductVariantByCatModel>? get() = mProductVariantList.value.let {
         when(it) {
             is Success -> it.data
             else -> null
@@ -91,6 +90,9 @@ class AddEditProductPreviewViewModel @Inject constructor(
 
     private val mGetProductDraftResult = MutableLiveData<Result<ProductDraft>>()
     val getProductDraftResult: LiveData<Result<ProductDraft>> get() = mGetProductDraftResult
+
+    private val mIsLoading = MutableLiveData<Boolean>()
+    val isLoading: LiveData<Boolean> get() = mIsLoading
 
     val isAdding: Boolean get() = getDraftId() == 0L && getProductId().isBlank()
 
@@ -207,7 +209,11 @@ class AddEditProductPreviewViewModel @Inject constructor(
     }
 
     fun updateProductStatus(isActive: Boolean) {
-        productInputModel.value?.detailInputModel?.status = if (isActive) 1 else 0
+        val newStatus = if (isActive) ProductStatus.STATUS_ACTIVE else ProductStatus.STATUS_INACTIVE
+        productInputModel.value?.detailInputModel?.status = newStatus
+        productInputModel.value?.variantInputModel?.productVariant?.forEach {
+            it.st = newStatus
+        }
     }
 
     fun getNewProductInputModel(imageUrlOrPathList: ArrayList<String>): ProductInputModel {
@@ -215,29 +221,29 @@ class AddEditProductPreviewViewModel @Inject constructor(
         return ProductInputModel().apply { this.detailInputModel = detailInputModel }
     }
 
-    private fun loadProductData(productId: String) {
-        getProduct(productId)
-    }
-
-    private fun getProduct(productId: String) {
+    fun getProductData(productId: String) {
+        mIsLoading.value = true
         launchCatchError(block = {
             val data = withContext(Dispatchers.IO) {
                 getProductUseCase.params = GetProductUseCase.createRequestParams(productId)
                 getProductUseCase.executeOnBackground()
             }
             mGetProductResult.value = Success(data)
+            mIsLoading.value = false
         }, onError = {
             mGetProductResult.value = Fail(it)
         })
     }
 
     fun getVariantList(categoryId: String) {
+        mIsLoading.value = true
         launchCatchError(block = {
             mProductVariantList.value = Success(withContext(Dispatchers.IO) {
                 getProductVariantUseCase.params =
                         GetProductVariantUseCase.createRequestParams(categoryId)
                 getProductVariantUseCase.executeOnBackground()
             })
+            mIsLoading.value = false
         }, onError = {
             mProductVariantList.value = Fail(it)
         })

@@ -8,7 +8,6 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.product.addedit.common.util.ResourceProvider
 import com.tokopedia.product.addedit.detail.domain.usecase.GetCategoryRecommendationUseCase
 import com.tokopedia.product.addedit.detail.domain.usecase.GetNameRecommendationUseCase
-import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_MIN_ORDER_QUANTITY
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_PREORDER_DAYS
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_PREORDER_WEEKS
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_PRODUCT_STOCK_LIMIT
@@ -18,7 +17,6 @@ import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProduct
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MIN_PRODUCT_STOCK_LIMIT
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.UNIT_DAY
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.UNIT_WEEK
-import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.WholeSaleInputModel
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.unifycomponents.list.ListItemUnify
@@ -40,11 +38,11 @@ class AddEditProductDetailViewModel @Inject constructor(
 
     var isAdding = false
 
-    var productInputModel = ProductInputModel()
-
-    var detailInputModel = DetailInputModel()
-
     var hasVariants = false
+
+    var shouldUpdateVariant = false
+
+    var productInputModel = ProductInputModel()
 
     var productPhotoPaths: MutableList<String> = mutableListOf()
 
@@ -84,8 +82,6 @@ class AddEditProductDetailViewModel @Inject constructor(
     val isPreOrderDurationInputError: LiveData<Boolean>
         get() = mIsPreOrderDurationInputError
     var preOrderDurationMessage: String = ""
-
-    var isEditMode: Boolean = false
 
     private val mIsInputValid = MediatorLiveData<Boolean>().apply {
         addSource(mIsProductPhotoError) {
@@ -149,18 +145,6 @@ class AddEditProductDetailViewModel @Inject constructor(
     fun validateProductNameInput(productNameInput: String) {
         if (productNameInput.isEmpty()) {
             val errorMessage = provider.getEmptyProductNameErrorMessage()
-            errorMessage?.let { productNameMessage = it }
-            mIsProductNameInputError.value = true
-            return
-        }
-        if (isProductNameExist(productNameInput)) {
-            val errorMessage = provider.getProductNameExistErrorMessage()
-            errorMessage?.let { productNameMessage = it }
-            mIsProductNameInputError.value = true
-            return
-        }
-        if (isProductNameBanned(productNameInput)) {
-            val errorMessage = provider.getProductNameBannedErrorMessage()
             errorMessage?.let { productNameMessage = it }
             mIsProductNameInputError.value = true
             return
@@ -243,7 +227,7 @@ class AddEditProductDetailViewModel @Inject constructor(
         }
         val productStock = productStockInput.toBigInteger()
         if (productStock < MIN_PRODUCT_STOCK_LIMIT.toBigInteger()) {
-            val errorMessage = provider.getMinLimitProductStockErrorMessage()
+            val errorMessage = provider.getEmptyProductStockErrorMessage()
             errorMessage?.let { productStockMessage = it }
             mIsProductStockInputError.value = true
             return
@@ -267,13 +251,7 @@ class AddEditProductDetailViewModel @Inject constructor(
         }
         val productMinOrder = minOrderQuantityInput.toBigInteger()
         if (productMinOrder < MIN_MIN_ORDER_QUANTITY.toBigInteger()) {
-            val errorMessage = provider.getMinLimitOrderQuantityErrorMessage()
-            errorMessage?.let { orderQuantityMessage = it }
-            mIsOrderQuantityInputError.value = true
-            return
-        }
-        if (productMinOrder > MAX_MIN_ORDER_QUANTITY.toBigInteger()) {
-            val errorMessage = provider.getMaxLimitOrderQuantityErrorMessage()
+            val errorMessage = provider.getEmptyOrderQuantityErrorMessage()
             errorMessage?.let { orderQuantityMessage = it }
             mIsOrderQuantityInputError.value = true
             return
@@ -323,16 +301,6 @@ class AddEditProductDetailViewModel @Inject constructor(
         mIsPreOrderDurationInputError.value = false
     }
 
-    private fun isProductNameExist(productNameInput: String): Boolean {
-        // TODO: replace the validation with API check
-        return false
-    }
-
-    private fun isProductNameBanned(productNameInput: String): Boolean {
-        // TODO: replace the validation with API check
-        return false
-    }
-
     fun recalculateWholeSaleMinOrder(wholesaleList: List<WholeSaleInputModel>) : List<WholeSaleInputModel> {
         wholesaleList.forEach { wholesaleInputModel ->
             // recalculate wholesale min order because of > symbol
@@ -353,7 +321,7 @@ class AddEditProductDetailViewModel @Inject constructor(
                     ?: urlOrPath
         }.toMutableList()
 
-        this.detailInputModel = productInputModel.detailInputModel.apply {
+        this.productInputModel.detailInputModel = productInputModel.detailInputModel.apply {
             this.pictureList = pictureList
             this.imageUrlOrPathList = imageUrlOrPathList
         }

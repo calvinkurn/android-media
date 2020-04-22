@@ -7,6 +7,7 @@ import android.text.TextUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+
 import static com.tokopedia.user.session.Constants.ACCESS_TOKEN;
 import static com.tokopedia.user.session.Constants.AUTOFILL_USER_DATA;
 import static com.tokopedia.user.session.Constants.EMAIL;

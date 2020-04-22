@@ -4,6 +4,7 @@ import android.content.Context
 import com.tokopedia.iris.IrisAnalytics
 import com.tokopedia.product.addedit.tracking.ProductAddEditTracking.KEY_SHOP_ID
 import com.tokopedia.product.addedit.tracking.ProductAddEditTracking.sendAddProductClick
+import com.tokopedia.product.addedit.tracking.ProductAddEditTracking.sendAddProductClickWithoutScreen
 
 object ProductAddShippingTracking {
     const val SCREEN = "/addproductpage - shipping"
@@ -42,7 +43,7 @@ object ProductAddShippingTracking {
         if (isSuccess) {
             sendAddProductClick(SCREEN, shopId, "click finish success", "")
         } else {
-            sendAddProductClick(shopId, "click finish error", errorName)
+            sendAddProductClickWithoutScreen(shopId, "click finish error", errorName)
         }
     }
 

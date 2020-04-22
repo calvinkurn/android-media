@@ -67,7 +67,6 @@ import com.tokopedia.shop.product.di.module.ShopProductModule
 import com.tokopedia.shop.product.util.ShopProductOfficialStoreUtils
 import com.tokopedia.shop.product.view.activity.ShopProductListActivity
 import com.tokopedia.shop.product.view.adapter.scrolllistener.DataEndlessScrollListener
-import com.tokopedia.shopetalasepicker.view.activity.ShopEtalasePickerActivity
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
@@ -97,6 +96,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         private const val REQUEST_CODE_MERCHANT_VOUCHER = 207
         private const val REQUEST_CODE_MERCHANT_VOUCHER_DETAIL = 208
         private const val REQUEST_CODE_MEMBERSHIP_STAMP = 2091
+        private const val REQUEST_CODE_ADD_ETALASE = 288
         private const val GRID_SPAN_COUNT = 2
         private const val SHOP_ATTRIBUTION = "EXTRA_SHOP_ATTRIBUTION"
         const val SAVED_SELECTED_ETALASE_ID = "saved_etalase_id"
@@ -105,9 +105,18 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         const val SAVED_SHOP_REF = "saved_shop_ref"
         const val SAVED_SHOP_IS_OFFICIAL = "saved_shop_is_official"
         const val SAVED_SHOP_IS_GOLD_MERCHANT = "saved_shop_is_gold_merchant"
+        const val SAVED_NEED_TO_RELOAD = "saved_need_to_reload"
         const val ALL_ETALASE_ID = "etalase"
         const val SOLD_ETALASE_ID = "sold"
         const val SHOP_INFO_CACHE_MANAGER_ID = "SHOP_INFO_CACHE_MANAGER_ID"
+
+        const val BUNDLE_IS_NEED_TO_GO_TO_ADD_SHOWCASE = "isNeedToGoToAddShowcase"
+        const val BUNDLE_IS_NEED_TO_GO_TO_ADD_SHOWCASE_VALUE = true
+        const val BUNDLE_SELECTED_ETALASE_ID = "selectedEtalaseId"
+        const val BUNDLE_IS_SHOW_DEFAULT = "isShowDefault"
+        const val BUNDLE_IS_SHOW_ZERO_PRODUCT = "isShowZeroProduct"
+        const val BUNDLE_SHOP_ID = "shopId"
+        const val BUNDLE = "bundle"
 
         @JvmStatic
         fun createInstance(shopAttribution: String?, shopRef: String): ShopPageProductListFragment {
@@ -255,7 +264,11 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
 
     private fun redirectToAddEtalasePage() {
         context?.let {
-            RouteManager.route(it, ApplinkConstInternalMarketplace.SHOP_SETTINGS_ETALASE_ADD)
+            val bundle = Bundle()
+            bundle.putBoolean(BUNDLE_IS_NEED_TO_GO_TO_ADD_SHOWCASE, BUNDLE_IS_NEED_TO_GO_TO_ADD_SHOWCASE_VALUE)
+            val intent = RouteManager.getIntent(context, ApplinkConstInternalMechant.MERCHANT_SHOP_SHOWCASE_LIST)
+            intent.putExtra("bundle", bundle)
+            startActivityForResult(intent, REQUEST_CODE_ADD_ETALASE)
         }
     }
 
@@ -531,6 +544,11 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
             REQUEST_CODE_MEMBERSHIP_STAMP -> {
                 loadMembership()
             }
+            REQUEST_CODE_ADD_ETALASE -> {
+                if (resultCode == Activity.RESULT_OK) {
+                    loadNewProductData()
+                }
+            }
             else -> {
             }
         }
@@ -651,11 +669,15 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
     }
 
     private fun redirectToEtalasePicker() {
-        activity?.let {
-            val shopEtalaseIntent = ShopEtalasePickerActivity.createIntent(it, shopInfo?.shopCore?.shopID
-                    ?: "",
-                    selectedEtalaseId, isShowDefault = true, isShowZeroProduct = isOwner)
-            startActivityForResult(shopEtalaseIntent, REQUEST_CODE_ETALASE)
+        context?.let {
+            val bundle = Bundle()
+            bundle.putString(BUNDLE_SELECTED_ETALASE_ID, selectedEtalaseId)
+            bundle.putBoolean(BUNDLE_IS_SHOW_DEFAULT, true)
+            bundle.putBoolean(BUNDLE_IS_SHOW_ZERO_PRODUCT, false)
+            bundle.putString(BUNDLE_SHOP_ID, shopInfo!!.shopCore.shopID)
+            val intent = RouteManager.getIntent(context, ApplinkConstInternalMechant.MERCHANT_SHOP_SHOWCASE_LIST)
+            intent.putExtra(BUNDLE, bundle)
+            startActivity(intent)
         }
     }
 

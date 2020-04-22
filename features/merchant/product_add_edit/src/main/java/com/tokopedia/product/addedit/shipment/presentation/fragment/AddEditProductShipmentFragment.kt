@@ -12,6 +12,7 @@ import com.tokopedia.kotlin.extensions.view.afterTextChanged
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_PRODUCT_INPUT_MODEL
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_SHIPMENT_INPUT
+import com.tokopedia.product.addedit.common.util.InputPriceUtil.formatProductPriceInput
 import com.tokopedia.product.addedit.common.util.getText
 import com.tokopedia.product.addedit.common.util.getTextIntOrZero
 import com.tokopedia.product.addedit.common.util.setModeToNumberInput
@@ -103,7 +104,7 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
             shipmentViewModel.isEditMode = isEditMode
             shipmentViewModel.isAddMode = isAddMode
         }
-        if (!shipmentViewModel.isEditMode || shipmentViewModel.isAddMode) {
+        if (shipmentViewModel.isAddMode || !shipmentViewModel.isEditMode) {
             ProductAddShippingTracking.trackScreen()
         }
     }
@@ -246,15 +247,19 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
     }
 
     private fun validateInputWeight(inputText: String): Boolean {
+        val minWeight = formatProductPriceInput(MIN_WEIGHT.toString())
+        val maxWeightGram = formatProductPriceInput(MAX_WEIGHT_GRAM.toString())
+        val maxWeightKilogram = formatProductPriceInput(MAX_WEIGHT_KILOGRAM.toString())
         val errorMessage = if (selectedWeightPosition == UNIT_GRAM) {
-            getString(R.string.error_weight_not_valid, MIN_WEIGHT, MAX_WEIGHT_GRAM)
+            getString(R.string.error_weight_not_valid, minWeight, maxWeightGram)
         } else {
-            getString(R.string.error_weight_not_valid, MIN_WEIGHT, MAX_WEIGHT_KILOGRAM)
+            getString(R.string.error_weight_not_valid, minWeight, maxWeightKilogram)
         }
         val isValid = shipmentViewModel.isWeightValid(inputText, selectedWeightPosition)
         tfWeightAmount?.setError(!isValid)
         tfWeightAmount?.setMessage(if (isValid) "" else errorMessage)
         btnEnd?.isEnabled = isValid
+        btnSave?.isEnabled = isValid
         return isValid
     }
 

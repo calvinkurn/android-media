@@ -255,6 +255,7 @@ class ChatListFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         adapter?.let { adapter ->
             chatItemListViewModel.updateLastReply(newChat)
             when {
+                index >= adapter.list.size -> { return }
                 //not found on list
                 index == -1 -> {
                     if (adapter.hasEmptyModel()) {

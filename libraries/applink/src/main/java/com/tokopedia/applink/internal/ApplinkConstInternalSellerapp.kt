@@ -59,4 +59,7 @@ object ApplinkConstInternalSellerapp {
     @JvmField
     val MENU_SETTING = "$INTERNAL_SELLERAPP/menu-setting"
 
+    //SellerOnboardingActivity
+    @JvmField
+    val SELLER_ONBOARDING = "$INTERNAL_SELLERAPP/seller-onboarding"
 }
