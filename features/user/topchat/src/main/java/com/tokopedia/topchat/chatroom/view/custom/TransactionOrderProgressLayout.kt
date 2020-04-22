@@ -104,19 +104,7 @@ class TransactionOrderProgressLayout : LinearLayout {
     }
 
     private fun renderFirstTimeSeen() {
-        cardOrderContainer?.let {
-            ObjectAnimator.ofObject(
-                    it,
-                    "backgroundColor",
-                    ArgbEvaluator(),
-                    State.COLOR_NOT_SEEN.toInt(),
-                    State.COLOR_SEEN
-            ).apply {
-                duration = transitionTime.toLong()
-                start()
-            }
-            state.seen()
-        }
+        state.seen()
     }
 
     private fun renderOrderStatus() {
