@@ -929,23 +929,29 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
     }
 
     fun finalUpdate(onSuccessCheckout: (Data) -> Unit, skipCheckIneligiblePromo: Boolean = false) {
-        val product = orderProduct
-        val shop = orderShop
-        val pref = _orderPreference
-        if (orderTotal.value?.buttonState == ButtonBayarState.NORMAL && pref != null && pref.shipping?.getRealShipperProductId() ?: 0 > 0) {
-            val param = generateUpdateCartParam()
-            if (param != null) {
-                globalEvent.value = OccGlobalEvent.Loading
-                updateCartOccUseCase.execute(param, {
-                    finalValidateUse(product, shop, pref, onSuccessCheckout, skipCheckIneligiblePromo)
-                }, { throwable: Throwable ->
-                    if (throwable is MessageErrorException && throwable.message != null) {
-                        globalEvent.value = OccGlobalEvent.TriggerRefresh(errorMessage = throwable.message
-                                ?: DEFAULT_ERROR_MESSAGE)
-                    } else {
-                        globalEvent.value = OccGlobalEvent.TriggerRefresh(throwable = throwable)
-                    }
-                })
+        if (orderTotal.value?.buttonState == ButtonBayarState.NORMAL) {
+            globalEvent.value = OccGlobalEvent.Loading
+            val product = orderProduct
+            val shop = orderShop
+            val pref = _orderPreference
+            if (pref != null && pref.shipping?.getRealShipperProductId() ?: 0 > 0) {
+                val param = generateUpdateCartParam()
+                if (param != null) {
+                    updateCartOccUseCase.execute(param, {
+                        finalValidateUse(product, shop, pref, onSuccessCheckout, skipCheckIneligiblePromo)
+                    }, { throwable: Throwable ->
+                        if (throwable is MessageErrorException && throwable.message != null) {
+                            globalEvent.value = OccGlobalEvent.TriggerRefresh(errorMessage = throwable.message
+                                    ?: DEFAULT_ERROR_MESSAGE)
+                        } else {
+                            globalEvent.value = OccGlobalEvent.TriggerRefresh(throwable = throwable)
+                        }
+                    })
+                } else {
+                    globalEvent.value = OccGlobalEvent.Error(errorMessage = DEFAULT_LOCAL_ERROR_MESSAGE)
+                }
+            } else {
+                globalEvent.value = OccGlobalEvent.Error(errorMessage = DEFAULT_LOCAL_ERROR_MESSAGE)
             }
         }
     }
@@ -1024,7 +1030,6 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
         checkoutOccUseCase.execute(param, { checkoutOccGqlResponse: CheckoutOccGqlResponse ->
             if (checkoutOccGqlResponse.response.status.equals(STATUS_OK, true)) {
                 if (checkoutOccGqlResponse.response.data.success == 1 || checkoutOccGqlResponse.response.data.paymentParameter.redirectParam.url.isNotEmpty()) {
-                    globalEvent.value = OccGlobalEvent.Normal
                     onSuccessCheckout(checkoutOccGqlResponse.response.data)
                     orderSummaryAnalytics.eventClickBayarSuccess(orderTotal.value?.isButtonChoosePayment
                             ?: false, getTransactionId(checkoutOccGqlResponse.response.data.paymentParameter.redirectParam.form), generateOspEe(OrderSummaryPageEnhanceECommerce.STEP_2, OrderSummaryPageEnhanceECommerce.STEP_2_OPTION, allPromoCodes))
