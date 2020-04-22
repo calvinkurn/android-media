@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rootLayoutSob"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvSliderSob"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/btnSobOpenApp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:listitem="@layout/viewholder_sob_onboarding" />
+
+    <com.tokopedia.unifycomponents.PageControl
+        android:id="@+id/pageIndicatorSob"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/layout_lvl4"
+        app:layout_constraintBottom_toTopOf="@+id/btnSobOpenApp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btnSobOpenApp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/layout_lvl3"
+        android:layout_marginLeft="@dimen/layout_lvl3"
+        android:layout_marginEnd="@dimen/layout_lvl3"
+        android:layout_marginRight="@dimen/layout_lvl3"
+        android:layout_marginBottom="@dimen/layout_lvl4"
+        android:text="@string/sob_open_tokopedia_seller"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+</androidx.constraintlayout.widget.ConstraintLayout>

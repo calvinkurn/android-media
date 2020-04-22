@@ -61,6 +61,7 @@ ext {
             oms                     : ":libraries:oms",
             permissionchecker       : ":libraries:permissionchecker",
             playCore                : ":libraries:play_core",
+            productPhotoAdapter     : ":libraries:product_photo_adapter",
             pushNotification        : ":libraries:push_notification",
             reactNative             : ":libraries:react_native",
             remoteConfig            : ":libraries:remote_config",
@@ -87,7 +88,6 @@ ext {
             translator              : ":libraries:translator",
             traceroute              : ":libraries:traceroute",
             imagePreviewSlider      : ":libraries:imagepreviewslider",
-            tokofix                 : ":libraries:tokofix",
             analyticAnnotationCentral   : ":libraries:annotation_proc_central"
     ]
 }

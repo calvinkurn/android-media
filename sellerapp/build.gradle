@@ -1,8 +1,4 @@
 apply plugin: 'com.android.application'
-if (project.hasProperty("apply-patch")) {
-    apply plugin: 'auto-patch-plugin'
-}
-apply plugin: 'robust'
 apply plugin: 'io.fabric'
 apply plugin: 'io.hansel.preprocessor'
 apply plugin: 'com.bugsnag.android.gradle'
@@ -90,8 +86,8 @@ buildscript {
 android {
 
     project.ext {
-        defaultVersionCode = 165000123;
-        defaultVersionName = "1.65.123";
+        defaultVersionCode = 200000123;
+        defaultVersionName = "2.00.123";
     }
 
     packagingOptions {
@@ -238,7 +234,6 @@ dependencies {
     implementation project(rootProject.ext.libraries.core_legacy)
     implementation project(rootProject.ext.libraries.trackingOptimizer)
     implementation project(rootProject.ext.libraries.coreNetwork)
-    implementation project(rootProject.ext.libraries.tokofix)
     implementation project(rootProject.ext.libraries.commonNetwork)
     implementation project(rootProject.ext.libraries.iris)
     implementation project(rootProject.ext.libraries.dynamicFeatures)
@@ -251,6 +246,7 @@ dependencies {
     implementation project(rootProject.ext.features.shopPage)
     implementation project(rootProject.ext.features.sellerorder)
     implementation project(rootProject.ext.features.sellerHome)
+    implementation project(rootProject.ext.features.sellerOnboarding)
     implementation project(rootProject.ext.features.mitraToppers)
     implementation project(rootProject.ext.features.merchantLendingWidget)
     implementation project(rootProject.ext.features.goldMerchantCommon)
@@ -296,6 +292,7 @@ dependencies {
     implementation project(rootProject.ext.features.attachproduct)
     implementation project(rootProject.ext.features.talk)
     implementation project(rootProject.ext.features.productDetail)
+    implementation project(rootProject.ext.features.productAddEdit)
     implementation project(rootProject.ext.features.productManageItem)
     implementation project(rootProject.ext.features.productManageList)
     implementation project(rootProject.ext.features.broadcastMessage)
@@ -315,6 +312,7 @@ dependencies {
     implementation project(rootProject.ext.features.commonDigital)
     implementation project(rootProject.ext.features.digitalproduct)
     implementation project(rootProject.ext.features.shopOpen)
+    implementation project(rootProject.ext.features.shopShowcase)
     implementation project(rootProject.ext.features.withdraw)
 
     implementation project(rootProject.ext.features.changePhoneNumber)
@@ -346,7 +344,7 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
 
     implementation project(rootProject.ext.libraries.remoteResourceRequest)
-
+    
     implementation(rootProject.ext.debugToolsDependencies.chuck) {
         exclude group: 'com.squareup.okhttp3'
         exclude group: 'com.squareup.okio'
@@ -430,8 +428,6 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     testImplementation rootProject.ext.testDependencies.junit
-
-    implementation rootProject.ext.miscDependencies.robust
 
     implementation rootProject.ext.playServicesDependencies.tagManager
     implementation rootProject.ext.playServicesDependencies.tagManagerImpl
