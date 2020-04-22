@@ -680,7 +680,8 @@ public class HomeFragment extends BaseDaggerFragment implements
                         (DynamicHomeChannel.Grid) dataMap.get(HomeViewModel.GRID),
                         (int) dataMap.get(HomeViewModel.POSITION),
                         ((AddToCartDataModel) dataMap.get(HomeViewModel.ATC)).getData().getCartId(),
-                       viewModel.getUserId()
+                        (String) dataMap.get(HomeViewModel.QUANTITIY),
+                        viewModel.getUserId()
                ));
                RouteManager.route(getContext(), ApplinkConstInternalMarketplace.ONE_CLICK_CHECKOUT);
             }
