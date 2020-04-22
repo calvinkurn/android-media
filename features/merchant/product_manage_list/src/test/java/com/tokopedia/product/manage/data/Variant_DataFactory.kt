@@ -57,7 +57,7 @@ fun createProductVariant(
 }
 
 fun createGetVariantResponse(
-    productName: String,
+    productName: String = "",
     products: List<Product> = emptyList(),
     selections: List<Selection> = emptyList(),
     sizeCharts: List<Picture> = emptyList()
