@@ -230,7 +230,9 @@ class PlayInteractionFragment :
     }
 
     override fun onDestroyView() {
+        destroyInsets(requireView())
         super.onDestroyView()
+        layoutManager.onDestroy()
         job.cancel()
     }
 
@@ -261,6 +263,10 @@ class PlayInteractionFragment :
         }
 
         invalidateInsets(view)
+    }
+
+    private fun destroyInsets(view: View) {
+        ViewCompat.setOnApplyWindowInsetsListener(view, null)
     }
 
     //region observe

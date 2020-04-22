@@ -227,8 +227,10 @@ class PlayFragment : BaseDaggerFragment(), PlaySensorOrientationManager.Orientat
     }
 
     override fun onDestroyView() {
+        destroyInsets(requireView())
         super.onDestroyView()
         if (::orientationManager.isInitialized) orientationManager.disable()
+        layoutManager.onDestroy()
     }
 
     override fun onDestroy() {
@@ -282,6 +284,10 @@ class PlayFragment : BaseDaggerFragment(), PlaySensorOrientationManager.Orientat
         if (this.channelId != channelId && activity is PlayNewChannelInteractor) {
             (activity as PlayNewChannelInteractor).onNewChannel(channelId)
         }
+    }
+
+    private fun destroyInsets(view: View) {
+        ViewCompat.setOnApplyWindowInsetsListener(requireView(), null)
     }
 
     private fun setOrientation() {
