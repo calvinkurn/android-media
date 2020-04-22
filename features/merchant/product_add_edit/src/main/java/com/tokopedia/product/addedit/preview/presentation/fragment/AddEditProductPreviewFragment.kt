@@ -305,7 +305,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
                         else urlOrPath
                     }.orEmpty()
                     val intent = ImagePickerAddProductActivity.getIntent(context, createImagePickerBuilder(ArrayList(imageUrlOrPathList)), viewModel.isEditing.value
-                            ?: false)
+                            ?: false, viewModel.isAdding)
                     startActivityForResult(intent, REQUEST_CODE_IMAGE)
                 }
             }
