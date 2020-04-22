@@ -142,6 +142,7 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
 
     override fun onCategoriesCleared() {
         unselectCategories()
+        resetSortOptions()
     }
 
     override fun getSwipeRefreshLayout(view: View?): SwipeRefreshLayout? {
@@ -339,6 +340,10 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
 
     private fun unselectCategories() {
         viewModel.unselectAllCategories()
+    }
+
+    private fun resetSortOptions() {
+        viewModel.resetSortOptions()
     }
 
 }

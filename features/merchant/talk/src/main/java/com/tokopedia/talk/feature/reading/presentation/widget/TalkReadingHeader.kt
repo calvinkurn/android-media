@@ -39,8 +39,8 @@ class TalkReadingHeader : BaseCustomView {
     fun updateSelectedSort(chipText: String) {
         if(chipText != SORT_CATEGORY) {
             val sortChip = this.readingHeaderChips.chipItems.first()
-            sortChip.refChipUnify.chipType = ChipsUnify.TYPE_SELECTED
-            sortChip.refChipUnify.chipText = chipText
+            sortChip.type = ChipsUnify.TYPE_SELECTED
+            sortChip.selectedItem = arrayListOf(chipText)
         }
     }
 

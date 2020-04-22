@@ -11,7 +11,7 @@
         android:visibility="gone"
         android:background="@android:color/white" >
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content" >
 
@@ -19,7 +19,6 @@
                 android:id="@+id/talk_reading_app_bar_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toTopOf="parent"
                 android:elevation="@dimen/layout_lvl0">
 
                 <com.google.android.material.appbar.CollapsingToolbarLayout
@@ -39,9 +38,10 @@
             <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
                 android:id="@+id/readingSwipeToRefresh"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="@dimen/layout_lvl0"
                 app:layout_behavior="@string/appbar_scrolling_view_behavior"
-                app:layout_constraintTop_toBottomOf="@id/talk_reading_app_bar_layout">
+                android:layout_below="@id/talk_reading_app_bar_layout"
+                android:layout_alignParentBottom="true">
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/talkReadingRecyclerView"
@@ -51,7 +51,7 @@
 
             </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        </RelativeLayout>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/addFloatingActionButton"
