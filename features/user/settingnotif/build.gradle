@@ -40,6 +40,10 @@ dependencies {
     implementation rootProject.ext.tkpdLibDependencies.showcase
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
+
+    testImplementation rootProject.ext.testDependencies.mockk
+    testImplementation rootProject.ext.testDependencies.assertJCore
+    testImplementation rootProject.ext.testDependencies.archCoreTesting
 }
 
 project.ext {
