@@ -15,6 +15,7 @@ interface SettingFieldContract {
         )
         fun loadUserSettings()
         fun requestUpdateMoengageUserSetting(updatedSettingIds: List<Map<String, Any>>)
+        fun cleared()
     }
 
     interface SettingState {
