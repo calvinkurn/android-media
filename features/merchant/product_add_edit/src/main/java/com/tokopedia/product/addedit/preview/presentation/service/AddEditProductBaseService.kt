@@ -108,6 +108,8 @@ abstract class AddEditProductBaseService : JobIntentService(), CoroutineScope {
             onUploadProductImagesDone(uploadIdList, variantOptionUploadId, sizeChartUploadId)
         }, onError = { throwable ->
             setUploadProductDataError(getErrorMessage(throwable))
+
+            logError(RequestParams.EMPTY, throwable)
         })
     }
 
