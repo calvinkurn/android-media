@@ -14,13 +14,14 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.attachproduct.resultmodel.ResultProduct
+import com.tokopedia.attachproduct.view.activity.AttachProductActivity
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.removeObservers
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.talk.common.TalkConstants
 import com.tokopedia.talk.common.TalkConstants.QUESTION_ID
 import com.tokopedia.talk.common.TalkConstants.SHOP_ID
-import com.tokopedia.talk.common.di.TalkComponent
 import com.tokopedia.talk.feature.reply.data.mapper.TalkReplyMapper
 import com.tokopedia.talk.feature.reply.data.model.discussion.DiscussionDataByQuestionIDResponseWrapper
 import com.tokopedia.talk.feature.reply.di.DaggerTalkReplyComponent
@@ -50,6 +51,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
         const val FOLLOWING = true
         const val NOT_FOLLOWING = false
         const val REPORT_ACTIVITY_REQUEST_CODE = 201
+        const val ATTACH_PRODUCT_ACTIVITY_REQUEST_CODE = 202
 
         @JvmStatic
         fun createNewInstance(questionId: String, shopId: String): TalkReplyFragment =
@@ -114,10 +116,17 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        when(requestCode) {
-            REPORT_ACTIVITY_REQUEST_CODE -> {
+        data?.let {
+            when(requestCode) {
+                REPORT_ACTIVITY_REQUEST_CODE -> {
 
+                }
+                ATTACH_PRODUCT_ACTIVITY_REQUEST_CODE -> {
+                    if (!it.hasExtra(AttachProductActivity.TOKOPEDIA_ATTACH_PRODUCT_RESULT_KEY))
+                        return
+                    val resultProducts: ArrayList<ResultProduct> = it.getParcelableArrayListExtra(AttachProductActivity.TOKOPEDIA_ATTACH_PRODUCT_RESULT_KEY)
+                }
+                else -> super.onActivityResult(requestCode, resultCode, data)
             }
         }
     }
@@ -148,7 +157,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
     }
 
     override fun onAttachProductButtonClicked() {
-        showAttachedProductBottomSheet()
+        goToAttachProductActivity()
     }
 
     override fun onMaximumTextLimitReached() {
@@ -377,7 +386,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
     private fun initView() {
         initAdapter()
         initRecyclerView()
-        getProfilePicture()
+        initTextBox()
     }
 
     private fun initAdapter() {
@@ -431,12 +440,13 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
         }
     }
 
-    private fun getProfilePicture() {
-        replyTextBox.setProfilePicture(userSession.profilePicture)
+    private fun initTextBox() {
+        replyTextBox.bind(userSession.profilePicture, this)
     }
 
-    private fun showAttachedProductBottomSheet() {
-
+    private fun goToAttachProductActivity() {
+        val intent = context?.let { AttachProductActivity.createInstance(it, shopId, "", userSession.shopId == shopId, AttachProductActivity.SOURCE_TALK) }
+        startActivityForResult(intent, ATTACH_PRODUCT_ACTIVITY_REQUEST_CODE)
     }
 
     private fun sendComment(text: String, attachedProductIds: List<String>) {

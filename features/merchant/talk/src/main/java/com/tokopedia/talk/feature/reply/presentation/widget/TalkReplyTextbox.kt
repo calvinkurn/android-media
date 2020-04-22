@@ -5,6 +5,7 @@ import android.util.AttributeSet
 import android.view.View
 import com.tokopedia.kotlin.extensions.view.loadImageCircle
 import com.tokopedia.talk.feature.reply.presentation.widget.listeners.TalkReplyHeaderListener
+import com.tokopedia.talk.feature.reply.presentation.widget.listeners.TalkReplyTextboxListener
 import com.tokopedia.talk_old.R
 import com.tokopedia.unifycomponents.BaseCustomView
 import kotlinx.android.synthetic.main.widget_talk_reply_textbox.view.*
@@ -26,12 +27,13 @@ class TalkReplyTextbox : BaseCustomView {
         View.inflate(context, R.layout.widget_talk_reply_textbox, this)
     }
 
-    fun setProfilePicture(profilePicture: String) {
+    fun bind(profilePicture: String, talkReplyTextboxListener: TalkReplyTextboxListener) {
         replyUserProfilePicture.loadImageCircle(profilePicture)
-    }
-
-    fun bind(profilePicture: String, talkReplyHeaderListener: TalkReplyHeaderListener) {
-        replyUserProfilePicture.loadImageCircle(profilePicture)
-
+        replyAttachProduct.setOnClickListener {
+            talkReplyTextboxListener.onAttachProductButtonClicked()
+        }
+        replySendButton.setOnClickListener {
+            talkReplyTextboxListener.onSendButtonClicked(replyEditText.text.toString())
+        }
     }
 }
