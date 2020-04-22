@@ -152,11 +152,12 @@ open class AddEditProductAddService : AddEditProductBaseService() {
             setUploadProductDataSuccess()
             ProductAddShippingTracking.clickFinish(shopId, true)
         }, onError = { throwable ->
-            throwable.message?.let { errorMessage ->
-                delay(NOTIFICATION_CHANGE_DELAY)
-                setUploadProductDataError(throwable)
-                ProductAddShippingTracking.clickFinish(shopId, false, errorMessage)
-            }
+            delay(NOTIFICATION_CHANGE_DELAY)
+            val errorMessage = getErrorMessage(throwable)
+            setUploadProductDataError(errorMessage)
+            ProductAddShippingTracking.clickFinish(shopId, false, errorMessage)
+
+            logError(productAddUseCase.params, throwable)
         })
     }
 

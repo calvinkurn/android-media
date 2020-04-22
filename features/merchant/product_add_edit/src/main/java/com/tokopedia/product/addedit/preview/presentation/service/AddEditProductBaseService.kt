@@ -1,6 +1,7 @@
 package com.tokopedia.product.addedit.preview.presentation.service
 
 import androidx.core.app.JobIntentService
+import com.google.gson.Gson
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.mediauploader.data.state.UploadResult
@@ -20,11 +21,13 @@ import com.tokopedia.product.addedit.preview.domain.mapper.AddProductInputMapper
 import com.tokopedia.product.addedit.preview.domain.mapper.EditProductInputMapper
 import com.tokopedia.product.addedit.preview.domain.usecase.ProductAddUseCase
 import com.tokopedia.product.addedit.preview.domain.usecase.ProductEditUseCase
+import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import java.io.File
+import java.net.URLEncoder
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
@@ -47,6 +50,8 @@ abstract class AddEditProductBaseService : JobIntentService(), CoroutineScope {
     lateinit var deleteProductDraftUseCase: DeleteProductDraftUseCase
     @Inject
     lateinit var resourceProvider: ResourceProvider
+    @Inject
+    lateinit var gson: Gson
 
     private var notificationManager: AddEditProductNotificationManager? = null
 
@@ -71,15 +76,8 @@ abstract class AddEditProductBaseService : JobIntentService(), CoroutineScope {
         notificationManager?.onSuccessUpload()
     }
 
-    fun setUploadProductDataError(throwable: Throwable) {
-        throwable.message?.let { errorMessage ->
-            // don't display gql error message to user
-            if (errorMessage.contains(GQL_ERROR_SUBSTRING)) {
-                notificationManager?.onFailedUpload(resourceProvider.getGqlErrorMessage() ?: "")
-            } else {
-                notificationManager?.onFailedUpload(errorMessage)
-            }
-        }
+    fun setUploadProductDataError(errorMessage: String) {
+        notificationManager?.onFailedUpload(errorMessage)
     }
 
     fun uploadProductImages(imageUrlOrPathList: List<String>, variantPicturePath: List<String>, sizeChartPath: String) {
@@ -109,8 +107,26 @@ abstract class AddEditProductBaseService : JobIntentService(), CoroutineScope {
             delay(NOTIFICATION_CHANGE_DELAY)
             onUploadProductImagesDone(uploadIdList, variantOptionUploadId, sizeChartUploadId)
         }, onError = { throwable ->
-            setUploadProductDataError(throwable)
+            setUploadProductDataError(getErrorMessage(throwable))
         })
+    }
+
+    protected fun getErrorMessage(throwable: Throwable): String {
+        // don't display gql error message to user
+        return if (throwable.message == null || throwable.message?.contains(GQL_ERROR_SUBSTRING) == true) {
+            resourceProvider.getGqlErrorMessage().orEmpty()
+        } else {
+            throwable.message.orEmpty()
+        }
+    }
+
+    protected fun logError(requestParams: RequestParams, throwable: Throwable) {
+        val errorMessage = String.format(
+                "\"Error upload product.\",\"userId: %s\",\"userEmail: %s \",\"errorMessage: %s\",params: \"%s\"",
+                userSession.userId,
+                userSession.email,
+                getErrorMessage(throwable),
+                URLEncoder.encode(gson.toJson(requestParams), "UTF-8"))
     }
 
     private fun initInjector() {
