@@ -60,8 +60,12 @@ class ProductVariantPriceViewHolder(
            val priceRupiah = CurrencyFormatHelper.convertToRupiah(price.toString())
            val priceTxt = CurrencyFormatHelper.removeCurrencyPrefix(priceRupiah)
            val prefixTxt = itemView.context.getString(R.string.product_manage_quick_edit_currency)
-           textFieldInput.setText(priceTxt)
+
            prependText(prefixTxt)
+           textFieldInput.setText(priceTxt)
+
+           val length = textFieldInput.length()
+           textFieldInput.setSelection(length)
        }
     }
 
