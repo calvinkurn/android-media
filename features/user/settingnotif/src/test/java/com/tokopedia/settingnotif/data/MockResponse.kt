@@ -4,7 +4,6 @@ object MockResponse {
 
     val pushNotificationResponse = """
         {
-          "data": {
             "notifier_notificationGetUserAllSettings": {
               "pushnotif": [
                 {
@@ -77,7 +76,6 @@ object MockResponse {
                 }
               ]
             }
-          }
         }
     """.trimIndent()
 
