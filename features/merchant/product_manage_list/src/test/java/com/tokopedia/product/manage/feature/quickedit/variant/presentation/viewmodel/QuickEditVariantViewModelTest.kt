@@ -17,7 +17,7 @@ import org.junit.Test
 class QuickEditVariantViewModelTest: QuickEditVariantViewModelTestFixture() {
 
     @Test
-    fun `when get variants success should set variant result live data`() {
+    fun `given variant list is NOT empty when get variants success should set variants result`() {
         val productName = "Tokopedia"
         val variantList = listOf(
             createProductVariantResponse(combination = listOf(0, 1)),
@@ -53,6 +53,18 @@ class QuickEditVariantViewModelTest: QuickEditVariantViewModelTestFixture() {
 
         viewModel.getProductVariantsResult
             .verifyValueEquals(expectedResult)
+    }
+
+    @Test
+    fun `given variant list is empty when get variants should show error view`() {
+        val response = createGetVariantResponse(products = emptyList())
+
+        onGetProductVariant_thenReturn(response)
+
+        viewModel.getProductVariants("1")
+
+        viewModel.viewState
+            .verifyValueEquals(ShowErrorView)
     }
 
     @Test
