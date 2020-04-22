@@ -4,16 +4,24 @@ import com.google.gson.annotations.SerializedName
 
 data class ProductFeedbackDetailResponse(
         @SerializedName("productrevFeedbackDataPerProduct")
-        val productFeedbackDataPerProduct: ProductFeedbackDataPerProduct = ProductFeedbackDataPerProduct()
+        val productrevFeedbackDataPerProduct: ProductFeedbackDataPerProduct = ProductFeedbackDataPerProduct()
 ) {
     data class ProductFeedbackDataPerProduct(
+            @SerializedName("aggregatedRating")
             val aggregatedRating: List<AggregatedRating> = listOf(),
+            @SerializedName("filterBy")
             val filterBy: String? = "",
+            @SerializedName("hasNext")
             val hasNext: Boolean = false,
+            @SerializedName("limit")
             val limit: Int? = -1,
+            @SerializedName("list")
             val list: List<FeedbackList> = listOf(),
+            @SerializedName("page")
             val page: Int? = -1,
+            @SerializedName("sortBy")
             val sortBy: String? = "",
+            @SerializedName("topics")
             val topics: List<Topic> = listOf()
     ) {
         data class FeedbackList(
@@ -47,13 +55,18 @@ data class ProductFeedbackDetailResponse(
         }
 
         data class Topic(
+                @SerializedName("count")
                 val count: Int,
+                @SerializedName("formatted")
                 val formatted: String,
+                @SerializedName("title")
                 val title: String
         )
 
         data class AggregatedRating(
+                @SerializedName("rating")
                 val rating: Int,
+                @SerializedName("ratingCount")
                 val ratingCount: Int
         )
     }

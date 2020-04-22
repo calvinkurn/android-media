@@ -6,10 +6,10 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.coroutines.data.Interactor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.reviewseller.R
-import com.tokopedia.reviewseller.common.GQL_GET_PRODUCT_FEEDBACK_LIST_DETAIL
-import com.tokopedia.reviewseller.common.GQL_GET_PRODUCT_REVIEW_DETAIL_OVERALL
 import com.tokopedia.reviewseller.common.util.CoroutineDispatcherProvider
 import com.tokopedia.reviewseller.common.util.CoroutineDispatcherProviderImpl
+import com.tokopedia.reviewseller.common.util.GQL_GET_PRODUCT_FEEDBACK_LIST_DETAIL
+import com.tokopedia.reviewseller.common.util.GQL_GET_PRODUCT_REVIEW_DETAIL_OVERALL
 import com.tokopedia.reviewseller.feature.reviewdetail.di.scope.ReviewDetailScope
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
