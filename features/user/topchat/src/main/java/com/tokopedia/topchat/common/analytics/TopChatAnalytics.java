@@ -6,6 +6,7 @@ import com.tokopedia.attachproduct.analytics.AttachProductAnalytics;
 import com.tokopedia.chat_common.data.AttachInvoiceSentViewModel;
 import com.tokopedia.chat_common.data.BannedProductAttachmentViewModel;
 import com.tokopedia.chat_common.data.ProductAttachmentViewModel;
+import com.tokopedia.topchat.chatroom.domain.pojo.orderprogress.ChatOrderProgress;
 import com.tokopedia.topchat.chatroom.view.viewmodel.InvoicePreviewUiModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.QuotationUiModel;
 import com.tokopedia.track.TrackApp;
@@ -101,6 +102,8 @@ public class TopChatAnalytics {
         String CLICK_QUOTATION_ATTACHMENT = "click bayar on quotation thumbnail";
         String CLICK_IMAGE_THUMBNAIL = "click image on product thumbnail ";
         String CLICK_OP_CARD_DESCRIPTION = "click on order progress card";
+        String CLICK_OP_CTA_DESCRIPTION = "click cta on order progress card";
+        String CLICK_OP_ORDER_HISTORY = "click on order history";
     }
 
     public interface Label {
@@ -491,6 +494,26 @@ public class TopChatAnalytics {
                 Name.CHAT_DETAIL,
                 Category.CHAT_DETAIL,
                 Action.CLICK_OP_CARD_DESCRIPTION,
+                Label.BUYER
+        );
+    }
+
+    // #OP2, #OP3, #OP5
+    public void eventClickCtaButton(@NotNull ChatOrderProgress chatOrder) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                Name.CHAT_DETAIL,
+                Category.CHAT_DETAIL,
+                Action.CLICK_OP_CTA_DESCRIPTION,
+                Label.BUYER + " - " + chatOrder.getCtaType()
+        );
+    }
+
+    // #OP6
+    public void eventClickOrderProgressBuyAgain() {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                Name.CHAT_DETAIL,
+                Category.CHAT_DETAIL,
+                Action.CLICK_OP_ORDER_HISTORY,
                 Label.BUYER
         );
     }

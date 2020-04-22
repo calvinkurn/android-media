@@ -209,6 +209,7 @@ class TransactionOrderProgressLayout : LinearLayout {
         actionBtn?.shouldShowWithAction(chatOrder.hasActionButton) {
             actionBtn?.text = chatOrder.button.label
             actionBtn?.setOnClickListener {
+                analytics?.eventClickCtaButton(chatOrder)
                 RouteManager.route(context, chatOrder.button.uri)
             }
         }
@@ -222,6 +223,7 @@ class TransactionOrderProgressLayout : LinearLayout {
 
     private fun bindClickCloseState() {
         stateChanger?.setOnClickListener {
+            analytics?.eventClickOrderProgressBuyAgain()
             RouteManager.route(context, chatOrder.button.uri)
         }
     }

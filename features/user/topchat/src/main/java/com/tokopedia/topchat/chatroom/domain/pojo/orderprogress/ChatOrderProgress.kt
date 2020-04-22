@@ -31,6 +31,14 @@ data class ChatOrderProgress(
 ) {
 
     val hasActionButton: Boolean get() = button.key.isNotEmpty()
+    val ctaType: String get() {
+        // TODO: check with BE for cta "review"
+        return when (button.key) {
+            ctaTrack -> "lacak"
+            ctaFinishOrder -> "selesai"
+            else -> "unknown cta type"
+        }
+    }
 
     fun isNotEmpty(): Boolean = state != stateEmpty
     fun isStateFinished(): Boolean = state == stateFinish
@@ -40,6 +48,10 @@ data class ChatOrderProgress(
         const val stateNew_order = "new_order"
         const val stateOngoing = "on_going"
         const val stateFinish = "finish"
+
+        const val ctaBuyAgain = "buy_again"
+        const val ctaFinishOrder = "finish_order"
+        const val ctaTrack = "track"
 
         const val DEFAULT_STATE = stateEmpty
     }
