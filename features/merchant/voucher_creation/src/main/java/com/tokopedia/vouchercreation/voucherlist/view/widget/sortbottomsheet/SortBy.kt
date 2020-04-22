@@ -6,6 +6,8 @@ import androidx.annotation.StringDef
  * Created By @ilhamsuaib on 22/04/20
  */
 
+@MustBeDocumented
+@Retention(AnnotationRetention.SOURCE)
 @StringDef(SortBy.NEWEST_DONE_DATE, SortBy.OLDEST_DONE_DATE)
 annotation class SortBy {
 
