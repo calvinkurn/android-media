@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import com.tokopedia.kotlin.extensions.view.loadImageCircle
+import com.tokopedia.talk.feature.reply.presentation.widget.listeners.TalkReplyHeaderListener
 import com.tokopedia.talk_old.R
 import com.tokopedia.unifycomponents.BaseCustomView
 import kotlinx.android.synthetic.main.widget_talk_reply_textbox.view.*
@@ -27,5 +28,10 @@ class TalkReplyTextbox : BaseCustomView {
 
     fun setProfilePicture(profilePicture: String) {
         replyUserProfilePicture.loadImageCircle(profilePicture)
+    }
+
+    fun bind(profilePicture: String, talkReplyHeaderListener: TalkReplyHeaderListener) {
+        replyUserProfilePicture.loadImageCircle(profilePicture)
+
     }
 }

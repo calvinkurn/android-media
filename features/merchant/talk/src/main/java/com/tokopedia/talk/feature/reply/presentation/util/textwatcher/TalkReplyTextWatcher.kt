@@ -3,9 +3,9 @@ package com.tokopedia.talk.feature.reply.presentation.util.textwatcher
 import android.text.Editable
 import android.text.TextWatcher
 import android.widget.EditText
-import com.tokopedia.talk.feature.reply.presentation.widget.listeners.OnMaximumLimitReachedListener
+import com.tokopedia.talk.feature.reply.presentation.widget.listeners.TalkReplyTextboxListener
 
-class TalkReplyTextWatcher(private val replyTextBox: EditText, onMaximumLimitReachedListener: OnMaximumLimitReachedListener) : TextWatcher {
+class TalkReplyTextWatcher(private val replyTextBox: EditText, talkReplyTextboxListener: TalkReplyTextboxListener) : TextWatcher {
 
     override fun afterTextChanged(s: Editable?) {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.

@@ -97,11 +97,12 @@
         app:layout_constraintTop_toTopOf="@id/likeIcon" />
 
     <ImageView
-        android:id="@+id/replyHeaderKebab"
+        android:id="@+id/replyKebab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/layout_lvl3"
         android:layout_marginRight="@dimen/layout_lvl3"
+        android:visibility="gone"
         app:layout_constraintTop_toTopOf="@id/likeIcon"
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@drawable/talk_ic_kebab" />

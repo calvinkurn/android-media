@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.tokopedia.TalkInstance
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
@@ -99,7 +100,7 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
     }
 
     override fun initInjector() {
-        component.inject(this)
+        component?.inject(this)
     }
 
     override fun onItemClicked(t: TalkReadingUiModel?) {
@@ -110,10 +111,13 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
         getDiscussionData(page)
     }
 
-    override fun getComponent(): TalkReadingComponent {
-        return DaggerTalkReadingComponent.builder().talkComponent(
-                getComponent(TalkComponent::class.java))
-                .build()
+    override fun getComponent(): TalkReadingComponent? {
+        return activity?.run {
+            DaggerTalkReadingComponent
+                    .builder()
+                    .talkComponent(TalkInstance.getComponent(application))
+                    .build()
+        }
     }
 
     override fun onFinishChooseSort(sortOption: SortOption) {

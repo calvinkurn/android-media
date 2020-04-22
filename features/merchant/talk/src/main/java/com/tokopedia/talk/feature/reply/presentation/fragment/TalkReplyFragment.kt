@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
+import com.tokopedia.TalkInstance
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
@@ -42,7 +43,7 @@ import javax.inject.Inject
 
 class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>, OnReplyBottomSheetClickedListener,
         OnKebabClickedListener, OnAttachedProductCardClickedListener, TalkReplyHeaderListener,
-        OnMaximumLimitReachedListener {
+        TalkReplyTextboxListener {
 
     companion object {
 
@@ -75,13 +76,16 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
     }
 
     override fun initInjector() {
-        component.inject(this)
+        component?.inject(this)
     }
 
-    override fun getComponent(): TalkReplyComponent {
-        return DaggerTalkReplyComponent.builder().talkComponent(
-                getComponent(TalkComponent::class.java))
-                .build()
+    override fun getComponent(): TalkReplyComponent? {
+        return activity?.run {
+            DaggerTalkReplyComponent
+                    .builder()
+                    .talkComponent(TalkInstance.getComponent(application))
+                    .build()
+        }
     }
 
     override fun onTermsAndConditionsClicked() {
@@ -143,8 +147,16 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
         super.onDestroy()
     }
 
-    override fun onMaximumLimitReached() {
+    override fun onAttachProductButtonClicked() {
+        showAttachedProductBottomSheet()
+    }
+
+    override fun onMaximumTextLimitReached() {
         onAnswerTooLong()
+    }
+
+    override fun onSendButtonClicked(text: String) {
+        sendComment(text, listOf())
     }
 
     private fun goToReportActivity(commentId: String) {
@@ -369,7 +381,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
     }
 
     private fun initAdapter() {
-        adapter = TalkReplyAdapter(TalkReplyAdapterTypeFactory(this))
+        adapter = TalkReplyAdapter(TalkReplyAdapterTypeFactory(this, this))
     }
 
     private fun initRecyclerView() {
@@ -421,5 +433,13 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
 
     private fun getProfilePicture() {
         replyTextBox.setProfilePicture(userSession.profilePicture)
+    }
+
+    private fun showAttachedProductBottomSheet() {
+
+    }
+
+    private fun sendComment(text: String, attachedProductIds: List<String>) {
+
     }
 }
