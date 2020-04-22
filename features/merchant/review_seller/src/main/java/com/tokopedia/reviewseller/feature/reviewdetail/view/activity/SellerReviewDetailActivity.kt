@@ -3,6 +3,7 @@ package com.tokopedia.reviewseller.feature.reviewdetail.view.activity
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.reviewseller.R
 import com.tokopedia.reviewseller.common.ReviewSellerComponentBuilder
 import com.tokopedia.reviewseller.feature.reviewdetail.di.component.DaggerReviewProductDetailComponent
 import com.tokopedia.reviewseller.feature.reviewdetail.di.component.ReviewProductDetailComponent
@@ -16,6 +17,10 @@ class SellerReviewDetailActivity : BaseSimpleActivity(), HasComponent<ReviewProd
 
     override fun getNewFragment(): Fragment = SellerReviewDetailFragment()
 
+    override fun getLayoutRes(): Int {
+        return R.layout.activity_seller_review_detail
+    }
+
     override fun getComponent(): ReviewProductDetailComponent {
         return DaggerReviewProductDetailComponent
                 .builder()
@@ -23,5 +28,6 @@ class SellerReviewDetailActivity : BaseSimpleActivity(), HasComponent<ReviewProd
                 .reviewProductDetailModule(ReviewProductDetailModule())
                 .build()
     }
+
 
 }

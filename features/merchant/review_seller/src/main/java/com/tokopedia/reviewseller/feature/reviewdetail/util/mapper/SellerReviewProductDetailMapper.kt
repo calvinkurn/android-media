@@ -3,9 +3,10 @@ package com.tokopedia.reviewseller.feature.reviewdetail.util.mapper
 import com.tokopedia.reviewseller.feature.reviewdetail.data.ProductFeedbackDetailResponse
 import com.tokopedia.reviewseller.feature.reviewdetail.data.ProductReviewDetailOverallResponse
 import com.tokopedia.reviewseller.feature.reviewdetail.view.model.*
+import com.tokopedia.sortfilter.SortFilterItem
+import com.tokopedia.unifycomponents.ChipsUnify
 
 object SellerReviewProductDetailMapper {
-
 
     fun mapToProductFeedbackDetailUiModel(productFeedbackDataPerProduct:
                                           ProductFeedbackDetailResponse.ProductFeedbackDataPerProduct): ProductFeedbackDetailUiModel {
@@ -30,17 +31,14 @@ object SellerReviewProductDetailMapper {
         return ratingBarListUiModel
     }
 
-    fun mapToTopicUiModel(productFeedbackDataPerProduct: ProductFeedbackDetailResponse.ProductFeedbackDataPerProduct): List<TopicUiModel> {
-        val topicListUiModel = mutableListOf<TopicUiModel>()
+    fun mapToTopicUiModel(productFeedbackDataPerProduct: ProductFeedbackDetailResponse.ProductFeedbackDataPerProduct): TopicUiModel {
+        val topicListUiModel = TopicUiModel()
 
         productFeedbackDataPerProduct.topics.map {
-            topicListUiModel.add(
-                    TopicUiModel(
-                            title = it.title,
-                            count = it.count,
-                            formatTitle = it.formatted
-                    )
-            )
+            topicListUiModel.apply {
+                sortFilterItemList = mapToItemSortFilter(productFeedbackDataPerProduct)
+                countFeedback = productFeedbackDataPerProduct.list.size
+            }
         }
         return topicListUiModel
     }
@@ -87,6 +85,20 @@ object SellerReviewProductDetailMapper {
             ratingAvg = productFeedbackDetailResponse.ratingAverage
             ratingCount = productFeedbackDetailResponse.ratingCount
         }
+    }
+
+    fun mapToItemSortFilter(data: ProductFeedbackDetailResponse.ProductFeedbackDataPerProduct): ArrayList<SortFilterItem> {
+        val itemSortFilterList = ArrayList<SortFilterItem>()
+        val maxData = data.topics.take(4)
+        maxData.map {
+            val sortFilter = SortFilterItem(
+                    title = it.formatted,
+                    type = ChipsUnify.TYPE_NORMAL,
+                    size = ChipsUnify.SIZE_SMALL)
+            sortFilter.listener = {}
+            itemSortFilterList.add(sortFilter)
+        }
+        return itemSortFilterList
     }
 
 }

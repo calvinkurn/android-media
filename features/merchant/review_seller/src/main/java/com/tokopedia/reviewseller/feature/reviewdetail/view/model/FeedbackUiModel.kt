@@ -1,5 +1,8 @@
 package com.tokopedia.reviewseller.feature.reviewdetail.view.model
 
+import com.tokopedia.reviewseller.feature.reviewdetail.view.adapter.BaseSellerReviewDetail
+import com.tokopedia.reviewseller.feature.reviewdetail.view.adapter.SellerReviewDetailAdapterTypeFactory
+
 data class FeedbackUiModel(
         var attachments: List<Attachment> = listOf(),
         var autoReply: String? = "",
@@ -11,7 +14,12 @@ data class FeedbackUiModel(
         var reviewTime: String? = "",
         var reviewerName: String? = "",
         var variantName: String? = ""
-) {
+): BaseSellerReviewDetail {
+
+    override fun type(typeFactory: SellerReviewDetailAdapterTypeFactory): Int {
+        return typeFactory.type(this)
+    }
+
     data class Attachment(
             val thumbnailURL: String? = "",
             val fullSizeURL: String? = ""
