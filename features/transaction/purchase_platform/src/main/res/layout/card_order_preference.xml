@@ -3,8 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    tools:parentTag="com.tokopedia.unifycomponents.CardUnify">
+    android:layout_height="wrap_content">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -26,7 +25,6 @@
             android:background="@color/Neutral_N100"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="@id/iv_card_header" />
-
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_card_header"
@@ -50,7 +48,7 @@
             android:layout_marginStart="@dimen/dp_8"
             android:layout_marginLeft="@dimen/dp_8"
             app:labelTitle="@string/lbl_default_preference"
-            app:labelType="general_dark_green"
+            app:labelType="general_light_grey"
             app:layout_constraintBottom_toBottomOf="@id/iv_card_header"
             app:layout_constraintStart_toEndOf="@+id/tv_card_header"
             app:layout_constraintTop_toTopOf="@id/iv_card_header" />
@@ -122,10 +120,7 @@
             android:id="@+id/divider"
             android:layout_width="0dp"
             android:layout_height="0.5dp"
-            android:layout_marginStart="@dimen/dp_18"
-            android:layout_marginLeft="@dimen/dp_18"
-            android:layout_marginTop="@dimen/dp_8"
-            android:background="@color/white"
+            android:layout_marginTop="@dimen/dp_14"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_address_detail" />
@@ -232,11 +227,25 @@
             android:lines="1"
             android:text="@string/label_kurir"
             android:textColor="@color/Neutral_N700_96"
-            android:visibility="visible"
             app:layout_constraintStart_toStartOf="@+id/tv_shipping_name"
             app:layout_constraintTop_toBottomOf="@+id/tv_shipping_duration"
             app:typographyType="body_3"
             app:typographyWeight="bold" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_shipping_slash_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:gravity="center_vertical"
+            android:lines="1"
+            android:textColor="@color/Neutral_N700_68"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_shipping_courier_lbl"
+            app:typographyType="small"
+            app:typographyWeight="reguler"
+            tools:text="Rp. 25.000" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_shipping_courier"
@@ -246,7 +255,6 @@
             android:gravity="center_vertical"
             android:lines="1"
             android:textColor="@color/Neutral_N700_68"
-            android:visibility="visible"
             app:drawableRightCompat="@drawable/ic_keyboard_arrow_down_grey_20dp"
             app:layout_constraintStart_toStartOf="@+id/tv_shipping_name"
             app:layout_constraintTop_toBottomOf="@+id/tv_shipping_slash_price"
@@ -276,29 +284,12 @@
             android:layout_marginEnd="@dimen/dp_8"
             android:layout_marginRight="@dimen/dp_8"
             android:textColor="@color/Red_R600"
-            android:visibility="gone"
             app:layout_constraintEnd_toStartOf="@+id/tv_shipping_change_duration"
             app:layout_constraintStart_toStartOf="@+id/tv_shipping_name"
-            app:layout_constraintTop_toBottomOf="@+id/tv_shipping_courier"
+            app:layout_constraintTop_toBottomOf="@+id/tv_shipping_price"
             app:typographyType="body_3"
             app:typographyWeight="reguler"
             tools:text="durasi tidak tersedia" />
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tv_shipping_slash_price"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_16"
-            android:layout_marginLeft="@dimen/dp_16"
-            android:gravity="center_vertical"
-            android:lines="1"
-            android:textColor="@color/Neutral_N700_68"
-            android:visibility="visible"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_shipping_courier_lbl"
-            app:typographyType="small"
-            app:typographyWeight="reguler"
-            tools:text="Rp. 25.000" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_shipping_change_duration"
@@ -314,24 +305,11 @@
             android:paddingRight="@dimen/dp_0"
             android:text="@string/label_change_template"
             android:textColor="@color/Green_G500"
-            android:visibility="visible"
-            app:layout_constraintBottom_toTopOf="@+id/divider2"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_shipping_message"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/ticker_shipping_promo"
             app:typographyType="body_3"
             app:typographyWeight="bold" />
-
-        <View
-            android:id="@+id/divider2"
-            android:layout_width="0dp"
-            android:layout_height="0.5dp"
-            android:layout_marginStart="@dimen/dp_18"
-            android:layout_marginLeft="@dimen/dp_18"
-            android:layout_marginTop="@dimen/dp_24"
-            android:background="@color/white"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_shipping_courier" />
 
         <ImageView
             android:id="@+id/iv_payment"
@@ -351,7 +329,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_6"
             android:layout_marginLeft="@dimen/dp_6"
-            android:layout_marginTop="@dimen/dp_18"
+            android:layout_marginTop="@dimen/dp_16"
             android:layout_marginEnd="@dimen/dp_16"
             android:layout_marginRight="@dimen/dp_16"
             android:lines="1"
@@ -359,7 +337,7 @@
             android:textColor="@color/Neutral_N700_96"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/iv_payment"
-            app:layout_constraintTop_toBottomOf="@+id/divider2"
+            app:layout_constraintTop_toBottomOf="@+id/tv_shipping_message"
             app:typographyType="body_3"
             app:typographyWeight="bold"
             tools:text="Virtual Account" />
@@ -368,6 +346,7 @@
             android:id="@+id/tv_payment_detail"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_2"
             android:lines="1"
             android:textColor="@color/Neutral_N700_68"
             app:layout_constraintEnd_toEndOf="@+id/tv_payment_name"
@@ -394,9 +373,7 @@
         <View
             android:id="@+id/divider3"
             android:layout_width="0dp"
-            android:layout_height="0.5dp"
-            android:layout_marginStart="@dimen/dp_18"
-            android:layout_marginLeft="@dimen/dp_18"
+            android:layout_height="@dimen/dp_1"
             android:layout_marginTop="@dimen/dp_20"
             android:background="@color/Neutral_N75"
             app:layout_constraintEnd_toEndOf="parent"
@@ -420,8 +397,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/divider3"
             app:typographyType="body_3"
-            app:typographyWeight="bold"
-            tools:visibility="visible" />
+            app:typographyWeight="bold" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

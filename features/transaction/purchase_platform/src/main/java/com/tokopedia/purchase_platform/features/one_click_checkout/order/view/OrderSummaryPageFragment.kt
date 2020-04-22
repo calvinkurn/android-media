@@ -208,6 +208,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
     private fun initViews(view: View) {
         orderProductCard = OrderProductCard(view, this, orderSummaryAnalytics)
         orderPreferenceCard = OrderPreferenceCard(view, getOrderPreferenceCardListener(), orderSummaryAnalytics)
+        btnPromoCheckout?.margin = ButtonPromoCheckoutView.Margin.NO_BOTTOM
     }
 
     private fun initViewModel() {
@@ -507,8 +508,8 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
             }
             if (insuranceData.insuranceType == InsuranceConstant.INSURANCE_TYPE_MUST) {
                 tvInsurance?.setText(R.string.label_must_insurance)
-                cbInsurance?.isChecked = true
                 cbInsurance?.isEnabled = false
+                forceSetChecked(cbInsurance, true)
                 viewModel.setInsuranceCheck(true)
                 groupInsurance?.visible()
             } else if (insuranceData.insuranceType == InsuranceConstant.INSURANCE_TYPE_NO) {
@@ -518,16 +519,27 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                 tvInsurance?.setText(R.string.label_shipment_insurance)
                 cbInsurance?.isEnabled = true
                 if (insuranceData.insuranceUsedDefault == InsuranceConstant.INSURANCE_USED_DEFAULT_YES) {
-                    cbInsurance?.isChecked = true
+                    forceSetChecked(cbInsurance, true)
                     viewModel.setInsuranceCheck(true)
                 } else if (insuranceData.insuranceUsedDefault == InsuranceConstant.INSURANCE_USED_DEFAULT_NO) {
-                    cbInsurance?.isChecked = false
+                    forceSetChecked(cbInsurance, false)
                     viewModel.setInsuranceCheck(false)
                 }
                 groupInsurance?.visible()
             }
         } else {
             groupInsurance?.gone()
+        }
+    }
+
+    private fun forceSetChecked(checkBox: CheckboxUnify?, newCheck: Boolean) {
+        checkBox?.apply {
+            if (isChecked == newCheck) {
+                isChecked = newCheck
+                setIndeterminate(false)
+            } else {
+                isChecked = newCheck
+            }
         }
     }
 

@@ -91,8 +91,14 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
         val shipmentModel = preference.preference.shipment
 
         val shipping = preference.shipping
-        tvShippingName?.text = shipping?.serviceName ?: shipmentModel.serviceName
-        tvShippingDuration?.text = shipping?.serviceDuration ?: shipmentModel.serviceDuration
+        tvShippingName?.text = "Pengiriman ${shipmentModel.serviceName.capitalize()}"
+        val tempServiceDuration = shipping?.serviceDuration ?: shipmentModel.serviceDuration
+        val serviceDur = if (tempServiceDuration.contains("(") && tempServiceDuration.contains(")")) {
+            "Durasi " + tempServiceDuration.substring(tempServiceDuration.indexOf("(") + 1, tempServiceDuration.indexOf(")"))
+        } else {
+            OrderSummaryPageViewModel.NO_EXACT_DURATION_MESSAGE
+        }
+        tvShippingDuration?.text = serviceDur
 
         if (shipping == null) {
             tvShippingDuration?.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, 0, 0)
@@ -101,7 +107,7 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
         } else {
             if (shipping.serviceErrorMessage == null || shipping.serviceErrorMessage.isBlank()) {
                 if (!shipping.isServicePickerEnable) {
-                    tvShippingDuration?.text = "${shipping.serviceDuration} - ${shipping.shipperName}"
+                    tvShippingDuration?.text = "Durasi ${shipping.serviceDuration} - ${shipping.shipperName}"
                     tvShippingDuration?.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, 0, 0)
                     tvShippingDuration?.setOnClickListener { }
                     tvShippingPrice?.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(shipping.shippingPrice
@@ -151,6 +157,8 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
                     }
 
                 } else {
+                    tvShippingName?.text = "Pengiriman"
+                    tvShippingDuration?.text = shipping.serviceName
                     tvShippingDuration?.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, R.drawable.ic_keyboard_arrow_down_grey_20dp, 0)
                     tvShippingDuration?.setOnClickListener {
                         listener.chooseDuration()
