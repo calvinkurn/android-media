@@ -22,7 +22,7 @@ class RechargeGeneralProductSelectViewHolder(val view: View, val listener: OnInp
             }
 
             override fun onCustomInputClick() {
-                listener.onCustomInputClick(inputView, productData = mapProducts(data.dataCollections))
+                listener.onCustomInputClick(inputView, adapterPosition, mapProducts(data.dataCollections))
             }
         }
 
