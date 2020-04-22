@@ -132,10 +132,6 @@
             android:name=".globalsearch.presentation.activity.HotelChangeSearchActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
-
-        <meta-data
-            android:name="firebase_performance_logcat_enabled"
-            android:value="true" />
     </application>
 
 </manifest>
