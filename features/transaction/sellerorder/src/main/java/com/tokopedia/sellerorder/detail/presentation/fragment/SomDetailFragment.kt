@@ -742,7 +742,8 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
     private fun setActionUploadAwb(key: String) {
         detailResponse.button.forEach {
             if (key.equals(KEY_UPLOAD_AWB, true)) {
-                RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, it.url))
+                val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.WEBVIEW, it.url)
+                startActivity(intent)
             }
         }
     }
