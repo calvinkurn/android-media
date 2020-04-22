@@ -24,6 +24,7 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
@@ -54,6 +55,8 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
         HasComponent<ShopShowcaseManagementComponent> {
 
     companion object {
+        const val SHOP_SHOWCASE_TRACE = "mp_shop_showcase"
+
         @JvmStatic
         fun createInstance(shopType: String, shopId: String?, selectedEtalaseId: String?,
                            isShowDefault: Boolean? = false, isShowZeroProduct: Boolean? = false,
@@ -94,6 +97,7 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
     private var shopShowcaseListAdapter: ShopShowcaseListAdapter? = null
     private var showcaseList: List<ShowcaseItem> = listOf()
     private var tracking: ShopShowcaseTracking? = null
+    private var performanceMonitoring: PerformanceMonitoring? = null
 
     private var shopId: String = "0"
     private var selectedEtalaseId: String? = null
@@ -198,6 +202,7 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        performanceMonitoring = PerformanceMonitoring.start(SHOP_SHOWCASE_TRACE)
         showLoading(true)
         initHeaderUnify()
         initSearchbar()
@@ -311,6 +316,7 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
         viewModel.getListBuyerShopShowcaseResponse.observe(this, Observer {
             when (it) {
                 is Success -> {
+                    stopPerformanceMonitoring()
                     showLoading(false)
                     val errorMessage = it.data.shopShowcasesByShopID.error.message
                     if (errorMessage.isNotEmpty()) {
@@ -332,6 +338,7 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
         viewModel.getListSellerShopShowcaseResponse.observe(this, Observer {
             when (it) {
                 is Success -> {
+                    stopPerformanceMonitoring()
                     showLoading(false)
                     showLoadingSwipeToRefresh(false)
                     val errorMessage = it.data.shopShowcases.error.message
@@ -523,6 +530,10 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
             intent.putExtra("isNeedToReloadData", true)
             it.context?.startActivity(intent)
         }
+    }
+
+    private fun stopPerformanceMonitoring() {
+        performanceMonitoring?.stopTrace()
     }
 
     private fun showErrorMessage(t: Throwable) {
