@@ -108,6 +108,18 @@ public class ImagePickerBuilder implements Parcelable {
         return minResolution;
     }
 
+    public String getBelowMinResolutionErrorMessage() {
+        return imagePickerEditorBuilder.getBelowMinResolutionErrorMessage();
+    }
+
+    public String getImageTooLargeErrorMessage() {
+        return imagePickerEditorBuilder.getImageTooLargeErrorMessage();
+    }
+
+    public boolean isRecheckSizeAfterResize() {
+        return imagePickerEditorBuilder.isRecheckSizeAfterResize();
+    }
+
     public int getRatioX() {
         return imageRatioTypeDef.getRatioX();
     }
