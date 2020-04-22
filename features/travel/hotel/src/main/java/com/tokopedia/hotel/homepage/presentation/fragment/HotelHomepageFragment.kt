@@ -26,6 +26,7 @@ import com.tokopedia.hotel.common.presentation.HotelBaseFragment
 import com.tokopedia.hotel.common.util.HotelUtils
 import com.tokopedia.hotel.destination.view.activity.HotelDestinationActivity
 import com.tokopedia.hotel.homepage.di.HotelHomepageComponent
+import com.tokopedia.hotel.homepage.presentation.activity.HotelHomepageActivity.Companion.TYPE_COORDINATE
 import com.tokopedia.hotel.homepage.presentation.activity.HotelHomepageActivity.Companion.TYPE_PROPERTY
 import com.tokopedia.hotel.homepage.presentation.adapter.HotelLastSearchAdapter
 import com.tokopedia.hotel.homepage.presentation.adapter.viewholder.HotelLastSearchViewHolder
@@ -303,7 +304,7 @@ class HotelHomepageFragment : HotelBaseFragment(),
         hotelHomepageModel.locLong = longitude
         hotelHomepageModel.locId = 0
         hotelHomepageModel.locType = ""
-        hotelHomepageModel.searchType = "coordinate"
+        hotelHomepageModel.searchType = TYPE_COORDINATE
         hotelHomepageModel.searchId = ""
         renderView()
     }
