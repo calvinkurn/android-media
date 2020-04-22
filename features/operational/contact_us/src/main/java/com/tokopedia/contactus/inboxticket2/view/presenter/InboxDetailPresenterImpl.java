@@ -3,20 +3,19 @@ package com.tokopedia.contactus.inboxticket2.view.presenter;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
-import android.os.Handler;
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.common.network.data.model.RestResponse;
 import com.tokopedia.contactus.R;
 import com.tokopedia.contactus.common.analytics.ContactUsTracking;
 import com.tokopedia.contactus.common.analytics.InboxTicketTracking;
 import com.tokopedia.contactus.inboxticket2.data.model.ChipGetInboxDetail;
+import com.tokopedia.contactus.inboxticket2.data.model.TicketReplyResponse;
 import com.tokopedia.contactus.inboxticket2.data.model.Tickets;
 import com.tokopedia.contactus.inboxticket2.domain.AttachmentItem;
 import com.tokopedia.contactus.inboxticket2.domain.CommentsItem;
@@ -31,14 +30,13 @@ import com.tokopedia.contactus.inboxticket2.domain.usecase.PostMessageUseCase;
 import com.tokopedia.contactus.inboxticket2.domain.usecase.PostMessageUseCase2;
 import com.tokopedia.contactus.inboxticket2.domain.usecase.PostRatingUseCase;
 import com.tokopedia.contactus.inboxticket2.domain.usecase.SubmitRatingUseCase;
-import com.tokopedia.contactus.inboxticket2.view.activity.ProvideRatingActivity;
 import com.tokopedia.contactus.inboxticket2.view.activity.InboxDetailActivity;
+import com.tokopedia.contactus.inboxticket2.view.activity.ProvideRatingActivity;
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxBaseContract;
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxDetailContract;
 import com.tokopedia.contactus.inboxticket2.view.customview.CustomEditText;
 import com.tokopedia.contactus.inboxticket2.view.fragment.InboxBottomSheetFragment;
 import com.tokopedia.contactus.inboxticket2.view.utils.Utils;
-import com.tokopedia.contactus.orderquery.data.CreateTicketResult;
 import com.tokopedia.contactus.orderquery.data.ImageUpload;
 import com.tokopedia.contactus.orderquery.data.ImageUploadResult;
 import com.tokopedia.contactus.orderquery.data.UploadImageContactUsParam;
@@ -93,6 +91,8 @@ public class InboxDetailPresenterImpl
     private static final int MESSAGE_WRONG_FILE_SIZE = 1;
     private static final String PARAM_IMAGE_ID = "id";
     private static final String PARAM_WEB_SERVICE = "web_service";
+    private static final String AGENT = "agent";
+    private static final String OK = "OK";
     private String rateCommentID;
     private int next;
     private Utils utils;
@@ -415,26 +415,24 @@ public class InboxDetailPresenterImpl
                 attachmentString = new StringBuilder(attachmentString.toString().replace("~~", "~"));
                 if (attachmentString.length() > 0)
                     attachmentString = new StringBuilder(attachmentString.substring(1));
-                postMessageUseCase.setQueryMap(mTicketDetail.getId(),
-                        mView.getUserMessage(), 1, attachmentString.toString());
+                postMessageUseCase.createRequestParams(mTicketDetail.getId(),
+                        mView.getUserMessage(), 1, attachmentString.toString(), getLastReplyFromAgent());
                 fileUploaded = getFileUploaded(imageUploads);
                 return postMessageUseCase.createObservable(RequestParams.create()).subscribeOn(Schedulers.io());
-            }).flatMap(typeRestResponseMap -> {
-                Type token = new TypeToken<InboxDataResponse<CreateTicketResult>>() {
-                }.getType();
-                RestResponse res1 = typeRestResponseMap.get(token);
-                InboxDataResponse ticketListResponse = res1.getData();
-                CreateTicketResult createTicket = (CreateTicketResult) ticketListResponse.getData();
-                if (createTicket != null && createTicket.getIsSuccess() > 0) {
-                    if (createTicket.getPostKey() != null && createTicket.getPostKey().length() > 0) {
-                        postMessageUseCase2.setQueryMap(fileUploaded, createTicket.getPostKey());
+            }).flatMap(ticketReplyResponse -> {
+                if (ticketReplyResponse != null &&
+                        ticketReplyResponse.getTicketReplyData() != null &&
+                        ticketReplyResponse.getTicketReplyData().getStatus().equals(OK)) {
+                    String postKey = ticketReplyResponse.getTicketReplyData().getPostKey();
+                    if (postKey.length() > 0) {
+                        postMessageUseCase2.setQueryMap(fileUploaded, postKey);
                         return postMessageUseCase2.createObservable(RequestParams.create());
                     } else {
-                        error = (String) ticketListResponse.getErrorMessage().get(0);
+                        error = mView.getActivity().getString(R.string.contact_us_something_went_wrong);
                         return Observable.just(null);
                     }
                 } else {
-                    error = (String) ticketListResponse.getErrorMessage().get(0);
+                    error = mView.getActivity().getString(R.string.contact_us_something_went_wrong);
                     return Observable.just(null);
                 }
             }).subscribeOn(Schedulers.io())
@@ -474,8 +472,8 @@ public class InboxDetailPresenterImpl
                     });
 
         } else if (isValid == 0) {
-            postMessageUseCase.setQueryMap(mTicketDetail.getId(), mView.getUserMessage(), 0, "");
-            postMessageUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
+            postMessageUseCase.createRequestParams(mTicketDetail.getId(), mView.getUserMessage(), 0, "", getLastReplyFromAgent());
+            postMessageUseCase.execute(new Subscriber<TicketReplyResponse.TicketReply>() {
                 @Override
                 public void onCompleted() {
 
@@ -487,17 +485,14 @@ public class InboxDetailPresenterImpl
                 }
 
                 @Override
-                public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
+                public void onNext(TicketReplyResponse.TicketReply createTicketResult) {
                     mView.hideSendProgress();
-                    Type token = new TypeToken<InboxDataResponse<CreateTicketResult>>() {
-                    }.getType();
-                    RestResponse res1 = typeRestResponseMap.get(token);
-                    InboxDataResponse ticketListResponse = res1.getData();
-                    CreateTicketResult createTicket = (CreateTicketResult) ticketListResponse.getData();
-                    if (createTicket != null && createTicket.getIsSuccess() > 0) {
+                    if (createTicketResult != null &&
+                            createTicketResult.getTicketReplyData()!=null &&
+                            createTicketResult.getTicketReplyData().getStatus().equals(OK)) {
                         addNewLocalComment();
                     } else {
-                        mView.setSnackBarErrorMessage((String) ticketListResponse.getErrorMessage().get(0), true);
+                        mView.setSnackBarErrorMessage((String) mView.getActivity().getString(R.string.contact_us_something_went_wrong), true);
                     }
                 }
             });
@@ -505,6 +500,21 @@ public class InboxDetailPresenterImpl
             mView.setSnackBarErrorMessage(mView.getActivity().getResources().getString(R.string.invalid_images), true);
         }
 
+    }
+
+    private String getLastReplyFromAgent() {
+        String reply = "";
+        for (int i = mTicketDetail.getComments().size() - 1; i >= 0; i--) {
+            CommentsItem commentsItem = mTicketDetail.getComments().get(i);
+            if (commentsItem.getCreatedBy() == null) {
+                error = mView.getActivity().getString(R.string.contact_us_something_went_wrong);
+                break;
+            } else if (commentsItem.getCreatedBy().getRole().equals(AGENT)) {
+                reply = mTicketDetail.getComments().get(i).getMessage();
+                break;
+            }
+        }
+        return reply;
     }
 
     @Override
