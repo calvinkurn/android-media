@@ -351,18 +351,9 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
                         }
                     }
                 } else {
-                    context?.apply {
-                        viewModel.productInputModel.value?.let { productInputModel ->
-                            AddEditProductAddService.startService(
-                                    context = this,
-                                    detailInputModel = productInputModel.detailInputModel,
-                                    descriptionInputModel = productInputModel.descriptionInputModel,
-                                    shipmentInputModel = productInputModel.shipmentInputModel,
-                                    variantInputModel = productInputModel.variantInputModel,
-                                    draftId = viewModel.getDraftId()
-                            )
-                            moveToManageProduct()
-                        }
+                    viewModel.productInputModel.value?.let { productInputModel ->
+                        startProductAddService(productInputModel)
+                        moveToManageProduct()
                     }
                 }
             }
@@ -502,9 +493,12 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
                     context?.let {
                         val validateMessage = viewModel.validateProductInput(detailInputModel)
                         if (validateMessage.isEmpty()) {
-                            AddEditProductAddService.startService(it, detailInputModel,
-                                descriptionInputModel, shipmentInputModel, variantInputModel,
-                                    viewModel.getDraftId())
+                            startProductAddService(ProductInputModel(
+                                    detailInputModel = detailInputModel,
+                                    descriptionInputModel = descriptionInputModel,
+                                    shipmentInputModel = shipmentInputModel,
+                                    variantInputModel = variantInputModel
+                            ))
                             activity?.finish()
                         } else {
                             view?.let { view ->
@@ -1016,6 +1010,18 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
     private fun moveToManageProduct() {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PRODUCT_MANAGE_LIST)
         startActivity(intent)
+    }
+
+    private fun startProductAddService(productInputModel: ProductInputModel) {
+        context?.let {
+            val saveInstanceCacheManager = SaveInstanceCacheManager(it, true)
+            saveInstanceCacheManager.put(ProductInputModel.TAG, productInputModel)
+            AddEditProductAddService.startService(
+                    context = it,
+                    cacheId = saveInstanceCacheManager.id ?: "",
+                    draftId = viewModel.getDraftId()
+            )
+        }
     }
 
     private fun showLoading() {
