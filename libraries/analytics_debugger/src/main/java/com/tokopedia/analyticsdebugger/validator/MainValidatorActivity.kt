@@ -33,11 +33,11 @@ class MainValidatorActivity : AppCompatActivity(), MainValidatorFragment.Listene
         }
     }
 
-    override fun goDetail(expected: String, actual: String) {
+    override fun goDetail(expected: String, actual: String, timestamp: String) {
         supportFragmentManager.beginTransaction()
                 .addToBackStack("detail")
                 .setCustomAnimations(R.anim.slide_left_in, 0, R.anim.pop_delay_in, R.anim.slide_right_out)
-                .replace(R.id.container, ValidatorDetailFragment.newIntent(expected, actual))
+                .replace(R.id.container, ValidatorDetailFragment.newIntent(expected, actual, timestamp))
                 .commit()
     }
 

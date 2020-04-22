@@ -2,6 +2,9 @@ package com.tokopedia.analyticsdebugger.validator
 
 import android.content.Context
 import java.io.IOException
+import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.collections.ArrayList
 
 
 internal object Utils {
@@ -42,6 +45,12 @@ internal object Utils {
             e.printStackTrace()
         }
         return files
+    }
+
+    fun getTimeStampFormat(ts: Long?): String {
+        if (ts == null) return ""
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS", Locale.getDefault())
+        return dateFormat.format(Date(ts))
     }
 
 }

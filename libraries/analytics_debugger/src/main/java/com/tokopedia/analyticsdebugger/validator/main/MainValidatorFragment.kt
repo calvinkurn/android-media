@@ -7,6 +7,8 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.analyticsdebugger.R
 import com.tokopedia.analyticsdebugger.validator.Utils
@@ -56,8 +58,8 @@ class MainValidatorFragment : Fragment() {
         val value = testQuery[key]
         viewModel.run(value as List<Map<String, Any>>, key)
         with(rv) {
-            layoutManager = androidx.recyclerview.widget.LinearLayoutManager(context)
-            addItemDecoration(androidx.recyclerview.widget.DividerItemDecoration(context, androidx.recyclerview.widget.DividerItemDecoration.VERTICAL))
+            layoutManager = LinearLayoutManager(context)
+            addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
             adapter = mAdapter
         }
     }
@@ -69,12 +71,13 @@ class MainValidatorFragment : Fragment() {
     private fun goToDetail(item: Validator) {
         val exp = item.data.toJson()
         val act = item.match?.data ?: ""
+        val ts = Utils.getTimeStampFormat(item.match?.timestamp)
 
-        callback?.goDetail(exp, act)
+        callback?.goDetail(exp, act, ts)
     }
 
     interface Listener {
-        fun goDetail(expected: String, actual: String)
+        fun goDetail(expected: String, actual: String, timestamp: String)
     }
 
     companion object {
