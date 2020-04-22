@@ -1,5 +1,7 @@
 package com.tokopedia.talk.feature.reading.presentation.fragment
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -52,6 +54,7 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
         const val DEFAULT_DISCUSSION_DATA_LIMIT = 10
         const val DEFAULT_INITIAL_PAGE = 1
         const val DONT_LOAD_INITAL_DATA = false
+        const val TALK_REPLY_ACTIVITY_REQUEST_CODE = 202
 
         @JvmStatic
         fun createNewInstance(productId: String, shopId: String): TalkReadingFragment =
@@ -159,6 +162,17 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
         removeObservers(viewModel.filterCategories)
         removeObservers(viewModel.sortOptions)
         super.onDestroy()
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        when(requestCode) {
+            TALK_REPLY_ACTIVITY_REQUEST_CODE -> if(resultCode == Activity.RESULT_OK) {
+                view?.let {
+                    Toaster.make(it, getString(R.string.delete_question_toaster_success), Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL, getString(R.string.talk_ok))
+                }
+            }
+            else -> super.onActivityResult(requestCode, resultCode, data)
+        }
     }
 
     private fun showPageLoading() {
@@ -292,7 +306,7 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
 
     private fun goToReplyActivity(questionID: String) {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalMechant.TALK_REPLY, questionID, shopId)
-        startActivity(intent)
+        startActivityForResult(intent, TALK_REPLY_ACTIVITY_REQUEST_CODE)
     }
 
     private fun getDiscussionData(page: Int = DEFAULT_INITIAL_PAGE) {

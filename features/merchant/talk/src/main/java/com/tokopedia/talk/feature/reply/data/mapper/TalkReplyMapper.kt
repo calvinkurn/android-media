@@ -10,7 +10,10 @@ object TalkReplyMapper {
         return TalkReplyHeaderModel(
                 discussionDataByQuestionIDResponseWrapper.discussionDataByQuestionID.question.createTimeFormatted,
                 discussionDataByQuestionIDResponseWrapper.discussionDataByQuestionID.question.content,
-                discussionDataByQuestionIDResponseWrapper.discussionDataByQuestionID.question.questionState.isFollowed
+                discussionDataByQuestionIDResponseWrapper.discussionDataByQuestionID.question.questionState.isFollowed,
+                discussionDataByQuestionIDResponseWrapper.discussionDataByQuestionID.question.questionState.allowFollow,
+                discussionDataByQuestionIDResponseWrapper.discussionDataByQuestionID.question.questionState.allowReport,
+                discussionDataByQuestionIDResponseWrapper.discussionDataByQuestionID.question.questionState.allowDelete
         )
     }
 

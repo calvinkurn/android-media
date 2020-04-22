@@ -1,5 +1,6 @@
 package com.tokopedia.talk.feature.reply.presentation.fragment
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -39,7 +40,7 @@ import kotlinx.android.synthetic.main.fragment_talk_reply.*
 import kotlinx.android.synthetic.main.partial_talk_connection_error.view.*
 import javax.inject.Inject
 
-class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>, OnReportClickedListener,
+class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>, OnReplyBottomSheetClickedListener,
         OnKebabClickedListener, OnAttachedProductCardClickedListener, TalkReplyHeaderListener,
         OnMaximumLimitReachedListener {
 
@@ -67,7 +68,6 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
 
     private var questionId = ""
     private var shopId = ""
-    private var commentId = 0
     private var adapter: TalkReplyAdapter? = null
 
     override fun getScreenName(): String {
@@ -118,12 +118,16 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
         }
     }
 
-    override fun onReportOptionClicked(talkId: Int, commentId: Int) {
-        goToReportActivity(talkId, commentId)
+    override fun onReportOptionClicked(commentId: String) {
+        goToReportActivity(commentId)
     }
 
-    override fun onKebabClicked() {
-        showBottomSheet()
+    override fun onDeleteOptionClicked(commentId: String) {
+        showDeleteDialog(commentId)
+    }
+
+    override fun onKebabClicked(commentId: String, allowReport: Boolean, allowDelete: Boolean) {
+        showBottomSheet(commentId, allowReport, allowDelete)
     }
 
     override fun onClickAttachedProduct(productId: String) {
@@ -143,14 +147,14 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
         onAnswerTooLong()
     }
 
-    private fun goToReportActivity(talkId: Int, commentId: Int) {
+    private fun goToReportActivity(commentId: String) {
 
     }
 
-    private fun showDeleteDialog() {
+    private fun showDeleteDialog(commentId: String) {
         context?.let {
             val deleteDialog = DialogUnify(it, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE)
-            initDialog(deleteDialog)
+            initDialog(deleteDialog, commentId)
         }
     }
 
@@ -176,9 +180,9 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
         pageError.visibility = View.GONE
     }
 
-    private fun showBottomSheet() {
+    private fun showBottomSheet(commentId: String, allowReport: Boolean, allowDelete: Boolean) {
         val reportBottomSheet = context?.let { context ->
-            TalkReplyReportBottomSheet.createInstance(context, questionId, commentId, this)
+            TalkReplyReportBottomSheet.createInstance(context, commentId, this, allowReport, allowDelete)
         }
         this.childFragmentManager.let { reportBottomSheet?.show(it,"BottomSheetTag") }
     }
@@ -224,7 +228,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
     }
 
     private fun onSuccessDeleteQuestion() {
-        showSuccessToaster(getString(R.string.delete_question_toaster_success))
+        this.activity?.setResult(Activity.RESULT_OK)
     }
 
     private fun onFailDeleteQuestion() {
@@ -316,22 +320,31 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
         talkReplyTotalAnswers.text = String.format(getString(R.string.reply_total_answer), totalAnswers)
     }
 
-    private fun initDialog(dialog: DialogUnify) {
+    private fun initDialog(dialog: DialogUnify, commentId: String) {
+        if(commentId.isNotBlank()) {
+            dialog.setDescription(getString(R.string.delete_dialog_content))
+            dialog.setPrimaryCTAClickListener {
+                deleteReply(commentId)
+                dialog.dismiss()
+            }
+        } else {
+            dialog.setDescription(getString(R.string.delete_dialog_question_description))
+            dialog.setPrimaryCTAClickListener {
+                deleteQuestion()
+                dialog.dismiss()
+            }
+        }
         dialog.setTitle(getString(R.string.delete_dialog_title))
-        dialog.setDescription(getString(R.string.delete_dialog_content))
         dialog.setPrimaryCTAText(getString(R.string.delete_confirm_button))
         dialog.setSecondaryCTAText(getString(R.string.delete_cancel_button))
-        dialog.setPrimaryCTAClickListener {
-            deleteReply()
-        }
         dialog.setSecondaryCTAClickListener {
             dialog.dismiss()
         }
         dialog.show()
     }
 
-    private fun deleteReply() {
-//        viewModel.deleteComment(questionId, )
+    private fun deleteReply(commentId: String) {
+        viewModel.deleteComment(questionId, commentId)
     }
 
     private fun deleteQuestion() {

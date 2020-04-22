@@ -88,8 +88,7 @@ class TalkReplyViewModel @Inject constructor(
                 talkDeleteTalkUseCase.setParams(questionId.toIntOrZero())
                 talkDeleteTalkUseCase.executeOnBackground()
             }
-            if(response.talkDeleteTalk.data.isSuccess == MUTATION_SUCCESS
-                    && response.talkDeleteTalk.data.talkId == questionId.toIntOrZero()) {
+            if(response.talkDeleteTalk.data.isSuccess == MUTATION_SUCCESS) {
                 _deleteTalkResult.postValue(Success(response))
             } else {
                 _deleteTalkResult.postValue(Fail(Throwable(response.talkDeleteTalk.messageError.first())))
@@ -105,8 +104,7 @@ class TalkReplyViewModel @Inject constructor(
                 talkDeleteCommentUseCase.setParams(questionId.toIntOrZero(), commentId.toIntOrZero())
                 talkDeleteCommentUseCase.executeOnBackground()
             }
-            if(response.talkDeleteComment.data.isSuccess == MUTATION_SUCCESS
-                    && commentId.toIntOrZero() == response.talkDeleteComment.data.commentId) {
+            if(response.talkDeleteComment.data.isSuccess == MUTATION_SUCCESS) {
                 _deleteCommentResult.postValue(Success(response))
             } else {
                 _deleteCommentResult.postValue(Fail(Throwable(response.talkDeleteComment.messageError.first())))

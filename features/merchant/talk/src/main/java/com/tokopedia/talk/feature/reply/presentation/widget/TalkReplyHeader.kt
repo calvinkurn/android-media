@@ -41,9 +41,7 @@ class TalkReplyHeader : BaseCustomView {
         replyHeaderTNC.setOnClickListener {
             talkReplyHeaderListener.onTermsAndConditionsClicked()
         }
-        replyHeaderKebab.setOnClickListener {
-            onKebabClickedListener.onKebabClicked()
-        }
+        showKebabWithConditions(talkReplyHeaderModel.allowReport, talkReplyHeaderModel.allowDelete, onKebabClickedListener)
         replyHeaderFollowButton.setOnClickListener {
             talkReplyHeaderListener.onFollowUnfollowButtonClicked()
         }
@@ -62,6 +60,15 @@ class TalkReplyHeader : BaseCustomView {
     fun setButtonToUnfollowed() {
         replyHeaderFollowButton.text = UNFOLLOWED_TEXT
         replyHeaderFollowButton.buttonType = UnifyButton.Type.MAIN
+    }
+
+    private fun showKebabWithConditions(allowReport: Boolean, allowDelete: Boolean, onKebabClickedListener: OnKebabClickedListener) {
+        if(allowReport || allowDelete){
+            replyHeaderKebab.setOnClickListener {
+                onKebabClickedListener.onKebabClicked("", allowReport, allowDelete)
+            }
+            replyHeaderKebab.visibility = View.VISIBLE
+        }
     }
 
 
