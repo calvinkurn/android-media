@@ -1343,6 +1343,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 }
 
                 doUpdateButtonPromoCheckout(promoUiModel);
+                shipmentPresenter.setValidateUsePromoRevampUiModel(null);
                 shipmentAdapter.checkHasSelectAllCourier(false);
             }
         }

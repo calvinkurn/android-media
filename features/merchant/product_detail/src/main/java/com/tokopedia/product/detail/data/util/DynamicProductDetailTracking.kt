@@ -200,11 +200,11 @@ object DynamicProductDetailTracking {
 
         fun onEditProductClicked(productInfo: DynamicProductInfoP1?, componentTrackDataModel: ComponentTrackDataModel?) {
             val mapEvent = TrackAppUtils.gtmData(
-                    "",
+                    ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
                     ProductTrackingConstant.Category.PDP_SELLER,
                     ProductTrackingConstant.Action.CLICK_EDIT_PRODUCT,
                     "")
-            TrackingUtil.addComponentTracker(mapEvent, productInfo, componentTrackDataModel, ProductTrackingConstant.Action.IMPRESSION_CHOOSE_VARIANT_NOTIFICATION)
+            TrackingUtil.addComponentTracker(mapEvent, productInfo, componentTrackDataModel, ProductTrackingConstant.Action.CLICK_EDIT_PRODUCT)
         }
 
         fun onVariantErrorPartialySelected(productInfo: DynamicProductInfoP1?, actionButton: Int) {

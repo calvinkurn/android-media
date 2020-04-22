@@ -7,6 +7,7 @@ package com.tokopedia.variant_common.constant
 object VariantConstant {
     const val PARAM_PRODUCT_IDS = "productIds"
     const val PARAM_WAREHOUSE_ID = "warehouseID"
+    const val PARAM_IS_VARIANT = "isVariant"
 
 
     const val QUERY_MULTI_ORIGIN = "multiorigin"

@@ -8,6 +8,8 @@ data class DynamicProductInfoP1(
         val layoutName: String = ""
 ) {
 
+    fun isProductActive(nearestWarehouseStock: Int): Boolean = nearestWarehouseStock > 0 && basic.isActive()
+
     val parentProductId: String
         get() =
             if (data.variant.isVariant && data.variant.parentID.isNotEmpty() && data.variant.parentID.toInt() > 0) {
