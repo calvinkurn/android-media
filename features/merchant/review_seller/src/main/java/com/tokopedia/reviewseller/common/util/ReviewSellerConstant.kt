@@ -1,4 +1,4 @@
-package com.tokopedia.reviewseller.common
+package com.tokopedia.reviewseller.common.util
 
 /**
  * @author by milhamj on 2020-02-14.
