@@ -9,11 +9,6 @@ import com.tokopedia.product.manage.feature.quickedit.variant.adapter.model.Prod
 import com.tokopedia.product.manage.feature.quickedit.variant.data.mapper.ProductManageVariantMapper.mapToVariantsResult
 import com.tokopedia.product.manage.feature.quickedit.variant.data.mapper.ProductManageVariantMapper.mapVariantsToEditResult
 import com.tokopedia.product.manage.feature.quickedit.variant.data.mapper.ProductManageVariantMapper.updateVariant
-import com.tokopedia.product.manage.feature.quickedit.variant.data.model.ViewState
-import com.tokopedia.product.manage.feature.quickedit.variant.data.model.ViewState.HideErrorView
-import com.tokopedia.product.manage.feature.quickedit.variant.data.model.ViewState.HideProgressBar
-import com.tokopedia.product.manage.feature.quickedit.variant.data.model.ViewState.ShowErrorView
-import com.tokopedia.product.manage.feature.quickedit.variant.data.model.ViewState.ShowProgressBar
 import com.tokopedia.product.manage.feature.quickedit.variant.data.model.result.EditVariantResult
 import com.tokopedia.product.manage.feature.quickedit.variant.data.model.result.GetVariantResult
 import com.tokopedia.product.manage.feature.quickedit.variant.domain.GetProductVariantUseCase
@@ -24,7 +19,7 @@ import javax.inject.Inject
 class QuickEditVariantViewModel @Inject constructor(
     private val getProductVariantUseCase: GetProductVariantUseCase,
     private val dispatchers: CoroutineDispatchers
-): BaseViewModel(dispatchers.main) {
+) : BaseViewModel(dispatchers.main) {
 
     val getProductVariantsResult: LiveData<GetVariantResult>
         get() = _getProductVariantsResult
@@ -32,12 +27,16 @@ class QuickEditVariantViewModel @Inject constructor(
     val editVariantResult: LiveData<EditVariantResult>
         get() = _editVariantResult
 
-    val viewState: LiveData<ViewState>
-        get() = _viewState
+    val showProgressBar: LiveData<Boolean>
+        get() = _showProgressBar
+
+    val showErrorView: LiveData<Boolean>
+        get() = _showErrorView
 
     private val _getProductVariantsResult = MutableLiveData<GetVariantResult>()
     private val _editVariantResult = MutableLiveData<EditVariantResult>()
-    private val _viewState = MutableLiveData<ViewState>()
+    private val _showProgressBar = MutableLiveData<Boolean>()
+    private val _showErrorView = MutableLiveData<Boolean>()
 
     fun getProductVariants(productId: String) {
         hideErrorView()
@@ -51,14 +50,14 @@ class QuickEditVariantViewModel @Inject constructor(
                 mapToVariantsResult(variant)
             }
 
-            if(result.variants.isNotEmpty()) {
+            if (result.variants.isNotEmpty()) {
                 setEditVariantResult(productId, result)
                 _getProductVariantsResult.value = result
-                hideProgressBar()
             } else {
-                hideProgressBar()
                 showErrorView()
             }
+
+            hideProgressBar()
         }) {
             hideProgressBar()
             showErrorView()
@@ -89,18 +88,18 @@ class QuickEditVariantViewModel @Inject constructor(
     }
 
     private fun showProgressBar() {
-        _viewState.value = ShowProgressBar
+        _showProgressBar.value = true
     }
 
     private fun hideProgressBar() {
-        _viewState.value = HideProgressBar
+        _showProgressBar.value = false
     }
 
     private fun showErrorView() {
-        _viewState.value = ShowErrorView
+        _showErrorView.value = true
     }
 
     private fun hideErrorView() {
-        _viewState.value = HideErrorView
+        _showErrorView.value = false
     }
 }

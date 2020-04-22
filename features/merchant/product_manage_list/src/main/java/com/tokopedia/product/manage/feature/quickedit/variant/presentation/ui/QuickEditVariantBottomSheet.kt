@@ -25,10 +25,6 @@ import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.product.manage.ProductManageInstance
 import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.feature.quickedit.variant.adapter.model.ProductVariant
-import com.tokopedia.product.manage.feature.quickedit.variant.data.model.ViewState.HideErrorView
-import com.tokopedia.product.manage.feature.quickedit.variant.data.model.ViewState.HideProgressBar
-import com.tokopedia.product.manage.feature.quickedit.variant.data.model.ViewState.ShowErrorView
-import com.tokopedia.product.manage.feature.quickedit.variant.data.model.ViewState.ShowProgressBar
 import com.tokopedia.product.manage.feature.quickedit.variant.data.model.result.EditVariantResult
 import com.tokopedia.product.manage.feature.quickedit.variant.di.DaggerQuickEditVariantComponent
 import com.tokopedia.product.manage.feature.quickedit.variant.di.QuickEditVariantComponent
@@ -149,15 +145,16 @@ abstract class QuickEditVariantBottomSheet: BottomSheetUnify(), HasComponent<Qui
     }
 
     private fun observeViewState() {
-        observe(viewModel.viewState) {
-            when(it) {
-                is ShowProgressBar -> progressBar.show()
-                is HideProgressBar -> progressBar.hide()
-                is ShowErrorView -> {
-                    expandBottomSheet()
-                    errorView.show()
-                }
-                is HideErrorView -> errorView.hide()
+        observe(viewModel.showProgressBar) { showProgressBar ->
+            progressBar.showWithCondition(showProgressBar)
+        }
+
+        observe(viewModel.showErrorView) { showErrorView ->
+            if(showErrorView) {
+                expandBottomSheet()
+                errorView.show()
+            } else {
+                errorView.hide()
             }
         }
     }

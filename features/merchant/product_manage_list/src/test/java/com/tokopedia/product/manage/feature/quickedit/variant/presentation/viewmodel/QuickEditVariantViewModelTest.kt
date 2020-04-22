@@ -5,7 +5,6 @@ import com.tokopedia.product.manage.data.createOptionResponse
 import com.tokopedia.product.manage.data.createProductVariant
 import com.tokopedia.product.manage.data.createProductVariantResponse
 import com.tokopedia.product.manage.data.createSelectionResponse
-import com.tokopedia.product.manage.feature.quickedit.variant.data.model.ViewState.ShowErrorView
 import com.tokopedia.product.manage.feature.quickedit.variant.data.model.response.GetProductVariantResponse
 import com.tokopedia.product.manage.feature.quickedit.variant.data.model.result.EditVariantResult
 import com.tokopedia.product.manage.feature.quickedit.variant.data.model.result.GetVariantResult
@@ -53,30 +52,32 @@ class QuickEditVariantViewModelTest: QuickEditVariantViewModelTestFixture() {
 
         viewModel.getProductVariantsResult
             .verifyValueEquals(expectedResult)
+
+        verifyHideProgressBar()
     }
 
     @Test
-    fun `given variant list is empty when get variants should show error view`() {
+    fun `given variant list is empty when get variants should hide progress bar and show error view`() {
         val response = createGetVariantResponse(products = emptyList())
 
         onGetProductVariant_thenReturn(response)
 
         viewModel.getProductVariants("1")
 
-        viewModel.viewState
-            .verifyValueEquals(ShowErrorView)
+        verifyHideProgressBar()
+        verifyShowErrorView()
     }
 
     @Test
-    fun `when get variants error should show error view`() {
+    fun `when get variants error should hide progress bar and show error view`() {
         val error = NullPointerException()
 
         onGetProductVariant_thenError(error)
 
         viewModel.getProductVariants("1")
 
-        viewModel.viewState
-            .verifyValueEquals(ShowErrorView)
+        verifyHideProgressBar()
+        verifyShowErrorView()
     }
 
     @Test
@@ -171,5 +172,15 @@ class QuickEditVariantViewModelTest: QuickEditVariantViewModelTestFixture() {
 
     private fun onGetProductVariant_thenError(error: Throwable) {
         coEvery { getProductVariantUseCase.execute(any()) } throws error
+    }
+
+    private fun verifyHideProgressBar() {
+        viewModel.showProgressBar
+            .verifyValueEquals(false)
+    }
+
+    private fun verifyShowErrorView() {
+        viewModel.showErrorView
+            .verifyValueEquals(true)
     }
 }
