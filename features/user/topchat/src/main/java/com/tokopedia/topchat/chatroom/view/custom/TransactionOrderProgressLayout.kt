@@ -305,6 +305,5 @@ class TransactionOrderProgressLayout : LinearLayout {
         private val LAYOUT = R.layout.partial_transaction_order_progress
         private val DEFAULT_STATE = CommonUtil.toJson(State())
         private const val PREF_NAME = "Chat_TransactionOrderProgressPreference"
-        private const val transitionTime = 3000
     }
 }
