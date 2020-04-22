@@ -166,7 +166,7 @@ class AddEditProductDescriptionFragment:
                 inputImage = ""
                 inputTitle = ""
                 inputDescription = ""
-                adapter.notifyItemChanged(position)
+                getRecyclerView(view).post { adapter.notifyItemChanged(position) }
             }
             getVideoYoutube(url, position)
         }
