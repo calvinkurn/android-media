@@ -24,6 +24,9 @@ import com.tokopedia.product.manage.feature.quickedit.stock.data.model.EditStock
 import com.tokopedia.product.manage.oldlist.data.model.featuredproductresponse.FeaturedProductResponseModel
 import com.tokopedia.product.manage.oldlist.data.model.featuredproductresponse.GoldManageFeaturedProductV2
 import com.tokopedia.product.manage.oldlist.data.model.featuredproductresponse.Header
+import com.tokopedia.product.manage.verification.verifyErrorEquals
+import com.tokopedia.product.manage.verification.verifySuccessEquals
+import com.tokopedia.product.manage.verification.verifyValueEquals
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.Picture
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.Price
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductList
