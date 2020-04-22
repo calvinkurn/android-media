@@ -25,7 +25,7 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.view.RefreshHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.coachmark.CoachMark
 import com.tokopedia.coachmark.CoachMarkBuilder
@@ -730,7 +730,7 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
     private fun setActionUploadAwb(key: String) {
         detailResponse.button.forEach {
             if (key.equals(KEY_UPLOAD_AWB, true)) {
-                RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, it.url))
+                openWebview(it.url)
             }
         }
     }
@@ -952,9 +952,7 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
     }
 
     override fun onInvalidResiUpload(awbUploadUrl: String) {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalLogistic.UPLOAD_AWB)
-        intent.putExtra(EXTRA_URL_UPLOAD, awbUploadUrl)
-        startActivity(intent)
+        openWebview(awbUploadUrl)
     }
 
     override fun onSeeInvoice(url: String) {
@@ -1372,5 +1370,9 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
 
     override fun onRefresh(view: View?) {
         loadDetail()
+    }
+
+    private fun openWebview(url: String) {
+        startActivity(RouteManager.getIntent(context, ApplinkConstInternalGlobal.WEBVIEW, url))
     }
 }
