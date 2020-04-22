@@ -56,7 +56,7 @@ class VideoView(container: ViewGroup) : UIView(container) {
     internal fun setOrientation(screenOrientation: ScreenOrientation, videoOrientation: VideoOrientation) {
         pvVideo.setOrientation(screenOrientation, videoOrientation)
         view.changeConstraint {
-            if (videoOrientation.isLandscape && !screenOrientation.isLandscape) clear(ivThumbnail.id, ConstraintSet.BOTTOM)
+            if (videoOrientation.isHorizontal && !screenOrientation.isLandscape) clear(ivThumbnail.id, ConstraintSet.BOTTOM)
             else connect(ivThumbnail.id, ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM)
         }
     }

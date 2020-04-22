@@ -115,7 +115,7 @@ class VideoPlayCustom(context: Context, attrs: AttributeSet?, defStyleAttr: Int)
 
     fun setOrientation(screen: ScreenOrientation, video: VideoOrientation) {
         contentFrame?.let {
-            setResizeModeRaw(it, if (video.isLandscape) {
+            setResizeModeRaw(it, if (video.isHorizontal) {
                 when {
                     screen.isLandscape -> AspectRatioFrameLayout.RESIZE_MODE_FIT
                     else -> AspectRatioFrameLayout.RESIZE_MODE_FIXED_WIDTH
@@ -124,7 +124,7 @@ class VideoPlayCustom(context: Context, attrs: AttributeSet?, defStyleAttr: Int)
 
             val lParams = it.layoutParams as FrameLayout.LayoutParams
             lParams.gravity =
-                    if (video.isLandscape && !screen.isLandscape) Gravity.NO_GRAVITY
+                    if (video.isHorizontal && !screen.isLandscape) Gravity.NO_GRAVITY
                     else Gravity.CENTER
 
             it.layoutParams = lParams

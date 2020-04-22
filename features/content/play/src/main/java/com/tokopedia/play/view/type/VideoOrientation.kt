@@ -5,12 +5,12 @@ package com.tokopedia.play.view.type
  * Created by mzennis on 15/04/20.
  */
 enum class VideoOrientation(val value: String) {
-    Portrait("vertical"),
-    Landscape("horizontal"),
+    Vertical("vertical"),
+    Horizontal("horizontal"),
     Unknown("unknown");
 
-    val isLandscape: Boolean
-        get() = this == Landscape
+    val isHorizontal: Boolean
+        get() = this == Horizontal
 
     companion object {
         private val values = values()
