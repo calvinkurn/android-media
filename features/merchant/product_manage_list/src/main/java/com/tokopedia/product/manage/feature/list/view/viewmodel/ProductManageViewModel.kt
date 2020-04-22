@@ -326,7 +326,7 @@ class ProductManageViewModel @Inject constructor(
                 val shopId = userSessionInterface.shopId
                 val variantInputParam = mapResultToUpdateParam(shopId, result)
                 val requestParams = EditProductVariantUseCase.createRequestParams(variantInputParam)
-                editProductVariantUseCase.execute(requestParams).response
+                editProductVariantUseCase.execute(requestParams).productUpdateV3Data
             }
 
             if(response.isSuccess) {
@@ -348,7 +348,7 @@ class ProductManageViewModel @Inject constructor(
                 val shopId = userSessionInterface.shopId
                 val variantInputParam = mapResultToUpdateParam(shopId, result)
                 val requestParams = EditProductVariantUseCase.createRequestParams(variantInputParam)
-                editProductVariantUseCase.execute(requestParams).response
+                editProductVariantUseCase.execute(requestParams).productUpdateV3Data
             }
 
             if(response.isSuccess) {
