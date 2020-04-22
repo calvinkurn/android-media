@@ -17,6 +17,7 @@
     <string name="mvc_stop">Hentikan</string>
     <string name="mvc_sort">Urutkan</string>
     <string name="mvc_voucher_type">Jenis Voucher</string>
+    <string name="mvc_type_of_voucher">Tipe Voucher</string>
     <string name="mvc_create_step_next">Lanjutkan</string>
     <string name="mvc_create_display_voucher">Lihat Tampilan Voucher</string>
     <string name="mvc_create_step_desc_voucher_target">Target dan nama voucher</string>
@@ -37,4 +38,11 @@
     <string name="mvc_apply">Terapkan</string>
     <string name="mvc_newest_done_date">Tanggal selesai terkini</string>
     <string name="mvc_oldest_done_date">Tanggal selesai terlama</string>
+    <string name="mvc_filter">Filter</string>
+    <string name="mvc_reset">Reset</string>
+    <string name="mvc_free_shipping">Gratis Ongkir</string>
+    <string name="mvc_voucher_target">Target Voucher</string>
+    <string name="mvc_public">Publik</string>
+    <string name="mvc_special">Khusus</string>
+    <string name="mvc_cashback">Cashback</string>
 </resources>

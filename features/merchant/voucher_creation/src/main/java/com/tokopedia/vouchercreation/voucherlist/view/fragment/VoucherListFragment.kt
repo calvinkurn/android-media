@@ -19,10 +19,10 @@ import com.tokopedia.vouchercreation.voucherlist.view.adapter.factory.VoucherLis
 import com.tokopedia.vouchercreation.voucherlist.view.viewholder.MenuViewHolder
 import com.tokopedia.vouchercreation.voucherlist.view.viewholder.VoucherViewHolder
 import com.tokopedia.vouchercreation.voucherlist.view.viewmodel.VoucherListViewModel
+import com.tokopedia.vouchercreation.voucherlist.view.widget.filterbottomsheet.FilterBottomSheet
 import com.tokopedia.vouchercreation.voucherlist.view.widget.VoucherListBottomSheet
 import com.tokopedia.vouchercreation.voucherlist.view.widget.headerchips.ChipType
 import com.tokopedia.vouchercreation.voucherlist.view.widget.sortbottomsheet.SortBottomSheet
-import com.tokopedia.vouchercreation.voucherlist.view.widget.sortbottomsheet.SortBy
 import kotlinx.android.synthetic.main.fragment_mvc_voucher_list.view.*
 import javax.inject.Inject
 
@@ -55,7 +55,21 @@ class VoucherListFragment : BaseListFragment<BaseVoucherListUiModel, VoucherList
     }
 
     private val isActiveVoucher by lazy { getBooleanArgs(KEY_IS_ACTIVE_VOUCHER, true) }
-    private val sortItems: List<SortUiModel> by lazy { getMvcSortItems() }
+
+    private val sortItems: List<SortUiModel> by lazy {
+        return@lazy if (context == null) {
+            emptyList()
+        } else {
+            SortBottomSheet.getMvcSortItems(requireContext())
+        }
+    }
+    private val filterItems: List<BaseFilterUiModel> by lazy {
+        return@lazy if (context == null) {
+            emptyList()
+        } else {
+            FilterBottomSheet.getMvcFilterItems(requireContext())
+        }
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_mvc_voucher_list, container, false)
@@ -171,6 +185,7 @@ class VoucherListFragment : BaseListFragment<BaseVoucherListUiModel, VoucherList
     private fun setOnChipListener(chip: HeaderChipUiModel) {
         when (chip.type) {
             ChipType.CHIP_SORT -> showSortBottomSheet()
+            ChipType.CHIP_FILTER -> showFilterBottomSheet()
         }
     }
 
@@ -183,14 +198,13 @@ class VoucherListFragment : BaseListFragment<BaseVoucherListUiModel, VoucherList
                 .show(childFragmentManager, sortItems)
     }
 
-    private fun getMvcSortItems(): List<SortUiModel> {
-        if (null == context) {
-            return emptyList()
-        }
-        return listOf(
-                SortUiModel(requireContext().getString(R.string.mvc_newest_done_date), SortBy.NEWEST_DONE_DATE),
-                SortUiModel(requireContext().getString(R.string.mvc_oldest_done_date), SortBy.NEWEST_DONE_DATE)
-        )
+    private fun showFilterBottomSheet() {
+        val parent = view as? ViewGroup ?: return
+        FilterBottomSheet(parent)
+                .setOnApplyClickListener {
+
+                }
+                .show(childFragmentManager, filterItems)
     }
 
     private fun showDummyData() {

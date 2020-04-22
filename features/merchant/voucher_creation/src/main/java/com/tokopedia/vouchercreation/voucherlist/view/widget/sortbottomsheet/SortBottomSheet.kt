@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.voucherlist.model.SortUiModel
-import com.tokopedia.vouchercreation.voucherlist.toJson
 import com.tokopedia.vouchercreation.voucherlist.view.adapter.SortAdapter
 import kotlinx.android.synthetic.main.bottomsheet_mvc_sort.view.*
 
@@ -22,10 +21,6 @@ import kotlinx.android.synthetic.main.bottomsheet_mvc_sort.view.*
 class SortBottomSheet(
         parent: ViewGroup
 ) : BottomSheetUnify() {
-
-    companion object {
-        val TAG: String = SortBottomSheet::class.java.simpleName
-    }
 
     private val sortAdapter by lazy { SortAdapter(this::onSortItemClick) }
 
@@ -88,5 +83,16 @@ class SortBottomSheet(
         sortAdapter.clearAllElements()
         sortAdapter.addElement(sortItems)
         show(fm, TAG)
+    }
+
+    companion object {
+        val TAG: String = SortBottomSheet::class.java.simpleName
+
+        fun getMvcSortItems(context: Context): List<SortUiModel> {
+            return listOf(
+                    SortUiModel(context.getString(R.string.mvc_newest_done_date), SortBy.NEWEST_DONE_DATE),
+                    SortUiModel(context.getString(R.string.mvc_oldest_done_date), SortBy.NEWEST_DONE_DATE)
+            )
+        }
     }
 }
