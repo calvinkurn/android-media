@@ -18,7 +18,6 @@
     <string name="path_digital_product" translatable="false">/form</string>
     <string name="path_cc_native" translatable="false">/cc</string>
     <string name="path_smart_bills" translatable="false">/smartbills</string>
-    <string name="path_smart_bills_onboarding" translatable="false">/smartbills/onboarding</string>
 
     <string name="path_emoney_brizzi" translatable="false">/smartcard</string>
     <string name="title_digital_emoney">Uang Elektronik</string>

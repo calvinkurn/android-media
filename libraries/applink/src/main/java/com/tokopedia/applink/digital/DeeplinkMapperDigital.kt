@@ -53,6 +53,8 @@ object DeeplinkMapperDigital {
             else deeplink.replaceBefore("://", DeeplinkConstant.SCHEME_INTERNAL)
         } else if (deeplink.startsWith(ApplinkConst.DIGITAL_SMARTCARD)) {
             return getDigitalSmartcardNavigation(deeplink)
+        } else if (deeplink.startsWith(ApplinkConst.DIGITAL_SMARTBILLS)) {
+            return ApplinkConsInternalDigital.SMART_BILLS
         }
         return deeplink
     }
