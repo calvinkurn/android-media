@@ -71,7 +71,6 @@ class PlayFragment : BaseDaggerFragment() {
     }
 
     private lateinit var pageMonitoring: PageLoadTimePerformanceInterface
-//    private lateinit var fpmRequestNetwork: PerformanceMonitoring
 
     private var channelId = ""
 
