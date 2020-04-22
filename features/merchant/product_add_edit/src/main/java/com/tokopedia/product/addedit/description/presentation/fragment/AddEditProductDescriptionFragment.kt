@@ -531,6 +531,9 @@ class AddEditProductDescriptionFragment:
         val videoLinkModels: ArrayList<VideoLinkModel> = ArrayList()
         videoLinkModels.add(VideoLinkModel())
         super.renderList(videoLinkModels)
+        descriptionViewModel.isFetchingVideoData[adapter.dataSize - 1] = false
+        descriptionViewModel.urlToFetch[adapter.dataSize - 1] = ""
+        descriptionViewModel.fetchedUrl[adapter.dataSize - 1] = ""
 
         textViewAddVideo.visibility =
                 if (adapter.dataSize < MAX_VIDEOS) View.VISIBLE else View.GONE
