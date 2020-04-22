@@ -15,6 +15,7 @@ import com.tokopedia.product.addedit.description.domain.usecase.GetProductVarian
 import com.tokopedia.product.addedit.description.presentation.model.*
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_PRODUCT_PHOTOS
 import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
+import com.tokopedia.product.addedit.detail.presentation.model.WholeSaleInputModel
 import com.tokopedia.product.addedit.draft.domain.usecase.GetProductDraftUseCase
 import com.tokopedia.product.addedit.draft.domain.usecase.SaveProductDraftUseCase
 import com.tokopedia.product.addedit.draft.mapper.AddEditProductMapper.mapDraftToProductInputModel
@@ -299,6 +300,16 @@ class AddEditProductPreviewViewModel @Inject constructor(
     fun validateProductInput(): String {
         val detailInputModel = productInputModel.value?.detailInputModel ?: DetailInputModel()
         return validateProductInput(detailInputModel)
+    }
+
+    fun recalculateWholeSaleMinOrder(wholesaleList: List<WholeSaleInputModel>) : List<WholeSaleInputModel> {
+        wholesaleList.forEach { wholesaleInputModel ->
+            // recalculate wholesale min order because of > symbol
+            val oldValue = wholesaleInputModel.quantity.toBigInteger()
+            val newValue = oldValue + 1.toBigInteger()
+            wholesaleInputModel.quantity = newValue.toString()
+        }
+        return wholesaleList
     }
 
     private fun mapProductVariant(productVariant: ArrayList<ProductVariantCombinationViewModel>,

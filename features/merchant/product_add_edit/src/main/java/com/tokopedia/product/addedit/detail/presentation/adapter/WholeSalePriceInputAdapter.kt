@@ -28,11 +28,11 @@ class WholeSalePriceInputAdapter(private val listener: WholeSaleInputViewHolder.
     }
 
     override fun onBindViewHolder(holder: WholeSaleInputViewHolder, position: Int) {
+
         val wholeSaleInputModel = wholeSaleInputModelList[position]
 
+        // wholesale quantity
         val isWholeSaleQuantityEmpty = wholeSaleInputModel.quantity.isBlank()
-        val isWholeSalePriceEmpty = wholeSaleInputModel.price.isBlank()
-
         // set wholesale quantity recommendation when the wholesale quantity is empty
         if (isWholeSaleQuantityEmpty) {
             if (position == 0) wholeSaleInputModel.quantity = (position + 1).toString()
@@ -43,13 +43,16 @@ class WholeSalePriceInputAdapter(private val listener: WholeSaleInputViewHolder.
             }
         }
 
+        // wholesale price
+        val isWholeSalePriceEmpty = wholeSaleInputModel.price.isBlank()
         // set wholesale price recommendation when the wholesale price is empty
         if (isWholeSalePriceEmpty && productPrice > 0.toBigInteger()) {
-            var priceRecommendation = (productPrice - (position + 1).toBigInteger())
-            if (priceRecommendation < 0.toBigInteger()) {
-                priceRecommendation = 0.toBigInteger()
+            if (position == 0) wholeSaleInputModel.price = (productPrice - 1.toBigInteger()).toString()
+            else {
+                val previousInputModel = wholeSaleInputModelList[position - 1]
+                val priceRecommendation = previousInputModel.price.toBigInteger() - 1.toBigInteger()
+                wholeSaleInputModel.price = priceRecommendation.toString()
             }
-            wholeSaleInputModel.price = priceRecommendation.toString()
         }
 
         holder.bindData(wholeSaleInputModel)

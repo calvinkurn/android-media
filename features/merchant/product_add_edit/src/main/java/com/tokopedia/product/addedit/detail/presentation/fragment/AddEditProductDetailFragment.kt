@@ -78,6 +78,7 @@ import com.tokopedia.product_photo_adapter.ProductPhotoViewHolder
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.TextFieldUnify
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.list.ListItemUnify
 import com.tokopedia.unifycomponents.list.ListUnify
 import com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
@@ -630,7 +631,6 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                     }
                     productCategoryLayout?.show()
                     productCategoryRecListView?.show()
-                    // TODO remove the onchange listener in productCategoryRecListView, because it overwrite viewModel.productInputModel.detailInputModel.categoryId to "0"
                     val selectedCategory = ArrayList<ListItemUnify>()
                     selectedCategory.add(ListItemUnify(categoryName, ""))
                     productCategoryRecListView?.setData(selectedCategory)
@@ -677,6 +677,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         viewModel.isNameRecommendationSelected = true
 
         productNameField?.textFieldInput?.setText(productName)
+        productNameField?.textFieldInput?.setSelection(productName.length)
 
         if (viewModel.isAdding) {
             ProductAddMainTracking.clickProductNameRecom(shopId, productName)
@@ -852,6 +853,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         val wholesalePriceExist = detailInputModel.wholesaleList.isNotEmpty()
         if (wholesalePriceExist) {
             productWholeSaleSwitch?.isChecked = true
+            detailInputModel.wholesaleList = viewModel.recalculateWholeSaleMinOrder(detailInputModel.wholesaleList)
             wholeSaleInputFormsAdapter?.setWholeSaleInputModels(detailInputModel.wholesaleList)
             viewModel.isWholeSalePriceActivated.value = true
         }
@@ -1003,22 +1005,39 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
 
     private fun createAddProductPhotoButtonOnClickListener(): View.OnClickListener {
         return View.OnClickListener {
+
             val isEditing = viewModel.isEditing
             val isAdding = viewModel.isAdding
-            val imageUrlOrPathList = productPhotoAdapter?.getProductPhotoPaths()?.map { urlOrPath ->
-                val pictureList = viewModel.productInputModel.detailInputModel.pictureList
-                if (urlOrPath.startsWith(AddEditProductConstants.HTTP_PREFIX))pictureList.find {
-                    it.urlThumbnail == urlOrPath
-                }?.urlOriginal ?: urlOrPath
-                else urlOrPath
-            }.orEmpty()
-            val intent = ImagePickerAddProductActivity.getIntent(context, createImagePickerBuilder(ArrayList(imageUrlOrPathList)), isEditing, isAdding)
-            startActivityForResult(intent, REQUEST_CODE_IMAGE)
+
+            // tracking
             if (isEditing && !isAdding) {
                 ProductEditMainTracking.trackAddPhoto(shopId)
             } else {
                 ProductAddMainTracking.trackAddPhoto(shopId)
             }
+
+            productPhotoAdapter?.run {
+                // show error message when maximum product image is reached
+                val productPhotoSize = this.getProductPhotoPaths().size
+                if (productPhotoSize == MAX_PRODUCT_PHOTOS) showMaxProductImageErrorToast(getString(R.string.error_max_product_photo))
+                else {
+                    val imageUrlOrPathList = productPhotoAdapter?.getProductPhotoPaths()?.map { urlOrPath ->
+                        val pictureList = viewModel.productInputModel.detailInputModel.pictureList
+                        if (urlOrPath.startsWith(AddEditProductConstants.HTTP_PREFIX))pictureList.find {
+                            it.urlThumbnail == urlOrPath
+                        }?.urlOriginal ?: urlOrPath
+                        else urlOrPath
+                    }.orEmpty()
+                    val intent = ImagePickerAddProductActivity.getIntent(context, createImagePickerBuilder(ArrayList(imageUrlOrPathList)), isEditing, isAdding)
+                    startActivityForResult(intent, REQUEST_CODE_IMAGE)
+                }
+            }
+        }
+    }
+
+    private fun showMaxProductImageErrorToast(errorMessage: String) {
+        view?.let {
+            Toaster.make(it, errorMessage, type = Toaster.TYPE_ERROR)
         }
     }
 

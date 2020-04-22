@@ -11,12 +11,13 @@ import com.tokopedia.product.addedit.detail.domain.usecase.GetNameRecommendation
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_PREORDER_DAYS
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_PREORDER_WEEKS
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_PRODUCT_STOCK_LIMIT
-import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MIN_ORDER_QUANTITY
+import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MIN_MIN_ORDER_QUANTITY
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MIN_PREORDER_DURATION
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MIN_PRODUCT_PRICE_LIMIT
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MIN_PRODUCT_STOCK_LIMIT
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.UNIT_DAY
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.UNIT_WEEK
+import com.tokopedia.product.addedit.detail.presentation.model.WholeSaleInputModel
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.unifycomponents.list.ListItemUnify
 import com.tokopedia.usecase.coroutines.Fail
@@ -82,8 +83,6 @@ class AddEditProductDetailViewModel @Inject constructor(
         get() = mIsPreOrderDurationInputError
     var preOrderDurationMessage: String = ""
 
-    var isEditMode: Boolean = false
-
     private val mIsInputValid = MediatorLiveData<Boolean>().apply {
         addSource(mIsProductPhotoError) {
             this.value = isInputValid()
@@ -146,18 +145,6 @@ class AddEditProductDetailViewModel @Inject constructor(
     fun validateProductNameInput(productNameInput: String) {
         if (productNameInput.isEmpty()) {
             val errorMessage = provider.getEmptyProductNameErrorMessage()
-            errorMessage?.let { productNameMessage = it }
-            mIsProductNameInputError.value = true
-            return
-        }
-        if (isProductNameExist(productNameInput)) {
-            val errorMessage = provider.getProductNameExistErrorMessage()
-            errorMessage?.let { productNameMessage = it }
-            mIsProductNameInputError.value = true
-            return
-        }
-        if (isProductNameBanned(productNameInput)) {
-            val errorMessage = provider.getProductNameBannedErrorMessage()
             errorMessage?.let { productNameMessage = it }
             mIsProductNameInputError.value = true
             return
@@ -240,7 +227,7 @@ class AddEditProductDetailViewModel @Inject constructor(
         }
         val productStock = productStockInput.toBigInteger()
         if (productStock < MIN_PRODUCT_STOCK_LIMIT.toBigInteger()) {
-            val errorMessage = provider.getMinLimitProductStockErrorMessage()
+            val errorMessage = provider.getEmptyProductStockErrorMessage()
             errorMessage?.let { productStockMessage = it }
             mIsProductStockInputError.value = true
             return
@@ -255,16 +242,16 @@ class AddEditProductDetailViewModel @Inject constructor(
         mIsProductStockInputError.value = false
     }
 
-    fun validateProductMinOrderInput(productStockInput: String, orderQuantityInput: String) {
-        if (orderQuantityInput.isEmpty()) {
+    fun validateProductMinOrderInput(productStockInput: String, minOrderQuantityInput: String) {
+        if (minOrderQuantityInput.isEmpty()) {
             val errorMessage = provider.getEmptyOrderQuantityErrorMessage()
             errorMessage?.let { orderQuantityMessage = it }
             mIsOrderQuantityInputError.value = true
             return
         }
-        val productMinOrder = orderQuantityInput.toBigInteger()
-        if (productMinOrder < MIN_ORDER_QUANTITY.toBigInteger()) {
-            val errorMessage = provider.getMinLimitOrderQuantityErrorMessage()
+        val productMinOrder = minOrderQuantityInput.toBigInteger()
+        if (productMinOrder < MIN_MIN_ORDER_QUANTITY.toBigInteger()) {
+            val errorMessage = provider.getEmptyOrderQuantityErrorMessage()
             errorMessage?.let { orderQuantityMessage = it }
             mIsOrderQuantityInputError.value = true
             return
@@ -272,7 +259,7 @@ class AddEditProductDetailViewModel @Inject constructor(
         if (!hasVariants && productStockInput.isNotEmpty()) {
             val productStock = productStockInput.toBigInteger()
             if (productMinOrder > productStock) {
-                val errorMessage = provider.getMaxLimitOrderQuantityErrorMessage()
+                val errorMessage = provider.getMinOrderExceedStockErrorMessage()
                 errorMessage?.let { orderQuantityMessage = it }
                 mIsOrderQuantityInputError.value = true
                 return
@@ -314,14 +301,14 @@ class AddEditProductDetailViewModel @Inject constructor(
         mIsPreOrderDurationInputError.value = false
     }
 
-    private fun isProductNameExist(productNameInput: String): Boolean {
-        // TODO: replace the validation with API check
-        return false
-    }
-
-    private fun isProductNameBanned(productNameInput: String): Boolean {
-        // TODO: replace the validation with API check
-        return false
+    fun recalculateWholeSaleMinOrder(wholesaleList: List<WholeSaleInputModel>) : List<WholeSaleInputModel> {
+        wholesaleList.forEach { wholesaleInputModel ->
+            // recalculate wholesale min order because of > symbol
+            val oldValue = wholesaleInputModel.quantity.toBigInteger()
+            val newValue = oldValue - 1.toBigInteger()
+            wholesaleInputModel.quantity = newValue.toString()
+        }
+        return wholesaleList
     }
 
     fun updateProductPhotos(imagePickerResult: ArrayList<String>, originalImageUrl: ArrayList<String>, editted: ArrayList<Boolean>) {

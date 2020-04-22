@@ -36,6 +36,7 @@ import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.common.AddEditProductComponentBuilder
+import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.EXTRA_CACHE_MANAGER_ID
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.HTTP_PREFIX
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.PHOTO_TIPS_URL_1
@@ -333,6 +334,12 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
             if (validateMessage.isNotEmpty()) {
                 Toaster.make(view, validateMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
             } else {
+
+                // recalculate wholesale min order because of > symbol
+                viewModel.productInputModel.value?.run {
+                    this.detailInputModel.wholesaleList = viewModel.recalculateWholeSaleMinOrder(this.detailInputModel.wholesaleList)
+                }
+
                 // when we perform add product, the productId will be 0
                 // when we perform edit product, the productId will be provided from the getProductV3 response
                 // when we perform open draft, previous state before we save the product to draft will be the same
@@ -340,7 +347,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
                     context?.let {
                         viewModel.productInputModel.value?.run {
                             AddEditProductEditService.startService(it, this)
-                            moveToManageProduct()
+                            activity?.finish()
                         }
                     }
                 } else {

@@ -84,10 +84,11 @@
     <string name="label_available_stock">Stok tersedia</string>
     <string name="label_minimum_order">Minimum pemesanan</string>
     <string name="error_empty_product_stock">Stok produk tidak boleh kosong</string>
-    <string name="error_minimum_stock_quantity_is_one">Stok minimal 1</string>
+    <string name="error_minimum_stock_quantity_is_one">Stok tidak boleh 0</string>
     <string name="error_available_stock_quantity_exceeding_max_limit">Stok melebihi batas maks. 999.999</string>
     <string name="error_empty_minimum_order">Minimum pemesanan tidak boleh kosong</string>
     <string name="error_minimum_order_cant_be_zero">Minimum pemesanan tidak boleh 0</string>
+    <string name="error_maximum_order_exceeding_max_limit">Minimum pemesanan melebihi batas maks. 999.999</string>
     <string name="error_minimum_order_cant_exceed_available_stock">Minimum pemesanan tidak boleh melebihi jumlah stok</string>
 
     <!-- activate pre order state -->
