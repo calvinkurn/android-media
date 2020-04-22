@@ -795,19 +795,17 @@ object DynamicProductDetailTracking {
             arrayListOf(Product(
                     productInfo?.getProductName ?: "",
                     productInfo?.basic?.getProductId().toString(),
-                    productInfo?.data?.price?.value?.toDouble()
-                            ?: 0.0,
-                    "",
-                    productInfo?.getProductName ?: "",
-                    TrackingUtil.getEnhanceCategoryFormatted(productInfo?.basic?.category?.detail),
+                    productInfo?.data?.price?.value?.toDouble() ?: 0.0,
+                    productInfo?.getProductName,
                     ProductTrackingConstant.Tracking.DEFAULT_VALUE,
-                    trackerAttribution
-                            ?: ProductTrackingConstant.Tracking.DEFAULT_VALUE,
+                    TrackingUtil.getEnhanceCategoryFormatted(productInfo?.basic?.category?.detail),
+                    null,
+                    trackerAttribution ?: ProductTrackingConstant.Tracking.DEFAULT_VALUE,
                     dimension55,
                     TrackingUtil.getMultiOriginAttribution(multiOrigin),
                     dimension83 ?: "",
                     shopInfo?.goldOS?.shopTypeString ?: "",
-                    0
+                    1
             ))
         }
 
@@ -858,10 +856,8 @@ object DynamicProductDetailTracking {
                             deeplinkUrl,
                             productImageUrl,
                             shopInfo?.goldOS?.isOfficial ?: 0,
-                            TrackingUtil.getFormattedPrice(productInfo?.data?.price?.value
-                                    ?: 0),
-                            productInfo?.basic?.productID
-                                    ?: "",
+                            TrackingUtil.getFormattedPrice(productInfo?.data?.price?.value ?: 0),
+                            productInfo?.basic?.productID ?: "",
                             "layout:${productInfo?.layoutName};catName:${productInfo?.basic?.category?.name};catId:${productInfo?.basic?.category?.id}",
                             "",
                             irisSessionId,

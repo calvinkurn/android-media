@@ -3,6 +3,8 @@ package com.tokopedia.topchat.common.analytics;
 
 import com.tokopedia.abstraction.processor.ProductListClickBundler;
 import com.tokopedia.abstraction.processor.ProductListClickProduct;
+import com.tokopedia.abstraction.processor.ProductListImpressionBundler;
+import com.tokopedia.abstraction.processor.ProductListImpressionProduct;
 import com.tokopedia.analyticconstant.DataLayer;
 import com.tokopedia.attachproduct.analytics.AttachProductAnalytics;
 import com.tokopedia.chat_common.data.AttachInvoiceSentViewModel;
@@ -273,7 +275,7 @@ public class TopChatAnalytics {
                 product.getPriceInt(),
                 null,
                 "/chat",
-                0
+                1
         );
         products.add(topChatProduct);
 
@@ -297,28 +299,29 @@ public class TopChatAnalytics {
             @NotNull UserSessionInterface user
     ) {
 
-        ArrayList<ProductListClickProduct> products = new ArrayList<>();
-        ProductListClickProduct product1 = new ProductListClickProduct(
+        ArrayList<ProductListImpressionProduct> products = new ArrayList<>();
+        ProductListImpressionProduct product1 = new ProductListImpressionProduct(
                 product.getIdString(),
                 product.getProductName(),
+                null,
                 product.getCategory(),
                 product.getVariants().toString(),
+                product.getPriceInt() + 0.0,
                 null,
-                product.getPriceInt(),
-                null,
+                1,
                 getField(String.valueOf(product.getBlastId())),
-                0
+                getField(String.valueOf(product.getBlastId()))
         );
         products.add(product1);
 
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
-                ProductListClickBundler.KEY, ProductListClickBundler.getBundle(
+                ProductListClickBundler.KEY, ProductListImpressionBundler.getBundle(
                         getField(String.valueOf(product.getBlastId())),
                         products,
+                        null,
+                        Name.EVENT_NAME_PRODUCT_PREVIEW,
                         Category.CHAT_DETAIL,
                         Action.VIEW_PRODUCT_PREVIEW,
-                        Name.EVENT_NAME_PRODUCT_PREVIEW,
-                        null,
                         null,
                         null
                 )
