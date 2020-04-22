@@ -55,18 +55,12 @@ abstract class AddEditProductBaseService : JobIntentService(), CoroutineScope {
         const val NOTIFICATION_CHANGE_DELAY = 500L
     }
 
+    abstract fun getNotificationManager(urlImageCount: Int): AddEditProductNotificationManager
+    abstract fun onUploadProductImagesDone(uploadIdList: ArrayList<String>, variantOptionUploadId: List<String>, sizeChartId: String)
+
     override fun onCreate() {
         super.onCreate()
         initInjector()
-    }
-
-    private fun initInjector() {
-        val baseMainApplication = applicationContext as BaseMainApplication
-        DaggerAddEditProductPreviewComponent.builder()
-            .addEditProductComponent(AddEditProductComponentBuilder.getComponent(baseMainApplication))
-            .addEditProductPreviewModule(AddEditProductPreviewModule())
-            .build()
-            .inject(this)
     }
 
     override val coroutineContext: CoroutineContext by lazy {
@@ -119,6 +113,15 @@ abstract class AddEditProductBaseService : JobIntentService(), CoroutineScope {
         })
     }
 
+    private fun initInjector() {
+        val baseMainApplication = applicationContext as BaseMainApplication
+        DaggerAddEditProductPreviewComponent.builder()
+                .addEditProductComponent(AddEditProductComponentBuilder.getComponent(baseMainApplication))
+                .addEditProductPreviewModule(AddEditProductPreviewModule())
+                .build()
+                .inject(this)
+    }
+
     private suspend fun uploadImageAndGetId(imagePath: String): String {
         val filePath = File(imagePath)
         val params = uploaderUseCase.createParams(
@@ -146,7 +149,4 @@ abstract class AddEditProductBaseService : JobIntentService(), CoroutineScope {
             }
         }
     }
-
-    abstract fun getNotificationManager(urlImageCount: Int): AddEditProductNotificationManager
-    abstract fun onUploadProductImagesDone(uploadIdList: ArrayList<String>, variantOptionUploadId: List<String>, sizeChartId: String)
 }
