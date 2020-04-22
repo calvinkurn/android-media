@@ -23,8 +23,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.authentication.AuthHelper
 import com.tokopedia.core.gcm.GCMHandler
-import com.tokopedia.core.share.DefaultShare
-import com.tokopedia.design.image.ImageLoader
+import com.tokopedia.sharedata.DefaultShareData
 import com.tokopedia.discovery.R
 import com.tokopedia.discovery.categoryrevamp.adapters.BaseCategoryAdapter
 import com.tokopedia.discovery.categoryrevamp.adapters.ProductNavListAdapter
@@ -50,6 +49,7 @@ import com.tokopedia.discovery.hotlistRevamp.viewmodel.HotlistNavViewModel
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -278,7 +278,8 @@ class HotlistNavFragment : BaseCategorySectionFragment(),
 
     private fun updateData(data: HotListDetailResponse) {
         showBannerShimmer(false)
-        ImageLoader.LoadImage(hotlist_banner, data.hotlistDetail?.coverImage)
+        if(data.hotlistDetail?.coverImage !=null)
+            hotlist_banner.loadImage(data.hotlistDetail.coverImage)
         hotlistDetail = data.hotlistDetail
         val hotId = hotlistDetail?.filterAttribute?.sc.toString()
         fetchProducts(0)
@@ -698,7 +699,7 @@ class HotlistNavFragment : BaseCategorySectionFragment(),
                 .build()
 
         shareData.type = LinkerData.HOTLIST_TYPE
-        DefaultShare(activity, shareData).show()
+        DefaultShareData(activity, shareData).show()
     }
 
     override fun topAdsTrackerUrlTrigger(url: String) {
