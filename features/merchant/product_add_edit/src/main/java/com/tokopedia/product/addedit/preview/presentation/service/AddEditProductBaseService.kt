@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.mediauploader.data.state.UploadResult
 import com.tokopedia.mediauploader.domain.UploaderUseCase
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.addedit.common.AddEditProductComponentBuilder
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.GQL_ERROR_SUBSTRING
 import com.tokopedia.product.addedit.common.constant.AddEditProductExtraConstant.IMAGE_SOURCE_ID
@@ -119,7 +120,7 @@ abstract class AddEditProductBaseService : JobIntentService(), CoroutineScope {
         return if (throwable.message == null || throwable.message?.contains(GQL_ERROR_SUBSTRING) == true) {
             resourceProvider.getGqlErrorMessage().orEmpty()
         } else {
-            throwable.message.orEmpty()
+            ErrorHandler.getErrorMessage(this, throwable)
         }
     }
 
