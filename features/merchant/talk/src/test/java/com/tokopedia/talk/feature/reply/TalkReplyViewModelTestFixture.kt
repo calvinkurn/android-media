@@ -1,11 +1,10 @@
-package com.tokopedia.talk.feature.reading
+package com.tokopedia.talk.feature.reply
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.LiveData
 import com.tokopedia.talk.coroutines.TestCoroutineDispatchers
-import com.tokopedia.talk.feature.reading.domain.usecase.GetDiscussionAggregateUseCase
-import com.tokopedia.talk.feature.reading.domain.usecase.GetDiscussionDataUseCase
-import com.tokopedia.talk.feature.reading.presentation.viewmodel.TalkReadingViewModel
+import com.tokopedia.talk.feature.reply.domain.usecase.*
+import com.tokopedia.talk.feature.reply.presentation.viewmodel.TalkReplyViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.MockKAnnotations
@@ -14,23 +13,37 @@ import junit.framework.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
 
-abstract class TalkReadingViewModelTestFixture {
+abstract class TalkReplyViewModelTestFixture {
 
     @RelaxedMockK
-    lateinit var getDiscussionAggregateUseCase: GetDiscussionAggregateUseCase
+    lateinit var discussionDataByQuestionIDUseCase: DiscussionDataByQuestionIDUseCase
 
     @RelaxedMockK
-    lateinit var getDiscussionDataUseCase: GetDiscussionDataUseCase
+    lateinit var talkFollowUnfollowTalkUseCase: TalkFollowUnfollowTalkUseCase
+
+    @RelaxedMockK
+    lateinit var talkDeleteTalkUseCase: TalkDeleteTalkUseCase
+
+    @RelaxedMockK
+    lateinit var talkDeleteCommentUseCase: TalkDeleteCommentUseCase
+
+    @RelaxedMockK
+    lateinit var talkCreateNewCommentUseCase: TalkCreateNewCommentUseCase
 
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
-    protected lateinit var viewModel: TalkReadingViewModel
+    protected lateinit var viewModel: TalkReplyViewModel
 
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        viewModel = TalkReadingViewModel(getDiscussionAggregateUseCase, getDiscussionDataUseCase, TestCoroutineDispatchers)
+        viewModel = TalkReplyViewModel(discussionDataByQuestionIDUseCase,
+                talkFollowUnfollowTalkUseCase,
+                talkDeleteTalkUseCase,
+                talkDeleteCommentUseCase,
+                talkCreateNewCommentUseCase,
+                TestCoroutineDispatchers)
     }
 
     protected fun LiveData<*>.verifyValueEquals(expected: Any) {
@@ -50,4 +63,5 @@ abstract class TalkReadingViewModelTestFixture {
         assertEquals(expectedResult, actualResult)
 
     }
+
 }

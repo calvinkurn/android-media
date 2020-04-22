@@ -175,7 +175,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
     }
 
     override fun onSendButtonClicked(text: String) {
-        sendComment(text, listOf())
+        sendComment(text)
     }
 
     private fun goToReportActivity(commentId: String) {
@@ -485,8 +485,8 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
         viewModel.setAttachedProducts(attachedProducts)
     }
 
-    private fun sendComment(text: String, attachedProductIds: List<String>) {
-
+    private fun sendComment(text: String) {
+        viewModel.createNewComment(text, questionId)
     }
 
     private fun removeAttachedProduct(productId: String) {

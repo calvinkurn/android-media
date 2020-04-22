@@ -118,8 +118,24 @@ class TalkReplyViewModel @Inject constructor(
         }
     }
 
-    fun createNewComment(comment: String, questionId: String, attachedProducts: List<AttachedProduct>) {
-
+    fun createNewComment(comment: String, questionId: String) {
+        launchCatchError(block = {
+            val response = withContext(dispatchers.io) {
+                val attachedProductIds = mutableListOf<String>()
+                attachedProducts.value?.forEach {
+                    attachedProductIds.add(it.productId)
+                }
+                talkCreateNewCommentUseCase.setParams(comment, questionId.toIntOrZero(), attachedProductIds.joinToString())
+                talkCreateNewCommentUseCase.executeOnBackground()
+            }
+            if(response.talkCreateNewComment.data.isSuccess == MUTATION_SUCCESS) {
+                _createNewCommentResult.postValue(Success(response))
+            } else {
+                _createNewCommentResult.postValue(Fail(Throwable(response.talkCreateNewComment.messageError.first())))
+            }
+        }) {
+            _createNewCommentResult.postValue(Fail(it))
+        }
     }
 
     fun setAttachedProducts(attachedProducts: MutableList<AttachedProduct>) {
