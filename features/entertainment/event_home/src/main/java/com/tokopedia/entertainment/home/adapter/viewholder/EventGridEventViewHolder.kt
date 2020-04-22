@@ -41,7 +41,7 @@ class EventGridEventViewHolder(itemView: View, action: ((data: EventItemModel,
 
     override fun bind(element: EventGridViewModel) {
         itemView.ent_title_card.text = element.title
-        itemAdapter.items = element.items
+        itemAdapter.setList(element.items)
         itemView.btn_see_all.setOnClickListener {
             RouteManager.route(itemView.context, ApplinkConstInternalEntertainment.EVENT_CATEGORY
                     , element.id,  "", "")
@@ -105,6 +105,11 @@ class EventGridEventViewHolder(itemView: View, action: ((data: EventItemModel,
         fun onErrorPostLiked(throwable: Throwable) {
             notifyItemChanged(pos)
             Log.e(TAG, throwable.localizedMessage)
+        }
+
+        fun setList(list : MutableList<EventItemModel>){
+            items = list
+            notifyDataSetChanged()
         }
 
         override fun getItemCount() = items.size
