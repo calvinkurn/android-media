@@ -1,4 +1,4 @@
-package com.tokopedia.analyticsdebugger.validator.main
+package com.tokopedia.analyticsdebugger.validator
 
 import android.content.Context
 import android.content.Intent
@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.analyticsdebugger.R
 import com.tokopedia.analyticsdebugger.validator.detail.ValidatorDetailFragment
 import com.tokopedia.analyticsdebugger.validator.list.ValidatorListFragment
+import com.tokopedia.analyticsdebugger.validator.main.MainValidatorFragment
 
 class MainValidatorActivity : AppCompatActivity(), MainValidatorFragment.Listener, ValidatorListFragment.Listener {
 

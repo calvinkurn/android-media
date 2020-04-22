@@ -12,7 +12,7 @@ import com.tokopedia.analyticsdebugger.debugger.ui.activity.AnalyticsGtmErrorDeb
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.analyticsdebugger.database.GtmErrorLogDB
-import com.tokopedia.analyticsdebugger.validator.main.MainValidatorActivity
+import com.tokopedia.analyticsdebugger.validator.MainValidatorActivity
 
 import java.net.URLDecoder
 
