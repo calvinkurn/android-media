@@ -263,7 +263,6 @@ class PlayFragment : BaseDaggerFragment() {
                 is Success ->
                     PlayAnalytics.sendScreen(channelId, playViewModel.channelType)
             }
-            startRenderMonitoring()
         })
     }
 
@@ -316,9 +315,6 @@ class PlayFragment : BaseDaggerFragment() {
                         isBuffering = false,
                         shouldTrackNext = true
                 )
-            }
-            if (it.state is PlayVideoState.Playing) {
-                stopPageMonitoring()
             }
         })
     }
@@ -426,7 +422,7 @@ class PlayFragment : BaseDaggerFragment() {
         pageMonitoring.startPreparePagePerformanceMonitoring()
     }
 
-    fun startNetworkMonitoring() {
+    private fun startNetworkMonitoring() {
         pageMonitoring.stopPreparePagePerformanceMonitoring()
         pageMonitoring.startNetworkRequestPerformanceMonitoring()
     }
@@ -436,7 +432,7 @@ class PlayFragment : BaseDaggerFragment() {
         pageMonitoring.startRenderPerformanceMonitoring()
     }
 
-    private fun stopPageMonitoring() {
+    fun stopPageMonitoring() {
         pageMonitoring.stopRenderPerformanceMonitoring()
         pageMonitoring.stopMonitoring()
     }

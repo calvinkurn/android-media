@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.ViewCompat
@@ -153,6 +154,8 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
         get() = requireView().findViewById(statsInfoComponent.getContainerId())
     private val chatListView: View
         get() = requireView().findViewById(chatListComponent.getContainerId())
+    private val toolbarView: View
+        get() = requireView().findViewById(toolbarComponent.getContainerId())
 
     private var channelId: String = ""
 
@@ -292,6 +295,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
     private fun observeTitleChannel() {
         playViewModel.observableGetChannelInfo.observe(viewLifecycleOwner, Observer {
             if (it is Success) setChannelTitle(it.data.title)
+            triggerStartMonitoring()
         })
     }
 
@@ -428,6 +432,17 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
                 .withEndAction {
                     view.isClickable = true
                 }
+    }
+
+    private fun triggerStartMonitoring() {
+        playFragment.startRenderMonitoring()
+
+        toolbarView.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener{
+            override fun onGlobalLayout() {
+                playFragment.stopPageMonitoring()
+                toolbarView.viewTreeObserver.removeOnGlobalLayoutListener(this)
+            }
+        })
     }
 
     //region Component Initialization
