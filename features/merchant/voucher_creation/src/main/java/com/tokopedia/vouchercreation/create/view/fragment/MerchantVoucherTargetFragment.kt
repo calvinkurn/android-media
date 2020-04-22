@@ -4,13 +4,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.create.view.bottomsheet.CreateVoucherBottomSheetType
-import com.tokopedia.vouchercreation.create.view.customview.bottomsheet.CreatePromoCodeBottomSheetView
+import com.tokopedia.vouchercreation.create.view.fragment.bottomsheet.CreatePromoCodeBottomSheet
 import com.tokopedia.vouchercreation.create.view.typefactory.CreateVoucherTypeFactory
 import com.tokopedia.vouchercreation.create.view.typefactory.VoucherTargetAdapterTypeFactory
 import com.tokopedia.vouchercreation.create.view.typefactory.VoucherTargetTypeFactory
@@ -39,9 +40,13 @@ class MerchantVoucherTargetFragment(onNextInvoker: () -> Unit = {})
         viewModelProvider.get(MerchantVoucherTargetViewModel::class.java)
     }
 
-    private val voucherTargetWidget by lazy {
-        VoucherTargetUiModel(::openBottomSheet)
+    private val createPromoCodeBottomSheet by lazy {
+        CreatePromoCodeBottomSheet.createInstance(context, ::onNextCreatePromoCode)
     }
+
+    private var voucherTargetWidget = VoucherTargetUiModel(::openBottomSheet)
+
+    private var shouldReturnToInitialValue = true
 
     private val fillVoucherWidget by lazy {
         FillVoucherNameUiModel()
@@ -71,20 +76,35 @@ class MerchantVoucherTargetFragment(onNextInvoker: () -> Unit = {})
 
     override fun setupView() {
         super.setupView()
+        observeLiveData()
         setupBottomSheet()
     }
 
     override fun onDismissBottomSheet(bottomSheetType: CreateVoucherBottomSheetType) {
         when(bottomSheetType) {
             CreateVoucherBottomSheetType.CREATE_PROMO_CODE -> {
-                setupView()
+                if (shouldReturnToInitialValue) {
+                    voucherTargetWidget = VoucherTargetUiModel(::openBottomSheet)
+                    extraWidget = listOf(voucherTargetWidget, fillVoucherWidget)
+                    super.setupView()
+                }
             }
         }
     }
 
+    private fun observeLiveData() {
+        viewModel.voucherTargetListData.observe(viewLifecycleOwner, Observer { voucherTargetList ->
+            shouldReturnToInitialValue = false
+            dismissBottomSheet()
+            voucherTargetWidget = VoucherTargetUiModel(::openBottomSheet, voucherTargetList)
+            extraWidget = listOf(voucherTargetWidget, fillVoucherWidget)
+            super.setupView()
+        })
+    }
+
     private fun setupBottomSheet() {
         context?.run {
-            addBottomSheetView(CreateVoucherBottomSheetType.CREATE_PROMO_CODE, CreatePromoCodeBottomSheetView(this, ::onNextCreatePromoCode))
+            addBottomSheetView(CreateVoucherBottomSheetType.CREATE_PROMO_CODE, createPromoCodeBottomSheet)
         }
     }
 
@@ -93,7 +113,7 @@ class MerchantVoucherTargetFragment(onNextInvoker: () -> Unit = {})
     }
 
     private fun onNextCreatePromoCode(promoCode: String) {
-
+        viewModel.validatePromoCode(promoCode)
     }
 
 }

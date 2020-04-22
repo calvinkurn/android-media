@@ -8,17 +8,19 @@ import kotlinx.android.synthetic.main.mvc_create_promo_code_bottom_sheet_view.vi
 
 class CreatePromoCodeBottomSheetView @JvmOverloads constructor(
         context: Context,
-        onNextClick: (String) -> Unit = { _ -> },
+        private val onNextClick: (String) -> Unit = { _ -> },
         @LayoutRes layoutResource: Int = R.layout.mvc_create_promo_code_bottom_sheet_view
-) : BaseVoucherCustomView(context, layoutResource = layoutResource), VoucherBottomView {
+) : BaseVoucherCustomView(context, layoutResource = layoutResource) {
 
     override fun setupAttributes() {
 
     }
 
     override fun setupView() {
-        createPromoCodeTextField?.setPlaceholder("tes")
+        view?.run {
+            createPromoCodeSaveButton?.setOnClickListener {
+                onNextClick(createPromoCodeTextField?.textFieldInput?.text.toString())
+            }
+        }
     }
-
-    override val title: String? = resources.getString(R.string.mvc_create_target_create_promo_code_bottomsheet_title)
 }

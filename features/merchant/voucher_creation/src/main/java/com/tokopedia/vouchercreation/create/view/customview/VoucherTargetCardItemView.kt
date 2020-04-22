@@ -25,6 +25,8 @@ class VoucherTargetCardItemView @JvmOverloads constructor(
     companion object {
         const val TARGET_PUBLIC_TYPE = 0
         const val TARGET_SPECIAL_TYPE = 1
+
+        private const val PROMO_CODE_PREFIX = "TOKO"
     }
 
     private var voucherTargetCardType: VoucherTargetCardType = VoucherTargetCardType.PUBLIC
@@ -116,7 +118,7 @@ class VoucherTargetCardItemView @JvmOverloads constructor(
         this.voucherTargetType = voucherTargetType
         this.isItemEnabled = isItemEnabled
         this.isHavePromoCode = isHavePromoCode
-        this.promoCode = promoCode
+        this.promoCode = "$PROMO_CODE_PREFIX$promoCode"
 
         setupView()
     }

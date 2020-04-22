@@ -2,16 +2,16 @@ package com.tokopedia.vouchercreation.create.view.adapter
 
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.vouchercreation.create.data.source.VoucherTargetStaticDataSource
 import com.tokopedia.vouchercreation.create.view.customview.VoucherTargetCardItemView
+import com.tokopedia.vouchercreation.create.view.uimodel.VoucherTargetItemUiModel
+import kotlinx.android.synthetic.main.mvc_promo_code_info.view.*
 import kotlinx.android.synthetic.main.mvc_voucher_target_item.view.*
 
-class MerchantVoucherTargetAdapter(private val onRequestNotifyLambda: () -> Unit = {},
+class MerchantVoucherTargetAdapter(private val merchantVoucherTargetList: List<VoucherTargetItemUiModel>,
+                                   private val onRequestNotifyLambda: () -> Unit = {},
                                    private val onShouldOpenBottomSheet: () -> Unit = {}) : RecyclerView.Adapter<MerchantVoucherTargetAdapter.MerchantVoucherTargetViewHolder>() {
 
     class MerchantVoucherTargetViewHolder(itemView: VoucherTargetCardItemView) : RecyclerView.ViewHolder(itemView)
-
-    private var merchantVoucherTargetList = VoucherTargetStaticDataSource.getVoucherTargetItemUiModelList()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MerchantVoucherTargetViewHolder {
         val view = VoucherTargetCardItemView(parent.context)
@@ -23,14 +23,23 @@ class MerchantVoucherTargetAdapter(private val onRequestNotifyLambda: () -> Unit
     override fun onBindViewHolder(holder: MerchantVoucherTargetViewHolder, position: Int) {
         merchantVoucherTargetList[position].let { uiModel ->
             (holder.itemView as? VoucherTargetCardItemView)?.run {
+                val canShowBottomSheet = uiModel.voucherTargetType == VoucherTargetCardItemView.TARGET_SPECIAL_TYPE && !uiModel.isHavePromoCard
                 setupCurrentView(uiModel.voucherTargetType, uiModel.isEnabled, uiModel.isHavePromoCard, uiModel.promoCode)
                 voucherTargetItemRadioButton?.setOnCheckedChangeListener { _, isChecked ->
                     if (isChecked) {
                         onItemEnabled(position)
-                        val canShowBottomSheet = uiModel.voucherTargetType == VoucherTargetCardItemView.TARGET_SPECIAL_TYPE && !uiModel.isHavePromoCard
                         if (canShowBottomSheet) {
                             onShouldOpenBottomSheet()
                         }
+                    }
+                }
+                voucherTargetPromoCodeInfo?.run {
+                    if (isChangeEnabled && uiModel.isHavePromoCard) {
+                        voucherCreatePromoCodeChange?.setOnClickListener {
+                            onShouldOpenBottomSheet()
+                        }
+                    } else {
+                        voucherCreatePromoCodeChange?.setOnClickListener(null)
                     }
                 }
             }

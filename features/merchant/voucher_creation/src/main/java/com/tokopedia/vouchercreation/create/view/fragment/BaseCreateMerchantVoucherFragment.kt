@@ -8,25 +8,13 @@ import android.view.inputmethod.InputMethodManager
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.vouchercreation.create.view.bottomsheet.CreateVoucherBottomSheetType
-import com.tokopedia.vouchercreation.create.view.customview.bottomsheet.VoucherBottomView
 import com.tokopedia.vouchercreation.create.view.typefactory.CreateVoucherTypeFactory
 import com.tokopedia.vouchercreation.create.view.uimodel.NextButtonUiModel
 
-abstract class BaseCreateMerchantVoucherFragment<F : CreateVoucherTypeFactory, WTF : BaseAdapterTypeFactory>(val onNext: () -> Unit) : BaseListFragment<Visitable<CreateVoucherTypeFactory>, WTF>() {
-
-    private val bottomSheet: BottomSheetUnify by lazy {
-        BottomSheetUnify().apply {
-            setOnDismissListener {
-                dismissBottomView()
-            }
-            setCloseClickListener {
-                dismissBottomView()
-                this.dismiss()
-            }
-        }
-    }
+abstract class BaseCreateMerchantVoucherFragment<F : CreateVoucherTypeFactory, WTF : BaseAdapterTypeFactory>(private val onNext: () -> Unit) : BaseListFragment<Visitable<CreateVoucherTypeFactory>, WTF>() {
 
     private var activeBottomSheetType: CreateVoucherBottomSheetType = CreateVoucherBottomSheetType.CREATE_PROMO_CODE
 
@@ -36,7 +24,7 @@ abstract class BaseCreateMerchantVoucherFragment<F : CreateVoucherTypeFactory, W
 
     private val widgetList : MutableList<Visitable<CreateVoucherTypeFactory>> = mutableListOf()
 
-    private var bottomSheetViewArray: SparseArray<View> = SparseArray()
+    private var bottomSheetViewArray: SparseArray<BottomSheetUnify> = SparseArray()
 
     open var extraWidget : List<Visitable<F>> = mutableListOf()
 
@@ -59,25 +47,33 @@ abstract class BaseCreateMerchantVoucherFragment<F : CreateVoucherTypeFactory, W
         }
     }
 
+    fun dismissBottomSheet() {
+        val activeBottomSheet = childFragmentManager.findFragmentByTag(activeBottomSheetType.tag)
+        (activeBottomSheet as? BottomSheetUnify)?.dismiss()
+    }
+
     protected fun showBottomSheet(bottomSheetType: CreateVoucherBottomSheetType) {
         activeBottomSheetType = bottomSheetType
-        bottomSheetViewArray.get(bottomSheetType.key)?.let { bottomSheetView ->
-            bottomSheet.run {
-                (bottomSheetView as? VoucherBottomView)?.title?.let { title ->
-                    setTitle(title)
-                }
-                setChild(bottomSheetView)
-                show(this@BaseCreateMerchantVoucherFragment.childFragmentManager, bottomSheetType.tag)
+        bottomSheetViewArray.get(bottomSheetType.key)?.run {
+            setOnDismissListener {
+                dismissBottomView()
             }
+            setCloseClickListener {
+                dismissBottomView()
+                this.dismiss()
+            }
+            show(this@BaseCreateMerchantVoucherFragment.childFragmentManager, bottomSheetType.tag)
         }
     }
 
-    protected fun addBottomSheetView (bottomSheetType: CreateVoucherBottomSheetType, bottomSheetView: View) {
-        bottomSheetViewArray.put(bottomSheetType.key, bottomSheetView)
+    protected fun addBottomSheetView (bottomSheetType: CreateVoucherBottomSheetType, bottomSheetFragment: BottomSheetUnify) {
+        bottomSheetViewArray.put(bottomSheetType.key, bottomSheetFragment)
     }
 
     private fun dismissBottomView() {
-        hideKeyboard()
+        activity?.let {
+            KeyboardHandler.hideSoftKeyboard(it)
+        }
         onDismissBottomSheet(activeBottomSheetType)
     }
 

@@ -3,6 +3,7 @@ package com.tokopedia.vouchercreation.create.view.viewholder
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
+import android.view.inputmethod.EditorInfo
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.vouchercreation.R
@@ -22,6 +23,7 @@ class FillVoucherNameViewHolder(itemView: View) : AbstractViewHolder<FillVoucher
 
     override fun bind(element: FillVoucherNameUiModel?) {
         itemView.fillVoucherNameTextfield?.run {
+            textFieldInput.imeOptions = EditorInfo.IME_ACTION_DONE
             textFieldInput.addTextChangedListener(object : TextWatcher {
                 override fun afterTextChanged(s: Editable?) {
                     //No op
