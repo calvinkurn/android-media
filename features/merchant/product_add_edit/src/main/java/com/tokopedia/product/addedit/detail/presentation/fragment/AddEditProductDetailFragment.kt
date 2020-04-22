@@ -27,10 +27,7 @@ import com.tokopedia.imagepicker.editor.main.view.ImageEditorActivity
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
 import com.tokopedia.imagepicker.picker.main.builder.*
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.observe
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_DESCRIPTION_INPUT
@@ -169,8 +166,6 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     // product conditions
     private var productConditionListView: ListUnify? = null
     private val productConditions = ArrayList<ListItemUnify>()
-    private var newCondition: ListItemUnify? = null
-    private var secondHandCondition: ListItemUnify? = null
     private var isProductConditionNew = true
 
     private lateinit var userSession: UserSessionInterface
@@ -278,8 +273,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             else {
                 ProductAddMainTracking.clickOtherCategory(shopId)
             }
-            // if has variant
-            if (viewModel.hasVariants) {
+            if (!viewModel.isAdding && viewModel.hasVariants) {
                 showImmutableCategoryDialog()
             } else {
                 val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PRODUCT_CATEGORY_PICKER, 0.toString())
@@ -363,12 +357,12 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         productConditionListView = view.findViewById(R.id.lvu_product_conditions)
 
         // new condition
-        newCondition = ListItemUnify(getString(R.string.label_new), "")
+        val newCondition = ListItemUnify(getString(R.string.label_new), "")
         newCondition?.setVariant(null, ListItemUnify.RADIO_BUTTON, null)
         newCondition?.run { productConditions.add(NEW_PRODUCT_INDEX, this) }
 
         // secondhand condition
-        secondHandCondition = ListItemUnify(getString(R.string.label_secondhand), "")
+        val secondHandCondition = ListItemUnify(getString(R.string.label_secondhand), "")
         secondHandCondition?.setVariant(null, ListItemUnify.RADIO_BUTTON, getString(R.string.label_secondhand))
         secondHandCondition?.run { productConditions.add(USED_PRODUCT_INDEX, this) }
 
@@ -623,9 +617,14 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                     viewModel.productInputModel.detailInputModel.categoryId = categoryId.toString()
                     viewModel.productInputModel.detailInputModel.categoryName = categoryName
 
-                    val categoryList = ListUnifyUtil.getSelected(productCategoryRecListView)
+                    val categoryRecommendationResult = viewModel.productCategoryRecommendationLiveData.value
+                    val categoryList = if (categoryRecommendationResult != null && categoryRecommendationResult is Success) {
+                        productCategoryRecListView?.getSelected(categoryRecommendationResult.data)
+                    } else {
+                        null
+                    }
                     if (categoryList != null) {
-                        ListUnifyUtil.getShownRadioButton(categoryList)?.isChecked = false
+                        categoryList.getShownRadioButton()?.isChecked = false
                         if (viewModel.isEditing && !viewModel.isAdding) {
                             ProductEditMainTracking.clickSaveOtherCategory(shopId)
                         }
@@ -878,27 +877,26 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         // product condition
         productConditionListView?.onLoadFinish {
 
-            if (detailInputModel.condition == CONDITION_NEW) newCondition?.listRightRadiobtn?.isChecked = true
-            else secondHandCondition?.listRightRadiobtn?.isChecked = true
+            if (detailInputModel.condition == CONDITION_NEW) productConditionListView?.setSelected(productConditions, NEW_PRODUCT_INDEX) {}
+            else productConditionListView?.setSelected(productConditions, USED_PRODUCT_INDEX) {}
 
             // list item click listener
             productConditionListView?.run {
                 this.setOnItemClickListener { _, _, position, _ ->
-                    ListUnifyUtil.setSelected(this, position) {
+                    setSelected(productConditions, position) {
                         if (position == NEW_PRODUCT_INDEX) isProductConditionNew = true
                         else isProductConditionNew = false
                     }
                 }
             }
 
-            // radio button click listener
-            newCondition?.listRightRadiobtn?.setOnCheckedChangeListener { _, isChecked ->
-                if (isChecked) secondHandCondition?.listRightRadiobtn?.isChecked = false
-                isProductConditionNew = true
-            }
-            secondHandCondition?.listRightRadiobtn?.setOnCheckedChangeListener { _, isChecked ->
-                if (isChecked) newCondition?.listRightRadiobtn?.isChecked = false
-                isProductConditionNew = false
+            productConditions.forEachIndexed { index, listItemUnify ->
+                listItemUnify.listRightRadiobtn?.setOnClickListener {
+                    productConditionListView?.setSelected(productConditions, index) {
+                        if (index == NEW_PRODUCT_INDEX) isProductConditionNew = true
+                        else isProductConditionNew = false
+                    }
+                }
             }
         }
 
@@ -922,12 +920,12 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                     viewModel.getProductNameRecommendation(query = productNameInput)
                 }
                 // show category recommendations to the product has no variants
-                if (!viewModel.hasVariants) viewModel.getCategoryRecommendation(productNameInput)
+                if (viewModel.isAdding) viewModel.getCategoryRecommendation(productNameInput)
             } else {
                 // show empty recommendations for input with error
                 productNameRecAdapter?.setProductNameRecommendations(emptyList())
                 // keep the category if the product has variants
-                if (!viewModel.hasVariants) productCategoryRecListView?.setData(ArrayList(emptyList()))
+                if (viewModel.isAdding) productCategoryRecListView?.setData(ArrayList(emptyList()))
             }
             // reset name selection status
             viewModel.isNameRecommendationSelected = false
@@ -1062,7 +1060,11 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                 ImagePickerTabTypeDef.TYPE_INSTAGRAM
         )
 
-        val imagePickerEditorBuilder = ImagePickerEditorBuilder.getDefaultBuilder()
+        val imagePickerEditorBuilder = ImagePickerEditorBuilder.getDefaultBuilder().apply {
+            this.belowMinResolutionErrorMessage = getString(R.string.error_image_under_x_resolution, ImagePickerBuilder.DEFAULT_MIN_RESOLUTION, ImagePickerBuilder.DEFAULT_MIN_RESOLUTION)
+            this.imageTooLargeErrorMessage = getString(R.string.error_image_too_large, (AddEditProductConstants.MAX_PRODUCT_IMAGE_SIZE_IN_KB / 1024))
+            this.isRecheckSizeAfterResize = true
+        }
 
         val imagePickerMultipleSelectionBuilder = ImagePickerMultipleSelectionBuilder(
                 selectedImagePathList,
@@ -1074,7 +1076,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                 title,
                 imagePickerPickerTabTypeDef,
                 GalleryType.IMAGE_ONLY,
-                ImagePickerBuilder.DEFAULT_MAX_IMAGE_SIZE_IN_KB,
+                AddEditProductConstants.MAX_PRODUCT_IMAGE_SIZE_IN_KB,
                 ImagePickerBuilder.DEFAULT_MIN_RESOLUTION,
                 ImageRatioTypeDef.RATIO_1_1,
                 true,
@@ -1142,9 +1144,8 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         if (viewModel.isAdding) {
             ProductAddMainTracking.clickContinue(shopId)
         }
-        val categoryId = viewModel.productInputModel.detailInputModel.categoryId
         inputAllDataInProductInputModel()
-        val intent = AddEditProductDescriptionActivity.createInstance(context, categoryId, viewModel.productInputModel)
+        val intent = AddEditProductDescriptionActivity.createInstance(context, viewModel.productInputModel)
         startActivityForResult(intent, REQUEST_CODE_DESCRIPTION)
     }
 
@@ -1181,7 +1182,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         val items = ArrayList(result.data.take(3))
         productCategoryRecListView?.setData(items)
         productCategoryRecListView?.onLoadFinish {
-            selectFirstCategoryRecommendation()
+            selectFirstCategoryRecommendation(items)
             createCategoryRecommendationItemClickListener(items)
             productCategoryRecListView?.onLoadFinish {}
         }
@@ -1192,11 +1193,11 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         productCategoryRecListView?.hide()
     }
 
-    private fun selectFirstCategoryRecommendation() = productCategoryRecListView?.run {
-        productCategoryRecListView?.adapter?.count?.let {
-            if (it > 0) {
-                ListUnifyUtil.setSelected(this, 0) {
-                    val categoryId = ListUnifyUtil.getCategoryId(it).toString()
+    private fun selectFirstCategoryRecommendation(items: List<ListItemUnify>) = productCategoryRecListView?.run {
+        adapter?.count?.let { itemSize ->
+            if (itemSize > 0) {
+                setSelected(items, 0) {
+                    val categoryId = it.getCategoryId().toString()
                     viewModel.productInputModel.detailInputModel.categoryId = categoryId
                     true
                 }
@@ -1206,15 +1207,15 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
 
     private fun createCategoryRecommendationItemClickListener(items: List<ListItemUnify>) = productCategoryRecListView?.run {
         productCategoryRecListView?.setOnItemClickListener { _, _, position, _ ->
-            ListUnifyUtil.setSelected(this, position) {
-                onCategoryRecommendationSelected(ListUnifyUtil.getCategoryId(it).toString())
+            setSelected(items, position) {
+                onCategoryRecommendationSelected(it.getCategoryId().toString())
             }
         }
 
         items.forEachIndexed { index, item ->
             item.listRightRadiobtn?.setOnClickListener {
-                ListUnifyUtil.setSelected(this, index) {
-                    onCategoryRecommendationSelected(ListUnifyUtil.getCategoryId(it).toString())
+                setSelected(items, index) {
+                    onCategoryRecommendationSelected(it.getCategoryId().toString())
                 }
             }
         }
