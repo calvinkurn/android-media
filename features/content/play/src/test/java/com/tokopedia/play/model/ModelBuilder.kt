@@ -1162,14 +1162,6 @@ class ModelBuilder {
 
     fun buildProduct() = gson.fromJson(product, Product::class.java)
 
-    fun buildVariantSheetUiModel() = VariantSheetUiModel(
-            product = PlayUiMapper.mapItemProduct(buildProduct()),
-            action = ProductAction.AddToCart,
-            parentVariant = gson.fromJson(parentVariant, ProductVariantCommon::class.java),
-            listOfVariantCategory = gson.fromJson(listOfVariantCategory, object : TypeToken<List<VariantCategory>>() {}.type),
-            mapOfSelectedVariants = mutableMapOf("15125086" to 0)
-    )
-
     fun buildAddToCartModelResponseSuccess() = AddToCartDataModel(data = DataModel(cartId = "123", success = 1))
     fun buildAddToCartModelResponseFail() = AddToCartDataModel(
             errorMessage = arrayListOf("error message"),
@@ -1198,11 +1190,15 @@ class ModelBuilder {
     fun buildStateHelperUiModel(
         shouldShowPinned: Boolean = true,
         channelType: PlayChannelType = PlayChannelType.Live,
-        bottomInsets: Map<BottomInsetsType, BottomInsetsState> = buildBottomInsetsMap()
+        bottomInsets: Map<BottomInsetsType, BottomInsetsState> = buildBottomInsetsMap(),
+        screenOrientation: ScreenOrientation = ScreenOrientation.Portrait,
+        videoOrientation: VideoOrientation = VideoOrientation.Vertical
     ) = StateHelperUiModel(
             shouldShowPinned = shouldShowPinned,
             channelType = channelType,
-            bottomInsets = bottomInsets
+            bottomInsets = bottomInsets,
+            screenOrientation = screenOrientation,
+            videoOrientation = videoOrientation
     )
 
     fun buildChannelInfoUiModel(
@@ -1227,11 +1223,15 @@ class ModelBuilder {
     fun buildVideoStreamUiModel(
             uriString: String = "https://tkp.me",
             channelType: PlayChannelType = PlayChannelType.Live,
-            isActive: Boolean = true
+            isActive: Boolean = true,
+            orientation: VideoOrientation = VideoOrientation.Vertical,
+            backgroundUrl: String = "https://tkp.me"
     ) = VideoStreamUiModel(
             uriString = uriString,
             channelType = channelType,
-            isActive = isActive
+            isActive = isActive,
+            orientation = orientation,
+            backgroundUrl = backgroundUrl
     )
 
     fun buildPlayChatUiModel(

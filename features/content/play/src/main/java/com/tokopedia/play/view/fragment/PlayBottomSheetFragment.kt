@@ -291,7 +291,7 @@ class PlayBottomSheetFragment : BaseDaggerFragment(), CoroutineScope {
                             ProductSheetInteractionEvent.OnCloseProductSheet -> closeProductSheet()
                             is ProductSheetInteractionEvent.OnBuyProduct -> shouldCheckProductVariant(it.product, ProductAction.Buy)
                             is ProductSheetInteractionEvent.OnAtcProduct -> shouldCheckProductVariant(it.product, ProductAction.AddToCart)
-                            is ProductSheetInteractionEvent.OnProductCardClicked -> onProductCardClicked(it.product)
+                            is ProductSheetInteractionEvent.OnProductCardClicked -> shouldOpenProductDetail(it.product)
                             is ProductSheetInteractionEvent.OnVoucherScrolled -> onVoucherScrolled(it.lastPositionViewed)
                         }
                     }
@@ -302,13 +302,6 @@ class PlayBottomSheetFragment : BaseDaggerFragment(), CoroutineScope {
 
     private fun onVoucherScrolled(lastPositionViewed: Int) {
         PlayAnalytics.scrollMerchantVoucher(channelId, lastPositionViewed)
-    }
-
-    private fun onProductCardClicked(product: ProductLineUiModel) {
-        if (product.applink != null && product.applink.isNotEmpty()) {
-            PlayAnalytics.clickProduct(trackingQueue, channelId, product, playViewModel.channelType)
-            openPageByApplink(product.applink)
-        }
     }
 
     private fun initVariantSheetComponent(container: ViewGroup): UIComponent<VariantSheetInteractionEvent> {
@@ -365,6 +358,10 @@ class PlayBottomSheetFragment : BaseDaggerFragment(), CoroutineScope {
         viewModel.doInteractionEvent(InteractionEvent.DoActionProduct(product, action, type))
     }
 
+    private fun shouldOpenProductDetail(product: ProductLineUiModel) {
+        viewModel.doInteractionEvent(InteractionEvent.OpenProductDetail(product))
+    }
+
     private fun sendVariantToaster(toasterType: Int, message: String, actionText: String? = null, actionClickListener: View.OnClickListener? = null) {
         launch {
             EventBusFactory.get(viewLifecycleOwner)
@@ -394,8 +391,16 @@ class PlayBottomSheetFragment : BaseDaggerFragment(), CoroutineScope {
     }
 
     private fun handleInteractionEvent(event: InteractionEvent) {
-        if(event is InteractionEvent.DoActionProduct) {
-            doActionProduct(event.product, event.action, event.type)
+        when (event) {
+            is InteractionEvent.DoActionProduct -> doActionProduct(event.product, event.action, event.type)
+            is InteractionEvent.OpenProductDetail -> doOpenProductDetail(event.product)
+        }
+    }
+
+    private fun doOpenProductDetail(product: ProductLineUiModel) {
+        if (product.applink != null && product.applink.isNotEmpty()) {
+            PlayAnalytics.clickProduct(trackingQueue, channelId, product, playViewModel.channelType)
+            openPageByApplink(product.applink)
         }
     }
 

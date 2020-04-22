@@ -86,11 +86,8 @@ class PlayViewModel @Inject constructor(
     val observableBadgeCart: LiveData<CartUiModel>
         get() = _observableBadgeCart
 
-    val screenOrientation: ScreenOrientation
-        get() {
-            val screenOrientation = _observableScreenOrientation.value
-            return screenOrientation ?: ScreenOrientation.Unknown
-        }
+    var screenOrientation: ScreenOrientation = ScreenOrientation.Unknown
+        private set
     val videoOrientation: VideoOrientation
         get() {
             val videoOrientation = _observableVideoStream.value
@@ -171,7 +168,6 @@ class PlayViewModel @Inject constructor(
     private val _observableBottomInsetsState = MutableLiveData<Map<BottomInsetsType, BottomInsetsState>>()
     private val _observablePinned = MediatorLiveData<PinnedUiModel>()
     private val _observableBadgeCart = MutableLiveData<CartUiModel>()
-    private val _observableScreenOrientation = MutableLiveData<ScreenOrientation>()
     private val stateHandler: LiveData<Unit> = MediatorLiveData<Unit>().apply {
         addSource(playVideoManager.getObservablePlayVideoState()) {
             _observableVideoProperty.value = VideoPropertyUiModel(it)
@@ -499,7 +495,7 @@ class PlayViewModel @Inject constructor(
      * Set Screen Orientation
      */
     fun setScreenOrientation(screenOrientation: ScreenOrientation) {
-        _observableScreenOrientation.value = screenOrientation
+        this.screenOrientation = screenOrientation
     }
 
     fun updateBadgeCart() {
