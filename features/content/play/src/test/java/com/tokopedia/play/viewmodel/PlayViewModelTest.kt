@@ -14,10 +14,7 @@ import com.tokopedia.play.model.ModelBuilder
 import com.tokopedia.play.ui.chatlist.model.PlayChat
 import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.util.coroutine.CoroutineDispatcherProvider
-import com.tokopedia.play.view.type.BottomInsetsType
-import com.tokopedia.play.view.type.PlayChannelType
-import com.tokopedia.play.view.type.ProductAction
-import com.tokopedia.play.view.type.VideoOrientation
+import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.*
 import com.tokopedia.play.view.uimodel.mapper.PlayUiMapper
 import com.tokopedia.play.view.viewmodel.PlayViewModel
@@ -627,6 +624,27 @@ class PlayViewModelTest {
         Assertions
                 .assertThat(playViewModel.channelType)
                 .isEqualTo(expectedResult)
+    }
+    //endregion
+
+    //region screen orientation
+    @Test
+    fun `when screen orientation is not set, then orientation is unknown`() {
+        val expectedResult = ScreenOrientation.Unknown
+
+        Assertions
+                .assertThat(playViewModel.screenOrientation)
+                .isEqualTo(expectedResult)
+    }
+
+    @Test
+    fun `when screen orientation is set, then orientation should match the value set`() {
+        val orientation = ScreenOrientation.Landscape
+        playViewModel.setScreenOrientation(orientation)
+
+        Assertions
+                .assertThat(playViewModel.screenOrientation)
+                .isEqualTo(orientation)
     }
     //endregion
 
