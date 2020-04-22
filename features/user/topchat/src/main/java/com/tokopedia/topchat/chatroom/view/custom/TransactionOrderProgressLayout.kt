@@ -146,6 +146,13 @@ class TransactionOrderProgressLayout : LinearLayout {
         } else {
             hideDescription()
             renderCloseStateChangerButton()
+            bindClickCloseState()
+        }
+    }
+
+    private fun bindClickCloseState() {
+        stateChanger?.setOnClickListener {
+            RouteManager.route(context, chatOrder.button.uri)
         }
     }
 
