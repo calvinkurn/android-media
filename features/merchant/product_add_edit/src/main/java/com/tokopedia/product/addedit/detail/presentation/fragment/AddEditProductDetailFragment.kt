@@ -383,11 +383,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         submitTextView = view.findViewById(R.id.tv_submit_text)
         submitLoadingIndicator = view.findViewById(R.id.lu_submit_loading_indicator)
         if (viewModel.isEditing) submitTextView?.text = getString(R.string.action_save)
-        else {
-            submitTextView?.text = getString(R.string.action_continue)
-            // the submit button will be disabled until all the detail input are valid
-            disableSubmitButton()
-        }
+        else submitTextView?.text = getString(R.string.action_continue)
 
         // fill the form with detail input model
         fillProductDetailForm(viewModel.productInputModel.detailInputModel)
