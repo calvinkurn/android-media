@@ -434,15 +434,20 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
                 }
     }
 
+    private lateinit var onToolbarGlobalLayoutListener: ViewTreeObserver.OnGlobalLayoutListener
+
     private fun triggerStartMonitoring() {
         playFragment.startRenderMonitoring()
 
-        toolbarView.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener{
-            override fun onGlobalLayout() {
-                playFragment.stopPageMonitoring()
-                toolbarView.viewTreeObserver.removeOnGlobalLayoutListener(this)
+        if (!this::onToolbarGlobalLayoutListener.isInitialized) {
+            onToolbarGlobalLayoutListener = object : ViewTreeObserver.OnGlobalLayoutListener{
+                override fun onGlobalLayout() {
+                    playFragment.stopPageMonitoring()
+                    toolbarView.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                }
             }
-        })
+            toolbarView.viewTreeObserver.addOnGlobalLayoutListener(onToolbarGlobalLayoutListener)
+        }
     }
 
     //region Component Initialization
