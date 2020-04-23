@@ -21,38 +21,18 @@ class SellerSectionViewHolder(
     private val txtTitle = itemView?.findViewById<TextView>(R.id.txt_title)
     private val imgIcon = itemView?.findViewById<ImageView>(R.id.img_icon)
 
-    private val context by lazy {
-        itemView?.context
-    }
+    private val context by lazy { itemView?.context }
 
     override fun bind(element: SellerSection?) {
         if (element == null) return
         txtTitle?.text = context?.getString(element.title)
-        setIconState(element)
-        setIconColorState(element)
-        setContainerClicked(element.isEnabled)
+        imgIcon?.setImageResource(element.resourceIcon)
+        setContainerClicked()
     }
 
-    private fun setContainerClicked(state: Boolean) {
-        container?.isEnabled = state
+    private fun setContainerClicked() {
         container?.setOnClickListener {
             listener.onItemClicked()
-        }
-    }
-
-    private fun setIconColorState(element: SellerSection) {
-        context?.let {
-            val colorId = componentTextColor(element.isEnabled)
-            txtTitle?.setTextColor(ContextCompat.getColor(it, colorId))
-        }
-    }
-
-    private fun setIconState(element: SellerSection) {
-        if (element.isEnabled) {
-            imgIcon?.setImageResource(element.resourceIcon)
-        } else {
-            val deactivatedIcon = R.drawable.ic_notifsetting_deactivated_seller
-            imgIcon?.setImageResource(deactivatedIcon)
         }
     }
 
