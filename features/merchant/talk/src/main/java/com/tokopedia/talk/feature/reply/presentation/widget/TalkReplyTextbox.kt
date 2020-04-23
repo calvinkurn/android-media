@@ -45,6 +45,5 @@ class TalkReplyTextbox : BaseCustomView {
     fun reset() {
         replyEditText.setText("")
         replyEditText.clearFocus()
-
     }
 }

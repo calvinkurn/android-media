@@ -57,7 +57,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
         const val NOT_FOLLOWING = false
         const val REPORT_ACTIVITY_REQUEST_CODE = 201
         const val ATTACH_PRODUCT_ACTIVITY_REQUEST_CODE = 202
-        const val TEXT_LIMIT = 10
+        const val TEXT_LIMIT = 500
         const val TOASTER_ERROR_DEFAULT_HEIGHT = 50
         const val TOASTER_ERROR_WITH_ATTACHED_PRODUCTS_HEIGHT = 150
 

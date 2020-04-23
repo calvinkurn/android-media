@@ -104,10 +104,6 @@
     <string name="reply_toaster_success">Yay, jawabanmu berhasil dikirim. Tunggu notifikasi balasan di Inbox, ya.</string>
     <string name="reply_toaster_message_too_long">Balasanmu terlalu panjang. Kurangi dikit, ya!</string>
     <string name="reply_toaster_network_error">Pertanyaanmu tidak terkirim. Cek koneksi internetmu dan coba lagi, ya.</string>
-    <string name="reply_attach_product_bottom_sheet_title">Lampirkan Produk</string>
-    <string name="reply_attach_product_bottom_sheet_search_place_holder">Cari produk di semua etalase</string>
-    <string name="reply_attach_product_bottom_sheet_empty_title">Oops, produk tidak ditemukan</string>
-    <string name="reply_attach_product_bottom_sheet_empty_subtitle">Lakukan pencarian dengan kata kunci lain, ya.</string>
     <string name="delete_toaster_success">Jawabanmu berhasil dihapus.</string>
     <string name="delete_toaster_network_error">Jawaban belum terhapus. Cek koneksi internetmu dan coba lagi, ya.</string>
     <string name="delete_dialog_title">Beneran mau dihapus?</string>
@@ -124,11 +120,6 @@
 
     <string name="toaster_report_success">Laporanmu berhasil dikirim dan akan segera ditindaklanjuti.</string>
     <string name="toaster_report_fail">Laporanmu gagal dikirim. Cek koneksi internetmu dan coba lagi, ya.</string>
-    <string name="report_header">Bantu kami memahami apa yang terjadi. Mengapa kamu melaporkan hal ini?</string>
-    <string name="report_spam_option">Ini adalah spam</string>
-    <string name="report_content_option">Konten mengandung SARA, diskriminasi, vulgar, ancaman, dan pelanggaran nilai/norma sosial</string>
-    <string name="report_other_option">Lainnya</string>
-    <string name="report_editText_placeholder">Alasan</string>
 
     <string name="write_category_title">Pilih kategori</string>
     <string name="write_question_title">Tulis pertanyaan</string>
