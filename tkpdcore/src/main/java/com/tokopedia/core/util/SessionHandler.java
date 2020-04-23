@@ -81,12 +81,6 @@ public class SessionHandler {
         this.context = context;
     }
 
-    public static String getTempLoginSession(Context context) {
-        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
-        return sharedPrefs.getString("temp_login_id", "");
-
-    }
-
     /**
      * @param context Non Null context
      * @param isLogin flag to determine user is login or not

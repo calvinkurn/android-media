@@ -29,7 +29,7 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.analytics.handler.UserAuthenticationAnalytics;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
-import com.tokopedia.core.customView.LoginTextView;
+import com.tokopedia.sellerapp.welcome.widget.LoginTextView;
 import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.core.session.model.LoginProviderModel;
 import com.tokopedia.sellerapp.R;

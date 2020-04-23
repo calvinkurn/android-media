@@ -1,4 +1,4 @@
-package com.tokopedia.core.customView;
+package com.tokopedia.sellerapp.welcome.widget;
 
 import android.annotation.TargetApi;
 import android.content.Context;

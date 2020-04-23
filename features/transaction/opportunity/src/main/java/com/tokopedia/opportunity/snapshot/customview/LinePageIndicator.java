@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.tkpd.library.viewpagerindicator;
+package com.tokopedia.opportunity.snapshot.customview;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -31,6 +31,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
 
+import com.tkpd.library.viewpagerindicator.PageIndicator;
 import com.tokopedia.core2.R;
 
 /**

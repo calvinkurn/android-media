@@ -1,4 +1,4 @@
-package com.tokopedia.core.loyaltysystem.util;
+package com.tokopedia.opportunity.snapshot.customview;
 
 import android.content.Context;
 import android.graphics.Bitmap;
