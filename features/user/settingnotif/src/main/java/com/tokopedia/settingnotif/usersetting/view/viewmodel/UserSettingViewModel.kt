@@ -2,24 +2,30 @@ package com.tokopedia.settingnotif.usersetting.view.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.settingnotif.usersetting.data.mapper.UserSettingMapper
 import com.tokopedia.settingnotif.usersetting.data.pojo.setusersetting.SetUserSettingResponse
 import com.tokopedia.settingnotif.usersetting.domain.GetUserSettingUseCase
 import com.tokopedia.settingnotif.usersetting.domain.SetUserSettingUseCase
 import com.tokopedia.settingnotif.usersetting.util.SingleLiveEvent
-import com.tokopedia.settingnotif.usersetting.util.load
+import com.tokopedia.settingnotif.usersetting.util.dispatcher.DispatcherProvider
 import com.tokopedia.settingnotif.usersetting.view.adapter.viewholder.SettingViewHolder
 import com.tokopedia.settingnotif.usersetting.view.dataview.UserSettingDataView
 import com.tokopedia.settingnotif.usersetting.view.listener.SettingFieldContract
 import com.tokopedia.settingnotif.usersetting.view.state.UserSettingErrorState
+import com.tokopedia.settingnotif.usersetting.view.state.UserSettingErrorState.GetSettingError
+import com.tokopedia.settingnotif.usersetting.view.state.UserSettingErrorState.SetSettingError
 import com.tokopedia.track.TrackApp
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import com.tokopedia.settingnotif.usersetting.domain.SetUserSettingUseCase.Companion.params as settingParams
 
 class UserSettingViewModel @Inject constructor(
         private val getUserSettingUseCase: GetUserSettingUseCase,
-        private val setUserSettingUseCase: SetUserSettingUseCase
-) : ViewModel(), SettingFieldContract.UserSetting {
+        private val setUserSettingUseCase: SetUserSettingUseCase,
+        private val dispatcher: DispatcherProvider
+) : BaseViewModel(dispatcher.io()), SettingFieldContract.UserSetting {
 
     private val _userSetting = SingleLiveEvent<UserSettingDataView>()
     val userSetting: LiveData<UserSettingDataView> get() = _userSetting
@@ -34,23 +40,29 @@ class UserSettingViewModel @Inject constructor(
             notificationType: String,
             updatedSettingIds: List<Map<String, Any>>
     ) {
-        val params = settingParams(notificationType, updatedSettingIds)
-        setUserSettingUseCase.load(requestParams = params, onSuccess = { data ->
-            if (data != null) {
-                _setUserSetting.value = data
+        setUserSettingUseCase.params = settingParams(
+                notificationType = notificationType,
+                updatedSettingIds = updatedSettingIds
+        )
+        launchCatchError(block = {
+            val result = setUserSettingUseCase.executeOnBackground()
+            withContext(dispatcher.ui()) {
+                _setUserSetting.value = result
             }
         }, onError = {
-            _errorState.postValue(UserSettingErrorState.SetSettingError)
+            _errorState.postValue(SetSettingError)
         })
     }
 
     override fun loadUserSettings() {
-        getUserSettingUseCase.load(onSuccess = { data ->
-            if (data != null) {
-                _userSetting.setValue(data)
+        launchCatchError(block = {
+            val result = getUserSettingUseCase.executeOnBackground()
+            withContext(dispatcher.ui()) {
+                val mapToDataView = UserSettingMapper.map(result)
+                _userSetting.setValue(mapToDataView)
             }
         }, onError = {
-            _errorState.postValue(UserSettingErrorState.GetSettingError)
+            _errorState.postValue(GetSettingError)
         })
     }
 
@@ -76,6 +88,10 @@ class UserSettingViewModel @Inject constructor(
 
     private fun setMoengagePromoPreference(checked: Boolean) {
         TrackApp.getInstance().moEngage.setPushPreference(checked)
+    }
+
+    override fun cleared() {
+        this.onCleared()
     }
 
     companion object {
