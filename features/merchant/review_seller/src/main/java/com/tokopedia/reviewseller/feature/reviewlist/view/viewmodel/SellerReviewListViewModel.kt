@@ -42,40 +42,31 @@ class SellerReviewListViewModel @Inject constructor(
 
     fun getProductRatingData(sortBy: String, filterBy: String) {
         launchCatchError(block = {
-//            val productRatingOverall = asyncCatchError(
-//                    dispatcherProvider.io(),
-//                    block = {
-//                        getProductRatingOverall(filterBy)
-//                    },
-//                    onError = {
-//                        _productRatingOverall.postValue(Fail(it))
-//                        null
-//                    }
-//            )
 
-            val reviewProductList = asyncCatchError(
-                    dispatcherProvider.io(),
+            val productRatingOverall = asyncCatchError(dispatcherProvider.io(),
+                    block = {
+                        getProductRatingOverall(filterBy)
+                    }, onError = {
+                        _productRatingOverall.postValue(Fail(it))
+                        null }
+            )
+
+            val reviewProductList = asyncCatchError(dispatcherProvider.io(),
                     block = {
                         getProductReviewList(
                                 sortBy = sortBy,
                                 filterBy = filterBy)
-                    },
-                    onError = {
+                    }, onError = {
                         _reviewProductList.postValue(Fail(it))
                         null
-                    }
-            )
+                    })
 
-            reviewProductList.await()?.let { reviewProductData ->
-                _reviewProductList.postValue(Success(reviewProductData))
+            productRatingOverall.await()?.let {
+                _productRatingOverall.postValue(Success(it))
+                reviewProductList.await()?.also { reviewProductData ->
+                    _reviewProductList.postValue(Success(reviewProductData))
+                }
             }
-
-//            productRatingOverall.await()?.let {
-//                _productRatingOverall.postValue(Success(it))
-////                reviewProductList.await()?.let { reviewProductData ->
-////                    _reviewProductList.postValue(Success(reviewProductData))
-////                }
-//            }
         }) {
         }
     }
@@ -104,17 +95,13 @@ class SellerReviewListViewModel @Inject constructor(
                 page
         )
 
+
         val productRatingListResponse = getReviewProductListUseCase.executeOnBackground()
 //        val isHastNextPage = ReviewSellerUtil.isHasNextPage(page, ReviewSellerConstant.DEFAULT_PER_PAGE, productRatingListResponse.data.size)
         return Pair(
                 productRatingListResponse.hasNext,
                 SellerReviewProductListMapper.mapToProductReviewListUiModel(productRatingListResponse)
         )
-    }
-
-    fun clearCache() {
-        getProductRatingOverallUseCase.clearCache()
-        getReviewProductListUseCase.clearCache()
     }
 
 
