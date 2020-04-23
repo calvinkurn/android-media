@@ -12,7 +12,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.viewpager.widget.ViewPager
 import com.airbnb.deeplinkdispatch.DeepLink
-import com.tkpd.library.utils.URLParser
+import com.tokopedia.discovery.common.utils.URLParser
 import com.tkpd.library.utils.legacy.MethodChecker
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
@@ -126,6 +126,8 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener,
 
     companion object {
         private const val EXTRA_TRACKER_ATTRIBUTION = "tracker_attribution"
+        private const val DEPARTMENT_ID = "DEPARTMENT_ID"
+        private const val EXTRA_CATEGORY_URL = "CATEGORY_URL"
 
         private const val ORDER_BY = "ob"
         private const val SCREEN_NAME = "/p"

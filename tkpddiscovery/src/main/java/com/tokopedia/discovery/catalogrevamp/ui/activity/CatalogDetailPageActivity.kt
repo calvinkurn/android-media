@@ -11,7 +11,8 @@ import com.tkpd.library.utils.legacy.MethodChecker
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.core.analytics.AppScreen
-import com.tokopedia.core.network.NetworkErrorHelper
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.sharedata.DefaultShareData
 import com.tokopedia.discovery.R
 import com.tokopedia.discovery.catalogrevamp.analytics.CatalogDetailPageAnalytics
 import com.tokopedia.discovery.catalogrevamp.ui.customview.SearchNavigationView
@@ -135,7 +136,7 @@ class CatalogDetailPageActivity : BaseActivity(),
         bottomSheetFilterView?.onBackPressed()
         if (supportActionBar != null)
             supportActionBar!!.setHomeAsUpIndicator(
-                    com.tokopedia.core2.R.drawable.ic_webview_back_button
+                    com.tokopedia.abstraction.R.drawable.ic_action_back
             )
     }
 
@@ -181,14 +182,14 @@ class CatalogDetailPageActivity : BaseActivity(),
     private fun setupToolbar() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             toolbar.elevation = 10f
-            toolbar.setBackgroundResource(com.tokopedia.core2.R.color.white)
+            toolbar.setBackgroundResource(com.tokopedia.abstraction.R.color.white)
         } else {
-            toolbar.setBackgroundResource(com.tokopedia.core2.R.drawable.bg_white_toolbar_drop_shadow)
+            toolbar.setBackgroundResource(com.tokopedia.transaction.R.drawable.bg_white_toolbar_drop_shadow)
         }
         img_share_button.setOnClickListener {
             if (shareData != null) {
                 CatalogDetailPageAnalytics.trackEventClickSocialShare()
-                DefaultShare(this, shareData).show()
+                DefaultShareData(this, shareData!!).show()
             } else
                 NetworkErrorHelper.showSnackbar(this, "Data katalog belum tersedia")
         }
