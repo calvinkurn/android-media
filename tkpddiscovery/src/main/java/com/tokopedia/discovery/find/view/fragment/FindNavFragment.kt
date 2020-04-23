@@ -33,6 +33,7 @@ import com.tokopedia.discovery.categoryrevamp.view.fragments.BaseBannedProductFr
 import com.tokopedia.discovery.categoryrevamp.view.interfaces.ProductCardListener
 import com.tokopedia.discovery.categoryrevamp.view.interfaces.QuickFilterListener
 import com.tokopedia.discovery.common.constants.SearchConstant
+import com.tokopedia.discovery.common.manager.AdultManager
 import com.tokopedia.discovery.find.analytics.FindPageAnalytics.Companion.findPageAnalytics
 import com.tokopedia.discovery.find.data.model.RelatedLinkData
 import com.tokopedia.discovery.find.di.component.DaggerFindNavComponent
@@ -237,6 +238,16 @@ class FindNavFragment : BaseBannedProductFragment(), ProductCardListener,
                 }
                 is Fail -> {
                     renderRelatedLink(ArrayList())
+                }
+            }
+        })
+
+        findNavViewModel.getAdultProductLiveData().observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Success -> {
+                    if(it.data){
+                        AdultManager.showAdultPopUp(this, AdultManager.ORIGIN_FIND_PAGE, findSearchParam)
+                    }
                 }
             }
         })
@@ -622,5 +633,23 @@ class FindNavFragment : BaseBannedProductFragment(), ProductCardListener,
     override fun onPriceListClick(product: ProductsItem, adapterPosition: Int) {
         findPageAnalytics.eventClickPriceList()
         openProductDetailPage(product, adapterPosition)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        AdultManager.handleActivityResult(activity, requestCode, resultCode, data, object : AdultManager.Callback {
+            override fun onFail() {
+
+            }
+
+            override fun onVerificationSuccess(message: String?) {
+                reloadData()
+            }
+
+            override fun onLoginPreverified() {
+                reloadData()
+            }
+
+        })
     }
 }

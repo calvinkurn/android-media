@@ -26,6 +26,7 @@ class FindNavViewModel @Inject constructor() : ViewModel(), CoroutineScope {
     private val mProductList = MutableLiveData<Result<List<ProductsItem>>>()
     private val mProductCount = MutableLiveData<List<String>>()
     private var mBannedData = MutableLiveData<Result<ArrayList<String>>>()
+    private var adultProduct = MutableLiveData<Result<Boolean>>()
     private var mQuickFilterModel = MutableLiveData<Result<List<Filter>>>()
     private var mDynamicFilterModel = MutableLiveData<Result<DynamicFilterModel>>()
     private var mRelatedLinkList = MutableLiveData<Result<List<RelatedLinkData>>>()
@@ -56,20 +57,30 @@ class FindNavViewModel @Inject constructor() : ViewModel(), CoroutineScope {
 
     private fun handleDataForSearchProduct(searchProduct: SearchProduct) {
         if (checkForBannedData(searchProduct)) {
-            val list = ArrayList<String>()
-            searchProduct.errorMessage?.let {
-                list.add(it)
-            }
-            searchProduct.liteUrl?.let {
-                list.add(it)
-            }
-            mBannedData.value = Success(list)
+            mBannedData.value = Success(getBannedDataValue(searchProduct))
+        } else if (!checkForAdultData(searchProduct)) {
+            adultProduct.value = Success(true)
         } else {
             searchProduct.products.let { productList ->
                 mProductList.value = Success((productList) as List<ProductsItem>)
             }
             setProductCountValue(searchProduct)
         }
+    }
+
+    private fun getBannedDataValue(searchProduct: SearchProduct): ArrayList<String> {
+        val list = ArrayList<String>()
+        searchProduct.errorMessage?.let {
+            list.add(it)
+        }
+        searchProduct.liteUrl?.let {
+            list.add(it)
+        }
+        return list
+    }
+
+    private fun checkForAdultData(searchProduct: SearchProduct): Boolean {
+        return searchProduct.isQuerySafe ?: true
     }
 
     private fun setProductCountValue(searchProduct: SearchProduct) {
@@ -135,7 +146,7 @@ class FindNavViewModel @Inject constructor() : ViewModel(), CoroutineScope {
         return mProductList
     }
 
-    fun getProductCountLiveData(): MutableLiveData<List<String>> {
+    fun getProductCountLiveData(): LiveData<List<String>> {
         return mProductCount
     }
 
@@ -153,5 +164,9 @@ class FindNavViewModel @Inject constructor() : ViewModel(), CoroutineScope {
 
     fun getRelatedLinkListLiveData(): LiveData<Result<List<RelatedLinkData>>> {
         return mRelatedLinkList
+    }
+
+    fun getAdultProductLiveData(): MutableLiveData<Result<Boolean>> {
+        return adultProduct
     }
 }
