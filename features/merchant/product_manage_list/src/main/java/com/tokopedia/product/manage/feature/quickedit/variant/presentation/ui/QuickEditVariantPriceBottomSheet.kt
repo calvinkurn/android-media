@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.product.manage.R
+import com.tokopedia.product.manage.feature.quickedit.common.constant.EditProductConstant.MINIMUM_PRICE
 import com.tokopedia.product.manage.feature.quickedit.variant.adapter.ProductVariantAdapter
 import com.tokopedia.product.manage.feature.quickedit.variant.adapter.factory.ProductVariantPriceAdapterFactoryImpl
 import com.tokopedia.product.manage.feature.quickedit.variant.adapter.viewholder.ProductVariantPriceViewHolder.*
@@ -43,7 +44,18 @@ class QuickEditVariantPriceBottomSheet(
     }
 
     override fun onSaveButtonClicked(result: EditVariantResult) {
-        onSaveVariantsPrice(result)
-        dismiss()
+        if(isVariantsPriceValid(result)) {
+            onSaveVariantsPrice(result)
+            dismiss()
+        }
+    }
+
+    private fun isVariantsPriceValid(result: EditVariantResult): Boolean {
+        result.variants.forEach {
+            if(it.price < MINIMUM_PRICE) {
+                return false
+            }
+        }
+        return true
     }
 }

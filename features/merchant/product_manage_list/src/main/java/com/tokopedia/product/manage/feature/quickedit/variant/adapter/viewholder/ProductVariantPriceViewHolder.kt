@@ -8,6 +8,8 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.product.manage.R
+import com.tokopedia.product.manage.feature.quickedit.common.constant.EditProductConstant.MAXIMUM_PRICE_LENGTH
+import com.tokopedia.product.manage.feature.quickedit.common.constant.EditProductConstant.MINIMUM_PRICE
 import com.tokopedia.product.manage.feature.quickedit.variant.adapter.model.ProductVariant
 import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import com.tokopedia.utils.text.currency.CurrencyIdrTextWatcher
@@ -21,8 +23,6 @@ class ProductVariantPriceViewHolder(
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.item_product_manage_variant
-
-        private const val MAXIMUM_INPUT_LENGTH = 11
     }
 
     override fun bind(variant: ProductVariant) {
@@ -43,14 +43,14 @@ class ProductVariantPriceViewHolder(
             setFirstIcon(R.drawable.ic_system_action_close_normal_24)
             getFirstIcon().setOnClickListener {
                 textFieldInput.text.clear()
-                hideTextFieldPriceError()
+                hidePriceError()
             }
         }
     }
 
     private fun setTextFieldPriceMaxLength() {
         itemView.textFieldPrice.apply {
-            val maxLength = LengthFilter(MAXIMUM_INPUT_LENGTH)
+            val maxLength = LengthFilter(MAXIMUM_PRICE_LENGTH)
             textFieldInput.filters = arrayOf(maxLength)
         }
     }
@@ -84,6 +84,14 @@ class ProductVariantPriceViewHolder(
                 }
 
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                    val input = textFieldInput.text.toString()
+                    val price = CurrencyFormatHelper.convertRupiahToInt(input)
+
+                    if(price < MINIMUM_PRICE) {
+                        showMinPriceError()
+                    } else {
+                        hidePriceError()
+                    }
                 }
             })
             setOnFocusChangeListener { _, hasFocus ->
@@ -99,10 +107,20 @@ class ProductVariantPriceViewHolder(
         itemView.textFieldPrice.setInputType(InputType.TYPE_CLASS_NUMBER)
     }
 
-    private fun hideTextFieldPriceError() {
+    private fun showMinPriceError() {
         itemView.textFieldPrice.apply {
-            setError(false)
+           context?.let {
+               val message = it.getString(R.string.product_manage_quick_edit_min_price_error)
+               setMessage(message)
+               setError(true)
+           }
+        }
+    }
+
+    private fun hidePriceError() {
+        itemView.textFieldPrice.apply {
             setMessage("")
+            setError(false)
         }
     }
 
