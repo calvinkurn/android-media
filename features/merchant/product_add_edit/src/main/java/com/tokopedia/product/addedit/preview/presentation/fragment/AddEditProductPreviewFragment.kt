@@ -99,7 +99,9 @@ import com.tokopedia.product.addedit.shipment.presentation.model.ShipmentInputMo
 import com.tokopedia.product.addedit.tooltip.model.ImageTooltipModel
 import com.tokopedia.product.addedit.tooltip.model.NumericTooltipModel
 import com.tokopedia.product.addedit.tooltip.presentation.TooltipBottomSheet
+import com.tokopedia.product.addedit.tracking.ProductAddMainTracking
 import com.tokopedia.product.addedit.tracking.ProductAddStepperTracking
+import com.tokopedia.product.addedit.tracking.ProductEditMainTracking
 import com.tokopedia.product.addedit.tracking.ProductEditStepperTracking
 import com.tokopedia.product_photo_adapter.PhotoItemTouchHelperCallback
 import com.tokopedia.product_photo_adapter.ProductPhotoAdapter
@@ -117,6 +119,7 @@ import javax.inject.Inject
 class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHolder.OnPhotoChangeListener {
 
     private var isProductStatusSwitchFirstTime = false
+    private var countTouchPhoto = 0
 
     private var toolbar: Toolbar? = null
 
@@ -578,6 +581,15 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
 
     override fun onStartDrag(viewHolder: RecyclerView.ViewHolder) {
         photoItemTouchHelper?.startDrag(viewHolder)
+        countTouchPhoto += 1
+        if(countTouchPhoto == 2) {
+            if (viewModel.isEditing.value == true && !viewModel.isAdding) {
+                ProductEditMainTracking.trackDragPhoto(shopId)
+            } else {
+                ProductAddMainTracking.trackDragPhoto(shopId)
+            }
+            countTouchPhoto = 0
+        }
     }
 
     override fun onRemovePhoto(viewHolder: RecyclerView.ViewHolder) {

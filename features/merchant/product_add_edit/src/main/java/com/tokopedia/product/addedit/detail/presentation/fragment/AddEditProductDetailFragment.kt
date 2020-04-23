@@ -120,6 +120,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
 
     private var selectedDurationPosition: Int = UNIT_DAY
     private var isPreOrderFirstTime = false
+    private var countTouchPhoto = 0
 
     // product photo
     private var addProductPhotoButton: AppCompatTextView? = null
@@ -654,12 +655,16 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     }
 
     override fun onStartDrag(viewHolder: RecyclerView.ViewHolder) {
-        if (viewModel.isEditing && !viewModel.isAdding) {
-            ProductEditMainTracking.trackDragPhoto(shopId)
-        } else {
-            ProductAddMainTracking.trackDragPhoto(shopId)
-        }
         photoItemTouchHelper?.startDrag(viewHolder)
+        countTouchPhoto += 1
+        if(countTouchPhoto == 2) {
+            if (viewModel.isEditing && !viewModel.isAdding) {
+                ProductEditMainTracking.trackDragPhoto(shopId)
+            } else {
+                ProductAddMainTracking.trackDragPhoto(shopId)
+            }
+            countTouchPhoto = 0
+        }
     }
 
     override fun onRemovePhoto(viewHolder: RecyclerView.ViewHolder) {
