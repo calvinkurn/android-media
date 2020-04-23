@@ -1,15 +1,14 @@
 package com.tokopedia.settingnotif.usersetting.domain
 
-import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.settingnotif.usersetting.base.BaseRequestUseCase
+import com.tokopedia.settingnotif.usersetting.base.SettingRepository
 import com.tokopedia.settingnotif.usersetting.data.pojo.setusersetting.SetUserSettingResponse
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
 open class SetUserSettingUseCase @Inject constructor(
-        private val repository: GraphqlRepository,
+        private val repository: SettingRepository,
         private val graphQuery: String
 ) : UseCase<SetUserSettingResponse>() {
 
@@ -17,20 +16,11 @@ open class SetUserSettingUseCase @Inject constructor(
 
     override suspend fun executeOnBackground(): SetUserSettingResponse {
         require(params.paramsAllValueInString.isNotEmpty())
-
-        val request = GraphqlRequest(graphQuery, SetUserSettingResponse::class.java, params.parameters)
-        val response = repository.getReseponse(listOf(request))
-        val error = response.getError(SetUserSettingResponse::class.java)
-
-        if (error == null || error.isEmpty()) {
-            return response.getData(
-                    SetUserSettingResponse::class.java
-            ) as SetUserSettingResponse
-        } else {
-            throw MessageErrorException(
-                    error.mapNotNull { it.message }.joinToString(separator = ", ")
-            )
-        }
+        return BaseRequestUseCase.execute(
+                query = graphQuery,
+                repository = repository,
+                requestParams = params
+        )
     }
 
     companion object {
