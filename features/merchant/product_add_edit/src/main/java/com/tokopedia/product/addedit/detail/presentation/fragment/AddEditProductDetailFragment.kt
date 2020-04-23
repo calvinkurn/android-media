@@ -658,6 +658,8 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     override fun onStartDrag(viewHolder: RecyclerView.ViewHolder) {
         photoItemTouchHelper?.startDrag(viewHolder)
         countTouchPhoto += 1
+        // photoItemTouchHelper?.startDrag(viewHolder) can hit tracker one time
+        // to avoid double hit tracker when dragging or touching image product, we need count how many onStartDrag func run
         if(countTouchPhoto == 2) {
             if (viewModel.isEditing && !viewModel.isAdding) {
                 ProductEditMainTracking.trackDragPhoto(shopId)
