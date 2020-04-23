@@ -121,7 +121,6 @@ abstract class QuickEditVariantBottomSheet: BottomSheetUnify(), HasComponent<Qui
     private fun setupSaveBtn(result: EditVariantResult) {
         btnSave.setOnClickListener {
             onSaveButtonClicked(result)
-            dismiss()
         }
     }
 
