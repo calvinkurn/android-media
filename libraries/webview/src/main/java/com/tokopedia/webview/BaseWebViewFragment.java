@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import android.webkit.CookieManager;
 import android.webkit.GeolocationPermissions;
 import android.webkit.JavascriptInterface;
+import android.webkit.PermissionRequest;
 import android.webkit.SslErrorHandler;
 import android.webkit.URLUtil;
 import android.webkit.ValueCallback;
@@ -181,6 +182,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         webView.clearCache(true);
         webView.addJavascriptInterface(new WebToastInterface(getActivity()),"Android");
         WebSettings webSettings = webView.getSettings();
+        webSettings.setUserAgentString(webSettings.getUserAgentString() + " webview ");
         webSettings.setJavaScriptEnabled(true);
         webSettings.setCacheMode(WebSettings.LOAD_NO_CACHE);
         webSettings.setDomStorageEnabled(true);
@@ -322,6 +324,35 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         @Override
         public void onGeolocationPermissionsShowPrompt(String origin, GeolocationPermissions.Callback callback) {
             checkLocationPermission(callback, origin);
+        }
+
+        @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+        @Override
+        public void onPermissionRequest(PermissionRequest request) {
+            for (String resource:
+                    request.getResources()) {
+                if (resource.equals(PermissionRequest.RESOURCE_VIDEO_CAPTURE)) {
+                    permissionCheckerHelper = new PermissionCheckerHelper();
+                    permissionCheckerHelper.checkPermission(BaseWebViewFragment.this, PermissionCheckerHelper.Companion.PERMISSION_CAMERA, new PermissionCheckerHelper.PermissionCheckListener() {
+                        @Override
+                        public void onPermissionDenied(String permissionText) {
+                            request.deny();
+                        }
+                        @Override
+                        public void onNeverAskAgain(String permissionText) {
+                            request.deny();
+                        }
+                        @Override
+                        public void onPermissionGranted() {
+                            request.grant(request.getResources());
+                        }
+                    }, getString(R.string.need_permission_camera));
+                }
+            }
+        }
+        @Override
+        public void onPermissionRequestCanceled(PermissionRequest request) {
+            super.onPermissionRequestCanceled(request);
         }
 
         @Override
