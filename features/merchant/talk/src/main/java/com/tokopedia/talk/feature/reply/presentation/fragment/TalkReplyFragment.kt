@@ -38,6 +38,7 @@ import com.tokopedia.talk.feature.reply.presentation.widget.listeners.*
 import com.tokopedia.talk_old.R
 import com.tokopedia.talk_old.reporttalk.view.activity.ReportTalkActivity
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_talk_reading.pageError
@@ -56,6 +57,9 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
         const val NOT_FOLLOWING = false
         const val REPORT_ACTIVITY_REQUEST_CODE = 201
         const val ATTACH_PRODUCT_ACTIVITY_REQUEST_CODE = 202
+        const val TEXT_LIMIT = 10
+        const val TOASTER_ERROR_DEFAULT_HEIGHT = 50
+        const val TOASTER_ERROR_WITH_ATTACHED_PRODUCTS_HEIGHT = 150
 
         @JvmStatic
         fun createNewInstance(questionId: String, shopId: String, productId: String): TalkReplyFragment =
@@ -133,9 +137,6 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
                 }
                 ATTACH_PRODUCT_ACTIVITY_REQUEST_CODE -> {
                     if (!it.hasExtra(AttachProductActivity.TOKOPEDIA_ATTACH_PRODUCT_RESULT_KEY)) {
-                        return
-                    }
-                    if(resultCode != Activity.RESULT_OK) {
                         return
                     }
                     val resultProducts: ArrayList<ResultProduct> = it.getParcelableArrayListExtra(AttachProductActivity.TOKOPEDIA_ATTACH_PRODUCT_RESULT_KEY)
@@ -256,12 +257,14 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
     }
 
     private fun showSuccessToaster(successMessage: String) {
+        adjustToasterHeight()
         view?.let {
             Toaster.make(it, successMessage, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL, getString(R.string.talk_ok))
         }
     }
 
     private fun showErrorToaster(errorMessage: String) {
+        adjustToasterHeight()
         view?.let {
             Toaster.make(it, errorMessage, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR, getString(R.string.talk_ok))
         }
@@ -304,15 +307,27 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
     }
 
     private fun onAnswerTooLong() {
-        showErrorToaster(getString(R.string.reply_toaster_message_too_long))
+        adjustToasterHeight()
+        view?.let { Toaster.make(it, getString(R.string.reply_toaster_message_too_long), Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR) }
     }
 
     private fun onSuccessCreateComment() {
         showSuccessToaster(getString(R.string.reply_toaster_success))
+        resetTextBox()
+        resetAttachedProducts()
     }
 
     private fun onFailCreateComment() {
-        showErrorToaster(getString(R.string.reply_toaster_network_error))
+        adjustToasterHeight()
+        view?.let { Toaster.make(it, getString(R.string.reply_toaster_network_error), Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR, getString(R.string.talk_ok)) }
+    }
+
+    private fun adjustToasterHeight() {
+        if(viewModel.attachedProducts.value?.isNotEmpty() == true) {
+            Toaster.toasterCustomBottomHeight = TOASTER_ERROR_WITH_ATTACHED_PRODUCTS_HEIGHT.toPx()
+            return
+        }
+        Toaster.toasterCustomBottomHeight = TOASTER_ERROR_DEFAULT_HEIGHT.toPx()
     }
 
     private fun onSuccessReport() {
@@ -408,7 +423,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
     }
 
     private fun initTextBox() {
-        replyTextBox.bind(userSession.profilePicture, this)
+        replyTextBox.bind(userSession.profilePicture, this, TEXT_LIMIT)
     }
 
     private fun initAttachedProductAdapter() {
@@ -518,5 +533,13 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
             shopId = it.getString(SHOP_ID, "")
             productId = it.getString(PRODUCT_ID, "")
         }
+    }
+
+    private fun resetTextBox() {
+        replyTextBox.reset()
+    }
+
+    private fun resetAttachedProducts() {
+        viewModel.setAttachedProducts(mutableListOf())
     }
 }

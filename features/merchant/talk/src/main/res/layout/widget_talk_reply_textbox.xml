@@ -22,7 +22,7 @@
         android:background="@drawable/bg_rounded_chat_input"
         android:hint="@string/reply_editText_placeholder"
         android:inputType="textMultiLine"
-        android:maxLines="5"
+        android:maxLines="4"
         android:paddingStart="@dimen/spacing_lvl7"
         android:paddingLeft="@dimen/spacing_lvl7"
         android:paddingTop="@dimen/dp_10"
