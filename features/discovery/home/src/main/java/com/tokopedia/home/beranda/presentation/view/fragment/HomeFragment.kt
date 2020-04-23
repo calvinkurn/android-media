@@ -23,6 +23,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.content.ContextCompat
 import androidx.core.util.Pair
+import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -196,6 +197,23 @@ class HomeFragment : BaseDaggerFragment(),
         }
     }
 
+    override val eggListener: HomeEggListener
+        get() = this
+    override val trackingQueue: TrackingQueue
+        get()  = TrackingQueue(activity!!)
+    override val childsFragmentManager: FragmentManager
+        get() = childFragmentManager
+
+    override val userId: String
+        get() = viewModel!!.getUserId()
+
+    override val windowHeight: Int
+        get() = if (activity != null) {
+            root!!.height
+        } else {
+            0
+        }
+
     @Inject
     lateinit var permissionCheckerHelper: PermissionCheckerHelper
     @Inject
@@ -210,8 +228,6 @@ class HomeFragment : BaseDaggerFragment(),
     private lateinit var homeRecyclerView: NestedRecyclerView
     private lateinit var root: FrameLayout
     private lateinit var refreshLayout: ToggleableSwipeRefreshLayout
-    private lateinit var adapter: HomeRecycleAdapter
-    private lateinit var layoutManager: LinearLayoutManager
     private lateinit var floatingTextButton: FloatingTextButton
     private lateinit var stickyLoginView: StickyLoginView
     private lateinit var onEggScrollListener: RecyclerView.OnScrollListener
@@ -222,13 +238,14 @@ class HomeFragment : BaseDaggerFragment(),
     private lateinit var tickerDetail: TickerDetail
     private lateinit var homeSnackbar: Snackbar
     private lateinit var sharedPrefs: SharedPreferences
+    private var adapter: HomeRecycleAdapter? = null
+    private var layoutManager: LinearLayoutManager? = null
     private var messageSnackbar: SnackbarRetry? = null
     private var homePerformanceMonitoringListener: HomePerformanceMonitoringListener? = null
     private var showRecomendation = false
     private var mShowTokopointNative = false
     private var isShowFirstInstallSearch = false
     private var scrollToRecommendList = false
-    private var trackingQueue: TrackingQueue
     private var isFeedLoaded = false
     private var startToTransitionOffset = 0
     private var searchBarTransitionRange = 0
@@ -260,7 +277,6 @@ class HomeFragment : BaseDaggerFragment(),
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         userSession = UserSession(activity)
-        trackingQueue = TrackingQueue(activity!!)
         irisAnalytics = getInstance(activity!!)
         irisSession = IrisSession(context!!)
         remoteConfig = FirebaseRemoteConfigImpl(activity)
@@ -491,8 +507,7 @@ class HomeFragment : BaseDaggerFragment(),
                 return sendScreen()
             }
         }
-        executeWeaveCoRoutine<String, RemoteConfig>(sendScrWeave,
-                WeaverFirebaseConditionCheck(RemoteConfigKey.ENABLE_ASYNC_HOME_SNDSCR, remoteConfig))
+        executeWeaveCoRoutine(sendScrWeave, WeaverFirebaseConditionCheck(RemoteConfigKey.ENABLE_ASYNC_HOME_SNDSCR, remoteConfig))
     }
 
     override fun onPause() {
@@ -629,7 +644,7 @@ class HomeFragment : BaseDaggerFragment(),
     private fun observeStickyLogin() {
         viewModel!!.stickyLogin.observe(viewLifecycleOwner, Observer { (status, data) ->
             if (status === Result.Status.SUCCESS) {
-                setStickyContent(data)
+                setStickyContent(data!!)
             } else {
                 hideStickyLogin()
             }
@@ -642,7 +657,7 @@ class HomeFragment : BaseDaggerFragment(),
             Glide.with(context!!)
                     .asBitmap()
                     .load(playCardViewModelEvent.peekContent().playCardHome!!.coverUrl)
-                    .into(object : CustomTarget<Bitmap?>() {
+                    .into(object : CustomTarget<Bitmap>() {
                         override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
                             viewModel!!.setPlayBanner(playCardViewModelEvent.peekContent())
                         }
@@ -675,12 +690,12 @@ class HomeFragment : BaseDaggerFragment(),
     }
 
     private fun isDataValid(visitables: List<HomeVisitable?>): Boolean {
-        return containsInstance(visitables, HomepageBannerDataModel::class.java)
+        return containsInstance(visitables)
     }
 
-    private fun <T> containsInstance(list: List<T>, type: Class<*>): Boolean {
+    private fun <T> containsInstance(list: List<T>): Boolean {
         for (a in list) {
-            if (a.javaClass == type) {
+            if (a is HomepageBannerDataModel) {
                 return true
             }
         }
@@ -756,7 +771,7 @@ class HomeFragment : BaseDaggerFragment(),
     // https://stackoverflow.com/questions/28672883/java-lang-illegalstateexception-fragment-not-attached-to-activity
     private val floatingEggButtonFragment: FloatingEggButtonFragment?
         private get() =// https://stackoverflow.com/questions/28672883/java-lang-illegalstateexception-fragment-not-attached-to-activity
-            if (activity != null && isAdded && getChildFragmentManager() != null) {
+            if (activity != null && isAdded && childsFragmentManager != null) {
                 getChildFragmentManager().findFragmentById(R.id.floating_egg_fragment) as FloatingEggButtonFragment?
             } else null
 
@@ -764,7 +779,7 @@ class HomeFragment : BaseDaggerFragment(),
         layoutManager = LinearLayoutManager(context)
         homeRecyclerView!!.layoutManager = layoutManager
         val adapterFactory = HomeAdapterFactory(
-                getChildFragmentManager(),
+                childsFragmentManager,
                 this,
                 this,
                 this,
@@ -1417,7 +1432,7 @@ class HomeFragment : BaseDaggerFragment(),
 
     private fun fetchTokopointsNotification(type: String) {
         if (activity != null) {
-            TokoPointsNotificationManager.fetchNotification(activity, type, getChildFragmentManager())
+            TokoPointsNotificationManager.fetchNotification(activity, type, childsFragmentManager)
         }
     }
 
@@ -1449,19 +1464,6 @@ class HomeFragment : BaseDaggerFragment(),
             homeMainToolbar!!.setInboxNumber(inboxCount)
         }
     }
-
-    override val eggListener: HomeEggListener
-        get() = this
-
-    override val userId: String
-        get() = viewModel!!.getUserId()
-
-    override val windowHeight: Int
-        get() = if (activity != null) {
-            root!!.height
-        } else {
-            0
-        }
 
     private val windowHeightForExtraSpace: Int
         private get() = if (activity != null) {
@@ -1691,7 +1693,7 @@ class HomeFragment : BaseDaggerFragment(),
             val listener = object : RecyclerView.OnScrollListener() {
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                     super.onScrolled(recyclerView, dx, dy)
-                    if (layoutManager.findLastVisibleItemPosition() >= adapterPosition) {
+                    if (layoutManager!!.findLastVisibleItemPosition() >= adapterPosition) {
                         sendIrisTracker(DynamicChannelViewHolder.Companion.getLayoutType(dynamicChannelDataModel.channel!!),
                                 dynamicChannelDataModel.channel!!,
                                 adapterPosition);
