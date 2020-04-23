@@ -140,8 +140,7 @@ public class WelcomeFragment extends BaseDaggerFragment implements
             @Override
             public void onClick(View v) {
                 if (MainApplication.getAppContext() instanceof TkpdCoreRouter) {
-                    Intent intent = ((TkpdCoreRouter) MainApplication.getAppContext())
-                            .getLoginIntent(getActivity());
+                    Intent intent = RouteManager.getIntent(getActivity(), ApplinkConst.LOGIN);
                     startActivityForResult(intent, REQUEST_LOGIN);
                 }
             }
@@ -190,21 +189,6 @@ public class WelcomeFragment extends BaseDaggerFragment implements
     public void onDestroyView() {
         super.onDestroyView();
         presenter.destroyView();
-    }
-
-    @Override
-    public void addProgressbar() {
-        ProgressBar pb = new ProgressBar(getActivity(), null, android.R.attr.progressBarStyle);
-        int lastPos = containerProvider.getChildCount() - 1;
-        if (containerProvider != null && !(containerProvider.getChildAt(lastPos) instanceof ProgressBar))
-            containerProvider.addView(pb, containerProvider.getChildCount());
-    }
-
-    @Override
-    public void removeProgressBar() {
-        int lastPos = containerProvider.getChildCount() - 1;
-        if (containerProvider != null && containerProvider.getChildAt(lastPos) instanceof ProgressBar)
-            containerProvider.removeViewAt(containerProvider.getChildCount() - 1);
     }
 
     @Override
@@ -314,11 +298,6 @@ public class WelcomeFragment extends BaseDaggerFragment implements
                 presenter.initData();
                 break;
         }
-    }
-
-    @Override
-    public void showError(String string) {
-        SnackbarManager.make(getActivity(), string, Snackbar.LENGTH_LONG).show();
     }
 
     public boolean checkHasNoProvider() {

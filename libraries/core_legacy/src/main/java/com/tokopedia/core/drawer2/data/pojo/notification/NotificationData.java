@@ -7,7 +7,6 @@ import com.google.gson.annotations.SerializedName;
  * Created by Angga.Prasetiyo on 18/12/2015.
  */
 public class NotificationData {
-    private static final String TAG = NotificationData.class.getSimpleName();
 
     @SerializedName("total_cart")
     @Expose

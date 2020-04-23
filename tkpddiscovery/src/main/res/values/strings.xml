@@ -98,4 +98,6 @@
     <string name="title_tokopedia">Tokopedia</string>
     <string name="find_data_updated_text">Data diperbaharui pada %s</string>
     <string name="find_price_header_text">Daftar harga %s terbaru %s</string>
+    <string name="tkpd_discovery_message_share_catalog">Klik link ini untuk menemukan catalog dari Tokopedia. </string>
+    <string name="tkpd_discovery_share_text_content">Klik link ini untuk menemukan produk yang baru saya temukan di Tokopedia, Klik </string>
 </resources>
