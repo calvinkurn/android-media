@@ -7,11 +7,16 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="@dimen/spacing_lvl4"
+    android:layout_marginStart="@dimen/spacing_lvl4"
+    android:layout_marginLeft="@dimen/spacing_lvl4"
+    android:layout_marginRight="@dimen/spacing_lvl4"
+    android:layout_marginEnd="@dimen/spacing_lvl4"
     app:card_type="border">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        >
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/ivRatingReview"
@@ -35,6 +40,7 @@
             android:layout_marginTop="@dimen/dp_12"
             android:textColor="@color/clr_f531353b"
             app:layout_constraintStart_toEndOf="@id/ivRatingReview"
+            app:layout_constraintEnd_toStartOf="@id/tgFiveReview"
             app:layout_constraintTop_toTopOf="parent"
             app:typographyType="heading_1"
             app:typographyWeight="bold"
