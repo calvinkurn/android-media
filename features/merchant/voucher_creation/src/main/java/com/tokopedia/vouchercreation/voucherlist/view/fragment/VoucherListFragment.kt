@@ -14,13 +14,15 @@ import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.getBooleanArgs
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.di.component.DaggerVoucherCreationComponent
+import com.tokopedia.vouchercreation.voucherlist.logD
 import com.tokopedia.vouchercreation.voucherlist.model.*
+import com.tokopedia.vouchercreation.voucherlist.toJson
 import com.tokopedia.vouchercreation.voucherlist.view.adapter.factory.VoucherListAdapterFactoryImpl
 import com.tokopedia.vouchercreation.voucherlist.view.viewholder.MenuViewHolder
 import com.tokopedia.vouchercreation.voucherlist.view.viewholder.VoucherViewHolder
 import com.tokopedia.vouchercreation.voucherlist.view.viewmodel.VoucherListViewModel
-import com.tokopedia.vouchercreation.voucherlist.view.widget.filterbottomsheet.FilterBottomSheet
 import com.tokopedia.vouchercreation.voucherlist.view.widget.VoucherListBottomSheet
+import com.tokopedia.vouchercreation.voucherlist.view.widget.filterbottomsheet.FilterBottomSheet
 import com.tokopedia.vouchercreation.voucherlist.view.widget.headerchips.ChipType
 import com.tokopedia.vouchercreation.voucherlist.view.widget.sortbottomsheet.SortBottomSheet
 import kotlinx.android.synthetic.main.fragment_mvc_voucher_list.view.*
@@ -63,9 +65,9 @@ class VoucherListFragment : BaseListFragment<BaseVoucherListUiModel, VoucherList
             SortBottomSheet.getMvcSortItems(requireContext())
         }
     }
-    private val filterItems: List<BaseFilterUiModel> by lazy {
+    private val filterItems: MutableList<BaseFilterUiModel> by lazy {
         return@lazy if (context == null) {
-            emptyList()
+            mutableListOf()
         } else {
             FilterBottomSheet.getMvcFilterItems(requireContext())
         }
@@ -202,7 +204,14 @@ class VoucherListFragment : BaseListFragment<BaseVoucherListUiModel, VoucherList
         val parent = view as? ViewGroup ?: return
         FilterBottomSheet(parent)
                 .setOnApplyClickListener {
-
+                    logD("setOnApplyClickListener")
+                }
+                .setCancelApplyFilter {
+                    logD("setCancelApplyFilter : default -> ${filterItems.toJson}")
+                    logD("setCancelApplyFilter : cancel -> ${it.toJson}")
+                    filterItems.clear()
+                    filterItems.addAll(it)
+                    logD("setCancelApplyFilter : new -> ${filterItems.toJson}")
                 }
                 .show(childFragmentManager, filterItems)
     }

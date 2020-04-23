@@ -12,8 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.voucherlist.model.BaseFilterUiModel
-import com.tokopedia.vouchercreation.voucherlist.model.BaseFilterUiModel.FilterGroup
-import com.tokopedia.vouchercreation.voucherlist.model.BaseFilterUiModel.FilterItem
+import com.tokopedia.vouchercreation.voucherlist.model.BaseFilterUiModel.*
 import com.tokopedia.vouchercreation.voucherlist.view.adapter.FilterAdapter
 import kotlinx.android.synthetic.main.bottomsheet_mvc_filter.view.*
 
@@ -28,11 +27,12 @@ class FilterBottomSheet(
     companion object {
         val TAG: String = FilterBottomSheet::class.java.simpleName
 
-        fun getMvcFilterItems(context: Context): List<BaseFilterUiModel> {
-            return listOf(
+        fun getMvcFilterItems(context: Context): MutableList<BaseFilterUiModel> {
+            return mutableListOf(
                     FilterGroup(context.getString(R.string.mvc_type_of_voucher)),
                     FilterItem(context.getString(R.string.mvc_cashback), FilterBy.CASHBACK),
                     FilterItem(context.getString(R.string.mvc_free_shipping), FilterBy.FREE_SHIPPING),
+                    FilterDivider,
                     FilterGroup(context.getString(R.string.mvc_voucher_target)),
                     FilterItem(context.getString(R.string.mvc_public), FilterBy.PUBLIC),
                     FilterItem(context.getString(R.string.mvc_special), FilterBy.SPECIAL)
@@ -40,8 +40,11 @@ class FilterBottomSheet(
         }
     }
 
+    private var applyFilter = false
     private var onApplyClick: () -> Unit = {}
+    private var onCancelApply: (items: List<BaseFilterUiModel>) -> Unit = {}
     private val filterAdapter by lazy { FilterAdapter(this::onItemFilterClick) }
+    private var tmpFilterList = emptyList<BaseFilterUiModel>()
 
     init {
         setTitle(parent.context.getString(R.string.mvc_filter))
@@ -58,6 +61,7 @@ class FilterBottomSheet(
         rvMcvFilter.addItemDecoration(getFilterItemDecoration())
 
         btnMvcApplyFilter.setOnClickListener {
+            applyFilter = true
             onApplyClick()
             dismissAllowingStateLoss()
         }
@@ -102,18 +106,36 @@ class FilterBottomSheet(
         clearAction()
     }
 
-
     fun setOnApplyClickListener(action: () -> Unit): FilterBottomSheet {
         onApplyClick = action
         return this
     }
 
+    fun setCancelApplyFilter(callback: (items: List<BaseFilterUiModel>) -> Unit): FilterBottomSheet {
+        this.onCancelApply = callback
+        return this
+    }
+
     override fun onDismiss(dialog: DialogInterface) {
         super.onDismiss(dialog)
-        println("onDismiss")
+        if (!applyFilter) {
+            onCancelApply(tmpFilterList)
+        }
+    }
+
+    private fun List<BaseFilterUiModel>.copy(): List<BaseFilterUiModel> {
+        return this.map {
+            return@map if (it is FilterItem) {
+                it.copy()
+            } else {
+                it
+            }
+        }
     }
 
     fun show(fm: FragmentManager, items: List<BaseFilterUiModel>) {
+        tmpFilterList = items.copy()
+
         filterAdapter.clearAllElements()
         filterAdapter.addElement(items)
 

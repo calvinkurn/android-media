@@ -28,4 +28,6 @@
     <dimen name="mvc_create_target_description_size">12sp</dimen>
     <dimen name="mvc_create_target_description_line_spacing">4sp</dimen>
     <dimen name="mvc_dimen_14dp">14dp</dimen>
+    <dimen name="mvc_dimen_10dp">10dp</dimen>
+    <dimen name="mvc_dimen_minus_8dp">-8dp</dimen>
 </resources>
