@@ -65,8 +65,8 @@ class PlayViewModel @Inject constructor(
         get() = _observableChatList
     val observableTotalLikes: LiveData<TotalLikeUiModel>
         get() = _observableTotalLikes
-    val observableIsLikeContent: LiveData<Boolean>
-        get() = _observableIsLikeContent
+    val observableLikeState: LiveData<LikeStateUiModel>
+        get() = _observableLikeState
     val observableTotalViews: LiveData<TotalViewUiModel>
         get() = _observableTotalViews
     val observablePartnerInfo: LiveData<PartnerInfoUiModel>
@@ -156,7 +156,7 @@ class PlayViewModel @Inject constructor(
     private val _observableVideoStream = MutableLiveData<VideoStreamUiModel>()
     private val _observableChatList = MutableLiveData<MutableList<PlayChatUiModel>>()
     private val _observableTotalLikes = MutableLiveData<TotalLikeUiModel>()
-    private val _observableIsLikeContent = MutableLiveData<Boolean>()
+    private val _observableLikeState = MutableLiveData<LikeStateUiModel>()
     private val _observableTotalViews = MutableLiveData<TotalViewUiModel>()
     private val _observablePartnerInfo = MutableLiveData<PartnerInfoUiModel>()
     private val _observableQuickReply = MutableLiveData<QuickReplyUiModel>()
@@ -473,6 +473,7 @@ class PlayViewModel @Inject constructor(
     }
 
     fun changeLikeCount(shouldLike: Boolean) {
+        _observableLikeState.value = LikeStateUiModel(isLiked = shouldLike, fromNetwork = false)
         val currentTotalLike = _observableTotalLikes.value ?: TotalLikeUiModel.empty()
         if (!hasWordsOrDotsRegex.containsMatchIn(currentTotalLike.totalLikeFormatted)) {
             var finalTotalLike = currentTotalLike.totalLike + (if (shouldLike) 1 else -1)
@@ -601,7 +602,7 @@ class PlayViewModel @Inject constructor(
                 getIsLikeUseCase.params = GetIsLikeUseCase.createParam(contentId, contentType)
                 getIsLikeUseCase.executeOnBackground()
             }
-            _observableIsLikeContent.value = isLiked
+            _observableLikeState.value = LikeStateUiModel(isLiked, fromNetwork = true)
         } catch (e: Exception) {
         }
     }

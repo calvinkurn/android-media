@@ -41,7 +41,7 @@ sealed class ScreenStateEvent : ComponentEvent {
     /**
      * Like
      */
-    data class LikeContent(val shouldLike: Boolean, val animate: Boolean) : ScreenStateEvent()
+    data class LikeContent(val likeState: LikeStateUiModel, val isFirstTime: Boolean) : ScreenStateEvent()
     /**
      * Follow
      */

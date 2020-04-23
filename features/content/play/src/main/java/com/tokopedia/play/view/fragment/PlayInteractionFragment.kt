@@ -377,13 +377,17 @@ class PlayInteractionFragment :
     }
 
     private fun observeLikeContent() {
-        playViewModel.observableIsLikeContent.observe(viewLifecycleOwner, Observer {
-            launch {
-                EventBusFactory.get(viewLifecycleOwner)
-                        .emit(
-                                ScreenStateEvent::class.java,
-                                ScreenStateEvent.LikeContent(it, false)
-                        )
+        playViewModel.observableLikeState.observe(viewLifecycleOwner, object : Observer<LikeStateUiModel> {
+            private var isFirstTime = true
+            override fun onChanged(likeModel: LikeStateUiModel) {
+                launch {
+                    EventBusFactory.get(viewLifecycleOwner)
+                            .emit(
+                                    ScreenStateEvent::class.java,
+                                    ScreenStateEvent.LikeContent(likeModel, isFirstTime)
+                            )
+                    isFirstTime = false
+                }
             }
         })
     }
@@ -928,18 +932,7 @@ class PlayInteractionFragment :
                 playViewModel.likeType,
                 shouldLike)
 
-        sendEventLikeContent(shouldLike)
         PlayAnalytics.clickLike(channelId, shouldLike, playViewModel.channelType)
-    }
-
-    private fun sendEventLikeContent(shouldLike: Boolean) {
-        launch {
-            EventBusFactory.get(viewLifecycleOwner)
-                    .emit(
-                            ScreenStateEvent::class.java,
-                            ScreenStateEvent.LikeContent(shouldLike, true)
-                    )
-        }
     }
 
     private fun openLoginPage() {

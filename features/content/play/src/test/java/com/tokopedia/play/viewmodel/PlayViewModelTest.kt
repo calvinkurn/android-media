@@ -172,7 +172,7 @@ class PlayViewModelTest {
         playViewModel.getChannelInfo(mockChannel.channelId)
 
         Assertions
-                .assertThat(playViewModel.observableIsLikeContent.getOrAwaitValue())
+                .assertThat(playViewModel.observableLikeState.getOrAwaitValue())
                 .isEqualTo(expectedModel)
     }
 
