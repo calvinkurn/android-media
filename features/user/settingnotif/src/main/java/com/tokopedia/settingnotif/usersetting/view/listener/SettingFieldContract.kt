@@ -15,7 +15,6 @@ interface SettingFieldContract {
         )
         fun loadUserSettings()
         fun requestUpdateMoengageUserSetting(updatedSettingIds: List<Map<String, Any>>)
-        fun cleared()
     }
 
     interface SettingState {
@@ -33,7 +32,6 @@ interface SettingFieldContract {
         fun getPinnedItems(): List<VisitableSettings>
         fun getSettingStates(): List<ParentSetting>
         fun updateSettingState(setting: ParentSetting?)
-        fun cleared()
     }
 
 }

@@ -232,11 +232,6 @@ abstract class SettingFieldFragment : BaseListFragment<Visitable<*>,
         }
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        settingViewModel.cleared()
-    }
-
     // disable pagination
     override fun isLoadMoreEnabledByDefault(): Boolean = false
 
