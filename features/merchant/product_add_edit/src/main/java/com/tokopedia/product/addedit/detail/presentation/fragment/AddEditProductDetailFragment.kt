@@ -278,6 +278,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                 showImmutableCategoryDialog()
             } else {
                 val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PRODUCT_CATEGORY_PICKER, 0.toString())
+                intent.putExtra(AddEditProductConstants.EXTRA_IS_EDIT_MODE, (viewModel.isEditing && !viewModel.isAdding))
                 startActivityForResult(intent, REQUEST_CODE_CATEGORY)
             }
         }
