@@ -135,11 +135,6 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
     }
 
     @Override
-    public void inflateFragment(Fragment fragment, String tag) {
-        getFragmentManager().beginTransaction().add(R.id.main_view, fragment, tag).commit();
-    }
-
-    @Override
     public void onBackPressed() {
         if (getFragmentManager().getBackStackEntryCount() > 0) {
             getFragmentManager().popBackStack();
