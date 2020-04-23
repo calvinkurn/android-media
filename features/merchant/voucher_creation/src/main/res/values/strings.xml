@@ -12,7 +12,8 @@
     <string name="mvc_edit_quota">Ubah Kuota</string>
     <string name="mvc_edit_shown_period">Ubah Periode Tampil</string>
     <string name="mvc_view_detail_and_edit_voucher">Lihat Detail &amp; Ubah Voucher</string>
-    <string name="mvc_view_detail">Ubah Voucher</string>
+    <string name="mvc_view_detail">Lihat Detail</string>
+    <string name="mvc_edit_voucher">Ubah Voucher</string>
     <string name="mvc_download">Download</string>
     <string name="mvc_duplicate">Duplikat</string>
     <string name="mvc_cancel">Batalkan</string>
