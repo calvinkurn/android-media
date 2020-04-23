@@ -2,6 +2,21 @@
 <resources>
     <string name="app_name">Voucher Creation</string>
     <string name="create_voucher_title">Tambah Voucher Toko</string>
+    <string name="voucher_creation_step_next">Lanjutkan</string>
+    <string name="mvc_voucher_active">Lihat Voucher Aktif</string>
+    <string name="mvc_voucher_history">Lihat Riwayat Voucher</string>
+    <string name="mvc_share">Bagikan</string>
+    <string name="mvc_used">Terpakai</string>
+    <string name="mvc_edit_quota">Ubah Kuota</string>
+    <string name="mvc_edit_shown_period">Ubah Periode Tampil</string>
+    <string name="mvc_view_detail_and_edit_voucher">Lihat Detail &amp; Ubah Voucher</string>
+    <string name="mvc_view_detail">Ubah Voucher</string>
+    <string name="mvc_download">Download</string>
+    <string name="mvc_duplicate">Duplikat</string>
+    <string name="mvc_cancel">Batalkan</string>
+    <string name="mvc_stop">Hentikan</string>
+    <string name="mvc_sort">Urutkan</string>
+    <string name="mvc_voucher_type">Jenis Voucher</string>
     <string name="mvc_create_step_next">Lanjutkan</string>
     <string name="mvc_create_save">Simpan</string>
     <string name="mvc_create_display_voucher">Lihat Tampilan Voucher</string>
