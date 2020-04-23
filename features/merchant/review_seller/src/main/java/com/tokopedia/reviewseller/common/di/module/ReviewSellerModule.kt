@@ -7,6 +7,8 @@ import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.reviewseller.common.di.scope.ReviewSellerScope
 import dagger.Module
 import dagger.Provides
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 
 @Module
 @ReviewSellerScope
@@ -19,6 +21,12 @@ class ReviewSellerModule {
     @ReviewSellerScope
     @Provides
     fun provideGraphqlRepository(): GraphqlRepository = Interactor.getInstance().graphqlRepository
+
+
+    @ReviewSellerScope
+    @Provides
+    fun provideCoroutineDispatcher(): CoroutineDispatcher = Dispatchers.Main
+
 
     @ReviewSellerScope
     @Provides

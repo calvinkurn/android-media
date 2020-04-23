@@ -5,6 +5,8 @@ import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.list.ListItemUnify
 import com.tokopedia.unifycomponents.list.ListUnify
+import java.math.RoundingMode
+import java.text.DecimalFormat
 import java.util.*
 
 object ReviewSellerUtil {
@@ -40,6 +42,12 @@ object ReviewSellerUtil {
         return String.format("$old;$newValue")
     }
 
+}
+
+fun Float.roundDecimal(): String {
+    val df = DecimalFormat("#.##")
+    df.roundingMode = RoundingMode.CEILING
+    return df.format(this)
 }
 
 fun Map<String, Any>.getKeyByValue(value: String?): String {
