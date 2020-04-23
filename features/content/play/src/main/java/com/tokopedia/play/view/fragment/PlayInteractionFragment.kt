@@ -213,6 +213,7 @@ class PlayInteractionFragment :
         observeToolbarInfo()
         observeTotalLikes()
         observeTotalViews()
+        observeNewChat()
         observeChatList()
         observePinned()
         observeCartInfo()
@@ -332,14 +333,29 @@ class PlayInteractionFragment :
         playViewModel.observableTotalViews.observe(viewLifecycleOwner, Observer(::setTotalView))
     }
 
-    private fun observeChatList() {
-        playViewModel.observableNewChat.observe(viewLifecycleOwner, Observer {
+    private fun observeNewChat() {
+        playViewModel.observableNewChat.observe(viewLifecycleOwner, EventObserver {
             launch {
                 EventBusFactory.get(viewLifecycleOwner)
                         .emit(
                                 ScreenStateEvent::class.java,
                                 ScreenStateEvent.IncomingChat(it)
                         )
+            }
+        })
+    }
+
+    private fun observeChatList() {
+        playViewModel.observableChatList.observe(viewLifecycleOwner, object : Observer<List<PlayChatUiModel>> {
+            override fun onChanged(chatList: List<PlayChatUiModel>) {
+                playViewModel.observableChatList.removeObserver(this)
+                launch {
+                    EventBusFactory.get(viewLifecycleOwner)
+                            .emit(
+                                    ScreenStateEvent::class.java,
+                                    ScreenStateEvent.SetChatList(chatList)
+                            )
+                }
             }
         })
     }

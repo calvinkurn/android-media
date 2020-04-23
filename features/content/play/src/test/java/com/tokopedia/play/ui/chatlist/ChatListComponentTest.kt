@@ -245,7 +245,7 @@ class ChatListComponentTest {
         val mockChat = modelBuilder.buildPlayChatUiModel()
 
         EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.IncomingChat(mockChat))
-        verify { component.uiView.showChat(mockChat) }
+        verify { component.uiView.showNewChat(mockChat) }
         confirmVerified(component.uiView)
     }
 

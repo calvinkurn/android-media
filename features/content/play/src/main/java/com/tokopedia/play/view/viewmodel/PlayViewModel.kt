@@ -1,10 +1,7 @@
 package com.tokopedia.play.view.viewmodel
 
 import android.net.Uri
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MediatorLiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Observer
+import androidx.lifecycle.*
 import com.google.android.exoplayer2.ExoPlayer
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -23,6 +20,7 @@ import com.tokopedia.play.view.uimodel.mapper.PlayUiMapper
 import com.tokopedia.play.view.wrapper.PlayResult
 import com.tokopedia.play.view.wrapper.GlobalErrorCodeWrapper
 import com.tokopedia.play.ERR_SERVER_ERROR
+import com.tokopedia.play.util.event.Event
 import com.tokopedia.play_common.model.PlayBufferControl
 import com.tokopedia.play_common.player.PlayVideoManager
 import com.tokopedia.usecase.coroutines.Fail
@@ -61,8 +59,10 @@ class PlayViewModel @Inject constructor(
         get() = _observableSocketInfo
     val observableVideoStream: LiveData<VideoStreamUiModel>
         get() = _observableVideoStream
-    val observableNewChat: LiveData<PlayChatUiModel>
+    val observableNewChat: LiveData<Event<PlayChatUiModel>>
         get() = _observableNewChat
+    val observableChatList: LiveData<out List<PlayChatUiModel>>
+        get() = _observableChatList
     val observableTotalLikes: LiveData<TotalLikeUiModel>
         get() = _observableTotalLikes
     val observableIsLikeContent: LiveData<Boolean>
@@ -154,7 +154,7 @@ class PlayViewModel @Inject constructor(
     private val _observableGetChannelInfo = MutableLiveData<Result<ChannelInfoUiModel>>()
     private val _observableSocketInfo = MutableLiveData<PlaySocketInfo>()
     private val _observableVideoStream = MutableLiveData<VideoStreamUiModel>()
-    private val _observableNewChat = MutableLiveData<PlayChatUiModel>()
+    private val _observableChatList = MutableLiveData<MutableList<PlayChatUiModel>>()
     private val _observableTotalLikes = MutableLiveData<TotalLikeUiModel>()
     private val _observableIsLikeContent = MutableLiveData<Boolean>()
     private val _observableTotalViews = MutableLiveData<TotalViewUiModel>()
@@ -166,6 +166,11 @@ class PlayViewModel @Inject constructor(
     private val _observableVideoProperty = MutableLiveData<VideoPropertyUiModel>()
     private val _observableProductSheetContent = MutableLiveData<PlayResult<ProductSheetUiModel>>()
     private val _observableBottomInsetsState = MutableLiveData<Map<BottomInsetsType, BottomInsetsState>>()
+    private val _observableNewChat = MediatorLiveData<Event<PlayChatUiModel>>().apply {
+        addSource(_observableChatList) { chatList ->
+            chatList.lastOrNull()?.let { value = Event(it) }
+        }
+    }
     private val _observablePinned = MediatorLiveData<PinnedUiModel>()
     private val _observableBadgeCart = MutableLiveData<CartUiModel>()
     private val stateHandler: LiveData<Unit> = MediatorLiveData<Unit>().apply {
@@ -231,6 +236,8 @@ class PlayViewModel @Inject constructor(
                 else _observablePinned.value = PinnedRemoveUiModel
             }
         }
+
+        _observableChatList.value = mutableListOf()
 
         _observableBottomInsetsState.value = getLatestBottomInsetsMapState()
     }
@@ -454,7 +461,7 @@ class PlayViewModel @Inject constructor(
 
         val cleanMessage = message.trimMultipleNewlines()
         playSocket.send(cleanMessage)
-        _observableNewChat.value = PlayUiMapper.mapPlayChat(userSession.userId,
+        setNewChat(PlayUiMapper.mapPlayChat(userSession.userId,
                 PlayChat(
                         message = cleanMessage,
                         user = PlayChat.UserData(
@@ -462,7 +469,7 @@ class PlayViewModel @Inject constructor(
                                 name = userSession.name,
                                 image = userSession.profilePicture)
                 )
-        )
+        ))
     }
 
     fun changeLikeCount(shouldLike: Boolean) {
@@ -523,7 +530,7 @@ class PlayViewModel @Inject constructor(
                         _observableTotalViews.value = PlayUiMapper.mapTotalViews(result)
                     }
                     is PlayChat -> {
-                        _observableNewChat.value = PlayUiMapper.mapPlayChat(userSession.userId, result)
+                        setNewChat(PlayUiMapper.mapPlayChat(userSession.userId, result))
                     }
                     is PinnedMessage -> {
                         val partnerName = _observablePartnerInfo.value?.name.orEmpty()
@@ -569,6 +576,12 @@ class PlayViewModel @Inject constructor(
      */
     private fun destroy() {
         playSocket.destroy()
+    }
+
+    private fun setNewChat(chat: PlayChatUiModel) {
+        val currentChatList = _observableChatList.value
+        currentChatList?.add(chat)
+        _observableChatList.value = currentChatList
     }
 
     private suspend fun getTotalLikes(contentId: Int, contentType: Int, likeType: Int) {
