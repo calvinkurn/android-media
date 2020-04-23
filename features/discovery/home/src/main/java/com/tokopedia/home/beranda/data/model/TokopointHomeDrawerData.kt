@@ -3,7 +3,7 @@ package com.tokopedia.home.beranda.data.model
 import android.os.Parcel
 import android.os.Parcelable
 
-class TokopointHomeDrawerData (
+data class TokopointHomeDrawerData (
         val offFlag: Int = -1,
         val hasNotification: Int = -1,
         val userTier: UserTier = UserTier(),

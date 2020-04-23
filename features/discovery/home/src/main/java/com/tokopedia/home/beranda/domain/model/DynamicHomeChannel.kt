@@ -180,7 +180,7 @@ data class DynamicHomeChannel(
                 val grid: Grid = grids[i]
                 list.add(
                         DataLayer.mapOf(
-                                "id", id + "_" + grid.id,
+                                "id", id + "_" + grid.id+ "_" + persoType+ "_" + categoryID,
                                 "name", promoName,
                                 "creative", grid.attribution,
                                 "creative_url", grid.imageUrl,

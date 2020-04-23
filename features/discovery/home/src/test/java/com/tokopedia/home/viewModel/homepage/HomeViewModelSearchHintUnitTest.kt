@@ -31,8 +31,7 @@ class HomeViewModelSearchHintUnitTest : Spek({
             }
 
             Then("Check data observer"){
-//                assert(homeViewModel.searchHint.value != null)
-                assert(true)
+                assert(homeViewModel.searchHint.value != null)
             }
         }
 
@@ -50,8 +49,7 @@ class HomeViewModelSearchHintUnitTest : Spek({
             }
 
             Then("Check data observer"){
-//                assert(homeViewModel.searchHint.value == null)
-                assert(true)
+                assert(homeViewModel.searchHint.value == null)
             }
         }
     }
