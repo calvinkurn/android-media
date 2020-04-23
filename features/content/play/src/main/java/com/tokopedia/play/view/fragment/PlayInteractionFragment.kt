@@ -97,7 +97,7 @@ class PlayInteractionFragment :
         PlayMoreActionBottomSheet.Listener {
 
     companion object {
-        private const val INTERACTION_TOUCH_CLICK_TOLERATION = 25
+        private const val INTERACTION_TOUCH_CLICK_TOLERANCE = 25
 
         private const val REQUEST_CODE_LOGIN = 192
 
@@ -425,7 +425,7 @@ class PlayInteractionFragment :
     //endregion
 
     private fun setupView(view: View) {
-        container.setOnTouchListener(PlayClickTouchListener(INTERACTION_TOUCH_CLICK_TOLERATION))
+        container.setOnTouchListener(PlayClickTouchListener(INTERACTION_TOUCH_CLICK_TOLERANCE))
         container.setOnClickListener {
             if (
                     (playViewModel.screenOrientation.isLandscape && container.hasAlpha) ||

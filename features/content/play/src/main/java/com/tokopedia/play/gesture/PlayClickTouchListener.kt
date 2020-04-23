@@ -6,16 +6,16 @@ import android.view.View
 /**
  * Created by jegul on 23/04/20
  */
-class PlayClickTouchListener(private val toleration: Int) : View.OnTouchListener {
+class PlayClickTouchListener(private val tolerance: Int) : View.OnTouchListener {
 
     private var currentX = -1
     private var currentY = -1
 
-    private val tolerationXRange: IntRange
-        get() = currentX - toleration .. currentX + toleration
+    private val toleranceXRange: IntRange
+        get() = currentX - tolerance .. currentX + tolerance
 
-    private val tolerationYRange: IntRange
-        get() = currentY - toleration .. currentY + toleration
+    private val toleranceYRange: IntRange
+        get() = currentY - tolerance .. currentY + tolerance
 
     override fun onTouch(v: View, event: MotionEvent): Boolean {
         return when (event.action) {
@@ -27,7 +27,7 @@ class PlayClickTouchListener(private val toleration: Int) : View.OnTouchListener
             MotionEvent.ACTION_UP -> {
                 val upX = event.x.toInt()
                 val upY = event.y.toInt()
-                if (upX in tolerationXRange && upY in tolerationYRange) {
+                if (upX in toleranceXRange && upY in toleranceYRange) {
                     v.performClick()
 
                 }
