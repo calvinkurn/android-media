@@ -229,7 +229,6 @@ public class ContactUsHomeFragment extends BaseDaggerFragment
             encodedUrl = ContactUsURL.NAVIGATE_NEXT_URL;
         }
         startActivity(RouteManager.getIntent(getContext(), encodedUrl));
-//        startActivity(((ContactUsModuleRouter) (getContext().getApplicationContext())).getWebviewActivityWithIntent(getContext(), encodedUrl, "Hubungi Kami"));
     }
 
     public void onBtnChatClicked() {

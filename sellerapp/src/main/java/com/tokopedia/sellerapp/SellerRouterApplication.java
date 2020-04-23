@@ -136,9 +136,7 @@ public abstract class SellerRouterApplication extends MainApplication
         AbstractionRouter,
         ShopModuleRouter,
         ApplinkRouter,
-        NetworkRouter, TopChatRouter,
-        ContactUsModuleRouter, WithdrawRouter,
-        TopAdsWebViewRouter,
+        NetworkRouter,
         PhoneVerificationRouter,
         TopAdsManagementRouter,
         BroadcastMessageRouter,
@@ -146,7 +144,7 @@ public abstract class SellerRouterApplication extends MainApplication
         CoreNetworkRouter,
         FlashSaleRouter,
         LinkerRouter,
-        ResolutionRouter {
+        ResolutionRouter,
         SellerHomeRouter {
 
     protected RemoteConfig remoteConfig;
@@ -630,9 +628,6 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    }
-
-    @Override
     public Intent getInboxTalkCallingIntent(@NonNull Context context) {
         return InboxTalkActivity.Companion.createIntent(context);
     }
@@ -750,5 +745,11 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public Fragment getChatListFragment() {
         return ChatTabListFragment.create();
+    }
+
+    @Override
+    public void sendAnalyticsAnomalyResponse(String title,
+                                             String accessToken, String refreshToken,
+                                             String response, String request) {
     }
 }
