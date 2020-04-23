@@ -4,7 +4,6 @@ import android.util.Log
 import androidx.test.rule.ActivityTestRule
 import com.tokopedia.analytics.performance.util.PltPerformanceData
 import com.tokopedia.product.detail.view.activity.ProductDetailActivity
-import com.tokopedia.test.application.TestRepeatRule
 import org.junit.Rule
 import org.junit.Test
 import java.io.File
@@ -17,9 +16,6 @@ class PltProductPerformanceTest {
 
     @get:Rule
     var activityRule: ActivityTestRule<ProductDetailActivity> = ActivityTestRule(ProductDetailActivity::class.java)
-
-    @get:Rule
-    var testRepeatRule: TestRepeatRule = TestRepeatRule()
 
     @Test
     fun testPageLoadTimePerformance() {

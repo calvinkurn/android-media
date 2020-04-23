@@ -107,6 +107,8 @@ dependencies {
         exclude group: 'org.jetbrains.kotlin:kotlin-stdlib-jdk7'
     }
     implementation rootProject.ext.tkpdInternalLibDependencies.betaNotif
+    implementation rootProject.ext.tkpdInternalLibDependencies.fakeresponse
+    implementation project(rootProject.ext.libraries.commonNetwork)
 }
 
 project.ext {

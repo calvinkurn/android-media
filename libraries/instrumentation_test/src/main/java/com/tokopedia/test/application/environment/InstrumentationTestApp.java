@@ -13,6 +13,7 @@ import com.google.firebase.FirebaseApp;
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.analyticsdebugger.debugger.FpmLogger;
+import com.tokopedia.common.network.util.NetworkClient;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.TkpdCoreRouter;
 import com.tokopedia.core.analytics.container.GTMAnalytics;
@@ -52,6 +53,7 @@ public class InstrumentationTestApp extends BaseMainApplication implements TkpdC
         TrackApp.getInstance().registerImplementation(TrackApp.GTM, GTMAnalytics.class);
         TrackApp.getInstance().registerImplementation(TrackApp.APPSFLYER, DummyAppsFlyerAnalytics.class);
         TrackApp.getInstance().initializeAllApis();
+        NetworkClient.init(this);
         GlobalConfig.DEBUG = true;
         GlobalConfig.VERSION_NAME = "3.66";
         GraphqlClient.init(this);
@@ -398,6 +400,11 @@ public class InstrumentationTestApp extends BaseMainApplication implements TkpdC
 
     @Override
     public void doRelogin(String newAccessToken) {
+
+    }
+
+    @Override
+    public void sendAnalyticsAnomalyResponse(String s, String s1, String s2, String s3, String s4) {
 
     }
 }
