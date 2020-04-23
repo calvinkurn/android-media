@@ -37,7 +37,7 @@ class TalkReplyTextbox : BaseCustomView {
         replySendButton.setOnClickListener {
             talkReplyTextboxListener.onSendButtonClicked(replyEditText.text.toString())
         }
-        val textWatcher = TalkReplyTextWatcher(textLimit, talkReplyTextboxListener)
+        val textWatcher = TalkReplyTextWatcher(textLimit, talkReplyTextboxListener, replyEditText)
         replyEditText.addTextChangedListener(textWatcher)
         replyEditText.filters = arrayOf(InputFilter.LengthFilter(textLimit))
     }

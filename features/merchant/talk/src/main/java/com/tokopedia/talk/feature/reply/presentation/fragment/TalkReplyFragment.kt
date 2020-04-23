@@ -520,7 +520,9 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
     }
 
     private fun sendComment(text: String) {
-        viewModel.createNewComment(text, questionId)
+        if(text.isNotBlank()) {
+            viewModel.createNewComment(text, questionId)
+        }
     }
 
     private fun removeAttachedProduct(productId: String) {
