@@ -336,8 +336,28 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         return TkpdSeller.getActivitySellingTransactionOpportunity(context, query);
     }
 
+    /**
+     * Use {@link com.tokopedia.applink.RouteManager} or {@link ApplinkRouter#isSupportApplink(String)}
+     *
+     * @param appLinks
+     * @return
+     */
+    @Deprecated
+    public boolean isSupportedDelegateDeepLink(String appLinks) {
+        return isSupportApplink(appLinks);
+    }
+
     public Intent getIntentDeepLinkHandlerActivity() {
         return new Intent(this, DeeplinkHandlerActivity.class);
+    }
+
+    /**
+     * Use {@link com.tokopedia.applink.RouteManager} or {@link ApplinkRouter#goToApplinkActivity(Activity, String, Bundle)}
+     */
+    @Deprecated
+    @Override
+    public void actionNavigateByApplinksUrl(Activity activity, String applinks, Bundle bundle) {
+        goToApplinkActivity(activity, applinks, bundle);
     }
 
     @Override

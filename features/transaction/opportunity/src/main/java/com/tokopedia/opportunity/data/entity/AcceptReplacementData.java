@@ -1,4 +1,4 @@
-package com.tokopedia.core.network.entity.replacement;
+package com.tokopedia.opportunity.data.entity;
 
 import com.google.gson.annotations.SerializedName;
 

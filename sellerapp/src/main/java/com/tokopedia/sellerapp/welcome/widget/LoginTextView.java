@@ -16,8 +16,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
-import com.tokopedia.core2.R;
 import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.sellerapp.R;
 
 /**
  * Created by stevenfredian on 6/2/16.

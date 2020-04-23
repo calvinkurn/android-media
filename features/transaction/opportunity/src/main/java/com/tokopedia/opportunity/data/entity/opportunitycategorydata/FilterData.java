@@ -1,10 +1,9 @@
 
-package com.tokopedia.core.network.entity.replacement.opportunitycategorydata;
+package com.tokopedia.opportunity.data.entity.opportunitycategorydata;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Deprecated
