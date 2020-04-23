@@ -60,7 +60,8 @@ private const val EXTRA_PARENT_NAME = " PARENT_NAME"
 private const val STATE_GRID = 1
 private const val STATE_LIST = 2
 private const val STATE_BIG = 3
-
+private const val DEPARTMENT_ID = "DEPARTMENT_ID"
+private const val EXTRA_CATEGORY_URL = "CATEGORY_URL"
 
 class CategoryNavActivity : BaseActivity(), CategoryNavigationListener,
         SearchNavigationView.SearchNavClickListener,
@@ -97,6 +98,7 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener,
     lateinit var categoryNavViewModel: CategoryNavViewModel
 
     object DeepLinkIntents {
+
         @DeepLink(Constants.Applinks.DISCOVERY_CATEGORY_DETAIL, ApplinkConstInternalDiscovery.DISCOVERY_CATEGORY_DETAIL_MARKETPLACE)
         @JvmStatic
         fun getCallingCategoryIntent(context: Context?, bundle: Bundle): Intent? {
