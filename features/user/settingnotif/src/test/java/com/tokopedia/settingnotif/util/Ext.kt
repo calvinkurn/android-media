@@ -2,6 +2,7 @@ package com.tokopedia.settingnotif.util
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
+import org.assertj.core.api.Assertions
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.TimeoutException
@@ -29,4 +30,8 @@ fun <T> LiveData<T>.getOrAwaitValue(
 
     @Suppress("UNCHECKED_CAST")
     return data as T
+}
+
+infix fun LiveData<*>.isEqualsTo(any: Any) {
+    Assertions.assertThat(this.getOrAwaitValue()).isEqualTo(any)
 }
