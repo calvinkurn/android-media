@@ -26,7 +26,6 @@ class VideoView(container: ViewGroup) : UIView(container) {
                     .findViewById(R.id.cl_video_view)
 
     private val pvVideo = view.findViewById<VideoPlayCustom>(R.id.pv_video)
-    private val ivThumbnail = view.findViewById<ImageView>(R.id.iv_thumbnail)
 
     override val containerId: Int = view.id
 
@@ -47,26 +46,7 @@ class VideoView(container: ViewGroup) : UIView(container) {
         pvVideo.setPlayer(exoPlayer)
     }
 
-    internal fun setThumbnail() {
-        pvVideo.textureView?.bitmap?.let {
-            ivThumbnail.setImageBitmap(it)
-        }
-    }
-
     internal fun setOrientation(screenOrientation: ScreenOrientation, videoOrientation: VideoOrientation) {
         pvVideo.setOrientation(screenOrientation, videoOrientation)
-        view.changeConstraint {
-            if (videoOrientation.isHorizontal && !screenOrientation.isLandscape) clear(ivThumbnail.id, ConstraintSet.BOTTOM)
-            else connect(ivThumbnail.id, ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM)
-        }
     }
-
-    internal fun showThumbnail(shouldShow: Boolean) {
-        if (shouldShow) {
-            ivThumbnail.visible()
-        } else {
-            ivThumbnail.gone()
-        }
-    }
-
 }

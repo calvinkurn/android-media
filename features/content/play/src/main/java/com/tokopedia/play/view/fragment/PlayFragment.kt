@@ -278,7 +278,15 @@ class PlayFragment : BaseDaggerFragment(), PlaySensorOrientationManager.Orientat
      * @return true means the onBackPressed() has been handled by this fragment
      */
     fun onBackPressed(): Boolean {
-        return playViewModel.onBackPressed()
+        val isHandled = playViewModel.onBackPressed()
+        return when {
+            isHandled -> isHandled
+            playViewModel.screenOrientation.isLandscape -> {
+                requestedOrientation = ScreenOrientation.Portrait.requestedOrientation
+                true
+            }
+            else -> false
+        }
     }
 
     fun onNewChannelId(channelId: String?) {

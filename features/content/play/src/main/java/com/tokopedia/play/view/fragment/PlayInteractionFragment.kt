@@ -31,6 +31,7 @@ import com.tokopedia.play.di.PlayModule
 import com.tokopedia.play.extensions.hasAlpha
 import com.tokopedia.play.extensions.isAnyHidden
 import com.tokopedia.play.extensions.isAnyShown
+import com.tokopedia.play.gesture.PlayClickTouchListener
 import com.tokopedia.play.ui.chatlist.ChatListComponent
 import com.tokopedia.play.ui.endliveinfo.EndLiveInfoComponent
 import com.tokopedia.play.ui.endliveinfo.interaction.EndLiveInfoInteractionEvent
@@ -96,6 +97,8 @@ class PlayInteractionFragment :
         PlayMoreActionBottomSheet.Listener {
 
     companion object {
+        private const val INTERACTION_TOUCH_CLICK_TOLERANCE = 25
+
         private const val REQUEST_CODE_LOGIN = 192
 
         private const val PERCENT_PRODUCT_SHEET_HEIGHT = 0.6
@@ -442,6 +445,7 @@ class PlayInteractionFragment :
     //endregion
 
     private fun setupView(view: View) {
+        container.setOnTouchListener(PlayClickTouchListener(INTERACTION_TOUCH_CLICK_TOLERANCE))
         container.setOnClickListener {
             if (
                     (playViewModel.screenOrientation.isLandscape && container.hasAlpha) ||
