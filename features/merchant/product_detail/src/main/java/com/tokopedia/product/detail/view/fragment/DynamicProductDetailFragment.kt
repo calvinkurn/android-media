@@ -917,7 +917,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         activity?.let {
             val intent = RouteManager.getIntent(
                     it,
-                    ApplinkConstInternalMechant.TALK_READING,
+                    ApplinkConstInternalMarketplace.TALK_READING,
                     viewModel.getDynamicProductInfoP1?.basic?.productID,
                     viewModel.getDynamicProductInfoP1?.basic?.shopID
             )

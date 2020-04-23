@@ -20,6 +20,7 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.removeObservers
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.talk.common.TalkConstants
+import com.tokopedia.talk.common.TalkConstants.PRODUCT_ID
 import com.tokopedia.talk.common.TalkConstants.QUESTION_ID
 import com.tokopedia.talk.common.TalkConstants.SHOP_ID
 import com.tokopedia.talk.feature.reply.data.mapper.TalkReplyMapper
@@ -35,6 +36,7 @@ import com.tokopedia.talk.feature.reply.presentation.viewmodel.TalkReplyViewMode
 import com.tokopedia.talk.feature.reply.presentation.widget.TalkReplyReportBottomSheet
 import com.tokopedia.talk.feature.reply.presentation.widget.listeners.*
 import com.tokopedia.talk_old.R
+import com.tokopedia.talk_old.reporttalk.view.activity.ReportTalkActivity
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -56,12 +58,13 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
         const val ATTACH_PRODUCT_ACTIVITY_REQUEST_CODE = 202
 
         @JvmStatic
-        fun createNewInstance(questionId: String, shopId: String): TalkReplyFragment =
+        fun createNewInstance(questionId: String, shopId: String, productId: String): TalkReplyFragment =
                 TalkReplyFragment().apply {
                     arguments = Bundle()
                     arguments?.apply {
                         putString(QUESTION_ID, questionId)
                         putString(SHOP_ID, shopId)
+                        putString(PRODUCT_ID, productId)
                     }
                 }
     }
@@ -73,6 +76,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
 
     private var questionId = ""
     private var shopId = ""
+    private var productId = ""
     private var adapter: TalkReplyAdapter? = null
     private var attachedProductAdapter: TalkReplyAttachedProductAdapter? = null
 
@@ -123,11 +127,17 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
         data?.let {
             when(requestCode) {
                 REPORT_ACTIVITY_REQUEST_CODE -> {
-
+                    if(resultCode == Activity.RESULT_OK) {
+                        onSuccessReport()
+                    }
                 }
                 ATTACH_PRODUCT_ACTIVITY_REQUEST_CODE -> {
-                    if (!it.hasExtra(AttachProductActivity.TOKOPEDIA_ATTACH_PRODUCT_RESULT_KEY))
+                    if (!it.hasExtra(AttachProductActivity.TOKOPEDIA_ATTACH_PRODUCT_RESULT_KEY)) {
                         return
+                    }
+                    if(resultCode != Activity.RESULT_OK) {
+                        return
+                    }
                     val resultProducts: ArrayList<ResultProduct> = it.getParcelableArrayListExtra(AttachProductActivity.TOKOPEDIA_ATTACH_PRODUCT_RESULT_KEY)
                     setAttachedProducts(TalkReplyMapper.mapResultProductsToAttachedProducts(resultProducts))
                 }
@@ -179,7 +189,12 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
     }
 
     private fun goToReportActivity(commentId: String) {
-
+        val intent = if(commentId.isNotBlank()) {
+            context?.let { ReportTalkActivity.createIntentReportComment(it, questionId, commentId, shopId, productId) }
+        } else {
+            context?.let { ReportTalkActivity.createIntentReportTalk(it, questionId, shopId, productId) }
+        }
+        startActivityForResult(intent, REPORT_ACTIVITY_REQUEST_CODE)
     }
 
     private fun goToAttachProductActivity() {
@@ -298,6 +313,10 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
 
     private fun onFailCreateComment() {
         showErrorToaster(getString(R.string.reply_toaster_network_error))
+    }
+
+    private fun onSuccessReport() {
+        showSuccessToaster(getString(R.string.toaster_report_success))
     }
 
     private fun observeFollowUnfollowResponse() {
@@ -497,6 +516,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
         arguments?.let {
             questionId = it.getString(QUESTION_ID, "")
             shopId = it.getString(SHOP_ID, "")
+            productId = it.getString(PRODUCT_ID, "")
         }
     }
 }

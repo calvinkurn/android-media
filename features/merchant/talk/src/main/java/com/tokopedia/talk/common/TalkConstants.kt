@@ -6,4 +6,5 @@ object TalkConstants {
     const val QUESTION_ID = "question_id"
     const val COMMENT_ID = "comment_id"
     const val SHOP_ID = "shop_id"
+    const val PRODUCT_ID = "product_id"
 }

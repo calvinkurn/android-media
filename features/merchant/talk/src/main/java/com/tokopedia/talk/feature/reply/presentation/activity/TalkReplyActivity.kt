@@ -14,6 +14,7 @@ class TalkReplyActivity : BaseSimpleActivity(), HasComponent<TalkComponent> {
 
     private var questionId = ""
     private var shopId = ""
+    private var productId = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         getDataFromAppLink()
@@ -22,7 +23,7 @@ class TalkReplyActivity : BaseSimpleActivity(), HasComponent<TalkComponent> {
     }
 
     override fun getNewFragment(): Fragment? {
-        return TalkReplyFragment.createNewInstance(questionId, shopId)
+        return TalkReplyFragment.createNewInstance(questionId, shopId, productId)
     }
 
     override fun getComponent(): TalkComponent {
@@ -36,13 +37,17 @@ class TalkReplyActivity : BaseSimpleActivity(), HasComponent<TalkComponent> {
 
     private fun getDataFromAppLink() {
         val uri = intent.data ?: return
-        val questionIdString = uri.pathSegments[uri.pathSegments.size - 2] ?: return
+        val questionIdString = uri.pathSegments[uri.pathSegments.size - 3] ?: return
         if (questionIdString.isNotEmpty()) {
             this.questionId = questionIdString
         }
-        val shopIdString = uri.lastPathSegment ?: return
+        val shopIdString = uri.pathSegments[uri.pathSegments.size - 2] ?: return
         if (shopIdString.isNotEmpty()) {
             this.shopId = shopIdString
+        }
+        val productIdString = uri.lastPathSegment ?: return
+        if (productIdString.isNotEmpty()) {
+            this.productId = productIdString
         }
     }
 }

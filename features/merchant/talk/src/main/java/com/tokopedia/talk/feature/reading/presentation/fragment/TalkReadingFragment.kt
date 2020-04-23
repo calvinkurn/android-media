@@ -16,8 +16,10 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.GENERAL_SETTING
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.kotlin.extensions.view.removeObservers
+import com.tokopedia.talk.common.TalkConstants.PRODUCT_ID
 import com.tokopedia.talk.common.TalkConstants.SHOP_ID
 import com.tokopedia.talk.common.di.TalkComponent
 import com.tokopedia.talk.feature.reading.data.mapper.TalkReadingMapper
@@ -51,7 +53,6 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
         OnThreadClickListener {
 
     companion object {
-        const val PRODUCT_ID = "productID"
         const val DEFAULT_DISCUSSION_DATA_LIMIT = 10
         const val DEFAULT_INITIAL_PAGE = 1
         const val DONT_LOAD_INITAL_DATA = false
@@ -310,7 +311,7 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
     }
 
     private fun goToReplyActivity(questionID: String) {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalMechant.TALK_REPLY, questionID, shopId)
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.TALK_REPLY, questionID, shopId, productId)
         startActivityForResult(intent, TALK_REPLY_ACTIVITY_REQUEST_CODE)
     }
 
