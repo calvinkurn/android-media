@@ -3,11 +3,8 @@ package com.tokopedia.home.account.presentation.util
 import android.text.TextUtils
 import com.crashlytics.android.Crashlytics
 import com.tokopedia.home.account.BuildConfig
-import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.network.data.model.response.ResponseV4ErrorException
 import timber.log.Timber
-import java.lang.Exception
-import java.net.URLEncoder
 
 object AccountHomeErrorHandler {
     @JvmStatic
@@ -28,9 +25,8 @@ object AccountHomeErrorHandler {
 
     @JvmStatic
     fun logExceptionToCrashlytics(t: Throwable, userId: String, email:String, errorCode:String) {
-
         val errorMessage = String.format(
-                "\"Error account home.\",\"userId: %s\",\"userEmail: %s \",\"errorMessage: %s\",\"%s\"",
+                "userId=%s;userEmail=%s;errorMessage=%s;errorCode=%s",
                 userId,
                 email,
                 getExceptionMessage(t),
@@ -42,10 +38,10 @@ object AccountHomeErrorHandler {
             try {
                 Crashlytics.logException(exception)
             } catch (e: Exception) {
-                Timber.w("P2#ACCOUNT_HOME#Failed renderC;$errorMessage $e")
+                Timber.w("P2#ACCOUNT_HOME_ERROR#'Failed render C;'$errorMessage $errorCode'")
             }
         } else {
-            Timber.w("P2#ACCOUNT_HOME#Failed render;$errorMessage")
+            Timber.w("P2#ACCOUNT_HOME_ERROR#'Failed render';'$errorMessage'")
         }
     }
 }
