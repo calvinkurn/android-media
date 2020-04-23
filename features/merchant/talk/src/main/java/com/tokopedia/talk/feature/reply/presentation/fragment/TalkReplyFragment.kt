@@ -315,6 +315,8 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
         showSuccessToaster(getString(R.string.reply_toaster_success))
         resetTextBox()
         resetAttachedProducts()
+        getDiscussionData()
+        showPageLoading()
     }
 
     private fun onFailCreateComment() {
