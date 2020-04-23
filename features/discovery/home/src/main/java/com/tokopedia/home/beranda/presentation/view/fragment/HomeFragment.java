@@ -359,7 +359,9 @@ public class HomeFragment extends BaseDaggerFragment implements
                     }
                 }
         );
-        getViewLifecycleOwner().getLifecycle().addObserver(fragmentFramePerformanceIndexMonitoring);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            getViewLifecycleOwner().getLifecycle().addObserver(fragmentFramePerformanceIndexMonitoring);
+        }
         homeMainToolbar = view.findViewById(R.id.toolbar);
         homeMainToolbar.setAfterInflationCallable(getAfterInflationCallable());
         statusBarBackground = view.findViewById(R.id.status_bar_bg);
