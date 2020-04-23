@@ -207,7 +207,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
 
     private fun initViews(view: View) {
         orderProductCard = OrderProductCard(view, this, orderSummaryAnalytics)
-        orderPreferenceCard = OrderPreferenceCard(view, getOrderPreferenceCardListener())
+        orderPreferenceCard = OrderPreferenceCard(view, getOrderPreferenceCardListener(), orderSummaryAnalytics)
     }
 
     private fun initViewModel() {
@@ -306,15 +306,20 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                     view?.let { _ ->
                         ErrorCheckoutBottomSheet().show(this, it, object : ErrorCheckoutBottomSheet.Listener {
                             override fun onClickSimilarProduct(errorCode: String) {
-                                if (errorCode == ErrorCheckoutBottomSheet.ERROR_CODE_PRODUCT_STOCK_EMPTY) {
-                                    orderSummaryAnalytics.eventClickSimilarProductEmptyStock()
-                                } else {
+                                if (errorCode == ErrorCheckoutBottomSheet.ERROR_CODE_SHOP_CLOSED) {
                                     orderSummaryAnalytics.eventClickSimilarProductShopClosed()
+                                } else {
+                                    orderSummaryAnalytics.eventClickSimilarProductEmptyStock()
                                 }
                                 RouteManager.route(context, ApplinkConstInternalDiscovery.SIMILAR_SEARCH_RESULT, viewModel.orderProduct.productId.toString())
                                 activity?.finish()
                             }
                         })
+                        if (it.error.code == ErrorCheckoutBottomSheet.ERROR_CODE_SHOP_CLOSED) {
+                            orderSummaryAnalytics.eventViewErrorMessage(OrderSummaryAnalytics.ERROR_ID_SHOP_CLOSED)
+                        } else {
+                            orderSummaryAnalytics.eventViewErrorMessage(OrderSummaryAnalytics.ERROR_ID_STOCK)
+                        }
                     }
                 }
                 is OccGlobalEvent.PriceChangeError -> {
@@ -331,6 +336,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                                 refresh(isFullRefresh = false)
                             }
                             priceValidationDialog.show()
+                            orderSummaryAnalytics.eventViewErrorMessage(OrderSummaryAnalytics.ERROR_ID_PRICE_CHANGE)
                         }
                     }
                 }
@@ -361,7 +367,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
 
                                 override fun onButtonChooseOtherPromo() {
                                     val intent = RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_CHECKOUT_MARKETPLACE)
-                                    intent.putExtra(ARGS_PAGE_SOURCE, PromoCheckoutAnalytics.PAGE_CHECKOUT)
+                                    intent.putExtra(ARGS_PAGE_SOURCE, PromoCheckoutAnalytics.PAGE_OCC)
                                     intent.putExtra(ARGS_VALIDATE_USE_REQUEST, viewModel.generateValidateUsePromoRequest())
                                     intent.putExtra(ARGS_PROMO_REQUEST, viewModel.generatePromoRequest())
                                     intent.putStringArrayListExtra(ARGS_BBO_PROMO_CODES, viewModel.generateBboPromoCodes())
@@ -401,7 +407,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
             }
             tvSubheader?.text = preference.onboardingHeaderMessage
             tvSubheaderAction?.setOnClickListener {
-                orderSummaryAnalytics.eventClickInfoOnOSP()
+                orderSummaryAnalytics.eventClickInfoOnOSPNewOcc()
                 OccInfoBottomSheet().show(this, preference.onboardingComponent)
                 orderSummaryAnalytics.eventViewOnboardingInfo()
             }
@@ -413,7 +419,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
             spannableString.setSpan(ForegroundColorSpan(Color.parseColor(COLOR_INFO)), preference.onboardingHeaderMessage.length, spannableString.length, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
             tvHeader3?.text = spannableString
             tvHeader3?.setOnClickListener {
-                orderSummaryAnalytics.eventClickInfoOnOSP()
+                orderSummaryAnalytics.eventClickInfoOnOSPNewBuyer()
                 OccInfoBottomSheet().show(this, preference.onboardingComponent)
                 orderSummaryAnalytics.eventViewOnboardingInfo()
             }
@@ -451,8 +457,11 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
 
         buttonAturPilihan?.setOnClickListener {
             orderSummaryAnalytics.eventUserSetsFirstPreference(userSession.userId)
-            val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PREFERENCE_EDIT)
-            intent.putExtra(PreferenceEditActivity.EXTRA_PREFERENCE_INDEX, "${getString(R.string.preference_number_summary)} 1")
+            val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PREFERENCE_EDIT).apply {
+                putExtra(PreferenceEditActivity.EXTRA_PREFERENCE_INDEX, "${getString(R.string.preference_number_summary)} 1")
+                putExtra(PreferenceEditActivity.EXTRA_SHIPPING_PARAM, viewModel.generateShippingParam())
+                putParcelableArrayListExtra(PreferenceEditActivity.EXTRA_LIST_SHOP_SHIPMENT, ArrayList(viewModel.generateListShopShipment()))
+            }
             startActivityForResult(intent, REQUEST_CREATE_PREFERENCE)
         }
     }
@@ -626,7 +635,6 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
             val lastApply = orderPromo.lastApply
             var title = getString(R.string.promo_funnel_label)
             if (lastApply?.additionalInfo?.messageInfo?.message?.isNotEmpty() == true) {
-                orderSummaryAnalytics.eventViewPromoAlreadyApplied()
                 title = lastApply.additionalInfo.messageInfo.message
             } else if (lastApply?.defaultEmptyPromoMessage?.isNotBlank() == true) {
                 title = lastApply.defaultEmptyPromoMessage
@@ -635,10 +643,14 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
             btnPromoCheckout?.title = title
             btnPromoCheckout?.desc = lastApply?.additionalInfo?.messageInfo?.detail ?: ""
 
+            if (lastApply?.additionalInfo?.usageSummaries?.isNotEmpty() == true) {
+                orderSummaryAnalytics.eventViewPromoAlreadyApplied()
+            }
+
             btnPromoCheckout?.setOnClickListener {
                 viewModel.updateCartPromo { validateUsePromoRequest, promoRequest, bboCodes ->
                     val intent = RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_CHECKOUT_MARKETPLACE)
-                    intent.putExtra(ARGS_PAGE_SOURCE, PromoCheckoutAnalytics.PAGE_CHECKOUT)
+                    intent.putExtra(ARGS_PAGE_SOURCE, PromoCheckoutAnalytics.PAGE_OCC)
                     intent.putExtra(ARGS_PROMO_REQUEST, promoRequest)
                     intent.putExtra(ARGS_VALIDATE_USE_REQUEST, validateUsePromoRequest)
                     intent.putStringArrayListExtra(ARGS_BBO_PROMO_CODES, bboCodes)
@@ -744,9 +756,12 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
 
                         override fun onAddPreference(itemCount: Int) {
                             orderSummaryAnalytics.eventAddPreferensiFromOSP()
-                            val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PREFERENCE_EDIT)
                             val preferenceIndex = "${getString(R.string.preference_number_summary)} ${itemCount + 1}"
-                            intent.putExtra(PreferenceEditActivity.EXTRA_PREFERENCE_INDEX, preferenceIndex)
+                            val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PREFERENCE_EDIT).apply {
+                                putExtra(PreferenceEditActivity.EXTRA_PREFERENCE_INDEX, preferenceIndex)
+                                putExtra(PreferenceEditActivity.EXTRA_SHIPPING_PARAM, viewModel.generateShippingParam())
+                                putParcelableArrayListExtra(PreferenceEditActivity.EXTRA_LIST_SHOP_SHIPMENT, ArrayList(viewModel.generateListShopShipment()))
+                            }
                             startActivityForResult(intent, REQUEST_CREATE_PREFERENCE)
                         }
                     }).show(this@OrderSummaryPageFragment, profileId)

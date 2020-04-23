@@ -39,6 +39,7 @@ class PartialButtonActionView private constructor(val view: View,
     var hasShopAuthority: Boolean = false
     var isLeasing: Boolean = false
     var hasTopAdsActive: Boolean = false
+    var isShopOwner: Boolean = false
     var preOrder: PreOrder? = PreOrder()
     var onSuccessGetCartType = false
     var showByMe = false
@@ -57,11 +58,12 @@ class PartialButtonActionView private constructor(val view: View,
         this.hasTopAdsActive = hasTopAdsActive
     }
 
-    fun renderData(isWarehouseProduct: Boolean, hasShopAuthority: Boolean, hasTopAdsActive: Boolean, cartTypeData: CartTypeData? = null) {
+    fun renderData(isWarehouseProduct: Boolean, hasShopAuthority: Boolean, isShopOwner: Boolean, hasTopAdsActive: Boolean, cartTypeData: CartTypeData? = null) {
         this.isWarehouseProduct = isWarehouseProduct
         this.hasShopAuthority = hasShopAuthority
         this.hasTopAdsActive = hasTopAdsActive
         this.cartTypeData = cartTypeData
+        this.isShopOwner = isShopOwner
         this.onSuccessGetCartType = cartTypeData != null && cartTypeData.availableButtons.isNotEmpty()
         renderButton()
     }
@@ -221,8 +223,9 @@ class PartialButtonActionView private constructor(val view: View,
         with(view) {
             changeTopChatLayoutParamsToHandleWarehouseButton()
             btn_byme.hide()
+            btn_top_ads.hide()
             btn_empty_stock.show()
-            btn_topchat.show()
+            btn_topchat.showWithCondition(!isShopOwner)
             btn_topchat.setOnClickListener(this@PartialButtonActionView)
         }
     }

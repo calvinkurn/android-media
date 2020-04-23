@@ -386,11 +386,15 @@ abstract class BaseTracking {
     }
 
     protected fun convertRupiahToInt(rupiah: String): Int {
-        var rupiah = rupiah
-        rupiah = rupiah.replace("Rp", "")
-        rupiah = rupiah.replace(".", "")
-        rupiah = rupiah.replace(" ", "")
-        return Integer.parseInt(rupiah)
+        try {
+            var rupiah = rupiah
+            rupiah = rupiah.replace("Rp", "")
+            rupiah = rupiah.replace(".", "")
+            rupiah = rupiah.replace(" ", "")
+            return Integer.parseInt(rupiah)
+        } catch (e: Exception) {
+            return 0
+        }
     }
 
     protected fun getTracker(): ContextAnalytics {

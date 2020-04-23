@@ -20,6 +20,7 @@ import com.tokopedia.home.beranda.domain.interactor.*
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.domain.model.SearchPlaceholder
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel
+import com.tokopedia.home.beranda.domain.model.recharge_recommendation.RechargeRecommendation
 import com.tokopedia.home.beranda.domain.model.review.SuggestedProductReview
 import com.tokopedia.home.beranda.helper.Event
 import com.tokopedia.home.beranda.helper.RateLimiter
@@ -76,6 +77,8 @@ open class HomeViewModel @Inject constructor(
         private val sendGeolocationInfoUseCase: SendGeolocationInfoUseCase,
         private val stickyLoginUseCase: StickyLoginUseCase,
         private val sendTopAdsUseCase: SendTopAdsUseCase,
+        private val getRechargeRecommendationUseCase: GetRechargeRecommendationUseCase,
+        private val declineRechargeRecommendationUseCase: DeclineRechargeRecommendationUseCase,
         private val homeDispatcher: HomeDispatcherProvider
 ) : BaseViewModel(homeDispatcher.io()){
 
@@ -159,6 +162,8 @@ open class HomeViewModel @Inject constructor(
     private var dismissReviewJob: Job? = null
     private var getPopularKeywordJob: Job? = null
     private var buWidgetJob: Job? = null
+    private var getRechargeRecommendationJob: Job? = null
+    private var declineRechargeRecommendationJob: Job? = null
     private var jobChannel: Job? = null
     private var channel : Channel<UpdateLiveDataModel>? = null
 
@@ -474,6 +479,32 @@ open class HomeViewModel @Inject constructor(
         getTokocashBalance()
     }
 
+    private fun insertRechargeRecommendation(data: RechargeRecommendation) {
+        if (data.recommendations.isNotEmpty()) {
+            _homeLiveData.value?.list?.run {
+                val findRechargeRecommendationViewModel = find { visitable -> visitable is RechargeRecommendationViewModel }
+                val indexOfRechargeRecommendationViewModel = indexOf(findRechargeRecommendationViewModel)
+                if (indexOfRechargeRecommendationViewModel > -1 && findRechargeRecommendationViewModel is RechargeRecommendationViewModel) {
+                    val newFindRechargeRecommendationViewModel = findRechargeRecommendationViewModel.copy(
+                            rechargeRecommendation = data
+                    )
+                    launch { channel?.send(UpdateLiveDataModel(ACTION_UPDATE, newFindRechargeRecommendationViewModel, indexOfRechargeRecommendationViewModel)) }
+                }
+            }
+        } else {
+            removeRechargeRecommendation()
+        }
+    }
+
+    private fun removeRechargeRecommendation() {
+        val findRechargeRecommendationViewModel =
+                _homeLiveData.value?.list?.find { visitable -> visitable is RechargeRecommendationViewModel }
+                        ?: return
+        if (findRechargeRecommendationViewModel is RechargeRecommendationViewModel) {
+            launch { channel?.send(UpdateLiveDataModel(ACTION_DELETE, findRechargeRecommendationViewModel)) }
+        }
+    }
+
 // =================================================================================
 // ============================== Evaluate Controller ==============================
 // =================================================================================
@@ -543,7 +574,11 @@ open class HomeViewModel @Inject constructor(
                 val findRetryModel = homeDataModel.list.find { visitable -> visitable is HomeRetryModel
                 }
                 visitableMutableList.remove(findRetryModel)
-                homeDataModel.copy(
+                if (!homeDataModel.isCache) {
+                    visitableMutableList.add(HomeLoadingMoreModel())
+                    getFeedTabData()
+                }
+                return homeDataModel.copy(
                         list = visitableMutableList)
             }
         }
@@ -581,11 +616,11 @@ open class HomeViewModel @Inject constructor(
             homeFlowData.collect { homeDataModel ->
                 if (homeDataModel?.isCache == false) {
                     updateWidget(UpdateLiveDataModel(action = ACTION_UPDATE_HOME_DATA, homeData = homeDataModel))
-                    getFeedTabData()
                     getHeaderData()
                     getReviewData()
                     getPlayBanner()
                     getPopularKeyword()
+                    getRechargeRecommendation()
                     _trackingLiveData.postValue(Event(_homeLiveData.value?.list?.filterIsInstance<HomeVisitable>() ?: listOf()))
                 } else {
                     updateWidget(UpdateLiveDataModel(action = ACTION_UPDATE_HOME_DATA, homeData = homeDataModel))
@@ -691,6 +726,26 @@ open class HomeViewModel @Inject constructor(
         }
     }
 
+    private fun getRechargeRecommendation() {
+        if(getRechargeRecommendationJob?.isActive == true) return
+        getRechargeRecommendationJob = launchCatchError(coroutineContext, block = {
+            getRechargeRecommendationUseCase.setParams()
+            val data = getRechargeRecommendationUseCase.executeOnBackground()
+            insertRechargeRecommendation(data)
+        }) {
+            removeRechargeRecommendation()
+        }
+    }
+
+    fun declineRechargeRecommendationItem(requestParams: Map<String, String>) {
+        removeRechargeRecommendation()
+        if(declineRechargeRecommendationJob?.isActive == true) return
+        declineRechargeRecommendationJob = launchCatchError(coroutineContext, block = {
+            declineRechargeRecommendationUseCase.setParams(requestParams)
+            declineRechargeRecommendationUseCase.executeOnBackground()
+        }){}
+    }
+
     fun getFeedTabData() {
         launchCatchError(coroutineContext, block={
             val homeRecommendationTabs = getRecommendationTabUseCase.executeOnBackground()
@@ -700,12 +755,17 @@ open class HomeViewModel @Inject constructor(
             val findRecommendationModel = _homeLiveData.value?.list?.find {
                 visitable -> visitable is HomeRecommendationFeedDataModel
             }
+            val findLoadingModel = _homeLiveData.value?.list?.find {
+                visitable -> visitable is HomeLoadingMoreModel
+            }
 
             if (findRecommendationModel != null) return@launchCatchError
 
             val homeRecommendationFeedViewModel = HomeRecommendationFeedDataModel()
             homeRecommendationFeedViewModel.recommendationTabDataModel = homeRecommendationTabs
             homeRecommendationFeedViewModel.isNewData = true
+
+            updateWidget(UpdateLiveDataModel(ACTION_DELETE, findLoadingModel as HomeVisitable?))
             updateWidget(UpdateLiveDataModel(ACTION_DELETE, findRetryModel as HomeVisitable?))
             updateWidget(UpdateLiveDataModel(ACTION_ADD, homeRecommendationFeedViewModel))
 
@@ -713,6 +773,11 @@ open class HomeViewModel @Inject constructor(
             val findRetryModel = _homeLiveData.value?.list?.find {
                 visitable -> visitable is HomeRetryModel
             }
+            val findLoadingModel = _homeLiveData.value?.list?.find {
+                visitable -> visitable is HomeLoadingMoreModel
+            }
+
+            updateWidget(UpdateLiveDataModel(ACTION_DELETE, findLoadingModel as HomeVisitable?))
             updateWidget(UpdateLiveDataModel(ACTION_DELETE, findRetryModel as HomeVisitable?))
             updateWidget(UpdateLiveDataModel(ACTION_ADD, HomeRetryModel()))
         }

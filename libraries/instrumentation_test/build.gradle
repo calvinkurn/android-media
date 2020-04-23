@@ -94,6 +94,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.networkDependencies.retrofit
     implementation rootProject.ext.miscDependencies.gson
+
     implementation rootProject.ext.testDependencies.mockk
     implementation rootProject.ext.testDependencies.spek2Api, {
         exclude group: 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
