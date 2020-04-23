@@ -9,7 +9,7 @@
         android:id="@+id/talkReplyReport"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/title_report_page"
+        android:text="@string/report_bottom_sheet_text"
         android:paddingBottom="@dimen/layout_lvl2"
         android:visibility="gone"
         app:layout_constraintTop_toTopOf="parent"

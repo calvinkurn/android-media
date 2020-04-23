@@ -237,9 +237,9 @@ object ApplinkConstInternalMarketplace {
 
     // Talk Reading
     @JvmField
-    val TALK_READING = "${ApplinkConstInternalMechant.INTERNAL_MERCHANT}/talk-reading/{product_id}/{shop_id}/"
+    val TALK_READING = "$INTERNAL_MARKETPLACE/talk-reading/{product_id}/{shop_id}/"
     // Talk Reply
     @JvmField
-    val TALK_REPLY = "${ApplinkConstInternalMechant.INTERNAL_MERCHANT}/talk-reply/{question_id}/{shop_id}/{product_id}/"
+    val TALK_REPLY = "$INTERNAL_MARKETPLACE/talk-reply/{question_id}/{shop_id}/{product_id}/"
 
 }
