@@ -18,7 +18,7 @@ class TalkCreateNewCommentUseCase @Inject constructor(graphqlRepository: Graphql
             val talkId = "\$talk_id"
             val productIds = "\$product_ids"
             """
-                mutation talkDeleteComment($text: String, $talkId: Int, $productIds: String) {
+                mutation talkCreateNewComment($text: String, $talkId: Int, $productIds: String) {
                   talkCreateNewComment(text:$text, talk_id:$talkId, product_ids:$productIds) {
                     status
                     messageError
