@@ -5,6 +5,7 @@ import com.tokopedia.settingnotif.usersetting.base.SettingRepository
 import com.tokopedia.settingnotif.usersetting.data.pojo.setusersetting.SetUserSettingResponse
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
+import java.lang.Exception
 import javax.inject.Inject
 
 open class SetUserSettingUseCase @Inject constructor(
@@ -15,7 +16,10 @@ open class SetUserSettingUseCase @Inject constructor(
     var params: RequestParams = RequestParams.EMPTY
 
     override suspend fun executeOnBackground(): SetUserSettingResponse {
-        require(params.paramsAllValueInString.isNotEmpty())
+        if (params.paramsAllValueInString.isEmpty()) {
+            throw Exception("no param found")
+        }
+
         return BaseRequestUseCase.execute(
                 query = graphQuery,
                 repository = repository,
