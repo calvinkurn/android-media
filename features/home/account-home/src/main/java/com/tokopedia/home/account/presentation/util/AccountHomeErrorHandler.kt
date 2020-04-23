@@ -4,15 +4,21 @@ import android.text.TextUtils
 import com.crashlytics.android.Crashlytics
 import com.tokopedia.home.account.BuildConfig
 import com.tokopedia.network.data.model.response.ResponseV4ErrorException
+import java.lang.Exception
 import java.net.URLEncoder
 
 object AccountHomeErrorHandler {
     @JvmStatic
     fun getExceptionMessage(t: Throwable): String {
-        return if (t is ResponseV4ErrorException && !TextUtils.isEmpty(t.errorList.firstOrNull())) {
-            t.errorList.firstOrNull() ?: t.localizedMessage
-        } else {
-            t.localizedMessage
+        return try {
+            if (t is ResponseV4ErrorException && !TextUtils.isEmpty(t.errorList.firstOrNull())) {
+                t.errorList.firstOrNull() ?: t.localizedMessage
+            } else {
+                t.localizedMessage
+            }
+        }
+        catch (e: Exception){
+            ""
         }
     }
 
