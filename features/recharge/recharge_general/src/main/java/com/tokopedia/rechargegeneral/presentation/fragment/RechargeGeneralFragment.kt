@@ -269,8 +269,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
         })
         recharge_general_enquiry_button.isEnabled = false
         recharge_general_enquiry_button.setOnClickListener {
-            // If it's express checkout, open checkout bottomsheet; if not navigate to old checkout
-            if (isExpressCheckout) enquire() else processCheckout()
+            enquire()
         }
 
         loadData()
@@ -805,10 +804,15 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
 
     private fun enquire() {
         if (validateEnquiry()) {
-            if (!userSession.isLoggedIn) {
-                navigateToLoginPage()
+            // If it's express checkout, open checkout bottomsheet; if not navigate to old checkout
+            if (!isExpressCheckout) {
+                processCheckout()
             } else {
-                selectedProduct?.run { getEnquiry(operatorId.toString(), id, inputData) }
+                if (!userSession.isLoggedIn) {
+                    navigateToLoginPage()
+                } else {
+                    selectedProduct?.run { getEnquiry(operatorId.toString(), id, inputData) }
+                }
             }
         }
     }
