@@ -64,7 +64,6 @@ import com.tokopedia.rechargegeneral.widget.RechargeGeneralCheckoutBottomSheet
 import com.tokopedia.rechargegeneral.widget.RechargeGeneralProductSelectBottomSheet
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ticker.*
-import com.tokopedia.unifyprinciples.UnifyThemeHelper
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_recharge_general.*
@@ -152,8 +151,6 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
         super.onCreate(savedInstanceState)
 
         activity?.let {
-            UnifyThemeHelper.setTheme(it)
-
             val viewModelProvider = ViewModelProviders.of(it, viewModelFactory)
             viewModel = viewModelProvider.get(RechargeGeneralViewModel::class.java)
             sharedViewModel = viewModelProvider.get(SharedRechargeGeneralViewModel::class.java)
@@ -269,8 +266,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
         })
         recharge_general_enquiry_button.isEnabled = false
         recharge_general_enquiry_button.setOnClickListener {
-            // If it's express checkout, open checkout bottomsheet; if not navigate to old checkout
-            if (isExpressCheckout) enquire() else processCheckout()
+            enquire()
         }
 
         loadData()
@@ -805,10 +801,15 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
 
     private fun enquire() {
         if (validateEnquiry()) {
-            if (!userSession.isLoggedIn) {
-                navigateToLoginPage()
+            // If it's express checkout, open checkout bottomsheet; if not navigate to old checkout
+            if (!isExpressCheckout) {
+                processCheckout()
             } else {
-                selectedProduct?.run { getEnquiry(operatorId.toString(), id, inputData) }
+                if (!userSession.isLoggedIn) {
+                    navigateToLoginPage()
+                } else {
+                    selectedProduct?.run { getEnquiry(operatorId.toString(), id, inputData) }
+                }
             }
         }
     }
