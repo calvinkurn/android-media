@@ -497,6 +497,52 @@ class TrackingHotelUtil {
                 )))
     }
 
+    fun hotelClickChangeSearch(type: String, name: String, totalRoom: Int, totalGuest: Int, checkIn: String, checkOut: String, screenName: String,
+                               irisSessionId: String, userId: String) {
+        val map = mutableMapOf<String, Any>()
+        map[EVENT] = CLICK_HOTEL
+        map[EVENT_CATEGORY] = DIGITAL_NATIVE
+        map[EVENT_ACTION] = ACTION_CLICK_CHANGE_SEARCH
+        map[EVENT_LABEL] = "$HOTEL_LABEL - $type - $name - $totalRoom - $totalGuest - ${convertDate(checkIn)} - ${HotelUtils.countDayDifference(checkIn, checkOut)}"
+        map[SCREEN_NAME] = screenName
+        map[CURRENT_SITE] = TOKOPEDIA_DIGITAL_HOTEL
+        map[CLIENT_ID] = TrackApp.getInstance().gtm.clientIDString ?: ""
+        map[SESSION_IRIS] = irisSessionId
+        map[USER_ID] = userId
+        map[BUSINESS_UNIT] = HOTEL_LABEL
+
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
+    }
+
+    fun changeSearchPageLoaded(screenName: String, irisSessionId: String, userId: String) {
+        val map = mutableMapOf<String, String>()
+        map[EVENT_NAME] = OPEN_SCREEN_EVENT
+        map[CURRENT_SITE] = TOKOPEDIA_DIGITAL_HOTEL
+        map[CLIENT_ID] = TrackApp.getInstance().gtm.clientIDString ?: ""
+        map[SESSION_IRIS] = irisSessionId
+        map[USER_ID] = userId
+        map[BUSINESS_UNIT] = HOTEL_LABEL
+
+        TrackApp.getInstance().gtm.sendScreenAuthenticated(screenName, map)
+    }
+
+    fun clickSaveChangeSearch(type: String, name: String, totalRoom: Int, totalGuest: Int, checkIn: String, checkOut: String, screenName: String,
+    irisSessionId: String, userId: String) {
+        val map = mutableMapOf<String, Any>()
+        map[EVENT] = CLICK_HOTEL
+        map[EVENT_CATEGORY] = DIGITAL_NATIVE
+        map[EVENT_ACTION] = ACTION_SAVE_CHANGE_SEARCH
+        map[EVENT_LABEL] = "$HOTEL_LABEL - $type - $name - $totalRoom - $totalGuest - ${convertDate(checkIn)} - ${HotelUtils.countDayDifference(checkIn, checkOut)}"
+        map[SCREEN_NAME] = screenName
+        map[CURRENT_SITE] = TOKOPEDIA_DIGITAL_HOTEL
+        map[CLIENT_ID] = TrackApp.getInstance().gtm.clientIDString ?: ""
+        map[SESSION_IRIS] = irisSessionId
+        map[USER_ID] = userId
+        map[BUSINESS_UNIT] = HOTEL_LABEL
+
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
+    }
+
     private fun convertDate(date: String): String =
             TravelDateUtil.formatDate(TravelDateUtil.YYYY_MM_DD, TravelDateUtil.YYYYMMDD, date)
 

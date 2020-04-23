@@ -47,6 +47,9 @@ class PinCompleteFragment: BaseDaggerFragment() {
     }
 
     private fun initViews(){
+        activity?.run {
+            tickerCompletePin?.setTextDescription(this.getString(R.string.ticker_complete_add_pin))
+        }
         when(arguments?.getInt(ApplinkConstInternalGlobal.PARAM_SOURCE)){
             SOURCE_CHANGE_PIN -> {
                 titleComplete.text = getString(R.string.change_pin_success)

@@ -24,6 +24,7 @@ import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.design.drawable.CountDrawable
@@ -49,6 +50,7 @@ import com.tokopedia.shop.pageheader.di.component.DaggerShopPageComponent
 import com.tokopedia.shop.pageheader.di.component.ShopPageComponent
 import com.tokopedia.shop.pageheader.di.module.ShopPageModule
 import com.tokopedia.shop.pageheader.presentation.ShopPageViewModel
+import com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity
 import com.tokopedia.shop.pageheader.presentation.adapter.ShopPageFragmentPagerAdapter
 import com.tokopedia.shop.pageheader.presentation.holder.ShopPageFragmentHeaderViewHolder
 import com.tokopedia.shop.product.view.activity.ShopProductListActivity
@@ -88,7 +90,6 @@ class ShopPageFragment :
         const val TAB_POSITION_INFO = 2
         const val SHOP_STATUS_FAVOURITE = "SHOP_STATUS_FAVOURITE"
         const val SHOP_STICKY_LOGIN = "SHOP_STICKY_LOGIN"
-        const val SHOP_TRACE = "mp_shop"
         const val SHOP_NAME_PLACEHOLDER = "{{shop_name}}"
         const val SHOP_LOCATION_PLACEHOLDER = "{{shop_location}}"
         private const val REQUEST_CODER_USER_LOGIN = 100
@@ -122,7 +123,6 @@ class ShopPageFragment :
 
     private lateinit var remoteConfig: RemoteConfig
     private lateinit var cartLocalCacheHandler: LocalCacheHandler
-    private var performanceMonitoring: PerformanceMonitoring? = null
     var shopPageTracking: ShopPageTrackingBuyer? = null
     var titles = listOf<String>()
     var shopId: String? = null
@@ -148,6 +148,7 @@ class ShopPageFragment :
     private val iconTabReview = R.drawable.ic_shop_tab_review_inactive
     private val intentData: Intent = Intent()
     private var isFirstLoading: Boolean = false
+    private var shouldOverrideTabToHome: Boolean = false
     private val customDimensionShopPage: CustomDimensionShopPage by lazy {
         CustomDimensionShopPage.create(shopId, isOfficialStore, isGoldMerchant)
     }
@@ -174,6 +175,7 @@ class ShopPageFragment :
             container: ViewGroup?,
             savedInstanceState: Bundle?
     ): View? = inflater.inflate(R.layout.shop_page_main, container, false)
+
 
     override fun onDestroy() {
         shopViewModel.shopInfoResp.removeObservers(this)
@@ -254,6 +256,7 @@ class ShopPageFragment :
                     onErrorGetShopInfo(result.throwable)
                 }
             }
+            stopPerformanceMonitoring()
         })
 
         shopViewModel.whiteListResp.observe(this, Observer { response ->
@@ -276,7 +279,6 @@ class ShopPageFragment :
         context?.let {
             remoteConfig = FirebaseRemoteConfigImpl(it)
             cartLocalCacheHandler = LocalCacheHandler(it, CART_LOCAL_CACHE_NAME)
-            performanceMonitoring = PerformanceMonitoring.start(SHOP_TRACE)
             shopPageTracking = ShopPageTrackingBuyer(TrackingQueue(it))
             activity?.intent?.run {
                 shopId = getStringExtra(SHOP_ID)
@@ -296,8 +298,9 @@ class ShopPageFragment :
                     if (shopDomain.isNullOrEmpty()) {
                         shopDomain = getQueryParameter(SHOP_DOMAIN)
                     }
-                    if (lastPathSegment.orEmpty() == PATH_HOME)
-                        tabPosition = TAB_POSITION_HOME
+                    if (lastPathSegment.orEmpty() == PATH_HOME) {
+                        shouldOverrideTabToHome = true
+                    }
                     shopRef = getQueryParameter(QUERY_SHOP_REF) ?: ""
                     shopAttribution = getQueryParameter(QUERY_SHOP_ATTRIBUTION) ?: ""
                 }
@@ -498,8 +501,12 @@ class ShopPageFragment :
 
     private fun redirectToShopSettingsPage() {
         context?.let { context ->
-            shopId?.let { shopId ->
-                startActivity(ShopPageSettingActivity.createIntent(context, shopId))
+            if (GlobalConfig.isSellerApp()) {
+                RouteManager.route(context, ApplinkConstInternalSellerapp.MENU_SETTING)
+            } else {
+                shopId?.let { shopId ->
+                    startActivity(ShopPageSettingActivity.createIntent(context, shopId))
+                }
             }
         }
     }
@@ -524,10 +531,6 @@ class ShopPageFragment :
                         REQUEST_CODE_USER_LOGIN_CART)
             }
         }
-    }
-
-    fun stopPerformanceMonitor() {
-        performanceMonitoring?.stopTrace()
     }
 
     fun onSuccessGetShopInfo(shopInfo: ShopInfo) {
@@ -555,9 +558,11 @@ class ShopPageFragment :
                 shopPageTracking?.sendScreenShopPage(shopCore.shopID, shopType)
             }
             shopPageFragmentHeaderViewHolder.updateShopTicker(shopInfo, isMyShop)
+
         }
         swipeToRefresh.isRefreshing = false
         view?.let { onToasterNoUploadProduct(it, getString(R.string.shop_page_product_no_upload_product), isFirstCreateShop) }
+
     }
 
     fun onBackPressed() {
@@ -578,9 +583,16 @@ class ShopPageFragment :
                 add(getString(R.string.shop_info_title_tab_feed))
             add(getString(R.string.shop_info_title_tab_review))
         }
-        val selectedPosition = tabPosition
         viewPagerAdapter.setTabData(generateTabData())
         viewPagerAdapter.notifyDataSetChanged()
+        var selectedPosition = getSelectedTabPosition()
+        if(shouldOverrideTabToHome){
+            selectedPosition = if(viewPagerAdapter.isFragmentObjectExists(HomeProductFragment::class.java)){
+                viewPagerAdapter.getFragmentPosition(HomeProductFragment::class.java)
+            }else{
+                viewPagerAdapter.getFragmentPosition(ShopPageHomeFragment::class.java)
+            }
+        }
         tabLayout?.apply {
             for (i in 0 until tabCount) {
                 getTabAt(i)?.customView = viewPagerAdapter.getTabView(i, selectedPosition)
@@ -588,6 +600,18 @@ class ShopPageFragment :
         }
         setViewState(VIEW_CONTENT)
         viewPager.setCurrentItem(selectedPosition, false)
+    }
+
+    private fun getSelectedTabPosition(): Int {
+        return if (isShowHomeTab()) {
+            if (isShowNewHomeTab()) {
+                viewPagerAdapter.getFragmentPosition(ShopPageHomeFragment::class.java)
+            } else {
+                viewPagerAdapter.getFragmentPosition(ShopPageProductListFragment::class.java)
+            }
+        } else {
+            viewPagerAdapter.getFragmentPosition(ShopPageProductListFragment::class.java)
+        }
     }
 
     private fun isShowHomeTab(): Boolean {
@@ -755,6 +779,10 @@ class ShopPageFragment :
             startActivity(ShopProductListActivity.createIntent(activity, shopId,
                     "", selectedEtalaseId, "", sortName, shopRef))
         }
+    }
+
+    private fun stopPerformanceMonitoring() {
+        (activity as? ShopPageActivity)?.stopShopHeaderPerformanceMonitoring()
     }
 
     fun refreshData() {

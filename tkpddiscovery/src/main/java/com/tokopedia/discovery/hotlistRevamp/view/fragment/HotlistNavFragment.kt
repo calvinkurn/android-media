@@ -23,8 +23,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.authentication.AuthHelper
 import com.tokopedia.core.gcm.GCMHandler
-import com.tokopedia.core.share.DefaultShare
-import com.tokopedia.design.image.ImageLoader
+import com.tokopedia.sharedata.DefaultShareData
 import com.tokopedia.discovery.R
 import com.tokopedia.discovery.categoryrevamp.adapters.BaseCategoryAdapter
 import com.tokopedia.discovery.categoryrevamp.adapters.ProductNavListAdapter
@@ -50,8 +49,10 @@ import com.tokopedia.discovery.hotlistRevamp.viewmodel.HotlistNavViewModel
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.linker.model.LinkerData
+import com.tokopedia.linker.share.DefaultShare
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey.HOTLIST_SHARE_MSG
 import com.tokopedia.topads.sdk.utils.ImpresionTask
@@ -278,7 +279,8 @@ class HotlistNavFragment : BaseCategorySectionFragment(),
 
     private fun updateData(data: HotListDetailResponse) {
         showBannerShimmer(false)
-        ImageLoader.LoadImage(hotlist_banner, data.hotlistDetail?.coverImage)
+        if(data.hotlistDetail?.coverImage !=null)
+            hotlist_banner.loadImage(data.hotlistDetail.coverImage)
         hotlistDetail = data.hotlistDetail
         val hotId = hotlistDetail?.filterAttribute?.sc.toString()
         fetchProducts(0)
@@ -491,7 +493,7 @@ class HotlistNavFragment : BaseCategorySectionFragment(),
             startActivityForResult(intent, REQUEST_PRODUCT_ITEM_CLICK)
         }
         if (item.isTopAds) {
-            ImpresionTask().execute(item.productClickTrackingUrl)
+            hotlistnavViewModel.sendTopAds(item.productClickTrackingUrl)
         }
     }
 
@@ -671,12 +673,12 @@ class HotlistNavFragment : BaseCategorySectionFragment(),
             hotlistNavAnalytics.eventCpmTopAdsShopClick(isUserLoggedIn(),
                     hotlistDetail?.shareFilePath ?: "")
         }
-        ImpresionTask().execute(clickTrackerUrl)
+        hotlistnavViewModel.sendTopAds(clickTrackerUrl)
         RouteManager.route(activity, applink)
     }
 
     override fun onCpmImpression(impressionTrackUrl: String) {
-        ImpresionTask().execute(impressionTrackUrl)
+        hotlistnavViewModel.sendTopAds(impressionTrackUrl)
     }
 
     // share button clicked
@@ -698,11 +700,11 @@ class HotlistNavFragment : BaseCategorySectionFragment(),
                 .build()
 
         shareData.type = LinkerData.HOTLIST_TYPE
-        DefaultShare(activity, shareData).show()
+        DefaultShareData(activity, shareData).show()
     }
 
     override fun topAdsTrackerUrlTrigger(url: String) {
-        ImpresionTask().execute(url)
+        hotlistnavViewModel.sendTopAds(url)
     }
 
     override fun onDestroyView() {

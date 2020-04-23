@@ -19,6 +19,7 @@
             android:layout_height="match_parent"
             android:layout_gravity="center"
             android:keepScreenOn="true"
+            app:cameraAudio="off"
             app:cameraPlaySounds="true" />
 
         <ImageView

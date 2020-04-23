@@ -2,10 +2,15 @@ package com.tokopedia.rechargegeneral.presentation.activity
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Rect
 import android.os.Bundle
+import android.view.MotionEvent
+import android.view.View
+import android.widget.EditText
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.common.topupbills.CommonTopupBillsComponentInstance
 import com.tokopedia.rechargegeneral.di.DaggerRechargeGeneralComponent
 import com.tokopedia.rechargegeneral.di.RechargeGeneralComponent
@@ -44,6 +49,22 @@ class RechargeGeneralActivity : BaseSimpleActivity(), HasComponent<RechargeGener
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         intent?.handleExtra()
+    }
+
+    override fun dispatchTouchEvent(event: MotionEvent): Boolean {
+        if (event.action == MotionEvent.ACTION_DOWN) {
+            val focusedView: View? = currentFocus
+            focusedView?.run {
+                if (focusedView is EditText) {
+                    val outRect = Rect()
+                    focusedView.getGlobalVisibleRect(outRect)
+                    if (!outRect.contains(event.rawX.toInt(), event.rawY.toInt())) {
+                        KeyboardHandler.DropKeyboard(this@RechargeGeneralActivity, focusedView)
+                    }
+                }
+            }
+        }
+        return super.dispatchTouchEvent(event)
     }
 
     companion object {

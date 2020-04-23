@@ -4,71 +4,56 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/vgVoucherView"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:minHeight="@dimen/dp_50">
+    android:layout_height="match_parent">
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tvVoucherTitle"
+    <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/layout_lvl1"
-        android:layout_marginLeft="@dimen/layout_lvl1"
-        android:layout_marginTop="@dimen/layout_lvl1"
-        android:layout_marginEnd="@dimen/layout_lvl1"
-        android:layout_marginRight="@dimen/layout_lvl1"
-        android:singleLine="false"
-        android:textColor="@color/Neutral_N700"
+        android:orientation="vertical"
+        android:paddingLeft="@dimen/layout_lvl1"
+        android:paddingTop="@dimen/dp_4"
+        android:paddingRight="@dimen/layout_lvl1"
+        android:paddingBottom="@dimen/dp_4"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintWidth_percent="0.75"
-        app:typographyType="body_2"
-        app:typographyWeight="reguler"
-        tools:text="Gratis Ongkir\n20rb" />
+        app:layout_constraintWidth_percent="0.7">
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tvVoucherSubtitle"
-        style="@style/TextView.Micro10"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/layout_lvl1"
-        android:layout_marginLeft="@dimen/layout_lvl1"
-        android:layout_marginTop="@dimen/dp_2"
-        android:layout_marginEnd="@dimen/layout_lvl1"
-        android:layout_marginRight="@dimen/layout_lvl1"
-        android:textColor="@color/Neutral_N700"
-        android:visibility="gone"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tvVoucherTitle"
-        app:layout_constraintWidth_percent="0.75"
-        app:typographyType="small"
-        tools:text="Next Day (Rp 25.000)" />
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvVoucherTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:singleLine="false"
+            android:textColor="@color/Neutral_N700"
+            app:typographyType="body_2"
+            app:typographyWeight="reguler"
+            tools:text="Gratis Ongkir\n20rb" />
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tvVoucherDesc"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/layout_lvl1"
-        android:layout_marginLeft="@dimen/layout_lvl1"
-        android:layout_marginTop="@dimen/dp_3"
-        android:layout_marginEnd="@dimen/layout_lvl1"
-        android:layout_marginRight="@dimen/layout_lvl1"
-        android:paddingBottom="4dp"
-        android:textColor="@color/light_N700_44"
-        android:textSize="@dimen/sp_10"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tvVoucherSubtitle"
-        app:layout_constraintWidth_percent="0.6"
-        app:typographyType="small"
-        tools:text="*Min Pembelian 300Rb" />
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvVoucherSubtitle"
+            style="@style/TextView.Micro10"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/Neutral_N700"
+            android:visibility="gone"
+            app:typographyType="small"
+            tools:text="Next Day (Rp 25.000)" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvVoucherDesc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:textColor="@color/light_N700_44"
+            android:textSize="@dimen/sp_10"
+            app:typographyType="small"
+            tools:text="*Min Pembelian 300Rb" />
+
+    </LinearLayout>
 
     <com.tokopedia.merchantvoucher.common.widget.MerchantVoucherImageType
         android:id="@+id/iv_voucher_type"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_gravity="end"
         android:scaleType="matrix"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -92,9 +77,9 @@
         android:textColor="@color/text_color_voucher_button"
         android:textSize="@dimen/sp_12"
         android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintEnd_toEndOf="@id/iv_voucher_type"
+        app:layout_constraintRight_toRightOf="@id/iv_voucher_type"
+        app:layout_constraintTop_toTopOf="@id/iv_voucher_type" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvCode"
@@ -103,7 +88,7 @@
         android:gravity="end"
         android:singleLine="true"
         android:textColor="@color/white"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/iv_voucher_type"
         app:layout_constraintEnd_toEndOf="@id/btnUseVoucher"
         app:layout_constraintRight_toRightOf="@id/btnUseVoucher"
         app:typographyType="small"

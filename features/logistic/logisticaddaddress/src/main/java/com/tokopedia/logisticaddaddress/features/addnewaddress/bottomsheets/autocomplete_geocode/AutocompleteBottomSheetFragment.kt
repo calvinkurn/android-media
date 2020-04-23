@@ -33,6 +33,7 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetL
     private var currentLat: Double = 0.0
     private var currentLong: Double = 0.0
     private var currentSearch: String = ""
+    private var actionListener: ActionListener? = null
     private val defaultLat: Double by lazy { -6.175794 }
     private val defaultLong: Double by lazy { 106.826457 }
     private lateinit var rlCurrentLocation: RelativeLayout
@@ -43,7 +44,6 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetL
     private lateinit var mDisabledGps: View
     private lateinit var etSearch: EditText
     private lateinit var adapter: AutocompleteBottomSheetAdapter
-    private lateinit var actionListener: ActionListener
     private lateinit var icCloseBtn: ImageView
     private val compositeSubs: CompositeSubscription by lazy { CompositeSubscription() }
 
@@ -161,7 +161,7 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetL
         }
 
         rlCurrentLocation.setOnClickListener {
-            actionListener.useCurrentLocation()
+            actionListener?.useCurrentLocation()
             hideKeyboardAndDismiss()
         }
     }
@@ -247,7 +247,7 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetL
 
     override fun onPoiListClicked(placeId: String) {
         placeId.run {
-            actionListener.onGetPlaceId(placeId)
+            actionListener?.onGetPlaceId(placeId)
             hideKeyboardAndDismiss()
         }
         AddNewAddressAnalytics.eventClickAddressSuggestionFromSuggestionList(eventLabel = LOGISTIC_LABEL)

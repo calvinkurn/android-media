@@ -2,6 +2,7 @@ package com.tokopedia.shop.home.view.adapter.viewholder
 
 import android.os.Handler
 import android.view.View
+import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.carousel.CarouselUnify
@@ -24,6 +25,7 @@ import java.util.ArrayList
 
 class ShopHomeSliderBannerViewHolder(
         view: View?,
+        private val previousViewHolder: AbstractViewHolder<*>?,
         private val listener: ShopHomeDisplayWidgetListener
 ) : AbstractViewHolder<ShopHomeDisplayWidgetUiModel>(view), CarouselUnify.OnActiveIndexChangedListener {
 
@@ -66,7 +68,7 @@ class ShopHomeSliderBannerViewHolder(
             indicatorPosition = CarouselUnify.INDICATOR_BL
             infinite = true
             onActiveIndexChangedListener = this@ShopHomeSliderBannerViewHolder
-            indicatorWrapper.setMargin(0, 8.toPx(), 0, 0)
+            indicatorWrapper.setMargin(0, 4.toPx(), 0, 0)
         }
     }
 
@@ -108,6 +110,11 @@ class ShopHomeSliderBannerViewHolder(
         itemView.textViewTitle?.apply {
             if (shopHomeDisplayWidgetUiModel.header.title.isEmpty()) {
                 hide()
+                if (previousViewHolder is ShopHomeSliderSquareViewHolder || previousViewHolder is ShopHomeCarousellProductViewHolder) {
+                    (itemView.layoutParams as? ViewGroup.MarginLayoutParams)?.apply {
+                        setMargins(leftMargin, 16.toPx(), rightMargin, bottomMargin)
+                    }
+                }
             } else {
                 text = shopHomeDisplayWidgetUiModel.header.title
                 show()

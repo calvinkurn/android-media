@@ -126,6 +126,10 @@ class ShopEditScheduleActivity : BaseSimpleActivity(), UpdateShopSchedulePresent
         tvSave.setOnClickListener { onSaveButtonClicked() }
     }
 
+    override fun getToolbarResourceID(): Int {
+        return R.id.toolbar
+    }
+
     private fun showStartDatePickerDialog(selectedDate: Date, minDate: Date) {
         val calendar = Calendar.getInstance()
         calendar.time = selectedDate

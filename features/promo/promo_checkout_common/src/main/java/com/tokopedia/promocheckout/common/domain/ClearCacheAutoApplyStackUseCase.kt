@@ -30,6 +30,7 @@ class ClearCacheAutoApplyStackUseCase @Inject constructor(@ApplicationContext va
 
         val PARAM_PLACEHOLDER_SERVICE_ID = "#serviceId"
         val PARAM_PLACEHOLDER_PROMO_CODE = "#promoCode"
+        val PARAM_PLACEHOLDER_IS_OCC = "#isOCC"
     }
 
     fun setParams(serviceId: String, promoCodeList: ArrayList<String>) {
@@ -37,6 +38,17 @@ class ClearCacheAutoApplyStackUseCase @Inject constructor(@ApplicationContext va
         queryString = queryString.replace(PARAM_PLACEHOLDER_SERVICE_ID, serviceId)
 
         queryString = queryString.replace(PARAM_PLACEHOLDER_PROMO_CODE, Gson().toJson(promoCodeList))
+
+        queryString = queryString.replace(PARAM_PLACEHOLDER_IS_OCC, "false")
+    }
+
+    fun setParams(serviceId: String, promoCodeList: ArrayList<String>, isOcc: Boolean) {
+        queryString = GraphqlHelper.loadRawString(context.resources, R.raw.clear_cache_auto_apply_stack)
+        queryString = queryString.replace(PARAM_PLACEHOLDER_SERVICE_ID, serviceId)
+
+        queryString = queryString.replace(PARAM_PLACEHOLDER_PROMO_CODE, Gson().toJson(promoCodeList))
+
+        queryString = queryString.replace(PARAM_PLACEHOLDER_IS_OCC, isOcc.toString())
     }
 
     override fun createObservable(params: RequestParams?): Observable<ClearPromoUiModel> {

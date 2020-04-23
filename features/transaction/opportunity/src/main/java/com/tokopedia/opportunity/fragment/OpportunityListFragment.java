@@ -172,8 +172,12 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
             String id = savedInstanceState.getString(ARGS_SAVE_INSTANCE_ID);
             SaveInstanceCacheManager cacheManager = new SaveInstanceCacheManager(context, id);
             filterData = cacheManager.get(ARGS_FILTER_DATA, OpportunityFilterViewModel.class);
-            opportunityParam = cacheManager.get(ARGS_PARAM, GetOpportunityListParam.class);
-
+            GetOpportunityListParam opor = cacheManager.get(ARGS_PARAM, GetOpportunityListParam.class);
+            if (opor != null) {
+                opportunityParam = opor;
+            } else {
+                opportunityParam = new GetOpportunityListParam();
+            }
         } else {
             filterData = new OpportunityFilterViewModel();
             opportunityParam = new GetOpportunityListParam();
@@ -335,7 +339,7 @@ public class OpportunityListFragment extends BasePresenterFragment<OpportunityLi
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                if (newText.length() == 0) {
+                if (newText.length() == 0 && opportunityParam != null) {
                     opportunityParam.setQuery("");
                     resetOpportunityList();
                 }

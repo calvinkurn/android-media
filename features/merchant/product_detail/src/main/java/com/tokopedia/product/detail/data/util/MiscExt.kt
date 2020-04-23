@@ -21,9 +21,3 @@ val WarehouseInfo.origin: String?
             arrayOf(districtId, postalCode, geoLocation).joinToString("|")
         } else null
     }
-
-val PreOrder.timeUnitValue: String
-    get() = if (timeUnit.toLowerCase() == TimeUnitTypeDef.DAY.toLowerCase()) "Hari"
-    else if ((timeUnit.toLowerCase() == TimeUnitTypeDef.WEEK.toLowerCase())) "Minggu"
-    else if ((timeUnit.toLowerCase() == TimeUnitTypeDef.MONTH.toLowerCase())) "Bulan"
-    else ""

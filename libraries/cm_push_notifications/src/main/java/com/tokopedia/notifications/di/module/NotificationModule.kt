@@ -2,10 +2,13 @@ package com.tokopedia.notifications.di.module
 
 import android.content.Context
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.atc_common.domain.mapper.AddToCartDataMapper
+import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
+import com.tokopedia.graphql.domain.GraphqlUseCase as RxUseCase
 import com.tokopedia.notifications.R
-import com.tokopedia.notifications.data.AttributionManager
+import com.tokopedia.notifications.data.DataManager
 import com.tokopedia.notifications.data.model.AttributionNotifier
 import com.tokopedia.notifications.di.scope.CMNotificationContext
 import com.tokopedia.notifications.di.scope.CMNotificationScope
@@ -40,24 +43,30 @@ import javax.inject.Named
     }
 
     @Provides
-    @Named(NOTIFICATION_ATTRIBUTION)
-    fun provideAttributionQuery(
-            @CMNotificationContext context: Context
-    ): String {
-        return GraphqlHelper.loadRawString(
-                context.resources,
-                R.raw.query_notification_attribution
-        )
+    @CMNotificationScope
+    fun provideAtcUseCase(
+            @Named(ATC_MUTATION_QUERY) query: String,
+            useCase: RxUseCase,
+            mapper: AddToCartDataMapper
+    ): AddToCartUseCase {
+        return AddToCartUseCase(query, useCase, mapper)
     }
 
     @Provides
     @CMNotificationScope
-    fun provideAttributionManager(useCase: AttributionUseCase): AttributionManager {
-        return AttributionManager(useCase)
+    fun provideDataManager(
+            attributionUseCase: AttributionUseCase,
+            atcProductUseCase: AddToCartUseCase
+    ): DataManager {
+        return DataManager(
+                attributionUseCase,
+                atcProductUseCase
+        )
     }
 
     companion object {
         const val NOTIFICATION_ATTRIBUTION = "notification_attribution"
+        const val ATC_MUTATION_QUERY = "atcMutation"
     }
 
 }

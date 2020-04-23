@@ -37,7 +37,6 @@ interface TopChatContract {
 
         fun onErrorUploadImage(errorMessage: String, it: ImageUploadViewModel)
 
-        fun showErrorWebSocket(b: Boolean)
 
         fun getStringArgument(key: String, savedInstanceState: Bundle?): String
 

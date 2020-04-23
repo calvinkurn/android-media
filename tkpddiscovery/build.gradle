@@ -22,11 +22,9 @@ buildscript {
 
 dependencies {
     implementation project(rootProject.ext.features.resourcesCommon)
-    implementation project(rootProject.ext.libraries.tkpddesign)
     implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.libraries.baseList)
     implementation project(rootProject.ext.libraries.core_legacy)
-    implementation project(rootProject.ext.features.tkpdcore)
     implementation project(rootProject.ext.features.topAdsSdk)
     implementation project(rootProject.ext.features.wishlistCommon)
     implementation project(rootProject.ext.features.goldMerchantResource)
@@ -38,6 +36,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.remoteConfig)
     implementation project(rootProject.ext.libraries.coreNetwork)
     implementation project(rootProject.ext.libraries.analytics)
+    implementation project(rootProject.ext.libraries.sharedata)
     implementation project(rootProject.ext.features.productCard)
     implementation project(rootProject.ext.features.kolCommon)
     implementation project(rootProject.ext.features.filter)
@@ -104,6 +103,10 @@ dependencies {
     implementation rootProject.ext.miscDependencies.viewModelKtx
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
     implementation project(rootProject.ext.features.basemvvm)
+
+    testImplementation rootProject.ext.testDependencies.mockk
+    testImplementation rootProject.ext.testDependencies.archCoreTesting
+    testImplementation rootProject.ext.testDependencies.junit
 }
 
 project.ext {

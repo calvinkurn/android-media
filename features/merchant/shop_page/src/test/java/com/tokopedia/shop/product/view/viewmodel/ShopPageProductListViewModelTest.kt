@@ -2,18 +2,23 @@ package com.tokopedia.shop.product.view.viewmodel
 
 import com.tokopedia.shop.common.graphql.data.membershipclaimbenefit.MembershipClaimBenefitResponse
 import com.tokopedia.shop.common.graphql.data.stampprogress.MembershipStampProgress
+import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.GetMembershipUseCaseNew
 import com.tokopedia.shop.product.data.model.ShopFeaturedProduct
 import com.tokopedia.shop.product.data.model.ShopProduct
+import com.tokopedia.shop.product.domain.interactor.GqlGetShopProductUseCase
+import com.tokopedia.shop.product.utils.mapper.ShopPageProductListMapper
+import com.tokopedia.shop.product.view.datamodel.ShopProductEtalaseListViewModel
+import com.tokopedia.shop.product.view.datamodel.ShopProductFeaturedViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
 import io.mockk.coVerify
+import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Test
 import org.mockito.ArgumentMatchers.*
-import java.lang.Exception
 
 @ExperimentalCoroutinesApi
 class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture() {
@@ -21,52 +26,61 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
     @Test
     fun `check whether response get buyer shop page product success is not null`() {
         runBlocking {
-            val shopFeaturedProduct = ShopFeaturedProduct()
-            val shopFeaturedProducts = listOf(shopFeaturedProduct)
 
             coEvery { getMembershipUseCase.executeOnBackground() } returns MembershipStampProgress()
-            coEvery { getShopFeaturedProductUseCase.executeOnBackground() } returns shopFeaturedProducts
-            viewModelShopPageProductListViewModel.getBuyerShopPageProductTabData(anyString(), any(), anyBoolean())
+
+            viewModelShopPageProductListViewModel.getBuyerShopPageProductTabData(anyString(),
+                    ShopProductEtalaseListViewModel(), false)
+
+            verify { GetMembershipUseCaseNew.createRequestParams(anyInt()) }
+
             verifyGetMemberShipUseCaseCalled()
-            verifyGetShopFeaturedProductUseCaseCalled()
+
             Assert.assertTrue(viewModelShopPageProductListViewModel.membershipData.value is Success)
-            Assert.assertTrue(viewModelShopPageProductListViewModel.shopProductFeaturedData.value is Success)
             Assert.assertNotNull(viewModelShopPageProductListViewModel.membershipData.value)
-            Assert.assertNotNull(viewModelShopPageProductListViewModel.shopProductFeaturedData.value)
         }
     }
 
     @Test
     fun `check whether response shop featured product error is null`() {
         runBlocking {
-            coEvery { getShopFeaturedProductUseCase.executeOnBackground() } throws Exception()
-            viewModelShopPageProductListViewModel.getBuyerShopPageProductTabData(anyString(), any(), anyBoolean())
-            verifyGetShopFeaturedProductUseCaseCalled()
-            Assert.assertTrue(viewModelShopPageProductListViewModel.shopProductFeaturedData.value is Fail)
+            coEvery { getMembershipUseCase.executeOnBackground() } throws Exception()
+            viewModelShopPageProductListViewModel.getBuyerShopPageProductTabData(anyString(), ShopProductEtalaseListViewModel(), anyBoolean())
+
+            verify { GetMembershipUseCaseNew.createRequestParams(anyInt()) }
+
+            verifyGetMemberShipUseCaseCalled()
+
+            Assert.assertNull(viewModelShopPageProductListViewModel.membershipData.value)
         }
     }
 
     @Test
     fun `check whether response get seller shop page product tab data success is not null`() {
         runBlocking {
-            val shopFeaturedProduct = ShopFeaturedProduct()
-            val shopFeaturedProducts = listOf(shopFeaturedProduct)
 
-            coEvery { getShopFeaturedProductUseCase.executeOnBackground() } returns shopFeaturedProducts
-            viewModelShopPageProductListViewModel.getSellerShopPageProductTabData(anyString(), any())
-            verifyGetShopFeaturedProductUseCaseCalled()
-            Assert.assertTrue(viewModelShopPageProductListViewModel.shopProductFeaturedData.value is Success)
-            Assert.assertNotNull(viewModelShopPageProductListViewModel.shopProductFeaturedData.value)
+            coEvery { getShopProductUseCase.executeOnBackground() } returns ShopProduct.GetShopProduct()
+            viewModelShopPageProductListViewModel.getSellerShopPageProductTabData(anyString(), ShopProductEtalaseListViewModel())
+
+            verify { GqlGetShopProductUseCase.createParams(anyString(), any()) }
+
+            verifyGetShopProductUseCaseCaseCalled()
+            Assert.assertTrue(viewModelShopPageProductListViewModel.productListData.value is Success)
+            Assert.assertNotNull(viewModelShopPageProductListViewModel.productListData.value)
         }
     }
 
     @Test
     fun `check whether response get seller shop page product tab data error is null`() {
         runBlocking {
-            coEvery { getShopFeaturedProductUseCase.executeOnBackground() } throws Exception()
-            viewModelShopPageProductListViewModel.getSellerShopPageProductTabData(anyString(), any())
-            verifyGetShopFeaturedProductUseCaseCalled()
-            Assert.assertTrue(viewModelShopPageProductListViewModel.shopProductFeaturedData.value is Fail)
+
+            coEvery { getShopProductUseCase.executeOnBackground() } throws Exception()
+            viewModelShopPageProductListViewModel.getSellerShopPageProductTabData(anyString(), ShopProductEtalaseListViewModel())
+
+            verify { GqlGetShopProductUseCase.createParams(anyString(), any()) }
+
+            verifyGetShopProductUseCaseCaseCalled()
+            Assert.assertTrue(viewModelShopPageProductListViewModel.productListData.value is Fail)
         }
     }
 
@@ -94,9 +108,14 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
     @Test
     fun `check whether response get new product list data success is not null`() {
         runBlocking {
+
             coEvery { getShopProductUseCase.executeOnBackground() } returns ShopProduct.GetShopProduct()
             viewModelShopPageProductListViewModel.getNewProductListData(anyString(), anyString())
+
+            verify { GqlGetShopProductUseCase.createParams(anyString(), any()) }
+
             verifyGetShopProductUseCaseCaseCalled()
+
             Assert.assertTrue(viewModelShopPageProductListViewModel.productListData.value is Success)
             Assert.assertNotNull(viewModelShopPageProductListViewModel.productListData.value)
         }
@@ -107,6 +126,9 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
         runBlocking {
             coEvery { getShopProductUseCase.executeOnBackground() } throws Exception()
             viewModelShopPageProductListViewModel.getNewProductListData(anyString(), anyString())
+
+            verify { GqlGetShopProductUseCase.createParams(anyString(), any()) }
+
             verifyGetShopProductUseCaseCaseCalled()
             Assert.assertTrue(viewModelShopPageProductListViewModel.productListData.value is Fail)
         }
@@ -115,9 +137,13 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
     @Test
     fun `check whether response get next product list data success is not null`() {
         runBlocking {
+
             coEvery { getShopProductUseCase.executeOnBackground() } returns ShopProduct.GetShopProduct()
             viewModelShopPageProductListViewModel.getNextProductListData(anyString(), anyString(), anyInt())
             verifyGetShopProductUseCaseCaseCalled()
+
+            verify { GqlGetShopProductUseCase.createParams(anyString(), any()) }
+
             Assert.assertTrue(viewModelShopPageProductListViewModel.productListData.value is Success)
             Assert.assertNotNull(viewModelShopPageProductListViewModel.productListData.value)
         }
@@ -128,6 +154,9 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
         runBlocking {
             coEvery { getShopProductUseCase.executeOnBackground() } throws Exception()
             viewModelShopPageProductListViewModel.getNextProductListData(anyString(), anyString(), anyInt())
+
+            verify { GqlGetShopProductUseCase.createParams(anyString(), any()) }
+
             verifyGetShopProductUseCaseCaseCalled()
             Assert.assertTrue(viewModelShopPageProductListViewModel.productListData.value is Fail)
         }
@@ -135,11 +164,16 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
 
     @Test
     fun `check whether response get new membership data success is not null`() {
-        val mockShopId = "7307343"
         runBlocking {
+
             coEvery { getMembershipUseCase.executeOnBackground() } returns MembershipStampProgress()
-            viewModelShopPageProductListViewModel.getNewMembershipData(mockShopId)
+
+            viewModelShopPageProductListViewModel.getNewMembershipData(anyString())
+
+            verify { GetMembershipUseCaseNew.createRequestParams(anyInt()) }
+
             verifyGetMemberShipUseCaseCalled()
+
             Assert.assertTrue(viewModelShopPageProductListViewModel.newMembershipData.value is Success)
             Assert.assertNotNull(viewModelShopPageProductListViewModel.newMembershipData.value)
         }
@@ -148,9 +182,12 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
     @Test
     fun `check whether response get new membership data error`() {
         runBlocking {
-            val mockShopId = "7307343"
+
             coEvery { getMembershipUseCase.executeOnBackground() } throws Exception()
-            viewModelShopPageProductListViewModel.getNewMembershipData(mockShopId)
+            viewModelShopPageProductListViewModel.getNewMembershipData(anyString())
+
+            verify { GetMembershipUseCaseNew.createRequestParams(anyInt()) }
+
             verifyGetMemberShipUseCaseCalled()
             Assert.assertTrue(viewModelShopPageProductListViewModel.newMembershipData.value is Fail)
         }
@@ -170,5 +207,16 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
 
     private fun verifyGetShopFeaturedProductUseCaseCalled() {
         coVerify { getShopFeaturedProductUseCase.executeOnBackground() }
+    }
+
+    private fun List<ShopFeaturedProduct>.toViewModel(): ShopProductFeaturedViewModel {
+        return ShopProductFeaturedViewModel(
+               this.map { shopFeaturedProduct ->
+                    ShopPageProductListMapper.mapShopFeaturedProductToProductViewModel(
+                            shopFeaturedProduct,
+                            anyBoolean()
+                    )
+                }
+        )
     }
 }

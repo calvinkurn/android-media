@@ -48,6 +48,7 @@ public class UserIdentificationFormActivity extends BaseStepperActivity {
     private SnackbarRetry snackbar;
     private int projectId = -1;
     protected UserIdentificationCommonAnalytics analytics;
+    public static boolean isSupportedLiveness = true;
 
     public interface Listener {
         void trackOnBackPressed();

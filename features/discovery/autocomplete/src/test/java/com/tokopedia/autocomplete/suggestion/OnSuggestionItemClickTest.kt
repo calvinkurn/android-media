@@ -10,7 +10,7 @@ import org.junit.Test
 internal class OnSuggestionItemClickTest {
 
     private val suggestionView = mockk<SuggestionContract.View>(relaxed = true)
-    private val getSuggestionUseCase = mockk<SuggestionUseCase>(relaxed = true)
+    private val getSuggestionUseCase = mockk<UseCase<SuggestionData>>(relaxed = true)
     private val suggestionTrackerUseCase = mockk<UseCase<Void?>>(relaxed = true)
     private val userSession = mockk<UserSessionInterface>(relaxed = true)
 
@@ -23,10 +23,12 @@ internal class OnSuggestionItemClickTest {
     private val applinkProfileWithoutQueryParams = "tokopedia://people/$id"
     private val applinkRecentSearch = "tokopedia://search?q=jaket+pria&source=universe&st=product"
     private val urlTracker = "https://ace.tokopedia.com/tracker/v1?id=558518&user_id=0&device=desktop&unique_id=&type=shop"
+    private val expectedUrlTracker = "https://ace.tokopedia.com/tracker/v1?id=558518&user_id=0&device=desktop&unique_id=&type=shop&device=android&source=searchbar&count=5&user_id=&unique_id=d41d8cd98f00b204e9800998ecf8427e&device_id="
     private val capturedUrlTrackerParams = slot<RequestParams>()
     private val keywordTypedByUser = "samsung"
     private val position = 1
     private val title = "Samsung"
+    private val campaignCode = "123"
 
     @Before
     fun setUp() {
@@ -78,8 +80,8 @@ internal class OnSuggestionItemClickTest {
 
         val actualUrlTracker = requestParams.getString(SuggestionTrackerUseCase.URL_TRACKER, "")
 
-        assert(actualUrlTracker == urlTracker) {
-            "Assertion Failed, actual url tracker: $actualUrlTracker, expected url tracker: $urlTracker"
+        assert(actualUrlTracker == expectedUrlTracker) {
+            "Assertion Failed, actual url tracker: $actualUrlTracker, expected url tracker: $expectedUrlTracker"
         }
     }
 
@@ -132,7 +134,8 @@ internal class OnSuggestionItemClickTest {
                 type = TYPE_CURATED,
                 searchTerm = keywordTypedByUser,
                 title = title,
-                position = position
+                position = position,
+                trackingCode = campaignCode
         )
 
         `when suggestion item clicked`(item)
@@ -147,7 +150,7 @@ internal class OnSuggestionItemClickTest {
                 "- page: ${item.applink}"
 
         verify {
-            suggestionView.trackEventClickCurated(expectedEventLabel)
+            suggestionView.trackEventClickCurated(expectedEventLabel, campaignCode)
             suggestionView.onClickSuggestion(item)
         }
 

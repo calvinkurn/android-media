@@ -1,6 +1,7 @@
 package com.tokopedia.shop.home.view.adapter.viewholder
 
 import android.view.View
+import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.GridLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -12,6 +13,7 @@ import com.tokopedia.shop.home.view.adapter.PaddingItemDecorationShopPage
 import com.tokopedia.shop.home.view.adapter.ShopHomeMultipleImageColumnAdapter
 import com.tokopedia.shop.home.view.listener.ShopHomeDisplayWidgetListener
 import com.tokopedia.shop.home.view.model.ShopHomeDisplayWidgetUiModel
+import com.tokopedia.unifycomponents.toPx
 import kotlinx.android.synthetic.main.widget_shop_home_multiple_image_column.view.*
 
 /**
@@ -20,6 +22,7 @@ import kotlinx.android.synthetic.main.widget_shop_home_multiple_image_column.vie
 
 class ShopHomeMultipleImageColumnViewHolder(
         itemView: View,
+        private val previousViewHolder: AbstractViewHolder<*>?,
         listener: ShopHomeDisplayWidgetListener
 ) : AbstractViewHolder<ShopHomeDisplayWidgetUiModel>(itemView) {
 
@@ -60,6 +63,11 @@ class ShopHomeMultipleImageColumnViewHolder(
         itemView.textViewTitle?.apply {
             if (element.header.title.isEmpty()) {
                 hide()
+                if (previousViewHolder is ShopHomeSliderSquareViewHolder || previousViewHolder is ShopHomeCarousellProductViewHolder) {
+                    (itemView.layoutParams as? ViewGroup.MarginLayoutParams)?.apply {
+                        setMargins(leftMargin, 16.toPx(), rightMargin, bottomMargin)
+                    }
+                }
             } else {
                 text = element.header.title
                 show()

@@ -1,5 +1,5 @@
 apply plugin: 'com.android.library'
-apply from: "$rootProject.projectDir/buildconfig/module.gradle"
+apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
 repositories {
@@ -34,7 +34,7 @@ dependencies {
     implementation rootProject.ext.networkDependencies.glide
 
     implementation rootProject.ext.miscDependencies.dagger
-    annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
+    kapt rootProject.ext.miscDependencies.daggerCompiler
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
@@ -43,7 +43,7 @@ dependencies {
     }
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
-    annotationProcessor rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
+    kapt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
     implementation rootProject.ext.debugToolsDependencies.chuck
     implementation(rootProject.ext.tkpdLibDependencies.showcase) {
         exclude group: "com.android.support"
@@ -56,6 +56,7 @@ dependencies {
 
     implementation project(rootProject.ext.libraries.webview)
     implementation project(rootProject.ext.libraries.remoteResourceRequest)
+    
 }
 
 project.ext {

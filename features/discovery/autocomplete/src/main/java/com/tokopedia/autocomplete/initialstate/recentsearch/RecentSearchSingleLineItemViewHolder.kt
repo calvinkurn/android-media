@@ -8,6 +8,7 @@ import com.tokopedia.autocomplete.R
 import com.tokopedia.autocomplete.analytics.AutocompleteTracking
 import com.tokopedia.autocomplete.initialstate.BaseItemInitialStateSearch
 import com.tokopedia.autocomplete.initialstate.InitialStateItemClickListener
+import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import kotlinx.android.synthetic.main.layout_autocomplete_single_line_item.view.*
 
 class RecentSearchSingleLineItemViewHolder(itemView: View, private val clickListener: InitialStateItemClickListener) : RecyclerView.ViewHolder(itemView) {
@@ -32,8 +33,8 @@ class RecentSearchSingleLineItemViewHolder(itemView: View, private val clickList
     }
 
     private fun bindRemoveButton(item: BaseItemInitialStateSearch) {
-        itemView.actionShortcutButton?.let {
-            ImageHandler.loadImage2(it, item.shortcutImage, R.drawable.autocomplete_ic_remove)
+        itemView.actionShortcutButton?.shouldShowWithAction(item.shortcutImage.isNotEmpty()) {
+            ImageHandler.loadImage2(itemView.actionShortcutButton, item.shortcutImage, R.drawable.autocomplete_ic_remove)
         }
     }
 

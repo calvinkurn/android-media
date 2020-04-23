@@ -48,10 +48,10 @@ ext {
     playServiceAppIndexing = '17.1.0'
     playServiceAnalytics = '16.0.6'
     playServiceFirebaseMessaging = '17.3.4'
-    playServiceLocation = '16.0.0'
+    playServiceLocation = '17.0.0'
     playServiceMaps = '17.0.0'
-    playServiceAuth = '16.0.1'
-    playServicePlace = '16.0.0'
+    playServiceAuth = '17.0.0'
+    playServicePlace = '17.0.0'
     playServiceAuthApiPhone = '16.0.0'
     playServiceMapsUtil = '1.0.2'
     playServiceFirebaseRemoteConfig = '16.1.3'
@@ -77,6 +77,8 @@ ext {
 
     debugToolsEnabled = true
 
+    debugToolsEnabled = true
+
     // Sort and categorize alphabetically by folder name
     app = [
             customerapp: ":customerapp",
@@ -85,12 +87,13 @@ ext {
 
     unifyIconVersion = '0.0.4'
     unifyPrinciplesVersion = '1.1.1'
-    unifyComponentsVersion = '1.1.32'
+    unifyComponentsVersion = '1.1.33'
     unifyCoachMarkVersion = '1.2.3'
     unifyCalendarVersion = '1.0.2'
     unifyBannerVersion = '1.0.4'
     unifyDialogVersion = '1.0.0'
     unifyDatePickerVersion = '1.0.3'
+    unifyPinVersion = '1.0.1'
     unifyEmptyStateVersion = '1.0.2'
     unifyGlobalErrorVersion = '1.0.8'
     unifyHeaderVersion = '1.1.1'
@@ -179,7 +182,7 @@ ext {
     analyticsDependencies = [
             appsflyer  : "com.appsflyer:af-android-sdk:5.1.1@aar",
             installRef : "com.android.installreferrer:installreferrer:1.1",
-            moengage   : "com.moengage:moe-android-sdk:9.7.02",
+            moengage   : "com.moengage:moe-android-sdk:9.8.02",
             moengageAmp: "com.moengage:push-amp-plus:0.3.00",
             branch     : "io.branch.sdk.android:library:4.1.1",
     ]
@@ -191,7 +194,7 @@ ext {
 
     miscDependencies = [
             scannerZxing          : "com.journeyapps:zxing-android-embedded:3.5.0",
-            facebook              : "com.facebook.android:facebook-android-sdk:4.26.0",
+            facebook              : "com.facebook.android:facebook-android-sdk:6.2.0",
             parcelerApi           : "org.parceler:parceler-api:1.1.12",
             parceler              : "org.parceler:parceler:1.1.12",
             gson                  : "com.google.code.gson:gson:2.7",
@@ -211,7 +214,7 @@ ext {
             slidinguppanel        : "com.sothree.slidinguppanel:library:3.3.1",
             lottie                : "com.airbnb.android:lottie:$lottieVersion",
             cardio                : "io.card:android-sdk:$cardioVersion",
-            loaderviewlibrary     : "com.elyeproj.libraries:loaderviewlibrary:1.5.0",
+            loaderviewlibrary     : "com.elyeproj.libraries:loaderviewlibrary:2.0.0",
             imagecropper          : "com.theartofdev.edmodo:android-image-cropper:2.5.1",
             reactNative           : "com.facebook.react:react-native:$reactNativeVersion@aar",
             codePushReactNative   : "com.microsoft.codepush:rn-codepush:5.6.0@aar",
@@ -243,8 +246,8 @@ ext {
             workManager           : "android.arch.work:work-runtime-ktx:$workManagerVersion",
             stfalconImageViewer   : "com.github.stfalcon:stfalcon-imageviewer:$stfalconVersion",
             liveness              : "ai.advance.liveness:guardian_core_v1.6@aar",
+            robust                : "com.meituan.robust:robust:0.4.95",
             javaxInject           :  "javax.inject:javax.inject:1",
-
             slice                 : "androidx.slice:slice-builders-ktx:$sliceVersion"
     ]
 
@@ -321,6 +324,7 @@ ext {
             dialog          : "com.tokopedia.unify.compositions:dialog:${unifyDialogVersion}@aar",
             datepicker      : "com.tokopedia.unify.compositions:datepicker:${unifyDatePickerVersion}@aar",
             empty_state     : "com.tokopedia.unify.compositions:empty_state:${unifyEmptyStateVersion}@aar",
+            pin             : "com.tokopedia.unify.compositions:pin:${unifyPinVersion}@aar",
             global_error    : "com.tokopedia.unify.compositions:global_error:${unifyGlobalErrorVersion}@aar",
             header          : "com.tokopedia.unify.compositions:header:${unifyHeaderVersion}@aar",
             iconNotification: "com.tokopedia.unify.compositions:icon_notification:${unifyIconNotificationVersion}@aar",

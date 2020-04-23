@@ -255,6 +255,15 @@ public class SearchTracking {
         ));
     }
 
+    public static void eventClickSuggestedSearch(String currentKeyword, String suggestion) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
+                SearchEventTracking.Event.SEARCH_RESULT,
+                SearchEventTracking.Category.SEARCH_RESULT,
+                SearchEventTracking.Action.CLICK_FUZZY_KEYWORDS_SUGGESTION,
+                String.format("%s - %s", currentKeyword, suggestion)
+        ));
+    }
+
     public static void eventSearchResultChangeGrid(Context context, String gridName, String screenName) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 SearchEventTracking.Event.SEARCH_RESULT,
@@ -631,8 +640,8 @@ public class SearchTracking {
                 EVENT_ACTION, SearchEventTracking.Action.GENERAL_SEARCH,
                 EVENT_LABEL, generalSearchTrackingModel.getEventLabel(),
                 IS_RESULT_FOUND, generalSearchTrackingModel.isResultFound(),
-                CATEGORY_ID_MAPPING, new JSONArray(Arrays.asList(generalSearchTrackingModel.getCategoryMapping().keySet().toArray())),
-                CATEGORY_NAME_MAPPING, new JSONArray(generalSearchTrackingModel.getCategoryMapping().values()),
+                CATEGORY_ID_MAPPING, generalSearchTrackingModel.getCategoryIdMapping(),
+                CATEGORY_NAME_MAPPING, generalSearchTrackingModel.getCategoryNameMapping(),
                 RELATED_KEYWORD, generalSearchTrackingModel.getRelatedKeyword()
         );
 

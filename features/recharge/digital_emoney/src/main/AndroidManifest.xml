@@ -9,7 +9,7 @@
     <application>
 
         <activity
-            android:name=".view.activity.EmoneyCheckBalanceNFCActivity"
+            android:name=".view.activity.NfcCheckBalanceActivity"
             android:label="@string/emoney_toolbar_title_etoll_check_balance"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"

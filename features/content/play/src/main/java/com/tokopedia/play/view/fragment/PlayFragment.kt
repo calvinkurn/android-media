@@ -31,6 +31,7 @@ import com.tokopedia.play.analytic.TrackingField
 import com.tokopedia.play.data.websocket.PlaySocketInfo
 import com.tokopedia.play.di.DaggerPlayComponent
 import com.tokopedia.play.di.PlayModule
+import com.tokopedia.play.extensions.isAnyBottomSheetsShown
 import com.tokopedia.play.util.PlayFullScreenHelper
 import com.tokopedia.play.util.keyboard.KeyboardWatcher
 import com.tokopedia.play.view.contract.PlayNewChannelInteractor
@@ -438,7 +439,7 @@ class PlayFragment : BaseDaggerFragment() {
             override fun onKeyboardHidden() {
                 playViewModel.onKeyboardHidden()
                 ivClose.invisible()
-                if (!playViewModel.isAnyBottomSheetShown) this@PlayFragment.onBottomInsetsViewHidden()
+                if (!playViewModel.stateHelper.bottomInsets.isAnyBottomSheetsShown) this@PlayFragment.onBottomInsetsViewHidden()
             }
         })
     }

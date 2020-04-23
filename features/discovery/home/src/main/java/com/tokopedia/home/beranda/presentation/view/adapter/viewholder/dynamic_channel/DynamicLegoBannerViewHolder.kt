@@ -5,18 +5,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
-import androidx.appcompat.widget.AppCompatImageView
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.circular_view_pager.presentation.widgets.shimmeringImageView.ShimmeringImageView
 import com.tokopedia.home.R
 import com.tokopedia.home.analytics.HomePageTracking
 import com.tokopedia.home.analytics.HomePageTrackingV2
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.helper.glide.FPM_DYNAMIC_LEGO_BANNER
-import com.tokopedia.home.beranda.helper.glide.loadImage
-import com.tokopedia.home.beranda.helper.glide.loadImageFitCenter
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelViewModel
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.GridSpacingItemDecoration
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils
 import com.tokopedia.track.TrackApp
@@ -110,7 +107,7 @@ class DynamicLegoBannerViewHolder(legoBannerView: View,
                 if(legoBannerType == TYPE_FOUR_GRID_LEGO){
                     holder.imageView.loadImage(grid.imageUrl, FPM_DYNAMIC_LEGO_BANNER)
                 } else {
-                    holder.imageView.loadImageFitCenter(grid.imageUrl, FPM_DYNAMIC_LEGO_BANNER)
+                    holder.imageView.loadImage(grid.imageUrl, FPM_DYNAMIC_LEGO_BANNER)
                 }
                 holder.imageView.setOnClickListener {
                     when(legoBannerType) {
@@ -157,7 +154,7 @@ class DynamicLegoBannerViewHolder(legoBannerView: View,
     }
 
     class LegoItemViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val imageView: AppCompatImageView = view.findViewById(R.id.image)
+        val imageView: ShimmeringImageView = view.findViewById(R.id.image)
         val context: Context
             get() = itemView.context
     }
