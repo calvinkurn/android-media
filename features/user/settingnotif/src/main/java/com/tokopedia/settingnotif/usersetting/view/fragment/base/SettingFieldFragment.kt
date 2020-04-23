@@ -25,7 +25,6 @@ import com.tokopedia.settingnotif.usersetting.di.DaggerUserSettingComponent
 import com.tokopedia.settingnotif.usersetting.di.module.UserSettingModule
 import com.tokopedia.settingnotif.usersetting.data.pojo.NotificationActivation
 import com.tokopedia.settingnotif.usersetting.data.pojo.ParentSetting
-import com.tokopedia.settingnotif.usersetting.data.pojo.setusersetting.SetUserSettingResponse
 import com.tokopedia.settingnotif.usersetting.view.activity.ParentActivity
 import com.tokopedia.settingnotif.usersetting.view.adapter.SettingFieldAdapter
 import com.tokopedia.settingnotif.usersetting.view.adapter.factory.SettingFieldTypeFactory
@@ -98,7 +97,7 @@ abstract class SettingFieldFragment : BaseListFragment<Visitable<*>,
             onSuccessGetUserSetting(it)
         })
         settingViewModel.setUserSetting.observe(viewLifecycleOwner, Observer {
-            onSuccessSetUserSetting(it)
+            onSuccessSetUserSetting()
         })
         settingViewModel.errorErrorState.observe(viewLifecycleOwner, Observer {
             when (it) {
@@ -126,7 +125,7 @@ abstract class SettingFieldFragment : BaseListFragment<Visitable<*>,
         renderList(data.data)
     }
 
-    private fun onSuccessSetUserSetting(data: SetUserSettingResponse) {
+    private fun onSuccessSetUserSetting() {
         showMessage(R.string.state_success_set_user_setting)
     }
 
@@ -163,14 +162,21 @@ abstract class SettingFieldFragment : BaseListFragment<Visitable<*>,
     protected fun permissionValidation(
             validation: Boolean,
             pinnedItem: NotificationActivation,
-            lastStateItems: List<ParentSetting>
+            lastStateItems: List<ParentSetting>,
+            isRequiredPinnedActivation: Boolean = true
     ) {
-        if (validation) {
-            settingFieldAdapter.removePinnedActivation()
-            settingFieldAdapter.enableSwitchComponent(lastStateItems)
-        } else {
-            settingFieldAdapter.addPinnedActivation(pinnedItem)
-            settingFieldAdapter.disableSwitchComponent()
+        with(settingFieldAdapter) {
+            if (validation) {
+                if (isRequiredPinnedActivation) {
+                    removePinnedActivation()
+                }
+                enableSwitchComponent(lastStateItems)
+            } else {
+                if (isRequiredPinnedActivation) {
+                    addPinnedActivation(pinnedItem)
+                }
+                disableSwitchComponent()
+            }
         }
     }
 
