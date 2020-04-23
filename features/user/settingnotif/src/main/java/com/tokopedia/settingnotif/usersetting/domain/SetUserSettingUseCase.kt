@@ -1,33 +1,34 @@
 package com.tokopedia.settingnotif.usersetting.domain
 
-import android.content.Context
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.graphql.domain.GraphqlUseCase
-import com.tokopedia.settingnotif.R
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.settingnotif.usersetting.data.pojo.setusersetting.SetUserSettingResponse
 import com.tokopedia.usecase.RequestParams
-import com.tokopedia.usecase.UseCase
-import rx.Observable
+import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
-class SetUserSettingUseCase @Inject constructor(
-        val context: Context?,
-        private val useCase: GraphqlUseCase
+open class SetUserSettingUseCase @Inject constructor(
+        private val repository: GraphqlRepository,
+        private val graphQuery: String
 ) : UseCase<SetUserSettingResponse>() {
 
-    override fun createObservable(params: RequestParams?): Observable<SetUserSettingResponse> {
-        if (context == null) return Observable.error(IllegalStateException("Something error. Try again later"))
+    var params: RequestParams = RequestParams.EMPTY
 
-        val query = GraphqlHelper.loadRawString(context.resources, R.raw.query_set_user_setting)
-        val request = GraphqlRequest(query, SetUserSettingResponse::class.java, params?.parameters)
+    override suspend fun executeOnBackground(): SetUserSettingResponse {
+        require(params.paramsAllValueInString.isNotEmpty())
 
-        useCase.clearRequest()
-        useCase.addRequest(request)
+        val request = GraphqlRequest(graphQuery, SetUserSettingResponse::class.java, params.parameters)
+        val response = repository.getReseponse(listOf(request))
+        val error = response.getError(SetUserSettingResponse::class.java)
 
-        return useCase.createObservable(RequestParams.EMPTY).map { gqlResponse ->
-            gqlResponse.getData<SetUserSettingResponse>(
+        if (error == null || error.isEmpty()) {
+            return response.getData(
                     SetUserSettingResponse::class.java
+            ) as SetUserSettingResponse
+        } else {
+            throw MessageErrorException(
+                    error.mapNotNull { it.message }.joinToString(separator = ", ")
             )
         }
     }

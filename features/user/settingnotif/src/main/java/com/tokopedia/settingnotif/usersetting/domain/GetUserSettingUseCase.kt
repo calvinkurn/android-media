@@ -1,38 +1,31 @@
 package com.tokopedia.settingnotif.usersetting.domain
 
-import android.content.Context
-import androidx.annotation.RawRes
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.graphql.domain.GraphqlUseCase
-import com.tokopedia.settingnotif.usersetting.data.mapper.UserSettingFieldMapper
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.settingnotif.usersetting.data.pojo.UserNotificationResponse
-import com.tokopedia.settingnotif.usersetting.view.dataview.UserSettingDataView
-import com.tokopedia.usecase.RequestParams
-import com.tokopedia.usecase.UseCase
-import rx.Observable
+import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
-class GetUserSettingUseCase @Inject constructor(
-        val context: Context?,
-        private val useCase: GraphqlUseCase,
-        @RawRes val query: Int
-) : UseCase<UserSettingDataView>() {
+open class GetUserSettingUseCase @Inject constructor(
+        private val repository: GraphqlRepository,
+        private val graphQuery: String
+) : UseCase<UserNotificationResponse>() {
 
-    override fun createObservable(requestParams: RequestParams?): Observable<UserSettingDataView> {
-        if (context == null) return Observable.error(IllegalStateException("Something error. Try again later"))
+    override suspend fun executeOnBackground(): UserNotificationResponse {
+        val request = GraphqlRequest(graphQuery, UserNotificationResponse::class.java)
+        val response = repository.getReseponse(listOf(request))
+        val error = response.getError(UserNotificationResponse::class.java)
 
-        val query = GraphqlHelper.loadRawString(context.resources, query)
-        val request = GraphqlRequest(query, UserNotificationResponse::class.java)
-
-        useCase.clearRequest()
-        useCase.addRequest(request)
-
-        return useCase.createObservable(RequestParams.EMPTY).map { gqlResponse ->
-            gqlResponse.getData<UserNotificationResponse>(
+        if (error == null || error.isEmpty()) {
+            return response.getData(
                     UserNotificationResponse::class.java
+            ) as UserNotificationResponse
+        } else {
+            throw MessageErrorException(
+                    error.mapNotNull { it.message }.joinToString(separator = ", ")
             )
-        }.map(UserSettingFieldMapper())
+        }
     }
 
 }
