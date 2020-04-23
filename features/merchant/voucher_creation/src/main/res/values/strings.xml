@@ -3,8 +3,10 @@
     <string name="app_name">Voucher Creation</string>
     <string name="create_voucher_title">Tambah Voucher Toko</string>
     <string name="voucher_creation_step_next">Lanjutkan</string>
-    <string name="mvc_voucher_active">Lihat Voucher Aktif</string>
-    <string name="mvc_voucher_history">Lihat Riwayat Voucher</string>
+    <string name="mvc_view_voucher_active">Lihat Voucher Aktif</string>
+    <string name="mvc_voucher_active">Voucher Aktif</string>
+    <string name="mvc_view_voucher_history">Lihat Riwayat Voucher</string>
+    <string name="mvc_voucher_history">Riwayat Voucher</string>
     <string name="mvc_share">Bagikan</string>
     <string name="mvc_used">Terpakai</string>
     <string name="mvc_edit_quota">Ubah Kuota</string>

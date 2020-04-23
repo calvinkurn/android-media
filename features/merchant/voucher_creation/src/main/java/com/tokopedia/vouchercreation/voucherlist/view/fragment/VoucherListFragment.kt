@@ -183,6 +183,13 @@ class VoucherListFragment : BaseListFragment<BaseVoucherListUiModel, VoucherList
         (activity as? AppCompatActivity)?.let { activity ->
             activity.setSupportActionBar(toolbarMvcList)
             activity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
+            val title = if (isActiveVoucher) {
+                context.getString(R.string.mvc_voucher_active)
+            } else {
+                context.getString(R.string.mvc_voucher_history)
+            }
+            activity.supportActionBar?.title = title
         }
         showAppBarElevation(false)
     }
