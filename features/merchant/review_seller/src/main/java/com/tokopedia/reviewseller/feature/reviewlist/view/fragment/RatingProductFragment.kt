@@ -24,10 +24,7 @@ import com.tokopedia.coachmark.CoachMark
 import com.tokopedia.coachmark.CoachMarkBuilder
 import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.globalerror.GlobalError
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.reviewseller.R
 import com.tokopedia.reviewseller.common.util.DataEndlessScrollListener
 import com.tokopedia.reviewseller.common.util.ReviewSellerConstant
@@ -258,13 +255,14 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
 
     private fun onSuccessGetProductRatingOverallData(data: ProductRatingOverallUiModel) {
         reviewSellerAdapter.hideLoading()
+        appBar_layout_reviewSeller?.show()
         swipeToRefreshReviewSeller?.isRefreshing = false
         reviewSellerAdapter.setProductRatingOverallData(data)
     }
 
     private fun onErrorGetReviewSellerData(throwable: Throwable) {
         swipeToRefreshReviewSeller?.isRefreshing = false
-        if (reviewSellerAdapter.endlessDataSize == 0) {
+        if (reviewSellerAdapter.itemCount.isZero()) {
             if (throwable is Exception) {
                 globalError_reviewSeller?.setType(GlobalError.SERVER_ERROR)
             } else {
@@ -274,8 +272,8 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
             rvRatingProduct?.hide()
             emptyState_reviewProduct?.hide()
             filter_and_sort_layout?.hide()
+            search_bar_layout?.show()
             globalError_reviewSeller?.show()
-
 
             globalError_reviewSeller.setActionClickListener {
                 loadInitialData()
@@ -287,7 +285,6 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
 
     private fun onSuccessGetReviewProductListData(hasNextPage: Boolean, reviewProductList: List<ProductReviewUiModel>) {
         reviewSellerAdapter.hideLoading()
-        appBar_layout_reviewSeller?.show()
         swipeToRefreshReviewSeller?.isRefreshing = false
         if (reviewProductList.isEmpty()) {
             emptyState_reviewProduct?.show()
