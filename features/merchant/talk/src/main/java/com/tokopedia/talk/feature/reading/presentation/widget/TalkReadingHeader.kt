@@ -37,10 +37,12 @@ class TalkReadingHeader : BaseCustomView {
     }
 
     fun updateSelectedSort(chipText: String) {
+        val sortChip = this.readingHeaderChips.chipItems.first()
         if(chipText != SORT_CATEGORY) {
-            val sortChip = this.readingHeaderChips.chipItems.first()
             sortChip.type = ChipsUnify.TYPE_SELECTED
             sortChip.selectedItem = arrayListOf(chipText)
+        } else {
+            sortChip.type = ChipsUnify.TYPE_NORMAL
         }
     }
 
