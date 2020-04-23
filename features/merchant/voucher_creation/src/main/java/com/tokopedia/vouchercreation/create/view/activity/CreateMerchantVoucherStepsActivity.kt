@@ -15,11 +15,11 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.kotlin.extensions.view.setStatusBarColor
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
-import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.create.view.adapter.CreateMerchantVoucherStepsAdapter
 import com.tokopedia.vouchercreation.create.view.fragment.BaseCreateMerchantVoucherFragment
 import com.tokopedia.vouchercreation.create.view.fragment.MerchantVoucherTargetFragment
+import com.tokopedia.vouchercreation.create.view.fragment.bottomsheet.TipsAndTrickBottomSheetFragment
 import com.tokopedia.vouchercreation.create.view.uimodel.VoucherCreationStepInfo
 import com.tokopedia.vouchercreation.create.view.viewmodel.CreateMerchantVoucherStepsViewModel
 import com.tokopedia.vouchercreation.di.component.DaggerVoucherCreationComponent
@@ -75,7 +75,8 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
     }
 
     private val bottomSheet by lazy {
-        BottomSheetUnify().apply {
+        TipsAndTrickBottomSheetFragment.createInstance(this).apply {
+            this.setTitle(bottomSheetViewTitle.toBlankOrString())
             setCloseClickListener {
                 this.dismiss()
             }
@@ -128,7 +129,9 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
     private fun setupToolbar() {
         createMerchantVoucherHeader?.run {
             try {
-                addRightIcon(R.drawable.ic_tips)
+                addRightIcon(R.drawable.ic_tips).setOnClickListener {
+                    bottomSheet.show(supportFragmentManager, TipsAndTrickBottomSheetFragment.javaClass.name)
+                }
             } catch (ex: Resources.NotFoundException) {
                 ex.printStackTrace()
             }
