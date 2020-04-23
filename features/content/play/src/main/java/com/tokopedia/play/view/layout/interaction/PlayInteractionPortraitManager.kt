@@ -57,7 +57,7 @@ class PlayInteractionPortraitManager(
         layoutChat(container = view, id = sendChatComponentId, likeComponentId = likeComponentId, sizeContainerComponentId = sizeContainerComponentId, videoControlComponentId = videoControlComponentId)
         layoutChatList(container = view, id = chatListComponentId, quickReplyComponentId = quickReplyComponentId, likeComponentId = likeComponentId, sizeContainerComponentId = sizeContainerComponentId)
         layoutPinned(container = view, id = pinnedComponentId, chatListComponentId = chatListComponentId, likeComponentId = likeComponentId, sizeContainerComponentId = sizeContainerComponentId)
-        layoutPlayButton(container = view, id = playButtonComponentId, sizeContainerComponentId = sizeContainerComponentId)
+        layoutPlayButton(container = view, id = playButtonComponentId, immersiveBoxComponent = immersiveBoxComponentId)
         layoutImmersiveBox(container = view, videoOrientation = videoOrientation, id = immersiveBoxComponentId, pinnedComponentId = pinnedComponentId, statsInfoComponentId = statsInfoComponentId)
         layoutQuickReply(container = view, id = quickReplyComponentId, sendChatComponentId = sendChatComponentId, sizeContainerComponentId = sizeContainerComponentId)
         layoutGradientBackground(container = view, id = gradientBackgroundComponentId)
@@ -224,12 +224,12 @@ class PlayInteractionPortraitManager(
         }
     }
 
-    private fun layoutPlayButton(container: View, @IdRes id: Int, @IdRes sizeContainerComponentId: Int) {
+    private fun layoutPlayButton(container: View, @IdRes id: Int, @IdRes immersiveBoxComponent: Int) {
         container.changeConstraint {
-            connect(id, ConstraintSet.START, sizeContainerComponentId, ConstraintSet.START)
-            connect(id, ConstraintSet.END, sizeContainerComponentId, ConstraintSet.END)
-            connect(id, ConstraintSet.TOP, sizeContainerComponentId, ConstraintSet.TOP)
-            connect(id, ConstraintSet.BOTTOM, sizeContainerComponentId, ConstraintSet.BOTTOM)
+            connect(id, ConstraintSet.START, immersiveBoxComponent, ConstraintSet.START)
+            connect(id, ConstraintSet.END, immersiveBoxComponent, ConstraintSet.END)
+            connect(id, ConstraintSet.TOP, immersiveBoxComponent, ConstraintSet.TOP)
+            connect(id, ConstraintSet.BOTTOM, immersiveBoxComponent, ConstraintSet.BOTTOM)
         }
     }
 
