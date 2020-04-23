@@ -86,11 +86,6 @@ class PushNotifFieldFragment : SettingFieldFragment() {
         )
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        viewModel.cleared()
-    }
-
     override fun getScreenName() = getString(R.string.settingnotif_dialog_info_title)
     override fun getNotificationType() = TYPE_PUSH_NOTIF
 

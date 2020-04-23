@@ -101,8 +101,4 @@ class SettingStateViewModel @Inject constructor(
         }
     }
 
-    override fun cleared() {
-        this.onCleared()
-    }
-
 }

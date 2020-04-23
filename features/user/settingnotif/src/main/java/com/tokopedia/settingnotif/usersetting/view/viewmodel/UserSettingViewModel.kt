@@ -90,10 +90,6 @@ class UserSettingViewModel @Inject constructor(
         TrackApp.getInstance().moEngage.setPushPreference(checked)
     }
 
-    override fun cleared() {
-        this.onCleared()
-    }
-
     companion object {
         private const val SETTING_EMAIL_BULLETIN = "bulletin_newsletter"
         private const val SETTING_PUSH_NOTIFICATION_PROMO = "promo"
