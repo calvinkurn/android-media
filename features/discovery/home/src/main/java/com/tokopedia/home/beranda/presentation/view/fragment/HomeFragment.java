@@ -1132,8 +1132,20 @@ public class HomeFragment extends BaseDaggerFragment implements
     }
 
     private void getStickyContent(){
+        WeaveInterface stickyContentWeave = new WeaveInterface() {
+            @NotNull
+            @Override
+            public Object execute() {
+                return executeGetStickyContent();
+            }
+        };
+        Weaver.Companion.executeWeaveCoRoutineNow(stickyContentWeave);
+    }
+
+    private boolean executeGetStickyContent(){
         boolean isShowSticky = remoteConfig.getBoolean(StickyLoginConstant.REMOTE_CONFIG_FOR_HOME, true);
         if(isShowSticky && !userSession.isLoggedIn()) viewModel.getStickyContent();
+        return true;
     }
 
     private void hideLoading() {
