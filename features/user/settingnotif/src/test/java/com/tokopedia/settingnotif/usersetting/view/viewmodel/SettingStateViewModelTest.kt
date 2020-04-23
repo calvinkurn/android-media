@@ -8,22 +8,20 @@ import com.tokopedia.settingnotif.usersetting.data.pojo.SellerSection
 import com.tokopedia.settingnotif.usersetting.state.NotificationItemState
 import com.tokopedia.settingnotif.usersetting.view.dataview.UserSettingDataView
 import com.tokopedia.user.session.UserSessionInterface
+import io.mockk.every
+import io.mockk.mockk
 import org.junit.After
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
-import org.mockito.Mock
-import org.mockito.Mockito.`when`
-import org.mockito.MockitoAnnotations
 
 class SettingStateViewModelTest {
 
     private lateinit var viewModel: SettingStateViewModel
-    @Mock lateinit var userSession: UserSessionInterface
+    private var userSession: UserSessionInterface = mockk(relaxed = true)
 
     @Before
     fun setUp() {
-        MockitoAnnotations.initMocks(this)
         viewModel = SettingStateViewModel(userSession)
     }
 
@@ -47,7 +45,7 @@ class SettingStateViewModelTest {
     @Test fun `it should added pinned of seller section`() {
         val isNotificationEnabled = true
 
-        `when`(userSession.hasShop()).thenReturn(true)
+        every { userSession.hasShop() } returns true
 
         viewModel.addPinnedPushNotificationItems(
                 isNotificationEnabled,
@@ -62,7 +60,7 @@ class SettingStateViewModelTest {
     @Test fun `it should added pinned notification of permission and seller section`() {
         val isNotificationEnabled = false
 
-        `when`(userSession.hasShop()).thenReturn(true)
+        every { userSession.hasShop() } returns true
 
         viewModel.addPinnedPushNotificationItems(
                 isNotificationEnabled,
@@ -80,7 +78,7 @@ class SettingStateViewModelTest {
 
     @Test fun `it should added pinned of email activation`() {
         val fakeEmail = "isfhani.ghiath@tokopedia.com"
-        `when`(userSession.email).thenReturn(fakeEmail)
+        every { userSession.email } returns fakeEmail
 
         viewModel.addPinnedEmailItems(
                 UserSettingDataView(emptyList())
@@ -97,7 +95,7 @@ class SettingStateViewModelTest {
 
     @Test fun `it should added pinned of change email`() {
         val fakeEmail = "isfhani.ghiath@tokopedia.com"
-        `when`(userSession.email).thenReturn(fakeEmail)
+        every { userSession.email } returns fakeEmail
 
         viewModel.addPinnedEmailItems(
                 UserSettingDataView(emptyList())
@@ -149,8 +147,6 @@ class SettingStateViewModelTest {
         assertTrue(viewModel.getSettingStates().isEmpty())
     }
 
-    @After fun tearDown() {
-        viewModel.cleared()
-    }
+    @After fun tearDown() {}
 
 }
