@@ -127,6 +127,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
     private var progressDialog: AlertDialog? = null
 
     private var shouldUpdateCart: Boolean = true
+    private var shouldDismissProgressDialog: Boolean = false
 
     override fun getScreenName(): String {
         return this::class.java.simpleName
@@ -835,7 +836,9 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                     intent.putExtra(PaymentConstant.EXTRA_PARAMETER_TOP_PAY_DATA, paymentPassData)
                     intent.putExtra(PaymentConstant.EXTRA_PARAMETER_TOP_PAY_TOASTER_MESSAGE, checkoutData.error.message)
                     startActivityForResult(intent, PaymentConstant.REQUEST_CODE)
+                    shouldDismissProgressDialog = true
                 } else {
+                    viewModel.globalEvent.value = OccGlobalEvent.Normal
                     Toaster.make(v, getString(R.string.default_osp_error_message), type = Toaster.TYPE_ERROR)
                 }
             }
@@ -844,6 +847,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
 
     override fun onStart() {
         shouldUpdateCart = true
+        shouldDismissProgressDialog = false
         super.onStart()
     }
 
@@ -855,6 +859,9 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         super.onStop()
         if (swipeRefreshLayout?.isRefreshing == false && shouldUpdateCart) {
             viewModel.updateCart()
+        }
+        if (shouldDismissProgressDialog && progressDialog?.isShowing == true) {
+            viewModel.globalEvent.value = OccGlobalEvent.Normal
         }
     }
 
