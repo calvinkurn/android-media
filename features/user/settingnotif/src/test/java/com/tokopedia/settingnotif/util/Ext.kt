@@ -2,10 +2,42 @@ package com.tokopedia.settingnotif.util
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
+import com.tokopedia.graphql.data.model.GraphqlError
+import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.settingnotif.usersetting.base.SettingRepository
+import io.mockk.MockKAdditionalAnswerScope
+import io.mockk.coEvery
 import org.assertj.core.api.Assertions
+import java.lang.reflect.Type
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.TimeoutException
+
+inline fun <reified T> SettingRepository.stubRepository(
+        expectedValue: Any,
+        onError: Map<Type, List<GraphqlError>>?
+): MockKAdditionalAnswerScope<GraphqlResponse, GraphqlResponse> {
+    return stubResponseRepository(
+            mapOf(T::class.java to expectedValue),
+            onError
+    )
+}
+
+fun SettingRepository.stubResponseRepository(
+        onResult: Map<Type, Any>,
+        onError: Map<Type, List<GraphqlError>>?
+): MockKAdditionalAnswerScope<GraphqlResponse, GraphqlResponse> {
+    val it = this
+    return coEvery {
+        it.getResponse(any(), any())
+    } answers {
+        GraphqlResponse(
+                onResult,
+                onError,
+                false
+        )
+    }
+}
 
 fun <T> LiveData<T>.getOrAwaitValue(
         time: Long = 2,
