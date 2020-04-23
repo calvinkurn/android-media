@@ -245,8 +245,9 @@ class PlayFragment : BaseDaggerFragment(), PlaySensorOrientationManager.Orientat
 
     override fun onOrientationChanged(screenOrientation: ScreenOrientation) {
         val event = playViewModel.observableEvent.value
+        val videoOrientation = playViewModel.videoOrientation
         val isFreezeOrBanned = (event?.isFreeze ?: false) || (event?.isBanned ?: false)
-        if (requestedOrientation != screenOrientation.requestedOrientation && !isFreezeOrBanned)
+        if (requestedOrientation != screenOrientation.requestedOrientation && !isFreezeOrBanned && videoOrientation.isHorizontal)
             requestedOrientation = screenOrientation.requestedOrientation
         sendTrackerWhenRotateScreen(screenOrientation)
     }

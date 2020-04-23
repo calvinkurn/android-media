@@ -35,7 +35,8 @@ open class ChatListComponent(
                     .collect {
                         when (it) {
                             is ScreenStateEvent.Init -> uiView.hide()
-                            is ScreenStateEvent.IncomingChat -> uiView.showChat(it.chat)
+                            is ScreenStateEvent.IncomingChat -> uiView.showNewChat(it.chat)
+                            is ScreenStateEvent.SetChatList -> uiView.setChatList(it.chatList)
                             is ScreenStateEvent.VideoStreamChanged -> if (it.videoStream.channelType.isLive && !it.stateHelper.bottomInsets.isAnyBottomSheetsShown) uiView.show() else uiView.hide()
                             is ScreenStateEvent.OnNewPlayRoomEvent -> if(it.event.isFreeze || it.event.isBanned) uiView.hide()
                             is ScreenStateEvent.BottomInsetsChanged -> {

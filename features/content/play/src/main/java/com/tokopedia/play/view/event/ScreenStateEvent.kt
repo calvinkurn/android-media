@@ -32,6 +32,7 @@ sealed class ScreenStateEvent : ComponentEvent {
     data class SetProductSheet(val productResult: PlayResult<ProductSheetUiModel>) : ScreenStateEvent()
     data class SetVariantSheet(val variantResult: PlayResult<VariantSheetUiModel>) : ScreenStateEvent()
     data class SetVariantToaster(val toasterType: Int, val message: String, val actionText: String?, val actionClickListener: View.OnClickListener?) : ScreenStateEvent()
+    data class SetChatList(val chatList: List<PlayChatUiModel>) : ScreenStateEvent()
     /**
      * Chat
      */
@@ -40,7 +41,7 @@ sealed class ScreenStateEvent : ComponentEvent {
     /**
      * Like
      */
-    data class LikeContent(val shouldLike: Boolean, val animate: Boolean) : ScreenStateEvent()
+    data class LikeContent(val likeState: LikeStateUiModel, val isFirstTime: Boolean) : ScreenStateEvent()
     /**
      * Follow
      */

@@ -42,7 +42,7 @@ class PlayParentLayoutManagerImpl(
     private val offset12 = context.resources.getDimensionPixelOffset(R.dimen.play_offset_12)
     private val offset16 = context.resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4)
 
-    private var isVideoAlreadyPlaying = false
+    private var isVideoAlreadyReady = false
 
     private var topBounds = 0
 
@@ -85,9 +85,9 @@ class PlayParentLayoutManagerImpl(
     }
 
     override fun onVideoStateChanged(view: View, videoState: PlayVideoState, videoOrientation: VideoOrientation) {
-        if (videoState is PlayVideoState.Playing && !isVideoAlreadyPlaying) {
+        if (videoState in arrayOf(PlayVideoState.Playing, PlayVideoState.Pause, PlayVideoState.Ended) && !isVideoAlreadyReady) {
             reconfigureLayout(view, videoOrientation)
-            isVideoAlreadyPlaying = true
+            isVideoAlreadyReady = true
         }
     }
 
@@ -99,7 +99,7 @@ class PlayParentLayoutManagerImpl(
                 if (!screenOrientation.isLandscape) topBoundsWithOffset
                 else 0
 
-        if (shouldConfigureMargin && isVideoAlreadyPlaying) reconfigureLayout(view, videoOrientation)
+        if (shouldConfigureMargin && isVideoAlreadyReady) reconfigureLayout(view, videoOrientation)
     }
 
     override fun layoutView(view: View) {
