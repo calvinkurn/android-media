@@ -38,8 +38,6 @@ import kotlin.properties.Delegates
 class PlayVideoManager private constructor(private val applicationContext: Context) : CoroutineScope {
 
     companion object {
-        private const val END_TIME_TOLERATION_MS = 200
-
         private const val MAX_CACHE_BYTES: Long = 10 * 1024 * 1024
         private const val CACHE_FOLDER_NAME = "play_video"
 
@@ -85,18 +83,7 @@ class PlayVideoManager private constructor(private val applicationContext: Conte
         override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
             when (playbackState) {
                 Player.STATE_IDLE -> _observablePlayVideoState.value = PlayVideoState.NoMedia
-                Player.STATE_BUFFERING -> {
-                    _observablePlayVideoState.value = PlayVideoState.Buffering
-                    if (!isVideoLive()) {
-                        val videoDuration = videoPlayer.duration
-                        val currentPosition = videoPlayer.currentPosition
-                        val startVideoEndToleration = videoDuration - END_TIME_TOLERATION_MS
-                        val endVideoEndToleration = videoDuration + END_TIME_TOLERATION_MS
-                        if (currentPosition in startVideoEndToleration..endVideoEndToleration) {
-                            videoPlayer.seekTo(videoDuration - END_TIME_TOLERATION_MS)
-                        }
-                    }
-                }
+                Player.STATE_BUFFERING -> _observablePlayVideoState.value = PlayVideoState.Buffering
                 Player.STATE_READY -> {
                     _observablePlayVideoState.value = if (!playWhenReady) PlayVideoState.Pause else PlayVideoState.Playing
                 }
