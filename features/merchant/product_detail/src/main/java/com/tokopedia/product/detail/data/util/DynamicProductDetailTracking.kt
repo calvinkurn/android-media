@@ -862,9 +862,9 @@ object DynamicProductDetailTracking {
                             "",
                             irisSessionId,
                             null,
-                            null,
-                            null,
-                            null,
+                            ProductDetailViewsBundler.KEY,
+                            "product page",
+                            "view product page",
                             null,
                             null
                     )

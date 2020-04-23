@@ -315,7 +315,7 @@ public class TopChatAnalytics {
         products.add(product1);
 
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
-                ProductListClickBundler.KEY, ProductListImpressionBundler.getBundle(
+                ProductListImpressionBundler.KEY, ProductListImpressionBundler.getBundle(
                         getField(String.valueOf(product.getBlastId())),
                         products,
                         null,
