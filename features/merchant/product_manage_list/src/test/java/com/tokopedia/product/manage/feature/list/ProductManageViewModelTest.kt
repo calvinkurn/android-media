@@ -19,6 +19,7 @@ import com.tokopedia.product.manage.feature.multiedit.data.response.MultiEditPro
 import com.tokopedia.product.manage.feature.multiedit.data.response.MultiEditProductResult
 import com.tokopedia.product.manage.feature.multiedit.data.response.MultiEditProductResult.*
 import com.tokopedia.product.manage.feature.quickedit.common.data.model.ProductUpdateV3Data
+import com.tokopedia.product.manage.feature.quickedit.common.data.model.ProductUpdateV3Header
 import com.tokopedia.product.manage.feature.quickedit.common.data.model.ProductUpdateV3Response
 import com.tokopedia.product.manage.feature.quickedit.delete.data.model.DeleteProductResult
 import com.tokopedia.product.manage.feature.quickedit.price.data.model.EditPriceResult
@@ -505,7 +506,9 @@ class ProductManageViewModelTest: ProductManageViewModelTestFixture() {
 
     @Test
     fun `when edit variant price NOT success should set live data value fail`() {
-        val data = ProductUpdateV3Data(isSuccess = false)
+        val errorMessage = "can't edit price :("
+        val headerResponse = ProductUpdateV3Header(errorMessage = arrayListOf(errorMessage))
+        val data = ProductUpdateV3Data(isSuccess = false, header = headerResponse)
         val response = ProductUpdateV3Response(data)
         val result = createEditVariantResult()
 
@@ -513,7 +516,7 @@ class ProductManageViewModelTest: ProductManageViewModelTestFixture() {
 
         viewModel.editVariantsPrice(result)
 
-        val expectedResult = Fail(MessageErrorException())
+        val expectedResult = Fail(MessageErrorException(errorMessage))
 
         viewModel.editVariantPriceResult
             .verifyErrorEquals(expectedResult)
@@ -552,7 +555,9 @@ class ProductManageViewModelTest: ProductManageViewModelTestFixture() {
 
     @Test
     fun `when edit variant stock NOT success should set live data value fail`() {
-        val data = ProductUpdateV3Data(isSuccess = false)
+        val errorMessage = "can't edit stock :("
+        val headerResponse = ProductUpdateV3Header(errorMessage = arrayListOf(errorMessage))
+        val data = ProductUpdateV3Data(isSuccess = false, header = headerResponse)
         val response = ProductUpdateV3Response(data)
         val result = createEditVariantResult()
 
@@ -560,7 +565,7 @@ class ProductManageViewModelTest: ProductManageViewModelTestFixture() {
 
         viewModel.editVariantsStock(result)
 
-        val expectedResult = Fail(MessageErrorException())
+        val expectedResult = Fail(MessageErrorException(errorMessage))
 
         viewModel.editVariantStockResult
             .verifyErrorEquals(expectedResult)
