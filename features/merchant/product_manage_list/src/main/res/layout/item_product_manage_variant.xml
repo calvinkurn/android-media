@@ -27,5 +27,6 @@
 
     <com.tokopedia.unifycomponents.DividerUnify
         android:layout_width="match_parent"
+        android:layout_marginTop="@dimen/spacing_lvl1"
         android:layout_height="@dimen/layout_lvl1"/>
 </LinearLayout>
