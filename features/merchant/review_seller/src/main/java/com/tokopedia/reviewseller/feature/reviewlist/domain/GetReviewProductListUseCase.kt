@@ -1,7 +1,7 @@
 package com.tokopedia.reviewseller.feature.reviewlist.domain
 
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
-import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.reviewseller.common.util.GQL_GET_PRODUCT_REVIEW_LIST
@@ -13,7 +13,7 @@ import javax.inject.Named
 class GetReviewProductListUseCase @Inject constructor(
     @Named(GQL_GET_PRODUCT_REVIEW_LIST)
     val gqlQuery: String,
-    private val gqlUseCase: MultiRequestGraphqlUseCase
+    private val graphQlRepository: GraphqlRepository
 ): UseCase<ProductReviewListResponse.ProductShopRatingAggregate>() {
 
     companion object {
@@ -31,22 +31,14 @@ class GetReviewProductListUseCase @Inject constructor(
     var params = mapOf<String, Any>()
 
     override suspend fun executeOnBackground(): ProductReviewListResponse.ProductShopRatingAggregate {
-
-        gqlUseCase.clearRequest()
-
         val gqlRequest = GraphqlRequest(gqlQuery, ProductReviewListResponse::class.java, params)
-        gqlUseCase.addRequest(gqlRequest)
-        val gqlResponse = gqlUseCase.executeOnBackground()
+        val gqlResponse = graphQlRepository.getReseponse(listOf(gqlRequest))
         val error = gqlResponse.getError(GraphqlError::class.java)
         if (error == null || error.isEmpty()) {
             return gqlResponse.getData<ProductReviewListResponse>(ProductReviewListResponse::class.java).productShopRatingAggregate
         } else {
             throw MessageErrorException(error.joinToString(", ") { it.message })
         }
-    }
-
-    fun clearCache() {
-        gqlUseCase.clearCache()
     }
 
 }
