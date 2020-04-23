@@ -166,7 +166,7 @@ class FindNavViewModel @Inject constructor() : ViewModel(), CoroutineScope {
         return mRelatedLinkList
     }
 
-    fun getAdultProductLiveData(): MutableLiveData<Result<Boolean>> {
+    fun getAdultProductLiveData(): LiveData<Result<Boolean>> {
         return adultProduct
     }
 }
