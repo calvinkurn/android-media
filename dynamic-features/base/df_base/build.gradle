@@ -112,4 +112,5 @@ dependencies {
     //Entertainment
     implementation project(rootProject.ext.features.eventHome)
     implementation project(rootProject.ext.features.eventSearch)
+    implementation project(rootProject.ext.features.orderhistory)
 }

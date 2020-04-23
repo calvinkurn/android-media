@@ -206,6 +206,7 @@ ext {
             settingnotif                    : ":features:user:settingnotif",
             talk                            : ":features:user:talk",
             topchat                         : ":features:user:topchat",
+            orderhistory                    : ":features:user:orderhistory",
 //            topchat                         : ":features:user:topchat_no_op",
             updateinactivephone             : ":features:user:updateinactivephone",
             userIdentification              : ":features:user:user_identification",

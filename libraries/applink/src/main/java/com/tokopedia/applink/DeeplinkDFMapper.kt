@@ -69,6 +69,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.CHANGE_PASSWORD
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.DETAIL_TALK_BASE
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.LIVENESS_DETECTION
 import com.tokopedia.applink.internal.ApplinkConstInternalEntertainment.EVENT_HOME
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.ORDER_HISTORY
 import com.tokopedia.applink.internal.ApplinkConstInternalNotification.NOTIFICATION_BUYER
 import com.tokopedia.applink.internal.ApplinkConstInternalOperational.INTERNAL_INBOX_LIST
 import com.tokopedia.config.GlobalConfig
@@ -210,6 +211,7 @@ object DeeplinkDFMapper {
             add(DFP({ it.startsWith(USER_IDENTIFICATION_FORM) }, DF_BASE, R.string.user_identification_common_title))
             add(DFP({ it.startsWith(ATTACH_INVOICE) }, DF_BASE, R.string.title_module_attachinvoice))
             add(DFP({ it.startsWith(ATTACH_VOUCHER) }, DF_BASE, R.string.title_module_attachvoucher))
+            add(DFP({ it.startsWith(ORDER_HISTORY) }, DF_BASE, R.string.title_module_attachvoucher))
             add(DFP({
                 it.startsWith(TOPCHAT_IDLESS) || it.startsWith(ApplinkConstInternalGlobal.TOPCHAT)
             }, DF_BASE, R.string.title_topchat))
