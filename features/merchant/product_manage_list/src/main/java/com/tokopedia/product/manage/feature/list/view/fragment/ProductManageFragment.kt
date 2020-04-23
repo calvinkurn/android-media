@@ -1545,7 +1545,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
                     ).orEmpty()
                     showMessageToast(message)
                 }
-                is Fail -> showErrorToast()
+                is Fail -> showErrorMessageToast(it)
             }
         }
     }
@@ -1559,8 +1559,18 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
                     ).orEmpty()
                     showMessageToast(message)
                 }
-                is Fail -> showErrorToast()
+                is Fail -> showErrorMessageToast(it)
             }
+        }
+    }
+
+    private fun showErrorMessageToast(result: Fail) {
+        val error = result.throwable
+        if (error is MessageErrorException) {
+            val message = error.message.orEmpty()
+            showErrorToast(message)
+        } else {
+            showErrorToast()
         }
     }
     // endregion

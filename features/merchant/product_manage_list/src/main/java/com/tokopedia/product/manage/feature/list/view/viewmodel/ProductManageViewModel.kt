@@ -332,7 +332,8 @@ class ProductManageViewModel @Inject constructor(
             if(response.isSuccess) {
                 _editVariantPriceResult.value = Success(result)
             } else {
-                _editVariantPriceResult.value = Fail(MessageErrorException())
+                val message = response.header.errorMessage.lastOrNull().orEmpty()
+                _editVariantPriceResult.value = Fail(MessageErrorException(message))
             }
             hideProgressDialog()
         }) {
@@ -354,7 +355,8 @@ class ProductManageViewModel @Inject constructor(
             if(response.isSuccess) {
                 _editVariantStockResult.value = Success(result)
             } else {
-                _editVariantStockResult.value = Fail(MessageErrorException())
+                val message = response.header.errorMessage.lastOrNull().orEmpty()
+                _editVariantStockResult.value = Fail(MessageErrorException(message))
             }
             hideProgressDialog()
         }) {
