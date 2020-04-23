@@ -25,9 +25,9 @@
     <dimen name="mvc_create_promo_code_info_padding_vertical">10dp</dimen>
     <dimen name="mvc_create_promo_code_info_padding_horizontal">8dp</dimen>
     <dimen name="mvc_create_voucher_display_padding_horizontal">4dp</dimen>
-    <dimen name="mvc_create_voucher_display_image_width">328dp</dimen>
-    <dimen name="mvc_create_voucher_display_image_height">246dp</dimen>
     <dimen name="mvc_create_voucher_display_text_margin_top">12dp</dimen>
+    <dimen name="mvc_create_voucher_display_recycler_view_decoration">12dp</dimen>
+    <dimen name="mvc_create_voucher_display_page_control_height">46dp</dimen>
 
     <dimen name="mvc_create_target_description_size">12sp</dimen>
     <dimen name="mvc_create_target_description_line_spacing">4sp</dimen>

@@ -12,6 +12,7 @@ import com.tokopedia.vouchercreation.create.view.adapter.VoucherDisplayAdapter
 import com.tokopedia.vouchercreation.create.view.customview.bottomsheet.VoucherBottomView
 import com.tokopedia.vouchercreation.create.view.decorator.VoucherDisplayItemDecoration
 import com.tokopedia.vouchercreation.create.view.enums.VoucherTargetCardType
+import com.tokopedia.vouchercreation.create.view.listener.VoucherDisplayScrollListener
 import kotlinx.android.synthetic.main.mvc_voucher_display_bottom_sheet_view.*
 import kotlinx.android.synthetic.main.mvc_voucher_display_bottom_sheet_view.view.*
 
@@ -25,12 +26,20 @@ class VoucherDisplayBottomSheetFragment(private val getVoucherType: () -> Vouche
                     val view = View.inflate(context, R.layout.mvc_voucher_display_bottom_sheet_view, null)
                     view?.voucherDisplayRecyclerView?.run {
                         addItemDecoration(VoucherDisplayItemDecoration(context))
-                        PagerSnapHelper().attachToRecyclerView(this)
+                        pagerSnapHelper.attachToRecyclerView(this)
                     }
                     setChild(view)
                 }
             }
         }
+    }
+
+    private val pagerSnapHelper by lazy {
+        PagerSnapHelper()
+    }
+
+    private val voucherDisplayScrollListener by lazy {
+        VoucherDisplayScrollListener(pagerSnapHelper, ::onSnapPositionChangeListener)
     }
 
     override fun onAttach(context: Context) {
@@ -50,10 +59,16 @@ class VoucherDisplayBottomSheetFragment(private val getVoucherType: () -> Vouche
 
     private fun initView() {
         view?.setupBottomSheetCustomLayoutParams()
+        val displayList = getVoucherType().displayPairList
+        val linearLayoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        val voucherDisplayAdapter = VoucherDisplayAdapter(displayList)
         voucherDisplayRecyclerView?.run {
-            layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-            adapter = VoucherDisplayAdapter(getVoucherType().displayPairList)
+            layoutManager = linearLayoutManager
+            linearLayoutManager.smoothScrollToPosition(this, null, 0)
+            adapter = voucherDisplayAdapter
+            addOnScrollListener(voucherDisplayScrollListener)
         }
+        voucherDisplayPageControl?.setIndicator(displayList.size)
     }
 
     private fun View.setupBottomSheetCustomLayoutParams() {
@@ -63,5 +78,9 @@ class VoucherDisplayBottomSheetFragment(private val getVoucherType: () -> Vouche
         val initialPaddingRight = paddingRight
         setPadding(0,initialPaddingTop,0,initialPaddingBottom)
         bottomSheetHeader.setPadding(initialPaddingLeft, 0, initialPaddingRight, 0)
+    }
+
+    private fun onSnapPositionChangeListener(position: Int) {
+        view?.voucherDisplayPageControl?.setCurrentIndicator(position)
     }
 }

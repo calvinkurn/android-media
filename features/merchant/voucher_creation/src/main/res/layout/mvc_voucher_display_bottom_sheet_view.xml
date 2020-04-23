@@ -15,7 +15,7 @@
     <com.tokopedia.unifycomponents.PageControl
         android:id="@+id/voucherDisplayPageControl"
         android:layout_width="match_parent"
-        android:layout_height="46dp"
+        android:layout_height="@dimen/mvc_create_voucher_display_page_control_height"
         android:gravity="center"
         app:indicator_color="DEFAULT"
         app:indicator_type="CIRCLE"
