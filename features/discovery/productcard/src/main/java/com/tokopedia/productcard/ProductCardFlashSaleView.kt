@@ -5,6 +5,8 @@ import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.productcard.utils.glideClear
+import com.tokopedia.productcard.utils.loadImage
+import com.tokopedia.productcard.utils.loadImageRounded
 import com.tokopedia.unifycomponents.BaseCustomView
 import kotlinx.android.synthetic.main.product_card_flashsale_layout.view.*
 
@@ -31,7 +33,7 @@ class ProductCardFlashSaleView: BaseCustomView, IProductCardFlashSaleView {
     }
 
     override fun setProductModel(productCardModel: ProductCardFlashSaleModel) {
-        imageProduct?.setImageUrl(productCardModel.productImageUrl)
+        imageProduct?.loadImage(productCardModel.productImageUrl)
         renderProductCardFlashSaleContent(productCardModel)
     }
 

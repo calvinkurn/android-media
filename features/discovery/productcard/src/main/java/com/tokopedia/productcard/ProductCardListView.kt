@@ -33,8 +33,7 @@ class ProductCardListView: BaseCustomView, IProductCardView {
     }
 
     override fun setProductModel(productCardModel: ProductCardModel) {
-//        imageProduct?.loadImageRounded(productCardModel.productImageUrl)
-        imageProduct?.setImageUrl(productCardModel.productImageUrl)
+        imageProduct?.loadImageRounded(productCardModel.productImageUrl)
         labelProductStatus?.initLabelGroup(productCardModel.getLabelProductStatus())
 
         textTopAds?.showWithCondition(productCardModel.isTopAds)

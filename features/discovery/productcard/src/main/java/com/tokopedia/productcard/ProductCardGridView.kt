@@ -32,8 +32,7 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
     }
 
     override fun setProductModel(productCardModel: ProductCardModel) {
-//        imageProduct?.loadImage(productCardModel.productImageUrl)
-        imageProduct?.setImageUrl(productCardModel.productImageUrl)
+        imageProduct?.loadImage(productCardModel.productImageUrl)
         labelProductStatus?.initLabelGroup(productCardModel.getLabelProductStatus())
 
         textTopAds?.showWithCondition(productCardModel.isTopAds)

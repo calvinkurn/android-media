@@ -19,7 +19,7 @@
         android:paddingBottom="@dimen/product_card_padding_bottom"
         tools:layout_height="match_parent">
 
-        <com.tokopedia.unifycomponents.ImageUnify
+        <ImageView
             android:id="@+id/imageProduct"
             android:layout_width="@dimen/product_card_list_image_size"
             android:layout_height="@dimen/product_card_list_image_size"
@@ -28,8 +28,6 @@
             android:visibility="visible"
             android:layout_marginLeft="@dimen/dp_8"
             android:layout_marginStart="@dimen/dp_8"
-            app:unify_image_type="rect"
-            app:unify_image_corner_radius="8"
             app:layout_constraintDimensionRatio="H,1:1"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
