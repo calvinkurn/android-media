@@ -52,22 +52,22 @@ class ProductReviewDetailViewModel @Inject constructor(
                     }
             )
 
-//            val feedbackDetailResponse = asyncCatchError(
-//                    dispatcherProvider.io(),
-//                    block = {
-//                        getProductFeedbackDetailList(productID, sortBy, filterBy)
-//                    },
-//                    onError = {
-//                        _productFeedbackDetail.postValue(Fail(it))
-//                        null
-//                    }
-//            )
+            val feedbackDetailResponse = asyncCatchError(
+                    dispatcherProvider.io(),
+                    block = {
+                        getProductFeedbackDetailList(productID, sortBy, filterBy)
+                    },
+                    onError = {
+                        _productFeedbackDetail.postValue(Fail(it))
+                        null
+                    }
+            )
 
             reviewDetailOverallResponse.await()?.let {
                 _reviewDetailOverall.postValue(Success(it))
-//                feedbackDetailResponse.await()?.let { feedbackResponse ->
-//                    _productFeedbackDetail.postValue(Success(feedbackResponse))
-//                }
+                feedbackDetailResponse.await()?.also { feedbackResponse ->
+                    _productFeedbackDetail.postValue(Success(feedbackResponse))
+                }
             }
         }) {
         }

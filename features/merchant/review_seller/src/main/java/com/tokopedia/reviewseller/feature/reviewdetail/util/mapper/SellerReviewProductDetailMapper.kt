@@ -95,7 +95,6 @@ object SellerReviewProductDetailMapper {
                     title = it.formatted,
                     type = ChipsUnify.TYPE_NORMAL,
                     size = ChipsUnify.SIZE_SMALL)
-            sortFilter.listener = {}
             itemSortFilterList.add(sortFilter)
         }
         return itemSortFilterList

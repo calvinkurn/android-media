@@ -14,7 +14,6 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
 import com.tokopedia.globalerror.GlobalError
-import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.reviewseller.R
@@ -22,7 +21,6 @@ import com.tokopedia.reviewseller.common.util.DataEndlessScrollListener
 import com.tokopedia.reviewseller.feature.reviewdetail.di.component.ReviewProductDetailComponent
 import com.tokopedia.reviewseller.feature.reviewdetail.view.adapter.SellerReviewDetailAdapter
 import com.tokopedia.reviewseller.feature.reviewdetail.view.adapter.SellerReviewDetailAdapterTypeFactory
-import com.tokopedia.reviewseller.feature.reviewdetail.view.adapter.viewholder.OverallRatingDetailViewHolder
 import com.tokopedia.reviewseller.feature.reviewdetail.view.model.OverallRatingDetailUiModel
 import com.tokopedia.reviewseller.feature.reviewdetail.view.model.ProductFeedbackDetailUiModel
 import com.tokopedia.reviewseller.feature.reviewdetail.view.viewmodel.ProductReviewDetailViewModel
@@ -35,8 +33,7 @@ import javax.inject.Inject
 /**
  * @author by milhamj on 2020-02-14.
  */
-class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDetailAdapterTypeFactory>(),
-        OverallRatingDetailViewHolder.OverallRatingDetailListener {
+class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDetailAdapterTypeFactory>() {
 
     companion object {
         const val PRODUCT_ID = "EXTRA_SHOP_ID"
@@ -54,7 +51,7 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
     private var swipeToRefreshReviewDetail: SwipeToRefresh? = null
 
     private val sellerReviewDetailTypeFactory by lazy {
-        SellerReviewDetailAdapterTypeFactory(this)
+        SellerReviewDetailAdapterTypeFactory()
     }
 
     var productID: Int = 0
@@ -98,9 +95,11 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
     override fun loadInitialData() {
         clearAllData()
         rvRatingDetail?.show()
+        review_detail_toolbar?.hide()
         globalError_reviewDetail?.hide()
         emptyState_reviewDetail?.hide()
         showLoading()
+
         viewModelProductReviewDetail?.getProductRatingDetail(productID, sortBy, filterBy)
     }
 
@@ -185,38 +184,47 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
     private fun onSuccessGetProductReviewDetailOverallData(data: OverallRatingDetailUiModel) {
         reviewSellerDetailAdapter.hideLoading()
         swipeToRefreshReviewDetail?.isRefreshing = false
+        review_detail_toolbar.apply {
+            show()
+            title = data.productName.toString()
+        }
         reviewSellerDetailAdapter.setOverallRatingDetailData(data)
     }
 
     private fun onSuccessGetFeedbackReviewListData(hasNextPage: Boolean, reviewProductDetail: ProductFeedbackDetailUiModel) {
         reviewSellerDetailAdapter.hideLoading()
         swipeToRefreshReviewDetail?.isRefreshing = false
-        if (reviewSellerDetailAdapter.itemCount == 0) {
+        if (reviewSellerDetailAdapter.itemCount == 1) {
             if (reviewProductDetail.productFeedbackDetailList.isEmpty()) {
+                reviewSellerDetailAdapter.apply {
+                    setRatingBarDetailData(reviewProductDetail.ratingBarList)
+                    setTopicDetailData(reviewProductDetail.topicList)
+                }
                 emptyState_reviewDetail?.show()
             } else {
-                reviewSellerDetailAdapter.setRatingBarDetailData(reviewProductDetail.ratingBarList)
-                reviewSellerDetailAdapter.setTopicDetailData(reviewProductDetail.topicList)
-                reviewSellerDetailAdapter.setFeedbackListData(reviewProductDetail.productFeedbackDetailList)
+                reviewSellerDetailAdapter.apply {
+                    setRatingBarDetailData(reviewProductDetail.ratingBarList)
+                    setTopicDetailData(reviewProductDetail.topicList)
+                    setFeedbackListData(reviewProductDetail.productFeedbackDetailList)
+                }
             }
         } else {
-            reviewSellerDetailAdapter.setRatingBarDetailData(reviewProductDetail.ratingBarList)
+            reviewSellerDetailAdapter.setFeedbackListData(reviewProductDetail.productFeedbackDetailList)
             updateScrollListenerState(hasNextPage)
         }
-
     }
 
     private fun onErrorGetReviewDetailData(throwable: Throwable) {
         swipeToRefreshReviewDetail?.isRefreshing = false
-        if (reviewSellerDetailAdapter.endlessDataSize == 0) {
+        if (reviewSellerDetailAdapter.itemCount == 0) {
             if (throwable is Exception) {
                 globalError_reviewDetail?.setType(GlobalError.SERVER_ERROR)
             } else {
                 globalError_reviewDetail?.setType(GlobalError.NO_CONNECTION)
             }
-            globalError_reviewDetail?.show()
             emptyState_reviewDetail?.hide()
             rvRatingDetail?.hide()
+            globalError_reviewDetail?.show()
 
             globalError_reviewDetail?.setActionClickListener {
                 loadInitialData()
@@ -232,9 +240,5 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
                 loadInitialData()
             })
         }
-    }
-
-    override fun onSetTitleToolbar(title: String) {
-        view?.findViewById<HeaderUnify>(R.id.review_detail_toolbar)?.actionText = title
     }
 }
