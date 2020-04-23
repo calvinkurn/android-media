@@ -12,6 +12,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.getBooleanArgs
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.di.component.DaggerVoucherCreationComponent
 import com.tokopedia.vouchercreation.voucherlist.model.*
@@ -48,6 +49,8 @@ class VoucherListFragment : BaseListFragment<BaseVoucherListUiModel, VoucherList
             }
         }
     }
+
+    private var fragmentListener: Listener? = null
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -129,6 +132,12 @@ class VoucherListFragment : BaseListFragment<BaseVoucherListUiModel, VoucherList
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             android.R.id.home -> activity?.finish()
+            R.id.menuMvcShowVoucherActive -> {
+                fragmentListener?.switchFragment(true)
+            }
+            R.id.menuMvcShowVoucherHistory -> {
+                fragmentListener?.switchFragment(false)
+            }
         }
         return super.onOptionsItemSelected(item)
     }
@@ -144,6 +153,9 @@ class VoucherListFragment : BaseListFragment<BaseVoucherListUiModel, VoucherList
         headerChipMvc.init {
             setOnChipListener(it)
         }
+
+        searchBarMvc.isVisible = !isActiveVoucher
+        headerChipMvc.isVisible = !isActiveVoucher
     }
 
     private fun setupRecyclerViewVoucherList() {
@@ -256,5 +268,13 @@ class VoucherListFragment : BaseListFragment<BaseVoucherListUiModel, VoucherList
         if (bottomSheet is VoucherListBottomSheet) {
             bottomSheet.dismiss()
         }
+    }
+
+    fun setFragmentListener(listener: Listener) {
+        this.fragmentListener = listener
+    }
+
+    interface Listener {
+        fun switchFragment(isActiveVoucher: Boolean)
     }
 }
