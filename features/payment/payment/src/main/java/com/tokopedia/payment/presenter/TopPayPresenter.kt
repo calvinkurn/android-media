@@ -33,10 +33,7 @@ class TopPayPresenter(private val saveFingerPrintUseCase: SaveFingerPrintUseCase
         if (paymentPassData != null) {
             try {
                 val postData = paymentPassData.queryString.toByteArray()
-                var method = paymentPassData.method
-                if (method == null) {
-                    method = PaymentPassData.METHOD_POST
-                }
+                val method = paymentPassData.method ?: PaymentPassData.METHOD_POST
                 view?.renderWebViewPostUrl(paymentPassData.redirectUrl, postData, method.equals(PaymentPassData.METHOD_GET, true))
             } catch (e: Exception) {
                 view?.showToastMessageWithForceCloseView(ErrorNetMessage.MESSAGE_ERROR_DEFAULT)

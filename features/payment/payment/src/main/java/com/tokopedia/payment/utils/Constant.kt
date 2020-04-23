@@ -16,3 +16,6 @@ interface Constant {
         }
     }
 }
+
+typealias NetworkAuthUtil = com.tokopedia.core.network.retrofit.utils.AuthUtil
+typealias NetworkAuthUtilKey = com.tokopedia.core.network.retrofit.utils.AuthUtil.KEY

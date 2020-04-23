@@ -45,6 +45,8 @@ import com.tokopedia.payment.fingerprint.view.FingerprintDialogRegister
 import com.tokopedia.payment.presenter.TopPayContract
 import com.tokopedia.payment.presenter.TopPayPresenter
 import com.tokopedia.payment.utils.Constant
+import com.tokopedia.payment.utils.NetworkAuthUtil
+import com.tokopedia.payment.utils.NetworkAuthUtilKey
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.unifycomponents.Toaster
@@ -94,11 +96,9 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
 
     private val webViewOnKeyListener: View.OnKeyListener
         get() = View.OnKeyListener { _, keyCode, event ->
-            if (event.action == KeyEvent.ACTION_DOWN) {
-                if (keyCode == KeyEvent.KEYCODE_BACK) {
-                    onBackPressed()
-                    return@OnKeyListener true
-                }
+            if (event.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_BACK) {
+                onBackPressed()
+                return@OnKeyListener true
             }
             false
         }
@@ -411,14 +411,16 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
                 }
 
                 // success payment
-                if (!paymentPassData?.callbackSuccessUrl.isNullOrEmpty() && url.contains(paymentPassData!!.callbackSuccessUrl)) {
+                val callbackSuccessUrl = paymentPassData?.callbackSuccessUrl
+                if (!callbackSuccessUrl.isNullOrEmpty() && url.contains(callbackSuccessUrl)) {
                     view?.stopLoading()
                     callbackPaymentSucceed()
                     return true
                 }
 
                 // failed payment
-                if (!paymentPassData?.callbackFailedUrl.isNullOrEmpty() && url.contains(paymentPassData!!.callbackFailedUrl)) {
+                val callbackFailedUrl = paymentPassData?.callbackFailedUrl
+                if (!callbackFailedUrl.isNullOrEmpty() && url.contains(callbackFailedUrl)) {
                     view?.stopLoading()
                     callbackPaymentFailed()
                     return true
@@ -585,11 +587,11 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
 
     fun getGeneratedOverrideRedirectHeaderUrlPayment(originUrl: String): Map<String?, String?>? {
         val urlQuery = Uri.parse(originUrl).query
-        return com.tokopedia.core.network.retrofit.utils.AuthUtil.generateWebviewHeaders(
+        return NetworkAuthUtil.generateWebviewHeaders(
                 Uri.parse(originUrl).path,
                 urlQuery ?: "",
                 "GET",
-                com.tokopedia.core.network.retrofit.utils.AuthUtil.KEY.KEY_WSV4)
+                NetworkAuthUtilKey.KEY_WSV4)
     }
 
     fun getEnableFingerprintPayment(): Boolean {

@@ -9,6 +9,7 @@ import com.tokopedia.payment.fingerprint.data.model.ResponseRegisterFingerprint
 import org.json.JSONObject
 import retrofit2.Response
 import rx.Observable
+import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
 
@@ -62,6 +63,7 @@ class FingerprintDataSourceCloud @Inject constructor(private val fingerprintApi:
                         return@map null
                     }
                 } catch (e: Exception) {
+                    Timber.w(e)
                     return@map null
                 }
             } else {
