@@ -18,10 +18,11 @@ data class WebHookParam(
         @SerializedName(CMConstant.PayloadKeys.NOTIFCENTER_NOTIFICATION_TYPE)
         var typeOfNotification: Int? = null
 ): Parcelable {
+
     constructor(parcel: Parcel) : this(
             parcel.readString(),
-            parcel.readValue(Int::class.java.classLoader) as? Int) {
-    }
+            parcel.readInt()
+    )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(notificationCenterId)
