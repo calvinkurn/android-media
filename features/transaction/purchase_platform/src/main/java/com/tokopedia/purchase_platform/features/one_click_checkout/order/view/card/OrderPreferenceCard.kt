@@ -246,6 +246,26 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
         }
     }
 
+    fun setPaymentError(isError: Boolean) {
+        if (isError) {
+            ivPayment?.alpha = 0.5f
+            tvPaymentName?.alpha = 0.5f
+            tvPaymentDetail?.alpha = 0.5f
+            val color = tvPaymentDetail?.context?.resources?.getColor(com.tokopedia.unifyprinciples.R.color.Red_R600)
+            if (color != null) {
+                tvPaymentDetail?.setTextColor(color)
+            }
+        } else {
+            ivPayment?.alpha = 1f
+            tvPaymentName?.alpha = 1f
+            tvPaymentDetail?.alpha = 1f
+            val color = tvPaymentDetail?.context?.resources?.getColor(com.tokopedia.unifyprinciples.R.color.Neutral_N700_68)
+            if (color != null) {
+                tvPaymentDetail?.setTextColor(color)
+            }
+        }
+    }
+
     @SuppressLint("SetTextI18n")
     private fun showAddress() {
         val addressModel = preference.preference.address

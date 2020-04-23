@@ -625,9 +625,11 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
     private fun setupPaymentError(paymentErrorMessage: String?) {
         if (paymentErrorMessage.isNullOrEmpty()) {
             tickerPaymentError?.gone()
+            orderPreferenceCard.setPaymentError(false)
         } else {
             tickerPaymentError?.setTextDescription(paymentErrorMessage)
             tickerPaymentError?.visible()
+            orderPreferenceCard.setPaymentError(true)
         }
     }
 
