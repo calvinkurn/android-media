@@ -162,6 +162,22 @@ class TalkReadingViewModelTest : TalkReadingViewModelTestFixture() {
         viewModel.updateSelectedCategory("some category", false)
     }
 
+    @Test
+    fun `when resetSortOptions should set sortOptions to default value`() {
+        val sortOptions = listOf(SortOption.SortByInformativeness(), SortOption.SortByLike(), SortOption.SortByTime())
+
+        viewModel.updateSortOptions(sortOptions)
+        viewModel.updateSelectedSort(sortOptions.last())
+        viewModel.resetSortOptions()
+
+        verifySortOptionsEquals(sortOptions)
+    }
+
+    @Test
+    fun `when data is null resetSortOptions should do nothing`() {
+        viewModel.resetSortOptions()
+    }
+
 
     private fun verifyDiscussionAggregateEquals(expectedResponse: Success<DiscussionAggregateResponse>) {
         viewModel.discussionAggregate.verifySuccessEquals(expectedResponse)
