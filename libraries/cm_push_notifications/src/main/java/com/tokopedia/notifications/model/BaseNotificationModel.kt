@@ -6,6 +6,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import android.os.Parcel
 import android.os.Parcelable
+import com.tokopedia.graphql.CommonUtils
 import com.tokopedia.notifications.database.convertors.NotificationModeConverter
 import com.tokopedia.notifications.database.convertors.NotificationStatusConverter
 import org.json.JSONObject
@@ -135,9 +136,19 @@ data class BaseNotificationModel(
         var shopId: String? = null,
 
         @ColumnInfo(name = "notifcenterBlastId")
-        var blastId: String? = null
+        var blastId: String? = null,
+
+        @ColumnInfo(name = "webhook_params")
+        var webHookParam: WebHookParam? = null
 
 ) : Parcelable {
+
+    fun getWebHookData(): String? {
+        return if (this.webHookParam != null)
+            CommonUtils.toJson(this.webHookParam)
+        else ""
+    }
+
     constructor(parcel: Parcel) : this(
             parcel.readInt(),
             parcel.readLong(),
@@ -177,7 +188,8 @@ data class BaseNotificationModel(
             parcel.readString(),
             parcel.readString(),
             parcel.readString(),
-            parcel.readString())
+            parcel.readString(),
+            parcel.readParcelable(WebHookParam::class.java.classLoader))
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeInt(notificationId)
@@ -218,6 +230,7 @@ data class BaseNotificationModel(
         parcel.writeString(userId)
         parcel.writeString(shopId)
         parcel.writeString(blastId)
+        parcel.writeParcelable(webHookParam, flags)
     }
 
     override fun describeContents(): Int {
