@@ -42,16 +42,16 @@ class SellerReviewDetailAdapter(
     override val endlessDataSize: Int
         get() = productReviewDetailFeedback.size
 
-//    override fun hideLoading() {
-//        if (visitables.contains(loadingModel)) {
-//            val itemPosition = visitables.indexOf(loadingModel)
-//            visitables.remove(loadingModel)
-//            notifyItemRemoved(itemPosition)
-//        } else if (visitables.contains(loadingMoreModel)) {
-//            val itemPosition = visitables.indexOf(loadingMoreModel)
-//            visitables.remove(loadingMoreModel)
-//            notifyItemRemoved(itemPosition)
-//        }
-//    }
+    override fun hideLoading() {
+        if (visitables.contains(loadingModel)) {
+            val itemPosition = visitables.indexOf(loadingModel)
+            visitables.remove(loadingModel)
+            notifyItemRemoved(itemPosition)
+        } else if (visitables.contains(loadingMoreModel)) {
+            val itemPosition = visitables.indexOf(loadingMoreModel)
+            visitables.remove(loadingMoreModel)
+            notifyItemRemoved(itemPosition)
+        }
+    }
 
 }
