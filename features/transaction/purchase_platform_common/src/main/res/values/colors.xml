@@ -10,5 +10,7 @@
     <color name="n_700_44">#7031353b</color>
     <color name="background_cashback_enable">#e3f9e3</color>
     <color name="error_red_outline">#f05f68</color>
+    <color name="n_700_96">#f531353b</color>
+    <color name="address_green">#03AC0E</color>
 
 </resources>

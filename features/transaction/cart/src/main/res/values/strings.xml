@@ -29,10 +29,6 @@
     <string name="promo_choose_item_cart">Pilih barang dulu biar bisa pakai berbagai promo terbaik</string>
     <string name="label_ellipsize">...</string>
     <string name="label_button_change_note">Ubah Catatan</string>
-    <string name="insurance_cart_label">Produk Asuransi</string>
-    <string name="ticker_text">Polis akan dikirim ke email / no. ponsel / TopChat setelah pembayaran berhasil</string>
-    <string name="text_details_change">Ubah</string>
-    <string name="text_ubah_data_asuransi">Ubah Data Asuransi</string>
     <string name="checkout_module_title_recommendation">Rekomendasi</string>
     <string name="checkout_module_title_wishlist">Wujudkan Wishlist kamu!</string>
     <string name="checkout_module_title_recent_view">Kamu sempat lihat-lihat ini</string>

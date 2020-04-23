@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="grey_nonactive_text">#42000000</color>
+    <color name="cashback_text_color">#42b549</color>
+    <color name="button_change_courier">#42b549</color>
+    <color name="warning_yellow_background">#fffcf5</color>
+    <color name="warning_yellow_outline">#ffe38f</color>
+    <color name="error_red_background">#fdebec</color>
+
+</resources>

@@ -79,7 +79,7 @@
         </activity>
 
         <activity
-            android:name="com.tokopedia.purchase_platform.features.checkout.subfeature.address_choice.view.CartAddressChoiceActivity"
+            android:name="com.tokopedia.checkout.subfeature.address_choice.view.CartAddressChoiceActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="stateHidden">
@@ -98,14 +98,14 @@
         </activity>
 
         <activity
-            android:name="com.tokopedia.purchase_platform.features.checkout.subfeature.multiple_address.view.MultipleAddressFormActivity"
+            android:name="com.tokopedia.checkout.subfeature.multiple_address.view.MultipleAddressFormActivity"
             android:label="@string/checkout_module_title_send_to_multiple_address"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="stateAlwaysHidden" />
 
         <activity
-            android:name="com.tokopedia.purchase_platform.features.checkout.view.ShipmentActivity"
+            android:name="com.tokopedia.checkout.view.ShipmentActivity"
             android:label="@string/checkout_module_title_activity_checkout"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White">
@@ -123,7 +123,7 @@
         </activity>
 
         <activity
-            android:name="com.tokopedia.purchase_platform.features.checkout.subfeature.webview.CheckoutWebViewActivity"
+            android:name="com.tokopedia.checkout.subfeature.webview.CheckoutWebViewActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
 

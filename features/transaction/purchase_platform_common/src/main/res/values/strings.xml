@@ -16,5 +16,23 @@
     <string name="label_free_return">Free Returns</string>
     <string name="label_cod">Bayar di Tempat</string>
     <string name="label_selller_cashback">Potensi Cashback Penjual</string>
+    <string name="label_continue_to_payment">Tetap lanjut ke pembayaran?</string>
+    <string name="label_hint_search_address">Cari Alamat</string>
+    <string name="label_promo_not_eligible_info">Ada promo yang tidak bisa dipakai untuk transaksi ini</string>
+    <string name="label_button_continue">Lanjut Bayar</string>
+    <string name="label_button_select_other_promo">Pilih Promo Lain</string>
+    <string name="insurance_cart_label">Produk Asuransi</string>
+    <string name="text_details_change">Ubah</string>
+    <string name="ticker_text">Polis akan dikirim ke email / no. ponsel / TopChat setelah pembayaran berhasil</string>
+    <string name="text_ubah_data_asuransi">Ubah Data Asuransi</string>
+    <string name="label_cashback">Cashback</string>
+    <string name="label_shipment_fee">Total Ongkos Kirim</string>
+    <string name="label_product_discount">Total Diskon Barang</string>
+    <string name="label_shipping_discount">Total Diskon Ongkos Kirim</string>
+    <string name="label_free_shipping">Bebas Ongkir</string>
+    <string name="label_button_bottomsheet_close">Tutup</string>
+    <string name="label_shipment_insurance">Asuransi Pengiriman</string>
+    <string name="title_bottomsheet_insurance">Asuransi Pengiriman</string>
+    <string name="label_must_insurance">Wajib Asuransi</string>
 
 </resources>

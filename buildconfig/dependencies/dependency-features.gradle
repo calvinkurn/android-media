@@ -180,6 +180,7 @@ ext {
             purchase_platform               : ":features:transaction:purchase_platform",
             purchase_platform_common        : ":features:transaction:purchase_platform_common",
             cart                            : ":features:transaction:cart",
+            checkout                        : ":features:transaction:checkout",
             loyalty                         : ":features:promo:loyalty",
             loyaltyCommon                   : ":features:promo:loyalty_common",
             sellerorder                     : ":features:transaction:sellerorder",

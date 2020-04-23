@@ -337,17 +337,6 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
         sendEnhancedEcommerce(dataLayer);
     }
 
-    // GTM v5 EE Step 2 - 4
-    public void sendEnhancedECommerceCheckoutV5(Bundle eCommerceBundle,
-                                                int step,
-                                                String checkoutOption,
-                                                String transactionId,
-                                                boolean isTradeIn,
-                                                String eventAction,
-                                                String eventLabel) {
-
-    }
-
     public void eventClickCourierSelectionClickPilihAlamatLain() {
         sendEventCategoryAction(
                 EventName.CLICK_ATC,
