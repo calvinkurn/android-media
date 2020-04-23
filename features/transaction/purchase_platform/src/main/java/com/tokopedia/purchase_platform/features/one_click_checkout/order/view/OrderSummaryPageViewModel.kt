@@ -8,6 +8,8 @@ import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesR
 import com.tokopedia.logisticcart.shipping.model.*
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorProductData
+import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorProductData.ERROR_DISTANCE_LIMIT_EXCEEDED
+import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorProductData.ERROR_WEIGHT_LIMIT_EXCEEDED
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.TKPDMapParam
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
@@ -190,6 +192,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                                 if (value != null) {
                                     val curShip = value.preference.shipment
                                     var shipping = value.shipping
+                                    var shippingErrorId: String? = null
 
                                     if (!shippingRecommendationData.errorId.isNullOrEmpty() && !shippingRecommendationData.errorMessage.isNullOrEmpty()) {
                                         shipping = Shipment(serviceName = curShip.serviceName, serviceDuration = curShip.serviceDuration, serviceErrorMessage = shippingRecommendationData.errorMessage, shippingRecommendationData = null)
@@ -209,6 +212,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                                                         } else {
                                                             NO_EXACT_DURATION_MESSAGE
                                                         }
+                                                        shippingErrorId = durationError.errorId
                                                         shipping = Shipment(
                                                                 serviceId = shippingDurationViewModel.serviceData.serviceId,
                                                                 serviceDuration = serviceDur,
@@ -236,6 +240,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                                                                     flagNeedToSetPinpoint = true
                                                                 }
                                                             }
+                                                            shippingErrorId = selectedShippingCourierUiModel.productData.error.errorId
                                                             val tempServiceDuration = shippingDurationViewModel.serviceData.serviceName
                                                             val serviceDur = if (tempServiceDuration.contains("(") && tempServiceDuration.contains(")")) {
                                                                 tempServiceDuration.substring(tempServiceDuration.indexOf("(") + 1, tempServiceDuration.indexOf(")"))
@@ -264,6 +269,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                                             }
                                             if (selectedShippingDurationViewModel == null && shippingRecommendationData.shippingDurationViewModels.isNotEmpty()) {
                                                 shipping = Shipment(serviceName = curShip.serviceName, serviceDuration = curShip.serviceDuration, serviceErrorMessage = NO_DURATION_AVAILABLE, shippingRecommendationData = shippingRecommendationData)
+                                                orderSummaryAnalytics.eventViewErrorMessage(OrderSummaryAnalytics.ERROR_ID_LOGISTIC_DURATION_UNAVAILABLE)
                                             } else if (shippingRecommendationData.shippingDurationViewModels.isEmpty()) {
                                                 shipping = Shipment(serviceName = curShip.serviceName, serviceDuration = curShip.serviceDuration, serviceErrorMessage = NO_COURIER_SUPPORTED_ERROR_MESSAGE, shippingRecommendationData = null)
                                             }
@@ -282,6 +288,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                                                         } else {
                                                             NO_EXACT_DURATION_MESSAGE
                                                         }
+                                                        shippingErrorId = durationError.errorId
                                                         shipping = Shipment(
                                                                 serviceId = shippingDurationViewModel.serviceData.serviceId,
                                                                 serviceDuration = serviceDur,
@@ -310,6 +317,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                                                                     flagNeedToSetPinpoint = true
                                                                 }
                                                             }
+                                                            shippingErrorId = selectedShippingCourierUiModel.productData.error.errorId
                                                             val tempServiceDuration = shippingDurationViewModel.serviceData.serviceName
                                                             val serviceDur = if (tempServiceDuration.contains("(") && tempServiceDuration.contains(")")) {
                                                                 tempServiceDuration.substring(tempServiceDuration.indexOf("(") + 1, tempServiceDuration.indexOf(")"))
@@ -338,6 +346,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                                             }
                                             if (selectedShippingDurationViewModel == null && shippingRecommendationData.shippingDurationViewModels.isNotEmpty()) {
                                                 shipping = Shipment(serviceName = curShip.serviceName, serviceDuration = curShip.serviceDuration, serviceErrorMessage = NO_DURATION_AVAILABLE, shippingRecommendationData = shippingRecommendationData)
+                                                orderSummaryAnalytics.eventViewErrorMessage(OrderSummaryAnalytics.ERROR_ID_LOGISTIC_DURATION_UNAVAILABLE)
                                             } else if (shippingRecommendationData.shippingDurationViewModels.isEmpty()) {
                                                 shipping = Shipment(serviceName = curShip.serviceName, serviceDuration = curShip.serviceDuration, serviceErrorMessage = NO_COURIER_SUPPORTED_ERROR_MESSAGE, shippingRecommendationData = null)
                                             }
@@ -381,6 +390,13 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                                         validateUsePromo()
                                     } else {
                                         orderTotal.value = orderTotal.value?.copy(buttonState = if (shipping?.serviceErrorMessage.isNullOrEmpty() && orderShop.errors.isEmpty() && !orderProduct.quantity.isStateError) ButtonBayarState.NORMAL else ButtonBayarState.DISABLE)
+                                        if (shippingErrorId?.isNotEmpty() == true) {
+                                            if (shippingErrorId == ERROR_DISTANCE_LIMIT_EXCEEDED) {
+                                                orderSummaryAnalytics.eventViewErrorMessage(OrderSummaryAnalytics.ERROR_ID_LOGISTIC_DISTANCE_EXCEED)
+                                            } else if (shippingErrorId == ERROR_WEIGHT_LIMIT_EXCEEDED) {
+                                                orderSummaryAnalytics.eventViewErrorMessage(OrderSummaryAnalytics.ERROR_ID_LOGISTIC_WEIGHT_EXCEED)
+                                            }
+                                        }
                                     }
                                     if (!hasSentViewOspEe) {
                                         orderSummaryAnalytics.eventViewOrderSummaryPage(generateOspEe(OrderSummaryPageEnhanceECommerce.STEP_1, OrderSummaryPageEnhanceECommerce.STEP_1_OPTION))
@@ -965,6 +981,20 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
     }
 
     private fun doCheckout(product: OrderProduct, shop: OrderShop, pref: OrderPreference, onSuccessCheckout: (Data) -> Unit) {
+        val shopPromos = generateShopPromos()
+        val checkoutPromos = generateCheckoutPromos()
+        val allPromoCodes = ArrayList<String>().apply {
+            if (checkoutPromos.isNotEmpty()) {
+                addAll(checkoutPromos.map {
+                    it.code
+                })
+            }
+            if (shopPromos.isNotEmpty()) {
+                addAll(shopPromos.map {
+                    it.code
+                })
+            }
+        }
         val param = CheckoutOccRequest(Profile(pref.preference.profileId), ParamCart(data = listOf(ParamData(
                 pref.preference.address.addressId,
                 listOf(
@@ -987,17 +1017,17 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                                         pref.shipping.getRealUt(),
                                         pref.shipping.getRealChecksum()
                                 ),
-                                promos = generateShopPromos()
+                                promos = shopPromos
                         )
                 )
-        )), promos = generateCheckoutPromos()))
+        )), promos = checkoutPromos))
         checkoutOccUseCase.execute(param, { checkoutOccGqlResponse: CheckoutOccGqlResponse ->
             if (checkoutOccGqlResponse.response.status.equals(STATUS_OK, true)) {
                 if (checkoutOccGqlResponse.response.data.success == 1 || checkoutOccGqlResponse.response.data.paymentParameter.redirectParam.url.isNotEmpty()) {
                     globalEvent.value = OccGlobalEvent.Normal
                     onSuccessCheckout(checkoutOccGqlResponse.response.data)
                     orderSummaryAnalytics.eventClickBayarSuccess(orderTotal.value?.isButtonChoosePayment
-                            ?: false, generateOspEe(OrderSummaryPageEnhanceECommerce.STEP_2, OrderSummaryPageEnhanceECommerce.STEP_2_OPTION))
+                            ?: false, getTransactionId(checkoutOccGqlResponse.response.data.paymentParameter.redirectParam.form), generateOspEe(OrderSummaryPageEnhanceECommerce.STEP_2, OrderSummaryPageEnhanceECommerce.STEP_2_OPTION, allPromoCodes))
                 } else {
                     val errorCode = checkoutOccGqlResponse.response.data.error.code
                     orderSummaryAnalytics.eventClickBayarNotSuccess(orderTotal.value?.isButtonChoosePayment
@@ -1388,6 +1418,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                 orderTotal.value = orderTotal.value?.copy(orderCost = orderCost,
                         paymentErrorMessage = OVO_INSUFFICIENT_ERROR_MESSAGE,
                         isButtonChoosePayment = true, buttonState = currentState)
+                orderSummaryAnalytics.eventViewErrorMessage(OrderSummaryAnalytics.ERROR_ID_PAYMENT_OVO_BALANCE)
             } else {
                 orderTotal.value = orderTotal.value?.copy(orderCost = orderCost, paymentErrorMessage = null, isButtonChoosePayment = false, buttonState = currentState)
             }
@@ -1402,7 +1433,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
         debounceJob?.cancel()
     }
 
-    private fun generateOspEe(step: Int, option: String): Map<String, Any> {
+    private fun generateOspEe(step: Int, option: String, promoCodes: List<String> = emptyList()): Map<String, Any> {
         return OrderSummaryPageEnhanceECommerce().apply {
             setName(orderProduct.productName)
             setId(orderProduct.productId)
@@ -1415,9 +1446,10 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
             setAttribution(orderProduct.productResponse.productTrackerData.attribution)
             setDiscountedPrice(orderProduct.productResponse.isSlashPrice)
             setWarehouseId(orderProduct.productResponse.wareHouseId)
-            setWarehouseId(orderProduct.weight)
-            setPromoCode("")
+            setProductWeight(orderProduct.weight)
+            setPromoCode(promoCodes)
             setPromoDetails("")
+            setProductType("")
             setCartId(orderShop.cartResponse.cartId)
             setBuyerAddressId(_orderPreference?.preference?.address?.addressId ?: 0)
             setSpid(_orderPreference?.shipping?.getRealShipperProductId() ?: 0)
@@ -1429,6 +1461,21 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
             setShopType(orderShop.isOfficial, orderShop.isGold)
             setCategoryId(orderProduct.productResponse.categoryId)
         }.build(step, option)
+    }
+
+    private fun getTransactionId(query: String): String {
+        val keyLength = TRANSACTION_ID_KEY.length
+        val keyIndex = query.indexOf(TRANSACTION_ID_KEY)
+        if (keyIndex > -1 && query[keyIndex + keyLength] == '=') {
+            val nextAmpersand = query.indexOf('&', keyIndex)
+            val end = if (nextAmpersand > -1) nextAmpersand else query.length
+            val start = keyIndex + keyLength + 1
+
+            if (end > start) {
+                return query.substring(start, end)
+            }
+        }
+        return ""
     }
 
     companion object {
@@ -1445,5 +1492,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
 
         const val OVO_GATEWAY_CODE = "OVO"
         const val OVO_INSUFFICIENT_ERROR_MESSAGE = "OVO Cash kamu tidak cukup. Silahkan pilih pembayaran lain."
+
+        private const val TRANSACTION_ID_KEY = "transaction_id"
     }
 }

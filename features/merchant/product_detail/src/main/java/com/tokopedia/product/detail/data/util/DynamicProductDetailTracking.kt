@@ -901,6 +901,16 @@ object DynamicProductDetailTracking {
     }
 
     object Impression {
+        fun eventViewErrorWhenAddToCart(errorMessage: String, productId: String, userId:String) {
+            val mapEvent = TrackAppUtils.gtmData(ProductTrackingConstant.PDP.EVENT_VIEW_PDP,
+                    ProductTrackingConstant.Category.PDP,
+                    ProductTrackingConstant.Action.ACTION_VIEW_ERROR_WHEN_ADD_TO_CART,
+                    "not success - $errorMessage")
+            mapEvent[ProductTrackingConstant.Tracking.KEY_USER_ID_VARIANT] = userId
+            mapEvent[ProductTrackingConstant.Tracking.KEY_ISLOGGIN] = (userId != "0").toString()
+            mapEvent[ProductTrackingConstant.Tracking.PROMO_ID] = productId
+            TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
+        }
 
         fun eventEcommerceDynamicComponent(trackingQueue: TrackingQueue?, componentTrackDataModel: ComponentTrackDataModel, productInfo: DynamicProductInfoP1?) {
             val productId = productInfo?.basic?.productID ?: ""

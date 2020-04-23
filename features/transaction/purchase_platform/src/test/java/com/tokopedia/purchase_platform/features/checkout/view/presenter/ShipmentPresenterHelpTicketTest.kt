@@ -106,7 +106,7 @@ object ShipmentPresenterHelpTicketTest : Spek({
             }
 
             Given("mock cart") {
-                presenter.shipmentCartItemModelList = listOf(ShipmentCartItemModel())
+                presenter.shipmentCartItemModelList = emptyList()
                 presenter.setDataCheckoutRequestList(listOf(DataCheckoutRequest()))
             }
 

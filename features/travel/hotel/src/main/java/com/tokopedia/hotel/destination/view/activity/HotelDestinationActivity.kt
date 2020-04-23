@@ -88,7 +88,7 @@ class HotelDestinationActivity : HotelBaseActivity(), HasComponent<HotelDestinat
             if (text.length <= DEFAULT_MIN_CHARACTER && isSearching) {
                 isSearching = false
                 backToHotelRecommendation()
-            } else if (text.isNotEmpty() && text.length == DEFAULT_MIN_CHARACTER && !isSearching) {
+            } else if (text.isNotEmpty() && text.length >= DEFAULT_MIN_CHARACTER && !isSearching) {
                 isSearching = true
                 showSearchDestinationResult()
             } else if (isSearching) {

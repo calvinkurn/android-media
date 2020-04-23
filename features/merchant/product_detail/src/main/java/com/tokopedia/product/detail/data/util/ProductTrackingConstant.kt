@@ -142,6 +142,8 @@ object ProductTrackingConstant {
         const val CLICK_BUY_ACTIVATION_OVO = "click - beli then go to bottomsheet ovo activation"
         const val CLICK_SEE_BOTTOMSHEET_OVO = "click - beli then show bottomsheet"
         const val CLICK_TOPUP_BOTTOMSHEET_OVO = "on bottomsheet"
+
+        const val ACTION_VIEW_ERROR_WHEN_ADD_TO_CART = "view error when add to cart"
     }
 
     object Label {

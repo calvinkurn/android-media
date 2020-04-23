@@ -41,9 +41,9 @@ import com.tokopedia.design.quickfilter.QuickFilterItem;
 import com.tokopedia.design.quickfilter.QuickSingleFilterView;
 import com.tokopedia.design.quickfilter.custom.CustomViewRounderCornerFilterView;
 import com.tokopedia.design.text.SearchInputView;
+import com.tokopedia.topads.sdk.utils.ImpresionTask;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
 import com.tokopedia.transaction.R;
-import com.tokopedia.transaction.orders.UnifiedOrderListRouter;
 import com.tokopedia.transaction.orders.orderdetails.data.ShopInfo;
 import com.tokopedia.transaction.orders.orderdetails.data.Status;
 import com.tokopedia.transaction.orders.orderdetails.view.OrderListAnalytics;
@@ -73,6 +73,7 @@ import com.tokopedia.transaction.util.Utils;
 import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.unifycomponents.UnifyButton;
 import com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -181,6 +182,9 @@ public class OrderListFragment extends BaseDaggerFragment implements
 
     @Inject
     OrderListAnalytics orderListAnalytics;
+
+    @Inject
+    UserSessionInterface userSession;
 
     private String selectedFilter = "0";
 
@@ -637,6 +641,12 @@ public class OrderListFragment extends BaseDaggerFragment implements
         defEndDate = Utils.setFormat(format, format1, defaultDate.getEndRangeDate());
         customEndDate = Utils.setFormat(format, format1, customDate.getEndRangeDate());
         customStartDate = Utils.setFormat(format, format1, customDate.getStartRangeDate());
+    }
+
+    @Override
+    public void sendATCTrackingUrl(String url) {
+        String clickUrl = url + "&click_source=ATC_direct_click";
+        new ImpresionTask(userSession).execute(clickUrl);
     }
 
     @Override

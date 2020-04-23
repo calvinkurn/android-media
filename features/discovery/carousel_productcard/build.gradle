@@ -21,7 +21,7 @@ buildscript {
 android {
     defaultConfig {
         multiDexEnabled true
-//        testInstrumentationRunner "com.tokopedia.test.application.InstrumentationTestRunner"
+        testInstrumentationRunner "com.tokopedia.test.application.InstrumentationTestRunner"
     }
 
     packagingOptions {
@@ -56,9 +56,10 @@ dependencies {
     androidTestImplementation rootProject.ext.tkpdInternalLibDependencies.akamaiBotLib
     androidTestImplementation rootProject.ext.tkpdInternalLibDependencies.network
     androidTestImplementation rootProject.ext.tkpdInternalLibDependencies.authentication
-//    androidTestImplementation project(rootProject.ext.libraries.instrumentation_test), {
-//        exclude group: "com.google.android.gms"
-//    }
+    androidTestImplementation project(rootProject.ext.libraries.instrumentation_test), {
+        exclude group: "com.google.android.gms"
+        exclude group: "com.google.firebase", module: "firebase-iid"
+    }
     androidTestImplementation rootProject.ext.testDependencies.espressoCore
     androidTestImplementation rootProject.ext.testDependencies.espressoContrib
 }

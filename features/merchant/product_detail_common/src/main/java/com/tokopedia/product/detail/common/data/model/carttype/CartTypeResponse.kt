@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName
 
 data class CartRedirectionResponse(
         @SerializedName("cart_redirection")
-        val cartRedirection: CartRedirection = CartRedirection()
+        val cartRedirection: CartRedirection? = null
 )
 
 data class CartTypeData(

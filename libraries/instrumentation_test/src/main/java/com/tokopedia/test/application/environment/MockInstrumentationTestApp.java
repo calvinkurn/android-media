@@ -75,6 +75,7 @@ public class MockInstrumentationTestApp extends BaseMainApplication implements T
             responseList.put("widget_grid", getRawString(R.raw.response_mock_data_home_widget_grid));
             responseList.put("suggestedProductReview", getRawString(R.raw.response_mock_data_suggested_review));
             responseList.put("playGetLiveDynamicChannels", getRawString(R.raw.response_mock_data_play_widget));
+            responseList.put("rechargeRecommendation", getRawString(R.raw.response_mock_data_recharge_recommendation));
 
             List<Interceptor> testInterceptors = new ArrayList<>();
             testInterceptors.add(new MockInterceptor(responseList));
