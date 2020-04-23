@@ -16,6 +16,7 @@ import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.legacy.AnalyticsLog;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
+import com.tokopedia.analyticsdebugger.debugger.TetraDebugger;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.ApplinkDelegate;
 import com.tokopedia.applink.ApplinkRouter;
@@ -197,6 +198,7 @@ public abstract class SellerRouterApplication extends MainApplication
     private TopAdsComponent topAdsComponent;
     private DaggerShopComponent.Builder daggerShopBuilder;
     private ShopComponent shopComponent;
+    private TetraDebugger tetraDebugger;
 
     @Override
     public void onCreate() {
@@ -205,6 +207,7 @@ public abstract class SellerRouterApplication extends MainApplication
         initializeRemoteConfig();
         initResourceDownloadManager();
         initIris();
+        initTetraDebugger();
     }
 
     private void initResourceDownloadManager() {
@@ -224,6 +227,19 @@ public abstract class SellerRouterApplication extends MainApplication
         daggerGMBuilder = DaggerGMComponent.builder().gMModule(new GMModule());
         daggerProductBuilder = DaggerProductComponent.builder().productModule(new ProductModule());
         daggerShopBuilder = DaggerShopComponent.builder().shopModule(new ShopModule());
+    }
+
+    private void initTetraDebugger() {
+        if(GlobalConfig.isAllowDebuggingTools()) {
+            tetraDebugger = TetraDebugger.Companion.instance(this);
+            tetraDebugger.init();
+        }
+    }
+
+    private void setTetraUserId(String userId) {
+        if(tetraDebugger != null) {
+            tetraDebugger.setUserId(userId);
+        }
     }
 
     public GMComponent getGMComponent() {
@@ -388,6 +404,7 @@ public abstract class SellerRouterApplication extends MainApplication
         new CacheApiClearAllUseCase(this).executeSync();
 
         TkpdSellerLogout.onLogOut(appComponent, this);
+        setTetraUserId("");
     }
 
     @Override
