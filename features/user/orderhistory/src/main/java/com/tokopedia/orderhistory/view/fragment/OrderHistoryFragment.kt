@@ -1,12 +1,9 @@
 package com.tokopedia.orderhistory.view.fragment
 
-import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -35,18 +32,8 @@ class OrderHistoryFragment : BaseListFragment<Visitable<*>, OrderHistoryTypeFact
     private val viewModel by lazy { viewModelFragmentProvider.get(OrderHistoryViewModel::class.java) }
 
     private lateinit var adapter: OrderHistoryAdapter
-    private var listener: Listener? = null
 
-    interface Listener {
-        fun onClickOrderHistory(intent: Intent)
-    }
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        if (context is Listener) {
-            listener = context
-        }
-    }
+    override fun getRecyclerViewResourceId() = R.id.recycler_view
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_orderhistory_order_history, container, false).also {
@@ -80,11 +67,8 @@ class OrderHistoryFragment : BaseListFragment<Visitable<*>, OrderHistoryTypeFact
     }
 
     override fun createAdapterInstance(): BaseListAdapter<Visitable<*>, OrderHistoryTypeFactory> {
-        adapter = OrderHistoryAdapter(adapterTypeFactory)
-        return adapter
+        return OrderHistoryAdapter(adapterTypeFactory).also { adapter = it }
     }
-
-    override fun getRecyclerViewResourceId() = R.id.recycler_view
 
     companion object {
         fun createInstance(extra: Bundle?): OrderHistoryFragment {

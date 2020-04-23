@@ -15,8 +15,7 @@ import com.tokopedia.orderhistory.di.OrderHistoryComponent
 import com.tokopedia.orderhistory.di.DaggerOrderHistoryComponent
 import com.tokopedia.orderhistory.view.fragment.OrderHistoryFragment
 
-class OrderHistoryActivity : BaseSimpleActivity(), HasComponent<OrderHistoryComponent>,
-        OrderHistoryFragment.Listener {
+class OrderHistoryActivity : BaseSimpleActivity(), HasComponent<OrderHistoryComponent> {
 
     override fun getNewFragment(): Fragment? {
         return OrderHistoryFragment.createInstance(intent.extras)
@@ -53,8 +52,4 @@ class OrderHistoryActivity : BaseSimpleActivity(), HasComponent<OrderHistoryComp
         }
     }
 
-    override fun onClickOrderHistory(intent: Intent) {
-        setResult(Activity.RESULT_OK, intent)
-        finish()
-    }
 }
