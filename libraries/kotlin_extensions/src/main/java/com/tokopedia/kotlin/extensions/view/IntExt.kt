@@ -21,6 +21,8 @@ fun Int?.toZeroIfNull():Int {
     return this?:0
 }
 
+fun Int?.isZero(): Boolean = this?.let { it == 0 } ?: false
+fun Int?.isMoreThanZero(): Boolean = this?.let { it > 0 } ?: false
 
 const val INTEGER_MILLION = 1_000_000
 const val INTEGER_THOUSAND = 1_000
