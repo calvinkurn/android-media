@@ -122,21 +122,13 @@ public class CommonUtils {
         return true;
     }
 
-    public static <T> boolean checkNotNull(T reference) {
-        if (reference == null) {
-            return false;
-        } else {
-            return true;
-        }
-    }
-
     /**
      * @param reference
      * @param <T>
      * @return false if empty otherwise true if not empty
      */
     public static <T extends Collection> boolean checkCollectionNotNull(T reference) {
-        if (!checkNotNull(reference) || reference.isEmpty())
+        if (!com.tokopedia.abstraction.common.utils.view.CommonUtils.checkNotNull(reference) || reference.isEmpty())
             return false;
 
         return true;

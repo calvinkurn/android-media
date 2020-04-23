@@ -1,15 +1,14 @@
 package com.tokopedia.core.gcm;
 
-import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 
-import com.crashlytics.android.Crashlytics;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
+import com.crashlytics.android.Crashlytics;
 import com.google.firebase.messaging.RemoteMessage;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.moengage.pushbase.push.MoEngageNotificationUtils;
@@ -39,7 +38,6 @@ public class BaseMessagingService extends BaseNotificationMessagingService {
     private SharedPreferences sharedPreferences;
     private Context mContext;;
     private SessionHandler sessionHandler;
-    private GCMHandler gcmHandler;
     private LocalBroadcastManager localBroadcastManager;
 
     @Override
@@ -47,7 +45,6 @@ public class BaseMessagingService extends BaseNotificationMessagingService {
         super.onMessageReceived(remoteMessage);
         mContext = getApplicationContext();
         sessionHandler = RouterUtils.getRouterFromContext(mContext).legacySessionHandler();
-        gcmHandler = new GCMHandler(mContext);
         localBroadcastManager = LocalBroadcastManager.getInstance(mContext);
 
         Bundle data = convertMap(remoteMessage);

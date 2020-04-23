@@ -210,11 +210,6 @@ public class MockInstrumentationTestApp extends BaseMainApplication implements T
     }
 
     @Override
-    public Intent getInboxMessageIntent(Context mContext) {
-        return null;
-    }
-
-    @Override
     public void onAppsFlyerInit() {
 
     }
@@ -273,11 +268,6 @@ public class MockInstrumentationTestApp extends BaseMainApplication implements T
             }
 
             @Override
-            public String getFreshToken() {
-                return null;
-            }
-
-            @Override
             public String getUserId() {
                 return "null";
             }
@@ -294,11 +284,6 @@ public class MockInstrumentationTestApp extends BaseMainApplication implements T
 
             @Override
             public boolean isMsisdnVerified() {
-                return false;
-            }
-
-            @Override
-            public boolean isHasPassword() {
                 return false;
             }
         };

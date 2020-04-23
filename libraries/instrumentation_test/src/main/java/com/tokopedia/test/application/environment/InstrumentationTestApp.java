@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Base64;
+
 import com.google.android.gms.ads.identifier.AdvertisingIdClient;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
@@ -162,11 +163,6 @@ public class InstrumentationTestApp extends BaseMainApplication implements TkpdC
     }
 
     @Override
-    public Intent getInboxMessageIntent(Context mContext) {
-        return null;
-    }
-
-    @Override
     public void onAppsFlyerInit() {
 
     }
@@ -225,11 +221,6 @@ public class InstrumentationTestApp extends BaseMainApplication implements TkpdC
             }
 
             @Override
-            public String getFreshToken() {
-                return null;
-            }
-
-            @Override
             public String getUserId() {
                 return "null";
             }
@@ -246,11 +237,6 @@ public class InstrumentationTestApp extends BaseMainApplication implements TkpdC
 
             @Override
             public boolean isMsisdnVerified() {
-                return false;
-            }
-
-            @Override
-            public boolean isHasPassword() {
                 return false;
             }
         };

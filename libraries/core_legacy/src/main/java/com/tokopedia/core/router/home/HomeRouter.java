@@ -16,14 +16,11 @@ import java.lang.reflect.InvocationTargetException;
 
 public class HomeRouter {
 
-    public static final String EXTRA_BANNERWEBVIEW_URL = "url";
-
     public static final String EXTRA_INIT_FRAGMENT = "EXTRA_INIT_FRAGMENT";
     public static final String IDENTIFIER_HOME_ACTIVITY = "ParentIndexHome";
     public static final int INIT_STATE_FRAGMENT_HOTLIST = 3;
 
     private static final String ACTIVITY_PARENT_INDEX_HOME = "com.tokopedia.navigation.presentation.activity.MainParentActivity";
-    private static final String ACTIVITY_BANNER_WEBVIEW = "com.tokopedia.core.home.BannerWebView";
     private static final String FCM_NOTIFICATIONRECEIVER = "com.tokopedia.tkpd.fcm.AppNotificationReceiver";
 
     @Deprecated
@@ -33,12 +30,6 @@ public class HomeRouter {
 
     public static Intent getHomeActivityInterfaceRouter(Context context) {
         return ((TkpdCoreRouter) context.getApplicationContext()).getHomeIntent(context);
-    }
-
-    public static Intent getBannerWebviewActivity(Context context, String url) {
-        Intent intent = RouterUtils.getActivityIntent(context, ACTIVITY_BANNER_WEBVIEW);
-        intent.putExtra(EXTRA_BANNERWEBVIEW_URL, url);
-        return intent;
     }
 
     public static Class<?> getHomeActivityClass() {

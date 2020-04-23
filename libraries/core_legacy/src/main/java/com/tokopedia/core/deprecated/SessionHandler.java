@@ -60,8 +60,6 @@ public abstract class SessionHandler {
 
     public abstract String getAccessToken();
 
-    public abstract String getFreshToken();
-
     public abstract String getUserId();
 
     public abstract String getDeviceId();
@@ -74,10 +72,6 @@ public abstract class SessionHandler {
         return getShopID();
     }
 
-    public boolean hasShop() {
-        return isUserHasShop();
-    }
-
     public String getName() {
         return getLoginName();
     }
@@ -86,5 +80,4 @@ public abstract class SessionHandler {
 
     public abstract boolean isMsisdnVerified();
 
-    public abstract boolean isHasPassword() ;
 }

@@ -26,11 +26,6 @@ public abstract class MainRouterApplication extends CoreNetworkApplication imple
                 }
 
                 @Override
-                public String getFreshToken() {
-                    return mSessionHandler.getAuthRefreshToken();
-                }
-
-                @Override
                 public String getUserId() {
                     return mSessionHandler.getLoginID();
                 }
@@ -93,11 +88,6 @@ public abstract class MainRouterApplication extends CoreNetworkApplication imple
                 @Override
                 public boolean isMsisdnVerified() {
                     return mSessionHandler.isMsisdnVerified();
-                }
-
-                @Override
-                public boolean isHasPassword() {
-                    return mSessionHandler.isHasPassword();
                 }
             };
         }else{
