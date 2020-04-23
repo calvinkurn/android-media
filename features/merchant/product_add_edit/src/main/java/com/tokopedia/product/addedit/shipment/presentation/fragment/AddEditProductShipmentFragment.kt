@@ -3,27 +3,22 @@ package com.tokopedia.product.addedit.shipment.presentation.fragment
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.kotlin.extensions.view.afterTextChanged
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_PRODUCT_INPUT_MODEL
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_SHIPMENT_INPUT
-import com.tokopedia.product.addedit.common.util.InputPriceUtil.formatProductPriceInput
-import com.tokopedia.product.addedit.common.util.getText
-import com.tokopedia.product.addedit.common.util.getTextIntOrZero
-import com.tokopedia.product.addedit.common.util.setModeToNumberInput
-import com.tokopedia.product.addedit.common.util.setText
+import com.tokopedia.product.addedit.common.util.*
 import com.tokopedia.product.addedit.optionpicker.OptionPicker
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.shipment.di.AddEditProductShipmentComponent
-import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.MAX_WEIGHT_GRAM
-import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.MAX_WEIGHT_KILOGRAM
-import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.MIN_WEIGHT
 import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.UNIT_GRAM
 import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.UNIT_KILOGRAM
 import com.tokopedia.product.addedit.shipment.presentation.model.ShipmentInputModel
@@ -131,9 +126,22 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
             }
         }
         applyShipmentInputModel()
-        tfWeightAmount?.textFieldInput?.afterTextChanged {
-            validateInputWeight(it)
-        }
+        tfWeightAmount?.textFieldInput?.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+                val inputWeight = s?.toString()?.replace(".", "")
+                inputWeight?.let { validateInputWeight(it) }
+            }
+
+            override fun beforeTextChanged(charSequence: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+
+            override fun onTextChanged(charSequence: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                val inputWeight = charSequence.toString()
+                if (inputWeight == "") {
+                    tfWeightAmount?.textFieldInput?.setText("0")
+                }
+            }
+
+        })
         btnEnd?.setOnClickListener {
             btnEnd?.isLoading = true
             submitInput()
@@ -247,13 +255,14 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
     }
 
     private fun validateInputWeight(inputText: String): Boolean {
-        val minWeight = formatProductPriceInput(MIN_WEIGHT.toString())
-        val maxWeightGram = formatProductPriceInput(MAX_WEIGHT_GRAM.toString())
-        val maxWeightKilogram = formatProductPriceInput(MAX_WEIGHT_KILOGRAM.toString())
-        val errorMessage = if (selectedWeightPosition == UNIT_GRAM) {
-            getString(R.string.error_weight_not_valid, minWeight, maxWeightGram)
-        } else {
-            getString(R.string.error_weight_not_valid, minWeight, maxWeightKilogram)
+        val inputWeight = inputText.toIntOrZero()
+        var errorMessage = ""
+        if (inputWeight == 0) {
+            errorMessage = getString(R.string.error_weight_is_zero)
+        } else if (selectedWeightPosition == UNIT_GRAM && inputWeight > 500000) {
+            errorMessage = getString(R.string.error_weight_exceed_in_gram)
+        } else if (selectedWeightPosition == UNIT_KILOGRAM && inputWeight > 500) {
+            errorMessage = getString(R.string.error_weight_exceed_in_kilogram)
         }
         val isValid = shipmentViewModel.isWeightValid(inputText, selectedWeightPosition)
         tfWeightAmount?.setError(!isValid)
