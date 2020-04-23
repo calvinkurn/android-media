@@ -7,6 +7,8 @@ import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.settingnotif.R
+import com.tokopedia.settingnotif.usersetting.base.BaseSettingRepository
+import com.tokopedia.settingnotif.usersetting.base.SettingRepository
 import com.tokopedia.settingnotif.usersetting.di.UserSettingScope
 import com.tokopedia.settingnotif.usersetting.domain.GetUserSettingUseCase
 import com.tokopedia.settingnotif.usersetting.domain.SetUserSettingUseCase
@@ -38,15 +40,15 @@ import dagger.Provides
 
     @Provides
     @UserSettingScope
-    fun provideGraphqlRepository(): GraphqlRepository {
-        return GraphqlInteractor.getInstance().graphqlRepository
+    fun provideGraphqlRepository(): SettingRepository {
+        return BaseSettingRepository(GraphqlInteractor.getInstance().graphqlRepository)
     }
 
     @Provides
     @UserSettingScope
     fun provideGetUserSettingUseCase(
             @UserSettingScope context: Context?,
-            repository: GraphqlRepository
+            repository: SettingRepository
     ): GetUserSettingUseCase {
         val query = GraphqlHelper.loadRawString(
                 context?.resources,
@@ -59,7 +61,7 @@ import dagger.Provides
     @UserSettingScope
     fun provideSetUserSettingUseCase(
             @UserSettingScope context: Context?,
-            repository: GraphqlRepository
+            repository: SettingRepository
     ): SetUserSettingUseCase {
         val query = GraphqlHelper.loadRawString(
                 context?.resources,
