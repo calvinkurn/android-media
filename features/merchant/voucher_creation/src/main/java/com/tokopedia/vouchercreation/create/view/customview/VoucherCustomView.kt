@@ -7,7 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 
-abstract class BaseVoucherCustomView @JvmOverloads constructor(
+abstract class VoucherCustomView @JvmOverloads constructor(
         context: Context,
         private val attrs: AttributeSet? = null,
         private val defStyleAttr: Int = 0,

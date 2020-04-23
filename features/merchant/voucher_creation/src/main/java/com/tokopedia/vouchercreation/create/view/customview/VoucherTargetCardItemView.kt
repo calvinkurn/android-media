@@ -19,7 +19,7 @@ class VoucherTargetCardItemView @JvmOverloads constructor(
         defStyleRes: Int = 0,
         @LayoutRes layoutResource: Int = R.layout.mvc_voucher_target_item,
         styleableResource: IntArray = R.styleable.VoucherTargetCardItemView
-) : BaseVoucherCustomView(context, attrs, defStyleAttr, defStyleRes, layoutResource, styleableResource) {
+) : VoucherCustomView(context, attrs, defStyleAttr, defStyleRes, layoutResource, styleableResource) {
 
     companion object {
         const val TARGET_PUBLIC_TYPE = 0

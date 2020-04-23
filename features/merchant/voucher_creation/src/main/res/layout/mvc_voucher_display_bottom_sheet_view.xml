@@ -8,6 +8,7 @@
         android:id="@+id/voucherDisplayRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/mvc_create_voucher_display_recycler_view_margin_top"
         android:orientation="horizontal"
         android:clipToPadding="false"
         app:layout_constraintTop_toTopOf="parent"/>
