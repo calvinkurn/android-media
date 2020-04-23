@@ -8,13 +8,20 @@ import com.tokopedia.vouchercreation.voucherlist.view.widget.headerchips.ChipTyp
  * Created By @ilhamsuaib on 20/04/20
  */
 
-data class HeaderChipUiModel(
-        var text: String = "",
-        @ChipType
-        val type: Int,
-        var isActive: Boolean = false,
-        var isVisible: Boolean = true
+sealed class BaseHeaderChipUiModel(
+        open var isVisible: Boolean = true
 ) : Visitable<HeaderChipFactory> {
 
     override fun type(typeFactory: HeaderChipFactory): Int = typeFactory.type(this)
+
+    data class HeaderChip(
+            var text: String = "",
+            @ChipType val type: Int,
+            var isActive: Boolean = false,
+            override var isVisible: Boolean = true
+    ) : BaseHeaderChipUiModel(isVisible)
+
+    data class ResetChip(
+            override var isVisible: Boolean = false
+    ) : BaseHeaderChipUiModel(isVisible)
 }

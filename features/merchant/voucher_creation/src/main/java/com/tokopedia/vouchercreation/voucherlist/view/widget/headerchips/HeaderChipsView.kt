@@ -7,7 +7,9 @@ import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.vouchercreation.R
-import com.tokopedia.vouchercreation.voucherlist.model.HeaderChipUiModel
+import com.tokopedia.vouchercreation.voucherlist.model.BaseHeaderChipUiModel
+import com.tokopedia.vouchercreation.voucherlist.model.BaseHeaderChipUiModel.HeaderChip
+import com.tokopedia.vouchercreation.voucherlist.model.BaseHeaderChipUiModel.ResetChip
 import com.tokopedia.vouchercreation.voucherlist.view.adapter.HeaderChipsAdapter
 
 /**
@@ -16,18 +18,18 @@ import com.tokopedia.vouchercreation.voucherlist.view.adapter.HeaderChipsAdapter
 
 class HeaderChipsView : RecyclerView {
 
-    private var onChipClick: (element: HeaderChipUiModel) -> Unit = {}
+    private var onChipClick: (element: BaseHeaderChipUiModel) -> Unit = {}
     private val chipAdapter by lazy { HeaderChipsAdapter(onChipClick) }
 
-    private val resetChip by lazy { HeaderChipUiModel(type = ChipType.CHIP_RESET, isVisible = false) }
-    private val sortChip by lazy { HeaderChipUiModel(context.getString(R.string.mvc_sort), ChipType.CHIP_SORT) }
-    private val filterChip by lazy { HeaderChipUiModel(context.getString(R.string.mvc_voucher_type), ChipType.CHIP_FILTER) }
+    private val resetChip = ResetChip(false)
+    private val sortChip by lazy { HeaderChip(context.getString(R.string.mvc_sort), ChipType.CHIP_SORT) }
+    private val filterChip by lazy { HeaderChip(context.getString(R.string.mvc_voucher_type), ChipType.CHIP_FILTER) }
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
     constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
-    fun init(onClick: (element: HeaderChipUiModel) -> Unit) {
+    fun init(onClick: (element: BaseHeaderChipUiModel) -> Unit) {
         this.onChipClick = onClick
 
         layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
@@ -66,9 +68,9 @@ class HeaderChipsView : RecyclerView {
         }
     }
 
-    private fun getItems(): List<HeaderChipUiModel> = listOf(resetChip, sortChip, filterChip)
+    private fun getItems(): List<BaseHeaderChipUiModel> = listOf(resetChip, sortChip, filterChip)
 
-    private fun notifyItem(model: HeaderChipUiModel) {
+    private fun notifyItem(model: BaseHeaderChipUiModel) {
         val position = getItems().indexOf(model)
         if (position >= 0) {
             chipAdapter.notifyItemChanged(position)
@@ -87,7 +89,7 @@ class HeaderChipsView : RecyclerView {
         notifyItem(resetChip)
     }
 
-    fun setOnItemClickListener(onClick: (element: HeaderChipUiModel) -> Unit) {
+    fun setOnItemClickListener(onClick: (element: BaseHeaderChipUiModel) -> Unit) {
         this.onChipClick = onClick
     }
 }

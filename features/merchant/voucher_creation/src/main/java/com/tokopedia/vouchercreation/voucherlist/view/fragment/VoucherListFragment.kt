@@ -15,6 +15,8 @@ import com.tokopedia.kotlin.extensions.view.getBooleanArgs
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.di.component.DaggerVoucherCreationComponent
 import com.tokopedia.vouchercreation.voucherlist.model.*
+import com.tokopedia.vouchercreation.voucherlist.model.BaseHeaderChipUiModel.HeaderChip
+import com.tokopedia.vouchercreation.voucherlist.model.BaseHeaderChipUiModel.ResetChip
 import com.tokopedia.vouchercreation.voucherlist.view.adapter.factory.VoucherListAdapterFactoryImpl
 import com.tokopedia.vouchercreation.voucherlist.view.viewholder.MenuViewHolder
 import com.tokopedia.vouchercreation.voucherlist.view.viewholder.VoucherViewHolder
@@ -184,18 +186,31 @@ class VoucherListFragment : BaseListFragment<BaseVoucherListUiModel, VoucherList
         }
     }
 
-    private fun setOnChipListener(chip: HeaderChipUiModel) {
-        when (chip.type) {
-            ChipType.CHIP_SORT -> showSortBottomSheet()
-            ChipType.CHIP_FILTER -> showFilterBottomSheet()
+    private fun setOnChipListener(chip: BaseHeaderChipUiModel) {
+        when (chip) {
+            is HeaderChip -> {
+                when (chip.type) {
+                    ChipType.CHIP_SORT -> showSortBottomSheet()
+                    ChipType.CHIP_FILTER -> showFilterBottomSheet()
+                }
+            }
+            is ResetChip -> setOnResetClick()
         }
+    }
+
+    private fun setOnResetClick() {
+        sortItems.clear()
+        sortItems.addAll(SortBottomSheet.getMvcSortItems(requireContext()))
+        filterItems.clear()
+        filterItems.addAll(FilterBottomSheet.getMvcFilterItems(requireContext()))
+        view?.headerChipMvc?.hideResetButton()
     }
 
     private fun showSortBottomSheet() {
         if (!isAdded) return
         sortBottomSheet
                 ?.setOnApplySortListener {
-
+                    showResetChip()
                 }
                 ?.setOnCancelApply { previousSortItems ->
                     sortItems.clear()
@@ -208,13 +223,20 @@ class VoucherListFragment : BaseListFragment<BaseVoucherListUiModel, VoucherList
         if (!isAdded) return
         filterBottomSheet
                 ?.setOnApplyClickListener {
-
+                    showResetChip()
                 }
                 ?.setCancelApplyFilter { previousFilterItems ->
                     filterItems.clear()
                     filterItems.addAll(previousFilterItems)
                 }
                 ?.show(childFragmentManager, filterItems)
+    }
+
+    private fun showResetChip() {
+        val canResetFilter = filterItems.filterIsInstance<HeaderChip>().any { it.isActive }
+        if (canResetFilter) {
+            view?.headerChipMvc?.showResetButton()
+        }
     }
 
     private fun showDummyData() {
