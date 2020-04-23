@@ -14,9 +14,7 @@ import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.getBooleanArgs
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.di.component.DaggerVoucherCreationComponent
-import com.tokopedia.vouchercreation.voucherlist.logD
 import com.tokopedia.vouchercreation.voucherlist.model.*
-import com.tokopedia.vouchercreation.voucherlist.toJson
 import com.tokopedia.vouchercreation.voucherlist.view.adapter.factory.VoucherListAdapterFactoryImpl
 import com.tokopedia.vouchercreation.voucherlist.view.viewholder.MenuViewHolder
 import com.tokopedia.vouchercreation.voucherlist.view.viewholder.VoucherViewHolder
@@ -55,23 +53,25 @@ class VoucherListFragment : BaseListFragment<BaseVoucherListUiModel, VoucherList
     private val mViewModel: VoucherListViewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(VoucherListViewModel::class.java)
     }
+    private val sortBottomSheet: SortBottomSheet? by lazy {
+        val parent = view as? ViewGroup ?: return@lazy null
+        return@lazy SortBottomSheet(parent)
+    }
+    private val filterBottomSheet: FilterBottomSheet? by lazy {
+        val parent = view as? ViewGroup ?: return@lazy null
+        return@lazy FilterBottomSheet(parent)
+    }
 
-    private val isActiveVoucher by lazy { getBooleanArgs(KEY_IS_ACTIVE_VOUCHER, true) }
-
-    private val sortItems: List<SortUiModel> by lazy {
-        return@lazy if (context == null) {
-            emptyList()
-        } else {
-            SortBottomSheet.getMvcSortItems(requireContext())
-        }
+    private val sortItems: MutableList<SortUiModel> by lazy {
+        val ctx = context ?: return@lazy mutableListOf<SortUiModel>()
+        return@lazy SortBottomSheet.getMvcSortItems(ctx)
     }
     private val filterItems: MutableList<BaseFilterUiModel> by lazy {
-        return@lazy if (context == null) {
-            mutableListOf()
-        } else {
-            FilterBottomSheet.getMvcFilterItems(requireContext())
-        }
+        val ctx = context ?: return@lazy mutableListOf<BaseFilterUiModel>()
+        return@lazy FilterBottomSheet.getMvcFilterItems(ctx)
     }
+
+    private val isActiveVoucher by lazy { getBooleanArgs(KEY_IS_ACTIVE_VOUCHER, true) }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_mvc_voucher_list, container, false)
@@ -192,28 +192,29 @@ class VoucherListFragment : BaseListFragment<BaseVoucherListUiModel, VoucherList
     }
 
     private fun showSortBottomSheet() {
-        val parent = view as? ViewGroup ?: return
-        SortBottomSheet(parent)
-                .setOnApplySortListener {
+        if (!isAdded) return
+        sortBottomSheet
+                ?.setOnApplySortListener {
 
                 }
-                .show(childFragmentManager, sortItems)
+                ?.setOnCancelApply { previousSortItems ->
+                    sortItems.clear()
+                    sortItems.addAll(previousSortItems)
+                }
+                ?.show(childFragmentManager, sortItems)
     }
 
     private fun showFilterBottomSheet() {
-        val parent = view as? ViewGroup ?: return
-        FilterBottomSheet(parent)
-                .setOnApplyClickListener {
-                    logD("setOnApplyClickListener")
+        if (!isAdded) return
+        filterBottomSheet
+                ?.setOnApplyClickListener {
+
                 }
-                .setCancelApplyFilter {
-                    logD("setCancelApplyFilter : default -> ${filterItems.toJson}")
-                    logD("setCancelApplyFilter : cancel -> ${it.toJson}")
+                ?.setCancelApplyFilter { previousFilterItems ->
                     filterItems.clear()
-                    filterItems.addAll(it)
-                    logD("setCancelApplyFilter : new -> ${filterItems.toJson}")
+                    filterItems.addAll(previousFilterItems)
                 }
-                .show(childFragmentManager, filterItems)
+                ?.show(childFragmentManager, filterItems)
     }
 
     private fun showDummyData() {

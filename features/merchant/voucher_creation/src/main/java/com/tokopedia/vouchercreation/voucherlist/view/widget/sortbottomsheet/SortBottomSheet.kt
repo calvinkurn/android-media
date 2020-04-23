@@ -1,6 +1,7 @@
 package com.tokopedia.vouchercreation.voucherlist.view.widget.sortbottomsheet
 
 import android.content.Context
+import android.content.DialogInterface
 import android.graphics.Rect
 import android.view.LayoutInflater
 import android.view.View
@@ -24,7 +25,10 @@ class SortBottomSheet(
 
     private val sortAdapter by lazy { SortAdapter(this::onSortItemClick) }
 
-    private var onApplyClick: (sort: SortUiModel?) -> Unit = {}
+    private var onApplyClick: (SortUiModel?) -> Unit = {}
+    private var onCancelApplySort: (List<SortUiModel>) -> Unit = {}
+    private var applySort = false
+    private var tmpSortList = listOf<SortUiModel>()
 
     init {
         setTitle(parent.context.getString(R.string.mvc_sort))
@@ -41,6 +45,7 @@ class SortBottomSheet(
         rvMcvSort.addItemDecoration(getSortItemDecoration())
 
         btnMvcApplySort.btnMvcApplySort.setOnClickListener {
+            applySort = true
             applySort()
         }
 
@@ -74,12 +79,31 @@ class SortBottomSheet(
         sortAdapter.notifyDataSetChanged()
     }
 
+    private fun List<SortUiModel>.copy(): List<SortUiModel> {
+        return this.map { it.copy() }
+    }
+
+    override fun onDismiss(dialog: DialogInterface) {
+        super.onDismiss(dialog)
+        if (!applySort) {
+            onCancelApplySort(tmpSortList)
+        }
+    }
+
     fun setOnApplySortListener(callback: (sort: SortUiModel?) -> Unit): SortBottomSheet {
         onApplyClick = callback
         return this
     }
 
+    fun setOnCancelApply(callback: (List<SortUiModel>) -> Unit): SortBottomSheet {
+        onCancelApplySort = callback
+        return this
+    }
+
     fun show(fm: FragmentManager, sortItems: List<SortUiModel>) {
+        applySort = false
+        tmpSortList = sortItems.copy()
+
         sortAdapter.clearAllElements()
         sortAdapter.addElement(sortItems)
         show(fm, TAG)
@@ -88,9 +112,9 @@ class SortBottomSheet(
     companion object {
         val TAG: String = SortBottomSheet::class.java.simpleName
 
-        fun getMvcSortItems(context: Context): List<SortUiModel> {
-            return listOf(
-                    SortUiModel(context.getString(R.string.mvc_newest_done_date), SortBy.NEWEST_DONE_DATE),
+        fun getMvcSortItems(context: Context): MutableList<SortUiModel> {
+            return mutableListOf(
+                    SortUiModel(context.getString(R.string.mvc_newest_done_date), SortBy.NEWEST_DONE_DATE, true),
                     SortUiModel(context.getString(R.string.mvc_oldest_done_date), SortBy.NEWEST_DONE_DATE)
             )
         }

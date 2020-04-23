@@ -125,15 +125,12 @@ class FilterBottomSheet(
 
     private fun List<BaseFilterUiModel>.copy(): List<BaseFilterUiModel> {
         return this.map {
-            return@map if (it is FilterItem) {
-                it.copy()
-            } else {
-                it
-            }
+            return@map if (it is FilterItem) it.copy() else it
         }
     }
 
     fun show(fm: FragmentManager, items: List<BaseFilterUiModel>) {
+        applyFilter = false
         tmpFilterList = items.copy()
 
         filterAdapter.clearAllElements()
