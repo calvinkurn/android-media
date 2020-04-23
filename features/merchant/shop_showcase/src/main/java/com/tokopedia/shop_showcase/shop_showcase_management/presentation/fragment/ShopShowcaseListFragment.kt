@@ -93,6 +93,7 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
     private lateinit var emptyStateContainer: LinearLayout
     private lateinit var imgEmptyState: ImageView
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
+    private lateinit var globalError: GlobalError? = null
     private var layoutManager: LinearLayoutManager? = null
     private var shopShowcaseListAdapter: ShopShowcaseListAdapter? = null
     private var showcaseList: List<ShowcaseItem> = listOf()
@@ -185,6 +186,7 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
         val view = inflater.inflate(R.layout.fragment_shop_showcase_list, container, false)
         headerUnify = view.findViewById(R.id.showcase_list_toolbar)
         headerLayout = view.findViewById(R.id.header_layout)
+        globalError = view.findViewById(R.id.globalError)
         swipeRefreshLayout = view.findViewById(R.id.swipe_refresh)
         btnAddEtalase = view.findViewById(R.id.btn_add_etalase)
         loading = view.findViewById(R.id.loading)
@@ -203,6 +205,7 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         performanceMonitoring = PerformanceMonitoring.start(SHOP_SHOWCASE_TRACE)
+        globalError.setType(GlobalError.SERVER_ERROR)
         showLoading(true)
         initHeaderUnify()
         initSearchbar()
@@ -215,6 +218,10 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
         observeDeleteShopShowcase()
         observeTotalProduct()
 
+        globalError.setOnClickListener {
+            refreshData()
+        }
+
         btnAddEtalase.setOnClickListener {
 //            isNeedToGoToAddShowcase = true
             tracking?.clickTambahEtalase(shopId, shopType)
@@ -224,9 +231,13 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
 
     private fun initSwipeRefresh() {
         swipeRefreshLayout.setOnRefreshListener {
-            showLoadingSwipeToRefresh(true)
-            loadData()
+            refreshData()
         }
+    }
+
+    private fun refreshData() {
+        showLoadingSwipeToRefresh(true)
+        loadData()
     }
 
     private fun initSearchbar() {
