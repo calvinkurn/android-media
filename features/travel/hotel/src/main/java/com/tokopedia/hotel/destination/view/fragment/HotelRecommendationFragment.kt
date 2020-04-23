@@ -181,7 +181,7 @@ class HotelRecommendationFragment : BaseListFragment<PopularSearch, PopularSearc
         })
     }
 
-    fun onClickCurrentLocation(lang: Double, lat: Double) {
+    private fun onClickCurrentLocation(lang: Double, lat: Double) {
         val intent = Intent()
         intent.putExtra(HOTEL_CURRENT_LOCATION_LANG, lang)
         intent.putExtra(HOTEL_CURRENT_LOCATION_LAT, lat)
@@ -191,7 +191,7 @@ class HotelRecommendationFragment : BaseListFragment<PopularSearch, PopularSearc
                 com.tokopedia.common.travel.R.anim.travel_slide_out_up)
     }
 
-    fun renderRecentSearch(recentSearches: MutableList<RecentSearch>) {
+    private fun renderRecentSearch(recentSearches: MutableList<RecentSearch>) {
         recentSearchLayout.visibility = if (recentSearches.isEmpty()) View.GONE else View.VISIBLE
         if (recentSearches.size >= 5) recentSearchAdapter.setData(recentSearches.subList(0, 5))
         else recentSearchAdapter.setData(recentSearches)

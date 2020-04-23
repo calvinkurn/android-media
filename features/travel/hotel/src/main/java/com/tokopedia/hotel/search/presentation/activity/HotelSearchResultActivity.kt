@@ -3,7 +3,6 @@ package com.tokopedia.hotel.search.presentation.activity
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.view.ViewGroup
 import android.widget.LinearLayout
@@ -42,36 +41,17 @@ class HotelSearchResultActivity : HotelBaseActivity(), HasComponent<HotelSearchP
     override fun onCreate(savedInstanceState: Bundle?) {
         val uri = intent.data
         if (uri != null) {
-            when {
-                isSearchCity(uri) -> {
-                    hotelSearchModel.id = uri.getQueryParameter(PARAM_CITY_ID)?.toLong() ?: 0
-                    hotelSearchModel.name = uri.getQueryParameter(PARAM_CITY_NAME) ?: ""
-                    hotelSearchModel.type = TYPE_CITY
-                }
-
-                isSearchDistrict(uri) -> {
-                    hotelSearchModel.id = uri.getQueryParameter(PARAM_DISTRICT_ID)?.toLong() ?: 0
-                    hotelSearchModel.name = uri.getQueryParameter(PARAM_DISTRICT_NAME) ?: ""
-                    hotelSearchModel.type = TYPE_DISTRICT
-                }
-
-                isSearchRegion(uri) -> {
-                    hotelSearchModel.id = uri.getQueryParameter(PARAM_REGION_ID)?.toLong() ?: 0
-                    hotelSearchModel.name = uri.getQueryParameter(PARAM_REGION_NAME) ?: ""
-                    hotelSearchModel.type = TYPE_REGION
-                }
-            }
-
-            if (!uri.getQueryParameter(PARAM_CHECK_IN).isNullOrEmpty()) hotelSearchModel.checkIn = uri.getQueryParameter(PARAM_CHECK_IN)
-                    ?: ""
-            if (!uri.getQueryParameter(PARAM_CHECK_OUT).isNullOrEmpty()) hotelSearchModel.checkOut = uri.getQueryParameter(PARAM_CHECK_OUT)
-                    ?: ""
-            if (!uri.getQueryParameter(PARAM_ROOM).isNullOrEmpty()) hotelSearchModel.room = uri.getQueryParameter(PARAM_ROOM)?.toInt()
-                    ?: 0
-            if (!uri.getQueryParameter(PARAM_ADULT).isNullOrEmpty()) hotelSearchModel.adult = uri.getQueryParameter(PARAM_ADULT)?.toInt()
-                    ?: 0
+            //when activity open from applink
+            hotelSearchModel.searchId = uri.getQueryParameter(PARAM_ID) ?: ""
+            hotelSearchModel.searchType = uri.getQueryParameter(PARAM_TYPE) ?: ""
+            hotelSearchModel.name = uri.getQueryParameter(PARAM_NAME) ?: ""
+            hotelSearchModel.checkIn = uri.getQueryParameter(PARAM_CHECK_IN) ?: ""
+            hotelSearchModel.checkOut = uri.getQueryParameter(PARAM_CHECK_OUT) ?: ""
+            hotelSearchModel.room = uri.getQueryParameter(PARAM_ROOM)?.toInt() ?: 1
+            hotelSearchModel.adult = uri.getQueryParameter(PARAM_ADULT)?.toInt() ?: 1
 
         } else {
+            //when activity open from intent
             hotelSearchModel = intent.getParcelableExtra(HotelSearchResultFragment.ARG_HOTEL_SEARCH_MODEL)
                     ?: HotelSearchModel()
         }
@@ -83,10 +63,6 @@ class HotelSearchResultActivity : HotelBaseActivity(), HasComponent<HotelSearchP
         setupSearchToolbarAction()
         setUpTitleAndSubtitle()
     }
-
-    private fun isSearchCity(uri: Uri): Boolean = !uri.getQueryParameter(PARAM_CITY_ID).isNullOrEmpty()
-    private fun isSearchDistrict(uri: Uri): Boolean = !uri.getQueryParameter(PARAM_DISTRICT_ID).isNullOrEmpty()
-    private fun isSearchRegion(uri: Uri): Boolean = !uri.getQueryParameter(PARAM_REGION_ID).isNullOrEmpty()
 
     private fun setupSearchToolbarAction() {
         wrapper = LinearLayout(this)
@@ -168,14 +144,13 @@ class HotelSearchResultActivity : HotelBaseActivity(), HasComponent<HotelSearchP
                             checkIn = it.getStringExtra(HotelChangeSearchActivity.CHECK_IN_DATE),
                             checkOut = it.getStringExtra(HotelChangeSearchActivity.CHECK_OUT_DATE),
                             room = it.getIntExtra(HotelChangeSearchActivity.NUM_OF_ROOMS, 1),
-                            adult = it.getIntExtra(HotelChangeSearchActivity.NUM_OF_GUESTS, 0)
+                            adult = it.getIntExtra(HotelChangeSearchActivity.NUM_OF_GUESTS, 0),
+                            searchType = it.getStringExtra(HotelChangeSearchActivity.SEARCH_TYPE),
+                            searchId = it.getStringExtra(HotelChangeSearchActivity.SEARCH_ID)
                     )
 
                     (fragment as HotelSearchResultFragment).let { searchFragment ->
-                        searchFragment.searchResultviewModel.initSearchParam(hotelSearchModel.id,
-                                hotelSearchModel.type, hotelSearchModel.lat, hotelSearchModel.long,
-                                hotelSearchModel.checkIn, hotelSearchModel.checkOut,
-                                hotelSearchModel.room, hotelSearchModel.adult)
+                        searchFragment.searchResultviewModel.initSearchParam(hotelSearchModel)
                         searchFragment.searchDestinationName = hotelSearchModel.name
                         searchFragment.searchDestinationType = hotelSearchModel.type
 
@@ -192,16 +167,13 @@ class HotelSearchResultActivity : HotelBaseActivity(), HasComponent<HotelSearchP
 
         const val CHANGE_SEARCH_REQ_CODE = 101
 
-        const val PARAM_DISTRICT_ID = "district_id"
-        const val PARAM_DISTRICT_NAME = "district_name"
-        const val PARAM_CITY_ID = "city_id"
-        const val PARAM_CITY_NAME = "city_name"
-        const val PARAM_REGION_ID = "region_id"
-        const val PARAM_REGION_NAME = "region_name"
         const val PARAM_CHECK_IN = "check_in"
         const val PARAM_CHECK_OUT = "check_out"
         const val PARAM_ROOM = "room"
         const val PARAM_ADULT = "adult"
+        const val PARAM_ID = "id"
+        const val PARAM_NAME = "name"
+        const val PARAM_TYPE = "type"
 
         const val TYPE_REGION = "region"
         const val TYPE_DISTRICT = "district"

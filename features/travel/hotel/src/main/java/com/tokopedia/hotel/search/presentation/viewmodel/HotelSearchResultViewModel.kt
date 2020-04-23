@@ -6,10 +6,10 @@ import com.tokopedia.common.travel.utils.TravelDispatcherProvider
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.hotel.search.data.model.Filter
-import com.tokopedia.hotel.search.data.model.PropertySearch
-import com.tokopedia.hotel.search.data.model.Sort
+import com.tokopedia.hotel.search.data.model.*
 import com.tokopedia.hotel.search.data.model.params.ParamFilter
+import com.tokopedia.hotel.search.data.model.params.ParamLocation
+import com.tokopedia.hotel.search.data.model.params.ParamSort
 import com.tokopedia.hotel.search.data.model.params.SearchParam
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.usecase.coroutines.Fail
@@ -33,32 +33,41 @@ class HotelSearchResultViewModel @Inject constructor(
 
     var isFilter = false
 
-    fun initSearchParam(destinationID: Long, type: String, latitude: Float, longitude: Float,
-                        checkIn: String, checkOut: String, totalRoom: Int, totalAdult: Int) {
-        if (type == TYPE_CITY){
-            searchParam.location.cityID = destinationID
-            searchParam.location.districtID = 0
-            searchParam.location.regionID = 0
-        }
-        else if (type == TYPE_DISTRICT) {
-            searchParam.location.districtID = destinationID
-            searchParam.location.cityID = 0
-            searchParam.location.regionID = 0
-        } else {
-            searchParam.location.regionID = destinationID
-            searchParam.location.cityID = 0
-            searchParam.location.districtID = 0
-        }
-        searchParam.location.latitude = latitude
-        searchParam.location.longitude = longitude
-        searchParam.checkIn = checkIn
-        searchParam.checkOut = checkOut
-        searchParam.room = totalRoom
-        searchParam.guest.adult = totalAdult
+    fun initSearchParam(hotelSearchModel: HotelSearchModel) {
 
-        //Default param
-        searchParam.sort.popularity = true
-        addSort(Sort("popularity"))
+        with(searchParam) {
+            location = ParamLocation()
+
+            when (hotelSearchModel.type) {
+                // temp: to support the popular search and recent search in suggestion page
+                TYPE_CITY -> {
+                    location.cityID = hotelSearchModel.id
+                }
+                TYPE_DISTRICT -> {
+                    location.districtID = hotelSearchModel.id
+                }
+                TYPE_REGION -> {
+                    location.regionID = hotelSearchModel.id
+                }
+            }
+
+            // when user search by coordinate
+            if (hotelSearchModel.searchType == TYPE_COORDINATE) {
+                location.latitude = hotelSearchModel.lat
+                location.longitude = hotelSearchModel.long
+            }
+
+            checkIn = hotelSearchModel.checkIn
+            checkOut = hotelSearchModel.checkOut
+            room = hotelSearchModel.room
+            guest.adult = hotelSearchModel.adult
+            location.searchType = hotelSearchModel.searchType
+            location.searchId = hotelSearchModel.searchId
+
+            //Default param
+            sort.popularity = true
+            addSort(Sort(DEFAULT_SORT))
+        }
     }
 
     fun searchProperty(page: Int, searchQuery: String) {
@@ -76,18 +85,14 @@ class HotelSearchResultViewModel @Inject constructor(
 
     fun addSort(sort: Sort) {
         selectedSort = sort
-        with(searchParam.sort) {
-            popularity = sort.name.toLowerCase() == "popularity"
-            price = sort.name.toLowerCase() == "price"
-            ranking = sort.name.toLowerCase() == "ranking"
-            star = sort.name.toLowerCase() == "star"
-            reviewScore = sort.name.toLowerCase() == "reviewscore"
 
-            // to be edited
-            if (popularity || reviewScore || star) sortDir = "desc"
-            else if (price) sortDir = "asc"
-            else sortDir = "desc"
-
+        searchParam.sort = when (sort.name.toLowerCase()) {
+            HotelSortEnum.POPULARITY.value -> ParamSort(popularity = true, sortDir = HotelSortEnum.POPULARITY.order)
+            HotelSortEnum.PRICE.value -> ParamSort(price = true, sortDir = HotelSortEnum.PRICE.order)
+            HotelSortEnum.RANKING.value -> ParamSort(ranking = true, sortDir = HotelSortEnum.RANKING.order)
+            HotelSortEnum.STAR.value -> ParamSort(star = true, sortDir = HotelSortEnum.STAR.order)
+            HotelSortEnum.REVIEWSCORE.value -> ParamSort(reviewScore = true, sortDir = HotelSortEnum.REVIEWSCORE.order)
+            else -> ParamSort()
         }
     }
 
@@ -101,5 +106,8 @@ class HotelSearchResultViewModel @Inject constructor(
         private const val TYPE_REGION = "region"
         private const val TYPE_DISTRICT = "district"
         private const val TYPE_CITY = "city"
+        private const val TYPE_COORDINATE = "coordinate"
+
+        private const val DEFAULT_SORT = "popularity"
     }
 }

@@ -77,10 +77,13 @@ class HotelHomepageFragment : HotelBaseFragment(),
         if (savedInstanceState != null && savedInstanceState.containsKey(EXTRA_HOTEL_MODEL)) {
             hotelHomepageModel = savedInstanceState.getParcelable(EXTRA_HOTEL_MODEL)
                     ?: HotelHomepageModel()
-        } else if (arguments != null && arguments?.containsKey(EXTRA_PARAM_TYPE) == true) {
-            hotelHomepageModel.locId = arguments?.getLong(EXTRA_PARAM_ID) ?: 4712
-            hotelHomepageModel.locName = arguments?.getString(EXTRA_PARAM_NAME) ?: "Bali"
-            hotelHomepageModel.locType = arguments?.getString(EXTRA_PARAM_TYPE) ?: "region"
+        } else if (arguments != null && arguments?.containsKey(EXTRA_PARAM_ID) == true) {
+            // previous default 4712 Bali region
+            hotelHomepageModel.locId = 0
+            hotelHomepageModel.locType = ""
+            hotelHomepageModel.searchId = arguments?.getString(EXTRA_PARAM_ID) ?: ""
+            hotelHomepageModel.locName = arguments?.getString(EXTRA_PARAM_NAME) ?: ""
+            hotelHomepageModel.searchType = arguments?.getString(EXTRA_PARAM_TYPE) ?: ""
             hotelHomepageModel.adultCount = arguments?.getInt(EXTRA_ADULT, 1) ?: 1
             hotelHomepageModel.roomCount = arguments?.getInt(EXTRA_ROOM, 1) ?: 1
             hotelHomepageModel.checkInDate = arguments?.getString(EXTRA_PARAM_CHECKIN) ?: ""
@@ -96,7 +99,8 @@ class HotelHomepageFragment : HotelBaseFragment(),
                         TravelDateUtil.dateToString(TravelDateUtil.DEFAULT_VIEW_FORMAT,
                                 TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, hotelHomepageModel.checkOutDate))
             }
-            if (hotelHomepageModel.checkInDate.isNotBlank() && hotelHomepageModel.checkOutDate.isNotBlank()) hotelHomepageModel.nightCounter = countRoomDuration()
+            if (hotelHomepageModel.checkInDate.isNotBlank() && hotelHomepageModel.checkOutDate.isNotBlank())
+                hotelHomepageModel.nightCounter = countRoomDuration()
         }
 
         remoteConfig = FirebaseRemoteConfigImpl(context)
@@ -186,12 +190,14 @@ class HotelHomepageFragment : HotelBaseFragment(),
                 if (data.hasExtra(HotelDestinationActivity.HOTEL_CURRENT_LOCATION_LANG)) {
                     onDestinationNearBy(data.getDoubleExtra(HotelDestinationActivity.HOTEL_CURRENT_LOCATION_LANG, 0.0),
                             data.getDoubleExtra(HotelDestinationActivity.HOTEL_CURRENT_LOCATION_LAT, 0.0))
-                } else {
+                } else if (data.hasExtra(HotelDestinationActivity.HOTEL_DESTINATION_SEARCH_ID)){
                     onDestinationChanged(data.getStringExtra(HotelDestinationActivity.HOTEL_DESTINATION_NAME) ?: "",
-                            data.getLongExtra(HotelDestinationActivity.HOTEL_DESTINATION_ID, 0),
-                            data.getStringExtra(HotelDestinationActivity.HOTEL_DESTINATION_TYPE) ?: "",
-                            data.getStringExtra(HotelDestinationActivity.HOTEL_DESTINATION_SEARCH_TYPE) ?: "",
-                            data.getStringExtra(HotelDestinationActivity.HOTEL_DESTINATION_SEARCH_ID) ?: "")
+                            searchId = data.getStringExtra(HotelDestinationActivity.HOTEL_DESTINATION_SEARCH_TYPE) ?: "",
+                            searchType = data.getStringExtra(HotelDestinationActivity.HOTEL_DESTINATION_SEARCH_ID) ?: "")
+                } else if (data.hasExtra(HotelDestinationActivity.HOTEL_DESTINATION_ID)) {
+                    onDestinationChanged(data.getStringExtra(HotelDestinationActivity.HOTEL_DESTINATION_NAME) ?: "",
+                            id = data.getLongExtra(HotelDestinationActivity.HOTEL_DESTINATION_ID, 0),
+                            type = data.getStringExtra(HotelDestinationActivity.HOTEL_DESTINATION_TYPE) ?: "")
                 }
             }
         }
@@ -309,11 +315,11 @@ class HotelHomepageFragment : HotelBaseFragment(),
         renderView()
     }
 
-    private fun onDestinationChanged(name: String, destinationId: Long, type: String, searchType: String, searchId: String) {
-        trackingHotelUtil.hotelSelectDestination(type, name)
+    private fun onDestinationChanged(name: String, id: Long = 0, type: String = "", searchType: String = "", searchId: String = "") {
+        trackingHotelUtil.hotelSelectDestination(searchType, name)
 
         hotelHomepageModel.locName = name
-        hotelHomepageModel.locId = destinationId
+        hotelHomepageModel.locId = id
         hotelHomepageModel.locType = type
         hotelHomepageModel.locLat = 0.0
         hotelHomepageModel.locLong = 0.0
@@ -347,7 +353,9 @@ class HotelHomepageFragment : HotelBaseFragment(),
                         checkIn = hotelHomepageModel.checkInDate,
                         checkOut = hotelHomepageModel.checkOutDate,
                         room = hotelHomepageModel.roomCount,
-                        adult = hotelHomepageModel.adultCount)
+                        adult = hotelHomepageModel.adultCount,
+                        searchType = hotelHomepageModel.searchType,
+                        searchId = hotelHomepageModel.searchId)
                 startActivityForResult(HotelSearchResultActivity.createIntent(this, hotelSearchModel), REQUEST_CODE_SEARCH)
             }
         }
@@ -374,16 +382,17 @@ class HotelHomepageFragment : HotelBaseFragment(),
         if (promoDataList.isNotEmpty()) trackingHotelUtil.hotelBannerImpression(promoDataList.first(), 0)
 
         banner_hotel_homepage_promo.setOnPromoClickListener { position ->
-            onPromoClicked(promoDataList.getOrNull(position)
-                    ?: TravelCollectiveBannerModel.Banner(), position)
-            if (RouteManager.isSupportApplink(context, promoDataList.getOrNull(position)?.attribute?.appUrl
-                            ?: "")) RouteManager.route(context, promoDataList.getOrNull(position)?.attribute?.appUrl
-                    ?: "")
-            else if (!getRegisteredNavigation(context!!, promoDataList.getOrNull(position)?.attribute?.appUrl
-                            ?: "").isEmpty()) RouteManager.route(context, getRegisteredNavigation(context!!, promoDataList.getOrNull(position)?.attribute?.appUrl
-                    ?: ""))
-            else if ((promoDataList.getOrNull(position)?.attribute?.webUrl
-                            ?: "").isNotEmpty()) RouteManager.route(context, promoDataList.getOrNull(position)?.attribute?.webUrl)
+            onPromoClicked(promoDataList.getOrNull(position) ?: TravelCollectiveBannerModel.Banner(), position)
+
+            if (RouteManager.isSupportApplink(context, promoDataList.getOrNull(position)?.attribute?.appUrl ?: "")) {
+                RouteManager.route(context, promoDataList.getOrNull(position)?.attribute?.appUrl ?: "")
+            }
+            else if (!getRegisteredNavigation(context!!, promoDataList.getOrNull(position)?.attribute?.appUrl ?: "").isEmpty()) {
+                RouteManager.route(context, getRegisteredNavigation(context!!, promoDataList.getOrNull(position)?.attribute?.appUrl ?: ""))
+            }
+            else if ((promoDataList.getOrNull(position)?.attribute?.webUrl ?: "").isNotEmpty()) {
+                RouteManager.route(context, promoDataList.getOrNull(position)?.attribute?.webUrl)
+            }
         }
 
         renderBannerView(promoDataList)
@@ -486,10 +495,10 @@ class HotelHomepageFragment : HotelBaseFragment(),
 
         fun getInstance(): HotelHomepageFragment = HotelHomepageFragment()
 
-        fun getInstance(id: Long, name: String, type: String, checkIn: String, checkOut: String, adult: Int, room: Int): HotelHomepageFragment =
+        fun getInstance(id: String, name: String, type: String, checkIn: String, checkOut: String, adult: Int, room: Int): HotelHomepageFragment =
                 HotelHomepageFragment().also {
                     it.arguments = Bundle().apply {
-                        putLong(EXTRA_PARAM_ID, id)
+                        putString(EXTRA_PARAM_ID, id)
                         putString(EXTRA_PARAM_NAME, name)
                         putString(EXTRA_PARAM_TYPE, type)
                         if (checkIn.isNotBlank()) putString(EXTRA_PARAM_CHECKIN, checkIn)

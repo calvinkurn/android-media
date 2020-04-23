@@ -20,14 +20,16 @@ class HotelChangeSearchActivity : HotelGlobalSearchActivity() {
 
     override fun getNewFragment(): Fragment {
         return HotelChangeSearchFragment.getInstance(intent.getLongExtra(EXTRA_DESTINATION_ID, 0),
-                intent.getStringExtra(EXTRA_DESTINATION_NAME),
-                intent.getStringExtra(EXTRA_DESTINATION_TYPE),
+                intent.getStringExtra(EXTRA_DESTINATION_NAME) ?: "",
+                intent.getStringExtra(EXTRA_DESTINATION_TYPE) ?: "",
                 intent.getDoubleExtra(EXTRA_DESTINATION_LAT, 0.0),
                 intent.getDoubleExtra(EXTRA_DESTINATION_LONG, 0.0),
-                intent.getStringExtra(EXTRA_CHECK_IN_DATE),
-                intent.getStringExtra(EXTRA_CHECK_OUT_DATE),
+                intent.getStringExtra(EXTRA_CHECK_IN_DATE)  ?: "",
+                intent.getStringExtra(EXTRA_CHECK_OUT_DATE) ?: "",
                 intent.getIntExtra(EXTRA_NUM_OF_GUESTS, 0),
-                intent.getIntExtra(EXTRA_NUM_OF_ROOMS, 0))
+                intent.getIntExtra(EXTRA_NUM_OF_ROOMS, 0),
+                intent.getStringExtra(EXTRA_DESTINATION_SEARCH_TYPE) ?: "",
+                intent.getStringExtra(EXTRA_DESTINATION_SEARCH_ID) ?: "")
     }
 
     override fun getScreenName(): String = ""
@@ -44,6 +46,8 @@ class HotelChangeSearchActivity : HotelGlobalSearchActivity() {
         const val EXTRA_DESTINATION_NAME = "EXTRA_DESTINATION_NAME"
         const val EXTRA_DESTINATION_LONG = "EXTRA_DESTINATION_LONG"
         const val EXTRA_DESTINATION_LAT = "EXTRA_DESTINATION_LAT"
+        const val EXTRA_DESTINATION_SEARCH_ID = "EXTRA_DESTINATION_SEARCH_ID"
+        const val EXTRA_DESTINATION_SEARCH_TYPE = "EXTRA_DESTINATION_SEARCH_TYPE"
 
         const val DESTINATION_ID = "HOTEL_DESTINATION_ID"
         const val DESTINATION_TYPE = "HOTEL_DESTINATION_TYPE"
@@ -54,6 +58,8 @@ class HotelChangeSearchActivity : HotelGlobalSearchActivity() {
         const val CHECK_OUT_DATE = "CHECK_OUT_DATE"
         const val NUM_OF_GUESTS = "NUM_OF_GUESTS"
         const val NUM_OF_ROOMS = "NUM_OF_ROOMS"
+        const val SEARCH_TYPE = "SEARCH_TYPE"
+        const val SEARCH_ID = "SEARCH_ID"
 
         fun getIntent(context: Context, destinationId: Long, destinationName: String,
                       destinationType: String, latitude: Double, longitude: Double, checkInDate: String, checkOutDate: String,

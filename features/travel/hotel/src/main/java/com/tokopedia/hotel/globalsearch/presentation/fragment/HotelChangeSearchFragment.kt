@@ -1,6 +1,5 @@
 package com.tokopedia.hotel.globalsearch.presentation.fragment
 
-import android.app.Activity
 import android.app.Activity.RESULT_OK
 import android.content.Intent
 import android.os.Bundle
@@ -24,11 +23,16 @@ import com.tokopedia.hotel.globalsearch.presentation.activity.HotelChangeSearchA
 import com.tokopedia.hotel.globalsearch.presentation.activity.HotelChangeSearchActivity.Companion.EXTRA_DESTINATION_LAT
 import com.tokopedia.hotel.globalsearch.presentation.activity.HotelChangeSearchActivity.Companion.EXTRA_DESTINATION_LONG
 import com.tokopedia.hotel.globalsearch.presentation.activity.HotelChangeSearchActivity.Companion.EXTRA_DESTINATION_NAME
+import com.tokopedia.hotel.globalsearch.presentation.activity.HotelChangeSearchActivity.Companion.EXTRA_DESTINATION_SEARCH_ID
+import com.tokopedia.hotel.globalsearch.presentation.activity.HotelChangeSearchActivity.Companion.EXTRA_DESTINATION_SEARCH_TYPE
 import com.tokopedia.hotel.globalsearch.presentation.activity.HotelChangeSearchActivity.Companion.EXTRA_DESTINATION_TYPE
 import com.tokopedia.hotel.globalsearch.presentation.activity.HotelChangeSearchActivity.Companion.EXTRA_NUM_OF_GUESTS
 import com.tokopedia.hotel.globalsearch.presentation.activity.HotelChangeSearchActivity.Companion.EXTRA_NUM_OF_ROOMS
 import com.tokopedia.hotel.globalsearch.presentation.activity.HotelChangeSearchActivity.Companion.NUM_OF_GUESTS
 import com.tokopedia.hotel.globalsearch.presentation.activity.HotelChangeSearchActivity.Companion.NUM_OF_ROOMS
+import com.tokopedia.hotel.globalsearch.presentation.activity.HotelChangeSearchActivity.Companion.SEARCH_ID
+import com.tokopedia.hotel.globalsearch.presentation.activity.HotelChangeSearchActivity.Companion.SEARCH_TYPE
+import com.tokopedia.hotel.homepage.presentation.activity.HotelHomepageActivity.Companion.TYPE_COORDINATE
 import com.tokopedia.iris.util.IrisSession
 import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.fragment_hotel_change_search.*
@@ -63,6 +67,8 @@ class HotelChangeSearchFragment : HotelGlobalSearchFragment() {
             globalSearchModel.numOfRooms = it.getInt(EXTRA_NUM_OF_ROOMS)
             globalSearchModel.locationLong = it.getDouble(EXTRA_DESTINATION_LONG, 0.0)
             globalSearchModel.locationLat = it.getDouble(EXTRA_DESTINATION_LAT, 0.0)
+            globalSearchModel.searchType = it.getString(EXTRA_DESTINATION_SEARCH_TYPE) ?: ""
+            globalSearchModel.searchId = it.getString(EXTRA_DESTINATION_SEARCH_ID) ?: ""
 
             globalSearchModel.nightCount = countRoomDuration()
 
@@ -85,6 +91,8 @@ class HotelChangeSearchFragment : HotelGlobalSearchFragment() {
             putExtra(CHECK_OUT_DATE, globalSearchModel.checkOutDate)
             putExtra(NUM_OF_GUESTS, globalSearchModel.numOfGuests)
             putExtra(NUM_OF_ROOMS, globalSearchModel.numOfRooms)
+            putExtra(SEARCH_TYPE, globalSearchModel.searchType)
+            putExtra(SEARCH_ID, globalSearchModel.searchId)
         }
 
         context?.let {
@@ -106,14 +114,22 @@ class HotelChangeSearchFragment : HotelGlobalSearchFragment() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         when (requestCode) {
-            REQUEST_CODE_DESTINATION -> if (resultCode == Activity.RESULT_OK && data != null) {
-                if (data.hasExtra(HotelDestinationActivity.HOTEL_CURRENT_LOCATION_LANG)) {
-                    onDestinationNearBy(data.getDoubleExtra(HotelDestinationActivity.HOTEL_CURRENT_LOCATION_LANG, 0.0),
-                            data.getDoubleExtra(HotelDestinationActivity.HOTEL_CURRENT_LOCATION_LAT, 0.0))
-                } else {
-                    onDestinationChanged(data.getStringExtra(HotelDestinationActivity.HOTEL_DESTINATION_NAME),
-                            data.getLongExtra(HotelDestinationActivity.HOTEL_DESTINATION_ID, 0),
-                            data.getStringExtra(HotelDestinationActivity.HOTEL_DESTINATION_TYPE))
+            REQUEST_CODE_DESTINATION -> if (resultCode == RESULT_OK && data != null) {
+                when {
+                    data.hasExtra(HotelDestinationActivity.HOTEL_CURRENT_LOCATION_LANG) -> {
+                        onDestinationNearBy(data.getDoubleExtra(HotelDestinationActivity.HOTEL_CURRENT_LOCATION_LANG, 0.0),
+                                data.getDoubleExtra(HotelDestinationActivity.HOTEL_CURRENT_LOCATION_LAT, 0.0))
+                    }
+                    data.hasExtra(HotelDestinationActivity.HOTEL_DESTINATION_SEARCH_ID) -> {
+                        onDestinationChanged(data.getStringExtra(HotelDestinationActivity.HOTEL_DESTINATION_NAME),
+                                searchId = data.getStringExtra(HotelDestinationActivity.HOTEL_DESTINATION_SEARCH_ID) ?: "",
+                                searchType = data.getStringExtra(HotelDestinationActivity.HOTEL_DESTINATION_TYPE) ?: "")
+                    }
+                    data.hasExtra(HotelDestinationActivity.HOTEL_DESTINATION_ID) -> {
+                        onDestinationChanged(data.getStringExtra(HotelDestinationActivity.HOTEL_DESTINATION_NAME),
+                                destinationId = data.getLongExtra(HotelDestinationActivity.HOTEL_DESTINATION_ID, 0),
+                                type = data.getStringExtra(HotelDestinationActivity.HOTEL_DESTINATION_TYPE))
+                    }
                 }
             }
         }
@@ -133,15 +149,19 @@ class HotelChangeSearchFragment : HotelGlobalSearchFragment() {
         globalSearchModel.locationLong = longitude
         globalSearchModel.destinationId = 0
         globalSearchModel.destinationType = ""
+        globalSearchModel.searchId = ""
+        globalSearchModel.searchType = TYPE_COORDINATE
         renderView()
     }
 
-    private fun onDestinationChanged(name: String, destinationId: Long, type: String) {
+    private fun onDestinationChanged(name: String, destinationId: Long = 0, type: String  = "", searchId: String = "", searchType: String = "") {
         globalSearchModel.destinationName = name
         globalSearchModel.destinationId = destinationId
         globalSearchModel.destinationType = type
         globalSearchModel.locationLat = 0.0
         globalSearchModel.locationLong = 0.0
+        globalSearchModel.searchType = searchType
+        globalSearchModel.searchId =  searchId
         renderView()
     }
 
@@ -151,7 +171,7 @@ class HotelChangeSearchFragment : HotelGlobalSearchFragment() {
         const val SCREEN_NAME = "hotel/changesearch"
 
         fun getInstance(destinationId: Long, destinationName: String, destinationType: String, latitude: Double, longitude: Double,
-                        checkInDate: String, checkOutDate: String, numOfGuests: Int, numOfRooms: Int) =
+                        checkInDate: String, checkOutDate: String, numOfGuests: Int, numOfRooms: Int, searchId: String, searchType: String) =
                 HotelChangeSearchFragment().also {
                     it.arguments = Bundle().apply {
                         putLong(EXTRA_DESTINATION_ID, destinationId)
@@ -163,6 +183,8 @@ class HotelChangeSearchFragment : HotelGlobalSearchFragment() {
                         putString(EXTRA_CHECK_OUT_DATE, checkOutDate)
                         putInt(EXTRA_NUM_OF_GUESTS, numOfGuests)
                         putInt(EXTRA_NUM_OF_ROOMS, numOfRooms)
+                        putString(EXTRA_DESTINATION_SEARCH_TYPE, searchType)
+                        putString(EXTRA_DESTINATION_SEARCH_ID, searchId)
                     }
                 }
     }
