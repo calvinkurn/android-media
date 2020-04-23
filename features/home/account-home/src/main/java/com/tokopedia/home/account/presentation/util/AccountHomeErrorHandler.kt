@@ -26,7 +26,7 @@ object AccountHomeErrorHandler {
     @JvmStatic
     fun logExceptionToCrashlytics(t: Throwable, userId: String, email:String, errorCode:String) {
         val errorMessage = String.format(
-                "userId=%s;userEmail=%s;errorMessage=%s;errorCode=%s",
+                "userId='%s';email='%s';error_msg='%s';error_code='%s'",
                 userId,
                 email,
                 getExceptionMessage(t),
@@ -37,11 +37,11 @@ object AccountHomeErrorHandler {
         if (!BuildConfig.DEBUG) {
             try {
                 Crashlytics.logException(exception)
-            } catch (e: Exception) {
-                Timber.w("P2#ACCOUNT_HOME_ERROR#'Failed render C;'$errorMessage $errorCode'")
+            } catch (exception: Exception) {
+                Timber.w("P2#ACCOUNT_HOME_ERROR#'Failed render C;$errorMessage;'$exception'")
             }
         } else {
-            Timber.w("P2#ACCOUNT_HOME_ERROR#'Failed render';'$errorMessage'")
+            Timber.w("P2#ACCOUNT_HOME_ERROR#'Failed render';$errorMessage")
         }
     }
 }
