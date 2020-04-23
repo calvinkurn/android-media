@@ -2,8 +2,10 @@ package com.tokopedia.product.manage.feature.quickedit.price.presentation.fragme
 
 import android.content.Context
 import android.os.Bundle
+import android.text.Editable
 import android.text.InputFilter
 import android.text.InputType
+import android.text.TextWatcher
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
@@ -62,6 +64,25 @@ class ProductManageQuickEditPriceFragment(private val onFinishedListener: OnFini
             }
             val idrTextWatcher = CurrencyIdrTextWatcher(this.textFieldInput)
             textFieldInput.addTextChangedListener(idrTextWatcher)
+            textFieldInput.addTextChangedListener(object : TextWatcher {
+                override fun afterTextChanged(s: Editable?) {
+                }
+
+                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                }
+
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                    val input = textFieldInput.text.toString()
+                    val price = CurrencyFormatHelper.convertRupiahToInt(input)
+
+                    if(price < MINIMUM_PRICE) {
+                        showErrorPriceTooLow()
+                    } else {
+                        hideError()
+                    }
+                }
+
+            })
             setOnFocusChangeListener { v, hasFocus ->
                 if (hasFocus) {
                     activity.let {
