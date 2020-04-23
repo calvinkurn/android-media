@@ -1,6 +1,6 @@
 package com.tokopedia.vouchercreation.create.data.source
 
-import com.tokopedia.vouchercreation.create.view.customview.VoucherTargetCardItemView
+import com.tokopedia.vouchercreation.create.view.enums.VoucherTargetCardType
 import com.tokopedia.vouchercreation.create.view.uimodel.VoucherTargetItemUiModel
 
 object VoucherTargetStaticDataSource {
@@ -8,11 +8,11 @@ object VoucherTargetStaticDataSource {
     fun getVoucherTargetItemUiModelList() : List<VoucherTargetItemUiModel> =
             listOf(
                     VoucherTargetItemUiModel(
-                            voucherTargetType = VoucherTargetCardItemView.TARGET_PUBLIC_TYPE,
+                            voucherTargetType = VoucherTargetCardType.PUBLIC,
                             isEnabled = true,
                             isHavePromoCard = false),
                     VoucherTargetItemUiModel(
-                            voucherTargetType = VoucherTargetCardItemView.TARGET_PRIVATE_TYPE,
+                            voucherTargetType = VoucherTargetCardType.PRIVATE,
                             isEnabled = false,
                             isHavePromoCard = false
                     ))

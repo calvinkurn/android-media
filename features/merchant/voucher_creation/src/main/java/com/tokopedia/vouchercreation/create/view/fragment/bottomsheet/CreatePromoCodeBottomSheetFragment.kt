@@ -15,9 +15,9 @@ import com.tokopedia.vouchercreation.create.view.customview.bottomsheet.VoucherB
 import kotlinx.android.synthetic.main.mvc_create_promo_code_bottom_sheet_view.*
 
 
-class CreatePromoCodeBottomSheet(bottomSheetContext: Context?,
-                                 val onNextClick: (String) -> Unit = {},
-                                 val getPromoCode: () -> String) : BottomSheetUnify(), VoucherBottomView {
+class CreatePromoCodeBottomSheetFragment(bottomSheetContext: Context?,
+                                         val onNextClick: (String) -> Unit = {},
+                                         val getPromoCode: () -> String) : BottomSheetUnify(), VoucherBottomView {
 
     companion object {
         private val TEXFIELD_ALERT_MINIMUM = R.string.mvc_create_alert_minimum
@@ -27,8 +27,8 @@ class CreatePromoCodeBottomSheet(bottomSheetContext: Context?,
 
         fun createInstance(context: Context?,
                            onNextClick: (String) -> Unit,
-                           getPromoCode: () -> String = {""}) : CreatePromoCodeBottomSheet {
-            return CreatePromoCodeBottomSheet(context, onNextClick, getPromoCode).apply {
+                           getPromoCode: () -> String = {""}) : CreatePromoCodeBottomSheetFragment {
+            return CreatePromoCodeBottomSheetFragment(context, onNextClick, getPromoCode).apply {
                 context?.run {
                     val view = View.inflate(this, R.layout.mvc_create_promo_code_bottom_sheet_view, null)
                     setChild(view)
@@ -97,6 +97,6 @@ class CreatePromoCodeBottomSheet(bottomSheetContext: Context?,
         }
     }
 
-    override val title: String? = bottomSheetContext?.resources?.getString(R.string.mvc_create_target_create_promo_code_bottomsheet_title)
+    override var bottomSheetViewTitle: String? = bottomSheetContext?.resources?.getString(R.string.mvc_create_target_create_promo_code_bottomsheet_title)
 
 }

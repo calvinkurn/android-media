@@ -10,8 +10,8 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import com.tokopedia.vouchercreation.create.view.bottomsheet.CreateVoucherBottomSheetType
 import com.tokopedia.vouchercreation.create.view.customview.bottomsheet.VoucherBottomView
+import com.tokopedia.vouchercreation.create.view.enums.CreateVoucherBottomSheetType
 import com.tokopedia.vouchercreation.create.view.typefactory.CreateVoucherTypeFactory
 import com.tokopedia.vouchercreation.create.view.uimodel.NextButtonUiModel
 
@@ -30,6 +30,8 @@ abstract class BaseCreateMerchantVoucherFragment<F : CreateVoucherTypeFactory, W
     open var extraWidget : List<Visitable<F>> = mutableListOf()
 
     abstract fun onDismissBottomSheet(bottomSheetType: CreateVoucherBottomSheetType)
+
+    abstract fun onBeforeShowBottomSheet(bottomSheetType: CreateVoucherBottomSheetType)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -56,7 +58,7 @@ abstract class BaseCreateMerchantVoucherFragment<F : CreateVoucherTypeFactory, W
     protected fun showBottomSheet(bottomSheetType: CreateVoucherBottomSheetType) {
         activeBottomSheetType = bottomSheetType
         bottomSheetViewArray.get(bottomSheetType.key)?.run {
-            (this as? VoucherBottomView)?.title?.let { bottomSheetTitle ->
+            (this as? VoucherBottomView)?.bottomSheetViewTitle?.let { bottomSheetTitle ->
                 setTitle(bottomSheetTitle)
             }
             setOnDismissListener {
@@ -66,6 +68,7 @@ abstract class BaseCreateMerchantVoucherFragment<F : CreateVoucherTypeFactory, W
                 dismissBottomView()
                 this.dismiss()
             }
+            onBeforeShowBottomSheet(bottomSheetType)
             show(this@BaseCreateMerchantVoucherFragment.childFragmentManager, bottomSheetType.tag)
         }
     }

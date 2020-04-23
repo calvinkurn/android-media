@@ -26,4 +26,12 @@
     <string name="mvc_create_promo_code_message_no_tokopedia_alias">&#160;\u2022 Tidak boleh mengandung TOP, TOPED, TOKOPEDIA</string>
     <string name="mvc_create_promo_code_prefix">TOKO</string>
     <string name="mvc_create_target_create_promo_code_bottomsheet_title">Buat Kode Promo</string>
+    <string name="mvc_create_public_voucher_display_title">Tampilan voucher publik</string>
+    <string name="mvc_create_public_voucher_display_product_page">Halaman Produk</string>
+    <string name="mvc_create_public_voucher_display_shop_page">Halaman Toko</string>
+    <string name="mvc_create_public_voucher_display_cart_page">Halaman Keranjang</string>
+    <string name="mvc_create_private_voucher_display_title">Tampilan voucher khusus</string>
+    <string name="mvc_create_private_voucher_display_download_voucher">Download Voucher</string>
+    <string name="mvc_create_private_voucher_display_socmed_post">Post di Sosmed Tokomu</string>
+    <string name="mvc_create_private_voucher_display_chat_share">Sebarkan Melalui Chat</string>
 </resources>

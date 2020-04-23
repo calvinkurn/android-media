@@ -4,13 +4,12 @@ import android.content.Context
 import android.graphics.drawable.GradientDrawable
 import android.util.AttributeSet
 import android.view.View
-import androidx.annotation.DrawableRes
 import androidx.annotation.LayoutRes
-import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.vouchercreation.R
+import com.tokopedia.vouchercreation.create.view.enums.VoucherTargetCardType
 import kotlinx.android.synthetic.main.mvc_voucher_target_item.view.*
 
 class VoucherTargetCardItemView @JvmOverloads constructor(
@@ -111,25 +110,16 @@ class VoucherTargetCardItemView @JvmOverloads constructor(
         }
     }
 
-    fun setupCurrentView(voucherTargetType: Int,
+    fun setupCurrentView(voucherTargetType: VoucherTargetCardType,
                          isItemEnabled: Boolean,
                          isHavePromoCode: Boolean,
                          promoCode: String) {
-        this.voucherTargetType = voucherTargetType
+        this.voucherTargetCardType = voucherTargetType
         this.isItemEnabled = isItemEnabled
         this.isHavePromoCode = isHavePromoCode
         this.promoCode = "$PROMO_CODE_PREFIX$promoCode"
 
         setupView()
-    }
-
-    enum class VoucherTargetCardType(@DrawableRes val iconDrawableRes: Int,
-                                     @StringRes val titleStringRes: Int,
-                                     @StringRes val descriptionStringRes: Int) {
-
-        PUBLIC(R.drawable.ic_im_umum, R.string.mvc_create_target_public, R.string.mvc_create_target_public_desc),
-        PRIVATE(R.drawable.ic_im_terbatas, R.string.mvc_create_target_private, R.string.mvc_create_target_private_desc)
-
     }
 
 }

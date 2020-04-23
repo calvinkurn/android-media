@@ -3,7 +3,8 @@ package com.tokopedia.vouchercreation.create.view.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.vouchercreation.create.view.customview.VoucherTargetCardItemView
+import com.tokopedia.vouchercreation.create.data.source.VoucherTargetStaticDataSource
+import com.tokopedia.vouchercreation.create.view.enums.VoucherTargetCardType
 import com.tokopedia.vouchercreation.create.view.uimodel.VoucherTargetItemUiModel
 import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
@@ -26,8 +27,12 @@ class MerchantVoucherTargetViewModel @Inject constructor(
     val privateVoucherPromoCode : LiveData<String>
         get() = mPrivateVoucherPromoCode
 
-    fun setVoucherTargetListData(list: List<VoucherTargetItemUiModel>) {
-        mVoucherTargetListData.value = list
+    private val mShouldReturnToInitialValue = MutableLiveData<Boolean>()
+    val shouldReturnToInitialValue : LiveData<Boolean>
+        get() = mShouldReturnToInitialValue
+
+    fun setDefaultVoucherTargetListData() {
+        mVoucherTargetListData.value = VoucherTargetStaticDataSource.getVoucherTargetItemUiModelList()
     }
 
     fun validatePromoCode(promoCode: String) {
@@ -36,13 +41,14 @@ class MerchantVoucherTargetViewModel @Inject constructor(
 
     private fun getPromoCodeValidation(promoCode: String) {
         if (promoCode.length in PROMO_CODE_MIN_LENGTH..PROMO_CODE_MAX_LENGTH) {
+            mShouldReturnToInitialValue.value = false
             mVoucherTargetListData.value = listOf(
                     VoucherTargetItemUiModel(
-                            voucherTargetType = VoucherTargetCardItemView.TARGET_PUBLIC_TYPE,
+                            voucherTargetType = VoucherTargetCardType.PUBLIC,
                             isEnabled = false,
                             isHavePromoCard = false),
                     VoucherTargetItemUiModel(
-                            voucherTargetType = VoucherTargetCardItemView.TARGET_PRIVATE_TYPE,
+                            voucherTargetType = VoucherTargetCardType.PRIVATE,
                             isEnabled = true,
                             isHavePromoCard = true,
                             promoCode = promoCode)

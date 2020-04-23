@@ -2,9 +2,11 @@ package com.tokopedia.vouchercreation.create.view.uimodel
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.vouchercreation.create.data.source.VoucherTargetStaticDataSource
+import com.tokopedia.vouchercreation.create.view.enums.CreateVoucherBottomSheetType
+import com.tokopedia.vouchercreation.create.view.enums.VoucherTargetCardType
 import com.tokopedia.vouchercreation.create.view.typefactory.VoucherTargetTypeFactory
 
-class VoucherTargetUiModel(val onShouldShowBottomSheet: () -> Unit = {},
+class VoucherTargetUiModel(val onShouldShowBottomSheet: (CreateVoucherBottomSheetType, VoucherTargetCardType?) -> Unit = { _,_ ->},
                            val voucherTargetList: List<VoucherTargetItemUiModel> = VoucherTargetStaticDataSource.getVoucherTargetItemUiModelList())
     : Visitable<VoucherTargetTypeFactory> {
 
