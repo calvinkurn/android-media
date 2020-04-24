@@ -126,7 +126,7 @@ class NotificationUpdatePresenter @Inject constructor(
         addToCartRequestParams.quantity = 1
         addToCartRequestParams.notes = ""
         addToCartRequestParams.productName = product.name
-        addToCartRequestParams.price = product.price.replace("[^0-9]".toRegex(), "")
+        addToCartRequestParams.price = product.price
 
        return RequestParams.create().apply {
            putObject(AddToCartUseCase.REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST, addToCartRequestParams)

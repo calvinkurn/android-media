@@ -313,7 +313,7 @@ internal class SimilarSearchViewModel(
                 quantity = originalProduct.minOrder,
                 productName = originalProduct.name,
                 category = originalProduct.categoryName,
-                price = originalProduct.price.replace("[^0-9]".toRegex(), "")
+                price = originalProduct.price
         )
     }
 

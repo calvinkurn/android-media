@@ -279,7 +279,7 @@ open class WishlistViewModel @Inject constructor(
                 addToCartRequestParams.notes = ""
                 addToCartRequestParams.productName = it.name
                 addToCartRequestParams.category = it.categoryBreadcrumb
-                addToCartRequestParams.price = it.price.replace("[^0-9]".toRegex(), "")
+                addToCartRequestParams.price = it.price
 
                 val requestParams = RequestParams.create()
                 requestParams.putObject(AddToCartUseCase.REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST, addToCartRequestParams)

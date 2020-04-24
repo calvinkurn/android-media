@@ -485,7 +485,7 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
             shopId = orderListRecomViewModel.getRecommendationItem().getShopId();
             productName = orderListRecomViewModel.getRecommendationItem().getName();
             productCategory = orderListRecomViewModel.getRecommendationItem().getCategoryBreadcrumbs();
-            productPrice = orderListRecomViewModel.getRecommendationItem().getPrice().replaceAll("[^0-9]", "");
+            productPrice = orderListRecomViewModel.getRecommendationItem().getPrice();
             externalSource = "recommendation_list";
             clickUrl = orderListRecomViewModel.getRecommendationItem().getClickUrl();
         }

@@ -48,7 +48,8 @@ class AddToCartUseCase @Inject constructor(@Named("atcMutation") private val que
 
         @JvmStatic
         @JvmOverloads
-        fun getMinimumParams(productId: String, shopId: String, quantity: Int = 1, notes: String = ""): RequestParams {
+        fun getMinimumParams(productId: String, shopId: String, quantity: Int = 1, notes: String = "",
+                /*tracking data*/ productName: String = "", category: String = "", price: String = ""): RequestParams {
             return RequestParams.create()
                     .apply {
                         putObject(
@@ -57,7 +58,10 @@ class AddToCartUseCase @Inject constructor(@Named("atcMutation") private val que
                                         productId = productId.toLong(),
                                         shopId = shopId.toInt(),
                                         quantity = quantity,
-                                        notes = notes
+                                        notes = notes,
+                                        productName = productName,
+                                        category = category,
+                                        price = price
                                 )
                         )
                     }
@@ -97,7 +101,7 @@ class AddToCartUseCase @Inject constructor(@Named("atcMutation") private val que
                                 AFInAppEventParameterName.DESCRIPTION to addToCartRequest.productName,
                                 AFInAppEventParameterName.CURRENCY to AF_VALUE_CURRENCY,
                                 AFInAppEventParameterName.QUANTITY to addToCartRequest.quantity,
-                                AFInAppEventParameterName.PRICE to addToCartRequest.price,
+                                AFInAppEventParameterName.PRICE to addToCartRequest.price.replace("[^0-9]".toRegex(), ""),
                                 AF_PARAM_CATEGORY to addToCartRequest.category,
                                 AFInAppEventParameterName.CONTENT to JSONArray().put(JSONObject().put(AF_PARAM_CONTENT_ID, addToCartRequest.productId.toString()).put(AF_PARAM_CONTENT_QUANTITY, addToCartRequest.quantity))
                         )
