@@ -12,6 +12,7 @@ import com.google.gson.annotations.SerializedName
 import com.tokopedia.graphql.CommonUtils
 import com.tokopedia.notifications.database.convertors.NotificationModeConverter
 import com.tokopedia.notifications.database.convertors.NotificationStatusConverter
+import com.tokopedia.notifications.model.WebHookParams.Companion.webHookToJson
 import org.json.JSONObject
 
 /**
@@ -141,21 +142,13 @@ data class BaseNotificationModel(
         @ColumnInfo(name = "notifcenterBlastId")
         var blastId: String? = null,
 
-        @Expose
         @ColumnInfo(name = "webhook_params")
-        @SerializedName(value = "webhook_params")
         var webHookParam: String? = null
 
 ) : Parcelable {
 
-    fun appendWebHookRoot(): String? {
-        val gson = Gson()
-                .newBuilder()
-                .excludeFieldsWithoutExposeAnnotation()
-                .create()
-        return if (webHookParam != null)
-            gson.toJson(this)
-        else ""
+    fun webHookParamData(): String? {
+        return webHookToJson(this.webHookParam)
     }
 
     constructor(parcel: Parcel) : this(
