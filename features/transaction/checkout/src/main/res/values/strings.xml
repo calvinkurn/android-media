@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="checkout_module_title_activity_checkout">Pengiriman</string>
+    <string name="checkout_module_title_send_to_multiple_address">Kirim ke Banyak Alamat</string>
     <string name="button_change_corner">Ubah Lokasi Tokopedia Corner</string>
     <string name="button_choose_corner">Pilih Lokasi Tokopedia Corner</string>
     <string name="brand_tokopedia_corner">Tokopedia Corner</string>

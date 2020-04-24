@@ -5,9 +5,6 @@
     <string name="label_dialog_back_to_cart_button_negative">Tetap di Halaman Ini</string>
     <string name="message_payment_succeded_transaction_module">Pembayaran berhasil</string>
     <string name="checkout_module_tambahkan_dari_wishlist">Tambahkan dari Wishlist</string>
-    <string name="checkout_module_title_activity_cart">Keranjang</string>
-    <string name="checkout_module_title_activity_checkout">Pengiriman</string>
-    <string name="checkout_module_title_send_to_multiple_address">Kirim ke Banyak Alamat</string>
     <string name="label_showcase_multiple_address_title">Kirim Barang Sama ke Beberapa Alamat.</string>
     <string name="label_showcase_multiple_address_message">Klik tombol untuk mengirim barang yang sama ke beda alamat.</string>
     <string name="error_message_checkout_failed">Gagal memproses pembayaran. Silakan coba lagi.</string>
