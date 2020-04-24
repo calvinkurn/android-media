@@ -1,4 +1,4 @@
-query TokopointsSumCoupon(){
+query {
   tokopointsSumCoupon (categoryID: 51) {
     sumCoupon
     sumCouponStr
