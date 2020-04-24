@@ -1,10 +1,8 @@
 package com.tokopedia.vouchercreation.create.view.fragment
 
-import android.content.Context
 import android.os.Bundle
 import android.util.SparseArray
 import android.view.View
-import android.view.inputmethod.InputMethodManager
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
@@ -66,7 +64,6 @@ abstract class BaseCreateMerchantVoucherFragment<F : CreateVoucherTypeFactory, W
             }
             setCloseClickListener {
                 dismissBottomView()
-                this.dismiss()
             }
             onBeforeShowBottomSheet(bottomSheetType)
             show(this@BaseCreateMerchantVoucherFragment.childFragmentManager, bottomSheetType.tag)
@@ -82,11 +79,6 @@ abstract class BaseCreateMerchantVoucherFragment<F : CreateVoucherTypeFactory, W
             KeyboardHandler.hideSoftKeyboard(it)
         }
         onDismissBottomSheet(activeBottomSheetType)
-    }
-
-    private fun hideKeyboard() {
-        val imm = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        imm.hideSoftInputFromWindow(view?.windowToken, 0)
     }
 
     private inline fun <reified T> List<*>.asListOfType(): List<T>? =

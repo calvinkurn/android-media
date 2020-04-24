@@ -6,5 +6,7 @@
     <integer name="create_promo_code_max_length">10</integer>
 
     <item name="mvc_create_voucher_display_page_control_vertical_bias" format="float" type="integer">0.413</item>
+    <item name="mvc_create_icon_image_width_percent" format="float" type="integer">0.1</item>
+    <item name="mvc_create_voucher_tips_item_width_percent" format="float" type="integer">0.85</item>
 
 </resources>

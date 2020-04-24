@@ -99,7 +99,9 @@ class MerchantVoucherTargetFragment(onNextInvoker: () -> Unit = {})
                     super.setupView()
                 }
             }
-            else -> {}
+            else -> {
+                dismissBottomSheet()
+            }
         }
     }
 
