@@ -100,7 +100,8 @@
 /features/recharge/common_topup_bills                   @tokopedia/minion-mark
 /features/recharge/digital_homepage                     @tokopedia/minion-mark
 /features/recharge/digitalproduct                       @tokopedia/minion-mark
-/features/recharge/recharge_credit_card                  @tokopedia/minion-mark
+/features/recharge/recharge_credit_card                 @tokopedia/minion-mark
+/features/recharge/smart_bills                          @tokopedia/minion-mark
 
 /features/entertainment/event                 			@tokopedia/minion-mark
 /features/entertainment/digital_deals         			@tokopedia/minion-mark
