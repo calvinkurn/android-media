@@ -3,9 +3,11 @@ package com.tokopedia.vouchercreation.voucherlist.view.adapter.factory
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
+import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.vouchercreation.voucherlist.model.VoucherUiModel
 import com.tokopedia.vouchercreation.voucherlist.view.fragment.VoucherListFragment
+import com.tokopedia.vouchercreation.voucherlist.view.viewholder.EmptyStateViewHolder
 import com.tokopedia.vouchercreation.voucherlist.view.viewholder.VoucherViewHolder
 
 /**
@@ -19,9 +21,9 @@ class VoucherListAdapterFactoryImpl(
 
     override fun type(voucher: VoucherUiModel): Int = VoucherViewHolder.RES_LAYOUT
 
-    /*override fun type(viewModel: EmptyModel?): Int = EmptyStateViewHolder.RES_LAYOUT
+    override fun type(viewModel: EmptyModel?): Int = EmptyStateViewHolder.RES_LAYOUT
 
-    override fun type(viewModel: LoadingModel?): Int = if (isActiveVoucher) {
+    /*override fun type(viewModel: LoadingModel?): Int = if (isActiveVoucher) {
         VoucherActiveLoadingStateViewHolder.RES_LAYOUT
     } else {
         VoucherInactiveLoadingStateViewHolder.RES_LAYOUT
