@@ -40,6 +40,12 @@ class AddToCartUseCase @Inject constructor(@Named("atcMutation") private val que
         private const val PARAM_ATC_FROM_EXTERNAL_SOURCE = "atcFromExternalSource"
         private const val PARAM_IS_SCP = "isSCP"
 
+        private const val AF_PARAM_CATEGORY = "category"
+        private const val AF_PARAM_CONTENT_ID = "id"
+        private const val AF_PARAM_CONTENT_QUANTITY = "quantity"
+        private const val AF_VALUE_CONTENT_TYPE = "product"
+        private const val AF_VALUE_CURRENCY = "IDR"
+
         @JvmStatic
         @JvmOverloads
         fun getMinimumParams(productId: String, shopId: String, quantity: Int = 1, notes: String = ""): RequestParams {
@@ -87,13 +93,13 @@ class AddToCartUseCase @Inject constructor(@Named("atcMutation") private val que
                 TrackApp.getInstance().appsFlyer.sendEvent(AFInAppEventType.ADD_TO_CART,
                         mutableMapOf(
                                 AFInAppEventParameterName.CONTENT_ID to addToCartRequest.productId.toString(),
-                                AFInAppEventParameterName.CONTENT_TYPE to "product",
+                                AFInAppEventParameterName.CONTENT_TYPE to AF_VALUE_CONTENT_TYPE,
                                 AFInAppEventParameterName.DESCRIPTION to addToCartRequest.productName,
-                                AFInAppEventParameterName.CURRENCY to "IDR",
+                                AFInAppEventParameterName.CURRENCY to AF_VALUE_CURRENCY,
                                 AFInAppEventParameterName.QUANTITY to addToCartRequest.quantity,
                                 AFInAppEventParameterName.PRICE to addToCartRequest.price,
-                                "category" to addToCartRequest.category,
-                                AFInAppEventParameterName.CONTENT to JSONArray().put(JSONObject().put("id", addToCartRequest.productId.toString()).put("quantity", addToCartRequest.quantity))
+                                AF_PARAM_CATEGORY to addToCartRequest.category,
+                                AFInAppEventParameterName.CONTENT to JSONArray().put(JSONObject().put(AF_PARAM_CONTENT_ID, addToCartRequest.productId.toString()).put(AF_PARAM_CONTENT_QUANTITY, addToCartRequest.quantity))
                         )
                 )
             }
