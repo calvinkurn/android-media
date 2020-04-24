@@ -19,8 +19,8 @@
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_2"
-        android:background="@color/divider_notif_light"
+        android:layout_height="@dimen/dp_8"
+        android:background="@color/divider_notif_big"
         android:layout_marginTop="@dimen/dp_16"/>
 
 </LinearLayout>

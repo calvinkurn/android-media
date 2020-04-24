@@ -11,7 +11,7 @@
         android:id="@+id/imgMenuIcon"
         android:layout_width="@dimen/dp_40"
         android:layout_height="@dimen/dp_40"
-        android:src="@mipmap/ic_launcher"
+        tools:src="@tools:sample/avatars"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
