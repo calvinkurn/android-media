@@ -20,7 +20,7 @@
         app:layout_constraintEnd_toStartOf="@id/guideline1"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintWidth_percent="0.445" />
+        app:layout_constraintWidth_percent="0.435" />
 
     <com.tokopedia.unifycomponents.ChipsUnify
         android:id="@+id/review_sort_chips"
@@ -29,6 +29,8 @@
         android:layout_marginTop="@dimen/spacing_lvl4"
         android:layout_marginEnd="@dimen/spacing_lvl4"
         android:layout_marginRight="@dimen/spacing_lvl4"
+        android:layout_marginStart="@dimen/spacing_lvl3"
+        android:layout_marginLeft="@dimen/spacing_lvl3"
         app:centerText="true"
         app:chipSize="medium"
         app:chipType="normal"
@@ -41,8 +43,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_marginStart="@dimen/spacing_lvl3"
-        android:layout_marginLeft="@dimen/spacing_lvl3"
         app:layout_constraintGuide_percent="0.47" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
