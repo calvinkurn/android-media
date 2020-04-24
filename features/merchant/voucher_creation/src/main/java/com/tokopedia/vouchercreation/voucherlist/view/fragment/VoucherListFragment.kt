@@ -8,14 +8,15 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.getBooleanArgs
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.di.component.DaggerVoucherCreationComponent
-import com.tokopedia.vouchercreation.voucherlist.model.BaseVoucherListUiModel
 import com.tokopedia.vouchercreation.voucherlist.model.BottomSheetMenuUiModel
+import com.tokopedia.vouchercreation.voucherlist.model.EmptyStateUiModel
 import com.tokopedia.vouchercreation.voucherlist.model.HeaderChipUiModel
 import com.tokopedia.vouchercreation.voucherlist.model.VoucherUiModel
 import com.tokopedia.vouchercreation.voucherlist.view.adapter.factory.VoucherListAdapterFactoryImpl
@@ -30,7 +31,7 @@ import javax.inject.Inject
  * Created By @ilhamsuaib on 17/04/20
  */
 
-class VoucherListFragment : BaseListFragment<BaseVoucherListUiModel, VoucherListAdapterFactoryImpl>(),
+class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFactoryImpl>(),
         VoucherViewHolder.Listener, MenuViewHolder.Listener {
 
     companion object {
@@ -93,7 +94,7 @@ class VoucherListFragment : BaseListFragment<BaseVoucherListUiModel, VoucherList
                 .inject(this)
     }
 
-    override fun onItemClicked(t: BaseVoucherListUiModel?) {
+    override fun onItemClicked(t: Visitable<*>?) {
 
     }
 
@@ -176,11 +177,12 @@ class VoucherListFragment : BaseListFragment<BaseVoucherListUiModel, VoucherList
         renderList(getDummyData())
     }
 
-    private fun getDummyData(): List<VoucherUiModel> {
-        val list = mutableListOf<VoucherUiModel>()
-        repeat(10) {
+    private fun getDummyData(): List<Visitable<*>> {
+        val list = mutableListOf<Visitable<*>>()
+        list.add(EmptyStateUiModel(isActiveVoucher))
+        /*repeat(10) {
             list.add(VoucherUiModel("Voucher Hura Nyoba Doang", it % 2 == 0))
-        }
+        }*/
         return list
     }
 

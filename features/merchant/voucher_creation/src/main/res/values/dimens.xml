@@ -4,6 +4,7 @@
     <dimen name="voucher_creation_next_button_margin">16dp</dimen>
     <dimen name="mvc_dimen_20dp">20dp</dimen>
     <dimen name="mvc_dimen_12dp">12dp</dimen>
+    <dimen name="mvc_dimen_240dp">240dp</dimen>
     <dimen name="mvc_create_progressbar_height">2dp</dimen>
     <dimen name="mvc_create_next_button_margin">16dp</dimen>
     <dimen name="mvc_create_target_card_height">146dp</dimen>

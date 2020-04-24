@@ -34,4 +34,9 @@
     <string name="mvc_create_voucher_name_textfield_hint">Nama voucher</string>
     <string name="mvc_create_voucher_name_alert_restricted">Mengandung kata yang dilarang</string>
     <string name="mvc_create_voucher_name_alert_minimum">Min. 5 huruf</string>
+    <string name="mvc_no_active_voucher">Gak ada voucher aktif</string>
+    <string name="mvc_list_empty_state_description">Yuk, gunakan Voucher Toko untuk meningkatkan peluang penjualan tokomu.</string>
+    <string name="mvc_create_voucher">Buat Voucher</string>
+    <string name="mvc_view_history">Lihat Riwayat</string>
+    <string name="mvc_no_voucher_history_yet">Belum ada riwayat voucher</string>
 </resources>
