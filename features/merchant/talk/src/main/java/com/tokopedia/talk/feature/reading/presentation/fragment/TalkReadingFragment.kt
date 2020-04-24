@@ -289,11 +289,11 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
         viewModel.discussionData.observe(this, Observer {
             when (it) {
                 is Success -> {
-                    stopNetworkRequestPerformanceMonitoring()
-                    startRenderPerformanceMonitoring()
                     if(it.data.discussionData.question.isEmpty()) {
                         showPageEmpty()
                     } else {
+                        stopNetworkRequestPerformanceMonitoring()
+                        startRenderPerformanceMonitoring()
                         renderDiscussionData(
                                 TalkReadingMapper.mapDiscussionDataResponseToTalkReadingUiModel(it.data.discussionData),
                                 it.data.discussionData.hasNext)
