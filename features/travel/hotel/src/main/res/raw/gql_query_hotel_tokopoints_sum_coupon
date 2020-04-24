@@ -1,0 +1,7 @@
+query TokopointsSumCoupon(){
+  tokopointsSumCoupon (categoryID: 51) {
+    sumCoupon
+    sumCouponStr
+    sumCouponUnitOpt
+  }
+}

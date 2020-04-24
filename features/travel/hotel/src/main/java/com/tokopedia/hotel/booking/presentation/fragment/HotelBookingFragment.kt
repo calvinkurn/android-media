@@ -117,6 +117,8 @@ class HotelBookingFragment : HotelBaseFragment() {
             }
         })
 
+        bookingViewModel.tokopointSumCouponResult.observe(this, androidx.lifecycle.Observer { renderSumCoupon(it) })
+
         bookingViewModel.hotelCheckoutResult.observe(this, androidx.lifecycle.Observer {
             progressDialog.dismiss()
             when (it) {
@@ -174,6 +176,7 @@ class HotelBookingFragment : HotelBaseFragment() {
 
         bookingViewModel.getCartData(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_get_cart), hotelBookingPageModel.cartId)
         bookingViewModel.getContactList(GraphqlHelper.loadRawString(resources, com.tokopedia.travel.passenger.R.raw.query_get_travel_contact_list))
+        bookingViewModel.getTokopointsSumCoupon(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_sum_tokopoints))
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -460,6 +463,10 @@ class HotelBookingFragment : HotelBaseFragment() {
                 til_guest.error = null
             }
         }
+    }
+
+    private fun renderSumCoupon(couponSum: String) {
+        booking_pay_now_promo_ticker.counterCoupons = couponSum
     }
 
     private fun setupPayNowPromoTicker(cart: HotelCart) {
