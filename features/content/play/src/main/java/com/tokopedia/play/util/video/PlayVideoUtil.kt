@@ -13,7 +13,6 @@ import java.lang.Exception
 class PlayVideoUtil(context: Context) {
 
     companion object {
-        private const val PLAY_CACHE_DIR = "/play_cache"
         private const val END_IMAGE_NAME = "play_end_image.png"
     }
 
@@ -23,14 +22,18 @@ class PlayVideoUtil(context: Context) {
     fun saveEndImage(image: Bitmap) {
         val fileOutputStream = FileOutputStream(playEndImageFile)
         try {
-            image.compress(Bitmap.CompressFormat.PNG, 50, fileOutputStream)
+            image.compress(Bitmap.CompressFormat.WEBP, 60, fileOutputStream)
         } catch (e: Exception) {
         } finally {
             fileOutputStream.close()
         }
     }
 
-    fun getEndImage(): Bitmap {
-        return BitmapFactory.decodeFile(playEndImageFile.path);
+    fun getEndImage(): Bitmap? {
+        return BitmapFactory.decodeFile(playEndImageFile.path)
+    }
+
+    fun clearImage() {
+        if (playEndImageFile.exists()) playEndImageFile.delete()
     }
 }

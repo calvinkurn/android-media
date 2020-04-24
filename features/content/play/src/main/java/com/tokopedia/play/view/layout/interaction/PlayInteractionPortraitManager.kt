@@ -57,7 +57,7 @@ class PlayInteractionPortraitManager(
         layoutChat(container = view, id = sendChatComponentId, likeComponentId = likeComponentId, sizeContainerComponentId = sizeContainerComponentId, videoControlComponentId = videoControlComponentId)
         layoutChatList(container = view, id = chatListComponentId, quickReplyComponentId = quickReplyComponentId, likeComponentId = likeComponentId, sizeContainerComponentId = sizeContainerComponentId)
         layoutPinned(container = view, id = pinnedComponentId, chatListComponentId = chatListComponentId, likeComponentId = likeComponentId, sizeContainerComponentId = sizeContainerComponentId)
-        layoutPlayButton(container = view, videoOrientation = videoOrientation, id = playButtonComponentId, sizeContainerComponentId = sizeContainerComponentId, immersiveBoxComponentId = immersiveBoxComponentId)
+        layoutPlayButton(container = view, videoOrientation = videoOrientation, id = playButtonComponentId, immersiveBoxComponentId = immersiveBoxComponentId)
         layoutImmersiveBox(container = view, videoOrientation = videoOrientation, id = immersiveBoxComponentId, pinnedComponentId = pinnedComponentId, statsInfoComponentId = statsInfoComponentId)
         layoutQuickReply(container = view, id = quickReplyComponentId, sendChatComponentId = sendChatComponentId, sizeContainerComponentId = sizeContainerComponentId)
         layoutGradientBackground(container = view, id = gradientBackgroundComponentId)
@@ -150,7 +150,7 @@ class PlayInteractionPortraitManager(
     override fun onVideoOrientationChanged(container: View, videoOrientation: VideoOrientation) {
         if (this.videoOrientation != videoOrientation) {
             layoutImmersiveBox(container = container, videoOrientation = videoOrientation, id = immersiveBoxComponentId, pinnedComponentId = pinnedComponentId, statsInfoComponentId = statsInfoComponentId)
-            layoutPlayButton(container = container, videoOrientation = videoOrientation, id = playButtonComponentId, sizeContainerComponentId = sizeContainerComponentId, immersiveBoxComponentId = immersiveBoxComponentId)
+            layoutPlayButton(container = container, videoOrientation = videoOrientation, id = playButtonComponentId, immersiveBoxComponentId = immersiveBoxComponentId)
         }
     }
 
@@ -226,9 +226,9 @@ class PlayInteractionPortraitManager(
         }
     }
 
-    private fun layoutPlayButton(container: View, videoOrientation: VideoOrientation, @IdRes id: Int, @IdRes sizeContainerComponentId: Int, @IdRes immersiveBoxComponentId: Int) {
+    private fun layoutPlayButton(container: View, videoOrientation: VideoOrientation, @IdRes id: Int, @IdRes immersiveBoxComponentId: Int) {
         container.changeConstraint {
-            val componentAnchor = if (videoOrientation.isHorizontal) immersiveBoxComponentId else sizeContainerComponentId
+            val componentAnchor = if (videoOrientation.isHorizontal) immersiveBoxComponentId else ConstraintSet.PARENT_ID
 
             connect(id, ConstraintSet.START, componentAnchor, ConstraintSet.START)
             connect(id, ConstraintSet.END, componentAnchor, ConstraintSet.END)
