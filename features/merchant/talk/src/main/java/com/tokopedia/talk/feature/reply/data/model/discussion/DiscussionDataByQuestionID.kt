@@ -6,5 +6,8 @@ import com.google.gson.annotations.SerializedName
 data class DiscussionDataByQuestionID(
         @SerializedName("question")
         @Expose
-        val question: Question = Question()
+        val question: Question = Question(),
+        @SerializedName("maxAnswerLength")
+        @Expose
+        val maxAnswerLength: Int = 0
 )

@@ -57,7 +57,6 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
         const val NOT_FOLLOWING = false
         const val REPORT_ACTIVITY_REQUEST_CODE = 201
         const val ATTACH_PRODUCT_ACTIVITY_REQUEST_CODE = 202
-        const val TEXT_LIMIT = 500
         const val TOASTER_ERROR_DEFAULT_HEIGHT = 50
         const val TOASTER_ERROR_WITH_ATTACHED_PRODUCTS_HEIGHT = 150
 
@@ -83,6 +82,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
     private var productId = ""
     private var adapter: TalkReplyAdapter? = null
     private var attachedProductAdapter: TalkReplyAttachedProductAdapter? = null
+    private var textLimit = 0
 
     override fun getScreenName(): String {
         return ""
@@ -353,8 +353,6 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
         viewModel.discussionData.observe(this, Observer {
             when(it) {
                 is Success -> {
-                    hidePageError()
-                    hidePageLoading()
                     bindHeader(TalkReplyMapper.mapDiscussionDataResponseToTalkReplyHeaderModel(it.data))
                     if(it.data.discussionDataByQuestionID.question.totalAnswer > 0) {
                         showAnswers(it.data)
@@ -362,6 +360,10 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
                         onAnswersEmpty()
                     }
                     setIsFollowing(it.data.discussionDataByQuestionID.question.questionState.isFollowed)
+                    updateTextLimit(it.data.discussionDataByQuestionID.maxAnswerLength)
+                    initTextBox()
+                    hidePageError()
+                    hidePageLoading()
                 }
                 else -> {
                     showPageError()
@@ -413,7 +415,6 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
         initAttachedProductAdapter()
         initRecyclerView()
         initAttachedProductRecyclerView()
-        initTextBox()
     }
 
     private fun initAdapter() {
@@ -425,7 +426,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
     }
 
     private fun initTextBox() {
-        replyTextBox.bind(userSession.profilePicture, this, TEXT_LIMIT)
+        replyTextBox.bind(userSession.profilePicture, this, textLimit)
     }
 
     private fun initAttachedProductAdapter() {
@@ -545,5 +546,9 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
 
     private fun resetAttachedProducts() {
         viewModel.setAttachedProducts(mutableListOf())
+    }
+
+    private fun updateTextLimit(textLimit: Int) {
+        this.textLimit = textLimit
     }
 }
