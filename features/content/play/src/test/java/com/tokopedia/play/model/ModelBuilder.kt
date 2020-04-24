@@ -1262,6 +1262,14 @@ class ModelBuilder {
             totalView = totalView
     )
 
+    fun buildLikeStateUiModel(
+            isLiked: Boolean = true,
+            fromNetwork: Boolean = false
+    ) = LikeStateUiModel(
+            isLiked = isLiked,
+            fromNetwork = fromNetwork
+    )
+
     fun buildPartnerInfoUiModel(
             id: Long = 10213,
             name: String = "Partner",

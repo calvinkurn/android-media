@@ -167,7 +167,10 @@ class PlayViewModelTest {
 
     @Test
     fun `test observe is liked`() {
-        val expectedModel = mockIsLike
+        val expectedModel = modelBuilder.buildLikeStateUiModel(
+                isLiked = mockIsLike,
+                fromNetwork = true
+        )
 
         playViewModel.getChannelInfo(mockChannel.channelId)
 
@@ -344,7 +347,7 @@ class PlayViewModelTest {
         playViewModel.sendChat(messages)
 
         Assertions
-                .assertThat(playViewModel.observableNewChat.getOrAwaitValue())
+                .assertThat(playViewModel.observableNewChat.getOrAwaitValue().peekContent())
                 .isEqualTo(expectedModel)
     }
 

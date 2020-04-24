@@ -243,7 +243,7 @@ class VideoControlComponentTest {
         }
     }
 
-    class VideoControlComponentMock(container: ViewGroup, bus: EventBusFactory, private val scope: CoroutineScope) : VideoControlComponent(container, bus, coroutineScope, TestCoroutineDispatchersProvider) {
+    class VideoControlComponentMock(container: ViewGroup, bus: EventBusFactory, scope: CoroutineScope) : VideoControlComponent(container, bus, scope, TestCoroutineDispatchersProvider) {
         override fun initView(container: ViewGroup): VideoControlView {
             return mockk(relaxed = true)
         }
