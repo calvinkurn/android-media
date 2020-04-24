@@ -216,7 +216,7 @@ class StatsInfoComponentTest {
         }
     }
 
-    class StatsInfoComponentMock(container: ViewGroup, bus: EventBusFactory, coroutineScope: CoroutineScope) : StatsInfoComponent(container, bus, coroutineScope, TestCoroutineDispatchersProvider) {
+    class StatsInfoComponentMock(container: ViewGroup, bus: EventBusFactory, scope: CoroutineScope) : StatsInfoComponent(container, bus, scope, TestCoroutineDispatchersProvider) {
         override fun initView(container: ViewGroup): StatsInfoView {
             return mockk(relaxed = true)
         }

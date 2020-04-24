@@ -25,15 +25,15 @@ import kotlinx.coroutines.launch
 open class PinnedComponent(
         container: ViewGroup,
         private val bus: EventBusFactory,
-        coroutineScope: CoroutineScope,
+        private val scope: CoroutineScope,
         dispatchers: CoroutineDispatcherProvider
-) : UIComponent<PinnedInteractionEvent>, CoroutineScope by coroutineScope, PinnedView.Listener {
+) : UIComponent<PinnedInteractionEvent>, PinnedView.Listener {
 
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
     val uiView = initView(container)
 
     init {
-        launch(dispatchers.immediate) {
+        scope.launch(dispatchers.immediate) {
             bus.getSafeManagedFlow(ScreenStateEvent::class.java)
                     .collect {
                         when (it) {
@@ -57,13 +57,13 @@ open class PinnedComponent(
     }
 
     override fun onPinnedMessageActionClicked(view: PinnedView, applink: String, message: String) {
-        launch {
+        scope.launch {
             bus.emit(PinnedInteractionEvent::class.java, PinnedInteractionEvent.PinnedMessageClicked(applink, message))
         }
     }
 
     override fun onPinnedProductActionClicked(view: PinnedView) {
-        launch {
+        scope.launch {
             bus.emit(PinnedInteractionEvent::class.java, PinnedInteractionEvent.PinnedProductClicked)
         }
     }

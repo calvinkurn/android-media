@@ -74,7 +74,7 @@ class OneTapComponentTest {
         confirmVerified(component.uiView)
     }
 
-    class OneTapComponentMock(container: ViewGroup, bus: EventBusFactory, coroutineScope: CoroutineScope) : OneTapComponent(container, bus, coroutineScope, TestCoroutineDispatchersProvider) {
+    class OneTapComponentMock(container: ViewGroup, bus: EventBusFactory, scope: CoroutineScope) : OneTapComponent(container, bus, scope, TestCoroutineDispatchersProvider) {
         override fun initView(container: ViewGroup): OneTapView {
             return mockk(relaxed = true)
         }

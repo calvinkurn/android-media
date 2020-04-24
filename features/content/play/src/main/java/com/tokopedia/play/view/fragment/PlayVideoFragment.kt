@@ -11,7 +11,6 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.R
 import com.tokopedia.play.component.EventBusFactory
-import com.tokopedia.play.component.UIComponent
 import com.tokopedia.play.di.DaggerPlayComponent
 import com.tokopedia.play.di.PlayModule
 import com.tokopedia.play.extensions.isAnyHidden
@@ -26,6 +25,7 @@ import com.tokopedia.play.view.custom.RoundedConstraintLayout
 import com.tokopedia.play.view.event.ScreenStateEvent
 import com.tokopedia.play.view.layout.video.PlayVideoLayoutManager
 import com.tokopedia.play.view.layout.video.PlayVideoLayoutManagerImpl
+import com.tokopedia.play.view.layout.video.PlayVideoViewInitializer
 import com.tokopedia.play.view.type.PlayRoomEvent
 import com.tokopedia.play.view.uimodel.EventUiModel
 import com.tokopedia.play.view.uimodel.VideoPropertyUiModel
@@ -43,7 +43,7 @@ import kotlin.coroutines.CoroutineContext
 /**
  * Created by jegul on 29/11/19
  */
-class PlayVideoFragment : BaseDaggerFragment(), CoroutineScope {
+class PlayVideoFragment : BaseDaggerFragment(), PlayVideoViewInitializer {
 
     companion object {
 
@@ -56,10 +56,11 @@ class PlayVideoFragment : BaseDaggerFragment(), CoroutineScope {
         }
     }
 
+    private val scope = object : CoroutineScope {
+        override val coroutineContext: CoroutineContext
+            get() = job + dispatchers.main
+    }
     private val job: Job = SupervisorJob()
-
-    override val coroutineContext: CoroutineContext
-        get() = job + dispatchers.main
 
     private val cornerRadius = 16f.dpToPx()
 
@@ -120,13 +121,14 @@ class PlayVideoFragment : BaseDaggerFragment(), CoroutineScope {
 
     override fun onDestroyView() {
         super.onDestroyView()
+        layoutManager.onDestroy()
         job.cancel()
     }
 
     //region observe
     private fun observeVOD() {
         playViewModel.observableVOD.observe(viewLifecycleOwner, Observer {
-            launch {
+            scope.launch {
                 EventBusFactory.get(viewLifecycleOwner)
                         .emit(
                                 ScreenStateEvent::class.java,
@@ -151,7 +153,7 @@ class PlayVideoFragment : BaseDaggerFragment(), CoroutineScope {
                 else containerVideo.setCornerRadius(0f)
             }
 
-            launch {
+            scope.launch {
                 EventBusFactory.get(viewLifecycleOwner)
                         .emit(
                                 ScreenStateEvent::class.java,
@@ -163,7 +165,7 @@ class PlayVideoFragment : BaseDaggerFragment(), CoroutineScope {
 
     private fun observeEventUserInfo() {
         playViewModel.observableEvent.observe(viewLifecycleOwner, Observer {
-            launch {
+            scope.launch {
                 if (it.isBanned) sendEventBanned(it)
                 else if(it.isFreeze) sendEventFreeze(it)
             }
@@ -177,17 +179,11 @@ class PlayVideoFragment : BaseDaggerFragment(), CoroutineScope {
 
     //region Component Initialization
     private fun initComponents(container: ViewGroup) {
-        val videoComponent = initVideoComponent(container)
-        val videoLoadingComponent = initVideoLoadingComponent(container)
-        val oneTapComponent = initOneTapComponent(container)
-        val overlayVideoComponent = initOverlayVideoComponent(container)
-
         layoutManager = PlayVideoLayoutManagerImpl(
-                context = requireContext(),
-                videoComponentId = videoComponent.getContainerId(),
-                videoLoadingComponentId = videoLoadingComponent.getContainerId(),
-                oneTapComponentId = oneTapComponent.getContainerId(),
-                overlayVideoComponentId = overlayVideoComponent.getContainerId()
+                container = container,
+                orientation = playViewModel.screenOrientation,
+                videoOrientation = playViewModel.videoOrientation,
+                viewInitializer = this
         )
 
         sendInitState()
@@ -195,26 +191,30 @@ class PlayVideoFragment : BaseDaggerFragment(), CoroutineScope {
         layoutManager.layoutView(container)
     }
 
-    private fun initVideoComponent(container: ViewGroup): UIComponent<Unit> {
-        return VideoComponent(container, EventBusFactory.get(viewLifecycleOwner), this, dispatchers)
+    override fun onInitVideo(container: ViewGroup): Int {
+        return VideoComponent(container, EventBusFactory.get(viewLifecycleOwner), scope, dispatchers)
                 .also(viewLifecycleOwner.lifecycle::addObserver)
+                .getContainerId()
     }
 
-    private fun initVideoLoadingComponent(container: ViewGroup): UIComponent<Unit> {
-        return VideoLoadingComponent(container, EventBusFactory.get(viewLifecycleOwner), this, dispatchers)
+    override fun onInitVideoLoading(container: ViewGroup): Int {
+        return VideoLoadingComponent(container, EventBusFactory.get(viewLifecycleOwner), scope, dispatchers)
+                .getContainerId()
     }
 
-    private fun initOneTapComponent(container: ViewGroup): UIComponent<Unit> {
-        return OneTapComponent(container, EventBusFactory.get(viewLifecycleOwner), this, dispatchers)
+    override fun onInitOneTap(container: ViewGroup): Int {
+        return OneTapComponent(container, EventBusFactory.get(viewLifecycleOwner), scope, dispatchers)
+                .getContainerId()
     }
 
-    private fun initOverlayVideoComponent(container: ViewGroup): UIComponent<Unit> {
-        return OverlayVideoComponent(container, EventBusFactory.get(viewLifecycleOwner), this, dispatchers)
+    override fun onInitOverlayVideo(container: ViewGroup): Int {
+        return OverlayVideoComponent(container, EventBusFactory.get(viewLifecycleOwner), scope, dispatchers)
+                .getContainerId()
     }
     //endregion
 
     private fun sendInitState() {
-        launch(dispatchers.immediate) {
+        scope.launch(dispatchers.immediate) {
             EventBusFactory.get(viewLifecycleOwner).emit(
                     ScreenStateEvent::class.java,
                     ScreenStateEvent.Init(playViewModel.screenOrientation, playViewModel.stateHelper)
@@ -223,7 +223,7 @@ class PlayVideoFragment : BaseDaggerFragment(), CoroutineScope {
     }
 
     private fun delegateVideoProperty(prop: VideoPropertyUiModel) {
-        launch {
+        scope.launch {
             EventBusFactory.get(viewLifecycleOwner)
                     .emit(
                             ScreenStateEvent::class.java,
@@ -233,7 +233,7 @@ class PlayVideoFragment : BaseDaggerFragment(), CoroutineScope {
     }
 
     private fun showOneTapOnboarding() {
-        launch {
+        scope.launch {
             EventBusFactory.get(viewLifecycleOwner)
                     .emit(
                             ScreenStateEvent::class.java,
@@ -243,7 +243,7 @@ class PlayVideoFragment : BaseDaggerFragment(), CoroutineScope {
     }
 
     private fun sendEventBanned(eventUiModel: EventUiModel) {
-        launch {
+        scope.launch {
             EventBusFactory.get(viewLifecycleOwner)
                     .emit(
                             ScreenStateEvent::class.java,
@@ -259,7 +259,7 @@ class PlayVideoFragment : BaseDaggerFragment(), CoroutineScope {
     }
 
     private fun sendEventFreeze(eventUiModel: EventUiModel) {
-        launch {
+        scope.launch {
             EventBusFactory.get(viewLifecycleOwner)
                     .emit(
                             ScreenStateEvent::class.java,
@@ -276,7 +276,7 @@ class PlayVideoFragment : BaseDaggerFragment(), CoroutineScope {
     }
 
     private fun setVideoStream(videoStream: VideoStreamUiModel) {
-        launch {
+        scope.launch {
             EventBusFactory.get(viewLifecycleOwner)
                     .emit(
                             ScreenStateEvent::class.java,

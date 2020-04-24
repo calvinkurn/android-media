@@ -152,7 +152,7 @@ class PlayButtonComponentTest {
         }
     }
 
-    class PlayButtonComponentMock(container: ViewGroup, bus: EventBusFactory, coroutineScope: CoroutineScope) : PlayButtonComponent(container, bus, coroutineScope, TestCoroutineDispatchersProvider) {
+    class PlayButtonComponentMock(container: ViewGroup, bus: EventBusFactory, scope: CoroutineScope) : PlayButtonComponent(container, bus, scope, TestCoroutineDispatchersProvider) {
         override fun initView(container: ViewGroup): PlayButtonView {
             return mockk(relaxed = true)
         }

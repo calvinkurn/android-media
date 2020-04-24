@@ -84,7 +84,7 @@ class VideoComponentTest {
         confirmVerified(component.uiView)
     }
 
-    class VideoComponentMock(container: ViewGroup, bus: EventBusFactory, coroutineScope: CoroutineScope) : VideoComponent(container, bus, coroutineScope, TestCoroutineDispatchersProvider) {
+    class VideoComponentMock(container: ViewGroup, bus: EventBusFactory, scope: CoroutineScope) : VideoComponent(container, bus, scope, TestCoroutineDispatchersProvider) {
         override fun initView(container: ViewGroup): VideoView {
             return mockk(relaxed = true)
         }

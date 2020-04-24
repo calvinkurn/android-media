@@ -267,7 +267,7 @@ class ChatListComponentTest {
         confirmVerified(component.uiView)
     }
 
-    class ChatListComponentMock(container: ViewGroup, bus: EventBusFactory, coroutineScope: CoroutineScope) : ChatListComponent(container, bus, coroutineScope, TestCoroutineDispatchersProvider) {
+    class ChatListComponentMock(container: ViewGroup, bus: EventBusFactory, scope: CoroutineScope) : ChatListComponent(container, bus, scope, TestCoroutineDispatchersProvider) {
         override fun initView(container: ViewGroup): ChatListView {
             return mockk(relaxed = true)
         }

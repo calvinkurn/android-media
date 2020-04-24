@@ -203,7 +203,7 @@ class ToolbarComponentTest {
         }
     }
 
-    class ToolbarComponentMock(container: ViewGroup, bus: EventBusFactory, coroutineScope: CoroutineScope) : ToolbarComponent(container, bus, coroutineScope, TestCoroutineDispatchersProvider) {
+    class ToolbarComponentMock(container: ViewGroup, bus: EventBusFactory, scope: CoroutineScope) : ToolbarComponent(container, bus, scope, TestCoroutineDispatchersProvider) {
         override fun initView(container: ViewGroup): ToolbarView {
             return mockk(relaxed = true)
         }

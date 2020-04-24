@@ -19,15 +19,15 @@ import kotlinx.coroutines.launch
 open class QuickReplyComponent(
         container: ViewGroup,
         private val bus: EventBusFactory,
-        coroutineScope: CoroutineScope,
+        private val scope: CoroutineScope,
         dispatchers: CoroutineDispatcherProvider
-) : UIComponent<QuickReplyInteractionEvent>, CoroutineScope by coroutineScope, QuickReplyView.Listener {
+) : UIComponent<QuickReplyInteractionEvent>, QuickReplyView.Listener {
 
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
     val uiView = initView(container)
 
     init {
-        launch(dispatchers.immediate) {
+        scope.launch(dispatchers.immediate) {
             bus.getSafeManagedFlow(ScreenStateEvent::class.java)
                     .collect {
                         when (it) {
@@ -60,7 +60,7 @@ open class QuickReplyComponent(
     }
 
     override fun onQuickReplyClicked(view: QuickReplyView, replyString: String) {
-        launch {
+        scope.launch {
             bus.emit(QuickReplyInteractionEvent::class.java, QuickReplyInteractionEvent.ReplyClicked(replyString))
         }
     }

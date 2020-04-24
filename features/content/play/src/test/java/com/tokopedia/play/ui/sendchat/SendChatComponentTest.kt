@@ -160,7 +160,7 @@ class SendChatComponentTest {
         confirmVerified(component.uiView)
     }
 
-    class SendChatComponentMock(container: ViewGroup, bus: EventBusFactory, coroutineScope: CoroutineScope) : SendChatComponent(container, bus, coroutineScope, TestCoroutineDispatchersProvider) {
+    class SendChatComponentMock(container: ViewGroup, bus: EventBusFactory, scope: CoroutineScope) : SendChatComponent(container, bus, scope, TestCoroutineDispatchersProvider) {
         override fun initView(container: ViewGroup): SendChatView {
             return mockk(relaxed = true)
         }

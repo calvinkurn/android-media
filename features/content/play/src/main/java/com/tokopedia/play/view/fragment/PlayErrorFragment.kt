@@ -26,17 +26,12 @@ import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play.view.wrapper.GlobalErrorCodeWrapper
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.SupervisorJob
 import javax.inject.Inject
-import kotlin.coroutines.CoroutineContext
-
 
 /**
  * Created by mzennis on 2020-01-10.
  */
-class PlayErrorFragment: BaseDaggerFragment(), CoroutineScope {
+class PlayErrorFragment: BaseDaggerFragment() {
 
     companion object {
         fun newInstance(channelId: String?): PlayErrorFragment {
@@ -47,11 +42,6 @@ class PlayErrorFragment: BaseDaggerFragment(), CoroutineScope {
             }
         }
     }
-
-    private val job: Job = SupervisorJob()
-
-    override val coroutineContext: CoroutineContext
-        get() = job + dispatchers.main
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -93,11 +83,6 @@ class PlayErrorFragment: BaseDaggerFragment(), CoroutineScope {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         observeErrorChannel()
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        job.cancel()
     }
 
     private fun initComponent(view: View) {
