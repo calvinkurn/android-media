@@ -57,7 +57,7 @@
             android:layout_toRightOf="@+id/cb_prioritas"
             android:padding="@dimen/dp_4"
             android:text="@string/label_hardcoded_order_prioritas_info"
-            android:textSize="@dimen/font_small"
+            android:textSize="@dimen/sp_12"
             app:textViewTheme="lightSecondary"
             android:layout_toEndOf="@+id/cb_prioritas" />
     </RelativeLayout>

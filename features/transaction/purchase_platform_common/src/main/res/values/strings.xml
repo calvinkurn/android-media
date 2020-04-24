@@ -34,5 +34,7 @@
     <string name="label_shipment_insurance">Asuransi Pengiriman</string>
     <string name="title_bottomsheet_insurance">Asuransi Pengiriman</string>
     <string name="label_must_insurance">Wajib Asuransi</string>
+    <string name="label_choose_payment">Pilih Pembayaran</string>
+    <string name="label_main_address">Utama</string>
 
 </resources>

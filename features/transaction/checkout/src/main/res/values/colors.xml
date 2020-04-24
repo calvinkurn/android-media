@@ -6,5 +6,14 @@
     <color name="warning_yellow_background">#fffcf5</color>
     <color name="warning_yellow_outline">#ffe38f</color>
     <color name="error_red_background">#fdebec</color>
+    <color name="button_checkout">#FA581D</color>
+    <color name="bg_trade_in_label">#ccebff</color>
+    <color name="text_trade_in_label">#009bff</color>
+    <color name="bg_trade_in_address_info">#f8f8f8</color>
 
+    <color name="checkout_shadow_color_1">#00AAAAAA</color>
+    <color name="checkout_shadow_color_2">#10AAAAAA</color>
+    <color name="checkout_shadow_color_3">#15AAAAAA</color>
+    <color name="checkout_shadow_color_4">#20AAAAAA</color>
+    <color name="checkout_shadow_color_5">#25AAAAAA</color>
 </resources>

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="total_benefit">#04AC0F</color>
-    <color name="button_checkout">#FA581D</color>
     <color name="title_black">#e131353b</color>
     <color name="clr_fa591d">#fa591d</color>
     <color name="text_error_red_2">#d0021b</color>
@@ -13,9 +12,6 @@
     <color name="ic_disable_pinpoint">#9FA6B0</color>
 
     <color name="shipping_duration_info_black">#d2000000</color>
-    <color name="bg_trade_in_label">#ccebff</color>
-    <color name="text_trade_in_label">#009bff</color>
-    <color name="bg_trade_in_address_info">#f8f8f8</color>
     <color name="clr_a2a4a8">#a2a4a8</color>
 
 </resources>

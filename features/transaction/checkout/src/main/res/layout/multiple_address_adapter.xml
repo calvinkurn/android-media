@@ -39,7 +39,7 @@
                 android:id="@+id/img_shop_badge"
                 android:layout_width="@dimen/dp_18"
                 android:layout_height="@dimen/dp_18"
-                tools:src="@drawable/ic_badge_official" />
+                tools:src="@color/green_200" />
 
         </LinearLayout>
 
@@ -82,7 +82,7 @@
                     android:id="@+id/product_image"
                     android:layout_width="@dimen/dp_52"
                     android:layout_height="@dimen/dp_52"
-                    tools:src="@drawable/empty_photo" />
+                    tools:src="@color/green_200" />
 
             </androidx.cardview.widget.CardView>
 
