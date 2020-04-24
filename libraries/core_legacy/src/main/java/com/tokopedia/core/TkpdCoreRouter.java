@@ -81,10 +81,6 @@ public interface TkpdCoreRouter {
         return RouterUtils.getRouterFromContext(mContext).getInboxMessageActivityClass();
     }
 
-    static IAppNotificationReceiver getAppNotificationReceiver(Context mContext) {
-        return RouterUtils.getRouterFromContext(mContext).getAppNotificationReceiver();
-    }
-
     static Intent getInboxTalkActivityIntentWrapper(Context mContext) {
         return RouterUtils.getRouterFromContext(mContext).getInboxTalkCallingIntent(mContext);
     }

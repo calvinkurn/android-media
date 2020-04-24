@@ -17,7 +17,6 @@ import com.tokopedia.core.analytics.fingerprint.LocationUtils;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.DaggerAppComponent;
 import com.tokopedia.core.base.di.module.AppModule;
-import com.tokopedia.core.gcm.base.IAppNotificationReceiver;
 import com.tokopedia.core.gcm.utils.NotificationUtils;
 import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.router.SellerAppRouter;
@@ -206,11 +205,6 @@ public abstract class MainApplication extends MainRouterApplication{
     }
 
     @Override
-    public IAppNotificationReceiver getAppNotificationReceiver() {
-        return SellerAppRouter.getAppNotificationReceiver();
-    }
-
-    @Override
     public Class<?> getInboxMessageActivityClass() {
         return InboxRouter.getInboxMessageActivityClass();
     }
@@ -233,10 +227,5 @@ public abstract class MainApplication extends MainRouterApplication{
     @Override
     public Intent getActivitySellingTransactionListReal(Context mContext) {
         return SellerRouter.getActivitySellingTransactionList(mContext);
-    }
-
-    @Override
-    public Intent getInboxTalkCallingIntent(Context mContext){
-        return null;
     }
 }

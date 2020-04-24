@@ -133,10 +133,6 @@ public class BaseMessagingService extends BaseNotificationMessagingService {
     }
 
     public static IAppNotificationReceiver createInstance(Context context) {
-        if (GlobalConfig.isSellerApp()) {
-            return TkpdCoreRouter.getAppNotificationReceiver(context);
-        } else {
-            return HomeRouter.getAppNotificationReceiver();
-        }
+        return ((TkpdCoreRouter) context.getApplicationContext()).getAppNotificationReceiver();
     }
 }

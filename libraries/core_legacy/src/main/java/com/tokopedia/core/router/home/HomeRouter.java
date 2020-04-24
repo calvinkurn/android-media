@@ -21,7 +21,6 @@ public class HomeRouter {
     public static final int INIT_STATE_FRAGMENT_HOTLIST = 3;
 
     private static final String ACTIVITY_PARENT_INDEX_HOME = "com.tokopedia.navigation.presentation.activity.MainParentActivity";
-    private static final String FCM_NOTIFICATIONRECEIVER = "com.tokopedia.tkpd.fcm.AppNotificationReceiver";
 
     @Deprecated
     public static Intent getHomeActivity(Context context) {
@@ -50,32 +49,5 @@ public class HomeRouter {
             e.printStackTrace();
         }
         return parentIndexHomeClass;
-    }
-
-    public static IAppNotificationReceiver getAppNotificationReceiver() {
-        Constructor<?> ctor = null;
-        try {
-            ctor = RouterUtils.getActivityClass(FCM_NOTIFICATIONRECEIVER)
-                    .getConstructor();
-        } catch (NoSuchMethodException e) {
-            e.printStackTrace();
-            return null;
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        Object object = null;
-        try {
-            object = ctor.newInstance();
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-            return null;
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-            return null;
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
-            return null;
-        }
-        return (IAppNotificationReceiver) object;
     }
 }
