@@ -60,6 +60,7 @@ import com.tokopedia.tkpd.utils.ProductNotFoundException;
 import com.tokopedia.tkpd.utils.ShopNotFoundException;
 import com.tokopedia.tkpdreactnative.react.ReactConst;
 import com.tokopedia.track.TrackApp;
+import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.webview.download.BaseDownloadAppLinkActivity;
 import com.tokopedia.webview.ext.UrlEncoderExtKt;
@@ -126,8 +127,9 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
 
     @Override
     public void checkUriLogin(Uri uriData) {
+        UserSessionInterface userSession = new UserSession(context);
         if (DeepLinkChecker.getDeepLinkType(context, uriData.toString()) == DeepLinkChecker.ACCOUNTS && uriData.getPath().contains("activation")) {
-            if (!SessionHandler.isV4Login(context)) {
+            if (!userSession.isLoggedIn()) {
                 login(uriData);
             }
         }

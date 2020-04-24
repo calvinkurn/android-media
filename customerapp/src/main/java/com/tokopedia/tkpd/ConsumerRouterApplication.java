@@ -161,6 +161,8 @@ import com.tokopedia.transaction.orders.UnifiedOrderListRouter;
 import com.tokopedia.transaction.others.CreditCardFingerPrintUseCase;
 import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.usecase.UseCase;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.weaver.WeaveInterface;
 import com.tokopedia.weaver.Weaver;
 
@@ -867,8 +869,9 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public void sendOpenHomeEvent() {
+        UserSessionInterface userSession = new UserSession(context);
         Map<String, Object> value = DataLayer.mapOf(
-                AppEventTracking.MOENGAGE.LOGIN_STATUS, legacySessionHandler().isV4Login()
+                AppEventTracking.MOENGAGE.LOGIN_STATUS, userSession.isLoggedIn()
         );
         TrackApp.getInstance().getMoEngage().sendTrackEvent(value, AppEventTracking.EventMoEngage.OPEN_BERANDA);
     }

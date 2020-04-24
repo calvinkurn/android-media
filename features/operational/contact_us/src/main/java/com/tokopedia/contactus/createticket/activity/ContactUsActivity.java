@@ -8,6 +8,7 @@ import android.os.Bundle;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.contactus.R;
 import com.tokopedia.contactus.createticket.ContactUsConstant;
 import com.tokopedia.contactus.createticket.fragment.ContactUsFaqFragment;
@@ -17,8 +18,8 @@ import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.router.SellerAppRouter;
-import com.tokopedia.config.GlobalConfig;
-import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 /**
  * Created by nisie on 8/12/16.
@@ -170,7 +171,8 @@ public class ContactUsActivity extends BasePresenterActivity implements
     @Override
     public void onFinishCreateTicket() {
         CommonUtils.UniversalToast(this, getString(R.string.title_contact_finish));
-        if (GlobalConfig.isSellerApp() && SessionHandler.isV4Login(this)) {
+        UserSessionInterface userSession = new UserSession(this);
+        if (GlobalConfig.isSellerApp() && userSession.isLoggedIn()) {
             Intent intent = SellerAppRouter.getSellerHomeActivity(this);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);

@@ -112,6 +112,8 @@ import com.tokopedia.topchat.chatlist.fragment.ChatTabListFragment;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.transaction.common.TransactionRouter;
 import com.tokopedia.transaction.orders.UnifiedOrderListRouter;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -248,9 +250,10 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public Intent getHomeIntent(Context context) {
+        UserSessionInterface userSession = new UserSession(context);
         Intent intent = new Intent(context, WelcomeActivity.class);
-        if (SessionHandler.isV4Login(context)) {
-            if (SessionHandler.isUserHasShop(context)) {
+        if (userSession.isLoggedIn()) {
+            if (userSession.hasShop()) {
                 return SellerHomeActivity.createIntent(context);
             } else {
                 return intent;
@@ -267,7 +270,8 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public Class<?> getHomeClass() {
-        if (SessionHandler.isV4Login(context)) {
+        UserSessionInterface userSession = new UserSession(context);
+        if (userSession.isLoggedIn()) {
             return SellerHomeActivity.class;
         } else {
             return WelcomeActivity.class;

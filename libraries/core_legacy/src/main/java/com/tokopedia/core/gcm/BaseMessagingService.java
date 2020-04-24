@@ -22,6 +22,8 @@ import com.tokopedia.core.gcm.base.IAppNotificationReceiver;
 import com.tokopedia.core.gcm.intentservices.PushNotificationIntentService;
 import com.tokopedia.core.gcm.utils.RouterUtils;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.Map;
 
@@ -77,8 +79,9 @@ public class BaseMessagingService extends BaseNotificationMessagingService {
 
     private void logOnMessageReceived(RemoteMessage remoteMessage) {
         try {
+            UserSessionInterface userSession = new UserSession(this);
             String whiteListedUsers = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.WHITELIST_USER_LOG_NOTIFICATION);
-            String userId = sessionHandler.getUserId();
+            String userId = userSession.getUserId();
             if (!userId.isEmpty() && whiteListedUsers.contains(userId)) {
                 executeLogOnMessageReceived(remoteMessage);
             }
@@ -89,11 +92,12 @@ public class BaseMessagingService extends BaseNotificationMessagingService {
 
     private void executeLogOnMessageReceived(RemoteMessage remoteMessage) {
         if (!BuildConfig.DEBUG) {
+            UserSessionInterface userSession = new UserSession(this);
             String notificationCode = getNotificationCode(remoteMessage);
             String errorMessage = "onMessageReceived FirebaseMessagingService, " +
-                    "userId: " + sessionHandler.getUserId() + ", " +
-                    "userEmail: " + sessionHandler.getEmail() + ", " +
-                    "deviceId: " + sessionHandler.getDeviceId() + ", " +
+                    "userId: " + userSession.getUserId() + ", " +
+                    "userEmail: " + userSession.getEmail() + ", " +
+                    "deviceId: " + userSession.getDeviceId() + ", " +
                     "notificationId: " + remoteMessage.getFrom() + ", " +
                     "notificationCode: " + notificationCode;
             Crashlytics.logException(new Exception(errorMessage));

@@ -19,30 +19,9 @@ public abstract class MainRouterApplication extends CoreNetworkApplication imple
                     = new com.tokopedia.core.util.SessionHandler(this);
             return sessionHandler = new SessionHandler(this) {
 
-
-                @Override
-                public String getAccessToken() {
-                    return mSessionHandler.getAccessToken(MainRouterApplication.this);
-                }
-
-                @Override
-                public String getUserId() {
-                    return mSessionHandler.getLoginID();
-                }
-
-                @Override
-                public String getLoginName() {
-                    return mSessionHandler.getLoginName();
-                }
-
                 @Override
                 public String getGTMLoginID() {
                     return mSessionHandler.getGTMLoginID(context);
-                }
-
-                @Override
-                public String getShopID() {
-                    return mSessionHandler.getShopID();
                 }
 
                 @Override
@@ -51,38 +30,8 @@ public abstract class MainRouterApplication extends CoreNetworkApplication imple
                 }
 
                 @Override
-                public boolean isUserHasShop() {
-                    return mSessionHandler.isUserHasShop();
-                }
-
-                @Override
-                public boolean isV4Login() {
-                    return mSessionHandler.isV4Login();
-                }
-
-                @Override
-                public String getPhoneNumber() {
-                    return mSessionHandler.getPhoneNumber();
-                }
-
-                @Override
-                public String getEmail() {
-                    return mSessionHandler.getEmail();
-                }
-
-                @Override
                 public String getRefreshToken() {
                     return mSessionHandler.getAuthRefreshToken();
-                }
-
-                @Override
-                public String getDeviceId() {
-                    return legacyGCMHandler().getRegistrationId();
-                }
-
-                @Override
-                public String getProfilePicture() {
-                    return mSessionHandler.getProfilePicture();
                 }
 
                 @Override
