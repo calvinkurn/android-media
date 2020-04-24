@@ -4,7 +4,6 @@ import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase.Companion.REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST
-import com.tokopedia.graphql.CommonUtils.toJson
 import com.tokopedia.notifications.analytics.NotificationAnalytics
 import com.tokopedia.notifications.domain.AttributionUseCase
 import com.tokopedia.notifications.model.AddToCart
@@ -31,7 +30,7 @@ class DataManager @Inject constructor(
                 recipientId = notification?.userId,
                 shopId = notification?.shopId,
                 blastId = notification?.blastId,
-                data = notification?.appendWebHookRoot()
+                data = notification?.webHookParamData()
         )
         attributionUseCase.execute(params)
     }
