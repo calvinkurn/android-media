@@ -67,6 +67,12 @@ public class MockInstrumentationTestApp extends BaseMainApplication implements T
         super.onCreate();
     }
 
+public void sendAnalyticsAnomalyResponse(String title,
+
+                                      String accessToken, String refreshToken,
+
+                                      String response, String request){}
+
     public void enableMockResponse() {
         if (GlobalConfig.DEBUG) {
             HashMap<String, String> responseList = new HashMap<>();
@@ -209,7 +215,6 @@ public class MockInstrumentationTestApp extends BaseMainApplication implements T
         return null;
     }
 
-    @Override
     public Intent getInboxMessageIntent(Context mContext) {
         return null;
     }

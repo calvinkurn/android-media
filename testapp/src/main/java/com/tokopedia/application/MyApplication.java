@@ -100,6 +100,12 @@ public class MyApplication extends BaseMainApplication
         }
     }
 
+public void sendAnalyticsAnomalyResponse(String title,
+
+                                      String accessToken, String refreshToken,
+
+                                      String response, String request){}
+
     private void upgradeSecurityProvider() {
         try {
             ProviderInstaller.installIfNeededAsync(this, new ProviderInstaller.ProviderInstallListener() {
