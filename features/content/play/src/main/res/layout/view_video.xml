@@ -27,10 +27,19 @@
             tools:layout_width="match_parent"
             tools:layout_height="match_parent">
 
+<!--            <com.tokopedia.play.ui.video.VideoPlayCustom-->
+<!--                android:id="@+id/pv_video"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                tools:parentTag="android.widget.FrameLayout" />-->
+
             <com.google.android.exoplayer2.ui.PlayerView
                 android:id="@+id/pv_video"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                app:surface_type="texture_view"
+                app:use_controller="false"
+                app:shutter_background_color="@color/transparent"
                 tools:parentTag="android.widget.FrameLayout" />
 
         </FrameLayout>

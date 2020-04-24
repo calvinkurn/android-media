@@ -46,7 +46,7 @@ class VideoView(container: ViewGroup) : UIView(container) {
     }
 
     internal fun setPlayer(exoPlayer: ExoPlayer?) {
-        pvVideo.player = exoPlayer
+        pvVideo.setPlayer(exoPlayer)
     }
 
     internal fun setOrientation(screenOrientation: ScreenOrientation, videoOrientation: VideoOrientation) {
