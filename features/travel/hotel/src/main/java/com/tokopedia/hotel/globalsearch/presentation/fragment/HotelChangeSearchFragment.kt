@@ -123,12 +123,7 @@ class HotelChangeSearchFragment : HotelGlobalSearchFragment() {
                     data.hasExtra(HotelDestinationActivity.HOTEL_DESTINATION_SEARCH_ID) -> {
                         onDestinationChanged(data.getStringExtra(HotelDestinationActivity.HOTEL_DESTINATION_NAME),
                                 searchId = data.getStringExtra(HotelDestinationActivity.HOTEL_DESTINATION_SEARCH_ID) ?: "",
-                                searchType = data.getStringExtra(HotelDestinationActivity.HOTEL_DESTINATION_TYPE) ?: "")
-                    }
-                    data.hasExtra(HotelDestinationActivity.HOTEL_DESTINATION_ID) -> {
-                        onDestinationChanged(data.getStringExtra(HotelDestinationActivity.HOTEL_DESTINATION_NAME),
-                                destinationId = data.getLongExtra(HotelDestinationActivity.HOTEL_DESTINATION_ID, 0),
-                                type = data.getStringExtra(HotelDestinationActivity.HOTEL_DESTINATION_TYPE))
+                                searchType = data.getStringExtra(HotelDestinationActivity.HOTEL_DESTINATION_SEARCH_TYPE) ?: "")
                     }
                 }
             }
