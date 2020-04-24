@@ -8,13 +8,15 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.reviewseller.R
+import com.tokopedia.reviewseller.common.util.toggle
+import com.tokopedia.reviewseller.feature.reviewdetail.view.adapter.SellerReviewDetailListener
 import com.tokopedia.reviewseller.feature.reviewdetail.view.model.TopicUiModel
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifyprinciples.Typography
 
-class TopicViewHolder(val view: View) : AbstractViewHolder<TopicUiModel>(view) {
+class TopicViewHolder(val view: View, private val fragmentListener: SellerReviewDetailListener) : AbstractViewHolder<TopicUiModel>(view) {
 
     companion object {
         @JvmStatic
@@ -28,7 +30,11 @@ class TopicViewHolder(val view: View) : AbstractViewHolder<TopicUiModel>(view) {
         sortFilterTopics.apply {
             sortFilterItems.removeAllViews()
             addItem(dataStaticItemSortFilter())
+            parentListener = {
+                fragmentListener.onParentTopicFilterClicked()
+            }
         }
+
         labelResultFeedback.text = setReviewCountBold(element.countFeedback.orZero())
     }
 
@@ -66,6 +72,15 @@ class TopicViewHolder(val view: View) : AbstractViewHolder<TopicUiModel>(view) {
                     type = ChipsUnify.TYPE_NORMAL,
                     size = ChipsUnify.SIZE_SMALL)
             )
+        }
+
+        itemSortFilterList.forEach {
+            it.apply {
+                listener = {
+                    toggle()
+                    fragmentListener.onChildTopicFilterClicked(this)
+                }
+            }
         }
         return itemSortFilterList
     }
