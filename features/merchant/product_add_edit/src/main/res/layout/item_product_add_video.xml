@@ -50,7 +50,8 @@
                 android:maxLines="1"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/imgThumbnail"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                app:typographyType="heading_6" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tvVideoSubtitle"
@@ -64,7 +65,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/imgThumbnail"
                 app:layout_constraintTop_toBottomOf="@id/tvVideoTitle"
-                app:typographyType="body_2" />
+                app:typographyType="small" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
