@@ -26,6 +26,7 @@ import com.tokopedia.play.view.custom.RoundedConstraintLayout
 import com.tokopedia.play.view.event.ScreenStateEvent
 import com.tokopedia.play.view.layout.video.PlayVideoLayoutManager
 import com.tokopedia.play.view.layout.video.PlayVideoLayoutManagerImpl
+import com.tokopedia.play.view.layout.video.PlayVideoViewInitializer
 import com.tokopedia.play.view.type.PlayRoomEvent
 import com.tokopedia.play.view.uimodel.EventUiModel
 import com.tokopedia.play.view.uimodel.VideoPropertyUiModel
@@ -43,7 +44,10 @@ import kotlin.coroutines.CoroutineContext
 /**
  * Created by jegul on 29/11/19
  */
-class PlayVideoFragment : BaseDaggerFragment(), CoroutineScope {
+class PlayVideoFragment :
+        BaseDaggerFragment(),
+        PlayVideoViewInitializer,
+        CoroutineScope {
 
     companion object {
 
@@ -120,6 +124,7 @@ class PlayVideoFragment : BaseDaggerFragment(), CoroutineScope {
 
     override fun onDestroyView() {
         super.onDestroyView()
+        layoutManager.onDestroy()
         job.cancel()
     }
 
@@ -177,17 +182,11 @@ class PlayVideoFragment : BaseDaggerFragment(), CoroutineScope {
 
     //region Component Initialization
     private fun initComponents(container: ViewGroup) {
-        val videoComponent = initVideoComponent(container)
-        val videoLoadingComponent = initVideoLoadingComponent(container)
-        val oneTapComponent = initOneTapComponent(container)
-        val overlayVideoComponent = initOverlayVideoComponent(container)
-
         layoutManager = PlayVideoLayoutManagerImpl(
-                context = requireContext(),
-                videoComponentId = videoComponent.getContainerId(),
-                videoLoadingComponentId = videoLoadingComponent.getContainerId(),
-                oneTapComponentId = oneTapComponent.getContainerId(),
-                overlayVideoComponentId = overlayVideoComponent.getContainerId()
+                container = container,
+                orientation = playViewModel.screenOrientation,
+                videoOrientation = playViewModel.videoOrientation,
+                viewInitializer = this
         )
 
         sendInitState()
@@ -195,21 +194,25 @@ class PlayVideoFragment : BaseDaggerFragment(), CoroutineScope {
         layoutManager.layoutView(container)
     }
 
-    private fun initVideoComponent(container: ViewGroup): UIComponent<Unit> {
+    override fun onInitVideo(container: ViewGroup): Int {
         return VideoComponent(container, EventBusFactory.get(viewLifecycleOwner), this, dispatchers)
                 .also(viewLifecycleOwner.lifecycle::addObserver)
+                .getContainerId()
     }
 
-    private fun initVideoLoadingComponent(container: ViewGroup): UIComponent<Unit> {
+    override fun onInitVideoLoading(container: ViewGroup): Int {
         return VideoLoadingComponent(container, EventBusFactory.get(viewLifecycleOwner), this, dispatchers)
+                .getContainerId()
     }
 
-    private fun initOneTapComponent(container: ViewGroup): UIComponent<Unit> {
+    override fun onInitOneTap(container: ViewGroup): Int {
         return OneTapComponent(container, EventBusFactory.get(viewLifecycleOwner), this, dispatchers)
+                .getContainerId()
     }
 
-    private fun initOverlayVideoComponent(container: ViewGroup): UIComponent<Unit> {
+    override fun onInitOverlayVideo(container: ViewGroup): Int {
         return OverlayVideoComponent(container, EventBusFactory.get(viewLifecycleOwner), this, dispatchers)
+                .getContainerId()
     }
     //endregion
 

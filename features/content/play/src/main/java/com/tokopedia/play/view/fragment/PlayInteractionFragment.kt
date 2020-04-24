@@ -31,6 +31,7 @@ import com.tokopedia.play.di.PlayModule
 import com.tokopedia.play.extensions.hasAlpha
 import com.tokopedia.play.extensions.isAnyHidden
 import com.tokopedia.play.extensions.isAnyShown
+import com.tokopedia.play.extensions.isFullSolid
 import com.tokopedia.play.gesture.PlayClickTouchListener
 import com.tokopedia.play.ui.chatlist.ChatListComponent
 import com.tokopedia.play.ui.endliveinfo.EndLiveInfoComponent
@@ -103,7 +104,6 @@ class PlayInteractionFragment :
 
         private const val PERCENT_PRODUCT_SHEET_HEIGHT = 0.6
 
-        private const val INVISIBLE_ALPHA = 0f
         private const val VISIBLE_ALPHA = 1f
 
         private const val FADE_DURATION = 200L
@@ -242,7 +242,7 @@ class PlayInteractionFragment :
 
     override fun onWatchModeClicked(bottomSheet: PlayMoreActionBottomSheet) {
         PlayAnalytics.clickWatchMode(channelId, playViewModel.channelType)
-        triggerImmersive(container.alpha == VISIBLE_ALPHA)
+        triggerImmersive(container.isFullSolid)
         bottomSheet.dismiss()
     }
 
@@ -450,7 +450,7 @@ class PlayInteractionFragment :
             if (
                     (playViewModel.screenOrientation.isLandscape && container.hasAlpha) ||
                     (!playViewModel.screenOrientation.isLandscape && !playViewModel.videoOrientation.isHorizontal && container.hasAlpha)
-            ) triggerImmersive(it.alpha == VISIBLE_ALPHA)
+            ) triggerImmersive(it.isFullSolid)
         }
     }
 
