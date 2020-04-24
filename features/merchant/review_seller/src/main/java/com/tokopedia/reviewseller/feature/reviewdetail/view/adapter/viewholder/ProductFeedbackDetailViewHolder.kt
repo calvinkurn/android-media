@@ -2,6 +2,7 @@ package com.tokopedia.reviewseller.feature.reviewdetail.view.adapter.viewholder
 
 import android.view.View
 import androidx.appcompat.widget.AppCompatImageView
+import androidx.constraintlayout.widget.Group
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -11,6 +12,9 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.reviewseller.R
 import com.tokopedia.reviewseller.common.util.PaddingItemDecoratingReviewSeller
+import com.tokopedia.reviewseller.feature.reviewdetail.util.ReviewUtil
+import com.tokopedia.reviewseller.feature.reviewdetail.util.toRelativeDayAndWeek
+import com.tokopedia.reviewseller.feature.reviewdetail.util.toReviewDescriptionFormatted
 import com.tokopedia.reviewseller.feature.reviewdetail.view.adapter.ReviewDetailFeedbackImageAdapter
 import com.tokopedia.reviewseller.feature.reviewdetail.view.model.FeedbackUiModel
 import com.tokopedia.unifyprinciples.Typography
@@ -20,6 +24,9 @@ class ProductFeedbackDetailViewHolder(view: View) : AbstractViewHolder<FeedbackU
     companion object {
         @JvmStatic
         val LAYOUT = R.layout.item_product_feedback_detail
+        const val DATE_REVIEW_FORMAT = "yyyy-MM-dd'T'HH:mm:ss'Z'"
+        const val REPLY_TEXT_MAX_CHAR = 100
+        const val FEEDBACK_TEXT_MAC_CHAR = 180
     }
 
     private var ivRatingFeedback: AppCompatImageView? = null
@@ -33,6 +40,7 @@ class ProductFeedbackDetailViewHolder(view: View) : AbstractViewHolder<FeedbackU
     private var tvReplyDate: Typography? = null
     private var tvReplyComment: Typography? = null
     private var replyFeedbackState: View? = null
+    private var reviewDetailGroup: Group? = null
 
     init {
         ivRatingFeedback = view.findViewById(R.id.ivRatingFeedback)
@@ -53,47 +61,67 @@ class ProductFeedbackDetailViewHolder(view: View) : AbstractViewHolder<FeedbackU
     }
 
     override fun bind(element: FeedbackUiModel) {
-
-        ivRatingFeedback?.setImageResource(getReviewStar(element.rating.orZero()))
+        ivRatingFeedback?.setImageResource(ReviewUtil.getReviewStar(element.rating.orZero()))
         tvFeedbackUser?.text = element.reviewerName.orEmpty()
-        tvFeedbackDate?.text = element.reviewTime.orEmpty()
+        tvFeedbackDate?.text = element.reviewTime.orEmpty() toRelativeDayAndWeek (DATE_REVIEW_FORMAT)
 
-        if (element.variantName?.isEmpty() == true) {
+        setupReplySection(element.replyText ?: "", element.replyTime ?: "", element.autoReply ?: "")
+        setupVariant(element.variantName ?: "")
+        setupFeedbackReview(element.reviewText ?: "")
+        setImageAttachment(element)
+    }
+
+    private fun setupReplySection(replyText: String, replyTime: String, autoReply: String) {
+        if (replyText.isNotEmpty()) {
+            showReplySection()
+            if (autoReply == "false") {
+                tvReplyUser?.text = "Balasan kamu"
+            } else {
+                setupReplyText(replyText)
+                tvReplyUser?.text = getString(R.string.otomatis_reply)
+                tvReplyDate?.text = replyTime
+            }
+        } else {
+            hideReplySection()
+        }
+    }
+
+    private fun setupVariant(variantName: String) {
+        if (variantName.isEmpty()) {
             tvVariantFeedback?.hide()
             tvVariantFeedbackValue?.hide()
         } else {
             tvVariantFeedback?.show()
             tvVariantFeedbackValue?.show()
-            tvVariantFeedbackValue?.text = element.variantName.orEmpty()
+            tvVariantFeedbackValue?.text = variantName
         }
+    }
 
-        if (element.reviewText?.isEmpty() == true) {
+    private fun setupFeedbackReview(feedbackText: String) {
+        if (feedbackText.isEmpty()) {
             tvFeedbackReview?.text = getString(R.string.review_not_found)
             tvFeedbackReview?.setTextColor(ContextCompat.getColor(itemView.context, R.color.clr_review_not_found))
         } else {
-            tvFeedbackReview?.setTextColor(ContextCompat.getColor(itemView.context, R.color.clr_f531353b))
-            tvFeedbackReview?.text = element.reviewText.orEmpty()
-        }
-
-        setImageAttachment(element)
-
-        if (element.replyText?.isNotEmpty() == true) {
-            replyFeedbackState?.show()
-            tvReplyUser?.show()
-            tvReplyDate?.show()
-            tvReplyComment?.show()
-            if (element.autoReply == "false") {
-                tvReplyUser?.text = "Balasan kamu"
-            } else {
-                tvReplyUser?.text = getString(R.string.otomatis_reply)
-                tvReplyDate?.text = element.replyTime.orEmpty()
-                tvReplyComment?.text = element.replyText.orEmpty()
+            tvFeedbackReview?.apply {
+                setTextColor(ContextCompat.getColor(itemView.context, R.color.clr_f531353b))
+                maxLines = 3
+                text = feedbackText.toReviewDescriptionFormatted(FEEDBACK_TEXT_MAC_CHAR)
+                setOnClickListener {
+                    maxLines = Integer.MAX_VALUE
+                    text = feedbackText
+                }
             }
-        } else {
-            replyFeedbackState?.hide()
-            tvReplyUser?.hide()
-            tvReplyDate?.hide()
-            tvReplyComment?.hide()
+        }
+    }
+
+    private fun setupReplyText(replyText: String) {
+        tvReplyComment?.apply {
+            maxLines = 2
+            text = replyText.toReviewDescriptionFormatted(REPLY_TEXT_MAX_CHAR)
+            setOnClickListener {
+                maxLines = Integer.MAX_VALUE
+                text = replyText
+            }
         }
     }
 
@@ -116,26 +144,19 @@ class ProductFeedbackDetailViewHolder(view: View) : AbstractViewHolder<FeedbackU
         }
     }
 
-    private fun getReviewStar(ratingCount: Int): Int {
-        return when (ratingCount) {
-            1 -> {
-                R.drawable.ic_rating_star_one
-            }
-            2 -> {
-                R.drawable.ic_rating_star_two
-            }
-            3 -> {
-                R.drawable.ic_rating_star_three
-            }
-            4 -> {
-                R.drawable.ic_rating_star_four
-            }
-            5 -> {
-                R.drawable.ic_rating_star_five
-            }
-            else -> {
-                R.drawable.ic_rating_star_zero
-            }
-        }
+    private fun hideReplySection() {
+        reviewDetailGroup?.hide()
+        replyFeedbackState?.hide()
+        tvReplyUser?.hide()
+        tvReplyDate?.hide()
+        tvReplyComment?.hide()
+    }
+
+    private fun showReplySection() {
+        replyFeedbackState?.show()
+        tvReplyUser?.show()
+        tvReplyDate?.show()
+        tvReplyComment?.show()
+        reviewDetailGroup?.show()
     }
 }

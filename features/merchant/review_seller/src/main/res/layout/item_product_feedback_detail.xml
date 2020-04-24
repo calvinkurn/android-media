@@ -107,7 +107,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:textColor="@color/clr_f531353b"
-        android:maxLines="@integer/int_3"
         android:layout_marginLeft="@dimen/spacing_lvl4"
         android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginRight="@dimen/spacing_lvl4"
@@ -134,13 +133,14 @@
         android:orientation="horizontal"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         tools:listitem="@layout/item_attachment_feedback" />
-    
+
     <View
         android:id="@+id/replyFeedbackState"
         android:layout_width="@dimen/spacing_lvl2"
-        android:layout_height="@dimen/layout_lvl7"
+        android:layout_height="0dp"
         android:background="@drawable/rectangle_8"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/tvReplyComment"
         app:layout_constraintTop_toBottomOf="@id/rvItemAttachmentFeedback"
         android:layout_marginLeft="@dimen/spacing_lvl4"
         android:layout_marginStart="@dimen/spacing_lvl4"
@@ -183,7 +183,6 @@
         app:layout_constraintTop_toBottomOf="@id/tvReplyUser"
         app:layout_constraintStart_toEndOf="@id/replyFeedbackState"
         app:layout_constraintEnd_toEndOf="parent"
-        android:maxLines="@integer/int_3"
         android:layout_marginLeft="@dimen/spacing_lvl4"
         android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginRight="@dimen/spacing_lvl4"
