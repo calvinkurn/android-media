@@ -66,6 +66,7 @@ class ProductReviewDetailViewModel @Inject constructor(
             reviewDetailOverallResponse.await()?.let {
                 _reviewDetailOverall.postValue(Success(it))
                 feedbackDetailResponse.await()?.also { feedbackResponse ->
+                    feedbackResponse.second.topicList.countFeedback = feedbackResponse.second.productFeedbackDetailList.size
                     _productFeedbackDetail.postValue(Success(feedbackResponse))
                 }
             }
