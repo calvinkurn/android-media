@@ -26,10 +26,7 @@ import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.reviewseller.R
-import com.tokopedia.reviewseller.common.util.DataEndlessScrollListener
-import com.tokopedia.reviewseller.common.util.ReviewSellerConstant
-import com.tokopedia.reviewseller.common.util.getKeyByValue
-import com.tokopedia.reviewseller.common.util.setSelectedFilterOrSort
+import com.tokopedia.reviewseller.common.util.*
 import com.tokopedia.reviewseller.feature.reviewdetail.view.activity.SellerReviewDetailActivity
 import com.tokopedia.reviewseller.feature.reviewdetail.view.fragment.SellerReviewDetailFragment
 import com.tokopedia.reviewseller.feature.reviewlist.di.component.ReviewProductListComponent
@@ -61,6 +58,7 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
         private const val TAG_COACH_MARK_RATING_PRODUCT = "coachMarkRatingProduct"
         val chipsPaddingRight = 8.toPx()
         val maxChipTextWidth = 116.toPx()
+        private const val searchQuery = "search"
     }
 
     @Inject
@@ -98,6 +96,7 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
 
     var chipsSortText: String? = ""
     var chipsFilterText: String? = ""
+    var searchFilterText: String? = ""
 
     private val coachMark: CoachMark by lazy {
         initCoachMark()
@@ -126,8 +125,9 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
         viewModelListReviewList = ViewModelProvider(this, viewModelFactory).get(SellerReviewListViewModel::class.java)
         linearLayoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         prefs = context?.getSharedPreferences(prefKey, Context.MODE_PRIVATE)
-//        viewModel?.sortBy = ReviewSellerConstant.mapSortReviewProduct().getKeyByValue(getString(R.string.most_review))
-//        viewModel?.filterBy = ReviewSellerConstant.mapFilterReviewProduct().getKeyByValue(getString(R.string.last_week))
+        viewModelListReviewList?.sortBy = ReviewSellerConstant.mapSortReviewProduct().getKeyByValue(getString(R.string.most_review))
+        viewModelListReviewList?.filterBy = ReviewSellerConstant.mapFilterReviewProduct().getKeyByValue(getString(R.string.last_week))
+        viewModelListReviewList?.filterAllText = viewModelListReviewList?.filterBy
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -177,7 +177,7 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
         globalError_reviewSeller?.hide()
         emptyState_reviewProduct?.hide()
         showLoading()
-        viewModelListReviewList?.getProductRatingData(viewModelListReviewList?.sortBy.toString(), viewModelListReviewList?.filterBy.toString())
+        viewModelListReviewList?.getProductRatingData(viewModelListReviewList?.sortBy.orEmpty(), viewModelListReviewList?.filterAllText.orEmpty())
     }
 
     override fun createEndlessRecyclerViewListener(): EndlessRecyclerViewScrollListener {
@@ -216,13 +216,26 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
     }
 
     private fun initSearchBar() {
-        searchBarRatingProduct?.searchBarTextField?.setOnEditorActionListener { v, actionId, event ->
-            if (actionId == EditorInfo.IME_ACTION_DONE) {
-                val query = searchBarRatingProduct?.searchBarTextField?.text.toString()
-                if (query.isNotEmpty()) {
+        searchBarRatingProduct?.apply {
+            searchBarIcon.setOnClickListener {
+                if (searchBarPlaceholder.isNotEmpty()) {
+                    searchFilterText = "$searchQuery="
+                    viewModelListReviewList?.filterAllText = ReviewSellerUtil.setFilterJoinValueFormat(viewModelListReviewList?.filterBy.orEmpty(), searchFilterText.orEmpty())
+                    searchBarTextField.text.clear()
+                    searchBarPlaceholder = getString(R.string.product_search)
                 }
             }
-            false
+            searchBarTextField.setOnEditorActionListener { _, actionId, _ ->
+                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                    val query = searchBarRatingProduct?.searchBarTextField?.text.toString()
+                    searchFilterText = "$searchQuery=$query"
+                    viewModelListReviewList?.filterAllText = ReviewSellerUtil.setFilterJoinValueFormat(viewModelListReviewList?.filterBy.orEmpty(), searchFilterText.orEmpty())
+                    searchBarPlaceholder = query
+                    loadInitialData()
+                    return@setOnEditorActionListener true
+                }
+                return@setOnEditorActionListener false
+            }
         }
 
     }
@@ -270,9 +283,10 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
                 globalError_reviewSeller?.setType(GlobalError.NO_CONNECTION)
             }
 
-            rvRatingProduct?.hide()
-            appBar_layout_reviewSeller?.hide()
-            emptyState_reviewProduct?.hide()
+            appBar_layout_reviewSeller?.gone()
+            rvRatingProduct?.gone()
+            emptyState_reviewProduct?.gone()
+            scrollView_globalError_reviewSeller?.show()
             globalError_reviewSeller?.show()
 
             globalError_reviewSeller.setActionClickListener {
@@ -296,8 +310,8 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
 
     fun loadNextPage(page: Int) {
         viewModelListReviewList?.getNextProductReviewList(
-                sortBy = viewModelListReviewList?.sortBy.toString(),
-                filterBy = viewModelListReviewList?.filterBy.toString(),
+                sortBy = viewModelListReviewList?.sortBy.orEmpty(),
+                filterBy = viewModelListReviewList?.filterAllText.orEmpty(),
                 page = page
         )
     }
@@ -437,9 +451,11 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
     }
 
     private fun onErrorLoadMoreToaster(message: String, action: String) {
-        view?.let { Toaster.make(it, message, actionText = action, type = Toaster.TYPE_ERROR, clickListener = View.OnClickListener {
-            loadInitialData()
-        }) }
+        view?.let {
+            Toaster.make(it, message, actionText = action, type = Toaster.TYPE_ERROR, clickListener = View.OnClickListener {
+                loadInitialData()
+            })
+        }
     }
 
     override fun onItemProductReviewClicked(productId: Int) {
@@ -515,8 +531,8 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
             chipsFilterText = filterListItemUnify[position].listTitleText
             chipsFilter?.chip_text?.text = chipsFilterText
             filterListUnify.setSelectedFilterOrSort(filterListItemUnify, position)
-            viewModelListReviewList?.filterBy =
-                    ReviewSellerConstant.mapFilterReviewProduct().getKeyByValue(chipsFilterText)
+            viewModelListReviewList?.filterBy = ReviewSellerConstant.mapFilterReviewProduct().getKeyByValue(chipsFilterText)
+            viewModelListReviewList?.filterAllText = ReviewSellerUtil.setFilterJoinValueFormat(viewModelListReviewList?.filterBy.orEmpty(), searchFilterText.orEmpty())
             loadInitialData()
             bottomSheetFilter?.dismiss()
         } catch (e: Exception) {
