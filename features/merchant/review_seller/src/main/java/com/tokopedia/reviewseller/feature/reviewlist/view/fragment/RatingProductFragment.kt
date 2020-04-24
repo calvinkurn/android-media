@@ -28,8 +28,8 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.reviewseller.R
 import com.tokopedia.reviewseller.common.util.DataEndlessScrollListener
 import com.tokopedia.reviewseller.common.util.ReviewSellerConstant
-import com.tokopedia.reviewseller.common.util.ReviewSellerUtil
 import com.tokopedia.reviewseller.common.util.getKeyByValue
+import com.tokopedia.reviewseller.common.util.setSelectedFilterOrSort
 import com.tokopedia.reviewseller.feature.reviewdetail.view.activity.SellerReviewDetailActivity
 import com.tokopedia.reviewseller.feature.reviewdetail.view.fragment.SellerReviewDetailFragment
 import com.tokopedia.reviewseller.feature.reviewlist.di.component.ReviewProductListComponent
@@ -256,6 +256,7 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
     private fun onSuccessGetProductRatingOverallData(data: ProductRatingOverallUiModel) {
         reviewSellerAdapter.hideLoading()
         appBar_layout_reviewSeller?.show()
+        filter_and_sort_layout?.show()
         swipeToRefreshReviewSeller?.isRefreshing = false
         reviewSellerAdapter.setProductRatingOverallData(data)
     }
@@ -270,9 +271,8 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
             }
 
             rvRatingProduct?.hide()
+            appBar_layout_reviewSeller?.hide()
             emptyState_reviewProduct?.hide()
-            filter_and_sort_layout?.hide()
-            search_bar_layout?.show()
             globalError_reviewSeller?.show()
 
             globalError_reviewSeller.setActionClickListener {
@@ -460,7 +460,7 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
 
         filterListUnify?.let { it ->
             it.onLoadFinish {
-                ReviewSellerUtil.setSelectedFilterOrSort(it, viewModelListReviewList?.positionFilter.orZero())
+                it.setSelectedFilterOrSort(filterListItemUnify, viewModelListReviewList?.positionFilter.orZero())
                 it.setOnItemClickListener { _, _, position, _ ->
                     onItemFilterClickedBottomSheet(position, filterListItemUnify, it)
                 }
@@ -490,7 +490,7 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
 
         sortListUnify?.let { it ->
             it.onLoadFinish {
-                ReviewSellerUtil.setSelectedFilterOrSort(it, viewModelListReviewList?.positionSort.orZero())
+                it.setSelectedFilterOrSort(sortListItemUnify, viewModelListReviewList?.positionFilter.orZero())
                 it.setOnItemClickListener { _, _, position, _ ->
                     onItemSortClickedBottomSheet(position, sortListItemUnify, it)
                 }
@@ -514,7 +514,7 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
             viewModelListReviewList?.positionFilter = position
             chipsFilterText = filterListItemUnify[position].listTitleText
             chipsFilter?.chip_text?.text = chipsFilterText
-            ReviewSellerUtil.setSelectedFilterOrSort(filterListUnify, position)
+            filterListUnify.setSelectedFilterOrSort(filterListItemUnify, position)
             viewModelListReviewList?.filterBy =
                     ReviewSellerConstant.mapFilterReviewProduct().getKeyByValue(chipsFilterText)
             loadInitialData()
@@ -529,7 +529,7 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
             viewModelListReviewList?.positionSort = position
             chipsSortText = sortListItemUnify[position].listTitleText
             chipsSort?.chip_text?.text = chipsSortText
-            ReviewSellerUtil.setSelectedFilterOrSort(sortListUnify, position)
+            sortListUnify.setSelectedFilterOrSort(sortListItemUnify, position)
             viewModelListReviewList?.sortBy =
                     ReviewSellerConstant.mapSortReviewProduct().getKeyByValue(chipsSortText)
             loadInitialData()

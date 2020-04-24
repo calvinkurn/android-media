@@ -17,7 +17,7 @@ object SellerReviewProductDetailMapper {
         }
     }
 
-    fun mapToRatingBarUiModel(productFeedbackDataPerProduct: ProductFeedbackDetailResponse.ProductFeedbackDataPerProduct): List<RatingBarUiModel> {
+    private fun mapToRatingBarUiModel(productFeedbackDataPerProduct: ProductFeedbackDetailResponse.ProductFeedbackDataPerProduct): List<RatingBarUiModel> {
         val ratingBarListUiModel = mutableListOf<RatingBarUiModel>()
 
         productFeedbackDataPerProduct.aggregatedRating.map {
@@ -31,7 +31,7 @@ object SellerReviewProductDetailMapper {
         return ratingBarListUiModel
     }
 
-    fun mapToTopicUiModel(productFeedbackDataPerProduct: ProductFeedbackDetailResponse.ProductFeedbackDataPerProduct): TopicUiModel {
+    private fun mapToTopicUiModel(productFeedbackDataPerProduct: ProductFeedbackDetailResponse.ProductFeedbackDataPerProduct): TopicUiModel {
         val topicListUiModel = TopicUiModel()
 
         productFeedbackDataPerProduct.topics.map {
@@ -43,7 +43,7 @@ object SellerReviewProductDetailMapper {
         return topicListUiModel
     }
 
-    fun mapToFeedbackUiModel(productFeedbackDataPerProduct: ProductFeedbackDetailResponse.ProductFeedbackDataPerProduct): List<FeedbackUiModel> {
+    private fun mapToFeedbackUiModel(productFeedbackDataPerProduct: ProductFeedbackDetailResponse.ProductFeedbackDataPerProduct): List<FeedbackUiModel> {
         val feedbackListUiModel = mutableListOf<FeedbackUiModel>()
 
         val mapAttachment = mutableListOf<FeedbackUiModel.Attachment>()
@@ -83,11 +83,11 @@ object SellerReviewProductDetailMapper {
         return OverallRatingDetailUiModel().apply {
             productName = productFeedbackDetailResponse.productName
             ratingAvg = productFeedbackDetailResponse.ratingAverage
-            ratingCount = productFeedbackDetailResponse.ratingCount
+            reviewCount = productFeedbackDetailResponse.ratingCount
         }
     }
 
-    fun mapToItemSortFilter(data: ProductFeedbackDetailResponse.ProductFeedbackDataPerProduct): ArrayList<SortFilterItem> {
+    private fun mapToItemSortFilter(data: ProductFeedbackDetailResponse.ProductFeedbackDataPerProduct): ArrayList<SortFilterItem> {
         val itemSortFilterList = ArrayList<SortFilterItem>()
         val maxData = data.topics.take(4)
         maxData.map {
