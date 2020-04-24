@@ -176,7 +176,7 @@ class HotelBookingFragment : HotelBaseFragment() {
 
         bookingViewModel.getCartData(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_get_cart), hotelBookingPageModel.cartId)
         bookingViewModel.getContactList(GraphqlHelper.loadRawString(resources, com.tokopedia.travel.passenger.R.raw.query_get_travel_contact_list))
-        bookingViewModel.getTokopointsSumCoupon(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_sum_tokopoints))
+        bookingViewModel.getTokopointsSumCoupon(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_tokopoints_sum_coupon))
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
