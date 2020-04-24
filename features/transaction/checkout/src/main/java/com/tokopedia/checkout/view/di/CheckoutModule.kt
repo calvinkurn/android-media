@@ -87,17 +87,6 @@ class CheckoutModule constructor(val shipmentFragment: ShipmentFragment) {
     }
 
     @Provides
-    @CheckoutScope
-    fun provideOkHttpRetryPolicy(): OkHttpRetryPolicy {
-        return OkHttpRetryPolicy(
-                CommonPurchaseApiUrl.NET_READ_TIMEOUT,
-                CommonPurchaseApiUrl.NET_WRITE_TIMEOUT,
-                CommonPurchaseApiUrl.NET_CONNECT_TIMEOUT,
-                CommonPurchaseApiUrl.NET_RETRY
-        )
-    }
-
-    @Provides
     @PurchasePlatformQualifier
     @CheckoutScope
     fun provideCartApiOkHttpClient(@ApplicationScope httpLoggingInterceptor: HttpLoggingInterceptor,
