@@ -220,7 +220,6 @@ class HomeFragment : BaseDaggerFragment(),
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     private lateinit var mainParentStatusBarListener: MainParentStatusBarListener
-    private lateinit var activityStateListener: ActivityStateListener
     private lateinit var viewModel: HomeViewModel
     private lateinit var remoteConfig: RemoteConfig
     private lateinit var userSession: UserSessionInterface
@@ -241,6 +240,7 @@ class HomeFragment : BaseDaggerFragment(),
     private var adapter: HomeRecycleAdapter? = null
     private var layoutManager: LinearLayoutManager? = null
     private var messageSnackbar: SnackbarRetry? = null
+    private var activityStateListener: ActivityStateListener? = null
     private var homePerformanceMonitoringListener: HomePerformanceMonitoringListener? = null
     private var showRecomendation = false
     private var mShowTokopointNative = false
