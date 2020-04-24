@@ -11,7 +11,7 @@ interface SmartBillsApi {
     @POST(PATH_MULTI_CHECKOUT)
     @Headers("Content-Type: application/json")
     suspend fun postMultiCheckout(
-            @FieldMap map: MutableMap<String, Any>,
+            @FieldMap map: Map<String, Any>,
             @Header("Idempotency-Key") idemPotencyKey: String,
             @Header("X-Tkpd-UserId") userId: String
     ): Response<DataResponse<RechargeMultiCheckoutResponse>>

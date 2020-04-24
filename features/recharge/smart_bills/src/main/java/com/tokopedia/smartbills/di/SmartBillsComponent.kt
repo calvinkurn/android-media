@@ -7,11 +7,7 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.smartbills.presentation.fragment.SmartBillsFragment
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Component
-import kotlinx.coroutines.CoroutineDispatcher
 
-/**
- * Created by resakemal on 15/04/20.
- */
 @SmartBillsScope
 @Component(modules = [SmartBillsModule::class, SmartBillsViewModelModule::class], dependencies = [CommonTopupBillsComponent::class])
 interface SmartBillsComponent {
@@ -21,11 +17,8 @@ interface SmartBillsComponent {
 
     fun userSessionInterface(): UserSessionInterface
 
-    fun coroutineDispatcher(): CoroutineDispatcher
-
     fun graphqlRepository(): GraphqlRepository
 
     fun inject(smartBillsFragment: SmartBillsFragment)
 
 }
-

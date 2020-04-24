@@ -14,7 +14,6 @@ import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListCheckableAdapter
 import com.tokopedia.abstraction.base.view.adapter.holder.BaseCheckableViewHolder
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.common.payment.model.PaymentPassData
 import com.tokopedia.common.topupbills.data.TopupBillsEnquiryData
 import com.tokopedia.common.topupbills.data.TopupBillsFavNumber
 import com.tokopedia.common.topupbills.data.TopupBillsMenuDetail
@@ -33,11 +32,11 @@ import kotlinx.android.synthetic.main.fragment_smart_bills.*
 import java.util.*
 import javax.inject.Inject
 
-class SmartBillsFragment: BaseTopupBillsFragment(),
+class SmartBillsFragment : BaseTopupBillsFragment(),
         BaseCheckableViewHolder.CheckableInteractionListener,
         SmartBillsAdapter.LoaderListener,
         BaseListCheckableAdapter.OnCheckableAdapterListener<RechargeBills>,
-        TopupBillsCheckoutWidget.ActionListener{
+        TopupBillsCheckoutWidget.ActionListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory

@@ -6,7 +6,6 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.common.topupbills.CommonTopupBillsComponentInstance
 import com.tokopedia.smartbills.di.SmartBillsComponent
 import com.tokopedia.smartbills.presentation.fragment.SmartBillsFragment
-import com.tokopedia.smartbills.presentation.fragment.SmartBillsOnboardingFragment
 
 class SmartBillsActivity : BaseSimpleActivity(), HasComponent<SmartBillsComponent> {
 

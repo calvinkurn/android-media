@@ -9,9 +9,6 @@ import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
 
-/**
- * Created by resakemal on 15/04/20.
- */
 @Module
 @SmartBillsScope
 abstract class SmartBillsViewModelModule {
@@ -23,5 +20,5 @@ abstract class SmartBillsViewModelModule {
     @Binds
     @IntoMap
     @ViewModelKey(SmartBillsViewModel::class)
-    internal abstract fun smartBillsViewModel(viewModel: SmartBillsViewModel): ViewModel
+    internal abstract fun rechargeCCViewModel(customViewModel: SmartBillsViewModel): ViewModel
 }

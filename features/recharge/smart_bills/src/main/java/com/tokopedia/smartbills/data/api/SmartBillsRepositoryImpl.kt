@@ -6,7 +6,7 @@ import javax.inject.Inject
 
 class SmartBillsRepositoryImpl @Inject constructor(private val smartBillsApi: SmartBillsApi) : SmartBillsRepository {
 
-    override suspend fun postMultiCheckout(mapParam: MutableMap<String, Any>,
+    override suspend fun postMultiCheckout(mapParam: Map<String, Any>,
                                            idempotencyKey: String,
                                            userId: String): RechargeMultiCheckoutResponse {
         val response = smartBillsApi.postMultiCheckout(mapParam, idempotencyKey, userId)
