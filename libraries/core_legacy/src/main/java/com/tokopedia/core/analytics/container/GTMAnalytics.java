@@ -60,6 +60,8 @@ public class GTMAnalytics extends ContextAnalytics {
     private static final String SHOP_TYPE = "shopType";
     public static final String OPEN_SCREEN = "openScreen";
     public static final String CAMPAIGN_TRACK = "campaignTrack";
+    public static final String CLIENT_ID = "clientId";
+    public static final String SESSION_IRIS = "sessionIris";
     private final Iris iris;
     private TetraDebugger tetraDebugger;
     private final RemoteConfig remoteConfig;
@@ -124,10 +126,10 @@ public class GTMAnalytics extends ContextAnalytics {
     }
 
     public Bundle addWrapperValue(Bundle bundle) {
-        bundle.putString("clientId", getClientIDString());
+        bundle.putString(CLIENT_ID, getClientIDString());
         bundle.putString(USER_ID, userSession.getUserId());
-        if (!CommonUtils.checkStringNotNull(bundle.getString("sessionIris")))
-            bundle.putString("sessionIris", new IrisSession(context).getSessionId());
+        if (!CommonUtils.checkStringNotNull(bundle.getString(SESSION_IRIS)))
+            bundle.putString(SESSION_IRIS, new IrisSession(context).getSessionId());
         return bundle;
     }
 
@@ -777,7 +779,7 @@ public class GTMAnalytics extends ContextAnalytics {
         }else{
             bundle.putString("userId", "");
         }
-        bundle.putString("clientId", getClientIDString());
+        bundle.putString(CLIENT_ID, getClientIDString());
         bundle.putBoolean("isLoggedInStatus", sessionHandler.isLoggedIn());
         if(!TextUtils.isEmpty(sessionHandler.getShopId())) {
             bundle.putString("shopId", sessionHandler.getShopId());
@@ -986,7 +988,7 @@ public class GTMAnalytics extends ContextAnalytics {
 
         bundle.putString("appsflyerId", afUniqueId);
         bundle.putString("userId", sessionHandler.getLoginID());
-        bundle.putString("clientId", getClientIDString());
+        bundle.putString(CLIENT_ID, getClientIDString());
         bundle.putString(KEY_EVENT, CAMPAIGN_TRACK);
         bundle.putString("screenName", (String) param.get("screenName"));
 
