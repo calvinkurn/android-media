@@ -336,7 +336,7 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
                 }
                 is Fail -> {
                     showLoading(false)
-//                    showErrorMessage(it.throwable)
+                    showErrorMessage(it.throwable)
                     showGlobalError(GlobalError.SERVER_ERROR)
                 }
             }
@@ -361,7 +361,7 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
                 }
                 is Fail -> {
                     showLoading(false)
-                    // showErrorMessage(it.throwable)
+                    showErrorMessage(it.throwable)
                     showGlobalError(GlobalError.SERVER_ERROR)
                 }
             }
