@@ -21,7 +21,7 @@ class ProductFeedbackDetailViewHolder(private val view: View) : AbstractViewHold
     companion object {
         @JvmStatic
         val LAYOUT = R.layout.item_product_feedback_detail
-        
+
         private const val isAutoReply = "false"
     }
 
@@ -36,7 +36,7 @@ class ProductFeedbackDetailViewHolder(private val view: View) : AbstractViewHold
     private var tvReplyDate: Typography? = null
     private var tvReplyComment: Typography? = null
     private var replyFeedbackState: View? = null
-    
+
     init {
         ivRatingFeedback = view.findViewById(R.id.ivRatingFeedback)
         tvFeedbackUser = view.findViewById(R.id.tvFeedbackUser)
@@ -78,8 +78,7 @@ class ProductFeedbackDetailViewHolder(private val view: View) : AbstractViewHold
 
         setImageAttachment(element)
 
-        if (element.replyText?.isNotEmpty() == true || element.replyTime?.isNotEmpty() == true) {
-            view.partialFeedbackReplyDetail?.show()
+        if (element.replyText?.isNotEmpty() == true) {
             if (element.autoReply == isAutoReply) {
                 tvReplyUser?.text = getString(R.string.otomatis_reply)
             } else {
@@ -87,10 +86,11 @@ class ProductFeedbackDetailViewHolder(private val view: View) : AbstractViewHold
             }
             tvReplyDate?.text = element.replyTime.orEmpty()
             tvReplyComment?.text = element.replyText.orEmpty()
-        } else  {
+            view.partialFeedbackReplyDetail?.show()
+        } else {
             view.partialFeedbackReplyDetail?.hide()
-        }
 
+        }
     }
 
     private fun setImageAttachment(element: FeedbackUiModel) {

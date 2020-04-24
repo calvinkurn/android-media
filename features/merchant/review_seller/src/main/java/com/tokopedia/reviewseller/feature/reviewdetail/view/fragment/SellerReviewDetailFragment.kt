@@ -207,7 +207,9 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
                 }
             }
         } else {
-            reviewSellerDetailAdapter.setFeedbackListData(reviewProductDetail.productFeedbackDetailList)
+            if(hasNextPage) {
+                reviewSellerDetailAdapter.setFeedbackListData(reviewProductDetail.productFeedbackDetailList)
+            }
         }
         updateScrollListenerState(hasNextPage)
     }
