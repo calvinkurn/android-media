@@ -10,6 +10,7 @@ import android.view.View
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.abstraction.constant.TkpdState
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.product.manage.R
@@ -126,15 +127,18 @@ class ProductManageSellerFragment : ProductManageFragment(), ProductDraftListCou
     private fun registerDraftReceiver() {
         draftBroadCastReceiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context, intent: Intent) {
-                if (intent.action == UploadProductService.ACTION_DRAFT_CHANGED) {
+                if (intent.action == UploadProductService.ACTION_DRAFT_CHANGED || intent.action == TkpdState.ProductService.BROADCAST_DRAFT_CHANGED) {
                     productDraftListCountPresenter.getAllDraftCount()
                 }
             }
         }
 
         activity?.let {
-            LocalBroadcastManager.getInstance(it).registerReceiver(
-                    draftBroadCastReceiver, IntentFilter(UploadProductService.ACTION_DRAFT_CHANGED))
+            val intentFilters = IntentFilter().apply {
+                addAction(UploadProductService.ACTION_DRAFT_CHANGED)
+                addAction(TkpdState.ProductService.BROADCAST_DRAFT_CHANGED)
+            }
+            it.registerReceiver(draftBroadCastReceiver, intentFilters)
         }
     }
 

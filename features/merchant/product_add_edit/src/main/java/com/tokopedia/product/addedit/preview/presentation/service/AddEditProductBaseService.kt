@@ -1,8 +1,11 @@
 package com.tokopedia.product.addedit.preview.presentation.service
 
+import android.content.Intent
+import android.os.Bundle
 import androidx.core.app.JobIntentService
 import com.google.gson.Gson
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.constant.TkpdState
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.mediauploader.data.state.UploadResult
 import com.tokopedia.mediauploader.domain.UploaderUseCase
@@ -76,10 +79,13 @@ abstract class AddEditProductBaseService : JobIntentService(), CoroutineScope {
 
     fun setUploadProductDataSuccess() {
         notificationManager?.onSuccessUpload()
+        sendSuccessBroadcast()
+        sendDraftChangedBroadcast()
     }
 
     fun setUploadProductDataError(errorMessage: String) {
         notificationManager?.onFailedUpload(errorMessage)
+        sendDraftChangedBroadcast()
     }
 
     fun uploadProductImages(imageUrlOrPathList: List<String>, variantPicturePath: List<String>, sizeChartPath: String) {
@@ -174,5 +180,22 @@ abstract class AddEditProductBaseService : JobIntentService(), CoroutineScope {
                 ""
             }
         }
+    }
+
+    private fun sendSuccessBroadcast() {
+        val result = Intent(TkpdState.ProductService.BROADCAST_ADD_EDIT_PRODUCT_SUCCESS)
+        val bundle = Bundle()
+        bundle.putInt(TkpdState.ProductService.STATUS_FLAG, TkpdState.ProductService.STATUS_DONE)
+        result.putExtras(bundle)
+        sendBroadcast(result)
+    }
+
+    private fun sendDraftChangedBroadcast() {
+        val result = Intent(TkpdState.ProductService.BROADCAST_DRAFT_CHANGED)
+        val bundle = Bundle().apply {
+            putInt(TkpdState.ProductService.STATUS_FLAG, TkpdState.ProductService.STATUS_DONE)
+        }
+        result.putExtras(bundle)
+        sendBroadcast(result)
     }
 }
