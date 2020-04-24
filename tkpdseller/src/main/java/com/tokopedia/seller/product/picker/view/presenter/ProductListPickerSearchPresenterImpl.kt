@@ -3,7 +3,7 @@ package com.tokopedia.seller.product.picker.view.presenter
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.seller.product.picker.view.listener.ProductListPickerSearchView
 import com.tokopedia.seller.product.picker.view.mapper.GetProductListMapper
-import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductListResponse
+import com.tokopedia.shop.common.data.source.cloud.model.oldproductlist.ProductListResponse
 import com.tokopedia.shop.common.domain.interactor.GetProductListUseCase
 import com.tokopedia.user.session.UserSessionInterface
 import rx.Subscriber

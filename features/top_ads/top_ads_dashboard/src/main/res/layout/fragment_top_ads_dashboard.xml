@@ -134,5 +134,5 @@
         app:floatButtonSize="big"
         app:floatButtonType="primary"
         app:shadowTop="true"
-        app:text="@string/label_add_promo" />
+        app:text="@string/label_add_ad_creation" />
 </LinearLayout>

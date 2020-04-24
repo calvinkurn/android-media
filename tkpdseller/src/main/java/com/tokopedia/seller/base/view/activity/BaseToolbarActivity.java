@@ -108,7 +108,7 @@ abstract class BaseToolbarActivity extends BaseActivity {
 
     private Drawable resize(Drawable image, int width, int height) {
         Bitmap b = ((BitmapDrawable) image).getBitmap();
-        Bitmap bitmapResized = Bitmap.createScaledBitmap(b, 50, 50, false);
+        Bitmap bitmapResized = Bitmap.createScaledBitmap(b, 24, 24, false);
         return new BitmapDrawable(getResources(), bitmapResized);
     }
 

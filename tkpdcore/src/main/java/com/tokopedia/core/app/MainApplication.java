@@ -166,6 +166,8 @@ public abstract class MainApplication extends MainRouterApplication{
         if (!BuildConfig.DEBUG) {
             Fabric.with(this, new Crashlytics());
             Crashlytics.setUserIdentifier(userSession.getUserId());
+            Crashlytics.setUserEmail(userSession.getEmail());
+            Crashlytics.setUserName(userSession.getName());
         }
     }
 

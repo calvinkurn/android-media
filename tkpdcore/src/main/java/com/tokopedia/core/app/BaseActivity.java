@@ -49,7 +49,7 @@ import rx.schedulers.Schedulers;
  * Extends one of BaseActivity from tkpd abstraction eg:BaseSimpleActivity, BaseStepperActivity, BaseTabActivity, etc
  */
 @Deprecated
-public class BaseActivity extends AppCompatActivity implements SessionHandler.onLogoutListener,
+public class BaseActivity extends AppCompatActivity implements
         ErrorNetworkReceiver.ReceiveListener, ScreenTracking.IOpenScreenAnalytics {
 
 
@@ -149,22 +149,6 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
                 .subscribe(ignored -> {}, throwable -> {});
     }
 
-    @Override
-    public void onLogout(Boolean success) {
-        if (success) {
-            finish();
-            Intent intent;
-            if (GlobalConfig.isSellerApp()) {
-                intent = ((TkpdCoreRouter) MainApplication.getAppContext()).getHomeIntent(this);
-            } else {
-                intent = HomeRouter.getHomeActivity(this);
-            }
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(intent);
-            AppWidgetUtil.sendBroadcastToAppWidget(this);
-        }
-    }
-
     private void registerForceLogoutReceiver() {
         logoutNetworkReceiver.setReceiver(this);
         IntentFilter filter = new IntentFilter();
@@ -224,7 +208,6 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
                 new DialogForceLogout.ActionListener() {
                     @Override
                     public void onDialogClicked() {
-                        sessionHandler.forceLogout();
                         try {
                             ((TkpdCoreRouter) getApplication()).onLogout(getApplicationComponent());
                         } catch (Exception ex) {

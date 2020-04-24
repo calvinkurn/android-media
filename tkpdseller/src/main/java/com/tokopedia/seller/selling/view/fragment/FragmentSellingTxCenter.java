@@ -2,30 +2,27 @@ package com.tokopedia.seller.selling.view.fragment;
 
 import android.app.Activity;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import androidx.annotation.Nullable;
+
 import com.tkpd.library.utils.LocalCacheHandler;
-import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.drawer2.service.DrawerGetNotificationService;
-import com.tokopedia.config.GlobalConfig;
-import com.tokopedia.core2.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
-import com.tokopedia.core.customadapter.ListViewPeopleTransactionSummary;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.session.baseFragment.BaseFragment;
+import com.tokopedia.core.util.RefreshHandler;
+import com.tokopedia.core2.R;
 import com.tokopedia.seller.selling.presenter.PeopleTxCenter;
 import com.tokopedia.seller.selling.presenter.PeopleTxCenterImpl;
 import com.tokopedia.seller.selling.presenter.PeopleTxCenterView;
-import com.tokopedia.core.session.baseFragment.BaseFragment;
-import com.tokopedia.core.util.RefreshHandler;
-import com.tokopedia.core.var.TkpdCache;
 
 import java.util.ArrayList;
 
@@ -57,16 +54,6 @@ public class FragmentSellingTxCenter extends BaseFragment<PeopleTxCenter> implem
     }
 
     public FragmentSellingTxCenter() {
-    }
-
-    @Override
-    public int getFragmentId() {
-        return 0;
-    }
-
-    @Override
-    public void ariseRetry(int type, Object... data) {
-
     }
 
     @Override
@@ -201,9 +188,6 @@ public class FragmentSellingTxCenter extends BaseFragment<PeopleTxCenter> implem
 
     @Override
     public void loadData() {
-        if (GlobalConfig.isSellerApp()) {
-            DrawerGetNotificationService.startService(MainApplication.getAppContext(), true, true);
-        }
         try {
             MenuCount.clear();
             MenuCount.add(cache.getInt(DrawerNotification.CACHE_SELLING_NEW_ORDER, 0));
