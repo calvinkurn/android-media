@@ -18,7 +18,7 @@ public class TrackingPageActivity extends BaseSimpleActivity {
     public static final String URL_LIVE_TRACKING = "url_live_tracking";
     public static final String ORDER_CALLER = "caller";
 
-/*    @DeepLink(ApplinkConst.ORDER_TRACKING)
+   /* @DeepLink(ApplinkConst.ORDER_TRACKING)
     public static Intent getCallingIntent(Context context, Bundle extras) {
         return createIntent(context,
                 extras.getString(ApplinkConst.Query.ORDER_TRACKING_ORDER_ID),

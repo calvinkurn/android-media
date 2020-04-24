@@ -798,7 +798,8 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                         String trackingUrl;
                         Uri uri = Uri.parse(actionButton.getUri());
                         trackingUrl = uri.getQueryParameter("url");
-                        Intent intentTracking = RouteManager.getIntent(getActivity(), ApplinkConstInternalLogistic.ORDER_TRACKING,  getArguments().getString(KEY_ORDER_ID));
+                        Intent intentTracking = RouteManager.getIntent(getActivity(), ApplinkConst.ORDER_TRACKING);
+                        intentTracking.putExtra(ApplinkConst.Query.ORDER_TRACKING_ORDER_ID, getArguments().getString(KEY_ORDER_ID));
                         intentTracking.putExtra(ApplinkConst.Query.ORDER_TRACKING_URL_LIVE_TRACKING, trackingUrl);
                         startActivity(intentTracking);
 

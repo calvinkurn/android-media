@@ -658,7 +658,8 @@ public class OrderDetailActivity extends TActivity
 
         /*new*/
         String caller = (getExtraUserMode() == SELLER_MODE) ? "seller" : "";
-        Intent intent = RouteManager.getIntent(this, ApplinkConstInternalLogistic.ORDER_TRACKING, orderId);
+        Intent intent = RouteManager.getIntent(this, ApplinkConst.ORDER_TRACKING);
+        intent.putExtra(ApplinkConst.Query.ORDER_TRACKING_ORDER_ID, orderId);
         intent.putExtra(ApplinkConst.Query.ORDER_TRACKING_URL_LIVE_TRACKING, trackingUrl);
         intent.putExtra(ApplinkConst.Query.ORDER_TRACKING_CALLER, caller);
         startActivity(intent);

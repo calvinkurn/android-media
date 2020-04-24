@@ -33,7 +33,6 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.applink.internal.ApplinkConstInternalLogistic;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.app.MainApplication;
@@ -579,7 +578,7 @@ public class FragmentSellingTransaction extends BaseFragment<SellingStatusTransa
                 routingAppLink += uriBuilder.toString();
                 RouteManager.route(getActivity(), routingAppLink);*/
 
-                Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalLogistic.ORDER_TRACKING);
+                Intent intent = RouteManager.getIntent(getActivity(), ApplinkConst.ORDER_TRACKING);
                 intent.putExtra(ApplinkConst.Query.ORDER_TRACKING_ORDER_ID, model.OrderId);
                 if (!TextUtils.isEmpty(model.liveTracking)) {
                     intent.putExtra(ApplinkConst.Query.ORDER_TRACKING_URL_LIVE_TRACKING, model.liveTracking);

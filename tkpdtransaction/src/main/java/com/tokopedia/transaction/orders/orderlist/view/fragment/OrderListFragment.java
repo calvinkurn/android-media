@@ -1011,7 +1011,8 @@ public class OrderListFragment extends BaseDaggerFragment implements
         String trackingUrl;
         Uri uri = Uri.parse(actionButtonUri);
         trackingUrl = uri.getQueryParameter("url");
-        Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalLogistic.ORDER_TRACKING, selectedOrderId);
+        Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalLogistic.ORDER_TRACKING);
+        intent.putExtra(ApplinkConst.Query.ORDER_TRACKING_ORDER_ID, selectedOrderId);
         intent.putExtra(ApplinkConst.Query.ORDER_TRACKING_URL_LIVE_TRACKING, trackingUrl);
         startActivity(intent);
     }
