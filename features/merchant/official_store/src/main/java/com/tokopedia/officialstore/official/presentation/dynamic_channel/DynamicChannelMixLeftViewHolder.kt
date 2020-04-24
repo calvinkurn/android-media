@@ -52,7 +52,6 @@ class DynamicChannelMixLeftViewHolder(
 
     override fun bind(element: DynamicChannelViewModel?) {
         element?.run {
-            dcEventHandler.flashSaleImpression(dynamicChannelData)
             setupHeader(dynamicChannelData)
             setupContent(dynamicChannelData)
         }
