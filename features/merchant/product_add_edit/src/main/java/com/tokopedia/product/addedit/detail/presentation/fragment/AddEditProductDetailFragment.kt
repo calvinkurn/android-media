@@ -358,13 +358,15 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
 
         // new condition
         val newCondition = ListItemUnify(getString(R.string.label_new), "")
-        newCondition?.setVariant(null, ListItemUnify.RADIO_BUTTON, null)
-        newCondition?.run { productConditions.add(NEW_PRODUCT_INDEX, this) }
+        newCondition.isBold = false
+        newCondition.setVariant(null, ListItemUnify.RADIO_BUTTON, null)
+        newCondition.run { productConditions.add(NEW_PRODUCT_INDEX, this) }
 
         // secondhand condition
         val secondHandCondition = ListItemUnify(getString(R.string.label_secondhand), "")
-        secondHandCondition?.setVariant(null, ListItemUnify.RADIO_BUTTON, getString(R.string.label_secondhand))
-        secondHandCondition?.run { productConditions.add(USED_PRODUCT_INDEX, this) }
+        secondHandCondition.isBold = false
+        secondHandCondition.setVariant(null, ListItemUnify.RADIO_BUTTON, getString(R.string.label_secondhand))
+        secondHandCondition.run { productConditions.add(USED_PRODUCT_INDEX, this) }
 
         // add new and secondhand condition to the view
         productConditionListView?.setData(productConditions)
@@ -441,8 +443,8 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             if (isChecked) {
                 val productPriceInput = productPriceField?.textFieldInput?.editableText.toString().replace(".", "")
                 wholeSaleInputFormsAdapter?.setProductPrice(productPriceInput)
-                val wholesalePriceExist = wholeSaleInputFormsAdapter?.itemCount != 0
-                if (!wholesalePriceExist) wholeSaleInputFormsAdapter?.addNewWholeSalePriceForm()
+                val wholesalePriceEmpty = wholeSaleInputFormsAdapter?.itemCount == 0
+                if (wholesalePriceEmpty) wholeSaleInputFormsAdapter?.addNewWholeSalePriceForm()
             }
         }
 
@@ -632,7 +634,9 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                     productCategoryLayout?.show()
                     productCategoryRecListView?.show()
                     val selectedCategory = ArrayList<ListItemUnify>()
-                    selectedCategory.add(ListItemUnify(categoryName, ""))
+                    val selectedCategoryItemUnify = ListItemUnify(categoryName, "")
+                    selectedCategoryItemUnify.isBold = false
+                    selectedCategory.add(selectedCategoryItemUnify)
                     productCategoryRecListView?.setData(selectedCategory)
                 }
                 REQUEST_CODE_DESCRIPTION -> {
@@ -919,7 +923,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                     productNameRecAdapter?.setProductNameInput(productNameInput)
                     viewModel.getProductNameRecommendation(query = productNameInput)
                 }
-                // show category recommendations to the product has no variants
+                // show category recommendations to the product that has no variants
                 if (viewModel.isAdding) viewModel.getCategoryRecommendation(productNameInput)
             } else {
                 // show empty recommendations for input with error
