@@ -64,7 +64,6 @@ import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
 import com.tokopedia.core.router.CustomerRouter;
 import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
-import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.AccessTokenRefresh;
 import com.tokopedia.core.util.AppWidgetUtil;
 import com.tokopedia.core.util.SessionHandler;
@@ -497,7 +496,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Class<?> getHomeClass(Context context) throws ClassNotFoundException {
+    public Class<?> getHomeClass() {
         return MainParentActivity.class;
     }
 
@@ -889,12 +888,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         notif.dismissAllActivedNotifications();
         NotificationModHandler.clearCacheAllNotification(activity);
 
-        Intent intent;
-        if (GlobalConfig.isSellerApp()) {
-            intent = getHomeIntent(activity);
-        } else {
-            intent = HomeRouter.getHomeActivity(activity);
-        }
+        Intent intent = getHomeIntent(activity);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         activity.startActivity(intent);
         AppWidgetUtil.sendBroadcastToAppWidget(activity);

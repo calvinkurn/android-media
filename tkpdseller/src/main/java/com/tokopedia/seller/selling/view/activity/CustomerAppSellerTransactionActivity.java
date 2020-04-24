@@ -38,7 +38,6 @@ import com.tokopedia.core.gcm.NotificationModHandler;
 import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
 import com.tokopedia.core.network.v4.NetworkConfig;
 import com.tokopedia.core.presenter.BaseView;
-import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.AppWidgetUtil;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
@@ -513,7 +512,7 @@ public class CustomerAppSellerTransactionActivity extends BaseTabActivity
     @Override
     public void onBackPressed() {
         if (isTaskRoot()) {
-            startActivity(HomeRouter.getHomeActivityInterfaceRouter(this));
+            startActivity(((com.tokopedia.core.TkpdCoreRouter) getApplication()).getHomeIntent(this));
             finish();
         } else {
             super.onBackPressed();

@@ -21,7 +21,6 @@ import com.tokopedia.core.gcm.base.BaseNotificationMessagingService;
 import com.tokopedia.core.gcm.base.IAppNotificationReceiver;
 import com.tokopedia.core.gcm.intentservices.PushNotificationIntentService;
 import com.tokopedia.core.gcm.utils.RouterUtils;
-import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 
 import java.util.Map;

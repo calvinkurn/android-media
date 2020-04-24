@@ -17,8 +17,6 @@ public interface TkpdCoreRouter {
 
     String INBOX_TICKET_ACTIVITY = "com.tokopedia.contactus.inboxticket2.view.activity.InboxListActivity";
 
-    String ACTIVITY_SIMPLE_HOME = "com.tokopedia.tkpd.home.SimpleHomeActivity";
-
     String FRAGMENT_TYPE = "FRAGMENT_TYPE";
     int WISHLIST_FRAGMENT = 1;
 
@@ -45,16 +43,6 @@ public interface TkpdCoreRouter {
             e.printStackTrace();
         }
         return parentIndexHomeClass;
-    }
-
-    static Class<?> getSimpleHomeActivityClass() {
-        try {
-            return RouterUtils.getActivityClass(ACTIVITY_SIMPLE_HOME);
-        } catch (ClassNotFoundException e) {
-
-            e.printStackTrace();
-            return null;
-        }
     }
 
     @Deprecated
@@ -85,17 +73,7 @@ public interface TkpdCoreRouter {
         return RouterUtils.getRouterFromContext(mContext).getInboxTalkCallingIntent(mContext);
     }
 
-    static Intent getSellerHomeActivity(Context context) {
-        return RouterUtils.getRouterFromContext(context).getSellerHomeActivityReal(context);
-    }
-
-    static Class<?> getDeeplinkClass(Context mContext) {
-        return RouterUtils.getRouterFromContext(mContext).getDeeplinkClass();
-    }
-
     Class<?> getDeeplinkClass();
-
-    Intent getSellerHomeActivityReal(Context context);
 
     Intent getInboxTalkCallingIntent(Context mContext);
 
@@ -113,7 +91,7 @@ public interface TkpdCoreRouter {
 
     Intent getHomeIntent(Context context);
 
-    Class<?> getHomeClass(Context context) throws ClassNotFoundException;
+    Class<?> getHomeClass();
 
     NotificationPass setNotificationPass(Context mContext, NotificationPass mNotificationPass, Bundle data, String notifTitle);
 

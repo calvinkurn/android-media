@@ -44,8 +44,6 @@ import com.tokopedia.core.gcm.utils.ApplinkUtils;
 import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
 import com.tokopedia.core.network.v4.NetworkConfig;
 import com.tokopedia.core.presenter.BaseView;
-import com.tokopedia.core.router.SellerAppRouter;
-import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.AppWidgetUtil;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core2.R;
@@ -623,12 +621,7 @@ public class ActivitySellingTransaction extends BaseActivity
     @Override
     public void onBackPressed() {
         if (isTaskRoot()) {
-            Intent homeIntent = null;
-            if (GlobalConfig.isSellerApp()) {
-                homeIntent = SellerAppRouter.getSellerHomeActivity(this);
-            } else {
-                homeIntent = HomeRouter.getHomeActivity(this);
-            }
+            Intent homeIntent = ((com.tokopedia.core.TkpdCoreRouter) getApplication()).getHomeIntent(this);
             startActivity(homeIntent);
             finish();
         } else {

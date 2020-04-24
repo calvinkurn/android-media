@@ -22,10 +22,10 @@ public class WishlistNotification extends BasePromoNotification {
     @Override
     protected void configureNotificationData(Bundle data) {
         mNotificationPass.mIntent = NotificationUtils.configurePromoIntent(
-                new Intent(mContext, TkpdCoreRouter.getSimpleHomeActivityClass()),
+                new Intent(mContext, ((TkpdCoreRouter) mContext.getApplicationContext()).getHomeClass()),
                 data
         );
-        mNotificationPass.classParentStack = TkpdCoreRouter.getSimpleHomeActivityClass();
+        mNotificationPass.classParentStack = ((TkpdCoreRouter) mContext.getApplicationContext()).getHomeClass();
         mNotificationPass.title = data.getString(ARG_NOTIFICATION_TITLE, "");
         mNotificationPass.ticker = data.getString(ARG_NOTIFICATION_DESCRIPTION, "");
         mNotificationPass.description = data.getString(ARG_NOTIFICATION_DESCRIPTION, "");

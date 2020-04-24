@@ -35,7 +35,6 @@ import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
-import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.session.model.AccountsModel;
 import com.tokopedia.core.session.model.AccountsParameter;
 import com.tokopedia.core.session.model.InfoModel;
@@ -89,6 +88,8 @@ import static com.tokopedia.webview.ConstantKt.KEY_TITLEBAR;
  */
 public class DeepLinkPresenterImpl implements DeepLinkPresenter {
 
+    public static final String EXTRA_INIT_FRAGMENT = "EXTRA_INIT_FRAGMENT";
+    public static final int INIT_STATE_FRAGMENT_HOTLIST = 3;
     public static final String IS_DEEP_LINK_SEARCH = "IS_DEEP_LINK_SEARCH";
 
     private static final String TAG = DeepLinkPresenterImpl.class.getSimpleName();
@@ -475,7 +476,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                 if (SessionHandler.isMsisdnVerified()) {
                     finishLogin();
                 } else if (MainApplication.getAppContext() instanceof TkpdCoreRouter) {
-                    Intent intentHome = HomeRouter.getHomeActivity(context);
+                    Intent intentHome = ((com.tokopedia.core.TkpdCoreRouter) context.getApplicationContext()).getHomeIntent(context);
                     intentHome.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     Intent intentPhoneVerif = ((TkpdCoreRouter) MainApplication.getAppContext())
                             .getPhoneVerificationActivationIntent(context);
@@ -508,7 +509,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     }
 
     private void finishLogin() {
-        Intent intent = HomeRouter.getHomeActivity(context);
+        Intent intent = ((com.tokopedia.core.TkpdCoreRouter) context.getApplicationContext()).getHomeIntent(context);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         context.startActivity(intent);
         context.finish();
@@ -775,7 +776,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     }
 
     private void openHomepage(Bundle defaultBundle) {
-        Intent intent = new Intent(context, HomeRouter.getHomeActivityClass());
+        Intent intent = new Intent(context, ((com.tokopedia.core.TkpdCoreRouter) context.getApplication()).getHomeClass());
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -803,9 +804,9 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     }
 
     private void openHomepageHot(Bundle bundle) {
-        Intent intent = HomeRouter.getHomeActivityInterfaceRouter(context);
+        Intent intent = ((com.tokopedia.core.TkpdCoreRouter) context.getApplicationContext()).getHomeIntent(context);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.putExtra(HomeRouter.EXTRA_INIT_FRAGMENT, HomeRouter.INIT_STATE_FRAGMENT_HOTLIST);
+        intent.putExtra(EXTRA_INIT_FRAGMENT, INIT_STATE_FRAGMENT_HOTLIST);
         intent.putExtras(bundle);
         context.startActivity(intent);
     }
