@@ -182,7 +182,7 @@ class OrderListViewHolder(itemView: View?, var orderListAnalytics: OrderListAnal
         if (invoiceText.isNotEmpty()) {
             invoice?.text = invoiceText
         } else {
-            invoice?.invisible()
+            invoice?.hide()
         }
     }
 
