@@ -31,9 +31,7 @@ class PlayBottomSheetViewModel @Inject constructor(
         private val postAddToCartUseCase: PostAddToCartUseCase,
         private val userSession: UserSessionInterface,
         private val dispatchers: CoroutineDispatcherProvider
-) : BaseViewModel(dispatchers.main) {
-
-    private val job = SupervisorJob()
+) : PlayBaseViewModel(dispatchers.main) {
 
     private val _observableAddToCart = MutableLiveData<Event<CartFeedbackUiModel>>()
     private val _observableProductVariant = MutableLiveData<PlayResult<VariantSheetUiModel>>()
@@ -44,14 +42,10 @@ class PlayBottomSheetViewModel @Inject constructor(
     val observableAddToCart: LiveData<Event<CartFeedbackUiModel>> = _observableAddToCart
     val observableProductVariant: LiveData<PlayResult<VariantSheetUiModel>> = _observableProductVariant
 
-    override fun flush() {
-        clearJob()
-    }
-
     fun getProductVariant(product: ProductLineUiModel, action: ProductAction) {
         _observableProductVariant.value = PlayResult.Loading(true)
 
-        launchCatchError(block = {
+        scope.launchCatchError(block = {
             val variantSheetUiModel = withContext(dispatchers.io) {
                 getProductVariantUseCase.params = getProductVariantUseCase.createParams(product.id)
                 val response = getProductVariantUseCase.executeOnBackground()
@@ -82,7 +76,7 @@ class PlayBottomSheetViewModel @Inject constructor(
     }
 
     fun addToCart(product: ProductLineUiModel, notes: String = "", action: ProductAction, type: BottomInsetsType) {
-        launchCatchError(block = {
+        scope.launchCatchError(block = {
             val responseCart = withContext(dispatchers.io) {
                 postAddToCartUseCase.parameters = AddToCartUseCase.getMinimumParams(
                         product.id,
@@ -109,13 +103,7 @@ class PlayBottomSheetViewModel @Inject constructor(
     }
 
     fun onFreezeBan() {
-        clearJob()
-    }
-
-    private fun clearJob() {
-        if (isActive && !masterJob.isCancelled) {
-            masterJob.cancelChildren()
-        }
+        flush()
     }
 
     private fun mappingResponseCart(addToCartDataModel: AddToCartDataModel,
@@ -131,9 +119,4 @@ class PlayBottomSheetViewModel @Inject constructor(
                     action = action,
                     bottomInsetsType = bottomInsetsType
             )
-
-    override fun onCleared() {
-        super.onCleared()
-        job.cancelChildren()
-    }
 }

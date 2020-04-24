@@ -3,7 +3,6 @@ package com.tokopedia.play.view.viewmodel
 import android.net.Uri
 import androidx.lifecycle.*
 import com.google.android.exoplayer2.ExoPlayer
-import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toAmountString
 import com.tokopedia.play.data.*
@@ -44,7 +43,7 @@ class PlayViewModel @Inject constructor(
         private val playSocket: PlaySocket,
         private val userSession: UserSessionInterface,
         private val dispatchers: CoroutineDispatcherProvider
-) : BaseViewModel(dispatchers.main) {
+) : PlayBaseViewModel(dispatchers.main) {
 
     val observableVOD: LiveData<out ExoPlayer>
         get() = playVideoManager.getObservableVideoPlayer()
@@ -243,10 +242,6 @@ class PlayViewModel @Inject constructor(
     }
 
     //region lifecycle
-    fun resumeWithChannelId(channelId: String) {
-        getChannelInfo(channelId)
-    }
-
     override fun onCleared() {
         super.onCleared()
         stateHandler.removeObserver(stateHandlerObserver)
@@ -254,10 +249,8 @@ class PlayViewModel @Inject constructor(
         stopPlayer()
     }
 
-    override fun flush() {
-        if (isActive && !masterJob.isCancelled) {
-            masterJob.cancelChildren()
-        }
+    fun resumeWithChannelId(channelId: String) {
+        getChannelInfo(channelId)
     }
     //endregion
 
@@ -410,7 +403,7 @@ class PlayViewModel @Inject constructor(
 
         var retryCount = 0
 
-        fun getChannelInfoResponse(channelId: String): Job = launchCatchError(block = {
+        fun getChannelInfoResponse(channelId: String): Job = scope.launchCatchError(block = {
             val channel = withContext(dispatchers.io) {
                 getChannelInfoUseCase.channelId = channelId
                 return@withContext getChannelInfoUseCase.executeOnBackground()
@@ -509,16 +502,16 @@ class PlayViewModel @Inject constructor(
     fun updateBadgeCart() {
         val channelInfo = _observableGetChannelInfo.value
         if (channelInfo != null && channelInfo is Success) {
-            launch { getBadgeCart(channelInfo.data.isShowCart) }
+            scope.launch { getBadgeCart(channelInfo.data.isShowCart) }
         }
     }
 
-    fun startWebSocket(channelId: String, gcToken: String, settings: Channel.Settings) {
+    private fun startWebSocket(channelId: String, gcToken: String, settings: Channel.Settings) {
         playSocket.channelId = channelId
         playSocket.gcToken = gcToken
         playSocket.settings = settings
         playSocket.connect(onMessageReceived = { response ->
-            launch {
+            scope.launch {
                 val result = withContext(dispatchers.io) {
                     val socketMapper = PlaySocketMapper(response)
                     socketMapper.mapping()
@@ -658,7 +651,7 @@ class PlayViewModel @Inject constructor(
 
         } catch (e: Exception) {
             _observableProductSheetContent.value = PlayResult.Failure(e) {
-                launch { if (channel.isShowProductTagging) getProductTagItems(channel) }
+                scope.launch { if (channel.isShowProductTagging) getProductTagItems(channel) }
             }
         }
     }
