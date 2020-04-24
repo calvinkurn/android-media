@@ -8,7 +8,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.talk.common.TalkConstants
+import com.tokopedia.talk.common.constants.TalkConstants
 import com.tokopedia.talk.common.di.TalkComponent
 import com.tokopedia.talk.feature.write.di.DaggerTalkWriteComponent
 import com.tokopedia.talk.feature.write.di.TalkWriteComponent
