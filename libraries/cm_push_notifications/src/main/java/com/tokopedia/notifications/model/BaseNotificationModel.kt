@@ -8,6 +8,7 @@ import android.os.Parcel
 import android.os.Parcelable
 import com.google.gson.Gson
 import com.google.gson.annotations.Expose
+import com.google.gson.annotations.SerializedName
 import com.tokopedia.graphql.CommonUtils
 import com.tokopedia.notifications.database.convertors.NotificationModeConverter
 import com.tokopedia.notifications.database.convertors.NotificationStatusConverter
@@ -142,6 +143,7 @@ data class BaseNotificationModel(
 
         @Expose
         @ColumnInfo(name = "webhook_params")
+        @SerializedName(value = "webhook_params")
         var webHookParam: String? = null
 
 ) : Parcelable {
