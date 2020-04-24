@@ -243,10 +243,10 @@ class PlayInteractionPortraitManager(
             connect(id, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START)
             connect(id, ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END)
 
-            if (videoOrientation.isHorizontal) {
+            if (videoOrientation is VideoOrientation.Horizontal) {
                 connect(id, ConstraintSet.TOP, statsInfoComponentId, ConstraintSet.BOTTOM, offset16)
                 clear(id, ConstraintSet.BOTTOM)
-                setDimensionRatio(id, "H,16:9")
+                setDimensionRatio(id, "H, ${videoOrientation.aspectRatio}")
             } else {
                 connect(id, ConstraintSet.TOP, statsInfoComponentId, ConstraintSet.BOTTOM)
                 connect(id, ConstraintSet.BOTTOM, pinnedComponentId, ConstraintSet.TOP, offset16)

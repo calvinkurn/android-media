@@ -38,6 +38,20 @@
 
         </FrameLayout>
 
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/iv_thumbnail"
+            android:layout_height="@dimen/layout_lvl0"
+            android:layout_width="@dimen/layout_lvl0"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            tools:layout_width="match_parent"
+            tools:layout_height="match_parent"
+            tools:visibility="visible"
+            />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </merge>
