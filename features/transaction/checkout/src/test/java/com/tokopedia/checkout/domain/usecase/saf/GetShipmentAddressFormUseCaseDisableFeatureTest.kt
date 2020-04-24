@@ -2,12 +2,13 @@ package com.tokopedia.checkout.domain.usecase.saf
 
 import com.google.gson.Gson
 import com.tokopedia.network.utils.TKPDMapParam
-import com.tokopedia.purchase_platform.UnitTestFileUtils
-import com.tokopedia.purchase_platform.features.checkout.data.model.response.shipment_address_form.ShipmentAddressFormDataResponse
-import com.tokopedia.purchase_platform.features.checkout.data.repository.ICheckoutRepository
-import com.tokopedia.purchase_platform.features.checkout.domain.mapper.ShipmentMapper
-import com.tokopedia.purchase_platform.features.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData
-import com.tokopedia.purchase_platform.features.checkout.domain.usecase.GetShipmentAddressFormUseCase
+import com.tokopedia.checkout.UnitTestFileUtils
+import com.tokopedia.checkout.data.model.response.shipment_address_form.ShipmentAddressFormDataResponse
+import com.tokopedia.checkout.data.repository.ICheckoutRepository
+import com.tokopedia.checkout.domain.mapper.ShipmentMapper
+import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData
+import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormUseCase
+import com.tokopedia.purchase_platform.common.utils.each
 import com.tokopedia.usecase.RequestParams
 import io.mockk.every
 import io.mockk.mockk

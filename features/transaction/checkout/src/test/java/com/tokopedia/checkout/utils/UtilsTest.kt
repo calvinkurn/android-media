@@ -1,5 +1,6 @@
 package com.tokopedia.checkout.utils
 
+import com.tokopedia.purchase_platform.common.utils.convertToString
 import org.junit.Assert.assertEquals
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.specification.describe

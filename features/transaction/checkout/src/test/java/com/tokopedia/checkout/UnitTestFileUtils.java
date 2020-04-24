@@ -1,4 +1,4 @@
-package com.tokopedia.purchase_platform;
+package com.tokopedia.checkout;
 
 import java.io.IOException;
 import java.io.InputStream;
