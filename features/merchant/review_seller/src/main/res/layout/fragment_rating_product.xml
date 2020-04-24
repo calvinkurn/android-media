@@ -32,13 +32,6 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <com.tokopedia.globalerror.GlobalError
-                    android:id="@+id/globalError_reviewSeller"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/spacing_lvl4"
-                    android:gravity="center"
-                    android:visibility="gone" />
             </LinearLayout>
 
             <androidx.appcompat.widget.Toolbar
@@ -87,6 +80,17 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
+            <com.tokopedia.globalerror.GlobalError
+                android:id="@+id/globalError_reviewSeller"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_lvl4"
+                android:layout_gravity="center"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:visibility="gone" />
 
             <include
                 android:id="@+id/emptyState_reviewProduct"

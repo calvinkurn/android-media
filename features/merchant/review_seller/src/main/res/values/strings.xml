@@ -48,4 +48,8 @@
     <string name="default_filter_detail">30 Hari Terakhir</string>
     <string name="topic_review_detail_label">Topik Populer</string>
     <string name="count_review_label">Menampilkan %s ulasan dari pembeli</string>
+    <string name="label_by">Oleh</string>
+    <string name="variant_feedback_label">Varian:</string>
+    <string name="otomatis_reply">Balasan otomatis</string>
+    <string name="review_not_found">Ulasan tidak terserdia.</string>
 </resources>

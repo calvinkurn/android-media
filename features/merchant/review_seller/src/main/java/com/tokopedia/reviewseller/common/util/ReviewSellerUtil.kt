@@ -7,32 +7,8 @@ import com.tokopedia.unifycomponents.list.ListItemUnify
 import com.tokopedia.unifycomponents.list.ListUnify
 import java.math.RoundingMode
 import java.text.DecimalFormat
-import java.util.*
 
 object ReviewSellerUtil {
-
-    fun setSelectedFilterOrSort(listUnify: ListUnify, position: Int) {
-        with(listUnify) {
-            val clickedItem = this.getItemAtPosition(position) as ListItemUnify
-            when (choiceMode) {
-                ListView.CHOICE_MODE_SINGLE -> {
-                    (this.getValue("array") as ArrayList<ListItemUnify>).filter { it.listRightRadiobtn?.isChecked ?: false }
-                            .filterNot { it == clickedItem }
-                            .onEach { it.listRightRadiobtn?.isChecked = false }
-
-                    clickedItem.listRightRadiobtn?.isChecked = true
-                }
-            }
-        }
-    }
-
-    private fun SortFilterItem.toggle() {
-        type = if(type == ChipsUnify.TYPE_NORMAL) {
-            ChipsUnify.TYPE_SELECTED
-        } else {
-            ChipsUnify.TYPE_NORMAL
-        }
-    }
 
     fun setFilterMultipleFormat(old: String, newValue: String): String {
         return String.format("$old,$newValue")
@@ -41,13 +17,41 @@ object ReviewSellerUtil {
     fun setFilterJoinValueFormat(old: String, newValue: String): String {
         return String.format("$old;$newValue")
     }
-
 }
 
-fun Float.roundDecimal(): String {
-    val df = DecimalFormat("#.##")
+fun SortFilterItem.toggle() {
+    type = if (type == ChipsUnify.TYPE_NORMAL) {
+        ChipsUnify.TYPE_SELECTED
+    } else {
+        ChipsUnify.TYPE_NORMAL
+    }
+}
+
+fun ListUnify.setSelectedFilterOrSort(items: List<ListItemUnify>, position: Int) {
+    val clickedItem = this.getItemAtPosition(position) as ListItemUnify
+    when (choiceMode) {
+        ListView.CHOICE_MODE_SINGLE -> {
+            items.filter {
+                it.listRightRadiobtn?.isChecked ?: false
+            }.filterNot { it == clickedItem }.onEach { it.listRightRadiobtn?.isChecked = false }
+
+            clickedItem.listRightRadiobtn?.isChecked = true
+        }
+    }
+}
+
+fun Float?.roundDecimal(): String {
+    val df = DecimalFormat("#.#")
     df.roundingMode = RoundingMode.CEILING
-    return df.format(this)
+    return df.format(this).isDecimalLengthOne()
+}
+
+fun String?.isDecimalLengthOne(): String {
+    return if(this?.length == 1) {
+        "$this.0"
+    } else {
+        "$this"
+    }
 }
 
 fun Map<String, Any>.getKeyByValue(value: String?): String {
@@ -64,8 +68,4 @@ fun Map<String, List<Any>>.getValueListByKey(key: String?): List<Any>? {
 
 fun Map<String, Map<String, Any>>.geValueMapByKey(key: String?): Map<String, Any>? {
     return this.filterKeys { it == key }.values.firstOrNull()
-}
-
-fun <T : Any> T.getValue(field: String): Any {
-    return this.javaClass.getDeclaredField(field).apply { isAccessible = true }.get(this)
 }
