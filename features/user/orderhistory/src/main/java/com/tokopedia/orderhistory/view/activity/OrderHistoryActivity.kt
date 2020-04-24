@@ -9,6 +9,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.orderhistory.R
 import com.tokopedia.orderhistory.di.DaggerOrderHistoryComponent
 import com.tokopedia.orderhistory.di.OrderHistoryComponent
 import com.tokopedia.orderhistory.view.fragment.OrderHistoryFragment
@@ -56,6 +57,7 @@ class OrderHistoryActivity : BaseSimpleActivity(), HasComponent<OrderHistoryComp
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             toolbar.elevation = 0f
         }
+        supportActionBar?.setTitle(R.string.title_orderhistory)
     }
 
 }
