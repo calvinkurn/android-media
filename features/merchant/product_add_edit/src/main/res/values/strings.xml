@@ -96,7 +96,7 @@
     <string name="label_duration_amount">Jumlah</string>
     <string name="label_day">Hari</string>
     <string name="label_week">Minggu</string>
-    <string name="error_empty_preorder_duration">Durasi tidak boleh kosong</string>
+    <string name="error_empty_preorder_duration">Durasi minimal 1</string>
     <string name="error_preorder_duration_minimum_is_one">Durasi minimal 1</string>
     <string name="error_preorder_duration_cant_exceed_ninety_days">Durasi melebihi batas maks. \n90 hari</string>
     <string name="error_preorder_duration_cant_exceed_thirteen_weeks">Durasi melebihi batas maks. \n13 minggu</string>
