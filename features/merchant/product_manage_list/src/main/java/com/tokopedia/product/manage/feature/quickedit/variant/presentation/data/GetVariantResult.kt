@@ -1,4 +1,4 @@
-package com.tokopedia.product.manage.feature.quickedit.variant.data.model.result
+package com.tokopedia.product.manage.feature.quickedit.variant.presentation.data
 
 import com.tokopedia.product.manage.feature.quickedit.variant.adapter.model.ProductVariant
 import com.tokopedia.product.manage.feature.quickedit.variant.data.model.Picture

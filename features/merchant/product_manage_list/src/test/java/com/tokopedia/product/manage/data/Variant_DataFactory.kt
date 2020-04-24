@@ -8,7 +8,7 @@ import com.tokopedia.product.manage.feature.quickedit.variant.data.model.Product
 import com.tokopedia.product.manage.feature.quickedit.variant.data.model.Selection
 import com.tokopedia.product.manage.feature.quickedit.variant.data.model.Variant
 import com.tokopedia.product.manage.feature.quickedit.variant.data.model.response.GetProductVariantResponse
-import com.tokopedia.product.manage.feature.quickedit.variant.data.model.result.EditVariantResult
+import com.tokopedia.product.manage.feature.quickedit.variant.presentation.data.EditVariantResult
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 
 fun createProductVariantResponse(

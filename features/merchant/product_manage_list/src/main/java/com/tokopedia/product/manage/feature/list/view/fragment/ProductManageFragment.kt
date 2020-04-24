@@ -81,7 +81,7 @@ import com.tokopedia.product.manage.feature.quickedit.price.data.model.EditPrice
 import com.tokopedia.product.manage.feature.quickedit.price.presentation.fragment.ProductManageQuickEditPriceFragment
 import com.tokopedia.product.manage.feature.quickedit.stock.data.model.EditStockResult
 import com.tokopedia.product.manage.feature.quickedit.stock.presentation.fragment.ProductManageQuickEditStockFragment
-import com.tokopedia.product.manage.feature.quickedit.variant.data.model.result.EditVariantResult
+import com.tokopedia.product.manage.feature.quickedit.variant.presentation.data.EditVariantResult
 import com.tokopedia.product.manage.feature.quickedit.variant.presentation.ui.QuickEditVariantPriceBottomSheet
 import com.tokopedia.product.manage.feature.quickedit.variant.presentation.ui.QuickEditVariantStockBottomSheet
 import com.tokopedia.product.manage.item.imagepicker.imagepickerbuilder.AddProductImagePickerBuilder

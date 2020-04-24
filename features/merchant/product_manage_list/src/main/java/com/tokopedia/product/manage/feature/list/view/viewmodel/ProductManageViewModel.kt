@@ -30,7 +30,7 @@ import com.tokopedia.product.manage.feature.quickedit.price.domain.EditPriceUseC
 import com.tokopedia.product.manage.feature.quickedit.stock.data.model.EditStockResult
 import com.tokopedia.product.manage.feature.quickedit.stock.domain.EditStockUseCase
 import com.tokopedia.product.manage.feature.quickedit.variant.data.mapper.ProductManageVariantMapper.mapResultToUpdateParam
-import com.tokopedia.product.manage.feature.quickedit.variant.data.model.result.EditVariantResult
+import com.tokopedia.product.manage.feature.quickedit.variant.presentation.data.EditVariantResult
 import com.tokopedia.product.manage.feature.quickedit.variant.domain.EditProductVariantUseCase
 import com.tokopedia.product.manage.oldlist.domain.PopupManagerAddProductUseCase
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.Product

@@ -8,7 +8,7 @@ import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.feature.quickedit.variant.adapter.ProductVariantAdapter
 import com.tokopedia.product.manage.feature.quickedit.variant.adapter.factory.ProductVariantStockAdapterFactoryImpl
 import com.tokopedia.product.manage.feature.quickedit.variant.adapter.viewholder.ProductVariantStockViewHolder.ProductVariantStockListener
-import com.tokopedia.product.manage.feature.quickedit.variant.data.model.result.EditVariantResult
+import com.tokopedia.product.manage.feature.quickedit.variant.presentation.data.EditVariantResult
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 
 class QuickEditVariantStockBottomSheet(

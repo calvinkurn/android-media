@@ -9,7 +9,7 @@ import com.tokopedia.product.manage.feature.quickedit.common.constant.EditProduc
 import com.tokopedia.product.manage.feature.quickedit.variant.adapter.ProductVariantAdapter
 import com.tokopedia.product.manage.feature.quickedit.variant.adapter.factory.ProductVariantPriceAdapterFactoryImpl
 import com.tokopedia.product.manage.feature.quickedit.variant.adapter.viewholder.ProductVariantPriceViewHolder.*
-import com.tokopedia.product.manage.feature.quickedit.variant.data.model.result.EditVariantResult
+import com.tokopedia.product.manage.feature.quickedit.variant.presentation.data.EditVariantResult
 
 class QuickEditVariantPriceBottomSheet(
     private val onSaveVariantsPrice: (EditVariantResult) -> Unit

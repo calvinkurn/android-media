@@ -25,7 +25,7 @@ import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.product.manage.ProductManageInstance
 import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.feature.quickedit.variant.adapter.model.ProductVariant
-import com.tokopedia.product.manage.feature.quickedit.variant.data.model.result.EditVariantResult
+import com.tokopedia.product.manage.feature.quickedit.variant.presentation.data.EditVariantResult
 import com.tokopedia.product.manage.feature.quickedit.variant.di.DaggerQuickEditVariantComponent
 import com.tokopedia.product.manage.feature.quickedit.variant.di.QuickEditVariantComponent
 import com.tokopedia.product.manage.feature.quickedit.variant.presentation.viewmodel.QuickEditVariantViewModel

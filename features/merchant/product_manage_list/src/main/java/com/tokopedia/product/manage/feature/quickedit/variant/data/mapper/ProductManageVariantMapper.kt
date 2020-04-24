@@ -3,14 +3,14 @@ package com.tokopedia.product.manage.feature.quickedit.variant.data.mapper
 import com.tokopedia.product.manage.feature.multiedit.data.param.ShopParam
 import com.tokopedia.product.manage.feature.quickedit.variant.adapter.model.ProductVariant
 import com.tokopedia.product.manage.feature.quickedit.variant.data.model.GetProductV3
-import com.tokopedia.product.manage.feature.quickedit.variant.data.model.result.GetVariantResult
+import com.tokopedia.product.manage.feature.quickedit.variant.presentation.data.GetVariantResult
 import com.tokopedia.product.manage.feature.quickedit.variant.data.model.Selection
 import com.tokopedia.product.manage.feature.quickedit.variant.data.model.param.UpdateVariantParam
 import com.tokopedia.product.manage.feature.quickedit.variant.data.model.param.VariantInputParam
 import com.tokopedia.product.manage.feature.quickedit.variant.data.model.param.VariantProductInput
 import com.tokopedia.product.manage.feature.quickedit.variant.data.model.param.VariantSelectionInput
 import com.tokopedia.product.manage.feature.quickedit.variant.data.model.param.VariantSizeChartInput
-import com.tokopedia.product.manage.feature.quickedit.variant.data.model.result.EditVariantResult
+import com.tokopedia.product.manage.feature.quickedit.variant.presentation.data.EditVariantResult
 
 object ProductManageVariantMapper {
 
