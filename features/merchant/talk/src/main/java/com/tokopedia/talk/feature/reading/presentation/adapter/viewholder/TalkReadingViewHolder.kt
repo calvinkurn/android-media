@@ -32,7 +32,7 @@ class TalkReadingViewHolder(view: View, private val onThreadClickListener: OnThr
                     showAnswer(answer.content, questionID)
                     showNumberOfLikesWithCondition(answer.likeCount)
                     showNumberOfAttachedProductsWithCondition(answer.attachedProductCount)
-                    showNumberOfOtherAnswersWithCondition(totalAnswer)
+                    showNumberOfOtherAnswersWithCondition(totalAnswer, questionID)
                     hideNoAnswersText()
                 }
             } else {
@@ -117,11 +117,16 @@ class TalkReadingViewHolder(view: View, private val onThreadClickListener: OnThr
         }
     }
 
-    private fun showNumberOfOtherAnswersWithCondition(otherAnswers: Int) {
+    private fun showNumberOfOtherAnswersWithCondition(otherAnswers: Int, questionId: String) {
         val answersToShow = otherAnswers - 1
         if(answersToShow > 0) {
-            itemView.seeOtherAnswers.text = String.format(OTHER_ANSWERS, answersToShow)
-            itemView.seeOtherAnswers.visibility = View.VISIBLE
+            itemView.seeOtherAnswers.apply {
+                text = String.format(OTHER_ANSWERS, answersToShow)
+                setOnClickListener {
+                    onThreadClickListener.onThreadClicked(questionId)
+                }
+                visibility = View.VISIBLE
+            }
         }
     }
 

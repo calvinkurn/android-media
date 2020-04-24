@@ -12,6 +12,6 @@ class TalkReadingShimmerViewHolder(view: View) : AbstractViewHolder<TalkReadingS
     }
 
     override fun bind(element: TalkReadingShimmerModel) {
-
+        // No Op
     }
 }
