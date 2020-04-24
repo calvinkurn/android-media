@@ -1,6 +1,7 @@
 package com.tokopedia.product.detail
 
 import android.util.Log
+import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import com.tokopedia.analytics.performance.util.PltPerformanceData
 import com.tokopedia.product.detail.view.activity.ProductDetailActivity
@@ -15,10 +16,13 @@ class PltProductPerformanceTest {
     private val TEST_CASE_PAGE_LOAD_TIME_PERFORMANCE = "pdp_test_case_page_load_time"
 
     @get:Rule
-    var activityRule: ActivityTestRule<ProductDetailActivity> = ActivityTestRule(ProductDetailActivity::class.java)
+    var activityRule: ActivityTestRule<ProductDetailActivity> = ActivityTestRule(ProductDetailActivity::class.java, false, false)
 
     @Test
     fun testPageLoadTimePerformance() {
+        val context = InstrumentationRegistry.getInstrumentation().targetContext
+        val intent = ProductDetailActivity.createIntent(context, "220891000")
+        activityRule.launchActivity(intent)
         waitForData()
         savePLTPerformanceResultData(TEST_CASE_PAGE_LOAD_TIME_PERFORMANCE)
         activityRule.activity.finish()
@@ -54,7 +58,7 @@ class PltProductPerformanceTest {
                         "${pltPerformanceData.renderPageDuration}," +
                         "${pltPerformanceData.overallDuration}," +
                         "$datasource\n")
-        Log.e("datanya","datanya" + pltPerformanceData.startPageDuration.toString() + pltPerformanceData.networkRequestDuration.toString())
+        Log.e("datanya", "datanya" + pltPerformanceData.startPageDuration.toString() + pltPerformanceData.networkRequestDuration.toString())
 
         val perfReport = File(perfDataDir, "report.csv")
         perfReport.appendText(
@@ -80,7 +84,6 @@ class PltProductPerformanceTest {
         val indexperformance = "Index Performance (FPI)"
 
         perfDataDir.mkdirs()
-        Log.e("mkdirsuccess","sukses" + perfDataDir.absolutePath)
         val perfReportPlt = File(perfDataDir, "report-plt.csv")
         perfReportPlt.appendText("" +
                 "$testcase," +
