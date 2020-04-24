@@ -259,6 +259,8 @@ public class TopChatAnalytics {
         ));
     }
 
+    public static final int PRODUCT_INDEX = 1;
+
     // #AP6
     public void eventClickProductThumbnailEE(
             @NotNull ProductAttachmentViewModel product,
@@ -275,7 +277,7 @@ public class TopChatAnalytics {
                 product.getPriceInt(),
                 null,
                 "/chat",
-                1
+                PRODUCT_INDEX
         );
         products.add(topChatProduct);
 
@@ -308,7 +310,7 @@ public class TopChatAnalytics {
                 product.getVariants().toString(),
                 product.getPriceInt() + 0.0,
                 null,
-                1,
+                PRODUCT_INDEX,
                 getField(String.valueOf(product.getBlastId())),
                 getField(String.valueOf(product.getBlastId()))
         );
