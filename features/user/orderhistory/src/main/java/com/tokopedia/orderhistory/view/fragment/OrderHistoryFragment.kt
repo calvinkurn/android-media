@@ -4,11 +4,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.orderhistory.R
 import com.tokopedia.orderhistory.analytic.OrderHistoryAnalytic
 import com.tokopedia.orderhistory.di.OrderHistoryComponent
@@ -24,22 +26,29 @@ class OrderHistoryFragment : BaseListFragment<Visitable<*>, OrderHistoryTypeFact
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-
     @Inject
     lateinit var analytic: OrderHistoryAnalytic
 
     private val viewModelFragmentProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
     private val viewModel by lazy { viewModelFragmentProvider.get(OrderHistoryViewModel::class.java) }
-
     private lateinit var adapter: OrderHistoryAdapter
+    private var shopId: String? = null
 
     override fun getRecyclerViewResourceId() = R.id.recycler_view
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_orderhistory_order_history, container, false).also {
-            viewModel.initializeArguments(arguments)
+            initializeArguments()
             setupObserver()
         }
+    }
+
+    private fun initializeArguments() {
+        shopId = arguments?.getString(ApplinkConst.OrderHistory.PARAM_SHOP_ID)
     }
 
     private fun setupObserver() {

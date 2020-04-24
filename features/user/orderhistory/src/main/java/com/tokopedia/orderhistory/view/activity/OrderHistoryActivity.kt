@@ -1,7 +1,5 @@
 package com.tokopedia.orderhistory.view.activity
 
-import android.app.Activity
-import android.content.Intent
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
@@ -10,15 +8,15 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.orderhistory.R
-import com.tokopedia.orderhistory.di.OrderHistoryComponent
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.orderhistory.di.DaggerOrderHistoryComponent
+import com.tokopedia.orderhistory.di.OrderHistoryComponent
 import com.tokopedia.orderhistory.view.fragment.OrderHistoryFragment
 
 class OrderHistoryActivity : BaseSimpleActivity(), HasComponent<OrderHistoryComponent> {
 
     override fun getNewFragment(): Fragment? {
-        return OrderHistoryFragment.createInstance(intent.extras)
+        return OrderHistoryFragment.createInstance(getArgument())
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -33,6 +31,14 @@ class OrderHistoryActivity : BaseSimpleActivity(), HasComponent<OrderHistoryComp
                 .builder()
                 .baseAppComponent((application as BaseMainApplication).baseAppComponent)
                 .build()
+    }
+
+    private fun getArgument(): Bundle? {
+        val bundle = Bundle()
+        val shopId = intent.data?.lastPathSegment ?: return bundle
+        return bundle.apply {
+            putString(ApplinkConst.OrderHistory.PARAM_SHOP_ID, shopId)
+        }
     }
 
     private fun useLightNotificationBar() {
