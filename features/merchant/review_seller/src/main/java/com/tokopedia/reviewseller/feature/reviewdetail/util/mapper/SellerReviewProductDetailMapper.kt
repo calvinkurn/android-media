@@ -5,14 +5,16 @@ import com.tokopedia.reviewseller.feature.reviewdetail.data.ProductReviewDetailO
 import com.tokopedia.reviewseller.feature.reviewdetail.view.model.*
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
+import com.tokopedia.user.session.UserSessionInterface
 
 object SellerReviewProductDetailMapper {
 
     fun mapToProductFeedbackDetailUiModel(productFeedbackDataPerProduct:
-                                          ProductFeedbackDetailResponse.ProductFeedbackDataPerProduct): ProductFeedbackDetailUiModel {
+                                          ProductFeedbackDetailResponse.ProductFeedbackDataPerProduct,
+                                          userSession: UserSessionInterface): ProductFeedbackDetailUiModel {
         return ProductFeedbackDetailUiModel().apply {
             ratingBarList = mapToRatingBarUiModel(productFeedbackDataPerProduct)
-            productFeedbackDetailList = mapToFeedbackUiModel(productFeedbackDataPerProduct)
+            productFeedbackDetailList = mapToFeedbackUiModel(productFeedbackDataPerProduct, userSession)
             topicList = mapToTopicUiModel(productFeedbackDataPerProduct)
         }
     }
@@ -43,7 +45,8 @@ object SellerReviewProductDetailMapper {
         return topicListUiModel
     }
 
-    private fun mapToFeedbackUiModel(productFeedbackDataPerProduct: ProductFeedbackDetailResponse.ProductFeedbackDataPerProduct): List<FeedbackUiModel> {
+    private fun mapToFeedbackUiModel(productFeedbackDataPerProduct: ProductFeedbackDetailResponse.ProductFeedbackDataPerProduct,
+                                     userSession: UserSessionInterface): List<FeedbackUiModel> {
         val feedbackListUiModel = mutableListOf<FeedbackUiModel>()
 
         val mapAttachment = mutableListOf<FeedbackUiModel.Attachment>()
@@ -69,7 +72,8 @@ object SellerReviewProductDetailMapper {
                             reviewText = it.reviewText,
                             reviewTime = it.reviewTime,
                             reviewerName = it.reviewerName,
-                            variantName = it.variantName
+                            variantName = it.variantName,
+                            sellerUser = userSession.name
                     )
             )
         }
