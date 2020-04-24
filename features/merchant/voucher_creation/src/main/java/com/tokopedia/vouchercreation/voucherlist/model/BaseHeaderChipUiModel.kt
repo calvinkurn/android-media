@@ -17,9 +17,8 @@ sealed class BaseHeaderChipUiModel(
     data class HeaderChip(
             var text: String = "",
             @ChipType val type: Int,
-            var isActive: Boolean = false,
-            override var isVisible: Boolean = true
-    ) : BaseHeaderChipUiModel(isVisible)
+            var isActive: Boolean = false
+    ) : BaseHeaderChipUiModel()
 
     data class ResetChip(
             override var isVisible: Boolean = false
