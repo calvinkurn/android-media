@@ -95,7 +95,6 @@ class SellerReviewListViewModel @Inject constructor(
                 page
         )
 
-
         val productRatingListResponse = getReviewProductListUseCase.executeOnBackground()
 //        val isHastNextPage = ReviewSellerUtil.isHasNextPage(page, ReviewSellerConstant.DEFAULT_PER_PAGE, productRatingListResponse.data.size)
         return Pair(

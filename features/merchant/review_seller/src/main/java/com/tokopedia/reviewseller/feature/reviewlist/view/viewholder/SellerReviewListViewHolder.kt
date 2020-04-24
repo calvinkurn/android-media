@@ -5,6 +5,7 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.reviewseller.R
+import com.tokopedia.reviewseller.common.util.roundDecimal
 import com.tokopedia.reviewseller.feature.reviewlist.view.model.ProductReviewUiModel
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
@@ -25,7 +26,8 @@ class SellerReviewListViewHolder(itemView: View,
     override fun bind(element: ProductReviewUiModel) {
         ivItemProduct.setImageUrl(element.productImageUrl.orEmpty())
         tgTitleProduct.text = element.productName
-        tgRatingCount.text = element.rating?.toString()
+
+        tgRatingCount.text = element.rating?.roundDecimal()
         tgReviewCount.text = String.format(getString(R.string.period_seller_review), element.reviewCount.toString())
 
         itemView.setOnClickListener {
