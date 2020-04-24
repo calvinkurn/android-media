@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -55,10 +54,6 @@ class OrderHistoryFragment : BaseListFragment<Visitable<*>, OrderHistoryTypeFact
 
     }
 
-    private fun isFirstPage(): Boolean {
-        return currentPage == 1
-    }
-
     override fun getScreenName(): String = screenName
 
     override fun initInjector() {
@@ -72,7 +67,7 @@ class OrderHistoryFragment : BaseListFragment<Visitable<*>, OrderHistoryTypeFact
     override fun onItemClicked(t: Visitable<*>?) {}
 
     override fun loadData(page: Int) {
-
+        viewModel.loadProductHistory(shopId)
     }
 
     override fun createAdapterInstance(): BaseListAdapter<Visitable<*>, OrderHistoryTypeFactory> {

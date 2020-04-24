@@ -1,12 +1,12 @@
 package com.tokopedia.orderhistory.view.adapter
 
-import android.view.View
-import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
-import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
-import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.orderhistory.view.adapter.viewholder.OrderHistoryViewHolder
+import com.tokopedia.orderhistory.data.Product
 
 class OrderHistoryTypeFactoryImpl() : BaseAdapterTypeFactory(), OrderHistoryTypeFactory {
+
+    override fun type(product: Product): Int {
+        return -1
+    }
 
 }
