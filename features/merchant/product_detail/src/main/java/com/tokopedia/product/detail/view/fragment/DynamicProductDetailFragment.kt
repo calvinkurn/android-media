@@ -2240,6 +2240,9 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                         trackerListName = trackerListNamePdp ?: ""
                         isTradeIn = data.data.isTradeIn
                         shippingPrice = viewModel.shippingMinimumPrice
+                        productName = data.getProductName
+                        category = data.basic.category.name
+                        price = data.finalPrice.toString()
                     }
                     viewModel.addToCart(addToCartOcsRequestParams)
                 }
