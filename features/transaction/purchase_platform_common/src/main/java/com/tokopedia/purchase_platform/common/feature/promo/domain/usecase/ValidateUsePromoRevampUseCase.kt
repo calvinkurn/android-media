@@ -1,4 +1,4 @@
-package com.tokopedia.purchase_platform.common.feature.promo.domain
+package com.tokopedia.purchase_platform.common.feature.promo.domain.usecase
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext

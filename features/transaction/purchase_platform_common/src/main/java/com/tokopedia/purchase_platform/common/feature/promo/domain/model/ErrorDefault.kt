@@ -1,4 +1,4 @@
-package com.tokopedia.checkout.data.model.response.shipment_address_form.promo_checkout
+package com.tokopedia.purchase_platform.common.feature.promo.domain.model
 
 import com.google.gson.annotations.SerializedName
 

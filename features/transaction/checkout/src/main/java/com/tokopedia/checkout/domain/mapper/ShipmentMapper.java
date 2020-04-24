@@ -22,15 +22,15 @@ import com.tokopedia.checkout.data.model.response.shipment_address_form.Addresse
 import com.tokopedia.checkout.data.model.response.shipment_address_form.CampaignTimer;
 import com.tokopedia.checkout.data.model.response.shipment_address_form.CheckoutDisabledFeaturesKt;
 import com.tokopedia.checkout.data.model.response.shipment_address_form.ShipmentAddressFormDataResponse;
-import com.tokopedia.checkout.data.model.response.shipment_address_form.promo_checkout.AdditionalInfo;
-import com.tokopedia.checkout.data.model.response.shipment_address_form.promo_checkout.CartEmptyInfo;
-import com.tokopedia.checkout.data.model.response.shipment_address_form.promo_checkout.Data;
-import com.tokopedia.checkout.data.model.response.shipment_address_form.promo_checkout.ErrorDetail;
-import com.tokopedia.checkout.data.model.response.shipment_address_form.promo_checkout.LastApply;
-import com.tokopedia.checkout.data.model.response.shipment_address_form.promo_checkout.MessageInfo;
-import com.tokopedia.checkout.data.model.response.shipment_address_form.promo_checkout.PromoSAFResponse;
-import com.tokopedia.checkout.data.model.response.shipment_address_form.promo_checkout.TrackingDetailsItem;
-import com.tokopedia.checkout.data.model.response.shipment_address_form.promo_checkout.UsageSummaries;
+import com.tokopedia.purchase_platform.common.feature.promo.domain.model.AdditionalInfo;
+import com.tokopedia.purchase_platform.common.feature.promo.domain.model.CartEmptyInfo;
+import com.tokopedia.purchase_platform.common.feature.promo.domain.model.Data;
+import com.tokopedia.purchase_platform.common.feature.promo.domain.model.ErrorDetail;
+import com.tokopedia.purchase_platform.common.feature.promo.domain.model.LastApply;
+import com.tokopedia.purchase_platform.common.feature.promo.domain.model.MessageInfo;
+import com.tokopedia.purchase_platform.common.feature.promo.domain.model.PromoSAFResponse;
+import com.tokopedia.purchase_platform.common.feature.promo.domain.model.TrackingDetailsItem;
+import com.tokopedia.purchase_platform.common.feature.promo.domain.model.UsageSummaries;
 import com.tokopedia.checkout.domain.model.cartshipmentform.AddressesData;
 import com.tokopedia.checkout.domain.model.cartshipmentform.CampaignTimerUi;
 import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData;
@@ -266,11 +266,11 @@ public class ShipmentMapper implements IShipmentMapper {
                     if (lastApply.getData().getVoucherOrders() != null) {
                         for (int i = 0; i < lastApply.getData().getVoucherOrders().size(); i++) {
                             LastApplyVoucherOrdersItemUiModel lastApplyVoucherOrdersItemUiModel = new LastApplyVoucherOrdersItemUiModel();
-                            com.tokopedia.checkout.data.model.response.shipment_address_form.promo_checkout.VoucherOrdersItem voucherOrdersItem = lastApply.getData().getVoucherOrders().get(i);
+                            com.tokopedia.purchase_platform.common.feature.promo.domain.model.VoucherOrdersItem voucherOrdersItem = lastApply.getData().getVoucherOrders().get(i);
                             lastApplyVoucherOrdersItemUiModel.setCode(voucherOrdersItem.getCode());
                             lastApplyVoucherOrdersItemUiModel.setUniqueId(voucherOrdersItem.getUniqueId());
 
-                            com.tokopedia.checkout.data.model.response.shipment_address_form.promo_checkout.Message message = voucherOrdersItem.getMessage();
+                            com.tokopedia.purchase_platform.common.feature.promo.domain.model.Message message = voucherOrdersItem.getMessage();
                             LastApplyMessageUiModel lastApplyMessageInfoUiModel = new LastApplyMessageUiModel();
                             lastApplyMessageInfoUiModel.setColor(message.getColor());
                             lastApplyMessageInfoUiModel.setState(message.getState());
@@ -327,7 +327,7 @@ public class ShipmentMapper implements IShipmentMapper {
 
                     // set message
                     if (lastApply.getData().getMessage() != null) {
-                        com.tokopedia.checkout.data.model.response.shipment_address_form.promo_checkout.Message lastApplyMessage = lastApply.getData().getMessage();
+                        com.tokopedia.purchase_platform.common.feature.promo.domain.model.Message lastApplyMessage = lastApply.getData().getMessage();
                         LastApplyMessageUiModel lastApplyMessageUiModel = new LastApplyMessageUiModel();
                         lastApplyMessageUiModel.setText(lastApplyMessage.getText());
                         lastApplyMessageUiModel.setState(lastApplyMessage.getState());
@@ -343,7 +343,7 @@ public class ShipmentMapper implements IShipmentMapper {
                             }
 
                             if (lastApply.getData().getVoucherOrders() != null) {
-                                for (com.tokopedia.checkout.data.model.response.shipment_address_form.promo_checkout.VoucherOrdersItem voucherOrdersItem : lastApply.getData().getVoucherOrders()) {
+                                for (com.tokopedia.purchase_platform.common.feature.promo.domain.model.VoucherOrdersItem voucherOrdersItem : lastApply.getData().getVoucherOrders()) {
                                     if (voucherOrdersItem.getMessage().getState().equalsIgnoreCase(STATE_RED)) {
                                         listRedStates.add(voucherOrdersItem.getCode());
                                     }
@@ -359,7 +359,7 @@ public class ShipmentMapper implements IShipmentMapper {
                     }
 
                     if (lastApply.getData().getVoucherOrders() != null) {
-                        for (com.tokopedia.checkout.data.model.response.shipment_address_form.promo_checkout.VoucherOrdersItem voucherOrdersItem : lastApply.getData().getVoucherOrders()) {
+                        for (com.tokopedia.purchase_platform.common.feature.promo.domain.model.VoucherOrdersItem voucherOrdersItem : lastApply.getData().getVoucherOrders()) {
                             listAllPromoCodes.add(voucherOrdersItem.getCode());
                         }
                     }

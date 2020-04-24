@@ -4,7 +4,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.Ticker;
 import com.tokopedia.checkout.data.model.response.egold.EgoldAttributes;
-import com.tokopedia.checkout.data.model.response.shipment_address_form.promo_checkout.PromoSAFResponse;
+import com.tokopedia.purchase_platform.common.feature.promo.domain.model.PromoSAFResponse;
 
 import java.util.ArrayList;
 import java.util.List;
