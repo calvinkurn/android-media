@@ -1,7 +1,7 @@
 package com.tokopedia.vouchercreation.voucherlist.view.adapter
 
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
-import com.tokopedia.vouchercreation.voucherlist.model.HeaderChipUiModel
+import com.tokopedia.vouchercreation.voucherlist.model.BaseHeaderChipUiModel
 import com.tokopedia.vouchercreation.voucherlist.view.adapter.factory.HeaderChipFactoryImpl
 
 /**
@@ -9,10 +9,10 @@ import com.tokopedia.vouchercreation.voucherlist.view.adapter.factory.HeaderChip
  */
 
 class HeaderChipsAdapter(
-        onClick: (element: HeaderChipUiModel) -> Unit
+        onClick: (element: BaseHeaderChipUiModel) -> Unit
 ) : BaseAdapter<HeaderChipFactoryImpl>(HeaderChipFactoryImpl(onClick)) {
 
-    var items = listOf<HeaderChipUiModel>()
+    var items = listOf<BaseHeaderChipUiModel>()
         private set
-        get() = visitables.filterIsInstance<HeaderChipUiModel>()
+        get() = visitables.filterIsInstance<BaseHeaderChipUiModel>()
 }

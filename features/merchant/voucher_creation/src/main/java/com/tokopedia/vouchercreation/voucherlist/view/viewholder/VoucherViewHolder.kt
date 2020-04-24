@@ -12,7 +12,7 @@ import kotlinx.android.synthetic.main.item_mvc_voucher_list.view.*
 
 class VoucherViewHolder(
         itemView: View?,
-        private val listener: Listener
+        private val onMoreClick: (VoucherUiModel) -> Unit
 ) : AbstractViewHolder<VoucherUiModel>(itemView) {
 
     companion object {
@@ -22,12 +22,8 @@ class VoucherViewHolder(
     override fun bind(element: VoucherUiModel) {
         with(itemView) {
             btnMore.setOnClickListener {
-                listener.onMoreClickListener(element)
+                onMoreClick(element)
             }
         }
-    }
-
-    interface Listener {
-        fun onMoreClickListener(voucher: VoucherUiModel)
     }
 }

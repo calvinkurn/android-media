@@ -29,6 +29,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/icMenu"
         app:layout_constraintTop_toTopOf="@+id/icMenu"
-        app:typographyType="heading_4"
+        app:typographyType="heading_5"
         tools:text="Ubah Kuota" />
 </androidx.constraintlayout.widget.ConstraintLayout>

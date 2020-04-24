@@ -6,7 +6,6 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.vouchercreation.voucherlist.model.EmptyStateUiModel
 import com.tokopedia.vouchercreation.voucherlist.model.VoucherUiModel
-import com.tokopedia.vouchercreation.voucherlist.view.fragment.VoucherListFragment
 import com.tokopedia.vouchercreation.voucherlist.view.viewholder.EmptyStateViewHolder
 import com.tokopedia.vouchercreation.voucherlist.view.viewholder.VoucherViewHolder
 
@@ -15,7 +14,7 @@ import com.tokopedia.vouchercreation.voucherlist.view.viewholder.VoucherViewHold
  */
 
 class VoucherListAdapterFactoryImpl(
-        private val fragment: VoucherListFragment,
+        private val voucherListener: Listener,
         private val isActiveVoucher: Boolean
 ) : BaseAdapterTypeFactory(), VoucherListAdapterFactory {
 
@@ -31,9 +30,15 @@ class VoucherListAdapterFactoryImpl(
 
     override fun createViewHolder(parent: View?, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
-            VoucherViewHolder.RES_LAYOUT -> VoucherViewHolder(parent, fragment)
+            VoucherViewHolder.RES_LAYOUT -> VoucherViewHolder(parent) {
+                voucherListener.onMoreClickListener(it)
+            }
             EmptyStateViewHolder.RES_LAYOUT -> EmptyStateViewHolder(parent)
             else -> super.createViewHolder(parent, type)
         }
+    }
+
+    interface Listener {
+        fun onMoreClickListener(voucher: VoucherUiModel)
     }
 }
