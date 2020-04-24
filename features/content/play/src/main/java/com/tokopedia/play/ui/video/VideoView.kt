@@ -46,11 +46,10 @@ class VideoView(container: ViewGroup) : UIView(container) {
     }
 
     internal fun setPlayer(exoPlayer: ExoPlayer?) {
-        pvVideo.setPlayer(exoPlayer)
+        pvVideo.player = exoPlayer
     }
 
     internal fun setOrientation(screenOrientation: ScreenOrientation, videoOrientation: VideoOrientation) {
-//        pvVideo.setOrientation(screenOrientation, videoOrientation)
         pvVideo.resizeMode = if (videoOrientation.isHorizontal) {
             when {
                 screenOrientation.isLandscape -> AspectRatioFrameLayout.RESIZE_MODE_FIT
