@@ -25,9 +25,8 @@ class ProductFeedbackDetailViewHolder(private val view: View) : AbstractViewHold
     companion object {
         @JvmStatic
         val LAYOUT = R.layout.item_product_feedback_detail
-        const val DATE_REVIEW_FORMAT = "yyyy-MM-dd'T'HH:mm:ss'Z'"
-        const val REPLY_TEXT_MAX_CHAR = 100
-        const val FEEDBACK_TEXT_MAC_CHAR = 180
+
+        private const val isAutoReply = "false"
     }
 
     private var ivRatingFeedback: AppCompatImageView? = null
@@ -41,7 +40,6 @@ class ProductFeedbackDetailViewHolder(private val view: View) : AbstractViewHold
     private var tvReplyDate: Typography? = null
     private var tvReplyComment: Typography? = null
     private var replyFeedbackState: View? = null
-    private var reviewDetailGroup: Group? = null
 
     init {
         ivRatingFeedback = view.findViewById(R.id.ivRatingFeedback)
@@ -72,59 +70,19 @@ class ProductFeedbackDetailViewHolder(private val view: View) : AbstractViewHold
         setImageAttachment(element)
     }
 
-    private fun setupReplySection(replyText: String, replyTime: String, autoReply: String) {
-        if (replyText.isNotEmpty()) {
-            showReplySection()
-            if (autoReply == "false") {
-                tvReplyUser?.text = "Balasan kamu"
-            } else {
-                setupReplyText(replyText)
+        if (element.replyText?.isNotEmpty() == true) {
+            if (element.autoReply == isAutoReply) {
                 tvReplyUser?.text = getString(R.string.otomatis_reply)
-                tvReplyDate?.text = replyTime
+            } else {
+                tvReplyUser?.text = String.format(getString(R.string.user_reply_feedback), element.sellerUser.orEmpty())
             }
+            tvReplyDate?.text = element.replyTime.orEmpty()
+            tvReplyComment?.text = element.replyText.orEmpty()
+            view.partialFeedbackReplyDetail?.show()
         } else {
-            hideReplySection()
-        }
-    }
+            view.partialFeedbackReplyDetail?.hide()
 
-    private fun setupVariant(variantName: String) {
-        if (variantName.isEmpty()) {
-            tvVariantFeedback?.hide()
-            tvVariantFeedbackValue?.hide()
-        } else {
-            tvVariantFeedback?.show()
-            tvVariantFeedbackValue?.show()
-            tvVariantFeedbackValue?.text = variantName
         }
-    }
-
-    private fun setupFeedbackReview(feedbackText: String) {
-        if (feedbackText.isEmpty()) {
-            tvFeedbackReview?.text = getString(R.string.review_not_found)
-            tvFeedbackReview?.setTextColor(ContextCompat.getColor(view.context, R.color.clr_review_not_found))
-        } else {
-            tvFeedbackReview?.apply {
-                setTextColor(ContextCompat.getColor(itemView.context, R.color.clr_f531353b))
-                maxLines = 3
-                text = feedbackText.toReviewDescriptionFormatted(FEEDBACK_TEXT_MAC_CHAR)
-                setOnClickListener {
-                    maxLines = Integer.MAX_VALUE
-                    text = feedbackText
-                }
-            }
-        }
-    }
-
-    private fun setupReplyText(replyText: String) {
-        tvReplyComment?.apply {
-            maxLines = 2
-            text = replyText.toReviewDescriptionFormatted(REPLY_TEXT_MAX_CHAR)
-            setOnClickListener {
-                maxLines = Integer.MAX_VALUE
-                text = replyText
-            }
-        }
-
     }
 
     private fun setImageAttachment(element: FeedbackUiModel) {

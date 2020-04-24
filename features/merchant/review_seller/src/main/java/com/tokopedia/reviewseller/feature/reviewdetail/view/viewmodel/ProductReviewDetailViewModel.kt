@@ -25,7 +25,7 @@ class ProductReviewDetailViewModel @Inject constructor(
         private val getProductReviewDetailOverallUseCase: GetProductReviewDetailOverallUseCase,
         private val getProductFeedbackDetailListUseCase: GetProductFeedbackDetailListUseCase
 ) : BaseViewModel(dispatcherProvider.main()) {
-    
+
     private val _reviewDetailOverall = MutableLiveData<Result<OverallRatingDetailUiModel>>()
     val reviewDetailOverallRating: LiveData<Result<OverallRatingDetailUiModel>>
         get() = _reviewDetailOverall
