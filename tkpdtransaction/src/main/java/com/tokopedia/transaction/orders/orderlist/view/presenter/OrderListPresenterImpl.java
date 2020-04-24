@@ -227,7 +227,9 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
             variables.put(START_DATE, getView().getStartDate());
             variables.put(END_DATE, getView().getEndDate());
             variables.put(SORT, "");
-            variables.put(ORDER_STATUS, Integer.parseInt(getView().getSelectedFilter()));
+            if(orderCategory.equalsIgnoreCase(OrderCategory.MARKETPLACE)) {
+                variables.put(ORDER_STATUS, Integer.parseInt(getView().getSelectedFilter()));
+            }
             graphqlRequest = new
                     GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(),
                     R.raw.orderlist_marketplace), Data.class, variables, false);
