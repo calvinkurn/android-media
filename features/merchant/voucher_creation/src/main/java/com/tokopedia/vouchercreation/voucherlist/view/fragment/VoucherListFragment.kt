@@ -12,17 +12,19 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.getBooleanArgs
+import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.di.component.DaggerVoucherCreationComponent
-import com.tokopedia.vouchercreation.voucherlist.model.BaseVoucherListUiModel
-import com.tokopedia.vouchercreation.voucherlist.model.BottomSheetMenuUiModel
-import com.tokopedia.vouchercreation.voucherlist.model.HeaderChipUiModel
-import com.tokopedia.vouchercreation.voucherlist.model.VoucherUiModel
+import com.tokopedia.vouchercreation.voucherlist.model.*
+import com.tokopedia.vouchercreation.voucherlist.model.BaseHeaderChipUiModel.HeaderChip
+import com.tokopedia.vouchercreation.voucherlist.model.BaseHeaderChipUiModel.ResetChip
 import com.tokopedia.vouchercreation.voucherlist.view.adapter.factory.VoucherListAdapterFactoryImpl
-import com.tokopedia.vouchercreation.voucherlist.view.viewholder.MenuViewHolder
-import com.tokopedia.vouchercreation.voucherlist.view.viewholder.VoucherViewHolder
 import com.tokopedia.vouchercreation.voucherlist.view.viewmodel.VoucherListViewModel
-import com.tokopedia.vouchercreation.voucherlist.view.widget.VoucherListBottomSheet
+import com.tokopedia.vouchercreation.voucherlist.view.widget.MoreMenuBottomSheet
+import com.tokopedia.vouchercreation.voucherlist.view.widget.filterbottomsheet.FilterBottomSheet
+import com.tokopedia.vouchercreation.voucherlist.view.widget.headerchips.ChipType
+import com.tokopedia.vouchercreation.voucherlist.view.widget.sortbottomsheet.SortBottomSheet
 import kotlinx.android.synthetic.main.fragment_mvc_voucher_list.view.*
 import javax.inject.Inject
 
@@ -31,7 +33,7 @@ import javax.inject.Inject
  */
 
 class VoucherListFragment : BaseListFragment<BaseVoucherListUiModel, VoucherListAdapterFactoryImpl>(),
-        VoucherViewHolder.Listener, MenuViewHolder.Listener {
+        VoucherListAdapterFactoryImpl.Listener {
 
     companion object {
         private const val KEY_IS_ACTIVE_VOUCHER = "is_active_voucher"
@@ -47,11 +49,34 @@ class VoucherListFragment : BaseListFragment<BaseVoucherListUiModel, VoucherList
         }
     }
 
+    private var fragmentListener: Listener? = null
+
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
 
     private val mViewModel: VoucherListViewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(VoucherListViewModel::class.java)
+    }
+    private val moreBottomSheet: MoreMenuBottomSheet? by lazy {
+        val parent = view as? ViewGroup ?: return@lazy null
+        return@lazy MoreMenuBottomSheet(parent, this::onMoreMenuItemClickListener)
+    }
+    private val sortBottomSheet: SortBottomSheet? by lazy {
+        val parent = view as? ViewGroup ?: return@lazy null
+        return@lazy SortBottomSheet(parent)
+    }
+    private val filterBottomSheet: FilterBottomSheet? by lazy {
+        val parent = view as? ViewGroup ?: return@lazy null
+        return@lazy FilterBottomSheet(parent)
+    }
+
+    private val sortItems: MutableList<SortUiModel> by lazy {
+        val ctx = context ?: return@lazy mutableListOf<SortUiModel>()
+        return@lazy SortBottomSheet.getMvcSortItems(ctx)
+    }
+    private val filterItems: MutableList<BaseFilterUiModel> by lazy {
+        val ctx = context ?: return@lazy mutableListOf<BaseFilterUiModel>()
+        return@lazy FilterBottomSheet.getMvcFilterItems(ctx)
     }
 
     private val isActiveVoucher by lazy { getBooleanArgs(KEY_IS_ACTIVE_VOUCHER, true) }
@@ -101,31 +126,37 @@ class VoucherListFragment : BaseListFragment<BaseVoucherListUiModel, VoucherList
 
     }
 
-    override fun onMoreClickListener(voucher: VoucherUiModel) {
-        val parent = (view as? ViewGroup) ?: return
-        VoucherListBottomSheet(parent, this)
-                .show(voucher, childFragmentManager)
-    }
-
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             android.R.id.home -> activity?.finish()
+            R.id.menuMvcShowVoucherActive -> {
+                fragmentListener?.switchFragment(true)
+            }
+            R.id.menuMvcShowVoucherHistory -> {
+                fragmentListener?.switchFragment(false)
+            }
         }
         return super.onOptionsItemSelected(item)
     }
 
-    override fun onMenuClickListener(menu: BottomSheetMenuUiModel) {
-        dismissBottomSheet()
+    private fun onMoreMenuItemClickListener(menu: MoreMenuUiModel) {
+        dismissBottomSheet<MoreMenuBottomSheet>(MoreMenuBottomSheet.TAG)
+    }
+
+    override fun onMoreClickListener(voucher: VoucherUiModel) {
+        moreBottomSheet?.show(isActiveVoucher, voucher, childFragmentManager)
     }
 
     private fun setupView() = view?.run {
         setupActionBar()
         setupRecyclerViewVoucherList()
 
-        headerChipMvc.init()
-        headerChipMvc.setOnItemClickListener {
+        headerChipMvc.init {
             setOnChipListener(it)
         }
+
+        searchBarMvc.isVisible = !isActiveVoucher
+        headerChipMvc.isVisible = !isActiveVoucher
     }
 
     private fun setupRecyclerViewVoucherList() {
@@ -153,6 +184,13 @@ class VoucherListFragment : BaseListFragment<BaseVoucherListUiModel, VoucherList
         (activity as? AppCompatActivity)?.let { activity ->
             activity.setSupportActionBar(toolbarMvcList)
             activity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
+            val title = if (isActiveVoucher) {
+                context.getString(R.string.mvc_voucher_active)
+            } else {
+                context.getString(R.string.mvc_voucher_history)
+            }
+            activity.supportActionBar?.title = title
         }
         showAppBarElevation(false)
     }
@@ -168,8 +206,57 @@ class VoucherListFragment : BaseListFragment<BaseVoucherListUiModel, VoucherList
         }
     }
 
-    private fun setOnChipListener(chip: HeaderChipUiModel) {
+    private fun setOnChipListener(chip: BaseHeaderChipUiModel) {
+        when (chip) {
+            is HeaderChip -> {
+                when (chip.type) {
+                    ChipType.CHIP_SORT -> showSortBottomSheet()
+                    ChipType.CHIP_FILTER -> showFilterBottomSheet()
+                }
+            }
+            is ResetChip -> setOnResetClick()
+        }
+    }
 
+    private fun setOnResetClick() {
+        sortItems.clear()
+        sortItems.addAll(SortBottomSheet.getMvcSortItems(requireContext()))
+        filterItems.clear()
+        filterItems.addAll(FilterBottomSheet.getMvcFilterItems(requireContext()))
+        view?.headerChipMvc?.hideResetButton()
+    }
+
+    private fun showSortBottomSheet() {
+        if (!isAdded) return
+        sortBottomSheet
+                ?.setOnApplySortListener {
+                    showResetChip()
+                }
+                ?.setOnCancelApply { previousSortItems ->
+                    sortItems.clear()
+                    sortItems.addAll(previousSortItems)
+                }
+                ?.show(childFragmentManager, sortItems)
+    }
+
+    private fun showFilterBottomSheet() {
+        if (!isAdded) return
+        filterBottomSheet
+                ?.setOnApplyClickListener {
+                    showResetChip()
+                }
+                ?.setCancelApplyFilter { previousFilterItems ->
+                    filterItems.clear()
+                    filterItems.addAll(previousFilterItems)
+                }
+                ?.show(childFragmentManager, filterItems)
+    }
+
+    private fun showResetChip() {
+        val canResetFilter = filterItems.filterIsInstance<HeaderChip>().any { it.isActive }
+        if (canResetFilter) {
+            view?.headerChipMvc?.showResetButton()
+        }
     }
 
     private fun showDummyData() {
@@ -184,10 +271,18 @@ class VoucherListFragment : BaseListFragment<BaseVoucherListUiModel, VoucherList
         return list
     }
 
-    private fun dismissBottomSheet() {
-        val bottomSheet = childFragmentManager.findFragmentByTag(VoucherListBottomSheet.TAG)
-        if (bottomSheet is VoucherListBottomSheet) {
+    private inline fun <reified T : BottomSheetUnify> dismissBottomSheet(tag: String) {
+        val bottomSheet = childFragmentManager.findFragmentByTag(tag)
+        if (bottomSheet is T) {
             bottomSheet.dismiss()
         }
+    }
+
+    fun setFragmentListener(listener: Listener) {
+        this.fragmentListener = listener
+    }
+
+    interface Listener {
+        fun switchFragment(isActiveVoucher: Boolean)
     }
 }

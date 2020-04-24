@@ -1,6 +1,6 @@
 package com.tokopedia.vouchercreation.voucherlist.view.adapter.factory
 
-import com.tokopedia.vouchercreation.voucherlist.model.BottomSheetMenuUiModel
+import com.tokopedia.vouchercreation.voucherlist.model.MoreMenuUiModel
 
 /**
  * Created By @ilhamsuaib on 18/04/20
@@ -8,5 +8,5 @@ import com.tokopedia.vouchercreation.voucherlist.model.BottomSheetMenuUiModel
 
 interface MenuAdapterFactory {
 
-    fun type(model: BottomSheetMenuUiModel): Int
+    fun type(model: MoreMenuUiModel): Int
 }

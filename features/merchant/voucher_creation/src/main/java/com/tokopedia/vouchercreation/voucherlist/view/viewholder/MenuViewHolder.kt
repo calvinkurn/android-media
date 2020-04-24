@@ -5,7 +5,7 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.loadImageDrawable
 import com.tokopedia.vouchercreation.R
-import com.tokopedia.vouchercreation.voucherlist.model.BottomSheetMenuUiModel
+import com.tokopedia.vouchercreation.voucherlist.model.MoreMenuUiModel
 import kotlinx.android.synthetic.main.item_mvc_bottomsheet_menu.view.*
 
 /**
@@ -14,15 +14,15 @@ import kotlinx.android.synthetic.main.item_mvc_bottomsheet_menu.view.*
 
 class MenuViewHolder(
         itemView: View?,
-        private val listener: Listener
-) : AbstractViewHolder<BottomSheetMenuUiModel>(itemView) {
+        private val callback: (MoreMenuUiModel) -> Unit
+) : AbstractViewHolder<MoreMenuUiModel>(itemView) {
 
     companion object {
         @LayoutRes
         val RES_LAYOUT = R.layout.item_mvc_bottomsheet_menu
     }
 
-    override fun bind(element: BottomSheetMenuUiModel) {
+    override fun bind(element: MoreMenuUiModel) {
         with(itemView) {
             tvTitle.text = element.title.orEmpty()
             element.icon?.let {
@@ -30,12 +30,12 @@ class MenuViewHolder(
             }
 
             setOnClickListener {
-                listener.onMenuClickListener(element)
+                callback(element)
             }
         }
     }
 
     interface Listener {
-        fun onMenuClickListener(menu: BottomSheetMenuUiModel)
+        fun onMoreMenuItemClickListener(menu: MoreMenuUiModel)
     }
 }
