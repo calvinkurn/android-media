@@ -17,7 +17,6 @@ import com.tokopedia.notifications.database.convertors.NotificationModeConverter
 import com.tokopedia.notifications.database.convertors.NotificationStatusConverter;
 import com.tokopedia.notifications.database.convertors.ProductInfoConverter;
 import com.tokopedia.notifications.database.convertors.PushActionButtonConverter;
-import com.tokopedia.notifications.database.convertors.WebHookParamConverter;
 import com.tokopedia.notifications.database.pushRuleEngine.BaseNotificationDao;
 import com.tokopedia.notifications.inApp.ruleEngine.storage.ButtonListConverter;
 import com.tokopedia.notifications.inApp.ruleEngine.storage.dao.ElapsedTimeDao;
@@ -34,8 +33,7 @@ import com.tokopedia.notifications.model.BaseNotificationModel;
         PushActionButtonConverter.class,
         CarouselConverter.class,
         GridConverter.class,
-        ProductInfoConverter.class,
-        WebHookParamConverter.class
+        ProductInfoConverter.class
 })
 public abstract class RoomDB extends RoomDatabase {
 
