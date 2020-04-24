@@ -1,13 +1,18 @@
 package com.tokopedia.atc_common.domain.usecase
 
+import com.appsflyer.AFInAppEventParameterName
+import com.appsflyer.AFInAppEventType
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.data.model.response.AddToCartGqlResponse
 import com.tokopedia.atc_common.domain.mapper.AddToCartDataMapper
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
+import com.tokopedia.track.TrackApp
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
+import org.json.JSONArray
+import org.json.JSONObject
 import rx.Observable
 import javax.inject.Inject
 import javax.inject.Named
@@ -77,7 +82,22 @@ class AddToCartUseCase @Inject constructor(@Named("atcMutation") private val que
         graphqlUseCase.addRequest(graphqlRequest)
         return graphqlUseCase.createObservable(RequestParams.EMPTY).map {
             val addToCartGqlResponse = it.getData<AddToCartGqlResponse>(AddToCartGqlResponse::class.java)
-            addToCartDataMapper.mapAddToCartResponse(addToCartGqlResponse)
+            val result = addToCartDataMapper.mapAddToCartResponse(addToCartGqlResponse)
+            if (!result.isDataError()) {
+                TrackApp.getInstance().appsFlyer.sendEvent(AFInAppEventType.ADD_TO_CART,
+                        mutableMapOf(
+                                AFInAppEventParameterName.CONTENT_ID to addToCartRequest.productId.toString(),
+                                AFInAppEventParameterName.CONTENT_TYPE to "product",
+                                AFInAppEventParameterName.DESCRIPTION to addToCartRequest.productName,
+                                AFInAppEventParameterName.CURRENCY to "IDR",
+                                AFInAppEventParameterName.QUANTITY to addToCartRequest.quantity,
+                                AFInAppEventParameterName.PRICE to addToCartRequest.price,
+                                "category" to addToCartRequest.category,
+                                AFInAppEventParameterName.CONTENT to JSONArray().put(JSONObject().put("id", addToCartRequest.productId.toString()).put("quantity", addToCartRequest.quantity))
+                        )
+                )
+            }
+            result
         }
 
     }
