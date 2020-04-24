@@ -15,7 +15,10 @@ object ReviewSellerUtil {
     }
 
     fun setFilterJoinValueFormat(old: String, newValue: String): String {
-        return String.format("$old;$newValue")
+        return if(newValue.isNotEmpty()) {
+            String.format("$old;$newValue")
+        } else
+            String.format(old)
     }
 }
 
