@@ -690,16 +690,11 @@ class HomeFragment : BaseDaggerFragment(),
     }
 
     private fun isDataValid(visitables: List<HomeVisitable?>): Boolean {
-        return containsInstance(visitables)
+        return containsInstance(visitables, HomepageBannerDataModel::class.java)
     }
 
-    private fun <T> containsInstance(list: List<T>): Boolean {
-        for (a in list) {
-            if (a is HomepageBannerDataModel) {
-                return true
-            }
-        }
-        return false
+    private fun <T> containsInstance(list: List<T>, type: Class<*>): Boolean {
+        return list.any{it == type}
     }
 
     private fun loadEggData() {
