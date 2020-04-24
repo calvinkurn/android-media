@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <com.tokopedia.unifycomponents.ImageUnify
@@ -68,10 +68,18 @@
         android:id="@+id/replyAttachedProductsRecyclerView"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
+        android:layout_gravity="start"
         android:layout_marginTop="@dimen/dp_12"
+        android:clipToPadding="false"
+        android:orientation="horizontal"
+        android:paddingStart="@dimen/layout_lvl2"
+        android:paddingEnd="@dimen/layout_lvl2"
+        android:paddingTop="@dimen/layout_lvl1"
+        android:paddingBottom="@dimen/layout_lvl1"
+        android:visibility="gone"
         app:layout_constraintStart_toStartOf="@id/replyMessage"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/replyMessage"/>
+        app:layout_constraintTop_toBottomOf="@id/replyMessage"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
     <ImageView
         android:id="@+id/likeIcon"
@@ -106,5 +114,12 @@
         app:layout_constraintTop_toTopOf="@id/likeIcon"
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@drawable/talk_ic_kebab" />
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_1"
+        android:layout_marginTop="@dimen/layout_lvl2"
+        app:layout_constraintTop_toBottomOf="@id/likeIcon"
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -7,11 +7,10 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
-import com.tokopedia.talk.common.analytics.TalkAnalytics
-import com.tokopedia.talk.common.analytics.TalkAnalytics.TALK_READING_PLT_NETWORK_METRICS
-import com.tokopedia.talk.common.analytics.TalkAnalytics.TALK_READING_PLT_PREPARE_METRICS
-import com.tokopedia.talk.common.analytics.TalkAnalytics.TALK_READING_PLT_RENDER_METRICS
-import com.tokopedia.talk.common.analytics.TalkAnalytics.TALK_READING_TRACE
+import com.tokopedia.talk.common.analytics.TalkPerformanceMonitoringConstants.TALK_READING_PLT_NETWORK_METRICS
+import com.tokopedia.talk.common.analytics.TalkPerformanceMonitoringConstants.TALK_READING_PLT_PREPARE_METRICS
+import com.tokopedia.talk.common.analytics.TalkPerformanceMonitoringConstants.TALK_READING_PLT_RENDER_METRICS
+import com.tokopedia.talk.common.analytics.TalkPerformanceMonitoringConstants.TALK_READING_TRACE
 import com.tokopedia.talk.common.analytics.TalkPerformanceMonitoringListener
 import com.tokopedia.talk.common.constants.TalkConstants.NO_SHADOW_ELEVATION
 import com.tokopedia.talk.common.di.DaggerTalkComponent

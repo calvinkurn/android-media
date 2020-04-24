@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@android:color/white"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <ImageView
@@ -14,6 +15,7 @@
         app:layout_constraintTop_toTopOf="parent"/>
 
     <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/reading_empty_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/reading_empty_title"
@@ -24,5 +26,27 @@
         app:typographyType="heading_2"
         app:typographyWeight="bold"
         app:layout_constraintTop_toBottomOf="@id/reading_image_error"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/reading_empty_subtitle"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:text="@string/reading_empty_subtitle"
+        android:gravity="center"
+        android:layout_marginTop="@dimen/spacing_lvl2"
+        app:typographyType="body_3"
+        app:layout_constraintStart_toStartOf="@id/reading_empty_title"
+        app:layout_constraintEnd_toEndOf="@id/reading_empty_title"
+        app:layout_constraintTop_toBottomOf="@id/reading_empty_title"/>
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/readingEmptyAskButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/title_write_page"
+        android:layout_marginTop="@dimen/layout_lvl3"
+        android:layout_marginStart="@dimen/layout_lvl7"
+        android:layout_marginEnd="@dimen/layout_lvl7"
+        app:layout_constraintTop_toBottomOf="@id/reading_empty_subtitle"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

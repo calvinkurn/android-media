@@ -38,14 +38,15 @@ import com.tokopedia.talk.feature.reading.presentation.widget.OnCategoryModified
 import com.tokopedia.talk.feature.reading.presentation.widget.OnFinishedSelectSortListener
 import com.tokopedia.talk.feature.reading.presentation.widget.OnThreadClickListener
 import com.tokopedia.talk.feature.reading.presentation.widget.TalkReadingSortBottomSheet
-import com.tokopedia.talk.feature.write.presentation.activity.TalkWriteActivity
 import com.tokopedia.talk_old.R
+import com.tokopedia.talk_old.addtalk.view.activity.AddTalkActivity
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_talk_reading.*
 import kotlinx.android.synthetic.main.partial_talk_connection_error.view.*
+import kotlinx.android.synthetic.main.partial_talk_reading_empty.*
 import javax.inject.Inject
 
 class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
@@ -222,10 +223,23 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
 
     private fun showPageLoading() {
         pageLoading.visibility = View.VISIBLE
+        hidePageEmpty()
     }
 
     private fun hidePageLoading() {
         pageLoading.visibility = View.GONE
+    }
+
+    private fun showPageEmpty() {
+        addFloatingActionButton.hide()
+        pageEmpty.visibility = View.VISIBLE
+        readingEmptyAskButton.setOnClickListener {
+            goToWriteActivity()
+        }
+    }
+
+    private fun hidePageEmpty() {
+        pageEmpty.visibility = View.GONE
     }
 
     private fun showPageError() {
@@ -242,6 +256,7 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
 
     private fun hidePageError() {
         pageError.visibility = View.GONE
+        addFloatingActionButton.show()
     }
 
     private fun bindHeader(talkReadingHeaderModel: TalkReadingHeaderModel) {
@@ -276,9 +291,14 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
                 is Success -> {
                     stopNetworkRequestPerformanceMonitoring()
                     startRenderPerformanceMonitoring()
-                    renderDiscussionData(
-                            TalkReadingMapper.mapDiscussionDataResponseToTalkReadingUiModel(it.data.discussionData),
-                            it.data.discussionData.hasNext)
+                    if(it.data.discussionData.question.isEmpty()) {
+                        showPageEmpty()
+                    } else {
+                        renderDiscussionData(
+                                TalkReadingMapper.mapDiscussionDataResponseToTalkReadingUiModel(it.data.discussionData),
+                                it.data.discussionData.hasNext)
+                    }
+
                 }
                 is Fail -> {
                     hidePageLoading()
@@ -347,7 +367,7 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
     }
 
     private fun goToWriteActivity() {
-        val intent = context?.let { TalkWriteActivity.createIntent(it) }
+        val intent = context?.let { AddTalkActivity.createIntent(it, productId) }
         startActivity(intent)
     }
 

@@ -32,16 +32,26 @@ class TalkReadingViewHolder(view: View, private val onThreadClickListener: OnThr
                     showAnswer(answer.content, questionID)
                     showNumberOfLikesWithCondition(answer.likeCount)
                     showNumberOfAttachedProductsWithCondition(answer.attachedProductCount)
-                    showNumberOfOtherAnswersWithCondition(totalAnswer)
+                    showNumberOfOtherAnswersWithCondition(totalAnswer, questionID)
+                    hideNoAnswersText()
                 }
-                return
+            } else {
+                showNoAnswersText()
             }
-            showNoAnswersText()
         }
     }
 
     private fun showNoAnswersText() {
         itemView.readingNoAnswersText.visibility = View.VISIBLE
+        hideOtherElements()
+    }
+
+    private fun hideNoAnswersText() {
+        itemView.apply {
+            readingNoAnswersText.visibility = View.GONE
+            likeIcon.visibility = View.VISIBLE
+            likeCount.visibility = View.VISIBLE
+        }
     }
 
     private fun showProfilePicture(userThumbNail: String) {
@@ -64,9 +74,9 @@ class TalkReadingViewHolder(view: View, private val onThreadClickListener: OnThr
 
     private fun showAnswer(answer: String, questionId: String) {
         if(answer.isNotEmpty()) {
-            itemView.apply {
-                readingMessage.text = answer
-                readingMessage.setOnClickListener {
+            itemView.readingMessage.apply {
+                text = answer
+                setOnClickListener {
                     onThreadClickListener.onThreadClicked(questionId)
                 }
                 visibility = View.VISIBLE
@@ -76,8 +86,8 @@ class TalkReadingViewHolder(view: View, private val onThreadClickListener: OnThr
 
     private fun showDate(date: String) {
         if(date.isNotEmpty()) {
-            itemView.apply {
-                readingDate.text = addBulletPointToDate(date)
+            itemView.readingDate.apply {
+                text = addBulletPointToDate(date)
                 visibility = View.VISIBLE
             }
         }
@@ -107,10 +117,31 @@ class TalkReadingViewHolder(view: View, private val onThreadClickListener: OnThr
         }
     }
 
-    private fun showNumberOfOtherAnswersWithCondition(otherAnswers: Int) {
-        if(otherAnswers > 0) {
-            itemView.seeOtherAnswers.text = String.format(OTHER_ANSWERS, (otherAnswers - 1))
-            itemView.visibility = View.VISIBLE
+    private fun showNumberOfOtherAnswersWithCondition(otherAnswers: Int, questionId: String) {
+        val answersToShow = otherAnswers - 1
+        if(answersToShow > 0) {
+            itemView.seeOtherAnswers.apply {
+                text = String.format(OTHER_ANSWERS, answersToShow)
+                setOnClickListener {
+                    onThreadClickListener.onThreadClicked(questionId)
+                }
+                visibility = View.VISIBLE
+            }
+        }
+    }
+
+    private fun hideOtherElements() {
+        itemView.apply {
+            likeIcon.visibility = View.GONE
+            likeCount.visibility = View.GONE
+            attachedProductCount.visibility = View.GONE
+            attachedProductIcon.visibility = View.GONE
+            readingMessage.visibility = View.GONE
+            readingProfilePicture.visibility = View.GONE
+            readingDisplayName.visibility = View.GONE
+            readingDate.visibility = View.GONE
+            seeOtherAnswers.visibility = View.GONE
+            readingSellerLabel.visibility = View.GONE
         }
     }
 

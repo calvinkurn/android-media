@@ -1,6 +1,6 @@
 package com.tokopedia.talk.common.analytics
 
-object TalkAnalytics {
+object TalkPerformanceMonitoringConstants {
     const val TALK_READING_TRACE = "talk_reading_trace"
     const val TALK_READING_PLT_PREPARE_METRICS = "talk_reading_plt_prepare_metrics"
     const val TALK_READING_PLT_NETWORK_METRICS = "talk_reading_plt_network_metrics"

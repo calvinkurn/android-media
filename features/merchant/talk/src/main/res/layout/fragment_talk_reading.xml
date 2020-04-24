@@ -39,17 +39,28 @@
                 android:id="@+id/readingSwipeToRefresh"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/layout_lvl0"
-                app:layout_behavior="@string/appbar_scrolling_view_behavior"
                 android:layout_below="@id/talk_reading_app_bar_layout"
-                android:layout_alignParentBottom="true">
+                android:layout_alignParentBottom="true"
+                android:layout_marginTop="-334dp"
+                android:layout_marginBottom="334dp"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/talkReadingRecyclerView"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/layout_lvl0"
-                    app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+                    app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
             </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+            <include
+                android:id="@+id/pageEmpty"
+                layout="@layout/partial_talk_reading_empty"
+                android:visibility="gone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/talk_reading_app_bar_layout"
+                android:layout_alignParentBottom="true"/>
 
         </RelativeLayout>
 

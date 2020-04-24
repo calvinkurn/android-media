@@ -3,6 +3,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     app:card_type="border"
+    android:padding="@dimen/layout_lvl1"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -13,10 +14,6 @@
             android:id="@+id/replyAttachedProductImage"
             android:layout_width="@dimen/dp_36"
             android:layout_height="@dimen/dp_36"
-            android:layout_marginStart="@dimen/layout_lvl1"
-            android:layout_marginLeft="@dimen/layout_lvl1"
-            android:layout_marginTop="@dimen/layout_lvl1"
-            android:layout_marginBottom="@dimen/layout_lvl1"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -50,8 +47,6 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/layout_lvl1"
             android:layout_marginLeft="@dimen/layout_lvl1"
-            android:layout_marginEnd="@dimen/dp_12"
-            android:layout_marginRight="@dimen/dp_12"
             app:layout_constraintStart_toEndOf="@id/replyAttachedProductName"
             app:layout_constraintTop_toTopOf="@id/replyAttachedProductImage"
             app:layout_constraintEnd_toEndOf="parent"

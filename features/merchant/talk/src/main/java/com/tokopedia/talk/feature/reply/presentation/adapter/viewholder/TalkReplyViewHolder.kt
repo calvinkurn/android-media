@@ -1,6 +1,7 @@
 package com.tokopedia.talk.feature.reply.presentation.adapter.viewholder
 
 import android.view.View
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.talk.feature.reading.presentation.adapter.viewholder.TalkReadingViewHolder
@@ -19,6 +20,7 @@ class TalkReplyViewHolder(view: View,
 
     companion object {
         val LAYOUT = R.layout.item_talk_reply
+        val IN_VIEWHOLDER = true
     }
 
     override fun bind(element: TalkReplyUiModel) {
@@ -56,8 +58,8 @@ class TalkReplyViewHolder(view: View,
 
     private fun showDate(date: String) {
         if(date.isNotEmpty()) {
-            itemView.apply {
-                replyDate.text = addBulletPointToDate(date)
+            itemView.replyDate.apply {
+                text = addBulletPointToDate(date)
                 visibility = View.VISIBLE
             }
         }
@@ -89,9 +91,10 @@ class TalkReplyViewHolder(view: View,
     }
 
     private fun showAttachedProducts(attachedProducts: List<AttachedProduct>) {
-        val adapter = TalkReplyAttachedProductAdapter(attachedProductCardListener)
+        val adapter = TalkReplyAttachedProductAdapter(attachedProductCardListener, IN_VIEWHOLDER)
         itemView.replyAttachedProductsRecyclerView.adapter = adapter
         adapter.setData(attachedProducts)
+        itemView.replyAttachedProductsRecyclerView.visibility = View.VISIBLE
     }
 
     private fun showKebabWithConditions(commentId: String, allowReport: Boolean, allowDelete: Boolean, onKebabClickedListener: OnKebabClickedListener) {

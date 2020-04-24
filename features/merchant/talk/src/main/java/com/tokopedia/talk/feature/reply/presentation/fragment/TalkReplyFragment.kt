@@ -11,6 +11,7 @@ import androidx.lifecycle.Observer
 import com.tokopedia.TalkInstance
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
@@ -62,6 +63,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
         const val ATTACH_PRODUCT_ACTIVITY_REQUEST_CODE = 202
         const val TOASTER_ERROR_DEFAULT_HEIGHT = 50
         const val TOASTER_ERROR_WITH_ATTACHED_PRODUCTS_HEIGHT = 150
+        const val NOT_IN_VIEWHOLDER = false
 
         @JvmStatic
         fun createNewInstance(questionId: String, shopId: String, productId: String): TalkReplyFragment =
@@ -253,7 +255,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
 
     private fun showDeleteDialog(commentId: String) {
         context?.let {
-            val deleteDialog = DialogUnify(it, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE)
+            val deleteDialog = DialogUnify(it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
             initDialog(deleteDialog, commentId)
         }
     }
@@ -331,6 +333,8 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
 
     private fun onSuccessDeleteComment() {
         showSuccessToaster(getString(R.string.delete_toaster_success))
+        getDiscussionData()
+        showPageLoading()
     }
 
     private fun onFailDeleteComment() {
@@ -471,7 +475,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
     }
 
     private fun initAttachedProductAdapter() {
-        attachedProductAdapter = TalkReplyAttachedProductAdapter(this)
+        attachedProductAdapter = TalkReplyAttachedProductAdapter(this, NOT_IN_VIEWHOLDER)
     }
 
     private fun initAttachedProductRecyclerView() {
@@ -583,6 +587,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
 
     private fun resetTextBox() {
         replyTextBox.reset()
+        KeyboardHandler.DropKeyboard(context, view)
     }
 
     private fun resetAttachedProducts() {

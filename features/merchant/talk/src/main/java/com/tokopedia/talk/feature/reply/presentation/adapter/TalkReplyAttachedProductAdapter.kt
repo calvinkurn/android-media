@@ -9,7 +9,8 @@ import com.tokopedia.talk.feature.reply.presentation.widget.listeners.AttachedPr
 import com.tokopedia.talk_old.R
 
 class TalkReplyAttachedProductAdapter(
-        private val attachedProductCardListener: AttachedProductCardListener
+        private val attachedProductCardListener: AttachedProductCardListener,
+        private val isInViewHolder: Boolean
 ) : RecyclerView.Adapter<TalkReplyAttachedProductViewHolder>() {
 
     private var attachedProducts: List<AttachedProduct> = listOf()
@@ -24,7 +25,7 @@ class TalkReplyAttachedProductAdapter(
     }
 
     override fun onBindViewHolder(holder: TalkReplyAttachedProductViewHolder, position: Int) {
-       holder.bind(attachedProducts[position], attachedProductCardListener)
+       holder.bind(attachedProducts[position], attachedProductCardListener, isInViewHolder)
     }
 
     fun setData(attachedProducts: List<AttachedProduct>) {
