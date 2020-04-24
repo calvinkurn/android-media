@@ -16,7 +16,6 @@ import com.tokopedia.flight.search.presentation.model.FlightPriceModel
 import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataModel
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.remoteconfig.RemoteConfigKey
 
 class FlightSearchReturnActivity : FlightSearchActivity(),
         FlightSearchFragment.OnFlightSearchFragmentListener {
@@ -62,25 +61,15 @@ class FlightSearchReturnActivity : FlightSearchActivity(),
     override fun selectFlight(selectedFlightID: String, selectedFlightTerm: String, flightPriceModel: FlightPriceModel,
                               isBestPairing: Boolean, isCombineDone: Boolean, requestId: String) {
         passDataModel.searchRequestId = requestId
-        if (remoteConfig.getBoolean(RemoteConfigKey.ANDROID_CUSTOMER_FLIGHT_BOOKING_NEW_FLOW, true)) {
-            startActivityForResult(FlightBookingActivity
-                    .getCallingIntent(this,
-                            passDataModel,
-                            selectedDepartureID,
-                            selectedDepartureTerm,
-                            flightPriceModel,
-                            selectedFlightID,
-                            selectedFlightTerm),
-                    REQUEST_CODE_BOOKING)
-        } else {
-            startActivityForResult(com.tokopedia.flight.bookingV2.presentation.activity.FlightBookingActivity
-                    .getCallingIntent(this,
-                            passDataModel,
-                            selectedDepartureID,
-                            flightPriceModel,
-                            selectedFlightID),
-                    REQUEST_CODE_BOOKING)
-        }
+        startActivityForResult(FlightBookingActivity
+                .getCallingIntent(this,
+                        passDataModel,
+                        selectedDepartureID,
+                        selectedDepartureTerm,
+                        flightPriceModel,
+                        selectedFlightID,
+                        selectedFlightTerm),
+                REQUEST_CODE_BOOKING)
     }
 
     override fun isReturnPage(): Boolean = true

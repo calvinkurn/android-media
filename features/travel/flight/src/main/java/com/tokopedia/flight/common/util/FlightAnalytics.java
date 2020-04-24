@@ -9,9 +9,8 @@ import com.tokopedia.common.travel.data.entity.TravelCollectiveBannerModel;
 import com.tokopedia.flight.bookingV2.presentation.model.FlightBookingCartData;
 import com.tokopedia.flight.dashboard.view.fragment.model.FlightClassModel;
 import com.tokopedia.flight.dashboard.view.fragment.model.FlightDashboardModel;
-import com.tokopedia.flight.detail.view.model.FlightDetailRouteModel;
 import com.tokopedia.flight.detail.view.model.FlightDetailModel;
-import com.tokopedia.flight.review.view.model.FlightBookingReviewModel;
+import com.tokopedia.flight.detail.view.model.FlightDetailRouteModel;
 import com.tokopedia.flight.search.data.api.single.response.Route;
 import com.tokopedia.flight.search.presentation.model.FlightAirlineModel;
 import com.tokopedia.flight.search.presentation.model.FlightJourneyModel;
@@ -689,46 +688,6 @@ public class FlightAnalytics {
                                 CURRENCY_CODE, DEFAULT_CURRENCY_CODE,
                                 "actionField", DataLayer.mapOf("step", 1,
                                         "option", Category.BOOKING_NEXT),
-                                "products", DataLayer.listOf(
-                                        products.toArray(new Object[products.size()])
-                                )
-                        )
-                )
-        );
-    }
-
-    public void eventReviewNextClick() {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(GENERIC_EVENT,
-                GENERIC_CATEGORY,
-                Category.REVIEW_NEXT,
-                Label.REVIEW_NEXT
-        ));
-    }
-
-    public void eventReviewNextClick(FlightBookingReviewModel flightBookingReviewModel, String comboKey) {
-
-        List<Object> products = new ArrayList<>();
-
-        if (flightBookingReviewModel.getDetailViewModelListDeparture() != null) {
-            products.addAll(constructEnhanceEcommerceProduct(flightBookingReviewModel.getDetailViewModelListDeparture(), comboKey,
-                    flightBookingReviewModel.getFlightClass().getTitle(), flightBookingReviewModel.getDetailViewModelListReturn() == null));
-            if (flightBookingReviewModel.getDetailViewModelListReturn() != null) {
-                products.addAll(constructEnhanceEcommerceProduct(flightBookingReviewModel.getDetailViewModelListReturn(), comboKey,
-                        flightBookingReviewModel.getFlightClass().getTitle(), false));
-            }
-        }
-
-        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
-                DataLayer.mapOf(EVENT, CHECKOUT_EVENT,
-                        EVENT_CATEGORY, GENERIC_CATEGORY,
-                        EVENT_ACTION, Category.REVIEW_NEXT,
-                        EVENT_LABEL, String.format(Label.PRODUCT_VIEW,
-                                flightBookingReviewModel.getDetailViewModelListDeparture().getDepartureAirport(),
-                                flightBookingReviewModel.getDetailViewModelListDeparture().getArrivalAirport()),
-                        ECOMMERCE, DataLayer.mapOf(
-                                CURRENCY_CODE, DEFAULT_CURRENCY_CODE,
-                                "actionField", DataLayer.mapOf("step", 2,
-                                        "option", Category.REVIEW_NEXT),
                                 "products", DataLayer.listOf(
                                         products.toArray(new Object[products.size()])
                                 )

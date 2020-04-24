@@ -35,9 +35,6 @@ import com.tokopedia.flight.orderlist.data.FlightOrderApi;
 import com.tokopedia.flight.orderlist.data.cloud.FlightOrderDataSource;
 import com.tokopedia.flight.orderlist.domain.FlightGetOrderUseCase;
 import com.tokopedia.flight.orderlist.domain.model.mapper.FlightOrderMapper;
-import com.tokopedia.flight.review.data.FlightBookingDataSource;
-import com.tokopedia.flight.review.data.FlightCancelVoucherDataSource;
-import com.tokopedia.flight.review.data.FlightCheckVoucheCodeDataSource;
 import com.tokopedia.flight.search.data.db.FlightComboDao;
 import com.tokopedia.flight.search.data.db.FlightJourneyDao;
 import com.tokopedia.flight.search.data.db.FlightRouteDao;
@@ -118,16 +115,12 @@ public class FlightModule {
     @Provides
     public FlightRepository provideFlightRepository(FlightClassesDataSource getFlightClassesUseCase,
                                                     FlightCartDataSource flightCartDataSource,
-                                                    FlightCheckVoucheCodeDataSource flightCheckVoucheCodeDataSource,
-                                                    FlightBookingDataSource flightBookingDataSource,
                                                     FlightOrderDataSource flightOrderDataSource,
                                                     FlightOrderMapper flightOrderMapper,
                                                     FlightCancellationCloudDataSource flightCancellationCloudDataSource,
-                                                    FlightCancelVoucherDataSource flightCancelVoucherDataSource,
                                                     FlightBookingCartDataSource flightBookingCartDataSource) {
         return new FlightRepositoryImpl(getFlightClassesUseCase, flightCartDataSource,
-                flightCheckVoucheCodeDataSource, flightBookingDataSource, flightOrderDataSource,
-                flightOrderMapper, flightCancellationCloudDataSource, flightCancelVoucherDataSource,
+                flightOrderDataSource, flightOrderMapper, flightCancellationCloudDataSource,
                 flightBookingCartDataSource);
     }
 

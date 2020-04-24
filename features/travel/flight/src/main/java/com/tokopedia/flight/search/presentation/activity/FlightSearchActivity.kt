@@ -29,7 +29,6 @@ import com.tokopedia.flight.search.util.FlightSearchCache
 import com.tokopedia.flight.search_universal.presentation.bottomsheet.FlightSearchUniversalBottomSheet
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.unifycomponents.setImage
 import com.tokopedia.unifycomponents.toPx
 import kotlinx.android.synthetic.main.activity_flight_search.*
@@ -184,17 +183,10 @@ open class FlightSearchActivity : BaseFlightActivity(),
                               isBestPairing: Boolean, isCombineDone: Boolean, requestId: String) {
         passDataModel.searchRequestId = requestId
         if (passDataModel.isOneWay) {
-            if (remoteConfig.getBoolean(RemoteConfigKey.ANDROID_CUSTOMER_FLIGHT_BOOKING_NEW_FLOW, true)) {
-                startActivityForResult(FlightBookingActivity
-                        .getCallingIntent(this, passDataModel, selectedFlightID, selectedTerm,
-                                flightPriceModel),
-                        REQUEST_CODE_BOOKING)
-            } else {
-                startActivityForResult(com.tokopedia.flight.bookingV2.presentation.activity.FlightBookingActivity
-                        .getCallingIntent(this, passDataModel, selectedFlightID,
-                                flightPriceModel),
-                        REQUEST_CODE_BOOKING)
-            }
+            startActivityForResult(FlightBookingActivity
+                    .getCallingIntent(this, passDataModel, selectedFlightID, selectedTerm,
+                            flightPriceModel),
+                    REQUEST_CODE_BOOKING)
         } else {
             startActivityForResult(FlightSearchReturnActivity
                     .getCallingIntent(this, passDataModel, selectedFlightID, selectedTerm,
