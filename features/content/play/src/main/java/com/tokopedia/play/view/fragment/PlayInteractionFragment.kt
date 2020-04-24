@@ -80,11 +80,8 @@ import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
@@ -94,7 +91,6 @@ import kotlin.coroutines.CoroutineContext
 class PlayInteractionFragment :
         BaseDaggerFragment(),
         PlayInteractionViewInitializer,
-        CoroutineScope,
         PlayMoreActionBottomSheet.Listener {
 
     companion object {
@@ -118,11 +114,12 @@ class PlayInteractionFragment :
         }
     }
 
-    private val job = SupervisorJob()
-
-    override val coroutineContext: CoroutineContext
-        get() = job + dispatchers.main
-
+    private val scope = object : CoroutineScope {
+        override val coroutineContext: CoroutineContext
+            get() = job + dispatchers.main
+    }
+    private val job: Job = SupervisorJob()
+    
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
@@ -247,7 +244,7 @@ class PlayInteractionFragment :
     }
 
     override fun onNoAction(bottomSheet: PlayMoreActionBottomSheet) {
-        launch {
+        scope.launch {
             EventBusFactory.get(viewLifecycleOwner)
                     .emit(ScreenStateEvent::class.java, ScreenStateEvent.OnNoMoreAction)
         }
@@ -276,7 +273,7 @@ class PlayInteractionFragment :
     //region observe
     private fun observeVOD() {
         playViewModel.observableVOD.observe(viewLifecycleOwner, Observer {
-            launch {
+            scope.launch {
                 EventBusFactory.get(viewLifecycleOwner)
                         .emit(
                                 ScreenStateEvent::class.java,
@@ -290,7 +287,7 @@ class PlayInteractionFragment :
         playViewModel.observableVideoProperty.observe(viewLifecycleOwner, Observer {
             if (it.state == PlayVideoState.Playing) PlayAnalytics.clickPlayVideo(channelId, playViewModel.channelType)
             if (it.state == PlayVideoState.Ended) showInteractionIfWatchMode()
-            launch {
+            scope.launch {
                 EventBusFactory.get(viewLifecycleOwner)
                         .emit(
                                 ScreenStateEvent::class.java,
@@ -338,7 +335,7 @@ class PlayInteractionFragment :
 
     private fun observeNewChat() {
         playViewModel.observableNewChat.observe(viewLifecycleOwner, EventObserver {
-            launch {
+            scope.launch {
                 EventBusFactory.get(viewLifecycleOwner)
                         .emit(
                                 ScreenStateEvent::class.java,
@@ -352,7 +349,7 @@ class PlayInteractionFragment :
         playViewModel.observableChatList.observe(viewLifecycleOwner, object : Observer<List<PlayChatUiModel>> {
             override fun onChanged(chatList: List<PlayChatUiModel>) {
                 playViewModel.observableChatList.removeObserver(this)
-                launch {
+                scope.launch {
                     EventBusFactory.get(viewLifecycleOwner)
                             .emit(
                                     ScreenStateEvent::class.java,
@@ -383,7 +380,7 @@ class PlayInteractionFragment :
         playViewModel.observableLikeState.observe(viewLifecycleOwner, object : Observer<LikeStateUiModel> {
             private var isFirstTime = true
             override fun onChanged(likeModel: LikeStateUiModel) {
-                launch {
+                scope.launch {
                     EventBusFactory.get(viewLifecycleOwner)
                             .emit(
                                     ScreenStateEvent::class.java,
@@ -399,7 +396,7 @@ class PlayInteractionFragment :
         playViewModel.observableBottomInsetsState.observe(viewLifecycleOwner, Observer {
             if (it.isAnyShown) requireView().gone()
 
-            launch {
+            scope.launch {
                 val keyboardState = it[BottomInsetsType.Keyboard]
                 if (keyboardState != null && !keyboardState.isPreviousStateSame) {
                     when (keyboardState) {
@@ -427,7 +424,7 @@ class PlayInteractionFragment :
 
     private fun observeEventUserInfo() {
         playViewModel.observableEvent.observe(viewLifecycleOwner, Observer {
-            launch {
+            scope.launch {
                 getBottomSheetInstance().setState(it.isFreeze)
 
                 if (it.isBanned) sendEventBanned(it)
@@ -497,9 +494,9 @@ class PlayInteractionFragment :
     }
 
     override fun onInitToolbar(container: ViewGroup): Int {
-        val toolbarComponent = ToolbarComponent(container, EventBusFactory.get(viewLifecycleOwner), this, dispatchers)
+        val toolbarComponent = ToolbarComponent(container, EventBusFactory.get(viewLifecycleOwner), scope, dispatchers)
 
-        launch {
+        scope.launch {
             toolbarComponent.getUserInteractionEvents()
                     .collect {
                         when (it) {
@@ -516,10 +513,10 @@ class PlayInteractionFragment :
     }
 
     override fun onInitVideoControl(container: ViewGroup): Int {
-        val videoControlComponent = VideoControlComponent(container, EventBusFactory.get(viewLifecycleOwner), this, dispatchers)
+        val videoControlComponent = VideoControlComponent(container, EventBusFactory.get(viewLifecycleOwner), scope, dispatchers)
                 .also(viewLifecycleOwner.lifecycle::addObserver)
 
-        launch {
+        scope.launch {
             videoControlComponent.getUserInteractionEvents()
                     .collect {
                         when (it) {
@@ -533,9 +530,9 @@ class PlayInteractionFragment :
     }
 
     override fun onInitLike(container: ViewGroup): Int {
-        val likeComponent = LikeComponent(container, EventBusFactory.get(viewLifecycleOwner), this, dispatchers)
+        val likeComponent = LikeComponent(container, EventBusFactory.get(viewLifecycleOwner), scope, dispatchers)
 
-        launch {
+        scope.launch {
             likeComponent.getUserInteractionEvents()
                     .collect {
                         when (it) {
@@ -548,10 +545,10 @@ class PlayInteractionFragment :
     }
 
     override fun onInitChat(container: ViewGroup): Int {
-        val sendChatComponent = SendChatComponent(container, EventBusFactory.get(viewLifecycleOwner), this, dispatchers)
+        val sendChatComponent = SendChatComponent(container, EventBusFactory.get(viewLifecycleOwner), scope, dispatchers)
                 .also(viewLifecycleOwner.lifecycle::addObserver)
 
-        launch {
+        scope.launch {
             sendChatComponent.getUserInteractionEvents()
                     .collect {
                         when (it) {
@@ -568,16 +565,16 @@ class PlayInteractionFragment :
     }
 
     override fun onInitChatList(container: ViewGroup): Int {
-        return ChatListComponent(container, EventBusFactory.get(viewLifecycleOwner), this, dispatchers)
+        return ChatListComponent(container, EventBusFactory.get(viewLifecycleOwner), scope, dispatchers)
                 .also(viewLifecycleOwner.lifecycle::addObserver)
                 .getContainerId()
     }
 
     override fun onInitPinned(container: ViewGroup): Int {
-        val pinnedComponent = PinnedComponent(container, EventBusFactory.get(viewLifecycleOwner), this, dispatchers)
+        val pinnedComponent = PinnedComponent(container, EventBusFactory.get(viewLifecycleOwner), scope, dispatchers)
                 .also(viewLifecycleOwner.lifecycle::addObserver)
 
-        launch {
+        scope.launch {
             pinnedComponent.getUserInteractionEvents()
                     .collect {
                         when (it) {
@@ -594,9 +591,9 @@ class PlayInteractionFragment :
     }
 
     override fun onInitPlayButton(container: ViewGroup): Int {
-        val playButtonComponent = PlayButtonComponent(container, EventBusFactory.get(viewLifecycleOwner), this, dispatchers)
+        val playButtonComponent = PlayButtonComponent(container, EventBusFactory.get(viewLifecycleOwner), scope, dispatchers)
 
-        launch {
+        scope.launch {
             playButtonComponent.getUserInteractionEvents()
                     .collect {
                         when (it) {
@@ -609,9 +606,9 @@ class PlayInteractionFragment :
     }
 
     override fun onInitImmersiveBox(container: ViewGroup): Int {
-        val immersiveBoxComponent = ImmersiveBoxComponent(container, EventBusFactory.get(viewLifecycleOwner), this, dispatchers)
+        val immersiveBoxComponent = ImmersiveBoxComponent(container, EventBusFactory.get(viewLifecycleOwner), scope, dispatchers)
 
-        launch {
+        scope.launch {
             immersiveBoxComponent.getUserInteractionEvents()
                     .collect {
                         when (it) {
@@ -633,9 +630,9 @@ class PlayInteractionFragment :
     }
 
     override fun onInitQuickReply(container: ViewGroup): Int {
-        val quickReplyComponent = QuickReplyComponent(container, EventBusFactory.get(viewLifecycleOwner), this, dispatchers)
+        val quickReplyComponent = QuickReplyComponent(container, EventBusFactory.get(viewLifecycleOwner), scope, dispatchers)
 
-        launch {
+        scope.launch {
             quickReplyComponent.getUserInteractionEvents()
                     .collect {
                         when (it) {
@@ -651,14 +648,14 @@ class PlayInteractionFragment :
     }
 
     override fun onInitGradientBackground(container: ViewGroup): Int {
-        return GradientBackgroundComponent(container, EventBusFactory.get(viewLifecycleOwner), this, dispatchers)
+        return GradientBackgroundComponent(container, EventBusFactory.get(viewLifecycleOwner), scope, dispatchers)
                 .getContainerId()
     }
 
     override fun onInitEndLiveComponent(container: ViewGroup): Int {
-        val endLiveInfoComponent = EndLiveInfoComponent(container, EventBusFactory.get(viewLifecycleOwner), this, dispatchers)
+        val endLiveInfoComponent = EndLiveInfoComponent(container, EventBusFactory.get(viewLifecycleOwner), scope, dispatchers)
 
-        launch {
+        scope.launch {
             endLiveInfoComponent.getUserInteractionEvents()
                     .collect {
                         when (it) {
@@ -676,14 +673,14 @@ class PlayInteractionFragment :
     }
 
     override fun onInitStatsInfo(container: ViewGroup): Int {
-        return StatsInfoComponent(container, EventBusFactory.get(viewLifecycleOwner), this, dispatchers)
+        return StatsInfoComponent(container, EventBusFactory.get(viewLifecycleOwner), scope, dispatchers)
                 .getContainerId()
     }
 
     override fun onInitVideoSettings(container: ViewGroup): Int {
-        val videoSettingsComponent =  VideoSettingsComponent(container, EventBusFactory.get(viewLifecycleOwner), this, dispatchers)
+        val videoSettingsComponent =  VideoSettingsComponent(container, EventBusFactory.get(viewLifecycleOwner), scope, dispatchers)
 
-        launch {
+        scope.launch {
             videoSettingsComponent.getUserInteractionEvents()
                     .collect {
                         when (it) {
@@ -705,7 +702,7 @@ class PlayInteractionFragment :
     //endregion
 
     private fun sendInitState() {
-        launch(dispatchers.immediate) {
+        scope.launch(dispatchers.immediate) {
             EventBusFactory.get(viewLifecycleOwner).emit(
                     ScreenStateEvent::class.java,
                     ScreenStateEvent.Init(playViewModel.screenOrientation, playViewModel.stateHelper)
@@ -718,7 +715,7 @@ class PlayInteractionFragment :
      * Emit data to ui component
      */
     private fun setChannelTitle(title: String) {
-        launch {
+        scope.launch {
             EventBusFactory.get(viewLifecycleOwner)
                     .emit(
                             ScreenStateEvent::class.java,
@@ -728,7 +725,7 @@ class PlayInteractionFragment :
     }
 
     private fun setPartnerInfo(partnerInfo: PartnerInfoUiModel) {
-        launch {
+        scope.launch {
             EventBusFactory.get(viewLifecycleOwner)
                     .emit(
                             ScreenStateEvent::class.java,
@@ -738,7 +735,7 @@ class PlayInteractionFragment :
     }
 
     private fun setCartInfo(cartUiModel: CartUiModel) {
-        launch {
+        scope.launch {
             EventBusFactory.get(viewLifecycleOwner)
                     .emit(
                             ScreenStateEvent::class.java,
@@ -748,7 +745,7 @@ class PlayInteractionFragment :
     }
 
     private fun setTotalView(totalView: TotalViewUiModel) {
-        launch {
+        scope.launch {
             EventBusFactory.get(viewLifecycleOwner)
                     .emit(
                             ScreenStateEvent::class.java,
@@ -759,7 +756,7 @@ class PlayInteractionFragment :
 
 
     private fun setTotalLikes(totalLikes: TotalLikeUiModel) {
-        launch {
+        scope.launch {
             EventBusFactory.get(viewLifecycleOwner)
                     .emit(
                             ScreenStateEvent::class.java,
@@ -769,7 +766,7 @@ class PlayInteractionFragment :
     }
 
     private fun setQuickReply(quickReply: QuickReplyUiModel) {
-        launch {
+        scope.launch {
             EventBusFactory.get(viewLifecycleOwner)
                     .emit(
                             ScreenStateEvent::class.java,
@@ -779,7 +776,7 @@ class PlayInteractionFragment :
     }
 
     private fun setPinned(pinnedMessage: PinnedUiModel) {
-        launch {
+        scope.launch {
             EventBusFactory.get(viewLifecycleOwner)
                     .emit(
                             ScreenStateEvent::class.java,
@@ -789,7 +786,7 @@ class PlayInteractionFragment :
     }
 
     private fun setVideoStream(videoStream: VideoStreamUiModel) {
-        launch {
+        scope.launch {
             EventBusFactory.get(viewLifecycleOwner)
                     .emit(
                             ScreenStateEvent::class.java,
@@ -838,7 +835,7 @@ class PlayInteractionFragment :
     }
 
     private fun sendEventFollowPartner(shouldFollow: Boolean) {
-        launch {
+        scope.launch {
             EventBusFactory.get(viewLifecycleOwner)
                     .emit(
                             ScreenStateEvent::class.java,
@@ -848,7 +845,7 @@ class PlayInteractionFragment :
     }
 
     private fun sendImmersiveEvent(shouldImmersive: Boolean) {
-        launch {
+        scope.launch {
             EventBusFactory.get(viewLifecycleOwner)
                     .emit(
                             ScreenStateEvent::class.java,
@@ -918,7 +915,7 @@ class PlayInteractionFragment :
     }
 
     private fun sendEventComposeChat() {
-        launch {
+        scope.launch {
             EventBusFactory.get(viewLifecycleOwner)
                     .emit(
                             ScreenStateEvent::class.java,
@@ -956,7 +953,7 @@ class PlayInteractionFragment :
     }
 
     private fun sendEventBanned(eventUiModel: EventUiModel) {
-        launch {
+        scope.launch {
             EventBusFactory.get(viewLifecycleOwner)
                     .emit(
                             ScreenStateEvent::class.java,
@@ -972,7 +969,7 @@ class PlayInteractionFragment :
     }
 
     private fun sendEventFreeze(eventUiModel: EventUiModel) {
-        launch {
+        scope.launch {
             EventBusFactory.get(viewLifecycleOwner)
                     .emit(
                             ScreenStateEvent::class.java,

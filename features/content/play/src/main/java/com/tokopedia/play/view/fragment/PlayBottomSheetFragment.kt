@@ -44,6 +44,7 @@ import com.tokopedia.play.view.wrapper.PlayResult
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -53,7 +54,7 @@ import kotlin.coroutines.CoroutineContext
 /**
  * Created by jegul on 06/03/20
  */
-class PlayBottomSheetFragment : BaseDaggerFragment(), CoroutineScope {
+class PlayBottomSheetFragment : BaseDaggerFragment() {
 
     companion object {
         private const val REQUEST_CODE_LOGIN = 191
@@ -69,10 +70,11 @@ class PlayBottomSheetFragment : BaseDaggerFragment(), CoroutineScope {
         }
     }
 
-    private val job = SupervisorJob()
-
-    override val coroutineContext: CoroutineContext
-        get() = job + dispatchers.main
+    private val scope = object : CoroutineScope {
+        override val coroutineContext: CoroutineContext
+            get() = job + dispatchers.main
+    }
+    private val job: Job = SupervisorJob()
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -164,7 +166,7 @@ class PlayBottomSheetFragment : BaseDaggerFragment(), CoroutineScope {
 
     private fun observeProductSheetContent() {
         playViewModel.observableProductSheetContent.observe(viewLifecycleOwner, Observer {
-            launch {
+            scope.launch {
                 EventBusFactory.get(viewLifecycleOwner)
                         .emit(
                                 ScreenStateEvent::class.java,
@@ -191,7 +193,7 @@ class PlayBottomSheetFragment : BaseDaggerFragment(), CoroutineScope {
 
     private fun observeVariantSheetContent() {
         viewModel.observableProductVariant.observe(viewLifecycleOwner, Observer {
-            launch {
+            scope.launch {
                 EventBusFactory.get(viewLifecycleOwner)
                         .emit(
                                 ScreenStateEvent::class.java,
@@ -203,7 +205,7 @@ class PlayBottomSheetFragment : BaseDaggerFragment(), CoroutineScope {
 
     private fun observeBottomInsetsState() {
         playViewModel.observableBottomInsetsState.observe(viewLifecycleOwner, Observer {
-            launch {
+            scope.launch {
                 EventBusFactory.get(viewLifecycleOwner)
                         .emit(ScreenStateEvent::class.java, ScreenStateEvent.BottomInsetsChanged(it, it.isAnyShown, it.isAnyHidden, playViewModel.stateHelper))
 
@@ -273,7 +275,7 @@ class PlayBottomSheetFragment : BaseDaggerFragment(), CoroutineScope {
     }
 
     private fun sendInitState() {
-        launch(dispatchers.immediate) {
+        scope.launch(dispatchers.immediate) {
             EventBusFactory.get(viewLifecycleOwner).emit(
                     ScreenStateEvent::class.java,
                     ScreenStateEvent.Init(playViewModel.screenOrientation, playViewModel.stateHelper)
@@ -282,9 +284,9 @@ class PlayBottomSheetFragment : BaseDaggerFragment(), CoroutineScope {
     }
 
     private fun initProductSheetComponent(container: ViewGroup): UIComponent<ProductSheetInteractionEvent> {
-        val productSheetComponent = ProductSheetComponent(container, EventBusFactory.get(viewLifecycleOwner), this, dispatchers)
+        val productSheetComponent = ProductSheetComponent(container, EventBusFactory.get(viewLifecycleOwner), scope, dispatchers)
 
-        launch {
+        scope.launch {
             productSheetComponent.getUserInteractionEvents()
                     .collect {
                         when (it) {
@@ -305,9 +307,9 @@ class PlayBottomSheetFragment : BaseDaggerFragment(), CoroutineScope {
     }
 
     private fun initVariantSheetComponent(container: ViewGroup): UIComponent<VariantSheetInteractionEvent> {
-        val variantSheetComponent = VariantSheetComponent(container, EventBusFactory.get(viewLifecycleOwner), this, dispatchers)
+        val variantSheetComponent = VariantSheetComponent(container, EventBusFactory.get(viewLifecycleOwner), scope, dispatchers)
 
-        launch {
+        scope.launch {
             variantSheetComponent.getUserInteractionEvents()
                     .collect {
                         when (it) {
@@ -363,7 +365,7 @@ class PlayBottomSheetFragment : BaseDaggerFragment(), CoroutineScope {
     }
 
     private fun sendVariantToaster(toasterType: Int, message: String, actionText: String? = null, actionClickListener: View.OnClickListener? = null) {
-        launch {
+        scope.launch {
             EventBusFactory.get(viewLifecycleOwner)
                     .emit(
                             ScreenStateEvent::class.java,
