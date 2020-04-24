@@ -12,14 +12,13 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.viewpager.widget.ViewPager
 import com.airbnb.deeplinkdispatch.DeepLink
-import com.tkpd.library.utils.URLParser
+import com.tokopedia.discovery.common.utils.URLParser
 import com.tkpd.library.utils.legacy.MethodChecker
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.core.gcm.Constants
-import com.tokopedia.core.router.discovery.BrowseProductRouter
 import com.tokopedia.discovery.R
 import com.tokopedia.common_category.customview.SearchNavigationView
 import com.tokopedia.common_category.fragment.BaseCategorySectionFragment
@@ -61,7 +60,8 @@ private const val EXTRA_PARENT_NAME = " PARENT_NAME"
 private const val STATE_GRID = 1
 private const val STATE_LIST = 2
 private const val STATE_BIG = 3
-
+private const val DEPARTMENT_ID = "DEPARTMENT_ID"
+private const val EXTRA_CATEGORY_URL = "CATEGORY_URL"
 
 class CategoryNavActivity : BaseActivity(), CategoryNavigationListener,
         SearchNavigationView.SearchNavClickListener,
@@ -98,12 +98,13 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener,
     lateinit var categoryNavViewModel: CategoryNavViewModel
 
     object DeepLinkIntents {
+
         @DeepLink(Constants.Applinks.DISCOVERY_CATEGORY_DETAIL, ApplinkConstInternalDiscovery.DISCOVERY_CATEGORY_DETAIL_MARKETPLACE)
         @JvmStatic
         fun getCallingCategoryIntent(context: Context?, bundle: Bundle): Intent? {
             val intent = Intent(context, CategoryNavActivity::class.java)
             val newBundle = Bundle()
-            newBundle.putString(BrowseProductRouter.DEPARTMENT_ID, bundle.getString(BrowseProductRouter.DEPARTMENT_ID))
+            newBundle.putString(DEPARTMENT_ID, bundle.getString(DEPARTMENT_ID))
             try {
                 newBundle.putString(EXTRA_TRACKER_ATTRIBUTION,
                         URLDecoder.decode(bundle.getString(EXTRA_TRACKER_ATTRIBUTION, ""), "UTF-8")
@@ -114,8 +115,8 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener,
                         bundle.getString(EXTRA_TRACKER_ATTRIBUTION, "").replace("%20".toRegex(), " ")
                 )
             }
-            if (bundle.containsKey(BrowseProductRouter.DEPARTMENT_ID)) {
-                newBundle.putString(EXTRA_CATEGORY_CATEGORY_ID, bundle.getString(BrowseProductRouter.DEPARTMENT_ID))
+            if (bundle.containsKey(DEPARTMENT_ID)) {
+                newBundle.putString(EXTRA_CATEGORY_CATEGORY_ID, bundle.getString(DEPARTMENT_ID))
             }
             return intent.putExtras(newBundle)
         }
@@ -125,6 +126,8 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener,
 
     companion object {
         private const val EXTRA_TRACKER_ATTRIBUTION = "tracker_attribution"
+        private const val DEPARTMENT_ID = "DEPARTMENT_ID"
+        private const val EXTRA_CATEGORY_URL = "CATEGORY_URL"
 
         private const val ORDER_BY = "ob"
         private const val SCREEN_NAME = "/p"
@@ -139,7 +142,7 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener,
         fun  getCategoryIntentWithFilter(context: Context,
                                         categoryUrl: String): Intent {
             val intent = Intent(context, CategoryNavActivity::class.java)
-            intent.putExtra(BrowseProductRouter.EXTRA_CATEGORY_URL, categoryUrl)
+            intent.putExtra(EXTRA_CATEGORY_URL, categoryUrl)
             return intent
         }
 
@@ -147,7 +150,7 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener,
         fun getCategoryIntentWithDepartmentId(context: Context,
                                         departmentId: String): Intent {
             val intent = Intent(context, CategoryNavActivity::class.java)
-            intent.putExtra(BrowseProductRouter.DEPARTMENT_ID, departmentId)
+            intent.putExtra(DEPARTMENT_ID, departmentId)
             return intent
         }
 
@@ -389,8 +392,8 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener,
 
     private fun fetchBundle() {
         intent.extras?.let { bundle ->
-            if (bundle.containsKey(BrowseProductRouter.EXTRA_CATEGORY_URL)) {
-                categoryUrl = bundle.getString(BrowseProductRouter.EXTRA_CATEGORY_URL, "")
+            if (bundle.containsKey(EXTRA_CATEGORY_URL)) {
+                categoryUrl = bundle.getString(EXTRA_CATEGORY_URL, "")
                 categoryUrl?.let {
                     if (it.contains(EXTRA_CATEGORY_NAME)) {
                         departmentId = URLParser.getPathSegment(0, categoryUrl)

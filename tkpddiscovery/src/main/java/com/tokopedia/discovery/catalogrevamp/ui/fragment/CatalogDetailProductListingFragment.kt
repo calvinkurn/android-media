@@ -29,7 +29,7 @@ import com.tokopedia.common_category.fragment.BaseCategorySectionFragment
 import com.tokopedia.common_category.interfaces.ProductCardListener
 import com.tokopedia.common_category.interfaces.QuickFilterListener
 import com.tokopedia.core.gcm.GCMHandler
-import com.tokopedia.design.utils.CurrencyFormatHelper
+import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import com.tokopedia.discovery.R
 import com.tokopedia.discovery.catalogrevamp.analytics.CatalogDetailPageAnalytics
 import com.tokopedia.discovery.catalogrevamp.di.CatalogComponent

@@ -15,7 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
 import com.beloo.widget.chipslayoutmanager.SpacingItemDecoration
-import com.tkpd.library.utils.URLParser
+import com.tokopedia.discovery.common.utils.URLParser
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
@@ -31,7 +31,7 @@ import com.tokopedia.common_category.factory.product.ProductTypeFactoryImpl
 import com.tokopedia.common_category.interfaces.ProductCardListener
 import com.tokopedia.common_category.interfaces.QuickFilterListener
 import com.tokopedia.core.gcm.GCMHandler
-import com.tokopedia.design.utils.CurrencyFormatHelper
+import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import com.tokopedia.discovery.R
 import com.tokopedia.discovery.categoryrevamp.adapters.*
 import com.tokopedia.discovery.categoryrevamp.analytics.CategoryPageAnalytics.Companion.catAnalyticsInstance
@@ -197,8 +197,8 @@ open class ProductNavFragment : BaseBannedProductFragment(),
                 .build()
         selectedFilterRecyclerView.layoutManager = layoutManager
         selectedFilterRecyclerView.addItemDecoration(SpacingItemDecoration(
-                resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_8),
-                resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_10)
+                resources.getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_8),
+                resources.getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_10)
         ))
     }
 

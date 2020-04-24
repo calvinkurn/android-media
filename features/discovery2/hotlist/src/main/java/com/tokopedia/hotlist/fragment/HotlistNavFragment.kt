@@ -32,7 +32,6 @@ import com.tokopedia.common_category.interfaces.ProductCardListener
 import com.tokopedia.common_category.interfaces.QuickFilterListener
 import com.tokopedia.common_category.model.productModel.ProductsItem
 import com.tokopedia.core.gcm.GCMHandler
-import com.tokopedia.design.image.ImageLoader
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.hotlist.analytics.HotlistNavAnalytics.Companion.hotlistNavAnalytics
 import com.tokopedia.hotlist.data.cpmAds.CpmItem
@@ -49,6 +48,7 @@ import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.hotlist.R
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -277,7 +277,8 @@ class HotlistNavFragment : BaseCategorySectionFragment(),
 
     private fun updateData(data: HotListDetailResponse) {
         showBannerShimmer(false)
-        ImageLoader.LoadImage(hotlist_banner, data.hotlistDetail?.coverImage)
+        if(data.hotlistDetail?.coverImage !=null)
+            hotlist_banner.loadImage(data.hotlistDetail.coverImage)
         hotlistDetail = data.hotlistDetail
         val hotId = hotlistDetail?.filterAttribute?.sc.toString()
         fetchProducts(0)

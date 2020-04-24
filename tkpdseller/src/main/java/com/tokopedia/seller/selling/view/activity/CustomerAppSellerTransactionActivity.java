@@ -42,7 +42,6 @@ import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.AppWidgetUtil;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
-//import com.tokopedia.opportunity.fragment.OpportunityListFragment;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
@@ -64,6 +63,8 @@ import java.util.List;
 
 import static com.tokopedia.seller.selling.view.activity.ActivitySellingTransaction.EXTRA_KEY_CONFIRM_SHIPPING;
 import static com.tokopedia.seller.selling.view.activity.ActivitySellingTransaction.EXTRA_KEY_IN_SHIPPING;
+
+//import com.tokopedia.opportunity.fragment.OpportunityListFragment;
 
 /**
  * @author okasurya on 8/1/18.
@@ -193,7 +194,7 @@ public class CustomerAppSellerTransactionActivity extends BaseTabActivity
     private void checkLogin() {
         if (getApplication() instanceof TkpdCoreRouter) {
             if (!SessionHandler.isV4Login(this)) {
-                startActivity(((TkpdCoreRouter) getApplication()).getLoginIntent(this));
+                startActivity(RouteManager.getIntent(this, ApplinkConst.LOGIN));
                 AppWidgetUtil.sendBroadcastToAppWidget(this);
                 finish();
             } else if (!SessionHandler.isUserHasShop(this)) {

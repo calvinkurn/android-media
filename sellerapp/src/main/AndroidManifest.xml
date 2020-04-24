@@ -268,10 +268,6 @@
                 <data android:scheme="sellerapp" />
             </intent-filter>
         </activity>
-        <activity
-            android:name="com.tokopedia.sellerapp.shopstatisticdetail.ShopStatisticDetail"
-            android:label="@string/title_activity_shop_statistic_detail"
-            android:screenOrientation="portrait" />
         <service android:name="com.tokopedia.sellerhomedrawer.domain.service.SellerDrawerGetNotificationService"
             android:permission="android.permission.BIND_JOB_SERVICE"/>
     </application>
