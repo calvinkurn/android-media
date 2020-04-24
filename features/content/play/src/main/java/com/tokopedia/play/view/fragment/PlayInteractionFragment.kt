@@ -393,30 +393,35 @@ class PlayInteractionFragment :
     }
 
     private fun observeBottomInsetsState() {
-        playViewModel.observableBottomInsetsState.observe(viewLifecycleOwner, Observer {
-            if (it.isAnyShown) requireView().gone()
+        playViewModel.observableBottomInsetsState.observe(viewLifecycleOwner, object : Observer<Map<BottomInsetsType, BottomInsetsState>> {
+            private var isFirstTime = true
 
-            scope.launch {
-                val keyboardState = it[BottomInsetsType.Keyboard]
-                if (keyboardState != null && !keyboardState.isPreviousStateSame) {
-                    when (keyboardState) {
-                        is BottomInsetsState.Hidden -> if (!it.isAnyShown) playFragment.onBottomInsetsViewHidden()
-                        is BottomInsetsState.Shown -> {
-                            pushParentPlayByKeyboardHeight(keyboardState.estimatedInsetsHeight)
+            override fun onChanged(map: Map<BottomInsetsType, BottomInsetsState>) {
+                if (!isFirstTime) requireView().gone()
+
+                scope.launch {
+                    val keyboardState = map[BottomInsetsType.Keyboard]
+                    if (keyboardState != null && !keyboardState.isPreviousStateSame) {
+                        when (keyboardState) {
+                            is BottomInsetsState.Hidden -> if (!map.isAnyShown) playFragment.onBottomInsetsViewHidden()
+                            is BottomInsetsState.Shown -> {
+                                pushParentPlayByKeyboardHeight(keyboardState.estimatedInsetsHeight)
+                            }
                         }
                     }
-                }
 
-                if (keyboardState?.isHidden == true) delay(PlayParentLayoutManagerImpl.ANIMATION_DURATION)
-                EventBusFactory.get(viewLifecycleOwner)
-                        .emit(
-                                ScreenStateEvent::class.java,
-                                ScreenStateEvent.BottomInsetsChanged(it, it.isAnyShown, it.isAnyHidden, playViewModel.stateHelper)
-                        )
+                    if (keyboardState?.isHidden == true) delay(PlayParentLayoutManagerImpl.ANIMATION_DURATION)
+                    EventBusFactory.get(viewLifecycleOwner)
+                            .emit(
+                                    ScreenStateEvent::class.java,
+                                    ScreenStateEvent.BottomInsetsChanged(map, map.isAnyShown, map.isAnyHidden, playViewModel.stateHelper)
+                            )
 
-            }.apply {
-                invokeOnCompletion {
-                    view?.visible()
+                }.apply {
+                    invokeOnCompletion {
+                        view?.visible()
+                        isFirstTime = false
+                    }
                 }
             }
         })
