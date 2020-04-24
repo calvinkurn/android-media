@@ -18,8 +18,8 @@ import com.tokopedia.vouchercreation.create.view.fragment.bottomsheet.VoucherDis
 import com.tokopedia.vouchercreation.create.view.typefactory.CreateVoucherTypeFactory
 import com.tokopedia.vouchercreation.create.view.typefactory.VoucherTargetAdapterTypeFactory
 import com.tokopedia.vouchercreation.create.view.typefactory.VoucherTargetTypeFactory
-import com.tokopedia.vouchercreation.create.view.uimodel.FillVoucherNameUiModel
-import com.tokopedia.vouchercreation.create.view.uimodel.VoucherTargetUiModel
+import com.tokopedia.vouchercreation.create.view.uimodel.widgets.FillVoucherNameUiModel
+import com.tokopedia.vouchercreation.create.view.uimodel.widgets.VoucherTargetUiModel
 import com.tokopedia.vouchercreation.create.view.viewmodel.MerchantVoucherTargetViewModel
 import com.tokopedia.vouchercreation.di.component.DaggerVoucherCreationComponent
 import javax.inject.Inject

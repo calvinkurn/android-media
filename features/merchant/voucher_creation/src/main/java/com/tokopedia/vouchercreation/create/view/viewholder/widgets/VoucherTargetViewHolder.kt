@@ -1,16 +1,18 @@
-package com.tokopedia.vouchercreation.create.view.viewholder
+package com.tokopedia.vouchercreation.create.view.viewholder.widgets
 
 import android.view.View
+import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.create.view.adapter.MerchantVoucherTargetAdapter
-import com.tokopedia.vouchercreation.create.view.uimodel.VoucherTargetUiModel
+import com.tokopedia.vouchercreation.create.view.uimodel.widgets.VoucherTargetUiModel
 import kotlinx.android.synthetic.main.mvc_voucher_target_widget.view.*
 
 class VoucherTargetViewHolder(itemView: View) : AbstractViewHolder<VoucherTargetUiModel>(itemView) {
 
     companion object {
+        @LayoutRes
         val LAYOUT = R.layout.mvc_voucher_target_widget
     }
 

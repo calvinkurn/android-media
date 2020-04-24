@@ -1,19 +1,23 @@
-package com.tokopedia.vouchercreation.create.view.viewholder
+package com.tokopedia.vouchercreation.create.view.viewholder.widgets
 
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
 import android.view.inputmethod.EditorInfo
+import androidx.annotation.LayoutRes
+import androidx.annotation.StringRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.vouchercreation.R
-import com.tokopedia.vouchercreation.create.view.uimodel.FillVoucherNameUiModel
+import com.tokopedia.vouchercreation.create.view.uimodel.widgets.FillVoucherNameUiModel
 import kotlinx.android.synthetic.main.mvc_fill_voucher_name_widget.view.*
 
 class FillVoucherNameViewHolder(itemView: View) : AbstractViewHolder<FillVoucherNameUiModel>(itemView) {
 
     companion object {
+        @LayoutRes
         val LAYOUT = R.layout.mvc_fill_voucher_name_widget
+        @StringRes
         val TEXFIELD_ALERT_MINIMUM = R.string.mvc_create_alert_minimum
 
         private const val MIN_TEXTFIELD_LENGTH = 5

@@ -4,12 +4,12 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.vouchercreation.create.view.uimodel.FillVoucherNameUiModel
-import com.tokopedia.vouchercreation.create.view.uimodel.NextButtonUiModel
-import com.tokopedia.vouchercreation.create.view.uimodel.VoucherTargetUiModel
-import com.tokopedia.vouchercreation.create.view.viewholder.FillVoucherNameViewHolder
-import com.tokopedia.vouchercreation.create.view.viewholder.NextButtonViewHolder
-import com.tokopedia.vouchercreation.create.view.viewholder.VoucherTargetViewHolder
+import com.tokopedia.vouchercreation.create.view.uimodel.widgets.FillVoucherNameUiModel
+import com.tokopedia.vouchercreation.create.view.uimodel.widgets.NextButtonUiModel
+import com.tokopedia.vouchercreation.create.view.uimodel.widgets.VoucherTargetUiModel
+import com.tokopedia.vouchercreation.create.view.viewholder.widgets.FillVoucherNameViewHolder
+import com.tokopedia.vouchercreation.create.view.viewholder.widgets.NextButtonViewHolder
+import com.tokopedia.vouchercreation.create.view.viewholder.widgets.VoucherTargetViewHolder
 
 class VoucherTargetAdapterTypeFactory : BaseAdapterTypeFactory(), VoucherTargetTypeFactory {
 

@@ -1,7 +1,7 @@
 package com.tokopedia.vouchercreation.create.view.typefactory
 
-import com.tokopedia.vouchercreation.create.view.uimodel.FillVoucherNameUiModel
-import com.tokopedia.vouchercreation.create.view.uimodel.VoucherTargetUiModel
+import com.tokopedia.vouchercreation.create.view.uimodel.widgets.FillVoucherNameUiModel
+import com.tokopedia.vouchercreation.create.view.uimodel.widgets.VoucherTargetUiModel
 
 interface VoucherTargetTypeFactory : CreateVoucherTypeFactory {
 

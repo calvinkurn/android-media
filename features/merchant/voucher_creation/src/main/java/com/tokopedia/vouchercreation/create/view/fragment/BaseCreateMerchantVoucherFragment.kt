@@ -11,7 +11,7 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.vouchercreation.create.view.customview.bottomsheet.VoucherBottomView
 import com.tokopedia.vouchercreation.create.view.enums.CreateVoucherBottomSheetType
 import com.tokopedia.vouchercreation.create.view.typefactory.CreateVoucherTypeFactory
-import com.tokopedia.vouchercreation.create.view.uimodel.NextButtonUiModel
+import com.tokopedia.vouchercreation.create.view.uimodel.widgets.NextButtonUiModel
 
 abstract class BaseCreateMerchantVoucherFragment<F : CreateVoucherTypeFactory, WTF : BaseAdapterTypeFactory>(private val onNext: () -> Unit) : BaseListFragment<Visitable<CreateVoucherTypeFactory>, WTF>() {
 
