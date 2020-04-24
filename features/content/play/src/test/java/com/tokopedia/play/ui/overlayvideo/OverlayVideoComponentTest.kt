@@ -121,7 +121,7 @@ class OverlayVideoComponentTest {
         }
     }
 
-    class OverlayVideoComponentMock(container: ViewGroup, bus: EventBusFactory, coroutineScope: CoroutineScope) : OverlayVideoComponent(container, bus, coroutineScope, TestCoroutineDispatchersProvider) {
+    class OverlayVideoComponentMock(container: ViewGroup, bus: EventBusFactory, private val scope: CoroutineScope) : OverlayVideoComponent(container, bus, coroutineScope, TestCoroutineDispatchersProvider) {
         override fun initView(container: ViewGroup): OverlayVideoView {
             return mockk(relaxed = true)
         }

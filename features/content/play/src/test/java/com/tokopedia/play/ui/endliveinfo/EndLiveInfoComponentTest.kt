@@ -94,7 +94,7 @@ class EndLiveInfoComponentTest {
         confirmVerified(component.uiView)
     }
 
-    class EndLiveInfoComponentMock(container: ViewGroup, bus: EventBusFactory, coroutineScope: CoroutineScope) : EndLiveInfoComponent(container, bus, coroutineScope, TestCoroutineDispatchersProvider) {
+    class EndLiveInfoComponentMock(container: ViewGroup, bus: EventBusFactory, private val scope: CoroutineScope) : EndLiveInfoComponent(container, bus, coroutineScope, TestCoroutineDispatchersProvider) {
         override fun initView(container: ViewGroup): EndLiveInfoView {
             return mockk(relaxed = true)
         }

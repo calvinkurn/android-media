@@ -121,7 +121,7 @@ class ProductSheetComponentTest {
         confirmVerified(component.uiView)
     }
 
-    class ProductSheetComponentMock(container: ViewGroup, bus: EventBusFactory, coroutineScope: CoroutineScope) : ProductSheetComponent(container, bus, coroutineScope, TestCoroutineDispatchersProvider) {
+    class ProductSheetComponentMock(container: ViewGroup, bus: EventBusFactory, private val scope: CoroutineScope) : ProductSheetComponent(container, bus, coroutineScope, TestCoroutineDispatchersProvider) {
         override fun initView(container: ViewGroup): ProductSheetView {
             return mockk(relaxed = true)
         }

@@ -22,15 +22,15 @@ import kotlinx.coroutines.launch
 open class VideoControlComponent(
         container: ViewGroup,
         private val bus: EventBusFactory,
-        coroutineScope: CoroutineScope,
+        private val scope: CoroutineScope,
         dispatchers: CoroutineDispatcherProvider
-) : UIComponent<VideoControlInteractionEvent>, VideoControlView.Listener, CoroutineScope by coroutineScope {
+) : UIComponent<VideoControlInteractionEvent>, VideoControlView.Listener {
 
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
     val uiView = initView(container)
 
     init {
-        launch(dispatchers.immediate) {
+        scope.launch(dispatchers.immediate) {
             bus.getSafeManagedFlow(ScreenStateEvent::class.java)
                     .collect {
                         when (it) {
@@ -56,13 +56,13 @@ open class VideoControlComponent(
     }
 
     override fun onStartSeeking(view: VideoControlView) {
-        launch {
+        scope.launch {
             bus.emit(VideoControlInteractionEvent::class.java, VideoControlInteractionEvent.VideoScrubStarted)
         }
     }
 
     override fun onEndSeeking(view: VideoControlView) {
-        launch {
+        scope.launch {
             bus.emit(VideoControlInteractionEvent::class.java, VideoControlInteractionEvent.VideoScrubEnded)
         }
     }

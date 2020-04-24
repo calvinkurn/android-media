@@ -24,15 +24,15 @@ import java.net.UnknownHostException
 open class VariantSheetComponent(
         container: ViewGroup,
         private val bus: EventBusFactory,
-        coroutineScope: CoroutineScope,
+        private val scope: CoroutineScope,
         dispatchers: CoroutineDispatcherProvider
-) : UIComponent<VariantSheetInteractionEvent>, CoroutineScope by coroutineScope, VariantSheetView.Listener {
+) : UIComponent<VariantSheetInteractionEvent>, VariantSheetView.Listener {
 
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
     val uiView = initView(container)
 
     init {
-        launch(dispatchers.immediate) {
+        scope.launch(dispatchers.immediate) {
             bus.getSafeManagedFlow(ScreenStateEvent::class.java)
                     .collect {
                         when (it) {
@@ -61,19 +61,19 @@ open class VariantSheetComponent(
     }
 
     override fun onCloseButtonClicked(view: VariantSheetView) {
-        launch {
+        scope.launch {
             bus.emit(VariantSheetInteractionEvent::class.java, VariantSheetInteractionEvent.OnCloseVariantSheet)
         }
     }
 
     override fun onAddToCartClicked(view: VariantSheetView, productModel: ProductLineUiModel) {
-        launch {
+        scope.launch {
             bus.emit(VariantSheetInteractionEvent::class.java, VariantSheetInteractionEvent.OnAddProductToCart(productModel))
         }
     }
 
     override fun onBuyClicked(view: VariantSheetView, productModel: ProductLineUiModel) {
-        launch {
+        scope.launch {
             bus.emit(VariantSheetInteractionEvent::class.java, VariantSheetInteractionEvent.OnBuyProduct(productModel))
         }
     }

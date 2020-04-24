@@ -18,15 +18,15 @@ import kotlinx.coroutines.launch
 open class VideoSettingsComponent(
         container: ViewGroup,
         private val bus: EventBusFactory,
-        private val coroutineScope: CoroutineScope,
+        private val scope: CoroutineScope,
         dispatchers: CoroutineDispatcherProvider
-) : UIComponent<VideoSettingsInteractionEvent>, VideoSettingsView.Listener, CoroutineScope by coroutineScope {
+) : UIComponent<VideoSettingsInteractionEvent>, VideoSettingsView.Listener {
 
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
     val uiView = initView(container)
 
     init {
-        launch(dispatchers.immediate) {
+        scope.launch(dispatchers.immediate) {
             bus.getSafeManagedFlow(ScreenStateEvent::class.java)
                     .collect {
                         when (it) {
@@ -52,13 +52,13 @@ open class VideoSettingsComponent(
     }
 
     override fun onEnterFullscreen(view: VideoSettingsView) {
-        launch {
+        scope.launch {
             bus.emit(VideoSettingsInteractionEvent::class.java, VideoSettingsInteractionEvent.EnterFullScreenClicked)
         }
     }
 
     override fun onExitFullscreen(view: VideoSettingsView) {
-        launch {
+        scope.launch {
             bus.emit(VideoSettingsInteractionEvent::class.java, VideoSettingsInteractionEvent.ExitFullScreenClicked)
         }
     }

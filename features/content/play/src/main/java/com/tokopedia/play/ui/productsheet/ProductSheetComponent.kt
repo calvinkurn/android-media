@@ -24,15 +24,15 @@ import java.net.UnknownHostException
 open class ProductSheetComponent(
         container: ViewGroup,
         private val bus: EventBusFactory,
-        coroutineScope: CoroutineScope,
+        private val scope: CoroutineScope,
         dispatchers: CoroutineDispatcherProvider
-) : UIComponent<ProductSheetInteractionEvent>, CoroutineScope by coroutineScope, ProductSheetView.Listener {
+) : UIComponent<ProductSheetInteractionEvent>, ProductSheetView.Listener {
 
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
     val uiView = initView(container)
 
     init {
-        launch(dispatchers.immediate) {
+        scope.launch(dispatchers.immediate) {
             bus.getSafeManagedFlow(ScreenStateEvent::class.java)
                     .collect {
                         when (it) {
@@ -60,31 +60,31 @@ open class ProductSheetComponent(
     }
 
     override fun onCloseButtonClicked(view: ProductSheetView) {
-        launch {
+        scope.launch {
             bus.emit(ProductSheetInteractionEvent::class.java, ProductSheetInteractionEvent.OnCloseProductSheet)
         }
     }
 
     override fun onBuyButtonClicked(view: ProductSheetView, product: ProductLineUiModel) {
-        launch {
+        scope.launch {
             bus.emit(ProductSheetInteractionEvent::class.java, ProductSheetInteractionEvent.OnBuyProduct(product))
         }
     }
 
     override fun onAtcButtonClicked(view: ProductSheetView, product: ProductLineUiModel) {
-        launch {
+        scope.launch {
             bus.emit(ProductSheetInteractionEvent::class.java, ProductSheetInteractionEvent.OnAtcProduct(product))
         }
     }
 
     override fun onProductCardClicked(view: ProductSheetView, product: ProductLineUiModel) {
-        launch {
+        scope.launch {
             bus.emit(ProductSheetInteractionEvent::class.java, ProductSheetInteractionEvent.OnProductCardClicked(product))
         }
     }
 
     override fun onVoucherScrolled(lastPositionViewed: Int) {
-        launch {
+        scope.launch {
             bus.emit(ProductSheetInteractionEvent::class.java, ProductSheetInteractionEvent.OnVoucherScrolled(lastPositionViewed))
         }
     }

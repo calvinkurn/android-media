@@ -20,15 +20,15 @@ import kotlinx.coroutines.launch
 open class SendChatComponent(
         container: ViewGroup,
         private val bus: EventBusFactory,
-        private val coroutineScope: CoroutineScope,
+        private val scope: CoroutineScope,
         dispatchers: CoroutineDispatcherProvider
-) : UIComponent<SendChatInteractionEvent>, SendChatView.Listener, CoroutineScope by coroutineScope {
+) : UIComponent<SendChatInteractionEvent>, SendChatView.Listener {
 
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
     val uiView = initView(container)
 
     init {
-        launch(dispatchers.immediate) {
+        scope.launch(dispatchers.immediate) {
             bus.getSafeManagedFlow(ScreenStateEvent::class.java)
                     .collect {
                         when (it) {
@@ -64,13 +64,13 @@ open class SendChatComponent(
     }
 
     override fun onChatFormClicked(view: SendChatView) {
-        launch {
+        scope.launch {
             bus.emit(SendChatInteractionEvent::class.java, SendChatInteractionEvent.FormClicked)
         }
     }
 
     override fun onSendChatClicked(view: SendChatView, message: String) {
-        launch {
+        scope.launch {
             bus.emit(SendChatInteractionEvent::class.java, SendChatInteractionEvent.SendClicked(message))
         }
     }

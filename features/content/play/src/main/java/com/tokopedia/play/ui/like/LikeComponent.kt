@@ -18,15 +18,15 @@ import kotlinx.coroutines.launch
 open class LikeComponent(
         container: ViewGroup,
         private val bus: EventBusFactory,
-        coroutineScope: CoroutineScope,
+        private val scope: CoroutineScope,
         dispatchers: CoroutineDispatcherProvider
-) : UIComponent<LikeInteractionEvent>, LikeView.Listener, CoroutineScope by coroutineScope {
+) : UIComponent<LikeInteractionEvent>, LikeView.Listener {
 
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
     val uiView = initView(container)
 
     init {
-        launch(dispatchers.immediate) {
+        scope.launch(dispatchers.immediate) {
             bus.getSafeManagedFlow(ScreenStateEvent::class.java)
                     .collect {
                         when (it) {
@@ -49,7 +49,7 @@ open class LikeComponent(
     }
 
     override fun onLikeClicked(view: LikeView, shouldLike: Boolean) {
-        launch {
+        scope.launch {
             bus.emit(
                     LikeInteractionEvent::class.java,
                     LikeInteractionEvent.LikeClicked(shouldLike)

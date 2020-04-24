@@ -18,15 +18,15 @@ import kotlinx.coroutines.launch
 open class ImmersiveBoxComponent(
         container: ViewGroup,
         private val bus: EventBusFactory,
-        coroutineScope: CoroutineScope,
+        private val scope: CoroutineScope,
         dispatchers: CoroutineDispatcherProvider
-) : UIComponent<ImmersiveBoxInteractionEvent>, CoroutineScope by coroutineScope, ImmersiveBoxView.Listener {
+) : UIComponent<ImmersiveBoxInteractionEvent>, ImmersiveBoxView.Listener {
 
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
     val uiView = initView(container)
 
     init {
-        launch(dispatchers.immediate) {
+        scope.launch(dispatchers.immediate) {
             bus.getSafeManagedFlow(ScreenStateEvent::class.java)
                     .collect {
                         when (it) {
@@ -48,7 +48,7 @@ open class ImmersiveBoxComponent(
     }
 
     override fun onImmersiveBoxClicked(view: ImmersiveBoxView, currentAlpha: Float) {
-        launch {
+        scope.launch {
             bus.emit(ImmersiveBoxInteractionEvent::class.java, ImmersiveBoxInteractionEvent.BoxClicked(currentAlpha))
         }
     }

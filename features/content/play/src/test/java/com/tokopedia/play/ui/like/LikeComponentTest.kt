@@ -195,7 +195,7 @@ class LikeComponentTest {
         confirmVerified(component.uiView)
     }
 
-    class LikeComponentMock(container: ViewGroup, bus: EventBusFactory, coroutineScope: CoroutineScope) : LikeComponent(container, bus, coroutineScope, TestCoroutineDispatchersProvider) {
+    class LikeComponentMock(container: ViewGroup, bus: EventBusFactory, private val scope: CoroutineScope) : LikeComponent(container, bus, coroutineScope, TestCoroutineDispatchersProvider) {
         override fun initView(container: ViewGroup): LikeView {
             return mockk(relaxed = true)
         }

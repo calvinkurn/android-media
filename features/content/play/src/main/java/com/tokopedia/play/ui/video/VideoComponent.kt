@@ -21,15 +21,15 @@ import kotlinx.coroutines.launch
 open class VideoComponent(
         container: ViewGroup,
         bus: EventBusFactory,
-        coroutineScope: CoroutineScope,
+        scope: CoroutineScope,
         dispatchers: CoroutineDispatcherProvider
-) : UIComponent<Unit>, CoroutineScope by coroutineScope {
+) : UIComponent<Unit> {
 
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
     val uiView = initView(container)
 
     init {
-        launch(dispatchers.immediate) {
+        scope.launch(dispatchers.immediate) {
             bus.getSafeManagedFlow(ScreenStateEvent::class.java)
                     .collect {
                         when (it) {

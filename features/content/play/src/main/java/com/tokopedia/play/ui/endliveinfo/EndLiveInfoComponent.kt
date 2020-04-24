@@ -19,15 +19,15 @@ import kotlinx.coroutines.launch
 open class EndLiveInfoComponent(
         container: ViewGroup,
         private val bus: EventBusFactory,
-        coroutineScope: CoroutineScope,
+        private val scope: CoroutineScope,
         dispatchers: CoroutineDispatcherProvider
-) : UIComponent<EndLiveInfoInteractionEvent>, CoroutineScope by coroutineScope, EndLiveInfoView.Listener {
+) : UIComponent<EndLiveInfoInteractionEvent>, EndLiveInfoView.Listener {
 
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
     val uiView = initView(container)
 
     init {
-        launch(dispatchers.immediate) {
+        scope.launch(dispatchers.immediate) {
             bus.getSafeManagedFlow(ScreenStateEvent::class.java)
                     .collect {
                         when (it) {
@@ -59,7 +59,7 @@ open class EndLiveInfoComponent(
     }
 
     override fun onButtonActionClicked(view: EndLiveInfoView, btnUrl: String) {
-        launch {
+        scope.launch {
             bus.emit(EndLiveInfoInteractionEvent::class.java, EndLiveInfoInteractionEvent.ButtonActionClicked(btnUrl))
         }
     }

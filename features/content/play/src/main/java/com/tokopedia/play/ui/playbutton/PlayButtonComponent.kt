@@ -19,15 +19,15 @@ import kotlinx.coroutines.launch
 open class PlayButtonComponent(
         container: ViewGroup,
         private val bus: EventBusFactory,
-        coroutineScope: CoroutineScope,
+        private val scope: CoroutineScope,
         dispatchers: CoroutineDispatcherProvider
-) : UIComponent<PlayButtonInteractionEvent>, CoroutineScope by coroutineScope, PlayButtonView.Listener {
+) : UIComponent<PlayButtonInteractionEvent>, PlayButtonView.Listener {
 
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
     val uiView = initView(container)
 
     init {
-        launch(dispatchers.immediate) {
+        scope.launch(dispatchers.immediate) {
             bus.getSafeManagedFlow(ScreenStateEvent::class.java)
                     .collect {
                         when (it) {
@@ -48,7 +48,7 @@ open class PlayButtonComponent(
     }
 
     override fun onButtonClicked(view: PlayButtonView) {
-        launch {
+        scope.launch {
             bus.emit(
                     PlayButtonInteractionEvent::class.java,
                     PlayButtonInteractionEvent.PlayClicked
