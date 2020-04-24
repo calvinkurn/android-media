@@ -56,8 +56,8 @@ class TalkReplyViewHolder(view: View,
 
     private fun showDate(date: String) {
         if(date.isNotEmpty()) {
-            itemView.apply {
-                replyDate.text = addBulletPointToDate(date)
+            itemView.replyDate.apply {
+                text = addBulletPointToDate(date)
                 visibility = View.VISIBLE
             }
         }
