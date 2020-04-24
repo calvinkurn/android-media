@@ -10,4 +10,18 @@ data class EditVariantResult(
     val variants: List<ProductVariant>,
     val selections: List<Selection>,
     val sizeCharts: List<Picture>
-)
+) {
+
+    fun countVariantStock(): Int {
+        var stock = 0
+        variants.forEach {
+            stock =+ it.stock
+        }
+        return stock
+    }
+
+    fun isVariantActive(): Boolean {
+        val activeVariant = variants.find { it.isActive() }
+        return activeVariant != null
+    }
+}

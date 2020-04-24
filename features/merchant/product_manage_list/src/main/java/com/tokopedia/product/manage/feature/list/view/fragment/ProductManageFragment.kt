@@ -81,6 +81,7 @@ import com.tokopedia.product.manage.feature.quickedit.price.data.model.EditPrice
 import com.tokopedia.product.manage.feature.quickedit.price.presentation.fragment.ProductManageQuickEditPriceFragment
 import com.tokopedia.product.manage.feature.quickedit.stock.data.model.EditStockResult
 import com.tokopedia.product.manage.feature.quickedit.stock.presentation.fragment.ProductManageQuickEditStockFragment
+import com.tokopedia.product.manage.feature.quickedit.variant.data.model.result.EditVariantResult
 import com.tokopedia.product.manage.feature.quickedit.variant.presentation.ui.QuickEditVariantPriceBottomSheet
 import com.tokopedia.product.manage.feature.quickedit.variant.presentation.ui.QuickEditVariantStockBottomSheet
 import com.tokopedia.product.manage.item.imagepicker.imagepickerbuilder.AddProductImagePickerBuilder
@@ -1549,6 +1550,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
             }
         }
     }
+
     private fun observeEditVariantStock() {
         observe(viewModel.editVariantStockResult) {
             when (it) {
@@ -1557,11 +1559,26 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
                         R.string.product_manage_quick_edit_stock_success,
                         it.data.productName
                     ).orEmpty()
+                    updateVariantStock(it.data)
                     showMessageToast(message)
                 }
                 is Fail -> showErrorMessageToast(it)
             }
         }
+    }
+
+    // endregion
+
+    private fun updateVariantStock(data: EditVariantResult) {
+        val stock = data.countVariantStock()
+
+        val status = if(data.isVariantActive()) {
+            ACTIVE
+        } else {
+            INACTIVE
+        }
+
+        productManageListAdapter.updateStock(data.productId, stock, status)
     }
 
     private fun showErrorMessageToast(result: Fail) {
@@ -1573,7 +1590,6 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
             showErrorToast()
         }
     }
-    // endregion
 
     private fun showPageLoading() {
         mainContainer.hide()
