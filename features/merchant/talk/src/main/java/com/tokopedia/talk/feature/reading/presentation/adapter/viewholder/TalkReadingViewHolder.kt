@@ -109,7 +109,7 @@ class TalkReadingViewHolder(view: View, private val onThreadClickListener: OnThr
 
     private fun showNumberOfOtherAnswersWithCondition(otherAnswers: Int) {
         if(otherAnswers > 0) {
-            itemView.seeOtherAnswers.text = String.format(OTHER_ANSWERS, otherAnswers)
+            itemView.seeOtherAnswers.text = String.format(OTHER_ANSWERS, (otherAnswers - 1))
             itemView.visibility = View.VISIBLE
         }
     }

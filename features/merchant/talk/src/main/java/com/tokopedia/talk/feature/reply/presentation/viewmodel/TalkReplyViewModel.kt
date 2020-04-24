@@ -125,7 +125,7 @@ class TalkReplyViewModel @Inject constructor(
                 attachedProducts.value?.forEach {
                     attachedProductIds.add(it.productId)
                 }
-                talkCreateNewCommentUseCase.setParams(comment, questionId.toIntOrZero(), attachedProductIds.joinToString())
+                talkCreateNewCommentUseCase.setParams(comment, questionId.toIntOrZero(), attachedProductIds.joinToString(prefix = "{", postfix = "}"))
                 talkCreateNewCommentUseCase.executeOnBackground()
             }
             if(response.talkCreateNewComment.data.isSuccess == MUTATION_SUCCESS) {
