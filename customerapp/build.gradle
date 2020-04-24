@@ -62,7 +62,7 @@ def isFirebasePerformanceLogEnabled() {
     if (project.hasProperty('firebasePerformanceLogEnabled') && firebasePerformanceLogEnabled == "true") {
         return "true"
     }
-    return "true"
+    return "false"
 }
 
 project.ext {
