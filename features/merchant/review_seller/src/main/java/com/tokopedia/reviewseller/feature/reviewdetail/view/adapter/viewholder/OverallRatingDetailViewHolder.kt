@@ -28,7 +28,7 @@ class OverallRatingDetailViewHolder(val view: View): AbstractViewHolder<OverallR
         ratingStar.text = element?.ratingAvg.toString()
 
         val strReview = getString(R.string.review_text)
-        val ratingCount = element?.ratingCount.toString()
+        val ratingCount = element?.reviewCount.toString()
         val strReviewSpan = SpannableString("$ratingCount $strReview")
         strReviewSpan.setSpan(StyleSpan(Typeface.BOLD), 0, ratingCount.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
         totalReview.text = strReviewSpan
