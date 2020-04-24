@@ -299,6 +299,11 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
                     } else {
                         ProductAddMainTracking.clickRemoveWholesale(shopId)
                     }
+                    wholeSaleInputFormsAdapter?.itemCount?.let {
+                        if (it == 1) {
+                            productWholeSaleSwitch?.isChecked = false
+                        }
+                    }
                     addNewWholeSalePriceButton?.visibility = View.VISIBLE
                 },
 
