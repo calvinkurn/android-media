@@ -1,15 +1,11 @@
 package com.tokopedia.notifications.model
 
+import android.os.Parcel
+import android.os.Parcelable
 import androidx.room.ColumnInfo
 import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import android.os.Parcel
-import android.os.Parcelable
-import com.google.gson.Gson
-import com.google.gson.annotations.Expose
-import com.google.gson.annotations.SerializedName
-import com.tokopedia.graphql.CommonUtils
 import com.tokopedia.notifications.database.convertors.NotificationModeConverter
 import com.tokopedia.notifications.database.convertors.NotificationStatusConverter
 import com.tokopedia.notifications.model.WebHookParams.Companion.webHookToJson
