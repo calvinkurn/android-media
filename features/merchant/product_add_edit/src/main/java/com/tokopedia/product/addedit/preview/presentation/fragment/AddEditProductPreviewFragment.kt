@@ -1022,7 +1022,8 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
     }
 
     private fun moveToManageProduct() {
-        activity?.finish()
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PRODUCT_MANAGE_LIST)
+        startActivity(intent)
     }
 
     private fun startProductAddService(productInputModel: ProductInputModel) {
