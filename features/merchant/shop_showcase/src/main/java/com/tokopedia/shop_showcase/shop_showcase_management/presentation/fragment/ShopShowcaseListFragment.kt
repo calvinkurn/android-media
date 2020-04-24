@@ -574,8 +574,6 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
     }
 
     private fun showGlobalError(errorType: Int) {
-//        globalError.setType(GlobalError.SERVER_ERROR)
-//        globalError.setType(GlobalError.NO_CONNECTION)
         globalError.setType(errorType)
         globalError.visibility = View.VISIBLE
         headerLayout.visibility = View.GONE
