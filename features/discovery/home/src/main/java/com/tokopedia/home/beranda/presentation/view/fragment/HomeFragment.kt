@@ -221,7 +221,6 @@ class HomeFragment : BaseDaggerFragment(),
 
     private lateinit var mainParentStatusBarListener: MainParentStatusBarListener
     private lateinit var activityStateListener: ActivityStateListener
-    private lateinit var component: BerandaComponent
     private lateinit var viewModel: HomeViewModel
     private lateinit var remoteConfig: RemoteConfig
     private lateinit var userSession: UserSessionInterface
@@ -238,6 +237,7 @@ class HomeFragment : BaseDaggerFragment(),
     private lateinit var tickerDetail: TickerDetail
     private lateinit var homeSnackbar: Snackbar
     private lateinit var sharedPrefs: SharedPreferences
+    private var component: BerandaComponent? = null
     private var adapter: HomeRecycleAdapter? = null
     private var layoutManager: LinearLayoutManager? = null
     private var messageSnackbar: SnackbarRetry? = null
