@@ -6,6 +6,8 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import android.os.Parcel
 import android.os.Parcelable
+import com.google.gson.Gson
+import com.google.gson.annotations.Expose
 import com.tokopedia.graphql.CommonUtils
 import com.tokopedia.notifications.database.convertors.NotificationModeConverter
 import com.tokopedia.notifications.database.convertors.NotificationStatusConverter
@@ -138,14 +140,19 @@ data class BaseNotificationModel(
         @ColumnInfo(name = "notifcenterBlastId")
         var blastId: String? = null,
 
+        @Expose
         @ColumnInfo(name = "webhook_params")
-        var webHookParam: WebHookParam? = null
+        var webHookParam: String? = null
 
 ) : Parcelable {
 
-    fun getWebHookData(): String? {
-        return if (this.webHookParam != null)
-            CommonUtils.toJson(this.webHookParam)
+    fun appendWebHookRoot(): String? {
+        val gson = Gson()
+                .newBuilder()
+                .excludeFieldsWithoutExposeAnnotation()
+                .create()
+        return if (webHookParam != null)
+            gson.toJson(this)
         else ""
     }
 
@@ -189,7 +196,7 @@ data class BaseNotificationModel(
             parcel.readString(),
             parcel.readString(),
             parcel.readString(),
-            parcel.readParcelable(WebHookParam::class.java.classLoader))
+            parcel.readString())
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeInt(notificationId)
@@ -230,7 +237,7 @@ data class BaseNotificationModel(
         parcel.writeString(userId)
         parcel.writeString(shopId)
         parcel.writeString(blastId)
-        parcel.writeParcelable(webHookParam, flags)
+        parcel.writeString(webHookParam)
     }
 
     override fun describeContents(): Int {
