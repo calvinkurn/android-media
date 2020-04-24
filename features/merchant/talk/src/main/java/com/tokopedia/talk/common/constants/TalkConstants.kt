@@ -1,4 +1,4 @@
-package com.tokopedia.talk.common
+package com.tokopedia.talk.common.constants
 
 object TalkConstants {
     const val NO_SHADOW_ELEVATION = 0F

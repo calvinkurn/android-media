@@ -3,8 +3,7 @@ package com.tokopedia.talk.feature.reply.presentation.widget
 import android.content.Context
 import android.os.Bundle
 import android.view.View
-import com.tokopedia.talk.common.TalkConstants.COMMENT_ID
-import com.tokopedia.talk.common.TalkConstants.QUESTION_ID
+import com.tokopedia.talk.common.constants.TalkConstants.COMMENT_ID
 import com.tokopedia.talk.feature.reply.presentation.widget.listeners.OnReplyBottomSheetClickedListener
 import com.tokopedia.talk_old.R
 import com.tokopedia.unifycomponents.BottomSheetUnify

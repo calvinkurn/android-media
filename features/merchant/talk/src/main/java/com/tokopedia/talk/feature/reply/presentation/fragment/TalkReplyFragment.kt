@@ -1,6 +1,7 @@
 package com.tokopedia.talk.feature.reply.presentation.fragment
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -19,10 +20,12 @@ import com.tokopedia.attachproduct.view.activity.AttachProductActivity
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.removeObservers
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.talk.common.TalkConstants
-import com.tokopedia.talk.common.TalkConstants.PRODUCT_ID
-import com.tokopedia.talk.common.TalkConstants.QUESTION_ID
-import com.tokopedia.talk.common.TalkConstants.SHOP_ID
+import com.tokopedia.talk.common.analytics.TalkPerformanceMonitoringContract
+import com.tokopedia.talk.common.analytics.TalkPerformanceMonitoringListener
+import com.tokopedia.talk.common.constants.TalkConstants
+import com.tokopedia.talk.common.constants.TalkConstants.PRODUCT_ID
+import com.tokopedia.talk.common.constants.TalkConstants.QUESTION_ID
+import com.tokopedia.talk.common.constants.TalkConstants.SHOP_ID
 import com.tokopedia.talk.feature.reply.data.mapper.TalkReplyMapper
 import com.tokopedia.talk.feature.reply.data.model.discussion.AttachedProduct
 import com.tokopedia.talk.feature.reply.data.model.discussion.DiscussionDataByQuestionIDResponseWrapper
@@ -49,7 +52,7 @@ import javax.inject.Inject
 
 class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>, OnReplyBottomSheetClickedListener,
         OnKebabClickedListener, AttachedProductCardListener, TalkReplyHeaderListener,
-        TalkReplyTextboxListener {
+        TalkReplyTextboxListener, TalkPerformanceMonitoringContract {
 
     companion object {
 
@@ -83,6 +86,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
     private var adapter: TalkReplyAdapter? = null
     private var attachedProductAdapter: TalkReplyAttachedProductAdapter? = null
     private var textLimit = 0
+    private var talkPerformanceMonitoringListener: TalkPerformanceMonitoringListener? = null
 
     override fun getScreenName(): String {
         return ""
@@ -116,6 +120,8 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         showPageLoading()
         initView()
+        stopPreparePerfomancePageMonitoring()
+        startNetworkRequestPerformanceMonitoring()
         getDataFromArguments()
         observeFollowUnfollowResponse()
         observeDiscussionData()
@@ -187,6 +193,39 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
 
     override fun onSendButtonClicked(text: String) {
         sendComment(text)
+    }
+
+    override fun stopPreparePerfomancePageMonitoring() {
+        talkPerformanceMonitoringListener?.stopPreparePagePerformanceMonitoring()
+    }
+
+    override fun startNetworkRequestPerformanceMonitoring() {
+        talkPerformanceMonitoringListener?.startNetworkRequestPerformanceMonitoring()
+    }
+
+    override fun stopNetworkRequestPerformanceMonitoring() {
+        talkPerformanceMonitoringListener?.stopNetworkRequestPerformanceMonitoring()
+    }
+
+    override fun startRenderPerformanceMonitoring() {
+        talkPerformanceMonitoringListener?.startRenderPerformanceMonitoring()
+        talkReplyRecyclerView.post {
+            talkPerformanceMonitoringListener?.stopRenderPerformanceMonitoring()
+            talkPerformanceMonitoringListener?.stopPerformanceMonitoring()
+        }
+    }
+
+    override fun castContextToTalkPerformanceMonitoringListener(context: Context): TalkPerformanceMonitoringListener? {
+        return if(context is TalkPerformanceMonitoringListener) {
+            context
+        } else {
+            null
+        }
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        castContextToTalkPerformanceMonitoringListener(context)
     }
 
     private fun goToReportActivity(commentId: String) {
@@ -353,6 +392,8 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
         viewModel.discussionData.observe(this, Observer {
             when(it) {
                 is Success -> {
+                    stopNetworkRequestPerformanceMonitoring()
+                    startRenderPerformanceMonitoring()
                     bindHeader(TalkReplyMapper.mapDiscussionDataResponseToTalkReplyHeaderModel(it.data))
                     if(it.data.discussionDataByQuestionID.question.totalAnswer > 0) {
                         showAnswers(it.data)
