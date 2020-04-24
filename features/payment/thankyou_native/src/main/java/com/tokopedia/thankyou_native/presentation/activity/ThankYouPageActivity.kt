@@ -7,6 +7,8 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.thankyou_native.R
 import com.tokopedia.thankyou_native.di.component.DaggerThankYouPageComponent
@@ -106,14 +108,26 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
     private fun isOnBackPressOverride(): Boolean {
         val fragment = supportFragmentManager.findFragmentByTag(tagFragment)
         fragment?.let {
-            if (it is DeferredPaymentFragment) {
-                return it.onBackPressed()
-            } else if (it is ProcessingPaymentFragment) {
-                return it.onBackPressed()
+            when (it) {
+                is DeferredPaymentFragment -> {
+                    return it.onBackPressed()
+                }
+                is ProcessingPaymentFragment -> {
+                    return it.onBackPressed()
+                }
+                else -> {
+                    gotoHomePage()
+                }
             }
 
         }
         return false
+    }
+
+
+    private fun gotoHomePage() {
+        RouteManager.route(this, ApplinkConst.HOME, "")
+        finish()
     }
 
     companion object {

@@ -141,7 +141,7 @@ class DeferredPaymentFragment : ThankYouBaseFragment(), ThankYouPageTimerView.Th
         numberTypeTitle?.let {
             tvAccountNumberTypeTag.text = numberTypeTitle
             tvAccountNumber.text = thanksPageData.additionalInfo?.accountDest ?: ""
-        }?: run {
+        } ?: run {
             tvAccountNumberTypeTag.gone()
             tvAccountNumber.gone()
         }
@@ -161,7 +161,7 @@ class DeferredPaymentFragment : ThankYouBaseFragment(), ThankYouPageTimerView.Th
             tvAccountNumberCopy.gone()
         }
         if (thanksPageData.additionalInfo.bankName.isNotBlank()) {
-            tvBankName.text ="${thanksPageData.additionalInfo.bankName} ${thanksPageData.additionalInfo.bankBranch}"
+            tvBankName.text = "${thanksPageData.additionalInfo.bankName} ${thanksPageData.additionalInfo.bankBranch}"
             tvBankName.visible()
         }
         tvSeeDetail.setOnClickListener { openInvoiceDetail(thanksPageData) }
@@ -206,9 +206,7 @@ class DeferredPaymentFragment : ThankYouBaseFragment(), ThankYouPageTimerView.Th
                         as ClipboardManager
                 val clip = ClipData.newPlainText(COPY_BOARD_LABEL, str.replace("\\s+".toRegex(), ""))
                 clipboard.primaryClip = clip
-                clipboard.addPrimaryClipChangedListener {
-                    showToastCopySuccessFully(context)
-                }
+                showToastCopySuccessFully(context)
             }
         }
     }
