@@ -1,7 +1,7 @@
 package com.tokopedia.checkout.subfeature.address_choice.view
 
 import com.tokopedia.cachemanager.PersistentCacheManager
-import com.tokopedia.logisticcart.shipping.model.RecipientAddressModel
+import com.tokopedia.logisticdata.data.entity.address.RecipientAddressModel
 import com.tokopedia.purchase_platform.common.feature.addresslist.domain.model.AddressListModel
 import com.tokopedia.purchase_platform.common.feature.addresslist.GetAddressCornerUseCase
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsChangeAddress

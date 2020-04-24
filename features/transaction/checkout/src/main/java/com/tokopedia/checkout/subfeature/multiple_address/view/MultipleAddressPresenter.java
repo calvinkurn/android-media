@@ -8,7 +8,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.authentication.AuthHelper;
-import com.tokopedia.logisticcart.shipping.model.RecipientAddressModel;
+import com.tokopedia.logisticdata.data.entity.address.RecipientAddressModel;
 import com.tokopedia.network.utils.TKPDMapParam;
 import com.tokopedia.checkout.data.model.request.DataChangeAddressRequest;
 import com.tokopedia.checkout.domain.model.cartmultipleshipment.SetShippingAddressData;

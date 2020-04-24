@@ -1,7 +1,7 @@
 package com.tokopedia.checkout.subfeature.address_choice.view
 
 import com.tokopedia.logisticdata.data.entity.address.Token
-import com.tokopedia.logisticcart.shipping.model.RecipientAddressModel
+import com.tokopedia.logisticdata.data.entity.address.RecipientAddressModel
 
 /**
  * Created by fajarnuha on 2019-05-24.

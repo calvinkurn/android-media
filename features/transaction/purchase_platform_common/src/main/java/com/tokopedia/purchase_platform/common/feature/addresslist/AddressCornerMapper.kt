@@ -2,7 +2,7 @@ package com.tokopedia.purchase_platform.common.feature.addresslist
 
 import com.tokopedia.purchase_platform.common.feature.addresslist.domain.model.AddressListModel
 import com.tokopedia.logisticdata.data.entity.address.Token
-import com.tokopedia.logisticcart.shipping.model.RecipientAddressModel
+import com.tokopedia.logisticdata.data.entity.address.RecipientAddressModel
 import rx.functions.Func1
 import javax.inject.Inject
 

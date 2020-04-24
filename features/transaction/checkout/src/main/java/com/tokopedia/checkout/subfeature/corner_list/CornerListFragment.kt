@@ -15,7 +15,7 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.checkout.R
 import com.tokopedia.design.text.SearchInputView
-import com.tokopedia.logisticcart.shipping.model.RecipientAddressModel
+import com.tokopedia.logisticdata.data.entity.address.RecipientAddressModel
 import com.tokopedia.checkout.subfeature.corner_list.di.DaggerCornerComponent
 import java.util.*
 import javax.inject.Inject

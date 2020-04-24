@@ -6,7 +6,7 @@ import com.tokopedia.logisticdata.data.entity.address.AddressModel;
 import com.tokopedia.logisticdata.data.entity.address.GetPeopleAddress;
 import com.tokopedia.checkout.subfeature.address_choice.addressoptions.Paging;
 import com.tokopedia.checkout.subfeature.address_choice.addressoptions.PeopleAddressModel;
-import com.tokopedia.logisticcart.shipping.model.RecipientAddressModel;
+import com.tokopedia.logisticdata.data.entity.address.RecipientAddressModel;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,9 +1,7 @@
-package com.tokopedia.logisticcart.shipping.model;
+package com.tokopedia.logisticdata.data.entity.address;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-
-import com.tokopedia.logisticdata.data.entity.address.LocationDataModel;
 
 /**
  * @author Aghny A. Putra on 25/01/18

@@ -1,6 +1,6 @@
 package com.tokopedia.checkout.subfeature.address_choice.addressoptions;
 
-import com.tokopedia.logisticcart.shipping.model.RecipientAddressModel;
+import com.tokopedia.logisticdata.data.entity.address.RecipientAddressModel;
 
 /**
  * Created by fajarnuha on 09/02/19.

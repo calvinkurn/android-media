@@ -1,6 +1,6 @@
 package com.tokopedia.checkout.subfeature.corner_list
 
-import com.tokopedia.logisticcart.shipping.model.RecipientAddressModel
+import com.tokopedia.logisticdata.data.entity.address.RecipientAddressModel
 
 /**
  * Created by fajarnuha on 2019-05-26.

@@ -7,7 +7,7 @@ import android.view.View;
 
 import com.tokopedia.checkout.R;
 import com.tokopedia.design.component.Dialog;
-import com.tokopedia.logisticcart.shipping.model.RecipientAddressModel;
+import com.tokopedia.logisticdata.data.entity.address.RecipientAddressModel;
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;
 import com.tokopedia.promocheckout.common.view.model.PromoStackingData;
 import com.tokopedia.purchase_platform.common.base.BaseCheckoutActivity;

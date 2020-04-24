@@ -5,6 +5,7 @@ import com.google.gson.reflect.TypeToken
 import com.tokopedia.logisticcart.FileUtils
 import com.tokopedia.logisticcart.cod.model.CodResponse
 import com.tokopedia.logisticcart.shipping.model.*
+import com.tokopedia.logisticdata.data.entity.address.RecipientAddressModel
 
 internal object DummyProvider {
 
