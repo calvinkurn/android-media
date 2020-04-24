@@ -215,7 +215,10 @@ class DeferredPaymentFragment : ThankYouBaseFragment(), ThankYouPageTimerView.Th
         view?.let {
             val toasterMessage = when (paymentType) {
                 is BankTransfer -> getString(R.string.thankyou_bank_account_copied)
-                is VirtualAccount -> getString(R.string.thankyou_virtual_account_copied)
+                is VirtualAccount -> if (thanksPageData.gatewayName == GATEWAY_KLIK_BCA)
+                    getString(R.string.thankyou_klikbca_virtual_account_copied)
+                else
+                    getString(R.string.thankyou_virtual_account_copied)
                 is Retail -> getString(R.string.thankyou_retail_account_copied)
                 else -> ""
             }
