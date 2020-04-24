@@ -225,13 +225,14 @@ object ApplinkConstInternalMarketplace {
 
     @JvmField
     val SHOP_PAGE_SETTING = "$INTERNAL_MARKETPLACE/shop-page-setting"
+
     // AttachVoucherActivity
     @JvmField
     val ATTACH_VOUCHER = "$INTERNAL_MARKETPLACE/user-attach-voucher"
 
     // OrderHistoryActivity
     @JvmField
-    val ORDER_HISTORY = "$INTERNAL_MARKETPLACE/user-order-history"
+    val ORDER_HISTORY = "$INTERNAL_MARKETPLACE/user-order-history/{shop_id}/"
 
     @JvmField
     val PARAM_IS_NEED_LOC = "IS_NEED_LOC"
