@@ -56,7 +56,7 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
 
     var productID: Int = 0
     var sortBy: String = ""
-    var filterBy: String = ""
+    var filterBy: String = "time=all"
 
     override fun getScreenName(): String = "SellerReviewDetail"
 
@@ -95,7 +95,6 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
     override fun loadInitialData() {
         clearAllData()
         rvRatingDetail?.show()
-        review_detail_toolbar?.hide()
         globalError_reviewDetail?.hide()
         emptyState_reviewDetail?.hide()
         showLoading()
@@ -185,7 +184,6 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
         reviewSellerDetailAdapter.hideLoading()
         swipeToRefreshReviewDetail?.isRefreshing = false
         review_detail_toolbar.apply {
-            show()
             title = data.productName.toString()
         }
         reviewSellerDetailAdapter.setOverallRatingDetailData(data)

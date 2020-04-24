@@ -16,6 +16,8 @@ class RatingAndTopicDetailViewHolder(val view: View) : AbstractViewHolder<Rating
     override fun bind(element: RatingBarUiModel) {
         view.rating_star_label.text = element.ratingLabel.toString()
         view.rating_total_review.text = String.format("(${element.ratingCount})")
-        view.progress_bar_rating.setValue(10000, true)
+        view.progress_bar_rating.apply {
+            setValue(50, true)
+        }
     }
 }
