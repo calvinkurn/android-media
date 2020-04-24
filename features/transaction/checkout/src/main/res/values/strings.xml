@@ -118,5 +118,11 @@
     <string name="label_button_change_address_new">Ganti Alamat</string>
     <string name="label_button_send_to_multiple_address">Kirim ke Banyak Alamat</string>
     <string name="hyperlink_learn_more">Pelajari selengkapnya</string>
+    <string name="dialog_title_back_to_cart">Kembali Ke Keranjang?</string>
+    <string name="dialog_message_back_to_cart">Perubahan yang Anda lakukan di halaman ini tidak akan disimpan</string>
+    <string name="label_dialog_back_to_cart_button_positive"><![CDATA[Kembali & Hapus Perubahan]]></string>
+    <string name="label_dialog_back_to_cart_button_negative">Tetap di Halaman Ini</string>
+    <string name="label_showcase_multiple_address_title">Kirim Barang Sama ke Beberapa Alamat.</string>
+    <string name="label_showcase_multiple_address_message">Klik tombol untuk mengirim barang yang sama ke beda alamat.</string>
 
 </resources>

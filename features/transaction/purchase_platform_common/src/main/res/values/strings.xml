@@ -36,5 +36,6 @@
     <string name="label_must_insurance">Wajib Asuransi</string>
     <string name="label_choose_payment">Pilih Pembayaran</string>
     <string name="label_main_address">Utama</string>
+    <string name="label_toko">Toko: </string>
 
 </resources>

@@ -1,12 +1,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <string name="dialog_title_back_to_cart">Kembali Ke Keranjang?</string>
-    <string name="dialog_message_back_to_cart">Perubahan yang Anda lakukan di halaman ini tidak akan disimpan</string>
-    <string name="label_dialog_back_to_cart_button_positive"><![CDATA[Kembali & Hapus Perubahan]]></string>
-    <string name="label_dialog_back_to_cart_button_negative">Tetap di Halaman Ini</string>
     <string name="message_payment_succeded_transaction_module">Pembayaran berhasil</string>
     <string name="checkout_module_tambahkan_dari_wishlist">Tambahkan dari Wishlist</string>
-    <string name="label_showcase_multiple_address_title">Kirim Barang Sama ke Beberapa Alamat.</string>
-    <string name="label_showcase_multiple_address_message">Klik tombol untuk mengirim barang yang sama ke beda alamat.</string>
     <string name="error_message_checkout_failed">Gagal memproses pembayaran. Silakan coba lagi.</string>
     <string name="label_no_courier_bottomsheet_message">Tidak ada kurir yang mendukung pengiriman ini ke lokasi Anda.</string>
     <string name="message_cannot_apply_courier_promo" formatted="false">Promo ini hanya berlaku untuk pembelian dengan kurir %s</string>
@@ -23,8 +17,6 @@
     <string name="checkout_module_label_clasing_benefit_shop_name">Toko %s</string>
     <string name="checkout_module_label_clasing_benefit_global">Tokopedia</string>
     <string name="checkout_module_label_promo_no_item_checked">Silakan pilih item terlebih dahulu</string>
-
-    <string name="label_toko">Toko: </string>
 
     <string name="label_total_cashback">Total Cashback</string>
     <string name="activity_title_checkout_variant">Detail Produk</string>
