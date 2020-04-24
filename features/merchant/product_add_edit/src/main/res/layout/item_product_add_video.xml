@@ -28,7 +28,8 @@
                 android:layout_width="72dp"
                 android:layout_height="72dp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"/>
 
             <ImageView
                 android:id="@+id/imgPlay"
@@ -47,7 +48,7 @@
                 android:layout_marginStart="@dimen/spacing_lvl4"
                 android:layout_marginLeft="@dimen/spacing_lvl4"
                 android:ellipsize="end"
-                android:maxLines="1"
+                android:maxLines="2"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/imgThumbnail"
                 app:layout_constraintTop_toTopOf="parent"
