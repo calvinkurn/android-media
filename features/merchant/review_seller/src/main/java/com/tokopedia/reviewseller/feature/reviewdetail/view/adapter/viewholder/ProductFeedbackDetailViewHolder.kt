@@ -14,12 +14,15 @@ import com.tokopedia.reviewseller.common.util.PaddingItemDecoratingReviewSeller
 import com.tokopedia.reviewseller.feature.reviewdetail.view.adapter.ReviewDetailFeedbackImageAdapter
 import com.tokopedia.reviewseller.feature.reviewdetail.view.model.FeedbackUiModel
 import com.tokopedia.unifyprinciples.Typography
+import kotlinx.android.synthetic.main.item_product_feedback_detail.view.*
 
-class ProductFeedbackDetailViewHolder(view: View) : AbstractViewHolder<FeedbackUiModel>(view) {
+class ProductFeedbackDetailViewHolder(private val view: View) : AbstractViewHolder<FeedbackUiModel>(view) {
 
     companion object {
         @JvmStatic
         val LAYOUT = R.layout.item_product_feedback_detail
+        
+        private const val isAutoReply = "false"
     }
 
     private var ivRatingFeedback: AppCompatImageView? = null
@@ -33,7 +36,7 @@ class ProductFeedbackDetailViewHolder(view: View) : AbstractViewHolder<FeedbackU
     private var tvReplyDate: Typography? = null
     private var tvReplyComment: Typography? = null
     private var replyFeedbackState: View? = null
-
+    
     init {
         ivRatingFeedback = view.findViewById(R.id.ivRatingFeedback)
         tvFeedbackUser = view.findViewById(R.id.tvFeedbackUser)
@@ -59,57 +62,49 @@ class ProductFeedbackDetailViewHolder(view: View) : AbstractViewHolder<FeedbackU
         tvFeedbackDate?.text = element.reviewTime.orEmpty()
 
         if (element.variantName?.isEmpty() == true) {
-            tvVariantFeedback?.hide()
-            tvVariantFeedbackValue?.hide()
+            view.partialFeedbackVariantReviewDetail?.hide()
         } else {
-            tvVariantFeedback?.show()
-            tvVariantFeedbackValue?.show()
+            view.partialFeedbackVariantReviewDetail?.show()
             tvVariantFeedbackValue?.text = element.variantName.orEmpty()
         }
 
         if (element.reviewText?.isEmpty() == true) {
             tvFeedbackReview?.text = getString(R.string.review_not_found)
-            tvFeedbackReview?.setTextColor(ContextCompat.getColor(itemView.context, R.color.clr_review_not_found))
+            tvFeedbackReview?.setTextColor(ContextCompat.getColor(view.context, R.color.clr_review_not_found))
         } else {
-            tvFeedbackReview?.setTextColor(ContextCompat.getColor(itemView.context, R.color.clr_f531353b))
+            tvFeedbackReview?.setTextColor(ContextCompat.getColor(view.context, R.color.clr_f531353b))
             tvFeedbackReview?.text = element.reviewText.orEmpty()
         }
 
         setImageAttachment(element)
 
-        if (element.replyText?.isNotEmpty() == true) {
-            replyFeedbackState?.show()
-            tvReplyUser?.show()
-            tvReplyDate?.show()
-            tvReplyComment?.show()
-            if (element.autoReply == "false") {
-                tvReplyUser?.text = "Balasan kamu"
-            } else {
+        if (element.replyText?.isNotEmpty() == true || element.replyTime?.isNotEmpty() == true) {
+            view.partialFeedbackReplyDetail?.show()
+            if (element.autoReply == isAutoReply) {
                 tvReplyUser?.text = getString(R.string.otomatis_reply)
-                tvReplyDate?.text = element.replyTime.orEmpty()
-                tvReplyComment?.text = element.replyText.orEmpty()
+            } else {
+                tvReplyUser?.text = String.format(getString(R.string.user_reply_feedback), element.sellerUser.orEmpty())
             }
-        } else {
-            replyFeedbackState?.hide()
-            tvReplyUser?.hide()
-            tvReplyDate?.hide()
-            tvReplyComment?.hide()
+            tvReplyDate?.text = element.replyTime.orEmpty()
+            tvReplyComment?.text = element.replyText.orEmpty()
+        } else  {
+            view.partialFeedbackReplyDetail?.hide()
         }
+
     }
 
     private fun setImageAttachment(element: FeedbackUiModel) {
-        val linearLayoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
+        val linearLayoutManager = LinearLayoutManager(view.context, LinearLayoutManager.HORIZONTAL, false)
 
         rvItemAttachmentFeedback?.apply {
             if (element.attachments.isNotEmpty()) {
-                show()
                 layoutManager = linearLayoutManager
                 if (itemDecorationCount == 0) {
                     addItemDecoration(PaddingItemDecoratingReviewSeller())
                 }
                 adapter = reviewDetailFeedbackImageAdapter
-                reviewDetailFeedbackImageAdapter.setImageAttachmentFeedbackData(element.attachments)
                 reviewDetailFeedbackImageAdapter.submitList(element.attachments)
+                show()
             } else {
                 hide()
             }

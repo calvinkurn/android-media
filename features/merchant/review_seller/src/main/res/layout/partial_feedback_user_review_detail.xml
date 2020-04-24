@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvFeedbackByLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:textColor="@color/clr_f531353b"
+        android:layout_marginLeft="@dimen/spacing_lvl4"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        app:typographyWeight="reguler"
+        android:text="@string/label_by"
+        app:typographyType="body_3" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvFeedbackUser"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toEndOf="@id/tvFeedbackByLabel"
+        android:textColor="@color/clr_f531353b"
+        android:layout_marginLeft="@dimen/spacing_lvl2"
+        android:layout_marginStart="@dimen/spacing_lvl2"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        app:typographyWeight="bold"
+        app:typographyType="body_3"
+        tools:text="Alexandra Ronodipuro •"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvFeedbackDate"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toEndOf="@id/tvFeedbackUser"
+        android:layout_marginLeft="@dimen/spacing_lvl2"
+        android:layout_marginStart="@dimen/spacing_lvl2"
+        android:layout_marginRight="@dimen/spacing_lvl4"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        app:typographyWeight="reguler"
+        app:typographyType="body_3"
+        tools:text="Hari ini"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -50,6 +50,7 @@
     <string name="count_review_label">Menampilkan %s ulasan dari pembeli</string>
     <string name="label_by">Oleh</string>
     <string name="variant_feedback_label">Varian:</string>
-    <string name="otomatis_reply">Balasan otomatis</string>
+    <string name="otomatis_reply">Balasan Otomatis</string>
     <string name="review_not_found">Ulasan tidak terserdia.</string>
+    <string name="user_reply_feedback">Balasan %s</string>
 </resources>

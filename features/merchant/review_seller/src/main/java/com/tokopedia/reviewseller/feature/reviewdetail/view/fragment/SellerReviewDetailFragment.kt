@@ -208,8 +208,8 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
             }
         } else {
             reviewSellerDetailAdapter.setFeedbackListData(reviewProductDetail.productFeedbackDetailList)
-            updateScrollListenerState(hasNextPage)
         }
+        updateScrollListenerState(hasNextPage)
     }
 
     private fun onErrorGetReviewDetailData(throwable: Throwable) {
