@@ -59,6 +59,7 @@ import com.tokopedia.transaction.orders.orderlist.data.bomorderfilter.DefaultDat
 import com.tokopedia.transaction.orders.orderlist.di.DaggerOrderListComponent;
 import com.tokopedia.transaction.orders.orderlist.di.OrderListComponent;
 import com.tokopedia.transaction.orders.orderlist.di.OrderListUseCaseModule;
+import com.tokopedia.transaction.orders.orderlist.view.activity.OrderListActivity;
 import com.tokopedia.transaction.orders.orderlist.view.adapter.OrderListAdapter;
 import com.tokopedia.transaction.orders.orderlist.view.adapter.WishListResponseListener;
 import com.tokopedia.transaction.orders.orderlist.view.adapter.factory.OrderListAdapterFactory;
@@ -210,6 +211,8 @@ public class OrderListFragment extends BaseDaggerFragment implements
     EndlessRecyclerViewScrollListener endlessRecyclerViewScrollListener;
     private TrackingQueue trackingQueue;
     private CloseableBottomSheetDialog changeDateBottomSheetDialog;
+
+    private boolean isPulledToRefresh = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -416,6 +419,11 @@ public class OrderListFragment extends BaseDaggerFragment implements
         simpleSearchView.setListener(this);
         simpleSearchView.setResetListener(this);
         filterDate.setOnClickListener(this);
+
+        swipeToRefresh.setOnRefreshListener(() -> {
+            isPulledToRefresh = true;
+            doRefresh();
+        });
     }
 
     private void addRecyclerListener() {
@@ -455,6 +463,10 @@ public class OrderListFragment extends BaseDaggerFragment implements
 
     @Override
     public void onRefresh(View view) {
+        doRefresh();
+    }
+
+    private void doRefresh() {
         page_num = 1;
         isLoading = true;
         presenter.onRefresh();
@@ -465,6 +477,13 @@ public class OrderListFragment extends BaseDaggerFragment implements
             quickSingleFilterView.setVisibility(View.VISIBLE);
             simpleSearchView.setVisibility(View.VISIBLE);
         }
+        if (isPulledToRefresh) {
+            if (getActivity() != null) {
+                ((OrderListActivity)getActivity()).getInitialData();
+                isPulledToRefresh = false;
+            }
+        }
+        System.out.println("++ doRefresh - selectedFilter = "+selectedFilter);
         presenter.getAllOrderData(getActivity(), mOrderCategory, TxOrderNetInteractor.TypeRequest.INITIAL, page_num, 1);
     }
 
@@ -585,6 +604,7 @@ public class OrderListFragment extends BaseDaggerFragment implements
     @Override
     public void selectFilter(String typeFilter) {
         selectedFilter = typeFilter;
+        System.out.println("++ selectedFilter = "+selectedFilter);
         refreshHandler.startRefresh();
     }
 
