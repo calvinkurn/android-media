@@ -10,7 +10,7 @@ import com.tokopedia.play_common.player.PlayVideoManager
 /**
  * Created by jegul on 11/12/19
  */
-class PlayLifecycleObserver(private val context: Context) : LifecycleObserver {
+class PlayVideoPlayerObserver(private val context: Context) : LifecycleObserver {
 
     private val playVideoManager: PlayVideoManager
         get() = PlayVideoManager.getInstance(context.applicationContext)

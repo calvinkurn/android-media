@@ -14,8 +14,9 @@ import com.tokopedia.play.KEY_GROUPCHAT_PREFERENCES
 import com.tokopedia.play.data.network.PlayApi
 import com.tokopedia.play.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play.util.coroutine.DefaultCoroutineDispatcherProvider
+import com.tokopedia.play.util.observer.PlayVideoUtilObserver
 import com.tokopedia.play_common.player.PlayVideoManager
-import com.tokopedia.play_common.util.PlayLifecycleObserver
+import com.tokopedia.play_common.util.PlayVideoPlayerObserver
 import com.tokopedia.play_common.util.PlayProcessLifecycleObserver
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.url.TokopediaUrl
@@ -39,7 +40,11 @@ class PlayModule(val mContext: Context) {
 
     @PlayScope
     @Provides
-    fun providePlayLifecycleObserver(): PlayLifecycleObserver = PlayLifecycleObserver(mContext)
+    fun providePlayVideoPlayerLifecycleObserver(): PlayVideoPlayerObserver = PlayVideoPlayerObserver(mContext)
+
+    @PlayScope
+    @Provides
+    fun providePlayVideoUtilLifecycleObserver(): PlayVideoUtilObserver = PlayVideoUtilObserver(mContext)
 
     @PlayScope
     @Provides
