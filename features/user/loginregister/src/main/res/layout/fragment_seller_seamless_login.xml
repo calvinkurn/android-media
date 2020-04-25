@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/seller_seamless_loader"
+        android:layout_gravity="center"
+        android:layout_width="@dimen/layout_lvl6"
+        android:layout_height="@dimen/layout_lvl6"
+        android:visibility="gone"
+        />
+
+    <LinearLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/seller_seamless_main_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="@dimen/spacing_lvl4"
+        tools:context=".login.view.fragment.SellerSeamlessLoginFragment">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/spacing_lvl4"
+            android:text="@string/seller_direct_login"
+            app:typographyType="heading_3"
+            app:typographyWeight="bold" />
+
+        <include layout="@layout/item_account_with_shop" />
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/seller_seamless_positive_btn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_lvl6"
+            android:text="@string/button_direct_login" />
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/seller_seamless_negative_btn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_lvl4"
+            android:text="@string/button_use_another_acc"
+            app:unifyButtonVariant="text" />
+
+    </LinearLayout>
+</FrameLayout>
