@@ -355,7 +355,7 @@ class AddEditProductDescriptionFragment:
 
         tvVariantHeaderSubtitle.text = descriptionViewModel.getVariantSelectedMessage()
         tvAddVariant.text = descriptionViewModel.getVariantButtonMessage()
-        btnNext.visibility = View.INVISIBLE
+        btnNext.visibility = View.GONE
         btnSave.visibility = View.VISIBLE
     }
 
