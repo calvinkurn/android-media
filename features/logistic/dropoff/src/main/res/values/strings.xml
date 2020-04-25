@@ -17,9 +17,6 @@
     <string name="no_dropoff_found_desc">Tidak ada titik ambil dalam radius</string>
     <string name="no_dropoff_found_title">Tidak menemukan titik ambil terdekat</string>
     <string name="title_bottom_sheet_dropoff">Titik Ambil Terdekat</string>
-
-    <string name="disabled_location_notif_title">Lokasi Anda Belum Terisi</string>
-    <string name="disabled_location_notfi_desc">Yuk, tulis alamat secara manual atau aktifkan GPS di HPmu</string>
     <string name="gps_empty_title">GPS tidak terdeteksi!</string>
     <string name="gps_empty_desc">Cari otomatis dengan aktifkan GPS atau masukkan kata kunci lokasi</string>
     <string name="gps_empty_action">Aktifkan GPS</string>
