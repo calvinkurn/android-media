@@ -1,10 +1,11 @@
-package com.tokopedia.logisticaddaddress.utils
+package com.tokopedia.logisticdata.util
+
 
 import com.google.android.gms.maps.model.LatLng
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
-class LocationUtilsKtTest {
+class LocationHelperKtTest {
 
     @Test
     fun givenDecimalValueReturnRoundedString() {
