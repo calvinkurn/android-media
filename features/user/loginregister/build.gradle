@@ -3,7 +3,7 @@ apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 apply plugin: "de.mannodermaus.android-junit5"
 
-android{
+android {
     sourceSets.each {
         it.java.srcDirs += "src/$it.name/kotlin"
     }
@@ -63,6 +63,7 @@ dependencies {
     implementation project(rootProject.ext.features.otp)
     implementation project(rootProject.ext.features.sessioncommon)
     implementation project(rootProject.ext.features.profileCommon)
+    implementation project(rootProject.ext.features.seamlesslogin)
 
     implementation rootProject.ext.unifyDependencies.icon
     implementation rootProject.ext.unifyDependencies.components
@@ -83,7 +84,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation rootProject.ext.playServicesDependencies.auth
-    implementation (rootProject.ext.serviceDependencies.crashlytics) {
+    implementation(rootProject.ext.serviceDependencies.crashlytics) {
         transitive = true
     }
     implementation rootProject.ext.miscDependencies.dagger
@@ -115,3 +116,5 @@ project.ext {
 }
 
 apply from: '../../../publish_local.gradle'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
