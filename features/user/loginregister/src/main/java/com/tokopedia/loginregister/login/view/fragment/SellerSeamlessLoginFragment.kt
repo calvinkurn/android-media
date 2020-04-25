@@ -211,6 +211,13 @@ class SellerSeamlessLoginFragment : BaseDaggerFragment() {
         }
     }
 
+    override fun onDestroy() {
+        serviceConnection?.run {
+            activity?.unbindService(this)
+        }
+        super.onDestroy()
+    }
+
     internal inner class RemoteServiceConnection : ServiceConnection {
         override fun onServiceConnected(name: ComponentName, boundService: IBinder) {
             service = RemoteApi.Stub.asInterface(boundService)
