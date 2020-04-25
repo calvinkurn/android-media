@@ -13,7 +13,10 @@ import com.tokopedia.gm.common.utils.PowerMerchantTracking
 import com.tokopedia.kotlin.extensions.view.hideLoading
 import com.tokopedia.kotlin.extensions.view.showLoading
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.power_merchant.subscribe.ACTION_ACTIVATE
+import com.tokopedia.power_merchant.subscribe.ACTION_AUTO_EXTEND
 import com.tokopedia.power_merchant.subscribe.ACTION_KEY
+import com.tokopedia.power_merchant.subscribe.ACTION_KYC
 import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.TERMS_AND_CONDITION_URL
 import com.tokopedia.power_merchant.subscribe.di.DaggerPowerMerchantSubscribeComponent
@@ -129,8 +132,16 @@ class PowerMerchantTermsFragment : BaseWebViewFragment(), PmTermsContract.View {
                     Toaster.make(it, getString(R.string.pm_terms_error_no_agreed), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
                 }
             } else {
-                openKycPage()
+                onClickActivateButton()
             }
+        }
+    }
+
+    private fun onClickActivateButton() {
+        when(action) {
+            ACTION_ACTIVATE,
+            ACTION_AUTO_EXTEND -> presenter.activatePowerMerchant()
+            ACTION_KYC -> openKycPage()
         }
     }
 
