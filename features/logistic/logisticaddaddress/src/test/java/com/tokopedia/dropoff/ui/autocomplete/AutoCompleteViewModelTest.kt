@@ -31,16 +31,16 @@ object AutoCompleteViewModelTest : Spek({
     lateinit var viewModel: com.tokopedia.dropoff.ui.autocomplete.AutoCompleteViewModel
 
     beforeEachTest {
-        viewModel = com.tokopedia.dropoff.ui.autocomplete.AutoCompleteViewModel(dispatcher, autoCompleteUseCase,
+        viewModel = AutoCompleteViewModel(dispatcher, autoCompleteUseCase,
                 getDistrictUseCase, getSavedAddressUseCase, mapper)
     }
 
     Feature("get auto complete") {
-        val autoCompleteObserver: Observer<Result<List<com.tokopedia.dropoff.ui.autocomplete.model.SuggestedPlace>>> = mockk(relaxed = true)
+        val autoCompleteObserver: Observer<Result<List<SuggestedPlace>>> = mockk(relaxed = true)
         Scenario("success") {
             val successResponse = AutocompleteResponse()
             val successList = listOf(
-                    com.tokopedia.dropoff.ui.autocomplete.model.SuggestedPlace("Jakarta Pusat")
+                    SuggestedPlace("Jakarta Pusat")
             )
             Given("success callback") {
                 every { autoCompleteUseCase.execute(any(), any()) } answers {

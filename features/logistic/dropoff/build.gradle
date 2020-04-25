@@ -49,6 +49,9 @@ dependencies {
     kapt rootProject.ext.miscDependencies.daggerCompiler
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
+
+    testImplementation rootProject.ext.testDependencies.mockk
+    testImplementation rootProject.ext.testDependencies.archCoreTesting
 }
 
 project.ext {
