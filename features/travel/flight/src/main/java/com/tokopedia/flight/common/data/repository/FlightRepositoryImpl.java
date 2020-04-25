@@ -1,6 +1,5 @@
 package com.tokopedia.flight.common.data.repository;
 
-import com.tokopedia.flight.common.data.model.request.DataRequest;
 import com.tokopedia.flight.bookingV2.data.FlightBookingCartDataSource;
 import com.tokopedia.flight.bookingV2.data.cloud.FlightCartDataSource;
 import com.tokopedia.flight.bookingV2.data.cloud.entity.CartEntity;
@@ -14,6 +13,7 @@ import com.tokopedia.flight.cancellation.data.cloud.entity.Passenger;
 import com.tokopedia.flight.cancellation.data.cloud.entity.Reason;
 import com.tokopedia.flight.cancellation.data.cloud.requestbody.FlightCancellationRequestBody;
 import com.tokopedia.flight.cancellation.data.cloud.requestbody.FlightEstimateRefundRequest;
+import com.tokopedia.flight.common.data.model.request.DataRequest;
 import com.tokopedia.flight.common.domain.FlightRepository;
 import com.tokopedia.flight.dashboard.data.cloud.FlightClassesDataSource;
 import com.tokopedia.flight.dashboard.data.cloud.entity.flightclass.FlightClassEntity;
@@ -21,16 +21,7 @@ import com.tokopedia.flight.orderlist.data.cloud.FlightOrderDataSource;
 import com.tokopedia.flight.orderlist.data.cloud.entity.OrderEntity;
 import com.tokopedia.flight.orderlist.domain.FlightOrderRepositoryImpl;
 import com.tokopedia.flight.orderlist.domain.model.mapper.FlightOrderMapper;
-import com.tokopedia.flight.review.data.FlightBookingDataSource;
-import com.tokopedia.flight.review.data.FlightCancelVoucherDataSource;
-import com.tokopedia.flight.review.data.FlightCheckVoucheCodeDataSource;
-import com.tokopedia.flight.review.data.model.AttributesVoucher;
-import com.tokopedia.flight.review.data.model.FlightCheckoutEntity;
-import com.tokopedia.flight.review.domain.checkout.FlightCheckoutRequest;
-import com.tokopedia.flight.review.domain.verifybooking.model.request.VerifyRequest;
-import com.tokopedia.flight.review.domain.verifybooking.model.response.DataResponseVerify;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -44,29 +35,20 @@ import rx.functions.Func1;
 public class FlightRepositoryImpl extends FlightOrderRepositoryImpl implements FlightRepository {
     private FlightClassesDataSource flightClassesDataSource;
     private FlightCartDataSource flightCartDataSource;
-    private FlightCheckVoucheCodeDataSource flightCheckVoucheCodeDataSource;
-    private FlightBookingDataSource flightBookingDataSource;
     private FlightCancellationCloudDataSource flightCancellationCloudDataSource;
-    private FlightCancelVoucherDataSource flightCancelVoucherDataSource;
     private FlightBookingCartDataSource flightBookingCartDataSource;
 
     public FlightRepositoryImpl(FlightClassesDataSource flightClassesDataSource,
                                 FlightCartDataSource flightCartDataSource,
-                                FlightCheckVoucheCodeDataSource flightCheckVoucheCodeDataSource,
-                                FlightBookingDataSource flightBookingDataSource,
                                 FlightOrderDataSource flightOrderDataSource,
                                 FlightOrderMapper flightOrderMapper,
                                 FlightCancellationCloudDataSource flightCancellationCloudDataSource,
-                                FlightCancelVoucherDataSource flightCancelVoucherDataSource,
                                 FlightBookingCartDataSource flightBookingCartDataSource) {
         super(flightOrderDataSource, flightOrderMapper);
 
         this.flightClassesDataSource = flightClassesDataSource;
         this.flightCartDataSource = flightCartDataSource;
-        this.flightCheckVoucheCodeDataSource = flightCheckVoucheCodeDataSource;
-        this.flightBookingDataSource = flightBookingDataSource;
         this.flightCancellationCloudDataSource = flightCancellationCloudDataSource;
-        this.flightCancelVoucherDataSource = flightCancelVoucherDataSource;
         this.flightBookingCartDataSource = flightBookingCartDataSource;
     }
 
@@ -108,21 +90,6 @@ public class FlightRepositoryImpl extends FlightOrderRepositoryImpl implements F
     }
 
     @Override
-    public Observable<AttributesVoucher> checkVoucherCode(HashMap<String, String> paramsAllValueInString) {
-        return flightCheckVoucheCodeDataSource.checkVoucherCode(paramsAllValueInString);
-    }
-
-    @Override
-    public Observable<DataResponseVerify> verifyBooking(VerifyRequest verifyRequest) {
-        return flightBookingDataSource.verifyBooking(verifyRequest);
-    }
-
-    @Override
-    public Observable<FlightCheckoutEntity> checkout(FlightCheckoutRequest request) {
-        return flightBookingDataSource.checkout(request);
-    }
-
-    @Override
     public Observable<OrderEntity> getOrderEntity(String id) {
         return getFlightOrderDataSource().getOrder(id);
     }
@@ -146,10 +113,5 @@ public class FlightRepositoryImpl extends FlightOrderRepositoryImpl implements F
     public Observable<CancellationRequestEntity> cancellationRequest(FlightCancellationRequestBody request) {
         DataRequest<FlightCancellationRequestBody> requestBody = new DataRequest<>(request);
         return flightCancellationCloudDataSource.requestCancellation(requestBody);
-    }
-
-    @Override
-    public Observable<Boolean> cancelVoucherApply() {
-        return flightCancelVoucherDataSource.cancelVoucher();
     }
 }

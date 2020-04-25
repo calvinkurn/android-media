@@ -1,4 +1,4 @@
-package com.tokopedia.flight.review.view.model;
+package com.tokopedia.flight.detail.view.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -6,7 +6,7 @@ import android.os.Parcelable;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.flight.bookingV2.constant.FlightBookingPassenger;
 import com.tokopedia.flight.bookingV2.presentation.model.SimpleModel;
-import com.tokopedia.flight.review.view.adapter.FlightBookingReviewPassengerAdapterTypeFactory;
+import com.tokopedia.flight.detail.view.adapter.FlightDetailOrderPassengerAdapterTypeFactory;
 
 import java.util.List;
 
@@ -14,7 +14,7 @@ import java.util.List;
  * Created by zulfikarrahman on 11/23/17.
  */
 
-public class FlightDetailPassenger implements Parcelable, Visitable<FlightBookingReviewPassengerAdapterTypeFactory> {
+public class FlightDetailPassenger implements Parcelable, Visitable<FlightDetailOrderPassengerAdapterTypeFactory> {
 
     List<SimpleModel> infoPassengerList;
     String passengerName;
@@ -124,7 +124,7 @@ public class FlightDetailPassenger implements Parcelable, Visitable<FlightBookin
     }
 
     @Override
-    public int type(FlightBookingReviewPassengerAdapterTypeFactory typeFactory) {
+    public int type(FlightDetailOrderPassengerAdapterTypeFactory typeFactory) {
         return typeFactory.type(this);
     }
 }

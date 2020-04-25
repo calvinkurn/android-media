@@ -10,12 +10,10 @@ import com.tokopedia.flight.bookingV2.presentation.model.FlightBookingPassengerM
 import com.tokopedia.flight.bookingV3.data.FlightCart
 import com.tokopedia.flight.bookingV3.data.FlightCartViewEntity
 import com.tokopedia.flight.bookingV3.data.FlightPromoViewEntity
+import com.tokopedia.flight.detail.view.model.FlightDetailModel
 import com.tokopedia.flight.detail.view.model.FlightDetailRouteInfoModel
 import com.tokopedia.flight.detail.view.model.FlightDetailRouteModel
-import com.tokopedia.flight.detail.view.model.FlightDetailModel
 import com.tokopedia.flight.orderlist.view.viewmodel.FlightStopOverViewModel
-import com.tokopedia.flight.review.view.fragment.FlightBookingReviewFragment.DEFAULT_IS_COUPON_ONE
-import com.tokopedia.flight.review.view.fragment.FlightBookingReviewFragment.DEFAULT_IS_COUPON_ZERO
 import com.tokopedia.flight.search.presentation.model.FlightPriceModel
 import com.tokopedia.flight.search.presentation.model.filter.RefundableEnum
 import com.tokopedia.promocheckout.common.view.model.PromoData
@@ -29,6 +27,9 @@ import java.util.*
 class FlightBookingMapper {
 
     companion object {
+        private const val DEFAULT_IS_COUPON_ZERO = 0
+        private const val DEFAULT_IS_COUPON_ONE = 1
+
         fun mapToFlightCartView(flightCart: FlightCart, isRefreshCart: Boolean): FlightCartViewEntity {
             val journies: MutableList<FlightCartViewEntity.JourneySummary> = arrayListOf()
             for (item in flightCart.cartData.flight.journeys) {

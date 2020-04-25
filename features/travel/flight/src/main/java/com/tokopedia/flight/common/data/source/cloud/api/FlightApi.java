@@ -1,27 +1,23 @@
 package com.tokopedia.flight.common.data.source.cloud.api;
 
 import com.google.gson.JsonObject;
-import com.tokopedia.flight.common.data.model.request.DataRequest;
 import com.tokopedia.flight.bookingV2.data.cloud.requestbody.FlightCartRequest;
 import com.tokopedia.flight.bookingV2.data.entity.AddToCartEntity;
 import com.tokopedia.flight.cancellation.data.cloud.entity.CancellationRequestEntity;
 import com.tokopedia.flight.cancellation.data.cloud.entity.EstimateRefundResultEntity;
 import com.tokopedia.flight.cancellation.data.cloud.requestbody.FlightEstimateRefundRequest;
 import com.tokopedia.flight.common.constant.FlightUrl;
+import com.tokopedia.flight.common.data.model.request.DataRequest;
 import com.tokopedia.flight.country.data.FlightCountryEntity;
 import com.tokopedia.flight.dashboard.data.cloud.entity.flightclass.FlightClassEntity;
 import com.tokopedia.flight.orderlist.data.cloud.entity.OrderEntity;
 import com.tokopedia.flight.orderlist.data.cloud.entity.SendEmailEntity;
-import com.tokopedia.flight.review.data.model.AttributesVoucher;
-import com.tokopedia.flight.review.data.model.FlightCheckoutEntity;
-import com.tokopedia.flight.review.domain.checkout.FlightCheckoutRequest;
 import com.tokopedia.flight.search.data.api.combined.request.FlightSearchCombinedRequestData;
 import com.tokopedia.flight.search.data.api.combined.response.FlightSearchCombinedResponse;
 import com.tokopedia.flight.search.data.api.single.request.FlightSearchSingleRequestData;
 import com.tokopedia.flight.search.data.api.single.response.FlightDataResponse;
 import com.tokopedia.network.data.model.response.DataResponse;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -73,22 +69,11 @@ public interface FlightApi {
     @GET(FlightUrl.FLIGHT_CART_PATH_WITH_ID)
     Observable<Response<String>> getCart(@Path("id") String cartId, @Header("x-tkpd-userid") String userId);
 
-    @GET(FlightUrl.FLIGHT_CHECK_VOUCHER_CODE)
-    Observable<Response<DataResponse<AttributesVoucher>>> checkVoucherCode(@QueryMap HashMap<String, String> paramsAllValueInString);
-
     @GET(FlightUrl.FLIGHT_ORDERS)
     Observable<Response<DataResponse<List<OrderEntity>>>> getOrders(@QueryMap Map<String, Object> paramsAllValueInString);
 
     @GET(FlightUrl.FLIGHT_ORDER)
     Observable<Response<DataResponse<OrderEntity>>> getOrder(@Path("id") String id);
-
-    @Headers({"Content-Type: application/json"})
-    @POST(FlightUrl.FLIGHT_VERIFY_BOOKING)
-    Observable<Response<String>> verifyBooking(@Body JsonObject verifyRequest, @Header("x-tkpd-userid") String userId);
-
-    @Headers({"Content-Type: application/json"})
-    @POST(FlightUrl.FLIGHT_CHECKOUT_BOOKING)
-    Observable<Response<DataResponse<FlightCheckoutEntity>>> checkout(@Body FlightCheckoutRequest checkoutRequest, @Header("x-tkpd-userid") String userId);
 
     @GET(FlightUrl.FLIGHT_EMAIL)
     Observable<Response<SendEmailEntity>> sendEmail(@QueryMap Map<String, Object> param);
@@ -104,7 +89,4 @@ public interface FlightApi {
     @POST(FlightUrl.FLIGHT_CANCELLATION_REQUEST)
     Observable<Response<DataResponse<CancellationRequestEntity>>> requestCancellation(@Body JsonObject cancellationRequest);
 
-    @Headers({"Content-Type: application/json"})
-    @POST(FlightUrl.FLIGHT_CANCEL_VOUCHER_CODE)
-    Observable<Response<Object>> cancelCoupounVoucher(@Header("x-tkpd-userid") String userId);
 }

@@ -1,4 +1,4 @@
-package com.tokopedia.flight.review.view.adapter.viewholder;
+package com.tokopedia.flight.detail.view.adapter.viewholder;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -15,8 +15,8 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.bookingV2.constant.FlightBookingPassenger;
 import com.tokopedia.flight.bookingV2.presentation.model.SimpleModel;
+import com.tokopedia.flight.detail.view.model.FlightDetailPassenger;
 import com.tokopedia.flight.orderlist.constant.FlightCancellationStatus;
-import com.tokopedia.flight.review.view.model.FlightDetailPassenger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +25,7 @@ import java.util.List;
  * Created by zulfikarrahman on 11/10/17.
  */
 
-public class FlightBookingReviewPassengerViewHolder extends AbstractViewHolder<FlightDetailPassenger> {
+public class FlightDetailOrderPassengerViewHolder extends AbstractViewHolder<FlightDetailPassenger> {
     @LayoutRes
     public static int LAYOUT = com.tokopedia.flight.R.layout.item_flight_review_passenger;
     private Context context;
@@ -72,7 +72,7 @@ public class FlightBookingReviewPassengerViewHolder extends AbstractViewHolder<F
         }
     }
 
-    public FlightBookingReviewPassengerViewHolder(View layoutView) {
+    public FlightDetailOrderPassengerViewHolder(View layoutView) {
         super(layoutView);
 
         context = layoutView.getContext();
