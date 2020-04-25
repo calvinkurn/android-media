@@ -1,4 +1,4 @@
-package com.tokopedia.design.quickfilter.custom;
+package com.tokopedia.sellerorder.common.widget;
 
 import android.content.Context;
 import androidx.annotation.NonNull;
@@ -10,6 +10,7 @@ import android.util.AttributeSet;
 import com.tokopedia.design.R;
 import com.tokopedia.design.quickfilter.QuickFilterItem;
 import com.tokopedia.design.quickfilter.QuickSingleFilterView;
+import com.tokopedia.design.quickfilter.custom.CustomViewRoundedCornerAdapter;
 
 import java.util.List;
 

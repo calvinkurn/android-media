@@ -1,15 +1,9 @@
-package com.tokopedia.design.reputation;
+package com.tokopedia.tkpd.tkpdreputation.inbox.view.customview;
 
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.Drawable;
-import androidx.appcompat.content.res.AppCompatResources;
 import android.os.Build;
-import android.os.Build;
-import androidx.annotation.DrawableRes;
-import com.google.android.material.bottomsheet.BottomSheetDialog;
-import androidx.appcompat.content.res.AppCompatResources;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
@@ -19,8 +13,12 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.tokopedia.design.R;
+import androidx.annotation.DrawableRes;
+import androidx.appcompat.content.res.AppCompatResources;
+
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.tokopedia.design.base.BaseCustomView;
+import com.tokopedia.tkpd.tkpdreputation.R;
 
 /**
  * @author by stevenfredian on 8/16/17.

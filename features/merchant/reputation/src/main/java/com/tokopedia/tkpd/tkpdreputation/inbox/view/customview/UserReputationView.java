@@ -1,4 +1,4 @@
-package com.tokopedia.design.reputation;
+package com.tokopedia.tkpd.tkpdreputation.inbox.view.customview;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -15,8 +15,8 @@ import android.widget.TextView;
 import androidx.appcompat.content.res.AppCompatResources;
 
 import com.google.android.material.bottomsheet.BottomSheetDialog;
-import com.tokopedia.design.R;
 import com.tokopedia.design.base.BaseCustomView;
+import com.tokopedia.tkpd.tkpdreputation.R;
 
 /**
  * @author by stevenfredian on 8/16/17.

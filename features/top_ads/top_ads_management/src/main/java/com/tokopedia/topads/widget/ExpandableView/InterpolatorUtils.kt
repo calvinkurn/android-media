@@ -1,4 +1,4 @@
-package com.tokopedia.design.utils
+package com.tokopedia.topads.widget.ExpandableView
 
 import android.animation.TimeInterpolator
 import androidx.annotation.IntRange
