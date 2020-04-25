@@ -42,6 +42,10 @@ class VoucherDisplayBottomSheetFragment(private val getVoucherType: () -> Vouche
         VoucherDisplayScrollListener(pagerSnapHelper, ::onSnapPositionChangeListener)
     }
 
+    private val linearLayoutManager by lazy {
+        LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+    }
+
     override fun onAttach(context: Context) {
         super.onAttach(context)
         bottomSheetViewTitle = when(getVoucherType()) {
@@ -58,9 +62,8 @@ class VoucherDisplayBottomSheetFragment(private val getVoucherType: () -> Vouche
     override var bottomSheetViewTitle: String? = null
 
     private fun initView() {
-        view?.setupBottomSheetCustomLayoutParams()
+        view?.setupBottomSheetChildNoMargin()
         val displayList = getVoucherType().displayPairList
-        val linearLayoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         val voucherDisplayAdapter = VoucherDisplayAdapter(displayList)
         voucherDisplayRecyclerView?.run {
             layoutManager = linearLayoutManager
@@ -71,7 +74,7 @@ class VoucherDisplayBottomSheetFragment(private val getVoucherType: () -> Vouche
         voucherDisplayPageControl?.setIndicator(displayList.size)
     }
 
-    private fun View.setupBottomSheetCustomLayoutParams() {
+    private fun View.setupBottomSheetChildNoMargin() {
         val initialPaddingTop = paddingTop
         val initialPaddingBottom = paddingBottom
         val initialPaddingLeft = paddingLeft

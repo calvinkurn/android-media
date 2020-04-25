@@ -2,9 +2,6 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingTop=""
-    android:paddingStart="@dimen/mvc_create_margin_padding"
-    android:paddingEnd="@dimen/mvc_create_margin_padding"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <androidx.appcompat.widget.AppCompatImageView
@@ -30,7 +27,9 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:textColor="@color/mvc_text_color_black"
-        app:layout_constraintStart_toEndOf="@id/voucherTipsInfoTitle"
+        app:typographyType="body_2"
+        app:typographyWeight="reguler"
+        app:layout_constraintStart_toStartOf="@id/voucherTipsInfoTitle"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/voucherTipsInfoTitle"
         app:layout_constraintBottom_toBottomOf="parent"/>

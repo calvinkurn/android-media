@@ -4,11 +4,8 @@ import androidx.annotation.StringRes
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.vouchercreation.create.view.typefactory.VoucherTipsItemTypeFactory
 
-class BasicVoucherTipsItemUiModel(
+data class TipsItemUiModel(
+        val isOpen: Boolean = false,
         @StringRes val titleRes: Int,
-        @StringRes val descRes: Int
-) : Visitable<VoucherTipsItemTypeFactory> {
-
-    override fun type(typeFactory: VoucherTipsItemTypeFactory): Int =
-            typeFactory.type(this)
-}
+        val tipsItemList: List<Visitable<VoucherTipsItemTypeFactory>>
+)
