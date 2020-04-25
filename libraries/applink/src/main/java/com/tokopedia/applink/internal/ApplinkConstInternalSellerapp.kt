@@ -59,4 +59,8 @@ object ApplinkConstInternalSellerapp {
     @JvmField
     val MENU_SETTING = "$INTERNAL_SELLERAPP/menu-setting"
 
+    //MenuSettingActivity
+    @JvmField
+    val SEAMLESS_LOGIN = "$INTERNAL_SELLERAPP/login-seamless"
+
 }
