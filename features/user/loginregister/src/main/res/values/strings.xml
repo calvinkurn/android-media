@@ -348,4 +348,8 @@
     <string name="title_ticker_from_atc">Yuk, lanjutin belanjanya sekarang!</string>
     <string name="desc_ticker_from_atc">Khusus pengguna baru, dapetin cashback 80% hingga Rp30.000.</string>
 
+    <string name="seller_direct_login">Mau langsung masuk ke toko ini?</string>
+    <string name="button_direct_login">Ya, Masuk</string>
+    <string name="button_use_another_acc">Gunakan Akun Lain</string>
+
 </resources>
