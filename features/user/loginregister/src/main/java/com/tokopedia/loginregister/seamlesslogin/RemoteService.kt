@@ -76,6 +76,7 @@ class RemoteService : Service() {
                     putString("email", userSession.email)
                     putString("shop_avatar", userSession.shopAvatar)
                     putString("shop_name", userSession.shopName)
+                    putString("phone_no", userSession.phoneNumber)
                 }
             }else {
                 data.apply {
