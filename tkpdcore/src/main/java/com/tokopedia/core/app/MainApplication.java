@@ -19,7 +19,6 @@ import com.tokopedia.core.base.di.component.DaggerAppComponent;
 import com.tokopedia.core.base.di.module.AppModule;
 import com.tokopedia.core.gcm.utils.NotificationUtils;
 import com.tokopedia.core.router.InboxRouter;
-import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.util.toolargetool.TooLargeTool;
 import com.tokopedia.core2.BuildConfig;
@@ -197,11 +196,6 @@ public abstract class MainApplication extends MainRouterApplication{
                     userData));
         }
         return true;
-    }
-
-    @Override
-    public Intent getSellerHomeActivityReal(Context context) {
-        return SellerAppRouter.getSellerHomeActivity(context);
     }
 
     @Override

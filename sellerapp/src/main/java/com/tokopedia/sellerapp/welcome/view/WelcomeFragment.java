@@ -29,12 +29,11 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.analytics.handler.UserAuthenticationAnalytics;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
-import com.tokopedia.sellerapp.welcome.widget.LoginTextView;
-import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.core.session.model.LoginProviderModel;
 import com.tokopedia.sellerapp.R;
 import com.tokopedia.sellerapp.welcome.presenter.WelcomeFragmentPresenter;
 import com.tokopedia.sellerapp.welcome.presenter.WelcomeFragmentPresenterImpl;
+import com.tokopedia.sellerapp.welcome.widget.LoginTextView;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -361,8 +360,8 @@ public class WelcomeFragment extends BaseDaggerFragment implements
     private void onSuccessLogin() {
         if (MainApplication.getAppContext() instanceof TkpdCoreRouter) {
             Intent intent;
-            if (getUserSession().hasShop()) {
-                intent = SellerAppRouter.getSellerHomeActivity(getActivity());
+            if (getUserSession().hasShop() && getActivity() != null) {
+                intent = ((TkpdCoreRouter) getActivity().getApplication()).getHomeIntent(getActivity());
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent
                         .FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
             } else {

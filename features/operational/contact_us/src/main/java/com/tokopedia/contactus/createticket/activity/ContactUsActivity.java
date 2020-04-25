@@ -16,8 +16,8 @@ import com.tokopedia.contactus.createticket.fragment.ContactUsFaqFragment.Contac
 import com.tokopedia.contactus.createticket.fragment.CreateTicketFormFragment;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.router.InboxRouter;
-import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -173,7 +173,7 @@ public class ContactUsActivity extends BasePresenterActivity implements
         CommonUtils.UniversalToast(this, getString(R.string.title_contact_finish));
         UserSessionInterface userSession = new UserSession(this);
         if (GlobalConfig.isSellerApp() && userSession.isLoggedIn()) {
-            Intent intent = SellerAppRouter.getSellerHomeActivity(this);
+            Intent intent = ((TkpdCoreRouter) getApplication()).getHomeIntent(this);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
             finish();

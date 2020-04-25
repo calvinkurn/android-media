@@ -34,7 +34,6 @@ import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.router.SellerRouter;
-import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.session.model.AccountsModel;
 import com.tokopedia.core.session.model.AccountsParameter;
 import com.tokopedia.core.session.model.InfoModel;
@@ -65,10 +64,8 @@ import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.webview.download.BaseDownloadAppLinkActivity;
 import com.tokopedia.webview.ext.UrlEncoderExtKt;
 
-import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -153,7 +150,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         Bundle defaultBundle = new Bundle();
         defaultBundle.putBundle(RouteManager.QUERY_PARAM, queryParamBundle);
         if (uriData.getHost().equals(AF_ONELINK_HOST)) {
-            Log.d(TAG, "URI DATA = " + uriData.toString());
+            Timber.d( "URI DATA = " + uriData.toString());
             processAFlistener();
         } else {
             List<String> linkSegment = uriData.getPathSegments();
@@ -242,12 +239,6 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     openHotel(uriData, defaultBundle);
                     screenName = "";
                     break;
-                /*
-                case RECHARGE:
-                    openRecharge(linkSegment, uriData);
-                    screenName = AppScreen.SCREEN_RECHARGE;
-                    break;
-                   */
                 case DeepLinkChecker.APPLINK:
                     if (linkSegment != null && linkSegment.size() > 0) {
                         openWebView(Uri.parse(String.valueOf(linkSegment.get(0))), false, true,
@@ -380,18 +371,6 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
             intent = RouteManager.getIntent(context, ApplinkConst.GROUPCHAT_DETAIL, linkSegment.get(1));
             intent.putExtras(bundle);
             context.startActivity(intent);
-        }
-    }
-
-    private void openDigitalPage(String applink) {
-        if (context.getApplication() instanceof IDigitalModuleRouter) {
-            if (((IDigitalModuleRouter) context.getApplication())
-                    .isSupportedDelegateDeepLink(applink)) {
-                Bundle bundle = new Bundle();
-                ((IDigitalModuleRouter) context.getApplication()).actionNavigateByApplinksUrl(context,
-                        applink, bundle);
-                context.finish();
-            }
         }
     }
 
@@ -565,10 +544,6 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         context.finish();
     }
 
-    private static boolean isPromo(List<String> linkSegment) {
-        return linkSegment.size() > 0 && (linkSegment.get(0).equals("promo"));
-    }
-
     private void openWebView(Uri uri, boolean allowingOverriding, boolean showTitlebar,
                              boolean needLogin) {
         String encodedUri = UrlEncoderExtKt.encodeOnce(uri.toString());
@@ -581,17 +556,6 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
             context.startActivity(intent);
             context.finish();
         }
-    }
-
-    private String encodeUrl(String url) {
-        String encodedUrl;
-        try {
-            encodedUrl = URLEncoder.encode(url, FORMAT_UTF_8);
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-            return null;
-        }
-        return encodedUrl;
     }
 
     private void openShopInfo(final List<String> linkSegment, final Uri uriData, Bundle bundle) {
@@ -850,10 +814,6 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                 ApplinkConstInternalDiscovery.SEARCH_RESULT;
 
         return applink + "?" + uriData.getQuery();
-    }
-
-    private boolean isHotBrowse(List<String> linkSegment, Uri uriData) {
-        return (linkSegment.size() == 1 && !isHotAlias(uriData));
     }
 
     private boolean isHotAlias(Uri uri) {
