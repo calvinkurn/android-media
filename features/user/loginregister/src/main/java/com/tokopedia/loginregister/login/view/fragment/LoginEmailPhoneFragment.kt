@@ -36,6 +36,7 @@ import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.text.TextDrawable
@@ -95,6 +96,7 @@ import kotlinx.android.synthetic.main.fragment_login_with_phone.*
 import java.util.*
 import javax.inject.Inject
 import javax.inject.Named
+
 
 /**
  * @author by nisie on 18/01/19.
@@ -278,6 +280,10 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
         partialRegisterInputView.setEmailExtension(emailExtension, emailExtensionList)
         partialRegisterInputView.initKeyboardListener(view)
 
+        if(GlobalConfig.isSellerApp() && arguments?.getBoolean(SELLER_SEAMLESS, false) == true) {
+            val intent = RouteManager.getIntent(activity, ApplinkConstInternalSellerapp.SEAMLESS_LOGIN)
+            startActivityForResult(intent, REQUEST_SEAMLESS_LOGIN)
+        }
     }
 
     private fun fetchRemoteConfig() {
@@ -723,7 +729,6 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
                     RequestOtpUseCase.OTP_TYPE_LOGIN_PHONE_NUMBER, phoneNumber, "")
             startActivityForResult(intent, REQUEST_LOGIN_PHONE)
         }
-
     }
 
     override fun goToRegisterPhoneVerifyPage(phoneNumber: String) {
@@ -866,7 +871,6 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
 
     override fun onSuccessGetUserInfoAddPin(): (ProfilePojo) -> Unit {
         return {
-
             if (it.profileInfo.fullName.contains(CHARACTER_NOT_ALLOWED)) {
                 onGoToChangeName()
             } else {
@@ -1092,6 +1096,14 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
                 onSuccessLogin()
             } else if (requestCode == REQUEST_COTP_PHONE_VERIFICATION && resultCode == Activity.RESULT_OK) {
                 onSuccessLogin()
+            } else if(requestCode == REQUEST_SEAMLESS_LOGIN && resultCode == Activity.RESULT_OK){
+                if (data != null) {
+                    data.extras?.let {
+                        if (it.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_SQ_CHECK, false)) {
+                            onGoToSecurityQuestion("")
+                        } else  { presenter.getUserInfo() }
+                    }
+                } else { presenter.getUserInfo() }
             } else {
                 dismissLoadingLogin()
                 super.onActivityResult(requestCode, resultCode, data)
@@ -1394,6 +1406,8 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
         const val AUTO_FILL_EMAIL = "email"
         const val IS_FROM_REGISTER = "is_from_register"
 
+        const val SELLER_SEAMLESS = "is_from_seller_seamles"
+
         const val FACEBOOK = "facebook"
         const val GPLUS = "gplus"
 
@@ -1419,6 +1433,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
         const val REQUEST_ADD_PIN_AFTER_SQ = 119
         private val REQUEST_OTP_VALIDATE = 120
         private val REQUEST_PENDING_OTP_VALIDATE = 121
+        const val REQUEST_SEAMLESS_LOGIN = 122
 
         private const val PHONE_TYPE = "phone"
         private const val EMAIL_TYPE = "email"
