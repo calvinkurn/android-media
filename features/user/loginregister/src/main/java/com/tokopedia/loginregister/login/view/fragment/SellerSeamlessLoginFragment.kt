@@ -111,8 +111,8 @@ class SellerSeamlessLoginFragment : BaseDaggerFragment() {
         view?.seller_seamless_positive_btn?.isEnabled = true
         view?.seller_seamless_negative_btn?.isEnabled = true
         seller_seamless_main_view?.alpha = 1.0F
-        seller_seamless_main_view?.show()
         seller_seamless_loader?.hide()
+        seller_seamless_main_view?.show()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
