@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="searchbar_autocomplete_hint">Masukkan kata kunci lokasi</string>
+    <string name="searchbar_dropoff_hint">Cari Tempat Titik Ambil…</string>
+    <string name="point_center">Point Center</string>
+
+</resources>

@@ -13,9 +13,8 @@ import com.tokopedia.logisticaddaddress.domain.usecase.GetDistrictUseCase
 import com.tokopedia.logisticaddaddress.domain.usecase.GetZipCodeUseCase
 import com.tokopedia.logisticaddaddress.features.addnewaddress.analytics.AddNewAddressAnalytics
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.get_district.GetDistrictDataUiModel
-import com.tokopedia.logisticaddaddress.features.autocomplete.model.SuggestedPlace
+import com.tokopedia.dropoff.ui.autocomplete.model.SuggestedPlace
 import com.tokopedia.logisticdata.data.entity.address.SaveAddressDataModel
-import com.tokopedia.network.exception.MessageErrorException
 import io.mockk.*
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.spekframework.spek2.Spek
@@ -147,7 +146,7 @@ object AddEditAddressPresenterTest : Spek({
             val givenLat = 0.3131
             val givenLong = 9.3232
             val successModel = listOf(
-                    SuggestedPlace(placeId = givenPlaceId)
+                    com.tokopedia.dropoff.ui.autocomplete.model.SuggestedPlace(placeId = givenPlaceId)
             )
             val successDistrict = GetDistrictDataUiModel(
                     latitude = givenLat.toString(), longitude = givenLong.toString())
