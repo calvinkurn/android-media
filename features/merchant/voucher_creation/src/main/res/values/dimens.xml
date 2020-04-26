@@ -35,10 +35,17 @@
     <dimen name="mvc_create_voucher_display_recycler_view_margin_top">8dp</dimen>
     <dimen name="mvc_create_voucher_tips_item_height">56dp</dimen>
     <dimen name="mvc_create_voucher_tips_item_arrow_width">12dp</dimen>
+    <dimen name="mvc_create_voucher_tips_title_padding_left">15dp</dimen>
+    <dimen name="mvc_create_voucher_tips_image_title_margin_left">8dp</dimen>
+    <dimen name="mvc_create_voucher_tips_image_title_margin_bottom">24dp</dimen>
+    <dimen name="mvc_create_voucher_tips_image_desc_margin_top">8dp</dimen>
     <dimen name="mvc_create_voucher_tips_dot_size">6dp</dimen>
+    <dimen name="mvc_create_voucher_tips_dot_height">20dp</dimen>
     <dimen name="mvc_create_voucher_tips_dot_margin_left">12dp</dimen>
     <dimen name="mvc_create_voucher_tips_dot_padding_horizontal">13dp</dimen>
     <dimen name="mvc_create_voucher_tips_dot_margin_bottom">18dp</dimen>
+    <dimen name="mvc_create_voucher_tips_basic_desc_margin_top">10dp</dimen>
+    <dimen name="mvc_create_voucher_tips_basic_desc_margin_bottom">20dp</dimen>
 
     <dimen name="mvc_create_target_description_size">12sp</dimen>
     <dimen name="mvc_create_target_description_line_spacing">4sp</dimen>

@@ -55,7 +55,7 @@ class VoucherTipsAdapter(itemList: List<TipsItemUiModel>,
         tipsItemList[position].run {
             isOpen = !isOpen
         }
-        notifyItemChanged(position)
+        notifyDataSetChanged()
     }
 
     private fun View.setAccordionState(isItemOpen: Boolean): Boolean {
