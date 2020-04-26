@@ -266,7 +266,8 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
 
     private fun getDummyData(): List<Visitable<*>> {
         val list = mutableListOf<Visitable<*>>()
-        list.add(ErrorStateUiModel)
+        list.add(NoResultStateUiModel)
+        //list.add(ErrorStateUiModel)
         //list.add(EmptyStateUiModel(isActiveVoucher))
         /*repeat(10) {
             list.add(VoucherUiModel("Voucher Hura Nyoba Doang", it % 2 == 0))

@@ -6,9 +6,11 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.vouchercreation.voucherlist.model.EmptyStateUiModel
 import com.tokopedia.vouchercreation.voucherlist.model.ErrorStateUiModel
+import com.tokopedia.vouchercreation.voucherlist.model.NoResultStateUiModel
 import com.tokopedia.vouchercreation.voucherlist.model.VoucherUiModel
 import com.tokopedia.vouchercreation.voucherlist.view.viewholder.EmptyStateViewHolder
 import com.tokopedia.vouchercreation.voucherlist.view.viewholder.ErrorStateViewHolder
+import com.tokopedia.vouchercreation.voucherlist.view.viewholder.NoResultStateViewHolder
 import com.tokopedia.vouchercreation.voucherlist.view.viewholder.VoucherViewHolder
 
 /**
@@ -26,6 +28,8 @@ class VoucherListAdapterFactoryImpl(
 
     override fun type(errorStateUiModel: ErrorStateUiModel): Int = ErrorStateViewHolder.RES_LAYOUT
 
+    override fun type(noResultStateUiModel: NoResultStateUiModel): Int = NoResultStateViewHolder.RES_LAYOUT
+
     /*override fun type(viewModel: LoadingModel?): Int = if (isActiveVoucher) {
         VoucherActiveLoadingStateViewHolder.RES_LAYOUT
     } else {
@@ -37,6 +41,7 @@ class VoucherListAdapterFactoryImpl(
             VoucherViewHolder.RES_LAYOUT -> VoucherViewHolder(parent) {
                 voucherListener.onMoreClickListener(it)
             }
+            NoResultStateViewHolder.RES_LAYOUT -> NoResultStateViewHolder(parent)
             ErrorStateViewHolder.RES_LAYOUT -> ErrorStateViewHolder(parent)
             EmptyStateViewHolder.RES_LAYOUT -> EmptyStateViewHolder(parent)
             else -> super.createViewHolder(parent, type)

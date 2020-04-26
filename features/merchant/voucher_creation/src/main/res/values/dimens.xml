@@ -32,4 +32,5 @@
     <dimen name="mvc_dimen_14dp">14dp</dimen>
     <dimen name="mvc_dimen_10dp">10dp</dimen>
     <dimen name="mvc_dimen_minus_8dp">-8dp</dimen>
+    <dimen name="mvc_dimen_120dp">120dp</dimen>
 </resources>
