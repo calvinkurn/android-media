@@ -65,6 +65,8 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
     var productID: Int = 0
     var sortBy: String = ""
     var filterBy: String = "time=all"
+    var chipsFilterText = ""
+    var itemView: View? = null
 
     private var filterPeriodDetailUnify: ListUnify? = null
     private var bottomSheetPeriodDetail: BottomSheetUnify? = null
@@ -94,6 +96,7 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
         initRecyclerView(view)
         initSwipeToRefRefresh(view)
         initViewBottomSheet()
+        initChipsView()
     }
 
     override fun initInjector() {
@@ -203,7 +206,10 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
         review_detail_toolbar.apply {
             title = data.productName.toString()
         }
-        reviewSellerDetailAdapter.setOverallRatingDetailData(data)
+
+        reviewSellerDetailAdapter.setOverallRatingDetailData(data.apply {
+            chipFilter = chipsFilterText
+        })
     }
 
     private fun onSuccessGetFeedbackReviewListData(hasNextPage: Boolean, reviewProductDetail: ProductFeedbackDetailUiModel) {
@@ -276,25 +282,31 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
         filterPeriodDetailUnify?.let { it ->
             it.onLoadFinish {
                 it.setSelectedFilterOrSort(filterPeriodItemUnify, viewModelProductReviewDetail?.positionFilterPeriod.orZero())
-            }
-            it.setOnItemClickListener { _, _, position, _ ->
-                onItemFilterClickedBottomSheet(view, position, filterPeriodItemUnify, it)
-            }
 
-            filterPeriodItemUnify.forEachIndexed { position, listItemUnify ->
-                listItemUnify.listRightRadiobtn?.setOnClickListener { _ ->
+                it.setOnItemClickListener { _, _, position, _ ->
                     onItemFilterClickedBottomSheet(view, position, filterPeriodItemUnify, it)
                 }
+
+                filterPeriodItemUnify.forEachIndexed { position, listItemUnify ->
+                    listItemUnify.listRightRadiobtn?.setOnClickListener { _ ->
+                        onItemFilterClickedBottomSheet(view, position, filterPeriodItemUnify, it)
+                    }
+                }
             }
+        }
+
+        fragmentManager?.let {
+            bottomSheetPeriodDetail?.show(it, title)
         }
     }
 
     private fun onItemFilterClickedBottomSheet(view: View, position: Int, filterListItemUnify: ArrayList<ListItemUnify>,
                                                filterListUnify: ListUnify) {
         try {
+            itemView = view
             viewModelProductReviewDetail?.positionFilterPeriod = position
-            val chipsFilterText = filterListItemUnify[position].listTitleText
-            view.review_period_filter_button_detail?.chip_text?.text = chipsFilterText
+            chipsFilterText = filterListItemUnify[position].listTitleText
+            itemView?.review_period_filter_button_detail?.chip_text?.text = chipsFilterText
             filterListUnify.setSelectedFilterOrSort(filterListItemUnify, position)
             viewModelProductReviewDetail?.filterPeriod = ReviewSellerConstant.mapFilterReviewDetail().getKeyByValue(chipsFilterText)
             viewModelProductReviewDetail?.filterAllText = ReviewSellerUtil.setFilterJoinValueFormat(viewModelProductReviewDetail?.filterPeriod.orEmpty())
@@ -310,6 +322,10 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
         bottomSheetPeriodDetail = BottomSheetUnify()
         filterPeriodDetailUnify = view.findViewById(R.id.listFilterReviewDetail)
         bottomSheetPeriodDetail?.setChild(view)
+    }
+
+    private fun initChipsView() {
+        chipsFilterText = getString(R.string.default_filter_detail)
     }
 
 }

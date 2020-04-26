@@ -26,7 +26,7 @@ class ProductReviewDetailViewModel @Inject constructor(
         private val getProductFeedbackDetailListUseCase: GetProductFeedbackDetailListUseCase
 ) : BaseViewModel(dispatcherProvider.main()) {
 
-    var positionFilterPeriod = 0
+    var positionFilterPeriod = 1
     var filterPeriod: String = ""
     var filterAllText: String = ""
 

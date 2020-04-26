@@ -35,7 +35,7 @@ class OverallRatingDetailViewHolder(val view: View,
         totalReview.text = strReviewSpan
 
         reviewPeriod.apply {
-            chip_text.text = getString(R.string.default_filter_detail)
+            chip_text.text = element?.chipFilter.orEmpty()
             setOnClickListener {
                 listener.onFilterPeriodClicked(view, chip_text.text.toString())
             }
