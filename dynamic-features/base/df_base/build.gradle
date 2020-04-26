@@ -81,6 +81,8 @@ dependencies {
     implementation project(rootProject.ext.features.saldodetails)
     //IM
     //implementation project(rootProject.ext.features.referral) //Need to fix the structure
+    //Logistic
+    implementation project(rootProject.ext.features.dropOff)
     //Merchant
     implementation project(rootProject.ext.features.report)
     implementation project(rootProject.ext.features.shopOpen)
