@@ -17,8 +17,6 @@ import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.di.component.DaggerVoucherCreationComponent
-import com.tokopedia.vouchercreation.voucherlist.model.EmptyStateUiModel
-import com.tokopedia.vouchercreation.voucherlist.model.VoucherUiModel
 import com.tokopedia.vouchercreation.voucherlist.model.*
 import com.tokopedia.vouchercreation.voucherlist.model.BaseHeaderChipUiModel.HeaderChip
 import com.tokopedia.vouchercreation.voucherlist.model.BaseHeaderChipUiModel.ResetChip
@@ -268,7 +266,8 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
 
     private fun getDummyData(): List<Visitable<*>> {
         val list = mutableListOf<Visitable<*>>()
-        list.add(EmptyStateUiModel(isActiveVoucher))
+        list.add(ErrorStateUiModel)
+        //list.add(EmptyStateUiModel(isActiveVoucher))
         /*repeat(10) {
             list.add(VoucherUiModel("Voucher Hura Nyoba Doang", it % 2 == 0))
         }*/
