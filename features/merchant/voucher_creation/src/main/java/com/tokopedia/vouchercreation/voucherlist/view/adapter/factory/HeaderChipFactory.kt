@@ -1,6 +1,6 @@
 package com.tokopedia.vouchercreation.voucherlist.view.adapter.factory
 
-import com.tokopedia.vouchercreation.voucherlist.model.HeaderChipUiModel
+import com.tokopedia.vouchercreation.voucherlist.model.BaseHeaderChipUiModel
 
 /**
  * Created By @ilhamsuaib on 20/04/20
@@ -8,5 +8,5 @@ import com.tokopedia.vouchercreation.voucherlist.model.HeaderChipUiModel
 
 interface HeaderChipFactory {
 
-    fun type(model: HeaderChipUiModel): Int
+    fun type(model: BaseHeaderChipUiModel): Int
 }

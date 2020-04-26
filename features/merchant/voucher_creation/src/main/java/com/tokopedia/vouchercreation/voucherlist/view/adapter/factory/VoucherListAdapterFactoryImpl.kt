@@ -13,7 +13,7 @@ import com.tokopedia.vouchercreation.voucherlist.view.viewholder.VoucherViewHold
  */
 
 class VoucherListAdapterFactoryImpl(
-        private val fragment: VoucherListFragment,
+        private val voucherListener: Listener,
         private val isActiveVoucher: Boolean
 ) : BaseAdapterTypeFactory(), VoucherListAdapterFactory {
 
@@ -29,8 +29,14 @@ class VoucherListAdapterFactoryImpl(
 
     override fun createViewHolder(parent: View?, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
-            VoucherViewHolder.RES_LAYOUT -> VoucherViewHolder(parent, fragment)
+            VoucherViewHolder.RES_LAYOUT -> VoucherViewHolder(parent) {
+                voucherListener.onMoreClickListener(it)
+            }
             else -> super.createViewHolder(parent, type)
         }
+    }
+
+    interface Listener {
+        fun onMoreClickListener(voucher: VoucherUiModel)
     }
 }

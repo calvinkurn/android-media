@@ -10,12 +10,12 @@
     <item
         android:id="@+id/menuMvcShowVoucherActive"
         android:icon="@drawable/ic_mvc_voucher_active"
-        android:title="@string/mvc_voucher_active"
+        android:title="@string/mvc_view_voucher_active"
         app:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/menuMvcShowVoucherHistory"
         android:icon="@drawable/ic_mvc_voucher_inactive"
-        android:title="@string/mvc_voucher_history"
+        android:title="@string/mvc_view_voucher_history"
         app:showAsAction="ifRoom" />
 </menu>

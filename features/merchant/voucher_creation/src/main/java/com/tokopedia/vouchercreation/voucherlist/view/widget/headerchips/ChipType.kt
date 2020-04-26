@@ -8,7 +8,7 @@ import androidx.annotation.IntDef
 
 @MustBeDocumented
 @Retention(AnnotationRetention.SOURCE)
-@IntDef(ChipType.CHIP_RESET, ChipType.CHIP_SORT, ChipType.CHIP_FILTER)
+@IntDef(ChipType.CHIP_SORT, ChipType.CHIP_FILTER)
 annotation class ChipType {
 
     companion object {
