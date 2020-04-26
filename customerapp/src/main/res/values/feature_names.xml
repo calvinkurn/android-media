@@ -162,6 +162,7 @@
 
     <!--    Logistic-->
     <string name="title_dropoff_picker">Pilih Lokasi Titik Ambil</string>
+    <string name="title_autocomplete_page">Cari Lokasi</string>
 
     <!-- Dynamic feature for Setting Bank-->
     <string name="onboarding_app_name">OnBoarding</string>
