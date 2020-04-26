@@ -18,6 +18,7 @@ import com.tokopedia.reviewseller.feature.reviewdetail.util.toRelativeDayAndWeek
 import com.tokopedia.reviewseller.feature.reviewdetail.util.toReviewDescriptionFormatted
 import com.tokopedia.reviewseller.feature.reviewdetail.view.adapter.ReviewDetailFeedbackImageAdapter
 import com.tokopedia.reviewseller.feature.reviewdetail.view.model.FeedbackUiModel
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.item_product_feedback_detail.view.*
 
@@ -30,6 +31,7 @@ class ProductFeedbackDetailViewHolder(private val view: View) : AbstractViewHold
         const val REPLY_TEXT_MAX_LENGTH = 150
 
         private const val isAutoReply = "false"
+        private val PADDING_TEXT = 16.toPx()
     }
 
     private var ivRatingFeedback: AppCompatImageView? = null
@@ -85,7 +87,9 @@ class ProductFeedbackDetailViewHolder(private val view: View) : AbstractViewHold
             tvReplyDate?.text = element.replyTime.orEmpty()
             tvReplyComment?.text = element.replyText.orEmpty()
 
-            showMoreReplyComment()
+            tvReplyComment?.post {
+                showMoreReplyComment()
+            }
 
             tvHideOrMore?.setOnClickListener {
                 hideMoreReplyComment()
@@ -115,9 +119,9 @@ class ProductFeedbackDetailViewHolder(private val view: View) : AbstractViewHold
     }
 
     private fun showMoreReplyComment() {
-        if(tvReplyComment?.text?.length.orZero() >= REPLY_TEXT_MAX_LENGTH) {
-            tvReplyComment?.ellipsize = TextUtils.TruncateAt.END
+        if (tvReplyComment?.lineCount.orZero() >= REPLY_TEXT_MAX_LINE) {
             tvReplyComment?.maxLines = REPLY_TEXT_MAX_LINE
+            tvReplyComment?.ellipsize = TextUtils.TruncateAt.END
             tvHideOrMore?.show()
         } else {
             tvHideOrMore?.hide()
@@ -127,8 +131,9 @@ class ProductFeedbackDetailViewHolder(private val view: View) : AbstractViewHold
     private fun hideMoreReplyComment() {
         tvHideOrMore?.hide()
         tvReplyComment?.apply {
-            ellipsize = null
+            setPadding(0, 0, PADDING_TEXT, 0)
             maxLines = Integer.MAX_VALUE
+            ellipsize = null
         }
     }
 
