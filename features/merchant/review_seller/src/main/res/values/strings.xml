@@ -39,6 +39,13 @@
         <item>1 Tahun Terakhir</item>
     </string-array>
 
+    <string-array name="filter_review_detail_array">
+        <item>7 Hari Terakhir</item>
+        <item>30 Hari Terakhir</item>
+        <item>1 Tahun Terakhir</item>
+        <item>Semua</item>
+    </string-array>
+
     <string name="rating_star_icon_content_description">Rating Star Icon</string>
     <string name="product_average_rating">4.6</string>
     <string name="maximum_product_rating">/ 5.0</string>

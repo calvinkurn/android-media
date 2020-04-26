@@ -1,8 +1,9 @@
 package com.tokopedia.reviewseller.feature.reviewdetail.view.adapter.viewholder
 
+import android.text.TextUtils
 import android.view.View
 import androidx.appcompat.widget.AppCompatImageView
-import androidx.constraintlayout.widget.Group
+import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -25,6 +26,8 @@ class ProductFeedbackDetailViewHolder(private val view: View) : AbstractViewHold
     companion object {
         @JvmStatic
         val LAYOUT = R.layout.item_product_feedback_detail
+        const val REPLY_TEXT_MAX_LINE = 3
+        const val REPLY_TEXT_MAX_LENGTH = 150
 
         private const val isAutoReply = "false"
     }
@@ -39,7 +42,8 @@ class ProductFeedbackDetailViewHolder(private val view: View) : AbstractViewHold
     private var tvReplyUser: Typography? = null
     private var tvReplyDate: Typography? = null
     private var tvReplyComment: Typography? = null
-    private var replyFeedbackState: View? = null
+    private var replyFeedbackState: CardView? = null
+    private var tvHideOrMore: Typography? = null
 
     init {
         ivRatingFeedback = view.findViewById(R.id.ivRatingFeedback)
@@ -53,6 +57,7 @@ class ProductFeedbackDetailViewHolder(private val view: View) : AbstractViewHold
         tvReplyDate = view.findViewById(R.id.tvReplyDate)
         tvReplyComment = view.findViewById(R.id.tvReplyComment)
         replyFeedbackState = view.findViewById(R.id.replyFeedbackState)
+        tvHideOrMore = view.findViewById(R.id.tgHideOrMore)
     }
 
     private val reviewDetailFeedbackImageAdapter by lazy {
@@ -71,6 +76,7 @@ class ProductFeedbackDetailViewHolder(private val view: View) : AbstractViewHold
     }
 
         if (element.replyText?.isNotEmpty() == true) {
+
             if (element.autoReply == isAutoReply) {
                 tvReplyUser?.text = getString(R.string.otomatis_reply)
             } else {
@@ -78,28 +84,51 @@ class ProductFeedbackDetailViewHolder(private val view: View) : AbstractViewHold
             }
             tvReplyDate?.text = element.replyTime.orEmpty()
             tvReplyComment?.text = element.replyText.orEmpty()
+
+            showMoreReplyComment()
+
+            tvHideOrMore?.setOnClickListener {
+                hideMoreReplyComment()
+            }
+
             view.partialFeedbackReplyDetail?.show()
         } else {
             view.partialFeedbackReplyDetail?.hide()
-
         }
     }
 
     private fun setImageAttachment(element: FeedbackUiModel) {
         val linearLayoutManager = LinearLayoutManager(view.context, LinearLayoutManager.HORIZONTAL, false)
-
         rvItemAttachmentFeedback?.apply {
-            if (element.attachments.isNotEmpty()) {
-                layoutManager = linearLayoutManager
-                if (itemDecorationCount == 0) {
-                    addItemDecoration(PaddingItemDecoratingReviewSeller())
-                }
-                adapter = reviewDetailFeedbackImageAdapter
-                reviewDetailFeedbackImageAdapter.submitList(element.attachments)
-                show()
-            } else {
-                hide()
+            layoutManager = linearLayoutManager
+            if (itemDecorationCount == 0) {
+                addItemDecoration(PaddingItemDecoratingReviewSeller())
             }
+            adapter = reviewDetailFeedbackImageAdapter
+        }
+        if (element.attachments.isEmpty()) {
+            rvItemAttachmentFeedback?.hide()
+        } else {
+            reviewDetailFeedbackImageAdapter.submitList(element.attachments)
+            rvItemAttachmentFeedback?.show()
+        }
+    }
+
+    private fun showMoreReplyComment() {
+        if(tvReplyComment?.text?.length.orZero() >= REPLY_TEXT_MAX_LENGTH) {
+            tvReplyComment?.ellipsize = TextUtils.TruncateAt.END
+            tvReplyComment?.maxLines = REPLY_TEXT_MAX_LINE
+            tvHideOrMore?.show()
+        } else {
+            tvHideOrMore?.hide()
+        }
+    }
+
+    private fun hideMoreReplyComment() {
+        tvHideOrMore?.hide()
+        tvReplyComment?.apply {
+            ellipsize = null
+            maxLines = Integer.MAX_VALUE
         }
     }
 

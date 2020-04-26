@@ -15,7 +15,7 @@ class ReviewDetailFeedbackImageAdapter: ListAdapter<FeedbackUiModel.Attachment,
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ReviewDetailFeedbackImageViewHolder {
         val view = LayoutInflater
                 .from(parent.context)
-                .inflate(R.layout.item_product_feedback_detail, parent, false)
+                .inflate(R.layout.item_attachment_feedback, parent, false)
         return ReviewDetailFeedbackImageViewHolder(view)
     }
 
@@ -25,7 +25,4 @@ class ReviewDetailFeedbackImageAdapter: ListAdapter<FeedbackUiModel.Attachment,
         }
     }
 
-    fun setImageAttachmentFeedbackData(attachment: List<FeedbackUiModel.Attachment>) {
-        this.attachmentUiModel = attachment
-    }
 }

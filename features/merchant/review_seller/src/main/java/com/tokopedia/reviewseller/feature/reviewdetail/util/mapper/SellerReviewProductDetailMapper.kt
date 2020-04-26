@@ -1,5 +1,6 @@
 package com.tokopedia.reviewseller.feature.reviewdetail.util.mapper
 
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.reviewseller.feature.reviewdetail.data.ProductFeedbackDetailResponse
 import com.tokopedia.reviewseller.feature.reviewdetail.data.ProductReviewDetailOverallResponse
 import com.tokopedia.reviewseller.feature.reviewdetail.view.model.*
@@ -49,18 +50,14 @@ object SellerReviewProductDetailMapper {
                                      userSession: UserSessionInterface): List<FeedbackUiModel> {
         val feedbackListUiModel = mutableListOf<FeedbackUiModel>()
 
-        val mapAttachment = mutableListOf<FeedbackUiModel.Attachment>()
-
         productFeedbackDataPerProduct.list.map {
-            it.attachments.onEach { attachment ->
+            val mapAttachment = mutableListOf<FeedbackUiModel.Attachment>()
+            it.attachments.map { attachment ->
                 mapAttachment.add(FeedbackUiModel.Attachment(
                         thumbnailURL = attachment.thumbnailURL,
                         fullSizeURL = attachment.fullSizeURL
                 ))
             }
-        }
-
-        productFeedbackDataPerProduct.list.map {
             feedbackListUiModel.add(
                     FeedbackUiModel(
                             attachments = mapAttachment,
@@ -70,6 +67,7 @@ object SellerReviewProductDetailMapper {
                             replyText = it.replyText,
                             replyTime = it.replyTime,
                             reviewText = it.reviewText,
+                            isMoreReply = it.replyText?.length.orZero() >= 150,
                             reviewTime = it.reviewTime,
                             reviewerName = it.reviewerName,
                             variantName = it.variantName,
