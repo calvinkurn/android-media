@@ -1,66 +1,92 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
 
-    <View
+    <androidx.cardview.widget.CardView
         android:id="@+id/replyFeedbackState"
         android:layout_width="@dimen/spacing_lvl2"
-        android:layout_height="0dp"
-        android:background="@drawable/rectangle_8"
+        android:layout_height="@dimen/dp_0"
+        app:layout_constrainedHeight="true"
+        app:cardCornerRadius="@dimen/spacing_lvl2"
+        app:cardElevation="@dimen/dp_0"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginLeft="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        app:layout_constraintEnd_toStartOf="@id/tvReplyComment"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/tvReplyComment"
-        android:layout_marginLeft="@dimen/spacing_lvl4"
-        android:layout_marginStart="@dimen/spacing_lvl4"
-        android:layout_marginTop="@dimen/spacing_lvl4"/>
+        app:layout_constraintBottom_toBottomOf="@id/tvReplyComment">
+
+        <View
+            android:layout_width="@dimen/spacing_lvl2"
+            android:layout_height="wrap_content"
+            android:background="#E5E8EA" />
+
+    </androidx.cardview.widget.CardView>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvReplyUser"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_lvl4"
-        android:layout_marginLeft="@dimen/spacing_lvl4"
         android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginLeft="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:textColor="@color/clr_f531353b"
+        app:layout_constraintStart_toEndOf="@id/replyFeedbackState"
+        app:layout_constraintTop_toTopOf="parent"
         app:typographyType="body_3"
         app:typographyWeight="bold"
-        android:textColor="@color/clr_f531353b"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toEndOf="@id/replyFeedbackState"
-        tools:text="Balasan otomatis •"/>
+        tools:text="Balasan otomatis •" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvReplyDate"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toEndOf="@id/tvReplyUser"
-        android:layout_marginLeft="@dimen/spacing_lvl2"
         android:layout_marginStart="@dimen/spacing_lvl2"
+        android:layout_marginLeft="@dimen/spacing_lvl2"
         android:layout_marginTop="@dimen/spacing_lvl4"
-        android:layout_marginRight="@dimen/spacing_lvl4"
         android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:layout_marginRight="@dimen/spacing_lvl4"
         android:textColor="@color/clr_ad31353b"
-        app:typographyWeight="reguler"
+        app:layout_constraintStart_toEndOf="@id/tvReplyUser"
+        app:layout_constraintTop_toTopOf="parent"
         app:typographyType="body_3"
-        tools:text="Hari ini"/>
+        app:typographyWeight="reguler"
+        tools:text="Hari ini" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvReplyComment"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/tvReplyUser"
-        app:layout_constraintStart_toEndOf="@id/replyFeedbackState"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginLeft="@dimen/spacing_lvl4"
         android:layout_marginStart="@dimen/spacing_lvl4"
-        android:layout_marginRight="@dimen/spacing_lvl4"
-        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:layout_marginLeft="@dimen/spacing_lvl4"
         android:layout_marginTop="@dimen/spacing_lvl3"
-        app:typographyWeight="reguler"
+        android:layout_marginRight="@dimen/spacing_lvl1"
+        android:layout_marginEnd="@dimen/spacing_lvl1"
+        app:layout_constraintStart_toEndOf="@id/replyFeedbackState"
+        app:layout_constraintTop_toBottomOf="@id/tvReplyUser"
+        app:layout_constraintEnd_toStartOf="@id/tgHideOrMore"
         app:typographyType="body_3"
-        tools:text="Thank you, semoga puas dan ditunggu orderan selanjutnya"/>
+        app:typographyWeight="reguler"
+        tools:text="Thank you, semoga puas dan ditunggu orderanselan jutnyafshfhskhfhdssjhfkshj kfdhsjhfjs hjshfkjs hjkfskjfjshf fhsfhsjkfsjkfhkjshfsksjghksjhgkjsksfjjgsj" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tgHideOrMore"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:layout_marginRight="@dimen/spacing_lvl4"
+        app:layout_constraintBottom_toBottomOf="@id/tvReplyComment"
+        app:layout_constraintStart_toEndOf="@id/tvReplyComment"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:textColor="#00ad0e"
+        app:typographyType="body_3"
+        app:typographyWeight="bold"
+        android:visibility="gone"
+        android:text="Selengkapnya"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

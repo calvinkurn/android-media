@@ -15,25 +15,33 @@ import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrol
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.reviewseller.R
-import com.tokopedia.reviewseller.common.util.DataEndlessScrollListener
+import com.tokopedia.reviewseller.common.util.*
 import com.tokopedia.reviewseller.feature.reviewdetail.di.component.ReviewProductDetailComponent
 import com.tokopedia.reviewseller.feature.reviewdetail.view.adapter.SellerReviewDetailAdapter
 import com.tokopedia.reviewseller.feature.reviewdetail.view.adapter.SellerReviewDetailAdapterTypeFactory
+import com.tokopedia.reviewseller.feature.reviewdetail.view.adapter.viewholder.OverallRatingDetailViewHolder
 import com.tokopedia.reviewseller.feature.reviewdetail.view.model.OverallRatingDetailUiModel
 import com.tokopedia.reviewseller.feature.reviewdetail.view.model.ProductFeedbackDetailUiModel
 import com.tokopedia.reviewseller.feature.reviewdetail.view.viewmodel.ProductReviewDetailViewModel
+import com.tokopedia.reviewseller.feature.reviewlist.util.mapper.SellerReviewProductListMapper
+import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.list.ListItemUnify
+import com.tokopedia.unifycomponents.list.ListUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_seller_review_detail.*
+import kotlinx.android.synthetic.main.item_overall_review_detail.view.*
 import javax.inject.Inject
 
 /**
  * @author by milhamj on 2020-02-14.
  */
-class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDetailAdapterTypeFactory>() {
+class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDetailAdapterTypeFactory>(),
+    OverallRatingDetailViewHolder.OverallRatingDetailListener{
 
     companion object {
         const val PRODUCT_ID = "EXTRA_SHOP_ID"
@@ -51,12 +59,15 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
     private var swipeToRefreshReviewDetail: SwipeToRefresh? = null
 
     private val sellerReviewDetailTypeFactory by lazy {
-        SellerReviewDetailAdapterTypeFactory()
+        SellerReviewDetailAdapterTypeFactory(this)
     }
 
     var productID: Int = 0
     var sortBy: String = ""
     var filterBy: String = "time=all"
+
+    private var filterPeriodDetailUnify: ListUnify? = null
+    private var bottomSheetPeriodDetail: BottomSheetUnify? = null
 
     override fun getScreenName(): String = "SellerReviewDetail"
 
@@ -69,6 +80,8 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
         super.onCreate(savedInstanceState)
         linearLayoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         viewModelProductReviewDetail = ViewModelProvider(this, viewModelFactory).get(ProductReviewDetailViewModel::class.java)
+        viewModelProductReviewDetail?.filterPeriod = ReviewSellerConstant.mapFilterReviewDetail().getKeyByValue(getString(R.string.default_filter_detail))
+        viewModelProductReviewDetail?.filterAllText = viewModelProductReviewDetail?.filterPeriod.orEmpty()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -80,6 +93,7 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
 
         initRecyclerView(view)
         initSwipeToRefRefresh(view)
+        initViewBottomSheet()
     }
 
     override fun initInjector() {
@@ -99,7 +113,10 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
         emptyState_reviewDetail?.hide()
         showLoading()
 
-        viewModelProductReviewDetail?.getProductRatingDetail(productID, sortBy, filterBy)
+        viewModelProductReviewDetail?.getProductRatingDetail(
+                productID,
+                sortBy,
+                viewModelProductReviewDetail?.filterAllText.orEmpty())
     }
 
     override fun getRecyclerView(view: View): RecyclerView {
@@ -207,9 +224,7 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
                 }
             }
         } else {
-            if(hasNextPage) {
-                reviewSellerDetailAdapter.setFeedbackListData(reviewProductDetail.productFeedbackDetailList)
-            }
+            reviewSellerDetailAdapter.setFeedbackListData(reviewProductDetail.productFeedbackDetailList)
         }
         updateScrollListenerState(hasNextPage)
     }
@@ -241,4 +256,60 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
             })
         }
     }
+
+    override fun onFilterPeriodClicked(view: View, title: String) {
+        val filterDetailList: Array<String> = resources.getStringArray(R.array.filter_review_detail_array)
+        val filterDetailItemUnify = SellerReviewProductListMapper.mapToItemUnifyList(filterDetailList)
+        filterPeriodDetailUnify?.setData(filterDetailItemUnify)
+        initBottomSheetFilterPeriod(view, title, filterDetailItemUnify)
+    }
+
+    private fun initBottomSheetFilterPeriod(view: View, title: String, filterPeriodItemUnify: ArrayList<ListItemUnify>) {
+        bottomSheetPeriodDetail?.apply {
+            setTitle(title)
+            showCloseIcon = true
+            setCloseClickListener {
+                dismiss()
+            }
+        }
+
+        filterPeriodDetailUnify?.let { it ->
+            it.onLoadFinish {
+                it.setSelectedFilterOrSort(filterPeriodItemUnify, viewModelProductReviewDetail?.positionFilterPeriod.orZero())
+            }
+            it.setOnItemClickListener { _, _, position, _ ->
+                onItemFilterClickedBottomSheet(view, position, filterPeriodItemUnify, it)
+            }
+
+            filterPeriodItemUnify.forEachIndexed { position, listItemUnify ->
+                listItemUnify.listRightRadiobtn?.setOnClickListener { _ ->
+                    onItemFilterClickedBottomSheet(view, position, filterPeriodItemUnify, it)
+                }
+            }
+        }
+    }
+
+    private fun onItemFilterClickedBottomSheet(view: View, position: Int, filterListItemUnify: ArrayList<ListItemUnify>,
+                                               filterListUnify: ListUnify) {
+        try {
+            viewModelProductReviewDetail?.positionFilterPeriod = position
+            val chipsFilterText = filterListItemUnify[position].listTitleText
+            view.review_period_filter_button_detail?.chip_text?.text = chipsFilterText
+            filterListUnify.setSelectedFilterOrSort(filterListItemUnify, position)
+            viewModelProductReviewDetail?.filterPeriod = ReviewSellerConstant.mapFilterReviewDetail().getKeyByValue(chipsFilterText)
+            viewModelProductReviewDetail?.filterAllText = ReviewSellerUtil.setFilterJoinValueFormat(viewModelProductReviewDetail?.filterPeriod.orEmpty())
+            loadInitialData()
+            bottomSheetPeriodDetail?.dismiss()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    private fun initViewBottomSheet() {
+        val view = View.inflate(context, R.layout.bottom_sheet_period_filter_detail, null)
+        bottomSheetPeriodDetail = BottomSheetUnify()
+        filterPeriodDetailUnify = view.findViewById(R.id.listFilterReviewDetail)
+        bottomSheetPeriodDetail?.setChild(view)
+    }
+
 }

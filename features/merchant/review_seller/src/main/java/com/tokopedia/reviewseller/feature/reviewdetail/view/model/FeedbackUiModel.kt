@@ -4,13 +4,14 @@ import com.tokopedia.reviewseller.feature.reviewdetail.view.adapter.BaseSellerRe
 import com.tokopedia.reviewseller.feature.reviewdetail.view.adapter.SellerReviewDetailAdapterTypeFactory
 
 data class FeedbackUiModel(
-        var attachments: List<Attachment> = listOf(),
+        var attachments: List<Attachment> = mutableListOf(),
         var autoReply: String? = "",
         var feedbackID: Int? = -1,
         var rating: Int? = -1,
         var replyText: String? = "",
         var replyTime: String? = "",
         var reviewText: String? = "",
+        var isMoreReply: Boolean = false,
         var reviewTime: String? = "",
         var reviewerName: String? = "",
         var variantName: String? = "",
@@ -22,7 +23,7 @@ data class FeedbackUiModel(
     }
 
     data class Attachment(
-            val thumbnailURL: String? = "",
-            val fullSizeURL: String? = ""
+            var thumbnailURL: String? = "",
+            var fullSizeURL: String? = ""
     )
 }

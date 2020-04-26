@@ -6,19 +6,46 @@ package com.tokopedia.reviewseller.common.util
 
 object ReviewSellerConstant {
 
+    const val LAST_WEEK_KEY = "time=7d"
+    const val LAST_MONTH_KEY = "time=30d"
+    const val LAST_YEAR_KEY = "time=1y"
+    const val ALL_KEY = "time=all"
+
+    const val LAST_WEEK_VALUE = "7 Hari Terakhir"
+    const val LAST_MONTH_VALUE = "30 Hari Terakhir"
+    const val LAST_YEAR_VALUE = "1 Tahun Terakhir"
+    const val ALL_VALUE = "Semua"
+
+    const val MOST_REVIEW_KEY = "review_count desc"
+    const val HIGHEST_RATING_KEY = "rating_avg desc"
+    const val LOWEST_RATTING_KEY = "rating_avg asc"
+
+    const val MOST_REVIEW_VALUE = "Ulasan Terbanyak"
+    const val HIGHEST_RATING_VALUE = "Rating Tertinggi - Terendah"
+    const val LOWEST_RATING_VALUE = "Rating Terendah - Tertinggi"
+
     fun mapSortReviewProduct(): MutableMap<String, String> {
         val map = mutableMapOf<String, String>()
-        map["review_count desc"] = "Ulasan Terbanyak"
-        map["rating_avg desc"] = "Rating Tertinggi - Terendah"
-        map["rating_avg asc"] = "Rating Terendah - Tertinggi"
+        map[MOST_REVIEW_KEY] = MOST_REVIEW_VALUE
+        map[HIGHEST_RATING_KEY] = HIGHEST_RATING_VALUE
+        map[LOWEST_RATTING_KEY] = LOWEST_RATING_VALUE
         return map
     }
 
     fun mapFilterReviewProduct(): MutableMap<String, String> {
         val map = mutableMapOf<String, String>()
-        map["time=7d"] = "7 Hari Terakhir"
-        map["time=30d"] = "30 Hari Terakhir"
-        map["time=1y"] = "1 Tahun Terakhir"
+        map[LAST_WEEK_KEY] = LAST_WEEK_VALUE
+        map[LAST_MONTH_KEY] = LAST_MONTH_VALUE
+        map[LAST_YEAR_KEY] = LAST_YEAR_VALUE
+        return map
+    }
+
+    fun mapFilterReviewDetail(): MutableMap<String, String> {
+        val map = mutableMapOf<String, String>()
+        map[LAST_WEEK_KEY] = LAST_WEEK_VALUE
+        map[LAST_MONTH_KEY] = LAST_MONTH_VALUE
+        map[LAST_YEAR_KEY] = LAST_YEAR_VALUE
+        map[ALL_KEY] = ALL_VALUE
         return map
     }
 

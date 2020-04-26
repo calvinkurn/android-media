@@ -10,7 +10,9 @@ import com.tokopedia.reviewseller.feature.reviewdetail.view.model.OverallRatingD
 import com.tokopedia.reviewseller.feature.reviewdetail.view.model.RatingBarUiModel
 import com.tokopedia.reviewseller.feature.reviewdetail.view.model.TopicUiModel
 
-class SellerReviewDetailAdapterTypeFactory: BaseAdapterTypeFactory(), TypeFactoryDetailViewHolder {
+class SellerReviewDetailAdapterTypeFactory(
+        private val overallRatingDetailListener: OverallRatingDetailViewHolder.OverallRatingDetailListener
+): BaseAdapterTypeFactory(), TypeFactoryDetailViewHolder {
 
     override fun type(feedbackUiModel: FeedbackUiModel): Int {
         return ProductFeedbackDetailViewHolder.LAYOUT
@@ -35,7 +37,7 @@ class SellerReviewDetailAdapterTypeFactory: BaseAdapterTypeFactory(), TypeFactor
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
         return when(type) {
             ProductFeedbackDetailViewHolder.LAYOUT -> ProductFeedbackDetailViewHolder(parent)
-            OverallRatingDetailViewHolder.LAYOUT -> OverallRatingDetailViewHolder(parent)
+            OverallRatingDetailViewHolder.LAYOUT -> OverallRatingDetailViewHolder(parent, overallRatingDetailListener)
             RatingAndTopicDetailViewHolder.LAYOUT -> RatingAndTopicDetailViewHolder(parent)
             ShimmerReviewDetailViewHolder.LAYOUT -> ShimmerReviewDetailViewHolder(parent)
             TopicViewHolder.LAYOUT -> TopicViewHolder(parent)

@@ -13,5 +13,6 @@ object AdapterDiffCallback {
         override fun areContentsTheSame(oldItemReviewFeedback: FeedbackUiModel.Attachment, newItemReviewFeedback: FeedbackUiModel.Attachment): Boolean {
             return oldItemReviewFeedback == newItemReviewFeedback
         }
+
     }
 }
