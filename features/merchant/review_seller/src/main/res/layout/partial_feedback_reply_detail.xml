@@ -61,14 +61,12 @@
         android:id="@+id/tvReplyComment"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginLeft="@dimen/spacing_lvl4"
+        android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginTop="@dimen/spacing_lvl3"
-        android:layout_marginRight="@dimen/spacing_lvl1"
-        android:layout_marginEnd="@dimen/spacing_lvl1"
         app:layout_constraintStart_toEndOf="@id/replyFeedbackState"
         app:layout_constraintTop_toBottomOf="@id/tvReplyUser"
-        app:layout_constraintEnd_toStartOf="@id/tgHideOrMore"
+        app:layout_constraintEnd_toEndOf="@id/tgHideOrMore"
         app:typographyType="body_3"
         app:typographyWeight="reguler"
         tools:text="Thank you, semoga puas dan ditunggu orderanselan jutnyafshfhskhfhdssjhfkshj kfdhsjhfjs hjshfkjs hjkfskjfjshf fhsfhsjkfsjkfhkjshfsksjghksjhgkjsksfjjgsj" />
@@ -83,10 +81,10 @@
         app:layout_constraintBottom_toBottomOf="@id/tvReplyComment"
         app:layout_constraintStart_toEndOf="@id/tvReplyComment"
         app:layout_constraintEnd_toEndOf="parent"
-        android:textColor="#00ad0e"
+        android:textColor="@color/clr_read_more"
         app:typographyType="body_3"
         app:typographyWeight="bold"
         android:visibility="gone"
-        android:text="Selengkapnya"/>
+        android:text="@string/label_read_more"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
