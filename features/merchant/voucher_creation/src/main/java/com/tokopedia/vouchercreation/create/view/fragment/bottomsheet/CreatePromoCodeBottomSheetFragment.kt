@@ -21,6 +21,7 @@ class CreatePromoCodeBottomSheetFragment(bottomSheetContext: Context?,
 
     companion object {
         private val TEXFIELD_ALERT_MINIMUM = R.string.mvc_create_alert_minimum
+        private val TEXTFIELD_MESSAGE_EASY_REMEMBER = R.string.mvc_create_promo_code_message_easy_remember
 
         private const val MIN_TEXTFIELD_LENGTH = 5
         private const val MAX_TEXTFIELD_LENGTH = 10
@@ -41,6 +42,7 @@ class CreatePromoCodeBottomSheetFragment(bottomSheetContext: Context?,
     override var bottomSheetViewTitle: String? = bottomSheetContext?.resources?.getString(R.string.mvc_create_target_create_promo_code_bottomsheet_title)
 
     private var alertMinimumMessage = bottomSheetContext?.resources?.getString(TEXFIELD_ALERT_MINIMUM).toBlankOrString()
+    private var easyRememberMessage = bottomSheetContext?.resources?.getString(TEXTFIELD_MESSAGE_EASY_REMEMBER).toBlankOrString()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -83,7 +85,7 @@ class CreatePromoCodeBottomSheetFragment(bottomSheetContext: Context?,
                         when {
                             s.isEmpty() -> {
                                 setError(false)
-                                setMessage("")
+                                setMessage(easyRememberMessage)
                             }
                             s.length < MIN_TEXTFIELD_LENGTH -> {
                                 setError(true)

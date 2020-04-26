@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
-        app:text_field_placeholder="@string/mvc_create_promo_code_title"
+        app:text_field_label="@string/mvc_create_promo_code_title"
         app:text_field_message="@string/mvc_create_promo_code_message_easy_remember"
         app:text_field_prepend_text="@string/mvc_create_promo_code_prefix"
         app:text_field_counter="@integer/create_promo_code_max_length"/>

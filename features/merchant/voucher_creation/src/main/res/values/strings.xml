@@ -37,8 +37,8 @@
     <string name="mvc_create_voucher_name_alert_restricted">Mengandung kata yang dilarang</string>
     <string name="mvc_create_alert_minimum">Min. 5 huruf</string>
     <string name="mvc_create_promo_code_message_easy_remember">Gunakan kode yang mudah diingat</string>
-    <string name="mvc_create_promo_code_message_letter_number">&#160;\u2022 Gunakan huruf &amp; angka (A&#8211;Z &amp; 0&#8211;9)</string>
-    <string name="mvc_create_promo_code_message_no_tokopedia_alias">&#160;\u2022 Tidak boleh mengandung TOP, TOPED, TOKOPEDIA</string>
+    <string name="mvc_create_promo_code_message_letter_number">&#160;<b>\u2022</b>  Gunakan huruf &amp; angka (A&#8211;Z &amp; 0&#8211;9)</string>
+    <string name="mvc_create_promo_code_message_no_tokopedia_alias">&#160;<b>\u2022</b>  Tidak boleh mengandung TOP, TOPED, TOKOPEDIA</string>
     <string name="mvc_create_promo_code_prefix">TOKO</string>
     <string name="mvc_create_target_create_promo_code_bottomsheet_title">Buat Kode Promo</string>
     <string name="mvc_create_public_voucher_display_title">Tampilan voucher publik</string>
