@@ -120,6 +120,10 @@ dependencies {
     implementation project(rootProject.ext.libraries.webview)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
 
+    androidTestImplementation 'androidx.test:rules:1.1.0'
+    androidTestImplementation project(rootProject.ext.libraries.playCore)
+    androidTestImplementation rootProject.ext.firebase.core
+
     testImplementation rootProject.ext.testDependencies.junitJupiterApi
     testImplementation rootProject.ext.testDependencies.assertJ
     testImplementation rootProject.ext.testDependencies.archCoreTesting
