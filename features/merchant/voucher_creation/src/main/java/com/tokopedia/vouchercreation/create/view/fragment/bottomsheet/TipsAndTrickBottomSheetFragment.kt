@@ -39,7 +39,9 @@ class TipsAndTrickBottomSheetFragment(bottomSheetContext: Context) : BottomSheet
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initView()
+        if (isAdded) {
+            initView()
+        }
     }
 
     private fun initView() {
@@ -50,10 +52,6 @@ class TipsAndTrickBottomSheetFragment(bottomSheetContext: Context) : BottomSheet
         }
     }
 
-    private fun onChevronAltered(position: Int) {
-
-    }
-
     private fun View.setupBottomSheetChildNoMargin() {
         val initialPaddingTop = paddingTop
         val initialPaddingBottom = paddingBottom
@@ -61,6 +59,10 @@ class TipsAndTrickBottomSheetFragment(bottomSheetContext: Context) : BottomSheet
         val initialPaddingRight = paddingRight
         setPadding(0,initialPaddingTop,0,initialPaddingBottom)
         bottomSheetHeader.setPadding(initialPaddingLeft, 0, initialPaddingRight, 0)
+    }
+
+
+    private fun onChevronAltered(position: Int) {
     }
 
     override var bottomSheetViewTitle: String? = bottomSheetContext.resources?.getString(R.string.mvc_create_tips_bottomsheet_title).toBlankOrString()

@@ -13,7 +13,7 @@ import com.tokopedia.vouchercreation.create.view.typefactory.VoucherTipsItemType
 import com.tokopedia.vouchercreation.create.view.uimodel.vouchertips.TipsItemUiModel
 import kotlinx.android.synthetic.main.mvc_voucher_tips_item.view.*
 
-class VoucherTipsAdapter(private val tipsItemList: List<TipsItemUiModel>,
+class VoucherTipsAdapter(itemList: List<TipsItemUiModel>,
                          private val onChevronIconAltered: (Int) -> Unit = {}) : RecyclerView.Adapter<VoucherTipsAdapter.VoucherTipsViewHolder>() {
 
     class VoucherTipsViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
@@ -22,6 +22,8 @@ class VoucherTipsAdapter(private val tipsItemList: List<TipsItemUiModel>,
         private const val CHEVRON_CLOSED_ROTATION = 0f
         private const val CHEVRON_OPENED_ROTATION = 180f
     }
+
+    private var tipsItemList = itemList
 
     private val voucherTipsItemAdapterTypeFactory by lazy {
         VoucherTipsItemAdapterTypeFactory()
@@ -42,8 +44,18 @@ class VoucherTipsAdapter(private val tipsItemList: List<TipsItemUiModel>,
                 if (setAccordionState(tipsItemUiModel.isOpen)) {
                     voucherTipsItemRecyclerView?.setAdapterItem(tipsItemUiModel.tipsItemList)
                 }
+                voucherTipsView?.setOnClickListener {
+                    alterChevronState(position)
+                }
             }
         }
+    }
+
+    private fun alterChevronState(position: Int) {
+        tipsItemList[position].run {
+            isOpen = !isOpen
+        }
+        notifyItemChanged(position)
     }
 
     private fun View.setAccordionState(isItemOpen: Boolean): Boolean {

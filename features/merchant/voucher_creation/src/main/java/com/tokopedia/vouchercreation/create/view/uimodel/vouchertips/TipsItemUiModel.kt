@@ -5,7 +5,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.vouchercreation.create.view.typefactory.VoucherTipsItemTypeFactory
 
 data class TipsItemUiModel(
-        val isOpen: Boolean = false,
+        var isOpen: Boolean = false,
         @StringRes val titleRes: Int,
         val tipsItemList: List<Visitable<VoucherTipsItemTypeFactory>>
 )

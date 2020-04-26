@@ -56,7 +56,9 @@ class VoucherDisplayBottomSheetFragment(private val getVoucherType: () -> Vouche
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initView()
+        if (isAdded) {
+            initView()
+        }
     }
 
     override var bottomSheetViewTitle: String? = null

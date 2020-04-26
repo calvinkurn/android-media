@@ -4,31 +4,41 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/voucherTipsTitle"
-        android:layout_width="0dp"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/voucherTipsView"
+        android:layout_width="match_parent"
         android:layout_height="@dimen/mvc_create_voucher_tips_item_height"
-        android:gravity="center_vertical"
-        app:layout_constraintWidth_percent="@integer/mvc_create_voucher_tips_item_width_percent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent">
 
-    <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/voucherTipsChevron"
-        android:layout_width="@dimen/mvc_create_voucher_tips_item_arrow_width"
-        android:layout_height="wrap_content"
-        app:srcCompat="@drawable/ic_mvc_chevron_down"
-        app:layout_constraintStart_toEndOf="@id/voucherTipsTitle"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="@id/voucherTipsTitle"/>
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/voucherTipsTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            app:layout_constraintWidth_percent="@integer/mvc_create_voucher_tips_item_width_percent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/voucherTipsChevron"
+            android:layout_width="@dimen/mvc_create_voucher_tips_item_arrow_width"
+            android:layout_height="wrap_content"
+            app:srcCompat="@drawable/ic_mvc_chevron_down"
+            app:layout_constraintStart_toEndOf="@id/voucherTipsTitle"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/voucherTipsItemRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintTop_toBottomOf="@id/voucherTipsTitle"
+        app:layout_constraintTop_toBottomOf="@id/voucherTipsView"
         app:layout_constraintBottom_toBottomOf="parent"/>
 
     <View

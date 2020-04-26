@@ -38,10 +38,26 @@ class CreatePromoCodeBottomSheetFragment(bottomSheetContext: Context?,
         }
     }
 
+    override var bottomSheetViewTitle: String? = bottomSheetContext?.resources?.getString(R.string.mvc_create_target_create_promo_code_bottomsheet_title)
+
     private var alertMinimumMessage = bottomSheetContext?.resources?.getString(TEXFIELD_ALERT_MINIMUM).toBlankOrString()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        if (isAdded) {
+            initView()
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        createPromoCodeTextField?.textFieldInput?.run {
+            setText(getPromoCode())
+            selectAll()
+        }
+    }
+
+    private fun initView() {
         createPromoCodeTextField?.run {
             textFieldInput.run {
                 filters = arrayOf(InputFilter.AllCaps(), InputFilter.LengthFilter(MAX_TEXTFIELD_LENGTH))
@@ -88,15 +104,5 @@ class CreatePromoCodeBottomSheetFragment(bottomSheetContext: Context?,
             }
         }
     }
-
-    override fun onResume() {
-        super.onResume()
-        createPromoCodeTextField?.textFieldInput?.run {
-            setText(getPromoCode())
-            selectAll()
-        }
-    }
-
-    override var bottomSheetViewTitle: String? = bottomSheetContext?.resources?.getString(R.string.mvc_create_target_create_promo_code_bottomsheet_title)
 
 }

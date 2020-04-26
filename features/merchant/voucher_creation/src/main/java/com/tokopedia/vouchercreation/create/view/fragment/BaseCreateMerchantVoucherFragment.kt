@@ -37,14 +37,16 @@ abstract class BaseCreateMerchantVoucherFragment<F : CreateVoucherTypeFactory, W
     }
 
     open fun setupView() {
-        widgetList.run {
-            clear()
-            extraWidget.asListOfType<Visitable<CreateVoucherTypeFactory>>()?.let {
-                addAll(it)
+        if (isAdded) {
+            widgetList.run {
+                clear()
+                extraWidget.asListOfType<Visitable<CreateVoucherTypeFactory>>()?.let {
+                    addAll(it)
+                }
+                add(nextButtonWidget)
+                adapter?.data?.clear()
+                renderList(this)
             }
-            add(nextButtonWidget)
-            adapter?.data?.clear()
-            renderList(this)
         }
     }
 
