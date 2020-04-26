@@ -11,7 +11,7 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.dropoff.data.query.AutoCompleteQuery
 import com.tokopedia.dropoff.data.query.GetAddressQuery
 import com.tokopedia.dropoff.data.query.GetDistrictQuery
-import com.tokopedia.logisticaddaddress.domain.model.autocomplete.AutocompleteResponse
+import com.tokopedia.dropoff.data.response.autoComplete.AutocompleteResponse
 import com.tokopedia.logisticdata.data.autocomplete.SavedAddress
 import com.tokopedia.logisticdata.data.autocomplete.SuggestedPlace
 import com.tokopedia.usecase.coroutines.Fail

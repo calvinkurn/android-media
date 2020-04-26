@@ -3,7 +3,7 @@ package com.tokopedia.dropoff.domain.mapper
 import com.tokopedia.dropoff.data.response.getAddress.AddressResponse
 import com.tokopedia.dropoff.data.response.getDistrict.GetDistrictResponse
 import com.tokopedia.dropoff.ui.autocomplete.model.ValidatedDistrict
-import com.tokopedia.logisticaddaddress.domain.model.autocomplete.AutocompleteResponse
+import com.tokopedia.dropoff.data.response.autoComplete.AutocompleteResponse
 import com.tokopedia.logisticdata.data.autocomplete.SavedAddress
 import com.tokopedia.logisticdata.data.autocomplete.SuggestedPlace
 import javax.inject.Inject

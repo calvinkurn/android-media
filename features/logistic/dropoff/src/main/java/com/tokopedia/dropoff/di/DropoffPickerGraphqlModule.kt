@@ -5,7 +5,7 @@ import com.tokopedia.dropoff.data.response.getDistrict.GetDistrictResponse
 import com.tokopedia.dropoff.data.response.getStore.GetStoreResponse
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.logisticaddaddress.domain.model.autocomplete.AutocompleteResponse
+import com.tokopedia.dropoff.data.response.autoComplete.AutocompleteResponse
 import dagger.Module
 import dagger.Provides
 

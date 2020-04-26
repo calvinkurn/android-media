@@ -7,7 +7,7 @@ import com.tokopedia.dropoff.data.response.getDistrict.GetDistrictResponse
 import com.tokopedia.dropoff.domain.mapper.AutoCompleteMapper
 import com.tokopedia.dropoff.ui.autocomplete.model.ValidatedDistrict
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
-import com.tokopedia.logisticaddaddress.domain.model.autocomplete.AutocompleteResponse
+import com.tokopedia.dropoff.data.response.autoComplete.AutocompleteResponse
 import com.tokopedia.logisticdata.data.autocomplete.SavedAddress
 import com.tokopedia.logisticdata.data.autocomplete.SuggestedPlace
 import com.tokopedia.usecase.coroutines.Fail
