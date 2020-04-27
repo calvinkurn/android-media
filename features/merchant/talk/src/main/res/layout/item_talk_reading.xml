@@ -66,12 +66,15 @@
     
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/readingMessage"
-        android:layout_width="wrap_content"
+        android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:visibility="gone"
+        android:layout_marginEnd="@dimen/layout_lvl2"
+        android:layout_marginRight="@dimen/layout_lvl2"
         app:layout_goneMarginStart="@dimen/layout_lvl2"
         app:typographyType="body_2"
         app:layout_constraintStart_toStartOf="@id/readingSellerLabel"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/readingDisplayName" />
 
     <ImageView

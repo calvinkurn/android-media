@@ -1,5 +1,6 @@
 package com.tokopedia.talk.feature.reading.presentation.adapter.viewholder
 
+import android.text.TextUtils
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.loadImage
@@ -14,6 +15,7 @@ class TalkReadingViewHolder(view: View, private val threadListener: ThreadListen
         const val BULLET_POINT = "\u2022 %s"
         const val ATTACHED_PRODUCT = "%d produk"
         const val OTHER_ANSWERS = "Lihat %d Jawaban Lainnya"
+        const val MAX_LINES = 2
         val LAYOUT = R.layout.item_talk_reading
     }
 
@@ -82,6 +84,9 @@ class TalkReadingViewHolder(view: View, private val threadListener: ThreadListen
         if(answer.isNotEmpty()) {
             itemView.readingMessage.apply {
                 text = answer
+                setSingleLine(false)
+                ellipsize = TextUtils.TruncateAt.END
+                setLines(MAX_LINES)
                 setOnClickListener {
                     threadListener.onThreadClicked(questionId)
                 }
