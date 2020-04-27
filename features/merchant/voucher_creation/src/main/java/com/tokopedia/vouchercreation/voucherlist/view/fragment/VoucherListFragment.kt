@@ -20,12 +20,14 @@ import com.tokopedia.vouchercreation.di.component.DaggerVoucherCreationComponent
 import com.tokopedia.vouchercreation.voucherlist.model.*
 import com.tokopedia.vouchercreation.voucherlist.model.BaseHeaderChipUiModel.HeaderChip
 import com.tokopedia.vouchercreation.voucherlist.model.BaseHeaderChipUiModel.ResetChip
+import com.tokopedia.vouchercreation.voucherlist.model.MoreMenuUiModel.EditQuota
 import com.tokopedia.vouchercreation.voucherlist.model.MoreMenuUiModel.CancelVoucher
 import com.tokopedia.vouchercreation.voucherlist.model.MoreMenuUiModel.StopVoucher
 import com.tokopedia.vouchercreation.voucherlist.view.adapter.factory.VoucherListAdapterFactoryImpl
 import com.tokopedia.vouchercreation.voucherlist.view.viewmodel.VoucherListViewModel
 import com.tokopedia.vouchercreation.voucherlist.view.widget.CancelVoucherDialog
 import com.tokopedia.vouchercreation.voucherlist.view.widget.MoreMenuBottomSheet
+import com.tokopedia.vouchercreation.voucherlist.view.widget.EditQuotaBottomSheet
 import com.tokopedia.vouchercreation.voucherlist.view.widget.StopVoucherDialog
 import com.tokopedia.vouchercreation.voucherlist.view.widget.filterbottomsheet.FilterBottomSheet
 import com.tokopedia.vouchercreation.voucherlist.view.widget.headerchips.ChipType
@@ -156,6 +158,7 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
     private fun onMoreMenuItemClickListener(menu: MoreMenuUiModel, voucher: VoucherUiModel) {
         dismissBottomSheet<MoreMenuBottomSheet>(MoreMenuBottomSheet.TAG)
         when (menu) {
+            is EditQuota -> showEditQuotaBottomSheet()
             is CancelVoucher -> showCancelVoucherDialog(voucher)
             is StopVoucher -> showStopVoucherDialog(voucher)
         }
@@ -175,6 +178,12 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
 
                 }
                 .show(voucher)
+    }
+
+    private fun showEditQuotaBottomSheet() {
+        val parent = view as? ViewGroup ?: return
+        if (!isAdded) return
+        EditQuotaBottomSheet(parent).show(childFragmentManager)
     }
 
     private fun setupView() = view?.run {
