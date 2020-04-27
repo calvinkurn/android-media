@@ -167,6 +167,9 @@ class FindNavFragment : BaseBannedProductFragment(), ProductCardListener,
         findNavViewModel.getProductListLiveData().observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
+                    if(!findNavViewModel.checkForAdultData()){
+                        AdultManager.showAdultPopUp(this, AdultManager.ORIGIN_FIND_PAGE, findSearchParam)
+                    }
                     removeShimmerIfRunning()
                     handleForProductsData(it.data)
                     showProductPriceSection(it.data as ArrayList<ProductsItem>)
@@ -238,16 +241,6 @@ class FindNavFragment : BaseBannedProductFragment(), ProductCardListener,
                 }
                 is Fail -> {
                     renderRelatedLink(ArrayList())
-                }
-            }
-        })
-
-        findNavViewModel.getAdultProductLiveData().observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is Success -> {
-                    if(it.data){
-                        AdultManager.showAdultPopUp(this, AdultManager.ORIGIN_FIND_PAGE, findSearchParam)
-                    }
                 }
             }
         })
@@ -637,19 +630,6 @@ class FindNavFragment : BaseBannedProductFragment(), ProductCardListener,
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        AdultManager.handleActivityResult(activity, requestCode, resultCode, data, object : AdultManager.Callback {
-            override fun onFail() {
-
-            }
-
-            override fun onVerificationSuccess(message: String?) {
-                reloadData()
-            }
-
-            override fun onLoginPreverified() {
-                reloadData()
-            }
-
-        })
+        AdultManager.handleActivityResult(activity, requestCode, resultCode, data)
     }
 }

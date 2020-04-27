@@ -26,11 +26,11 @@ class FindNavViewModel @Inject constructor() : ViewModel(), CoroutineScope {
     private val mProductList = MutableLiveData<Result<List<ProductsItem>>>()
     private val mProductCount = MutableLiveData<List<String>>()
     private var mBannedData = MutableLiveData<Result<ArrayList<String>>>()
-    private var adultProduct = MutableLiveData<Result<Boolean>>()
     private var mQuickFilterModel = MutableLiveData<Result<List<Filter>>>()
     private var mDynamicFilterModel = MutableLiveData<Result<DynamicFilterModel>>()
     private var mRelatedLinkList = MutableLiveData<Result<List<RelatedLinkData>>>()
     private val findNavParamBuilder: FindNavParamBuilder by lazy { FindNavParamBuilder() }
+    private var isQuerySafe: Boolean = false
     private val jobs = SupervisorJob()
 
     @Inject
@@ -58,9 +58,8 @@ class FindNavViewModel @Inject constructor() : ViewModel(), CoroutineScope {
     private fun handleDataForSearchProduct(searchProduct: SearchProduct) {
         if (checkForBannedData(searchProduct)) {
             mBannedData.value = Success(getBannedDataValue(searchProduct))
-        } else if (!checkForAdultData(searchProduct)) {
-            adultProduct.value = Success(true)
         } else {
+            isQuerySafe = (searchProduct.isQuerySafe ?: true)
             searchProduct.products.let { productList ->
                 mProductList.value = Success((productList) as List<ProductsItem>)
             }
@@ -77,10 +76,6 @@ class FindNavViewModel @Inject constructor() : ViewModel(), CoroutineScope {
             list.add(it)
         }
         return list
-    }
-
-    private fun checkForAdultData(searchProduct: SearchProduct): Boolean {
-        return searchProduct.isQuerySafe ?: true
     }
 
     private fun setProductCountValue(searchProduct: SearchProduct) {
@@ -166,7 +161,7 @@ class FindNavViewModel @Inject constructor() : ViewModel(), CoroutineScope {
         return mRelatedLinkList
     }
 
-    fun getAdultProductLiveData(): LiveData<Result<Boolean>> {
-        return adultProduct
+    fun checkForAdultData(): Boolean {
+        return isQuerySafe
     }
 }
