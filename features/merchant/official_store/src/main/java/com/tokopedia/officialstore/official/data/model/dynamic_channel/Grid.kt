@@ -22,7 +22,9 @@ data class Grid(
         @Expose @SerializedName("impression") val impression: String,
         @Expose @SerializedName("cashback") val cashback: String,
         @Expose @SerializedName("discountPercentage") val discountPercentage: String,
-        @Expose @SerializedName("labelGroup") val labelGroup: List<ProductCardModel.LabelGroup> = listOf()
+        @Expose @SerializedName("labelGroup") val labelGroup: List<ProductCardModel.LabelGroup> = listOf(),
+        // Impression purposed
+        var isImpressed: Boolean = false
 ) : Parcelable {
 
     private constructor(parcel: Parcel) : this(
@@ -43,7 +45,8 @@ data class Grid(
             discountPercentage = parcel.readString() ?: "",
             labelGroup = arrayListOf<ProductCardModel.LabelGroup>().apply {
                 parcel.readList(this, ProductCardModel.LabelGroup::class.java.classLoader)
-            }
+            },
+            isImpressed = parcel.readByte().toInt() != 0
     )
 
     override fun writeToParcel(dest: Parcel?, flags: Int) {
@@ -64,6 +67,7 @@ data class Grid(
             writeString(cashback)
             writeString(discountPercentage)
             writeList(labelGroup)
+            writeByte((if(isImpressed) 1 else 0).toByte())
         }
     }
 
