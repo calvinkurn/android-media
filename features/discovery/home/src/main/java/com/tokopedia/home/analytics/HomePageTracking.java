@@ -334,7 +334,6 @@ public class HomePageTracking {
                                                 FIELD_ID, channel.getId() + "_" + grid.getId()+ "_" + channel.getPersoType()+ "_" + channel.getCategoryID(),
                                                 FIELD_NAME, channel.getPromoName(),
                                                 FIELD_CREATIVE, grid.getAttribution(),
-                                                FIELD_CREATIVE_URL, grid.getImageUrl(),
                                                 FIELD_POSITION, String.valueOf(position)
                                         )
                                 )
@@ -369,7 +368,6 @@ public class HomePageTracking {
                                                         channel.getCategoryID()),
                                                 FIELD_NAME, channel.getPromoName(),
                                                 FIELD_CREATIVE, grid.getAttribution(),
-                                                FIELD_CREATIVE_URL, grid.getImageUrl(),
                                                 FIELD_POSITION, String.valueOf(position)
                                         )
                                 )
@@ -860,7 +858,6 @@ public class HomePageTracking {
                                                 FIELD_ID, bannerChannel.getBanner().getId()+"_"+bannerChannel.getId(),
                                                 FIELD_NAME, bannerChannel.getPromoName(),
                                                 FIELD_CREATIVE, bannerChannel.getBanner().getAttribution(),
-                                                FIELD_CREATIVE_URL, "",
                                                 FIELD_POSITION, String.valueOf(1)
                                         )
                                 )
