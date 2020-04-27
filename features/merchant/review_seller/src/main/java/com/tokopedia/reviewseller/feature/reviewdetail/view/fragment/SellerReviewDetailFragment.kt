@@ -7,6 +7,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
@@ -22,11 +23,14 @@ import com.tokopedia.reviewseller.feature.reviewdetail.di.component.ReviewProduc
 import com.tokopedia.reviewseller.feature.reviewdetail.util.mapper.SellerReviewProductDetailMapper
 import com.tokopedia.reviewseller.feature.reviewdetail.view.adapter.SellerReviewDetailAdapter
 import com.tokopedia.reviewseller.feature.reviewdetail.view.adapter.SellerReviewDetailAdapterTypeFactory
+import com.tokopedia.reviewseller.feature.reviewdetail.view.adapter.SellerReviewDetailListener
 import com.tokopedia.reviewseller.feature.reviewdetail.view.adapter.viewholder.OverallRatingDetailViewHolder
 import com.tokopedia.reviewseller.feature.reviewdetail.view.adapter.viewholder.ProductFeedbackDetailViewHolder
+import com.tokopedia.reviewseller.feature.reviewdetail.view.bottomsheet.PopularTopicsBottomSheet
 import com.tokopedia.reviewseller.feature.reviewdetail.view.model.OverallRatingDetailUiModel
 import com.tokopedia.reviewseller.feature.reviewdetail.view.model.ProductFeedbackDetailUiModel
 import com.tokopedia.reviewseller.feature.reviewdetail.view.viewmodel.ProductReviewDetailViewModel
+import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.reviewseller.feature.reviewlist.util.mapper.SellerReviewProductListMapper
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -42,7 +46,7 @@ import javax.inject.Inject
 /**
  * @author by milhamj on 2020-02-14.
  */
-class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDetailAdapterTypeFactory>(),
+class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDetailAdapterTypeFactory>(), SellerReviewDetailListener,
         OverallRatingDetailViewHolder.OverallRatingDetailListener, ProductFeedbackDetailViewHolder.ProductFeedbackDetailListener {
 
     companion object {
@@ -61,7 +65,7 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
     private var swipeToRefreshReviewDetail: SwipeToRefresh? = null
 
     private val sellerReviewDetailTypeFactory by lazy {
-        SellerReviewDetailAdapterTypeFactory(this, this)
+        SellerReviewDetailAdapterTypeFactory(this, this, this)
     }
 
     var productID: Int = 0
@@ -151,6 +155,27 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
         viewModelProductReviewDetail?.reviewDetailOverallRating?.removeObservers(this)
         viewModelProductReviewDetail?.flush()
         super.onDestroy()
+    }
+
+    /**
+     * Listener Section
+     */
+    override fun onChildTopicFilterClicked(item: SortFilterItem) {
+        // asd.foreach{ if(name==terbaru) isSelected =isSelected }
+        // asd.map{ if(selected) globalTopics = it.name.append(, )} " "
+        // globalData terbaru
+        // topics = "
+        Toaster.make(view!!, item.title.toString(), Snackbar.LENGTH_LONG)
+    }
+
+    override fun onParentTopicFilterClicked() {
+        val bottomSheet = PopularTopicsBottomSheet(activity, "test", ::onTopicsClicked)
+        bottomSheet.showDialog()
+        Toaster.make(view!!, "parent clicked", Snackbar.LENGTH_LONG)
+    }
+
+    private fun onTopicsClicked(data: List<String>) {
+
     }
 
     private fun initRecyclerView(view: View) {

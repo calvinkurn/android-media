@@ -18,6 +18,25 @@ val Date.relativeWeekDay: String
         else format.format(this)
     }
 
+val Date.relativeWeekAndDay: String
+    get() {
+        val format = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
+        val calActive = Calendar.getInstance()
+        val stringDays = " hari lalu"
+        calActive.timeInMillis = time
+
+        val now = Calendar.getInstance()
+
+        val timeOffset = now.get(Calendar.DATE) - calActive.get(Calendar.DATE)
+
+        return when {
+            DateUtils.isToday(time) -> "Hari Ini"
+            timeOffset == 1 -> "Kemarin"
+            timeOffset in 2..7 -> "$timeOffset $stringDays"
+            else -> format.format(this)
+        }
+    }
+
 fun Date.toFormattedString(format: String, locale: Locale = Locale.getDefault()): String {
     val formatter = SimpleDateFormat(format, locale)
     return formatter.format(this)
