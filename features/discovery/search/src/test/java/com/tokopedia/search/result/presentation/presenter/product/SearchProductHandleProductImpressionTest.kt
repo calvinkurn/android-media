@@ -62,16 +62,14 @@ internal class SearchProductHandleProductImpressionTest: ProductListPresenterTes
             it.isTopAds = false
         }
 
-        val position = 0
+        `When handle product impressed`(productItemViewModel, 0)
 
-        `When handle product impressed`(productItemViewModel, position)
-
-        `Then verify interaction for product impression`(productItemViewModel, position)
+        `Then verify interaction for product impression`(productItemViewModel)
     }
 
-    private fun `Then verify interaction for product impression`(productItemViewModel: ProductItemViewModel, position: Int) {
+    private fun `Then verify interaction for product impression`(productItemViewModel: ProductItemViewModel) {
         verify {
-            productListView.sendProductImpressionTrackingEvent(productItemViewModel, position)
+            productListView.sendProductImpressionTrackingEvent(productItemViewModel)
         }
 
         confirmVerified(productListView)
