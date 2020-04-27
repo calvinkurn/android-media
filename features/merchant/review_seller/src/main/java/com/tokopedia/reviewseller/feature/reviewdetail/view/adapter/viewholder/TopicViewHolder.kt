@@ -22,14 +22,14 @@ class TopicViewHolder(val view: View) : AbstractViewHolder<TopicUiModel>(view) {
     }
 
     private val sortFilterTopics: SortFilter = view.findViewById(R.id.topicSortFilterTopic)
-    private val labelResultFeedback: Typography = view.findViewById(R.id.labelResultFeedback)
+    private val resultFeedbackLabel: Typography = view.findViewById(R.id.resultFeedbackLabel)
 
     override fun bind(element: TopicUiModel) {
         sortFilterTopics.apply {
             sortFilterItems.removeAllViews()
             addItem(dataStaticItemSortFilter())
         }
-        labelResultFeedback.text = setReviewCountBold(element.countFeedback.orZero())
+        resultFeedbackLabel.text = setReviewCountBold(element.countFeedback.orZero())
     }
 
     private fun setReviewCountBold(reviewCount: Int): SpannableString {

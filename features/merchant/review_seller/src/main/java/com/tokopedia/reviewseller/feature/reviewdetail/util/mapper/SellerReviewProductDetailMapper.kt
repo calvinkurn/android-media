@@ -1,11 +1,16 @@
 package com.tokopedia.reviewseller.feature.reviewdetail.util.mapper
 
+import android.content.Context
+import androidx.core.content.ContextCompat
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.reviewseller.R
 import com.tokopedia.reviewseller.feature.reviewdetail.data.ProductFeedbackDetailResponse
 import com.tokopedia.reviewseller.feature.reviewdetail.data.ProductReviewDetailOverallResponse
 import com.tokopedia.reviewseller.feature.reviewdetail.view.model.*
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
+import com.tokopedia.unifycomponents.list.ListItemUnify
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.user.session.UserSessionInterface
 
 object SellerReviewProductDetailMapper {
@@ -88,6 +93,40 @@ object SellerReviewProductDetailMapper {
             reviewCount = productFeedbackDetailResponse.ratingCount
         }
     }
+
+    fun mapToItemUnifyListFeedback(context: Context, isEmptyReply: Boolean): ArrayList<ListItemUnify> {
+        val itemUnifyList: ArrayList<ListItemUnify> = arrayListOf()
+        val iconSize = 24.toPx()
+
+        itemUnifyList.apply {
+            add(
+                    if (!isEmptyReply) {
+                        val iconList = ContextCompat.getDrawable(context, R.drawable.ic_pencil_edit)
+                        ListItemUnify(title = context.getString(R.string.edit_review_label), description = "").apply {
+                            listDrawable = iconList
+                            listIconHeight = iconSize
+                            listIconWidth = iconSize                        }
+                    } else {
+                        val iconList = ContextCompat.getDrawable(context, R.drawable.ic_sent)
+                        ListItemUnify(title = context.getString(R.string.review_reply_label), description = "").apply {
+                            listDrawable = iconList
+                            listIconHeight = iconSize
+                            listIconWidth = iconSize                        }
+                    }
+            )
+            val iconReport = ContextCompat.getDrawable(context, R.drawable.ic_report_flag)
+            add(
+                    ListItemUnify(title = context.getString(R.string.report_label), description = "").apply {
+                        listDrawable = iconReport
+                        listIconHeight = iconSize
+                        listIconWidth = iconSize
+                    }
+            )
+        }
+
+        return itemUnifyList
+    }
+
 
     private fun mapToItemSortFilter(data: ProductFeedbackDetailResponse.ProductFeedbackDataPerProduct): ArrayList<SortFilterItem> {
         val itemSortFilterList = ArrayList<SortFilterItem>()

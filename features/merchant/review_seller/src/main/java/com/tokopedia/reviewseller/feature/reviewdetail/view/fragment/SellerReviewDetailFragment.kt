@@ -23,6 +23,7 @@ import com.tokopedia.reviewseller.feature.reviewdetail.di.component.ReviewProduc
 import com.tokopedia.reviewseller.feature.reviewdetail.view.adapter.SellerReviewDetailAdapter
 import com.tokopedia.reviewseller.feature.reviewdetail.view.adapter.SellerReviewDetailAdapterTypeFactory
 import com.tokopedia.reviewseller.feature.reviewdetail.view.adapter.viewholder.OverallRatingDetailViewHolder
+import com.tokopedia.reviewseller.feature.reviewdetail.view.adapter.viewholder.ProductFeedbackDetailViewHolder
 import com.tokopedia.reviewseller.feature.reviewdetail.view.model.OverallRatingDetailUiModel
 import com.tokopedia.reviewseller.feature.reviewdetail.view.model.ProductFeedbackDetailUiModel
 import com.tokopedia.reviewseller.feature.reviewdetail.view.viewmodel.ProductReviewDetailViewModel
@@ -41,7 +42,7 @@ import javax.inject.Inject
  * @author by milhamj on 2020-02-14.
  */
 class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDetailAdapterTypeFactory>(),
-    OverallRatingDetailViewHolder.OverallRatingDetailListener{
+    OverallRatingDetailViewHolder.OverallRatingDetailListener, ProductFeedbackDetailViewHolder.ProductFeedbackDetailListener{
 
     companion object {
         const val PRODUCT_ID = "EXTRA_SHOP_ID"
@@ -59,7 +60,7 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
     private var swipeToRefreshReviewDetail: SwipeToRefresh? = null
 
     private val sellerReviewDetailTypeFactory by lazy {
-        SellerReviewDetailAdapterTypeFactory(this)
+        SellerReviewDetailAdapterTypeFactory(this, this)
     }
 
     var productID: Int = 0
@@ -69,7 +70,9 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
     var itemView: View? = null
 
     private var filterPeriodDetailUnify: ListUnify? = null
+    private var optionFeedbackDetailUnify: ListUnify? = null
     private var bottomSheetPeriodDetail: BottomSheetUnify? = null
+    private var bottomSheetOptionFeedback: BottomSheetUnify? = null
 
     override fun getScreenName(): String = "SellerReviewDetail"
 
@@ -322,10 +325,35 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
         bottomSheetPeriodDetail = BottomSheetUnify()
         filterPeriodDetailUnify = view.findViewById(R.id.listFilterReviewDetail)
         bottomSheetPeriodDetail?.setChild(view)
+
+        val viewOption = View.inflate(context, R.layout.bottom_sheet_option_feedback, null)
+        bottomSheetOptionFeedback = BottomSheetUnify()
+        optionFeedbackDetailUnify = viewOption.findViewById(R.id.optionFeedbackList)
+        bottomSheetOptionFeedback?.setChild(viewOption)
     }
 
     private fun initChipsView() {
         chipsFilterText = getString(R.string.default_filter_detail)
+    }
+
+    override fun onOptionFeedbackClicked(view: View, title: String, optionDetailListItemUnify: ArrayList<ListItemUnify>, isEmptyReply: Boolean) {
+        optionFeedbackDetailUnify?.setData(optionDetailListItemUnify)
+
+        bottomSheetOptionFeedback?.apply {
+            setTitle(title)
+            showCloseIcon = true
+            setCloseClickListener {
+                dismiss()
+            }
+        }
+
+        optionFeedbackDetailUnify?.onLoadFinish {
+
+        }
+
+        fragmentManager?.let {
+            bottomSheetOptionFeedback?.show(it, title)
+        }
     }
 
 }
