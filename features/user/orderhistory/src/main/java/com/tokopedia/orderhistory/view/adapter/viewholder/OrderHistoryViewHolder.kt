@@ -15,10 +15,13 @@ import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 
-class OrderHistoryViewHolder(itemView: View?, val listener: Listener? = null) : AbstractViewHolder<Product>(itemView) {
+class OrderHistoryViewHolder(
+        itemView: View?,
+        private val listener: Listener? = null
+) : AbstractViewHolder<Product>(itemView) {
 
     interface Listener {
-
+        fun onClickBuyAgain(product: Product)
     }
 
     private var thumbnail: ImageView? = itemView?.findViewById(R.id.iv_thumbnail)
@@ -110,7 +113,9 @@ class OrderHistoryViewHolder(itemView: View?, val listener: Listener? = null) : 
     }
 
     private fun bindClickBuyAgain(product: Product) {
-
+        buyAgainButton?.setOnClickListener {
+            listener?.onClickBuyAgain(product)
+        }
     }
 
     private fun bindClickWishList(product: Product) {

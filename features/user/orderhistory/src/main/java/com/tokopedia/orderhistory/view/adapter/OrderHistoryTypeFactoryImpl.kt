@@ -7,7 +7,9 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.orderhistory.data.Product
 import com.tokopedia.orderhistory.view.adapter.viewholder.OrderHistoryViewHolder
 
-class OrderHistoryTypeFactoryImpl : BaseAdapterTypeFactory(), OrderHistoryTypeFactory {
+class OrderHistoryTypeFactoryImpl(
+        private val orderHistoryViewHolderListener: OrderHistoryViewHolder.Listener
+) : BaseAdapterTypeFactory(), OrderHistoryTypeFactory {
 
     override fun type(product: Product): Int {
         return OrderHistoryViewHolder.LAYOUT
@@ -15,7 +17,7 @@ class OrderHistoryTypeFactoryImpl : BaseAdapterTypeFactory(), OrderHistoryTypeFa
 
     override fun createViewHolder(parent: View?, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
-            OrderHistoryViewHolder.LAYOUT -> OrderHistoryViewHolder(parent)
+            OrderHistoryViewHolder.LAYOUT -> OrderHistoryViewHolder(parent, orderHistoryViewHolderListener)
             else -> super.createViewHolder(parent, type)
         }
     }
