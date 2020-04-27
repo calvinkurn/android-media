@@ -77,6 +77,8 @@ ext {
 
     debugToolsEnabled = true
 
+    debugToolsEnabled = true
+
     // Sort and categorize alphabetically by folder name
     app = [
             customerapp: ":customerapp",
@@ -180,7 +182,7 @@ ext {
     analyticsDependencies = [
             appsflyer  : "com.appsflyer:af-android-sdk:5.1.1@aar",
             installRef : "com.android.installreferrer:installreferrer:1.1",
-            moengage   : "com.moengage:moe-android-sdk:9.7.02",
+            moengage   : "com.moengage:moe-android-sdk:9.8.02",
             moengageAmp: "com.moengage:push-amp-plus:0.3.00",
             branch     : "io.branch.sdk.android:library:4.1.1",
     ]
@@ -212,7 +214,7 @@ ext {
             slidinguppanel        : "com.sothree.slidinguppanel:library:3.3.1",
             lottie                : "com.airbnb.android:lottie:$lottieVersion",
             cardio                : "io.card:android-sdk:$cardioVersion",
-            loaderviewlibrary     : "com.elyeproj.libraries:loaderviewlibrary:1.5.0",
+            loaderviewlibrary     : "com.elyeproj.libraries:loaderviewlibrary:2.0.0",
             imagecropper          : "com.theartofdev.edmodo:android-image-cropper:2.5.1",
             reactNative           : "com.facebook.react:react-native:$reactNativeVersion@aar",
             codePushReactNative   : "com.microsoft.codepush:rn-codepush:5.6.0@aar",
@@ -244,6 +246,7 @@ ext {
             workManager           : "android.arch.work:work-runtime-ktx:$workManagerVersion",
             stfalconImageViewer   : "com.github.stfalcon:stfalcon-imageviewer:$stfalconVersion",
             liveness              : "ai.advance.liveness:guardian_core_v1.6@aar",
+            robust                : "com.meituan.robust:robust:0.4.95",
             javaxInject           :  "javax.inject:javax.inject:1",
             slice                 : "androidx.slice:slice-builders-ktx:$sliceVersion"
     ]

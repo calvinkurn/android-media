@@ -35,10 +35,13 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
     public static final String DEFAULT_NOTIF_CODE_VALUE = "0";
     private static final int DEFAULT_CART_VALUE = 0;
     private RemoteConfig remoteConfig;
+    private AppNotificationReceiver receiver;
 
     public AppNotificationReceiverUIBackground(Application application) {
         super(application);
         remoteConfig = new FirebaseRemoteConfigImpl(application);
+        //Hack reflection error don't remove it if reflection is already delete
+        receiver = new AppNotificationReceiver();
     }
 
     public void prepareAndExecuteDedicatedNotification(Bundle data) {

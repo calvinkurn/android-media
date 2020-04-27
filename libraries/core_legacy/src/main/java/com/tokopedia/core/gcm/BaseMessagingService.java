@@ -2,11 +2,14 @@ package com.tokopedia.core.gcm;
 
 import android.app.Application;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 
 import com.crashlytics.android.Crashlytics;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+
 import com.google.firebase.messaging.RemoteMessage;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.moengage.pushbase.push.MoEngageNotificationUtils;
@@ -17,6 +20,7 @@ import com.tokopedia.core.TkpdCoreRouter;
 import com.tokopedia.core.deprecated.SessionHandler;
 import com.tokopedia.core.gcm.base.BaseNotificationMessagingService;
 import com.tokopedia.core.gcm.base.IAppNotificationReceiver;
+import com.tokopedia.core.gcm.intentservices.PushNotificationIntentService;
 import com.tokopedia.core.gcm.utils.RouterUtils;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
@@ -36,6 +40,7 @@ public class BaseMessagingService extends BaseNotificationMessagingService {
     private Context mContext;;
     private SessionHandler sessionHandler;
     private GCMHandler gcmHandler;
+    private LocalBroadcastManager localBroadcastManager;
 
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
@@ -43,6 +48,7 @@ public class BaseMessagingService extends BaseNotificationMessagingService {
         mContext = getApplicationContext();
         sessionHandler = RouterUtils.getRouterFromContext(mContext).legacySessionHandler();
         gcmHandler = new GCMHandler(mContext);
+        localBroadcastManager = LocalBroadcastManager.getInstance(mContext);
 
         Bundle data = convertMap(remoteMessage);
         Timber.d("FCM " + data.toString());
@@ -67,6 +73,10 @@ public class BaseMessagingService extends BaseNotificationMessagingService {
             logTokopediaNotification(remoteMessage);
         }
         logOnMessageReceived(remoteMessage);
+
+        if (com.tokopedia.config.GlobalConfig.isSellerApp()) {
+            sendPushNotificationIntent();
+        }
     }
 
     private void logOnMessageReceived(RemoteMessage remoteMessage) {
@@ -106,6 +116,15 @@ public class BaseMessagingService extends BaseNotificationMessagingService {
         if(sharedPreferences == null) sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
         return sharedPreferences.getBoolean(Constants.Settings.NOTIFICATION_PROMO, true);
+    }
+
+    /**
+     * Send dataless intent for each incoming push notification
+     */
+    private void sendPushNotificationIntent() {
+        Intent intent = new Intent(PushNotificationIntentService.UPDATE_NOTIFICATION_DATA);
+        if (localBroadcastManager != null)
+            localBroadcastManager.sendBroadcast(intent);
     }
 
     private void logTokopediaNotification(RemoteMessage remoteMessage) {

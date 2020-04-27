@@ -1,6 +1,7 @@
 package com.tokopedia.discovery.categoryrevamp.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.common_category.usecase.SendTopAdsUseCase
 import com.tokopedia.discovery.categoryrevamp.domain.usecase.*
 import io.mockk.every
 import io.mockk.mockk
