@@ -287,6 +287,7 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
             filter_and_sort_layout?.gone()
             rvRatingProduct?.gone()
             emptyState_reviewProduct?.gone()
+            search_bar_layout?.show()
             scrollView_globalError_reviewSeller?.show()
             globalError_reviewSeller?.show()
 
