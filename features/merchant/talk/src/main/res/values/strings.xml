@@ -91,6 +91,7 @@
     <string name="reading_popular_sort_option">Pertanyaan Terpopuler</string>
     <string name="reading_sort_bottom_sheet_title">Urutkan berdasarkan</string>
     <string name="reading_sort_chip_string">%s (%d)</string>
+    <string name="reading_like_count_place_holder">Like</string>
     <string name="reading_seller_label">Penjual</string>
     <string name="reading_no_answer">Belum ada jawaban</string>
 

@@ -430,7 +430,12 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
     }
 
     private fun initTextBox() {
-        replyTextBox.bind(userSession.profilePicture, this, textLimit)
+        val profilePicture = if(userSession.shopId == shopId) {
+            userSession.shopAvatar
+        } else {
+            userSession.profilePicture
+        }
+        replyTextBox.bind(profilePicture, this, textLimit)
     }
 
     private fun initAttachedProductAdapter() {

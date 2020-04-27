@@ -68,7 +68,6 @@
         android:id="@+id/replyAttachedProductsRecyclerView"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
-        android:layout_gravity="start"
         android:layout_marginTop="@dimen/dp_12"
         android:clipToPadding="false"
         android:orientation="horizontal"
@@ -78,6 +77,7 @@
         android:paddingBottom="@dimen/layout_lvl1"
         android:visibility="gone"
         app:layout_constraintStart_toStartOf="@id/replyMessage"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/replyMessage"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
