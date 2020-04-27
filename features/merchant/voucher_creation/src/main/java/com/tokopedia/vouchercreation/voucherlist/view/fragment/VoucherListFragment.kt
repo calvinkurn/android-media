@@ -107,7 +107,7 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
     override fun getRecyclerViewResourceId(): Int = R.id.rvVoucherList
 
     override fun getAdapterTypeFactory(): VoucherListAdapterFactoryImpl {
-        return VoucherListAdapterFactoryImpl(this, isActiveVoucher)
+        return VoucherListAdapterFactoryImpl(this)
     }
 
     override fun getScreenName(): String = VoucherListFragment::class.java.simpleName
@@ -186,11 +186,7 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
             activity.setSupportActionBar(toolbarMvcList)
             activity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-            val title = if (isActiveVoucher) {
-                context.getString(R.string.mvc_voucher_active)
-            } else {
-                context.getString(R.string.mvc_voucher_history)
-            }
+            val title = if (isActiveVoucher) context.getString(R.string.mvc_voucher_active) else context.getString(R.string.mvc_voucher_history)
             activity.supportActionBar?.title = title
         }
         showAppBarElevation(false)
@@ -261,7 +257,12 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
     }
 
     private fun showDummyData() {
-        renderList(getDummyData())
+        //renderList(getDummyData())
+        renderList(getActiveVoucherShimmer())
+    }
+
+    private fun getActiveVoucherShimmer(): List<Visitable<*>> {
+        return listOf(LoadingStateUiModel(isActiveVoucher))
     }
 
     private fun getDummyData(): List<Visitable<*>> {

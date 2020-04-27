@@ -1,9 +1,6 @@
 package com.tokopedia.vouchercreation.voucherlist.view.adapter.factory
 
-import com.tokopedia.vouchercreation.voucherlist.model.EmptyStateUiModel
-import com.tokopedia.vouchercreation.voucherlist.model.ErrorStateUiModel
-import com.tokopedia.vouchercreation.voucherlist.model.NoResultStateUiModel
-import com.tokopedia.vouchercreation.voucherlist.model.VoucherUiModel
+import com.tokopedia.vouchercreation.voucherlist.model.*
 
 /**
  * Created By @ilhamsuaib on 17/04/20
@@ -18,4 +15,6 @@ interface VoucherListAdapterFactory {
     fun type(errorStateUiModel: ErrorStateUiModel): Int
 
     fun type(noResultStateUiModel: NoResultStateUiModel): Int
+
+    fun type(model: LoadingStateUiModel): Int
 }
