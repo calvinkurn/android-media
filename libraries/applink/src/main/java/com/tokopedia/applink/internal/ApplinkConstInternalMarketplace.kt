@@ -235,9 +235,6 @@ object ApplinkConstInternalMarketplace {
     @JvmField
     val PARAM_FIRST_CREATE_SHOP = "FIRST_CREATE_SHOP"
 
-    // Talk Reading
-    @JvmField
-    val TALK_READING = "$INTERNAL_MARKETPLACE/talk-reading/{product_id}/{shop_id}/"
     // Talk Reply
     @JvmField
     val TALK_REPLY = "$INTERNAL_MARKETPLACE/talk-reply/{question_id}/{shop_id}/{product_id}/"

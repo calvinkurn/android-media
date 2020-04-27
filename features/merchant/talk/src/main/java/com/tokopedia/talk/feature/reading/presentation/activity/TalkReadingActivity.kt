@@ -19,6 +19,10 @@ import com.tokopedia.talk.feature.reading.presentation.fragment.TalkReadingFragm
 
 class TalkReadingActivity : BaseSimpleActivity(), HasComponent<TalkComponent>, TalkPerformanceMonitoringListener {
 
+    companion object {
+        const val APPLINK_SHOP_ID = "shop_id"
+    }
+
     private var productId: String = ""
     private var shopId: String = ""
     private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
@@ -99,13 +103,13 @@ class TalkReadingActivity : BaseSimpleActivity(), HasComponent<TalkComponent>, T
 
     private fun getDataFromAppLink() {
         val uri = intent.data ?: return
-        val productIdString = uri.pathSegments[uri.pathSegments.size - 2] ?: return
+        val shopId = uri.getQueryParameter(APPLINK_SHOP_ID) ?: ""
+        if (shopId.isNotEmpty()) {
+            this.shopId = shopId
+        }
+        val productIdString = uri.pathSegments[uri.pathSegments.size - 1] ?: return
         if (productIdString.isNotEmpty()) {
             this.productId = productIdString
-        }
-        val shopIdString = uri.lastPathSegment ?: return
-        if (shopIdString.isNotEmpty()) {
-            this.shopId = shopIdString
         }
     }
 
