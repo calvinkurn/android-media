@@ -139,7 +139,6 @@ class AddEditProductPreviewViewModel @Inject constructor(
                 }
             }
             addSource(productAddResult) {
-                getVariantList(it.detailInputModel.categoryId)
                 productInputModel.value = it
             }
         }
