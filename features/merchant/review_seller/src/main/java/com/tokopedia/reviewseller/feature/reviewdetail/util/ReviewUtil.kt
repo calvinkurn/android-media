@@ -1,5 +1,6 @@
 package com.tokopedia.reviewseller.feature.reviewdetail.util
 
+import android.content.Context
 import android.text.Spanned
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.relativeWeekAndDay
@@ -35,9 +36,10 @@ object ReviewUtil {
     }
 }
 
-fun String.toReviewDescriptionFormatted(maxChar: Int): Spanned {
-    return if (MethodChecker.fromHtml(this).length > maxChar) {
-        val subDescription = MethodChecker.fromHtml(this).toString().substring(0, maxChar)
+fun String.toReviewDescriptionFormatted(context: Context, maxChar: Int): Spanned {
+    val seeMoreTextLength = context.getString(R.string.label_read_more).length + context.getString(R.string.label_ellipsis_read_more).length
+    return if (seeMoreTextLength < maxChar) {
+        val subDescription = MethodChecker.fromHtml(this).toString().substring(0, maxChar - seeMoreTextLength)
         MethodChecker
                 .fromHtml(subDescription.replace("(\r\n|\n)".toRegex(), "<br />") + "... "
                         + "<font color='#42b549'>Selengkapnya</font>")

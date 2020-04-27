@@ -35,6 +35,8 @@ class SellerReviewListViewModel @Inject constructor(
     var sortBy: String? = ""
     var filterBy: String? = ""
 
+    var filterAllText: String? = ""
+
     var positionFilter = 0
     var positionSort = 0
 

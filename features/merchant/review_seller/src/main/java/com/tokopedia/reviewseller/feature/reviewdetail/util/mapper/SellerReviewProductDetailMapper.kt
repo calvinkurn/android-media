@@ -1,18 +1,26 @@
 package com.tokopedia.reviewseller.feature.reviewdetail.util.mapper
 
+import android.content.Context
+import androidx.core.content.ContextCompat
+import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.reviewseller.R
 import com.tokopedia.reviewseller.feature.reviewdetail.data.ProductFeedbackDetailResponse
 import com.tokopedia.reviewseller.feature.reviewdetail.data.ProductReviewDetailOverallResponse
 import com.tokopedia.reviewseller.feature.reviewdetail.view.model.*
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
+import com.tokopedia.unifycomponents.list.ListItemUnify
+import com.tokopedia.unifycomponents.toPx
+import com.tokopedia.user.session.UserSessionInterface
 
 object SellerReviewProductDetailMapper {
 
     fun mapToProductFeedbackDetailUiModel(productFeedbackDataPerProduct:
-                                          ProductFeedbackDetailResponse.ProductFeedbackDataPerProduct): ProductFeedbackDetailUiModel {
+                                          ProductFeedbackDetailResponse.ProductFeedbackDataPerProduct,
+                                          userSession: UserSessionInterface): ProductFeedbackDetailUiModel {
         return ProductFeedbackDetailUiModel().apply {
             ratingBarList = mapToRatingBarUiModel(productFeedbackDataPerProduct)
-            productFeedbackDetailList = mapToFeedbackUiModel(productFeedbackDataPerProduct)
+            productFeedbackDetailList = mapToFeedbackUiModel(productFeedbackDataPerProduct, userSession)
             topicList = mapToTopicUiModel(productFeedbackDataPerProduct)
         }
     }
@@ -43,21 +51,18 @@ object SellerReviewProductDetailMapper {
         return topicListUiModel
     }
 
-    private fun mapToFeedbackUiModel(productFeedbackDataPerProduct: ProductFeedbackDetailResponse.ProductFeedbackDataPerProduct): List<FeedbackUiModel> {
+    private fun mapToFeedbackUiModel(productFeedbackDataPerProduct: ProductFeedbackDetailResponse.ProductFeedbackDataPerProduct,
+                                     userSession: UserSessionInterface): List<FeedbackUiModel> {
         val feedbackListUiModel = mutableListOf<FeedbackUiModel>()
 
-        val mapAttachment = mutableListOf<FeedbackUiModel.Attachment>()
-
         productFeedbackDataPerProduct.list.map {
-            it.attachments.onEach { attachment ->
+            val mapAttachment = mutableListOf<FeedbackUiModel.Attachment>()
+            it.attachments.map { attachment ->
                 mapAttachment.add(FeedbackUiModel.Attachment(
                         thumbnailURL = attachment.thumbnailURL,
                         fullSizeURL = attachment.fullSizeURL
                 ))
             }
-        }
-
-        productFeedbackDataPerProduct.list.map {
             feedbackListUiModel.add(
                     FeedbackUiModel(
                             attachments = mapAttachment,
@@ -67,9 +72,11 @@ object SellerReviewProductDetailMapper {
                             replyText = it.replyText,
                             replyTime = it.replyTime,
                             reviewText = it.reviewText,
+                            isMoreReply = it.replyText?.length.orZero() >= 150,
                             reviewTime = it.reviewTime,
                             reviewerName = it.reviewerName,
-                            variantName = it.variantName
+                            variantName = it.variantName,
+                            sellerUser = userSession.name
                     )
             )
         }
@@ -86,6 +93,40 @@ object SellerReviewProductDetailMapper {
             reviewCount = productFeedbackDetailResponse.ratingCount
         }
     }
+
+    fun mapToItemUnifyListFeedback(context: Context, isEmptyReply: Boolean): ArrayList<ListItemUnify> {
+        val itemUnifyList: ArrayList<ListItemUnify> = arrayListOf()
+        val iconSize = 24.toPx()
+
+        itemUnifyList.apply {
+            add(
+                    if (!isEmptyReply) {
+                        val iconList = ContextCompat.getDrawable(context, R.drawable.ic_pencil_edit)
+                        ListItemUnify(title = context.getString(R.string.edit_review_label), description = "").apply {
+                            listDrawable = iconList
+                            listIconHeight = iconSize
+                            listIconWidth = iconSize                        }
+                    } else {
+                        val iconList = ContextCompat.getDrawable(context, R.drawable.ic_sent)
+                        ListItemUnify(title = context.getString(R.string.review_reply_label), description = "").apply {
+                            listDrawable = iconList
+                            listIconHeight = iconSize
+                            listIconWidth = iconSize                        }
+                    }
+            )
+            val iconReport = ContextCompat.getDrawable(context, R.drawable.ic_report_flag)
+            add(
+                    ListItemUnify(title = context.getString(R.string.report_label), description = "").apply {
+                        listDrawable = iconReport
+                        listIconHeight = iconSize
+                        listIconWidth = iconSize
+                    }
+            )
+        }
+
+        return itemUnifyList
+    }
+
 
     private fun mapToItemSortFilter(data: ProductFeedbackDetailResponse.ProductFeedbackDataPerProduct): ArrayList<SortFilterItem> {
         val itemSortFilterList = ArrayList<SortFilterItem>()

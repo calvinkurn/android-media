@@ -26,84 +26,48 @@
         android:layout_marginEnd="@dimen/spacing_lvl4"
         android:layout_marginRight="@dimen/spacing_lvl4"
         android:layout_marginTop="@dimen/spacing_lvl3"
-        app:srcCompat="@drawable/ic_option_review_detail"/>
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tvFeedbackByLabel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/ivRatingFeedback"
-        app:layout_constraintStart_toStartOf="parent"
-        android:textColor="@color/clr_f531353b"
-        android:layout_marginLeft="@dimen/spacing_lvl4"
-        android:layout_marginStart="@dimen/spacing_lvl4"
-        android:layout_marginTop="@dimen/spacing_lvl4"
-        app:typographyWeight="reguler"
-        android:text="@string/label_by"
-        app:typographyType="body_3" />
+        app:srcCompat="@drawable/ic_option"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvFeedbackUser"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/ivRatingFeedback"
-        app:layout_constraintStart_toEndOf="@id/tvFeedbackByLabel"
+        app:layout_constraintTop_toBottomOf="@+id/ivRatingFeedback"
+        app:layout_constraintStart_toStartOf="@+id/ivRatingFeedback"
+        app:layout_constraintEnd_toStartOf="@+id/tvFeedbackDate"
         android:textColor="@color/clr_f531353b"
-        android:layout_marginLeft="@dimen/spacing_lvl2"
-        android:layout_marginStart="@dimen/spacing_lvl2"
         android:layout_marginTop="@dimen/spacing_lvl4"
-        app:typographyWeight="bold"
         app:typographyType="body_3"
-        tools:text="Alexandra Ronodipuro •"/>
+        app:typographyWeight="reguler"
+        tools:text="Oleh Alexandra Ronodipuro •"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvFeedbackDate"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/ivRatingFeedback"
+        app:layout_constraintTop_toTopOf="@+id/tvFeedbackUser"
         app:layout_constraintStart_toEndOf="@id/tvFeedbackUser"
         android:layout_marginLeft="@dimen/spacing_lvl2"
         android:layout_marginStart="@dimen/spacing_lvl2"
         android:layout_marginRight="@dimen/spacing_lvl4"
         android:layout_marginEnd="@dimen/spacing_lvl4"
-        android:layout_marginTop="@dimen/spacing_lvl4"
         app:typographyWeight="reguler"
         app:typographyType="body_3"
         tools:text="Hari ini"/>
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tvVariantFeedback"
-        android:layout_width="0dp"
+    <include
+        android:id="@+id/partialFeedbackVariantReviewDetail"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/tvFeedbackByLabel"
+        layout="@layout/partial_feedback_variant_detail"
         app:layout_constraintStart_toStartOf="parent"
-        android:textColor="@color/clr_f531353b"
-        android:layout_marginLeft="@dimen/spacing_lvl4"
-        android:layout_marginStart="@dimen/spacing_lvl4"
-        android:layout_marginTop="@dimen/spacing_lvl3"
-        android:text="@string/variant_feedback_label"
-        app:typographyWeight="bold"
-        app:typographyType="body_3"/>
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tvVariantFeedbackValue"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/tvFeedbackByLabel"
-        app:layout_constraintStart_toEndOf="@id/tvVariantFeedback"
-        android:textColor="@color/clr_f531353b"
-        android:layout_marginLeft="@dimen/spacing_lvl2"
-        android:layout_marginStart="@dimen/spacing_lvl2"
-        android:layout_marginTop="@dimen/spacing_lvl3"
-        tools:text="Maroon"
-        app:typographyType="body_3"
-        app:typographyWeight="reguler"/>
+        app:layout_constraintTop_toBottomOf="@+id/tvFeedbackDate"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvFeedbackReview"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/tvVariantFeedback"
+        app:layout_constraintTop_toBottomOf="@id/partialFeedbackVariantReviewDetail"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:textColor="@color/clr_f531353b"
@@ -118,21 +82,19 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvItemAttachmentFeedback"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:clipToPadding="false"
-        android:clipChildren="false"
-        android:paddingLeft="@dimen/spacing_lvl4"
-        android:paddingStart="@dimen/spacing_lvl4"
-        android:paddingEnd="@dimen/spacing_lvl4"
-        android:paddingRight="@dimen/spacing_lvl4"
         android:layout_marginTop="@dimen/spacing_lvl4"
-        app:layout_constraintTop_toBottomOf="@id/tvFeedbackReview"
-        app:layout_constraintStart_toStartOf="parent"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:paddingStart="@dimen/dp_8"
+        android:paddingLeft="@dimen/dp_8"
+        android:paddingEnd="@dimen/dp_8"
+        android:paddingRight="@dimen/dp_8"
         app:layout_constraintEnd_toEndOf="parent"
-        android:orientation="horizontal"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        tools:listitem="@layout/item_attachment_feedback" />
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvFeedbackReview" />
 
     <View
         android:id="@+id/replyFeedbackState"
@@ -196,7 +158,7 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_marginTop="@dimen/spacing_lvl4"
-        app:layout_constraintTop_toBottomOf="@id/replyFeedbackState"
+        app:layout_constraintTop_toBottomOf="@id/tvReplyComment"
         app:layout_constraintStart_toStartOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

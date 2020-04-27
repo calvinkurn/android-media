@@ -12,7 +12,8 @@ import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifyprinciples.Typography
 
 
-class OverallRatingDetailViewHolder(val view: View): AbstractViewHolder<OverallRatingDetailUiModel>(view) {
+class OverallRatingDetailViewHolder(val view: View,
+                                    private val listener: OverallRatingDetailListener): AbstractViewHolder<OverallRatingDetailUiModel>(view) {
 
     companion object {
         @JvmStatic
@@ -34,14 +35,18 @@ class OverallRatingDetailViewHolder(val view: View): AbstractViewHolder<OverallR
         totalReview.text = strReviewSpan
 
         reviewPeriod.apply {
-            chip_text.text = getString(R.string.default_filter_detail)
+            chip_text.text = element?.chipFilter.orEmpty()
             setOnClickListener {
-
+                listener.onFilterPeriodClicked(view, chip_text.text.toString())
             }
             setChevronClickListener {
-
+                listener.onFilterPeriodClicked(view, chip_text.text.toString())
             }
         }
+    }
+
+    interface OverallRatingDetailListener {
+        fun onFilterPeriodClicked(view: View, title: String)
     }
 
 }

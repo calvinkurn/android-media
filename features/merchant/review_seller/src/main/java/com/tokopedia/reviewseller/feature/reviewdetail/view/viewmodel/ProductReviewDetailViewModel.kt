@@ -26,7 +26,9 @@ class ProductReviewDetailViewModel @Inject constructor(
         private val getProductFeedbackDetailListUseCase: GetProductFeedbackDetailListUseCase
 ) : BaseViewModel(dispatcherProvider.main()) {
 
-    var chipsFilterText: String? = ""
+    var positionFilterPeriod = 1
+    var filterPeriod: String = ""
+    var filterAllText: String = ""
 
     private val _reviewDetailOverall = MutableLiveData<Result<OverallRatingDetailUiModel>>()
     val reviewDetailOverallRating: LiveData<Result<OverallRatingDetailUiModel>>
@@ -96,10 +98,9 @@ class ProductReviewDetailViewModel @Inject constructor(
         )
 
         val productFeedbackDetailResponse = getProductFeedbackDetailListUseCase.executeOnBackground()
-//        val isHastNextPage = ReviewSellerUtil.isHasNextPage(page, ReviewSellerConstant.DEFAULT_PER_PAGE, productRatingListResponse.data.size)
         return Pair(
                 productFeedbackDetailResponse.hasNext,
-                SellerReviewProductDetailMapper.mapToProductFeedbackDetailUiModel(productFeedbackDetailResponse))
+                SellerReviewProductDetailMapper.mapToProductFeedbackDetailUiModel(productFeedbackDetailResponse, userSession))
     }
 
     private suspend fun getReviewDetailOverall(productID: Int, filterBy: String): OverallRatingDetailUiModel {
