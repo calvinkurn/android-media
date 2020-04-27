@@ -166,7 +166,7 @@ data class DynamicHomeChannel(
                                 "id", grid.id,
                                 "name", "/ - p2 - sprint sale banner",
                                 "creative", grid.name,
-                                "creative_url", grid.imageUrl,
+                                "creative_url", "",
                                 "position", (i + 1).toString())
                 )
             }
@@ -183,7 +183,7 @@ data class DynamicHomeChannel(
                                 "id", id + "_" + grid.id+ "_" + persoType+ "_" + categoryID,
                                 "name", promoName,
                                 "creative", grid.attribution,
-                                "creative_url", grid.imageUrl,
+                                "creative_url", "",
                                 "position", (i + 1).toString())
                 )
             }
@@ -198,7 +198,7 @@ data class DynamicHomeChannel(
                         "id", hero[0].id,
                         "name", promoName,
                         "creative", promoName,
-                        "creative_url", hero[0].imageUrl,
+                        "creative_url", "",
                         "position", 1.toString()))
             }
 
@@ -486,7 +486,7 @@ data class DynamicHomeChannel(
                                 "id", id + "_" + banner.id + "_" + persoType + "_" + categoryID,
                                 "name", promoName,
                                 "creative", banner.attribution,
-                                "creative_url", banner.imageUrl,
+                                "creative_url", "",
                                 "position", 1.toString())
                 )
                 )

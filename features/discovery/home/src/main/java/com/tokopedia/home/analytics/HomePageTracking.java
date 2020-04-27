@@ -862,7 +862,7 @@ public class HomePageTracking {
                                                 FIELD_ID, bannerChannel.getBanner().getId()+"_"+bannerChannel.getId(),
                                                 FIELD_NAME, bannerChannel.getPromoName(),
                                                 FIELD_CREATIVE, bannerChannel.getBanner().getAttribution(),
-                                                FIELD_CREATIVE_URL, bannerChannel.getBanner().getImageUrl(),
+                                                FIELD_CREATIVE_URL, "",
                                                 FIELD_POSITION, String.valueOf(1)
                                         )
                                 )
