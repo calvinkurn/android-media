@@ -138,7 +138,7 @@ public class GraphqlClient {
         public Function(Context mContext) {
             this.context = new WeakReference<>(mContext);
 
-            currentTime = () -> System.currentTimeMillis() / 1000;
+            currentTime = () -> System.currentTimeMillis() ;
             getExpiredTime = () -> getExpiredTime(context.get());
             setExpiredTime = (time) -> {
                 setExpiredTime(context.get(), time);

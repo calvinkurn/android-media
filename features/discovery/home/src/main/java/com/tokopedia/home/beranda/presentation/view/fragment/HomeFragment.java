@@ -361,7 +361,9 @@ public class HomeFragment extends BaseDaggerFragment implements
                     }
                 }
         );
-        getViewLifecycleOwner().getLifecycle().addObserver(fragmentFramePerformanceIndexMonitoring);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            getViewLifecycleOwner().getLifecycle().addObserver(fragmentFramePerformanceIndexMonitoring);
+        }
         homeMainToolbar = view.findViewById(R.id.toolbar);
         homeMainToolbar.setAfterInflationCallable(getAfterInflationCallable());
         statusBarBackground = view.findViewById(R.id.status_bar_bg);
@@ -678,7 +680,8 @@ public class HomeFragment extends BaseDaggerFragment implements
                         (DynamicHomeChannel.Grid) dataMap.get(HomeViewModel.GRID),
                         (int) dataMap.get(HomeViewModel.POSITION),
                         ((AddToCartDataModel) dataMap.get(HomeViewModel.ATC)).getData().getCartId(),
-                       viewModel.getUserId()
+                        (String) dataMap.get(HomeViewModel.QUANTITIY),
+                        viewModel.getUserId()
                ));
                RouteManager.route(getContext(), ApplinkConstInternalMarketplace.ONE_CLICK_CHECKOUT);
             }
