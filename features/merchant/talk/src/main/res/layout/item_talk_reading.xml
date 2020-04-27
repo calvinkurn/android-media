@@ -81,7 +81,7 @@
         android:id="@+id/likeIcon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/layout_lvl2"
+        android:layout_marginTop="@dimen/dp_12"
         app:layout_goneMarginStart="@dimen/layout_lvl2"
         app:srcCompat="@drawable/talk_ic_like"
         app:layout_constraintStart_toStartOf="@id/readingSellerLabel"
