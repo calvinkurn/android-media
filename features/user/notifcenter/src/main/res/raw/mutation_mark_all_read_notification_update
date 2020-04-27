@@ -1,5 +1,5 @@
-mutation markAllReadStatusNotificationUpdate{
-  notifcenter_markAllReadStatus{
+mutation markAllReadStatusNotificationUpdate($typeOfNotif: Int){
+  notifcenter_markAllReadStatus(type_of_notif: $typeOfNotif){
     data {
         is_success
     }

@@ -11,12 +11,14 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.viewpager.widget.ViewPager
+import com.airbnb.deeplinkdispatch.DeepLink
 import com.tkpd.library.utils.URLParser
 import com.tkpd.library.utils.legacy.MethodChecker
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
+import com.tokopedia.core.gcm.Constants
 import com.tokopedia.core.router.discovery.BrowseProductRouter
 import com.tokopedia.discovery.R
 import com.tokopedia.discovery.catalogrevamp.ui.customview.SearchNavigationView
@@ -48,9 +50,11 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.activity_category_nav.*
 import kotlinx.android.synthetic.main.layout_nav_no_product.*
+import java.io.UnsupportedEncodingException
+import java.net.URLDecoder
 import javax.inject.Inject
 
-private const val EXTRA_CATEGORY_DEPARTMENT_ID = "CATEGORY_ID"
+private const val EXTRA_CATEGORY_CATEGORY_ID = "CATEGORY_ID"
 private const val EXTRA_CATEGORY_DEPARTMENT_NAME = "CATEGORY_NAME"
 private const val EXTRA_PARENT_ID = " PARENT_ID"
 private const val EXTRA_PARENT_NAME = " PARENT_NAME"
@@ -93,7 +97,35 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener,
     @Inject
     lateinit var categoryNavViewModel: CategoryNavViewModel
 
+    object DeepLinkIntents {
+        @DeepLink(Constants.Applinks.DISCOVERY_CATEGORY_DETAIL)
+        @JvmStatic
+        fun getCallingCategoryIntent(context: Context?, bundle: Bundle): Intent? {
+            val intent = Intent(context, CategoryNavActivity::class.java)
+            val newBundle = Bundle()
+            newBundle.putString(BrowseProductRouter.DEPARTMENT_ID, bundle.getString(BrowseProductRouter.DEPARTMENT_ID))
+            try {
+                newBundle.putString(EXTRA_TRACKER_ATTRIBUTION,
+                        URLDecoder.decode(bundle.getString(EXTRA_TRACKER_ATTRIBUTION, ""), "UTF-8")
+                )
+            } catch (e: UnsupportedEncodingException) {
+                e.printStackTrace()
+                newBundle.putString(EXTRA_TRACKER_ATTRIBUTION,
+                        bundle.getString(EXTRA_TRACKER_ATTRIBUTION, "").replace("%20".toRegex(), " ")
+                )
+            }
+            if (bundle.containsKey(BrowseProductRouter.DEPARTMENT_ID)) {
+                newBundle.putString(EXTRA_CATEGORY_CATEGORY_ID, bundle.getString(BrowseProductRouter.DEPARTMENT_ID))
+            }
+            return intent.putExtras(newBundle)
+        }
+
+    }
+
+
     companion object {
+        private const val EXTRA_TRACKER_ATTRIBUTION = "tracker_attribution"
+
         private const val ORDER_BY = "ob"
         private const val SCREEN_NAME = "/p"
         const val EXTRA_CATEGORY_NAME = "categoryName"
@@ -104,10 +136,22 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener,
         }
 
         @JvmStatic
-        fun isCategoryRevampEnabled(context: Context): Boolean {
-            val remoteConfig = FirebaseRemoteConfigImpl(context)
-            return remoteConfig.getBoolean(RemoteConfigKey.APP_ENABLE_CATEGORY_REVAMP, true)
+        fun getCategoryIntentWithFilter(context: Context,
+                                        categoryUrl: String): Intent {
+            val intent = Intent(context, CategoryNavActivity::class.java)
+            intent.putExtra(BrowseProductRouter.EXTRA_CATEGORY_URL, categoryUrl)
+            return intent
         }
+
+        @JvmStatic
+        fun getCategoryIntentWithDepartmentId(context: Context,
+                                        departmentId: String): Intent {
+            val intent = Intent(context, CategoryNavActivity::class.java)
+            intent.putExtra(BrowseProductRouter.DEPARTMENT_ID, departmentId)
+            return intent
+        }
+
+
 
     }
 
@@ -171,7 +215,7 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener,
         return if (uri == null) SearchParameter() else SearchParameter(uri.toString())
     }
 
-    fun initInjector() {
+    private fun initInjector() {
         categoryNavComponent = DaggerCategoryNavComponent.builder()
                 .baseAppComponent((applicationContext as BaseMainApplication)
                         .baseAppComponent).build()
@@ -227,7 +271,7 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener,
     }
 
     private fun fetchCategoryDetail() {
-        progressBar.visibility = View.VISIBLE
+        progressBar.show()
         categoryNavViewModel.fetchCategoryDetail(departmentId)
     }
 
@@ -256,6 +300,7 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener,
             when (it) {
                 is Success -> {
                     updateToolBarHeading(it.data.name ?: "")
+                    this.departmentId = it.data.id.toString()
                     handleCategoryDetailSuccess()
                 }
                 is Fail -> {
@@ -359,8 +404,8 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener,
                 }
             }
 
-            if (bundle.containsKey(EXTRA_CATEGORY_DEPARTMENT_ID)) {
-                departmentId = bundle.getString(EXTRA_CATEGORY_DEPARTMENT_ID, "")
+            if (bundle.containsKey(EXTRA_CATEGORY_CATEGORY_ID)) {
+                departmentId = bundle.getString(EXTRA_CATEGORY_CATEGORY_ID, "")
                 departmentName = bundle.getString(EXTRA_CATEGORY_DEPARTMENT_NAME, "")
 
                 if (bundle.containsKey(EXTRA_PARENT_ID)) {

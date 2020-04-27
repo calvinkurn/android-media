@@ -1,6 +1,6 @@
 package com.tokopedia.settingbank.addeditaccount.data
 
-import com.tokopedia.abstraction.common.data.model.response.DataResponse
+import com.tokopedia.network.data.model.response.DataResponse
 import com.tokopedia.settingbank.addeditaccount.domain.pojo.AddBankAccountPojo
 import com.tokopedia.settingbank.addeditaccount.domain.pojo.EditBankAccountPojo
 import com.tokopedia.settingbank.addeditaccount.domain.pojo.ValidateBankAccountPojo

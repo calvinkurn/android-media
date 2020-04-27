@@ -5,27 +5,25 @@ import com.google.gson.Gson
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.promocheckout.common.R
 import com.tokopedia.promocheckout.common.domain.model.clearpromo.ClearCacheAutoApplyStackResponse
 import com.tokopedia.usecase.RequestParams
+import com.tokopedia.usecase.UseCase
 import rx.Observable
-import rx.Subscriber
+import rx.android.schedulers.AndroidSchedulers
+import rx.schedulers.Schedulers
 import javax.inject.Inject
 
 /**
  * Created by Irfan Khoirul on 18/03/19.
  */
 
-class ClearCacheAutoApplyStackUseCase @Inject constructor(@ApplicationContext val context: Context) : GraphqlUseCase() {
+class ClearCacheAutoApplyStackUseCase @Inject constructor(@ApplicationContext val context: Context) : UseCase<ClearCacheAutoApplyStackResponse>() {
 
     var queryString: String = ""
 
     companion object {
-        val PARAM_SERVICE_ID = "serviceID"
-        val PARAM_PROMO_CODE = "promoCode"
-
         val PARAM_VALUE_MARKETPLACE = "marketplace"
 
         val PARAM_PLACEHOLDER_SERVICE_ID = "#serviceId"
@@ -39,12 +37,18 @@ class ClearCacheAutoApplyStackUseCase @Inject constructor(@ApplicationContext va
         queryString = queryString.replace(PARAM_PLACEHOLDER_PROMO_CODE, Gson().toJson(promoCodeList))
     }
 
-    override fun createObservable(params: RequestParams?): Observable<GraphqlResponse> {
+    override fun createObservable(params: RequestParams?): Observable<ClearCacheAutoApplyStackResponse> {
         val graphqlRequest = GraphqlRequest(queryString, ClearCacheAutoApplyStackResponse::class.java)
-        clearRequest()
-        addRequest(graphqlRequest)
+        val graphqlUseCase = GraphqlUseCase()
+        graphqlUseCase.clearRequest()
+        graphqlUseCase.addRequest(graphqlRequest)
 
-        return super.createObservable(params)
+        return graphqlUseCase.createObservable(RequestParams.EMPTY)
+                .map {
+                    it.getData<ClearCacheAutoApplyStackResponse>(ClearCacheAutoApplyStackResponse::class.java)
+                }
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
     }
 
 }

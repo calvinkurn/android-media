@@ -30,7 +30,6 @@ import static com.tokopedia.authentication.AuthHelper.getUserAgent;
 
 public class GraphqlClient {
     private static Retrofit sRetrofit = null;
-    private static GraphqlApi sGraphqlApi = null;
     private static FingerprintManager sFingerprintManager;
     private static GraphqlDatabase sGraphqlDatabase;
 

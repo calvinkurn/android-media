@@ -29,7 +29,7 @@ public class ChooseAccountViewModel {
     }
 
     public String getPhoneNumber() {
-        return phoneNumber;
+        return phoneNumber.replace("-", "");
     }
 
     //UUID

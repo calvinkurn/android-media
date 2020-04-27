@@ -5,7 +5,7 @@ import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCart;
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsChangeAddress;
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection;
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsMultipleAddress;
-import com.tokopedia.tracking.view.OrderAnalyticsOrderTracking;
+import com.tokopedia.logisticorder.view.OrderAnalyticsOrderTracking;
 
 import dagger.Module;
 import dagger.Provides;

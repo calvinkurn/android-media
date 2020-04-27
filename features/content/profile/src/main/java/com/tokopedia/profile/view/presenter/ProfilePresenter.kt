@@ -1,7 +1,7 @@
 package com.tokopedia.profile.view.presenter
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
-import com.tokopedia.abstraction.common.utils.GlobalConfig
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.affiliatecommon.domain.DeletePostUseCase
 import com.tokopedia.affiliatecommon.domain.TrackAffiliateClickUseCase
@@ -9,17 +9,11 @@ import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.feedcomponent.data.pojo.FeedPostRelated
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem
-import com.tokopedia.feedcomponent.domain.model.statistic.FeedGetStatsPosts
 import com.tokopedia.feedcomponent.domain.usecase.GetPostStatisticCommissionUseCase
 import com.tokopedia.feedcomponent.domain.usecase.GetRelatedPostUseCase
 import com.tokopedia.feedcomponent.view.mapper.PostStatisticMapper
 import com.tokopedia.feedcomponent.view.subscriber.TrackPostClickSubscriber
 import com.tokopedia.feedcomponent.view.viewmodel.statistic.PostStatisticCommissionUiModel
-import com.tokopedia.feedcomponent.view.viewmodel.statistic.PostStatisticDetailType
-import com.tokopedia.feedcomponent.view.viewmodel.statistic.PostStatisticDetailUiModel
-import com.tokopedia.kotlin.extensions.view.toCompactAmountString
-import com.tokopedia.kotlin.extensions.view.toLongOrZero
-import com.tokopedia.profile.R
 import com.tokopedia.profile.domain.usecase.GetDynamicFeedProfileFirstUseCase
 import com.tokopedia.profile.domain.usecase.GetDynamicFeedProfileUseCase
 import com.tokopedia.profile.domain.usecase.ShouldChangeUsernameUseCase

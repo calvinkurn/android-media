@@ -57,17 +57,17 @@ import com.tokopedia.purchase_platform.features.express_checkout.domain.model.at
 import com.tokopedia.purchase_platform.features.express_checkout.domain.model.atc.WholesalePriceModel
 import com.tokopedia.purchase_platform.features.express_checkout.view.profile.CheckoutProfileBottomSheet
 import com.tokopedia.purchase_platform.features.express_checkout.view.profile.CheckoutProfileFragmentListener
-import com.tokopedia.purchase_platform.features.express_checkout.view.profile.viewmodel.ProfileViewModel
+import com.tokopedia.purchase_platform.features.express_checkout.view.profile.uimodel.ProfileUiModel
 import com.tokopedia.purchase_platform.features.express_checkout.view.variant.adapter.CheckoutVariantAdapter
 import com.tokopedia.purchase_platform.features.express_checkout.view.variant.adapter.CheckoutVariantAdapterTypeFactory
 import com.tokopedia.purchase_platform.features.express_checkout.view.variant.analytics.ExpressCheckoutAnalyticsTracker
 import com.tokopedia.purchase_platform.features.express_checkout.view.variant.di.DaggerCheckoutVariantComponent
 import com.tokopedia.purchase_platform.features.express_checkout.view.variant.util.isOnboardingStateHasNotShown
 import com.tokopedia.purchase_platform.features.express_checkout.view.variant.util.setOnboardingStateHasNotShown
-import com.tokopedia.purchase_platform.features.express_checkout.view.variant.viewmodel.*
-import com.tokopedia.purchase_platform.features.express_checkout.view.variant.viewmodel.OptionVariantViewModel.Companion.STATE_NOT_AVAILABLE
-import com.tokopedia.purchase_platform.features.express_checkout.view.variant.viewmodel.OptionVariantViewModel.Companion.STATE_NOT_SELECTED
-import com.tokopedia.purchase_platform.features.express_checkout.view.variant.viewmodel.OptionVariantViewModel.Companion.STATE_SELECTED
+import com.tokopedia.purchase_platform.features.express_checkout.view.variant.uimodel.*
+import com.tokopedia.purchase_platform.features.express_checkout.view.variant.uimodel.OptionVariantUiModel.Companion.STATE_NOT_AVAILABLE
+import com.tokopedia.purchase_platform.features.express_checkout.view.variant.uimodel.OptionVariantUiModel.Companion.STATE_NOT_SELECTED
+import com.tokopedia.purchase_platform.features.express_checkout.view.variant.uimodel.OptionVariantUiModel.Companion.STATE_SELECTED
 import kotlinx.android.synthetic.main.fragment_detail_product_page.*
 import rx.Observable
 import rx.Subscriber
@@ -90,7 +90,7 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
     @Inject
     lateinit var itemDecorator: CheckoutVariantItemDecorator
     @Inject
-    lateinit var fragmentViewModel: FragmentViewModel
+    lateinit var fragmentUiModel: FragmentUiModel
     @Inject
     lateinit var compositeSubscription: CompositeSubscription
     @Inject
@@ -259,7 +259,7 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
 
     override fun onClickEditProfile() {
         if (!checkoutProfileBottomSheet.isAdded) {
-            checkoutProfileBottomSheet.updateArguments(fragmentViewModel.getProfileViewModel())
+            checkoutProfileBottomSheet.updateArguments(fragmentUiModel.getProfileViewModel())
             activity?.supportFragmentManager?.run {
                 checkoutProfileBottomSheet.show(this, "")
             }
@@ -271,12 +271,12 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
     }
 
     override fun showDurationOptions() {
-        val shippingParam = presenter.getShippingParam(fragmentViewModel.getQuantityViewModel()?.orderQuantity
-            ?: 0, fragmentViewModel.getProductViewModel()?.productPrice?.toLong() ?: 0)
-        val shopShipmentList = fragmentViewModel.atcResponseModel?.atcDataModel?.cartModel?.groupShopModels?.get(0)?.shopShipmentModels
-        val selectedServiceId = fragmentViewModel.getProfileViewModel()?.shippingDurationId
+        val shippingParam = presenter.getShippingParam(fragmentUiModel.getQuantityViewModel()?.orderQuantity
+            ?: 0, fragmentUiModel.getProductViewModel()?.productPrice?.toLong() ?: 0)
+        val shopShipmentList = fragmentUiModel.atcResponseModel?.atcDataModel?.cartModel?.groupShopModels?.get(0)?.shopShipmentModels
+        val selectedServiceId = fragmentUiModel.getProfileViewModel()?.shippingDurationId
         shippingDurationBottomsheet.updateArguments(shippingParam, selectedServiceId
-            ?: 0, -1, true, shopShipmentList)
+            ?: 0, shopShipmentList)
         if (!shippingDurationBottomsheet.isAdded) {
             activity?.supportFragmentManager?.run {
                 shippingDurationBottomsheet.show(this, "")
@@ -285,13 +285,13 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
     }
 
     override fun showDurationOptions(latitude: String, longitude: String) {
-        fragmentViewModel.atcResponseModel?.atcDataModel?.userProfileModelDefaultModel?.addressModel?.latitude = latitude
-        fragmentViewModel.atcResponseModel?.atcDataModel?.userProfileModelDefaultModel?.addressModel?.longitude = longitude
+        fragmentUiModel.atcResponseModel?.atcDataModel?.userProfileModelDefaultModel?.addressModel?.latitude = latitude
+        fragmentUiModel.atcResponseModel?.atcDataModel?.userProfileModelDefaultModel?.addressModel?.longitude = longitude
         showDurationOptions()
     }
 
     override fun onClickEditCourier() {
-        shippingCourierBottomsheet.updateArguments(fragmentViewModel.shippingCourierViewModels)
+        shippingCourierBottomsheet.updateArguments(fragmentUiModel.shippingCourierUiModels)
         if (!shippingCourierBottomsheet.isAdded) {
             activity?.supportFragmentManager?.run {
                 shippingCourierBottomsheet.show(this, "")
@@ -305,7 +305,7 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
             tooltip.setTitle(activity?.getString(R.string.title_bottomsheet_insurance))
             tooltip.setDesc(insuranceInfo)
             tooltip.setTextButton(activity?.getString(R.string.label_button_bottomsheet_close))
-            tooltip.setIcon(R.drawable.ic_insurance)
+            tooltip.setIcon(R.drawable.ic_pp_insurance)
             tooltip.btnAction.setOnClickListener {
                 tooltip.dismiss()
             }
@@ -313,20 +313,20 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
         }
     }
 
-    override fun onChangeVariant(selectedOptionViewModel: OptionVariantViewModel) {
-        val productViewModel = fragmentViewModel.getProductViewModel()
-        val summaryViewModel = fragmentViewModel.getSummaryViewModel()
-        val quantityViewModel = fragmentViewModel.getQuantityViewModel()
+    override fun onChangeVariant(selectedOptionUiModel: OptionVariantUiModel) {
+        val productViewModel = fragmentUiModel.getProductViewModel()
+        val summaryViewModel = fragmentUiModel.getSummaryViewModel()
+        val quantityViewModel = fragmentUiModel.getQuantityViewModel()
 
         if (productViewModel != null && productViewModel.productChildrenList.isNotEmpty()) {
             var selectedKey = 0
             for ((key, value) in productViewModel.selectedVariantOptionsIdMap) {
-                if (key == selectedOptionViewModel.variantId && value != selectedOptionViewModel.optionId) {
+                if (key == selectedOptionUiModel.variantId && value != selectedOptionUiModel.optionId) {
                     selectedKey = key
                 }
             }
             if (selectedKey != 0) {
-                productViewModel.selectedVariantOptionsIdMap[selectedKey] = selectedOptionViewModel.optionId
+                productViewModel.selectedVariantOptionsIdMap[selectedKey] = selectedOptionUiModel.optionId
             }
 
             // Check is product child for selected variant is available
@@ -348,33 +348,33 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
                 for (productChild: ProductChild in productViewModel.productChildrenList) {
                     productChild.isSelected = productChild.productId == newSelectedProductChild.productId
                 }
-                onNeedToNotifySingleItem(fragmentViewModel.getIndex(productViewModel))
+                onNeedToNotifySingleItem(fragmentUiModel.getIndex(productViewModel))
 
                 if (summaryViewModel != null) {
                     summaryViewModel.itemPrice = quantityViewModel?.orderQuantity?.times(newSelectedProductChild.productPrice.toLong())
                         ?: 0
-                    onNeedToNotifySingleItem(fragmentViewModel.getIndex(summaryViewModel))
+                    onNeedToNotifySingleItem(fragmentUiModel.getIndex(summaryViewModel))
                 }
 
-                val variantTypeViewModels = fragmentViewModel.getVariantTypeViewModel()
-                for (variantTypeViewModel: TypeVariantViewModel in variantTypeViewModels) {
-                    if (variantTypeViewModel.variantId == selectedOptionViewModel.variantId) {
-                        variantTypeViewModel.variantSelectedValue = selectedOptionViewModel.variantName
-                        onNeedToNotifySingleItem(fragmentViewModel.getIndex(variantTypeViewModel))
+                val variantTypeViewModels = fragmentUiModel.getVariantTypeViewModel()
+                for (variantTypeUiModel: TypeVariantUiModel in variantTypeViewModels) {
+                    if (variantTypeUiModel.variantId == selectedOptionUiModel.variantId) {
+                        variantTypeUiModel.variantSelectedValue = selectedOptionUiModel.variantName
+                        onNeedToNotifySingleItem(fragmentUiModel.getIndex(variantTypeUiModel))
                         break
                     }
                 }
 
-                for (variantTypeViewModel: TypeVariantViewModel in variantTypeViewModels) {
-                    if (variantTypeViewModel.variantId != selectedOptionViewModel.variantId) {
-                        for (optionViewModel: OptionVariantViewModel in variantTypeViewModel.variantOptions) {
+                for (variantTypeUiModel: TypeVariantUiModel in variantTypeViewModels) {
+                    if (variantTypeUiModel.variantId != selectedOptionUiModel.variantId) {
+                        for (optionUiModel: OptionVariantUiModel in variantTypeUiModel.variantOptions) {
 
                             // Get other variant type selected option id
                             val otherVariantSelectedOptionIds = ArrayList<Int>()
-                            for (otherVariantViewModel: TypeVariantViewModel in variantTypeViewModels) {
-                                if (otherVariantViewModel.variantId != variantTypeViewModel.variantId &&
-                                    otherVariantViewModel.variantId != selectedOptionViewModel.variantId) {
-                                    for (otherVariantTypeOption: OptionVariantViewModel in otherVariantViewModel.variantOptions) {
+                            for (otherVariantUiModel: TypeVariantUiModel in variantTypeViewModels) {
+                                if (otherVariantUiModel.variantId != variantTypeUiModel.variantId &&
+                                    otherVariantUiModel.variantId != selectedOptionUiModel.variantId) {
+                                    for (otherVariantTypeOption: OptionVariantUiModel in otherVariantUiModel.variantOptions) {
                                         if (otherVariantTypeOption.currentState == STATE_SELECTED) {
                                             otherVariantSelectedOptionIds.add(otherVariantTypeOption.optionId)
                                             break
@@ -386,20 +386,20 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
                             // Look for available child
                             var hasAvailableChild = false
                             for (productChild: ProductChild in productViewModel.productChildrenList) {
-                                hasAvailableChild = checkChildAvailable(productChild, optionViewModel.optionId, selectedOptionViewModel.optionId, otherVariantSelectedOptionIds)
+                                hasAvailableChild = checkChildAvailable(productChild, optionUiModel.optionId, selectedOptionUiModel.optionId, otherVariantSelectedOptionIds)
                                 if (hasAvailableChild) break
                             }
 
                             // Set option id state with checking result
                             if (!hasAvailableChild) {
-                                optionViewModel.hasAvailableChild = false
-                                optionViewModel.currentState = STATE_NOT_AVAILABLE
-                            } else if (optionViewModel.currentState != STATE_SELECTED) {
-                                optionViewModel.hasAvailableChild = true
-                                optionViewModel.currentState = STATE_NOT_SELECTED
+                                optionUiModel.hasAvailableChild = false
+                                optionUiModel.currentState = STATE_NOT_AVAILABLE
+                            } else if (optionUiModel.currentState != STATE_SELECTED) {
+                                optionUiModel.hasAvailableChild = true
+                                optionUiModel.currentState = STATE_NOT_SELECTED
                             }
                         }
-                        onNeedToNotifySingleItem(fragmentViewModel.getIndex(variantTypeViewModel))
+                        onNeedToNotifySingleItem(fragmentUiModel.getIndex(variantTypeUiModel))
                     }
                 }
 
@@ -409,12 +409,12 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
                     } else {
                         quantityViewModel.maxOrderQuantity = newSelectedProductChild.stock
                     }
-                    onNeedToNotifySingleItem(fragmentViewModel.getIndex(quantityViewModel))
+                    onNeedToNotifySingleItem(fragmentUiModel.getIndex(quantityViewModel))
                 }
             }
 
             reloadRatesDebounceListener.onNeedToRecalculateRates(false)
-            fragmentViewModel.isStateChanged = true
+            fragmentUiModel.isStateChanged = true
         }
     }
 
@@ -439,25 +439,25 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
         return productChild.isAvailable && currentChangedOptionIdAvailable && optionViewModelIdAvailable && otherSelectedOptionIdCountEqual
     }
 
-    override fun onChangeQuantity(quantityViewModel: QuantityViewModel) {
-        val productViewModel = fragmentViewModel.getProductViewModel()
-        val summaryViewModel = fragmentViewModel.getSummaryViewModel()
+    override fun onChangeQuantity(quantityUiModel: QuantityUiModel) {
+        val productViewModel = fragmentUiModel.getProductViewModel()
+        val summaryViewModel = fragmentUiModel.getSummaryViewModel()
 
-        if (fragmentViewModel.atcResponseModel?.atcDataModel?.cartModel?.groupShopModels?.get(0)?.productModels?.get(0)?.wholesalePriceModel?.isNotEmpty() == true) {
-            val wholesalePriceModels = fragmentViewModel.atcResponseModel?.atcDataModel?.cartModel?.groupShopModels?.get(0)?.productModels?.get(0)?.wholesalePriceModel?.asReversed()
+        if (fragmentUiModel.atcResponseModel?.atcDataModel?.cartModel?.groupShopModels?.get(0)?.productModels?.get(0)?.wholesalePriceModel?.isNotEmpty() == true) {
+            val wholesalePriceModels = fragmentUiModel.atcResponseModel?.atcDataModel?.cartModel?.groupShopModels?.get(0)?.productModels?.get(0)?.wholesalePriceModel?.asReversed()
             if (wholesalePriceModels != null) {
                 var eligibleForWholesalePrice = false
                 for (wholesalePriceModel: WholesalePriceModel in wholesalePriceModels) {
-                    if (quantityViewModel.orderQuantity >= wholesalePriceModel.qtyMax ||
-                        (quantityViewModel.orderQuantity < wholesalePriceModel.qtyMax &&
-                            quantityViewModel.orderQuantity >= wholesalePriceModel.qtyMin)) {
+                    if (quantityUiModel.orderQuantity >= wholesalePriceModel.qtyMax ||
+                        (quantityUiModel.orderQuantity < wholesalePriceModel.qtyMax &&
+                            quantityUiModel.orderQuantity >= wholesalePriceModel.qtyMin)) {
                         productViewModel?.productPrice = wholesalePriceModel.prdPrc
                         eligibleForWholesalePrice = true
                         break
                     }
                 }
                 if (!eligibleForWholesalePrice) {
-                    productViewModel?.productPrice = fragmentViewModel.atcResponseModel?.atcDataModel?.cartModel?.groupShopModels?.get(0)?.productModels?.get(0)?.productPrice
+                    productViewModel?.productPrice = fragmentUiModel.atcResponseModel?.atcDataModel?.cartModel?.groupShopModels?.get(0)?.productModels?.get(0)?.productPrice
                         ?: 0
                 }
             }
@@ -466,62 +466,62 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
         if (productViewModel?.productChildrenList != null && productViewModel.productChildrenList.size > 0) {
             for (productChild: ProductChild in productViewModel.productChildrenList) {
                 if (productChild.isSelected) {
-                    summaryViewModel?.itemPrice = productChild.productPrice.toLong() * quantityViewModel.orderQuantity
+                    summaryViewModel?.itemPrice = productChild.productPrice.toLong() * quantityUiModel.orderQuantity
                     break
                 }
             }
         } else {
-            summaryViewModel?.itemPrice = productViewModel?.productPrice?.toLong()?.times(quantityViewModel.orderQuantity)
+            summaryViewModel?.itemPrice = productViewModel?.productPrice?.toLong()?.times(quantityUiModel.orderQuantity)
                 ?: 0
         }
 
         if (summaryViewModel != null) {
-            onNeedToNotifySingleItem(fragmentViewModel.getIndex(summaryViewModel))
+            onNeedToNotifySingleItem(fragmentUiModel.getIndex(summaryViewModel))
             onSummaryChanged(summaryViewModel)
         }
 
-        onNeedToNotifySingleItem(fragmentViewModel.getIndex(quantityViewModel))
+        onNeedToNotifySingleItem(fragmentUiModel.getIndex(quantityUiModel))
         reloadRatesDebounceListener.onNeedToRecalculateRates(false)
-        fragmentViewModel.isStateChanged = true
+        fragmentUiModel.isStateChanged = true
     }
 
-    override fun onChangeNote(noteViewModel: NoteViewModel) {
-        if (fragmentViewModel.isStateChanged == false && noteViewModel.note.isNotEmpty()) {
-            fragmentViewModel.isStateChanged = true
+    override fun onChangeNote(noteUiModel: NoteUiModel) {
+        if (fragmentUiModel.isStateChanged == false && noteUiModel.note.isNotEmpty()) {
+            fragmentUiModel.isStateChanged = true
         }
     }
 
-    override fun onSummaryChanged(summaryViewModel: SummaryViewModel?) {
-        val totalPayment = summaryViewModel?.itemPrice?.plus(summaryViewModel.shippingPrice)?.plus(summaryViewModel.servicePrice)?.plus(summaryViewModel.insurancePrice)
-        fragmentViewModel.totalPayment = totalPayment
+    override fun onSummaryChanged(summaryUiModel: SummaryUiModel?) {
+        val totalPayment = summaryUiModel?.itemPrice?.plus(summaryUiModel.shippingPrice)?.plus(summaryUiModel.servicePrice)?.plus(summaryUiModel.insurancePrice)
+        fragmentUiModel.totalPayment = totalPayment
 
-        tv_total_payment_value.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(fragmentViewModel.totalPayment
+        tv_total_payment_value.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(fragmentUiModel.totalPayment
             ?: 0, false)
     }
 
-    override fun onInsuranceCheckChanged(insuranceViewModel: InsuranceViewModel) {
-        val summaryViewModel = fragmentViewModel.getSummaryViewModel()
+    override fun onInsuranceCheckChanged(insuranceUiModel: InsuranceUiModel) {
+        val summaryViewModel = fragmentUiModel.getSummaryViewModel()
         if (summaryViewModel != null) {
-            if (insuranceViewModel.isChecked) {
-                summaryViewModel.insurancePrice = insuranceViewModel.insurancePrice
+            if (insuranceUiModel.isChecked) {
+                summaryViewModel.insurancePrice = insuranceUiModel.insurancePrice
                 summaryViewModel.isUseInsurance = true
             } else {
                 summaryViewModel.insurancePrice = 0
                 summaryViewModel.isUseInsurance = false
             }
 
-            onNeedToNotifySingleItem(fragmentViewModel.getIndex(summaryViewModel))
+            onNeedToNotifySingleItem(fragmentUiModel.getIndex(summaryViewModel))
         }
-        onNeedToNotifySingleItem(fragmentViewModel.getIndex(insuranceViewModel))
-        fragmentViewModel.isStateChanged = true
+        onNeedToNotifySingleItem(fragmentUiModel.getIndex(insuranceUiModel))
+        fragmentUiModel.isStateChanged = true
     }
 
     override fun onNeedToValidateButtonBuyVisibility() {
         var hasError = false
         when {
-            fragmentViewModel.getProfileViewModel()?.isDurationError == true -> hasError = true
-            fragmentViewModel.getProfileViewModel()?.isCourierError == true -> hasError = true
-            fragmentViewModel.getQuantityViewModel()?.isStateError == true -> hasError = true
+            fragmentUiModel.getProfileViewModel()?.isDurationError == true -> hasError = true
+            fragmentUiModel.getProfileViewModel()?.isCourierError == true -> hasError = true
+            fragmentUiModel.getQuantityViewModel()?.isStateError == true -> hasError = true
         }
 
         if (activity != null) {
@@ -530,13 +530,13 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
                 bt_buy.setOnClickListener { }
             } else {
                 bt_buy.background = ContextCompat.getDrawable(activity as Context, R.drawable.bg_button_orange_enabled)
-                bt_buy.setOnClickListener { presenter.checkoutExpress(fragmentViewModel, trackerAttribution, trackerListName) }
+                bt_buy.setOnClickListener { presenter.checkoutExpress(fragmentUiModel, trackerAttribution, trackerListName) }
             }
         }
     }
 
     override fun onNeedToRecalculateRatesAfterChangeTemplate() {
-        fragmentViewModel.getProfileViewModel()?.isStateHasChangedProfile = false
+        fragmentUiModel.getProfileViewModel()?.isStateHasChangedProfile = false
         reloadRatesDebounceListener.onNeedToRecalculateRates(true)
     }
 
@@ -548,23 +548,23 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
         return compositeSubscription
     }
 
-    override fun onBindProductUpdateQuantityViewModel(productViewModel: ProductViewModel, stockWording: String) {
-        val quantityViewModel = fragmentViewModel.getQuantityViewModel()
+    override fun onBindProductUpdateQuantityViewModel(productUiModel: ProductUiModel, stockWording: String) {
+        val quantityViewModel = fragmentUiModel.getQuantityViewModel()
         if (quantityViewModel != null) {
-            quantityViewModel.maxOrderQuantity = productViewModel.maxOrderQuantity
+            quantityViewModel.maxOrderQuantity = productUiModel.maxOrderQuantity
             quantityViewModel.stockWording = stockWording
-            onNeedToNotifySingleItem(fragmentViewModel.getIndex(quantityViewModel))
+            onNeedToNotifySingleItem(fragmentUiModel.getIndex(quantityViewModel))
         }
     }
 
-    override fun onBindVariantGetProductViewModel(): ProductViewModel? {
-        return fragmentViewModel.getProductViewModel()
+    override fun onBindVariantGetProductViewModel(): ProductUiModel? {
+        return fragmentUiModel.getProductViewModel()
     }
 
     override fun onBindVariantUpdateProductViewModel() {
-        val productViewModel = fragmentViewModel.getProductViewModel()
+        val productViewModel = fragmentUiModel.getProductViewModel()
         if (productViewModel != null) {
-            onNeedToNotifySingleItem(fragmentViewModel.getIndex(productViewModel))
+            onNeedToNotifySingleItem(fragmentUiModel.getIndex(productViewModel))
         }
     }
 
@@ -588,14 +588,14 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
     }
 
     override fun generateFingerprintPublicKey() {
-        if (!fragmentViewModel.hasGenerateFingerprintPublicKey) {
+        if (!fragmentUiModel.hasGenerateFingerprintPublicKey) {
             context?.run {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
                         FingerprintUtil.getEnableFingerprintPayment(this)) {
                     val publicKey = FingerPrintDialog.generatePublicKey(this)
                     if (publicKey != null) {
-                        fragmentViewModel.fingerprintPublicKey = FingerPrintDialog.getPublicKey(publicKey)
-                        fragmentViewModel.hasGenerateFingerprintPublicKey = true
+                        fragmentUiModel.fingerprintPublicKey = FingerPrintDialog.getPublicKey(publicKey)
+                        fragmentUiModel.hasGenerateFingerprintPublicKey = true
                     }
                 }
             }
@@ -627,7 +627,7 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
     }
 
     override fun navigateCheckoutToThankYouPage(appLink: String) {
-        var eventLabel = if (fragmentViewModel.getProfileViewModel()?.isStateHasChangedProfile == false) {
+        var eventLabel = if (fragmentUiModel.getProfileViewModel()?.isStateHasChangedProfile == false) {
             ConstantTransactionAnalytics.EventLabel.SUCCESS_DEFAULT
         } else {
             ConstantTransactionAnalytics.EventLabel.SUCCESS_NOT_DEFAULT
@@ -645,7 +645,7 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
         fragmentManager?.run {
             errorBottomsheets.show(this, title)
         }
-        fragmentViewModel.isStateChanged = true
+        fragmentUiModel.isStateChanged = true
     }
 
     override fun showErrorCourier(message: String) {
@@ -657,7 +657,7 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
             }
         }
         analyticsTracker.eventClickBuyAndError(message)
-        fragmentViewModel.isStateChanged = true
+        fragmentUiModel.isStateChanged = true
     }
 
     override fun showErrorNotAvailable(message: String) {
@@ -668,7 +668,7 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
             }
         }
         analyticsTracker.eventClickBuyAndError(message)
-        fragmentViewModel.isStateChanged = true
+        fragmentUiModel.isStateChanged = true
     }
 
     override fun showErrorAPI(retryAction: String) {
@@ -677,23 +677,23 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
         errorBottomsheets.actionListener = object : ErrorBottomsheetsActionListenerWithRetry {
             override fun onActionButtonClicked() {
                 errorBottomsheets.dismiss()
-                presenter.checkoutOneClickShipment(fragmentViewModel, trackerAttribution, trackerListName)
+                presenter.checkoutOneClickShipment(fragmentUiModel, trackerAttribution, trackerListName)
             }
 
             override fun onRetryClicked() {
                 errorBottomsheets.dismiss()
                 when (retryAction) {
                     RETRY_ACTION_RELOAD_EXPRESS_CHECKOUT -> {
-                        presenter.checkoutExpress(fragmentViewModel, trackerAttribution, trackerListName)
+                        presenter.checkoutExpress(fragmentUiModel, trackerAttribution, trackerListName)
                     }
                     RETRY_ACTION_RELOAD_CHECKOUT_FOR_PAYMENT -> {
-                        presenter.hitOldCheckout(fragmentViewModel)
+                        presenter.hitOldCheckout(fragmentUiModel)
                     }
                 }
             }
         }
         analyticsTracker.eventClickBuyAndError(message)
-        fragmentViewModel.isStateChanged = true
+        fragmentUiModel.isStateChanged = true
     }
 
     override fun showErrorPayment(message: String) {
@@ -701,14 +701,14 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
         errorBottomsheets.actionListener = object : ErrorBottomsheetsActionListener {
             override fun onActionButtonClicked() {
                 errorBottomsheets.dismiss()
-                presenter.hitOldCheckout(fragmentViewModel)
-                analyticsTracker.clickPilihMetodePembayaran(fragmentViewModel.getProfileViewModel()?.paymentDetail
+                presenter.hitOldCheckout(fragmentUiModel)
+                analyticsTracker.clickPilihMetodePembayaran(fragmentUiModel.getProfileViewModel()?.paymentDetail
                     ?: "")
             }
         }
         analyticsTracker.eventClickBuyAndError(message)
         analyticsTracker.viewErrorMetodePembayaran()
-        fragmentViewModel.isStateChanged = true
+        fragmentUiModel.isStateChanged = true
     }
 
     override fun showErrorPinpoint() {
@@ -719,13 +719,13 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
                 goToGeolocationActivity()
             }
         }
-        fragmentViewModel.isStateChanged = true
+        fragmentUiModel.isStateChanged = true
     }
 
     private fun goToGeolocationActivity() {
         val locationPass = LocationPass()
-        locationPass.districtName = fragmentViewModel.getProfileViewModel()?.districtName
-        locationPass.cityName = fragmentViewModel.getProfileViewModel()?.cityName
+        locationPass.districtName = fragmentUiModel.getProfileViewModel()?.districtName
+        locationPass.cityName = fragmentUiModel.getProfileViewModel()?.cityName
         activity?.run {
             val intent = RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.GEOLOCATION)
             val bundle = Bundle()
@@ -737,22 +737,22 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
     }
 
     override fun updateFragmentViewModel(atcResponseModel: AtcResponseModel) {
-        fragmentViewModel.atcResponseModel = atcResponseModel
+        fragmentUiModel.atcResponseModel = atcResponseModel
     }
 
     override fun showData(viewModels: ArrayList<Visitable<*>>) {
-        for (viewModel: Visitable<*> in viewModels) {
-            if (viewModel is com.tokopedia.purchase_platform.features.express_checkout.view.variant.viewmodel.ProfileViewModel) {
-                viewModel.isFirstTimeShowProfile = isOnboardingStateHasNotShown(activity)
+        for (uiModel: Visitable<*> in viewModels) {
+            if (uiModel is com.tokopedia.purchase_platform.features.express_checkout.view.variant.uimodel.ProfileUiModel) {
+                uiModel.isFirstTimeShowProfile = isOnboardingStateHasNotShown(activity)
                 break
             }
         }
-        fragmentViewModel.viewModels = viewModels
+        fragmentUiModel.viewModels = viewModels
         adapter.clearAllElements()
         adapter.addDataViewModel(viewModels)
         adapter.notifyDataSetChanged()
 
-        onSummaryChanged(fragmentViewModel.getSummaryViewModel())
+        onSummaryChanged(fragmentUiModel.getSummaryViewModel())
 
         rl_bottom_action_container.visibility = View.VISIBLE
         img_total_payment_info.setOnClickListener {
@@ -771,8 +771,8 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
         actionField.setOption(if (step == EnhancedECommerceActionField.STEP_1) EnhancedECommerceActionField.OPTION_CLICK_CHECKOUT else EnhancedECommerceActionField.OPTION_CLICK_BAYAR)
 
         val product = EnhancedECommerceProductCartMapData()
-        val shopModel = fragmentViewModel.atcResponseModel?.atcDataModel?.cartModel?.groupShopModels?.get(0)?.shopModel
-        val productChildren = fragmentViewModel.getProductViewModel()?.productChildrenList
+        val shopModel = fragmentUiModel.atcResponseModel?.atcDataModel?.cartModel?.groupShopModels?.get(0)?.shopModel
+        val productChildren = fragmentUiModel.getProductViewModel()?.productChildrenList
         if (productChildren != null && productChildren.isNotEmpty()) {
             for (productChild: ProductChild in productChildren) {
                 if (productChild.isSelected) {
@@ -783,9 +783,9 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
                 }
             }
         } else {
-            product.setProductName(fragmentViewModel.getProductViewModel()?.productName)
-            product.setProductID(fragmentViewModel.getProductViewModel()?.parentId?.toString())
-            product.setPrice(fragmentViewModel.getProductViewModel()?.productPrice?.toString())
+            product.setProductName(fragmentUiModel.getProductViewModel()?.productName)
+            product.setProductID(fragmentUiModel.getProductViewModel()?.parentId?.toString())
+            product.setPrice(fragmentUiModel.getProductViewModel()?.productPrice?.toString())
         }
 
         if (shopModel?.isOfficial == 1) {
@@ -796,7 +796,7 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
             product.setShopType(EnhancedECommerceProductCartMapData.SHOP_TYPE_REGULER)
         }
 
-        product.setQty(fragmentViewModel.getQuantityViewModel()?.orderQuantity ?: 0)
+        product.setQty(fragmentUiModel.getQuantityViewModel()?.orderQuantity ?: 0)
         product.setShopId(shopModel?.shopId?.toString())
         product.setShopName(shopModel?.shopName)
 
@@ -810,54 +810,54 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
     }
 
     override fun setShippingDurationError(message: String) {
-        val profileViewModel = fragmentViewModel.getProfileViewModel()
+        val profileViewModel = fragmentUiModel.getProfileViewModel()
         if (profileViewModel != null) {
             profileViewModel.isDurationError = true
             profileViewModel.durationErrorMessage = message
             profileViewModel.shippingCourierId = 0
             profileViewModel.shippingDurationId = 0
-            onNeedToNotifySingleItem(fragmentViewModel.getIndex(profileViewModel))
+            onNeedToNotifySingleItem(fragmentUiModel.getIndex(profileViewModel))
         }
-        fragmentViewModel.isStateChanged = true
-        val insuranceViewModel = fragmentViewModel.getInsuranceViewModel()
+        fragmentUiModel.isStateChanged = true
+        val insuranceViewModel = fragmentUiModel.getInsuranceViewModel()
         if (insuranceViewModel != null) {
             insuranceViewModel.isVisible = false
-            onNeedToNotifySingleItem(fragmentViewModel.getIndex(insuranceViewModel))
+            onNeedToNotifySingleItem(fragmentUiModel.getIndex(insuranceViewModel))
         }
     }
 
     override fun setShippingCourierError(message: String) {
-        val profileViewModel = fragmentViewModel.getProfileViewModel()
+        val profileViewModel = fragmentUiModel.getProfileViewModel()
         if (profileViewModel != null) {
             profileViewModel.isCourierError = true
             profileViewModel.courierErrorMessage = message
             profileViewModel.shippingCourierId = 0
-            onNeedToNotifySingleItem(fragmentViewModel.getIndex(profileViewModel))
+            onNeedToNotifySingleItem(fragmentUiModel.getIndex(profileViewModel))
         }
-        fragmentViewModel.isStateChanged = true
-        val insuranceViewModel = fragmentViewModel.getInsuranceViewModel()
+        fragmentUiModel.isStateChanged = true
+        val insuranceViewModel = fragmentUiModel.getInsuranceViewModel()
         if (insuranceViewModel != null) {
             insuranceViewModel.isVisible = false
-            onNeedToNotifySingleItem(fragmentViewModel.getIndex(insuranceViewModel))
+            onNeedToNotifySingleItem(fragmentUiModel.getIndex(insuranceViewModel))
         }
     }
 
-    override fun updateShippingData(productData: ProductData, serviceData: ServiceData, shippingCourierViewModels: MutableList<ShippingCourierViewModel>?) {
-        if (shippingCourierViewModels != null) {
-            for (shippingCourierViewModel: ShippingCourierViewModel in shippingCourierViewModels) {
-                if (shippingCourierViewModel.productData.isRecommend) {
-                    shippingCourierViewModel.isSelected = true
+    override fun updateShippingData(productData: ProductData, serviceData: ServiceData, shippingCourierUiModels: MutableList<ShippingCourierUiModel>?) {
+        if (shippingCourierUiModels != null) {
+            for (shippingCourierUiModel: ShippingCourierUiModel in shippingCourierUiModels) {
+                if (shippingCourierUiModel.productData.isRecommend) {
+                    shippingCourierUiModel.isSelected = true
                     break
                 }
             }
-            fragmentViewModel.shippingCourierViewModels = shippingCourierViewModels
+            fragmentUiModel.shippingCourierUiModels = shippingCourierUiModels
         }
 
-        val profileViewModel = fragmentViewModel.getProfileViewModel()
-        val insuranceViewModel = fragmentViewModel.getInsuranceViewModel()
-        val summaryViewModel = fragmentViewModel.getSummaryViewModel()
+        val profileViewModel = fragmentUiModel.getProfileViewModel()
+        val insuranceViewModel = fragmentUiModel.getInsuranceViewModel()
+        val summaryViewModel = fragmentUiModel.getSummaryViewModel()
 
-        val shopShipmentList = fragmentViewModel.atcResponseModel?.atcDataModel?.cartModel?.groupShopModels?.get(0)?.shopShipmentModels
+        val shopShipmentList = fragmentUiModel.atcResponseModel?.atcDataModel?.cartModel?.groupShopModels?.get(0)?.shopShipmentModels
         if (shopShipmentList != null) {
             for (shopShipment: ShopShipment in shopShipmentList) {
                 var foundData = false
@@ -882,7 +882,7 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
                 profileViewModel.shippingCourierId = productData.shipperProductId
                 profileViewModel.shippingDuration = serviceData.serviceName
                 profileViewModel.shippingDurationId = serviceData.serviceId
-                onNeedToNotifySingleItem(fragmentViewModel.getIndex(profileViewModel))
+                onNeedToNotifySingleItem(fragmentUiModel.getIndex(profileViewModel))
             }
         }
 
@@ -898,26 +898,26 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
                     productData.insurance.insuranceUsedDefault == InsuranceConstant.INSURANCE_USED_DEFAULT_YES ||
                     productData.insurance.insuranceType == InsuranceConstant.INSURANCE_TYPE_MUST
                 insuranceViewModel.isVisible = true
-                onNeedToNotifySingleItem(fragmentViewModel.getIndex(insuranceViewModel))
+                onNeedToNotifySingleItem(fragmentUiModel.getIndex(insuranceViewModel))
 
                 if (summaryViewModel != null) {
                     summaryViewModel.isUseInsurance = insuranceViewModel.isChecked
                     summaryViewModel.shippingPrice = productData.price.price
                     summaryViewModel.insurancePrice = if (insuranceViewModel.isChecked) productData.insurance.insurancePrice else 0
                     summaryViewModel.insuranceInfo = productData.insurance.insuranceUsedInfo
-                    onNeedToNotifySingleItem(fragmentViewModel.getIndex(summaryViewModel))
+                    onNeedToNotifySingleItem(fragmentUiModel.getIndex(summaryViewModel))
                 }
             } else {
                 insuranceViewModel.isChecked = false
                 insuranceViewModel.isVisible = false
-                onNeedToRemoveSingleItem(fragmentViewModel.getIndex(insuranceViewModel))
+                onNeedToRemoveSingleItem(fragmentUiModel.getIndex(insuranceViewModel))
 
                 if (summaryViewModel != null) {
                     summaryViewModel.isUseInsurance = false
                     summaryViewModel.shippingPrice = productData.price.price
                     summaryViewModel.insurancePrice = 0
                     summaryViewModel.insuranceInfo = ""
-                    onNeedToNotifySingleItem(fragmentViewModel.getIndex(summaryViewModel))
+                    onNeedToNotifySingleItem(fragmentUiModel.getIndex(summaryViewModel))
                 }
             }
         }
@@ -927,7 +927,7 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
         }
     }
 
-    override fun onShippingDurationChoosen(shippingCourierViewModels: MutableList<ShippingCourierViewModel>,
+    override fun onShippingDurationChoosen(shippingCourierUiModels: MutableList<ShippingCourierUiModel>,
                                            courierItemData: CourierItemData,
                                            recipientAddressModel: RecipientAddressModel,
                                            cartPosition: Int,
@@ -936,20 +936,20 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
                                            flagNeedToSetPinpoint: Boolean,
                                            isDurationClick: Boolean,
                                            isClearPromo: Boolean) {
-        if (shippingCourierViewModels != null) {
-            val summaryViewModel = fragmentViewModel.getSummaryViewModel()
+        if (shippingCourierUiModels != null) {
+            val summaryViewModel = fragmentUiModel.getSummaryViewModel()
             if (summaryViewModel != null) {
                 onSummaryChanged(summaryViewModel)
             }
-            fragmentViewModel.shippingCourierViewModels = shippingCourierViewModels
-            for (shippingCourierViewModel: ShippingCourierViewModel in shippingCourierViewModels) {
-                if (shippingCourierViewModel.productData.isRecommend || shippingCourierViewModel.serviceData.serviceId == selectedServiceId) {
-                    if (shippingCourierViewModel.serviceData.error != null &&
-                        !TextUtils.isEmpty(shippingCourierViewModel.serviceData.error.errorMessage) &&
-                        shippingCourierViewModel.serviceData.error.errorId == ErrorProductData.ERROR_PINPOINT_NEEDED) {
+            fragmentUiModel.shippingCourierUiModels = shippingCourierUiModels
+            for (shippingCourierUiModel: ShippingCourierUiModel in shippingCourierUiModels) {
+                if (shippingCourierUiModel.productData.isRecommend || shippingCourierUiModel.serviceData.serviceId == selectedServiceId) {
+                    if (shippingCourierUiModel.serviceData.error != null &&
+                        !TextUtils.isEmpty(shippingCourierUiModel.serviceData.error.errorMessage) &&
+                        shippingCourierUiModel.serviceData.error.errorId == ErrorProductData.ERROR_PINPOINT_NEEDED) {
                         goToGeolocationActivity()
                     } else {
-                        updateShippingData(shippingCourierViewModel.productData, shippingCourierViewModel.serviceData, shippingCourierViewModels)
+                        updateShippingData(shippingCourierUiModel.productData, shippingCourierUiModel.serviceData, shippingCourierUiModels)
                     }
                     break
                 }
@@ -957,7 +957,7 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
         }
     }
 
-    override fun onInsuranceSelectedStateChanged(element: InsuranceRecommendationViewModel?, isSelected: Boolean) {
+    override fun onInsuranceSelectedStateChanged(element: InsuranceRecommendationUiModel?, isSelected: Boolean) {
     }
 
     override fun sendEventInsuranceInfoClicked() {
@@ -978,10 +978,10 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
 
     }
 
-    override fun onCourierChoosen(shippingCourierViewModel: ShippingCourierViewModel, courierItemData: CourierItemData?,
+    override fun onCourierChoosen(shippingCourierUiModel: ShippingCourierUiModel, courierItemData: CourierItemData?,
                                   recipientAddressModel: RecipientAddressModel?, cartPosition: Int, hasCourierPromo: Boolean,
                                   isPromoCourier: Boolean, isNeedPinpoint: Boolean) {
-        updateShippingData(shippingCourierViewModel.productData, shippingCourierViewModel.serviceData, null)
+        updateShippingData(shippingCourierUiModel.productData, shippingCourierUiModel.serviceData, null)
     }
 
     override fun onCourierShipmentRecpmmendationCloseClicked() {
@@ -993,39 +993,39 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
     }
 
     override fun onContinueWithoutProfile() {
-        val profileViewModel = fragmentViewModel.getProfileViewModel()
+        val profileViewModel = fragmentUiModel.getProfileViewModel()
         if (profileViewModel != null) {
             profileViewModel.isStateHasRemovedProfile = true
             profileViewModel.isSelected = false
-            onNeedToNotifySingleItem(fragmentViewModel.getIndex(profileViewModel))
+            onNeedToNotifySingleItem(fragmentUiModel.getIndex(profileViewModel))
         }
         checkoutProfileBottomSheet.dismiss()
-        analyticsTracker.eventClickContinueWithoutTemplate(fragmentViewModel.isStateChanged == false)
+        analyticsTracker.eventClickContinueWithoutTemplate(fragmentUiModel.isStateChanged == false)
     }
 
-    override fun onProfileChanged(selectedProfileViewModel: ProfileViewModel) {
-        val currentProfileViewModel = fragmentViewModel.getProfileViewModel()
+    override fun onProfileChanged(selectedProfileUiModel: ProfileUiModel) {
+        val currentProfileViewModel = fragmentUiModel.getProfileViewModel()
         if (currentProfileViewModel != null) {
-            currentProfileViewModel.addressId = selectedProfileViewModel.addressId
-            currentProfileViewModel.addressDetail = selectedProfileViewModel.addressDetail
-            currentProfileViewModel.addressTitle = selectedProfileViewModel.addressTitle
-            currentProfileViewModel.cityName = selectedProfileViewModel.cityName
-            currentProfileViewModel.districtName = selectedProfileViewModel.districtName
+            currentProfileViewModel.addressId = selectedProfileUiModel.addressId
+            currentProfileViewModel.addressDetail = selectedProfileUiModel.addressDetail
+            currentProfileViewModel.addressTitle = selectedProfileUiModel.addressTitle
+            currentProfileViewModel.cityName = selectedProfileUiModel.cityName
+            currentProfileViewModel.districtName = selectedProfileUiModel.districtName
             currentProfileViewModel.isStateHasRemovedProfile = false
             currentProfileViewModel.isSelected = true
             currentProfileViewModel.isDurationError = false
             currentProfileViewModel.isCourierError = false
             currentProfileViewModel.isStateHasChangedProfile = true
             currentProfileViewModel.isShowDefaultProfileCheckBox =
-                selectedProfileViewModel.profileId != currentProfileViewModel.profileId
+                selectedProfileUiModel.profileId != currentProfileViewModel.profileId
             currentProfileViewModel.isEditable = false
             currentProfileViewModel.isDefaultProfileCheckboxChecked = false
-            currentProfileViewModel.paymentDetail = selectedProfileViewModel.paymentDetail
-            currentProfileViewModel.paymentOptionImageUrl = selectedProfileViewModel.paymentImageUrl
-            currentProfileViewModel.shippingDurationId = selectedProfileViewModel.durationId
-            currentProfileViewModel.shippingDuration = selectedProfileViewModel.durationDetail
+            currentProfileViewModel.paymentDetail = selectedProfileUiModel.paymentDetail
+            currentProfileViewModel.paymentOptionImageUrl = selectedProfileUiModel.paymentImageUrl
+            currentProfileViewModel.shippingDurationId = selectedProfileUiModel.durationId
+            currentProfileViewModel.shippingDuration = selectedProfileUiModel.durationDetail
 
-            onNeedToNotifySingleItem(fragmentViewModel.getIndex(currentProfileViewModel))
+            onNeedToNotifySingleItem(fragmentUiModel.getIndex(currentProfileViewModel))
         }
 
         checkoutProfileBottomSheet.dismiss()
@@ -1055,29 +1055,29 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
                 }
 
                 override fun onNext(forceReload: Boolean) {
-                    if (forceReload || fragmentViewModel.getQuantityViewModel()?.orderQuantity != fragmentViewModel.lastQuantity ||
-                        fragmentViewModel.getProductViewModel()?.productPrice != fragmentViewModel.lastPrice) {
+                    if (forceReload || fragmentUiModel.getQuantityViewModel()?.orderQuantity != fragmentUiModel.lastQuantity ||
+                        fragmentUiModel.getProductViewModel()?.productPrice != fragmentUiModel.lastPrice) {
                         if (activity != null) bt_buy.background = ContextCompat.getDrawable(activity as Context, R.drawable.bg_button_disabled)
-                        fragmentViewModel.lastQuantity = fragmentViewModel.getQuantityViewModel()?.orderQuantity
-                        fragmentViewModel.lastPrice = fragmentViewModel.getProductViewModel()?.productPrice
-                        presenter.loadShippingRates(fragmentViewModel.getProductViewModel()?.productPrice?.toLong()
-                            ?: 0, fragmentViewModel.getQuantityViewModel()?.orderQuantity
-                            ?: 0, fragmentViewModel.getProfileViewModel()?.shippingDurationId
-                            ?: 0, fragmentViewModel.getProfileViewModel()?.shippingCourierId
+                        fragmentUiModel.lastQuantity = fragmentUiModel.getQuantityViewModel()?.orderQuantity
+                        fragmentUiModel.lastPrice = fragmentUiModel.getProductViewModel()?.productPrice
+                        presenter.loadShippingRates(fragmentUiModel.getProductViewModel()?.productPrice?.toLong()
+                            ?: 0, fragmentUiModel.getQuantityViewModel()?.orderQuantity
+                            ?: 0, fragmentUiModel.getProfileViewModel()?.shippingDurationId
+                            ?: 0, fragmentUiModel.getProfileViewModel()?.shippingCourierId
                             ?: 0)
                     }
                 }
             }))
     }
 
-    override fun onLogisticPromoChosen(shippingCourierViewModels: MutableList<ShippingCourierViewModel>, courierData: CourierItemData, recipientAddressModel: RecipientAddressModel, cartPosition: Int, serviceData: ServiceData, flagNeedToSetPinpoint: Boolean, promoCode: String, selectedServiceId: Int) {
+    override fun onLogisticPromoChosen(shippingCourierUiModels: MutableList<ShippingCourierUiModel>, courierData: CourierItemData, recipientAddressModel: RecipientAddressModel, cartPosition: Int, serviceData: ServiceData, flagNeedToSetPinpoint: Boolean, promoCode: String, selectedServiceId: Int) {
         // Haven't discussed yet
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == REQUEST_CODE_GEOLOCATION) {
             val locationPass = data?.extras?.getParcelable<LocationPass>(LogisticConstant.EXTRA_EXISTING_LOCATION)
-            presenter.updateAddress(fragmentViewModel, locationPass?.latitude
+            presenter.updateAddress(fragmentUiModel, locationPass?.latitude
                 ?: "", locationPass?.longitude ?: "")
         }
     }

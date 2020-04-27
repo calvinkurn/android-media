@@ -25,7 +25,6 @@ import com.tokopedia.home_recom.model.datamodel.ProductInfoDataModel
 import com.tokopedia.home_recom.util.RecommendationPageErrorHandler
 import com.tokopedia.home_recom.util.Status
 import com.tokopedia.home_recom.util.fadeShow
-import com.tokopedia.home_recom.util.startFade
 import com.tokopedia.home_recom.view.fragment.ProductInfoFragment.Companion.WIHSLIST_STATUS_IS_WISHLIST
 import com.tokopedia.home_recom.viewmodel.PrimaryProductViewModel
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
@@ -130,38 +129,38 @@ class ProductInfoFragment : BaseDaggerFragment() {
             primaryProductViewModel.productInfoDataModel.observe(it, Observer {
             it?.let {
                 response ->
-                container_loading.hide()
-                container_error.hide()
-                container_empty.hide()
-                container_product.hide()
+                container_loading?.hide()
+                container_error?.hide()
+                container_empty?.hide()
+                container_product?.hide()
                 when(response.status){
                     Status.LOADING -> {
-                        container_loading.fadeShow()
-                        container_error.hide()
-                        container_empty.hide()
-                        container_product.hide()
+                        container_loading?.fadeShow()
+                        container_error?.hide()
+                        container_empty?.hide()
+                        container_product?.hide()
                     }
                     Status.SUCCESS -> {
-                        container_loading.hide()
-                        container_error.hide()
-                        container_empty.hide()
-                        container_product.fadeShow()
+                        container_loading?.hide()
+                        container_error?.hide()
+                        container_empty?.hide()
+                        container_product?.fadeShow()
                         response.data?.let { primaryProduct ->
                             initView(primaryProduct)
                         }
                     }
                     Status.EMPTY -> {
-                        container_loading.hide()
-                        container_error.hide()
-                        container_product.hide()
-                        container_empty.fadeShow()
+                        container_loading?.hide()
+                        container_error?.hide()
+                        container_product?.hide()
+                        container_empty?.fadeShow()
                     }
                     else -> {
-                        container_loading.hide()
-                        container_empty.hide()
-                        container_product.hide()
-                        container_error.fadeShow()
-                        buttonReload.setOnClickListener {
+                        container_loading?.hide()
+                        container_empty?.hide()
+                        container_product?.hide()
+                        container_error?.fadeShow()
+                        buttonReload?.setOnClickListener {
                             primaryProductViewModel.getPrimaryProduct(productId, queryParam)
                         }
                     }
@@ -178,15 +177,15 @@ class ProductInfoFragment : BaseDaggerFragment() {
     private fun initView(productDataModel: ProductInfoDataModel){
         configureContentView(true)
         recommendationItem = mapToRecommendationItem(productDataModel)
-        product_name.text = productDataModel.productDetailData.name
+        product_name?.text = productDataModel.productDetailData.name
         handleDiscount(productDataModel.productDetailData.discountPercentage, productDataModel.productDetailData.slashedPrice)
-        product_price.text = productDataModel.productDetailData.price
-        location.text = productDataModel.productDetailData.shop.location
+        product_price?.text = productDataModel.productDetailData.price
+        location?.text = productDataModel.productDetailData.shop.location
         if (productDataModel.productDetailData.badges.isNotEmpty()) {
-            badge.visibility = View.VISIBLE
+            badge?.visibility = View.VISIBLE
             ImageHandler.loadImageFitCenter(context, badge, productDataModel.productDetailData.badges[0].imageUrl)
         } else {
-            badge.visibility = View.GONE
+            badge?.visibility = View.GONE
         }
         updateWishlist(productDataModel.productDetailData.isWishlist)
         ImageHandler.loadImageRounded2(context, product_image, productDataModel.productDetailData.imageUrl)
@@ -220,37 +219,37 @@ class ProductInfoFragment : BaseDaggerFragment() {
      */
     private fun configureContentView(isShow: Boolean){
         val show = if(isShow) View.VISIBLE else View.GONE
-        product_image.startFade(isShow)
-        fab_detail.startFade(isShow)
-        product_name.startFade(isShow)
-        product_discount.startFade(isShow)
-        product_slashed_price.startFade(isShow)
-        product_price.startFade(isShow)
-        badge.startFade(isShow)
-        location.startFade(isShow)
-        rating.startFade(isShow)
-        review_count.startFade(isShow)
-        buy_now.startFade(isShow)
-        add_to_cart.startFade(isShow)
-//        product_image.visibility = show
-//        fab_detail.visibility = show
-//        product_name.visibility = show
-//        product_discount.visibility = show
-//        product_slashed_price.visibility = show
-//        product_price.visibility = show
-//        badge.visibility = show
-//        location.visibility = show
-//        rating.visibility = show
-//        review_count.visibility = show
-//        buy_now.visibility = show
-//        add_to_cart.visibility = show
+//        product_image.startFade(isShow)
+//        fab_detail.startFade(isShow)
+//        product_name.startFade(isShow)
+//        product_discount.startFade(isShow)
+//        product_slashed_price.startFade(isShow)
+//        product_price.startFade(isShow)
+//        badge.startFade(isShow)
+//        location.startFade(isShow)
+//        rating.startFade(isShow)
+//        review_count.startFade(isShow)
+//        buy_now.startFade(isShow)
+//        add_to_cart.startFade(isShow)
+        product_image?.visibility = show
+        fab_detail?.visibility = show
+        product_name?.visibility = show
+        product_discount?.visibility = show
+        product_slashed_price?.visibility = show
+        product_price?.visibility = show
+        badge?.visibility = show
+        location?.visibility = show
+        rating?.visibility = show
+        review_count?.visibility = show
+        buy_now?.visibility = show
+        add_to_cart?.visibility = show
     }
 
     /**
      * [onProductImpression] it will handle impression image tracking
      */
     private fun onProductImpression(){
-        product_image.addOnImpressionListener(recommendationItem, object: ViewHintListener{
+        product_image?.addOnImpressionListener(recommendationItem, object: ViewHintListener{
             override fun onViewHint() {
                 RecommendationPageTracking.eventImpressionPrimaryProductWithProductId(recommendationItem, "0", ref)
             }
@@ -268,7 +267,7 @@ class ProductInfoFragment : BaseDaggerFragment() {
      * [onClickProductCard] it will handle product click
      */
     private fun onClickProductCard(productId: String){
-        product_card.setOnClickListener {
+        product_card?.setOnClickListener {
             RecommendationPageTracking.eventClickPrimaryProductWithProductId(recommendationItem, "0", ref)
             val intent = RouteManager.getIntent(
                     context,
@@ -282,15 +281,15 @@ class ProductInfoFragment : BaseDaggerFragment() {
      * [onClickAddToCart] it will handle click add to cart
      */
     private fun onClickAddToCart(productId: Int, shopId: Int, minOrder: Int){
-        add_to_cart.setOnClickListener {
+        add_to_cart?.setOnClickListener {
             if (primaryProductViewModel.isLoggedIn()) {
-                add_to_cart.isEnabled = false
+                add_to_cart?.isEnabled = false
                 addToCart(
                         productId, shopId, minOrder,
                         success = { result ->
                             recommendationItem.cartId = result[CART_ID] as Int
                             RecommendationPageTracking.eventUserClickAddToCartWithProductId(recommendationItem, ref)
-                            add_to_cart.isEnabled = true
+                            add_to_cart?.isEnabled = true
                             if(result.containsKey(STATUS) && !(result[STATUS] as Boolean)){
                                 showToastError(MessageErrorException(result[MESSAGE].toString()))
                             }else{
@@ -301,7 +300,7 @@ class ProductInfoFragment : BaseDaggerFragment() {
                             }
                         },
                         error = {
-                            add_to_cart.isEnabled = true
+                            add_to_cart?.isEnabled = true
                             showToastError(it)
                         }
                 )
@@ -319,13 +318,13 @@ class ProductInfoFragment : BaseDaggerFragment() {
      * [onClickBuyNow] it will handle click buy now
      */
     private fun onClickBuyNow(productId: Int, shopId: Int, minOrder: Int){
-        buy_now.setOnClickListener {
+        buy_now?.setOnClickListener {
             if (primaryProductViewModel.isLoggedIn()){
-                buy_now.isEnabled = false
+                buy_now?.isEnabled = false
                 addToCart(
                         productId, shopId, minOrder,
                         success = { result ->
-                            buy_now.isEnabled = true
+                            buy_now?.isEnabled = true
                             if(result.containsKey(STATUS) && !(result[STATUS] as Boolean)){
                                 showToastError(MessageErrorException(result[MESSAGE].toString()))
                             }else if(result.containsKey(CART_ID) && result[CART_ID].toString().isNotEmpty()){
@@ -353,7 +352,7 @@ class ProductInfoFragment : BaseDaggerFragment() {
      * [onClickWishlist] it will handle click wishlist icon
      */
     private fun onClickWishlist(productId: String){
-        fab_detail.setOnClickListener {
+        fab_detail?.setOnClickListener {
             if (primaryProductViewModel.isLoggedIn()) {
                 RecommendationPageTracking.eventUserClickProductToWishlistForUserLoginWithProductId(!it.isActivated, ref)
                 if (it.isActivated) {

@@ -4,7 +4,7 @@ import android.app.Activity;
 import androidx.appcompat.app.AlertDialog;
 import android.text.TextUtils;
 
-import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.nps.R;
 import com.tokopedia.remoteconfig.RemoteConfigKey;

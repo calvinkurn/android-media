@@ -20,7 +20,6 @@ dependencies {
     implementation project(rootProject.ext.libraries.tkpddesign)
     implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.libraries.track)
-    implementation project(rootProject.ext.features.changepassword)
     implementation project(rootProject.ext.libraries.applink)
 
     implementation rootProject.ext.tkpdInternalLibDependencies.url
@@ -42,7 +41,7 @@ dependencies {
     implementation(rootProject.ext.tkpdLibDependencies.expandableOption) {
         exclude group: "com.android.support"
     }
-    implementation rootProject.ext.playServicesDependencies.analytics
+    implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     annotationProcessor rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
     implementation rootProject.ext.debugToolsDependencies.chuck
@@ -55,7 +54,7 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
 
     implementation project(rootProject.ext.libraries.webview)
-
+    implementation project(rootProject.ext.libraries.remoteResourceRequest)
 }
 
 project.ext {

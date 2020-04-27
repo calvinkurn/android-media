@@ -1,7 +1,5 @@
 package com.tokopedia.purchase_platform.features.cart.view.subscriber
 
-import com.tokopedia.network.utils.ErrorHandler
-import com.tokopedia.purchase_platform.common.data.api.CartResponseErrorException
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.CartListData
 import com.tokopedia.purchase_platform.features.cart.view.ICartListPresenter
 import com.tokopedia.purchase_platform.features.cart.view.ICartListView
@@ -23,11 +21,7 @@ class GetCartListDataSubscriber(val view: ICartListView?,
                 it.hideProgressLoading()
             }
             it.renderLoadGetCartDataFinish()
-            var errorMessage = e.message
-            if (e !is CartResponseErrorException) {
-                errorMessage = ErrorHandler.getErrorMessage(it.getActivityObject(), e)
-            }
-            it.renderErrorInitialGetCartListData(errorMessage ?: "")
+            it.renderErrorInitialGetCartListData(e)
             it.stopCartPerformanceTrace()
         }
     }

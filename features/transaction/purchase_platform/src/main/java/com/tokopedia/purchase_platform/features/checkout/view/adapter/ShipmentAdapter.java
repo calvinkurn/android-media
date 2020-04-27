@@ -18,7 +18,7 @@ import com.tokopedia.logisticcart.shipping.model.CourierItemData;
 import com.tokopedia.logisticcart.shipping.model.RecipientAddressModel;
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;
 import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData;
-import com.tokopedia.logisticcart.shipping.model.ShippingCourierViewModel;
+import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel;
 import com.tokopedia.promocheckout.common.util.TickerCheckoutUtilKt;
 import com.tokopedia.promocheckout.common.view.model.PromoStackingData;
 import com.tokopedia.promocheckout.common.view.uimodel.DataUiModel;
@@ -53,12 +53,12 @@ import com.tokopedia.purchase_platform.features.checkout.view.viewholder.Shipmen
 import com.tokopedia.purchase_platform.features.checkout.view.viewholder.ShipmentItemViewHolder;
 import com.tokopedia.purchase_platform.features.checkout.view.viewholder.ShipmentNotifierViewHolder;
 import com.tokopedia.purchase_platform.features.checkout.view.viewholder.ShipmentRecipientAddressViewHolder;
-import com.tokopedia.purchase_platform.features.checkout.view.viewmodel.EgoldAttributeModel;
-import com.tokopedia.purchase_platform.features.checkout.view.viewmodel.EgoldTieringModel;
-import com.tokopedia.purchase_platform.features.checkout.view.viewmodel.ShipmentButtonPaymentModel;
-import com.tokopedia.purchase_platform.features.checkout.view.viewmodel.ShipmentDonationModel;
-import com.tokopedia.purchase_platform.features.checkout.view.viewmodel.ShipmentInsuranceTncModel;
-import com.tokopedia.purchase_platform.features.checkout.view.viewmodel.ShipmentNotifierModel;
+import com.tokopedia.purchase_platform.features.checkout.view.uimodel.EgoldAttributeModel;
+import com.tokopedia.purchase_platform.features.checkout.view.uimodel.EgoldTieringModel;
+import com.tokopedia.purchase_platform.features.checkout.view.uimodel.ShipmentButtonPaymentModel;
+import com.tokopedia.purchase_platform.features.checkout.view.uimodel.ShipmentDonationModel;
+import com.tokopedia.purchase_platform.features.checkout.view.uimodel.ShipmentInsuranceTncModel;
+import com.tokopedia.purchase_platform.features.checkout.view.uimodel.ShipmentNotifierModel;
 import com.tokopedia.showcase.ShowCaseBuilder;
 import com.tokopedia.showcase.ShowCaseDialog;
 import com.tokopedia.showcase.ShowCaseObject;
@@ -804,23 +804,23 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
     }
 
-    public void setShippingCourierViewModels(List<ShippingCourierViewModel> shippingCourierViewModels,
+    public void setShippingCourierViewModels(List<ShippingCourierUiModel> shippingCourierUiModels,
                                              CourierItemData recommendedCourier, int position) {
-        for (ShippingCourierViewModel shippingCourierViewModel : shippingCourierViewModels) {
-            shippingCourierViewModel.setSelected(false);
+        for (ShippingCourierUiModel shippingCourierUiModel : shippingCourierUiModels) {
+            shippingCourierUiModel.setSelected(false);
         }
         Object currentShipmentData = shipmentDataList.get(position);
         if (currentShipmentData instanceof ShipmentCartItemModel) {
             ShipmentCartItemModel cartItemModel = (ShipmentCartItemModel) currentShipmentData;
             if (cartItemModel.getSelectedShipmentDetailData() != null &&
                     cartItemModel.getSelectedShipmentDetailData().getSelectedCourier() != null) {
-                for (ShippingCourierViewModel shippingCourierViewModel : shippingCourierViewModels) {
-                    if (shippingCourierViewModel.getProductData().getShipperProductId() == recommendedCourier.getShipperProductId()) {
-                        shippingCourierViewModel.setSelected(true);
+                for (ShippingCourierUiModel shippingCourierUiModel : shippingCourierUiModels) {
+                    if (shippingCourierUiModel.getProductData().getShipperProductId() == recommendedCourier.getShipperProductId()) {
+                        shippingCourierUiModel.setSelected(true);
                         break;
                     }
                 }
-                cartItemModel.getSelectedShipmentDetailData().setShippingCourierViewModels(shippingCourierViewModels);
+                cartItemModel.getSelectedShipmentDetailData().setShippingCourierViewModels(shippingCourierUiModels);
             }
         }
     }

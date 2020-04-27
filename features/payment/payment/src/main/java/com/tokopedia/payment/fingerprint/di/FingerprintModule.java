@@ -3,7 +3,7 @@ package com.tokopedia.payment.fingerprint.di;
 import android.content.Context;
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
-import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor;
 import com.tokopedia.payment.fingerprint.data.AccountFingerprintApi;

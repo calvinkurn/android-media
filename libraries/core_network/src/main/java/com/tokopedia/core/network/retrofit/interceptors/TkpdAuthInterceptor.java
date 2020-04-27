@@ -7,6 +7,7 @@ import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
 import com.tokopedia.core.util.AccessTokenRefresh;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionRefresh;
+import com.tokopedia.network.interceptor.TkpdBaseInterceptor;
 import com.tokopedia.user.session.UserSession;
 
 import org.json.JSONArray;

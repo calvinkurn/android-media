@@ -17,16 +17,22 @@ inline fun <reified VM : ViewModel> Fragment.viewModelProvider(
         provider: ViewModelProvider.Factory
 ) = ViewModelProviders.of(this, provider).get(VM::class.java)
 
-fun RecyclerView.endLess(`do`: (lastPosition: Int) -> Unit) {
+fun RecyclerView.endLess(
+        onScrolled: (dy: Int) -> Unit,
+        onScrollStateChanged: (lastPosition: Int) -> Unit
+) {
     this.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-        override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {}
+        override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+            super.onScrolled(recyclerView, dx, dy)
+            onScrolled(dy)
+        }
         override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
             super.onScrollStateChanged(recyclerView, newState)
             if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                 val layoutManager = (recyclerView.layoutManager)
                 if (layoutManager != null && layoutManager is LinearLayoutManager) {
                     val lastPosition = layoutManager.findLastVisibleItemPosition()
-                    `do`(lastPosition)
+                    onScrollStateChanged(lastPosition)
                 }
             }
         }

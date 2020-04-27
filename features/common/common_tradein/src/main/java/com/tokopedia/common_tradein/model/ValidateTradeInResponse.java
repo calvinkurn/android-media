@@ -15,6 +15,8 @@ public class ValidateTradeInResponse {
     private int remainingPrice;
     @SerializedName("Message")
     private String message;
+    @SerializedName("WidgetString")
+    private String widgetString;
 
     public boolean isEligible() {
         return isEligible;
@@ -62,5 +64,13 @@ public class ValidateTradeInResponse {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public String getWidgetString() {
+        return widgetString;
+    }
+
+    public void setWidgetString(String widgetString) {
+        this.widgetString = widgetString;
     }
 }

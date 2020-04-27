@@ -15,10 +15,13 @@ import android.text.method.ScrollingMovementMethod;
 import android.text.style.ClickableSpan;
 import android.text.style.URLSpan;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
+import androidx.appcompat.widget.Toolbar;
 import androidx.legacy.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
@@ -26,13 +29,14 @@ import com.airbnb.deeplinkdispatch.DeepLink;
 import com.google.android.material.tabs.TabLayout;
 import com.tkpd.library.utils.DownloadResultReceiver;
 import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.abstraction.base.view.activity.BaseActivity;
+import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.app.TkpdActivity;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
@@ -44,7 +48,7 @@ import com.tokopedia.core.presenter.BaseView;
 import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.AppWidgetUtil;
-import com.tokopedia.core.util.GlobalConfig;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.core2.R;
@@ -66,7 +70,7 @@ import com.tokopedia.seller.selling.view.listener.SellingTransaction;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ActivitySellingTransaction extends TkpdActivity
+public class ActivitySellingTransaction extends BaseActivity
         implements FragmentSellingTxCenter.OnCenterMenuClickListener,
         DownloadResultReceiver.Receiver,
         SellingTransaction {
@@ -86,12 +90,24 @@ public class ActivitySellingTransaction extends TkpdActivity
     public static final String EXTRA_KEY_NEW_ORDER = "new_order";
     public static final String EXTRA_KEY_CONFIRM_SHIPPING = "confirm_shipping";
     public static final String EXTRA_KEY_IN_SHIPPING = "in_shipping";
-    public static final String EXTRA_KEY_DONE = "done";
     public static final String EXTRA_KEY_ALL_ORDER = "all_order";
+    public static final String EXTRA_KEY_CANCELLED = "order_canceled";
+    public static final String EXTRA_KEY_FINISHED = "done";
+    public static final String NO_TAB_ACTIVE = "";
+
+    public static final String EXTRA_FILTER_STATUS_ID = "filter_status_id";
+    public static final int EXTRA_ID_FILTER_WAITING_PICKUP = 6;
+    public static final int EXTRA_ID_FILTER_WAITING_AWB = 8;
+    public static final int EXTRA_ID_FILTER_AWB_INVALID = 9;
+    public static final int EXTRA_ID_FILTER_AWB_CHANGE = 10;
+    public static final int EXTRA_ID_FILTER_RETUR = 11;
+    public static final int EXTRA_ID_FILTER_COMPLAINT = 13;
+    public static final int NO_FILTER = -1;
 
     ViewPager mViewPager;
     DownloadResultReceiver mReceiver;
     FragmentManager fragmentManager;
+    private Toolbar toolbar;
     private Tabs indicator;
     private TextView sellerTickerView;
     private String[] CONTENT;
@@ -106,7 +122,14 @@ public class ActivitySellingTransaction extends TkpdActivity
                     .putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_SELLING_OPPORTUNITY)
                     .putExtras(extras);
         } else {
-            return CustomerAppSellerTransactionActivity.getIntentOpportunity(context, extras);
+            RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
+            boolean enable = remoteConfig.getBoolean(
+                    RemoteConfigKey.RC_ENABLE_REVAMP_SOM, true);
+            if (enable) {
+                return RouteManager.getIntent(context, ApplinkConstInternalOrder.OPPORTUNITY);
+            } else {
+                return CustomerAppSellerTransactionActivity.getIntentOpportunity(context, extras);
+            }
         }
     }
 
@@ -179,23 +202,47 @@ public class ActivitySellingTransaction extends TkpdActivity
 
     @DeepLink(ApplinkConst.SELLER_HISTORY)
     public static Intent getCallingIntentSellerHistory(Context context, Bundle extras) {
-        if (GlobalConfig.isSellerApp()) {
-            Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
-            return new Intent(context, ActivitySellingTransaction.class)
-                    .setData(uri.build())
-                    .putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_SELLING_TRANSACTION_LIST)
-                    .putExtras(extras);
-        } else {
-            RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
-            boolean enable = remoteConfig.getBoolean(
-                    RemoteConfigKey.RC_ENABLE_REVAMP_SOM, true);
-            if (enable) {
-                return RouteManager.getIntent(context, ApplinkConstInternalOrder.HISTORY)
-                        .putExtra(EXTRA_TAB_ACTIVE, EXTRA_KEY_ALL_ORDER);
-            } else {
-                return CustomerAppSellerTransactionActivity.getIntentAllTransaction(context, extras);
-            }
-        }
+        return handleApplinkWithDefaultFallback(context, extras, ApplinkConstInternalOrder.HISTORY, EXTRA_KEY_ALL_ORDER, NO_FILTER);
+    }
+
+    @DeepLink(ApplinkConst.SELLER_PURCHASE_CANCELED)
+    public static Intent getCallingIntentSellerCanceled(Context context, Bundle extras) {
+        return handleApplinkWithDefaultFallback(context, extras, ApplinkConstInternalOrder.CANCELLED, EXTRA_KEY_CANCELLED, NO_FILTER);
+    }
+
+    @DeepLink(ApplinkConst.SELLER_PURCHASE_FINISHED)
+    public static Intent getCallingIntentSellerFinished(Context context, Bundle extras) {
+        return handleApplinkWithDefaultFallback(context, extras, ApplinkConstInternalOrder.FINISHED, EXTRA_KEY_FINISHED, NO_FILTER);
+    }
+
+    @DeepLink(ApplinkConst.SELLER_PURCHASE_WAITING_PICKUP)
+    public static Intent getCallingIntentSellerWaitingPickup(Context context, Bundle extras) {
+        return handleApplinkWithDefaultFallback(context, extras, ApplinkConstInternalOrder.WAITING_PICKUP, NO_TAB_ACTIVE, EXTRA_ID_FILTER_WAITING_PICKUP);
+    }
+
+    @DeepLink(ApplinkConst.SELLER_PURCHASE_WAITING_AWB)
+    public static Intent getCallingIntentSellerWaitingAwb(Context context, Bundle extras) {
+        return handleApplinkWithDefaultFallback(context, extras, ApplinkConstInternalOrder.WAITING_AWB, NO_TAB_ACTIVE, EXTRA_ID_FILTER_WAITING_AWB);
+    }
+
+    @DeepLink(ApplinkConst.SELLER_PURCHASE_AWB_INVALID)
+    public static Intent getCallingIntentSellerAwbInvalid(Context context, Bundle extras) {
+        return handleApplinkWithDefaultFallback(context, extras, ApplinkConstInternalOrder.AWB_INVALID, NO_TAB_ACTIVE, EXTRA_ID_FILTER_AWB_INVALID);
+    }
+
+    @DeepLink(ApplinkConst.SELLER_PURCHASE_AWB_CHANGE)
+    public static Intent getCallingIntentSellerAwbChange(Context context, Bundle extras) {
+        return handleApplinkWithDefaultFallback(context, extras, ApplinkConstInternalOrder.AWB_CHANGE, NO_TAB_ACTIVE, EXTRA_ID_FILTER_AWB_CHANGE);
+    }
+
+    @DeepLink(ApplinkConst.SELLER_PURCHASE_RETUR)
+    public static Intent getCallingIntentSellerRetur(Context context, Bundle extras) {
+        return handleApplinkWithDefaultFallback(context, extras, ApplinkConstInternalOrder.RETUR, NO_TAB_ACTIVE, EXTRA_ID_FILTER_RETUR);
+    }
+
+    @DeepLink(ApplinkConst.SELLER_PURCHASE_COMPLAINT)
+    public static Intent getCallingIntentSellerComplaint(Context context, Bundle extras) {
+        return handleApplinkWithDefaultFallback(context, extras, ApplinkConstInternalOrder.COMPLAINT, NO_TAB_ACTIVE, EXTRA_ID_FILTER_COMPLAINT);
     }
 
     @DeepLink(ApplinkConst.SellerApp.SALES)
@@ -211,15 +258,25 @@ public class ActivitySellingTransaction extends TkpdActivity
         }
     }
 
-    public static Intent createIntent(Context context, int tab) {
-        return new Intent(context, ActivitySellingTransaction.class)
-                .putExtra(EXTRA_STATE_TAB_POSITION, tab);
-    }
-
-    public static Intent createIntent(Context context, int tab, String query) {
-        Intent intent = createIntent(context, tab);
-        intent.putExtra(EXTRA_QUERY, query);
-        return intent;
+    private static Intent handleApplinkWithDefaultFallback(Context context, Bundle extras, String internalApplink, String tabActive, int filterStatusId) {
+        if (GlobalConfig.isSellerApp()) {
+            Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
+            return new Intent(context, ActivitySellingTransaction.class)
+                    .setData(uri.build())
+                    .putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_SELLING_TRANSACTION_LIST)
+                    .putExtras(extras);
+        } else {
+            RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
+            boolean enable = remoteConfig.getBoolean(
+                    RemoteConfigKey.RC_ENABLE_REVAMP_SOM, true);
+            if (enable) {
+                return RouteManager.getIntent(context, internalApplink)
+                        .putExtra(EXTRA_TAB_ACTIVE, tabActive)
+                        .putExtra(EXTRA_FILTER_STATUS_ID, filterStatusId);
+            } else {
+                return CustomerAppSellerTransactionActivity.getIntentAllTransaction(context, extras);
+            }
+        }
     }
 
     @Override
@@ -250,8 +307,8 @@ public class ActivitySellingTransaction extends TkpdActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_shop_transaction_v2);
         clearNotif();
-        inflateView(R.layout.activity_shop_transaction_v2);
         setView();
         initVariable();
         setAdapter();
@@ -265,6 +322,14 @@ public class ActivitySellingTransaction extends TkpdActivity
         fragmentManager = getFragmentManager();
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            finish();
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     private void setTrackerWidget() {
         boolean fromWidget = getIntent().getBooleanExtra(FROM_WIDGET_TAG, false);
         if (fromWidget) {
@@ -272,45 +337,16 @@ public class ActivitySellingTransaction extends TkpdActivity
         }
     }
 
-    @Override
-    public int getDrawerPosition() {
-        return 0;
-    }
-
-    private void setDrawerPosition(int position) {
-        switch (position) {
-            case TAB_POSITION_SELLING_NEW_ORDER:
-                drawerHelper.setSelectedPosition(TkpdState.DrawerPosition.SHOP_NEW_ORDER);
-                break;
-            case TAB_POSITION_SELLING_CONFIRM_SHIPPING:
-                drawerHelper.setSelectedPosition(TkpdState.DrawerPosition.SHOP_CONFIRM_SHIPPING);
-                break;
-            case TAB_POSITION_SELLING_SHIPPING_STATUS:
-                drawerHelper.setSelectedPosition(TkpdState.DrawerPosition.SHOP_SHIPPING_STATUS);
-                break;
-            case TAB_POSITION_SELLING_TRANSACTION_LIST:
-                drawerHelper.setSelectedPosition(TkpdState.DrawerPosition.SHOP_TRANSACTION_LIST);
-                break;
-            case TAB_POSITION_SELLING_OPPORTUNITY:
-                drawerHelper.setSelectedPosition(TkpdState.DrawerPosition.SHOP_OPPORTUNITY_LIST);
-                break;
-            default:
-                break;
-        }
-    }
-
     private void setView() {
+        toolbar = findViewById(R.id.toolbar);
         sellerTickerView = findViewById(R.id.ticker);
         sellerTickerView.setMovementMethod(new ScrollingMovementMethod());
         sellerTickerView.setVisibility(View.GONE);
         mViewPager = findViewById(R.id.pager);
         indicator = findViewById(R.id.indicator);
-    }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        setDrawerPosition(mViewPager.getCurrentItem());
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     protected void makeLinkClickable(SpannableStringBuilder strBuilder, final URLSpan span) {
@@ -408,7 +444,6 @@ public class ActivitySellingTransaction extends TkpdActivity
 
             @Override
             public void onPageSelected(int position) {
-                setDrawerPosition(position);
                 if (indicator.getTabAt(position) != null) {
                     UnifyTracking.eventShopTabSelected(ActivitySellingTransaction.this, indicator.getTabAt(position).getText().toString());
                 }
@@ -431,7 +466,6 @@ public class ActivitySellingTransaction extends TkpdActivity
     private void openTab() {
         try {
             mViewPager.setCurrentItem(getIntent().getExtras().getInt(EXTRA_STATE_TAB_POSITION));
-            setDrawerPosition(getIntent().getExtras().getInt(EXTRA_STATE_TAB_POSITION));
         } catch (Exception e) {
             e.printStackTrace();
         }

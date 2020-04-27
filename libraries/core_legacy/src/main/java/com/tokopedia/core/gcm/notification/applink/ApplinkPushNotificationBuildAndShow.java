@@ -6,7 +6,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import androidx.core.app.TaskStackBuilder;
 
-import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.R;
 import com.tokopedia.core.TkpdCoreRouter;
 import com.tokopedia.core.gcm.BuildAndShowNotification;

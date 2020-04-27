@@ -5,35 +5,41 @@ import com.tokopedia.browse.categoryNavigation.data.model.category.Data
 
 class CategoryListTwoModelMapper {
 
+    enum class CategoryType(val value: Int) {
+        SPECIAL(1),
+        NORMAL(2)
+    }
+    val defaultCaseID = "0"
+
     fun transform(data: Data, id: String): List<ChildItem>? {
 
         val iterator = data.categoryAllList?.categories
-        iterator!!.forEach {
+        iterator?.forEach {
             if (it?.id.equals(id)) {
 
-                val l: MutableList<ChildItem>? = it!!.child as MutableList<ChildItem>?
+                val levelThreeItem: MutableList<ChildItem>? = it?.child as MutableList<ChildItem>?
 
-                if (id.equals("0")) {
+                if (id.equals(defaultCaseID)) {
 
-                    if (l != null) {
-                        for (i in l) {
-                            i.type = 1
-                            i.parentCategoryname = it.name
+                    if (levelThreeItem != null) {
+                        for (item in levelThreeItem) {
+                            item.type = CategoryType.SPECIAL.value
+                            item.parentCategoryname = it?.name
                         }
                     }
-
                 } else {
 
-                    if (l != null) {
-                        for (i in l) {
-                            i.parentCategoryname = it.name
-                            i.child?.add(0, ChildItem(i.applinks, "Lihat Semua", "0", 2))
+                    if (levelThreeItem != null) {
+                        for (item in levelThreeItem) {
+                            item.parentCategoryname = it?.name
+                            item.child?.add(0, ChildItem(item.applinks, item.name ?: "", item.id
+                                    ?: "", CategoryType.NORMAL.value))
                         }
                     }
 
                 }
 
-                return l
+                return levelThreeItem
             }
         }
         return null

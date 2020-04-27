@@ -2,6 +2,7 @@ package com.tokopedia.core.network.core;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.tokopedia.abstraction.common.network.converter.TokopediaWsV4ResponseConverter;
 import com.tokopedia.core.network.retrofit.coverters.DigitalResponseConverter;
 import com.tokopedia.core.network.retrofit.coverters.GeneratedHostConverter;
 import com.tokopedia.core.network.retrofit.coverters.StringResponseConverter;
@@ -31,6 +32,7 @@ public class RetrofitFactory {
                 .addConverterFactory(new GeneratedHostConverter())
                 .addConverterFactory(new TkpdResponseConverter())
                 .addConverterFactory(new StringResponseConverter())
+                .addConverterFactory(new TokopediaWsV4ResponseConverter())
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create());
     }

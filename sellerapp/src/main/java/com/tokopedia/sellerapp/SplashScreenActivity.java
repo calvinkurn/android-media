@@ -1,28 +1,26 @@
 package com.tokopedia.sellerapp;
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
 import android.text.TextUtils;
+
+import androidx.annotation.NonNull;
 
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.SplashScreen;
 import com.tokopedia.core.gcm.Constants;
-import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.fcmcommon.service.SyncFcmTokenService;
+import com.tokopedia.loginregister.login.view.activity.LoginActivity;
 import com.tokopedia.remoteconfig.RemoteConfig;
-import com.tokopedia.sellerapp.utils.timber.TimberWrapper;
-import com.tokopedia.sellerapp.welcome.WelcomeActivity;
-import com.tokopedia.sellerapp.dashboard.view.activity.DashboardActivity;
 import com.tokopedia.sellerapp.deeplink.DeepLinkDelegate;
 import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
-
-import org.json.JSONObject;
+import com.tokopedia.sellerapp.utils.timber.TimberWrapper;
+import com.tokopedia.sellerhome.view.activity.SellerHomeActivity;
+import com.tokopedia.selleronboarding.activity.SellerOnboardingActivity;
+import com.tokopedia.selleronboarding.utils.OnboardingPreference;
 
 import static com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.OPEN_SHOP;
 
@@ -73,17 +71,24 @@ public class SplashScreenActivity extends SplashScreen {
                     intent.putExtras(bundle);
                     delegate.dispatchFrom(this, intent);
                 } else {
-                    startActivity(DashboardActivity.createInstance(this));
+                    startActivity(SellerHomeActivity.createIntent(this));
                 }
             } else {
                 // Means it is a Seller
-                startActivity(DashboardActivity.createInstance(this));
+                startActivity(SellerHomeActivity.createIntent(this));
             }
         } else if (!TextUtils.isEmpty(SessionHandler.getLoginID(this))) {
             Intent intent = moveToCreateShop(this);
             startActivity(intent);
         } else {
-            Intent intent = new Intent(SplashScreenActivity.this, WelcomeActivity.class);
+            boolean hasOnboarding = new OnboardingPreference(this)
+                    .getBoolean(OnboardingPreference.HAS_OPEN_ONBOARDING, false);
+            Intent intent;
+            if (hasOnboarding) {
+                intent = LoginActivity.DeepLinkIntents.getCallingIntent(this);
+            } else {
+                intent = new Intent(this, SellerOnboardingActivity.class);
+            }
             startActivity(intent);
         }
         finish();

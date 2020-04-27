@@ -9,6 +9,11 @@ query get_accounts_list($validate_token: String!, $phone: String!, $login_type: 
       email
       msisdn_verified
       image
+      shop_detail {
+        id
+        name
+        domain
+      }
     }
     users_count
     errors {

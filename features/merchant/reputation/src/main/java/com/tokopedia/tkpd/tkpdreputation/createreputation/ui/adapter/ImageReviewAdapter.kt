@@ -10,9 +10,9 @@ import com.tokopedia.tkpd.tkpdreputation.createreputation.model.ImageReviewViewM
 import com.tokopedia.tkpd.tkpdreputation.createreputation.ui.viewholder.BaseImageReviewViewHolder
 import com.tokopedia.tkpd.tkpdreputation.createreputation.ui.viewholder.DefaultImageReviewViewHolder
 import com.tokopedia.tkpd.tkpdreputation.createreputation.ui.viewholder.ImageReviewViewHolder
-import com.tokopedia.tkpd.tkpdreputation.createreputation.util.OnAddImageClick
+import com.tokopedia.tkpd.tkpdreputation.createreputation.ui.listener.OnAddImageClickListener
 
-class ImageReviewAdapter(private val addDataClick: OnAddImageClick) : RecyclerView.Adapter<BaseImageReviewViewHolder<*>>() {
+class ImageReviewAdapter(private val onAddImageClickListener: OnAddImageClickListener) : RecyclerView.Adapter<BaseImageReviewViewHolder<*>>() {
 
     companion object {
         const val TYPE_DEFAULT = 1
@@ -29,12 +29,10 @@ class ImageReviewAdapter(private val addDataClick: OnAddImageClick) : RecyclerVi
     override fun onCreateViewHolder(view: ViewGroup, position: Int): BaseImageReviewViewHolder<*> {
         return when (position) {
             TYPE_DEFAULT -> {
-                DefaultImageReviewViewHolder(LayoutInflater.from(view.context).inflate(R.layout.item_add_image_review, view, false),
-                        addDataClick)
+                DefaultImageReviewViewHolder(LayoutInflater.from(view.context).inflate(R.layout.item_add_image_review, view, false), onAddImageClickListener)
             }
             TYPE_IMAGE -> {
-                return ImageReviewViewHolder(LayoutInflater.from(view.context).inflate(R.layout.item_image_chooser_review, view, false),
-                        addDataClick)
+                return ImageReviewViewHolder(LayoutInflater.from(view.context).inflate(R.layout.item_image_chooser_review, view, false), onAddImageClickListener)
             }
             else -> throw IllegalArgumentException("Invalid view type")
         }

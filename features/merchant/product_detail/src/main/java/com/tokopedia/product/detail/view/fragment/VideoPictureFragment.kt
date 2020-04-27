@@ -32,6 +32,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.videoplayer.state.RepeatMode
 import com.tokopedia.videoplayer.state.VideoSourceProtocol
 import kotlinx.android.synthetic.main.video_picture_view.*
@@ -44,6 +45,8 @@ class VideoPictureFragment : BaseDaggerFragment() {
     private var mediaSource = ""
     private var mediaPosition = 0
     var onPictureClickListener: ((Int) -> Unit)? = null
+    var onPictureClickTrackListener: ((ComponentTrackDataModel?) -> Unit)? = null
+    var componentTrackDataModel: ComponentTrackDataModel? = null
 
     private var isReadyPlayed = true
     private var currentWindowIndex: Int = C.INDEX_UNSET
@@ -102,6 +105,7 @@ class VideoPictureFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         view.setOnClickListener {
+            onPictureClickTrackListener?.invoke(componentTrackDataModel)
             onPictureClickListener?.invoke(mediaPosition)
         }
 

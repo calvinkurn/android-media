@@ -1,5 +1,6 @@
 package com.tokopedia.tokopoints.view.coupondetail
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -20,9 +21,8 @@ import android.webkit.WebView
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
-import android.widget.ViewFlipper
+import androidx.appcompat.widget.AppCompatImageView
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
@@ -32,16 +32,13 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.tokopoints.R
-import com.tokopedia.tokopoints.di.TokoPointComponent
 import com.tokopedia.tokopoints.di.TokopointBundleComponent
-import com.tokopedia.tokopoints.view.activity.CouponListingStackedActivity
+import com.tokopedia.tokopoints.view.couponlisting.CouponListingStackedActivity
 import com.tokopedia.tokopoints.view.contract.CouponDetailContract
-import com.tokopedia.tokopoints.view.customview.ServerErrorView
 import com.tokopedia.tokopoints.view.customview.SwipeCardView
 import com.tokopedia.tokopoints.view.fragment.CloseableBottomSheetFragment
 import com.tokopedia.tokopoints.view.fragment.ValidateMerchantPinFragment
@@ -65,6 +62,7 @@ import rx.schedulers.Schedulers
 
 import com.tokopedia.tokopoints.view.util.CommonConstant.COUPON_MIME_TYPE
 import com.tokopedia.tokopoints.view.util.CommonConstant.UTF_ENCODING
+import com.tokopedia.unifycomponents.UnifyButton
 import kotlinx.android.synthetic.main.tp_content_coupon_detail.*
 import kotlinx.android.synthetic.main.tp_fragment_coupon_detail.*
 import kotlinx.android.synthetic.main.tp_layout_coupon_detail_button.*
@@ -77,6 +75,9 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
     private var mRefreshRepeatCount = 0
     private var mCouponName: String? = null
     var mTimer: CountDownTimer? = null
+    var phoneVerificationState: Boolean? = null
+    var mCTA: String = ""
+    var mCode: String = ""
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -96,7 +97,7 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
         super.onViewCreated(view, savedInstanceState)
         initObserver()
         initListener()
-
+        mPresenter.isPhonerVerfied()
     }
 
     private fun initObserver() {
@@ -107,7 +108,14 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
         observePinPage()
         observeRefetchCoupon()
         onbserveOnRedeemCoupon()
+        observeUserInfo()
     }
+
+    private fun observeUserInfo() = mPresenter.userInfo.observe(this, Observer {
+        it.let {
+            phoneVerificationState = it.verifiedMsisdn
+        }
+    })
 
     private fun obserserFinish() = mPresenter.finish.observe(this, Observer {
         it?.let {
@@ -215,7 +223,8 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
 
     override fun onClick(source: View) {
         if (source.id == R.id.text_my_coupon) {
-            startActivity(CouponListingStackedActivity.getCallingIntent(activityContext))
+            val context = activityContext
+            context?.let { startActivity(CouponListingStackedActivity.getCallingIntent(context)) }
         }
     }
 
@@ -265,6 +274,34 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
 
     }
 
+    private fun openPhoneVerificationBottomSheet() {
+        val view = LayoutInflater.from(context).inflate(R.layout.phoneverification_bottomsheet, null, false)
+        val closeableBottomSheetDialog = CloseableBottomSheetDialog.createInstanceRounded(context)
+        closeableBottomSheetDialog.setCustomContentView(view, "", false)
+        val btnVerifikasi = view.findViewById<UnifyButton>(R.id.btn_verifikasi)
+        val btnCancel = view.findViewById<AppCompatImageView>(R.id.cancel_verifikasi)
+        btnVerifikasi.setOnClickListener {
+            val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_PHONE)
+            startActivityForResult(intent, REQUEST_CODE_VERIFICATION_PHONE)
+
+            AnalyticsTrackerUtil.sendEvent(context,
+                    AnalyticsTrackerUtil.EventKeys.KEY_EVENT_PROFILE_VALUE,
+                    AnalyticsTrackerUtil.CategoryKeys.KEY_EVENT_CATEGORY_PROFILE_VALUE,
+                    AnalyticsTrackerUtil.ActionKeys.KEY_EVENT_ACTION_PROFILE_VALUE,
+                    "")
+            closeableBottomSheetDialog.cancel()
+
+        }
+        btnCancel.setOnClickListener {
+            closeableBottomSheetDialog.cancel()
+            AnalyticsTrackerUtil.sendEvent(context,
+                    AnalyticsTrackerUtil.EventKeys.KEY_EVENT_PROFILE_VALUE,
+                    AnalyticsTrackerUtil.CategoryKeys.KEY_EVENT_CATEGORY_PROFILE_VALUE,
+                    AnalyticsTrackerUtil.ActionKeys.KEY_EVENT_ACTION_PROFILE_VALUE_BATAL, "")
+        }
+
+        closeableBottomSheetDialog.show()
+    }
 
     override fun showRedeemFullError(item: CatalogsValueEntity, title: String, desc: String) {
 
@@ -340,6 +377,8 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
         }
         hideLoader()
         mCouponName = data.title
+        mCTA = data.cta
+        mCode = data.realCode as String
         val description = view!!.findViewById<TextView>(R.id.tv_title)
         val label = view!!.findViewById<TextView>(R.id.text_time_label)
         val value = view!!.findViewById<Typography>(R.id.text_time_value)
@@ -398,21 +437,27 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
 
         this.mRealCode = data.realCode
         btnAction2.setOnClickListener { v ->
-            val code = mRealCode as String
-            if (!TextUtils.isEmpty(code)) {
-                showRedeemCouponDialog(data.cta, code, data.title)
-                AnalyticsTrackerUtil.sendEvent(context,
-                        AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
-                        AnalyticsTrackerUtil.CategoryKeys.KUPON_MILIK_SAYA_DETAIL,
-                        AnalyticsTrackerUtil.ActionKeys.CLICK_GUNAKAN,
-                        mCouponName)
+
+            val variant = RemoteConfigInstance.getInstance().abTestPlatform.getString(AB_TEST_PHONE_VERIFICATION_KEY, AB_TESTING_CTA_VARIANT_A)
+            if (phoneVerificationState == false && variant == AB_TESTING_CTA_VARIANT_A) {
+                openPhoneVerificationBottomSheet()
             } else {
-                if (arguments != null && arguments!!.getString(CommonConstant.EXTRA_COUPON_CODE) != null) {
-                    btnAction2.isEnabled = false
-                    btnAction2.setTextColor(resources.getColor(com.tokopedia.abstraction.R.color.black_12))
-                    progressBar.visibility = View.VISIBLE
-                    btnAction2.text = ""
-                    mPresenter.reFetchRealCode()
+                val code = mRealCode as String
+                if (!TextUtils.isEmpty(code)) {
+                    showRedeemCouponDialog(data.cta, code, data.title)
+                    AnalyticsTrackerUtil.sendEvent(context,
+                            AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
+                            AnalyticsTrackerUtil.CategoryKeys.KUPON_MILIK_SAYA_DETAIL,
+                            AnalyticsTrackerUtil.ActionKeys.CLICK_GUNAKAN,
+                            mCouponName)
+                } else {
+                    if (arguments != null && arguments!!.getString(CommonConstant.EXTRA_COUPON_CODE) != null) {
+                        btnAction2.isEnabled = false
+                        btnAction2.setTextColor(resources.getColor(com.tokopedia.abstraction.R.color.black_12))
+                        progressBar.visibility = View.VISIBLE
+                        btnAction2.text = ""
+                        mPresenter.reFetchRealCode()
+                    }
                 }
             }
         }
@@ -650,20 +695,38 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
         }
     }
 
-
-    companion object {
-        private val CONTAINER_LOADER = 0
-        private val CONTAINER_DATA = 1
-        private val CONTAINER_ERROR = 2
-        private val CONTAINER_SWIPE = 1
-
-
-        fun newInstance(extras: Bundle): Fragment {
-            val fragment = CouponDetailFragment()
-            fragment.arguments = extras
-            return fragment
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        when (requestCode) {
+            REQUEST_CODE_VERIFICATION_PHONE -> {
+                when (resultCode) {
+                    Activity.RESULT_OK -> {
+                        phoneVerificationState=true
+                        mPresenter.redeemCoupon(mCode, mCTA)
+                    }
+                    Activity.RESULT_CANCELED -> {
+                        super.onActivityResult(requestCode, resultCode, data)
+                    }
+                }
+            }
         }
     }
 
-}
+        companion object {
+            val AB_TESTING_CTA_VARIANT_A = "CTA Phone Verify 2"
+            val AB_TEST_PHONE_VERIFICATION_KEY = "CTA Phone Verify 2"
+            private val REQUEST_CODE_VERIFICATION_PHONE = 301
+            private val CONTAINER_LOADER = 0
+            private val CONTAINER_DATA = 1
+            private val CONTAINER_ERROR = 2
+            private val CONTAINER_SWIPE = 1
+
+
+            fun newInstance(extras: Bundle): Fragment {
+                val fragment = CouponDetailFragment()
+                fragment.arguments = extras
+                return fragment
+            }
+        }
+
+    }
 

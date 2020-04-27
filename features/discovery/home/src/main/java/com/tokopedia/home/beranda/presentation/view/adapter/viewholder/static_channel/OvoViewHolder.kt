@@ -19,14 +19,15 @@ import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.abstraction.common.utils.HexValidator
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
 import com.tokopedia.common_wallet.analytics.CommonWalletAnalytics
-import com.tokopedia.gamification.util.HexValidator
 import com.tokopedia.home.R
 import com.tokopedia.home.analytics.HomePageTracking
+import com.tokopedia.home.analytics.HomePageTrackingV2
 import com.tokopedia.home.beranda.data.model.SectionContentItem
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderViewModel
@@ -104,7 +105,6 @@ class OvoViewHolder(itemView: View, val listener: HomeCategoryListener) : Abstra
         val tokocashProgressBar = itemView.findViewById<ProgressBar>(R.id.progress_bar_tokocash)
         scanHolder.setOnClickListener { goToScanner() }
 
-        val homeHeaderWalletAction = element.homeHeaderWalletActionData
         if (element.homeHeaderWalletActionData == null && element.isWalletDataError) {
             tokoCashHolder.setOnClickListener {
                 tokocashProgressBar.visibility = View.VISIBLE
@@ -122,72 +122,79 @@ class OvoViewHolder(itemView: View, val listener: HomeCategoryListener) : Abstra
             tokoCashHolder.setOnClickListener(null)
             tokocashProgressBar.visibility = View.VISIBLE
         } else {
-            if (!TextUtils.isEmpty(homeHeaderWalletAction.walletType) && homeHeaderWalletAction.walletType == WALLET_TYPE) {
-                tokocashProgressBar.visibility = View.GONE
-                tvActionTokocash.text = homeHeaderWalletAction.labelActionButton
-                tvActionTokocash.setOnClickListener { goToOvoAppLink(homeHeaderWalletAction.isLinked, homeHeaderWalletAction.appLinkActionButton) }
-                tokoCashHolder.setOnClickListener { goToOvoAppLink(homeHeaderWalletAction.isLinked, homeHeaderWalletAction.appLinkBalance) }
+            val homeHeaderWalletAction = element.homeHeaderWalletActionData
 
-                if (homeHeaderWalletAction.isLinked) {
-                    tvTitleTokocash.text = homeHeaderWalletAction.cashBalance
-                    tvActionTokocash.visibility = View.VISIBLE
-                    tvBalanceTokocash.visibility = View.VISIBLE
-                    tvBalanceTokocash.text = itemView.resources.getString(R.string.home_header_fintech_points, homeHeaderWalletAction.pointBalance)
-                    tvActionTokocash.visibility = if (homeHeaderWalletAction.isVisibleActionButton) View.VISIBLE else View.GONE
-                    tvTitleTokocash.visibility = if (homeHeaderWalletAction.isVisibleActionButton) View.GONE else View.VISIBLE
-                } else {
-                    tvTitleTokocash.text = TITLE
-                    tvActionTokocash.visibility = View.VISIBLE
-                    tvBalanceTokocash.visibility = View.GONE
-                    if (element.isPendingTokocashChecked && element.cashBackData != null) {
-                        if (element.cashBackData.amount > 0) {
-                            tvTitleTokocash.text = "(+ ${element.cashBackData.amountText} )"
-                        }
+            homeHeaderWalletAction?.let {homeHeaderWalletAction ->
+                if (!TextUtils.isEmpty(homeHeaderWalletAction.walletType) && homeHeaderWalletAction.walletType == WALLET_TYPE) {
+                    tokocashProgressBar.visibility = View.GONE
+                    tvActionTokocash.text = homeHeaderWalletAction.labelActionButton
+                    tvActionTokocash.setOnClickListener { goToOvoAppLink(homeHeaderWalletAction.isLinked, homeHeaderWalletAction.appLinkActionButton) }
+                    tokoCashHolder.setOnClickListener { goToOvoAppLink(homeHeaderWalletAction.isLinked, homeHeaderWalletAction.appLinkBalance) }
+
+                    if (homeHeaderWalletAction.isLinked) {
+                        tvTitleTokocash.text = homeHeaderWalletAction.cashBalance
+                        tvActionTokocash.visibility = View.VISIBLE
+                        tvBalanceTokocash.visibility = View.VISIBLE
+                        tvBalanceTokocash.text = itemView.resources.getString(R.string.home_header_fintech_points, homeHeaderWalletAction.pointBalance)
+                        tvActionTokocash.visibility = if (homeHeaderWalletAction.isVisibleActionButton) View.VISIBLE else View.GONE
+                        tvTitleTokocash.visibility = if (homeHeaderWalletAction.isVisibleActionButton) View.GONE else View.VISIBLE
                     } else {
-                        listener.onRequestPendingCashBack()
-                    }
-                }
-            } else {
-                tokocashProgressBar.visibility = View.GONE
-                tvTitleTokocash.text = homeHeaderWalletAction.labelTitle
-                tvActionTokocash.text = homeHeaderWalletAction.labelActionButton
-                tvActionTokocash.setOnClickListener {
-                    if (!homeHeaderWalletAction.appLinkActionButton.contains("webview") && !homeHeaderWalletAction.isLinked) {
-                        HomePageTracking.eventTokoCashActivateClick(itemView.context)
-                    }
-                    listener.actionAppLinkWalletHeader(homeHeaderWalletAction.appLinkActionButton)
-                }
-                tokoCashHolder.setOnClickListener {
-                    if (homeHeaderWalletAction.appLinkBalance != "" &&
-                            !homeHeaderWalletAction.appLinkBalance.contains("webview") &&
-                            homeHeaderWalletAction.isLinked) {
-                        HomePageTracking.eventTokoCashCheckSaldoClick(itemView.context)
-                    }
-
-                    listener.actionAppLinkWalletHeader(homeHeaderWalletAction.appLinkBalance)
-                }
-                ivLogoTokocash.setImageResource(R.drawable.ic_tokocash)
-
-                if (homeHeaderWalletAction.isLinked) {
-                    tvBalanceTokocash.visibility = View.VISIBLE
-                    tvBalanceTokocash.text = homeHeaderWalletAction.balance
-
-                    tvActionTokocash.visibility = if (homeHeaderWalletAction.isVisibleActionButton) View.VISIBLE else View.GONE
-                    tvTitleTokocash.visibility = if (homeHeaderWalletAction.isVisibleActionButton) View.GONE else View.VISIBLE
-                } else {
-                    tvBalanceTokocash.visibility = View.GONE
-                    tvActionTokocash.visibility = View.VISIBLE
-                    if (element.isPendingTokocashChecked && element.cashBackData != null) {
-                        if (element.cashBackData.amount > 0) {
-                            tvActionTokocash.visibility = View.GONE
-                            tvBalanceTokocash.visibility = View.VISIBLE
-                            tvBalanceTokocash.text = element.cashBackData.amountText
-                            tvBalanceTokocash.setOnClickListener {
-                                listener.actionInfoPendingCashBackTokocash(element.cashBackData, homeHeaderWalletAction.appLinkActionButton)
+                        tvTitleTokocash.text = TITLE
+                        tvActionTokocash.visibility = View.VISIBLE
+                        tvBalanceTokocash.visibility = View.GONE
+                        if (element.isPendingTokocashChecked && element.cashBackData != null) {
+                            if (element.cashBackData?.amount?:0 > 0) {
+                                tvTitleTokocash.text = "(+ ${element?.cashBackData?.amountText} )"
                             }
+                        } else {
+                            listener.onRequestPendingCashBack()
                         }
+                        tvTitleTokocash.visibility = View.VISIBLE
+                    }
+                } else {
+                    tokocashProgressBar.visibility = View.GONE
+                    tvTitleTokocash.text = homeHeaderWalletAction.labelTitle
+                    tvActionTokocash.text = homeHeaderWalletAction.labelActionButton
+                    tvActionTokocash.setOnClickListener {
+                        if (!homeHeaderWalletAction.appLinkActionButton.contains("webview") && !homeHeaderWalletAction.isLinked) {
+                            HomePageTracking.eventTokoCashActivateClick(itemView.context)
+                        }
+                        listener.actionAppLinkWalletHeader(homeHeaderWalletAction.appLinkActionButton)
+                    }
+                    tokoCashHolder.setOnClickListener {
+                        if (homeHeaderWalletAction.appLinkBalance != "" &&
+                                !homeHeaderWalletAction.appLinkBalance.contains("webview") &&
+                                homeHeaderWalletAction.isLinked) {
+                            HomePageTracking.eventTokoCashCheckSaldoClick(itemView.context)
+                        }
+
+                        listener.actionAppLinkWalletHeader(homeHeaderWalletAction.appLinkBalance)
+                    }
+                    ivLogoTokocash.setImageResource(R.drawable.ic_tokocash)
+
+                    if (homeHeaderWalletAction.isLinked) {
+                        tvBalanceTokocash.visibility = View.VISIBLE
+                        tvBalanceTokocash.text = homeHeaderWalletAction.balance
+
+                        tvActionTokocash.visibility = if (homeHeaderWalletAction.isVisibleActionButton) View.VISIBLE else View.GONE
+                        tvTitleTokocash.visibility = if (homeHeaderWalletAction.isVisibleActionButton) View.GONE else View.VISIBLE
                     } else {
-                        listener.onRequestPendingCashBack()
+                        tvBalanceTokocash.visibility = View.GONE
+                        tvActionTokocash.visibility = View.VISIBLE
+                        if (element.isPendingTokocashChecked && element.cashBackData != null) {
+                            if (element.cashBackData?.amount?:0 > 0) {
+                                tvActionTokocash.visibility = View.GONE
+                                tvBalanceTokocash.visibility = View.VISIBLE
+                                tvBalanceTokocash.text = element?.cashBackData?.amountText?:""
+                                tvBalanceTokocash.setOnClickListener {
+                                    element.cashBackData?.let {
+                                        listener.actionInfoPendingCashBackTokocash(it, homeHeaderWalletAction.appLinkActionButton)
+                                    }
+                                }
+                            }
+                        } else {
+                            listener.onRequestPendingCashBack()
+                        }
                     }
                 }
             }
@@ -202,6 +209,7 @@ class OvoViewHolder(itemView: View, val listener: HomeCategoryListener) : Abstra
         val tokopointProgressBarLayout = itemView.findViewById<ProgressBar>(R.id.progress_bar_tokopoint_layout)
         val tokopointActionContainer = itemView.findViewById<View>(R.id.container_action_tokopoint)
         val mTextCouponCount = itemView.findViewById<TextView>(R.id.text_coupon_count)
+        ivLogoTokoPoint.setImageResource(R.drawable.ic_product_fintech_tokopoint_green_24)
         if (element.tokopointsDrawerHomeData == null && element.isTokoPointDataError) {
             tokoPointHolder.setOnClickListener {
                 tokopointProgressBarLayout.visibility = View.VISIBLE
@@ -229,31 +237,42 @@ class OvoViewHolder(itemView: View, val listener: HomeCategoryListener) : Abstra
             tvBalanceTokoPoint.visibility = View.VISIBLE
             mTextCouponCount.visibility = View.VISIBLE
 
-            ImageHandler.loadImageAndCache(ivLogoTokoPoint, element.tokopointsDrawerHomeData.iconImageURL)
+            ImageHandler.loadImageAndCache(ivLogoTokoPoint, element.tokopointsDrawerHomeData?.iconImageURL)
             mTextCouponCount.setTypeface(mTextCouponCount.typeface, Typeface.BOLD)
-            if (element.tokopointsDrawerHomeData.sectionContent != null && element.tokopointsDrawerHomeData.sectionContent.size > 0) {
-                setTokopointHeaderData(element.tokopointsDrawerHomeData.sectionContent[0], tvBalanceTokoPoint)
-                if (element.tokopointsDrawerHomeData.sectionContent.size >= 2) {
-                    setTokopointHeaderData(element.tokopointsDrawerHomeData.sectionContent[1], mTextCouponCount)
+            element.tokopointsDrawerHomeData?.sectionContent?.let { sectionContent ->
+                if (sectionContent.size > 0) {
+                    setTokopointHeaderData(sectionContent[0], tvBalanceTokoPoint)
+                    if (sectionContent.size >= 2) {
+                        setTokopointHeaderData(sectionContent[1], mTextCouponCount)
+                    }
+                } else {
+                    tvBalanceTokoPoint.setText(R.string.home_header_tokopoint_no_tokopoints)
+                    mTextCouponCount.setText(R.string.home_header_tokopoint_no_coupons)
+                    tvBalanceTokoPoint.setTextColor(ContextCompat.getColor(itemView.context, R.color.font_black_primary_70))
+                    mTextCouponCount.setTextColor(ContextCompat.getColor(itemView.context, R.color.tkpd_main_green))
                 }
-            } else {
-                tvBalanceTokoPoint.setText(R.string.home_header_tokopoint_no_tokopoints)
-                mTextCouponCount.setText(R.string.home_header_tokopoint_no_coupons)
-                tvBalanceTokoPoint.setTextColor(ContextCompat.getColor(itemView.context, R.color.font_black_primary_70))
-                mTextCouponCount.setTextColor(ContextCompat.getColor(itemView.context, R.color.tkpd_main_green))
             }
 
             tokoPointHolder.setOnClickListener {
                 if (element.tokopointsDrawerHomeData != null) {
                     HomePageTracking.eventUserProfileTokopoints(itemView.context)
-                    listener.actionTokoPointClicked(
-                            element.tokopointsDrawerHomeData.redirectAppLink,
-                            element.tokopointsDrawerHomeData.redirectURL,
-                            if (TextUtils.isEmpty(element.tokopointsDrawerHomeData.mainPageTitle))
-                                TITLE_HEADER_WEBSITE
-                            else
-                                element.tokopointsDrawerHomeData.mainPageTitle
-                    )
+                    element.tokopointsDrawerHomeData?.let {tokopointsDrawerHomeData->
+                        listener.actionTokoPointClicked(
+                                tokopointsDrawerHomeData.redirectAppLink,
+                                tokopointsDrawerHomeData.redirectURL,
+                                if (TextUtils.isEmpty(tokopointsDrawerHomeData.mainPageTitle))
+                                    TITLE_HEADER_WEBSITE
+                                else
+                                    tokopointsDrawerHomeData.mainPageTitle
+                        )
+
+                        if (tokopointsDrawerHomeData.sectionContent.isNotEmpty() &&
+                                tokopointsDrawerHomeData.sectionContent[0].tagAttributes.text.isNotEmpty()) {
+                            HomePageTracking.sendClickOnTokopointsNewCouponTracker()
+                        } else {
+                            HomePageTracking.sendTokopointTrackerClick()
+                        }
+                    }
                 }
             }
         }

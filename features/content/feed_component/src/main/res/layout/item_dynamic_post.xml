@@ -268,7 +268,7 @@
                         app:layout_constraintBottom_toBottomOf="@id/likeIcon"
                         app:layout_constraintStart_toEndOf="@id/likeIcon"
                         app:layout_constraintTop_toTopOf="@id/likeIcon"
-                        app:typographyType="body_3"
+                        app:typographyType="heading_5"
                         tools:ignore="RtlSymmetry"
                         />
 
@@ -308,7 +308,7 @@
                         app:layout_constraintBottom_toBottomOf="@id/commentIcon"
                         app:layout_constraintStart_toEndOf="@id/commentIcon"
                         app:layout_constraintTop_toTopOf="@id/commentIcon"
-                        app:typographyType="body_3"
+                        app:typographyType="heading_5"
                         tools:ignore="RtlSymmetry"
                         />
 
@@ -333,7 +333,7 @@
                         app:srcCompat="@drawable/ic_share_grey_profile"
                         />
 
-                    <TextView
+                    <com.tokopedia.unifyprinciples.Typography
                         android:id="@+id/shareText"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -342,11 +342,10 @@
                         android:paddingLeft="@dimen/dp_4"
                         android:text="@string/kol_action_share"
                         android:textColor="@color/color_like_comment_share"
-                        android:textSize="@dimen/sp_12"
-                        android:textStyle="normal"
                         app:layout_constraintBottom_toBottomOf="@id/shareIcon"
                         app:layout_constraintStart_toEndOf="@id/shareIcon"
                         app:layout_constraintTop_toTopOf="@id/shareIcon"
+                        app:typographyType="heading_5"
                         tools:ignore="RtlSymmetry"
                         />
 

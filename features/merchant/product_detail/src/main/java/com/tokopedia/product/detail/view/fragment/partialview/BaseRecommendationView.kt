@@ -94,17 +94,19 @@ abstract class BaseRecommendationView(context: Context,
                     }
 
                     override fun onItemImpressed(productCardModel: ProductCardModel, adapterPosition: Int) {
-                        val productRecommendation = product.recommendationItemList[adapterPosition]
-                        val topAdsImageUrl = productRecommendation.trackerImageUrl
-                        if (productCardModel.isTopAds) {
-                            ImpresionTask().execute(topAdsImageUrl)
+                        if (product.recommendationItemList.size > adapterPosition) {
+                            val productRecommendation = product.recommendationItemList[adapterPosition]
+                            val topAdsImageUrl = productRecommendation.trackerImageUrl
+                            if (productCardModel.isTopAds) {
+                                ImpresionTask().execute(topAdsImageUrl)
+                            }
+                            productDetailTracking.eventRecommendationImpression(
+                                    adapterPosition,
+                                    productRecommendation,
+                                    getListener().isUserSessionActive,
+                                    pageName,
+                                    product.title)
                         }
-                        productDetailTracking.eventRecommendationImpression(
-                                adapterPosition,
-                                productRecommendation,
-                                getListener().isUserSessionActive,
-                                pageName,
-                                product.title)
                     }
                 },
                 productCardModelList = product.recommendationItemList.map {

@@ -1,6 +1,5 @@
 package com.tokopedia.purchase_platform.features.cart.view.subscriber
 
-import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.promocheckout.common.domain.model.clearpromo.ClearCacheAutoApplyStackResponse
 import com.tokopedia.promocheckout.common.view.model.PromoStackingData
 import com.tokopedia.promocheckout.common.view.uimodel.ClashingVoucherOrderUiModel
@@ -16,7 +15,7 @@ class ClearCacheAutoApplyAfterClashSubscriber(val view: ICartListView?,
                                               val presenter: ICartListPresenter,
                                               val promoStackingGlobalData: PromoStackingData,
                                               val newPromoList: ArrayList<ClashingVoucherOrderUiModel>,
-                                              val type: String) : Subscriber<GraphqlResponse>() {
+                                              val type: String) : Subscriber<ClearCacheAutoApplyStackResponse>() {
 
     override fun onCompleted() {
 
@@ -28,10 +27,9 @@ class ClearCacheAutoApplyAfterClashSubscriber(val view: ICartListView?,
         view?.onFailedClearPromoStack(false)
     }
 
-    override fun onNext(response: GraphqlResponse) {
+    override fun onNext(response: ClearCacheAutoApplyStackResponse) {
         view?.hideProgressLoading()
-        val responseData = response.getData<ClearCacheAutoApplyStackResponse>(ClearCacheAutoApplyStackResponse::class.java)
-        if (responseData.successData.success) {
+        if (response.successData.success) {
             view?.onSuccessClearPromoStackAfterClash()
             presenter.processApplyPromoStackAfterClash(promoStackingGlobalData, newPromoList, type)
         } else {

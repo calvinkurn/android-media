@@ -25,19 +25,16 @@ class PointHistoryRepositoryTest {
 
     @Before
     fun setUp() {
-        repository = PointHistoryRepository(repo, map)
+        repository = PointHistoryRepository(repo, map , "tp_curent_point")
     }
 
     @Test
     fun getPointsDetail() {
         var data = mockk<GraphqlResponse>()
         coEvery { repo.getReseponse(any(),any()) } returns  data
-        coEvery{map.get(any())} returns "hiosdbvoiav"
         runBlocking{
            assert(repository.getPointsDetail() == data)
         }
-
-
     }
 
     @Test

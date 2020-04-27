@@ -7,7 +7,7 @@ import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.purchase_platform.features.express_checkout.view.variant.CheckoutVariantActionListener
 import com.tokopedia.purchase_platform.features.express_checkout.view.variant.viewholder.*
-import com.tokopedia.purchase_platform.features.express_checkout.view.variant.viewmodel.*
+import com.tokopedia.purchase_platform.features.express_checkout.view.variant.uimodel.*
 
 /**
  * Created by Irfan Khoirul on 30/11/18.
@@ -15,39 +15,39 @@ import com.tokopedia.purchase_platform.features.express_checkout.view.variant.vi
 
 open class CheckoutVariantAdapterTypeFactory(val listener: CheckoutVariantActionListener) : BaseAdapterTypeFactory(), CheckoutVariantTypeFactory {
 
-    override fun type(viewModel: NoteViewModel): Int {
+    override fun type(uiModel: NoteUiModel): Int {
         return NoteViewHolder.LAYOUT
     }
 
-    override fun type(viewModel: ProductViewModel): Int {
+    override fun type(uiModel: ProductUiModel): Int {
         return ProductViewHolder.LAYOUT
     }
 
-    override fun type(viewModel: ProfileViewModel): Int {
+    override fun type(uiModel: ProfileUiModel): Int {
         return ProfileViewHolder.LAYOUT
     }
 
-    override fun type(viewModel: QuantityViewModel): Int {
+    override fun type(uiModel: QuantityUiModel): Int {
         return QuantityViewHolder.LAYOUT
     }
 
-    override fun type(viewModel: SummaryViewModel): Int {
+    override fun type(uiModel: SummaryUiModel): Int {
         return SummaryViewHolder.LAYOUT
     }
 
-    override fun type(viewModel: TypeVariantViewModel): Int {
+    override fun type(uiModel: TypeVariantUiModel): Int {
         return TypeVariantViewHolder.LAYOUT
     }
 
-    override fun type(viewModel: InsuranceViewModel): Int {
+    override fun type(uiModel: InsuranceUiModel): Int {
         return InsuranceViewHolder.LAYOUT
     }
 
-    override fun type(viewModel: InsuranceRecommendationViewModel): Int {
+    override fun type(uiModel: InsuranceRecommendationUiModel): Int {
         return InsuranceRecommendationViewHolder.LAYOUT
     }
 
-    override fun type(viewModel: LoadingModel): Int {
+    override fun type(uiModel: LoadingModel): Int {
         return LoadingViewHolder.LAYOUT
     }
 

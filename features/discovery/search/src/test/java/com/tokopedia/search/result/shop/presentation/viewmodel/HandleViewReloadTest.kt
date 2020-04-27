@@ -1,9 +1,9 @@
 package com.tokopedia.search.result.shop.presentation.viewmodel
 
+import com.tokopedia.discovery.common.EventObserver
+import com.tokopedia.discovery.common.State
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.search.InstantTaskExecutorRuleSpek
-import com.tokopedia.search.result.common.EventObserver
-import com.tokopedia.search.result.common.State
 import com.tokopedia.search.result.isExecuted
 import com.tokopedia.search.result.shop.domain.model.SearchShopModel
 import com.tokopedia.search.result.shop.presentation.viewmodel.testinstance.*

@@ -8,7 +8,7 @@ import com.tokopedia.purchase_platform.features.express_checkout.data.entity.req
 import com.tokopedia.purchase_platform.features.express_checkout.data.entity.request.CheckoutParam
 import com.tokopedia.purchase_platform.features.express_checkout.data.entity.request.CheckoutRequestParam
 import com.tokopedia.purchase_platform.features.express_checkout.data.entity.request.Profile
-import com.tokopedia.purchase_platform.features.express_checkout.view.variant.viewmodel.FragmentViewModel
+import com.tokopedia.purchase_platform.features.express_checkout.view.variant.uimodel.FragmentUiModel
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
@@ -27,27 +27,27 @@ open class DoCheckoutExpressUseCase @Inject constructor(@ApplicationContext val 
 
     val variables = HashMap<String, Any?>()
 
-    fun setParams(fragmentViewModel: FragmentViewModel, checkoutData: DataCheckoutRequest) {
+    fun setParams(fragmentUiModel: FragmentUiModel, checkoutData: DataCheckoutRequest) {
         val cart = Cart()
-        cart.setDefaultProfile = fragmentViewModel.getProfileViewModel()?.isDefaultProfileCheckboxChecked
+        cart.setDefaultProfile = fragmentUiModel.getProfileViewModel()?.isDefaultProfileCheckboxChecked
         cart.promoCode = ""
         cart.isDonation = 0
         cart.data = arrayListOf(checkoutData)
 
         val checkoutParam = CheckoutParam()
         val profile = Profile()
-        profile.addressId = fragmentViewModel.getProfileViewModel()?.addressId
+        profile.addressId = fragmentUiModel.getProfileViewModel()?.addressId
         profile.description = ""
-        profile.gatewayCode = fragmentViewModel.atcResponseModel?.atcDataModel?.userProfileModelDefaultModel?.paymentModel?.gatewayCode
-        profile.status = fragmentViewModel.atcResponseModel?.atcDataModel?.userProfileModelDefaultModel?.status
-        profile.profileId = fragmentViewModel.atcResponseModel?.atcDataModel?.userProfileModelDefaultModel?.id
+        profile.gatewayCode = fragmentUiModel.atcResponseModel?.atcDataModel?.userProfileModelDefaultModel?.paymentModel?.gatewayCode
+        profile.status = fragmentUiModel.atcResponseModel?.atcDataModel?.userProfileModelDefaultModel?.status
+        profile.profileId = fragmentUiModel.atcResponseModel?.atcDataModel?.userProfileModelDefaultModel?.id
         profile.checkoutParam = checkoutParam
 
         val checkoutRequestParam = CheckoutRequestParam()
         checkoutRequestParam.carts = cart
         checkoutRequestParam.profile = profile
-        checkoutRequestParam.fingerprintSupport = fragmentViewModel.fingerprintPublicKey?.isNotEmpty()?.toString()
-        checkoutRequestParam.fingerprintPublicKey = fragmentViewModel.fingerprintPublicKey
+        checkoutRequestParam.fingerprintSupport = fragmentUiModel.fingerprintPublicKey?.isNotEmpty()?.toString()
+        checkoutRequestParam.fingerprintPublicKey = fragmentUiModel.fingerprintPublicKey
 
         val jsonTreeCheckoutRequest = Gson().toJsonTree(checkoutRequestParam)
         val jsonObjectCheckoutRequest = jsonTreeCheckoutRequest.asJsonObject

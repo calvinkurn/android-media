@@ -1,6 +1,8 @@
 package com.tokopedia.shop.product.di.component;
 
 import com.tokopedia.shop.common.di.component.ShopComponent;
+import com.tokopedia.shop.newproduct.view.fragment.ShopPageProductListFragment;
+import com.tokopedia.shop.newproduct.view.fragment.ShopPageProductListResultFragment;
 import com.tokopedia.shop.product.di.module.ShopProductModule;
 import com.tokopedia.shop.product.di.scope.ShopProductScope;
 import com.tokopedia.shop.product.view.fragment.HomeProductFragment;
@@ -16,7 +18,9 @@ import dagger.Component;
 @Component(modules = ShopProductModule.class, dependencies = ShopComponent.class)
 public interface ShopProductComponent {
     void inject(ShopProductListLimitedFragment shopProductListLimitedFragment);
+    void inject(ShopPageProductListFragment shopPageProductFragment);
     void inject(ShopProductListFragment shopProductListFragment);
     void inject(HomeProductFragment homeProductFragment);
+    void inject(ShopPageProductListResultFragment  shopPageProductListResultFragment);
 
 }

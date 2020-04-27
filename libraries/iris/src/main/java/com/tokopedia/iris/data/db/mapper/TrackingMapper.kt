@@ -1,11 +1,14 @@
 package com.tokopedia.iris.data.db.mapper
 
+import com.tokopedia.config.GlobalConfig
+import com.tokopedia.iris.data.db.table.Tracking
 import com.tokopedia.iris.util.KEY_CONTAINER
 import com.tokopedia.iris.util.KEY_EVENT
-import com.tokopedia.iris.data.db.table.Tracking
+import com.tokopedia.iris.util.KEY_EVENT_SELLERAPP
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
+import timber.log.Timber
 import java.util.*
 
 /**
@@ -39,7 +42,9 @@ class TrackingMapper {
         for (i in tracking.indices) {
             val item = tracking[i]
             if (!item.event.isBlank() && (item.event.contains("event"))) {
-                event.put(JSONObject(item.event))
+                val eventObject = JSONObject(item.event)
+                logCertainItems(eventObject)
+                event.put(eventObject)
                 val nextItem: Tracking? = try {
                     tracking[i+1]
                 } catch (e: IndexOutOfBoundsException) {
@@ -62,18 +67,43 @@ class TrackingMapper {
         return result.toString()
     }
 
+    private fun logCertainItems(item:JSONObject?){
+        try {
+            if (item?.has("event_ga") == true &&
+                item.has("eventCategory") && item.has("eventAction")) {
+                val itemEvent = item.getString("event_ga")
+                val itemCat = item.getString("eventCategory")
+                val itemAct = item.getString("eventAction")
+                if ("clickTopNav" == itemEvent &&
+                    itemCat?.startsWith("top nav") == true &&
+                    "click search box" == itemAct) {
+                    Timber.w("P1#IRIS_COLLECT#IRISSEND_CLICKSEARCHBOX")
+                } else if ("clickPDP" == itemEvent && "product detail page" == itemCat &&
+                    "click - tambah ke keranjang" == itemAct) {
+                    Timber.w("P1#IRIS_COLLECT#IRISSEND_PDP_ATC")
+                }
+            }
+        }catch (e:Exception) {
+            Timber.e("P1#IRIS#logIrisAnalyticsSend %s", e.toString())
+        }
+    }
+
     companion object {
 
         fun reformatEvent(event: String, sessionId: String) : JSONObject {
             return try {
+                var keyEvent = KEY_EVENT
+                if (GlobalConfig.isSellerApp()) {
+                    keyEvent = KEY_EVENT_SELLERAPP
+                }
                 val item = JSONObject(event)
-                if (item.get("event") != null) {
+                if (item.has("event") && item.get("event") != null) {
                     item.put("event_ga", item.get("event"))
                     item.remove("event")
                 }
                 item.put("iris_session_id", sessionId)
                 item.put("container", KEY_CONTAINER)
-                item.put("event", KEY_EVENT)
+                item.put("event", keyEvent)
                 item.put("hits_time", Calendar.getInstance().timeInMillis)
                 item
             } catch (e: JSONException) {

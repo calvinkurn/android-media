@@ -5,10 +5,10 @@ import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.purchase_platform.features.express_checkout.view.variant.CheckoutVariantActionListener
 import com.tokopedia.purchase_platform.features.express_checkout.view.variant.adapter.VariantOptionAdapter
-import com.tokopedia.purchase_platform.features.express_checkout.view.variant.viewmodel.OptionVariantViewModel
-import com.tokopedia.purchase_platform.features.express_checkout.view.variant.viewmodel.OptionVariantViewModel.Companion.STATE_NOT_SELECTED
-import com.tokopedia.purchase_platform.features.express_checkout.view.variant.viewmodel.OptionVariantViewModel.Companion.STATE_SELECTED
-import com.tokopedia.purchase_platform.features.express_checkout.view.variant.viewmodel.TypeVariantViewModel
+import com.tokopedia.purchase_platform.features.express_checkout.view.variant.uimodel.OptionVariantUiModel
+import com.tokopedia.purchase_platform.features.express_checkout.view.variant.uimodel.OptionVariantUiModel.Companion.STATE_NOT_SELECTED
+import com.tokopedia.purchase_platform.features.express_checkout.view.variant.uimodel.OptionVariantUiModel.Companion.STATE_SELECTED
+import com.tokopedia.purchase_platform.features.express_checkout.view.variant.uimodel.TypeVariantUiModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.purchase_platform.R
@@ -18,19 +18,19 @@ import kotlinx.android.synthetic.main.item_variant_detail_product_page.view.*
  * Created by Irfan Khoirul on 30/11/18.
  */
 
-class TypeVariantViewHolder(val view: View, val listener: CheckoutVariantActionListener) : AbstractViewHolder<TypeVariantViewModel>(view) {
+class TypeVariantViewHolder(val view: View, val listener: CheckoutVariantActionListener) : AbstractViewHolder<TypeVariantUiModel>(view) {
 
     companion object {
         val LAYOUT = R.layout.item_variant_detail_product_page
     }
 
-    override fun bind(element: TypeVariantViewModel?) {
+    override fun bind(element: TypeVariantUiModel?) {
         if (element != null) {
             val checkoutVariantProductViewModel = listener.onBindVariantGetProductViewModel()
             if (checkoutVariantProductViewModel != null && checkoutVariantProductViewModel.selectedVariantOptionsIdMap.isNotEmpty()) {
                 for ((key, value) in checkoutVariantProductViewModel.selectedVariantOptionsIdMap) {
                     if (key == element.variantId) {
-                        for (option: OptionVariantViewModel in element.variantOptions) {
+                        for (option: OptionVariantUiModel in element.variantOptions) {
                             if (option.optionId == value) {
                                 option.currentState = STATE_SELECTED
                                 element.variantSelectedValue = option.variantName

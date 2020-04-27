@@ -95,11 +95,7 @@ public class ListViewShopOrderDetail extends BaseAdapter{
 			
 			@Override
 			public void onClick(View v) {
-//				context.startActivity(
-//						ProductDetailRouter.createInstanceProductDetailInfoActivity(
-//								context, getProductDataToPass(data)
-//						)
-//				);
+
 			}
 		});
 		return convertView;

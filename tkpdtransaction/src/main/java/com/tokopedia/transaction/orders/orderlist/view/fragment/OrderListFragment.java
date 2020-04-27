@@ -33,7 +33,6 @@ import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel;
 import com.tokopedia.datepicker.DatePickerUnify;
-import com.tokopedia.datepicker.OnDateChangedListener;
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog;
 import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.design.component.ToasterNormal;
@@ -87,7 +86,9 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+
 import javax.inject.Inject;
+
 import kotlin.Unit;
 
 
@@ -118,11 +119,13 @@ public class OrderListFragment extends BaseDaggerFragment implements
     public static final int REJECT_BUYER_REQUEST = 102;
     public static final int CANCEL_BUYER_REQUEST = 103;
     private static final long KEYBOARD_SEARCH_WAITING_TIME = 300;
-    private static final String ACTION_BUY_AGAIN = "beli lagi";
-    private static final String ACTION_ASK_SELLER = "tanya penjual";
+    public static final String ACTION_BUY_AGAIN = "beli lagi";
+    public static final String ACTION_ASK_SELLER = "tanya penjual";
     private static final String ACTION_TRACK_IT = "lacak";
-    private static final String ACTION_SUBMIT_CANCELLATION = "ajukan pembatalan";
+    public static final String ACTION_SUBMIT_CANCELLATION = "ajukan pembatalan";
     private static final String ACTION_DONE = "selesai";
+    private static final String ACTION_SIMILAR_PRODUCT = "rekomendasi";
+    private static final String CLICK_SIMILAR_PRODUCT = "click lihat produk serupa";
     private static final String  MULAI_DARI= "Mulai Dari";
     private static final String  SAMPAI= "Sampai";
     private static final int DEFAULT_FILTER_YEAR = 2017;
@@ -649,7 +652,7 @@ public class OrderListFragment extends BaseDaggerFragment implements
         orderListAdapter.addElement(data);
         endlessRecyclerViewScrollListener.updateStateAfterGetData();
         swipeToRefresh.setVisibility(View.VISIBLE);
-        if ((mOrderCategory.equalsIgnoreCase(OrderListContants.BELANJA) || mOrderCategory.equalsIgnoreCase(OrderListContants.MARKETPLACE)) && !isRecommendation) {
+        if ((mOrderCategory.equalsIgnoreCase(OrderListContants.BELANJA) || (mOrderCategory.equalsIgnoreCase(OrderListContants.MARKETPLACE)) && !isRecommendation )|| orderLabelList.getOrderCategory().equalsIgnoreCase(OrderCategory.DIGITAL)) {
             filterDate.setVisibility(View.VISIBLE);
         }
     }
@@ -913,7 +916,7 @@ public class OrderListFragment extends BaseDaggerFragment implements
         this.selectedOrderId = order.id();
         switch (actionButton.label().toLowerCase()) {
             case ACTION_BUY_AGAIN:
-                if(mOrderCategory.equals(OrderListContants.BELANJA))
+                if(mOrderCategory.equalsIgnoreCase(OrderListContants.BELANJA) || mOrderCategory.equalsIgnoreCase(OrderListContants.MARKETPLACE))
                     presenter.setOrderDetails(selectedOrderId, mOrderCategory, actionButton.label().toLowerCase());
                 else
                     handleDefaultCase(actionButton);
@@ -930,6 +933,13 @@ public class OrderListFragment extends BaseDaggerFragment implements
                 presenter.finishOrder(selectedOrderId, actionButtonUri);
                 break;
             default:
+                if (actionButton.uri().contains(ACTION_SIMILAR_PRODUCT)) {
+                    String eventLabel = "";
+                    if (order.items() != null && !order.items().isEmpty()) {
+                        eventLabel = String.valueOf(order.items().get(0).getId());
+                    }
+                    orderListAnalytics.sendActionButtonClickEventList(CLICK_SIMILAR_PRODUCT, eventLabel);
+                }
                 handleDefaultCase(actionButton);
                 break;
         }

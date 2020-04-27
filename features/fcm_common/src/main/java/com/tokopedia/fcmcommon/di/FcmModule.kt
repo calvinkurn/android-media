@@ -3,16 +3,14 @@ package com.tokopedia.fcmcommon.di
 import android.content.Context
 import android.content.SharedPreferences
 import android.preference.PreferenceManager
-
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.fcmcommon.CoroutineContextProviders
 import com.tokopedia.fcmcommon.FirebaseMessagingManager
 import com.tokopedia.fcmcommon.FirebaseMessagingManagerImpl
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-
-import javax.inject.Singleton
-
+import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.Dispatchers
@@ -31,6 +29,7 @@ class FcmModule(@ApplicationContext private val context: Context) {
             context: Context,
             sharedPreferences: SharedPreferences,
             repository: GraphqlRepository,
+            userSession: UserSessionInterface,
             coroutineContextProviders: CoroutineContextProviders,
             queries: Map<String, String>
     ): FirebaseMessagingManager {
@@ -38,6 +37,7 @@ class FcmModule(@ApplicationContext private val context: Context) {
                 context,
                 sharedPreferences,
                 repository,
+                userSession,
                 coroutineContextProviders,
                 queries
         )
@@ -59,5 +59,9 @@ class FcmModule(@ApplicationContext private val context: Context) {
             Dispatchers.Main,
             Dispatchers.IO
     )
+
+    @Provides
+    @FcmScope
+    fun provideUserSessionInterface(@ApplicationContext context: Context): UserSessionInterface = UserSession(context)
 
 }

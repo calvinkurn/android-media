@@ -281,19 +281,6 @@ public class CustomerWrapper extends BaseAnalyticsModel {
         return null;
     }
 
-    @Override
-    public void setExtraAttr(Map<String, String> extraAttr) {
-        this.extraAttr = extraAttr;
-    }
-
-    public Map<String, String> getExtraAttr() {
-        return this.extraAttr;
-    }
-
-    public String getmCustomerId() {
-        return mCustomerId;
-    }
-
     public void setCustomerId(String mCustomerId) {
         this.mCustomerId = mCustomerId;
     }

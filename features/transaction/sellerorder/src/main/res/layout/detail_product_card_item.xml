@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/detail_product_card_item"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:tools="http://schemas.android.com/tools"
@@ -64,18 +65,19 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_product_name"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_8"
+            android:layout_marginLeft="@dimen/dp_8"
+            android:ellipsize="end"
+            android:maxLines="2"
+            android:textColor="@color/Neutral_N700_96"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/cv_product_img"
             app:layout_constraintTop_toTopOf="parent"
             app:typographyType="body_3"
             app:typographyWeight="bold"
-            tools:text="Fujifilm Instax Square"
-            android:layout_marginStart="@dimen/dp_8"
-            android:layout_marginLeft="@dimen/dp_8"
-            android:layout_marginRight="@dimen/dp_8"
-            android:layout_marginEnd="@dimen/dp_8"
-            android:textColor="@color/Neutral_N700_96"/>
+            tools:text="Fujifilm Instax Square Fujifilm Instax Square Fujifilm Instax Square" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_product_desc"

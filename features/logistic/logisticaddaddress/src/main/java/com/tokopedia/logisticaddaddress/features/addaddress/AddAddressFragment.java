@@ -6,9 +6,6 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import com.google.android.material.textfield.TextInputLayout;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -26,12 +23,15 @@ import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
+import com.google.android.material.textfield.TextInputLayout;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
-import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.design.base.BaseToaster;
 import com.tokopedia.design.component.ToasterError;
@@ -39,7 +39,6 @@ import com.tokopedia.logisticaddaddress.R;
 import com.tokopedia.logisticaddaddress.di.AddressModule;
 import com.tokopedia.logisticaddaddress.di.DaggerAddressComponent;
 import com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomActivity;
-import com.tokopedia.purchase_platform.common.analytics.ITransactionAnalyticsAddAddress;
 import com.tokopedia.logisticaddaddress.features.pinpoint.GeolocationActivity;
 import com.tokopedia.logisticdata.data.entity.address.Destination;
 import com.tokopedia.logisticdata.data.entity.address.DistrictRecommendationAddress;
@@ -49,6 +48,7 @@ import com.tokopedia.logisticdata.data.module.qualifier.LogisticUserSessionQuali
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsChangeAddress;
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsMultipleAddress;
 import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics;
+import com.tokopedia.purchase_platform.common.analytics.ITransactionAnalyticsAddAddress;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
@@ -58,7 +58,7 @@ import java.util.Locale;
 
 import javax.inject.Inject;
 
-import rx.subscriptions.CompositeSubscription;
+import timber.log.Timber;
 
 import static com.tokopedia.logisticaddaddress.common.AddressConstants.EDIT_PARAM;
 import static com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_ADDRESS;
@@ -888,7 +888,7 @@ public class AddAddressFragment extends BaseDaggerFragment
 
         int resultCode = availability.isGooglePlayServicesAvailable(getActivity());
         if (ConnectionResult.SUCCESS == resultCode) {
-            CommonUtils.dumper("Google play services available");
+            Timber.d("Google play services available");
 
             LocationPass locationPass = new LocationPass();
 
@@ -913,7 +913,7 @@ public class AddAddressFragment extends BaseDaggerFragment
                 startActivityForResult(intent, REQUEST_CODE);
             }
         } else {
-            CommonUtils.dumper("Google play services unavailable");
+            Timber.d("Google play services unavailable");
             Dialog dialog = availability.getErrorDialog(getActivity(), resultCode, 0);
             dialog.show();
         }

@@ -2,7 +2,7 @@ package com.tokopedia.product.manage.item.common.util
 
 import android.text.TextUtils
 import com.crashlytics.android.Crashlytics
-import com.tokopedia.core.network.retrofit.exception.ResponseV4ErrorException
+import com.tokopedia.network.data.model.response.ResponseV4ErrorException
 
 /**
  * @author by milhamj on 2020-02-06.

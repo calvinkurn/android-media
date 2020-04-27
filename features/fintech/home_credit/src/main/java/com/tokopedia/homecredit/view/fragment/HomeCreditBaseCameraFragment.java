@@ -11,6 +11,7 @@ import android.graphics.BitmapFactory;
 import android.os.Build;
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
+
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -18,15 +19,15 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.tokopedia.cameraview.BitmapCallback;
-import com.tokopedia.cameraview.CameraListener;
-import com.tokopedia.cameraview.CameraOptions;
-import com.tokopedia.cameraview.CameraUtils;
-import com.tokopedia.cameraview.CameraView;
-import com.tokopedia.cameraview.Facing;
-import com.tokopedia.cameraview.Flash;
-import com.tokopedia.cameraview.PictureResult;
-import com.tokopedia.cameraview.Size;
+import com.otaliastudios.cameraview.CameraException;
+import com.otaliastudios.cameraview.CameraListener;
+import com.otaliastudios.cameraview.CameraOptions;
+import com.otaliastudios.cameraview.CameraUtils;
+import com.otaliastudios.cameraview.CameraView;
+import com.otaliastudios.cameraview.PictureResult;
+import com.otaliastudios.cameraview.controls.Facing;
+import com.otaliastudios.cameraview.controls.Flash;
+import com.otaliastudios.cameraview.size.Size;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.imagepicker.common.util.ImageUtils;
@@ -36,7 +37,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 public class HomeCreditBaseCameraFragment extends BaseDaggerFragment {
@@ -132,6 +132,11 @@ public class HomeCreditBaseCameraFragment extends BaseDaggerFragment {
             public void onCameraOpened(CameraOptions options) {
                 initialFlash();
                 isCameraOpen = true;
+            }
+
+            @Override
+            public void onCameraError(@NonNull CameraException exception) {
+                super.onCameraError(exception);
             }
 
             @Override
@@ -280,6 +285,7 @@ public class HomeCreditBaseCameraFragment extends BaseDaggerFragment {
             cameraView.addCameraListener(cameraListener);
             cameraView.open();
         } catch (Throwable e) {
+            e.printStackTrace();
         }
     }
 

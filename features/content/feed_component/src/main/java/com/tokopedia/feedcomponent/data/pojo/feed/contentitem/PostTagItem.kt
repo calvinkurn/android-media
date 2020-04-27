@@ -68,4 +68,39 @@ data class PostTagItem(
 
         @SerializedName("rating")
         val rating: Int = 0
-)
+) {
+        fun copy(): PostTagItem {
+                val newTracking: ArrayList<Tracking> = arrayListOf()
+                for (track in tracking) {
+                        newTracking.add(track.copy())
+                }
+                val newTags: ArrayList<PostTagItemTag> = arrayListOf()
+                for (tag in tags) {
+                        newTags.add(tag.copy())
+                }
+                val newShops: ArrayList<PostTagItemShop> = arrayListOf()
+                for (newShop in shop) {
+                        newShops.add(newShop.copy())
+                }
+                val newButtonCtas: ArrayList<PostTagItemButtonCTA> = arrayListOf()
+                for (newButtonCta in buttonCTA) {
+                        newButtonCtas.add(newButtonCta.copy())
+                }
+                return PostTagItem(id,
+                        text,
+                        price,
+                        type,
+                        applink,
+                        weblink,
+                        thumbnail,
+                        percentage,
+                        isSelected,
+                        position,
+                        isWishlisted,
+                        newTracking,
+                        newTags,
+                        newShops,
+                        newButtonCtas,
+                        rating)
+        }
+}

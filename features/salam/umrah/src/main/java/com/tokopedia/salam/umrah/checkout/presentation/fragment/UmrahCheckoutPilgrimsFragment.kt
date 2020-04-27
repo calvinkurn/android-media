@@ -282,8 +282,7 @@ class UmrahCheckoutPilgrimsFragment : BaseDaggerFragment() {
     }
 
     private fun getLastTime(): Calendar {
-        val calendar = GregorianCalendar(YEAR_END, MONTH_END, DAY_END)
-        return calendar
+        return GregorianCalendar(YEAR_END, MONTH_END, DAY_END)
     }
 
     private fun getCalendarTwoWeeksBefore(): Calendar {

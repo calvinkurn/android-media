@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.viewpager.widget.ViewPager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.common.utils.GlobalConfig
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
@@ -31,7 +31,8 @@ import com.tokopedia.design.label.LabelView
 import com.tokopedia.design.utils.DateLabelUtils
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo
+import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
+import com.tokopedia.topads.auto.view.activity.EmptyProductActivity
 import com.tokopedia.topads.auto.view.widget.AutoAdsWidgetView
 import com.tokopedia.topads.common.TopAdsMenuBottomSheets
 import com.tokopedia.topads.common.TopAdsWebViewActivity
@@ -45,9 +46,7 @@ import com.tokopedia.topads.dashboard.TopAdsDashboardTracking
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardTrackerConstant
 import com.tokopedia.topads.dashboard.data.constant.TopAdsStatisticsType
-import com.tokopedia.topads.dashboard.data.model.DashboardPopulateResponse
-import com.tokopedia.topads.dashboard.data.model.DataStatistic
-import com.tokopedia.topads.dashboard.data.model.TotalAd
+import com.tokopedia.topads.dashboard.data.model.*
 import com.tokopedia.topads.dashboard.data.utils.TopAdsDatePeriodUtil
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
 import com.tokopedia.topads.dashboard.view.activity.SellerCenterActivity
@@ -56,9 +55,11 @@ import com.tokopedia.topads.dashboard.view.adapter.TopAdsStatisticPagerAdapter
 import com.tokopedia.topads.dashboard.view.adapter.TopAdsTabAdapter
 import com.tokopedia.topads.dashboard.view.listener.TopAdsDashboardView
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDashboardPresenter
+import com.tokopedia.topads.data.response.AutoAdsResponse
 import com.tokopedia.topads.debit.autotopup.data.model.AutoTopUpStatus
 import com.tokopedia.topads.debit.autotopup.view.activity.TopAdsAutoTopUpActivity
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption
+import com.tokopedia.topads.view.activity.AdCreationChooserActivity
 import kotlinx.android.synthetic.main.fragment_top_ads_dashboard.*
 import kotlinx.android.synthetic.main.partial_top_ads_dashboard_statistics.*
 import kotlinx.android.synthetic.main.partial_top_ads_shop_info.*
@@ -74,6 +75,8 @@ class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView {
     internal var isShowAutoAddPromo = false
     internal var isAutoTopUpActive = false
     internal var isAutoAds = false
+    private var adStatus = 0
+    private var adCurrentState = 0
 
     val shopInfoLayout: View?
         get() = view_group_deposit
@@ -177,18 +180,48 @@ class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView {
         button_topads_add_promo.button.setOnClickListener {
             activity?.let {
                 if (GlobalConfig.isSellerApp()) {
-                    startActivityForResult(RouteManager.getIntent(context, ApplinkConstInternalTopAds.TOPADS_ADD_PROMO_OPTION), REQUEST_CODE_AD_OPTION)
+                    when (adStatus) {
+                        1 -> noProduct()
+                        2 -> noAds()
+                        3 -> manualAds()
+                        4 -> autoAds()
+                        else -> activity?.finish()
+                    }
+                    activity?.finish()
+
                 } else {
-                    if (isShowAutoAddPromo){
+                    if (isShowAutoAddPromo) {
                         startActivity(TopAdsWebViewActivity.createIntent(it, TopAdsDashboardConstant.URL_ONECLICKPROMO))
                     } else {
                         RouteManager.route(context, ApplinkConstInternalTopAds.TOPADS_DASHBOARD_INTERNAL)
                     }
-                }}}
+                }
+            }
+        }
 
         snackbarRetry = NetworkErrorHelper.createSnackbarWithAction(activity) { loadData() }
         snackbarRetry?.setColorActionRetry(ContextCompat.getColor(activity!!, com.tokopedia.design.R.color.green_400))
         setHasOptionsMenu(true)
+    }
+
+    private fun noAds() {
+        /*Ad switching is still in progress*/
+        if (adCurrentState == 400 || adCurrentState == 300 || adCurrentState == 200) {
+            startActivity(Intent(activity, AdCreationChooserActivity::class.java))
+        } else
+            startActivity(RouteManager.getIntent(context, ApplinkConstInternalTopAds.TOPADS_CREATE_ADS))
+    }
+
+    private fun noProduct() {
+        startActivity(Intent(activity, EmptyProductActivity::class.java))
+    }
+
+    private fun manualAds() {
+        startActivity(Intent(activity, AdCreationChooserActivity::class.java))
+    }
+
+    private fun autoAds() {
+        startActivity(Intent(activity, AdCreationChooserActivity::class.java))
     }
 
     private fun refreshData() {
@@ -360,6 +393,8 @@ class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView {
         topAdsDashboardPresenter.getPopulateDashboardData(GraphqlHelper.loadRawString(resources, com.tokopedia.topads.common.R.raw.gql_get_deposit))
         topAdsDashboardPresenter.getShopInfo()
         topAdsDashboardPresenter.getTickerTopAds(resources)
+        topAdsDashboardPresenter.getAdsStatus(GraphqlHelper.loadRawString(resources, R.raw.query_ads_create_ads_creation_shop_info))
+        topAdsDashboardPresenter.getAutoAdsStatus(resources)
         loadStatisticsData()
     }
 
@@ -573,12 +608,12 @@ class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView {
     }
 
     override fun onSuccessGetShopInfo(shopInfo: ShopInfo) {
-        ImageHandler.LoadImage(image_view_shop_icon, shopInfo.info.shopAvatar)
+        ImageHandler.LoadImage(image_view_shop_icon, shopInfo.shopAssets.avatar)
 
         text_view_shop_title.text = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-            Html.fromHtml(shopInfo.info.shopName, Html.FROM_HTML_MODE_LEGACY)
+            Html.fromHtml(shopInfo.shopCore.name, Html.FROM_HTML_MODE_LEGACY)
         } else {
-            Html.fromHtml(shopInfo.info.shopName)
+            Html.fromHtml(shopInfo.shopCore.name)
         }
     }
 
@@ -627,7 +662,7 @@ class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView {
         onLoadTopAdsShopDepositSuccess(dashboardPopulateResponse.dataDeposit)
         onSuccessPopulateTotalAds(dashboardPopulateResponse.totalAd)
         if (!isUsageExists || !isAdExists) {
-            isShowAutoAddPromo = GlobalConfig.isCustomerApp()
+            isShowAutoAddPromo = !GlobalConfig.isSellerApp()
         }
     }
 
@@ -636,6 +671,10 @@ class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView {
             ticker_view.addAllMessage(message)
             ticker_view.visibility = View.VISIBLE
         }
+    }
+
+    override fun onSuccessAdsInfo(data: AutoAdsResponse.TopAdsGetAutoAds.Data) {
+        adCurrentState = data.status
     }
 
     private fun isContainString(message: List<String>): Boolean {
@@ -660,11 +699,15 @@ class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView {
         }
     }
 
+    override fun onSuccessAdStatus(data: AdStatusResponse.TopAdsGetShopInfo.Data) {
+        adStatus = data.category
+    }
+
     private fun onActiveAutoAds() {
         isAutoAds = true
         label_view_group_summary.visibility = View.GONE
         label_view_keyword.visibility = View.GONE
-        button_topads_add_promo.visibility = View.GONE
+    //    button_topads_add_promo.visibility = View.GONE
     }
 
     private fun onDeactiveAutoAds() {

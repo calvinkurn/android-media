@@ -1,23 +1,22 @@
 package com.tokopedia.graphql;
 
-import android.util.Log;
-
-import com.google.gson.Gson;
 import com.tokopedia.graphql.data.GraphqlClient;
-import com.tokopedia.graphql.data.db.GraphqlDatabase;
 import com.tokopedia.graphql.data.db.GraphqlDatabaseDao;
 import com.tokopedia.graphql.data.db.GraphqlDatabaseModel;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class GraphqlCacheManager {
 
     private String Key;
     private String Value;
     private long expiredTime = 0;
-    private static String TAG = "GraphqlCacheManager";
     private GraphqlDatabaseDao databaseDao;
+
+    public static long lastDeleteExpired = 0L;
+    public final static long periodOfExpirationDeletion = TimeUnit.MINUTES.toMillis(5);
 
     public GraphqlCacheManager() {
         databaseDao = GraphqlClient.getGraphqlDatabase().getGraphqlDatabaseDao();
@@ -38,7 +37,6 @@ public class GraphqlCacheManager {
      * @return
      */
     public GraphqlCacheManager setCacheDuration(long duration) {
-        Log.d(TAG, "Storing expired time: " + (System.currentTimeMillis()));
         this.expiredTime = System.currentTimeMillis() + (duration * 1000);
         return this;
     }
@@ -74,14 +72,23 @@ public class GraphqlCacheManager {
     }
 
     public String get(String key) {
-        GraphqlDatabaseModel cache = databaseDao.getGraphqlModel(key);
-        if (cache == null)
-            return null;
-        if (isExpired(cache.expiredTime)) {
+        long currentTime = System.currentTimeMillis();
+        GraphqlDatabaseModel cache = databaseDao.getGraphqlModel(key, currentTime);
+        deleteExpiredRecord(currentTime);
+        if (cache == null) {
             return null;
         } else {
             return cache.value;
         }
+    }
+
+    public void deleteExpiredRecord(Long currentTime){
+        try {
+            if (currentTime - lastDeleteExpired > periodOfExpirationDeletion) {
+                databaseDao.deleteExpiredRows(currentTime);
+                lastDeleteExpired = currentTime;
+            }
+        }catch (Exception ignored) { }
     }
 
     public boolean isExpired(String key) {
@@ -102,26 +109,8 @@ public class GraphqlCacheManager {
         } catch (Exception e){e.getLocalizedMessage();}
     }
 
-    public String getValueString(String key) {
-        GraphqlDatabaseModel cache = databaseDao.getGraphqlModel(key);
-        if (cache == null)
-            return null;
-        if (isExpired(cache.expiredTime)) {
-            throw new RuntimeException("Cache is expired!!");
-        } else {
-            return cache.value;
-        }
-    }
-
-    public <T> T getConvertObjData(String key, Class<T> clazz) {
-        Gson gson = new Gson();
-        return gson.fromJson(getValueString(key), clazz);
-    }
-
     public boolean isExpired(long expiredTime) {
         if (expiredTime == 0) return false;
-        Log.i(TAG, "Cache expired time: " + expiredTime);
-        Log.i(TAG, "Cache current time: " + System.currentTimeMillis());
         return expiredTime < System.currentTimeMillis();
     }
 

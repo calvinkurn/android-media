@@ -9,25 +9,30 @@ import android.os.Build
 import android.os.PersistableBundle
 import androidx.annotation.RequiresApi
 import androidx.core.app.JobIntentService
+import androidx.core.app.NotificationManagerCompat
 import androidx.core.app.RemoteInput
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.chat_common.data.ReplyChatViewModel
+import com.tokopedia.topchat.chatroom.di.ChatRoomContextModule
 import com.tokopedia.topchat.chatroom.di.DaggerChatComponent
 import com.tokopedia.topchat.chatroom.domain.usecase.ReplyChatUseCase
+import com.tokopedia.topchat.common.analytics.TopChatAnalytics
 import rx.Subscriber
-import javax.inject.Inject
-import androidx.core.app.NotificationManagerCompat
-import java.lang.IllegalStateException
 import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 
 class NotificationChatService : JobIntentService() {
 
     private val REPLY_KEY = "reply_chat_key"
     private val MESSAGE_ID = "message_chat_id"
     private val NOTIFICATION_ID = "notification_id"
+    private val USER_ID = "user_id"
 
     @Inject
     lateinit var replyChatUseCase: ReplyChatUseCase
+
+    @Inject
+    lateinit var analytics: TopChatAnalytics
 
     private var jobScheduler: JobScheduler? = null
 
@@ -44,6 +49,7 @@ class NotificationChatService : JobIntentService() {
         super.onCreate()
         DaggerChatComponent.builder()
                 .baseAppComponent((application as BaseMainApplication).baseAppComponent)
+                .chatRoomContextModule(ChatRoomContextModule(this))
                 .build()
                 .inject(this)
 
@@ -69,15 +75,17 @@ class NotificationChatService : JobIntentService() {
 
         val messageId = intent.getStringExtra(MESSAGE_ID)
         val notificationId = intent.getIntExtra(NOTIFICATION_ID, 0)
+        val userId = intent.getStringExtra(USER_ID)
 
-        val params = ReplyChatUseCase.generateParam(messageId, message)
+        val params = ReplyChatUseCase.generateParamWithSource(messageId, message, TopChatAnalytics.SELLERAPP_PUSH_NOTIF)
 
         replyChatUseCase.execute(params, object : Subscriber<ReplyChatViewModel>() {
             override fun onNext(response: ReplyChatViewModel) {
                 if (response.isSuccessReplyChat) {
+                    analytics.eventClickReplyChatFromNotif(if (userId.isNullOrBlank()) "0" else userId)
                     clearNotification(notificationId)
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                        if(isJobIdRunning(JOB_ID_RETRY)) {
+                        if (isJobIdRunning(JOB_ID_RETRY)) {
                             jobScheduler?.cancel(JOB_ID_RETRY)
                         }
                     }
@@ -90,7 +98,7 @@ class NotificationChatService : JobIntentService() {
 
             override fun onError(e: Throwable?) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    setRetryJob(messageId, message, notificationId)
+                    setRetryJob(messageId, message, notificationId, userId)
                 }
             }
         })
@@ -99,12 +107,14 @@ class NotificationChatService : JobIntentService() {
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     private fun setRetryJob(messageId: String,
                             message: String,
-                            notificationId: Int) {
+                            notificationId: Int,
+                            userId: String) {
 
         val bundle = PersistableBundle()
         bundle.putString(MESSAGE_ID, messageId)
         bundle.putString(REPLY_KEY, message)
         bundle.putInt(NOTIFICATION_ID, notificationId)
+        bundle.putString(USER_ID, userId)
         val minDelay = TimeUnit.SECONDS.toMillis(3)
         val maxDelay = TimeUnit.MINUTES.toMillis(2)
 

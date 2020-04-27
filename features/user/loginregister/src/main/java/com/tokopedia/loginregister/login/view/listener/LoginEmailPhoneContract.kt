@@ -7,11 +7,12 @@ import com.tokopedia.loginregister.ticker.domain.pojo.TickerInfoPojo
 import com.facebook.CallbackManager
 import com.tokopedia.abstraction.base.view.listener.CustomerView
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter
-import com.tokopedia.abstraction.common.network.exception.MessageErrorException
+import com.tokopedia.loginregister.common.data.model.DynamicBannerDataModel
 import com.tokopedia.loginregister.discover.data.DiscoverItemViewModel
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckData
 import com.tokopedia.loginregister.login.domain.pojo.StatusPinData
 import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentialSubscriber
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.sessioncommon.data.LoginTokenPojo
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo
 import java.util.ArrayList
@@ -38,7 +39,7 @@ interface LoginEmailPhoneContract {
 
         fun dismissLoadingDiscover()
 
-        fun onErrorDiscoverLogin(errorMessage: String)
+        fun onErrorDiscoverLogin(throwable: Throwable)
 
         fun onSuccessDiscoverLogin(providers: ArrayList<DiscoverItemViewModel>)
 
@@ -99,6 +100,10 @@ interface LoginEmailPhoneContract {
         fun onSuccessGetTickerInfo(listTickerInfo: List<TickerInfoPojo>)
 
         fun onErrorGetTickerInfo(error: Throwable)
+
+        fun onGetDynamicBannerSuccess(dynamicBannerDataModel: DynamicBannerDataModel)
+
+        fun onGetDynamicBannerError(throwable: Throwable)
     }
 
     interface Presenter : CustomerPresenter<View> {
@@ -125,5 +130,7 @@ interface LoginEmailPhoneContract {
         fun checkStatusPin(onSuccess: (StatusPinData) -> kotlin.Unit, onError: (kotlin.Throwable) -> kotlin.Unit)
 
         fun registerCheck(id: String, onSuccess: (RegisterCheckData) -> kotlin.Unit, onError: (kotlin.Throwable) -> kotlin.Unit)
+
+        fun getDynamicBanner(page: String)
     }
 }

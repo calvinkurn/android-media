@@ -1,8 +1,8 @@
 package com.tokopedia.core.network.retrofit.services;
 
 import com.tokopedia.core.network.core.OkHttpFactory;
-import com.tokopedia.core.network.core.OkHttpRetryPolicy;
 import com.tokopedia.core.network.core.RetrofitFactory;
+import com.tokopedia.network.utils.OkHttpRetryPolicy;
 
 import retrofit2.Retrofit;
 

@@ -43,13 +43,14 @@ import com.tokopedia.topads.sdk.view.adapter.BannerAdsAdapter
 import com.tokopedia.topads.sdk.view.adapter.factory.BannerAdsAdapterTypeFactory
 import com.tokopedia.topads.sdk.view.adapter.viewholder.banner.BannerShopProductViewHolder
 import com.tokopedia.topads.sdk.view.adapter.viewholder.banner.BannerShopViewHolder
+import com.tokopedia.topads.sdk.view.adapter.viewholder.banner.BannerShowMoreViewHolder
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopProductViewModel
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopViewModel
+import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopViewMoreModel
 import kotlinx.android.synthetic.main.layout_ads_banner_digital.view.*
 import kotlinx.android.synthetic.main.layout_ads_banner_digital.view.description
 import kotlinx.android.synthetic.main.layout_ads_banner_shop_b.view.*
 import kotlinx.android.synthetic.main.layout_ads_banner_shop_b_pager.view.*
-import kotlinx.android.synthetic.main.layout_ads_banner_shop_b_product.view.*
 import org.apache.commons.text.StringEscapeUtils
 import java.util.*
 import javax.inject.Inject
@@ -90,16 +91,18 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
     private fun renderViewCpmShop(context: Context, cpmData: CpmData, appLink: String, adsClickUrl: String) {
         if (activityIsFinishing(context))
             return
-        if (template == NO_TEMPLATE) {
+        if (template == NO_TEMPLATE && isEligible(cpmData)) {
             var variant = RemoteConfigInstance.getInstance().abTestPlatform.getString(AB_TEST_KEY, VARIANT_A)
-            if(variant.equals(VARIANT_B)) {
+            if (variant.equals(VARIANT_B)) {
                 View.inflate(getContext(), R.layout.layout_ads_banner_shop_b_pager, this)
                 BannerShopProductViewHolder.LAYOUT = R.layout.layout_ads_banner_shop_b_product
                 BannerShopViewHolder.LAYOUT = R.layout.layout_ads_banner_shop_b
-            } else{
+                BannerShowMoreViewHolder.LAYOUT = R.layout.layout_ads_banner_shop_b_more
+            } else {
                 View.inflate(getContext(), R.layout.layout_ads_banner_shop_a_pager, this)
                 BannerShopProductViewHolder.LAYOUT = R.layout.layout_ads_banner_shop_a_product
                 BannerShopViewHolder.LAYOUT = R.layout.layout_ads_banner_shop_a
+                BannerShowMoreViewHolder.LAYOUT = R.layout.layout_ads_banner_shop_a_more
             }
 
             findViewById<TextView>(R.id.shop_name)?.text = escapeHTML(cpmData.cpm.name)
@@ -122,6 +125,12 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
                     }
                 }
             }
+            shop_image?.setOnClickListener {
+                if (topAdsBannerClickListener != null) {
+                    topAdsBannerClickListener!!.onBannerAdsClicked(1, cpmData?.applinks, cpmData)
+                    ImpresionTask().execute(cpmData?.adClickUrl)
+                }
+            }
             if (cpmData.cpm.cpmShop.isPowerMerchant && !cpmData.cpm.cpmShop.isOfficial) {
                 container?.background = ContextCompat.getDrawable(context, R.drawable.bg_pm_gradient)
             } else if (cpmData.cpm.cpmShop.isOfficial) {
@@ -135,33 +144,55 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
     }
 
     private fun setHeadlineShopData(cpmData: CpmData?, appLink: String, adsClickUrl: String) {
-        if (cpmData != null && cpmData.cpm.cpmShop != null) {
+        if (isEligible(cpmData)) {
             var shop_badge = findViewById<ImageView>(R.id.shop_badge)
             shop_badge?.let {
-                if (cpmData.cpm.badges.size > 0) {
+                if (cpmData?.cpm?.badges!!.size > 0) {
                     shop_badge.visibility = View.VISIBLE
-                    Glide.with(shop_badge).load(cpmData.cpm.badges[0].imageUrl).into(shop_badge)
+                    Glide.with(shop_badge).load(cpmData?.cpm.badges[0].imageUrl).into(shop_badge)
                 } else {
                     shop_badge.visibility = View.GONE
                 }
             }
-            shop_name?.text = cpmData.cpm.cpmShop.name
-            description?.text = cpmData.cpm.cpmShop.tagline
+            shop_name?.text = cpmData?.cpm?.cpmShop?.name
+            description?.text = cpmData?.cpm?.cpmShop?.slogan
+            shop_badge?.setOnClickListener {
+                if (topAdsBannerClickListener != null) {
+                    topAdsBannerClickListener!!.onBannerAdsClicked(1, cpmData?.applinks, cpmData)
+                    ImpresionTask().execute(cpmData?.adClickUrl)
+                }
+            }
+            shop_name?.setOnClickListener {
+                if (topAdsBannerClickListener != null) {
+                    topAdsBannerClickListener!!.onBannerAdsClicked(1, cpmData?.applinks, cpmData)
+                    ImpresionTask().execute(cpmData?.adClickUrl)
+                }
+            }
             kunjungi_toko?.setOnClickListener {
                 if (topAdsBannerClickListener != null) {
-                    topAdsBannerClickListener!!.onBannerAdsClicked(1, cpmData.applinks, cpmData)
-                    ImpresionTask().execute(cpmData.adClickUrl)
+                    topAdsBannerClickListener!!.onBannerAdsClicked(1, cpmData?.applinks, cpmData)
+                    ImpresionTask().execute(cpmData?.adClickUrl)
                 }
             }
             val items = ArrayList<Item<*>>()
             items.add(BannerShopViewModel(cpmData, appLink, adsClickUrl))
-            for (i in 0 until cpmData.cpm.cpmShop.products.size) {
-                items.add(BannerShopProductViewModel(cpmData, cpmData.cpm.cpmShop.products[i],
-                        appLink, adsClickUrl))
+            for (i in 0 until cpmData?.cpm?.cpmShop?.products!!.size) {
+                if (i < 3) {
+                    items.add(BannerShopProductViewModel(cpmData, cpmData.cpm.cpmShop.products[i],
+                            appLink, adsClickUrl))
+                }
+            }
+            if (cpmData.cpm.cpmShop.products.size < 3) {
+                items.add(BannerShopViewMoreModel(cpmData, appLink, adsClickUrl))
             }
             bannerAdsAdapter!!.setList(items)
         }
     }
+
+    private fun isEligible(cpmData: CpmData?) =
+            cpmData != null
+                    && cpmData.cpm.cpmShop != null
+                    && cpmData.cpm.cpmShop.products.size > 1
 
     private fun activityIsFinishing(context: Context): Boolean {
         return if (context is Activity) {

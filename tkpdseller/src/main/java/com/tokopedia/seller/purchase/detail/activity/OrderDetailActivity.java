@@ -13,8 +13,6 @@ import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.text.Html;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -22,13 +20,15 @@ import android.text.TextUtils;
 import android.text.style.StyleSpan;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Adapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
@@ -45,7 +45,6 @@ import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
-import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.design.bottomsheet.BottomSheetCallAction;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
@@ -53,24 +52,17 @@ import com.tokopedia.design.component.Tooltip;
 import com.tokopedia.dialog.DialogUnify;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.SellerModuleRouter;
-import com.tokopedia.seller.purchase.detail.fragment.ConfirmRequestPickupFragment;
-import com.tokopedia.transaction.common.TransactionRouter;
-import com.tokopedia.transaction.common.data.order.OrderDetailData;
-import com.tokopedia.transaction.common.data.order.OrderShipmentTypeDef;
-import com.tokopedia.transaction.common.fragment.RejectOrderBuyerRequest;
-import com.tokopedia.transaction.common.listener.ToolbarChangeListener;
 import com.tokopedia.seller.purchase.detail.adapter.OrderItemAdapter;
 import com.tokopedia.seller.purchase.detail.customview.OrderDetailButtonLayout;
 import com.tokopedia.seller.purchase.detail.di.DaggerOrderDetailComponent;
 import com.tokopedia.seller.purchase.detail.di.OrderDetailComponent;
-import com.tokopedia.seller.purchase.detail.dialog.AcceptOrderDialog;
 import com.tokopedia.seller.purchase.detail.dialog.AcceptPartialOrderDialog;
 import com.tokopedia.seller.purchase.detail.dialog.ComplaintDialog;
 import com.tokopedia.seller.purchase.detail.dialog.FinishOrderDialog;
 import com.tokopedia.seller.purchase.detail.fragment.CancelOrderFragment;
-import com.tokopedia.transaction.common.fragment.CancelSearchFragment;
 import com.tokopedia.seller.purchase.detail.fragment.CancelShipmentFragment;
 import com.tokopedia.seller.purchase.detail.fragment.ChangeAwbFragment;
+import com.tokopedia.seller.purchase.detail.fragment.ConfirmRequestPickupFragment;
 import com.tokopedia.seller.purchase.detail.fragment.RejectOrderFragment;
 import com.tokopedia.seller.purchase.detail.model.detail.viewmodel.BookingCodeData;
 import com.tokopedia.seller.purchase.detail.model.rejectorder.EmptyVarianProductEditable;
@@ -78,13 +70,18 @@ import com.tokopedia.seller.purchase.detail.model.rejectorder.WrongProductPriceW
 import com.tokopedia.seller.purchase.detail.presenter.OrderDetailPresenterImpl;
 import com.tokopedia.seller.purchase.utils.OrderDetailAnalytics;
 import com.tokopedia.seller.purchase.utils.OrderDetailConstant;
+import com.tokopedia.transaction.common.TransactionRouter;
+import com.tokopedia.transaction.common.data.order.OrderDetailData;
+import com.tokopedia.transaction.common.data.order.OrderShipmentTypeDef;
+import com.tokopedia.transaction.common.fragment.CancelSearchFragment;
+import com.tokopedia.transaction.common.fragment.RejectOrderBuyerRequest;
+import com.tokopedia.transaction.common.listener.ToolbarChangeListener;
 import com.tokopedia.unifycomponents.BottomSheetUnify;
 import com.tokopedia.unifycomponents.UnifyButton;
 import com.tokopedia.unifyprinciples.Typography;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -93,7 +90,6 @@ import java.util.Objects;
 import javax.inject.Inject;
 
 import kotlin.Unit;
-import kotlin.jvm.functions.Function1;
 
 import static com.tokopedia.seller.purchase.detail.fragment.RejectOrderBaseFragment.FRAGMENT_REJECT_ORDER_SUB_MENU_TAG;
 import static com.tokopedia.seller.purchase.detail.fragment.RejectOrderFragment.REJECT_ORDER_MENU_FRAGMENT_TAG;
@@ -107,6 +103,7 @@ import static com.tokopedia.seller.purchase.utils.OrderDetailConstant.PARAM_CONF
 public class OrderDetailActivity extends TActivity
         implements OrderDetailView, ToolbarChangeListener {
 
+    private static final int CREATE_RESCENTER_REQUEST_CODE = 789;
     public static final int REQUEST_CODE_ORDER_DETAIL = 111;
     private static final String VALIDATION_FRAGMENT_TAG = "validation_fragments";
     private static final String REJECT_ORDER_FRAGMENT_TAG = "reject_order_fragment_teg";
@@ -1055,7 +1052,7 @@ public class OrderDetailActivity extends TActivity
     public void onComplaintClicked(String orderId) {
         Intent intent = InboxRouter.getCreateResCenterActivityIntent(this,
                 orderId);
-        startActivityForResult(intent, TransactionPurchaseRouter.CREATE_RESCENTER_REQUEST_CODE);
+        startActivityForResult(intent, CREATE_RESCENTER_REQUEST_CODE);
     }
 
     private View getMainView() {

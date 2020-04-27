@@ -27,6 +27,7 @@ import com.tokopedia.design.component.ToasterNormal
 import com.tokopedia.talk.ProductTalkTypeFactoryImpl
 import com.tokopedia.talk.R
 import com.tokopedia.talk.common.adapter.TalkProductAttachmentAdapter
+import com.tokopedia.talk.common.adapter.viewholder.ChatBannerTalkViewHolder
 import com.tokopedia.talk.common.adapter.viewholder.CommentTalkViewHolder
 import com.tokopedia.talk.common.adapter.viewholder.LoadMoreCommentTalkViewHolder
 import com.tokopedia.talk.common.adapter.viewmodel.TalkProductAttachmentViewModel
@@ -41,6 +42,7 @@ import com.tokopedia.talk.producttalk.view.adapter.EmptyProductTalkViewHolder
 import com.tokopedia.talk.producttalk.view.adapter.LoadProductTalkThreadViewHolder
 import com.tokopedia.talk.producttalk.view.adapter.ProductTalkAdapter
 import com.tokopedia.talk.producttalk.view.adapter.ProductTalkThreadViewHolder
+import com.tokopedia.talk.producttalk.view.data.ChatBannerUiModel
 import com.tokopedia.talk.producttalk.view.listener.ProductTalkContract
 import com.tokopedia.talk.producttalk.view.viewmodel.ProductTalkTitleViewModel
 import com.tokopedia.talk.producttalk.view.viewmodel.ProductTalkViewModel
@@ -63,7 +65,7 @@ class ProductTalkFragment : BaseDaggerFragment(),
         CommentTalkViewHolder.TalkCommentItemListener,
         TalkProductAttachmentAdapter.ProductAttachmentItemClickListener,
         EmptyProductTalkViewHolder.TalkItemListener,
-        LoadMoreCommentTalkViewHolder.LoadMoreListener {
+        LoadMoreCommentTalkViewHolder.LoadMoreListener, ChatBannerTalkViewHolder.Listener {
 
     private lateinit var performanceMonitoring: PerformanceMonitoring
 
@@ -230,7 +232,7 @@ class ProductTalkFragment : BaseDaggerFragment(),
 
 
     private fun setUpView(view: View) {
-        val adapterTypeFactory = ProductTalkTypeFactoryImpl(this, this, this, this, this, this)
+        val adapterTypeFactory = ProductTalkTypeFactoryImpl(this, this, this, this, this, this, this)
         val listProductTalk = ArrayList<Visitable<*>>()
         adapter = ProductTalkAdapter(adapterTypeFactory, listProductTalk)
         linearLayoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
@@ -363,15 +365,14 @@ class ProductTalkFragment : BaseDaggerFragment(),
     private fun goToDetailTalk(talkId: String, shopId: String, allowReply: Boolean) {
         if (allowReply) {
             context?.run {
-                val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.DETAIL_TALK).apply {
-                    putExtras(
-                            Bundle().apply {
-                                putExtra(TalkDetailsActivity.THREAD_TALK_ID, talkId)
-                                putExtra(TalkDetailsActivity.SHOP_ID, shopId)
-                                putExtra(TalkDetailsActivity.SOURCE, TalkDetailsActivity.SOURCE_PDP)
-                            }
-                    )
-                }
+                val intent = RouteManager.getIntent(
+                        context,
+                        ApplinkConstInternalGlobal.DETAIL_TALK,
+                        talkId,
+                        shopId,
+                        "",
+                        TalkDetailsActivity.SOURCE_PDP
+                )
                 this@ProductTalkFragment.startActivityForResult(
                         intent, REQUEST_GO_TO_DETAIL)
             }
@@ -382,9 +383,9 @@ class ProductTalkFragment : BaseDaggerFragment(),
 
 
     private fun goToLogin() {
-        activity?.applicationContext?.run {
+        activity?.run {
             val intent: Intent = RouteManager.getIntent(context, ApplinkConst.LOGIN)
-            activity!!.startActivityForResult(intent, REQUEST_GO_TO_LOGIN)
+            startActivityForResult(intent, REQUEST_GO_TO_LOGIN)
         }
     }
 
@@ -562,10 +563,10 @@ class ProductTalkFragment : BaseDaggerFragment(),
     }
 
     override fun onClickProductAttachment(attachProduct: TalkProductAttachmentViewModel) {
-        activity?.applicationContext?.run {
+        activity?.run {
             analytics.trackClickProductFromAttachment()
             val intent: Intent? = getProductIntent(attachProduct.productId.toString())
-            this@ProductTalkFragment.startActivity(intent)
+            startActivity(intent)
         }
     }
 
@@ -633,7 +634,7 @@ class ProductTalkFragment : BaseDaggerFragment(),
     override fun onChatClicked() {
         if (presenter.isLoggedIn()) {
             if (shopId.isNotBlank()) {
-                activity?.applicationContext?.run {
+                activity?.run {
                     val intent = RouteManager.getIntent(this,
                             ApplinkConst.TOPCHAT_ASKSELLER,
                             shopId,
@@ -772,4 +773,11 @@ class ProductTalkFragment : BaseDaggerFragment(),
         return uri.host != null && uri.host == BRANCH_IO_HOST
     }
 
+    override fun onDismissChatTicker(position: Int) {
+        adapter.removeElement(position)
+    }
+
+    override fun trackOnClickChatBanner(element: ChatBannerUiModel) {
+        analytics.trackOnClickChatBanner(element)
+    }
 }

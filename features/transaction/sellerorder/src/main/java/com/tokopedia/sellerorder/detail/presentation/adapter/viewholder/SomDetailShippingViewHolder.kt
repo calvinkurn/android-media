@@ -2,6 +2,8 @@ package com.tokopedia.sellerorder.detail.presentation.adapter.viewholder
 
 import android.graphics.Typeface
 import android.view.View
+import com.tokopedia.coachmark.CoachMark
+import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.kotlin.extensions.view.loadImageCircle
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.detail.data.model.SomDetailData
@@ -12,7 +14,7 @@ import kotlinx.android.synthetic.main.detail_shipping_item.view.*
 /**
  * Created by fwidjaja on 2019-10-04.
  */
-class SomDetailShippingViewHolder(itemView: View, private val actionListener: SomDetailAdapter.ActionListener) : SomDetailAdapter.BaseViewHolder<SomDetailData>(itemView) {
+class SomDetailShippingViewHolder(itemView: View, private val actionListener: SomDetailAdapter.ActionListener?) : SomDetailAdapter.BaseViewHolder<SomDetailData>(itemView) {
 
     override fun bind(item: SomDetailData, position: Int) {
         if (item.dataObject is SomDetailShipping) {
@@ -22,17 +24,28 @@ class SomDetailShippingViewHolder(itemView: View, private val actionListener: So
             itemView.tv_receiver_phone.text = item.dataObject.receiverPhone
             itemView.tv_receiver_street.text = item.dataObject.receiverStreet
             itemView.tv_receiver_district.text = item.dataObject.receiverDistrict
+            itemView.tv_receiver_province.text = item.dataObject.receiverProvince
+
+            itemView.copy_address_btn.apply {
+                setOnClickListener {
+                    actionListener?.onCopiedAddress(itemView.context.getString(R.string.alamat_pengiriman), (item.dataObject.receiverName +
+                            "\n" + item.dataObject.receiverPhone +
+                            "\n" + item.dataObject.receiverStreet +
+                            "\n" + item.dataObject.receiverDistrict +
+                            "\n" + item.dataObject.receiverProvince))
+                }
+            }
 
             if (item.dataObject.isFreeShipping || item.dataObject.isRemoveAwb) {
                 itemView.label_harus_sesuai.visibility = View.VISIBLE
                 itemView.ic_harus_sesuai.visibility = View.VISIBLE
                 itemView.label_harus_sesuai.setOnClickListener {
-                    actionListener.onShowBottomSheetInfo(
+                    actionListener?.onShowBottomSheetInfo(
                             itemView.context.getString(R.string.title_bottomsheet_immutable_courier),
                             R.string.desc_bottomsheet_immutable_courier)
                 }
                 itemView.ic_harus_sesuai.setOnClickListener {
-                    actionListener.onShowBottomSheetInfo(
+                    actionListener?.onShowBottomSheetInfo(
                             itemView.context.getString(R.string.title_bottomsheet_immutable_courier),
                             R.string.desc_bottomsheet_immutable_courier)
                 }
@@ -57,7 +70,7 @@ class SomDetailShippingViewHolder(itemView: View, private val actionListener: So
                 if (item.dataObject.driverPhone.isNotEmpty()) {
                     itemView.tv_driver_phone.text = item.dataObject.driverPhone
                     itemView.driver_call_btn.setOnClickListener {
-                        actionListener.onDialPhone(item.dataObject.driverPhone)
+                        actionListener?.onDialPhone(item.dataObject.driverPhone)
                     }
                 } else {
                     itemView.tv_driver_phone.visibility = View.GONE
@@ -81,7 +94,7 @@ class SomDetailShippingViewHolder(itemView: View, private val actionListener: So
                     itemView.rl_booking_code.visibility = View.VISIBLE
 
                     itemView.rl_wajib_dicantumkan.setOnClickListener {
-                        actionListener.onShowBottomSheetInfo(
+                        actionListener?.onShowBottomSheetInfo(
                                 itemView.context.getString(R.string.wajib_tulis_kode_booking_title),
                                 R.string.wajib_tulis_kode_booking_desc)
                     }
@@ -100,7 +113,7 @@ class SomDetailShippingViewHolder(itemView: View, private val actionListener: So
                         itemView.booking_code_see_btn.apply {
                             visibility = View.VISIBLE
                             setOnClickListener {
-                                actionListener.onShowBookingCode(
+                                actionListener?.onShowBookingCode(
                                         item.dataObject.onlineBookingCode,
                                         item.dataObject.onlineBookingType)
                             }
@@ -120,5 +133,14 @@ class SomDetailShippingViewHolder(itemView: View, private val actionListener: So
                 itemView.rl_som_dropshipper.visibility = View.GONE
             }
         }
+
+        val coachmarkShipping = CoachMarkItem(itemView,
+                itemView.context.getString(R.string.coachmark_shipping),
+                itemView.context.getString(R.string.coachmark_shipping_info))
+
+        actionListener?.onAddedCoachMarkShipping(
+                coachmarkShipping
+        )
+
     }
 }

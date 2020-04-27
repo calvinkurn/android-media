@@ -1,5 +1,5 @@
 query getProductWishlistCount($productID: Int!){
-    wishlistCount(productID: $productID){
-        count
-    }
-}
+     wishlistCount(productID: $productID){
+         count
+     }
+ }

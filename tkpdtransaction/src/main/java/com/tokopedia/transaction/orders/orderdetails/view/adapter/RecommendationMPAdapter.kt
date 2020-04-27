@@ -1,7 +1,6 @@
 package com.tokopedia.transaction.orders.orderdetails.view.adapter
 
 import android.graphics.drawable.Drawable
-import android.util.Log
 import android.util.SparseBooleanArray
 import android.view.LayoutInflater
 import android.view.View
@@ -16,7 +15,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.transaction.R
-import com.tokopedia.transaction.orders.orderdetails.data.recommendationPojo.RecommendationsItem
+import com.tokopedia.transaction.orders.orderdetails.data.recommendationMPPojo.RecommendationsItem
 import com.tokopedia.transaction.orders.orderdetails.view.OrderListAnalytics
 
 class RecommendationMPAdapter(private val recommendationItems: List<RecommendationsItem>) : RecyclerView.Adapter<RecommendationMPAdapter.RecommendationViewHolder>() {
@@ -114,11 +113,11 @@ class RecommendationMPAdapter(private val recommendationItems: List<Recommendati
         }
 
         fun renderSubtitle(element: RecommendationsItem) {
-            if (element.description.isNullOrEmpty()) {
+            if (element.clientNumber.isNullOrEmpty()) {
                 subtitle.hide()
             } else {
                 subtitle.show()
-                subtitle.text = MethodChecker.fromHtml(element.description)
+                subtitle.text = MethodChecker.fromHtml(element.clientNumber)
             }
 
             if (element.title.isNullOrEmpty() &&

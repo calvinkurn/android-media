@@ -9,7 +9,6 @@ import android.text.TextUtils;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
-import com.tkpd.library.utils.legacy.CommonUtils;
 import com.tokopedia.core.deprecated.LocalCacheHandler;
 import com.tokopedia.core.deprecated.SessionHandler;
 import com.tokopedia.core.gcm.data.entity.NotificationEntity;
@@ -17,6 +16,7 @@ import com.tokopedia.core.gcm.model.FCMTokenUpdate;
 import com.tokopedia.core.gcm.utils.RouterUtils;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.user.session.UserSession;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -26,17 +26,15 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
+import timber.log.Timber;
 
 /**
  * @author by Herdi_WORK on 13.12.16.
  */
 
 public class FCMCacheManager {
-    public static final String GCM_ID = "gcm_id";
-    public static final String GCM_ID_TIMESTAMP = "gcm_id_timestamp";
     public static final long GCM_ID_EXPIRED_TIME = TimeUnit.DAYS.toMillis(3);
     private String NOTIFICATION_CODE = "tkp_code";
-    private static final String GCM_STORAGE = "GCM_STORAGE";
     private static final String NOTIFICATION_STORAGE = "NOTIFICATION_STORAGE";
     public static final String SETTING_NOTIFICATION_VIBRATE = "notifications_new_message_vibrate";
     private LocalCacheHandler cache;
@@ -50,14 +48,6 @@ public class FCMCacheManager {
     private FCMCacheManager(Context ctx, String cacheCode) {
         cache = new LocalCacheHandler(ctx, cacheCode);
         context = ctx;
-    }
-
-    public void setCache(Context ctx) {
-        if (cache == null)
-            cache = new LocalCacheHandler(ctx, TkpdCache.G_CODE);
-
-        cache.setExpire(1);
-        cache.applyEditor();
     }
 
     public void setCache() {
@@ -91,8 +81,8 @@ public class FCMCacheManager {
     public Boolean isAllowBell() {
         long prevTime = cache.getLong(TkpdCache.Key.PREV_TIME);
         long currTIme = System.currentTimeMillis();
-        CommonUtils.dumper("prev time: " + prevTime);
-        CommonUtils.dumper("curr time: " + currTIme);
+        Timber.d("prev time: " + prevTime);
+        Timber.d("curr time: " + currTIme);
         if (currTIme - prevTime > 15000) {
             cache.putLong(TkpdCache.Key.PREV_TIME, currTIme);
             cache.applyEditor();
@@ -162,20 +152,16 @@ public class FCMCacheManager {
     }
 
     public static void storeRegId(String id, Context context) {
-        LocalCacheHandler cache = new LocalCacheHandler(context, GCM_STORAGE);
-        cache.putString(GCM_ID, id);
-        cache.applyEditor();
+        new UserSession(context).setDeviceId(id);
     }
 
     public static void storeFcmTimestamp(Context context) {
-        LocalCacheHandler cache = new LocalCacheHandler(context, GCM_STORAGE);
-        cache.putLong(GCM_ID_TIMESTAMP, System.currentTimeMillis());
-        cache.applyEditor();
+        UserSession userSession = new UserSession(context);
+        userSession.setFcmTimestamp();
     }
 
     public static boolean isFcmExpired(Context context) {
-        LocalCacheHandler cache = new LocalCacheHandler(context, GCM_STORAGE);
-        long lastFCMUpdate = cache.getLong(GCM_ID_TIMESTAMP, 0);
+        long lastFCMUpdate = new UserSession(context).getFcmTimestamp();
         if (lastFCMUpdate <= 0) {
             FCMCacheManager.storeFcmTimestamp(context);
             return false;
@@ -207,13 +193,18 @@ public class FCMCacheManager {
     }
 
     public static String getRegistrationId(Context context) {
-        LocalCacheHandler cache = new LocalCacheHandler(context, GCM_STORAGE);
-        return cache.getString(GCM_ID, "");
+        return new UserSession(context).getDeviceId();
     }
 
-    public String getRegistrationId() {
-        LocalCacheHandler cache = new LocalCacheHandler(context, GCM_STORAGE);
-        return cache.getString(GCM_ID, "");
+    public static String getRegistrationIdWithTemp(Context context) {
+        UserSession userSession = new UserSession(context);
+        String deviceId = userSession.getDeviceId();
+        if (TextUtils.isEmpty(deviceId)) {
+            String tempID = getTempFcmId();
+            userSession.setDeviceId(tempID);
+            return tempID;
+        }
+        return deviceId;
     }
 
     public static void setDialogNotificationSetting(Context context) {
@@ -227,15 +218,8 @@ public class FCMCacheManager {
         return cache.getBoolean("notification_dialog", false);
     }
 
-    public static String getRegistrationIdWithTemp(Context context) {
-        LocalCacheHandler cache = new LocalCacheHandler(context, GCM_STORAGE);
-        if (cache.getString("gcm_id", "").equals("")) {
-            String tempID = getTempFcmId();
-            cache.putString("gcm_id", tempID);
-            cache.applyEditor();
-            return tempID;
-        }
-        return cache.getString("gcm_id", "");
+    public String getRegistrationId() {
+        return getRegistrationId(context);
     }
 
     public void saveIncomingNotification(NotificationEntity notificationEntity) {

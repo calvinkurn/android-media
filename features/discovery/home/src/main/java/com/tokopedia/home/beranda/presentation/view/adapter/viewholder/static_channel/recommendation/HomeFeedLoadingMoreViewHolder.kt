@@ -15,6 +15,6 @@ class HomeFeedLoadingMoreViewHolder(itemView: View) : AbstractViewHolder<Loading
 
     companion object {
         @LayoutRes
-        val LAYOUT = R.layout.loading_layout
+        val LAYOUT = R.layout.home_feed_loading_more_layout
     }
 }

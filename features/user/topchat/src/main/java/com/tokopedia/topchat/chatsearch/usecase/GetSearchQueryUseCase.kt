@@ -1,5 +1,6 @@
 package com.tokopedia.topchat.chatsearch.usecase
 
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.topchat.chatsearch.data.GetChatSearchResponse
 import javax.inject.Inject
@@ -13,6 +14,7 @@ class GetSearchQueryUseCase @Inject constructor(
 
     private val paramKeyword = "keyword"
     private val paramPage = "page"
+    private val paramIsSeller = "isSeller"
 
     fun doSearch(
             onSuccess: (GetChatSearchResponse) -> Unit,
@@ -40,8 +42,13 @@ class GetSearchQueryUseCase @Inject constructor(
     private fun generateSearchParams(keyword: String, page: Int): Map<String, Any> {
         return mapOf(
                 paramKeyword to keyword,
-                paramPage to page
+                paramPage to page,
+                paramIsSeller to isSellerOnly()
         )
+    }
+
+    private fun isSellerOnly(): Int {
+        return if (GlobalConfig.isSellerApp()) 1 else 0
     }
 
     fun cancelRunningSearch() {
@@ -49,12 +56,14 @@ class GetSearchQueryUseCase @Inject constructor(
         isSearching = false
     }
 
-    private val query by lazy {
-        val keyword = "\$$paramKeyword"
-        val page = "\$$paramPage"
-        """
-            query chatSearch($keyword: String, $page: Int){
-              chatSearch(keyword:$keyword, page: $page, isSeller: 1, by:"name") {
+    private val query = """
+            query chatSearch($$paramKeyword: String, $$paramPage: Int, $$paramIsSeller: Int){
+              chatSearch(
+                keyword:$$paramKeyword, 
+                page: $$paramPage, 
+                isSeller: $$paramIsSeller, 
+                by:"name"
+              ) {
                 contact{
                   hasNext
                   data {
@@ -79,5 +88,4 @@ class GetSearchQueryUseCase @Inject constructor(
               }
             }
         """.trimIndent()
-    }
 }

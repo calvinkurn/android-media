@@ -12,21 +12,21 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.purchase_platform.R
 import com.tokopedia.purchase_platform.features.express_checkout.data.constant.MAX_QUANTITY
 import com.tokopedia.purchase_platform.features.express_checkout.view.variant.CheckoutVariantActionListener
-import com.tokopedia.purchase_platform.features.express_checkout.view.variant.viewmodel.ProductChild
-import com.tokopedia.purchase_platform.features.express_checkout.view.variant.viewmodel.ProductViewModel
+import com.tokopedia.purchase_platform.features.express_checkout.view.variant.uimodel.ProductChild
+import com.tokopedia.purchase_platform.features.express_checkout.view.variant.uimodel.ProductUiModel
 import kotlinx.android.synthetic.main.item_product_detail_product_page.view.*
 
 /**
  * Created by Irfan Khoirul on 30/11/18.
  */
 
-class ProductViewHolder(val view: View, val listener: CheckoutVariantActionListener) : AbstractViewHolder<ProductViewModel>(view) {
+class ProductViewHolder(val view: View, val listener: CheckoutVariantActionListener) : AbstractViewHolder<ProductUiModel>(view) {
 
     companion object {
         val LAYOUT = R.layout.item_product_detail_product_page
     }
 
-    override fun bind(element: ProductViewModel?) {
+    override fun bind(element: ProductUiModel?) {
         if (element != null) {
             var stockWording = ""
             if (element.isFreeOngkir && element.freeOngkirImg.isNotBlank()) {

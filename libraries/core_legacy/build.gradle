@@ -39,13 +39,20 @@ dependencies {
     implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.libraries.remoteConfig)
     implementation project(rootProject.ext.libraries.analytics)
+    if (rootProject.ext.debugToolsEnabled) {
+        implementation project(rootProject.ext.libraries.analyticsDebugger)
+    } else {
+        implementation project(rootProject.ext.libraries.analyticsDebuggerNoop)
+    }
     implementation project(rootProject.ext.libraries.iris)
+    implementation project(rootProject.ext.libraries.deviceInfo)
 
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
+    implementation rootProject.ext.tkpdInternalLibDependencies.network
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
@@ -60,7 +67,7 @@ dependencies {
     implementation rootProject.ext.firebase.core
     implementation rootProject.ext.firebase.messaging
     implementation rootProject.ext.firebase.config
-    implementation rootProject.ext.firebase.performance
+
     implementation rootProject.ext.playServicesDependencies.plus
     implementation rootProject.ext.playServicesDependencies.base
     implementation rootProject.ext.playServicesDependencies.location
@@ -81,6 +88,7 @@ dependencies {
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
     implementation(rootProject.ext.analyticsDependencies.moengage)
     implementation rootProject.ext.analyticsDependencies.moengageAmp
+    implementation project(rootProject.ext.libraries.weaver)
 }
 
 project.ext {

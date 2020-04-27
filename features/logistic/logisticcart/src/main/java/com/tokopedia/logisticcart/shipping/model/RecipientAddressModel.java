@@ -59,6 +59,8 @@ public class RecipientAddressModel implements Parcelable {
     private String dropOffAddressDetail;
     private LocationDataModel locationDataModel;
 
+    private String disabledMultiAddressMessage;
+
     public RecipientAddressModel() {
     }
 
@@ -334,6 +336,14 @@ public class RecipientAddressModel implements Parcelable {
         this.locationDataModel = locationDataModel;
     }
 
+    public String getDisabledMultiAddressMessage() {
+        return disabledMultiAddressMessage;
+    }
+
+    public void setDisabledMultiAddressMessage(String disabledMultiAddressMessage) {
+        this.disabledMultiAddressMessage = disabledMultiAddressMessage;
+    }
+
     public boolean equalCorner(RecipientAddressModel that) {
         return getCityId().equals(that.getCityId()) &&
                 getDestinationDistrictId().equals(that.getDestinationDistrictId()) &&
@@ -448,6 +458,7 @@ public class RecipientAddressModel implements Parcelable {
         dest.writeString(this.dropOffAddressName);
         dest.writeString(this.dropOffAddressDetail);
         dest.writeParcelable(this.locationDataModel, flags);
+        dest.writeString(this.disabledMultiAddressMessage);
     }
 
     protected RecipientAddressModel(Parcel in) {
@@ -485,6 +496,7 @@ public class RecipientAddressModel implements Parcelable {
         this.dropOffAddressName = in.readString();
         this.dropOffAddressDetail = in.readString();
         this.locationDataModel = in.readParcelable(LocationDataModel.class.getClassLoader());
+        this.disabledMultiAddressMessage = in.readString();
     }
 
     public static final Creator<RecipientAddressModel> CREATOR = new Creator<RecipientAddressModel>() {

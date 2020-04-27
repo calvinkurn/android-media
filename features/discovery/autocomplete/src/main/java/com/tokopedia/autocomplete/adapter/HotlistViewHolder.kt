@@ -40,16 +40,16 @@ class HotlistViewHolder(val view : View, val clickListener : ItemClickListener) 
             clickListener.onItemClicked(element.applink, element.url)
         }
 
-        val startIndex = indexOfSearchQuery(element.getKeyword(), element.getSearchTerm())
+        val startIndex = indexOfSearchQuery(element.keyword, element.searchTerm)
         if (startIndex == -1) {
             view.title_hotlist.text = element.keyword
         } else {
-            val highlightedTitle = SpannableString(element.getKeyword())
+            val highlightedTitle = SpannableString(element.keyword)
             highlightedTitle.setSpan(TextAppearanceSpan(view.context, R.style.searchTextHiglight),
                     0, startIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
             highlightedTitle.setSpan(TextAppearanceSpan(view.context, R.style.searchTextHiglight),
-                    startIndex + element.getSearchTerm().length,
-                    element.getKeyword().length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                    startIndex + element.searchTerm.length,
+                    element.keyword.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
             view.title_hotlist.text = highlightedTitle
         }
     }

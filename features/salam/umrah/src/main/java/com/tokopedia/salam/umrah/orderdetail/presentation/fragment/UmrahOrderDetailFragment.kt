@@ -17,8 +17,10 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.salam.umrah.R
+import com.tokopedia.salam.umrah.checkout.presentation.fragment.UmrahCheckoutFragment
 import com.tokopedia.salam.umrah.common.analytics.UmrahTrackingAnalytics
 import com.tokopedia.salam.umrah.common.presentation.adapter.UmrahSimpleAdapter
 import com.tokopedia.salam.umrah.common.presentation.adapter.UmrahSimpleDetailAdapter
@@ -54,13 +56,15 @@ class UmrahOrderDetailFragment : BaseDaggerFragment(), UmrahOrderDetailButtonAda
 
     lateinit var orderId: String
 
+    lateinit var performanceMonitoring: PerformanceMonitoring
+
     override fun getScreenName(): String = ""
 
     override fun initInjector() = getComponent(UmrahOrderDetailComponent::class.java).inject(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        initializePerformance()
         orderId = savedInstanceState?.getString(EXTRA_ORDER_ID)
                 ?: arguments?.getString(EXTRA_ORDER_ID) ?: ""
     }
@@ -76,6 +80,7 @@ class UmrahOrderDetailFragment : BaseDaggerFragment(), UmrahOrderDetailButtonAda
                 is Success -> {
                     hideLoading()
                     renderData(it.data)
+                    performanceMonitoring.stopTrace()
                 }
                 is Fail -> {
                     val data = it.throwable
@@ -120,6 +125,10 @@ class UmrahOrderDetailFragment : BaseDaggerFragment(), UmrahOrderDetailButtonAda
         if (::orderId.isInitialized) {
             outState.putString(EXTRA_ORDER_ID, orderId)
         }
+    }
+
+    private fun initializePerformance(){
+        performanceMonitoring = PerformanceMonitoring.start(UMRAH_ORDER_DETAIL_PAGE_PERFORMANCE)
     }
 
     fun showLoading() {
@@ -285,6 +294,7 @@ class UmrahOrderDetailFragment : BaseDaggerFragment(), UmrahOrderDetailButtonAda
     companion object {
 
         private const val EXTRA_ORDER_ID = "EXTRA_ORDER_ID"
+        const val UMRAH_ORDER_DETAIL_PAGE_PERFORMANCE = "sl_umrah_order_detail"
 
         fun getInstance(orderId: String): UmrahOrderDetailFragment = UmrahOrderDetailFragment().also {
             it.arguments = Bundle().apply {
@@ -292,6 +302,11 @@ class UmrahOrderDetailFragment : BaseDaggerFragment(), UmrahOrderDetailButtonAda
             }
         }
 
+    }
+
+    override fun onDestroyView() {
+        performanceMonitoring.stopTrace()
+        super.onDestroyView()
     }
 
 }

@@ -6,6 +6,9 @@ query dynamicHomeIcon($type: Int!) {
           desc
           categoryRows{
             id
+            galaxy_attribution
+            persona
+            brand_id
             name
             url
             imageUrl

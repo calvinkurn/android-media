@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <com.tokopedia.cameraview.CameraView
+    <com.otaliastudios.cameraview.CameraView
         android:id="@+id/cameraView"
         android:keepScreenOn="true"
         android:layout_width="match_parent"

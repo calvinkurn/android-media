@@ -3,7 +3,10 @@ package com.tokopedia.notifcenter.presentation.fragment
 
 import android.app.Dialog
 import android.content.Context
+import android.os.Build
 import android.os.Bundle
+import android.text.Html
+import android.text.Spanned
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -19,6 +22,8 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.util.getParamString
 import com.tokopedia.notifcenter.R
+import com.tokopedia.notifcenter.data.consts.Resources.BottomSheetDialogTheme
+import com.tokopedia.notifcenter.data.consts.Resources.designBottomSheet
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 
@@ -58,7 +63,7 @@ class NotificationUpdateLongerTextFragment : BottomSheetDialogFragment() {
         }
     }
 
-    override fun getTheme(): Int = R.style.BottomSheetDialogTheme
+    override fun getTheme(): Int = BottomSheetDialogTheme
 
     override fun onCreateView(
             inflater: LayoutInflater, container: ViewGroup?,
@@ -85,10 +90,10 @@ class NotificationUpdateLongerTextFragment : BottomSheetDialogFragment() {
         setupViewModel(savedInstanceState)
         setupCtaButton()
         contentTitleView.text = contentTitle
-        contentTextView.text = contentText
+        contentTextView.text = fromHtml(contentText)
 
         if (contentImageUrl.isNotBlank()) {
-            ImageHandler.loadImage2(contentImageView, contentImageUrl, R.drawable.ic_loading_toped_new)
+            ImageHandler.loadImage2(contentImageView, contentImageUrl, R.drawable.ic_notifcenter_loading_toped)
             contentImageView.show()
         } else {
             contentImageView.hide()
@@ -126,7 +131,7 @@ class NotificationUpdateLongerTextFragment : BottomSheetDialogFragment() {
         dialog.setOnShowListener {
             //To Anchor View Bottom
             val bottomSheetDialog = it as BottomSheetDialog
-            val bottomSheet = bottomSheetDialog.findViewById<View>(R.id.design_bottom_sheet)
+            val bottomSheet = bottomSheetDialog.findViewById<View>(designBottomSheet)
             val bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet)
             val containerLayout: FrameLayout? = bottomSheetDialog.findViewById(R.id.container)
 
@@ -154,6 +159,14 @@ class NotificationUpdateLongerTextFragment : BottomSheetDialogFragment() {
             btnText = getParamString(NotificationUpdateFragment.PARAM_BUTTON_TEXT, arguments, null, DEFAULT_CTA_BUTTON)
             appLink = getParamString(NotificationUpdateFragment.PARAM_CTA_APPLINK, arguments, null, "")
             templateKey = getParamString(NotificationUpdateFragment.PARAM_TEMPLATE_KEY, arguments, null, "")
+        }
+    }
+
+    fun fromHtml(content: String): Spanned {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            Html.fromHtml(content, Html.FROM_HTML_MODE_LEGACY)
+        } else {
+            Html.fromHtml(content)
         }
     }
 

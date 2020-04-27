@@ -4,7 +4,7 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
-import com.tokopedia.core.util.GlobalConfig;
+import com.tokopedia.config.GlobalConfig;
 
 @Deprecated
 public abstract class BaseSimpleActivity extends BaseToolbarActivity {
@@ -20,7 +20,7 @@ public abstract class BaseSimpleActivity extends BaseToolbarActivity {
 
     @Override
     protected boolean isToolbarWhite() {
-        return GlobalConfig.isCustomerApp() || super.isToolbarWhite();
+        return !GlobalConfig.isSellerApp() || super.isToolbarWhite();
     }
 
     protected void setupFragment(Bundle savedInstance) {

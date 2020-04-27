@@ -8,7 +8,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
-import androidx.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -20,15 +19,15 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
+
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
-import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.logisticdata.data.entity.address.DistrictRecommendationAddress;
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
-import com.tokopedia.core.util.GlobalConfig;
-import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.seller.LogisticRouter;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.shopsettings.shipping.customview.CourierView;
@@ -40,6 +39,8 @@ import com.tokopedia.seller.shopsettings.shipping.model.editshipping.ShopShippin
 import com.tokopedia.seller.shopsettings.shipping.model.openshopshipping.OpenShopData;
 import com.tokopedia.seller.shopsettings.shipping.presenter.EditShippingPresenter;
 import com.tokopedia.seller.shopsettings.shipping.presenter.EditShippingPresenterImpl;
+
+import timber.log.Timber;
 
 /**
  * Created by Kris on 2/19/2016.
@@ -206,6 +207,11 @@ public class FragmentEditShipping extends Fragment implements EditShippingViewLi
     @Override
     public void setShopDetailedInformation(ShopShipping data) {
         addressLayout.renderData(data);
+    }
+
+    @Override
+    public void setGeoAddress(String address) {
+        addressLayout.renderGeoAddress(address);
     }
 
     @Override
@@ -426,11 +432,7 @@ public class FragmentEditShipping extends Fragment implements EditShippingViewLi
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         if (isAdded() && getActivity() != null) {
-            if(GlobalConfig.isCustomerApp()) {
-                getActivity().getMenuInflater().inflate(R.menu.save_btn_black, menu);
-            } else {
-                getActivity().getMenuInflater().inflate(R.menu.save_btn, menu);
-            }
+            getActivity().getMenuInflater().inflate(R.menu.save_btn_black, menu);
             MenuItem item = menu.findItem(R.id.action_send);
             item.setTitle(getString(R.string.title_action_save_shipping));
         }
@@ -502,7 +504,7 @@ public class FragmentEditShipping extends Fragment implements EditShippingViewLi
             Intent intent = logisticRouter.getGeoLocationActivityIntent(getActivity(), locationPass);
             startActivityForResult(intent, OPEN_MAP_CODE);
         } else {
-            CommonUtils.dumper("Google play services unavailable");
+            Timber.d("Google play services unavailable");
             Dialog dialog = availability.getErrorDialog(getActivity(), resultCode, 0);
             dialog.show();
         }

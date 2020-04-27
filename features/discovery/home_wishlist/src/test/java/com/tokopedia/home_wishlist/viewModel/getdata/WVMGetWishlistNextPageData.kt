@@ -466,8 +466,11 @@ class WVMGetWishlistNextPageData : Spek({
                 ), keyword = keyword, hasNextPage = true, page = currentPage)
             }
             Given("Get wishlist usecase 1 returns empty data") {
-                getWishlistDataUseCase.givenGetWishlistDataReturnsThis(listOf(),
-                        keyword = keyword, page = nextPage, hasNextPage = true)
+                getWishlistDataUseCase.givenGetWishlistDataReturnsThis(listOf(
+                        WishlistItem(id="1"),
+                        WishlistItem(id="2"),
+                        WishlistItem(id="3")
+                ), keyword = keyword, page = nextPage, hasNextPage = true)
             }
 
             When("Viewmodel get wishlist data") {

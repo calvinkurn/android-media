@@ -36,25 +36,19 @@ open class ProductAttachmentViewModel : SendableViewModel, Visitable<BaseChatTyp
     var priceBefore: String = ""
         private set
     var shopId: Int = 0
-
     var freeShipping: FreeShipping = FreeShipping()
-
     var playStoreData: PlayStoreData = PlayStoreData()
-
     var categoryId: Int = 0
-
     var minOrder: Int = 1
-
     var variants: List<AttachmentVariant> = emptyList()
-
     var colorVariantId: String = ""
     var colorVariant: String = ""
     var colorHexVariant: String = ""
     var sizeVariantId: String = ""
     var sizeVariant: String = ""
-
     var remainingStock: Int = 1
     var status: Int = 0
+    var wishList: Boolean = false
 
     constructor(messageId: String, fromUid: String, from: String,
                 fromRole: String, attachmentId: String, attachmentType: String,
@@ -93,7 +87,7 @@ open class ProductAttachmentViewModel : SendableViewModel, Visitable<BaseChatTyp
             canShowFooter: Boolean, blastId: Int, productPriceInt: Int, category: String,
             variants: List<AttachmentVariant>, dropPercentage: String, priceBefore: String, shopId: Int,
             freeShipping: FreeShipping, categoryId: Int, playStoreData: PlayStoreData,
-            minOrder: Int, remainingStock: Int, status: Int
+            minOrder: Int, remainingStock: Int, status: Int, wishList: Boolean
     ) : super(
             messageId, fromUid, from, fromRole, attachmentId, attachmentType, replyTime,
             "", isRead, false, isSender, message
@@ -121,6 +115,7 @@ open class ProductAttachmentViewModel : SendableViewModel, Visitable<BaseChatTyp
             this.variants = variants
             setupVariantsField()
         }
+        this.wishList = wishList
     }
 
     /**
@@ -268,6 +263,18 @@ open class ProductAttachmentViewModel : SendableViewModel, Visitable<BaseChatTyp
 
     fun hasEmptyStock(): Boolean {
         return status == 0
+    }
+
+    fun isWishListed(): Boolean {
+        return wishList
+    }
+
+    fun getStringProductId(): String {
+        return productId.toString()
+    }
+
+    fun getIdString(): String {
+        return productId.toString()
     }
 
 }

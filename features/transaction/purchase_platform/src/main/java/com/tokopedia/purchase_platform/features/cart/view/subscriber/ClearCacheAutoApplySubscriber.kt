@@ -1,9 +1,7 @@
 package com.tokopedia.purchase_platform.features.cart.view.subscriber
 
-import com.tokopedia.purchase_platform.features.cart.view.ICartListPresenter
-import com.tokopedia.purchase_platform.features.cart.view.ICartListView
-import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.promocheckout.common.domain.model.clearpromo.ClearCacheAutoApplyStackResponse
+import com.tokopedia.purchase_platform.features.cart.view.ICartListView
 import rx.Subscriber
 
 /**
@@ -11,9 +9,8 @@ import rx.Subscriber
  */
 
 class ClearCacheAutoApplySubscriber(val view: ICartListView?,
-                                    val presenter: ICartListPresenter,
                                     val shopIndex: Int,
-                                    val ignoreAPIResponse: Boolean) : Subscriber<GraphqlResponse>() {
+                                    val ignoreAPIResponse: Boolean) : Subscriber<ClearCacheAutoApplyStackResponse>() {
 
     override fun onCompleted() {
 
@@ -27,15 +24,14 @@ class ClearCacheAutoApplySubscriber(val view: ICartListView?,
         }
     }
 
-    override fun onNext(response: GraphqlResponse) {
+    override fun onNext(response: ClearCacheAutoApplyStackResponse) {
         view?.hideProgressLoading()
-        val responseData = response.getData<ClearCacheAutoApplyStackResponse>(ClearCacheAutoApplyStackResponse::class.java)
         if (ignoreAPIResponse) {
-            if (responseData.successData.success) {
+            if (response.successData.success) {
                 view?.onSuccessClearPromoStack(shopIndex)
             }
         } else {
-            if (responseData.successData.success) {
+            if (response.successData.success) {
                 view?.onSuccessClearPromoStack(shopIndex)
             } else {
                 view?.onFailedClearPromoStack(ignoreAPIResponse)

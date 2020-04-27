@@ -9,7 +9,7 @@
 
         <activity android:name=".view.activity.ProductDetailActivity"
             android:label="@string/title_activity_product_detail"
-            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:configChanges="keyboardHidden|orientation|screenSize|uiMode"
             android:theme="@style/Theme.White">
 
             <intent-filter android:autoVerify="true">

@@ -2,7 +2,7 @@ package com.tokopedia.core.drawer2.data.source;
 
 import com.google.gson.reflect.TypeToken;
 import com.tkpd.library.utils.LocalCacheHandler;
-import com.tokopedia.abstraction.common.data.model.response.GraphqlResponse;
+import com.tokopedia.network.data.model.response.GraphqlResponse;
 import com.tokopedia.abstraction.common.utils.network.CacheUtil;
 import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.core.base.domain.RequestParams;

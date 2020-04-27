@@ -227,6 +227,16 @@ fun View.isNotVisibleOnTheScreen(listener: ViewHintListener) {
 
 }
 
+fun View.isVisibleOnTheScreen(onViewVisible:() -> Unit, onViewNotVisible:() -> Unit) {
+    viewTreeObserver.addOnScrollChangedListener {
+        if (getVisiblePercent(this@isVisibleOnTheScreen) == -1) {
+            onViewNotVisible.invoke()
+        } else {
+            onViewVisible.invoke()
+        }
+    }
+}
+
 fun getVisiblePercent(v: View): Int {
     if (v.isShown) {
         val r = Rect()

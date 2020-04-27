@@ -1,6 +1,6 @@
 package com.tokopedia.notifcenter.analytics
 
-import com.google.android.gms.tagmanager.DataLayer
+import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.notifcenter.data.entity.ProductData
 import com.tokopedia.notifcenter.data.viewbean.NotificationItemViewBean
@@ -17,51 +17,158 @@ class NotificationUpdateAnalytics @Inject constructor() {
     private val seenProductCards = HashSet<String>()
 
     companion object {
-        val SCREEN_NAME: String = "notif center"
-        val EVENT_CATEGORY_NOTIF_CENTER: String = "notif center"
-        val EVENT_NAME_CLICK_NOTIF_CENTER: String = "clickNotifCenter"
-
-        val EVENT_ACTION_CLICK_NEWEST_INFO: String = "click on info terbaru"
-        val EVENT_ACTION_CLICK_NOTIF_LIST: String = "click on notif list"
-        val EVENT_ACTION_CLICK_NOTIF_TAB: String = "click on transaction or update"
-        val EVENT_ACTION_CLICK_FILTER_REQ: String = "click on filter request"
-        val EVENT_ACTION_SCROLL_TO_BOTTOM: String = "scroll to bottom"
-        val EVENT_ACTION_MARK_ALL_AS_READ: String = "mark all as read"
-
-        val EVENT_NAME = "event"
-        val EVENT_CATEGORY = "eventCategory"
-        val EVENT_ACTION = "eventAction"
-        val EVENT_LABEL = "eventLabel"
-        val ECOMMERCE = "ecommerce"
-
         // Name
-        val NAME_EVENT_PRODUCT_VIEW = "productView"
-        val NAME_EVENT_PRODUCT_CLICK = "productClick"
-        val NAME_EVENT_ATC = "addToCart"
-        val NAME_EVENT_VIEW_NOTIF = "viewNotifCenterIris"
+        const val EVENT_NAME = "event"
+        const val EVENT_CHECKOUT = "checkout"
+        const val EVENT_NAME_CLICK_NOTIF_CENTER = "clickNotifCenter"
+        const val NAME_EVENT_PRODUCT_VIEW = "productView"
+        const val NAME_EVENT_PRODUCT_CLICK = "productClick"
+        const val NAME_EVENT_ATC = "addToCart"
+        const val NAME_EVENT_VIEW_NOTIF = "viewNotifCenterIris"
 
         // Category
-        val CATEGORY_NOTIF_CENTER = "notif center"
+        const val EVENT_CATEGORY = "eventCategory"
+        const val CATEGORY_NOTIF_CENTER = "notif center"
 
         // Action
-        val ACTION_VIEW_PRODUCT_THUMBNAIL = "view on product thumbnail"
-        val ACTION_CLICK_PRODUCT_THUMBNAIL = "click on product thumbnail"
-        val ACTION_CLICK_ATC_BUTTON = "click on atc button"
-        val ACTION_VIEW_NOTIF_LIST = "view on notif list"
-        val ACTION_CLICK_LONGER_CONTENT_BUTTON = "click on text (longer content)"
-        val ACTION_VIEW_PRODUCT_CARD = "view on product card impression"
+        const val EVENT_ACTION = "eventAction"
+        const val ACTION_VIEW_PRODUCT_THUMBNAIL = "view on product thumbnail"
+        const val ACTION_CLICK_PRODUCT_THUMBNAIL = "click on product thumbnail"
+        const val ACTION_CLICK_ATC_BUTTON = "click on atc button"
+        const val ACTION_CLICK_BUY_BUTTON = "click on buy button"
+        const val ACTION_VIEW_NOTIF_LIST = "view on notif list"
+        const val ACTION_CLICK_LONGER_CONTENT_BUTTON = "click on text (longer content)"
+        const val ACTION_VIEW_PRODUCT_CARD = "view on product card impression"
+
+        const val EVENT_ACTION_CLICK_NEWEST_INFO = "click on info terbaru"
+        const val EVENT_ACTION_CLICK_NOTIF_LIST = "click on notif list"
+        const val EVENT_ACTION_CLICK_NOTIF_TAB = "click on transaction or update"
+        const val EVENT_ACTION_CLICK_FILTER_REQ = "click on filter request"
+        const val EVENT_ACTION_SCROLL_TO_BOTTOM = "scroll to bottom"
+        const val EVENT_ACTION_MARK_ALL_AS_READ = "mark all as read"
 
         // Label
-        val LABEL_UPDATE_NOTIF_CENTER = "tab update / recomm page from notif center"
-        val LABEL_LOCATION_UPDATE = "tab notif center page"
-        val LABEL_LOCATION = "lonceng"
+        const val EVENT_LABEL = "eventLabel"
+        const val LABEL_UPDATE_NOTIF_CENTER = "tab update / recomm page from notif center"
+        const val LABEL_LOCATION_UPDATE = "tab notif center page"
+        const val LABEL_LOCATION = "lonceng"
+
+        // Other
+        const val ECOMMERCE = "ecommerce"
+    }
+
+    // #11A
+    fun trackProductListImpression(notification: NotificationItemViewBean) {
+        val eventLabel = notification.getImpressionTrackLabel(LABEL_LOCATION)
+        val impressions = arrayListOf<Map<String, Any>>()
+        for ((index, product) in notification.products.withIndex()) {
+            impressions.add(
+                    DataLayer.mapOf(
+                            "name", product.name,
+                            "id", product.productId,
+                            "price", product.price,
+                            "brand", "",
+                            "category", "",
+                            "variant", "",
+                            "list", notification.products.map { it.name },
+                            "position", index
+                    )
+            )
+        }
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
+                DataLayer.mapOf(
+                        EVENT_NAME, NAME_EVENT_PRODUCT_VIEW,
+                        EVENT_CATEGORY, CATEGORY_NOTIF_CENTER,
+                        EVENT_ACTION, ACTION_VIEW_PRODUCT_THUMBNAIL,
+                        EVENT_LABEL, eventLabel,
+                        ECOMMERCE, DataLayer.mapOf(
+                        "currencyCode", "IDR",
+                        "impressions", impressions
+                )
+                )
+        )
+    }
+
+    // #11C
+    fun trackProductCheckoutBuyClick(notification: NotificationItemViewBean) {
+        val eventLabel = notification.getImpressionTrackLabel(LABEL_LOCATION)
+        val productTrack = arrayListOf<Map<String, Any>>()
+        for ((_, product) in notification.products.withIndex()) {
+            productTrack.add(
+                    DataLayer.mapOf(
+                            "name", product.name,
+                            "id", product.productId,
+                            "price", product.price,
+                            "brand", "",
+                            "category", "",
+                            "variant", "",
+                            "quantity", "1",
+                            "shop_id", product.shop?.id,
+                            "shop_type", "",
+                            "shop_name", product.shop?.name
+                    )
+            )
+        }
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
+                DataLayer.mapOf(
+                        EVENT_NAME, EVENT_CHECKOUT,
+                        EVENT_CATEGORY, CATEGORY_NOTIF_CENTER,
+                        EVENT_ACTION, ACTION_CLICK_BUY_BUTTON,
+                        EVENT_LABEL, eventLabel,
+                        ECOMMERCE, DataLayer.mapOf(
+                            "checkout", DataLayer.mapOf(
+                                "actionField", DataLayer.mapOf(
+                                    "step", "1",
+                                    "option", "click checkout"
+                                ),
+                                "products", productTrack
+                            )
+                        )
+                )
+        )
+    }
+
+    // #11B
+    fun trackProductCheckoutCardClick(notification: NotificationItemViewBean) {
+        val eventLabel = notification.getImpressionTrackLabel(LABEL_LOCATION)
+        val productListName = "/notifcenter"
+        val productTrack = arrayListOf<Map<String, Any>>()
+        for ((index, product) in notification.products.withIndex()) {
+            productTrack.add(
+                    DataLayer.mapOf(
+                            "name", product.name,
+                            "id", product.productId,
+                            "price", product.price,
+                            "brand", "",
+                            "category", "",
+                            "variant", "",
+                            "list", productListName,
+                            "position", index,
+                            "attribution", ""
+                    )
+            )
+        }
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
+                DataLayer.mapOf(
+                        EVENT_NAME, NAME_EVENT_PRODUCT_CLICK,
+                        EVENT_CATEGORY, CATEGORY_NOTIF_CENTER,
+                        EVENT_ACTION, ACTION_CLICK_PRODUCT_THUMBNAIL,
+                        EVENT_LABEL, eventLabel,
+                        ECOMMERCE, DataLayer.mapOf(
+                            "click", DataLayer.mapOf(
+                                "actionField", DataLayer.mapOf("list", productListName),
+                                "products", productTrack
+                            )
+                        )
+                )
+        )
     }
 
     // #NC1
     fun trackClickNewestInfo() {
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 EVENT_NAME_CLICK_NOTIF_CENTER,
-                EVENT_CATEGORY_NOTIF_CENTER,
+                CATEGORY_NOTIF_CENTER,
                 EVENT_ACTION_CLICK_NEWEST_INFO,
                 ""
         ))
@@ -72,7 +179,7 @@ class NotificationUpdateAnalytics @Inject constructor() {
         val label = viewModel.getImpressionTrackLabel(LABEL_LOCATION)
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 EVENT_NAME_CLICK_NOTIF_CENTER,
-                EVENT_CATEGORY_NOTIF_CENTER,
+                CATEGORY_NOTIF_CENTER,
                 EVENT_ACTION_CLICK_NOTIF_LIST,
                 label
         ))
@@ -81,7 +188,7 @@ class NotificationUpdateAnalytics @Inject constructor() {
     fun trackClickFilterRequest(filter: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 EVENT_NAME_CLICK_NOTIF_CENTER,
-                EVENT_CATEGORY_NOTIF_CENTER,
+                CATEGORY_NOTIF_CENTER,
                 EVENT_ACTION_CLICK_FILTER_REQ,
                 filter
         ))
@@ -90,7 +197,7 @@ class NotificationUpdateAnalytics @Inject constructor() {
     fun trackScrollBottom(notifSize: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 EVENT_NAME_CLICK_NOTIF_CENTER,
-                EVENT_CATEGORY_NOTIF_CENTER,
+                CATEGORY_NOTIF_CENTER,
                 EVENT_ACTION_SCROLL_TO_BOTTOM,
                 notifSize
         ))
@@ -99,7 +206,7 @@ class NotificationUpdateAnalytics @Inject constructor() {
     fun trackMarkAllAsRead(markAllReadCounter: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 EVENT_NAME_CLICK_NOTIF_CENTER,
-                EVENT_CATEGORY_NOTIF_CENTER,
+                CATEGORY_NOTIF_CENTER,
                 EVENT_ACTION_MARK_ALL_AS_READ,
                 markAllReadCounter
         ))
@@ -202,7 +309,21 @@ class NotificationUpdateAnalytics @Inject constructor() {
     }
 
     // #NC7
-    fun trackAtcToPdpClick(product: ProductData) {
+    fun trackAtcToPdpClick(notification: NotificationItemViewBean) {
+        val productTrack = arrayListOf<Map<String, Any>>()
+        for ((index, product) in notification.products.withIndex()) {
+            productTrack.add(DataLayer.mapOf(
+                    "name", product.name,
+                    "id", product.productId,
+                    "price", product.price,
+                    "brand", "",
+                    "category", "",
+                    "variant", "",
+                    "list", "/notifcenter",
+                    "position", index,
+                    "attribution", ""
+            ))
+        }
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
             DataLayer.mapOf(
                 EVENT_NAME, NAME_EVENT_PRODUCT_CLICK,
@@ -212,19 +333,7 @@ class NotificationUpdateAnalytics @Inject constructor() {
                 ECOMMERCE, DataLayer.mapOf(
                     "click", DataLayer.mapOf(
                         "actionField", DataLayer.mapOf("list", "/notifcenter"),
-                        "products", DataLayer.listOf(
-                            DataLayer.mapOf(
-                                    "name", product.name,
-                                    "id", product.productId,
-                                    "price", product.price,
-                                    "brand", "",
-                                    "category", "",
-                                    "variant", "",
-                                    "list", "",
-                                    "position", "",
-                                    "attribution", ""
-                            )
-                        )
+                        "products", productTrack
                     )
                 )
             )
@@ -255,7 +364,7 @@ class NotificationUpdateAnalytics @Inject constructor() {
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 TrackAppUtils.gtmData(
                         EVENT_NAME_CLICK_NOTIF_CENTER,
-                        EVENT_CATEGORY_NOTIF_CENTER,
+                        CATEGORY_NOTIF_CENTER,
                         ACTION_CLICK_LONGER_CONTENT_BUTTON,
                         templateKey
                 )
@@ -278,7 +387,7 @@ class NotificationUpdateAnalytics @Inject constructor() {
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 TrackAppUtils.gtmData(
                         EVENT_NAME_CLICK_NOTIF_CENTER,
-                        EVENT_CATEGORY_NOTIF_CENTER,
+                        CATEGORY_NOTIF_CENTER,
                         EVENT_ACTION_CLICK_NOTIF_TAB,
                         "tab ${tab[tabPosition]}"
                 )

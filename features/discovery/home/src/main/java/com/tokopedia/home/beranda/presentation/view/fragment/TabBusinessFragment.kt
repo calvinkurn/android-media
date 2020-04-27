@@ -19,13 +19,10 @@ import com.tokopedia.home.beranda.data.model.HomeWidget
 import com.tokopedia.home.beranda.di.DaggerBerandaComponent
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.widget_business.TabBusinessViewPagerAdapter
 import com.tokopedia.home.beranda.presentation.view.viewmodel.TabBusinessViewModel
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_parent_business_unit.*
 import javax.inject.Inject
 
 class TabBusinessFragment : BaseDaggerFragment(), ViewPager.OnPageChangeListener {
-    private var tabList: List<HomeWidget.TabItem> = arrayListOf()
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     lateinit var viewModel: TabBusinessViewModel
@@ -72,65 +69,70 @@ class TabBusinessFragment : BaseDaggerFragment(), ViewPager.OnPageChangeListener
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         errorView.visibility = View.GONE
-        container.visibility = View.GONE
+        container.visibility = View.INVISIBLE
         temporayPlaceHolders.visibility = View.VISIBLE
 
-        if (tabList.isEmpty()) {
-            getTabBusinessUnit()
-        }
+        getTabBusinessUnit()
+
         buttonReload.setOnClickListener {
             errorView.visibility = View.GONE
-            container.visibility = View.GONE
+            container.visibility = View.INVISIBLE
             temporayPlaceHolders.visibility = View.VISIBLE
+            getTabBusinessUnit()
+        }
+
+        viewModel.homeWidget.observe(
+                viewLifecycleOwner,
+                Observer { onSuccessGetTabBusinessWidget(it) })
+
+        viewModel.homeWidgetErrorAction.observe(
+                viewLifecycleOwner,
+                Observer { onErrorGetTabBusinessWidget(it.throwable) }
+        )
+    }
+
+    fun refresh() {
+        if (view != null) {
+            errorView.visibility = View.GONE
+            container.visibility = View.INVISIBLE
+            temporayPlaceHolders.visibility = View.VISIBLE
+
             getTabBusinessUnit()
         }
     }
 
     private fun getTabBusinessUnit() {
-        if (tabLayout.tabCount == 0) {
-            viewModel.getTabList(getRawQuery())
-        }
+        temporayPlaceHolders.visibility = View.VISIBLE
+        container.visibility = View.INVISIBLE
+
+        viewModel.getTabList(getRawQuery())
     }
 
     private fun getRawQuery(): String {
         return GraphqlHelper.loadRawString(activity?.resources, R.raw.query_tab_business_widget)
     }
 
-    override fun onDestroy() {
-        viewModel.clearJob()
-        super.onDestroy()
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        viewModel.homeWidget.observe(
-                this, Observer { when (it) {
-            is Success -> onSuccessGetTabBusinessWidget(it.data)
-            is Fail -> onErrorGetTabBusinessWidget(it.throwable)
-        } })
-    }
-
     private fun onSuccessGetTabBusinessWidget(homeWidget: HomeWidget) {
-        tabList = homeWidget.tabBusinessList;
-        errorView.visibility = View.GONE
-        container.visibility = View.VISIBLE
-        temporayPlaceHolders.visibility = View.GONE
-        tabLayout.tabMode = TabLayout.MODE_SCROLLABLE
+        if (homeWidget.tabBusinessList.isNotEmpty()) {
+            errorView.visibility = View.GONE
+            container.visibility = View.VISIBLE
+            temporayPlaceHolders.visibility = View.GONE
+            tabLayout.tabMode = TabLayout.MODE_SCROLLABLE
 
-        adapter = TabBusinessViewPagerAdapter(childFragmentManager, homeWidget.tabBusinessList, homeWidget.widgetHeader.backColor, positionWidget)
-        viewPager.adapter = adapter
-        viewPager.offscreenPageLimit = homeWidget.tabBusinessList.size
-        viewPager.removeOnPageChangeListener(this)
-        viewPager.addOnPageChangeListener(this)
-        viewPager.setCanScrollHorizontal(false)
-        tabLayout.setupWithViewPager(null)
-        tabLayout.setupWithViewPager(viewPager)
+            adapter = TabBusinessViewPagerAdapter(childFragmentManager, homeWidget.tabBusinessList, homeWidget.widgetHeader.backColor, positionWidget)
+            viewPager.adapter = adapter
+            viewPager.removeOnPageChangeListener(this)
+            viewPager.addOnPageChangeListener(this)
+            viewPager.setCanScrollHorizontal(false)
+            tabLayout.setupWithViewPager(null)
+            tabLayout.setupWithViewPager(viewPager)
+        }
     }
 
     private fun onErrorGetTabBusinessWidget(throwable: Throwable) {
         throwable.printStackTrace()
         errorView.visibility = View.VISIBLE
-        container.visibility = View.GONE
+        container.visibility = View.INVISIBLE
         temporayPlaceHolders.visibility = View.GONE
     }
 
@@ -141,8 +143,10 @@ class TabBusinessFragment : BaseDaggerFragment(), ViewPager.OnPageChangeListener
     }
 
     override fun onPageSelected(tabPosition: Int) {
-        val tab = tabList[tabPosition]
-        HomePageTracking.eventClickTabHomeWidget(activity, tab.name.toString().toLowerCase())
-        adapter.notifyDataSetChanged()
+        val tab = viewModel.getTabList(tabPosition)
+        tab?.let { tab->
+            HomePageTracking.eventClickTabHomeWidget(activity, tab.name.toString().toLowerCase())
+            adapter.notifyDataSetChanged()
+        }
     }
 }

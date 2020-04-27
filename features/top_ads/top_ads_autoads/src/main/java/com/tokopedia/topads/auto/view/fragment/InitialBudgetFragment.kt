@@ -8,10 +8,8 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.widget.Button
-import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.applink.AppUtil
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 
 import com.tokopedia.topads.auto.R
@@ -74,7 +72,7 @@ class InitialBudgetFragment : DailyBudgetFragment(), View.OnClickListener, Manua
 
     override fun onManualAdsClicked() {
         if(AppUtil.isSellerInstalled(context)) {
-            startActivityForResult(RouteManager.getIntent(context, ApplinkConstInternalTopAds.TOPADS_ADD_PROMO_OPTION), REQUEST_CODE_AD_OPTION)
+            RouteManager.route(context, ApplinkConstInternalTopAds.TOPADS_CREATE_ADS)
         } else {
             RouteManager.route(context, ApplinkConstInternalTopAds.TOPADS_DASHBOARD_INTERNAL)
         }

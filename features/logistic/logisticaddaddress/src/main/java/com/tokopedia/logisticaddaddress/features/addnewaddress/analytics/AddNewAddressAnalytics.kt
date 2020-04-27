@@ -70,175 +70,175 @@ object AddNewAddressAnalytics {
                 event, eventCategory, eventAction, eventLabel))
     }
 
-    fun eventClickButtonOkOnAllowLocation() {
-        sendEventCategoryAction(CLICK_ADDRESS, CART_CHANGE_ADDRESS, CLICK_BUTTON_OK_ON_ALLOW_LOCATION)
+    fun eventClickButtonOkOnAllowLocation(eventLabel: String) {
+        sendEventCategoryActionLabel(CLICK_ADDRESS, CART_CHANGE_ADDRESS, CLICK_BUTTON_OK_ON_ALLOW_LOCATION, eventLabel)
     }
 
-    fun eventClickButtonDoNotAllowOnAllowLocation() {
-        sendEventCategoryAction(CLICK_ADDRESS, CART_CHANGE_ADDRESS, CLICK_BUTTON_DO_NOT_ALLOW_ON_ALLOW_LOCATION)
+    fun eventClickButtonDoNotAllowOnAllowLocation(eventLabel: String) {
+        sendEventCategoryActionLabel(CLICK_ADDRESS, CART_CHANGE_ADDRESS, CLICK_BUTTON_DO_NOT_ALLOW_ON_ALLOW_LOCATION, eventLabel)
     }
 
-    fun eventClickButtonAktifkanLayananLokasiOnBlockGps() {
-        sendEventCategoryAction(CLICK_ADDRESS, CART_CHANGE_ADDRESS, CLICK_BUTTON_AKTIFKAN_LAYANAN_LOKASI_ON_BLOCK_GPS)
+    fun eventClickButtonAktifkanLayananLokasiOnBlockGps(eventLabel: String) {
+        sendEventCategoryActionLabel(CLICK_ADDRESS, CART_CHANGE_ADDRESS, CLICK_BUTTON_AKTIFKAN_LAYANAN_LOKASI_ON_BLOCK_GPS, eventLabel)
     }
 
-    fun eventClickButtonXOnBlockGps() {
-        sendEventCategoryAction(CLICK_ADDRESS, CART_CHANGE_ADDRESS, CLICK_BUTTON_X_ON_BLOCK_GPS)
+    fun eventClickButtonXOnBlockGps(eventLabel: String) {
+        sendEventCategoryActionLabel(CLICK_ADDRESS, CART_CHANGE_ADDRESS, CLICK_BUTTON_X_ON_BLOCK_GPS, eventLabel)
     }
 
-    fun eventViewErrorAlamatTidakValid() {
-        sendEventCategoryAction(VIEW_ADDRESS, CART_CHANGE_ADDRESS, VIEW_ERROR_ALAMAT_TIDAK_VALID)
+    fun eventViewErrorAlamatTidakValid(eventLabel: String) {
+        sendEventCategoryActionLabel(VIEW_ADDRESS, CART_CHANGE_ADDRESS, VIEW_ERROR_ALAMAT_TIDAK_VALID, eventLabel)
     }
 
-    fun eventClickBackArrowOnInputAddress() {
-        sendEventCategoryAction(CLICK_ADDRESS, CART_CHANGE_ADDRESS, CLICK_BACK_ARROW_ON_INPUT_ADDRESS)
+    fun eventClickBackArrowOnInputAddress(eventLabel: String) {
+        sendEventCategoryActionLabel(CLICK_ADDRESS, CART_CHANGE_ADDRESS, CLICK_BACK_ARROW_ON_INPUT_ADDRESS, eventLabel)
     }
 
-    fun eventClickFieldCariLokasi() {
-        sendEventCategoryAction(CLICK_ADDRESS, CART_CHANGE_ADDRESS, CLICK_FIELD_CARI_LOKASI)
+    fun eventClickFieldCariLokasi(eventLabel: String) {
+        sendEventCategoryActionLabel(CLICK_ADDRESS, CART_CHANGE_ADDRESS, CLICK_FIELD_CARI_LOKASI, eventLabel)
     }
 
-    fun eventClickMagnifier() {
-        sendEventCategoryAction(CLICK_ADDRESS, CART_CHANGE_ADDRESS, CLICK_MAGNIFIER)
+    fun eventClickMagnifier(eventLabel: String) {
+        sendEventCategoryActionLabel(CLICK_ADDRESS, CART_CHANGE_ADDRESS, CLICK_MAGNIFIER, eventLabel)
     }
 
-    fun eventClickAddressSuggestionFromSuggestionList() {
-        sendEventCategoryAction(CLICK_ADDRESS, CART_CHANGE_ADDRESS, CLICK_ADDRESS_SUGGESTION_FROM_SUGGESTION_LIST)
+    fun eventClickAddressSuggestionFromSuggestionList(eventLabel: String) {
+        sendEventCategoryActionLabel(CLICK_ADDRESS, CART_CHANGE_ADDRESS, CLICK_ADDRESS_SUGGESTION_FROM_SUGGESTION_LIST, eventLabel)
     }
 
-    fun eventClickButtonPilihLokasi() {
-        sendEventCategoryAction(CLICK_ADDRESS, CART_CHANGE_ADDRESS, CLICK_BUTTON_PILIH_LOKASI)
+    fun eventClickButtonPilihLokasi(eventLabel: String) {
+        sendEventCategoryActionLabel(CLICK_ADDRESS, CART_CHANGE_ADDRESS, CLICK_BUTTON_PILIH_LOKASI, eventLabel)
     }
 
-    fun eventClickFieldDetailAlamat() {
-        sendEventCategoryAction(CLICK_ADDRESS, CART_CHANGE_ADDRESS, CLICK_FIELD_DETAIL_ALAMAT)
+    fun eventClickFieldDetailAlamat(eventLabel: String) {
+        sendEventCategoryActionLabel(CLICK_ADDRESS, CART_CHANGE_ADDRESS, CLICK_FIELD_DETAIL_ALAMAT, eventLabel)
     }
 
-    fun eventClickBackArrowOnPinPoint() {
-        sendEventCategoryAction(CLICK_ADDRESS, CART_CHANGE_ADDRESS, CLICK_BACK_ARROW_ON_PIN_POINT)
+    fun eventClickBackArrowOnPinPoint(eventLabel: String) {
+        sendEventCategoryActionLabel(CLICK_ADDRESS, CART_CHANGE_ADDRESS, CLICK_BACK_ARROW_ON_PIN_POINT, eventLabel)
     }
 
-    fun eventClickButtonPilihLokasiIniSuccess() {
-        sendEventCategoryActionLabel(CLICK_ADDRESS, CART_CHANGE_ADDRESS, CLICK_BUTTON_PILIH_LOKASI_INI, SUCCESS)
+    fun eventClickButtonPilihLokasiIniSuccess(eventLabel: String) {
+        sendEventCategoryActionLabel(CLICK_ADDRESS, CART_CHANGE_ADDRESS, CLICK_BUTTON_PILIH_LOKASI_INI, "$SUCCESS - $eventLabel")
     }
 
-    fun eventClickButtonPilihLokasiIniNotSuccess() {
-        sendEventCategoryActionLabel(CLICK_ADDRESS, CART_CHANGE_ADDRESS, CLICK_BUTTON_PILIH_LOKASI_INI, NOT_SUCCESS)
+    fun eventClickButtonPilihLokasiIniNotSuccess(eventLabel: String) {
+        sendEventCategoryActionLabel(CLICK_ADDRESS, CART_CHANGE_ADDRESS, CLICK_BUTTON_PILIH_LOKASI_INI, "$NOT_SUCCESS - $eventLabel")
     }
 
-    fun eventClickButtonPilihLokasiIni() {
-        sendEventCategoryAction(CLICK_ADDRESS, CART_CHANGE_ADDRESS, CLICK_BUTTON_PILIH_LOKASI_INI)
+    fun eventClickButtonPilihLokasiIni(eventLabel: String) {
+        sendEventCategoryActionLabel(CLICK_ADDRESS, CART_CHANGE_ADDRESS, CLICK_BUTTON_PILIH_LOKASI_INI, eventLabel)
     }
 
-    fun eventClickFieldDetailAlamatChangeAddressPositive() {
-        sendEventCategoryAction(CLICK_ADDRESS, CART_CHANGE_ADDRESS_POSITIVE, CLICK_FIELD_DETAIL_ALAMAT)
+    fun eventClickFieldDetailAlamatChangeAddressPositive(eventLabel: String) {
+        sendEventCategoryActionLabel(CLICK_ADDRESS, CART_CHANGE_ADDRESS_POSITIVE, CLICK_FIELD_DETAIL_ALAMAT, eventLabel)
     }
 
-    fun eventClickFieldLabelAlamatChangeAddressPositive() {
-        sendEventCategoryAction(CLICK_ADDRESS, CART_CHANGE_ADDRESS_POSITIVE, CLICK_FIELD_LABEL_ALAMAT)
+    fun eventClickFieldLabelAlamatChangeAddressPositive(eventLabel: String) {
+        sendEventCategoryActionLabel(CLICK_ADDRESS, CART_CHANGE_ADDRESS_POSITIVE, CLICK_FIELD_LABEL_ALAMAT, eventLabel)
     }
 
-    fun eventClickChipsLabelAlamatChangeAddressPositive() {
-        sendEventCategoryAction(CLICK_ADDRESS, CART_CHANGE_ADDRESS_POSITIVE, CLICK_CHIPS_LABEL_ALAMAT)
+    fun eventClickChipsLabelAlamatChangeAddressPositive(eventLabel: String) {
+        sendEventCategoryActionLabel(CLICK_ADDRESS, CART_CHANGE_ADDRESS_POSITIVE, CLICK_CHIPS_LABEL_ALAMAT, eventLabel)
     }
 
-    fun eventClickFieldNamaPenerimaChangeAddressPositive() {
-        sendEventCategoryAction(CLICK_ADDRESS, CART_CHANGE_ADDRESS_POSITIVE, CLICK_FIELD_NAMA_PENERIMA)
+    fun eventClickFieldNamaPenerimaChangeAddressPositive(eventLabel: String) {
+        sendEventCategoryActionLabel(CLICK_ADDRESS, CART_CHANGE_ADDRESS_POSITIVE, CLICK_FIELD_NAMA_PENERIMA, eventLabel)
     }
 
-    fun eventClickFieldNoPonselChangeAddressPositive() {
-        sendEventCategoryAction(CLICK_ADDRESS, CART_CHANGE_ADDRESS_POSITIVE, CLICK_FIELD_NO_PONSEL)
+    fun eventClickFieldNoPonselChangeAddressPositive(eventLabel: String) {
+        sendEventCategoryActionLabel(CLICK_ADDRESS, CART_CHANGE_ADDRESS_POSITIVE, CLICK_FIELD_NO_PONSEL, eventLabel)
     }
 
-    fun eventClickButtonUbahPinPointChangeAddressPositive() {
-        sendEventCategoryAction(CLICK_ADDRESS, CART_CHANGE_ADDRESS_POSITIVE, CLICK_BUTTON_UBAH_PIN_POINT)
+    fun eventClickButtonUbahPinPointChangeAddressPositive(eventLabel: String) {
+        sendEventCategoryActionLabel(CLICK_ADDRESS, CART_CHANGE_ADDRESS_POSITIVE, CLICK_BUTTON_UBAH_PIN_POINT, eventLabel)
     }
 
-    fun eventClickButtonUnnamedRoad() {
-        sendEventCategoryAction(VIEW_ADDRESS, CART_CHANGE_ADDRESS, CLICK_PILIH_LOKASI_UNNAMED_ROAD)
+    fun eventClickButtonUnnamedRoad(eventLabel: String) {
+        sendEventCategoryActionLabel(VIEW_ADDRESS, CART_CHANGE_ADDRESS, CLICK_PILIH_LOKASI_UNNAMED_ROAD, eventLabel)
     }
 
-    fun eventClickBackArrowOnPositivePageChangeAddressPositive() {
-        sendEventCategoryAction(CLICK_ADDRESS, CART_CHANGE_ADDRESS_POSITIVE, CLICK_BACK_ARROW_ON_POSITIVE_PAGE)
+    fun eventClickBackArrowOnPositivePageChangeAddressPositive(eventLabel: String) {
+        sendEventCategoryActionLabel(CLICK_ADDRESS, CART_CHANGE_ADDRESS_POSITIVE, CLICK_BACK_ARROW_ON_POSITIVE_PAGE, eventLabel)
     }
 
-    fun eventClickButtonSimpanSuccess() {
-        sendEventCategoryActionLabel(CLICK_ADDRESS, CART_CHANGE_ADDRESS, CLICK_BUTTON_SIMPAN, POSITIVE_SUCCESS)
+    fun eventClickButtonSimpanSuccess(eventLabel: String) {
+        sendEventCategoryActionLabel(CLICK_ADDRESS, CART_CHANGE_ADDRESS, CLICK_BUTTON_SIMPAN, "$POSITIVE_SUCCESS - $eventLabel")
     }
 
-    fun eventClickButtonSimpanNotSuccess(errorField: String) {
-        sendEventCategoryActionLabel(CLICK_ADDRESS, CART_CHANGE_ADDRESS, CLICK_BUTTON_SIMPAN, "$POSITIVE_NOT_SUCCESS - $errorField")
+    fun eventClickButtonSimpanNotSuccess(errorField: String, eventLabel: String) {
+        sendEventCategoryActionLabel(CLICK_ADDRESS, CART_CHANGE_ADDRESS, CLICK_BUTTON_SIMPAN, "$POSITIVE_NOT_SUCCESS - $errorField - $eventLabel")
     }
 
-    fun eventViewFailedPinPointNotification() {
-        sendEventCategoryAction(CLICK_ADDRESS, CART_CHANGE_ADDRESS_NEGATIVE, VIEW_FAILED_PINPOINT_NOTIFICATION)
+    fun eventViewFailedPinPointNotification(eventLabel: String) {
+        sendEventCategoryActionLabel(CLICK_ADDRESS, CART_CHANGE_ADDRESS_NEGATIVE, VIEW_FAILED_PINPOINT_NOTIFICATION, eventLabel)
     }
 
-    fun eventClickButtonTandaiLokasiChangeAddressNegativeSuccess() {
-        sendEventCategoryActionLabel(CLICK_ADDRESS, CART_CHANGE_ADDRESS_NEGATIVE, CLICK_BUTTON_TANDAI_LOKASI, SUCCESS)
+    fun eventClickButtonTandaiLokasiChangeAddressNegativeSuccess(eventLabel: String) {
+        sendEventCategoryActionLabel(CLICK_ADDRESS, CART_CHANGE_ADDRESS_NEGATIVE, CLICK_BUTTON_TANDAI_LOKASI, "$SUCCESS - $eventLabel")
     }
 
-    fun eventClickButtonTandaiLokasiChangeAddressNegativeFailed() {
-        sendEventCategoryActionLabel(CLICK_ADDRESS, CART_CHANGE_ADDRESS_NEGATIVE, CLICK_BUTTON_TANDAI_LOKASI, FAILED)
+    fun eventClickButtonTandaiLokasiChangeAddressNegativeFailed(eventLabel: String) {
+        sendEventCategoryActionLabel(CLICK_ADDRESS, CART_CHANGE_ADDRESS_NEGATIVE, CLICK_BUTTON_TANDAI_LOKASI, "$FAILED - $eventLabel")
     }
 
-    fun eventClickFieldKotaKecamatanChangeAddressNegative() {
-        sendEventCategoryAction(CLICK_ADDRESS, CART_CHANGE_ADDRESS_NEGATIVE, CLICK_FIELD_KOTA_KECAMATAN)
+    fun eventClickFieldKotaKecamatanChangeAddressNegative(eventLabel: String) {
+        sendEventCategoryActionLabel(CLICK_ADDRESS, CART_CHANGE_ADDRESS_NEGATIVE, CLICK_FIELD_KOTA_KECAMATAN, eventLabel)
     }
 
-    fun eventClickChipsKotaKecamatanChangeAddressNegative() {
-        sendEventCategoryAction(CLICK_ADDRESS, CART_CHANGE_ADDRESS_NEGATIVE, CLICK_CHIPS_KOTA_KECAMATAN)
+    fun eventClickChipsKotaKecamatanChangeAddressNegative(eventLabel: String) {
+        sendEventCategoryActionLabel(CLICK_ADDRESS, CART_CHANGE_ADDRESS_NEGATIVE, CLICK_CHIPS_KOTA_KECAMATAN, eventLabel)
     }
 
-    fun eventClickSuggestionKotaKecamatanChangeAddressNegative() {
-        sendEventCategoryAction(CLICK_ADDRESS, CART_CHANGE_ADDRESS_NEGATIVE, CLICK_SUGGESTION_KOTA_KECAMATAN)
+    fun eventClickSuggestionKotaKecamatanChangeAddressNegative(eventLabel: String) {
+        sendEventCategoryActionLabel(CLICK_ADDRESS, CART_CHANGE_ADDRESS_NEGATIVE, CLICK_SUGGESTION_KOTA_KECAMATAN, eventLabel)
     }
 
-    fun eventClickFieldKodePosChangeAddressNegative() {
-        sendEventCategoryAction(CLICK_ADDRESS, CART_CHANGE_ADDRESS_NEGATIVE, CLICK_FIELD_KODE_POS)
+    fun eventClickFieldKodePosChangeAddressNegative(eventLabel: String) {
+        sendEventCategoryActionLabel(CLICK_ADDRESS, CART_CHANGE_ADDRESS_NEGATIVE, CLICK_FIELD_KODE_POS, eventLabel)
     }
 
-    fun eventClickChipsKodePosChangeAddressNegative() {
-        sendEventCategoryAction(CLICK_ADDRESS, CART_CHANGE_ADDRESS_NEGATIVE, CLICK_CHIPS_KODE_POS)
+    fun eventClickChipsKodePosChangeAddressNegative(eventLabel: String) {
+        sendEventCategoryActionLabel(CLICK_ADDRESS, CART_CHANGE_ADDRESS_NEGATIVE, CLICK_CHIPS_KODE_POS, eventLabel)
     }
 
-    fun eventClickFieldAlamatChangeAddressNegative() {
-        sendEventCategoryAction(CLICK_ADDRESS, CART_CHANGE_ADDRESS_NEGATIVE, CLICK_FIELD_ALAMAT)
+    fun eventClickFieldAlamatChangeAddressNegative(eventLabel: String) {
+        sendEventCategoryActionLabel(CLICK_ADDRESS, CART_CHANGE_ADDRESS_NEGATIVE, CLICK_FIELD_ALAMAT, eventLabel)
     }
 
-    fun eventClickFieldLabelAlamatChangeAddressNegative() {
-        sendEventCategoryAction(CLICK_ADDRESS, CART_CHANGE_ADDRESS_NEGATIVE, CLICK_FIELD_LABEL_ALAMAT)
+    fun eventClickFieldLabelAlamatChangeAddressNegative(eventLabel: String) {
+        sendEventCategoryActionLabel(CLICK_ADDRESS, CART_CHANGE_ADDRESS_NEGATIVE, CLICK_FIELD_LABEL_ALAMAT, eventLabel)
     }
 
-    fun eventClickChipsLabelAlamatChangeAddressNegative() {
-        sendEventCategoryAction(CLICK_ADDRESS, CART_CHANGE_ADDRESS_NEGATIVE, CLICK_CHIPS_LABEL_ALAMAT)
+    fun eventClickChipsLabelAlamatChangeAddressNegative(eventLabel: String) {
+        sendEventCategoryActionLabel(CLICK_ADDRESS, CART_CHANGE_ADDRESS_NEGATIVE, CLICK_CHIPS_LABEL_ALAMAT, eventLabel)
     }
 
-    fun eventClickFieldNamaPenerimaChangeAddressNegative() {
-        sendEventCategoryAction(CLICK_ADDRESS, CART_CHANGE_ADDRESS_NEGATIVE, CLICK_FIELD_NAMA_PENERIMA)
+    fun eventClickFieldNamaPenerimaChangeAddressNegative(eventLabel: String) {
+        sendEventCategoryActionLabel(CLICK_ADDRESS, CART_CHANGE_ADDRESS_NEGATIVE, CLICK_FIELD_NAMA_PENERIMA, eventLabel)
     }
 
-    fun eventClickFieldNoPonselChangeAddressNegative() {
-        sendEventCategoryAction(CLICK_ADDRESS, CART_CHANGE_ADDRESS_NEGATIVE, CLICK_FIELD_NO_PONSEL)
+    fun eventClickFieldNoPonselChangeAddressNegative(eventLabel: String) {
+        sendEventCategoryActionLabel(CLICK_ADDRESS, CART_CHANGE_ADDRESS_NEGATIVE, CLICK_FIELD_NO_PONSEL, eventLabel)
     }
 
-    fun eventViewToasterPilihKotaDanKodePosTerlebihDahulu() {
-        sendEventCategoryAction(VIEW_ADDRESS, CART_CHANGE_ADDRESS_NEGATIVE, VIEW_TOASTER_PILIH_KOTA_DAN_KODE_POS_TERLEBIH_DAHULU)
+    fun eventViewToasterPilihKotaDanKodePosTerlebihDahulu(eventLabel: String) {
+        sendEventCategoryActionLabel(VIEW_ADDRESS, CART_CHANGE_ADDRESS_NEGATIVE, VIEW_TOASTER_PILIH_KOTA_DAN_KODE_POS_TERLEBIH_DAHULU, eventLabel)
     }
 
-    fun eventViewToasterAlamatTidakSesuaiDenganPeta() {
-        sendEventCategoryAction(VIEW_ADDRESS, CART_CHANGE_ADDRESS_NEGATIVE, VIEW_TOASTER_ALAMAT_TIDAK_SESUAI_DENGAN_PETA)
+    fun eventViewToasterAlamatTidakSesuaiDenganPeta(eventLabel: String) {
+        sendEventCategoryActionLabel(VIEW_ADDRESS, CART_CHANGE_ADDRESS_NEGATIVE, VIEW_TOASTER_ALAMAT_TIDAK_SESUAI_DENGAN_PETA, eventLabel)
     }
 
-    fun eventClickBackArrowOnNegativePage() {
-        sendEventCategoryAction(CLICK_ADDRESS, CART_CHANGE_ADDRESS_NEGATIVE, CLICK_BACK_ARROW_ON_NEGATIVE_PAGE)
+    fun eventClickBackArrowOnNegativePage(eventLabel: String) {
+        sendEventCategoryActionLabel(CLICK_ADDRESS, CART_CHANGE_ADDRESS_NEGATIVE, CLICK_BACK_ARROW_ON_NEGATIVE_PAGE, eventLabel)
     }
 
-    fun eventClickButtonSimpanNegativeSuccess() {
-        sendEventCategoryActionLabel(CLICK_ADDRESS, CART_CHANGE_ADDRESS, CLICK_BUTTON_SIMPAN, NEGATIVE_SUCCESS)
+    fun eventClickButtonSimpanNegativeSuccess(eventLabel: String) {
+        sendEventCategoryActionLabel(CLICK_ADDRESS, CART_CHANGE_ADDRESS, CLICK_BUTTON_SIMPAN, "$NEGATIVE_SUCCESS - $eventLabel")
     }
 
-    fun eventClickButtonSimpanNegativeNotSuccess(errorField: String) {
-        sendEventCategoryActionLabel(CLICK_ADDRESS, CART_CHANGE_ADDRESS_NEGATIVE, CLICK_BUTTON_SIMPAN, "$NEGATIVE_NOT_SUCCESS - $errorField")
+    fun eventClickButtonSimpanNegativeNotSuccess(errorField: String, eventLabel: String) {
+        sendEventCategoryActionLabel(CLICK_ADDRESS, CART_CHANGE_ADDRESS_NEGATIVE, CLICK_BUTTON_SIMPAN, "$NEGATIVE_NOT_SUCCESS - $errorField - $eventLabel")
     }
 }

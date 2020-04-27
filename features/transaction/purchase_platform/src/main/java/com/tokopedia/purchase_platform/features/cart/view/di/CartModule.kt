@@ -5,7 +5,9 @@ import android.content.res.Resources
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.atc_common.AtcConstant
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
+import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
 import com.tokopedia.graphql.coroutines.data.Interactor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.GraphqlUseCase
@@ -16,6 +18,7 @@ import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.promocheckout.common.domain.mapper.CheckPromoStackingCodeMapper
 import com.tokopedia.purchase_platform.R
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCart
+import com.tokopedia.purchase_platform.common.constant.CartConstant
 import com.tokopedia.purchase_platform.common.di.PurchasePlatformBaseModule
 import com.tokopedia.purchase_platform.common.di.PurchasePlatformNetworkModule
 import com.tokopedia.purchase_platform.common.domain.schedulers.DefaultSchedulers
@@ -53,8 +56,9 @@ class CartModule {
 
     @Provides
     @CartScope
-    fun provideCheckPromoStackingCodeUseCase(@ApplicationContext context: Context): CheckPromoStackingCodeUseCase {
-        return CheckPromoStackingCodeUseCase(context.resources)
+    fun provideCheckPromoStackingCodeUseCase(@ApplicationContext context: Context,
+                                             mapper: CheckPromoStackingCodeMapper): CheckPromoStackingCodeUseCase {
+        return CheckPromoStackingCodeUseCase(context.resources, mapper)
     }
 
     @Provides
@@ -117,8 +121,8 @@ class CartModule {
 
     @Provides
     @CartScope
-    fun provideCheckoutAnalyticsCart(): CheckoutAnalyticsCart {
-        return CheckoutAnalyticsCart()
+    fun provideCheckoutAnalyticsCart(@ApplicationContext context: Context): CheckoutAnalyticsCart {
+        return CheckoutAnalyticsCart(context)
     }
 
     @Provides
@@ -179,15 +183,24 @@ class CartModule {
                                   removeInsuranceProductUsecase: RemoveInsuranceProductUsecase,
                                   updateInsuranceProductDataUsecase: UpdateInsuranceProductDataUsecase,
                                   seamlessLoginUsecase: SeamlessLoginUsecase,
+                                  updateCartCounterUseCase: UpdateCartCounterUseCase,
                                   schedulers: ExecutorSchedulers): ICartListPresenter {
         return CartListPresenter(getCartListSimplifiedUseCase, deleteCartUseCase,
-                updateCartUseCase, checkPromoStackingCodeUseCase, checkPromoStackingCodeMapper,
-                compositeSubscription, addWishListUseCase, removeWishListUseCase,
-                updateAndReloadCartUseCase, userSessionInterface, clearCacheAutoApplyStackUseCase,
-                getRecentViewUseCase, getWishlistUseCase, getRecommendationUseCase,
-                addToCartUseCase, getInsuranceCartUseCase, removeInsuranceProductUsecase,
-                updateInsuranceProductDataUsecase, seamlessLoginUsecase, schedulers
+                updateCartUseCase, checkPromoStackingCodeUseCase, compositeSubscription,
+                addWishListUseCase, removeWishListUseCase, updateAndReloadCartUseCase,
+                userSessionInterface, clearCacheAutoApplyStackUseCase, getRecentViewUseCase,
+                getWishlistUseCase, getRecommendationUseCase, addToCartUseCase,
+                getInsuranceCartUseCase, removeInsuranceProductUsecase,
+                updateInsuranceProductDataUsecase, seamlessLoginUsecase,
+                updateCartCounterUseCase, schedulers
         )
+    }
+
+    @Provides
+    @CartScope
+    @Named(AtcConstant.MUTATION_UPDATE_CART_COUNTER)
+    fun provideUpdateCartCounterMutation(@ApplicationContext context: Context): String {
+        return GraphqlHelper.loadRawString(context.resources, R.raw.gql_update_cart_counter)
     }
 
 }

@@ -13,11 +13,11 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
 import com.tokopedia.autocomplete.OnScrollListenerAutocomplete;
 import com.tokopedia.autocomplete.R;
-import com.tokopedia.autocomplete.TabAutoCompleteCallback;
 import com.tokopedia.autocomplete.adapter.ItemClickListener;
-import com.tokopedia.autocomplete.adapter.SearchAdapter;
 import com.tokopedia.autocomplete.adapter.SearchAdapterTypeFactory;
 import com.tokopedia.autocomplete.analytics.AppScreen;
+import com.tokopedia.autocomplete.suggestion.SuggestionAdapter;
+
 import java.util.List;
 
 /**
@@ -26,14 +26,12 @@ import java.util.List;
 
 public class SearchResultFragment extends TkpdBaseV4Fragment {
 
-    private static final String TAG = SearchResultFragment.class.getSimpleName();
     private static final String ARGS_INSTANCE_NAME = "ARGS_INSTANCE_NAME";
     private static final String DEFAULT_INSTANCE_TPE = "unknown";
     private static final String ARGS_INSTANCE_TYPE = "ARGS_INSTANCE_TYPE";
-    private SearchAdapter adapter;
+    private SuggestionAdapter adapter;
     private LinearLayoutManager layoutManager;
     private ItemClickListener clickListener;
-    private TabAutoCompleteCallback tabAutoCompleteListener;
     private String instanceType;
     private int instanceIndex;
 
@@ -44,8 +42,7 @@ public class SearchResultFragment extends TkpdBaseV4Fragment {
 
     public static SearchResultFragment newInstance(String tabName,
                                                    int tabIndex,
-                                                   ItemClickListener clickListener,
-                                                   TabAutoCompleteCallback tabAutoCompleteListener) {
+                                                   ItemClickListener clickListener) {
 
         Bundle args = new Bundle();
         args.putString(ARGS_INSTANCE_NAME, tabName);
@@ -53,13 +50,8 @@ public class SearchResultFragment extends TkpdBaseV4Fragment {
 
         SearchResultFragment fragment = new SearchResultFragment();
         fragment.setCallBackListener(clickListener);
-        fragment.setHostListener(tabAutoCompleteListener);
         fragment.setArguments(args);
         return fragment;
-    }
-
-    private void setHostListener(TabAutoCompleteCallback tabAutoCompleteListener) {
-        this.tabAutoCompleteListener = tabAutoCompleteListener;
     }
 
     private void setCallBackListener(ItemClickListener clickListener) {
@@ -77,10 +69,7 @@ public class SearchResultFragment extends TkpdBaseV4Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View parentView = inflater.inflate(R.layout.fragment_search_result, container, false);
-        initView(parentView);
-        prepareView(parentView);
-        return parentView;
+        return inflater.inflate(R.layout.fragment_search_result, container, false);
     }
 
     private void initView(View view) {
@@ -90,9 +79,8 @@ public class SearchResultFragment extends TkpdBaseV4Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        if (tabAutoCompleteListener != null) {
-            tabAutoCompleteListener.onAdapterReady(instanceIndex, adapter);
-        }
+        initView(view);
+        prepareView(view);
     }
 
     @Override
@@ -105,12 +93,6 @@ public class SearchResultFragment extends TkpdBaseV4Fragment {
         super.onDestroyView();
     }
 
-    public void addSearchResult(Visitable visitable) {
-        if (adapter != null) {
-            adapter.addList(visitable);
-        }
-    }
-
     public void addBulkSearchResult(List<Visitable> list) {
         if (adapter != null) {
             adapter.addAll(list);
@@ -120,7 +102,7 @@ public class SearchResultFragment extends TkpdBaseV4Fragment {
     private void prepareView(View view) {
         SearchAdapterTypeFactory typeFactory = new SearchAdapterTypeFactory(instanceType, clickListener);
         layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
-        adapter = new SearchAdapter(typeFactory);
+        adapter = new SuggestionAdapter(typeFactory);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setNestedScrollingEnabled(false);

@@ -256,7 +256,9 @@ public class ProductVariantDetailLeafFragment extends BaseVariantImageFragment {
 
         if (listener.getProductVariantCombinationViewModel().isActive() &&
                 isStockLimited()) {
-            if (stock < minStock || stock > MAX_STOCK) {counterInputViewStock.setError(getContext().getString(R.string.product_error_product_minimum_order_not_valid,
+            if (stock < minStock || stock > MAX_STOCK) {
+                counterInputViewStock.setError(getContext().getString(
+                        R.string.product_error_total_stock_not_valid,
                         String.valueOf(minStock),
                         getContext().getString(R.string.product_maximum_total_stock)));
                 return false;

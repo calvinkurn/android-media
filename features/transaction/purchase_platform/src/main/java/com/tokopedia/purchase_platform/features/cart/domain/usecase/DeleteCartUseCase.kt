@@ -4,6 +4,7 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.domain.schedulers.ExecutorSchedulers
+import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
 import com.tokopedia.purchase_platform.features.cart.data.model.request.RemoveCartRequest
 import com.tokopedia.purchase_platform.features.cart.data.model.response.deletecart.DeleteCartGqlResponse
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.DeleteCartData
@@ -18,6 +19,8 @@ import javax.inject.Inject
  */
 
 class DeleteCartUseCase @Inject constructor(private val clearCacheAutoApplyStackUseCase: ClearCacheAutoApplyStackUseCase,
+                                            private val updaterCartCounterUseCase: UpdateCartCounterUseCase,
+                                            private val graphqlUseCase: GraphqlUseCase,
                                             private val schedulers: ExecutorSchedulers) : UseCase<DeleteCartData>() {
 
     companion object {
@@ -54,7 +57,6 @@ class DeleteCartUseCase @Inject constructor(private val clearCacheAutoApplyStack
         )
 
         val graphqlRequest = GraphqlRequest(QUERY, DeleteCartGqlResponse::class.java, variables)
-        val graphqlUseCase = GraphqlUseCase()
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(graphqlRequest)
 
@@ -89,6 +91,12 @@ class DeleteCartUseCase @Inject constructor(private val clearCacheAutoApplyStack
                         clearCacheAutoApplyStackUseCase.createObservable(RequestParams.create())
                                 .map { deleteCartData }
                     }
+                }.flatMap { deleteCartData ->
+                    updaterCartCounterUseCase.createObservable(RequestParams.create())
+                            .map {
+                                deleteCartData.cartCounter = it
+                                deleteCartData
+                            }
                 }
                 .subscribeOn(schedulers.io)
                 .observeOn(schedulers.main)

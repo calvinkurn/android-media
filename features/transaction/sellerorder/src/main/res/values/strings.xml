@@ -8,6 +8,7 @@
     <string name="title_som_change_courier">Ganti Kurir</string>
     <string name="title_som_scan_barcode">Scan Resi</string>
     <string name="title_som_booking_code">Detail Kode Booking</string>
+    <string name="title_som_invoice">Invoice</string>
     <string name="hint_search_product">Cari nama pembeli, produk, resi, atau invoice</string>
     <string name="response_due">Batas Respons</string>
     <string name="seller_info">Seller Info</string>
@@ -41,6 +42,7 @@
     <string name="terapkan">Terapkan</string>
     <string name="reset">Reset</string>
     <string name="simpan">Simpan</string>
+    <string name="cetak">Cetak</string>
 
     <!--DETAIL-->
     <string name="daftar_produk">Daftar Produk</string>
@@ -55,10 +57,14 @@
     <string name="salin_caps">SALIN</string>
     <string name="awb_label">awb</string>
     <string name="resi_tersalin">Nomor resi sudah tersalin</string>
+    <string name="invoice_label">invoice</string>
+    <string name="invoice_tersalin">Invoice sudah tersalin</string>
     <string name="detail_pengiriman">Detail Pengiriman</string>
     <string name="kode_booking">Kode Booking</string>
     <string name="kurir_pengiriman">Kurir Pengiriman</string>
     <string name="alamat_pengiriman">Alamat Pengiriman</string>
+    <string name="alamat_pengiriman_tersalin">Alamat Pengiriman sudah tersalin</string>
+    <string name="salin_alamat">Salin Alamat</string>
     <string name="catatan">Catatan</string>
     <string name="terima_pesanan">Terima Pesanan</string>
     <string name="informasi_pembayaran">Informasi Pembayaran</string>
@@ -177,9 +183,11 @@
     <string name="confirm_msg_2b">sebelum batas respons berakhir</string>
     <string name="confirm_msg_3">Cetak label pengiriman atau tulis kode booking di kemasan paket</string>
     <string name="title_bottomsheet_accept_order">Konfirmasi terima pesanan</string>
+    <string name="title_dialog_set_delivered">Ubah Status Pengiriman</string>
     <string name="ic_checklist_desc">ic_checklist</string>
     <string name="action_batal">Batal</string>
     <string name="action_terima">Terima</string>
+    <string name="action_ubah">Ubah Status</string>
 
     <string name="title_dialog_cancel_order">Batalkan Pesanan</string>
 
@@ -219,7 +227,7 @@
         <![CDATA[
         <html>
         <body>
-        <p><a href="https://m.tokopedia.com/myorder/seller/ticker-info"><strong style="color: green;">Info Selengkapnya</strong></a></p>
+        <a href="https://m.tokopedia.com/myorder/seller/ticker-info"><strong style="color: green;">Info Selengkapnya</strong></a>
         </body>
         </html>
         ]]>
@@ -241,5 +249,30 @@
     <string name="som_penalty_subtitle">Apakah Anda yakin ingin membatalkan pesanan?</string>
 
     <string name="som_dropshipper_label">Dropshipper</string>
+
+    <!--Coachmark-->
+    <string name="coachmark_search">Temukan pesanan lebih cepat</string>
+    <string name="coachmark_search_info">Cari berdasarkan nama produk atau klik status pesanan yang kamu inginkan.</string>
+    <string name="coachmark_pesanan">Lihat daftar pesanan</string>
+    <string name="coachmark_pesanan_info">Klik di sini untuk menerima pesananmu. Jangan lupa cek batas respons, ya!</string>
+    <string name="coachmark_filter">Pilih filter</string>
+    <string name="coachmark_filter_info">Tampilkan daftar pesanan sesuai jenis kurir, tipe pesanan, dan jatuh tempo.</string>
+    <string name="coachmark_chat">Chat pembeli</string>
+    <string name="coachmark_chat_info">Ada detail pesanan yang kurang jelas? Yuk, tanya langsung ke pembelimu.</string>
+    <string name="coachmark_header">Cek info pesananmu</string>
+    <string name="coachmark_header_info">Temukan info seputar nama pembeli, tanggal transaksi, hingga batas respons di sini.</string>
+    <string name="coachmark_product">Produk yang dipesan</string>
+    <string name="coachmark_product_info">Pastikan barang yang kamu kirim sudah sesuai dengan yang dipesan oleh pembeli.</string>
+    <string name="coachmark_shipping">Detail pengiriman</string>
+    <string name="coachmark_shipping_info">Kirim pesanan ke alamat pembeli dengan menggunakan kurir yang telah ditentukan.</string>
+    <string name="coachmark_edit">Edit kurir atau resi di sini</string>
+    <string name="coachmark_edit_info">Klik ini jika butuh mengganti kurir, edit resi, atau menolak pesanan yang masuk.</string>
+    <string name="coachmark_terima_pesanan">Saatnya proses pesananmu!</string>
+    <string name="coachmark_terima_pesanan_info">Setelah menerima pesanan, kamu bisa langsung mengemas barang untuk segera dikirimkan.</string>
+    <string name="coachmark_booking">Wajib Tulis Kode Booking</string>
+    <string name="coachmark_booking_info">Cetak label pengiriman atau tulis kode booking di paket yang akan di kirim.</string>
+    <string name="dialog_receiver_name">Nama Penerima</string>
+    <string name="et_empty_error">Tidak Boleh Kosong</string>
+
 
 </resources>

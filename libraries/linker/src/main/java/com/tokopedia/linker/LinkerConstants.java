@@ -72,6 +72,7 @@ public interface LinkerConstants {
     String EVENT_LOGIN_LABLE = "login";
     String EVENT_REGISTER_LABLE = "sign_up";
     String EVENT_FLIGHT_PURCHASE = "FLIGHT_PURCHASE ";
+    String EVENT_MARKETPLACE_FIRST_TXN = "marketplace_first_txn";
 
     int ERROR_INIT_FAILED = 101;
     int ERROR_REQUEST_NOT_SUCCESSFUL = 102;

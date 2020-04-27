@@ -1,10 +1,9 @@
 package com.tokopedia.purchase_platform.features.checkout.view.subscriber
 
-import com.tokopedia.purchase_platform.features.checkout.view.ShipmentContract
-import com.tokopedia.purchase_platform.features.checkout.view.ShipmentPresenter
-import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.promocheckout.common.domain.model.clearpromo.ClearCacheAutoApplyStackResponse
 import com.tokopedia.promocheckout.common.view.uimodel.ClashingVoucherOrderUiModel
+import com.tokopedia.purchase_platform.features.checkout.view.ShipmentContract
+import com.tokopedia.purchase_platform.features.checkout.view.ShipmentPresenter
 import rx.Subscriber
 
 
@@ -16,7 +15,7 @@ class ClearShipmentCacheAutoApplyAfterClashSubscriber(val view: ShipmentContract
                                                       private val cornerId: String,
                                                       private val isTradeIn: Boolean,
                                                       private val devieId: String,
-                                                      private val type: String) : Subscriber<GraphqlResponse>() {
+                                                      private val type: String) : Subscriber<ClearCacheAutoApplyStackResponse>() {
 
     override fun onCompleted() {
 
@@ -28,11 +27,10 @@ class ClearShipmentCacheAutoApplyAfterClashSubscriber(val view: ShipmentContract
         view?.onFailedClearPromoStack(false)
     }
 
-    override fun onNext(response: GraphqlResponse) {
+    override fun onNext(response: ClearCacheAutoApplyStackResponse) {
         view?.hideLoading()
         presenter.setCouponStateChanged(true)
-        val responseData = response.getData<ClearCacheAutoApplyStackResponse>(ClearCacheAutoApplyStackResponse::class.java)
-        if (responseData.successData.success) {
+        if (response.successData.success) {
             view?.onSuccessClearPromoStackAfterClash()
             presenter.applyPromoStackAfterClash(newPromoList, isFromMultipleAddress, isOneClickShipment, isTradeIn, cornerId, devieId, type)
         } else {

@@ -8,18 +8,21 @@ import com.tokopedia.search.di.module.RecommendationModule;
 import com.tokopedia.search.di.module.RemoteConfigModule;
 import com.tokopedia.search.di.module.RemoveWishListUseCaseModule;
 import com.tokopedia.search.di.module.ResourcesModule;
+import com.tokopedia.search.di.module.SearchContextModule;
 import com.tokopedia.search.di.module.UserSessionModule;
 import com.tokopedia.search.di.scope.SearchScope;
 import com.tokopedia.search.result.domain.usecase.getdynamicfilter.GetDynamicFilterGqlUseCaseModule;
 import com.tokopedia.search.result.domain.usecase.productwishlisturl.ProductWishlistUrlUseCaseModule;
 import com.tokopedia.search.result.domain.usecase.searchproduct.SearchProductUseCaseModule;
 import com.tokopedia.search.result.network.service.TopAdsServiceModule;
+import com.tokopedia.search.result.presentation.ProductListSectionContract;
 import com.tokopedia.search.result.presentation.presenter.localcache.SearchLocalCacheHandlerModule;
 
 import dagger.Component;
 
 @SearchScope
 @Component(modules = {
+        SearchContextModule.class,
         RemoteConfigModule.class,
         AddWishListUseCaseModule.class,
         RemoveWishListUseCaseModule.class,
@@ -30,7 +33,6 @@ import dagger.Component;
         SearchProductUseCaseModule.class,
         GetDynamicFilterGqlUseCaseModule.class,
         SearchLocalCacheHandlerModule.class,
-        RemoteConfigModule.class,
         ResourcesModule.class,
         GraphqlRepositoryModule.class,
         AdvertisingLocalCacheHandlerModule.class

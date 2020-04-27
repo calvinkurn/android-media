@@ -16,7 +16,6 @@ import android.view.View;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
-import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
 import com.tokopedia.discovery.common.constants.SearchApiConst;
@@ -45,6 +44,7 @@ import com.tokopedia.search.result.presentation.view.listener.SearchNavigationLi
 import com.tokopedia.search.utils.UrlParamUtils;
 import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker;
 import com.tokopedia.topads.sdk.domain.model.CpmData;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -53,8 +53,6 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
-import static com.tokopedia.discovery.common.constants.SearchConstant.GCM.GCM_ID;
-import static com.tokopedia.discovery.common.constants.SearchConstant.GCM.GCM_STORAGE;
 import static com.tokopedia.discovery.common.constants.SearchConstant.LANDSCAPE_COLUMN_MAIN;
 import static com.tokopedia.discovery.common.constants.SearchConstant.PORTRAIT_COLUMN_MAIN;
 import static com.tokopedia.discovery.common.constants.SearchConstant.ViewType.BIG_GRID;
@@ -71,10 +69,7 @@ public abstract class SearchSectionFragment
     public static final int REQUEST_CODE_GOTO_PRODUCT_DETAIL = 4;
     public static final int REQUEST_CODE_LOGIN = 561;
 
-    protected static final int START_ROW_FIRST_TIME_LOAD = 0;
-
     private static final String EXTRA_SPAN_COUNT = "EXTRA_SPAN_COUNT";
-    private static final String EXTRA_SHOW_BOTTOM_BAR = "EXTRA_SHOW_BOTTOM_BAR";
     protected static final String EXTRA_SEARCH_PARAMETER = "EXTRA_SEARCH_PARAMETER";
 
     private SearchNavigationListener searchNavigationListener;
@@ -84,13 +79,11 @@ public abstract class SearchSectionFragment
     private LinearLayoutManager linearLayoutManager;
     private StaggeredGridLayoutManager staggeredGridLayoutManager;
     private SwipeRefreshLayout refreshLayout;
-    private boolean showBottomBar;
     public int spanCount;
 
     private ArrayList<Sort> sort;
     private ArrayList<Filter> filters;
     private HashMap<String, String> selectedSort;
-    protected boolean isUsingBottomSheetFilter;
     protected boolean isListEmpty = false;
     private boolean hasLoadData;
     private FilterTrackingData filterTrackingData;
@@ -99,7 +92,7 @@ public abstract class SearchSectionFragment
     protected FilterController filterController = new FilterController();
 
     @Inject
-    SearchTracking searchTracking;
+    UserSessionInterface userSession;
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -343,7 +336,8 @@ public abstract class SearchSectionFragment
 
     private void handleSortResult(Map<String, String> selectedSort, String selectedSortName, String autoApplyFilter) {
         setSelectedSort(new HashMap<>(selectedSort));
-        searchTracking.eventSearchResultSort(getScreenName(), selectedSortName);
+        String userId = userSession.isLoggedIn() ? userSession.getUserId() : "0";
+        SearchTracking.eventSearchResultSort(getScreenName(), selectedSortName, userId);
         if(searchParameter != null) {
             searchParameter.getSearchParameterHashMap().put(SearchApiConst.ORIGIN_FILTER,
                     SearchApiConst.DEFAULT_VALUE_OF_ORIGIN_FILTER_FROM_SORT_PAGE);
@@ -432,11 +426,15 @@ public abstract class SearchSectionFragment
             return;
         }
 
-        if (bottomSheetListener != null && isUsingBottomSheetFilter) {
+        if (bottomSheetListener != null && isUsingBottomSheetFilter()) {
             openBottomSheetFilter();
         } else {
             FilterSortManager.openFilterPage(getFilterTrackingData(), this, getScreenName(), searchParameter.getSearchParameterHashMap());
         }
+    }
+
+    protected boolean isUsingBottomSheetFilter() {
+        return false;
     }
 
     protected void openBottomSheetFilter() {
@@ -519,7 +517,6 @@ public abstract class SearchSectionFragment
         super.onSaveInstanceState(outState);
         outState.putInt(EXTRA_SPAN_COUNT, getSpanCount());
         outState.putParcelable(EXTRA_SEARCH_PARAMETER, searchParameter);
-        outState.putBoolean(EXTRA_SHOW_BOTTOM_BAR, showBottomBar);
     }
 
     public abstract void reloadData();
@@ -547,7 +544,6 @@ public abstract class SearchSectionFragment
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         setSpanCount(savedInstanceState.getInt(EXTRA_SPAN_COUNT));
         copySearchParameter(savedInstanceState.getParcelable(EXTRA_SEARCH_PARAMETER));
-        showBottomBar = savedInstanceState.getBoolean(EXTRA_SHOW_BOTTOM_BAR);
     }
 
     @Override
@@ -618,10 +614,7 @@ public abstract class SearchSectionFragment
     }
 
     public String getRegistrationId() {
-        if(getActivity() == null || getActivity().getApplicationContext() == null) return "";
-
-        LocalCacheHandler cache = new LocalCacheHandler(getActivity().getApplicationContext(), GCM_STORAGE);
-        return cache.getString(GCM_ID, "");
+        return userSession != null ? userSession.getDeviceId() : "";
     }
 
     @Nullable

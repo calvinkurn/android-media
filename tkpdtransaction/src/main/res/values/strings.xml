@@ -142,6 +142,8 @@
     <string name="text_complaint_dialog">Apakah Pesanan dari toko %s bermasalah? \n\n\nKlik <b>Ya</b> untuk komplain barang yang berkendala atau belum sampai.\nKlik <b>Kembali</b> untuk membatalkan aksi ini</string>
     <string name="dialog_message_ask_seller"><![CDATA[<br/><br/>Invoice:<br/>XXX]]></string>
 
+    <string name="title_invoice">Invoice</string>
+    <string name="button_order_detail_download_invoice">Unduh</string>
     <string name="button_order_detail_accept_order">Terima Pesanan</string>
     <string name="button_order_detail_accept_order_partially">Terima Sebagian</string>
     <string name="button_order_detail_change_courier">Ganti Kurir</string>
@@ -355,7 +357,7 @@ Anda di sini.</string>
     <string name="user_label">Data Pemegang E-tiket</string>
     <string name="booking_code_title">Kode Booking:</string>
     <string name="btn_redeem_ticket">Tutup</string>
-    <string name="voucher_code_title">Kode voucher:</string>
+    <string name="voucher_code_title">Kode Booking :</string>
     <string name="voucher_code_title_deals">Voucher Deals</string>
     <string name="redeem_deals_btn">Redeem</string>
     <string name="event_ticket_voucher_multiple">x E-Tiket</string>
@@ -382,6 +384,9 @@ Anda di sini.</string>
     <string name="tkpdtransaction_oms_retry_text">Tunggu 30 detik</string>
     <string name="title_voucher_code_copied">Kode Voucher berhasil tersalin</string>
 
+    <string name="redeem_dialog_powered_by">Powered by  </string>
+    <string name="redeem_dialog_voucher_code">Kode Voucher</string>
+
 
     <string name="tkpdtransaction_filter_terapkan">Terapkan</string>
     <string name="tkpdtransaction_filter_sampai">Sampai</string>
@@ -390,6 +395,7 @@ Anda di sini.</string>
     <string name="tkpdtransaction_filter_custom_date">"Pilih Tanggal Sendiri"</string>
     <string name="tkpdtransaction_filter_90_days">90 Hari Terakhir</string>
     <string name="tkpdtransaction_90_days_found_nothing">Tidak ada transaksi dalam 90 hari terakhir</string>
+    <string name="tkpdtransaction_web_title">Info Pembeli</string>
     <string name="month_1">Jan</string>
     <string name="month_2">Feb</string>
     <string name="month_3">Mar</string>

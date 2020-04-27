@@ -7,8 +7,8 @@ import com.tokopedia.gm.common.domain.interactor.GetPowerMerchantStatusUseCase
 import com.tokopedia.gm.common.domain.interactor.GetShopScoreUseCase
 import com.tokopedia.gm.common.domain.interactor.GetShopStatusUseCase
 import com.tokopedia.usecase.RequestParams
-import com.tokopedia.user_identification_common.domain.pojo.GetApprovalStatusPojo
-import com.tokopedia.user_identification_common.domain.usecase.GetApprovalStatusUseCase
+import com.tokopedia.user_identification_common.domain.pojo.KycUserProjectInfoPojo
+import com.tokopedia.user_identification_common.domain.usecase.GetUserProjectInfoUseCase
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -22,14 +22,14 @@ class GetPowerMerchantStatusUseCaseTest : Spek({
     Feature("GetPowerMerchantStatusUseCase") {
 
         val getShopStatusUseCase: GetShopStatusUseCase = mockk(relaxed = true)
-        val getApprovalStatusUseCase: GetApprovalStatusUseCase = mockk(relaxed = true)
+        val getUserProjectInfoUseCase: GetUserProjectInfoUseCase = mockk(relaxed = true)
         val getShopScoreUseCase: GetShopScoreUseCase = mockk(relaxed = true)
         val requestParams: RequestParams = mockk(relaxed = true)
 
         val getPowerMerchantStatusUseCase by lazy {
             GetPowerMerchantStatusUseCase(
                     getShopStatusUseCase,
-                    getApprovalStatusUseCase,
+                    getUserProjectInfoUseCase,
                     getShopScoreUseCase
             )
         }
@@ -37,7 +37,7 @@ class GetPowerMerchantStatusUseCaseTest : Spek({
         Scenario("GetPowerMerchantStatus is success") {
             val goldGetPmOsStatusSuccess = mockk<GoldGetPmOsStatus>()
             val shopScoreResultSuccess = mockk<ShopScoreResult>()
-            val getApprovalStatusPojo = mockk<GetApprovalStatusPojo>()
+            val getApprovalStatusPojo = mockk<KycUserProjectInfoPojo>()
             lateinit var testSubscriber : AssertableSubscriber<PowerMerchantStatus>
 
             Given("Mock getShopStatusUseCase to return empty success POJO") {
@@ -54,7 +54,7 @@ class GetPowerMerchantStatusUseCaseTest : Spek({
 
             Given("Mock getApprovalStatusUseCase to return empty success POJO") {
                 every {
-                    getApprovalStatusUseCase.execute(any())
+                    getUserProjectInfoUseCase.execute(any())
                 } returns Observable.just(getApprovalStatusPojo)
             }
 
@@ -65,7 +65,7 @@ class GetPowerMerchantStatusUseCaseTest : Spek({
             Then("All the use case attributes created and executed") {
                 verify {
                     getShopScoreUseCase.createObservable(any())
-                    getApprovalStatusUseCase.execute(any())
+                    getUserProjectInfoUseCase.execute(any())
                     getShopScoreUseCase.createObservable(any())
                 }
             }

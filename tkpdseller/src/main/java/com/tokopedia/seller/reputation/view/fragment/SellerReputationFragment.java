@@ -25,8 +25,9 @@ import com.tokopedia.base.list.seller.view.adapter.BaseRetryDataBinder;
 import com.tokopedia.base.list.seller.view.old.RetryDataBinder;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.core.base.presentation.BaseDaggerFragment;
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.NetworkErrorHelper;
@@ -312,13 +313,16 @@ public class SellerReputationFragment extends BaseDaggerFragment
     }
 
     private void inject() {
+       if(getActivity() != null) {
+           AppComponent appComponent = ((MainApplication) getActivity().getApplication()).getAppComponent();
 
-        //[START] This is for dependent component
-        DaggerSellerReputationComponent.builder()
-                .sellerReputationModule(new SellerReputationModule())
-                .appComponent(getComponent(AppComponent.class))
-                .build().inject(this);
-        //[END] This is for dependent component
+           //[START] This is for dependent component
+           DaggerSellerReputationComponent.builder()
+                   .sellerReputationModule(new SellerReputationModule())
+                   .appComponent(appComponent)
+                   .build().inject(this);
+           //[END] This is for dependent component
+       }
     }
 
     @Override

@@ -7,6 +7,7 @@ import java.io.File
 open class ReadVersionConfigTask : DefaultTask() {
 
     val versionConfigMap = mutableMapOf<String, Int>()
+    var versionSuffix:String = ""
 
     companion object {
         const val CONFIG_VERSION_FILE_PATH = "tools/version/config_version.txt"
@@ -18,7 +19,11 @@ open class ReadVersionConfigTask : DefaultTask() {
         file.forEachLine {line ->
             if(line.isNotEmpty() &&!line.startsWith("//")){
                 val splits = line.split("=")
-                versionConfigMap[splits[0]] = splits[1].toInt()
+                if (splits[0] == "Suffix") {
+                    versionSuffix = splits[1]
+                } else {
+                    versionConfigMap[splits[0]] = splits[1].toInt()
+                }
             }
         }
     }

@@ -2,7 +2,7 @@ package com.tokopedia.purchase_platform.features.cart.domain.model.cartlist
 
 import android.os.Parcel
 import android.os.Parcelable
-import com.tokopedia.purchase_platform.features.cart.view.viewmodel.CartItemHolderData
+import com.tokopedia.purchase_platform.features.cart.view.uimodel.CartItemHolderData
 
 /**
  * Created by Irfan Khoirul on 2019-10-16.

@@ -4,11 +4,11 @@ import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
@@ -16,13 +16,11 @@ import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.ApplinkRouter
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.Menus
 import com.tokopedia.talk.R
-import com.tokopedia.talk.common.TalkRouter
 import com.tokopedia.talk.common.adapter.TalkProductAttachmentAdapter
 import com.tokopedia.talk.common.adapter.viewholder.CommentTalkViewHolder
 import com.tokopedia.talk.common.adapter.viewholder.LoadMoreCommentTalkViewHolder
@@ -599,9 +597,9 @@ open class InboxTalkFragment : BaseDaggerFragment(),
     }
 
     private fun onGoToPdp(productId: String) {
-        activity?.applicationContext?.run {
+        activity?.run {
             val intent: Intent? = getProductIntent(productId)
-            this@InboxTalkFragment.startActivity(intent)
+            startActivity(intent)
         }
     }
 
@@ -615,13 +613,13 @@ open class InboxTalkFragment : BaseDaggerFragment(),
 
     override fun onGoToUserProfile(userId: String) {
         analytics.trackClickUserProfile()
-        activity?.applicationContext?.run {
+        activity?.run {
             RouteManager.route(activity, ApplinkConst.PROFILE.replace("{user_id}", userId))
         }
     }
 
     override fun onGoToShopPage(shopId: String) {
-        activity?.applicationContext?.run {
+        activity?.run {
             RouteManager.route(this, ApplinkConst.SHOP, shopId)
         }
     }
@@ -654,15 +652,14 @@ open class InboxTalkFragment : BaseDaggerFragment(),
     private fun goToDetailTalk(talkId: String, shopId: String, allowReply: Boolean) {
         if (allowReply) {
             context?.run {
-                val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.DETAIL_TALK).apply {
-                    putExtras(
-                            Bundle().apply {
-                                putExtra(TalkDetailsActivity.THREAD_TALK_ID, talkId)
-                                putExtra(TalkDetailsActivity.SHOP_ID, shopId)
-                                putExtra(TalkDetailsActivity.SOURCE, TalkDetailsActivity.SOURCE_INBOX)
-                            }
-                    )
-                }
+                val intent = RouteManager.getIntent(
+                        context,
+                        ApplinkConstInternalGlobal.DETAIL_TALK,
+                        talkId,
+                        shopId,
+                        "",
+                        TalkDetailsActivity.SOURCE_INBOX
+                )
                 this@InboxTalkFragment.startActivityForResult(
                         intent, REQUEST_GO_TO_DETAIL)
             }

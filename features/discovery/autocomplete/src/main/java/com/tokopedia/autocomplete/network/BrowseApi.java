@@ -16,9 +16,4 @@ public interface BrowseApi {
     Observable<Response<SearchResponse>> getUniverseAutoComplete(
             @QueryMap HashMap<String, Object> param
     );
-
-    @DELETE(AutocompleteBaseURL.Ace.PATH_DELETE_SEARCH)
-    Observable<Response<Void>> deleteRecentSearch(
-            @QueryMap HashMap<String, Object> parameters
-    );
 }

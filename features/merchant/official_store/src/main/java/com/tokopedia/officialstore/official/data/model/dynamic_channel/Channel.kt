@@ -13,7 +13,11 @@ data class Channel(
         @Expose @SerializedName("name") val name: String,
         @Expose @SerializedName("layout") val layout: String,
         @Expose @SerializedName("campaignID") val campaignID: Int,
-        @Expose @SerializedName("grids") val grids: MutableList<Grid?>?
+        @Expose @SerializedName("grids") val grids: MutableList<Grid?>?,
+        @Expose @SerializedName("galaxy_attribution") val galaxyAttribution: String = "",
+        @Expose @SerializedName("persona") val persona: String = "",
+        @Expose @SerializedName("category_persona") val categoryPersona: String = "",
+        @Expose @SerializedName("brand_id") val brandId: String = ""
 ) : Parcelable {
 
     private constructor(parcel: Parcel) : this(
@@ -24,7 +28,11 @@ data class Channel(
             name = parcel.readString() ?: "",
             layout = parcel.readString() ?: "",
             campaignID = parcel.readInt() ?: 0,
-            grids = parcel.createTypedArrayList(Grid.CREATOR)
+            grids = parcel.createTypedArrayList(Grid.CREATOR),
+            galaxyAttribution = parcel.readString() ?: "",
+            persona = parcel.readString() ?: "",
+            categoryPersona = parcel.readString() ?: "",
+            brandId = parcel.readString() ?: ""
     )
 
     override fun writeToParcel(dest: Parcel?, flags: Int) {
@@ -37,6 +45,10 @@ data class Channel(
             writeString(layout)
             writeInt(campaignID)
             writeTypedList(grids)
+            writeString(galaxyAttribution)
+            writeString(persona)
+            writeString(categoryPersona)
+            writeString(brandId)
         }
     }
 

@@ -73,8 +73,8 @@ android {
     }
 
     project.ext {
-        defaultVersionCode = 221001101;
-        defaultVersionName = "2.21";
+        defaultVersionCode = 299600000;
+        defaultVersionName = "3.60";
         react = [
                 nodeExecutableAndArgs: ["${nodeExecutableAndArgs}"]
         ]
@@ -116,6 +116,7 @@ android {
             zipAlignEnabled false
             testCoverageEnabled false
             buildConfigField "boolean", "ENABLE_DISTRIBUTION", allowDistribution()
+            ext.enableHansel = false
         }
         release {
             signingConfig signingConfigs.debug
@@ -136,7 +137,7 @@ android {
         }
     }
     defaultConfig {
-        minSdkVersion rootProject.ext.minSdkVersion
+        minSdkVersion 21
         targetSdkVersion rootProject.ext.targetSdkVersion
         multiDexEnabled = true
         applicationId "com.tokopedia.tkpd"
@@ -225,6 +226,10 @@ dependencies {
 
     //------- DO NOT DELETE THIS PART -------//
     // TO BE ADDED AS FEATURE REQUIREMENT
+	implementation project(rootProject.ext.features.productDetail)
+	implementation project(rootProject.ext.features.topchat)
+	implementation project(rootProject.ext.libraries.core_legacy)
+
 }
 
 repositories {

@@ -11,40 +11,35 @@ import android.graphics.drawable.TransitionDrawable
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.text.Editable
-import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.airbnb.lottie.LottieAnimationView
-import com.airbnb.lottie.LottieDrawable
 import com.airbnb.lottie.LottieCompositionFactory
-import com.airbnb.lottie.LottieListener
-import com.airbnb.lottie.LottieComposition
-import com.airbnb.lottie.LottieTask
+import com.airbnb.lottie.LottieDrawable
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.core.base.di.component.AppComponent
+import com.tokopedia.device.info.DevicePerformanceInfo
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
 import com.tokopedia.imagepicker.picker.main.builder.*
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.util.DeviceChecker
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.reputation.common.view.AnimatedReputationView
 import com.tokopedia.tkpd.tkpdreputation.R
@@ -52,6 +47,7 @@ import com.tokopedia.tkpd.tkpdreputation.analytic.ReputationTracking
 import com.tokopedia.tkpd.tkpdreputation.createreputation.model.ProductRevGetForm
 import com.tokopedia.tkpd.tkpdreputation.createreputation.ui.activity.CreateReviewActivity
 import com.tokopedia.tkpd.tkpdreputation.createreputation.ui.adapter.ImageReviewAdapter
+import com.tokopedia.tkpd.tkpdreputation.createreputation.ui.listener.OnAddImageClickListener
 import com.tokopedia.tkpd.tkpdreputation.createreputation.util.Fail
 import com.tokopedia.tkpd.tkpdreputation.createreputation.util.LoadingView
 import com.tokopedia.tkpd.tkpdreputation.createreputation.util.Success
@@ -64,7 +60,7 @@ import javax.inject.Inject
 import com.tokopedia.usecase.coroutines.Fail as CoroutineFail
 import com.tokopedia.usecase.coroutines.Success as CoroutineSuccess
 
-class CreateReviewFragment : BaseDaggerFragment() {
+class CreateReviewFragment : BaseDaggerFragment(), OnAddImageClickListener {
 
     companion object {
         private const val REQUEST_CODE_IMAGE = 111
@@ -74,6 +70,7 @@ class CreateReviewFragment : BaseDaggerFragment() {
         const val REVIEW_CLICK_AT = "REVIEW_CLICK_AT"
         const val REVIEW_NOTIFICATION_ID = "REVIEW_NOTIFICATION_ID"
         const val REVIEW_ORDER_ID = "REVIEW_ORDER_ID"
+        const val UTM_SOURCE = "UTM_SOURCE"
 
         private const val IMAGE_REVIEW_GREY_BG = "https://ecs7.tokopedia.net/android/others/1_2reviewbg.png"
         private const val IMAGE_REVIEW_GREEN_BG = "https://ecs7.tokopedia.net/android/others/3reviewbg.png"
@@ -92,11 +89,12 @@ class CreateReviewFragment : BaseDaggerFragment() {
         private const val IMAGE_PEDIE_4 = "https://ecs7.tokopedia.net/android/pedie/4star.png"
         private const val IMAGE_PEDIE_5 = "https://ecs7.tokopedia.net/android/pedie/5star.png"
 
-        fun createInstance(productId: String, reviewId: String, reviewClickAt: Int = 0) = CreateReviewFragment().also {
+        fun createInstance(productId: String, reviewId: String, reviewClickAt: Int = 0, utmSource: String) = CreateReviewFragment().also {
             it.arguments = Bundle().apply {
                 putString(PRODUCT_ID_REVIEW, productId)
                 putString(REVIEW_ID, reviewId)
                 putInt(REVIEW_CLICK_AT, reviewClickAt)
+                putString(UTM_SOURCE, utmSource)
             }
         }
     }
@@ -109,7 +107,7 @@ class CreateReviewFragment : BaseDaggerFragment() {
     private lateinit var animatedReviewPicker: AnimatedReputationView
     private lateinit var createReviewViewModel: CreateReviewViewModel
     private val imageAdapter: ImageReviewAdapter by lazy {
-        ImageReviewAdapter(this::addImageClick)
+        ImageReviewAdapter(this)
     }
     private var isLowDevice = false
     private var selectedImage: ArrayList<String> = arrayListOf()
@@ -124,6 +122,7 @@ class CreateReviewFragment : BaseDaggerFragment() {
     private var productRevGetForm: ProductRevGetForm = ProductRevGetForm()
     private var shopId: String = ""
     private var orderId: String = ""
+    private var utmSource: String = ""
 
     private var reviewUserName: String = ""
     lateinit var imgAnimationView: LottieAnimationView
@@ -138,7 +137,7 @@ class CreateReviewFragment : BaseDaggerFragment() {
             DaggerReputationComponent
                     .builder()
                     .reputationModule(ReputationModule())
-                    .appComponent(getComponent(AppComponent::class.java))
+                    .baseAppComponent((requireContext().applicationContext as BaseMainApplication).baseAppComponent)
                     .build()
                     .inject(this)
         }
@@ -156,6 +155,7 @@ class CreateReviewFragment : BaseDaggerFragment() {
             orderId = it.getString(REVIEW_ORDER_ID) ?: ""
             reviewClickAt = it.getInt(REVIEW_CLICK_AT, 0)
             reviewId = it.getString(REVIEW_ID, "").toIntOrNull() ?: 0
+            utmSource = it.getString(UTM_SOURCE, "")
         }
 
         if (reviewClickAt > CreateReviewActivity.DEFAULT_PRODUCT_RATING || reviewClickAt < 0) {
@@ -194,7 +194,7 @@ class CreateReviewFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         reviewUserName = createReviewViewModel.userSessionInterface.name
-        isLowDevice = DeviceChecker.isLowPerformingDevice(context)
+        isLowDevice = DevicePerformanceInfo.isLow(context)
 
         getReviewData()
         anonymous_text.text = generateAnonymousText()
@@ -220,6 +220,7 @@ class CreateReviewFragment : BaseDaggerFragment() {
                     }
                 }
                 generateReviewBackground(position)
+                clearFocusAndHideSoftInput(view)
             }
         })
         animatedReviewPicker.renderInitialReviewWithData(reviewClickAt)
@@ -246,33 +247,38 @@ class CreateReviewFragment : BaseDaggerFragment() {
             if (anonymous_cb.isChecked) {
                 reviewTracker.reviewOnAnonymousClickTracker(orderId, productId.toString(10), false)
             }
+            clearFocusAndHideSoftInput(view)
         }
 
-        edit_text_review.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(text: Editable) {
+        edit_text_review.setOnFocusChangeListener { _, _ ->
+            if(!edit_text_review.isFocused) {
                 reviewTracker.reviewOnMessageChangedTracker(
                         orderId,
                         productId.toString(10),
-                        text.toString().isEmpty(),
+                        edit_text_review.text.toString().isEmpty(),
                         false
                 )
 
-                if (text.toString().isEmpty() && !shouldIncreaseProgressBar) {
+                val editTextReview = edit_text_review.text.toString()
+                if (editTextReview.isEmpty() && !shouldIncreaseProgressBar) {
                     shouldIncreaseProgressBar = true
                     stepper_review.progress = stepper_review.progress - 1
-                } else if (shouldIncreaseProgressBar) {
+                } else if (editTextReview.isNotEmpty() && shouldIncreaseProgressBar) {
                     stepper_review.progress = stepper_review.progress + 1
                     shouldIncreaseProgressBar = false
                 }
             }
+        }
 
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-            }
+        review_container.setOnTouchListener { _, _ ->
+            clearFocusAndHideSoftInput(view)
+            return@setOnTouchListener false
+        }
 
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-            }
-
-        })
+        rv_img_review.setOnTouchListener { _, _ ->
+            clearFocusAndHideSoftInput(view)
+            return@setOnTouchListener false
+        }
 
         rv_img_review?.adapter = imageAdapter
         imageAdapter.setImageReviewData(createReviewViewModel.initImageData())
@@ -286,6 +292,26 @@ class CreateReviewFragment : BaseDaggerFragment() {
         super.onDestroy()
         createReviewViewModel.getReputationDataForm.removeObservers(this)
         createReviewViewModel.getSubmitReviewResponse.removeObservers(this)
+    }
+
+    override fun onAddImageClick() {
+        clearFocusAndHideSoftInput(view)
+        context?.let {
+            val builder = ImagePickerBuilder(getString(R.string.image_picker_title),
+                    intArrayOf(ImagePickerTabTypeDef.TYPE_GALLERY, ImagePickerTabTypeDef.TYPE_CAMERA),
+                    GalleryType.IMAGE_ONLY, ImagePickerBuilder.DEFAULT_MAX_IMAGE_SIZE_IN_KB,
+                    ImagePickerBuilder.DEFAULT_MIN_RESOLUTION, ImageRatioTypeDef.RATIO_1_1, true,
+                    ImagePickerEditorBuilder(
+                            intArrayOf(ImageEditActionTypeDef.ACTION_BRIGHTNESS, ImageEditActionTypeDef.ACTION_CONTRAST,
+                                    ImageEditActionTypeDef.ACTION_CROP, ImageEditActionTypeDef.ACTION_ROTATE),
+                            false, null),
+                    ImagePickerMultipleSelectionBuilder(
+                            selectedImage, null, -1, 5
+                    ))
+
+            val intent = ImagePickerActivity.getIntent(it, builder)
+            startActivityForResult(intent, REQUEST_CODE_IMAGE)
+        }
     }
 
     private fun getReviewData() {
@@ -307,7 +333,7 @@ class CreateReviewFragment : BaseDaggerFragment() {
         )
 
         createReviewViewModel.submitReview(DEFAULT_REVIEW_ID, reviewId.toString(), productId.toString(),
-                shopId, reviewMessage, reviewClickAt.toFloat(), selectedImage, anonymous_cb.isChecked)
+                shopId, reviewMessage, reviewClickAt.toFloat(), selectedImage, anonymous_cb.isChecked, utmSource)
     }
 
     private fun onSuccessGetReviewForm(data: ProductRevGetForm) {
@@ -488,25 +514,6 @@ class CreateReviewFragment : BaseDaggerFragment() {
         return ""
     }
 
-    private fun addImageClick() {
-        context?.let {
-            val builder = ImagePickerBuilder(getString(R.string.image_picker_title),
-                    intArrayOf(ImagePickerTabTypeDef.TYPE_GALLERY, ImagePickerTabTypeDef.TYPE_CAMERA),
-                    GalleryType.IMAGE_ONLY, ImagePickerBuilder.DEFAULT_MAX_IMAGE_SIZE_IN_KB,
-                    ImagePickerBuilder.DEFAULT_MIN_RESOLUTION, ImageRatioTypeDef.RATIO_1_1, true,
-                    ImagePickerEditorBuilder(
-                            intArrayOf(ImageEditActionTypeDef.ACTION_BRIGHTNESS, ImageEditActionTypeDef.ACTION_CONTRAST,
-                                    ImageEditActionTypeDef.ACTION_CROP, ImageEditActionTypeDef.ACTION_ROTATE),
-                            false, null),
-                    ImagePickerMultipleSelectionBuilder(
-                            selectedImage, null, -1, 5
-                    ))
-
-            val intent = ImagePickerActivity.getIntent(it, builder)
-            startActivityForResult(intent, REQUEST_CODE_IMAGE)
-        }
-    }
-
     private fun onSuccessSubmitReview() {
         stopLoading()
         showLayout()
@@ -586,6 +593,12 @@ class CreateReviewFragment : BaseDaggerFragment() {
             }
             finish()
         }
+    }
+
+    private fun clearFocusAndHideSoftInput(view: View?) {
+        edit_text_review.clearFocus()
+        val imm = view?.context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(view.windowToken, 0)
     }
 
     class BackgroundCustomTarget(private val context: Context) : CustomTarget<Bitmap>() {

@@ -21,11 +21,13 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.design.base.BaseToaster;
 import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.design.text.TkpdHintTextInputLayout;
 import com.tokopedia.design.text.watcher.AfterTextWatcher;
 import com.tokopedia.design.utils.StringUtils;
+import com.tokopedia.user.session.UserSession;
 import com.tokopedia.withdraw.R;
 import com.tokopedia.withdraw.WithdrawAnalytics;
 import com.tokopedia.withdraw.constant.WithdrawConstant;
@@ -63,6 +65,11 @@ public class WithdrawPasswordFragment extends BaseDaggerFragment implements With
 
     @Inject
     WithdrawAnalytics analytics;
+
+    @Inject
+    UserSession userSession;
+
+
 
     @Override
     protected void initInjector() {
@@ -122,9 +129,8 @@ public class WithdrawPasswordFragment extends BaseDaggerFragment implements With
         });
 
         forgotPassword.setOnClickListener(v -> {
-            Intent intent = RouteManager.getIntent(Objects.requireNonNull(getActivity()), ApplinkConst.CHANGE_PASSWORD);
-            Bundle bundle = new Bundle();
-            intent.putExtras(bundle);
+            Intent intent = RouteManager.getIntent(Objects.requireNonNull(getActivity()), ApplinkConstInternalGlobal.FORGOT_PASSWORD);
+            intent.putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, userSession.getEmail());
             startActivityForResult(intent, 65);
             analytics.eventClickForgotPassword();
         });

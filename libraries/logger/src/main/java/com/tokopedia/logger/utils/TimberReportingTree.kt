@@ -41,7 +41,7 @@ class TimberReportingTree(private val tags: List<String>) : Timber.DebugTree() {
         tagMaps[messageKey]?.let {
             val priority = it.postPriority
             val classLine = tag ?: ""
-            val processedMessage = getMessage(messageSplit[1], timeStamp, classLine, messageSplit[2])
+            val processedMessage = getMessage(messageSplit[1], timeStamp, classLine, replaceNewline(messageSplit[2]))
             LogManager.log(processedMessage, timeStamp, priority, messageSplit.first())
         }
     }
@@ -68,7 +68,7 @@ class TimberReportingTree(private val tags: List<String>) : Timber.DebugTree() {
                 .append(timeStamp)
                 .append("#")
         stringBuilder.append("time=")
-                .append(getReadableTimeStamp(timeStamp))
+                .append("'${getReadableTimeStamp(timeStamp)}'")
                 .append("#")
         stringBuilder.append("uid=")
                 .append(userId)
@@ -83,10 +83,10 @@ class TimberReportingTree(private val tags: List<String>) : Timber.DebugTree() {
                 .append(Build.VERSION.RELEASE)
                 .append("#")
         stringBuilder.append("device=")
-                .append(Build.MODEL)
+                .append("'${Build.MODEL}'")
                 .append("#")
         stringBuilder.append("cls=")
-                .append(classLine)
+                .append("'${classLine}'")
                 .append("#")
         stringBuilder.append("msg=")
                 .append(message)
@@ -98,6 +98,10 @@ class TimberReportingTree(private val tags: List<String>) : Timber.DebugTree() {
             return PRIORITY_OFFLINE
         }
         return PRIORITY_ONLINE
+    }
+
+    private fun replaceNewline(message: String): String {
+        return message.replace("\n"," ")
     }
 
     private fun populateTagMaps(tags: List<String>?) {

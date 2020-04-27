@@ -1,7 +1,7 @@
 package com.tokopedia.purchase_platform.features.cart.view.mapper
 
 import com.tokopedia.purchase_platform.features.cart.data.model.response.recentview.RecentView
-import com.tokopedia.purchase_platform.features.cart.view.viewmodel.CartRecentViewItemHolderData
+import com.tokopedia.purchase_platform.features.cart.view.uimodel.CartRecentViewItemHolderData
 import javax.inject.Inject
 
 /**

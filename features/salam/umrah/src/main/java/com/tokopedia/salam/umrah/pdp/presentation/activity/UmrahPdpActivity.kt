@@ -32,7 +32,17 @@ class UmrahPdpActivity : UmrahBaseActivity(), HasComponent<UmrahPdpComponent> {
     }
 
     override fun getMenuButton() = R.menu.umrah_base_menu_white
-    override fun getShareLink(): String = getString(R.string.umrah_pdp_link_share,slugName)
+    override fun onClickSalam() {
+
+    }
+
+    override fun onClickHelp() {
+
+    }
+
+    override fun onClickShare() {
+
+    }
 
     private fun getIntentData() {
         val uri = intent.data

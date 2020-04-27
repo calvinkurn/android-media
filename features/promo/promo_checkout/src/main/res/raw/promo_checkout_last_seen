@@ -1,25 +1,8 @@
-query GetPromoSuggestion($serviceID: String!){
-  GetPromoSuggestion(serviceID: $serviceID) {
-    PromoHistory {
-          PromoCode
-          ActiveTimeWindow {
-            ID
-            StartTime
-            EndTime
-            StartDate
-            EndDate
-          }
-          PromoContent {
-            ID
-            Name
-            Public
-            Status
-            BaseCode
-            IsBackdoor
-            PromoType
-            PromoTitle
-            Description
-          }
-        }
+query rechargeLastSeenPromo($categoryIDs: [Int]!){
+  rechargePromoBanner(categoryIDs: $categoryIDs) {
+    id
+    title
+    subtitle
+    promo_code
   }
 }

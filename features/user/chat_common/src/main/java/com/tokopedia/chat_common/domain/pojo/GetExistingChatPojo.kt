@@ -59,6 +59,15 @@ data class Contact(
         @SerializedName("domain")
         val domain: String = "",
         @Expose
+        @SerializedName("isOfficial")
+        val isOfficial: Boolean = false,
+        @Expose
+        @SerializedName("isGold")
+        val isGold: Boolean = false,
+        @Expose
+        @SerializedName("badge")
+        val badge: String = "",
+        @Expose
         @SerializedName("status")
         val status: Status = Status()
 )

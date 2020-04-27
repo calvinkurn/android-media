@@ -1,5 +1,6 @@
 package com.tokopedia.shop.open.view.fragment;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -12,13 +13,17 @@ import androidx.annotation.Nullable;
 
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.core.base.presentation.BaseDaggerFragment;
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.shop.open.data.model.response.isreservedomain.ResponseIsReserveDomain;
 import com.tokopedia.shop.open.di.component.ShopOpenDomainComponent;
 import com.tokopedia.shop.open.util.ShopErrorHandler;
 import com.tokopedia.shop.open.view.activity.ShopOpenDomainActivity;
 import com.tokopedia.shop.open.view.listener.ShopOpenCheckDomainView;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
+
+import javax.inject.Inject;
 
 /**
  * Created by Hendry on 3/17/2017.
@@ -26,14 +31,17 @@ import com.tokopedia.shop.open.view.listener.ShopOpenCheckDomainView;
 
 public class ShopOpenRoutingFragment extends BaseDaggerFragment implements ShopOpenCheckDomainView {
 
-    private TextView tvMessageRetry;
-
     public static ShopOpenRoutingFragment newInstance() {
         return new ShopOpenRoutingFragment();
     }
+    private static int CODE_LOGIN = 1313;
 
+    private TextView tvMessageRetry;
     private View loadingLayout;
     private View errorLayout;
+
+    @Inject
+    UserSessionInterface userSession;
 
     @Override
     protected void initInjector() {
@@ -62,6 +70,22 @@ public class ShopOpenRoutingFragment extends BaseDaggerFragment implements ShopO
     }
 
     @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (getActivity() == null) {
+            return;
+        }
+
+        if (requestCode == CODE_LOGIN) {
+            if (resultCode == Activity.RESULT_OK) {
+                goToShopOpenDomain();
+            }  else {
+                getActivity().finish();
+            }
+        }
+    }
+
+    @Override
     public void onSuccessCheckReserveDomain(ResponseIsReserveDomain responseIsReserveDomain) {
         goToShopOpenDomain();
     }
@@ -86,14 +110,18 @@ public class ShopOpenRoutingFragment extends BaseDaggerFragment implements ShopO
         }
 
         Intent intent;
-        if (SessionHandler.isV4Login(getActivity()) && !SessionHandler.isUserHasShop(getActivity())) {
-            intent = ShopOpenDomainActivity.getIntent(getActivity());
-        } else {
+        if (!userSession.isLoggedIn()) {
+            intent = RouteManager.getIntent(getActivity(), ApplinkConst.LOGIN);
+            startActivityForResult(intent, CODE_LOGIN);
+        } else if (userSession.hasShop()) {
             intent = RouteManager.getIntent(getActivity(), ApplinkConst.HOME);
+            startActivity(intent);
+            getActivity().finish();
+        } else {
+            intent = ShopOpenDomainActivity.getIntent(getActivity());
+            startActivity(intent);
+            getActivity().finish();
         }
-
-        startActivity(intent);
-        getActivity().finish();
     }
 
     @Override

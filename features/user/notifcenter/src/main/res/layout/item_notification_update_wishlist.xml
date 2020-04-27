@@ -108,7 +108,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/pvl_variant"
                 tools:text="This is really long product name that appear on the screen" />
 
-            <com.tokopedia.notifcenter.widget.CampaignLayout
+            <com.tokopedia.notifcenter.widget.CampaignGreenView
                 android:id="@+id/cl_campaign"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -146,11 +146,11 @@
                 android:id="@+id/iv_cart"
                 android:layout_width="@dimen/dp_50"
                 android:layout_height="@dimen/dp_32"
-                android:background="@drawable/bg_rounded_stroke_grey"
+                android:background="@drawable/notifcenter_bg_rounded_stroke_grey"
                 android:padding="8dp"
                 app:layout_constraintBottom_toBottomOf="@+id/iv_thumbnail"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:srcCompat="@drawable/ic_add_to_cart" />
+                app:srcCompat="@drawable/notifcenter_ic_add_to_cart" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

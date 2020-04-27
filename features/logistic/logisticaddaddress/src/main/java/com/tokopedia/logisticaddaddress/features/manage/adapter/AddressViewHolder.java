@@ -15,18 +15,18 @@ import com.tokopedia.unifyprinciples.Typography;
 /**
  * Created by Fajar Ulin Nuha on 15/10/18.
  */
-public class AddressViewHolder extends AbstractViewHolder<AddressViewModel> {
+public class AddressViewHolder extends AbstractViewHolder<AddressUiModel> {
 
     private ManageAddressListener listener;
     private static final int ADDRESS_STATUS_VISIBLE_CODE = 1;
 
     public interface ManageAddressListener {
 
-        void setActionEditButton(AddressViewModel viewModel);
+        void setActionEditButton(AddressUiModel viewModel);
 
-        void setActionDeleteButton(AddressViewModel viewModel);
+        void setActionDeleteButton(AddressUiModel viewModel);
 
-        void setActionDefaultButtonClicked(AddressViewModel viewModel);
+        void setActionDefaultButtonClicked(AddressUiModel viewModel);
 
     }
 
@@ -52,14 +52,14 @@ public class AddressViewHolder extends AbstractViewHolder<AddressViewModel> {
     }
 
     @Override
-    public void bind(AddressViewModel element) {
+    public void bind(AddressUiModel element) {
         setVisibility(element);
         addressName.setText(element.getAddressName());
         addressDetail.setText(element.getAddressFull());
         setListener(element);
     }
 
-    private void setVisibility(AddressViewModel viewModel) {
+    private void setVisibility(AddressUiModel viewModel) {
         if (viewModel.getAddressStatus() == ADDRESS_STATUS_VISIBLE_CODE) {
             defaultBtn.setVisibility(View.VISIBLE);
         } else {
@@ -81,7 +81,7 @@ public class AddressViewHolder extends AbstractViewHolder<AddressViewModel> {
 
     }
 
-    private void setListener(AddressViewModel viewModel) {
+    private void setListener(AddressUiModel viewModel) {
         editBtn.setOnClickListener(view -> listener.setActionEditButton(viewModel));
         deleteBtn.setOnClickListener(view -> listener.setActionDeleteButton(viewModel));
         defaultBtn.setOnClickListener(view -> listener.setActionDefaultButtonClicked(viewModel));

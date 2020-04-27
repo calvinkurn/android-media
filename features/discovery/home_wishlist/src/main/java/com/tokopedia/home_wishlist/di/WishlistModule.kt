@@ -3,11 +3,9 @@ package com.tokopedia.home_wishlist.di
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.GraphqlUseCase
-import com.tokopedia.home_wishlist.R
 import com.tokopedia.home_wishlist.common.WishlistDispatcherProvider
 import com.tokopedia.home_wishlist.common.WishlistProductionDispatcherProvider
 import com.tokopedia.home_wishlist.data.repository.WishlistRepository
@@ -84,20 +82,20 @@ class WishlistModule {
     @Named("recommendationQuery")
     fun provideRecommendationRawQuery(@ApplicationContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources,
-                    R.raw.query_recommendation_widget)
+                    com.tokopedia.recommendation_widget_common.R.raw.query_recommendation_widget)
 
     @Provides
     @WishlistScope
     @Named("singleProductRecommendation")
     fun provideSingleProductRecommendationRawQuery(@ApplicationContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources,
-                    R.raw.query_single_recommendation_widget)
+                    com.tokopedia.recommendation_widget_common.R.raw.query_single_recommendation_widget)
 
 
     @Provides
     @Named("atcMutation")
     fun provideAddToCartMutation(@ApplicationContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources,
-                    R.raw.mutation_add_to_cart)
+                    com.tokopedia.atc_common.R.raw.mutation_add_to_cart)
 
 }

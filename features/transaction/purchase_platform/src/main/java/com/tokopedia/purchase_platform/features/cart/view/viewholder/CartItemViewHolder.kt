@@ -23,7 +23,7 @@ import com.tokopedia.purchase_platform.common.utils.QuantityTextWatcher.TEXTWATC
 import com.tokopedia.purchase_platform.common.utils.QuantityWrapper
 import com.tokopedia.purchase_platform.common.utils.Utils
 import com.tokopedia.purchase_platform.features.cart.view.adapter.CartItemAdapter
-import com.tokopedia.purchase_platform.features.cart.view.viewmodel.CartItemHolderData
+import com.tokopedia.purchase_platform.features.cart.view.uimodel.CartItemHolderData
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifyprinciples.Typography
 import org.apache.commons.lang3.StringUtils

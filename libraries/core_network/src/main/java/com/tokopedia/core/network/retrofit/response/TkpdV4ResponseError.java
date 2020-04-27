@@ -4,7 +4,8 @@ import android.text.TextUtils;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.tokopedia.core.network.retrofit.exception.ResponseV4ErrorException;
+import com.tokopedia.network.data.model.response.ResponseV4ErrorException;
+import com.tokopedia.network.data.model.response.BaseResponseError;
 
 import java.io.IOException;
 import java.util.List;
@@ -27,6 +28,11 @@ public class TkpdV4ResponseError extends BaseResponseError {
     @SerializedName(PARAM_STATUS)
     @Expose
     private String status;
+
+    @Override
+    public String getErrorKey() {
+        return null;
+    }
 
     @Override
     public boolean isResponseErrorValid() {

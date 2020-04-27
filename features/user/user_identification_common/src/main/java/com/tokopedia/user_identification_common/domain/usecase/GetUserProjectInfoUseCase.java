@@ -69,8 +69,12 @@ public class GetUserProjectInfoUseCase {
     }
 
     public static Map<String, Object> getRequestParam() {
+        return getRequestParam(KYCConstant.KYC_PROJECT_ID);
+    }
+
+    public static Map<String, Object> getRequestParam(int projectId) {
         Map<String, Object> requestParams = new HashMap<>();
-        requestParams.put(PROJECT_ID, KYCConstant.KYC_PROJECT_ID);
+        requestParams.put(PROJECT_ID, projectId);
         return requestParams;
     }
 

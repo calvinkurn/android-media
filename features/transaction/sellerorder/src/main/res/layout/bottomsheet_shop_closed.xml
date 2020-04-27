@@ -3,16 +3,27 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_marginStart="@dimen/dp_16"
     android:layout_marginLeft="@dimen/dp_16"
     android:layout_marginEnd="@dimen/dp_16"
     android:layout_marginRight="@dimen/dp_16">
 
+    <com.tokopedia.unifycomponents.ticker.Ticker
+        android:id="@+id/ticker_penalty_shop_closed"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:tickerShapeType="loose"
+        app:tickerType="warning"
+        android:visibility="gone"
+        tools:visibility="visible"/>
+
     <com.tokopedia.unifycomponents.TextFieldUnify
         android:id="@+id/tf_start_shop_closed"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_16"/>
+        android:layout_marginTop="@dimen/dp_16"
+        android:layout_below="@id/ticker_penalty_shop_closed"/>
 
     <com.tokopedia.unifycomponents.TextFieldUnify
         android:id="@+id/tf_end_shop_closed"

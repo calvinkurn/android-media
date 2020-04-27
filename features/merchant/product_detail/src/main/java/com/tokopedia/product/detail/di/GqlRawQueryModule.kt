@@ -3,7 +3,9 @@ package com.tokopedia.product.detail.di
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.atc_common.AtcConstant
 import com.tokopedia.product.detail.R
+import com.tokopedia.purchase_platform.common.constant.CartConstant
 import com.tokopedia.purchase_platform.common.usecase.SubmitHelpTicketUseCase
 import dagger.Module
 import dagger.Provides
@@ -21,6 +23,14 @@ class GqlRawQueryModule {
     @StringKey(RawQueryKeyConstant.QUERY_PRODUCT_INFO)
     fun provideRawProductInfo(@ApplicationContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources, R.raw.gql_get_product_info)
+
+
+    @ProductDetailScope
+    @Provides
+    @IntoMap
+    @StringKey(RawQueryKeyConstant.QUERY_TRADE_IN)
+    fun provideRawTradeIn(@ApplicationContext context: Context): String =
+            GraphqlHelper.loadRawString(context.resources, com.tokopedia.common_tradein.R.raw.gql_validate_tradein)
 
     @ProductDetailScope
     @Provides
@@ -227,6 +237,15 @@ class GqlRawQueryModule {
     fun provideProductCategory(@ApplicationContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources, R.raw.gql_product_catalog)
 
+
+    @ProductDetailScope
+    @Provides
+    @IntoMap
+    @StringKey(RawQueryKeyConstant.QUERY_GET_PDP_LAYOUT)
+    fun provideGetPdpLayout(@ApplicationContext context: Context): String {
+        return GraphqlHelper.loadRawString(context.resources, R.raw.gql_get_pdp_layout)
+    }
+
     @ProductDetailScope
     @Provides
     @Named(SubmitHelpTicketUseCase.QUERY_NAME)
@@ -235,9 +254,8 @@ class GqlRawQueryModule {
 
     @ProductDetailScope
     @Provides
-    @Named(RawQueryKeyConstant.MUTATION_UPDATE_CART_COUNTER)
-    fun provideAddToCartMutation(@ApplicationContext context: Context): String {
+    @Named(AtcConstant.MUTATION_UPDATE_CART_COUNTER)
+    fun provideUpdateCartCounterMutation(@ApplicationContext context: Context): String {
         return GraphqlHelper.loadRawString(context.resources, R.raw.gql_update_cart_counter)
     }
-
 }

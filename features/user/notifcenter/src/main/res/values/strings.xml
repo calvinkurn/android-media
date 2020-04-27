@@ -76,7 +76,7 @@
 
     <string name="title_counter_update_notification">" (%1$s)"</string>
     <string name="title_notification_update">Update</string>
-    <string name="title_notification_activity">Transaksi</string>
+    <string name="title_notification_transaction">Transaksi</string>
     <string name="title_setting">Setting</string>
     <string name="exceed_ninety_nine">99+</string>
 
@@ -98,4 +98,6 @@
     <string name="notif_transaction_waiting_payment">Menunggu Pembayaran</string>
     <string name="title_read_more">Lihat Semua</string>
     <string name="no_notification_update_yet">Belum ada Notification</string>
+    <string name="title_seller_info">Info Penjual</string>
+    <string name="notifcenter_btn_buy">Beli</string>
 </resources>

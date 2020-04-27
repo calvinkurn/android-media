@@ -2,6 +2,7 @@ package com.tokopedia.autocomplete.domain.model;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -23,11 +24,11 @@ public class SearchData {
     public static final String AUTOCOMPLETE_TOP_PROFILE = "top_profile";
 
     @SerializedName("id")
-    private String id;
+    private String id = "";
     @SerializedName("name")
-    private String name;
+    private String name = "";
     @SerializedName("items")
-    private List<SearchItem> items;
+    private List<SearchItem> items = new ArrayList<>();
 
     public String getId() {
         return id;

@@ -10,13 +10,17 @@ import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.tokopedia.abstraction.common.network.constant.ErrorNetMessage
+import androidx.appcompat.widget.AppCompatImageView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
-import com.tokopedia.abstraction.common.utils.view.CommonUtils
+import com.tokopedia.network.constant.ErrorNetMessage
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.promocheckout.R
+import com.tokopedia.promocheckout.analytics.PromoCheckoutAnalytics.Companion.promoCheckoutAnalytics
 import com.tokopedia.promocheckout.common.analytics.FROM_CART
 import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutUtil
 import com.tokopedia.promocheckout.common.domain.CheckPromoCodeException
@@ -30,9 +34,12 @@ import com.tokopedia.promocheckout.detail.view.presenter.CheckPromoCodeDetailExc
 import com.tokopedia.promocheckout.detail.view.presenter.PromoCheckoutDetailContract
 import com.tokopedia.promocheckout.widget.TimerCheckoutWidget
 import com.tokopedia.promocheckout.widget.TimerPromoCheckout
+import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.unifycomponents.UnifyButton
 import kotlinx.android.synthetic.main.fragment_checkout_detail_layout.*
 import kotlinx.android.synthetic.main.include_period_tnc_promo.*
 import kotlinx.android.synthetic.main.include_period_tnc_promo.view.*
+import timber.log.Timber
 import javax.inject.Inject
 
 abstract class BasePromoCheckoutDetailFragment : Fragment(), PromoCheckoutDetailContract.View {
@@ -140,14 +147,14 @@ abstract class BasePromoCheckoutDetailFragment : Fragment(), PromoCheckoutDetail
     }
 
 
-    private fun showTimerView(){
+    private fun showTimerView() {
         view?.timerUsage?.visibility = View.VISIBLE
         view?.titlePeriod?.visibility = View.GONE
         view?.textPeriod?.visibility = View.GONE
 
     }
 
-    private fun hideTimerView(){
+    private fun hideTimerView() {
         view?.timerUsage?.visibility = View.GONE
         view?.titlePeriod?.visibility = View.VISIBLE
         view?.textPeriod?.visibility = View.VISIBLE
@@ -229,13 +236,43 @@ abstract class BasePromoCheckoutDetailFragment : Fragment(), PromoCheckoutDetail
         } else {
             trackingPromoCheckoutUtil.checkoutClickUsePromoCouponFailed()
         }
-
         var message = ErrorHandler.getErrorMessage(activity, e)
         if (e is CheckPromoCodeException || e is MessageErrorException) {
             message = e.message
         }
-        NetworkErrorHelper.showRedCloseSnackbar(activity, message)
-        setDisabledButtonUse()
+        if (message.equals(resources.getString(R.string.promo_phone_verification_message)) || message.equals(R.string.promo_phone_verification_message_v2)) {
+            val variant = RemoteConfigInstance.getInstance().abTestPlatform.getString(AB_TEST_PHONE_VERIFICATION_KEY, AB_TESTING_CTA_VARIANT_A)
+
+            if (variant.isNotEmpty() && variant == AB_TESTING_CTA_VARIANT_A) {
+                buttonUse.setOnClickListener {
+                    openPhoneVerificationBottomSheet()
+                }
+            }
+        } else {
+            NetworkErrorHelper.showRedCloseSnackbar(activity, message)
+            setDisabledButtonUse()
+        }
+    }
+
+    private fun openPhoneVerificationBottomSheet() {
+        val view = LayoutInflater.from(context).inflate(R.layout.promo_phoneverification_bottomsheet, null, false)
+        val closeableBottomSheetDialog = CloseableBottomSheetDialog.createInstanceRounded(context)
+        closeableBottomSheetDialog.setCustomContentView(view, "", false)
+        val btnVerifikasi = view.findViewById<UnifyButton>(R.id.btn_verifikasi)
+        val btnCancel = view.findViewById<AppCompatImageView>(R.id.cancel_verifikasi)
+        btnVerifikasi.setOnClickListener {
+            val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_PHONE)
+            startActivityForResult(intent, REQUEST_CODE_VERIFICATION_PHONE)
+            promoCheckoutAnalytics.clickVerifikasai()
+            closeableBottomSheetDialog.cancel()
+        }
+
+        btnCancel.setOnClickListener {
+            closeableBottomSheetDialog.cancel()
+            promoCheckoutAnalytics.clickCancelVerifikasi()
+        }
+
+        closeableBottomSheetDialog.show()
     }
 
     override fun onClashCheckPromo(clasingInfoDetailUiModel: ClashingInfoDetailUiModel) {
@@ -299,7 +336,7 @@ abstract class BasePromoCheckoutDetailFragment : Fragment(), PromoCheckoutDetail
         try {
             progressDialog?.show()
         } catch (exception: UnsupportedOperationException) {
-            CommonUtils.dumper(exception)
+            Timber.d(exception)
         }
     }
 
@@ -337,7 +374,25 @@ abstract class BasePromoCheckoutDetailFragment : Fragment(), PromoCheckoutDetail
         super.onDestroyView()
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        when (requestCode) {
+            REQUEST_CODE_VERIFICATION_PHONE -> {
+                when (resultCode) {
+                    Activity.RESULT_OK -> {
+                        onClickUse()
+                    }
+                    Activity.RESULT_CANCELED -> {
+                        super.onActivityResult(requestCode, resultCode, data)
+                    }
+                }
+            }
+        }
+    }
+
     companion object {
+        val AB_TESTING_CTA_VARIANT_A = "CTA Phone Verify 2"
+        val AB_TEST_PHONE_VERIFICATION_KEY = "CTA Phone Verify 2"
+        val REQUEST_CODE_VERIFICATION_PHONE = 301
         val EXTRA_KUPON_CODE = "EXTRA_KUPON_CODE"
         val EXTRA_IS_USE = "EXTRA_IS_USE"
         val PAGE_TRACKING = "PAGE_TRACKING"

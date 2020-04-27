@@ -1,6 +1,5 @@
 package com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel;
 
-import com.tokopedia.core.database.model.PagingHandler;
 
 import java.util.List;
 

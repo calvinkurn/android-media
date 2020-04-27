@@ -15,18 +15,21 @@ import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_SHOP_ID
 import com.tokopedia.sellerorder.common.util.SomConsts.VAR_PARAM_LANG
 import com.tokopedia.sellerorder.common.util.SomConsts.VAR_PARAM_ORDERID
 import com.tokopedia.sellerorder.detail.data.model.*
-import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 /**
  * Created by fwidjaja on 2019-09-30.
  */
 class SomDetailViewModel @Inject constructor(dispatcher: CoroutineDispatcher,
-                                            private val graphqlRepository: GraphqlRepository,
+                                             private val graphqlRepository: GraphqlRepository,
                                              private val userSession: UserSessionInterface) : BaseViewModel(dispatcher) {
 
     private val _orderDetailResult = MutableLiveData<Result<SomDetailOrder.Data.GetSomDetail>>()
@@ -49,6 +52,10 @@ class SomDetailViewModel @Inject constructor(dispatcher: CoroutineDispatcher,
     val editRefNumResult: LiveData<Result<SomEditAwbResponse.Data>>
         get() = _editRefNumResult
 
+    private val _setDelivered = MutableLiveData<Result<SetDeliveredResponse>>()
+    val setDelivered: LiveData<Result<SetDeliveredResponse>>
+        get() = _setDelivered
+
     fun loadDetailOrder(detailQuery: String, orderId: String) {
         launch { getDetailOrder(detailQuery, orderId) }
     }
@@ -67,6 +74,25 @@ class SomDetailViewModel @Inject constructor(dispatcher: CoroutineDispatcher,
 
     fun editAwb(queryString: String) {
         launch { doEditAwb(queryString) }
+    }
+
+    fun setDelivered(rawQuery: String, orderId: String, receivedBy: String) {
+        launchCatchError(block = {
+            val param = mapOf("input" to SetDeliveredRequest(orderId, receivedBy))
+            val gqlRequest = GraphqlRequest(rawQuery, SetDeliveredResponse::class.java, param)
+            val gqlResponse = withContext(Dispatchers.IO) {
+                graphqlRepository.getReseponse(listOf(gqlRequest))
+            }
+            val response = gqlResponse.getData<SetDeliveredResponse>(SetDeliveredResponse::class.java)
+            if (response.setDelivered.success == 1) {
+                _setDelivered.postValue(Success(response))
+            } else {
+                _setDelivered.postValue(Fail(Throwable(message = response.setDelivered.message.joinToString())))
+            }
+        }, onError =
+        {
+            _setDelivered.postValue(Fail(it))
+        })
     }
 
     suspend fun getDetailOrder(rawQuery: String, orderId: String) {

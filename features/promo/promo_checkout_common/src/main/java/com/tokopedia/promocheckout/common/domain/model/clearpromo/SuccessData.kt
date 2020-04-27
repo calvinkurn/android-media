@@ -8,8 +8,8 @@ import com.google.gson.annotations.SerializedName
 
 data class SuccessData(
         @SerializedName("Success")
-        val success: Boolean = false,
+        var success: Boolean = false,
 
         @SerializedName("ticker_message")
-        val tickerMessage: String = ""
+        var tickerMessage: String = ""
 )

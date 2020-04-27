@@ -152,6 +152,8 @@ public class DynamicFeedShopAdapter
                         itemClickListener.onShopItemClicked(getAdapterPosition(), data);
                     } else {
                         itemClickListener.onAddFavorite(getAdapterPosition(), data);
+                        btnFollow.setButtonCompatType(ButtonCompat.SECONDARY);
+                        btnFollow.setText(btnFollow.getContext().getString(R.string.topads_visit_shop));
                     }
                 }
             });

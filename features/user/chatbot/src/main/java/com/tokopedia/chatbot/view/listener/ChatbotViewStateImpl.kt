@@ -18,6 +18,7 @@ import com.tokopedia.chat_common.view.listener.TypingListener
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.data.ConnectionDividerViewModel
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionSelectionBubbleViewModel
+import com.tokopedia.chatbot.data.invoice.AttachInvoiceSelectionViewModel
 import com.tokopedia.chatbot.data.quickreply.QuickReplyListViewModel
 import com.tokopedia.chatbot.data.quickreply.QuickReplyViewModel
 import com.tokopedia.chatbot.data.rating.ChatRatingViewModel
@@ -123,6 +124,8 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
     }
 
     override fun onShowInvoiceToChat(generatedInvoice: AttachInvoiceSentViewModel) {
+        if (adapter.dataSize > 0 && adapter.data[0] is AttachInvoiceSelectionViewModel)
+            getAdapter().removeElement(adapter.data[0])
         super.onReceiveMessageEvent(generatedInvoice)
     }
 
@@ -213,6 +216,8 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
     override fun showLiveChatQuickReply(quickReplyList: List<QuickReplyViewModel>) {
         showQuickReply(quickReplyList)
     }
+
+    override fun getInterlocutorName(headerName: CharSequence): CharSequence  = headerName
 
     override fun getRecyclerViewId(): Int {
         return R.id.recycler_view

@@ -1,6 +1,5 @@
 package com.tokopedia.core.base.common.service;
 
-import com.tokopedia.core.base.common.response.GetListFaveShopIdResponse;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 
@@ -19,18 +18,9 @@ import rx.Observable;
 public interface ServiceV4 {
 
     @FormUrlEncoded
-    @POST(TkpdBaseURL.Etc.PATH_GET_LIST_FAVE_SHOP_ID)
-    Observable<Response<GetListFaveShopIdResponse>> getListFaveShopId(
-            @FieldMap Map<String, String> params);
-
-    @FormUrlEncoded
     @POST(TkpdBaseURL.Etc.PATH_GET_WISHLIST)
     Observable<Response<String>> getWishlist(@FieldMap TKPDMapParam<String, String> param);
 
-
-    @FormUrlEncoded
-    @POST(TkpdBaseURL.Etc.PATH_GET_FAVORITE_SHOP)
-    Observable<Response<String>> getFavoriteShop(@FieldMap Map<String, String> params);
 
     @FormUrlEncoded
     @POST(TkpdBaseURL.User.URL_POST_FAVORITE_SHOP)

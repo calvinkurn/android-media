@@ -1,15 +1,19 @@
 package com.tokopedia.topchat.chatlist.widget
 
+import android.graphics.PorterDuff
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.tkpd.library.ui.view.LinearLayoutManager
+import android.widget.RelativeLayout
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration
 import com.tokopedia.design.component.Menus
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.adapter.FilterMenuAdapter
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.toPx
 import kotlinx.android.synthetic.main.fragment_menu_list.view.*
 
 class FilterMenu : BottomSheetUnify() {
@@ -27,6 +31,21 @@ class FilterMenu : BottomSheetUnify() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         initChildLayout()
         return super.onCreateView(inflater, container, savedInstanceState)
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        changeCloseButtonColour()
+    }
+
+    private fun changeCloseButtonColour() {
+        context?.let { ctx ->
+            val color = ContextCompat.getColor(ctx, com.tokopedia.unifyprinciples.R.color.Neutral_N400)
+            bottomSheetClose.drawable?.apply {
+                mutate()
+                setColorFilter(color, PorterDuff.Mode.SRC_ATOP)
+            }
+        }
     }
 
     private fun initChildLayout() {

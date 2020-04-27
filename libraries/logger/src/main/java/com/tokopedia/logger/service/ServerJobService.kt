@@ -7,34 +7,29 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.os.Build
 import com.tokopedia.logger.LogManager
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
+import com.tokopedia.logger.utils.globalScopeLaunch
 
 @TargetApi(Build.VERSION_CODES.LOLLIPOP)
 class ServerJobService : JobService() {
 
+    companion object {
+        var isRunning = false
+    }
+
     override fun onStartJob(params: JobParameters?): Boolean {
-        runBlocking {
-            launch(Dispatchers.IO) {
-                when {
-                    // When there is network connection and there is data in DB then we send logs to server
-                    isNetworkAvailable(application) and (LogManager.getCount() > 0) -> {
-                        LogManager.deleteExpiredLogs()
-                        LogManager.sendLogToServer()
-                        jobFinished(params,false)
-                    }
-                    // When there is data in DB but no network connection, we check this data, if its old we delete it
-                    LogManager.loggerRepository.getCount() > 0 -> {
-                        LogManager.deleteExpiredLogs()
-                        jobFinished(params,false)
-                    }
-                    else -> {
-                        jobFinished(params,false)
-                    }
-                }
+        if(isRunning) return false
+        isRunning = true
+        globalScopeLaunch({
+            LogManager.deleteExpiredLogs()
+            if(isNetworkAvailable(application) and (LogManager.getCount() > 0)) {
+                LogManager.sendLogToServer()
             }
-        }
+        }, {
+            it.printStackTrace()
+        }, {
+            isRunning = false
+            jobFinished(params, false)
+        })
         return false
     }
     override fun onStopJob(params: JobParameters?): Boolean {

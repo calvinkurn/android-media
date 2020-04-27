@@ -1,7 +1,7 @@
 package com.tokopedia.purchase_platform.features.cart.view
 
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.CartItemData
-import com.tokopedia.purchase_platform.features.cart.view.viewmodel.CartShopHolderData
+import com.tokopedia.purchase_platform.features.cart.view.uimodel.CartShopHolderData
 
 /**
  * Created by Irfan Khoirul on 2019-05-29.

@@ -6,7 +6,7 @@ import dagger.Component
 
 @ChatSearchScope
 @Component(
-        modules = [ChatSearchModule::class, ChatSearchViewModelModule::class],
+        modules = [ChatSearchModule::class, ChatSearchViewsModelModule::class],
         dependencies = [BaseAppComponent::class]
 )
 interface ChatSearchComponent {

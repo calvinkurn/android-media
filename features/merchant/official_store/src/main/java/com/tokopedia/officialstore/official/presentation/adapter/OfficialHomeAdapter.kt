@@ -6,7 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.officialstore.common.listener.FeaturedShopListener
 import com.tokopedia.officialstore.official.data.mapper.OfficialHomeMapper
-import com.tokopedia.officialstore.official.presentation.adapter.viewholder.ProductRecommendationViewHolder
+import com.tokopedia.officialstore.official.presentation.adapter.viewholder.OfficialProductRecommendationViewHolder
 import com.tokopedia.officialstore.official.presentation.adapter.viewmodel.OfficialBannerViewModel
 import com.tokopedia.officialstore.official.presentation.adapter.viewmodel.OfficialBenefitViewModel
 import com.tokopedia.officialstore.official.presentation.adapter.viewmodel.OfficialFeaturedShopViewModel
@@ -18,6 +18,7 @@ class OfficialHomeAdapter(adapterTypeFactory: OfficialHomeAdapterTypeFactory):
      * preparing space for banner, benefit, and featuredshop
      */
     fun resetState(shopListener: FeaturedShopListener) {
+        visitables.add(OfficialHomeMapper.BANNER_POSITION, loadingModel)
         visitables.add(OfficialHomeMapper.BANNER_POSITION, OfficialBannerViewModel(mutableListOf(), ""))
         visitables.add(OfficialHomeMapper.BENEFIT_POSITION, OfficialBenefitViewModel(arrayListOf()))
         visitables.add(OfficialHomeMapper.FEATURE_SHOP_POSITION, OfficialFeaturedShopViewModel(arrayListOf(), null, "", shopListener))
@@ -40,6 +41,6 @@ class OfficialHomeAdapter(adapterTypeFactory: OfficialHomeAdapterTypeFactory):
     }
 
     var twoSpanLayout = listOf(
-            ProductRecommendationViewHolder.LAYOUT
+            OfficialProductRecommendationViewHolder.LAYOUT
     )
 }

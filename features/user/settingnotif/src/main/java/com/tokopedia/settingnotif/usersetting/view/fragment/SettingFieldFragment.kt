@@ -15,7 +15,7 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
-import com.tokopedia.abstraction.common.network.constant.ErrorNetMessage.MESSAGE_ERROR_SERVER
+import com.tokopedia.network.constant.ErrorNetMessage.MESSAGE_ERROR_SERVER
 import com.tokopedia.settingnotif.R
 import com.tokopedia.settingnotif.usersetting.di.DaggerUserSettingComponent
 import com.tokopedia.settingnotif.usersetting.di.UserSettingModule
@@ -131,9 +131,11 @@ abstract class SettingFieldFragment : BaseListFragment<Visitable<*>,
     }
 
     protected fun showMessage(@StringRes messageRes: Int) {
-        val message = getString(messageRes)
-        view?.let {
-            Toaster.showNormal(it, message, Snackbar.LENGTH_SHORT)
+        activity?.let {
+            val message = it.getString(messageRes)
+            view?.let { view ->
+                Toaster.showNormal(view, message, Snackbar.LENGTH_SHORT)
+            }
         }
     }
 

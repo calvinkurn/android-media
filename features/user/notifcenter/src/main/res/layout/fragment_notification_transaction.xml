@@ -2,6 +2,7 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -28,5 +29,18 @@
         android:layout_height="match_parent"
         android:visibility="gone"
         tools:visibility="visible"/>
+
+    <com.tokopedia.design.button.BottomActionView
+        android:id="@+id/btnFilter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/dp_18"
+        android:animateLayoutChanges="true"
+        app:bav_1_display="true"
+        app:bav_2_display="false"
+        app:bav_1_icon_display="false"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        app:bav_label_1="@string/mark_all_as_read"/>
 
 </RelativeLayout>

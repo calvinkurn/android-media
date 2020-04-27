@@ -3,8 +3,12 @@ package com.tokopedia.purchase_platform.features.checkout.view.di
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.logisticcart.domain.executor.MainScheduler
+import com.tokopedia.logisticcart.domain.executor.SchedulerProvider
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter
-import com.tokopedia.logisticcart.shipping.usecase.GetCourierRecommendationUseCase
+import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateConverter
+import com.tokopedia.logisticcart.shipping.usecase.GetRatesApiUseCase
+import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
 import com.tokopedia.logisticdata.data.analytics.CodAnalytics
 import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutUtil
 import com.tokopedia.promocheckout.common.di.PromoCheckoutModule
@@ -29,6 +33,7 @@ import com.tokopedia.purchase_platform.features.checkout.view.ShipmentAdapterAct
 import com.tokopedia.purchase_platform.features.checkout.view.ShipmentContract
 import com.tokopedia.purchase_platform.features.checkout.view.ShipmentFragment
 import com.tokopedia.purchase_platform.features.checkout.view.ShipmentPresenter
+import com.tokopedia.purchase_platform.features.checkout.view.converter.ShipmentDataConverter
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
@@ -69,8 +74,9 @@ class CheckoutModule constructor(val shipmentFragment: ShipmentFragment) {
 
     @Provides
     @CheckoutScope
-    fun provideCheckPromoStackingCodeUseCase(@ApplicationContext context: Context): CheckPromoStackingCodeUseCase {
-        return CheckPromoStackingCodeUseCase(context.resources)
+    fun provideCheckPromoStackingCodeUseCase(@ApplicationContext context: Context,
+                                             mapper: CheckPromoStackingCodeMapper): CheckPromoStackingCodeUseCase {
+        return CheckPromoStackingCodeUseCase(context.resources, mapper)
     }
 
     @Provides
@@ -84,6 +90,12 @@ class CheckoutModule constructor(val shipmentFragment: ShipmentFragment) {
     @Named(SubmitHelpTicketUseCase.QUERY_NAME)
     fun provideSubmitHelpTicketUseCaseQuery(@ApplicationContext context: Context): String {
         return GraphqlHelper.loadRawString(context.resources, com.tokopedia.purchase_platform.common.R.raw.submit_help_ticket)
+    }
+
+    @Provides
+    @CheckoutScope
+    fun provideScheduler(): SchedulerProvider {
+        return MainScheduler()
     }
 
 
@@ -100,7 +112,9 @@ class CheckoutModule constructor(val shipmentFragment: ShipmentFragment) {
                                  changeShippingAddressUseCase: ChangeShippingAddressUseCase,
                                  saveShipmentStateUseCase: SaveShipmentStateUseCase,
                                  codCheckoutUseCase: CodCheckoutUseCase,
-                                 getCourierRecommendationUseCase: GetCourierRecommendationUseCase,
+                                 ratesUseCase: GetRatesUseCase,
+                                 ratesApiUseCase: GetRatesApiUseCase,
+                                 stateConverter: RatesResponseStateConverter,
                                  clearCacheAutoApplyStackUseCase: ClearCacheAutoApplyStackUseCase,
                                  submitHelpTicketUseCase: SubmitHelpTicketUseCase,
                                  shippingCourierConverter: ShippingCourierConverter,
@@ -108,16 +122,18 @@ class CheckoutModule constructor(val shipmentFragment: ShipmentFragment) {
                                  analyticsPurchaseProtection: CheckoutAnalyticsPurchaseProtection,
                                  codAnalytics: CodAnalytics,
                                  checkoutAnalytics: CheckoutAnalyticsCourierSelection,
-                                 getInsuranceCartUseCase: GetInsuranceCartUseCase): ShipmentContract.Presenter {
+                                 getInsuranceCartUseCase: GetInsuranceCartUseCase,
+                                 shipmentDataConverter: ShipmentDataConverter): ShipmentContract.Presenter {
         return ShipmentPresenter(checkPromoStackingCodeFinalUseCase,
                 checkPromoStackingCodeUseCase, checkPromoStackingCodeMapper, compositeSubscription,
                 checkoutUseCase, getShipmentAddressFormUseCase,
                 getShipmentAddressFormOneClickShipementUseCase,
                 editAddressUseCase, changeShippingAddressUseCase,
-                saveShipmentStateUseCase, getCourierRecommendationUseCase,
-                codCheckoutUseCase, clearCacheAutoApplyStackUseCase, submitHelpTicketUseCase, shippingCourierConverter,
-                shipmentFragment, userSessionInterface,
-                analyticsPurchaseProtection, codAnalytics, checkoutAnalytics, getInsuranceCartUseCase)
+                saveShipmentStateUseCase,
+                ratesUseCase, ratesApiUseCase,
+                codCheckoutUseCase, clearCacheAutoApplyStackUseCase, submitHelpTicketUseCase,
+                stateConverter, shippingCourierConverter, shipmentFragment, userSessionInterface,
+                analyticsPurchaseProtection, codAnalytics, checkoutAnalytics, getInsuranceCartUseCase,shipmentDataConverter)
     }
 
     @Provides

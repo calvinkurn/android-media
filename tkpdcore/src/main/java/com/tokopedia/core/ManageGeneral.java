@@ -6,13 +6,15 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Intent;
 import android.os.Bundle;
-import com.google.android.material.tabs.TabLayout;
+import android.view.MenuItem;
+
+import androidx.appcompat.widget.Toolbar;
 import androidx.legacy.app.FragmentStatePagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
+import com.google.android.material.tabs.TabLayout;
+import com.tokopedia.abstraction.base.view.activity.BaseActivity;
 import com.tokopedia.core.analytics.AppScreen;
-import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.app.TkpdActivity;
 import com.tokopedia.core.fragment.AboutFragment;
 import com.tokopedia.core.fragment.FragmentSettingPeople;
 import com.tokopedia.core.fragment.SettingsFragment;
@@ -23,6 +25,8 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.core2.R;
 
+import org.jetbrains.annotations.Nullable;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,13 +35,14 @@ import java.util.List;
  */
 @SuppressLint("ValidFragment")
 @Deprecated
-public class ManageGeneral extends TkpdActivity implements NotificationReceivedListener {
+public class ManageGeneral extends BaseActivity implements NotificationReceivedListener {
     private static final String EXTRA_STATE_TAB_POSITION = "EXTRA_STATE_TAB_POSITION";
     public final static int TAB_POSITION_MANAGE_PROFILE = 0;
     public final static int TAB_POSITION_MANAGE_SHOP = 1;
     public final static int TAB_POSITION_MANAGE_APP = 2;
     public final static int TAB_POSITION_ABOUT_US = 3;
 
+    private Toolbar toolbar;
     private ViewPager mViewPager;
     private TabLayout indicator;
 
@@ -55,10 +60,15 @@ public class ManageGeneral extends TkpdActivity implements NotificationReceivedL
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        inflateView(R.layout.activity_manage_general);
+        setContentView(R.layout.activity_manage_general);
 
+        toolbar = findViewById(R.id.toolbar);
         mViewPager = (ViewPager) findViewById(R.id.pager);
         indicator = (TabLayout) findViewById(R.id.indicator);
+
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         String[] content;
         GeneralFragmentAdapter adapter = new GeneralFragmentAdapter(getFragmentManager());
         if (isUserDoesntHaveShop()) {
@@ -87,6 +97,14 @@ public class ManageGeneral extends TkpdActivity implements NotificationReceivedL
         mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(indicator));
         indicator.setOnTabSelectedListener(new GlobalMainTabSelectedListener(mViewPager));
         actionSelectedTabWhenReserve();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            finish();
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private boolean isUserDoesntHaveShop() {
@@ -156,11 +174,6 @@ public class ManageGeneral extends TkpdActivity implements NotificationReceivedL
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-    }
-
-    @Override
-    public int getDrawerPosition() {
-        return TkpdState.DrawerPosition.SETTINGS;
     }
 
 }

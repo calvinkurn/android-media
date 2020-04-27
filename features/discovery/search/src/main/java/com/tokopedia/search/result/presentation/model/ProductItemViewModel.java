@@ -4,7 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
 
-import com.google.android.gms.tagmanager.DataLayer;
+import com.tokopedia.analyticconstant.DataLayer;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.design.utils.CurrencyFormatHelper;
 import com.tokopedia.discovery.common.constants.SearchApiConst;
@@ -17,7 +17,6 @@ import java.util.List;
 public class ProductItemViewModel extends ImpressHolder implements Parcelable, Visitable<ProductListTypeFactory> {
 
     private static final String ACTION_FIELD = "/searchproduct - p$1 - product";
-    public static String imageClick = "/imagesearch - p%s";
 
     private String productID;
     private String warehouseID;
@@ -356,7 +355,7 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
         return typeFactory.type(this);
     }
 
-    public Object getProductAsObjectDataLayer(String userId, String filterSortParams) {
+    public Object getProductAsObjectDataLayer(String userId, String filterSortParams, String searchRef) {
         return DataLayer.mapOf(
                 "name", getProductName(),
                 "id", getProductID(),
@@ -369,7 +368,10 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
                 "userId", userId,
                 "shopId", getShopID(),
                 "dimension61", TextUtils.isEmpty(filterSortParams) ? "none / other" : filterSortParams,
-                "dimension83", isFreeOngkirActive() ? "bebas ongkir" : "none / other"
+                "dimension83", isFreeOngkirActive() ? "bebas ongkir" : "none / other",
+                "dimension87", "search result",
+                "dimension88", "search - product",
+                "dimension90", searchRef
         );
     }
 

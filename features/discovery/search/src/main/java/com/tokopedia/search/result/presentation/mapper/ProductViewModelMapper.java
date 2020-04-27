@@ -1,7 +1,5 @@
 package com.tokopedia.search.result.presentation.mapper;
 
-import android.text.TextUtils;
-
 import com.tokopedia.filter.common.data.DataValue;
 import com.tokopedia.filter.common.data.Filter;
 import com.tokopedia.filter.common.data.Option;
@@ -9,6 +7,7 @@ import com.tokopedia.search.result.domain.model.SearchProductModel;
 import com.tokopedia.search.result.presentation.model.BadgeItemViewModel;
 import com.tokopedia.search.result.presentation.model.FreeOngkirViewModel;
 import com.tokopedia.search.result.presentation.model.GlobalNavViewModel;
+import com.tokopedia.search.result.presentation.model.InspirationCarouselViewModel;
 import com.tokopedia.search.result.presentation.model.LabelGroupViewModel;
 import com.tokopedia.search.result.presentation.model.LabelItemViewModel;
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
@@ -32,13 +31,12 @@ public class ProductViewModelMapper {
         }
         productViewModel.setCpmModel(searchProductModel.getCpmModel());
         if (searchProduct.getRelated() != null &&
-                !TextUtils.isEmpty(searchProduct.getRelated().getRelatedKeyword())) {
+                !textIsEmpty(searchProduct.getRelated().getRelatedKeyword())) {
             productViewModel.setRelatedSearchModel(convertToRelatedSearchModel(searchProduct.getRelated()));
         }
         productViewModel.setProductList(convertToProductItemViewModelList(lastProductItemPositionFromCache, searchProduct.getProducts()));
         productViewModel.setAdsModel(searchProductModel.getTopAdsModel());
         productViewModel.setQuery(searchProduct.getQuery());
-        productViewModel.setShareUrl(searchProduct.getShareUrl());
         productViewModel.setTickerModel(createTickerModel(searchProduct));
         productViewModel.setSuggestionModel(createSuggestionModel(searchProduct));
         productViewModel.setTotalData(searchProduct.getCount());
@@ -57,11 +55,22 @@ public class ProductViewModelMapper {
                     )
             );
         }
+        if (searchProductModel.getSearchInspirationCarousel() != null) {
+            productViewModel
+                    .setInspirationCarouselViewModel(
+                            convertToInspirationCarouselViewModel(searchProductModel.getSearchInspirationCarousel()
+                            )
+                    );
+        }
         productViewModel.setAdditionalParams(searchProduct.getAdditionalParams());
         productViewModel.setAutocompleteApplink(searchProduct.getAutocompleteApplink());
         productViewModel.setDefaultView(searchProduct.getDefaultView());
 
         return productViewModel;
+    }
+
+    private boolean textIsEmpty(String str) {
+        return str == null || str.length() == 0;
     }
 
     private QuickFilterViewModel convertToQuickFilterViewModel(DataValue dynamicFilterModel, String formattedResultCount) {
@@ -99,6 +108,7 @@ public class ProductViewModelMapper {
                 globalNavModel.getData().getBackground(),
                 globalNavModel.getData().getSeeAllApplink(),
                 globalNavModel.getData().getSeeAllUrl(),
+                globalNavModel.getData().getIsShowTopAds(),
                 convertToViewModel(globalNavModel.getData().getGlobalNavItems())
         );
     }
@@ -262,5 +272,57 @@ public class ProductViewModelMapper {
         suggestionViewModel.setSuggestionCurrentKeyword(suggestionModel.getCurrentKeyword());
         suggestionViewModel.setFormattedResultCount(searchProduct.getCountText());
         return suggestionViewModel;
+    }
+
+    private  List<InspirationCarouselViewModel> convertToInspirationCarouselViewModel(SearchProductModel.SearchInspirationCarousel searchInspirationCarousel) {
+        List<InspirationCarouselViewModel> inspirationCarousel = new ArrayList<>();
+
+        for (SearchProductModel.InspirationCarouselData data : searchInspirationCarousel.getData()) {
+            inspirationCarousel.add(new InspirationCarouselViewModel(
+                    data.getTitle(),
+                    data.getType(),
+                    data.getPosition(),
+                    convertToInspirationCarouselOptionViewModel(data.getInspirationCarouselOptions())
+            ));
+        }
+
+        return inspirationCarousel;
+    }
+
+    private  List<InspirationCarouselViewModel.Option> convertToInspirationCarouselOptionViewModel(List<SearchProductModel.InspirationCarouselOption> inspirationCarouselOptions) {
+        List<InspirationCarouselViewModel.Option> options = new ArrayList<>();
+
+        for (SearchProductModel.InspirationCarouselOption opt : inspirationCarouselOptions) {
+            int position = inspirationCarouselOptions.indexOf(opt) + 1;
+            options.add(new InspirationCarouselViewModel.Option(
+                    opt.getTitle(),
+                    opt.getUrl(),
+                    opt.getApplink(),
+                    convertToInspirationCarouselProductViewModel(opt.getInspirationCarouselProducts(), position)
+            ));
+        }
+
+        return options;
+    }
+
+    private  List<InspirationCarouselViewModel.Option.Product> convertToInspirationCarouselProductViewModel(List<SearchProductModel.InspirationCarouselProduct> inspirationCarouselProduct, int position) {
+        List<InspirationCarouselViewModel.Option.Product> products = new ArrayList<>();
+
+        for (SearchProductModel.InspirationCarouselProduct product : inspirationCarouselProduct) {
+            products.add(new InspirationCarouselViewModel.Option.Product(
+                    product.getId(),
+                    product.getName(),
+                    product.getPrice(),
+                    product.getPriceStr(),
+                    product.getImgUrl(),
+                    product.getRating(),
+                    product.countReview(),
+                    product.getUrl(),
+                    product.getApplink(),
+                    position
+            ));
+        }
+
+        return products;
     }
 }

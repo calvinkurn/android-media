@@ -92,17 +92,6 @@
                     app:layout_constraintLeft_toLeftOf="parent"/>
 
                 <ImageView
-                    android:id="@+id/search_image_search_button"
-                    android:layout_width="@dimen/dp_32"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="@+id/searchTextView"
-                    app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/ic_product_discovery_imagesearch_normal_24" />
-
-                <ImageView
                     android:id="@+id/search_home_button"
                     android:layout_width="@dimen/dp_24"
                     android:layout_height="@dimen/dp_24"

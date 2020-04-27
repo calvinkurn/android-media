@@ -4,14 +4,12 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.os.Build;
-import android.os.Bundle;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import com.tokopedia.notifications.common.CMConstant;
 import com.tokopedia.notifications.common.CMEvents;
 import com.tokopedia.notifications.common.CMNotificationUtils;
 import com.tokopedia.notifications.common.IrisAnalyticsEvents;
-import com.tokopedia.notifications.common.PayloadConverter;
 import com.tokopedia.notifications.common.PersistentEvent;
 import com.tokopedia.notifications.model.BaseNotificationModel;
 
@@ -77,6 +75,11 @@ public class CMNotificationFactory {
                 case CMConstant.NotificationType.DELETE_NOTIFICATION:
                     cancelNotification(context, baseNotificationModel.getNotificationId());
                     IrisAnalyticsEvents.INSTANCE.sendPushEvent(context, IrisAnalyticsEvents.PUSH_DELETED, baseNotificationModel);
+                    return null;
+
+                case CMConstant.NotificationType.DROP_NOTIFICATION:
+                    cancelNotification(context, baseNotificationModel.getNotificationId());
+                    IrisAnalyticsEvents.INSTANCE.sendPushEvent(context, IrisAnalyticsEvents.PUSH_CANCELLED, baseNotificationModel);
                     return null;
 
             }

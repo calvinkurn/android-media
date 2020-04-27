@@ -25,6 +25,7 @@
         app:contentInsetStart="0dp" />
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/coordinator_layout_fragment_os"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/white">
@@ -53,8 +54,14 @@
                     app:layout_collapseMode="pin"
                     app:tabIndicatorColor="@color/Purple_P600" />
 
-            </com.google.android.material.appbar.CollapsingToolbarLayout>
+                <include
+                    android:id="@+id/view_category_tab_loading"
+                    layout="@layout/view_official_store_category_loading"
+                    android:visibility="visible"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"  />
 
+            </com.google.android.material.appbar.CollapsingToolbarLayout>
 
         </com.google.android.material.appbar.AppBarLayout>
 

@@ -34,7 +34,7 @@ import com.tokopedia.feedplus.view.fragment.FeedPlusFragment
 import com.tokopedia.feedplus.view.viewmodel.EmptyFeedBeforeLoginModel
 import com.tokopedia.feedplus.view.viewmodel.RetryModel
 import com.tokopedia.feedplus.view.viewmodel.onboarding.OnboardingViewModel
-import com.tokopedia.interest_pick_common.view.adapter.OnboardingAdapter
+import com.tokopedia.interest_pick_common.view.adapter.InterestPickAdapter
 import com.tokopedia.kolcommon.view.listener.KolPostViewHolderListener
 import com.tokopedia.user.session.UserSessionInterface
 
@@ -44,7 +44,7 @@ import com.tokopedia.user.session.UserSessionInterface
 
 class FeedPlusTypeFactoryImpl(context: FeedPlusFragment,
                               private val userSession: UserSessionInterface,
-                              private val interestPickItemListener: OnboardingAdapter.InterestPickItemListener) :
+                              private val interestPickItemListener: InterestPickAdapter.InterestPickItemListener) :
         BaseAdapterTypeFactory(), FeedPlusTypeFactory, DynamicFeedTypeFactory {
 
     private val kolPostListener: KolPostViewHolderListener

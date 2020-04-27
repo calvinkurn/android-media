@@ -14,6 +14,7 @@ import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
@@ -180,6 +181,8 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         initVar(savedInstanceState)
         initView()
         if (userSession.isLoggedIn) {
+            presenter.getFollowersCount(isTypeAffiliate())
+            presenter.invalidateShareOptions()
             if (viewModel.isEditState){
                 presenter.getFeedDetail(viewModel.postId, isTypeAffiliate())
             } else {
@@ -541,6 +544,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         }
         caption.setOnTouchListener { v, event ->
             if (v.id == R.id.caption) {
+                showKeyboard()
                 v.parent.requestDisallowInterceptTouchEvent(true)
                 when (event.action and MotionEvent.ACTION_MASK) {
                     MotionEvent.ACTION_UP -> v.parent.requestDisallowInterceptTouchEvent(false)
@@ -906,6 +910,12 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
                 saveDraftAndSubmit(true)
                 shareDialog.dismiss()
             }
+        }
+    }
+
+    private fun showKeyboard() {
+        activity?.let {
+            (it.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager).toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY)
         }
     }
 }

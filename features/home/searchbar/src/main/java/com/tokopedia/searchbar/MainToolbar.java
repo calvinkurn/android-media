@@ -103,7 +103,6 @@ public class MainToolbar extends Toolbar {
         FirebaseRemoteConfigImpl firebaseRemoteConfig = new FirebaseRemoteConfigImpl(context);
         wishlistNewPage = firebaseRemoteConfig.getBoolean(RemoteConfigKey.ENABLE_NEW_WISHLIST_PAGE, true);
         inflateResource(context);
-        ImageButton btnQrCode = findViewById(R.id.btn_qrcode);
         btnNotification = findViewById(R.id.btn_notification);
         btnInbox = findViewById(R.id.btn_inbox);
         btnWishlist = findViewById(R.id.btn_wishlist);
@@ -124,14 +123,6 @@ public class MainToolbar extends Toolbar {
                 Configuration.SCREENLAYOUT_SIZE_MASK) >=
                 Configuration.SCREENLAYOUT_SIZE_LARGE) {
             editTextSearch.setTextSize(18);
-        }
-
-        if (btnQrCode != null) {
-            btnQrCode.setOnClickListener(v -> {
-                searchBarAnalytics.eventTrackingSqanQr();
-                getContext().startActivity(((SearchBarRouter) this.getContext().getApplicationContext())
-                        .gotoQrScannerPage(false));
-            });
         }
 
         btnWishlist.setOnClickListener(v -> {
@@ -193,5 +184,9 @@ public class MainToolbar extends Toolbar {
 
     public ImageView getBtnWishlist() {
         return btnWishlist;
+    }
+
+    public ImageView getBtnInbox() {
+        return btnInbox;
     }
 }

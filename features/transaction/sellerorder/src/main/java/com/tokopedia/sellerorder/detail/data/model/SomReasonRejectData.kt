@@ -25,6 +25,10 @@ data class SomReasonRejectData (
                 @Expose
                 val reasonText: String = "",
 
+                @SerializedName("reason_ticker")
+                @Expose
+                val reasonTicker: String = "",
+
                 @SerializedName("child")
                 @Expose
                 val listChild: List<Child> = listOf()) {

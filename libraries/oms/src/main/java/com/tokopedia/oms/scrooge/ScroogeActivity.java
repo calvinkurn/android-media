@@ -7,8 +7,6 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.net.http.SslError;
 import android.os.Bundle;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import android.util.Base64;
 import android.view.MenuItem;
 import android.view.View;
@@ -17,15 +15,19 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+
 import com.tokopedia.abstraction.base.view.webview.CommonWebViewClient;
 import com.tokopedia.abstraction.base.view.webview.FilePickerInterface;
-import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.oms.R;
 
 import java.io.ByteArrayOutputStream;
+
+import timber.log.Timber;
 
 public class ScroogeActivity extends AppCompatActivity implements FilePickerInterface {
     //callbacks URL's
@@ -124,7 +126,7 @@ public class ScroogeActivity extends AppCompatActivity implements FilePickerInte
         webview.setWebViewClient(new WebViewClient() {
             public synchronized void onPageStarted(WebView inView, String inUrl, Bitmap inFavicon) {
                 super.onPageStarted(inView, inUrl, inFavicon);
-                CommonUtils.dumper("ScroogeActivity :: onPageStarted url " + inUrl);
+                Timber.d("ScroogeActivity :: onPageStarted url " + inUrl);
 
                 try {
                     setProgressBarIndeterminateVisibility(true);
@@ -136,12 +138,12 @@ public class ScroogeActivity extends AppCompatActivity implements FilePickerInte
 
             public synchronized void onPageFinished(WebView inView, String inUrl) {
                 super.onPageFinished(inView, inUrl);
-                CommonUtils.dumper("ScroogeActivity :: onPageFinished url " + inUrl);
+                Timber.d("ScroogeActivity :: onPageFinished url " + inUrl);
             }
 
             public synchronized void onReceivedError(WebView inView, int iniErrorCode, String inDescription, String inFailingUrl) {
                 super.onReceivedError(inView, iniErrorCode, inDescription, inFailingUrl);
-                CommonUtils.dumper("ScroogeActivity :: Error occured while loading url " + inFailingUrl);
+                Timber.d("ScroogeActivity :: Error occured while loading url " + inFailingUrl);
                 Intent responseIntent = new Intent();
                 responseIntent.putExtra(ScroogePGUtil.RESULT_EXTRA_MSG, inDescription);
                 setResult(ScroogePGUtil.RESULT_CODE_RECIEVED_ERROR, responseIntent);
@@ -149,8 +151,8 @@ public class ScroogeActivity extends AppCompatActivity implements FilePickerInte
             }
 
             public synchronized void onReceivedSslError(WebView inView, SslErrorHandler inHandler, SslError inError) {
-                CommonUtils.dumper("ScroogeActivity :: SSL Error occured " + inError.toString());
-                CommonUtils.dumper("ScroogeActivity :: SSL Handler is " + inHandler);
+                Timber.d("ScroogeActivity :: SSL Error occured " + inError.toString());
+                Timber.d("ScroogeActivity :: SSL Handler is " + inHandler);
                 if (inHandler != null) {
                     inHandler.proceed();
                 }

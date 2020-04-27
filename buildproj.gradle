@@ -4,8 +4,8 @@ allprojects {
         google()
         mavenCentral()
         mavenLocal()
-        maven { url "https://maven.google.com" }
         jcenter()
+        maven { url "https://maven.google.com" }
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         maven { url 'https://maven.fabric.io/public' }
         maven { url 'https://dl.bintray.com/guardian/android' }
@@ -55,6 +55,7 @@ subprojects {
     project.configurations.all {
         resolutionStrategy {
             dependencySubstitution {
+                force "androidx.appcompat:appcompat:${supportLibraryVersion}"
                 substitute module('com.squareup.okhttp3:okhttp') with module(rootProject.ext.networkDependencies.okHttp)
                 substitute module('org.jetbrains.kotlin:kotlin-stdlib') with module(rootProject.ext.supportLibDependencies.kotlinSupport)
                 substitute module('org.jetbrains.kotlin:kotlin-stdlib-common') with module("org.jetbrains.kotlin:kotlin-stdlib-common:${kotlinVersion}")
@@ -79,7 +80,6 @@ subprojects {
                 substitute module('com.google.android.gms:play-services-base') with module("com.google.android.gms:play-services-base:${playServiceBaseVersion}")
                 substitute module('com.google.firebase:firebase-iid') with module("com.google.firebase:firebase-iid:${playServiceFirebaseIidVersion}")
                 substitute module('com.google.android.gms:play-services-measurement-base') with module("com.google.android.gms:play-services-measurement-base:${playServiceMeasurementBase}")
-                substitute module('com.google.guava:guava') with module("com.google.guava:guava:${guavaVersion}")
                 substitute module('com.facebook.soloader:soloader') with module("com.facebook.soloader:soloader:0.8.0")
             }
         }

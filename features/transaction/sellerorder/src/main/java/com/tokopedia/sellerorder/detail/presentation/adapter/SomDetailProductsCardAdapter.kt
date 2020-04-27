@@ -13,7 +13,7 @@ import kotlinx.android.synthetic.main.detail_product_card_item.view.*
 /**
  * Created by fwidjaja on 2019-10-04.
  */
-class SomDetailProductsCardAdapter(private val actionListener: SomDetailAdapter.ActionListener): RecyclerView.Adapter<SomDetailProductsCardAdapter.ViewHolder>() {
+class SomDetailProductsCardAdapter(private val actionListener: SomDetailAdapter.ActionListener?): RecyclerView.Adapter<SomDetailProductsCardAdapter.ViewHolder>() {
     var listProducts = mutableListOf<SomDetailOrder.Data.GetSomDetail.Products>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -26,7 +26,7 @@ class SomDetailProductsCardAdapter(private val actionListener: SomDetailAdapter.
 
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.itemView.setOnClickListener { actionListener.onClickProduct(listProducts[position].id) }
+        holder.itemView.setOnClickListener { actionListener?.onClickProduct(listProducts[position].id) }
         holder.itemView.iv_product.loadImage(listProducts[position].thumbnail)
         holder.itemView.tv_product_name.text = listProducts[position].name
         holder.itemView.tv_product_desc.text = "${listProducts[position].quantity} barang (${listProducts[position].weightText})"

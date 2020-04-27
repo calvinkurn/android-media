@@ -13,7 +13,6 @@ include "features:discovery:carousel_productcard"
 // libraries
 include "libraries:analytics"
 include "libraries:applink"
-include "libraries:cache_api"
 include "libraries:kotlin_extensions"
 include "libraries:remote_config"
 include "libraries:track"

@@ -3,9 +3,7 @@ package com.tokopedia.notifications.image.downloaderFactory
 import android.content.Context
 import android.content.ContextWrapper
 import android.graphics.Bitmap
-import android.util.Log
 import com.bumptech.glide.Glide
-import com.tokopedia.notifications.common.CarouselUtilities
 import com.tokopedia.notifications.model.BaseNotificationModel
 import java.io.File
 import java.io.FileOutputStream
@@ -20,10 +18,12 @@ const val PNG_QUALITY = 95
 
 abstract class NotificationImageDownloader(val baseNotificationModel: BaseNotificationModel) {
 
-    abstract suspend fun downloadImages(context: Context): BaseNotificationModel?
+    abstract suspend fun downloadAndVerify(context: Context): BaseNotificationModel?
 
-    protected fun downloadAndStore(context: Context, url: String, imageSizeAndTimeout: ImageSizeAndTimeout): String? {
-        val bitmap = downloadImage(context, url, imageSizeAndTimeout)
+    protected abstract suspend fun verifyAndUpdate()
+
+    protected fun downloadAndStore(context: Context, url: String?, imageSizeAndTimeout: ImageSizeAndTimeout): String? {
+        val bitmap = url?.let { downloadImage(context, url, imageSizeAndTimeout) }
         return bitmap?.let {
             storeBitmapToFile(context, bitmap)
         }

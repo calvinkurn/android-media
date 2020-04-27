@@ -10,15 +10,14 @@ import androidx.fragment.app.Fragment
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
-import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
 import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.di.BundleModule
 import com.tokopedia.tokopoints.di.DaggerTokopointBundleComponent
-import com.tokopedia.tokopoints.di.TokoPointComponent
 import com.tokopedia.tokopoints.di.TokopointBundleComponent
+import com.tokopedia.tokopoints.di.TokopointsQueryModule
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil
 
 class CouponDetailActivity : BaseSimpleActivity(), HasComponent<TokopointBundleComponent> {
@@ -55,6 +54,7 @@ class CouponDetailActivity : BaseSimpleActivity(), HasComponent<TokopointBundleC
         return DaggerTokopointBundleComponent.builder()
                 .bundleModule(BundleModule(bundle ?: Bundle()))
                 .baseAppComponent((application as BaseMainApplication).baseAppComponent)
+                .tokopointsQueryModule(TokopointsQueryModule(this))
                 .build()
     }
 
@@ -68,17 +68,7 @@ class CouponDetailActivity : BaseSimpleActivity(), HasComponent<TokopointBundleC
                 AnalyticsTrackerUtil.EventKeys.BACK_ARROW_LABEL)
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == REQUEST_CODE_LOGIN && resultCode == Activity.RESULT_OK) {
-            inflateFragment()
-        } else {
-            finish()
-        }
-    }
-
     companion object {
-        private val REQUEST_CODE_LOGIN = 1
 
         fun getCallingIntent(context: Context, extras: Bundle): Intent {
             val intent = Intent(context, CouponDetailActivity::class.java)

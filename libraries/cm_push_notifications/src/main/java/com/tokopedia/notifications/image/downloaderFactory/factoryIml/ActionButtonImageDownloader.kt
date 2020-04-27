@@ -1,6 +1,7 @@
 package com.tokopedia.notifications.image.downloaderFactory.factoryIml
 
 import android.content.Context
+import com.tokopedia.notifications.common.CMConstant
 import com.tokopedia.notifications.image.downloaderFactory.ImageSizeAndTimeout
 import com.tokopedia.notifications.image.downloaderFactory.NotificationImageDownloader
 import com.tokopedia.notifications.model.BaseNotificationModel
@@ -8,23 +9,32 @@ import com.tokopedia.notifications.model.BaseNotificationModel
 class ActionButtonImageDownloader(baseNotificationModel: BaseNotificationModel)
     : NotificationImageDownloader(baseNotificationModel) {
 
-    override suspend fun downloadImages(context: Context): BaseNotificationModel? {
-        baseNotificationModel.media?.let { media ->
-            val filePath = downloadAndStore(context, media.displayUrl, ImageSizeAndTimeout.BIG_IMAGE)
+    override suspend fun verifyAndUpdate() {
+        baseNotificationModel.media?.run {
+            if (mediumQuality.startsWith(CMConstant.HTTP) || mediumQuality.startsWith(CMConstant.WWW))
+                baseNotificationModel.media = null
+        }
+    }
+
+    override suspend fun downloadAndVerify(context: Context): BaseNotificationModel? {
+        baseNotificationModel.media?.run {
+            val filePath = downloadAndStore(context, mediumQuality, ImageSizeAndTimeout.BIG_IMAGE)
             filePath?.let {
-                media.displayUrl = filePath
-                media.mediumQuality = filePath
-                media.highQuality = filePath
-                media.lowQuality = filePath
-                media.fallbackUrl = filePath
+                displayUrl = filePath
+                mediumQuality = filePath
+                highQuality = filePath
+                lowQuality = filePath
+                fallbackUrl = filePath
             }
         }
         baseNotificationModel.actionButton.forEach { actionButton ->
-            actionButton.actionButtonIcon?.let { iconUrl->
+            actionButton.actionButtonIcon?.let { iconUrl ->
                 val filePath = downloadAndStore(context, iconUrl, ImageSizeAndTimeout.ACTION_BUTTON_ICON)
                 actionButton.actionButtonIcon = filePath
             }
         }
+
+        verifyAndUpdate()
         return baseNotificationModel
     }
 }

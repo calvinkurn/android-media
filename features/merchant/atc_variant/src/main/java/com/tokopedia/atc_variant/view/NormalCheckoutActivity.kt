@@ -7,10 +7,12 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.atc_variant.R
+import com.tokopedia.common_tradein.model.TradeInParams
+import com.tokopedia.design.dialog.AccessRequestDialogFragment
+import com.tokopedia.design.dialog.IAccessRequestListener
 import com.tokopedia.purchase_platform.common.constant.ATC_AND_BUY
 import com.tokopedia.purchase_platform.common.constant.ProductAction
-import com.tokopedia.tradein_common.IAccessRequestListener
-import com.tokopedia.common_tradein.model.TradeInParams
+import com.tokopedia.track.TrackApp
 
 /**
  * Created by Irfan Khoirul on 30/11/18.
@@ -94,7 +96,8 @@ open class NormalCheckoutActivity : BaseSimpleActivity(), IAccessRequestListener
                     getString(ApplinkConst.Transaction.EXTRA_REFERENCE),
                     getString(ApplinkConst.Transaction.EXTRA_CUSTOM_EVENT_LABEL),
                     getString(ApplinkConst.Transaction.EXTRA_CUSTOM_EVENT_ACTION),
-                    tradeInParams
+                    tradeInParams,
+                    getString(ApplinkConst.Transaction.EXTRA_LAYOUT_NAME)
             )
             return normalCheckoutFragment!!
         }
@@ -109,13 +112,22 @@ open class NormalCheckoutActivity : BaseSimpleActivity(), IAccessRequestListener
     }
 
     override fun clickAccept() {
+        sendPDPEvent(AccessRequestDialogFragment.STATUS_AGREE)
         normalCheckoutFragment?.run {
             this.goToTradeInHome()
         }
     }
 
     override fun clickDeny() {
+        sendPDPEvent(AccessRequestDialogFragment.STATUS_DENY)
+    }
 
+    private fun sendPDPEvent(label: String) {
+        val trackApp = TrackApp.getInstance()
+        trackApp.gtm.sendGeneralEvent("clickPDP",
+                "product detail page",
+                "click - asking permission trade in",
+                label)
     }
 
 }

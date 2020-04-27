@@ -5,9 +5,6 @@ import androidx.fragment.app.Fragment
 import androidx.core.content.ContextCompat
 import android.widget.FrameLayout
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
-import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.settingnotif.R
 import com.tokopedia.settingnotif.usersetting.view.fragment.SettingTypeFragment
 import com.tokopedia.settingnotif.usersetting.view.viewmodel.SettingType
 
@@ -27,7 +24,7 @@ class UserNotificationSettingActivity : BaseSimpleActivity(),
     }
 
     private fun setupView() {
-        val color = ContextCompat.getColor(this, com.tokopedia.design.R.color.white)
+        val color = ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Neutral_N0)
         fragmentContainer?.setBackgroundColor(color)
     }
 

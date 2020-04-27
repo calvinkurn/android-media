@@ -1,7 +1,6 @@
 package com.tokopedia.gamification.taptap.fragment;
 
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,15 +9,14 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
-import com.tokopedia.applink.RouteManager;
 import com.tokopedia.gamification.R;
-import com.tokopedia.gamification.applink.ApplinkUtil;
 import com.tokopedia.gamification.data.entity.CrackResultEntity;
 import com.tokopedia.gamification.taptap.activity.TapTapTokenActivity;
 import com.tokopedia.gamification.taptap.compoundview.WidgetSummaryTapTap;
 import com.tokopedia.gamification.taptap.data.entiity.RewardButton;
 import com.tokopedia.gamification.taptap.database.GamificationDatabaseWrapper;
 import com.tokopedia.gamification.taptap.database.GamificationDbCallback;
+import com.tokopedia.promogamification.common.applink.ApplinkUtil;
 
 import java.util.List;
 
@@ -111,14 +109,7 @@ public class TapTapSummaryDialogFragment extends DialogFragment implements Gamif
 
     @Override
     public void navigateToActivity(String applink, String url) {
-        if (!TextUtils.isEmpty(applink)) {
-            boolean isSupported = RouteManager.route(getActivity(), applink);
-            if (!isSupported) {
-                ApplinkUtil.navigateToAssociatedPage(getActivity(), applink, url, TapTapTokenActivity.class);
-            }
-        } else {
-            ApplinkUtil.navigateToAssociatedPage(getActivity(), applink, url, TapTapTokenActivity.class);
-        }
+        ApplinkUtil.navigateToAssociatedPage(getActivity(), applink, url, TapTapTokenActivity.class);
     }
 
     @Override

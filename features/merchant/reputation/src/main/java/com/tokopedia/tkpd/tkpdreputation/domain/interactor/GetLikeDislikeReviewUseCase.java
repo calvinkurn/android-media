@@ -1,12 +1,9 @@
 package com.tokopedia.tkpd.tkpdreputation.domain.interactor;
 
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.domain.UseCase;
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.tkpd.tkpdreputation.domain.model.GetLikeDislikeReviewDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.repository.ReputationRepository;
-
+import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.usecase.UseCase;
 import rx.Observable;
 
 /**
@@ -18,13 +15,11 @@ public class GetLikeDislikeReviewUseCase extends UseCase<GetLikeDislikeReviewDom
     private static final String PARAM_REVIEW_IDS = "review_ids";
     private static final String PARAM_USER_ID = "user_id";
 
-    ReputationRepository reputationRepository;
+    private final ReputationRepository reputationRepository;
 
 
-    public GetLikeDislikeReviewUseCase(ThreadExecutor threadExecutor,
-                                       PostExecutionThread postExecutionThread,
-                                       ReputationRepository reputationRepository) {
-        super(threadExecutor, postExecutionThread);
+    public GetLikeDislikeReviewUseCase(ReputationRepository reputationRepository) {
+        super();
         this.reputationRepository = reputationRepository;
     }
 
@@ -39,4 +34,5 @@ public class GetLikeDislikeReviewUseCase extends UseCase<GetLikeDislikeReviewDom
         params.putString(PARAM_USER_ID, userId);
         return params;
     }
+
 }

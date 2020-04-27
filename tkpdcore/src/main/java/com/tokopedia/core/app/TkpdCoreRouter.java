@@ -85,8 +85,6 @@ public interface TkpdCoreRouter {
 
     Intent getActivitySellingTransactionOpportunity(Context context, String query);
 
-    Intent getHomeHotlistIntent(Context context);
-
     Intent getInboxReputationIntent(Context context);
 
     /**
@@ -120,8 +118,6 @@ public interface TkpdCoreRouter {
     Intent getTopProfileIntent(Context context, String userId);
 
     Intent getGroupChatIntent(Context context, String channelUrl);
-
-    Intent getInboxChannelsIntent(Context context);
 
     Intent getInboxTalkCallingIntent(Context context);
 

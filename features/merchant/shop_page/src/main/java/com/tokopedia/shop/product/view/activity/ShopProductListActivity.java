@@ -4,32 +4,41 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.EditText;
+
 import androidx.fragment.app.Fragment;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
-import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.applink.ApplinkConst;
-import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.cachemanager.CacheManager;
 import com.tokopedia.cachemanager.SaveInstanceCacheManager;
 import com.tokopedia.design.text.SearchInputView;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.shop.R;
 import com.tokopedia.shop.ShopComponentInstance;
-import com.tokopedia.shop.analytic.ShopPageTrackingBuyer;
+import com.tokopedia.shop.analytic.OldShopPageTrackingBuyer;
+import com.tokopedia.shop.common.config.ShopPageConfig;
 import com.tokopedia.shop.common.constant.ShopParamConstant;
 import com.tokopedia.shop.common.di.component.ShopComponent;
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo;
-import com.tokopedia.shop.page.view.activity.ShopPageActivity;
+import com.tokopedia.shop.newproduct.view.fragment.ShopPageProductListResultFragment;
+import com.tokopedia.shop.oldpage.view.activity.ShopPageActivity;
 import com.tokopedia.shop.product.view.fragment.ShopProductListFragment;
+import com.tokopedia.shop.product.view.listener.OnShopProductListFragmentListener;
 import com.tokopedia.shop.search.view.activity.ShopSearchProductActivity;
+import com.tokopedia.trackingoptimizer.TrackingQueue;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.TimeUnit;
 
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SCREEN_SHOP_PAGE;
+import static com.tokopedia.shop.analytic.OldShopPageTrackingConstant.SCREEN_SHOP_PAGE;
 
 /**
  * Created by nathan on 2/15/18.
@@ -37,45 +46,52 @@ import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SCREEN_SHOP_P
 
 public class ShopProductListActivity extends BaseSimpleActivity
         implements HasComponent<ShopComponent>,
-        ShopProductListFragment.OnShopProductListFragmentListener,
-        ShopProductListFragment.OnSuccessGetShopInfoListener,
-        ShopProductListFragment.OnInitTrackingListener {
+        OnShopProductListFragmentListener,
+        ShopPageProductListResultFragment.ShopPageProductListResultFragmentListener {
 
     public static final String SAVED_KEYWORD = "svd_keyword";
 
     private ShopComponent component;
     private String shopId;
+    private String shopRef = "";
 
     // this field only used first time for new fragment
     private String keyword = "";
     private String etalaseId;
     private String sort;
     private String attribution;
+    private Boolean isNeedToReloadData = false;
 
     private SearchInputView searchInputView;
     private ShopInfo shopInfo;
-    private ShopPageTrackingBuyer shopPageTracking;
+    private OldShopPageTrackingBuyer shopPageTracking;
+    private RemoteConfig remoteConfig;
+    private EditText editTextSearch;
+    private View imageViewSortIcon;
+    private View textViewCancel;
 
     public static Intent createIntent(Context context, String shopId, String keyword,
-                                      String etalaseId, String attribution, String sortId) {
-        Intent intent = createIntent(context, shopId, keyword, etalaseId, attribution);
+                                      String etalaseId, String attribution, String sortId, String shopRef) {
+        Intent intent = createIntent(context, shopId, keyword, etalaseId, attribution, shopRef);
         intent.putExtra(ShopParamConstant.EXTRA_SORT_ID, sortId);
         return intent;
     }
 
     public static Intent createIntent(Context context, String shopId, String keyword,
-                                      String etalaseId, String attribution) {
+                                      String etalaseId, String attribution, String shopRef) {
         Intent intent = new Intent(context, ShopProductListActivity.class);
         intent.putExtra(ShopParamConstant.EXTRA_SHOP_ID, shopId);
         intent.putExtra(ShopParamConstant.EXTRA_PRODUCT_KEYWORD, keyword);
         intent.putExtra(ShopParamConstant.EXTRA_ETALASE_ID, etalaseId);
         intent.putExtra(ShopParamConstant.EXTRA_ATTRIBUTION, attribution);
+        intent.putExtra(ShopParamConstant.EXTRA_SHOP_REF, shopRef);
         return intent;
     }
 
-    public static Intent createIntent(Context context, String shopId) {
+    public static Intent createIntent(Context context, String shopId, String shopRef) {
         Intent intent = new Intent(context, ShopProductListActivity.class);
         intent.putExtra(ShopParamConstant.EXTRA_SHOP_ID, shopId);
+        intent.putExtra(ShopParamConstant.EXTRA_SHOP_REF, shopRef);
         return intent;
     }
 
@@ -86,7 +102,9 @@ public class ShopProductListActivity extends BaseSimpleActivity
                 .setData(uri.build())
                 .putExtra(ShopParamConstant.EXTRA_SHOP_ID, extras.getString(ShopParamConstant.KEY_SHOP_ID))
                 .putExtra(ShopParamConstant.EXTRA_ATTRIBUTION, extras.getString(ShopPageActivity.APP_LINK_EXTRA_SHOP_ATTRIBUTION, ""))
-                .putExtra(ShopParamConstant.EXTRA_ETALASE_ID, extras.getString(ShopParamConstant.KEY_ETALASE_ID));
+                .putExtra(ShopParamConstant.EXTRA_ETALASE_ID, extras.getString(ShopParamConstant.KEY_ETALASE_ID))
+                .putExtra(ShopParamConstant.EXTRA_IS_NEED_TO_RELOAD_DATA, extras.getBoolean(ShopParamConstant.KEY_RELOAD_STATE))
+                .putExtra(ShopParamConstant.EXTRA_SHOP_REF, extras.getString(ShopParamConstant.KEY_SHOP_REF));
     }
 
     @DeepLink(ApplinkConst.SHOP_ETALASE_WITH_KEYWORD_AND_SORT)
@@ -98,45 +116,87 @@ public class ShopProductListActivity extends BaseSimpleActivity
                 .putExtra(ShopParamConstant.EXTRA_ATTRIBUTION, extras.getString(ShopPageActivity.APP_LINK_EXTRA_SHOP_ATTRIBUTION, ""))
                 .putExtra(ShopParamConstant.EXTRA_ETALASE_ID, extras.getString(ShopParamConstant.KEY_ETALASE_ID))
                 .putExtra(ShopParamConstant.EXTRA_PRODUCT_KEYWORD, extras.getString(ShopParamConstant.KEY_KEYWORD))
-                .putExtra(ShopParamConstant.EXTRA_SORT_ID, extras.getString(ShopParamConstant.KEY_SORT));
+                .putExtra(ShopParamConstant.EXTRA_SORT_ID, extras.getString(ShopParamConstant.KEY_SORT))
+                .putExtra(ShopParamConstant.EXTRA_SHOP_REF, extras.getString(ShopParamConstant.KEY_SHOP_REF));
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        remoteConfig = new FirebaseRemoteConfigImpl(this);
         shopId = getIntent().getStringExtra(ShopParamConstant.EXTRA_SHOP_ID);
+        shopRef = getIntent().getStringExtra(ShopParamConstant.EXTRA_SHOP_REF);
         etalaseId = getIntent().getStringExtra(ShopParamConstant.EXTRA_ETALASE_ID);
-        sort = getIntent().getStringExtra(ShopParamConstant.EXTRA_SORT_ID);
+        sort = getIntent().getStringExtra(ShopParamConstant.EXTRA_SORT_ID) == null ? "" : getIntent().getStringExtra(ShopParamConstant.EXTRA_SORT_ID);
         attribution = getIntent().getStringExtra(ShopParamConstant.EXTRA_ATTRIBUTION);
+        isNeedToReloadData = getIntent().getBooleanExtra(ShopParamConstant.EXTRA_IS_NEED_TO_RELOAD_DATA, false);
         if (savedInstanceState == null) {
             keyword = getIntent().getStringExtra(ShopParamConstant.EXTRA_PRODUCT_KEYWORD);
             if (null == keyword) {
                 keyword = "";
             }
         } else {
-            keyword = savedInstanceState.getString(SAVED_KEYWORD,"");
+            keyword = savedInstanceState.getString(SAVED_KEYWORD, "");
         }
-
+        if (shopRef == null) {
+            shopRef = "";
+        }
+        shopPageTracking = new OldShopPageTrackingBuyer(new TrackingQueue(this));
         super.onCreate(savedInstanceState);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
         initSearchInputView();
         findViewById(R.id.mainLayout).requestFocus();
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        shopPageTracking.sendAllTrackingQueue();
+    }
+
     private void initSearchInputView() {
-        searchInputView = findViewById(R.id.searchInputView);
-        searchInputView.getSearchTextView().setText(keyword);
-        searchInputView.getSearchTextView().setMovementMethod(null);
-        searchInputView.getSearchTextView().setKeyListener(null);
-        searchInputView.setOnClickListener(view -> {
-            if (null != shopPageTracking)
-                shopPageTracking.clickSearchBox(SCREEN_SHOP_PAGE);
-            if (null != shopInfo) {
-                String cacheManagerId = saveShopInfoModelToCacheManager(shopInfo);
-                if (null != cacheManagerId) {
-                    redirectToShopSearchProduct(cacheManagerId);
+        if (isNewShopPageEnabled()) {
+            editTextSearch = findViewById(R.id.editTextSearchProduct);
+            imageViewSortIcon = findViewById(R.id.image_view_sort);
+            textViewCancel = findViewById(R.id.text_view_cancel);
+            editTextSearch.setText(keyword);
+            editTextSearch.setKeyListener(null);
+            editTextSearch.setMovementMethod(null);
+            editTextSearch.setOnClickListener(view -> {
+                if (null != shopPageTracking)
+                    shopPageTracking.clickSearchBox(SCREEN_SHOP_PAGE);
+                if (null != shopInfo) {
+                    String cacheManagerId = saveShopInfoModelToCacheManager(shopInfo);
+                    if (null != cacheManagerId) {
+                        redirectToShopSearchProduct(cacheManagerId);
+                    }
                 }
-            }
-        });
+            });
+            textViewCancel.setOnClickListener(view -> {
+                finish();
+            });
+            imageViewSortIcon.setOnClickListener(view -> {
+                if (shopInfo != null) {
+                    Fragment fragmentShopPageProductListResultFragment = getSupportFragmentManager().findFragmentByTag(getTagFragment());
+                    if (fragmentShopPageProductListResultFragment instanceof ShopPageProductListResultFragment) {
+                        ((ShopPageProductListResultFragment) fragmentShopPageProductListResultFragment).clickSortButton();
+                    }
+                }
+            });
+        } else {
+            searchInputView = findViewById(R.id.searchInputView);
+            searchInputView.getSearchTextView().setText(keyword);
+            searchInputView.getSearchTextView().setMovementMethod(null);
+            searchInputView.getSearchTextView().setKeyListener(null);
+            searchInputView.setOnClickListener(view -> {
+                if (null != shopPageTracking)
+                    shopPageTracking.clickSearchBox(SCREEN_SHOP_PAGE);
+                if (null != shopInfo) {
+                    String cacheManagerId = saveShopInfoModelToCacheManager(shopInfo);
+                    if (null != cacheManagerId) {
+                        redirectToShopSearchProduct(cacheManagerId);
+                    }
+                }
+            });
+        }
     }
 
     private void redirectToShopSearchProduct(String cacheManagerId) {
@@ -144,7 +204,9 @@ public class ShopProductListActivity extends BaseSimpleActivity
                 this,
                 keyword,
                 cacheManagerId,
-                attribution
+                attribution,
+                sort,
+                shopRef
         ));
     }
 
@@ -156,7 +218,12 @@ public class ShopProductListActivity extends BaseSimpleActivity
 
     @Override
     protected Fragment getNewFragment() {
-        return ShopProductListFragment.createInstance(shopId, keyword, etalaseId, sort, attribution);
+        if (isNewShopPageEnabled()) {
+            return ShopPageProductListResultFragment.createInstance(shopId, shopRef,
+                    keyword, etalaseId, sort, attribution, isNeedToReloadData);
+        } else {
+            return ShopProductListFragment.createInstance(shopId, shopRef, keyword, etalaseId, sort, attribution);
+        }
     }
 
     @Override
@@ -169,20 +236,39 @@ public class ShopProductListActivity extends BaseSimpleActivity
 
     @Override
     public void updateUIByShopName(String shopName) {
-        searchInputView.setSearchHint(getString(R.string.shop_product_search_hint_2,
-                MethodChecker.fromHtml(shopName)));
+        if (isNewShopPageEnabled()) {
+            if (null != editTextSearch)
+                editTextSearch.setHint(getString(R.string.shop_product_search_hint_2,
+                        MethodChecker.fromHtml(shopName)));
+        } else {
+            if (null != searchInputView)
+                searchInputView.setSearchHint(getString(R.string.shop_product_search_hint_2,
+                        MethodChecker.fromHtml(shopName)));
+        }
     }
 
 
     @Override
     public void updateUIByEtalaseName(String etalaseName) {
-        searchInputView.setSearchHint(getString(R.string.shop_product_search_hint_3,
-                MethodChecker.fromHtml(etalaseName)));
+        if (isNewShopPageEnabled()) {
+            if (null != editTextSearch) {
+                editTextSearch.setHint(getString(R.string.shop_product_search_hint_3,
+                        MethodChecker.fromHtml(etalaseName)));
+            }
+        } else {
+            if (null != searchInputView)
+                searchInputView.setSearchHint(getString(R.string.shop_product_search_hint_3,
+                        MethodChecker.fromHtml(etalaseName)));
+
+        }
     }
 
     @Override
     protected int getLayoutRes() {
-        return R.layout.activity_shop_product_list;
+        if (isNewShopPageEnabled())
+            return R.layout.activity_new_shop_product_list_result;
+        else
+            return R.layout.activity_shop_product_list;
     }
 
     @Override
@@ -203,16 +289,21 @@ public class ShopProductListActivity extends BaseSimpleActivity
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putString(SAVED_KEYWORD, searchInputView.getSearchText());
+        outState.putString(SAVED_KEYWORD, keyword);
     }
 
     @Override
-    public void updateShopInfo(ShopInfo shopInfo) {
+    public void updateShopInfo(@NotNull ShopInfo shopInfo) {
         this.shopInfo = shopInfo;
     }
 
+    private boolean isNewShopPageEnabled() {
+        ShopPageConfig shopPageConfig = new ShopPageConfig(this);
+        return shopPageConfig.isNewShopPageEnabled();
+    }
+
     @Override
-    public void updateShopPageTracking(ShopPageTrackingBuyer shopPageTracking) {
-        this.shopPageTracking = shopPageTracking;
+    public void onSortValueUpdated(@NotNull String sortValue) {
+        this.sort = sortValue;
     }
 }

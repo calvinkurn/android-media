@@ -23,6 +23,7 @@ import com.tokopedia.abstraction.common.utils.DisplayMetricUtils;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.component.badge.BadgeView;
+import com.tokopedia.home.account.AccountConstants;
 import com.tokopedia.home.account.AccountHomeRouter;
 import com.tokopedia.home.account.R;
 import com.tokopedia.home.account.analytics.AccountAnalytics;
@@ -46,6 +47,8 @@ import javax.inject.Inject;
 public class AccountHomeFragment extends TkpdBaseV4Fragment implements
         AccountHome.View, AllNotificationListener, FragmentListener {
 
+    public static final int SELLER_TAB_INDEX = 1;
+
     @Inject
     AccountHome.Presenter presenter;
     private TabLayout tabLayout;
@@ -61,8 +64,10 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements
 
     private AccountAnalytics accountAnalytics;
 
-    public static Fragment newInstance() {
-        return new AccountHomeFragment();
+    public static Fragment newInstance(Bundle extras) {
+        Fragment fragment = new AccountHomeFragment();
+        fragment.setArguments(extras);
+        return fragment;
     }
 
     @Override
@@ -83,7 +88,13 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
         setPage();
+
+        if (getArguments() != null && getArguments().containsKey(AccountConstants.ACCOUNT_TAB)) {
+            String param = getArguments().getString(AccountConstants.ACCOUNT_TAB);
+            presenter.openTabByParam(param);
+        }
     }
 
     @Override
@@ -114,6 +125,11 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements
 
             adapter.setItems(fragmentItems);
         }
+    }
+
+    @Override
+    public void openSellerTab() {
+        viewPager.setCurrentItem(SELLER_TAB_INDEX);
     }
 
     @Override
@@ -157,7 +173,7 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements
 
         ImageButton menuSettings = toolbar.findViewById(R.id.action_settings);
 
-        menuSettings.setOnClickListener(v -> startActivity(GeneralSettingActivity.createIntent
+        menuSettings.setOnClickListener(v -> startActivity(GeneralSettingActivity.Companion.createIntent
                 (getActivity())));
         menuNotification.setOnClickListener(v -> {
             accountAnalytics.eventTrackingNotifCenter();

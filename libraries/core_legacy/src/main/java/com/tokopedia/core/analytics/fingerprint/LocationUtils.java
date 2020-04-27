@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
@@ -18,9 +19,10 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
-import com.tkpd.library.utils.legacy.CommonUtils;
 import com.tokopedia.core.analytics.fingerprint.domain.usecase.CacheGetFingerprintUseCase;
 import com.tokopedia.core.deprecated.LocalCacheHandler;
+
+import timber.log.Timber;
 
 import static com.tokopedia.core.analytics.fingerprint.LocationCache.DEFAULT_UPDATE_INTERVAL_IN_MILLISECONDS;
 import static com.tokopedia.core.analytics.fingerprint.LocationCache.FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS;
@@ -86,7 +88,7 @@ public class LocationUtils implements LocationListener, GoogleApiClient.Connecti
                     if (location != null) {
                         new LocationCache(context).saveLocation(context, location);
                     } else {
-                        CommonUtils.dumper("location permission not granted");
+                        Timber.d("location permission not granted");
                     }
                 }
             }
@@ -109,10 +111,10 @@ public class LocationUtils implements LocationListener, GoogleApiClient.Connecti
         int resultCode = availability.isGooglePlayServicesAvailable(context);
 
         if (ConnectionResult.SUCCESS == resultCode) {
-            CommonUtils.dumper("Google play services available");
+            Timber.d("Google play services available");
             return true;
         } else {
-            CommonUtils.dumper("Google play services unavailable");
+            Timber.d("Google play services unavailable");
             return false;
         }
     }

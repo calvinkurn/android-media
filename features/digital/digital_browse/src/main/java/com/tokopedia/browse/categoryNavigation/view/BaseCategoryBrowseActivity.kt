@@ -20,8 +20,6 @@ import com.tokopedia.browse.categoryNavigation.analytics.CategoryAnalytics
 import com.tokopedia.browse.categoryNavigation.fragments.CategoryLevelTwoFragment
 import com.tokopedia.browse.categoryNavigation.fragments.CategorylevelOneFragment
 import com.tokopedia.browse.categoryNavigation.fragments.Listener
-import com.tokopedia.browse.homepage.presentation.activity.DigitalBrowseHomeActivity
-import com.tokopedia.navigation_common.category.CategoryNavigationConfig
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import kotlinx.android.synthetic.main.activity_category_browse.*
 import kotlinx.android.synthetic.main.activity_category_browse.empty_view
@@ -40,10 +38,11 @@ open class BaseCategoryBrowseActivity : BaseSimpleActivity(), CategoryChangeList
     private var deepLinkCategoryName: String? = null
 
     private var TOOLBAR_NAME = "Belanja"
-    val EXTRA_CATEGORY_NAME = "CATEGORY_NAME"
 
 
     companion object {
+        private const val EXTRA_CATEGORY_NAME = "CATEGORY_NAME"
+
         @JvmStatic
         fun newIntent(context: Context, categoryName: String): Intent {
             val intent = Intent(context, BaseCategoryBrowseActivity::class.java)
@@ -52,7 +51,6 @@ open class BaseCategoryBrowseActivity : BaseSimpleActivity(), CategoryChangeList
             intent.putExtras(bundle)
             return intent
         }
-        val EXTRA_CATEGORY_NAME = "CATEGORY_NAME"
 
         @JvmStatic
         fun newIntent(context: Context): Intent {
@@ -60,35 +58,26 @@ open class BaseCategoryBrowseActivity : BaseSimpleActivity(), CategoryChangeList
         }
     }
 
+    override fun getScreenName() = getString(R.string.belanja_screen_name)
+
     open fun getCategoryLaunchSource(): String {
         return "Belanja/Category"
     }
 
 
     object DeepLinkIntents {
-        val EXTRA_CATEGORY_NAME = "CATEGORY_NAME"
-        val EXTRA_TYPE = "type"
-        val TYPE_BELANJA = "1"
         lateinit var extras: Bundle
-
         @DeepLink(ApplinkConst.CATEGORY_BELANJA)
         @JvmStatic
         fun getCategoryBrowseIntent(context: Context, bundle: Bundle): Intent {
             extras = bundle
-            return CategoryNavigationConfig.updateCategoryConfig(context, ::runNewBelanja, ::runOldBelanja)
+            return openBelanjaActivity(context)
         }
 
-        fun runNewBelanja(context: Context): Intent {
+        private fun openBelanjaActivity(context: Context): Intent {
             val deepLinkCategoryName = extras.getString(EXTRA_CATEGORY_NAME, "0")
             return newIntent(context, deepLinkCategoryName)
         }
-
-        fun runOldBelanja(context: Context): Intent {
-            val intent = Intent(context, DigitalBrowseHomeActivity::class.java)
-            intent.putExtra(EXTRA_TYPE, TYPE_BELANJA)
-            return intent
-        }
-
     }
 
 
@@ -98,8 +87,11 @@ open class BaseCategoryBrowseActivity : BaseSimpleActivity(), CategoryChangeList
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        if (intent != null && intent.extras != null && intent.extras.containsKey(EXTRA_CATEGORY_NAME)) {
-            deepLinkCategoryName = intent?.extras?.getString(EXTRA_CATEGORY_NAME)
+
+        intent?.extras?.let {
+            if (it.containsKey(EXTRA_CATEGORY_NAME)) {
+                deepLinkCategoryName = intent?.extras?.getString(EXTRA_CATEGORY_NAME)
+            }
         }
         super.onCreate(savedInstanceState)
         setupToolbar(TOOLBAR_NAME)
@@ -112,16 +104,18 @@ open class BaseCategoryBrowseActivity : BaseSimpleActivity(), CategoryChangeList
 
     private fun setupToolbar(toolbarTitle: String) {
         toolbar_top.contentInsetStartWithNavigation = 0
-        setSupportActionBar(toolbar_top)
-        supportActionBar!!.setHomeButtonEnabled(true)
-        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-        supportActionBar!!.setHomeAsUpIndicator(ContextCompat.getDrawable(this, com.tokopedia.abstraction.R.drawable.ic_action_back))
-
         val titleStr = SpannableStringBuilder(toolbarTitle)
         titleStr.setSpan(android.text.style.StyleSpan(android.graphics.Typeface.BOLD),
                 0, toolbarTitle.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
 
-        supportActionBar!!.title = titleStr
+        setSupportActionBar(toolbar_top)
+
+        supportActionBar?.let {
+            it.setHomeButtonEnabled(true)
+            it.setDisplayHomeAsUpEnabled(true)
+            it.setHomeAsUpIndicator(ContextCompat.getDrawable(this, com.tokopedia.abstraction.R.drawable.ic_action_back))
+            it.title = titleStr
+        }
     }
 
     override fun setupFragment(savedInstance: Bundle?) {

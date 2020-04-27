@@ -15,8 +15,21 @@ data class Banner(@SerializedName("id")
                   @SerializedName("redirect_url")
                   val redirectUrl: String = "",
                   @SerializedName("applink")
-                  val applink: String = "") : Parcelable {
+                  val applink: String = "",
+                  @SerializedName("galaxy_attribution")
+                  val galaxyAttribution: String = "",
+                  @SerializedName("persona")
+                  val persona: String = "",
+                  @SerializedName("category_persona")
+                  val categoryPersona: String = "",
+                  @SerializedName("brand_id")
+                  val brandId: String = "")
+    : Parcelable {
     constructor(parcel: Parcel) : this(
+            parcel.readString() ?: "",
+            parcel.readString() ?: "",
+            parcel.readString() ?: "",
+            parcel.readString() ?: "",
             parcel.readString() ?: "",
             parcel.readString() ?: "",
             parcel.readString() ?: "",
@@ -31,6 +44,10 @@ data class Banner(@SerializedName("id")
         parcel.writeString(topadsViewUrl)
         parcel.writeString(redirectUrl)
         parcel.writeString(applink)
+        parcel.writeString(persona)
+        parcel.writeString(brandId)
+        parcel.writeString(galaxyAttribution)
+        parcel.writeString(categoryPersona)
     }
 
     override fun describeContents(): Int {

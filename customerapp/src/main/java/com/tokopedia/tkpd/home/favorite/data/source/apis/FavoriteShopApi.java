@@ -1,6 +1,6 @@
 package com.tokopedia.tkpd.home.favorite.data.source.apis;
 
-import com.tokopedia.abstraction.common.data.model.response.GraphqlResponse;
+import com.tokopedia.network.data.model.response.GraphqlResponse;
 import com.tokopedia.core.network.entity.home.FavoritShopResponseData;
 import com.tokopedia.tkpd.home.favorite.domain.model.FavoriteShop;
 

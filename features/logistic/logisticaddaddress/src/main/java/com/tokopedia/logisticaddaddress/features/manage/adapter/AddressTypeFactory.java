@@ -29,7 +29,7 @@ public class AddressTypeFactory extends BaseAdapterTypeFactory {
         return super.createViewHolder(parent, type);
     }
 
-    public int type(AddressViewModel addressModel) {
+    public int type(AddressUiModel addressModel) {
         return AddressViewHolder.LAYOUT;
     }
 

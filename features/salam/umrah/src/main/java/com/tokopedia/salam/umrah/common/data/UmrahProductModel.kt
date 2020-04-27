@@ -2,10 +2,12 @@ package com.tokopedia.salam.umrah.common.data
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.salam.umrah.pdp.data.UmrahFAQContent
 import com.tokopedia.salam.umrah.pdp.data.UmrahPdpAirlineModel
 import com.tokopedia.salam.umrah.pdp.data.UmrahPdpFeaturedFacilityModel
 import com.tokopedia.salam.umrah.pdp.data.UmrahPdpItineraryModel
+import com.tokopedia.salam.umrah.travel.presentation.adapter.UmrahTravelProductAdapterTypeFactory
 
 /**
  * @author by M on 30/10/19
@@ -90,7 +92,9 @@ data class UmrahProductModel(
 
             @SerializedName("faq")
             val faqs: UmrahFAQ = UmrahFAQ()
-    ) {
+    ): Visitable<UmrahTravelProductAdapterTypeFactory> {
+            override fun type(typeFactory: UmrahTravelProductAdapterTypeFactory?): Int =
+                    typeFactory?.type() ?: 0
         data class UmrahProductUI(
                 @SerializedName("travelDates")
                 val travelDates: String = "",
@@ -116,40 +120,6 @@ data class UmrahProductModel(
                 @SerializedName("availableSeat")
                 @Expose
                 val availableSeat: String = ""
-        )
-
-        data class TravelAgent(
-                @SerializedName("id")
-                @Expose
-                val id: String = "",
-                @SerializedName("name")
-                @Expose
-                val name: String = "",
-                @SerializedName("logoUrl")
-                @Expose
-                val imageUrl: String = "",
-                @SerializedName("permissionOfUmrah")
-                @Expose
-                val permissionOfUmrah: String = "",
-                @SerializedName("pilgrimsPerYear")
-                @Expose
-                val pilgrimsPerYear: Int = 0,
-                @SerializedName("establishedSince")
-                @Expose
-                val establishedSince: Int = 0,
-                @SerializedName("ui")
-                @Expose
-                val ui: UmrahTravelAgentUI = UmrahTravelAgentUI()
-
-        )
-
-        data class  UmrahTravelAgentUI(
-                @SerializedName("establishedSince")
-                @Expose
-                val establishedSince: String = "",
-                @SerializedName("pilgrimsPerYear")
-                @Expose
-                val pilgrimsPerYear: String = ""
         )
 
         data class UmrahFAQ(

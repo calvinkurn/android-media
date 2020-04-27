@@ -8,28 +8,28 @@ import androidx.fragment.app.Fragment;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import android.util.TypedValue;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AutoCompleteTextView;
-import android.widget.LinearLayout;
 
 import com.google.gson.reflect.TypeToken;
-import com.tkpd.library.utils.KeyboardHandler;
-import com.tokopedia.core.analytics.AppScreen;
-import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.app.TkpdCoreRouter;
-import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.core.base.presentation.BaseDaggerFragment;
-import com.tokopedia.core.customwidget.SwipeToRefresh;
-import com.tokopedia.core.database.CacheUtil;
-import com.tokopedia.core.database.manager.GlobalCacheManager;
-import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.util.GlobalConfig;
-import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
+import com.tokopedia.config.GlobalConfig;
+import com.tokopedia.abstraction.common.utils.network.CacheUtil;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.design.text.SearchInputView;
+import com.tokopedia.network.utils.ErrorHandler;
 import com.tokopedia.tkpd.tkpdreputation.R;
+import com.tokopedia.tkpd.tkpdreputation.analytic.AppScreen;
+import com.tokopedia.tkpd.tkpdreputation.analytic.ReputationTracking;
 import com.tokopedia.tkpd.tkpdreputation.di.DaggerReputationComponent;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationActivity;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationDetailActivity;
@@ -53,7 +53,7 @@ import javax.inject.Inject;
  */
 
 public class InboxReputationFragment extends BaseDaggerFragment
-        implements InboxReputation.View, SearchInputView.Listener {
+        implements InboxReputation.View, SearchInputView.Listener, SearchInputView.FocusChangeListener {
 
     protected static final long DEFAULT_DELAY_TEXT_CHANGED = TimeUnit.MILLISECONDS.toMillis(300);
     public final static String PARAM_TAB = "tab";
@@ -62,6 +62,7 @@ public class InboxReputationFragment extends BaseDaggerFragment
     private static final String ARGS_TIME_FILTER = "ARGS_TIME_FILTER";
     private static final String ARGS_SCORE_FILTER = "ARGS_SCORE_FILTER";
     private static final String ARGS_QUERY = "ARGS_QUERY";
+    private static final String SEE_ALL_REVIEW = "Lihat Semua";
 
     SearchInputView searchView;
     private RecyclerView mainList;
@@ -71,15 +72,16 @@ public class InboxReputationFragment extends BaseDaggerFragment
     private String timeFilter;
     private String scoreFilter;
     private View filterButton;
+    private boolean isFromWhitespace;
 
     @Inject
     InboxReputationPresenter presenter;
 
     @Inject
-    GlobalCacheManager cacheManager;
+    PersistentCacheManager persistentCacheManager;
 
     @Inject
-    SessionHandler sessionHandler;
+    ReputationTracking reputationTracking;
 
     public static Fragment createInstance(int tab) {
         InboxReputationFragment fragment = new InboxReputationFragment();
@@ -96,14 +98,12 @@ public class InboxReputationFragment extends BaseDaggerFragment
 
     @Override
     protected void initInjector() {
-        AppComponent appComponent = getComponent(AppComponent.class);
-
+        BaseAppComponent baseAppComponent = ((BaseMainApplication) requireContext().getApplicationContext()).getBaseAppComponent();
         DaggerReputationComponent reputationComponent =
                 (DaggerReputationComponent) DaggerReputationComponent
                         .builder()
-                        .appComponent(appComponent)
+                        .baseAppComponent(baseAppComponent)
                         .build();
-
         reputationComponent.inject(this);
     }
 
@@ -130,7 +130,7 @@ public class InboxReputationFragment extends BaseDaggerFragment
             scoreFilter = "";
         }
 
-        InboxReputationTypeFactory typeFactory = new InboxReputationTypeFactoryImpl(this);
+        InboxReputationTypeFactory typeFactory = new InboxReputationTypeFactoryImpl(getContext(), this);
         adapter = new InboxReputationAdapter(typeFactory);
     }
 
@@ -145,6 +145,7 @@ public class InboxReputationFragment extends BaseDaggerFragment
         searchView = (SearchInputView) parentView.findViewById(R.id.search);
         searchView.setDelayTextChanged(DEFAULT_DELAY_TEXT_CHANGED);
         searchView.setListener(this);
+        searchView.setFocusChangeListener(this);
         filterButton = parentView.findViewById(R.id.filter_button);
         prepareView();
         presenter.attachView(this);
@@ -170,6 +171,7 @@ public class InboxReputationFragment extends BaseDaggerFragment
             @Override
             public void onClick(View v) {
                 openFilter();
+                reputationTracking.onClickButtonFilterReputationTracker(getTab());
             }
         });
     }
@@ -194,6 +196,7 @@ public class InboxReputationFragment extends BaseDaggerFragment
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
+                reputationTracking.onScrollReviewTracker(getTab());
                 int lastItemPosition = layoutManager.findLastVisibleItemPosition();
                 int visibleItem = layoutManager.getItemCount() - 1;
                 if (!adapter.isLoading() && !adapter.isEmpty())
@@ -234,16 +237,10 @@ public class InboxReputationFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onErrorGetFirstTimeInboxReputation(String errorMessage) {
+    public void onErrorGetFirstTimeInboxReputation(Throwable throwable) {
         if (getActivity() != null & getView() != null) {
-            NetworkErrorHelper.showEmptyState(getActivity(), getView(), errorMessage, new
-                    NetworkErrorHelper
-                            .RetryClickedListener() {
-                        @Override
-                        public void onRetryClicked() {
-                            presenter.getFirstTimeInboxReputation(getTab());
-                        }
-                    });
+            NetworkErrorHelper.showEmptyState(getActivity(), getView(), ErrorHandler.getErrorMessage(getContext(), throwable),
+                    () -> presenter.getFirstTimeInboxReputation(getTab()));
         }
     }
 
@@ -262,17 +259,11 @@ public class InboxReputationFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onErrorGetNextPage(String errorMessage) {
+    public void onErrorGetNextPage(Throwable throwable) {
         adapter.removeLoading();
-        NetworkErrorHelper.createSnackbarWithAction(getActivity(), errorMessage, new
-                NetworkErrorHelper
-                        .RetryClickedListener() {
-                    @Override
-                    public void onRetryClicked() {
-                        presenter.getFirstTimeInboxReputation(getTab());
-                    }
-                })
-                .showRetrySnackbar();
+        NetworkErrorHelper.createSnackbarWithAction(getActivity(),
+                ErrorHandler.getErrorMessage(getContext(), throwable),
+                () -> presenter.getFirstTimeInboxReputation(getTab())).showRetrySnackbar();
     }
 
     @Override
@@ -283,15 +274,9 @@ public class InboxReputationFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onErrorRefresh(String errorMessage) {
-        NetworkErrorHelper.showEmptyState(getActivity(), getView(), errorMessage, new
-                NetworkErrorHelper
-                        .RetryClickedListener() {
-                    @Override
-                    public void onRetryClicked() {
-                        presenter.refreshPage(getQuery(), timeFilter, scoreFilter, getTab());
-                    }
-                });
+    public void onErrorRefresh(Throwable throwable) {
+        NetworkErrorHelper.showEmptyState(getActivity(), getView(), ErrorHandler.getErrorMessage(getContext(), throwable),
+                () -> presenter.refreshPage(getQuery(), timeFilter, scoreFilter, getTab()));
     }
 
     @Override
@@ -318,6 +303,23 @@ public class InboxReputationFragment extends BaseDaggerFragment
                              String revieweeName, String revieweeImage,
                              ReputationDataViewModel reputationDataViewModel, String textDeadline,
                              int adapterPosition, int role) {
+
+        if(reputationDataViewModel.getActionMessage().equals(SEE_ALL_REVIEW)) {
+            reputationTracking.seeAllReviewItemOnClickTracker(
+                    invoice,
+                    (adapterPosition + 1),
+                    isFromWhitespace,
+                    getTab()
+            );
+        } else {
+            reputationTracking.reviewItemOnClickTracker(
+                    invoice,
+                    (adapterPosition + 1),
+                    isFromWhitespace,
+                    getTab()
+            );
+        }
+
         savePassModelToDB(getInboxReputationDetailPassModel(reputationId, invoice, createTime,
                 revieweeImage, revieweeName, textDeadline,
                 reputationDataViewModel, role));
@@ -330,19 +332,27 @@ public class InboxReputationFragment extends BaseDaggerFragment
                 REQUEST_OPEN_DETAIL);
     }
 
+    @Override
+    public void clickFromWhitespace(boolean source) {
+        isFromWhitespace = source;
+    }
+
     private void savePassModelToDB(InboxReputationDetailPassModel inboxReputationDetailPassModel) {
-        if (cacheManager != null) {
-            cacheManager.setKey(InboxReputationDetailActivity.CACHE_PASS_DATA);
-            cacheManager.setValue(CacheUtil.convertModelToString(inboxReputationDetailPassModel,
-                    new TypeToken<InboxReputationDetailPassModel>() {
-                    }.getType()));
-            cacheManager.store();
+        if (persistentCacheManager != null) {
+            persistentCacheManager.put(
+                    InboxReputationDetailActivity.CACHE_PASS_DATA,
+                    CacheUtil.convertModelToString(inboxReputationDetailPassModel,
+                            new TypeToken<InboxReputationDetailPassModel>() {
+                            }.getType())
+
+            );
+
         }
     }
 
     private void removeCachePassData() {
-        if (cacheManager != null) {
-            cacheManager.delete(InboxReputationDetailActivity.CACHE_PASS_DATA);
+        if (persistentCacheManager != null) {
+            persistentCacheManager.delete(InboxReputationDetailActivity.CACHE_PASS_DATA);
         }
     }
 
@@ -371,16 +381,15 @@ public class InboxReputationFragment extends BaseDaggerFragment
         adapter.removeEmpty();
         adapter.setList(inboxReputationViewModel.getList());
         presenter.setHasNextPage(inboxReputationViewModel.isHasNextPage());
+        if(!getQuery().isEmpty())
+            reputationTracking.onSuccessFilteredReputationTracker(getQuery(), getTab());
     }
 
     @Override
-    public void onErrorGetFilteredInboxReputation(String errorMessage) {
-        NetworkErrorHelper.createSnackbarWithAction(getActivity(), errorMessage, new NetworkErrorHelper.RetryClickedListener() {
-            @Override
-            public void onRetryClicked() {
-                presenter.getFilteredInboxReputation(getQuery(), timeFilter, scoreFilter, getTab());
-            }
-        }).showRetrySnackbar();
+    public void onErrorGetFilteredInboxReputation(Throwable throwable) {
+        NetworkErrorHelper.createSnackbarWithAction(getActivity(), ErrorHandler.getErrorMessage(getContext(), throwable),
+                () -> presenter.getFilteredInboxReputation(getQuery(), timeFilter, scoreFilter, getTab())).showRetrySnackbar();
+        reputationTracking.onErrorFilteredReputationTracker(getQuery(), getTab());
     }
 
     @Override
@@ -410,18 +419,8 @@ public class InboxReputationFragment extends BaseDaggerFragment
     }
 
     private void goToHotlist() {
-        if (MainApplication.getAppContext() instanceof TkpdCoreRouter
-                && !GlobalConfig.isSellerApp()) {
-            Intent intent = ((TkpdCoreRouter) MainApplication.getAppContext()).getHomeHotlistIntent
-                    (getActivity());
-            startActivity(intent);
-            getActivity().finish();
-        } else if (MainApplication.getAppContext() instanceof TkpdCoreRouter) {
-            Intent intent = ((TkpdCoreRouter) MainApplication.getAppContext()).getHomeIntent
-                    (getActivity());
-            startActivity(intent);
-            getActivity().finish();
-        }
+        RouteManager.route(getContext(), ApplinkConst.HOME);
+        getActivity().finish();
     }
 
     @Override
@@ -439,6 +438,8 @@ public class InboxReputationFragment extends BaseDaggerFragment
                     }
                 });
         adapter.notifyDataSetChanged();
+        if(!getQuery().isEmpty())
+            reputationTracking.onEmptyFilteredReputationTracker(getQuery(), getTab());
     }
 
     @Override
@@ -507,6 +508,13 @@ public class InboxReputationFragment extends BaseDaggerFragment
                     timeFilter,
                     scoreFilter,
                     getTab());
+        }
+    }
+
+    @Override
+    public void onFocusChanged(boolean hasFocus) {
+        if(hasFocus) {
+            reputationTracking.onClickSearchViewTracker(getTab());
         }
     }
 }

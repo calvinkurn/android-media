@@ -8,9 +8,9 @@ import android.app.ProgressDialog
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.text.Editable
 import android.view.View
+import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
@@ -18,11 +18,10 @@ import com.tokopedia.design.base.BaseToaster
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.text.watcher.AfterTextWatcher
 import com.tokopedia.design.utils.StringUtils
-import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.shop.common.constant.ShopScheduleActionDef
 import com.tokopedia.shop.common.graphql.data.shopbasicdata.ShopBasicDataModel
 import com.tokopedia.shop.settings.R
-import com.tokopedia.shop.settings.basicinfo.view.presenter.UpdateShopShedulePresenter
+import com.tokopedia.shop.settings.basicinfo.view.presenter.UpdateShopSchedulePresenter
 import com.tokopedia.shop.settings.common.di.DaggerShopSettingsComponent
 import com.tokopedia.shop.settings.common.util.*
 import kotlinx.android.synthetic.main.activity_shop_edit_schedule.*
@@ -30,29 +29,54 @@ import kotlinx.android.synthetic.main.partial_toolbar_save_button.*
 import java.util.*
 import javax.inject.Inject
 
-class ShopEditScheduleActivity : BaseSimpleActivity(), UpdateShopShedulePresenter.View {
+class ShopEditScheduleActivity : BaseSimpleActivity(), UpdateShopSchedulePresenter.View {
 
     @Inject
-    lateinit var updateShopSchedulePresenter: UpdateShopShedulePresenter
+    lateinit var updateShopSchedulePresenter: UpdateShopSchedulePresenter
 
     private var progressDialog: ProgressDialog? = null
 
     private var selectedStartCloseUnixTimeMs: Long = 0
     private var selectedEndCloseUnixTimeMs: Long = 0
 
-    lateinit var shopBasicDataModel: ShopBasicDataModel
+    private lateinit var shopBasicDataModel: ShopBasicDataModel
     private var isClosedNow: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        GraphqlClient.init(this)
 
-        shopBasicDataModel = intent.getParcelableExtra(EXTRA_SHOP_MODEL)
-        isClosedNow = intent.getBooleanExtra(EXTRA_IS_CLOSED_NOW, false)
+        super.onCreate(savedInstanceState)
 
         if (savedInstanceState != null) {
             selectedStartCloseUnixTimeMs = savedInstanceState.getLong(SAVED_SELECTED_START_DATE)
             selectedEndCloseUnixTimeMs = savedInstanceState.getLong(SAVED_SELECTED_END_DATE)
+        }
+
+        DaggerShopSettingsComponent.builder()
+                .baseAppComponent((application as BaseMainApplication).baseAppComponent)
+                .build()
+                .inject(this)
+        updateShopSchedulePresenter.attachView(this)
+
+        title = intent.getStringExtra(EXTRA_TITLE) ?: ""
+        isClosedNow = intent.getBooleanExtra(EXTRA_IS_CLOSED_NOW, false)
+        toolbar = findViewById(R.id.toolbar)
+        setSupportActionBar(toolbar)
+        supportActionBar?.apply {
+            setDisplayHomeAsUpEnabled(true)
+        }
+        if (intent.hasExtra(EXTRA_SHOP_MODEL)) {
+            shopBasicDataModel = intent.getParcelableExtra(EXTRA_SHOP_MODEL)
+            setupView(shopBasicDataModel)
         } else {
+            // execute get shop basic data use case
+            showSubmitLoading(getString(com.tokopedia.abstraction.R.string.title_loading))
+            updateShopSchedulePresenter.getShopBasicData()
+        }
+    }
+
+    private fun setupView(shopBasicDataModel: ShopBasicDataModel) {
+
+        if (selectedStartCloseUnixTimeMs == 0L || selectedEndCloseUnixTimeMs == 0L) {
             val closeSchedule = shopBasicDataModel.closeSchedule
 
             if (isClosedNow) { // if close now, default: H
@@ -78,22 +102,6 @@ class ShopEditScheduleActivity : BaseSimpleActivity(), UpdateShopShedulePresente
             }
         }
 
-        super.onCreate(savedInstanceState)
-
-        DaggerShopSettingsComponent.builder()
-                .baseAppComponent((application as BaseMainApplication).baseAppComponent)
-                .build()
-                .inject(this)
-        updateShopSchedulePresenter.attachView(this)
-
-        supportActionBar?.title = getString(R.string.shop_settings_set_shop_status)
-
-        etShopCloseNote.addTextChangedListener(object : AfterTextWatcher() {
-            override fun afterTextChanged(s: Editable) {
-                tilShopCloseNote.error = null
-            }
-        })
-
         setUIShopSchedule(shopBasicDataModel)
 
         labelStartClose.setOnClickListener {
@@ -101,11 +109,19 @@ class ShopEditScheduleActivity : BaseSimpleActivity(), UpdateShopShedulePresente
             val selectedDate = unixToDate(selectedStartCloseUnixTimeMs)
             showStartDatePickerDialog(selectedDate, minDate)
         }
+
         labelEndClose.setOnClickListener {
             val minDate: Date = unixToDate(selectedStartCloseUnixTimeMs)
             val selectedDate: Date = unixToDate(selectedEndCloseUnixTimeMs)
             showEndDatePickerDialog(selectedDate, minDate)
         }
+
+        etShopCloseNote.addTextChangedListener(object : AfterTextWatcher() {
+            override fun afterTextChanged(s: Editable) {
+                tilShopCloseNote.error = null
+            }
+        })
+
         tvSave.visibility = View.VISIBLE
         tvSave.setOnClickListener { onSaveButtonClicked() }
     }
@@ -114,7 +130,7 @@ class ShopEditScheduleActivity : BaseSimpleActivity(), UpdateShopShedulePresente
         return R.id.toolbar
     }
 
-    fun showStartDatePickerDialog(selectedDate: Date, minDate: Date) {
+    private fun showStartDatePickerDialog(selectedDate: Date, minDate: Date) {
         val calendar = Calendar.getInstance()
         calendar.time = selectedDate
         val datePicker = DatePickerDialog(this, DatePickerDialog.OnDateSetListener { _, year, month, dayOfMonth ->
@@ -125,7 +141,7 @@ class ShopEditScheduleActivity : BaseSimpleActivity(), UpdateShopShedulePresente
         datePicker.show()
     }
 
-    fun showEndDatePickerDialog(selectedDate: Date, minDate: Date) {
+    private fun showEndDatePickerDialog(selectedDate: Date, minDate: Date) {
         val calendar = Calendar.getInstance()
         calendar.time = selectedDate
         val datePicker = DatePickerDialog(this, DatePickerDialog.OnDateSetListener { _, year, month, dayOfMonth ->
@@ -172,21 +188,21 @@ class ShopEditScheduleActivity : BaseSimpleActivity(), UpdateShopShedulePresente
                 closeNote)
     }
 
-    fun showSubmitLoading(message: String) {
+    private fun showSubmitLoading(message: String) {
         if (progressDialog == null) {
             progressDialog = ProgressDialog(this)
         }
-        if (progressDialog?.isShowing == true) {
-            progressDialog!!.setMessage(message)
-            progressDialog!!.isIndeterminate = true
-            progressDialog!!.setCancelable(false)
-            progressDialog!!.show()
+        if (progressDialog?.isShowing == false) {
+            progressDialog?.setMessage(message)
+            progressDialog?.isIndeterminate = true
+            progressDialog?.setCancelable(false)
+            progressDialog?.show()
         }
     }
 
-    fun hideSubmitLoading() {
+    private fun hideSubmitLoading() {
         if (progressDialog?.isShowing == true) {
-            progressDialog!!.dismiss()
+            progressDialog?.dismiss()
             progressDialog = null
         }
     }
@@ -211,6 +227,17 @@ class ShopEditScheduleActivity : BaseSimpleActivity(), UpdateShopShedulePresente
         showSnackbarErrorSubmitEdit(throwable)
     }
 
+    override fun onSuccessGetShopBasicData(shopBasicDataModel: ShopBasicDataModel) {
+        this.shopBasicDataModel = shopBasicDataModel
+        setupView(shopBasicDataModel)
+        hideSubmitLoading()
+    }
+
+    override fun onErrorGetShopBasicData(throwable: Throwable) {
+        hideSubmitLoading()
+        showErrorMessage(throwable, View.OnClickListener { updateShopSchedulePresenter.getShopBasicData() })
+    }
+
     private fun setUIShopSchedule(shopBasicDataModel: ShopBasicDataModel) {
         //set close schedule
         if (isClosedNow || shopBasicDataModel.isClosed) {
@@ -232,6 +259,13 @@ class ShopEditScheduleActivity : BaseSimpleActivity(), UpdateShopShedulePresente
         ToasterError.make(findViewById(android.R.id.content),
                 message, BaseToaster.LENGTH_INDEFINITE)
                 .setAction(getString(com.tokopedia.abstraction.R.string.title_try_again)) { onSaveButtonClicked() }.show()
+    }
+
+    private fun showErrorMessage(throwable: Throwable, retryHandler: View.OnClickListener) {
+        val message = ErrorHandler.getErrorMessage(this, throwable)
+        ToasterError.make(findViewById(android.R.id.content),
+                message, BaseToaster.LENGTH_INDEFINITE)
+                .setAction(getString(com.tokopedia.abstraction.R.string.title_try_again), retryHandler).show()
     }
 
     public override fun onSaveInstanceState(outState: Bundle) {

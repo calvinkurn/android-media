@@ -3,7 +3,7 @@ package com.tokopedia.recentview.analytics;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import com.google.android.gms.tagmanager.DataLayer;
+import com.tokopedia.analyticconstant.DataLayer;
 
 import java.util.List;
 import com.tokopedia.track.TrackApp;

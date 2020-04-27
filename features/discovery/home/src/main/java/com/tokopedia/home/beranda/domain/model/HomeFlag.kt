@@ -4,14 +4,19 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 class HomeFlag {
+    companion object {
+        val DYNAMIC_ICON_WRAP_STRING = "dynamic_icon_wrap"
+        val HAS_RECOM_NAV_BUTTON_STRING = "has_recom_nav_button"
+        val HAS_TOKOPOINTS_STRING = "has_tokopoints"
+    }
     enum class TYPE {
         DYNAMIC_ICON_WRAP, HAS_TOKOPOINTS, HAS_RECOM_NAV_BUTTON;
 
         override fun toString(): String {
             return when(this){
-                DYNAMIC_ICON_WRAP -> "dynamic_icon_wrap"
-                HAS_RECOM_NAV_BUTTON -> "has_recom_nav_button"
-                HAS_TOKOPOINTS -> "has_tokopoints"
+                DYNAMIC_ICON_WRAP -> DYNAMIC_ICON_WRAP_STRING
+                HAS_RECOM_NAV_BUTTON -> HAS_RECOM_NAV_BUTTON_STRING
+                HAS_TOKOPOINTS -> HAS_TOKOPOINTS_STRING
             }
         }
     }

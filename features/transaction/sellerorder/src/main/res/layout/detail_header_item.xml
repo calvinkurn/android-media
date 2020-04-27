@@ -219,6 +219,16 @@
             android:layout_marginLeft="@dimen/dp_16"
             android:layout_marginStart="@dimen/dp_16"
             android:textIsSelectable="true"/>
+        
+        <ImageView
+            android:id="@+id/header_invoice_copy"
+            android:layout_width="@dimen/dp_16"
+            android:layout_height="@dimen/dp_16"
+            android:layout_marginLeft="@dimen/dp_5"
+            app:layout_constraintStart_toEndOf="@+id/header_invoice"
+            app:layout_constraintTop_toTopOf="@+id/header_invoice"
+            app:layout_constraintBottom_toBottomOf="@+id/header_invoice"
+            app:srcCompat="@drawable/ic_copy"/>
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/header_see_invoice"

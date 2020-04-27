@@ -29,7 +29,7 @@ import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.service.ErrorNetworkReceiver;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.core.util.AppWidgetUtil;
-import com.tokopedia.core.util.GlobalConfig;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core2.R;
 import com.tokopedia.track.TrackApp;
@@ -80,15 +80,12 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
         gcmHandler = new GCMHandler(this);
         logoutNetworkReceiver = new ErrorNetworkReceiver();
         globalCacheManager = new GlobalCacheManager();
-
-        initShake();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         unregisterForceLogoutReceiver();
-        unregisterShake();
     }
 
     @Override
@@ -108,7 +105,6 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
         initGTM();
         sendScreenAnalytics();
 
-        registerShake();
         registerForceLogoutReceiver();
         checkIfForceLogoutMustShow();
     }
@@ -125,7 +121,6 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
             if (screenName == null) {
                 screenName = this.getClass().getSimpleName();
             }
-            ((AbstractionRouter) getApplication()).onActivityDestroyed(screenName, this);
         }
         sessionHandler = null;
         gcmHandler = null;
@@ -279,27 +274,5 @@ public class BaseActivity extends AppCompatActivity implements SessionHandler.on
 
     protected void setGoldMerchant(ShopModel shopModel) {
         sessionHandler.setGoldMerchant(shopModel.info.shopIsGold);
-    }
-
-    private void initShake() {
-        if (!GlobalConfig.isSellerApp() && getApplication() instanceof AbstractionRouter) {
-            ((AbstractionRouter) getApplication()).init();
-        }
-    }
-
-    protected void registerShake() {
-        if (!GlobalConfig.isSellerApp() && getApplication() instanceof AbstractionRouter) {
-            String screenName = getScreenName();
-            if (screenName == null) {
-                screenName = this.getClass().getSimpleName();
-            }
-            ((AbstractionRouter) getApplication()).registerShake(screenName, this);
-        }
-    }
-
-    protected void unregisterShake() {
-        if (!GlobalConfig.isSellerApp() && getApplication() instanceof AbstractionRouter) {
-            ((AbstractionRouter) getApplication()).unregisterShake();
-        }
     }
 }

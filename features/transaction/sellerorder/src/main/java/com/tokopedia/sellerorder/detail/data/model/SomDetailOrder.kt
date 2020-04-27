@@ -107,7 +107,11 @@ data class SomDetailOrder(
 
                 @SerializedName("online_booking")
                 @Expose
-                val onlineBooking: OnlineBookingRoot = OnlineBookingRoot()) {
+                val onlineBooking: OnlineBookingRoot = OnlineBookingRoot(),
+
+                @SerializedName("penalty_reject_info")
+                @Expose
+                val penaltyRejectInfo: PenaltyRejectInfo = PenaltyRejectInfo()) {
 
             data class Products(
                     @SerializedName("id")
@@ -456,6 +460,16 @@ data class SomDetailOrder(
                     @SerializedName("info_text")
                     @Expose
                     val infoText: String = "")
+
+            data class PenaltyRejectInfo(
+                    @SerializedName("is_penalty_reject")
+                    @Expose
+                    val isPenaltyReject: Boolean = false,
+
+                    @SerializedName("penalty_reject_wording")
+                    @Expose
+                    val penaltyRejectWording: String = ""
+            )
         }
     }
 }

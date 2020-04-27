@@ -1,7 +1,7 @@
-query($device_id: Int!, $category_ids: String){
-rechargeFavoriteRecommendationList(device_id:$device_id, category_ids:$category_ids) {
+query ($device_id: Int!, $category_ids: String, $mp_category_ids: [Int]) {
+rechargeFavoriteRecommendationList(device_id: $device_id, category_ids: $category_ids, mp_category_ids: $mp_category_ids) {
 title
-recommendations{
+recommendations {
 iconUrl
 title
 clientNumber

@@ -3,6 +3,7 @@ package com.tokopedia.promocheckout.list.view.fragment
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import com.tokopedia.abstraction.constant.IRouterConstant
 import com.tokopedia.promocheckout.common.data.REQUEST_CODE_PROMO_DETAIL
 import com.tokopedia.promocheckout.common.util.EXTRA_PROMO_DATA
@@ -13,9 +14,10 @@ import com.tokopedia.promocheckout.common.view.uimodel.PromoDigitalModel
 import com.tokopedia.promocheckout.detail.view.activity.PromoCheckoutDetailDigitalActivity
 import com.tokopedia.promocheckout.list.di.PromoCheckoutListComponent
 import com.tokopedia.promocheckout.list.model.listcoupon.PromoCheckoutListModel
-import com.tokopedia.promocheckout.list.model.listpromolastseen.PromoHistoryItem
+import com.tokopedia.promocheckout.list.model.listlastseen.PromoCheckoutLastSeenModel
 import com.tokopedia.promocheckout.list.view.presenter.PromoCheckoutListContract
 import com.tokopedia.promocheckout.list.view.presenter.PromoCheckoutListDigitalPresenter
+import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.fragment_promo_checkout_list.*
 import javax.inject.Inject
 
@@ -32,7 +34,8 @@ open class PromoCheckoutListDigitalFragment : BasePromoCheckoutListFragment(), P
         super.onCreate(savedInstanceState)
         isCouponActive = arguments?.getBoolean(EXTRA_COUPON_ACTIVE) ?: true
         promoCode = arguments?.getString(EXTRA_PROMO_CODE) ?: ""
-        promoDigitalModel = arguments?.getParcelable(EXTRA_PROMO_DIGITAL_MODEL) ?: PromoDigitalModel()
+        promoDigitalModel = arguments?.getParcelable(EXTRA_PROMO_DIGITAL_MODEL)
+                ?: PromoDigitalModel()
         categoryId = promoDigitalModel.categoryId
         pageTracking = arguments?.getInt(PAGE_TRACKING) ?: 1
         promoCheckoutListDigitalPresenter.attachView(this)
@@ -45,7 +48,8 @@ open class PromoCheckoutListDigitalFragment : BasePromoCheckoutListFragment(), P
 
     open fun navigateToPromoDetail(promoCheckoutListModel: PromoCheckoutListModel?) {
         startActivityForResult(PromoCheckoutDetailDigitalActivity.newInstance(
-                activity, promoCheckoutListModel?.code ?: "", false, promoDigitalModel, pageTracking), REQUEST_CODE_PROMO_DETAIL)
+                activity, promoCheckoutListModel?.code
+                ?: "", false, promoDigitalModel, pageTracking), REQUEST_CODE_PROMO_DETAIL)
     }
 
     override fun onPromoCodeUse(promoCode: String) {
@@ -63,14 +67,15 @@ open class PromoCheckoutListDigitalFragment : BasePromoCheckoutListFragment(), P
         activity?.finish()
     }
 
-    override fun onClickItemLastSeen(promoHistoryItem: PromoHistoryItem) {
-        textInputCoupon.setText(promoHistoryItem.promoCode)
+    override fun onClickItemLastSeen(promoCheckoutLastSeenModel: PromoCheckoutLastSeenModel) {
+        textInputCoupon.setText(promoCheckoutLastSeenModel.promoCode)
     }
 
     override fun loadData(page: Int) {
-        if(isCouponActive) {
+        if (isCouponActive) {
             promoCheckoutListPresenter.getListPromo(serviceId, categoryId, page, resources)
         }
+        promoCheckoutListPresenter.getListLastSeen(listOf(categoryId), resources)
     }
 
     override fun initInjector() {
@@ -80,9 +85,6 @@ open class PromoCheckoutListDigitalFragment : BasePromoCheckoutListFragment(), P
     override fun onDestroyView() {
         promoCheckoutListDigitalPresenter.detachView()
         super.onDestroyView()
-    }
-
-    override fun onClickRedeemCoupon(catalog_id: Int?, slug: String?, title: String, creativeName: String, position: Int) {
     }
 
     companion object {

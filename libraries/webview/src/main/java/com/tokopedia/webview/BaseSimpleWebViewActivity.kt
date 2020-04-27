@@ -5,11 +5,11 @@ import android.content.Intent
 import android.net.ParseException
 import android.net.Uri
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import androidx.core.app.TaskStackBuilder
 import android.text.TextUtils
 import android.view.Menu
 import android.view.MenuItem
+import androidx.core.app.TaskStackBuilder
+import androidx.fragment.app.Fragment
 import com.airbnb.deeplinkdispatch.DeepLink
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.applink.ApplinkConst
@@ -88,8 +88,7 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
             val url2 = url.substringAfter("$KEY_URL=", "")
             if (url2.isNotEmpty()) {
                 val url2BeforeAnd = url2.substringBefore("&")
-                val uriFromUrl = Uri.parse(url.replaceFirst("$KEY_URL=$url2BeforeAnd", "")
-                    .replaceFirst("&&", "&").replaceFirst("?&", "&"))
+                val uriFromUrl = Uri.parse(url.replaceFirst("$KEY_URL=$url2BeforeAnd", "").validateAnd() )
                 uriFromUrl.buildUpon()
                     .appendQueryParameter(KEY_URL, url2.encodeOnce())
                     .build().toString()
@@ -126,6 +125,32 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
                 url
             }
         }
+    }
+
+    /**
+     * trim invalid &
+     * Example:
+     * https://www.tokopedia.com/help?&a=b
+     * https://www.tokopedia.com/help?a=b
+     *
+     * https://www.tokopedia.com/help?a=b&&c=d
+     * https://www.tokopedia.com/help?a=b&c=d
+     *
+     * https://www.tokopedia.com/help?a=b?&c=d
+     * https://www.tokopedia.com/help?a=b&c=d
+     */
+    private fun String.validateAnd(): String {
+        var url = replace("&&", "&")
+        val indexQuestionAnd = url.indexOf("?&")
+        if (indexQuestionAnd > -1) {
+            val indexQuestion = url.indexOf("?")
+            if (indexQuestion == indexQuestionAnd) {
+                url = url.replaceFirst("?&", "?")
+            } else {
+                url = url.replaceFirst("?&", "&")
+            }
+        }
+        return url
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -208,7 +233,7 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
             return taskStackBuilder
         }
 
-        @DeepLink(ApplinkConst.WEBVIEW)
+        @DeepLink(ApplinkConst.WEBVIEW, ApplinkConst.SellerApp.WEBVIEW, ApplinkConst.SELLER_INFO_DETAIL)
         @JvmStatic
         fun getInstanceIntentAppLink(context: Context, extras: Bundle): Intent {
             var webUrl = extras.getString(
@@ -240,7 +265,7 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
                 webUrl = TokopediaUrl.Companion.getInstance().WEB
             }
 
-            return getStartIntent(context, webUrl, showToolbar, needLogin, allowOverride)
+            return getStartIntent(context, webUrl, showToolbar, allowOverride, needLogin)
         }
     }
 

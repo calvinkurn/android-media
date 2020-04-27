@@ -1,7 +1,7 @@
 package com.tokopedia.core.network.exception;
 
-import com.tokopedia.core.network.retrofit.response.ResponseStatus;
-import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
+import com.tokopedia.network.constant.ResponseStatus;
+import com.tokopedia.network.constant.ErrorNetMessage;
 
 /**
  * @author anggaprasetiyo on 7/3/17.

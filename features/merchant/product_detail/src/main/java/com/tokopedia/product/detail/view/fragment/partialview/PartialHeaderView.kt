@@ -3,11 +3,11 @@ package com.tokopedia.product.detail.view.fragment.partialview
 import android.app.Activity
 import android.graphics.Paint
 import android.graphics.Typeface
-import androidx.core.content.ContextCompat
 import android.text.Spannable
 import android.text.style.ImageSpan
 import android.text.style.StyleSpan
 import android.view.View
+import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.design.component.Dialog

@@ -160,7 +160,7 @@
 
     </LinearLayout>
 
-    <com.tokopedia.shop.page.view.widget.ShopWarningTickerView
+    <com.tokopedia.shop.oldpage.view.widget.ShopWarningTickerView
         android:id="@+id/shopWarningTickerView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

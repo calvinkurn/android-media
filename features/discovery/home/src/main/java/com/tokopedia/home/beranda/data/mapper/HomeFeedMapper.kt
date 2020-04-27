@@ -62,7 +62,11 @@ class HomeFeedMapper : Func1<GraphqlResponse, HomeFeedListModel> {
                             banner.buAttribution,
                             banner.creativeName,
                             banner.target,
-                            position
+                            position,
+                            banner.galaxyAttribution,
+                            banner.persona,
+                            banner.brandId,
+                            banner.categoryPersona
                     )
             )
         }

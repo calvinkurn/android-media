@@ -188,27 +188,40 @@
         android:id="@+id/footer_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/main_product_attach"
-        android:layout_alignEnd="@id/main_product_attach"
-        android:layout_alignRight="@id/main_product_attach"
+        android:layout_below="@+id/main_product_attach"
+        android:layout_alignEnd="@+id/main_product_attach"
+        android:layout_alignRight="@+id/main_product_attach"
         android:layout_marginEnd="@dimen/dp_12"
         android:layout_marginRight="@dimen/dp_12"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:paddingBottom="@dimen/dp_12"
+        android:paddingBottom="@dimen/spacing_lvl3"
         android:visibility="gone"
         tools:visibility="visible">
 
         <ImageView
+            android:id="@+id/ic_add_to_wishlist"
+            android:layout_width="@dimen/dp_40"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:paddingStart="@dimen/dp_11"
+            android:paddingTop="@dimen/dp_2"
+            android:paddingEnd="@dimen/dp_11"
+            android:paddingBottom="@dimen/dp_2"
+            android:visibility="gone"
+            tools:srcCompat="@drawable/ic_attachproduct_wishlist"
+            tools:visibility="visible" />
+
+        <ImageView
             android:id="@+id/ic_add_to_cart"
-            android:layout_width="@dimen/dp_48"
+            android:layout_width="@dimen/dp_40"
             android:layout_height="match_parent"
             android:layout_marginEnd="@dimen/dp_8"
-            android:layout_marginRight="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_8"
             android:gravity="center"
-            android:paddingStart="@dimen/dp_12"
+            android:paddingStart="@dimen/dp_8"
             android:paddingTop="@dimen/dp_2"
-            android:paddingEnd="@dimen/dp_12"
+            android:paddingEnd="@dimen/dp_8"
             android:paddingBottom="@dimen/dp_2"
             android:visibility="gone"
             app:srcCompat="@drawable/ic_cart_grayscale_20"
@@ -226,7 +239,35 @@
             app:unifyButtonSize="small"
             app:unifyButtonType="transaction"
             tools:visibility="visible" />
+    </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/footer_layout"
+        android:layout_alignEnd="@+id/main_product_attach"
+        android:layout_alignRight="@+id/main_product_attach"
+        android:layout_marginEnd="@dimen/dp_12"
+        android:layout_marginRight="@dimen/dp_12"
+        android:paddingBottom="@dimen/spacing_lvl3">
+
+        <ImageView
+            android:id="@+id/chat_status"
+            android:layout_width="@dimen/attachproduct_14dp"
+            android:layout_height="@dimen/attachproduct_14dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginEnd="@dimen/spacing_lvl1"
+            android:layout_marginRight="@dimen/spacing_lvl1"
+            tools:srcCompat="@drawable/ic_check" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/hour"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:includeFontPadding="false"
+            android:textColor="@color/Neutral_N700_44"
+            app:typographyType="body_3"
+            tools:text="11:00" />
     </LinearLayout>
 
 </RelativeLayout>

@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.Space;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -26,6 +27,7 @@ import com.tokopedia.purchase_platform.common.utils.Utils;
 import com.tokopedia.purchase_platform.features.checkout.view.ShipmentAdapterActionListener;
 import com.tokopedia.showcase.ShowCaseContentPosition;
 import com.tokopedia.showcase.ShowCaseObject;
+import com.tokopedia.unifycomponents.Label;
 import com.tokopedia.unifycomponents.TabsUnify;
 import com.tokopedia.unifyprinciples.Typography;
 
@@ -40,7 +42,7 @@ public class ShipmentRecipientAddressViewHolder extends RecyclerView.ViewHolder 
     public static final int ITEM_VIEW_RECIPIENT_ADDRESS = R.layout.view_item_shipment_recipient_address;
 
     private RelativeLayout rlRecipientAddressLayout;
-    private Typography tvAddressStatus;
+    private Label tvAddressStatus;
     private Typography tvAddressName;
     private Typography tvRecipientName;
     private Typography tvRecipientAddress;
@@ -59,6 +61,10 @@ public class ShipmentRecipientAddressViewHolder extends RecyclerView.ViewHolder 
     private Typography tvDropOffAddressDescription;
     private Typography tvChangeDropOff;
     private ImageView imgPinpoint;
+    private Typography tvDisabledMultipleAddressInfo;
+    private Typography tvChangeAddressTop;
+    private View separatorBottom;
+    private Space space;
 
     private ShipmentAdapterActionListener shipmentAdapterActionListener;
 
@@ -87,6 +93,10 @@ public class ShipmentRecipientAddressViewHolder extends RecyclerView.ViewHolder 
         tvDropOffAddressDescription = itemView.findViewById(R.id.tv_drop_off_address_description);
         tvChangeDropOff = itemView.findViewById(R.id.tv_change_drop_off);
         imgPinpoint = itemView.findViewById(R.id.img_pinpoint);
+        tvDisabledMultipleAddressInfo = itemView.findViewById(R.id.tv_disabled_multiple_address_info);
+        tvChangeAddressTop = itemView.findViewById(R.id.tv_change_address_top);
+        separatorBottom = itemView.findViewById(R.id.separator_bottom);
+        space = itemView.findViewById(R.id.space);
     }
 
     public void bindViewHolder(RecipientAddressModel recipientAddress,
@@ -94,8 +104,10 @@ public class ShipmentRecipientAddressViewHolder extends RecyclerView.ViewHolder 
                                String cartIds) {
         renderBaseAddress(recipientAddress, cartIds);
         if (recipientAddress.isTradeIn()) {
+            renderAddressOptionOnBottom();
             renderTradeInAddress(recipientAddress);
         } else {
+            renderAddressOptionOnTop(recipientAddress);
             renderNormalAddress(recipientAddress);
             llTradeInInfo.setVisibility(View.GONE);
         }
@@ -111,6 +123,7 @@ public class ShipmentRecipientAddressViewHolder extends RecyclerView.ViewHolder 
         }
         tvRecipientChangeAddress.setOnClickListener(v -> shipmentAdapterActionListener.onChangeAddress());
         tvSendToMultipleAddress.setOnClickListener(v -> shipmentAdapterActionListener.onSendToMultipleAddress(recipientAddress, cartIds));
+        tvChangeAddressTop.setOnClickListener(v -> shipmentAdapterActionListener.onChangeAddress());
     }
 
     private void setShowCase(ViewGroup viewGroup, ArrayList<ShowCaseObject> showCaseObjectList) {
@@ -233,7 +246,8 @@ public class ShipmentRecipientAddressViewHolder extends RecyclerView.ViewHolder 
             tvAddressStatus.setVisibility(View.GONE);
         }
         tvAddressName.setText(Utils.getHtmlFormat(recipientAddress.getAddressName()));
-        tvRecipientName.setText(Utils.getHtmlFormat(recipientAddress.getRecipientName()));
+        tvRecipientName.setText(String.format(tvRecipientName.getContext().getString(R.string.recipient_name_format),
+                Utils.getHtmlFormat(recipientAddress.getRecipientName()), recipientAddress.getRecipientPhoneNumber()));
         tvRecipientAddress.setText(Utils.getHtmlFormat(getFullAddress(recipientAddress)));
         tvRecipientPhone.setVisibility(View.GONE);
     }
@@ -269,6 +283,33 @@ public class ShipmentRecipientAddressViewHolder extends RecyclerView.ViewHolder 
 
         tvTradeInInfo.setMovementMethod(LinkMovementMethod.getInstance());
         tvTradeInInfo.setText(formattedTrandeInInfoText);
+    }
+
+    private void renderAddressOptionOnTop(RecipientAddressModel recipientAddressModel) {
+        llAddOrChangeAddressContainer.setVisibility(View.GONE);
+        tvChangeAddressTop.setVisibility(View.VISIBLE);
+        if (!TextUtils.isEmpty(recipientAddressModel.getDisabledMultiAddressMessage())) {
+            tvDisabledMultipleAddressInfo.setText(recipientAddressModel.getDisabledMultiAddressMessage());
+            tvDisabledMultipleAddressInfo.setVisibility(View.VISIBLE);
+            separatorBottom.setVisibility(View.VISIBLE);
+            space.setVisibility(View.GONE);
+        } else {
+            tvDisabledMultipleAddressInfo.setVisibility(View.GONE);
+            separatorBottom.setVisibility(View.GONE);
+            space.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void renderAddressOptionOnBottom() {
+        llAddOrChangeAddressContainer.setVisibility(View.VISIBLE);
+        tvChangeAddressTop.setVisibility(View.GONE);
+        tvDisabledMultipleAddressInfo.setVisibility(View.GONE);
+        separatorBottom.setVisibility(View.GONE);
+        if (shipmentAdapterActionListener.isTradeInByDropOff()) {
+            space.setVisibility(View.VISIBLE);
+        } else {
+            space.setVisibility(View.GONE);
+        }
     }
 
 }

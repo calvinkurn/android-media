@@ -4,15 +4,15 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.attachproduct.resultmodel.ResultProduct
 import com.tokopedia.chat_common.data.BlockedStatus
 import com.tokopedia.chat_common.data.ChatroomViewModel
 import com.tokopedia.chat_common.data.ImageUploadViewModel
 import com.tokopedia.chat_common.data.ProductAttachmentViewModel
 import com.tokopedia.chat_common.view.listener.BaseChatContract
+import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactory
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendablePreview
-import com.tokopedia.topchat.common.TopChatRouter
+import com.tokopedia.wishlist.common.listener.WishListActionListener
 
 /**
  * @author : Steven 11/12/18
@@ -47,7 +47,7 @@ interface TopChatContract {
 
         fun showAttachmentPreview(attachmentPreview: ArrayList<SendablePreview>)
 
-        fun notifyAttachmentsSent()
+        fun clearAttachmentPreviews()
 
         fun getShopName(): String
 
@@ -122,5 +122,21 @@ interface TopChatContract {
         fun onClickBannedProduct(liteUrl: String)
 
         fun getBuyPageIntent(context: Context?, element: ProductAttachmentViewModel): Intent
+
+        fun initVoucherPreview(extras: Bundle?)
+
+        fun loadChatRoomSettings(messageId: String, onSuccess: (List<Visitable<TopChatTypeFactory>>) -> Unit)
+
+        fun addToWishList(
+                productId: String,
+                userId: String,
+                wishlistActionListener: WishListActionListener
+        )
+
+        fun removeFromWishList(
+                productId: String,
+                userId: String,
+                wishListActionListener: WishListActionListener
+        )
     }
 }

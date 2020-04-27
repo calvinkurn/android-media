@@ -20,6 +20,7 @@ open class PublishCompositeTask : DefaultTask() {
 
     lateinit var sortedDependency: List<String>
     var versionConfigMap = mutableMapOf<String, Int>()
+    var versionSuffix = ""
 
     var successModuleList: MutableList<String> = mutableListOf()
     var failModuleList: MutableList<String> = mutableListOf()
@@ -91,8 +92,11 @@ open class PublishCompositeTask : DefaultTask() {
                     logFile.appendText("$it module artifact is not defined in the project. FAILED.\n\n")
                 } else {
                     val currentMaxVersion = artifactInfo.maxCurrentVersionName.versionToInt(versionConfigMap).first
+                    val versionSuffixString = (if (versionSuffix.isNotEmpty()) {
+                        "-$versionSuffix"
+                    } else "" )
                     val increasedVersionString = (currentMaxVersion + (versionConfigMap["Step"]
-                        ?: 1)).toVersion(versionConfigMap)
+                        ?: 1)).toVersion(versionConfigMap) + versionSuffixString
                     artifactInfo.increaseVersionString = increasedVersionString
 
                     logFile.appendText("Start increasing version:${artifactInfo.versionName} -> ${artifactInfo.increaseVersionString}\n")
@@ -223,7 +227,25 @@ open class PublishCompositeTask : DefaultTask() {
     private fun publishModule(module: String): Boolean {
         val moduleLogFile = File("${module}/${module}_log.txt")
         moduleLogFile.delete()
-        val gitCommandString = "./gradlew assemble artifactoryPublish  -p $module --parallel --stacktrace"
+
+        val outputFile = File("$module/build/outputs/aar/$module.aar")
+        val outputFile2 = File("$module/build/outputs/aar/$module-debug.aar")
+        if (outputFile.exists()) {
+            outputFile.delete()
+        }
+        if (outputFile2.exists()) {
+            outputFile2.delete()
+        }
+        
+        val gitCommandAssembleString = "./gradlew assembleDebug  -p $module --stacktrace"
+        val gitCommandAssembleResultString = gitCommandAssembleString.runCommandGroovy(project.projectDir.absoluteFile)?.trimSpecial() ?: ""
+        if (!gitCommandAssembleResultString.contains("BUILD SUCCESSFUL")) {
+            return false
+        }
+        if (outputFile2.exists()) {
+            outputFile2.copyTo(outputFile, true)
+        }
+        val gitCommandString = "./gradlew artifactoryPublish  -p $module --stacktrace"
         val gitResultLog = gitCommandString.runCommandGroovy(project.projectDir.absoluteFile)?.trimSpecial() ?: ""
         moduleLogFile.appendText(gitResultLog)
         return gitResultLog.contains("BUILD SUCCESSFUL")

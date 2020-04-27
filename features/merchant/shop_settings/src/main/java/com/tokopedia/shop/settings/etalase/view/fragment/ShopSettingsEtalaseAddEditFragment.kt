@@ -9,7 +9,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
@@ -22,20 +21,17 @@ import com.tokopedia.gm.common.widget.MerchantCommonBottomSheet
 import com.tokopedia.shop.settings.R
 import com.tokopedia.shop.settings.common.di.ShopSettingsComponent
 import com.tokopedia.shop.settings.etalase.data.ShopEtalaseViewModel
+import com.tokopedia.shop.settings.etalase.view.activity.ShopSettingsEtalaseAddEditActivity
 import com.tokopedia.shop.settings.etalase.view.listener.ShopSettingsEtalaseAddEditView
 import com.tokopedia.shop.settings.etalase.view.presenter.ShopSettingsEtalaseAddEditPresenter
-import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_shop_etalase_add_edit.*
 import javax.inject.Inject
 
 class ShopSettingsEtalaseAddEditFragment : BaseDaggerFragment(),
         ShopSettingsEtalaseAddEditView,
         MerchantCommonBottomSheet.BottomSheetListener {
-
     @Inject
     lateinit var presenter: ShopSettingsEtalaseAddEditPresenter
-    @Inject
-    lateinit var userSession: UserSessionInterface
     private var isEdit: Boolean = false
     private var etalase: ShopEtalaseViewModel = ShopEtalaseViewModel()
 
@@ -46,6 +42,7 @@ class ShopSettingsEtalaseAddEditFragment : BaseDaggerFragment(),
         private const val PARAM_SHOP_ETALASE = "SHOP_ETALASE"
         private const val PARAM_IS_SUCCESS = "IS_SUCCESS"
         private const val FEATURE_ETALASE = "Etalase"
+        const val MAXIMUN_ETALASE_COUNT = 10
 
         @JvmStatic
         fun createInstance(isEdit: Boolean, etalase: ShopEtalaseViewModel = ShopEtalaseViewModel()) =
@@ -92,12 +89,18 @@ class ShopSettingsEtalaseAddEditFragment : BaseDaggerFragment(),
                 }
             }
         })
+        getEtalaseList()
     }
 
     fun saveAddEditEtalase() {
         if (isValid) {
             etalase.name = edit_text_title.text.toString().trim()
-            presenter.saveEtalase(etalase, isEdit)
+            getEtalaseList()
+            if (!presenter.isEtalaseDuplicate(etalase.name)) {
+                presenter.saveEtalase(etalase, isEdit)
+            } else {
+                edit_text_title.error = context?.getString(R.string.shop_etalase_title_already_exist)
+            }
         }
     }
 
@@ -113,33 +116,43 @@ class ShopSettingsEtalaseAddEditFragment : BaseDaggerFragment(),
 
     override fun onErrorAddEdit(throwable: Throwable?) {
         if (view != null && activity != null) {
-            if (throwable is MessageErrorException) {
-                if (isIdlePowerMerchant()) {
-                    showIdlePowerMerchantBottomSheet(FEATURE_ETALASE)
-                } else if (!isPowerMerchant()) {
-                    showRegularMerchantBottomSheet(FEATURE_ETALASE)
-                } else {
-                    showToasterErrorAddEdit(throwable)
-                }
+            if (isIdlePowerMerchant() && presenter.isEtalaseCountAtMax()) {
+                showIdlePowerMerchantBottomSheet(FEATURE_ETALASE)
+            } else if (!isPowerMerchant() && presenter.isEtalaseCountAtMax()) {
+                showRegularMerchantBottomSheet(FEATURE_ETALASE)
             } else {
-                showToasterErrorAddEdit(throwable)
+                showToasterError(throwable) {
+                    saveAddEditEtalase()
+                }
             }
+
         }
     }
 
-    private fun showToasterErrorAddEdit(throwable: Throwable?) {
+    override fun onSuccessGetEtalaseList() {
+        scroll_view.visibility = View.VISIBLE
+        (activity as? ShopSettingsEtalaseAddEditActivity)?.showSaveButton()
+    }
+
+    override fun onErrorGetEtalaseList(throwable: Throwable?) {
+        showToasterError(throwable) {
+            getEtalaseList()
+        }
+    }
+
+    private fun showToasterError(throwable: Throwable?, onRetry: () -> Unit) {
         ToasterError.make(view, ErrorHandler.getErrorMessage(activity, throwable), BaseToaster.LENGTH_LONG)
                 .setAction(R.string.title_retry) {
-                    saveAddEditEtalase()
+                    onRetry()
                 }.show()
     }
 
     private fun isIdlePowerMerchant(): Boolean {
-        return userSession.isPowerMerchantIdle
+        return presenter.isIdlePowerMerchant()
     }
 
     private fun isPowerMerchant(): Boolean {
-        return userSession.isGoldMerchant
+        return presenter.isPowerMerchant()
     }
 
     private fun showIdlePowerMerchantBottomSheet(featureName: String) {
@@ -171,6 +184,18 @@ class ShopSettingsEtalaseAddEditFragment : BaseDaggerFragment(),
 
     override fun onBottomSheetButtonClicked() {
         RouteManager.route(context, ApplinkConstInternalMarketplace.POWER_MERCHANT_SUBSCRIBE)
+    }
+
+    private fun getEtalaseList() {
+        presenter.getEtalaseList()
+    }
+
+    override fun showLoading() {
+        progress_bar.visibility = View.VISIBLE
+    }
+
+    override fun hideLoading() {
+        progress_bar.visibility = View.GONE
     }
 
 }

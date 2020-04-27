@@ -1,0 +1,20 @@
+query umrahTravelAgents($params: UmrahTravelAgentsInput!){
+  umrahTravelAgents(params:$params){
+    id
+    name
+    location
+    address
+    phone
+    email
+    logoUrl
+    permissionOfHajj
+    permissionOfUmrah
+    pilgrimsPerYear
+    establishedSince
+    slugName
+    ui {
+        establishedSince
+        pilgrimsPerYear
+    }
+  }
+}

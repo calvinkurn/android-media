@@ -1,9 +1,9 @@
 package com.tokopedia.product.detail.view.fragment.partialview
 
 import android.view.View
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.gallery.customview.RatingView
 import com.tokopedia.kotlin.extensions.view.gone
@@ -52,8 +52,7 @@ class PartialMostHelpfulReviewView private constructor(private val view: View) {
                     txt_variant_review.hide()
                 }
 
-                rating_review.setImageDrawable(ContextCompat.getDrawable(view.context,
-                        RatingView.getRatingDrawable(reviewData.productRating)))
+                ImageHandler.loadImageRounded2(context, rating_review, RatingView.getRatingDrawable(reviewData.productRating), 0f)
                 txt_date_user.text = MethodChecker.fromHtml(
                         view.context.getString(R.string.date_review_pattern, reviewData.reviewCreateTime, "<b>" + reviewData.user.fullName + "</b>"))
                 txt_desc_review.maxLines = 4

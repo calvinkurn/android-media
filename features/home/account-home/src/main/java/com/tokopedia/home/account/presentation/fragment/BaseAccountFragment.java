@@ -1,6 +1,7 @@
 package com.tokopedia.home.account.presentation.fragment;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.webkit.URLUtil;
@@ -8,6 +9,7 @@ import android.webkit.URLUtil;
 import androidx.annotation.Nullable;
 
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
+import com.tokopedia.abstraction.common.utils.network.URLGenerator;
 import com.tokopedia.affiliatecommon.data.util.AffiliatePreference;
 import com.tokopedia.analytics.TrackAnalytics;
 import com.tokopedia.analytics.firebase.FirebaseEvent;
@@ -34,6 +36,7 @@ import com.tokopedia.home.account.presentation.viewmodel.InfoCardViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.MenuGridItemViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.MenuGridViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.MenuListViewModel;
+import com.tokopedia.home.account.presentation.viewmodel.RekeningPremiumViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.SellerSaldoViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.ShopCardViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.TokopediaPayBSModel;
@@ -79,8 +82,6 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements 
     public static final int OPEN_SHOP_SUCCESS = 100;
     public static final int REQUEST_PHONE_VERIFICATION = 123;
     public static final String OVO = "OVO";
-
-    public Boolean isOpenShop = false;
 
     private AccountAnalytics accountAnalytics;
     UserSession userSession;
@@ -271,7 +272,7 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements 
     public void onTokopediaPayLeftItemClicked(String label, String applink, TokopediaPayBSModel bsData,
                                               boolean isLinked, String walletType) {
 
-        sendTracking(AccountConstants.Analytics.CLICK_ACCOUNT, EVENT_CATEGORY_AKUN_PEMBELI, "click tokopedia pay ovo","");
+        sendTracking(AccountConstants.Analytics.CLICK_ACCOUNT, EVENT_CATEGORY_AKUN_PEMBELI, "click tokopedia pay ovo", "");
 
         if (walletType.equals(OVO) && !isLinked) {
             sendTrackingOvoActivation();
@@ -291,7 +292,7 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements 
                                                 @NotNull TokopediaPayBSModel bsData, boolean isLinked,
                                                 @NotNull String walletType) {
 
-        sendTracking(AccountConstants.Analytics.CLICK_ACCOUNT, EVENT_CATEGORY_AKUN_PEMBELI, "click tokopedia pay ovo paylater","");
+        sendTracking(AccountConstants.Analytics.CLICK_ACCOUNT, EVENT_CATEGORY_AKUN_PEMBELI, "click tokopedia pay ovo paylater", "");
 
         if (applink != null && applink.startsWith("http")) {
             openApplink(String.format("%s?url=%s",
@@ -305,7 +306,7 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements 
     @Override
     public void onTokopediaPayRightItemClicked(boolean isRightSaldo, String label, String vccStatus, String applink, TokopediaPayBSModel bsData) {
 
-        sendTracking(AccountConstants.Analytics.CLICK_ACCOUNT, EVENT_CATEGORY_AKUN_PEMBELI, "click tokopedia pay saldo","");
+        sendTracking(AccountConstants.Analytics.CLICK_ACCOUNT, EVENT_CATEGORY_AKUN_PEMBELI, "click tokopedia pay saldo", "");
         if (bsData != null) {
             sendOVOTracking(AccountConstants.Analytics.OVO_PAY_LATER_CATEGORY,
                     AccountConstants.Analytics.OVO_PAY_ICON_CLICK,
@@ -391,18 +392,12 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements 
 
     @Override
     public void onOpenShopClicked() {
-        if (userSession.isMsisdnVerified()){
-            moveToCreateShop();
-        } else {
-            startActivityForResult(RouteManager.getIntent(getContext(), ApplinkConst.PHONE_VERIFICATION), REQUEST_PHONE_VERIFICATION);
-        }
+        moveToCreateShop();
     }
 
-
-    protected void moveToCreateShop(){
-        isOpenShop = true;
+    protected void moveToCreateShop() {
         if (getContext().getApplicationContext() instanceof AccountHomeRouter) {
-            startActivityForResult(RouteManager.getIntent(getContext(), OPEN_SHOP), OPEN_SHOP_SUCCESS);
+            startActivityForResult(RouteManager.getIntent(getContext(), ApplinkConst.CREATE_SHOP), OPEN_SHOP_SUCCESS);
         }
     }
 
@@ -521,7 +516,7 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements 
     }
 
     @Override
-    public void onPowerMerchantSettingClicked(){
+    public void onPowerMerchantSettingClicked() {
         sendTracking(
                 PENJUAL,
                 SECTION_OTHER_FEATURE,
@@ -545,5 +540,14 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements 
     @Override
     public void onAccountItemImpression(@NotNull HashMap<String, Object> data) {
         trackingQueue.putEETracking(data);
+    }
+
+    @Override
+    public void openRekeningPremiumWebLink(RekeningPremiumViewModel rekeningPremiumViewModel) {
+        String resultGenerateUrl = URLGenerator.generateURLSessionLogin(
+                Uri.encode(rekeningPremiumViewModel.getWebLink()), userSession.getDeviceId(), userSession.getUserId());
+        RouteManager.route(getContext(), resultGenerateUrl);
+        sendTracking(rekeningPremiumViewModel.getTitleTrack(), rekeningPremiumViewModel.getSectionTrack(),
+                rekeningPremiumViewModel.getMenu());
     }
 }

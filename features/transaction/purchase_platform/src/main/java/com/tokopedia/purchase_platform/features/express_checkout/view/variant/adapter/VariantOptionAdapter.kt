@@ -6,16 +6,16 @@ import android.view.ViewGroup
 import com.tokopedia.purchase_platform.features.express_checkout.view.variant.CheckoutVariantActionListener
 import com.tokopedia.purchase_platform.features.express_checkout.view.variant.VariantChangeListener
 import com.tokopedia.purchase_platform.features.express_checkout.view.variant.viewholder.OptionVariantViewHolder
-import com.tokopedia.purchase_platform.features.express_checkout.view.variant.viewmodel.OptionVariantViewModel
-import com.tokopedia.purchase_platform.features.express_checkout.view.variant.viewmodel.OptionVariantViewModel.Companion.STATE_NOT_AVAILABLE
-import com.tokopedia.purchase_platform.features.express_checkout.view.variant.viewmodel.OptionVariantViewModel.Companion.STATE_NOT_SELECTED
-import com.tokopedia.purchase_platform.features.express_checkout.view.variant.viewmodel.OptionVariantViewModel.Companion.STATE_SELECTED
+import com.tokopedia.purchase_platform.features.express_checkout.view.variant.uimodel.OptionVariantUiModel
+import com.tokopedia.purchase_platform.features.express_checkout.view.variant.uimodel.OptionVariantUiModel.Companion.STATE_NOT_AVAILABLE
+import com.tokopedia.purchase_platform.features.express_checkout.view.variant.uimodel.OptionVariantUiModel.Companion.STATE_NOT_SELECTED
+import com.tokopedia.purchase_platform.features.express_checkout.view.variant.uimodel.OptionVariantUiModel.Companion.STATE_SELECTED
 
 /**
  * Created by Irfan Khoirul on 30/11/18.
  */
 
-class VariantOptionAdapter(var dataList: ArrayList<OptionVariantViewModel>, val listener: CheckoutVariantActionListener) :
+class VariantOptionAdapter(var dataList: ArrayList<OptionVariantUiModel>, val listener: CheckoutVariantActionListener) :
         RecyclerView.Adapter<OptionVariantViewHolder>(), VariantChangeListener {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): OptionVariantViewHolder {
@@ -35,8 +35,8 @@ class VariantOptionAdapter(var dataList: ArrayList<OptionVariantViewModel>, val 
         holder.bind(dataList[position])
     }
 
-    override fun onSelectedVariantChanged(selectedVariant: OptionVariantViewModel) {
-        for (item: OptionVariantViewModel in dataList) {
+    override fun onSelectedVariantChanged(selectedVariant: OptionVariantUiModel) {
+        for (item: OptionVariantUiModel in dataList) {
             if (item.equals(selectedVariant)) {
                 item.currentState = STATE_SELECTED
             } else if (item.currentState != STATE_NOT_AVAILABLE) {

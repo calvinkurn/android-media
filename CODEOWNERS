@@ -8,10 +8,11 @@
 /features/content/kol_common/           				@tokopedia/minion-dave
 /features/content/profile/              				@tokopedia/minion-dave
 /features/content/feed_component/       				@tokopedia/minion-dave
-/features/discovery/category_common/                	@tokopedia/minion-stuart
+/features/user/groupchat/                       		@tokopedia/minion-dave
 /features/discovery/topadssdk/                      	@tokopedia/minion-dave
 /features/discovery/home/                           	@tokopedia/minion-dave
 /features/discovery/home_recom/                     	@tokopedia/minion-dave
+/features/discovery/home_wishlist/                     	@tokopedia/minion-dave
 /features/discovery/recentview/                     	@tokopedia/minion-dave
 /features/discovery/wishlist_common/                	@tokopedia/minion-dave
 /features/discovery/productcard/                    	@tokopedia/minion-dave
@@ -23,60 +24,100 @@
 /features/digital/digital_browse/                   	@tokopedia/minion-dave
 /features/discovery/global_nav_widget/              	@tokopedia/minion-dave
 /features/discovery/global_nav_widget_samples/      	@tokopedia/minion-dave
-/features/home/account-home/                        	@tokopedia/minion-dave
 /features/home/navigation/                          	@tokopedia/minion-dave
 /features/home/navigation-common/                   	@tokopedia/minion-dave
 /features/home/searchbar/                           	@tokopedia/minion-dave
+/features/content/play/                                 @tokopedia/minion-dave
+/features/content/play_common/                          @tokopedia/minion-dave
+/features/content/interest_pick_common                  @tokopedia/minion-dave
+/features/discovery/discovery_common                    @tokopedia/minion-dave
+/features/discovery/recommendation_widget_common        @tokopedia/minion-dave
+/features/discovery/carousel_productcard                @tokopedia/minion-dave
+/features/discovery/productcard_options                 @tokopedia/minion-dave
+/features/discovery/home_page_banner                    @tokopedia/minion-dave
 
 /features/common/developer_options                  	@tokopedia/core-team
 /features/common/nps                                	@tokopedia/core-team
 /features/common/resources_common                   	@tokopedia/core-team
+/features/common/qr_scanner                   	        @tokopedia/core-team
+
+/features/discovery/category_common/                	@tokopedia/minion-stuart
+/features/discovery/flashsale_management/               @tokopedia/minion-stuart
+/features/discovery/flashsale_management_common/        @tokopedia/minion-stuart
 
 /features/fintech/mitra_toppers/                        @tokopedia/minion-stuart
+
+/features/merchant/atc_variant/                         @tokopedia/minion-stuart
+/features/merchant/brandlist/                           @tokopedia/minion-stuart
 /features/merchant/gold_merchant/                       @tokopedia/minion-stuart
 /features/merchant/gold_merchant_common/                @tokopedia/minion-stuart
+/features/merchant/gold_merchant_resource/              @tokopedia/minion-stuart
 /features/merchant/gold_merchant_subscribe/             @tokopedia/minion-stuart
+/features/merchant/official_store/                      @tokopedia/minion-stuart
 /features/merchant/power_merchant_subscribe/            @tokopedia/minion-stuart
 /features/merchant/product_detail/                      @tokopedia/minion-stuart
+/features/merchant/product_detail_common/               @tokopedia/minion-stuart
 /features/merchant/product_draft_database/              @tokopedia/minion-stuart
+/features/merchant/product_add_edit/                    @tokopedia/minion-stuart
+/features/merchant/product_manage_common/               @tokopedia/minion-stuart
 /features/merchant/product_manage_item/                 @tokopedia/minion-stuart
 /features/merchant/product_manage_list/                 @tokopedia/minion-stuart
+/features/merchant/product_share/                       @tokopedia/minion-stuart
+/features/merchant/report/                              @tokopedia/minion-stuart
 /features/merchant/reputation/                          @tokopedia/minion-stuart
 /features/merchant/reputation_common/                   @tokopedia/minion-stuart
 /features/merchant/shop_common/                         @tokopedia/minion-stuart
+/features/merchant/shop_etalase_picker/                 @tokopedia/minion-stuart
 /features/merchant/shop_open/                           @tokopedia/minion-stuart
+/features/merchant/shop_showcase/                       @tokopedia/minion-stuart
 /features/merchant/shop_page/                           @tokopedia/minion-stuart
-/features/merchant/official_store/                      @tokopedia/minion-stuart
-/features/merchant/atc_variant/                         @tokopedia/minion-stuart
-/features/top_ads/top_ads_free_claim/                   @tokopedia/minion-stuart
-/features/top_ads/top_ads_management/                   @tokopedia/minion-stuart
-/features/top_ads/top_ads_management_common/            @tokopedia/minion-stuart
-/features/top_ads/top_ads_management_sourcetagging/     @tokopedia/minion-stuart
-/features/top_ads/top_ads_autoads/     @tokopedia/minion-dave
-/features/top_ads/top_ads_detail_sheet/     @tokopedia/minion-dave
 
+/features/top_ads/top_ads_free_claim/                   @tokopedia/minion-skywalker
+/features/top_ads/top_ads_management/                   @tokopedia/minion-skywalker
+/features/top_ads/top_ads_management_common/            @tokopedia/minion-skywalker
+/features/top_ads/top_ads_management_sourcetagging/     @tokopedia/minion-skywalker
+/features/top_ads/top_ads_autoads/                      @tokopedia/minion-skywalker
+/features/top_ads/top_ads_create/                       @tokopedia/minion-skywalker
+/features/top_ads/top_ads_detail_sheet/                 @tokopedia/minion-skywalker
+
+/features/merchant/shop_settings/                       @tokopedia/minion-stuart
+
+/features/merchant/seller_home/                         @tokopedia/minion-stuart
+/features/merchant/seller_onboarding/                   @tokopedia/minion-stuart
+/features/merchant/seller_home_drawer/                  @tokopedia/minion-stuart
 /libraries/kotlin_extensions/                           @tokopedia/minion-stuart
 
-/features/digital/flight/                               @tokopedia/minion-mark
-/features/digital/train/                                @tokopedia/minion-mark
-/features/digital/hotel/                                @tokopedia/minion-mark
-/features/digital/flight_no_op/                         @tokopedia/minion-mark
-/features/digital/digitalproduct                        @tokopedia/minion-mark
-/features/digital/common_travel                         @tokopedia/minion-mark
-/features/digital/common_digital                        @tokopedia/minion-mark
-/features/digital/common_topup_bills                    @tokopedia/minion-mark
-/features/digital/digital_homepage                      @tokopedia/minion-mark
-/libraries/travel_calendar                              @tokopedia/minion-mark
-/features/digital/travel_homepage                       @tokopedia/minion-mark
-/features/digital/travel_country_code                   @tokopedia/minion-mark
-/features/digital/travel_passenger                      @tokopedia/minion-mark
-/features/digital/voucher_game                          @tokopedia/minion-mark
-/features/digital/digital_emoney                        @tokopedia/minion-mark
-/features/digital/imagepreviewslider                    @tokopedia/minion-mark
+/features/top_ads/top_ads_free_claim/                   @tokopedia/minion-skywalker
+/features/top_ads/top_ads_management/                   @tokopedia/minion-skywalker
+/features/top_ads/top_ads_management_common/            @tokopedia/minion-skywalker
+/features/top_ads/top_ads_management_sourcetagging/     @tokopedia/minion-skywalker
+/features/top_ads/top_ads_autoads/                      @tokopedia/minion-skywalker
+/features/top_ads/top_ads_create/                       @tokopedia/minion-skywalker
+/features/top_ads/top_ads_detail_sheet/                 @tokopedia/minion-skywalker
+
+/features/recharge/digital_topup_bills                  @tokopedia/minion-mark
+/features/recharge/rechargeocr                          @tokopedia/minion-mark
+/features/recharge/recharge_general                     @tokopedia/minion-mark
+/features/recharge/voucher_game                         @tokopedia/minion-mark
+/features/recharge/digital_emoney                       @tokopedia/minion-mark
+/features/recharge/common_digital                       @tokopedia/minion-mark
+/features/recharge/common_topup_bills                   @tokopedia/minion-mark
+/features/recharge/digital_homepage                     @tokopedia/minion-mark
+/features/recharge/digitalproduct                       @tokopedia/minion-mark
+
+/features/entertainment/event                 			@tokopedia/minion-mark
+/features/entertainment/digital_deals         			@tokopedia/minion-mark
+
+/features/travel/flight_orderlist                       @tokopedia/minion-mark
+/features/travel/flight/                                @tokopedia/minion-mark
+/features/travel/hotel/                                 @tokopedia/minion-mark
+/features/travel/common_travel                          @tokopedia/minion-mark
+/features/travel/travel_homepage                        @tokopedia/minion-mark
+/features/travel/travel_country_code                    @tokopedia/minion-mark
+/features/travel/travel_passenger                       @tokopedia/minion-mark
+
 /features/salam/umrah                                   @tokopedia/minion-mark
-/features/digital/digital_topup_bills                   @tokopedia/minion-mark
-/features/digital/flight_orderlist                      @tokopedia/minion-mark
-/features/digital/rechargeocr                           @tokopedia/minion-mark
+/libraries/travel_calendar                              @tokopedia/minion-mark
 
 /features/payment/payment/                      		@tokopedia/minion-bob
 /features/payment/payment_setting/              		@tokopedia/minion-bob
@@ -88,45 +129,47 @@
 /features/transaction/purchase_platform_common/ 		@tokopedia/minion-bob
 /features/logistic/logisticdata/                		@tokopedia/minion-bob
 /features/logistic/logisticaddaddress/          		@tokopedia/minion-bob
-/features/logistic/tracking/                    		@tokopedia/minion-bob
+/features/logistic/logisticorder/                    	@tokopedia/minion-bob
 /features/promo/promo_checkout/                 		@tokopedia/minion-bob
 /features/promo/promo_checkout_common/          		@tokopedia/minion-bob
 /features/logistic/logisticcart/                		@tokopedia/minion-bob
 
-/features/user/chatbot/                         @tokopedia/minion-darth
-/features/user/chatbot_no_op/                   @tokopedia/minion-kevin
-/features/user/chat_common/                     @tokopedia/minion-kevin
-/features/user/topchat/                         @tokopedia/minion-kevin
-/features/user/topchat_no_op/                   @tokopedia/minion-kevin
-/features/user/groupchat/                       @tokopedia/minion-kevin
-/features/user/profilecompletion/                         @tokopedia/minion-kevin
-/features/user/vote/                            @tokopedia/minion-kevin
-/features/user/otp/                             @tokopedia/minion-kevin
-/features/user/settingbank/                     @tokopedia/minion-kevin
-/features/user/settingnotif/                    @tokopedia/minion-kevin
-/features/user/changepassword/                  @tokopedia/minion-kevin
-/features/user/logout/                          @tokopedia/minion-kevin
-/features/user/loginregister/                   @tokopedia/minion-kevin
-/features/user/sessioncommon/                   @tokopedia/minion-kevin
-/features/user/loginphone/                      @tokopedia/minion-kevin
-/features/user/notifcenter/                     @tokopedia/minion-kevin
-/features/user/attachproduct/                   @tokopedia/minion-kevin
-/features/user/talk/                            @tokopedia/minion-kevin
-/features/user/changephonenumber                @tokopedia/minion-kevin
-/features/user/onboarding                       @tokopedia/minion-kevin
-/features/user/phoneverification                @tokopedia/minion-kevin
-/features/user/updateinactivephone              @tokopedia/minion-kevin
-/features/user/user_identification/             @tokopedia/minion-kevin
-/features/user/user_identification_common/      @tokopedia/minion-kevin
-/features/user/user_identification_no_op/       @tokopedia/minion-kevin
-/features/fcm_common/                           @tokopedia/minion-kevin
+/features/user/chatbot/                         		@tokopedia/minion-darth
+/features/user/chatbot_no_op/                   		@tokopedia/minion-kevin
+/features/user/chat_common/                     		@tokopedia/minion-kevin
+/features/user/topchat/                         		@tokopedia/minion-kevin
+/features/user/topchat_no_op/                   		@tokopedia/minion-kevin
+/features/user/profilecompletion/                       @tokopedia/minion-kevin
+/features/user/vote/                            		@tokopedia/minion-kevin
+/features/user/otp/                             		@tokopedia/minion-kevin
+/features/user/settingbank/                     		@tokopedia/minion-yoda
+/features/user/settingnotif/                    		@tokopedia/minion-kevin
+/features/user/changepassword/                  		@tokopedia/minion-kevin
+/features/user/logout/                          		@tokopedia/minion-kevin
+/features/user/loginregister/                   		@tokopedia/minion-kevin
+/features/user/sessioncommon/                   		@tokopedia/minion-kevin
+/features/user/loginphone/                      		@tokopedia/minion-kevin
+/features/user/notifcenter/                     		@tokopedia/minion-kevin
+/features/user/attachproduct/                   		@tokopedia/minion-kevin
+/features/user/talk/                            		@tokopedia/minion-kevin
+/features/user/changephonenumber                		@tokopedia/minion-kevin
+/features/user/onboarding                       		@tokopedia/minion-kevin
+/features/user/phoneverification                		@tokopedia/minion-kevin
+/features/user/updateinactivephone              		@tokopedia/minion-kevin
+/features/user/user_identification/             		@tokopedia/minion-kevin
+/features/user/user_identification_common/      		@tokopedia/minion-kevin
+/features/user/user_identification_no_op/       		@tokopedia/minion-kevin
+/features/fcm_common/                                   @tokopedia/minion-kevin
 /features/user/seamless_login/                          @tokopedia/minion-kevin
 /features/user/kyc_centralized/                         @tokopedia/minion-kevin
 /features/user/attachinvoice/                           @tokopedia/minion-kevin
+/features/user/attachvoucher/                           @tokopedia/minion-kevin
+/features/user/attachcommon/                            @tokopedia/minion-kevin
+/features/user/stickylogin/                             @tokopedia/minion-kevin
+/features/user/campaign_shake_landing/                  @tokopedia/minion-kevin
+/features/home/account-home/                        	@tokopedia/minion-kevin
 
-/features/digital/event                 				@tokopedia/minion-darth
 /features/operational/contact_us        				@tokopedia/minion-darth
-/features/digital/digital_deals         				@tokopedia/minion-darth
 
 /features/fintech/wallet                				@tokopedia/minion-solo
 /features/fintech/common_wallet         				@tokopedia/minion-solo
@@ -139,12 +182,24 @@
 /features/promo/gamification            				@tokopedia/minion-solo
 /features/payment/withdraw/             				@tokopedia/minion-solo
 /features/kyc                           				@tokopedia/minion-yoda
+/features/promo/merchant_voucher                        @tokopedia/minion-solo
+/features/promo/promo_gamification_common               @tokopedia/minion-solo
+/features/promo/loyalty                                 @tokopedia/minion-solo
+/features/promo/loyalty_common                          @tokopedia/minion-solo
+/features/fintech/merchant_lending_widget               @tokopedia/minion-solo
+
 
 /features/im/challenges                 				@tokopedia/minion-yoda
 /features/im/referral                   				@tokopedia/minion-yoda
+/features/im/common_promo                               @tokopedia/minion-yoda
+/features/ovop2p                                        @tokopedia/minion-yoda
+/features/payment/common_payment                        @tokopedia/minion-yoda
+
 
 /libraries/adapter_delegate/							@tokopedia/core-team
 /libraries/analytics/							        @tokopedia/core-team
+/libraries/analytics_debugger/							@tokopedia/core-team
+/libraries/analytics_debugger_noop/					    @tokopedia/core-team
 /libraries/applink/										@tokopedia/core-team
 /libraries/banner_dynamic/								@tokopedia/core-team
 /libraries/base_adapter/								@tokopedia/core-team
@@ -157,7 +212,7 @@
 /libraries/collapsing_tab_layout/						@tokopedia/core-team
 /libraries/common_network/								@tokopedia/core-team
 /libraries/composite_lib/								@tokopedia/core-team
-/libraries/core_legacy/									@ricoharisin
+/libraries/core_legacy/									@nathaniel09
 /libraries/core_network/								@tokopedia/core-team
 /libraries/cpm/											@tokopedia/core-team
 /libraries/date_picker_range/							@tokopedia/core-team
@@ -175,13 +230,15 @@
 /libraries/logger/										@tokopedia/core-team
 /libraries/oms/											@tokopedia/core-team
 /libraries/permissionchecker/							@tokopedia/core-team
+/libraries/product_photo_adapter/                       @tokopedia/minion-stuart
 /libraries/promotions_target/							@tokopedia/core-team
 /libraries/push_notification/							@tokopedia/core-team
 /libraries/react_native/								@tokopedia/core-team
 /libraries/remote_config/								@tokopedia/core-team
+/libraries/remoteresourcerequest/						@tokopedia/core-team
 /libraries/sharedata/									@tokopedia/core-team
-/libraries/track/										@ricoharisin
-/libraries/tracking_optimizer/							@ricoharisin
+/libraries/track/										@nathaniel09
+/libraries/tracking_optimizer/							@nathaniel09
 /libraries/translator/									@tokopedia/core-team
 /libraries/travel_calendar/								@tokopedia/core-team
 /libraries/twitter_share/								@tokopedia/core-team
@@ -192,6 +249,8 @@
 /libraries/webview/										@tokopedia/core-team
 /libraries/williamchart/								@tokopedia/core-team
 /libraries/youtubeutil/									@tokopedia/core-team
+/libraries/imagepreviewslider                           @tokopedia/core-team
+/libraries/annotation_proc_central                      @tokopedia/core-team
 
 /tkpddiscovery/                                        	@tokopedia/core-team
 /tkpdsession/                                       	@tokopedia/core-team
@@ -206,5 +265,5 @@
 /tkpdabstraction/                                   	@nathaniel09 @hendrysetiadi89
 
 /customerapp/                                       	@tokopedia/core-team
-/sellerapp/                                         	@tokopedia/core-team
+/sellerapp/                                         	@tokopedia/minion-stuart
 /testapp/                                               @tokopedia/core-team

@@ -2,8 +2,8 @@ package com.tokopedia.autocomplete.analytics;
 
 import android.content.Context;
 
-import com.google.android.gms.tagmanager.DataLayer;
-import com.tokopedia.autocomplete.viewmodel.BaseItemAutoCompleteSearch;
+import com.tokopedia.analyticconstant.DataLayer;
+import com.tokopedia.autocomplete.initialstate.BaseItemInitialStateSearch;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -55,6 +55,7 @@ public class AutocompleteTracking {
     public static final String CLICK_SEARCH = "click - search";
     public static final String CLICK_PROFILE_SUGGESTION = "click - profile autocomplete on suggestion list";
     public static final String CLICK_TOP_PROFILE_SUGGESTION = "click - profile autocomplete on top suggestion";
+    public static final String CLICK_REFRESH_POPULAR_SEARCH = "click refresh on popular search";
 
     public static final String ECOMMERCE = "ecommerce";
     public static final String PRODUCT_CLICK = "productClick";
@@ -192,9 +193,8 @@ public class AutocompleteTracking {
         );
     }
 
-    public static void eventClickRecentView(Context context,
-                                            String position,
-                                            BaseItemAutoCompleteSearch data) {
+    public static void eventClickRecentView(String position,
+                                            BaseItemInitialStateSearch data) {
         Map<String, Object> productData = convertSearchItemToProductData(data, position);
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(EVENT, PRODUCT_CLICK,
@@ -217,16 +217,25 @@ public class AutocompleteTracking {
         );
     }
 
-    private static Map<String, Object> convertSearchItemToProductData(BaseItemAutoCompleteSearch data,
+    private static Map<String, Object> convertSearchItemToProductData(BaseItemInitialStateSearch data,
                                                                       String position) {
         return DataLayer.mapOf(
-                PRODUCT_NAME, data.getKeyword(),
+                PRODUCT_NAME, data.getTitle(),
                 PRODUCT_ID, data.getProductId(),
-                PRODUCT_PRICE, data.getProductPrice(),
+                PRODUCT_PRICE, "",
                 PRODUCT_BRAND, NONE_OTHER,
                 PRODUCT_CATEGORY, NONE_OTHER,
                 PRODUCT_VARIANT, NONE_OTHER,
                 PRODUCT_POSITION, position
+        );
+    }
+
+    public static void eventClickRefreshPopularSearch(){
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                EVENT_CLICK_TOP_NAV,
+                EVENTCATEGORY_TOP_NAV + " - homepage",
+                CLICK_REFRESH_POPULAR_SEARCH,
+                ""
         );
     }
 }

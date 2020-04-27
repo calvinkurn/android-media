@@ -42,7 +42,9 @@ public class DigitalViewHolder extends AbstractViewHolder<DigitalSearch> {
                                 element.getApplink()
                         )
                 );
-                listener.onItemClicked(element.getApplink(), element.getUrl());
+                if (listener != null) {
+                    listener.onItemClicked(element.getApplink(), element.getUrl());
+                }
             }
         });
         titleTextView.setText(element.getRecom());

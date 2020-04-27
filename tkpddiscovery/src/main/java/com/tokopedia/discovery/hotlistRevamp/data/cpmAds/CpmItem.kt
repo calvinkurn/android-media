@@ -25,9 +25,6 @@ data class CpmItem(
         @field:SerializedName("click_url")
         val click_url: String? = null,
 
-        @field:SerializedName("impression_url")
-        val impression_url: String? = null,
-
         @field:SerializedName("badge_url")
         val badge_url: String? = null
 

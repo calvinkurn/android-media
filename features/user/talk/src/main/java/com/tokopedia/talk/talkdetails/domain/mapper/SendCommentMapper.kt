@@ -1,6 +1,6 @@
 package com.tokopedia.talk.talkdetails.domain.mapper
 
-import com.tokopedia.abstraction.common.data.model.response.DataResponse
+import com.tokopedia.network.data.model.response.DataResponse
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.talk.talkdetails.data.SendCommentResponse
 import retrofit2.Response

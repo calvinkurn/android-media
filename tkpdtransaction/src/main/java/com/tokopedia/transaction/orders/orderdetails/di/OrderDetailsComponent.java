@@ -5,6 +5,7 @@ package com.tokopedia.transaction.orders.orderdetails.di;
  */
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
+import com.tokopedia.transaction.orders.orderdetails.view.activity.SeeInvoiceActivity;
 import com.tokopedia.transaction.orders.orderdetails.view.fragment.MarketPlaceDetailFragment;
 import com.tokopedia.transaction.orders.orderdetails.view.fragment.OmsDetailFragment;
 import com.tokopedia.transaction.orders.orderdetails.view.fragment.OrderListDetailFragment;
@@ -20,6 +21,7 @@ public interface OrderDetailsComponent {
 
     void inject(OmsDetailFragment omsDetailFragment);
 
+    void inject(SeeInvoiceActivity seeInvoiceActivity);
 
     void inject(MarketPlaceDetailFragment marketPlaceDetailFragment);
 }

@@ -20,7 +20,6 @@ public interface CouponListingStackedContract {
 
         void openWebView(String url);
 
-        void populateCoupons(int categoryId);
 
         void emptyCoupons(Map<String, String> errors);
 
@@ -31,9 +30,9 @@ public interface CouponListingStackedContract {
 
         Resources getResources();
 
-        void showRedeemCouponDialog(String cta, String code, String title);
+//        void showRedeemCouponDialog(String cta, String code, String title);
 
-        void showCouponInStackBottomSheet(String stackId);
+//        void showCouponInStackBottomSheet(String stackId);
     }
 
     interface Presenter extends CustomerPresenter<View> {

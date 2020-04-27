@@ -1,14 +1,17 @@
 package com.tokopedia.search.result.presentation;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.filter.common.data.DataValue;
+import com.tokopedia.abstraction.base.view.listener.CustomerView;
+import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
+import com.tokopedia.filter.common.data.DynamicFilterModel;
 import com.tokopedia.filter.common.data.Filter;
-import com.tokopedia.filter.common.data.Option;
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem;
 import com.tokopedia.search.analytics.GeneralSearchTrackingModel;
 import com.tokopedia.search.result.presentation.model.GlobalNavViewModel;
+import com.tokopedia.search.result.presentation.model.InspirationCarouselViewModel;
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
-import com.tokopedia.wishlist.common.listener.WishListActionListener;
+
 import org.json.JSONArray;
 
 import java.util.ArrayList;
@@ -18,18 +21,8 @@ import java.util.Map;
 
 public interface ProductListSectionContract {
 
-    interface View extends SearchSectionContract.View {
-        boolean isUserHasLogin();
-
+    interface View extends CustomerView {
         String getUserId();
-
-        void initTopAdsParams();
-
-        void incrementStart();
-
-        void storeTotalData(int totalData);
-
-        void setHeaderTopAds(boolean hasHeader);
 
         void addProductList(List<Visitable> list);
 
@@ -73,8 +66,6 @@ public interface ProductListSectionContract {
 
         void initQuickFilter(List<Filter> quickFilterList);
 
-        void setAdditionalParams(String additionalParams);
-
         void setAutocompleteApplink(String autocompleteApplink);
 
         void sendTrackingEventAppsFlyerViewListingSearch(JSONArray afProdIds, String query, ArrayList<String> prodIdArray);
@@ -82,8 +73,6 @@ public interface ProductListSectionContract {
         void sendTrackingEventMoEngageSearchAttempt(String query, boolean hasProductList, HashMap<String, String> category);
 
         void sendTrackingGTMEventSearchAttempt(GeneralSearchTrackingModel generalSearchTrackingModel);
-
-        void setFirstTimeLoad(boolean isFirstTimeLoad);
 
         void sendImpressionGlobalNav(GlobalNavViewModel globalNavViewModel);
 
@@ -96,8 +85,6 @@ public interface ProductListSectionContract {
         void updateScrollListener();
 
         boolean isAnyFilterActive();
-
-        Map<String, String> getAdditionalParamsMap();
 
         void launchLoginActivity(String productId);
 
@@ -119,21 +106,85 @@ public interface ProductListSectionContract {
 
         void showFreeOngkirShowCase(boolean hasFreeOngkirBadge);
 
-        boolean isTickerHasDismissed();
-
         void redirectToBrowser(String url);
+
+        HashMap<String, String> getSelectedSort();
+
+        void setSelectedSort(HashMap<String, String> selectedSort);
+
+        HashMap<String, String> getSelectedFilter();
+
+        void refreshFilterController(HashMap<String, String> selectedFilter);
+
+        void showRefreshLayout();
+
+        void hideRefreshLayout();
+
+        String getScreenNameId();
+
+        void setTotalSearchResultCount(String formattedResultCount);
+
+        BaseAppComponent getBaseAppComponent();
+
+        void logDebug(String tag, String message);
+
+        void renderDynamicFilter(DynamicFilterModel dynamicFilterModel);
+
+        void renderFailRequestDynamicFilter();
+
+        boolean isFirstActiveTab();
+
+        void setupSearchNavigation();
+
+        void trackScreenAuthenticated();
+
+        void reloadData();
+
+        void showBottomNavigation();
+
+        void hideBottomNavigation();
+
+        void sendImpressionInspirationCarousel(final InspirationCarouselViewModel inspirationCarouselViewModel);
     }
 
-    interface Presenter extends SearchSectionContract.Presenter<View> {
+    interface Presenter extends CustomerPresenter<View> {
 
-        void loadMoreData(Map<String, Object> searchParameter, Map<String, String> additionalParams);
+        void initInjector(View view);
 
-        void loadData(Map<String, Object> searchParameter, Map<String, String> additionalParams, boolean isFirstTimeLoad);
+        void requestDynamicFilter(Map<String, Object> searchParameter);
+
+        void loadMoreData(Map<String, Object> searchParameter);
+
+        void loadData(Map<String, Object> searchParameter);
 
         void handleWishlistButtonClicked(final ProductItemViewModel productItem);
 
         void handleWishlistButtonClicked(final RecommendationItem recommendationItem);
 
         void onBannedProductsGoToBrowserClick(String url);
+
+        boolean isUsingBottomSheetFilter();
+
+        String getUserId();
+
+        boolean isUserLoggedIn();
+
+        String getDeviceId();
+
+        void onPriceFilterTickerDismissed();
+
+        boolean getIsTickerHasDismissed();
+
+        boolean hasNextPage();
+
+        void clearData();
+
+        void setStartFrom(int startFrom);
+
+        int getStartFrom();
+
+        void onViewCreated();
+
+        void onViewVisibilityChanged(boolean isViewVisible, boolean isViewAdded);
     }
 }

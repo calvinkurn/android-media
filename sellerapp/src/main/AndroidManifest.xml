@@ -50,33 +50,16 @@
         </activity>
 
         <activity
-            android:name=".LogoutActivity"
-            android:label="@string/app_name"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.Tokopedia3.PlainGreen">
-            <intent-filter android:autoVerify="true">
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <data
-                    android:scheme="@string/internal_scheme"
-                    android:host="@string/host_global"
-                    android:path="@string/path_logout"/>
-            </intent-filter>
-        </activity>
-
-        <activity
             android:name=".welcome.WelcomeActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"/>
 
         <activity
-            android:name=".dashboard.view.activity.DashboardActivity"
+            android:name="com.tokopedia.sellerhome.view.activity.SellerHomeActivity"
             android:exported="true"
             android:label="@string/drawer_title_home"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.Tokopedia3">
+            android:theme="@style/SellerHomeTheme">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -86,8 +69,8 @@
                 <data android:scheme="tkpd" />
                 <data
                     android:scheme="@string/internal_scheme"
-                    android:host="@string/host_marketplace"
-                    android:path="@string/path_sellerapp_dashboard"/>
+                    android:host="@string/host_sellerapp"
+                    android:path="@string/path_sellerhome"/>
             </intent-filter>
             <meta-data
                 android:name="APPS_HOME"
@@ -116,6 +99,9 @@
         <meta-data
             android:name="APP_ID"
             android:value="@string/key_moengage" />
+        <meta-data
+            android:name="com.bugsnag.android.API_KEY"
+            android:value="50d42520ce58b3168a5a721995812a72"/>
         <uses-library
             android:name="org.apache.http.legacy"
             android:required="false" />
@@ -262,12 +248,6 @@
             android:launchMode="singleTask"/>
 
         <activity
-            android:name="com.tokopedia.sellerapp.webview.SellerappWebViewActivity"
-            android:label="@string/title_activity_deep_link"
-            android:theme="@style/Theme.White"
-            android:screenOrientation="portrait" />
-
-        <activity
             android:name=".deeplink.DeepLinkHandlerActivity"
             android:screenOrientation="portrait">
             <intent-filter>
@@ -283,7 +263,7 @@
             android:name="com.tokopedia.sellerapp.shopstatisticdetail.ShopStatisticDetail"
             android:label="@string/title_activity_shop_statistic_detail"
             android:screenOrientation="portrait" />
-        <service android:name="com.tokopedia.core.drawer2.service.DrawerGetNotificationService"
+        <service android:name="com.tokopedia.sellerhomedrawer.domain.service.SellerDrawerGetNotificationService"
             android:permission="android.permission.BIND_JOB_SERVICE"/>
     </application>
 </manifest>

@@ -4,9 +4,9 @@ import android.content.Context;
 import android.text.TextUtils;
 
 import com.moengage.push.PushManager;
+import com.tokopedia.abstraction.common.utils.view.DateFormatUtils;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.gcm.FCMCacheManager;
-import com.tokopedia.core.util.DateFormatUtils;
 import com.tokopedia.home.account.analytics.data.model.UserAttributeData;
 import com.tokopedia.track.TrackApp;
 

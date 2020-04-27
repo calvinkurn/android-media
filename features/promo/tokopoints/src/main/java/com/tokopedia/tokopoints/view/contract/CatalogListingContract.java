@@ -41,14 +41,11 @@ public interface CatalogListingContract {
 
         void refreshTab();
 
-
-        void onSuccessTokenDetail(LuckyEggEntity tokenDetail, LobDetails lobDetails);
-
         void onSuccessPoints(String rewardStr, int rewardValue, String membership, String eggUrl);
     }
 
-    interface Presenter extends CustomerPresenter<View> {
-        void destroyView();
+    interface Presenter {
+
 
         void getHomePageData(String slugCategory, String slugSubCategory, boolean isBannerRequire);
 

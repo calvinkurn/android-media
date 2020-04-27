@@ -17,7 +17,6 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.salam.umrah.R
 import com.tokopedia.salam.umrah.checkout.data.ContactUser
 import com.tokopedia.salam.umrah.checkout.di.UmrahCheckoutComponent
-import com.tokopedia.salam.umrah.checkout.presentation.activity.UmrahCheckoutContactDataActivity
 import com.tokopedia.salam.umrah.checkout.presentation.activity.UmrahCheckoutContactDataActivity.Companion.EXTRA_INITIAL_CONTACT_DATA
 import com.tokopedia.salam.umrah.checkout.presentation.viewmodel.UmrahCheckoutPilgrimsViewModel
 import com.tokopedia.travel.country_code.presentation.activity.PhoneCodePickerActivity
@@ -59,7 +58,7 @@ class UmrahCheckoutContactDataFragment : BaseDaggerFragment(), TravelContactArra
 
         initView()
 
-        umrahCheckoutPilgrimsViewModel.getContactList(GraphqlHelper.loadRawString(resources, com.tokopedia.common.travel.R.raw.query_get_travel_contact_list))
+        umrahCheckoutPilgrimsViewModel.getContactList(GraphqlHelper.loadRawString(resources, com.tokopedia.travel.passenger.R.raw.query_get_travel_contact_list))
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -101,7 +100,7 @@ class UmrahCheckoutContactDataFragment : BaseDaggerFragment(), TravelContactArra
 
 
     fun initView() {
-        til_umrah_checkout_contact_name.setLabel(getString(com.tokopedia.common.travel.R.string.travel_contact_data_name_title))
+        til_umrah_checkout_contact_name.setLabel(getString(com.tokopedia.travel.passenger.R.string.travel_contact_data_name_title))
 
         context?.let {
             travelContactArrayAdapter = TravelContactArrayAdapter(it, com.tokopedia.travel.passenger.R.layout.layout_travel_passenger_autocompletetv, arrayListOf(), this)
@@ -135,7 +134,7 @@ class UmrahCheckoutContactDataFragment : BaseDaggerFragment(), TravelContactArra
         til_umrah_checkout_contact_name.setErrorTextAppearance(com.tokopedia.common.travel.R.style.ErrorTextAppearance)
 
 
-        til_umrah_checkout_contact_email.setLabel(getString(com.tokopedia.common.travel.R.string.travel_contact_data_email_title))
+        til_umrah_checkout_contact_email.setLabel(getString(com.tokopedia.travel.passenger.R.string.travel_contact_data_email_title))
         til_umrah_checkout_contact_email.editText.apply {
             setText(contactData.email)
             addTextChangedListener(object : TextWatcher {

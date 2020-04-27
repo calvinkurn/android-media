@@ -6,7 +6,7 @@
 
     <application>
         <activity
-            android:name=".view.activity.TokoPointsHomeNewActivity"
+            android:name=".view.tokopointhome.TokoPointsHomeNewActivity"
             android:screenOrientation="portrait"
             android:theme="@style/TokoPointTransparentStatus" >
             <intent-filter>
@@ -23,7 +23,7 @@
         </activity>
 
         <activity
-            android:name=".view.activity.CatalogListingActivity"
+            android:name=".view.cataloglisting.CatalogListingActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" >
             <intent-filter >
@@ -40,7 +40,7 @@
         </activity>
 
         <activity
-            android:name=".view.activity.CouponListingStackedActivity"
+            android:name=".view.couponlisting.CouponListingStackedActivity"
             android:screenOrientation="portrait"
             android:launchMode="singleTop"
             android:theme="@style/Theme.White" >
@@ -58,7 +58,7 @@
         </activity>
 
         <activity
-            android:name=".view.activity.CouponCatalogDetailsActivity"
+            android:name=".view.catalogdetail.CouponCatalogDetailsActivity"
             android:screenOrientation="portrait"
             android:launchMode="singleTop"
             android:theme="@style/Theme.White" >

@@ -4,7 +4,6 @@ import androidx.annotation.Nullable;
 import android.text.TextUtils;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.InboxReputationDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.InboxReputationItemDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.ReputationBadgeDomain;
@@ -55,7 +54,7 @@ public class GetInboxReputationDetailSubscriber extends Subscriber<InboxReputati
     @Override
     public void onError(Throwable e) {
         viewListener.finishLoading();
-        viewListener.onErrorGetInboxDetail(ErrorHandler.getErrorMessage(e));
+        viewListener.onErrorGetInboxDetail(e);
     }
 
     @Override

@@ -1,10 +1,12 @@
 package com.tokopedia.browse.categoryNavigation.adapters
 
-import android.content.Context
 import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.browse.R
 import com.tokopedia.browse.categoryNavigation.analytics.CategoryAnalytics
@@ -51,24 +53,27 @@ class CategoryLevelOneAdapter(private val categoryList: MutableList<CategoriesIt
 
         ImageHandler.loadImage(holder.itemView.context, holder.categoryImage, categoryList[position].iconImageUrl, R.drawable.loading_page)
 
-        holder.parent_layout.setOnClickListener {
-            listener.onItemClicked(categoryList[position].id!!, position, categoryList[position].name!!, categoryList[position].applinks)
+        holder.parentLayout.setOnClickListener {
+            listener.onItemClicked(categoryList[position].id
+                    ?: "", position, categoryList[position].name
+                    ?: "", categoryList[position].applinks)
+
             CategoryAnalytics.createInstance().eventCategoryLevelOneClick(categoryList[position], position)
         }
         if (categoryList[position].isSelected) {
-            holder.unselected_overlay.hide()
+            holder.unselectedOverlay.hide()
         } else {
-            holder.unselected_overlay.show()
+            holder.unselectedOverlay.show()
         }
 
     }
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
-        val parent_layout = view.parent_layout
-        val categoryImage = view.category_imageview
-        val categoryName = view.category_name
-        val unselected_overlay = view.unselected_overlay
+        val parentLayout: ConstraintLayout = view.parent_layout
+        val categoryImage: ImageView = view.category_imageview
+        val categoryName: TextView = view.category_name
+        val unselectedOverlay: View = view.unselected_overlay
 
     }
 }

@@ -13,6 +13,10 @@ buildscript {
     }
 }
 
+android {
+    compileSdkVersion 29
+}
+
 dependencies {
     implementation project(rootProject.ext.features.resourcesCommon)
     implementation project(rootProject.ext.libraries.tkpddesign)
@@ -34,6 +38,7 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.datepicker
+    implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.graphql
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
@@ -52,16 +57,22 @@ dependencies {
         exclude group: 'com.android.support.constraint'
         exclude group: 'com.github.scottyab'
     }
-    implementation rootProject.ext.firebase.fireStore
     implementation rootProject.ext.miscDependencies.dagger
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.networkDependencies.glide
 
-    testImplementation 'junit:junit:4.12'
 
     implementation project(rootProject.ext.features.commonTradein)
     implementation rootProject.ext.miscDependencies.rootbeer
+    implementation project(rootProject.ext.libraries.iris)
+    testImplementation rootProject.ext.testDependencies.mockk
+    testImplementation rootProject.ext.testDependencies.archCoreTesting
+    testImplementation rootProject.ext.testDependencies.junit
+    testImplementation rootProject.ext.testDependencies.couroutinesTest
+    testImplementation rootProject.ext.miscDependencies.coroutineCore
+    testImplementation rootProject.ext.testDependencies.json
+    testImplementation rootProject.ext.firebase.fireStore
 }
 
 project.ext {

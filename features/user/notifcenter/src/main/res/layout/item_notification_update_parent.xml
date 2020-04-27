@@ -13,7 +13,7 @@
         app:layout_constraintBottom_toBottomOf="@+id/type"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/type"
-        tools:src="@drawable/dot_grey" />
+        tools:src="@drawable/notifcenter_dot_grey" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/type"
@@ -36,7 +36,7 @@
         android:layout_height="@dimen/dp_3"
         android:layout_marginStart="@dimen/dp_4"
         android:layout_marginLeft="@dimen/dp_4"
-        android:src="@drawable/dot_grey"
+        android:src="@drawable/notifcenter_dot_grey"
         android:tint="@color/Neutral_N200"
         app:layout_constraintBottom_toBottomOf="@+id/type"
         app:layout_constraintStart_toEndOf="@id/type"
@@ -62,7 +62,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_8"
         android:layout_marginLeft="@dimen/dp_8"
-        android:background="@drawable/bg_rounded_corner"
+        android:background="@drawable/notifcenter_bg_rounded_corner"
         android:gravity="center"
         android:includeFontPadding="false"
         android:minHeight="@dimen/dp_20"

@@ -4,7 +4,6 @@ import javax.annotation.Generated
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.kotlin.model.ImpressHolder
 
-@Generated("com.robohorse.robopojogenerator")
 data class CategoriesItem(
 
         @field:SerializedName("template")

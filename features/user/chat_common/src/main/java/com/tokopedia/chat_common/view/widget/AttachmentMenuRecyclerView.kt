@@ -89,4 +89,10 @@ class AttachmentMenuRecyclerView : RecyclerView, AttachmentItemViewHolder.Attach
         imm.hideSoftInputFromWindow(windowToken, 0)
     }
 
+    fun addVoucherAttachmentMenu() {
+        if (!adapter.alreadyHasAttachVoucherMenu()) {
+            adapter.addVoucherAttachmentMenu()
+        }
+    }
+
 }

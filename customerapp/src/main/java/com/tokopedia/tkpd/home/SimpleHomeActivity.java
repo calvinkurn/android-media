@@ -20,7 +20,6 @@ import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.tkpd.R;
-import com.tokopedia.tkpd.home.fragment.ProductHistoryFragment;
 import com.tokopedia.tkpd.home.wishlist.WishListFragment;
 import com.tokopedia.tkpd.home.presenter.SimpleHome;
 import com.tokopedia.tkpd.home.presenter.SimpleHomeImpl;
@@ -33,7 +32,6 @@ public class SimpleHomeActivity extends TActivity
     public static final String FRAGMENT_TYPE = "FRAGMENT_TYPE";
     public static final int INVALID_FRAGMENT = 0;
     public static final int WISHLIST_FRAGMENT = 1;
-    public static final int PRODUCT_HISTORY_FRAGMENT = 2;
     SimpleHome simpleHome;
 
     FragmentManager supportFragmentManager;
@@ -95,9 +93,6 @@ public class SimpleHomeActivity extends TActivity
             case WISHLIST_FRAGMENT:
                 toolbar.setTitle(getString(R.string.title_wishlist));
                 break;
-            case PRODUCT_HISTORY_FRAGMENT:
-                toolbar.setTitle(getString(R.string.title_activity_product_history));
-                break;
         }
     }
 
@@ -117,15 +112,6 @@ public class SimpleHomeActivity extends TActivity
                     moveToFragment(wishListFragment, true, WishListFragment.FRAGMENT_TAG);
                 } else {
                     Log.d(TAG, messageTAG + WishListFragment.class.getSimpleName() + " is not created !!!");
-                }
-                break;
-            case PRODUCT_HISTORY_FRAGMENT:
-                if (isFragmentCreated(ProductHistoryFragment.FRAGMENT_TAG)) {
-                    Log.d(TAG, messageTAG + ProductHistoryFragment.class.getSimpleName() + " is created !!!");
-                    Fragment productHistory = ProductHistoryFragment.newInstance();
-                    moveToFragment(productHistory, true, ProductHistoryFragment.FRAGMENT_TAG);
-                } else {
-                    Log.d(TAG, messageTAG + ProductHistoryFragment.class.getSimpleName() + " is not created !!!");
                 }
                 break;
         }

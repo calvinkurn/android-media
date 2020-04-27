@@ -1,24 +1,30 @@
 package com.tokopedia.common_tradein.customviews;
 
+import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.os.Build;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.fragment.app.FragmentActivity;
-import androidx.core.view.ViewCompat;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.TextView;
 
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.view.ViewCompat;
+import androidx.fragment.app.FragmentActivity;
+
+import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.common_tradein.R;
+import com.tokopedia.common_tradein.di.CommonTradeInComponent;
+import com.tokopedia.common_tradein.di.DaggerCommonTradeInComponent;
 import com.tokopedia.common_tradein.viewmodel.ITradeInParamReceiver;
 import com.tokopedia.common_tradein.viewmodel.TradeInResponseObserver;
 import com.tokopedia.common_tradein.viewmodel.TradeInTextViewModel;
-import com.tokopedia.common_tradein.viewmodel.CommonTradeInVMFactory;
 
-public class TradeInTextView extends ConstraintLayout {
+import javax.inject.Inject;
+
+public class TradeInTextView extends ConstraintLayout implements HasComponent<CommonTradeInComponent> {
     public static final String ACTION_TRADEIN_ELLIGIBLE = "ACTION_TRADE_IN_ELLIGIBLE";
     public static final String EXTRA_ISELLIGIBLE = "EXTRA_ISELLIGIBLE";
     public TextView titleTextView;
@@ -34,6 +40,9 @@ public class TradeInTextView extends ConstraintLayout {
             viewModel.showAccessRequestDialog();
         }
     };
+
+    @Inject
+    ViewModelProvider.Factory viewModelFactory;
 
     public TradeInTextView(Context context) {
         super(context);
@@ -51,10 +60,10 @@ public class TradeInTextView extends ConstraintLayout {
     }
 
     private void initView() {
+        getComponent().inject(this);
         inflate(getContext(), R.layout.trade_in_textview, this);
         if (!isInEditMode()) {
-            viewModel = ViewModelProviders.of((FragmentActivity) getContext(),
-                    CommonTradeInVMFactory.getInstance(((FragmentActivity) getContext()).getApplication()))
+            viewModel = ViewModelProviders.of((FragmentActivity) getContext(), viewModelFactory)
                     .get(TradeInTextViewModel.class);
             viewModel.setActivity((FragmentActivity) getContext());
             viewModel.getResponseData().observe((FragmentActivity) getContext(),
@@ -109,6 +118,11 @@ public class TradeInTextView extends ConstraintLayout {
 
     public void setTrackListener(ClickTrackListener listener) {
         this.trackListener = listener;
+    }
+
+    @Override
+    public CommonTradeInComponent getComponent() {
+        return DaggerCommonTradeInComponent.builder().build();
     }
 
     public interface ClickTrackListener {

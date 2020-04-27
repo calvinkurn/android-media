@@ -13,12 +13,12 @@
 
     <ImageView
         android:id="@+id/rating_review"
-        android:layout_width="@dimen/dp_100"
+        android:layout_width="@dimen/dp_120"
         android:layout_height="@dimen/dp_24"
         android:layout_marginTop="@dimen/dp_9"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txt_thumb_like"
-        tools:srcCompat="@drawable/ic_star_five" />
+        tools:srcCompat="@drawable/ic_gold_star_five" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_review"

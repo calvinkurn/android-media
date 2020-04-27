@@ -13,4 +13,6 @@ interface ProductAttachmentListener {
     fun trackSeenProduct(element: ProductAttachmentViewModel)
     fun onClickBannedProduct(viewModel: BannedProductAttachmentViewModel)
     fun trackSeenBannedProduct(viewModel: BannedProductAttachmentViewModel)
+    fun onClickAddToWishList(productId: String, success: () -> Unit)
+    fun onClickRemoveFromWishList(productId: String, success: () -> Unit)
 }

@@ -28,6 +28,7 @@ class NotificationUpdateTypeFactoryImpl(
             NotificationItemViewBean.TYPE_BANNER_2X1 -> BigBannerNotificationViewHolder.LAYOUT
             NotificationItemViewBean.TYPE_RECOMMENDATION -> ProductRecomNotificationViewHolder.LAYOUT
             NotificationItemViewBean.TYPE_WISHLIST -> WishListNotificationViewHolder.LAYOUT
+            NotificationItemViewBean.TYPE_PRODUCT_CHECKOUT -> ProductCheckoutViewHolder.LAYOUT
             else -> TextNotificationViewHolder.LAYOUT
         }
     }
@@ -43,6 +44,7 @@ class NotificationUpdateTypeFactoryImpl(
             BigBannerNotificationViewHolder.LAYOUT -> BigBannerNotificationViewHolder(view, notificationUpdateListener)
             ProductRecomNotificationViewHolder.LAYOUT -> ProductRecomNotificationViewHolder(view, notificationUpdateListener)
             WishListNotificationViewHolder.LAYOUT -> WishListNotificationViewHolder(view, notificationUpdateListener)
+            ProductCheckoutViewHolder.LAYOUT -> ProductCheckoutViewHolder(view, notificationUpdateListener)
             EmptyDataStateViewHolder.LAYOUT -> EmptyDataStateViewHolder(view)
             else -> super.createViewHolder(view, viewType)
         }

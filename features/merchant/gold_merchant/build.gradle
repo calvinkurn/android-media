@@ -36,6 +36,7 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.williamchart
+    implementation rootProject.ext.tkpdInternalLibDependencies.network
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
@@ -43,6 +44,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.dagger
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
     implementation rootProject.ext.playServicesDependencies.maps
+    implementation rootProject.ext.debugToolsDependencies.chuck
     implementation rootProject.ext.miscDependencies.scannerZxing
     implementation (rootProject.ext.miscDependencies.imagecropper){
         exclude group: "com.android.support"

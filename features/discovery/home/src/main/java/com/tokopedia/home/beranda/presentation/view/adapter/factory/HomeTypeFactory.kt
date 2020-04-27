@@ -20,10 +20,6 @@ interface HomeTypeFactory {
 
     fun type(tickerViewModel: TickerViewModel): Int
 
-    fun type(searchPlaceholderViewModel: SearchPlaceholderViewModel): Int
-
-    fun type(digitalViewModel: DigitalsViewModel): Int
-
     fun type(businessUnitViewModel: BusinessUnitViewModel): Int
 
     fun type(useCaseIconSectionViewModel: UseCaseIconSectionViewModel): Int
@@ -49,6 +45,12 @@ interface HomeTypeFactory {
     fun type(geolocationPromptViewModel: GeolocationPromptViewModel): Int
 
     fun type(reviewViewModel: ReviewViewModel): Int
+
     fun type(playCard: PlayCardViewModel): Int
 
+    fun type(homeLoadingMoreModel: HomeLoadingMoreModel): Int
+
+    fun type(homeRetryModel: HomeRetryModel): Int
+
+    fun type(popularKeywordListViewModel: PopularKeywordListViewModel): Int
 }

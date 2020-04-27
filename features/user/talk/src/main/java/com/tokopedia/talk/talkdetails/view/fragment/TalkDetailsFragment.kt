@@ -21,7 +21,6 @@ import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.ApplinkRouter
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.attachproduct.resultmodel.ResultProduct
 import com.tokopedia.attachproduct.view.activity.AttachProductActivity
@@ -29,7 +28,6 @@ import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.Menus
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.talk.R
-import com.tokopedia.talk.common.TalkRouter
 import com.tokopedia.talk.common.adapter.TalkProductAttachmentAdapter
 import com.tokopedia.talk.common.adapter.viewholder.CommentTalkViewHolder
 import com.tokopedia.talk.common.adapter.viewholder.LoadMoreCommentTalkViewHolder
@@ -155,7 +153,10 @@ class TalkDetailsFragment : BaseDaggerFragment(),
         sendMessageEditText = view.findViewById(R.id.new_comment)
         sendMessageButton = view.findViewById(R.id.send_but)
         sendMessageButton.setOnClickListener {
-            analytics.trackSendCommentTalk(source)
+            analytics.trackSendCommentTalk(
+                    source,
+                    talkId,
+                    adapter.list.filterIsInstance(InboxTalkItemViewModel::class.java).firstOrNull()?.productHeader?.productId ?: "0")
             KeyboardHandler.DropKeyboard(context, view)
             if (userSession.isLoggedIn) {
                 presenter.sendComment(talkId,

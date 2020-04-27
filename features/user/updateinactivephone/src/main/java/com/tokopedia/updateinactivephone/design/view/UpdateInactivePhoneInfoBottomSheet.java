@@ -3,12 +3,11 @@ package com.tokopedia.updateinactivephone.design.view;
 import android.app.Activity;
 import android.content.Context;
 import android.content.ContextWrapper;
-import androidx.annotation.NonNull;
 import android.view.View;
-import android.widget.ImageView;
+
+import androidx.annotation.NonNull;
 
 import com.tokopedia.design.bottomsheet.BottomSheetView;
-import com.tokopedia.design.component.BottomSheets;
 import com.tokopedia.updateinactivephone.R;
 
 public class UpdateInactivePhoneInfoBottomSheet extends BottomSheetView {

@@ -5,14 +5,15 @@ import android.content.Context
 import android.text.TextUtils
 import android.util.Log
 import com.google.firebase.messaging.RemoteMessage
-import com.tokopedia.abstraction.common.utils.view.CommonUtils
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.notifications.common.CMConstant
+import com.tokopedia.notifications.common.HOURS_24_IN_MILLIS
 import com.tokopedia.notifications.common.PayloadConverter
 import com.tokopedia.notifications.inApp.CMInAppManager
 import com.tokopedia.notifications.worker.PushWorker
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
+import timber.log.Timber
 import kotlin.coroutines.CoroutineContext
 
 
@@ -47,6 +48,10 @@ class CMPushNotificationManager : CoroutineScope {
         get() = (applicationContext as CMRouter).getBooleanRemoteConfig(CMConstant.RemoteKeys.KEY_IS_INAPP_ENABLE,
                 false) || BuildConfig.DEBUG
 
+    val cmPushEndTimeInterval: Long
+        get() = (applicationContext as CMRouter).getLongRemoteConfig(CMConstant.RemoteKeys.KEY_CM_PUSH_END_TIME_INTERVAL,
+                HOURS_24_IN_MILLIS * 7)
+
     /**
      * initialization of push notification library
      * Push Worker is initialisation & scheduled periodic
@@ -68,7 +73,7 @@ class CMPushNotificationManager : CoroutineScope {
         try {
 
             if (::applicationContext.isInitialized && token != null && isForegroundTokenUpdateEnabled) {
-                CommonUtils.dumper("token: $token")
+                Timber.d("token: $token")
                 if (TextUtils.isEmpty(token)) {
                     return
                 }
@@ -92,7 +97,7 @@ class CMPushNotificationManager : CoroutineScope {
     fun refreshTokenFromBackground(token: String?, isForce: Boolean?) {
         try {
             if (::applicationContext.isInitialized && token != null && isBackgroundTokenUpdateEnabled) {
-                CommonUtils.dumper("token: $token")
+                Timber.d("token: $token")
                 if (TextUtils.isEmpty(token)) {
                     return
                 }

@@ -1,6 +1,6 @@
 package com.tokopedia.purchase_platform.features.express_checkout.view.variant
 
-import com.tokopedia.purchase_platform.features.express_checkout.view.variant.viewmodel.*
+import com.tokopedia.purchase_platform.features.express_checkout.view.variant.uimodel.*
 import rx.subscriptions.CompositeSubscription
 
 /**
@@ -23,21 +23,21 @@ interface CheckoutVariantActionListener {
 
     fun onClickInsuranceInfo(insuranceInfo: String)
 
-    fun onBindProductUpdateQuantityViewModel(productViewModel: ProductViewModel, stockWording: String)
+    fun onBindProductUpdateQuantityViewModel(productUiModel: ProductUiModel, stockWording: String)
 
-    fun onBindVariantGetProductViewModel(): ProductViewModel?
+    fun onBindVariantGetProductViewModel(): ProductUiModel?
 
     fun onBindVariantUpdateProductViewModel()
 
-    fun onChangeVariant(selectedOptionViewModel: OptionVariantViewModel)
+    fun onChangeVariant(selectedOptionUiModel: OptionVariantUiModel)
 
-    fun onChangeQuantity(quantityViewModel: QuantityViewModel)
+    fun onChangeQuantity(quantityUiModel: QuantityUiModel)
 
-    fun onChangeNote(noteViewModel: NoteViewModel)
+    fun onChangeNote(noteUiModel: NoteUiModel)
 
-    fun onSummaryChanged(summaryViewModel: SummaryViewModel?)
+    fun onSummaryChanged(summaryUiModel: SummaryUiModel?)
 
-    fun onInsuranceCheckChanged(insuranceViewModel: InsuranceViewModel)
+    fun onInsuranceCheckChanged(insuranceUiModel: InsuranceUiModel)
 
     fun onNeedToValidateButtonBuyVisibility()
 
@@ -47,7 +47,7 @@ interface CheckoutVariantActionListener {
 
     fun onVariantGuidelineClick(variantGuideline: String)
 
-    fun onInsuranceSelectedStateChanged(element: InsuranceRecommendationViewModel?, isSelected: Boolean)
+    fun onInsuranceSelectedStateChanged(element: InsuranceRecommendationUiModel?, isSelected: Boolean)
 
     fun sendEventInsuranceSelectedStateChanged(isChecked: Boolean, title: String)
 

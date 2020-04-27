@@ -1,0 +1,10 @@
+<resources>
+
+    <string name="shake_default_error">Untuk saat ini, Tokopedia sedang kepenuhan pengunjung</string>
+    <string name="shake_login_error">Login sekarang untuk menghidupkan kembali fitur shake-shake!</string>
+    <string name="masuk_sekarang">Ok</string>
+    <string name="shake_shake_wrong_deeplink">Sedang terjadi kendala. Mohon coba beberapa saat lagi.</string>
+    <string name="rationale_need_location_for_promotion">Akses lokasi diperlukan untuk memudahkan
+        pengiriman dan mendapatkan rekomendasi produk. Perbolehkan?</string>
+
+</resources>

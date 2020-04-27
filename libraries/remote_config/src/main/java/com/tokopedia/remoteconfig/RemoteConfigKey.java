@@ -31,7 +31,6 @@ public class RemoteConfigKey {
     public static final String REFERRAL_WELCOME_MESSAGE = "referral_welcome_message_new";
     public static final String REFFERAL_TERMS = "referral_terms";
     public static final String REFERRAL_TITLE_DESC = "app_refferal_content";
-    public static final String APP_HIDE_SAMPAI_VIEW = "android_customer_hide_sampai_view";
 
     public static final String MAINAPP_SHOW_SIMPLE_APP_RATING = "mainapp_show_simple_app_rating";
     public static final String MAINAPP_SHOW_ADVANCED_APP_RATING = "mainapp_show_advanced_app_rating";
@@ -91,6 +90,8 @@ public class RemoteConfigKey {
     public static final String MAIN_APP_DISABLE_NEW_PRODUCT_DETAIL = "main_app_disable_new_product_detail";
     public static final String APP_ENABLE_MERCHANT_CREDIT_LINE = "app_enable_merchant_credit_line";
 
+    public static final String ANDROID_MAIN_APP_ENABLED_OLD_PDP = "android_main_app_enabled_old_pdp";
+
     public static final String NONB1_TTL = "app_nonb_1_ttl";
     public static final String NONB1_DESC = "app_nonb_1_dsc";
     public static final String NONB2_TTL = "app_nonb_2_ttl";
@@ -117,18 +118,10 @@ public class RemoteConfigKey {
 
     public static final String APP_ENABLE_SALDO_SPLIT_FOR_SELLER_APP = "app_enable_saldo_split_for_seller_app";
 
-    //   switch for New category belanja page
-    public static final String APP_CATEGORY_BROWSE_V1 = "app_category_browse_v1";
-
-     //   switch for New category belanja page A/B testing
-    public static final String APP_CATEGORY_BROWSE_ENABLE_AB = "app_category_browse_enable_ab";
-
     public static final String SHOP_SHARE_MSG = "app_shop_shr_msg";
     public static final String HOTLIST_SHARE_MSG = "app_hotlist_shr_msg";
 
     public static final String REMOTE_CONFIG_APP_SHOW_SEARCH_BAR_PDP = "app_show_search_bar_pdp";
-
-    public static final String ENABLE_ADD_NEW_ADDRESS_KEY = "android_customer_enable_add_new_address";
 
     public static final String RC_ENABLE_REVAMP_SOM = "android_enable_revamp_som";
 
@@ -150,23 +143,21 @@ public class RemoteConfigKey {
 
     public static final String ANDROID_SPLASH_IMAGE = "android_customer_splashscreen";
 
+    public static final String APP_ENABLE_OPEN_SHOP_REVAMP = "app_enable_open_shop_revamp";
+
     public static final String PLAY_PIP = "android_customer_enable_play_pip";
 
     public static final String CONFIG_ENABLE_NEW_ROUTE_REACT = "android_customer_enable_route_react";
 
     public static final String PLAY_YOUTUBE_FULL_SCREEN = "android_customer_enable_play_youtube_fullscreen";
 
-    public static final String APP_ENABLE_CATEGORY_REVAMP = "app_enable_category_revamp";
     public static final String APP_ENABLE_BANNED_NAVIGATION = "app_enable_banned_navigation";
-
-    public static final String APP_HOTLIST_NAV_ENABLE = "app_hotlist_nav_enable";
 
     public static final String TOPCHAT_COMPRESS = "android_topchat_compress";
 
     public static final String ENABLE_CART_ICON_IN_SEARCH = "android_customer_enable_cart_icon_in_search";
     public static final String ENABLE_CART_ICON_IN_SHOP = "android_customer_enable_cart_icon_in_shop";
 
-    public static final String APP_ENABLE_CATALOG_REVAMP = "app_enable_catalog_revamp";
     public static final String TOPCHAT_OLD = "android_topchat_old";
     public static final String TOPCHAT_SELLER_BROADCAST = "android_topchat_seller_broadcast";
     public static final String ENABLE_PASS_GA_CLIENT_ID_WEB = "enable_pass_ga_client_to_web";
@@ -189,9 +180,35 @@ public class RemoteConfigKey {
 
     public static final String MAINAPP_SALAM_UMRAH = "android_main_app_enabled_umrah";
 
+    public static final String ENABLE_NEW_SHOP_PAGE = "android_main_app_enable_new_shop_page";
+
+    public static final String ENABLE_OLD_PRODUCT_MANAGE = "android_seller_app_enable_old_product_manage";
+
+
 
     public static final String MAINAPP_RECHARGE_OCR = "android_mainapp_enable_ocr_emoney";
     public static final String MAINAPP_RECHARGE_SMARTCARD = "mainapp_digital_smartcard";
 
     public static final String ENABLE_IN_APP_REVIEW_DIGITAL_THANKYOU_PAGE = "android_customer_enable_in_app_review_digital_thank_you_page";
+
+    public static final String ENABLE_SEQ1_ASYNC = "android_exec_seq1_async";
+    public static final String ENABLE_SEQ2_ASYNC = "android_exec_seq2_async";
+    public static final String ENABLE_SEQ3_ASYNC = "android_exec_seq3_async";
+    public static final String ENABLE_SEQ4_ASYNC = "android_exec_seq4_async";
+    public static final String ENABLE_SEQ5_ASYNC = "android_exec_seq5_async";
+    public static final String ENABLE_ASYNC_REMOTECONF_FETCH = "android_async_remoteconf_fetch";
+    public static final String ENABLE_ASYNC_DEFFERED_DEEPLINK_FETCH = "android_async_deffered_deeplink_fetch";
+    public static final String ENABLE_ASYNC_MOVETOHOME = "android_async_movetohome";
+    public static final String ENABLE_ASYNC_APPSFLYER_INIT = "android_async_appsflyer_init";
+    public static final String ENABLE_ASYNC_ONBOARDING_CREATE = "android_async_onboarding_create";
+    public static final String ENABLE_ASYNC_OPENHOME_EVENT = "android_async_openhome_event";
+    public static final String ENABLE_ASYNC_FIRSTTIME_EVENT = "android_async_firsttime_event";
+    public static final String ENABLE_ASYNC_CREATE_APPSFLYER = "android_async_create_appsflyer";
+    public static final String ENABLE_ASYNC_GTMREFRESH = "android_async_gtmrefresh";
+    public static final String ENABLE_ASYNC_INSTALLTRACK = "android_async_installtrack";
+    public static final String ENABLE_ASYNC_HOME_SNDSCR = "android_enable_home_sndscr";
+    public static final String ENABLE_ASYNC_ADDSHORTCUTS = "android_async_addshortcuts";
+    public static final String ENABLE_ASYNC_CHECKAPPSIGNATURE = "android_async_checkappsignature";
+
+    public static final String WHITELIST_USER_LOG_NOTIFICATION = "key_whitelist_user_log_notification";
 }

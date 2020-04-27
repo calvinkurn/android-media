@@ -20,11 +20,12 @@ class MarkAllReadNotificationUpdateUseCase @Inject constructor(
         @ApplicationContext val context: Context,
         private val graphqlUseCase: GraphqlUseCase
 ){
-    fun execute(subscriber: Subscriber<GraphqlResponse>) {
+    fun execute(requestParams: Map<String, Any>,
+                subscriber: Subscriber<GraphqlResponse>) {
         val query = GraphqlHelper.loadRawString(context.resources
                 , R.raw.mutation_mark_all_read_notification_update)
         val graphqlRequest = GraphqlRequest(query,
-                NotificationUpdateActionResponse::class.java)
+                NotificationUpdateActionResponse::class.java, requestParams)
 
         val cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.CLOUD_THEN_CACHE)
                 .setSessionIncluded(true).build()
@@ -32,6 +33,17 @@ class MarkAllReadNotificationUpdateUseCase @Inject constructor(
         graphqlUseCase.addRequest(graphqlRequest)
         graphqlUseCase.setCacheStrategy(cacheStrategy)
         graphqlUseCase.execute(subscriber)
+    }
+
+    companion object {
+        private const val PARAM_NOTIF_TYPE  = "typeOfNotif"
+        private const val TYPE_NOTIF_UPDATE = 1 //update
+
+        fun params(typeOfNotif: Int = TYPE_NOTIF_UPDATE): HashMap<String, Any> {
+            val params = hashMapOf<String, Any>()
+            params[PARAM_NOTIF_TYPE] = typeOfNotif
+            return params
+        }
     }
 
 }

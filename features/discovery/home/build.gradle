@@ -1,17 +1,22 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
+apply plugin: 'de.mannodermaus.android-junit5'
 
 repositories {
     maven { url 'https://hansel.io/maven' }
 }
 buildscript {
     repositories {
+        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         mavenCentral()
+        jcenter()
         maven { url 'https://hansel.io/maven' }
+        google()
     }
     dependencies {
         classpath rootProject.ext.miscDependencies.hansel
+        classpath rootProject.ext.miscDependencies.androidjunit5
     }
 }
 
@@ -23,17 +28,31 @@ android {
             }
         }
     }
+
+    testOptions {
+        unitTests {
+            includeAndroidResources = true
+        }
+        junitPlatform {
+            filters {
+                engines {
+                    include 'spek2'
+                }
+            }
+        }
+    }
 }
 
 dependencies {
+    def newExoPlayerVersion = '2.11.1'
+
     // Feature
     implementation project(rootProject.ext.features.commonWallet)
     implementation project(rootProject.ext.features.commonDigital)
-    implementation project(rootProject.ext.features.digitalproduct)
     implementation project(rootProject.ext.features.dynamicBanner)
     implementation project(rootProject.ext.features.feedComponent)
     implementation project(rootProject.ext.features.feed)
-    implementation project(rootProject.ext.features.gamification)
+    implementation project(rootProject.ext.features.promoGamificationCommon)
     implementation project(rootProject.ext.features.goldMerchantResource)
     implementation project(rootProject.ext.features.loyalty)
     implementation project(rootProject.ext.features.loyaltyCommon)
@@ -44,6 +63,8 @@ dependencies {
     implementation project(rootProject.ext.features.tkpdsession)
     implementation project(rootProject.ext.features.tokopointsNotification)
     implementation project(rootProject.ext.features.topAdsSdk)
+    implementation project(rootProject.ext.features.productCard)
+    implementation project(rootProject.ext.features.playCommon)
     implementation project(rootProject.ext.features.resourcesCommon)
     implementation project(rootProject.ext.features.reputationCommon)
     implementation project(rootProject.ext.features.searchbar)
@@ -53,7 +74,7 @@ dependencies {
     // Library
     implementation project(rootProject.ext.libraries.analytics)
     implementation project(rootProject.ext.libraries.applink)
-    implementation project(rootProject.ext.libraries.cameraview)
+    implementation project(rootProject.ext.libraries.circularViewPager)
     implementation project(rootProject.ext.libraries.collapsingTabLayout)
     implementation project(rootProject.ext.libraries.coreNetwork)
     implementation project(rootProject.ext.libraries.core_legacy)
@@ -69,6 +90,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.libraries.trackingOptimizer)
     implementation project(rootProject.ext.libraries.traceroute)
+    implementation project(rootProject.ext.libraries.deviceInfo)
 
     // Room
     implementation rootProject.ext.dbDependencies.dbRoomRuntime
@@ -99,7 +121,7 @@ dependencies {
     }
     implementation rootProject.ext.miscDependencies.dagger
     kapt rootProject.ext.miscDependencies.daggerCompiler
-    implementation rootProject.ext.playServicesDependencies.analytics
+    implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
     implementation rootProject.ext.playServicesDependencies.maps
     implementation rootProject.ext.debugToolsDependencies.chuck
 
@@ -118,6 +140,9 @@ dependencies {
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
     implementation rootProject.ext.playServicesDependencies.location
+    implementation project(rootProject.ext.libraries.weaver)
+
+    implementation "com.google.android.exoplayer:exoplayer:$newExoPlayerVersion"
 
     // Test
     androidTestImplementation rootProject.ext.dbDependencies.dbRoomTesting
@@ -127,6 +152,8 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.powerMockito
     testImplementation rootProject.ext.miscDependencies.coroutineCore
     testImplementation rootProject.ext.miscDependencies.coroutineTest
+    testImplementation rootProject.ext.testDependencies.spek2Api
+    testImplementation rootProject.ext.testDependencies.spek2Dsl
 }
 
 project.ext {

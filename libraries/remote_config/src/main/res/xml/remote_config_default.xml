@@ -302,16 +302,6 @@
         <key>nonb_5_dsc</key>
         <value>Buka toko gratis, nikmati transaksi mudah, aman, dan dikunjungi jutaan pembeli</value>
     </entry>
-    <!--switch for New category belanja-->
-    <entry>
-        <key>app_category_browse_v1</key>
-        <value>true</value>
-    </entry>
-    <!--switch for New category belanja A/B testing-->
-    <entry>
-        <key>app_category_browse_enable_ab</key>
-        <value>true</value>
-    </entry>
     <entry>
     <key>android_seller_account_ticker_msg</key>
         <value>Perkuat bisnismu dengan Power Merchant versi baru.</value>
@@ -333,16 +323,7 @@
         <value>false</value>
     </entry>
     <entry>
-        <key>app_enable_category_revamp</key>
-        <value>true</value>
-    </entry>
-
-    <entry>
         <key>app_enable_banned_navigation</key>
-        <value>true</value>
-    </entry>
-    <entry>
-        <key>app_enable_catalog_revamp</key>
         <value>true</value>
     </entry>
     <entry>
@@ -354,11 +335,15 @@
         <value>Pengiriman ini berpotensi Bebas Ongkir</value>
     </entry>
     <entry>
-        <key>app_hotlist_nav_enable</key>
-        <value>true</value>
+        <key>android_main_app_enabled_old_pdp</key>
+        <value>false</value>
     </entry>
     <entry>
         <key>android_main_app_enabled_umrah</key>
+        <value>true</value>
+    </entry>
+    <entry>
+        <key>android_main_app_enable_new_shop_page</key>
         <value>true</value>
     </entry>
 </defaultsMap>

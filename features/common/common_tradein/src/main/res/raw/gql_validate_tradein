@@ -6,5 +6,6 @@ query validateTradeInPDP($params:TradeInValidationInput!){
    UsedPrice
    RemainingPrice
    Message
+   WidgetString
  }
 }

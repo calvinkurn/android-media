@@ -15,7 +15,7 @@ import rx.Observable;
 
 public interface AccountHomeRouter {
 
-    void doLogoutAccount(Activity activity);
+    void doLogoutAccount(Context activity);
 
     Intent getManageAddressIntent(Context context);
 

@@ -17,7 +17,7 @@ import org.junit.Assert.assertEquals
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.gherkin.Feature
 
-class CartMapperV3Test : Spek({
+object CartMapperV3Test : Spek({
 
     val context = mockk<Context>(relaxed = true)
     val cartMapperV3 by memoized { CartSimplifiedMapper(context) }

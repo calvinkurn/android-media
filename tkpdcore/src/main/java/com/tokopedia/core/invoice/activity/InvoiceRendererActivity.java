@@ -38,7 +38,7 @@ import com.tokopedia.core.invoice.model.InvoiceRenderParam;
 import com.tokopedia.core.invoice.presenter.InvoiceRenderPresenter;
 import com.tokopedia.core.invoice.presenter.InvoiceRenderPresenterImpl;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.util.GlobalConfig;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.util.TkpdWebView;
 import com.tokopedia.design.component.Dialog;
 

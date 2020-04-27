@@ -28,10 +28,11 @@ import androidx.appcompat.widget.AppCompatTextView;
 import androidx.core.app.NotificationManagerCompat;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
-import com.readystatesoftware.chuck.Chuck;
-import com.tkpd.library.utils.OneOnClick;
+import com.chuckerteam.chucker.api.Chucker;
+import com.tokopedia.developer_options.utils.OneOnClick;
 import com.tokopedia.abstraction.base.view.activity.BaseActivity;
-import com.tokopedia.analytics.debugger.GtmLogger;
+import com.tokopedia.analyticsdebugger.debugger.GtmLogger;
+import com.tokopedia.analyticsdebugger.debugger.IrisLogger;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.config.GlobalConfig;
@@ -44,9 +45,6 @@ import com.tokopedia.url.Env;
 import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
-
-import java.util.Timer;
-import java.util.TimerTask;
 
 @DeepLink(ApplinkConst.DEVELOPER_OPTIONS)
 public class DeveloperOptionActivity extends BaseActivity {
@@ -84,6 +82,9 @@ public class DeveloperOptionActivity extends BaseActivity {
     private CheckBox toggleChuck;
 
     private TextView vGoToAnalytics;
+    private TextView vGoToAnalyticsError;
+    private TextView vGoToIrisSaveLogDB;
+    private TextView vGoToIrisSendLogDB;
     private CheckBox toggleAnalytics;
 
     private CheckBox toggleUiBlockDebugger;
@@ -163,6 +164,10 @@ public class DeveloperOptionActivity extends BaseActivity {
         toggleChuck = findViewById(R.id.toggle_chuck);
 
         vGoToAnalytics = findViewById(R.id.goto_analytics);
+        vGoToAnalyticsError = findViewById(R.id.goto_analytics_error);
+        vGoToIrisSaveLogDB = findViewById(R.id.goto_iris_save_log);
+        vGoToIrisSendLogDB = findViewById(R.id.goto_iris_send_log);
+
         toggleAnalytics = findViewById(R.id.toggle_analytics);
 
         toggleUiBlockDebugger = findViewById(R.id.toggle_ui_block_debugger);
@@ -191,6 +196,7 @@ public class DeveloperOptionActivity extends BaseActivity {
         envSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerEnvironmentChooser.setAdapter(envSpinnerAdapter);
 
+        validateIfSellerapp();
     }
 
     private void initListener() {
@@ -204,12 +210,14 @@ public class DeveloperOptionActivity extends BaseActivity {
             throw new RuntimeException("Throw Runtime Exception");
         });
 
-        vDevOptionRN.setOnClickListener(v ->
+        vDevOptionRN.setOnClickListener(v -> {
+            if (!GlobalConfig.isSellerApp()) {
                 RouteManager.route(this,
                         ApplinkConst.SETTING_DEVELOPER_OPTIONS
                                 .replace("{type}", RN_DEV_LOGGER)
-                ));
-
+                );
+            }
+        });
 
         resetOnBoarding.setOnClickListener(v -> {
             userSession.setFirstTimeUser(true);
@@ -265,7 +273,7 @@ public class DeveloperOptionActivity extends BaseActivity {
         vGoTochuck.setOnClickListener(new OneOnClick() {
             @Override
             public void oneOnClick(View view) {
-                startActivity(Chuck.getLaunchIntent(getApplicationContext()));
+                startActivity(Chucker.getLaunchIntent(getApplicationContext(), Chucker.SCREEN_HTTP));
             }
         });
 
@@ -280,6 +288,17 @@ public class DeveloperOptionActivity extends BaseActivity {
         toggleAnalytics.setOnCheckedChangeListener((compoundButton, state) -> GtmLogger.getInstance(this).enableNotification(state));
 
         vGoToAnalytics.setOnClickListener(v -> GtmLogger.getInstance(DeveloperOptionActivity.this).openActivity());
+        vGoToAnalyticsError.setOnClickListener(v -> {
+            GtmLogger.getInstance(DeveloperOptionActivity.this).openErrorActivity();
+        });
+
+        vGoToIrisSaveLogDB.setOnClickListener(v -> {
+            IrisLogger.getInstance(DeveloperOptionActivity.this).openSaveActivity();
+        });
+
+        vGoToIrisSendLogDB.setOnClickListener(v -> {
+            IrisLogger.getInstance(DeveloperOptionActivity.this).openSendActivity();
+        });
 
         SharedPreferences uiBlockDebuggerPref = getSharedPreferences("UI_BLOCK_DEBUGGER");
         toggleUiBlockDebugger.setChecked(uiBlockDebuggerPref.getBoolean("isEnabled", false));
@@ -360,6 +379,12 @@ public class DeveloperOptionActivity extends BaseActivity {
         SharedPreferences.Editor editor = groupChatSf.edit();
         editor.putBoolean(LOG_GROUPCHAT, check);
         editor.apply();
+    }
+
+    private void validateIfSellerapp() {
+        if (GlobalConfig.isSellerApp() && vDevOptionRN != null) {
+            vDevOptionRN.setVisibility(View.GONE);
+        }
     }
 
     private static TkpdCoreRouter coreRouter(Context applicationContext) {
