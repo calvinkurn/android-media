@@ -63,6 +63,10 @@ class TipsAndTrickBottomSheetFragment(bottomSheetContext: Context) : BottomSheet
 
 
     private fun onChevronAltered(position: Int) {
+        voucherTipsAdapter?.itemList?.get(position)?.run {
+            isOpen = !isOpen
+        }
+        voucherTipsAdapter?.notifyItemChanged(position)
     }
 
     override var bottomSheetViewTitle: String? = bottomSheetContext.resources?.getString(R.string.mvc_create_tips_bottomsheet_title).toBlankOrString()

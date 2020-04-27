@@ -13,7 +13,7 @@ import com.tokopedia.vouchercreation.create.view.typefactory.VoucherTipsItemType
 import com.tokopedia.vouchercreation.create.view.uimodel.vouchertips.TipsItemUiModel
 import kotlinx.android.synthetic.main.mvc_voucher_tips_item.view.*
 
-class VoucherTipsAdapter(itemList: List<TipsItemUiModel>,
+class VoucherTipsAdapter(val itemList: List<TipsItemUiModel>,
                          private val onChevronIconAltered: (Int) -> Unit = {}) : RecyclerView.Adapter<VoucherTipsAdapter.VoucherTipsViewHolder>() {
 
     class VoucherTipsViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
@@ -22,8 +22,6 @@ class VoucherTipsAdapter(itemList: List<TipsItemUiModel>,
         private const val CHEVRON_CLOSED_ROTATION = 0f
         private const val CHEVRON_OPENED_ROTATION = 180f
     }
-
-    private var tipsItemList = itemList
 
     private val voucherTipsItemAdapterTypeFactory by lazy {
         VoucherTipsItemAdapterTypeFactory()
@@ -35,26 +33,19 @@ class VoucherTipsAdapter(itemList: List<TipsItemUiModel>,
         return VoucherTipsViewHolder(view)
     }
 
-    override fun getItemCount(): Int = tipsItemList.size
+    override fun getItemCount(): Int = itemList.size
 
     override fun onBindViewHolder(holder: VoucherTipsViewHolder, position: Int) {
-        tipsItemList[position].let { tipsItemUiModel ->
+        itemList[position].let { tipsItemUiModel ->
             holder.itemView.run {
                 voucherTipsTitle?.text = resources?.getString(tipsItemUiModel.titleRes).toBlankOrString()
                 setAccordionState(tipsItemUiModel.isOpen)
                 voucherTipsItemRecyclerView?.setAdapterItem(tipsItemUiModel.tipsItemList)
                 voucherTipsView?.setOnClickListener {
-                    alterChevronState(position)
+                    onChevronIconAltered(position)
                 }
             }
         }
-    }
-
-    private fun alterChevronState(position: Int) {
-        tipsItemList[position].run {
-            isOpen = !isOpen
-        }
-        notifyDataSetChanged()
     }
 
     private fun View.setAccordionState(isItemOpen: Boolean): Boolean {
@@ -73,12 +64,12 @@ class VoucherTipsAdapter(itemList: List<TipsItemUiModel>,
 
     private fun RecyclerView.setAdapterItem(tipsItemList: List<Visitable<VoucherTipsItemTypeFactory>>) {
         if (adapter == null) {
-            val voucherTipsItemAdapter = VoucherTipsItemAdapter(voucherTipsItemAdapterTypeFactory).apply {
-                setVisitables(tipsItemList)
-            }
+            val voucherTipsItemAdapter = VoucherTipsItemAdapter(voucherTipsItemAdapterTypeFactory)
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             adapter = voucherTipsItemAdapter
         }
+
+        (adapter as? VoucherTipsItemAdapter)?.setVisitables(tipsItemList)
     }
 
 }

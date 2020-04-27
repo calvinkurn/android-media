@@ -13,7 +13,7 @@ object TipsAndTrickStaticDataSource {
                     TipsItemUiModel(
                             isOpen = false,
                             titleRes = R.string.mvc_create_tips_title_voucher_name,
-                            tipsItemList = listOf(
+                            tipsItemList = arrayListOf(
                                     DottedVoucherTipsItemUiModel(
                                             descRes = R.string.mvc_create_tips_desc_voucher_name_1
                                     ),
@@ -27,7 +27,7 @@ object TipsAndTrickStaticDataSource {
                     TipsItemUiModel(
                             isOpen = true,
                             titleRes = R.string.mvc_create_tips_title_voucher_type,
-                            tipsItemList = listOf(
+                            tipsItemList = arrayListOf(
                                     ImageVoucherTipsItemUiModel(
                                             iconRes = R.drawable.ic_im_gratis_ongkir,
                                             titleRes = R.string.mvc_create_tips_subtitle_free_delivery,
@@ -42,7 +42,7 @@ object TipsAndTrickStaticDataSource {
                     TipsItemUiModel(
                             isOpen = false,
                             titleRes = R.string.mvc_create_tips_title_cashback_type,
-                            tipsItemList = listOf(
+                            tipsItemList = arrayListOf(
                                     ImageVoucherTipsItemUiModel(
                                             iconRes = R.drawable.ic_im_rupiah,
                                             titleRes = R.string.mvc_create_tips_subtitle_rupiah,
@@ -57,7 +57,7 @@ object TipsAndTrickStaticDataSource {
                     TipsItemUiModel(
                             isOpen = false,
                             titleRes = R.string.mvc_create_tips_title_voucher_max_estimation,
-                            tipsItemList = listOf(
+                            tipsItemList = arrayListOf(
                                     DottedVoucherTipsItemUiModel(
                                             descRes = R.string.mvc_create_tips_desc_max_estimation_1
                                     ),
