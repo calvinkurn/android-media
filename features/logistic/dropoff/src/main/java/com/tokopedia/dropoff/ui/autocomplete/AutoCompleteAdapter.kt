@@ -4,7 +4,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.base.view.adapter.viewholders.LoadingViewholder
 import com.tokopedia.dropoff.R
 import com.tokopedia.logisticdata.data.autocomplete.*
 import kotlinx.android.synthetic.main.item_autocomplete_result.view.*
@@ -20,7 +19,7 @@ class AutoCompleteAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             R.layout.item_autocomplete_result -> ResultViewHolder(view)
             R.layout.item_autocomplete_no_result -> NoResultViewHolder(view)
             R.layout.item_autocomplete_header -> HeaderViewHolder(view)
-            else -> LoadingViewholder(view)
+            else -> ShimmeringViewHolder(view)
         }
     }
 
@@ -42,7 +41,7 @@ class AutoCompleteAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     override fun getItemViewType(position: Int): Int = when (data[position]) {
         is SuggestedPlace -> R.layout.item_autocomplete_result
         is SavedAddress -> R.layout.item_autocomplete_result
-        is LoadingType -> LoadingViewholder.LAYOUT
+        is LoadingType -> com.tokopedia.design.R.layout.item_shimmering_list
         is HeaderType -> R.layout.item_autocomplete_header
         is NoResultType -> R.layout.item_autocomplete_no_result
     }
@@ -85,7 +84,9 @@ class AutoCompleteAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
      *  to member of the adapter, e.g. listener
      * */
     private inner class NoResultViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
+
     private inner class HeaderViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
+    private inner class ShimmeringViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
     private inner class ResultViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun bindAutoComplete(item: SuggestedPlace) {
             itemView.tv_autocomplete_title.text = item.mainText

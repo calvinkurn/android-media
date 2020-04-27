@@ -4,7 +4,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.base.view.adapter.viewholders.LoadingViewholder
 import com.tokopedia.dropoff.R
 import com.tokopedia.dropoff.ui.dropoff_picker.model.*
 import com.tokopedia.dropoff.util.getDescription
@@ -23,7 +22,7 @@ internal class NearbyStoreAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder
             R.layout.item_nearby_location -> NearbyStoreViewHolder(view)
             R.layout.item_empty_nearby_location -> EmptyViewHolder(view)
             R.layout.item_dropoff_list_header -> HeaderViewHolder(view)
-            else -> LoadingViewholder(view)
+            else -> ShimmeringViewHolder(view)
         }
     }
 
@@ -44,7 +43,7 @@ internal class NearbyStoreAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder
         is DropoffNearbyModel -> R.layout.item_nearby_location
         is EmptyType -> R.layout.item_empty_nearby_location
         is HeaderType -> R.layout.item_dropoff_list_header
-        is LoadingType -> LoadingViewholder.LAYOUT
+        is LoadingType -> com.tokopedia.design.R.layout.item_shimmering_list
     }
 
     fun setData(item: List<DropoffNearbyModel>) {
@@ -96,6 +95,7 @@ internal class NearbyStoreAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder
 
     private inner class EmptyViewHolder(view: View) : RecyclerView.ViewHolder(view)
     private inner class HeaderViewHolder(view: View) : RecyclerView.ViewHolder(view)
+    private inner class ShimmeringViewHolder(view: View) : RecyclerView.ViewHolder(view)
 
     companion object {
         const val NEAREST_ITEM = 1
