@@ -7,8 +7,6 @@ ext {
             cacheapi                : "com.tokopedia.cacheapi:cache_api:0.0.3",
             globalconfig            : "com.tokopedia.config:global_config:1.0.3",
             graphql                 : "com.tokopedia.graphql:graphql:1.1.13",
-//            graphql                 : "com.tokopedia.graphql:graphql:1.1.13-debug",
-            graphql                 : "com.tokopedia.graphql:graphql:1.1.10",
             url                     : "com.tokopedia.url:url:1.0.6-hub",
             network                 : "com.tokopedia.network:network:1.1.3",
             usecase                 : "com.tokopedia.usecase:usecase:1.0.3",
