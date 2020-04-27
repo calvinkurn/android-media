@@ -427,7 +427,7 @@ class DropoffPickerActivity : BaseActivity(), OnMapReadyCallback {
         }
         val intent = Intent(this, AutoCompleteActivity::class.java)
         startActivityForResult(intent, REQUEST_CODE_AUTOCOMPLETE)
-        overridePendingTransition(R.anim.slide_in_up, R.anim.stay_still)
+        overridePendingTransition(R.anim.autocomplete_slide_in_up, R.anim.stay_still)
     }
 
     private val adapterListener: NearbyStoreAdapter.ActionListener =
