@@ -1,5 +1,7 @@
 package com.tokopedia.kotlin.extensions.view
 import android.util.DisplayMetrics
+import kotlin.math.pow
+
 /**
  * @author : Steven 05/07/19
  */

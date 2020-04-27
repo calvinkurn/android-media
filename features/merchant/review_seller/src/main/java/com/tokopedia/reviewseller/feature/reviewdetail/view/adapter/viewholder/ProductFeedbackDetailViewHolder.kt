@@ -18,9 +18,9 @@ import com.tokopedia.reviewseller.feature.reviewdetail.util.ReviewUtil
 import com.tokopedia.reviewseller.feature.reviewdetail.util.mapper.SellerReviewProductDetailMapper
 import com.tokopedia.reviewseller.feature.reviewdetail.util.toRelativeDayAndWeek
 import com.tokopedia.reviewseller.feature.reviewdetail.util.toReviewDescriptionFormatted
+import com.tokopedia.reviewseller.feature.reviewdetail.view.adapter.ProductFeedbackDetailListener
 import com.tokopedia.reviewseller.feature.reviewdetail.view.adapter.ReviewDetailFeedbackImageAdapter
 import com.tokopedia.reviewseller.feature.reviewdetail.view.model.FeedbackUiModel
-import com.tokopedia.unifycomponents.list.ListItemUnify
 import com.tokopedia.unifyprinciples.Typography
 
 
@@ -63,7 +63,7 @@ class ProductFeedbackDetailViewHolder(private val view: View,
     }
 
     private val reviewDetailFeedbackImageAdapter by lazy {
-        ReviewDetailFeedbackImageAdapter()
+        ReviewDetailFeedbackImageAdapter(productFeedbackDetailListener)
     }
 
     override fun bind(element: FeedbackUiModel) {
@@ -165,6 +165,7 @@ class ProductFeedbackDetailViewHolder(private val view: View,
         if (element.attachments.isEmpty()) {
             rvItemAttachmentFeedback?.hide()
         } else {
+            reviewDetailFeedbackImageAdapter.setAttachmentUiData(element.attachments)
             reviewDetailFeedbackImageAdapter.submitList(element.attachments)
             rvItemAttachmentFeedback?.show()
         }
@@ -189,9 +190,5 @@ class ProductFeedbackDetailViewHolder(private val view: View,
         tvReplyUser?.show()
         tvReplyDate?.show()
         tvReplyComment?.show()
-    }
-
-    interface ProductFeedbackDetailListener {
-        fun onOptionFeedbackClicked(view: View, title: String, optionDetailListItemUnify: ArrayList<ListItemUnify>, isEmptyReply: Boolean)
     }
 }

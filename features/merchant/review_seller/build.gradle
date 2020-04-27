@@ -58,6 +58,8 @@ dependencies {
     implementation project(rootProject.ext.libraries.analytics)
     implementation project(rootProject.ext.libraries.track)
 
+    implementation project(rootProject.ext.libraries.imagePreviewSlider)
+
     implementation rootProject.ext.unifyDependencies.coach_mark
     implementation rootProject.ext.unifyDependencies.sort_filter
 

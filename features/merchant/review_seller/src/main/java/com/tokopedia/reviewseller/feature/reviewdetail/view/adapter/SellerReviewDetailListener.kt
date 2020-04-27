@@ -1,6 +1,8 @@
 package com.tokopedia.reviewseller.feature.reviewdetail.view.adapter
 
+import android.view.View
 import com.tokopedia.sortfilter.SortFilterItem
+import com.tokopedia.unifycomponents.list.ListItemUnify
 
 /**
  * Created by Yehezkiel on 24/04/20
@@ -8,4 +10,13 @@ import com.tokopedia.sortfilter.SortFilterItem
 interface SellerReviewDetailListener {
     fun onChildTopicFilterClicked(item: SortFilterItem)
     fun onParentTopicFilterClicked()
+}
+
+interface ProductFeedbackDetailListener {
+    fun onOptionFeedbackClicked(view: View, title: String, optionDetailListItemUnify: ArrayList<ListItemUnify>, isEmptyReply: Boolean)
+    fun onImageItemClicked(imageUrls: List<String>, thumbnailsUrl: List<String>, position: Int)
+}
+
+interface OverallRatingDetailListener {
+    fun onFilterPeriodClicked(view: View, title: String)
 }
