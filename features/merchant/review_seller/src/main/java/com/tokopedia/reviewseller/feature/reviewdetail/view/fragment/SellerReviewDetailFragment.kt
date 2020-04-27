@@ -45,7 +45,7 @@ import javax.inject.Inject
 /**
  * @author by milhamj on 2020-02-14.
  */
-class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDetailAdapterTypeFactory>(),
+class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDetailAdapterTypeFactory>(), SellerReviewDetailListener,
         OverallRatingDetailViewHolder.OverallRatingDetailListener, ProductFeedbackDetailViewHolder.ProductFeedbackDetailListener {
 
     companion object {
@@ -64,7 +64,7 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
     private var swipeToRefreshReviewDetail: SwipeToRefresh? = null
 
     private val sellerReviewDetailTypeFactory by lazy {
-        SellerReviewDetailAdapterTypeFactory(this, this)
+        SellerReviewDetailAdapterTypeFactory(this, this, this)
     }
 
     var productID: Int = 0
@@ -75,11 +75,8 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
 
     private var filterPeriodDetailUnify: ListUnify? = null
     private var optionFeedbackDetailUnify: ListUnify? = null
-    private var optionMenuDetailUnify: ListUnify? = null
-
     private var bottomSheetPeriodDetail: BottomSheetUnify? = null
     private var bottomSheetOptionFeedback: BottomSheetUnify? = null
-    private var bottomSheetMenuDetail: BottomSheetUnify? = null
 
     override fun getScreenName(): String = "SellerReviewDetail"
 
@@ -160,11 +157,11 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
      * Listener Section
      */
     override fun onChildTopicFilterClicked(item: SortFilterItem) {
-        Toaster.make(view!!,item.title.toString(),Snackbar.LENGTH_LONG)
+        Toaster.make(view!!, item.title.toString(), Snackbar.LENGTH_LONG)
     }
 
     override fun onParentTopicFilterClicked() {
-        Toaster.make(view!!,"parent clicked",Snackbar.LENGTH_LONG)
+        Toaster.make(view!!, "parent clicked", Snackbar.LENGTH_LONG)
     }
 
     private fun initRecyclerView(view: View) {
@@ -401,11 +398,6 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
         bottomSheetOptionFeedback = BottomSheetUnify()
         optionFeedbackDetailUnify = viewOption.findViewById(R.id.optionFeedbackList)
         bottomSheetOptionFeedback?.setChild(viewOption)
-
-        val viewMenu = View.inflate(context, R.layout.bottom_sheet_menu_option_product_detail, null)
-        bottomSheetMenuDetail = BottomSheetUnify()
-        optionMenuDetailUnify = viewMenu.findViewById(R.id.optionMenuDetail)
-        bottomSheetMenuDetail?.setChild(viewMenu)
     }
 
     private fun initChipsView() {
@@ -423,21 +415,8 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
             }
         }
 
-        optionFeedbackDetailUnify?.let {
-            it.onLoadFinish {
-                it.setOnItemClickListener { _, _, position, _ ->
-                    when (position) {
-                        1 -> {
-                            if (!isEmptyReply) {
+        optionFeedbackDetailUnify?.onLoadFinish {
 
-                            }
-                        }
-                        2 -> {
-
-                        }
-                    }
-                }
-            }
         }
 
         fragmentManager?.let {
