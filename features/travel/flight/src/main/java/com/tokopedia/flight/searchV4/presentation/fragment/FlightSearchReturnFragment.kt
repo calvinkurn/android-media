@@ -107,7 +107,10 @@ class FlightSearchReturnFragment : FlightSearchFragment() {
     }
 
     override fun renderSearchList(list: List<FlightJourneyModel>) {
-        if (flightSearchReturnViewModel.isBestPairing && !flightSearchReturnViewModel.isViewOnlyBestPairing) {
+        clearAllData()
+        if (flightSearchReturnViewModel.isBestPairing &&
+                !flightSearchReturnViewModel.isViewOnlyBestPairing &&
+                list.isNotEmpty()) {
             showSeeBestPairingResultView()
         }
 
