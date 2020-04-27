@@ -110,12 +110,6 @@ class PlayFragment : BaseDaggerFragment(), PlaySensorOrientationManager.Orientat
 
     private var isChangingOrientation = false
 
-    private var systemUiVisibility: Int
-        get() = requireActivity().window.decorView.systemUiVisibility
-        set(value) {
-            requireActivity().window.decorView.systemUiVisibility = value
-        }
-
     private var requestedOrientation: Int
         get() = requireActivity().requestedOrientation
         set(value) {
@@ -203,7 +197,6 @@ class PlayFragment : BaseDaggerFragment(), PlaySensorOrientationManager.Orientat
         requireView().post {
             registerKeyboardListener(requireView())
         }
-        setupSystemUi()
     }
 
     override fun onPause() {
@@ -336,12 +329,6 @@ class PlayFragment : BaseDaggerFragment(), PlaySensorOrientationManager.Orientat
 
     private fun setupScreen(view: View) {
         setInsets(view)
-    }
-
-    private fun setupSystemUi() {
-        systemUiVisibility =
-                if (playViewModel.screenOrientation.isLandscape) PlayFullScreenHelper.getHideSystemUiVisibility()
-                else PlayFullScreenHelper.getShowSystemUiVisibility()
     }
 
     private fun setInsets(view: View) {
