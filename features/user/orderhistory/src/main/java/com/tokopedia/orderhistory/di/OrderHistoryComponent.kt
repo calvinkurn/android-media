@@ -6,7 +6,11 @@ import dagger.Component
 
 @OrderHistoryScope
 @Component(
-        modules = [OrderHistoryModule::class, OrderHistoryViewModelModule::class],
+        modules = [
+            OrderHistoryModule::class,
+            OrderHistoryViewModelModule::class,
+            OrderHistoryContextModule::class
+        ],
         dependencies = [BaseAppComponent::class]
 )
 interface OrderHistoryComponent {

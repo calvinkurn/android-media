@@ -12,6 +12,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.orderhistory.R
 import com.tokopedia.orderhistory.di.DaggerOrderHistoryComponent
 import com.tokopedia.orderhistory.di.OrderHistoryComponent
+import com.tokopedia.orderhistory.di.OrderHistoryContextModule
 import com.tokopedia.orderhistory.view.fragment.OrderHistoryFragment
 
 class OrderHistoryActivity : BaseSimpleActivity(), HasComponent<OrderHistoryComponent> {
@@ -31,6 +32,7 @@ class OrderHistoryActivity : BaseSimpleActivity(), HasComponent<OrderHistoryComp
         return DaggerOrderHistoryComponent
                 .builder()
                 .baseAppComponent((application as BaseMainApplication).baseAppComponent)
+                .orderHistoryContextModule(OrderHistoryContextModule(this))
                 .build()
     }
 

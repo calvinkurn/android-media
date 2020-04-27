@@ -8,10 +8,13 @@ import com.tokopedia.orderhistory.usecase.GetProductOrderHistoryUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.wishlist.common.listener.WishListActionListener
+import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import javax.inject.Inject
 
 class OrderHistoryViewModel @Inject constructor(
-        private val productHistoryUseCase: GetProductOrderHistoryUseCase
+        private val productHistoryUseCase: GetProductOrderHistoryUseCase,
+        private var addWishListUseCase: AddWishListUseCase
 ) : ViewModel() {
 
     private val _product: MutableLiveData<Result<ChatHistoryProductResponse>> = MutableLiveData()
@@ -32,6 +35,10 @@ class OrderHistoryViewModel @Inject constructor(
 
     private fun onErrorGetHistoryProduct(throwable: Throwable) {
         _product.value = Fail(throwable)
+    }
+
+    fun addToWishList(productId: String, userId: String?, wishListActionListener: WishListActionListener) {
+        addWishListUseCase.createObservable(productId, userId, wishListActionListener)
     }
 
 }

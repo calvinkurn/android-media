@@ -25,12 +25,15 @@ import com.tokopedia.orderhistory.view.adapter.OrderHistoryTypeFactoryImpl
 import com.tokopedia.orderhistory.view.adapter.viewholder.OrderHistoryViewHolder
 import com.tokopedia.orderhistory.view.viewmodel.OrderHistoryViewModel
 import com.tokopedia.purchase_platform.common.constant.ATC_AND_BUY
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.wishlist.common.listener.WishListActionListener
 import javax.inject.Inject
 
 class OrderHistoryFragment : BaseListFragment<Visitable<*>, OrderHistoryTypeFactory>(),
-        OrderHistoryViewHolder.Listener {
+        OrderHistoryViewHolder.Listener, WishListActionListener {
 
     private val screenName = "order_history"
 
@@ -38,6 +41,8 @@ class OrderHistoryFragment : BaseListFragment<Visitable<*>, OrderHistoryTypeFact
     lateinit var viewModelFactory: ViewModelProvider.Factory
     @Inject
     lateinit var analytic: OrderHistoryAnalytic
+    @Inject
+    lateinit var session: UserSessionInterface
 
     private var recycler: VerticalRecyclerView? = null
     private val viewModelFragmentProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
@@ -123,6 +128,39 @@ class OrderHistoryFragment : BaseListFragment<Visitable<*>, OrderHistoryTypeFact
 //            putExtra(ApplinkConst.Transaction.EXTRA_CUSTOM_EVENT_ACTION, product.getBuyEventAction())
         }
         activity?.startActivity(intent)
+    }
+
+    override fun onClickAddToWishList(product: Product) {
+        viewModel.addToWishList(product.productId, session.userId, this)
+    }
+
+    override fun onSuccessAddWishlist(productId: String?) {
+        view?.let {
+            val successMessage = it.context.getString(R.string.title_orderhistory_success_atc)
+            val ctaText = it.context.getString(R.string.cta_orderhistory_success_atw)
+            Toaster.make(
+                    it,
+                    successMessage,
+                    Toaster.LENGTH_SHORT,
+                    Toaster.TYPE_NORMAL,
+                    ctaText,
+                    View.OnClickListener { goToWishList() }
+            )
+        }
+    }
+
+    override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
+        if (errorMessage == null) return
+        view?.let {
+            Toaster.make(it, errorMessage, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR)
+        }
+    }
+
+    override fun onSuccessRemoveWishlist(productId: String?) { }
+    override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) { }
+
+    private fun goToWishList() {
+        RouteManager.route(context, ApplinkConst.NEW_WISHLIST)
     }
 
     companion object {
