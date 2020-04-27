@@ -20,8 +20,10 @@ import com.tokopedia.vouchercreation.di.component.DaggerVoucherCreationComponent
 import com.tokopedia.vouchercreation.voucherlist.model.*
 import com.tokopedia.vouchercreation.voucherlist.model.BaseHeaderChipUiModel.HeaderChip
 import com.tokopedia.vouchercreation.voucherlist.model.BaseHeaderChipUiModel.ResetChip
+import com.tokopedia.vouchercreation.voucherlist.model.MoreMenuUiModel.CancelVoucher
 import com.tokopedia.vouchercreation.voucherlist.view.adapter.factory.VoucherListAdapterFactoryImpl
 import com.tokopedia.vouchercreation.voucherlist.view.viewmodel.VoucherListViewModel
+import com.tokopedia.vouchercreation.voucherlist.view.widget.CancelVoucherDialog
 import com.tokopedia.vouchercreation.voucherlist.view.widget.MoreMenuBottomSheet
 import com.tokopedia.vouchercreation.voucherlist.view.widget.filterbottomsheet.FilterBottomSheet
 import com.tokopedia.vouchercreation.voucherlist.view.widget.headerchips.ChipType
@@ -60,7 +62,7 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
     }
     private val moreBottomSheet: MoreMenuBottomSheet? by lazy {
         val parent = view as? ViewGroup ?: return@lazy null
-        return@lazy MoreMenuBottomSheet(parent, this::onMoreMenuItemClickListener)
+        return@lazy MoreMenuBottomSheet(parent)
     }
     private val sortBottomSheet: SortBottomSheet? by lazy {
         val parent = view as? ViewGroup ?: return@lazy null
@@ -140,12 +142,28 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
         return super.onOptionsItemSelected(item)
     }
 
-    private fun onMoreMenuItemClickListener(menu: MoreMenuUiModel) {
-        dismissBottomSheet<MoreMenuBottomSheet>(MoreMenuBottomSheet.TAG)
+    override fun onMoreClickListener(voucher: VoucherUiModel) {
+        moreBottomSheet?.let {
+            it.setOnModeClickListener(voucher) { menu ->
+                onMoreMenuItemClickListener(menu, voucher)
+            }
+            it.show(isActiveVoucher, childFragmentManager)
+        }
     }
 
-    override fun onMoreClickListener(voucher: VoucherUiModel) {
-        moreBottomSheet?.show(isActiveVoucher, voucher, childFragmentManager)
+    private fun onMoreMenuItemClickListener(menu: MoreMenuUiModel, voucher: VoucherUiModel) {
+        dismissBottomSheet<MoreMenuBottomSheet>(MoreMenuBottomSheet.TAG)
+        when (menu) {
+            is CancelVoucher -> showCancelVoucherDialog(voucher)
+        }
+    }
+
+    private fun showCancelVoucherDialog(voucher: VoucherUiModel) {
+        CancelVoucherDialog(context ?: return)
+                .setOnPrimaryClickListener {
+
+                }
+                .show(voucher)
     }
 
     private fun setupView() = view?.run {
@@ -257,8 +275,8 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
     }
 
     private fun showDummyData() {
-        //renderList(getDummyData())
-        renderList(getVoucherListShimmer())
+        renderList(getDummyData())
+        //renderList(getVoucherListShimmer())
     }
 
     private fun getVoucherListShimmer(): List<Visitable<*>> {
@@ -267,12 +285,12 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
 
     private fun getDummyData(): List<Visitable<*>> {
         val list = mutableListOf<Visitable<*>>()
-        list.add(NoResultStateUiModel)
-        //list.add(ErrorStateUiModel)
-        //list.add(EmptyStateUiModel(isActiveVoucher))
-        /*repeat(10) {
+        /*list.add(NoResultStateUiModel)
+        list.add(ErrorStateUiModel)
+        list.add(EmptyStateUiModel(isActiveVoucher))*/
+        repeat(10) {
             list.add(VoucherUiModel("Voucher Hura Nyoba Doang", it % 2 == 0))
-        }*/
+        }
         return list
     }
 
