@@ -15,7 +15,7 @@ class ImpressionTaskAlert(private val aClass: Class<*>) {
         val currentTime = System.currentTimeMillis()
         val timeSpan = currentTime - lastClick
         if (timeSpan < clickTreshold) {
-            Timber.w("P2#TOPADS_TRACKING#Alert click at class " + aClass.simpleName)
+            Timber.w("P2#TOPADS_TRACKING#Alert click;class=" + aClass.simpleName + ";diff_time=" + timeSpan)
         }
         lastClick = currentTime
     }
@@ -24,7 +24,7 @@ class ImpressionTaskAlert(private val aClass: Class<*>) {
         val currentTime = System.currentTimeMillis()
         val timeSpan = currentTime - lastImpression
         if (timeSpan > impressionTreshold) {
-            Timber.e(TAG, "P2#TOPADS_TRACKING#Alert impression at class " + aClass.simpleName)
+            Timber.w("P2#TOPADS_TRACKING#Alert impression;class=" + aClass.simpleName + ";diff_time=" + timeSpan)
         }
         lastImpression = currentTime
     }
