@@ -895,12 +895,6 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, AddToCartVariantAd
             if (isInsuranceSelected) {
                 normalCheckoutTracking.eventClickInsuranceBuy(getInsuranceTitle(), productId)
             }
-            normalCheckoutTracking.eventAppsFlyerAddToCart(productId,
-                    selectedProductInfo?.basic?.price.toString(),
-                    quantity,
-                    selectedProductInfo?.basic?.name ?: "",
-                    selectedProductInfo?.category?.name ?: "")
-
             selectedProductInfo?.run {
                 normalCheckoutTracking.eventClickAddToCartInVariant(
                         irisSession,
