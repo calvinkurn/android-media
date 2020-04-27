@@ -29,10 +29,12 @@ public class ProductViewModel implements Parcelable {
     private QuickFilterViewModel quickFilterModel;
     private TopAdsModel adsModel;
     private CpmModel cpmModel;
+    @Deprecated
     private RelatedSearchViewModel relatedSearchModel;
     private GlobalNavViewModel globalNavViewModel;
     private List<InspirationCarouselViewModel> inspirationCarouselViewModel = new ArrayList<>();
     private int defaultView;
+    private RelatedViewModel relatedViewModel;
 
     public TopAdsModel getAdsModel() {
         return adsModel;
@@ -199,6 +201,14 @@ public class ProductViewModel implements Parcelable {
 
     public int getTotalItem() {
         return getProductList().size() + getAdsModel().getData().size();
+    }
+
+    public void setRelatedViewModel(RelatedViewModel relatedViewModel) {
+        this.relatedViewModel = relatedViewModel;
+    }
+
+    public RelatedViewModel getRelatedViewModel() {
+        return this.relatedViewModel;
     }
 
     @Override

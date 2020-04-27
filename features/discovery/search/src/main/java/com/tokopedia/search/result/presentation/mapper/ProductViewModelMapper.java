@@ -5,6 +5,8 @@ import com.tokopedia.filter.common.data.Filter;
 import com.tokopedia.filter.common.data.Option;
 import com.tokopedia.search.result.domain.model.SearchProductModel;
 import com.tokopedia.search.result.presentation.model.BadgeItemViewModel;
+import com.tokopedia.search.result.presentation.model.BroadMatchItemViewModel;
+import com.tokopedia.search.result.presentation.model.BroadMatchViewModel;
 import com.tokopedia.search.result.presentation.model.FreeOngkirViewModel;
 import com.tokopedia.search.result.presentation.model.GlobalNavViewModel;
 import com.tokopedia.search.result.presentation.model.InspirationCarouselViewModel;
@@ -14,6 +16,7 @@ import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
 import com.tokopedia.search.result.presentation.model.ProductViewModel;
 import com.tokopedia.search.result.presentation.model.QuickFilterViewModel;
 import com.tokopedia.search.result.presentation.model.RelatedSearchViewModel;
+import com.tokopedia.search.result.presentation.model.RelatedViewModel;
 import com.tokopedia.search.result.presentation.model.SuggestionViewModel;
 import com.tokopedia.search.result.presentation.model.TickerViewModel;
 
@@ -33,6 +36,9 @@ public class ProductViewModelMapper {
         if (searchProduct.getRelated() != null &&
                 !textIsEmpty(searchProduct.getRelated().getRelatedKeyword())) {
             productViewModel.setRelatedSearchModel(convertToRelatedSearchModel(searchProduct.getRelated()));
+        }
+        if (searchProduct.getRelated() != null) {
+            productViewModel.setRelatedViewModel(convertToRelatedViewModel(searchProduct.getRelated()));
         }
         productViewModel.setProductList(convertToProductItemViewModelList(lastProductItemPositionFromCache, searchProduct.getProducts(), useRatingString));
         productViewModel.setAdsModel(searchProductModel.getTopAdsModel());
@@ -151,6 +157,46 @@ public class ProductViewModelMapper {
         relatedSearchModel.setOtherRelated(otherRelatedList);
 
         return relatedSearchModel;
+    }
+
+    private RelatedViewModel convertToRelatedViewModel(SearchProductModel.Related related) {
+        List<BroadMatchViewModel> broadMatchViewModelList = new ArrayList<>();
+        for (SearchProductModel.OtherRelated otherRelated: related.getOtherRelated()) {
+            broadMatchViewModelList.add(convertToBroadMatchViewModel(otherRelated));
+        }
+
+        return new RelatedViewModel(
+                related.getRelatedKeyword(),
+                broadMatchViewModelList
+        );
+    }
+
+    private BroadMatchViewModel convertToBroadMatchViewModel(SearchProductModel.OtherRelated otherRelated) {
+        List<BroadMatchItemViewModel> broadMatchItemViewModelList = new ArrayList<>();
+        for (SearchProductModel.OtherRelatedProduct otherRelatedProduct: otherRelated.getOtherRelatedProductList()) {
+            broadMatchItemViewModelList.add(convertToBroadMatchItemViewModel(otherRelatedProduct));
+        }
+
+        return new BroadMatchViewModel(
+                otherRelated.getKeyword(),
+                otherRelated.getUrl(),
+                otherRelated.getApplink(),
+                broadMatchItemViewModelList
+        );
+    }
+
+    private BroadMatchItemViewModel convertToBroadMatchItemViewModel(SearchProductModel.OtherRelatedProduct otherRelatedProduct) {
+        return new BroadMatchItemViewModel(
+                otherRelatedProduct.getId(),
+                otherRelatedProduct.getName(),
+                otherRelatedProduct.getPrice(),
+                otherRelatedProduct.getImageUrl(),
+                otherRelatedProduct.getRating(),
+                otherRelatedProduct.getCountReview(),
+                otherRelatedProduct.getUrl(),
+                otherRelatedProduct.getApplink(),
+                otherRelatedProduct.getPriceString()
+        );
     }
 
     private List<ProductItemViewModel> convertToProductItemViewModelList(int lastProductItemPositionFromCache, List<SearchProductModel.Product> productModels, boolean useRatingString) {

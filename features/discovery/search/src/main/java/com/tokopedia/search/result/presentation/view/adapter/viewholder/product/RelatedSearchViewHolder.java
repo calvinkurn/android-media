@@ -20,6 +20,7 @@ import com.tokopedia.search.utils.ListHelper;
 import java.util.ArrayList;
 import java.util.List;
 
+@Deprecated
 public class RelatedSearchViewHolder extends AbstractViewHolder<RelatedSearchViewModel> {
     @LayoutRes
     public static final int LAYOUT = R.layout.related_search_layout;

@@ -9,6 +9,7 @@ import com.tokopedia.search.result.presentation.view.typefactory.ProductListType
 import java.util.ArrayList;
 import java.util.List;
 
+@Deprecated
 public class RelatedSearchViewModel implements Parcelable, Visitable<ProductListTypeFactory> {
 
     private String relatedKeyword = "";

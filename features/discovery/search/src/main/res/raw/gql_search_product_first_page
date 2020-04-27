@@ -39,6 +39,17 @@ query SearchProduct(
                 keyword
                 url
                 applink
+                product {
+                    id
+                    name
+                    price
+                    image_url
+                    rating
+                    count_review
+                    url
+                    applink
+                    price_str
+                }
             }
         }
         products {
