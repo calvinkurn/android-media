@@ -258,10 +258,10 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
 
     private fun showDummyData() {
         //renderList(getDummyData())
-        renderList(getActiveVoucherShimmer())
+        renderList(getVoucherListShimmer())
     }
 
-    private fun getActiveVoucherShimmer(): List<Visitable<*>> {
+    private fun getVoucherListShimmer(): List<Visitable<*>> {
         return listOf(LoadingStateUiModel(isActiveVoucher))
     }
 
