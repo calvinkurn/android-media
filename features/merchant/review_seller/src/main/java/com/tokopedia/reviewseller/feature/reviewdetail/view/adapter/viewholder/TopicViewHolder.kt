@@ -34,6 +34,7 @@ class TopicViewHolder(val view: View, private val fragmentListener: SellerReview
                 fragmentListener.onParentTopicFilterClicked()
             }
         }
+
         resultFeedbackLabel.text = setReviewCountBold(element.countFeedback.orZero())
     }
 
