@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.TabLayoutOnPageChangeListener
@@ -38,9 +39,13 @@ class SellerReviewListFragment : BaseDaggerFragment() {
     }
 
     private fun setupToolbar() {
-        review_toolbar.headerView?.textSize = resources.getDimension(R.dimen.toolbar_font_size)
-        review_toolbar?.setOnClickListener {
-            activity?.onBackPressed()
+        activity?.run {
+            (this as? AppCompatActivity)?.run {
+                setSupportActionBar(review_toolbar)
+                supportActionBar?.setDisplayHomeAsUpEnabled(true)
+                supportActionBar?.setDisplayShowTitleEnabled(true)
+                setHasOptionsMenu(true)
+            }
         }
     }
 
