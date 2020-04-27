@@ -16,7 +16,7 @@ import kotlinx.android.synthetic.main.bottomsheet_mvc_edit_quota.view.*
  * Created By @ilhamsuaib on 27/04/20
  */
 
-class MvcEditQuota(
+class EditQuotaBottomSheet(
         parent: ViewGroup
 ) : BottomSheetUnify() {
 
@@ -44,6 +44,6 @@ class MvcEditQuota(
     }
 
     fun show(fm: FragmentManager) {
-        show(fm, MvcEditQuota::class.java.simpleName)
+        show(fm, EditQuotaBottomSheet::class.java.simpleName)
     }
 }
