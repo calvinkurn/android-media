@@ -97,14 +97,18 @@ class FlightHomepageViewModel @Inject constructor(
             dashboardCache.putArrivalAirport(extrasTripDeparture[INDEX_ID_AIRPORT_ARRIVAL_TRIP])
             dashboardCache.putArrivalCityName(extrasTripDeparture[INDEX_NAME_CITY_ARRIVAL_TRIP])
             dashboardCache.putRoundTrip(false)
-            dashboardCache.putDepartureDate(extrasTripDeparture[INDEX_DATE_TRIP])
+            if (extrasTripDeparture[INDEX_DATE_TRIP].isNotEmpty()) {
+                dashboardCache.putDepartureDate(extrasTripDeparture[INDEX_DATE_TRIP])
+            }
             dashboardCache.putReturnDate("")
 
             // if applink params is roundtrip
             if (tempExtras.size > 1) {
                 val extrasTripReturn = tempExtras[INDEX_RETURN_TRIP].split("_")
                 dashboardCache.putRoundTrip(true)
-                dashboardCache.putReturnDate(extrasTripReturn[INDEX_DATE_TRIP])
+                if (extrasTripReturn[INDEX_DATE_TRIP].isNotEmpty()) {
+                    dashboardCache.putReturnDate(extrasTripReturn[INDEX_DATE_TRIP])
+                }
             }
 
             // transform passenger

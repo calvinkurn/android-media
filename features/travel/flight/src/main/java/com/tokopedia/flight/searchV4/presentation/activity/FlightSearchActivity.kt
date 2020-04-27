@@ -44,6 +44,7 @@ open class FlightSearchActivity : BaseFlightActivity(),
     protected var dateString = ""
     protected var passengerString = ""
     protected var classString = ""
+    var isSearchFromWidget = false
 
     private lateinit var wrapper: LinearLayout
 
@@ -176,6 +177,7 @@ open class FlightSearchActivity : BaseFlightActivity(),
 
     private fun initializeDataFromExtras() {
         flightSearchPassDataModel = intent.getParcelableExtra(EXTRA_PASS_DATA)
+        isSearchFromWidget = intent.getBooleanExtra(EXTRA_SEARCH_FROM_WIDGET, false)
         initializeToolbarData()
     }
 
@@ -221,6 +223,32 @@ open class FlightSearchActivity : BaseFlightActivity(),
         flightChangeSearchBottomSheet.listener = this
         flightChangeSearchBottomSheet.setShowListener { flightChangeSearchBottomSheet.bottomSheet.state = BottomSheetBehavior.STATE_EXPANDED }
         flightChangeSearchBottomSheet.show(supportFragmentManager, FlightSearchUniversalBottomSheet.TAG_SEARCH_FORM)
+    }
+
+    fun setupAndShowCoachMarkSearchFromWidget() {
+        if (::wrapper.isInitialized && isSearchFromWidget) {
+            val coachMarkItems = arrayListOf<CoachMarkItem>()
+            coachMarkItems.add(CoachMarkItem(
+                    wrapper,
+                    "",
+                    getString(R.string.flight_search_coach_mark_from_widget)
+            ))
+
+            val coachMark = CoachMarkBuilder().build()
+            coachMark.show(this, TAG_CHANGE_COACH_MARK, coachMarkItems)
+            Handler().postDelayed({
+                if (coachMark.isAdded && coachMark.isVisible) {
+                    coachMark.dismissAllowingStateLoss()
+                }
+                isSearchFromWidget = false
+            }, DELAY_THREE_SECONDS)
+            coachMark.onFinishListener = {
+                isSearchFromWidget = false
+            }
+            coachMark.overlayOnClickListener = ({
+                isSearchFromWidget = false
+            })
+        }
     }
 
     fun setupAndShowCoachMark() {
@@ -286,6 +314,7 @@ open class FlightSearchActivity : BaseFlightActivity(),
     companion object {
         const val TAG_CHANGE_COACH_MARK = "TagChangeSearchCoachMark"
         const val EXTRA_PASS_DATA = "EXTRA_PASS_DATA"
+        const val EXTRA_SEARCH_FROM_WIDGET = "EXTRA_SEARCH_FROM_WIDGET"
 
         private const val REQUEST_CODE_BOOKING = 10
         private const val REQUEST_CODE_RETURN = 11
@@ -293,9 +322,12 @@ open class FlightSearchActivity : BaseFlightActivity(),
         private val DIMEN_24_IN_PX = 24.toPx()
         private const val CORNER_RADIUS = 8f
 
-        fun getCallingIntent(context: Context, passDataModel: FlightSearchPassDataModel): Intent =
+        fun getCallingIntent(context: Context,
+                             passDataModel: FlightSearchPassDataModel,
+                             isSearchFromWidget: Boolean): Intent =
                 Intent(context, FlightSearchActivity::class.java)
                         .putExtra(EXTRA_PASS_DATA, passDataModel)
+                        .putExtra(EXTRA_SEARCH_FROM_WIDGET, isSearchFromWidget)
 
     }
 }

@@ -57,6 +57,7 @@ class FlightHomepageFragment : BaseDaggerFragment(), FlightSearchFormView.Flight
     private lateinit var performanceMonitoring: PerformanceMonitoring
     private var isTraceStop: Boolean = false
     private var applinkErrorTextResource = -1
+    private var isSearchFromWidget: Boolean = false
 
     override fun getScreenName(): String = FlightHomepageFragment::class.java.simpleName
 
@@ -133,6 +134,7 @@ class FlightHomepageFragment : BaseDaggerFragment(), FlightSearchFormView.Flight
         flightHomepageViewModel.autoSearch.observe(viewLifecycleOwner, Observer {
             if (it) {
                 flightHomepageSearchForm.autoSearch()
+                isSearchFromWidget = true
             }
         })
 
@@ -446,7 +448,7 @@ class FlightHomepageFragment : BaseDaggerFragment(), FlightSearchFormView.Flight
     }
 
     private fun navigateToSearchPage(flightSearchData: FlightSearchPassDataModel) {
-        startActivityForResult(FlightSearchActivity.getCallingIntent(requireContext(), flightSearchData),
+        startActivityForResult(FlightSearchActivity.getCallingIntent(requireContext(), flightSearchData, isSearchFromWidget),
                 REQUEST_CODE_SEARCH)
     }
 

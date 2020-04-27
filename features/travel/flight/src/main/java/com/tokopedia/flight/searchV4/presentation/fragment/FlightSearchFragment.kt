@@ -216,6 +216,8 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
             performanceMonitoringP2.stopTrace()
             if (!coachMarkCache.isSearchCoachMarkShowed()) {
                 (activity as FlightSearchActivity).setupAndShowCoachMark()
+            } else if ((activity as FlightSearchActivity).isSearchFromWidget) {
+                (activity as FlightSearchActivity).setupAndShowCoachMarkSearchFromWidget()
             }
         }
     }

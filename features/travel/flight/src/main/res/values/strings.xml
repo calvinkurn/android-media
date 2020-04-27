@@ -520,6 +520,7 @@ di tempatmu.</string>
     <string name="flight_change_search_label">Ubah pencarian</string>
     <string name="flight_search_coach_mark_change_title">Ganti Pencarian</string>
     <string name="flight_search_coach_mark_change_description">Tidak menemukan penerbangan yang sesuai? Klik disini untuk mengganti pencarian yang sesuai.</string>
+    <string name="flight_search_coach_mark_from_widget">Kamu sedang lihat jadwal penerbangan hari ini. Klik ikon di kanan atas untuk ubah tanggal.</string>
     <string name="flight_search_people_label">/orang</string>
 
     <string name="flight_search_see_other_journey_title">Mau cek penerbangan pulang lainnya?</string>
