@@ -895,6 +895,12 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, AddToCartVariantAd
             if (isInsuranceSelected) {
                 normalCheckoutTracking.eventClickInsuranceBuy(getInsuranceTitle(), productId)
             }
+            normalCheckoutTracking.eventAppsFlyerAddToCart(productId,
+                    selectedProductInfo?.basic?.price.toString(),
+                    quantity,
+                    selectedProductInfo?.basic?.name ?: "",
+                    selectedProductInfo?.category?.name ?: "")
+
             selectedProductInfo?.run {
                 normalCheckoutTracking.eventClickAddToCartInVariant(
                         irisSession,
@@ -1076,6 +1082,9 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, AddToCartVariantAd
             addToCartOcsRequestParams.trackerAttribution = trackerAttribution ?: ""
             addToCartOcsRequestParams.trackerListName = trackerListName ?: ""
             addToCartOcsRequestParams.isTradeIn = isTradeIn == 1
+            addToCartOcsRequestParams.productName = selectedProductInfo?.basic?.name ?: ""
+            addToCartOcsRequestParams.category = selectedProductInfo?.category?.name ?: ""
+            addToCartOcsRequestParams.price = selectedProductInfo?.basic?.price?.toString() ?: ""
 
             viewModel.addToCartProduct(addToCartOcsRequestParams, ::onSuccessAtc, ::onErrorAtc, onFinish, onRetryWhenError)
         } else {
@@ -1091,6 +1100,9 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, AddToCartVariantAd
             addToCartRequestParams.attribution = trackerAttribution ?: ""
             addToCartRequestParams.listTracker = trackerListName ?: ""
             addToCartRequestParams.warehouseId = selectedWarehouseId
+            addToCartRequestParams.productName = selectedProductInfo?.basic?.name ?: ""
+            addToCartRequestParams.category = selectedProductInfo?.category?.name ?: ""
+            addToCartRequestParams.price = selectedProductInfo?.basic?.price?.toString() ?: ""
 
             viewModel.addToCartProduct(addToCartRequestParams, ::onSuccessAtc, ::onErrorAtc, onFinish, onRetryWhenError)
         }
