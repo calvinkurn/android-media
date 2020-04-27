@@ -1,9 +1,8 @@
 package com.tokopedia.reviewseller.feature.reviewdetail.view.fragment
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -21,11 +20,13 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.reviewseller.R
 import com.tokopedia.reviewseller.common.util.*
 import com.tokopedia.reviewseller.feature.reviewdetail.di.component.ReviewProductDetailComponent
+import com.tokopedia.reviewseller.feature.reviewdetail.util.mapper.SellerReviewProductDetailMapper
 import com.tokopedia.reviewseller.feature.reviewdetail.view.adapter.SellerReviewDetailAdapter
 import com.tokopedia.reviewseller.feature.reviewdetail.view.adapter.SellerReviewDetailAdapterTypeFactory
 import com.tokopedia.reviewseller.feature.reviewdetail.view.adapter.SellerReviewDetailListener
 import com.tokopedia.reviewseller.feature.reviewdetail.view.adapter.viewholder.OverallRatingDetailViewHolder
 import com.tokopedia.reviewseller.feature.reviewdetail.view.adapter.viewholder.ProductFeedbackDetailViewHolder
+import com.tokopedia.reviewseller.feature.reviewdetail.view.bottomsheet.PopularTopicsBottomSheet
 import com.tokopedia.reviewseller.feature.reviewdetail.view.model.OverallRatingDetailUiModel
 import com.tokopedia.reviewseller.feature.reviewdetail.view.model.ProductFeedbackDetailUiModel
 import com.tokopedia.reviewseller.feature.reviewdetail.view.viewmodel.ProductReviewDetailViewModel
@@ -37,6 +38,7 @@ import com.tokopedia.unifycomponents.list.ListItemUnify
 import com.tokopedia.unifycomponents.list.ListUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import kotlinx.android.synthetic.main.fragment_rating_product.*
 import kotlinx.android.synthetic.main.fragment_seller_review_detail.*
 import kotlinx.android.synthetic.main.item_overall_review_detail.view.*
 import javax.inject.Inject
@@ -74,8 +76,11 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
 
     private var filterPeriodDetailUnify: ListUnify? = null
     private var optionFeedbackDetailUnify: ListUnify? = null
+    private var optionMenuDetailUnify: ListUnify? = null
+
     private var bottomSheetPeriodDetail: BottomSheetUnify? = null
     private var bottomSheetOptionFeedback: BottomSheetUnify? = null
+    private var bottomSheetMenuDetail: BottomSheetUnify? = null
 
     override fun getScreenName(): String = "SellerReviewDetail"
 
@@ -98,7 +103,7 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        initToolbar()
         initRecyclerView(view)
         initSwipeToRefRefresh(view)
         initViewBottomSheet()
@@ -156,11 +161,21 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
      * Listener Section
      */
     override fun onChildTopicFilterClicked(item: SortFilterItem) {
+        // asd.foreach{ if(name==terbaru) isSelected =isSelected }
+        // asd.map{ if(selected) globalTopics = it.name.append(, )} " "
+        // globalData terbaru
+        // topics = "
         Toaster.make(view!!, item.title.toString(), Snackbar.LENGTH_LONG)
     }
 
     override fun onParentTopicFilterClicked() {
+        val bottomSheet = PopularTopicsBottomSheet(activity, "test", ::onTopicsClicked)
+        bottomSheet.showDialog()
         Toaster.make(view!!, "parent clicked", Snackbar.LENGTH_LONG)
+    }
+
+    private fun onTopicsClicked(data: List<String>) {
+
     }
 
     private fun initRecyclerView(view: View) {
@@ -169,6 +184,59 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
             it.layoutManager = linearLayoutManager
             endlessRecyclerViewScrollListener = createEndlessRecyclerViewListener()
             it.addOnScrollListener(endlessRecyclerViewScrollListener)
+        }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.menu_option_review_product_detail, menu)
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.menu_option_product_detail -> {
+                clickOptionFeedbackDetail()
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    private fun initToolbar() {
+        activity?.run {
+            (this as? AppCompatActivity)?.run {
+                setSupportActionBar(review_detail_toolbar)
+                supportActionBar?.setDisplayHomeAsUpEnabled(true)
+                supportActionBar?.setDisplayShowTitleEnabled(true)
+                setHasOptionsMenu(true)
+            }
+        }
+    }
+
+    private fun clickOptionFeedbackDetail() {
+        val optionMenuList = context?.let { SellerReviewProductDetailMapper.mapToItemUnifyMenuOption(it) }
+        optionMenuList?.let { optionFeedbackDetailUnify?.setData(it) }
+
+        bottomSheetOptionFeedback?.apply {
+            showCloseIcon = true
+            setCloseClickListener {
+                dismiss()
+            }
+        }
+
+        optionFeedbackDetailUnify?.let {
+            it.onLoadFinish {
+                it.setOnItemClickListener { _, _, position, _ ->
+                    when (position) {
+                        1 -> {
+
+                        }
+                    }
+                }
+            }
+        }
+
+        fragmentManager?.let {
+            bottomSheetOptionFeedback?.show(it, getString(R.string.change_product_label))
         }
     }
 
@@ -255,10 +323,10 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
     private fun onErrorGetReviewDetailData(throwable: Throwable) {
         swipeToRefreshReviewDetail?.isRefreshing = false
         if (reviewSellerDetailAdapter.itemCount == 0) {
-            if (throwable is Exception) {
-                globalError_reviewDetail?.setType(GlobalError.SERVER_ERROR)
-            } else {
-                globalError_reviewDetail?.setType(GlobalError.NO_CONNECTION)
+            if (throwable.message?.isNotEmpty() == true) {
+                globalError_reviewSeller?.setType(GlobalError.SERVER_ERROR)
+            } else if (throwable.message?.isEmpty() == true) {
+                globalError_reviewSeller?.setType(GlobalError.NO_CONNECTION)
             }
             emptyState_reviewDetail?.hide()
             rvRatingDetail?.hide()
@@ -344,6 +412,11 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
         bottomSheetOptionFeedback = BottomSheetUnify()
         optionFeedbackDetailUnify = viewOption.findViewById(R.id.optionFeedbackList)
         bottomSheetOptionFeedback?.setChild(viewOption)
+
+        val viewMenu = View.inflate(context, R.layout.bottom_sheet_menu_option_product_detail, null)
+        bottomSheetMenuDetail = BottomSheetUnify()
+        optionMenuDetailUnify = viewMenu.findViewById(R.id.optionMenuDetail)
+        bottomSheetMenuDetail?.setChild(viewMenu)
     }
 
     private fun initChipsView() {
@@ -361,8 +434,21 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
             }
         }
 
-        optionFeedbackDetailUnify?.onLoadFinish {
+        optionFeedbackDetailUnify?.let {
+            it.onLoadFinish {
+                it.setOnItemClickListener { _, _, position, _ ->
+                    when (position) {
+                        1 -> {
+                            if (!isEmptyReply) {
 
+                            }
+                        }
+                        2 -> {
+
+                        }
+                    }
+                }
+            }
         }
 
         fragmentManager?.let {

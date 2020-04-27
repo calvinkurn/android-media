@@ -278,9 +278,9 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
     private fun onErrorGetReviewSellerData(throwable: Throwable) {
         swipeToRefreshReviewSeller?.isRefreshing = false
         if (reviewSellerAdapter.itemCount.isZero()) {
-            if (throwable is Exception) {
+            if (throwable.message?.isNotEmpty() == true) {
                 globalError_reviewSeller?.setType(GlobalError.SERVER_ERROR)
-            } else {
+            } else if(throwable.message?.isEmpty() == true) {
                 globalError_reviewSeller?.setType(GlobalError.NO_CONNECTION)
             }
 

@@ -1,9 +1,9 @@
 package com.tokopedia.reviewseller.feature.reviewdetail.domain
 
-import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.reviewseller.common.util.GQL_GET_PRODUCT_REVIEW_DETAIL_OVERALL
 import com.tokopedia.reviewseller.feature.reviewdetail.data.ProductReviewDetailOverallResponse
 import com.tokopedia.usecase.coroutines.UseCase
@@ -33,7 +33,7 @@ class GetProductReviewDetailOverallUseCase @Inject constructor(
         if (error == null || error.isEmpty()) {
             return gqlResponse.getData<ProductReviewDetailOverallResponse>(ProductReviewDetailOverallResponse::class.java).productGetReviewAggregateByProduct
         } else {
-            throw MessageErrorException(error.joinToString(", ") { it.message })
+            throw MessageErrorException(error.joinToString(", ") { it.message} )
         }
     }
 }

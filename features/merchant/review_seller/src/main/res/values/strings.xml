@@ -66,5 +66,7 @@
     <string name="review_reply_label">Balas Ulasan</string>
     <string name="report_label">Laporkan</string>
     <string name="option_menu_label">Menu</string>
+    <string name="option_review_product_detail_label">Option Review Product Detail</string>
+    <string name="change_product_label">Ubah Produk</string>
     <string name="label_name_reviewer_builder">Oleh <![CDATA[<b>%1s</b>]]></string>
 </resources>

@@ -94,6 +94,20 @@ object SellerReviewProductDetailMapper {
         }
     }
 
+    fun mapToItemUnifyMenuOption(context: Context): ArrayList<ListItemUnify> {
+        val itemUnifyList: ArrayList<ListItemUnify> = arrayListOf()
+
+        itemUnifyList.apply {
+            add(
+                    ListItemUnify(
+                            title = context.getString(R.string.change_product_label),
+                            description = "")
+            )
+        }
+
+        return itemUnifyList
+    }
+
     fun mapToItemUnifyListFeedback(context: Context, isEmptyReply: Boolean): ArrayList<ListItemUnify> {
         val itemUnifyList: ArrayList<ListItemUnify> = arrayListOf()
         val iconSize = 24.toPx()
@@ -105,13 +119,15 @@ object SellerReviewProductDetailMapper {
                         ListItemUnify(title = context.getString(R.string.edit_review_label), description = "").apply {
                             listDrawable = iconList
                             listIconHeight = iconSize
-                            listIconWidth = iconSize                        }
+                            listIconWidth = iconSize
+                        }
                     } else {
                         val iconList = ContextCompat.getDrawable(context, R.drawable.ic_sent)
                         ListItemUnify(title = context.getString(R.string.review_reply_label), description = "").apply {
                             listDrawable = iconList
                             listIconHeight = iconSize
-                            listIconWidth = iconSize                        }
+                            listIconWidth = iconSize
+                        }
                     }
             )
             val iconReport = ContextCompat.getDrawable(context, R.drawable.ic_report_flag)
