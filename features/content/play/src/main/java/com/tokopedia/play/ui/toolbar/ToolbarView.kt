@@ -55,7 +55,6 @@ class ToolbarView(
 
     override val containerId: Int = view.id
 
-
     override fun show() {
         view.show()
     }

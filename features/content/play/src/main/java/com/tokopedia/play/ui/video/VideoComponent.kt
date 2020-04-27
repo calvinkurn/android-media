@@ -10,6 +10,7 @@ import com.tokopedia.play.component.UIComponent
 import com.tokopedia.play.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play.util.video.PlayVideoUtil
 import com.tokopedia.play.view.event.ScreenStateEvent
+import com.tokopedia.play.view.uimodel.General
 import com.tokopedia.play_common.state.PlayVideoState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
@@ -42,12 +43,16 @@ open class VideoComponent(
                                 uiView.hide()
                                 if (it.stateHelper.videoState == PlayVideoState.Ended) showEndImage()
                             }
-                            is ScreenStateEvent.SetVideo -> uiView.setPlayer(it.videoPlayer)
+                            is ScreenStateEvent.SetVideo -> if (it.videoPlayer is General) uiView.setPlayer(it.videoPlayer.exoPlayer)
                             is ScreenStateEvent.OnNewPlayRoomEvent -> if (it.event.isFreeze || it.event.isBanned) {
                                 uiView.hide()
                                 uiView.setPlayer(null)
                             }
-                            is ScreenStateEvent.VideoPropertyChanged -> handleVideoStateChanged(it.videoProp.state)
+                            is ScreenStateEvent.VideoPropertyChanged -> {
+                                if (!it.stateHelper.videoPlayer.isGeneral) {
+                                    uiView.hide()
+                                } else handleVideoStateChanged(it.videoProp.state)
+                            }
                             is ScreenStateEvent.VideoStreamChanged -> {
                                 uiView.setOrientation(it.stateHelper.screenOrientation, it.videoStream.orientation)
                             }

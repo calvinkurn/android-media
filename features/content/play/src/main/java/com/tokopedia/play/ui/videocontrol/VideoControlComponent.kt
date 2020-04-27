@@ -10,6 +10,7 @@ import com.tokopedia.play.extensions.isAnyShown
 import com.tokopedia.play.ui.videocontrol.interaction.VideoControlInteractionEvent
 import com.tokopedia.play.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play.view.event.ScreenStateEvent
+import com.tokopedia.play.view.uimodel.General
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
@@ -35,11 +36,13 @@ open class VideoControlComponent(
                     .collect {
                         when (it) {
                             is ScreenStateEvent.Init -> uiView.hide()
-                            is ScreenStateEvent.SetVideo -> {
-                                uiView.setPlayer(it.videoPlayer)
-                            }
+                            is ScreenStateEvent.SetVideo -> if (it.videoPlayer is General) uiView.setPlayer(it.videoPlayer.exoPlayer)
                             is ScreenStateEvent.VideoStreamChanged -> {
-                                if (it.videoStream.channelType.isVod && !it.stateHelper.bottomInsets.isAnyShown) uiView.show()
+                                if (
+                                        it.videoStream.channelType.isVod &&
+                                        it.stateHelper.videoPlayer.isGeneral &&
+                                        !it.stateHelper.bottomInsets.isAnyShown
+                                ) uiView.show()
                                 else uiView.hide()
                             }
                             is ScreenStateEvent.OnNewPlayRoomEvent -> if (it.event.isFreeze || it.event.isBanned) {

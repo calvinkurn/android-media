@@ -21,7 +21,7 @@ sealed class ScreenStateEvent : ComponentEvent {
     /**
      * Setter
      */
-    data class SetVideo(val videoPlayer: ExoPlayer) : ScreenStateEvent()
+    data class SetVideo(val videoPlayer: VideoPlayerUiModel) : ScreenStateEvent()
     data class SetChannelTitle(val title: String): ScreenStateEvent()
     data class SetPartnerInfo(val partnerInfo: PartnerInfoUiModel): ScreenStateEvent()
     data class SetTotalCart(val cartUiModel: CartUiModel): ScreenStateEvent()

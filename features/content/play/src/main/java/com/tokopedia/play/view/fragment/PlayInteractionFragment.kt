@@ -286,7 +286,7 @@ class PlayInteractionFragment :
 
     //region observe
     private fun observeVOD() {
-        playViewModel.observableVOD.observe(viewLifecycleOwner, Observer {
+        playViewModel.observableVideoPlayer.observe(viewLifecycleOwner, Observer {
             scope.launch {
                 EventBusFactory.get(viewLifecycleOwner)
                         .emit(

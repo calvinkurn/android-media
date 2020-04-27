@@ -1,11 +1,11 @@
 package com.tokopedia.play.view.uimodel.mapper
 
+import com.google.android.exoplayer2.ExoPlayer
 import com.tokopedia.play.data.*
 import com.tokopedia.play.ui.chatlist.model.PlayChat
 import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.*
-
 
 /**
  * Created by mzennis on 2020-03-06.
@@ -18,13 +18,18 @@ object PlayUiMapper {
     fun createCompleteInfoModel(
             channel: Channel,
             partnerName: String,
-            isBanned: Boolean
+            isBanned: Boolean,
+            exoPlayer: ExoPlayer
     ) = PlayCompleteInfoUiModel(
             channelInfo = mapChannelInfo(channel),
             videoStream = mapVideoStream(
                     channel.videoStream,
                     channel.isActive,
                     channel.backgroundUrl),
+            videoPlayer = mapVideoPlayer(
+                    channel.videoStream,
+                    exoPlayer
+            ),
             pinnedMessage = mapPinnedMessage(
                     partnerName,
                     channel.pinnedMessage
@@ -83,8 +88,7 @@ object PlayUiMapper {
     // TODO("testing")
     fun mapVideoStream(videoStream: VideoStream, isActive: Boolean, backgroundUrl: String) = VideoStreamUiModel(
             uriString = videoStream.config.streamUrl,
-            channelType = if (videoStream.isLive && PlayChannelType.getByValue(videoStream.type).isLive)
-                PlayChannelType.Live else PlayChannelType.VOD,
+            channelType = if (videoStream.isLive) PlayChannelType.Live else PlayChannelType.VOD,
             orientation = VideoOrientation.getByValue(videoStream.orientation),
             backgroundUrl = backgroundUrl,
 //            channelType = PlayChannelType.Live,
@@ -92,6 +96,12 @@ object PlayUiMapper {
 //            backgroundUrl = "https://i.pinimg.com/736x/d3/bb/7b/d3bb7b85f4e160d013f68fcde8d19844.jpg",
             isActive = isActive
     )
+
+    private fun mapVideoPlayer(videoStream: VideoStream, exoPlayer: ExoPlayer) = when (videoStream.type) {
+        "live", "vod" -> General(exoPlayer)
+        "youtube" -> YouTube(videoStream.config.youtubeId)
+        else -> Unknown
+    }
 
     fun mapQuickReply(quickReplyList: List<String>) = QuickReplyUiModel(quickReplyList.filterNot { quickReply -> quickReply.isEmpty() || quickReply.isBlank() } )
     fun mapQuickReply(quickReply: QuickReply) = mapQuickReply(quickReply.data)

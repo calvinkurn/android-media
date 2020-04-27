@@ -2,7 +2,6 @@ package com.tokopedia.play.view.viewmodel
 
 import android.net.Uri
 import androidx.lifecycle.*
-import com.google.android.exoplayer2.ExoPlayer
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toAmountString
 import com.tokopedia.play.data.*
@@ -45,15 +44,14 @@ class PlayViewModel @Inject constructor(
         private val dispatchers: CoroutineDispatcherProvider
 ) : PlayBaseViewModel(dispatchers.main) {
 
-    val observableVOD: LiveData<out ExoPlayer>
-        get() = playVideoManager.getObservableVideoPlayer()
-
     /**
      * Not Used for Event to component
      */
     val observableGetChannelInfo: LiveData<Result<ChannelInfoUiModel>>
         get() = _observableGetChannelInfo
 
+    val observableVideoPlayer: LiveData<VideoPlayerUiModel>
+        get() = _observableVideoPlayer
     val observableSocketInfo: LiveData<PlaySocketInfo>
         get() = _observableSocketInfo
     val observableVideoStream: LiveData<VideoStreamUiModel>
@@ -96,6 +94,11 @@ class PlayViewModel @Inject constructor(
         get() {
             val videoStream = _observableVideoStream.value
             return videoStream?.channelType ?: PlayChannelType.Unknown
+        }
+    val videoPlayer: VideoPlayerUiModel
+        get() {
+            val videoPlayer = _observableVideoPlayer.value
+            return videoPlayer ?: Unknown
         }
     val contentId: Int
         get() {
@@ -141,6 +144,7 @@ class PlayViewModel @Inject constructor(
             return StateHelperUiModel(
                     shouldShowPinned = pinned is PinnedMessageUiModel || pinned is PinnedProductUiModel,
                     channelType = channelType,
+                    videoPlayer = videoPlayer,
                     bottomInsets = bottomInsets ?: getDefaultBottomInsetsMapState(),
                     screenOrientation = screenOrientation,
                     videoOrientation = videoOrientation,
@@ -172,6 +176,11 @@ class PlayViewModel @Inject constructor(
         }
     }
     private val _observablePinned = MediatorLiveData<PinnedUiModel>()
+    private val _observableVideoPlayer = MediatorLiveData<VideoPlayerUiModel>().apply {
+        addSource(playVideoManager.getObservableVideoPlayer()) {
+            if (videoPlayer.isGeneral) value = General(it)
+        }
+    }
     private val _observableBadgeCart = MutableLiveData<CartUiModel>()
     private val stateHandler: LiveData<Unit> = MediatorLiveData<Unit>().apply {
         addSource(playVideoManager.getObservablePlayVideoState()) {
@@ -422,7 +431,8 @@ class PlayViewModel @Inject constructor(
             val completeInfoUiModel = PlayUiMapper.createCompleteInfoModel(
                     channel = channel,
                     partnerName = _observablePartnerInfo.value?.name.orEmpty(),
-                    isBanned = _observableEvent.value?.isBanned ?: false
+                    isBanned = _observableEvent.value?.isBanned ?: false,
+                    exoPlayer = playVideoManager.videoPlayer
             )
 
             _observableGetChannelInfo.value = Success(completeInfoUiModel.channelInfo)
@@ -431,6 +441,7 @@ class PlayViewModel @Inject constructor(
             _observablePinnedProduct.value = completeInfoUiModel.pinnedProduct
             _observableQuickReply.value = completeInfoUiModel.quickReply
             _observableVideoStream.value = completeInfoUiModel.videoStream
+            _observableVideoPlayer.value = completeInfoUiModel.videoPlayer
             _observableEvent.value = completeInfoUiModel.event
             _observablePartnerInfo.value = getPartnerInfo(completeInfoUiModel.channelInfo)
         }) {

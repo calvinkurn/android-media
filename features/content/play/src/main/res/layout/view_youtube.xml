@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <fragment
+        android:id="@+id/fragment_youtube"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:name="com.google.android.youtube.player.YouTubePlayerSupportFragment"
+        />
+
+</merge>
