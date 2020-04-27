@@ -389,15 +389,15 @@ class FlightHomepageFragment : BaseDaggerFragment(), FlightSearchFormView.Flight
                 val departureErrorResourceId = flightHomepageViewModel.validateDepartureDate(dateIn)
                 if (departureErrorResourceId == -1) {
                     flightHomepageSearchForm.setDepartureDate(dateIn)
+
+                    val returnErrorResourceId = flightHomepageViewModel.validateReturnDate(dateIn, dateOut)
+                    if (returnErrorResourceId == -1) {
+                        flightHomepageSearchForm.setReturnDate(dateOut)
+                    } else {
+                        showMessageErrorInSnackbar(returnErrorResourceId)
+                    }
                 } else {
                     showMessageErrorInSnackbar(departureErrorResourceId)
-                }
-
-                val returnErrorResourceId = flightHomepageViewModel.validateReturnDate(dateIn, dateOut)
-                if (returnErrorResourceId == -1) {
-                    flightHomepageSearchForm.setReturnDate(dateOut)
-                } else {
-                    showMessageErrorInSnackbar(returnErrorResourceId)
                 }
             }
         }
