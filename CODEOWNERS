@@ -9,6 +9,7 @@
 /features/content/profile/              				@tokopedia/minion-dave
 /features/content/feed_component/       				@tokopedia/minion-darth
 /features/category/       				                @tokopedia/minion-darth
+/features/discovery2/       				            @tokopedia/minion-darth
 /features/user/groupchat/                       		@tokopedia/minion-dave
 /features/discovery/topadssdk/                      	@tokopedia/minion-dave
 /features/discovery/home/                           	@tokopedia/minion-dave
