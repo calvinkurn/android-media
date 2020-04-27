@@ -93,23 +93,27 @@ class AddToCartUseCase @Inject constructor(@Named("atcMutation") private val que
         return graphqlUseCase.createObservable(RequestParams.EMPTY).map {
             val addToCartGqlResponse = it.getData<AddToCartGqlResponse>(AddToCartGqlResponse::class.java)
             val result = addToCartDataMapper.mapAddToCartResponse(addToCartGqlResponse)
-            if (!result.isDataError()) {
-                TrackApp.getInstance().appsFlyer.sendEvent(AFInAppEventType.ADD_TO_CART,
-                        mutableMapOf(
-                                AFInAppEventParameterName.CONTENT_ID to addToCartRequest.productId.toString(),
-                                AFInAppEventParameterName.CONTENT_TYPE to AF_VALUE_CONTENT_TYPE,
-                                AFInAppEventParameterName.DESCRIPTION to addToCartRequest.productName,
-                                AFInAppEventParameterName.CURRENCY to AF_VALUE_CURRENCY,
-                                AFInAppEventParameterName.QUANTITY to addToCartRequest.quantity,
-                                AFInAppEventParameterName.PRICE to addToCartRequest.price.replace("[^0-9]".toRegex(), ""),
-                                AF_PARAM_CATEGORY to addToCartRequest.category,
-                                AFInAppEventParameterName.CONTENT to JSONArray().put(JSONObject().put(AF_PARAM_CONTENT_ID, addToCartRequest.productId.toString()).put(AF_PARAM_CONTENT_QUANTITY, addToCartRequest.quantity))
-                        )
-                )
-            }
+            sendAppsFlyerTracking(result, addToCartRequest)
             result
         }
 
+    }
+
+    private fun sendAppsFlyerTracking(result: AddToCartDataModel, addToCartRequest: AddToCartRequestParams) {
+        if (!result.isDataError()) {
+            TrackApp.getInstance().appsFlyer.sendEvent(AFInAppEventType.ADD_TO_CART,
+                    mutableMapOf(
+                            AFInAppEventParameterName.CONTENT_ID to addToCartRequest.productId.toString(),
+                            AFInAppEventParameterName.CONTENT_TYPE to AF_VALUE_CONTENT_TYPE,
+                            AFInAppEventParameterName.DESCRIPTION to addToCartRequest.productName,
+                            AFInAppEventParameterName.CURRENCY to AF_VALUE_CURRENCY,
+                            AFInAppEventParameterName.QUANTITY to addToCartRequest.quantity,
+                            AFInAppEventParameterName.PRICE to addToCartRequest.price.replace("[^0-9]".toRegex(), ""),
+                            AF_PARAM_CATEGORY to addToCartRequest.category,
+                            AFInAppEventParameterName.CONTENT to JSONArray().put(JSONObject().put(AF_PARAM_CONTENT_ID, addToCartRequest.productId.toString()).put(AF_PARAM_CONTENT_QUANTITY, addToCartRequest.quantity))
+                    )
+            )
+        }
     }
 
 }

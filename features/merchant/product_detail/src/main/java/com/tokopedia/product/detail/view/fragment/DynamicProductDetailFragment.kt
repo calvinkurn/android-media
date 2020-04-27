@@ -2274,6 +2274,9 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                 warehouseId = selectedWarehouseId.toString()
                 attribution = trackerAttributionPdp ?: ""
                 listTracker = trackerListNamePdp ?: ""
+                productName = data.getProductName
+                category = data.basic.category.name
+                price = data.finalPrice.toString()
             }
             viewModel.addToCart(addToCartOccRequestParams)
         } else {

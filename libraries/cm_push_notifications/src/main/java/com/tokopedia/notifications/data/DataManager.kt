@@ -46,7 +46,9 @@ class DataManager @Inject constructor(
         addToCart?.let { atc ->
             val params = atcParams(
                     atc.productId.toString(),
-                    atc.shopId
+                    atc.shopId,
+                    atc.productName ?: "",
+                    atc.productPrice?.toString() ?: ""
             )
 
             fun tracker(data: AddToCartDataModel) {
@@ -68,12 +70,14 @@ class DataManager @Inject constructor(
 
     companion object {
         
-        fun atcParams(productId: String, shopId: Int?): RequestParams {
+        fun atcParams(productId: String, shopId: Int?, productName: String, price: String): RequestParams {
             val addToCartRequestParams = AddToCartRequestParams()
             addToCartRequestParams.productId = productId.toLongOrNull()?: 0
             addToCartRequestParams.shopId = shopId?: -1
             addToCartRequestParams.quantity = 1
             addToCartRequestParams.notes = ""
+            addToCartRequestParams.productName = productName
+            addToCartRequestParams.price = price
 
             return RequestParams.create().apply {
                 putObject(REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST, addToCartRequestParams)

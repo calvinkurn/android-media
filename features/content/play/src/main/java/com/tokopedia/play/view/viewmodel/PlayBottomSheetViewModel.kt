@@ -88,7 +88,8 @@ class PlayBottomSheetViewModel @Inject constructor(
                         product.id,
                         product.shopId,
                         product.minQty,
-                        notes
+                        notes,
+                        product.title
                 )
                 postAddToCartUseCase.executeOnBackground()
             }
