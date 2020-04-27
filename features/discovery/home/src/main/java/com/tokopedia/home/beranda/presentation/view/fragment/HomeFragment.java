@@ -299,11 +299,6 @@ public class HomeFragment extends BaseDaggerFragment implements
         searchBarTransitionRange = getResources().getDimensionPixelSize(R.dimen.home_searchbar_transition_range);
         startToTransitionOffset = (getResources().getDimensionPixelSize(R.dimen.banner_background_height)) / 2;
 
-        if (getPageLoadTimeCallback() != null) {
-            getPageLoadTimeCallback().stopPreparePagePerformanceMonitoring();
-            getPageLoadTimeCallback().startNetworkRequestPerformanceMonitoring();
-        }
-
         initViewModel();
         setGeolocationPermission();
         needToShowGeolocationComponent();
@@ -613,6 +608,33 @@ public class HomeFragment extends BaseDaggerFragment implements
         observeStickyLogin();
         observeTrackingData();
         observeRequestImagePlayBanner();
+        observeHomeRequestNetwork();
+        observeViewModelInitialized();
+    }
+
+    private void observeHomeRequestNetwork() {
+        viewModel.isRequestNetworkLiveData().observe(getViewLifecycleOwner(), data -> {
+            if (data != null) {
+                boolean isRequestNetwork = data.peekContent();
+                if (isRequestNetwork && getPageLoadTimeCallback() != null) {
+                    getPageLoadTimeCallback().startNetworkRequestPerformanceMonitoring();
+                } else if (getPageLoadTimeCallback() != null) {
+                    getPageLoadTimeCallback().stopNetworkRequestPerformanceMonitoring();
+                    getPageLoadTimeCallback().startRenderPerformanceMonitoring();
+                }
+            }
+        });
+    }
+
+    private void observeViewModelInitialized() {
+        viewModel.isViewModelInitalized().observe(getViewLifecycleOwner(), data -> {
+            if (data != null) {
+                boolean isViewModelInitialized = data.peekContent();
+                if (isViewModelInitialized && getPageLoadTimeCallback() != null) {
+                    getPageLoadTimeCallback().stopPreparePagePerformanceMonitoring();
+                }
+            }
+        });
     }
 
     private void observeErrorEvent(){
@@ -740,13 +762,7 @@ public class HomeFragment extends BaseDaggerFragment implements
 
     private void setData(List<HomeVisitable> data, boolean isCache){
         if(!data.isEmpty()) {
-            if (!isCache && getPageLoadTimeCallback() != null) {
-                getPageLoadTimeCallback().stopNetworkRequestPerformanceMonitoring();
-            }
-
             if (needToPerformanceMonitoring() && getPageLoadTimeCallback() != null) {
-                getPageLoadTimeCallback().stopNetworkRequestPerformanceMonitoring();
-                getPageLoadTimeCallback().startRenderPerformanceMonitoring();
                 setOnRecyclerViewLayoutReady(isCache);
             }
 
