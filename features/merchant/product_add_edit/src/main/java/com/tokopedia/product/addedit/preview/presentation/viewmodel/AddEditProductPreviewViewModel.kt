@@ -105,6 +105,8 @@ class AddEditProductPreviewViewModel @Inject constructor(
 
     var productDomain: Product = Product()
 
+    var hasOriginalVariantLevel: Boolean = false // indicating whether you can clear variant or not
+
     private val saveProductDraftResultMutableLiveData = MutableLiveData<Result<Long>>()
     val saveProductDraftResultLiveData: LiveData<Result<Long>> get() = saveProductDraftResultMutableLiveData
 
@@ -119,6 +121,7 @@ class AddEditProductPreviewViewModel @Inject constructor(
                             productInputModel.productId = it.data.productID.toLongOrZero()
                         }
                         getVariantList(productInputModel.detailInputModel.categoryId)
+                        hasOriginalVariantLevel = checkOriginalVariantLevel(productInputModel)
                         productInputModel
                     }
                     is Fail -> ProductInputModel()
@@ -133,6 +136,7 @@ class AddEditProductPreviewViewModel @Inject constructor(
                     is Success -> {
                         val productInputModel = mapDraftToProductInputModel(it.data)
                         getVariantList(productInputModel.detailInputModel.categoryId)
+                        hasOriginalVariantLevel = checkOriginalVariantLevel(productInputModel)
                         productInputModel
                     }
                     is Fail -> ProductInputModel()
@@ -365,6 +369,19 @@ class AddEditProductPreviewViewModel @Inject constructor(
         } else {
             false
         }
+    }
+
+    // disable removing variant when in edit mode and if product have a variant
+    private fun checkOriginalVariantLevel(inputModel: ProductInputModel): Boolean {
+        val variantInputModel  = inputModel.variantInputModel
+        variantInputModel?.apply {
+            if (isEditing.value == true) {
+                if (productVariant.size > 0) {
+                    return variantOptionParent.getOrNull(0) != null
+                }
+            }
+        }
+        return false
     }
 
 }

@@ -292,6 +292,16 @@ class AddEditProductDescriptionViewModel @Inject constructor(
         }
     }
 
+    // disable removing variant when in edit mode and if product have a variant
+    fun checkOriginalVariantLevel(): Boolean {
+        if (isEditMode) {
+            if (variantInputModel.productVariant.size > 0) {
+                return variantInputModel.variantOptionParent.getOrNull(0) != null
+            }
+        }
+        return false
+    }
+
     companion object {
         const val KEY_YOUTUBE_VIDEO_ID = "v"
         const val WEB_PREFIX_HTTP = "http://"

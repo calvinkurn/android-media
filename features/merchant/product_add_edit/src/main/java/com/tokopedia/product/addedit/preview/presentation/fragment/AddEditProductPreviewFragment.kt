@@ -990,15 +990,17 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
                     put(AddEditProductUploadConstant.EXTRA_IS_OFFICIAL_STORE, false)
                     put(AddEditProductUploadConstant.EXTRA_DEFAULT_SKU, "")
                     put(AddEditProductUploadConstant.EXTRA_NEED_RETAIN_IMAGE, false)
-                    put(AddEditProductUploadConstant.EXTRA_HAS_ORIGINAL_VARIANT_LV1, true)
-                    put(AddEditProductUploadConstant.EXTRA_HAS_ORIGINAL_VARIANT_LV2, false)
                     put(AddEditProductUploadConstant.EXTRA_HAS_WHOLESALE, false)
-                    put(AddEditProductUploadConstant.EXTRA_IS_ADD, 1)
+                    put(AddEditProductUploadConstant.EXTRA_IS_ADD, viewModel.isAdding)
                 }
                 val intent = RouteManager.getIntent(it, ApplinkConstInternalMarketplace.PRODUCT_EDIT_VARIANT_DASHBOARD)
                 intent?.run {
                     putExtra(EXTRA_VARIANT_RESULT_CACHE_ID, cacheManager.id)
                     putExtra(AddEditProductUploadConstant.EXTRA_IS_USING_CACHE_MANAGER, true)
+                    putExtra(AddEditProductUploadConstant.EXTRA_HAS_ORIGINAL_VARIANT_LV1,
+                            viewModel.hasOriginalVariantLevel)
+                    putExtra(AddEditProductUploadConstant.EXTRA_HAS_ORIGINAL_VARIANT_LV2,
+                            viewModel.hasOriginalVariantLevel)
                     startActivityForResult(this, REQUEST_CODE_VARIANT_DIALOG_EDIT)
                 }
             }
