@@ -417,14 +417,13 @@ public class HomePageTracking {
         getTracker().sendGeneralEvent(map);
     }
 
-    public static void eventClickSeeAllLegoBannerChannel(Context context,
-                                                         String applink,
+    public static void eventClickSeeAllLegoBannerChannel(String headerName,
                                                          String channelId) {
         Map<String, Object> map = new HashMap<>();
         map.put(EVENT, EVENT_CLICK_HOME_PAGE);
         map.put(EVENT_CATEGORY, CATEGORY_HOME_PAGE);
         map.put(EVENT_ACTION, ACTION_CLICK_SEE_ALL_LEGO_BANNER_CHANNEL);
-        map.put(EVENT_LABEL, applink);
+        map.put(EVENT_LABEL, headerName);
         map.put(CHANNEL_ID, channelId);
         getTracker().sendGeneralEvent(map);
     }
@@ -441,8 +440,7 @@ public class HomePageTracking {
         getTracker().sendGeneralEvent(map);
     }
 
-    public static void eventClickSeeAllThreeLegoBannerChannel(Context context,
-                                                              String headerName,
+    public static void eventClickSeeAllThreeLegoBannerChannel(String headerName,
                                                               String channelId) {
         Map<String, Object> map = new HashMap<>();
         map.put(EVENT, EVENT_CLICK_HOME_PAGE);
