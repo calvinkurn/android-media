@@ -1107,11 +1107,6 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, AddToCartVariantAd
         addToCartDataModel?.run {
             if (addToCartDataModel.status == "OK" && addToCartDataModel.data.success == 1) {
                 //success checkout
-                normalCheckoutTracking.eventAppsFlyerAddToCart(productId,
-                        selectedProductInfo?.basic?.price.toString(),
-                        quantity,
-                        selectedProductInfo?.basic?.name ?: "",
-                        selectedProductInfo?.category?.name ?: "")
                 onFinish(addToCartDataModel.data.message[0], addToCartDataModel.data.cartId.toString())
             } else if (addToCartDataModel.errorReporter.eligible) {
                 onFinishError(addToCartDataModel)
