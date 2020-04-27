@@ -324,7 +324,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
         flightSearchViewModel.flightSearchPassData = flightSearchPassDataModel
     }
 
-    fun resetDateAndReload() {
+    fun resetDateAndReload(shouldResetCombine: Boolean = false) {
         flightSearchViewModel.flush()
         onFlightSearchFragmentListener?.changeDate(flightSearchViewModel.flightSearchPassData)
 
@@ -334,6 +334,10 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
 
         clearAllData()
         showLoading()
+
+        if (shouldResetCombine) {
+            flightSearchViewModel.isCombineDone = false
+        }
 
         flightSearchViewModel.flightAirportCombine = flightSearchViewModel.buildAirportCombineModel(
                 getDepartureAirport(), getArrivalAirport())

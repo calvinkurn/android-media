@@ -81,7 +81,7 @@ open class FlightSearchActivity : BaseFlightActivity(),
                     when (data.getIntExtra(FlightFlowExtraConstant.EXTRA_FLOW_DATA, 0)) {
                         FlightFlowConstant.PRICE_CHANGE -> {
                             if (fragment is FlightSearchFragment) {
-                                (fragment as FlightSearchFragment).resetDateAndReload()
+                                (fragment as FlightSearchFragment).resetDateAndReload(true)
                             }
                         }
                         FlightFlowConstant.EXPIRED_JOURNEY -> {
@@ -91,7 +91,7 @@ open class FlightSearchActivity : BaseFlightActivity(),
                         FlightFlowConstant.CHANGE_SEARCH_PARAM -> {
                             if (fragment is FlightSearchFragment) {
                                 (fragment as FlightSearchFragment).setSearchPassData((data.getParcelableExtra(EXTRA_PASS_DATA) as FlightSearchPassDataModel))
-                                (fragment as FlightSearchFragment).resetDateAndReload()
+                                (fragment as FlightSearchFragment).resetDateAndReload(true)
                             }
                         }
                     }
@@ -118,7 +118,7 @@ open class FlightSearchActivity : BaseFlightActivity(),
             } else {
                 if (fragment is FlightSearchFragment) {
                     (fragment as FlightSearchFragment).setSearchPassData(flightSearchPassDataModel)
-                    (fragment as FlightSearchFragment).resetDateAndReload()
+                    (fragment as FlightSearchFragment).resetDateAndReload(true)
                 }
             }
         }
