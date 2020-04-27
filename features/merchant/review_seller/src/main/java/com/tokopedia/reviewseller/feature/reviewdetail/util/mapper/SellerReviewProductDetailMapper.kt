@@ -119,13 +119,15 @@ object SellerReviewProductDetailMapper {
                         ListItemUnify(title = context.getString(R.string.edit_review_label), description = "").apply {
                             listDrawable = iconList
                             listIconHeight = iconSize
-                            listIconWidth = iconSize                        }
+                            listIconWidth = iconSize
+                        }
                     } else {
                         val iconList = ContextCompat.getDrawable(context, R.drawable.ic_sent)
                         ListItemUnify(title = context.getString(R.string.review_reply_label), description = "").apply {
                             listDrawable = iconList
                             listIconHeight = iconSize
-                            listIconWidth = iconSize                        }
+                            listIconWidth = iconSize
+                        }
                     }
             )
             val iconReport = ContextCompat.getDrawable(context, R.drawable.ic_report_flag)

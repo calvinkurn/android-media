@@ -26,6 +26,7 @@ import com.tokopedia.reviewseller.feature.reviewdetail.view.adapter.SellerReview
 import com.tokopedia.reviewseller.feature.reviewdetail.view.adapter.SellerReviewDetailListener
 import com.tokopedia.reviewseller.feature.reviewdetail.view.adapter.viewholder.OverallRatingDetailViewHolder
 import com.tokopedia.reviewseller.feature.reviewdetail.view.adapter.viewholder.ProductFeedbackDetailViewHolder
+import com.tokopedia.reviewseller.feature.reviewdetail.view.bottomsheet.PopularTopicsBottomSheet
 import com.tokopedia.reviewseller.feature.reviewdetail.view.model.OverallRatingDetailUiModel
 import com.tokopedia.reviewseller.feature.reviewdetail.view.model.ProductFeedbackDetailUiModel
 import com.tokopedia.reviewseller.feature.reviewdetail.view.viewmodel.ProductReviewDetailViewModel
@@ -75,8 +76,11 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
 
     private var filterPeriodDetailUnify: ListUnify? = null
     private var optionFeedbackDetailUnify: ListUnify? = null
+    private var optionMenuDetailUnify: ListUnify? = null
+
     private var bottomSheetPeriodDetail: BottomSheetUnify? = null
     private var bottomSheetOptionFeedback: BottomSheetUnify? = null
+    private var bottomSheetMenuDetail: BottomSheetUnify? = null
 
     override fun getScreenName(): String = "SellerReviewDetail"
 
@@ -157,11 +161,21 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
      * Listener Section
      */
     override fun onChildTopicFilterClicked(item: SortFilterItem) {
+        // asd.foreach{ if(name==terbaru) isSelected =isSelected }
+        // asd.map{ if(selected) globalTopics = it.name.append(, )} " "
+        // globalData terbaru
+        // topics = "
         Toaster.make(view!!, item.title.toString(), Snackbar.LENGTH_LONG)
     }
 
     override fun onParentTopicFilterClicked() {
+        val bottomSheet = PopularTopicsBottomSheet(activity, "test", ::onTopicsClicked)
+        bottomSheet.showDialog()
         Toaster.make(view!!, "parent clicked", Snackbar.LENGTH_LONG)
+    }
+
+    private fun onTopicsClicked(data: List<String>) {
+
     }
 
     private fun initRecyclerView(view: View) {
@@ -398,6 +412,11 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
         bottomSheetOptionFeedback = BottomSheetUnify()
         optionFeedbackDetailUnify = viewOption.findViewById(R.id.optionFeedbackList)
         bottomSheetOptionFeedback?.setChild(viewOption)
+
+        val viewMenu = View.inflate(context, R.layout.bottom_sheet_menu_option_product_detail, null)
+        bottomSheetMenuDetail = BottomSheetUnify()
+        optionMenuDetailUnify = viewMenu.findViewById(R.id.optionMenuDetail)
+        bottomSheetMenuDetail?.setChild(viewMenu)
     }
 
     private fun initChipsView() {
@@ -415,8 +434,21 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
             }
         }
 
-        optionFeedbackDetailUnify?.onLoadFinish {
+        optionFeedbackDetailUnify?.let {
+            it.onLoadFinish {
+                it.setOnItemClickListener { _, _, position, _ ->
+                    when (position) {
+                        1 -> {
+                            if (!isEmptyReply) {
 
+                            }
+                        }
+                        2 -> {
+
+                        }
+                    }
+                }
+            }
         }
 
         fragmentManager?.let {
