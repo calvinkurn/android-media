@@ -1597,8 +1597,9 @@ public class HomeFragment extends BaseDaggerFragment implements
             Bundle extras = intent.getExtras();
             if (extras != null) {
                 String data = extras.getString(getActivity().getString(R.string.broadcast_wallet));
-                if (data != null && !data.isEmpty())
-                    viewModel.getHeaderData(); // update header data
+                if (data != null && !data.isEmpty()) {
+                    viewModel.getHeaderData();
+                }
             }
         }
     };
