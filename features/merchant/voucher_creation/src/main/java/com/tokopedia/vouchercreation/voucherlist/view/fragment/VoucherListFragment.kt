@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.kotlin.extensions.view.dpToPx
@@ -32,7 +33,7 @@ import javax.inject.Inject
  * Created By @ilhamsuaib on 17/04/20
  */
 
-class VoucherListFragment : BaseListFragment<BaseVoucherListUiModel, VoucherListAdapterFactoryImpl>(),
+class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFactoryImpl>(),
         VoucherListAdapterFactoryImpl.Listener {
 
     companion object {
@@ -106,7 +107,7 @@ class VoucherListFragment : BaseListFragment<BaseVoucherListUiModel, VoucherList
     override fun getRecyclerViewResourceId(): Int = R.id.rvVoucherList
 
     override fun getAdapterTypeFactory(): VoucherListAdapterFactoryImpl {
-        return VoucherListAdapterFactoryImpl(this, isActiveVoucher)
+        return VoucherListAdapterFactoryImpl(this)
     }
 
     override fun getScreenName(): String = VoucherListFragment::class.java.simpleName
@@ -118,7 +119,7 @@ class VoucherListFragment : BaseListFragment<BaseVoucherListUiModel, VoucherList
                 .inject(this)
     }
 
-    override fun onItemClicked(t: BaseVoucherListUiModel?) {
+    override fun onItemClicked(t: Visitable<*>?) {
 
     }
 
@@ -185,11 +186,7 @@ class VoucherListFragment : BaseListFragment<BaseVoucherListUiModel, VoucherList
             activity.setSupportActionBar(toolbarMvcList)
             activity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-            val title = if (isActiveVoucher) {
-                context.getString(R.string.mvc_voucher_active)
-            } else {
-                context.getString(R.string.mvc_voucher_history)
-            }
+            val title = if (isActiveVoucher) context.getString(R.string.mvc_voucher_active) else context.getString(R.string.mvc_voucher_history)
             activity.supportActionBar?.title = title
         }
         showAppBarElevation(false)
@@ -260,14 +257,22 @@ class VoucherListFragment : BaseListFragment<BaseVoucherListUiModel, VoucherList
     }
 
     private fun showDummyData() {
-        renderList(getDummyData())
+        //renderList(getDummyData())
+        renderList(getVoucherListShimmer())
     }
 
-    private fun getDummyData(): List<VoucherUiModel> {
-        val list = mutableListOf<VoucherUiModel>()
-        repeat(10) {
+    private fun getVoucherListShimmer(): List<Visitable<*>> {
+        return listOf(LoadingStateUiModel(isActiveVoucher))
+    }
+
+    private fun getDummyData(): List<Visitable<*>> {
+        val list = mutableListOf<Visitable<*>>()
+        list.add(NoResultStateUiModel)
+        //list.add(ErrorStateUiModel)
+        //list.add(EmptyStateUiModel(isActiveVoucher))
+        /*repeat(10) {
             list.add(VoucherUiModel("Voucher Hura Nyoba Doang", it % 2 == 0))
-        }
+        }*/
         return list
     }
 
