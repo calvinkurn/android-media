@@ -50,6 +50,7 @@ class OfficialStoreHomeViewModel @Inject constructor(
     val userId: String
         get() = userSessionInterface.userId
 
+
     val officialStoreBannersResult: LiveData<Result<OfficialStoreBanners>>
         get() = _officialStoreBannersResult
 
@@ -67,6 +68,9 @@ class OfficialStoreHomeViewModel @Inject constructor(
     val topAdsWishlistResult: LiveData<Result<WishlistModel>>
         get() = _topAdsWishlistResult
 
+    val productRecommendation: LiveData<Result<RecommendationWidget>>
+        get() = _productRecommendation
+
     private val _officialStoreBannersResult by lazy {
         MutableLiveData<Result<OfficialStoreBanners>>()
     }
@@ -82,8 +86,7 @@ class OfficialStoreHomeViewModel @Inject constructor(
     private val _officialStoreDynamicChannelResult = MutableLiveData<Result<DynamicChannel>>()
 
     private val _productRecommendation = MutableLiveData<Result<RecommendationWidget>>()
-    val productRecommendation: LiveData<Result<RecommendationWidget>>
-        get() = _productRecommendation
+
 
     private val _topAdsWishlistResult by lazy {
         MutableLiveData<Result<WishlistModel>>()
