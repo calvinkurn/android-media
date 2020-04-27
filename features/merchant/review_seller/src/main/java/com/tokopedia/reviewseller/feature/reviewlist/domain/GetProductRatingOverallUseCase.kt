@@ -1,9 +1,9 @@
 package com.tokopedia.reviewseller.feature.reviewlist.domain
 
-import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.reviewseller.common.util.GQL_GET_PRODUCT_RATING_OVERALL
 import com.tokopedia.reviewseller.feature.reviewlist.data.ProductRatingOverallResponse
 import com.tokopedia.usecase.coroutines.UseCase
@@ -32,7 +32,7 @@ class GetProductRatingOverallUseCase @Inject constructor(
         if (error.isNullOrEmpty()) {
             return gqlResponse.getData<ProductRatingOverallResponse>(ProductRatingOverallResponse::class.java).getProductRatingOverallByShop
         } else {
-            throw MessageErrorException(error.joinToString(", ") { it.message })
+            throw MessageErrorException(error.joinToString(", ") { it.message} )
         }
     }
 

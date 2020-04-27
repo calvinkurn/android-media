@@ -1,9 +1,9 @@
 package com.tokopedia.reviewseller.feature.reviewdetail.domain
 
-import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.reviewseller.common.util.GQL_GET_PRODUCT_FEEDBACK_LIST_DETAIL
 import com.tokopedia.reviewseller.feature.reviewdetail.data.ProductFeedbackDetailResponse
 import com.tokopedia.usecase.coroutines.UseCase
@@ -41,7 +41,7 @@ class GetProductFeedbackDetailListUseCase @Inject constructor(
         if (error == null || error.isEmpty()) {
             return gqlResponse.getData<ProductFeedbackDetailResponse>(ProductFeedbackDetailResponse::class.java).productrevFeedbackDataPerProduct
         } else {
-            throw MessageErrorException(error.joinToString(", ") { it.message })
+            throw MessageErrorException(error.joinToString(", ") { it.message} )
         }
     }
 
