@@ -32,7 +32,6 @@ import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.customView.LoginTextView;
 import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.core.session.model.LoginProviderModel;
-import com.tokopedia.loginregister.login.view.fragment.LoginEmailPhoneFragment;
 import com.tokopedia.sellerapp.R;
 import com.tokopedia.sellerapp.welcome.presenter.WelcomeFragmentPresenter;
 import com.tokopedia.sellerapp.welcome.presenter.WelcomeFragmentPresenterImpl;
@@ -143,7 +142,6 @@ public class WelcomeFragment extends BaseDaggerFragment implements
                 if (MainApplication.getAppContext() instanceof TkpdCoreRouter) {
                     Intent intent = ((TkpdCoreRouter) MainApplication.getAppContext())
                             .getLoginIntent(getActivity());
-                    intent.putExtra(LoginEmailPhoneFragment.SELLER_SEAMLESS, true);
                     startActivityForResult(intent, REQUEST_LOGIN);
                 }
             }
