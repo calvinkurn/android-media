@@ -10,19 +10,19 @@ import com.tokopedia.vouchercreation.voucherlist.model.VoucherUiModel
  * Created By @ilhamsuaib on 27/04/20
  */
 
-class CancelVoucherDialog(context: Context) {
+class StopVoucherDialog(context: Context) {
 
     private val dialog = DialogUnify(context, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
     private var primaryClick: () -> Unit = {}
 
-    fun setOnPrimaryClickListener(callback: () -> Unit): CancelVoucherDialog {
+    fun setOnPrimaryClickListener(callback: () -> Unit): StopVoucherDialog {
         this.primaryClick = callback
         return this
     }
 
     fun show(voucher: VoucherUiModel) = with(dialog) {
-        setTitle(context.getString(R.string.mvc_cancel_voucher_dialog_title))
-        val description = context.getString(R.string.mvc_cancel_voucher_dialog_description)
+        setTitle(context.getString(R.string.mvc_stop_voucher_dialog_title))
+        val description = context.getString(R.string.mvc_stop_voucher_dialog_description)
         setDescription(String.format(description, voucher.name).parseAsHtml())
         setPrimaryCTAText(context.getString(R.string.mvc_yes_cancel))
         setPrimaryCTAClickListener {

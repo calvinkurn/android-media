@@ -55,8 +55,10 @@
     <string name="mvc_cashback">Cashback</string>
     <string name="mvc_no_result_found">Voucher yang kamu cari enggak ditemukan</string>
     <string name="mvc_please_try_to_search_again">Coba ulangi pencarian dengan kata kunci atau filter lain, ya.</string>
-    <string name="mvc_cancel_voucher_title">Yakin batalkan Voucher?</string>
-    <string name="mvc_cancel_voucher_description"><![CDATA[<font color="#AD31353B">Dengan membatalkan Voucher Toko, <b>\"%s\"</b> calon pembeli tidak dapat menggunakan voucher ini.</font>]]></string>
+    <string name="mvc_cancel_voucher_dialog_title">Yakin batalkan Voucher?</string>
+    <string name="mvc_cancel_voucher_dialog_description"><![CDATA[<font color="#AD31353B">Dengan membatalkan Voucher Toko <b>\"%s\"</b>, calon pembeli tidak dapat menggunakan voucher ini.</font>]]></string>
     <string name="mvc_yes_cancel">Ya, Batalkan</string>
     <string name="mvc_back">Kembali</string>
+    <string name="mvc_stop_voucher_dialog_title">Yakin hentikan voucher yang sedang berlangsung?</string>
+    <string name="mvc_stop_voucher_dialog_description"><![CDATA[<font color="#AD31353B">Dengan menghentikan Voucher Toko <b>\"%s\"</b>, calon pembeli tidak dapat menggunakan voucher ini.</font>]]></string>
 </resources>

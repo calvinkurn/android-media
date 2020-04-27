@@ -21,10 +21,12 @@ import com.tokopedia.vouchercreation.voucherlist.model.*
 import com.tokopedia.vouchercreation.voucherlist.model.BaseHeaderChipUiModel.HeaderChip
 import com.tokopedia.vouchercreation.voucherlist.model.BaseHeaderChipUiModel.ResetChip
 import com.tokopedia.vouchercreation.voucherlist.model.MoreMenuUiModel.CancelVoucher
+import com.tokopedia.vouchercreation.voucherlist.model.MoreMenuUiModel.StopVoucher
 import com.tokopedia.vouchercreation.voucherlist.view.adapter.factory.VoucherListAdapterFactoryImpl
 import com.tokopedia.vouchercreation.voucherlist.view.viewmodel.VoucherListViewModel
 import com.tokopedia.vouchercreation.voucherlist.view.widget.CancelVoucherDialog
 import com.tokopedia.vouchercreation.voucherlist.view.widget.MoreMenuBottomSheet
+import com.tokopedia.vouchercreation.voucherlist.view.widget.StopVoucherDialog
 import com.tokopedia.vouchercreation.voucherlist.view.widget.filterbottomsheet.FilterBottomSheet
 import com.tokopedia.vouchercreation.voucherlist.view.widget.headerchips.ChipType
 import com.tokopedia.vouchercreation.voucherlist.view.widget.sortbottomsheet.SortBottomSheet
@@ -155,7 +157,16 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
         dismissBottomSheet<MoreMenuBottomSheet>(MoreMenuBottomSheet.TAG)
         when (menu) {
             is CancelVoucher -> showCancelVoucherDialog(voucher)
+            is StopVoucher -> showStopVoucherDialog(voucher)
         }
+    }
+
+    private fun showStopVoucherDialog(voucher: VoucherUiModel) {
+        StopVoucherDialog(context ?: return)
+                .setOnPrimaryClickListener {
+
+                }
+                .show(voucher)
     }
 
     private fun showCancelVoucherDialog(voucher: VoucherUiModel) {
