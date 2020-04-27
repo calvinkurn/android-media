@@ -31,6 +31,7 @@ import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.design.text.watcher.AfterTextWatcher
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.header.HeaderUnify
 
 import com.tokopedia.shop_showcase.R
@@ -93,6 +94,7 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
     private lateinit var emptyStateContainer: LinearLayout
     private lateinit var imgEmptyState: ImageView
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
+    private lateinit var globalError: GlobalError
     private var layoutManager: LinearLayoutManager? = null
     private var shopShowcaseListAdapter: ShopShowcaseListAdapter? = null
     private var showcaseList: List<ShowcaseItem> = listOf()
@@ -185,6 +187,7 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
         val view = inflater.inflate(R.layout.fragment_shop_showcase_list, container, false)
         headerUnify = view.findViewById(R.id.showcase_list_toolbar)
         headerLayout = view.findViewById(R.id.header_layout)
+        globalError = view.findViewById(R.id.globalError)
         swipeRefreshLayout = view.findViewById(R.id.swipe_refresh)
         btnAddEtalase = view.findViewById(R.id.btn_add_etalase)
         loading = view.findViewById(R.id.loading)
@@ -224,9 +227,13 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
 
     private fun initSwipeRefresh() {
         swipeRefreshLayout.setOnRefreshListener {
-            showLoadingSwipeToRefresh(true)
-            loadData()
+            refreshData()
         }
+    }
+
+    private fun refreshData() {
+        showLoadingSwipeToRefresh(true)
+        loadData()
     }
 
     private fun initSearchbar() {
@@ -322,6 +329,7 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
                     if (errorMessage.isNotEmpty()) {
                         showErrorResponse(errorMessage)
                     } else {
+                        hideGlobalError()
                         showcaseList = it.data.shopShowcasesByShopID.result
                         shopShowcaseListAdapter?.updateDataShowcaseList(showcaseList)
                     }
@@ -329,6 +337,7 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
                 is Fail -> {
                     showLoading(false)
                     showErrorMessage(it.throwable)
+                    showGlobalError(GlobalError.SERVER_ERROR)
                 }
             }
         })
@@ -345,6 +354,7 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
                     if (errorMessage.isNotEmpty()) {
                         showErrorResponse(errorMessage)
                     } else {
+                        hideGlobalError()
                         showcaseList = it.data.shopShowcases.result
                         shopShowcaseListAdapter?.updateDataShowcaseList(showcaseList)
                     }
@@ -352,6 +362,7 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
                 is Fail -> {
                     showLoading(false)
                     showErrorMessage(it.throwable)
+                    showGlobalError(GlobalError.SERVER_ERROR)
                 }
             }
         })
@@ -553,6 +564,24 @@ class ShopShowcaseListFragment : BaseDaggerFragment(), ShopShowcaseManagementLis
     private fun showSuccessMessage(message: String) {
         view?.let {
             Toaster.showNormal(it, message, Snackbar.LENGTH_LONG)
+        }
+    }
+
+    private fun hideGlobalError() {
+        globalError.visibility = View.GONE
+        headerLayout.visibility = View.VISIBLE
+        swipeRefreshLayout.visibility = View.VISIBLE
+    }
+
+    private fun showGlobalError(errorType: Int) {
+        globalError.setType(errorType)
+        globalError.visibility = View.VISIBLE
+        headerLayout.visibility = View.GONE
+        swipeRefreshLayout.visibility = View.GONE
+        loading.visibility = View.GONE
+        emptyStateContainer.visibility = View.GONE
+        globalError.setActionClickListener {
+            refreshData()
         }
     }
 
