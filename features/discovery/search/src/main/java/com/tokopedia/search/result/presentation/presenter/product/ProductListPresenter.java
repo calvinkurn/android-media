@@ -1224,7 +1224,7 @@ final class ProductListPresenter
             getView().sendTopAdsTrackingUrl(item.getTopadsImpressionUrl());
             getView().sendTopAdsGTMTrackingProductImpression(item, adapterPosition);
         } else {
-            getView().sendProductImpressionTrackingEvent(item, adapterPosition);
+            getView().sendProductImpressionTrackingEvent(item);
         }
     }
 

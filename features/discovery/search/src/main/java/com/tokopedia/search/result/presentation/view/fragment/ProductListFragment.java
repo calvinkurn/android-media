@@ -589,7 +589,7 @@ public class ProductListFragment
     }
 
     @Override
-    public void sendProductImpressionTrackingEvent(ProductItemViewModel item, int adapterPosition) {
+    public void sendProductImpressionTrackingEvent(ProductItemViewModel item) {
         String userId = getUserId();
         String searchRef = getSearchRef();
         List<Object> dataLayerList = new ArrayList<>();
