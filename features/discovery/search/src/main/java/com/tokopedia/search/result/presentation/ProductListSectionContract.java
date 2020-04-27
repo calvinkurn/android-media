@@ -163,6 +163,8 @@ public interface ProductListSectionContract {
         void stopNetworkRequestPerformanceMonitoring();
 
         void startRenderPerformanceMonitoring();
+
+        void sendProductImpressionTrackingEvent(ProductItemViewModel item, int adapterPosition);
     }
 
     interface Presenter extends CustomerPresenter<View> {
