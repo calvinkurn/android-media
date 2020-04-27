@@ -1,82 +1,95 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <com.tokopedia.talk.feature.reply.presentation.widget.TalkReplyHeader
-        android:id="@+id/talkReplyHeader"
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/replySwipeRefresh"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"/>
+        android:layout_height="match_parent" >
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/talkReplyTotalAnswers"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingTop="@dimen/layout_lvl2"
-        android:paddingBottom="@dimen/layout_lvl2"
-        android:paddingStart="@dimen/layout_lvl2"
-        android:paddingEnd="@dimen/layout_lvl2"
-        app:typographyType="heading_4"
-        app:typographyWeight="bold"
-        app:layout_constraintTop_toBottomOf="@id/talkReplyHeader" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/talkReplyEmptyState"
-        android:layout_width="@dimen/layout_lvl0"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/layout_lvl7"
-        android:text="@string/reply_empty_state"
-        android:maxLines="2"
-        android:layout_marginStart="@dimen/dp_36"
-        android:layout_marginEnd="@dimen/dp_36"
-        android:gravity="center"
-        android:visibility="gone"
-        app:typographyType="body_1"
-        app:typographyWeight="bold"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/talkReplyHeader"/>
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/talkReplyRecyclerView"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/layout_lvl0"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        app:layout_constraintTop_toBottomOf="@id/talkReplyTotalAnswers"
-        app:layout_constraintBottom_toTopOf="@id/replyTextBox"/>
-
-    <FrameLayout
-        android:id="@+id/replyAttachedProductContainer"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:animateLayoutChanges="true"
-        android:background="@color/Neutral_N50"
-        android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@id/replyTextBox">
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/replyAttachedProductReview"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="start"
-            android:clipToPadding="false"
-            android:orientation="horizontal"
-            android:paddingStart="@dimen/layout_lvl2"
-            android:paddingEnd="@dimen/layout_lvl2"
-            android:paddingTop="@dimen/layout_lvl1"
-            android:paddingBottom="@dimen/layout_lvl1"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+            android:layout_height="match_parent" >
 
-    </FrameLayout>
+            <com.tokopedia.talk.feature.reply.presentation.widget.TalkReplyHeader
+                android:id="@+id/talkReplyHeader"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toTopOf="parent"/>
 
-    <com.tokopedia.talk.feature.reply.presentation.widget.TalkReplyTextbox
-        android:id="@+id/replyTextBox"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/talkReplyTotalAnswers"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="@dimen/layout_lvl2"
+                android:paddingBottom="@dimen/layout_lvl2"
+                android:paddingStart="@dimen/layout_lvl2"
+                android:paddingEnd="@dimen/layout_lvl2"
+                app:typographyType="heading_4"
+                app:typographyWeight="bold"
+                app:layout_constraintTop_toBottomOf="@id/talkReplyHeader" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/talkReplyEmptyState"
+                android:layout_width="@dimen/layout_lvl0"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/layout_lvl7"
+                android:text="@string/reply_empty_state"
+                android:maxLines="2"
+                android:layout_marginStart="@dimen/dp_36"
+                android:layout_marginEnd="@dimen/dp_36"
+                android:gravity="center"
+                android:visibility="gone"
+                app:typographyType="body_1"
+                app:typographyWeight="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/talkReplyHeader"/>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/talkReplyRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/layout_lvl0"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:layout_constraintTop_toBottomOf="@id/talkReplyTotalAnswers"
+                app:layout_constraintBottom_toTopOf="@id/replyTextBox"/>
+
+            <FrameLayout
+                android:id="@+id/replyAttachedProductContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:animateLayoutChanges="true"
+                android:background="@color/Neutral_N50"
+                android:visibility="gone"
+                app:layout_constraintBottom_toTopOf="@id/replyTextBox">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/replyAttachedProductReview"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:clipToPadding="false"
+                    android:orientation="horizontal"
+                    android:paddingStart="@dimen/layout_lvl2"
+                    android:paddingEnd="@dimen/layout_lvl2"
+                    android:paddingTop="@dimen/layout_lvl1"
+                    android:paddingBottom="@dimen/layout_lvl1"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+            </FrameLayout>
+
+            <com.tokopedia.talk.feature.reply.presentation.widget.TalkReplyTextbox
+                android:id="@+id/replyTextBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="parent"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     <include
         android:id="@+id/pageLoading"

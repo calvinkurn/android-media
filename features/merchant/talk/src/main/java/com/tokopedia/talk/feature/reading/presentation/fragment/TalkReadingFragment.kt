@@ -16,8 +16,8 @@ import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.GENERAL_SETTING
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.kotlin.extensions.view.removeObservers
 import com.tokopedia.talk.common.analytics.TalkPerformanceMonitoringContract
 import com.tokopedia.talk.common.analytics.TalkPerformanceMonitoringListener
@@ -372,7 +372,7 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
     }
 
     private fun goToReplyActivity(questionID: String) {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.TALK_REPLY, questionID, shopId, productId)
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.TALK_REPLY, questionID, productId, shopId)
         startActivityForResult(intent, TALK_REPLY_ACTIVITY_REQUEST_CODE)
     }
 

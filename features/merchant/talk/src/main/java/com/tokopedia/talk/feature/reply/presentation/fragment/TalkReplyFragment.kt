@@ -409,6 +409,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
                     initTextBox()
                     hidePageError()
                     hidePageLoading()
+                    replySwipeRefresh.isRefreshing = false
                 }
                 else -> {
                     showPageError()
@@ -460,6 +461,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
         initAttachedProductAdapter()
         initRecyclerView()
         initAttachedProductRecyclerView()
+        initSwipeRefresh()
     }
 
     private fun initAdapter() {
@@ -485,6 +487,13 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
 
     private fun initAttachedProductRecyclerView() {
         replyAttachedProductReview.adapter = attachedProductAdapter
+    }
+
+    private fun initSwipeRefresh() {
+        replySwipeRefresh.setOnRefreshListener {
+            getDiscussionData()
+            showPageLoading()
+        }
     }
 
     private fun bindHeader(talkReplyHeaderModel: TalkReplyHeaderModel) {

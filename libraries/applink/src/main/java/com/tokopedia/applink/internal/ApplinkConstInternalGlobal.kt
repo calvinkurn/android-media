@@ -160,8 +160,8 @@ object ApplinkConstInternalGlobal {
     @JvmField
     val PARAM_SHOP_ID = "shop_id"
 
-    // TalkProductActivity
-    // tokopedia-android-internal://global/product-talk
+    // TalkReadingActivity
+    // tokopedia-android-internal://talk/product-talk
     @JvmField
     val PRODUCT_TALK_BASE = "$INTERNAL_GLOBAL/product-talk/"
     @JvmField
@@ -169,6 +169,14 @@ object ApplinkConstInternalGlobal {
             "shop_id={shop_id}"
     @JvmField
     val PARAM_PRODUCT_ID = "product_id"
+
+    // TalkReplyActivity
+    // tokopedia-android-internal://talk/product-talk
+    @JvmField
+    val TALK_REPLY_BASE = "$INTERNAL_GLOBAL/reply-talk/"
+    @JvmField
+    val TALK_REPLY = "$TALK_REPLY_BASE{question_id}/{product_id}/?" +
+            "shop_id={shop_id}"
 
     // TalkDetailsActivity
     // tokopedia-android-internal://global/detail-talk

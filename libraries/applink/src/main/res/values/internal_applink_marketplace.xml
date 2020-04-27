@@ -83,6 +83,6 @@
     <string name="applink_report_title">Report</string>
     <string name="path_sellerapp_dashboard" translatable="false">/sellerapp-dashboard</string>
 
-    <string name="path_talk_reply" translatable="false">/talk-reply/.*\\/.*\\/.*\\/</string>
+    <string name="path_reply_talk" translatable="false">/reply-talk/.*\\/.*\\/</string>
 
 </resources>

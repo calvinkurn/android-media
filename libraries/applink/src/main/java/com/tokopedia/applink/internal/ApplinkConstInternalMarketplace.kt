@@ -237,6 +237,7 @@ object ApplinkConstInternalMarketplace {
 
     // Talk Reply
     @JvmField
-    val TALK_REPLY = "$INTERNAL_MARKETPLACE/talk-reply/{question_id}/{shop_id}/{product_id}/"
+    val TALK_REPLY = "$INTERNAL_MARKETPLACE/talk-reply/{question_id}/{product_id}/?" +
+            "shop_id={shop_id}"
 
 }

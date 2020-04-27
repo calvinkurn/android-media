@@ -46,18 +46,19 @@ class TalkReplyActivity : BaseSimpleActivity(), HasComponent<TalkComponent>, Tal
 
     private fun getDataFromAppLink() {
         val uri = intent.data ?: return
-        val questionIdString = uri.pathSegments[uri.pathSegments.size - 3] ?: return
+        val questionIdString = uri.pathSegments[uri.pathSegments.size - 2] ?: return
         if (questionIdString.isNotEmpty()) {
             this.questionId = questionIdString
         }
-        val shopIdString = uri.pathSegments[uri.pathSegments.size - 2] ?: return
-        if (shopIdString.isNotEmpty()) {
-            this.shopId = shopIdString
-        }
-        val productIdString = uri.lastPathSegment ?: return
+        val productIdString = uri.pathSegments[uri.pathSegments.size - 1] ?: return
         if (productIdString.isNotEmpty()) {
             this.productId = productIdString
         }
+        val shopId = uri.getQueryParameter(TalkConstants.SHOP_ID) ?: ""
+        if (shopId.isNotEmpty()) {
+            this.shopId = shopId
+        }
+
     }
 
     override fun startPerformanceMonitoring() {
