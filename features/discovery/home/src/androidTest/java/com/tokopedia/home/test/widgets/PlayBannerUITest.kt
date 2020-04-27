@@ -66,6 +66,9 @@ class PlayBannerUITest{
     private val getDynamicChannelsUseCase = mockk<GetDynamicChannelsUseCase> (relaxed = true)
     private val sendTopAdsUseCase = mockk<SendTopAdsUseCase>(relaxed = true)
     private val getAtcUseCase = mockk<AddToCartOccUseCase>(relaxed = true)
+    private val getRechargeRecommendationUseCase = mockk<GetRechargeRecommendationUseCase>(relaxed = true)
+    private val declineRechargeRecommendationUseCase = mockk<DeclineRechargeRecommendationUseCase>(relaxed = true)
+    private val closeChannelUseCase = mockk<CloseChannelUseCase>(relaxed = true)
     private val homeDataMapper = HomeDataMapper(InstrumentationRegistry.getInstrumentation().context, HomeVisitableFactoryImpl(userSessionInterface), mockk(relaxed = true))
 
     private val context = InstrumentationRegistry.getInstrumentation().context
@@ -356,6 +359,9 @@ class PlayBannerUITest{
             stickyLoginUseCase = getStickyLoginUseCase,
             userSession = userSessionInterface,
             getAtcUseCase = getAtcUseCase,
-            sendTopAdsUseCase = sendTopAdsUseCase
+            sendTopAdsUseCase = sendTopAdsUseCase,
+            closeChannelUseCase = closeChannelUseCase,
+            getRechargeRecommendationUseCase = getRechargeRecommendationUseCase,
+            declineRechargeRecommendationUseCase = declineRechargeRecommendationUseCase
     )
 }

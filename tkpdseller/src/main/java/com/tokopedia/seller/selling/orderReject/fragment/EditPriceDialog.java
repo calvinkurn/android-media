@@ -17,7 +17,6 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 
-import com.tokopedia.core.myproduct.utils.VerificationUtils;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.Pair;
 import com.tokopedia.seller.R;

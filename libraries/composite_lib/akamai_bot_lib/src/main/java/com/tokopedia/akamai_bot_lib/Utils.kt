@@ -104,7 +104,7 @@ fun <E> setExpire(
     val curr_time = currentTime.invoke()
     val alreadyNotedTime1 = alreadyNotedTime.invoke()
 
-    if ((curr_time - alreadyNotedTime1) > sdValidTime) {
+    if ((curr_time - alreadyNotedTime1) >= sdValidTime) {
         saveTime(curr_time)
         setValue()
         return getValue.invoke()

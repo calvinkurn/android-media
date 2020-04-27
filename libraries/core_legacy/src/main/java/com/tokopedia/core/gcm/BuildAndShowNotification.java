@@ -471,17 +471,4 @@ public class BuildAndShowNotification {
     public interface OnGetFileListener {
         void onFileReady(File file);
     }
-
-    private Bitmap getBitmap(String url) {
-        try {
-            return Glide.with(mContext)
-                    .asBitmap()
-                    .load(url)
-                    .submit(60, 60)
-                    .get(3, TimeUnit.SECONDS);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
 }
