@@ -96,7 +96,7 @@ class PartialSnapshotView(private val view: View,
             text_title_discount_timer.text = campaign.campaignTypeName
             sale_text_stock_available.text = MethodChecker.fromHtml(stockWording)
             setProgressStockBar(campaign)
-
+            showCountDownTimer(campaign)
             discount_timer_holder.show()
             sale_text_stock_available.show()
         } else {
