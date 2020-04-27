@@ -264,6 +264,8 @@ class PlayVideoManager private constructor(private val applicationContext: Conte
     }
 
     fun isVideoLive(): Boolean = videoPlayer.isCurrentWindowLive
+
+    fun getVideoState(): PlayVideoState = _observablePlayVideoState.value ?: PlayVideoState.NoMedia
     //endregion
 
     //region private method

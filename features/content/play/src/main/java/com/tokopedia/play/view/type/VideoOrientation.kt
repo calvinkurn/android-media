@@ -4,22 +4,34 @@ package com.tokopedia.play.view.type
 /**
  * Created by mzennis on 15/04/20.
  */
-enum class VideoOrientation(val value: String) {
-    Vertical("vertical"),
-    Horizontal("horizontal"),
-    Unknown("unknown");
+sealed class VideoOrientation {
+
+    abstract val value: String
+
+    object Vertical : VideoOrientation() {
+        override val value: String = VERTICAL
+    }
+    data class Horizontal(val aspectRatio: String) : VideoOrientation() {
+        override val value: String = HORIZONTAL
+    }
+    object Unknown : VideoOrientation() {
+        override val value: String = UNKNOWN
+    }
 
     val isHorizontal: Boolean
-        get() = this == Horizontal
+        get() = this is Horizontal
 
     companion object {
-        private val values = values()
+        private const val VERTICAL = "vertical"
+        private const val HORIZONTAL = "horizontal"
+        private const val UNKNOWN = "unknown"
 
         fun getByValue(value: String): VideoOrientation {
-            values.forEach {
-                if (it.value.equals(value, true)) return it
+            return when (value) {
+                VERTICAL -> Vertical
+                HORIZONTAL -> Horizontal("16:9") //for now only support 16:9
+                else -> Unknown
             }
-            return Unknown
         }
     }
 }

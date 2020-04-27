@@ -1,6 +1,7 @@
 package com.tokopedia.play.view.uimodel
 
 import com.tokopedia.play.view.type.*
+import com.tokopedia.play_common.state.PlayVideoState
 
 /**
  * Created by jegul on 18/03/20
@@ -10,5 +11,6 @@ data class StateHelperUiModel(
         val channelType: PlayChannelType,
         val bottomInsets: Map<BottomInsetsType, BottomInsetsState>,
         val screenOrientation: ScreenOrientation,
-        val videoOrientation: VideoOrientation
+        val videoOrientation: VideoOrientation,
+        val videoState: PlayVideoState
 )

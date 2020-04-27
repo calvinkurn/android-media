@@ -1,5 +1,6 @@
 package com.tokopedia.play.ui.video
 
+import android.graphics.Bitmap
 import android.view.ViewGroup
 import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.Lifecycle
@@ -7,6 +8,7 @@ import androidx.lifecycle.OnLifecycleEvent
 import com.tokopedia.play.component.EventBusFactory
 import com.tokopedia.play.component.UIComponent
 import com.tokopedia.play.util.coroutine.CoroutineDispatcherProvider
+import com.tokopedia.play.util.video.PlayVideoUtil
 import com.tokopedia.play.view.event.ScreenStateEvent
 import com.tokopedia.play_common.state.PlayVideoState
 import kotlinx.coroutines.CoroutineScope
@@ -28,6 +30,8 @@ open class VideoComponent(
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
     val uiView = initView(container)
 
+    private val playVideoUtil = PlayVideoUtil(container.context)
+
     init {
         scope.launch(dispatchers.immediate) {
             bus.getSafeManagedFlow(ScreenStateEvent::class.java)
@@ -36,6 +40,7 @@ open class VideoComponent(
                             is ScreenStateEvent.Init -> {
                                 uiView.setOrientation(it.screenOrientation, it.stateHelper.videoOrientation)
                                 uiView.hide()
+                                if (it.stateHelper.videoState == PlayVideoState.Ended) showEndImage()
                             }
                             is ScreenStateEvent.SetVideo -> uiView.setPlayer(it.videoPlayer)
                             is ScreenStateEvent.OnNewPlayRoomEvent -> if (it.event.isFreeze || it.event.isBanned) {
@@ -69,9 +74,22 @@ open class VideoComponent(
 
     private fun handleVideoStateChanged(state: PlayVideoState) {
         when (state) {
-            PlayVideoState.Playing, PlayVideoState.Pause, PlayVideoState.Ended -> {
+            PlayVideoState.Playing, PlayVideoState.Pause -> {
                 uiView.show()
+                uiView.showThumbnail(null)
+            }
+            PlayVideoState.Ended -> {
+                uiView.show()
+                uiView.getCurrentBitmap()?.let { saveEndImage(it) }
             }
         }
+    }
+
+    private fun saveEndImage(bitmap: Bitmap) {
+        playVideoUtil.saveEndImage(bitmap)
+    }
+
+    private fun showEndImage() {
+        uiView.showThumbnail(playVideoUtil.getEndImage())
     }
 }

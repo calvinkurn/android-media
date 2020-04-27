@@ -1,11 +1,13 @@
 package com.tokopedia.play.ui.video
 
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.graphics.Bitmap
+import android.view.*
+import android.widget.FrameLayout
 import android.widget.ImageView
 import androidx.constraintlayout.widget.ConstraintSet
 import com.google.android.exoplayer2.ExoPlayer
+import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
+import com.google.android.exoplayer2.ui.PlayerView
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -25,7 +27,8 @@ class VideoView(container: ViewGroup) : UIView(container) {
             LayoutInflater.from(container.context).inflate(R.layout.view_video, container, true)
                     .findViewById(R.id.cl_video_view)
 
-    private val pvVideo = view.findViewById<VideoPlayCustom>(R.id.pv_video)
+    private val pvVideo = view.findViewById<PlayerView>(R.id.pv_video)
+    private val ivThumbnail = view.findViewById<ImageView>(R.id.iv_thumbnail)
 
     override val containerId: Int = view.id
 
@@ -39,14 +42,63 @@ class VideoView(container: ViewGroup) : UIView(container) {
 
     internal fun onDestroy() {
         setPlayer(null)
-        pvVideo.release()
     }
 
     internal fun setPlayer(exoPlayer: ExoPlayer?) {
-        pvVideo.setPlayer(exoPlayer)
+        pvVideo.player = exoPlayer
     }
 
     internal fun setOrientation(screenOrientation: ScreenOrientation, videoOrientation: VideoOrientation) {
-        pvVideo.setOrientation(screenOrientation, videoOrientation)
+        configureVideoLayout(screenOrientation, videoOrientation)
+        configureThumbnailLayout(screenOrientation, videoOrientation)
+    }
+
+    internal fun getCurrentBitmap(): Bitmap? {
+        val textureView = pvVideo.videoSurfaceView as? TextureView
+        return textureView?.bitmap
+    }
+
+    internal fun showThumbnail(bitmap: Bitmap?) {
+        if (bitmap != null) {
+            ivThumbnail.setImageBitmap(bitmap)
+            ivThumbnail.visible()
+        } else {
+            ivThumbnail.gone()
+        }
+    }
+
+    private fun configureVideoLayout(screenOrientation: ScreenOrientation, videoOrientation: VideoOrientation) {
+        pvVideo.resizeMode = if (videoOrientation.isHorizontal) {
+            when {
+                screenOrientation.isLandscape -> AspectRatioFrameLayout.RESIZE_MODE_FIT
+                else -> AspectRatioFrameLayout.RESIZE_MODE_FIXED_WIDTH
+            }
+        } else AspectRatioFrameLayout.RESIZE_MODE_ZOOM
+
+        val lParams = pvVideo.layoutParams as FrameLayout.LayoutParams
+        lParams.gravity =
+                if (videoOrientation.isHorizontal && !screenOrientation.isLandscape) Gravity.NO_GRAVITY
+                else Gravity.CENTER
+
+        pvVideo.layoutParams = lParams
+    }
+
+    private fun configureThumbnailLayout(screenOrientation: ScreenOrientation, videoOrientation: VideoOrientation) {
+        when {
+            !screenOrientation.isLandscape && videoOrientation is VideoOrientation.Horizontal -> {
+                view.changeConstraint {
+                    clear(ivThumbnail.id, ConstraintSet.BOTTOM)
+                    setDimensionRatio(ivThumbnail.id, "H, ${videoOrientation.aspectRatio}")
+                }
+                ivThumbnail.scaleType = ImageView.ScaleType.FIT_CENTER
+            }
+            else -> {
+                view.changeConstraint {
+                    connect(ivThumbnail.id, ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM)
+                    setDimensionRatio(ivThumbnail.id, null)
+                }
+                ivThumbnail.scaleType = if (videoOrientation.isHorizontal) ImageView.ScaleType.FIT_CENTER else ImageView.ScaleType.CENTER
+            }
+        }
     }
 }

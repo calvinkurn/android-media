@@ -110,12 +110,6 @@ class PlayFragment : BaseDaggerFragment(), PlaySensorOrientationManager.Orientat
 
     private var isChangingOrientation = false
 
-    private var systemUiVisibility: Int
-        get() = requireActivity().window.decorView.systemUiVisibility
-        set(value) {
-            requireActivity().window.decorView.systemUiVisibility = value
-        }
-
     private var requestedOrientation: Int
         get() = requireActivity().requestedOrientation
         set(value) {
@@ -214,16 +208,6 @@ class PlayFragment : BaseDaggerFragment(), PlaySensorOrientationManager.Orientat
                 bufferCount = if (bufferTrackingModel.isBuffering) bufferTrackingModel.bufferCount - 1 else bufferTrackingModel.bufferCount,
                 shouldTrackNext = false
         )
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            android.R.id.home -> {
-                activity?.supportFinishAfterTransition()
-                return true
-            }
-        }
-        return super.onOptionsItemSelected(item)
     }
 
     override fun onDestroyView() {
@@ -344,14 +328,7 @@ class PlayFragment : BaseDaggerFragment(), PlaySensorOrientationManager.Orientat
     }
 
     private fun setupScreen(view: View) {
-        setupSystemUi()
         setInsets(view)
-    }
-
-    private fun setupSystemUi() {
-        systemUiVisibility =
-                if (playViewModel.screenOrientation.isLandscape) PlayFullScreenHelper.getHideSystemUiVisibility()
-                else PlayFullScreenHelper.getShowSystemUiVisibility()
     }
 
     private fun setInsets(view: View) {

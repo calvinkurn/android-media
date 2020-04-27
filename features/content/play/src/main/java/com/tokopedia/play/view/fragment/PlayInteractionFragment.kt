@@ -28,10 +28,7 @@ import com.tokopedia.play.animation.PlayFadeOutAnimation
 import com.tokopedia.play.component.EventBusFactory
 import com.tokopedia.play.di.DaggerPlayComponent
 import com.tokopedia.play.di.PlayModule
-import com.tokopedia.play.extensions.hasAlpha
-import com.tokopedia.play.extensions.isAnyHidden
-import com.tokopedia.play.extensions.isAnyShown
-import com.tokopedia.play.extensions.isFullSolid
+import com.tokopedia.play.extensions.*
 import com.tokopedia.play.gesture.PlayClickTouchListener
 import com.tokopedia.play.ui.chatlist.ChatListComponent
 import com.tokopedia.play.ui.endliveinfo.EndLiveInfoComponent
@@ -59,6 +56,7 @@ import com.tokopedia.play.ui.videocontrol.VideoControlComponent
 import com.tokopedia.play.ui.videocontrol.interaction.VideoControlInteractionEvent
 import com.tokopedia.play.ui.videosettings.VideoSettingsComponent
 import com.tokopedia.play.ui.videosettings.interaction.VideoSettingsInteractionEvent
+import com.tokopedia.play.util.PlayFullScreenHelper
 import com.tokopedia.play.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play.util.event.EventObserver
 import com.tokopedia.play.view.bottomsheet.PlayMoreActionBottomSheet
@@ -230,6 +228,11 @@ class PlayInteractionFragment :
         trackingQueue.sendAll()
     }
 
+    override fun onResume() {
+        super.onResume()
+        setupSystemUi()
+    }
+
     override fun onDestroyView() {
         destroyInsets(requireView())
         super.onDestroyView()
@@ -268,6 +271,17 @@ class PlayInteractionFragment :
 
     private fun destroyInsets(view: View) {
         ViewCompat.setOnApplyWindowInsetsListener(view, null)
+    }
+
+    private fun setupSystemUi() {
+        val screenOrientation = playViewModel.screenOrientation
+        systemUiVisibility =
+                if (screenOrientation.isLandscape) PlayFullScreenHelper.getHideSystemUiVisibility()
+                else {
+                    val videoOrientation = playViewModel.screenOrientation
+                    if (!videoOrientation.isLandscape && container.isFullAlpha) PlayFullScreenHelper.getHideSystemUiVisibility()
+                    else PlayFullScreenHelper.getShowSystemUiVisibility()
+                }
     }
 
     //region observe
@@ -393,30 +407,35 @@ class PlayInteractionFragment :
     }
 
     private fun observeBottomInsetsState() {
-        playViewModel.observableBottomInsetsState.observe(viewLifecycleOwner, Observer {
-            if (it.isAnyShown) requireView().gone()
+        playViewModel.observableBottomInsetsState.observe(viewLifecycleOwner, object : Observer<Map<BottomInsetsType, BottomInsetsState>> {
+            private var isFirstTime = true
 
-            scope.launch {
-                val keyboardState = it[BottomInsetsType.Keyboard]
-                if (keyboardState != null && !keyboardState.isPreviousStateSame) {
-                    when (keyboardState) {
-                        is BottomInsetsState.Hidden -> if (!it.isAnyShown) playFragment.onBottomInsetsViewHidden()
-                        is BottomInsetsState.Shown -> {
-                            pushParentPlayByKeyboardHeight(keyboardState.estimatedInsetsHeight)
+            override fun onChanged(map: Map<BottomInsetsType, BottomInsetsState>) {
+                if (!isFirstTime) requireView().gone()
+
+                scope.launch {
+                    val keyboardState = map[BottomInsetsType.Keyboard]
+                    if (keyboardState != null && !keyboardState.isPreviousStateSame) {
+                        when (keyboardState) {
+                            is BottomInsetsState.Hidden -> if (!map.isAnyShown) playFragment.onBottomInsetsViewHidden()
+                            is BottomInsetsState.Shown -> {
+                                pushParentPlayByKeyboardHeight(keyboardState.estimatedInsetsHeight)
+                            }
                         }
                     }
-                }
 
-                if (keyboardState?.isHidden == true) delay(PlayParentLayoutManagerImpl.ANIMATION_DURATION)
-                EventBusFactory.get(viewLifecycleOwner)
-                        .emit(
-                                ScreenStateEvent::class.java,
-                                ScreenStateEvent.BottomInsetsChanged(it, it.isAnyShown, it.isAnyHidden, playViewModel.stateHelper)
-                        )
+                    if (keyboardState?.isHidden == true) delay(PlayParentLayoutManagerImpl.ANIMATION_DURATION)
+                    EventBusFactory.get(viewLifecycleOwner)
+                            .emit(
+                                    ScreenStateEvent::class.java,
+                                    ScreenStateEvent.BottomInsetsChanged(map, map.isAnyShown, map.isAnyHidden, playViewModel.stateHelper)
+                            )
 
-            }.apply {
-                invokeOnCompletion {
-                    view?.visible()
+                }.apply {
+                    invokeOnCompletion {
+                        view?.visible()
+                        isFirstTime = false
+                    }
                 }
             }
         })

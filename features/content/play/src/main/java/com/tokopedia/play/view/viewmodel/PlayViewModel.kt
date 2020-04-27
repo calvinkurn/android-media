@@ -143,7 +143,8 @@ class PlayViewModel @Inject constructor(
                     channelType = channelType,
                     bottomInsets = bottomInsets ?: getDefaultBottomInsetsMapState(),
                     screenOrientation = screenOrientation,
-                    videoOrientation = videoOrientation
+                    videoOrientation = videoOrientation,
+                    videoState = playVideoManager.getVideoState()
             )
         }
 
