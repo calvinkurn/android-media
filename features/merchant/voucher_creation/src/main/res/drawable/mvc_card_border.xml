@@ -6,5 +6,7 @@
         android:color="@color/mvc_card_border_green"/>
     <corners
         android:radius="@dimen/mvc_create_target_card_border_radius"/>
+    <solid
+        android:color="@color/transparent"/>
 
 </shape>

@@ -2,7 +2,6 @@ package com.tokopedia.vouchercreation.create.view.viewholder.vouchertips
 
 import android.view.View
 import androidx.annotation.LayoutRes
-import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.vouchercreation.R
@@ -18,9 +17,7 @@ class ImageVoucherTipsItemViewHolder(itemView: View) : AbstractViewHolder<ImageV
 
     override fun bind(element: ImageVoucherTipsItemUiModel) {
         itemView.run {
-            ContextCompat.getDrawable(context, element.iconRes)?.let { iconDrawable ->
-                voucherTipsInfoImage?.setImageDrawable(iconDrawable)
-            }
+            voucherTipsInfoImage?.setImageResource(element.iconRes)
             voucherTipsInfoTitle?.text = resources?.getString(element.titleRes).toBlankOrString()
             voucherTipsInfoDesc?.text = resources?.getText(element.descRes) ?: ""
         }

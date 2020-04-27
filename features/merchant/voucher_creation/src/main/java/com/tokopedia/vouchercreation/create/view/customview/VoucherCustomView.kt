@@ -14,7 +14,7 @@ abstract class VoucherCustomView @JvmOverloads constructor(
         private val defStyleRes: Int = 0,
         private val layoutResource: Int,
         private val styleableResource: IntArray = intArrayOf()
-) : ConstraintLayout(context, attrs, defStyleAttr, defStyleRes) {
+) : ConstraintLayout(context, attrs, defStyleAttr) {
 
     init {
         setupLayout()

@@ -3,7 +3,9 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginStart="@dimen/mvc_create_margin_padding"
+    android:layout_marginLeft="@dimen/mvc_create_margin_padding"
     android:layout_marginEnd="@dimen/mvc_create_margin_padding"
+    android:layout_marginRight="@dimen/mvc_create_margin_padding"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     
     <com.tokopedia.unifyprinciples.Typography

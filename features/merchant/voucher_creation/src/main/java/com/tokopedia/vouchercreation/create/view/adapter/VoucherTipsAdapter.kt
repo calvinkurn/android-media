@@ -41,9 +41,8 @@ class VoucherTipsAdapter(itemList: List<TipsItemUiModel>,
         tipsItemList[position].let { tipsItemUiModel ->
             holder.itemView.run {
                 voucherTipsTitle?.text = resources?.getString(tipsItemUiModel.titleRes).toBlankOrString()
-                if (setAccordionState(tipsItemUiModel.isOpen)) {
-                    voucherTipsItemRecyclerView?.setAdapterItem(tipsItemUiModel.tipsItemList)
-                }
+                setAccordionState(tipsItemUiModel.isOpen)
+                voucherTipsItemRecyclerView?.setAdapterItem(tipsItemUiModel.tipsItemList)
                 voucherTipsView?.setOnClickListener {
                     alterChevronState(position)
                 }

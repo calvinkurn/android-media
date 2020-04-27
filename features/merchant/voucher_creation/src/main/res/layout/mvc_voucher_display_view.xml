@@ -11,7 +11,9 @@
         android:layout_height="wrap_content"
         android:adjustViewBounds="true"
         android:layout_marginStart="@dimen/mvc_create_voucher_display_padding_horizontal"
+        android:layout_marginLeft="@dimen/mvc_create_voucher_display_padding_horizontal"
         android:layout_marginEnd="@dimen/mvc_create_voucher_display_padding_horizontal"
+        android:layout_marginRight="@dimen/mvc_create_voucher_display_padding_horizontal"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>

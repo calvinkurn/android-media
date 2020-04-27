@@ -69,7 +69,7 @@ class VoucherTargetCardItemView @JvmOverloads constructor(
     }
 
     private fun View.setupIcon() {
-        voucherTargetItemIcon?.setImageDrawable(ContextCompat.getDrawable(context, voucherTargetCardType.iconDrawableRes))
+        voucherTargetItemIcon?.setImageResource(voucherTargetCardType.iconDrawableRes)
     }
 
     private fun View.setupTitle() {
