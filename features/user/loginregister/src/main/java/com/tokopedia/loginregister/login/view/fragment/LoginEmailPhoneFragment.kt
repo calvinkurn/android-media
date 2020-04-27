@@ -282,7 +282,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
         partialRegisterInputView.setEmailExtension(emailExtension, emailExtensionList)
         partialRegisterInputView.initKeyboardListener(view)
 
-        if(GlobalConfig.isSellerApp() && arguments?.getBoolean(SELLER_SEAMLESS, false) == true) {
+        if(GlobalConfig.isSellerApp()) {
             val intent = RouteManager.getIntent(activity, ApplinkConstInternalSellerapp.SEAMLESS_LOGIN)
             startActivityForResult(intent, REQUEST_SEAMLESS_LOGIN)
         }
@@ -1426,7 +1426,6 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
         const val AUTO_FILL_EMAIL = "email"
         const val IS_FROM_REGISTER = "is_from_register"
 
-        const val SELLER_SEAMLESS = "is_from_seller_seamles"
 
         const val FACEBOOK = "facebook"
         const val GPLUS = "gplus"
