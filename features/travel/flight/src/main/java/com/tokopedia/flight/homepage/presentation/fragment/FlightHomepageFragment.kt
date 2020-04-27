@@ -413,6 +413,8 @@ class FlightHomepageFragment : BaseDaggerFragment(), FlightSearchFormView.Flight
         }
     }
 
+
+
     private fun validateSearchPassData(flightSearchData: FlightSearchPassDataModel): Boolean {
         var isValid = true
 
@@ -431,6 +433,11 @@ class FlightHomepageFragment : BaseDaggerFragment(), FlightSearchFormView.Flight
             isValid = false
             showMessageErrorInSnackbar(R.string.flight_dashboard_arrival_departure_same_error)
         } else if (flightSearchData.departureAirport.airportCode == flightSearchData.arrivalAirport.airportCode) {
+            isValid = false
+            showMessageErrorInSnackbar(R.string.flight_dashboard_arrival_departure_same_error)
+        } else if (flightSearchData.departureAirport.cityName.isNotEmpty() &&
+                flightSearchData.arrivalAirport.cityName.isNotEmpty() &&
+                flightSearchData.departureAirport.cityName == flightSearchData.arrivalAirport.cityName) {
             isValid = false
             showMessageErrorInSnackbar(R.string.flight_dashboard_arrival_departure_same_error)
         }
