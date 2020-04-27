@@ -4,13 +4,14 @@ import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product.manage.feature.list.extension.findIndex
 import com.tokopedia.product.manage.common.view.adapter.base.BaseProductManageAdapter
+import com.tokopedia.product.manage.feature.list.view.adapter.differ.ProductListDiffer
 import com.tokopedia.product.manage.feature.list.view.adapter.factory.ProductManageAdapterFactoryImpl
 import com.tokopedia.product.manage.feature.list.view.model.ProductViewModel
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 
 class ProductManageListAdapter(
     baseListAdapterTypeFactory: ProductManageAdapterFactoryImpl
-) : BaseProductManageAdapter<ProductViewModel, ProductManageAdapterFactoryImpl>(baseListAdapterTypeFactory) {
+) : BaseProductManageAdapter<ProductViewModel, ProductManageAdapterFactoryImpl>(baseListAdapterTypeFactory, ProductListDiffer()) {
 
     fun updatePrice(productId: String, price: String) {
         submitList(productId) {

@@ -1,13 +1,13 @@
 package com.tokopedia.product.manage.feature.list.view.adapter.differ
 
-import androidx.recyclerview.widget.DiffUtil
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.product.manage.common.view.adapter.differ.ProductManageDiffer
 import com.tokopedia.product.manage.feature.list.view.model.ProductViewModel
 
-class ProductListDiffer(
-    private val oldProductList: List<Visitable<*>>,
-    private val newProductList: List<Visitable<*>>
-): DiffUtil.Callback() {
+class ProductListDiffer: ProductManageDiffer() {
+
+    private var oldProductList: List<Visitable<*>> = emptyList()
+    private var newProductList: List<Visitable<*>> = emptyList()
 
     override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
         val oldItem = oldProductList[oldItemPosition]
@@ -27,4 +27,13 @@ class ProductListDiffer(
     override fun getOldListSize() = oldProductList.size
 
     override fun getNewListSize() = newProductList.size
+
+    override fun create(
+        oldList: List<Visitable<*>>,
+        newList: List<Visitable<*>>
+    ): ProductManageDiffer {
+        oldProductList = oldList
+        newProductList= newList
+        return this
+    }
 }

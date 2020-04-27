@@ -4,10 +4,11 @@ import androidx.recyclerview.widget.DiffUtil
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.factory.AdapterTypeFactory
-import com.tokopedia.product.manage.feature.list.view.adapter.differ.ProductListDiffer
+import com.tokopedia.product.manage.common.view.adapter.differ.ProductManageDiffer
 
 abstract class BaseProductManageAdapter<T, F: AdapterTypeFactory>(
-    baseListAdapterTypeFactory: F
+    baseListAdapterTypeFactory: F,
+    private val differ: ProductManageDiffer
 ): BaseListAdapter<T, F>(baseListAdapterTypeFactory) {
 
     override fun showLoading() {
@@ -47,7 +48,7 @@ abstract class BaseProductManageAdapter<T, F: AdapterTypeFactory>(
     }
 
     protected fun submitList(items: List<Visitable<*>>) {
-        val diffUtilCallback = ProductListDiffer(visitables, items)
+        val diffUtilCallback = differ.create(visitables, items)
         val result = DiffUtil.calculateDiff(diffUtilCallback)
         visitables.clear()
         visitables.addAll(items)
