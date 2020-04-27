@@ -22,7 +22,6 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
-import com.chuckerteam.chucker.api.Chucker
 import com.google.android.material.appbar.AppBarLayout
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -58,7 +57,6 @@ import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.
 import com.tokopedia.purchase_platform.common.base.BaseCheckoutFragment
 import com.tokopedia.purchase_platform.common.constant.*
 import com.tokopedia.purchase_platform.common.constant.CartConstant.ACTION_OK
-import com.tokopedia.purchase_platform.common.constant.CartConstant.CART
 import com.tokopedia.purchase_platform.common.constant.CartConstant.CART_EMPTY_DEFAULT_IMG_URL
 import com.tokopedia.purchase_platform.common.constant.CartConstant.CART_EMPTY_WITH_PROMO_IMG_URL
 import com.tokopedia.purchase_platform.common.constant.CartConstant.PARAM_CART
@@ -103,9 +101,9 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey.APP_ENABLE_INSURANCE_RECOMMENDATION
+import com.tokopedia.topads.sdk.utils.ImpresionTask
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
-import com.tokopedia.topads.sdk.utils.ImpresionTask
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.data.source.cloud.model.Wishlist
@@ -186,6 +184,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     private var hasTriedToLoadWishList: Boolean = false
     private var hasTriedToLoadRecentViewList: Boolean = false
+    private var shouldReloadRecentViewList: Boolean = false
     private var hasTriedToLoadRecommendation: Boolean = false
     private var isInsuranceEnabled = false
     private var isToolbarWithBackButton = true
@@ -1388,8 +1387,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 renderCartNotEmpty(it)
             }
 
-            if (recentViewList == null) {
-                dPresenter.processGetRecentViewData()
+            if (recentViewList == null || shouldReloadRecentViewList) {
+                dPresenter.processGetRecentViewData(cartAdapter.allCartItemProductId)
             } else {
                 renderRecentView(null)
             }
@@ -1807,6 +1806,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         return ValidateUsePromoRequest(
                 codes = globalPromo.toMutableList(),
                 state = PARAM_CART,
+                skipApply = 0,
                 cartType = PARAM_DEFAULT,
                 orders = listOrder)
     }
@@ -2245,6 +2245,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             ShipmentActivity.REQUEST_CODE -> onResultFromRequestCodeCartShipment(resultCode, data)
             NAVIGATION_PDP -> {
                 refreshHandler?.isRefreshing = true
+                resetRecentViewList()
                 dPresenter.processInitialGetCartData(getCartId(), cartListData == null, true)
             }
             NAVIGATION_PROMO -> {
@@ -2554,10 +2555,10 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     override fun renderRecentView(recentViewList: List<RecentView>?) {
         var cartRecentViewItemHolderDataList: MutableList<CartRecentViewItemHolderData> = ArrayList()
-        if (this.recentViewList != null) {
-            cartRecentViewItemHolderDataList.addAll(this.recentViewList!!)
-        } else if (recentViewList != null) {
+        if (recentViewList != null) {
             cartRecentViewItemHolderDataList = recentViewMapper.convertToViewHolderModelList(recentViewList)
+        } else if (this.recentViewList != null) {
+            cartRecentViewItemHolderDataList.addAll(this.recentViewList!!)
         }
         val cartSectionHeaderHolderData = CartSectionHeaderHolderData()
         cartSectionHeaderHolderData.title = getString(R.string.checkout_module_title_recent_view)
@@ -2566,6 +2567,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         cartRecentViewHolderData.recentViewList = cartRecentViewItemHolderDataList
         cartAdapter.addCartRecentViewData(cartSectionHeaderHolderData, cartRecentViewHolderData)
         this.recentViewList = cartRecentViewItemHolderDataList
+        shouldReloadRecentViewList = false
 
         sendAnalyticsOnViewProductRecentView(
                 dPresenter.generateRecentViewDataImpressionAnalytics(cartRecentViewItemHolderDataList, FLAG_IS_CART_EMPTY)
@@ -2867,5 +2869,14 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     override fun checkHitValidateUseIsNeeded(params: ValidateUsePromoRequest): Boolean {
         return isNeedHitUpdateCartAndValidateUse(params)
+    }
+
+    override fun resetRecentViewList() {
+        shouldReloadRecentViewList = true
+    }
+
+    override fun sendATCTrackingURL(clickurl: String) {
+        var url = "$clickurl&click_source=ATC_direct_click";
+        ImpresionTask(userSession).execute(url);
     }
 }

@@ -10,7 +10,7 @@
 /features/content/feed_component/       				@tokopedia/minion-darth
 /features/category/       				                @tokopedia/minion-darth
 /features/user/groupchat/                       		@tokopedia/minion-dave
-/features/discovery/topadssdk/                      	@tokopedia/minion-dave
+/features/discovery/topadssdk/                      	@nathaniel09
 /features/discovery/home/                           	@tokopedia/minion-dave
 /features/discovery/home_recom/                     	@tokopedia/minion-dave
 /features/discovery/home_wishlist/                     	@tokopedia/minion-dave
@@ -45,8 +45,6 @@
 /features/discovery/category_common/                	@tokopedia/minion-stuart
 /features/discovery/flashsale_management/               @tokopedia/minion-stuart
 /features/discovery/flashsale_management_common/        @tokopedia/minion-stuart
-
-/features/fintech/mitra_toppers/                        @tokopedia/minion-stuart
 
 /features/merchant/atc_variant/                         @tokopedia/minion-stuart
 /features/merchant/brandlist/                           @tokopedia/minion-stuart
@@ -95,6 +93,8 @@
 
 /features/entertainment/event                 			@tokopedia/minion-mark
 /features/entertainment/digital_deals         			@tokopedia/minion-mark
+/features/entertainment/event_home                 		@tokopedia/minion-mark
+/features/entertainment/event_search        			@tokopedia/minion-mark
 
 /features/travel/flight_orderlist                       @tokopedia/minion-mark
 /features/travel/flight/                                @tokopedia/minion-mark
@@ -208,6 +208,7 @@
 /libraries/core_network/								@tokopedia/core-team
 /libraries/cpm/											@tokopedia/core-team
 /libraries/date_picker_range/							@tokopedia/core-team
+/libraries/device_info/                                 @tokopedia/core-team
 /libraries/dynamic_features/							@tokopedia/core-team
 /libraries/encryption/							        @tokopedia/core-team
 /libraries/fingerprint/									@tokopedia/core-team
@@ -216,7 +217,7 @@
 /libraries/image_preview/								@tokopedia/core-team
 /libraries/imageuploader/								@tokopedia/core-team
 /libraries/inappupdate/									@tokopedia/core-team
-/libraries/iris/										@tokopedia/core-team
+/libraries/iris/										@nathaniel09
 /libraries/kotlin_extensions/							@tokopedia/core-team
 /libraries/linker/										@tokopedia/core-team
 /libraries/locationmanager/								@tokopedia/core-team

@@ -255,6 +255,15 @@ public class SearchTracking {
         ));
     }
 
+    public static void eventClickSuggestedSearch(String currentKeyword, String suggestion) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
+                SearchEventTracking.Event.SEARCH_RESULT,
+                SearchEventTracking.Category.SEARCH_RESULT,
+                SearchEventTracking.Action.CLICK_FUZZY_KEYWORDS_SUGGESTION,
+                String.format("%s - %s", currentKeyword, suggestion)
+        ));
+    }
+
     public static void eventSearchResultChangeGrid(Context context, String gridName, String screenName) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 SearchEventTracking.Event.SEARCH_RESULT,

@@ -58,6 +58,7 @@ dependencies {
     androidTestImplementation rootProject.ext.tkpdInternalLibDependencies.authentication
     androidTestImplementation project(rootProject.ext.libraries.instrumentation_test), {
         exclude group: "com.google.android.gms"
+        exclude group: "com.google.firebase", module: "firebase-iid"
     }
     androidTestImplementation rootProject.ext.testDependencies.espressoCore
     androidTestImplementation rootProject.ext.testDependencies.espressoContrib

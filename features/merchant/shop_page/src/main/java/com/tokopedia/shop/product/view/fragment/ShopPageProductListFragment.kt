@@ -1132,7 +1132,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
     }
 
     private fun stopPerformanceMonitoring(){
-        (activity as? ShopPageActivity)?.stopPerformanceMonitor()
+        (activity as? ShopPageActivity)?.stopShopProductTabPerformanceMonitoring()
     }
 
     fun clearCache() {

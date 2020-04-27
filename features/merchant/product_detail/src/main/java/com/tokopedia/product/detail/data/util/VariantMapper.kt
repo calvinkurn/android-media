@@ -5,14 +5,35 @@ import com.tokopedia.product.detail.common.data.model.pdplayout.BasicInfo
 import com.tokopedia.product.detail.common.data.model.pdplayout.ComponentData
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.common.data.model.pdplayout.Media
+import com.tokopedia.product.detail.common.data.model.product.Stock
 import com.tokopedia.product.detail.view.util.toDate
 import com.tokopedia.variant_common.model.ProductVariantCommon
 import com.tokopedia.variant_common.model.VariantChildCommon
+import com.tokopedia.variant_common.model.VariantMultiOriginWarehouse
 
 /**
  * Created by Yehezkiel on 2020-02-26
  */
 object VariantMapper {
+
+    fun updateSelectedMultiOrigin(oldData: VariantMultiOriginWarehouse, newData: VariantChildCommon?): VariantMultiOriginWarehouse {
+
+        val newWarehouseInfo = oldData.warehouseInfo.copy(
+                id = newData?.warehouseInfo?.warehouseId ?: "",
+                isFulfillment = newData?.warehouseInfo?.isFulfillment ?: false,
+                districtId = newData?.warehouseInfo?.districtId ?: "",
+                postalCode = newData?.warehouseInfo?.postalCode ?: "",
+                geoLocation = newData?.warehouseInfo?.geoLocation ?: ""
+        )
+
+        return oldData.copy(
+                productId = newData?.productId.toString(),
+                stock = newData?.getVariantFinalStock() ?: 0,
+                price = newData?.price?.toInt() ?: 0,
+                stockWording = newData?.stock?.stockWordingHTML ?: "",
+                warehouseInfo = newWarehouseInfo
+        )
+    }
 
     fun updateDynamicProductInfo(oldData: DynamicProductInfoP1?, newData: VariantChildCommon?, existingListMedia: List<Media>?): DynamicProductInfoP1? {
         if (oldData == null) return null
@@ -43,6 +64,7 @@ object VariantMapper {
                 appLinks = newData?.campaign?.applinks ?: "",
                 percentageAmount = newData?.campaign?.discountedPercentage?.toInt() ?: 0,
                 stockSoldPercentage = newData?.campaign?.stockSoldPercentage?.toInt() ?: 0,
+                isCheckImei = newData?.campaign?.isCheckImei ?: false,
                 isUsingOvo = newData?.campaign?.isUsingOvo ?: false
         )
 
@@ -60,14 +82,20 @@ object VariantMapper {
                 value = newData?.price?.toInt() ?: 0
         )
 
+        val newStock = oldData.data.stock.copy(
+                value = newData?.stock?.stock ?: 0,
+                stockWording = newData?.stock?.stockWording ?: ""
+        )
+
         val data = oldData.data.copy(
                 isCOD = newData?.isCod ?: false,
                 isWishlist = newData?.isWishlist ?: false,
                 campaign = newCampaign,
                 price = newPrice,
-                name= newData?.name ?: "",
+                name = newData?.name ?: "",
                 media = newMedia,
-        //upcoming campaign data
+                stock = newStock,
+                //upcoming campaign data
                 campaignId = newData?.upcoming?.campaignId ?: "",
                 campaignType = newData?.upcoming?.campaignType ?: "",
                 campaignTypeName = newData?.upcoming?.campaignTypeName ?: "",
@@ -101,6 +129,7 @@ object VariantMapper {
         val data = oldData?.data?.copy(
                 media = media
         )
-        return DynamicProductInfoP1(basic ?: BasicInfo(),data ?: ComponentData(), oldData?.layoutName ?: "")
+        return DynamicProductInfoP1(basic ?: BasicInfo(), data
+                ?: ComponentData(), oldData?.layoutName ?: "")
     }
 }

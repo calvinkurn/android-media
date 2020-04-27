@@ -35,6 +35,7 @@ import com.tokopedia.favorite.view.adapter.FavoriteAdapterTypeFactory;
 import com.tokopedia.favorite.view.viewlistener.FavoriteClickListener;
 import com.tokopedia.favorite.view.viewmodel.FavoriteShopViewModel;
 import com.tokopedia.favorite.view.viewmodel.TopAdsShopItem;
+import com.tokopedia.topads.sdk.utils.ImpresionTask;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -353,6 +354,11 @@ public class FragmentFavorite extends BaseDaggerFragment
     public void addFavoriteShop(FavoriteShopViewModel shopViewModel) {
         int favoriteShopPosition = 2;
         favoriteAdapter.addElement(favoriteShopPosition, shopViewModel);
+    }
+
+    @Override
+    public void sendFavoriteShopImpression(String clickUrl) {
+        new ImpresionTask(userSession).execute(clickUrl);
     }
 
     @Override

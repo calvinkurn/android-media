@@ -11,6 +11,7 @@ import com.tokopedia.autocomplete.initialstate.recentview.RecentViewViewModel
 import com.tokopedia.autocomplete.initialstate.recentview.ReecentViewTitleViewModel
 import com.tokopedia.autocomplete.initialstate.testinstance.initialStateCommonResponse
 import com.tokopedia.autocomplete.initialstate.testinstance.popularSearchCommonResponse
+import com.tokopedia.usecase.UseCase
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.*
 import org.junit.Assert
@@ -21,7 +22,7 @@ import rx.Subscriber
 internal class InitialStatePresenterTest {
     private val initialStateView = mockk<InitialStateContract.View>(relaxed = true)
 
-    private val getInitialStateUseCase = mockk<InitialStateUseCase>(relaxed = true)
+    private val getInitialStateUseCase = mockk<UseCase<List<InitialStateData>>>(relaxed = true)
     private val deleteRecentSearchUseCase = mockk<DeleteRecentSearchUseCase>(relaxed = true)
     private val popularSearchUseCase = mockk<RefreshPopularSearchUseCase>(relaxed = true)
 

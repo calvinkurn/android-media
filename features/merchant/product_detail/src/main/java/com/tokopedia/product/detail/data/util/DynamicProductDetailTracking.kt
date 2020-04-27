@@ -48,6 +48,16 @@ object DynamicProductDetailTracking {
 
     object Click {
 
+        fun eventClickWholesale(productInfo: DynamicProductInfoP1?, componentTrackDataModel: ComponentTrackDataModel?){
+            val mapEvent = TrackAppUtils.gtmData(
+                    ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
+                    ProductTrackingConstant.Category.PDP,
+                    ProductTrackingConstant.Action.CLICK_WHOLESALE, "")
+
+            TrackingUtil.addComponentTracker(mapEvent, productInfo, componentTrackDataModel, ProductTrackingConstant.Action.CLICK_WHOLESALE)
+
+        }
+
         fun eventClickBuyAskForImei(title: String, userId: String, productInfo: DynamicProductInfoP1?) {
             val actionTitle = "${ProductTrackingConstant.Action.CLICK_REQUEST_PERMISSION_IMEI} $title"
             val mapEvent = TrackAppUtils.gtmData(
@@ -55,7 +65,7 @@ object DynamicProductDetailTracking {
                     ProductTrackingConstant.Category.PDP,
                     actionTitle, "")
             mapEvent[ProductTrackingConstant.Tracking.KEY_USER_ID_VARIANT] = userId
-            mapEvent[ProductTrackingConstant.Tracking.KEY_ISLOGGIN] = (userId != "0").toString()
+            mapEvent[ProductTrackingConstant.Tracking.KEY_ISLOGGIN] = (userId.isNotEmpty()).toString()
 
             TrackingUtil.addComponentTracker(mapEvent, productInfo, null, actionTitle)
         }
@@ -68,7 +78,7 @@ object DynamicProductDetailTracking {
                     actionTitle,
                     "")
             mapEvent[ProductTrackingConstant.Tracking.KEY_USER_ID_VARIANT] = userId
-            mapEvent[ProductTrackingConstant.Tracking.KEY_ISLOGGIN] = (userId != "0").toString()
+            mapEvent[ProductTrackingConstant.Tracking.KEY_ISLOGGIN] = (userId.isNotEmpty()).toString()
 
             TrackingUtil.addComponentTracker(mapEvent, productInfo, null, actionTitle)
         }
@@ -82,7 +92,7 @@ object DynamicProductDetailTracking {
                     "")
 
             mapEvent[ProductTrackingConstant.Tracking.KEY_USER_ID_VARIANT] = userId
-            mapEvent[ProductTrackingConstant.Tracking.KEY_ISLOGGIN] = (userId != "0").toString()
+            mapEvent[ProductTrackingConstant.Tracking.KEY_ISLOGGIN] = (userId.isNotEmpty()).toString()
             TrackingUtil.addComponentTracker(mapEvent, productInfo, null, actionTitle)
         }
 
@@ -94,7 +104,7 @@ object DynamicProductDetailTracking {
                     actionTitle, "")
 
             mapEvent[ProductTrackingConstant.Tracking.KEY_USER_ID_VARIANT] = userId
-            mapEvent[ProductTrackingConstant.Tracking.KEY_ISLOGGIN] = (userId != "0").toString()
+            mapEvent[ProductTrackingConstant.Tracking.KEY_ISLOGGIN] = (userId.isNotEmpty()).toString()
 
             TrackingUtil.addComponentTracker(mapEvent, productInfo, null, actionTitle)
         }
@@ -117,7 +127,7 @@ object DynamicProductDetailTracking {
             mapEvent[ProductTrackingConstant.Tracking.KEY_SHOP_ID_SELLER] = productInfo?.basic?.shopID
                     ?: ""
             mapEvent[ProductTrackingConstant.Tracking.KEY_SHOP_TYPE] = shopType
-            mapEvent[ProductTrackingConstant.Tracking.KEY_ISLOGGIN] = userId != "0"
+            mapEvent[ProductTrackingConstant.Tracking.KEY_ISLOGGIN] = (userId.isNotEmpty()).toString()
 
             TrackingUtil.addComponentTracker(mapEvent, productInfo, null, ProductTrackingConstant.Action.IMPRESSION_CHOOSE_VARIANT_NOTIFICATION)
         }
@@ -132,7 +142,7 @@ object DynamicProductDetailTracking {
             mapEvent[ProductTrackingConstant.Tracking.KEY_SHOP_ID_SELLER] = productInfo?.basic?.shopID
                     ?: ""
             mapEvent[ProductTrackingConstant.Tracking.KEY_SHOP_TYPE] = shopType
-            mapEvent[ProductTrackingConstant.Tracking.KEY_ISLOGGIN] = if (userId == "0") "false" else "true"
+            mapEvent[ProductTrackingConstant.Tracking.KEY_ISLOGGIN] = (userId.isNotEmpty()).toString()
 
 
             TrackingUtil.addComponentTracker(mapEvent, productInfo, null, ProductTrackingConstant.Action.IMPRESSION_CHOOSE_VARIANT_NOTIFICATION)
@@ -172,7 +182,7 @@ object DynamicProductDetailTracking {
                     ProductTrackingConstant.Tracking.KEY_USER_ID, userId,
                     ProductTrackingConstant.Tracking.KEY_SHOP_ID_SELLER, shopId,
                     ProductTrackingConstant.Tracking.KEY_SHOP_TYPE, shopType,
-                    ProductTrackingConstant.Tracking.KEY_ISLOGGIN, if (userId == "0") "false" else "true",
+                    ProductTrackingConstant.Tracking.KEY_ISLOGGIN, (userId.isNotEmpty()).toString(),
 
                     ProductTrackingConstant.Tracking.KEY_ECOMMERCE, DataLayer.mapOf(
                     ProductTrackingConstant.Tracking.CURRENCY_CODE, ProductTrackingConstant.Tracking.CURRENCY_DEFAULT_VALUE,
@@ -200,11 +210,11 @@ object DynamicProductDetailTracking {
 
         fun onEditProductClicked(productInfo: DynamicProductInfoP1?, componentTrackDataModel: ComponentTrackDataModel?) {
             val mapEvent = TrackAppUtils.gtmData(
-                    "",
+                    ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
                     ProductTrackingConstant.Category.PDP_SELLER,
                     ProductTrackingConstant.Action.CLICK_EDIT_PRODUCT,
                     "")
-            TrackingUtil.addComponentTracker(mapEvent, productInfo, componentTrackDataModel, ProductTrackingConstant.Action.IMPRESSION_CHOOSE_VARIANT_NOTIFICATION)
+            TrackingUtil.addComponentTracker(mapEvent, productInfo, componentTrackDataModel, ProductTrackingConstant.Action.CLICK_EDIT_PRODUCT)
         }
 
         fun onVariantErrorPartialySelected(productInfo: DynamicProductInfoP1?, actionButton: Int) {
@@ -764,7 +774,7 @@ object DynamicProductDetailTracking {
 
             val mapOfData: Map<String, Any?> = mapOf(ProductTrackingConstant.Tracking.KEY_EVENT to "clickPDP",
                     ProductTrackingConstant.Tracking.KEY_CATEGORY to "product detail page",
-                    ProductTrackingConstant.Tracking.KEY_ACTION to "click",
+                    ProductTrackingConstant.Tracking.KEY_ACTION to "click - review produk tab",
                     ProductTrackingConstant.Tracking.KEY_LABEL to "review",
                     "subcategory" to categoryNameLvl2,
                     "subcategoryId" to categoryIdLvl2,
@@ -907,7 +917,7 @@ object DynamicProductDetailTracking {
                     ProductTrackingConstant.Action.ACTION_VIEW_ERROR_WHEN_ADD_TO_CART,
                     "not success - $errorMessage")
             mapEvent[ProductTrackingConstant.Tracking.KEY_USER_ID_VARIANT] = userId
-            mapEvent[ProductTrackingConstant.Tracking.KEY_ISLOGGIN] = (userId != "0").toString()
+            mapEvent[ProductTrackingConstant.Tracking.KEY_ISLOGGIN] = (userId.isNotEmpty()).toString()
             mapEvent[ProductTrackingConstant.Tracking.PROMO_ID] = productId
             TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
         }

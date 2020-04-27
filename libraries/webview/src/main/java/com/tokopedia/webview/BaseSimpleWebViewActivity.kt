@@ -30,9 +30,6 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         init(intent)
-        if (!::url.isInitialized || url.isEmpty()) {
-            finish()
-        }
         super.onCreate(savedInstanceState)
         setupToolbar()
     }
@@ -202,7 +199,7 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
             return taskStackBuilder
         }
 
-        @DeepLink(ApplinkConst.WEBVIEW)
+        @DeepLink(ApplinkConst.WEBVIEW, ApplinkConst.SellerApp.WEBVIEW)
         @JvmStatic
         fun getInstanceIntentAppLink(context: Context, extras: Bundle): Intent {
             var webUrl = extras.getString(

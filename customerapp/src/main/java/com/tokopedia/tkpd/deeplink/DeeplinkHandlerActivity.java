@@ -27,7 +27,6 @@ import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.deeplink.CoreDeeplinkModule;
-import com.tokopedia.core.deeplink.CoreDeeplinkModuleLoader;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.config.GlobalConfig;
@@ -99,6 +98,7 @@ import com.tokopedia.updateinactivephone.common.applink.ChangeInactivePhoneAppli
 import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.useridentification.applink.UserIdentificationApplinkModule;
 import com.tokopedia.useridentification.applink.UserIdentificationApplinkModuleLoader;
+import com.tokopedia.utils.uri.DeeplinkUtils;
 import com.tokopedia.webview.WebViewApplinkModule;
 import com.tokopedia.webview.WebViewApplinkModuleLoader;
 
@@ -110,6 +110,8 @@ import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+import timber.log.Timber;
+
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
@@ -159,7 +161,6 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
         if (applinkDelegate == null) {
             applinkDelegate = new TkpdApplinkDelegate(
                     new ConsumerDeeplinkModuleLoader(),
-                    new CoreDeeplinkModuleLoader(),
                     new InboxDeeplinkModuleLoader(),
                     new OvoUpgradeDeeplinkModuleLoader(),
                     new SellerApplinkModuleLoader(),
@@ -238,6 +239,7 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
             }
         }
         iniBranchIO(this);
+        logDeeplink();
         finish();
     }
 
@@ -404,5 +406,13 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
         if (remoteConfig.getBoolean(RemoteConfigKey.APP_ENABLE_BRANCH_INIT_DEEPLINKHANDLER)){
             LinkerManager.getInstance().initSession();
         }
+    }
+
+    private void logDeeplink() {
+        String referrer = DeeplinkUtils.INSTANCE.getReferrerCompatible(this);
+        Uri extraReferrer = DeeplinkUtils.INSTANCE.getExtraReferrer(this);
+        Uri uri = DeeplinkUtils.INSTANCE.getDataUri(this);
+        Timber.w("P1#DEEPLINK_OPEN_APP#%s;referrer='%s';extra_referrer='%s';uri='%s'",
+                getClass().getSimpleName(), referrer, extraReferrer.toString(), uri.toString());
     }
 }

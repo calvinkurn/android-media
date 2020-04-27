@@ -3,9 +3,9 @@ package com.tokopedia.shop.home.view.adapter.viewholder
 import android.content.Intent
 import android.net.Uri
 import android.view.View
+import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.appcompat.widget.AppCompatImageView
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.Group
 import com.elyeproj.loaderviewlibrary.LoaderImageView
 import com.google.android.youtube.player.YouTubeApiServiceUtil
@@ -19,9 +19,9 @@ import com.tokopedia.shop.home.HomeConstant
 import com.tokopedia.shop.home.view.activity.ShopHomePageYoutubePlayerActivity
 import com.tokopedia.shop.home.view.listener.ShopHomeDisplayWidgetListener
 import com.tokopedia.shop.home.view.model.ShopHomeDisplayWidgetUiModel
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.youtubeutils.common.YoutubePlayerConstant
 import kotlinx.android.synthetic.main.widget_shop_page_video_youtube.view.*
-import java.util.regex.Pattern
 
 /**
  * Created by rizqiaryansa on 2020-02-26.
@@ -29,6 +29,7 @@ import java.util.regex.Pattern
 
 class ShopHomeVideoViewHolder(
         val view: View,
+        private val previousViewHolder: AbstractViewHolder<*>?,
         private val listener: ShopHomeDisplayWidgetListener
 ) : AbstractViewHolder<ShopHomeDisplayWidgetUiModel>(view),
         YouTubeThumbnailView.OnInitializedListener, View.OnClickListener {
@@ -78,6 +79,11 @@ class ShopHomeVideoViewHolder(
         itemView.textViewTitle?.apply {
             if (model.header.title.isEmpty()) {
                 hide()
+                if (previousViewHolder is ShopHomeSliderSquareViewHolder || previousViewHolder is ShopHomeCarousellProductViewHolder) {
+                    (itemView.layoutParams as? ViewGroup.MarginLayoutParams)?.apply {
+                        setMargins(leftMargin, 16.toPx(), rightMargin, bottomMargin)
+                    }
+                }
             } else {
                 text = model.header.title
                 show()
