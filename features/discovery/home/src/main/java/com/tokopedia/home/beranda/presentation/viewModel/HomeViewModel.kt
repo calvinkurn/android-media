@@ -91,6 +91,7 @@ open class HomeViewModel @Inject constructor(
         const val ATC = "atc"
         const val CHANNEL = "channel"
         const val GRID = "grid"
+        const val QUANTITIY = "quantity"
         const val POSITION = "position"
         private var lastRequestTimeHomeData: Long = 0
         private var lastRequestTimeSendGeolocation: Long = 0
@@ -247,7 +248,7 @@ open class HomeViewModel @Inject constructor(
                                       isWalletDataError: Boolean? = null,
                                       isTokoPointDataError: Boolean? = null) {
         if(headerDataModel == null){
-            headerDataModel = _homeLiveData.value?.list?.find { visitable-> visitable is HeaderDataModel } as HeaderDataModel?
+            headerDataModel = (_homeLiveData.value?.list?.find { visitable-> visitable is HeaderDataModel } as HeaderDataModel?)?.copy()
         }
 
         val currentPosition = _homeLiveData.value?.list?.withIndex()?.find { (_, model) ->  model is HeaderDataModel }?.index ?: -1
@@ -275,7 +276,7 @@ open class HomeViewModel @Inject constructor(
                 headerViewModel.isTokoPointDataError = it
             }
             headerViewModel.isUserLogin = userSession.isLoggedIn
-            launch(coroutineContext) { updateWidget(UpdateLiveDataModel(ACTION_UPDATE, headerViewModel.copy(), currentPosition)) }
+            launch(coroutineContext) { updateWidget(UpdateLiveDataModel(ACTION_UPDATE, headerViewModel, currentPosition)) }
         }
 
     }
@@ -462,6 +463,7 @@ open class HomeViewModel @Inject constructor(
     }
 
     fun onRefreshTokoPoint() {
+        if (!userSession.isLoggedIn) return
         updateHeaderViewModel(
                 isTokoPointDataError = false,
                 tokopointsDrawer = null,
@@ -578,7 +580,7 @@ open class HomeViewModel @Inject constructor(
                     visitableMutableList.add(HomeLoadingMoreModel())
                     getFeedTabData()
                 }
-                return homeDataModel.copy(
+                homeDataModel.copy(
                         list = visitableMutableList)
             }
         }
@@ -773,11 +775,6 @@ open class HomeViewModel @Inject constructor(
             val findRetryModel = _homeLiveData.value?.list?.find {
                 visitable -> visitable is HomeRetryModel
             }
-            val findLoadingModel = _homeLiveData.value?.list?.find {
-                visitable -> visitable is HomeLoadingMoreModel
-            }
-
-            updateWidget(UpdateLiveDataModel(ACTION_DELETE, findLoadingModel as HomeVisitable?))
             updateWidget(UpdateLiveDataModel(ACTION_DELETE, findRetryModel as HomeVisitable?))
             updateWidget(UpdateLiveDataModel(ACTION_ADD, HomeRetryModel()))
         }
@@ -856,12 +853,12 @@ open class HomeViewModel @Inject constructor(
         sendTopAdsUseCase.executeOnBackground(url)
     }
 
-
     fun getOneClickCheckout(channel: DynamicHomeChannel.Channels, grid: DynamicHomeChannel.Grid, position: Int){
         val requestParams = RequestParams()
+        val quantity = if(grid.minOrder < 1) "1" else grid.minOrder.toString()
         requestParams.putObject(AddToCartOccUseCase.REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST, AddToCartOccRequestParams(
                 productId = grid.id,
-                quantity = "1",
+                quantity = quantity,
                 shopId = grid.shop.shopId,
                 warehouseId = grid.warehouseId
         ))
@@ -876,6 +873,7 @@ open class HomeViewModel @Inject constructor(
                                                 ATC to it,
                                                 CHANNEL to channel,
                                                 GRID to grid,
+                                                QUANTITIY to quantity,
                                                 POSITION to position
 
                                         )

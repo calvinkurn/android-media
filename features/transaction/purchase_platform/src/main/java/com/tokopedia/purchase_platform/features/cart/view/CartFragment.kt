@@ -1806,6 +1806,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         return ValidateUsePromoRequest(
                 codes = globalPromo.toMutableList(),
                 state = PARAM_CART,
+                skipApply = 0,
                 cartType = PARAM_DEFAULT,
                 orders = listOrder)
     }
