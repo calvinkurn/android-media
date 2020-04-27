@@ -12,8 +12,10 @@ import com.tokopedia.common.travel.utils.TravelDispatcherProvider
 import com.tokopedia.flight.airport.view.model.FlightAirportModel
 import com.tokopedia.flight.common.util.FlightAnalytics
 import com.tokopedia.flight.common.util.FlightRequestUtil
+import com.tokopedia.flight.search.domain.FlightSearchStatisticsUseCase
 import com.tokopedia.flight.search.presentation.model.*
 import com.tokopedia.flight.search.presentation.model.filter.FlightFilterModel
+import com.tokopedia.flight.search.presentation.model.resultstatistics.FlightSearchStatisticModel
 import com.tokopedia.flight.searchV4.data.FlightSearchThrowable
 import com.tokopedia.flight.searchV4.data.cloud.combine.FlightCombineRequestModel
 import com.tokopedia.flight.searchV4.data.cloud.combine.FlightCombineRouteRequest
@@ -39,6 +41,7 @@ class FlightSearchViewModel @Inject constructor(
         private val flightSearchJourneyByIdUseCase: FlightSearchJouneyByIdUseCase,
         private val flightSearchCombineUseCase: FlightSearchCombineUseCase,
         private val travelTickerUseCase: TravelTickerCoroutineUseCase,
+        private val flightSearchStatisticUseCase: FlightSearchStatisticsUseCase,
         private val flightAnalytics: FlightAnalytics,
         private val dispatcherProvider: TravelDispatcherProvider)
     : BaseViewModel(dispatcherProvider.io()) {
@@ -48,6 +51,8 @@ class FlightSearchViewModel @Inject constructor(
     lateinit var filterModel: FlightFilterModel
     var isCombineDone: Boolean = false
     var selectedSortOption: Int = TravelSortOption.CHEAPEST
+    var priceFilterStatistic: Pair<Int, Int> = Pair(0, Int.MAX_VALUE)
+    private var searchStatisticModel: FlightSearchStatisticModel? = null
     val isInFilterMode: Boolean
         get() {
             if (::filterModel.isInitialized) {
@@ -55,8 +60,6 @@ class FlightSearchViewModel @Inject constructor(
             }
             return false
         }
-
-    var priceFilterStatistic: Pair<Int, Int> = Pair(0, Int.MAX_VALUE)
 
     private val mutableJourneyList = MutableLiveData<Result<List<FlightJourneyModel>>>()
     val journeyList: LiveData<Result<List<FlightJourneyModel>>>
@@ -90,6 +93,21 @@ class FlightSearchViewModel @Inject constructor(
             fetchCombineData()
             runFireAndForgetForReturn(isReturnTrip)
         }
+    }
+
+    fun generateSearchStatistics() {
+        launchCatchError(context = dispatcherProvider.ui(), block = {
+            if (::filterModel.isInitialized) {
+                searchStatisticModel = flightSearchStatisticUseCase.executeCoroutine(
+                        flightSearchStatisticUseCase.createRequestParams(filterModel))
+            }
+        }) {
+            it.printStackTrace()
+        }
+    }
+
+    fun changeHasFilterValue() {
+        filterModel.setHasFilter(searchStatisticModel)
     }
 
     fun setProgress(progress: Int) {

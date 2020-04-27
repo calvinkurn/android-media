@@ -527,9 +527,9 @@ di tempatmu.</string>
     <string name="flight_search_see_other_journey_description"><![CDATA[Kalau pilih penerbangan di luar paket Best Pairing, harga tiket berangkatmu akan berubah jadi <b>%1$s</b>.]]></string>
     <string name="flight_search_see_other_journey_button">Cek Penerbangan Lain</string>
 
-    <string name="flight_search_see_only_best_pairing_journey_title">Mau pilih tiket dari halaman ini?</string>
-    <string name="flight_search_see_only_best_pairing_journey_description"><![CDATA[Harga tiket berangkatmu akan berubah jadi <b>%1$s</b>. Untuk mendapatkan harga semula, pilih paket Best Pairing.]]></string>
-    <string name="flight_search_see_only_best_pairing_journey_button">Cek Paket Best Pairing</string>
+    <string name="flight_search_see_only_best_pairing_journey_title">Mau pesan tiket dari pilihan sebelumnya?</string>
+    <string name="flight_search_see_only_best_pairing_journey_description"><![CDATA[Harga tiket berangkatmu akan berubah jadi <b>%1$s</b>. Untuk mendapatkan harga semula, pilih Best Pairing.]]></string>
+    <string name="flight_search_see_only_best_pairing_journey_button">Cek Best Pairing</string>
 
     <string name="flight_detail_bottom_sheet_title">Detail tiket</string>
     <string name="flight_detail_bottom_sheet_tab_journey_title">Perjalanan</string>

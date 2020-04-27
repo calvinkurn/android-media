@@ -365,6 +365,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
             flightSearchViewModel.filterModel = buildFilterModel(FlightFilterModel())
             flightSearchViewModel.flightAirportCombine = flightSearchViewModel.buildAirportCombineModel(
                     getDepartureAirport(), getArrivalAirport())
+            flightSearchViewModel.generateSearchStatistics()
             flightSearchViewModel.initialize(true, isReturnTrip())
             flightSearchViewModel.fetchSearchDataCloud(isReturnTrip())
         }
@@ -492,8 +493,8 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
                     flightSearchViewModel.filterModel.transitTypeList.add(TransitEnum.DIRECT)
                     quickDirectFilter.select()
                 }
-
                 flightSearchViewModel.sendQuickFilterTrack(FLIGHT_QUICK_FILTER_DIRECT)
+                flightSearchViewModel.changeHasFilterValue()
                 clearAllData()
                 fetchSortAndFilterData()
             }
@@ -509,6 +510,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
                     quickBaggageFilter.select()
                 }
                 flightSearchViewModel.sendQuickFilterTrack(FLIGHT_QUICK_FILTER_BAGGAGE)
+                flightSearchViewModel.changeHasFilterValue()
                 clearAllData()
                 fetchSortAndFilterData()
             }
@@ -524,6 +526,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
                     quickMealFilter.select()
                 }
                 flightSearchViewModel.sendQuickFilterTrack(FLIGHT_QUICK_FILTER_MEAL)
+                flightSearchViewModel.changeHasFilterValue()
                 clearAllData()
                 fetchSortAndFilterData()
             }
@@ -539,6 +542,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
                     quickTransitFilter.select()
                 }
                 flightSearchViewModel.sendQuickFilterTrack(FLIGHT_QUICK_FILTER_TRANSIT)
+                flightSearchViewModel.changeHasFilterValue()
                 clearAllData()
                 fetchSortAndFilterData()
             }

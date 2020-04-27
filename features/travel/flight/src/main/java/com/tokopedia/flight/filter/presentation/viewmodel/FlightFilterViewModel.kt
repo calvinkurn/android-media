@@ -119,7 +119,7 @@ class FlightFilterViewModel @Inject constructor(
         launch(dispatcherProvider.ui()) {
             filterModel.value?.let {
                 mutableStatisticModel.postValue(flightSearchStatisticUseCase.executeCoroutine(
-                        flightSearchStatisticUseCase.createRequestParams(filterModel.value!!)))
+                        flightSearchStatisticUseCase.createRequestParams(it)))
             }
         }
     }
