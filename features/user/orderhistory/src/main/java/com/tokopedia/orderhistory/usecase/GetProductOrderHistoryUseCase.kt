@@ -11,7 +11,7 @@ class GetProductOrderHistoryUseCase @Inject constructor(
 
     private val paramShopId = "shopID"
     private val paramMinOrderTime = "minOrderTime"
-    private val minOrderTime = "0"
+    private var minOrderTime = "0"
 
     fun loadProductHistory(
             shopId: String,
@@ -25,10 +25,15 @@ class GetProductOrderHistoryUseCase @Inject constructor(
             setGraphqlQuery(query)
             execute({ result ->
                 onSuccess(result)
+                updateMinOrderTime(result)
             }, { error ->
                 onError(error)
             })
         }
+    }
+
+    private fun updateMinOrderTime(result: ChatHistoryProductResponse) {
+        minOrderTime = result.minOrderTime
     }
 
     private fun generateParams(shopId: String): Map<String, Any> {
