@@ -15,6 +15,7 @@ import com.tokopedia.purchase_platform.features.one_click_checkout.order.analyti
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.model.OrderProduct
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.model.OrderShop
 import com.tokopedia.unifycomponents.Label
+import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.unifyprinciples.Typography
 
 class OrderProductCard(private val view: View, private val listener: OrderProductCardListener, private val orderSummaryAnalytics: OrderSummaryAnalytics) {
@@ -27,6 +28,7 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
     private val ivProductImage by lazy { view.findViewById<RoundedCornerImageView>(R.id.iv_product_image) }
     private val lblCashback by lazy { view.findViewById<Label>(R.id.lbl_cashback) }
     private val etNote by lazy { view.findViewById<EditText>(R.id.et_note) }
+    private val tfNote by lazy { view.findViewById<TextFieldUnify>(R.id.tf_note) }
     private val tvNoteCharCounter by lazy { view.findViewById<Typography>(R.id.tv_note_char_counter) }
     private val btnQtyPlus by lazy { view.findViewById<ImageView>(R.id.btn_qty_plus) }
     private val btnQtyMin by lazy { view.findViewById<ImageView>(R.id.btn_qty_min) }
@@ -60,6 +62,8 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
                 lblCashback?.gone()
             }
 
+            tfNote?.textFieldInput?.textSize = 16f
+            tfNote?.textFieldInput?.setSingleLine(false)
             etNote?.filters = arrayOf(InputFilter.LengthFilter(MAX_NOTES_LENGTH))
             etNote?.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
                 if (hasFocus) {

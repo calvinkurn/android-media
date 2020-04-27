@@ -229,10 +229,21 @@
         app:typographyType="body_3"
         app:typographyWeight="reguler" />
 
+    <com.tokopedia.unifycomponents.TextFieldUnify
+        android:id="@+id/tf_note"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:text_field_input_type="text"
+        app:text_field_label="@string/label_note_for_seller"
+        app:text_field_counter="144"
+        app:layout_constraintEnd_toEndOf="@+id/tv_note_label"
+        app:layout_constraintStart_toStartOf="@+id/tv_note_label"
+        app:layout_constraintTop_toBottomOf="@+id/tv_note_label" />
+
     <androidx.appcompat.widget.AppCompatEditText
         android:id="@+id/et_note"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:imeOptions="actionDone"
         android:maxLines="3"
         android:overScrollMode="always"
@@ -255,8 +266,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end"
-        app:layout_constraintEnd_toEndOf="@+id/et_note"
-        app:layout_constraintTop_toBottomOf="@+id/et_note"
+        app:layout_constraintEnd_toEndOf="@+id/tf_note"
+        app:layout_constraintTop_toBottomOf="@+id/tf_note"
         app:typographyType="small"
         tools:text="60/140"
         tools:visibility="visible" />
