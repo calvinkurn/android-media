@@ -267,7 +267,6 @@ class FlightSearchFormView @JvmOverloads constructor(context: Context, attrs: At
             makeBold(text)
             if (flightSearchData.departureAirport.cityName.isNotEmpty()) {
                 val cityNameText = SpannableStringBuilder(flightSearchData.departureAirport.cityName)
-//                makeSmall(cityNameText)
                 text.append("\n")
                 text.append(cityNameText)
             }
@@ -286,7 +285,6 @@ class FlightSearchFormView @JvmOverloads constructor(context: Context, attrs: At
             makeBold(text)
             if (flightSearchData.arrivalAirport.cityName.isNotEmpty()) {
                 val cityNameText = SpannableStringBuilder(flightSearchData.arrivalAirport.cityName)
-//                makeSmall(cityNameText)
                 text.append("\n")
                 text.append(cityNameText)
             }
@@ -374,13 +372,6 @@ class FlightSearchFormView @JvmOverloads constructor(context: Context, attrs: At
                 ForegroundColorSpan(ContextCompat.getColor(context, android.R.color.black)),
                 0, text.length,
                 Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-        return text
-    }
-
-    private fun makeSmall(text: SpannableStringBuilder): SpannableStringBuilder {
-        if (text.isEmpty()) return text
-        text.setSpan(RelativeSizeSpan(0.75f),
-                0, text.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
         return text
     }
 
