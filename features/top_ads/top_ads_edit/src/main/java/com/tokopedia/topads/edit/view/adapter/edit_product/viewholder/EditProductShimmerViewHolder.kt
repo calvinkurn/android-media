@@ -8,7 +8,7 @@ import com.tokopedia.topads.edit.view.adapter.edit_product.viewmodel.EditProduct
 /**
  * Created by Pika on 8/4/20.
  */
-class EditProductShimmerViewHolder(val view: View): EditProductViewHolder<EditProductShimmerViewModel>(view) {
+class EditProductShimmerViewHolder(val view: View) : EditProductViewHolder<EditProductShimmerViewModel>(view) {
 
     companion object {
         @LayoutRes

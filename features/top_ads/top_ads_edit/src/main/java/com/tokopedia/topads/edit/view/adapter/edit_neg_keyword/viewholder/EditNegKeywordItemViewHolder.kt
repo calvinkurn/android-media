@@ -18,15 +18,15 @@ class EditNegKeywordItemViewHolder(val view: View, private var actionDelete: ((p
         var LAYOUT = R.layout.topads_edit_negative_keyword_edit_item_layout
         val TITLE_1 = "Pencarian luas"
         val TITLE_2 = "Pencarian Spesifik"
-        val BROAD = "negative_phrase"
-        val SPECIFIC = "negative_exact"
+        val BROAD = 12
+        val SPECIFIC = 22
     }
 
     private lateinit var sortKeywordList: EditKeywordSortSheet
 
     override fun bind(item: EditNegKeywordItemViewModel) {
         item.data.let {
-            view.keyword_name.text = it.name
+            view.keyword_name.text = it.tag
             view.delete.setOnClickListener {
                 actionDelete?.invoke(adapterPosition)
             }

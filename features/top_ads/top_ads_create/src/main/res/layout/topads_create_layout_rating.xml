@@ -15,7 +15,7 @@
         android:adjustViewBounds="true"
         android:gravity="center"
         android:scaleType="centerCrop"
-        tools:src="@drawable/topads_create_ic_rating_active" />
+        tools:src="@drawable/topads_ic_rating_active" />
 
     <ImageView
         android:id="@+id/imageViewRating2"
@@ -24,7 +24,7 @@
         android:adjustViewBounds="true"
         android:gravity="center"
         android:scaleType="centerCrop"
-        tools:src="@drawable/topads_create_ic_rating_active" />
+        tools:src="@drawable/topads_ic_rating_active" />
 
     <ImageView
         android:id="@+id/imageViewRating3"
@@ -33,7 +33,7 @@
         android:adjustViewBounds="true"
         android:gravity="center"
         android:scaleType="centerCrop"
-        tools:src="@drawable/topads_create_ic_rating_active" />
+        tools:src="@drawable/topads_ic_rating_active" />
 
     <ImageView
         android:id="@+id/imageViewRating4"
@@ -42,7 +42,7 @@
         android:adjustViewBounds="true"
         android:gravity="center"
         android:scaleType="centerCrop"
-        tools:src="@drawable/topads_create_ic_rating_active" />
+        tools:src="@drawable/topads_ic_rating_active" />
 
     <ImageView
         android:id="@+id/imageViewRating5"
@@ -51,7 +51,7 @@
         android:adjustViewBounds="true"
         android:gravity="center"
         android:scaleType="centerCrop"
-        tools:src="@drawable/topads_create_ic_rating_active" />
+        tools:src="@drawable/topads_ic_rating_active" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/txt_rating_count"

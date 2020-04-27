@@ -5,7 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.topads.edit.R
-import com.tokopedia.topads.edit.data.param.NegKeyword
+import com.tokopedia.topads.edit.data.response.GetKeywordResponse
 import kotlinx.android.synthetic.main.topads_edit_add_keyword_negative_item_layout.view.*
 
 /**
@@ -14,7 +14,7 @@ import kotlinx.android.synthetic.main.topads_edit_add_keyword_negative_item_layo
 
 class NegKeywordListAdapter(var onCheck: (() -> Unit?)) : RecyclerView.Adapter<NegKeywordListAdapter.ViewHolder>() {
 
-    var items: MutableList<NegKeyword> = mutableListOf()
+    var items: MutableList<GetKeywordResponse.KeywordsItem> = mutableListOf()
 
     class ViewHolder(val view: View) : RecyclerView.ViewHolder(view), View.OnClickListener {
         fun viewHolder(itemView: View) {
@@ -30,8 +30,8 @@ class NegKeywordListAdapter(var onCheck: (() -> Unit?)) : RecyclerView.Adapter<N
         }
     }
 
-    fun getSelectedList(): List<NegKeyword> {
-        val selected: MutableList<NegKeyword> = mutableListOf()
+    fun getSelectedList(): List<GetKeywordResponse.KeywordsItem> {
+        val selected: MutableList<GetKeywordResponse.KeywordsItem> = mutableListOf()
 
         items.forEach {
             if (it.isChecked) {
@@ -53,7 +53,7 @@ class NegKeywordListAdapter(var onCheck: (() -> Unit?)) : RecyclerView.Adapter<N
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.view.checkBox.setOnCheckedChangeListener(null)
         holder.view.checkBox.isChecked = items[position].isChecked
-        holder.view.keyword_name.text = items[position].name
+        holder.view.keyword_name.text = items[position].tag
         holder.view.checkBox.setOnCheckedChangeListener { _, isChecked ->
             items[position].isChecked = isChecked
             onCheck.invoke()
@@ -61,12 +61,8 @@ class NegKeywordListAdapter(var onCheck: (() -> Unit?)) : RecyclerView.Adapter<N
     }
 
     fun addKeyword(name: String) {
-        val model = NegKeyword()
-        model.isChecked = true
-        model.name = name
-        items.add(model)
-        items[items.size - 1].isChecked = true
-        notifyItemInserted(items.size - 1)
+        items.add(GetKeywordResponse.KeywordsItem(12,1, "0", 0, true, name))
+        notifyDataSetChanged()
     }
 
 

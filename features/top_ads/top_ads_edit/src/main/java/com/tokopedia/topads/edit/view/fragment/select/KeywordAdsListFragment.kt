@@ -38,10 +38,14 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
     var minSuggestedBid = 0
     private var selected: ArrayList<ResponseKeywordSuggestion.Result.TopAdsGetKeywordSuggestion.Data>? = arrayListOf()
     private var favoured: ArrayList<ResponseKeywordSuggestion.Result.TopAdsGetKeywordSuggestion.Data>? = arrayListOf()
+    private var manual: ArrayList<ResponseKeywordSuggestion.Result.TopAdsGetKeywordSuggestion.Data>? = arrayListOf()
+
 
     companion object {
         private const val FAVOURED_DATA = "favouredData"
         private const val SELECTED_DATA = "selectedData"
+        private const val MANUAL_DATA = "manualData"
+
         private const val NOT_KNOWN = "Tidak diketahui"
         private const val PRODUCT_ID = "product"
         private const val MIN_SUGGESTION = "minSuggestedBid"
@@ -76,11 +80,8 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
 
     private fun onKeywordSelected(pos: Int) {
         showSelectMessage()
-        if (pos != -1 && keywordListAdapter.items[pos] is KeywordItemViewModel) {
-            if ((keywordListAdapter.items[pos] as KeywordItemViewModel).data.totalSearch != "Tidak diketahui")
-                keywordListAdapter.setSelectedKeywords(getFavouredData())
-
-        }
+        if (pos != -1 && (keywordListAdapter.items[pos] as KeywordItemViewModel).data.totalSearch != "Tidak diketahui")
+            keywordListAdapter.setSelectedKeywords(getFavouredData())
     }
 
     private fun showSelectMessage() {
@@ -97,14 +98,12 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
     }
 
     private fun onSuccessSuggestion(keywords: List<ResponseKeywordSuggestion.Result.TopAdsGetKeywordSuggestion.Data>) {
-        // keywordListAdapter.items.add(KeywordGroupViewModel("Rekomendasi"))
         keywordListAdapter.favoured.clear()
         keywordListAdapter.manualKeywords.clear()
         var list: MutableList<KeywordViewModel> = mutableListOf()
         list.add(KeywordGroupViewModel("Rekomendasi"))
         keywords.forEach { index ->
             list.add(KeywordItemViewModel(index))
-            // keywordListAdapter.items.add(KeywordItemViewModel(index))
             keywordList.add(KeywordItemViewModel(index).data.keyword)
         }
 
@@ -117,8 +116,8 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
 
     private fun addManualKeywords() {
 
-        if(!favoured.isNullOrEmpty())
-        keywordListAdapter.addRestoredData(favoured, selected)
+        if (!favoured.isNullOrEmpty())
+            keywordListAdapter.addRestoredData(favoured, selected, manual)
     }
 
     private fun onErrorSuggestion(throwable: Throwable) {
@@ -128,50 +127,9 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
         addManualKeywords()
     }
 
-    private fun addManualKeywordsEmpty() {
-        val list = mutableListOf<KeywordItemViewModel>()
-        keywordListAdapter.manualKeywords.forEach {
-            list.add(viewModel.addNewKeyword(it.data.keyword, minSuggestedBid))
-        }
-        keywordListAdapter.setSelectedList(getSelectedKeyword())
-    }
-
-    private fun getSelectedKeyword(): MutableList<String> {
-        var list = mutableListOf<String>()
-        keywordListAdapter.getSelectedItems().forEach {
-            list.add(it.data.keyword)
-        }
-        return list
-    }
-
-    private fun getSelectedKeywordName(): ArrayList<String> {
-        var list = ArrayList<String>()
-        keywordListAdapter.getSelectedItems().forEach {
-            list.add(it.data.keyword)
-        }
-        return list
-    }
-
-    private fun getSelectedKeywordPrice(): ArrayList<Int> {
-        var list = ArrayList<Int>()
-        keywordListAdapter.getSelectedItems().forEach {
-            list.add(it.data.bidSuggest)
-        }
-        return list
-    }
-
-    private fun getManualKeywords(): MutableList<String> {
-        var list = mutableListOf<String>()
-        keywordListAdapter.manualKeywords.forEach {
-            list.add(it.data.keyword)
-        }
-        return list
-    }
-
     private fun getFavouredData(): List<KeywordItemViewModel> {
         val manual = mutableListOf<KeywordItemViewModel>()
         val selected = mutableListOf<KeywordItemViewModel>()
-        selected.clear()
         selected.addAll(keywordListAdapter.getSelectedItems())
         manual.addAll(keywordListAdapter.manualKeywords)
         manual.addAll(selected)
@@ -200,6 +158,14 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
         return finalList
     }
 
+    private fun getManualKeywordArray(): ArrayList<ResponseKeywordSuggestion.Result.TopAdsGetKeywordSuggestion.Data> {
+        var finalList: ArrayList<ResponseKeywordSuggestion.Result.TopAdsGetKeywordSuggestion.Data> = arrayListOf()
+        keywordListAdapter.manualKeywords.forEach {
+            finalList.add(it.data)
+        }
+        return finalList
+    }
+
     override fun getScreenName(): String {
         return KeywordAdsListFragment::class.java.simpleName
     }
@@ -216,6 +182,7 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         favoured = arguments?.getParcelableArrayList(FAVOURED_DATA)
         selected = arguments?.getParcelableArrayList(SELECTED_DATA)
+        manual = arguments?.getParcelableArrayList(MANUAL_DATA)
         add_btn.isEnabled = false
         add_btn.setOnClickListener {
             keywordValidation(editText.text.toString())
@@ -224,6 +191,7 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
             val returnIntent = Intent()
             returnIntent.putParcelableArrayListExtra(FAVOURED_DATA, getFavouredDataArray())
             returnIntent.putParcelableArrayListExtra(SELECTED_DATA, getSelectedKeywordArray())
+            returnIntent.putParcelableArrayListExtra(MANUAL_DATA, getManualKeywordArray())
             activity?.setResult(Activity.RESULT_OK, returnIntent)
             activity?.finish()
         }
@@ -244,7 +212,6 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
             }
 
             override fun afterTextChanged(s: Editable?) {
-                //  add_btn.isEnabled = !s.isNullOrBlank()
             }
 
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {

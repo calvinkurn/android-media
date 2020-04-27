@@ -36,13 +36,10 @@ data class GetAdProductResponse(
         )
 
         data class DataItem(
-//
-//                @field:SerializedName("adPriceDailyFmt")
-//                val adPriceDailyFmt: String = "",
 
                 @field:SerializedName("itemID")
                 val itemID: Int = 0,
-//
+
                 @field:SerializedName("adPriceBidFmt")
                 val adPriceBidFmt: String = "",
 

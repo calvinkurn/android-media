@@ -10,12 +10,13 @@ import kotlinx.android.synthetic.main.topads_edit_no_keywords_layout.view.*
  * Created by Pika on 9/4/20.
  */
 
-class EditKeywordEmptyViewHolder(val view: View,var actionAdd: (() -> Unit)?): EditKeywordViewHolder<EditKeywordEmptyViewModel>(view) {
+class EditKeywordEmptyViewHolder(val view: View, var actionAdd: (() -> Unit)?) : EditKeywordViewHolder<EditKeywordEmptyViewModel>(view) {
 
-    companion object{
+    companion object {
         @LayoutRes
         val LAYOUT = R.layout.topads_edit_no_keywords_layout
     }
+
     override fun bind(item: EditKeywordEmptyViewModel, data: MutableList<Int>, error: MutableList<Boolean>) {
         view.add.setOnClickListener {
             actionAdd?.invoke()

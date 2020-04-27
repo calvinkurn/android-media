@@ -48,8 +48,11 @@ data class GetKeywordResponse(
 
     data class KeywordsItem(
 
-            @field:SerializedName("typeKeyword")
-            var typeKeyword: String = "positive_phrase",
+            @field:SerializedName("type")
+            var type: Int = 11,
+
+            @field:SerializedName("status")
+            var status: Int = 1,
 
             @field:SerializedName("keyword_id")
             val keywordId: String = "",
@@ -57,24 +60,27 @@ data class GetKeywordResponse(
             @field:SerializedName("price_bid")
             var priceBid: Int = 0,
 
+            @field:SerializedName("isChecked")
+            var isChecked: Boolean = false,
+
             @field:SerializedName("tag")
             val tag: String = "") : Parcelable {
-
         constructor(parcel: Parcel) : this(
-                parcel.readString(),
+                parcel.readInt(),
+                parcel.readInt(),
                 parcel.readString(),
                 parcel.readInt(),
-                parcel.readString()
-
-        )
-
+                parcel.readByte() != 0.toByte(),
+                parcel.readString()) {
+        }
 
         override fun writeToParcel(parcel: Parcel, flags: Int) {
-            parcel.writeString(typeKeyword)
+            parcel.writeInt(type)
+            parcel.writeInt(status)
             parcel.writeString(keywordId)
-            parcel.writeString(tag)
             parcel.writeInt(priceBid)
-
+            parcel.writeByte(if (isChecked) 1 else 0)
+            parcel.writeString(tag)
         }
 
         override fun describeContents(): Int {

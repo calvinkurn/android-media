@@ -7,12 +7,10 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.dialog.DialogUnify
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.topads.edit.R
 import com.tokopedia.topads.edit.data.param.GroupEditInput
 import com.tokopedia.topads.edit.data.param.TopadsManageGroupAdsInput
 import com.tokopedia.topads.edit.data.param.KeywordEditInput
-import com.tokopedia.topads.edit.data.param.NegKeyword
 import com.tokopedia.topads.edit.data.response.FinalAdResponse
 import com.tokopedia.topads.edit.data.response.GetAdProductResponse
 import com.tokopedia.topads.edit.data.response.GetKeywordResponse
@@ -32,13 +30,11 @@ class EditFormAdActivity : BaseActivity(), HasComponent<TopAdsEditComponent>, Ed
 
     @Inject
     lateinit var viewModel: EditFormDefaultViewModel
-    private lateinit var adapter: TopAdsEditPagerAdapter
-    var list: ArrayList<Fragment> = ArrayList()
-    private val ADDED_PRODUCTS = "addedProducts"
-    private val DELETED_PRODUCTS = "deletedProducts"
-
     @Inject
     lateinit var userSession: UserSessionInterface
+    private lateinit var adapter: TopAdsEditPagerAdapter
+    var list: ArrayList<Fragment> = ArrayList()
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -52,7 +48,7 @@ class EditFormAdActivity : BaseActivity(), HasComponent<TopAdsEditComponent>, Ed
         }
 
         btn_submit.setOnClickListener {
-            getDataFromChildFragments()
+            showConfirmationDialog(true)
         }
     }
 
@@ -81,13 +77,9 @@ class EditFormAdActivity : BaseActivity(), HasComponent<TopAdsEditComponent>, Ed
         finish()
     }
 
-    private fun onSuccessUpdateAds(data: FinalAdResponse) {
+    private fun onSuccessUpdateAds(data: FinalAdResponse) {}
 
-    }
-
-    private fun onErrorUpdateAds(e: Throwable) {
-
-    }
+    private fun onErrorUpdateAds(e: Throwable) {}
 
 
     private fun setupToolBar() {
@@ -120,10 +112,10 @@ class EditFormAdActivity : BaseActivity(), HasComponent<TopAdsEditComponent>, Ed
     }
 
     override fun onBackPressed() {
-        showConfirmationDialog()
+        showConfirmationDialog(false)
     }
 
-    private fun showConfirmationDialog() {
+    private fun showConfirmationDialog(dismiss: Boolean) {
         val dialog = DialogUnify(this, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
         dialog.setTitle(getString(R.string.leave_page_conf_dialog_title))
         dialog.setDescription(getString(R.string.leave_page_conf_dialog_desc))
@@ -131,11 +123,15 @@ class EditFormAdActivity : BaseActivity(), HasComponent<TopAdsEditComponent>, Ed
         dialog.setSecondaryCTAText(getString(R.string.keluar))
         dialog.setPrimaryCTAClickListener {
             getDataFromChildFragments()
-            dialog.dismiss()
+            //    dialog.dismiss()
         }
         dialog.setSecondaryCTAClickListener {
-            finish()
-            super.onBackPressed()
+            if (dismiss) {
+                dialog.dismiss()
+            } else {
+                //finish()
+                super.onBackPressed()
+            }
 
         }
         dialog.show()
@@ -171,12 +167,13 @@ class EditFormAdActivity : BaseActivity(), HasComponent<TopAdsEditComponent>, Ed
 
 fun convertToParam(dataProduct: Bundle, dataKeyword: HashMap<String, Any?>, dataGroup: HashMap<String, Any?>, userSession: UserSessionInterface): TopadsManageGroupAdsInput {
 
-    val POSITIVE_KEYWORDS = "positive_keywords"
     val NEGATIVE_KEYWORDS = "negative_keywords"
     val POSITIVE_CREATE = "createdPositiveKeyword"
     val POSITIVE_DELETE = "deletedPositiveKeyword"
     val POSITIVE_EDIT = "editedPositiveKeyword"
-    var groupName: String = dataGroup["group_name"] as String
+    val NEGATIVE_KEYWORDS_ADDED = "negative_keywords_added"
+    val NEGATIVE_KEYWORDS_DELETED = "negative_keywords_deleted"
+    val groupName: String = dataGroup["group_name"] as String
     val priceBidGroup = dataGroup["price_bid"] as? Int
     val dailyBudgetGroup = dataGroup["daily_budget"] as? Int
     val groupId = dataGroup["group_id"] as? Int
@@ -187,9 +184,11 @@ fun convertToParam(dataProduct: Bundle, dataKeyword: HashMap<String, Any?>, data
 
     val keywordsPositiveCreate = dataKeyword[POSITIVE_CREATE] as? MutableList<GetKeywordResponse.KeywordsItem>
     val keywordsPositiveDelete = dataKeyword[POSITIVE_DELETE] as? MutableList<GetKeywordResponse.KeywordsItem>
+    val keywordsNegCreate = dataKeyword[NEGATIVE_KEYWORDS_ADDED] as? MutableList<GetKeywordResponse.KeywordsItem>
+    val keywordsNegDelete = dataKeyword[NEGATIVE_KEYWORDS_DELETED] as? MutableList<GetKeywordResponse.KeywordsItem>
     val keywordsPostiveEdit = dataKeyword[POSITIVE_EDIT] as? MutableList<GetKeywordResponse.KeywordsItem>
-    val keywordsNegative: MutableList<NegKeyword>
-    keywordsNegative = dataKeyword[NEGATIVE_KEYWORDS] as MutableList<NegKeyword>
+    //   val keywordsNegative: MutableList<GetKeywordResponse.KeywordsItem>
+    //   keywordsNegative = dataKeyword[NEGATIVE_KEYWORDS] as MutableList<GetKeywordResponse.KeywordsItem>
 
     //always
     val input = TopadsManageGroupAdsInput()
@@ -244,7 +243,12 @@ fun convertToParam(dataProduct: Bundle, dataKeyword: HashMap<String, Any?>, data
         keyword.price_bid = x.priceBid
         keyword.status = "active"
         keyword.tag = x.tag
-        keyword.type = x.typeKeyword
+        if (x.type == 11) {
+            keyword.type = "positive_phrase"
+        } else {
+            keyword.type = "positive_specific"
+        }
+        //  keyword.type = x.typeKeyword
         keywordEditInput.keyword = keyword
         keywordEditInput.action = "create"
         keywordList.add(keywordEditInput)
@@ -254,8 +258,10 @@ fun convertToParam(dataProduct: Bundle, dataKeyword: HashMap<String, Any?>, data
         val keyword = KeywordEditInput.Keyword()
         keyword.price_bid = x.priceBid
         keyword.id = x.keywordId
-        keyword.tag = x.tag
         keyword.status = "active"
+        keyword.tag = null
+        keyword.type = null
+        keyword.source = null
         keywordEditInput.keyword = keyword
         keywordEditInput.action = "edit"
         keywordList.add(keywordEditInput)
@@ -264,27 +270,50 @@ fun convertToParam(dataProduct: Bundle, dataKeyword: HashMap<String, Any?>, data
     keywordsPositiveDelete?.forEach { x ->
         val keywordEditInput = KeywordEditInput()
         val keyword = KeywordEditInput.Keyword()
-        keyword.price_bid = x.priceBid
+        keyword.price_bid = null
         keyword.id = x.keywordId
-        keyword.tag = x.tag
-        keyword.status = "active"
+        keyword.tag = null
+        keyword.status = null
+        keyword.type = null
+        keyword.source = null
         keywordEditInput.keyword = keyword
         keywordEditInput.action = "delete"
         keywordList.add(keywordEditInput)
     }
 
-    keywordsNegative.forEach { x ->
+    keywordsNegCreate?.forEach { x ->
         val keywordEditInput = KeywordEditInput()
         val keyword = KeywordEditInput.Keyword()
         keyword.id = "0"
         keyword.price_bid = 0
-        keyword.type = x.type
+        if (x.type == 12) {
+            keyword.type = "negative_phrase"
+        } else {
+            keyword.type = "negative_specific"
+        }
         keyword.status = "active"
-        keyword.tag = x.name
+        keyword.tag = x.tag
+        keyword.source = "es"
         keywordEditInput.keyword = keyword
         keywordEditInput.action = "create"
         keywordList.add(keywordEditInput)
     }
+
+    keywordsNegDelete?.forEach { x ->
+        val keywordEditInput = KeywordEditInput()
+        val keyword = KeywordEditInput.Keyword()
+        keyword.price_bid = 0
+        keyword.id = x.keywordId
+        keyword.tag = null
+        keyword.status = null
+        keyword.type = null
+        keyword.source = null
+        keywordEditInput.keyword = keyword
+        keywordEditInput.action = "delete"
+        keywordList.add(keywordEditInput)
+    }
+
+
     input.groupInput = groupInput
     input.groupInput.group = group
     if (productList.isNullOrEmpty())

@@ -9,9 +9,6 @@ import kotlinx.android.synthetic.main.topads_create_layout_keyword_list_item.vie
 import kotlinx.android.synthetic.main.topads_create_layout_keyword_list_item.view.checkBox
 import java.lang.Exception
 
-/**
- * Author errysuprayogi on 11,November,2019
- */
 class KeywordItemViewHolder(val view: View, private var actionSelected: ((pos: Int) -> Unit)?) : KeywordViewHolder<KeywordItemViewModel>(view) {
 
     companion object {

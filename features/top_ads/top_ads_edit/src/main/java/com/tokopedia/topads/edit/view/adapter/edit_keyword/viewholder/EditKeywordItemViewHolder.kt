@@ -12,21 +12,17 @@ import kotlinx.android.synthetic.main.topads_edit_keyword_edit_item_layout.view.
  * Created by Pika on 9/4/20.
  */
 
-class EditKeywordItemViewHolder(val view: View, private var actionDelete: ((pos: Int) -> Unit)?, private val actionClick: (() -> MutableMap<String, Int>)?, var actionEnable: (() -> Unit)?, var actionEdit: ((pos: Int) -> Unit)?) : EditKeywordViewHolder<EditKeywordItemViewModel>(view) {
+class EditKeywordItemViewHolder(val view: View, private var actionDelete: ((pos: Int) -> Unit)?, private val actionClick: (() -> MutableMap<String, Int>)?, var actionEnable: (() -> Unit)?) : EditKeywordViewHolder<EditKeywordItemViewModel>(view) {
 
     companion object {
         @LayoutRes
         var LAYOUT = R.layout.topads_edit_keyword_edit_item_layout
         val TITLE_1 = "Pencarian luas"
         val TITLE_2 = "Pencarian Spesifik"
-        val BROAD = "positive_phrase"
-        val SPECIFIC = "positive_exact"
+        val BROAD = 11
+        val SPECIFIC = 21
         private var bidMap = mutableMapOf<String, Int>()
 
-    }
-
-    init {
-        bidMap = actionClick!!.invoke()
     }
 
     private lateinit var sortKeywordList: EditKeywordSortSheet
@@ -35,12 +31,21 @@ class EditKeywordItemViewHolder(val view: View, private var actionDelete: ((pos:
 
         item.data.let {
             view.keyword_name.text = it.tag
-            if (item.data.typeKeyword == BROAD)
+            if (item.data.type == BROAD)
                 view.sort.text = TITLE_1
             else
                 view.sort.text = TITLE_2
             if (adapterPosition < data.size)
                 view.budget.textFieldInput.setText(data[adapterPosition].toString())
+            bidMap = actionClick!!.invoke()
+            if (data[adapterPosition] < bidMap["min"]!! && bidMap["min"] != 0) {
+                setError(true, view.resources.getString(R.string.min_bid_error), bidMap["min"]!!)
+                error[adapterPosition] = true
+
+            } else if (data[adapterPosition] > bidMap["max"]!! && bidMap["max"] != 0) {
+                error[adapterPosition] = true
+                setError(true, view.resources.getString(R.string.max_bid_error), bidMap["max"]!!)
+            }
             view.delete.setOnClickListener {
                 actionDelete?.invoke(adapterPosition)
             }
@@ -51,9 +56,9 @@ class EditKeywordItemViewHolder(val view: View, private var actionDelete: ((pos:
                 sortKeywordList.onItemClick = {
                     view.sort.text = sortKeywordList.getSelectedSortId()
                     if (sortKeywordList.getSelectedSortId() == TITLE_1) {
-                        item.data.typeKeyword = BROAD
+                        item.data.type = BROAD
                     } else {
-                        item.data.typeKeyword = SPECIFIC
+                        item.data.type = SPECIFIC
                     }
                 }
 
@@ -62,19 +67,19 @@ class EditKeywordItemViewHolder(val view: View, private var actionDelete: ((pos:
                 override fun onNumberChanged(number: Double) {
                     super.onNumberChanged(number)
                     val result = number.toInt()
+                    if (bidMap["min"] == 0)
+                        bidMap = actionClick.invoke()
 
                     if (adapterPosition < data.size)
                         data[adapterPosition] = result
                     when {
                         result < bidMap["min"]!! -> {
                             error[adapterPosition] = true
-                            view.budget.setError(true)
-                            view.budget.setMessage(String.format(view.resources.getString(R.string.min_bid_error), bidMap["min"]!!))
+                            setError(true, view.resources.getString(R.string.min_bid_error), bidMap["min"]!!)
                         }
                         result > bidMap["max"]!! -> {
                             error[adapterPosition] = true
-                            view.budget.setError(true)
-                            view.budget.setMessage(String.format(view.resources.getString(R.string.max_bid_error), bidMap["max"]!!))
+                            setError(true, view.resources.getString(R.string.max_bid_error), bidMap["max"]!!)
                         }
                         else -> {
                             error[adapterPosition] = false
@@ -91,4 +96,8 @@ class EditKeywordItemViewHolder(val view: View, private var actionDelete: ((pos:
 
     }
 
+    fun setError(isError: Boolean, error: String, bid: Int) {
+        view.budget.setError(isError)
+        view.budget.setMessage(String.format(error, bid))
+    }
 }

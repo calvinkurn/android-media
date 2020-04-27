@@ -3,29 +3,24 @@ package com.tokopedia.topads.edit.view.fragment.edit
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.preference.PreferenceManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.topads.edit.R
-import com.tokopedia.topads.edit.data.param.NegKeyword
+import com.tokopedia.topads.edit.data.SharedViewModel
+import com.tokopedia.topads.edit.data.response.GetKeywordResponse
 import com.tokopedia.topads.edit.di.TopAdsEditComponent
 import com.tokopedia.topads.edit.view.activity.SelectNegKeywordActivity
 import com.tokopedia.topads.edit.view.adapter.edit_neg_keyword.EditNegKeywordListAdapter
 import com.tokopedia.topads.edit.view.adapter.edit_neg_keyword.EditNegKeywordListAdapterTypeFactoryImpl
 import com.tokopedia.topads.edit.view.adapter.edit_neg_keyword.viewmodel.EditNegKeywordEmptyViewModel
 import com.tokopedia.topads.edit.view.adapter.edit_neg_keyword.viewmodel.EditNegKeywordItemViewModel
-import com.tokopedia.topads.edit.view.adapter.edit_neg_keyword.viewmodel.EditNegKeywordViewModel
-import com.tokopedia.topads.edit.view.model.EditFormDefaultViewModel
 import kotlinx.android.synthetic.main.topads_edit_negative_keyword_layout.*
 import java.util.*
-import javax.inject.Inject
 
 /**
  * Created by Pika on 12/4/20.
@@ -35,26 +30,24 @@ class EditNegativeKeywordsFragment : BaseDaggerFragment() {
 
     private val RESTORED_DATA = "restoreData"
     private val SELECTED_KEYWORD = "selectKeywords"
-    private val NEGATIVE_KEYWORDS = "negative_keywords"
-    private val POSITIVE_KEYWORDS = "positive_keywords"
-
-
+    private val NEGATIVE_KEYWORDS_ADDED = "negative_keywords_added"
+    private val NEGATIVE_KEYWORDS_DELETED = "negative_keywords_deleted"
+    private lateinit var sharedViewModel: SharedViewModel
+    private var deletedKeywords: ArrayList<GetKeywordResponse.KeywordsItem>? = arrayListOf()
+    private var addedKeywords: ArrayList<GetKeywordResponse.KeywordsItem>? = arrayListOf()
+    private var originalKeyList: MutableList<String> = arrayListOf()
     private lateinit var adapter: EditNegKeywordListAdapter
-    var items: MutableList<EditNegKeywordViewModel> = mutableListOf()
-    var restoreData:ArrayList<NegKeyword>? = arrayListOf()
+    private var restoreData: ArrayList<GetKeywordResponse.KeywordsItem>? = arrayListOf()
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         adapter = EditNegKeywordListAdapter(EditNegKeywordListAdapterTypeFactoryImpl(this::onDeleteNegKeyword, this::onAddKeyword))
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        sharedViewModel = ViewModelProviders.of(requireActivity()).get(SharedViewModel::class.java)
         return inflater.inflate(resources.getLayout(R.layout.topads_edit_negative_keyword_layout), container, false)
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        adapter.items.add(EditNegKeywordEmptyViewModel())
-
     }
 
     private fun onDeleteNegKeyword(position: Int) {
@@ -80,14 +73,25 @@ class EditNegativeKeywordsFragment : BaseDaggerFragment() {
 
     private fun deleteNegKeyword(position: Int) {
         restoreData?.forEach {
-            if(it.name == (adapter.items[position] as EditNegKeywordItemViewModel).data.name){
+            if (it.tag == (adapter.items[position] as EditNegKeywordItemViewModel).data.tag) {
                 it.isChecked = false
             }
-
+        }
+        if (isExistsOriginal(position)) {
+            deletedKeywords?.add((adapter.items[position] as EditNegKeywordItemViewModel).data)
+        } else {
+            var ind = 0
+            addedKeywords?.forEachIndexed { index, it ->
+                if (it.tag == (adapter.items[position] as EditNegKeywordItemViewModel).data.tag) {
+                    ind = index
+                }
+            }
+            addedKeywords?.removeAt(ind)
         }
         adapter.items.removeAt(position)
         if (adapter.items.size == 0) {
             adapter.items.add(EditNegKeywordEmptyViewModel())
+            setVisibilityOperation(false)
         }
         adapter.notifyDataSetChanged()
         updateItemCount()
@@ -96,7 +100,7 @@ class EditNegativeKeywordsFragment : BaseDaggerFragment() {
 
     private fun onAddKeyword() {
         val intent = Intent(context, SelectNegKeywordActivity::class.java)
-        intent.putParcelableArrayListExtra(RESTORED_DATA,restoreData)
+        intent.putParcelableArrayListExtra(RESTORED_DATA, restoreData)
         startActivityForResult(intent, 1)
 
     }
@@ -108,11 +112,24 @@ class EditNegativeKeywordsFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setVisibilityOperation(true)
+
+        sharedViewModel.negKeyword.observe(this, androidx.lifecycle.Observer {
+            adapter.items.clear()
+            it.forEach { item ->
+                adapter.items.add(EditNegKeywordItemViewModel(item))
+                originalKeyList.add(item.tag)
+
+            }
+            if (adapter.items.size == 0) {
+                adapter.items.add(EditNegKeywordEmptyViewModel())
+                setVisibilityOperation(false)
+            }
+            updateItemCount()
+            adapter.notifyDataSetChanged()
+        })
         add_keyword.setOnClickListener {
             onAddKeyword()
-        }
-        if (adapter.items.size == 0) {
-            setVisibilityOperation(false)
         }
         keyword_list.adapter = adapter
         keyword_list.layoutManager = LinearLayoutManager(context)
@@ -143,30 +160,37 @@ class EditNegativeKeywordsFragment : BaseDaggerFragment() {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == 1) {
             if (resultCode == Activity.RESULT_OK) {
-                val data1 = data?.getParcelableArrayListExtra<NegKeyword>(SELECTED_KEYWORD)
-                restoreData = data?.getParcelableArrayListExtra<NegKeyword>(RESTORED_DATA)
+                val data1 = data?.getParcelableArrayListExtra<GetKeywordResponse.KeywordsItem>(SELECTED_KEYWORD)
+                restoreData = data?.getParcelableArrayListExtra<GetKeywordResponse.KeywordsItem>(RESTORED_DATA)
                 addKeywords(data1)
             }
         }
     }
 
-    private fun addKeywords(data: ArrayList<NegKeyword>?) {
-        adapter.items.clear()
-        setVisibilityOperation(true)
+    private fun addKeywords(data: ArrayList<GetKeywordResponse.KeywordsItem>?) {
+        if (adapter.items[0] is EditNegKeywordEmptyViewModel) {
+            adapter.items.clear()
+        }
         data?.forEach {
-         //   if (adapter.items.find { it -> (it as EditNegKeywordItemViewModel).data.name == it.data.name } == null)
+            if (adapter.items.find { item -> (item as EditNegKeywordItemViewModel).data.tag == it.tag } == null) {
                 adapter.items.add(EditNegKeywordItemViewModel(it))
+                addedKeywords?.add(it)
+            }
         }
         updateItemCount()
         adapter.notifyDataSetChanged()
 
     }
 
+    private fun isExistsOriginal(position: Int): Boolean {
+        return (originalKeyList.find { it -> (adapter.items[position] as EditNegKeywordItemViewModel).data.tag == it } != null)
+
+    }
+
     fun sendData(): Bundle {
-        var bundle = Bundle()
-        var list: ArrayList<NegKeyword> = arrayListOf()
-        list.addAll(adapter.getCurrentItems())
-        bundle.putParcelableArrayList(NEGATIVE_KEYWORDS, list)
+        val bundle = Bundle()
+        bundle.putParcelableArrayList(NEGATIVE_KEYWORDS_ADDED, addedKeywords)
+        bundle.putParcelableArrayList(NEGATIVE_KEYWORDS_DELETED, deletedKeywords)
         return bundle
     }
 

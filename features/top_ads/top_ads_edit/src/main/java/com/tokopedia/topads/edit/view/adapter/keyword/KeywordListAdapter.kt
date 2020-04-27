@@ -14,7 +14,6 @@ class KeywordListAdapter(private val typeFactory: KeywordListAdapterTypeFactory,
     private var remains: MutableList<KeywordViewModel> = mutableListOf()
     var favoured: MutableList<KeywordItemViewModel> = mutableListOf()
     var manualKeywords: MutableList<KeywordItemViewModel> = mutableListOf()
-    private var index: Int = 0
     private var SELECTED_KEYWORD = " Kata Kunci Pilihan"
     private var RECOMMENDED = "Rekomendasi"
 
@@ -51,18 +50,28 @@ class KeywordListAdapter(private val typeFactory: KeywordListAdapterTypeFactory,
         } else if (items.size != 0 && items[0] is KeywordGroupViewModel && (items[0] as KeywordGroupViewModel).title != SELECTED_KEYWORD) {
             items.add(0, KeywordGroupViewModel(SELECTED_KEYWORD))
         }
+
         favoured.forEachIndexed lit@{ index, _ ->
             if (favoured[index].data.keyword == it.data.keyword) {
                 return true
             }
         }
+        var index = 0
+        items.forEachIndexed { ind, item ->
+            if (item is KeywordItemViewModel) {
+                if (item.data.keyword == it.data.keyword) {
+                    index = ind
+                }
+            }
+        }
         if (index != 0)
-            items.remove(favoured[index])
+            items.removeAt(index)
+        else
+            manualKeywords.add(it)
         items.removeAll(favoured)
         favoured.add(it)
         items.addAll(1, favoured)
         it.isChecked = true
-        manualKeywords.add(it)
         notifyDataSetChanged()
         return false
     }
@@ -117,9 +126,12 @@ class KeywordListAdapter(private val typeFactory: KeywordListAdapterTypeFactory,
         notifyDataSetChanged()
     }
 
-    fun addRestoredData(favoured: ArrayList<ResponseKeywordSuggestion.Result.TopAdsGetKeywordSuggestion.Data>?, selected: ArrayList<ResponseKeywordSuggestion.Result.TopAdsGetKeywordSuggestion.Data>?) {
+    fun addRestoredData(favoured: ArrayList<ResponseKeywordSuggestion.Result.TopAdsGetKeywordSuggestion.Data>?, selected: ArrayList<ResponseKeywordSuggestion.Result.TopAdsGetKeywordSuggestion.Data>?, manual: ArrayList<ResponseKeywordSuggestion.Result.TopAdsGetKeywordSuggestion.Data>?) {
         val toBeAdded: MutableList<KeywordViewModel> = mutableListOf()
         toBeAdded.addAll(items)
+        manual?.forEach {
+            manualKeywords.add(KeywordItemViewModel(it))
+        }
         toBeAdded.removeAt(0)
         val index: MutableList<Int> = mutableListOf()
         toBeAdded.forEachIndexed { indi, fav ->

@@ -52,6 +52,15 @@ data class FinalAdResponse(
                 val status: Status = Status()
         )
 
+        data class Data(
+
+                @field:SerializedName("resourceUrl")
+                val resourceUrl: String? = null,
+
+                @field:SerializedName("id")
+                val id: Int? = null
+        )
+
         data class Status(
 
                 @field:SerializedName("error_code")

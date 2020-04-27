@@ -36,7 +36,7 @@ class BidInfoItemViewHolder(val view: View, var selectedKeywords: MutableList<St
                 override fun onNumberChanged(number: Double) {
                     super.onNumberChanged(number)
                     val result = number.toInt()
-               //     selectedSuggestBid[adapterPosition] = result
+                    selectedSuggestBid[adapterPosition] = result
                     when {
                         result < bidMap["min"]!! -> {
                             item.isError = true

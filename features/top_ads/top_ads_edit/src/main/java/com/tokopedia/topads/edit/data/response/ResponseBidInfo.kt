@@ -27,7 +27,6 @@ data class ResponseBidInfo(
 
                     @field:SerializedName("min_bid")
                     val minBid: Int = 0
-
             )
         }
     }

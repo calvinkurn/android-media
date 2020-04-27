@@ -64,26 +64,22 @@ class EditFormDefaultViewModel @Inject constructor(private val context: Context,
     }
 
 
-    fun getBidInfoDefault(suggestions: List<DataSuggestions>, onSuccess: (List<ResponseBidInfo.Result.TopadsBidInfo.DataItem>) -> Unit, onError: ((Throwable) -> Unit), onEmpty: (() -> Unit)) {
+    fun getBidInfoDefault(suggestions: List<DataSuggestions>, onSuccess: (List<ResponseBidInfo.Result.TopadsBidInfo.DataItem>) -> Unit, onError: ((Throwable) -> Unit)) {
 
         launchCatchError(
                 block = {
                     val queryMap = HashMap<String, Any?>()
-                    queryMap[ParamObject.SHOP_Id] = Integer.parseInt(userSession.shopId)
-                    queryMap[ParamObject.SOURCE] = ParamObject.SOURCE_VALUE
-                    queryMap[ParamObject.SUGGESTION] = suggestions
-                    queryMap[ParamObject.REQUEST_TYPE] = ParamObject.PRODUCT
+                    queryMap[SHOP_Id] = Integer.parseInt(userSession.shopId)
+                    queryMap[SOURCE] = SOURCE_VALUE
+                    queryMap[SUGGESTION] = suggestions
+                    queryMap[REQUEST_TYPE] = ParamObject.PRODUCT
                     val data = withContext(Dispatchers.IO) {
                         val request = GraphqlRequest(GraphqlHelper.loadRawString(context.resources, R.raw.query_ads_create_bid_info), ResponseBidInfo.Result::class.java, queryMap)
                         val cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.CLOUD_THEN_CACHE).build()
                         repository.getReseponse(listOf(request), cacheStrategy)
                     }
                     data.getSuccessData<ResponseBidInfo.Result>().let {
-                        if (it.topadsBidInfo.data.isEmpty()) {
-                            onEmpty()
-                        } else {
-                            onSuccess(it.topadsBidInfo.data)
-                        }
+                        onSuccess(it.topadsBidInfo.data)
                     }
 
                 },
@@ -121,11 +117,34 @@ class EditFormDefaultViewModel @Inject constructor(private val context: Context,
                 })
     }
 
-    fun getAdKeyword(onSuccess: ((List<GetKeywordResponse.KeywordsItem>) -> Unit), onError: ((String) -> Unit), onEmpty: (() -> Unit)) {
+
+    fun getGroupInfo(groupId: String, onSuccess: (GroupInfoResponse.TopAdsGetPromoGroup.Data) -> Unit, onError: ((Throwable) -> Unit)) {
+
+        launchCatchError(
+                block = {
+                    val queryMap = HashMap<String, Any?>()
+                    queryMap[ParamObject.GROUP_ID] = groupId
+                    val data = withContext(Dispatchers.IO) {
+                        val request = GraphqlRequest(GraphqlHelper.loadRawString(context.resources, R.raw.query_get_group_info), GroupInfoResponse::class.java, queryMap)
+                        val cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.CLOUD_THEN_CACHE).build()
+                        repository.getReseponse(listOf(request), cacheStrategy)
+                    }
+                    data.getSuccessData<GroupInfoResponse>().let {
+                        onSuccess(it.topAdsGetPromoGroup?.data!!)
+                    }
+
+                },
+                onError = {
+                    onError(it)
+                })
+    }
+
+    fun getAdKeyword(groupId: Int, onSuccess: (List<GetKeywordResponse.KeywordsItem>) -> Unit, onError: (String) -> Unit, onEmpty: () -> Unit) {
         launchCatchError(
                 block = {
                     val filter = mutableMapOf<String, String>()
                     filter[ParamObject.SHOP_id] = userSession.shopId
+                    filter[ParamObject.GROUP_ID] = groupId.toString()
                     val data = withContext(Dispatchers.IO) {
                         val request = GraphqlRequest(GraphqlHelper.loadRawString(context.resources, R.raw.query_ads_get_ad_keyword),
                                 GetKeywordResponse::class.java, mapOf(ParamObject.SOURCE to "editkeyword", "filter" to filter))
@@ -153,7 +172,7 @@ class EditFormDefaultViewModel @Inject constructor(private val context: Context,
     }
 
 
-    fun getBidInfo(suggestions: List<DataSuggestions>, onSuccess: (List<ResponseBidInfo.Result.TopadsBidInfo.DataItem>) -> Unit, onError: ((Throwable) -> Unit), onEmpty: (() -> Unit)) {
+    fun getBidInfo(suggestions: List<DataSuggestions>, onSuccess: (List<ResponseBidInfo.Result.TopadsBidInfo.DataItem>) -> Unit, onError: ((Throwable) -> Unit)) {
 
         launchCatchError(
                 block = {
@@ -168,11 +187,7 @@ class EditFormDefaultViewModel @Inject constructor(private val context: Context,
                         repository.getReseponse(listOf(request), cacheStrategy)
                     }
                     data.getSuccessData<ResponseBidInfo.Result>().let {
-                        if (it.topadsBidInfo.data.isEmpty()) {
-                            onEmpty()
-                        } else {
-                            onSuccess(it.topadsBidInfo.data)
-                        }
+                        onSuccess(it.topadsBidInfo.data)
                     }
 
                 },

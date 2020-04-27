@@ -6,7 +6,7 @@ import com.tokopedia.topads.edit.R
 import com.tokopedia.topads.edit.view.adapter.keyword.viewmodel.KeywordGroupViewModel
 import kotlinx.android.synthetic.main.topads_create_layout_keyword_group_item.view.*
 
-class KeywordGroupViewHolder(val view: View): KeywordViewHolder<KeywordGroupViewModel>(view) {
+class KeywordGroupViewHolder(val view: View) : KeywordViewHolder<KeywordGroupViewModel>(view) {
 
     companion object {
         @LayoutRes

@@ -8,7 +8,7 @@ import com.tokopedia.topads.edit.view.adapter.edit_product.viewmodel.EditProduct
 /**
  * Created by Pika on 8/4/20.
  */
-class EditProductEmptyViewHolder(val view: View): EditProductViewHolder<EditProductEmptyViewModel>(view) {
+class EditProductEmptyViewHolder(val view: View) : EditProductViewHolder<EditProductEmptyViewModel>(view) {
 
     companion object {
         @LayoutRes

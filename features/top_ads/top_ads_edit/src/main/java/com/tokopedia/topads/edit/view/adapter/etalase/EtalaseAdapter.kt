@@ -12,12 +12,12 @@ import com.tokopedia.topads.edit.view.adapter.etalase.viewmodel.EtalaseViewModel
 
 
 class EtalaseAdapter(val typeFactory: EtalaseAdapterTypeFactory,
-                     var items: MutableList<EtalaseViewModel>): RecyclerView.Adapter<EtalaseViewHolder<EtalaseViewModel>>() {
+                     var items: MutableList<EtalaseViewModel>) : RecyclerView.Adapter<EtalaseViewHolder<EtalaseViewModel>>() {
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EtalaseViewHolder<EtalaseViewModel> {
-            val view = LayoutInflater.from(parent.context).inflate(viewType, parent, false)
-            return typeFactory.holder(viewType, view) as EtalaseViewHolder<EtalaseViewModel>
+        val view = LayoutInflater.from(parent.context).inflate(viewType, parent, false)
+        return typeFactory.holder(viewType, view) as EtalaseViewHolder<EtalaseViewModel>
     }
 
     override fun getItemViewType(position: Int): Int {
@@ -32,7 +32,7 @@ class EtalaseAdapter(val typeFactory: EtalaseAdapterTypeFactory,
         holder.bind(items[position])
     }
 
-    fun updateData(data: MutableList<EtalaseViewModel>){
+    fun updateData(data: MutableList<EtalaseViewModel>) {
         items = data
         notifyDataSetChanged()
     }

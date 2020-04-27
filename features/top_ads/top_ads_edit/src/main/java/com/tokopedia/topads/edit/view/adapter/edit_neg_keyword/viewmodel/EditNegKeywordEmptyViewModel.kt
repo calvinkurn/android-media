@@ -7,7 +7,7 @@ import com.tokopedia.topads.edit.view.adapter.edit_neg_keyword.EditNegKeywordLis
  * Created by Pika on 12/4/20.
  */
 
-class EditNegKeywordEmptyViewModel:EditNegKeywordViewModel() {
+class EditNegKeywordEmptyViewModel : EditNegKeywordViewModel() {
     override fun type(typesFactory: EditNegKeywordListAdapterTypeFactory): Int {
         return typesFactory.type(this)
 

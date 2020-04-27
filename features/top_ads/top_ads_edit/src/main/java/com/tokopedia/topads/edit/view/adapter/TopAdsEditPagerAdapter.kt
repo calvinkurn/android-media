@@ -3,10 +3,6 @@ package com.tokopedia.topads.edit.view.adapter
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
-import com.tokopedia.topads.edit.view.fragment.edit.EditGroupAdFragment
-import com.tokopedia.topads.edit.view.fragment.edit.BaseEditKeywordFragment
-import com.tokopedia.topads.edit.view.fragment.edit.EditProductFragment
-
 
 class TopAdsEditPagerAdapter(fm: FragmentManager, behavior: Int) : FragmentStatePagerAdapter(fm, behavior) {
 

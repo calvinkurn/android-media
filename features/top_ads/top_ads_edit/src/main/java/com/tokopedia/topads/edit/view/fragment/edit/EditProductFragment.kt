@@ -141,7 +141,6 @@ class EditProductFragment : BaseDaggerFragment() {
         updateItemCount()
         if (adapter.items.size == 0) {
             adapter.items.add(EditProductEmptyViewModel())
-            //  setVisibilityOperation(false)
             adapter.notifyDataSetChanged()
         }
 
@@ -157,7 +156,6 @@ class EditProductFragment : BaseDaggerFragment() {
         btnState = flag
         buttonStateCallback?.setButtonState()
         if (flag) {
-
             product_count.visibility = View.VISIBLE
             add_product.visibility = View.VISIBLE
             add_image.visibility = View.VISIBLE
@@ -182,13 +180,13 @@ class EditProductFragment : BaseDaggerFragment() {
 
     private fun createProduct(price: ArrayList<String>?, product: ArrayList<Int>?, name: ArrayList<String>?, image: ArrayList<String>?) {
         val size = product?.size
-        if (adapter.items.size == 1 && adapter.items[0] is EditProductEmptyViewModel)
+        if (adapter.items[0] is EditProductEmptyViewModel)
             adapter.items.clear()
-        for (x in 0 until size!!) {
-            val dataItem = GetAdProductResponse.TopadsGetListProductsOfGroup.DataItem.AdDetailProduct(image?.get(x)!!, image[x], name?.get(x)!!)
-            adapter.items.add(EditProductItemViewModel(GetAdProductResponse.TopadsGetListProductsOfGroup.DataItem(product[x], price?.get(x)!!, "", 0, 0, dataItem)))
-            if (!existsOriginal(product[x])) {
-                addedProducts.add(GetAdProductResponse.TopadsGetListProductsOfGroup.DataItem(product[x], price[x], "", 0, 0, dataItem))
+        for (ind in 0 until size!!) {
+            val dataItem = GetAdProductResponse.TopadsGetListProductsOfGroup.DataItem.AdDetailProduct(image?.get(ind)!!, image[ind], name?.get(ind)!!)
+            adapter.items.add(EditProductItemViewModel(GetAdProductResponse.TopadsGetListProductsOfGroup.DataItem(product[ind], price?.get(ind)!!, "", 0, 0, dataItem)))
+            if (!existsOriginal(product[ind])) {
+                addedProducts.add(GetAdProductResponse.TopadsGetListProductsOfGroup.DataItem(product[ind], price[ind], "", 0, 0, dataItem))
 
             }
         }
@@ -221,8 +219,8 @@ class EditProductFragment : BaseDaggerFragment() {
         val bundle = Bundle()
         filterAddedProducts()
         val added: ArrayList<GetAdProductResponse.TopadsGetListProductsOfGroup.DataItem> = arrayListOf()
-        added.addAll(getAddedArray())
         val deleted: ArrayList<GetAdProductResponse.TopadsGetListProductsOfGroup.DataItem> = arrayListOf()
+        added.addAll(getAddedArray())
         deleted.addAll(getDeletedArray())
         bundle.putParcelableArrayList(ADDED_PRODUCTS, added)
         bundle.putParcelableArrayList(DELETED_PRODUCTS, deleted)

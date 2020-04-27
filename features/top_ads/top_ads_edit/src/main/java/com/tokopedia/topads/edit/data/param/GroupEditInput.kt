@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName
  * Created by Pika on 14/4/20.
  */
 
-data class  GroupEditInput(
+data class GroupEditInput(
         @field:SerializedName("action")
         var action: String = "",
 
@@ -16,10 +16,7 @@ data class  GroupEditInput(
     data class Group(
 
             @field:SerializedName("adOperations")
-            var adOperations: List<AdOperationsItem>? =null,
-
-//            @field:SerializedName("shop_id")
-//            var shopId: Int = 0,
+            var adOperations: List<AdOperationsItem>? = null,
 
             @field:SerializedName("priceBid")
             var priceBid: Int? = 0,
@@ -32,9 +29,6 @@ data class  GroupEditInput(
 
             @field:SerializedName("scheduleEnd")
             var scheduleEnd: String? = null,
-
-//            @field:SerializedName("id")
-//            var id: Int? = 0,
 
             @field:SerializedName("type")
             var type: String = "",

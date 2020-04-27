@@ -7,6 +7,6 @@ import androidx.recyclerview.widget.RecyclerView
  * Created by Pika on 9/4/20.
  */
 
-abstract class EditKeywordViewHolder<in T>(view: View): RecyclerView.ViewHolder(view) {
+abstract class EditKeywordViewHolder<in T>(view: View) : RecyclerView.ViewHolder(view) {
     abstract fun bind(item: T, data: MutableList<Int>, error: MutableList<Boolean>)
 }

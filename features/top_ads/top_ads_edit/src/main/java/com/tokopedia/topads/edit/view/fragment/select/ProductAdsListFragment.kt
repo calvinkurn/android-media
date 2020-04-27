@@ -16,7 +16,6 @@ import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.topads.common.data.response.ResponseEtalase
 import com.tokopedia.topads.common.data.response.ResponseProductList
 import com.tokopedia.topads.edit.R
-import com.tokopedia.topads.edit.data.param.ProductData
 import com.tokopedia.topads.edit.di.TopAdsEditComponent
 import com.tokopedia.topads.edit.view.adapter.etalase.viewmodel.EtalaseItemViewModel
 import com.tokopedia.topads.edit.view.adapter.etalase.viewmodel.EtalaseViewModel
@@ -48,10 +47,6 @@ class ProductAdsListFragment : BaseDaggerFragment() {
         private const val RESULT_PROUCT="resultProduct"
         private const val RESULT_NAME = "resultName"
         private const val RESULT_IMAGE = "resultImage"
-        private const val RESULT = "result"
-
-        private const val NOT_PROMOTED = "not_promoted"
-        private const val PROMOTED = "promoted"
         private const val ALL = "all"
         private const val ROW = 50
         private const val START = 0
@@ -214,6 +209,7 @@ class ProductAdsListFragment : BaseDaggerFragment() {
     private fun refreshProduct() {
         swipe_refresh_layout.isRefreshing = true
         productListAdapter.items.clear()
+        productListAdapter.notifyDataSetChanged()
         viewModel.productList(getKeyword(),
                 getSelectedEtalaseId(),
                 getSelectedSortId(),
@@ -272,7 +268,6 @@ class ProductAdsListFragment : BaseDaggerFragment() {
     private fun onSuccessGetProductList(data: List<ResponseProductList.Result.TopadsGetListProduct.Data>) {
         clearRefreshLoading()
         btn_next.isEnabled = false
-        productListAdapter.items.clear()
         data.forEach { result ->
             if (promotedGroup.checkedRadioButtonId == R.id.promoted) {
                 if (result.adID > 0 && !ifExists(result.productID)) {
@@ -293,7 +288,7 @@ class ProductAdsListFragment : BaseDaggerFragment() {
             productListAdapter.setSelectedList(selectedPrevNonPro)
         else
             productListAdapter.setSelectedList(selectedPrevPro)
-        var count = selectedPrevNonPro.size + selectedPrevPro.size
+        val count = selectedPrevNonPro.size + selectedPrevPro.size
 
         select_product_info.text = String.format(getString(R.string.format_selected_produk), count)
         btn_next.isEnabled = count > 0
@@ -311,7 +306,7 @@ class ProductAdsListFragment : BaseDaggerFragment() {
     }
 
     private fun onSuccessGetEtalase(data: List<ResponseEtalase.Data.ShopShowcasesByShopID.Result>) {
-        var items = mutableListOf<EtalaseViewModel>()
+        val items = mutableListOf<EtalaseViewModel>()
         items.add(0, EtalaseItemViewModel(true, viewModel.addSemuaProduk()))
         data.forEachIndexed { index, result -> items.add(index + 1, EtalaseItemViewModel(false, result)) }
         filterSheetProductList.updateData(items)

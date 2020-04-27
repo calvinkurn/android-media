@@ -7,6 +7,6 @@ import androidx.recyclerview.widget.RecyclerView
  * Created by Pika on 8/4/20.
  */
 
-abstract class EditProductViewHolder<in T>(view: View): RecyclerView.ViewHolder(view) {
+abstract class EditProductViewHolder<in T>(view: View) : RecyclerView.ViewHolder(view) {
     abstract fun bind(item: T)
 }

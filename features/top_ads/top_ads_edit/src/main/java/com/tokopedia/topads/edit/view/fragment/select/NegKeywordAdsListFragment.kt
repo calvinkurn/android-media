@@ -3,7 +3,6 @@ package com.tokopedia.topads.edit.view.fragment.select
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.os.Parcelable
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
@@ -16,7 +15,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager
 import com.tokopedia.topads.edit.R
 import com.tokopedia.topads.edit.Utils
-import com.tokopedia.topads.edit.data.param.NegKeyword
+import com.tokopedia.topads.edit.data.response.GetKeywordResponse
 import com.tokopedia.topads.edit.di.TopAdsEditComponent
 import com.tokopedia.topads.edit.view.adapter.neg_keyword.NegKeywordListAdapter
 import kotlinx.android.synthetic.main.topads_edit_select_negative_keyword_list_layout.*
@@ -58,15 +57,15 @@ class NegKeywordAdsListFragment : BaseDaggerFragment() {
         adapter = NegKeywordListAdapter(this::onCheckedItem)
     }
 
-    private fun getSelectedList(): ArrayList<NegKeyword> {
-        val list: ArrayList<NegKeyword> = arrayListOf()
+    private fun getSelectedList(): ArrayList<GetKeywordResponse.KeywordsItem> {
+        val list: ArrayList<GetKeywordResponse.KeywordsItem> = arrayListOf()
         list.addAll(adapter.getSelectedList())
         return list
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val data = arguments?.getParcelableArrayList<NegKeyword>(RESTORED_DATA)
+        val data = arguments?.getParcelableArrayList<GetKeywordResponse.KeywordsItem>(RESTORED_DATA)
         formatRestoredData(data)
 
         add_btn.setOnClickListener {
@@ -75,6 +74,7 @@ class NegKeywordAdsListFragment : BaseDaggerFragment() {
                 onCheckedItem()
             }
         }
+
         btn_next.setOnClickListener {
             val intent = Intent()
             intent.putParcelableArrayListExtra(SELECTED_KEYWORD, getSelectedList())
@@ -87,8 +87,7 @@ class NegKeywordAdsListFragment : BaseDaggerFragment() {
         keyword_list.layoutManager = LinearLayoutManager(context)
         editText.addTextChangedListener(object : TextWatcher {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                var text = validateKeyword(s)
-
+                val text = validateKeyword(s)
                 if (s.toString().trim().isEmpty()) {
                     add_btn.isEnabled = false
                 } else if (!text.isNullOrBlank()) {
@@ -119,8 +118,8 @@ class NegKeywordAdsListFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun formatRestoredData(list: ArrayList<NegKeyword>?) {
-        var list1: MutableList<NegKeyword> = mutableListOf()
+    private fun formatRestoredData(list: ArrayList<GetKeywordResponse.KeywordsItem>?) {
+        val list1: MutableList<GetKeywordResponse.KeywordsItem> = mutableListOf()
         list?.forEach {
             list1.add(it)
         }
@@ -165,14 +164,8 @@ class NegKeywordAdsListFragment : BaseDaggerFragment() {
         }
     }
 
-    override fun onPause() {
-        super.onPause()
-
-
-    }
-
-    private fun getData(): ArrayList<NegKeyword>? {
-        var list: ArrayList<NegKeyword> = arrayListOf()
+    private fun getData(): ArrayList<GetKeywordResponse.KeywordsItem>? {
+        val list: ArrayList<GetKeywordResponse.KeywordsItem> = arrayListOf()
         adapter.items.forEach {
             list.add(it)
         }
@@ -182,14 +175,12 @@ class NegKeywordAdsListFragment : BaseDaggerFragment() {
     private fun keywordValidation(key: String): Boolean {
         if (key.isNotEmpty()) {
             adapter.items.forEach {
-                if (it.name == key) {
+                if (it.tag == key) {
                     makeToast(getString(R.string.keyword_already_exists))
                     return false
                 }
             }
         }
         return true
-
     }
-
 }

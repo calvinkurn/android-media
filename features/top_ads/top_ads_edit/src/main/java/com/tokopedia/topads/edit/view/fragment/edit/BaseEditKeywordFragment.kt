@@ -11,7 +11,6 @@ import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.topads.edit.R
 import com.tokopedia.topads.edit.data.SharedViewModel
-import com.tokopedia.topads.edit.data.param.NegKeyword
 import com.tokopedia.topads.edit.data.response.GetKeywordResponse
 import com.tokopedia.topads.edit.di.TopAdsEditComponent
 import com.tokopedia.topads.edit.view.activity.EditFormAdActivityCallback
@@ -30,16 +29,15 @@ class BaseEditKeywordFragment : BaseDaggerFragment(), EditKeywordsFragment.Butto
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private var callback: EditFormAdActivityCallback? = null
     private var buttonStateCallback: SaveButtonStateCallBack? = null
-    lateinit var sharedViewModel: SharedViewModel
+    private lateinit var sharedViewModel: SharedViewModel
     private var btnState = true
 
     companion object {
-        private const val POSITIVE_KEYWORDS = "positive_keywords"
-        private const val NEGATIVE_KEYWORDS = "negative_keywords"
         private const val POSITIVE_CREATE = "createdPositiveKeyword"
         private const val POSITIVE_DELETE = "deletedPositiveKeyword"
         private const val POSITIVE_EDIT = "editedPositiveKeyword"
-
+        private const val NEGATIVE_KEYWORDS_ADDED = "negative_keywords_added"
+        private const val NEGATIVE_KEYWORDS_DELETED = "negative_keywords_deleted"
 
         fun newInstance(bundle: Bundle?): BaseEditKeywordFragment {
             val fragment = BaseEditKeywordFragment()
@@ -57,8 +55,8 @@ class BaseEditKeywordFragment : BaseDaggerFragment(), EditKeywordsFragment.Butto
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        keyword.isChecked = true
         renderViewPager()
+        keyword.isChecked = true
         keyword_grp.setOnCheckedChangeListener { _, checkedId ->
             if (checkedId == R.id.keyword) {
                 view_pager.currentItem = 0
@@ -119,29 +117,31 @@ class BaseEditKeywordFragment : BaseDaggerFragment(), EditKeywordsFragment.Butto
 
     fun sendData(): HashMap<String, Any?> {
         val dataMap = HashMap<String, Any?>()
-        val fragments = (view_pager.adapter as KeywordEditPagerAdapter).list
-        var dataNegative: ArrayList<NegKeyword>? = arrayListOf()
+        val fragments = (view_pager?.adapter as KeywordEditPagerAdapter).list
+        var dataNegativeAdded: ArrayList<GetKeywordResponse.KeywordsItem>? = arrayListOf()
+        var dataNegativeDeleted: ArrayList<GetKeywordResponse.KeywordsItem>? = arrayListOf()
         var deletedKeywordsPos: ArrayList<GetKeywordResponse.KeywordsItem>? = arrayListOf()
         var addedKeywordsPos: ArrayList<GetKeywordResponse.KeywordsItem>? = arrayListOf()
         var editedKeywordsPos: ArrayList<GetKeywordResponse.KeywordsItem>? = arrayListOf()
 
         if (fragments[0] is EditKeywordsFragment) {
-            var bundle: Bundle? = null
-            bundle = (fragments[0] as EditKeywordsFragment).sendData()
+            val bundle: Bundle = (fragments[0] as EditKeywordsFragment).sendData()
             addedKeywordsPos = bundle.getParcelableArrayList(POSITIVE_CREATE)
             deletedKeywordsPos = bundle.getParcelableArrayList(POSITIVE_DELETE)
             editedKeywordsPos = bundle.getParcelableArrayList(POSITIVE_EDIT)
 
         }
         if (fragments[1] is EditNegativeKeywordsFragment) {
-            var bundle: Bundle? = null
-            bundle = (fragments[1] as EditNegativeKeywordsFragment).sendData()
-            dataNegative = bundle.getParcelableArrayList(NEGATIVE_KEYWORDS)
+            val bundle: Bundle = (fragments[1] as EditNegativeKeywordsFragment).sendData()
+            dataNegativeAdded = bundle.getParcelableArrayList(NEGATIVE_KEYWORDS_ADDED)
+            dataNegativeDeleted = bundle.getParcelableArrayList(NEGATIVE_KEYWORDS_DELETED)
+
         }
         dataMap[POSITIVE_CREATE] = addedKeywordsPos
         dataMap[POSITIVE_DELETE] = deletedKeywordsPos
         dataMap[POSITIVE_EDIT] = editedKeywordsPos
-        dataMap[NEGATIVE_KEYWORDS] = dataNegative
+        dataMap[NEGATIVE_KEYWORDS_ADDED] = dataNegativeAdded
+        dataMap[NEGATIVE_KEYWORDS_DELETED] = dataNegativeDeleted
         return dataMap
     }
 

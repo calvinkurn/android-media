@@ -36,7 +36,7 @@ class EditKeywordSortSheet {
     }
 
     fun getSelectedSortId(): String {
-        return when(dialog?.radio_group?.checkedRadioButtonId){
+        return when (dialog?.radio_group?.checkedRadioButtonId) {
             R.id.title_1 -> TITLE_1
             R.id.title_2 -> TITLE_2
             else -> TITLE_1

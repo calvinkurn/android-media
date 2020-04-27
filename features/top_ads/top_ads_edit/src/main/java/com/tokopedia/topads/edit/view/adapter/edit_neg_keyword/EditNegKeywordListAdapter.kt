@@ -3,7 +3,7 @@ package com.tokopedia.topads.edit.view.adapter.edit_neg_keyword
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.topads.edit.data.param.NegKeyword
+import com.tokopedia.topads.edit.data.response.GetKeywordResponse
 import com.tokopedia.topads.edit.view.adapter.edit_neg_keyword.viewholder.EditNegKeywordViewHolder
 import com.tokopedia.topads.edit.view.adapter.edit_neg_keyword.viewmodel.EditNegKeywordItemViewModel
 import com.tokopedia.topads.edit.view.adapter.edit_neg_keyword.viewmodel.EditNegKeywordViewModel
@@ -34,8 +34,8 @@ class EditNegKeywordListAdapter(val typeFactory: EditNegKeywordListAdapterTypeFa
         holder.bind(items[position])
     }
 
-    fun getCurrentItems(): List<NegKeyword> {
-        val list: ArrayList<NegKeyword> = arrayListOf()
+    fun getCurrentItems(): List<GetKeywordResponse.KeywordsItem> {
+        val list: ArrayList<GetKeywordResponse.KeywordsItem> = arrayListOf()
         items.forEach {
             if (it is EditNegKeywordItemViewModel)
                 list.add(it.data)

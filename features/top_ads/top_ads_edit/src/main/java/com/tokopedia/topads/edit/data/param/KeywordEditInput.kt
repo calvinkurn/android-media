@@ -16,10 +16,6 @@ data class KeywordEditInput(
     data class Keyword(
             @field:SerializedName("id")
             var id: String = "",
-//            @field:SerializedName("shop_id")
-//            var shop_id: Int = 0,
-//            @field:SerializedName("group_id")
-//            var group_id: Int? = 0,
             @field:SerializedName("type")
             var type: String? = "",
             @field:SerializedName("status")

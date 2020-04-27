@@ -11,7 +11,7 @@
     </style>
     <style name="TopadsProductFilterRadioButtonStyle" parent="@android:style/Widget.CompoundButton.RadioButton">
         <item name="android:button">@null</item>
-        <item name="android:background">@drawable/topads_create_radio_btn_filter_selector</item>
+        <item name="android:background">@drawable/topads_radio_btn_filter_selector</item>
         <item name="android:textSize">14sp</item>
         <item name="android:gravity">center</item>
         <item name="android:textColor">@color/topads_create_text_filter_color_selector</item>

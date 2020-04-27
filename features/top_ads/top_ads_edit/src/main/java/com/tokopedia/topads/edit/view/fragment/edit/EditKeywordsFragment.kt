@@ -11,7 +11,6 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.topads.common.data.response.ResponseKeywordSuggestion
@@ -28,6 +27,7 @@ import com.tokopedia.topads.edit.view.adapter.edit_keyword.viewmodel.EditKeyword
 import com.tokopedia.topads.edit.view.adapter.edit_keyword.viewmodel.EditKeywordItemViewModel
 import com.tokopedia.topads.edit.view.model.EditFormDefaultViewModel
 import kotlinx.android.synthetic.main.topads_edit_keword_layout.*
+import timber.log.Timber
 import javax.inject.Inject
 
 /**
@@ -35,7 +35,7 @@ import javax.inject.Inject
  */
 class EditKeywordsFragment : BaseDaggerFragment() {
 
-    lateinit var sharedViewModel: SharedViewModel
+    private lateinit var sharedViewModel: SharedViewModel
 
     @Inject
     lateinit var viewmodel: EditFormDefaultViewModel
@@ -45,25 +45,25 @@ class EditKeywordsFragment : BaseDaggerFragment() {
     private lateinit var adapter: EditKeywordListAdapter
     private var bidMap = mutableMapOf<String, Int>()
     private lateinit var callBack: ButtonAction
-    var minSuggestKeyword = 0
-    var maxSuggestKeyword = 0
+    private var minSuggestKeyword = 0
+    private var maxSuggestKeyword = 0
     private val MAX_BID = "max"
     private val MIN_BID = "min"
     private var deletedKeywords: ArrayList<GetKeywordResponse.KeywordsItem>? = arrayListOf()
     private var addedKeywords: ArrayList<GetKeywordResponse.KeywordsItem>? = arrayListOf()
     private var editedKeywords: ArrayList<GetKeywordResponse.KeywordsItem>? = arrayListOf()
-    var error:MutableList<Boolean> = mutableListOf()
     private var initialBudget: MutableList<Int> = mutableListOf()
-
+    private var error: MutableList<Boolean> = mutableListOf()
     private var originalKeyList: MutableList<String> = arrayListOf()
     private var restoreData: ArrayList<ResponseKeywordSuggestion.Result.TopAdsGetKeywordSuggestion.Data>? = arrayListOf()
     private var selectedData: ArrayList<ResponseKeywordSuggestion.Result.TopAdsGetKeywordSuggestion.Data>? = arrayListOf()
+    private var manualData: ArrayList<ResponseKeywordSuggestion.Result.TopAdsGetKeywordSuggestion.Data>? = arrayListOf()
 
-    var groupId = 0
-    var productIds = ""
+
+    private var groupId = 0
+    private var productIds = ""
 
     companion object {
-        private const val POSITIVE_KEYWORDS = "positive_keywords"
         private const val FAVOURED_DATA = "favouredData"
         private const val SELECTED_DATA = "selectedData"
         private const val PRODUCT_ID = "product"
@@ -72,14 +72,10 @@ class EditKeywordsFragment : BaseDaggerFragment() {
         private const val POSITIVE_CREATE = "createdPositiveKeyword"
         private const val POSITIVE_DELETE = "deletedPositiveKeyword"
         private const val POSITIVE_EDIT = "editedPositiveKeyword"
+        private const val MANUAL_DATA = "manualData"
+        private const val POSITIVE_PHRASE = 11
+        private const val POSITIVE_SPECIFIC = 21
 
-
-        fun createNewInstance(): BaseEditKeywordFragment {
-            val fragment = BaseEditKeywordFragment()
-            // fragment.arguments = bundle
-            return fragment
-
-        }
     }
 
     override fun getScreenName(): String {
@@ -92,7 +88,7 @@ class EditKeywordsFragment : BaseDaggerFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        adapter = EditKeywordListAdapter(EditKeywordListAdapterTypeFactoryImpl(this::onDeleteKeyword, this::onAddKeyword, this::getMinMax, this::actionEnable, this::onEditKeyword))
+        adapter = EditKeywordListAdapter(EditKeywordListAdapterTypeFactoryImpl(this::onDeleteKeyword, this::onAddKeyword, this::getMinMax, this::actionEnable))
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -103,11 +99,11 @@ class EditKeywordsFragment : BaseDaggerFragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewmodel.getAdKeyword(this::onSuccessKeyword, this::onErrorKeyword, this::onEmptyKeyword)
         val suggestions = java.util.ArrayList<DataSuggestions>()
         val dummyId: MutableList<Int> = mutableListOf()
         suggestions.add(DataSuggestions("group", dummyId))
-        viewmodel.getBidInfo(suggestions, this::onSuccessSuggestion, this::onErrorSuggestion, this::onEmptySuggestion)
+        viewmodel.getBidInfo(suggestions, this::onSuccessSuggestion, this::onErrorSuggestion)
+        viewmodel.getAdKeyword(groupId, this::onSuccessKeyword, this::onErrorKeyword, this::onEmptyKeyword)
     }
 
     private fun getMinMax(): MutableMap<String, Int> {
@@ -122,8 +118,9 @@ class EditKeywordsFragment : BaseDaggerFragment() {
 
     }
 
-    private fun onEmptySuggestion() {}
-    private fun onErrorSuggestion(throwable: Throwable) {}
+    private fun onErrorSuggestion(e: Throwable) {
+        Timber.d(e)
+    }
 
     private fun onSuccessSuggestion(data: List<ResponseBidInfo.Result.TopadsBidInfo.DataItem>) {
 
@@ -135,10 +132,6 @@ class EditKeywordsFragment : BaseDaggerFragment() {
         showConfirmationDialog(position)
     }
 
-    private fun onEditKeyword(position: Int) {
-        //   editedKeywords?.add((adapter.items[position] as EditKeywordItemViewModel).data)
-    }
-
     private fun onAddKeyword() {
         val intent = Intent(context, SelectKeywordActivity::class.java)
         intent.putExtra(MIN_SUGGESTION, minSuggestKeyword)
@@ -146,8 +139,8 @@ class EditKeywordsFragment : BaseDaggerFragment() {
         intent.putExtra(GROUP_ID, groupId)
         intent.putParcelableArrayListExtra(FAVOURED_DATA, restoreData)
         intent.putParcelableArrayListExtra(SELECTED_DATA, selectedData)
+        intent.putParcelableArrayListExtra(MANUAL_DATA, manualData)
         startActivityForResult(intent, 1)
-
     }
 
     private fun showConfirmationDialog(position: Int) {
@@ -196,8 +189,7 @@ class EditKeywordsFragment : BaseDaggerFragment() {
         initialBudget.removeAt(position)
         error.removeAt(position)
         if (adapter.items.size == 0) {
-            setVisibilityOperation(false)
-            adapter.items.add(EditKeywordEmptyViewModel())
+            setEmptyView(true)
         }
         adapter.notifyDataSetChanged()
         updateItemCount()
@@ -229,37 +221,45 @@ class EditKeywordsFragment : BaseDaggerFragment() {
         add_keyword.setOnClickListener {
             onAddKeyword()
         }
-        keyword_list.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                super.onScrolled(recyclerView, dx, dy)
-                actionEnable()
-            }
-
-        })
         keyword_list.adapter = adapter
         keyword_list.layoutManager = LinearLayoutManager(context)
     }
 
     private fun onSuccessKeyword(data: List<GetKeywordResponse.KeywordsItem>) {
+        val negKeyword: MutableList<GetKeywordResponse.KeywordsItem> = mutableListOf()
         data.forEach { result ->
-            adapter.items.add(EditKeywordItemViewModel(result))
-            initialBudget.add(result.priceBid)
-            error.add(false)
-            originalKeyList.add(result.tag)
+            if ((result.type == POSITIVE_SPECIFIC || result.type == POSITIVE_PHRASE) && result.status != -1) {
+                adapter.items.add(EditKeywordItemViewModel(result))
+                initialBudget.add(result.priceBid)
+                error.add(false)
+                originalKeyList.add(result.tag)
+            } else if (result.status != -1) {
+                negKeyword.add(result)
+            }
         }
-        adapter.notifyDataSetChanged()
+        sharedViewModel.setNegKeywords(negKeyword)
+        if (adapter.items.size == 0) {
+            setEmptyView(true)
+        } else {
+            setVisibilityOperation(true)
+            adapter.notifyDataSetChanged()
+        }
         updateItemCount()
-        setVisibilityOperation(true)
-        adapter.getBidData(initialBudget,error)
+        adapter.getBidData(initialBudget, error)
+    }
+
+    private fun setEmptyView(value: Boolean) {
+        adapter.items.clear()
+        adapter.items.add(EditKeywordEmptyViewModel())
+        setVisibilityOperation(false)
+        adapter.notifyDataSetChanged()
     }
 
     private fun onErrorKeyword(error: String) {}
 
     private fun onEmptyKeyword() {
-        adapter.items.clear()
-        adapter.items.add(EditKeywordEmptyViewModel())
-        setVisibilityOperation(false)
-        adapter.notifyDataSetChanged()
+        setEmptyView(true)
+
     }
 
     private fun setVisibilityOperation(flag: Boolean) {
@@ -282,38 +282,37 @@ class EditKeywordsFragment : BaseDaggerFragment() {
             if (resultCode == Activity.RESULT_OK) {
                 restoreData = data?.getParcelableArrayListExtra(FAVOURED_DATA)
                 selectedData = data?.getParcelableArrayListExtra(SELECTED_DATA)
+                manualData = data?.getParcelableArrayListExtra(MANUAL_DATA)
                 updateKeywords(selectedData)
             }
         }
     }
 
     private fun updateKeywords(selectedKeywords: ArrayList<ResponseKeywordSuggestion.Result.TopAdsGetKeywordSuggestion.Data>?) {
+        if (adapter.items[0] is EditKeywordEmptyViewModel) {
+            adapter.items.clear()
+        }
         selectedKeywords?.forEach {
-
-            if (adapter.items.size == 1 && adapter.items[0] is EditKeywordEmptyViewModel)
-                adapter.items.clear()
             if (adapter.items.find { item -> it.keyword == (item as EditKeywordItemViewModel).data.tag } == null) {
-                adapter.items.add(EditKeywordItemViewModel(GetKeywordResponse.KeywordsItem("positive_phrase", "0", it.bidSuggest, it.keyword)))
+                adapter.items.add(EditKeywordItemViewModel(GetKeywordResponse.KeywordsItem(POSITIVE_PHRASE, 1, "0", it.bidSuggest, false, it.keyword)))
                 initialBudget.add(it.bidSuggest)
                 error.add(false)
                 if (!isExistsOriginal(it.keyword)) {
-                    addedKeywords?.add(GetKeywordResponse.KeywordsItem("positive_phrase", "0", it.bidSuggest, it.keyword))
+                    addedKeywords?.add(GetKeywordResponse.KeywordsItem(POSITIVE_PHRASE, 1, "0", it.bidSuggest, false, it.keyword))
                 }
             }
         }
-        adapter.getBidData(initialBudget,error)
+        adapter.getBidData(initialBudget, error)
         updateItemCount()
-
-
     }
+
     override fun onAttach(context: Context) {
         super.onAttach(context)
         if (parentFragment is ButtonAction) {
             callBack = parentFragment as ButtonAction
         } else {
-            throw RuntimeException("The parent fragment must implement OnChildFragmentInteractionListener")
+            throw RuntimeException("The parent fragment must implement ButtonAction")
         }
-        //  callBack = (EditKeywordsFragment.ButtonAction())context
 
     }
 
@@ -321,12 +320,13 @@ class EditKeywordsFragment : BaseDaggerFragment() {
         val bundle = Bundle()
         val list: ArrayList<GetKeywordResponse.KeywordsItem> = arrayListOf()
         list.addAll(adapter.getCurrentItems())
-        // bundle.putParcelableArrayList(POSITIVE_CREATE, selectedData)
 
-        adapter.items.forEachIndexed { index, item ->
-            if ((item as EditKeywordItemViewModel).data.priceBid != adapter.data[index]) {
-                (adapter.items[index] as EditKeywordItemViewModel).data.priceBid = adapter.data[index]
-                editedKeywords?.add((adapter.items[index] as EditKeywordItemViewModel).data)
+        if (adapter.items[0] !is EditKeywordEmptyViewModel) {
+            adapter.items.forEachIndexed { index, item ->
+                if ((item as EditKeywordItemViewModel).data.priceBid != adapter.data[index]) {
+                    (adapter.items[index] as EditKeywordItemViewModel).data.priceBid = adapter.data[index]
+                    editedKeywords?.add((adapter.items[index] as EditKeywordItemViewModel).data)
+                }
             }
         }
         bundle.putParcelableArrayList(POSITIVE_CREATE, addedKeywords)
