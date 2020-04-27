@@ -50,7 +50,7 @@ fun String.toReviewDescriptionFormatted(context: Context, maxChar: Int): Spanned
 
 infix fun String.toRelativeDayAndWeek(format: String): String {
     return if (this.isNotEmpty()) {
-        val sdf = SimpleDateFormat(format)
+        val sdf = SimpleDateFormat(format, Locale.getDefault())
         val date: Date = sdf.parse(this)
         val millis: Long = date.time
 

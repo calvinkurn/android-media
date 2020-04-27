@@ -1,7 +1,5 @@
 package com.tokopedia.reviewseller.feature.reviewdetail.view.adapter.viewholder
 
-import android.text.TextUtils
-import android.util.Log
 import android.view.View
 import android.view.ViewTreeObserver
 import androidx.appcompat.widget.AppCompatImageView
@@ -23,7 +21,6 @@ import com.tokopedia.reviewseller.feature.reviewdetail.util.toReviewDescriptionF
 import com.tokopedia.reviewseller.feature.reviewdetail.view.adapter.ReviewDetailFeedbackImageAdapter
 import com.tokopedia.reviewseller.feature.reviewdetail.view.model.FeedbackUiModel
 import com.tokopedia.unifycomponents.list.ListItemUnify
-import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 
 
@@ -110,12 +107,10 @@ class ProductFeedbackDetailViewHolder(private val view: View,
             }
         }
 
-        tvFeedbackReview?.apply {
-            setReplyCommentSeeMore(this, feedbackText, 3)
-        }
+        tvFeedbackReview?.setReplyCommentSeeMore(feedbackText, 3)
     }
 
-    private fun setReplyCommentSeeMore(txtView: Typography, replyText: String, maxLines: Int) = txtView?.let {
+    private fun Typography.setReplyCommentSeeMore(replyText: String, maxLines: Int) = this.let {
         val vto = it.viewTreeObserver
 
         vto.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
@@ -145,7 +140,7 @@ class ProductFeedbackDetailViewHolder(private val view: View,
 
             tvReplyComment?.text = element.replyText.orEmpty()
             tvReplyComment?.let {
-                setReplyCommentSeeMore(it, element.replyText.orEmpty(), 2)
+                it.setReplyCommentSeeMore(element.replyText.orEmpty(), 2)
                 it.setOnClickListener { _ ->
                     it.maxLines = Integer.MAX_VALUE
                     it.text = MethodChecker.fromHtml(element.replyText)
