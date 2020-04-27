@@ -1,6 +1,8 @@
 package com.tokopedia.translator.ui;
 
-import android.widget.*;
+import android.content.Context;
+import android.util.AttributeSet;
+import android.widget.FrameLayout;
 
 public class TranslatorSettingView extends FrameLayout {
     public TranslatorSettingView(Context context) {
