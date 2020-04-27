@@ -58,6 +58,8 @@
 /features/merchant/product_detail/                      @tokopedia/minion-stuart
 /features/merchant/product_detail_common/               @tokopedia/minion-stuart
 /features/merchant/product_draft_database/              @tokopedia/minion-stuart
+/features/merchant/product_add_edit/                    @tokopedia/minion-stuart
+/features/merchant/product_manage_common/               @tokopedia/minion-stuart
 /features/merchant/product_manage_item/                 @tokopedia/minion-stuart
 /features/merchant/product_manage_list/                 @tokopedia/minion-stuart
 /features/merchant/product_share/                       @tokopedia/minion-stuart
@@ -67,6 +69,7 @@
 /features/merchant/shop_common/                         @tokopedia/minion-stuart
 /features/merchant/shop_etalase_picker/                 @tokopedia/minion-stuart
 /features/merchant/shop_open/                           @tokopedia/minion-stuart
+/features/merchant/shop_showcase/                       @tokopedia/minion-stuart
 /features/merchant/shop_page/                           @tokopedia/minion-stuart
 
 /features/top_ads/top_ads_free_claim/                   @tokopedia/minion-skywalker
@@ -80,6 +83,7 @@
 /features/merchant/shop_settings/                       @tokopedia/minion-stuart
 
 /features/merchant/seller_home/                         @tokopedia/minion-stuart
+/features/merchant/seller_onboarding/                   @tokopedia/minion-stuart
 /features/merchant/seller_home_drawer/                  @tokopedia/minion-stuart
 /libraries/kotlin_extensions/                           @tokopedia/minion-stuart
 
@@ -226,6 +230,7 @@
 /libraries/logger/										@tokopedia/core-team
 /libraries/oms/											@tokopedia/core-team
 /libraries/permissionchecker/							@tokopedia/core-team
+/libraries/product_photo_adapter/                       @tokopedia/minion-stuart
 /libraries/promotions_target/							@tokopedia/core-team
 /libraries/push_notification/							@tokopedia/core-team
 /libraries/react_native/								@tokopedia/core-team

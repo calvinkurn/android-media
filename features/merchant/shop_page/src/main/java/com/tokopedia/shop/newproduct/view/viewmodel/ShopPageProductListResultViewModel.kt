@@ -16,6 +16,7 @@ import com.tokopedia.shop.newproduct.view.datamodel.ShopProductViewModel
 import com.tokopedia.shop.product.data.model.ShopProduct
 import com.tokopedia.shop.product.data.source.cloud.model.ShopProductFilterInput
 import com.tokopedia.shop.product.domain.interactor.GqlGetShopProductUseCase
+import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -65,17 +66,35 @@ class ShopPageProductListResultViewModel @Inject constructor(private val userSes
         }
     }
 
-    fun getEtalaseData(shopId: String) {
+    fun getEtalaseData(shopId: String, isOwner: Boolean, isNeedToReloadData: Boolean = false) {
         launchCatchError(coroutineContext, block = {
-            val etalaseListDataResult = withContext(Dispatchers.IO) { getShopEtalaseData(shopId) }
+            val etalaseListDataResult = withContext(Dispatchers.IO) { getShopEtalaseData(shopId, isOwner, isNeedToReloadData) }
             etalaseListData.postValue(Success(etalaseListDataResult))
         }) {
             etalaseListData.postValue(Fail(it))
         }
     }
 
-    private fun getShopEtalaseData(shopId: String): List<ShopProductEtalaseChipItemViewModel> {
-        val params = GetShopEtalaseByShopUseCase.createRequestParams(shopId, true, false, isMyShop(shopId))
+    private fun getShopEtalaseData(shopId: String, isOwner: Boolean, isNeedToReloadData: Boolean = false): List<ShopProductEtalaseChipItemViewModel> {
+        var params: RequestParams
+
+        if (isOwner) {
+            params = GetShopEtalaseByShopUseCase.createRequestParams(
+                    shopId,
+                    GetShopEtalaseByShopUseCase.Companion.SellerQueryParam.HIDE_NO_COUNT_VALUE,
+                    GetShopEtalaseByShopUseCase.Companion.SellerQueryParam.HIDE_SHOWCASE_GROUP_VALUE,
+                    GetShopEtalaseByShopUseCase.Companion.SellerQueryParam.IS_OWNER_VALUE
+            )
+        } else {
+            params = GetShopEtalaseByShopUseCase.createRequestParams(
+                    shopId,
+                    GetShopEtalaseByShopUseCase.Companion.BuyerQueryParam.HIDE_NO_COUNT_VALUE,
+                    GetShopEtalaseByShopUseCase.Companion.BuyerQueryParam.HIDE_SHOWCASE_GROUP_VALUE,
+                    GetShopEtalaseByShopUseCase.Companion.BuyerQueryParam.IS_OWNER_VALUE
+            )
+        }
+
+        getShopEtalaseByShopUseCase.isFromCacheFirst = !isNeedToReloadData
         val listShopEtalaseResponse = getShopEtalaseByShopUseCase.createObservable(params).toBlocking().first()
         return ShopPageProductListMapper.mapToShopProductEtalaseListDataModel(listShopEtalaseResponse)
     }

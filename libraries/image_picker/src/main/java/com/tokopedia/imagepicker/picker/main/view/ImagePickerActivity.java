@@ -156,6 +156,7 @@ public class ImagePickerActivity extends BaseSimpleActivity
         } else {
             tvDone.setVisibility(View.GONE);
         }
+        trackOpen();
     }
 
     protected void onDoneClicked() {
@@ -342,6 +343,7 @@ public class ImagePickerActivity extends BaseSimpleActivity
     public void onBackPressed() {
         //remove any cache file captured by camera
         ImageUtils.deleteCacheFolder(ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_CACHE_CAMERA);
+        trackBack();
         super.onBackPressed();
     }
 
@@ -570,6 +572,7 @@ public class ImagePickerActivity extends BaseSimpleActivity
         intent.putStringArrayListExtra(RESULT_IMAGE_DESCRIPTION_LIST, imageDescriptionList);
         intent.putExtra(RESULT_IS_EDITTED, isEdittedList);
         setResult(Activity.RESULT_OK, intent);
+        trackContinue();
         finish();
     }
 
@@ -680,5 +683,17 @@ public class ImagePickerActivity extends BaseSimpleActivity
     @Override
     public void onVideoRecorderVisible() {
         onCameraViewVisible();
+    }
+
+    public void trackOpen(){
+        //to be overridden
+    }
+
+    public void trackBack(){
+        //to be overridden
+    }
+
+    public void trackContinue(){
+        //to be overridden
     }
 }

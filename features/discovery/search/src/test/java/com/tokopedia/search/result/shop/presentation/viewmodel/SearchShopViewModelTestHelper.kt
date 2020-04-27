@@ -1,6 +1,5 @@
 package com.tokopedia.search.result.shop.presentation.viewmodel
 
-import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.search.result.TestDispatcherProvider
@@ -34,10 +33,6 @@ internal fun FeatureBody.createTestInstance() {
     val userSession by memoized {
         mockk<UserSessionInterface>(relaxed = true)
     }
-
-    val localCacheHandler by memoized {
-        mockk<LocalCacheHandler>(relaxed = true)
-    }
 }
 
 internal fun TestBody.createSearchShopViewModel(parameter: Map<String, Any> =
@@ -51,8 +46,6 @@ internal fun TestBody.createSearchShopViewModel(parameter: Map<String, Any> =
     val searchShopLoadMoreUseCase by memoized<UseCase<SearchShopModel>>()
     val searchLocalCacheHandler by memoized<SearchLocalCacheHandler>()
     val userSession by memoized<UserSessionInterface>()
-    val localCacheHandler by memoized<LocalCacheHandler>()
-
 
     val shopViewModelMapperModule = ShopViewModelMapperModule()
 
@@ -64,6 +57,6 @@ internal fun TestBody.createSearchShopViewModel(parameter: Map<String, Any> =
             TestDispatcherProvider(), parameter,
             searchShopFirstPageUseCase, searchShopLoadMoreUseCase, getDynamicFilterUseCase,
             shopCpmViewModelMapper, shopTotalCountViewModelMapper, shopViewModelMapper,
-            searchLocalCacheHandler, userSession, localCacheHandler
+            searchLocalCacheHandler, userSession
     )
 }

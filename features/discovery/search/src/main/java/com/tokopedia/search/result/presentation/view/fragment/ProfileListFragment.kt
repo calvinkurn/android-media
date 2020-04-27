@@ -9,14 +9,11 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
-import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchConstant
-import com.tokopedia.discovery.common.constants.SearchConstant.GCM.GCM_ID
-import com.tokopedia.discovery.common.constants.SearchConstant.GCM.GCM_STORAGE
 import com.tokopedia.discovery.common.model.SearchParameter
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.search.R
@@ -392,10 +389,7 @@ class ProfileListFragment :
     }
 
     override fun getRegistrationId(): String {
-        if (activity == null || activity!!.applicationContext == null) return ""
-
-        val cache = LocalCacheHandler(activity!!.applicationContext, GCM_STORAGE)
-        return cache.getString(GCM_ID, "")
+        return userSessionInterface.deviceId ?: ""
     }
 
     fun backToTop() {

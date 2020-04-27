@@ -56,6 +56,7 @@ class ProductSnapshotViewHolder(private val view: View,
         }
 
         view.fab_detail.setOnClickListener {
+            listener.onEditProductClick(element, element.dynamicProductInfoP1, getComponentTrackData(element))
             listener.onFabWishlistClicked(it.isActivated, getComponentTrackData(element))
         }
         element.media?.let {

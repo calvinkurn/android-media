@@ -9,6 +9,7 @@ import com.tokopedia.linker.LinkerUtils
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductSnapshotDataModel
 import com.tokopedia.product.util.processor.Product
 import com.tokopedia.product.util.processor.ProductDetailViewsBundler
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
@@ -349,6 +350,22 @@ object DynamicProductDetailTracking {
                     ))
                     ))
             )
+        }
+
+        fun eventEditProductClick (product: ProductSnapshotDataModel, isSessionActive: Boolean,
+                                   productInfo: DynamicProductInfoP1?, componentTrackDataModel: ComponentTrackDataModel) {
+            val topAdsAction = ProductTrackingConstant.Action.TOPADS_CLICK + (if (!isSessionActive) " - ${ProductTrackingConstant.Tracking.USER_NON_LOGIN}" else "")
+
+            val editProductData = DataLayer.mapOf(
+                    ProductTrackingConstant.Tracking.KEY_EVENT, ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
+                    ProductTrackingConstant.Tracking.KEY_CATEGORY, ProductTrackingConstant.Category.PRODUCT_DETAIL_PAGE_SELLER,
+                    ProductTrackingConstant.Tracking.KEY_ACTION, ProductTrackingConstant.Action.CLICK_EDIT_PRODUCT,
+                    ProductTrackingConstant.Tracking.KEY_LABEL, "",
+                    ProductTrackingConstant.Tracking.KEY_PRODUCT_ID, product.dynamicProductInfoP1?.parentProductId,
+                    ProductTrackingConstant.Tracking.KEY_LAYOUT, "layout:${productInfo?.layoutName};catName:${productInfo?.basic?.category?.name};catId:${productInfo?.basic?.category?.id};",
+                    ProductTrackingConstant.Tracking.KEY_COMPONENT, "comp:${componentTrackDataModel.componentType};temp:${componentTrackDataModel.componentName};elem:${topAdsAction};cpos:${componentTrackDataModel.adapterPosition};"
+            )
+            TrackApp.getInstance().gtm.sendGeneralEvent(editProductData)
         }
 
         fun eventClickAffiliate(userId: String, shopID: Int, isRegularPdp: Boolean = false, productInfo: DynamicProductInfoP1?) {

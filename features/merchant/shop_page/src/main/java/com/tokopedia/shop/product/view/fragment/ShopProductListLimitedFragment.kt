@@ -2,23 +2,23 @@ package com.tokopedia.shop.product.view.fragment
 
 import android.app.Activity
 import android.app.ProgressDialog
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
-import com.google.android.material.snackbar.Snackbar
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.SimpleItemAnimator
 import android.text.TextUtils
 import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.SimpleItemAnimator
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
@@ -26,13 +26,13 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHold
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
-import com.tokopedia.network.exception.UserNotLoginException
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.network.TextApiUtils
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.kotlin.extensions.view.gone
@@ -45,6 +45,7 @@ import com.tokopedia.merchantvoucher.voucherList.MerchantVoucherListActivity
 import com.tokopedia.merchantvoucher.voucherList.presenter.MerchantVoucherListPresenter
 import com.tokopedia.merchantvoucher.voucherList.presenter.MerchantVoucherListView
 import com.tokopedia.merchantvoucher.voucherList.widget.MerchantVoucherListWidget
+import com.tokopedia.network.exception.UserNotLoginException
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.shop.R
 import com.tokopedia.shop.ShopModuleRouter
@@ -718,7 +719,7 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
             shopPageTracking?.clickZeroProduct(CustomDimensionShopPage.create(shopInfo!!.shopCore.shopID,
                     shopInfo!!.goldOS.isOfficial == 1, shopInfo!!.goldOS.isGold == 1))
         }
-        RouteManager.route(activity, ApplinkConst.PRODUCT_ADD)
+        RouteManager.route(activity, ApplinkConstInternalMechant.MERCHANT_OPEN_PRODUCT_PREVIEW)
     }
 
     fun promoClicked(url: String?) {

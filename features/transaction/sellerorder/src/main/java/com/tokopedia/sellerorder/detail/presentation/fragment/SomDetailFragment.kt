@@ -516,6 +516,7 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
                             buttonResp.key.equals(KEY_VIEW_COMPLAINT_SELLER, true) -> setActionSeeComplaint(buttonResp.url)
                             buttonResp.key.equals(KEY_BATALKAN_PESANAN, true) -> setActionRejectOrder()
                             buttonResp.key.equals(KEY_ASK_BUYER, true) -> goToAskBuyer()
+                            buttonResp.key.equals(KEY_REJECT_ORDER, true) -> setActionRejectOrder()
                         }
                     }
                 }

@@ -1,0 +1,100 @@
+package com.tokopedia.product.addedit.detail.presentation.adapter
+
+import android.view.LayoutInflater
+import android.view.ViewGroup
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.NO_POSITION
+import com.tokopedia.product.addedit.R
+import com.tokopedia.product.addedit.detail.presentation.model.WholeSaleInputModel
+import com.tokopedia.product.addedit.detail.presentation.viewholder.WholeSaleInputViewHolder
+import java.math.BigInteger
+
+class WholeSalePriceInputAdapter(private val listener: WholeSaleInputViewHolder.TextChangedListener,
+                                 private val onAddWholesale: (() -> Unit)? = null,
+                                 private val onDeleteWholesale: (() -> Unit)? = null) :
+        RecyclerView.Adapter<WholeSaleInputViewHolder>(), WholeSaleInputViewHolder.OnDeleteButtonClickListener {
+
+    private var wholeSaleInputModelList: MutableList<WholeSaleInputModel> = mutableListOf()
+
+    private var productPrice: BigInteger = 0.toBigInteger()
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WholeSaleInputViewHolder {
+        val rootView = LayoutInflater.from(parent.context).inflate(R.layout.wholesale_input_item, parent, false)
+        return WholeSaleInputViewHolder(rootView, this, listener)
+    }
+
+    override fun getItemCount(): Int {
+        return wholeSaleInputModelList.size
+    }
+
+    override fun onBindViewHolder(holder: WholeSaleInputViewHolder, position: Int) {
+        val wholeSaleInputModel = wholeSaleInputModelList[position]
+
+        val isWholeSaleQuantityEmpty = wholeSaleInputModel.quantity.isBlank()
+        val isWholeSalePriceEmpty = wholeSaleInputModel.price.isBlank()
+
+        // set wholesale quantity recommendation when the wholesale quantity is empty
+        if (isWholeSaleQuantityEmpty) {
+            if (position == 0) wholeSaleInputModel.quantity = (position + 1).toString()
+            else {
+                val previousInputModel = wholeSaleInputModelList[position - 1]
+                val quantityRecommendation = previousInputModel.quantity.toBigInteger() + 1.toBigInteger()
+                wholeSaleInputModel.quantity = quantityRecommendation.toString()
+            }
+        }
+
+        // set wholesale price recommendation when the wholesale price is empty
+        if (isWholeSalePriceEmpty && productPrice > 0.toBigInteger()) {
+            var priceRecommendation = (productPrice - (position + 1).toBigInteger())
+            if (priceRecommendation < 0.toBigInteger()) {
+                priceRecommendation = 0.toBigInteger()
+            }
+            wholeSaleInputModel.price = priceRecommendation.toString()
+        }
+
+        holder.bindData(wholeSaleInputModel)
+    }
+
+    fun addNewWholeSalePriceForm() {
+        val wholeSaleInputModel = WholeSaleInputModel()
+        wholeSaleInputModelList.add(wholeSaleInputModel)
+        onAddWholesale?.invoke()
+        notifyItemInserted(wholeSaleInputModelList.lastIndex)
+    }
+
+    fun setWholeSaleInputModels(wholeSaleInputModels: List<WholeSaleInputModel>) {
+        this.wholeSaleInputModelList = wholeSaleInputModels.toMutableList()
+        notifyDataSetChanged()
+    }
+
+    fun setProductPrice(productPriceInput: String) {
+        if (productPriceInput.isBlank()) this.productPrice = 0.toBigInteger()
+        else this.productPrice = productPriceInput.toBigInteger()
+    }
+
+    fun updateWholeSaleQuantityInputModel(position: Int, newQuantity: String) {
+        wholeSaleInputModelList[position].quantity = newQuantity
+    }
+
+    fun updateWholeSalePriceInputModel(position: Int, newPrice: String) {
+        wholeSaleInputModelList[position].price = newPrice
+    }
+
+    fun getPreviousQuantity(position: Int): String {
+        return if (position == 0) ""
+        else wholeSaleInputModelList[position - 1].quantity
+    }
+
+    fun getPreviousPrice(position: Int): String {
+        return if (position == 0) ""
+        else wholeSaleInputModelList[position - 1].price
+    }
+
+    override fun onDeleteButtonClicked(position: Int) {
+        if (position != NO_POSITION) {
+            onDeleteWholesale?.invoke()
+            wholeSaleInputModelList.removeAt(position)
+            notifyItemRemoved(position)
+        }
+    }
+}

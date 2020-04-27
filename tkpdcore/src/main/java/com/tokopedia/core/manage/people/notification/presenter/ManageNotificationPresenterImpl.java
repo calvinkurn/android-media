@@ -124,8 +124,7 @@ public class ManageNotificationPresenterImpl implements ManageNotificationPresen
                     @Override
                     public void onTimeout() {
                         viewListener.finishLoading();
-                        // Will disable the snackbar error as infra team not ready
-//                        viewListener.showSnackbar();
+                        viewListener.showSnackbar();
                     }
 
                     @Override

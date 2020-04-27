@@ -162,6 +162,11 @@ final class ProductListPresenter
         return userSession.isLoggedIn();
     }
 
+    @Override
+    public String getDeviceId() {
+        return userSession.getDeviceId();
+    }
+
     private Map<String, String> getAdditionalParamsMap() {
         return UrlParamUtils.getParamMap(additionalParams);
     }

@@ -36,6 +36,7 @@ import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.design.component.Dialog
@@ -62,6 +63,7 @@ import com.tokopedia.loginregister.discover.data.DiscoverItemViewModel
 import com.tokopedia.loginregister.login.di.DaggerLoginComponent
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckData
 import com.tokopedia.loginregister.login.domain.pojo.StatusPinData
+import com.tokopedia.loginregister.login.router.LoginRouter
 import com.tokopedia.loginregister.login.view.activity.LoginActivity
 import com.tokopedia.loginregister.login.view.listener.LoginEmailPhoneContract
 import com.tokopedia.loginregister.login.view.presenter.LoginEmailPhonePresenter
@@ -620,8 +622,12 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
             userSession.autofillUserData = emailPhoneEditText.text.toString()
 
         activity?.run {
-            setResult(Activity.RESULT_OK)
-            finish()
+            if (GlobalConfig.isSellerApp()) {
+                setLoginSuccessSellerApp()
+            } else {
+                setResult(Activity.RESULT_OK)
+                finish()
+            }
 
             analytics.eventSuccessLogin(context, userSession.loginMethod, registerAnalytics)
             setTrackingUserId(userSession.userId)
@@ -629,6 +635,20 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
         }
 
         RemoteConfigInstance.getInstance().abTestPlatform.fetchByType(null)
+    }
+
+    private fun setLoginSuccessSellerApp() = view?.run {
+        if (context.applicationContext is LoginRouter) {
+            (context.applicationContext as LoginRouter).setOnboardingStatus(true)
+        }
+        val intent = if (userSession.hasShop()) {
+            RouteManager.getIntent(context, ApplinkConstInternalSellerapp.SELLER_HOME)
+        } else {
+            RouteManager.getIntent(context, ApplinkConstInternalMarketplace.OPEN_SHOP)
+        }
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+        startActivity(intent)
+        activity?.finish()
     }
 
     private fun setFCM() {

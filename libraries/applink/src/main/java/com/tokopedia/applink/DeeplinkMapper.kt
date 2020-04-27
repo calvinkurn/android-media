@@ -246,7 +246,7 @@ object DeeplinkMapper {
     private fun getRegisteredNavigationFromTokopedia(deeplink: String): String {
         val trimDeeplink = trimDeeplink(deeplink)
         val mappedDeeplink = when (trimDeeplink) {
-            ApplinkConst.PRODUCT_ADD -> ApplinkConstInternalMarketplace.PRODUCT_ADD_ITEM
+            ApplinkConst.PRODUCT_ADD -> ApplinkConstInternalMechant.MERCHANT_OPEN_PRODUCT_PREVIEW
             ApplinkConst.SETTING_PROFILE -> ApplinkConstInternalGlobal.SETTING_PROFILE
             ApplinkConst.ADD_CREDIT_CARD -> ApplinkConstInternalPayment.PAYMENT_ADD_CREDIT_CARD
             ApplinkConst.SETTING_NOTIFICATION -> ApplinkConstInternalMarketplace.USER_NOTIFICATION_SETTING
@@ -322,7 +322,7 @@ object DeeplinkMapper {
         return when (trimDeeplink) {
             ApplinkConst.SellerApp.SELLER_APP_HOME -> ApplinkConstInternalSellerapp.SELLER_HOME
             ApplinkConst.SellerApp.TOPADS_DASHBOARD -> ApplinkConstInternalTopAds.TOPADS_DASHBOARD_INTERNAL
-            ApplinkConst.SellerApp.PRODUCT_ADD -> ApplinkConstInternalMarketplace.PRODUCT_ADD_ITEM
+            ApplinkConst.SellerApp.PRODUCT_ADD -> ApplinkConstInternalMechant.MERCHANT_OPEN_PRODUCT_PREVIEW
             ApplinkConst.SETTING_PROFILE -> ApplinkConstInternalGlobal.SETTING_PROFILE
             ApplinkConst.ADD_CREDIT_CARD -> ApplinkConstInternalPayment.PAYMENT_ADD_CREDIT_CARD
             ApplinkConst.SETTING_BANK -> ApplinkConstInternalGlobal.SETTING_BANK

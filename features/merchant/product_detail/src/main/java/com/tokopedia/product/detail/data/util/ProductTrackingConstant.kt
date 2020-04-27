@@ -8,6 +8,7 @@ object ProductTrackingConstant {
         const val PDP_AFTER_ATC = "product detail page after atc"
         const val TOP_NAV_SEARCH_PDP = "top nav - search - product detail page"
         const val TOP_NAV_SHARE_PDP = "top nav - product detail page"
+        const val PRODUCT_DETAIL_PAGE_SELLER = "product detail page - seller side"
     }
 
     object Tracking {
@@ -114,6 +115,7 @@ object ProductTrackingConstant {
         const val CLICK_TRADEIN = "click trade in widget"
         const val CLICK_UNFOLLOW = "click - unfollow shop"
         const val CLICK_FOLLOW = "click - follow shop"
+        const val CLICK_EDIT_PRODUCT = "click - edit product button"
     }
 
     object Label {

@@ -5,7 +5,6 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.authentication.AuthHelper
 import com.tokopedia.discovery.common.DispatcherProvider
 import com.tokopedia.discovery.common.Event
@@ -14,7 +13,6 @@ import com.tokopedia.discovery.common.State
 import com.tokopedia.discovery.common.State.*
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchConstant
-import com.tokopedia.discovery.common.constants.SearchConstant.GCM.GCM_ID
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.filter.newdynamicfilter.controller.FilterController
@@ -43,8 +41,7 @@ internal class SearchShopViewModel(
         private val shopTotalCountViewModelMapper: Mapper<SearchShopModel, ShopTotalCountViewModel>,
         private val shopViewModelMapper: Mapper<SearchShopModel, ShopViewModel>,
         private val searchLocalCacheHandler: SearchLocalCacheHandler,
-        private val userSession: UserSessionInterface,
-        private val localCacheHandler: LocalCacheHandler
+        private val userSession: UserSessionInterface
 ) : BaseViewModel(dispatcher.ui()) {
 
     companion object {
@@ -97,7 +94,7 @@ internal class SearchShopViewModel(
     }
 
     fun getRegistrationId(): String {
-        return localCacheHandler.getString(GCM_ID, "")
+        return userSession.deviceId
     }
 
     private fun setSearchParameterUserId() {

@@ -69,6 +69,7 @@ import com.tokopedia.inbox.rescenter.inboxv2.view.activity.ResoInboxActivity;
 import com.tokopedia.iris.IrisAnalytics;
 import com.tokopedia.linker.interfaces.LinkerRouter;
 import com.tokopedia.linker.model.LinkerData;
+import com.tokopedia.loginregister.login.router.LoginRouter;
 import com.tokopedia.loginregister.login.view.activity.LoginActivity;
 import com.tokopedia.loginregister.registerinitial.view.activity.RegisterInitialActivity;
 import com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomActivity;
@@ -120,9 +121,10 @@ import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
 import com.tokopedia.sellerapp.drawer.DrawerSellerHelper;
 import com.tokopedia.sellerapp.utils.DeferredResourceInitializer;
 import com.tokopedia.sellerapp.utils.FingerprintModelGenerator;
-import com.tokopedia.sellerapp.welcome.WelcomeActivity;
 import com.tokopedia.sellerhome.SellerHomeRouter;
 import com.tokopedia.sellerhome.view.activity.SellerHomeActivity;
+import com.tokopedia.selleronboarding.activity.SellerOnboardingActivity;
+import com.tokopedia.selleronboarding.utils.OnboardingPreference;
 import com.tokopedia.sellerorder.common.util.SomConsts;
 import com.tokopedia.sellerorder.list.presentation.fragment.SomListFragment;
 import com.tokopedia.shop.ShopModuleRouter;
@@ -184,7 +186,8 @@ public abstract class SellerRouterApplication extends MainApplication
         LinkerRouter,
         ResolutionRouter,
         MLPRouter,
-        SellerHomeRouter {
+        SellerHomeRouter,
+        LoginRouter {
 
     protected RemoteConfig remoteConfig;
     private DaggerProductComponent.Builder daggerProductBuilder;
@@ -346,7 +349,7 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public Intent getHomeIntent(Context context) {
-        Intent intent = new Intent(context, WelcomeActivity.class);
+        Intent intent = new Intent(context, SellerOnboardingActivity.class);
         if (SessionHandler.isV4Login(context)) {
             if (SessionHandler.isUserHasShop(context)) {
                 return SellerHomeActivity.createIntent(context);
@@ -368,7 +371,7 @@ public abstract class SellerRouterApplication extends MainApplication
         if (SessionHandler.isV4Login(context)) {
             return SellerHomeActivity.class;
         } else {
-            return WelcomeActivity.class;
+            return SellerOnboardingActivity.class;
         }
     }
 
@@ -991,5 +994,11 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public Fragment getChatListFragment() {
         return ChatTabListFragment.create();
+    }
+
+    @Override
+    public void setOnboardingStatus(boolean status) {
+        OnboardingPreference preference = new OnboardingPreference(this);
+        preference.putBoolean(OnboardingPreference.HAS_OPEN_ONBOARDING, status);
     }
 }
