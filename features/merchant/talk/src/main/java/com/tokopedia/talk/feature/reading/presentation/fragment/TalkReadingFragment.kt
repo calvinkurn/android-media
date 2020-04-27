@@ -15,6 +15,7 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.GENERAL_SETTING
@@ -36,7 +37,7 @@ import com.tokopedia.talk.feature.reading.presentation.adapter.uimodel.TalkReadi
 import com.tokopedia.talk.feature.reading.presentation.viewmodel.TalkReadingViewModel
 import com.tokopedia.talk.feature.reading.presentation.widget.OnCategoryModifiedListener
 import com.tokopedia.talk.feature.reading.presentation.widget.OnFinishedSelectSortListener
-import com.tokopedia.talk.feature.reading.presentation.widget.OnThreadClickListener
+import com.tokopedia.talk.feature.reading.presentation.widget.ThreadListener
 import com.tokopedia.talk.feature.reading.presentation.widget.TalkReadingSortBottomSheet
 import com.tokopedia.talk_old.R
 import com.tokopedia.talk_old.addtalk.view.activity.AddTalkActivity
@@ -52,7 +53,7 @@ import javax.inject.Inject
 class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
         TalkReadingAdapterTypeFactory>(), HasComponent<TalkReadingComponent>,
         OnFinishedSelectSortListener, OnCategoryModifiedListener,
-        OnThreadClickListener, TalkPerformanceMonitoringContract {
+        ThreadListener, TalkPerformanceMonitoringContract {
 
     companion object {
         const val DEFAULT_DISCUSSION_DATA_LIMIT = 10
@@ -165,6 +166,10 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
 
     override fun onThreadClicked(questionID: String) {
         goToReplyActivity(questionID)
+    }
+
+    override fun onUserDetailsClicked(userId: String) {
+        goToProfileActivity(userId)
     }
 
     override fun onDestroy() {
@@ -374,6 +379,11 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
     private fun goToReplyActivity(questionID: String) {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.TALK_REPLY, questionID, productId, shopId)
         startActivityForResult(intent, TALK_REPLY_ACTIVITY_REQUEST_CODE)
+    }
+
+    private fun goToProfileActivity(userId: String) {
+        val intent = RouteManager.getIntent(context, ApplinkConst.PROFILE, userId)
+        startActivity(intent)
     }
 
     private fun getDiscussionData(page: Int = DEFAULT_INITIAL_PAGE) {

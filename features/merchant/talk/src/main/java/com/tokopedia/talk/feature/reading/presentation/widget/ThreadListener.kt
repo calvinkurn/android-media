@@ -1,5 +1,6 @@
 package com.tokopedia.talk.feature.reading.presentation.widget
 
-interface OnThreadClickListener {
+interface ThreadListener {
     fun onThreadClicked(questionID: String)
+    fun onUserDetailsClicked(userId: String)
 }

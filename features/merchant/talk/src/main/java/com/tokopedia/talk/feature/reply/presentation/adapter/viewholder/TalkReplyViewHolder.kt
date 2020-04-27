@@ -10,12 +10,14 @@ import com.tokopedia.talk.feature.reply.presentation.adapter.TalkReplyAttachedPr
 import com.tokopedia.talk.feature.reply.presentation.adapter.uimodel.TalkReplyUiModel
 import com.tokopedia.talk.feature.reply.presentation.widget.listeners.AttachedProductCardListener
 import com.tokopedia.talk.feature.reply.presentation.widget.listeners.OnKebabClickedListener
+import com.tokopedia.talk.feature.reply.presentation.widget.listeners.ThreadListener
 import com.tokopedia.talk_old.R
 import kotlinx.android.synthetic.main.item_talk_reply.view.*
 
 class TalkReplyViewHolder(view: View,
                           private val attachedProductCardListener: AttachedProductCardListener,
-                          private val onKebabClickedListener: OnKebabClickedListener
+                          private val onKebabClickedListener: OnKebabClickedListener,
+                          private val threadListener: ThreadListener
 ) : AbstractViewHolder<TalkReplyUiModel>(view) {
 
     companion object {
@@ -25,8 +27,8 @@ class TalkReplyViewHolder(view: View,
 
     override fun bind(element: TalkReplyUiModel) {
         element.answer.apply {
-            showProfilePicture(userThumbnail)
-            showDisplayName(userName)
+            showProfilePicture(userThumbnail, userId)
+            showDisplayName(userName, userId)
             showDate(createTimeFormatted)
             showSellerLabelWithCondition(isSeller)
             showAnswer(content, answerID)
@@ -38,19 +40,25 @@ class TalkReplyViewHolder(view: View,
         }
     }
 
-    private fun showProfilePicture(userThumbNail: String) {
+    private fun showProfilePicture(userThumbNail: String, userId: String) {
         if(userThumbNail.isNotEmpty()) {
             itemView.replyProfilePicture.apply {
                 loadImage(userThumbNail)
+                setOnClickListener {
+                    threadListener.onUserDetailsClicked(userId)
+                }
                 visibility = View.VISIBLE
             }
         }
     }
 
-    private fun showDisplayName(userName: String) {
+    private fun showDisplayName(userName: String, userId: String) {
         if(userName.isNotEmpty()) {
             itemView.replyDisplayName.apply{
                 text = userName
+                setOnClickListener {
+                    threadListener.onUserDetailsClicked(userId)
+                }
                 visibility = View.VISIBLE
             }
         }

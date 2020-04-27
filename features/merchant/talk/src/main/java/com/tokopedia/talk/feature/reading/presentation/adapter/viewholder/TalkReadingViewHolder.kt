@@ -4,11 +4,11 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.talk.feature.reading.presentation.adapter.uimodel.TalkReadingUiModel
-import com.tokopedia.talk.feature.reading.presentation.widget.OnThreadClickListener
+import com.tokopedia.talk.feature.reading.presentation.widget.ThreadListener
 import com.tokopedia.talk_old.R
 import kotlinx.android.synthetic.main.item_talk_reading.view.*
 
-class TalkReadingViewHolder(view: View, private val onThreadClickListener: OnThreadClickListener) : AbstractViewHolder<TalkReadingUiModel>(view) {
+class TalkReadingViewHolder(view: View, private val threadListener: ThreadListener) : AbstractViewHolder<TalkReadingUiModel>(view) {
 
     companion object {
         const val BULLET_POINT = "\u2022 %s"
@@ -21,13 +21,13 @@ class TalkReadingViewHolder(view: View, private val onThreadClickListener: OnThr
         itemView.apply {
             readingQuestionTitle.text = element.question.content
             readingQuestionTitle.setOnClickListener {
-                onThreadClickListener.onThreadClicked(element.question.questionID)
+                threadListener.onThreadClicked(element.question.questionID)
             }
             if(element.question.totalAnswer > 0 && element.question.answer.answerID.isNotEmpty()) {
                 element.question.apply {
-                    showProfilePicture(answer.userThumbnail)
+                    showProfilePicture(answer.userThumbnail, answer.userId)
                     showSellerLabelWithCondition(answer.isSeller)
-                    showDisplayName(answer.userName)
+                    showDisplayName(answer.userName, answer.userId)
                     showDate(answer.createTimeFormatted)
                     showAnswer(answer.content, questionID)
                     showNumberOfLikesWithCondition(answer.likeCount)
@@ -54,19 +54,25 @@ class TalkReadingViewHolder(view: View, private val onThreadClickListener: OnThr
         }
     }
 
-    private fun showProfilePicture(userThumbNail: String) {
+    private fun showProfilePicture(userThumbNail: String, userId: String) {
         if(userThumbNail.isNotEmpty()) {
             itemView.readingProfilePicture.apply {
                 loadImage(userThumbNail)
+                setOnClickListener {
+                    threadListener.onUserDetailsClicked(userId)
+                }
                 visibility = View.VISIBLE
             }
         }
     }
 
-    private fun showDisplayName(userName: String) {
+    private fun showDisplayName(userName: String, userId: String) {
         if(userName.isNotEmpty()) {
             itemView.readingDisplayName.apply{
                 text = userName
+                setOnClickListener {
+                    threadListener.onUserDetailsClicked(userId)
+                }
                 visibility = View.VISIBLE
             }
         }
@@ -77,7 +83,7 @@ class TalkReadingViewHolder(view: View, private val onThreadClickListener: OnThr
             itemView.readingMessage.apply {
                 text = answer
                 setOnClickListener {
-                    onThreadClickListener.onThreadClicked(questionId)
+                    threadListener.onThreadClicked(questionId)
                 }
                 visibility = View.VISIBLE
             }
@@ -123,7 +129,7 @@ class TalkReadingViewHolder(view: View, private val onThreadClickListener: OnThr
             itemView.seeOtherAnswers.apply {
                 text = String.format(OTHER_ANSWERS, answersToShow)
                 setOnClickListener {
-                    onThreadClickListener.onThreadClicked(questionId)
+                    threadListener.onThreadClicked(questionId)
                 }
                 visibility = View.VISIBLE
             }

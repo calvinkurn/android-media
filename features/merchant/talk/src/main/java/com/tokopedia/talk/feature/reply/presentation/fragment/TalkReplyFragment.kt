@@ -53,7 +53,7 @@ import javax.inject.Inject
 
 class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>, OnReplyBottomSheetClickedListener,
         OnKebabClickedListener, AttachedProductCardListener, TalkReplyHeaderListener,
-        TalkReplyTextboxListener, TalkPerformanceMonitoringContract {
+        TalkReplyTextboxListener, TalkPerformanceMonitoringContract, ThreadListener {
 
     companion object {
 
@@ -230,6 +230,10 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
         castContextToTalkPerformanceMonitoringListener(context)
     }
 
+    override fun onUserDetailsClicked(userId: String) {
+        goToProfileActivity(userId)
+    }
+
     private fun goToReportActivity(commentId: String) {
         val intent = if(commentId.isNotBlank()) {
             context?.let { ReportTalkActivity.createIntentReportComment(it, questionId, commentId, shopId, productId) }
@@ -250,6 +254,11 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
 
     private fun goToPdp(productId: String) {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId)
+        startActivity(intent)
+    }
+
+    private fun goToProfileActivity(userId: String) {
+        val intent = RouteManager.getIntent(context, ApplinkConst.PROFILE, userId)
         startActivity(intent)
     }
 
@@ -465,7 +474,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
     }
 
     private fun initAdapter() {
-        adapter = TalkReplyAdapter(TalkReplyAdapterTypeFactory(this, this))
+        adapter = TalkReplyAdapter(TalkReplyAdapterTypeFactory(this, this, this))
     }
 
     private fun initRecyclerView() {
