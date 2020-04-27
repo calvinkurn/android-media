@@ -5,7 +5,10 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="center_vertical"
-    android:orientation="horizontal">
+    android:orientation="horizontal"
+    android:paddingTop="@dimen/smart_bills_item_padding"
+    android:paddingBottom="@dimen/smart_bills_item_padding"
+    android:background="@color/white" >
 
     <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
         android:id="@+id/smart_bills_item_checkbox"
@@ -16,7 +19,8 @@
         android:id="@+id/smart_bills_item_icon_container"
         android:layout_width="@dimen/layout_lvl5"
         android:layout_height="@dimen/layout_lvl5"
-        app:cardCornerRadius="@dimen/spacing_lvl4">
+        app:cardCornerRadius="@dimen/spacing_lvl4"
+        android:layout_marginLeft="@dimen/spacing_lvl2">
 
         <ImageView
             android:id="@+id/smart_bills_item_icon"

@@ -52,11 +52,11 @@ class SmartBillsOnboardingFragment: BaseDaggerFragment() {
     }
 
     override fun getScreenName(): String {
-        TODO("Not yet implemented")
+        return ""
     }
 
     override fun initInjector() {
-        TODO("Not yet implemented")
+
     }
 
     companion object {

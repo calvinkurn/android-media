@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListCheckableAdapter
 import com.tokopedia.abstraction.base.view.adapter.holder.BaseCheckableViewHolder
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -22,6 +23,8 @@ import com.tokopedia.common.payment.PaymentConstant
 import com.tokopedia.common.payment.model.PaymentPassData
 import com.tokopedia.common.topupbills.view.fragment.BaseTopupBillsFragment
 import com.tokopedia.common.topupbills.widget.TopupBillsCheckoutWidget
+import com.tokopedia.design.utils.CurrencyFormatHelper
+import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.smartbills.R
 import com.tokopedia.smartbills.data.RechargeBills
 import com.tokopedia.smartbills.di.SmartBillsComponent
@@ -53,6 +56,7 @@ class SmartBillsFragment : BaseDaggerFragment(),
     lateinit var adapter: SmartBillsAdapter
 
     private var totalPrice = 0
+    private var maximumPrice = 0
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_smart_bills, container, false)
@@ -81,6 +85,12 @@ class SmartBillsFragment : BaseDaggerFragment(),
             when (it) {
                 is Success -> {
                     adapter.renderList(it.data.bills)
+
+                    // Save maximum price
+                    maximumPrice = 0
+                    for (bill in it.data.bills) {
+                        maximumPrice += bill.amount.toInt()
+                    }
                 }
                 is Fail -> {
                     adapter.showGetListError(it.throwable)
@@ -122,7 +132,12 @@ class SmartBillsFragment : BaseDaggerFragment(),
             context?.let {
                 // Navigate to onboarding if it's the first time
                 val visitedOnboarding = sharedPrefs.getBoolean(SMART_BILLS_VISITED_ONBOARDING, false)
-                if (visitedOnboarding) {
+                if (!visitedOnboarding) {
+                    //TODO: Put onboarding tracking here
+                    if (::sharedPrefs.isInitialized) {
+                        sharedPrefs.edit().putBoolean(SMART_BILLS_VISITED_ONBOARDING, true).apply()
+                    }
+
                     startActivityForResult(Intent(it,
                             SmartBillsOnboardingActivity::class.java),
                             REQUEST_CODE_SMART_BILLS_ONBOARDING
@@ -131,8 +146,11 @@ class SmartBillsFragment : BaseDaggerFragment(),
             }
 
             smart_bills_select_all_checkbox.setOnClickListener {
-                adapter.toggleAllItems(smart_bills_select_all_checkbox.isChecked)
+                toggleAllItems(smart_bills_select_all_checkbox.isChecked)
             }
+
+            rv_smart_bills_items.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+            rv_smart_bills_items.adapter = adapter
 
             smart_bills_checkout_view.listener = this
 
@@ -146,18 +164,12 @@ class SmartBillsFragment : BaseDaggerFragment(),
                 REQUEST_CODE_LOGIN -> {
 
                 }
-                REQUEST_CODE_SMART_BILLS_ONBOARDING -> {
-                    //TODO: Put onboarding tracking here
-                    if (::sharedPrefs.isInitialized) {
-                        sharedPrefs.edit().putBoolean(SMART_BILLS_VISITED_ONBOARDING, true).apply()
-                    }
-                }
             }
         }
     }
 
     override fun getScreenName(): String {
-        return ""
+        return getString(R.string.app_name)
     }
 
     override fun initInjector() {
@@ -189,11 +201,14 @@ class SmartBillsFragment : BaseDaggerFragment(),
     }
 
     override fun onItemChecked(item: RechargeBills, isChecked: Boolean) {
+        smart_bills_checkout_view.setVisibilityLayout(adapter.checkedDataList.isNotEmpty())
+
         if (isChecked) {
             totalPrice += item.amount.toInt()
         } else {
             totalPrice -= item.amount.toInt()
         }
+        smart_bills_checkout_view.setTotalPrice(CurrencyFormatUtil.convertPriceValueToIdrFormat(totalPrice, true))
 
         smart_bills_select_all_checkbox.isChecked = adapter.totalChecked == adapter.dataSize
     }
@@ -201,6 +216,15 @@ class SmartBillsFragment : BaseDaggerFragment(),
     override fun onClickNextBuyButton() {
         viewModel.runMultiCheckout(viewModel.createMultiCheckoutParams(adapter.checkedDataList),
                 userSession.userId)
+    }
+
+    private fun toggleAllItems(value: Boolean) {
+        adapter.toggleAllItems(value)
+
+        smart_bills_checkout_view.setVisibilityLayout(value)
+
+        totalPrice = if (value) maximumPrice else 0
+        smart_bills_checkout_view.setTotalPrice(CurrencyFormatUtil.convertPriceValueToIdrFormat(totalPrice, true))
     }
 
     companion object {

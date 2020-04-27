@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     android:orientation="vertical">
 
     <androidx.core.widget.NestedScrollView
@@ -24,11 +25,19 @@
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/smart_bills_title"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/spacing_lvl4"
+                android:text="@string/smart_bills_title"
+                app:typographyType="body_2"
+                app:typographyWeight="bold" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/spacing_lvl4"
+                android:layout_marginTop="@dimen/spacing_lvl3"
+                android:layout_marginRight="@dimen/spacing_lvl4"
+                android:layout_marginBottom="@dimen/spacing_lvl2"
                 android:orientation="horizontal">
 
                 <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
@@ -46,9 +55,10 @@
             </LinearLayout>
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/smart_bills_item_list"
+                android:id="@+id/rv_smart_bills_items"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/spacing_lvl4" />
 
         </LinearLayout>
 
@@ -58,6 +68,8 @@
         android:id="@+id/smart_bills_checkout_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true" />
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="@dimen/spacing_lvl4"
+        android:layout_marginRight="@dimen/spacing_lvl4" />
 
 </RelativeLayout>
