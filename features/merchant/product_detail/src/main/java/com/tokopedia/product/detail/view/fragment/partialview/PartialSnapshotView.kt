@@ -46,7 +46,6 @@ class PartialSnapshotView(private val view: View,
 
         if (campaign.isActive) {
             renderCampaignActive(campaign, data.stock.getFinalStockWording(nearestWarehouseStockWording))
-            showCountDownTimer(campaign)
         } else {
             renderCampaignInactive(data.price.value.getCurrencyFormatted())
         }
