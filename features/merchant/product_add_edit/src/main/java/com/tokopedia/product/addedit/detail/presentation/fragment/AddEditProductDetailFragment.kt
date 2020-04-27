@@ -360,13 +360,13 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
 
         // new condition
         val newCondition = ListItemUnify(getString(R.string.label_new), "")
-        newCondition?.setVariant(null, ListItemUnify.RADIO_BUTTON, null)
-        newCondition?.run { productConditions.add(NEW_PRODUCT_INDEX, this) }
+        newCondition.setVariant(null, ListItemUnify.RADIO_BUTTON, null)
+        newCondition.run { productConditions.add(NEW_PRODUCT_INDEX, this) }
 
         // secondhand condition
         val secondHandCondition = ListItemUnify(getString(R.string.label_secondhand), "")
-        secondHandCondition?.setVariant(null, ListItemUnify.RADIO_BUTTON, getString(R.string.label_secondhand))
-        secondHandCondition?.run { productConditions.add(USED_PRODUCT_INDEX, this) }
+        secondHandCondition.setVariant(null, ListItemUnify.RADIO_BUTTON, getString(R.string.label_secondhand))
+        secondHandCondition.run { productConditions.add(USED_PRODUCT_INDEX, this) }
 
         // add new and secondhand condition to the view
         productConditionListView?.setData(productConditions)
@@ -861,7 +861,6 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         val wholesalePriceExist = detailInputModel.wholesaleList.isNotEmpty()
         if (wholesalePriceExist) {
             productWholeSaleSwitch?.isChecked = true
-            detailInputModel.wholesaleList = viewModel.recalculateWholeSaleMinOrder(detailInputModel.wholesaleList)
             wholeSaleInputFormsAdapter?.setWholeSaleInputModels(detailInputModel.wholesaleList)
             viewModel.isWholeSalePriceActivated.value = true
         }

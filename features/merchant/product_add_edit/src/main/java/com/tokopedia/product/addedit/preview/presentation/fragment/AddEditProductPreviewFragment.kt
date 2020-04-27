@@ -338,9 +338,9 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
                 Toaster.make(view, validateMessage, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
             } else {
 
-                // recalculate wholesale min order because of > symbol
+                // increment wholesale min order by one because of > symbol
                 viewModel.productInputModel.value?.run {
-                    this.detailInputModel.wholesaleList = viewModel.recalculateWholeSaleMinOrder(this.detailInputModel.wholesaleList)
+                    this.detailInputModel.wholesaleList = viewModel.incrementWholeSaleMinOrder(this.detailInputModel.wholesaleList)
                 }
 
                 // when we perform add product, the productId will be 0
