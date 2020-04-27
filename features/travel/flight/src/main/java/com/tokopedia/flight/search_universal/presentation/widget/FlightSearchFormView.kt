@@ -267,7 +267,7 @@ class FlightSearchFormView @JvmOverloads constructor(context: Context, attrs: At
             makeBold(text)
             if (flightSearchData.departureAirport.cityName.isNotEmpty()) {
                 val cityNameText = SpannableStringBuilder(flightSearchData.departureAirport.cityName)
-                makeSmall(cityNameText)
+//                makeSmall(cityNameText)
                 text.append("\n")
                 text.append(cityNameText)
             }
@@ -286,7 +286,7 @@ class FlightSearchFormView @JvmOverloads constructor(context: Context, attrs: At
             makeBold(text)
             if (flightSearchData.arrivalAirport.cityName.isNotEmpty()) {
                 val cityNameText = SpannableStringBuilder(flightSearchData.arrivalAirport.cityName)
-                makeSmall(cityNameText)
+//                makeSmall(cityNameText)
                 text.append("\n")
                 text.append(cityNameText)
             }
