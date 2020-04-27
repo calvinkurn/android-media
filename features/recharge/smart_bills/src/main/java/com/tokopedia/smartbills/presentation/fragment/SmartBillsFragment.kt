@@ -13,10 +13,13 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListCheckableAdapter
 import com.tokopedia.abstraction.base.view.adapter.holder.BaseCheckableViewHolder
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.common.topupbills.data.TopupBillsEnquiryData
-import com.tokopedia.common.topupbills.data.TopupBillsFavNumber
-import com.tokopedia.common.topupbills.data.TopupBillsMenuDetail
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalPayment
+import com.tokopedia.common.payment.PaymentConstant
+import com.tokopedia.common.payment.model.PaymentPassData
 import com.tokopedia.common.topupbills.view.fragment.BaseTopupBillsFragment
 import com.tokopedia.common.topupbills.widget.TopupBillsCheckoutWidget
 import com.tokopedia.smartbills.R
@@ -28,15 +31,19 @@ import com.tokopedia.smartbills.presentation.adapter.SmartBillsAdapterFactory
 import com.tokopedia.smartbills.presentation.viewmodel.SmartBillsViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_smart_bills.*
 import java.util.*
 import javax.inject.Inject
 
-class SmartBillsFragment : BaseTopupBillsFragment(),
+class SmartBillsFragment : BaseDaggerFragment(),
         BaseCheckableViewHolder.CheckableInteractionListener,
         SmartBillsAdapter.LoaderListener,
         BaseListCheckableAdapter.OnCheckableAdapterListener<RechargeBills>,
         TopupBillsCheckoutWidget.ActionListener {
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -44,6 +51,8 @@ class SmartBillsFragment : BaseTopupBillsFragment(),
     private lateinit var sharedPrefs: SharedPreferences
 
     lateinit var adapter: SmartBillsAdapter
+
+    private var totalPrice = 0
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_smart_bills, container, false)
@@ -82,8 +91,15 @@ class SmartBillsFragment : BaseTopupBillsFragment(),
         viewModel.multiCheckout.observe(this, Observer {
             when (it) {
                 is Success -> {
-                    // Check if all items' transaction succeeds
-                    if (it.data.attributes.allSuccess) navigateToPayment(it.data)
+                    // Check if all items' transaction succeeds; if they do, navigate to payment
+                    if (it.data.attributes.allSuccess) {
+                        val paymentPassData = PaymentPassData()
+                        paymentPassData.convertToPaymenPassData(it.data)
+
+                        val intent = RouteManager.getIntent(context, ApplinkConstInternalPayment.PAYMENT_CHECKOUT)
+                        intent.putExtra(PaymentConstant.EXTRA_PARAMETER_TOP_PAY_DATA, paymentPassData)
+                        startActivityForResult(intent, PaymentConstant.REQUEST_CODE)
+                    }
                     else { //TODO: Handle partial success
 
                     }
@@ -98,28 +114,38 @@ class SmartBillsFragment : BaseTopupBillsFragment(),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        context?.let {
-            // Navigate to onboarding if it's the first time
-            val visitedOnboarding = sharedPrefs.getBoolean(SMART_BILLS_VISITED_ONBOARDING, false)
-            if (visitedOnboarding) {
-                startActivityForResult(Intent(it,
-                        SmartBillsOnboardingActivity::class.java),
-                        REQUEST_CODE_SMART_BILLS_ONBOARDING
-                )
+        // If user is not logged in, redirect to login page
+        if (!userSession.isLoggedIn) {
+            val intent = RouteManager.getIntent(activity, ApplinkConst.LOGIN)
+            startActivityForResult(intent, BaseTopupBillsFragment.REQUEST_CODE_LOGIN)
+        } else {
+            context?.let {
+                // Navigate to onboarding if it's the first time
+                val visitedOnboarding = sharedPrefs.getBoolean(SMART_BILLS_VISITED_ONBOARDING, false)
+                if (visitedOnboarding) {
+                    startActivityForResult(Intent(it,
+                            SmartBillsOnboardingActivity::class.java),
+                            REQUEST_CODE_SMART_BILLS_ONBOARDING
+                    )
+                }
             }
-        }
 
-        smart_bills_select_all_checkbox.setOnClickListener {
-            adapter.toggleAllItems(smart_bills_select_all_checkbox.isChecked)
-        }
+            smart_bills_select_all_checkbox.setOnClickListener {
+                adapter.toggleAllItems(smart_bills_select_all_checkbox.isChecked)
+            }
 
-        smart_bills_checkout_view.listener = this
+            smart_bills_checkout_view.listener = this
+
+            loadData()
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK) {
             when (requestCode) {
+                REQUEST_CODE_LOGIN -> {
+
+                }
                 REQUEST_CODE_SMART_BILLS_ONBOARDING -> {
                     //TODO: Put onboarding tracking here
                     if (::sharedPrefs.isInitialized) {
@@ -128,10 +154,6 @@ class SmartBillsFragment : BaseTopupBillsFragment(),
                 }
             }
         }
-    }
-
-    override fun getCheckoutView(): TopupBillsCheckoutWidget? {
-        return smart_bills_checkout_view
     }
 
     override fun getScreenName(): String {
@@ -151,10 +173,10 @@ class SmartBillsFragment : BaseTopupBillsFragment(),
     }
 
     override fun loadData() {
-//        viewModel.getStatementMonths(
-//                GraphqlHelper.loadRawString(resources, R.raw.query_recharge_statement_months),
-//                viewModel.createStatementMonthsParams(1)
-//        )
+        viewModel.getStatementMonths(
+                GraphqlHelper.loadRawString(resources, R.raw.query_recharge_statement_months),
+                viewModel.createStatementMonthsParams(1)
+        )
         val calendarInstance = Calendar.getInstance()
         viewModel.getStatementBills(
                 GraphqlHelper.loadRawString(resources, R.raw.query_recharge_statement_bills),
@@ -168,63 +190,24 @@ class SmartBillsFragment : BaseTopupBillsFragment(),
 
     override fun onItemChecked(item: RechargeBills, isChecked: Boolean) {
         if (isChecked) {
-            price += item.amount.toInt()
+            totalPrice += item.amount.toInt()
         } else {
-            price -= item.amount.toInt()
+            totalPrice -= item.amount.toInt()
         }
 
         smart_bills_select_all_checkbox.isChecked = adapter.totalChecked == adapter.dataSize
     }
 
     override fun onClickNextBuyButton() {
-        processTransaction()
-    }
-
-    override fun processCheckout() {
         viewModel.runMultiCheckout(viewModel.createMultiCheckoutParams(adapter.checkedDataList),
                 userSession.userId)
-    }
-
-    override fun processEnquiry(data: TopupBillsEnquiryData) {
-        TODO("Not yet implemented")
-    }
-
-    override fun processMenuDetail(data: TopupBillsMenuDetail) {
-        TODO("Not yet implemented")
-    }
-
-    override fun processFavoriteNumbers(data: TopupBillsFavNumber) {
-        TODO("Not yet implemented")
-    }
-
-    override fun onEnquiryError(error: Throwable) {
-        TODO("Not yet implemented")
-    }
-
-    override fun onMenuDetailError(error: Throwable) {
-        TODO("Not yet implemented")
-    }
-
-    override fun onCatalogPluginDataError(error: Throwable) {
-        TODO("Not yet implemented")
-    }
-
-    override fun onFavoriteNumbersError(error: Throwable) {
-        TODO("Not yet implemented")
-    }
-
-    override fun onCheckVoucherError(error: Throwable) {
-        TODO("Not yet implemented")
-    }
-
-    override fun onExpressCheckoutError(error: Throwable) {
-        TODO("Not yet implemented")
     }
 
     companion object {
         const val SMART_BILLS_PREF = "SMART_BILLS"
         const val SMART_BILLS_VISITED_ONBOARDING = "SMART_BILLS_VISITED_ONBOARDING"
 
+        const val REQUEST_CODE_LOGIN = 1010
         const val REQUEST_CODE_SMART_BILLS_ONBOARDING = 1700
     }
 }

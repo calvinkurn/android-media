@@ -16,13 +16,13 @@ import com.tokopedia.applink.internal.ApplinkConstInternalPayment
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
 import com.tokopedia.common.payment.PaymentConstant
 import com.tokopedia.common.payment.model.PaymentPassData
-import com.tokopedia.common.payment.model.TopPayBaseModel
 import com.tokopedia.common.topupbills.R
 import com.tokopedia.common.topupbills.analytics.CommonTopupBillsAnalytics
 import com.tokopedia.common.topupbills.data.TopupBillsEnquiryData
 import com.tokopedia.common.topupbills.data.TopupBillsFavNumber
 import com.tokopedia.common.topupbills.data.TopupBillsMenuDetail
 import com.tokopedia.common.topupbills.data.catalog_plugin.RechargeCatalogPlugin
+import com.tokopedia.common.topupbills.data.express_checkout.RechargeExpressCheckoutData
 import com.tokopedia.common.topupbills.utils.generateRechargeCheckoutToken
 import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsViewModel
 import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsViewModel.Companion.NULL_RESPONSE
@@ -385,17 +385,13 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
 
     fun processTransaction() {
         if (userSession.isLoggedIn) {
-            processCheckout()
+            if (isExpressCheckout) {
+                processExpressCheckout()
+            } else {
+                navigateToCart()
+            }
         } else {
             navigateToLoginPage()
-        }
-    }
-
-    open fun processCheckout() {
-        if (isExpressCheckout) {
-            processExpressCheckout()
-        } else {
-            navigateToCart()
         }
     }
 
@@ -428,9 +424,9 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
         startActivityForResult(intent, REQUEST_CODE_OTP)
     }
 
-    fun navigateToPayment(data: TopPayBaseModel) {
+    private fun navigateToPayment(checkoutData: RechargeExpressCheckoutData) {
         val paymentPassData = PaymentPassData()
-        paymentPassData.convertToPaymenPassData(data)
+        paymentPassData.convertToPaymenPassData(checkoutData)
 
         val intent = RouteManager.getIntent(context, ApplinkConstInternalPayment.PAYMENT_CHECKOUT)
         intent.putExtra(PaymentConstant.EXTRA_PARAMETER_TOP_PAY_DATA, paymentPassData)

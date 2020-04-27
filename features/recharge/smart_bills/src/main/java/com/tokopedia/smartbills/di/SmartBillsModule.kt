@@ -44,20 +44,20 @@ class SmartBillsModule {
         return UserSession(context)
     }
 
-    @Provides
     @SmartBillsScope
+    @Provides
     internal fun provideOkHttpRetryPolicy(): OkHttpRetryPolicy {
         return OkHttpRetryPolicy.createdDefaultOkHttpRetryPolicy()
     }
 
-    @Provides
     @SmartBillsScope
+    @Provides
     internal fun provideFingerprintInterceptor(networkRouter: NetworkRouter, userSession: UserSessionInterface): FingerprintInterceptor {
         return FingerprintInterceptor(networkRouter, userSession)
     }
 
-    @Provides
     @SmartBillsScope
+    @Provides
     internal fun provideOkHttpClient(fingerprintInterceptor: FingerprintInterceptor,
                                      httpLoggingInterceptor: HttpLoggingInterceptor,
                                      digitalInterceptor: DigitalInterceptor,
@@ -73,21 +73,21 @@ class SmartBillsModule {
                 .build()
     }
 
-    @Provides
     @SmartBillsScope
+    @Provides
     internal fun provideNetworkRouter(@ApplicationContext context: Context): NetworkRouter {
         return context as NetworkRouter
     }
 
-    @Provides
     @SmartBillsScope
+    @Provides
     fun provideDigitalInterceptor(@ApplicationContext context: Context,
                                   networkRouter: AbstractionRouter): DigitalInterceptor {
         return DigitalInterceptor(context, networkRouter)
     }
 
-    @Provides
     @SmartBillsScope
+    @Provides
     fun provideGqlApiService(gson: Gson, client: OkHttpClient): SmartBillsApi {
         val retrofitBuilder = Retrofit.Builder()
                 .baseUrl(BASE_URL)
@@ -98,8 +98,8 @@ class SmartBillsModule {
         return retrofit.create(SmartBillsApi::class.java)
     }
 
-    @Provides
     @SmartBillsScope
+    @Provides
     fun provideRepository(rechargeCCApi: SmartBillsApi): SmartBillsRepository {
         return SmartBillsRepositoryImpl(rechargeCCApi)
     }
