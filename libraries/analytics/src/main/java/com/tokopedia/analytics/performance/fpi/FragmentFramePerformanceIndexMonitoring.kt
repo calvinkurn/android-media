@@ -76,7 +76,9 @@ class FragmentFramePerformanceIndexMonitoring : LifecycleObserver, CoroutineScop
                 )
                 cacheFpiDatabaseModel?.let {
                     if (it.fragmentHashCode != fragment?.hashCode().toString()) {
-                        sendPerformanceMonitoringData(it.fpiPerformanceData, pageName)
+                        withContext(Dispatchers.Main) {
+                            sendPerformanceMonitoringData(it.fpiPerformanceData, pageName)
+                        }
                         cacheManager?.delete(pageName)
                     } else {
                         mainPerformanceData = it.fpiPerformanceData
