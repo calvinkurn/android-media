@@ -4,6 +4,7 @@
     <dimen name="voucher_creation_next_button_margin">16dp</dimen>
     <dimen name="mvc_dimen_20dp">20dp</dimen>
     <dimen name="mvc_dimen_12dp">12dp</dimen>
+    <dimen name="mvc_dimen_240dp">240dp</dimen>
     <dimen name="mvc_dimen_1dp">1dp</dimen>
     <dimen name="mvc_create_progressbar_height">2dp</dimen>
     <dimen name="mvc_create_next_button_margin">16dp</dimen>
@@ -31,4 +32,7 @@
     <dimen name="mvc_dimen_14dp">14dp</dimen>
     <dimen name="mvc_dimen_10dp">10dp</dimen>
     <dimen name="mvc_dimen_minus_8dp">-8dp</dimen>
+    <dimen name="mvc_dimen_100dp">100dp</dimen>
+    <dimen name="mvc_dimen_120dp">120dp</dimen>
+    <dimen name="mvc_dimen_140dp">140dp</dimen>
 </resources>
