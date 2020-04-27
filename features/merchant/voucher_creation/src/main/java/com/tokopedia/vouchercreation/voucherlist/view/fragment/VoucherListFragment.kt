@@ -19,9 +19,11 @@ import com.tokopedia.vouchercreation.di.component.DaggerVoucherCreationComponent
 import com.tokopedia.vouchercreation.voucherlist.model.*
 import com.tokopedia.vouchercreation.voucherlist.model.BaseHeaderChipUiModel.HeaderChip
 import com.tokopedia.vouchercreation.voucherlist.model.BaseHeaderChipUiModel.ResetChip
+import com.tokopedia.vouchercreation.voucherlist.model.MoreMenuUiModel.EditQuota
 import com.tokopedia.vouchercreation.voucherlist.view.adapter.factory.VoucherListAdapterFactoryImpl
 import com.tokopedia.vouchercreation.voucherlist.view.viewmodel.VoucherListViewModel
 import com.tokopedia.vouchercreation.voucherlist.view.widget.MoreMenuBottomSheet
+import com.tokopedia.vouchercreation.voucherlist.view.widget.MvcEditQuota
 import com.tokopedia.vouchercreation.voucherlist.view.widget.filterbottomsheet.FilterBottomSheet
 import com.tokopedia.vouchercreation.voucherlist.view.widget.headerchips.ChipType
 import com.tokopedia.vouchercreation.voucherlist.view.widget.sortbottomsheet.SortBottomSheet
@@ -139,12 +141,22 @@ class VoucherListFragment : BaseListFragment<BaseVoucherListUiModel, VoucherList
         return super.onOptionsItemSelected(item)
     }
 
-    private fun onMoreMenuItemClickListener(menu: MoreMenuUiModel) {
-        dismissBottomSheet<MoreMenuBottomSheet>(MoreMenuBottomSheet.TAG)
-    }
-
     override fun onMoreClickListener(voucher: VoucherUiModel) {
         moreBottomSheet?.show(isActiveVoucher, voucher, childFragmentManager)
+    }
+
+    private fun onMoreMenuItemClickListener(menu: MoreMenuUiModel) {
+        dismissBottomSheet<MoreMenuBottomSheet>(MoreMenuBottomSheet.TAG)
+        when (menu) {
+            is EditQuota -> showEditQuotaBottomSheet()
+        }
+    }
+
+    private fun showEditQuotaBottomSheet() {
+        val parent = view as? ViewGroup ?: return
+        if (!isAdded) return
+
+        MvcEditQuota(parent).show(childFragmentManager)
     }
 
     private fun setupView() = view?.run {
