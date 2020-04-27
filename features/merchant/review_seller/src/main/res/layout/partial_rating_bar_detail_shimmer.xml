@@ -19,7 +19,7 @@
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/rectangleProgressbar"
-        android:layout_width="@dimen/dp_0"
+        android:layout_width="@dimen/dp_290"
         android:layout_height="@dimen/dp_10"
         android:layout_marginTop="@dimen/spacing_lvl3"
         app:corners="6"
