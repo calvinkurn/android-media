@@ -135,6 +135,7 @@ class FlightHomepageFragment : BaseDaggerFragment(), FlightSearchFormView.Flight
                 flightHomepageSearchForm.autoSearch()
             }
         })
+
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
@@ -230,8 +231,9 @@ class FlightHomepageFragment : BaseDaggerFragment(), FlightSearchFormView.Flight
     override fun onSaveSearch(flightSearchData: FlightSearchPassDataModel) {
         flightHomepageViewModel.onSearchTicket(flightSearchData)
         flightSearchData.linkUrl = arguments?.getString(EXTRA_FROM_DEEPLINK_URL) ?: ""
-        startActivityForResult(FlightSearchActivity.getCallingIntent(requireContext(), flightSearchData),
-                REQUEST_CODE_SEARCH)
+        if (validateSearchPassData(flightSearchData)) {
+            navigateToSearchPage(flightSearchData)
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -409,6 +411,34 @@ class FlightHomepageFragment : BaseDaggerFragment(), FlightSearchFormView.Flight
             performanceMonitoring.stopTrace()
             isTraceStop = true
         }
+    }
+
+    private fun validateSearchPassData(flightSearchData: FlightSearchPassDataModel): Boolean {
+        var isValid = true
+
+        if (flightSearchData.departureAirport.cityCode.isNotEmpty() && flightSearchData.arrivalAirport.cityCode.isNotEmpty() &&
+                flightSearchData.departureAirport.cityCode == flightSearchData.arrivalAirport.cityCode) {
+            isValid = false
+            showMessageErrorInSnackbar(R.string.flight_dashboard_arrival_departure_same_error)
+        } else if (flightSearchData.departureAirport.cityAirports.isNotEmpty() &&
+                flightSearchData.departureAirport.cityAirports.contains(flightSearchData.arrivalAirport.airportCode)) {
+            isValid = false
+            showMessageErrorInSnackbar(R.string.flight_dashboard_arrival_departure_same_error)
+        } else if (flightSearchData.arrivalAirport.cityAirports.isNotEmpty() &&
+                flightSearchData.arrivalAirport.cityAirports.contains(flightSearchData.departureAirport.airportCode)) {
+            isValid = false
+            showMessageErrorInSnackbar(R.string.flight_dashboard_arrival_departure_same_error)
+        } else if (flightSearchData.departureAirport.airportCode == flightSearchData.arrivalAirport.airportCode) {
+            isValid = false
+            showMessageErrorInSnackbar(R.string.flight_dashboard_arrival_departure_same_error)
+        }
+
+        return isValid
+    }
+
+    private fun navigateToSearchPage(flightSearchData: FlightSearchPassDataModel) {
+        startActivityForResult(FlightSearchActivity.getCallingIntent(requireContext(), flightSearchData),
+                REQUEST_CODE_SEARCH)
     }
 
     companion object {

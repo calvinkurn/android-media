@@ -8,8 +8,10 @@ import android.os.Handler
 import android.view.Menu
 import android.widget.ImageView
 import android.widget.LinearLayout
+import androidx.annotation.StringRes
 import androidx.fragment.app.Fragment
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.coachmark.CoachMarkBuilder
 import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.flight.R
@@ -107,14 +109,16 @@ open class FlightSearchActivity : BaseFlightActivity(),
         flightSearchPassDataModel.flightClass = flightSearchParams.flightClass
         flightSearchPassDataModel.searchRequestId = ""
 
-        if (isReturnPage()) {
-            val intent = Intent()
-            intent.putExtra(EXTRA_PASS_DATA, flightSearchPassDataModel)
-            FlightFlowUtil.actionSetResultAndClose(this, intent, FlightFlowConstant.CHANGE_SEARCH_PARAM)
-        } else {
-            if (fragment is FlightSearchFragment) {
-                (fragment as FlightSearchFragment).setSearchPassData(flightSearchPassDataModel)
-                (fragment as FlightSearchFragment).resetDateAndReload()
+        if (validateSearchPassData(flightSearchParams)) {
+            if (isReturnPage()) {
+                val intent = Intent()
+                intent.putExtra(EXTRA_PASS_DATA, flightSearchPassDataModel)
+                FlightFlowUtil.actionSetResultAndClose(this, intent, FlightFlowConstant.CHANGE_SEARCH_PARAM)
+            } else {
+                if (fragment is FlightSearchFragment) {
+                    (fragment as FlightSearchFragment).setSearchPassData(flightSearchPassDataModel)
+                    (fragment as FlightSearchFragment).resetDateAndReload()
+                }
             }
         }
     }
@@ -243,6 +247,33 @@ open class FlightSearchActivity : BaseFlightActivity(),
                 coachMarkCache.setSearchCoachMarkIsShowed()
             })
         }
+    }
+
+    private fun validateSearchPassData(flightSearchData: FlightSearchPassDataModel): Boolean {
+        var isValid = true
+
+        if (flightSearchData.departureAirport.cityCode.isNotEmpty() && flightSearchData.arrivalAirport.cityCode.isNotEmpty() &&
+                flightSearchData.departureAirport.cityCode == flightSearchData.arrivalAirport.cityCode) {
+            isValid = false
+            showMessageErrorInSnackbar(R.string.flight_dashboard_arrival_departure_same_error)
+        } else if (flightSearchData.departureAirport.cityAirports.isNotEmpty() &&
+                flightSearchData.departureAirport.cityAirports.contains(flightSearchData.arrivalAirport.airportCode)) {
+            isValid = false
+            showMessageErrorInSnackbar(R.string.flight_dashboard_arrival_departure_same_error)
+        } else if (flightSearchData.arrivalAirport.cityAirports.isNotEmpty() &&
+                flightSearchData.arrivalAirport.cityAirports.contains(flightSearchData.departureAirport.airportCode)) {
+            isValid = false
+            showMessageErrorInSnackbar(R.string.flight_dashboard_arrival_departure_same_error)
+        } else if (flightSearchData.departureAirport.airportCode == flightSearchData.arrivalAirport.airportCode) {
+            isValid = false
+            showMessageErrorInSnackbar(R.string.flight_dashboard_arrival_departure_same_error)
+        }
+
+        return isValid
+    }
+
+    private fun showMessageErrorInSnackbar(@StringRes stringResourceId: Int) {
+        NetworkErrorHelper.showRedCloseSnackbar(this, getString(stringResourceId))
     }
 
     companion object {
