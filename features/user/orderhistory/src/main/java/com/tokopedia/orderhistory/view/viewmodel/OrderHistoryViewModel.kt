@@ -12,8 +12,8 @@ class OrderHistoryViewModel @Inject constructor(
         private val productHistoryUseCase: GetProductOrderHistoryUseCase
 ) : ViewModel() {
 
-    private val _product: MutableLiveData<List<Product>> = MutableLiveData()
-    val product: LiveData<List<Product>> get() = _product
+    private val _product: MutableLiveData<Result<List<Product>>> = MutableLiveData()
+    val product: LiveData<Result<List<Product>>> get() = _product
 
     fun loadProductHistory(shopId: String?) {
         if (shopId == null) return
@@ -25,11 +25,11 @@ class OrderHistoryViewModel @Inject constructor(
     }
 
     private fun onSuccessGetHistoryProduct(orderHistory: ChatHistoryProductResponse) {
-        _product.value = orderHistory.products
+        _product.value = Result.success(orderHistory.products)
     }
 
     private fun onErrorGetHistoryProduct(throwable: Throwable) {
-        println()
+        _product.value = Result.failure(throwable)
     }
 
 }

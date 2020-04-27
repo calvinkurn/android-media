@@ -47,7 +47,7 @@ class OrderHistoryFragment : BaseListFragment<Visitable<*>, OrderHistoryTypeFact
             bindView(it)
             setupRecyclerview()
             initializeArguments()
-            setupObserver()
+            setupProductListObserver()
         }
     }
 
@@ -63,9 +63,13 @@ class OrderHistoryFragment : BaseListFragment<Visitable<*>, OrderHistoryTypeFact
         shopId = arguments?.getString(ApplinkConst.OrderHistory.PARAM_SHOP_ID)
     }
 
-    private fun setupObserver() {
-        viewModel.product.observe(this, Observer {
-            renderList(it)
+    private fun setupProductListObserver() {
+        viewModel.product.observe(this, Observer { result ->
+            if (result.isSuccess) {
+                renderList(result.getOrDefault(emptyList()))
+            } else {
+                showGetListError(result.exceptionOrNull())
+            }
         })
     }
 
