@@ -14,6 +14,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
 import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.imagepreviewslider.presentation.activity.ImagePreviewSliderActivity
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
@@ -21,17 +22,13 @@ import com.tokopedia.reviewseller.R
 import com.tokopedia.reviewseller.common.util.*
 import com.tokopedia.reviewseller.feature.reviewdetail.di.component.ReviewProductDetailComponent
 import com.tokopedia.reviewseller.feature.reviewdetail.util.mapper.SellerReviewProductDetailMapper
-import com.tokopedia.reviewseller.feature.reviewdetail.view.adapter.SellerReviewDetailAdapter
-import com.tokopedia.reviewseller.feature.reviewdetail.view.adapter.SellerReviewDetailAdapterTypeFactory
-import com.tokopedia.reviewseller.feature.reviewdetail.view.adapter.SellerReviewDetailListener
-import com.tokopedia.reviewseller.feature.reviewdetail.view.adapter.viewholder.OverallRatingDetailViewHolder
-import com.tokopedia.reviewseller.feature.reviewdetail.view.adapter.viewholder.ProductFeedbackDetailViewHolder
+import com.tokopedia.reviewseller.feature.reviewdetail.view.adapter.*
 import com.tokopedia.reviewseller.feature.reviewdetail.view.bottomsheet.PopularTopicsBottomSheet
 import com.tokopedia.reviewseller.feature.reviewdetail.view.model.OverallRatingDetailUiModel
 import com.tokopedia.reviewseller.feature.reviewdetail.view.model.ProductFeedbackDetailUiModel
 import com.tokopedia.reviewseller.feature.reviewdetail.view.viewmodel.ProductReviewDetailViewModel
-import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.reviewseller.feature.reviewlist.util.mapper.SellerReviewProductListMapper
+import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.list.ListItemUnify
@@ -47,7 +44,7 @@ import javax.inject.Inject
  * @author by milhamj on 2020-02-14.
  */
 class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDetailAdapterTypeFactory>(), SellerReviewDetailListener,
-        OverallRatingDetailViewHolder.OverallRatingDetailListener, ProductFeedbackDetailViewHolder.ProductFeedbackDetailListener {
+        OverallRatingDetailListener, ProductFeedbackDetailListener {
 
     companion object {
         const val PRODUCT_ID = "EXTRA_SHOP_ID"
@@ -72,7 +69,8 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
     var sortBy: String = ""
     var filterBy: String = "time=all"
     var chipsFilterText = ""
-    var itemView: View? = null
+
+    var toolbarTitle = ""
 
     private var filterPeriodDetailUnify: ListUnify? = null
     private var optionFeedbackDetailUnify: ListUnify? = null
@@ -288,8 +286,9 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
     private fun onSuccessGetProductReviewDetailOverallData(data: OverallRatingDetailUiModel) {
         reviewSellerDetailAdapter.hideLoading()
         swipeToRefreshReviewDetail?.isRefreshing = false
+        toolbarTitle = data.productName.orEmpty()
         review_detail_toolbar.apply {
-            title = data.productName.toString()
+            title = toolbarTitle
         }
 
         reviewSellerDetailAdapter.setOverallRatingDetailData(data.apply {
@@ -385,13 +384,12 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
         }
     }
 
-    private fun onItemFilterClickedBottomSheet(view: View, position: Int, filterListItemUnify: ArrayList<ListItemUnify>,
+    private fun onItemFilterClickedBottomSheet(itemView: View, position: Int, filterListItemUnify: ArrayList<ListItemUnify>,
                                                filterListUnify: ListUnify) {
         try {
-            itemView = view
             viewModelProductReviewDetail?.positionFilterPeriod = position
             chipsFilterText = filterListItemUnify[position].listTitleText
-            itemView?.review_period_filter_button_detail?.chip_text?.text = chipsFilterText
+            itemView.review_period_filter_button_detail?.chip_text?.text = chipsFilterText
             filterListUnify.setSelectedFilterOrSort(filterListItemUnify, position)
             viewModelProductReviewDetail?.filterPeriod = ReviewSellerConstant.mapFilterReviewDetail().getKeyByValue(chipsFilterText)
             viewModelProductReviewDetail?.filterAllText = ReviewSellerUtil.setFilterJoinValueFormat(viewModelProductReviewDetail?.filterPeriod.orEmpty())
@@ -453,6 +451,18 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
 
         fragmentManager?.let {
             bottomSheetOptionFeedback?.show(it, title)
+        }
+    }
+
+    override fun onImageItemClicked(imageUrls: List<String>, thumbnailsUrl: List<String>, position: Int) {
+        context?.run {
+            startActivity(ImagePreviewSliderActivity.getCallingIntent(
+                    context = this,
+                    title = toolbarTitle,
+                    imageUrls = imageUrls,
+                    imageThumbnailUrls = thumbnailsUrl,
+                    imagePosition = position
+            ))
         }
     }
 

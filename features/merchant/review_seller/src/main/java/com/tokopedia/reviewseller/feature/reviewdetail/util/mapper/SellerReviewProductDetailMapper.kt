@@ -157,4 +157,16 @@ object SellerReviewProductDetailMapper {
         return itemSortFilterList
     }
 
+    fun mapToItemImageSlider(attachmentList: List<FeedbackUiModel.Attachment>?): Pair<List<String>, List<String>> {
+        val imageSlider = arrayListOf<String>()
+        val thumbnailSlider = arrayListOf<String>()
+
+        attachmentList?.map {
+            thumbnailSlider.add(it.thumbnailURL.orEmpty())
+            imageSlider.add(it.fullSizeURL.orEmpty())
+        }
+
+        return Pair(thumbnailSlider, imageSlider)
+    }
+
 }
