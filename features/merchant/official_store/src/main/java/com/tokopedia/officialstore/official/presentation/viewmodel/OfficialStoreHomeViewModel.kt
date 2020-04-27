@@ -64,15 +64,8 @@ class OfficialStoreHomeViewModel @Inject constructor(
     val officialStoreDynamicChannelResult: LiveData<Result<DynamicChannel>>
         get() = _officialStoreDynamicChannelResult
 
-    val officialStoreProductRecommendationResult: LiveData<Result<RecommendationWidget>>
-        get() = _officialStoreProductRecommendation
-
     val topAdsWishlistResult: LiveData<Result<WishlistModel>>
         get() = _topAdsWishlistResult
-
-    val wishlistResult: LiveData<Result<WishlistModel>> by lazy {
-        _wishlistResult
-    }
 
     private val _officialStoreBannersResult by lazy {
         MutableLiveData<Result<OfficialStoreBanners>>()
@@ -88,19 +81,11 @@ class OfficialStoreHomeViewModel @Inject constructor(
 
     private val _officialStoreDynamicChannelResult = MutableLiveData<Result<DynamicChannel>>()
 
-    private val _officialStoreProductRecommendation by lazy {
-        MutableLiveData<Result<RecommendationWidget>>()
-    }
-
     private val _productRecommendation = MutableLiveData<Result<RecommendationWidget>>()
     val productRecommendation: LiveData<Result<RecommendationWidget>>
         get() = _productRecommendation
 
     private val _topAdsWishlistResult by lazy {
-        MutableLiveData<Result<WishlistModel>>()
-    }
-
-    private val _wishlistResult by lazy {
         MutableLiveData<Result<WishlistModel>>()
     }
 
@@ -121,28 +106,12 @@ class OfficialStoreHomeViewModel @Inject constructor(
         }
     }
 
-    fun loadMore(category: Category?, page: Int) {
-        val categories = category?.categories.toString()
-        val categoriesWithoutOpeningSquare = categories.replace("[", "") // Remove Square bracket from the string
-        val categoriesWithoutClosingSquare = categoriesWithoutOpeningSquare.replace("]", "") // Remove Square bracket from the string
-        launchCatchError(block = {
-            val recommendation = getOfficialStoreProductRecommendation(categoriesWithoutClosingSquare, page)
-            _officialStoreProductRecommendation.value = recommendation
-        }) {}
-    }
-
     fun loadMoreProducts(categoryId: String, pageNumber: Int, pageName: String = "official-store") {
         launchCatchError(block = {
             withContext(Dispatchers.IO) {
-//                val pageName = "official-store"
                 val requestParams = getRecommendationUseCase.getOfficialStoreRecomParams(pageNumber, pageName, categoryId)
                 val dataProductResponse = getRecommendationUseCase.createObservable(requestParams).toBlocking().first()
                 _productRecommendation.postValue(Success(dataProductResponse.get(0)))
-
-//                val pageName = "official-store"
-//                val requestParams = getRecommendationUseCase.getOfficialStoreRecomParams(pageNumber, pageName, categoryId)
-//                val dataProduct = getRecommendationUseCase.createObservable(requestParams).toBlocking()
-//                val recommendationWidget = dataProduct.first()[0]
             }
         }) {
             _productRecommendation.value = Fail(it)

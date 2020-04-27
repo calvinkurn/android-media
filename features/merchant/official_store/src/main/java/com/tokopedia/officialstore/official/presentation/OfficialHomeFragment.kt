@@ -118,7 +118,6 @@ class OfficialHomeFragment :
                     val categoriesWithoutClosingSquare = categoriesWithoutOpeningSquare.replace("]", "") // Remove Square bracket from the string
                     counterTitleShouldBeRendered += 1
                     productRecommendationPerformanceMonitoring = PerformanceMonitoring.start(recomConstant)
-                    // viewModel.loadMore(category, page)
                     viewModel.loadMoreProducts(categoriesWithoutClosingSquare, page)
 
                     if (adapter?.getVisitables()?.lastOrNull() is ProductRecommendationViewModel) {
@@ -287,26 +286,6 @@ class OfficialHomeFragment :
     }
 
     private fun observeProductRecommendation() {
-//        viewModel.officialStoreProductRecommendationResult.observe(this, Observer {
-//            when (it) {
-//                is Success -> {
-//                    PRODUCT_RECOMMENDATION_TITLE_SECTION = it.data.title
-//                    adapter?.hideLoading()
-//                    endlessScrollListener.updateStateAfterGetData()
-//                    swipeRefreshLayout?.isRefreshing = false
-//                    if (counterTitleShouldBeRendered == 1) {
-//                        OfficialHomeMapper.mappingProductrecommendationTitle(it.data.title, adapter)
-//                    }
-//                    OfficialHomeMapper.mappingProductRecommendation(it.data, adapter, this)
-//                }
-//                is Fail -> {
-//                    swipeRefreshLayout?.isRefreshing = false
-//                    showErrorNetwork(it.throwable)
-//                }
-//            }
-//            productRecommendationPerformanceMonitoring.stopTrace()
-//        })
-
         viewModel.productRecommendation.observe(this, Observer {
             when (it) {
                 is Success -> {
@@ -415,7 +394,7 @@ class OfficialHomeFragment :
         viewModel.officialStoreBenefitsResult.removeObservers(this)
         viewModel.officialStoreFeaturedShopResult.removeObservers(this)
         viewModel.officialStoreDynamicChannelResult.removeObservers(this)
-        viewModel.officialStoreProductRecommendationResult.removeObservers(this)
+        viewModel.productRecommendation.removeObservers(this)
         viewModel.flush()
         super.onDestroy()
     }
