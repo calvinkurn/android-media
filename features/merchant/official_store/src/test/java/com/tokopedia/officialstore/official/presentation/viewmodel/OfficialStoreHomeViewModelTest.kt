@@ -95,12 +95,12 @@ class OfficialStoreHomeViewModelTest: OfficialStoreHomeViewModelTestFixture() {
     fun given_get_data_error__when_load_more__should_set_product_recommendation_error_value() {
         runBlocking {
             val page = 1
-            val category = Category()
+            val categoryId = "0"     // "65, 20, 60, 288, 297, 578, 2099
             val error = NullPointerException()
 
             onGetOfficialStoreProductRecommendation_thenReturn(error)
 
-            viewModel.loadMore(category, page)
+            viewModel.loadMoreProducts(categoryId, page)
 
             val expectedError = Fail(NullPointerException())
             verifyOfficialStoreProductRecommendationError(expectedError)

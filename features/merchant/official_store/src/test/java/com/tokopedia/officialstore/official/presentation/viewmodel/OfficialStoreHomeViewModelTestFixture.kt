@@ -294,8 +294,7 @@ abstract class OfficialStoreHomeViewModelTestFixture {
     protected fun verifyOfficialStoreProductRecommendationError(expectedError: Fail) {
         verifyGetOfficialStoreProductRecommendationUseCaseCalled()
 
-        viewModel.officialStoreProductRecommendationResult
-            .assertError(expectedError)
+        viewModel.productRecommendation.assertError(expectedError)
     }
 
     protected fun verifyTopAdsWishListError(expectedError: Fail) {
