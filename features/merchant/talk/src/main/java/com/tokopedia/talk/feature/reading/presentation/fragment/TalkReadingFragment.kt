@@ -1,6 +1,7 @@
 package com.tokopedia.talk.feature.reading.presentation.fragment
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -17,11 +18,11 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.GENERAL_SETTING
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.kotlin.extensions.view.removeObservers
-import com.tokopedia.talk.common.TalkConstants.PRODUCT_ID
-import com.tokopedia.talk.common.TalkConstants.SHOP_ID
-import com.tokopedia.talk.common.di.TalkComponent
+import com.tokopedia.talk.common.analytics.TalkPerformanceMonitoringContract
+import com.tokopedia.talk.common.analytics.TalkPerformanceMonitoringListener
+import com.tokopedia.talk.common.constants.TalkConstants.PRODUCT_ID
+import com.tokopedia.talk.common.constants.TalkConstants.SHOP_ID
 import com.tokopedia.talk.feature.reading.data.mapper.TalkReadingMapper
 import com.tokopedia.talk.feature.reading.data.model.SortOption
 import com.tokopedia.talk.feature.reading.data.model.TalkReadingCategory
@@ -37,7 +38,6 @@ import com.tokopedia.talk.feature.reading.presentation.widget.OnCategoryModified
 import com.tokopedia.talk.feature.reading.presentation.widget.OnFinishedSelectSortListener
 import com.tokopedia.talk.feature.reading.presentation.widget.OnThreadClickListener
 import com.tokopedia.talk.feature.reading.presentation.widget.TalkReadingSortBottomSheet
-import com.tokopedia.talk.feature.write.presentation.activity.TalkWriteActivity
 import com.tokopedia.talk_old.R
 import com.tokopedia.talk_old.addtalk.view.activity.AddTalkActivity
 import com.tokopedia.unifycomponents.ChipsUnify
@@ -52,7 +52,7 @@ import javax.inject.Inject
 class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
         TalkReadingAdapterTypeFactory>(), HasComponent<TalkReadingComponent>,
         OnFinishedSelectSortListener, OnCategoryModifiedListener,
-        OnThreadClickListener {
+        OnThreadClickListener, TalkPerformanceMonitoringContract {
 
     companion object {
         const val DEFAULT_DISCUSSION_DATA_LIMIT = 10
@@ -74,6 +74,7 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
 
     private var productId: String = ""
     private var shopId: String = ""
+    private var talkPerformanceMonitoringListener: TalkPerformanceMonitoringListener? = null
 
     override fun getAdapterTypeFactory(): TalkReadingAdapterTypeFactory {
         return TalkReadingAdapterTypeFactory(this)
@@ -88,6 +89,8 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        stopPreparePerfomancePageMonitoring()
+        startNetworkRequestPerformanceMonitoring()
         getDataFromArguments()
         observeProductHeader()
         observeSortOptions()
@@ -183,6 +186,41 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
         }
     }
 
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        talkPerformanceMonitoringListener = castContextToTalkPerformanceMonitoringListener(context)
+    }
+
+    override fun stopPreparePerfomancePageMonitoring() {
+        talkPerformanceMonitoringListener?.stopPreparePagePerformanceMonitoring()
+    }
+
+    override fun startNetworkRequestPerformanceMonitoring() {
+        talkPerformanceMonitoringListener?.startNetworkRequestPerformanceMonitoring()
+    }
+
+    override fun stopNetworkRequestPerformanceMonitoring() {
+        talkPerformanceMonitoringListener?.stopNetworkRequestPerformanceMonitoring()
+    }
+
+    override fun startRenderPerformanceMonitoring() {
+        talkPerformanceMonitoringListener?.startRenderPerformanceMonitoring()
+        talkReadingRecyclerView.post {
+            talkPerformanceMonitoringListener?.let {
+                it.stopRenderPerformanceMonitoring()
+                it.stopPerformanceMonitoring()
+            }
+        }
+    }
+
+    override fun castContextToTalkPerformanceMonitoringListener(context: Context): TalkPerformanceMonitoringListener? {
+        return if(context is TalkPerformanceMonitoringListener) {
+            context
+        } else {
+            null
+        }
+    }
+
     private fun showPageLoading() {
         pageLoading.visibility = View.VISIBLE
         hidePageEmpty()
@@ -254,6 +292,8 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
                     if(it.data.discussionData.question.isEmpty()) {
                         showPageEmpty()
                     } else {
+                        stopNetworkRequestPerformanceMonitoring()
+                        startRenderPerformanceMonitoring()
                         renderDiscussionData(
                                 TalkReadingMapper.mapDiscussionDataResponseToTalkReadingUiModel(it.data.discussionData),
                                 it.data.discussionData.hasNext)
