@@ -231,8 +231,7 @@ abstract class OfficialStoreHomeViewModelTestFixture {
     ) {
         verifyGetOfficialStoreProductRecommendationUseCaseCalled()
 
-        viewModel.officialStoreProductRecommendationResult
-            .assertSuccess(expectedProductRecommendation)
+        viewModel.productRecommendation.assertSuccess(expectedProductRecommendation)
     }
 
     protected fun verifyTopAdsWishListEquals(

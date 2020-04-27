@@ -10,14 +10,9 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.topads.sdk.domain.model.WishlistModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import io.mockk.coEvery
 import io.mockk.mockk
-import io.mockk.mockkObject
-import io.mockk.verify
 import kotlinx.coroutines.runBlocking
-import org.junit.Assert
 import org.junit.Test
-import org.mockito.Matchers
 
 class OfficialStoreHomeViewModelTest: OfficialStoreHomeViewModelTestFixture() {
 
@@ -81,7 +76,7 @@ class OfficialStoreHomeViewModelTest: OfficialStoreHomeViewModelTestFixture() {
     fun given_get_data_success__when_load_more__should_set_value_with_first_product_recommendation() {
        runBlocking {
            val page = 1
-           val category = Category()
+           val categoryId = "0"     // "65, 20, 60, 288, 297, 578, 2099
            val productRecommendation = listOf(
                RecommendationWidget(title = "Recommendation 1"),
                RecommendationWidget(title = "Recommendation 2")
@@ -89,27 +84,11 @@ class OfficialStoreHomeViewModelTest: OfficialStoreHomeViewModelTestFixture() {
 
            onGetOfficialStoreProductRecommendation_thenReturn(productRecommendation)
 
-           viewModel.loadMore(category, page)
+           viewModel.loadMoreProducts(categoryId, page)
 
            val expectedProductRecommendation = Success(productRecommendation[0])
            verifyOfficialStoreProductRecommendationEquals(expectedProductRecommendation)
        }
-
-//        mockkObject(ReorderShopShowcaseListUseCase)
-//        coEvery {
-//            reorderShowcase.executeOnBackground()
-//        } returns ReorderShopShowcaseResponse()
-//        val anyList: List<String> = Matchers.anyList()
-//        viewModel.reorderShopShowcaseList(anyList)
-//        verify {
-//            ReorderShopShowcaseListUseCase.createRequestParam(anyList)
-//        }
-//        Assert.assertTrue(reorderShowcase.params.parameters.isNotEmpty())
-//        coEvery {
-//            reorderShowcase.executeOnBackground()
-//        }
-//        Assert.assertTrue(viewModel.reoderShopShowcaseResponse.value is Success)
-
     }
 
     @Test
