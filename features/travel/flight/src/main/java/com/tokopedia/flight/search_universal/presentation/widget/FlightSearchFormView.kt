@@ -329,6 +329,7 @@ class FlightSearchFormView @JvmOverloads constructor(context: Context, attrs: At
 
     private fun toggleOneWay(isChecked: Boolean) {
         flightSearchData.isOneWay = !isChecked
+        if (isChecked) setReturnDate(generateDefaultReturnDate(departureDate))
         renderTripView()
     }
 
@@ -444,6 +445,7 @@ class FlightSearchFormView @JvmOverloads constructor(context: Context, attrs: At
         fun onDestinationAirportClicked()
         fun onDepartureDateClicked(departureAirport: String, arrivalAirport: String, flightClassId: Int,
                                    departureDate: Date, returnDate: Date, isRoundTrip: Boolean)
+
         fun onReturnDateClicked(departureDate: Date, returnDate: Date)
         fun onPassengerClicked(passengerModel: FlightPassengerModel?)
         fun onClassClicked(flightClassId: Int = -1)
