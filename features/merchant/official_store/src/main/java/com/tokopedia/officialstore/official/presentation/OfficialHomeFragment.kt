@@ -113,9 +113,13 @@ class OfficialHomeFragment :
                 if (swipeRefreshLayout?.isRefreshing == false) {
                     val CATEGORY_CONST: String = category?.slug.orEmpty()
                     val recomConstant = (FirebasePerformanceMonitoringConstant.PRODUCT_RECOM).replace(SLUG_CONST, CATEGORY_CONST)
+                    val categories = category?.categories.toString()
+                    val categoriesWithoutOpeningSquare = categories.replace("[", "") // Remove Square bracket from the string
+                    val categoriesWithoutClosingSquare = categoriesWithoutOpeningSquare.replace("]", "") // Remove Square bracket from the string
                     counterTitleShouldBeRendered += 1
                     productRecommendationPerformanceMonitoring = PerformanceMonitoring.start(recomConstant)
-                    viewModel.loadMore(category, page)
+                    // viewModel.loadMore(category, page)
+                    viewModel.loadMoreProducts(categoriesWithoutClosingSquare, page)
 
                     if (adapter?.getVisitables()?.lastOrNull() is ProductRecommendationViewModel) {
                         adapter?.showLoading()
@@ -283,7 +287,27 @@ class OfficialHomeFragment :
     }
 
     private fun observeProductRecommendation() {
-        viewModel.officialStoreProductRecommendationResult.observe(this, Observer {
+//        viewModel.officialStoreProductRecommendationResult.observe(this, Observer {
+//            when (it) {
+//                is Success -> {
+//                    PRODUCT_RECOMMENDATION_TITLE_SECTION = it.data.title
+//                    adapter?.hideLoading()
+//                    endlessScrollListener.updateStateAfterGetData()
+//                    swipeRefreshLayout?.isRefreshing = false
+//                    if (counterTitleShouldBeRendered == 1) {
+//                        OfficialHomeMapper.mappingProductrecommendationTitle(it.data.title, adapter)
+//                    }
+//                    OfficialHomeMapper.mappingProductRecommendation(it.data, adapter, this)
+//                }
+//                is Fail -> {
+//                    swipeRefreshLayout?.isRefreshing = false
+//                    showErrorNetwork(it.throwable)
+//                }
+//            }
+//            productRecommendationPerformanceMonitoring.stopTrace()
+//        })
+
+        viewModel.productRecommendation.observe(this, Observer {
             when (it) {
                 is Success -> {
                     PRODUCT_RECOMMENDATION_TITLE_SECTION = it.data.title

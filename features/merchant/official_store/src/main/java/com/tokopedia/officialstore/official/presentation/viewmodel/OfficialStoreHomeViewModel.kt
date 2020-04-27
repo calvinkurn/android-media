@@ -92,6 +92,10 @@ class OfficialStoreHomeViewModel @Inject constructor(
         MutableLiveData<Result<RecommendationWidget>>()
     }
 
+    private val _productRecommendation = MutableLiveData<Result<RecommendationWidget>>()
+    val productRecommendation: LiveData<Result<RecommendationWidget>>
+        get() = _productRecommendation
+
     private val _topAdsWishlistResult by lazy {
         MutableLiveData<Result<WishlistModel>>()
     }
@@ -125,6 +129,24 @@ class OfficialStoreHomeViewModel @Inject constructor(
             val recommendation = getOfficialStoreProductRecommendation(categoriesWithoutClosingSquare, page)
             _officialStoreProductRecommendation.value = recommendation
         }) {}
+    }
+
+    fun loadMoreProducts(categoryId: String, pageNumber: Int, pageName: String = "official-store") {
+        launchCatchError(block = {
+            withContext(Dispatchers.IO) {
+//                val pageName = "official-store"
+                val requestParams = getRecommendationUseCase.getOfficialStoreRecomParams(pageNumber, pageName, categoryId)
+                val dataProductResponse = getRecommendationUseCase.createObservable(requestParams).toBlocking().first()
+                _productRecommendation.postValue(Success(dataProductResponse.get(0)))
+
+//                val pageName = "official-store"
+//                val requestParams = getRecommendationUseCase.getOfficialStoreRecomParams(pageNumber, pageName, categoryId)
+//                val dataProduct = getRecommendationUseCase.createObservable(requestParams).toBlocking()
+//                val recommendationWidget = dataProduct.first()[0]
+            }
+        }) {
+            _productRecommendation.value = Fail(it)
+        }
     }
 
     private suspend fun getOfficialStoreBanners(categoryId: String): Result<OfficialStoreBanners> {

@@ -10,9 +10,14 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.topads.sdk.domain.model.WishlistModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import io.mockk.coEvery
 import io.mockk.mockk
+import io.mockk.mockkObject
+import io.mockk.verify
 import kotlinx.coroutines.runBlocking
+import org.junit.Assert
 import org.junit.Test
+import org.mockito.Matchers
 
 class OfficialStoreHomeViewModelTest: OfficialStoreHomeViewModelTestFixture() {
 
@@ -89,6 +94,22 @@ class OfficialStoreHomeViewModelTest: OfficialStoreHomeViewModelTestFixture() {
            val expectedProductRecommendation = Success(productRecommendation[0])
            verifyOfficialStoreProductRecommendationEquals(expectedProductRecommendation)
        }
+
+//        mockkObject(ReorderShopShowcaseListUseCase)
+//        coEvery {
+//            reorderShowcase.executeOnBackground()
+//        } returns ReorderShopShowcaseResponse()
+//        val anyList: List<String> = Matchers.anyList()
+//        viewModel.reorderShopShowcaseList(anyList)
+//        verify {
+//            ReorderShopShowcaseListUseCase.createRequestParam(anyList)
+//        }
+//        Assert.assertTrue(reorderShowcase.params.parameters.isNotEmpty())
+//        coEvery {
+//            reorderShowcase.executeOnBackground()
+//        }
+//        Assert.assertTrue(viewModel.reoderShopShowcaseResponse.value is Success)
+
     }
 
     @Test
