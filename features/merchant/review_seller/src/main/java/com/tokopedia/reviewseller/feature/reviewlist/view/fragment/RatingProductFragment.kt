@@ -173,7 +173,8 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
     override fun loadInitialData() {
         clearAllData()
         rvRatingProduct?.visible()
-        appBar_layout_reviewSeller?.hide()
+        filter_and_sort_layout?.hide()
+        search_bar_layout?.hide()
         globalError_reviewSeller?.hide()
         emptyState_reviewProduct?.hide()
         showLoading()
@@ -268,8 +269,8 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
 
     private fun onSuccessGetProductRatingOverallData(data: ProductRatingOverallUiModel) {
         reviewSellerAdapter.hideLoading()
-        appBar_layout_reviewSeller?.show()
         filter_and_sort_layout?.show()
+        search_bar_layout?.show()
         swipeToRefreshReviewSeller?.isRefreshing = false
         reviewSellerAdapter.setProductRatingOverallData(data)
     }
@@ -283,7 +284,7 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
                 globalError_reviewSeller?.setType(GlobalError.NO_CONNECTION)
             }
 
-            appBar_layout_reviewSeller?.gone()
+            filter_and_sort_layout?.gone()
             rvRatingProduct?.gone()
             emptyState_reviewProduct?.gone()
             scrollView_globalError_reviewSeller?.show()

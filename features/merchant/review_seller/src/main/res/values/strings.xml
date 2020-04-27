@@ -61,4 +61,8 @@
     <string name="review_not_found">Ulasan tidak terserdia.</string>
     <string name="user_reply_feedback">Balasan %s</string>
     <string name="label_read_more">Selengkapnya</string>
+    <string name="edit_review_label">Ubah Ulasan</string>
+    <string name="review_reply_label">Balas Ulasan</string>
+    <string name="report_label">Laporkan</string>
+    <string name="option_menu_label">Menu</string>
 </resources>

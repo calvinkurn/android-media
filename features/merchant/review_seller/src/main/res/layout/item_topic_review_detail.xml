@@ -32,7 +32,7 @@
         app:sort_filter_type="advanced"/>
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/labelResultFeedback"
+        android:id="@+id/resultFeedbackLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:typographyType="body_2"
