@@ -420,11 +420,13 @@ class FlightHomepageFragment : BaseDaggerFragment(), FlightSearchFormView.Flight
                 flightSearchData.departureAirport.cityCode == flightSearchData.arrivalAirport.cityCode) {
             isValid = false
             showMessageErrorInSnackbar(R.string.flight_dashboard_arrival_departure_same_error)
-        } else if (flightSearchData.departureAirport.cityAirports.isNotEmpty() &&
+        } else if (flightSearchData.departureAirport.cityAirports != null &&
+                flightSearchData.departureAirport.cityAirports.isNotEmpty() &&
                 flightSearchData.departureAirport.cityAirports.contains(flightSearchData.arrivalAirport.airportCode)) {
             isValid = false
             showMessageErrorInSnackbar(R.string.flight_dashboard_arrival_departure_same_error)
-        } else if (flightSearchData.arrivalAirport.cityAirports.isNotEmpty() &&
+        } else if (flightSearchData.arrivalAirport.cityAirports != null &&
+                flightSearchData.arrivalAirport.cityAirports.isNotEmpty() &&
                 flightSearchData.arrivalAirport.cityAirports.contains(flightSearchData.departureAirport.airportCode)) {
             isValid = false
             showMessageErrorInSnackbar(R.string.flight_dashboard_arrival_departure_same_error)
