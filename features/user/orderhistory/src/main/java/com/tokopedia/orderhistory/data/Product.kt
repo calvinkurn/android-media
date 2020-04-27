@@ -39,7 +39,22 @@ data class Product(
         @SerializedName("status")
         val status: Int = 0
 ) : Visitable<OrderHistoryTypeFactory> {
+
+    // TODO: impl free shipping later
+    // val hasFreeShipping: Boolean get() = freeShipping.isActive && freeShipping.imageUrl.isNotEmpty()
+
+    val hasEmptyStock: Boolean get() = status == statusDeleted || status == statusWarehouse
+    val hasDiscount: Boolean
+        get() {
+            return priceBefore.isNotEmpty() && discountedPercentage > 0
+        }
+
     override fun type(typeFactory: OrderHistoryTypeFactory): Int {
         return typeFactory.type(this)
+    }
+
+    companion object {
+        private const val statusDeleted = 0
+        private const val statusWarehouse = 3
     }
 }

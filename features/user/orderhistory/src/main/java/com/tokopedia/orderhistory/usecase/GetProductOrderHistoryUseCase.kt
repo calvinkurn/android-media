@@ -15,7 +15,7 @@ class GetProductOrderHistoryUseCase @Inject constructor(
 
     fun loadProductHistory(
             shopId: String,
-            onSuccess: (List<Product>) -> Unit,
+            onSuccess: (ChatHistoryProductResponse) -> Unit,
             onError: (Throwable) -> Unit
     ) {
         val params = generateParams(shopId)
@@ -24,7 +24,7 @@ class GetProductOrderHistoryUseCase @Inject constructor(
             setRequestParams(params)
             setGraphqlQuery(query)
             execute({ result ->
-                onSuccess(result.products)
+                onSuccess(result)
             }, { error ->
                 onError(error)
             })

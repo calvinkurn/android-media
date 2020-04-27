@@ -4,11 +4,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
+import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.orderhistory.R
 import com.tokopedia.orderhistory.analytic.OrderHistoryAnalytic
@@ -28,6 +30,7 @@ class OrderHistoryFragment : BaseListFragment<Visitable<*>, OrderHistoryTypeFact
     @Inject
     lateinit var analytic: OrderHistoryAnalytic
 
+    private var recycler: VerticalRecyclerView? = null
     private val viewModelFragmentProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
     private val viewModel by lazy { viewModelFragmentProvider.get(OrderHistoryViewModel::class.java) }
     private lateinit var adapter: OrderHistoryAdapter
@@ -41,9 +44,19 @@ class OrderHistoryFragment : BaseListFragment<Visitable<*>, OrderHistoryTypeFact
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_orderhistory_order_history, container, false).also {
+            bindView(it)
+            setupRecyclerview()
             initializeArguments()
             setupObserver()
         }
+    }
+
+    private fun bindView(view: View?) {
+        recycler = view?.findViewById(recyclerViewResourceId)
+    }
+
+    private fun setupRecyclerview() {
+        recycler?.clearItemDecoration()
     }
 
     private fun initializeArguments() {
@@ -51,7 +64,9 @@ class OrderHistoryFragment : BaseListFragment<Visitable<*>, OrderHistoryTypeFact
     }
 
     private fun setupObserver() {
-
+        viewModel.product.observe(this, Observer {
+            renderList(it)
+        })
     }
 
     override fun getScreenName(): String = screenName
