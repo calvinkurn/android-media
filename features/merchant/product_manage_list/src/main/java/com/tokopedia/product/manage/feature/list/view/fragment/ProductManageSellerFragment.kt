@@ -127,7 +127,7 @@ class ProductManageSellerFragment : ProductManageFragment(), ProductDraftListCou
     private fun registerDraftReceiver() {
         draftBroadCastReceiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context, intent: Intent) {
-                if (intent.action == UploadProductService.ACTION_DRAFT_CHANGED || intent.action == TkpdState.ProductService.BROADCAST_DRAFT_CHANGED) {
+                if (intent.action == UploadProductService.ACTION_DRAFT_CHANGED || intent.action == TkpdState.ProductService.BROADCAST_ADD_EDIT_PRODUCT_SUCCESS) {
                     productDraftListCountPresenter.getAllDraftCount()
                 }
             }
@@ -136,7 +136,7 @@ class ProductManageSellerFragment : ProductManageFragment(), ProductDraftListCou
         activity?.let {
             val intentFilters = IntentFilter().apply {
                 addAction(UploadProductService.ACTION_DRAFT_CHANGED)
-                addAction(TkpdState.ProductService.BROADCAST_DRAFT_CHANGED)
+                addAction(TkpdState.ProductService.BROADCAST_ADD_EDIT_PRODUCT_SUCCESS)
             }
             it.registerReceiver(draftBroadCastReceiver, intentFilters)
         }

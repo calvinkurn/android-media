@@ -9,7 +9,6 @@ public class TkpdState {
         /* BROADCAST INTENT FILTER */
         public static final String BROADCAST_ADD_PRODUCT = "BROADCAST_ADD_PRODUCT";
         public static final String BROADCAST_ADD_EDIT_PRODUCT_SUCCESS = "BROADCAST_ADD_EDIT_PRODUCT_SUCCESS";
-        public static final String BROADCAST_DRAFT_CHANGED = "BROADCAST_DRAFT_CHANGED";
 
         /* TYPE */
         public static final String SERVICE_TYPE = "SERVICE_TYPE";

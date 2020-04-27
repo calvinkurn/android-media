@@ -80,12 +80,10 @@ abstract class AddEditProductBaseService : JobIntentService(), CoroutineScope {
     fun setUploadProductDataSuccess() {
         notificationManager?.onSuccessUpload()
         sendSuccessBroadcast()
-        sendDraftChangedBroadcast()
     }
 
     fun setUploadProductDataError(errorMessage: String) {
         notificationManager?.onFailedUpload(errorMessage)
-        sendDraftChangedBroadcast()
     }
 
     fun uploadProductImages(imageUrlOrPathList: List<String>, variantPicturePath: List<String>, sizeChartPath: String) {
@@ -186,15 +184,6 @@ abstract class AddEditProductBaseService : JobIntentService(), CoroutineScope {
         val result = Intent(TkpdState.ProductService.BROADCAST_ADD_EDIT_PRODUCT_SUCCESS)
         val bundle = Bundle()
         bundle.putInt(TkpdState.ProductService.STATUS_FLAG, TkpdState.ProductService.STATUS_DONE)
-        result.putExtras(bundle)
-        sendBroadcast(result)
-    }
-
-    private fun sendDraftChangedBroadcast() {
-        val result = Intent(TkpdState.ProductService.BROADCAST_DRAFT_CHANGED)
-        val bundle = Bundle().apply {
-            putInt(TkpdState.ProductService.STATUS_FLAG, TkpdState.ProductService.STATUS_DONE)
-        }
         result.putExtras(bundle)
         sendBroadcast(result)
     }
