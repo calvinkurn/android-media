@@ -22,6 +22,7 @@ import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.common.di.DaggerLoginRegisterComponent
 import com.tokopedia.loginregister.common.di.LoginRegisterComponent
 import com.tokopedia.loginregister.login.view.fragment.LoginEmailPhoneFragment
+import com.tokopedia.loginregister.login.view.fragment.SellerSeamlessLoginFragment
 import com.tokopedia.loginregister.login.view.listener.LoginEmailPhoneContract
 import com.tokopedia.user.session.UserSession
 
@@ -138,10 +139,10 @@ class LoginActivity : BaseSimpleActivity(), HasComponent<LoginRegisterComponent>
     }
 
     override fun onBackPressed() {
-        if (supportFragmentManager.findFragmentById(R.id.parent_view) is LoginEmailPhoneContract.View) {
-            (supportFragmentManager.findFragmentById(R.id
-                    .parent_view) as LoginEmailPhoneContract.View).onBackPressed()
-        } else {
+        if(fragment != null && fragment is SellerSeamlessLoginFragment){
+            (fragment as SellerSeamlessLoginFragment).onBackPressedFragment()
+            super.onBackPressed()
+        }else{
             super.onBackPressed()
         }
     }

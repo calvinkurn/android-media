@@ -20,6 +20,8 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.RemoteApi
+import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics
+import com.tokopedia.loginregister.common.analytics.SeamlessLoginAnalytics
 import com.tokopedia.loginregister.common.di.LoginRegisterComponent
 import com.tokopedia.loginregister.login.di.DaggerLoginComponent
 import com.tokopedia.loginregister.login.view.constant.SeamlessSellerConstant
@@ -49,11 +51,21 @@ class SellerSeamlessLoginFragment : BaseDaggerFragment() {
     private val viewModelProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
     private val seamlessViewModel by lazy { viewModelProvider.get(SellerSeamlessViewModel::class.java) }
 
+    @Inject
+    lateinit var analytics: SeamlessLoginAnalytics
+
     private var getUserTaskId = ""
     private var getKeyTaskId = ""
 
-    override fun getScreenName(): String = ""
-    
+    override fun getScreenName(): String = SeamlessLoginAnalytics.SCREEN_SEAMLESS_LOGIN
+
+    override fun onStart() {
+        super.onStart()
+        activity?.run {
+            analytics.trackScreen(screenName)
+        }
+    }
+
     override fun initInjector() {
         val daggerLoginComponent = DaggerLoginComponent
                 .builder().loginRegisterComponent(getComponent(LoginRegisterComponent::class.java))
@@ -129,6 +141,7 @@ class SellerSeamlessLoginFragment : BaseDaggerFragment() {
 
         view?.seller_seamless_positive_btn.setOnClickListener {
             if(service != null){
+                analytics.eventClickLoginSeamless()
                 showProgressBar()
                 getKeyTaskId = UUID.randomUUID().toString()
                 getKey(getKeyTaskId)
@@ -136,6 +149,7 @@ class SellerSeamlessLoginFragment : BaseDaggerFragment() {
         }
 
         view?.seller_seamless_negative_btn.setOnClickListener {
+            analytics.eventClickLoginWithOtherAcc()
             activity?.finish()
         }
 
@@ -216,6 +230,10 @@ class SellerSeamlessLoginFragment : BaseDaggerFragment() {
             activity?.unbindService(this)
         }
         super.onDestroy()
+    }
+
+    fun onBackPressedFragment() {
+        analytics.eventClickBack()
     }
 
     internal inner class RemoteServiceConnection : ServiceConnection {
