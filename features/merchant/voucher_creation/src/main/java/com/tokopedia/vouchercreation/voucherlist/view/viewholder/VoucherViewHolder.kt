@@ -2,6 +2,7 @@ package com.tokopedia.vouchercreation.voucherlist.view.viewholder
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.loadImageDrawable
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.voucherlist.model.VoucherUiModel
 import kotlinx.android.synthetic.main.item_mvc_voucher_list.view.*
@@ -21,6 +22,7 @@ class VoucherViewHolder(
 
     override fun bind(element: VoucherUiModel) {
         with(itemView) {
+            imgVoucherType.loadImageDrawable(R.drawable.img_mvc_cashback_khusus)
             btnMore.setOnClickListener {
                 onMoreClick(element)
             }

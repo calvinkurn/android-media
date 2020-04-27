@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.kotlin.extensions.view.dpToPx
@@ -19,9 +20,11 @@ import com.tokopedia.vouchercreation.di.component.DaggerVoucherCreationComponent
 import com.tokopedia.vouchercreation.voucherlist.model.*
 import com.tokopedia.vouchercreation.voucherlist.model.BaseHeaderChipUiModel.HeaderChip
 import com.tokopedia.vouchercreation.voucherlist.model.BaseHeaderChipUiModel.ResetChip
+import com.tokopedia.vouchercreation.voucherlist.model.MoreMenuUiModel.EditQuota
 import com.tokopedia.vouchercreation.voucherlist.view.adapter.factory.VoucherListAdapterFactoryImpl
 import com.tokopedia.vouchercreation.voucherlist.view.viewmodel.VoucherListViewModel
 import com.tokopedia.vouchercreation.voucherlist.view.widget.MoreMenuBottomSheet
+import com.tokopedia.vouchercreation.voucherlist.view.widget.EditQuotaBottomSheet
 import com.tokopedia.vouchercreation.voucherlist.view.widget.filterbottomsheet.FilterBottomSheet
 import com.tokopedia.vouchercreation.voucherlist.view.widget.headerchips.ChipType
 import com.tokopedia.vouchercreation.voucherlist.view.widget.sortbottomsheet.SortBottomSheet
@@ -32,7 +35,7 @@ import javax.inject.Inject
  * Created By @ilhamsuaib on 17/04/20
  */
 
-class VoucherListFragment : BaseListFragment<BaseVoucherListUiModel, VoucherListAdapterFactoryImpl>(),
+class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFactoryImpl>(),
         VoucherListAdapterFactoryImpl.Listener {
 
     companion object {
@@ -106,7 +109,7 @@ class VoucherListFragment : BaseListFragment<BaseVoucherListUiModel, VoucherList
     override fun getRecyclerViewResourceId(): Int = R.id.rvVoucherList
 
     override fun getAdapterTypeFactory(): VoucherListAdapterFactoryImpl {
-        return VoucherListAdapterFactoryImpl(this, isActiveVoucher)
+        return VoucherListAdapterFactoryImpl(this)
     }
 
     override fun getScreenName(): String = VoucherListFragment::class.java.simpleName
@@ -118,7 +121,7 @@ class VoucherListFragment : BaseListFragment<BaseVoucherListUiModel, VoucherList
                 .inject(this)
     }
 
-    override fun onItemClicked(t: BaseVoucherListUiModel?) {
+    override fun onItemClicked(t: Visitable<*>?) {
 
     }
 
@@ -139,12 +142,22 @@ class VoucherListFragment : BaseListFragment<BaseVoucherListUiModel, VoucherList
         return super.onOptionsItemSelected(item)
     }
 
-    private fun onMoreMenuItemClickListener(menu: MoreMenuUiModel) {
-        dismissBottomSheet<MoreMenuBottomSheet>(MoreMenuBottomSheet.TAG)
-    }
-
     override fun onMoreClickListener(voucher: VoucherUiModel) {
         moreBottomSheet?.show(isActiveVoucher, voucher, childFragmentManager)
+    }
+
+    private fun onMoreMenuItemClickListener(menu: MoreMenuUiModel) {
+        dismissBottomSheet<MoreMenuBottomSheet>(MoreMenuBottomSheet.TAG)
+        when (menu) {
+            is EditQuota -> showEditQuotaBottomSheet()
+        }
+    }
+
+    private fun showEditQuotaBottomSheet() {
+        val parent = view as? ViewGroup ?: return
+        if (!isAdded) return
+
+        EditQuotaBottomSheet(parent).show(childFragmentManager)
     }
 
     private fun setupView() = view?.run {
@@ -185,11 +198,7 @@ class VoucherListFragment : BaseListFragment<BaseVoucherListUiModel, VoucherList
             activity.setSupportActionBar(toolbarMvcList)
             activity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-            val title = if (isActiveVoucher) {
-                context.getString(R.string.mvc_voucher_active)
-            } else {
-                context.getString(R.string.mvc_voucher_history)
-            }
+            val title = if (isActiveVoucher) context.getString(R.string.mvc_voucher_active) else context.getString(R.string.mvc_voucher_history)
             activity.supportActionBar?.title = title
         }
         showAppBarElevation(false)
@@ -261,10 +270,18 @@ class VoucherListFragment : BaseListFragment<BaseVoucherListUiModel, VoucherList
 
     private fun showDummyData() {
         renderList(getDummyData())
+        //renderList(getVoucherListShimmer())
     }
 
-    private fun getDummyData(): List<VoucherUiModel> {
-        val list = mutableListOf<VoucherUiModel>()
+    private fun getVoucherListShimmer(): List<Visitable<*>> {
+        return listOf(LoadingStateUiModel(isActiveVoucher))
+    }
+
+    private fun getDummyData(): List<Visitable<*>> {
+        val list = mutableListOf<Visitable<*>>()
+        /*list.add(NoResultStateUiModel)
+        list.add(ErrorStateUiModel)
+        list.add(EmptyStateUiModel(isActiveVoucher))*/
         repeat(10) {
             list.add(VoucherUiModel("Voucher Hura Nyoba Doang", it % 2 == 0))
         }
