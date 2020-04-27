@@ -14,11 +14,14 @@ import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.orderhistory.R
 import com.tokopedia.orderhistory.analytic.OrderHistoryAnalytic
+import com.tokopedia.orderhistory.data.ChatHistoryProductResponse
 import com.tokopedia.orderhistory.di.OrderHistoryComponent
 import com.tokopedia.orderhistory.view.adapter.OrderHistoryAdapter
 import com.tokopedia.orderhistory.view.adapter.OrderHistoryTypeFactory
 import com.tokopedia.orderhistory.view.adapter.OrderHistoryTypeFactoryImpl
 import com.tokopedia.orderhistory.view.viewmodel.OrderHistoryViewModel
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
 class OrderHistoryFragment : BaseListFragment<Visitable<*>, OrderHistoryTypeFactory>() {
@@ -65,12 +68,15 @@ class OrderHistoryFragment : BaseListFragment<Visitable<*>, OrderHistoryTypeFact
 
     private fun setupProductListObserver() {
         viewModel.product.observe(this, Observer { result ->
-            if (result.isSuccess) {
-                renderList(result.getOrDefault(emptyList()))
-            } else {
-                showGetListError(result.exceptionOrNull())
+            when (result) {
+                is Success -> onSuccessGetProductDate(result.data)
+                is Fail -> showGetListError(result.throwable)
             }
         })
+    }
+
+    private fun onSuccessGetProductDate(data: ChatHistoryProductResponse) {
+        renderList(data.products, data.hasNext)
     }
 
     override fun getScreenName(): String = screenName

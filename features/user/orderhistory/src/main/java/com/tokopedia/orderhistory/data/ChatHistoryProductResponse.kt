@@ -8,4 +8,5 @@ data class ChatHistoryProductResponse(
         val chatHistoryProducts: ChatHistoryProducts = ChatHistoryProducts()
 ) {
     val products: List<Product> get() = chatHistoryProducts.products
+    val hasNext: Boolean get() = chatHistoryProducts.hasNext
 }
