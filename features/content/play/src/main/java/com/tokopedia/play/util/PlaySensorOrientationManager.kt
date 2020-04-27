@@ -14,17 +14,6 @@ class PlaySensorOrientationManager(
         private val listener: OrientationListener
 ) : OrientationEventListener(context, SensorManager.SENSOR_DELAY_NORMAL) {
 
-    companion object {
-        /**
-         * Assuming the default orientation of the device is Portrait
-         */
-        private val RANGE_REVERSED_LANDSCAPE = 60..140
-        private val RANGE_REVERSED_PORTRAIT = 140..220
-        private val RANGE_LANDSCAPE = 220..300
-
-        //TODO("Readjust the range")
-    }
-
     /**
      * Might be worth checking
      * https://stackoverflow.com/questions/6190779/monitor-android-system-settings-values/6191153
@@ -42,11 +31,21 @@ class PlaySensorOrientationManager(
     override fun onOrientationChanged(orientation: Int) {
         if (orientation == ORIENTATION_UNKNOWN) return
 
-        when (orientation) {
-            in RANGE_REVERSED_LANDSCAPE -> requestOrientationChange(ScreenOrientation.ReversedLandscape)
-            in RANGE_REVERSED_PORTRAIT -> { /* The Product team does not want this */ }
-            in RANGE_LANDSCAPE -> requestOrientationChange(ScreenOrientation.Landscape)
-            else -> requestOrientationChange(ScreenOrientation.Portrait)
+        /**
+         * Assuming the default orientation of the device is Portrait
+         * Please adjust this number if you find it not appropriate
+         */
+        if (orientation >= 330 || orientation < 30) {
+            requestOrientationChange(ScreenOrientation.Portrait)
+        } else if (orientation in 60 until 120) {
+            requestOrientationChange(ScreenOrientation.ReversedLandscape)
+        } else if (orientation in 150 until 210) {
+            /**
+             * Range not used
+             */
+//            requestOrientationChange(ScreenOrientation.ReversedPortrait)
+        } else if (orientation in 240 until 300) {
+            requestOrientationChange(ScreenOrientation.Landscape)
         }
     }
 
