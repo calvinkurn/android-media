@@ -255,6 +255,7 @@ class HomeFragment : BaseDaggerFragment(),
     private val impressionScrollListeners: MutableMap<String, RecyclerView.OnScrollListener> = HashMap()
     private var mLastClickTime = System.currentTimeMillis()
     private val fragmentFramePerformanceIndexMonitoring = FragmentFramePerformanceIndexMonitoring()
+    private var pageLoadTimeCallback: PageLoadTimePerformanceInterface? = null
 
 
     override fun onAttach(context: Context) {
@@ -282,9 +283,9 @@ class HomeFragment : BaseDaggerFragment(),
         remoteConfig = FirebaseRemoteConfigImpl(activity)
         searchBarTransitionRange = resources.getDimensionPixelSize(R.dimen.home_searchbar_transition_range)
         startToTransitionOffset = resources.getDimensionPixelSize(R.dimen.banner_background_height) / 2
-        if (pageLoadTimeCallback != null) {
-            pageLoadTimeCallback!!.stopPreparePagePerformanceMonitoring()
-            pageLoadTimeCallback!!.startNetworkRequestPerformanceMonitoring()
+        if (getPageLoadTimeCallback() != null) {
+            getPageLoadTimeCallback()!!.stopPreparePagePerformanceMonitoring()
+            getPageLoadTimeCallback()!!.startNetworkRequestPerformanceMonitoring()
         }
         initViewModel()
         setGeolocationPermission()
@@ -334,7 +335,9 @@ class HomeFragment : BaseDaggerFragment(),
             override fun onFrameRendered(fpiPerformanceData: FpiPerformanceData) {}
         }
         )
-        viewLifecycleOwner.lifecycle.addObserver(fragmentFramePerformanceIndexMonitoring)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            viewLifecycleOwner.lifecycle.addObserver(fragmentFramePerformanceIndexMonitoring)
+        }
         homeMainToolbar = view.findViewById(R.id.toolbar)
         homeMainToolbar.setAfterInflationCallable(afterInflationCallable)
         statusBarBackground = view.findViewById(R.id.status_bar_bg)
@@ -552,6 +555,29 @@ class HomeFragment : BaseDaggerFragment(),
         observeStickyLogin()
         observeTrackingData()
         observeRequestImagePlayBanner()
+        observeHomeRequestNetwork();
+        observeViewModelInitialized();
+    }
+
+    private fun observeHomeRequestNetwork() {
+        viewModel.isRequestNetworkLiveData.observe(viewLifecycleOwner, Observer {data: Event<Boolean> ->
+            val isRequestNetwork = data.peekContent()
+            if (isRequestNetwork && getPageLoadTimeCallback() != null) {
+                getPageLoadTimeCallback()!!.startNetworkRequestPerformanceMonitoring()
+            } else if (getPageLoadTimeCallback() != null) {
+                getPageLoadTimeCallback()!!.stopNetworkRequestPerformanceMonitoring()
+                getPageLoadTimeCallback()!!.startRenderPerformanceMonitoring()
+            }
+        })
+    }
+
+    private fun observeViewModelInitialized() {
+        viewModel.isViewModelInitalized.observe(viewLifecycleOwner, Observer { data: Event<Boolean> ->
+            val isViewModelInitialized = data.peekContent()
+            if (isViewModelInitialized && getPageLoadTimeCallback() != null) {
+                getPageLoadTimeCallback()!!.stopPreparePagePerformanceMonitoring()
+            }
+        })
     }
 
     private fun observeErrorEvent() {
@@ -672,12 +698,7 @@ class HomeFragment : BaseDaggerFragment(),
 
     private fun setData(data: List<HomeVisitable?>, isCache: Boolean) {
         if (!data.isEmpty()) {
-            if (!isCache && pageLoadTimeCallback != null) {
-                pageLoadTimeCallback!!.stopNetworkRequestPerformanceMonitoring()
-            }
             if (needToPerformanceMonitoring() && pageLoadTimeCallback != null) {
-                pageLoadTimeCallback!!.stopNetworkRequestPerformanceMonitoring()
-                pageLoadTimeCallback!!.startRenderPerformanceMonitoring()
                 setOnRecyclerViewLayoutReady(isCache)
             }
             adapter!!.submitList(data)
@@ -1167,7 +1188,7 @@ class HomeFragment : BaseDaggerFragment(),
                 if (visitable is HomeVisitable) {
                     val homeVisitable = visitable
                     if (homeVisitable.isTrackingCombined && homeVisitable.trackingDataForCombination != null) {
-                        combinedTracking.addAll(homeVisitable.trackingDataForCombination)
+                        HomePageTracking.eventEnhanceImpressionLegoAndCuratedHomePage(trackingQueue, homeVisitable.getTrackingDataForCombination());
                     } else if (!homeVisitable.isTrackingCombined && homeVisitable.trackingData != null) {
                         HomePageTracking.eventEnhancedImpressionWidgetHomePage(trackingQueue, homeVisitable.trackingData)
                     }
@@ -1767,10 +1788,12 @@ class HomeFragment : BaseDaggerFragment(),
         }
     }
 
-    private val pageLoadTimeCallback: PageLoadTimePerformanceInterface?
-        private get() = if (homePerformanceMonitoringListener != null && homePerformanceMonitoringListener!!.pageLoadTimePerformanceInterface != null) {
-            homePerformanceMonitoringListener!!.pageLoadTimePerformanceInterface
-        } else null
+    private fun getPageLoadTimeCallback(): PageLoadTimePerformanceInterface? {
+        if (homePerformanceMonitoringListener != null && homePerformanceMonitoringListener!!.pageLoadTimePerformanceInterface != null) {
+           pageLoadTimeCallback =  homePerformanceMonitoringListener!!.pageLoadTimePerformanceInterface
+        }
+        return pageLoadTimeCallback
+    }
 
     override fun getFramePerformanceIndexData(): FragmentFramePerformanceIndexMonitoring {
         return fragmentFramePerformanceIndexMonitoring
