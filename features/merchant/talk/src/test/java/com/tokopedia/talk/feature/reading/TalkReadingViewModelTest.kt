@@ -1,8 +1,8 @@
 package com.tokopedia.talk.feature.reading
 
 import android.accounts.NetworkErrorException
-import com.tokopedia.talk.feature.reading.data.model.DiscussionAggregateResponse
-import com.tokopedia.talk.feature.reading.data.model.DiscussionDataResponseWrapper
+import com.tokopedia.talk.feature.reading.data.model.discussionaggregate.DiscussionAggregateResponse
+import com.tokopedia.talk.feature.reading.data.model.discussiondata.DiscussionDataResponseWrapper
 import com.tokopedia.talk.feature.reading.data.model.SortOption
 import com.tokopedia.talk.feature.reading.data.model.TalkReadingCategory
 import com.tokopedia.usecase.coroutines.Fail

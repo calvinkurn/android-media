@@ -2,6 +2,10 @@ package com.tokopedia.talk.feature.reading.data.mapper
 
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.talk.feature.reading.data.model.*
+import com.tokopedia.talk.feature.reading.data.model.discussionaggregate.DiscussionAggregate
+import com.tokopedia.talk.feature.reading.data.model.discussionaggregate.DiscussionAggregateCategory
+import com.tokopedia.talk.feature.reading.data.model.discussionaggregate.DiscussionAggregateResponse
+import com.tokopedia.talk.feature.reading.data.model.discussiondata.DiscussionDataResponse
 import com.tokopedia.talk.feature.reading.presentation.adapter.uimodel.TalkReadingHeaderModel
 import com.tokopedia.talk.feature.reading.presentation.adapter.uimodel.TalkReadingUiModel
 import com.tokopedia.talk.feature.reading.presentation.widget.OnCategoryModifiedListener

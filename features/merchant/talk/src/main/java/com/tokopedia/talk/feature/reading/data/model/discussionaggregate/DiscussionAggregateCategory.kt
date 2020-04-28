@@ -1,4 +1,4 @@
-package com.tokopedia.talk.feature.reading.data.model
+package com.tokopedia.talk.feature.reading.data.model.discussionaggregate
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName

@@ -4,8 +4,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.talk.common.coroutine.CoroutineDispatchers
-import com.tokopedia.talk.feature.reading.data.model.DiscussionAggregateResponse
-import com.tokopedia.talk.feature.reading.data.model.DiscussionDataResponseWrapper
+import com.tokopedia.talk.feature.reading.data.model.discussionaggregate.DiscussionAggregateResponse
+import com.tokopedia.talk.feature.reading.data.model.discussiondata.DiscussionDataResponseWrapper
 import com.tokopedia.talk.feature.reading.data.model.SortOption
 import com.tokopedia.talk.feature.reading.domain.usecase.GetDiscussionAggregateUseCase
 import com.tokopedia.talk.feature.reading.domain.usecase.GetDiscussionDataUseCase
