@@ -367,7 +367,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
     protected Response refreshToken(Chain chain, Response response, Request finalRequest)  {
         AccessTokenRefresh accessTokenRefresh = new AccessTokenRefresh();
         try {
-            accessTokenRefresh.refreshToken(context, userSession, networkRouter, finalRequest);
+            accessTokenRefresh.refreshToken(context, userSession, networkRouter);
             Request newest = recreateRequestWithNewAccessToken(chain);
             return checkShowForceLogout(chain, newest);
         } catch (IOException e) {
