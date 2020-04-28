@@ -180,7 +180,7 @@ class PlayBottomSheetFragment : BaseDaggerFragment() {
     private fun sendTrackerImpression(playResult: PlayResult<ProductSheetUiModel>) {
         if (playResult is PlayResult.Success) {
             if (playResult.data.productList.isNotEmpty()
-                    && playResult.data.productList[0] is ProductLineUiModel) {
+                    && playResult.data.productList.first() is ProductLineUiModel) {
                 with(PlayAnalytics) { impressionProductList(
                         trackingQueue,
                         channelId,
@@ -241,7 +241,8 @@ class PlayBottomSheetFragment : BaseDaggerFragment() {
                 playViewModel.updateBadgeCart()
                 when (it.action) {
                     ProductAction.Buy -> RouteManager.route(requireContext(), ApplinkConstInternalMarketplace.CART)
-                    ProductAction.AddToCart -> sendVariantToaster(
+                    ProductAction.AddToCart -> doShowToaster(
+                            bottomSheetType = it.bottomInsetsType,
                             toasterType = Toaster.TYPE_NORMAL,
                             message = getString(R.string.play_add_to_cart_message_success),
                             actionText = getString(R.string.play_action_view),
@@ -257,7 +258,8 @@ class PlayBottomSheetFragment : BaseDaggerFragment() {
                 PlayAnalytics.clickProductAction(trackingQueue, channelId, it.product, it.cartId, playViewModel.channelType, it.action, it.bottomInsetsType)
             }
             else {
-                sendVariantToaster(
+                doShowToaster(
+                        bottomSheetType = it.bottomInsetsType,
                         toasterType = Toaster.TYPE_ERROR,
                         message = if (it.errorMessage.isNotEmpty() && it.errorMessage.isNotBlank()) it.errorMessage else generalErrorMessage
                 )
@@ -295,6 +297,7 @@ class PlayBottomSheetFragment : BaseDaggerFragment() {
                             is ProductSheetInteractionEvent.OnAtcProduct -> shouldCheckProductVariant(it.product, ProductAction.AddToCart)
                             is ProductSheetInteractionEvent.OnProductCardClicked -> shouldOpenProductDetail(it.product)
                             is ProductSheetInteractionEvent.OnVoucherScrolled -> onVoucherScrolled(it.lastPositionViewed)
+                            is ProductSheetInteractionEvent.OnEmptyButtonClicked -> openShopPage(it.partnerId)
                         }
                     }
         }
@@ -304,6 +307,10 @@ class PlayBottomSheetFragment : BaseDaggerFragment() {
 
     private fun onVoucherScrolled(lastPositionViewed: Int) {
         PlayAnalytics.scrollMerchantVoucher(channelId, lastPositionViewed)
+    }
+
+    private fun openShopPage(partnerId: Long) {
+        openPageByApplink(ApplinkConst.SHOP, partnerId.toString())
     }
 
     private fun initVariantSheetComponent(container: ViewGroup): UIComponent<VariantSheetInteractionEvent> {
@@ -364,7 +371,34 @@ class PlayBottomSheetFragment : BaseDaggerFragment() {
         viewModel.doInteractionEvent(InteractionEvent.OpenProductDetail(product))
     }
 
-    private fun sendVariantToaster(toasterType: Int, message: String, actionText: String? = null, actionClickListener: View.OnClickListener? = null) {
+    private fun doShowToaster(
+            bottomSheetType: BottomInsetsType,
+            toasterType: Int,
+            message: String,
+            actionText: String = "",
+            actionClickListener: View.OnClickListener = View.OnClickListener {}
+    ) {
+        when (bottomSheetType) {
+            BottomInsetsType.ProductSheet ->
+                Toaster.make(requireView(),
+                        message,
+                        toasterType,
+                        actionText = actionText,
+                        clickListener = actionClickListener)
+            BottomInsetsType.VariantSheet ->
+                sendVariantToaster(toasterType, message, actionText, actionClickListener)
+            else -> {
+                // nothing
+            }
+        }
+    }
+
+    private fun sendVariantToaster(
+            toasterType: Int,
+            message: String,
+            actionText: String = "",
+            actionClickListener: View.OnClickListener = View.OnClickListener {}
+    ) {
         scope.launch {
             EventBusFactory.get(viewLifecycleOwner)
                     .emit(

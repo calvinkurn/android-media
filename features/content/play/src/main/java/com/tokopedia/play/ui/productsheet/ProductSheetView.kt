@@ -25,13 +25,14 @@ import com.tokopedia.play.view.uimodel.ProductLineUiModel
 import com.tokopedia.play.view.uimodel.ProductPlaceholderUiModel
 import com.tokopedia.play.view.uimodel.ProductSheetUiModel
 import com.tokopedia.play.view.uimodel.VoucherPlaceholderUiModel
+import com.tokopedia.unifycomponents.Toaster
 
 /**
  * Created by jegul on 02/03/20
  */
 class ProductSheetView(
         container: ViewGroup,
-        listener: Listener
+        private val listener: Listener
 ) : UIView(container) {
 
     private val view: View = LayoutInflater.from(container.context).inflate(R.layout.view_product_sheet, container, true)
@@ -126,6 +127,12 @@ class ProductSheetView(
     internal fun setProductSheet(model: ProductSheetUiModel) {
         showContent(true)
 
+        if (productLineAdapter.getItems().isNotEmpty() &&
+                productLineAdapter.getItems().first() is ProductLineUiModel &&
+                productLineAdapter.itemCount > model.productList.size) {
+            showToasterProductRemoved()
+        }
+
         tvSheetTitle.text = model.title
         voucherAdapter.setItemsAndAnimateChanges(model.voucherList)
         productLineAdapter.setItemsAndAnimateChanges(model.productList)
@@ -151,6 +158,25 @@ class ProductSheetView(
         )
     }
 
+    internal fun showEmpty(partnerId: Long) {
+        showContent(false)
+
+        globalError.setType(GlobalError.PAGE_NOT_FOUND)
+        globalError.errorTitle.text = view.context.getString(R.string.play_product_empty_title)
+        globalError.errorDescription.text = view.context.getString(R.string.play_product_empty_desc)
+        globalError.errorAction.text = view.context.getString(R.string.play_product_empty_action)
+        globalError.setActionClickListener {
+            listener.onEmptyButtonClicked(partnerId)
+        }
+    }
+
+    private fun showToasterProductRemoved() {
+        Toaster.make(
+                view,
+                view.context.getString(R.string.play_product_updated),
+                type = Toaster.TYPE_NORMAL)
+    }
+
     private fun showContent(shouldShow: Boolean) {
         if (shouldShow) {
             rvProductList.visible()
@@ -167,6 +193,7 @@ class ProductSheetView(
 
     private fun getPlaceholderModel() = ProductSheetUiModel(
             title = "",
+            partnerId = 0L,
             voucherList = List(PLACEHOLDER_COUNT) { VoucherPlaceholderUiModel },
             productList = List(PLACEHOLDER_COUNT) { ProductPlaceholderUiModel }
     )
@@ -181,5 +208,6 @@ class ProductSheetView(
         fun onAtcButtonClicked(view: ProductSheetView, product: ProductLineUiModel)
         fun onProductCardClicked(view: ProductSheetView, product: ProductLineUiModel)
         fun onVoucherScrolled(lastPositionViewed: Int)
+        fun onEmptyButtonClicked(partnerId: Long)
     }
 }

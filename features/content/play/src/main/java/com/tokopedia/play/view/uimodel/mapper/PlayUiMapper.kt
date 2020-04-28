@@ -118,9 +118,10 @@ object PlayUiMapper {
             isFollowable = shopId != shopInfo.shopCore.shopId
     )
 
-    fun mapProductSheet(title: String, productTagging: ProductTagging): ProductSheetUiModel {
+    fun mapProductSheet(title: String, partnerId: Long, productTagging: ProductTagging): ProductSheetUiModel {
         return ProductSheetUiModel(
                 title = title,
+                partnerId = partnerId,
                 productList = mapItemProducts(productTagging.listOfProducts),
                 voucherList = mapItemVouchers(productTagging.listOfVouchers)
         )
