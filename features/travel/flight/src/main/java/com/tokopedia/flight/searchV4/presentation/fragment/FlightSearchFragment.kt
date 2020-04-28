@@ -24,6 +24,7 @@ import com.tokopedia.flight.R
 import com.tokopedia.flight.airport.view.model.FlightAirportModel
 import com.tokopedia.flight.common.constant.FlightErrorConstant
 import com.tokopedia.flight.common.util.FlightAnalytics
+import com.tokopedia.flight.common.view.HorizontalProgressBar
 import com.tokopedia.flight.detail.view.model.FlightDetailModel
 import com.tokopedia.flight.detail.view.widget.FlightDetailBottomSheet
 import com.tokopedia.flight.filter.presentation.FlightFilterFacilityEnum
@@ -45,10 +46,11 @@ import com.tokopedia.flight.searchV4.presentation.adapter.viewholder.EmptyResult
 import com.tokopedia.flight.searchV4.presentation.adapter.viewholder.FlightSearchAdapterTypeFactory
 import com.tokopedia.flight.searchV4.presentation.model.EmptyResultModel
 import com.tokopedia.flight.searchV4.presentation.viewmodel.FlightSearchViewModel
-import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
+import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.*
@@ -373,6 +375,10 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
 
     open fun getArrivalAirport(): FlightAirportModel = flightSearchViewModel.flightSearchPassData.arrivalAirport
 
+    open fun getFlightSearchTicker(): Ticker = flight_search_ticker
+
+    open fun getSearchHorizontalProgress(): HorizontalProgressBar = horizontal_progress_bar
+
     open fun renderSearchList(list: List<FlightJourneyModel>) {
         if (!flightSearchViewModel.isOneWay() && !adapter.isContainData) {
             showSearchRouteTitle()
@@ -389,9 +395,19 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
     }
 
     private fun renderTickerView(travelTickerModel: TravelTickerModel) {
-        TravelTickerUtils.buildUnifyTravelTicker(travelTickerModel, flight_search_ticker)
+        TravelTickerUtils.buildUnifyTravelTicker(travelTickerModel, getFlightSearchTicker())
+        getFlightSearchTicker().setDescriptionClickEvent(object : TickerCallback {
+            override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                if (linkUrl.isNotEmpty()) {
+                    RouteManager.route(context, linkUrl.toString())
+                }
+            }
+
+            override fun onDismiss() {}
+
+        })
         if (travelTickerModel.url.isNotEmpty()) {
-            flight_search_ticker.setOnClickListener {
+            getFlightSearchTicker().setOnClickListener {
                 RouteManager.route(requireContext(), travelTickerModel.url)
             }
         }
@@ -416,12 +432,12 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
     }
 
     private fun setUpProgress(progress: Int) {
-        if (horizontal_progress_bar.visibility == View.VISIBLE) {
-            horizontal_progress_bar.setProgress(progress)
+        if (getSearchHorizontalProgress().visibility == View.VISIBLE) {
+            getSearchHorizontalProgress().setProgress(progress)
             if (flightSearchViewModel.isDoneLoadData()) {
                 Handler().postDelayed({
                     try {
-                        horizontal_progress_bar.hide()
+                        getSearchHorizontalProgress().visibility = View.GONE
                     } catch (t: Throwable) {
                         t.printStackTrace()
                     }

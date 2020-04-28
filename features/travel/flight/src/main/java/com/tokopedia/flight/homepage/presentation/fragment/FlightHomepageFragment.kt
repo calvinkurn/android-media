@@ -39,6 +39,7 @@ import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataModel
 import com.tokopedia.flight.searchV4.presentation.activity.FlightSearchActivity
 import com.tokopedia.flight.search_universal.presentation.widget.FlightSearchFormView
 import com.tokopedia.travelcalendar.selectionrangecalendar.SelectionRangeCalendarWidget
+import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_flight_homepage.*
@@ -313,6 +314,16 @@ class FlightHomepageFragment : BaseDaggerFragment(), FlightSearchFormView.Flight
 
     private fun renderTickerView(travelTickerModel: TravelTickerModel) {
         TravelTickerUtils.buildUnifyTravelTicker(travelTickerModel, flightHomepageTicker)
+        flightHomepageTicker.setDescriptionClickEvent(object : TickerCallback {
+            override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                if (linkUrl.isNotEmpty()) {
+                    RouteManager.route(context, linkUrl.toString())
+                }
+            }
+
+            override fun onDismiss() {}
+
+        })
         if (travelTickerModel.url.isNotEmpty()) {
             flightHomepageTicker.setOnClickListener {
                 RouteManager.route(requireContext(), travelTickerModel.url)
@@ -414,7 +425,6 @@ class FlightHomepageFragment : BaseDaggerFragment(), FlightSearchFormView.Flight
             isTraceStop = true
         }
     }
-
 
 
     private fun validateSearchPassData(flightSearchData: FlightSearchPassDataModel): Boolean {

@@ -11,6 +11,7 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.flight.R
 import com.tokopedia.flight.airport.view.model.FlightAirportModel
 import com.tokopedia.flight.common.util.FlightDateUtil
+import com.tokopedia.flight.common.view.HorizontalProgressBar
 import com.tokopedia.flight.search.presentation.model.FlightJourneyModel
 import com.tokopedia.flight.search.presentation.model.FlightPriceModel
 import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataModel
@@ -23,6 +24,7 @@ import com.tokopedia.flight.searchV4.presentation.activity.FlightSearchReturnAct
 import com.tokopedia.flight.searchV4.presentation.model.FlightSearchSeeAllResultModel
 import com.tokopedia.flight.searchV4.presentation.model.SearchErrorEnum
 import com.tokopedia.flight.searchV4.presentation.viewmodel.FlightSearchReturnViewModel
+import com.tokopedia.unifycomponents.ticker.Ticker
 import kotlinx.android.synthetic.main.fragment_flight_search_return.*
 
 /**
@@ -97,6 +99,10 @@ class FlightSearchReturnFragment : FlightSearchFragment() {
     override fun getDepartureAirport(): FlightAirportModel = flightSearchViewModel.flightSearchPassData.arrivalAirport
 
     override fun getArrivalAirport(): FlightAirportModel = flightSearchViewModel.flightSearchPassData.departureAirport
+
+    override fun getFlightSearchTicker(): Ticker = flight_search_ticker
+
+    override fun getSearchHorizontalProgress(): HorizontalProgressBar = horizontal_progress_bar
 
     override fun buildFilterModel(filterModel: FlightFilterModel): FlightFilterModel {
         filterModel.isBestPairing = flightSearchReturnViewModel.isViewOnlyBestPairing
