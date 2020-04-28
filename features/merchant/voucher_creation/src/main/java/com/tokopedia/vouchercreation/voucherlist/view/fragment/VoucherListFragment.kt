@@ -156,7 +156,7 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
     }
 
     override fun onShareClickListener(voucher: VoucherUiModel) {
-
+        showShareBottomSheet(voucher)
     }
 
     private fun onMoreMenuItemClickListener(menu: MoreMenuUiModel, voucher: VoucherUiModel) {
