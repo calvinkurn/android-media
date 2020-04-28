@@ -42,9 +42,9 @@ class DownloadVoucherViewHolder(itemView: View?) : AbstractViewHolder<DownloadVo
 
     private fun rotateChevronIcon(isExpanded: Boolean) = with(itemView) {
         @DrawableRes val icon = if (isExpanded) {
-            R.drawable.ic_mvc_chevron_top
-        } else {
             R.drawable.ic_mvc_chevron_down
+        } else {
+            R.drawable.ic_mvc_chevron_up
         }
         icMvcChevron.loadImageDrawable(icon)
     }
