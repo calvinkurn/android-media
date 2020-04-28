@@ -75,6 +75,32 @@
     <string name="mvc_create_tips_calculation">Cara perhitungan estimasi pengeluaran</string>
     <string name="mvc_create_tips_estimation">Estimasi = Nominal Diskon x Kuota Voucher</string>
     <string name="mvc_create_voucher_name_alert_minimum">Min. 5 huruf</string>
+    <string name="mvc_create_promo_type_free_deliv_tab">Gratis Ongkir</string>
+    <string name="mvc_create_promo_type_free_deliv_ticker">Untuk <b>menjangkau pembeli dari berbagai kota,</b> terutama jika barangmu sulit ditemukan di kota-kota lain.</string>
+    <string name="mvc_create_promo_type_free_deliv_textfield_free_deliv_amount">Nominal Gratis Ongkir</string>
+    <string name="mvc_create_promo_type_cashback_tab">Cashback</string>
+    <string name="mvc_create_promo_type_cashback_ticker">Untuk <b>menarik lebih banyak pelanggan,</b> namun tetap ingin mempertahankan citra brand toko dan harga barang.</string>
+    <string name="mvc_create_promo_type_cashback_title_type">Jenis Cashback</string>
+    <string name="mvc_create_promo_type_cashback_chip_rupiah">Rupiah (Rp)</string>
+    <string name="mvc_create_promo_type_cashback_chip_percentage">Persentase (&#37;)</string>
+    <string name="mvc_create_promo_type_cashback_textfield_discount_maximum">Maksimum Potongan Harga</string>
+    <string name="mvc_create_promo_type_cashback_texfield_alert_not_below_discount">Tidak boleh kurang dari potongan harga</string>
+    <string name="mvc_create_promo_type_textfield_minimum_purchase">Minimum Pembelian</string>
+    <string name="mvc_create_promo_type_textfield_voucher_quota">Kuota Voucher</string>
+    <string name="mvc_create_promo_type_textfield_alert_maximum">Maks. %s</string>
+    <string name="mvc_create_promo_type_textfield_alert_minimum">Min. %s</string>
+    <string name="mvc_create_promo_type_textfield_alert_minimum_percentage">Min. %s&#37;</string>
+    <string name="mvc_create_promo_type_textfield_alert_maximum_percentage">Maks. %s&#37;</string>
+    <string name="mvc_create_promo_type_estimation">Estimasi Maks. Pengeluaran</string>
+    <string name="mvc_create_promo_type_estimation_explanation">Dipotong dari transaksi selesai</string>
+    <string name="mvc_create_promo_type_bottomsheet_title_promo_expenses">Pengeluaran Promosi</string>
+    <string name="mvc_create_promo_type_bottomsheet_subtitle_increase_discount">Tingkatkan Potongan Hargamu</string>
+    <string name="mvc_create_promo_type_bottomsheet_minimum_purchase">Minimum Pembelian</string>
+    <string name="mvc_create_promo_type_bottomsheet_cashback">Cashback</string>
+    <string name="mvc_create_promo_type_bottomsheet_discount">Potongan Harga</string>
+    <string name="mvc_create_promo_type_bottomsheet_discount_value">&#62; %s</string>
+    <string name="mvc_create_promo_type_bottomsheet_desc">Pastikan potongan harga <b>lebih besar dari %s</b> untuk menarik lebih banyak calon pembeli.</string>
+    <string name="mvc_create_promo_type_bottomsheet_change_now">Ubah Sekarang</string>
     <string name="mvc_no_active_voucher">Gak ada voucher aktif</string>
     <string name="mvc_list_empty_state_description">Yuk, gunakan Voucher Toko untuk meningkatkan peluang penjualan tokomu.</string>
     <string name="mvc_create_voucher">Buat Voucher</string>
@@ -111,4 +137,5 @@
     <string name="mvc_for_post_instagram_story">Untuk post Instagram Story.</string>
     <string name="mvc_shop_cover">Sampul Toko</string>
     <string name="mvc_for_cover_of_your_shop">Untuk sampul di halaman tokomu.</string>
+    <string name="mvc_rp">Rp</string>
 </resources>
