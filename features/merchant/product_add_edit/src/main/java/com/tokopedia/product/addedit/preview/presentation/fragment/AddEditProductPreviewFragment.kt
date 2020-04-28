@@ -356,7 +356,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
                 } else {
                     viewModel.productInputModel.value?.let { productInputModel ->
                         startProductAddService(productInputModel)
-                        moveToManageProduct()
+                        activity?.finish()
                     }
                 }
             }
@@ -1021,11 +1021,6 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
         }
         viewModel.productInputModel.value?.detailInputModel?.pictureList = newPictureList
         viewModel.productInputModel.value?.detailInputModel?.imageUrlOrPathList = imageUrlOrPathList
-    }
-
-    private fun moveToManageProduct() {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PRODUCT_MANAGE_LIST)
-        startActivity(intent)
     }
 
     private fun startProductAddService(productInputModel: ProductInputModel) {
