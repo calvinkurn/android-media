@@ -59,4 +59,13 @@
     <string name="mvc_save_changes">Simpan Perubahan</string>
     <string name="mvc_retry">Ulangi</string>
     <string name="mvc_you_only_can_add_voucher_quota_as_long_voucher_is_live">Kamu hanya dapat <b>menambah kuota voucher</b> selama masa voucher sedang berlangsung.</string>
+    <string name="mvc_cancel_voucher_dialog_title">Yakin batalkan Voucher?</string>
+    <string name="mvc_cancel_voucher_dialog_description"><![CDATA[<font color="#AD31353B">Dengan membatalkan Voucher Toko <b>\"%s\"</b>, calon pembeli tidak dapat menggunakan voucher ini.</font>]]></string>
+    <string name="mvc_yes_cancel">Ya, Batalkan</string>
+    <string name="mvc_back">Kembali</string>
+    <string name="mvc_stop_voucher_dialog_title">Yakin hentikan voucher yang sedang berlangsung?</string>
+    <string name="mvc_stop_voucher_dialog_description"><![CDATA[<font color="#AD31353B">Dengan menghentikan Voucher Toko <b>\"%s\"</b>, calon pembeli tidak dapat menggunakan voucher ini.</font>]]></string>
+    <string name="mvc_download_voucher">Download Voucher</string>
+    <string name="mvc_select_voucher_size">Pilih Ukuran Voucher</string>
+    <string name="mvc_download_voucher_description">Download voucher menggunakan ukuran yang sesuai kebutuhan kamu dari 3 ukuran berikut :</string>
 </resources>
