@@ -13,7 +13,7 @@ import kotlinx.android.synthetic.main.item_mvc_voucher_list.view.*
 
 class VoucherViewHolder(
         itemView: View?,
-        private val onMoreClick: (VoucherUiModel) -> Unit
+        private val listener: Listener
 ) : AbstractViewHolder<VoucherUiModel>(itemView) {
 
     companion object {
@@ -24,8 +24,23 @@ class VoucherViewHolder(
         with(itemView) {
             imgVoucherType.loadImageDrawable(R.drawable.img_mvc_cashback_khusus)
             btnMore.setOnClickListener {
-                onMoreClick(element)
+                listener.onMoreMenuClickListener(element)
+            }
+            btnMvcShareVoucher.setOnClickListener {
+                listener.onShareClickListener(element)
+            }
+            setOnClickListener {
+                listener.onVoucherClickListener(element)
             }
         }
+    }
+
+    interface Listener {
+
+        fun onVoucherClickListener(voucher: VoucherUiModel)
+
+        fun onMoreMenuClickListener(voucher: VoucherUiModel)
+
+        fun onShareClickListener(voucher: VoucherUiModel)
     }
 }

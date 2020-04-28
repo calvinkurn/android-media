@@ -22,6 +22,7 @@ import com.tokopedia.vouchercreation.voucherlist.model.BaseHeaderChipUiModel.Hea
 import com.tokopedia.vouchercreation.voucherlist.model.BaseHeaderChipUiModel.ResetChip
 import com.tokopedia.vouchercreation.voucherlist.model.MoreMenuUiModel.*
 import com.tokopedia.vouchercreation.voucherlist.view.adapter.factory.VoucherListAdapterFactoryImpl
+import com.tokopedia.vouchercreation.voucherlist.view.viewholder.VoucherViewHolder
 import com.tokopedia.vouchercreation.voucherlist.view.viewmodel.VoucherListViewModel
 import com.tokopedia.vouchercreation.voucherlist.view.widget.*
 import com.tokopedia.vouchercreation.voucherlist.view.widget.filterbottomsheet.FilterBottomSheet
@@ -35,7 +36,7 @@ import javax.inject.Inject
  */
 
 class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFactoryImpl>(),
-        VoucherListAdapterFactoryImpl.Listener {
+        VoucherViewHolder.Listener {
 
     companion object {
         private const val KEY_IS_ACTIVE_VOUCHER = "is_active_voucher"
@@ -141,13 +142,21 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
         return super.onOptionsItemSelected(item)
     }
 
-    override fun onMoreClickListener(voucher: VoucherUiModel) {
+    override fun onMoreMenuClickListener(voucher: VoucherUiModel) {
         moreBottomSheet?.let {
             it.setOnModeClickListener(voucher) { menu ->
                 onMoreMenuItemClickListener(menu, voucher)
             }
             it.show(isActiveVoucher, childFragmentManager)
         }
+    }
+
+    override fun onVoucherClickListener(voucher: VoucherUiModel) {
+
+    }
+
+    override fun onShareClickListener(voucher: VoucherUiModel) {
+
     }
 
     private fun onMoreMenuItemClickListener(menu: MoreMenuUiModel, voucher: VoucherUiModel) {
