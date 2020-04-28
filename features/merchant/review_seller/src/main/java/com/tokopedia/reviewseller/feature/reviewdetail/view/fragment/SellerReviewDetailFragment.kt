@@ -13,6 +13,9 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
+import com.tokopedia.coachmark.CoachMark
+import com.tokopedia.coachmark.CoachMarkBuilder
+import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.imagepreviewslider.presentation.activity.ImagePreviewSliderActivity
 import com.tokopedia.kotlin.extensions.view.hide
@@ -49,6 +52,7 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
 
     companion object {
         const val PRODUCT_ID = "EXTRA_SHOP_ID"
+        private const val TAG_COACH_MARK_REVIEW_DETAIL = "coachMarkReviewDetail"
     }
 
     @Inject
@@ -80,6 +84,16 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
     private var bottomSheetPeriodDetail: BottomSheetUnify? = null
     private var bottomSheetOptionFeedback: BottomSheetUnify? = null
     private var bottomSheetMenuDetail: BottomSheetUnify? = null
+
+    private val coachMark: CoachMark by lazy {
+        CoachMarkBuilder().build()
+    }
+
+    private val coachMarkMenuOption: CoachMarkItem by lazy {
+        CoachMarkItem(view?.findViewById(R.id.menu_option_product_detail),
+                getString(R.string.change_product_label),
+                getString(R.string.change_product_desc))
+    }
 
     override fun getScreenName(): String = "SellerReviewDetail"
 
@@ -211,6 +225,15 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
         }
     }
 
+    private fun coachMarkShow() {
+        activity?.let {
+            if (!coachMark.hasShown(it, TAG_COACH_MARK_REVIEW_DETAIL)) {
+                coachMark.enableSkip = true
+                coachMark.show(it, TAG_COACH_MARK_REVIEW_DETAIL, arrayListOf(coachMarkMenuOption))
+            }
+        }
+    }
+
     private fun clickOptionFeedbackDetail() {
         val optionMenuList = context?.let { SellerReviewProductDetailMapper.mapToItemUnifyMenuOption(it) }
         optionMenuList?.let { optionFeedbackDetailUnify?.setData(it) }
@@ -314,6 +337,7 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
                     setFeedbackListData(reviewProductDetail.productFeedbackDetailList)
                 }
             }
+            coachMarkShow()
         } else {
             reviewSellerDetailAdapter.setFeedbackListData(reviewProductDetail.productFeedbackDetailList)
         }
