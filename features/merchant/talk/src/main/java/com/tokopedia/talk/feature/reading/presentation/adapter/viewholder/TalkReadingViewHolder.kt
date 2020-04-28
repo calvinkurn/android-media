@@ -84,9 +84,8 @@ class TalkReadingViewHolder(view: View, private val threadListener: ThreadListen
         if(answer.isNotEmpty()) {
             itemView.readingMessage.apply {
                 text = answer
-                setSingleLine(false)
                 ellipsize = TextUtils.TruncateAt.END
-                setLines(MAX_LINES)
+                maxLines = MAX_LINES
                 setOnClickListener {
                     threadListener.onThreadClicked(questionId)
                 }

@@ -71,6 +71,7 @@
         android:visibility="gone"
         android:layout_marginEnd="@dimen/layout_lvl2"
         android:layout_marginRight="@dimen/layout_lvl2"
+        android:layout_marginTop="@dimen/spacing_lvl2"
         app:layout_goneMarginStart="@dimen/layout_lvl2"
         app:typographyType="body_2"
         app:layout_constraintStart_toStartOf="@id/readingSellerLabel"
