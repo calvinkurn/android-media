@@ -78,6 +78,7 @@
             android:name="com.tokopedia.talk_old.talkdetails.view.activity.TalkDetailsActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
+            android:label="@string/title_talk_discuss"
             android:windowSoftInputMode="adjustResize|stateHidden">
 
             <intent-filter android:autoVerify="true">

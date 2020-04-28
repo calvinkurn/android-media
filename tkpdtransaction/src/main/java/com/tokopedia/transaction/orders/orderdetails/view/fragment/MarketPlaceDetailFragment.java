@@ -590,7 +590,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                 textView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        presenter.onBuyAgainAllItems(" - order");
+                        presenter.onBuyAgainAllItems(" - order", status.status());
                     }
                 });
             } else {
@@ -624,7 +624,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                     stickyTextView.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            presenter.onBuyAgainAllItems(" - order");
+                            presenter.onBuyAgainAllItems(" - order", status.status());
                         }
                     });
                 } else {

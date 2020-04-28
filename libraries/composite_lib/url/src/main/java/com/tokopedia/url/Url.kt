@@ -43,6 +43,7 @@ data class Url(
         val LAKU6: String,
         val SELLER: String,
         val PLAY: String,
-        val WS_PLAY: String
+        val WS_PLAY: String,
+        val HUB: String
 )
 
