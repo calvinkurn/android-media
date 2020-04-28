@@ -44,7 +44,7 @@ class AddToCartDoneViewModel @Inject constructor(
             const val KEY_XSOURCE = "xSource"
             const val KEY_PAGE_NUMBER = "pageNumber"
             const val DEFAULT_PAGE_NUMBER = 1
-            const val DEFAULT_PAGE_NAME = "pdp_atc_1,pdp_atc_2"
+            const val DEFAULT_PAGE_NAME = "pdp_atc_1"
         }
     }
 

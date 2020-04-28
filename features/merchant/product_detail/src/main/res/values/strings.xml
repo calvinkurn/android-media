@@ -31,6 +31,8 @@
     <string name="template_min_order">%1$d Buah</string>
     <string name="buy_now">Beli Sekarang</string>
     <string name="add_product_to_cart">Tambah ke Keranjang</string>
+    <string name="ticker_atc_done_some_store">Dikirim dari toko yang sama</string>
+    <string name="ticker_atc_done_different_store">Dikirim dari toko yang berbeda</string>
     <string name="plus_product_to_cart">+ Keranjang</string>
     <string name="apply_credit">Ajukan Kredit</string>
     <string name="buy">Beli</string>

@@ -1,39 +1,36 @@
 package com.tokopedia.product.detail.view.widget
 
 import android.app.Dialog
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
-import android.content.Intent
 import android.os.Bundle
-import com.google.android.material.snackbar.Snackbar
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.design.component.BottomSheets
-import com.tokopedia.discovery.common.constants.SearchConstant.Wishlist.WISHLIST_STATUS_IS_WISHLIST
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.addtocartrecommendation.AddToCartDoneAddedProductDataModel
-import com.tokopedia.product.detail.data.model.addtocartrecommendation.AddToCartDoneRecommendationDataModel
+import com.tokopedia.product.detail.data.model.addtocartrecommendation.AddToCartDoneRecommendationCarouselDataModel
 import com.tokopedia.product.detail.data.util.ProductDetailTracking
 import com.tokopedia.product.detail.di.DaggerProductDetailComponent
 import com.tokopedia.product.detail.di.ProductDetailComponent
 import com.tokopedia.product.detail.view.adapter.AddToCartDoneAdapter
 import com.tokopedia.product.detail.view.adapter.AddToCartDoneTypeFactory
 import com.tokopedia.product.detail.view.viewholder.AddToCartDoneAddedProductViewHolder
-import com.tokopedia.product.detail.view.viewholder.AddToCartDoneRecommendationViewHolder
 import com.tokopedia.product.detail.view.viewmodel.AddToCartDoneViewModel
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
@@ -128,9 +125,7 @@ class AddToCartDoneBottomSheet :
                 is Success -> {
                     viewShimmeringLoading.hide()
                     atcDoneAdapter.clearAllElements()
-                    for (res in it.data) {
-                        atcDoneAdapter.addElement(AddToCartDoneRecommendationDataModel(res))
-                    }
+                    atcDoneAdapter.addElement(AddToCartDoneRecommendationCarouselDataModel(it.data.first(), addedProductDataModel?.shopId ?: -1))
                     atcDoneAdapter.addElement(0, addedProductDataModel)
                     atcDoneAdapter.notifyDataSetChanged()
                 }
@@ -165,7 +160,7 @@ class AddToCartDoneBottomSheet :
             val displaymetrics = DisplayMetrics()
             activity?.windowManager?.defaultDisplay?.getMetrics(displaymetrics)
             val screenHeight = displaymetrics.heightPixels
-            val maxHeight = (screenHeight * 0.9f).toInt()
+            val maxHeight = (screenHeight * 0.91f).toInt()
             val params = parent.layoutParams
             params.height = maxHeight
             parent.layoutParams = params

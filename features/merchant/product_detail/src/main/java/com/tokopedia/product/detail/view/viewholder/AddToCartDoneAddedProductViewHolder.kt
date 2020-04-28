@@ -21,19 +21,9 @@ class AddToCartDoneAddedProductViewHolder(
 
     override fun bind(element: AddToCartDoneAddedProductDataModel) {
         with(itemView) {
-            if (element.isFreeOngkir && element.freeOngkirImg.isNotBlank()) {
-                img_free_ongkir.visible()
-                img_free_ongkir.loadImageRounded(element.freeOngkirImg)
-            } else {
-                img_free_ongkir.gone()
+            element.productImageUr?.let {
+                image_view_added_product.loadImageRounded(it, resources.getDimension(R.dimen.dp_8))
             }
-            text_view_product_name.text = element.productName
-            ImageHandler.loadImage(
-                    itemView.context,
-                    image_view_added_product,
-                    element.productImageUr,
-                    R.drawable.loading_page
-            )
             button_go_to_cart.setOnClickListener {
                 addToCartDoneAddedProductListener.onButtonGoToCartClicked()
             }
