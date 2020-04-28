@@ -2,10 +2,12 @@ package com.tokopedia.flight.homepage.presentation.bottomsheet
 
 import android.os.Bundle
 import android.view.View
+import androidx.annotation.StringRes
 import com.tokopedia.flight.R
 import com.tokopedia.flight.dashboard.view.fragment.model.FlightPassengerModel
 import com.tokopedia.flight.dashboard.view.validator.FlightSelectPassengerValidator
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.bottom_sheet_flight_select_passenger.*
 
 /**
@@ -27,6 +29,16 @@ class FlightSelectPassengerBottomSheet : BottomSheetUnify() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initView()
+
+        bottomSheetHeader.setPadding(
+                resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.layout_lvl2),
+                bottomSheetHeader.top,
+                bottomSheetWrapper.right,
+                bottomSheetHeader.bottom)
+        bottomSheetWrapper.setPadding(0,
+                bottomSheetWrapper.paddingTop,
+                0,
+                bottomSheetWrapper.paddingBottom)
     }
 
     private fun initBottomSheet() {
@@ -71,23 +83,43 @@ class FlightSelectPassengerBottomSheet : BottomSheetUnify() {
             }
         }
 
-        qtyFlightPassengerChild.setValueChangedListener { newValue, oldValue, isOver ->
+        qtyFlightPassengerChild.setAddClickListener {
             val tempPassengerModel = clonePassengerModel()
-            tempPassengerModel.children = newValue
+            tempPassengerModel.children = qtyFlightPassengerChild.getValue()
             if (validatePassenger(tempPassengerModel)) {
                 passengerModel = tempPassengerModel
             } else {
-                qtyFlightPassengerChild.setValue(oldValue)
+                qtyFlightPassengerChild.setValue(qtyFlightPassengerChild.getValue() - 1)
             }
         }
 
-        qtyFlightPassengerInfant.setValueChangedListener { newValue, oldValue, isOver ->
+        qtyFlightPassengerChild.setSubstractListener {
             val tempPassengerModel = clonePassengerModel()
-            tempPassengerModel.infant = newValue
+            tempPassengerModel.children = qtyFlightPassengerChild.getValue()
             if (validatePassenger(tempPassengerModel)) {
                 passengerModel = tempPassengerModel
             } else {
-                qtyFlightPassengerInfant.setValue(oldValue)
+                qtyFlightPassengerChild.setValue(qtyFlightPassengerChild.getValue() + 1)
+            }
+        }
+
+        qtyFlightPassengerInfant.setAddClickListener {
+            val tempPassengerModel = clonePassengerModel()
+            tempPassengerModel.infant = qtyFlightPassengerInfant.getValue()
+            if (validatePassenger(tempPassengerModel)) {
+                passengerModel = tempPassengerModel
+            } else {
+                qtyFlightPassengerInfant.setValue(qtyFlightPassengerInfant.getValue() - 1)
+            }
+        }
+
+        qtyFlightPassengerInfant.setSubstractListener {
+            val tempPassengerModel = clonePassengerModel()
+            tempPassengerModel.infant = qtyFlightPassengerInfant.getValue()
+            if (validatePassenger(tempPassengerModel)) {
+                passengerModel = tempPassengerModel
+            } else {
+                qtyFlightPassengerInfant.setValue(qtyFlightPassengerInfant.getValue() + 1)
             }
         }
 
@@ -110,11 +142,16 @@ class FlightSelectPassengerBottomSheet : BottomSheetUnify() {
         }
     }
 
+    private fun showErrorMessage(@StringRes resId: Int) {
+        Toaster.make(mChildView, getString(resId), Toaster.LENGTH_SHORT, type = Toaster.TYPE_ERROR)
+    }
+
     private fun validatePassenger(passengers: FlightPassengerModel): Boolean {
         var isValid = true
 
         if (!passengerValidator.validateTotalPassenger(passengers)) {
             isValid = false
+            showErrorMessage(R.string.select_passenger_total_passenger_error_message)
         } else if (!passengerValidator.validateInfantNotGreaterThanAdult(passengers)) {
             isValid = false
         } else if (!passengerValidator.validateInfantMoreThanFour(passengers.infant)) {
