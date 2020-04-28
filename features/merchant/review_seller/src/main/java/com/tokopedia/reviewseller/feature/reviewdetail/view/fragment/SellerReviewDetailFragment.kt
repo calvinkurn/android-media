@@ -13,6 +13,8 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.coachmark.CoachMark
 import com.tokopedia.coachmark.CoachMarkBuilder
 import com.tokopedia.coachmark.CoachMarkItem
@@ -249,8 +251,8 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
             it.onLoadFinish {
                 it.setOnItemClickListener { _, _, position, _ ->
                     when (position) {
-                        1 -> {
-
+                        0 -> {
+                            RouteManager.route(context, ApplinkConst.PRODUCT_EDIT, productID.toString())
                         }
                     }
                 }
@@ -466,12 +468,12 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
             it.onLoadFinish {
                 it.setOnItemClickListener { _, _, position, _ ->
                     when (position) {
-                        1 -> {
+                        0 -> {
                             if (!isEmptyReply) {
 
                             }
                         }
-                        2 -> {
+                        1 -> {
 
                         }
                     }
