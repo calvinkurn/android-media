@@ -1,7 +1,6 @@
 package com.tokopedia.reviewseller.feature.reviewdetail.view.adapter.viewholder
 
 import android.view.View
-import android.view.ViewTreeObserver
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
@@ -31,7 +30,8 @@ class ProductFeedbackDetailViewHolder(private val view: View,
         @JvmStatic
         val LAYOUT = R.layout.item_product_feedback_detail
         const val DATE_REVIEW_FORMAT = "yyyy-MM-dd'T'HH:mm:ss'Z'"
-
+        const val REPLY_MAX_CHAR = 100
+        const val FEEDBACK_MAX_CHAR = 150
         private const val isAutoReply = "false"
     }
 
@@ -99,33 +99,13 @@ class ProductFeedbackDetailViewHolder(private val view: View,
         } else {
             tvFeedbackReview?.apply {
                 setTextColor(ContextCompat.getColor(itemView.context, R.color.clr_f531353b))
-                text = feedbackText
+                text = feedbackText.toReviewDescriptionFormatted(FEEDBACK_MAX_CHAR)
                 setOnClickListener {
                     maxLines = Integer.MAX_VALUE
                     text = feedbackText
                 }
             }
         }
-
-        tvFeedbackReview?.setReplyCommentSeeMore(feedbackText, 3)
-    }
-
-    private fun Typography.setReplyCommentSeeMore(replyText: String, maxLines: Int) = this.let {
-        val vto = it.viewTreeObserver
-
-        vto.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
-            override fun onGlobalLayout() {
-
-                if (it.lineCount > maxLines) {
-                    it.text = replyText.toReviewDescriptionFormatted(view.context, it.layout.getLineEnd(maxLines - 1))
-                } else {
-                    it.text = replyText
-                }
-
-                it.viewTreeObserver.removeOnGlobalLayoutListener(this)
-            }
-
-        })
     }
 
     private fun setFeedbackReply(element: FeedbackUiModel) {
@@ -140,7 +120,7 @@ class ProductFeedbackDetailViewHolder(private val view: View,
 
             tvReplyComment?.text = element.replyText.orEmpty()
             tvReplyComment?.let {
-                it.setReplyCommentSeeMore(element.replyText.orEmpty(), 2)
+                it.text = element.replyText.orEmpty().toReviewDescriptionFormatted(REPLY_MAX_CHAR)
                 it.setOnClickListener { _ ->
                     it.maxLines = Integer.MAX_VALUE
                     it.text = MethodChecker.fromHtml(element.replyText)
