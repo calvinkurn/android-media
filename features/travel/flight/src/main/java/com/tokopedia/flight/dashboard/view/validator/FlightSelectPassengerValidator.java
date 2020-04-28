@@ -9,8 +9,8 @@ import javax.inject.Inject;
  */
 
 public class FlightSelectPassengerValidator {
-    private static final int MAX_PASSENGER_VALUE = 7;
-    private static final int MAX_INFANT_VALUE = 4;
+    public static final int MAX_PASSENGER_VALUE = 7;
+    public static final int MAX_INFANT_VALUE = 4;
 
     @Inject
     public FlightSelectPassengerValidator() {

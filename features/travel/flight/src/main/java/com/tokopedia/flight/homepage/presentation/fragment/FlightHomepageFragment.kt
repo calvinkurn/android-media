@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
@@ -28,12 +29,12 @@ import com.tokopedia.flight.airport.view.model.FlightAirportModel
 import com.tokopedia.flight.common.util.FlightAnalytics
 import com.tokopedia.flight.common.util.FlightDateUtil
 import com.tokopedia.flight.dashboard.view.activity.FlightClassesActivity
-import com.tokopedia.flight.dashboard.view.activity.FlightSelectPassengerActivity
 import com.tokopedia.flight.dashboard.view.fragment.model.FlightClassModel
 import com.tokopedia.flight.dashboard.view.fragment.model.FlightDashboardModel
 import com.tokopedia.flight.dashboard.view.fragment.model.FlightPassengerModel
 import com.tokopedia.flight.dashboard.view.widget.FlightCalendarOneWayWidget
 import com.tokopedia.flight.homepage.di.FlightHomepageComponent
+import com.tokopedia.flight.homepage.presentation.bottomsheet.FlightSelectPassengerBottomSheet
 import com.tokopedia.flight.homepage.presentation.viewmodel.FlightHomepageViewModel
 import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataModel
 import com.tokopedia.flight.searchV4.presentation.activity.FlightSearchActivity
@@ -227,10 +228,15 @@ class FlightHomepageFragment : BaseDaggerFragment(), FlightSearchFormView.Flight
     }
 
     override fun onPassengerClicked(passengerModel: FlightPassengerModel?) {
-        passengerModel?.let {
-            startActivityForResult(FlightSelectPassengerActivity.getCallingIntent(requireContext(), it),
-                    REQUEST_CODE_SELECT_PASSENGER)
+        val flightSelectPassengerBottomSheet = FlightSelectPassengerBottomSheet()
+        flightSelectPassengerBottomSheet.listener = object : FlightSelectPassengerBottomSheet.Listener {
+            override fun onSavedPassenger(passengerModel: FlightPassengerModel) {
+                flightHomepageViewModel.onPassengerChanged(passengerModel)
+            }
         }
+        flightSelectPassengerBottomSheet.passengerModel = passengerModel
+        flightSelectPassengerBottomSheet.setShowListener { flightSelectPassengerBottomSheet.bottomSheet.state = BottomSheetBehavior.STATE_EXPANDED }
+        flightSelectPassengerBottomSheet.show(requireFragmentManager(), FlightSelectPassengerBottomSheet.TAG_SELECT_PASSENGER)
     }
 
     override fun onClassClicked(flightClassId: Int) {
@@ -271,12 +277,6 @@ class FlightHomepageFragment : BaseDaggerFragment(), FlightSearchFormView.Flight
                     val classModel = data?.getParcelableExtra<FlightClassModel>(FlightClassesActivity.EXTRA_FLIGHT_CLASS)
                     classModel?.let {
                         flightHomepageViewModel.onClassChanged(it)
-                    }
-                }
-                REQUEST_CODE_SELECT_PASSENGER -> {
-                    val passengerModel = data?.getParcelableExtra<FlightPassengerModel>(FlightSelectPassengerActivity.EXTRA_PASS_DATA)
-                    passengerModel?.let {
-                        flightHomepageViewModel.onPassengerChanged(it)
                     }
                 }
             }
@@ -488,7 +488,6 @@ class FlightHomepageFragment : BaseDaggerFragment(), FlightSearchFormView.Flight
 
         private const val REQUEST_CODE_AIRPORT_DEPARTURE = 1
         private const val REQUEST_CODE_AIRPORT_DESTINATION = 2
-        private const val REQUEST_CODE_SELECT_PASSENGER = 3
         private const val REQUEST_CODE_SELECT_CLASSES = 4
         private const val REQUEST_CODE_SEARCH = 5
 

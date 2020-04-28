@@ -22,20 +22,18 @@
     <string name="flight_label_search_hint_airport">Ketik kota atau bandara %s</string>
     <string name="flight_label_search_hint_phone_code">Cari kode telepon negara</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="select_passenger_adult_subtitle">(Lebih dari 12 tahun)</string>
+    <string name="select_passenger_adult_subtitle">Usia 12 tahun ke atas</string>
     <string name="select_passenger_adult_title">Dewasa</string>
-    <string name="select_passenger_children_subtitle">(2 – 12 tahun)</string>
+    <string name="select_passenger_children_subtitle">Usia 2 – 12 tahun</string>
     <string name="select_passenger_children_title">Anak</string>
-    <string name="select_passenger_infant_subtitle">(Kurang dari 2 tahun)</string>
+    <string name="select_passenger_infant_subtitle">Usia di bawah 2 tahun</string>
     <string name="select_passenger_infant_title">Bayi</string>
     <string name="select_passenger_total_passenger_error_message">Total Penumpang maksimal 7 penumpang (Dewasa dan Anak)</string>
-    <string name="select_passenger_infant_greater_than_adult_error_message">Jumlah penumpang bayi tidak boleh melebihi jumlah penumpang dewasa</string>
+    <string name="select_passenger_infant_greater_than_adult_error_message">Jumlah bayi tidak boleh melebihi penumpang dewasa</string>
     <string name="select_passenger_infant_more_than_four_error_message">Total penumpang bayi maksimal 4 penumpang</string>
     <string name="select_passenger_adult_atleast_one_error_message">Penumpang dewasa harus ada</string>
     <string name="select_passenger_submit_button">Simpan</string>
-    <string name="select_passenger_toolbar_title">Pilih Penumpang</string>
+    <string name="select_passenger_toolbar_title">Jumlah Penumpang</string>
     <string name="flight_label">PENERBANGAN</string>
     <string name="flight_label_facility">FASILITAS</string>
     <string name="flight_label_price">HARGA</string>
