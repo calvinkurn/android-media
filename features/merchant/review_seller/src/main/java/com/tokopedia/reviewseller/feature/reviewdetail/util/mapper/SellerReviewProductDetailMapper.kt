@@ -27,10 +27,12 @@ object SellerReviewProductDetailMapper {
 
     private fun mapToRatingBarUiModel(productFeedbackDataPerProduct: ProductFeedbackDetailResponse.ProductFeedbackDataPerProduct): List<RatingBarUiModel> {
         val ratingBarListUiModel = mutableListOf<RatingBarUiModel>()
+        val totalAggregatRating: Int = productFeedbackDataPerProduct.aggregatedRating.sumBy { it.ratingCount }
 
         productFeedbackDataPerProduct.aggregatedRating.map {
             ratingBarListUiModel.add(
                     RatingBarUiModel(
+                            ratingProgressBar = if (totalAggregatRating == 0) 0 else it.ratingCount / totalAggregatRating,
                             ratingLabel = it.rating,
                             ratingCount = it.ratingCount
                     )
