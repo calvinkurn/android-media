@@ -22,7 +22,7 @@ object GetCartListSimplifiedUseCaseTest : Spek({
     val graphqlUseCase = mockk<GraphqlUseCase>(relaxed = true)
     val cartMapperV3 = mockk<CartSimplifiedMapper>()
     val usecase by memoized {
-        GetCartListSimplifiedUseCase("query", graphqlUseCase, cartMapperV3, TestSchedulers)
+        GetCartListSimplifiedUseCase("query", cartMapperV3, TestSchedulers)
     }
 
     every { cartMapperV3.convertToCartItemDataList(any()) } returns CartListData()
