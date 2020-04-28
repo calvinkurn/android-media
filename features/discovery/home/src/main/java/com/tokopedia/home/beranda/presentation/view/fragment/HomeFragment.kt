@@ -324,8 +324,10 @@ class HomeFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun castContextToHomePerformanceMonitoring(context: Context): HomePerformanceMonitoringListener {
-        return context as HomePerformanceMonitoringListener
+    private fun castContextToHomePerformanceMonitoring(context: Context): HomePerformanceMonitoringListener? {
+        return if (context is HomePerformanceMonitoringListener) {
+            context
+        } else null
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
