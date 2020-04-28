@@ -47,6 +47,10 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
         this.product = product
     }
 
+    fun isProductInitialized(): Boolean {
+        return ::product.isInitialized
+    }
+
     fun initView() {
         if (::product.isInitialized) {
             ivProductImage?.let {
