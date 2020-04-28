@@ -421,8 +421,4 @@ public void sendAnalyticsAnomalyResponse(String title,
 
     }
 
-    @Override
-    public void sendAnalyticsAnomalyResponse(String s, String s1, String s2, String s3, String s4) {
-
-    }
 }
