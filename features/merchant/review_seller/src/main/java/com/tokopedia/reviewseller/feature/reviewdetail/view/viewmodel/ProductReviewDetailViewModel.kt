@@ -12,6 +12,7 @@ import com.tokopedia.reviewseller.feature.reviewdetail.domain.GetProductReviewDe
 import com.tokopedia.reviewseller.feature.reviewdetail.util.mapper.SellerReviewProductDetailMapper
 import com.tokopedia.reviewseller.feature.reviewdetail.view.model.OverallRatingDetailUiModel
 import com.tokopedia.reviewseller.feature.reviewdetail.view.model.ProductFeedbackDetailUiModel
+import com.tokopedia.reviewseller.feature.reviewdetail.view.model.RatingBarUiModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -29,6 +30,8 @@ class ProductReviewDetailViewModel @Inject constructor(
     var positionFilterPeriod = 1
     var filterPeriod: String = ""
     var filterAllText: String = ""
+
+    var ratingFilterData: List<RatingBarUiModel>? = null
 
     private val _reviewDetailOverall = MutableLiveData<Result<OverallRatingDetailUiModel>>()
     val reviewDetailOverallRating: LiveData<Result<OverallRatingDetailUiModel>>

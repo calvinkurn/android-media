@@ -26,6 +26,7 @@ import com.tokopedia.reviewseller.feature.reviewdetail.view.adapter.*
 import com.tokopedia.reviewseller.feature.reviewdetail.view.bottomsheet.PopularTopicsBottomSheet
 import com.tokopedia.reviewseller.feature.reviewdetail.view.model.OverallRatingDetailUiModel
 import com.tokopedia.reviewseller.feature.reviewdetail.view.model.ProductFeedbackDetailUiModel
+import com.tokopedia.reviewseller.feature.reviewdetail.view.model.RatingBarUiModel
 import com.tokopedia.reviewseller.feature.reviewdetail.view.viewmodel.ProductReviewDetailViewModel
 import com.tokopedia.reviewseller.feature.reviewlist.util.mapper.SellerReviewProductListMapper
 import com.tokopedia.sortfilter.SortFilterItem
@@ -44,7 +45,7 @@ import javax.inject.Inject
  * @author by milhamj on 2020-02-14.
  */
 class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDetailAdapterTypeFactory>(), SellerReviewDetailListener,
-        OverallRatingDetailListener, ProductFeedbackDetailListener {
+        OverallRatingDetailListener, ProductFeedbackDetailListener, SellerRatingAndTopicListener {
 
     companion object {
         const val PRODUCT_ID = "EXTRA_SHOP_ID"
@@ -62,7 +63,7 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
     private var swipeToRefreshReviewDetail: SwipeToRefresh? = null
 
     private val sellerReviewDetailTypeFactory by lazy {
-        SellerReviewDetailAdapterTypeFactory(this, this, this)
+        SellerReviewDetailAdapterTypeFactory(this, this, this, this)
     }
 
     var productID: Int = 0
@@ -468,6 +469,18 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
                     imageThumbnailUrls = thumbnailsUrl,
                     imagePosition = position
             ))
+        }
+    }
+
+    override fun onRatingCheckBoxClicked(ratingAndState: Pair<Int, Boolean>, adapterPosition: Int) {
+        val getTopicFromAdapter: List<RatingBarUiModel> = reviewSellerDetailAdapter.list.filterIsInstance<RatingBarUiModel>()
+        val filterRatingSelected = getTopicFromAdapter.find { it.ratingLabel == ratingAndState.first }
+        if (filterRatingSelected?.ratingIsChecked != ratingAndState.second && filterRatingSelected != null) {
+            reviewSellerDetailAdapter.updateFilterRating(adapterPosition, ratingAndState.second)
+        }
+
+        val generatedFilterRatingString = getTopicFromAdapter.filter { it.ratingIsChecked }.joinToString(postfix = ";", prefix = "rating=", separator = ",") {
+            it.ratingLabel.toString()
         }
     }
 
