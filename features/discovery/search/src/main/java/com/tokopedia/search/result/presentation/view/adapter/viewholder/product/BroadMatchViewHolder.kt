@@ -10,7 +10,7 @@ import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.search.R
 import com.tokopedia.search.result.presentation.model.BroadMatchViewModel
 import com.tokopedia.search.result.presentation.view.listener.BroadMatchListener
-import kotlinx.android.synthetic.main.search_broad_match.view.*
+import kotlinx.android.synthetic.main.search_result_product_broad_match.view.*
 
 class BroadMatchViewHolder(
         itemView: View,
@@ -20,7 +20,7 @@ class BroadMatchViewHolder(
     companion object {
         @LayoutRes
         @JvmField
-        val LAYOUT = R.layout.search_broad_match
+        val LAYOUT = R.layout.search_result_product_broad_match
     }
 
     override fun bind(element: BroadMatchViewModel) {
