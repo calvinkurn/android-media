@@ -7,7 +7,11 @@ import com.tokopedia.reviewseller.feature.reviewdetail.view.model.*
 
 class SellerReviewDetailAdapter(
         sellerReviewDetailAdapterTypeFactory: SellerReviewDetailAdapterTypeFactory
-): BaseListAdapter<Visitable<*>, SellerReviewDetailAdapterTypeFactory>(sellerReviewDetailAdapterTypeFactory), DataEndlessScrollListener.OnDataEndlessScrollListener {
+) : BaseListAdapter<Visitable<*>, SellerReviewDetailAdapterTypeFactory>(sellerReviewDetailAdapterTypeFactory), DataEndlessScrollListener.OnDataEndlessScrollListener {
+
+    companion object {
+        const val PAYLOAD_RATING_FILTER = 101
+    }
 
     private var productReviewDetailFeedback: MutableList<FeedbackUiModel> = mutableListOf()
 
@@ -36,11 +40,11 @@ class SellerReviewDetailAdapter(
         notifyItemRangeInserted(lastIndex, feedbackListUiModel.size)
     }
 
-    fun updateFilterRating(position: Int, updatedState: Boolean) {
-        if (position != -1) {
-            val data = visitables[position]
-            (data as? RatingBarUiModel)?.ratingIsChecked = updatedState
-            notifyItemChanged(position)
+    fun updateFilterRating(position: Int, updatedState: Boolean, filterRatingInstance: ProductReviewFilterUiModel?) {
+        val filterRatingIndex = visitables.indexOf(filterRatingInstance)
+        if (filterRatingInstance != null && filterRatingIndex != -1) {
+            filterRatingInstance.ratingBarList.getOrNull(position)?.ratingIsChecked = updatedState
+            notifyItemChanged(filterRatingIndex, PAYLOAD_RATING_FILTER)
         }
     }
 

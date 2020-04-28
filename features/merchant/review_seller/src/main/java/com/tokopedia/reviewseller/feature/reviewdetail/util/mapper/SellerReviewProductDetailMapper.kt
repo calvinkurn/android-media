@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.core.content.ContextCompat
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.reviewseller.R
+import com.tokopedia.reviewseller.common.util.ReviewSellerConstant
 import com.tokopedia.reviewseller.feature.reviewdetail.data.ProductFeedbackDetailResponse
 import com.tokopedia.reviewseller.feature.reviewdetail.data.ProductReviewDetailOverallResponse
 import com.tokopedia.reviewseller.feature.reviewdetail.view.model.*
@@ -31,7 +32,7 @@ object SellerReviewProductDetailMapper {
         productFeedbackDataPerProduct.aggregatedRating.map {
             ratingBarListUiModel.add(
                     RatingBarUiModel(
-                            ratingProgressBar = if (totalAggregatRating == 0) 0F else (it.ratingCount.toFloat() / totalAggregatRating.toFloat()) *100,
+                            ratingProgressBar = if (totalAggregatRating == 0) 0F else (it.ratingCount.toFloat() / totalAggregatRating.toFloat()) * 100,
                             ratingLabel = it.rating,
                             ratingCount = it.ratingCount
                     )
@@ -147,14 +148,14 @@ object SellerReviewProductDetailMapper {
     }
 
 
-    private fun mapToItemSortFilter(data: ProductFeedbackDetailResponse.ProductFeedbackDataPerProduct): ArrayList<SortFilterItem> {
-        val itemSortFilterList = ArrayList<SortFilterItem>()
+    private fun mapToItemSortFilter(data: ProductFeedbackDetailResponse.ProductFeedbackDataPerProduct): ArrayList<Pair<SortFilterItem, Boolean>> {
+        val itemSortFilterList = ArrayList<Pair<SortFilterItem, Boolean>>()
         val maxData = data.topics.take(4)
         maxData.map {
             val sortFilter = SortFilterItem(
                     title = it.formatted,
                     type = ChipsUnify.TYPE_NORMAL,
-                    size = ChipsUnify.SIZE_SMALL)
+                    size = ChipsUnify.SIZE_SMALL) to ReviewSellerConstant.TOPIC_POPULAR_UNSELECTED
             itemSortFilterList.add(sortFilter)
         }
         return itemSortFilterList

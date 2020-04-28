@@ -29,7 +29,7 @@ class TopicViewHolder(val view: View, private val fragmentListener: SellerReview
     override fun bind(element: TopicUiModel) {
         sortFilterTopics.apply {
             sortFilterItems.removeAllViews()
-            addItem(dataStaticItemSortFilter())
+            addItem(dataStaticItemSortFilter(element.sortFilterItemList))
             parentListener = {
                 fragmentListener.onParentTopicFilterClicked()
             }
@@ -48,40 +48,40 @@ class TopicViewHolder(val view: View, private val fragmentListener: SellerReview
         return strReviewSpan
     }
 
-    private fun dataStaticItemSortFilter(): ArrayList<SortFilterItem> {
+    private fun dataStaticItemSortFilter(sortFilterItemList: ArrayList<Pair<SortFilterItem, Boolean>>): ArrayList<SortFilterItem> {
         val itemSortFilterList = ArrayList<SortFilterItem>()
 
-        itemSortFilterList.apply {
-            add(SortFilterItem(
-                    title = "Kategori (99)",
-                    type = ChipsUnify.TYPE_NORMAL,
-                    size = ChipsUnify.SIZE_SMALL)
-            )
-            add(SortFilterItem(
-                    title = "Kemasan (105)",
-                    type = ChipsUnify.TYPE_NORMAL,
-                    size = ChipsUnify.SIZE_SMALL)
-            )
-            add(SortFilterItem(
-                    title = "Harga (900)",
-                    type = ChipsUnify.TYPE_NORMAL,
-                    size = ChipsUnify.SIZE_SMALL)
-            )
-            add(SortFilterItem(
-                    title = "Shipping (205)",
-                    type = ChipsUnify.TYPE_NORMAL,
-                    size = ChipsUnify.SIZE_SMALL)
-            )
-        }
+        itemSortFilterList.addAll(sortFilterItemList.map { SortFilterItem(title = it.first.title, type = sortFilterMapper(it.second), size = ChipsUnify.SIZE_SMALL) {
+            it.first.toggle()
+            fragmentListener.onChildTopicFilterClicked(it.first)
+        } })
 
-        itemSortFilterList.forEach {
-            it.apply {
-                listener = {
-                    toggle()
-                    fragmentListener.onChildTopicFilterClicked(this)
-                }
-            }
-        }
+//        itemSortFilterList.apply {
+//            add(SortFilterItem(
+//                    title = "Kategori (99)",
+//                    type = ChipsUnify.TYPE_NORMAL,
+//                    size = ChipsUnify.SIZE_SMALL)
+//            )
+//            add(SortFilterItem(
+//                    title = "Kemasan (105)",
+//                    type = ChipsUnify.TYPE_NORMAL,
+//                    size = ChipsUnify.SIZE_SMALL)
+//            )
+//            add(SortFilterItem(
+//                    title = "Harga (900)",
+//                    type = ChipsUnify.TYPE_NORMAL,
+//                    size = ChipsUnify.SIZE_SMALL)
+//            )
+//            add(SortFilterItem(
+//                    title = "Shipping (205)",
+//                    type = ChipsUnify.TYPE_NORMAL,
+//                    size = ChipsUnify.SIZE_SMALL)
+//            )
+//        }
+
         return itemSortFilterList
     }
+
+    private fun sortFilterMapper(isSelected: Boolean): String = if (isSelected) ChipsUnify.TYPE_SELECTED else ChipsUnify.TYPE_NORMAL
+
 }
