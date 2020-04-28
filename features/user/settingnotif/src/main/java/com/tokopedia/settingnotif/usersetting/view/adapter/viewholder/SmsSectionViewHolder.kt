@@ -12,7 +12,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.settingnotif.R
 import com.tokopedia.settingnotif.usersetting.const.Unify.Green_G500
-import com.tokopedia.settingnotif.usersetting.domain.pojo.SmsSection
+import com.tokopedia.settingnotif.usersetting.data.pojo.SmsSection
 import com.tokopedia.unifycomponents.ticker.Ticker
 
 class SmsSectionViewHolder(itemView: View?): AbstractViewHolder<SmsSection>(itemView) {
