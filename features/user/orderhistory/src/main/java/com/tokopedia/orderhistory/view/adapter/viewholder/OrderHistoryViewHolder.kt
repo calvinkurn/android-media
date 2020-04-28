@@ -23,6 +23,7 @@ class OrderHistoryViewHolder(
     interface Listener {
         fun onClickBuyAgain(product: Product)
         fun onClickAddToWishList(product: Product)
+        fun onClickCardProduct(product: Product)
     }
 
     private var thumbnail: ImageView? = itemView?.findViewById(R.id.iv_thumbnail)
@@ -49,7 +50,9 @@ class OrderHistoryViewHolder(
     }
 
     private fun bindCardClick(product: Product) {
-
+        itemView.setOnClickListener {
+            listener?.onClickCardProduct(product)
+        }
     }
 
     private fun bindImage(product: Product) {

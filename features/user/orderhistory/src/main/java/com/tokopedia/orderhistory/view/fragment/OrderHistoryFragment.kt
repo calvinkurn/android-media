@@ -134,6 +134,10 @@ class OrderHistoryFragment : BaseListFragment<Visitable<*>, OrderHistoryTypeFact
         viewModel.addToWishList(product.productId, session.userId, this)
     }
 
+    override fun onClickCardProduct(product: Product) {
+        RouteManager.route(context, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, product.productId)
+    }
+
     override fun onSuccessAddWishlist(productId: String?) {
         view?.let {
             val successMessage = it.context.getString(R.string.title_orderhistory_success_atc)
