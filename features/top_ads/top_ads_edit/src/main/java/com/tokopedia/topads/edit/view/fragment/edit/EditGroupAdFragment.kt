@@ -103,6 +103,7 @@ class EditGroupAdFragment : BaseDaggerFragment() {
         val suggestionsDefault = ArrayList<DataSuggestions>()
         suggestionsDefault.add(DataSuggestions("product", dummyId))
         viewModel.getBidInfoDefault(suggestionsDefault, this::onBidSuccessSuggestion, this::onBidErrorSuggestion)
+        viewModel.getGroupInfo(groupId.toString(), this::onSuccessGroupInfo, this::onError)
 
     }
 
@@ -111,8 +112,12 @@ class EditGroupAdFragment : BaseDaggerFragment() {
         group_name.textFieldInput.setText(arguments?.getString(GROUPKEY))
         budget.textFieldInput.setText(data.priceBid!!.toString())
         priceDaily = data.priceDaily!!
-        daily_budget.textFieldInput.setText(data.priceDaily.toString())
-        if (priceDaily > suggestBidPerClick * MULTIPLIER) {
+        if (priceDaily != 0)
+            daily_budget.textFieldInput.setText(data.priceDaily.toString())
+        else
+            daily_budget.textFieldInput.setText((MULTIPLIER * data.priceBid).toString())
+
+        if (priceDaily > data.priceBid * MULTIPLIER) {
             radio2.isChecked = true
         }
     }
@@ -122,7 +127,7 @@ class EditGroupAdFragment : BaseDaggerFragment() {
         suggestBidPerClick = data[0].suggestionBid
         minBid = data[0].minBid
         maxBid = data[0].maxBid
-        viewModel.getGroupInfo(groupId.toString(), this::onSuccessGroupInfo, this::onError)
+        setMessageErrorField(getString(R.string.recommendated_bid_message), suggestBidPerClick, false)
 
     }
 
@@ -182,7 +187,9 @@ class EditGroupAdFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun onBidErrorSuggestion(e: Throwable) {}
+    private fun onBidErrorSuggestion(e: Throwable) {
+        e.printStackTrace()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -196,7 +203,6 @@ class EditGroupAdFragment : BaseDaggerFragment() {
             productId = it
             getLatestBid()
         })
-        setMessageErrorField(getString(R.string.recommendated_bid_message), suggestBidPerClick, false)
         sharedViewModel.setGroupName(arguments?.getString(GROUPKEY)!!)
         sharedViewModel.setGroupId(arguments?.getString("groupId")!!.toInt())
         if (radio1.isChecked) {
@@ -206,7 +212,8 @@ class EditGroupAdFragment : BaseDaggerFragment() {
         radio_group.setOnCheckedChangeListener { buttonView, isChecked ->
             if (isChecked == radio1.id) {
                 daily_budget.visibility = View.GONE
-
+                validation3 = true
+                actionEnable()
             } else {
                 daily_budget.visibility = View.VISIBLE
             }
@@ -234,8 +241,10 @@ class EditGroupAdFragment : BaseDaggerFragment() {
                 currentBudget = number.toInt()
                 val result = number.toInt()
                 daily_budget.textFieldInput.setText((MULTIPLIER * result).toString())
-
                 when {
+                    minBid == 0 || maxBid == 0 -> {
+                        return
+                    }
                     result < minBid -> {
                         setMessageErrorField(getString(R.string.min_bid_error), minBid, true)
                         validation2 = false
@@ -307,6 +316,7 @@ class EditGroupAdFragment : BaseDaggerFragment() {
             dataMap[PRICE_BID] = Integer.parseInt(budget.textFieldInput.text.toString().replace(",", ""))
             dataMap[DAILY_BUDGET] = Integer.parseInt(daily_budget.textFieldInput.text.toString().replace(",", ""))
             dataMap[GROUP_ID] = groupId
+            dataMap["isBudgetLimited"] = radio1.isChecked
             dataMap[NAME_EDIT] = group_name.textFieldInput.text.toString() != arguments?.getString(GROUPKEY)
         } catch (e: NumberFormatException) {
         }

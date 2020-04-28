@@ -117,12 +117,6 @@ public class TopAdsDetailGroupFragment extends TopAdsDetailStatisticFragment<Top
         bundle.putString("groupName",ad.getName());
         bundle.putString("status",ad.getStatusDesc());
         RouteManager.route(getContext(),bundle, ApplinkConstInternalTopAds.TOPADS_EDIT_ADS);
-//        startActivity(new Intent(getContext(),EditFormAdActivity.class));
-//        RouteManager.route(getContext(), ApplinkConstInternalTopAds.TOPADS_AUTOADS_CREATE);
-//
-//
-//        Intent intent = TopAdsEditGroupMainPageActivity.createIntent(getActivity(), null, ad.getId(), isForceRefresh);
-//        startActivityForResult(intent, REQUEST_CODE_AD_EDIT);
     }
 
     @Override

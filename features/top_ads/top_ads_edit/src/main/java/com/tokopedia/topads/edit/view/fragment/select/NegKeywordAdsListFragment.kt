@@ -27,10 +27,12 @@ class NegKeywordAdsListFragment : BaseDaggerFragment() {
 
 
     private lateinit var adapter: NegKeywordListAdapter
+    private var currentList: ArrayList<String> = arrayListOf()
 
     companion object {
         private const val SELECTED_KEYWORD = "selectKeywords"
         private const val RESTORED_DATA = "restoreData"
+        private const val CURRENTLIST = "currentKeywords"
 
         fun createInstance(extras: Bundle?): NegKeywordAdsListFragment {
             val fragment = NegKeywordAdsListFragment()
@@ -65,12 +67,14 @@ class NegKeywordAdsListFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        add_btn.isEnabled = false
         val data = arguments?.getParcelableArrayList<GetKeywordResponse.KeywordsItem>(RESTORED_DATA)
+        currentList = arguments?.getStringArrayList(CURRENTLIST)!!
         formatRestoredData(data)
 
         add_btn.setOnClickListener {
-            if (keywordValidation(editText.text.toString())) {
-                adapter.addKeyword(editText.text.toString())
+            if (keywordValidation(editText.text.toString().trim())) {
+                adapter.addKeyword(editText.text.toString().trim())
                 onCheckedItem()
             }
         }
@@ -176,6 +180,12 @@ class NegKeywordAdsListFragment : BaseDaggerFragment() {
         if (key.isNotEmpty()) {
             adapter.items.forEach {
                 if (it.tag == key) {
+                    makeToast(getString(R.string.keyword_already_exists))
+                    return false
+                }
+            }
+            currentList.forEach {
+                if (it == key) {
                     makeToast(getString(R.string.keyword_already_exists))
                     return false
                 }

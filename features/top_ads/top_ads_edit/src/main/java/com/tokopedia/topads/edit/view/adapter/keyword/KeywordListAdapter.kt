@@ -44,18 +44,25 @@ class KeywordListAdapter(private val typeFactory: KeywordListAdapterTypeFactory,
         return selected
     }
 
-    fun addNewKeyword(it: KeywordItemViewModel): Boolean {
+    fun addNewKeyword(it: KeywordItemViewModel, originalList: ArrayList<String>): Boolean {
+
+        originalList.forEach { name ->
+            if (name == it.data.keyword) {
+                return true
+            }
+        }
+        favoured.forEachIndexed lit@{ index, _ ->
+            if (favoured[index].data.keyword == it.data.keyword) {
+                return true
+            }
+        }
+
         if (items.size == 0) {
             items.add(0, KeywordGroupViewModel(SELECTED_KEYWORD))
         } else if (items.size != 0 && items[0] is KeywordGroupViewModel && (items[0] as KeywordGroupViewModel).title != SELECTED_KEYWORD) {
             items.add(0, KeywordGroupViewModel(SELECTED_KEYWORD))
         }
 
-        favoured.forEachIndexed lit@{ index, _ ->
-            if (favoured[index].data.keyword == it.data.keyword) {
-                return true
-            }
-        }
         var index = 0
         items.forEachIndexed { ind, item ->
             if (item is KeywordItemViewModel) {
@@ -116,14 +123,6 @@ class KeywordListAdapter(private val typeFactory: KeywordListAdapterTypeFactory,
         this.items = items
         notifyDataSetChanged()
 
-    }
-
-    fun addManual(list: MutableList<KeywordItemViewModel>) {
-        items.clear()
-        manualKeywords.addAll(list)
-        items.add(0, KeywordGroupViewModel(SELECTED_KEYWORD))
-        items.addAll(list)
-        notifyDataSetChanged()
     }
 
     fun addRestoredData(favoured: ArrayList<ResponseKeywordSuggestion.Result.TopAdsGetKeywordSuggestion.Data>?, selected: ArrayList<ResponseKeywordSuggestion.Result.TopAdsGetKeywordSuggestion.Data>?, manual: ArrayList<ResponseKeywordSuggestion.Result.TopAdsGetKeywordSuggestion.Data>?) {

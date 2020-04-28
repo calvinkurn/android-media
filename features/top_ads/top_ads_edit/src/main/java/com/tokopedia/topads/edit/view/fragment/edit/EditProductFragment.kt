@@ -141,6 +141,8 @@ class EditProductFragment : BaseDaggerFragment() {
         updateItemCount()
         if (adapter.items.size == 0) {
             adapter.items.add(EditProductEmptyViewModel())
+            btnState = false
+            buttonStateCallback?.setButtonState()
             adapter.notifyDataSetChanged()
         }
 
@@ -193,6 +195,8 @@ class EditProductFragment : BaseDaggerFragment() {
         adapter.notifyDataSetChanged()
         sharedViewModel.setProductIds(getProductIds())
         updateItemCount()
+        btnState = true
+        buttonStateCallback?.setButtonState()
 
     }
 

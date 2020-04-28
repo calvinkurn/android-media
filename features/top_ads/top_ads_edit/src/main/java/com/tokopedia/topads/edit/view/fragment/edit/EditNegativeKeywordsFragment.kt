@@ -20,7 +20,7 @@ import com.tokopedia.topads.edit.view.adapter.edit_neg_keyword.EditNegKeywordLis
 import com.tokopedia.topads.edit.view.adapter.edit_neg_keyword.viewmodel.EditNegKeywordEmptyViewModel
 import com.tokopedia.topads.edit.view.adapter.edit_neg_keyword.viewmodel.EditNegKeywordItemViewModel
 import kotlinx.android.synthetic.main.topads_edit_negative_keyword_layout.*
-import java.util.*
+import kotlin.collections.ArrayList
 
 /**
  * Created by Pika on 12/4/20.
@@ -29,6 +29,7 @@ import java.util.*
 class EditNegativeKeywordsFragment : BaseDaggerFragment() {
 
     private val RESTORED_DATA = "restoreData"
+    private val CURRENTLIST = "currentKeywords"
     private val SELECTED_KEYWORD = "selectKeywords"
     private val NEGATIVE_KEYWORDS_ADDED = "negative_keywords_added"
     private val NEGATIVE_KEYWORDS_DELETED = "negative_keywords_deleted"
@@ -101,8 +102,18 @@ class EditNegativeKeywordsFragment : BaseDaggerFragment() {
     private fun onAddKeyword() {
         val intent = Intent(context, SelectNegKeywordActivity::class.java)
         intent.putParcelableArrayListExtra(RESTORED_DATA, restoreData)
+        intent.putStringArrayListExtra(CURRENTLIST, getCurrentItems())
         startActivityForResult(intent, 1)
 
+    }
+
+    private fun getCurrentItems(): ArrayList<String>? {
+        val list: ArrayList<String> = arrayListOf()
+        adapter.items.forEach {
+            if (it is EditNegKeywordItemViewModel)
+                list.add(it.data.tag)
+        }
+        return list
     }
 
     private fun updateItemCount() {
@@ -112,7 +123,6 @@ class EditNegativeKeywordsFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setVisibilityOperation(true)
 
         sharedViewModel.negKeyword.observe(this, androidx.lifecycle.Observer {
             adapter.items.clear()
@@ -124,10 +134,20 @@ class EditNegativeKeywordsFragment : BaseDaggerFragment() {
             if (adapter.items.size == 0) {
                 adapter.items.add(EditNegKeywordEmptyViewModel())
                 setVisibilityOperation(false)
+            } else {
+                setVisibilityOperation(true)
             }
             updateItemCount()
             adapter.notifyDataSetChanged()
         })
+        if (adapter.items.size != 0) {
+            setVisibilityOperation(true)
+        } else {
+            adapter.items.add(EditNegKeywordEmptyViewModel())
+            setVisibilityOperation(false)
+
+        }
+
         add_keyword.setOnClickListener {
             onAddKeyword()
         }
@@ -160,9 +180,10 @@ class EditNegativeKeywordsFragment : BaseDaggerFragment() {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == 1) {
             if (resultCode == Activity.RESULT_OK) {
-                val data1 = data?.getParcelableArrayListExtra<GetKeywordResponse.KeywordsItem>(SELECTED_KEYWORD)
+                val selected = data?.getParcelableArrayListExtra<GetKeywordResponse.KeywordsItem>(SELECTED_KEYWORD)
                 restoreData = data?.getParcelableArrayListExtra<GetKeywordResponse.KeywordsItem>(RESTORED_DATA)
-                addKeywords(data1)
+                if (selected?.size != 0)
+                    addKeywords(selected)
             }
         }
     }
@@ -177,6 +198,7 @@ class EditNegativeKeywordsFragment : BaseDaggerFragment() {
                 addedKeywords?.add(it)
             }
         }
+        setVisibilityOperation(true)
         updateItemCount()
         adapter.notifyDataSetChanged()
 

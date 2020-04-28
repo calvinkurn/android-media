@@ -30,11 +30,11 @@ class EditFormAdActivity : BaseActivity(), HasComponent<TopAdsEditComponent>, Ed
 
     @Inject
     lateinit var viewModel: EditFormDefaultViewModel
+
     @Inject
     lateinit var userSession: UserSessionInterface
     private lateinit var adapter: TopAdsEditPagerAdapter
     var list: ArrayList<Fragment> = ArrayList()
-
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -58,7 +58,7 @@ class EditFormAdActivity : BaseActivity(), HasComponent<TopAdsEditComponent>, Ed
     }
 
     private fun getDataFromChildFragments() {
-        var variable: HashMap<String, Any> = HashMap()
+        val variable: HashMap<String, Any> = HashMap()
         val fragments = (view_pager.adapter as TopAdsEditPagerAdapter).list
         var dataProduct = Bundle()
         var dataKeyword = HashMap<String, Any?>()
@@ -165,9 +165,7 @@ class EditFormAdActivity : BaseActivity(), HasComponent<TopAdsEditComponent>, Ed
     }
 }
 
-fun convertToParam(dataProduct: Bundle, dataKeyword: HashMap<String, Any?>, dataGroup: HashMap<String, Any?>, userSession: UserSessionInterface): TopadsManageGroupAdsInput {
-
-    val NEGATIVE_KEYWORDS = "negative_keywords"
+private fun convertToParam(dataProduct: Bundle, dataKeyword: HashMap<String, Any?>, dataGroup: HashMap<String, Any?>, userSession: UserSessionInterface): TopadsManageGroupAdsInput {
     val POSITIVE_CREATE = "createdPositiveKeyword"
     val POSITIVE_DELETE = "deletedPositiveKeyword"
     val POSITIVE_EDIT = "editedPositiveKeyword"
@@ -178,6 +176,7 @@ fun convertToParam(dataProduct: Bundle, dataKeyword: HashMap<String, Any?>, data
     val dailyBudgetGroup = dataGroup["daily_budget"] as? Int
     val groupId = dataGroup["group_id"] as? Int
     val isNameEdited = dataGroup["isNameEdit"] as Boolean
+    val isBudgetLimited = dataGroup["isBudgetLimited"] as Boolean
     val dataAddProduct = dataProduct.getParcelableArrayList<GetAdProductResponse.TopadsGetListProductsOfGroup.DataItem>("addedProducts")
     val dataDeleteProduct = dataProduct.getParcelableArrayList<GetAdProductResponse.TopadsGetListProductsOfGroup.DataItem>("deletedProducts")
 
@@ -187,8 +186,6 @@ fun convertToParam(dataProduct: Bundle, dataKeyword: HashMap<String, Any?>, data
     val keywordsNegCreate = dataKeyword[NEGATIVE_KEYWORDS_ADDED] as? MutableList<GetKeywordResponse.KeywordsItem>
     val keywordsNegDelete = dataKeyword[NEGATIVE_KEYWORDS_DELETED] as? MutableList<GetKeywordResponse.KeywordsItem>
     val keywordsPostiveEdit = dataKeyword[POSITIVE_EDIT] as? MutableList<GetKeywordResponse.KeywordsItem>
-    //   val keywordsNegative: MutableList<GetKeywordResponse.KeywordsItem>
-    //   keywordsNegative = dataKeyword[NEGATIVE_KEYWORDS] as MutableList<GetKeywordResponse.KeywordsItem>
 
     //always
     val input = TopadsManageGroupAdsInput()
@@ -210,7 +207,10 @@ fun convertToParam(dataProduct: Bundle, dataKeyword: HashMap<String, Any?>, data
     group?.status = "published"
     group?.scheduleStart = ""
     group?.scheduleEnd = ""
-    group?.dailyBudget = dailyBudgetGroup
+    if (isBudgetLimited) {
+        group?.dailyBudget = 40 * priceBidGroup!!
+    } else
+        group?.dailyBudget = dailyBudgetGroup
     group?.priceBid = priceBidGroup
 
 
@@ -258,7 +258,7 @@ fun convertToParam(dataProduct: Bundle, dataKeyword: HashMap<String, Any?>, data
         val keyword = KeywordEditInput.Keyword()
         keyword.price_bid = x.priceBid
         keyword.id = x.keywordId
-        keyword.status = "active"
+        keyword.status = null
         keyword.tag = null
         keyword.type = null
         keyword.source = null
@@ -312,7 +312,6 @@ fun convertToParam(dataProduct: Bundle, dataKeyword: HashMap<String, Any?>, data
         keywordEditInput.action = "delete"
         keywordList.add(keywordEditInput)
     }
-
 
     input.groupInput = groupInput
     input.groupInput.group = group

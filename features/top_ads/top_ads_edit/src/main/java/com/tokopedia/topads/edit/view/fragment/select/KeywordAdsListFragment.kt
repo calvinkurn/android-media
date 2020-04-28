@@ -24,7 +24,7 @@ import com.tokopedia.topads.edit.view.adapter.keyword.viewmodel.KeywordGroupView
 import com.tokopedia.topads.edit.view.adapter.keyword.viewmodel.KeywordItemViewModel
 import com.tokopedia.topads.edit.view.adapter.keyword.viewmodel.KeywordViewModel
 import com.tokopedia.topads.edit.view.model.KeywordAdsViewModel
-import kotlinx.android.synthetic.main.topads_create_layout_keyword_list.*
+import kotlinx.android.synthetic.main.topads_edit_select_layout_keyword_list.*
 import javax.inject.Inject
 
 class KeywordAdsListFragment : BaseDaggerFragment() {
@@ -36,6 +36,7 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
     private val keywordList = HashSet<String>()
     var productId = ""
     var minSuggestedBid = 0
+    private var originalList: ArrayList<String> = arrayListOf()
     private var selected: ArrayList<ResponseKeywordSuggestion.Result.TopAdsGetKeywordSuggestion.Data>? = arrayListOf()
     private var favoured: ArrayList<ResponseKeywordSuggestion.Result.TopAdsGetKeywordSuggestion.Data>? = arrayListOf()
     private var manual: ArrayList<ResponseKeywordSuggestion.Result.TopAdsGetKeywordSuggestion.Data>? = arrayListOf()
@@ -45,11 +46,13 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
         private const val FAVOURED_DATA = "favouredData"
         private const val SELECTED_DATA = "selectedData"
         private const val MANUAL_DATA = "manualData"
-
+        private const val ORIGINAL_LIST = "originalList"
         private const val NOT_KNOWN = "Tidak diketahui"
         private const val PRODUCT_ID = "product"
         private const val MIN_SUGGESTION = "minSuggestedBid"
         private const val GROUP_ID = "groupId"
+
+
         fun createInstance(extras: Bundle?): Fragment {
             val fragment = KeywordAdsListFragment()
             fragment.arguments = extras
@@ -74,14 +77,17 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
         val productIds = arguments?.getString(PRODUCT_ID)!!
         productId = productIds.substring(1, productIds.length - 1)
         val groupId = arguments?.getInt(GROUP_ID)
+        originalList = arguments?.getStringArrayList(ORIGINAL_LIST)!!
         minSuggestedBid = arguments?.getInt(MIN_SUGGESTION)!!
         viewModel.getSugestionKeyword(productId, groupId, this::onSuccessSuggestion, this::onErrorSuggestion)
     }
 
     private fun onKeywordSelected(pos: Int) {
         showSelectMessage()
-        if (pos != -1 && (keywordListAdapter.items[pos] as KeywordItemViewModel).data.totalSearch != "Tidak diketahui")
-            keywordListAdapter.setSelectedKeywords(getFavouredData())
+        if (pos != -1 && keywordListAdapter.items[pos] is KeywordItemViewModel) {
+            if ((keywordListAdapter.items[pos] as KeywordItemViewModel).data.totalSearch != "Tidak diketahui")
+                keywordListAdapter.setSelectedKeywords(getFavouredData())
+        }
     }
 
     private fun showSelectMessage() {
@@ -175,7 +181,7 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.topads_create_layout_keyword_list, container, false)
+        return inflater.inflate(R.layout.topads_edit_select_layout_keyword_list, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -185,7 +191,7 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
         manual = arguments?.getParcelableArrayList(MANUAL_DATA)
         add_btn.isEnabled = false
         add_btn.setOnClickListener {
-            keywordValidation(editText.text.toString())
+            keywordValidation(editText.text.toString().trim())
         }
         btn_next.setOnClickListener {
             val returnIntent = Intent()
@@ -199,7 +205,7 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
         keyword_list.layoutManager = LinearLayoutManager(context)
         editText.addTextChangedListener(object : TextWatcher {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                var text = validateKeyword(s)
+                val text = validateKeyword(s)
 
                 if (s.toString().trim().isEmpty()) {
                     add_btn.isEnabled = false
@@ -230,7 +236,7 @@ class KeywordAdsListFragment : BaseDaggerFragment() {
 
     private fun keywordValidation(key: String) {
         if (key.isNotEmpty()) {
-            val alreadyExists: Boolean = keywordListAdapter.addNewKeyword(viewModel.addNewKeyword(key, minSuggestedBid))
+            val alreadyExists: Boolean = keywordListAdapter.addNewKeyword(viewModel.addNewKeyword(key, minSuggestedBid), originalList)
             showSelectMessage()
             if (alreadyExists) {
                 makeToast(getString(R.string.keyword_already_exists))

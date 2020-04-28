@@ -64,6 +64,7 @@ class EditKeywordsFragment : BaseDaggerFragment() {
     private var productIds = ""
 
     companion object {
+        private const val ORIGINAL_LIST = "originalList"
         private const val FAVOURED_DATA = "favouredData"
         private const val SELECTED_DATA = "selectedData"
         private const val PRODUCT_ID = "product"
@@ -137,10 +138,22 @@ class EditKeywordsFragment : BaseDaggerFragment() {
         intent.putExtra(MIN_SUGGESTION, minSuggestKeyword)
         intent.putExtra(PRODUCT_ID, productIds)
         intent.putExtra(GROUP_ID, groupId)
+        intent.putStringArrayListExtra(ORIGINAL_LIST, getCurrentList())
         intent.putParcelableArrayListExtra(FAVOURED_DATA, restoreData)
         intent.putParcelableArrayListExtra(SELECTED_DATA, selectedData)
         intent.putParcelableArrayListExtra(MANUAL_DATA, manualData)
         startActivityForResult(intent, 1)
+    }
+
+    private fun getCurrentList(): ArrayList<String>? {
+        val list: ArrayList<String> = arrayListOf()
+        adapter.items.forEach {
+            if (it is EditKeywordItemViewModel) {
+                list.add(it.data.tag)
+
+            }
+        }
+        return list
     }
 
     private fun showConfirmationDialog(position: Int) {
@@ -283,7 +296,8 @@ class EditKeywordsFragment : BaseDaggerFragment() {
                 restoreData = data?.getParcelableArrayListExtra(FAVOURED_DATA)
                 selectedData = data?.getParcelableArrayListExtra(SELECTED_DATA)
                 manualData = data?.getParcelableArrayListExtra(MANUAL_DATA)
-                updateKeywords(selectedData)
+                if (selectedData?.size != 0)
+                    updateKeywords(selectedData)
             }
         }
     }
@@ -303,6 +317,7 @@ class EditKeywordsFragment : BaseDaggerFragment() {
             }
         }
         adapter.getBidData(initialBudget, error)
+        setVisibilityOperation(true)
         updateItemCount()
     }
 
