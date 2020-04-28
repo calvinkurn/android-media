@@ -30,6 +30,14 @@ fun SortFilterItem.toggle() {
     }
 }
 
+fun ChipsUnify.toggle() {
+    chipType = if (chipType == ChipsUnify.TYPE_NORMAL) {
+        ChipsUnify.TYPE_SELECTED
+    } else {
+        ChipsUnify.TYPE_NORMAL
+    }
+}
+
 fun ListUnify.setSelectedFilterOrSort(items: List<ListItemUnify>, position: Int) {
     val clickedItem = this.getItemAtPosition(position) as ListItemUnify
     when (choiceMode) {
