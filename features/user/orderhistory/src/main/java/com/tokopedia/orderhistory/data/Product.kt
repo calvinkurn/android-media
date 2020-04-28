@@ -43,6 +43,7 @@ data class Product(
     // TODO: impl free shipping later
     // val hasFreeShipping: Boolean get() = freeShipping.isActive && freeShipping.imageUrl.isNotEmpty()
 
+    val buyEventAction: String = "click on buy again"
     val hasEmptyStock: Boolean get() = status == statusDeleted || status == statusWarehouse
     val hasDiscount: Boolean
         get() {

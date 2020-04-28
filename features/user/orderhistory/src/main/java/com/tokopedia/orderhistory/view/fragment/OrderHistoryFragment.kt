@@ -1,5 +1,7 @@
 package com.tokopedia.orderhistory.view.fragment
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -24,7 +26,7 @@ import com.tokopedia.orderhistory.view.adapter.OrderHistoryTypeFactory
 import com.tokopedia.orderhistory.view.adapter.OrderHistoryTypeFactoryImpl
 import com.tokopedia.orderhistory.view.adapter.viewholder.OrderHistoryViewHolder
 import com.tokopedia.orderhistory.view.viewmodel.OrderHistoryViewModel
-import com.tokopedia.purchase_platform.common.constant.ATC_AND_BUY
+import com.tokopedia.purchase_platform.common.constant.ATC_ONLY
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -108,10 +110,9 @@ class OrderHistoryFragment : BaseListFragment<Visitable<*>, OrderHistoryTypeFact
 
     override fun onClickBuyAgain(product: Product) {
         val quantity = product.minOrder
-        val atcAndBuyAction = ATC_AND_BUY
+        val atcAndBuyAction = ATC_ONLY
         val needRefresh = true
-//        val shopName = view?.getShopName()
-        val intent =  RouteManager.getIntent(context, ApplinkConstInternalMarketplace.NORMAL_CHECKOUT).apply {
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.NORMAL_CHECKOUT).apply {
             putExtra(ApplinkConst.Transaction.EXTRA_SHOP_ID, product.shopId)
             putExtra(ApplinkConst.Transaction.EXTRA_PRODUCT_ID, product.productId)
             putExtra(ApplinkConst.Transaction.EXTRA_QUANTITY, quantity)
@@ -119,15 +120,14 @@ class OrderHistoryFragment : BaseListFragment<Visitable<*>, OrderHistoryTypeFact
             putExtra(ApplinkConst.Transaction.EXTRA_ACTION, atcAndBuyAction)
             putExtra(ApplinkConst.Transaction.EXTRA_OCS, false)
             putExtra(ApplinkConst.Transaction.EXTRA_NEED_REFRESH, needRefresh)
-            putExtra(ApplinkConst.Transaction.EXTRA_REFERENCE, ApplinkConst.ORDER_HISTORY)
+            putExtra(ApplinkConst.Transaction.EXTRA_REFERENCE, ApplinkConst.TOPCHAT)
             putExtra(ApplinkConst.Transaction.EXTRA_CATEGORY_ID, product.categoryId)
             putExtra(ApplinkConst.Transaction.EXTRA_CATEGORY_NAME, product.categoryId)
             putExtra(ApplinkConst.Transaction.EXTRA_PRODUCT_TITLE, product.name)
             putExtra(ApplinkConst.Transaction.EXTRA_PRODUCT_PRICE, product.priceInt.toFloat())
-//            putExtra(ApplinkConst.Transaction.EXTRA_CUSTOM_EVENT_LABEL, product.getAtcEventLabel())
-//            putExtra(ApplinkConst.Transaction.EXTRA_CUSTOM_EVENT_ACTION, product.getBuyEventAction())
+            putExtra(ApplinkConst.Transaction.EXTRA_CUSTOM_EVENT_ACTION, product.buyEventAction)
         }
-        activity?.startActivity(intent)
+        startActivityForResult(intent, REQUEST_GO_TO_NORMAL_CHECKOUT)
     }
 
     override fun onClickAddToWishList(product: Product) {
@@ -156,14 +156,43 @@ class OrderHistoryFragment : BaseListFragment<Visitable<*>, OrderHistoryTypeFact
         }
     }
 
-    override fun onSuccessRemoveWishlist(productId: String?) { }
-    override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) { }
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        when (requestCode) {
+            REQUEST_GO_TO_NORMAL_CHECKOUT -> onReturnFromNormalCheckout(resultCode, data)
+        }
+    }
+
+    override fun onSuccessRemoveWishlist(productId: String?) {}
+    override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {}
 
     private fun goToWishList() {
         RouteManager.route(context, ApplinkConst.NEW_WISHLIST)
     }
 
+    private fun onReturnFromNormalCheckout(resultCode: Int, data: Intent?) {
+        if (resultCode != Activity.RESULT_OK) return
+        if (data == null) return
+        val message = data.getStringExtra(ApplinkConst.Transaction.RESULT_ATC_SUCCESS_MESSAGE)
+                ?: return
+        view?.let {
+            val ctaText = it.context.getString(R.string.cta_orderhistory_success_atw)
+            Toaster.make(
+                    it,
+                    message,
+                    Toaster.LENGTH_SHORT,
+                    Toaster.TYPE_NORMAL,
+                    ctaText,
+                    View.OnClickListener { goToCheckoutPage() }
+            )
+        }
+    }
+
+    private fun goToCheckoutPage() {
+        RouteManager.route(context, ApplinkConstInternalMarketplace.CART)
+    }
+
     companion object {
+        private const val REQUEST_GO_TO_NORMAL_CHECKOUT = 115
         fun createInstance(extra: Bundle?): OrderHistoryFragment {
             return OrderHistoryFragment().apply {
                 arguments = extra
