@@ -42,6 +42,7 @@
         android:layout_width="@dimen/dp_104"
         android:layout_height="@dimen/layout_lvl3"
         android:layout_marginTop="@dimen/layout_lvl2"
+        android:visibility="gone"
         app:unifyButtonVariant="ghost"
         app:layout_constraintStart_toStartOf="@id/replyHeaderDate"
         app:layout_constraintTop_toBottomOf="@id/replyHeaderMessage" />

@@ -406,7 +406,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
         viewModel.discussionData.observe(this, Observer {
             when(it) {
                 is Success -> {
-                    bindHeader(TalkReplyMapper.mapDiscussionDataResponseToTalkReplyHeaderModel(it.data))
+                    bindHeader(TalkReplyMapper.mapDiscussionDataResponseToTalkReplyHeaderModel(it.data, isMyShop))
                     if(it.data.discussionDataByQuestionID.question.totalAnswer > 0) {
                         stopNetworkRequestPerformanceMonitoring()
                         startRenderPerformanceMonitoring()

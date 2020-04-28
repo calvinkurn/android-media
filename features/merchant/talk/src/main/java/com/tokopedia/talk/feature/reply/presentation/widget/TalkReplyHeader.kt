@@ -71,12 +71,11 @@ class TalkReplyHeader : BaseCustomView {
             }
             if(isFollowed) {
                 setButtonToFollowed()
-                return
+            } else {
+                setButtonToUnfollowed()
             }
-            setButtonToUnfollowed()
-            return
+            replyHeaderFollowButton.visibility = View.VISIBLE
         }
-        replyHeaderFollowButton.visibility = View.GONE
     }
 
 

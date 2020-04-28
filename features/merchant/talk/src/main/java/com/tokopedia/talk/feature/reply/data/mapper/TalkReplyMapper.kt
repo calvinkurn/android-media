@@ -8,12 +8,12 @@ import com.tokopedia.talk.feature.reply.presentation.uimodel.TalkReplyHeaderMode
 
 object TalkReplyMapper {
 
-    fun mapDiscussionDataResponseToTalkReplyHeaderModel(discussionDataByQuestionIDResponseWrapper: DiscussionDataByQuestionIDResponseWrapper): TalkReplyHeaderModel {
+    fun mapDiscussionDataResponseToTalkReplyHeaderModel(discussionDataByQuestionIDResponseWrapper: DiscussionDataByQuestionIDResponseWrapper, isMyShop: Boolean): TalkReplyHeaderModel {
         return TalkReplyHeaderModel(
                 discussionDataByQuestionIDResponseWrapper.discussionDataByQuestionID.question.createTimeFormatted,
                 discussionDataByQuestionIDResponseWrapper.discussionDataByQuestionID.question.content,
                 discussionDataByQuestionIDResponseWrapper.discussionDataByQuestionID.question.questionState.isFollowed,
-                discussionDataByQuestionIDResponseWrapper.discussionDataByQuestionID.question.questionState.allowFollow,
+                discussionDataByQuestionIDResponseWrapper.discussionDataByQuestionID.question.questionState.allowFollow.and(!isMyShop),
                 discussionDataByQuestionIDResponseWrapper.discussionDataByQuestionID.question.questionState.allowReport,
                 discussionDataByQuestionIDResponseWrapper.discussionDataByQuestionID.question.questionState.allowDelete
         )
