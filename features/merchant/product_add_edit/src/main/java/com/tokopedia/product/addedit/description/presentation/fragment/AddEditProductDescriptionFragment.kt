@@ -289,7 +289,14 @@ class AddEditProductDescriptionFragment:
     }
 
     private fun addEmptyVideoUrl() {
-        loadData(adapter.dataSize + 1)
+        val lastData = adapter.data.lastOrNull()
+        if (lastData == null) {
+            loadData(adapter.dataSize + 1)
+        } else {
+            if (lastData.inputUrl.isNotEmpty()) {
+                loadData(adapter.dataSize + 1)
+            }
+        }
     }
 
     override fun loadInitialData() {
