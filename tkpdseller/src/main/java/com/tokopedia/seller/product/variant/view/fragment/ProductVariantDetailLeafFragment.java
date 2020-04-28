@@ -69,6 +69,8 @@ public class ProductVariantDetailLeafFragment extends BaseVariantImageFragment {
 
         boolean isAddStatus();
 
+        boolean isAddEdit();
+
         @CurrencyTypeDef
         int getCurrencyTypeDef();
 
@@ -256,7 +258,19 @@ public class ProductVariantDetailLeafFragment extends BaseVariantImageFragment {
 
         if (listener.getProductVariantCombinationViewModel().isActive() &&
                 isStockLimited()) {
-            if (stock < minStock || stock > MAX_STOCK) {
+            if (listener.isAddEdit()) {
+                if (stock < 1) {
+                    counterInputViewStock.setError(getContext().getString(R.string.error_variant_minimum));
+                    return false;
+                } else if (stock > MAX_STOCK) {
+                    counterInputViewStock.setError(getContext().getString(R.string.error_variant_more_than_max));
+                    return false;
+                } else {
+                    counterInputViewStock.setError(null);
+                    return true;
+                }
+            }
+            else if (stock < minStock || stock > MAX_STOCK) {
                 counterInputViewStock.setError(getContext().getString(
                         R.string.product_error_total_stock_not_valid,
                         String.valueOf(minStock),

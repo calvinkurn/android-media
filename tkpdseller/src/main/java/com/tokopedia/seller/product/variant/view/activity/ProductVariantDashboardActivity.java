@@ -45,6 +45,7 @@ public class ProductVariantDashboardActivity extends BaseSimpleActivity
     public static final String EXTRA_HAS_ORIGINAL_VARIANT_LV2 = "EXTRA_HAS_ORI_VAR_LV2";
     public static final String EXTRA_HAS_WHOLESALE = "EXTRA_HAS_WHOLESALE";
     public static final String EXTRA_IS_ADD = "EXTRA_IS_ADD";
+    public static final String EXTRA_IS_ADD_EDIT = "EXTRA_IS_ADD_EDIT";
     public static final String SAVED_VARIANT_CHANGE_FROM_RESULT = "sdv_var_chg";
 
     private boolean hasVariantChangedFromResult;
