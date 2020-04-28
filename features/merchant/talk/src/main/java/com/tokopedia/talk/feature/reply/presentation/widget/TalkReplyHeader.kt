@@ -36,13 +36,16 @@ class TalkReplyHeader : BaseCustomView {
     fun bind(talkReplyHeaderModel: TalkReplyHeaderModel,
              talkReplyHeaderListener: TalkReplyHeaderListener,
              onKebabClickedListener: OnKebabClickedListener) {
-        replyHeaderDate.text = talkReplyHeaderModel.date
-        replyHeaderMessage.text = talkReplyHeaderModel.question
+        talkReplyHeaderModel.apply {
+            showQuestionWithCondition(isMasked, question, maskedContent)
+            showKebabWithConditions(allowReport, allowDelete, onKebabClickedListener)
+            showFollowWithCondition(allowFollow, isFollowed, talkReplyHeaderListener)
+            replyHeaderDate.text = date
+        }
         replyHeaderTNC.setOnClickListener {
             talkReplyHeaderListener.onTermsAndConditionsClicked()
         }
-        showKebabWithConditions(talkReplyHeaderModel.allowReport, talkReplyHeaderModel.allowDelete, onKebabClickedListener)
-        showFollowWithCondition(talkReplyHeaderModel.allowFollow, talkReplyHeaderModel.isFollowed, talkReplyHeaderListener)
+
     }
 
     fun setButtonToFollowed() {
@@ -53,6 +56,17 @@ class TalkReplyHeader : BaseCustomView {
     fun setButtonToUnfollowed() {
         replyHeaderFollowButton.text = UNFOLLOWED_TEXT
         replyHeaderFollowButton.buttonType = UnifyButton.Type.MAIN
+    }
+
+    private fun showQuestionWithCondition(isMasked: Boolean, question: String, maskedContent: String) {
+        replyHeaderMessage.apply {
+            if(isMasked) {
+                text = maskedContent
+                isEnabled = false
+                return
+            }
+            text = question
+        }
     }
 
     private fun showKebabWithConditions(allowReport: Boolean, allowDelete: Boolean, onKebabClickedListener: OnKebabClickedListener) {

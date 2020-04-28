@@ -19,27 +19,34 @@ class TalkReadingViewHolder(view: View, private val threadListener: ThreadListen
     }
 
     override fun bind(element: TalkReadingUiModel) {
-        itemView.apply {
-            readingQuestionTitle.apply {
-                text = element.question.content
-                setOnClickListener {
-                    threadListener.onThreadClicked(element.question.questionID)
-                }
-            }
-            if(element.question.totalAnswer > 0 && element.question.answer.answerID.isNotEmpty()) {
-                element.question.apply {
-                    showProfilePicture(answer.userThumbnail, answer.userId)
-                    showSellerLabelWithCondition(answer.isSeller)
-                    showDisplayName(answer.userName, answer.userId)
-                    showDate(answer.createTimeFormatted)
-                    showAnswer(answer.content, questionID)
-                    showNumberOfLikesWithCondition(answer.likeCount)
-                    showNumberOfAttachedProductsWithCondition(answer.attachedProductCount)
-                    showNumberOfOtherAnswersWithCondition(totalAnswer, questionID)
-                    hideNoAnswersText()
-                }
+        element.question.apply {
+            showQuestionWithCondition(state.isMasked, content, maskedContent, questionID)
+            if(totalAnswer > 0 && answer.answerID.isNotEmpty()) {
+                showProfilePicture(answer.userThumbnail, answer.userId)
+                showSellerLabelWithCondition(answer.isSeller)
+                showDisplayName(answer.userName, answer.userId)
+                showDate(answer.createTimeFormatted)
+                showAnswer(answer.content, questionID)
+                showNumberOfLikesWithCondition(answer.likeCount)
+                showNumberOfAttachedProductsWithCondition(answer.attachedProductCount)
+                showNumberOfOtherAnswersWithCondition(totalAnswer, questionID)
+                hideNoAnswersText()
             } else {
                 showNoAnswersText()
+            }
+        }
+    }
+
+    private fun showQuestionWithCondition(isMasked: Boolean, content: String, maskedContent: String, questionId: String) {
+        itemView.readingQuestionTitle.apply {
+            if(isMasked) {
+                text = maskedContent
+                isEnabled = false
+                return
+            }
+            text = content
+            setOnClickListener {
+                threadListener.onThreadClicked(questionId)
             }
         }
     }

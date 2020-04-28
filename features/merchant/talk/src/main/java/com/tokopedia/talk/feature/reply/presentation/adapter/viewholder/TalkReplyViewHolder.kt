@@ -1,7 +1,6 @@
 package com.tokopedia.talk.feature.reply.presentation.adapter.viewholder
 
 import android.view.View
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.talk.feature.reading.presentation.adapter.viewholder.TalkReadingViewHolder
@@ -32,7 +31,7 @@ class TalkReplyViewHolder(view: View,
             showDisplayName(userName, userId)
             showDate(createTimeFormatted)
             showSellerLabelWithCondition(isSeller)
-            showAnswer(content, answerID)
+            showAnswer(content, state.isMasked)
             showNumberOfLikesWithCondition(likeCount)
             if(attachedProductCount > 0) {
                 showAttachedProducts(attachedProducts)
@@ -85,10 +84,17 @@ class TalkReplyViewHolder(view: View,
         return String.format(TalkReadingViewHolder.BULLET_POINT, date)
     }
 
-    private fun showAnswer(answer: String, answerId: String) {
+    private fun showAnswer(answer: String, isMasked: Boolean) {
+        if(isMasked) {
+            itemView.replyMessage.apply {
+                visibility = View.VISIBLE
+                isEnabled = false
+            }
+            return
+        }
         if(answer.isNotEmpty()) {
-            itemView.apply {
-                replyMessage.text = answer
+            itemView.replyMessage.apply {
+                text = answer
                 visibility = View.VISIBLE
             }
         }

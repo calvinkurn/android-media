@@ -6,5 +6,7 @@ data class TalkReplyHeaderModel(
         val isFollowed: Boolean,
         val allowFollow: Boolean,
         val allowReport: Boolean,
-        val allowDelete: Boolean
+        val allowDelete: Boolean,
+        val isMasked: Boolean,
+        val maskedContent: String
 )
