@@ -83,9 +83,6 @@ public class ShipmentAddressFormDataResponse {
     @SerializedName("promo")
     @Expose
     private PromoSAFResponse promoSAFResponse;
-    @SerializedName("potential_gained_points")
-    @Expose
-    private PotentialGainedPoints potentialGainedPoints;
 
     public List<String> getErrors() {
         return errors;
@@ -143,10 +140,6 @@ public class ShipmentAddressFormDataResponse {
         return egoldAttributes;
     }
 
-    public void setEgoldAttributes(EgoldAttributes egoldAttributes) {
-        this.egoldAttributes = egoldAttributes;
-    }
-
     public boolean isShowOnboarding() {
         return isShowOnboarding;
     }
@@ -181,11 +174,4 @@ public class ShipmentAddressFormDataResponse {
 
     public PromoSAFResponse getPromoSAFResponse() { return promoSAFResponse; }
 
-    public void setPromoSAFResponse(PromoSAFResponse promoSAFResponse) { this.promoSAFResponse = promoSAFResponse; }
-
-    public PotentialGainedPoints getPotentialGainedPoints() { return potentialGainedPoints; }
-
-    public void setPotentialGainedPoints(PotentialGainedPoints potentialGainedPoints) {
-        this.potentialGainedPoints = potentialGainedPoints;
-    }
 }

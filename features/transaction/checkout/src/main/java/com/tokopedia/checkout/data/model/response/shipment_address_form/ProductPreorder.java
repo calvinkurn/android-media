@@ -15,15 +15,6 @@ public class ProductPreorder {
     @SerializedName("duration_day")
     @Expose
     private int durationDay;
-    @SerializedName("duration_unit_code")
-    @Expose
-    private int durationUnitCode;
-    @SerializedName("duration_unit_text")
-    @Expose
-    private String durationUnitText;
-    @SerializedName("duration_value")
-    @Expose
-    private String durationValue;
 
     public String getDurationText() {
         return durationText;
@@ -33,15 +24,4 @@ public class ProductPreorder {
         return durationDay;
     }
 
-    public int getDurationUnitCode() {
-        return durationUnitCode;
-    }
-
-    public String getDurationUnitText() {
-        return durationUnitText;
-    }
-
-    public String getDurationValue() {
-        return durationValue;
-    }
 }

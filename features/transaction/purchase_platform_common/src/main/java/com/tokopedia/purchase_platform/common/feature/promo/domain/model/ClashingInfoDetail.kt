@@ -9,9 +9,6 @@ data class ClashingInfoDetail(
 	@field:SerializedName("is_clashed_promos")
 	val isClashedPromos: Boolean? = null,
 
-	@field:SerializedName("options")
-	val options: Any? = null,
-
 	@field:SerializedName("clash_reason")
 	val clashReason: String? = null,
 

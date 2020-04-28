@@ -48,9 +48,6 @@ data class Data(
 		@field:SerializedName("is_coupon")
 	val isCoupon: Int? = null,
 
-		@field:SerializedName("benefit_details")
-	val benefitDetails: List<BenefitDetailsItem?>? = null,
-
 		@field:SerializedName("additional_info")
 	val additionalInfo: AdditionalInfo? = null,
 
@@ -64,8 +61,5 @@ data class Data(
 	val benefitSummaryInfo: BenefitSummaryInfo? = null,
 
 		@field:SerializedName("ticker_info")
-	val tickerInfo: TickerInfo? = null,
-
-		@field:SerializedName("tokopoints_detail")
-	val tokopointsDetail: TokopointsDetail? = null
+	val tickerInfo: TickerInfo? = null
 )

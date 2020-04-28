@@ -112,7 +112,7 @@ public class Product {
     @SerializedName("free_returns")
     @Expose
     private FreeReturns freeReturns;
-    @SerializedName("ProductCategory")
+    @SerializedName("product_category")
     @Expose
     private String productCategory;
     @SerializedName("product_tracker_data")
@@ -121,12 +121,6 @@ public class Product {
     @SerializedName("product_preorder")
     @Expose
     private ProductPreorder productPreorder;
-    @SerializedName("product_variants")
-    @Expose
-    private ProductVariantData productVariantData;
-    @SerializedName("wholesale_price")
-    @Expose
-    private List<WholesalePrice> wholesalePrice;
     @SerializedName("trade_in_info")
     @Expose
     private TradeInInfo tradeInInfo;
@@ -280,14 +274,6 @@ public class Product {
         return purchaseProtectionPlanData;
     }
 
-    public ProductVariantData getProductVariantData() {
-        return productVariantData;
-    }
-
-    public List<WholesalePrice> getWholesalePrice() {
-        return wholesalePrice;
-    }
-
     public TradeInInfo getTradeInInfo() {
         return tradeInInfo;
     }
@@ -300,7 +286,4 @@ public class Product {
         return productTicker;
     }
 
-    public void setProductTicker(ProductTicker productTicker) {
-        this.productTicker = productTicker;
-    }
 }

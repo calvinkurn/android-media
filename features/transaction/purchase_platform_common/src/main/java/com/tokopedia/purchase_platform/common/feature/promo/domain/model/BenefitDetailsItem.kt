@@ -21,9 +21,6 @@ data class BenefitDetailsItem(
 		@field:SerializedName("discount_amount")
 	val discountAmount: Int? = null,
 
-		@field:SerializedName("cashback_details")
-	val cashbackDetails: Any? = null,
-
 		@field:SerializedName("benefit_product_details")
 	val benefitProductDetails: List<BenefitProductDetailsItem?>? = null,
 

@@ -1,20 +1,24 @@
 query shipment_address_form($params: ShipmentAddressFormParams) {
   shipment_address_form(params: $params) {
     status
+    error_message
     data {
-      hashed_email
-      tickers {
-        id
-        message
-        page
-      }
       errors
       error_code
       is_multiple
-      is_coupon_active
-      is_one_tab_promo
+      kero_token
+      kero_discom_token
+      kero_unix_time
+      is_robinhood
+      is_hide_courier_name
+      is_blackbox
+      is_show_onboarding
+      is_ineligible_promo_dialog_enabled
+      disabled_features
+      donation_checkbox_status
       group_address {
         errors
+        # messages
         user_address {
           address_id
           address_name
@@ -34,19 +38,24 @@ query shipment_address_form($params: ShipmentAddressFormParams) {
           latitude
           longitude
           corner_id
+          # is_corner
         }
         group_shop {
           errors
+          # messages
+          shipping_id
+          sp_id
+          is_insurance
+          is_fulfillment_service
+          cart_string
+          has_promo_list
+          save_state_flag
+          promo_codes
+          vehicle_leasing {
+            booking_fee
+            is_leasing_product
+          }
           shop {
-            gold_merchant {
-              is_gold
-              is_gold_badge
-              gold_merchant_logo_url
-            }
-            official_store {
-              is_official
-              os_logo_url
-            }
             shop_id
             user_id
             shop_name
@@ -68,65 +77,43 @@ query shipment_address_form($params: ShipmentAddressFormParams) {
             province_id
             city_id
             city_name
-            province_name
-            country_name
-            is_allow_manage
-            shop_domain
+            gold_merchant {
+              is_gold
+              is_gold_badge
+              gold_merchant_logo_url
+            }
+            official_store {
+              is_official
+              os_logo_url
+            }
           }
-          cart_string
-          shipping_id
-          sp_id
-          rates_id
-          dropshipper {
-            name
-            telp_no
-          }
-          is_insurance
-          is_cod_available
-          is_order_priority
           shop_shipments {
             ship_id
             ship_name
             ship_code
             ship_logo
+            is_dropship_enabled
             ship_prods {
               ship_prod_id
               ship_prod_name
               ship_group_name
               ship_group_id
-              minimum_weight
               additional_fee
+              minimum_weight
             }
-            is_dropship_enabled
+          }
+          dropshipper {
+            name
+            telp_no
           }
           products {
             errors
             cart_id
             product_id
-            product_alias
-            sku
-            campaign_id
             product_name
             product_price_fmt
-            trade_in_info {
-              is_valid_trade_in
-              new_device_price
-              new_device_price_fmt
-              old_device_price
-              old_device_price_fmt
-            }
             product_price
             product_original_price
-            product_price_original_fmt
-            is_slash_price
-            wholesale_price {
-              qty_min_fmt
-              qty_max_fmt
-              qty_min
-              qty_max
-              prd_prc
-              prd_prc_fmt
-            }
             product_wholesale_price
             product_wholesale_price_fmt
             product_weight_fmt
@@ -135,48 +122,33 @@ query shipment_address_form($params: ShipmentAddressFormParams) {
             product_url
             product_returnable
             product_is_free_returns
-            free_returns {
-              is_freereturns
-              free_returns_logo
-            }
             product_is_preorder
-            product_preorder {
-              duration_text
-              duration_day
-              duration_unit_code
-              duration_unit_text
-              duration_value
-            }
             product_cashback
             product_min_order
             product_invenage_value
             product_switch_invenage
-            currency_rate
             product_price_currency
             product_image_src_200_square
-            product_all_images
             product_notes
             product_quantity
             product_menu_id
             product_finsurance
             product_fcancel_partial
+            product_cat_id
+            product_catalog_id
+            product_category
             product_shipment {
               shipment_id
+              service_id
             }
             product_shipment_mapping {
               shipment_id
               shipping_ids
+              service_ids {
+                service_id
+                sp_ids
+              }
             }
-            product_cat_id
-            product_catalog_id
-            product_status
-            product_tracker_data {
-              attribution
-              tracker_list_name
-            }
-            product_category
-            product_total_weight
-            product_total_weight_fmt
             purchase_protection_plan_data {
               protection_available
               protection_type_id
@@ -187,99 +159,46 @@ query shipment_address_form($params: ShipmentAddressFormParams) {
               protection_link_text
               protection_link_url
               protection_opt_in
+              protection_checkbox_disabled
             }
-            product_variants {
-              parent_id
-              default_child
-              is_enabled
-              stock
+            free_returns {
+              free_returns_logo
             }
-            warehouse_id
-            product_ticker{
+            product_tracker_data {
+              attribution
+              tracker_list_name
+            }
+            product_preorder {
+              duration_text
+              duration_day
+            }
+            trade_in_info {
+              is_valid_trade_in
+              new_device_price
+              new_device_price_fmt
+              old_device_price
+              old_device_price_fmt
+              drop_off_enable
+            }
+            free_shipping {
+              eligible
+              badge_url
+            }
+            product_ticker {
               show_ticker
               message
             }
-            product_timer{
-              show_timer
-              description
-              expired_timer_message{
-                title
-                description
-                button
-              }
-              timer_detail{
-                expired_time
-                deduct_time
-                expired_duration
-              }
-            }
           }
-          is_fulfillment_service
           warehouse {
             warehouse_id
-            partner_id
-            shop_id
-            warehouse_name
-            district_id
-            district_name
-            city_id
             city_name
-            province_id
-            province_name
-            status
-            postal_code
-            is_default
-            latlon
-            latitude
-            longitude
-            email
-            address_detail
-            country_name
-            is_fulfillment
           }
-          vehicle_leasing {
-            application_id
-            dp_price
-            booking_fee
-            total_price
-            product_id
-            dealer_id
-            multifinance_name
-            is_leasing_product
-            is_allow_checkout
-            error_message
-          }
-          has_promo_list
         }
-        sort_key
       }
-      kero_token
-      kero_discom_token
-      kero_unix_time
-      enable_partial_cancel
       donation {
         Title
         Nominal
         Description
-      }
-      is_one_click_shipment
-      is_robinhood
-      is_blackbox
-      promo_suggestion {
-        cta
-        cta_color
-        is_visible
-        promo_code
-        text
-      }
-      autoapply {
-        success
-        code
-        is_coupon
-        discount_amount
-        title_description
-        message_success
-        promo_id
       }
       cod {
         is_cod
@@ -293,12 +212,6 @@ query shipment_address_form($params: ShipmentAddressFormParams) {
       egold_attributes {
         eligible
         is_tiering
-        tier_data {
-          minimum_total_amount
-          minimum_amount
-          maximum_amount
-          basis_amount
-        }
         range {
           min
           max
@@ -309,76 +222,205 @@ query shipment_address_form($params: ShipmentAddressFormParams) {
           ticker_text
           tooltip_text
         }
+        tier_data {
+          minimum_total_amount
+          minimum_amount
+          maximum_amount
+          basis_amount
+        }
       }
-      autoapply_stack {
-        global_success
-        success
-        promo_code_id
-        discount_amount
-        cashback_wallet_amount
-        cashback_advocate_referral_amount
-        cashback_voucher_description
-        clashing_info_detail {
-          clash_message
-          clash_reason
-          is_clashed_promos
-          options {
+      tickers {
+        id
+        message
+        page
+      }
+      # campaign_timer {
+      #   description
+      #   show_timer
+      #   expired_timer_message {
+      #     button
+      #     description
+      #     title
+      #   }
+      #   timer_detail {
+      #     deduct_time
+      #     expired_duration
+      #     expired_time
+      #     server_time
+      #   }
+      # }
+      # addresses {
+      #   active
+      #   data {
+      #     default_address {
+      #       address_id
+      #       address_name
+      #       address
+      #       postal_code
+      #       phone
+      #       receiver_name
+      #       status
+      #       country
+      #       province_id
+      #       province_name
+      #       city_id
+      #       city_name
+      #       district_id
+      #       district_name
+      #       address_2
+      #       latitude
+      #       longitude
+      #       corner_id
+      #     }
+      #     trade_in_address {
+      #       address_id
+      #       address_name
+      #       address
+      #       postal_code
+      #       phone
+      #       receiver_name
+      #       status
+      #       country
+      #       province_id
+      #       province_name
+      #       city_id
+      #       city_name
+      #       district_id
+      #       district_name
+      #       address_2
+      #       latitude
+      #       longitude
+      #       corner_id
+      #     }
+      #   }
+      # }
+      disabled_features_detail {
+        disabled_multi_address_message
+      }
+      promo {
+        error_default {
+          title
+          description
+        }
+        last_apply {
+          code
+          data {
+            codes
+            promo_code_id
+            cashback_advocate_referral_amount
+            cashback_wallet_amount
+            discount_amount
+            discount_amount
+            title_description
+            is_tokopedia_gerai
+            global_success
+            gateway_id
+            is_coupon
+            success
+            invoice_description
             voucher_orders {
-              cart_id
+              cashback_wallet_amount
               code
-              shop_name
-              potential_benefit
-              promo_name
               unique_id
+              discount_amount
+              address_id
+              title_description
+              is_po
+              type
+              cart_id
+              shop_id
+              success
+              invoice_description
+              message {
+                color
+                state
+                text
+              }
+              benefit_details {
+                code
+                unique_id
+                cashback_amount
+                discount_amount
+                type
+                order_id
+                benefit_product_details {
+                  cashback_amount
+                  discount_amount
+                  product_id
+                  is_bebas_ongkir
+                }
+                promo_type {
+                  is_exclusive_shipping
+                  is_bebas_ongkir
+                }
+              }
+            }
+            clashing_info_detail {
+              is_clashed_promos
+              clash_reason
+              clash_message
+            }
+            tracking_details {
+              product_id
+              promo_codes_tracking
+              promo_details_tracking
+            }
+            message {
+              color
+              state
+              text
+            }
+            additional_info {
+              sp_ids
+              usage_summaries {
+                description
+                type
+                amount_str
+                amount
+              }
+              message_info {
+                message
+                detail
+              }
+              error_detail {
+                message
+              }
+              empty_cart_info {
+                image_url
+                detail
+                message
+              }
+            }
+            benefit_summary_info {
+              final_benefit_amount_str
+              final_benefit_amount
+              final_benefit_text
+              summaries {
+                amount
+                section_name
+                description
+                section_description
+                type
+                amount_str
+                details {
+                  amount
+                  section_name
+                  description
+                  type
+                  amount_str
+                  points
+                  points_str
+                }
+              }
+            }
+            ticker_info {
+              unique_id
+              status_code
+              message
             }
           }
         }
-        tracking_details {
-          product_id
-          promo_codes_tracking
-          promo_details_tracking
-        }
-        codes
-        title_description
-        message {
-          color
-          state
-          text
-        }
-        invoice_description
-        gateway_id
-        is_coupon
-        coupon_description
-        voucher_orders {
-          address_id
-          code
-          success
-          unique_id
-          cart_id
-          type
-          cashback_wallet_amount
-          discount_amount
-          title_description
-          invoice_description
-          message {
-            state
-            color
-            text
-          }
-          is_po
-          shop_id
-        }
       }
-      global_coupon_attr {
-        description
-        quantity_label
-      }
-      is_show_onboarding
-      is_hide_courier_name
-      is_new_buyer
-      disabled_features
-      donation_checkbox_status
     }
-    error_message
   }
 }
