@@ -74,4 +74,13 @@
     <string name="mvc_for_post_instagram_story">Untuk post Instagram Story.</string>
     <string name="mvc_shop_cover">Sampul Toko</string>
     <string name="mvc_for_cover_of_your_shop">Untuk sampul di halaman tokomu.</string>
+    <string name="mvc_copy_link">Copy Link</string>
+    <string name="mvc_instagram">Instagram</string>
+    <string name="mvc_facebook">Facebook</string>
+    <string name="mvc_facebook_messenger">Facebook Messenger</string>
+    <string name="mvc_whatsapp">Whatsapp</string>
+    <string name="mvc_line">Line</string>
+    <string name="mvc_twitter">Twitter</string>
+    <string name="mvc_broadcast_chat">Broadcast Chat</string>
+    <string name="mvc_others">Lainnya</string>
 </resources>

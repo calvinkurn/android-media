@@ -154,10 +154,21 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
         dismissBottomSheet<MoreMenuBottomSheet>(MoreMenuBottomSheet.TAG)
         when (menu) {
             is EditQuota -> showEditQuotaBottomSheet()
+            is ShareVoucher -> showShareBottomSheet(voucher)
             is DownloadVoucher -> showDownloadBottomSheet(voucher)
             is CancelVoucher -> showCancelVoucherDialog(voucher)
             is StopVoucher -> showStopVoucherDialog(voucher)
         }
+    }
+
+    private fun showShareBottomSheet(voucher: VoucherUiModel) {
+        if (!isAdded) return
+        val parent = view as? ViewGroup ?: return
+        ShareVoucherBottomSheet(parent)
+                .setOnItemClickListener {
+
+                }
+                .show(childFragmentManager)
     }
 
     private fun showDownloadBottomSheet(voucher: VoucherUiModel) {
