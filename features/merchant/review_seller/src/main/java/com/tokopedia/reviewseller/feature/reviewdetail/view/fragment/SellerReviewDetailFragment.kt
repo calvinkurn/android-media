@@ -356,6 +356,9 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
 
     private fun initBottomSheetFilterPeriod(view: View, title: String, filterPeriodItemUnify: ArrayList<ListItemUnify>) {
         bottomSheetPeriodDetail?.apply {
+            setOnDismissListener {
+                view.review_period_filter_button_detail.toggle()
+            }
             setTitle(title)
             showCloseIcon = true
             setCloseClickListener {
@@ -422,9 +425,11 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
     }
 
     override fun onOptionFeedbackClicked(view: View, title: String, optionDetailListItemUnify: ArrayList<ListItemUnify>, isEmptyReply: Boolean) {
+
         optionFeedbackDetailUnify?.setData(optionDetailListItemUnify)
 
         bottomSheetOptionFeedback?.apply {
+
             setTitle(title)
             showCloseIcon = true
             setCloseClickListener {
