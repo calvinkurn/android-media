@@ -42,7 +42,7 @@ sealed class MoreMenuUiModel(
             override val icon: Int
     ) : MoreMenuUiModel(title, icon)
 
-    data class Download(
+    data class DownloadVoucher(
             override val title: String,
             @DrawableRes
             override val icon: Int
@@ -60,7 +60,7 @@ sealed class MoreMenuUiModel(
             override val icon: Int
     ) : MoreMenuUiModel(title, icon)
 
-    data class Stop(
+    data class StopVoucher(
             override val title: String,
             @DrawableRes
             override val icon: Int

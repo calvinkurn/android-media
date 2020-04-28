@@ -20,17 +20,23 @@ import kotlinx.android.synthetic.main.bottomsheet_mvc_more_menu.view.*
  */
 
 class MoreMenuBottomSheet(
-        private val parent: ViewGroup,
-        private val callback: (MoreMenuUiModel) -> Unit
+        private val parent: ViewGroup
 ) : BottomSheetUnify() {
 
     companion object {
         val TAG: String = MoreMenuBottomSheet::class.java.simpleName
     }
 
-    private val menuAdapter by lazy { MoreMenuAdapter(callback) }
+    private var voucher: VoucherUiModel? = null
+    private var menuAdapter: MoreMenuAdapter? = null
 
-    init {
+    fun setOnModeClickListener(voucher: VoucherUiModel, callback: (MoreMenuUiModel) -> Unit) {
+        this.voucher = voucher
+        this.menuAdapter = MoreMenuAdapter(callback)
+        setupView()
+    }
+
+    private fun setupView() {
         val childView = LayoutInflater.from(parent.context)
                 .inflate(R.layout.bottomsheet_mvc_more_menu, parent, false)
 
@@ -41,9 +47,9 @@ class MoreMenuBottomSheet(
         setChild(childView)
     }
 
-    fun show(isActiveVoucher: Boolean, voucher: VoucherUiModel, fm: FragmentManager) {
+    fun show(isActiveVoucher: Boolean, fm: FragmentManager) {
         val getMenuItem = if (isActiveVoucher) {
-            if (voucher.isOngoingStatus) {
+            if (voucher?.isOngoingStatus == true) {
                 getOngoingVoucherMenu()
             } else {
                 getPendingVoucherMenu()
@@ -52,10 +58,10 @@ class MoreMenuBottomSheet(
             getVoucherHistoryMoreMenu()
         }
 
-        menuAdapter.clearAllElements()
-        menuAdapter.addElement(getMenuItem)
+        menuAdapter?.clearAllElements()
+        menuAdapter?.addElement(getMenuItem)
 
-        setTitle(voucher.name)
+        setTitle(voucher?.name.orEmpty())
         show(fm, TAG)
     }
 
@@ -64,7 +70,7 @@ class MoreMenuBottomSheet(
         override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
             super.getItemOffsets(outRect, view, parent, state)
             val position = parent.getChildAdapterPosition(view)
-            if (position == menuAdapter.itemCount.minus(1)) {
+            if (position == menuAdapter?.itemCount?.minus(1)) {
                 outRect.bottom = view.resources.getDimensionPixelSize(R.dimen.mvc_dimen_12dp)
             }
         }
@@ -83,7 +89,7 @@ class MoreMenuBottomSheet(
         menuItems.add(EditPeriod(parent.context.getString(R.string.mvc_edit_shown_period), R.drawable.ic_mvc_calendar))
         menuItems.add(ViewDetail(parent.context.getString(R.string.mvc_view_detail_and_edit_voucher), R.drawable.ic_mvc_detail))
         menuItems.add(ItemDivider)
-        menuItems.add(Download(parent.context.getString(R.string.mvc_download), R.drawable.ic_mvc_download))
+        menuItems.add(DownloadVoucher(parent.context.getString(R.string.mvc_download), R.drawable.ic_mvc_download))
         menuItems.add(Duplicate(parent.context.getString(R.string.mvc_duplicate), R.drawable.ic_mvc_duplicate))
         menuItems.add(ItemDivider)
         menuItems.add(CancelVoucher(parent.context.getString(R.string.mvc_cancel), R.drawable.ic_mvc_cancel))
@@ -97,9 +103,9 @@ class MoreMenuBottomSheet(
         menuItems.add(ItemDivider)
         menuItems.add(Share(parent.context.getString(R.string.mvc_share), R.drawable.ic_mvc_share))
         menuItems.add(Duplicate(parent.context.getString(R.string.mvc_duplicate), R.drawable.ic_mvc_duplicate))
-        menuItems.add(Download(parent.context.getString(R.string.mvc_download), R.drawable.ic_mvc_download))
+        menuItems.add(DownloadVoucher(parent.context.getString(R.string.mvc_download), R.drawable.ic_mvc_download))
         menuItems.add(ItemDivider)
-        menuItems.add(Stop(parent.context.getString(R.string.mvc_stop), R.drawable.ic_mvc_cancel))
+        menuItems.add(StopVoucher(parent.context.getString(R.string.mvc_stop), R.drawable.ic_mvc_cancel))
         return menuItems
     }
 }

@@ -20,11 +20,10 @@ import com.tokopedia.vouchercreation.di.component.DaggerVoucherCreationComponent
 import com.tokopedia.vouchercreation.voucherlist.model.*
 import com.tokopedia.vouchercreation.voucherlist.model.BaseHeaderChipUiModel.HeaderChip
 import com.tokopedia.vouchercreation.voucherlist.model.BaseHeaderChipUiModel.ResetChip
-import com.tokopedia.vouchercreation.voucherlist.model.MoreMenuUiModel.EditQuota
+import com.tokopedia.vouchercreation.voucherlist.model.MoreMenuUiModel.*
 import com.tokopedia.vouchercreation.voucherlist.view.adapter.factory.VoucherListAdapterFactoryImpl
 import com.tokopedia.vouchercreation.voucherlist.view.viewmodel.VoucherListViewModel
-import com.tokopedia.vouchercreation.voucherlist.view.widget.MoreMenuBottomSheet
-import com.tokopedia.vouchercreation.voucherlist.view.widget.EditQuotaBottomSheet
+import com.tokopedia.vouchercreation.voucherlist.view.widget.*
 import com.tokopedia.vouchercreation.voucherlist.view.widget.filterbottomsheet.FilterBottomSheet
 import com.tokopedia.vouchercreation.voucherlist.view.widget.headerchips.ChipType
 import com.tokopedia.vouchercreation.voucherlist.view.widget.sortbottomsheet.SortBottomSheet
@@ -62,7 +61,7 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
     }
     private val moreBottomSheet: MoreMenuBottomSheet? by lazy {
         val parent = view as? ViewGroup ?: return@lazy null
-        return@lazy MoreMenuBottomSheet(parent, this::onMoreMenuItemClickListener)
+        return@lazy MoreMenuBottomSheet(parent)
     }
     private val sortBottomSheet: SortBottomSheet? by lazy {
         val parent = view as? ViewGroup ?: return@lazy null
@@ -143,20 +142,53 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
     }
 
     override fun onMoreClickListener(voucher: VoucherUiModel) {
-        moreBottomSheet?.show(isActiveVoucher, voucher, childFragmentManager)
-    }
-
-    private fun onMoreMenuItemClickListener(menu: MoreMenuUiModel) {
-        dismissBottomSheet<MoreMenuBottomSheet>(MoreMenuBottomSheet.TAG)
-        when (menu) {
-            is EditQuota -> showEditQuotaBottomSheet()
+        moreBottomSheet?.let {
+            it.setOnModeClickListener(voucher) { menu ->
+                onMoreMenuItemClickListener(menu, voucher)
+            }
+            it.show(isActiveVoucher, childFragmentManager)
         }
     }
 
-    private fun showEditQuotaBottomSheet() {
-        val parent = view as? ViewGroup ?: return
-        if (!isAdded) return
+    private fun onMoreMenuItemClickListener(menu: MoreMenuUiModel, voucher: VoucherUiModel) {
+        dismissBottomSheet<MoreMenuBottomSheet>(MoreMenuBottomSheet.TAG)
+        when (menu) {
+            is EditQuota -> showEditQuotaBottomSheet()
+            is DownloadVoucher -> showDownloadBottomSheet(voucher)
+            is CancelVoucher -> showCancelVoucherDialog(voucher)
+            is StopVoucher -> showStopVoucherDialog(voucher)
+        }
+    }
 
+    private fun showDownloadBottomSheet(voucher: VoucherUiModel) {
+        if (!isAdded) return
+        val parent = view as? ViewGroup ?: return
+        DownloadVoucherBottomSheet(parent, voucher)
+                .setOnDownloadClickListener {
+
+                }
+                .show(childFragmentManager)
+    }
+
+    private fun showStopVoucherDialog(voucher: VoucherUiModel) {
+        StopVoucherDialog(context ?: return)
+                .setOnPrimaryClickListener {
+
+                }
+                .show(voucher)
+    }
+
+    private fun showCancelVoucherDialog(voucher: VoucherUiModel) {
+        CancelVoucherDialog(context ?: return)
+                .setOnPrimaryClickListener {
+
+                }
+                .show(voucher)
+    }
+
+    private fun showEditQuotaBottomSheet() {
+        if (!isAdded) return
+        val parent = view as? ViewGroup ?: return
         EditQuotaBottomSheet(parent).show(childFragmentManager)
     }
 
