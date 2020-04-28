@@ -3,10 +3,7 @@ package com.tokopedia.reviewseller.feature.reviewdetail.view.adapter
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.reviewseller.common.util.DataEndlessScrollListener
-import com.tokopedia.reviewseller.feature.reviewdetail.view.model.FeedbackUiModel
-import com.tokopedia.reviewseller.feature.reviewdetail.view.model.OverallRatingDetailUiModel
-import com.tokopedia.reviewseller.feature.reviewdetail.view.model.RatingBarUiModel
-import com.tokopedia.reviewseller.feature.reviewdetail.view.model.TopicUiModel
+import com.tokopedia.reviewseller.feature.reviewdetail.view.model.*
 
 class SellerReviewDetailAdapter(
         sellerReviewDetailAdapterTypeFactory: SellerReviewDetailAdapterTypeFactory
@@ -37,6 +34,14 @@ class SellerReviewDetailAdapter(
         productReviewDetailFeedback.addAll(feedbackListUiModel)
         visitables.addAll(feedbackListUiModel)
         notifyItemRangeInserted(lastIndex, feedbackListUiModel.size)
+    }
+
+    fun updateFilterRating(position: Int, updatedState: Boolean) {
+        if (position != -1) {
+            val data = visitables[position]
+            (data as? RatingBarUiModel)?.ratingIsChecked = updatedState
+            notifyItemChanged(position)
+        }
     }
 
     override val endlessDataSize: Int

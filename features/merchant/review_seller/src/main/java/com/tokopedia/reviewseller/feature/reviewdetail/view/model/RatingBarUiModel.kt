@@ -5,7 +5,9 @@ import com.tokopedia.reviewseller.feature.reviewdetail.view.adapter.SellerReview
 
 data class RatingBarUiModel(
         var ratingLabel: Int? = -1,
-        var ratingCount: Int = 500
+        var ratingCount: Int = 500,
+        var ratingProgressBar: Int = 0,
+        var ratingIsChecked :Boolean = false
 ): BaseSellerReviewDetail {
     override fun type(typeFactory: SellerReviewDetailAdapterTypeFactory): Int {
         return typeFactory.type(this)

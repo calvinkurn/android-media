@@ -20,3 +20,7 @@ interface ProductFeedbackDetailListener {
 interface OverallRatingDetailListener {
     fun onFilterPeriodClicked(view: View, title: String)
 }
+
+interface SellerRatingAndTopicListener {
+    fun onRatingCheckBoxClicked(ratingAndState: Pair<Int, Boolean>, adapterPosition: Int)
+}
