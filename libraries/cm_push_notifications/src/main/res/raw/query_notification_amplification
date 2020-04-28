@@ -1,0 +1,7 @@
+query notifier_getPushDataToRender(device_token: String!) {
+    notifier_getPushDataToRender(device_token: $device_token) {
+        status
+        error_message
+        push_data
+    }
+}
