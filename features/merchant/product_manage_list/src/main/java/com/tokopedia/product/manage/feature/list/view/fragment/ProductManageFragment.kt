@@ -464,12 +464,6 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
                         getProductList(withDelay = true, isRefresh = true)
                     }
                 }
-            } else if (intent.action == TkpdState.ProductService.BROADCAST_ADD_EDIT_PRODUCT_SUCCESS &&
-                    intent.hasExtra(TkpdState.ProductService.STATUS_FLAG) &&
-                    intent.getIntExtra(TkpdState.ProductService.STATUS_FLAG, 0) == TkpdState.ProductService.STATUS_DONE) {
-                activity?.runOnUiThread {
-                    getProductList(withDelay = true, isRefresh = true)
-                }
             }
         }
     }
@@ -1208,7 +1202,6 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         activity?.let {
             val intentFilter = IntentFilter()
             intentFilter.addAction(TkpdState.ProductService.BROADCAST_ADD_PRODUCT)
-            intentFilter.addAction(TkpdState.ProductService.BROADCAST_ADD_EDIT_PRODUCT_SUCCESS)
             it.registerReceiver(addProductReceiver, intentFilter)
         }
     }
