@@ -79,12 +79,17 @@ class YouTubeView(
         }
     }
 
+    private val onFullscreenListener = object : YouTubePlayer.OnFullscreenListener {
+        override fun onFullscreen(isFullscreen: Boolean) {
+            if (isFullscreen) listener.onEnterFullscreen(this@YouTubeView)
+            else listener.onExitFullscreen(this@YouTubeView)
+        }
+    }
+
     init {
         youtubeFragment.initialize(object : YouTubePlayer.OnInitializedListener {
             override fun onInitializationSuccess(provider: YouTubePlayer.Provider?, player: YouTubePlayer?, wasRestored: Boolean) {
-                youTubePlayer = player
-                player?.setPlayerStateChangeListener(playerStateChangedListener)
-                player?.setPlaybackEventListener(playbackEventListener)
+                player?.let { youTubePlayer = initYouTubePlayer(it) }
             }
 
             override fun onInitializationFailure(provider: YouTubePlayer.Provider?, error: YouTubeInitializationResult?) {
@@ -112,13 +117,23 @@ class YouTubeView(
         youTubePlayer?.release()
     }
 
+    private fun initYouTubePlayer(player: YouTubePlayer) : YouTubePlayer {
+        player.setPlayerStateChangeListener(playerStateChangedListener)
+        player.setPlaybackEventListener(playbackEventListener)
+        player.fullscreenControlFlags = YouTubePlayer.FULLSCREEN_FLAG_CUSTOM_LAYOUT
+        player.setOnFullscreenListener(onFullscreenListener)
+        return player
+    }
+
     companion object {
         private const val YOUTUBE_FRAGMENT_TAG = "fragment_youtube"
     }
 
     interface Listener {
         fun onInitFailure(view: YouTubeView, result: YouTubeInitializationResult)
-        fun onFullScreenClicked(view: YouTubeView, isFullScreen: Boolean)
+
+        fun onEnterFullscreen(view: YouTubeView)
+        fun onExitFullscreen(view: YouTubeView)
 
         fun onVideoStateChanged(view: YouTubeView, state: PlayVideoState)
     }

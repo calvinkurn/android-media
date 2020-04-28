@@ -16,8 +16,8 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.R
 import com.tokopedia.play.analytic.PlayAnalytics
@@ -411,7 +411,7 @@ class PlayInteractionFragment :
             private var isFirstTime = true
 
             override fun onChanged(map: Map<BottomInsetsType, BottomInsetsState>) {
-                if (!isFirstTime) requireView().gone()
+                if (!isFirstTime) requireView().hide()
 
                 scope.launch {
                     val keyboardState = map[BottomInsetsType.Keyboard]
@@ -433,7 +433,7 @@ class PlayInteractionFragment :
 
                 }.apply {
                     invokeOnCompletion {
-                        view?.visible()
+                        view?.show()
                         isFirstTime = false
                     }
                 }
@@ -703,7 +703,7 @@ class PlayInteractionFragment :
             videoSettingsComponent.getUserInteractionEvents()
                     .collect {
                         when (it) {
-                            VideoSettingsInteractionEvent.EnterFullScreenClicked -> {
+                            VideoSettingsInteractionEvent.EnterFullscreenClicked -> {
                                 PlayAnalytics.clickCtaFullScreenFromPortraitToLandscape(
                                         userId = userSession.userId,
                                         channelId = channelId,
@@ -711,7 +711,7 @@ class PlayInteractionFragment :
                                 )
                                 enterFullscreen()
                             }
-                            VideoSettingsInteractionEvent.ExitFullScreenClicked -> exitFullscreen()
+                            VideoSettingsInteractionEvent.ExitFullscreenClicked -> exitFullscreen()
                         }
                     }
         }

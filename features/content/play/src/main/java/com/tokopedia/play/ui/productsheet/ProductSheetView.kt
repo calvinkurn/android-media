@@ -12,8 +12,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.globalerror.GlobalError
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.R
 import com.tokopedia.play.component.UIView
 import com.tokopedia.play.ui.productsheet.adapter.MerchantVoucherAdapter
@@ -130,8 +130,8 @@ class ProductSheetView(
         voucherAdapter.setItemsAndAnimateChanges(model.voucherList)
         productLineAdapter.setItemsAndAnimateChanges(model.productList)
 
-        if (model.voucherList.isEmpty()) rvVoucherList.gone()
-        else rvVoucherList.visible()
+        if (model.voucherList.isEmpty()) rvVoucherList.hide()
+        else rvVoucherList.show()
     }
 
     internal fun showPlaceholder() {
@@ -153,15 +153,15 @@ class ProductSheetView(
 
     private fun showContent(shouldShow: Boolean) {
         if (shouldShow) {
-            rvProductList.visible()
-            rvVoucherList.visible()
+            rvProductList.show()
+            rvVoucherList.show()
 
-            globalError.gone()
+            globalError.hide()
         } else {
-            rvProductList.gone()
-            rvVoucherList.gone()
+            rvProductList.hide()
+            rvVoucherList.hide()
 
-            globalError.visible()
+            globalError.show()
         }
     }
 

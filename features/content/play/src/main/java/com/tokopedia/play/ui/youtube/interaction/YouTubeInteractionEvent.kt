@@ -9,4 +9,6 @@ import com.tokopedia.play_common.state.PlayVideoState
 sealed class YouTubeInteractionEvent : ComponentEvent {
 
     data class YouTubeVideoStateChanged(val videoState: PlayVideoState) : YouTubeInteractionEvent()
+    object EnterFullscreenClicked : YouTubeInteractionEvent()
+    object ExitFullscreenClicked :YouTubeInteractionEvent()
 }

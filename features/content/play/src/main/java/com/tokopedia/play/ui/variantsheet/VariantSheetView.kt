@@ -256,47 +256,47 @@ class VariantSheetView(
 
         when (product.price) {
             is DiscountedPrice -> {
-                llProductDiscount.visible()
+                llProductDiscount.show()
                 tvProductDiscount.text = view.context.getString(R.string.play_discount_percent, product.price.discountPercent)
                 tvOriginalPrice.text = product.price.originalPrice
                 tvCurrentPrice.text = product.price.discountedPrice
             }
             is OriginalPrice -> {
-                llProductDiscount.gone()
+                llProductDiscount.hide()
                 tvCurrentPrice.text = product.price.price
             }
         }
 
-        if (product.isFreeShipping) ivFreeShipping.visible()
-        else ivFreeShipping.gone()
+        if (product.isFreeShipping) ivFreeShipping.show()
+        else ivFreeShipping.hide()
     }
 
     private fun showContent(shouldShow: Boolean, withPlaceholder: Boolean) {
         if (shouldShow) {
-            btnContainer.visible()
+            btnContainer.show()
 
             if (withPlaceholder) {
-                phProductVariant.visible()
-                phBtnAction.visible()
+                phProductVariant.show()
+                phBtnAction.show()
 
-                clProductVariant.gone()
-                btnAction.gone()
+                clProductVariant.hide()
+                btnAction.hide()
             }
             else {
-                phProductVariant.gone()
-                phBtnAction.gone()
+                phProductVariant.hide()
+                phBtnAction.hide()
 
-                clProductVariant.visible()
-                btnAction.visible()
+                clProductVariant.show()
+                btnAction.show()
             }
 
-            globalError.gone()
+            globalError.hide()
         } else {
-            clProductVariant.gone()
-            phProductVariant.gone()
-            btnContainer.gone()
+            clProductVariant.hide()
+            phProductVariant.hide()
+            btnContainer.hide()
 
-            globalError.visible()
+            globalError.show()
         }
     }
 

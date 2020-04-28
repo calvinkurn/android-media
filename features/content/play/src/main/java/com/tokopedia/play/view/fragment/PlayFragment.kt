@@ -20,9 +20,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.dialog.DialogUnify
-import com.tokopedia.kotlin.extensions.view.invisible
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.play.ERR_STATE_SOCKET
 import com.tokopedia.play.ERR_STATE_VIDEO
 import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
@@ -43,6 +41,7 @@ import com.tokopedia.play.view.layout.parent.PlayParentLayoutManagerImpl
 import com.tokopedia.play.view.type.ScreenOrientation
 import com.tokopedia.play.view.type.VideoOrientation
 import com.tokopedia.play.view.uimodel.VideoPlayerUiModel
+import com.tokopedia.play.view.uimodel.YouTube
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play.view.wrapper.GlobalErrorCodeWrapper
 import com.tokopedia.play_common.state.PlayVideoState
@@ -200,6 +199,7 @@ class PlayFragment : BaseDaggerFragment(), PlaySensorOrientationManager.Orientat
         observeEventUserInfo()
         observeVideoProperty()
         observeVideoStream()
+        observeVideoPlayer()
     }
 
     override fun onResume() {
@@ -435,6 +435,18 @@ class PlayFragment : BaseDaggerFragment(), PlaySensorOrientationManager.Orientat
         })
     }
 
+    private fun observeVideoPlayer() {
+        playViewModel.observableVideoPlayer.observe(viewLifecycleOwner, Observer {
+            if (it is YouTube) {
+                flYouTube.show()
+                flVideo.hide()
+            } else {
+                flYouTube.hide()
+                flVideo.show()
+            }
+        })
+    }
+
     private fun showEventDialog(title: String, message: String, buttonTitle: String, buttonUrl: String = "") {
         activity?.let {
             val dialog = DialogUnify(it, DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE)
@@ -470,7 +482,7 @@ class PlayFragment : BaseDaggerFragment(), PlaySensorOrientationManager.Orientat
         keyboardWatcher.listen(view, object : KeyboardWatcher.Listener {
             override fun onKeyboardShown(estimatedKeyboardHeight: Int) {
                 playViewModel.onKeyboardShown(estimatedKeyboardHeight)
-                ivClose.visible()
+                ivClose.show()
             }
 
             override fun onKeyboardHidden() {

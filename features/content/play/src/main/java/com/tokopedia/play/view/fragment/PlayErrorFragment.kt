@@ -13,8 +13,8 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.globalerror.GlobalError
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.ERR_STATE_GLOBAL
 import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.R
@@ -104,7 +104,7 @@ class PlayErrorFragment: BaseDaggerFragment() {
                     showGlobalError(it.throwable)
                 }
                 is Success -> {
-                    container.gone()
+                    container.hide()
                 }
             }
         })
@@ -138,7 +138,7 @@ class PlayErrorFragment: BaseDaggerFragment() {
                 }
             }
             PlayAnalytics.errorState(channelId, "$ERR_STATE_GLOBAL: ${globalError.errorDescription.text}", playViewModel.channelType)
-            container.visible()
+            container.show()
         }
     }
 }

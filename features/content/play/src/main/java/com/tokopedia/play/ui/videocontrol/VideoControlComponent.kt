@@ -49,7 +49,7 @@ open class VideoControlComponent(
                                 uiView.setPlayer(null)
                             }
                             is ScreenStateEvent.BottomInsetsChanged -> {
-                                if (!it.isAnyShown && it.stateHelper.channelType.isVod) uiView.show()
+                                if (!it.isAnyShown && it.stateHelper.channelType.isVod && it.stateHelper.videoPlayer.isGeneral) uiView.show()
                                 else uiView.hide()
                             }
                         }

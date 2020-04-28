@@ -64,7 +64,16 @@ open class YouTubeComponent(
     override fun onInitFailure(view: YouTubeView, result: YouTubeInitializationResult) {
     }
 
-    override fun onFullScreenClicked(view: YouTubeView, isFullScreen: Boolean) {
+    override fun onEnterFullscreen(view: YouTubeView) {
+        scope.launch {
+            bus.emit(YouTubeInteractionEvent::class.java, YouTubeInteractionEvent.EnterFullscreenClicked)
+        }
+    }
+
+    override fun onExitFullscreen(view: YouTubeView) {
+        scope.launch {
+            bus.emit(YouTubeInteractionEvent::class.java, YouTubeInteractionEvent.ExitFullscreenClicked)
+        }
     }
 
     override fun onVideoStateChanged(view: YouTubeView, state: PlayVideoState) {

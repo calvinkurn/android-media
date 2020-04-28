@@ -1,5 +1,6 @@
 package com.tokopedia.play.view.fragment
 
+import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -15,6 +16,7 @@ import com.tokopedia.play.di.PlayModule
 import com.tokopedia.play.extensions.isAnyHidden
 import com.tokopedia.play.extensions.isAnyShown
 import com.tokopedia.play.ui.youtube.YouTubeComponent
+import com.tokopedia.play.ui.youtube.interaction.YouTubeInteractionEvent
 import com.tokopedia.play.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.play.view.custom.RoundedConstraintLayout
 import com.tokopedia.play.view.event.ScreenStateEvent
@@ -26,6 +28,7 @@ import com.tokopedia.unifycomponents.dpToPx
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
@@ -61,6 +64,12 @@ class PlayYouTubeFragment : BaseDaggerFragment(), PlayYouTubeViewInitializer {
     private lateinit var layoutManager: PlayYouTubeLayoutManager
 
     private lateinit var containerYouTube: RoundedConstraintLayout
+
+    private var requestedOrientation: Int
+        get() = requireActivity().requestedOrientation
+        set(value) {
+            requireActivity().requestedOrientation = value
+        }
 
     override fun getScreenName(): String = "Play YouTube"
 
@@ -140,9 +149,20 @@ class PlayYouTubeFragment : BaseDaggerFragment(), PlayYouTubeViewInitializer {
     }
 
     override fun onInitYouTube(container: ViewGroup): Int {
-        return YouTubeComponent(container, childFragmentManager, EventBusFactory.get(viewLifecycleOwner), scope, dispatchers)
+        val youTubeComponent = YouTubeComponent(container, childFragmentManager, EventBusFactory.get(viewLifecycleOwner), scope, dispatchers)
                 .also(viewLifecycleOwner.lifecycle::addObserver)
-                .getContainerId()
+
+        scope.launch {
+            youTubeComponent.getUserInteractionEvents()
+                    .collect {
+                        when (it) {
+                            YouTubeInteractionEvent.EnterFullscreenClicked -> enterFullscreen()
+                            YouTubeInteractionEvent.ExitFullscreenClicked -> exitFullscreen()
+                        }
+                    }
+        }
+
+        return youTubeComponent.getContainerId()
     }
     //endregion
 
@@ -153,5 +173,13 @@ class PlayYouTubeFragment : BaseDaggerFragment(), PlayYouTubeViewInitializer {
                     ScreenStateEvent.Init(playViewModel.screenOrientation, playViewModel.stateHelper)
             )
         }
+    }
+
+    private fun enterFullscreen() {
+        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+    }
+
+    private fun exitFullscreen() {
+        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
     }
 }
