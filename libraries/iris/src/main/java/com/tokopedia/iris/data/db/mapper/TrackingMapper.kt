@@ -16,7 +16,7 @@ import java.util.*
  */
 class TrackingMapper {
 
-    fun transformSingleEvent(track: String, sessionId: String, userId: String, deviceId: String) : String {
+    fun transformSingleEvent(track: String, sessionId: String, userId: String, deviceId: String): String {
 
         val result = JSONObject()
         val data = JSONArray()
@@ -25,9 +25,10 @@ class TrackingMapper {
 
         event.put(reformatEvent(track, sessionId))
 
-        row.put("device_id", deviceId)
-        row.put("user_id", userId)
-        row.put("event_data", event)
+        row.put(DEVICE_ID, deviceId)
+        row.put(USER_ID, userId)
+        row.put(EVENT_DATA, event)
+        row.put(APP_VERSION, GlobalConfig.VERSION_NAME)
 
         data.put(row)
 
@@ -35,7 +36,7 @@ class TrackingMapper {
         return result.toString()
     }
 
-    fun transformListEvent(tracking: List<Tracking>) : String {
+    fun transformListEvent(tracking: List<Tracking>): String {
         val result = JSONObject()
         val data = JSONArray()
         var event = JSONArray()
@@ -45,17 +46,24 @@ class TrackingMapper {
                 val eventObject = JSONObject(item.event)
                 event.put(eventObject)
                 val nextItem: Tracking? = try {
-                    tracking[i+1]
+                    tracking[i + 1]
                 } catch (e: IndexOutOfBoundsException) {
                     null
                 }
-                val nextUserId : String = nextItem?.userId ?: ""
-                if (item.userId != nextUserId || i == tracking.size - 1) {
+                val nextUserId: String = nextItem?.userId ?: ""
+                val nextVersion: String = nextItem?.appVersion ?: ""
+                // this is to group iris data based on userId and appVersion
+                if (item.userId != nextUserId || item.appVersion != nextVersion || i == tracking.size - 1) {
                     val row = JSONObject()
-                    row.put("device_id", item.deviceId)
-                    row.put("user_id", item.userId)
+                    row.put(DEVICE_ID, item.deviceId)
+                    row.put(USER_ID, item.userId)
+                    if (item.appVersion.isEmpty()) {
+                        row.put(APP_VERSION, GlobalConfig.VERSION_NAME)
+                    } else {
+                        row.put(APP_VERSION, item.appVersion)
+                    }
                     if (event.length() > 0) {
-                        row.put("event_data", event)
+                        row.put(EVENT_DATA, event)
                         data.put(row)
                     }
                     event = JSONArray()
@@ -68,7 +76,12 @@ class TrackingMapper {
 
     companion object {
 
-        fun reformatEvent(event: String, sessionId: String) : JSONObject {
+        const val DEVICE_ID = "device_id"
+        const val USER_ID = "user_id"
+        const val EVENT_DATA = "event_data"
+        const val APP_VERSION = "app_version"
+
+        fun reformatEvent(event: String, sessionId: String): JSONObject {
             return try {
                 var keyEvent = KEY_EVENT
                 if (GlobalConfig.isSellerApp()) {

@@ -106,6 +106,9 @@ public class DeveloperOptionActivity extends BaseActivity {
 
     private View routeManagerButton;
     private EditText editTextRouteManager;
+    private EditText editTextChangeVersionName;
+    private EditText editTextChangeVersionCode;
+    private View changeVersionButton;
 
     private TextView vGoTochuck;
     private CheckBox toggleChuck;
@@ -235,6 +238,12 @@ public class DeveloperOptionActivity extends BaseActivity {
 
         editTextRouteManager = findViewById(R.id.et_route_manager);
         routeManagerButton = findViewById(R.id.btn_route_manager);
+
+        editTextChangeVersionName = findViewById(R.id.et_change_version_name);
+        editTextChangeVersionCode = findViewById(R.id.et_change_version_code);
+        changeVersionButton = findViewById(R.id.btn_change_version);
+        editTextChangeVersionName.setText(GlobalConfig.VERSION_NAME);
+        editTextChangeVersionCode.setText(GlobalConfig.VERSION_CODE);
 
         ipGroupChat = findViewById(R.id.ip_groupchat);
         saveIpGroupChat = findViewById(R.id.ip_groupchat_save);
@@ -376,6 +385,31 @@ public class DeveloperOptionActivity extends BaseActivity {
                             "Route Manager String should not be empty", Toast.LENGTH_SHORT).show();
                 } else {
                     RouteManager.route(DeveloperOptionActivity.this, routeManagerString);
+                }
+            }
+        });
+
+        changeVersionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String versionCode = editTextChangeVersionCode.getText().toString();
+                String versionName = editTextChangeVersionName.getText().toString();
+                if (TextUtils.isEmpty(versionCode)) {
+                    Toast.makeText(DeveloperOptionActivity.this,
+                            "Version Code should not be empty", Toast.LENGTH_SHORT).show();
+                } else if (TextUtils.isEmpty(versionName)) {
+                    Toast.makeText(DeveloperOptionActivity.this,
+                            "Version Name should not be empty", Toast.LENGTH_SHORT).show();
+                } else {
+                    try {
+                        GlobalConfig.VERSION_NAME = versionName;
+                        GlobalConfig.VERSION_CODE = Integer.parseInt(versionCode);
+                        Toast.makeText(DeveloperOptionActivity.this,
+                                "Version has been changed: " + versionName + " - " + versionCode, Toast.LENGTH_SHORT).show();
+                    } catch (Exception e) {
+                        Toast.makeText(DeveloperOptionActivity.this,
+                                e.toString(), Toast.LENGTH_LONG).show();
+                    }
                 }
             }
         });
