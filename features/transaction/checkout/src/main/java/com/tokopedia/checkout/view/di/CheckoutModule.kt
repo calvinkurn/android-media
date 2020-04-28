@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.common.di.scope.ApplicationScope
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.akamai_bot_lib.interceptor.AkamaiBotInterceptor
 import com.tokopedia.authentication.AuthHelper.Companion.getUserAgent
+import com.tokopedia.checkout.R
 import com.tokopedia.logisticcart.domain.executor.MainScheduler
 import com.tokopedia.logisticcart.domain.executor.SchedulerProvider
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter
@@ -39,6 +40,7 @@ import com.tokopedia.checkout.domain.mapper.ICheckoutMapper
 import com.tokopedia.checkout.domain.mapper.IShipmentMapper
 import com.tokopedia.checkout.domain.mapper.ShipmentMapper
 import com.tokopedia.checkout.domain.usecase.*
+import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormGqlUseCase.Companion.SHIPMENT_ADDRESS_FORM_QUERY
 import com.tokopedia.checkout.view.ShipmentAdapterActionListener
 import com.tokopedia.checkout.view.ShipmentContract
 import com.tokopedia.checkout.view.ShipmentFragment
@@ -255,13 +257,9 @@ class CheckoutModule constructor(val shipmentFragment: ShipmentFragment) {
 
     @Provides
     @CheckoutScope
-    fun provideShipmentPresenter(checkPromoStackingCodeFinalUseCase: CheckPromoStackingCodeFinalUseCase,
-                                 checkPromoStackingCodeUseCase: CheckPromoStackingCodeUseCase,
-                                 checkPromoStackingCodeMapper: CheckPromoStackingCodeMapper,
-                                 compositeSubscription: CompositeSubscription,
+    fun provideShipmentPresenter(compositeSubscription: CompositeSubscription,
                                  checkoutUseCase: CheckoutUseCase,
-                                 getShipmentAddressFormUseCase: GetShipmentAddressFormUseCase,
-                                 getShipmentAddressFormOneClickShipementUseCase: GetShipmentAddressFormOneClickShipementUseCase,
+                                 getShipmentAddressFormGqlUseCase: GetShipmentAddressFormGqlUseCase,
                                  editAddressUseCase: EditAddressUseCase,
                                  changeShippingAddressUseCase: ChangeShippingAddressUseCase,
                                  saveShipmentStateUseCase: SaveShipmentStateUseCase,
@@ -281,8 +279,7 @@ class CheckoutModule constructor(val shipmentFragment: ShipmentFragment) {
                                  releaseBookingUseCase: ReleaseBookingUseCase,
                                  validateUsePromoRevampUseCase: ValidateUsePromoRevampUseCase): ShipmentContract.Presenter {
         return ShipmentPresenter(compositeSubscription,
-                checkoutUseCase, getShipmentAddressFormUseCase,
-                getShipmentAddressFormOneClickShipementUseCase,
+                checkoutUseCase, getShipmentAddressFormGqlUseCase,
                 editAddressUseCase, changeShippingAddressUseCase,
                 saveShipmentStateUseCase,
                 ratesUseCase, ratesApiUseCase,
@@ -308,6 +305,13 @@ class CheckoutModule constructor(val shipmentFragment: ShipmentFragment) {
     @CheckoutScope
     fun provideTrackingPromo(): TrackingPromoCheckoutUtil {
         return TrackingPromoCheckoutUtil()
+    }
+
+    @Provides
+    @CheckoutScope
+    @Named(SHIPMENT_ADDRESS_FORM_QUERY)
+    fun provideGetShipmentAddressFormQuery(@ApplicationContext context: Context): String {
+        return GraphqlHelper.loadRawString(context.resources, R.raw.shipment_address_form_query)
     }
 
 }

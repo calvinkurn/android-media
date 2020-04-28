@@ -12,6 +12,7 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.authentication.AuthHelper;
 import com.tokopedia.checkout.R;
+import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormGqlUseCase;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter;
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateConverter;
@@ -141,8 +142,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     private static final long LAST_THREE_DIGIT_MODULUS = 1000;
     private final CheckoutUseCase checkoutUseCase;
     private final CompositeSubscription compositeSubscription;
-    private final GetShipmentAddressFormUseCase getShipmentAddressFormUseCase;
-    private final GetShipmentAddressFormOneClickShipementUseCase getShipmentAddressFormOneClickShipementUseCase;
+    private final GetShipmentAddressFormGqlUseCase getShipmentAddressFormGqlUseCase;
     private final EditAddressUseCase editAddressUseCase;
     private final ChangeShippingAddressUseCase changeShippingAddressUseCase;
     private final SaveShipmentStateUseCase saveShipmentStateUseCase;
@@ -194,8 +194,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     @Inject
     public ShipmentPresenter(CompositeSubscription compositeSubscription,
                              CheckoutUseCase checkoutUseCase,
-                             GetShipmentAddressFormUseCase getShipmentAddressFormUseCase,
-                             GetShipmentAddressFormOneClickShipementUseCase getShipmentAddressFormOneClickShipementUseCase,
+                             GetShipmentAddressFormGqlUseCase getShipmentAddressFormGqlUseCase,
                              EditAddressUseCase editAddressUseCase,
                              ChangeShippingAddressUseCase changeShippingAddressUseCase,
                              SaveShipmentStateUseCase saveShipmentStateUseCase,
@@ -217,8 +216,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                              ValidateUsePromoRevampUseCase validateUsePromoRevampUseCase) {
         this.compositeSubscription = compositeSubscription;
         this.checkoutUseCase = checkoutUseCase;
-        this.getShipmentAddressFormUseCase = getShipmentAddressFormUseCase;
-        this.getShipmentAddressFormOneClickShipementUseCase = getShipmentAddressFormOneClickShipementUseCase;
+        this.getShipmentAddressFormGqlUseCase = getShipmentAddressFormGqlUseCase;
         this.editAddressUseCase = editAddressUseCase;
         this.changeShippingAddressUseCase = changeShippingAddressUseCase;
         this.saveShipmentStateUseCase = saveShipmentStateUseCase;
@@ -543,41 +541,41 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         } else {
             getView().showInitialLoading();
         }
-        TKPDMapParam<String, String> paramGetShipmentForm = new TKPDMapParam<>();
-        paramGetShipmentForm.put("lang", "id");
-        if (cornerId != null) paramGetShipmentForm.put("corner_id", cornerId);
-        if (leasingId != null && !leasingId.isEmpty())
-            paramGetShipmentForm.put("vehicle_leasing_id", leasingId);
+
+        Map<String, Object> params = new HashMap<>();
+        params.put(GetShipmentAddressFormGqlUseCase.PARAM_KEY_LANG, "id");
+        params.put(GetShipmentAddressFormGqlUseCase.PARAM_KEY_SKIP_ONBOARDING_UPDATE_STATE, isSkipUpdateOnboardingState ? 1 : 0);
+        if (cornerId != null) {
+            try {
+                int tmpCornerId = Integer.parseInt(cornerId);
+                params.put(GetShipmentAddressFormGqlUseCase.PARAM_KEY_CORNER_ID, tmpCornerId);
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
+            }
+        }
+        if (leasingId != null && !leasingId.isEmpty()) {
+            try {
+                int tmpLeasingId = Integer.parseInt(leasingId);
+                params.put(GetShipmentAddressFormGqlUseCase.PARAM_KEY_VEHICLE_LEASING_ID, tmpLeasingId);
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
+            }
+        }
+        if (isTradeIn) {
+            params.put(GetShipmentAddressFormGqlUseCase.PARAM_KEY_IS_TRADEIN, isTradeIn);
+            params.put(GetShipmentAddressFormGqlUseCase.PARAM_KEY_DEVICE_ID, deviceId);
+        }
 
         RequestParams requestParams = RequestParams.create();
-        Map<String, String> params = getGeneratedAuthParamNetwork(paramGetShipmentForm);
-        params.put(GetShipmentAddressFormUseCase.PARAM_SKIP_ONBOARDING_UPDATE_STATE, String.valueOf(isSkipUpdateOnboardingState ? 1 : 0));
-
-        if (isOneClickShipment) {
-            if (isTradeIn) {
-                params.put(GetShipmentAddressFormOneClickShipementUseCase.PARAM_IS_TRADEIN, String.valueOf(isTradeIn));
-                params.put(GetShipmentAddressFormOneClickShipementUseCase.PARAM_DEVICE_ID, deviceId);
-            }
-            requestParams.putObject(GetShipmentAddressFormUseCase.PARAM_REQUEST_AUTH_MAP_STRING_GET_SHIPMENT_ADDRESS, params);
-            compositeSubscription.add(
-                    getShipmentAddressFormOneClickShipementUseCase.createObservable(requestParams)
-                            .subscribeOn(Schedulers.io())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .unsubscribeOn(Schedulers.io())
-                            .subscribe(new GetShipmentAddressFormSubscriber(this, getView(),
-                                    isReloadData, isReloadAfterPriceChangeHinger, true))
-            );
-        } else {
-            requestParams.putObject(GetShipmentAddressFormUseCase.PARAM_REQUEST_AUTH_MAP_STRING_GET_SHIPMENT_ADDRESS, params);
-            compositeSubscription.add(
-                    getShipmentAddressFormUseCase.createObservable(requestParams)
-                            .subscribeOn(Schedulers.io())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .unsubscribeOn(Schedulers.io())
-                            .subscribe(new GetShipmentAddressFormSubscriber(this, getView(),
-                                    isReloadData, isReloadAfterPriceChangeHinger, false))
-            );
-        }
+        requestParams.putAll(params);
+        compositeSubscription.add(
+                getShipmentAddressFormGqlUseCase.createObservable(requestParams)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .unsubscribeOn(Schedulers.io())
+                        .subscribe(new GetShipmentAddressFormSubscriber(this, getView(),
+                                isReloadData, isReloadAfterPriceChangeHinger, true))
+        );
     }
 
     public void initializePresenterData(CartShipmentAddressFormData cartShipmentAddressFormData) {
@@ -656,7 +654,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 getGeneratedAuthParamNetwork(paramGetShipmentForm));
 
         compositeSubscription.add(
-                getShipmentAddressFormUseCase.createObservable(requestParams)
+                getShipmentAddressFormGqlUseCase.createObservable(requestParams)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .unsubscribeOn(Schedulers.io())
@@ -717,39 +715,27 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     @Override
     public void processReloadCheckoutPageBecauseOfError(boolean isOneClickShipment, boolean isTradeIn, String deviceId) {
         getView().showLoading();
-        TKPDMapParam<String, String> paramGetShipmentForm = new TKPDMapParam<>();
-        paramGetShipmentForm.put("lang", "id");
+
+        Map<String, Object> params = new HashMap<>();
+        params.put(GetShipmentAddressFormGqlUseCase.PARAM_KEY_LANG, "id");
+        if (isTradeIn) {
+            params.put(GetShipmentAddressFormGqlUseCase.PARAM_KEY_IS_TRADEIN, isTradeIn);
+            params.put(GetShipmentAddressFormGqlUseCase.PARAM_KEY_DEVICE_ID, deviceId);
+        }
 
         RequestParams requestParams = RequestParams.create();
-        Map<String, String> params = getGeneratedAuthParamNetwork(paramGetShipmentForm);
+        requestParams.putAll(params);
 
-        if (isOneClickShipment) {
-            if (isTradeIn) {
-                params.put(GetShipmentAddressFormOneClickShipementUseCase.PARAM_IS_TRADEIN, String.valueOf(isTradeIn));
-                params.put(GetShipmentAddressFormOneClickShipementUseCase.PARAM_DEVICE_ID, deviceId);
-            }
-            requestParams.putObject(GetShipmentAddressFormUseCase.PARAM_REQUEST_AUTH_MAP_STRING_GET_SHIPMENT_ADDRESS, params);
-            compositeSubscription.add(
-                    getShipmentAddressFormOneClickShipementUseCase.createObservable(requestParams)
-                            .subscribeOn(Schedulers.io())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .unsubscribeOn(Schedulers.io())
-                            .subscribe(new GetShipmentAddressFormSubscriber(this, getView(),
-                                    true, false, true))
+        requestParams.putObject(GetShipmentAddressFormUseCase.PARAM_REQUEST_AUTH_MAP_STRING_GET_SHIPMENT_ADDRESS, params);
+        compositeSubscription.add(
+                getShipmentAddressFormGqlUseCase.createObservable(requestParams)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .unsubscribeOn(Schedulers.io())
+                        .subscribe(new GetShipmentAddressFormSubscriber(this, getView(),
+                                true, false, true))
 
-            );
-        } else {
-            requestParams.putObject(GetShipmentAddressFormUseCase.PARAM_REQUEST_AUTH_MAP_STRING_GET_SHIPMENT_ADDRESS, params);
-            compositeSubscription.add(
-                    getShipmentAddressFormUseCase.createObservable(requestParams)
-                            .subscribeOn(Schedulers.io())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .unsubscribeOn(Schedulers.io())
-                            .subscribe(new GetShipmentAddressFormSubscriber(this, getView(),
-                                    true, false, false))
-
-            );
-        }
+        );
     }
 
     private Map<String, String> getGeneratedAuthParamNetwork(TKPDMapParam<String, String> originParams) {
