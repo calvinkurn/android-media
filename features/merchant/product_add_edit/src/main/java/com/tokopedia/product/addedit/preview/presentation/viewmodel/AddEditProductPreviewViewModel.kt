@@ -126,7 +126,10 @@ class AddEditProductPreviewViewModel @Inject constructor(
             }
             addSource(detailInputModel) {
                 getVariantList(it.categoryId)
-                productInputModel.value = productInputModel.value?.apply { this.detailInputModel = it }
+                productInputModel.value?.let { productInputModel ->
+                    productInputModel.detailInputModel = it
+                    this@AddEditProductPreviewViewModel.productInputModel.value = productInputModel
+                }
             }
             addSource(getProductDraftResult) {
                 productInputModel.value = when(it) {
@@ -139,7 +142,6 @@ class AddEditProductPreviewViewModel @Inject constructor(
                 }
             }
             addSource(productAddResult) {
-                getVariantList(it.detailInputModel.categoryId)
                 productInputModel.value = it
             }
         }
