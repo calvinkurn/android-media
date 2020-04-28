@@ -5,10 +5,9 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.vouchercreation.create.view.uimodel.vouchertarget.widgets.FillVoucherNameUiModel
-import com.tokopedia.vouchercreation.create.view.uimodel.NextButtonUiModel
 import com.tokopedia.vouchercreation.create.view.uimodel.vouchertarget.widgets.VoucherTargetUiModel
-import com.tokopedia.vouchercreation.create.view.viewholder.vouchertarget.widgets.FillVoucherNameViewHolder
 import com.tokopedia.vouchercreation.create.view.viewholder.NextButtonViewHolder
+import com.tokopedia.vouchercreation.create.view.viewholder.vouchertarget.widgets.FillVoucherNameViewHolder
 import com.tokopedia.vouchercreation.create.view.viewholder.vouchertarget.widgets.VoucherTargetViewHolder
 
 class VoucherTargetAdapterTypeFactory : BaseAdapterTypeFactory(), VoucherTargetTypeFactory {
@@ -23,6 +22,5 @@ class VoucherTargetAdapterTypeFactory : BaseAdapterTypeFactory(), VoucherTargetT
     }
 
     override fun type(voucherTargetUiModel: VoucherTargetUiModel): Int = VoucherTargetViewHolder.LAYOUT
-    override fun type(nextButtonUiModel: NextButtonUiModel): Int = NextButtonViewHolder.LAYOUT
     override fun type(fillVoucherNameUiModel: FillVoucherNameUiModel): Int = FillVoucherNameViewHolder.LAYOUT
 }

@@ -4,15 +4,20 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.vouchercreation.create.view.enums.CreateVoucherBottomSheetType
 import com.tokopedia.vouchercreation.create.view.fragment.BaseCreateMerchantVoucherFragment
 import com.tokopedia.vouchercreation.create.view.typefactory.CreateVoucherTypeFactory
-import com.tokopedia.vouchercreation.create.view.typefactory.vouchertarget.VoucherTargetAdapterTypeFactory
-import com.tokopedia.vouchercreation.create.view.typefactory.vouchertarget.VoucherTargetTypeFactory
+import com.tokopedia.vouchercreation.create.view.typefactory.vouchertype.PromotionTypeBudgetAdapterTypeFactory
+import com.tokopedia.vouchercreation.create.view.typefactory.vouchertype.PromotionTypeBudgetTypeFactory
+import com.tokopedia.vouchercreation.create.view.uimodel.vouchertype.widget.PromotionTypeInputUiModel
 
 class PromotionBudgetAndTypeFragment(onNextStep: () -> Unit = {})
-    : BaseCreateMerchantVoucherFragment<VoucherTargetTypeFactory, VoucherTargetAdapterTypeFactory>(onNextStep) {
+    : BaseCreateMerchantVoucherFragment<PromotionTypeBudgetTypeFactory, PromotionTypeBudgetAdapterTypeFactory>(onNextStep) {
 
     companion object {
         @JvmStatic
         fun createInstance(onNext: () -> Unit) = PromotionBudgetAndTypeFragment(onNext)
+    }
+
+    private val promotionTypeInputWidget by lazy {
+        PromotionTypeInputUiModel()
     }
 
     override fun onDismissBottomSheet(bottomSheetType: CreateVoucherBottomSheetType) {
@@ -23,23 +28,22 @@ class PromotionBudgetAndTypeFragment(onNextStep: () -> Unit = {})
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    override fun getAdapterTypeFactory(): VoucherTargetAdapterTypeFactory {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
+    override fun getAdapterTypeFactory(): PromotionTypeBudgetAdapterTypeFactory = PromotionTypeBudgetAdapterTypeFactory(this)
 
-    override fun onItemClicked(t: Visitable<CreateVoucherTypeFactory>?) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
+    override fun onItemClicked(t: Visitable<CreateVoucherTypeFactory>?) {}
 
-    override fun getScreenName(): String {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
+    override fun getScreenName(): String = ""
 
     override fun initInjector() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
     }
 
-    override fun loadData(page: Int) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun loadData(page: Int) {}
+
+    override fun setupView() {
+        super.setupView()
     }
+
+    override var extraWidget: List<Visitable<PromotionTypeBudgetTypeFactory>> =
+            listOf(promotionTypeInputWidget)
 }
