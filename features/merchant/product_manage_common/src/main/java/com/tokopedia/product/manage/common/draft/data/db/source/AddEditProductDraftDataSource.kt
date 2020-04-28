@@ -1,6 +1,5 @@
 package com.tokopedia.product.manage.common.draft.data.db.source
 
-import androidx.lifecycle.LiveData
 import com.tokopedia.product.manage.common.draft.data.db.entity.AddEditProductDraftEntity
 import rx.Observable
 import javax.inject.Inject
@@ -13,7 +12,7 @@ class AddEditProductDraftDataSource @Inject constructor(private val dataManager:
         return dataManager.insertDraft(json, isUploading, shopId)
     }
 
-    fun getDraft(productId: Long): AddEditProductDraftEntity {
+    fun getDraft(productId: Long): AddEditProductDraftEntity? {
         return dataManager.getDraft(productId)
     }
 
