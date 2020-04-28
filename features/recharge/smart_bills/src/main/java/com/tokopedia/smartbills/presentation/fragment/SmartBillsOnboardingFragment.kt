@@ -11,8 +11,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConsInternalDigital
 import com.tokopedia.smartbills.R
 import kotlinx.android.synthetic.main.fragment_smart_bills_onboarding.*
 
@@ -61,6 +59,6 @@ class SmartBillsOnboardingFragment: BaseDaggerFragment() {
 
     companion object {
         const val BULLET_GAP_WIDTH_PX = 12f
-        const val BULLET_RADIUS_PX = 6f
+        const val BULLET_RADIUS_PX = 4f
     }
 }

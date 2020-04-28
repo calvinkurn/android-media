@@ -105,8 +105,7 @@ class SmartBillsModule {
     }
 
     companion object {
-//        const val BASE_URL = "https://pay.tokopedia.id/"
-        const val BASE_URL = "https://pulsa-staging.tokopedia.id/"
-//        const val BASE_URL = "https://pulsa-dev-api.tokopedia.com/"
+//        const val BASE_URL = "https://pulsa-api.tokopedia.com/"
+        const val BASE_URL = "https://pulsa-api-staging.tokopedia.com/"
     }
 }

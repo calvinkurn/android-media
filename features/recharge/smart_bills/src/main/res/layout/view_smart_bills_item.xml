@@ -11,19 +11,19 @@
     android:paddingBottom="@dimen/smart_bills_item_padding">
 
     <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
-        android:id="@+id/smart_bills_item_checkbox"
+        android:id="@+id/cb_smart_bills_item"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/smart_bills_item_icon_container"
+        android:id="@+id/view_smart_bills_item_icon_container"
         android:layout_width="@dimen/smart_bills_icon_size"
         android:layout_height="@dimen/smart_bills_icon_size"
         android:layout_marginLeft="@dimen/spacing_lvl2"
-        app:cardCornerRadius="@dimen/spacing_lvl4">
+        app:cardCornerRadius="@dimen/smart_bills_icon_corner_size">
 
         <ImageView
-            android:id="@+id/smart_bills_item_icon"
+            android:id="@+id/iv_smart_bills_item_icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
@@ -36,7 +36,7 @@
         android:orientation="vertical">
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/smart_bills_item_title"
+            android:id="@+id/tv_smart_bills_item_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:typographyType="body_2"
@@ -44,7 +44,7 @@
             tools:text="Pascabayar" />
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/smart_bills_item_description"
+            android:id="@+id/tv_smart_bills_item_description"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_lvl1"
@@ -52,7 +52,7 @@
             tools:text="081298587943 - Telkomsel" />
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/smart_bills_item_price"
+            android:id="@+id/tv_smart_bills_item_price"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_lvl2"
@@ -62,7 +62,7 @@
             tools:text="Rp 200.000.000" />
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/smart_bills_item_error"
+            android:id="@+id/tv_smart_bills_item_error"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_lvl2"

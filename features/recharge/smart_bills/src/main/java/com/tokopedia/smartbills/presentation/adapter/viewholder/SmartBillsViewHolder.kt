@@ -22,28 +22,28 @@ class SmartBillsViewHolder(val view: View, listener: CheckableInteractionListene
     override fun bind(element: RechargeBills) {
         super.bind(element)
         with (view) {
-            smart_bills_item_title.text = element.productName
+            tv_smart_bills_item_title.text = element.productName
             val description = if (element.operatorName.isNotEmpty()) {
                 String.format(getString(R.string.smart_bills_item_description),
                         element.clientNumber, element.operatorName)
             } else {
                 element.clientNumber
             }
-            smart_bills_item_description.text = description
-            smart_bills_item_price.text = element.amountText
-            ImageHandler.LoadImage(smart_bills_item_icon, element.iconURL)
+            tv_smart_bills_item_description.text = description
+            tv_smart_bills_item_price.text = element.amountText
+            ImageHandler.LoadImage(iv_smart_bills_item_icon, element.iconURL)
 
             if (element.errorMessage.isNotEmpty()) {
-                smart_bills_item_error.show()
-                smart_bills_item_error.text = element.errorMessage
+                tv_smart_bills_item_error.show()
+                tv_smart_bills_item_error.text = element.errorMessage
             } else {
-                smart_bills_item_error.hide()
+                tv_smart_bills_item_error.hide()
             }
         }
     }
 
     override fun getCheckable(): CompoundButton {
-        return view.smart_bills_item_checkbox
+        return view.cb_smart_bills_item
     }
 
 }

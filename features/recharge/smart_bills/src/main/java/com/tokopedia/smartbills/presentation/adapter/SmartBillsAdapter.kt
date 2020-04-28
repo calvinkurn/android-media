@@ -2,6 +2,7 @@ package com.tokopedia.smartbills.presentation.adapter
 
 import android.content.Context
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListCheckableAdapter
+import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.smartbills.data.RechargeBills
 
@@ -14,6 +15,14 @@ class SmartBillsAdapter(private val context: Context,
     fun renderList(data: List<RechargeBills>) {
         clearAllElements()
         addElement(data)
+    }
+
+    fun renderEmptyState(title: String, description: String) {
+        clearAllElements()
+        val emptyModel = EmptyModel()
+        emptyModel.title = title
+        emptyModel.description = description
+        addElement(emptyModel)
     }
 
     override fun showLoading() {

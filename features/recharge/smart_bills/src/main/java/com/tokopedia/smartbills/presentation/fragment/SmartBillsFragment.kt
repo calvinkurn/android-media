@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListCheckableAdapter
 import com.tokopedia.abstraction.base.view.adapter.holder.BaseCheckableViewHolder
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
@@ -25,6 +26,10 @@ import com.tokopedia.common.payment.model.PaymentPassData
 import com.tokopedia.common.topupbills.view.fragment.BaseTopupBillsFragment
 import com.tokopedia.common.topupbills.widget.TopupBillsCheckoutWidget
 import com.tokopedia.design.utils.CurrencyFormatUtil
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.network.constant.TkpdBaseURL.DigitalWebsite.PATH_SUBSCRIPTIONS
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.smartbills.R
 import com.tokopedia.smartbills.data.RechargeBills
 import com.tokopedia.smartbills.di.SmartBillsComponent
@@ -33,6 +38,7 @@ import com.tokopedia.smartbills.presentation.adapter.SmartBillsAdapter
 import com.tokopedia.smartbills.presentation.adapter.SmartBillsAdapterFactory
 import com.tokopedia.smartbills.presentation.viewmodel.SmartBillsViewModel
 import com.tokopedia.unifycomponents.ticker.TickerCallback
+import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -79,18 +85,36 @@ class SmartBillsFragment : BaseDaggerFragment(),
         super.onActivityCreated(savedInstanceState)
 
         viewModel.statementMonths.observe(this, Observer {
+            when (it) {
+                is Success -> {
+                    if (it.data.isNotEmpty()) {
 
+                    } else {
+                        view_smart_bills_shimmering.hide()
+                        adapter.showGetListError(MessageErrorException("Terjadi kesalahan pada pengambilan data"))
+                    }
+                }
+                is Fail -> {
+                    view_smart_bills_shimmering.hide()
+                    adapter.showGetListError(it.throwable)
+                }
+            }
         })
 
         viewModel.statementBills.observe(this, Observer {
+            view_smart_bills_shimmering.hide()
             when (it) {
                 is Success -> {
-                    adapter.renderList(it.data.bills)
+                    if (it.data.bills.isNotEmpty()) {
+                        adapter.renderList(it.data.bills)
 
-                    // Save maximum price
-                    maximumPrice = 0
-                    for (bill in it.data.bills) {
-                        maximumPrice += bill.amount.toInt()
+                        // Save maximum price
+                        maximumPrice = 0
+                        for (bill in it.data.bills) {
+                            maximumPrice += bill.amount.toInt()
+                        }
+                    } else {
+                        adapter.renderEmptyState("kamu tidak punya tagihan", "ayo bayar tagihan kamu di tokopedia")
                     }
                 }
                 is Fail -> {
@@ -140,7 +164,7 @@ class SmartBillsFragment : BaseDaggerFragment(),
             val intent = RouteManager.getIntent(activity, ApplinkConst.LOGIN)
             startActivityForResult(intent, BaseTopupBillsFragment.REQUEST_CODE_LOGIN)
         } else {
-            context?.let {
+            context?.let { context ->
                 // Navigate to onboarding if it's the first time
                 val visitedOnboarding = sharedPrefs.getBoolean(SMART_BILLS_VISITED_ONBOARDING, false)
                 if (!visitedOnboarding) {
@@ -149,36 +173,41 @@ class SmartBillsFragment : BaseDaggerFragment(),
                         sharedPrefs.edit().putBoolean(SMART_BILLS_VISITED_ONBOARDING, true).apply()
                     }
 
-                    startActivityForResult(Intent(it,
+                    startActivityForResult(Intent(context,
                             SmartBillsOnboardingActivity::class.java),
                             REQUEST_CODE_SMART_BILLS_ONBOARDING
                     )
                 }
 
                 // Setup ticker
-                smart_bills_ticker.setHtmlDescription(getString(R.string.smart_bills_ticker))
-                smart_bills_ticker.setDescriptionClickEvent(object: TickerCallback {
+                ticker_smart_bills.setHtmlDescription(getString(R.string.smart_bills_ticker))
+                ticker_smart_bills.setDescriptionClickEvent(object : TickerCallback {
                     override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                        RouteManager.route(context, TokopediaUrl.Companion.getInstance().getPULSA() + PATH_SUBSCRIPTIONS)
+                        RouteManager.route(context,
+                                TokopediaUrl.Companion.getInstance().PULSA + PATH_SUBSCRIPTIONS)
                     }
 
                     override fun onDismiss() {
 
                     }
-
                 })
+
+                cb_smart_bills_select_all.setOnClickListener {
+                    toggleAllItems(cb_smart_bills_select_all.isChecked)
+                }
+
+                rv_smart_bills_items.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+                rv_smart_bills_items.adapter = adapter
+                rv_smart_bills_items.addItemDecoration(object : DividerItemDecoration(context) {
+                    override fun getDimenPaddingLeft(): Int {
+                        return R.dimen.smart_bills_divider_left_padding
+                    }
+                })
+
+                smart_bills_checkout_view.listener = this
+
+                loadData()
             }
-
-            smart_bills_select_all_checkbox.setOnClickListener {
-                toggleAllItems(smart_bills_select_all_checkbox.isChecked)
-            }
-
-            rv_smart_bills_items.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-            rv_smart_bills_items.adapter = adapter
-
-            smart_bills_checkout_view.listener = this
-
-            loadData()
         }
     }
 
@@ -209,6 +238,8 @@ class SmartBillsFragment : BaseDaggerFragment(),
     }
 
     override fun loadData() {
+        view_smart_bills_shimmering.show()
+
         viewModel.getStatementMonths(
                 GraphqlHelper.loadRawString(resources, R.raw.query_recharge_statement_months),
                 viewModel.createStatementMonthsParams(1)
@@ -234,7 +265,7 @@ class SmartBillsFragment : BaseDaggerFragment(),
         }
         smart_bills_checkout_view.setTotalPrice(CurrencyFormatUtil.convertPriceValueToIdrFormat(totalPrice, true))
 
-        smart_bills_select_all_checkbox.isChecked = adapter.totalChecked == adapter.dataSize
+        cb_smart_bills_select_all.isChecked = adapter.totalChecked == adapter.dataSize
     }
 
     override fun onClickNextBuyButton() {
