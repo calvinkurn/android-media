@@ -173,6 +173,9 @@ dependencies {
 
     //------- DO NOT DELETE THIS PART -------//
     // TO BE ADDED AS FEATURE REQUIREMENT
+	implementation project(rootProject.ext.features.accountHome)
+	implementation project(rootProject.ext.features.similarSearch)
+	implementation project(rootProject.ext.features.search)
 
 }
 

@@ -2,6 +2,8 @@ apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
+apply from: "../../../compile-unit-test.gradle"
+apply from: "../../../compile-instrument-test.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
 repositories {
@@ -23,7 +25,6 @@ buildscript {
 // For instrumentation test
 android {
     defaultConfig {
-        multiDexEnabled true
         testInstrumentationRunner "com.tokopedia.test.application.InstrumentationTestRunner"
     }
 }
@@ -61,25 +62,10 @@ dependencies {
     implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk8
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
 
-    testImplementation rootProject.ext.testDependencies.mockk
-    testImplementation rootProject.ext.testDependencies.spek2Api
-    testImplementation rootProject.ext.testDependencies.spek2Dsl
-    testImplementation rootProject.ext.supportLibDependencies.kotlinReflection
-    testImplementation rootProject.ext.testDependencies.junitJupiterApi
-
-    // instrumentation test - disabled for now
-//    implementation 'com.android.support:multidex:1.0.3'
-//    androidTestImplementation 'androidx.test:runner:1.2.0'
-//    androidTestImplementation 'androidx.test:rules:1.2.0'
-//    androidTestImplementation rootProject.ext.playServicesDependencies.core
-//    androidTestImplementation rootProject.ext.firebase.core
-//    androidTestImplementation project(rootProject.ext.libraries.core_legacy)
-//    androidTestImplementation 'junit:junit:4.12'
-//    androidTestImplementation project(rootProject.ext.libraries.commonNetwork)
-//    androidTestImplementation rootProject.ext.tkpdInternalLibDependencies.akamaiBotLib
-//    androidTestImplementation rootProject.ext.tkpdInternalLibDependencies.network
-//    androidTestImplementation rootProject.ext.tkpdInternalLibDependencies.authentication
-//    androidTestImplementation project(rootProject.ext.libraries.instrumentation_test)
+    androidTestImplementation project(rootProject.ext.libraries.commonNetwork)
+    androidTestImplementation rootProject.ext.tkpdInternalLibDependencies.akamaiBotLib
+    androidTestImplementation rootProject.ext.tkpdInternalLibDependencies.network
+    androidTestImplementation rootProject.ext.tkpdInternalLibDependencies.authentication
 }
 
 project.ext {
