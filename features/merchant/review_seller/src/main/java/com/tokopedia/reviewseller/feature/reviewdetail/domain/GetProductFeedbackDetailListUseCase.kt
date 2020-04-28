@@ -11,8 +11,7 @@ import javax.inject.Inject
 import javax.inject.Named
 
 class GetProductFeedbackDetailListUseCase @Inject constructor(
-        @Named(GQL_GET_PRODUCT_FEEDBACK_LIST_DETAIL)
-        val gqlQuery: String,
+        private val rawQuery: Map<String,String>,
         private val graphQlRepository: GraphqlRepository
 ): UseCase<ProductFeedbackDetailResponse.ProductFeedbackDataPerProduct>() {
 
@@ -35,7 +34,7 @@ class GetProductFeedbackDetailListUseCase @Inject constructor(
     var params = mapOf<String, Any>()
 
     override suspend fun executeOnBackground(): ProductFeedbackDetailResponse.ProductFeedbackDataPerProduct {
-        val gqlRequest = GraphqlRequest(gqlQuery, ProductFeedbackDetailResponse::class.java, params)
+        val gqlRequest = GraphqlRequest(rawQuery[GQL_GET_PRODUCT_FEEDBACK_LIST_DETAIL], ProductFeedbackDetailResponse::class.java, params)
         val gqlResponse = graphQlRepository.getReseponse(listOf(gqlRequest))
         val error = gqlResponse.getError(GraphqlError::class.java)
         if (error == null || error.isEmpty()) {
