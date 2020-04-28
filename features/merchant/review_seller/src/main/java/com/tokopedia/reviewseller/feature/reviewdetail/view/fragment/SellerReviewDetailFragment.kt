@@ -69,7 +69,6 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
     var productID: Int = 0
     var sortBy: String = ""
     var filterBy: String = "time=all"
-    var chipsFilterText = ""
 
     var toolbarTitle = ""
 
@@ -92,6 +91,10 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
         super.onCreate(savedInstanceState)
         linearLayoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         viewModelProductReviewDetail = ViewModelProvider(this, viewModelFactory).get(ProductReviewDetailViewModel::class.java)
+        iniFilterData()
+    }
+
+    private fun iniFilterData(){
         viewModelProductReviewDetail?.filterPeriod = ReviewSellerConstant.mapFilterReviewDetail().getKeyByValue(getString(R.string.default_filter_detail))
         viewModelProductReviewDetail?.filterAllText = viewModelProductReviewDetail?.filterPeriod.orEmpty()
     }
@@ -106,7 +109,6 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
         initRecyclerView(view)
         initSwipeToRefRefresh(view)
         initViewBottomSheet()
-        initChipsView()
     }
 
     override fun initInjector() {
@@ -128,8 +130,7 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
 
         viewModelProductReviewDetail?.getProductRatingDetail(
                 productID,
-                sortBy,
-                viewModelProductReviewDetail?.filterAllText.orEmpty())
+                sortBy)
     }
 
     override fun getRecyclerView(view: View): RecyclerView {
@@ -259,11 +260,18 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
     }
 
     private fun observeLiveData() {
-        viewModelProductReviewDetail?.reviewDetailOverallRating?.observe(this, Observer {
+        viewModelProductReviewDetail?.ratingFilterData?.observe(this, Observer {
             hideLoading()
-            when (it) {
+            when(it) {
                 is Success -> {
-                    onSuccessGetProductReviewDetailOverallData(it.data)
+                    reviewSellerDetailAdapter.clearAllElements()
+                    reviewSellerDetailAdapter.hideLoading()
+                    swipeToRefreshReviewDetail?.isRefreshing = false
+                    review_detail_toolbar.apply {
+                        title = it.data.second
+                    }
+
+                    renderList(it.data.first)
                 }
                 is Fail -> {
                     onErrorGetReviewDetailData(it.throwable)
@@ -281,19 +289,6 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
                     onErrorGetReviewDetailData(it.throwable)
                 }
             }
-        })
-    }
-
-    private fun onSuccessGetProductReviewDetailOverallData(data: OverallRatingDetailUiModel) {
-        reviewSellerDetailAdapter.hideLoading()
-        swipeToRefreshReviewDetail?.isRefreshing = false
-        toolbarTitle = data.productName.orEmpty()
-        review_detail_toolbar.apply {
-            title = toolbarTitle
-        }
-
-        reviewSellerDetailAdapter.setOverallRatingDetailData(data.apply {
-            chipFilter = chipsFilterText
         })
     }
 
@@ -389,12 +384,9 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
                                                filterListUnify: ListUnify) {
         try {
             viewModelProductReviewDetail?.positionFilterPeriod = position
-            chipsFilterText = filterListItemUnify[position].listTitleText
-            itemView.review_period_filter_button_detail?.chip_text?.text = chipsFilterText
             filterListUnify.setSelectedFilterOrSort(filterListItemUnify, position)
-            viewModelProductReviewDetail?.filterPeriod = ReviewSellerConstant.mapFilterReviewDetail().getKeyByValue(chipsFilterText)
-            viewModelProductReviewDetail?.filterAllText = ReviewSellerUtil.setFilterJoinValueFormat(viewModelProductReviewDetail?.filterPeriod.orEmpty())
-            loadInitialData()
+
+            viewModelProductReviewDetail?.setChipFilterText(filterListItemUnify[position].listTitleText)
             bottomSheetPeriodDetail?.dismiss()
         } catch (e: Exception) {
             e.printStackTrace()
@@ -416,10 +408,6 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
         bottomSheetMenuDetail = BottomSheetUnify()
         optionMenuDetailUnify = viewMenu.findViewById(R.id.optionMenuDetail)
         bottomSheetMenuDetail?.setChild(viewMenu)
-    }
-
-    private fun initChipsView() {
-        chipsFilterText = getString(R.string.default_filter_detail)
     }
 
     override fun onOptionFeedbackClicked(view: View, title: String, optionDetailListItemUnify: ArrayList<ListItemUnify>, isEmptyReply: Boolean) {

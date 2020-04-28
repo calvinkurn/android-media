@@ -19,30 +19,29 @@ object SellerReviewProductDetailMapper {
                                           ProductFeedbackDetailResponse.ProductFeedbackDataPerProduct,
                                           userSession: UserSessionInterface): ProductFeedbackDetailUiModel {
         return ProductFeedbackDetailUiModel().apply {
-            ratingBarList = mapToRatingBarUiModel(productFeedbackDataPerProduct)
             productFeedbackDetailList = mapToFeedbackUiModel(productFeedbackDataPerProduct, userSession)
             topicList = mapToTopicUiModel(productFeedbackDataPerProduct)
         }
     }
 
-    private fun mapToRatingBarUiModel(productFeedbackDataPerProduct: ProductFeedbackDetailResponse.ProductFeedbackDataPerProduct): List<RatingBarUiModel> {
+    fun mapToRatingBarUiModel(productFeedbackDataPerProduct: ProductFeedbackDetailResponse.ProductFeedbackDataPerProduct): ProductReviewFilterUiModel {
         val ratingBarListUiModel = mutableListOf<RatingBarUiModel>()
         val totalAggregatRating: Int = productFeedbackDataPerProduct.aggregatedRating.sumBy { it.ratingCount }
 
         productFeedbackDataPerProduct.aggregatedRating.map {
             ratingBarListUiModel.add(
                     RatingBarUiModel(
-                            ratingProgressBar = if (totalAggregatRating == 0) 0 else it.ratingCount / totalAggregatRating,
+                            ratingProgressBar = if (totalAggregatRating == 0) 0F else (it.ratingCount.toFloat() / totalAggregatRating.toFloat()) *100,
                             ratingLabel = it.rating,
                             ratingCount = it.ratingCount
                     )
             )
         }
-        return ratingBarListUiModel
+        return ProductReviewFilterUiModel(ratingBarListUiModel)
     }
 
-    private fun mapToTopicUiModel(productFeedbackDataPerProduct: ProductFeedbackDetailResponse.ProductFeedbackDataPerProduct): TopicUiModel {
-        val topicListUiModel = TopicUiModel()
+    fun mapToTopicUiModel(productFeedbackDataPerProduct: ProductFeedbackDetailResponse.ProductFeedbackDataPerProduct): TopicUiModel {
+        val topicListUiModel = TopicUiModel(countFeedback = productFeedbackDataPerProduct.list.size)
 
         productFeedbackDataPerProduct.topics.map {
             topicListUiModel.apply {
@@ -53,8 +52,8 @@ object SellerReviewProductDetailMapper {
         return topicListUiModel
     }
 
-    private fun mapToFeedbackUiModel(productFeedbackDataPerProduct: ProductFeedbackDetailResponse.ProductFeedbackDataPerProduct,
-                                     userSession: UserSessionInterface): List<FeedbackUiModel> {
+    fun mapToFeedbackUiModel(productFeedbackDataPerProduct: ProductFeedbackDetailResponse.ProductFeedbackDataPerProduct,
+                             userSession: UserSessionInterface): List<FeedbackUiModel> {
         val feedbackListUiModel = mutableListOf<FeedbackUiModel>()
 
         productFeedbackDataPerProduct.list.map {
@@ -88,11 +87,13 @@ object SellerReviewProductDetailMapper {
 
 
     fun mapToRatingDetailOverallUiModel(productFeedbackDetailResponse:
-                                        ProductReviewDetailOverallResponse.ProductGetReviewAggregateByProduct): OverallRatingDetailUiModel {
+                                        ProductReviewDetailOverallResponse.ProductGetReviewAggregateByProduct,
+                                        chipFilterString: String): OverallRatingDetailUiModel {
         return OverallRatingDetailUiModel().apply {
             productName = productFeedbackDetailResponse.productName
             ratingAvg = productFeedbackDetailResponse.ratingAverage
             reviewCount = productFeedbackDetailResponse.ratingCount
+            chipFilter = chipFilterString
         }
     }
 

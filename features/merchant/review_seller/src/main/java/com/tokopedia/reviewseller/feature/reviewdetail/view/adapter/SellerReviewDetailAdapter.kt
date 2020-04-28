@@ -19,7 +19,7 @@ class SellerReviewDetailAdapter(
 
     fun setRatingBarDetailData(ratingBarUiModel: List<RatingBarUiModel>) {
         val lastIndex = visitables.size
-        visitables.addAll(ratingBarUiModel)
+//        visitables.addAll(ratingBarUiModel)
         notifyItemRangeInserted(lastIndex, ratingBarUiModel.size)
     }
 
