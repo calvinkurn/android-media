@@ -16,12 +16,12 @@
         android:layout_weight="1"
         android:text="@string/oke"
         android:textColor="@color/Neutral_N700_96"
-        app:typographyType="heading_5" />
+        app:typographyType="heading_4" />
 
     <ImageView
         android:id="@+id/iv_option"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/layout_lvl3"
+        android:layout_height="@dimen/layout_lvl3"
         android:src="@drawable/ic_check_green" />
 
 </LinearLayout>

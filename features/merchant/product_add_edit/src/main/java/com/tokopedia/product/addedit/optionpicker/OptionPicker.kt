@@ -1,7 +1,5 @@
 package com.tokopedia.product.addedit.optionpicker
 
-import android.graphics.Bitmap
-import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
 import android.util.TypedValue
 import android.view.LayoutInflater
@@ -15,7 +13,7 @@ import com.tokopedia.kotlin.extensions.view.toDp
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.optionpicker.adapter.OptionTypeFactory
 import com.tokopedia.product.addedit.optionpicker.model.OptionModel
-import com.tokopedia.product.addedit.tooltip.presentation.ImageDividerItemDecoration
+import com.tokopedia.product.addedit.tooltip.presentation.TooltipDividerItemDecoration
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.android.synthetic.main.bottom_sheet_list.view.*
 
@@ -55,11 +53,14 @@ class OptionPicker: BottomSheetUnify(), OptionTypeFactory.OnItemClickListener {
     private fun changeCloseButtonSize() {
         val fontSize = resources.getDimension(R.dimen.fontSize_lvl5).toDp()
         bottomSheetTitle.setTextSize(TypedValue.COMPLEX_UNIT_SP, fontSize)
-        bottomSheetClose.drawable?.apply {
-            val bitmap = (this as BitmapDrawable).bitmap
-            val drawableSize = resources.getDimensionPixelSize(R.dimen.tooltip_close_size)
-            val scaled = BitmapDrawable(resources, Bitmap.createScaledBitmap(bitmap, drawableSize, drawableSize, true))
-            bottomSheetClose.setImageDrawable(scaled)
+        context?.also { context ->
+            bottomSheetClose.apply {
+                setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_bottomsheet_close))
+                layoutParams.apply {
+                    width = context.resources.getDimension(R.dimen.tooltip_close_size).toInt()
+                    height = context.resources.getDimension(R.dimen.tooltip_close_size).toInt()
+                }
+            }
         }
     }
 
@@ -85,7 +86,7 @@ class OptionPicker: BottomSheetUnify(), OptionTypeFactory.OnItemClickListener {
             adapter = listAdapter
             if (isDividerVisible) {
                 ContextCompat.getDrawable(context, R.drawable.tooltip_divider)?.also {
-                    addItemDecoration(ImageDividerItemDecoration(
+                    addItemDecoration(TooltipDividerItemDecoration(
                             drawable = it,
                             drawOnLastItem = false,
                             paddingLeft = context.resources.getDimension(R.dimen.layout_lvl2).toInt(),

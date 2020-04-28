@@ -29,7 +29,7 @@
     <dimen name="tooltip_padding">0dp</dimen>
     <dimen name="tooltip_padding_top">24dp</dimen>
     <dimen name="tooltip_close_margin">17dp</dimen>
-    <dimen name="tooltip_close_size">30dp</dimen>
+    <dimen name="tooltip_close_size">16dp</dimen>
     <dimen name="tooltip_image_size">64dp</dimen>
     <dimen name="tooltip_divider_padding_left">109dp</dimen>
 
