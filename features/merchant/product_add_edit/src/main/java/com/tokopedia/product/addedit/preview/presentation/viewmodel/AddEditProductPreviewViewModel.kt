@@ -105,6 +105,8 @@ class AddEditProductPreviewViewModel @Inject constructor(
 
     var productDomain: Product = Product()
 
+    var hasOriginalVariantLevel: Boolean = false // indicating whether you can clear variant or not
+
     private val saveProductDraftResultMutableLiveData = MutableLiveData<Result<Long>>()
     val saveProductDraftResultLiveData: LiveData<Result<Long>> get() = saveProductDraftResultMutableLiveData
 
@@ -118,7 +120,6 @@ class AddEditProductPreviewViewModel @Inject constructor(
                         if (!isDuplicate) {
                             productInputModel.productId = it.data.productID.toLongOrZero()
                         }
-                        getVariantList(productInputModel.detailInputModel.categoryId)
 
                         // decrement wholesale min order by one because of > symbol
                         val initialWholeSaleList =  productInputModel.detailInputModel.wholesaleList
@@ -127,6 +128,8 @@ class AddEditProductPreviewViewModel @Inject constructor(
                         // reassign wholesale information with the actual wholesale values
                         productInputModel.detailInputModel.wholesaleList = actualWholeSaleList
 
+                        getVariantList(productInputModel.detailInputModel.categoryId)
+                        hasOriginalVariantLevel = checkOriginalVariantLevel(productInputModel)
                         productInputModel
                     }
                     is Fail -> ProductInputModel()
@@ -134,20 +137,23 @@ class AddEditProductPreviewViewModel @Inject constructor(
             }
             addSource(detailInputModel) {
                 getVariantList(it.categoryId)
-                productInputModel.value = productInputModel.value?.apply { this.detailInputModel = it }
+                productInputModel.value?.let { productInputModel ->
+                    productInputModel.detailInputModel = it
+                    this@AddEditProductPreviewViewModel.productInputModel.value = productInputModel
+                }
             }
             addSource(getProductDraftResult) {
                 productInputModel.value = when(it) {
                     is Success -> {
                         val productInputModel = mapDraftToProductInputModel(it.data)
                         getVariantList(productInputModel.detailInputModel.categoryId)
+                        hasOriginalVariantLevel = checkOriginalVariantLevel(productInputModel)
                         productInputModel
                     }
                     is Fail -> ProductInputModel()
                 }
             }
             addSource(productAddResult) {
-                getVariantList(it.detailInputModel.categoryId)
                 productInputModel.value = it
             }
         }
@@ -200,14 +206,11 @@ class AddEditProductPreviewViewModel @Inject constructor(
     }
 
     fun updateVariantInputModel(variantInputModel: ProductVariantInputModel) {
-        variantInputModel.isRemoveVariant = getIsRemoveVariant(variantInputModel.productVariant)
         productInputModel.value?.variantInputModel = variantInputModel
     }
 
     fun updateVariantAndOption(productVariant: ArrayList<ProductVariantCombinationViewModel>,
                                variantOptionParent: ArrayList<ProductVariantOptionParent>) {
-        productInputModel.value?.variantInputModel?.isRemoveVariant =
-                getIsRemoveVariant(productVariant)
         productInputModel.value?.variantInputModel?.productVariant =
                 mapProductVariant(productVariant, variantOptionParent)
         productInputModel.value?.variantInputModel?.variantOptionParent =
@@ -376,13 +379,17 @@ class AddEditProductPreviewViewModel @Inject constructor(
         }
     }
 
-    // isRemoveVariant used for indicating productVariant size is decreased when not in draft mode
-    private fun getIsRemoveVariant(productVariant: ArrayList<ProductVariantCombinationViewModel>): Boolean {
-        return if (draftId.isEmpty()) {
-            productVariant.size < productInputModel.value?.variantInputModel?.productVariant?.size ?: 0
-        } else {
-            false
+    // disable removing variant when in edit mode and if product have a variant
+    private fun checkOriginalVariantLevel(inputModel: ProductInputModel): Boolean {
+        val variantInputModel  = inputModel.variantInputModel
+        variantInputModel?.apply {
+            if (isEditing.value == true) {
+                if (productVariant.size > 0) {
+                    return variantOptionParent.getOrNull(0) != null
+                }
+            }
         }
+        return false
     }
 
 }

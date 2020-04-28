@@ -356,7 +356,7 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
                 } else {
                     viewModel.productInputModel.value?.let { productInputModel ->
                         startProductAddService(productInputModel)
-                        moveToManageProduct()
+                        activity?.finish()
                     }
                 }
             }
@@ -990,15 +990,17 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
                     put(AddEditProductUploadConstant.EXTRA_IS_OFFICIAL_STORE, false)
                     put(AddEditProductUploadConstant.EXTRA_DEFAULT_SKU, "")
                     put(AddEditProductUploadConstant.EXTRA_NEED_RETAIN_IMAGE, false)
-                    put(AddEditProductUploadConstant.EXTRA_HAS_ORIGINAL_VARIANT_LV1, true)
-                    put(AddEditProductUploadConstant.EXTRA_HAS_ORIGINAL_VARIANT_LV2, false)
                     put(AddEditProductUploadConstant.EXTRA_HAS_WHOLESALE, false)
-                    put(AddEditProductUploadConstant.EXTRA_IS_ADD, 1)
+                    put(AddEditProductUploadConstant.EXTRA_IS_ADD, viewModel.isAdding)
                 }
                 val intent = RouteManager.getIntent(it, ApplinkConstInternalMarketplace.PRODUCT_EDIT_VARIANT_DASHBOARD)
                 intent?.run {
                     putExtra(EXTRA_VARIANT_RESULT_CACHE_ID, cacheManager.id)
                     putExtra(AddEditProductUploadConstant.EXTRA_IS_USING_CACHE_MANAGER, true)
+                    putExtra(AddEditProductUploadConstant.EXTRA_HAS_ORIGINAL_VARIANT_LV1,
+                            viewModel.hasOriginalVariantLevel)
+                    putExtra(AddEditProductUploadConstant.EXTRA_HAS_ORIGINAL_VARIANT_LV2,
+                            viewModel.hasOriginalVariantLevel)
                     startActivityForResult(this, REQUEST_CODE_VARIANT_DIALOG_EDIT)
                 }
             }
@@ -1019,11 +1021,6 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
         }
         viewModel.productInputModel.value?.detailInputModel?.pictureList = newPictureList
         viewModel.productInputModel.value?.detailInputModel?.imageUrlOrPathList = imageUrlOrPathList
-    }
-
-    private fun moveToManageProduct() {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PRODUCT_MANAGE_LIST)
-        startActivity(intent)
     }
 
     private fun startProductAddService(productInputModel: ProductInputModel) {

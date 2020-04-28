@@ -106,7 +106,6 @@ class AddEditProductDescriptionFragment:
         const val MAX_DESCRIPTION_CHAR = 2000
         const val REQUEST_CODE_VARIANT = 0
         const val TYPE_IDR = 1
-        const val IS_ADD = 0
         const val REQUEST_CODE_DESCRIPTION = 0x03
         const val VIDEO_REQUEST_DELAY = 250L
     }
@@ -545,15 +544,15 @@ class AddEditProductDescriptionFragment:
                 put(EXTRA_IS_OFFICIAL_STORE, false)
                 put(EXTRA_DEFAULT_SKU, "")
                 put(EXTRA_NEED_RETAIN_IMAGE, false)
-                put(EXTRA_HAS_ORIGINAL_VARIANT_LV1, true)
-                put(EXTRA_HAS_ORIGINAL_VARIANT_LV2, false)
                 put(EXTRA_HAS_WHOLESALE, false)
-                put(EXTRA_IS_ADD, IS_ADD)
+                put(EXTRA_IS_ADD, descriptionViewModel.isAddMode)
             }
             val intent = RouteManager.getIntent(it, ApplinkConstInternalMarketplace.PRODUCT_EDIT_VARIANT_DASHBOARD)
             intent?.run {
                 putExtra(EXTRA_VARIANT_RESULT_CACHE_ID, cacheManager.id)
                 putExtra(EXTRA_IS_USING_CACHE_MANAGER, true)
+                putExtra(EXTRA_HAS_ORIGINAL_VARIANT_LV1, descriptionViewModel.checkOriginalVariantLevel())
+                putExtra(EXTRA_HAS_ORIGINAL_VARIANT_LV2, descriptionViewModel.checkOriginalVariantLevel())
                 startActivityForResult(this, REQUEST_CODE_VARIANT)
             }
         }
