@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="@dimen/dp_8"
+    android:paddingBottom="@dimen/dp_8">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/searchBroadMatchTitle"
+        android:layout_width="@dimen/dp_0"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginEnd="@dimen/dp_12"
+        android:layout_marginRight="@dimen/dp_12"
+        android:maxLines="2"
+        android:text="@string/broad_match_title"
+        android:textColor="@color/charcoal_grey_96"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/searchBroadMatchSeeMore"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="heading_4"
+        app:typographyWeight="bold" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/searchBroadMatchSeeMore"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        android:text="@string/broad_match_see_more"
+        android:textColor="@color/green_tokopedia"
+        app:layout_constraintBottom_toBottomOf="@id/searchBroadMatchTitle"
+        app:layout_constraintLeft_toRightOf="@id/searchBroadMatchTitle"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/searchBroadMatchTitle"
+        app:typographyType="body_3"
+        app:typographyWeight="bold" />
+
+    <com.tokopedia.carouselproductcard.CarouselProductCardView
+        android:id="@+id/searchBroadMatchList"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_16"
+        app:layout_constraintTop_toBottomOf="@+id/searchBroadMatchTitle"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

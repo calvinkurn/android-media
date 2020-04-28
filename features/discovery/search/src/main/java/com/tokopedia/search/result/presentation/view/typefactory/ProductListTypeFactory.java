@@ -5,6 +5,7 @@ import android.view.View;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.search.result.presentation.model.BannedProductsEmptySearchViewModel;
 import com.tokopedia.search.result.presentation.model.BannedProductsTickerViewModel;
+import com.tokopedia.search.result.presentation.model.BroadMatchViewModel;
 import com.tokopedia.search.result.presentation.model.CpmViewModel;
 import com.tokopedia.search.result.presentation.model.EmptySearchProductViewModel;
 import com.tokopedia.search.result.presentation.model.GlobalNavViewModel;
@@ -43,6 +44,8 @@ public interface ProductListTypeFactory {
     int type(BannedProductsTickerViewModel bannedProductsTickerViewModel);
 
     int type(EmptySearchProductViewModel emptySearchViewModel);
+
+    int type(BroadMatchViewModel broadMatchViewModel);
 
     int getRecyclerViewItem();
 
