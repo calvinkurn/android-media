@@ -89,6 +89,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
     private var attachedProductAdapter: TalkReplyAttachedProductAdapter? = null
     private var textLimit = 0
     private var talkPerformanceMonitoringListener: TalkPerformanceMonitoringListener? = null
+    private var isMyShop = false
 
     override fun getScreenName(): String {
         return ""
@@ -606,6 +607,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
             shopId = it.getString(SHOP_ID, "")
             productId = it.getString(PRODUCT_ID, "")
         }
+        isMyShop = isMyShop()
     }
 
     private fun resetTextBox() {
@@ -619,5 +621,9 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
 
     private fun updateTextLimit(textLimit: Int) {
         this.textLimit = textLimit
+    }
+
+    private fun isMyShop() : Boolean {
+        return userSession.shopId == shopId
     }
 }

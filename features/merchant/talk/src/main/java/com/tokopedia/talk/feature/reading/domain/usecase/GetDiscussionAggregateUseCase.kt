@@ -15,7 +15,7 @@ class GetDiscussionAggregateUseCase @Inject constructor(graphqlRepository: Graph
             val productID = "\$productID"
             val shopID = "\$shopID"
             """
-            query discussionAggregateByProductID($productID: String!, $shopID: String!) {
+            query discussionAggregateByProductID($productID: String!, $shopID: String) {
                 discussionAggregateByProductID(productID: $productID, shopID: $shopID) {
                     productName
                     thumbnail

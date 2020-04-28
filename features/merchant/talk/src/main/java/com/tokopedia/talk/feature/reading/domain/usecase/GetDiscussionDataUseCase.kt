@@ -25,7 +25,7 @@ class GetDiscussionDataUseCase @Inject constructor(graphqlRepository: GraphqlRep
             val sortBy = "\$sortBy"
             val category = "\$category"
             """
-            query discussionDataByProductID($productID: String!, $shopID: String!, $page: Int!, $limit: Int!, $sortBy: String, $category: String) {
+            query discussionDataByProductID($productID: String!, $shopID: String, $page: Int!, $limit: Int!, $sortBy: String, $category: String) {
               discussionDataByProductID(productID: $productID, shopID: $shopID, page: $page, limit: $limit, sortBy: $sortBy, category: $category) {
                 hasNext
                 totalQuestion
