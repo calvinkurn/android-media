@@ -16,7 +16,7 @@
         android:paddingBottom="@dimen/dp_8">
 
 
-        <com.tokopedia.design.image.SquareImageView
+        <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/imageCatalog"
             android:layout_width="@dimen/dp_96"
             android:layout_height="@dimen/dp_96"
@@ -25,6 +25,8 @@
             android:layout_marginTop="@dimen/dp_8"
             android:adjustViewBounds="true"
             android:scaleType="centerCrop"
+            app:unify_image_corner_radius="0"
+            app:unify_image_type="rect"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"

@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.tokopedia.kategori.model.CategoryAllList
 import com.tokopedia.kategori.usecase.AllCategoryQueryUseCase
+import com.tokopedia.kategori.view.PerformanceMonitoringListener
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -17,7 +18,9 @@ class CategoryLevelOneViewModel @Inject constructor(private var getCategoryListU
     private var categoryDepth = 2
     private val categoryListLiveData = MutableLiveData<Result<CategoryAllList>>()
 
-    fun bound() {
+    fun bound(performanceMonitoringListener: PerformanceMonitoringListener?) {
+        performanceMonitoringListener?.stopPreparePagePerformanceMonitoring()
+        performanceMonitoringListener?.startNetworkRequestPerformanceMonitoring()
         getCategoryListUseCase.execute(getCategoryListUseCase.createRequestParams(categoryDepth, true), object : Subscriber<CategoryAllList>() {
             override fun onCompleted() {
             }
@@ -27,6 +30,8 @@ class CategoryLevelOneViewModel @Inject constructor(private var getCategoryListU
             }
 
             override fun onNext(categoryAllList: CategoryAllList?) {
+                performanceMonitoringListener?.stopNetworkRequestPerformanceMonitoring()
+                performanceMonitoringListener?.startRenderPerformanceMonitoring()
                 categoryListLiveData.value = Success(categoryAllList as CategoryAllList)
             }
         })

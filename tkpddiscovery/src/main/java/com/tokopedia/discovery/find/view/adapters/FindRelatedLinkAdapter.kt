@@ -5,7 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.discovery.R
-import com.tokopedia.discovery.categoryrevamp.adapters.QuickFilterAdapter
+import com.tokopedia.common_category.adapter.QuickFilterAdapter
 import com.tokopedia.discovery.find.data.model.RelatedLinkData
 import com.tokopedia.unifyprinciples.Typography
 

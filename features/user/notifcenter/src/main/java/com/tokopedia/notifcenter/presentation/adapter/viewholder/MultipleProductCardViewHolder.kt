@@ -26,7 +26,7 @@ class MultipleProductCardViewHolder(
         itemView: View,
         private val sourceView: SourceMultipleProductView,
         val listener: NotificationItemListener
-): AbstractViewHolder<MultipleProductCardViewBean>(itemView) {
+) : AbstractViewHolder<MultipleProductCardViewBean>(itemView) {
 
     private val thumbnail: ImageView = itemView.findViewById(R.id.iv_thumbnail)
     private val productName: TextView = itemView.findViewById(R.id.tv_product_name)
