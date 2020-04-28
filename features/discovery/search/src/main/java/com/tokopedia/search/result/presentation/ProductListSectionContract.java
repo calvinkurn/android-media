@@ -206,5 +206,7 @@ public interface ProductListSectionContract {
         void onProductImpressed(ProductItemViewModel item, int adapterPosition);
 
         void onProductClick(ProductItemViewModel item, int adapterPosition);
+
+        boolean isTrackingViewPortEnabled();
     }
 }

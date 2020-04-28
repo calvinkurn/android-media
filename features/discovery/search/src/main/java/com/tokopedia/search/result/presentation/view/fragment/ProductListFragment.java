@@ -557,6 +557,10 @@ public class ProductListFragment
     public void addProductList(List<Visitable> list) {
         isListEmpty = false;
 
+        if (!presenter.isTrackingViewPortEnabled()) {
+            sendProductImpressionTrackingEvent(list);
+        }
+
         adapter.appendItems(list);
     }
 
@@ -586,6 +590,30 @@ public class ProductListFragment
                         recyclerView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
                     }
                 });
+    }
+
+    private void sendProductImpressionTrackingEvent(List<Visitable> list) {
+        String userId = getUserId();
+        String searchRef = getSearchRef();
+        List<Object> dataLayerList = new ArrayList<>();
+        List<ProductItemViewModel> productItemViewModels = new ArrayList<>();
+        for (Visitable object : list) {
+            if (object instanceof ProductItemViewModel) {
+                ProductItemViewModel item = (ProductItemViewModel) object;
+                if (!item.isTopAds()) {
+                    String filterSortParams
+                            = SearchTracking.generateFilterAndSortEventLabel(getSelectedFilter(), getSelectedSort());
+                    dataLayerList.add(item.getProductAsObjectDataLayer(userId, filterSortParams, searchRef));
+                    productItemViewModels.add(item);
+                }
+            }
+        }
+        if(irisSession != null){
+            SearchTracking.eventImpressionSearchResultProduct(trackingQueue, dataLayerList, productItemViewModels, getQueryKey(),
+                    irisSession.getSessionId());
+        }else {
+            SearchTracking.eventImpressionSearchResultProduct(trackingQueue, dataLayerList, productItemViewModels, getQueryKey(), "");
+        }
     }
 
     @Override
