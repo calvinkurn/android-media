@@ -15,6 +15,7 @@ import timber.log.Timber;
 
 public class SessionActivityLifecycleCallbacks implements Application.ActivityLifecycleCallbacks {
 
+    private static final String TIME_FORMAT = "%.2f";
     private static final long INTERVAL_SESSION = TimeUnit.MINUTES.toMillis(1);
     private long lastSessionMillis = -1;
     private long sessionTime = 0;
@@ -31,12 +32,12 @@ public class SessionActivityLifecycleCallbacks implements Application.ActivityLi
 
     @Override
     public void onActivityResumed(Activity activity) {
-        long currentMillis = System.currentTimeMillis();
-        long minSessionTimeMillis = currentMillis - INTERVAL_SESSION;
-        if (lastSessionMillis < minSessionTimeMillis) {
-            Timber.w("P1#ACTIVE_SESSION#active;time=%s;diff=%s", ++sessionTime, getDiffDuration(lastSessionMillis, currentMillis));
-            lastSessionMillis = System.currentTimeMillis();
-        }
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                logSession(activity.getClass().getSimpleName());
+            }
+        }).start();
     }
 
     @Override
@@ -59,12 +60,21 @@ public class SessionActivityLifecycleCallbacks implements Application.ActivityLi
         // No-op
     }
 
+    private void logSession(String activityName) {
+        long currentMillis = System.currentTimeMillis();
+        long minSessionTimeMillis = currentMillis - INTERVAL_SESSION;
+        if (lastSessionMillis < minSessionTimeMillis) {
+            Timber.w("P1#ACTIVE_SESSION#active;time=%s;diff=%s;cls_name='%s'", ++sessionTime, getDiffDuration(lastSessionMillis, currentMillis), activityName);
+            lastSessionMillis = System.currentTimeMillis();
+        }
+    }
+
     private String getDiffDuration(long startDuration, long stopDuration) {
         float diffTimeInMillis = 0;
         if (startDuration > 0 && startDuration < stopDuration) {
             diffTimeInMillis = (stopDuration - startDuration);
             diffTimeInMillis /= INTERVAL_SESSION;
         }
-        return String.format(Locale.ENGLISH, "%.2f", diffTimeInMillis);
+        return String.format(Locale.ENGLISH, TIME_FORMAT, diffTimeInMillis);
     }
 }
