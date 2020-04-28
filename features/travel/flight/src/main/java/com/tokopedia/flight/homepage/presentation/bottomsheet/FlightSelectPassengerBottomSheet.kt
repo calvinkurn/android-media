@@ -63,6 +63,7 @@ class FlightSelectPassengerBottomSheet : BottomSheetUnify() {
                 if (tempPassengerModel.adult <= FlightSelectPassengerValidator.MAX_INFANT_VALUE) {
                     qtyFlightPassengerInfant.maxValue = tempPassengerModel.adult
                 }
+                setupAdultAndChildQuantity(tempPassengerModel)
                 passengerModel = tempPassengerModel
             } else {
                 qtyFlightPassengerAdult.setValue(qtyFlightPassengerAdult.getValue() - 1)
@@ -77,6 +78,7 @@ class FlightSelectPassengerBottomSheet : BottomSheetUnify() {
                 if (qtyFlightPassengerInfant.getValue() == qtyFlightPassengerInfant.maxValue) {
                     qtyFlightPassengerInfant.addButton.isEnabled = false
                 }
+                setupAdultAndChildQuantity(tempPassengerModel)
                 passengerModel = tempPassengerModel
             } else {
                 qtyFlightPassengerAdult.setValue(qtyFlightPassengerAdult.getValue() + 1)
@@ -87,6 +89,7 @@ class FlightSelectPassengerBottomSheet : BottomSheetUnify() {
             val tempPassengerModel = clonePassengerModel()
             tempPassengerModel.children = qtyFlightPassengerChild.getValue()
             if (validatePassenger(tempPassengerModel)) {
+                setupAdultAndChildQuantity(tempPassengerModel)
                 passengerModel = tempPassengerModel
             } else {
                 qtyFlightPassengerChild.setValue(qtyFlightPassengerChild.getValue() - 1)
@@ -97,6 +100,7 @@ class FlightSelectPassengerBottomSheet : BottomSheetUnify() {
             val tempPassengerModel = clonePassengerModel()
             tempPassengerModel.children = qtyFlightPassengerChild.getValue()
             if (validatePassenger(tempPassengerModel)) {
+                setupAdultAndChildQuantity(tempPassengerModel)
                 passengerModel = tempPassengerModel
             } else {
                 qtyFlightPassengerChild.setValue(qtyFlightPassengerChild.getValue() + 1)
@@ -161,6 +165,18 @@ class FlightSelectPassengerBottomSheet : BottomSheetUnify() {
         }
 
         return isValid
+    }
+
+    private fun setupAdultAndChildQuantity(passengers: FlightPassengerModel) {
+        val total = passengers.adult + passengers.children
+
+        if (total >= FlightSelectPassengerValidator.MAX_PASSENGER_VALUE) {
+            qtyFlightPassengerAdult.addButton.isEnabled = false
+            qtyFlightPassengerChild.addButton.isEnabled = false
+        } else {
+            qtyFlightPassengerAdult.addButton.isEnabled = true
+            qtyFlightPassengerChild.addButton.isEnabled = true
+        }
     }
 
     interface Listener {
