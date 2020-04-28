@@ -243,7 +243,7 @@ public class DeveloperOptionActivity extends BaseActivity {
         editTextChangeVersionCode = findViewById(R.id.et_change_version_code);
         changeVersionButton = findViewById(R.id.btn_change_version);
         editTextChangeVersionName.setText(GlobalConfig.VERSION_NAME);
-        editTextChangeVersionCode.setText(GlobalConfig.VERSION_CODE);
+        editTextChangeVersionCode.setText(String.valueOf(GlobalConfig.VERSION_CODE));
 
         ipGroupChat = findViewById(R.id.ip_groupchat);
         saveIpGroupChat = findViewById(R.id.ip_groupchat_save);
