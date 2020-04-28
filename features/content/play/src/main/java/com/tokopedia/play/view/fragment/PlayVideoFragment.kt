@@ -76,8 +76,6 @@ class PlayVideoFragment : BaseDaggerFragment(), PlayVideoViewInitializer {
 
     private lateinit var layoutManager: PlayVideoLayoutManager
 
-    private var channelId: String = ""
-
     private lateinit var containerVideo: RoundedConstraintLayout
 
     override fun getScreenName(): String = "Play Video"
@@ -97,7 +95,6 @@ class PlayVideoFragment : BaseDaggerFragment(), PlayVideoViewInitializer {
         super.onCreate(savedInstanceState)
         playViewModel = ViewModelProvider(requireParentFragment(), viewModelFactory).get(PlayViewModel::class.java)
         viewModel = ViewModelProvider(this, viewModelFactory).get(PlayVideoViewModel::class.java)
-        channelId  = arguments?.getString(PLAY_KEY_CHANNEL_ID).orEmpty()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -112,7 +109,7 @@ class PlayVideoFragment : BaseDaggerFragment(), PlayVideoViewInitializer {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        observeVOD()
+        observeVideoPlayer()
         observeVideoProperty()
         observeOneTapOnboarding()
         observeBottomInsetsState()
@@ -127,7 +124,7 @@ class PlayVideoFragment : BaseDaggerFragment(), PlayVideoViewInitializer {
     }
 
     //region observe
-    private fun observeVOD() {
+    private fun observeVideoPlayer() {
         playViewModel.observableVideoPlayer.observe(viewLifecycleOwner, Observer {
             scope.launch {
                 EventBusFactory.get(viewLifecycleOwner)
@@ -212,12 +209,6 @@ class PlayVideoFragment : BaseDaggerFragment(), PlayVideoViewInitializer {
         return OverlayVideoComponent(container, EventBusFactory.get(viewLifecycleOwner), scope, dispatchers)
                 .getContainerId()
     }
-
-    override fun onInitYouTube(container: ViewGroup): Int {
-        return YouTubeComponent(container, childFragmentManager, EventBusFactory.get(viewLifecycleOwner), scope, dispatchers)
-                .getContainerId()
-    }
-
     //endregion
 
     private fun sendInitState() {

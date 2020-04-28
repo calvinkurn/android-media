@@ -19,14 +19,12 @@ class PlayVideoPortraitManager(
 ) : PlayVideoLayoutManager {
 
     @IdRes private val videoComponentId: Int = viewInitializer.onInitVideo(container)
-    @IdRes private val youTubeComponentId: Int = viewInitializer.onInitYouTube(container)
     @IdRes private val videoLoadingComponentId: Int = viewInitializer.onInitVideoLoading(container)
     @IdRes private val oneTapComponentId: Int = viewInitializer.onInitOneTap(container)
     @IdRes private val overlayVideoComponentId: Int = viewInitializer.onInitOverlayVideo(container)
 
     override fun layoutView(view: View) {
         layoutVideo(container = view, id = videoComponentId)
-        layoutYouTube(container = view, id = youTubeComponentId)
         layoutVideoLoading(container = view, id = videoLoadingComponentId)
         layoutOneTap(container = view, id = oneTapComponentId)
         layoutOverlayVideo(container = view, id = overlayVideoComponentId)
@@ -41,15 +39,6 @@ class PlayVideoPortraitManager(
     }
 
     private fun layoutVideo(container: View, @IdRes id: Int) {
-        container.changeConstraint {
-            connect(id, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START)
-            connect(id, ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END)
-            connect(id, ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM)
-            connect(id, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP)
-        }
-    }
-
-    private fun layoutYouTube(container: View, @IdRes id: Int) {
         container.changeConstraint {
             connect(id, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START)
             connect(id, ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END)

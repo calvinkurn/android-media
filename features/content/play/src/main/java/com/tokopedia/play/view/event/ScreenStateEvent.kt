@@ -1,13 +1,8 @@
 package com.tokopedia.play.view.event
 
 import android.view.View
-import com.google.android.exoplayer2.ExoPlayer
 import com.tokopedia.play.component.ComponentEvent
-import com.tokopedia.play.view.type.BottomInsetsState
-import com.tokopedia.play.view.type.BottomInsetsType
-import com.tokopedia.play.view.type.PlayRoomEvent
-import com.tokopedia.play.view.type.ScreenOrientation
-import com.tokopedia.play.view.type.immersive.ImmersiveAction
+import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.*
 import com.tokopedia.play.view.wrapper.PlayResult
 

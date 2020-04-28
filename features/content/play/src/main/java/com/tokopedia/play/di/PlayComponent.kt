@@ -25,5 +25,7 @@ interface PlayComponent {
 
     fun inject(playBottomSheetFragment: PlayBottomSheetFragment)
 
+    fun inject(playYouTubeFragment: PlayYouTubeFragment)
+
     fun inject(playActivity: PlayActivity)
 }

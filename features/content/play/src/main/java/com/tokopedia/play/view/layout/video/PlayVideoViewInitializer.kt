@@ -12,9 +12,4 @@ interface PlayVideoViewInitializer {
     @IdRes fun onInitVideoLoading(container: ViewGroup): Int
     @IdRes fun onInitOneTap(container: ViewGroup): Int
     @IdRes fun onInitOverlayVideo(container: ViewGroup): Int
-
-    /**
-     * YouTube
-     */
-    @IdRes fun onInitYouTube(container: ViewGroup): Int
 }

@@ -400,7 +400,7 @@ class PlayViewModel @Inject constructor(
         } catch (e: Exception) {}
     }
 
-    private fun playVideoStream(channel: Channel) {
+    private fun playGeneralVideoStream(channel: Channel) {
         if (channel.isActive) initiateVideo(channel)
     }
 
@@ -426,8 +426,6 @@ class PlayViewModel @Inject constructor(
 
             startWebSocket(channelId, channel.gcToken, channel.settings)
 
-            playVideoStream(channel)
-
             val completeInfoUiModel = PlayUiMapper.createCompleteInfoModel(
                     channel = channel,
                     partnerName = _observablePartnerInfo.value?.name.orEmpty(),
@@ -435,13 +433,15 @@ class PlayViewModel @Inject constructor(
                     exoPlayer = playVideoManager.videoPlayer
             )
 
+            if (completeInfoUiModel.videoPlayer.isGeneral) playGeneralVideoStream(channel)
+
             _observableGetChannelInfo.value = Success(completeInfoUiModel.channelInfo)
             _observableTotalViews.value = completeInfoUiModel.totalView
             _observablePinnedMessage.value = completeInfoUiModel.pinnedMessage
             _observablePinnedProduct.value = completeInfoUiModel.pinnedProduct
             _observableQuickReply.value = completeInfoUiModel.quickReply
-            _observableVideoStream.value = completeInfoUiModel.videoStream
             _observableVideoPlayer.value = completeInfoUiModel.videoPlayer
+            _observableVideoStream.value = completeInfoUiModel.videoStream
             _observableEvent.value = completeInfoUiModel.event
             _observablePartnerInfo.value = getPartnerInfo(completeInfoUiModel.channelInfo)
         }) {

@@ -21,6 +21,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.invisible
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.ERR_STATE_SOCKET
 import com.tokopedia.play.ERR_STATE_VIDEO
@@ -34,7 +35,6 @@ import com.tokopedia.play.di.DaggerPlayComponent
 import com.tokopedia.play.di.PlayModule
 import com.tokopedia.play.extensions.isAnyBottomSheetsShown
 import com.tokopedia.play.extensions.isKeyboardShown
-import com.tokopedia.play.util.PlayFullScreenHelper
 import com.tokopedia.play.util.PlaySensorOrientationManager
 import com.tokopedia.play.util.keyboard.KeyboardWatcher
 import com.tokopedia.play.view.contract.PlayNewChannelInteractor
@@ -42,9 +42,12 @@ import com.tokopedia.play.view.layout.parent.PlayParentLayoutManager
 import com.tokopedia.play.view.layout.parent.PlayParentLayoutManagerImpl
 import com.tokopedia.play.view.type.ScreenOrientation
 import com.tokopedia.play.view.type.VideoOrientation
+import com.tokopedia.play.view.uimodel.VideoPlayerUiModel
 import com.tokopedia.play.view.viewmodel.PlayViewModel
+import com.tokopedia.play.view.wrapper.GlobalErrorCodeWrapper
 import com.tokopedia.play_common.state.PlayVideoState
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_play.*
@@ -62,7 +65,8 @@ class PlayFragment : BaseDaggerFragment(), PlaySensorOrientationManager.Orientat
 
         private const val VIDEO_FRAGMENT_TAG = "FRAGMENT_VIDEO"
         private const val INTERACTION_FRAGMENT_TAG = "FRAGMENT_INTERACTION"
-        private const val BOTTOM_SHEET_FRAGMENT_TAG = "FRAGMENT_INTERACTION"
+        private const val BOTTOM_SHEET_FRAGMENT_TAG = "FRAGMENT_BOTTOM_SHEET"
+        private const val YOUTUBE_FRAGMENT_TAG = "FRAGMENT_YOUTUBE"
         private const val ERROR_FRAGMENT_TAG = "FRAGMENT_ERROR"
 
         fun newInstance(channelId: String?): PlayFragment {
@@ -98,6 +102,7 @@ class PlayFragment : BaseDaggerFragment(), PlaySensorOrientationManager.Orientat
     private lateinit var flVideo: FrameLayout
     private lateinit var flInteraction: FrameLayout
     private lateinit var flBottomSheet: FrameLayout
+    private lateinit var flYouTube: FrameLayout
     private lateinit var flGlobalError: FrameLayout
 
     private lateinit var layoutManager: PlayParentLayoutManager
@@ -170,7 +175,13 @@ class PlayFragment : BaseDaggerFragment(), PlaySensorOrientationManager.Orientat
 
         if (childFragmentManager.findFragmentByTag(BOTTOM_SHEET_FRAGMENT_TAG) == null) {
             childFragmentManager.beginTransaction()
-                    .replace(fl_bottom_sheet.id, PlayBottomSheetFragment.newInstance(channelId), BOTTOM_SHEET_FRAGMENT_TAG)
+                    .replace(flBottomSheet.id, PlayBottomSheetFragment.newInstance(channelId), BOTTOM_SHEET_FRAGMENT_TAG)
+                    .commit()
+        }
+
+        if (childFragmentManager.findFragmentByTag(YOUTUBE_FRAGMENT_TAG) == null) {
+            childFragmentManager.beginTransaction()
+                    .replace(flYouTube.id, PlayYouTubeFragment.newInstance(), YOUTUBE_FRAGMENT_TAG)
                     .commit()
         }
 
@@ -237,11 +248,11 @@ class PlayFragment : BaseDaggerFragment(), PlaySensorOrientationManager.Orientat
     }
 
     fun onBottomInsetsViewShown(bottomMostBounds: Int) {
-        layoutManager.onBottomInsetsShown(requireView(), bottomMostBounds, playViewModel.videoOrientation)
+        layoutManager.onBottomInsetsShown(requireView(), bottomMostBounds, playViewModel.videoPlayer, playViewModel.videoOrientation)
     }
 
     fun onBottomInsetsViewHidden() {
-        layoutManager.onBottomInsetsHidden(requireView())
+        layoutManager.onBottomInsetsHidden(requireView(), playViewModel.videoPlayer)
     }
 
     fun setResultBeforeFinish() {
@@ -251,11 +262,11 @@ class PlayFragment : BaseDaggerFragment(), PlaySensorOrientationManager.Orientat
         })
     }
 
-    fun setVideoTopBounds(videoOrientation: VideoOrientation, topBounds: Int) {
+    fun setVideoTopBounds(videoPlayer: VideoPlayerUiModel, videoOrientation: VideoOrientation, topBounds: Int) {
         if (this.topBounds == null && topBounds > 0) {
             this.topBounds = topBounds
         }
-        this.topBounds?.let { layoutManager.onVideoTopBoundsChanged(requireView(), videoOrientation, it) }
+        this.topBounds?.let { layoutManager.onVideoTopBoundsChanged(requireView(), videoPlayer, videoOrientation, it) }
     }
 
     /**
@@ -298,6 +309,7 @@ class PlayFragment : BaseDaggerFragment(), PlaySensorOrientationManager.Orientat
             flVideo = findViewById(R.id.fl_video)
             flInteraction = findViewById(R.id.fl_interaction)
             flBottomSheet = findViewById(R.id.fl_bottom_sheet)
+            flYouTube = findViewById(R.id.fl_youtube)
             flGlobalError = findViewById(R.id.fl_global_error)
         }
 
@@ -308,10 +320,11 @@ class PlayFragment : BaseDaggerFragment(), PlaySensorOrientationManager.Orientat
                 flVideo = flVideo,
                 flInteraction = flInteraction,
                 flBottomSheet = flBottomSheet,
+                flYouTube = flYouTube,
                 flGlobalError = flGlobalError
         )
 
-        topBounds?.let { setVideoTopBounds(playViewModel.videoOrientation, it) }
+        topBounds?.let { setVideoTopBounds(playViewModel.videoPlayer, playViewModel.videoOrientation, it) }
     }
 
     private fun setupView(view: View) {
@@ -340,10 +353,12 @@ class PlayFragment : BaseDaggerFragment(), PlaySensorOrientationManager.Orientat
     }
 
     private fun observeGetChannelInfo() {
-        playViewModel.observableGetChannelInfo.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is Success ->
-                    PlayAnalytics.sendScreen(channelId, playViewModel.channelType)
+        playViewModel.observableGetChannelInfo.observe(viewLifecycleOwner, Observer { result ->
+            when (result) {
+                is Success -> PlayAnalytics.sendScreen(channelId, playViewModel.channelType)
+                is Fail -> result.throwable.message?.let {
+                    if (GlobalErrorCodeWrapper.wrap(it) != GlobalErrorCodeWrapper.Unknown) flGlobalError.show()
+                }
             }
         })
     }

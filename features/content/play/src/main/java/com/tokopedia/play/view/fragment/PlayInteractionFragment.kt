@@ -203,7 +203,7 @@ class PlayInteractionFragment :
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        observeVOD()
+        observeVideoPlayer()
         observeVideoProperty()
         observeTitleChannel()
         observeQuickReply()
@@ -285,7 +285,7 @@ class PlayInteractionFragment :
     }
 
     //region observe
-    private fun observeVOD() {
+    private fun observeVideoPlayer() {
         playViewModel.observableVideoPlayer.observe(viewLifecycleOwner, Observer {
             scope.launch {
                 EventBusFactory.get(viewLifecycleOwner)
@@ -329,7 +329,7 @@ class PlayInteractionFragment :
         playViewModel.observableVideoStream.observe(viewLifecycleOwner, Observer {
             layoutManager.onVideoOrientationChanged(container, it.orientation)
             triggerImmersive(false)
-            playFragment.setVideoTopBounds(it.orientation, layoutManager.getVideoTopBounds(container, it.orientation))
+            playFragment.setVideoTopBounds(playViewModel.videoPlayer, it.orientation, layoutManager.getVideoTopBounds(container, it.orientation))
 
             setVideoStream(it)
         })
