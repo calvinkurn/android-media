@@ -48,29 +48,29 @@
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/emptyState_reviewDetail"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/spacing_lvl4"
-                android:orientation="vertical"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/rvRatingDetail">
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/noReviewsYetDetail"
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:gravity="center"
                     android:text="@string/no_reviews_yet"
+                    android:gravity="center"
+                    android:textColor="@color/clr_f531353b"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
                     app:typographyType="heading_2"
                     app:typographyWeight="bold" />
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/noReviewsYetContentDetail"
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/spacing_lvl4"
                     android:gravity="center"
