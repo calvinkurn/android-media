@@ -1,4 +1,4 @@
-package com.tokopedia.vouchercreation.voucherlist.view.widget
+package com.tokopedia.vouchercreation.voucherlist.view.widget.sharebottomsheet
 
 import android.view.LayoutInflater
 import android.view.View
@@ -9,7 +9,6 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.voucherlist.model.ShareVoucherUiModel
 import com.tokopedia.vouchercreation.voucherlist.view.adapter.ShareVoucherAdapter
-import com.tokopedia.vouchercreation.voucherlist.view.widget.sharebottomsheet.SocmedType
 import kotlinx.android.synthetic.main.bottomsheet_mvc_share_voucher.view.*
 
 /**

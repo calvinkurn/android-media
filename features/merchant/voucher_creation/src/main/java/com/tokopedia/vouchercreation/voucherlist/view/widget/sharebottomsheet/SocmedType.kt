@@ -6,6 +6,8 @@ import androidx.annotation.IntDef
  * Created By @ilhamsuaib on 28/04/20
  */
 
+@MustBeDocumented
+@Retention(AnnotationRetention.SOURCE)
 @IntDef(
         SocmedType.COPY_LINK, SocmedType.INSTAGRAM, SocmedType.FACEBOOK,
         SocmedType.FACEBOOK_MESSENGER, SocmedType.WHATSAPP, SocmedType.LINE,
