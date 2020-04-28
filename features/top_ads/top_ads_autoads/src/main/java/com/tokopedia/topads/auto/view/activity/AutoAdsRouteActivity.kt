@@ -5,14 +5,11 @@ import androidx.lifecycle.ViewModelProviders
 import android.content.Context
 import android.content.Intent
 import android.content.pm.ActivityInfo
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import androidx.fragment.app.Fragment
-import com.tokopedia.config.GlobalConfig
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.applink.AppUtil
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
@@ -25,7 +22,6 @@ import com.tokopedia.topads.auto.view.fragment.DailyBudgetFragment
 import com.tokopedia.topads.auto.view.viewmodel.TopAdsInfoViewModel
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.topads.common.constant.TopAdsAddingOption
-import com.tokopedia.topads.common.data.util.ApplinkUtil
 import javax.inject.Inject
 
 class AutoAdsRouteActivity : AutoAdsBaseActivity() {
@@ -95,7 +91,8 @@ class AutoAdsRouteActivity : AutoAdsBaseActivity() {
     }
 
     private fun noAds() {
-        startActivity(Intent(this@AutoAdsRouteActivity, StartAutoAdsActivity::class.java))
+        startActivity(RouteManager.getIntent(this@AutoAdsRouteActivity, ApplinkConstInternalTopAds.TOPADS_CREATE_ADS))
+
     }
 
     private fun manualAds() {

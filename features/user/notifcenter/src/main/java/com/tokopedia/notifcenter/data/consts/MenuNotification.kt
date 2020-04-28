@@ -5,14 +5,14 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.notifcenter.GlobalNavConstant.*
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.data.model.DrawerNotification
-import com.tokopedia.notifcenter.data.viewbean.PurchaseNotificationViewBean
-import com.tokopedia.notifcenter.data.viewbean.SaleNotificationViewBean
+import com.tokopedia.notifcenter.data.viewbean.BuyerNotificationViewBean
+import com.tokopedia.notifcenter.data.viewbean.SellerNotificationViewBean
 
 private const val EMPTY_ICON = 0
 
-fun Fragment.buyerMenu(): List<PurchaseNotificationViewBean> {
-    val menus = mutableListOf<PurchaseNotificationViewBean>()
-    val item = PurchaseNotificationViewBean()
+fun Fragment.buyerMenu(): List<BuyerNotificationViewBean> {
+    val menus = mutableListOf<BuyerNotificationViewBean>()
+    val item = BuyerNotificationViewBean()
     val itemChild = listOf(
             DrawerNotification.ChildDrawerNotification(
                     MENUNGGU_PEMBAYARAN,
@@ -48,9 +48,9 @@ fun Fragment.buyerMenu(): List<PurchaseNotificationViewBean> {
     return menus
 }
 
-fun Fragment.sellerMenu(): List<SaleNotificationViewBean> {
-    val menus = mutableListOf<SaleNotificationViewBean>()
-    val item = SaleNotificationViewBean()
+fun Fragment.sellerMenu(): List<SellerNotificationViewBean> {
+    val menus = mutableListOf<SellerNotificationViewBean>()
+    val item = SellerNotificationViewBean()
     val itemChild = listOf(
             DrawerNotification.ChildDrawerNotification(
                     MENUNGGU_PEMBAYARAN,
@@ -80,7 +80,7 @@ fun Fragment.sellerMenu(): List<SaleNotificationViewBean> {
     )
 
     item.id = PENJUALAN
-    item.title = getString(R.string.penjualan)
+    item.title = context?.getString(R.string.penjualan)
     item.childs = itemChild
     menus.add(item)
     return menus

@@ -37,9 +37,10 @@ open class RechargeGeneralProductInput (
         var dataCollections: List<CatalogProductInput.DataCollection> = listOf(),
         @SerializedName("validations")
         @Expose
-        var validations: List<CatalogProductInput.Validation> = listOf(),
+        val validations: List<CatalogProductInput.Validation> = listOf(),
         var value: String = "",
-        var selectedProductId: String = ""
+        var selectedProductId: String = "",
+        var isFavoriteNumber: Boolean = false
 
 ) : Visitable<RechargeGeneralAdapterFactory> {
         override fun type(typeFactory: RechargeGeneralAdapterFactory) = typeFactory.type(this)

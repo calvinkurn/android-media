@@ -55,6 +55,7 @@ dependencies {
     implementation project(rootProject.ext.features.commonTradein)
     implementation project(rootProject.ext.features.basemvvm)
     implementation project(rootProject.ext.libraries.iris)
+    implementation project(rootProject.ext.libraries.irisSession)
     implementation project(rootProject.ext.features.tkpdtransactioncommon)
 }
 

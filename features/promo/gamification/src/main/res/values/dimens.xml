@@ -34,4 +34,5 @@
     <bool name="gami_is_tablet">false</bool>
     <dimen name="gami_rv_coupons_height">148dp</dimen>
     <dimen name="gami_rv_coupons_width">0dp</dimen>
+    <dimen name="gami_dp_68">68dp</dimen>
 </resources>

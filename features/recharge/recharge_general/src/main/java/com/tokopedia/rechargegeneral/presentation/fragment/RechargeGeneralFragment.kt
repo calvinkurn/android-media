@@ -66,7 +66,6 @@ import com.tokopedia.rechargegeneral.widget.RechargeGeneralCheckoutBottomSheet
 import com.tokopedia.rechargegeneral.widget.RechargeGeneralProductSelectBottomSheet
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ticker.*
-import com.tokopedia.unifyprinciples.UnifyThemeHelper
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_recharge_general.*
@@ -96,6 +95,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
 
     lateinit var adapter: RechargeGeneralAdapter
 
+    private lateinit var favoriteNumbers: List<TopupBillsFavNumberItem>
     private var inputData: HashMap<String, String> = hashMapOf()
     private var inputDataKeys = mutableListOf<String>()
 
@@ -156,8 +156,6 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
         super.onCreate(savedInstanceState)
 
         activity?.let {
-            UnifyThemeHelper.setTheme(it)
-
             val viewModelProvider = ViewModelProviders.of(it, viewModelFactory)
             viewModel = viewModelProvider.get(RechargeGeneralViewModel::class.java)
             sharedViewModel = viewModelProvider.get(SharedRechargeGeneralViewModel::class.java)
@@ -208,8 +206,11 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
         viewModel.productList.observe(this, Observer {
             when(it) {
                 is Success -> {
-                    adapter.hideLoading()
                     setupInputAndProduct(it.data)
+                    if (hasFavoriteNumbers) {
+                        updateFavoriteNumberInputField()
+                    }
+                    adapter.hideLoading()
                 }
                 is Fail -> {
                     val previousOperatorId = operatorId
@@ -474,10 +475,6 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
                     //processing enquiry fields
                     if (productData.needEnquiry) {
                         val enquiryField = mapper.mapDynamicInputToProductData(it)
-                        // Set favorite number if available
-                        if (it.name == PARAM_CLIENT_NUMBER && hasFavoriteNumbers) {
-                            it.style = INPUT_TYPE_FAVORITE_NUMBER
-                        }
                         if (inputData.containsKey(it.name)) {
                             enquiryField.value = inputData[it.name]!!
                         }
@@ -566,12 +563,20 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
         }
     }
 
-    private fun showFavoriteNumbersPage(favoriteNumbers: List<TopupBillsFavNumberItem>) {
+    private fun showFavoriteNumbersPage(favoriteNumbers: List<TopupBillsFavNumberItem>,
+                                        enquiryData: RechargeGeneralProductInput) {
         if (favoriteNumbers.isNotEmpty()) {
+            val clientNumberType = when (enquiryData.style) {
+                TopupBillsInputFieldWidget.INPUT_NUMERIC -> ClientNumberType.TYPE_INPUT_NUMERIC
+                TopupBillsInputFieldWidget.INPUT_ALPHANUMERIC -> ClientNumberType.TYPE_INPUT_ALPHANUMERIC
+                TopupBillsInputFieldWidget.INPUT_TELCO -> ClientNumberType.TYPE_INPUT_TEL
+                else -> ClientNumberType.TYPE_INPUT_NUMERIC
+            }
+
             context?.run {
                 startActivityForResult(
                         TopupBillsSearchNumberActivity.getCallingIntent(this,
-                                ClientNumberType.TYPE_INPUT_NUMERIC,
+                                clientNumberType,
                                 inputData[PARAM_CLIENT_NUMBER] ?: "",
                                 favoriteNumbers), REQUEST_CODE_DIGITAL_SEARCH_NUMBER)
             }
@@ -703,19 +708,19 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
     private fun renderClientNumber(favNumber: TopupBillsFavNumberItem) {
         with (favNumber) {
             operatorId.toIntOrNull()?.let { oprId -> this@RechargeGeneralFragment.operatorId = oprId }
-            inputData[PARAM_CLIENT_NUMBER] = clientNumber
+            if (clientNumber.isNotEmpty()) inputData[PARAM_CLIENT_NUMBER] = clientNumber
             if (productId.isNotEmpty()) selectedProduct = RechargeGeneralProductSelectData(productId)
 
             if (adapter.data.isNotEmpty()) {
                 val clientNumberInput: RechargeGeneralProductInput? = adapter.data.find { it is RechargeGeneralProductInput && it.name == PARAM_CLIENT_NUMBER } as? RechargeGeneralProductInput
                 clientNumberInput?.apply {
-                    value = clientNumber
-                    style = INPUT_TYPE_FAVORITE_NUMBER
+                    if (clientNumber.isNotEmpty()) value = clientNumber
+                    isFavoriteNumber = true
                 }
                 adapter.notifyItemChanged(adapter.data.indexOf(clientNumberInput))
             }
-            renderInitialData()
         }
+        renderInitialData()
     }
 
     private fun showGetListError(e: Throwable) {
@@ -742,6 +747,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
         loading_view.show()
 
         getMenuDetail(menuId)
+        getFavoriteNumbers(categoryId)
         getCatalogPluginData(operatorId, categoryId)
         getOperatorCluster(menuId)
     }
@@ -767,12 +773,14 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
         updateInputData(label, input)
     }
 
-    override fun onCustomInputClick(field: TopupBillsInputFieldWidget, position: Int, data: List<RechargeGeneralProductSelectData>?) {
+    override fun onCustomInputClick(field: TopupBillsInputFieldWidget,
+                                    enquiryData: RechargeGeneralProductInput?,
+                                    productData: List<RechargeGeneralProductSelectData>?) {
         // If there is data open product select bottom sheet, else open favorite number activity
-        if (data != null) {
-            showProductSelectDropdown(field, data, getString(R.string.product_select_label))
-        } else {
-            getFavoriteNumbers(categoryId)
+        if (productData != null) {
+            showProductSelectDropdown(field, productData, getString(R.string.product_select_label))
+        } else if (enquiryData != null) {
+            showFavoriteNumbersPage(favoriteNumbers, enquiryData)
         }
     }
 
@@ -805,10 +813,15 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
 
     private fun enquire() {
         if (validateEnquiry()) {
-            if (!userSession.isLoggedIn) {
-                navigateToLoginPage()
+            // If it's express checkout, open checkout bottomsheet; if not navigate to old checkout
+            if (!isExpressCheckout) {
+                processCheckout()
             } else {
-                selectedProduct?.run { getEnquiry(operatorId.toString(), id, inputData) }
+                if (!userSession.isLoggedIn) {
+                    navigateToLoginPage()
+                } else {
+                    selectedProduct?.run { getEnquiry(operatorId.toString(), id, inputData) }
+                }
             }
         }
     }
@@ -827,15 +840,27 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
         }
         renderTickers(data.tickers)
         // Set recommendation data if available
-        hasFavoriteNumbers = data.recommendations.isNotEmpty()
-        if (hasFavoriteNumbers && !hasInputData) {
+        if (data.recommendations.isNotEmpty() && !hasInputData) {
             setupAutoFillData(data.recommendations[0])
         }
         renderFooter(data)
     }
 
     override fun processFavoriteNumbers(data: TopupBillsFavNumber) {
-        showFavoriteNumbersPage(data.favNumberList)
+        favoriteNumbers = data.favNumberList
+        updateFavoriteNumberInputField()
+    }
+
+    private fun updateFavoriteNumberInputField() {
+        if (favoriteNumbers.isNotEmpty()) {
+            if (adapter.data.isNotEmpty()) {
+                val clientNumberInput: RechargeGeneralProductInput? = adapter.data.find { it is RechargeGeneralProductInput && it.name == PARAM_CLIENT_NUMBER } as? RechargeGeneralProductInput
+                clientNumberInput?.apply { isFavoriteNumber = true }
+                adapter.notifyItemChanged(adapter.data.indexOf(clientNumberInput))
+            } else { // Store favorite number state
+                hasFavoriteNumbers = true
+            }
+        }
     }
 
     override fun onEnquiryError(error: Throwable) {
@@ -901,10 +926,10 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
         rechargeGeneralAnalytics.eventClickCheckBills(categoryName, operatorName, selectedProduct?.title ?: "")
         rechargeGeneralAnalytics.eventClickBuy(categoryName, operatorName, false, data)
 
-        processCheckout(data)
+        processCheckout()
     }
 
-    private fun processCheckout(data: TopupBillsEnquiry) {
+    private fun processCheckout() {
         // Setup checkout pass data
         if (validateEnquiry()) {
             selectedProduct?.run {

@@ -432,11 +432,11 @@ class TopChatViewStateImpl(
         myAlertDialog.show()
     }
 
-    override fun showErrorWebSocket(b: Boolean) {
+    override fun showErrorWebSocket(isWebSocketError: Boolean) {
         notifier.visibility = View.VISIBLE
         val title = notifier.findViewById<TextView>(R.id.title)
         val action = notifier.findViewById<View>(R.id.action)
-        if (b) {
+        if (isWebSocketError) {
             title.setText(R.string.error_no_connection_retrying);
             action.visibility = View.VISIBLE
 

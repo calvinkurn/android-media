@@ -83,6 +83,7 @@ class GetPreferenceByIdUseCase @Inject constructor(val graphqlUseCase: GraphqlUs
                                 flags {
                                     pin
                                 }
+                                metadata
                         }
                         shipment {
                                 service_id
