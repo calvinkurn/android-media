@@ -168,7 +168,6 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
 
                 }
                 .show(childFragmentManager)
-
     }
 
     private fun showStopVoucherDialog(voucher: VoucherUiModel) {
