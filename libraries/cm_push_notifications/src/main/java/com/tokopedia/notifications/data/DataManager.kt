@@ -1,10 +1,12 @@
 package com.tokopedia.notifications.data
 
+import android.util.Log
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase.Companion.REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST
 import com.tokopedia.notifications.analytics.NotificationAnalytics
+import com.tokopedia.notifications.domain.AmplificationUseCase
 import com.tokopedia.notifications.domain.AttributionUseCase
 import com.tokopedia.notifications.model.AddToCart
 import com.tokopedia.notifications.model.BaseNotificationModel
@@ -16,7 +18,8 @@ import javax.inject.Inject
 
 class DataManager @Inject constructor(
         private val attributionUseCase: AttributionUseCase,
-        private val atcProductUseCase: AddToCartUseCase
+        private val atcProductUseCase: AddToCartUseCase,
+        private val amplificationUseCase: AmplificationUseCase
 ) {
 
     /*
@@ -63,6 +66,22 @@ class DataManager @Inject constructor(
                     .unsubscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(atcSubscriber(::tracker))
+        }
+    }
+
+    /*
+    * Amplification of Push Notification
+    * fetch all of notification haven't rendered yet
+    * and store it on local CM_Push_Notification database
+    * */
+    fun amplification(deviceToken: String) {
+        val params = amplificationUseCase.params(deviceToken)
+        amplificationUseCase.execute(params) {
+            it.webhookAttributionNotifier.pushData.forEach { data ->
+                //TODO add converter to baseNotificationModel
+                //TODO store into local CM database
+                Log.d("TAG", data)
+            }
         }
     }
 
