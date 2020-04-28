@@ -3,6 +3,7 @@ package com.tokopedia.transaction.orders.orderdetails.view.adapter;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
+import android.os.Build;
 import android.text.Html;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -116,13 +117,19 @@ public class ProductItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 quantity.setText(String.format(context.getResources().getString(R.string.quantity), items.getQuantity(), items.getWeight()));
                 if (!TextUtils.isEmpty(items.getPrice()))
                     productPrice.setText(items.getPrice());
+
+                if (!TextUtils.isEmpty(items.getDescription())) {
+                    String descHtml = items.getDescription();
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                        productDescription.setText(Html.fromHtml(descHtml, Html.FROM_HTML_MODE_LEGACY));
+                    } else {
+                        productDescription.setText(Html.fromHtml(descHtml));
+                    }
+                }else {
+                    productDescription.setVisibility(View.GONE);
+                }
             }
 
-            if (!TextUtils.isEmpty(items.getDescription())) {
-                productDescription.setText(items.getDescription());
-            }else {
-                productDescription.setVisibility(View.GONE);
-            }
             if (!TextUtils.isEmpty(items.getTotalPrice())) {
                 totalPrice.setText(items.getTotalPrice());
             }
