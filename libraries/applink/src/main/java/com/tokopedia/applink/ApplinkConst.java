@@ -482,6 +482,7 @@ public interface ApplinkConst {
         String EXTRA_CUSTOM_EVENT_LABEL = "custom_event_label";
         String EXTRA_CUSTOM_EVENT_ACTION = "custom_event_action";
         String EXTRA_LAYOUT_NAME = "layout_name";
+        String EXTRA_ATC_EXTERNAL_SOURCE = "atc_external_source";
 
         String EXTRA_CATEGORY_ID = "category_id";
         String EXTRA_CATEGORY_NAME = "category_name";

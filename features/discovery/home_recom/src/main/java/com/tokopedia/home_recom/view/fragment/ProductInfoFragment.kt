@@ -378,6 +378,7 @@ class ProductInfoFragment : BaseDaggerFragment() {
         addToCartRequestParams.shopId = shopId
         addToCartRequestParams.quantity = minOrder
         addToCartRequestParams.notes = ""
+        addToCartRequestParams.atcFromExternalSource = AddToCartRequestParams.ATC_FROM_DISCOVERY
 
         primaryProductViewModel.addToCart(addToCartRequestParams, success, error)
     }

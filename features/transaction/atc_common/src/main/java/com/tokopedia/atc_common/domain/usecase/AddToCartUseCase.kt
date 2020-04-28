@@ -37,7 +37,7 @@ class AddToCartUseCase @Inject constructor(@Named("atcMutation") private val que
 
         @JvmStatic
         @JvmOverloads
-        fun getMinimumParams(productId: String, shopId: String, quantity: Int = 1, notes: String = ""): RequestParams {
+        fun getMinimumParams(productId: String, shopId: String, quantity: Int = 1, notes: String = "", atcExternalSource: String = AddToCartRequestParams.ATC_FROM_OTHERS): RequestParams {
             return RequestParams.create()
                     .apply {
                         putObject(
@@ -46,7 +46,8 @@ class AddToCartUseCase @Inject constructor(@Named("atcMutation") private val que
                                         productId = productId.toLong(),
                                         shopId = shopId.toInt(),
                                         quantity = quantity,
-                                        notes = notes
+                                        notes = notes,
+                                        atcFromExternalSource = atcExternalSource
                                 )
                         )
                     }

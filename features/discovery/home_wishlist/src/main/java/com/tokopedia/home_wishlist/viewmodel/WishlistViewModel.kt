@@ -277,6 +277,7 @@ open class WishlistViewModel @Inject constructor(
                 addToCartRequestParams.shopId = it.shop.id.toInt()
                 addToCartRequestParams.quantity = it.minimumOrder
                 addToCartRequestParams.notes = ""
+                addToCartRequestParams.atcFromExternalSource = AddToCartRequestParams.ATC_FROM_WISHLIST
 
                 val requestParams = RequestParams.create()
                 requestParams.putObject(AddToCartUseCase.REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST, addToCartRequestParams)
