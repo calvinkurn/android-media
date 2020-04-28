@@ -1,19 +1,19 @@
 package com.tokopedia.smartbills.data.api
 
+import com.tokopedia.common_digital.common.data.request.DataRequest
 import com.tokopedia.network.data.model.response.DataResponse
+import com.tokopedia.smartbills.data.MultiCheckoutRequest
 import com.tokopedia.smartbills.data.RechargeMultiCheckoutResponse
 import retrofit2.Response
 import retrofit2.http.*
 
 interface SmartBillsApi {
 
-    @FormUrlEncoded
     @POST(PATH_MULTI_CHECKOUT)
     @Headers("Content-Type: application/json")
     suspend fun postMultiCheckout(
-            @FieldMap map: Map<String, Any>,
-            @Header("Idempotency-Key") idemPotencyKey: String,
-            @Header("X-Tkpd-UserId") userId: String
+            @Body request: DataRequest<MultiCheckoutRequest>,
+            @Header("Idempotency-Key") idemPotencyKey: String
     ): Response<DataResponse<RechargeMultiCheckoutResponse>>
 
     companion object {
