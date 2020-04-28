@@ -33,7 +33,7 @@ public class ActionNotificationTest {
     @Mock
     Context context;
     BaseNotificationModel model;
-    ActionNotification actionNotification;
+//    ActionNotification actionNotification;
     ActionButton button;
     @Mock
     Notification notification;
@@ -48,7 +48,7 @@ public class ActionNotificationTest {
         button = new ActionButton();
         button.setAppLink("abc");
         button.setText("hi");
-        List<ActionButton> actions = new ArrayList<ActionButton>();
+        ArrayList<ActionButton> actions = new ArrayList<ActionButton>();
         actions.add(button);
         model.setActionButton(actions);
 
@@ -62,11 +62,11 @@ public class ActionNotificationTest {
                 new Intent(),
                 PendingIntent.FLAG_UPDATE_CURRENT
         );
-        MockitoAnnotations.initMocks(this);
-        actionNotification = Mockito.spy(new ActionNotification(context, model));
-        doReturn(1).when(actionNotification).getRequestCode();
-        //doReturn(new Notification.Builder(context)).when(actionNotification).createMainPendingIntent("abc",2);
-        doReturn(resultPendingIntent).when(actionNotification).createMainPendingIntent(model,2);
+//        MockitoAnnotations.initMocks(this);
+//        actionNotification = Mockito.spy(new ActionNotification(context, model));
+//        doReturn(1).when(actionNotification).getRequestCode();
+//        //doReturn(new Notification.Builder(context)).when(actionNotification).createMainPendingIntent("abc",2);
+//        doReturn(resultPendingIntent).when(actionNotification).createMainPendingIntent(model,2);
 
     }
 
