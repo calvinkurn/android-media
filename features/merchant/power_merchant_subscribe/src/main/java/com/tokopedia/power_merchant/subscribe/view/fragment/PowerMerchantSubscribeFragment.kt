@@ -119,19 +119,23 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
             powerMerchantTracking.eventUpgradeShopPm()
             if (getApprovalStatusPojo.kycProjectInfo.status == STATUS_VERIFIED) {
                 if (shopStatusModel.isPowerMerchantInactive()) {
-                    if (shopScore < MINIMUM_SCORE_ACTIVATE_REGULAR) {
-                        setupDialogScore()?.show()
-                        return@setOnClickListener
+                    context?.let {
+                        val intent = if (shopScore < MINIMUM_SCORE_ACTIVATE_REGULAR) {
+                            PowerMerchantTermsActivity.createIntent(it, ACTION_SHOP_SCORE)
+                        } else {
+                            PowerMerchantTermsActivity.createIntent(it, ACTION_ACTIVATE)
+                        }
+                        startActivityForResult(intent, ACTIVATE_INTENT_CODE)
                     }
-                    val intent = context?.let { PowerMerchantTermsActivity.createIntent(it, ACTION_ACTIVATE) }
-                    startActivityForResult(intent, ACTIVATE_INTENT_CODE)
                 } else {
-                    if (shopScore < MINIMUM_SCORE_ACTIVATE_IDLE) {
-                        setupDialogScore()?.show()
-                        return@setOnClickListener
+                    context?.let {
+                        val intent = if (shopScore < MINIMUM_SCORE_ACTIVATE_REGULAR) {
+                            PowerMerchantTermsActivity.createIntent(it, ACTION_SHOP_SCORE)
+                        } else {
+                            PowerMerchantTermsActivity.createIntent(it, ACTION_AUTO_EXTEND)
+                        }
+                        startActivityForResult(intent, ACTIVATE_INTENT_CODE)
                     }
-                    val intent = context?.let { PowerMerchantTermsActivity.createIntent(it, ACTION_AUTO_EXTEND) }
-                    startActivityForResult(intent, AUTOEXTEND_INTENT_CODE)
                 }
             } else {
                 setupDialogKyc()?.show()
@@ -233,26 +237,6 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
                 dialog.hide()
             }
 
-            return dialog
-        }
-        return null
-    }
-
-    private fun setupDialogScore(): Dialog? {
-        context?.let {
-            val dialog = Dialog(it)
-            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-            dialog.setCancelable(false)
-            dialog.setCanceledOnTouchOutside(true)
-            dialog.setContentView(R.layout.dialog_score_verification)
-
-            dialog.btn_submit_score.setOnClickListener {
-                powerMerchantTracking.eventIncreaseScorePopUp()
-                RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, URL_GAINS_SCORE_POINT)
-            }
-            dialog.btn_close_score.setOnClickListener {
-                dialog.hide()
-            }
             return dialog
         }
         return null
