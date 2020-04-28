@@ -1,21 +1,27 @@
 package com.tokopedia.vouchercreation.voucherlist.view.widget
 
+import android.graphics.Rect
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.voucherlist.model.DownloadVoucherUiModel
+import com.tokopedia.vouchercreation.voucherlist.model.VoucherUiModel
 import com.tokopedia.vouchercreation.voucherlist.view.adapter.DownloadVoucherAdapter
-import kotlinx.android.synthetic.main.bottomsheet_mvc_download_voucher.*
+import kotlinx.android.synthetic.main.bottomsheet_mvc_download_voucher.view.*
 
 /**
  * Created By @ilhamsuaib on 28/04/20
  */
 
-class DownloadVoucherBottomSheet(parent: ViewGroup) : BottomSheetUnify() {
+class DownloadVoucherBottomSheet(
+        private val parent: ViewGroup,
+        private val voucher: VoucherUiModel
+) : BottomSheetUnify() {
 
     private val mAdapter by lazy { DownloadVoucherAdapter() }
     private var onDownloadClick: (List<DownloadVoucherUiModel>) -> Unit = {}
@@ -25,26 +31,65 @@ class DownloadVoucherBottomSheet(parent: ViewGroup) : BottomSheetUnify() {
                 .inflate(R.layout.bottomsheet_mvc_download_voucher, parent, false)
 
         setupView(child)
-        setTitle(getString(R.string.mvc_select_voucher_size))
+        setTitle(parent.context.getString(R.string.mvc_select_voucher_size))
         setChild(child)
     }
 
-    private fun setupView(child: View) = with(child) {
+    private fun setupView(child: View) = with(child) view@ {
         rvMvcVouchers.run {
-            layoutManager = LinearLayoutManager(context)
+            layoutManager = LinearLayoutManager(this@view.context)
             adapter = mAdapter
+            addItemDecoration(getItemDecoration())
         }
 
         btnMvcDownloadVoucher.setOnClickListener {
             onDownloadClick(mAdapter.items.filter { it.isSelected })
+            dismiss()
         }
     }
 
-    fun setOnDownloadClickListener(action: (List<DownloadVoucherUiModel>) -> Unit) {
+    private fun getItemDecoration() = object : RecyclerView.ItemDecoration() {
+
+        override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
+            super.getItemOffsets(outRect, view, parent, state)
+            val position = parent.getChildAdapterPosition(view)
+            if (position == 0) {
+                outRect.top = view.resources.getDimensionPixelSize(R.dimen.layout_lvl1)
+            }
+            if (position == mAdapter.itemCount.minus(1)) {
+                outRect.bottom = view.resources.getDimensionPixelSize(R.dimen.layout_lvl2)
+            }
+        }
+    }
+
+    fun setOnDownloadClickListener(action: (List<DownloadVoucherUiModel>) -> Unit): DownloadVoucherBottomSheet {
         this.onDownloadClick = action
+        return this
     }
 
     fun show(fm: FragmentManager) {
-        show(fm, DownloadVoucherBottomSheet::class.java.simpleName)
+        mAdapter.clearAllElements()
+        mAdapter.addElement(getDownloadItems())
+        showNow(fm, DownloadVoucherBottomSheet::class.java.simpleName)
+    }
+
+    private fun getDownloadItems(): List<DownloadVoucherUiModel> {
+        return listOf(
+                DownloadVoucherUiModel(
+                        isSelected = true,
+                        ratioStr = parent.context.getString(R.string.mvc_ratio_1_1),
+                        description = parent.context.getString(R.string.mvc_for_instagram_facebook_post)
+                ),
+                DownloadVoucherUiModel(
+                        isSelected = true,
+                        ratioStr = parent.context.getString(R.string.mvc_ratio_16_9),
+                        description = parent.context.getString(R.string.mvc_for_post_instagram_story)
+                ),
+                DownloadVoucherUiModel(
+                        isSelected = true,
+                        ratioStr = parent.context.getString(R.string.mvc_shop_cover),
+                        description = parent.context.getString(R.string.mvc_for_cover_of_your_shop)
+                )
+        )
     }
 }

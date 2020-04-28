@@ -8,7 +8,7 @@ import com.tokopedia.vouchercreation.voucherlist.view.adapter.factory.DownloadVo
  */
 
 data class DownloadVoucherUiModel(
-        val isSelected: Boolean,
+        var isSelected: Boolean,
         val ratioStr: String,
         val description: String
 ) : Visitable<DownloadVoucherFactory> {

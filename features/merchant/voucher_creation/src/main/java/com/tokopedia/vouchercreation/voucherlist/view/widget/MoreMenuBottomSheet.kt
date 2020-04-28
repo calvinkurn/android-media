@@ -89,7 +89,7 @@ class MoreMenuBottomSheet(
         menuItems.add(EditPeriod(parent.context.getString(R.string.mvc_edit_shown_period), R.drawable.ic_mvc_calendar))
         menuItems.add(ViewDetail(parent.context.getString(R.string.mvc_view_detail_and_edit_voucher), R.drawable.ic_mvc_detail))
         menuItems.add(ItemDivider)
-        menuItems.add(Download(parent.context.getString(R.string.mvc_download), R.drawable.ic_mvc_download))
+        menuItems.add(DownloadVoucher(parent.context.getString(R.string.mvc_download), R.drawable.ic_mvc_download))
         menuItems.add(Duplicate(parent.context.getString(R.string.mvc_duplicate), R.drawable.ic_mvc_duplicate))
         menuItems.add(ItemDivider)
         menuItems.add(CancelVoucher(parent.context.getString(R.string.mvc_cancel), R.drawable.ic_mvc_cancel))
@@ -103,7 +103,7 @@ class MoreMenuBottomSheet(
         menuItems.add(ItemDivider)
         menuItems.add(Share(parent.context.getString(R.string.mvc_share), R.drawable.ic_mvc_share))
         menuItems.add(Duplicate(parent.context.getString(R.string.mvc_duplicate), R.drawable.ic_mvc_duplicate))
-        menuItems.add(Download(parent.context.getString(R.string.mvc_download), R.drawable.ic_mvc_download))
+        menuItems.add(DownloadVoucher(parent.context.getString(R.string.mvc_download), R.drawable.ic_mvc_download))
         menuItems.add(ItemDivider)
         menuItems.add(StopVoucher(parent.context.getString(R.string.mvc_stop), R.drawable.ic_mvc_cancel))
         return menuItems
