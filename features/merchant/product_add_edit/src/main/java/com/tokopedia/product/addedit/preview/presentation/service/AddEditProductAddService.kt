@@ -6,9 +6,9 @@ import android.content.Context
 import android.content.Intent
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
-import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant
 import com.tokopedia.product.addedit.common.util.AddEditProductNotificationManager
 import com.tokopedia.product.addedit.description.presentation.model.DescriptionInputModel
 import com.tokopedia.product.addedit.description.presentation.model.ProductVariantInputModel
@@ -19,6 +19,7 @@ import com.tokopedia.product.addedit.draft.domain.usecase.SaveProductDraftUseCas
 import com.tokopedia.product.addedit.draft.mapper.AddEditProductMapper.mapProductInputModelDetailToDraft
 import com.tokopedia.product.addedit.preview.domain.usecase.ProductAddUseCase
 import com.tokopedia.product.addedit.preview.presentation.activity.AddEditProductPreviewActivity
+import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.shipment.presentation.model.ShipmentInputModel
 import com.tokopedia.product.addedit.tracking.ProductAddShippingTracking
@@ -48,38 +49,25 @@ open class AddEditProductAddService : AddEditProductBaseService() {
     protected var variantInputModel: ProductVariantInputModel = ProductVariantInputModel()
 
     companion object {
-        fun startService(context: Context,
-                         detailInputModel: DetailInputModel,
-                         descriptionInputModel: DescriptionInputModel,
-                         shipmentInputModel: ShipmentInputModel,
-                         variantInputModel: ProductVariantInputModel,
-                         draftId: Long
-        ) {
+        fun startService(context: Context, cacheManagerId: String?) {
             val work = Intent(context, AddEditProductBaseService::class.java).apply {
-                putExtra(AddEditProductUploadConstant.EXTRA_DETAIL_INPUT, detailInputModel)
-                putExtra(AddEditProductUploadConstant.EXTRA_DESCRIPTION_INPUT, descriptionInputModel)
-                putExtra(AddEditProductUploadConstant.EXTRA_SHIPMENT_INPUT, shipmentInputModel)
-                putExtra(AddEditProductUploadConstant.EXTRA_VARIANT_INPUT, variantInputModel)
-                putExtra(AddEditProductUploadConstant.EXTRA_PRODUCT_DRAFT_ID, draftId)
+                putExtra(AddEditProductConstants.EXTRA_CACHE_MANAGER_ID, cacheManagerId)
             }
             enqueueWork(context, AddEditProductAddService::class.java, JOB_ID, work)
         }
     }
 
     override fun onHandleWork(intent: Intent) {
-        val draftId = intent.getLongExtra(AddEditProductUploadConstant.EXTRA_PRODUCT_DRAFT_ID, 0)
-        shipmentInputModel = intent.getParcelableExtra(AddEditProductUploadConstant.EXTRA_SHIPMENT_INPUT)
-        descriptionInputModel = intent.getParcelableExtra(AddEditProductUploadConstant.EXTRA_DESCRIPTION_INPUT)
-        detailInputModel = intent.getParcelableExtra(AddEditProductUploadConstant.EXTRA_DETAIL_INPUT)
-        variantInputModel = intent.getParcelableExtra(AddEditProductUploadConstant.EXTRA_VARIANT_INPUT)
-        productInputModel.let {
-            it.shipmentInputModel = shipmentInputModel
-            it.descriptionInputModel = descriptionInputModel
-            it.detailInputModel = detailInputModel
-            it.variantInputModel = variantInputModel
-            it.draftId = draftId
+        val cacheManagerId = intent.getStringExtra(AddEditProductConstants.EXTRA_CACHE_MANAGER_ID) ?: ""
+        SaveInstanceCacheManager(this, cacheManagerId).run {
+            productInputModel =  get(AddEditProductPreviewConstants.EXTRA_PRODUCT_INPUT_MODEL, ProductInputModel::class.java) ?: ProductInputModel()
         }
-
+        productInputModel.let {
+            shipmentInputModel = it.shipmentInputModel
+            descriptionInputModel = it.descriptionInputModel
+            detailInputModel = it.detailInputModel
+            variantInputModel = it.variantInputModel
+        }
         // (1)
         saveProductToDraft()
     }
