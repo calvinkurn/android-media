@@ -29,7 +29,6 @@ public class ProductVariantDetailLevelLeafActivity extends BaseSimpleActivity im
     public static final String EXTRA_IS_OFFICIAL_STORE = "is_off_store";
     public static final String EXTRA_HAS_WHOLESALE = "has_wholesale";
     public static final String EXTRA_IS_ADD = "EXTRA_IS_ADD";
-    public static final String EXTRA_IS_ADD_EDIT = "EXTRA_IS_ADD_EDIT";
 
     public static final String EXTRA_ACTION_SUBMIT = "sbmt";
 
