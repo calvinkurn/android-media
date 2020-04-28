@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.vouchercreation.create.data.source.VoucherTargetStaticDataSource
 import com.tokopedia.vouchercreation.create.view.enums.VoucherTargetCardType
-import com.tokopedia.vouchercreation.create.view.uimodel.VoucherTargetItemUiModel
+import com.tokopedia.vouchercreation.create.view.uimodel.vouchertarget.VoucherTargetItemUiModel
 import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
 import javax.inject.Named

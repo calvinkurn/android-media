@@ -3,7 +3,7 @@ package com.tokopedia.vouchercreation.create.view.enums
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import com.tokopedia.vouchercreation.R
-import com.tokopedia.vouchercreation.create.view.uimodel.VoucherDisplayUiModel
+import com.tokopedia.vouchercreation.create.view.uimodel.vouchertarget.vouchertips.VoucherDisplayUiModel
 
 enum class VoucherTargetCardType(@DrawableRes val iconDrawableRes: Int,
                                  @StringRes val titleStringRes: Int,

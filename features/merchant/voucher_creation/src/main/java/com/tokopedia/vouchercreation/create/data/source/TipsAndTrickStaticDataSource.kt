@@ -1,10 +1,10 @@
 package com.tokopedia.vouchercreation.create.data.source
 
 import com.tokopedia.vouchercreation.R
-import com.tokopedia.vouchercreation.create.view.uimodel.vouchertips.BasicVoucherTipsItemUiModel
-import com.tokopedia.vouchercreation.create.view.uimodel.vouchertips.DottedVoucherTipsItemUiModel
-import com.tokopedia.vouchercreation.create.view.uimodel.vouchertips.ImageVoucherTipsItemUiModel
-import com.tokopedia.vouchercreation.create.view.uimodel.vouchertips.TipsItemUiModel
+import com.tokopedia.vouchercreation.create.view.uimodel.vouchertarget.vouchertips.BasicVoucherTipsItemUiModel
+import com.tokopedia.vouchercreation.create.view.uimodel.vouchertarget.vouchertips.DottedVoucherTipsItemUiModel
+import com.tokopedia.vouchercreation.create.view.uimodel.vouchertarget.vouchertips.ImageVoucherTipsItemUiModel
+import com.tokopedia.vouchercreation.create.view.uimodel.vouchertarget.vouchertips.TipsItemUiModel
 
 object TipsAndTrickStaticDataSource {
 

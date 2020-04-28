@@ -11,7 +11,6 @@ import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.vouchercreation.R
-import com.tokopedia.vouchercreation.create.view.customview.bottomsheet.VoucherBottomView
 import kotlinx.android.synthetic.main.mvc_create_promo_code_bottom_sheet_view.*
 
 

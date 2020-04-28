@@ -2,7 +2,7 @@ package com.tokopedia.vouchercreation.di.component
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.vouchercreation.create.view.activity.CreateMerchantVoucherStepsActivity
-import com.tokopedia.vouchercreation.create.view.fragment.MerchantVoucherTargetFragment
+import com.tokopedia.vouchercreation.create.view.fragment.step.MerchantVoucherTargetFragment
 import com.tokopedia.vouchercreation.di.module.VoucherCreationModule
 import com.tokopedia.vouchercreation.di.module.VoucherCreationViewModelModule
 import com.tokopedia.vouchercreation.di.scope.VoucherCreationScope

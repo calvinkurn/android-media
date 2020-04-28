@@ -8,8 +8,7 @@ import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.create.data.source.TipsAndTrickStaticDataSource
-import com.tokopedia.vouchercreation.create.view.adapter.VoucherTipsAdapter
-import com.tokopedia.vouchercreation.create.view.customview.bottomsheet.VoucherBottomView
+import com.tokopedia.vouchercreation.create.view.adapter.vouchertarget.VoucherTipsAdapter
 import kotlinx.android.synthetic.main.mvc_voucher_tips_bottom_sheet_view.*
 
 class TipsAndTrickBottomSheetFragment(bottomSheetContext: Context) : BottomSheetUnify(), VoucherBottomView {

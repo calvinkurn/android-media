@@ -8,8 +8,7 @@ import androidx.recyclerview.widget.PagerSnapHelper
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.vouchercreation.R
-import com.tokopedia.vouchercreation.create.view.adapter.VoucherDisplayAdapter
-import com.tokopedia.vouchercreation.create.view.customview.bottomsheet.VoucherBottomView
+import com.tokopedia.vouchercreation.create.view.adapter.vouchertarget.VoucherDisplayAdapter
 import com.tokopedia.vouchercreation.create.view.decorator.VoucherDisplayItemDecoration
 import com.tokopedia.vouchercreation.create.view.enums.VoucherTargetCardType
 import com.tokopedia.vouchercreation.create.view.listener.VoucherDisplayScrollListener
@@ -24,10 +23,6 @@ class VoucherDisplayBottomSheetFragment(private val getVoucherType: () -> Vouche
             return VoucherDisplayBottomSheetFragment(getVoucherType).apply {
                 context?.run {
                     val view = View.inflate(context, R.layout.mvc_voucher_display_bottom_sheet_view, null)
-                    view?.voucherDisplayRecyclerView?.run {
-                        addItemDecoration(VoucherDisplayItemDecoration(context))
-                        pagerSnapHelper.attachToRecyclerView(this)
-                    }
                     setChild(view)
                 }
             }
@@ -65,6 +60,7 @@ class VoucherDisplayBottomSheetFragment(private val getVoucherType: () -> Vouche
 
     private fun initView() {
         view?.setupBottomSheetChildNoMargin()
+        view?.setupItemDecoration()
         val displayList = getVoucherType().displayPairList
         val voucherDisplayAdapter = VoucherDisplayAdapter(displayList)
         voucherDisplayRecyclerView?.run {
@@ -83,6 +79,13 @@ class VoucherDisplayBottomSheetFragment(private val getVoucherType: () -> Vouche
         val initialPaddingRight = paddingRight
         setPadding(0,initialPaddingTop,0,initialPaddingBottom)
         bottomSheetHeader.setPadding(initialPaddingLeft, 0, initialPaddingRight, 0)
+    }
+
+    private fun View.setupItemDecoration() {
+        voucherDisplayRecyclerView?.run {
+            addItemDecoration(VoucherDisplayItemDecoration(context))
+            pagerSnapHelper.attachToRecyclerView(this)
+        }
     }
 
     private fun onSnapPositionChangeListener(position: Int) {

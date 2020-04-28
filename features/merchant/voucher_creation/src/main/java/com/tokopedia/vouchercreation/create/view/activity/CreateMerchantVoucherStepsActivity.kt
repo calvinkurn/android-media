@@ -18,9 +18,10 @@ import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.create.view.adapter.CreateMerchantVoucherStepsAdapter
 import com.tokopedia.vouchercreation.create.view.fragment.BaseCreateMerchantVoucherFragment
-import com.tokopedia.vouchercreation.create.view.fragment.MerchantVoucherTargetFragment
+import com.tokopedia.vouchercreation.create.view.fragment.step.MerchantVoucherTargetFragment
+import com.tokopedia.vouchercreation.create.view.fragment.step.PromotionBudgetAndTypeFragment
 import com.tokopedia.vouchercreation.create.view.fragment.bottomsheet.TipsAndTrickBottomSheetFragment
-import com.tokopedia.vouchercreation.create.view.uimodel.VoucherCreationStepInfo
+import com.tokopedia.vouchercreation.create.view.enums.VoucherCreationStepInfo
 import com.tokopedia.vouchercreation.create.view.viewmodel.CreateMerchantVoucherStepsViewModel
 import com.tokopedia.vouchercreation.di.component.DaggerVoucherCreationComponent
 import kotlinx.android.synthetic.main.activity_create_merchant_voucher_steps.*
@@ -51,7 +52,7 @@ class CreateMerchantVoucherStepsActivity : FragmentActivity() {
     private val fragmentStepsHashMap by lazy {
         LinkedHashMap<VoucherCreationStepInfo, BaseCreateMerchantVoucherFragment<*,*>>().apply {
             put(VoucherCreationStepInfo.STEP_ONE, MerchantVoucherTargetFragment.createInstance(::onNextStep))
-            put(VoucherCreationStepInfo.STEP_TWO, MerchantVoucherTargetFragment.createInstance(::onNextStep))
+            put(VoucherCreationStepInfo.STEP_TWO, PromotionBudgetAndTypeFragment.createInstance(::onNextStep))
             put(VoucherCreationStepInfo.STEP_THREE, MerchantVoucherTargetFragment.createInstance(::onNextStep))
             put(VoucherCreationStepInfo.STEP_FOUR, MerchantVoucherTargetFragment.createInstance(::onNextStep))
         }

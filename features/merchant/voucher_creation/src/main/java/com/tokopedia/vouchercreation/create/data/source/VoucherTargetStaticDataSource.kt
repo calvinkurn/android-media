@@ -1,7 +1,7 @@
 package com.tokopedia.vouchercreation.create.data.source
 
 import com.tokopedia.vouchercreation.create.view.enums.VoucherTargetCardType
-import com.tokopedia.vouchercreation.create.view.uimodel.VoucherTargetItemUiModel
+import com.tokopedia.vouchercreation.create.view.uimodel.vouchertarget.VoucherTargetItemUiModel
 
 object VoucherTargetStaticDataSource {
 
