@@ -68,13 +68,11 @@ class NotificationUpdateAnalytics @Inject constructor(): NotificationAnalytics()
     // multi product
     fun trackMultiProductListImpression(
             userId: String,
-            productNumber: Int,
             location: String = LABEL_LOCATION,
-            notification: MultipleProductCardViewBean
+            notification: BaseNotificationItemViewBean
     ) {
         val eventLabel = getImpressionTrackLabel(
                 notificationId = notification.notificationId,
-                productNumber = productNumber + 1,
                 location = location
         )
         trackProductListImpression(
@@ -92,10 +90,10 @@ class NotificationUpdateAnalytics @Inject constructor(): NotificationAnalytics()
             notification: BaseNotificationItemViewBean
     ) {
         val eventLabel = getImpressionTrackLabel(
-                location,
-                notification.templateKey,
-                notification.notificationId,
-                notification.products.first().productId
+                location = location,
+                templateKey = notification.templateKey,
+                notificationId = notification.notificationId,
+                productId = notification.products.first().productId
         )
         trackProductListImpression(
                 userId = userId,
@@ -236,7 +234,6 @@ class NotificationUpdateAnalytics @Inject constructor(): NotificationAnalytics()
     ) {
         val eventLabel = getImpressionTrackLabel(
                 notificationId = notification.notificationId,
-                productPrice = notification.getAtcProduct()?.price?: "",
                 location = eventLocation
         )
         trackProductCheckoutCardClick(
@@ -252,7 +249,6 @@ class NotificationUpdateAnalytics @Inject constructor(): NotificationAnalytics()
     ) {
         val eventLabel = getImpressionTrackLabel(
                 notificationId = notification.notificationId,
-                productPrice = notification.product.price,
                 location = eventLocation
         )
         trackProductCheckoutCardClick(
@@ -436,7 +432,6 @@ class NotificationUpdateAnalytics @Inject constructor(): NotificationAnalytics()
     ) {
         val eventLabel = getImpressionTrackLabel(
                 notificationId = notification.notificationId,
-                productPrice = notification.product.price,
                 location = eventLocation
         )
         trackAtcOnProductClick(

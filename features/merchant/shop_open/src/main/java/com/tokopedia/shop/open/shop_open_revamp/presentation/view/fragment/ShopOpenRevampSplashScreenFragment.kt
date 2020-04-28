@@ -8,8 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.fragment.app.Fragment
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.shop.open.R
 import com.tokopedia.shop.open.shop_open_revamp.analytic.ShopOpenRevampTracking
@@ -19,15 +17,13 @@ import com.tokopedia.shop.open.shop_open_revamp.listener.FragmentNavigationInter
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_shop_open_revamp_finish.*
-import kotlinx.android.synthetic.main.fragment_shop_open_revamp_finish.txt_greeting
-import kotlinx.android.synthetic.main.fragment_shop_open_revamp_splash_screen.*
 
 class ShopOpenRevampSplashScreenFragment : Fragment() {
 
     private val handler = Handler()
-    lateinit var fragmentNavigationInterface: FragmentNavigationInterface
     private lateinit var imageViewShopCreated: ImageView
     private var shopOpenRevampTracking: ShopOpenRevampTracking? = null
+    private var fragmentNavigationInterface: FragmentNavigationInterface? = null
 
     private val userSession: UserSessionInterface by lazy {
         UserSession(activity)
@@ -67,7 +63,7 @@ class ShopOpenRevampSplashScreenFragment : Fragment() {
         handler.postDelayed({
             context?.let{
                 fragmentNavigationInterface
-                    .navigateToNextPage(PageNameConstant.QUISIONER_PAGE, SECOND_FRAGMENT_TAG)
+                    ?.navigateToNextPage(PageNameConstant.QUISIONER_PAGE, SECOND_FRAGMENT_TAG)
             }
         }, 3000)
     }

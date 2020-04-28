@@ -1,7 +1,5 @@
 package com.tokopedia.profile.view.activity
 
-import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
@@ -21,18 +19,11 @@ class ProfileActivity : BaseSimpleActivity() {
         const val IS_FOLLOWING_FALSE = 0
 
         const val EXTRA_PARAM_USER_ID = "user_id"
-        const val EXTRA_PARAM_POST_ID = "post_id"
         const val EXTRA_PARAM_AFTER_POST = "after_post"
         const val EXTRA_PARAM_AFTER_EDIT = "after_edit"
         const val EXTRA_PARAM_SUCCESS_POST = "success_post"
         const val TRUE = "true"
         const val ZERO = "0"
-
-        fun createIntent(context: Context?, userId: String): Intent {
-            val intent = Intent(context, ProfileActivity::class.java)
-            intent.putExtra(EXTRA_PARAM_USER_ID, userId)
-            return intent
-        }
     }
 
     override fun getNewFragment(): Fragment {
