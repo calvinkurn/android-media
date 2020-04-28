@@ -37,9 +37,8 @@ open class RechargeGeneralProductInput (
         var dataCollections: List<CatalogProductInput.DataCollection> = listOf(),
         @SerializedName("validations")
         @Expose
-        val validations: List<CatalogProductInput.Validation> = listOf(),
+        var validations: List<CatalogProductInput.Validation> = listOf(),
         var value: String = "",
-        var selectedProductId: String = "",
         var isFavoriteNumber: Boolean = false
 
 ) : Visitable<RechargeGeneralAdapterFactory> {

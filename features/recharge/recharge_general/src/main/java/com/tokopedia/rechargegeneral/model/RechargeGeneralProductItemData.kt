@@ -6,6 +6,9 @@ import com.tokopedia.rechargegeneral.presentation.adapter.RechargeGeneralAdapter
 /**
  * Created by resakemal on 26/11/19.
  */
-class RechargeGeneralProductItemData : RechargeGeneralProductInput(), Visitable<RechargeGeneralAdapterFactory> {
+class RechargeGeneralProductItemData(
+        var selectedProductId: String = "")
+
+    : RechargeGeneralProductInput(), Visitable<RechargeGeneralAdapterFactory> {
     override fun type(typeFactory: RechargeGeneralAdapterFactory) = typeFactory.type(this)
 }
