@@ -26,11 +26,15 @@ import com.tokopedia.sessioncommon.ErrorHandlerSession
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_add_email_setting_profile.*
 import javax.inject.Inject
 
 
 class AddEmailFragment : BaseDaggerFragment() {
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -159,6 +163,8 @@ class AddEmailFragment : BaseDaggerFragment() {
     private fun onSuccessAddEmail(result: AddEmailResult) {
         dismissLoading()
         activity?.run {
+            userSession.email = result.email
+
             val intent = Intent()
             val bundle = Bundle()
             bundle.putInt(EXTRA_PROFILE_SCORE, result.addEmailPojo.data.completionScore)
