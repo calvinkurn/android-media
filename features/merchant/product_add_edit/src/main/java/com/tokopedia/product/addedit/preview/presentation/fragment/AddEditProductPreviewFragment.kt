@@ -925,7 +925,6 @@ class AddEditProductPreviewFragment : BaseDaggerFragment(), ProductPhotoViewHold
                     put(AddEditProductUploadConstant.EXTRA_HAS_ORIGINAL_VARIANT_LV2, false)
                     put(AddEditProductUploadConstant.EXTRA_HAS_WHOLESALE, false)
                     put(AddEditProductUploadConstant.EXTRA_IS_ADD, 1)
-                    put(AddEditProductUploadConstant.EXTRA_IS_ADD_EDIT, true)
                 }
                 val intent = RouteManager.getIntent(it, ApplinkConstInternalMarketplace.PRODUCT_EDIT_VARIANT_DASHBOARD)
                 intent?.run {

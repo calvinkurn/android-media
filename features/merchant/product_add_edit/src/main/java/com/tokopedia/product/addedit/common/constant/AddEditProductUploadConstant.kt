@@ -21,7 +21,6 @@ class AddEditProductUploadConstant {
         const val EXTRA_HAS_ORIGINAL_VARIANT_LV2 = "EXTRA_HAS_ORI_VAR_LV2"
         const val EXTRA_HAS_WHOLESALE = "EXTRA_HAS_WHOLESALE"
         const val EXTRA_IS_ADD = "EXTRA_IS_ADD"
-        const val EXTRA_IS_ADD_EDIT = "EXTRA_IS_ADD_EDIT"
 
         const val EXTRA_VARIANT_RESULT_CACHE_ID = "variant_cache_id"
         const val EXTRA_VARIANT_PICKER_RESULT_CACHE_ID = "variant_result_cache_id"

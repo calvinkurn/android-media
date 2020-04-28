@@ -26,7 +26,6 @@ import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstan
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_HAS_ORIGINAL_VARIANT_LV2
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_HAS_WHOLESALE
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_IS_ADD
-import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_IS_ADD_EDIT
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_IS_OFFICIAL_STORE
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_IS_USING_CACHE_MANAGER
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_NEED_RETAIN_IMAGE
@@ -475,7 +474,6 @@ class AddEditProductDescriptionFragment:
                 put(EXTRA_HAS_ORIGINAL_VARIANT_LV2, false)
                 put(EXTRA_HAS_WHOLESALE, false)
                 put(EXTRA_IS_ADD, IS_ADD)
-                put(EXTRA_IS_ADD_EDIT, true)
             }
             val intent = RouteManager.getIntent(it, ApplinkConstInternalMarketplace.PRODUCT_EDIT_VARIANT_DASHBOARD)
             intent?.run {

@@ -86,7 +86,6 @@ public class ProductVariantDashboardFragment extends BaseImageFragment
     private boolean hasWholesale;
     private String defaultSku;
     private boolean isAddStatus;
-    private boolean isAddEdit;
 
     private int indexOptionParentSizeChart = -1;
 
@@ -130,7 +129,6 @@ public class ProductVariantDashboardFragment extends BaseImageFragment
             hasWholesale = cacheManager.get(ProductVariantDashboardActivity.EXTRA_HAS_WHOLESALE, boolean.class, false);
             defaultSku = cacheManager.getString(ProductVariantDashboardActivity.EXTRA_DEFAULT_SKU);
             isAddStatus = cacheManager.get(ProductVariantDashboardActivity.EXTRA_IS_ADD, boolean.class, false);
-            isAddEdit = cacheManager.get(ProductVariantDashboardActivity.EXTRA_IS_ADD_EDIT, boolean.class, false);
             productVariantViewModel = cacheManager.get(ProductExtraConstant.EXTRA_PRODUCT_VARIANT_SELECTION,
                     (new TypeToken<ProductVariantViewModel>() {}).getType(), new ProductVariantViewModel());
             productSizeChart = cacheManager.get(ProductExtraConstant.EXTRA_PRODUCT_SIZECHART,
@@ -362,7 +360,7 @@ public class ProductVariantDashboardFragment extends BaseImageFragment
                     productVariantDashboardViewModel.getProductVariantOptionChildLv1(),
                     productVariantViewModel.getVariantOptionParent(0).getName(),
                     currencyType, defaultStockType, isOfficialStore,
-                    needRetainImage, hasWholesale, isAddStatus, isAddEdit);
+                    needRetainImage, hasWholesale, isAddStatus);
         }
     }
 

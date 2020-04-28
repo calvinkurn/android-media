@@ -50,16 +50,15 @@ public class ProductVariantDetailLevelLeafActivity extends BaseSimpleActivity im
     private boolean isOfficialStore;
     private boolean hasWholesale;
     private boolean isAddStatus;
-    private boolean isAddEdit;
 
     public static void start(Context context, Fragment fragment,
                              ProductVariantCombinationViewModel productVariantCombinationViewModel,
                              ProductVariantOptionChild productVariantOptionChild,
                              String variantName, @CurrencyTypeDef int currencyType,
                              @StockTypeDef int stockType, boolean isOfficialStore,
-                             boolean needRetainImage, boolean hasWholesale, boolean isAddStatus, boolean isAddEdit) {
+                             boolean needRetainImage, boolean hasWholesale, boolean isAddStatus) {
         Intent intent = getIntent(context, productVariantCombinationViewModel, productVariantOptionChild,
-                variantName, currencyType, stockType, isOfficialStore, needRetainImage, hasWholesale,isAddStatus, isAddEdit);
+                variantName, currencyType, stockType, isOfficialStore, needRetainImage, hasWholesale,isAddStatus);
         fragment.startActivityForResult(intent, VARIANT_EDIT_LEAF_REQUEST_CODE);
     }
 
@@ -70,7 +69,7 @@ public class ProductVariantDetailLevelLeafActivity extends BaseSimpleActivity im
                              @StockTypeDef int stockType, boolean isOfficialStore,
                              boolean needRetainImage, boolean hasWholesale, boolean isAddStatus) {
         Intent intent = getIntent(activity, productVariantCombinationViewModel, productVariantOptionChild,
-                variantName, currencyType, stockType, isOfficialStore, needRetainImage, hasWholesale, isAddStatus, false);
+                variantName, currencyType, stockType, isOfficialStore, needRetainImage, hasWholesale, isAddStatus);
         activity.startActivityForResult(intent, VARIANT_EDIT_LEAF_REQUEST_CODE);
     }
 
@@ -79,7 +78,7 @@ public class ProductVariantDetailLevelLeafActivity extends BaseSimpleActivity im
                                    ProductVariantOptionChild productVariantOptionChild,
                                    String variantName, @CurrencyTypeDef int currencyType,
                                    @StockTypeDef int stockType, boolean isOfficialStore,
-                                   boolean needRetainImage, boolean hasWholesale,boolean isAddStatus, boolean isAddEdit) {
+                                   boolean needRetainImage, boolean hasWholesale,boolean isAddStatus) {
         Intent intent = new Intent(context, ProductVariantDetailLevelLeafActivity.class);
         intent.putExtra(EXTRA_PRODUCT_VARIANT_LEAF_DATA, productVariantCombinationViewModel);
         intent.putExtra(EXTRA_PRODUCT_VARIANT_OPTION_CHILD, productVariantOptionChild);
@@ -90,7 +89,6 @@ public class ProductVariantDetailLevelLeafActivity extends BaseSimpleActivity im
         intent.putExtra(EXTRA_IS_OFFICIAL_STORE, isOfficialStore);
         intent.putExtra(EXTRA_HAS_WHOLESALE, hasWholesale);
         intent.putExtra(EXTRA_IS_ADD, isAddStatus);
-        intent.putExtra(EXTRA_IS_ADD_EDIT, isAddEdit);
         return intent;
     }
 
@@ -114,7 +112,6 @@ public class ProductVariantDetailLevelLeafActivity extends BaseSimpleActivity im
         hasWholesale  = intent.getBooleanExtra(EXTRA_HAS_WHOLESALE, false);
         isOfficialStore = intent.getBooleanExtra(EXTRA_IS_OFFICIAL_STORE, false);
         isAddStatus = intent.getBooleanExtra(EXTRA_IS_ADD, false);
-        isAddEdit = intent.getBooleanExtra(EXTRA_IS_ADD_EDIT, false);
 
         super.onCreate(savedInstanceState);
     }
@@ -151,11 +148,6 @@ public class ProductVariantDetailLevelLeafActivity extends BaseSimpleActivity im
     @Override
     public boolean isAddStatus() {
         return isAddStatus;
-    }
-
-    @Override
-    public boolean isAddEdit() {
-        return isAddEdit;
     }
 
     @Override
