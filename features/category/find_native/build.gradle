@@ -47,7 +47,6 @@ dependencies {
     implementation project(rootProject.ext.libraries.linker)
     implementation rootProject.ext.tkpdInternalLibDependencies.authentication
     implementation project(rootProject.ext.libraries.sharedata)
-    implementation project(rootProject.ext.features.tkpddiscovery)
     implementation project(rootProject.ext.features.basemvvm)
     implementation rootProject.ext.miscDependencies.chips
 }

@@ -7,9 +7,9 @@ import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.common_category.customview.SearchNavigationView
+import com.tokopedia.common_category.fragment.BaseBannedProductFragment
 import com.tokopedia.common_category.fragment.BaseCategorySectionFragment
-import com.tokopedia.discovery.categoryrevamp.data.bannedCategory.Data
-import com.tokopedia.discovery.categoryrevamp.view.fragments.BaseBannedProductFragment
+import com.tokopedia.common_category.model.bannedCategory.Data
 import com.tokopedia.common_category.interfaces.CategoryNavigationListener
 import com.tokopedia.find_native.analytics.FindPageAnalytics.Companion.findPageAnalytics
 import com.tokopedia.find_native.view.fragment.FindNavFragment
@@ -233,6 +233,5 @@ class FindNavActivity : BaseActivity(), CategoryNavigationListener,
     override fun onBannedFragmentAttached() {
         hideBottomNavigation()
         imageDisplayButton.invisible()
-
     }
 }

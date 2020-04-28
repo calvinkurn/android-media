@@ -26,9 +26,10 @@ import com.tokopedia.common_category.adapter.ProductNavListAdapter
 import com.tokopedia.common_category.adapter.QuickFilterAdapter
 import com.tokopedia.common_category.factory.ProductTypeFactory
 import com.tokopedia.common_category.factory.product.ProductTypeFactoryImpl
-import com.tokopedia.discovery.categoryrevamp.data.bannedCategory.Data
+import com.tokopedia.common_category.fragment.BaseBannedProductFragment
+import com.tokopedia.common_category.model.bannedCategory.Data
 import com.tokopedia.common_category.model.productModel.ProductsItem
-import com.tokopedia.discovery.categoryrevamp.view.fragments.BaseBannedProductFragment
+
 import com.tokopedia.common_category.interfaces.ProductCardListener
 import com.tokopedia.common_category.interfaces.QuickFilterListener
 import com.tokopedia.discovery.common.constants.SearchConstant
@@ -631,5 +632,10 @@ class FindNavFragment : BaseBannedProductFragment(), ProductCardListener,
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         AdultManager.handleActivityResult(activity, requestCode, resultCode, data)
+    }
+
+    override fun addBannedProductScreen() {
+        super.addBannedProductScreen()
+        view?.findViewById<View>(R.id.layout_banned_screen)?.show()
     }
 }
