@@ -1,6 +1,7 @@
 package com.tokopedia.reviewseller.feature.reviewdetail.view.fragment
 
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
@@ -24,9 +25,8 @@ import com.tokopedia.reviewseller.feature.reviewdetail.di.component.ReviewProduc
 import com.tokopedia.reviewseller.feature.reviewdetail.util.mapper.SellerReviewProductDetailMapper
 import com.tokopedia.reviewseller.feature.reviewdetail.view.adapter.*
 import com.tokopedia.reviewseller.feature.reviewdetail.view.bottomsheet.PopularTopicsBottomSheet
-import com.tokopedia.reviewseller.feature.reviewdetail.view.model.OverallRatingDetailUiModel
 import com.tokopedia.reviewseller.feature.reviewdetail.view.model.ProductFeedbackDetailUiModel
-import com.tokopedia.reviewseller.feature.reviewdetail.view.model.RatingBarUiModel
+import com.tokopedia.reviewseller.feature.reviewdetail.view.model.ProductReviewFilterUiModel
 import com.tokopedia.reviewseller.feature.reviewdetail.view.viewmodel.ProductReviewDetailViewModel
 import com.tokopedia.reviewseller.feature.reviewlist.util.mapper.SellerReviewProductListMapper
 import com.tokopedia.sortfilter.SortFilterItem
@@ -38,7 +38,6 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_rating_product.*
 import kotlinx.android.synthetic.main.fragment_seller_review_detail.*
-import kotlinx.android.synthetic.main.item_overall_review_detail.view.*
 import javax.inject.Inject
 
 /**
@@ -96,7 +95,7 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
 
     private fun iniFilterData(){
         viewModelProductReviewDetail?.filterPeriod = ReviewSellerConstant.mapFilterReviewDetail().getKeyByValue(getString(R.string.default_filter_detail))
-        viewModelProductReviewDetail?.filterAllText = viewModelProductReviewDetail?.filterPeriod.orEmpty()
+        viewModelProductReviewDetail?.filterByText = viewModelProductReviewDetail?.filterPeriod.orEmpty()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -152,7 +151,6 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
 
     override fun onDestroy() {
         viewModelProductReviewDetail?.productFeedbackDetail?.removeObservers(this)
-        viewModelProductReviewDetail?.reviewDetailOverallRating?.removeObservers(this)
         viewModelProductReviewDetail?.flush()
         super.onDestroy()
     }
@@ -244,7 +242,6 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
         viewModelProductReviewDetail?.getFeedbackDetailListNext(
                 productID = productID,
                 sortBy = sortBy,
-                filterBy = filterBy,
                 page = page)
     }
 
@@ -260,7 +257,7 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
     }
 
     private fun observeLiveData() {
-        viewModelProductReviewDetail?.ratingFilterData?.observe(this, Observer {
+        viewModelProductReviewDetail?.reviewInitialData?.observe(this, Observer {
             hideLoading()
             when(it) {
                 is Success -> {
@@ -283,7 +280,8 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
             hideLoading()
             when (it) {
                 is Success -> {
-                    onSuccessGetFeedbackReviewListData(it.data.first, it.data.second)
+                    Log.e("datanyaa",it.data.second.productFeedbackDetailList.toString())
+//                    onSuccessGetFeedbackReviewListData(it.data.first, it.data.second)
                 }
                 is Fail -> {
                     onErrorGetReviewDetailData(it.throwable)
@@ -364,12 +362,12 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
                 it.setSelectedFilterOrSort(filterPeriodItemUnify, viewModelProductReviewDetail?.positionFilterPeriod.orZero())
 
                 it.setOnItemClickListener { _, _, position, _ ->
-                    onItemFilterClickedBottomSheet(view, position, filterPeriodItemUnify, it)
+                    onItemFilterClickedBottomSheet(position, filterPeriodItemUnify, it)
                 }
 
                 filterPeriodItemUnify.forEachIndexed { position, listItemUnify ->
                     listItemUnify.listRightRadiobtn?.setOnClickListener { _ ->
-                        onItemFilterClickedBottomSheet(view, position, filterPeriodItemUnify, it)
+                        onItemFilterClickedBottomSheet(position, filterPeriodItemUnify, it)
                     }
                 }
             }
@@ -380,8 +378,7 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
         }
     }
 
-    private fun onItemFilterClickedBottomSheet(itemView: View, position: Int, filterListItemUnify: ArrayList<ListItemUnify>,
-                                               filterListUnify: ListUnify) {
+    private fun onItemFilterClickedBottomSheet(position: Int, filterListItemUnify: ArrayList<ListItemUnify>, filterListUnify: ListUnify) {
         try {
             viewModelProductReviewDetail?.positionFilterPeriod = position
             filterListUnify.setSelectedFilterOrSort(filterListItemUnify, position)
@@ -456,14 +453,12 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
     }
 
     override fun onRatingCheckBoxClicked(ratingAndState: Pair<Int, Boolean>, adapterPosition: Int) {
-        val getTopicFromAdapter: List<RatingBarUiModel> = reviewSellerDetailAdapter.list.filterIsInstance<RatingBarUiModel>()
-        val filterRatingSelected = getTopicFromAdapter.find { it.ratingLabel == ratingAndState.first }
-        if (filterRatingSelected?.ratingIsChecked != ratingAndState.second && filterRatingSelected != null) {
-            reviewSellerDetailAdapter.updateFilterRating(adapterPosition, ratingAndState.second)
-        }
+        val getTopicFromAdapter = reviewSellerDetailAdapter.list.filterIsInstance<ProductReviewFilterUiModel>().firstOrNull()
+        val getSelectedCheckbox = getTopicFromAdapter?.ratingBarList?.getOrNull(adapterPosition)
 
-        val generatedFilterRatingString = getTopicFromAdapter.filter { it.ratingIsChecked }.joinToString(postfix = ";", prefix = "rating=", separator = ",") {
-            it.ratingLabel.toString()
+        if (getSelectedCheckbox?.ratingIsChecked != ratingAndState.second && getSelectedCheckbox != null) {
+            reviewSellerDetailAdapter.updateFilterRating(adapterPosition, ratingAndState.second, getTopicFromAdapter)
+            viewModelProductReviewDetail?.setFilterRatingData(getTopicFromAdapter.ratingBarList)
         }
     }
 
