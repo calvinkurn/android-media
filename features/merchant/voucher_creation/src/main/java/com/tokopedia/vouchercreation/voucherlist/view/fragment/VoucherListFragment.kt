@@ -20,15 +20,10 @@ import com.tokopedia.vouchercreation.di.component.DaggerVoucherCreationComponent
 import com.tokopedia.vouchercreation.voucherlist.model.*
 import com.tokopedia.vouchercreation.voucherlist.model.BaseHeaderChipUiModel.HeaderChip
 import com.tokopedia.vouchercreation.voucherlist.model.BaseHeaderChipUiModel.ResetChip
-import com.tokopedia.vouchercreation.voucherlist.model.MoreMenuUiModel.EditQuota
-import com.tokopedia.vouchercreation.voucherlist.model.MoreMenuUiModel.CancelVoucher
-import com.tokopedia.vouchercreation.voucherlist.model.MoreMenuUiModel.StopVoucher
+import com.tokopedia.vouchercreation.voucherlist.model.MoreMenuUiModel.*
 import com.tokopedia.vouchercreation.voucherlist.view.adapter.factory.VoucherListAdapterFactoryImpl
 import com.tokopedia.vouchercreation.voucherlist.view.viewmodel.VoucherListViewModel
-import com.tokopedia.vouchercreation.voucherlist.view.widget.CancelVoucherDialog
-import com.tokopedia.vouchercreation.voucherlist.view.widget.MoreMenuBottomSheet
-import com.tokopedia.vouchercreation.voucherlist.view.widget.EditQuotaBottomSheet
-import com.tokopedia.vouchercreation.voucherlist.view.widget.StopVoucherDialog
+import com.tokopedia.vouchercreation.voucherlist.view.widget.*
 import com.tokopedia.vouchercreation.voucherlist.view.widget.filterbottomsheet.FilterBottomSheet
 import com.tokopedia.vouchercreation.voucherlist.view.widget.headerchips.ChipType
 import com.tokopedia.vouchercreation.voucherlist.view.widget.sortbottomsheet.SortBottomSheet
@@ -159,9 +154,20 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
         dismissBottomSheet<MoreMenuBottomSheet>(MoreMenuBottomSheet.TAG)
         when (menu) {
             is EditQuota -> showEditQuotaBottomSheet()
+            is DownloadVoucher -> showDownloadBottomSheet(voucher)
             is CancelVoucher -> showCancelVoucherDialog(voucher)
             is StopVoucher -> showStopVoucherDialog(voucher)
         }
+    }
+
+    private fun showDownloadBottomSheet(voucher: VoucherUiModel) {
+        if (!isAdded) return
+        val parent = view as? ViewGroup ?: return
+        DownloadVoucherBottomSheet(parent, voucher)
+                .setOnDownloadClickListener {
+
+                }
+                .show(childFragmentManager)
     }
 
     private fun showStopVoucherDialog(voucher: VoucherUiModel) {
@@ -181,8 +187,8 @@ class VoucherListFragment : BaseListFragment<Visitable<*>, VoucherListAdapterFac
     }
 
     private fun showEditQuotaBottomSheet() {
-        val parent = view as? ViewGroup ?: return
         if (!isAdded) return
+        val parent = view as? ViewGroup ?: return
         EditQuotaBottomSheet(parent).show(childFragmentManager)
     }
 
