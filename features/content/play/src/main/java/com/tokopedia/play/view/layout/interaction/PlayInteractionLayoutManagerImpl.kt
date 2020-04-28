@@ -3,8 +3,10 @@ package com.tokopedia.play.view.layout.interaction
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.WindowInsetsCompat
+import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play.view.type.ScreenOrientation
 import com.tokopedia.play.view.type.VideoOrientation
+import com.tokopedia.play.view.uimodel.VideoPlayerUiModel
 
 /**
  * Created by jegul on 01/04/20
@@ -54,6 +56,10 @@ class PlayInteractionLayoutManagerImpl(
     }
 
     override fun onVideoOrientationChanged(container: View, videoOrientation: VideoOrientation) {
-        return manager.onVideoOrientationChanged(container, videoOrientation)
+        manager.onVideoOrientationChanged(container, videoOrientation)
+    }
+
+    override fun onVideoPlayerChanged(container: View, videoPlayerUiModel: VideoPlayerUiModel, channelType: PlayChannelType) {
+        manager.onVideoPlayerChanged(container, videoPlayerUiModel, channelType)
     }
 }

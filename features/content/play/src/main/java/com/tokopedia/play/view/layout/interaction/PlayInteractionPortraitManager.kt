@@ -3,6 +3,7 @@ package com.tokopedia.play.view.layout.interaction
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.IdRes
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.view.WindowInsetsCompat
 import com.tokopedia.abstraction.common.utils.DisplayMetricUtils
@@ -11,7 +12,9 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.play.R
 import com.tokopedia.play.util.PlayFullScreenHelper
 import com.tokopedia.play.util.changeConstraint
+import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play.view.type.VideoOrientation
+import com.tokopedia.play.view.uimodel.VideoPlayerUiModel
 
 /**
  * Created by jegul on 13/04/20
@@ -43,11 +46,13 @@ class PlayInteractionPortraitManager(
     private val sendChatView: View = container.findViewById(sendChatComponentId)
     private val quickReplyView: View = container.findViewById(quickReplyComponentId)
     private val chatListView: View = container.findViewById(chatListComponentId)
+    private val pinnedView: View = container.findViewById(pinnedComponentId)
 
     private val offset24 = container.resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl5)
     private val offset16 = container.resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4)
     private val offset12 = container.resources.getDimensionPixelOffset(com.tokopedia.play.R.dimen.play_offset_12)
     private val offset8 = container.resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3)
+    private val offset0 = container.resources.getDimensionPixelOffset(com.tokopedia.play.R.dimen.play_no_offset)
 
     override fun layoutView(view: View) {
         layoutSizeContainer(container = view, id = sizeContainerComponentId)
@@ -152,6 +157,10 @@ class PlayInteractionPortraitManager(
             layoutImmersiveBox(container = container, videoOrientation = videoOrientation, id = immersiveBoxComponentId, pinnedComponentId = pinnedComponentId, statsInfoComponentId = statsInfoComponentId)
             layoutPlayButton(container = container, videoOrientation = videoOrientation, id = playButtonComponentId, immersiveBoxComponentId = immersiveBoxComponentId)
         }
+    }
+
+    override fun onVideoPlayerChanged(container: View, videoPlayerUiModel: VideoPlayerUiModel, channelType: PlayChannelType) {
+        changePinnedBottomMarginGone(if (videoPlayerUiModel.isYouTube && channelType.isVod) offset0 else offset12)
     }
 
     private fun layoutSizeContainer(container: View, @IdRes id: Int) {
@@ -276,5 +285,11 @@ class PlayInteractionPortraitManager(
             connect(id, ConstraintSet.END, sizeContainerComponentId, ConstraintSet.END, offset16)
             connect(id, ConstraintSet.TOP, statsInfoComponentId, ConstraintSet.BOTTOM, offset24)
         }
+    }
+
+    private fun changePinnedBottomMarginGone(bottomMargin: Int) {
+        val layoutParams = pinnedView.layoutParams as ConstraintLayout.LayoutParams
+        layoutParams.goneBottomMargin = bottomMargin
+        pinnedView.layoutParams = layoutParams
     }
 }

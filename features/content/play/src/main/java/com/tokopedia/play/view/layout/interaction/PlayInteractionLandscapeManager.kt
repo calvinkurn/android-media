@@ -7,7 +7,9 @@ import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.view.WindowInsetsCompat
 import com.tokopedia.play.util.PlayFullScreenHelper
 import com.tokopedia.play.util.changeConstraint
+import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play.view.type.VideoOrientation
+import com.tokopedia.play.view.uimodel.VideoPlayerUiModel
 
 /**
  * Created by jegul on 13/04/20
@@ -59,6 +61,10 @@ class PlayInteractionLandscapeManager(
     }
 
     override fun onVideoOrientationChanged(container: View, videoOrientation: VideoOrientation) {
+
+    }
+
+    override fun onVideoPlayerChanged(container: View, videoPlayerUiModel: VideoPlayerUiModel, channelType: PlayChannelType) {
 
     }
 
