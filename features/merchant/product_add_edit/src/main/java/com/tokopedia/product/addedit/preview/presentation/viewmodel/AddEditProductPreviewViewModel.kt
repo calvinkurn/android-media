@@ -196,14 +196,11 @@ class AddEditProductPreviewViewModel @Inject constructor(
     }
 
     fun updateVariantInputModel(variantInputModel: ProductVariantInputModel) {
-        variantInputModel.isRemoveVariant = getIsRemoveVariant(variantInputModel.productVariant)
         productInputModel.value?.variantInputModel = variantInputModel
     }
 
     fun updateVariantAndOption(productVariant: ArrayList<ProductVariantCombinationViewModel>,
                                variantOptionParent: ArrayList<ProductVariantOptionParent>) {
-        productInputModel.value?.variantInputModel?.isRemoveVariant =
-                getIsRemoveVariant(productVariant)
         productInputModel.value?.variantInputModel?.productVariant =
                 mapProductVariant(productVariant, variantOptionParent)
         productInputModel.value?.variantInputModel?.variantOptionParent =
@@ -359,15 +356,6 @@ class AddEditProductPreviewViewModel @Inject constructor(
             TYPE_ACTIVE_LIMITED
         } else {
             TYPE_ACTIVE
-        }
-    }
-
-    // isRemoveVariant used for indicating productVariant size is decreased when not in draft mode
-    private fun getIsRemoveVariant(productVariant: ArrayList<ProductVariantCombinationViewModel>): Boolean {
-        return if (draftId.isEmpty()) {
-            productVariant.size < productInputModel.value?.variantInputModel?.productVariant?.size ?: 0
-        } else {
-            false
         }
     }
 
