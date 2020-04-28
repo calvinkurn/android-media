@@ -2,6 +2,7 @@ package com.tokopedia.shop_showcase.shop_showcase_product_add.presentation.fragm
 
 import android.app.Activity
 import android.os.Bundle
+import android.os.Handler
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
@@ -142,6 +143,8 @@ class ShopShowcaseProductAddFragment : BaseDaggerFragment(),
         view?.findViewById<CardView>(R.id.header_layout)
     }
 
+    var firstItem = gridLayoutManager.findFirstCompletelyVisibleItemPosition()
+
     /**
      * Setup Scroll Listener for endless recycler view load.
      */
@@ -165,11 +168,33 @@ class ShopShowcaseProductAddFragment : BaseDaggerFragment(),
                 }
             }
 
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                if(newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    Handler().postDelayed({
+                        slideUpCounter()
+                    }, 1800)
+                }
+                if(newState == RecyclerView.SCROLL_STATE_DRAGGING) {
+                    val currentFirstVisible = gridLayoutManager.findFirstCompletelyVisibleItemPosition()
+                    if(currentFirstVisible > firstItem)
+                        slideDownCounter()
+                    else
+                        slideDownCounter()
+
+                    firstItem = currentFirstVisible
+                }
+                super.onScrollStateChanged(recyclerView, newState)
+            }
+
         }
     }
 
     private val showcaseProductAddViewModel: ShowcaseProductAddViewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(ShowcaseProductAddViewModel::class.java)
+    }
+
+    private val productSelectedCounter: CardView? by lazy {
+        view?.findViewById<CardView>(R.id.product_choosen_counter)
     }
 
     private val emptyState: EmptyStateUnify? by lazy {
@@ -375,6 +400,17 @@ class ShopShowcaseProductAddFragment : BaseDaggerFragment(),
 
     private fun hideLoadingProgress() {
         showcaseProductListAdapter?.hideLoadingProgress()
+    }
+
+    private fun slideDownCounter() {
+        productSelectedCounter?.animate()?.translationY(200f)
+        if(buttonBackToTop?.circleMainMenu?.visibility == View.VISIBLE)
+            buttonBackToTop?.animate()?.translationY(200f)
+    }
+
+    private fun slideUpCounter() {
+        productSelectedCounter?.animate()?.translationY(0f)
+        buttonBackToTop?.animate()?.translationY(0f)
     }
 
 }

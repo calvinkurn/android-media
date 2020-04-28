@@ -1,14 +1,15 @@
 package com.tokopedia.shop_showcase.shop_showcase_add.presentation.fragment
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.text.Editable
 import android.text.InputFilter
-import android.view.KeyEvent
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.text.TextWatcher
+import android.view.*
 import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.lifecycle.ViewModelProvider
@@ -176,6 +177,8 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
         }
     }
 
+    
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if(requestCode == START_PRODUCT_SHOWCASE_ACTIVITY && resultCode == Activity.RESULT_OK) {
@@ -263,6 +266,7 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
 //    }
 
     private fun initView() {
+        showSoftKeyboard()
         observeCreateShopShowcase()
         observeLoaderState()
         observeGetSelectedProductList()
@@ -292,16 +296,45 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
         /**
          * Listener for user click action done on their keyboard
          */
-        textFieldShowcaseName?.textFieldInput?.setOnEditorActionListener(object : TextView.OnEditorActionListener {
-            override fun onEditorAction(view: TextView?, actionId: Int, even: KeyEvent?): Boolean {
-                if(actionId == EditorInfo.IME_ACTION_DONE) {
-                    val showcaseName = textFieldShowcaseName?.textFieldInput?.text.toString()
-                    validateShowcaseName(showcaseName, false)
-                    return true
+//        textFieldShowcaseName?.textFieldInput?.setOnEditorActionListener(object : TextView.OnEditorActionListener {
+//            override fun onEditorAction(view: TextView?, actionId: Int, even: KeyEvent?): Boolean {
+//                if(actionId == EditorInfo.IME_ACTION_DONE) {
+//                    val showcaseName = textFieldShowcaseName?.textFieldInput?.text.toString()
+//                    validateShowcaseName(showcaseName, false)
+//                    return true
+//                }
+//                return false
+//            }
+//        })
+
+        textFieldShowcaseName?.textFieldInput?.run {
+            setOnEditorActionListener(object : TextView.OnEditorActionListener {
+                override fun onEditorAction(view: TextView?, actionId: Int, even: KeyEvent?): Boolean {
+                    if(actionId == EditorInfo.IME_ACTION_DONE) {
+                        val showcaseName = textFieldShowcaseName?.textFieldInput?.text.toString()
+                        validateShowcaseName(showcaseName, false)
+                        return true
+                    }
+                    return false
                 }
-                return false
-            }
-        })
+            })
+
+            addTextChangedListener(object : TextWatcher {
+                override fun afterTextChanged(p0: Editable?) {
+                    // no op
+                }
+
+                override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                    // no op
+                }
+
+                override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+                    if(s.isNotEmpty()) {
+                        textFieldShowcaseName?.setError(false)
+                    }
+                }
+            })
+        }
 
         /**
          * Send tracker if textfield get focus after clicked,
@@ -574,6 +607,13 @@ class ShopShowcaseAddFragment : BaseDaggerFragment(), HasComponent<ShopShowcaseA
 
     private fun updateAppendedSelectedProduct(showcaseAddAdapter: ShopShowcaseAddAdapter?, newSelectedProductList: ArrayList<ShowcaseProduct>?) {
         showcaseAddAdapter?.updateAppendedDataSet(newSelectedProductList)
+    }
+
+    private fun showSoftKeyboard() {
+        activity?.window?.run {
+            textFieldShowcaseName?.textFieldInput?.requestFocus()
+            setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE)
+        }
     }
 
     private fun hideSoftKeyboard() {
