@@ -6,6 +6,7 @@ import com.tokopedia.common.travel.utils.TravelDispatcherProvider
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.hotel.common.data.HotelTypeEnum
 import com.tokopedia.hotel.search.data.model.*
 import com.tokopedia.hotel.search.data.model.params.ParamFilter
 import com.tokopedia.hotel.search.data.model.params.ParamLocation
@@ -40,19 +41,19 @@ class HotelSearchResultViewModel @Inject constructor(
 
             when (hotelSearchModel.type) {
                 // temp: to support the popular search and recent search in suggestion page
-                TYPE_CITY -> {
+                HotelTypeEnum.CITY.value -> {
                     location.cityID = hotelSearchModel.id
                 }
-                TYPE_DISTRICT -> {
+                HotelTypeEnum.DISTRICT.value -> {
                     location.districtID = hotelSearchModel.id
                 }
-                TYPE_REGION -> {
+                HotelTypeEnum.REGION.value -> {
                     location.regionID = hotelSearchModel.id
                 }
             }
 
             // when user search by coordinate
-            if (hotelSearchModel.searchType == TYPE_COORDINATE) {
+            if (hotelSearchModel.searchType == HotelTypeEnum.COORDINATE.value) {
                 location.latitude = hotelSearchModel.lat
                 location.longitude = hotelSearchModel.long
             }
@@ -103,10 +104,6 @@ class HotelSearchResultViewModel @Inject constructor(
 
     companion object {
         private const val PARAM_SEARCH_PROPERTY = "data"
-        private const val TYPE_REGION = "region"
-        private const val TYPE_DISTRICT = "district"
-        private const val TYPE_CITY = "city"
-        private const val TYPE_COORDINATE = "coordinate"
 
         private const val DEFAULT_SORT = "popularity"
     }

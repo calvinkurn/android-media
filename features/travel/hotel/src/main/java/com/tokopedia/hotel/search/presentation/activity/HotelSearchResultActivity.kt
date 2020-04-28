@@ -13,6 +13,7 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.hotel.HotelComponentInstance
 import com.tokopedia.hotel.R
+import com.tokopedia.hotel.common.data.HotelTypeEnum
 import com.tokopedia.hotel.common.presentation.HotelBaseActivity
 import com.tokopedia.hotel.common.util.HotelUtils
 import com.tokopedia.hotel.globalsearch.presentation.activity.HotelChangeSearchActivity
@@ -41,10 +42,37 @@ class HotelSearchResultActivity : HotelBaseActivity(), HasComponent<HotelSearchP
     override fun onCreate(savedInstanceState: Bundle?) {
         val uri = intent.data
         if (uri != null) {
-            //when activity open from applink
-            hotelSearchModel.searchId = uri.getQueryParameter(PARAM_ID) ?: ""
-            hotelSearchModel.searchType = uri.getQueryParameter(PARAM_TYPE) ?: ""
-            hotelSearchModel.name = uri.getQueryParameter(PARAM_NAME) ?: ""
+            //for newer applink
+            if (!uri.getQueryParameter(PARAM_ID).isNullOrEmpty()) {
+                hotelSearchModel.searchId = uri.getQueryParameter(PARAM_ID) ?: ""
+                hotelSearchModel.searchType = uri.getQueryParameter(PARAM_TYPE) ?: ""
+                hotelSearchModel.name = uri.getQueryParameter(PARAM_NAME) ?: ""
+            } else {
+                // for older applink
+                when {
+                    !uri.getQueryParameter(PARAM_HOTEL_ID).isNullOrEmpty() -> {
+                        hotelSearchModel.id = (uri.getQueryParameter(PARAM_HOTEL_ID) ?: "0").toLong()
+                        hotelSearchModel.name = uri.getQueryParameter(PARAM_HOTEL_NAME) ?: ""
+                        hotelSearchModel.type = HotelTypeEnum.PROPERTY.value
+                    }
+                    !uri.getQueryParameter(PARAM_CITY_ID).isNullOrEmpty() -> {
+                        hotelSearchModel.id = (uri.getQueryParameter(PARAM_CITY_ID) ?: "0").toLong()
+                        hotelSearchModel.name = uri.getQueryParameter(PARAM_CITY_NAME) ?: ""
+                        hotelSearchModel.type = HotelTypeEnum.CITY.value
+                    }
+                    !uri.getQueryParameter(PARAM_DISTRICT_ID).isNullOrEmpty() -> {
+                        hotelSearchModel.id = (uri.getQueryParameter(PARAM_DISTRICT_ID) ?: "0").toLong()
+                        hotelSearchModel.name = uri.getQueryParameter(PARAM_DISTRICT_NAME) ?: ""
+                        hotelSearchModel.type = HotelTypeEnum.DISTRICT.value
+                    }
+                    !uri.getQueryParameter(PARAM_REGION_ID).isNullOrEmpty() -> {
+                        hotelSearchModel.id = (uri.getQueryParameter(PARAM_REGION_ID) ?: "0").toLong()
+                        hotelSearchModel.name = uri.getQueryParameter(PARAM_REGION_NAME) ?: ""
+                        hotelSearchModel.type = HotelTypeEnum.REGION.value
+                    }
+                }
+            }
+
             hotelSearchModel.checkIn = uri.getQueryParameter(PARAM_CHECK_IN) ?: ""
             hotelSearchModel.checkOut = uri.getQueryParameter(PARAM_CHECK_OUT) ?: ""
             hotelSearchModel.room = uri.getQueryParameter(PARAM_ROOM)?.toInt() ?: 1
@@ -106,10 +134,18 @@ class HotelSearchResultActivity : HotelBaseActivity(), HasComponent<HotelSearchP
         if (fragment is HotelSearchResultFragment) {
             (fragment as HotelSearchResultFragment).onClickChangeSearch(hotelSearchModel, SEARCH_SCREEN_NAME)
         }
-        startActivityForResult(HotelChangeSearchActivity.getIntent(this, hotelSearchModel.id, hotelSearchModel.name,
-                hotelSearchModel.type, hotelSearchModel.lat.toDouble(), hotelSearchModel.long.toDouble(),
-                hotelSearchModel.checkIn, hotelSearchModel.checkOut,
-                hotelSearchModel.adult, hotelSearchModel.room,
+        startActivityForResult(HotelChangeSearchActivity.getIntent(this,
+                hotelSearchModel.id,
+                hotelSearchModel.name,
+                hotelSearchModel.type,
+                hotelSearchModel.lat.toDouble(),
+                hotelSearchModel.long.toDouble(),
+                hotelSearchModel.checkIn,
+                hotelSearchModel.checkOut,
+                hotelSearchModel.adult,
+                hotelSearchModel.room,
+                hotelSearchModel.searchId,
+                hotelSearchModel.searchType,
                 getString(R.string.hotel_search_result_change_toolbar_title)),
                 CHANGE_SEARCH_REQ_CODE)
     }
@@ -171,13 +207,20 @@ class HotelSearchResultActivity : HotelBaseActivity(), HasComponent<HotelSearchP
         const val PARAM_CHECK_OUT = "check_out"
         const val PARAM_ROOM = "room"
         const val PARAM_ADULT = "adult"
+
+        //newer version applink param
         const val PARAM_ID = "id"
         const val PARAM_NAME = "name"
         const val PARAM_TYPE = "type"
 
-        const val TYPE_REGION = "region"
-        const val TYPE_DISTRICT = "district"
-        const val TYPE_CITY = "city"
+        const val PARAM_HOTEL_ID = "hotel_id"
+        const val PARAM_HOTEL_NAME = "hotel_name"
+        const val PARAM_DISTRICT_ID = "district_id"
+        const val PARAM_DISTRICT_NAME = "district_name"
+        const val PARAM_CITY_ID = "city_id"
+        const val PARAM_CITY_NAME = "city_name"
+        const val PARAM_REGION_ID = "region_id"
+        const val PARAM_REGION_NAME = "region_name"
 
         const val SEARCH_SCREEN_NAME = "/hotel/searchresult"
 
