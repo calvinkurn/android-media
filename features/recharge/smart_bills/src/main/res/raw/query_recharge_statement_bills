@@ -30,6 +30,12 @@ query rechargeStatementBills($month: Int!, $year: Int!){
       iconURL: IconURL
       date: Date
       dateText: DateText
+      disabled: Disabled
+      disabledText: DisabledText
+      checkoutFields: CheckoutFields {
+        name: Name
+        value: Value
+      }
     }
   }
 }

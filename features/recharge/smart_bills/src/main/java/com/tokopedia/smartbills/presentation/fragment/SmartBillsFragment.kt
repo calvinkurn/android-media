@@ -16,6 +16,7 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListCheckableAdap
 import com.tokopedia.abstraction.base.view.adapter.holder.BaseCheckableViewHolder
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalPayment
@@ -23,7 +24,6 @@ import com.tokopedia.common.payment.PaymentConstant
 import com.tokopedia.common.payment.model.PaymentPassData
 import com.tokopedia.common.topupbills.view.fragment.BaseTopupBillsFragment
 import com.tokopedia.common.topupbills.widget.TopupBillsCheckoutWidget
-import com.tokopedia.design.utils.CurrencyFormatHelper
 import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.smartbills.R
 import com.tokopedia.smartbills.data.RechargeBills
@@ -32,6 +32,7 @@ import com.tokopedia.smartbills.presentation.activity.SmartBillsOnboardingActivi
 import com.tokopedia.smartbills.presentation.adapter.SmartBillsAdapter
 import com.tokopedia.smartbills.presentation.adapter.SmartBillsAdapterFactory
 import com.tokopedia.smartbills.presentation.viewmodel.SmartBillsViewModel
+import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -109,13 +110,23 @@ class SmartBillsFragment : BaseDaggerFragment(),
                         val intent = RouteManager.getIntent(context, ApplinkConstInternalPayment.PAYMENT_CHECKOUT)
                         intent.putExtra(PaymentConstant.EXTRA_PARAMETER_TOP_PAY_DATA, paymentPassData)
                         startActivityForResult(intent, PaymentConstant.REQUEST_CODE)
-                    }
-                    else { //TODO: Handle partial success
+                    } else { // Else, show error message in affected items
+                        NetworkErrorHelper.showRedSnackbar(activity, getString(R.string.smart_bills_checkout_error))
 
+                        for (errorItem in it.data.attributes.errors) {
+                            val bill = adapter.data[errorItem.index]
+                            bill.errorMessage = if (errorItem.errorMessage.isNotEmpty()) {
+                                errorItem.errorMessage
+                            } else {
+                                getString(R.string.smart_bills_item_default_error)
+                            }
+                            adapter.data[errorItem.index] = bill
+                            adapter.notifyItemChanged(errorItem.index)
+                        }
                     }
                 }
                 is Fail -> {
-
+                    NetworkErrorHelper.showRedSnackbar(activity, it.throwable.message)
                 }
             }
         })
@@ -143,6 +154,19 @@ class SmartBillsFragment : BaseDaggerFragment(),
                             REQUEST_CODE_SMART_BILLS_ONBOARDING
                     )
                 }
+
+                // Setup ticker
+                smart_bills_ticker.setHtmlDescription(getString(R.string.smart_bills_ticker))
+                smart_bills_ticker.setDescriptionClickEvent(object: TickerCallback {
+                    override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                        RouteManager.route(context, TokopediaUrl.Companion.getInstance().getPULSA() + PATH_SUBSCRIPTIONS)
+                    }
+
+                    override fun onDismiss() {
+
+                    }
+
+                })
             }
 
             smart_bills_select_all_checkbox.setOnClickListener {
@@ -214,8 +238,19 @@ class SmartBillsFragment : BaseDaggerFragment(),
     }
 
     override fun onClickNextBuyButton() {
-        viewModel.runMultiCheckout(viewModel.createMultiCheckoutParams(adapter.checkedDataList),
-                userSession.userId)
+        if (adapter.checkedDataList.isNotEmpty()) {
+            // Reset error in bill items
+            for ((index, bill) in adapter.data.withIndex()) {
+                if (bill.errorMessage.isNotEmpty()) {
+                    bill.errorMessage = ""
+                    adapter.data[index] = bill
+                    adapter.notifyItemChanged(index)
+                }
+            }
+
+            viewModel.runMultiCheckout(viewModel.createMultiCheckoutParams(adapter.checkedDataList),
+                    userSession.userId)
+        }
     }
 
     private fun toggleAllItems(value: Boolean) {
@@ -233,5 +268,7 @@ class SmartBillsFragment : BaseDaggerFragment(),
 
         const val REQUEST_CODE_LOGIN = 1010
         const val REQUEST_CODE_SMART_BILLS_ONBOARDING = 1700
+
+        const val LANGGANAN_URL = "https://www.tokopedia.com/langganan"
     }
 }

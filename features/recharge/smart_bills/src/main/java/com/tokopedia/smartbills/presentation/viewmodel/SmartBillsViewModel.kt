@@ -3,16 +3,14 @@ package com.tokopedia.smartbills.presentation.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.common.topupbills.utils.generateRechargeCheckoutToken
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.smartbills.data.RechargeBills
-import com.tokopedia.smartbills.data.RechargeMultiCheckoutResponse
-import com.tokopedia.smartbills.data.RechargeStatementBills
-import com.tokopedia.smartbills.data.RechargeStatementMonths
+import com.tokopedia.smartbills.data.*
 import com.tokopedia.smartbills.data.api.SmartBillsRepository
 import com.tokopedia.smartbills.util.SmartBillsDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
@@ -42,7 +40,9 @@ class SmartBillsViewModel @Inject constructor(
     fun getStatementMonths(rawQuery: String, mapParams: Map<String, Any>, isLoadFromCloud: Boolean = false) {
         launchCatchError(block = {
             val graphqlRequest = GraphqlRequest(rawQuery, RechargeStatementMonths.Response::class.java, mapParams)
-            val graphqlCacheStrategy = GraphqlCacheStrategy.Builder(if (isLoadFromCloud) CacheType.CLOUD_THEN_CACHE else CacheType.CACHE_FIRST).build()
+            val graphqlCacheStrategy = GraphqlCacheStrategy.Builder(
+                    if (isLoadFromCloud) CacheType.CLOUD_THEN_CACHE else CacheType.CACHE_FIRST
+            ).build()
             val data = withContext(dispatcher.IO) {
                 graphqlRepository.getReseponse(listOf(graphqlRequest), graphqlCacheStrategy)
             }.getSuccessData<RechargeStatementMonths.Response>()
@@ -56,7 +56,9 @@ class SmartBillsViewModel @Inject constructor(
     fun getStatementBills(rawQuery: String, mapParams: Map<String, Any>, isLoadFromCloud: Boolean = false) {
         launchCatchError(block = {
             val graphqlRequest = GraphqlRequest(rawQuery, RechargeStatementBills.Response::class.java, mapParams)
-            val graphqlCacheStrategy = GraphqlCacheStrategy.Builder(if (isLoadFromCloud) CacheType.CLOUD_THEN_CACHE else CacheType.CACHE_FIRST).build()
+            val graphqlCacheStrategy = GraphqlCacheStrategy.Builder(
+                    if (isLoadFromCloud) CacheType.CLOUD_THEN_CACHE else CacheType.CACHE_FIRST
+            ).build()
             val data = withContext(dispatcher.IO) {
                 graphqlRepository.getReseponse(listOf(graphqlRequest), graphqlCacheStrategy)
             }.getSuccessData<RechargeStatementBills.Response>()
@@ -67,11 +69,10 @@ class SmartBillsViewModel @Inject constructor(
         }
     }
 
-    fun runMultiCheckout(mapParams: Map<String, Any>, userId: String) {
-        val idempotencyKey = "" //TODO: Set idempotency key
+    fun runMultiCheckout(request: MultiCheckoutRequest, userId: String) {
         launchCatchError(block = {
             val data = withContext(dispatcher.IO) {
-                smartBillsRepository.postMultiCheckout(mapParams, userId, idempotencyKey)
+                smartBillsRepository.postMultiCheckout(request, userId.generateRechargeCheckoutToken())
             }
 
             mutableMultiCheckout.postValue(Success(data))
@@ -88,30 +89,16 @@ class SmartBillsViewModel @Inject constructor(
         return mapOf(PARAM_MONTH to month, PARAM_YEAR to year)
     }
 
-    fun createMultiCheckoutParams(items: List<RechargeBills>): Map<String, Any> {
-        val itemParams = items.mapIndexed { index, item ->
-            val itemMap = mutableMapOf<String, Any>()
-            itemMap[PARAM_INDEX] = index
-            itemMap[PARAM_PRODUCT_ID] = item.productID
-
-            val fieldParams = item.checkoutFields.map { it.getMap() }
-            itemMap[PARAM_FIELDS] = fieldParams
-            return itemMap
+    fun createMultiCheckoutParams(items: List<RechargeBills>): MultiCheckoutRequest {
+        val requestData = items.mapIndexed { index, item ->
+            return@mapIndexed MultiCheckoutRequest.MultiCheckoutRequestItem(index, item.productID, item.checkoutFields, "")
         }
-        return mapOf<String, Any>(PARAM_DATA to mapOf(PARAM_ATTRIBUTES to mapOf(PARAM_ITEMS to itemParams)))
+        return MultiCheckoutRequest(MultiCheckoutRequest.MultiCheckoutRequestAttributes(requestData))
     }
 
     companion object {
         const val PARAM_LIMIT = "limit"
         const val PARAM_MONTH = "month"
         const val PARAM_YEAR = "year"
-
-        const val PARAM_INDEX = "index"
-        const val PARAM_PRODUCT_ID = "product_id"
-        const val PARAM_FIELDS = "fields"
-        const val PARAM_CART_UUID = "cart_uuid"
-        const val PARAM_DATA = "data"
-        const val PARAM_ATTRIBUTES = "attributes"
-        const val PARAM_ITEMS = "items"
     }
 }

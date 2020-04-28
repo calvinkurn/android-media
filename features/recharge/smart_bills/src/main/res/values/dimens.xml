@@ -2,4 +2,5 @@
 <resources>
     <dimen name="smart_bills_item_text_margin">12dp</dimen>
     <dimen name="smart_bills_item_padding">12dp</dimen>
+    <dimen name="smart_bills_icon_size">36dp</dimen>
 </resources>

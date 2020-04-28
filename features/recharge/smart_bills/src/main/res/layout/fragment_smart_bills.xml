@@ -20,7 +20,9 @@
             <com.tokopedia.unifycomponents.ticker.Ticker
                 android:id="@+id/smart_bills_ticker"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                app:closeButtonVisibility="gone"
+                app:tickerType="announcement" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/smart_bills_title"
@@ -70,6 +72,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_marginLeft="@dimen/spacing_lvl4"
-        android:layout_marginRight="@dimen/spacing_lvl4" />
+        android:layout_marginRight="@dimen/spacing_lvl4"
+        android:elevation="@dimen/spacing_lvl1" />
 
 </RelativeLayout>

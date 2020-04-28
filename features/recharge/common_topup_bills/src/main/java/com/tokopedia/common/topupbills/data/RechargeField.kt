@@ -10,13 +10,4 @@ class RechargeField (
         @SerializedName("value")
         @Expose
         val value: String = ""
-) {
-        fun getMap(): Map<String, String> {
-                return mapOf(PARAM_NAME to name, PARAM_VALUE to value)
-        }
-
-        companion object {
-                const val PARAM_NAME = "name"
-                const val PARAM_VALUE = "value"
-        }
-}
+)

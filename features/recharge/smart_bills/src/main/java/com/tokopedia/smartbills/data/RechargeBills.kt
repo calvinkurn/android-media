@@ -55,7 +55,8 @@ class RechargeBills(
         @SerializedName("checkoutFields")
         @Expose
         val checkoutFields: List<RechargeField> = listOf(),
-        var selected: Boolean = false
+        var selected: Boolean = false,
+        var errorMessage: String = ""
 ): Visitable<SmartBillsAdapterFactory> {
         override fun type(typeFactory: SmartBillsAdapterFactory): Int {
                 return typeFactory.type(this)
