@@ -152,7 +152,7 @@ public class ProductItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                     } else if (actionButton.getKey().equalsIgnoreCase(BUY_AGAIN_ACTION_BUTTON_KEY)) {
                         List<Items> itemsList = new ArrayList<>();
                         itemsList.add(items);
-                        presenter.onBuyAgainItems(itemsList, " - product");
+                        presenter.onBuyAgainItems(itemsList, " - product", status.status());
                     }
                 });
             }

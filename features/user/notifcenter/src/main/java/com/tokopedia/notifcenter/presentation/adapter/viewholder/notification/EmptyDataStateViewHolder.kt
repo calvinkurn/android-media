@@ -11,16 +11,20 @@ import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.data.state.EmptySource
 import com.tokopedia.notifcenter.data.viewbean.NotificationEmptyStateViewBean
 
-typealias LayoutParam = ViewGroup.LayoutParams
-
-class EmptyDataStateViewHolder(view: View): AbstractViewHolder<NotificationEmptyStateViewBean>(view) {
+class EmptyDataStateViewHolder(
+        view: View
+) : AbstractViewHolder<NotificationEmptyStateViewBean>(view) {
 
     private val container = view.findViewById<RelativeLayout>(R.id.empty_container)
     private val txtMessage = view.findViewById<TextView>(R.id.txt_message)
     private val imgState = view.findViewById<ImageView>(R.id.img_state)
 
-    private val _matchParent by lazy { LayoutParam.MATCH_PARENT }
-    private val _wrapContent by lazy { LayoutParam.WRAP_CONTENT }
+    private val _matchParent by lazy {
+        ViewGroup.LayoutParams.MATCH_PARENT
+    }
+    private val _wrapContent by lazy {
+        ViewGroup.LayoutParams.WRAP_CONTENT
+    }
 
     override fun bind(element: NotificationEmptyStateViewBean) {
         txtMessage.text = if (element.title != 0) getString(element.title) else ""
@@ -31,9 +35,7 @@ class EmptyDataStateViewHolder(view: View): AbstractViewHolder<NotificationEmpty
                 setLayoutParamsContainer()
             }
             is EmptySource.Transaction -> {
-                setLayoutParamsContainer(
-                        height = _wrapContent
-                )
+                setLayoutParamsContainer(height = _wrapContent)
             }
         }
     }

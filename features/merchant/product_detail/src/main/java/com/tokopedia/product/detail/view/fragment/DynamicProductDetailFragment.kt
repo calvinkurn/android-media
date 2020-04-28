@@ -632,6 +632,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             ProductDetailConstant.PRODUCT_WHOLESALE_INFO -> {
                 val data = DynamicProductDetailMapper.mapToWholesale(viewModel.getDynamicProductInfoP1?.data?.wholesale)
                 if (data != null && data.isNotEmpty()) {
+                    DynamicProductDetailTracking.Click.eventClickWholesale(viewModel.getDynamicProductInfoP1, componentTrackDataModel)
                     context?.run {
                         startActivity(WholesaleActivity.getIntent(this, ArrayList(data)))
                     }
@@ -868,7 +869,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                     activity?.run {
                         val statusMessage = productInfo.basic.statusMessage(this)
                         if (statusMessage.isNotEmpty()) {
-                            showToasterWithAction(getString(R.string.product_is_at_status_x, statusMessage), getString(R.string.close)) {}
+                            showToasterWithAction(getString(R.string.product_is_at_status_x, statusMessage), getString(R.string.close), {})
                         }
                     }
                 }
@@ -1765,8 +1766,10 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         viewModel.getDynamicProductInfoP1?.run {
             doActionOrLogin({
                 context?.let {
-                    val intent = RouteManager.getIntent(it, ApplinkConstInternalMarketplace.REPORT_PRODUCT,
-                            basic.productID)
+                    var deeplink = UriUtil.buildUri(ApplinkConstInternalMarketplace.REPORT_PRODUCT, basic.productID)
+                    deeplink = Uri.parse(deeplink).buildUpon().appendQueryParameter(ApplinkConst.DFFALLBACKURL_KEY,
+                        DynamicProductDetailMapper.generateProductReportFallback(basic.url)) .toString()
+                    val intent = RouteManager.getIntent(it, deeplink)
                     startActivityForResult(intent, ProductDetailConstant.REQUEST_CODE_REPORT)
                 }
                 productDetailTracking.eventReportLogin()
@@ -2171,9 +2174,9 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
             if (isVariant && isPartialySelected) {
                 if (pdpHashMapUtil?.productNewVariantDataModel?.listOfVariantCategory == null) {
-                    showToasterWithAction(getString(R.string.variant_failed_load), getString(R.string.product_refresh)) {
+                    showToasterWithAction(getString(R.string.variant_failed_load), getString(R.string.product_refresh),  {
                         onSwipeRefresh()
-                    }
+                    },500)
                 } else {
                     showErrorVariantUnselected()
                 }
@@ -2360,9 +2363,9 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
     private fun onFailFavoriteShop(t: Throwable) {
         context?.let {
-            showToasterWithAction(ProductDetailErrorHandler.getErrorMessage(it, t), getString(R.string.retry_label)) {
+            showToasterWithAction(ProductDetailErrorHandler.getErrorMessage(it, t), getString(R.string.retry_label), {
                 onShopFavoriteClick()
-            }
+            })
         }
         pdpHashMapUtil?.getShopInfo?.toogleFavorite = true
         dynamicAdapter.notifyShopInfo(pdpHashMapUtil?.getShopInfo, ProductDetailConstant.PAYLOAD_TOOGLE_AND_FAVORITE_SHOP)
@@ -2507,8 +2510,11 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         }
     }
 
-    private fun showToasterWithAction(message: String, buttonMessage: String, clickListener: () -> Unit) {
+    private fun showToasterWithAction(message: String, buttonMessage: String, clickListener: () -> Unit, ctaMaxWidth: Int? = null) {
         view?.let {
+            ctaMaxWidth?.let {
+                Toaster.toasterCustomCtaWidth = ctaMaxWidth
+            }
             Toaster.make(it, message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, buttonMessage, clickListener = View.OnClickListener {
                 clickListener.invoke()
             })
