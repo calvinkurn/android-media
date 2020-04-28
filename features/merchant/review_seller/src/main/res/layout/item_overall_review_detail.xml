@@ -26,7 +26,7 @@
         android:textColor="@color/typography_black"
         android:layout_marginLeft="@dimen/spacing_lvl3"
         android:layout_marginStart="@dimen/spacing_lvl3"
-        android:layout_marginTop="@dimen/dp_12"
+        android:layout_marginTop="@dimen/spacing_lvl4"
         app:typographyType="heading_1"
         app:typographyWeight="bold"
         app:layout_constraintStart_toEndOf="@id/rating_star"

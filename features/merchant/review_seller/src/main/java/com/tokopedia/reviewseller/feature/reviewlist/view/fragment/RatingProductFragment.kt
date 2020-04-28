@@ -303,6 +303,7 @@ class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewListTyp
         reviewSellerAdapter.hideLoading()
         swipeToRefreshReviewSeller?.isRefreshing = false
         if (reviewProductList.isEmpty()) {
+            scrollView_emptyState_reviewSeller?.show()
             emptyState_reviewProduct?.show()
         } else {
             reviewSellerAdapter.setProductListReviewData(reviewProductList)
