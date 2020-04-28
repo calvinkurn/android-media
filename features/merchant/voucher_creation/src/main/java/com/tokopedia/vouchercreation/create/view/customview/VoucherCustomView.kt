@@ -7,14 +7,14 @@ import android.view.LayoutInflater
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 
-abstract class BaseVoucherCustomView @JvmOverloads constructor(
+abstract class VoucherCustomView @JvmOverloads constructor(
         context: Context,
         private val attrs: AttributeSet? = null,
         private val defStyleAttr: Int = 0,
         private val defStyleRes: Int = 0,
         private val layoutResource: Int,
-        private val styleableResource: IntArray
-) : ConstraintLayout(context, attrs, defStyleAttr, defStyleRes) {
+        private val styleableResource: IntArray = intArrayOf()
+) : ConstraintLayout(context, attrs, defStyleAttr) {
 
     init {
         setupLayout()

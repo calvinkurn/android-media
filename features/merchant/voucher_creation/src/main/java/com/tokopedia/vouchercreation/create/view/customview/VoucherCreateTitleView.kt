@@ -14,7 +14,7 @@ class VoucherCreateTitleView @JvmOverloads constructor(
         defStyleRes: Int = 0,
         @LayoutRes layoutResource: Int = R.layout.mvc_create_widget_title,
         styleableResource: IntArray = R.styleable.VoucherCreateWidgetTitle
-) : BaseVoucherCustomView(context, attrs, defStyleAttr, defStyleRes, layoutResource, styleableResource) {
+) : VoucherCustomView(context, attrs, defStyleAttr, defStyleRes, layoutResource, styleableResource) {
 
     private var title: String = ""
 

@@ -4,13 +4,12 @@ import android.content.Context
 import android.graphics.drawable.GradientDrawable
 import android.util.AttributeSet
 import android.view.View
-import androidx.annotation.DrawableRes
 import androidx.annotation.LayoutRes
-import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.vouchercreation.R
+import com.tokopedia.vouchercreation.create.view.enums.VoucherTargetCardType
 import kotlinx.android.synthetic.main.mvc_voucher_target_item.view.*
 
 class VoucherTargetCardItemView @JvmOverloads constructor(
@@ -20,11 +19,13 @@ class VoucherTargetCardItemView @JvmOverloads constructor(
         defStyleRes: Int = 0,
         @LayoutRes layoutResource: Int = R.layout.mvc_voucher_target_item,
         styleableResource: IntArray = R.styleable.VoucherTargetCardItemView
-) : BaseVoucherCustomView(context, attrs, defStyleAttr, defStyleRes, layoutResource, styleableResource) {
+) : VoucherCustomView(context, attrs, defStyleAttr, defStyleRes, layoutResource, styleableResource) {
 
     companion object {
         const val TARGET_PUBLIC_TYPE = 0
-        const val TARGET_SPECIAL_TYPE = 1
+        const val TARGET_PRIVATE_TYPE = 1
+
+        private const val PROMO_CODE_PREFIX = "TOKO"
     }
 
     private var voucherTargetCardType: VoucherTargetCardType = VoucherTargetCardType.PUBLIC
@@ -37,8 +38,8 @@ class VoucherTargetCardItemView @JvmOverloads constructor(
                         TARGET_PUBLIC_TYPE -> {
                             VoucherTargetCardType.PUBLIC
                         }
-                        TARGET_SPECIAL_TYPE -> {
-                            VoucherTargetCardType.SPECIAL
+                        TARGET_PRIVATE_TYPE -> {
+                            VoucherTargetCardType.PRIVATE
                         }
                         else -> return
                     }
@@ -68,7 +69,7 @@ class VoucherTargetCardItemView @JvmOverloads constructor(
     }
 
     private fun View.setupIcon() {
-        voucherTargetItemIcon?.setImageDrawable(ContextCompat.getDrawable(context, voucherTargetCardType.iconDrawableRes))
+        voucherTargetItemIcon?.setImageResource(voucherTargetCardType.iconDrawableRes)
     }
 
     private fun View.setupTitle() {
@@ -109,25 +110,16 @@ class VoucherTargetCardItemView @JvmOverloads constructor(
         }
     }
 
-    fun setupCurrentView(voucherTargetType: Int,
+    fun setupCurrentView(voucherTargetType: VoucherTargetCardType,
                          isItemEnabled: Boolean,
                          isHavePromoCode: Boolean,
                          promoCode: String) {
-        this.voucherTargetType = voucherTargetType
+        this.voucherTargetCardType = voucherTargetType
         this.isItemEnabled = isItemEnabled
         this.isHavePromoCode = isHavePromoCode
-        this.promoCode = promoCode
+        this.promoCode = "$PROMO_CODE_PREFIX$promoCode"
 
         setupView()
-    }
-
-    enum class VoucherTargetCardType(@DrawableRes val iconDrawableRes: Int,
-                                     @StringRes val titleStringRes: Int,
-                                     @StringRes val descriptionStringRes: Int) {
-
-        PUBLIC(R.drawable.ic_im_umum, R.string.mvc_create_target_public, R.string.mvc_create_target_public_desc),
-        SPECIAL(R.drawable.ic_im_terbatas, R.string.mvc_create_target_special, R.string.mvc_create_target_special_desc)
-
     }
 
 }

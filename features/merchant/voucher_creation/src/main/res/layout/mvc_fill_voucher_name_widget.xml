@@ -23,9 +23,13 @@
         android:id="@+id/fillVoucherNameTextfield"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/mvc_create_widget_margin"
-        android:layout_marginEnd="@dimen/mvc_create_widget_margin"
+        android:layout_marginStart="@dimen/mvc_create_margin_padding"
+        android:layout_marginLeft="@dimen/mvc_create_margin_padding"
+        android:layout_marginEnd="@dimen/mvc_create_margin_padding"
+        android:layout_marginRight="@dimen/mvc_create_margin_padding"
         android:layout_marginBottom="@dimen/mvc_create_fill_voucher_name_margin_bottom"
+        app:text_field_placeholder="@string/mvc_create_voucher_name_textfield_hint"
+        app:text_field_counter="@integer/create_voucher_name_max_length"
         app:layout_constraintTop_toBottomOf="@id/fillVoucherNameTitle"
         app:layout_constraintBottom_toBottomOf="parent"/>
 

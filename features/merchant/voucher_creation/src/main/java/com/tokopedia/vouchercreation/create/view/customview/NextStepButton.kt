@@ -11,7 +11,7 @@ class NextStepButton @JvmOverloads constructor(
         defStyleAttr: Int = 0,
         defStyleRes: Int = 0,
         @LayoutRes layoutResource: Int = R.layout.mvc_next_step_button
-) : BaseVoucherCustomView(context, attrs, defStyleAttr, defStyleRes, layoutResource, intArrayOf()) {
+) : VoucherCustomView(context, attrs, defStyleAttr, defStyleRes, layoutResource) {
 
     override fun setupAttributes() {}
 

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/voucherTipsInfoImage"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/mvc_create_margin_padding"
+        android:layout_marginStart="@dimen/mvc_create_margin_padding"
+        app:layout_constraintWidth_percent="@integer/mvc_create_icon_image_width_percent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/voucherTipsInfoTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/mvc_text_color_black"
+        android:layout_marginLeft="@dimen/mvc_create_voucher_tips_image_title_margin_left"
+        android:layout_marginStart="@dimen/mvc_create_voucher_tips_image_title_margin_left"
+        app:typographyType="body_1"
+        app:typographyWeight="bold"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toEndOf="@id/voucherTipsInfoImage"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/voucherTipsInfoDesc"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textColor="@color/mvc_text_color_black"
+        android:layout_marginEnd="@dimen/mvc_create_margin_padding"
+        android:layout_marginRight="@dimen/mvc_create_margin_padding"
+        android:layout_marginTop="@dimen/mvc_create_voucher_tips_image_desc_margin_top"
+        android:layout_marginBottom="@dimen/mvc_create_voucher_tips_image_title_margin_bottom"
+        app:typographyType="body_2"
+        app:typographyWeight="reguler"
+        app:layout_constraintStart_toStartOf="@id/voucherTipsInfoTitle"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/voucherTipsInfoTitle"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

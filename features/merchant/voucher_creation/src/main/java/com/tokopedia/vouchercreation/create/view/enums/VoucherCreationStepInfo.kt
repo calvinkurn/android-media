@@ -1,4 +1,4 @@
-package com.tokopedia.vouchercreation.create.view.uimodel
+package com.tokopedia.vouchercreation.create.view.enums
 
 import androidx.annotation.StringRes
 import com.tokopedia.vouchercreation.R

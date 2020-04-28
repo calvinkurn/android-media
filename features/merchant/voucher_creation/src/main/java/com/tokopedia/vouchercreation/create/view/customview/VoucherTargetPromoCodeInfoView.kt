@@ -16,7 +16,7 @@ class VoucherTargetPromoCodeInfoView @JvmOverloads constructor(
         defStyleRes: Int = 0,
         @LayoutRes layoutResource: Int = R.layout.mvc_promo_code_info,
         styleableResource: IntArray = R.styleable.VoucherTargetPromoCodeInfoView
-) : BaseVoucherCustomView(context, attrs, defStyleAttr, defStyleRes, layoutResource, styleableResource) {
+) : VoucherCustomView(context, attrs, defStyleAttr, defStyleRes, layoutResource, styleableResource) {
 
     init {
         setupAttributes()

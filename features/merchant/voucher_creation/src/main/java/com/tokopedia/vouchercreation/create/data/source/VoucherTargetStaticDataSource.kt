@@ -1,19 +1,18 @@
 package com.tokopedia.vouchercreation.create.data.source
 
-import com.tokopedia.vouchercreation.create.view.customview.VoucherTargetCardItemView
-import com.tokopedia.vouchercreation.create.view.uimodel.VoucherTargetItemUiModel
+import com.tokopedia.vouchercreation.create.view.enums.VoucherTargetCardType
+import com.tokopedia.vouchercreation.create.view.uimodel.vouchertarget.VoucherTargetItemUiModel
 
 object VoucherTargetStaticDataSource {
 
     fun getVoucherTargetItemUiModelList() : List<VoucherTargetItemUiModel> =
             listOf(
                     VoucherTargetItemUiModel(
-                            voucherTargetType = VoucherTargetCardItemView.TARGET_PUBLIC_TYPE,
+                            voucherTargetType = VoucherTargetCardType.PUBLIC,
                             isEnabled = true,
-                            isHavePromoCard = true,
-                            promoCode = "KOKUMIGRATIS100"),
+                            isHavePromoCard = false),
                     VoucherTargetItemUiModel(
-                            voucherTargetType = VoucherTargetCardItemView.TARGET_SPECIAL_TYPE,
+                            voucherTargetType = VoucherTargetCardType.PRIVATE,
                             isEnabled = false,
                             isHavePromoCard = false
                     ))
