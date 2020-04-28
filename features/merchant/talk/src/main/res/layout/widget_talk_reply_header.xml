@@ -47,6 +47,21 @@
         app:layout_constraintStart_toStartOf="@id/replyHeaderDate"
         app:layout_constraintTop_toBottomOf="@id/replyHeaderMessage" />
 
+    <com.tokopedia.unifycomponents.ticker.Ticker
+        android:id="@+id/replyReportedTicker"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/layout_lvl2"
+        android:layout_marginRight="@dimen/layout_lvl2"
+        android:visibility="gone"
+        app:descriptionText="@string/reply_report_question_ticker"
+        app:layout_constraintStart_toStartOf="@id/replyHeaderMessage"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/replyHeaderMessage"
+        app:closeButtonVisibility="gone"
+        app:tickerType="warning"
+        app:tickerShapeType="loose"/>
+
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/replyHeaderTNC"
         android:layout_width="wrap_content"

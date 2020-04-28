@@ -13,6 +13,7 @@ import com.tokopedia.talk.feature.reply.presentation.widget.listeners.OnKebabCli
 import com.tokopedia.talk.feature.reply.presentation.widget.listeners.ThreadListener
 import com.tokopedia.talk_old.R
 import kotlinx.android.synthetic.main.item_talk_reply.view.*
+import kotlinx.android.synthetic.main.widget_talk_reply_header.view.*
 
 class TalkReplyViewHolder(view: View,
                           private val attachedProductCardListener: AttachedProductCardListener,
@@ -22,7 +23,7 @@ class TalkReplyViewHolder(view: View,
 
     companion object {
         val LAYOUT = R.layout.item_talk_reply
-        val IN_VIEWHOLDER = true
+        const val IN_VIEWHOLDER = true
     }
 
     override fun bind(element: TalkReplyUiModel) {
@@ -37,6 +38,7 @@ class TalkReplyViewHolder(view: View,
                 showAttachedProducts(attachedProducts)
             }
             showKebabWithConditions(answerID, state.allowReport, state.allowDelete, onKebabClickedListener)
+            showTickerWithCondition(state.isMasked, state.allowUnmask)
         }
     }
 
@@ -111,6 +113,12 @@ class TalkReplyViewHolder(view: View,
                 onKebabClickedListener.onKebabClicked(commentId, allowReport, allowDelete)
             }
             itemView.replyKebab.visibility = View.VISIBLE
+        }
+    }
+
+    private fun showTickerWithCondition(isMasked: Boolean, allowUnmask: Boolean) {
+        if(isMasked && allowUnmask) {
+            itemView.replyReportedTicker.visibility = View.VISIBLE
         }
     }
 

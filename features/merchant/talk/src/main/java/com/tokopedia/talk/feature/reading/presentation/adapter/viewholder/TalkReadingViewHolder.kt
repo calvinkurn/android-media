@@ -15,15 +15,16 @@ class TalkReadingViewHolder(view: View, private val threadListener: ThreadListen
         const val BULLET_POINT = "\u2022 %s"
         const val ATTACHED_PRODUCT = "%d produk"
         const val OTHER_ANSWERS = "Lihat %d Jawaban Lainnya"
-        const val MAX_LINES = 2
         val LAYOUT = R.layout.item_talk_reading
     }
 
     override fun bind(element: TalkReadingUiModel) {
         itemView.apply {
-            readingQuestionTitle.text = element.question.content
-            readingQuestionTitle.setOnClickListener {
-                threadListener.onThreadClicked(element.question.questionID)
+            readingQuestionTitle.apply {
+                text = element.question.content
+                setOnClickListener {
+                    threadListener.onThreadClicked(element.question.questionID)
+                }
             }
             if(element.question.totalAnswer > 0 && element.question.answer.answerID.isNotEmpty()) {
                 element.question.apply {
@@ -84,8 +85,6 @@ class TalkReadingViewHolder(view: View, private val threadListener: ThreadListen
         if(answer.isNotEmpty()) {
             itemView.readingMessage.apply {
                 text = answer
-                ellipsize = TextUtils.TruncateAt.END
-                maxLines = MAX_LINES
                 setOnClickListener {
                     threadListener.onThreadClicked(questionId)
                 }

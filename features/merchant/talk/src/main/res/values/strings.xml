@@ -119,6 +119,7 @@
     <string name="delete_question_bottom_sheet">Hapus Pertanyaan</string>
     <string name="delete_answer_bottom_sheet">Hapus Jawaban</string>
     <string name="report_bottom_sheet_text">Laporkan</string>
+    <string name="reply_report_question_ticker">Tokopedia tidak menampilkan konten ini karena melanggar S&amp;K. Tetap tampilkan?</string>
 
     <string name="toaster_report_success">Laporanmu berhasil dikirim dan akan segera ditindaklanjuti.</string>
     <string name="toaster_report_fail">Laporanmu gagal dikirim. Cek koneksi internetmu dan coba lagi, ya.</string>
