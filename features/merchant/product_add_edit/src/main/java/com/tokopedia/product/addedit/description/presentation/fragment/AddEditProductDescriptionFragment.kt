@@ -1,5 +1,6 @@
 package com.tokopedia.product.addedit.description.presentation.fragment
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.net.Uri
@@ -15,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
@@ -284,6 +286,7 @@ class AddEditProductDescriptionFragment:
 
         descriptionViewModel.getVariants(descriptionViewModel.categoryId)
 
+        hideKeyboardWhenTouchOutside()
         observeProductVariant()
         observeProductVideo()
     }
@@ -563,6 +566,16 @@ class AddEditProductDescriptionFragment:
                 putExtra(EXTRA_IS_USING_CACHE_MANAGER, true)
                 startActivityForResult(this, REQUEST_CODE_VARIANT)
             }
+        }
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    private fun hideKeyboardWhenTouchOutside() {
+        mainLayout?.setOnTouchListener{ _, _ ->
+            activity?.apply {
+                KeyboardHandler.hideSoftKeyboard(this)
+            }
+            true
         }
     }
 

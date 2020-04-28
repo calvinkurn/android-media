@@ -1,13 +1,16 @@
 package com.tokopedia.product.addedit.shipment.presentation.fragment
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.kotlin.extensions.view.afterTextChanged
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.common.constant.AddEditProductUploadConstant.Companion.EXTRA_PRODUCT_INPUT_MODEL
@@ -44,6 +47,7 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
     private var btnEnd: UnifyButton? = null
     private var productInputModel: ProductInputModel? = null
     private var btnSave: UnifyButton? = null
+    private var mainLayout: ConstraintLayout? = null
     private var selectedWeightPosition: Int = 0
 
     private lateinit var userSession: UserSessionInterface
@@ -121,6 +125,8 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
         switchInsurance = view.findViewById(R.id.switch_insurance)
         btnSave = view.findViewById(R.id.btn_save)
         btnEnd = view.findViewById(R.id.btn_end)
+        mainLayout = view.findViewById(R.id.main_layout)
+
         tfWeightAmount.setModeToNumberInput()
         tfWeightUnit?.apply {
             textFieldInput.setText(getWeightTypeTitle(0))
@@ -131,6 +137,7 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
             }
         }
         applyShipmentInputModel()
+        hideKeyboardWhenTouchOutside()
         tfWeightAmount?.textFieldInput?.afterTextChanged {
             validateInputWeight(it)
         }
@@ -268,6 +275,16 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
             textFieldInput.setText("")
             setError(false)
             setMessage("")
+        }
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    private fun hideKeyboardWhenTouchOutside() {
+        mainLayout?.setOnTouchListener{ _, _ ->
+            activity?.apply {
+                KeyboardHandler.hideSoftKeyboard(this)
+            }
+            true
         }
     }
 
