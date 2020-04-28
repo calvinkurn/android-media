@@ -77,6 +77,7 @@ final class ProductListPresenter
         implements ProductListSectionContract.Presenter {
 
     private List<Integer> searchNoResultCodeList = Arrays.asList(1, 2, 3, 6, 8);
+    private List<String> showBroadMatchResponseCodeList = Arrays.asList("4", "5");
     private static final String SEARCH_PAGE_NAME_RECOMMENDATION = "empty_search";
     private static final String DEFAULT_PAGE_TITLE_RECOMMENDATION = "Rekomendasi untukmu";
     private static final String DEFAULT_USER_ID = "0";
@@ -683,7 +684,6 @@ final class ProductListPresenter
 
         if (productViewModel.getProductList().isEmpty()) {
             getViewToHandleEmptyProductList(searchProductModel.getSearchProduct(), productViewModel);
-            getViewToShowRecommendationItem();
             getView().hideBottomNavigation();
         } else {
             getViewToShowProductList(searchParameter, searchProductModel, productViewModel);
@@ -733,11 +733,39 @@ final class ProductListPresenter
     }
 
     private void getViewToHandleEmptyProductList(SearchProductModel.SearchProduct searchProduct, ProductViewModel productViewModel) {
-        if (productViewModel.getErrorMessage() != null && !productViewModel.getErrorMessage().isEmpty()) {
-            getViewToHandleEmptySearchWithErrorMessage(searchProduct);
+        if (isShowBroadMatch(productViewModel)) {
+            getViewToShowBroadMatchToReplaceEmptySearch(productViewModel);
         } else {
-            getViewToShowEmptySearch(productViewModel);
+            if (productViewModel.getErrorMessage() != null && !productViewModel.getErrorMessage().isEmpty()) {
+                getViewToHandleEmptySearchWithErrorMessage(searchProduct);
+            } else {
+                getViewToShowEmptySearch(productViewModel);
+            }
+
+            getViewToShowRecommendationItem();
         }
+    }
+
+    private boolean isShowBroadMatch(ProductViewModel productViewModel) {
+        return showBroadMatchResponseCodeList.contains(productViewModel.getResponseCode())
+                && !productViewModel.getRelatedViewModel().getBroadMatchViewModelList().isEmpty();
+    }
+
+    private void getViewToShowBroadMatchToReplaceEmptySearch(ProductViewModel productViewModel) {
+        List<Visitable> visitableList = new ArrayList<>();
+
+        processSuggestionAndBroadMatch(productViewModel, visitableList);
+
+        getView().removeLoading();
+        getView().setProductList(visitableList);
+    }
+
+    private void processSuggestionAndBroadMatch(ProductViewModel productViewModel, List<Visitable> visitableList) {
+        if (!textIsEmpty(productViewModel.getSuggestionModel().getSuggestionText())) {
+            visitableList.add(productViewModel.getSuggestionModel());
+        }
+
+        visitableList.addAll(productViewModel.getRelatedViewModel().getBroadMatchViewModelList());
     }
 
     private void getViewToHandleEmptySearchWithErrorMessage(SearchProductModel.SearchProduct searchProduct) {
@@ -814,7 +842,8 @@ final class ProductListPresenter
             getView().trackEventImpressionSortPriceMinTicker();
         }
 
-        if (!textIsEmpty(productViewModel.getSuggestionModel().getSuggestionText())) {
+        if (!isShowBroadMatch(productViewModel)
+            && !textIsEmpty(productViewModel.getSuggestionModel().getSuggestionText())) {
             list.add(productViewModel.getSuggestionModel());
         }
 
@@ -847,6 +876,10 @@ final class ProductListPresenter
 
         inspirationCarouselViewModel = productViewModel.getInspirationCarouselViewModel();
         processInspirationCarouselPosition(searchParameter, list);
+
+        if (isShowBroadMatch(productViewModel)) {
+            processSuggestionAndBroadMatch(productViewModel, list);
+        }
 
         getView().removeLoading();
         getView().setProductList(list);
