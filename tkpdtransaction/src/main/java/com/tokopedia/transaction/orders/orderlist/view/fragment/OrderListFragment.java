@@ -998,7 +998,7 @@ public class OrderListFragment extends BaseDaggerFragment implements
     }
 
     private void trackOrder() {
-        /*String routingAppLink;
+        String routingAppLink;
         routingAppLink = ApplinkConst.ORDER_TRACKING.replace("{order_id}", selectedOrderId);
         String trackingUrl;
         Uri uri = Uri.parse(actionButtonUri);
@@ -1006,15 +1006,15 @@ public class OrderListFragment extends BaseDaggerFragment implements
         Uri.Builder uriBuilder = new Uri.Builder();
         uriBuilder.appendQueryParameter(ApplinkConst.Query.ORDER_TRACKING_URL_LIVE_TRACKING, trackingUrl);
         routingAppLink += uriBuilder.toString();
-        RouteManager.route(getContext(), routingAppLink);*/
-
+        RouteManager.route(getContext(), routingAppLink);
+/*
         String trackingUrl;
         Uri uri = Uri.parse(actionButtonUri);
         trackingUrl = uri.getQueryParameter("url");
         Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalLogistic.ORDER_TRACKING);
         intent.putExtra(ApplinkConst.Query.ORDER_TRACKING_ORDER_ID, selectedOrderId);
         intent.putExtra(ApplinkConst.Query.ORDER_TRACKING_URL_LIVE_TRACKING, trackingUrl);
-        startActivity(intent);
+        startActivity(intent);*/
     }
 
     @Override

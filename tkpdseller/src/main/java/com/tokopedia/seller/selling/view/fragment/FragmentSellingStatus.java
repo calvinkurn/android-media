@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -506,7 +507,7 @@ public class FragmentSellingStatus extends BaseFragment<SellingStatusTransaction
 
             @Override
             public void onTrack(SellingStatusTxModel model) {
-               /* String routingAppLink;
+                String routingAppLink;
                 routingAppLink = ApplinkConst.ORDER_TRACKING;
                 Uri.Builder uriBuilder = new Uri.Builder();
                 uriBuilder.appendQueryParameter(
@@ -518,14 +519,14 @@ public class FragmentSellingStatus extends BaseFragment<SellingStatusTransaction
                             model.liveTracking);
                 }
                 routingAppLink += uriBuilder.toString();
-                RouteManager.route(getActivity(), routingAppLink);*/
+                RouteManager.route(getActivity(), routingAppLink);
 
-                Intent intent = RouteManager.getIntent(getActivity(), ApplinkConst.ORDER_TRACKING);
+               /* Intent intent = RouteManager.getIntent(getActivity(), ApplinkConst.ORDER_TRACKING);
                 intent.putExtra(ApplinkConst.Query.ORDER_TRACKING_ORDER_ID, model.OrderId);
                 if (!TextUtils.isEmpty(model.liveTracking)) {
                     intent.putExtra(ApplinkConst.Query.ORDER_TRACKING_URL_LIVE_TRACKING, model.liveTracking);
                 }
-                startActivity(intent);
+                startActivity(intent);*/
             }
 
             @Override

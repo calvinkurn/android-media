@@ -783,7 +783,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                     } else if (actionButton.getLabel().equalsIgnoreCase("Lacak")) {
 
                         orderListAnalytics.sendActionButtonClickEvent(CLICK_TRACK);
-                        /*String routingAppLink;
+                        String routingAppLink;
                         routingAppLink = ApplinkConst.ORDER_TRACKING.replace("{order_id}", getArguments().getString(KEY_ORDER_ID));
 
                         String trackingUrl;
@@ -793,15 +793,15 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                         Uri.Builder uriBuilder = new Uri.Builder();
                         uriBuilder.appendQueryParameter(ApplinkConst.Query.ORDER_TRACKING_URL_LIVE_TRACKING, trackingUrl);
                         routingAppLink += uriBuilder.toString();
-                        RouteManager.route(getContext(), routingAppLink);*/
+                        RouteManager.route(getContext(), routingAppLink);
 
-                        String trackingUrl;
+                       /* String trackingUrl;
                         Uri uri = Uri.parse(actionButton.getUri());
                         trackingUrl = uri.getQueryParameter("url");
                         Intent intentTracking = RouteManager.getIntent(getActivity(), ApplinkConst.ORDER_TRACKING);
                         intentTracking.putExtra(ApplinkConst.Query.ORDER_TRACKING_ORDER_ID, getArguments().getString(KEY_ORDER_ID));
                         intentTracking.putExtra(ApplinkConst.Query.ORDER_TRACKING_URL_LIVE_TRACKING, trackingUrl);
-                        startActivity(intentTracking);
+                        startActivity(intentTracking);*/
 
                     } else {
                         RouteManager.route(getContext(), actionButton.getUri());
