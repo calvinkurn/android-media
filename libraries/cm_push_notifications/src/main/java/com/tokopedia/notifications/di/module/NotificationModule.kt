@@ -6,12 +6,17 @@ import com.tokopedia.atc_common.domain.mapper.AddToCartDataMapper
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.GraphqlUseCase as RxUseCase
-import com.tokopedia.notifications.R
 import com.tokopedia.notifications.data.DataManager
+import com.tokopedia.notifications.data.model.AmplificationNotifier
 import com.tokopedia.notifications.data.model.AttributionNotifier
+import com.tokopedia.notifications.di.module.GraphQueryModule.Companion.AMPLIFICATION_QUERY
+import com.tokopedia.notifications.di.module.GraphQueryModule.Companion.ATC_MUTATION_QUERY
+import com.tokopedia.notifications.di.module.GraphQueryModule.Companion.NOTIFICATION_ATTRIBUTION
 import com.tokopedia.notifications.di.scope.CMNotificationContext
 import com.tokopedia.notifications.di.scope.CMNotificationScope
+import com.tokopedia.notifications.domain.AmplificationUseCase
 import com.tokopedia.notifications.domain.AttributionUseCase
 import dagger.Module
 import dagger.Provides
@@ -27,10 +32,16 @@ import javax.inject.Named
 
     @Provides
     @CMNotificationScope
-    fun provideGraphqlUseCase(): GraphqlUseCase<AttributionNotifier> {
-        return GraphqlUseCase(
-                GraphqlInteractor.getInstance().graphqlRepository
-        )
+    fun provideGraphqlRepository(): GraphqlRepository {
+        return GraphqlInteractor.getInstance().graphqlRepository
+    }
+
+    @Provides
+    @CMNotificationScope
+    fun provideGraphqlUseCase(
+            repository: GraphqlRepository
+    ): GraphqlUseCase<AttributionNotifier> {
+        return GraphqlUseCase(repository)
     }
 
     @Provides
@@ -54,19 +65,25 @@ import javax.inject.Named
 
     @Provides
     @CMNotificationScope
+    fun provideAmplificationUseCase(
+            useCase: GraphqlUseCase<AmplificationNotifier>,
+            @Named(AMPLIFICATION_QUERY) query: String
+    ): AmplificationUseCase {
+        return AmplificationUseCase(useCase, query)
+    }
+
+    @Provides
+    @CMNotificationScope
     fun provideDataManager(
             attributionUseCase: AttributionUseCase,
-            atcProductUseCase: AddToCartUseCase
+            atcProductUseCase: AddToCartUseCase,
+            amplificationUseCase: AmplificationUseCase
     ): DataManager {
         return DataManager(
                 attributionUseCase,
-                atcProductUseCase
+                atcProductUseCase,
+                amplificationUseCase
         )
-    }
-
-    companion object {
-        const val NOTIFICATION_ATTRIBUTION = "notification_attribution"
-        const val ATC_MUTATION_QUERY = "atcMutation"
     }
 
 }
