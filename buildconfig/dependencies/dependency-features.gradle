@@ -68,6 +68,7 @@ ext {
             flashsaleManagement             : ":features:discovery:flashsale_management",
             flashsaleManagementCommon       : ":features:discovery:flashsale_management_common",
             home                            : ":features:discovery:home",
+            homeComponent                   : ":features:discovery:home_component",
             homeRecom                       : ":features:discovery:home_recom",
             homeWishlist                    : ":features:discovery:home_wishlist",
             recentview                      : ":features:discovery:recentview",
