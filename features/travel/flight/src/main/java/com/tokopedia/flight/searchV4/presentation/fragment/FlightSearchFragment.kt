@@ -55,7 +55,6 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.*
 import kotlinx.android.synthetic.main.fragment_flight_search.*
-import kotlinx.android.synthetic.main.fragment_search_flight.horizontal_progress_bar
 import kotlinx.android.synthetic.main.include_flight_quick_filter.*
 import kotlinx.android.synthetic.main.include_flight_search_title_route.*
 import javax.inject.Inject
@@ -330,7 +329,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
         flightSearchViewModel.flush()
         onFlightSearchFragmentListener?.changeDate(flightSearchViewModel.flightSearchPassData)
 
-        horizontal_progress_bar.visibility = View.VISIBLE
+        getSearchHorizontalProgress().visibility = View.VISIBLE
         flightSearchViewModel.setProgress(0)
         flight_sort_filter.visibility = View.GONE
 

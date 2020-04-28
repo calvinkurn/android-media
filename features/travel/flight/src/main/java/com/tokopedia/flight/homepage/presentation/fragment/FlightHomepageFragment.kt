@@ -3,6 +3,7 @@ package com.tokopedia.flight.homepage.presentation.fragment
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,7 +20,6 @@ import com.tokopedia.applink.DeeplinkMapper.getRegisteredNavigation
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.banner.Indicator
 import com.tokopedia.common.travel.data.entity.TravelCollectiveBannerModel
-import com.tokopedia.common.travel.ticker.TravelTickerUtils
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerModel
 import com.tokopedia.flight.R
 import com.tokopedia.flight.airport.view.activity.FlightAirportPickerActivity
@@ -39,6 +39,7 @@ import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataModel
 import com.tokopedia.flight.searchV4.presentation.activity.FlightSearchActivity
 import com.tokopedia.flight.search_universal.presentation.widget.FlightSearchFormView
 import com.tokopedia.travelcalendar.selectionrangecalendar.SelectionRangeCalendarWidget
+import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -59,6 +60,7 @@ class FlightHomepageFragment : BaseDaggerFragment(), FlightSearchFormView.Flight
     private var isTraceStop: Boolean = false
     private var applinkErrorTextResource = -1
     private var isSearchFromWidget: Boolean = false
+    private var bannerWidthInPixels = 0
 
     override fun getScreenName(): String = FlightHomepageFragment::class.java.simpleName
 
@@ -70,6 +72,11 @@ class FlightHomepageFragment : BaseDaggerFragment(), FlightSearchFormView.Flight
         super.onCreate(savedInstanceState)
 
         performanceMonitoring = PerformanceMonitoring.start(FLIGHT_HOMEPAGE_TRACE)
+
+        val displayMetrics = DisplayMetrics()
+        activity?.windowManager?.defaultDisplay?.getMetrics(displayMetrics)
+        bannerWidthInPixels = displayMetrics.widthPixels
+        bannerWidthInPixels -= resources.getDimensionPixelSize(R.dimen.banner_offset)
 
         activity?.run {
             val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
@@ -279,7 +286,11 @@ class FlightHomepageFragment : BaseDaggerFragment(), FlightSearchFormView.Flight
     private fun renderBannerView(bannerList: List<TravelCollectiveBannerModel.Banner>) {
         if (bannerList.isNotEmpty()) {
             showBannerView()
-            flightHomepageBanner.customWidth = resources.getDimensionPixelSize(R.dimen.banner_width)
+            flightHomepageBanner.customWidth = if (bannerWidthInPixels > 0) {
+                bannerWidthInPixels
+            } else {
+                resources.getDimensionPixelSize(R.dimen.banner_width)
+            }
             flightHomepageBanner.customHeight = resources.getDimensionPixelSize(R.dimen.banner_height)
             flightHomepageBanner.setBannerSeeAllTextColor(resources.getColor(com.tokopedia.unifycomponents.R.color.Green_G500))
             flightHomepageBanner.setBannerIndicator(Indicator.GREEN)
@@ -313,7 +324,8 @@ class FlightHomepageFragment : BaseDaggerFragment(), FlightSearchFormView.Flight
     }
 
     private fun renderTickerView(travelTickerModel: TravelTickerModel) {
-        TravelTickerUtils.buildUnifyTravelTicker(travelTickerModel, flightHomepageTicker)
+        flightHomepageTicker.setHtmlDescription(travelTickerModel.message)
+        flightHomepageTicker.tickerType = Ticker.TYPE_WARNING
         flightHomepageTicker.setDescriptionClickEvent(object : TickerCallback {
             override fun onDescriptionViewClick(linkUrl: CharSequence) {
                 if (linkUrl.isNotEmpty()) {
