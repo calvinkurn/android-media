@@ -9,6 +9,7 @@ import com.tokopedia.discovery.common.constants.SearchConstant;
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener;
 import com.tokopedia.search.result.presentation.model.BannedProductsEmptySearchViewModel;
 import com.tokopedia.search.result.presentation.model.BannedProductsTickerViewModel;
+import com.tokopedia.search.result.presentation.model.BroadMatchViewModel;
 import com.tokopedia.search.result.presentation.model.CpmViewModel;
 import com.tokopedia.search.result.presentation.model.EmptySearchProductViewModel;
 import com.tokopedia.search.result.presentation.model.GlobalNavViewModel;
@@ -24,6 +25,7 @@ import com.tokopedia.search.result.presentation.view.adapter.viewholder.common.S
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.BannedProductsEmptySearchViewHolder;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.BannedProductsTickerViewHolder;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.BigGridProductItemViewHolder;
+import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.BroadMatchViewHolder;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.CpmViewHolder;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.GlobalNavViewHolder;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.InspirationCarouselViewHolder;
@@ -38,6 +40,7 @@ import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.TickerViewHolder;
 import com.tokopedia.search.result.presentation.view.listener.BannedProductsRedirectToBrowserListener;
 import com.tokopedia.search.result.presentation.view.listener.BannerAdsListener;
+import com.tokopedia.search.result.presentation.view.listener.BroadMatchListener;
 import com.tokopedia.search.result.presentation.view.listener.EmptyStateListener;
 import com.tokopedia.search.result.presentation.view.listener.GlobalNavListener;
 import com.tokopedia.search.result.presentation.view.listener.InspirationCarouselListener;
@@ -61,6 +64,7 @@ public class ProductListTypeFactoryImpl extends BaseAdapterTypeFactory implement
     private final RecommendationListener recommendationListener;
     private final BannedProductsRedirectToBrowserListener bannedProductsRedirectToBrowserListener;
     private final InspirationCarouselListener inspirationCarouselListener;
+    private final BroadMatchListener broadMatchListener;
     private final Config topAdsConfig;
     private int recyclerViewItem;
 
@@ -75,6 +79,7 @@ public class ProductListTypeFactoryImpl extends BaseAdapterTypeFactory implement
                                       RecommendationListener recommendationListener,
                                       BannedProductsRedirectToBrowserListener bannedProductsRedirectToBrowserListener,
                                       InspirationCarouselListener inspirationCarouselListener,
+                                      BroadMatchListener broadMatchListener,
                                       Config config) {
 
         this.productListener = productListener;
@@ -89,6 +94,7 @@ public class ProductListTypeFactoryImpl extends BaseAdapterTypeFactory implement
         this.bannedProductsRedirectToBrowserListener = bannedProductsRedirectToBrowserListener;
         this.topAdsConfig = config;
         this.inspirationCarouselListener = inspirationCarouselListener;
+        this.broadMatchListener = broadMatchListener;
     }
 
     @Override
@@ -180,6 +186,11 @@ public class ProductListTypeFactoryImpl extends BaseAdapterTypeFactory implement
     }
 
     @Override
+    public int type(BroadMatchViewModel broadMatchViewModel) {
+        return BroadMatchViewHolder.LAYOUT;
+    }
+
+    @Override
     public AbstractViewHolder createViewHolder(View view, int type) {
         AbstractViewHolder viewHolder;
 
@@ -215,6 +226,8 @@ public class ProductListTypeFactoryImpl extends BaseAdapterTypeFactory implement
             viewHolder = new BannedProductsEmptySearchViewHolder(view, bannedProductsRedirectToBrowserListener);
         } else if (type == BannedProductsTickerViewHolder.LAYOUT) {
             viewHolder = new BannedProductsTickerViewHolder(view, bannedProductsRedirectToBrowserListener);
+        } else if (type == BroadMatchViewHolder.LAYOUT) {
+            viewHolder = new BroadMatchViewHolder(view, broadMatchListener);
         } else {
             viewHolder = super.createViewHolder(view, type);
         }

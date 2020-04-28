@@ -50,6 +50,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.trackingOptimizer)
     implementation project(rootProject.ext.features.seamlesslogin)
     implementation project(rootProject.ext.libraries.iris)
+    implementation project(rootProject.ext.features.carouselProductCard)
 
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components
