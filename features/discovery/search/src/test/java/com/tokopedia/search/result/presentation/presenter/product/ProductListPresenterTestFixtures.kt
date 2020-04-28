@@ -30,6 +30,7 @@ internal open class ProductListPresenterTestFixtures {
         every { it.getBoolean(RemoteConfigKey.ENABLE_GLOBAL_NAV_WIDGET, true) } answers { secondArg() }
         every { it.getBoolean(RemoteConfigKey.APP_CHANGE_PARAMETER_ROW, false) } answers { secondArg() }
         every { it.getBoolean(RemoteConfigKey.ENABLE_BOTTOM_SHEET_FILTER, true) } answers { secondArg() }
+        every { it.getBoolean(RemoteConfigKey.ENABLE_TRACKING_VIEW_PORT, true) } answers { secondArg() }
     }
     protected val advertisingLocalCache = mockk<LocalCacheHandler>(relaxed = true)
     protected val productListPresenter = ProductListPresenter(
