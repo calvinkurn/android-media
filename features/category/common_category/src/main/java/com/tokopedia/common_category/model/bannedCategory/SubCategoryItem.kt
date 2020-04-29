@@ -1,4 +1,4 @@
-package com.tokopedia.discovery.categoryrevamp.data.subCategoryModel
+package com.tokopedia.common_category.model.bannedCategory
 
 import android.os.Parcel
 import android.os.Parcelable

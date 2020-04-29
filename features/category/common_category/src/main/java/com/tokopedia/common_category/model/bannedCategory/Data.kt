@@ -37,6 +37,9 @@ class Data() : Parcelable {
     @SerializedName("isAdult")
     var isAdult: Int = 0
 
+    @SerializedName("child")
+    val child: List<SubCategoryItem?>? = null
+
     constructor(parcel: Parcel) : this() {
         id = parcel.readValue(Int::class.java.classLoader) as? Int
         name = parcel.readString()
