@@ -122,7 +122,7 @@ public class OrderListAnalytics {
     private static final String TICKER_EVENT_ACTION = "view ticker";
     private static final String TICKER_EVENT_NAME = "viewPurchaseList";
 
-    private static final String ORDER_LIST = "/orderlist";
+    private static final String ORDER_LIST = "/order list";
 
     @Inject
     public OrderListAnalytics() {
