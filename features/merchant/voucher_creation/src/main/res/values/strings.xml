@@ -120,4 +120,5 @@
     <string name="mvc_twitter">Twitter</string>
     <string name="mvc_broadcast_chat">Broadcast Chat</string>
     <string name="mvc_others">Lainnya</string>
+    <string name="mvc_start_date">Tanggal Mulai</string>
 </resources>
