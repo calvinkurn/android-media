@@ -253,6 +253,6 @@
     <string name="title_play_df">Play</string>
 
     <!--Promo-->
-    <string name="title_activity_gamification">Gamification</string>
+    <string name="title_gamification_df">Gamification</string>
 
 </resources>

@@ -16,7 +16,7 @@
     package="com.tokopedia.df.promo.gamification">
 
     <dist:module
-        dist:title="@string/title_activity_gamification">
+        dist:title="@string/title_gamification_df">
         <dist:delivery>
             <dist:on-demand/>
         </dist:delivery>
