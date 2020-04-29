@@ -68,6 +68,7 @@ public class OrderListAnalytics {
     private static final String KEY_CATEGORY = "category";
     private static final String KEY_CATEGORY_ID = "category_id";
     private static final String KEY_SHOP_ID = "shop_id";
+    private static final String KEY_CART_ID = "cart_id";
     private static final String KEY_SHOP_TYPE= "shop_type";
     private static final String KEY_SHOP_NAME= "shop_name";
     private static final String KEY_DIMENSION_45 = "dimension45";
@@ -291,6 +292,7 @@ public class OrderListAnalytics {
         Map<String, Object> add = new HashMap<>();
         Map<String, Object> ecommerce = new HashMap<>();
         Gson gson = new Gson();
+        String eventLabel = isSuccess ? EVENT_LABEL_BUY_AGAIN_SUCCESS : EVENT_LABEL_BUY_AGAIN_FAILURE;
 
         for (Items item : items) {
             MetaDataInfo metaDataInfo = gson.fromJson(item.getMetaData(), MetaDataInfo.class);
@@ -313,6 +315,7 @@ public class OrderListAnalytics {
                     cartId = String.valueOf(datum.getCartId());
                     break;
                 }
+            product.put(KEY_CART_ID, cartId);
             product.put(KEY_DIMENSION_45, cartId);
             product.put(KEY_DIMENSION_40, ORDER_LIST + " - " + statusCode);
             product.put(KEY_DIMENSION_38, NONE);
@@ -332,7 +335,7 @@ public class OrderListAnalytics {
         else
             map.put("eventCategory", EVENT_CATEGORY_BUY_AGAIN);
         map.put("eventAction", EVENT_ACTION_BUY_AGAIN + eventActionLabel);
-        map.put("eventLabel", isSuccess ? EVENT_LABEL_BUY_AGAIN_SUCCESS : EVENT_LABEL_BUY_AGAIN_FAILURE);
+        map.put("eventLabel", eventLabel + " - " + statusCode);
         map.put("ecommerce", ecommerce);
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(map);
 
