@@ -31,7 +31,7 @@ public class ExpiredCrackResult extends CrackResultEntity {
         crackBenefits.add(crackBenefit);
 
         Bitmap errorBitmap = BitmapFactory.decodeResource(context.getResources(),
-                R.drawable.image_error_crack_result_expired);
+                R.drawable.gf_image_error_crack_result_expired);
 
         CrackButtonEntity returnButton = new CrackButtonEntity();
         returnButton.setTitle(context.getString(com.tokopedia.gamification.R.string.ok_button));

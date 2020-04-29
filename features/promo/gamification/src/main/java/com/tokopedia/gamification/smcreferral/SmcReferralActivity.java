@@ -9,7 +9,6 @@ import androidx.fragment.app.Fragment;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.promogamification.common.GamificationRouter;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.webview.BaseSessionWebViewFragment;
@@ -30,8 +29,8 @@ public class SmcReferralActivity extends BaseSimpleActivity {
         if (userSession.isLoggedIn()) {
             loadFragmentForUrl();
         } else {
-                Intent loginIntent = RouteManager.getIntent(this, ApplinkConst.LOGIN);
-                startActivityForResult(loginIntent, LOGIN_REQUEST_CODE);
+            Intent loginIntent = RouteManager.getIntent(this, ApplinkConst.LOGIN);
+            startActivityForResult(loginIntent, LOGIN_REQUEST_CODE);
         }
     }
 
