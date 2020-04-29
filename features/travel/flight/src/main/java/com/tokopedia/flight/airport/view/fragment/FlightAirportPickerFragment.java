@@ -12,7 +12,6 @@ import androidx.annotation.Nullable;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
-import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
 import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel;
 import com.tokopedia.abstraction.base.view.fragment.BaseSearchListFragment;
 import com.tokopedia.flight.R;
@@ -24,6 +23,7 @@ import com.tokopedia.flight.airport.view.model.FlightAirportModel;
 import com.tokopedia.flight.airport.view.presenter.FlightAirportPickerContract;
 import com.tokopedia.flight.airport.view.presenter.FlightAirportPickerPresenterImpl;
 import com.tokopedia.flight.common.di.component.FlightComponent;
+import com.tokopedia.flight.searchV4.presentation.model.EmptyResultModel;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -162,15 +162,15 @@ public class FlightAirportPickerFragment extends BaseSearchListFragment<Visitabl
 
     @Override
     protected Visitable getEmptyDataViewModel() {
-        EmptyModel emptyModel = new EmptyModel();
+        EmptyResultModel emptyModel = new EmptyResultModel();
         if (searchInputView.getSearchText().length() < 3) {
             emptyModel.setIconRes(R.drawable.ic_flight_airport_search_not_complete);
             emptyModel.setTitle(getString(com.tokopedia.flight.R.string.flight_airport_less_than_three_keyword_title_error));
-            emptyModel.setContent(getString(com.tokopedia.flight.R.string.flight_airport_less_than_three_keyword_error));
+            emptyModel.setContentRes(R.string.flight_airport_less_than_three_keyword_error);
         } else {
             emptyModel.setIconRes(com.tokopedia.globalerror.R.drawable.unify_globalerrors_404);
             emptyModel.setTitle(getString(com.tokopedia.flight.R.string.flight_airport_not_found_title_error));
-            emptyModel.setContent(getString(com.tokopedia.flight.R.string.flight_airport_not_found_description_error));
+            emptyModel.setContentRes(R.string.flight_airport_not_found_description_error);
         }
         return emptyModel;
     }
