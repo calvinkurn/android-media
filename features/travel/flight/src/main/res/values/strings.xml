@@ -172,8 +172,7 @@
     <string name="activity_label_flight_search_departure">Pencarian Pergi</string>
     <string name="flight_dashboard_departure_airport_hint">Penerbangan Asal</string>
     <string name="flight_dashboard_arrival_airport_hint">Penerbangan Tujuan</string>
-    <string name="flight_airportpicker_departure_title">Penerbangan Asal</string>
-    <string name="flight_airportpicker_arrival_title">Penerbangan Tujuan</string>
+    <string name="flight_airportpicker_title">Tujuan</string>
     <string name="flight_title_return">Pencarian Pulang</string>
     <string name="flight_label_saving_price_html"><![CDATA[<strike>%1$s</strike>]]></string>
     <string name="flight_label_duration_transit">%1$s (%2$s transit)</string>
