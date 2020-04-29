@@ -150,11 +150,9 @@ object SellerReviewProductDetailMapper {
         return itemUnifyList
     }
 
-
-    private fun mapToItemSortFilter(data: List<ProductFeedbackDetailResponse.ProductFeedbackDataPerProduct.Topic>, oldData: List<SortFilterItemWrapper>): ArrayList<SortFilterItemWrapper> {
-        val itemSortFilterList = ArrayList<SortFilterItemWrapper>()
-        val updatedData = updateNewDataWithOldData(data,oldData)
-        val maxData = updatedData.take(4)
+    private fun mapToItemSortFilter(data: ProductFeedbackDetailResponse.ProductFeedbackDataPerProduct): ArrayList<SortFilterItem> {
+        val itemSortFilterList = ArrayList<SortFilterItem>()
+        val maxData = data.topics.take(4)
         maxData.map {
             val sortFilter = SortFilterItem(
                     title = it.first.formatted,
